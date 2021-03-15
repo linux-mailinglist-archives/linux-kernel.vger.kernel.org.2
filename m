@@ -2,180 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2BC33AFFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA5433B003
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbhCOKaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:30:22 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:38097 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhCOK3r (ORCPT
+        id S229927AbhCOKb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 06:31:26 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2695 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhCOKbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:29:47 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 15E532223A;
-        Mon, 15 Mar 2021 11:29:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1615804184;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M+G0aHtxYhQhsAv27r0UhYEFH5PYNNiTmAc6FMMstIQ=;
-        b=aInZ0BfuvttaSH0mW2556X+pvfz9pLyLrfE3jANCutDE71/K2EE5q1wQ57ep8UN/E2WmKu
-        Z5YhD2f+ys713msS7MpBsvrfJXyZTrKqJeVbgZJVdVpmWo6BehpZErRtBFWSTfF1qsYB84
-        0ol8tXZyG+OJArdoxTXBF/GtW+mfxso=
+        Mon, 15 Mar 2021 06:31:17 -0400
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DzXdw48HTz680Cl;
+        Mon, 15 Mar 2021 18:26:44 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 15 Mar 2021 11:31:15 +0100
+Received: from [10.210.166.140] (10.210.166.140) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 15 Mar 2021 10:31:14 +0000
+Subject: Re: arm64 syzbot instances
+To:     Dmitry Vyukov <dvyukov@google.com>
+CC:     Arnd Bergmann <arnd@arndb.de>, Mark Rutland <mark.rutland@arm.com>,
+        "Marc Zyngier" <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>,
+        Jiahui Cen <cenjiahui@huawei.com>
+References: <CACT4Y+beyZ7rjmy7im0KdSU-Pcqd4Rud3xsxonBbYVk0wU-B9g@mail.gmail.com>
+ <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com>
+ <CACT4Y+YeeEkF65O40DMLB=cggiowZUxXDs++BNTrDMO94j=NvA@mail.gmail.com>
+ <CAK8P3a0HVu+x0T6+K3d0v1bvU-Pes0F0CSjqm5x=bxFgv5Y3mA@mail.gmail.com>
+ <CACT4Y+aWMD283vYMfoGM1fir_fPF7MPqe+vLjaoQD2iZUV4c-A@mail.gmail.com>
+ <CAK8P3a2NEcHG+nOUCc6-DPeFKkc-GF-LEOkynhNdgxiXBHdQaw@mail.gmail.com>
+ <CACT4Y+bLdCw+nWndwnv6W9=0EhNNxi=n5Zp032hZE1j0QBMkaA@mail.gmail.com>
+ <CAK8P3a0yxbeY0z=6EQhvBN8NWF++1Cww4tRaSwrUQFt3A-BMaw@mail.gmail.com>
+ <CACT4Y+aTbdE1CeUOgCKLJ3XpjazN5=yTmToXN_03M9EQ_hhayg@mail.gmail.com>
+ <CAK8P3a221xG9dM1UZXNGhjkVyxn6sjscSYdsFwWO6CVB_HQhXw@mail.gmail.com>
+ <48347b4d-9194-16f2-95a0-c3eb55ca9a80@huawei.com>
+ <CACT4Y+a58QHkas=5t51Aou9GDHDtjyiGwtruUZgbe-iVmTp0Mw@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <56d33822-e577-c8a8-673b-675d6920c379@huawei.com>
+Date:   Mon, 15 Mar 2021 10:29:08 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <CACT4Y+a58QHkas=5t51Aou9GDHDtjyiGwtruUZgbe-iVmTp0Mw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 15 Mar 2021 11:29:44 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Tudor.Ambarus@microchip.com
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Subject: Re: [PATCH v4 2/4] mtd: spi-nor: implement OTP support for Winbond
- and similar flashes
-In-Reply-To: <b2baa942-6018-16a6-a5b7-76ed61b5eb8b@microchip.com>
-References: <20210306000535.9890-1-michael@walle.cc>
- <20210306000535.9890-3-michael@walle.cc>
- <b2baa942-6018-16a6-a5b7-76ed61b5eb8b@microchip.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <81b861a5340fc300293f46e583b412cd@walle.cc>
-X-Sender: michael@walle.cc
+X-Originating-IP: [10.210.166.140]
+X-ClientProxiedBy: lhreml718-chm.china.huawei.com (10.201.108.69) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-15 09:20, schrieb Tudor.Ambarus@microchip.com:
-> On 3/6/21 2:05 AM, Michael Walle wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
->> the content is safe
->> 
->> Use the new OTP ops to implement OTP access on Winbond flashes. Most
->> Winbond flashes provides up to four different OTP regions ("Security
->> Registers").
->> 
->> Winbond devices use a special opcode to read and write to the OTP
->> regions, just like the RDSFDP opcode. In fact, it seems that the
->> (undocumented) first OTP area of the newer flashes is the actual SFDP
->> table.
->> 
->> On a side note, Winbond devices also allow erasing the OTP regions as
->> long as the area isn't locked down.
->> 
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> ---
->>  drivers/mtd/spi-nor/core.c  |   2 +-
->>  drivers/mtd/spi-nor/core.h  |   6 ++
->>  drivers/mtd/spi-nor/otp.c   | 164 
->> ++++++++++++++++++++++++++++++++++++
->>  include/linux/mtd/spi-nor.h |   9 ++
->>  4 files changed, 180 insertions(+), 1 deletion(-)
->> 
->> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->> index 0c5c757fa95b..ef7df26896f1 100644
->> --- a/drivers/mtd/spi-nor/core.c
->> +++ b/drivers/mtd/spi-nor/core.c
->> @@ -1034,7 +1034,7 @@ static int 
->> spi_nor_write_16bit_sr_and_check(struct spi_nor *nor, u8 sr1)
->>   *
->>   * Return: 0 on success, -errno otherwise.
->>   */
->> -static int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 
->> cr)
->> +int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr)
->>  {
->>         int ret;
->>         u8 *sr_cr = nor->bouncebuf;
->> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
->> index ec8da1243846..dfbf6ba42b57 100644
->> --- a/drivers/mtd/spi-nor/core.h
->> +++ b/drivers/mtd/spi-nor/core.h
->> @@ -496,6 +496,7 @@ int spi_nor_read_sr(struct spi_nor *nor, u8 *sr);
->>  int spi_nor_read_cr(struct spi_nor *nor, u8 *cr);
->>  int spi_nor_write_sr(struct spi_nor *nor, const u8 *sr, size_t len);
->>  int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 sr1);
->> +int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr);
->> 
->>  int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr);
->>  ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t 
->> len,
->> @@ -503,6 +504,11 @@ ssize_t spi_nor_read_data(struct spi_nor *nor, 
->> loff_t from, size_t len,
->>  ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t 
->> len,
->>                            const u8 *buf);
->> 
->> +int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t 
->> len, u8 *buf);
->> +int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t 
->> len, u8 *buf);
->> +int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
->> +int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int 
->> region);
->> +
->>  int spi_nor_hwcaps_read2cmd(u32 hwcaps);
->>  u8 spi_nor_convert_3to4_read(u8 opcode);
->>  void spi_nor_set_read_settings(struct spi_nor_read_command *read,
->> diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
->> index 4e301fd5156b..4e8da9108c77 100644
->> --- a/drivers/mtd/spi-nor/otp.c
->> +++ b/drivers/mtd/spi-nor/otp.c
->> @@ -15,6 +15,170 @@
->>  #define spi_nor_otp_region_len(nor) ((nor)->params->otp.org->len)
->>  #define spi_nor_otp_n_regions(nor) 
->> ((nor)->params->otp.org->n_regions)
->> 
->> +/**
->> + * spi_nor_otp_read_secr() - read OTP data
->> + * @nor:       pointer to 'struct spi_nor'
->> + * @from:       offset to read from
->> + * @len:        number of bytes to read
->> + * @buf:        pointer to dst buffer
+On 15/03/2021 10:01, Dmitry Vyukov wrote:
+> On Mon, Mar 15, 2021 at 10:45 AM John Garry<john.garry@huawei.com>  wrote:
+>>>> It does not happen too often on syzbot so far, so let's try to do the
+>>>> right thing first.
+>>>> I've filed:https://bugs.launchpad.net/qemu/+bug/1918917
+>>>> with a link to this thread. To be fair, I don't fully understand what
+>>>> I am talking about, I hope I proxied your description properly.
+>>> Thanks, looks good. I provided a little more detail in a comment there.
+>>>
+>>>           Arnd
+>>> .
+>>>
+>>   From looking at the bug report, my impression is that this is a qemu
+>> issue, as the logical IO space is mapped to the PCI host bridge IO
+>> space, and qemu does not handle accesses to that CPU addressable region
+>> at all. As Arnd said.
+>>
+>> However, we really should not be accessing logical IO ports 0 or 0x2f8
+>> at all via ttyS3 if not enumerated from PCI device at that logical IO
+>> port. That is what I think anyway, as who knows what device - if any -
+>> really exists at that location. That is why I had this patch to just
+>> stop accesses to legacy IO port regions on arm64:
+>>
+>> https://lore.kernel.org/lkml/1610729929-188490-2-git-send-email-john.garry@huawei.com/
+> Hi John,
 > 
-> is buf DMA-able?
-
-That's actually the same description as spi_nor_read_data().
-Looks like the spimem will provide a DMA-able buffer on
-the fly if necessary. I'm not sure about the the
-spi_nor_controller_ops.
-
->> + *
->> + * Read OTP data from one region by using the SPINOR_OP_RSECR 
->> commands. This
->> + * method is used on GigaDevice and Winbond flashes.
->> + *
->> + * Return: number of bytes read successfully, -errno otherwise
->> + */
->> +int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t 
->> len, u8 *buf)
->> +{
->> +       u8 addr_width, read_opcode, read_dummy;
->> +       struct spi_mem_dirmap_desc *rdesc;
->> +       enum spi_nor_protocol read_proto;
->> +       int ret;
->> +
->> +       read_opcode = nor->read_opcode;
->> +       addr_width = nor->addr_width;
->> +       read_dummy = nor->read_dummy;
->> +       read_proto = nor->read_proto;
->> +       rdesc = nor->dirmap.rdesc;
->> +
->> +       nor->read_opcode = SPINOR_OP_RSECR;
->> +       nor->addr_width = 3;
->> +       nor->read_dummy = 8;
->> +       nor->read_proto = SNOR_PROTO_1_1_1;
+> Thanks for the info.
 > 
-> any winbond/gigadevice flashes with octal dtr support? Do they
-> provide SEC Register opcodes for octal dtr?
+> The patch is from January, but it's not merged yet, right?
+> It will fix the crash we see, right?
+> .
 
-AFAIK there are no winbond flashes with 8 bit I/O. There are
-4bit/DTR modes, but not for the security registers.
+It's not merged, and it probably would solve this issue. But following 
+discussion with Arnd when it was originally posted, I still need to do 
+some analysis whether it is the proper thing to do.
 
-I don't know what you had in mind. But I don't think it is
-worth to read the 3x 256byte data faster than single bit I/O.
+However, as mentioned, the fundamental issue looks like qemu IO port 
+access, so it would be good to check that first.
 
--michael
+On a related topic, I will cc colleague Jiahui Cen, who I think was 
+doing some work arm on qemu support in a related area, so may share some 
+experience here.
+
+Jiahui Cen did have a patch to fix logical PIO code from this work [0], 
+which is not merged, but I don't think would help here. I will cc you on it.
+
+Thanks,
+John
+
+[0] 
+https://lore.kernel.org/lkml/006ad6ce-d6b2-59cb-8209-aca3f6e53fec@huawei.com/
