@@ -2,326 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2B033C2F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:59:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F3133C2D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:59:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235064AbhCOQ7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:59:02 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:56614 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232557AbhCOQ6Z (ORCPT
+        id S234653AbhCOQ6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:58:45 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:51014 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233989AbhCOQ6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:58:25 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12FGjkOV151374;
-        Mon, 15 Mar 2021 16:57:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- subject : from : in-reply-to : date : cc : content-transfer-encoding :
- message-id : references : to : mime-version; s=corp-2020-01-29;
- bh=Lf8MqhFk41xiYbhWADyYqlSDummXTupAEP4HXqi9rZs=;
- b=p9AysWlBJsScrHRdGD86f8piOP/gmLOzb4UCpzQ/Tl1L2ZXrpzXhVNs6ek94XQvMZDvx
- 663Dt3h0/xF37C8GMx+ZnscvlNYN8I1c5DO8xHOxNzOrTPrlIxyYEtEc8LAdx1jUd0BH
- vvouwt1SCB6aQ7SoQhBBWP/Qxre1/b0B4OEXNbxoRwKY3mkHRwpPBa0hLcvwlB3WOR4L
- R3ZPqCWur17vjAlQXRfy8IxNUYJ+N0nwkVtFZ1T3OLTlODN6yYpYXLq224U9u5jnsUbp
- czP4wo8JN5jO86ZUEaacRBLCk6HOmf8ssdZchtejA7SD1eo1BYVzPDvb7Gm3U8ajrbpk ng== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 378p1nmk08-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Mar 2021 16:57:46 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12FGk646075085;
-        Mon, 15 Mar 2021 16:57:45 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2109.outbound.protection.outlook.com [104.47.55.109])
-        by userp3030.oracle.com with ESMTP id 3797axxh6t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Mar 2021 16:57:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hxKmvBEDr/SC6py9v/JwxXpz9mR14t1XFp8Dkre5pcZoIi9K6+7XkO1RhvHxFgASgV9GEIvebH/jk9/9640Ns7Yam5pR9inhBeVBwL0T8f7UZy0lKUvXXZ6xAhb5Hx1nPe8hYjU1DC3B7NMSfoETdJDPhd1ZrszSiiOnX8eUpixgagbJ+cwHQ2/0Q6NuWkpkKk5pE2hWtfv683vViIahv6k5bt3SAK0me1twwrsQHU5X7Jo8UjQpMrVveLsTHUAppemjYuP7g8/uElbH4cYrO8xsDwpZHMPWbOcMqyJMt7o6tCgPhaDJ55hbyY//ro0howzdTmSszQRYyBCGrpA/0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Lf8MqhFk41xiYbhWADyYqlSDummXTupAEP4HXqi9rZs=;
- b=TMQqViM4OQzpDNkPEuq64S/fJKiD+VX6wJMKj12ZlaXeOwepPvhEPLy/P6DPW75JIrdxgs1XTjirZldgndP8qVAIoTdNGSkcpHly2k6SJtlDPy7qVH7MotXfovBTN4xT1dBJe1Br2mRaCbWLs0fJNCl4pRxVju2QhUacuSAaqvM+3T4Lj7yW8l33iaIuQhLEaNsr7oTtiTBECwHqwaxXmGX/GQXDJfgDvLhlknBkLt9c7JnDXQ0HwYNMPJZByeNYtEWMApqOqH0Hx0/zND8rckCAa3nTV7FsjWOd4UjpNMBh1d6CikcYYQ035BsRAk0HIYmO1Y+af44dEe4R2Ub4Mw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Lf8MqhFk41xiYbhWADyYqlSDummXTupAEP4HXqi9rZs=;
- b=rvNHcI9iiLKu/xrP4rAzujSK40uMb5tVOk4SoPkUaxgch3pUiIqaqhrwWEdIBpqtpccR1Jlt3G61yF5FWTDVRjuMx3zsj07utROdybppX/Btl+nvh4VquzkT+ZbYJ3lXGNjelEtwvOne5hQArD0i6py08PYdoQnTguK8dMvhPzg=
-Authentication-Results: digikod.net; dkim=none (message not signed)
- header.d=none;digikod.net; dmarc=none action=none header.from=oracle.com;
-Received: from CH2PR10MB4150.namprd10.prod.outlook.com (2603:10b6:610:ac::13)
- by CH2PR10MB3768.namprd10.prod.outlook.com (2603:10b6:610:7::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Mon, 15 Mar
- 2021 16:57:43 +0000
-Received: from CH2PR10MB4150.namprd10.prod.outlook.com
- ([fe80::95df:950e:af4c:a5df]) by CH2PR10MB4150.namprd10.prod.outlook.com
- ([fe80::95df:950e:af4c:a5df%9]) with mapi id 15.20.3933.032; Mon, 15 Mar 2021
- 16:57:43 +0000
-Content-Type: text/plain; charset=utf-8
-Subject: Re: [PATCH v7 1/5] tools/certs: Add print-cert-tbs-hash.sh
-From:   Eric Snowberg <eric.snowberg@oracle.com>
-In-Reply-To: <20210312171232.2681989-2-mic@digikod.net>
-Date:   Mon, 15 Mar 2021 10:57:35 -0600
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <0BB27C1C-9B66-4671-B3F5-B4C505955CC6@oracle.com>
-References: <20210312171232.2681989-1-mic@digikod.net>
- <20210312171232.2681989-2-mic@digikod.net>
-To:     =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-X-Mailer: Apple Mail (2.3273)
-X-Originating-IP: [24.52.35.144]
-X-ClientProxiedBy: BY3PR03CA0015.namprd03.prod.outlook.com
- (2603:10b6:a03:39a::20) To CH2PR10MB4150.namprd10.prod.outlook.com
- (2603:10b6:610:ac::13)
+        Mon, 15 Mar 2021 12:58:11 -0400
+Received: from x64host.home (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 8661B20B26E1;
+        Mon, 15 Mar 2021 09:58:10 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8661B20B26E1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1615827491;
+        bh=2IkLEY7rVpHOq8BnHCSOXhCoOChzmb9iFYxXyHpHlLY=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=bOMGK6jhSSZAE3G6a/J4nJT9kIHG9Xay1WkstxQj1b4yPbS4YWb9PC2XG4pCYNay7
+         z9rIyQ3D+RILG/3cvhTE93IQdxL2fehUiD5CXwqsdqiP6IO2vwJ6tjCZs5xF8U9Lb4
+         Wt8kzJgFnPhG1h3w2vqPtw5vdsY36po0fLTKc7EQ=
+From:   madvenka@linux.microsoft.com
+To:     broonie@kernel.org, mark.rutland@arm.com, jpoimboe@redhat.com,
+        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        madvenka@linux.microsoft.com
+Subject: [RFC PATCH v2 0/8] arm64: Implement reliable stack trace
+Date:   Mon, 15 Mar 2021 11:57:52 -0500
+Message-Id: <20210315165800.5948-1-madvenka@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <5997dfe8d261a3a543667b83c902883c1e4bd270>
+References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.16.177.128] (24.52.35.144) by BY3PR03CA0015.namprd03.prod.outlook.com (2603:10b6:a03:39a::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31 via Frontend Transport; Mon, 15 Mar 2021 16:57:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b81d12ba-f105-4de8-6fd9-08d8e7d37361
-X-MS-TrafficTypeDiagnostic: CH2PR10MB3768:
-X-Microsoft-Antispam-PRVS: <CH2PR10MB37688642D5F9F1B240882B96876C9@CH2PR10MB3768.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:69;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KyMGOksJLqFlTW6xUIU3oEe78aQa4kZtmtE4jT7jMmJSmvIqHFaPuO9r0Eg2BT63+YB6Ip4MUMvqt9qaEmcmOSLG0eBiLm0lIA8wEV62qT9GNr4w75gnKE15Wh0eUPg/2y+1VO3SfnQOf9LuQfvCYpc8/IqLvPv+PXT7nJkErLxAsnHb0YPbDL6Qfui2iEXw6atALQ73LYrTY9x7AJSeKuja75KVn/J4oy/jd8WA6MdBWJMEyP5WBc4uVchguN21o8lnlz8/qhXqVMPYO/UYHK/XU5nZTXa0D/SFK9znWNqngcb9eoa5oTaBBs3e2EdJ7O1REOkrojdAUQL3LHZ9QFeBsTzayW+3uOJ1UEKB4ahIHC1XxMKNNJlxybDo7ngixoP1QNmDLSi18q9x1q/UeutuFEXALR0MpXCs+R9SQ5k4vB4226/2rbtUCAwDmpTHE5p6LsUbUAjOTAxVrpN3U0ikMX9qp9be07u3nGpr3Hi2fsvbBIWI1kzfsLOAbpz1LDln4zf70+/sSzKXGmTYJwECsHntb2GmEpMPP9sZHoAo9ENdtRWom2voW+50Lg3sQ46wTjp/C/M4dU9IwuZUo/VDX/L2/2eA0+Z7O9ePeqCa02Bw9Xe0CLfc+CtxnYVSpj94bOvTqMr0NZbZZwl96VDvrH9WiP/sfxLp1ttHuza525k1dNS05B0TQtbKLKoZCBkh5Ie7aOrJdGUVMlaK1jQEuYYm/APatWHsnyT1PMo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4150.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(376002)(346002)(136003)(39860400002)(66574015)(6916009)(2906002)(66946007)(7416002)(8676002)(2616005)(16526019)(4326008)(5660300002)(186003)(26005)(478600001)(6666004)(83380400001)(45080400002)(86362001)(966005)(66476007)(16576012)(316002)(66556008)(6486002)(44832011)(33656002)(36756003)(8936002)(52116002)(54906003)(53546011)(956004)(45980500001)(414714003)(473944003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Q2loZHhQZTBDYkEzSm5iTVdtbmlWd0VzdnBQem9ldG1Oci9NNDhucElzekpU?=
- =?utf-8?B?L2JtRGJNeWwxK3lmOXlNQnQ1ZHFxY1ZiZEU0N1VGU1hqaHJUQmVzNHV4OUMr?=
- =?utf-8?B?TUdZdVU4K1dkb1FiaklmMFpNZ2JLaWdsZlZrN1ZyZmVZeUJvZURTSzgwS1cv?=
- =?utf-8?B?Y0lVakxQUys5QnVGNUdrc0xBb0pjNVdEajdGdFlZTGF0TnY1MUVHN1NzRDRK?=
- =?utf-8?B?UldXT0Y5ejZISnZSV0hYMzNRdVBoTVdVMjNsUkxIYmJaa2l6SlBJZ3crLzFt?=
- =?utf-8?B?OUNnV3pibUh0VU9ybUQ4emdtU3N6T3BnM0tGNUdjTWdDald5OFlSTkFGNzF4?=
- =?utf-8?B?eTBPSE9lZ1BBWWdzR0dzT1BRV0VZWUNSdDRjR1Rla3BlZDJKbmw4Yno5UkJ1?=
- =?utf-8?B?ZmJ6M0F1VHM3QzAyaEZrMUJUWGpwVi9MQWVUWjVkVDljaGJGMmdsMFIwOVhq?=
- =?utf-8?B?czZzWFNpT3RzbkovUTk0MVVxVlpPN3B4SFpOR1pvaGwrYVRFNFRMaWd2ZFpN?=
- =?utf-8?B?KzVSei9waUFCZFRRd2RDRDIrSFdBTm14NUdJb2tRL3Zya1hjYmhGZWY0T1Vi?=
- =?utf-8?B?V1NDVkFuMDh3elI3WEpZV0dGTUJjbEhnZnM1djJHV0RRODJueVIzbnBGbnBQ?=
- =?utf-8?B?bUhxTkt1cmhQVXJSdXF6bmNScDMyWWJiM1ZMRFh0MlhrakN1cFlicVNyUVQr?=
- =?utf-8?B?TjhYUko0ckhwMDJHQUw4YmRrbStEenYrOWtZVEtHMVpjamZ1Rzc3ajFpRG9p?=
- =?utf-8?B?ekdKbVVPNGY2N0VVT2F4VVNSSFpWVEp3bWdmbWdISEJ0dm9lT3d3MUVmdXhH?=
- =?utf-8?B?UWxHaWZvSTV2cXozdkV2N21iaG5wT0d5anBMMjJYQ3o2UFdCd0R3YUZ5S0FJ?=
- =?utf-8?B?TUlWazFDSDE2QXU1ZjRHNEtSZjAzTkd2ZzBXaDEwWldXNW5iMytUUUhkdmxt?=
- =?utf-8?B?UW1CNy9rK05tME1Zb0FTNFhqYVhIRzJtQUJKaGVNVFN4V3M1cEFiMHBtUDJm?=
- =?utf-8?B?V0dUNmUzTndHZGpDUThDZzVMQjJtVDNkT1VvY3FKUTJKTHlzdENDVldKNEFO?=
- =?utf-8?B?NFlaVVBDRW5xS3JkRWQ0SjJHdDdValNhYVVZWkVqTEhob1VGT1AyZ3EvNGJm?=
- =?utf-8?B?MXBUSmp4WWhpR2ZKeXc0cEc1UUh6WHRyM256ZXdTckRUWUw5QUFtSHU0RHh1?=
- =?utf-8?B?S3diRVhhNjg1VDMxTkQ1TWpBeUpoU2tMSmgvVlBjejlid0RCUHlTc1pOaDRJ?=
- =?utf-8?B?Rk1SQTJXaVhXYzBtbnAyZGkxaXc3ek5WSWMyRzlJRlA3Y2x1QXFic2hWN0xS?=
- =?utf-8?B?VHB4ZGRvWHNNZzJFV3BNNWU4S29HalR4a2xoV09yUjZ5NlJqa3JsampFRS9m?=
- =?utf-8?B?UjA0SXZYb2JIZUtCTUM0SG02cFRQQWlrbUtzSXNQOWV4ZmM2RVVrQjdqWTI4?=
- =?utf-8?B?dWJ6TjhNa0srVGpSZXE1a3lBRmRCOUVwQjZTT3JNYmsza0J3dldvSUIyWnNX?=
- =?utf-8?B?cTFkMytiQzRkRG15b0pTU0N4YVB6YkRqUHhXVjZnWTBBcVhCS0ZXb2FjS05s?=
- =?utf-8?B?TGtRaVlINkkveFlXZTVta1RvMkcrY0tiR3lDdkNZZnY5Wkt3Q1lrelh3N2Nz?=
- =?utf-8?B?bFdwbjVYUE1lY2dLc2g1TGdQV25SOEJqbUwzQTFodFFWSUdHNVk5UllPbmUy?=
- =?utf-8?B?SWRWeHdiODhqZzFGdENXL1VtbEFUbW96dXZZV0xnMWJaSFFzZ0l6TUR0dTYz?=
- =?utf-8?Q?c5jUu/MJCKLvHYb2UYfl9/0CKZvKVGISz+khN3q?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b81d12ba-f105-4de8-6fd9-08d8e7d37361
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4150.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2021 16:57:43.4125
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Tkcd0GVlt/jf7gv6D1XvS4Kc90u7tU7UQ3uxerhFaUE3ThiWxHHwBjFOMKw8RbYphoA7Q+tKtBsmJRmUW9yzb114BWB5fTdH46n9RnMl0r4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB3768
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9923 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 bulkscore=0
- malwarescore=0 adultscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103150114
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9923 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0 adultscore=0
- spamscore=0 clxscore=1015 phishscore=0 malwarescore=0 priorityscore=1501
- bulkscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103150114
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
 
-> On Mar 12, 2021, at 10:12 AM, Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> =
-wrote:
->=20
-> From: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
->=20
-> Add a new helper print-cert-tbs-hash.sh to generate a TBSCertificate
-> hash from a given certificate.  This is useful to generate a blacklist
-> key description used to forbid loading a specific certificate in a
-> keyring, or to invalidate a certificate provided by a PKCS#7 file.
->=20
-> This kind of hash formatting is required to populate the file pointed
-> out by CONFIG_SYSTEM_BLACKLIST_HASH_LIST, but only the kernel code was
-> available to understand how to effectively create such hash.
->=20
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Eric Snowberg <eric.snowberg@oracle.com>
-> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
-> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Link: https://lore.kernel.org/r/20210312171232.2681989-2-mic@digikod.net
+I have made an attempt to implement reliable stack trace for arm64 so
+it can be used for livepatch. Below is the list of changes. I have
+documented my understanding of the issues and solutions below as well
+as in the patch descriptions and the code. Please let me know if my
+understanding is incorrect or incomplete anywhere.
 
-Tested-by: Eric Snowberg <eric.snowberg@oracle.com>
+Stack termination record
+========================
 
-> ---
->=20
-> Changes since v5:
-> * Add Reviewed-by Jarkko.
->=20
-> Changes since v3:
-> * Explain in the commit message that this kind of formating is not new
->  but it wasn't documented.
->=20
-> Changes since v1:
-> * Fix typo.
-> * Use "if" block instead of "||" .
-> ---
-> MAINTAINERS                        |  1 +
-> tools/certs/print-cert-tbs-hash.sh | 91 ++++++++++++++++++++++++++++++
-> 2 files changed, 92 insertions(+)
-> create mode 100755 tools/certs/print-cert-tbs-hash.sh
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 00836f6452f0..773a362e807f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4120,6 +4120,7 @@ F:	Documentation/admin-guide/module-signing.rst
-> F:	certs/
-> F:	scripts/extract-cert.c
-> F:	scripts/sign-file.c
-> +F:	tools/certs/
->=20
-> CFAG12864B LCD DRIVER
-> M:	Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>
-> diff --git a/tools/certs/print-cert-tbs-hash.sh b/tools/certs/print-cert-=
-tbs-hash.sh
-> new file mode 100755
-> index 000000000000..c93df5387ec9
-> --- /dev/null
-> +++ b/tools/certs/print-cert-tbs-hash.sh
-> @@ -0,0 +1,91 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Copyright =C2=A9 2020, Microsoft Corporation. All rights reserved.
-> +#
-> +# Author: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
-> +#
-> +# Compute and print the To Be Signed (TBS) hash of a certificate.  This =
-is used
-> +# as description of keys in the blacklist keyring to identify certificat=
-es.
-> +# This output should be redirected, without newline, in a file (hash0.tx=
-t) and
-> +# signed to create a PKCS#7 file (hash0.p7s).  Both of these files can t=
-hen be
-> +# loaded in the kernel with.
-> +#
-> +# Exemple on a workstation:
-> +# ./print-cert-tbs-hash.sh certificate-to-invalidate.pem > hash0.txt
-> +# openssl smime -sign -in hash0.txt -inkey builtin-private-key.pem \
-> +#               -signer builtin-certificate.pem -certfile certificate-ch=
-ain.pem \
-> +#               -noattr -binary -outform DER -out hash0.p7s
-> +#
-> +# Exemple on a managed system:
-> +# keyctl padd blacklist "$(< hash0.txt)" %:.blacklist < hash0.p7s
-> +
-> +set -u -e -o pipefail
-> +
-> +CERT=3D"${1:-}"
-> +BASENAME=3D"$(basename -- "${BASH_SOURCE[0]}")"
-> +
-> +if [ $# -ne 1 ] || [ ! -f "${CERT}" ]; then
-> +	echo "usage: ${BASENAME} <certificate>" >&2
-> +	exit 1
-> +fi
-> +
-> +# Checks that it is indeed a certificate (PEM or DER encoded) and exclud=
-e the
-> +# optional PEM text header.
-> +if ! PEM=3D"$(openssl x509 -inform DER -in "${CERT}" 2>/dev/null || open=
-ssl x509 -in "${CERT}")"; then
-> +	echo "ERROR: Failed to parse certificate" >&2
-> +	exit 1
-> +fi
-> +
-> +# TBSCertificate starts at the second entry.
-> +# Cf. https://tools.ietf.org/html/rfc3280#section-4.1
-> +#
-> +# Exemple of first lines printed by openssl asn1parse:
-> +#    0:d=3D0  hl=3D4 l=3D 763 cons: SEQUENCE
-> +#    4:d=3D1  hl=3D4 l=3D 483 cons: SEQUENCE
-> +#    8:d=3D2  hl=3D2 l=3D   3 cons: cont [ 0 ]
-> +#   10:d=3D3  hl=3D2 l=3D   1 prim: INTEGER           :02
-> +#   13:d=3D2  hl=3D2 l=3D  20 prim: INTEGER           :3CEB2CB8818D968AC=
-00EEFE195F0DF9665328B7B
-> +#   35:d=3D2  hl=3D2 l=3D  13 cons: SEQUENCE
-> +#   37:d=3D3  hl=3D2 l=3D   9 prim: OBJECT            :sha256WithRSAEncr=
-yption
-> +RANGE_AND_DIGEST_RE=3D'
-> +2s/^\s*\([0-9]\+\):d=3D\s*[0-9]\+\s\+hl=3D\s*[0-9]\+\s\+l=3D\s*\([0-9]\+=
-\)\s\+cons:\s*SEQUENCE\s*$/\1 \2/p;
-> +7s/^\s*[0-9]\+:d=3D\s*[0-9]\+\s\+hl=3D\s*[0-9]\+\s\+l=3D\s*[0-9]\+\s\+pr=
-im:\s*OBJECT\s*:\(.*\)$/\1/p;
-> +'
-> +
-> +RANGE_AND_DIGEST=3D($(echo "${PEM}" | \
-> +	openssl asn1parse -in - | \
-> +	sed -n -e "${RANGE_AND_DIGEST_RE}"))
-> +
-> +if [ "${#RANGE_AND_DIGEST[@]}" !=3D 3 ]; then
-> +	echo "ERROR: Failed to parse TBSCertificate." >&2
-> +	exit 1
-> +fi
-> +
-> +OFFSET=3D"${RANGE_AND_DIGEST[0]}"
-> +END=3D"$(( OFFSET + RANGE_AND_DIGEST[1] ))"
-> +DIGEST=3D"${RANGE_AND_DIGEST[2]}"
-> +
-> +# The signature hash algorithm is used by Linux to blacklist certificate=
-s.
-> +# Cf. crypto/asymmetric_keys/x509_cert_parser.c:x509_note_pkey_algo()
-> +DIGEST_MATCH=3D""
-> +while read -r DIGEST_ITEM; do
-> +	if [ -z "${DIGEST_ITEM}" ]; then
-> +		break
-> +	fi
-> +	if echo "${DIGEST}" | grep -qiF "${DIGEST_ITEM}"; then
-> +		DIGEST_MATCH=3D"${DIGEST_ITEM}"
-> +		break
-> +	fi
-> +done < <(openssl list -digest-commands | tr ' ' '\n' | sort -ur)
-> +
-> +if [ -z "${DIGEST_MATCH}" ]; then
-> +	echo "ERROR: Unknown digest algorithm: ${DIGEST}" >&2
-> +	exit 1
-> +fi
-> +
-> +echo "${PEM}" | \
-> +	openssl x509 -in - -outform DER | \
-> +	dd "bs=3D1" "skip=3D${OFFSET}" "count=3D${END}" "status=3Dnone" | \
-> +	openssl dgst "-${DIGEST_MATCH}" - | \
-> +	awk '{printf "tbs:" $2}'
-> --=20
-> 2.30.2
->=20
+The unwinder needs to be able to reliably tell when it has reached the end
+of a stack trace. One way to do this is to have the last stack frame at a
+fixed offset from the base of the task stack. When the unwinder reaches
+that offset, it knows it is done.
+
+All tasks have a pt_regs structure right after the task stack in the stack
+page. The pt_regs structure contains a stackframe field. Make this stackframe
+field the last frame in the task stack so all stack traces end at a fixed
+stack offset.
+
+For kernel tasks, this is simple to understand. For user tasks, there is
+some extra detail. User tasks get created via fork() et al. Once they return
+from fork, they enter the kernel only on an EL0 exception. In arm64,
+system calls are also EL0 exceptions.
+
+The EL0 exception handler uses the task pt_regs mentioned above to save
+register state and call different exception functions. All stack traces
+from EL0 exception code must end at the pt_regs. So, make pt_regs->stackframe
+the last frame in the EL0 exception stack.
+
+To summarize, task_pt_regs(task)->stackframe will always be the stack
+termination record.
+
+Implement frame types
+=====================
+
+Apart from the task pt_regs, pt_regs is also created on the stack for two
+other cases:
+
+EL1 exceptions:
+	When the kernel encounters an exception (more on this below),
+	it is called an EL1 exception. A pt_regs is created on the
+	stack at that point to save register state. In addition,
+	pt_regs->stackframe is set up for the interrupted kernel function
+	so that the function shows up in the EL1 exception stack trace.
+
+Ftrace:
+	When CONFIG_DYNAMIC_FTRACE_WITH_REGS is on, the ftrace infrastructure
+	is called at the beginning of a traced function, ftrace creates a
+	pt_regs on the stack at that point to save register state. In addition,
+	it sets up pt_regs->stackframe for the traced function so that the
+	traced function shows up in the stack trace taken from anywhere in
+	the ftrace code after that point. When the ftrace code returns to the
+	traced function, the pt_regs is removed from the stack.
+
+To summarize, pt_regs->stackframe is used as a marker frame in stack traces.
+To enable the unwinder to detect these frames, tag each pt_regs->stackframe
+with a type. To record the type, use the unused2 field in struct pt_regs and
+rename it to frame_type. The types are:
+
+TASK_FRAME
+	Terminating frame for a normal stack trace.
+EL0_FRAME
+	Terminating frame for an EL0 exception.
+EL1_FRAME
+	EL1 exception frame.
+FTRACE_FRAME
+	FTRACE frame.
+
+These frame types will be used by the unwinder later to validate frames.
+
+Proper termination of the stack trace
+=====================================
+
+In the unwinder, check the following for properly terminating the stack
+trace:
+
+	- Check every frame to see if it is task_pt_regs(stack)->stackframe.
+	  If it is, terminate the stack trace successfully.
+
+	- For additional validation, make sure that the frame_type is either
+	  TASK_FRAME or EL0_FRAME.
+
+Detect EL1 frame
+================
+
+The kernel runs at Exception Level 1. If an exception happens while
+executing in the kernel, it is an EL1 exception. This includes interrupts
+which are asynchronous exceptions in arm64.
+
+EL1 exceptions can happen on any instruction including instructions in
+the frame pointer prolog or epilog. Depending on where exactly they happen,
+they could render the stack trace unreliable.
+
+If an EL1 exception frame is found on the stack, mark the stack trace as
+unreliable.
+
+Now, the EL1 exception frame is not at any well-known offset on the stack.
+It can be anywhere on the stack. In order to properly detect an EL1
+exception frame, some checks must be done. See the patch description and
+the code for more detail.
+
+There are two special cases to be aware of:
+
+	- At the end of an interrupt, the code checks if the current task
+	  must be preempted for any reason. If so, it calls the preemption
+	  code which takes the task off the CPU. A stack trace taken on
+	  the task after the preemption will show the EL1 frame and will be
+	  considered unreliable. Preemption can happen practically at any
+	  point in code including the frame pointer prolog and epilog.
+
+	- Breakpoints encountered in kernel code are also EL1 exceptions.
+	  The probing infrastructure uses breakpoints for executing
+	  probe code. While in the probe code, the stack trace will show
+	  an EL1 frame and will be considered unreliable. There is one
+	  special case, viz, kretprobe which is discussed below.
+
+Detect ftrace frame
+===================
+
+The ftrace infrastructure called for a traced function creates two frames:
+
+	- One for the traced function
+
+	- One for the caller of the traced function
+
+That gives a reliable stack trace while executing in the ftrace infrastructure
+code. When ftrace returns to the traced function, the frames are popped and
+everything is back to normal.
+
+However, in cases like live patch, execution is redirected to a different
+function when ftrace returns. A stack trace taken while still in the ftrace
+infrastructure code will not show the target function. The target function
+is the real function that we want to track.
+
+If an ftrace frame is detected on the stack, mark the stack trace as
+unreliable.
+
+NOTE: For Function Graph Tracing where the return address of a function is
+modified, the unwinder already has code to address that. It retrieves the
+original address during unwinding.
+
+Return address check
+====================
+
+Check the return PC of every stack frame to make sure that it is a valid
+kernel text address (and not some generated code, for example).
+
+Check for kretprobe
+===================
+
+For functions with a kretprobe set up, probe code executes on entry
+to the function and replaces the return address in the stack frame with a
+kretprobe trampoline. Whenever the function returns, control is
+transferred to the trampoline. The trampoline eventually returns to the
+original return address.
+
+A stack trace taken while executing in the function (or in functions that
+get called from the function) will not show the original return address.
+Similarly, a stack trace taken while executing in the trampoline itself
+(and functions that get called from the trampoline) will not show the
+original return address. This means that the caller of the probed function
+will not show.
+
+So, if the trampoline is detected in the stack trace, mark the stack trace
+as unreliable.
+
+FYI, each task contains a task->kretprobe_instances list that can
+theoretically be consulted to find the orginal return address. But I am
+not entirely sure how to safely traverse that list for stack traces
+not on the current process.
+
+I have taken the easy way out and marked the stack trace as unreliable.
+
+Optprobes
+=========
+
+Optprobes may be implemented in the future for arm64. For optprobes, the
+same approach to detect them as kretprobes will work.
+
+Frame checks
+============
+
+I have a number of checks to make sure that the unwinder detects each frame
+type correctly. So, I have not added a return address check. The return
+address checks that could be added are:
+
+TASK_FRAME
+	Check for ret_from_fork().
+
+EL0_FRAME
+	Check for one of these:
+		el0_sync
+		el0_sync_compat
+		el0_irq
+		el0_irq_compat
+		el0_error
+		el0_error_compat
+
+EL1_FRAME
+	Check for one of these:
+		el1_sync
+		el1_irq
+		el1_error
+
+Currently these functions are local functions. Would need to make them
+global so the unwinder can reference them. Also, Mark Rutland indicated
+that these might need some reorg.
+
+So, I am currently not doing these address checks at the frames. But if
+the reviewers feel that I need to do them, I will add these checks.
+
+Implement arch_stack_walk_reliable()
+====================================
+
+Now that the unwinder can mark the stack trace as reliable (or not),
+implement arch_stack_walk_reliable() based on that.
+---
+
+Changelog:
+
+v1
+	- Introduced an implementation of reliable stack trace for arm64.
+
+v2
+	- Split the changes into logical individual patches.
+
+	- I have inlined the code that was in a function called
+	  update_frame() in unwind_frame() itself.
+
+	- I have added a lot of documentation to record my
+	  understanding of the issues and my solutions for them so
+	  reviewers can comment on them.
+
+	- In v1, all task stack traces ended in the same global frame.
+	  I have changed that to a per-task termination record in the
+	  task pt_regs->stackframe. This way, the stack trace always
+	  ends at a particular stack offset.
+
+	- The stack termination frame also contains FP == 0 and PC == 0
+	  so that debuggers will continue to work when they take stack
+	  traces.
+
+	- I have removed the encoding of the frame pointer by setting the
+	  LSB as it will mess up debuggers when they do stack traces.
+
+	- I have implemented a frame type field in pt_regs. Each type of
+	  frame is tagged with a specific pattern that can be checked by
+	  the unwinder to validate the frame.
+
+	- I have added the following reliability checks in the unwinder:
+
+		- Check for proper stack trace termintaion
+
+		- Check for EL1 exception frames
+
+		- Check for ftrace exception frames
+
+		- Check if the PC in every frame is a proper kernel text
+		  address
+
+		- Check for the kretprobed functions
+
+	- Based on the above unwinder enhancements, I have implemented
+	  arch_stack_walk_reliable().
+
+Madhavan T. Venkataraman (8):
+  arm64: Implement stack trace termination record
+  arm64: Implement frame types
+  arm64: Terminate the stack trace at TASK_FRAME and EL0_FRAME
+  arm64: Detect an EL1 exception frame and mark a stack trace unreliable
+  arm64: Detect an FTRACE frame and mark a stack trace unreliable
+  arm64: Check the return PC of every stack frame
+  arm64: Detect kretprobed functions in stack trace
+  arm64: Implement arch_stack_walk_reliable()
+
+ arch/arm64/Kconfig                  |   1 +
+ arch/arm64/include/asm/ptrace.h     |  15 ++-
+ arch/arm64/include/asm/stacktrace.h |   2 +
+ arch/arm64/kernel/asm-offsets.c     |   1 +
+ arch/arm64/kernel/entry-ftrace.S    |   2 +
+ arch/arm64/kernel/entry.S           |  12 +-
+ arch/arm64/kernel/head.S            |  30 ++++-
+ arch/arm64/kernel/process.c         |   6 +
+ arch/arm64/kernel/stacktrace.c      | 196 +++++++++++++++++++++++++++-
+ 9 files changed, 250 insertions(+), 15 deletions(-)
+
+
+base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
+-- 
+2.25.1
 
