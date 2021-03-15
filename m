@@ -2,90 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7ED33CA03
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 00:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B5633CA06
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 00:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233783AbhCOXiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 19:38:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57314 "EHLO
+        id S233809AbhCOXit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 19:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233836AbhCOXiM (ORCPT
+        with ESMTP id S232089AbhCOXiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 19:38:12 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B214EC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 16:38:12 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id v62so39733298ybb.15
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 16:38:12 -0700 (PDT)
+        Mon, 15 Mar 2021 19:38:14 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 832BDC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 16:38:14 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id j3so24162826qvo.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 16:38:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=OJG5tHSRHGT9S+uZcZRNR3aTYP0+DUQ0Eor7atCfRB4=;
-        b=JTPqPdRQbM5CiZ6rBU7vJ1rcRT+FqRrK4VFC/asvMFNG12vo/RlN42YMWGU2ajbuaC
-         V0rvz/PxHaZfPwo9Ibdsj/8BeeiJnw8KbKw2gGMSHzZlR7E5FhcnNc2C3136RoreuMPb
-         dSewy+veTF6Re1439u5iFaaOhRszQwnG+ZBKK9H+IRfULxUBCWsYxgq4LW5gt+ru/3Bx
-         kcI5uuJpGzp+9DdD+sify9W6QRWhhrINgnMVVaTT1b6qoChRwnwVQa9QYeqG0wUKPhZw
-         v08+2U5Tzb50jPT+bBMaYFmRDqtpEIOWFmFFANuW1w/10fMb+m5fWsYdXq2wuZ+sxW8c
-         jXag==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=kl2EVOBmn7oQV8DsVZaFdaHri6MWqYz7gtsahKZb1Es=;
+        b=qidQHbG8ZfyIg9dIuIPHeZczbB4TDnrajiH+GpYI8NXv1vvJgbEjKGAQUbSuWQAPDq
+         Da9we1AIBx4DUAZBSovJmYC+QFzyagc2byZzyBymdijQ0LKTuwE/ZlTIzW5a7CJTQ1pA
+         5vMmqmqLgaY7U3H8sc2F2hB+9ugpj4BpedoK9e5J4SoEnp/3XcOyd5lexR6u4vmYogmL
+         zqim66i37eOa16VeTLPmvBfcU9NnL8uWmA3m4BQaAgddIx1SmGFmMH1Hpae+DMdR34xr
+         /mbpeWukRRhfn70l+JEJg0hWuMD7cpkIkA/Hv8XKX9E6FQWKNorgNAIbMTOQicdLVxF6
+         TKSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=OJG5tHSRHGT9S+uZcZRNR3aTYP0+DUQ0Eor7atCfRB4=;
-        b=Rf7bTmrRmAyGPoMWYF14IvDawWbxUqX2wF/iKj/IaaohTz5zHgVTmgdv6MINzGiMoW
-         b4z1qzxoYlTVaojqQ9W9Vm9prYVl2QPeRTIvm3TuSVOYw/isBIqny0XsZF3b0aJGVt/K
-         SQ8fZKrfsINrRcdTM8eIjpgN+aBmQixpHazfHgjmZT8JLt/OOUfrF9jaJ4RV21/YC1uh
-         js3rGbvAVvbA8vtJ5J5IKaBOEuCs0ULhPpsYdQ3rlENsl2joSeSQri9VqC7WMwMTkUFh
-         lhtiKrt3CfGm4FqTdaZF+vqpz7Dxmxg1OzqWp52FXDyE+IJFC/ry2Fn4ZSGKHepkB6ma
-         D9Wg==
-X-Gm-Message-State: AOAM530zDzQYlX+1BiSj4h2YNJJ6QISZPP9wsF/gLhhBS+etwMnAGJvf
-        T3aXjUz8lXADWcLPVR5fFLmRLyIyjNfwfXdipRmHdBQl678EwbZybXF9G5GtPaYR6v44TXQHx7Z
-        vj6V0l+acK7FH0yhbGPsXd+fwRPKcuA6ltpwDT4RK1PXfGCK3Wi79rJAsW9YyeF8Zk60ET5Qj
-X-Google-Smtp-Source: ABdhPJyb7sgl96cn0UFQyghFSxnyvOu5a4b/lo/hS2BRsSTyGhPkX1P6I+5vprLKAn5qurT1N+F2Nc/3xvOc
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=kl2EVOBmn7oQV8DsVZaFdaHri6MWqYz7gtsahKZb1Es=;
+        b=sNRdPKC2L2m3JxYdlSkyVxceI2DU5YeR9MVFnb88p7foK4JNhc6/HeulXVmz3MfBaF
+         b7R/9LsUd96q/SahtaWo3fwJFr14KJZ25rrgMqLXrknIHqzTP+bZj5uG4n0QOZuWCqB7
+         FJ7CAcqY7ICWWHPfaNBCn2z0aKhnS9J1BP0xRRSCOauSiUz8oXDdNr4A/ee3oCs1wInN
+         EB6lJ1crr6N/bRZ/jFcLGiyyGaR2IZ9juC1XBtnVA4QRJXwcAaH8XImuWxZw1qpqtnJt
+         dXRgifSC/D75sd5olXMNe3b6HyoS0yGtd2tGSO3psRHc7MdDnjT18u6PQrTSDUzfRl8O
+         rukw==
+X-Gm-Message-State: AOAM531dvLtXrlXrgVIdq0gSavlnj6XO4snCo2QnX2pux2fT0g+xi6OA
+        moCBa8QWEmqOzR9dF8m+k+JoT5hsP6ExitsCgljPAwsLF+GifZ4m9mXXg0aljJhdu8mxbm+8vPd
+        Sk34ViMlShn+zqj6B6iEwJzyy8kW+wmzAyzsz23mqAV0zpPXbygQ5Bw7bOXeSMt83lCXYA5L7
+X-Google-Smtp-Source: ABdhPJzJXakUfv9mJ/Kx+ckRp9KsEOpMzFQFnjFYsAHrC3+thh4wfProYb5J7i58/Y5o8wnMW6ToVw0WS4Z7
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:888a:4e22:67:844a])
- (user=bgardon job=sendgmr) by 2002:a25:7306:: with SMTP id
- o6mr3101056ybc.132.1615851491748; Mon, 15 Mar 2021 16:38:11 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 16:37:59 -0700
-Message-Id: <20210315233803.2706477-1-bgardon@google.com>
+ (user=bgardon job=sendgmr) by 2002:a0c:b218:: with SMTP id
+ x24mr13495443qvd.55.1615851493599; Mon, 15 Mar 2021 16:38:13 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 16:38:00 -0700
+In-Reply-To: <20210315233803.2706477-1-bgardon@google.com>
+Message-Id: <20210315233803.2706477-2-bgardon@google.com>
 Mime-Version: 1.0
+References: <20210315233803.2706477-1-bgardon@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v3 0/4] Fix RCU warnings in TDP MMU
+Subject: [PATCH v3 1/4] KVM: x86/mmu: Fix RCU usage in handle_removed_tdp_mmu_page
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         Sean Christopherson <seanjc@google.com>,
         Peter Shier <pshier@google.com>,
         Jim Mattson <jmattson@google.com>,
-        Ben Gardon <bgardon@google.com>
+        Ben Gardon <bgardon@google.com>,
+        kernel test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Linux Test Robot found a few RCU warnings in the TDP MMU:
-https://www.spinics.net/lists/kernel/msg3845500.html
-https://www.spinics.net/lists/kernel/msg3845521.html
+The pt passed into handle_removed_tdp_mmu_page does not need RCU
+protection, as it is not at any risk of being freed by another thread at
+that point. However, the implicit cast from tdp_sptep_t to u64 * dropped
+the __rcu annotation without a proper rcu_derefrence. Fix this by
+passing the pt as a tdp_ptep_t and then rcu_dereferencing it in
+the function.
 
-Fix these warnings and cleanup a hack in tdp_mmu_iter_cond_resched.
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Ben Gardon <bgardon@google.com>
+---
+ arch/x86/kvm/mmu/tdp_mmu.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-Tested by compiling as suggested in the test robot report and confirmed
-that the warnings go away with this series applied. Also ran
-kvm-unit-tests on an Intel Skylake machine with the TDP MMU enabled and
-confirmed that the series introduced no new failures.
-
-Ben Gardon (3):
-  KVM: x86/mmu: Fix RCU usage in handle_removed_tdp_mmu_page
-  KVM: x86/mmu: Fix RCU usage when atomically zapping SPTEs
-  KVM: x86/mmu: Factor out tdp_iter_return_to_root
-
-Sean Christopherson (1):
-  KVM: x86/mmu: Store the address space ID in the TDP iterator
-
- arch/x86/kvm/mmu/mmu_internal.h |  5 +++++
- arch/x86/kvm/mmu/tdp_iter.c     | 30 +++++++++++++++----------
- arch/x86/kvm/mmu/tdp_iter.h     |  4 +++-
- arch/x86/kvm/mmu/tdp_mmu.c      | 40 +++++++++++++--------------------
- 4 files changed, 41 insertions(+), 38 deletions(-)
-
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index d78915019b08..db2936cca4bf 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -301,11 +301,16 @@ static void tdp_mmu_unlink_page(struct kvm *kvm, struct kvm_mmu_page *sp,
+  *
+  * Given a page table that has been removed from the TDP paging structure,
+  * iterates through the page table to clear SPTEs and free child page tables.
++ *
++ * Note that pt is passed in as a tdp_ptep_t, but it does not need RCU
++ * protection. Since this thread removed it from the paging structure,
++ * this thread will be responsible for ensuring the page is freed. Hence the
++ * early rcu_dereferences in the function.
+  */
+-static void handle_removed_tdp_mmu_page(struct kvm *kvm, u64 *pt,
++static void handle_removed_tdp_mmu_page(struct kvm *kvm, tdp_ptep_t pt,
+ 					bool shared)
+ {
+-	struct kvm_mmu_page *sp = sptep_to_sp(pt);
++	struct kvm_mmu_page *sp = sptep_to_sp(rcu_dereference(pt));
+ 	int level = sp->role.level;
+ 	gfn_t base_gfn = sp->gfn;
+ 	u64 old_child_spte;
+@@ -318,7 +323,7 @@ static void handle_removed_tdp_mmu_page(struct kvm *kvm, u64 *pt,
+ 	tdp_mmu_unlink_page(kvm, sp, shared);
+ 
+ 	for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
+-		sptep = pt + i;
++		sptep = rcu_dereference(pt) + i;
+ 		gfn = base_gfn + (i * KVM_PAGES_PER_HPAGE(level - 1));
+ 
+ 		if (shared) {
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
