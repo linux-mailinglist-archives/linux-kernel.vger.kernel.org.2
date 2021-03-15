@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD3633C46E
+	by mail.lfdr.de (Postfix) with ESMTP id A2A4C33C46D
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236555AbhCORgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35732 "EHLO
+        id S236526AbhCORgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:36:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234788AbhCORgQ (ORCPT
+        with ESMTP id S235947AbhCORgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 13:36:16 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D908DC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:36:15 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id y6so18284363eds.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:36:15 -0700 (PDT)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B07C061763
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:36:16 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id ci14so67521199ejc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:36:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LyOZSvQ+FKwW7E5BHy4fGSxNISgDCKWH+IcVuvUxQPk=;
-        b=ZsUSogGMUoOjz4dBzt1oyDFFVLnQ1MoQf7tmUaBrD3hjNggCbJ+AO3evQJ84ZZZ3ab
-         vV7fXJmzdknz5aH3kAgSkhlKuGFQ4qfqB/4AosO97FaJHFyftkJ4KEFd9JnCnxPtDrcc
-         bKtWefq5u0OASLXEPSO5xZ4pHSBUAXozez6XY=
+        bh=IDZVfkirJB0MIvsduY3XapD058ix0zBHR7vvfdLitJQ=;
+        b=XIhPZqdjCD1DSYC4oeAD8y+NLrevp6V+DsCUCSvm8e0XtQ/hp02YJ9hBAATdlnI/xw
+         nb3Tfm0MiqhQ6UfZ1qqJNJGTxgILOlzUO1GdFj0p58d8w4K/NVDUTN5n4BO96tISUr+U
+         7CqXeXC6UVeP967gzBHMY1U0r5qQpA67FCfJw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LyOZSvQ+FKwW7E5BHy4fGSxNISgDCKWH+IcVuvUxQPk=;
-        b=cd/UBSs0SwmXWpDSfnvmGDqvteEY9eqwgu2C0no9A1LrfMHt5YOGcK/M4584slHUJN
-         7j104Abipv54ECBIklTQimZzIxcGmrAu1yNDRbUKaPyn6FwNhCnEy/byXci8uzhcEsu3
-         0oRTZ3BVPD+TtzF0K662HzGMJmgAdQvvcxD37uR5uNejDpc2G68oy/V2ST1YetbvttSE
-         XgZu8jymbWhyrR7YORijpf/R+iwrNvdAs9+R4QnDmf1XHzUvyZVOYFLOxmKTlhpPGIsm
-         /89Eewyr0zv+D1e46Zr+EdHTrNdxyW0bhuJCPM3c0kR4aq8R2UcldqlEN6q0ncsvBADN
-         TAKg==
-X-Gm-Message-State: AOAM530PJ67BdMRu87EfAjLbNlKTcuEldXMkN1MyCaqsRyM3U67aO4CZ
-        DJGO+xE+Hy45pl+2q+VxHP67DA==
-X-Google-Smtp-Source: ABdhPJyYPh6aGUAp4XnUoFY9QGQVfUFCMlU5Dg/MhVEZKB8d3wPDo8TG7/NfZ7+ZwO6oKu0AyF8k7Q==
-X-Received: by 2002:a50:ec96:: with SMTP id e22mr31290132edr.385.1615829774539;
+        bh=IDZVfkirJB0MIvsduY3XapD058ix0zBHR7vvfdLitJQ=;
+        b=n/SGYMQg28u9R9WYtz/yoXnARrF/qdGy2K70dDLHZwUQlT7xRHgQmPn/iMwLEKvUtm
+         0iPQzcdjWbSxoAbhcS+n0MyvrmSfeUZTNJi55/UmryyxY3x3Q/RhMRVR0uMNPEjFGumY
+         /5WAzKK8hGmRgfTNy1JNO+mIiQSoEydNwywv1yEFlYBrBrZgZ/+IpUTbZtQQVQgafp5x
+         7PMRh9DEzLnvEbH+PqXaSaNBbHamymZ/bjbIpXXcUPwyZceOixOytGe6upZChOZwq+Yx
+         l5XCRlBsjq7DLaB+ByAt4XGKq6cOlfUkrB7NNDHdad5ZyWiU3JoHGm2NAKMdmXiXsUKl
+         uR2A==
+X-Gm-Message-State: AOAM532aDbkgK1GOW79WdxXcnFnWnuF+dxb6fQ1Ib5kKTtpVFZLPv8Ta
+        p+BSpbaBRJvZsu9f9ViyghhrKA==
+X-Google-Smtp-Source: ABdhPJzpqYffq9W7GeBhTlvNq25fhoVJAKNqxyw0lK/gOAQ6ssjZRjfcOvsPuiG5mnHQfA7bLn/gCg==
+X-Received: by 2002:a17:906:9509:: with SMTP id u9mr25099327ejx.225.1615829774998;
         Mon, 15 Mar 2021 10:36:14 -0700 (PDT)
 Received: from alco.lan ([80.71.134.83])
         by smtp.gmail.com with ESMTPSA id a3sm8109239ejv.40.2021.03.15.10.36.14
@@ -52,9 +52,9 @@ To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v4 05/11] media: uvcvideo: refactor __uvc_ctrl_add_mapping
-Date:   Mon, 15 Mar 2021 18:36:03 +0100
-Message-Id: <20210315173609.1547857-6-ribalda@chromium.org>
+Subject: [PATCH v4 06/11] media: uvcvideo: Add support for V4L2_CTRL_TYPE_CTRL_CLASS
+Date:   Mon, 15 Mar 2021 18:36:04 +0100
+Message-Id: <20210315173609.1547857-7-ribalda@chromium.org>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 In-Reply-To: <20210315173609.1547857-1-ribalda@chromium.org>
 References: <20210315173609.1547857-1-ribalda@chromium.org>
@@ -64,169 +64,214 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pass the chain instead of the device. We want to keed the reference to
-the chain that controls belong to.
+Create all the class controls for the device defined controls.
 
-We need to delay the initialization of the controls after the chains
-have been initialized.
+Fixes v4l2-compliance:
+Control ioctls (Input 0):
+		fail: v4l2-test-controls.cpp(216): missing control class for class 00980000
+		fail: v4l2-test-controls.cpp(216): missing control tclass for class 009a0000
+	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: FAIL
 
-This is a cleanup needed for the next patches.
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/usb/uvc/uvc_ctrl.c   | 41 ++++++++++++++++++++----------
- drivers/media/usb/uvc/uvc_driver.c |  8 +++---
- 2 files changed, 32 insertions(+), 17 deletions(-)
+ drivers/media/usb/uvc/uvc_ctrl.c | 96 ++++++++++++++++++++++++++++++++
+ drivers/media/usb/uvc/uvcvideo.h |  6 ++
+ 2 files changed, 102 insertions(+)
 
 diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-index b3dde98499f4..b75da65115ef 100644
+index b75da65115ef..be0fadaf414c 100644
 --- a/drivers/media/usb/uvc/uvc_ctrl.c
 +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-@@ -2057,7 +2057,7 @@ static int uvc_ctrl_add_info(struct uvc_device *dev, struct uvc_control *ctrl,
- /*
-  * Add a control mapping to a given control.
-  */
--static int __uvc_ctrl_add_mapping(struct uvc_device *dev,
-+static int __uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
- 	struct uvc_control *ctrl, const struct uvc_control_mapping *mapping)
- {
- 	struct uvc_control_mapping *map;
-@@ -2086,7 +2086,7 @@ static int __uvc_ctrl_add_mapping(struct uvc_device *dev,
- 		map->set = uvc_set_le_value;
+@@ -357,6 +357,17 @@ static const struct uvc_control_info uvc_ctrls[] = {
+ 	},
+ };
  
- 	list_add_tail(&map->list, &ctrl->info.mappings);
--	uvc_dbg(dev, CONTROL, "Adding mapping '%s' to control %pUl/%u\n",
-+	uvc_dbg(chain->dev, CONTROL, "Adding mapping '%s' to control %pUl/%u\n",
- 		map->name, ctrl->info.entity, ctrl->info.selector);
- 
- 	return 0;
-@@ -2168,7 +2168,7 @@ int uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
- 		goto done;
- 	}
- 
--	ret = __uvc_ctrl_add_mapping(dev, ctrl, mapping);
-+	ret = __uvc_ctrl_add_mapping(chain, ctrl, mapping);
- 	if (ret < 0)
- 		atomic_dec(&dev->nmappings);
- 
-@@ -2244,7 +2244,8 @@ static void uvc_ctrl_prune_entity(struct uvc_device *dev,
-  * Add control information and hardcoded stock control mappings to the given
-  * device.
-  */
--static void uvc_ctrl_init_ctrl(struct uvc_device *dev, struct uvc_control *ctrl)
-+static void uvc_ctrl_init_ctrl(struct uvc_video_chain *chain,
-+			       struct uvc_control *ctrl)
- {
- 	const struct uvc_control_info *info = uvc_ctrls;
- 	const struct uvc_control_info *iend = info + ARRAY_SIZE(uvc_ctrls);
-@@ -2263,14 +2264,14 @@ static void uvc_ctrl_init_ctrl(struct uvc_device *dev, struct uvc_control *ctrl)
- 	for (; info < iend; ++info) {
- 		if (uvc_entity_match_guid(ctrl->entity, info->entity) &&
- 		    ctrl->index == info->index) {
--			uvc_ctrl_add_info(dev, ctrl, info);
-+			uvc_ctrl_add_info(chain->dev, ctrl, info);
- 			/*
- 			 * Retrieve control flags from the device. Ignore errors
- 			 * and work with default flag values from the uvc_ctrl
- 			 * array when the device doesn't properly implement
- 			 * GET_INFO on standard controls.
- 			 */
--			uvc_ctrl_get_flags(dev, ctrl, &ctrl->info);
-+			uvc_ctrl_get_flags(chain->dev, ctrl, &ctrl->info);
- 			break;
- 		 }
- 	}
-@@ -2281,22 +2282,20 @@ static void uvc_ctrl_init_ctrl(struct uvc_device *dev, struct uvc_control *ctrl)
- 	for (; mapping < mend; ++mapping) {
- 		if (uvc_entity_match_guid(ctrl->entity, mapping->entity) &&
- 		    ctrl->info.selector == mapping->selector)
--			__uvc_ctrl_add_mapping(dev, ctrl, mapping);
-+			__uvc_ctrl_add_mapping(chain, ctrl, mapping);
- 	}
- }
- 
- /*
-  * Initialize device controls.
-  */
--int uvc_ctrl_init_device(struct uvc_device *dev)
-+static int uvc_ctrl_init_chain(struct uvc_video_chain *chain)
- {
- 	struct uvc_entity *entity;
- 	unsigned int i;
- 
--	INIT_WORK(&dev->async_ctrl.work, uvc_ctrl_status_event_work);
--
- 	/* Walk the entities list and instantiate controls */
--	list_for_each_entry(entity, &dev->entities, list) {
-+	list_for_each_entry(entity, &chain->entities, chain) {
- 		struct uvc_control *ctrl;
- 		unsigned int bControlSize = 0, ncontrols;
- 		u8 *bmControls = NULL;
-@@ -2316,7 +2315,7 @@ int uvc_ctrl_init_device(struct uvc_device *dev)
- 		}
- 
- 		/* Remove bogus/blacklisted controls */
--		uvc_ctrl_prune_entity(dev, entity);
-+		uvc_ctrl_prune_entity(chain->dev, entity);
- 
- 		/* Count supported controls and allocate the controls array */
- 		ncontrols = memweight(bmControls, bControlSize);
-@@ -2338,7 +2337,7 @@ int uvc_ctrl_init_device(struct uvc_device *dev)
- 			ctrl->entity = entity;
- 			ctrl->index = i;
- 
--			uvc_ctrl_init_ctrl(dev, ctrl);
-+			uvc_ctrl_init_ctrl(chain, ctrl);
- 			ctrl++;
- 		}
- 	}
-@@ -2346,6 +2345,22 @@ int uvc_ctrl_init_device(struct uvc_device *dev)
++static const struct uvc_control_class uvc_control_class[] = {
++	{
++		.id		= V4L2_CID_CAMERA_CLASS,
++		.name		= "Camera Controls",
++	},
++	{
++		.id		= V4L2_CID_USER_CLASS,
++		.name		= "User Controls",
++	},
++};
++
+ static const struct uvc_menu_info power_line_frequency_controls[] = {
+ 	{ 0, "Disabled" },
+ 	{ 1, "50 Hz" },
+@@ -1024,6 +1035,49 @@ static int __uvc_ctrl_get(struct uvc_video_chain *chain,
  	return 0;
  }
  
-+int uvc_ctrl_init_device(struct uvc_device *dev)
++static int __uvc_query_v4l2_class(struct uvc_video_chain *chain, u32 req_id,
++				  u32 found_id)
 +{
-+	struct uvc_video_chain *chain;
-+	int ret;
++	bool find_next = req_id & V4L2_CTRL_FLAG_NEXT_CTRL;
++	unsigned int i;
 +
-+	INIT_WORK(&dev->async_ctrl.work, uvc_ctrl_status_event_work);
++	req_id &= V4L2_CTRL_ID_MASK;
 +
-+	list_for_each_entry(chain, &dev->chains, list) {
-+		ret = uvc_ctrl_init_chain(chain);
-+		if (ret)
-+			return ret;
++	for (i = 0; i < ARRAY_SIZE(uvc_control_class); i++) {
++		if (!(chain->ctrl_class_bitmap & BIT(i)))
++			continue;
++		if (!find_next) {
++			if (uvc_control_class[i].id == req_id)
++				return i;
++			continue;
++		}
++		if (uvc_control_class[i].id > req_id &&
++		    uvc_control_class[i].id < found_id)
++			return i;
 +	}
 +
++	return -ENODEV;
++}
++
++static int uvc_query_v4l2_class(struct uvc_video_chain *chain, u32 req_id,
++				u32 found_id, struct v4l2_queryctrl *v4l2_ctrl)
++{
++	int idx;
++
++	idx = __uvc_query_v4l2_class(chain, req_id, found_id);
++	if (idx < 0)
++		return -ENODEV;
++
++	memset(v4l2_ctrl, 0, sizeof(*v4l2_ctrl));
++	v4l2_ctrl->id = uvc_control_class[idx].id;
++	strscpy(v4l2_ctrl->name, uvc_control_class[idx].name,
++		sizeof(v4l2_ctrl->name));
++	v4l2_ctrl->type = V4L2_CTRL_TYPE_CTRL_CLASS;
++	v4l2_ctrl->flags = V4L2_CTRL_FLAG_WRITE_ONLY
++			   | V4L2_CTRL_FLAG_READ_ONLY;
 +	return 0;
 +}
 +
- /*
-  * Cleanup device controls.
-  */
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 30ef2a3110f7..35873cf2773d 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -2423,14 +2423,14 @@ static int uvc_probe(struct usb_interface *intf,
- 	if (v4l2_device_register(&intf->dev, &dev->vdev) < 0)
- 		goto error;
+ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+ 	struct uvc_control *ctrl,
+ 	struct uvc_control_mapping *mapping,
+@@ -1127,12 +1181,31 @@ int uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+ 	if (ret < 0)
+ 		return -ERESTARTSYS;
  
--	/* Initialize controls. */
--	if (uvc_ctrl_init_device(dev) < 0)
--		goto error;
--
- 	/* Scan the device for video chains. */
- 	if (uvc_scan_device(dev) < 0)
- 		goto error;
- 
-+	/* Initialize controls. */
-+	if (uvc_ctrl_init_device(dev) < 0)
-+		goto error;
++	/* Check if the ctrl is a know class */
++	if (!(v4l2_ctrl->id & V4L2_CTRL_FLAG_NEXT_CTRL)) {
++		ret = uvc_query_v4l2_class(chain, v4l2_ctrl->id, 0, v4l2_ctrl);
++		if (!ret)
++			goto done;
++	}
 +
- 	/* Register video device nodes. */
- 	if (uvc_register_chains(dev) < 0)
- 		goto error;
+ 	ctrl = uvc_find_control(chain, v4l2_ctrl->id, &mapping);
+ 	if (ctrl == NULL) {
+ 		ret = -EINVAL;
+ 		goto done;
+ 	}
+ 
++	/*
++	 * If we're enumerating control with V4L2_CTRL_FLAG_NEXT_CTRL, check if
++	 * a class should be inserted between the previous control and the one
++	 * we have just found.
++	 */
++	if (v4l2_ctrl->id & V4L2_CTRL_FLAG_NEXT_CTRL) {
++		ret = uvc_query_v4l2_class(chain, v4l2_ctrl->id, mapping->id,
++					   v4l2_ctrl);
++		if (!ret)
++			goto done;
++	}
++
+ 	ret = __uvc_query_v4l2_ctrl(chain, ctrl, mapping, v4l2_ctrl);
+ done:
+ 	mutex_unlock(&chain->ctrl_mutex);
+@@ -1426,6 +1499,11 @@ static int uvc_ctrl_add_event(struct v4l2_subscribed_event *sev, unsigned elems)
+ 	if (ret < 0)
+ 		return -ERESTARTSYS;
+ 
++	if (__uvc_query_v4l2_class(handle->chain, sev->id, 0) >= 0) {
++		ret = 0;
++		goto done;
++	}
++
+ 	ctrl = uvc_find_control(handle->chain, sev->id, &mapping);
+ 	if (ctrl == NULL) {
+ 		ret = -EINVAL;
+@@ -1459,7 +1537,10 @@ static void uvc_ctrl_del_event(struct v4l2_subscribed_event *sev)
+ 	struct uvc_fh *handle = container_of(sev->fh, struct uvc_fh, vfh);
+ 
+ 	mutex_lock(&handle->chain->ctrl_mutex);
++	if (__uvc_query_v4l2_class(handle->chain, sev->id, 0) >= 0)
++		goto done;
+ 	list_del(&sev->node);
++done:
+ 	mutex_unlock(&handle->chain->ctrl_mutex);
+ }
+ 
+@@ -1577,6 +1658,9 @@ int uvc_ctrl_get(struct uvc_video_chain *chain,
+ 	struct uvc_control *ctrl;
+ 	struct uvc_control_mapping *mapping;
+ 
++	if (__uvc_query_v4l2_class(chain, xctrl->id, 0) >= 0)
++		return -EACCES;
++
+ 	ctrl = uvc_find_control(chain, xctrl->id, &mapping);
+ 	if (ctrl == NULL)
+ 		return -EINVAL;
+@@ -1596,6 +1680,9 @@ int uvc_ctrl_set(struct uvc_fh *handle,
+ 	s32 max;
+ 	int ret;
+ 
++	if (__uvc_query_v4l2_class(chain, xctrl->id, 0) >= 0)
++		return -EACCES;
++
+ 	ctrl = uvc_find_control(chain, xctrl->id, &mapping);
+ 	if (ctrl == NULL)
+ 		return -EINVAL;
+@@ -2062,6 +2149,7 @@ static int __uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
+ {
+ 	struct uvc_control_mapping *map;
+ 	unsigned int size;
++	unsigned int i;
+ 
+ 	/* Most mappings come from static kernel data and need to be duplicated.
+ 	 * Mappings that come from userspace will be unnecessarily duplicated,
+@@ -2085,6 +2173,14 @@ static int __uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
+ 	if (map->set == NULL)
+ 		map->set = uvc_set_le_value;
+ 
++	for (i = 0; i < ARRAY_SIZE(uvc_control_class); i++) {
++		if (V4L2_CTRL_ID2WHICH(uvc_control_class[i].id) ==
++						V4L2_CTRL_ID2WHICH(map->id)) {
++			chain->ctrl_class_bitmap |= BIT(i);
++			break;
++		}
++	}
++
+ 	list_add_tail(&map->list, &ctrl->info.mappings);
+ 	uvc_dbg(chain->dev, CONTROL, "Adding mapping '%s' to control %pUl/%u\n",
+ 		map->name, ctrl->info.entity, ctrl->info.selector);
+diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+index 97df5ecd66c9..1f17e4253673 100644
+--- a/drivers/media/usb/uvc/uvcvideo.h
++++ b/drivers/media/usb/uvc/uvcvideo.h
+@@ -262,6 +262,11 @@ struct uvc_control_mapping {
+ 		    u8 *data);
+ };
+ 
++struct uvc_control_class {
++	u32 id;
++	char name[32];
++};
++
+ struct uvc_control {
+ 	struct uvc_entity *entity;
+ 	struct uvc_control_info info;
+@@ -475,6 +480,7 @@ struct uvc_video_chain {
+ 
+ 	struct v4l2_prio_state prio;		/* V4L2 priority state */
+ 	u32 caps;				/* V4L2 chain-wide caps */
++	u8 ctrl_class_bitmap;			/* Bitmap of valid classes */
+ };
+ 
+ struct uvc_stats_frame {
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
