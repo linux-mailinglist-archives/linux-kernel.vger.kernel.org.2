@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D5D33B5F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B11933B604
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231892AbhCON4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:56:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56918 "EHLO mail.kernel.org"
+        id S231809AbhCON4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:56:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231145AbhCONxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 725DB64F07;
-        Mon, 15 Mar 2021 13:53:50 +0000 (UTC)
+        id S231245AbhCONx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64B19601FD;
+        Mon, 15 Mar 2021 13:53:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816431;
-        bh=FaW9x8HhE6as/IO5W+lcpoDoipNfhCCAyi0HIq0I0cY=;
+        s=korg; t=1615816438;
+        bh=jiypcFdW/AECP+n2d7mM7oZedDBxy9gTEWuoT3if2lY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nH0xGVCdK8EQwY/xrwv54s5PKJE6j80ETIiv5ayV/ANPvodLukretkdEc2ZDcLeqj
-         NsFffjR1kNIHrrUMvYuffD9I4dUBMFLCI/9SQdrBy79DCjZRuKadTg4kwi11N7f7b8
-         rXvO9vXsKDObUwd8eXs3p30qiWfEDXxtRCWBex9k=
+        b=Ba7ax8v+3cJ4yVg+NEYGdy8TA3iUf7jQeqPIfaFxBEV44GHRe48idcP1FqnJhzEy+
+         3pkw8rHEpLoFCvGwq8vOm3mEzu24JCZshzZnE2NMFO5b3hxe8gTsaBL4IEiHiDS3ys
+         ONXUznfNxDbCJSeMuL2fYVgkeK+QgxhXbDnPHwLk=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+59f777bdcbdd7eea5305@syzkaller.appspotmail.com,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 35/78] USB: serial: io_edgeport: fix memory leak in edge_startup
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH 4.4 44/75] staging: rtl8188eu: prevent ->ssid overflow in rtw_wx_set_scan()
 Date:   Mon, 15 Mar 2021 14:51:58 +0100
-Message-Id: <20210315135213.222503765@linuxfoundation.org>
+Message-Id: <20210315135209.692571540@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-References: <20210315135212.060847074@linuxfoundation.org>
+In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
+References: <20210315135208.252034256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,68 +40,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit cfdc67acc785e01a8719eeb7012709d245564701 upstream.
+commit 74b6b20df8cfe90ada777d621b54c32e69e27cd7 upstream.
 
-sysbot found memory leak in edge_startup().
-The problem was that when an error was received from the usb_submit_urb(),
-nothing was cleaned up.
+This code has a check to prevent read overflow but it needs another
+check to prevent writing beyond the end of the ->ssid[] array.
 
-Reported-by: syzbot+59f777bdcbdd7eea5305@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Fixes: 6e8cf7751f9f ("USB: add EPIC support to the io_edgeport driver")
-Cc: stable@vger.kernel.org	# 2.6.21: c5c0c55598ce
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: a2c60d42d97c ("staging: r8188eu: Add files for new driver - part 16")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/YEHymwsnHewzoam7@mwanda
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/io_edgeport.c |   26 ++++++++++++++++----------
- 1 file changed, 16 insertions(+), 10 deletions(-)
+ drivers/staging/rtl8188eu/os_dep/ioctl_linux.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/serial/io_edgeport.c
-+++ b/drivers/usb/serial/io_edgeport.c
-@@ -2959,26 +2959,32 @@ static int edge_startup(struct usb_seria
- 				response = -ENODEV;
- 			}
- 
--			usb_free_urb(edge_serial->interrupt_read_urb);
--			kfree(edge_serial->interrupt_in_buffer);
--
--			usb_free_urb(edge_serial->read_urb);
--			kfree(edge_serial->bulk_in_buffer);
--
--			kfree(edge_serial);
--
--			return response;
-+			goto error;
- 		}
- 
- 		/* start interrupt read for this edgeport this interrupt will
- 		 * continue as long as the edgeport is connected */
- 		response = usb_submit_urb(edge_serial->interrupt_read_urb,
- 								GFP_KERNEL);
--		if (response)
-+		if (response) {
- 			dev_err(ddev, "%s - Error %d submitting control urb\n",
- 				__func__, response);
-+
-+			goto error;
-+		}
- 	}
- 	return response;
-+
-+error:
-+	usb_free_urb(edge_serial->interrupt_read_urb);
-+	kfree(edge_serial->interrupt_in_buffer);
-+
-+	usb_free_urb(edge_serial->read_urb);
-+	kfree(edge_serial->bulk_in_buffer);
-+
-+	kfree(edge_serial);
-+
-+	return response;
- }
- 
- 
+--- a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
++++ b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
+@@ -1174,9 +1174,11 @@ static int rtw_wx_set_scan(struct net_de
+ 						break;
+ 					}
+ 					sec_len = *(pos++); len -= 1;
+-					if (sec_len > 0 && sec_len <= len) {
++					if (sec_len > 0 &&
++					    sec_len <= len &&
++					    sec_len <= 32) {
+ 						ssid[ssid_index].SsidLength = sec_len;
+-						memcpy(ssid[ssid_index].Ssid, pos, ssid[ssid_index].SsidLength);
++						memcpy(ssid[ssid_index].Ssid, pos, sec_len);
+ 						ssid_index++;
+ 					}
+ 					pos += sec_len;
 
 
