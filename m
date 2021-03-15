@@ -2,33 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F0D33BD59
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8E733BD8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236101AbhCOOeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:34:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37836 "EHLO mail.kernel.org"
+        id S237840AbhCOOhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:37:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233425AbhCOOBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233435AbhCOOBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 10:01:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B49064F66;
-        Mon, 15 Mar 2021 14:01:18 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5341D64F00;
+        Mon, 15 Mar 2021 14:01:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816879;
-        bh=DWkUTZJPYEwdrYvkqTCumpJfYkrmCHUOc9flC5P+QQs=;
+        s=korg; t=1615816882;
+        bh=dR9rYQsjpEZ/klirYxHXOXI9qRuEczWuLtNHXHmXuz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kZXxv0mjU4msynb3D7cQGRtQKRsRltmmBmr8zwHipbFiDyv9GwfmD2aObKKd4aJA9
-         +cb6mfK5DN95GLX6J8vrPKBeyReshHx5HBPVNxTgcVW7n0BuF63wsMxQ8izauOjfS2
-         NueKTSI5q0oj8vtudn92UeyCF/j09RmKfbxBed/c=
+        b=skNFXUjmD519pdZr1WsNpUKJLJtM7iqXKEXTsRkTlDzDwTw+IQTcQ2D6tQC40MwQF
+         iV/+njsMnHdouYJ4Spbn19odOhTbUbDM0YGme7kFY1xA5XqfrKtB0OWde5g+8NbCeZ
+         ELMGWQ+3e8THzkxiVtVs5vMT207XLCeThFqi31Q0=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrey Konovalov <andreyknvl@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 5.11 180/306] arm64: kasan: fix page_alloc tagging with DEBUG_VIRTUAL
-Date:   Mon, 15 Mar 2021 14:54:03 +0100
-Message-Id: <20210315135513.703435877@linuxfoundation.org>
+        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Patrick Daly <pdaly@codeaurora.org>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH 5.11 181/306] arm64: mte: Map hotplugged memory as Normal Tagged
+Date:   Mon, 15 Mar 2021 14:54:04 +0100
+Message-Id: <20210315135513.739011866@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -42,41 +46,103 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Andrey Konovalov <andreyknvl@google.com>
+From: Catalin Marinas <catalin.marinas@arm.com>
 
-commit 86c83365ab76e4b43cedd3ce07a07d32a4dc79ba upstream.
+commit d15dfd31384ba3cb93150e5f87661a76fa419f74 upstream.
 
-When CONFIG_DEBUG_VIRTUAL is enabled, the default page_to_virt() macro
-implementation from include/linux/mm.h is used. That definition doesn't
-account for KASAN tags, which leads to no tags on page_alloc allocations.
+In a system supporting MTE, the linear map must allow reading/writing
+allocation tags by setting the memory type as Normal Tagged. Currently,
+this is only handled for memory present at boot. Hotplugged memory uses
+Normal non-Tagged memory.
 
-Provide an arm64-specific definition for page_to_virt() when
-CONFIG_DEBUG_VIRTUAL is enabled that takes care of KASAN tags.
+Introduce pgprot_mhp() for hotplugged memory and use it in
+add_memory_resource(). The arm64 code maps pgprot_mhp() to
+pgprot_tagged().
 
-Fixes: 2813b9c02962 ("kasan, mm, arm64: tag non slab memory allocated via pagealloc")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Link: https://lore.kernel.org/r/4b55b35202706223d3118230701c6a59749d9b72.1615219501.git.andreyknvl@google.com
+Note that ZONE_DEVICE memory should not be mapped as Tagged and
+therefore setting the memory type in arch_add_memory() is not feasible.
+
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Fixes: 0178dc761368 ("arm64: mte: Use Normal Tagged attributes for the linear map")
+Reported-by: Patrick Daly <pdaly@codeaurora.org>
+Tested-by: Patrick Daly <pdaly@codeaurora.org>
+Link: https://lore.kernel.org/r/1614745263-27827-1-git-send-email-pdaly@codeaurora.org
+Cc: <stable@vger.kernel.org> # 5.10.x
+Cc: Will Deacon <will@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: David Hildenbrand <david@redhat.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Link: https://lore.kernel.org/r/20210309122601.5543-1-catalin.marinas@arm.com
 Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/include/asm/memory.h |    5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm64/include/asm/pgtable-prot.h |    1 -
+ arch/arm64/include/asm/pgtable.h      |    3 +++
+ arch/arm64/mm/mmu.c                   |    3 ++-
+ include/linux/pgtable.h               |    4 ++++
+ mm/memory_hotplug.c                   |    2 +-
+ 5 files changed, 10 insertions(+), 3 deletions(-)
 
---- a/arch/arm64/include/asm/memory.h
-+++ b/arch/arm64/include/asm/memory.h
-@@ -315,6 +315,11 @@ static inline void *phys_to_virt(phys_ad
- #define ARCH_PFN_OFFSET		((unsigned long)PHYS_PFN_OFFSET)
+--- a/arch/arm64/include/asm/pgtable-prot.h
++++ b/arch/arm64/include/asm/pgtable-prot.h
+@@ -66,7 +66,6 @@ extern bool arm64_use_ng_mappings;
+ #define _PAGE_DEFAULT		(_PROT_DEFAULT | PTE_ATTRINDX(MT_NORMAL))
  
- #if !defined(CONFIG_SPARSEMEM_VMEMMAP) || defined(CONFIG_DEBUG_VIRTUAL)
-+#define page_to_virt(x)	({						\
-+	__typeof__(x) __page = x;					\
-+	void *__addr = __va(page_to_phys(__page));			\
-+	(void *)__tag_set((const void *)__addr, page_kasan_tag(__page));\
-+})
- #define virt_to_page(x)		pfn_to_page(virt_to_pfn(x))
- #else
- #define page_to_virt(x)	({						\
+ #define PAGE_KERNEL		__pgprot(PROT_NORMAL)
+-#define PAGE_KERNEL_TAGGED	__pgprot(PROT_NORMAL_TAGGED)
+ #define PAGE_KERNEL_RO		__pgprot((PROT_NORMAL & ~PTE_WRITE) | PTE_RDONLY)
+ #define PAGE_KERNEL_ROX		__pgprot((PROT_NORMAL & ~(PTE_WRITE | PTE_PXN)) | PTE_RDONLY)
+ #define PAGE_KERNEL_EXEC	__pgprot(PROT_NORMAL & ~PTE_PXN)
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -486,6 +486,9 @@ static inline pmd_t pmd_mkdevmap(pmd_t p
+ 	__pgprot_modify(prot, PTE_ATTRINDX_MASK, PTE_ATTRINDX(MT_NORMAL_NC) | PTE_PXN | PTE_UXN)
+ #define pgprot_device(prot) \
+ 	__pgprot_modify(prot, PTE_ATTRINDX_MASK, PTE_ATTRINDX(MT_DEVICE_nGnRE) | PTE_PXN | PTE_UXN)
++#define pgprot_tagged(prot) \
++	__pgprot_modify(prot, PTE_ATTRINDX_MASK, PTE_ATTRINDX(MT_NORMAL_TAGGED))
++#define pgprot_mhp	pgprot_tagged
+ /*
+  * DMA allocations for non-coherent devices use what the Arm architecture calls
+  * "Normal non-cacheable" memory, which permits speculation, unaligned accesses
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -512,7 +512,8 @@ static void __init map_mem(pgd_t *pgdp)
+ 		 * if MTE is present. Otherwise, it has the same attributes as
+ 		 * PAGE_KERNEL.
+ 		 */
+-		__map_memblock(pgdp, start, end, PAGE_KERNEL_TAGGED, flags);
++		__map_memblock(pgdp, start, end, pgprot_tagged(PAGE_KERNEL),
++			       flags);
+ 	}
+ 
+ 	/*
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -912,6 +912,10 @@ static inline void ptep_modify_prot_comm
+ #define pgprot_device pgprot_noncached
+ #endif
+ 
++#ifndef pgprot_mhp
++#define pgprot_mhp(prot)	(prot)
++#endif
++
+ #ifdef CONFIG_MMU
+ #ifndef pgprot_modify
+ #define pgprot_modify pgprot_modify
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -1019,7 +1019,7 @@ static int online_memory_block(struct me
+  */
+ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+ {
+-	struct mhp_params params = { .pgprot = PAGE_KERNEL };
++	struct mhp_params params = { .pgprot = pgprot_mhp(PAGE_KERNEL) };
+ 	u64 start, size;
+ 	bool new_node = false;
+ 	int ret;
 
 
