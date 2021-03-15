@@ -2,83 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16EC433C1B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6522233C1BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232474AbhCOQ1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:27:16 -0400
-Received: from mail-il1-f172.google.com ([209.85.166.172]:40351 "EHLO
-        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbhCOQ0x (ORCPT
+        id S233166AbhCOQ1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:27:47 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:49644 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233101AbhCOQ1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:26:53 -0400
-Received: by mail-il1-f172.google.com with SMTP id e7so9901463ile.7;
-        Mon, 15 Mar 2021 09:26:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uNo6vdAx+jzMNRzSxihSuYm26CfiZWtwAB/YSlTgofg=;
-        b=PvCsskFvMP9wvE+EB8y4IgPN/FP2Uy09S0u3hc8xaYG6c7dk45nERtE/MMTxXxCpl+
-         PuYrhfR+gsfEvfHQd9HysnKb+0iAgZ4mivy9xS6B2JJfKEyYmepR0bAfJuPGdjmHya/I
-         zjH1sfZT857HI2LsnOQzzAhgXVyk8ex9bnw+9n/W/eCJa4Pcn40Y7AkkIrh/M3ZTYNjf
-         WPgULmU1Kokn6nGFTdxUUA8Hl6PuKrn3lwtQfrKohcUbNONGwtD2i8Y8M68iIE4yAkkk
-         8wu3R+sF+gJXDi6JsIK3lkK1K8TJtuS0EDfx68XtUEntZkf8VE8jxj9RT1f78Gy8iCHM
-         ghtA==
-X-Gm-Message-State: AOAM5330NzdYvQhLZEdIsDciMGPzBHjW/j3e9IcxAf/42YUYknMJlRfg
-        ClnoXXeit4DdtTawsLrOJQ==
-X-Google-Smtp-Source: ABdhPJw+veskbFJEXXCKZ2E/BDJV2CNNfMgN0Pv1qQFI928Wh1rpDctvLR3CxE8mWqEyWroMro7orw==
-X-Received: by 2002:a92:d6cf:: with SMTP id z15mr355098ilp.40.1615825612758;
-        Mon, 15 Mar 2021 09:26:52 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id s9sm7125949iob.33.2021.03.15.09.26.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 09:26:52 -0700 (PDT)
-Received: (nullmailer pid 982357 invoked by uid 1000);
-        Mon, 15 Mar 2021 16:26:48 -0000
-Date:   Mon, 15 Mar 2021 10:26:48 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     dillon.minfei@gmail.com
-Cc:     linux-kernel@vger.kernel.org, mcoquelin.stm32@gmail.com,
-        gregkh@linuxfoundation.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux@armlinux.org.uk, erwan.leray@st.com,
-        linux-arm-kernel@lists.infradead.org, erwan.leray@foss.st.com,
-        alexandre.torgue@st.com, a.fatoum@pengutronix.de,
-        robh+dt@kernel.org, afzal.mohd.ma@gmail.com,
-        vladimir.murzin@arm.com, alexandre.torgue@foss.st.com
-Subject: Re: [PATCH v3 3/9] dt-bindings: pinctrl: stm32: Add stm32h750 pinctrl
-Message-ID: <20210315162648.GB981570@robh.at.kernel.org>
-References: <1615801436-3016-1-git-send-email-dillon.minfei@gmail.com>
- <1615801436-3016-4-git-send-email-dillon.minfei@gmail.com>
+        Mon, 15 Mar 2021 12:27:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=m8eFPt4Ky/TIsfccDRiBKAA6Im8fSHoSL1rWmfMykMo=; b=litugTKON8LXh2E4fNWf+tdFsh
+        q2CsD9IDYGKKVIawn8gamhxRH644MuufqFWDCKKprPoZHtnAsUpBhIfbDLYsRIwcTEv0TojuuQngh
+        9J3WiaV60JpGFYmjOv2GNCbeGl6swiX0xF3BgMcQ26cgzBguK1z1MH20QdPZRSQUkmZ+cHM0b8weO
+        nMw1zNo5ZDzrtWTjylir56GRiIHipKmvmqBkHqMQTaNXL2ccxzXkV9uRTIH6IoeArfVAH59w8/LqW
+        lQKk+yTetQfXb8ka5Hd5m4l/qqdvdrI67gA7aRHbkH+i+GOkWx0VzhB9jVE/dO+eFCXLyB281bkpf
+        Y9mF4fFg==;
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1lLq3k-0000KL-25; Mon, 15 Mar 2021 10:27:13 -0600
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Ira Weiny <iweiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>
+References: <20210311233142.7900-1-logang@deltatee.com>
+ <20210311233142.7900-5-logang@deltatee.com>
+ <20210313013856.GA3402637@iweiny-DESK2.sc.intel.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <7509243d-b605-953b-6941-72876a60d527@deltatee.com>
+Date:   Mon, 15 Mar 2021 10:27:08 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615801436-3016-4-git-send-email-dillon.minfei@gmail.com>
+In-Reply-To: <20210313013856.GA3402637@iweiny-DESK2.sc.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, iweiny@intel.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, ira.weiny@intel.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [RFC PATCH v2 04/11] PCI/P2PDMA: Introduce
+ pci_p2pdma_should_map_bus() and pci_p2pdma_bus_offset()
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021 17:43:50 +0800, dillon.minfei@gmail.com wrote:
-> From: dillon min <dillon.minfei@gmail.com>
-> 
-> This patch intend to add pinctrl configuration support for
-> stm32h750 value line
-> 
-> The datasheet of stm32h750 value line can be found at:
-> https://www.st.com/resource/en/datasheet/stm32h750ib.pdf
-> 
-> Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> ---
->  Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
 
 
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
+On 2021-03-12 6:38 p.m., Ira Weiny wrote:
+> On Thu, Mar 11, 2021 at 04:31:34PM -0700, Logan Gunthorpe wrote:
+>> Introduce pci_p2pdma_should_map_bus() which is meant to be called by
+>> DMA map functions to determine how to map a given p2pdma page.
+>>
+>> pci_p2pdma_bus_offset() is also added to allow callers to get the bus
+>> offset if they need to map the bus address.
+>>
+>> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+>> ---
+>>  drivers/pci/p2pdma.c       | 50 ++++++++++++++++++++++++++++++++++++++
+>>  include/linux/pci-p2pdma.h | 11 +++++++++
+>>  2 files changed, 61 insertions(+)
+>>
+>> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+>> index 7f6836732bce..66d16b7eb668 100644
+>> --- a/drivers/pci/p2pdma.c
+>> +++ b/drivers/pci/p2pdma.c
+>> @@ -912,6 +912,56 @@ void pci_p2pdma_unmap_sg_attrs(struct device *dev, struct scatterlist *sg,
+>>  }
+>>  EXPORT_SYMBOL_GPL(pci_p2pdma_unmap_sg_attrs);
+>>  
+>> +/**
+>> + * pci_p2pdma_bus_offset - returns the bus offset for a given page
+>> + * @page: page to get the offset for
+>> + *
+>> + * Must be passed a PCI p2pdma page.
+>> + */
+>> +u64 pci_p2pdma_bus_offset(struct page *page)
+>> +{
+>> +	struct pci_p2pdma_pagemap *p2p_pgmap = to_p2p_pgmap(page->pgmap);
+>> +
+>> +	WARN_ON(!is_pci_p2pdma_page(page));
+> 
+> Shouldn't this check be before the to_p2p_pgmap() call?  
 
-If a tag was not added on purpose, please state why and what changed.
+The to_p2p_pgmap() call is just doing pointer arithmetic, so strictly
+speaking it doesn't need to be before. We just can't access p2p_pgmap
+until it has been checked.
 
+> And I've been told not
+> to introduce WARN_ON's.  Should this be?
+> 
+> 	if (!is_pci_p2pdma_page(page))
+> 		return -1;
+
+In this case the WARN_ON is just to guard against misuse of the
+function. It should never happen unless a developer changes the code in
+a way that is incorrect. So I think that's the correct use of WARN_ON.
+Though I might change it to WARN and return, that seems safer.
+
+Logan
