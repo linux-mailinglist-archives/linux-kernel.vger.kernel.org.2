@@ -2,231 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC9433C877
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A1133C87D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 22:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232773AbhCOVbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 17:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232416AbhCOVan (ORCPT
+        id S232807AbhCOVcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 17:32:52 -0400
+Received: from gardel.0pointer.net ([85.214.157.71]:34556 "EHLO
+        gardel.0pointer.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232825AbhCOVcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 17:30:43 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE8CC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:30:42 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id d16so26681411oic.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 14:30:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SgZW0+rc5pzyqjKsS4Yped9fvoRIww8OGAYn+UxfO4k=;
-        b=JSlA2uxDJ+CZ5OGFYc4O643eTdsPjdi2pD7zR4aNdDwc1vF44uM/aw1CEE5wwpsJq8
-         uw1cGIh2mvh9wQgWIIKnS7jUTLGpXObz6PAUodIcaMeM12EbxmIZOcs78yRjCuMTsPnN
-         Gw7GkDiV/kSdf3qQLVk0XKUSdt1FyADsCv/NM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SgZW0+rc5pzyqjKsS4Yped9fvoRIww8OGAYn+UxfO4k=;
-        b=rfZm0d0Go5O60y/ni5SPg4FMQEtkyHl4+jtiuhsPxbjeBYZ4mGy53iiYvK/wOyHvqi
-         0tm+D5AF4Kzhq9Je01J7wPrjuWn8WbMXYXUOvRvoLTJT71tva7aGJz3HK4VXshBh/pJO
-         I7EglAWdMRE1vYMIJpwKvxsrj2jEpaR5Mu+LtM3RMhFpBh5Xva03wjHCwrwV7GKLfNzQ
-         uZP1tbLt5pv0OdF52qIP7kbsRb3JVj2V5k2jt7PVvpQFqRU48VXpev/jTbSHVtCEAJx8
-         k5ObKqgngOnAj3zGN3auDT06Tw/Y6DKxb7gDBEwxkUxlE0qbqMKCl1+LyL8cF3NrV9li
-         fEEg==
-X-Gm-Message-State: AOAM533dltwcixJdG/gU+IXQApp/6iIru26SLYzTU3mV2dOF9xq6CjxV
-        hraPXafttWjaNtNyGojRWbjdPcg7OMx5XRUMCgcZJQ==
-X-Google-Smtp-Source: ABdhPJxp9Z55WZOHpsvw9TRL+FR+Tj/K5sC9Y1Isfs3+EZxgTlLRl+upwO4b5rwajihfy94crAv1cU+9QqzJbIrGYWA=
-X-Received: by 2002:aca:170a:: with SMTP id j10mr867562oii.128.1615843842283;
- Mon, 15 Mar 2021 14:30:42 -0700 (PDT)
+        Mon, 15 Mar 2021 17:32:39 -0400
+Received: from gardel-login.0pointer.net (gardel-mail [85.214.157.71])
+        by gardel.0pointer.net (Postfix) with ESMTP id B1728E80100;
+        Mon, 15 Mar 2021 22:32:35 +0100 (CET)
+Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
+        id 5D27D160945; Mon, 15 Mar 2021 22:32:35 +0100 (CET)
+Date:   Mon, 15 Mar 2021 22:32:35 +0100
+From:   Lennart Poettering <mzxreary@0pointer.de>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Luca Boccassi <bluca@debian.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tejun Heo <tj@kernel.org>,
+        Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier@javigon.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Hannes Reinecke <hare@suse.de>
+Subject: Re: [PATCH -next 1/5] block: add disk sequence number
+Message-ID: <YE/ScxsHLAI49Ba1@gardel-login>
+References: <20210315200242.67355-1-mcroce@linux.microsoft.com>
+ <20210315200242.67355-2-mcroce@linux.microsoft.com>
+ <20210315201824.GB2577561@casper.infradead.org>
+ <20210315210452.GC2577561@casper.infradead.org>
 MIME-Version: 1.0
-References: <20200311034351.1275197-3-jason@jlekstrand.net>
- <20200317212115.419358-1-jason@jlekstrand.net> <64eed158-22a8-10a7-7686-c972f8542649@daenzer.net>
- <20200930095542.GY438822@phenom.ffwll.local> <CAOFGe97Q_j8PWq90rQoVk-qY95LM=o+hhWYg+Gsi9sp8+FD+NQ@mail.gmail.com>
-In-Reply-To: <CAOFGe97Q_j8PWq90rQoVk-qY95LM=o+hhWYg+Gsi9sp8+FD+NQ@mail.gmail.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Mon, 15 Mar 2021 22:30:31 +0100
-Message-ID: <CAKMK7uE34xvL8-9TS1i8FtrFiaw5A4ZeTSaOvHnn0UGp1dj4MQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] RFC: dma-buf: Add an API for importing and exporting
- sync files (v5)
-To:     Jason Ekstrand <jason@jlekstrand.net>
-Cc:     =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel@daenzer.net>,
-        Chenbo Feng <fengc@google.com>,
-        Daniel Stone <daniels@collabora.com>,
-        James Jones <jajones@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Hackmann <ghackmann@google.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        =?UTF-8?Q?Kristian_H=C3=B8gsberg?= <hoegsberg@google.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Jesse Hall <jessehall@google.com>,
-        Dave Airlie <airlied@redhat.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315210452.GC2577561@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 10:11 PM Jason Ekstrand <jason@jlekstrand.net> wrot=
-e:
->
-> On Wed, Sep 30, 2020 at 4:55 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Wed, Sep 30, 2020 at 11:39:06AM +0200, Michel D=C3=A4nzer wrote:
-> > > On 2020-03-17 10:21 p.m., Jason Ekstrand wrote:
-> > > > Explicit synchronization is the future.  At least, that seems to be=
- what
-> > > > most userspace APIs are agreeing on at this point.  However, most o=
-f our
-> > > > Linux APIs (both userspace and kernel UAPI) are currently built aro=
-und
-> > > > implicit synchronization with dma-buf.  While work is ongoing to ch=
-ange
-> > > > many of the userspace APIs and protocols to an explicit synchroniza=
-tion
-> > > > model, switching over piecemeal is difficult due to the number of
-> > > > potential components involved.  On the kernel side, many drivers us=
-e
-> > > > dma-buf including GPU (3D/compute), display, v4l, and others.  In
-> > > > userspace, we have X11, several Wayland compositors, 3D drivers, co=
-mpute
-> > > > drivers (OpenCL etc.), media encode/decode, and the list goes on.
-> > > >
-> > > > This patch provides a path forward by allowing userspace to manuall=
-y
-> > > > manage the fences attached to a dma-buf.  Alternatively, one can th=
-ink
-> > > > of this as making dma-buf's implicit synchronization simply a carri=
-er
-> > > > for an explicit fence.  This is accomplished by adding two IOCTLs t=
-o
-> > > > dma-buf for importing and exporting a sync file to/from the dma-buf=
-.
-> > > > This way a userspace component which is uses explicit synchronizati=
-on,
-> > > > such as a Vulkan driver, can manually set the write fence on a buff=
-er
-> > > > before handing it off to an implicitly synchronized component such =
-as a
-> > > > Wayland compositor or video encoder.  In this way, each of the diff=
-erent
-> > > > components can be upgraded to an explicit synchronization model one=
- at a
-> > > > time as long as the userspace pieces connecting them are aware of i=
-t and
-> > > > import/export fences at the right times.
-> > > >
-> > > > There is a potential race condition with this API if userspace is n=
-ot
-> > > > careful.  A typical use case for implicit synchronization is to wai=
-t for
-> > > > the dma-buf to be ready, use it, and then signal it for some other
-> > > > component.  Because a sync_file cannot be created until it is guara=
-nteed
-> > > > to complete in finite time, userspace can only signal the dma-buf a=
-fter
-> > > > it has already submitted the work which uses it to the kernel and h=
-as
-> > > > received a sync_file back.  There is no way to atomically submit a
-> > > > wait-use-signal operation.  This is not, however, really a problem =
-with
-> > > > this API so much as it is a problem with explicit synchronization
-> > > > itself.  The way this is typically handled is to have very explicit
-> > > > ownership transfer points in the API or protocol which ensure that =
-only
-> > > > one component is using it at any given time.  Both X11 (via the PRE=
-SENT
-> > > > extension) and Wayland provide such ownership transfer points via
-> > > > explicit present and idle messages.
-> > > >
-> > > > The decision was intentionally made in this patch to make the impor=
-t and
-> > > > export operations IOCTLs on the dma-buf itself rather than as a DRM
-> > > > IOCTL.  This makes it the import/export operation universal across =
-all
-> > > > components which use dma-buf including GPU, display, v4l, and other=
-s.
-> > > > It also means that a userspace component can do the import/export
-> > > > without access to the DRM fd which may be tricky to get in cases wh=
-ere
-> > > > the client communicates with DRM via a userspace API such as OpenGL=
- or
-> > > > Vulkan.  At a future date we may choose to add direct import/export=
- APIs
-> > > > to components such as drm_syncobj to avoid allocating a file descri=
-ptor
-> > > > and going through two ioctls.  However, that seems to be something =
-of a
-> > > > micro-optimization as import/export operations are likely to happen=
- at a
-> > > > rate of a few per frame of rendered or decoded video.
-> > > >
-> > > > v2 (Jason Ekstrand):
-> > > >   - Use a wrapper dma_fence_array of all fences including the new o=
-ne
-> > > >     when importing an exclusive fence.
-> > > >
-> > > > v3 (Jason Ekstrand):
-> > > >   - Lock around setting shared fences as well as exclusive
-> > > >   - Mark SIGNAL_SYNC_FILE as a read-write ioctl.
-> > > >   - Initialize ret to 0 in dma_buf_wait_sync_file
-> > > >
-> > > > v4 (Jason Ekstrand):
-> > > >   - Use the new dma_resv_get_singleton helper
-> > > >
-> > > > v5 (Jason Ekstrand):
-> > > >   - Rename the IOCTLs to import/export rather than wait/signal
-> > > >   - Drop the WRITE flag and always get/set the exclusive fence
-> > > >
-> > > > Signed-off-by: Jason Ekstrand <jason@jlekstrand.net>
+On Mo, 15.03.21 21:04, Matthew Wilcox (willy@infradead.org) wrote:
+
+> On Mon, Mar 15, 2021 at 08:18:24PM +0000, Matthew Wilcox wrote:
+> > On Mon, Mar 15, 2021 at 09:02:38PM +0100, Matteo Croce wrote:
+> > > From: Matteo Croce <mcroce@microsoft.com>
 > > >
-> > > What's the status of this? DMA_BUF_IOCTL_EXPORT_SYNC_FILE would be us=
-eful
-> > > for Wayland compositors to wait for client buffers to become ready wi=
-thout
-> > > being prone to getting delayed by later HW access to them, so it woul=
-d be
-> > > nice to merge that at least (if DMA_BUF_IOCTL_IMPORT_SYNC_FILE is sti=
-ll
-> > > controversial).
+> > > Add a sequence number to the disk devices. This number is put in the
+> > > uevent so userspace can correlate events when a driver reuses a device,
+> > > like the loop one.
 > >
-> > I think the missing bits are just the usual stuff
-> > - igt testcases
-> > - userspace using the new ioctls
-> > - review of the entire pile
-> >
-> > I don't think there's any fundamental objections aside from "no one eve=
-r
-> > pushed this over the finish line".
+> > Should this be documented as monotonically increasing?  I think this
+> > is actually a media identifier.  Consider (if you will) a floppy disc.
+> > Back when such things were common, it was possible with personal computers
+> > of the era to have multiple floppy discs "in play" and be prompted to
+> > insert them as needed.  So shouldn't it be possible to support something
+> > similar here -- you're really removing the media from the loop device.
+> > With a monotonically increasing number, you're always destroying the
+> > media when you remove it, but in principle, it should be possible to
+> > reinsert the same media and have the same media identifier number.
 >
-> I just re-upped the patch series and you should have been on the CC
-> for the cover letter.  The Mesa MR is here:
-> https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/4037  I'm
-> going to try and knock out an IGT test quick but I don't know how much
-> is really practical to test in that environment besides a basic fuzz
-> for "does the IOCTL return a sync file".
+> So ... a lot of devices have UUIDs or similar.  eg:
+>
+> $ cat /sys/block/nvme0n1/uuid
+> e8238fa6-bf53-0001-001b-448b49cec94f
+>
+> https://linux.die.net/man/8/scsi_id (for scsi)
+>
+> how about making this way more generic; create an xattr on a file to
+> store the uuid (if one doesn't already exist) whenever it's used as the
+> base for a loop device.  then sysfs (or whatever) can report the contents
+> of that xattr as the unique id.
+>
+> That can be mostly in userspace -- losetup can create it, and read it.
+> It can be passed in as the first two current-reserved __u64 entries in
+> loop_config.  The only kernel change should be creating the sysfs
+> entry /sys/block/loopN/uuid from those two array entries.
 
-With vgem you should be able to control the interface fully, since
-that allows you to control dma_fences we attach to stuff. Or at least
-it has some of the ingredients, and a bunch of igts test it. E.g. we
-have one that creates a fence with vgem and then checks (using crc)
-that your display driver works correctly with the page flip.
+As a (part-time) maintainer of udev: as one major likely consumer of
+this I'd *really* prefer some concept here that works without
+`losetup` needing to be patched. i.e. we have plenty userspace that
+calls LOOP_CONFIGURE or LOOP_SET_FD, not just losetup, and we'd have
+to patch them all. In particular in a world of containers it's even
+worse: people probably will continue to use old userspaces (mixed with
+newer ones) for a very long time (decades!), and those old userpace
+won't fill in the fields for the ioctl hence.
 
-> I've dropped all the sync_file import stuff in the latest version.  It
-> would have been useful for testing but it's also where all the scary
-> stuff lives and I'm no longer convinced it solves any real problems
-> for userspace.
+Hence, for me it would be essential to have an identifier that is
+assigned by the kernel, instead of requiring userspace to assign it,
+because userspace won't for a long long time.
 
-Yeah vgem should allow you to get at least some of that sorted.
--Daniel
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+I'd be OK with a hybrid approach where userspace *can* fill
+something in, but doesn't have to in which case the kernel would fill
+it in.
+
+That all said, I very much prefer if we'd use a kernel-enforced
+"sequence number" or "generation counter" or so for this instead of a
+uuid or random cookie or so. Why? because it allows userspace that
+monitors things to derive ordering from these ids: when you watch
+these events and see a uevent for a device seqno=4711 then you know
+that it is from an earlier use than one you see for seqno=8878. UUIDs
+can't give you that. That's in particular a nice property since
+uevents/netlink are not a reliable transport: messages can get lost
+when the socket buffers overrun, or when udev as the uevent broker
+gets overloaded. Hence, for a userspace program it's kinda nice to
+know whether it' worth waiting for a specific loop device use or if
+it's clear that ship has sailed already: i.e. if my own use of a
+specific loop device gets seqno 777 then I know it still makes sense
+to wait for appropriate uevents as long as I see seqno <= 776. But if
+we I see seqneo >= 778 then I know it's not worth waiting anymore and
+one component in the uevent message chain has dropped my messages.
+
+But of course, beggars can't be choosers. If a seqno/generation
+counter concept is not in the cards, I'd be OK with a uuid/random
+cooie approach too. And if an approach where the kernel assigns these
+seqnos strictly monotonically is not in the cards, then I'd be OK with
+an approach where userspace can pick the ids, too. I'll take what I
+can get. My primary concern is that we get something to match up
+uevents, partition devices and the main block device with, and all of
+the suggested approaches could deliver that.
+
+Lennart
+
+--
+Lennart Poettering, Berlin
