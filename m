@@ -2,38 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD56F33BD15
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F6233BD09
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239322AbhCOOcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:32:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        id S235489AbhCOOby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:31:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233204AbhCOOBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5229C64F06;
-        Mon, 15 Mar 2021 14:00:35 +0000 (UTC)
+        id S229743AbhCOOBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:01:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 906E164F0C;
+        Mon, 15 Mar 2021 14:00:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816837;
-        bh=myaF3D99RkWXV3VhgdD/gmpVZL5N7dsK6TT+Ici6Uaw=;
+        s=korg; t=1615816838;
+        bh=fg8Q1EYWAk3JgG7ZOKsNwOrprZ0nqJY0OgF5mVDigTA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sRreGn2fNInIQiDIHaHKY/1hAOxXieKrDoI/KOQRo3ahCMLc9fPJyYX28FgXe/PW0
-         gU+GoSFKCbJYABPWmXJfrtFwNQxmB6XGpYo8oHz+mVjbSHUKWsaLRAJPXyZ2idLYvK
-         ziaI3aWGgyKihNPPfBibS56oDef/aHr5aCJ0pdD8=
+        b=IfD6YL/Xdyo/HbNZyZ9gp0v6RPetwkqDH3FDB5OI1LIOvjxY3u7zRQ1sotEK+ZSEu
+         oYCJF6bdIBVxPc79mkXI/cafNDLnujavBzSXpPW1NGDiiqqwMzZckBJF58yipDpo0K
+         vnAAgXiaT3i25edOnfHYrdiiYrUmq8gJWGY7qrTo=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        David Hildenbrand <david@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
+        stable@vger.kernel.org, Benjamin Coddington <bcodding@redhat.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 144/168] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
-Date:   Mon, 15 Mar 2021 14:56:16 +0100
-Message-Id: <20210315135555.075374670@linuxfoundation.org>
+Subject: [PATCH 5.4 145/168] SUNRPC: Set memalloc_nofs_save() for sync tasks
+Date:   Mon, 15 Mar 2021 14:56:17 +0100
+Message-Id: <20210315135555.106561418@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -47,75 +42,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Anshuman Khandual <anshuman.khandual@arm.com>
+From: Benjamin Coddington <bcodding@redhat.com>
 
-[ Upstream commit eeb0753ba27b26f609e61f9950b14f1b934fe429 ]
+[ Upstream commit f0940f4b3284a00f38a5d42e6067c2aaa20e1f2e ]
 
-pfn_valid() validates a pfn but basically it checks for a valid struct page
-backing for that pfn. It should always return positive for memory ranges
-backed with struct page mapping. But currently pfn_valid() fails for all
-ZONE_DEVICE based memory types even though they have struct page mapping.
+We could recurse into NFS doing memory reclaim while sending a sync task,
+which might result in a deadlock.  Set memalloc_nofs_save for sync task
+execution.
 
-pfn_valid() asserts that there is a memblock entry for a given pfn without
-MEMBLOCK_NOMAP flag being set. The problem with ZONE_DEVICE based memory is
-that they do not have memblock entries. Hence memblock_is_map_memory() will
-invariably fail via memblock_search() for a ZONE_DEVICE based address. This
-eventually fails pfn_valid() which is wrong. memblock_is_map_memory() needs
-to be skipped for such memory ranges. As ZONE_DEVICE memory gets hotplugged
-into the system via memremap_pages() called from a driver, their respective
-memory sections will not have SECTION_IS_EARLY set.
-
-Normal hotplug memory will never have MEMBLOCK_NOMAP set in their memblock
-regions. Because the flag MEMBLOCK_NOMAP was specifically designed and set
-for firmware reserved memory regions. memblock_is_map_memory() can just be
-skipped as its always going to be positive and that will be an optimization
-for the normal hotplug memory. Like ZONE_DEVICE based memory, all normal
-hotplugged memory too will not have SECTION_IS_EARLY set for their sections
-
-Skipping memblock_is_map_memory() for all non early memory sections would
-fix pfn_valid() problem for ZONE_DEVICE based memory and also improve its
-performance for normal hotplug memory as well.
-
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Acked-by: David Hildenbrand <david@redhat.com>
-Fixes: 73b20c84d42d ("arm64: mm: implement pte_devmap support")
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-Link: https://lore.kernel.org/r/1614921898-4099-2-git-send-email-anshuman.khandual@arm.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: a1231fda7e94 ("SUNRPC: Set memalloc_nofs_save() on all rpciod/xprtiod jobs")
+Signed-off-by: Benjamin Coddington <bcodding@redhat.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/mm/init.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ net/sunrpc/sched.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 602bd19630ff..cbcac03c0e0d 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -245,6 +245,18 @@ int pfn_valid(unsigned long pfn)
+diff --git a/net/sunrpc/sched.c b/net/sunrpc/sched.c
+index 7afbf15bcbd9..4beb6d2957c3 100644
+--- a/net/sunrpc/sched.c
++++ b/net/sunrpc/sched.c
+@@ -990,8 +990,11 @@ void rpc_execute(struct rpc_task *task)
  
- 	if (!valid_section(__nr_to_section(pfn_to_section_nr(pfn))))
- 		return 0;
-+
-+	/*
-+	 * ZONE_DEVICE memory does not have the memblock entries.
-+	 * memblock_is_map_memory() check for ZONE_DEVICE based
-+	 * addresses will always fail. Even the normal hotplugged
-+	 * memory will never have MEMBLOCK_NOMAP flag set in their
-+	 * memblock entries. Skip memblock search for all non early
-+	 * memory sections covering all of hotplug memory including
-+	 * both normal and ZONE_DEVICE based.
-+	 */
-+	if (!early_section(__pfn_to_section(pfn)))
-+		return pfn_section_valid(__pfn_to_section(pfn), pfn);
- #endif
- 	return memblock_is_map_memory(addr);
+ 	rpc_set_active(task);
+ 	rpc_make_runnable(rpciod_workqueue, task);
+-	if (!is_async)
++	if (!is_async) {
++		unsigned int pflags = memalloc_nofs_save();
+ 		__rpc_execute(task);
++		memalloc_nofs_restore(pflags);
++	}
  }
+ 
+ static void rpc_async_schedule(struct work_struct *work)
 -- 
 2.30.1
 
