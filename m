@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C80033B5EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF6F33B5EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:56:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231685AbhCONzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:55:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56824 "EHLO mail.kernel.org"
+        id S231839AbhCON4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:56:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230468AbhCONxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25E5764DAD;
-        Mon, 15 Mar 2021 13:53:41 +0000 (UTC)
+        id S231126AbhCONxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA05E64EEC;
+        Mon, 15 Mar 2021 13:53:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816423;
-        bh=+qXyopVlb6I52eh4Prd0dbNBohQZskhhj/Q2fdKsKLk=;
+        s=korg; t=1615816430;
+        bh=HCJa9TYHWg0WZQI2llOpeLP5sN/gHL88pDnxAHrsfk0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v+8LtCcLrmqyfLKDDeTebK4UXTORkDiuOnm4EDgI8Uc6BTLH3zagZxi/15fYKrgsN
-         7Bqh8HXyDVEyoA+Re70dy9gbpKbpghcbWJGXFDizyviN5Y34IlqicK/hXvXemoSfka
-         smWDL7fnvnG0jy6iLh0Dctt3xkMekIt2o0MEfPZI=
+        b=qKXFX5/htOoD6Rv5/tLMAXzXf2qIlyltSRLm6rUKKwJ+bfFOGNKoCxfSKCEOCrve+
+         SVF0JUjJ06oRuG0vdaGwH3WkZFSiLO2rh98unK5nqae5IT9wCks25isD4MnkMcybOp
+         DMguwaKkvtD4US0nhyJZl67Bs+0zt2oCCHv9nDOM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joe Lawrence <joe.lawrence@redhat.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Manoj Gupta <manojgupta@google.com>
-Subject: [PATCH 4.9 30/78] scripts/recordmcount.{c,pl}: support -ffunction-sections .text.* section names
+        stable@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 39/75] USB: serial: cp210x: add some more GE USB IDs
 Date:   Mon, 15 Mar 2021 14:51:53 +0100
-Message-Id: <20210315135213.061571101@linuxfoundation.org>
+Message-Id: <20210315135209.528655032@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
-References: <20210315135212.060847074@linuxfoundation.org>
+In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
+References: <20210315135208.252034256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,84 +42,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Joe Lawrence <joe.lawrence@redhat.com>
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-commit 9c8e2f6d3d361439cc6744a094f1c15681b55269 upstream.
+commit 42213a0190b535093a604945db05a4225bf43885 upstream.
 
-When building with -ffunction-sections, the compiler will place each
-function into its own ELF section, prefixed with ".text".  For example,
-a simple test module with functions test_module_do_work() and
-test_module_wq_func():
+GE CS1000 has some more custom USB IDs for CP2102N; add them
+to the driver to have working auto-probing.
 
-  % objdump --section-headers test_module.o | awk '/\.text/{print $2}'
-  .text
-  .text.test_module_do_work
-  .text.test_module_wq_func
-  .init.text
-  .exit.text
-
-Adjust the recordmcount scripts to look for ".text" as a section name
-prefix.  This will ensure that those functions will be included in the
-__mcount_loc relocations:
-
-  % objdump --reloc --section __mcount_loc test_module.o
-  OFFSET           TYPE              VALUE
-  0000000000000000 R_X86_64_64       .text.test_module_do_work
-  0000000000000008 R_X86_64_64       .text.test_module_wq_func
-  0000000000000010 R_X86_64_64       .init.text
-
-Link: http://lkml.kernel.org/r/1542745158-25392-2-git-send-email-joe.lawrence@redhat.com
-
-Signed-off-by: Joe Lawrence <joe.lawrence@redhat.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-[Manoj: Resolve conflict on 4.4.y/4.9.y because of missing 42c269c88dc1]
-Signed-off-by: Manoj Gupta <manojgupta@google.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- scripts/recordmcount.c  |    2 +-
- scripts/recordmcount.pl |   13 +++++++++++++
- 2 files changed, 14 insertions(+), 1 deletion(-)
+ drivers/usb/serial/cp210x.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/scripts/recordmcount.c
-+++ b/scripts/recordmcount.c
-@@ -362,7 +362,7 @@ static uint32_t (*w2)(uint16_t);
- static int
- is_mcounted_section_name(char const *const txtname)
- {
--	return strcmp(".text",           txtname) == 0 ||
-+	return strncmp(".text",          txtname, 5) == 0 ||
- 		strcmp(".ref.text",      txtname) == 0 ||
- 		strcmp(".sched.text",    txtname) == 0 ||
- 		strcmp(".spinlock.text", txtname) == 0 ||
---- a/scripts/recordmcount.pl
-+++ b/scripts/recordmcount.pl
-@@ -140,6 +140,11 @@ my %text_sections = (
-      ".text.unlikely" => 1,
- );
- 
-+# Acceptable section-prefixes to record.
-+my %text_section_prefixes = (
-+     ".text." => 1,
-+);
-+
- # Note: we are nice to C-programmers here, thus we skip the '||='-idiom.
- $objdump = 'objdump' if (!$objdump);
- $objcopy = 'objcopy' if (!$objcopy);
-@@ -505,6 +510,14 @@ while (<IN>) {
- 
- 	# Only record text sections that we know are safe
- 	$read_function = defined($text_sections{$1});
-+	if (!$read_function) {
-+	    foreach my $prefix (keys %text_section_prefixes) {
-+	        if (substr($1, 0, length $prefix) eq $prefix) {
-+	            $read_function = 1;
-+	            last;
-+	        }
-+	    }
-+	}
- 	# print out any recorded offsets
- 	update_funcs();
- 
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -199,6 +199,8 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x1901, 0x0194) },	/* GE Healthcare Remote Alarm Box */
+ 	{ USB_DEVICE(0x1901, 0x0195) },	/* GE B850/B650/B450 CP2104 DP UART interface */
+ 	{ USB_DEVICE(0x1901, 0x0196) },	/* GE B850 CP2105 DP UART interface */
++	{ USB_DEVICE(0x1901, 0x0197) }, /* GE CS1000 Display serial interface */
++	{ USB_DEVICE(0x1901, 0x0198) }, /* GE CS1000 M.2 Key E serial interface */
+ 	{ USB_DEVICE(0x199B, 0xBA30) }, /* LORD WSDA-200-USB */
+ 	{ USB_DEVICE(0x19CF, 0x3000) }, /* Parrot NMEA GPS Flight Recorder */
+ 	{ USB_DEVICE(0x1ADB, 0x0001) }, /* Schweitzer Engineering C662 Cable */
 
 
