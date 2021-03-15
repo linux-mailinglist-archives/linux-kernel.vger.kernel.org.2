@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B573933BD66
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:37:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D838733BE7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236326AbhCOOfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:35:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
+        id S240110AbhCOOra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:47:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233471AbhCOOBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:01:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 726B764F1A;
-        Mon, 15 Mar 2021 14:01:40 +0000 (UTC)
+        id S233668AbhCOOCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:02:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A789164F23;
+        Mon, 15 Mar 2021 14:02:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816901;
-        bh=T8Z3ON9Dfnl14NHHXv96sr73TwTKtyfJMyfBAYYkE7I=;
+        s=korg; t=1615816929;
+        bh=CS12a3USvFmXpMRngpc4W4VRWePXxRDT41MvuHo5LXE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YEcgEEm4llT1/bSnkbuc5NbCuPxSwU1vODHtBLr8/TuM0cmCy68uPK1Bny0gT/tRT
-         EScyVEzPf88NV4zzM31t/hsPpZGkf+r0V2e8FsP4Vh1YGjB/ax4d4JKPOMiijwfIZr
-         WyP1XQw/LXLge3mLz/AqSFhqBhNi4f57ERrz+uN4=
+        b=VWM/yTZrCoumjpJEK/q5X3zEZYkH4qo8irdyN1F+6V7y/xp2cutoIo5YE8+IH80DD
+         Ib9AHNNDia0kFCUTyJqOYQTK7Znl61WSXKokPJHJVinMqNqY7+MaLxuUi2Qgwq3aYt
+         Zb6AymwPkRfdGCd5pTnbkWdZM6E5W4F23hGeGqD8=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 178/290] ALSA: usb-audio: Fix "cannot get freq eq" errors on Dell AE515 sound bar
-Date:   Mon, 15 Mar 2021 14:54:31 +0100
-Message-Id: <20210315135547.927242069@linuxfoundation.org>
+        stable@vger.kernel.org, Niv Sardi <xaiki@evilgiggle.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.11 209/306] USB: serial: ch341: add new Product ID
+Date:   Mon, 15 Mar 2021 14:54:32 +0100
+Message-Id: <20210315135514.694610027@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +41,103 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Niv Sardi <xaiki@evilgiggle.com>
 
-commit fec60c3bc5d1713db2727cdffc638d48f9c07dc3 upstream.
+commit 5563b3b6420362c8a1f468ca04afe6d5f0a8d0a3 upstream.
 
-Dell AE515 sound bar (413c:a506) spews the error messages when the
-driver tries to read the current sample frequency, hence it needs to
-be on the list in snd_usb_get_sample_rate_quirk().
+Add PID for CH340 that's found on cheap programmers.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=211551
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210304083021.2152-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+The driver works flawlessly as soon as the new PID (0x9986) is added to it.
+These look like ANU232MI but ship with a ch341 inside. They have no special
+identifiers (mine only has the string "DB9D20130716" printed on the PCB and
+nothing identifiable on the packaging. The merchant i bought it from
+doesn't sell these anymore).
+
+the lsusb -v output is:
+Bus 001 Device 009: ID 9986:7523
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass          255 Vendor Specific Class
+  bDeviceSubClass         0
+  bDeviceProtocol         0
+  bMaxPacketSize0         8
+  idVendor           0x9986
+  idProduct          0x7523
+  bcdDevice            2.54
+  iManufacturer           0
+  iProduct                0
+  iSerial                 0
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength       0x0027
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0x80
+      (Bus Powered)
+    MaxPower               96mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           3
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      1
+      bInterfaceProtocol      2
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x82  EP 2 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0020  1x 32 bytes
+        bInterval               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0020  1x 32 bytes
+        bInterval               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0008  1x 8 bytes
+        bInterval               1
+
+Signed-off-by: Niv Sardi <xaiki@evilgiggle.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/quirks.c |    1 +
+ drivers/usb/serial/ch341.c |    1 +
  1 file changed, 1 insertion(+)
 
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1520,6 +1520,7 @@ bool snd_usb_get_sample_rate_quirk(struc
- 	case USB_ID(0x1901, 0x0191): /* GE B850V3 CP2114 audio interface */
- 	case USB_ID(0x21b4, 0x0081): /* AudioQuest DragonFly */
- 	case USB_ID(0x2912, 0x30c8): /* Audioengine D1 */
-+	case USB_ID(0x413c, 0xa506): /* Dell AE515 sound bar */
- 		return true;
- 	}
- 
+--- a/drivers/usb/serial/ch341.c
++++ b/drivers/usb/serial/ch341.c
+@@ -86,6 +86,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x1a86, 0x7522) },
+ 	{ USB_DEVICE(0x1a86, 0x7523) },
+ 	{ USB_DEVICE(0x4348, 0x5523) },
++	{ USB_DEVICE(0x9986, 0x7523) },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(usb, id_table);
 
 
