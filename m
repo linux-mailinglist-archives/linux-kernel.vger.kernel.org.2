@@ -2,75 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB7233C40B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5908333C40D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:24:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233348AbhCORXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233881AbhCORXg (ORCPT
+        id S235583AbhCORYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:24:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28502 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235276AbhCORYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:23:36 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D88C06174A;
-        Mon, 15 Mar 2021 10:23:36 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0786001d9615583ace417a.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:8600:1d96:1558:3ace:417a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 78B0B1EC01E0;
-        Mon, 15 Mar 2021 18:23:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1615829014;
+        Mon, 15 Mar 2021 13:24:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615829049;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=zHC3blqSNPKWJ830IEWlMeLd4dUxTY7L0fyE2191Pxk=;
-        b=PE+5nFQHuWhAEeZDZ9lgcQPQnLK9WDotyFUN6wwIp3nffXCY9VxzJw7Q53LCcyHn9iNfez
-        QiNbUE1CuGYF0lS+JcXSQNPH/Z9Dvq8I8AYuWrHGQh5UTNART/Nu1rjBU2C3vWu914PGlo
-        8NHdRMoGVAQHcb/Cm6KjnYvJGMxJaGQ=
-Date:   Mon, 15 Mar 2021 18:23:37 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        rostedt@goodmis.org, hpa@zytor.com, torvalds@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
-        jpoimboe@redhat.com, alexei.starovoitov@gmail.com,
-        mhiramat@kernel.org
-Subject: Re: [PATCH 0/2] x86: Remove ideal_nops[]
-Message-ID: <20210315172337.GH20497@zn.tnic>
-References: <CA+icZUVEkA6+5d3NGy7_G8eiaPvJkO_JCAX=XQwT1qpiGkLMWw@mail.gmail.com>
- <20210313121541.GC16144@zn.tnic>
- <CA+icZUXrJHHDNOC+DAcr9iw4MXn5cBDj-JrDkxeumk978Gtdcg@mail.gmail.com>
- <20210313124919.GD16144@zn.tnic>
- <CA+icZUWXuknBMdxTQXjJH2JiOgZbWcbk1U=dk6Zp2FgygU5Nyg@mail.gmail.com>
- <20210313132927.GF16144@zn.tnic>
- <CA+icZUWTSo2vkQO_tRggDFvvF_Q6AdzhvhQvmAsNxKnpGXHi0Q@mail.gmail.com>
- <CA+icZUXLyFqq0y_GnKca8MS4wO2kcj4K-D1kBHLa8u_pnLZ7eQ@mail.gmail.com>
- <20210315171516.GG20497@zn.tnic>
- <CA+icZUVOf4T65H2t_q-h_eAN24WOEN-cc8eNubT3GojJrGJ0vA@mail.gmail.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=BKoqRez6iHkkAn0kUlsim0iXUzTtxVRQH4dqQm3EPzc=;
+        b=ZQ+k0QnGoPf5tHc/mZ62j/BYOGE6RTWVGBYqQ1TgLv5Q+ect50cWEPnJV1bbNtehxETlnO
+        tFSi04nMyE/GxUG8xdfbW/LNBvQitLQqYWrm8I8wh3lr0UssaRBeHQcW6KnDH6lsp/xY5E
+        B6PLyeruLU0DpLcPSmzuWjj+MPu4b1Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-546-svTClTDnMU-RMDcmyeSC2w-1; Mon, 15 Mar 2021 13:24:04 -0400
+X-MC-Unique: svTClTDnMU-RMDcmyeSC2w-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A720D19067F1;
+        Mon, 15 Mar 2021 17:24:02 +0000 (UTC)
+Received: from krava (unknown [10.40.196.50])
+        by smtp.corp.redhat.com (Postfix) with SMTP id C7D3119EF2;
+        Mon, 15 Mar 2021 17:24:00 +0000 (UTC)
+Date:   Mon, 15 Mar 2021 18:23:59 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Denys Zagorui -X (dzagorui - GLOBALLOGIC INC at Cisco)" 
+        <dzagorui@cisco.com>
+Cc:     "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] perf: build reproducibility improvements
+Message-ID: <YE+YL4Rzsj77TJmS@krava>
+References: <20210312151700.79714-1-dzagorui@cisco.com>
+ <YE9TAY05BtXbuHxq@krava>
+ <BY5PR11MB40246F1699546B84817D826AD96C9@BY5PR11MB4024.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+icZUVOf4T65H2t_q-h_eAN24WOEN-cc8eNubT3GojJrGJ0vA@mail.gmail.com>
+In-Reply-To: <BY5PR11MB40246F1699546B84817D826AD96C9@BY5PR11MB4024.namprd11.prod.outlook.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 06:19:34PM +0100, Sedat Dilek wrote:
-> With my next build I try to apply this.
+On Mon, Mar 15, 2021 at 04:45:55PM +0000, Denys Zagorui -X (dzagorui - GLOBALLOGIC INC at Cisco) wrote:
+> > Makefile.config:1026: No openjdk development package found, please install JDK package, e.g. openjdk-8-jdk, java-1.8.0-openjdk-devel
+> > cp: '/home/jolsa/kernel/linux-perf/tools/perf/Documentation/tips.txt' and 'Documentation/tips.txt' are the same file
+> >  BISON    util/parse-events-bison.c
+> > bison: unrecognized option '--file-prefix-map=='
+> 
+> I thought that this flag was added in v3.6.3 because in git history next tag after corresponding bison patch was v3.6.3. But this is not true.
+> 
+> > hum, do we actualy want this? I think we want the exact path
+> > we used for compilation, no? what's the benefit?
+> ...
+> > same here, we want to be sure to use the python path
+> > from the exact build laction no?
+> 
+> This patch makes perf build more deterministic. This means that if we build perf on two different
+> build machines from exactly the same sources we will have absolutely identical binaries. To achieve
+> this absolute paths should not be stored in resulting binary. That is why i tried to determine those paths
+> in runtime instead of storing them in binary compile time.
+> There is ongoing project
+> https://reproducible-builds.org/reports/2021-02/ project
+> Kernel already achieved this
+> https://www.kernel.org/doc/html/latest/kbuild/reproducible-builds.html
 
-Your perf tool command should look something like this:
+ok, haven't heard about this
 
-perf stat --repeat 5 --sync --pre=/root/bin/pre-build-kernel.sh -- make -s -j9 LLVM=1 LLVM_IAS=1 bzImage
+> 
+> This patch doesn't make perf 100% reproducible. There is one more known issue with pmu event ordering
+> https://bugzilla.opensuse.org/show_bug.cgi?id=1180882
 
-Also, needless to say, your box needs to not run anything else during
-the measurement.
+nice, the reason of pmu events is in random fashion,
+so the resulting binary differs.. perhaps we could
+use scandir with sort instead
 
-Thx.
+jirka
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
