@@ -2,110 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D539933B0AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F81F33B0B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbhCOLKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 07:10:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53365 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229813AbhCOLKN (ORCPT
+        id S229943AbhCOLKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 07:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229867AbhCOLK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 07:10:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615806613;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M8yuhBec4/2fTpsvveERpk7/R/kPqBZv9NR7tFdHJ5s=;
-        b=O2S7+mpTdathAM7oVQLb13wI8uSAX+l0VXmlDyoT0OtqK1crl9XJCRWdypGB1dnK56xQfR
-        Gm61RkE3VXDAqdAFVghqDNVZOGwvhLjQ/ZeZX2Eox+8EOqluHOUCDV/XS1SgNNIUiBMT2b
-        xGgZ4+d1bI0VwwXFRazKXzmI5DcdKhU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-449-eOGXBqH5N3WE6lUyP2O3xQ-1; Mon, 15 Mar 2021 07:10:09 -0400
-X-MC-Unique: eOGXBqH5N3WE6lUyP2O3xQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9F1301074659;
-        Mon, 15 Mar 2021 11:10:07 +0000 (UTC)
-Received: from [10.36.112.200] (ovpn-112-200.ams2.redhat.com [10.36.112.200])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 56F9A6C43A;
-        Mon, 15 Mar 2021 11:10:05 +0000 (UTC)
-Subject: Re: [PATCH v4 1/4] mm,page_alloc: Bail out earlier on -ENOMEM in
- alloc_contig_migrate_range
-To:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210310150853.13541-1-osalvador@suse.de>
- <20210310150853.13541-2-osalvador@suse.de>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <c9f50be7-8a34-d455-e960-0b079ac6609f@redhat.com>
-Date:   Mon, 15 Mar 2021 12:10:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 15 Mar 2021 07:10:27 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F7A5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:10:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tj87VhqHR0sXsKV088xnD53HTE9mMlHv5F0yClaDo2U=; b=o5NRsadxDS78BITq4P5BGs5Xd+
+        F4WNBUAipC1ios/vORYxUeIjOuyNcfpqQXvsMszLFeRd0qdIoONISFDBy1IMm1jvtl6LoLlWZ4LLI
+        WorW2f4a6BkS5D45b0KTfIcyqn+yYsyVsiLxnFHstxmA8nCUmVaAlZR2ZwH2na2YrpEmS52U74q3L
+        kFXiX3uMoJvC84Nng5O15sNrzcpRtZvfeAvD20SeetFZyKrydH7oCsOMX5Ci+HxMEPSC3EPUHTbfQ
+        wpDFc2RgrWAUD5xc7ISyIcltkOoc+TDNG/oz9Idg0kcYGMu1Plv2A+DCVNQ4wgzuSUk5VhdqwVjfg
+        t+K8T14Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lLl6x-00Fd24-VW; Mon, 15 Mar 2021 11:10:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ACA81303205;
+        Mon, 15 Mar 2021 12:10:10 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8DB2223CC2262; Mon, 15 Mar 2021 12:10:10 +0100 (CET)
+Date:   Mon, 15 Mar 2021 12:10:10 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [GIT pull] locking/urgent for v5.12-rc3
+Message-ID: <YE9AkgbqL+eVO6p1@hirez.programming.kicks-ass.net>
+References: <161573639668.27979.17827928369874291298.tglx@nanos>
+ <CAHk-=wjuD2cCptSJmmHBp2c9chTPnZcSi+0vA+QJ8JNjYTJKCw@mail.gmail.com>
+ <YE8b6dgsEG4OU0ay@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210310150853.13541-2-osalvador@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YE8b6dgsEG4OU0ay@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.03.21 16:08, Oscar Salvador wrote:
-> Currently, __alloc_contig_migrate_range can generate -EINTR, -ENOMEM or -EBUSY,
-> and report them down the chain.
-> The problem is that when migrate_pages() reports -ENOMEM, we keep going till we
-> exhaust all the try-attempts (5 at the moment) instead of bailing out.
+On Mon, Mar 15, 2021 at 09:33:45AM +0100, Peter Zijlstra wrote:
+> On Sun, Mar 14, 2021 at 01:15:25PM -0700, Linus Torvalds wrote:
+> > On Sun, Mar 14, 2021 at 8:40 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> > >
+> > >  - A fix for the static_call mechanism so it handles unaligned
+> > >    addresses correctly.
+> > 
+> > I'm not disputing the fix in any way, but why weren't the relocation
+> > info and function start addresses mutually aligned?
+> > 
+> > Are we perhaps missing some .align directive somewhere?
+> > 
+> > Or am I missing something?
 > 
-> migrate_pages bails out right away on -ENOMEM because it is considered a fatal
-> error. Do the same here instead of keep going and retrying.
+> So I considered looking into that, but since carrying the flag on the
+> absolute address is always correct I figured it was the more robust fix.
 > 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> ---
->   mm/page_alloc.c | 8 +++++++-
->   1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 3e4b29ee2b1e..94467f1b85ff 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8484,7 +8484,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
->   			}
->   			tries = 0;
->   		} else if (++tries == 5) {
-> -			ret = ret < 0 ? ret : -EBUSY;
-> +			ret = -EBUSY;
->   			break;
->   		}
->   
-> @@ -8494,6 +8494,12 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
->   
->   		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
->   				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
-> +		/*
-> +		 * On -ENOMEM, migrate_pages() bails out right away. It is pointless
-> +		 * to retry again over this error, so do the same here.
-> +		 */
-> +		if (ret == -ENOMEM)
-> +			break;
+> I suppose I can try and figure out where alignment went wobbly.
 
-I would have thought we could also be able to get other fatal errors 
-from migrate_pages(), but doesn't seem like it
+include/asm-generic/vmlinux.lds.h:
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+#define STATIC_CALL_DATA						\
+	. = ALIGN(8);							\
+	__start_static_call_sites = .;					\
+	KEEP(*(.static_call_sites))					\
+	__stop_static_call_sites = .;					\
+	__start_static_call_tramp_key = .;				\
+	KEEP(*(.static_call_tramp_key))					\
+	__stop_static_call_tramp_key = .;
+
+#ifndef RO_AFTER_INIT_DATA
+#define RO_AFTER_INIT_DATA						\
+	. = ALIGN(8);							\
+	__start_ro_after_init = .;					\
+	*(.data..ro_after_init)						\
+	JUMP_TABLE_DATA							\
+	STATIC_CALL_DATA						\
+	__end_ro_after_init = .;
+#endif
+
+	.rodata           : AT(ADDR(.rodata) - LOAD_OFFSET) {		\
+		__start_rodata = .;					\
+		*(.rodata) *(.rodata.*)					\
+		SCHED_DATA						\
+		RO_AFTER_INIT_DATA	/* Read only after init */	\
+		. = ALIGN(8);						\
+		__start___tracepoints_ptrs = .;				\
+		KEEP(*(__tracepoints_ptrs)) /* Tracepoints: pointer array */ \
+		__stop___tracepoints_ptrs = .;				\
+		*(__tracepoints_strings)/* Tracepoints: strings */	\
+	}								\
 
 
--- 
-Thanks,
+$ nm defconfig-build/vmlinux | grep static_call_sites
+ffffffff82916dc0 D __start_static_call_sites
+ffffffff8291aaf0 D __stop_static_call_sites
 
-David / dhildenb
 
+Which all reads to me like it *SHOULD* work. Howver when I was debugging
+the crash as reported by Steve (using his .config), I definitely saw
+non-aligned base offsets causing mayhem.
