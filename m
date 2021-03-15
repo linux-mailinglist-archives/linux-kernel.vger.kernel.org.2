@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEABC33BB3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF71833BB28
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232574AbhCOON6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:13:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34900 "EHLO mail.kernel.org"
+        id S236342AbhCOOMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:12:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232562AbhCON7D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8436E64F5F;
-        Mon, 15 Mar 2021 13:58:34 +0000 (UTC)
+        id S232467AbhCON65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6919C64F48;
+        Mon, 15 Mar 2021 13:58:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816716;
-        bh=ddOZxZgRGynkfvgnaUEUSf5yjvmyGJvc7TfwxF016hA=;
+        s=korg; t=1615816718;
+        bh=4dxnC+z2O23rt+e3NSTNQYUyj91ckyhJEtphZAoFisM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Eg8flZUAHT7o9AS3ysAmq3+4pzbv3MjZGFVEuxF4taQCKf4LzBSGrbvqeUSZkf9PU
-         wiJ5nscreTJs+9TM4E2srXw48xBu5a5OQ5u+YZE05blyLIpBqcSDI5Qug9C9ucAYOc
-         6cAX/ilhydgKxoF4R1bQy/c6+A61WsKGM2X7oJ5M=
+        b=DaeF9ytE/V1mKQ9bKpIsiItZRrHdRmqx5oJMVT48HaaY5jbAlQZQBdBKqSBOCumYH
+         IA1sqzL5Xdt/UOY/chqPs6KdpQMmVHia81rZMTKSBm3LxJe84qc7qh+89UsYLMdky2
+         2y96ry5+JexnaptFFt0AwfEXXl2HK+YA6MOMYSI8=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Danielle Ratson <danieller@nvidia.com>,
-        Eddie Shklaer <eddies@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 072/290] mlxsw: spectrum_ethtool: Add an external speed to PTYS register
-Date:   Mon, 15 Mar 2021 14:52:45 +0100
-Message-Id: <20210315135544.344794069@linuxfoundation.org>
+        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 5.10 073/290] perf traceevent: Ensure read cmdlines are null terminated.
+Date:   Mon, 15 Mar 2021 14:52:46 +0100
+Message-Id: <20210315135544.376366571@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -43,69 +47,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Danielle Ratson <danieller@nvidia.com>
+From: Ian Rogers <irogers@google.com>
 
-commit ae9b24ddb69b4e31cda1b5e267a5a08a1db11717 upstream.
+commit 137a5258939aca56558f3a23eb229b9c4b293917 upstream.
 
-Currently, only external bits are added to the PTYS register, whereas
-there is one external bit that is wrongly marked as internal, and so was
-recently removed from the register.
+Issue detected by address sanitizer.
 
-Add that bit to the PTYS register again, as this bit is no longer
-internal.
-
-Its removal resulted in '100000baseLR4_ER4/Full' link mode no longer
-being supported, causing a regression on some setups.
-
-Fixes: 5bf01b571cf4 ("mlxsw: spectrum_ethtool: Remove internal speeds from PTYS register")
-Signed-off-by: Danielle Ratson <danieller@nvidia.com>
-Reported-by: Eddie Shklaer <eddies@nvidia.com>
-Tested-by: Eddie Shklaer <eddies@nvidia.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: cd4ceb63438e9e28 ("perf util: Save pid-cmdline mapping into tracing header")
+Signed-off-by: Ian Rogers <irogers@google.com>
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Stephane Eranian <eranian@google.com>
+Link: http://lore.kernel.org/lkml/20210226221431.1985458-1-irogers@google.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlxsw/reg.h              |    1 +
- drivers/net/ethernet/mellanox/mlxsw/spectrum_ethtool.c |    5 +++++
- drivers/net/ethernet/mellanox/mlxsw/switchx2.c         |    3 ++-
- 3 files changed, 8 insertions(+), 1 deletion(-)
+ tools/perf/util/trace-event-read.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/mellanox/mlxsw/reg.h
-+++ b/drivers/net/ethernet/mellanox/mlxsw/reg.h
-@@ -4208,6 +4208,7 @@ MLXSW_ITEM32(reg, ptys, ext_eth_proto_ca
- #define MLXSW_REG_PTYS_ETH_SPEED_100GBASE_CR4		BIT(20)
- #define MLXSW_REG_PTYS_ETH_SPEED_100GBASE_SR4		BIT(21)
- #define MLXSW_REG_PTYS_ETH_SPEED_100GBASE_KR4		BIT(22)
-+#define MLXSW_REG_PTYS_ETH_SPEED_100GBASE_LR4_ER4	BIT(23)
- #define MLXSW_REG_PTYS_ETH_SPEED_25GBASE_CR		BIT(27)
- #define MLXSW_REG_PTYS_ETH_SPEED_25GBASE_KR		BIT(28)
- #define MLXSW_REG_PTYS_ETH_SPEED_25GBASE_SR		BIT(29)
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_ethtool.c
-@@ -1171,6 +1171,11 @@ static const struct mlxsw_sp1_port_link_
- 		.mask_ethtool	= ETHTOOL_LINK_MODE_100000baseKR4_Full_BIT,
- 		.speed		= SPEED_100000,
- 	},
-+	{
-+		.mask		= MLXSW_REG_PTYS_ETH_SPEED_100GBASE_LR4_ER4,
-+		.mask_ethtool	= ETHTOOL_LINK_MODE_100000baseLR4_ER4_Full_BIT,
-+		.speed		= SPEED_100000,
-+	},
- };
+--- a/tools/perf/util/trace-event-read.c
++++ b/tools/perf/util/trace-event-read.c
+@@ -361,6 +361,7 @@ static int read_saved_cmdline(struct tep
+ 		pr_debug("error reading saved cmdlines\n");
+ 		goto out;
+ 	}
++	buf[ret] = '\0';
  
- #define MLXSW_SP1_PORT_LINK_MODE_LEN ARRAY_SIZE(mlxsw_sp1_port_link_mode)
---- a/drivers/net/ethernet/mellanox/mlxsw/switchx2.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/switchx2.c
-@@ -612,7 +612,8 @@ static const struct mlxsw_sx_port_link_m
- 	{
- 		.mask		= MLXSW_REG_PTYS_ETH_SPEED_100GBASE_CR4 |
- 				  MLXSW_REG_PTYS_ETH_SPEED_100GBASE_SR4 |
--				  MLXSW_REG_PTYS_ETH_SPEED_100GBASE_KR4,
-+				  MLXSW_REG_PTYS_ETH_SPEED_100GBASE_KR4 |
-+				  MLXSW_REG_PTYS_ETH_SPEED_100GBASE_LR4_ER4,
- 		.speed		= 100000,
- 	},
- };
+ 	parse_saved_cmdline(pevent, buf, size);
+ 	ret = 0;
 
 
