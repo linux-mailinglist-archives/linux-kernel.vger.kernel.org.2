@@ -2,122 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E28D33AE8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 10:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F12933AE8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 10:23:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229664AbhCOJVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 05:21:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47744 "EHLO mail.kernel.org"
+        id S229632AbhCOJWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 05:22:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:54998 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhCOJVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 05:21:01 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ADB7264E12;
-        Mon, 15 Mar 2021 09:21:00 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lLjPG-001cIb-KN; Mon, 15 Mar 2021 09:20:58 +0000
+        id S229490AbhCOJWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 05:22:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AFBBA1FB;
+        Mon, 15 Mar 2021 02:22:09 -0700 (PDT)
+Received: from [10.57.12.51] (unknown [10.57.12.51])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 72EFB3F70D;
+        Mon, 15 Mar 2021 02:22:08 -0700 (PDT)
+Subject: Re: [PATCH] PM / devfreq: unlock mutex and free devfreq struct in
+ error path
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
+References: <CGME20210312184551epcas1p2fe579b2a736cac2814b8a236869c4c27@epcas1p2.samsung.com>
+ <20210312184534.6423-1-lukasz.luba@arm.com>
+ <aa65398e-6de6-92df-3c27-a8a7f43eda10@samsung.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <ecd8866a-85a3-e2cc-7e35-06b3e2afb003@arm.com>
+Date:   Mon, 15 Mar 2021 09:22:07 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Mon, 15 Mar 2021 09:20:58 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Shenming Lu <lushenming@huawei.com>
-Cc:     Eric Auger <eric.auger@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-Subject: Re: [PATCH v4 5/6] KVM: arm64: GICv4.1: Restore VLPI pending state to
- physical side
-In-Reply-To: <81fbadda-0489-ffc3-cb38-08e89871ec95@huawei.com>
-References: <20210313083900.234-1-lushenming@huawei.com>
- <20210313083900.234-6-lushenming@huawei.com>
- <d9047922808df340feca2f257cfb8a3d@kernel.org>
- <81fbadda-0489-ffc3-cb38-08e89871ec95@huawei.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <b03ec1e5447024f9f990377e2c28e84f@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: lushenming@huawei.com, eric.auger@redhat.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, alex.williamson@redhat.com, cohuck@redhat.com, lorenzo.pieralisi@arm.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+In-Reply-To: <aa65398e-6de6-92df-3c27-a8a7f43eda10@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-15 09:11, Shenming Lu wrote:
-> On 2021/3/15 16:30, Marc Zyngier wrote:
->> On 2021-03-13 08:38, Shenming Lu wrote:
->>> From: Zenghui Yu <yuzenghui@huawei.com>
->>> 
->>> When setting the forwarding path of a VLPI (switch to the HW mode),
->>> we can also transfer the pending state from irq->pending_latch to
->>> VPT (especially in migration, the pending states of VLPIs are 
->>> restored
->>> into kvm’s vgic first). And we currently send "INT+VSYNC" to trigger
->>> a VLPI to pending.
->>> 
->>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
->>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
->>> ---
->>>  arch/arm64/kvm/vgic/vgic-v4.c | 18 ++++++++++++++++++
->>>  1 file changed, 18 insertions(+)
->>> 
->>> diff --git a/arch/arm64/kvm/vgic/vgic-v4.c 
->>> b/arch/arm64/kvm/vgic/vgic-v4.c
->>> index ac029ba3d337..3b82ab80c2f3 100644
->>> --- a/arch/arm64/kvm/vgic/vgic-v4.c
->>> +++ b/arch/arm64/kvm/vgic/vgic-v4.c
->>> @@ -449,6 +449,24 @@ int kvm_vgic_v4_set_forwarding(struct kvm *kvm, 
->>> int virq,
->>>      irq->host_irq    = virq;
->>>      atomic_inc(&map.vpe->vlpi_count);
->>> 
->>> +    /* Transfer pending state */
->>> +    if (irq->pending_latch) {
->>> +        unsigned long flags;
->>> +
->>> +        ret = irq_set_irqchip_state(irq->host_irq,
->>> +                        IRQCHIP_STATE_PENDING,
->>> +                        irq->pending_latch);
->>> +        WARN_RATELIMIT(ret, "IRQ %d", irq->host_irq);
->>> +
->>> +        /*
->>> +         * Clear pending_latch and communicate this state
->>> +         * change via vgic_queue_irq_unlock.
->>> +         */
->>> +        raw_spin_lock_irqsave(&irq->irq_lock, flags);
->>> +        irq->pending_latch = false;
->>> +        vgic_queue_irq_unlock(kvm, irq, flags);
->>> +    }
->>> +
->>>  out:
->>>      mutex_unlock(&its->its_lock);
->>>      return ret;
->> 
->> The read side of the pending state isn't locked, but the write side 
->> is.
->> I'd rather you lock the whole sequence for peace of mind.
+Hi Chanwoo,
+
+On 3/15/21 7:20 AM, Chanwoo Choi wrote:
+> Hi Lukasz,
 > 
-> Did you mean to lock before emitting the mapping request, Or just 
-> before reading
-> the pending state?
+> On 3/13/21 3:45 AM, Lukasz Luba wrote:
+>> The devfreq->lock is held for time of setup. Release the lock in the
+>> error path, before jumping to the end of the function.
+>>
+>> Change the goto destination which frees the allocated memory.
+>>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>>   drivers/devfreq/devfreq.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+>> index b6d3e7db0b09..99b2eeedc238 100644
+>> --- a/drivers/devfreq/devfreq.c
+>> +++ b/drivers/devfreq/devfreq.c
+>> @@ -822,7 +822,8 @@ struct devfreq *devfreq_add_device(struct device *dev,
+>>   
+>>   	if (devfreq->profile->timer < 0
+>>   		|| devfreq->profile->timer >= DEVFREQ_TIMER_NUM) {
+>> -		goto err_out;
+>> +		mutex_unlock(&devfreq->lock);
+>> +		goto err_dev;
+>>   	}
+>>   
+>>   	if (!devfreq->profile->max_state && !devfreq->profile->freq_table) {
+>>
+> 
+> Looks good to me. But, need to add the following information
+> and please use capital letter of the first character of patch title. Thanks.
 
-Just before reading the pending state, so that we can't get a concurrent
-modification of that state while we make the interrupt pending in the 
-VPT
-and clearing it in the emulation.
+thanks for looking at this, sure, I'll use the capital letter.
 
-Thanks,
+> 
+> Fixes: 4dc3bab8687f ("PM / devfreq: Add support delayed timer for polling mode")
+> 
+> Also, need to send it to stable lkml.
+> 
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+I'll add the 'Fixes' tag and send v2 also into stable v5.8+:
+
+Cc: v5.8+ <stable@vger.kernel.org> # v5.8+
+
+Regards,
+Lukasz
