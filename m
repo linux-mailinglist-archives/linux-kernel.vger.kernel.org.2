@@ -2,119 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269A333BF2E
+	by mail.lfdr.de (Postfix) with ESMTP id 72F6033BF2F
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239262AbhCOOy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:54:56 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:36923 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241584AbhCOOw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:52:56 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DzfXt3wJYz9tyTK;
-        Mon, 15 Mar 2021 15:52:46 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id vniJaSbpwf9e; Mon, 15 Mar 2021 15:52:46 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DzfXt2SyJz9tyTJ;
-        Mon, 15 Mar 2021 15:52:46 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C8CD08B776;
-        Mon, 15 Mar 2021 15:52:51 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id ABtNn8k4BisG; Mon, 15 Mar 2021 15:52:51 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.100])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 861B48B75B;
-        Mon, 15 Mar 2021 15:52:51 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 5E62F675E2; Mon, 15 Mar 2021 14:52:51 +0000 (UTC)
-Message-Id: <8038392f38d81f2ad169347efac29146f553b238.1615819955.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/mm: Remove unneeded #ifdef CONFIG_PPC_MEM_KEYS
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 15 Mar 2021 14:52:51 +0000 (UTC)
+        id S240806AbhCOOy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239593AbhCOOxu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:53:50 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65885C06174A;
+        Mon, 15 Mar 2021 07:53:50 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id l4so31898186qkl.0;
+        Mon, 15 Mar 2021 07:53:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qE9Ppz0N3hLMfdFALMqtSOrt8JpFdsQN6dnt3f0ZSTo=;
+        b=SAZ1uES/qFasD82o1L631cG0J0AqQtyqJx1AjdKjg/G4mncs9dUf9WJiLR3D4O5ldW
+         UfMywQOopH3ai3pwoB3U4MggR3RYqrDo4ZJETv36rHPxEm9NJtq5QrtI98vpJXb8Cv96
+         wTDWCFAUuuioM9cfVvRYlkTn18gTmv/FL9uRKPGM7W2LYm0OVz1+xezFFRCpcEh+ux7E
+         6T0IKao3XCdD6JpecH0d3Spc0c7EeVDU73hORpd/YTJvDZ2l4C3o3HwWIaq3KmASAIr/
+         /DR6KcSQ4H90Y+yqbhYB4eSAV+40pvJqDLXKZgnvD1qu9WA0sv4BcgmX9t+rxrtTZfsa
+         yd+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qE9Ppz0N3hLMfdFALMqtSOrt8JpFdsQN6dnt3f0ZSTo=;
+        b=nJuuUrIAaPDylYSWWy4eF3L79X1pd+4didQjzWGutwoxW+F8dp6VKH//U/rLbA1eWI
+         m4GzSkNi4FZwLZPhAwrq7uHQhCOmPHxsi7Hd3EQ+NqqXgFjhFXmDpcLrLLJ8cNY3iqlK
+         gphZs1vjl5WMhBQEdEiRxj1JerG3HWfbbommN5X7RdMW6VN3tOLbAXO+6Y3+R/H/pbnG
+         MfkaIiSNFkIFRjbxrJDLI/s4pTGA4qvBnMNCocfrT8kvgkU1pmX6K9L7ad0jVbd6ZYew
+         IMrNF8ONENtxSMSQPcwdKMEEZTaa4b1IOzFTpZR3YTsU6YsCyVWe0Z2/547nDaxxHLra
+         OdYw==
+X-Gm-Message-State: AOAM531OBtzF+pHpHGPrbYw+EwJPUS7CGvbeM8loML4A2j7nuXGZgehl
+        SHz6vExGoh696Zt9OWlrlqA=
+X-Google-Smtp-Source: ABdhPJxM+2aIt3zQQ3Gp6cLT+xUskFnn0JwG0+35iILUORVbHTjZRwEv1XNZfN/AWwRZ2LJYcThOwA==
+X-Received: by 2002:a37:5884:: with SMTP id m126mr25279968qkb.459.1615820029645;
+        Mon, 15 Mar 2021 07:53:49 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id w13sm11350021qtv.37.2021.03.15.07.53.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 07:53:48 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 3D8B327C0080;
+        Mon, 15 Mar 2021 10:53:48 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Mon, 15 Mar 2021 10:53:48 -0400
+X-ME-Sender: <xms:-3RPYAz9bZTgP8l8qpwj1nZ7sAK-JFjwpuFe_MY30Ep66WOBdms-wA>
+    <xme:-3RPYD9IuDwiDiSKwwBgAVWAccU583XrMAPmYASDJ7tcrUDEv3LKl2jtCwXgkfph2
+    MsvokTdATE4F9--3w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddvledgieelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
+    geejnecukfhppedufedurddutdejrddugeejrdduvdeinecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
+    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:-3RPYN_i6wmeYWAQuUiS1bzS_IYXTOO6k6sy_7HKeC69vEU4q68QNw>
+    <xmx:-3RPYKU2JqaNy3uFBd48QmkSZhdtq7kOsJdC2vXQsua_pMVb9V3hZw>
+    <xmx:-3RPYCdVXoDjGT-Y-UeabYm3IRoBGKR7TsXzpAcaFQ1CvjDiwtfxdQ>
+    <xmx:_HRPYLip858_820HzlTqKX15HIcPx4t1Zd5rNXMa9jk4WNPzAg-1b0-EvJE>
+Received: from localhost (unknown [131.107.147.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1846E108005F;
+        Mon, 15 Mar 2021 10:53:46 -0400 (EDT)
+Date:   Mon, 15 Mar 2021 22:53:36 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 10/13] rcu/nocb: Delete bypass_timer upon nocb_gp wakeup
+Message-ID: <YE908FC8F8/0p07q@boqun-archlinux>
+References: <20210223001011.127063-1-frederic@kernel.org>
+ <20210223001011.127063-11-frederic@kernel.org>
+ <20210303012456.GC20917@paulmck-ThinkPad-P72>
+ <20210310221702.GC2949@lothringen>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310221702.GC2949@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In fault.c, #ifdef CONFIG_PPC_MEM_KEYS is not needed because all
-functions are always defined, and arch_vma_access_permitted()
-always returns true when CONFIG_PPC_MEM_KEYS is not defined so
-access_pkey_error() will return false so bad_access_pkey()
-will never be called.
+On Wed, Mar 10, 2021 at 11:17:02PM +0100, Frederic Weisbecker wrote:
+> On Tue, Mar 02, 2021 at 05:24:56PM -0800, Paul E. McKenney wrote:
+> > On Tue, Feb 23, 2021 at 01:10:08AM +0100, Frederic Weisbecker wrote:
+> > > A NOCB-gp wake up can safely delete the nocb_bypass_timer. nocb_gp_wait()
+> > > is going to check again the bypass state and rearm the bypass timer if
+> > > necessary.
+> > > 
+> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > Cc: Josh Triplett <josh@joshtriplett.org>
+> > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > > Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > 
+> > Give that you delete this code a couple of patches later in this series,
+> > why not just leave it out entirely?  ;-)
+> 
+> It's not exactly deleted later, it's rather merged within the
+> "del_timer(&rdp_gp->nocb_timer)".
+> 
+> The purpose of that patch is to make it clear that we explicitly cancel
+> the nocb_bypass_timer here before we do it implicitly later with the
+> merge of nocb_bypass_timer into nocb_timer.
+> 
+> We could drop that patch, the resulting code in the end of the patchset
+> will be the same of course but the behaviour detail described here might
+> slip out of the reviewers attention :-)
+> 
 
-Include linux/pkeys.h to get a definition of vma_pkeys() for
-bad_access_pkey().
+How about merging the timers first and adding those small improvements
+later? i.e. move patch #12 #13 right after #7 (IIUC, #7 is the last
+requirement you need for merging timers), and then patch #8~#11 just
+follow, because IIUC, those patches are not about correctness but more
+about avoiding necessary timer fire-ups, right?
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/mm/fault.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+Just my 2 cents. The overall patchset looks good to me ;-)
 
-diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-index bb368257b55c..f1b3f5922f90 100644
---- a/arch/powerpc/mm/fault.c
-+++ b/arch/powerpc/mm/fault.c
-@@ -32,6 +32,7 @@
- #include <linux/context_tracking.h>
- #include <linux/hugetlb.h>
- #include <linux/uaccess.h>
-+#include <linux/pkeys.h>
- 
- #include <asm/firmware.h>
- #include <asm/interrupt.h>
-@@ -87,7 +88,6 @@ static noinline int bad_area(struct pt_regs *regs, unsigned long address)
- 	return __bad_area(regs, address, SEGV_MAPERR);
- }
- 
--#ifdef CONFIG_PPC_MEM_KEYS
- static noinline int bad_access_pkey(struct pt_regs *regs, unsigned long address,
- 				    struct vm_area_struct *vma)
- {
-@@ -127,7 +127,6 @@ static noinline int bad_access_pkey(struct pt_regs *regs, unsigned long address,
- 
- 	return 0;
- }
--#endif
- 
- static noinline int bad_access(struct pt_regs *regs, unsigned long address)
- {
-@@ -234,7 +233,6 @@ static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
- 	return false;
- }
- 
--#ifdef CONFIG_PPC_MEM_KEYS
- static bool access_pkey_error(bool is_write, bool is_exec, bool is_pkey,
- 			      struct vm_area_struct *vma)
- {
-@@ -248,7 +246,6 @@ static bool access_pkey_error(bool is_write, bool is_exec, bool is_pkey,
- 
- 	return false;
- }
--#endif
- 
- static bool access_error(bool is_write, bool is_exec, struct vm_area_struct *vma)
- {
-@@ -492,11 +489,9 @@ static int ___do_page_fault(struct pt_regs *regs, unsigned long address,
- 			return bad_area(regs, address);
- 	}
- 
--#ifdef CONFIG_PPC_MEM_KEYS
- 	if (unlikely(access_pkey_error(is_write, is_exec,
- 				       (error_code & DSISR_KEYFAULT), vma)))
- 		return bad_access_pkey(regs, address, vma);
--#endif /* CONFIG_PPC_MEM_KEYS */
- 
- 	if (unlikely(access_error(is_write, is_exec, vma)))
- 		return bad_access(regs, address);
--- 
-2.25.0
+Feel free to add
 
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+
+Regards,
+Boqun
+
+> > 
+> > 							Thanx, Paul
+> > 
+> > > ---
+> > >  kernel/rcu/tree_plugin.h | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > > index b62ad79bbda5..9da67b0d3997 100644
+> > > --- a/kernel/rcu/tree_plugin.h
+> > > +++ b/kernel/rcu/tree_plugin.h
+> > > @@ -1711,6 +1711,8 @@ static bool __wake_nocb_gp(struct rcu_data *rdp_gp,
+> > >  		del_timer(&rdp_gp->nocb_timer);
+> > >  	}
+> > >  
+> > > +	del_timer(&rdp_gp->nocb_bypass_timer);
+> > > +
+> > >  	if (force || READ_ONCE(rdp_gp->nocb_gp_sleep)) {
+> > >  		WRITE_ONCE(rdp_gp->nocb_gp_sleep, false);
+> > >  		needwake = true;
+> 
+> Thanks.
