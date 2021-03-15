@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BF633BE3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CDBA33BE6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238222AbhCOOo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:44:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50750 "EHLO mail.kernel.org"
+        id S239377AbhCOOqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:46:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232876AbhCOOD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:03:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27BF264F0B;
-        Mon, 15 Mar 2021 14:03:53 +0000 (UTC)
+        id S234634AbhCOOEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:04:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29096601FD;
+        Mon, 15 Mar 2021 14:04:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817034;
-        bh=/JTvGATYW5r/jlAqVIzH0rTIktRXFjvbCTITl6syH2k=;
+        s=korg; t=1615817075;
+        bh=a5dFQLmPODNEZdfFFdpwNGbuv6Bx/XSnfOSNpPuOyGw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lFThMuuveseEsqLvMS+Dr4PgRsZaFqLZ+20LBDoARZo5iCNPcyX5mJaXHK8QpqwTd
-         f9yS6STLiD5Pd4kLL4GLCNUQcCyjrMa9bSrhr7yF9XqyeBqKxPxkSixsYBBD4O+JjE
-         ou/xK+ebyY58M6HfDzCRxIXpzFYPP5U5Bi5GZZsg=
+        b=ZJlHo4YNvfq4neZiUkQWgDZeGHQAFzso3VPlk6zFoaxhmILd5l1Jrx6OA5BY1nZ9t
+         X5K/MOxZwC8oL7CbzbLK+5fvSABWvKoIWgdypuG/2t2zuJ8z0F52oY7fhxxCC05ypv
+         BxdA2oD+QmVYT8kVoPTsVTZh1CEfsjgJiHK5v3Is=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 257/290] seqlock,lockdep: Fix seqcount_latch_init()
+        stable@vger.kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.11 287/306] x86/sev-es: Introduce ip_within_syscall_gap() helper
 Date:   Mon, 15 Mar 2021 14:55:50 +0100
-Message-Id: <20210315135550.693627314@linuxfoundation.org>
+Message-Id: <20210315135517.388600712@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +41,90 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Joerg Roedel <jroedel@suse.de>
 
-[ Upstream commit 4817a52b306136c8b2b2271d8770401441e4cf79 ]
+commit 78a81d88f60ba773cbe890205e1ee67f00502948 upstream.
 
-seqcount_init() must be a macro in order to preserve the static
-variable that is used for the lockdep key. Don't then wrap it in an
-inline function, which destroys that.
+Introduce a helper to check whether an exception came from the syscall
+gap and use it in the SEV-ES code. Extend the check to also cover the
+compatibility SYSCALL entry path.
 
-Luckily there aren't many users of this function, but fix it before it
-becomes a problem.
-
-Fixes: 80793c3471d9 ("seqlock: Introduce seqcount_latch_t")
-Reported-by: Eric Dumazet <eric.dumazet@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/YEeFEbNUVkZaXDp4@hirez.programming.kicks-ass.net
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 315562c9af3d5 ("x86/sev-es: Adjust #VC IST Stack on entering NMI handler")
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: stable@vger.kernel.org # 5.10+
+Link: https://lkml.kernel.org/r/20210303141716.29223-2-joro@8bytes.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/seqlock.h | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ arch/x86/entry/entry_64_compat.S |    2 ++
+ arch/x86/include/asm/proto.h     |    1 +
+ arch/x86/include/asm/ptrace.h    |   15 +++++++++++++++
+ arch/x86/kernel/traps.c          |    3 +--
+ 4 files changed, 19 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index cbfc78b92b65..1ac20d75b061 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -659,10 +659,7 @@ typedef struct {
-  * seqcount_latch_init() - runtime initializer for seqcount_latch_t
-  * @s: Pointer to the seqcount_latch_t instance
-  */
--static inline void seqcount_latch_init(seqcount_latch_t *s)
--{
--	seqcount_init(&s->seqcount);
--}
-+#define seqcount_latch_init(s) seqcount_init(&(s)->seqcount)
+--- a/arch/x86/entry/entry_64_compat.S
++++ b/arch/x86/entry/entry_64_compat.S
+@@ -210,6 +210,8 @@ SYM_CODE_START(entry_SYSCALL_compat)
+ 	/* Switch to the kernel stack */
+ 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
  
- /**
-  * raw_read_seqcount_latch() - pick even/odd latch data copy
--- 
-2.30.1
-
++SYM_INNER_LABEL(entry_SYSCALL_compat_safe_stack, SYM_L_GLOBAL)
++
+ 	/* Construct struct pt_regs on stack */
+ 	pushq	$__USER32_DS		/* pt_regs->ss */
+ 	pushq	%r8			/* pt_regs->sp */
+--- a/arch/x86/include/asm/proto.h
++++ b/arch/x86/include/asm/proto.h
+@@ -25,6 +25,7 @@ void __end_SYSENTER_singlestep_region(vo
+ void entry_SYSENTER_compat(void);
+ void __end_entry_SYSENTER_compat(void);
+ void entry_SYSCALL_compat(void);
++void entry_SYSCALL_compat_safe_stack(void);
+ void entry_INT80_compat(void);
+ #ifdef CONFIG_XEN_PV
+ void xen_entry_INT80_compat(void);
+--- a/arch/x86/include/asm/ptrace.h
++++ b/arch/x86/include/asm/ptrace.h
+@@ -94,6 +94,8 @@ struct pt_regs {
+ #include <asm/paravirt_types.h>
+ #endif
+ 
++#include <asm/proto.h>
++
+ struct cpuinfo_x86;
+ struct task_struct;
+ 
+@@ -175,6 +177,19 @@ static inline bool any_64bit_mode(struct
+ #ifdef CONFIG_X86_64
+ #define current_user_stack_pointer()	current_pt_regs()->sp
+ #define compat_user_stack_pointer()	current_pt_regs()->sp
++
++static inline bool ip_within_syscall_gap(struct pt_regs *regs)
++{
++	bool ret = (regs->ip >= (unsigned long)entry_SYSCALL_64 &&
++		    regs->ip <  (unsigned long)entry_SYSCALL_64_safe_stack);
++
++#ifdef CONFIG_IA32_EMULATION
++	ret = ret || (regs->ip >= (unsigned long)entry_SYSCALL_compat &&
++		      regs->ip <  (unsigned long)entry_SYSCALL_compat_safe_stack);
++#endif
++
++	return ret;
++}
+ #endif
+ 
+ static inline unsigned long kernel_stack_pointer(struct pt_regs *regs)
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -694,8 +694,7 @@ asmlinkage __visible noinstr struct pt_r
+ 	 * In the SYSCALL entry path the RSP value comes from user-space - don't
+ 	 * trust it and switch to the current kernel stack
+ 	 */
+-	if (regs->ip >= (unsigned long)entry_SYSCALL_64 &&
+-	    regs->ip <  (unsigned long)entry_SYSCALL_64_safe_stack) {
++	if (ip_within_syscall_gap(regs)) {
+ 		sp = this_cpu_read(cpu_current_top_of_stack);
+ 		goto sync;
+ 	}
 
 
