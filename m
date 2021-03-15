@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EAB533BAFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9158733BB18
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235861AbhCOOL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:11:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35090 "EHLO mail.kernel.org"
+        id S236021AbhCOOMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:12:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232122AbhCON5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2EEC64F3D;
-        Mon, 15 Mar 2021 13:57:46 +0000 (UTC)
+        id S232330AbhCON6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8027164F16;
+        Mon, 15 Mar 2021 13:58:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816667;
-        bh=61hwE0aosy0oCTorMejB+6tfBdUSKc8uckX85DtWClM=;
+        s=korg; t=1615816704;
+        bh=lYI+fxC0x0wtugthTFEwxqBaDX2lnENLz29pCkVtjPY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cMewzX6U842sT/jSRM1KRnIynCZnSZ2WJYLVc+T9TMOshEvSH9adCeTzIhPoLHvI/
-         xlbCPmMgEaoGC6IwUpDI0woELNrKjaueRp61xmJ8AHHtF2TaiMEhZUGa7yl7felUXK
-         6YX1oyFUzt1pVAQVQFbVyiOveDA4upAzm3LKwMIQ=
+        b=tilEB6kimJEU3SyDUv+MaQe5tpcZMyq6aKtieC53iEFVNzJdtdw0dlb43bHXxUg5f
+         zhMXDNiCgvXrwqiryq+h2KXSrGbSMuUgru8bTPnbD/b0VnaleG0tMdbdIGDa705n9W
+         X487l5v26OF6WWgClaKqF2qQHv59F6SKUFvz73cc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Biao Huang <biao.huang@mediatek.com>,
+        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 044/290] net: ethernet: mtk-star-emac: fix wrong unmap in RX handling
-Date:   Mon, 15 Mar 2021 14:52:17 +0100
-Message-Id: <20210315135543.414029009@linuxfoundation.org>
+Subject: [PATCH 5.11 075/306] s390/qeth: fix notification for pending buffers during teardown
+Date:   Mon, 15 Mar 2021 14:52:18 +0100
+Message-Id: <20210315135510.180474061@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +41,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Biao Huang <biao.huang@mediatek.com>
+From: Julian Wiedmann <jwi@linux.ibm.com>
 
-commit 95b39f07a17faef3a9b225248ba449b976e529c8 upstream.
+commit 7eefda7f353ef86ad82a2dc8329e8a3538c08ab6 upstream.
 
-mtk_star_dma_unmap_rx() should unmap the dma_addr of old skb rather than
-that of new skb.
-Assign new_dma_addr to desc_data.dma_addr after all handling of old skb
-ends to avoid unexpected receive side error.
+The cited commit reworked the state machine for pending TX buffers.
+In qeth_iqd_tx_complete() it turned PENDING into a transient state, and
+uses NEED_QAOB for buffers that get parked while waiting for their QAOB
+completion.
 
-Fixes: f96e9641e92b ("net: ethernet: mtk-star-emac: fix error path in RX handling")
-Signed-off-by: Biao Huang <biao.huang@mediatek.com>
+But it missed to adjust the check in qeth_tx_complete_buf(). So if
+qeth_tx_complete_pending_bufs() is called during teardown to drain
+the parked TX buffers, we no longer raise a notification for af_iucv.
+
+Instead of updating the checked state, just move this code into
+qeth_tx_complete_pending_bufs() itself. This also gets rid of the
+special-case in the common TX completion path.
+
+Fixes: 8908f36d20d8 ("s390/qeth: fix af_iucv notification race")
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mediatek/mtk_star_emac.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/s390/net/qeth_core_main.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/mediatek/mtk_star_emac.c
-+++ b/drivers/net/ethernet/mediatek/mtk_star_emac.c
-@@ -1225,8 +1225,6 @@ static int mtk_star_receive_packet(struc
- 		goto push_new_skb;
- 	}
+--- a/drivers/s390/net/qeth_core_main.c
++++ b/drivers/s390/net/qeth_core_main.c
+@@ -1386,9 +1386,6 @@ static void qeth_tx_complete_buf(struct
+ 	struct qeth_qdio_out_q *queue = buf->q;
+ 	struct sk_buff *skb;
  
--	desc_data.dma_addr = new_dma_addr;
+-	if (atomic_read(&buf->state) == QETH_QDIO_BUF_PENDING)
+-		qeth_notify_skbs(queue, buf, TX_NOTIFY_GENERALERROR);
 -
- 	/* We can't fail anymore at this point: it's safe to unmap the skb. */
- 	mtk_star_dma_unmap_rx(priv, &desc_data);
+ 	/* Empty buffer? */
+ 	if (buf->next_element_to_fill == 0)
+ 		return;
+@@ -1461,6 +1458,9 @@ static void qeth_tx_complete_pending_buf
+ 			QETH_CARD_TEXT(card, 5, "fp");
+ 			QETH_CARD_TEXT_(card, 5, "%lx", (long) buf);
  
-@@ -1236,6 +1234,9 @@ static int mtk_star_receive_packet(struc
- 	desc_data.skb->dev = ndev;
- 	netif_receive_skb(desc_data.skb);
++			if (drain)
++				qeth_notify_skbs(queue, buf,
++						 TX_NOTIFY_GENERALERROR);
+ 			qeth_tx_complete_buf(buf, drain, 0);
  
-+	/* update dma_addr for new skb */
-+	desc_data.dma_addr = new_dma_addr;
-+
- push_new_skb:
- 	desc_data.len = skb_tailroom(new_skb);
- 	desc_data.skb = new_skb;
+ 			list_del(&buf->list_entry);
 
 
