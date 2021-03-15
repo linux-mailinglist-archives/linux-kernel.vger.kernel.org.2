@@ -2,106 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E6333C73F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:59:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 544F833C744
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 20:59:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233832AbhCOT6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 15:58:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
+        id S233847AbhCOT7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 15:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231510AbhCOT6i (ORCPT
+        with ESMTP id S233835AbhCOT6u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 15:58:38 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0443C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:58:37 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id b130so32945007qkc.10
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:58:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VK5S+oSgiV0TZNNcHVL0AldOZUISji+pEY94URSguVg=;
-        b=dvK5DJv4JP3JHtuV36BZYzPrDZfs70qvAKpcfAQJpzw1FsITXe53QTlWt3G+dSDT49
-         b5W8G5J32MF8Sr4TsyjChslhch1VRsGFCUASxC1QxyeBjPKqtFRx5bGsfJr96oD0Z93i
-         l3WyHNFglk6eAaEWRiwpBmCGG+ap4INLoNIkvo0SslP8uzclu5TuoFx78sM7BQcmpdj7
-         bGlrlS203GqsXm9tfl1uYAdD4J9VOYLMtWwF/oMinQ+1xZ3i4D0uh5MdwIa0PHPufo6A
-         GG4nwDFemYQt9nDj8qR9s38L9vb32i5K5rCW2rzFWr7/YVJaZfJkj8QTVQ0MDX3OUATA
-         D7Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VK5S+oSgiV0TZNNcHVL0AldOZUISji+pEY94URSguVg=;
-        b=fmTSwTaggndoAepfmaxlDkgPj5AbF757zaRfPfVu6zJj/diH+e2tIJRmcmjoz8zu7/
-         b6qu0kw/d5sty88DZ+tkw6UwpHOEzw/uqe4FDIrt5UZK0YajyvcEkxM7eobJARm0G8ND
-         e0GON8Rw0TDnHpcOvnWo5z/PGKjlbpbFbp/FY7S2T56FWD218qEwDilrbAOIyNVOXqTp
-         CJKqxfk6aikB6sB33SU7KPbLiV3xAWV8HFCLn2JUjaa1TB5pacO6TitFWcT6bQlR+Jme
-         NXqlbnNss4CYaU1daO9cPi92O/H6DhZfB/FFldFgKX5tLjdYKTBtLaJRRumPBrWCw8Hc
-         U+EA==
-X-Gm-Message-State: AOAM533wsK4P3uRFC+z48WWmICIro4WFGQPusIpgOTgDsq/9g9xkhhD5
-        G8D7JY1Oe6LP9fqvKCgt0jY=
-X-Google-Smtp-Source: ABdhPJzth58/vJKgaljjF5AMmE7St+2w6/erB2To+UsmQYc4C4qn8ac0UG7MJdxSTUVFgJzMpzWWHw==
-X-Received: by 2002:a05:620a:164c:: with SMTP id c12mr28462667qko.285.1615838316923;
-        Mon, 15 Mar 2021 12:58:36 -0700 (PDT)
-Received: from tong-desktop.local ([2601:5c0:c200:27c6:74e5:7488:fd7b:4bf2])
-        by smtp.googlemail.com with ESMTPSA id z6sm11706877qtv.69.2021.03.15.12.58.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 12:58:36 -0700 (PDT)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Cc:     Tong Zhang <ztong0001@gmail.com>
-Subject: [PATCH v2] staging: comedi: cb_pcidas64: fix request_irq() warn
-Date:   Mon, 15 Mar 2021 15:58:12 -0400
-Message-Id: <20210315195814.4692-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <858341a6-c105-1440-aa4d-ea0217f2ec89@mev.co.uk>
-References: <858341a6-c105-1440-aa4d-ea0217f2ec89@mev.co.uk>
+        Mon, 15 Mar 2021 15:58:50 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED4EC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 12:58:50 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id EA6602C4;
+        Mon, 15 Mar 2021 19:58:49 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net EA6602C4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1615838330; bh=RmlSWDLligJdwr7tDaNy2kWKhHfrAveo2WXurLzUQFU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=TimRqRDoxn6OFiaK9R2uPRk40l/KZjKgw7jLuQShx5eTZa+UkZXJMWQsIdr+tG1tN
+         53mvka3oOJn8cdNL5buo+2IKaivrkzzkbhQAdzKUmMTdys+RstVBmBApvQnjRGl9QS
+         aJ284LeIYnZDoeg8z35k3eQzt+vtUZ05szTxBAATTCVXdYh8GEQB+XpUBsVdbyAiJK
+         6ep4DQHJlt418B+nDWz5r6BU7mmz+ciZll/cprPbfBJL0YDAZ8jgNUEE0oYO8XoGz+
+         KFRNXdKlb5j8yfG46WM9mjK8nRMRuJPSSg6fXEZ9WRB4/H9E3uUZCpQdblxdAFe7Oj
+         4ssfIz9mKu5Aw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Sergei Trofimovich <slyfox@gentoo.org>,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc:     Sergei Trofimovich <slyfox@gentoo.org>
+Subject: Re: [PATCH] docs: don't include Documentation/Kconfig twice
+In-Reply-To: <20210307140018.757576-1-slyfox@gentoo.org>
+References: <20210307140018.757576-1-slyfox@gentoo.org>
+Date:   Mon, 15 Mar 2021 13:58:49 -0600
+Message-ID: <87czw01952.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-request_irq() wont accept a name which contains slash so we need to
-repalce it with something else -- otherwise it will trigger a warning
-and the entry in /proc/irq/ will not be created
-since the .name might be used by userspace and we don't want to break
-userspace, so we are changing the parameters passed to request_irq()
+Sergei Trofimovich <slyfox@gentoo.org> writes:
 
-[    1.565966] name 'pci-das6402/16'
-[    1.566149] WARNING: CPU: 0 PID: 184 at fs/proc/generic.c:180 __xlate_proc_name+0x93/0xb0
-[    1.568923] RIP: 0010:__xlate_proc_name+0x93/0xb0
-[    1.574200] Call Trace:
-[    1.574722]  proc_mkdir+0x18/0x20
-[    1.576629]  request_threaded_irq+0xfe/0x160
-[    1.576859]  auto_attach+0x60a/0xc40 [cb_pcidas64]
+> Before the change there were two inclusions of Documentation/Kconfig:
+>     lib/Kconfig.debug:source "Documentation/Kconfig"
+>     Kconfig: source "Documentation/Kconfig"
+>
+> Kconfig also included 'source "lib/Kconfig.debug"'.
+>
+> Noticed as two 'make menuconfig' entries in both top level menu
+> and in 'Kernel hacking' menu. The patch keeps entries only in
+> 'Kernel hacking'.
+>
+> CC: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> CC: Jonathan Corbet <corbet@lwn.net>
+> Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+> ---
+>  Kconfig | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/Kconfig b/Kconfig
+> index 745bc773f567..97ed6389c921 100644
+> --- a/Kconfig
+> +++ b/Kconfig
+> @@ -28,5 +28,3 @@ source "crypto/Kconfig"
+>  source "lib/Kconfig"
+>  
+>  source "lib/Kconfig.debug"
+> -
+> -source "Documentation/Kconfig"
+> -- 
+> 2.30.1
 
-Suggested-by: Ian Abbott <abbotti@mev.co.uk>
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
-v2: revert changes to .name field so that we dont break userspace
+I agree with not including it twice.  Under "kernel hacking" seems like
+the wrong place to keep it, though.  There's a lot more than kernel
+hacking in the kernel docs, I don't think we should bury it in quite
+that way.  So I'd delete the other one.
 
- drivers/staging/comedi/drivers/cb_pcidas64.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
 
-diff --git a/drivers/staging/comedi/drivers/cb_pcidas64.c b/drivers/staging/comedi/drivers/cb_pcidas64.c
-index fa987bb0e7cd..6d3ba399a7f0 100644
---- a/drivers/staging/comedi/drivers/cb_pcidas64.c
-+++ b/drivers/staging/comedi/drivers/cb_pcidas64.c
-@@ -4035,7 +4035,7 @@ static int auto_attach(struct comedi_device *dev,
- 	init_stc_registers(dev);
- 
- 	retval = request_irq(pcidev->irq, handle_interrupt, IRQF_SHARED,
--			     dev->board_name, dev);
-+			     "cb_pcidas64", dev);
- 	if (retval) {
- 		dev_dbg(dev->class_dev, "unable to allocate irq %u\n",
- 			pcidev->irq);
--- 
-2.25.1
-
+jon
