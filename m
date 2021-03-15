@@ -2,109 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8002D33C4B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D02933C4B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231894AbhCORl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
+        id S232891AbhCORlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236410AbhCORk6 (ORCPT
+        with ESMTP id S233847AbhCORkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:40:58 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F18C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:40:57 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id l4so32506369qkl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:40:57 -0700 (PDT)
+        Mon, 15 Mar 2021 13:40:49 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC7EC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:40:49 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id a13so563832pln.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:40:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mOb+Ef5KMaZtruDbTs1AgXiCk4ITTvmSiF0DYBBW3wg=;
-        b=Ufwx795stMYAiTib4EAh7trmxQj5/rNCEqzU91AFy+UTOVhYECw8KNZZJuk3ZRbNiZ
-         z3e02HQba2Ad3fyKBQ/K5QnKGm91r4+0mBbQ/M3/buzOt59CnYbWtnfPIjCJnvLRl4in
-         WgliiLxn+O9K62kOCJj9nHAJNZgFI1++wtCvw=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=u9ZJZrVbjHX+sPNQkFOuO7kEAmZWytlGCPF2PK2JOqU=;
+        b=Y3zm8mn+hcguMv8v3TdJ/RgMcPs5ZhEjRfzBRw18H4RtgOixdvOeYslQC6QFBHIF23
+         AA1p+wG/RubaVeVlBcWxpLU7U0/BWFwEGlDW4JLwJoM37zfQhXUauiOjyGUWdfeYvS6s
+         yXZWHyaRyosLIrsEkk8Izy8TiNIr4mLSm1GN0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mOb+Ef5KMaZtruDbTs1AgXiCk4ITTvmSiF0DYBBW3wg=;
-        b=jZKU9lEjIl3/CYWvfIayral9asfxg6wyOcJBSpwo+DoqMv6vizIE6LzdFgLHi3h3ea
-         /eyiyd1/eEBXHNv0qerp5RijoLoA2nL+siTYX2IWOZlQda1LCZuuu/X/8CCSyMY2b3Ah
-         8VrbH7kDwLB1/0Na+b1IOpftYF1OMUFK/YQmSSOdJ/53B9Bj4pluIBLI8sFr0HZL0Fae
-         FWTqehrh6PRwcx23/vjtDO5KnClwCA6KWA6eU3XXn33T+mGEHlg42mtzGSUCixvNBj+8
-         2QQLVNJ0o9nfleNP3On37z/AXGSpKwXOnio36C6mwBRb9tcIBcA011ymlOGTvL/Sb3dD
-         B9yQ==
-X-Gm-Message-State: AOAM530Qjc9f3qPV037PA9BeC8XtHO7Q8yFvGEwZ4Nhz8I5jLf8Y2cUJ
-        9tHfh57HFXtYYDf+ffxJhpMoIOat8UGZaQ==
-X-Google-Smtp-Source: ABdhPJxeGz737HPst82kgpVG2xUXi7j+M3fG7T7bX4G26f2WuE0feUaSeCGOK6u5YFcdQ0k6/kOFaQ==
-X-Received: by 2002:ae9:f80b:: with SMTP id x11mr26242218qkh.220.1615830056902;
-        Mon, 15 Mar 2021 10:40:56 -0700 (PDT)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id d14sm8752680qtj.92.2021.03.15.10.40.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 10:40:42 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id f145so17652631ybg.11
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:40:41 -0700 (PDT)
-X-Received: by 2002:a25:d3c5:: with SMTP id e188mr1132079ybf.345.1615830041273;
- Mon, 15 Mar 2021 10:40:41 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=u9ZJZrVbjHX+sPNQkFOuO7kEAmZWytlGCPF2PK2JOqU=;
+        b=QhJg5jyJtlJaRy3/WqHYtRgG43w3qlWnKohq4NyTPxnWiosuD7+ns1mXQhTxRxFXbN
+         rVsP+TBS14PTrZMaU8E0dj8O8kCpWLklSOTIV4Q01L1LdKnKuYDLX0e/Y+ZHCPyAxhkQ
+         94OCBmzed4MN49Kgt8cpFrPh7jNdzryGtI7TJN6ni9ul+We7saDn++q8O/cwkcXYFAqg
+         lwg16h7dWPlGrkrbxzGFJqbT3U/RU8DXbmjAeujegoBG+jL5haxaOqUWHgTWMUs412hJ
+         ieTVDk+Bt//450n1h2yKvmARsZPdY9PgNRmp7KmjW6uzJ9VndVEg9gWRloB5mWP3kzhb
+         Ex4Q==
+X-Gm-Message-State: AOAM5312LaCdGmMC243ur6IC/3wzRkSerlVe0pW7VksQhWpDGrqKmKfG
+        vWozrGv+4WuuVcRIqhEx3gth7g==
+X-Google-Smtp-Source: ABdhPJyhiuHpYtDv/Lna03qrgA/JUfdkRRDVSKn6FkSn7ext1b4iqZwUEjQ+rc0ABzDdqGzkF8arjQ==
+X-Received: by 2002:a17:90a:e542:: with SMTP id ei2mr218020pjb.134.1615830049338;
+        Mon, 15 Mar 2021 10:40:49 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id l22sm275837pjl.14.2021.03.15.10.40.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 10:40:48 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 10:40:47 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] seq_file: Unconditionally use vmalloc for buffer
+Message-ID: <202103151032.53E48DC@keescook>
+References: <20210312205558.2947488-1-keescook@chromium.org>
+ <YE8cCslnGkgmKTsY@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20210225221310.1939599-1-dianders@chromium.org>
- <20210225141022.1.Iad06142ceb8426ce5492737bf3d9162ed0dd2b55@changeid> <ee5695bb-a603-0dd5-7a7f-695e919b1af1@linaro.org>
-In-Reply-To: <ee5695bb-a603-0dd5-7a7f-695e919b1af1@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 15 Mar 2021 10:40:30 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=V=pRSP4FkJciYkpHa=A8i_GjGTz64Kzz_h9eGFQeD1cA@mail.gmail.com>
-Message-ID: <CAD=FV=V=pRSP4FkJciYkpHa=A8i_GjGTz64Kzz_h9eGFQeD1cA@mail.gmail.com>
-Subject: Re: [PATCH 01/13] arm64: dts: qcom: sc7180: Update dts for DP phy
- inside QMP phy
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alexandru M Stan <amstan@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YE8cCslnGkgmKTsY@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Mar 15, 2021 at 09:34:18AM +0100, Michal Hocko wrote:
+> On Fri 12-03-21 12:55:58, Kees Cook wrote:
+> > The sysfs interface to seq_file continues to be rather fragile, as seen
+> > with some recent exploits[1]. Move the seq_file buffer to the vmap area
+> > (while retaining the accounting flag), since it has guard pages that
+> > will catch and stop linear overflows. This seems justified given that
+> > seq_file already uses kvmalloc(), that allocations are normally short
+> > lived, and that they are not normally performance critical.
+> 
+> What is the runtime effect of this change? The interface is widely used
 
-On Sat, Mar 13, 2021 at 4:28 PM Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
-> >               usb_1_qmpphy: phy-wrapper@88e9000 {
-> > -                     compatible = "qcom,sc7180-qmp-usb3-phy";
-> > +                     compatible = "qcom,sc7180-qmp-usb3-dp-phy";
-> >                       reg = <0 0x088e9000 0 0x18c>,
-> > -                           <0 0x088e8000 0 0x38>;
-> > -                     reg-names = "reg-base", "dp_com";
-> > +                           <0 0x088e8000 0 0x38>,
->
-> Technically this should be 0x3c. Offset 0x38 is USB3_DP_COM_REVISION_ID3
-> (not used by the current driver though).
->
-> > +                           <0 0x088ea000 0 0x40>;
->
-> I think 0x40 is not enough here.
-> This is a serdes region and qmp_v3_dp_serdes_tbl contains registers
-> 0x148 and 0x154.
+I haven't been able to measure any differences yet, but maybe I lack
+imagination about workloads that are heavy on /sys or /proc accesses.
 
-OK!
+> for many other interfaces - e.g. in proc. While from the correctness POV
+> this should be OK (ish for 64b it is definitely problem for kernels with
+> lowmem and limited vmalloc space). Vmalloc is also to be expected to
+> regress in performance for small allocations which is the most usual
+> case.
 
-https://lore.kernel.org/r/20210315103836.1.I9a97120319d43b42353aeac4d348624d60687df7@changeid
+seq_file's default size is PAGE_SIZE (and just goes up by powers of 2
+from there), with the rare (3 callers) exception of single_open_size(),
+which for at least 1 case is always >PAGE_SIZE. (I realize PAGE_SIZE may
+be considered "small" for vmalloc, but I think gaining the guard page is
+worth it, given the recurring flaws we see with at least sysfs handlers.)
 
--Doug
+-Kees
+
+>  
+> > [1] https://blog.grimm-co.com/2021/03/new-old-bugs-in-linux-kernel.html
+> > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  fs/seq_file.c | 10 +++++-----
+> >  1 file changed, 5 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/fs/seq_file.c b/fs/seq_file.c
+> > index cb11a34fb871..ad78577d4c2c 100644
+> > --- a/fs/seq_file.c
+> > +++ b/fs/seq_file.c
+> > @@ -32,7 +32,7 @@ static void seq_set_overflow(struct seq_file *m)
+> >  
+> >  static void *seq_buf_alloc(unsigned long size)
+> >  {
+> > -	return kvmalloc(size, GFP_KERNEL_ACCOUNT);
+> > +	return __vmalloc(size, GFP_KERNEL_ACCOUNT);
+> >  }
+> >  
+> >  /**
+> > @@ -130,7 +130,7 @@ static int traverse(struct seq_file *m, loff_t offset)
+> >  
+> >  Eoverflow:
+> >  	m->op->stop(m, p);
+> > -	kvfree(m->buf);
+> > +	vfree(m->buf);
+> >  	m->count = 0;
+> >  	m->buf = seq_buf_alloc(m->size <<= 1);
+> >  	return !m->buf ? -ENOMEM : -EAGAIN;
+> > @@ -237,7 +237,7 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+> >  			goto Fill;
+> >  		// need a bigger buffer
+> >  		m->op->stop(m, p);
+> > -		kvfree(m->buf);
+> > +		vfree(m->buf);
+> >  		m->count = 0;
+> >  		m->buf = seq_buf_alloc(m->size <<= 1);
+> >  		if (!m->buf)
+> > @@ -349,7 +349,7 @@ EXPORT_SYMBOL(seq_lseek);
+> >  int seq_release(struct inode *inode, struct file *file)
+> >  {
+> >  	struct seq_file *m = file->private_data;
+> > -	kvfree(m->buf);
+> > +	vfree(m->buf);
+> >  	kmem_cache_free(seq_file_cache, m);
+> >  	return 0;
+> >  }
+> > @@ -585,7 +585,7 @@ int single_open_size(struct file *file, int (*show)(struct seq_file *, void *),
+> >  		return -ENOMEM;
+> >  	ret = single_open(file, show, data);
+> >  	if (ret) {
+> > -		kvfree(buf);
+> > +		vfree(buf);
+> >  		return ret;
+> >  	}
+> >  	((struct seq_file *)file->private_data)->buf = buf;
+> > -- 
+> > 2.25.1
+> 
+> -- 
+> Michal Hocko
+> SUSE Labs
+
+-- 
+Kees Cook
