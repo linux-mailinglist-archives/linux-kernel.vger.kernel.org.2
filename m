@@ -2,125 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA08833C1E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC5033C1E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233208AbhCOQbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:31:36 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:52164 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbhCOQa7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:30:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=TLEEbGguoFgREmZB/3d8+m/o/rHO6SzO5QZnLNcOSh0=; b=LMeid5maXhumpDhtUuT0T2tgJt
-        ol9/bEh8ONmQIjUErwM7mTPXZ1CariYnc5Iw/Ra321VFnAuXOc7cZyrF/Oh3deuXUDml8vg4X+V3F
-        dm6yEWcub7AMbQD1WI1UonXf5DW+ICkxZ1h5xdC7Ffwv1G0x9MtX7QA2tm/M9hFJ88vXUo1Nzf5SB
-        P9kkd0JYhI5ah/y1eBjMZckyn6x/RLEV5sBgyhTRxDlRjDfZtUo+Nai4KkED0ZA0WOzqD0D2RtvCY
-        S73e1NapCyNIPKDTwXar4Oz8rXKqzNZzn5eBvlCnYkJL+tXFA0w2raNvLWazJGM9RhSj7JUIcCIZd
-        r2qI+iiw==;
-Received: from guinness.priv.deltatee.com ([172.16.1.162])
-        by ale.deltatee.com with esmtp (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1lLq7B-0000Mv-Jy; Mon, 15 Mar 2021 10:30:46 -0600
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Ira Weiny <iweiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>
-References: <20210311233142.7900-1-logang@deltatee.com>
- <20210311233142.7900-5-logang@deltatee.com>
- <20210313023220.GB3402637@iweiny-DESK2.sc.intel.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <d34a2035-6077-8070-ea2c-b62a4a65422c@deltatee.com>
-Date:   Mon, 15 Mar 2021 10:30:45 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S233524AbhCOQbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:31:40 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:52057 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229829AbhCOQbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 12:31:15 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12FGUqrv013024
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Mar 2021 17:30:52 +0100
+Received: from md1za8fc.ad001.siemens.net ([139.22.41.172])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12FGUpYB023993;
+        Mon, 15 Mar 2021 17:30:51 +0100
+Date:   Mon, 15 Mar 2021 17:30:49 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH v2 1/4] platform/x86: simatic-ipc: add main driver for
+ Siemens devices
+Message-ID: <20210315173049.1d080129@md1za8fc.ad001.siemens.net>
+In-Reply-To: <CAHp75VdXDcTfNL9QRQ5XE-zVLHacfMKHUxhse3=dAfJbOJdObQ@mail.gmail.com>
+References: <20210315095710.7140-1-henning.schild@siemens.com>
+        <20210315095710.7140-2-henning.schild@siemens.com>
+        <CAHp75VdXDcTfNL9QRQ5XE-zVLHacfMKHUxhse3=dAfJbOJdObQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210313023220.GB3402637@iweiny-DESK2.sc.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, iweiny@intel.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, ira.weiny@intel.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [RFC PATCH v2 04/11] PCI/P2PDMA: Introduce
- pci_p2pdma_should_map_bus() and pci_p2pdma_bus_offset()
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Mon, 15 Mar 2021 12:31:11 +0200
+schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
 
-
-On 2021-03-12 7:32 p.m., Ira Weiny wrote:
-> On Thu, Mar 11, 2021 at 04:31:34PM -0700, Logan Gunthorpe wrote:
->> Introduce pci_p2pdma_should_map_bus() which is meant to be called by
->             ^^^^^^^^^^^^^^^^^^^^^^^^^
-> 	    pci_p2pdma_dma_map_type() ???
+> On Mon, Mar 15, 2021 at 12:02 PM Henning Schild
+> <henning.schild@siemens.com> wrote:
+> >
+> > This mainly implements detection of these devices and will allow
+> > secondary drivers to work on such machines.
+> >
+> > The identification is DMI-based with a vendor specific way to tell
+> > them apart in a reliable way.
+> >
+> > Drivers for LEDs and Watchdogs will follow to make use of that
+> > platform detection.  
 > 
-> FWIW I find this name confusing with pci_p2pdma_map_type() and looking at the
-> implementation I'm not clear why pci_p2pdma_dma_map_type() needs to exist?
-
-Yeah, there are subtle differences in prototype. But yes, they can
-probably be combined. Will do for future postings.
-
->> + * pci_p2pdma_dma_map_type - determine if a DMA mapping should use the
->> + *	bus address, be mapped normally or fail
->> + * @dev: device doing the DMA request
->> + * @pgmap: dev_pagemap structure for the mapping
->> + *
->> + * Returns:
->> + *    1 - if the page should be mapped with a bus address,
->> + *    0 - if the page should be mapped normally through an IOMMU mapping or
->> + *        physical address; or
->> + *   -1 - if the device should not map the pages and an error should be
->> + *        returned
->> + */
->> +int pci_p2pdma_dma_map_type(struct device *dev, struct dev_pagemap *pgmap)
->> +{
->> +	struct pci_p2pdma_pagemap *p2p_pgmap = to_p2p_pgmap(pgmap);
->> +	struct pci_dev *client;
->> +
->> +	if (!dev_is_pci(dev))
->> +		return -1;
->> +
->> +	client = to_pci_dev(dev);
->> +
->> +	switch (pci_p2pdma_map_type(p2p_pgmap->provider, client)) {
->> +	case PCI_P2PDMA_MAP_THRU_HOST_BRIDGE:
->> +		return 0;
->> +	case PCI_P2PDMA_MAP_BUS_ADDR:
->> +		return 1;
->> +	default:
->> +		return -1;
->> +	}
->> +}
->> +EXPORT_SYMBOL_GPL(pci_p2pdma_dma_map_type);
+> ...
 > 
-> I guess the main point here is to export this to the DMA layer?
+> > +static int register_platform_devices(u32 station_id)
+> > +{
+> > +       u8 ledmode = SIMATIC_IPC_DEVICE_NONE;
+> > +       u8 wdtmode = SIMATIC_IPC_DEVICE_NONE;
+> > +       int i;
+> > +
+> > +       platform_data.devmode = SIMATIC_IPC_DEVICE_NONE;
+> > +
+> > +       for (i = 0; i < ARRAY_SIZE(device_modes); i++) {
+> > +               if (device_modes[i].station_id == station_id) {
+> > +                       ledmode = device_modes[i].led_mode;
+> > +                       wdtmode = device_modes[i].wdt_mode;
+> > +                       break;
+> > +               }
+> > +       }
+> > +
+> > +       if (ledmode != SIMATIC_IPC_DEVICE_NONE) {
+> > +               platform_data.devmode = ledmode;
+> > +               ipc_led_platform_device =
+> > +                       platform_device_register_data(NULL,
+> > +                               KBUILD_MODNAME "_leds",
+> > PLATFORM_DEVID_NONE,
+> > +                               &platform_data,
+> > +                               sizeof(struct
+> > simatic_ipc_platform));
+> > +               if (IS_ERR(ipc_led_platform_device))
+> > +                       return PTR_ERR(ipc_led_platform_device);
+> > +
+> > +               pr_debug("device=%s created\n",
+> > +                        ipc_led_platform_device->name);
+> > +       }
+> > +
+> > +       if (wdtmode != SIMATIC_IPC_DEVICE_NONE) {
+> > +               platform_data.devmode = wdtmode;
+> > +               ipc_wdt_platform_device =
+> > +                       platform_device_register_data(NULL,
+> > +                               KBUILD_MODNAME "_wdt",
+> > PLATFORM_DEVID_NONE,
+> > +                               &platform_data,
+> > +                               sizeof(struct
+> > simatic_ipc_platform));
+> > +               if (IS_ERR(ipc_wdt_platform_device))
+> > +                       return PTR_ERR(ipc_wdt_platform_device);
+> > +
+> > +               pr_debug("device=%s created\n",
+> > +                        ipc_wdt_platform_device->name);
+> > +       }
+> > +
+> > +       if (ledmode == SIMATIC_IPC_DEVICE_NONE &&
+> > +           wdtmode == SIMATIC_IPC_DEVICE_NONE) {
+> > +               pr_warn("unsupported IPC detected, station
+> > id=%08x\n",
+> > +                       station_id);
+> > +               return -EINVAL;
+> > +       }
+> > +
+> > +       return 0;
+> > +}  
+> 
+> Why not use MFD here?
+> 
+> ...
+> 
+> > +/*
+> > + * Get membase address from PCI, used in leds and wdt modul. Here
+> > we read
+> > + * the bar0. The final address calculation is done in the
+> > appropriate modules
+> > + */  
+> 
+> No blank line here.
+> 
+> I would add FIXME or REVISIT here to point out that this should be
+> deduplicated in the future.
 
-Yes, that's correct.
+Sure i forgot the mention that ordering problem of the two series here
+again specifically. Was kind of assuming yours would maybe be first and
+that code not being reviewed again ... 
+The code is there to test and propose something "working" not something
+i expect to be merged as is.
 
-Logan
+regards,
+Henning
+
+> > +u32 simatic_ipc_get_membase0(unsigned int p2sb)
+> > +{
+> > +       struct pci_bus *bus;
+> > +       u32 bar0 = 0;
+> > +
+> > +       /*
+> > +        * The GPIO memory is bar0 of the hidden P2SB device.
+> > Unhide the device  
+> 
+> No, it's not a GPIO's bar. It's P2SB's one. GPIO resides in that bar
+> somewhere.
+> 
+> > +        * to have a quick look at it, before we hide it again.
+> > +        * Also grab the pci rescan lock so that device does not
+> > get discovered
+> > +        * and remapped while it is visible.
+> > +        * This code is inspired by drivers/mfd/lpc_ich.c
+> > +        */
+> > +       bus = pci_find_bus(0, 0);
+> > +       pci_lock_rescan_remove();
+> > +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x0);
+> > +       pci_bus_read_config_dword(bus, p2sb, PCI_BASE_ADDRESS_0,
+> > &bar0); +
+> > +       bar0 &= ~0xf;
+> > +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x1);
+> > +       pci_unlock_rescan_remove();
+> > +
+> > +       return bar0;
+> > +}
+> > +EXPORT_SYMBOL(simatic_ipc_get_membase0);  
+> 
+> ...
+> 
+> > +static inline u32 simatic_ipc_get_station_id(u8 *data, int max_len)
+> > +{
+> > +       u32 station_id = SIMATIC_IPC_INVALID_STATION_ID;
+> > +       int i;  
+> 
+> Reversed xmas tree order, please.
+> 
+> > +       struct {
+> > +               u8      type;           /* type (0xff = binary) */
+> > +               u8      len;            /* len of data entry */
+> > +               u8      reserved[3];
+> > +               u32     station_id;     /* station id (LE) */  
+> 
+> > +       } __packed
+> > +       *data_entry = (void *)data + sizeof(struct dmi_header);  
+> 
+> Can be one line.
+> 
+> > +       /* find 4th entry in OEM data */
+> > +       for (i = 0; i < 3; i++)  
+> 
+> 3 is magic!
+> 
+> > +               data_entry = (void *)((u8 *)(data_entry) +
+> > data_entry->len); +
+> > +       /* decode station id */
+> > +       if (data_entry && (u8 *)data_entry < data + max_len &&
+> > +           data_entry->type == 0xff && data_entry->len == 9)
+> > +               station_id = le32_to_cpu(data_entry->station_id);
+> > +
+> > +       return station_id;
+> > +}  
+> 
+
