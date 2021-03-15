@@ -2,99 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D054133C7D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B0633C7D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 21:36:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbhCOUgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S232540AbhCOUgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 15 Mar 2021 16:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232395AbhCOUgJ (ORCPT
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:12593 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231981AbhCOUgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 16:36:09 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4211C06174A;
-        Mon, 15 Mar 2021 13:36:09 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id p21so21156917pgl.12;
-        Mon, 15 Mar 2021 13:36:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9W5Vza1zdnhq73DRYJgUL8FEoXWeecaJWERvPnwUpIk=;
-        b=GYDNWA3oQqynNHzhFhW/W8B88eNQMPjL2RXbBm24KUVcJDWnSzGe/J5LebDQtcV6hj
-         XduIU5Tr9YNPD11ea9Y0XcxPD5z/A8ggjPSVaa6W81Lc/jiOD/5kWE9JU/180gRqnbBF
-         Tey0ngCxpSGEF3zO2HBXRvAXpWc3vntZkwTx0owNpkfx8JNmiMFGc4FwQTK91cgPBoeF
-         ZOlrUpb57/xUbVvCes2uTeBfbavBsEg4CaTidQta0Hs6S+8YNgOwud6M/MVJ5wAJo7aE
-         cHkSENl/lHytxXlV7HF52zZ7a8CLthH/GleE2qFlaXx5GiPiRyMRMslysFd/CbzChzlb
-         uuzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9W5Vza1zdnhq73DRYJgUL8FEoXWeecaJWERvPnwUpIk=;
-        b=Qpu87eYFc/9Wv7Te9PfQO4LG4ZYTp/v2+MZAdXFKsCdIgxsZpXJ5FBQr4cFPqWhIVG
-         euS59F+oJsIWorTtfcfwdM6vd5O3IO8hNmpXFqscei+UiCuuoiVCn6dB+qe4qbps0INz
-         BHDuGmUWDgoUwEH7wuYWjHe2e11peoodA6GYcFTm6gzM0KWE25UQuP/OKkKiZlzl2q2l
-         aYZyC2K+h+dTuRS+2TLU78eSYPLgZC3EV5AHouiRdbx7bNDQFJXwDSVEQClwXx8Ii14N
-         g0Y4yJ0uZ/w4i02j+u67HQvKXwEUjJTVpak+DEJD7u+RaXhezh4I0YFQ42v3WoBVDmr4
-         /I3A==
-X-Gm-Message-State: AOAM530VT6a2xL78I/hW8AZU4dWu4/P1xtghwmMIrEaLoIfetd5+fryE
-        772fGyKaTft5yNoqiYqAf0TnKgfad8w=
-X-Google-Smtp-Source: ABdhPJxtNZ0nDzAHhMlbZtYzgbehteduECJo5RQAnzY+P6cjtiVW3OP8oceKV416JMTrAF/J9RHycw==
-X-Received: by 2002:a63:d58:: with SMTP id 24mr759362pgn.171.1615840568825;
-        Mon, 15 Mar 2021 13:36:08 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id a20sm15150491pfl.97.2021.03.15.13.36.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 13:36:08 -0700 (PDT)
-Subject: Re: [PATCH 5.10 000/290] 5.10.24-rc1 review
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210315135541.921894249@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <ed1d3843-71a7-e569-59ad-8db7caa5aed2@gmail.com>
-Date:   Mon, 15 Mar 2021 13:36:06 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.1
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 15 Mar 2021 13:36:09 -0700
+X-QCInternal: smtphost
+Received: from gurus-linux.qualcomm.com (HELO gurus-linux.localdomain) ([10.46.162.81])
+  by ironmsg04-sd.qualcomm.com with ESMTP; 15 Mar 2021 13:36:08 -0700
+Received: by gurus-linux.localdomain (Postfix, from userid 383780)
+        id BF4D719B3; Mon, 15 Mar 2021 13:36:08 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 13:36:08 -0700
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Markus Elfring <Markus.Elfring@web.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Joe Perches <joe@perches.com>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        Anirudh Ghayal <aghayal@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [RFC PATCH v3 2/3] regmap-irq: Add support for POLARITY_HI and
+ POLARITY_LO config regs
+Message-ID: <20210315203608.GB8977@codeaurora.org>
+References: <cover.1615423027.git.gurus@codeaurora.org>
+ <4b77a308ccdabbe96ed68623bd6eead9510e1fc9.1615423027.git.gurus@codeaurora.org>
+ <20210312121916.GE5348@sirena.org.uk>
+ <20210315203336.GA8977@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315203336.GA8977@codeaurora.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 15, 2021 at 01:33:36PM -0700, Guru Das Srinagesh wrote:
+> On Fri, Mar 12, 2021 at 12:19:16PM +0000, Mark Brown wrote:
+> > On Wed, Mar 10, 2021 at 04:39:53PM -0800, Guru Das Srinagesh wrote:
+> > > If an interrupt is already configured as either edge- or
+> > > level-triggered, setting the corresponding bit for it in the POLARITY_HI
+> > > register further configures it as rising-edge or level-high triggered
+> > > (as the case may be), while setting the same bit in POLARITY_LO further
+> > > configures it as falling-edge or level-low triggered.
+> > 
+> > I think you probably need to bring these three fields together into a
+> > single virtual field and then map the values within that field using
+> > the existing type stuff.
+> 
+> Sure, how about this scheme then, for patches 2 and 3 in this series?
+> (Patch 1 will remain the same, pending your review of it.)
+> 
+> Since I do need to write to two extra registers, I'll need two
+> register_base's and two buffers to hold their data. This can be
+> generalized to "extra config registers" in the framework as follows:
+> 
+> - Add these two fields to `struct regmap_irq_chip`:
+> 
+> 	unsigned int *extra_config_base; /* Points to array of extra regs */
+> 	int num_extra_config_regs;	 /* = ARRAY_SIZE(array above) */
+> 
+> - Add this field to `struct regmap_irq_chip_data`:
+> 
+> 	unsigned int **extra_config_buf;
+>   	/* Will be dynamically allocated to size of:
+>   	 * [chip->num_extra_config_regs][chip->num_regs]
+>   	 */
+> 
+> - Add a new function callback in `struct regmap_irq_chip`:
+> 
+> 	int (*configure_extra_regs)(void *irq_drv_data, unsigned int
+> 	type)
+> 
+>   This callback will be called at the end of regmap_irq_set_type():
+>   	
+>   	if (d->chip->configure_extra_regs)
+> 		d->chip->configure_extra_regs();
+> 
+>   The callback, defined in the client driver, will specifically address
+>   the changes to regmap_irq_set_type() made in patches 2 and 3 of this
+>   series, viz. overriding how type_buf is to be handled, plus the
+>   populating of polarity_*_buf's (rechristened as extra_config_bufs in
+>   this proposed new scheme).
+> 
+> This new scheme thus makes v2 more generic. I thought I'd discuss this
+> with you before implementing it as v3 RFC. Could you please let me know
+> your thoughts?
 
+Typo. I meant:
 
-On 3/15/2021 6:51 AM, gregkh@linuxfoundation.org wrote:
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> This is the start of the stable review cycle for the 5.10.24 release.
-> There are 290 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 17 Mar 2021 13:55:02 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.24-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+This new scheme thus makes *v3* more generic. I thought I'd discuss this
+with you before implementing it as *v4* RFC. 
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit kernels:
-
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Guru Das.
