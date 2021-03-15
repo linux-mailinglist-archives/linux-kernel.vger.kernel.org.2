@@ -2,39 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAB533BE30
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B50D733BE11
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238126AbhCOOnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:43:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49890 "EHLO mail.kernel.org"
+        id S238320AbhCOOmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:42:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231774AbhCOODe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:03:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4342C64F05;
-        Mon, 15 Mar 2021 14:03:32 +0000 (UTC)
+        id S234244AbhCOODG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C76AE64EED;
+        Mon, 15 Mar 2021 14:03:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817014;
-        bh=K/iSoL6q7k8cO/ka6njGN2rQsmF2GAngz5mdvDbpFAM=;
+        s=korg; t=1615816986;
+        bh=9XsMaaOiAspY5eNbUTF64jnvZ7fk4hGIKdA/MsveCG8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nrjtt03LhHG0f4Q2roHNQbU88L91AucuJvH7UV8QhBKfK2Rajnolr5J4fWCG/iwpP
-         8ezfQi+/KzVSEcFaJBUYYFlkjJf9za0KUqim5XSIixzyCM8mDRdaRFe3Mrjntg+EcS
-         NxihptnFonb80JPWfoB9VVBt9YYh2rda4pbwDjCE=
+        b=RAANTUtH6BBjpVeX+Zp6/R/tATw7apkwBciZtE/IxFK1uWRrggs+1zC3XwnSVwBM8
+         bdzN+JnPMZs56+GkAzcYhJtSWs0dT9aLpy4lHVojJfQQI5c25PAJuW24qh6N3LC2gt
+         l2ZgcuGPTO6gKdOTf0ar33mYL3MeEtywNBK2cs94=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gabriel Marin <gmx@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: [PATCH 5.11 260/306] perf/core: Flush PMU internal buffers for per-CPU events
+        stable@vger.kernel.org, Lee Gibson <leegib@gmail.com>
+Subject: [PATCH 5.10 230/290] staging: rtl8712: Fix possible buffer overflow in r8712_sitesurvey_cmd
 Date:   Mon, 15 Mar 2021 14:55:23 +0100
-Message-Id: <20210315135516.434043944@linuxfoundation.org>
+Message-Id: <20210315135549.754227637@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,177 +40,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Kan Liang <kan.liang@linux.intel.com>
+From: Lee Gibson <leegib@gmail.com>
 
-[ Upstream commit a5398bffc01fe044848c5024e5e867e407f239b8 ]
+commit b93c1e3981af19527beee1c10a2bef67a228c48c upstream.
 
-Sometimes the PMU internal buffers have to be flushed for per-CPU events
-during a context switch, e.g., large PEBS. Otherwise, the perf tool may
-report samples in locations that do not belong to the process where the
-samples are processed in, because PEBS does not tag samples with PID/TID.
+Function r8712_sitesurvey_cmd calls memcpy without checking the length.
+A user could control that length and trigger a buffer overflow.
+Fix by checking the length is within the maximum allowed size.
 
-The current code only flush the buffers for a per-task event. It doesn't
-check a per-CPU event.
-
-Add a new event state flag, PERF_ATTACH_SCHED_CB, to indicate that the
-PMU internal buffers have to be flushed for this event during a context
-switch.
-
-Add sched_cb_entry and perf_sched_cb_usages back to track the PMU/cpuctx
-which is required to be flushed.
-
-Only need to invoke the sched_task() for per-CPU events in this patch.
-The per-task events have been handled in perf_event_context_sched_in/out
-already.
-
-Fixes: 9c964efa4330 ("perf/x86/intel: Drain the PEBS buffer during context switches")
-Reported-by: Gabriel Marin <gmx@google.com>
-Originally-by: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lkml.kernel.org/r/20201130193842.10569-1-kan.liang@linux.intel.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Lee Gibson <leegib@gmail.com>
+Link: https://lore.kernel.org/r/20210301132648.420296-1-leegib@gmail.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/perf_event.h |  2 ++
- kernel/events/core.c       | 42 ++++++++++++++++++++++++++++++++++----
- 2 files changed, 40 insertions(+), 4 deletions(-)
+ drivers/staging/rtl8712/rtl871x_cmd.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 9a38f579bc76..419a4d77de00 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -606,6 +606,7 @@ struct swevent_hlist {
- #define PERF_ATTACH_TASK	0x04
- #define PERF_ATTACH_TASK_DATA	0x08
- #define PERF_ATTACH_ITRACE	0x10
-+#define PERF_ATTACH_SCHED_CB	0x20
- 
- struct perf_cgroup;
- struct perf_buffer;
-@@ -872,6 +873,7 @@ struct perf_cpu_context {
- 	struct list_head		cgrp_cpuctx_entry;
- #endif
- 
-+	struct list_head		sched_cb_entry;
- 	int				sched_cb_usage;
- 
- 	int				online;
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 55d18791a72d..8425dbc1d239 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -385,6 +385,7 @@ static DEFINE_MUTEX(perf_sched_mutex);
- static atomic_t perf_sched_count;
- 
- static DEFINE_PER_CPU(atomic_t, perf_cgroup_events);
-+static DEFINE_PER_CPU(int, perf_sched_cb_usages);
- static DEFINE_PER_CPU(struct pmu_event_list, pmu_sb_events);
- 
- static atomic_t nr_mmap_events __read_mostly;
-@@ -3474,11 +3475,16 @@ static void perf_event_context_sched_out(struct task_struct *task, int ctxn,
+--- a/drivers/staging/rtl8712/rtl871x_cmd.c
++++ b/drivers/staging/rtl8712/rtl871x_cmd.c
+@@ -192,8 +192,10 @@ u8 r8712_sitesurvey_cmd(struct _adapter
+ 	psurveyPara->ss_ssidlen = 0;
+ 	memset(psurveyPara->ss_ssid, 0, IW_ESSID_MAX_SIZE + 1);
+ 	if (pssid && pssid->SsidLength) {
+-		memcpy(psurveyPara->ss_ssid, pssid->Ssid, pssid->SsidLength);
+-		psurveyPara->ss_ssidlen = cpu_to_le32(pssid->SsidLength);
++		int len = min_t(int, pssid->SsidLength, IW_ESSID_MAX_SIZE);
++
++		memcpy(psurveyPara->ss_ssid, pssid->Ssid, len);
++		psurveyPara->ss_ssidlen = cpu_to_le32(len);
  	}
- }
- 
-+static DEFINE_PER_CPU(struct list_head, sched_cb_list);
-+
- void perf_sched_cb_dec(struct pmu *pmu)
- {
- 	struct perf_cpu_context *cpuctx = this_cpu_ptr(pmu->pmu_cpu_context);
- 
--	--cpuctx->sched_cb_usage;
-+	this_cpu_dec(perf_sched_cb_usages);
-+
-+	if (!--cpuctx->sched_cb_usage)
-+		list_del(&cpuctx->sched_cb_entry);
- }
- 
- 
-@@ -3486,7 +3492,10 @@ void perf_sched_cb_inc(struct pmu *pmu)
- {
- 	struct perf_cpu_context *cpuctx = this_cpu_ptr(pmu->pmu_cpu_context);
- 
--	cpuctx->sched_cb_usage++;
-+	if (!cpuctx->sched_cb_usage++)
-+		list_add(&cpuctx->sched_cb_entry, this_cpu_ptr(&sched_cb_list));
-+
-+	this_cpu_inc(perf_sched_cb_usages);
- }
- 
- /*
-@@ -3515,6 +3524,24 @@ static void __perf_pmu_sched_task(struct perf_cpu_context *cpuctx, bool sched_in
- 	perf_ctx_unlock(cpuctx, cpuctx->task_ctx);
- }
- 
-+static void perf_pmu_sched_task(struct task_struct *prev,
-+				struct task_struct *next,
-+				bool sched_in)
-+{
-+	struct perf_cpu_context *cpuctx;
-+
-+	if (prev == next)
-+		return;
-+
-+	list_for_each_entry(cpuctx, this_cpu_ptr(&sched_cb_list), sched_cb_entry) {
-+		/* will be handled in perf_event_context_sched_in/out */
-+		if (cpuctx->task_ctx)
-+			continue;
-+
-+		__perf_pmu_sched_task(cpuctx, sched_in);
-+	}
-+}
-+
- static void perf_event_switch(struct task_struct *task,
- 			      struct task_struct *next_prev, bool sched_in);
- 
-@@ -3537,6 +3564,9 @@ void __perf_event_task_sched_out(struct task_struct *task,
- {
- 	int ctxn;
- 
-+	if (__this_cpu_read(perf_sched_cb_usages))
-+		perf_pmu_sched_task(task, next, false);
-+
- 	if (atomic_read(&nr_switch_events))
- 		perf_event_switch(task, next, false);
- 
-@@ -3845,6 +3875,9 @@ void __perf_event_task_sched_in(struct task_struct *prev,
- 
- 	if (atomic_read(&nr_switch_events))
- 		perf_event_switch(task, prev, true);
-+
-+	if (__this_cpu_read(perf_sched_cb_usages))
-+		perf_pmu_sched_task(prev, task, true);
- }
- 
- static u64 perf_calculate_period(struct perf_event *event, u64 nsec, u64 count)
-@@ -4669,7 +4702,7 @@ static void unaccount_event(struct perf_event *event)
- 	if (event->parent)
- 		return;
- 
--	if (event->attach_state & PERF_ATTACH_TASK)
-+	if (event->attach_state & (PERF_ATTACH_TASK | PERF_ATTACH_SCHED_CB))
- 		dec = true;
- 	if (event->attr.mmap || event->attr.mmap_data)
- 		atomic_dec(&nr_mmap_events);
-@@ -11168,7 +11201,7 @@ static void account_event(struct perf_event *event)
- 	if (event->parent)
- 		return;
- 
--	if (event->attach_state & PERF_ATTACH_TASK)
-+	if (event->attach_state & (PERF_ATTACH_TASK | PERF_ATTACH_SCHED_CB))
- 		inc = true;
- 	if (event->attr.mmap || event->attr.mmap_data)
- 		atomic_inc(&nr_mmap_events);
-@@ -12960,6 +12993,7 @@ static void __init perf_event_init_all_cpus(void)
- #ifdef CONFIG_CGROUP_PERF
- 		INIT_LIST_HEAD(&per_cpu(cgrp_cpuctx_list, cpu));
- #endif
-+		INIT_LIST_HEAD(&per_cpu(sched_cb_list, cpu));
- 	}
- }
- 
--- 
-2.30.1
-
+ 	set_fwstate(pmlmepriv, _FW_UNDER_SURVEY);
+ 	r8712_enqueue_cmd(pcmdpriv, ph2c);
 
 
