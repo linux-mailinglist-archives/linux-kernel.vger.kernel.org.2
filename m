@@ -2,31 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0D133B669
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B91633B6C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232146AbhCON5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:57:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57370 "EHLO mail.kernel.org"
+        id S232191AbhCON6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:58:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231334AbhCONyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:54:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D29B64F19;
-        Mon, 15 Mar 2021 13:54:17 +0000 (UTC)
+        id S231396AbhCONyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:54:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 39E7C64F0A;
+        Mon, 15 Mar 2021 13:54:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816458;
-        bh=u05QLZmcL9GGMe5D8tEnIMmyh9DU6uRxx+Tp8Cvl9Dc=;
+        s=korg; t=1615816461;
+        bh=toQ4NBeuoCSNsttrTGknBy1vLcKnL+Fdf386le6N6bg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ADJ2LESChl9aC1chsHaxNQgqbuCDbtVAbj1shnGAYTMfCzHxNtHiqptkmZl0HxgqZ
-         hNaCspjUCp4MkhE9C9cXiKSB/GiO4e/D5qiSQ/6fpuHF7JqI5rE2YKRITKJOvmqtMY
-         pCcstp0h3nB4NwX+/5b2gjRLKHF6NNYlv328cv30=
+        b=uUCe4Bea89NaW24aaEzxIUu0NeEeSvtTE5qmopqZM8anBkhbV1TMfhu1V7mq7omtG
+         mgmVs1a7LiahHfc/zdR9XJ5w5q5Rv27pSl6Cr9cBQ3JmrJNgUGK/rO9UX99d2ioJpb
+         jIMtIqP7ywR5YTifuNKlYuQXAC4Vet3Xyx9y1RA0=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 4.4 57/75] staging: comedi: pcl818: Fix endian problem for AI command data
-Date:   Mon, 15 Mar 2021 14:52:11 +0100
-Message-Id: <20210315135210.120829925@linuxfoundation.org>
+        stable@vger.kernel.org, Ondrej Mosnacek <omosnace@redhat.com>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 58/75] NFSv4.2: fix return value of _nfs4_get_security_label()
+Date:   Mon, 15 Mar 2021 14:52:12 +0100
+Message-Id: <20210315135210.153142170@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
 References: <20210315135208.252034256@linuxfoundation.org>
@@ -40,41 +44,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Ondrej Mosnacek <omosnace@redhat.com>
 
-commit 148e34fd33d53740642db523724226de14ee5281 upstream.
+[ Upstream commit 53cb245454df5b13d7063162afd7a785aed6ebf2 ]
 
-The analog input subdevice supports Comedi asynchronous commands that
-use Comedi's 16-bit sample format.  However, the call to
-`comedi_buf_write_samples()` is passing the address of a 32-bit integer
-parameter.  On bigendian machines, this will copy 2 bytes from the wrong
-end of the 32-bit value.  Fix it by changing the type of the parameter
-holding the sample value to `unsigned short`.
+An xattr 'get' handler is expected to return the length of the value on
+success, yet _nfs4_get_security_label() (and consequently also
+nfs4_xattr_get_nfs4_label(), which is used as an xattr handler) returns
+just 0 on success.
 
-[Note: the bug was introduced in commit edf4537bcbf5 ("staging: comedi:
-pcl818: use comedi_buf_write_samples()") but the patch applies better to
-commit d615416de615 ("staging: comedi: pcl818: introduce
-pcl818_ai_write_sample()").]
+Fix this by returning label.len instead, which contains the length of
+the result.
 
-Fixes: d615416de615 ("staging: comedi: pcl818: introduce pcl818_ai_write_sample()")
-Cc: <stable@vger.kernel.org> # 4.0+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20210223143055.257402-10-abbotti@mev.co.uk
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: aa9c2669626c ("NFS: Client implementation of Labeled-NFS")
+Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+Reviewed-by: James Morris <jamorris@linux.microsoft.com>
+Reviewed-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/comedi/drivers/pcl818.c |    2 +-
+ fs/nfs/nfs4proc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/staging/comedi/drivers/pcl818.c
-+++ b/drivers/staging/comedi/drivers/pcl818.c
-@@ -422,7 +422,7 @@ static int pcl818_ai_eoc(struct comedi_d
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index 3c15291ba1aa..0c9386978d9d 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -4922,7 +4922,7 @@ static int _nfs4_get_security_label(struct inode *inode, void *buf,
+ 		return ret;
+ 	if (!(fattr.valid & NFS_ATTR_FATTR_V4_SECURITY_LABEL))
+ 		return -ENOENT;
+-	return 0;
++	return label.len;
+ }
  
- static bool pcl818_ai_write_sample(struct comedi_device *dev,
- 				   struct comedi_subdevice *s,
--				   unsigned int chan, unsigned int val)
-+				   unsigned int chan, unsigned short val)
- {
- 	struct pcl818_private *devpriv = dev->private;
- 	struct comedi_cmd *cmd = &s->async->cmd;
+ static int nfs4_get_security_label(struct inode *inode, void *buf,
+-- 
+2.30.1
+
 
 
