@@ -2,133 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E8D33A9B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 03:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44FD833A9BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 04:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbhCOCww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 22:52:52 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32610 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229747AbhCOCws (ORCPT
+        id S229725AbhCODIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 23:08:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhCODH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 22:52:48 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12F2XlQp129569;
-        Sun, 14 Mar 2021 22:52:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=TfwgIDtMspvL1SrXH4WOgpQyUnLw8JK846jcaSOMI+I=;
- b=jRtgMWjgfnJLI7qeGsrxGDpLBx5KI9uKMN8koo+eqHQ7kAkh0gqKu2+2rBzLquwkejEZ
- r2ziZFH8dPJc7Y0XZOLOx/+DETtIvoaZ49oDnEdFhGZu8m2lFA/GJ3GJHEJEaBzUhPEb
- Zs6nVF0o7eZpsQ2SHDKBpIeuatf03Z+0gYYvoIf1CIrv8wh1Xy00QnM+Zcqep1Z+rznz
- E1iEotpH3yDnGSbC1kft9/6e8oyyw5Al5Pl3wBQIq6h2Xr2LgbpU0UBwD/7Uz6seRyrV
- ap0oo0lvuoAeuhVHi4ql0ReCY0KjPgD0M20tXPkqqgxyyCiEm3/Xt1M9rZq7Xs5e5hHr vw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 379ukebh0k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 14 Mar 2021 22:52:41 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12F2nsB3026890;
-        Sun, 14 Mar 2021 22:52:41 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 379ukebh05-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 14 Mar 2021 22:52:41 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12F2qdk9002570;
-        Mon, 15 Mar 2021 02:52:39 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 378mnh1d9x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Mar 2021 02:52:38 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12F2qKvD17957140
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Mar 2021 02:52:20 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AA840A4054;
-        Mon, 15 Mar 2021 02:52:36 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 52B07A405B;
-        Mon, 15 Mar 2021 02:52:36 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 15 Mar 2021 02:52:36 +0000 (GMT)
-Received: from localhost (unknown [9.206.171.122])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 871BF601F4;
-        Mon, 15 Mar 2021 13:52:34 +1100 (AEDT)
-From:   Michael Ellerman <michaele@au1.ibm.com>
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org, mmc@linux.ibm.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rpadlpar: fix potential drc_name corruption in store
- functions
-In-Reply-To: <a67af978-1c47-c66b-47f0-3d754da738f9@linux.ibm.com>
-References: <20210310223021.423155-1-tyreld@linux.ibm.com>
- <20210313091751.GM6564@kitsune.suse.cz>
- <a67af978-1c47-c66b-47f0-3d754da738f9@linux.ibm.com>
-Date:   Mon, 15 Mar 2021 13:52:31 +1100
-Message-ID: <87o8fl3z80.fsf@mpe.ellerman.id.au>
+        Sun, 14 Mar 2021 23:07:59 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73796C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 20:07:59 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id w8so8002688pjf.4
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 20:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=E+C021S+MuuSehTRLZXDd2gMGgIwxJN7I46PHjbYIPA=;
+        b=qt+FGTFJTPJ2JZunn0BlihnzQxcyX9KbvW6foXCHaqjGRikyCE4uq8/JjJ7NJqkNH/
+         5BaxBNNwRRDglJz9aEfY7cyz8ogJU8SzsaHg4i2YruvJ1t6BAkTGvvT6Zi0EKm5NxedC
+         Xjm8l82WC1grrZDwaf00ov+Ngll7W8OR4u2lCrWiFvdmQv1mUgVvqccUAeiROBdjol/Y
+         u8nPi8URiiCdsV4AhYBDczpAvJR3D8b9Q/qgM3GB+TpgsD1ISHyZome0Uzj+YlD/lG/3
+         MtLeGytU3uUKr6q9Ai14P7RjwOWfdVQ5fhgXw845Da3PioZfH4hsw157vqSdISU7fBtJ
+         CC+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=E+C021S+MuuSehTRLZXDd2gMGgIwxJN7I46PHjbYIPA=;
+        b=X9a1lJGl1mojYW4SctTRP90RL/AgUF/0dfUG8ASV+wcqG6QYGr7jpLcemsru58SqVL
+         zIkJ2bbQG3eLcxTjKjFiK2FonYTejVgMkQ680LIVRVR2zfJOD85Rm0YHTuxLlI8G/7iN
+         +IBJHSvrEPZ41iRhJcfulH+zz0LpDntvV9ktQN62jZS/thoK95apgs6oawUkyXkD6lhr
+         /w6+ZVgf4UUANm4/prmiTWRgM82gkQbMyw6YrdETJ+IaO+vfZI9YVN5puMfZdbjXgon2
+         cMOCn3k4z04cLsPHGxRxebg8BZ4VQcDuFD9vTomXu7BxJjXN7o5nthXkc8aQ5pcvF6ty
+         ceMw==
+X-Gm-Message-State: AOAM531SJW2w55ppRRuh7aDbmLGy5zpNAarwblxu5YR9MMMTVKQD3nEI
+        D9jv5SKxUIT6tLA0Cpmd9X6XPnLmNtXFzw==
+X-Google-Smtp-Source: ABdhPJxL8lzjTY6PKezQCujtpxCj27hHlpUJ7MN8QLCdwRQ0Yyk8U87S9VWEB2aHazmsfSHDzfJosg==
+X-Received: by 2002:a17:902:ba94:b029:e6:5cd1:a4a2 with SMTP id k20-20020a170902ba94b02900e65cd1a4a2mr9363284pls.69.1615777678267;
+        Sun, 14 Mar 2021 20:07:58 -0700 (PDT)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id k3sm11076919pgq.21.2021.03.14.20.07.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 14 Mar 2021 20:07:57 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 08:37:55 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        lukasz.luba@arm.com, Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Javi Merino <javi.merino@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>
+Subject: Re: [PATCH v2 4/5] thermal/drivers/cpuidle_cooling: Use device name
+ instead of auto-numbering
+Message-ID: <20210315030755.kl7gt66f45o254u3@vireshk-i7>
+References: <20210312170316.3138-1-daniel.lezcano@linaro.org>
+ <20210312170316.3138-4-daniel.lezcano@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-14_16:2021-03-12,2021-03-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 adultscore=0 mlxscore=0 clxscore=1011 malwarescore=0
- mlxlogscore=999 priorityscore=1501 bulkscore=0 suspectscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103150018
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312170316.3138-4-daniel.lezcano@linaro.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tyrel Datwyler <tyreld@linux.ibm.com> writes:
-> On 3/13/21 1:17 AM, Michal Such=C3=A1nek wrote:
->> On Wed, Mar 10, 2021 at 04:30:21PM -0600, Tyrel Datwyler wrote:
->>> Both add_slot_store() and remove_slot_store() try to fix up the drc_name
->>> copied from the store buffer by placing a NULL terminator at nbyte + 1
->>> or in place of a '\n' if present. However, the static buffer that we
->>> copy the drc_name data into is not zeored and can contain anything past
->>> the n-th byte. This is problematic if a '\n' byte appears in that buffer
->>> after nbytes and the string copied into the store buffer was not NULL
->>> terminated to start with as the strchr() search for a '\n' byte will ma=
-rk
->>> this incorrectly as the end of the drc_name string resulting in a drc_n=
-ame
->>> string that contains garbage data after the n-th byte. The following
->>> debugging shows an example of the drmgr utility writing "PHB 4543" to
->>> the add_slot sysfs attribute, but add_slot_store logging a corrupted
->>> string value.
->>>
->>> [135823.702864] drmgr: drmgr: -c phb -a -s PHB 4543 -d 1
->>> [135823.702879] add_slot_store: drc_name =3D PHB 4543=C2=B0|<82>!, rc =
-=3D -19
->>>
->>> Fix this by NULL terminating the string when we copy it into our static
->>> buffer by coping nbytes + 1 of data from the store buffer. The code has
->> Why is it OK to copy nbytes + 1 and why is it expected that the buffer
->> contains a nul after the content?
->
-> It is my understanding that the store function buffer is allocated as a
-> zeroed-page which the kernel copies up to at most (PAGE_SIZE - 1) of user=
- data
-> into. Anything after nbytes would therefore be zeroed.
+On 12-03-21, 18:03, Daniel Lezcano wrote:
+> Currently the naming of a cooling device is just a cooling technique
+> followed by a number. When there are multiple cooling devices using
+> the same technique, it is impossible to clearly identify the related
+> device as this one is just a number.
+> 
+> For instance:
+> 
+>  thermal-idle-0
+>  thermal-idle-1
+>  thermal-idle-2
+>  thermal-idle-3
+>  etc ...
+> 
+> The 'thermal' prefix is redundant with the subsystem namespace. This
+> patch removes the 'thermal prefix and changes the number by the device
+> name. So the naming above becomes:
+> 
+>  idle-cpu0
+>  idle-cpu1
+>  idle-cpu2
+>  idle-cpu3
+>  etc ...
+> 
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 
-I think that's true, but it would be nice if we didn't have to rely on
-that obscure detail in order for this code to be correct & understandable.
+I acked for both the patches :(
 
->> Isn't it much saner to just nul terminate the string after copying?
->
-> At the cost of an extra line of code, sure.
-
-Is there a reason we can't use strscpy()? That should deal with all the
-corner cases around the string copy, and then all you have to do is look
-for a newline and turn it into nul.
-
-cheers
+-- 
+viresh
