@@ -2,116 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B6133ADEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:53:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5045C33AD76
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:31:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbhCOIwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 04:52:45 -0400
-Received: from mail.monom.org ([188.138.9.77]:60114 "EHLO mail.monom.org"
+        id S229607AbhCOIbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:31:31 -0400
+Received: from m42-2.mailgun.net ([69.72.42.2]:44035 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229649AbhCOIwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 04:52:25 -0400
-X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Mar 2021 04:52:25 EDT
-Received: from mail.monom.org (localhost [127.0.0.1])
-        by filter.mynetwork.local (Postfix) with ESMTP id 4224B50051C;
-        Mon, 15 Mar 2021 09:45:13 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
+        id S229517AbhCOIbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 04:31:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615797060; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Ci6S2U/9V2fhFK9n1GscxocWUYLkBqUN9SmqC6qYi10=;
+ b=AEK2D5N5J7f/TTH5iu/2wr+mydgxhEM1INIiTlwybHmTRN5p6vRMlAyn/Z5Hj+tOS7q3LQJM
+ /C2mMaQdJ9MZxGLFo+zDz2bM2afPAPeKIQhyWAtTicSq6ToQv0boZ4VxHnzOtYkJZzuFhPAb
+ 8drZNedHwC+zxsm1ejdJNao9/Ik=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 604f1b271de5dd7b99d7d97d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 08:30:31
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DBB7CC433C6; Mon, 15 Mar 2021 08:30:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from localhost (unknown [94.31.96.195])
-        by mail.monom.org (Postfix) with ESMTPSA id BA7405003B6;
-        Mon, 15 Mar 2021 09:45:12 +0100 (CET)
-From:   Daniel Wagner <dwagner@suse.de>
-Subject: [ANNOUNCE] 4.4.261-rt218
-Date:   Mon, 15 Mar 2021 08:30:20 -0000
-Message-ID: <161579702068.3526.1632527232297488283@beryllium>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DD3A0C433CA;
+        Mon, 15 Mar 2021 08:30:29 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 15 Mar 2021 16:30:29 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Avri Altman <avri.altman@wdc.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
+Subject: Re: [PATCH v5 04/10] scsi: ufshpb: Make eviction depends on region's
+ reads
+In-Reply-To: <20210302132503.224670-5-avri.altman@wdc.com>
+References: <20210302132503.224670-1-avri.altman@wdc.com>
+ <20210302132503.224670-5-avri.altman@wdc.com>
+Message-ID: <7cf2ce1235075c2925561d180b1bd233@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+On 2021-03-02 21:24, Avri Altman wrote:
+> In host mode, eviction is considered an extreme measure.
+> verify that the entering region has enough reads, and the exiting
+> region has much less reads.
+> 
+> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+> ---
+>  drivers/scsi/ufs/ufshpb.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> index a8f8d13af21a..6f4fd22eaf2f 100644
+> --- a/drivers/scsi/ufs/ufshpb.c
+> +++ b/drivers/scsi/ufs/ufshpb.c
+> @@ -17,6 +17,7 @@
+>  #include "../sd.h"
+> 
+>  #define ACTIVATION_THRESHOLD 4 /* 4 IOs */
+> +#define EVICTION_THRESHOLD (ACTIVATION_THRESHOLD << 6) /* 256 IOs */
+> 
+>  /* memory management */
+>  static struct kmem_cache *ufshpb_mctx_cache;
+> @@ -1050,6 +1051,13 @@ static struct ufshpb_region
+> *ufshpb_victim_lru_info(struct ufshpb_lu *hpb)
+>  		if (ufshpb_check_srgns_issue_state(hpb, rgn))
+>  			continue;
+> 
+> +		/*
+> +		 * in host control mode, verify that the exiting region
+> +		 * has less reads
+> +		 */
+> +		if (hpb->is_hcm && rgn->reads > (EVICTION_THRESHOLD >> 1))
+> +			continue;
+> +
+>  		victim_rgn = rgn;
+>  		break;
+>  	}
+> @@ -1235,7 +1243,7 @@ static int ufshpb_issue_map_req(struct ufshpb_lu 
+> *hpb,
+> 
+>  static int ufshpb_add_region(struct ufshpb_lu *hpb, struct 
+> ufshpb_region *rgn)
+>  {
+> -	struct ufshpb_region *victim_rgn;
+> +	struct ufshpb_region *victim_rgn = NULL;
+>  	struct victim_select_info *lru_info = &hpb->lru_info;
+>  	unsigned long flags;
+>  	int ret = 0;
+> @@ -1263,6 +1271,16 @@ static int ufshpb_add_region(struct ufshpb_lu
+> *hpb, struct ufshpb_region *rgn)
+>  			 * because the device could detect this region
+>  			 * by not issuing HPB_READ
+>  			 */
+> +
+> +			/*
+> +			 * in host control mode, verify that the entering
+> +			 * region has enough reads
+> +			 */
 
-I'm pleased to announce the 4.4.261-rt218 stable release, but beware
-of the regressions!
+Maybe merge the new comments with the original comments above?
 
-This is updates v4.4-rt to the latest stable 4.4.261. This update was
-pretty painfull as there were many futex/rtmutex backports.
+Thanks,
+Can Guo.
 
-Unfortunatly, I found out, that we have two regression which are
-already present in v4.4.256-rt214.
-
-The first one is that the CONFIG_DEBUG_LOCKING_API_SELFTESTS tests
-hang and there is no output at all. This is obviously bad for
-verifying if the futex/rtmutex updates are working.
-
-Next is locktorture for spin_locks is able to trigger warning:
-
- WARNING: CPU: 0 PID: 3091 at /home/wagi/rt/v4.4-rt/kernel/sched/core.c:7948 __might_sleep+0x77/0x80()
- do not call blocking ops when !TASK_RUNNING; state=2 set at [<ffffffff81a32085>] schedule_timeout_interruptible+0x5/0x30
- Modules linked in: locktorture torture
- CPU: 0 PID: 3091 Comm: lock_torture_wr Tainted: G        W       4.4.261-rt217+ #4
- Hardware name: Gigabyte Technology Co., Ltd. P55-UD3/P55-UD3, BIOS F3 07/31/2009
-  0000000000000000 ffff88020c727b10 ffffffff81a136f2 ffff88020c727b58
-  0000000000000009 ffff88020c727b48 ffffffff8105cac6 ffff88020c727c70
-  ffffffff81eab6c8 000000000000005a 0000000000000000 ffff8800d850d7f0
- Call Trace:
-  [<ffffffff81a136f2>] dump_stack+0x7a/0xa4
-  [<ffffffff8105cac6>] warn_slowpath_common+0x86/0xa0
-  [<ffffffff8105cb2c>] warn_slowpath_fmt+0x4c/0x50
-  [<ffffffff81a2f401>] ? preempt_schedule+0x41/0x50
-  [<ffffffff81001058>] ? ___preempt_schedule+0x12/0x14
-  [<ffffffff81a32085>] ? schedule_timeout_interruptible+0x5/0x30
-  [<ffffffff81a32085>] ? schedule_timeout_interruptible+0x5/0x30
-  [<ffffffff81087be7>] __might_sleep+0x77/0x80
-  [<ffffffff81a30340>] wait_for_completion+0x30/0xf0
-  [<ffffffff811075cd>] stop_one_cpu+0x5d/0x80
-  [<ffffffff8108f060>] ? sched_ttwu_pending+0x80/0x80
-  [<ffffffff8108be1a>] ? migrate_enable+0xda/0x390
-  [<ffffffff8105d416>] ? unpin_current_cpu+0x16/0x70
-  [<ffffffff8108c06f>] migrate_enable+0x32f/0x390
-  [<ffffffff81a30d24>] rt_spin_lock_slowlock+0x1a4/0x380
-  [<ffffffffa00112f0>] ? lock_torture_reader+0x100/0x100 [locktorture]
-  [<ffffffff81a33716>] rt_spin_lock+0x36/0x60
-  [<ffffffffa0011045>] torture_spin_lock_write_lock+0x15/0x20 [locktorture]
-  [<ffffffffa0011349>] lock_torture_writer+0x59/0x170 [locktorture]
-  [<ffffffff81081a4a>] kthread+0xea/0x100
-  [<ffffffff81081960>] ? kthread_create_on_node+0x250/0x250
-  [<ffffffff81a3450f>] ret_from_fork+0x3f/0x80
-  [<ffffffff81081960>] ? kthread_create_on_node+0x250/0x250
-
-I decided to release this version with these known bugs, because
-someone else might spot the problem right away.
-
-Interesting enough, with this update the cyclicdeadline test passes
-for the first time on v4.4-rt. Also the cyclictest latency numbers are
-better. After 12 hours I saw max lattency of 16us, usually it was
-around 25us on my x86_64 box.
-
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v4.4-rt
-  Head SHA1: ac4368e8782290a48051791c7d866e118461e286
-
-Or to build 4.4.261-rt218 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.4.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.4.261.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/patch-4.4.261-rt218.patch.xz
-
-Enjoy!
-Daniel
+> +			if (hpb->is_hcm && rgn->reads < EVICTION_THRESHOLD) {
+> +				ret = -EACCES;
+> +				goto out;
+> +			}
+> +
+>  			victim_rgn = ufshpb_victim_lru_info(hpb);
+>  			if (!victim_rgn) {
+>  				dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
