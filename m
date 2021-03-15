@@ -2,79 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC84033B313
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF7933B318
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 13:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbhCOMux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 08:50:53 -0400
-Received: from mga18.intel.com ([134.134.136.126]:22548 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229703AbhCOMui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:50:38 -0400
-IronPort-SDR: pP0tAGJLaFZFEB/N7t1b0+h3IW/+SX7tSTKMrS3NPGrCHy6pjbF8S1HcLCVWMIGN74Drb0natm
- tRZLmgXVhodw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9923"; a="176674480"
-X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
-   d="scan'208";a="176674480"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 05:50:36 -0700
-IronPort-SDR: g/R/Dq5gGR6hM1qKL2p3YOCWWXbGCRbjXmDdbPgLRKqwjhnevWJ27efpXhWDwkunU4gtMvonah
- GvV3A6xBHkow==
-X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
-   d="scan'208";a="511013126"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 05:50:35 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lLmg4-00Cg6W-2c; Mon, 15 Mar 2021 14:50:32 +0200
-Date:   Mon, 15 Mar 2021 14:50:32 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Marek Vasut <marex@denx.de>,
-        Roman Guskov <rguskov@dh-electronics.com>
-Subject: Re: [PATCH v1 1/1] gpiolib: Read "gpio-line-names" from a firmware
- node
-Message-ID: <YE9YGGB+k7CsCNDI@smile.fi.intel.com>
-References: <20210305120240.42830-1-andriy.shevchenko@linux.intel.com>
- <CAMRc=Mfye=O4mMiK01Q6Ok+ztSfMwMcrfaZSs+LhRxi=AM+C2w@mail.gmail.com>
- <YE8z+ohM9abBs9SD@smile.fi.intel.com>
+        id S229673AbhCOMzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 08:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229494AbhCOMyu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 08:54:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C33C061574;
+        Mon, 15 Mar 2021 05:54:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hUmA3BEtzcJvz01TWYKXFbQSzi3Lt/8ZG4oFt7gXa3o=; b=LDzh+hErroH07/2l19Cc8w4NsG
+        ukMfGjjv1ZLXtEiDSYHtYgOE61fEooSW6yl6nYmKra259al18sIGMgcv6lSOJx/sWbd0ESuMSnohE
+        AJvjmCFzbMPyq+u0RpHtmoYqfKahvKPixclIb005c7/+IAobwcBZnMfI/ti9UdeexDue8yEzepCSc
+        kxCTTs0UEbjcOHQUEqOb9rIooC0wCCpkEZuU3WQP14rEsRORD/hzucOsH7n0W1ls2LtISwvipdtih
+        Xlbtbef+TST//pGjHM16t4AnVgO7yJyXDHg0h0yG/4mmvwqZnA26xBROyvCUZWAUxrLdg8ItU+LPj
+        TetyiKmA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lLmk4-000BGZ-P8; Mon, 15 Mar 2021 12:54:43 +0000
+Date:   Mon, 15 Mar 2021 12:54:40 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Ian Kent <raven@themaw.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] vfs: Use the mounts_to_id array to do /proc/mounts
+ and co.
+Message-ID: <20210315125440.GV2577561@casper.infradead.org>
+References: <161581005972.2850696.12854461380574304411.stgit@warthog.procyon.org.uk>
+ <161581007628.2850696.11692651942358302102.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YE8z+ohM9abBs9SD@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <161581007628.2850696.11692651942358302102.stgit@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 12:16:26PM +0200, Andy Shevchenko wrote:
-> On Mon, Mar 15, 2021 at 10:01:47AM +0100, Bartosz Golaszewski wrote:
-> > On Fri, Mar 5, 2021 at 1:03 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> 
-> > Unfortunately while this may fix the particular use-case on STM32, it
-> > breaks all other users as the 'gpio-line-names' property doesn't live
-> > on dev_fwnode(&gdev->dev) but on dev_fwnode(chip->parent).
-> > 
-> > How about we first look for this property on the latter and only if
-> > it's not present descend down to the former fwnode?
-> 
-> Oops, I have tested on x86 and it worked the same way.
-> 
-> Lemme check this, but I think the issue rather in ordering when we apply fwnode
-> to the newly created device and when we actually retrieve gpio-line-names
-> property.
+On Mon, Mar 15, 2021 at 12:07:56PM +0000, David Howells wrote:
+> Use the mounts_to_id xarray added to the mount namespace to perform
 
-Hmm... I can't see how it's possible can be. Can you provide a platform name
-and pointers to the DTS that has been broken by the change?
+You called it mounts_by_id in the last patch ...
 
+> Since it doesn't trawl a standard list_head, but rather uses xarray, this
+> could be done under the RCU read lock only.  To do this, we would need to
+> hide mounts that are in the process of being inserted into the tree by
+> marking them in the xarray itself or using a mount flag.
 
--- 
-With Best Regards,
-Andy Shevchenko
+>  /* iterator; we want it to have access to namespace_sem, thus here... */
+>  static void *m_start(struct seq_file *m, loff_t *pos)
+>  {
+> -	struct proc_mounts *p = m->private;
+> -	struct list_head *prev;
+> +	struct proc_mounts *state = m->private;
+> +	void *entry;
+>  
+>  	down_read(&namespace_sem);
+> -	if (!*pos) {
+> -		prev = &p->ns->list;
+> -	} else {
+> -		prev = &p->cursor.mnt_list;
+> +	state->xas = (struct xa_state) __XA_STATE(&state->ns->mounts_by_id, *pos, 0, 0);
+>  
+> -		/* Read after we'd reached the end? */
+> -		if (list_empty(prev))
+> -			return NULL;
+> -	}
+> +	entry = xas_find(&state->xas, ULONG_MAX);
 
+I know you haven't enabled enough debugging because this will assert
+that either the RCU read lock or the xa_lock is held to prevent xa_nodes
+from disappearing underneath us.
 
+Why do you want to use an xa_state for this?  This is /proc, so efficiency
+isn't the highest priority.  I'd just use xa_find(), and then you don't
+need to care about an xa_state or locking -- it handles taking the rcu
+read lock for you.
+
+> +	while (entry && xas_invalid(entry))
+
+I've never seen anybody make that mistake before.  Good one.  Not sure
+if there's anything I can do to prevent it in future.
+
+> +		entry = xas_next_entry(&state->xas, ULONG_MAX);
