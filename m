@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01A533BB56
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6943A33BB51
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236710AbhCOOPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:15:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37612 "EHLO mail.kernel.org"
+        id S236765AbhCOOPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:15:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232495AbhCON67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:58:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0093B64F29;
-        Mon, 15 Mar 2021 13:58:40 +0000 (UTC)
+        id S232515AbhCON7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 980DE64E4D;
+        Mon, 15 Mar 2021 13:58:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816722;
-        bh=bEj67SlRkQh96fFM0wqHYsH5alerkYTtOlOVpLd73Z0=;
+        s=korg; t=1615816723;
+        bh=NDPQ7FYGS8yZ1oCfwTxWbaEhC+/5hAfhGVa8tPwknQs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KlWuNfr+LaEPBMiLNN/YDgoNd+r9wzTnEZ6GOlUudvGIRfLTnQWmPP4j68rWWgTSQ
-         ijezV3xO96QJhoXGwk88uZDsw9JmbnDrA8k/aarRLctWZZZaQq5IYMHprkMjTSigBt
-         LYsIAgaHGLMyXm+pC+nwXuVMf6RQCd32PoEXQAG0=
+        b=qhISo5JW18V2CBhyLRzH0ChISpNNpejsy6FuFJSzQgnYO4rXwFV984C8CFLCYypm1
+         52fp2wtUjDk+maeHlMW3MkJbyGiAv17y5t9lpIWYzaqAUzCyxN8ZwImXeMYpiu8ays
+         e3t/JtGLaeh/1DAmtzYItIXc8zQlyGwpwaAF8tPQ=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Jian Shen <shenjian15@huawei.com>,
         Huazhong Tan <tanhuazhong@huawei.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 075/290] net: hns3: fix query vlan mask value error for flow director
-Date:   Mon, 15 Mar 2021 14:52:48 +0100
-Message-Id: <20210315135544.447649704@linuxfoundation.org>
+Subject: [PATCH 5.10 076/290] net: hns3: fix bug when calculating the TCAM table info
+Date:   Mon, 15 Mar 2021 14:52:49 +0100
+Message-Id: <20210315135544.480234037@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -44,51 +44,35 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Jian Shen <shenjian15@huawei.com>
 
-commit c75ec148a316e8cf52274d16b9b422703b96f5ce upstream.
+commit b36fc875bcdee56865c444a2cdae17d354a6d5f5 upstream.
 
-Currently, the driver returns VLAN_VID_MASK for vlan mask field,
-when get flow director rule information for rule doesn't use vlan.
-It may cause the vlan mask value display as 0xf000 in this
-case, like below:
+The function hclge_fd_convert_tuple() is used to convert tuples
+and tuples mask to TCAM x and y.  But it misuses the source mac
+as source mac mask when convert INNER_SRC_MAC, which may cause
+the flow director rule works unexpectedly. So fix it.
 
-estuary:/$ ethtool -u eth1
-50 RX rings available
-Total 1 rules
-
-Filter: 2
-Rule Type: TCP over IPv4
-Src IP addr: 0.0.0.0 mask: 255.255.255.255
-Dest IP addr: 0.0.0.0 mask: 255.255.255.255
-TOS: 0x0 mask: 0xff
-Src port: 0 mask: 0xffff
-Dest port: 0 mask: 0xffff
-VLAN EtherType: 0x0 mask: 0xffff
-VLAN: 0x0 mask: 0xf000
-User-defined: 0x1234 mask: 0x0
-Action: Direct to queue 3
-
-Fix it by return 0.
-
-Fixes: 05c2314fe6a8 ("net: hns3: Add support for rule query of flow director")
+Fixes: 117328680288 ("net: hns3: Add input key and action config support for flow director")
 Signed-off-by: Jian Shen <shenjian15@huawei.com>
 Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
 +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -6183,8 +6183,7 @@ static void hclge_fd_get_ext_info(struct
- 		fs->h_ext.vlan_tci = cpu_to_be16(rule->tuples.vlan_tag1);
- 		fs->m_ext.vlan_tci =
- 				rule->unused_tuple & BIT(INNER_VLAN_TAG_FST) ?
--				cpu_to_be16(VLAN_VID_MASK) :
--				cpu_to_be16(rule->tuples_mask.vlan_tag1);
-+				0 : cpu_to_be16(rule->tuples_mask.vlan_tag1);
- 	}
+@@ -5115,9 +5115,9 @@ static bool hclge_fd_convert_tuple(u32 t
+ 	case BIT(INNER_SRC_MAC):
+ 		for (i = 0; i < ETH_ALEN; i++) {
+ 			calc_x(key_x[ETH_ALEN - 1 - i], rule->tuples.src_mac[i],
+-			       rule->tuples.src_mac[i]);
++			       rule->tuples_mask.src_mac[i]);
+ 			calc_y(key_y[ETH_ALEN - 1 - i], rule->tuples.src_mac[i],
+-			       rule->tuples.src_mac[i]);
++			       rule->tuples_mask.src_mac[i]);
+ 		}
  
- 	if (fs->flow_type & FLOW_MAC_EXT) {
+ 		return true;
 
 
