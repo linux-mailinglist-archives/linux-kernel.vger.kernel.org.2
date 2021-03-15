@@ -2,155 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD11933AD89
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7C733AD9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229490AbhCOIdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 04:33:33 -0400
-Received: from mga14.intel.com ([192.55.52.115]:51623 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229523AbhCOId0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 04:33:26 -0400
-IronPort-SDR: p90FytXK6lNyVfyiuc0C9EA2y3rdVKEM3gbP/D+5JJwlGk9UXTxxzHCUATqgflJFPVMjncyu5/
- NUkYcVLM0MCw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9923"; a="188414655"
-X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
-   d="scan'208";a="188414655"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 01:33:24 -0700
-IronPort-SDR: ZgEVDje230GewEXPvE8PeHo8e/TZ8o7bNkwgoEYdgu0xed67WxuNlJpx2QA93FLv/F/CEFOqKF
- PkwmsR4ykJsA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
-   d="scan'208";a="590253278"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
-  by orsmga005.jf.intel.com with ESMTP; 15 Mar 2021 01:33:22 -0700
-Subject: Re: [PATCH v1 1/1] mmc: sdhci-acpi: Add support for NVIDIA
- BlueField-3 SoC
-To:     Liming Sun <limings@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Khalil Blaiech <kblaiech@nvidia.com>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <b62a68d1f8488e7f95befc6723ba5c20d6781628.1615487235.git.limings@nvidia.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <8236f89c-720e-f8bd-86d0-9654175de659@intel.com>
-Date:   Mon, 15 Mar 2021 10:33:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229766AbhCOIeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:34:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhCOIeV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 04:34:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6304BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 01:34:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WP1+kEkpWwIMY5F3rN8QbOxecZIRGyIBEVF6fseXUyc=; b=oG/MR5mHInuZm06IaaEF9C3ooY
+        1EHe6COHJvwunM+nF3iBhVqu5Cp3giiLFjhumRzLED+yCcBzRf8CqOGcTDhowPulgv9wqfrhAbhTl
+        IUtjfdPtJeQgtVBz9SIlAW6DcQC1y5ekrvptOok+rLbRC9kjlN5r43EAo2JTd2I6weegO0jqVIOo3
+        kmZ084P+mh9/6FZGZzkxv3t6l0Fz502+QECdEGhEC2A/6rZ9ob+Byuu/3YA3BwAKc28IR0r847XLd
+        npIGe2Pp29DVAout1jP7vl/y+FwGC6A7ipZqV1wbnhxeTZ7qBt5Aip+fgZ4+6pwJ41e3F9q/CsmFW
+        +2/vluhA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lLifa-00HS2O-Rg; Mon, 15 Mar 2021 08:33:50 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 478AA303205;
+        Mon, 15 Mar 2021 09:33:45 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2B29623CC228C; Mon, 15 Mar 2021 09:33:45 +0100 (CET)
+Date:   Mon, 15 Mar 2021 09:33:45 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [GIT pull] locking/urgent for v5.12-rc3
+Message-ID: <YE8b6dgsEG4OU0ay@hirez.programming.kicks-ass.net>
+References: <161573639668.27979.17827928369874291298.tglx@nanos>
+ <CAHk-=wjuD2cCptSJmmHBp2c9chTPnZcSi+0vA+QJ8JNjYTJKCw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <b62a68d1f8488e7f95befc6723ba5c20d6781628.1615487235.git.limings@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjuD2cCptSJmmHBp2c9chTPnZcSi+0vA+QJ8JNjYTJKCw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/03/21 3:48 pm, Liming Sun wrote:
-> This commit adds ACPI support for the BlueField-3 SoC which uses
-> the DWC_mshc eMMC controller. The boundary check logic in static
-> function dwcmshc_adma_write_desc() comes from sdhci-of-dwcmshc.c.
-
-Did you consider adding ACPI support to sdhci-of-dwcmshc.c ?
-Other drivers have taken that approach, see sdhci-xenon.c or sdhci-iproc.c
-
+On Sun, Mar 14, 2021 at 01:15:25PM -0700, Linus Torvalds wrote:
+> On Sun, Mar 14, 2021 at 8:40 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >
+> >  - A fix for the static_call mechanism so it handles unaligned
+> >    addresses correctly.
 > 
-> Signed-off-by: Liming Sun <limings@nvidia.com>
-> Reviewed-by: Khalil Blaiech <kblaiech@nvidia.com>
-> ---
->  drivers/mmc/host/sdhci-acpi.c | 64 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 64 insertions(+)
+> I'm not disputing the fix in any way, but why weren't the relocation
+> info and function start addresses mutually aligned?
 > 
-> diff --git a/drivers/mmc/host/sdhci-acpi.c b/drivers/mmc/host/sdhci-acpi.c
-> index 54205e3..6448e94e 100644
-> --- a/drivers/mmc/host/sdhci-acpi.c
-> +++ b/drivers/mmc/host/sdhci-acpi.c
-> @@ -716,6 +716,68 @@ static int sdhci_acpi_emmc_amd_probe_slot(struct platform_device *pdev,
->  	.priv_size	= sizeof(struct amd_sdhci_host),
->  };
->  
-> +/* Check DMA address/length boundary. */
-> +static inline bool dwcmshc_adma_boundary_ok(dma_addr_t addr, int len)
-> +{
-> +	return (addr | (SZ_128M - 1)) == ((addr + len - 1) | (SZ_128M - 1));
-> +}
-> +
-> +/*
-> + * If DMA addr spans 128MB boundary, we split the DMA transfer into two
-> + * so that each DMA transfer doesn't exceed the boundary.
-> + */
-> +static void dwcmshc_adma_write_desc(struct sdhci_host *host, void **desc,
-> +				    dma_addr_t addr, int len, unsigned int cmd)
-> +{
-> +	int tmplen, offset;
-> +
-> +	if (likely(!len || dwcmshc_adma_boundary_ok(addr, len))) {
-> +		sdhci_adma_write_desc(host, desc, addr, len, cmd);
-> +		return;
-> +	}
-> +
-> +	offset = addr & (SZ_128M - 1);
-> +	tmplen = SZ_128M - offset;
-> +	sdhci_adma_write_desc(host, desc, addr, tmplen, cmd);
-> +
-> +	addr += tmplen;
-> +	len -= tmplen;
-> +	sdhci_adma_write_desc(host, desc, addr, len, cmd);
-> +}
-> +
-> +static int sdhci_acpi_emmc_nvda_bf_probe_slot(struct platform_device *pdev,
-> +					      struct acpi_device *adev)
-> +{
-> +	struct sdhci_acpi_host *c = platform_get_drvdata(pdev);
-> +	struct sdhci_host *host = c->host;
-> +	u32 extra;
-> +
-> +	/* Extra adma table cnt for cross 128M boundary handling. */
-> +	extra = DIV_ROUND_UP_ULL(dma_get_required_mask(&pdev->dev), SZ_128M);
-> +	extra = min(extra, (u32)SDHCI_MAX_SEGS);
-> +	host->adma_table_cnt += extra;
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct sdhci_ops sdhci_acpi_ops_nvda_bf = {
-> +	.set_clock		= sdhci_set_clock,
-> +	.set_bus_width		= sdhci_set_bus_width,
-> +	.set_uhs_signaling	= sdhci_set_uhs_signaling,
-> +	.reset			= sdhci_reset,
-> +	.adma_write_desc	= dwcmshc_adma_write_desc,
-> +};
-> +
-> +static const struct sdhci_acpi_chip sdhci_acpi_chip_nvda_bf = {
-> +	.ops = &sdhci_acpi_ops_nvda_bf,
-> +};
-> +
-> +static const struct sdhci_acpi_slot sdhci_acpi_slot_nvda_bf_emmc = {
-> +	.chip		= &sdhci_acpi_chip_nvda_bf,
-> +	.caps		= MMC_CAP_8_BIT_DATA | MMC_CAP_NONREMOVABLE,
-> +	.probe_slot	= sdhci_acpi_emmc_nvda_bf_probe_slot,
-> +};
-> +
->  struct sdhci_acpi_uid_slot {
->  	const char *hid;
->  	const char *uid;
-> @@ -740,6 +802,7 @@ struct sdhci_acpi_uid_slot {
->  	{ "QCOM8051", NULL, &sdhci_acpi_slot_qcom_sd_3v },
->  	{ "QCOM8052", NULL, &sdhci_acpi_slot_qcom_sd },
->  	{ "AMDI0040", NULL, &sdhci_acpi_slot_amd_emmc },
-> +	{ "MLNXBF30", NULL, &sdhci_acpi_slot_nvda_bf_emmc },
->  	{ },
->  };
->  
-> @@ -757,6 +820,7 @@ struct sdhci_acpi_uid_slot {
->  	{ "QCOM8051" },
->  	{ "QCOM8052" },
->  	{ "AMDI0040" },
-> +	{ "MLNXBF30" },
->  	{ },
->  };
->  MODULE_DEVICE_TABLE(acpi, sdhci_acpi_ids);
+> Are we perhaps missing some .align directive somewhere?
 > 
+> Or am I missing something?
 
+So I considered looking into that, but since carrying the flag on the
+absolute address is always correct I figured it was the more robust fix.
+
+I suppose I can try and figure out where alignment went wobbly.
