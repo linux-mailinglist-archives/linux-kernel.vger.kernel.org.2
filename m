@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C163633BBFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9078233BC6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233846AbhCOOVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:21:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
+        id S234016AbhCOOZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:25:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232897AbhCOOAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB36B64F2B;
-        Mon, 15 Mar 2021 13:59:50 +0000 (UTC)
+        id S232805AbhCOOAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E68C264F2F;
+        Mon, 15 Mar 2021 13:59:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816791;
-        bh=A4y2DAvk4lp+gOnqxDJEAlRf/d/XyJVYKwHFG9clOgg=;
+        s=korg; t=1615816793;
+        bh=FTAwELuj2EcQRMLn9mlwt2MunR7r3AyeDut4nIGaRjk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T56KSzh6DiVdPN81zH0jn5VvnmKJrzxC4X57NoMmth8mrzcKUGNmYqdTscry70ZOU
-         2tdefmo1PzrZg4OZRlQa41KfdSJGuvsEM+hD6AWuFoXqELHOgM5SgiADuiXHsfFOUB
-         CL5DXBppOBZ0mQEF1kqjdaMBZDYkNXPV1X2Adl5w=
+        b=x9A6+sqpr7C2CBDUYpENgWh9CJdFqEGQk8npWJtLTIImK6xtjvPJR96x7s8ZLjKXz
+         mfOdPC0ovvcFRrswvC1ZPAmSxAaVKSyUpWdl4eFSReuYy40fUHzYgbGPO5k0AqBhia
+         GTczQcWMy1HfktBJ6gpDtgnxFIYiF8Yq9AThOzeM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yorick de Wid <ydewid@gmail.com>
-Subject: [PATCH 4.19 070/120] Goodix Fingerprint device is not a modem
-Date:   Mon, 15 Mar 2021 14:57:01 +0100
-Message-Id: <20210315135722.267621306@linuxfoundation.org>
+        stable@vger.kernel.org, Lorenzo Colitti <lorenzo@google.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH 4.19 071/120] USB: gadget: u_ether: Fix a configfs return code
+Date:   Mon, 15 Mar 2021 14:57:02 +0100
+Message-Id: <20210315135722.306884259@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
 References: <20210315135720.002213995@linuxfoundation.org>
@@ -40,41 +41,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Yorick de Wid <ydewid@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 4d8654e81db7346f915eca9f1aff18f385cab621 upstream.
+commit 650bf52208d804ad5ee449c58102f8dc43175573 upstream.
 
-The CDC ACM driver is false matching the Goodix Fingerprint device
-against the USB_CDC_ACM_PROTO_AT_V25TER.
+If the string is invalid, this should return -EINVAL instead of 0.
 
-The Goodix Fingerprint device is a biometrics sensor that should be
-handled in user-space. libfprint has some support for Goodix
-fingerprint sensors, although not for this particular one. It is
-possible that the vendor allocates a PID per OEM (Lenovo, Dell etc).
-If this happens to be the case then more devices from the same vendor
-could potentially match the ACM modem module table.
-
-Signed-off-by: Yorick de Wid <ydewid@gmail.com>
+Fixes: 73517cf49bd4 ("usb: gadget: add RNDIS configfs options for class/subclass/protocol")
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210213144901.53199-1-ydewid@gmail.com
+Acked-by: Lorenzo Colitti <lorenzo@google.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/YCqZ3P53yyIg5cn7@mwanda
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/class/cdc-acm.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/usb/gadget/function/u_ether_configfs.h |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -1973,6 +1973,11 @@ static const struct usb_device_id acm_id
- 	.driver_info = SEND_ZERO_PACKET,
- 	},
- 
-+	/* Exclude Goodix Fingerprint Reader */
-+	{ USB_DEVICE(0x27c6, 0x5395),
-+	.driver_info = IGNORE_DEVICE,
-+	},
-+
- 	/* control interfaces without any protocol set */
- 	{ USB_INTERFACE_INFO(USB_CLASS_COMM, USB_CDC_SUBCLASS_ACM,
- 		USB_CDC_PROTO_NONE) },
+--- a/drivers/usb/gadget/function/u_ether_configfs.h
++++ b/drivers/usb/gadget/function/u_ether_configfs.h
+@@ -169,12 +169,11 @@ out:									\
+ 						size_t len)		\
+ 	{								\
+ 		struct f_##_f_##_opts *opts = to_f_##_f_##_opts(item);	\
+-		int ret;						\
++		int ret = -EINVAL;					\
+ 		u8 val;							\
+ 									\
+ 		mutex_lock(&opts->lock);				\
+-		ret = sscanf(page, "%02hhx", &val);			\
+-		if (ret > 0) {						\
++		if (sscanf(page, "%02hhx", &val) > 0) {			\
+ 			opts->_n_ = val;				\
+ 			ret = len;					\
+ 		}							\
 
 
