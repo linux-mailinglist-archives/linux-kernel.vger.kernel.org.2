@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FBB233BB7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD02133BBA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237063AbhCOORQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:17:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
+        id S237638AbhCOOTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:19:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232719AbhCON7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E64664F69;
-        Mon, 15 Mar 2021 13:59:13 +0000 (UTC)
+        id S230431AbhCON7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63FC364F38;
+        Mon, 15 Mar 2021 13:59:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816755;
-        bh=zsm7c2CocJClkWFlhV/LJUeWDesaPLDHC3t5mDlzhEs=;
+        s=korg; t=1615816756;
+        bh=4Q0p/+jF15brPB709+DeieT+pei2ctwos3jXZVuZKwo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KqJSWU6j9cxC4vJwjWpJcbkQ+5lgIgFEhkOKjtNVSrLWx4i2cfP7i90zh7Gbwfn2w
-         Kt7/fKMBFX1bjxa2X19mJd/uKDQ4yTRhIUyv0MKAgYUV1lk+RDvKqvOaupz08GIPh7
-         brIe3UMIdcAPzIJsjx+hYSj+9J1Nlf5YGhU4iy/c=
+        b=ZDwHe8Wj1r81/w7sGl+KmkJCOkKzRpXbSnb4n+OtCNrvdbNZmSw0LOQWoBc+duNN7
+         PAsDVmfDZeaTW6w/EwOLOUvpgu9aJT0DiBroiHLt3EfvhPDlOOybvLV00UbxFWyslQ
+         y2YSOeqz5p5HSsTPbk9QEnpENyYQ+CbZ07UlMO5E=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Artem Lapkin <art@khadas.com>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Noralf=20Tr=C3=B8nnes?= <noralf@tronnes.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH 5.10 095/290] drm: meson_drv add shutdown function
-Date:   Mon, 15 Mar 2021 14:53:08 +0100
-Message-Id: <20210315135545.132503808@linuxfoundation.org>
+Subject: [PATCH 5.10 096/290] drm/shmem-helpers: vunmap: Dont put pages for dma-buf
+Date:   Mon, 15 Mar 2021 14:53:09 +0100
+Message-Id: <20210315135545.164674055@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -44,73 +44,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Artem Lapkin <art@khadas.com>
+From: Noralf Trønnes <noralf@tronnes.org>
 
-commit fa0c16caf3d73ab4d2e5d6fa2ef2394dbec91791 upstream.
+commit 64e194e278673bceb68fb2dde7dbc3d812bfceb3 upstream.
 
-Problem: random stucks on reboot stage about 1/20 stuck/reboots
-// debug kernel log
-[    4.496660] reboot: kernel restart prepare CMD:(null)
-[    4.498114] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown begin
-[    4.503949] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown domain 0:VPU...
-...STUCK...
+dma-buf importing was reworked in commit 7d2cd72a9aa3
+("drm/shmem-helpers: Simplify dma-buf importing"). Before that commit
+drm_gem_shmem_prime_import_sg_table() did set ->pages_use_count=1 and
+drm_gem_shmem_vunmap_locked() could call drm_gem_shmem_put_pages()
+unconditionally. Now without the use count set, put pages is called also
+on dma-bufs. Fix this by only putting pages if it's not imported.
 
-Solution: add shutdown function to meson_drm driver
-// debug kernel log
-[    5.231896] reboot: kernel restart prepare CMD:(null)
-[    5.246135] [drm:meson_drv_shutdown]
-...
-[    5.259271] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown begin
-[    5.274688] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown domain 0:VPU...
-[    5.338331] reboot: Restarting system
-[    5.358293] psci: PSCI_0_2_FN_SYSTEM_RESET reboot_mode:0 cmd:(null)
-bl31 reboot reason: 0xd
-bl31 reboot reason: 0x0
-system cmd  1.
-...REBOOT...
-
-Tested: on VIM1 VIM2 VIM3 VIM3L khadas sbcs - 1000+ successful reboots
-and Odroid boards, WeTek Play2 (GXBB)
-
-Fixes: bbbe775ec5b5 ("drm: Add support for Amlogic Meson Graphic Controller")
-Signed-off-by: Artem Lapkin <art@khadas.com>
-Tested-by: Christian Hewitt <christianshewitt@gmail.com>
-Acked-by: Neil Armstrong <narmstrong@baylibre.com>
-Acked-by: Kevin Hilman <khilman@baylibre.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210302042202.3728113-1-art@khadas.com
+Signed-off-by: Noralf Trønnes <noralf@tronnes.org>
+Fixes: 7d2cd72a9aa3 ("drm/shmem-helpers: Simplify dma-buf importing")
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+Tested-by: Thomas Zimmermann <tzimmermann@suse.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210219122203.51130-1-noralf@tronnes.org
+(cherry picked from commit cdea72518a2b38207146e92e1c9e2fac15975679)
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
 Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/meson/meson_drv.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/gpu/drm/drm_gem_shmem_helper.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/drivers/gpu/drm/meson/meson_drv.c
-+++ b/drivers/gpu/drm/meson/meson_drv.c
-@@ -482,6 +482,16 @@ static int meson_probe_remote(struct pla
- 	return count;
+--- a/drivers/gpu/drm/drm_gem_shmem_helper.c
++++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+@@ -340,13 +340,14 @@ static void drm_gem_shmem_vunmap_locked(
+ 	if (--shmem->vmap_use_count > 0)
+ 		return;
+ 
+-	if (obj->import_attach)
++	if (obj->import_attach) {
+ 		dma_buf_vunmap(obj->import_attach->dmabuf, shmem->vaddr);
+-	else
++	} else {
+ 		vunmap(shmem->vaddr);
++		drm_gem_shmem_put_pages(shmem);
++	}
+ 
+ 	shmem->vaddr = NULL;
+-	drm_gem_shmem_put_pages(shmem);
  }
  
-+static void meson_drv_shutdown(struct platform_device *pdev)
-+{
-+	struct meson_drm *priv = dev_get_drvdata(&pdev->dev);
-+	struct drm_device *drm = priv->drm;
-+
-+	DRM_DEBUG_DRIVER("\n");
-+	drm_kms_helper_poll_fini(drm);
-+	drm_atomic_helper_shutdown(drm);
-+}
-+
- static int meson_drv_probe(struct platform_device *pdev)
- {
- 	struct component_match *match = NULL;
-@@ -553,6 +563,7 @@ static const struct dev_pm_ops meson_drv
- 
- static struct platform_driver meson_drm_platform_driver = {
- 	.probe      = meson_drv_probe,
-+	.shutdown   = meson_drv_shutdown,
- 	.driver     = {
- 		.name	= "meson-drm",
- 		.of_match_table = dt_match,
+ /*
 
 
