@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F8433C067
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD37B33C077
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232931AbhCOPs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 11:48:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39868 "EHLO
+        id S234506AbhCOPso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 11:48:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231995AbhCOPrz (ORCPT
+        with ESMTP id S232246AbhCOPsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 11:47:55 -0400
+        Mon, 15 Mar 2021 11:48:01 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9619EC061764;
-        Mon, 15 Mar 2021 08:47:50 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 15:47:44 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF58C0613D7;
+        Mon, 15 Mar 2021 08:47:52 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 15:47:45 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615823264;
+        s=2020; t=1615823266;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JuqiaMODEFFciZaGye9DmlBc7q+pJBxKBaIYnbaymZU=;
-        b=ZuWHvNysKINlK1nzNAFS2uhsxMk1cVNFfOm5eN3j/CGbRAfAoNinGZSBsdK/JSK3wrxnUl
-        2qMEpQ4RvfizHoC4VbLqvPcm9aL9f2q64gOIaoforMbGBPxQIHJXM6QyVbLMYkg12eVl88
-        bj2IXnDwStg5/So+cN4y0vI5kgUIQic8Z1sFn8T0WpcN725vNe4oj/11dRzPDD7X0B6Rmx
-        pg2PpP6P33dZo/dSsV6lsitTTp2B4xCAZbG5DZarugQDxIZzLbnjarOu2bxiNFiIANwoqz
-        Lq8gruhoqPePpDPs4MQho9dgWbCwhSB5SfddELZ+bBcQzeTWEkCXiuwinslbsA==
+        bh=rTNs53tDw5b1ljYJ7Z/v3Quw82S7pfeOcoWM2vZPcbs=;
+        b=r8HYBMuRGFvT3dRibNh97jzU3JNLgf10QxFXnzRWams1hrzHQQTtKQ7g7HAQfcBIE//Z4S
+        noPTY5nN+aCqCjjCh93b/4m4JAP7dgqmLR/CEC/wJGZPNM8U+bkQbmzZv8+6dBonXAY9cU
+        clUYnL6nD34g2SgHIVvIqm7/narP9V5i2UZLZo5J2MkArs9P3SZHW5dFfRuuQnChaJE/ew
+        mBPvZ2lXPwND+JWXLtpa0pueYePrZ3McxJ4MNLnv3sP0uh7XdiWmKti+sEANT1hDhz2w3s
+        GncW8e7MOIQXJ9jv9l7+krXowRrwUTiaTzWJFppCQog5XSOKkx3UJ/RqCF3deQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615823264;
+        s=2020e; t=1615823266;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JuqiaMODEFFciZaGye9DmlBc7q+pJBxKBaIYnbaymZU=;
-        b=IXIcVan+5MrwUdaDBNKfu54dt6krzq4+en/wP4JTj+xTOwjo7RmJBQwehN/V1beKmGkdEn
-        GJHFaLXjGjULAXCw==
+        bh=rTNs53tDw5b1ljYJ7Z/v3Quw82S7pfeOcoWM2vZPcbs=;
+        b=hb8kjg8mU5qY5qKnvlIeCvpkMOIcCKVXnTIuin8ybh47VXKuE6UUjAS1uBgkAPfsSYgnUq
+        cQmrVcWrFKuaKICg==
 From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] x86/insn: Remove kernel_insn_init()
+Subject: [tip: x86/core] x86/uprobes: Convert to insn_decode()
 Cc:     Borislav Petkov <bp@suse.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210304174237.31945-21-bp@alien8.de>
-References: <20210304174237.31945-21-bp@alien8.de>
+In-Reply-To: <20210304174237.31945-16-bp@alien8.de>
+References: <20210304174237.31945-16-bp@alien8.de>
 MIME-Version: 1.0
-Message-ID: <161582326416.398.15532993905756587311.tip-bot2@tip-bot2>
+Message-ID: <161582326565.398.12323407900667724874.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,65 +60,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/core branch of tip:
 
-Commit-ID:     404b639e510b36136ef15b08ca8a022845ed87db
-Gitweb:        https://git.kernel.org/tip/404b639e510b36136ef15b08ca8a022845ed87db
+Commit-ID:     88afc23922137cd3efdb0f0b6722785c9f6a35eb
+Gitweb:        https://git.kernel.org/tip/88afc23922137cd3efdb0f0b6722785c9f6a35eb
 Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Sun, 22 Nov 2020 18:12:37 +01:00
+AuthorDate:    Tue, 17 Nov 2020 15:26:12 +01:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 15 Mar 2021 12:58:36 +01:00
+CommitterDate: Mon, 15 Mar 2021 12:05:03 +01:00
 
-x86/insn: Remove kernel_insn_init()
+x86/uprobes: Convert to insn_decode()
 
-Now that it is not needed anymore, drop it.
+Simplify code, no functional changes.
 
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210304174237.31945-21-bp@alien8.de
+Link: https://lkml.kernel.org/r/20210304174237.31945-16-bp@alien8.de
 ---
- arch/x86/include/asm/insn.h       | 11 -----------
- tools/arch/x86/include/asm/insn.h | 11 -----------
- 2 files changed, 22 deletions(-)
+ arch/x86/kernel/uprobes.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/include/asm/insn.h b/arch/x86/include/asm/insn.h
-index de9fe76..5eb3753 100644
---- a/arch/x86/include/asm/insn.h
-+++ b/arch/x86/include/asm/insn.h
-@@ -159,17 +159,6 @@ static inline void insn_get_attribute(struct insn *insn)
- /* Instruction uses RIP-relative addressing */
- extern int insn_rip_relative(struct insn *insn);
+diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+index a2b4133..b63cf8f 100644
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -276,12 +276,12 @@ static bool is_prefix_bad(struct insn *insn)
  
--/* Init insn for kernel text */
--static inline void kernel_insn_init(struct insn *insn,
--				    const void *kaddr, int buf_len)
--{
--#ifdef CONFIG_X86_64
--	insn_init(insn, kaddr, buf_len, 1);
--#else /* CONFIG_X86_32 */
--	insn_init(insn, kaddr, buf_len, 0);
--#endif
--}
--
- static inline int insn_is_avx(struct insn *insn)
+ static int uprobe_init_insn(struct arch_uprobe *auprobe, struct insn *insn, bool x86_64)
  {
- 	if (!insn->prefixes.got)
-diff --git a/tools/arch/x86/include/asm/insn.h b/tools/arch/x86/include/asm/insn.h
-index 2fe19b1..5aae785 100644
---- a/tools/arch/x86/include/asm/insn.h
-+++ b/tools/arch/x86/include/asm/insn.h
-@@ -159,17 +159,6 @@ static inline void insn_get_attribute(struct insn *insn)
- /* Instruction uses RIP-relative addressing */
- extern int insn_rip_relative(struct insn *insn);
++	enum insn_mode m = x86_64 ? INSN_MODE_64 : INSN_MODE_32;
+ 	u32 volatile *good_insns;
++	int ret;
  
--/* Init insn for kernel text */
--static inline void kernel_insn_init(struct insn *insn,
--				    const void *kaddr, int buf_len)
--{
--#ifdef CONFIG_X86_64
--	insn_init(insn, kaddr, buf_len, 1);
--#else /* CONFIG_X86_32 */
--	insn_init(insn, kaddr, buf_len, 0);
--#endif
--}
--
- static inline int insn_is_avx(struct insn *insn)
- {
- 	if (!insn->prefixes.got)
+-	insn_init(insn, auprobe->insn, sizeof(auprobe->insn), x86_64);
+-	/* has the side-effect of processing the entire instruction */
+-	insn_get_length(insn);
+-	if (!insn_complete(insn))
++	ret = insn_decode(insn, auprobe->insn, sizeof(auprobe->insn), m);
++	if (ret < 0)
+ 		return -ENOEXEC;
+ 
+ 	if (is_prefix_bad(insn))
