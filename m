@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BFF33BB8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA19B33BB84
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236806AbhCOOSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:18:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S237341AbhCOORj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:17:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230301AbhCON7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 013E564F27;
-        Mon, 15 Mar 2021 13:59:11 +0000 (UTC)
+        id S231623AbhCON7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DABC964F5D;
+        Mon, 15 Mar 2021 13:59:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816753;
-        bh=zK4at9k5Dm8F1q5zVGnHRvNLo57LWKGfx8uZ+FjbCQ8=;
+        s=korg; t=1615816755;
+        bh=lYVe70g8E3JiBLX0Rln+mX3b0K2j3UrL8r/mjPTCdPA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TQsZN2yTTmR6XAe71sa7KFHzz89bgkOFMPZelfx77Vea5o8GVejHtS1/oV4y+Bg4+
-         wQkgiY2jMPUV0c7JVGWKmp0XHt5FPiO4w0MUSu2FFau+jpQ0rxISqnnCWC/6KOfLZz
-         wiBD9bb7YQVf0rkjrnMSrwkQyKZ6C+dEIRNAcKpo=
+        b=GNogp8mA+jNDRwArkEAH6pWX7NH4xEGlomIJFHPGRWW0O0rcmLwFoY2u3mJ67MsMK
+         EHeD1TM5NLTaY8COFBk1MlS1ESChydqGR2SAhg7zWCg8ij8Qu+uwn/tF8kYiQ7fYFy
+         xO+LhOyk+XNZVzOdYdRh1nCQrEIwHkq455w7Xf4w=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,9 +28,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Aleksandr Miloserdov <a.miloserdov@yadro.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 086/168] scsi: target: core: Add cmd length set before cmd complete
-Date:   Mon, 15 Mar 2021 14:55:18 +0100
-Message-Id: <20210315135553.210000175@linuxfoundation.org>
+Subject: [PATCH 5.4 087/168] scsi: target: core: Prevent underflow for service actions
+Date:   Mon, 15 Mar 2021 14:55:19 +0100
+Message-Id: <20210315135553.241683807@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
 References: <20210315135550.333963635@linuxfoundation.org>
@@ -46,73 +46,98 @@ From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 From: Aleksandr Miloserdov <a.miloserdov@yadro.com>
 
-[ Upstream commit 1c73e0c5e54d5f7d77f422a10b03ebe61eaed5ad ]
+[ Upstream commit 14d24e2cc77411301e906a8cf41884739de192de ]
 
-TCM doesn't properly handle underflow case for service actions. One way to
-prevent it is to always complete command with
-target_complete_cmd_with_length(), however it requires access to data_sg,
-which is not always available.
+TCM buffer length doesn't necessarily equal 8 + ADDITIONAL LENGTH which
+might be considered an underflow in case of Data-In size being greater than
+8 + ADDITIONAL LENGTH. So truncate buffer length to prevent underflow.
 
-This change introduces target_set_cmd_data_length() function which allows
-to set command data length before completing it.
-
-Link: https://lore.kernel.org/r/20210209072202.41154-2-a.miloserdov@yadro.com
+Link: https://lore.kernel.org/r/20210209072202.41154-3-a.miloserdov@yadro.com
 Reviewed-by: Roman Bolshakov <r.bolshakov@yadro.com>
 Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
 Signed-off-by: Aleksandr Miloserdov <a.miloserdov@yadro.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/target_core_transport.c | 15 +++++++++++----
- include/target/target_core_backend.h   |  1 +
- 2 files changed, 12 insertions(+), 4 deletions(-)
+ drivers/target/target_core_pr.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-index b1f4be055f83..a16835c0bb1d 100644
---- a/drivers/target/target_core_transport.c
-+++ b/drivers/target/target_core_transport.c
-@@ -873,11 +873,9 @@ void target_complete_cmd(struct se_cmd *cmd, u8 scsi_status)
- }
- EXPORT_SYMBOL(target_complete_cmd);
+diff --git a/drivers/target/target_core_pr.c b/drivers/target/target_core_pr.c
+index 5e931690e697..51e690ab4d29 100644
+--- a/drivers/target/target_core_pr.c
++++ b/drivers/target/target_core_pr.c
+@@ -3731,6 +3731,7 @@ core_scsi3_pri_read_keys(struct se_cmd *cmd)
+ 	spin_unlock(&dev->t10_pr.registration_lock);
  
--void target_complete_cmd_with_length(struct se_cmd *cmd, u8 scsi_status, int length)
-+void target_set_cmd_data_length(struct se_cmd *cmd, int length)
- {
--	if ((scsi_status == SAM_STAT_GOOD ||
--	     cmd->se_cmd_flags & SCF_TREAT_READ_AS_NORMAL) &&
--	    length < cmd->data_length) {
-+	if (length < cmd->data_length) {
- 		if (cmd->se_cmd_flags & SCF_UNDERFLOW_BIT) {
- 			cmd->residual_count += cmd->data_length - length;
- 		} else {
-@@ -887,6 +885,15 @@ void target_complete_cmd_with_length(struct se_cmd *cmd, u8 scsi_status, int len
+ 	put_unaligned_be32(add_len, &buf[4]);
++	target_set_cmd_data_length(cmd, 8 + add_len);
  
- 		cmd->data_length = length;
+ 	transport_kunmap_data_sg(cmd);
+ 
+@@ -3749,7 +3750,7 @@ core_scsi3_pri_read_reservation(struct se_cmd *cmd)
+ 	struct t10_pr_registration *pr_reg;
+ 	unsigned char *buf;
+ 	u64 pr_res_key;
+-	u32 add_len = 16; /* Hardcoded to 16 when a reservation is held. */
++	u32 add_len = 0;
+ 
+ 	if (cmd->data_length < 8) {
+ 		pr_err("PRIN SA READ_RESERVATIONS SCSI Data Length: %u"
+@@ -3767,8 +3768,9 @@ core_scsi3_pri_read_reservation(struct se_cmd *cmd)
+ 	pr_reg = dev->dev_pr_res_holder;
+ 	if (pr_reg) {
+ 		/*
+-		 * Set the hardcoded Additional Length
++		 * Set the Additional Length to 16 when a reservation is held
+ 		 */
++		add_len = 16;
+ 		put_unaligned_be32(add_len, &buf[4]);
+ 
+ 		if (cmd->data_length < 22)
+@@ -3804,6 +3806,8 @@ core_scsi3_pri_read_reservation(struct se_cmd *cmd)
+ 			  (pr_reg->pr_res_type & 0x0f);
  	}
-+}
-+EXPORT_SYMBOL(target_set_cmd_data_length);
+ 
++	target_set_cmd_data_length(cmd, 8 + add_len);
 +
-+void target_complete_cmd_with_length(struct se_cmd *cmd, u8 scsi_status, int length)
-+{
-+	if (scsi_status == SAM_STAT_GOOD ||
-+	    cmd->se_cmd_flags & SCF_TREAT_READ_AS_NORMAL) {
-+		target_set_cmd_data_length(cmd, length);
-+	}
+ err:
+ 	spin_unlock(&dev->dev_reservation_lock);
+ 	transport_kunmap_data_sg(cmd);
+@@ -3822,7 +3826,7 @@ core_scsi3_pri_report_capabilities(struct se_cmd *cmd)
+ 	struct se_device *dev = cmd->se_dev;
+ 	struct t10_reservation *pr_tmpl = &dev->t10_pr;
+ 	unsigned char *buf;
+-	u16 add_len = 8; /* Hardcoded to 8. */
++	u16 len = 8; /* Hardcoded to 8. */
  
- 	target_complete_cmd(cmd, scsi_status);
- }
-diff --git a/include/target/target_core_backend.h b/include/target/target_core_backend.h
-index 51b6f50eabee..0deeff9b4496 100644
---- a/include/target/target_core_backend.h
-+++ b/include/target/target_core_backend.h
-@@ -69,6 +69,7 @@ int	transport_backend_register(const struct target_backend_ops *);
- void	target_backend_unregister(const struct target_backend_ops *);
+ 	if (cmd->data_length < 6) {
+ 		pr_err("PRIN SA REPORT_CAPABILITIES SCSI Data Length:"
+@@ -3834,7 +3838,7 @@ core_scsi3_pri_report_capabilities(struct se_cmd *cmd)
+ 	if (!buf)
+ 		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
  
- void	target_complete_cmd(struct se_cmd *, u8);
-+void	target_set_cmd_data_length(struct se_cmd *, int);
- void	target_complete_cmd_with_length(struct se_cmd *, u8, int);
+-	put_unaligned_be16(add_len, &buf[0]);
++	put_unaligned_be16(len, &buf[0]);
+ 	buf[2] |= 0x10; /* CRH: Compatible Reservation Hanlding bit. */
+ 	buf[2] |= 0x08; /* SIP_C: Specify Initiator Ports Capable bit */
+ 	buf[2] |= 0x04; /* ATP_C: All Target Ports Capable bit */
+@@ -3863,6 +3867,8 @@ core_scsi3_pri_report_capabilities(struct se_cmd *cmd)
+ 	buf[4] |= 0x02; /* PR_TYPE_WRITE_EXCLUSIVE */
+ 	buf[5] |= 0x01; /* PR_TYPE_EXCLUSIVE_ACCESS_ALLREG */
  
- void	transport_copy_sense_to_cmd(struct se_cmd *, unsigned char *);
++	target_set_cmd_data_length(cmd, len);
++
+ 	transport_kunmap_data_sg(cmd);
+ 
+ 	return 0;
+@@ -4023,6 +4029,7 @@ core_scsi3_pri_read_full_status(struct se_cmd *cmd)
+ 	 * Set ADDITIONAL_LENGTH
+ 	 */
+ 	put_unaligned_be32(add_len, &buf[4]);
++	target_set_cmd_data_length(cmd, 8 + add_len);
+ 
+ 	transport_kunmap_data_sg(cmd);
+ 
 -- 
 2.30.1
 
