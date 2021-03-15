@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B900B33BE98
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D42AE33BE06
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240967AbhCOOsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:48:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49646 "EHLO mail.kernel.org"
+        id S237470AbhCOOmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:42:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234377AbhCOODR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:03:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0192664EEE;
-        Mon, 15 Mar 2021 14:03:15 +0000 (UTC)
+        id S234090AbhCOOCz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:02:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7D7264E83;
+        Mon, 15 Mar 2021 14:02:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816997;
-        bh=QBYItGqWLCpcZOlA5tWQb9Srp1lpL2o1nruEPDPfUoY=;
+        s=korg; t=1615816975;
+        bh=wYn9ekKjGJS6jyTe0348dfUT899Q5inpi3XsKOBw0Jw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UP3LmbBxmzL/WYa5btt6c1Q48xngOehouCrVjWh8Q5prqURTWlvM8PUeiNNZQrCKG
-         V/r5iSDEDKoMnVksRemEjahR0NMpfd4kRVJnd2yCJ7g8AFblx8pqtaQC7ZhPgVIWNa
-         8fYfcysxHnEHzkDWuXERWNIIPEAZwUP8IP+yvjbw=
+        b=v1JPyd5ahdMYKASNUZlfcj3NEi2AhPkNL89VPQDj7cVH5RgjGxSPwd6jIGdOCiXkQ
+         npQK3xV6eHuFqbtBuCI9VxE63IlkZPAwJRtZrGWZCGve6eOQhiUfB3f1BNRm6QSFIU
+         asPVeKIJeftrByD/sVSM5irR/JU/aUJ589+aYFyo=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nigel Kirkland <nkirkland2304@gmail.com>,
-        James Smart <jsmart2021@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 251/306] nvme-fc: fix racing controller reset and create association
-Date:   Mon, 15 Mar 2021 14:55:14 +0100
-Message-Id: <20210315135516.133328469@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Shiyan <shc_work@mail.ru>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH 5.10 222/290] Revert "serial: max310x: rework RX interrupt handling"
+Date:   Mon, 15 Mar 2021 14:55:15 +0100
+Message-Id: <20210315135549.480725314@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +41,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: James Smart <jsmart2021@gmail.com>
+From: Alexander Shiyan <shc_work@mail.ru>
 
-[ Upstream commit f20ef34d71abc1fc56b322aaa251f90f94320140 ]
+commit 2334de198fed3da72e9785ecdd691d101aa96e77 upstream.
 
-Recent patch to prevent calling __nvme_fc_abort_outstanding_ios in
-interrupt context results in a possible race condition. A controller
-reset results in errored io completions, which schedules error
-work. The change of error work to a work element allows it to fire
-after the ctrl state transition to NVME_CTRL_CONNECTING, causing
-any outstanding io (used to initialize the controller) to fail and
-cause problems for connect_work.
+This reverts commit fce3c5c1a2d9cd888f2987662ce17c0c651916b2.
 
-Add a state check to only schedule error work if not in the RESETTING
-state.
+FIFO is triggered 4 intervals after receiving a byte, it's good
+when we don't care about the time of reception, but are only
+interested in the presence of any activity on the line.
+Unfortunately, this method is not suitable for all tasks,
+for example, the RS-485 protocol will not work properly,
+since the state machine must track the request-response time
+and after the timeout expires, a decision is made that the device
+on the line is not responding.
 
-Fixes: 19fce0470f05 ("nvme-fc: avoid calling _nvme_fc_abort_outstanding_ios from interrupt context")
-Signed-off-by: Nigel Kirkland <nkirkland2304@gmail.com>
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+Link: https://lore.kernel.org/r/20210217080608.31192-1-shc_work@mail.ru
+Fixes: fce3c5c1a2d9 ("serial: max310x: rework RX interrupt handling")
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/fc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/max310x.c |   29 +++++------------------------
+ 1 file changed, 5 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-index 5f36cfa8136c..7ec6869b3e5b 100644
---- a/drivers/nvme/host/fc.c
-+++ b/drivers/nvme/host/fc.c
-@@ -2055,7 +2055,7 @@ nvme_fc_fcpio_done(struct nvmefc_fcp_req *req)
- 		nvme_fc_complete_rq(rq);
+--- a/drivers/tty/serial/max310x.c
++++ b/drivers/tty/serial/max310x.c
+@@ -1056,9 +1056,9 @@ static int max310x_startup(struct uart_p
+ 	max310x_port_update(port, MAX310X_MODE1_REG,
+ 			    MAX310X_MODE1_TRNSCVCTRL_BIT, 0);
  
- check_error:
--	if (terminate_assoc)
-+	if (terminate_assoc && ctrl->ctrl.state != NVME_CTRL_RESETTING)
- 		queue_work(nvme_reset_wq, &ctrl->ioerr_work);
- }
+-	/* Reset FIFOs */
+-	max310x_port_write(port, MAX310X_MODE2_REG,
+-			   MAX310X_MODE2_FIFORST_BIT);
++	/* Configure MODE2 register & Reset FIFOs*/
++	val = MAX310X_MODE2_RXEMPTINV_BIT | MAX310X_MODE2_FIFORST_BIT;
++	max310x_port_write(port, MAX310X_MODE2_REG, val);
+ 	max310x_port_update(port, MAX310X_MODE2_REG,
+ 			    MAX310X_MODE2_FIFORST_BIT, 0);
  
--- 
-2.30.1
-
+@@ -1086,27 +1086,8 @@ static int max310x_startup(struct uart_p
+ 	/* Clear IRQ status register */
+ 	max310x_port_read(port, MAX310X_IRQSTS_REG);
+ 
+-	/*
+-	 * Let's ask for an interrupt after a timeout equivalent to
+-	 * the receiving time of 4 characters after the last character
+-	 * has been received.
+-	 */
+-	max310x_port_write(port, MAX310X_RXTO_REG, 4);
+-
+-	/*
+-	 * Make sure we also get RX interrupts when the RX FIFO is
+-	 * filling up quickly, so get an interrupt when half of the RX
+-	 * FIFO has been filled in.
+-	 */
+-	max310x_port_write(port, MAX310X_FIFOTRIGLVL_REG,
+-			   MAX310X_FIFOTRIGLVL_RX(MAX310X_FIFO_SIZE / 2));
+-
+-	/* Enable RX timeout interrupt in LSR */
+-	max310x_port_write(port, MAX310X_LSR_IRQEN_REG,
+-			   MAX310X_LSR_RXTO_BIT);
+-
+-	/* Enable LSR, RX FIFO trigger, CTS change interrupts */
+-	val = MAX310X_IRQ_LSR_BIT  | MAX310X_IRQ_RXFIFO_BIT | MAX310X_IRQ_TXEMPTY_BIT;
++	/* Enable RX, TX, CTS change interrupts */
++	val = MAX310X_IRQ_RXEMPTY_BIT | MAX310X_IRQ_TXEMPTY_BIT;
+ 	max310x_port_write(port, MAX310X_IRQEN_REG, val | MAX310X_IRQ_CTS_BIT);
+ 
+ 	return 0;
 
 
