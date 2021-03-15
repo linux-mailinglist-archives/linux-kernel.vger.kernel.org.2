@@ -2,86 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 771B733BEE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:53:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B71B33BEE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:53:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239554AbhCOOux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:50:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44578 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236178AbhCOOep (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:34:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615818881;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mE4MXpTy1s3he7taiWasf89xOhGqDGcYELJJK6u3UHE=;
-        b=cDpToJJID6PRdj49eljl/2ulz+nEcnWZAkhj3xl94QSzKUnT6VBNQmZhZMq/7RUJj6nZZl
-        WojjpJUJd3ZH/y1v5zQa1AxO5d67LsX7yFG1F3QlTjk4pz9h/ds7BBrXHPuJAZ//ce0pFw
-        Uzjt6B2yJM8td4xzvMZ7CZn8nnK21gU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-445-fLspmacGMXOIVy7I9GZFiQ-1; Mon, 15 Mar 2021 10:34:40 -0400
-X-MC-Unique: fLspmacGMXOIVy7I9GZFiQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 51D481007EF7;
-        Mon, 15 Mar 2021 14:34:10 +0000 (UTC)
-Received: from x1.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CBF62614ED;
-        Mon, 15 Mar 2021 14:34:09 +0000 (UTC)
-Date:   Mon, 15 Mar 2021 08:34:09 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     Amey Narkhede <ameynarkhede03@gmail.com>, bhelgaas@google.com,
-        raphael.norwitz@nutanix.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <20210315083409.08b1359b@x1.home.shazbot.org>
-In-Reply-To: <20210315135226.avwmnhkfsgof6ihw@pali>
-References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
-        <20210312173452.3855-5-ameynarkhede03@gmail.com>
-        <20210314235545.girtrazsdxtrqo2q@pali>
-        <20210315134323.llz2o7yhezwgealp@archlinux>
-        <20210315135226.avwmnhkfsgof6ihw@pali>
-Organization: Red Hat
+        id S239645AbhCOOvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:51:05 -0400
+Received: from mga11.intel.com ([192.55.52.93]:43311 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236206AbhCOOev (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:34:51 -0400
+IronPort-SDR: g7IVeUrWhZIslGevpZRSnYlT5A+7xEPohitVdDp8StW7HKvMnIMthQ7vfm7/zkeZCxNh4mRcai
+ 5xXs2DMejg3g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9923"; a="185737379"
+X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
+   d="scan'208";a="185737379"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 07:34:49 -0700
+IronPort-SDR: lhYcnUSY8vMDAX/iSTPuMCxtIWdiqW1SNi23o6Kk6P4T56JL+65+nAkyfj+NMAVbA6yOUvLmeG
+ 7Lk/4M2nRHKg==
+X-IronPort-AV: E=Sophos;i="5.81,249,1610438400"; 
+   d="scan'208";a="449383288"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 07:34:47 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lLoIu-00Chac-SN; Mon, 15 Mar 2021 16:34:44 +0200
+Date:   Mon, 15 Mar 2021 16:34:44 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Marek Vasut <marex@denx.de>,
+        Roman Guskov <rguskov@dh-electronics.com>
+Subject: Re: [PATCH v1 1/1] gpiolib: Read "gpio-line-names" from a firmware
+ node
+Message-ID: <YE9whHhaa2XavKfj@smile.fi.intel.com>
+References: <20210305120240.42830-1-andriy.shevchenko@linux.intel.com>
+ <CAMRc=Mfye=O4mMiK01Q6Ok+ztSfMwMcrfaZSs+LhRxi=AM+C2w@mail.gmail.com>
+ <YE8z+ohM9abBs9SD@smile.fi.intel.com>
+ <YE9YGGB+k7CsCNDI@smile.fi.intel.com>
+ <CAMRc=McLsamBwe8hSob11ustk2GUzOfYh7CcqNtxsM+6vgPENw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMRc=McLsamBwe8hSob11ustk2GUzOfYh7CcqNtxsM+6vgPENw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021 14:52:26 +0100
-Pali Roh=C3=A1r <pali@kernel.org> wrote:
+On Mon, Mar 15, 2021 at 03:04:37PM +0100, Bartosz Golaszewski wrote:
+> On Mon, Mar 15, 2021 at 1:50 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > On Mon, Mar 15, 2021 at 12:16:26PM +0200, Andy Shevchenko wrote:
+> > > On Mon, Mar 15, 2021 at 10:01:47AM +0100, Bartosz Golaszewski wrote:
+> > > > On Fri, Mar 5, 2021 at 1:03 PM Andy Shevchenko
+> > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > >
+> > > > Unfortunately while this may fix the particular use-case on STM32, it
+> > > > breaks all other users as the 'gpio-line-names' property doesn't live
+> > > > on dev_fwnode(&gdev->dev) but on dev_fwnode(chip->parent).
+> > > >
+> > > > How about we first look for this property on the latter and only if
+> > > > it's not present descend down to the former fwnode?
+> > >
+> > > Oops, I have tested on x86 and it worked the same way.
+> > >
+> > > Lemme check this, but I think the issue rather in ordering when we apply fwnode
+> > > to the newly created device and when we actually retrieve gpio-line-names
+> > > property.
+> >
+> > Hmm... I can't see how it's possible can be. Can you provide a platform name
+> > and pointers to the DTS that has been broken by the change?
+> >
+> 
+> I noticed it with gpio-mockup (libgpiod tests failed on v5.12-rc3) and
+> the WiP gpio-sim - but it's the same on most DT platforms. The node
+> that contains the `gpio-line-names` is the one associated with the
+> platform device passed to the GPIO driver. The gpiolib then creates
+> another struct device that becomes the child of that node but it
+> doesn't copy the parent's properties to it (nor should it).
+> 
+> Every driver that reads device properties does it from the parent
+> device, not the one in gdev - whether it uses of_, fwnode_ or generic
+> device_ properties.
 
-> On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:
-> > slot reset (pci_dev_reset_slot_function) and secondary bus
-> > reset(pci_parent_bus_reset) which I think are hot reset and
-> > warm reset respectively. =20
->=20
-> No. PCI secondary bus reset =3D PCIe Hot Reset. Slot reset is just another
-> type of reset, which is currently implemented only for PCIe hot plug
-> bridges and for PowerPC PowerNV platform and it just call PCI secondary
-> bus reset with some other hook. PCIe Warm Reset does not have API in
-> kernel and therefore drivers do not export this type of reset via any
-> kernel function (yet).
+What you are telling contradicts with the idea of copying parent's fwnode
+(or OF node) in the current code.
 
-Warm reset is beyond the scope of this series, but could be implemented
-in a compatible way to fit within the pci_reset_fn_methods[] array
-defined here.  Note that with this series the resets available through
-pci_reset_function() and the per device reset attribute is sysfs remain
-exactly the same as they are currently.  The bus and slot reset
-methods used here are limited to devices where only a single function is
-affected by the reset, therefore it is not like the patch you proposed
-which performed a reset irrespective of the downstream devices.  This
-series only enables selection of the existing methods.  Thanks,
+Basically to access the properties we have to use either what specific driver
+supplied (by setting gpiochip->of_node or by leaving it NULL and in this case
+gpiochip_add_data_with_key() will copy it from the parent.
 
-Alex
+That said, we shouldn't care about parent vs. GPIO device fwnode when reading
+properties. So, bug is somewhere else.
+
+In any case, I will test with the gpio-mockup, thanks!
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
