@@ -2,79 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8D733B05D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E423533B05F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhCOKuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:50:25 -0400
-Received: from mail-vk1-f175.google.com ([209.85.221.175]:37385 "EHLO
-        mail-vk1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhCOKt6 (ORCPT
+        id S229512AbhCOKvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 06:51:25 -0400
+Received: from smtp122.ord1c.emailsrvr.com ([108.166.43.122]:55870 "EHLO
+        smtp122.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229873AbhCOKu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:49:58 -0400
-Received: by mail-vk1-f175.google.com with SMTP id s136so1408956vks.4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 03:49:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cn0hjLBIKyevwPH7uud+eEnfZFG55NE7s3jjb3XGsvA=;
-        b=W7Ekkfjf8nSvveX57BXX7ax6sIBPNMp2SgfQlWKh+iGUzQZtS0xpzmAelfUepdl0ln
-         pOzCXpPv4c8QPYfxLryEntk4MglCLrhejnfphRdd9IuLq/+3E1FK0HPz52GMHmKEguru
-         L5v0+lfIYHytBgGTMFqZBaK+sbOpogtE3aNt5dq/ZSwD1kRhwzkwynBiinEf6UNzEKxk
-         6dTyu6Rk6zE5/RW5bZIvc8Wv/hstxBM/n+vFMDjUncc5Jm+4wNbYBZjlaUcp+1sB1/U/
-         +IHWPS+eTY8SH3anHG5yzH/Dl5HZAFmSOAUqnA+e1F31dZEHPkY6WqlU1ICL4YccjRBZ
-         aRYg==
-X-Gm-Message-State: AOAM5301SPW+ios0jJt0oZMjwvLA9WndFnOLEEGeDQte/N3v8e4rm2kT
-        yAFus872+zkjKfVl1mOpAxpom+Nf2tSBubXZNXd9AoQxz94=
-X-Google-Smtp-Source: ABdhPJz/2sDUrzcpIsQ6biizvJmEwGiuZAGWwvTIIvT7E2fQOhXFFkNTN7gCCw4ooKjDvbhBVrDcJvhyw+mnpboooBw=
-X-Received: by 2002:a1f:e543:: with SMTP id c64mr3902353vkh.2.1615805397738;
- Mon, 15 Mar 2021 03:49:57 -0700 (PDT)
+        Mon, 15 Mar 2021 06:50:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1615805455;
+        bh=qNSWJAmTWvGZ7FuISpDDGYcC/3dLC5XiaoLB4U8iWvo=;
+        h=Subject:To:From:Date:From;
+        b=Vmp7FwuVC2hCyzknfWB1lKhy7aWJG2qZOGw3wzGrD2Fk6idMpN0xHpXGyhDrAhNry
+         i1tMPJ1Hebt+KEyf+5JTXBmMVJ58cQtBfWbNBZEfeyzHiGguid5gHBd+zJg3rGn63s
+         CF3EFpA6CgtcrE+fLIGlsczrM6sgeTFKgai0Sa7I=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp24.relay.ord1c.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 257F460170;
+        Mon, 15 Mar 2021 06:50:54 -0400 (EDT)
+Subject: Re: [PATCH] staging: comedi: cb_pcidas: replace slash in name
+To:     Tong Zhang <ztong0001@gmail.com>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <20210314040221.2740750-1-ztong0001@gmail.com>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <393f3925-9dbf-72e5-4d9b-2e213a6a71cb@mev.co.uk>
+Date:   Mon, 15 Mar 2021 10:50:53 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210315104409.1598822-1-geert@linux-m68k.org>
-In-Reply-To: <20210315104409.1598822-1-geert@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 15 Mar 2021 11:49:46 +0100
-Message-ID: <CAMuHMdVJFprsj9njwv13jWTBELuq8RcXOmR7AoR9dqDdydLcNQ@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.12-rc3
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210314040221.2740750-1-ztong0001@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Classification-ID: 789b242b-2a41-4a30-9d6c-90dcc59bfe98-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 11:46 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> JFYI, when comparing v5.12-rc3[1] to v5.12-rc2[3], the summaries are:
->   - build errors: +2/-2
+On 14/03/2021 04:02, Tong Zhang wrote:
+> request_irq() wont accept a name which contains slash so we need to
+> repalce it with something else -- otherwise it will trigger a warning
+> and the entry in /proc/irq/ will not be created
+> 
+> [    1.630764] name 'pci-das1602/16'
+> [    1.630950] WARNING: CPU: 0 PID: 181 at fs/proc/generic.c:180 __xlate_proc_name+0x93/0xb0
+> [    1.634009] RIP: 0010:__xlate_proc_name+0x93/0xb0
+> [    1.639441] Call Trace:
+> [    1.639976]  proc_mkdir+0x18/0x20
+> [    1.641946]  request_threaded_irq+0xfe/0x160
+> [    1.642186]  cb_pcidas_auto_attach+0xf4/0x610 [cb_pcidas]
+> 
+> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+> ---
+>  drivers/staging/comedi/drivers/cb_pcidas.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/staging/comedi/drivers/cb_pcidas.c b/drivers/staging/comedi/drivers/cb_pcidas.c
+> index d740c4782775..df0960d41cff 100644
+> --- a/drivers/staging/comedi/drivers/cb_pcidas.c
+> +++ b/drivers/staging/comedi/drivers/cb_pcidas.c
+> @@ -230,7 +230,7 @@ struct cb_pcidas_board {
+>  
+>  static const struct cb_pcidas_board cb_pcidas_boards[] = {
+>  	[BOARD_PCIDAS1602_16] = {
+> -		.name		= "pci-das1602/16",
+> +		.name		= "pci-das1602-16",
+>  		.ai_speed	= 5000,
+>  		.ao_scan_speed	= 10000,
+>  		.fifo_size	= 512,
+> @@ -248,7 +248,7 @@ static const struct cb_pcidas_board cb_pcidas_boards[] = {
+>  		.has_ao		= 1,
+>  	},
+>  	[BOARD_PCIDAS1602_12] = {
+> -		.name		= "pci-das1602/12",
+> +		.name		= "pci-das1602-12",
+>  		.ai_speed	= 3200,
+>  		.ao_scan_speed	= 4000,
+>  		.fifo_size	= 1024,
+> @@ -257,12 +257,12 @@ static const struct cb_pcidas_board cb_pcidas_boards[] = {
+>  		.is_1602	= 1,
+>  	},
+>  	[BOARD_PCIDAS1200_JR] = {
+> -		.name		= "pci-das1200/jr",
+> +		.name		= "pci-das1200-jr",
+>  		.ai_speed	= 3200,
+>  		.fifo_size	= 1024,
+>  	},
+>  	[BOARD_PCIDAS1602_16_JR] = {
+> -		.name		= "pci-das1602/16/jr",
+> +		.name		= "pci-das1602-16-jr",
+>  		.ai_speed	= 5000,
+>  		.fifo_size	= 512,
+>  		.is_16bit	= 1,
+> 
 
-> 2 error regressions:
->   + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_248' declared with attribute error: BUILD_BUG failed:  => 320:38
->   + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_249' declared with attribute error: BUILD_BUG failed:  => 320:38
+As for cb_pcidas64, the board name may be used by user-space
+applications, so this may break those applications.
 
-powerpc-gcc4.9/ppc64_book3e_allmodconfig
-
-So we traded implicit declaration errors:
-
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:
-error: implicit declaration of function 'disable_kernel_vsx'
-[-Werror=implicit-function-declaration]: 674:2 =>
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:
-error: implicit declaration of function 'enable_kernel_vsx'
-[-Werror=implicit-function-declaration]: 638:2 =>
-
-for compile-time assertions.
-
-Gr{oetje,eeting}s,
-
-                        Geert
+I suggest passing the comedi driver name "cb_pcidas" to request_irq()
+for now.  (It can also be reached via dev->driver->driver_name .)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
