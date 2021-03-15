@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD39B33B56A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A611C33B54E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhCONyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:54:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55780 "EHLO mail.kernel.org"
+        id S231321AbhCONyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:54:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230145AbhCONxR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:53:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CE8C64EED;
-        Mon, 15 Mar 2021 13:53:14 +0000 (UTC)
+        id S230078AbhCONxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:53:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0FFD64EED;
+        Mon, 15 Mar 2021 13:53:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816396;
-        bh=PhgHNYBFT2asspsMB8sRxrS9HQYXygFe+G+z4EgUY6k=;
+        s=korg; t=1615816390;
+        bh=iLmPXNG76G6u/naED2bfEhxm8XyFLQIPdZKWYuVdl9c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0HvB+0Ddqa5/ytDE00KtEOPkjXrkp6CEn+i+AdBA9IO+IItIcPHntpeJd+5S4PFkR
-         8karLjuDu2K9C9VZBl0dHsFnT4j5gn0M8MYcJN4JTZNJ7Jtnm3YtW0ga3MfJuxYy2k
-         CZXyWF8HJ4nrKKE6Ydh+kfUWtjP4f/BQJwHpnLUQ=
+        b=QV8rK+X9S5LPiOSQpVFM7p1dmuv7vs6TShRRKEIHbpSdQJ7MVTrkszbm34foVD9ga
+         b1cVe4sVUq5cHBc4XaWiZSVC+Yfw6HxFFTriPYcaXyp+LO2gHi8xITzFpvtzwfL5SZ
+         0m3EIsPLBxWuPbFhSs2OePp079wdzlwebyMPmIj4=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chaotian Jing <chaotian.jing@mediatek.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 20/75] mmc: mediatek: fix race condition between msdc_request_timeout and irq
-Date:   Mon, 15 Mar 2021 14:51:34 +0100
-Message-Id: <20210315135208.913950051@linuxfoundation.org>
+        stable@vger.kernel.org, "Kevin(Yudong) Yang" <yyd@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 12/78] net/mlx4_en: update moderation when config reset
+Date:   Mon, 15 Mar 2021 14:51:35 +0100
+Message-Id: <20210315135212.466263867@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
-References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+References: <20210315135212.060847074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,84 +44,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Chaotian Jing <chaotian.jing@mediatek.com>
+From: Kevin(Yudong) Yang <yyd@google.com>
 
-[ Upstream commit 0354ca6edd464a2cf332f390581977b8699ed081 ]
+commit 00ff801bb8ce6711e919af4530b6ffa14a22390a upstream.
 
-when get request SW timeout, if CMD/DAT xfer done irq coming right now,
-then there is race between the msdc_request_timeout work and irq handler,
-and the host->cmd and host->data may set to NULL in irq handler. also,
-current flow ensure that only one path can go to msdc_request_done(), so
-no need check the return value of cancel_delayed_work().
+This patch fixes a bug that the moderation config will not be
+applied when calling mlx4_en_reset_config. For example, when
+turning on rx timestamping, mlx4_en_reset_config() will be called,
+causing the NIC to forget previous moderation config.
 
-Signed-off-by: Chaotian Jing <chaotian.jing@mediatek.com>
-Link: https://lore.kernel.org/r/20201218071611.12276-1-chaotian.jing@mediatek.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This fix is in phase with a previous fix:
+commit 79c54b6bbf06 ("net/mlx4_en: Fix TX moderation info loss
+after set_ringparam is called")
+
+Tested: Before this patch, on a host with NIC using mlx4, run
+netserver and stream TCP to the host at full utilization.
+$ sar -I SUM 1
+                 INTR    intr/s
+14:03:56          sum  48758.00
+
+After rx hwtstamp is enabled:
+$ sar -I SUM 1
+14:10:38          sum 317771.00
+We see the moderation is not working properly and issued 7x more
+interrupts.
+
+After the patch, and turned on rx hwtstamp, the rate of interrupts
+is as expected:
+$ sar -I SUM 1
+14:52:11          sum  49332.00
+
+Fixes: 79c54b6bbf06 ("net/mlx4_en: Fix TX moderation info loss after set_ringparam is called")
+Signed-off-by: Kevin(Yudong) Yang <yyd@google.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Reviewed-by: Neal Cardwell <ncardwell@google.com>
+CC: Tariq Toukan <tariqt@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/mtk-sd.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ drivers/net/ethernet/mellanox/mlx4/en_ethtool.c |    2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_netdev.c  |    2 ++
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h    |    1 +
+ 3 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-index 5ef25463494f..1770c8df9d1b 100644
---- a/drivers/mmc/host/mtk-sd.c
-+++ b/drivers/mmc/host/mtk-sd.c
-@@ -720,13 +720,13 @@ static void msdc_track_cmd_data(struct msdc_host *host,
- static void msdc_request_done(struct msdc_host *host, struct mmc_request *mrq)
+--- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+@@ -47,7 +47,7 @@
+ #define EN_ETHTOOL_SHORT_MASK cpu_to_be16(0xffff)
+ #define EN_ETHTOOL_WORD_MASK  cpu_to_be32(0xffffffff)
+ 
+-static int mlx4_en_moderation_update(struct mlx4_en_priv *priv)
++int mlx4_en_moderation_update(struct mlx4_en_priv *priv)
  {
- 	unsigned long flags;
--	bool ret;
+ 	int i;
+ 	int err = 0;
+--- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
+@@ -3459,6 +3459,8 @@ int mlx4_en_reset_config(struct net_devi
+ 			en_err(priv, "Failed starting port\n");
+ 	}
  
--	ret = cancel_delayed_work(&host->req_timeout);
--	if (!ret) {
--		/* delay work already running */
--		return;
--	}
-+	/*
-+	 * No need check the return value of cancel_delayed_work, as only ONE
-+	 * path will go here!
-+	 */
-+	cancel_delayed_work(&host->req_timeout);
-+
- 	spin_lock_irqsave(&host->lock, flags);
- 	host->mrq = NULL;
- 	spin_unlock_irqrestore(&host->lock, flags);
-@@ -747,7 +747,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
- 	bool done = false;
- 	bool sbc_error;
- 	unsigned long flags;
--	u32 *rsp = cmd->resp;
-+	u32 *rsp;
++	if (!err)
++		err = mlx4_en_moderation_update(priv);
+ out:
+ 	mutex_unlock(&mdev->state_lock);
+ 	kfree(tmp);
+--- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
++++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+@@ -773,6 +773,7 @@ void mlx4_en_ptp_overflow_check(struct m
+ #define DEV_FEATURE_CHANGED(dev, new_features, feature) \
+ 	((dev->features & feature) ^ (new_features & feature))
  
- 	if (mrq->sbc && cmd == mrq->cmd &&
- 	    (events & (MSDC_INT_ACMDRDY | MSDC_INT_ACMDCRCERR
-@@ -768,6 +768,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
- 
- 	if (done)
- 		return true;
-+	rsp = cmd->resp;
- 
- 	sdr_clr_bits(host->base + MSDC_INTEN, cmd_ints_mask);
- 
-@@ -942,7 +943,7 @@ static void msdc_data_xfer_next(struct msdc_host *host,
- static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
- 				struct mmc_request *mrq, struct mmc_data *data)
- {
--	struct mmc_command *stop = data->stop;
-+	struct mmc_command *stop;
- 	unsigned long flags;
- 	bool done;
- 	unsigned int check_data = events &
-@@ -958,6 +959,7 @@ static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
- 
- 	if (done)
- 		return true;
-+	stop = data->stop;
- 
- 	if (check_data || (stop && stop->error)) {
- 		dev_dbg(host->dev, "DMA status: 0x%8X\n",
--- 
-2.30.1
-
++int mlx4_en_moderation_update(struct mlx4_en_priv *priv);
+ int mlx4_en_reset_config(struct net_device *dev,
+ 			 struct hwtstamp_config ts_config,
+ 			 netdev_features_t new_features);
 
 
