@@ -2,80 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9127833C3D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:14:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0624633C3DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235746AbhCORNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 13:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235658AbhCORNW (ORCPT
+        id S235851AbhCOROQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 13:14:16 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:37314 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229843AbhCOROB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:13:22 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A6E0C06174A;
-        Mon, 15 Mar 2021 10:13:22 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 343E022234;
-        Mon, 15 Mar 2021 18:13:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1615828400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WvXuiNr6/ZH9LeLj3FbJ4cXG+gnUdCJXUawyo6mrnF8=;
-        b=FDedj9diIvD/llhNi5mdiIowvQEiqOlJyODlAvBfiNTOJY4AtjHMVm5PejQE7LXWxdaQ1w
-        +qgXPv1Yllm/Mktd2tWNeVVy42rVvx8kreG52pzZq4uWZZ4u+bY2ol8GegZmiE28BlTzMd
-        PWmUz3fRLEO4VhGrks7HEgmxtsyOnoU=
+        Mon, 15 Mar 2021 13:14:01 -0400
+Received: by mail-io1-f54.google.com with SMTP id y20so15854357iot.4;
+        Mon, 15 Mar 2021 10:14:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iFQlGUPMwfnpBCqbpSRGkYh/7C2oaLwfautQirfFp7M=;
+        b=pudu/QMZCjnInZnPiSyISnkrMhT7v6V9a2kUN6uiOu+fkblkomsisT3zUDkNZAnCH/
+         Tlu9b+/0Lvbz4KKues8sVhulhGg4BxNDrdmij32w9sfNxb11zKDEFopwI6nk1Tw66hKf
+         VHoED6ffQLj+kCAz8kVCN+1NlCCaPLXghwSMITM57vkREVE3Xs4cX0APBjsiSbrGdK8q
+         067mOB0nDEvNWKZbjsWektA750Pbv7Q0dGrER5/UlWHoEnHXhCeY6D2gEuyD4eh9zM0d
+         cEqWuviGNYp3dGYDNu9DrachtwaRoo9GXPfZ4leJkX9rnPo21+sPnRALMJ6xzb3W+vWw
+         ex6g==
+X-Gm-Message-State: AOAM531z1njY1J0gwqNBijAv2C23WFpgMcbJ4nDwXDY9JHEiwXe/swEX
+        gjikPLkNmDIbeGCnumTseSto9K8mUQ==
+X-Google-Smtp-Source: ABdhPJybHmYcrgjGA8sZJsjU3Vw+8gF5icFgDP64gDoqeaSzp6mjU+fJJj15xeY3CTGq96COYxgfIA==
+X-Received: by 2002:a02:cc1a:: with SMTP id n26mr10519485jap.21.1615828440953;
+        Mon, 15 Mar 2021 10:14:00 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id h128sm7358623ioa.32.2021.03.15.10.13.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 10:14:00 -0700 (PDT)
+Received: (nullmailer pid 1063744 invoked by uid 1000);
+        Mon, 15 Mar 2021 17:13:57 -0000
+Date:   Mon, 15 Mar 2021 11:13:57 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Masahiro Yamada <masahiroy@kernel.org>, anmar.oueja@linaro.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Bill Mills <bill.mills@linaro.org>
+Subject: Re: [PATCH V11 0/5] dt: Add fdtoverlay rule and statically build
+ unittest
+Message-ID: <20210315171357.GA1063052@robh.at.kernel.org>
+References: <cover.1615354376.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 15 Mar 2021 18:13:20 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, jonathanh@nvidia.com,
-        kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, robh@kernel.org, sharadg@nvidia.com,
-        thierry.reding@gmail.com
-Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
-In-Reply-To: <3b3c5aea-60bc-d7bd-9ae6-5e890782b2e8@nvidia.com>
-References: <ca540fb6-2ea7-90b0-66ad-097e99b6e585@nvidia.com>
- <20210311161558.GG4962@sirena.org.uk>
- <f21b87f1afb3eda54b5f00f2d1c146d3@walle.cc>
- <20210312113544.GB5348@sirena.org.uk>
- <6ed28bb5330879b1919aced5174f319f@walle.cc>
- <20210312120456.GD5348@sirena.org.uk>
- <684332700f8be9f77348a510eb6eba22@walle.cc>
- <20210312134642.GF5348@sirena.org.uk>
- <8cdf1cfa971945792b509a687a4de735@walle.cc>
- <6af6439c-bdb8-cd0f-635d-069040ba5b65@nvidia.com>
- <20210315153925.GC4595@sirena.org.uk>
- <3b3c5aea-60bc-d7bd-9ae6-5e890782b2e8@nvidia.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <67ca8858be63a07e3549f73afcc08437@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1615354376.git.viresh.kumar@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-15 18:10, schrieb Sameer Pujar:
->>> Yes this is a problem, unfortunately I missed checking some of the
->>> simple-card examples. I wonder we should be specifically looking for 
->>> "mclk"
->>> clock here.
->> That would definitely help mitigate the problem but I really think 
->> it's
->> cleaner and safer to just push this down to set_sysclk().
+On Wed, 10 Mar 2021 11:05:28 +0530, Viresh Kumar wrote:
+> Hi,
 > 
-> Understand now. I will push patches based on this. Thanks for the 
-> details.
+> This patchset adds a generic rule for applying overlays using fdtoverlay
+> tool and then updates unittests to get built statically using the same.
+> 
+> V10->V11:
+> - Update patch 4/5 to fix checkpatch warning on spaces and tabs.
+> - Added Acked-by from Masahiro for patch 2/5.
+> 
+> V9->V10:
+> - Add a new patch to allow .dtso files.
+> - Update 2/5 to be more efficient and also generate symbols for base
+>   files automatically.
+> - No need to add lines like DTC_FLAGS_foo_base += -@ in patch 5/5.
+> - Add Ack by Masahiro for 1/5.
+> 
+> V8->V9:
+> - Added some comment in patch 3/4 based on Frank's suggestions.
+> 
+> V7->V8:
+> - Patch 1 is new.
+> - Platforms need to use dtb-y += foo.dtb instead of overlay-y +=
+>   foo.dtb.
+> - Use multi_depend instead of .SECONDEXPANSION.
+> - Use dtb-y for unittest instead of overlay-y.
+> - Rename the commented dtb filess in unittest Makefile as .dtbo.
+> - Improved Makefile code (I am learning a lot every day :)
+> 
+> V6->V7:
+> - Dropped the first 4 patches, already merged.
+> - Patch 1/3 is new, suggested by Rob and slightly modified by me.
+> - Adapt Patch 3/3 to the new rule and name the overlay dtbs as .dtbo.
+> 
+> --
+> Viresh
+> 
+> Rob Herring (1):
+>   kbuild: Add generic rule to apply fdtoverlay
+> 
+> Viresh Kumar (4):
+>   kbuild: Simplify builds with CONFIG_OF_ALL_DTBS
+>   kbuild: Allow .dtso format for overlay source files
+>   of: unittest: Create overlay_common.dtsi and testcases_common.dtsi
+>   of: unittest: Statically apply overlays using fdtoverlay
+> 
+>  drivers/of/unittest-data/Makefile             | 48 ++++++++++
+>  drivers/of/unittest-data/overlay_base.dts     | 90 +-----------------
+>  drivers/of/unittest-data/overlay_common.dtsi  | 91 +++++++++++++++++++
+>  drivers/of/unittest-data/static_base_1.dts    |  4 +
+>  drivers/of/unittest-data/static_base_2.dts    |  4 +
+>  drivers/of/unittest-data/testcases.dts        | 23 ++---
+>  .../of/unittest-data/testcases_common.dtsi    | 19 ++++
+>  .../of/unittest-data/tests-interrupts.dtsi    | 11 +--
+>  scripts/Makefile.lib                          | 40 ++++++--
+>  9 files changed, 218 insertions(+), 112 deletions(-)
+>  create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
+>  create mode 100644 drivers/of/unittest-data/static_base_1.dts
+>  create mode 100644 drivers/of/unittest-data/static_base_2.dts
+>  create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
+> 
+> 
+> base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
+> --
+> 2.25.0.rc1.19.g042ed3e048af
+> 
+> 
+> 
 
-Please keep me on CC, I'm not subscribed to the sound/alsa mailinglist.
-
-Thanks,
--michael
+Applied patches 1,2,4,5, thanks!
