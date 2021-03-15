@@ -2,72 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAC733BF18
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DFB33BDF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239523AbhCOOxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:53:50 -0400
-Received: from aibo.runbox.com ([91.220.196.211]:60172 "EHLO aibo.runbox.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239030AbhCOOps (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:45:48 -0400
-X-Greylist: delayed 2639 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Mar 2021 10:45:47 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbx.email;
-         s=selector2; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
-        Message-Id:Date:Subject:To:From;
-        bh=3PR2r5ZvgnJe7tAC1N2GXrqbrl5IXjHqQVhXewN/7aA=; b=0sWhx4VABXDmZ9CxbTqUYyd+zG
-        6yydX42nbXOHnR3/F0i3jKh0BBAE1bV02SO8YwEkHHC+bwMJUbMoF5ps46A4HgGJygrSwd99b7+sb
-        Tnk5NafEGdO/mp8Lmb4LROjIHcAxV7V0Fg7jWxBZw1reCCeZG7E5iHqRYCe2FReJ+EW+PPLWBFtwp
-        Rhs88hszol2bUf80iyHqU2rPmXyfMWNM53iKjQlAyT1Zj6PmHoN5ZoRDnx4EB4JeV90bXrjg1iRMw
-        JmlaTXX+mR86MOC6lBKjhrNZGUlj2/Pm7aAE7CgnDsAKk5VB1dC3YltYAkW9KLpaZEG7C73E/a8el
-        8KyHoREA==;
-Received: from [10.9.9.73] (helo=submission02.runbox)
-        by mailtransmit02.runbox with esmtp (Exim 4.86_2)
-        (envelope-from <detegr@rbx.email>)
-        id 1lLnmh-00006C-Ux; Mon, 15 Mar 2021 15:01:35 +0100
-Received: by submission02.runbox with esmtpsa  [Authenticated alias (932193)]  (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90_1)
-        id 1lLnkR-0004Hn-5v; Mon, 15 Mar 2021 14:59:07 +0100
-From:   =?UTF-8?q?Antti=20Ker=C3=A4nen?= <detegr@rbx.email>
-To:     trivial@kernel.org, Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        =?UTF-8?q?Antti=20Ker=C3=A4nen?= <detegr@rbx.email>,
-        linux-media@vger.kernel.org (open list:MEDIA INPUT INFRASTRUCTURE
-        (V4L/DVB)), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] media: v4l2-mc: fix a warning message
-Date:   Mon, 15 Mar 2021 15:58:54 +0200
-Message-Id: <20210315135856.2794233-1-detegr@rbx.email>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S237717AbhCOOlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:41:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233979AbhCOOCq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:02:46 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C35C06174A;
+        Mon, 15 Mar 2021 07:02:44 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id 61so5753457wrm.12;
+        Mon, 15 Mar 2021 07:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=k0vn3g0iM9tzN5zs4VgW3rT5nVcEHeJKUw8PGKNq8mo=;
+        b=mtxAx5cWs61UGwBM7+LNzs509fgwmcXyFtwBhcyQOKx7rxl7Ym6jPE4w83BBHZHbAV
+         dzDpQwf5PYgEsmM1lunArSteDuIRyRT43+3RwcSEkDtTdXoa7iazy9PbnmY6q/7Xj+HT
+         NWN149YVOwQ0s285t18yUN5uL0jV8wdZZP/+6ICVKJnUjLfQJJMgeqt2S/1yK3UwDNjV
+         tYmg7NFWeX5ibxRGg4MWGSIVchnUfZaC+Zqn6Ymk8+nba/YAB6U02F1JqyaJwjl48P4r
+         G40UbXv1xNyTsv970hy5BHpagnp+2Mg5Mw6Atx/0QG+TSyIh7AD27kdx0QYS0LKfMXIc
+         gi7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=k0vn3g0iM9tzN5zs4VgW3rT5nVcEHeJKUw8PGKNq8mo=;
+        b=UeOVaCHTF/Xp2As0k1BVq1zrenw6puvf1h5V8CcjBagxkc1YvQh2jI6/URlob39A13
+         M0cnd29AHHgjO+5RZ85MT4xsxIWA89CyrMhjw75C+VlaEsTaatSeTzhwvIQ02Gy40hqB
+         oSsxwrtfyh1LIk2n2zJBJV/EiJ2F/xmXyAYt1z4BD41a6dx9LxUrAAvTZDxPpBFaeXBw
+         HWzLKjCRg2olkbODrzSa3pKSa2A5hzO3R43EPS5eZ3uwo53LARWDoD6rpohiWCB0fC+2
+         RStIkj8zBH9P0GDTeCAm3fxVZSvRP5vfTCzqQyuq2hy4l+hB5udOtcnsmBZN3SB9IeHB
+         xdXQ==
+X-Gm-Message-State: AOAM530yu4TMU1SEtp+AjgO2H1FShmrjtxHxexVLhvggmXaLhHubIk6l
+        dAl/iHqksqmOsNIbi0bRqJg=
+X-Google-Smtp-Source: ABdhPJx28lC8vTBtYr2kHoXQJipgXe7H1XrROX3f9kSupKxCshYAGQmCEA/JKVPb+O6qsghAFI/jNA==
+X-Received: by 2002:a5d:6a49:: with SMTP id t9mr28200782wrw.131.1615816961722;
+        Mon, 15 Mar 2021 07:02:41 -0700 (PDT)
+Received: from macbook-pro-alvaro.lan ([80.31.204.166])
+        by smtp.gmail.com with ESMTPSA id b131sm12689628wmb.34.2021.03.15.07.02.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 15 Mar 2021 07:02:41 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH 2/2] net: mdio: Add BCM6368 MDIO mux bus controller
+From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+In-Reply-To: <YEaQdXwrmVekXp4G@lunn.ch>
+Date:   Mon, 15 Mar 2021 15:02:37 +0100
+Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D39D163A-C6B3-4B66-B650-8FF0A06EF7A2@gmail.com>
+References: <20210308184102.3921-1-noltari@gmail.com>
+ <20210308184102.3921-3-noltari@gmail.com> <YEaQdXwrmVekXp4G@lunn.ch>
+To:     Andrew Lunn <andrew@lunn.ch>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The message erroneously told that the pad wasn't found from a tuner
-when in reality it wasn't found from a decoder.
+Hi Andrew,
 
-Signed-off-by: Antti Keränen <detegr@rbx.email>
----
- drivers/media/v4l2-core/v4l2-mc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> El 8 mar 2021, a las 22:00, Andrew Lunn <andrew@lunn.ch> escribi=C3=B3:
+>=20
+>> +static int bcm6368_mdiomux_probe(struct platform_device *pdev)
+>> +{
+>> +	struct bcm6368_mdiomux_desc *md;
+>> +	struct mii_bus *bus;
+>> +	struct resource *res;
+>> +	int rc;
+>> +
+>> +	md =3D devm_kzalloc(&pdev->dev, sizeof(*md), GFP_KERNEL);
+>> +	if (!md)
+>> +		return -ENOMEM;
+>> +	md->dev =3D &pdev->dev;
+>> +
+>> +	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +	if (!res)
+>> +		return -EINVAL;
+>> +
+>> +	/* Just ioremap, as this MDIO block is usually integrated into =
+an
+>> +	 * Ethernet MAC controller register range
+>> +	 */
+>> +	md->base =3D devm_ioremap(&pdev->dev, res->start, =
+resource_size(res));
+>> +	if (!md->base) {
+>> +		dev_err(&pdev->dev, "failed to ioremap register\n");
+>> +		return -ENOMEM;
+>> +	}
+>> +
+>> +	md->mii_bus =3D devm_mdiobus_alloc(&pdev->dev);
+>> +	if (!md->mii_bus) {
+>> +		dev_err(&pdev->dev, "mdiomux bus alloc failed\n");
+>> +		return ENOMEM;
+>> +	}
+>> +
+>> +	bus =3D md->mii_bus;
+>> +	bus->priv =3D md;
+>> +	bus->name =3D "BCM6368 MDIO mux bus";
+>> +	snprintf(bus->id, MII_BUS_ID_SIZE, "%s-%d", pdev->name, =
+pdev->id);
+>> +	bus->parent =3D &pdev->dev;
+>> +	bus->read =3D bcm6368_mdiomux_read;
+>> +	bus->write =3D bcm6368_mdiomux_write;
+>> +	bus->phy_mask =3D 0x3f;
+>> +	bus->dev.of_node =3D pdev->dev.of_node;
+>> +
+>> +	rc =3D mdiobus_register(bus);
+>> +	if (rc) {
+>> +		dev_err(&pdev->dev, "mdiomux registration failed\n");
+>> +		return rc;
+>> +	}
+>=20
+> So this is different to all the other mux drivers. Normally there is
+> an MDIO driver. And there is a mux driver. Two separate drivers. The
+> mux driver uses a phandle to reference the MDIO driver. Here we have
+> both in one driver.
+>=20
+> Does this MDIO bus device exist as a standalone device? Without the
+> mux? If silicon does exist like that, having two separate drivers
+> would be better.
 
-diff --git a/drivers/media/v4l2-core/v4l2-mc.c b/drivers/media/v4l2-core/v4l2-mc.c
-index cba3d8e0bc4a..b01474717dca 100644
---- a/drivers/media/v4l2-core/v4l2-mc.c
-+++ b/drivers/media/v4l2-core/v4l2-mc.c
-@@ -246,7 +246,7 @@ int v4l2_mc_create_media_graph(struct media_device *mdev)
- 			pad_sink = media_get_pad_index(decoder, true,
- 						       PAD_SIGNAL_ANALOG);
- 			if (pad_sink < 0) {
--				dev_warn(mdev->dev, "couldn't get tuner analog pad sink\n");
-+				dev_warn(mdev->dev, "couldn't get decoder analog pad sink\n");
- 				return -EINVAL;
- 			}
- 			ret = media_create_pad_link(entity, 0, decoder,
--- 
-2.30.2
+BCM6368 (and newer) SoCs have an integrated ethernet switch controller =
+with dedicated internal phys, but it also supports connecting to =
+external phys not integrated in the internal switch.
+Ports 0-3 are internal, ports 4-7 are external and can be connected to =
+external switches or phys and port 8 is the CPU.
+This MDIO bus device is integrated in the BCM63xx switch registers, =
+which corresponds to the same registers present in =
+drivers/net/dsa/b53/b53_regs.h.
+As you can see in the source code, registers are the same for the =
+internal and external bus. The only difference is that if MDIOC_EXT_MASK =
+(bit 16) is set, the MDIO bus accessed will be the external, and on the =
+contrary, if bit 16 isn=E2=80=99t set, the MDIO bus accessed will be the =
+internal one.
 
+I don=E2=80=99t know if this answers your question, but I think that =
+adding it as mdiomux is the way to go.
+
+>=20
+>     Andrew
+
+Best regards,
+=C3=81lvaro.=
