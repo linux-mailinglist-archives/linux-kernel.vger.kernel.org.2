@@ -2,33 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04ECA33B973
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACAE733B85E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:05:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234216AbhCOODE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:03:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34280 "EHLO mail.kernel.org"
+        id S234235AbhCOODG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:03:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230455AbhCON5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231151AbhCON5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 09:57:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2382D64F0B;
-        Mon, 15 Mar 2021 13:57:01 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2A8D64F07;
+        Mon, 15 Mar 2021 13:57:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816622;
-        bh=nsYvCEi2xoNHe+CzywZRoMdYn6xHq91vEpzjR/JdKQk=;
+        s=korg; t=1615816625;
+        bh=0M05p8XucEh6JAWReMiGEgzdUJCQTvigP4r5AdxlDuE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D0EKi0EjF9ekbWWDuH4YUZNTK3fBvyjKw2W2XdJcXrE7jDywyFAHkI+6g7vHTxTwC
-         7uK/t+BNiNryKR52FS2KZFRnzqDa3ZClkvK1ZqLH/NMit8GN3NYZ0tgH6udKXQJF4P
-         C3oqyiy/jWsFS5O980epis94wEWLow+rgBncvzeE=
+        b=XH8MbYq8sOvzBPcuYxgAH1eAAqaqbfDowWWQJt2y2HT9JstE+Fh0N0p7INQGeSPzP
+         Ro/gI5X8dnZjsIcShSr6aYRxeIQR0C7O8M5FPtCt65CSOigeXN/NjfBR+u5jUtV48L
+         4k7Gr1d/q4eFMV8jS0b9bsyozKI2+FxkpHpa26FM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.11 026/306] netfilter: x_tables: gpf inside xt_find_revision()
-Date:   Mon, 15 Mar 2021 14:51:29 +0100
-Message-Id: <20210315135508.510397578@linuxfoundation.org>
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Willem de Bruijn <willemb@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH 5.11 027/306] net: always use icmp{,v6}_ndo_send from ndo_start_xmit
+Date:   Mon, 15 Mar 2021 14:51:30 +0100
+Message-Id: <20210315135508.539413443@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -42,89 +47,186 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Jason A. Donenfeld <Jason@zx2c4.com>
 
-commit 8e24edddad152b998b37a7f583175137ed2e04a5 upstream.
+commit 4372339efc06bc2a796f4cc9d0a7a929dfda4967 upstream.
 
-nested target/match_revfn() calls work with xt[NFPROTO_UNSPEC] lists
-without taking xt[NFPROTO_UNSPEC].mutex. This can race with module unload
-and cause host to crash:
+There were a few remaining tunnel drivers that didn't receive the prior
+conversion to icmp{,v6}_ndo_send. Knowing now that this could lead to
+memory corrution (see ee576c47db60 ("net: icmp: pass zeroed opts from
+icmp{,v6}_ndo_send before sending") for details), there's even more
+imperative to have these all converted. So this commit goes through the
+remaining cases that I could find and does a boring translation to the
+ndo variety.
 
-general protection fault: 0000 [#1]
-Modules linked in: ... [last unloaded: xt_cluster]
-CPU: 0 PID: 542455 Comm: iptables
-RIP: 0010:[<ffffffff8ffbd518>]  [<ffffffff8ffbd518>] strcmp+0x18/0x40
-RDX: 0000000000000003 RSI: ffff9a5a5d9abe10 RDI: dead000000000111
-R13: ffff9a5a5d9abe10 R14: ffff9a5a5d9abd8c R15: dead000000000100
-(VvS: %R15 -- &xt_match,  %RDI -- &xt_match.name,
-xt_cluster unregister match in xt[NFPROTO_UNSPEC].match list)
-Call Trace:
- [<ffffffff902ccf44>] match_revfn+0x54/0xc0
- [<ffffffff902ccf9f>] match_revfn+0xaf/0xc0
- [<ffffffff902cd01e>] xt_find_revision+0x6e/0xf0
- [<ffffffffc05a5be0>] do_ipt_get_ctl+0x100/0x420 [ip_tables]
- [<ffffffff902cc6bf>] nf_getsockopt+0x4f/0x70
- [<ffffffff902dd99e>] ip_getsockopt+0xde/0x100
- [<ffffffff903039b5>] raw_getsockopt+0x25/0x50
- [<ffffffff9026c5da>] sock_common_getsockopt+0x1a/0x20
- [<ffffffff9026b89d>] SyS_getsockopt+0x7d/0xf0
- [<ffffffff903cbf92>] system_call_fastpath+0x25/0x2a
+The Fixes: line below is the merge that originally added icmp{,v6}_
+ndo_send and converted the first batch of icmp{,v6}_send users. The
+rationale then for the change applies equally to this patch. It's just
+that these drivers were left out of the initial conversion because these
+network devices are hiding in net/ rather than in drivers/net/.
 
-Fixes: 656caff20e1 ("netfilter 04/09: x_tables: fix match/target revision lookup")
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Reviewed-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Florian Westphal <fw@strlen.de>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Cc: David Ahern <dsahern@kernel.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Fixes: 803381f9f117 ("Merge branch 'icmp-account-for-NAT-when-sending-icmps-from-ndo-layer'")
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/x_tables.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/ipv4/ip_tunnel.c  |    5 ++---
+ net/ipv4/ip_vti.c     |    6 +++---
+ net/ipv6/ip6_gre.c    |   16 ++++++++--------
+ net/ipv6/ip6_tunnel.c |   10 +++++-----
+ net/ipv6/ip6_vti.c    |    6 +++---
+ net/ipv6/sit.c        |    2 +-
+ 6 files changed, 22 insertions(+), 23 deletions(-)
 
---- a/net/netfilter/x_tables.c
-+++ b/net/netfilter/x_tables.c
-@@ -330,6 +330,7 @@ static int match_revfn(u8 af, const char
- 	const struct xt_match *m;
- 	int have_rev = 0;
- 
-+	mutex_lock(&xt[af].mutex);
- 	list_for_each_entry(m, &xt[af].match, list) {
- 		if (strcmp(m->name, name) == 0) {
- 			if (m->revision > *bestp)
-@@ -338,6 +339,7 @@ static int match_revfn(u8 af, const char
- 				have_rev = 1;
+--- a/net/ipv4/ip_tunnel.c
++++ b/net/ipv4/ip_tunnel.c
+@@ -502,8 +502,7 @@ static int tnl_update_pmtu(struct net_de
+ 		if (!skb_is_gso(skb) &&
+ 		    (inner_iph->frag_off & htons(IP_DF)) &&
+ 		    mtu < pkt_size) {
+-			memset(IPCB(skb), 0, sizeof(*IPCB(skb)));
+-			icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED, htonl(mtu));
++			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED, htonl(mtu));
+ 			return -E2BIG;
  		}
  	}
-+	mutex_unlock(&xt[af].mutex);
+@@ -527,7 +526,7 @@ static int tnl_update_pmtu(struct net_de
  
- 	if (af != NFPROTO_UNSPEC && !have_rev)
- 		return match_revfn(NFPROTO_UNSPEC, name, revision, bestp);
-@@ -350,6 +352,7 @@ static int target_revfn(u8 af, const cha
- 	const struct xt_target *t;
- 	int have_rev = 0;
- 
-+	mutex_lock(&xt[af].mutex);
- 	list_for_each_entry(t, &xt[af].target, list) {
- 		if (strcmp(t->name, name) == 0) {
- 			if (t->revision > *bestp)
-@@ -358,6 +361,7 @@ static int target_revfn(u8 af, const cha
- 				have_rev = 1;
+ 		if (!skb_is_gso(skb) && mtu >= IPV6_MIN_MTU &&
+ 					mtu < pkt_size) {
+-			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
++			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
+ 			return -E2BIG;
  		}
  	}
-+	mutex_unlock(&xt[af].mutex);
+--- a/net/ipv4/ip_vti.c
++++ b/net/ipv4/ip_vti.c
+@@ -238,13 +238,13 @@ static netdev_tx_t vti_xmit(struct sk_bu
+ 	if (skb->len > mtu) {
+ 		skb_dst_update_pmtu_no_confirm(skb, mtu);
+ 		if (skb->protocol == htons(ETH_P_IP)) {
+-			icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
+-				  htonl(mtu));
++			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
++				      htonl(mtu));
+ 		} else {
+ 			if (mtu < IPV6_MIN_MTU)
+ 				mtu = IPV6_MIN_MTU;
  
- 	if (af != NFPROTO_UNSPEC && !have_rev)
- 		return target_revfn(NFPROTO_UNSPEC, name, revision, bestp);
-@@ -371,12 +375,10 @@ int xt_find_revision(u8 af, const char *
- {
- 	int have_rev, best = -1;
+-			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
++			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
+ 		}
  
--	mutex_lock(&xt[af].mutex);
- 	if (target == 1)
- 		have_rev = target_revfn(af, name, revision, &best);
- 	else
- 		have_rev = match_revfn(af, name, revision, &best);
--	mutex_unlock(&xt[af].mutex);
+ 		dst_release(dst);
+--- a/net/ipv6/ip6_gre.c
++++ b/net/ipv6/ip6_gre.c
+@@ -678,8 +678,8 @@ static int prepare_ip6gre_xmit_ipv6(stru
  
- 	/* Nothing at all?  Return 0 to try loading module. */
- 	if (best == -1) {
+ 		tel = (struct ipv6_tlv_tnl_enc_lim *)&skb_network_header(skb)[offset];
+ 		if (tel->encap_limit == 0) {
+-			icmpv6_send(skb, ICMPV6_PARAMPROB,
+-				    ICMPV6_HDR_FIELD, offset + 2);
++			icmpv6_ndo_send(skb, ICMPV6_PARAMPROB,
++					ICMPV6_HDR_FIELD, offset + 2);
+ 			return -1;
+ 		}
+ 		*encap_limit = tel->encap_limit - 1;
+@@ -805,8 +805,8 @@ static inline int ip6gre_xmit_ipv4(struc
+ 	if (err != 0) {
+ 		/* XXX: send ICMP error even if DF is not set. */
+ 		if (err == -EMSGSIZE)
+-			icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
+-				  htonl(mtu));
++			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
++				      htonl(mtu));
+ 		return -1;
+ 	}
+ 
+@@ -837,7 +837,7 @@ static inline int ip6gre_xmit_ipv6(struc
+ 			  &mtu, skb->protocol);
+ 	if (err != 0) {
+ 		if (err == -EMSGSIZE)
+-			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
++			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
+ 		return -1;
+ 	}
+ 
+@@ -1063,10 +1063,10 @@ static netdev_tx_t ip6erspan_tunnel_xmit
+ 		/* XXX: send ICMP error even if DF is not set. */
+ 		if (err == -EMSGSIZE) {
+ 			if (skb->protocol == htons(ETH_P_IP))
+-				icmp_send(skb, ICMP_DEST_UNREACH,
+-					  ICMP_FRAG_NEEDED, htonl(mtu));
++				icmp_ndo_send(skb, ICMP_DEST_UNREACH,
++					      ICMP_FRAG_NEEDED, htonl(mtu));
+ 			else
+-				icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
++				icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
+ 		}
+ 
+ 		goto tx_err;
+--- a/net/ipv6/ip6_tunnel.c
++++ b/net/ipv6/ip6_tunnel.c
+@@ -1332,8 +1332,8 @@ ipxip6_tnl_xmit(struct sk_buff *skb, str
+ 
+ 				tel = (void *)&skb_network_header(skb)[offset];
+ 				if (tel->encap_limit == 0) {
+-					icmpv6_send(skb, ICMPV6_PARAMPROB,
+-						ICMPV6_HDR_FIELD, offset + 2);
++					icmpv6_ndo_send(skb, ICMPV6_PARAMPROB,
++							ICMPV6_HDR_FIELD, offset + 2);
+ 					return -1;
+ 				}
+ 				encap_limit = tel->encap_limit - 1;
+@@ -1385,11 +1385,11 @@ ipxip6_tnl_xmit(struct sk_buff *skb, str
+ 		if (err == -EMSGSIZE)
+ 			switch (protocol) {
+ 			case IPPROTO_IPIP:
+-				icmp_send(skb, ICMP_DEST_UNREACH,
+-					  ICMP_FRAG_NEEDED, htonl(mtu));
++				icmp_ndo_send(skb, ICMP_DEST_UNREACH,
++					      ICMP_FRAG_NEEDED, htonl(mtu));
+ 				break;
+ 			case IPPROTO_IPV6:
+-				icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
++				icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
+ 				break;
+ 			default:
+ 				break;
+--- a/net/ipv6/ip6_vti.c
++++ b/net/ipv6/ip6_vti.c
+@@ -521,10 +521,10 @@ vti6_xmit(struct sk_buff *skb, struct ne
+ 			if (mtu < IPV6_MIN_MTU)
+ 				mtu = IPV6_MIN_MTU;
+ 
+-			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
++			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
+ 		} else {
+-			icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
+-				  htonl(mtu));
++			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
++				      htonl(mtu));
+ 		}
+ 
+ 		err = -EMSGSIZE;
+--- a/net/ipv6/sit.c
++++ b/net/ipv6/sit.c
+@@ -987,7 +987,7 @@ static netdev_tx_t ipip6_tunnel_xmit(str
+ 			skb_dst_update_pmtu_no_confirm(skb, mtu);
+ 
+ 		if (skb->len > mtu && !skb_is_gso(skb)) {
+-			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
++			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
+ 			ip_rt_put(rt);
+ 			goto tx_error;
+ 		}
 
 
