@@ -2,83 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A67B33ABD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 07:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2832333ABDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 07:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbhCOG4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 02:56:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38064 "EHLO
+        id S230000AbhCOG7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 02:59:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbhCOG4a (ORCPT
+        with ESMTP id S229985AbhCOG64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 02:56:30 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BE7C061574;
-        Sun, 14 Mar 2021 23:56:29 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id t83so23527867oih.12;
-        Sun, 14 Mar 2021 23:56:29 -0700 (PDT)
+        Mon, 15 Mar 2021 02:58:56 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55F3C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 23:58:56 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id 73so8409910qtg.13
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 23:58:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kCu0lyCUoe52qGsgPNzNVXib6I3EQmCP/5VwSI1JsdE=;
-        b=SNnX2IrogncjSFDJheFquG/1xR5rMHKda0CI9utmvDIAF8x7IGHEfnnEqV8c/k+l9b
-         eAI68RE5rKva8SWNkAISuGQQH4NIznmryloRpM9jEVVvDnyEeRLpw39Z3i+jpVA7LfKu
-         Fj3MYo2P55Cnt+qKR+LiJco8FcmYxIu2JHmBU5tx6vtowXVl2s9vUB7Wt6xfuQJNvc3o
-         mYrVFU8h3Yvv/PNfCIQzdye/KqB9oIhmMcJ1th5LAkzWilbb5mUWf3StcUZIySWLQcB2
-         f7r8HQyDA9FsBFwhKLX7eYsdUolPUYNVKV1HvhwEpuDL0fnKCqhEB585IomtaQ5mqCJl
-         K73A==
+        bh=IU5V4mabE/n2VCRh3kSmfdhuEAACW74e/YNmNcSi3W8=;
+        b=QdhmEyhcxyXwVDR8NjUH/7ppDoyROqwTDE670AXXQmtFChEdYuZki5fhCpd6P68hxZ
+         Y21sjoK48mK/a62E28b9/N+oxL/IEol2w/iP1zkhiAdn4neTjw73fwdorPEw5nYIcTM9
+         zGD0rVhMCXMIVVfIgUGJmliNYgomQ4uJVgZlLpvGiHumU2YbVPgMeONAzOcg0IXcfM+K
+         e8XrSRfdRxTRdGgP5J+jYYWn5FhDqA5RBQbqLLymakk+zSwGoixcNubo3YIP1GwbdVzO
+         ieLO4B1Dl7xRtri8oGKJz0PqFAhMkm6FB6sex6h/t1EESM4HYClp59EF09NSorHVK12H
+         jNHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kCu0lyCUoe52qGsgPNzNVXib6I3EQmCP/5VwSI1JsdE=;
-        b=lMlsMGnYVVAKGYM9TEsixdW5OFn0XAWrZkwyBfs44gShhAu9c3G58dXiGxn+Yaj1Xt
-         xh1GO8Hh1/OUmaKEtsvRsj5YZ/X2+96k2gULnZrP3UKucH+ospeWMdV5LcSq1lY+MOG8
-         myJqtavhoMboWFVop61Bed6ZBPrred3uRZz3XAo0WgqknudGwTRB07n3cH1Kj6E6i35o
-         ud7kY+nHnKhTZ5spzy3ZEcePPCTcv1QGZ2IPXFJ17HRl+uMVDkwvb0QECMUGYK5YT3a+
-         BXfgW+eowq29mZPMWotkAa2csh5Gv0oBJKRlz6ADeJ/hGkLUYt48gWIi+CWHNab/OsOx
-         UBUA==
-X-Gm-Message-State: AOAM530UtZHDxnzwyt5uHN+v6ofraPlJzxD1aRxsfrdJ49STE9CvYOix
-        eBOxs9G90vZBUuZopi4CQUo1nwWU/CNQHqKVQPMgNUlf
-X-Google-Smtp-Source: ABdhPJwGhtIr0J7Sg3g2apbSn3c1pLOIsmnGFfnu+l877kcHsrHwqMByT83HaG+yIbjZ3axUdFIXxSFBaqj+in0/FTs=
-X-Received: by 2002:aca:1a01:: with SMTP id a1mr13584174oia.33.1615791388614;
- Sun, 14 Mar 2021 23:56:28 -0700 (PDT)
+        bh=IU5V4mabE/n2VCRh3kSmfdhuEAACW74e/YNmNcSi3W8=;
+        b=hOWiGTTt1RPPZjtgNhfyYws0pmqVVfRKcTHRSoYih6W+B7ZyZ6WVT7HGH2/LDhfJQb
+         sDJbOZYT1rTIS7Cr+JibI7Ko06OXmjsuJPPedjcMPER5ri4rR2D6YKqenpY1lIyxB5Sc
+         VlOgr6m35P3M/ZbbhVbinXNtQfyOO/B/QpUj8Px9z+rX60I1n/SU9baXLo43RGxswLer
+         S+jwP/6NsSkhTeTiRq+fvqpn2wc99WygR2Gtpx9lEi74zOvOUUs2Vhp581DuO6HO9cDV
+         37BATqm736j0Tbh3RZNAFHMXeVo24JuszN/wwSx79WOVUsEZgs4M61y7rKD87D6YtEVe
+         BvEg==
+X-Gm-Message-State: AOAM531ftr8rL0TwFk6cyBthbsu+jo2qCW5tXsitvi9xyoA1LEbFQkAj
+        V6byKayJaa2beOuGNyxBsFpJozufoE8HYj0qGgeMHg==
+X-Google-Smtp-Source: ABdhPJw1nDPMaGuD+I/Gyg5vA/5WTioXa+s8ugiYlPtLXZ1fT5Oc3wV3ImBGwIyFbtBVjuIobFZYNfiGA87XfCiM7TY=
+X-Received: by 2002:ac8:7318:: with SMTP id x24mr21525417qto.67.1615791535245;
+ Sun, 14 Mar 2021 23:58:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <1614057902-23774-1-git-send-email-wanpengli@tencent.com>
- <CANRm+CwX189YE_oi5x-b6Xx4=hpcGCqzLaHjmW6bz_=Fj2N7Mw@mail.gmail.com>
- <YEo9GsUTKQRbd3HF@google.com> <CANRm+Cy42tM1M2vkuZk3y_-_wD-re9QxvoxWPGmyew+k1j_67w@mail.gmail.com>
- <e363db67-598b-619a-f844-d68dfb1d041a@redhat.com>
-In-Reply-To: <e363db67-598b-619a-f844-d68dfb1d041a@redhat.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Mon, 15 Mar 2021 14:56:17 +0800
-Message-ID: <CANRm+CwMz8DBDNjcUyhZmv5vSsX47CiBEd0G8UQNEQextju6jA@mail.gmail.com>
-Subject: Re: [PATCH] x86/kvm: Fix broken irq restoration in kvm_wait
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>
+References: <20210315015940.11788-1-walter-zh.wu@mediatek.com>
+In-Reply-To: <20210315015940.11788-1-walter-zh.wu@mediatek.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 15 Mar 2021 07:58:44 +0100
+Message-ID: <CACT4Y+YrFeRQkw+M8rpOF5169LFn9+puL3Dh1Kk1AOoKV-nyrQ@mail.gmail.com>
+Subject: Re: [PATCH] task_work: kasan: record task_work_add() call stack
+To:     Walter Wu <walter-zh.wu@mediatek.com>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        linux-mediatek@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 13 Mar 2021 at 17:33, Paolo Bonzini <pbonzini@redhat.com> wrote:
+On Mon, Mar 15, 2021 at 3:00 AM Walter Wu <walter-zh.wu@mediatek.com> wrote:
 >
-> On 13/03/21 01:57, Wanpeng Li wrote:
-> >> A third option would be to split the paths.  In the end, it's only the ptr/val
-> >> line that's shared.
-> > I just sent out a formal patch for my alternative fix, I think the
-> > whole logic in kvm_wait is more clear w/ my version.
-> >
+> Why record task_work_add() call stack?
+> Syzbot reports many use-after-free issues for task_work, see [1].
+> After see the free stack and the current auxiliary stack, we think
+> they are useless, we don't know where register the work, this work
+> may be the free call stack, so that we miss the root cause and
+> don't solve the use-after-free.
 >
-> I don't know, having three "if"s in 10 lines of code is a bit daunting.
+> Add task_work_add() call stack into KASAN auxiliary stack in
+> order to improve KASAN report. It is useful for programmers
+> to solve use-after-free issues.
+>
+> [1]: https://groups.google.com/g/syzkaller-bugs/search?q=kasan%20use-after-free%20task_work_run
+>
+> Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
+> Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Andrey Konovalov <andreyknvl@google.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Oleg Nesterov <oleg@redhat.com>
+> ---
+>  kernel/task_work.c | 3 +++
+>  mm/kasan/kasan.h   | 2 +-
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/task_work.c b/kernel/task_work.c
+> index 9cde961875c0..f255294377da 100644
+> --- a/kernel/task_work.c
+> +++ b/kernel/task_work.c
+> @@ -55,6 +55,9 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
+>                 break;
+>         }
+>
+> +       /* record the work call stack in order to print it in KASAN reports */
+> +       kasan_record_aux_stack(work);
 
-Fair enough, just sent out v3 per Sean's suggestion.
+I think this call should be done _before_ we actually queue the work,
+because this function may operate on non-current task.
+Consider, we queue the work, the other task already executes it and
+triggers use-after-free, now only now we record the stack.
+Moreover, I think we can trigger use-after-free here ourselves while
+recording the aux stack. We queued the work, and the work can cause
+own free, so it's not necessary live by now.
 
-    Wanpeng
+>         return 0;
+>  }
+>
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 3436c6bf7c0c..d300fe9415bd 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -146,7 +146,7 @@ struct kasan_alloc_meta {
+>         struct kasan_track alloc_track;
+>  #ifdef CONFIG_KASAN_GENERIC
+>         /*
+> -        * call_rcu() call stack is stored into struct kasan_alloc_meta.
+> +        * Auxiliary stack is stored into struct kasan_alloc_meta.
+>          * The free stack is stored into struct kasan_free_meta.
+>          */
+>         depot_stack_handle_t aux_stack[2];
+> --
+> 2.18.0
