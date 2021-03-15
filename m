@@ -2,111 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA7C33C158
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E8E33C153
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:13:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbhCOQMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:12:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbhCOQM1 (ORCPT
+        id S231368AbhCOQMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:12:51 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:45439 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230405AbhCOQMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:12:27 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4214AC06174A;
-        Mon, 15 Mar 2021 09:12:27 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id v14so9835919ilj.11;
-        Mon, 15 Mar 2021 09:12:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PkrviP+ymj4BXvLRWNPo/Hu6u+TacA+y9E4nXUh7hgw=;
-        b=OOthZe9JfMlV1WJY8Bb70Cb4w9V39LpSxgPvGuuwgCxNCkz5OVYLB1vOnSe8KKs/sI
-         /FMUcXKuGGb2A7vANO3AK68II6GzbOG2Ohp6clB4H7aOshMuah5PhiFnxbCt+cr9msyv
-         UMsjYNQgWAeoKCpadc0nqg5+3SvXh9gBp6HebiI6x98GLmGG9PMcwKwNbQCCuLMfQYcF
-         P/V7QIxYs9Jv/1o1jPcik3WgbX+Q2AdHKF1jXyWn0em+TDBVhOXsR8iXmXqqvVt27PTf
-         o294tIxkgNF7OBgwztvp/LFEPwHkafH+rjQ8Y0FmynwMQIDAvtBa0CM4KKmrgvpyPalL
-         U9lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PkrviP+ymj4BXvLRWNPo/Hu6u+TacA+y9E4nXUh7hgw=;
-        b=RT9trbLC+0xUnj5INfXcLH6rUC6uio/XPkHPKBxqFerz2yQuMAYd0A4d1djbXyLo74
-         BwnaV9e3VTLRsAy8V9uhosSCBA7sc32fCQSOOU2dHQXAPwNxX7pCuLFwV3tWsSGM/BGu
-         Z0VxwNvKzTks0uLfT/G14xHpU9vd+XsFbbThHuccg0tA3zwwPXHq1m+eHGCqdWfqRUTP
-         L8jkZLttAAI/p7IILYiV7R36SDh3coUWDv0ucCLtXSM5JrytyflndX4z556Gf1YsWH3f
-         /q5JwdvygN/jICfg8+myexV0ewLSUmd1J1U+hzGVI7++xYK7uV+9DuZx6jjRCxjNJF/X
-         Wifw==
-X-Gm-Message-State: AOAM533Oughd0tf5np53cstBVWg9FVgV26MnkxDEiGkht+W0sWVl+okg
-        4+jB1l5IGgs0cTfK1M6ryOCL1LOIkMjKYQ8mZPg=
-X-Google-Smtp-Source: ABdhPJydPYyWO1j7mP7alrY4A4Z00lPpwICYMrR5CdL38xawNKBu+D0hACmME2mjpBnKKVrKTuRGWVfT5rfErOQbaGI=
-X-Received: by 2002:a92:d18c:: with SMTP id z12mr243957ilz.95.1615824746670;
- Mon, 15 Mar 2021 09:12:26 -0700 (PDT)
+        Mon, 15 Mar 2021 12:12:24 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 2678032D7;
+        Mon, 15 Mar 2021 12:12:23 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 15 Mar 2021 12:12:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=WNHtvP7BKPSirxSpzTWIe4zHI5+
+        AJMQZQRuLDzKPABY=; b=T84ECQkg5SvFVLww+BtElw9yRPpbIfvWSQovK8WoWPt
+        EkSbkYjo5YJ5HFpqxYxNsEuA3/0FmZ4icG72TVPQ4k3vPYz2h8zk3EMoEoJq7Qgu
+        2o5foXqpXsBsdng5SSjM3aRQQ79Ol+DHUuNVHbSPiXzQ0WceUwfFy1itl5z4PrNq
+        9w41jJbHRV1ylu4DGHk86vr08hvvlmbiIVNSFKqKQg+4TFc2u8PJRlvjkkIjFULf
+        0Z7PlCv3W5mLY/h4kETsiiJJHyr43fteH2arqBGPpRJcGkafOazvd+VrfCgZxqJ6
+        8MZbFRwqd3vOBpxKjhe5nomxdI3KWu6370mMFcQB/Ow==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=WNHtvP
+        7BKPSirxSpzTWIe4zHI5+AJMQZQRuLDzKPABY=; b=YgTxdVJdmEMw7pumTzqsvE
+        8hWruC4u92L2hudcXF8No24CLQehXaHl11VXyUX1khHiGpO+AJ7yp+9UhxoUkEoU
+        Iy2caGvkRVtM+nerFygQI853ZLYOdGQmCOQxMJFVF64qtYDbsheGFd74vbpWQv9G
+        MtQJF5gcbzme/9A+f7af1JyzJsN9pUt1gbLGU3AgtM+BtGUdHWadrWHGySl2wADG
+        78UvcmSlSZXQPgfYhXWejL7+NpQEeA4JNZdg1m6GdtVZIWJeUZWMIxxOOXeWegWD
+        GVMGgxp3T+f4KRHOoJwWjFkRDkIRSflWGAHb4+lb2eynEaIldcJ2MTdXB2os4mig
+        ==
+X-ME-Sender: <xms:ZYdPYG1HYkFTI16PoKCZXgmHyd1vqn7Y4k5kXS1xgxB-o9MhBWmdoA>
+    <xme:ZYdPYJFzdslplzQcEmQAXXuvnXJ5viM_42DclKTdeFIpqf059ycUDpJju0JFhLYpB
+    HDkWzt5RAUGzeYCdfg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddvledgkeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:ZYdPYO7ST3JKDRRLRtMSuG7U-5OKijBN21Yytrm82kvfJ2zjZpmG6w>
+    <xmx:ZYdPYH0Pyn_UlIBhlmqhNdsppXH27kKx335d7RD7zVq-qgtaBESzbA>
+    <xmx:ZYdPYJGqctxa_ZJwVlz8heHQi6Nubn-F2BnHcgxcd7lKNjgO1W297A>
+    <xmx:ZodPYCP4MVeFUnlz9hR37wH3JtU_3LK5JWKmZv18UkUh9WJ7BznBCA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 77570240057;
+        Mon, 15 Mar 2021 12:12:21 -0400 (EDT)
+Date:   Mon, 15 Mar 2021 17:12:20 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
+Cc:     linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: Re: [PATCH v7 2/2] hwspinlock: add sun6i hardware spinlock support
+Message-ID: <20210315161220.sxjkam7bqli5fk5y@gilmour>
+References: <cover.1615713499.git.wilken.gottwalt@posteo.net>
+ <bfd2b97307c2321b15c09683f4bd5e1fcc792f13.1615713499.git.wilken.gottwalt@posteo.net>
 MIME-Version: 1.0
-References: <20210315133455.1576188-1-elder@linaro.org>
-In-Reply-To: <20210315133455.1576188-1-elder@linaro.org>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Mon, 15 Mar 2021 09:12:15 -0700
-Message-ID: <CAKgT0UdUuDBRO38h4a0V-0MJg7ONwYTr-nzDgPsEKtmihseDEQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 0/6] net: qualcomm: rmnet: stop using C bit-fields
-To:     Alex Elder <elder@linaro.org>
-Cc:     Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
-        stranche@codeaurora.org, David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, sharathv@codeaurora.org,
-        bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, David Laight <David.Laight@aculab.com>,
-        Vladimir Oltean <olteanv@gmail.com>, elder@kernel.org,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ugceib25g7u7yjue"
+Content-Disposition: inline
+In-Reply-To: <bfd2b97307c2321b15c09683f4bd5e1fcc792f13.1615713499.git.wilken.gottwalt@posteo.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 6:36 AM Alex Elder <elder@linaro.org> wrote:
->
-> The main reason for version 4 of this series is that a bug was
-> introduced in version 3, and that is fixed.
->
-> But a nice note from Vladimir Oltean got me thinking about the
-> necessity of using accessors defined in <linux/bitfield.h>, and I
-> concluded there was no need.  So this version simplifies things
-> further, using bitwise AND and OR operators (rather than, e.g.,
-> u8_get_bits()) to access all values encoded in bit fields.
->
-> This version has been tested using IPv4 with checksum offload
-> enabled and disabled.  Traffic over the link included ICMP (ping),
-> UDP (iperf), and TCP (wget).
->
-> Version 3 of this series used BIT() rather than GENMASK() to define
-> single-bit masks, and bitwise AND operators to access them.
->
-> Version 2 fixed bugs in the way the value written into the header
-> was computed in version 1.
->
-> The series was first posted here:
->   https://lore.kernel.org/netdev/20210304223431.15045-1-elder@linaro.org/
->
->                                         -Alex
->
-> Alex Elder (6):
->   net: qualcomm: rmnet: mark trailer field endianness
->   net: qualcomm: rmnet: simplify some byte order logic
->   net: qualcomm: rmnet: kill RMNET_MAP_GET_*() accessor macros
->   net: qualcomm: rmnet: use masks instead of C bit-fields
->   net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum trailer
->   net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum header
->
->  .../ethernet/qualcomm/rmnet/rmnet_handlers.c  | 10 +--
->  .../net/ethernet/qualcomm/rmnet/rmnet_map.h   | 12 ----
->  .../qualcomm/rmnet/rmnet_map_command.c        | 11 +++-
->  .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 60 ++++++++---------
->  include/linux/if_rmnet.h                      | 65 +++++++++----------
->  5 files changed, 69 insertions(+), 89 deletions(-)
->
 
-Other than the minor nit I pointed out in patch 2 the set looks good to me.
+--ugceib25g7u7yjue
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+On Sun, Mar 14, 2021 at 10:31:13AM +0100, Wilken Gottwalt wrote:
+> Adds the sun6i_hwspinlock driver for the hardware spinlock unit found in
+> most of the sun6i compatible SoCs.
+>=20
+> This unit provides at least 32 spinlocks in hardware. The implementation
+> supports 32, 64, 128 or 256 32bit registers. A lock can be taken by
+> reading a register and released by writing a 0 to it. This driver
+> supports all 4 spinlock setups, but for now only the first setup (32
+> locks) seem to exist in available devices. This spinlock unit is shared
+> between all ARM cores and the embedded companion core. All of them can
+> take/release a lock with a single cycle operation. It can be used to
+> sync access to devices shared by the ARM cores and the companion core.
+>=20
+> There are two ways to check if a lock is taken. The first way is to read
+> a lock. If a 0 is returned, the lock was free and is taken now. If an 1
+> is returned, the caller has to try again. Which means the lock is taken.
+> The second way is to read a 32bit wide status register where every bit
+> represents one of the 32 first locks. According to the datasheets this
+> status register supports only the 32 first locks. This is the reason the
+> first way (lock read/write) approach is used to be able to cover all 256
+> locks in future devices. The driver also reports the amount of supported
+> locks via debugfs.
+>=20
+> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+
+Acked-by: Maxime Ripard <maxime@cerno.tech>
+
+Maxime
+
+--ugceib25g7u7yjue
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYE+HZAAKCRDj7w1vZxhR
+xZCyAQCtg7NjcMB1RU9JypyxATYhgusZFieipCV1Sd853uzIMQEA2egEjSyiW/Uh
+tMaNWeYMgwAqR1MqyO98rUGEbJaOHAk=
+=RdjY
+-----END PGP SIGNATURE-----
+
+--ugceib25g7u7yjue--
