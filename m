@@ -2,102 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44FD833A9BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 04:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0172633A9C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 04:12:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhCODIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Mar 2021 23:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhCODH7 (ORCPT
+        id S229767AbhCODJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Mar 2021 23:09:04 -0400
+Received: from lucky1.263xmail.com ([211.157.147.135]:36780 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229747AbhCODIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Mar 2021 23:07:59 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73796C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 20:07:59 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id w8so8002688pjf.4
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Mar 2021 20:07:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=E+C021S+MuuSehTRLZXDd2gMGgIwxJN7I46PHjbYIPA=;
-        b=qt+FGTFJTPJ2JZunn0BlihnzQxcyX9KbvW6foXCHaqjGRikyCE4uq8/JjJ7NJqkNH/
-         5BaxBNNwRRDglJz9aEfY7cyz8ogJU8SzsaHg4i2YruvJ1t6BAkTGvvT6Zi0EKm5NxedC
-         Xjm8l82WC1grrZDwaf00ov+Ngll7W8OR4u2lCrWiFvdmQv1mUgVvqccUAeiROBdjol/Y
-         u8nPi8URiiCdsV4AhYBDczpAvJR3D8b9Q/qgM3GB+TpgsD1ISHyZome0Uzj+YlD/lG/3
-         MtLeGytU3uUKr6q9Ai14P7RjwOWfdVQ5fhgXw845Da3PioZfH4hsw157vqSdISU7fBtJ
-         CC+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=E+C021S+MuuSehTRLZXDd2gMGgIwxJN7I46PHjbYIPA=;
-        b=X9a1lJGl1mojYW4SctTRP90RL/AgUF/0dfUG8ASV+wcqG6QYGr7jpLcemsru58SqVL
-         zIkJ2bbQG3eLcxTjKjFiK2FonYTejVgMkQ680LIVRVR2zfJOD85Rm0YHTuxLlI8G/7iN
-         +IBJHSvrEPZ41iRhJcfulH+zz0LpDntvV9ktQN62jZS/thoK95apgs6oawUkyXkD6lhr
-         /w6+ZVgf4UUANm4/prmiTWRgM82gkQbMyw6YrdETJ+IaO+vfZI9YVN5puMfZdbjXgon2
-         cMOCn3k4z04cLsPHGxRxebg8BZ4VQcDuFD9vTomXu7BxJjXN7o5nthXkc8aQ5pcvF6ty
-         ceMw==
-X-Gm-Message-State: AOAM531SJW2w55ppRRuh7aDbmLGy5zpNAarwblxu5YR9MMMTVKQD3nEI
-        D9jv5SKxUIT6tLA0Cpmd9X6XPnLmNtXFzw==
-X-Google-Smtp-Source: ABdhPJxL8lzjTY6PKezQCujtpxCj27hHlpUJ7MN8QLCdwRQ0Yyk8U87S9VWEB2aHazmsfSHDzfJosg==
-X-Received: by 2002:a17:902:ba94:b029:e6:5cd1:a4a2 with SMTP id k20-20020a170902ba94b02900e65cd1a4a2mr9363284pls.69.1615777678267;
-        Sun, 14 Mar 2021 20:07:58 -0700 (PDT)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id k3sm11076919pgq.21.2021.03.14.20.07.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 14 Mar 2021 20:07:57 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 08:37:55 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        lukasz.luba@arm.com, Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Javi Merino <javi.merino@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>
-Subject: Re: [PATCH v2 4/5] thermal/drivers/cpuidle_cooling: Use device name
- instead of auto-numbering
-Message-ID: <20210315030755.kl7gt66f45o254u3@vireshk-i7>
-References: <20210312170316.3138-1-daniel.lezcano@linaro.org>
- <20210312170316.3138-4-daniel.lezcano@linaro.org>
+        Sun, 14 Mar 2021 23:08:32 -0400
+Received: from localhost (unknown [192.168.167.13])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 9A34BA80E5;
+        Mon, 15 Mar 2021 11:08:19 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [124.126.19.250])
+        by smtp.263.net (postfix) whith ESMTP id P13096T140547589097216S1615777695681307_;
+        Mon, 15 Mar 2021 11:08:20 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <165e4deda2583fa7c5e784b9575b96a8>
+X-RL-SENDER: maqianga@uniontech.com
+X-SENDER: maqianga@uniontech.com
+X-LOGIN-NAME: maqianga@uniontech.com
+X-FST-TO: gregkh@linuxfoundation.org
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Qiang Ma <maqianga@uniontech.com>
+To:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
+        singhalsimran0@gmail.com, matthew.v.deangelis@gmail.com,
+        john.oldman@polehill.co.uk, izabela.bakollari@gmail.com
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Qiang Ma <maqianga@uniontech.com>
+Subject: [PATCH] staging: rtl8723bs: add spaces between operators
+Date:   Mon, 15 Mar 2021 11:08:13 +0800
+Message-Id: <20210315030813.19445-1-maqianga@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312170316.3138-4-daniel.lezcano@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12-03-21, 18:03, Daniel Lezcano wrote:
-> Currently the naming of a cooling device is just a cooling technique
-> followed by a number. When there are multiple cooling devices using
-> the same technique, it is impossible to clearly identify the related
-> device as this one is just a number.
-> 
-> For instance:
-> 
->  thermal-idle-0
->  thermal-idle-1
->  thermal-idle-2
->  thermal-idle-3
->  etc ...
-> 
-> The 'thermal' prefix is redundant with the subsystem namespace. This
-> patch removes the 'thermal prefix and changes the number by the device
-> name. So the naming above becomes:
-> 
->  idle-cpu0
->  idle-cpu1
->  idle-cpu2
->  idle-cpu3
->  etc ...
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+Add spaces between operators for a better readability
+in function 'rtw_secgetmic'.
 
-I acked for both the patches :(
+Signed-off-by: Qiang Ma <maqianga@uniontech.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_security.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
+index 6d53c08b29d1..3e576cbe4712 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_security.c
++++ b/drivers/staging/rtl8723bs/core/rtw_security.c
+@@ -397,7 +397,7 @@ void rtw_secgetmic(struct mic_data *pmicdata, u8 *dst)
+ 		rtw_secmicappendbyte(pmicdata, 0);
+ 	/*  The appendByte function has already computed the result. */
+ 	secmicputuint32(dst, pmicdata->L);
+-	secmicputuint32(dst+4, pmicdata->R);
++	secmicputuint32(dst + 4, pmicdata->R);
+ 	/*  Reset to the empty message. */
+ 	secmicclear(pmicdata);
+ }
 -- 
-viresh
+2.20.1
+
+
+
