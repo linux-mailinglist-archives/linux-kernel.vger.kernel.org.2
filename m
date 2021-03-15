@@ -2,217 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC5033C1E4
+	by mail.lfdr.de (Postfix) with ESMTP id 5D19433C1E3
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233524AbhCOQbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:31:40 -0400
-Received: from gecko.sbs.de ([194.138.37.40]:52057 "EHLO gecko.sbs.de"
+        id S231740AbhCOQbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:31:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229829AbhCOQbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:31:15 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12FGUqrv013024
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Mar 2021 17:30:52 +0100
-Received: from md1za8fc.ad001.siemens.net ([139.22.41.172])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12FGUpYB023993;
-        Mon, 15 Mar 2021 17:30:51 +0100
-Date:   Mon, 15 Mar 2021 17:30:49 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v2 1/4] platform/x86: simatic-ipc: add main driver for
- Siemens devices
-Message-ID: <20210315173049.1d080129@md1za8fc.ad001.siemens.net>
-In-Reply-To: <CAHp75VdXDcTfNL9QRQ5XE-zVLHacfMKHUxhse3=dAfJbOJdObQ@mail.gmail.com>
-References: <20210315095710.7140-1-henning.schild@siemens.com>
-        <20210315095710.7140-2-henning.schild@siemens.com>
-        <CAHp75VdXDcTfNL9QRQ5XE-zVLHacfMKHUxhse3=dAfJbOJdObQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S233118AbhCOQbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 12:31:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4077264F2A;
+        Mon, 15 Mar 2021 16:31:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615825874;
+        bh=z4NG2AwrvKp1rnGS0SnMJpQVrKZy6B5wV36WyKhoKEo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tyt+CaZLBoLOKlgYe6sqDGdASlo2gRzBQ+4lDt1Z7Tzr1mCndmIzDb2TXpey2Nbg4
+         5bWEAEWryYnRe4wowJCAUc1QEee1xbU9dqctOglt4WC536c8iLm1vvZuFsWk5rhWEw
+         drmFCiy+bHWWLhnDQwtl1FTAqcCBZgmumzZvIs+t+0k4VwliM1L9cZLaRBWNqU8W4G
+         K//s+7Z91kz8PIDC8y24LSW1moBBJwSZC0usRSUlgzvFgLKEOSnY0NcPzuemBLuHQw
+         adv65R533Yx5o4pv0LMMsyYb3CU5YSiSIH64GKnwAhh+HOBLfwtIII6RpEC7wiK92G
+         hINYWbd8VDEjg==
+Date:   Mon, 15 Mar 2021 16:31:07 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, seanjc@google.com, mate.toth-pal@arm.com,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org,
+        mark.rutland@arm.com, dbrazdil@google.com
+Subject: Re: [PATCH v5 31/36] KVM: arm64: Add kvm_pgtable_stage2_find_range()
+Message-ID: <20210315163107.GA3430@willie-the-truck>
+References: <20210315143536.214621-1-qperret@google.com>
+ <20210315143536.214621-32-qperret@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315143536.214621-32-qperret@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mon, 15 Mar 2021 12:31:11 +0200
-schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
+On Mon, Mar 15, 2021 at 02:35:31PM +0000, Quentin Perret wrote:
+> Since the host stage 2 will be identity mapped, and since it will own
+> most of memory, it would preferable for performance to try and use large
+> block mappings whenever that is possible. To ease this, introduce a new
+> helper in the KVM page-table code which allows to search for large
+> ranges of available IPA space. This will be used in the host memory
+> abort path to greedily idmap large portion of the PA space.
+> 
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_pgtable.h | 29 +++++++++
+>  arch/arm64/kvm/hyp/pgtable.c         | 89 ++++++++++++++++++++++++++--
+>  2 files changed, 114 insertions(+), 4 deletions(-)
 
-> On Mon, Mar 15, 2021 at 12:02 PM Henning Schild
-> <henning.schild@siemens.com> wrote:
-> >
-> > This mainly implements detection of these devices and will allow
-> > secondary drivers to work on such machines.
-> >
-> > The identification is DMI-based with a vendor specific way to tell
-> > them apart in a reliable way.
-> >
-> > Drivers for LEDs and Watchdogs will follow to make use of that
-> > platform detection.  
-> 
-> ...
-> 
-> > +static int register_platform_devices(u32 station_id)
-> > +{
-> > +       u8 ledmode = SIMATIC_IPC_DEVICE_NONE;
-> > +       u8 wdtmode = SIMATIC_IPC_DEVICE_NONE;
-> > +       int i;
-> > +
-> > +       platform_data.devmode = SIMATIC_IPC_DEVICE_NONE;
-> > +
-> > +       for (i = 0; i < ARRAY_SIZE(device_modes); i++) {
-> > +               if (device_modes[i].station_id == station_id) {
-> > +                       ledmode = device_modes[i].led_mode;
-> > +                       wdtmode = device_modes[i].wdt_mode;
-> > +                       break;
-> > +               }
-> > +       }
-> > +
-> > +       if (ledmode != SIMATIC_IPC_DEVICE_NONE) {
-> > +               platform_data.devmode = ledmode;
-> > +               ipc_led_platform_device =
-> > +                       platform_device_register_data(NULL,
-> > +                               KBUILD_MODNAME "_leds",
-> > PLATFORM_DEVID_NONE,
-> > +                               &platform_data,
-> > +                               sizeof(struct
-> > simatic_ipc_platform));
-> > +               if (IS_ERR(ipc_led_platform_device))
-> > +                       return PTR_ERR(ipc_led_platform_device);
-> > +
-> > +               pr_debug("device=%s created\n",
-> > +                        ipc_led_platform_device->name);
-> > +       }
-> > +
-> > +       if (wdtmode != SIMATIC_IPC_DEVICE_NONE) {
-> > +               platform_data.devmode = wdtmode;
-> > +               ipc_wdt_platform_device =
-> > +                       platform_device_register_data(NULL,
-> > +                               KBUILD_MODNAME "_wdt",
-> > PLATFORM_DEVID_NONE,
-> > +                               &platform_data,
-> > +                               sizeof(struct
-> > simatic_ipc_platform));
-> > +               if (IS_ERR(ipc_wdt_platform_device))
-> > +                       return PTR_ERR(ipc_wdt_platform_device);
-> > +
-> > +               pr_debug("device=%s created\n",
-> > +                        ipc_wdt_platform_device->name);
-> > +       }
-> > +
-> > +       if (ledmode == SIMATIC_IPC_DEVICE_NONE &&
-> > +           wdtmode == SIMATIC_IPC_DEVICE_NONE) {
-> > +               pr_warn("unsupported IPC detected, station
-> > id=%08x\n",
-> > +                       station_id);
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       return 0;
-> > +}  
-> 
-> Why not use MFD here?
-> 
-> ...
-> 
-> > +/*
-> > + * Get membase address from PCI, used in leds and wdt modul. Here
-> > we read
-> > + * the bar0. The final address calculation is done in the
-> > appropriate modules
-> > + */  
-> 
-> No blank line here.
-> 
-> I would add FIXME or REVISIT here to point out that this should be
-> deduplicated in the future.
+Acked-by: Will Deacon <will@kernel.org>
 
-Sure i forgot the mention that ordering problem of the two series here
-again specifically. Was kind of assuming yours would maybe be first and
-that code not being reviewed again ... 
-The code is there to test and propose something "working" not something
-i expect to be merged as is.
-
-regards,
-Henning
-
-> > +u32 simatic_ipc_get_membase0(unsigned int p2sb)
-> > +{
-> > +       struct pci_bus *bus;
-> > +       u32 bar0 = 0;
-> > +
-> > +       /*
-> > +        * The GPIO memory is bar0 of the hidden P2SB device.
-> > Unhide the device  
-> 
-> No, it's not a GPIO's bar. It's P2SB's one. GPIO resides in that bar
-> somewhere.
-> 
-> > +        * to have a quick look at it, before we hide it again.
-> > +        * Also grab the pci rescan lock so that device does not
-> > get discovered
-> > +        * and remapped while it is visible.
-> > +        * This code is inspired by drivers/mfd/lpc_ich.c
-> > +        */
-> > +       bus = pci_find_bus(0, 0);
-> > +       pci_lock_rescan_remove();
-> > +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x0);
-> > +       pci_bus_read_config_dword(bus, p2sb, PCI_BASE_ADDRESS_0,
-> > &bar0); +
-> > +       bar0 &= ~0xf;
-> > +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x1);
-> > +       pci_unlock_rescan_remove();
-> > +
-> > +       return bar0;
-> > +}
-> > +EXPORT_SYMBOL(simatic_ipc_get_membase0);  
-> 
-> ...
-> 
-> > +static inline u32 simatic_ipc_get_station_id(u8 *data, int max_len)
-> > +{
-> > +       u32 station_id = SIMATIC_IPC_INVALID_STATION_ID;
-> > +       int i;  
-> 
-> Reversed xmas tree order, please.
-> 
-> > +       struct {
-> > +               u8      type;           /* type (0xff = binary) */
-> > +               u8      len;            /* len of data entry */
-> > +               u8      reserved[3];
-> > +               u32     station_id;     /* station id (LE) */  
-> 
-> > +       } __packed
-> > +       *data_entry = (void *)data + sizeof(struct dmi_header);  
-> 
-> Can be one line.
-> 
-> > +       /* find 4th entry in OEM data */
-> > +       for (i = 0; i < 3; i++)  
-> 
-> 3 is magic!
-> 
-> > +               data_entry = (void *)((u8 *)(data_entry) +
-> > data_entry->len); +
-> > +       /* decode station id */
-> > +       if (data_entry && (u8 *)data_entry < data + max_len &&
-> > +           data_entry->type == 0xff && data_entry->len == 9)
-> > +               station_id = le32_to_cpu(data_entry->station_id);
-> > +
-> > +       return station_id;
-> > +}  
-> 
-
+Will
