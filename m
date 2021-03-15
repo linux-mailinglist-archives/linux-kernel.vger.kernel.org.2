@@ -2,72 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED31733C407
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DD633C408
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 18:23:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234798AbhCORWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S235130AbhCORWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 15 Mar 2021 13:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233200AbhCORW3 (ORCPT
+Received: from perceval.ideasonboard.com ([213.167.242.64]:38980 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233102AbhCORWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:22:29 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D53C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:22:28 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id c10so67511270ejx.9
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 10:22:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=jnUDESg0pdNz4PY9VX9E8QDwmm1Q8F5U3VU0vhzTuCg=;
-        b=R3rIHSeARaUI2sMb5u09C4ogGxYV/tCOFyHUEIvtOguNFQcCrY7vSqvjN38QmZvfFR
-         GL5oKpThEEp47rCBpay1pm2PvWzKWIdns50ROiyOBTPKu1/BZpq6q17QR6zo9M3PwVNQ
-         lANgzvcOVHz5idlaicrGIoxGxZ6j4ouyjhX9etVVoXVsIKJY4kJZnq5k4BvB4O/fKfN6
-         XVCCmxlmEJYgO21OAjzag9r+8c0PP5GY5xnTu6jGQhMGiwPn0s7eLxjMhKefqNIF1tbW
-         bXD48mxKNlISW2emS24Cp5jcBofnstcpeOGWf0RjXutk1DRIi7VAXmbGOORSIXYvuGN2
-         QAEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=jnUDESg0pdNz4PY9VX9E8QDwmm1Q8F5U3VU0vhzTuCg=;
-        b=r6z1r1Z35QGUzP+FbaOORliBzjrmT7ZnLz845EBLVN4AU8K4gRGlMPFU8yEjlpXFlW
-         QFB9ItP/U+QWndUnrPNCDbbdaHNqH5XY8yBTWV7IHAsyOW92KvOezye6spDud7mBzivM
-         jxmnL52eW3oxqrt24JVOvTAQZBZIcyfo9IacEGALNYNFFPx4AvkIifs1YX2f25nqPWLy
-         QmLUVlUSa0WuCtFE8j6dQymMtJvRSqGnDDjp/UBF9M32yYBXB3avvZqqPnFESxy8gdsF
-         RpLWFDWe8fRIUbDoGuD7/uqFtuJsYdsJlIN6iJ/c7smow8LW4W26c6bb7v/6AZ6IB9z5
-         DXoA==
-X-Gm-Message-State: AOAM532Rq3Ypu6XaFMRh5EPNZWCwLBVdIh7xfHX7AGO8cHFA4XrjIVav
-        Z93uQD59WCu2tU1noQsf0+s9740BUO+eu0tX4W4=
-X-Google-Smtp-Source: ABdhPJznDffZdCo68kM+l9vV3zDTbmwvidy9lSDwVFqNIEo09hl/I3SUYUwLkcsjGpDSUE2WNK9+W++RlXHB8irXMxw=
-X-Received: by 2002:a17:907:9863:: with SMTP id ko3mr24733109ejc.543.1615828947458;
- Mon, 15 Mar 2021 10:22:27 -0700 (PDT)
+        Mon, 15 Mar 2021 13:22:41 -0400
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BFA59316;
+        Mon, 15 Mar 2021 18:22:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615828960;
+        bh=mwXOublgZNN3WsSwROdW/VWjnxX1/dxf4nAZk0poaPA=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=c8ML28d7nCiuZtt5wetJPDBn0aHcSoBg2QrFtkelETAXucTbwbip5vBfw56MhEp4F
+         8Js2Jlm41PdGBjIKWYlwafhiVaqTZaEYP+5d7mlTzgce1lYvXnFDGgz+xzVkG4g9Mo
+         Pykzgo01HLnYcEYJlufBN2PMkl9pEmdPTPcqu9Wg=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH v2 12/18] media: i2c: rdacm21: Give more time to OV490 to
+ boot
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210315131512.133720-1-jacopo+renesas@jmondi.org>
+ <20210315131512.133720-13-jacopo+renesas@jmondi.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <0826484e-8ae7-677e-6de2-8f019e9733fc@ideasonboard.com>
+Date:   Mon, 15 Mar 2021 17:22:37 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Received: by 2002:a17:906:68c8:0:0:0:0 with HTTP; Mon, 15 Mar 2021 10:22:26
- -0700 (PDT)
-Reply-To: ialiu4284@gmail.com
-From:   ibrahim aliu <miriammichel001@gmail.com>
-Date:   Mon, 15 Mar 2021 10:22:26 -0700
-Message-ID: <CAFfkUz0LyAgQJj7-f239nwGkdUSEJyojCUEFRa56y3u=9D5Kyg@mail.gmail.com>
-Subject: YOUR URGENT RESPONSE IS NEEDED NOW
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210315131512.133720-13-jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-I am contacting you on a business deal of $17.5 Million US Dollars,
-ready for transfer into your account
+On 15/03/2021 13:15, Jacopo Mondi wrote:
+> It has been observed through repeated testing (250 boots) that in the
+> 10% of the cases the RDACM21 initialization sequence errors out due a
+> timeout waiting for the OV490 firmware to complete its boot phase.
+> 
+> Albeit being the current timeout relatively large (300-600 milliseconds),
+> doubling it reduces the sporadic error rate down to 1 over an 80 boot
+> sequences test run.
+> 
+> The firmware boot delay is unfortunately not characterized in the camera
+> module manual.
+> 
 
-if we make this claim, we will share it 60%/40%.100% risk free and it
-will be legally backed up with government approved If you are
-interested reply for more details.
+I wonder if we could characterize this alone by pulling this down until
+we see failures increase, with all the other fixes in place...
 
-Kindly reply  for more details Waiting for your reply  Make Sure You
-Write To My privat
+I don't think that's required, but it might be something to check later
+if we don't get rid of that 1/80 failure.
 
-Best regards,
 
-Ibrahim Aliu
+
+> Fixes: a59f853b3b4b ("media: i2c: Add driver for RDACM21 camera module")
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+> ---
+>  drivers/media/i2c/rdacm21.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+> index 50a9b0d8255d..07cf077d8efd 100644
+> --- a/drivers/media/i2c/rdacm21.c
+> +++ b/drivers/media/i2c/rdacm21.c
+> @@ -53,7 +53,7 @@
+>  #define OV490_PID			0x8080300a
+>  #define OV490_VER			0x8080300b
+>  #define OV490_PID_TIMEOUT		20
+> -#define OV490_OUTPUT_EN_TIMEOUT		300
+> +#define OV490_OUTPUT_EN_TIMEOUT		600
+>  
+>  #define OV490_GPIO0			BIT(0)
+>  #define OV490_SPWDN0			BIT(0)
+> 
+
