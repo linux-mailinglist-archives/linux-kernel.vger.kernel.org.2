@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A558A33BBB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B42C333BBBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:21:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237781AbhCOOUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:20:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
+        id S231576AbhCOOUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:20:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232608AbhCON7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3028964EF3;
-        Mon, 15 Mar 2021 13:59:33 +0000 (UTC)
+        id S232769AbhCON7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:59:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64B3F64E4D;
+        Mon, 15 Mar 2021 13:59:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816774;
-        bh=2L7puG+yzZ4TW/Os7JW9fjafcAwTAHMZ6V+iNCv1x6k=;
+        s=korg; t=1615816775;
+        bh=I5/Ju2sqpmZF9GUUl8cG9iEELjgWoaYlwhzX40Zzz+w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RZaIYZ5y85MPxS8U0SG/sfv0pen7ES1GgPXG3M2mY7Hjxgz031di3Wm4S7tERemiM
-         ZuioAOrUpdOiDPxAZ6838ZTsPEjpfdw8G5qjPSUFAnku+7nLIPXDq7hyjn+J74nNTP
-         VeVjQ6mNth5tBZI50qhBx/O//j2eZpxk2odTS1m4=
+        b=XzZwjXMvv4GPwfasXqYsXEvMM5/SexOgacsu7Dv61UlJSQtgNrQMSCobCRutZR6cR
+         XJBJUr6G1HWkfkKh5j/UPafiFx11BnJdHVHgVNBg84sQbqia+nTQtnfSo6xCSZborW
+         N97sJhMez/8PTDfMEgY/91VoaK0B3NVgzhZP/a7Q=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Subject: [PATCH 4.14 52/95] usb: gadget: f_uac1: stop playback on function disable
-Date:   Mon, 15 Mar 2021 14:57:22 +0100
-Message-Id: <20210315135741.981252235@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: [PATCH 4.14 53/95] usb: renesas_usbhs: Clear PIPECFG for re-enabling pipe with other EPNUM
+Date:   Mon, 15 Mar 2021 14:57:23 +0100
+Message-Id: <20210315135742.012983544@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
 References: <20210315135740.245494252@linuxfoundation.org>
@@ -40,31 +41,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-commit cc2ac63d4cf72104e0e7f58bb846121f0f51bb19 upstream.
+commit b1d25e6ee57c2605845595b6c61340d734253eb3 upstream.
 
-There is missing playback stop/cleanup in case of
-gadget's ->disable callback that happens on
-events like USB host resetting or gadget disconnection
+According to the datasheet, this controller has a restriction
+which "set an endpoint number so that combinations of the DIR bit and
+the EPNUM bits do not overlap.". However, since the udc core driver is
+possible to assign a bulk pipe as an interrupt endpoint, an endpoint
+number may not match the pipe number. After that, when user rebinds
+another gadget driver, this driver broke the restriction because
+the driver didn't clear any configuration in usb_ep_disable().
 
-Fixes: 0591bc236015 ("usb: gadget: add f_uac1 variant based on a new u_audio api")
-Cc: <stable@vger.kernel.org> # 4.13+
-Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Link: https://lore.kernel.org/r/1614599375-8803-3-git-send-email-ruslan.bilovol@gmail.com
+Example:
+ # modprobe g_ncm
+ Then, EP3 = pipe 3, EP4 = pipe 4, EP5 = pipe 6
+ # rmmod g_ncm
+ # modprobe g_hid
+ Then, EP3 = pipe 6, EP4 = pipe 7.
+ So, pipe 3 and pipe 6 are set as EP3.
+
+So, clear PIPECFG register in usbhs_pipe_free().
+
+Fixes: dfb87b8bfe09 ("usb: renesas_usbhs: gadget: fix re-enabling pipe without re-connecting")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Link: https://lore.kernel.org/r/1615168538-26101-1-git-send-email-yoshihiro.shimoda.uh@renesas.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/f_uac1.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/renesas_usbhs/pipe.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/usb/gadget/function/f_uac1.c
-+++ b/drivers/usb/gadget/function/f_uac1.c
-@@ -503,6 +503,7 @@ static void f_audio_disable(struct usb_f
- 	uac1->as_out_alt = 0;
- 	uac1->as_in_alt = 0;
+--- a/drivers/usb/renesas_usbhs/pipe.c
++++ b/drivers/usb/renesas_usbhs/pipe.c
+@@ -746,6 +746,8 @@ struct usbhs_pipe *usbhs_pipe_malloc(str
  
-+	u_audio_stop_playback(&uac1->g_audio);
- 	u_audio_stop_capture(&uac1->g_audio);
+ void usbhs_pipe_free(struct usbhs_pipe *pipe)
+ {
++	usbhsp_pipe_select(pipe);
++	usbhsp_pipe_cfg_set(pipe, 0xFFFF, 0);
+ 	usbhsp_put_pipe(pipe);
  }
  
 
