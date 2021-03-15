@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7083233B806
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:04:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 738D933B821
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:04:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233513AbhCOOBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:01:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33852 "EHLO mail.kernel.org"
+        id S233662AbhCOOCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:02:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230354AbhCON4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:56:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21CEB64EF3;
-        Mon, 15 Mar 2021 13:56:44 +0000 (UTC)
+        id S231574AbhCON4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:56:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 535C464EFE;
+        Mon, 15 Mar 2021 13:56:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816606;
-        bh=XaLBq42/E+mlwlGI2vk6zUz1rdgx0t7/XCw3YyfywR4=;
+        s=korg; t=1615816608;
+        bh=fHyZTa1DYU/Knqh6mLdjAJX4WqBhgq98n0fx+lI7uVs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rDY3e1RO+8AAhRwc0g21y4YzAQ5u6utnJv4JxHvkvOH0Cd13OTAbw1WtuqKn7UgQM
-         6WjOB7CaABhn8k654UFlXinnjatQc/sd1NwcBl4+69tfm6jsDMDo5fII9rxh4srf0g
-         UCUfvMpVPbuhhDD5FuXrBQIyhvcyQseJktHzfUyQ=
+        b=U6kJXxyAXYhdt4kMQWV9wzuj7h2g8izUJQgcR3a6lSx/siYR2JoRJoo4HO/XuOtPF
+         xQM4mF1GEFDuzYub74S0A+aaWlM3+aoDuPx2noVyDZLu86Pt4mOIFK35nLVOSuEPjs
+         Sng9MuJeHw0xMkzsPS6jPXMFelJY7YsCH8c/QA0c=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>,
-        Andre Naujoks <nautsch2@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.11 017/306] can: skb: can_skb_set_owner(): fix ref counting if socket was closed before setting skb ownership
-Date:   Mon, 15 Mar 2021 14:51:20 +0100
-Message-Id: <20210315135508.197123225@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 5.11 018/306] gpio: pca953x: Set IRQ type when handle Intel Galileo Gen 2
+Date:   Mon, 15 Mar 2021 14:51:21 +0100
+Message-Id: <20210315135508.228776334@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -44,71 +43,133 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit e940e0895a82c6fbaa259f2615eb52b57ee91a7e upstream.
+commit eb441337c7147514ab45036cadf09c3a71e4ce31 upstream.
 
-There are two ref count variables controlling the free()ing of a socket:
-- struct sock::sk_refcnt - which is changed by sock_hold()/sock_put()
-- struct sock::sk_wmem_alloc - which accounts the memory allocated by
-  the skbs in the send path.
+The commit 0ea683931adb ("gpio: dwapb: Convert driver to using the
+GPIO-lib-based IRQ-chip") indeliberately made a regression on how
+IRQ line from GPIO I²C expander is handled. I.e. it reveals that
+the quirk for Intel Galileo Gen 2 misses the part of setting IRQ type
+which previously was predefined by gpio-dwapb driver. Now, we have to
+reorganize the approach to call necessary parts, which can be done via
+ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk.
 
-In case there are still TX skbs on the fly and the socket() is closed,
-the struct sock::sk_refcnt reaches 0. In the TX-path the CAN stack
-clones an "echo" skb, calls sock_hold() on the original socket and
-references it. This produces the following back trace:
+Without this fix and with above mentioned change the kernel hangs
+on the first IRQ event with:
 
-| WARNING: CPU: 0 PID: 280 at lib/refcount.c:25 refcount_warn_saturate+0x114/0x134
-| refcount_t: addition on 0; use-after-free.
-| Modules linked in: coda_vpu(E) v4l2_jpeg(E) videobuf2_vmalloc(E) imx_vdoa(E)
-| CPU: 0 PID: 280 Comm: test_can.sh Tainted: G            E     5.11.0-04577-gf8ff6603c617 #203
-| Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-| Backtrace:
-| [<80bafea4>] (dump_backtrace) from [<80bb0280>] (show_stack+0x20/0x24) r7:00000000 r6:600f0113 r5:00000000 r4:81441220
-| [<80bb0260>] (show_stack) from [<80bb593c>] (dump_stack+0xa0/0xc8)
-| [<80bb589c>] (dump_stack) from [<8012b268>] (__warn+0xd4/0x114) r9:00000019 r8:80f4a8c2 r7:83e4150c r6:00000000 r5:00000009 r4:80528f90
-| [<8012b194>] (__warn) from [<80bb09c4>] (warn_slowpath_fmt+0x88/0xc8) r9:83f26400 r8:80f4a8d1 r7:00000009 r6:80528f90 r5:00000019 r4:80f4a8c2
-| [<80bb0940>] (warn_slowpath_fmt) from [<80528f90>] (refcount_warn_saturate+0x114/0x134) r8:00000000 r7:00000000 r6:82b44000 r5:834e5600 r4:83f4d540
-| [<80528e7c>] (refcount_warn_saturate) from [<8079a4c8>] (__refcount_add.constprop.0+0x4c/0x50)
-| [<8079a47c>] (__refcount_add.constprop.0) from [<8079a57c>] (can_put_echo_skb+0xb0/0x13c)
-| [<8079a4cc>] (can_put_echo_skb) from [<8079ba98>] (flexcan_start_xmit+0x1c4/0x230) r9:00000010 r8:83f48610 r7:0fdc0000 r6:0c080000 r5:82b44000 r4:834e5600
-| [<8079b8d4>] (flexcan_start_xmit) from [<80969078>] (netdev_start_xmit+0x44/0x70) r9:814c0ba0 r8:80c8790c r7:00000000 r6:834e5600 r5:82b44000 r4:82ab1f00
-| [<80969034>] (netdev_start_xmit) from [<809725a4>] (dev_hard_start_xmit+0x19c/0x318) r9:814c0ba0 r8:00000000 r7:82ab1f00 r6:82b44000 r5:00000000 r4:834e5600
-| [<80972408>] (dev_hard_start_xmit) from [<809c6584>] (sch_direct_xmit+0xcc/0x264) r10:834e5600 r9:00000000 r8:00000000 r7:82b44000 r6:82ab1f00 r5:834e5600 r4:83f27400
-| [<809c64b8>] (sch_direct_xmit) from [<809c6c0c>] (__qdisc_run+0x4f0/0x534)
+    gpio gpiochip3: Persistence not supported for GPIO 1
+    irq 32, desc: 62f8fb50, depth: 0, count: 0, unhandled: 0
+    ->handle_irq():  41c7b0ab, handle_bad_irq+0x0/0x40
+    ->irq_data.chip(): e03f1e72, 0xc2539218
+    ->action(): 0ecc7e6f
+    ->action->handler(): 8a3db21e, irq_default_primary_handler+0x0/0x10
+       IRQ_NOPROBE set
+    unexpected IRQ trap at vector 20
 
-To fix this problem, only set skb ownership to sockets which have still
-a ref count > 0.
-
-Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Andre Naujoks <nautsch2@gmail.com>
-Link: https://lore.kernel.org/r/20210226092456.27126-1-o.rempel@pengutronix.de
-Suggested-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Reviewed-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: ba8c90c61847 ("gpio: pca953x: Override IRQ for one of the expanders on Galileo Gen 2")
+Depends-on: 0ea683931adb ("gpio: dwapb: Convert driver to using the GPIO-lib-based IRQ-chip")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/can/skb.h |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/gpio/gpio-pca953x.c |   78 ++++++++++++--------------------------------
+ 1 file changed, 23 insertions(+), 55 deletions(-)
 
---- a/include/linux/can/skb.h
-+++ b/include/linux/can/skb.h
-@@ -49,8 +49,12 @@ static inline void can_skb_reserve(struc
+--- a/drivers/gpio/gpio-pca953x.c
++++ b/drivers/gpio/gpio-pca953x.c
+@@ -112,8 +112,29 @@ MODULE_DEVICE_TABLE(i2c, pca953x_id);
+ #ifdef CONFIG_GPIO_PCA953X_IRQ
  
- static inline void can_skb_set_owner(struct sk_buff *skb, struct sock *sk)
- {
--	if (sk) {
--		sock_hold(sk);
-+	/* If the socket has already been closed by user space, the
-+	 * refcount may already be 0 (and the socket will be freed
-+	 * after the last TX skb has been freed). So only increase
-+	 * socket refcount if the refcount is > 0.
-+	 */
-+	if (sk && refcount_inc_not_zero(&sk->sk_refcnt)) {
- 		skb->destructor = sock_efree;
- 		skb->sk = sk;
- 	}
+ #include <linux/dmi.h>
+-#include <linux/gpio.h>
+-#include <linux/list.h>
++
++static const struct acpi_gpio_params pca953x_irq_gpios = { 0, 0, true };
++
++static const struct acpi_gpio_mapping pca953x_acpi_irq_gpios[] = {
++	{ "irq-gpios", &pca953x_irq_gpios, 1, ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER },
++	{ }
++};
++
++static int pca953x_acpi_get_irq(struct device *dev)
++{
++	int ret;
++
++	ret = devm_acpi_dev_add_driver_gpios(dev, pca953x_acpi_irq_gpios);
++	if (ret)
++		dev_warn(dev, "can't add GPIO ACPI mapping\n");
++
++	ret = acpi_dev_gpio_irq_get_by(ACPI_COMPANION(dev), "irq-gpios", 0);
++	if (ret < 0)
++		return ret;
++
++	dev_info(dev, "ACPI interrupt quirk (IRQ %d)\n", ret);
++	return ret;
++}
+ 
+ static const struct dmi_system_id pca953x_dmi_acpi_irq_info[] = {
+ 	{
+@@ -132,59 +153,6 @@ static const struct dmi_system_id pca953
+ 	},
+ 	{}
+ };
+-
+-#ifdef CONFIG_ACPI
+-static int pca953x_acpi_get_pin(struct acpi_resource *ares, void *data)
+-{
+-	struct acpi_resource_gpio *agpio;
+-	int *pin = data;
+-
+-	if (acpi_gpio_get_irq_resource(ares, &agpio))
+-		*pin = agpio->pin_table[0];
+-	return 1;
+-}
+-
+-static int pca953x_acpi_find_pin(struct device *dev)
+-{
+-	struct acpi_device *adev = ACPI_COMPANION(dev);
+-	int pin = -ENOENT, ret;
+-	LIST_HEAD(r);
+-
+-	ret = acpi_dev_get_resources(adev, &r, pca953x_acpi_get_pin, &pin);
+-	acpi_dev_free_resource_list(&r);
+-	if (ret < 0)
+-		return ret;
+-
+-	return pin;
+-}
+-#else
+-static inline int pca953x_acpi_find_pin(struct device *dev) { return -ENXIO; }
+-#endif
+-
+-static int pca953x_acpi_get_irq(struct device *dev)
+-{
+-	int pin, ret;
+-
+-	pin = pca953x_acpi_find_pin(dev);
+-	if (pin < 0)
+-		return pin;
+-
+-	dev_info(dev, "Applying ACPI interrupt quirk (GPIO %d)\n", pin);
+-
+-	if (!gpio_is_valid(pin))
+-		return -EINVAL;
+-
+-	ret = gpio_request(pin, "pca953x interrupt");
+-	if (ret)
+-		return ret;
+-
+-	ret = gpio_to_irq(pin);
+-
+-	/* When pin is used as an IRQ, no need to keep it requested */
+-	gpio_free(pin);
+-
+-	return ret;
+-}
+ #endif
+ 
+ static const struct acpi_device_id pca953x_acpi_ids[] = {
 
 
