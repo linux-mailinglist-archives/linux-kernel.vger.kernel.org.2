@@ -2,64 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B48833AFF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:27:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE3733AFF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 11:28:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhCOK1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 06:27:06 -0400
-Received: from a.mx.secunet.com ([62.96.220.36]:36876 "EHLO a.mx.secunet.com"
+        id S229908AbhCOK1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 06:27:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229887AbhCOK0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:26:49 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id C1EE120491;
-        Mon, 15 Mar 2021 11:26:48 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id YjNLl0WALVz4; Mon, 15 Mar 2021 11:26:42 +0100 (CET)
-Received: from mail-essen-01.secunet.de (unknown [10.53.40.204])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id D95522057B;
-        Mon, 15 Mar 2021 11:26:42 +0100 (CET)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- mail-essen-01.secunet.de (10.53.40.204) with Microsoft SMTP Server (TLS) id
- 14.3.487.0; Mon, 15 Mar 2021 11:26:42 +0100
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 15 Mar
- 2021 11:26:42 +0100
-Received: by gauss2.secunet.de (Postfix, from userid 1000)      id D45EC31803BF;
- Mon, 15 Mar 2021 11:26:41 +0100 (CET)
-Date:   Mon, 15 Mar 2021 11:26:41 +0100
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     angkery <angkery@163.com>
-CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>, <kuba@kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Junlin Yang <yangjunlin@yulong.com>
-Subject: Re: [PATCH] esp6: remove a duplicative condition
-Message-ID: <20210315102641.GX62598@gauss3.secunet.de>
-References: <20210311020756.1570-1-angkery@163.com>
+        id S229900AbhCOK1T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 06:27:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 725CA64E0F;
+        Mon, 15 Mar 2021 10:27:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615804039;
+        bh=AGwamD92u5AG9ynbGg86ThSmL6JsKPrR25OjmZjqN/A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sPq4qge3eoNxFFbYzw2zwdMkpY0+38CyOVqwY20gs7l3aMMi2aVu/wvdkTOcpFiZI
+         GEY1Xv2TvR5EtmzUB+mZivU640D3VBwD932VP59u1eQbsxP+ljiKQji7JJJ9dd/cGm
+         FGo8wHVxapOXjlLLGmR61BP1H7P4j7y7sASEAbYxzHyfOgQCmOP4nsILzmLeBNizMn
+         boUWWiJ3Thedjq54PSg4t21QAPzoZg5LspnTrGgdQuImuoiRSb+hQ9RMeoej2gXK6p
+         fugjLIltFvyLqb9sG97jY53C06jsONfyfKku8BftC+Cx0RAYgB9efGaPz28T28PxDK
+         KFj9y9a9SYKDA==
+Date:   Mon, 15 Mar 2021 15:57:15 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH RESEND][next] phy: qcom-usb-hs: Fix fall-through warnings
+ for Clang
+Message-ID: <YE82g5+07IOwRDzl@vkoul-mobl>
+References: <20210305100219.GA142595@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210311020756.1570-1-angkery@163.com>
-X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+In-Reply-To: <20210305100219.GA142595@embeddedor>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 10:07:56AM +0800, angkery wrote:
-> From: Junlin Yang <yangjunlin@yulong.com>
-> 
-> Fixes coccicheck warnings:
-> ./net/ipv6/esp6_offload.c:319:32-34:
-> WARNING !A || A && B is equivalent to !A || B
-> 
-> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+On 05-03-21, 04:02, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a break statement instead of letting the code fall
+> through to the next case.
 
-Applied to ipsec-next, thanks!
+Applied, thanks
+
+-- 
+~Vinod
