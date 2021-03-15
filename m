@@ -2,117 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9816333B125
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D98233B127
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 12:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhCOLaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 07:30:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21703 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230242AbhCOL3e (ORCPT
+        id S230369AbhCOLaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 07:30:01 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13537 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230034AbhCOL3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 07:29:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615807773;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1+7AUzrzm8HAwAnNkO+PDguvC47LB5o6Xz8fUn4oHzc=;
-        b=cAVkKJghkyTwlNk4NqOLqTmWgkmXUrZnNWhVNe1TvNtp0pdjg7AN5GxKcEAIqyehLTLSHE
-        xPrX+s9EVgOqnXdNQ33ogp7sBk1ymMfsTiGRP+A8TkRYo0F+91JfEFYuOm0nds3MLt8MZv
-        p4B33M4LdYNvQuZ3sLESc2ZbbXzClCw=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-FxdNRoXdOGSC3Fj9CpwHtw-1; Mon, 15 Mar 2021 07:29:32 -0400
-X-MC-Unique: FxdNRoXdOGSC3Fj9CpwHtw-1
-Received: by mail-wm1-f72.google.com with SMTP id b20so2357298wmj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 04:29:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1+7AUzrzm8HAwAnNkO+PDguvC47LB5o6Xz8fUn4oHzc=;
-        b=O8bSQ9/0JcLbP1y1euGjFinJMs/Ry7LAK/oZCZFG5q+ut7BjcmVJZ+73VdD1oacMnD
-         M5qrLVb4MRa/8WrGrSXVlbo+HYEizPeJXnWzzUO0G1B7Wl3LUGUZ3291ibsZfKgfTA5m
-         tW40ppVXnZQseiPiFU0v5GymEELdX+xfDJhROTDS9LGGRZhZsRjZ9chuW1KlnWKSRLNQ
-         N+G+6jqJsnEJ5i4xbNmfXS+Bhp/w+wKvIK3g0q/wR8dgZC5c/WVcCvvq75zVOmMOgqOc
-         OwAwZ6C0YC8DKYb74Vh3T5UqMQnMopXNH300LUPwJSUPKFT2BF/gcVLKttYviKHOIaVH
-         I+fg==
-X-Gm-Message-State: AOAM531A1TCO7p2mV0YeucUW9NxSxmJLp34HQf0w/LCZEhzi/FqFkKNL
-        HVWx5IOWbkRd/uNySVG3S1yUPgBXXldlI+OCbx6ZIBoDE7c7/g4vH9eOXQdy79wRiJLxR5GGHoq
-        7ZDlzW6OmHdhQm/hGsGpj1EUX
-X-Received: by 2002:a5d:4d0f:: with SMTP id z15mr27172920wrt.192.1615807770754;
-        Mon, 15 Mar 2021 04:29:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwPaa1RsYizJWQVGBx3qj8UyDGlrRh47JNGjq0sqiNSmbivdESKClpUjnV47KEmVgApFQQIBA==
-X-Received: by 2002:a5d:4d0f:: with SMTP id z15mr27172900wrt.192.1615807770597;
-        Mon, 15 Mar 2021 04:29:30 -0700 (PDT)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id s16sm18201253wru.91.2021.03.15.04.29.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 04:29:30 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 12:29:27 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v6 17/22] virtio/vsock: SEQPACKET feature bit support
-Message-ID: <20210315112927.4aygxeby2f7p3mju@steredhat>
-References: <20210307175722.3464068-1-arseny.krasnov@kaspersky.com>
- <20210307180404.3466602-1-arseny.krasnov@kaspersky.com>
+        Mon, 15 Mar 2021 07:29:42 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DzYzn4CgBzNnCN;
+        Mon, 15 Mar 2021 19:27:17 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.131) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Mon, 15 Mar 2021
+ 19:29:31 +0800
+Subject: Re: [PATCH v1] ata: ahci: Disable SXS for Hisilicon Kunpeng920
+To:     Jens Axboe <axboe@kernel.dk>
+CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <john.garry@huawei.com>,
+        <yangxingui@huawei.com>
+References: <1615544676-61926-1-git-send-email-luojiaxing@huawei.com>
+ <c1ef5207-96a4-e7f1-68ac-f95ab0b0f5d2@kernel.dk>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <06094d83-2083-09ad-5948-718cfbe4579b@huawei.com>
+Date:   Mon, 15 Mar 2021 19:29:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210307180404.3466602-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <c1ef5207-96a4-e7f1-68ac-f95ab0b0f5d2@kernel.dk>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.40.192.131]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 09:04:01PM +0300, Arseny Krasnov wrote:
->This adds handling of SEQPACKET bit: guest tries to negotiate it
->with vhost.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> net/vmw_vsock/virtio_transport.c | 5 +++++
-> 1 file changed, 5 insertions(+)
 
-Also for this patch I think is better to move after we set the 
-seqpackets ops.
+On 2021/3/12 22:27, Jens Axboe wrote:
+> Is this controller arm exclusive?
 
->
->diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
->index 2700a63ab095..41c5d0a31e08 100644
->--- a/net/vmw_vsock/virtio_transport.c
->+++ b/net/vmw_vsock/virtio_transport.c
->@@ -612,6 +612,10 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
-> 	rcu_assign_pointer(the_virtio_vsock, vsock);
->
-> 	mutex_unlock(&the_virtio_vsock_mutex);
->+
->+	if (vdev->features & (1ULL << VIRTIO_VSOCK_F_SEQPACKET))
->+		virtio_transport.seqpacket_allow = true;
->+
-> 	return 0;
->
-> out:
->@@ -695,6 +699,7 @@ static struct virtio_device_id id_table[] = {
-> };
->
-> static unsigned int features[] = {
->+	VIRTIO_VSOCK_F_SEQPACKET
-> };
->
-> static struct virtio_driver virtio_vsock_driver = {
->-- 
->2.25.1
->
+
+Yes, our SoC is base on ARM64 only.
+
+
+Thanks
+
+Jiaxing
+
 
