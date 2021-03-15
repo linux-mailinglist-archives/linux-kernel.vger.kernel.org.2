@@ -2,211 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C676933C555
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FBE33C556
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 19:14:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbhCOSOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 14:14:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49746 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231357AbhCOSNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:13:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B27F264F01;
-        Mon, 15 Mar 2021 18:13:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615832024;
-        bh=U+aKejYtJBufoVgMSdu8hu3ay4ZDWIRJ7Q4qXJs9HuM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RUaJd9NsSeOH6OvmBdRsty3jmBOxRTbIQ6/8AjMeLD9V3drpLpekIxT+6yrVG0q4s
-         23JekvLfdiuTQx+xeVBZ5AShLR1wRZsTJ6B0KFceooVLlZ7K9gwb+2SALIOk7kVFwQ
-         9lAauGHpRueNH23tCNwBIow2Qv9dGXAUAUeZLqhq6iC4Wgg1tzNWdhV0xyXtHEBSyt
-         v0s0qnvhUoXnqQmnSt9G+KxOpyuR38moA69UNDNXK9+zxZ1uQd+KEXj/GzuTO/OKYQ
-         Dcq6mNguANwu2EMf9zhvadu2uJjf6UarpgzEK5SZ1plY1IhTH7Kc6mGKuC+rmMlyIv
-         3BZhMjlFDsphw==
-Date:   Mon, 15 Mar 2021 11:13:39 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Fangrui Song <maskray@google.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] gcov: fix clang-11+ support
-Message-ID: <20210315181339.bzs6t7aonlaavggw@archlinux-ax161>
-References: <20210312220518.rz6cjh33bkwaumzz@archlinux-ax161>
- <20210312224132.3413602-1-ndesaulniers@google.com>
- <20210312224132.3413602-2-ndesaulniers@google.com>
+        id S231321AbhCOSOS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Mar 2021 14:14:18 -0400
+Received: from mail-vk1-f180.google.com ([209.85.221.180]:35797 "EHLO
+        mail-vk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231225AbhCOSNy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 14:13:54 -0400
+Received: by mail-vk1-f180.google.com with SMTP id k27so3034337vki.2;
+        Mon, 15 Mar 2021 11:13:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5ttnIf4YpTk5H8GW6m3wchGnU61LNhA8jE6rda8jNi0=;
+        b=DYq+kIPwNsa9eKlgRfMuHJBf8/TyQ1FsvEVt6A8n6Ont4dG8VzXTTvwKcKdtmicF5E
+         AfN8nRcG8ZXizXAeuKuRYGBPNn2HE8zZjdk9SAKFXBaLOxPbx6PAY6Gp7dN6cAMznR6e
+         w0UyQvvefTMaa2h1wysoWzRSJboIaeD0JlQxGH8BVKde9SihlKZth024Iu3G12EHqSqV
+         OM6Q4VSZxPc43UkxheyC+j7dH+lUkmG7w2ZN2kRm0ub2HrXYuIEGufmAZXabL1LJxe7S
+         LJKrjYe4YkGP2G7djrYrySHzD55QoClPPAUd3uQ0w8LJn74Wuz561FmmqG9XIPlvLhHR
+         RNzw==
+X-Gm-Message-State: AOAM531jWBzthl7cCgSNwAu1i2dCPrqUYj80dfZE7x5OCz8/GYlKD5al
+        PvKVRCkQHUQqCFhoGIrnFrlIdXAoagPd6bevsSkCfplWofE=
+X-Google-Smtp-Source: ABdhPJxmHPKCl6/KoLKCjWWHH1nzlyZhAfvkJCSsrW+k5JNup2itpowFYOpAeB2fpNRiP5LlvOmVxUysr23ztte+kQo=
+X-Received: by 2002:ac5:cbee:: with SMTP id i14mr5887786vkn.1.1615832033240;
+ Mon, 15 Mar 2021 11:13:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312224132.3413602-2-ndesaulniers@google.com>
+References: <20210313032515.12590-1-cnsztl@gmail.com> <67b314e7-92b9-8025-1a41-9b7da6ff2249@arm.com>
+ <CAMuHMdX9F0fgi2-N01cck=AvgtByq3sSpdgLrCu5MDrkkc-KXw@mail.gmail.com> <17376355.sWSEgdgrri@diego>
+In-Reply-To: <17376355.sWSEgdgrri@diego>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 15 Mar 2021 19:13:41 +0100
+Message-ID: <CAMuHMdWYrS=YT7F7erM-e6xhDME4judx-T7rdFGi7CpW1_iqkg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] rockchip: rk3399: Add support for FriendlyARM
+ NanoPi R4S
+To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+Cc:     Robin Murphy <robin.murphy@arm.com>, CN_SZTL <cnsztl@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        David Bauer <mail@david-bauer.net>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        Marty Jones <mj8263788@gmail.com>,
+        Jensen Huang <jensenhuang@friendlyarm.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 02:41:31PM -0800, Nick Desaulniers wrote:
-> LLVM changed the expected function signatures for llvm_gcda_start_file()
-> and llvm_gcda_emit_function() in the clang-11 release. Users of clang-11
-> or newer may have noticed their kernels failing to boot due to a panic
-> when enabling CONFIG_GCOV_KERNEL=y +CONFIG_GCOV_PROFILE_ALL=y.  Fix up
-> the function signatures so calling these functions doesn't panic the
-> kernel.
-> 
-> Link: https://reviews.llvm.org/rGcdd683b516d147925212724b09ec6fb792a40041
-> Link: https://reviews.llvm.org/rG13a633b438b6500ecad9e4f936ebadf3411d0f44
-> Cc: stable@vger.kernel.org # 5.4
-> Reported-by: Prasad Sodagudi <psodagud@quicinc.com>
-> Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> Reviewed-by: Fangrui Song <maskray@google.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
+Hi Heiko,
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+On Mon, Mar 15, 2021 at 5:52 PM Heiko Stübner <heiko@sntech.de> wrote:
+> Am Montag, 15. März 2021, 17:38:37 CET schrieb Geert Uytterhoeven:
+> > On Mon, Mar 15, 2021 at 5:32 PM Robin Murphy <robin.murphy@arm.com> wrote:
+> > > On 2021-03-13 13:22, CN_SZTL wrote:
+> > > > Robin Murphy <robin.murphy@arm.com> 于2021年3月13日周六 下午7:55写道：
+> > > >>
+> > > >> On 2021-03-13 03:25, Tianling Shen wrote:
+> > > >>> +     gpio-leds {
+> > > >>> +             compatible = "gpio-leds";
+> > > >>> +             pinctrl-0 = <&lan_led_pin>, <&sys_led_pin>, <&wan_led_pin>;
+> > > >>> +             pinctrl-names = "default";
+> > > >>> +
+> > > >>> +             lan_led: led-0 {
+> > > >>> +                     gpios = <&gpio1 RK_PA1 GPIO_ACTIVE_HIGH>;
+> > > >>> +                     label = "nanopi-r4s:green:lan";
+> > > >>> +             };
+> > > >>> +
+> > > >>> +             sys_led: led-1 {
+> > > >>> +                     gpios = <&gpio0 RK_PB5 GPIO_ACTIVE_HIGH>;
+> > > >>> +                     label = "nanopi-r4s:red:sys";
+> > > >>> +                     default-state = "on";
+> > > >>> +             };
+> > > >>> +
+> > > >>> +             wan_led: led-2 {
+> > > >>> +                     gpios = <&gpio1 RK_PA0 GPIO_ACTIVE_HIGH>;
+> > > >>> +                     label = "nanopi-r4s:green:wan";
+> > > >>> +             };
+> > >
+> > > Nit: (apologies for overlooking it before) there isn't an obvious
+> > > definitive order for the LEDs, but the order here is certainly not
+> > > consistent with anything. The most logical would probably be sys, wan,
+> >
+> > Looks like alphabetical sort order to me ;-)
+>
+> yep ... led-0, led-1, led-2 looks pretty sorted ;-)
 
-> ---
-> Changes V1 -> V2:
-> * Use CONFIG_CLANG_VERSION instead of __clang_major__.
-> * Pick up and retain Suggested-by, Tested-by, and Reviewed-by tags.
-> * Drop note from commit message about `git blame`; I did what was
->   sugguested in V1, but it still looks to git like I wrote those
->   functions. Oh well.
-> 
->  kernel/gcov/clang.c | 69 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 69 insertions(+)
-> 
-> diff --git a/kernel/gcov/clang.c b/kernel/gcov/clang.c
-> index c94b820a1b62..8743150db2ac 100644
-> --- a/kernel/gcov/clang.c
-> +++ b/kernel/gcov/clang.c
-> @@ -75,7 +75,9 @@ struct gcov_fn_info {
->  
->  	u32 num_counters;
->  	u64 *counters;
-> +#if CONFIG_CLANG_VERSION < 110000
->  	const char *function_name;
-> +#endif
->  };
->  
->  static struct gcov_info *current_info;
-> @@ -105,6 +107,7 @@ void llvm_gcov_init(llvm_gcov_callback writeout, llvm_gcov_callback flush)
->  }
->  EXPORT_SYMBOL(llvm_gcov_init);
->  
-> +#if CONFIG_CLANG_VERSION < 110000
->  void llvm_gcda_start_file(const char *orig_filename, const char version[4],
->  		u32 checksum)
->  {
-> @@ -113,7 +116,17 @@ void llvm_gcda_start_file(const char *orig_filename, const char version[4],
->  	current_info->checksum = checksum;
->  }
->  EXPORT_SYMBOL(llvm_gcda_start_file);
-> +#else
-> +void llvm_gcda_start_file(const char *orig_filename, u32 version, u32 checksum)
-> +{
-> +	current_info->filename = orig_filename;
-> +	current_info->version = version;
-> +	current_info->checksum = checksum;
-> +}
-> +EXPORT_SYMBOL(llvm_gcda_start_file);
-> +#endif
->  
-> +#if CONFIG_CLANG_VERSION < 110000
->  void llvm_gcda_emit_function(u32 ident, const char *function_name,
->  		u32 func_checksum, u8 use_extra_checksum, u32 cfg_checksum)
->  {
-> @@ -133,6 +146,24 @@ void llvm_gcda_emit_function(u32 ident, const char *function_name,
->  	list_add_tail(&info->head, &current_info->functions);
->  }
->  EXPORT_SYMBOL(llvm_gcda_emit_function);
-> +#else
-> +void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
-> +		u8 use_extra_checksum, u32 cfg_checksum)
-> +{
-> +	struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
-> +
-> +	if (!info)
-> +		return;
-> +
-> +	INIT_LIST_HEAD(&info->head);
-> +	info->ident = ident;
-> +	info->checksum = func_checksum;
-> +	info->use_extra_checksum = use_extra_checksum;
-> +	info->cfg_checksum = cfg_checksum;
-> +	list_add_tail(&info->head, &current_info->functions);
-> +}
-> +EXPORT_SYMBOL(llvm_gcda_emit_function);
-> +#endif
->  
->  void llvm_gcda_emit_arcs(u32 num_counters, u64 *counters)
->  {
-> @@ -295,6 +326,7 @@ void gcov_info_add(struct gcov_info *dst, struct gcov_info *src)
->  	}
->  }
->  
-> +#if CONFIG_CLANG_VERSION < 110000
->  static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
->  {
->  	size_t cv_size; /* counter values size */
-> @@ -322,6 +354,28 @@ static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
->  	kfree(fn_dup);
->  	return NULL;
->  }
-> +#else
-> +static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
-> +{
-> +	size_t cv_size; /* counter values size */
-> +	struct gcov_fn_info *fn_dup = kmemdup(fn, sizeof(*fn),
-> +			GFP_KERNEL);
-> +	if (!fn_dup)
-> +		return NULL;
-> +	INIT_LIST_HEAD(&fn_dup->head);
-> +
-> +	cv_size = fn->num_counters * sizeof(fn->counters[0]);
-> +	fn_dup->counters = vmalloc(cv_size);
-> +	if (!fn_dup->counters) {
-> +		kfree(fn_dup);
-> +		return NULL;
-> +	}
-> +
-> +	memcpy(fn_dup->counters, fn->counters, cv_size);
-> +
-> +	return fn_dup;
-> +}
-> +#endif
->  
->  /**
->   * gcov_info_dup - duplicate profiling data set
-> @@ -362,6 +416,7 @@ struct gcov_info *gcov_info_dup(struct gcov_info *info)
->   * gcov_info_free - release memory for profiling data set duplicate
->   * @info: profiling data set duplicate to free
->   */
-> +#if CONFIG_CLANG_VERSION < 110000
->  void gcov_info_free(struct gcov_info *info)
->  {
->  	struct gcov_fn_info *fn, *tmp;
-> @@ -375,6 +430,20 @@ void gcov_info_free(struct gcov_info *info)
->  	kfree(info->filename);
->  	kfree(info);
->  }
-> +#else
-> +void gcov_info_free(struct gcov_info *info)
-> +{
-> +	struct gcov_fn_info *fn, *tmp;
-> +
-> +	list_for_each_entry_safe(fn, tmp, &info->functions, head) {
-> +		vfree(fn->counters);
-> +		list_del(&fn->head);
-> +		kfree(fn);
-> +	}
-> +	kfree(info->filename);
-> +	kfree(info);
-> +}
-> +#endif
->  
->  #define ITER_STRIDE	PAGE_SIZE
->  
-> 
-> base-commit: f78d76e72a4671ea52d12752d92077788b4f5d50
-> -- 
-> 2.31.0.rc2.261.g7f71774620-goog
-> 
+Actually I had "lan, sys, wan" in mind ;-)
+
+> Generally I'd prefer sorting by node-names ... especially as the phandle
+> is sort of optional for most things - and they sometimes come and go
+> in dt-files.
+
+The node names are sorted, too, as you've just pointed out...
+
+Personally, I'm not so fond of the <foo>-%u node names, and prefer
+<foo>-<function>.  With the former, it's way too easy to have a silent
+override in your .dts(i) stack.
+Cfr. commit 45f5d5a9e34d3fe4 ("arm64: dts: renesas: r8a77995: draak:
+Fix backlight regulator name")
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
