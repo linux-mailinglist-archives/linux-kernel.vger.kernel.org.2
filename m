@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B7233BA9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A5233BB1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235116AbhCOOJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:09:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35534 "EHLO mail.kernel.org"
+        id S236135AbhCOOM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:12:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232145AbhCON5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:57:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3564664F12;
-        Mon, 15 Mar 2021 13:57:50 +0000 (UTC)
+        id S232350AbhCON62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E094764F17;
+        Mon, 15 Mar 2021 13:58:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816671;
-        bh=ywmH/FuJgV0z5wgRWqx9jwCb0RCD3L65oqObmzsVKOw=;
+        s=korg; t=1615816706;
+        bh=hJVwzSC6/ST+dE99RgvAl3V8AhpXoY12zMpM3vlMe1M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DN1dxSAMjqmIuRxj1KACvmYhKv/gThxKoEWeY4+Uc5U+q9F+O+zJwGqL43hbQ+cC8
-         5pk3VBpjzGX7N7eK9JMJgSnj7zZGCC21Slb80IwbRUFmXrBKqUwBB9+OB+fdyWUExS
-         Qk8gyggZxejqMnAiBi6FeA6ObwwjG4O9Jw+ksKuY=
+        b=KgFcZ/tSy97qsvCKoPEXX2hCEWaCWK7A87M/UrG3tjZ4PIylLC+MhUUX8+bbv4dCn
+         3zl5iH4XWiy2/WKOsWRj7zIHhteLjvnGdte0Sjo95MAxK7OvAJPxz3keZyi9JuW2Ro
+         yEi5m1yypWXODBhKAX+260xAHTtVzggLICmqAuVI=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>,
-        Ramesh Babu B <ramesh.babu.b@intel.com>,
+        stable@vger.kernel.org, Hayes Wang <hayeswang@realtek.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 046/290] net: stmmac: fix incorrect DMA channel intr enable setting of EQoS v4.10
+Subject: [PATCH 5.11 076/306] r8169: fix r8168fp_adjust_ocp_cmd function
 Date:   Mon, 15 Mar 2021 14:52:19 +0100
-Message-Id: <20210315135543.480687188@linuxfoundation.org>
+Message-Id: <20210315135510.214125519@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +42,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Ong Boon Leong <boon.leong.ong@intel.com>
+From: Hayes Wang <hayeswang@realtek.com>
 
-commit 879c348c35bb5fb758dd881d8a97409c1862dae8 upstream.
+commit abbf9a0ef8848dca58c5b97750c1c59bbee45637 upstream.
 
-We introduce dwmac410_dma_init_channel() here for both EQoS v4.10 and
-above which use different DMA_CH(n)_Interrupt_Enable bit definitions for
-NIE and AIE.
+The (0xBAF70000 & 0x00FFF000) << 6 should be (0xf70 << 18).
 
-Fixes: 48863ce5940f ("stmmac: add DMA support for GMAC 4.xx")
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Signed-off-by: Ramesh Babu B <ramesh.babu.b@intel.com>
+Fixes: 561535b0f239 ("r8169: fix OCP access on RTL8117")
+Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+Acked-by: Heiner Kallweit <hkallweit1@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c |   19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/realtek/r8169_main.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
-@@ -124,6 +124,23 @@ static void dwmac4_dma_init_channel(void
- 	       ioaddr + DMA_CHAN_INTR_ENA(chan));
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -1013,7 +1013,7 @@ static void r8168fp_adjust_ocp_cmd(struc
+ {
+ 	/* based on RTL8168FP_OOBMAC_BASE in vendor driver */
+ 	if (tp->mac_version == RTL_GIGA_MAC_VER_52 && type == ERIAR_OOB)
+-		*cmd |= 0x7f0 << 18;
++		*cmd |= 0xf70 << 18;
  }
  
-+static void dwmac410_dma_init_channel(void __iomem *ioaddr,
-+				      struct stmmac_dma_cfg *dma_cfg, u32 chan)
-+{
-+	u32 value;
-+
-+	/* common channel control register config */
-+	value = readl(ioaddr + DMA_CHAN_CONTROL(chan));
-+	if (dma_cfg->pblx8)
-+		value = value | DMA_BUS_MODE_PBL;
-+
-+	writel(value, ioaddr + DMA_CHAN_CONTROL(chan));
-+
-+	/* Mask interrupts by writing to CSR7 */
-+	writel(DMA_CHAN_INTR_DEFAULT_MASK_4_10,
-+	       ioaddr + DMA_CHAN_INTR_ENA(chan));
-+}
-+
- static void dwmac4_dma_init(void __iomem *ioaddr,
- 			    struct stmmac_dma_cfg *dma_cfg, int atds)
- {
-@@ -523,7 +540,7 @@ const struct stmmac_dma_ops dwmac4_dma_o
- const struct stmmac_dma_ops dwmac410_dma_ops = {
- 	.reset = dwmac4_dma_reset,
- 	.init = dwmac4_dma_init,
--	.init_chan = dwmac4_dma_init_channel,
-+	.init_chan = dwmac410_dma_init_channel,
- 	.init_rx_chan = dwmac4_dma_init_rx_chan,
- 	.init_tx_chan = dwmac4_dma_init_tx_chan,
- 	.axi = dwmac4_dma_axi,
+ DECLARE_RTL_COND(rtl_eriar_cond)
 
 
