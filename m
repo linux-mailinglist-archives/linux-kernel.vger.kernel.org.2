@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CDBA33BE6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBDE33BCCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239377AbhCOOqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:46:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52492 "EHLO mail.kernel.org"
+        id S235075AbhCOO3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:29:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234634AbhCOOEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:04:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29096601FD;
-        Mon, 15 Mar 2021 14:04:34 +0000 (UTC)
+        id S232978AbhCOOA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEF2964F1A;
+        Mon, 15 Mar 2021 13:59:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817075;
-        bh=a5dFQLmPODNEZdfFFdpwNGbuv6Bx/XSnfOSNpPuOyGw=;
+        s=korg; t=1615816800;
+        bh=7FnpRKc4Wvba20HFD+Q6GPJu64JtwqjEycgRBK0bmhA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZJlHo4YNvfq4neZiUkQWgDZeGHQAFzso3VPlk6zFoaxhmILd5l1Jrx6OA5BY1nZ9t
-         X5K/MOxZwC8oL7CbzbLK+5fvSABWvKoIWgdypuG/2t2zuJ8z0F52oY7fhxxCC05ypv
-         BxdA2oD+QmVYT8kVoPTsVTZh1CEfsjgJiHK5v3Is=
+        b=lfjbruLd4pp73CMJqMSqeRuzfdYh/z2RT7Isafl6N5QaKduS/2OApT7ldTK6ZTQRY
+         nAQr7lXvq1EQL9HhPW39rqHQx4herKCB4ieBvBKcrCODAxt7wys2/szGPu2Mw/FmjG
+         vujGgDZNy+kLWnX9QahzEZ+jGBGPZ0UoQxF3ACLE=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joerg Roedel <jroedel@suse.de>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.11 287/306] x86/sev-es: Introduce ip_within_syscall_gap() helper
-Date:   Mon, 15 Mar 2021 14:55:50 +0100
-Message-Id: <20210315135517.388600712@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH 5.4 119/168] usbip: fix stub_dev to check for stream socket
+Date:   Mon, 15 Mar 2021 14:55:51 +0100
+Message-Id: <20210315135554.270235407@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
+References: <20210315135550.333963635@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,90 +42,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Joerg Roedel <jroedel@suse.de>
+From: Shuah Khan <skhan@linuxfoundation.org>
 
-commit 78a81d88f60ba773cbe890205e1ee67f00502948 upstream.
+commit 47ccc8fc2c9c94558b27b6f9e2582df32d29e6e8 upstream.
 
-Introduce a helper to check whether an exception came from the syscall
-gap and use it in the SEV-ES code. Extend the check to also cover the
-compatibility SYSCALL entry path.
+Fix usbip_sockfd_store() to validate the passed in file descriptor is
+a stream socket. If the file descriptor passed was a SOCK_DGRAM socket,
+sock_recvmsg() can't detect end of stream.
 
-Fixes: 315562c9af3d5 ("x86/sev-es: Adjust #VC IST Stack on entering NMI handler")
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org # 5.10+
-Link: https://lkml.kernel.org/r/20210303141716.29223-2-joro@8bytes.org
+Cc: stable@vger.kernel.org
+Suggested-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Link: https://lore.kernel.org/r/e942d2bd03afb8e8552bd2a5d84e18d17670d521.1615171203.git.skhan@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/entry/entry_64_compat.S |    2 ++
- arch/x86/include/asm/proto.h     |    1 +
- arch/x86/include/asm/ptrace.h    |   15 +++++++++++++++
- arch/x86/kernel/traps.c          |    3 +--
- 4 files changed, 19 insertions(+), 2 deletions(-)
+ drivers/usb/usbip/stub_dev.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/arch/x86/entry/entry_64_compat.S
-+++ b/arch/x86/entry/entry_64_compat.S
-@@ -210,6 +210,8 @@ SYM_CODE_START(entry_SYSCALL_compat)
- 	/* Switch to the kernel stack */
- 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
+--- a/drivers/usb/usbip/stub_dev.c
++++ b/drivers/usb/usbip/stub_dev.c
+@@ -69,8 +69,16 @@ static ssize_t usbip_sockfd_store(struct
+ 		}
  
-+SYM_INNER_LABEL(entry_SYSCALL_compat_safe_stack, SYM_L_GLOBAL)
+ 		socket = sockfd_lookup(sockfd, &err);
+-		if (!socket)
++		if (!socket) {
++			dev_err(dev, "failed to lookup sock");
+ 			goto err;
++		}
 +
- 	/* Construct struct pt_regs on stack */
- 	pushq	$__USER32_DS		/* pt_regs->ss */
- 	pushq	%r8			/* pt_regs->sp */
---- a/arch/x86/include/asm/proto.h
-+++ b/arch/x86/include/asm/proto.h
-@@ -25,6 +25,7 @@ void __end_SYSENTER_singlestep_region(vo
- void entry_SYSENTER_compat(void);
- void __end_entry_SYSENTER_compat(void);
- void entry_SYSCALL_compat(void);
-+void entry_SYSCALL_compat_safe_stack(void);
- void entry_INT80_compat(void);
- #ifdef CONFIG_XEN_PV
- void xen_entry_INT80_compat(void);
---- a/arch/x86/include/asm/ptrace.h
-+++ b/arch/x86/include/asm/ptrace.h
-@@ -94,6 +94,8 @@ struct pt_regs {
- #include <asm/paravirt_types.h>
- #endif
++		if (socket->type != SOCK_STREAM) {
++			dev_err(dev, "Expecting SOCK_STREAM - found %d",
++				socket->type);
++			goto sock_err;
++		}
  
-+#include <asm/proto.h>
-+
- struct cpuinfo_x86;
- struct task_struct;
+ 		sdev->ud.tcp_socket = socket;
+ 		sdev->ud.sockfd = sockfd;
+@@ -100,6 +108,8 @@ static ssize_t usbip_sockfd_store(struct
  
-@@ -175,6 +177,19 @@ static inline bool any_64bit_mode(struct
- #ifdef CONFIG_X86_64
- #define current_user_stack_pointer()	current_pt_regs()->sp
- #define compat_user_stack_pointer()	current_pt_regs()->sp
-+
-+static inline bool ip_within_syscall_gap(struct pt_regs *regs)
-+{
-+	bool ret = (regs->ip >= (unsigned long)entry_SYSCALL_64 &&
-+		    regs->ip <  (unsigned long)entry_SYSCALL_64_safe_stack);
-+
-+#ifdef CONFIG_IA32_EMULATION
-+	ret = ret || (regs->ip >= (unsigned long)entry_SYSCALL_compat &&
-+		      regs->ip <  (unsigned long)entry_SYSCALL_compat_safe_stack);
-+#endif
-+
-+	return ret;
-+}
- #endif
+ 	return count;
  
- static inline unsigned long kernel_stack_pointer(struct pt_regs *regs)
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -694,8 +694,7 @@ asmlinkage __visible noinstr struct pt_r
- 	 * In the SYSCALL entry path the RSP value comes from user-space - don't
- 	 * trust it and switch to the current kernel stack
- 	 */
--	if (regs->ip >= (unsigned long)entry_SYSCALL_64 &&
--	    regs->ip <  (unsigned long)entry_SYSCALL_64_safe_stack) {
-+	if (ip_within_syscall_gap(regs)) {
- 		sp = this_cpu_read(cpu_current_top_of_stack);
- 		goto sync;
- 	}
++sock_err:
++	sockfd_put(socket);
+ err:
+ 	spin_unlock_irq(&sdev->ud.lock);
+ 	return -EINVAL;
 
 
