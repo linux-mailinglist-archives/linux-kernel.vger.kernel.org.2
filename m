@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E0433BDB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4179233BC8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240098AbhCOOd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:33:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S234420AbhCOO0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:26:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231776AbhCOOAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A628B64EEC;
-        Mon, 15 Mar 2021 14:00:15 +0000 (UTC)
+        id S233054AbhCOOAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7352E64F09;
+        Mon, 15 Mar 2021 14:00:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816817;
-        bh=N/eHAXzvXyN+mREmoj93Pa8P0PQs52ow+Si4Lnh6rnQ=;
+        s=korg; t=1615816818;
+        bh=7AU0H5/2jDc9x1n8Lgnc8XeCwv7//fVKNGekwzwCito=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=px7rFIwAz1dqdxb3WZoChCkvpSnvFlokJQ03mE/GTRf9Drah6m+P6d5Cnof9o9XSd
-         JgwmpmkBj8bCKVv4/jksl/NakLNtGyUCq8hf9PRJakD9TPkkqv41tGVRPbtB7PGw3a
-         5Job7ZclAAXd0DLgDMiVU9CJTEFBo3tmArwGu9mw=
+        b=BzJzLQgj4chrrWbHn/kWlukXSxU6/thdqY9xonyaNZ6iRh5SDEpEmmbiGHX5b74rq
+         1QASA4k1jgXiuoze8SkvE65gmaUVbFt9mHJdsiQBS6gE0AivEQRLvf3Nuuit86o3nA
+         +uMXJseJ7uhXBHklSroKEuqU8K4SunAUbVMj2uhw=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        "Tj (Elloe Linux)" <ml.linux@elloe.vision>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 142/306] iommu/amd: Fix performance counter initialization
-Date:   Mon, 15 Mar 2021 14:53:25 +0100
-Message-Id: <20210315135512.447963867@linuxfoundation.org>
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 143/306] clk: qcom: gdsc: Implement NO_RET_PERIPH flag
+Date:   Mon, 15 Mar 2021 14:53:26 +0100
+Message-Id: <20210315135512.477955383@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -43,115 +44,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 
-[ Upstream commit 6778ff5b21bd8e78c8bd547fd66437cf2657fd9b ]
+[ Upstream commit 785c02eb35009a4be6dbc68f4f7d916e90b7177d ]
 
-Certain AMD platforms enable power gating feature for IOMMU PMC,
-which prevents the IOMMU driver from updating the counter while
-trying to validate the PMC functionality in the init_iommu_perf_ctr().
-This results in disabling PMC support and the following error message:
+In some rare occasions, we want to only set the RETAIN_MEM bit, but
+not the RETAIN_PERIPH one: this is seen on at least SDM630/636/660's
+GPU-GX GDSC, where unsetting and setting back the RETAIN_PERIPH bit
+will generate chaos and panics during GPU suspend time (mainly, the
+chaos is unaligned access).
 
-    "AMD-Vi: Unable to read/write to IOMMU perf counter"
+For this reason, introduce a new NO_RET_PERIPH flag to the GDSC
+driver to address this corner case.
 
-To workaround this issue, disable power gating temporarily by programming
-the counter source to non-zero value while validating the counter,
-and restore the prior state afterward.
-
-Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Tested-by: Tj (Elloe Linux) <ml.linux@elloe.vision>
-Link: https://lore.kernel.org/r/20210208122712.5048-1-suravee.suthikulpanit@amd.com
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201753
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Link: https://lore.kernel.org/r/20210113183817.447866-8-angelogioacchino.delregno@somainline.org
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/amd/init.c | 45 ++++++++++++++++++++++++++++++----------
- 1 file changed, 34 insertions(+), 11 deletions(-)
+ drivers/clk/qcom/gdsc.c | 10 ++++++++--
+ drivers/clk/qcom/gdsc.h |  3 ++-
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-index 83d8ab2aed9f..01da76dc1caa 100644
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -12,6 +12,7 @@
- #include <linux/acpi.h>
- #include <linux/list.h>
- #include <linux/bitmap.h>
-+#include <linux/delay.h>
- #include <linux/slab.h>
- #include <linux/syscore_ops.h>
- #include <linux/interrupt.h>
-@@ -254,6 +255,8 @@ static enum iommu_init_state init_state = IOMMU_START_STATE;
- static int amd_iommu_enable_interrupts(void);
- static int __init iommu_go_to_state(enum iommu_init_state state);
- static void init_device_table_dma(void);
-+static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
-+				u8 fxn, u64 *value, bool is_write);
- 
- static bool amd_iommu_pre_enabled = true;
- 
-@@ -1712,13 +1715,11 @@ static int __init init_iommu_all(struct acpi_table_header *table)
- 	return 0;
- }
- 
--static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
--				u8 fxn, u64 *value, bool is_write);
--
--static void init_iommu_perf_ctr(struct amd_iommu *iommu)
-+static void __init init_iommu_perf_ctr(struct amd_iommu *iommu)
+diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+index af26e0695b86..51ed640e527b 100644
+--- a/drivers/clk/qcom/gdsc.c
++++ b/drivers/clk/qcom/gdsc.c
+@@ -183,7 +183,10 @@ static inline int gdsc_assert_reset(struct gdsc *sc)
+ static inline void gdsc_force_mem_on(struct gdsc *sc)
  {
-+	int retry;
- 	struct pci_dev *pdev = iommu->dev;
--	u64 val = 0xabcd, val2 = 0, save_reg = 0;
-+	u64 val = 0xabcd, val2 = 0, save_reg, save_src;
- 
- 	if (!iommu_feature(iommu, FEATURE_PC))
- 		return;
-@@ -1726,17 +1727,39 @@ static void init_iommu_perf_ctr(struct amd_iommu *iommu)
- 	amd_iommu_pc_present = true;
- 
- 	/* save the value to restore, if writable */
--	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false))
-+	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false) ||
-+	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, false))
- 		goto pc_false;
- 
--	/* Check if the performance counters can be written to */
--	if ((iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true)) ||
--	    (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false)) ||
--	    (val != val2))
-+	/*
-+	 * Disable power gating by programing the performance counter
-+	 * source to 20 (i.e. counts the reads and writes from/to IOMMU
-+	 * Reserved Register [MMIO Offset 1FF8h] that are ignored.),
-+	 * which never get incremented during this init phase.
-+	 * (Note: The event is also deprecated.)
-+	 */
-+	val = 20;
-+	if (iommu_pc_get_set_reg(iommu, 0, 0, 8, &val, true))
- 		goto pc_false;
- 
-+	/* Check if the performance counters can be written to */
-+	val = 0xabcd;
-+	for (retry = 5; retry; retry--) {
-+		if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true) ||
-+		    iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false) ||
-+		    val2)
-+			break;
+ 	int i;
+-	u32 mask = RETAIN_MEM | RETAIN_PERIPH;
++	u32 mask = RETAIN_MEM;
 +
-+		/* Wait about 20 msec for power gating to disable and retry. */
-+		msleep(20);
-+	}
-+
- 	/* restore */
--	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true))
-+	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true) ||
-+	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, true))
-+		goto pc_false;
-+
-+	if (val != val2)
- 		goto pc_false;
++	if (!(sc->flags & NO_RET_PERIPH))
++		mask |= RETAIN_PERIPH;
  
- 	pci_info(pdev, "IOMMU performance counters supported\n");
+ 	for (i = 0; i < sc->cxc_count; i++)
+ 		regmap_update_bits(sc->regmap, sc->cxcs[i], mask, mask);
+@@ -192,7 +195,10 @@ static inline void gdsc_force_mem_on(struct gdsc *sc)
+ static inline void gdsc_clear_mem_on(struct gdsc *sc)
+ {
+ 	int i;
+-	u32 mask = RETAIN_MEM | RETAIN_PERIPH;
++	u32 mask = RETAIN_MEM;
++
++	if (!(sc->flags & NO_RET_PERIPH))
++		mask |= RETAIN_PERIPH;
+ 
+ 	for (i = 0; i < sc->cxc_count; i++)
+ 		regmap_update_bits(sc->regmap, sc->cxcs[i], mask, 0);
+diff --git a/drivers/clk/qcom/gdsc.h b/drivers/clk/qcom/gdsc.h
+index bd537438c793..5bb396b344d1 100644
+--- a/drivers/clk/qcom/gdsc.h
++++ b/drivers/clk/qcom/gdsc.h
+@@ -42,7 +42,7 @@ struct gdsc {
+ #define PWRSTS_ON		BIT(2)
+ #define PWRSTS_OFF_ON		(PWRSTS_OFF | PWRSTS_ON)
+ #define PWRSTS_RET_ON		(PWRSTS_RET | PWRSTS_ON)
+-	const u8			flags;
++	const u16			flags;
+ #define VOTABLE		BIT(0)
+ #define CLAMP_IO	BIT(1)
+ #define HW_CTRL		BIT(2)
+@@ -51,6 +51,7 @@ struct gdsc {
+ #define POLL_CFG_GDSCR	BIT(5)
+ #define ALWAYS_ON	BIT(6)
+ #define RETAIN_FF_ENABLE	BIT(7)
++#define NO_RET_PERIPH	BIT(8)
+ 	struct reset_controller_dev	*rcdev;
+ 	unsigned int			*resets;
+ 	unsigned int			reset_count;
 -- 
 2.30.1
 
