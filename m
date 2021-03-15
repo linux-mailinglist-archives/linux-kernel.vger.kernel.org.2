@@ -2,159 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BEB833C263
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:43:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F30E433C268
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233707AbhCOQmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:42:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35818 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232829AbhCOQmf (ORCPT
+        id S232829AbhCOQpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:45:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232818AbhCOQpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:42:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615826554;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fGluRhk+PJrpzTtViETCiWQbIPiyTfmSvpP2ZDxvRgw=;
-        b=VWEhKfsOYLHURNavR871EhK8f7kwwtw1W8PTLX/61eNdCin2havzT+5LeClsJ53mXbj6s0
-        GqOboAjRmFJXIHeez14l6zKvIjXUYZ2NJ69Vqgp+PH9Zo4E3v9DSvj7+Z8CGPMr6zzNeVU
-        VNGYPCPgpzytJIvrNcG0WNVng7F2+b0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-243-cl6paFfuOZioICwlchD9fw-1; Mon, 15 Mar 2021 12:42:30 -0400
-X-MC-Unique: cl6paFfuOZioICwlchD9fw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A2C9EDF8A0;
-        Mon, 15 Mar 2021 16:42:28 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D91A55C3E6;
-        Mon, 15 Mar 2021 16:42:22 +0000 (UTC)
-Date:   Mon, 15 Mar 2021 17:42:21 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Chuck Lever III <chuck.lever@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        brouer@redhat.com, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
-Message-ID: <20210315174221.1c9e0fe7@carbon>
-In-Reply-To: <20210315104204.GB3697@techsingularity.net>
-References: <20210312124609.33d4d4ba@carbon>
-        <20210312145814.GA2577561@casper.infradead.org>
-        <20210312160350.GW3697@techsingularity.net>
-        <20210312210823.GE2577561@casper.infradead.org>
-        <20210313131648.GY3697@techsingularity.net>
-        <20210313163949.GI2577561@casper.infradead.org>
-        <7D8C62E1-77FD-4B41-90D7-253D13715A6F@oracle.com>
-        <20210313193343.GJ2577561@casper.infradead.org>
-        <20210314125231.GA3697@techsingularity.net>
-        <325875A2-A98A-4ECF-AFDF-0B70BCCB79AD@oracle.com>
-        <20210315104204.GB3697@techsingularity.net>
+        Mon, 15 Mar 2021 12:45:20 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E534EC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:45:19 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id e26so6942341pfd.9
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:45:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=U/NwnK7GgeCgwti3NMpPAcZaldrKmQoxLdXxuBnx+pQ=;
+        b=XuXQHJU+29r3Bb9uaTtrX4ZQ/GP/I5Pc3B5m/VoaUNvdR95LcaDMX2QRlYAMC2jb3l
+         Zf4GHE828XKqCTPOBJDNtJg+UdhgIBvvoC/vcFDjFCIn76jz1+4kxhemPwqT5vgDDz0v
+         tu+SvZW5Lj2yRW8YVPQmm79p2oXJCjmJYvFsCiYUoeWFEn3UF8OJklB8+McZiZCuQWQ/
+         5oSyp7M0A57vMx06+k9ehlh9V4LgSCZdYXV4LM8bhD6KT3ELbbdtZVMRVCKaS5B8Epht
+         iExzbTF4sS35hADZ2j3qtuIiG8VdJbydrNad2U5Jnhizm5UoKL9UJ/Lr1VMorkwrx7OD
+         JFTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=U/NwnK7GgeCgwti3NMpPAcZaldrKmQoxLdXxuBnx+pQ=;
+        b=HoSVyWGv6vpn+4C/25FB8eRS0s6lJ1paf/vXX9k9/vVBCIPqT66siLlKPC/czQrft+
+         SBGffpScKyShFLg/91i4GxpHx8BZpIKXSd2fWAv+3XVmzWaHG9zEl0w49F9gm6UZETg/
+         kSKyRzTeprycl29IjkbhhG2MTNKyZhGBSeZ4sCWWgESFVuwcut5+6KCBtcsmcGATqtdu
+         DOZwGmqFTHOVumSB934Dz8gOzsDnrZsUsZ43q7482X69wzwkowwvfBL1EY/Hfis1Vaeo
+         j5n5lxBAvhdWbw3BENQ7BCwm2aH+OvhNB04id6YHRYSPrvVkpEk2bLCfb0BXXc8zJl2w
+         HbIQ==
+X-Gm-Message-State: AOAM5304G4me1/4fl6FUH8dxB5vRVGrggH4PIk6tPaH2qEXMPmznyOJ0
+        /P2cElKnjFCl5pxcUC04pUKsnQ==
+X-Google-Smtp-Source: ABdhPJz7imQ4Wdll8vOKYyrUS5ptYMDeC97IL57XMeJU5ujASZAwWLWC4w1+YBiqJVyQmUZoX+Xvjg==
+X-Received: by 2002:a05:6a00:1504:b029:203:6bc9:3f14 with SMTP id q4-20020a056a001504b02902036bc93f14mr11290700pfu.22.1615826719061;
+        Mon, 15 Mar 2021 09:45:19 -0700 (PDT)
+Received: from google.com ([2620:15c:f:10:3d60:4c70:d756:da57])
+        by smtp.gmail.com with ESMTPSA id w26sm7487498pfj.58.2021.03.15.09.45.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 09:45:18 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 09:45:11 -0700
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, vkuznets@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] KVM: nVMX: Sync L2 guest CET states between L1/L2
+Message-ID: <YE+PF1zfkZTTgwxn@google.com>
+References: <20210315071841.7045-1-weijiang.yang@intel.com>
+ <20210315071841.7045-2-weijiang.yang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315071841.7045-2-weijiang.yang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021 10:42:05 +0000
-Mel Gorman <mgorman@techsingularity.net> wrote:
-
-> On Sun, Mar 14, 2021 at 03:22:02PM +0000, Chuck Lever III wrote:
-> > >> Anyway, I'm not arguing against a bulk allocator, nor even saying this
-> > >> is a bad interface.  It just maybe could be better.
-> > >>   
-> > > 
-> > > I think it puts more responsibility on the caller to use the API correctly
-> > > but I also see no value in arguing about it further because there is no
-> > > supporting data either way (I don't have routine access to a sufficiently
-> > > fast network to generate the data). I can add the following patch and let
-> > > callers figure out which interface is preferred. If one of the interfaces
-> > > is dead in a year, it can be removed.
-> > > 
-> > > As there are a couple of ways the arrays could be used, I'm leaving it
-> > > up to Jesper and Chuck which interface they want to use. In particular,
-> > > it would be preferred if the array has no valid struct pages in it but
-> > > it's up to them to judge how practical that is.  
-> > 
-> > I'm interested to hear from Jesper.
-> > 
-> > My two cents (US):
-> > 
-> > If svc_alloc_arg() is the /only/ consumer that wants to fill
-> > a partially populated array of page pointers, then there's no
-> > code-duplication benefit to changing the synopsis of
-> > alloc_pages_bulk() at this point.
-> > 
-> > Also, if the consumers still have to pass in the number of
-> > pages the array needs, rather than having the bulk allocator
-> > figure it out, then there's not much additional benefit, IMO.
-> > 
-> > Ideally (for SUNRPC) alloc_pages_bulk() would take a pointer
-> > to a sparsely-populated array and the total number of elements
-> > in that array, and fill in the NULL elements. The return value
-> > would be "success -- all elements are populated" or "failure --
-> > some elements remain NULL".
-> >   
+On Mon, Mar 15, 2021, Yang Weijiang wrote:
+> These fields are rarely updated by L1 QEMU/KVM, sync them when L1 is trying to
+> read/write them and after they're changed. If CET guest entry-load bit is not
+> set by L1 guest, migrate them to L2 manaully.
 > 
-> If the array API interface was expected to handle sparse arrays, it would
-> make sense to define nr_pages are the number of pages that need to be
-> in the array instead of the number of pages to allocate. The preamble
-> would skip the first N number of allocated pages and decrement nr_pages
-> accordingly before the watermark check. The return value would then be the
-> last populated array element and the caller decides if that is enough to
-> proceed or if the API needs to be called again. There is a slight risk
-> that with a spare array that only needed 1 page in reality would fail
-> the watermark check but on low memory, allocations take more work anyway.
-> That definition of nr_pages would avoid the potential buffer overrun but
-> both you and Jesper would need to agree that it's an appropriate API.
+> Opportunistically remove one blank line and add minor fix for MPX.
+> 
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
+>  arch/x86/kvm/cpuid.c      |  1 -
+>  arch/x86/kvm/vmx/nested.c | 35 +++++++++++++++++++++++++++++++++--
+>  arch/x86/kvm/vmx/vmx.h    |  3 +++
+>  3 files changed, 36 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index d191de769093..8692f53b8cd0 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -143,7 +143,6 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
+>  		}
+>  		vcpu->arch.guest_supported_xss =
+>  			(((u64)best->edx << 32) | best->ecx) & supported_xss;
+> -
 
-I actually like the idea of doing it this way.  Even-though the
-page_pool fast-path (__page_pool_get_cached()) doesn't clear/mark the
-"consumed" elements with NULL.  I'm ready to change page_pool to handle
-this when calling this API, as I think it will be faster than walking
-the linked list.
+Spurious whitespace deletion.
 
-Even-though my page_pool use-case doesn't have a sparse array to
-populate (like NFS/SUNRPC) then I can still use this API that Chuck is
-suggesting. Thus, I'm fine with this :-)
+>  	} else {
+>  		vcpu->arch.guest_supported_xss = 0;
+>  	}
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 9728efd529a1..57ecd8225568 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -2516,6 +2516,13 @@ static void prepare_vmcs02_rare(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
+>  	vmcs_write32(VM_ENTRY_MSR_LOAD_COUNT, vmx->msr_autoload.guest.nr);
+>  
+>  	set_cr4_guest_host_mask(vmx);
+> +
+> +	if (kvm_cet_supported() && vmx->nested.nested_run_pending &&
+> +	    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
+> +		vmcs_writel(GUEST_SSP, vmcs12->guest_ssp);
+> +		vmcs_writel(GUEST_S_CET, vmcs12->guest_s_cet);
+> +		vmcs_writel(GUEST_INTR_SSP_TABLE, vmcs12->guest_ssp_tbl);
+> +	}
+>  }
+>  
+>  /*
+> @@ -2556,6 +2563,15 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
+>  	if (kvm_mpx_supported() && (!vmx->nested.nested_run_pending ||
+>  	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS)))
+>  		vmcs_write64(GUEST_BNDCFGS, vmx->nested.vmcs01_guest_bndcfgs);
+> +
+> +	if (kvm_cet_supported() && (!vmx->nested.nested_run_pending ||
+> +	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE))) {
+
+Not your code per se, since this pattern comes from BNDCFGS and DEBUGCTL, but I
+don't see how loading vmcs01 state in this combo is correct:
+
+    a. kvm_xxx_supported()              == 1
+    b. nested_run_pending               == false
+    c. vm_entry_controls.load_xxx_state == true
+
+nested_vmx_enter_non_root_mode() only snapshots vmcs01 if 
+vm_entry_controls.load_xxx_state == false, which means the above combo is
+loading stale values (or more likely, zeros).
+
+I _think_ nested_vmx_enter_non_root_mode() just needs to snapshot vmcs01 if
+nested_run_pending=false.  For migration, if userspace restores MSRs after
+KVM_SET_NESTED_STATE, then what's done here is likely irrelevant.  If userspace
+restores MSRs before nested state, then vmcs01 will hold the desired value since
+setting MSRs would have written the value into vmcs01.
+
+I suspect no one has reported this issue because guests simply don't use MPX,
+and up until the recent LBR stuff, KVM effectively zeroed out DEBUGCTL for the
+guest.
+
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index 45622e9c4449..4184ff601120 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -3298,10 +3298,11 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
+        if (likely(!evaluate_pending_interrupts) && kvm_vcpu_apicv_active(vcpu))
+                evaluate_pending_interrupts |= vmx_has_apicv_interrupt(vcpu);
+
+-       if (!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_DEBUG_CONTROLS))
++       if (!vmx->nested.nested_run_pending ||
++           !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_DEBUG_CONTROLS))
+                vmx->nested.vmcs01_debugctl = vmcs_read64(GUEST_IA32_DEBUGCTL);
+-       if (kvm_mpx_supported() &&
+-               !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
++       if (kvm_mpx_supported() && (!vmx->nested.nested_run_pending ||
++           !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS)))
+                vmx->nested.vmcs01_guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
+
+        /*
 
 
-(p.s. working on implementing Alexander Duyck's suggestions, but I
-don't have it ready yet, I will try to send new patch tomorrow. And I
-do realize that with this API change I have to reimplement it again,
-but as long as we make forward progress then I'll happily do it).
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Side topic, all of this code is broken for SMM emulation.  SMI+RSM don't do a
+full VM-Exit -> VM-Entry; the CPU forcefully exits non-root, but most state that
+is loaded from the VMCS is left untouched.  It's the SMI handler's responsibility
+to not enable features, e.g. to not set CR4.CET.  For sane use cases, this
+probably doesn't matter as vmcs12 will be configured to context switch state,
+but if L1 is doing anything out of the ordinary, SMI+RSM will corrupt state.
 
-/* fast path */
-static struct page *__page_pool_get_cached(struct page_pool *pool)
-{
-	struct page *page;
+E.g. if L1 enables MPX in the guest, does not intercept L2 writes to BNDCFGS,
+and does not load BNDCFGS on VM-Entry, then SMI+RSM would corrupt BNDCFGS since
+the SMI "exit" would clear BNDCFGS, and the RSM "entry" would load zero.  This
+is 100% contrived, and probably doesn't impact real world use cases, but it
+still bugs me :-)
 
-	/* Caller MUST guarantee safe non-concurrent access, e.g. softirq */
-	if (likely(pool->alloc.count)) {
-		/* Fast-path */
-		page = pool->alloc.cache[--pool->alloc.count];
-	} else {
-		page = page_pool_refill_alloc_cache(pool);
-	}
+> +		vmcs_writel(GUEST_SSP, vmx->nested.vmcs01_guest_ssp);
+> +		vmcs_writel(GUEST_S_CET, vmx->nested.vmcs01_guest_s_cet);
+> +		vmcs_writel(GUEST_INTR_SSP_TABLE,
+> +			    vmx->nested.vmcs01_guest_ssp_tbl);
+> +	}
+> +
+>  	vmx_set_rflags(vcpu, vmcs12->guest_rflags);
+>  
+>  	/* EXCEPTION_BITMAP and CR0_GUEST_HOST_MASK should basically be the
+> @@ -3373,8 +3389,14 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
+>  	if (!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_DEBUG_CONTROLS))
+>  		vmx->nested.vmcs01_debugctl = vmcs_read64(GUEST_IA32_DEBUGCTL);
+>  	if (kvm_mpx_supported() &&
+> -		!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
+> +	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
+>  		vmx->nested.vmcs01_guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
+> +	if (kvm_cet_supported() &&
+> +	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
+> +		vmx->nested.vmcs01_guest_ssp = vmcs_readl(GUEST_SSP);
+> +		vmx->nested.vmcs01_guest_s_cet = vmcs_readl(GUEST_S_CET);
+> +		vmx->nested.vmcs01_guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
+> +	}
+>  
+>  	/*
+>  	 * Overwrite vmcs01.GUEST_CR3 with L1's CR3 if EPT is disabled *and*
+> @@ -4001,6 +4023,9 @@ static bool is_vmcs12_ext_field(unsigned long field)
+>  	case GUEST_IDTR_BASE:
+>  	case GUEST_PENDING_DBG_EXCEPTIONS:
+>  	case GUEST_BNDCFGS:
+> +	case GUEST_SSP:
+> +	case GUEST_INTR_SSP_TABLE:
+> +	case GUEST_S_CET:
+>  		return true;
+>  	default:
+>  		break;
+> @@ -4050,8 +4075,14 @@ static void sync_vmcs02_to_vmcs12_rare(struct kvm_vcpu *vcpu,
+>  	vmcs12->guest_idtr_base = vmcs_readl(GUEST_IDTR_BASE);
+>  	vmcs12->guest_pending_dbg_exceptions =
+>  		vmcs_readl(GUEST_PENDING_DBG_EXCEPTIONS);
+> -	if (kvm_mpx_supported())
+> +	if (kvm_mpx_supported() && guest_cpuid_has(vcpu, X86_FEATURE_MPX))
 
-	return page;
-}
+Adding the CPUID check for MPX definitely needs to be a separate commit.
 
+>  		vmcs12->guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
+> +	if (kvm_cet_supported() && (guest_cpuid_has(vcpu, X86_FEATURE_SHSTK) ||
+> +	    guest_cpuid_has(vcpu, X86_FEATURE_IBT))) {
+> +		vmcs12->guest_ssp = vmcs_readl(GUEST_SSP);
+> +		vmcs12->guest_s_cet = vmcs_readl(GUEST_S_CET);
+> +		vmcs12->guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
+> +	}
+>  
+>  	vmx->nested.need_sync_vmcs02_to_vmcs12_rare = false;
+>  }
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index 9d3a557949ac..36dc4fdb0909 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -155,6 +155,9 @@ struct nested_vmx {
+>  	/* to migrate it to L2 if VM_ENTRY_LOAD_DEBUG_CONTROLS is off */
+>  	u64 vmcs01_debugctl;
+>  	u64 vmcs01_guest_bndcfgs;
+> +	u64 vmcs01_guest_ssp;
+> +	u64 vmcs01_guest_s_cet;
+> +	u64 vmcs01_guest_ssp_tbl;
+>  
+>  	/* to migrate it to L1 if L2 writes to L1's CR8 directly */
+>  	int l1_tpr_threshold;
+> -- 
+> 2.26.2
+> 
