@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207C933BC0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 461F533BE3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238085AbhCOOWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:22:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34900 "EHLO mail.kernel.org"
+        id S238802AbhCOOoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:44:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232912AbhCOOAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C532264F47;
-        Mon, 15 Mar 2021 13:59:52 +0000 (UTC)
+        id S234518AbhCOODt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5710364EFE;
+        Mon, 15 Mar 2021 14:03:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816793;
-        bh=UnvoTaee++uQmgZBcbDloBQf3a1K2DhIcoEylFd3FLI=;
+        s=korg; t=1615817028;
+        bh=Tb7EzyvXMTHPSn2g/ehgOzm2842FZaoNE6EZOmT0yx0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gftBEHfcJ/o1fYGJJKucJWNC9rTDeRYFRG7c9q32janp25toTp2Ui8DbHjoEiy2Iq
-         ZfjAtnDJDuC5bWiNtJXTOolfketMstSwU84jBURctXxXQYDP4zqA+X+GC+is7ELLzP
-         /BFb9o57vrbhz9jjJpPtnFqL6kk/cA3EdpqSEy4I=
+        b=J8n+XMDMP+gjICr5aOZYhI9veD07nuLTJ/10jywF2vNt3GZ4/S8A+gMNHQcwx3HVw
+         f5/TkKPs397sPRbEnoRZo3e+F5ytU+qJ+5Nrlm9y3RfKuPAwboAWdhaKTZB7osmPlj
+         ISLtmJvt3SfZS3Ts2APzODnNKyg9fqlq1gwKzZRU=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.4 114/168] xhci: Fix repeated xhci wake after suspend due to uncleared internal wake state
-Date:   Mon, 15 Mar 2021 14:55:46 +0100
-Message-Id: <20210315135554.109970675@linuxfoundation.org>
+        stable@vger.kernel.org, Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 254/290] perf/x86/intel: Set PERF_ATTACH_SCHED_CB for large PEBS and LBR
+Date:   Mon, 15 Mar 2021 14:55:47 +0100
+Message-Id: <20210315135550.600253881@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
-References: <20210315135550.333963635@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,115 +42,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-commit d26c00e7276fc92b18c253d69e872f6b03832bad upstream.
+[ Upstream commit afbef30149587ad46f4780b1e0cc5e219745ce90 ]
 
-If port terminations are detected in suspend, but link never reaches U0
-then xHCI may have an internal uncleared wake state that will cause an
-immediate wake after suspend.
+To supply a PID/TID for large PEBS, it requires flushing the PEBS buffer
+in a context switch.
 
-This wake state is normally cleared when driver clears the PORT_CSC bit,
-which is set after a device is enabled and in U0.
+For normal LBRs, a context switch can flip the address space and LBR
+entries are not tagged with an identifier, we need to wipe the LBR, even
+for per-cpu events.
 
-Write 1 to clear PORT_CSC for ports that don't have anything connected
-when suspending. This makes sure any pending internal wake states in
-xHCI are cleared.
+For LBR callstack, save/restore the stack is required during a context
+switch.
 
-Cc: stable@vger.kernel.org
-Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210311115353.2137560-5-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Set PERF_ATTACH_SCHED_CB for the event with large PEBS & LBR.
+
+Fixes: 9c964efa4330 ("perf/x86/intel: Drain the PEBS buffer during context switches")
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lkml.kernel.org/r/20201130193842.10569-2-kan.liang@linux.intel.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci.c |   62 +++++++++++++++++++++++-------------------------
- 1 file changed, 30 insertions(+), 32 deletions(-)
+ arch/x86/events/intel/core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -883,44 +883,42 @@ static void xhci_clear_command_ring(stru
- 	xhci_set_cmd_ring_deq(xhci);
- }
- 
--static void xhci_disable_port_wake_on_bits(struct xhci_hcd *xhci)
-+/*
-+ * Disable port wake bits if do_wakeup is not set.
-+ *
-+ * Also clear a possible internal port wake state left hanging for ports that
-+ * detected termination but never successfully enumerated (trained to 0U).
-+ * Internal wake causes immediate xHCI wake after suspend. PORT_CSC write done
-+ * at enumeration clears this wake, force one here as well for unconnected ports
-+ */
-+
-+static void xhci_disable_hub_port_wake(struct xhci_hcd *xhci,
-+				       struct xhci_hub *rhub,
-+				       bool do_wakeup)
- {
--	struct xhci_port **ports;
--	int port_index;
- 	unsigned long flags;
- 	u32 t1, t2, portsc;
-+	int i;
- 
- 	spin_lock_irqsave(&xhci->lock, flags);
- 
--	/* disable usb3 ports Wake bits */
--	port_index = xhci->usb3_rhub.num_ports;
--	ports = xhci->usb3_rhub.ports;
--	while (port_index--) {
--		t1 = readl(ports[port_index]->addr);
--		portsc = t1;
--		t1 = xhci_port_state_to_neutral(t1);
--		t2 = t1 & ~PORT_WAKE_BITS;
--		if (t1 != t2) {
--			writel(t2, ports[port_index]->addr);
--			xhci_dbg(xhci, "disable wake bits port %d-%d, portsc: 0x%x, write: 0x%x\n",
--				 xhci->usb3_rhub.hcd->self.busnum,
--				 port_index + 1, portsc, t2);
--		}
--	}
-+	for (i = 0; i < rhub->num_ports; i++) {
-+		portsc = readl(rhub->ports[i]->addr);
-+		t1 = xhci_port_state_to_neutral(portsc);
-+		t2 = t1;
-+
-+		/* clear wake bits if do_wake is not set */
-+		if (!do_wakeup)
-+			t2 &= ~PORT_WAKE_BITS;
-+
-+		/* Don't touch csc bit if connected or connect change is set */
-+		if (!(portsc & (PORT_CSC | PORT_CONNECT)))
-+			t2 |= PORT_CSC;
- 
--	/* disable usb2 ports Wake bits */
--	port_index = xhci->usb2_rhub.num_ports;
--	ports = xhci->usb2_rhub.ports;
--	while (port_index--) {
--		t1 = readl(ports[port_index]->addr);
--		portsc = t1;
--		t1 = xhci_port_state_to_neutral(t1);
--		t2 = t1 & ~PORT_WAKE_BITS;
- 		if (t1 != t2) {
--			writel(t2, ports[port_index]->addr);
--			xhci_dbg(xhci, "disable wake bits port %d-%d, portsc: 0x%x, write: 0x%x\n",
--				 xhci->usb2_rhub.hcd->self.busnum,
--				 port_index + 1, portsc, t2);
-+			writel(t2, rhub->ports[i]->addr);
-+			xhci_dbg(xhci, "config port %d-%d wake bits, portsc: 0x%x, write: 0x%x\n",
-+				 rhub->hcd->self.busnum, i + 1, portsc, t2);
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index aaa7bffdb20f..4b05c876f9f6 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -3565,8 +3565,10 @@ static int intel_pmu_hw_config(struct perf_event *event)
+ 		if (!(event->attr.freq || (event->attr.wakeup_events && !event->attr.watermark))) {
+ 			event->hw.flags |= PERF_X86_EVENT_AUTO_RELOAD;
+ 			if (!(event->attr.sample_type &
+-			      ~intel_pmu_large_pebs_flags(event)))
++			      ~intel_pmu_large_pebs_flags(event))) {
+ 				event->hw.flags |= PERF_X86_EVENT_LARGE_PEBS;
++				event->attach_state |= PERF_ATTACH_SCHED_CB;
++			}
  		}
- 	}
- 	spin_unlock_irqrestore(&xhci->lock, flags);
-@@ -983,8 +981,8 @@ int xhci_suspend(struct xhci_hcd *xhci,
- 		return -EINVAL;
+ 		if (x86_pmu.pebs_aliases)
+ 			x86_pmu.pebs_aliases(event);
+@@ -3579,6 +3581,7 @@ static int intel_pmu_hw_config(struct perf_event *event)
+ 		ret = intel_pmu_setup_lbr_filter(event);
+ 		if (ret)
+ 			return ret;
++		event->attach_state |= PERF_ATTACH_SCHED_CB;
  
- 	/* Clear root port wake on bits if wakeup not allowed. */
--	if (!do_wakeup)
--		xhci_disable_port_wake_on_bits(xhci);
-+	xhci_disable_hub_port_wake(xhci, &xhci->usb3_rhub, do_wakeup);
-+	xhci_disable_hub_port_wake(xhci, &xhci->usb2_rhub, do_wakeup);
- 
- 	if (!HCD_HW_ACCESSIBLE(hcd))
- 		return 0;
+ 		/*
+ 		 * BTS is set up earlier in this path, so don't account twice
+-- 
+2.30.1
+
 
 
