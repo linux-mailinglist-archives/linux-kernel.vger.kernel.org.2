@@ -2,210 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E6633AD1E
+	by mail.lfdr.de (Postfix) with ESMTP id 9EEEE33AD1F
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 09:13:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhCOIMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 04:12:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54476 "EHLO
+        id S230139AbhCOIMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 04:12:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbhCOIMf (ORCPT
+        with ESMTP id S229828AbhCOIMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 04:12:35 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46D0C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 01:12:34 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id u16so8182416wrt.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 01:12:34 -0700 (PDT)
+        Mon, 15 Mar 2021 04:12:41 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F4DBC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 01:12:41 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id o10so20006501pgg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 01:12:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=yFMV3sC6EFaNY9YDS9U8toqJni92w4JY/QYIQPnPelY=;
-        b=OyZ63WONnapU2W573ASZ0rpWb6ycwsmmGbKRvkp+UgKKLP5oGfqLStQn73CtJ2+oBK
-         jVzYsoXhiIqNmvM8rzupqhBmVIh7HphuL0RWmYmTrjjTCTd4Oni6ZS+ODaZwzQe7ci5O
-         eJEdLjiLBpTQTOLlU2/IOjp9wSQIf2sWwiCS4P1Ku9zH1G3A31E37gk0xDzzlsJtWo49
-         JcgAQPv2G/OiihfxF2ssP3Ah4nuSs86HDea+lK+QK1f4EQV+8+6ewvBkvNUqO+b652Y0
-         LdghNX9AZybMRcpcf+F37L8SGYCXEjTs+tYxGfXFcm6j94DKk6t487nsjaYq57t2aPzq
-         KhYw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R2DgrG9cCQ/VyW56awRmKaR+vSbaA2HjfGG10SFlQJ8=;
+        b=f1AUZBH2EO04x7ODrbKy01jzjCPMEXgrzXxsAEAvbc1X/cXuNUjqPcf/5duQGB5//g
+         HI+LT8TD1ggVT3lXRu2NIkKNPyYB+8gZz921R3BviON/WFxCxdBHsb/STb8Pxkum9QRM
+         fLdpvu3Ad9y48G32l5DvK80z4UcS4rt+Sgmetx2Hh4+pHIkg5NsV9uxZtapFQNU7rQQ4
+         5f1IRJD1bFCZ1NEgqZIAEcVCdTJz+X4r1cCT9vpKYXG8rZ3G0SkeRti9tgNgmlmi0PEj
+         jfm/Wu2l+Am9DY59eqg8Q8cZ6jRlCeSty+tT+xvaGKg4zLO7dGXmJQigrC7CEZbBd7we
+         Z2pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=yFMV3sC6EFaNY9YDS9U8toqJni92w4JY/QYIQPnPelY=;
-        b=P5UvPTaL2UTTfFSdwkUsu/pszXAFblhpgaHplN5cMSfTuBc98SqGWtbF9oa1V/cjnK
-         o+3X5Q1MF35WVN9qjuKWmDl62x2b1Gyrno6z5Lrcob0hDNWmXsnm2uNq7aYMRHuiSVMs
-         iGWFlJNIZHsBO38laNXUAlEL59LuVHUcO0KuVfaSqTK1Wt7zmM6yh/h+Hzl9KTCL38IG
-         MRZSGb3UMdhfLxRSmKCbda62PR7Iu4BUgKmkCNA6uAglIHwUVraLnUzpJi7NPd+iTzYU
-         Wu0RZsIlNZcFzeE5SwT76h3BxfF6Yl3rxlHaNwhXVybrayejxEegypoSQIFCG5RatQbH
-         Z31g==
-X-Gm-Message-State: AOAM531Br5gdK0H7VF8Of0iffFN5mx0JXXNsRq3FIopTo5cWhyI1nVDG
-        7qNxNfQOqROgm0PZgA4DiV7OoQ==
-X-Google-Smtp-Source: ABdhPJwTKJfOyjJu/g8nYsAp4mNib1S5O6Kj5DHwHCXB84qmulUmL24LQ9lfumAhXHsFNv40ZjGrcQ==
-X-Received: by 2002:a5d:4521:: with SMTP id j1mr25632781wra.354.1615795953354;
-        Mon, 15 Mar 2021 01:12:33 -0700 (PDT)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id z2sm20744843wrm.0.2021.03.15.01.12.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R2DgrG9cCQ/VyW56awRmKaR+vSbaA2HjfGG10SFlQJ8=;
+        b=htUEo+BfkytqIRuP6epDlYY/PIZQryuQM3MW8l4/jEFK8XjGpmLjY+mhEK28QhUX+e
+         FAmxK0V5VhtWIZ9zJLy6gCvPjzsyZks/1PQ97GSnSejPLxBy0mP1Ds8MOUg0u0f2WJ6P
+         goXhuAZJkPO0G48PFR87LAL71BNcDzmYr8YGQz9wfKaoKnHDbmfkbdQfbJGiWX4+GnY3
+         7AK4SDJ4nsWZFJH3vp9TqW9UTXiyHGvrRblo0FWRGh++d1O7l7xaC3MhIZLTFWFiYNTq
+         EZL4dHR2fLSg55OsruHbGQT4vAJcMcb0P0W9Cjlcy6nQCDqbcKFFY9wHQCjv7Qf3Y+P9
+         +e9w==
+X-Gm-Message-State: AOAM532tmzEk4Ms+CJXpstdBWx+FsrRFR02ITDKmKRoWfTsp3gQYWtKl
+        VTF6mRa9eKaq49xdSNBGafkeZ2mm688=
+X-Google-Smtp-Source: ABdhPJxm2AMkqacPwylIlil+tnlWhN57D/cpL5ino0UMZKCtSf2vHXEd0WVc/kTeOrHVw+Hs9LRaDA==
+X-Received: by 2002:a62:17c4:0:b029:1f5:7cfe:ebc4 with SMTP id 187-20020a6217c40000b02901f57cfeebc4mr23243360pfx.5.1615795960209;
+        Mon, 15 Mar 2021 01:12:40 -0700 (PDT)
+Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:11:546:2cb6:224c:a739])
+        by smtp.gmail.com with ESMTPSA id d2sm9909424pjx.42.2021.03.15.01.12.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 01:12:32 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 08:12:31 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     j.neuschaefer@gmx.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mfd: ntxec: Support for EC in Tolino Shine 2 HD
-Message-ID: <20210315081231.GX701493@dell>
-References: <20210313104258.17111-1-andreas@kemnade.info>
+        Mon, 15 Mar 2021 01:12:39 -0700 (PDT)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH v5] f2fs: add sysfs nodes to get runtime compression stat
+Date:   Mon, 15 Mar 2021 17:12:33 +0900
+Message-Id: <20210315081233.3603648-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210313104258.17111-1-andreas@kemnade.info>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 13 Mar 2021, Andreas Kemnade wrote:
+From: Daeho Jeong <daehojeong@google.com>
 
-> Add the version of the EC in the Tolino Shine 2 HD
-> to the supported versions. It seems not to have an RTC
-> and does not ack data written to it.
-> The vendor kernel happily ignores write errors, using
-> I2C via userspace i2c-set also shows the error.
-> So add a quirk to ignore that error.
-> 
-> PWM can be successfully configured despite of that error.
-> 
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> Reviewed-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
-> ---
-> Changes in v3:
-> - remove have_rtc variable
-> - rename subdevices again
-> 
-> Changes in v2:
-> - more comments about stacking regmap construction
-> - fix accidential line removal
-> - better naming for subdevices
->  drivers/mfd/ntxec.c       | 55 ++++++++++++++++++++++++++++++++++++---
->  include/linux/mfd/ntxec.h |  1 +
->  2 files changed, 53 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mfd/ntxec.c b/drivers/mfd/ntxec.c
-> index 957de2b03529..ab6860ef3e9a 100644
-> --- a/drivers/mfd/ntxec.c
-> +++ b/drivers/mfd/ntxec.c
-> @@ -96,6 +96,38 @@ static struct notifier_block ntxec_restart_handler = {
->  	.priority = 128,
->  };
->  
-> +static int regmap_ignore_write(void *context,
-> +			       unsigned int reg, unsigned int val)
-> +
-> +{
-> +	struct regmap *regmap = context;
-> +
-> +	regmap_write(regmap, reg, val);
-> +
-> +	return 0;
-> +}
-> +
-> +static int regmap_wrap_read(void *context, unsigned int reg,
-> +			    unsigned int *val)
-> +{
-> +	struct regmap *regmap = context;
-> +
-> +	return regmap_read(regmap, reg, val);
-> +}
-> +
-> +/*
-> + * Some firmware versions do not ack written data, add a wrapper. It
-> + * is used to stack another regmap on top.
-> + */
-> +static const struct regmap_config regmap_config_noack = {
-> +	.name = "ntxec_noack",
-> +	.reg_bits = 8,
-> +	.val_bits = 16,
-> +	.cache_type = REGCACHE_NONE,
-> +	.reg_write = regmap_ignore_write,
-> +	.reg_read = regmap_wrap_read
-> +};
-> +
->  static const struct regmap_config regmap_config = {
->  	.name = "ntxec",
->  	.reg_bits = 8,
-> @@ -104,16 +136,22 @@ static const struct regmap_config regmap_config = {
->  	.val_format_endian = REGMAP_ENDIAN_BIG,
->  };
->  
-> -static const struct mfd_cell ntxec_subdevices[] = {
-> +static const struct mfd_cell ntxec_subdev[] = {
->  	{ .name = "ntxec-rtc" },
->  	{ .name = "ntxec-pwm" },
->  };
->  
-> +static const struct mfd_cell ntxec_subdev_no_rtc[] = {
-> +	{ .name = "ntxec-pwm" },
-> +};
-> +
->  static int ntxec_probe(struct i2c_client *client)
->  {
->  	struct ntxec *ec;
->  	unsigned int version;
->  	int res;
-> +	const struct mfd_cell *subdevs = ntxec_subdev;
-> +	size_t n_subdevs = ARRAY_SIZE(ntxec_subdev);
+I've added new sysfs nodes to show runtime compression stat since mount.
+compr_written_block - show the block count written after compression
+compr_saved_block - show the saved block count with compression
+compr_new_inode - show the count of inode newly enabled for compression
 
-This is a little confusing.  I had to re-read to figure it out.
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+---
+v2: thanks to kernel test robot <lkp@intel.com>, fixed compile issue
+    related to kernel config
+v3: changed sysfs nodes' names and made them runtime stat, not
+    persistent on disk
+v4: changed sysfs nodes' desctiption
+v5: changed not to use atomic values
+---
+ Documentation/ABI/testing/sysfs-fs-f2fs | 24 ++++++++++++++++
+ fs/f2fs/compress.c                      |  1 +
+ fs/f2fs/f2fs.h                          | 19 +++++++++++++
+ fs/f2fs/sysfs.c                         | 38 +++++++++++++++++++++++++
+ 4 files changed, 82 insertions(+)
 
-In my mind, it would be clearer to explicitly set these in the
-switch, rather than have a default which can be over-written.
-
->  	ec = devm_kmalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
->  	if (!ec)
-> @@ -138,6 +176,16 @@ static int ntxec_probe(struct i2c_client *client)
->  	switch (version) {
->  	case NTXEC_VERSION_KOBO_AURA:
->  		break;
-> +	case NTXEC_VERSION_TOLINO_SHINE2:
-> +		subdevs = ntxec_subdev_no_rtc;
-> +		n_subdevs = ARRAY_SIZE(ntxec_subdev_no_rtc);
-> +		/* Another regmap stacked on top of the other */
-> +		ec->regmap = devm_regmap_init(ec->dev, NULL,
-> +					      ec->regmap,
-> +					      &regmap_config_noack);
-> +		if (IS_ERR(ec->regmap))
-> +			return PTR_ERR(ec->regmap);
-> +		break;
->  	default:
->  		dev_err(ec->dev,
->  			"Netronix embedded controller version %04x is not supported.\n",
-> @@ -181,8 +229,9 @@ static int ntxec_probe(struct i2c_client *client)
->  
->  	i2c_set_clientdata(client, ec);
->  
-> -	res = devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE, ntxec_subdevices,
-> -				   ARRAY_SIZE(ntxec_subdevices), NULL, 0, NULL);
-> +	res = devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE,
-> +				   subdevs, n_subdevs,
-> +				   NULL, 0, NULL);
->  	if (res)
->  		dev_err(ec->dev, "Failed to add subdevices: %d\n", res);
->  
-> diff --git a/include/linux/mfd/ntxec.h b/include/linux/mfd/ntxec.h
-> index 361204d125f1..26ab3b8eb612 100644
-> --- a/include/linux/mfd/ntxec.h
-> +++ b/include/linux/mfd/ntxec.h
-> @@ -33,5 +33,6 @@ static inline __be16 ntxec_reg8(u8 value)
->  
->  /* Known firmware versions */
->  #define NTXEC_VERSION_KOBO_AURA	0xd726	/* found in Kobo Aura */
-> +#define NTXEC_VERSION_TOLINO_SHINE2 0xf110 /* found in Tolino Shine 2 HD */
->  
->  #endif
-
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index cbeac1bebe2f..ddd4bd6116fc 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -409,3 +409,27 @@ Description:	Give a way to change checkpoint merge daemon's io priority.
+ 		I/O priority "3". We can select the class between "rt" and "be",
+ 		and set the I/O priority within valid range of it. "," delimiter
+ 		is necessary in between I/O class and priority number.
++
++What:		/sys/fs/f2fs/<disk>/compr_written_block
++Date:		March 2021
++Contact:	"Daeho Jeong" <daehojeong@google.com>
++Description:	Show the block count written after compression since mount. Note
++		that when the compressed blocks are deleted, this count doesn't
++		decrease. If you write "0" here, you can initialize
++		compr_written_block and compr_saved_block to "0".
++
++What:		/sys/fs/f2fs/<disk>/compr_saved_block
++Date:		March 2021
++Contact:	"Daeho Jeong" <daehojeong@google.com>
++Description:	Show the saved block count with compression since mount. Note
++		that when the compressed blocks are deleted, this count doesn't
++		decrease. If you write "0" here, you can initialize
++		compr_written_block and compr_saved_block to "0".
++
++What:		/sys/fs/f2fs/<disk>/compr_new_inode
++Date:		March 2021
++Contact:	"Daeho Jeong" <daehojeong@google.com>
++Description:	Show the count of inode newly enabled for compression since mount.
++		Note that when the compression is disabled for the files, this count
++		doesn't decrease. If you write "0" here, you can initialize
++		compr_new_inode to "0".
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 77fa342de38f..3c9d797dbdd6 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -1353,6 +1353,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
+ 	if (fio.compr_blocks)
+ 		f2fs_i_compr_blocks_update(inode, fio.compr_blocks - 1, false);
+ 	f2fs_i_compr_blocks_update(inode, cc->nr_cpages, true);
++	add_compr_block_stat(inode, cc->nr_cpages);
+ 
+ 	set_inode_flag(cc->inode, FI_APPEND_WRITE);
+ 	if (cc->cluster_idx == 0)
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index e2d302ae3a46..ae7e08aa7d87 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1623,6 +1623,11 @@ struct f2fs_sb_info {
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ 	struct kmem_cache *page_array_slab;	/* page array entry */
+ 	unsigned int page_array_slab_size;	/* default page array slab size */
++
++	/* For runtime compression statistics */
++	u64 compr_written_block;
++	u64 compr_saved_block;
++	u32 compr_new_inode;
+ #endif
+ };
+ 
+@@ -3955,6 +3960,18 @@ int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi);
+ void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi);
+ int __init f2fs_init_compress_cache(void);
+ void f2fs_destroy_compress_cache(void);
++#define inc_compr_inode_stat(inode)					\
++	do {								\
++		struct f2fs_sb_info *sbi = F2FS_I_SB(inode);		\
++		sbi->compr_new_inode++;					\
++	} while (0)
++#define add_compr_block_stat(inode, blocks)				\
++	do {								\
++		struct f2fs_sb_info *sbi = F2FS_I_SB(inode);		\
++		int diff = F2FS_I(inode)->i_cluster_size - blocks;	\
++		sbi->compr_written_block += blocks;			\
++		sbi->compr_saved_block += diff;				\
++	} while (0)
+ #else
+ static inline bool f2fs_is_compressed_page(struct page *page) { return false; }
+ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
+@@ -3983,6 +4000,7 @@ static inline int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi) { return
+ static inline void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi) { }
+ static inline int __init f2fs_init_compress_cache(void) { return 0; }
+ static inline void f2fs_destroy_compress_cache(void) { }
++#define inc_compr_inode_stat(inode)		do { } while (0)
+ #endif
+ 
+ static inline void set_compress_context(struct inode *inode)
+@@ -4006,6 +4024,7 @@ static inline void set_compress_context(struct inode *inode)
+ 	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
+ 	set_inode_flag(inode, FI_COMPRESSED_FILE);
+ 	stat_inc_compr_inode(inode);
++	inc_compr_inode_stat(inode);
+ 	f2fs_mark_inode_dirty_sync(inode, true);
+ }
+ 
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index e38a7f6921dd..a166eebbe019 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -12,6 +12,7 @@
+ #include <linux/seq_file.h>
+ #include <linux/unicode.h>
+ #include <linux/ioprio.h>
++#include <linux/sysfs.h>
+ 
+ #include "f2fs.h"
+ #include "segment.h"
+@@ -282,6 +283,17 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
+ 		return len;
+ 	}
+ 
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++	if (!strcmp(a->attr.name, "compr_written_block"))
++		return sysfs_emit(buf, "%llu\n", sbi->compr_written_block);
++
++	if (!strcmp(a->attr.name, "compr_saved_block"))
++		return sysfs_emit(buf, "%llu\n", sbi->compr_saved_block);
++
++	if (!strcmp(a->attr.name, "compr_new_inode"))
++		return sysfs_emit(buf, "%u\n", sbi->compr_new_inode);
++#endif
++
+ 	ui = (unsigned int *)(ptr + a->offset);
+ 
+ 	return sprintf(buf, "%u\n", *ui);
+@@ -458,6 +470,24 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+ 		return count;
+ 	}
+ 
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++	if (!strcmp(a->attr.name, "compr_written_block") ||
++		!strcmp(a->attr.name, "compr_saved_block")) {
++		if (t != 0)
++			return -EINVAL;
++		sbi->compr_written_block = 0;
++		sbi->compr_saved_block = 0;
++		return count;
++	}
++
++	if (!strcmp(a->attr.name, "compr_new_inode")) {
++		if (t != 0)
++			return -EINVAL;
++		sbi->compr_new_inode = 0;
++		return count;
++	}
++#endif
++
+ 	*ui = (unsigned int)t;
+ 
+ 	return count;
+@@ -668,6 +698,9 @@ F2FS_FEATURE_RO_ATTR(sb_checksum, FEAT_SB_CHECKSUM);
+ F2FS_FEATURE_RO_ATTR(casefold, FEAT_CASEFOLD);
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ F2FS_FEATURE_RO_ATTR(compression, FEAT_COMPRESSION);
++F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_written_block, compr_written_block);
++F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_saved_block, compr_saved_block);
++F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_new_inode, compr_new_inode);
+ #endif
+ 
+ #define ATTR_LIST(name) (&f2fs_attr_##name.attr)
+@@ -730,6 +763,11 @@ static struct attribute *f2fs_attrs[] = {
+ 	ATTR_LIST(moved_blocks_foreground),
+ 	ATTR_LIST(moved_blocks_background),
+ 	ATTR_LIST(avg_vblocks),
++#endif
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++	ATTR_LIST(compr_written_block),
++	ATTR_LIST(compr_saved_block),
++	ATTR_LIST(compr_new_inode),
+ #endif
+ 	NULL,
+ };
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.31.0.rc2.261.g7f71774620-goog
+
