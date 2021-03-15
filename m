@@ -2,37 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB5E33BE42
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC6F33BE43
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238407AbhCOOom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:44:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50560 "EHLO mail.kernel.org"
+        id S238550AbhCOOoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:44:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231781AbhCOODw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:03:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8D9B64F02;
-        Mon, 15 Mar 2021 14:03:49 +0000 (UTC)
+        id S232810AbhCOODx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9529600EF;
+        Mon, 15 Mar 2021 14:03:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615817031;
-        bh=1cpXjPpo4Z5OBCeVk7aKUYLS5wTG3/dSdIXOKFik8Zg=;
+        s=korg; t=1615817033;
+        bh=kS+ZPXV7JrwZH1yID6qLLiZfV2jBJJqvvHJx4T01hpw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FFPYjRbb/dxdWXKE9eCDERImmA9FBdFQAyVcylZIZiBIJsrxlod+qyC+LkHFG34WT
-         jijabTZb4gBsgLvTL/FKj74ElT1C9E/sWn7GRziKpVmxQoSck1UvX2YGlrLBLxITqx
-         tNIVcyz70cbyHxrheohYLrY2QDrX/a3qVfjAAWNw=
+        b=tHRAwjtUaUmeh9p+jMqLy6V/pXJE7RpRMlQou0TWNK+krt+dDwZrXTUO1hLKGHZu/
+         Nff2iUuMV4n+WXMorvTTpVN/qTHLOcFW9N6bbHheYrsJQKGdhBTao9+RQeWIypAB91
+         jrJ4IlZO/MMynGXEmHykOygFp6l2t5OWZ+Iju9uc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        stable@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 267/306] include/linux/sched/mm.h: use rcu_dereference in in_vfork()
-Date:   Mon, 15 Mar 2021 14:55:30 +0100
-Message-Id: <20210315135516.668510601@linuxfoundation.org>
+Subject: [PATCH 5.11 268/306] prctl: fix PR_SET_MM_AUXV kernel stack leak
+Date:   Mon, 15 Mar 2021 14:55:31 +0100
+Message-Id: <20210315135516.707577306@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
 References: <20210315135507.611436477@linuxfoundation.org>
@@ -46,41 +42,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+From: Alexey Dobriyan <adobriyan@gmail.com>
 
-[ Upstream commit 149fc787353f65b7e72e05e7b75d34863266c3e2 ]
+[ Upstream commit c995f12ad8842dbf5cfed113fb52cdd083f5afd1 ]
 
-Fix a sparse warning by using rcu_dereference().  Technically this is a
-bug and a sufficiently aggressive compiler could reload the `real_parent'
-pointer outside the protection of the rcu lock (and access freed memory),
-but I think it's pretty unlikely to happen.
+Doing a
 
-Link: https://lkml.kernel.org/r/20210221194207.1351703-1-willy@infradead.org
-Fixes: b18dc5f291c0 ("mm, oom: skip vforked tasks from being selected")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+	prctl(PR_SET_MM, PR_SET_MM_AUXV, addr, 1);
+
+will copy 1 byte from userspace to (quite big) on-stack array
+and then stash everything to mm->saved_auxv.
+AT_NULL terminator will be inserted at the very end.
+
+/proc/*/auxv handler will find that AT_NULL terminator
+and copy original stack contents to userspace.
+
+This devious scheme requires CAP_SYS_RESOURCE.
+
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/sched/mm.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/sys.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-index 1ae08b8462a4..90b2a0bce11c 100644
---- a/include/linux/sched/mm.h
-+++ b/include/linux/sched/mm.h
-@@ -140,7 +140,8 @@ static inline bool in_vfork(struct task_struct *tsk)
- 	 * another oom-unkillable task does this it should blame itself.
+diff --git a/kernel/sys.c b/kernel/sys.c
+index 51f00fe20e4d..7cf21c947649 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -2080,7 +2080,7 @@ static int prctl_set_auxv(struct mm_struct *mm, unsigned long addr,
+ 	 * up to the caller to provide sane values here, otherwise userspace
+ 	 * tools which use this vector might be unhappy.
  	 */
- 	rcu_read_lock();
--	ret = tsk->vfork_done && tsk->real_parent->mm == tsk->mm;
-+	ret = tsk->vfork_done &&
-+			rcu_dereference(tsk->real_parent)->mm == tsk->mm;
- 	rcu_read_unlock();
+-	unsigned long user_auxv[AT_VECTOR_SIZE];
++	unsigned long user_auxv[AT_VECTOR_SIZE] = {};
  
- 	return ret;
+ 	if (len > sizeof(user_auxv))
+ 		return -EINVAL;
 -- 
 2.30.1
 
