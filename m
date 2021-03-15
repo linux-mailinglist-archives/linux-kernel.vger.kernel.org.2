@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D712B33BB5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:20:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDC833BAEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:11:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236727AbhCOOQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:16:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
+        id S235807AbhCOOK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:10:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232147AbhCON7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4151364F19;
-        Mon, 15 Mar 2021 13:58:50 +0000 (UTC)
+        id S232257AbhCON6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:58:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE2BB64F07;
+        Mon, 15 Mar 2021 13:58:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816731;
-        bh=Jl3E8f1Oe96Wvoxz7fOTbqvT+/AHJp0BHWTCpa3LvGY=;
+        s=korg; t=1615816696;
+        bh=MM8h9pSZ/19i18U1Dbp8uKWmfV4/joyYNuc/4IEtrYw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nc9f1Abm7F2nFeg2yvfEHtUJVZlVJSnY62gXzupVXOy8u00+uYrD8IxpM8M/n0wcR
-         ArvqHYEChIRkc81XeXpPHzspXJhuXwrcjO47wPB8SgdW+raaam6Tl7QHmNEpchOgo+
-         lucAObL7zN4F57IWeLZvBEQ2Ch8llOUHAOcc8I6E=
+        b=X7HR8dyf+Wmyw5qVV1z2sRgALsP+qNC3mnAPR3a7WYgyUULLbJX2LiAS9/HCgwXVJ
+         1qM0KHprdKfVx09B4WbBfZxQ8eLIEuPK+40txVCHbCqeLCoHV6zydP4juoZdG+oIhH
+         AFuqR+Kzos8opx1UE/s4/NCna9EYe16un5Ow/UKM=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jian Shen <shenjian15@huawei.com>,
-        Huazhong Tan <tanhuazhong@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.11 090/306] net: hns3: fix query vlan mask value error for flow director
-Date:   Mon, 15 Mar 2021 14:52:33 +0100
-Message-Id: <20210315135510.690750167@linuxfoundation.org>
+        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
+        Alexandra Winter <wintera@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 061/290] s390/qeth: fix memory leak after failed TX Buffer allocation
+Date:   Mon, 15 Mar 2021 14:52:34 +0100
+Message-Id: <20210315135543.979604801@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-References: <20210315135507.611436477@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +42,97 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Jian Shen <shenjian15@huawei.com>
+From: Julian Wiedmann <jwi@linux.ibm.com>
 
-commit c75ec148a316e8cf52274d16b9b422703b96f5ce upstream.
+commit e7a36d27f6b9f389e41d8189a8a08919c6835732 upstream.
 
-Currently, the driver returns VLAN_VID_MASK for vlan mask field,
-when get flow director rule information for rule doesn't use vlan.
-It may cause the vlan mask value display as 0xf000 in this
-case, like below:
+When qeth_alloc_qdio_queues() fails to allocate one of the buffers that
+back an Output Queue, the 'out_freeoutqbufs' path will free all
+previously allocated buffers for this queue. But it misses to free the
+half-finished queue struct itself.
 
-estuary:/$ ethtool -u eth1
-50 RX rings available
-Total 1 rules
+Move the buffer allocation into qeth_alloc_output_queue(), and deal with
+such errors internally.
 
-Filter: 2
-Rule Type: TCP over IPv4
-Src IP addr: 0.0.0.0 mask: 255.255.255.255
-Dest IP addr: 0.0.0.0 mask: 255.255.255.255
-TOS: 0x0 mask: 0xff
-Src port: 0 mask: 0xffff
-Dest port: 0 mask: 0xffff
-VLAN EtherType: 0x0 mask: 0xffff
-VLAN: 0x0 mask: 0xf000
-User-defined: 0x1234 mask: 0x0
-Action: Direct to queue 3
-
-Fix it by return 0.
-
-Fixes: 05c2314fe6a8 ("net: hns3: Add support for rule query of flow director")
-Signed-off-by: Jian Shen <shenjian15@huawei.com>
-Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 0da9581ddb0f ("qeth: exploit asynchronous delivery of storage blocks")
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/s390/net/qeth_core_main.c |   35 +++++++++++++++++------------------
+ 1 file changed, 17 insertions(+), 18 deletions(-)
 
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -6283,8 +6283,7 @@ static void hclge_fd_get_ext_info(struct
- 		fs->h_ext.vlan_tci = cpu_to_be16(rule->tuples.vlan_tag1);
- 		fs->m_ext.vlan_tci =
- 				rule->unused_tuple & BIT(INNER_VLAN_TAG_FST) ?
--				cpu_to_be16(VLAN_VID_MASK) :
--				cpu_to_be16(rule->tuples_mask.vlan_tag1);
-+				0 : cpu_to_be16(rule->tuples_mask.vlan_tag1);
+--- a/drivers/s390/net/qeth_core_main.c
++++ b/drivers/s390/net/qeth_core_main.c
+@@ -2632,15 +2632,28 @@ static void qeth_free_output_queue(struc
+ static struct qeth_qdio_out_q *qeth_alloc_output_queue(void)
+ {
+ 	struct qeth_qdio_out_q *q = kzalloc(sizeof(*q), GFP_KERNEL);
++	unsigned int i;
+ 
+ 	if (!q)
+ 		return NULL;
+ 
+-	if (qdio_alloc_buffers(q->qdio_bufs, QDIO_MAX_BUFFERS_PER_Q)) {
+-		kfree(q);
+-		return NULL;
++	if (qdio_alloc_buffers(q->qdio_bufs, QDIO_MAX_BUFFERS_PER_Q))
++		goto err_qdio_bufs;
++
++	for (i = 0; i < QDIO_MAX_BUFFERS_PER_Q; i++) {
++		if (qeth_init_qdio_out_buf(q, i))
++			goto err_out_bufs;
+ 	}
++
+ 	return q;
++
++err_out_bufs:
++	while (i > 0)
++		kmem_cache_free(qeth_qdio_outbuf_cache, q->bufs[--i]);
++	qdio_free_buffers(q->qdio_bufs, QDIO_MAX_BUFFERS_PER_Q);
++err_qdio_bufs:
++	kfree(q);
++	return NULL;
+ }
+ 
+ static void qeth_tx_completion_timer(struct timer_list *timer)
+@@ -2653,7 +2666,7 @@ static void qeth_tx_completion_timer(str
+ 
+ static int qeth_alloc_qdio_queues(struct qeth_card *card)
+ {
+-	int i, j;
++	unsigned int i;
+ 
+ 	QETH_CARD_TEXT(card, 2, "allcqdbf");
+ 
+@@ -2687,13 +2700,6 @@ static int qeth_alloc_qdio_queues(struct
+ 		queue->coalesce_usecs = QETH_TX_COALESCE_USECS;
+ 		queue->max_coalesced_frames = QETH_TX_MAX_COALESCED_FRAMES;
+ 		queue->priority = QETH_QIB_PQUE_PRIO_DEFAULT;
+-
+-		/* give outbound qeth_qdio_buffers their qdio_buffers */
+-		for (j = 0; j < QDIO_MAX_BUFFERS_PER_Q; ++j) {
+-			WARN_ON(queue->bufs[j]);
+-			if (qeth_init_qdio_out_buf(queue, j))
+-				goto out_freeoutqbufs;
+-		}
  	}
  
- 	if (fs->flow_type & FLOW_MAC_EXT) {
+ 	/* completion */
+@@ -2702,13 +2708,6 @@ static int qeth_alloc_qdio_queues(struct
+ 
+ 	return 0;
+ 
+-out_freeoutqbufs:
+-	while (j > 0) {
+-		--j;
+-		kmem_cache_free(qeth_qdio_outbuf_cache,
+-				card->qdio.out_qs[i]->bufs[j]);
+-		card->qdio.out_qs[i]->bufs[j] = NULL;
+-	}
+ out_freeoutq:
+ 	while (i > 0) {
+ 		qeth_free_output_queue(card->qdio.out_qs[--i]);
 
 
