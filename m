@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB1933BC1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 631DD33BE9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238374AbhCOOXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:23:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37820 "EHLO mail.kernel.org"
+        id S241038AbhCOOsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:48:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232890AbhCOOAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:00:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 944BC64F52;
-        Mon, 15 Mar 2021 13:59:48 +0000 (UTC)
+        id S234488AbhCOODl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:03:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67E4E64EFC;
+        Mon, 15 Mar 2021 14:03:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816789;
-        bh=dl9bqLQJ5Axhes/gC7YevlljktnoJcI4f1x1PvcNtcM=;
+        s=korg; t=1615817020;
+        bh=UcsAEqwzcrROjqapXTx8ABQo444UPYI3CUiTu7H0l/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WMaBfQp0QsnvvjKL0s5f5DhyzxGPp6HcRnsTQX1xhyvicfWK8+pDLOwnvJpWfQ3Ry
-         sGgLUWGz7JavE6n3z5xlg9STyBw15bjU+VuR85EmNj5Pbw1xOmMSWb/XTtbkZdCmTM
-         bx/CjuIBK7QnTCz/r1sMgTI9EcYn/ETMcoje/SB4=
+        b=K5UxBkkUZfWbHMKZEm91ib/jST+59ceDiAO/vMyHDPTxAS/1diUSokLr1Y9ggcixF
+         mwcm1/If47Hbcz0tLxSv5xl5KZK1WgVh5ezx7AGXPdGzNY9Xh5uqlr+son8CbGqDuQ
+         FUTOJGPXbZuwF9ZMQh/2HyzjS4qaWRj783IvoW/4=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bernhard <bernhard.gebetsberger@gmx.at>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.4 111/168] usb: xhci: do not perform Soft Retry for some xHCI hosts
+        stable@vger.kernel.org, Nigel Kirkland <nkirkland2304@gmail.com>,
+        James Smart <jsmart2021@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 250/290] nvme-fc: fix racing controller reset and create association
 Date:   Mon, 15 Mar 2021 14:55:43 +0100
-Message-Id: <20210315135554.007621432@linuxfoundation.org>
+Message-Id: <20210315135550.468382436@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
-References: <20210315135550.333963635@linuxfoundation.org>
+In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
+References: <20210315135541.921894249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,75 +42,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Stanislaw Gruszka <stf_xl@wp.pl>
+From: James Smart <jsmart2021@gmail.com>
 
-commit a4a251f8c23518899d2078c320cf9ce2fa459c9f upstream.
+[ Upstream commit f20ef34d71abc1fc56b322aaa251f90f94320140 ]
 
-On some systems rt2800usb and mt7601u devices are unable to operate since
-commit f8f80be501aa ("xhci: Use soft retry to recover faster from
-transaction errors")
+Recent patch to prevent calling __nvme_fc_abort_outstanding_ios in
+interrupt context results in a possible race condition. A controller
+reset results in errored io completions, which schedules error
+work. The change of error work to a work element allows it to fire
+after the ctrl state transition to NVME_CTRL_CONNECTING, causing
+any outstanding io (used to initialize the controller) to fail and
+cause problems for connect_work.
 
-Seems that some xHCI controllers can not perform Soft Retry correctly,
-affecting those devices.
+Add a state check to only schedule error work if not in the RESETTING
+state.
 
-To avoid the problem add xhci->quirks flag that restore pre soft retry
-xhci behaviour for affected xHCI controllers. Currently those are
-AMD_PROMONTORYA_4 and AMD_PROMONTORYA_2, since it was confirmed
-by the users: on those xHCI hosts issue happen and is gone after
-disabling Soft Retry.
-
-[minor commit message rewording for checkpatch -Mathias]
-
-Fixes: f8f80be501aa ("xhci: Use soft retry to recover faster from transaction errors")
-Cc: <stable@vger.kernel.org> # 4.20+
-Reported-by: Bernhard <bernhard.gebetsberger@gmx.at>
-Tested-by: Bernhard <bernhard.gebetsberger@gmx.at>
-Signed-off-by: Stanislaw Gruszka <stf_xl@wp.pl>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=202541
-Link: https://lore.kernel.org/r/20210311115353.2137560-2-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 19fce0470f05 ("nvme-fc: avoid calling _nvme_fc_abort_outstanding_ios from interrupt context")
+Signed-off-by: Nigel Kirkland <nkirkland2304@gmail.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci-pci.c  |    5 +++++
- drivers/usb/host/xhci-ring.c |    3 ++-
- drivers/usb/host/xhci.h      |    1 +
- 3 files changed, 8 insertions(+), 1 deletion(-)
+ drivers/nvme/host/fc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -277,6 +277,11 @@ static void xhci_pci_quirks(struct devic
- 	     pdev->device == 0x9026)
- 		xhci->quirks |= XHCI_RESET_PLL_ON_DISCONNECT;
+diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+index 5ead217ac2bc..fab068c8ba02 100644
+--- a/drivers/nvme/host/fc.c
++++ b/drivers/nvme/host/fc.c
+@@ -2055,7 +2055,7 @@ nvme_fc_fcpio_done(struct nvmefc_fcp_req *req)
+ 		nvme_fc_complete_rq(rq);
  
-+	if (pdev->vendor == PCI_VENDOR_ID_AMD &&
-+	    (pdev->device == PCI_DEVICE_ID_AMD_PROMONTORYA_2 ||
-+	     pdev->device == PCI_DEVICE_ID_AMD_PROMONTORYA_4))
-+		xhci->quirks |= XHCI_NO_SOFT_RETRY;
-+
- 	if (xhci->quirks & XHCI_RESET_ON_RESUME)
- 		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
- 				"QUIRK: Resetting on resume");
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -2299,7 +2299,8 @@ static int process_bulk_intr_td(struct x
- 		remaining	= 0;
- 		break;
- 	case COMP_USB_TRANSACTION_ERROR:
--		if ((ep_ring->err_count++ > MAX_SOFT_RETRY) ||
-+		if (xhci->quirks & XHCI_NO_SOFT_RETRY ||
-+		    (ep_ring->err_count++ > MAX_SOFT_RETRY) ||
- 		    le32_to_cpu(slot_ctx->tt_info) & TT_SLOT)
- 			break;
- 		*status = 0;
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -1875,6 +1875,7 @@ struct xhci_hcd {
- #define XHCI_SNPS_BROKEN_SUSPEND    BIT_ULL(35)
- #define XHCI_SKIP_PHY_INIT	BIT_ULL(37)
- #define XHCI_DISABLE_SPARSE	BIT_ULL(38)
-+#define XHCI_NO_SOFT_RETRY	BIT_ULL(40)
+ check_error:
+-	if (terminate_assoc)
++	if (terminate_assoc && ctrl->ctrl.state != NVME_CTRL_RESETTING)
+ 		queue_work(nvme_reset_wq, &ctrl->ioerr_work);
+ }
  
- 	unsigned int		num_active_eps;
- 	unsigned int		limit_active_eps;
+-- 
+2.30.1
+
 
 
