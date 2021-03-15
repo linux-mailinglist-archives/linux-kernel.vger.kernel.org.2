@@ -2,118 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C15833C19A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:24:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0475C33C196
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 17:23:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232127AbhCOQXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 12:23:31 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:33279 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231962AbhCOQW6 (ORCPT
+        id S231434AbhCOQW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 12:22:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231709AbhCOQW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:22:58 -0400
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 12FGMXOl021913;
-        Tue, 16 Mar 2021 01:22:33 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 12FGMXOl021913
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615825353;
-        bh=LD+AM6hgEBw4I3onUiko1OAZdxqmf7Chvn4W6NLeOeo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=zhoLwrN/0jIhVhOedIcv5B7oUqbyRfwg5WLmT3sXgNfk+WjwPni45vCR/Vf+vxDy3
-         q5QM/bfDlpxK3v5WyuiWNZFukEAwev6toOazwQVTscogRdCPW9n7wu6l91l/WNC9/f
-         B7SPulTY19fvBrWoyhBEg7oR6FzzEWKqa9LjurWvG4x5Zz+qWdrj4mWl1HZ+En3+8x
-         sVXvv5HFOcp/AYFugu92ltZD0dnNbc7ZfyyVtW8iVx1uj5WezzJBtC2KoRvGqwt83K
-         fdIi6f42yjHa7o+JeCUm1vFCFRIN9Ewuv/+0AjfXehAdZ2/Anyy75NomGi5pi8vA3Z
-         XaBufw7uBjyOg==
-X-Nifty-SrcIP: [209.85.210.175]
-Received: by mail-pf1-f175.google.com with SMTP id d21so857535pfn.1;
-        Mon, 15 Mar 2021 09:22:33 -0700 (PDT)
-X-Gm-Message-State: AOAM530gI8kWN/jE3WdXj8BqMnfoghqbe2mWz1mG38ZcS20xQ8/5+6sd
-        KV4j0bF7OxCMgxa1LQzRURnTFLmbFmvEr5x5UWk=
-X-Google-Smtp-Source: ABdhPJyqPUzhJDm8gyEGApfIOguBmYSN2t7PkceoZE565PaBe9jr7CKOSPlyvmaBu1sauYbXNFZ1TMhebCZYxXfKgWc=
-X-Received: by 2002:a65:41c6:: with SMTP id b6mr303989pgq.7.1615825352706;
- Mon, 15 Mar 2021 09:22:32 -0700 (PDT)
+        Mon, 15 Mar 2021 12:22:27 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264C4C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:22:27 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id w34so19686947pga.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 09:22:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4OgT1op5pKi9FPa9H6iNM9XBtjK1+8GfQ3rJ+7I0hzg=;
+        b=HPFxk1Zjce149T/5GYwsq4vVi8kl7RSBQGKUGvT9NymyCL5rp01UP+ZpzYZMmRE16S
+         YRbQ0a+dbcjFaOLrI3Z/iCOPI9UJw/1Mmq8BqVjt5LeT2rzixpuYHVcKZdBNTxfg1vDe
+         5Ot1ZXVlFg+HFGZLFoW8wepjsxCuuqh5IB2LmywdIODSk8EoXFu1Ctb3aWZ0OKcI2OIJ
+         Ih5jrY6ATdw1GDi/K8ZFtT1+wC49lt/JSzL+PJXdCwPowLZaErwogcAetcnMy7o495Cz
+         TZ9WOyfUXU/haFnwb4NLfk0y+lIASQnzn7eVpMgv2tu51NxucboE/FP0t2PLcZJs6576
+         XeRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4OgT1op5pKi9FPa9H6iNM9XBtjK1+8GfQ3rJ+7I0hzg=;
+        b=B1iibcn0embQW6JsE/0JGf4SQE4KW+PHg00kd7bkdWQFPn4OQfddtlcVNvInIFMuO2
+         1q6RghXglOETBm4AqcjLtyw8YwIoBDcUkrTMZBnQgH3wKQDslOr1mO5of9vz1Owkxxzf
+         yEQRdOJx6Q+1bzPZDkpsQMCza4FP7f6hffp5h2xrxsH8CN7aFKv9z8wLOV5glyAqPdlO
+         DGDdxWeK7ukjdGXUz2PsmKJ2Hnhp423rEXEffFBaZVCxPjVplddVAKmktrEjzoXWv3+g
+         kpFFI9ShcCxE1e6exApS9/Pbd7gF7ncI9j23JFy1L6ZZ0AY1/pSkbkIh591tzqWz71LQ
+         0iXg==
+X-Gm-Message-State: AOAM533ILpwjlLIc+nsteVhnGxBFRH5vh0TAFrYcOFJgsijlcQrvO8bh
+        IMD1hHRX7gLDFbKnxnQtjv7qig==
+X-Google-Smtp-Source: ABdhPJwTkkx4r53sv5pqh1F/+EV63pgm09PHYplM3kJLusGQI94sZ6ELMpBINgkwEsze/alAmXWY8Q==
+X-Received: by 2002:a63:c84a:: with SMTP id l10mr294989pgi.159.1615825346568;
+        Mon, 15 Mar 2021 09:22:26 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id d19sm81935pjs.55.2021.03.15.09.22.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 09:22:25 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 10:22:24 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] remoteproc: qcom_q6v5_mss: Provide errors for
+ firmware-name parsing
+Message-ID: <20210315162224.GB1339147@xps15>
+References: <20210312002605.3273255-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-References: <20210302210646.3044738-1-nathan@kernel.org> <20210309205915.2340265-1-nathan@kernel.org>
-In-Reply-To: <20210309205915.2340265-1-nathan@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 16 Mar 2021 01:21:55 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ6goFdV=HuCdiCsr-PSUGxtafHZAa=p=96ieFyFHL8yg@mail.gmail.com>
-Message-ID: <CAK7LNAQ6goFdV=HuCdiCsr-PSUGxtafHZAa=p=96ieFyFHL8yg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] Makefile: Remove '--gcc-toolchain' flag
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Fangrui Song <maskray@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312002605.3273255-1-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 5:59 AM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> This flag was originally added to allow clang to find the GNU cross
-> tools in commit 785f11aa595b ("kbuild: Add better clang cross build
-> support"). This flag was not enough to find the tools at times so
-> '--prefix' was added to the list in commit ef8c4ed9db80 ("kbuild: allow
-> to use GCC toolchain not in Clang search path") and improved upon in
-> commit ca9b31f6bb9c ("Makefile: Fix GCC_TOOLCHAIN_DIR prefix for Clang
-> cross compilation"). Now that '--prefix' specifies a full path and
-> prefix, '--gcc-toolchain' serves no purpose because the kernel builds
-> with '-nostdinc' and '-nostdlib'.
->
-> This has been verified with self compiled LLVM 10.0.1 and LLVM 13.0.0 as
-> well as a distribution version of LLVM 11.1.0 without binutils in the
-> LLVM toolchain locations.
->
-> Link: https://reviews.llvm.org/D97902
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+On Thu, Mar 11, 2021 at 04:26:05PM -0800, Bjorn Andersson wrote:
+> Failing to read the "firmware-name" DT property without informing the
+> developer is annoying, add some helpful debug prints.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
->
-> v1 -> v2:
->
-> * Improve commit message (add history behind flag and link to Fangrui's
->   documentation improvement).
+>  drivers/remoteproc/qcom_q6v5_mss.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
+> index 66106ba25ba3..15abfbba78d2 100644
+> --- a/drivers/remoteproc/qcom_q6v5_mss.c
+> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
+> @@ -1661,8 +1661,10 @@ static int q6v5_probe(struct platform_device *pdev)
+>  	mba_image = desc->hexagon_mba_image;
+>  	ret = of_property_read_string_index(pdev->dev.of_node, "firmware-name",
+>  					    0, &mba_image);
+> -	if (ret < 0 && ret != -EINVAL)
+> +	if (ret < 0 && ret != -EINVAL) {
+> +		dev_err(&pdev->dev, "unable to read mba firmware-name\n");
+>  		return ret;
+> +	}
+>  
+>  	rproc = rproc_alloc(&pdev->dev, pdev->name, &q6v5_ops,
+>  			    mba_image, sizeof(*qproc));
+> @@ -1680,8 +1682,10 @@ static int q6v5_probe(struct platform_device *pdev)
+>  	qproc->hexagon_mdt_image = "modem.mdt";
+>  	ret = of_property_read_string_index(pdev->dev.of_node, "firmware-name",
+>  					    1, &qproc->hexagon_mdt_image);
+> -	if (ret < 0 && ret != -EINVAL)
+> +	if (ret < 0 && ret != -EINVAL) {
+> +		dev_err(&pdev->dev, "unable to read mpss firmware-name\n");
+>  		goto free_rproc;
+> +	}
 
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-Both applied to linux-kbuild. Thanks.
-
-
-
-
-
-> I did not carry tags forward so that people could re-review and test.
->
->  Makefile | 4 ----
->  1 file changed, 4 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index 31dcdb3d61fa..182e93d91198 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -568,10 +568,6 @@ ifneq ($(CROSS_COMPILE),)
->  CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
->  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
->  CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-> -GCC_TOOLCHAIN  := $(realpath $(GCC_TOOLCHAIN_DIR)/..)
-> -endif
-> -ifneq ($(GCC_TOOLCHAIN),)
-> -CLANG_FLAGS    += --gcc-toolchain=$(GCC_TOOLCHAIN)
->  endif
->  ifneq ($(LLVM_IAS),1)
->  CLANG_FLAGS    += -no-integrated-as
->
-> base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
-> --
-> 2.31.0.rc1
->
-
-
--- 
-Best Regards
-Masahiro Yamada
+>  
+>  	platform_set_drvdata(pdev, qproc);
+>  
+> -- 
+> 2.29.2
+> 
