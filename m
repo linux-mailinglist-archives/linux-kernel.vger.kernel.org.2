@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF4F33BE87
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FC033BE08
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:50:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240480AbhCOOrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:47:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49162 "EHLO mail.kernel.org"
+        id S237968AbhCOOmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:42:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233893AbhCOOCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 10:02:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3281564EF3;
-        Mon, 15 Mar 2021 14:02:34 +0000 (UTC)
+        id S234106AbhCOOC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:02:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDDC364EFC;
+        Mon, 15 Mar 2021 14:02:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816955;
-        bh=29PgtmEDf0c+uslzpTsM6GpiVJ9WCgJL2+GQIQYDjMQ=;
+        s=korg; t=1615816976;
+        bh=7Ed7Lo0sYVxjRJyJpTL+BGzpiKR79N2IVWEzt+StavU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CrIm7fS6i4NhunSV4yOHH2PkykBVZ/7Iz9r4fLd533Nqv5m/OJgi2k7gzmkLIv0V4
-         YoLWG0F3OEIdPjyyZ4EvvR8e/DI1/2DU9/5SJwwIOqAL7zF1ZHc3WMqoh2axOmDQG2
-         nYcTnwH3qFeB02N5xZuVstTRWO1BBVR5a0PIx/7U=
+        b=kwZtuiafGHOsNooNKIdClYsF6tSNKAHKg82QIDMxht9SG/XkqyXYxKj3YFDOJL+fi
+         Ixu+3wmpJrCniAY1QMHlfy87uvTAIqY+OQdTrAhoZPdAhWDaWzzfv+omRrUGzB4b7q
+         djSG1oY2qAGP8i5riu770EncqRlMTRFdfmcntZgo=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Forest Crossman <cyrozap@gmail.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.10 210/290] usb: xhci: Fix ASMedia ASM1042A and ASM3242 DMA addressing
+        stable@vger.kernel.org, Jordan Niethe <jniethe5@gmail.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 240/306] powerpc/sstep: Fix VSX instruction emulation
 Date:   Mon, 15 Mar 2021 14:55:03 +0100
-Message-Id: <20210315135549.033703744@linuxfoundation.org>
+Message-Id: <20210315135515.759710381@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-References: <20210315135541.921894249@linuxfoundation.org>
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+References: <20210315135507.611436477@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +43,94 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Forest Crossman <cyrozap@gmail.com>
+From: Jordan Niethe <jniethe5@gmail.com>
 
-commit b71c669ad8390dd1c866298319ff89fe68b45653 upstream.
+[ Upstream commit 5c88a17e15795226b56d83f579cbb9b7a4864f79 ]
 
-I've confirmed that both the ASMedia ASM1042A and ASM3242 have the same
-problem as the ASM1142 and ASM2142/ASM3142, where they lose some of the
-upper bits of 64-bit DMA addresses. As with the other chips, this can
-cause problems on systems where the upper bits matter, and adding the
-XHCI_NO_64BIT_SUPPORT quirk completely fixes the issue.
+Commit af99da74333b ("powerpc/sstep: Support VSX vector paired storage
+access instructions") added loading and storing 32 word long data into
+adjacent VSRs. However the calculation used to determine if two VSRs
+needed to be loaded/stored inadvertently prevented the load/storing
+taking place for instructions with a data length less than 16 words.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Forest Crossman <cyrozap@gmail.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210311115353.2137560-4-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This causes the emulation to not function correctly, which can be seen
+by the alignment_handler selftest:
+
+$ ./alignment_handler
+[snip]
+test: test_alignment_handler_vsx_207
+tags: git_version:powerpc-5.12-1-0-g82d2c16b350f
+VSX: 2.07B
+        Doing lxsspx:   PASSED
+        Doing lxsiwax:  FAILED: Wrong Data
+        Doing lxsiwzx:  PASSED
+        Doing stxsspx:  PASSED
+        Doing stxsiwx:  PASSED
+failure: test_alignment_handler_vsx_207
+test: test_alignment_handler_vsx_300
+tags: git_version:powerpc-5.12-1-0-g82d2c16b350f
+VSX: 3.00B
+        Doing lxsd:     PASSED
+        Doing lxsibzx:  PASSED
+        Doing lxsihzx:  PASSED
+        Doing lxssp:    FAILED: Wrong Data
+        Doing lxv:      PASSED
+        Doing lxvb16x:  PASSED
+        Doing lxvh8x:   PASSED
+        Doing lxvx:     PASSED
+        Doing lxvwsx:   FAILED: Wrong Data
+        Doing lxvl:     PASSED
+        Doing lxvll:    PASSED
+        Doing stxsd:    PASSED
+        Doing stxsibx:  PASSED
+        Doing stxsihx:  PASSED
+        Doing stxssp:   PASSED
+        Doing stxv:     PASSED
+        Doing stxvb16x: PASSED
+        Doing stxvh8x:  PASSED
+        Doing stxvx:    PASSED
+        Doing stxvl:    PASSED
+        Doing stxvll:   PASSED
+failure: test_alignment_handler_vsx_300
+[snip]
+
+Fix this by making sure all VSX instruction emulation correctly
+load/store from the VSRs.
+
+Fixes: af99da74333b ("powerpc/sstep: Support VSX vector paired storage access instructions")
+Signed-off-by: Jordan Niethe <jniethe5@gmail.com>
+Reviewed-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210225031946.1458206-1-jniethe5@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci-pci.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ arch/powerpc/lib/sstep.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -66,6 +66,7 @@
- #define PCI_DEVICE_ID_ASMEDIA_1042A_XHCI		0x1142
- #define PCI_DEVICE_ID_ASMEDIA_1142_XHCI			0x1242
- #define PCI_DEVICE_ID_ASMEDIA_2142_XHCI			0x2142
-+#define PCI_DEVICE_ID_ASMEDIA_3242_XHCI			0x3242
+diff --git a/arch/powerpc/lib/sstep.c b/arch/powerpc/lib/sstep.c
+index bb5c20d4ca91..c6aebc149d14 100644
+--- a/arch/powerpc/lib/sstep.c
++++ b/arch/powerpc/lib/sstep.c
+@@ -904,7 +904,7 @@ static nokprobe_inline int do_vsx_load(struct instruction_op *op,
+ 	if (!address_ok(regs, ea, size) || copy_mem_in(mem, ea, size, regs))
+ 		return -EFAULT;
  
- static const char hcd_name[] = "xhci_hcd";
+-	nr_vsx_regs = size / sizeof(__vector128);
++	nr_vsx_regs = max(1ul, size / sizeof(__vector128));
+ 	emulate_vsx_load(op, buf, mem, cross_endian);
+ 	preempt_disable();
+ 	if (reg < 32) {
+@@ -951,7 +951,7 @@ static nokprobe_inline int do_vsx_store(struct instruction_op *op,
+ 	if (!address_ok(regs, ea, size))
+ 		return -EFAULT;
  
-@@ -276,11 +277,14 @@ static void xhci_pci_quirks(struct devic
- 		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042_XHCI)
- 		xhci->quirks |= XHCI_BROKEN_STREAMS;
- 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
--		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042A_XHCI)
-+		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042A_XHCI) {
- 		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
-+		xhci->quirks |= XHCI_NO_64BIT_SUPPORT;
-+	}
- 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
- 	    (pdev->device == PCI_DEVICE_ID_ASMEDIA_1142_XHCI ||
--	     pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI))
-+	     pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI ||
-+	     pdev->device == PCI_DEVICE_ID_ASMEDIA_3242_XHCI))
- 		xhci->quirks |= XHCI_NO_64BIT_SUPPORT;
- 
- 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
+-	nr_vsx_regs = size / sizeof(__vector128);
++	nr_vsx_regs = max(1ul, size / sizeof(__vector128));
+ 	preempt_disable();
+ 	if (reg < 32) {
+ 		/* FP regs + extensions */
+-- 
+2.30.1
+
 
 
