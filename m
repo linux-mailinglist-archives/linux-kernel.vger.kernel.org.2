@@ -2,57 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBFC733AA70
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 05:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C2533AA79
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 05:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbhCOEck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 00:32:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229445AbhCOEcc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 00:32:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59FD064E09;
-        Mon, 15 Mar 2021 04:32:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615782752;
-        bh=SzAcA90VMd5QVeYlFyZNSy2VN4Z/HMrClayKI6MMZ4w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rMYe3NUr65ge5GHeVxRuZUZxAS7+E24VUXfHlNkI9NI21Ga6iKu7nl4uHxRz1J7h4
-         WsMNqTXxfAhDP01EEWPFtZ3qTV+7s5ZjRJOLTqFVjj6DhZamhcoedws3ySr/i49y+k
-         84Jv9tTgHQDGT/+arasmro+I7Xu+L73F31NY+emm1aNndJV24G5T2XHTX8JV2tGSFF
-         1PJA67z4jhl/olnRfCjN0FDnzdjtMdUmTEHYU2o80LTGq9zvPgPhCo0HQ0fhQ5GGt3
-         kmkbu5QtWAoirLlebrlDo5EGdHGanE4gbecP5rDceKr4PLk+H3YAi2SuX79aT5VUAL
-         DgHQzL1wSUYRQ==
-Date:   Mon, 15 Mar 2021 12:32:26 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
-Cc:     Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        Greg Ungerer <gerg@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] arm64: dts: ls: mark crypto engine dma coherent
-Message-ID: <20210315043225.GD11246@dragon>
-References: <20210307204737.12063-1-horia.geanta@nxp.com>
+        id S229919AbhCOEdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 00:33:18 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:50599 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229672AbhCOEcy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 00:32:54 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id B8D7B5807FB;
+        Mon, 15 Mar 2021 00:32:53 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 15 Mar 2021 00:32:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=qeecw1UAGE0975QPTTGaKh4hQs
+        yijA7CZvhW4N9uBJ8=; b=EbkHMU0WJzAPe6GrNOWi5OV1RGCd6joeJbQ/6nxx9V
+        v8oTJ8Pspq6selpY8Qigj7X6oEFPZmWYYDPqf5ZoncGAZ3QEFvJQ+/3Iqf31s63W
+        GzX5WUifMoVHzyIFxtkO9EJ8kWSzJGnugQ03SP8DwKE7XfAOXyCInCJ2m85cxQRv
+        wW3Vi9DuXobyM0DRQ7XZjz7zBTDnrR7CF6oGkAu4kmIPNgGiHU8RaqukjCEPETIk
+        fvKF2uPrQM0rFdLVngCYl8Thy+rSaNdHMTIZ3G5IrELWBTSagsH8SVc829HRY4RT
+        pYyztc6vMOcQdhPB7s75YciZGLYa+Ng9ow/E5Eo6eNcA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=qeecw1UAGE0975QPT
+        TGaKh4hQsyijA7CZvhW4N9uBJ8=; b=TRxHNiu8uSlMQmVFdZDKAGtIDhg+JKmMy
+        joaukADsSPEaC8vAbTmoZcq2NDmgle3+Nm1XDpOHPsWqB23pYsrFB1tgbnCeu2FH
+        wQoD9rbmBu4iOyx12NT3PjPWp2Vfz4GH15dxhcU7VJgzdfZrPK98970gL6+mbBDz
+        OohOcBCXEJtXgzyJxegGw9flueCStW33tvdnBI/ObMBhK2cAuJ4GlKZUak+XP0VA
+        mRkIXx+W9Ap/8w7mKzao9r4rfHL2zK0TL/OoDFpcE9WwKTJSZuoB1Rb/ILwJgiUD
+        /FmWUXmhy406Eobxllk5lwDumzvDdCp3Saiee2la7giaF3tiyAglA==
+X-ME-Sender: <xms:dONOYI5uaqhAzN5HgTsguGtL_CYJVlVf_NWp7ghwM09YgxIEEiGtnQ>
+    <xme:dONOYJ7CgqsoyblDWVHKXoYxO54FXBnJpgJ4FOZbSy4N9pbaUzf7zCipBozkN-2-G
+    oAQnhJ3SX54s-9zSg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddvkedgjeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
+    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
+    vedtveenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdr
+    ohhrgh
+X-ME-Proxy: <xmx:dONOYHcpj-Zy8EgGr3PqoLIKrcQW_PgrQ5QKnv9U6QlKrJmarp-vyQ>
+    <xmx:dONOYNL9zHp5EXwojj8CuhoOiJuzAPFKIcWlLgEEP4fvE2HE3eAc5A>
+    <xmx:dONOYMKCLsssBB4WXdFAYYcnN58W4UNMc9HDzd99zQ3bGlxUrsV2YQ>
+    <xmx:deNOYBU3RahKfBWhrZizwttJ3FVL4vlrM0yPACJGAOTwmVkxINfeSg>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 89C6D1080057;
+        Mon, 15 Mar 2021 00:32:51 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
+Subject: [PATCH 0/5] arm64: sunxi: Enable the sun4i timer
+Date:   Sun, 14 Mar 2021 23:32:45 -0500
+Message-Id: <20210315043250.45095-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210307204737.12063-1-horia.geanta@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 10:47:34PM +0200, Horia Geantă wrote:
-> This patch set adds "dma-coherent" property to the crypto node
-> for NXP Layerscape platforms where the IP (CAAM) is configured
-> HW-coherent.
-> 
-> Horia Geantă (3):
->   arm64: dts: ls1046a: mark crypto engine dma coherent
->   arm64: dts: ls1043a: mark crypto engine dma coherent
->   arm64: dts: ls1012a: mark crypto engine dma coherent
+In preparation for adding CPU idle states, hook up the sun4i timer.
+Having a non-c3stop clockevent source available is necessary for all
+CPUs to simultaneously enter a local-timer-stop idle state.
 
-Applied all, thanks.
+Samuel Holland (5):
+  dt-bindings: timer: Simplify conditional expressions
+  dt-bindings: timer: Add compatibles for sun50i timers
+  arm64: dts: allwinner: a64: Sort watchdog node
+  arm64: dts: allwinner: Add sun4i MMIO timer nodes
+  arm64: sunxi: Build the sun4i timer driver
+
+ .../timer/allwinner,sun4i-a10-timer.yaml      | 42 +++++++++----------
+ arch/arm64/Kconfig.platforms                  |  1 +
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 25 +++++++----
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  |  9 ++++
+ .../arm64/boot/dts/allwinner/sun50i-h616.dtsi |  9 ++++
+ 5 files changed, 55 insertions(+), 31 deletions(-)
+
+-- 
+2.26.2
+
