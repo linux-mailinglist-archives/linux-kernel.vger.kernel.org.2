@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C0533BD48
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E9033BDA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233136AbhCOOdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:33:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38284 "EHLO mail.kernel.org"
+        id S240631AbhCOOiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:38:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233291AbhCOOBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233302AbhCOOBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 10:01:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8971664F72;
-        Mon, 15 Mar 2021 14:00:59 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B74864F8C;
+        Mon, 15 Mar 2021 14:01:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816860;
-        bh=/9QUm6B0bxaRCai/1jNkDp7YJ8yxEcZJAFEOjb+YINk=;
+        s=korg; t=1615816862;
+        bh=3lmgVQkraHIdpih845aGlCWj2Eykja87ToBmRkRG6Kw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b7hO/Iu1JE6youX2+g+1OCNEbxKY90NOW570ZsXcJOXEiaWI+LnMBxX3OOJG7ZnFi
-         WWC6AJh/01tNlPT97/ZlQf+EvBCtTIEoUf3o72sQFt0jPXOJF47txydJyScFpWYxls
-         nkEm/KxrJGtdSaj91ke75AO0McePZIQwSaWA3zRI=
+        b=k/7UjM7iv+8tXXVuOhIsHaufNuGWKNGtR2Pi8GmKunhtK5QegfjXW+bZuNvlRv4iB
+         Xr/WgOIhGs/yjmmW4QHyVlASGNfHPxW3vt46IdiyV1ERZdF+mFDGYny9Hj58tZkpOr
+         wPl+yH3MzkArs3TQAC4rzhihEKMkJRtQia1C/oTc=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+        Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 157/290] PCI: Fix pci_register_io_range() memory leak
-Date:   Mon, 15 Mar 2021 14:54:10 +0100
-Message-Id: <20210315135547.219813957@linuxfoundation.org>
+Subject: [PATCH 5.10 158/290] i40e: Fix memory leak in i40e_probe
+Date:   Mon, 15 Mar 2021 14:54:11 +0100
+Message-Id: <20210315135547.251640808@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
 References: <20210315135541.921894249@linuxfoundation.org>
@@ -43,79 +44,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
 
-[ Upstream commit f6bda644fa3a7070621c3bf12cd657f69a42f170 ]
+[ Upstream commit 58cab46c622d6324e47bd1c533693c94498e4172 ]
 
-Kmemleak reports:
+Struct i40e_veb is allocated in function i40e_setup_pf_switch, and
+stored to an array field veb inside struct i40e_pf. However when
+i40e_setup_misc_vector fails, this memory leaks.
 
-  unreferenced object 0xc328de40 (size 64):
-    comm "kworker/1:1", pid 21, jiffies 4294938212 (age 1484.670s)
-    hex dump (first 32 bytes):
-      00 00 00 00 00 00 00 00 e0 d8 fc eb 00 00 00 00  ................
-      00 00 10 fe 00 00 00 00 00 00 00 00 00 00 00 00  ................
+Fix this by calling exit and teardown functions.
 
-  backtrace:
-    [<ad758d10>] pci_register_io_range+0x3c/0x80
-    [<2c7f139e>] of_pci_range_to_resource+0x48/0xc0
-    [<f079ecc8>] devm_of_pci_get_host_bridge_resources.constprop.0+0x2ac/0x3ac
-    [<e999753b>] devm_of_pci_bridge_init+0x60/0x1b8
-    [<a895b229>] devm_pci_alloc_host_bridge+0x54/0x64
-    [<e451ddb0>] rcar_pcie_probe+0x2c/0x644
-
-In case a PCI host driver's probe is deferred, the same I/O range may be
-allocated again, and be ignored, causing a memory leak.
-
-Fix this by (a) letting logic_pio_register_range() return -EEXIST if the
-passed range already exists, so pci_register_io_range() will free it, and
-by (b) making pci_register_io_range() not consider -EEXIST an error
-condition.
-
-Link: https://lore.kernel.org/r/20210202100332.829047-1-geert+renesas@glider.be
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pci.c | 4 ++++
- lib/logic_pio.c   | 3 +++
- 2 files changed, 7 insertions(+)
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 5c9345072510..9e971fffeb6a 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -4010,6 +4010,10 @@ int pci_register_io_range(struct fwnode_handle *fwnode, phys_addr_t addr,
- 	ret = logic_pio_register_range(range);
- 	if (ret)
- 		kfree(range);
-+
-+	/* Ignore duplicates due to deferred probing */
-+	if (ret == -EEXIST)
-+		ret = 0;
- #endif
- 
- 	return ret;
-diff --git a/lib/logic_pio.c b/lib/logic_pio.c
-index f32fe481b492..07b4b9a1f54b 100644
---- a/lib/logic_pio.c
-+++ b/lib/logic_pio.c
-@@ -28,6 +28,8 @@ static DEFINE_MUTEX(io_range_mutex);
-  * @new_range: pointer to the IO range to be registered.
-  *
-  * Returns 0 on success, the error code in case of failure.
-+ * If the range already exists, -EEXIST will be returned, which should be
-+ * considered a success.
-  *
-  * Register a new IO range node in the IO range list.
-  */
-@@ -51,6 +53,7 @@ int logic_pio_register_range(struct logic_pio_hwaddr *new_range)
- 	list_for_each_entry(range, &io_range_list, list) {
- 		if (range->fwnode == new_range->fwnode) {
- 			/* range already there */
-+			ret = -EEXIST;
- 			goto end_register;
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index 59971f62e626..3e4a4d6f0419 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -15100,6 +15100,8 @@ static int i40e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		if (err) {
+ 			dev_info(&pdev->dev,
+ 				 "setup of misc vector failed: %d\n", err);
++			i40e_cloud_filter_exit(pf);
++			i40e_fdir_teardown(pf);
+ 			goto err_vsis;
  		}
- 		if (range->flags == LOGIC_PIO_CPU_MMIO &&
+ 	}
 -- 
 2.30.1
 
