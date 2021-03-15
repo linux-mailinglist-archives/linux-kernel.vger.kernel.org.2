@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC47233B4CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDBAD33B4CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 14:42:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbhCONmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 09:42:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50699 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229713AbhCONl5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:41:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615815717;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pIaBmIY3wpgp8eqLpLPVRWAADavoCBIo1W8aCkerR6M=;
-        b=IBa+/4uC/qUAayvMuH8AIe9TAogkwTwhK5zxBoQzOEsbpRQhs2/w0Md6Jis4rjDumKdODM
-        npyL1AwWt1YRQAU6DaHhB7eB+RFGSNwipIW94TwvYlPLSU1mEs+q60A7SPaiL87V201p8D
-        eyhuozeVJACBoYJESxUvcYJOuiAPHbQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-439-aHkpMn5yMBmMROU_HtnydA-1; Mon, 15 Mar 2021 09:41:53 -0400
-X-MC-Unique: aHkpMn5yMBmMROU_HtnydA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C08380006E;
-        Mon, 15 Mar 2021 13:41:51 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E8E19620DE;
-        Mon, 15 Mar 2021 13:41:49 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAJfpegsb9XrUct5zawN+kS_DSfowBf2BnrZzG+cQXUvsGZZuow@mail.gmail.com>
-References: <CAJfpegsb9XrUct5zawN+kS_DSfowBf2BnrZzG+cQXUvsGZZuow@mail.gmail.com> <161581005972.2850696.12854461380574304411.stgit@warthog.procyon.org.uk>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     dhowells@redhat.com, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ian Kent <raven@themaw.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 0/3] vfs: Use an xarray instead of inserted bookmarks to scan mount list
+        id S229867AbhCONmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 09:42:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:41410 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229717AbhCONmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 09:42:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F0261FB;
+        Mon, 15 Mar 2021 06:42:04 -0700 (PDT)
+Received: from bogus (unknown [10.163.67.35])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D3BF43F792;
+        Mon, 15 Mar 2021 06:41:58 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 13:41:50 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Jyoti Bhayana <jbhayana@google.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Enrico Granata <egranata@google.com>,
+        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
+        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
+        Peter Hilber <Peter.hilber@opensynergy.com>,
+        Ankit Arora <ankitarora@google.com>,
+        Guru Nagarajan <gurunagarajan@google.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v7 1/1] iio/scmi: Adding support for IIO SCMI Based
+ Sensors
+Message-ID: <20210315134150.kq3b22dnzbtldihy@bogus>
+References: <20210309231259.78050-1-jbhayana@google.com>
+ <20210309231259.78050-2-jbhayana@google.com>
+ <20210311210844.34371d8d@archlinux>
+ <20210312121639.00001c31@Huawei.com>
+ <20210312133101.GG30179@e120937-lin>
+ <CA+=V6c0boA1Q+k4rM0NOcK4ek_FYU7omEWhvMowqACH_t44sAQ@mail.gmail.com>
+ <20210313171107.4c8215e7@archlinux>
+ <CA+=V6c0a8z9+gkD_M6KNviN-VActtmpTgkuCBn-sgC4Fm2C6QA@mail.gmail.com>
+ <20210314154033.3facf1a2@archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2857439.1615815708.1@warthog.procyon.org.uk>
-Date:   Mon, 15 Mar 2021 13:41:48 +0000
-Message-ID: <2857440.1615815708@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210314154033.3facf1a2@archlinux>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miklos Szeredi <miklos@szeredi.hu> wrote:
+Hi Jonathan,
 
-> >  (2) We can use the file position to represent the mnt_id and can jump to
-> >      it directly - ie. using seek() to jump to a mount object by its ID.
-> 
-> What happens if the mount at the current position is removed?
+On Sun, Mar 14, 2021 at 03:40:33PM +0000, Jonathan Cameron wrote:
+> On Sat, 13 Mar 2021 11:55:39 -0800
+> Jyoti Bhayana <jbhayana@google.com> wrote:
+>
+> > Hi Jonathan,
+> >
+> > I still see the old version 6 in ib-iio-scmi-5.12-rc2-take2 as well.
+>
+> OK. I'm completely confused as to what is going with my local tree.
+> I have the right patch in the history but it didn't end up in the final
+> pushed out version.  Fat finger mess-up I guess and too many similarly named
+> branches and the fact I didn't check the final result closely enough.
+>
+> There is now an ib-iio-scmi-5.12-rc2-take3 branch
+>
 
-umount_tree() requires the namespace_sem to be writelocked, so that should be
-fine as the patches currently read-lock that whilst doing /proc/*/mount*
+I have now used this for my for-next/scmi branch. It is not final yet,
+just pushed out for bots to build test and get into -next. Let me know
+if you have plans to change/rework this branch, I can update it anytime
+till end of this week to avoid multiple hashes.
 
-I'm assuming that kern_unmount() won't be a problem as it is there to deal
-with mounts made by kern_mount() which don't get added to the mount list
-(mnt_ns is MNT_NS_INTERNAL).  kern_unmount_array() seems to be the same
-because overlayfs gives it mounts generated by clone_private_mount().  It
-might be worth putting a WARN_ON() in kern_unmount() to require this.
-
-When reading through proc, m_start() calls xas_find() which returns the entry
-at the starting index or, if not present, the next higher entry.
-
-David
-
+--
+Regards,
+Sudeep
