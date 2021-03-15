@@ -2,139 +2,379 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2C633BF63
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E344C33BF65
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 16:05:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233064AbhCOPEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 11:04:01 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:51795 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239019AbhCOPDt (ORCPT
+        id S238443AbhCOPE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 11:04:59 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:1675 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239809AbhCOPEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 11:03:49 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 373C02385;
-        Mon, 15 Mar 2021 11:03:47 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Mon, 15 Mar 2021 11:03:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=imv4IetqNlL67VMIjffr1KT6NlK
-        C85EkumX2HdaLpqQ=; b=iLddbCBnHq2pKqGeEzFQaj68uwOm2kDuuedkz6fwWrI
-        xlFIpqIOgF/E4HeeYiKmLuOYqW5rx22rHwX1kgRYKGZ3gXMTnopODCXuse6Jr+Sa
-        MnOYMwl9NkAdmOwl5j8NqDLqgbwhAnJJId+cEOxeJjGAZrjyMzQSYO/L+apAOLV9
-        OUnOEoTroWFxEBjY6fpYmcnucwM1tCNljN9ttUcZaGkes+32f5pO5C+VojfA66V4
-        98uebtcO20452m+kM3xcbpYIHlnzXLqA0d2LVsHpw43aKXIGyDwAfCqKKC548Fuj
-        1lVE4PQO3aLGpO7juduPMA0gwCq4WN8q6BuQGfMod+A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=imv4Ie
-        tqNlL67VMIjffr1KT6NlKC85EkumX2HdaLpqQ=; b=D7oG4rMpBZSgdfyypVnnrU
-        Um7i+BemRlI+fPRMioITdWTfqeBDICwVebIXIyswa0xRiA0KuVkdm+FMhq+5OFVJ
-        We//tLopWcv1IIq+DTKApUO9bAXiOMyh2CQgQKlsd0zjH1sDYSlLnKENGAK3OUP/
-        1gceNs4qel8JsQba72pO5/rhh+h3e62nCxqAz4crJymg5LgAQs1cqCkL25hlcfpz
-        I5jfpMFN5XAIgrsnz/RF/zbezkQZ7Vv7sh81a4iaL/Q+oN8dDQu1Hrtexve5TAn0
-        q2SEFGfBKyqeroJjx/QIX4V56jSS1W+Ln2i+Rkz2bN1unVpftrXeGQxAqNRe6bVg
-        ==
-X-ME-Sender: <xms:UXdPYJFS5MDvL6Q216fhJJttxPIYIu4YPMMcO8UEaF1BoR2KZkalDw>
-    <xme:UXdPYOTuhoed_Jf7kK9ARIyKT9ehBI43lJTbZv1QXK5tb10e-VwtWh4YOQQiPmjvf
-    MHKRDB2YAt5c5_GimQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddvledgjeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepuedtgfejueduheevgfevvdettdduleffgfffkeeltdffkeegudekjeeuveei
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:UXdPYICEaYJjvJ5gCM4qYBhXUnJ5OOjwbo1gdWcj6om8fxQidyETOw>
-    <xmx:UXdPYG1Xozsliz2O950mfgjMC5XJdypsgMslTRysggOcEg205apSeg>
-    <xmx:UXdPYOUwk1JVsax-YkmKfZ5wAEeDEUPVUGNqi5SgqPT9Q44KrIO4aQ>
-    <xmx:UndPYI6QFFnThVOFKpXrASgXvIE5IlD9agnR0TY4V0Aag2TAeBIg4A>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9F9EB1080063;
-        Mon, 15 Mar 2021 11:03:45 -0400 (EDT)
-Date:   Mon, 15 Mar 2021 16:03:43 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>
-Cc:     wens@csie.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com
-Subject: Re: [PATCH] ARM: dts: sun8i: h3: beelink-x2: Add power button
-Message-ID: <20210315150343.uzq46th6eecdr4e2@gilmour>
-References: <20210306203611.15534-1-jernej.skrabec@siol.net>
- <20210308130506.v35gjviwknr5hat5@gilmour>
- <2517400.0zBCEEo8qi@kista>
+        Mon, 15 Mar 2021 11:04:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1615820670; x=1647356670;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=lq03p0oS1uyKTvKhslVjh8+r/8qJSQHdf3XwmDeApZs=;
+  b=v0tEx1H8rc/TvbKemAqTELfbdZZkFlNFC5KsJB7hC96jG919OGEzXXB3
+   Yi6ai5LYove8q+Mk42UoYerqt4gOhD3gGhS/F4jAuAEXBBAQ6Krmbo+p3
+   c1gjssyOvNsDXWK+p03LK60NNOS5A5GmGG8rAhEEpZHAZZzi8grCSXdKL
+   qsrZRga1Scc5Dj8X+81ziZjBsx2ObWlwN5hfDFfG2XHh/Kooj53cXEoL+
+   s/YIaaf/I3YsFntvZx38DIhajPWyEqVHQ2ZQbW7A5YfIRrvO4Jo/9xJ02
+   g/ZORrQZTjCfE0wjp0OtZ2zDG7IIezIxnpp0SEE+iyVRRaQmWt6HNxI1q
+   Q==;
+IronPort-SDR: rJDG8qbkVt4EfqdipX4B+YSSvomCrNkKQDx7YvYL1taX1UC3iNewGgIllHvTZLd7TTiVLWuEnp
+ HjNLecLz+gX6HsYH1qOV2YbpJuJzae8rhWTzj1rWE644Zf1FLMkNmrWdLvkJnt4Xmd3J2O+ui5
+ cLD6shJJQe9/gA8GVFfOOfNmbHO0JPrjen5cFaqXttYCTE2YOuCg/gRsrAXusp12Wg4l9bomxH
+ DzGosgey/JB4bFxk+3Pe8LzGnRC8Di/fppL2KSe+vYiDIie+CHbc31h9vH7vdM0J27EdckEZob
+ K1Q=
+X-IronPort-AV: E=Sophos;i="5.81,249,1610434800"; 
+   d="scan'208";a="112784098"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Mar 2021 08:04:27 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 15 Mar 2021 08:04:27 -0700
+Received: from tyr.hegelund-hansen.dk (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Mon, 15 Mar 2021 08:04:25 -0700
+Message-ID: <f856d877048319cd532602bc430c237f3576f516.camel@microchip.com>
+Subject: Re: [PATCH v15 0/4] Adding the Sparx5 Serdes driver
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Date:   Mon, 15 Mar 2021 16:04:24 +0100
+In-Reply-To: <20210218161451.3489955-1-steen.hegelund@microchip.com>
+References: <20210218161451.3489955-1-steen.hegelund@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mfhruzbnsooaoye6"
-Content-Disposition: inline
-In-Reply-To: <2517400.0zBCEEo8qi@kista>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Kishon, Vinod, Andrew, Jacub, and David, 
 
---mfhruzbnsooaoye6
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I just wanted to know if you think that the Generic PHY subsystem might
+not be the right place for this Ethernet SerDes PHY driver after all.
 
-Hi,
+Originally I chose this subsystem for historic reasons: The
+Microchip/Microsemi Ocelot SerDes driver was added here when it was
+upstreamed.
+On the other hand the Ocelot Serdes can do both PCIe and Ethernet, so
+it might fit the signature of a generic PHY better.
 
-On Thu, Mar 11, 2021 at 10:59:35PM +0100, Jernej =C5=A0krabec wrote:
-> Hi!
->=20
-> Dne ponedeljek, 08. marec 2021 ob 14:05:06 CET je Maxime Ripard napisal(a=
-):
-> > Hi
-> >=20
-> > On Sat, Mar 06, 2021 at 09:36:11PM +0100, Jernej Skrabec wrote:
-> > > Beelink X2 has power button. Add node for it.
-> > >=20
-> > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> > > ---
-> > >  arch/arm/boot/dts/sun8i-h3-beelink-x2.dts | 11 +++++++++++
-> > >  1 file changed, 11 insertions(+)
-> > >=20
-> > > diff --git a/arch/arm/boot/dts/sun8i-h3-beelink-x2.dts b/arch/arm/boo=
-t/dts/
-> sun8i-h3-beelink-x2.dts
-> > > index 62b5280ec093..4a2cb072ecf6 100644
-> > > --- a/arch/arm/boot/dts/sun8i-h3-beelink-x2.dts
-> > > +++ b/arch/arm/boot/dts/sun8i-h3-beelink-x2.dts
-> > > @@ -111,6 +111,17 @@ spdif_out: spdif-out {
-> > >  		#sound-dai-cells =3D <0>;
-> > >  		compatible =3D "linux,spdif-dit";
-> > >  	};
-> > > +
-> > > +	r_gpio_keys {
-> >=20
-> > Underscores are not valid for node names (and will trigger a dtc warning
-> > when running with W=3D1).
->=20
-> Unless I'm doing something wrong, I didn't get any warning with "make dtb=
-s=20
-> W=3D1". In fact many H3 boards have a node with this name and not a singl=
-e=20
-> warning is produced with this command for underscores (there are other=20
-> warnings though).
+At the moment the acceptance of the Sparx5 Serdes driver is blocking us
+from adding the Sparx5 SwitchDev driver (to net), so it is really
+important for us to resolve which subsystem the Serdes driver belongs
+to.
 
-It looks like I've been remembering it wrong, and it's actually W=3D2 that
-reports it, but it's here nonetheless :)
+I am very much looking forward to your response.
 
-Maxime
+BR
+Steen
 
---mfhruzbnsooaoye6
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+On Thu, 2021-02-18 at 17:14 +0100, Steen Hegelund wrote:
+> Adding the Sparx5 Serdes driver
+> 
+> This series of patches provides the serdes driver for the Microchip
+> Sparx5
+> ethernet switch.
+> 
+> The serdes driver supports the 10G and 25G serdes instances available
+> in the
+> Sparx5.
+> 
+> The Sparx5 serdes support several interface modes with several speeds
+> and also
+> allows the client to change the mode and the speed according to
+> changing in the
+> environment such as changing cables from DAC to fiber.
+> 
+> The serdes driver is to be used by the Sparx5 switchdev driver that
+> will follow in subsequent series.
+> 
+> Sparx5 Architecture:
+> ====================
+> 
+> Below is a diagram of the Ethernet transport part of the Sparx5 chip.
+> 
+> The diagram shows the switch core that sends/receives traffic via the
+> Frame Bus
+> and passes to the Port Modules.
+> The Port Modules are able to talk to a SerDes via a Port Muxing
+> configuration.
+> The SerDes instances (33 in all) then passes the traffic on its lanes
+> to the
+> attached cuPHY or SFP module.
+> 
+>  +---------------------------------------------------------+
+>  |                                                         |
+>  |                         Switch Core                     |
+>  |                                                         |
+>  +----------------------------+----------------------------+
+>                               |
+>  -------+--------------+------+-------+--------------+-----+   Frame
+> Bus
+>         |              |              |              |
+>  +------+-----+ +------+-----+ +------+-----+ +------+-----+
+>  |1G/2.G Port | |5G Port     | |10G Port    | |25GG Port   |
+>  |Modules     | |Modules     | |Modules     | |Modules     |
+>  |MAC, PCS    | |MAC, PCS    | |MAC, PCS    | |MAC, PCS    |
+>  +------+-----+ +------+-----+ +------+-----+ +------+-----+
+>         |              |              |              |
+>  -------+-+------------+-------+------+----------+---+-----+  Port
+> Muxing
+>           |                    |                 |
+>     +-----+----+         +-----+----+         +--+-------+
+>     |SerDes 5G |         |SerDes 10G|         |SerDes 25G|    SerDes
+> Driver
+>     |Lane (13) |         |Lane (12) |         |Lane (8)  |    Controls
+> these
+>     +-----+----+         +-----+----+         +-----+----+
+>           |                    |                    |
+>        to cuPHY             to cuPHY             to cuPHY
+>        or SFP               or SFP               or SFP
+> 
+> The 33 SerDes instances are handled internally by 2 SerDes macros
+> types:
+> 
+> - A 10G SerDes macro that supports the following rates and modes:
+>   - 100 Mbps:
+>        - 100BASE-FX
+>   - 1.25 Gbps:
+>        - SGMII
+>        - 1000BASE-X
+>        - 1000BASE-KX
+>   - 3.125 Gbps:
+>        - 2.5GBASE-X
+>        - 2.5GBASE-KX
+>   - 5 Gbps:
+>        - QSGMII
+>        - USGMII
+>   - 5.15625 Gbps:
+>        - 5GBASE-KR
+>        - 5G-USXGMII
+>   - 10 Gbps:
+>        - 10G-USGMII
+>   - 10.3125 Gbps:
+>        - 10GBASE-R
+>        - 10GBASE-KR
+>        - USXGMII
+> 
+> - A 25G SerDes macro that supports the following rates and modes:
+>   - 1.25 Gbps:
+>        - SGMII
+>        - 1000BASE-X
+>        - 1000BASE-KX
+>   - 3.125 Gbps:
+>        - 2.5GBASE-X
+>        - 2.5GBASE-KX
+>   - 5 Gbps:
+>        - QSGMII
+>        - USGMII
+>   - 5.15625 Gbps:
+>        - 5GBASE-KR
+>        - 5G-USXGMII
+>   - 10 Gbps:
+>        - 10G-USGMII
+>   - 10.3125 Gbps:
+>        - 10GBASE-R
+>        - 10GBASE-KR
+>        - USXGMII
+>   - 10.3125 Gbps:
+>        - 10GBASE-R
+>        - 10GBASE-KR
+>        - USXGMII
+>   - 25.78125 Gbps:
+>        - 25GBASE-KR
+>        - 25GBASE-CR
+>        - 25GBASE-SR
+>        - 25GBASE-LR
+>        - 25GBASE-ER
+> 
+> The SerDes driver handles these SerDes instances and configures them
+> based on
+> the selected mode, speed and media type.
+> 
+> In the current version of the SerDes driver only a subset of the above
+> modes
+> are supported: the modes that can be tested on our current evaluation
+> boards
+> (PCB134 and PCB35).
+> 
+> The first 13 10G SerDes macros are limited to 6G, and this gives the
+> SerDes
+> instance architecture shown on the diagram above.
+> 
+> The Port Muxing allows a Port Module to use a specific SerDes instance,
+> but not
+> all combinations are allowed.
+> This is functionality as well as the configuration of the Port Modules
+> is
+> handled by the SwitchDev Driver.
+> 
+> The Sparx5 Chip Register Model can be browsed at this location:
+> https://github.com/microchip-ung/sparx-5_reginfo
+> and the datasheet is available here:
+> https://ww1.microchip.com/downloads/en/DeviceDoc/SparX-5_Family_L2L3_Enterprise_10G_Ethernet_Switches_Datasheet_00003822B.pdf
+> 
+> History:
+> --------
+> v14 -> v15:
+>     Changed the default interface function return value to -ENODEV.
+>     Moved the CMU initialization, so that it is always done before the
+>     serdes instance configuration.
+>     Added a reference to the Sparx5 datasheet.
+> 
+> v13 -> v14:
+>     Changed the 25g apply, 10g apply and the CMU configuration
+> functions to
+>     use a table based register update structure.
+>     The table entries still need serdes indices/instances so the table
+> must
+>     be generated per serdes.
+> 
+> v12 -> v13:
+>     Interface changes:
+>         - Added set_media and set_speed interfaces on the generic phy
+>         - Removed the ethernet SerDes configuration structure and its
+>           header file.
+>     Implementation changes:
+>         - Implemented the new media and speed interfaces in the Serdes
+> driver
+>         - Removed the configure interface function in the SerDes driver
+>         - The existing configuration function is now only used
+> internally
+> 
+> v11 -> v12:
+>     Used bitfields for bools in configuration structures.
+>     Removed vertical alignment in structures.
+>     Removed CONFIG_DEBUG_KERNEL guard around warning checks
+> 
+> v10 -> v11:
+>     Rebased on v5.11-rc1
+> 
+> v9 -> v10:
+>     Only add the new folder to the phy Kconfig (no sort fix)
+>     Corrected the serdes mode conversion for 2.5G mode.
+>     Clarified the SGMII and 1000BASEX conversion.
+>     Improved some of the more cryptic error messages.
+>     Expanded the validate function a bit, and removed the link status
+>     from the return value.
+> 
+> v8 -> v9:
+>     Replace pr_err with dev_err
+>     Expanded the description here in the cover letter (should probably
+> og into
+>     the driver, at least part of it).
+> 
+> v7 -> v8:
+>     Provide the IO targets as offsets from the start of the IO range
+>     Initialise resource index
+> 
+> v6 -> v7:
+>     This series changes the way the IO targets are provided to the
+> driver.
+>     Now only one IO range is available in the DT, and the driver has a
+> table
+>     to map its targets (as their order is still not sequential), thus
+> reducing
+>     the DT needed information and binding requirements.
+>     The register access macros have been converted to functions.
+> 
+>     - Bindings:
+>       - reg prop: minItems set to 1
+>       - reg-names prop: removed
+>     - Driver
+>       - Use one IO range and map targets via this.
+>       - Change register access macros to use functions.
+>       - Provided a new header files with reg access functions.
+>     - Device tree
+>       - Provide only one IO range
+> 
+> v5 -> v6:
+>      Series error: This had the same content as v5
+> 
+> v4 -> v5:
+>     - Bindings:
+>       - Removed .yaml from compatible string
+>       - reg prop: removed description and added minItems
+>       - reg-names prop: removed description and added const name list
+> and
+>         minItems
+>       - #phy-cells prop: removed description and added maxItems
+>     - Configuration interface
+>       - Removed include of linux/phy.h
+>       - Added include of linux/types.h
+>     - Driver
+>        - Added include of linux/phy.h
+> 
+> v3 -> v4:
+>     - Add a reg-names item to the binding description
+>     - Add a clocks item to the binding description
+>     - Removed the clock parameter from the configuration interface
+>     - Use the clock dt node to get the coreclock, and using that when
+>       doing the actual serdes configuration
+>     - Added a clocks entry with a system clock reference to the serdes
+> node in
+>       the device tree
+> 
+> v2 -> v3:
+>     - Sorted the Kconfig sourced folders
+>     - Sorted the Makefile included folders
+>     - Changed the configuration interface documentation to use kernel
+> style
+> 
+> v1 -> v2: Fixed kernel test robot warnings
+>     - Made these structures static:
+>       - media_presets_25g
+>       - mode_presets_25g
+>       - media_presets_10g
+>       - mode_presets_10g
+>     - Removed these duplicate initializations:
+>       - sparx5_sd25g28_params.cfg_rx_reserve_15_8
+>       - sparx5_sd25g28_params.cfg_pi_en
+>       - sparx5_sd25g28_params.cfg_cdrck_en
+>       - sparx5_sd10g28_params.cfg_cdrck_en
+> 
+> Steen Hegelund (4):
+>   dt-bindings: phy: Add sparx5-serdes bindings
+>   phy: Add media type and speed serdes configuration interfaces
+>   phy: Add Sparx5 ethernet serdes PHY driver
+>   arm64: dts: sparx5: Add Sparx5 serdes driver node
+> 
+>  .../bindings/phy/microchip,sparx5-serdes.yaml |  100 +
+>  arch/arm64/boot/dts/microchip/sparx5.dtsi     |    8 +
+>  drivers/phy/Kconfig                           |    1 +
+>  drivers/phy/Makefile                          |    1 +
+>  drivers/phy/microchip/Kconfig                 |   12 +
+>  drivers/phy/microchip/Makefile                |    6 +
+>  drivers/phy/microchip/sparx5_serdes.c         | 2480 +++++++++++++++
+>  drivers/phy/microchip/sparx5_serdes.h         |  136 +
+>  drivers/phy/microchip/sparx5_serdes_regs.h    | 2695 +++++++++++++++++
+>  drivers/phy/phy-core.c                        |   30 +
+>  include/linux/phy/phy.h                       |   26 +
+>  11 files changed, 5495 insertions(+)
+>  create mode 100644
+> Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
+>  create mode 100644 drivers/phy/microchip/Kconfig
+>  create mode 100644 drivers/phy/microchip/Makefile
+>  create mode 100644 drivers/phy/microchip/sparx5_serdes.c
+>  create mode 100644 drivers/phy/microchip/sparx5_serdes.h
+>  create mode 100644 drivers/phy/microchip/sparx5_serdes_regs.h
+> 
+> --
+> 2.30.0
+> 
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYE93TwAKCRDj7w1vZxhR
-xYexAQDb6dkfEktXz1olTmB8ij8tEMvdw1+q+P4jn663TrYYlAEAwOCcYZI9M/W4
-PYGJSL4AaL7FgNeesPXOs7AB7A0KygU=
-=znPS
------END PGP SIGNATURE-----
 
---mfhruzbnsooaoye6--
