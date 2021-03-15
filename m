@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE8833BBEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BAE33BCD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 15:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237079AbhCOORR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 10:17:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38284 "EHLO mail.kernel.org"
+        id S235130AbhCOO3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 10:29:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229972AbhCON7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 09:59:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A594164F58;
-        Mon, 15 Mar 2021 13:59:13 +0000 (UTC)
+        id S232984AbhCOOAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 10:00:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C227364F0F;
+        Mon, 15 Mar 2021 14:00:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615816754;
-        bh=xpwWOfKkxd4nnhLg46f86jxhAN1cBRgdz4QIhtpDBWo=;
+        s=korg; t=1615816804;
+        bh=2wt3srBQLujzsopo+9BlZr8r/Wje3pwwVlb9R6il4z4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HzbHt5iWQyNY9q8zhl5MysbT3Lsw5NxxzUfUwlzdUiPUK0f6ecGJ+AMoB9mnda8aV
-         s5+wozOlOr5+qyiUcwCV/Vx6oLDWlXU0exs8RVrYzO3/Wcpp2o3PgC92jqp6ht91zo
-         xQk0rcz2XthIwEB+qY/J1dNJAxT69YzyrN/tnTdk=
+        b=YCcEubJHRQTQjqt/CuErkWDpLhrLW0AvmpC/Mvjzap0NZzHOr40b7nm2PvxJ789Yy
+         F7a/cVaWawCix8XZPUWdn3wC2My3v9RENq5OckSlFa4Y/LKxuLSt2syDABNNaPzlE1
+         6YSFmScPhOMAegBg1PwD9A1ebT4F+puDbcfCML6Q=
 From:   gregkh@linuxfoundation.org
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 39/95] s390/smp: __smp_rescan_cpus() - move cpumask away from stack
-Date:   Mon, 15 Mar 2021 14:57:09 +0100
-Message-Id: <20210315135741.558259994@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+59f777bdcbdd7eea5305@syzkaller.appspotmail.com,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 079/120] USB: serial: io_edgeport: fix memory leak in edge_startup
+Date:   Mon, 15 Mar 2021 14:57:10 +0100
+Message-Id: <20210315135722.554240725@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
-References: <20210315135740.245494252@linuxfoundation.org>
+In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
+References: <20210315135720.002213995@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +43,68 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 62c8dca9e194326802b43c60763f856d782b225c ]
+commit cfdc67acc785e01a8719eeb7012709d245564701 upstream.
 
-Avoid a potentially large stack frame and overflow by making
-"cpumask_t avail" a static variable. There is no concurrent
-access due to the existing locking.
+sysbot found memory leak in edge_startup().
+The problem was that when an error was received from the usb_submit_urb(),
+nothing was cleaned up.
 
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: syzbot+59f777bdcbdd7eea5305@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Fixes: 6e8cf7751f9f ("USB: add EPIC support to the io_edgeport driver")
+Cc: stable@vger.kernel.org	# 2.6.21: c5c0c55598ce
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/kernel/smp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/serial/io_edgeport.c |   26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
 
-diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
-index 40946c8587a5..d43b48d8f67d 100644
---- a/arch/s390/kernel/smp.c
-+++ b/arch/s390/kernel/smp.c
-@@ -761,7 +761,7 @@ static int smp_add_core(struct sclp_core_entry *core, cpumask_t *avail,
- static int __smp_rescan_cpus(struct sclp_core_info *info, bool early)
- {
- 	struct sclp_core_entry *core;
--	cpumask_t avail;
-+	static cpumask_t avail;
- 	bool configured;
- 	u16 core_id;
- 	int nr, i;
--- 
-2.30.1
-
+--- a/drivers/usb/serial/io_edgeport.c
++++ b/drivers/usb/serial/io_edgeport.c
+@@ -3021,26 +3021,32 @@ static int edge_startup(struct usb_seria
+ 				response = -ENODEV;
+ 			}
+ 
+-			usb_free_urb(edge_serial->interrupt_read_urb);
+-			kfree(edge_serial->interrupt_in_buffer);
+-
+-			usb_free_urb(edge_serial->read_urb);
+-			kfree(edge_serial->bulk_in_buffer);
+-
+-			kfree(edge_serial);
+-
+-			return response;
++			goto error;
+ 		}
+ 
+ 		/* start interrupt read for this edgeport this interrupt will
+ 		 * continue as long as the edgeport is connected */
+ 		response = usb_submit_urb(edge_serial->interrupt_read_urb,
+ 								GFP_KERNEL);
+-		if (response)
++		if (response) {
+ 			dev_err(ddev, "%s - Error %d submitting control urb\n",
+ 				__func__, response);
++
++			goto error;
++		}
+ 	}
+ 	return response;
++
++error:
++	usb_free_urb(edge_serial->interrupt_read_urb);
++	kfree(edge_serial->interrupt_in_buffer);
++
++	usb_free_urb(edge_serial->read_urb);
++	kfree(edge_serial->bulk_in_buffer);
++
++	kfree(edge_serial);
++
++	return response;
+ }
+ 
+ 
 
 
