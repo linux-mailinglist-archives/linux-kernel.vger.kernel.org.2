@@ -2,133 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652CE33AED9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 10:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BB333AEE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Mar 2021 10:32:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhCOJao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 05:30:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53698 "EHLO mail.kernel.org"
+        id S229517AbhCOJbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 05:31:47 -0400
+Received: from z11.mailgun.us ([104.130.96.11]:17439 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhCOJaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 05:30:12 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S229686AbhCOJba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 05:31:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615800690; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=zrHHjVyRUaxOp7+pztnXqhCMulxmhKFQRdxif8qsoV0=;
+ b=huDBEKNWA8oL/vGKAeIdr1X3Ci4iBYenj/jJmL5OwBmtnHcDvIpO9dwGln+eBg1Gg9UQB+HJ
+ ry1mKec1F3Eee7k7MEZrlqKwEoCyHT4emEnP2amn6qCSqR/H4vun7Hb8kAbJUZdIrgNZJW37
+ 9j+q+fh5l3KvT0DfbsZiL1jy7EY=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 604f29606dc1045b7de10447 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Mar 2021 09:31:12
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A249DC433ED; Mon, 15 Mar 2021 09:31:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98C0D64E74;
-        Mon, 15 Mar 2021 09:30:08 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lLjY6-001cQC-Iq; Mon, 15 Mar 2021 09:30:06 +0000
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 31CFEC433ED;
+        Mon, 15 Mar 2021 09:31:10 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
+Content-Type: text/plain; charset=US-ASCII;
  format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Mon, 15 Mar 2021 09:30:06 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Shenming Lu <lushenming@huawei.com>
-Cc:     Eric Auger <eric.auger@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-Subject: Re: [PATCH v4 5/6] KVM: arm64: GICv4.1: Restore VLPI pending state to
- physical side
-In-Reply-To: <cd821431-52a7-d9a6-1468-8ce0c9446d85@huawei.com>
-References: <20210313083900.234-1-lushenming@huawei.com>
- <20210313083900.234-6-lushenming@huawei.com>
- <d9047922808df340feca2f257cfb8a3d@kernel.org>
- <81fbadda-0489-ffc3-cb38-08e89871ec95@huawei.com>
- <b03ec1e5447024f9f990377e2c28e84f@kernel.org>
- <cd821431-52a7-d9a6-1468-8ce0c9446d85@huawei.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <4f37549dcc5d3dd59a92bc94f2f0b59b@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: lushenming@huawei.com, eric.auger@redhat.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, alex.williamson@redhat.com, cohuck@redhat.com, lorenzo.pieralisi@arm.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 15 Mar 2021 17:31:10 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Avri Altman <Avri.Altman@wdc.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
+Subject: Re: [PATCH v5 03/10] scsi: ufshpb: Add region's reads counter
+In-Reply-To: <DM6PR04MB6575A58446F1EB9ABDFBB7A6FC6C9@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210302132503.224670-1-avri.altman@wdc.com>
+ <20210302132503.224670-4-avri.altman@wdc.com>
+ <343d6b0d7802b58bec6e3c06e6f9be57@codeaurora.org>
+ <DM6PR04MB6575A58446F1EB9ABDFBB7A6FC6C9@DM6PR04MB6575.namprd04.prod.outlook.com>
+Message-ID: <aa82d7011c102b5d0991cad8908ac9ee@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-15 09:25, Shenming Lu wrote:
-> On 2021/3/15 17:20, Marc Zyngier wrote:
->> On 2021-03-15 09:11, Shenming Lu wrote:
->>> On 2021/3/15 16:30, Marc Zyngier wrote:
->>>> On 2021-03-13 08:38, Shenming Lu wrote:
->>>>> From: Zenghui Yu <yuzenghui@huawei.com>
->>>>> 
->>>>> When setting the forwarding path of a VLPI (switch to the HW mode),
->>>>> we can also transfer the pending state from irq->pending_latch to
->>>>> VPT (especially in migration, the pending states of VLPIs are 
->>>>> restored
->>>>> into kvm’s vgic first). And we currently send "INT+VSYNC" to 
->>>>> trigger
->>>>> a VLPI to pending.
->>>>> 
->>>>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
->>>>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
->>>>> ---
->>>>>  arch/arm64/kvm/vgic/vgic-v4.c | 18 ++++++++++++++++++
->>>>>  1 file changed, 18 insertions(+)
->>>>> 
->>>>> diff --git a/arch/arm64/kvm/vgic/vgic-v4.c 
->>>>> b/arch/arm64/kvm/vgic/vgic-v4.c
->>>>> index ac029ba3d337..3b82ab80c2f3 100644
->>>>> --- a/arch/arm64/kvm/vgic/vgic-v4.c
->>>>> +++ b/arch/arm64/kvm/vgic/vgic-v4.c
->>>>> @@ -449,6 +449,24 @@ int kvm_vgic_v4_set_forwarding(struct kvm 
->>>>> *kvm, int virq,
->>>>>      irq->host_irq    = virq;
->>>>>      atomic_inc(&map.vpe->vlpi_count);
->>>>> 
->>>>> +    /* Transfer pending state */
->>>>> +    if (irq->pending_latch) {
->>>>> +        unsigned long flags;
->>>>> +
->>>>> +        ret = irq_set_irqchip_state(irq->host_irq,
->>>>> +                        IRQCHIP_STATE_PENDING,
->>>>> +                        irq->pending_latch);
->>>>> +        WARN_RATELIMIT(ret, "IRQ %d", irq->host_irq);
->>>>> +
->>>>> +        /*
->>>>> +         * Clear pending_latch and communicate this state
->>>>> +         * change via vgic_queue_irq_unlock.
->>>>> +         */
->>>>> +        raw_spin_lock_irqsave(&irq->irq_lock, flags);
->>>>> +        irq->pending_latch = false;
->>>>> +        vgic_queue_irq_unlock(kvm, irq, flags);
->>>>> +    }
->>>>> +
->>>>>  out:
->>>>>      mutex_unlock(&its->its_lock);
->>>>>      return ret;
->>>> 
->>>> The read side of the pending state isn't locked, but the write side 
->>>> is.
->>>> I'd rather you lock the whole sequence for peace of mind.
->>> 
->>> Did you mean to lock before emitting the mapping request, Or just 
->>> before reading
->>> the pending state?
+On 2021-03-15 17:20, Avri Altman wrote:
+>> > +
+>> > +             if (hpb->is_hcm) {
+>> > +                     spin_lock_irqsave(&rgn->rgn_lock, flags);
 >> 
->> Just before reading the pending state, so that we can't get a 
->> concurrent
->> modification of that state while we make the interrupt pending in the 
->> VPT
->> and clearing it in the emulation.
+>> rgn_lock is never used in IRQ contexts, so no need of irqsave and
+>> irqrestore everywhere, which can impact performance. Please correct
+>> me if I am wrong.
+> Thanks.  Will do.
 > 
-> Get it. I will correct it right now.
+>> 
+>> Meanwhile, have you ever initialized the rgn_lock before use it???
+> Yep - forgot to do that here (but not in gs20 and mi10).  Thanks.
 
-Please hold off sending a new version for a few days. My inbox is 
-exploding...
+You mean you didn't test this specific series before upload?
+I haven't moved to the test stage, but this will definitely
+cause you error...
 
-Thanks,
+Can Guo.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+> 
+> Thanks,
+> Avri
+> 
+>> 
+>> Thanks,
+>> Can Guo.
+>> 
+>> > +                     rgn->reads = 0;
+>> > +                     spin_unlock_irqrestore(&rgn->rgn_lock, flags);
+>> > +             }
+>> > +
+>> >               return 0;
+>> >       }
+>> >
+>> >       if (!ufshpb_is_support_chunk(hpb, transfer_len))
+>> >               return 0;
+>> >
+>> > +     if (hpb->is_hcm) {
+>> > +             bool activate = false;
+>> > +             /*
+>> > +              * in host control mode, reads are the main source for
+>> > +              * activation trials.
+>> > +              */
+>> > +             spin_lock_irqsave(&rgn->rgn_lock, flags);
+>> > +             rgn->reads++;
+>> > +             if (rgn->reads == ACTIVATION_THRESHOLD)
+>> > +                     activate = true;
+>> > +             spin_unlock_irqrestore(&rgn->rgn_lock, flags);
+>> > +             if (activate) {
+>> > +                     spin_lock_irqsave(&hpb->rsp_list_lock, flags);
+>> > +                     ufshpb_update_active_info(hpb, rgn_idx, srgn_idx);
+>> > +                     hpb->stats.rb_active_cnt++;
+>> > +                     spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
+>> > +                     dev_dbg(&hpb->sdev_ufs_lu->sdev_dev,
+>> > +                             "activate region %d-%d\n", rgn_idx, srgn_idx);
+>> > +             }
+>> > +
+>> > +             /* keep those counters normalized */
+>> > +             if (rgn->reads > hpb->entries_per_srgn)
+>> > +                     schedule_work(&hpb->ufshpb_normalization_work);
+>> > +     }
+>> > +
+>> >       spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+>> >       if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
+>> >                                  transfer_len)) {
+>> > @@ -745,21 +794,6 @@ static int ufshpb_clear_dirty_bitmap(struct
+>> > ufshpb_lu *hpb,
+>> >       return 0;
+>> >  }
+>> >
+>> > -static void ufshpb_update_active_info(struct ufshpb_lu *hpb, int
+>> > rgn_idx,
+>> > -                                   int srgn_idx)
+>> > -{
+>> > -     struct ufshpb_region *rgn;
+>> > -     struct ufshpb_subregion *srgn;
+>> > -
+>> > -     rgn = hpb->rgn_tbl + rgn_idx;
+>> > -     srgn = rgn->srgn_tbl + srgn_idx;
+>> > -
+>> > -     list_del_init(&rgn->list_inact_rgn);
+>> > -
+>> > -     if (list_empty(&srgn->list_act_srgn))
+>> > -             list_add_tail(&srgn->list_act_srgn, &hpb->lh_act_srgn);
+>> > -}
+>> > -
+>> >  static void ufshpb_update_inactive_info(struct ufshpb_lu *hpb, int
+>> > rgn_idx)
+>> >  {
+>> >       struct ufshpb_region *rgn;
+>> > @@ -1079,6 +1113,14 @@ static void __ufshpb_evict_region(struct
+>> > ufshpb_lu *hpb,
+>> >
+>> >       ufshpb_cleanup_lru_info(lru_info, rgn);
+>> >
+>> > +     if (hpb->is_hcm) {
+>> > +             unsigned long flags;
+>> > +
+>> > +             spin_lock_irqsave(&rgn->rgn_lock, flags);
+>> > +             rgn->reads = 0;
+>> > +             spin_unlock_irqrestore(&rgn->rgn_lock, flags);
+>> > +     }
+>> > +
+>> >       for_each_sub_region(rgn, srgn_idx, srgn)
+>> >               ufshpb_purge_active_subregion(hpb, srgn);
+>> >  }
+>> > @@ -1523,6 +1565,31 @@ static void
+>> > ufshpb_run_inactive_region_list(struct ufshpb_lu *hpb)
+>> >       spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
+>> >  }
+>> >
+>> > +static void ufshpb_normalization_work_handler(struct work_struct
+>> > *work)
+>> > +{
+>> > +     struct ufshpb_lu *hpb;
+>> > +     int rgn_idx;
+>> > +     unsigned long flags;
+>> > +
+>> > +     hpb = container_of(work, struct ufshpb_lu,
+>> > ufshpb_normalization_work);
+>> > +
+>> > +     for (rgn_idx = 0; rgn_idx < hpb->rgns_per_lu; rgn_idx++) {
+>> > +             struct ufshpb_region *rgn = hpb->rgn_tbl + rgn_idx;
+>> > +
+>> > +             spin_lock_irqsave(&rgn->rgn_lock, flags);
+>> > +             rgn->reads = (rgn->reads >> 1);
+>> > +             spin_unlock_irqrestore(&rgn->rgn_lock, flags);
+>> > +
+>> > +             if (rgn->rgn_state != HPB_RGN_ACTIVE || rgn->reads)
+>> > +                     continue;
+>> > +
+>> > +             /* if region is active but has no reads - inactivate it */
+>> > +             spin_lock(&hpb->rsp_list_lock);
+>> > +             ufshpb_update_inactive_info(hpb, rgn->rgn_idx);
+>> > +             spin_unlock(&hpb->rsp_list_lock);
+>> > +     }
+>> > +}
+>> > +
+>> >  static void ufshpb_map_work_handler(struct work_struct *work)
+>> >  {
+>> >       struct ufshpb_lu *hpb = container_of(work, struct ufshpb_lu,
+>> > map_work);
+>> > @@ -1913,6 +1980,9 @@ static int ufshpb_lu_hpb_init(struct ufs_hba
+>> > *hba, struct ufshpb_lu *hpb)
+>> >       INIT_LIST_HEAD(&hpb->list_hpb_lu);
+>> >
+>> >       INIT_WORK(&hpb->map_work, ufshpb_map_work_handler);
+>> > +     if (hpb->is_hcm)
+>> > +             INIT_WORK(&hpb->ufshpb_normalization_work,
+>> > +                       ufshpb_normalization_work_handler);
+>> >
+>> >       hpb->map_req_cache = kmem_cache_create("ufshpb_req_cache",
+>> >                         sizeof(struct ufshpb_req), 0, 0, NULL);
+>> > @@ -2012,6 +2082,8 @@ static void ufshpb_discard_rsp_lists(struct
+>> > ufshpb_lu *hpb)
+>> >
+>> >  static void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
+>> >  {
+>> > +     if (hpb->is_hcm)
+>> > +             cancel_work_sync(&hpb->ufshpb_normalization_work);
+>> >       cancel_work_sync(&hpb->map_work);
+>> >  }
+>> >
+>> > diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+>> > index 8119b1a3d1e5..bd4308010466 100644
+>> > --- a/drivers/scsi/ufs/ufshpb.h
+>> > +++ b/drivers/scsi/ufs/ufshpb.h
+>> > @@ -121,6 +121,10 @@ struct ufshpb_region {
+>> >       struct list_head list_lru_rgn;
+>> >       unsigned long rgn_flags;
+>> >  #define RGN_FLAG_DIRTY 0
+>> > +
+>> > +     /* region reads - for host mode */
+>> > +     spinlock_t rgn_lock;
+>> > +     unsigned int reads;
+>> >  };
+>> >
+>> >  #define for_each_sub_region(rgn, i, srgn)                            \
+>> > @@ -211,6 +215,7 @@ struct ufshpb_lu {
+>> >
+>> >       /* for selecting victim */
+>> >       struct victim_select_info lru_info;
+>> > +     struct work_struct ufshpb_normalization_work;
+>> >
+>> >       /* pinned region information */
+>> >       u32 lu_pinned_start;
