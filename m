@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73DAD33DFB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A510033DFC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:03:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232280AbhCPVBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 17:01:53 -0400
-Received: from www62.your-server.de ([213.133.104.62]:59966 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232211AbhCPVBp (ORCPT
+        id S232307AbhCPVDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 17:03:30 -0400
+Received: from casper.infradead.org ([90.155.50.34]:35976 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232329AbhCPVDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 17:01:45 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lMGov-000DD5-8i; Tue, 16 Mar 2021 22:01:41 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lMGou-000NvJ-VU; Tue, 16 Mar 2021 22:01:40 +0100
-Subject: Re: [PATCH] libbpf: avoid inline hint definition from
- 'linux/stddef.h'
-To:     Pedro Tammela <pctammela@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20210314173839.457768-1-pctammela@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5083f82b-39fc-9d46-bcd0-3a6be2fc7f98@iogearbox.net>
-Date:   Tue, 16 Mar 2021 22:01:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Tue, 16 Mar 2021 17:03:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KHYI63/oZUglLRTw4PB2bT7DWIzsrdEaZn8S9TzaRZE=; b=D6h+y9bDeKRNcXSqcwjogsQbgS
+        +w0dHuFN3mDp9X9h+UAF1zgng94INvYdrPYWUQ11iYiPN/ztFbRhC++N+Gh28jl7Fn8sZApt0XAPd
+        jB8HA3dxks2gsAbVc1piFuFDZ9C4+ijk5wlhsfpk+9GJxKWl4Zfm1MvnHvLc9mh5ldkq2wfIkpYiN
+        CyuQEQl2YZDC2DkrtsGvSJsrskjO0wVgLjAZkRx+cufrhA6C2xyhGY3/EevHxv3XZkBeL0bOQiRMu
+        B81/Zvj8KCI/g6gvqAiWYvVBgFUZrnbUBZBGCBp8kb8tFZ7RMWK+p4GfPrk01+/sB2Y8UDpTampWW
+        eerAmIFA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMGp6-000cD1-UW; Tue, 16 Mar 2021 21:01:56 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8468A986501; Tue, 16 Mar 2021 22:01:54 +0100 (CET)
+Date:   Tue, 16 Mar 2021 22:01:54 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Subject: Re: [PATCH v23 6/9] x86/entry: Introduce ENDBR macro
+Message-ID: <20210316210154.GT4746@worktop.programming.kicks-ass.net>
+References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
+ <20210316151320.6123-7-yu-cheng.yu@intel.com>
+ <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
+ <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
+ <YFENvgrR8JSYq1ae@hirez.programming.kicks-ass.net>
+ <65845773-6cf0-1bdc-1ecf-168de74cc283@intel.com>
+ <YFER79kU+ukn3YZr@hirez.programming.kicks-ass.net>
+ <aff84067-5b9e-1335-e540-ef90ee133ac9@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210314173839.457768-1-pctammela@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26110/Tue Mar 16 12:05:23 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aff84067-5b9e-1335-e540-ef90ee133ac9@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/14/21 6:38 PM, Pedro Tammela wrote:
-> Linux headers might pull 'linux/stddef.h' which defines
-> '__always_inline' as the following:
-> 
->     #ifndef __always_inline
->     #define __always_inline __inline__
->     #endif
-> 
-> This becomes an issue if the program picks up the 'linux/stddef.h'
-> definition as the macro now just hints inline to clang.
+On Tue, Mar 16, 2021 at 01:26:52PM -0700, Yu, Yu-cheng wrote:
+> Then, what about moving what I had earlier to vdso.h?
+> If we don't want __i386__ either, then make it two macros.
 
-How did the program end up including linux/stddef.h ? Would be good to
-also have some more details on how we got here for the commit desc.
+vdso.h seems to use CONFIG_X86_{64,32} resp.
 
-> This change now enforces the proper definition for BPF programs
-> regardless of the include order.
-> 
-> Signed-off-by: Pedro Tammela <pctammela@gmail.com>
-> ---
->   tools/lib/bpf/bpf_helpers.h | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> index ae6c975e0b87..5fa483c0b508 100644
-> --- a/tools/lib/bpf/bpf_helpers.h
-> +++ b/tools/lib/bpf/bpf_helpers.h
-> @@ -29,9 +29,12 @@
->    */
->   #define SEC(NAME) __attribute__((section(NAME), used))
->   
-> -#ifndef __always_inline
-> +/*
-> + * Avoid 'linux/stddef.h' definition of '__always_inline'.
-> + */
+> +.macro ENDBR
+> +#ifdef CONFIG_X86_CET
 
-I think the comment should have more details on 'why' we undef it as in
-few months looking at it again, the next question to dig into would be
-what was wrong with linux/stddef.h. Providing a better rationale would
-be nice for readers here.
+And shouldn't that be CONFIG_X86_IBT ?
 
-> +#undef __always_inline
->   #define __always_inline inline __attribute__((always_inline))
-> -#endif
-> +
->   #ifndef __noinline
->   #define __noinline __attribute__((noinline))
->   #endif
-> 
+
+> +#ifdef __i386__
+
+#ifdef CONFIG_X86_32
+
+> +	endbr32
+> +#else
+> +	endbr64
+> +#endif
+> +#endif
+> +.endm
 
