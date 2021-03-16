@@ -2,104 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528DB33CDBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7B333CDC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:10:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbhCPGGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 02:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232040AbhCPGGb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 02:06:31 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF18C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 23:06:31 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id a8so9927862plp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 23:06:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7NE5qRppEh+vuD5w5V/nMu/zyhNN/XrhmdRPI+9wiC0=;
-        b=Td1jxmn39AwTl8uHORTeIBbhli4+n/1Z5mTPDDLP21XZQmZT8Em/DG2qNT3FUiAm+g
-         1PDVpPS+6EYvIv76fFaVl1ty48R411f0/lOgRZodXGdizu1UmBGXJTHzDhr6M3mnmXeT
-         9TJUHu34Rly/4NRUrdhSaycEvwr7K3y97y647AreHd79haF2L90gt3BoUCKagQ3Am+i7
-         CxHvZY7o4+jCElrW/J2/6UouO12SgITh/kvskSd3NQd8xcRmh/z8NCZ8MODWYVD8wuul
-         NZrD1sk0GW3UyvrQV5Je53FmLPhfMoId34tJ50DARsMWBtfozrZ9Bz2bd3vMDrp3+oDv
-         2jKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7NE5qRppEh+vuD5w5V/nMu/zyhNN/XrhmdRPI+9wiC0=;
-        b=t2nkU7kqQn1Lp4XqrYeROktR5Ebd112arPye3GbI11I02cqSGGHtRCfKSvDqT33Gqs
-         us46DpYgfq5J7A6kirmVOibt06SBPy9LYoSXqdkdvvp4YxDJ3PJC/NtCYpFAh5nZOgQL
-         YkaPlnjastw9Wgu4eHE5OlnU6974Fst4Em99xQuPSg4rtz7+81XSLLDn5MMCb0SYikjk
-         pgAZUdFn0jhkK2UInxnBLYDCAk7VTHhGORMRCXkBoekuMpVlWgct4XmsPBoNpD84u0Lx
-         dL/svjh7o9FncGVSILGY1WBKhe+cRefRKt5gxbmbspm/4UkSajoN1kK1vp6/jwrfKd35
-         ahmA==
-X-Gm-Message-State: AOAM532OQWFfkM9edRyOkCS+5QEhQBaHTBgrtAjT6QnW5ZpCzJtd+tib
-        6Nj94HpCd7gHH6VXjvJafLdaQrRfiPLuyYE=
-X-Google-Smtp-Source: ABdhPJwWzCPXHKAmG/UbO02vIg/yn4CTsiE8CFyBgcqNZK1XUg4dgqJ1pkPpCRrDqxycQ5KryRV6cw==
-X-Received: by 2002:a17:902:82c7:b029:e4:74ad:9450 with SMTP id u7-20020a17090282c7b02900e474ad9450mr15278280plz.58.1615874789908;
-        Mon, 15 Mar 2021 23:06:29 -0700 (PDT)
-Received: from thinkpad ([103.66.79.72])
-        by smtp.gmail.com with ESMTPSA id i1sm14484826pfo.160.2021.03.15.23.06.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 23:06:29 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 11:36:24 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Fan Wu <wufan@codeaurora.org>
-Subject: Re: [PATCH v3 RESEND] bus: mhi: core: Return EAGAIN if MHI ring is
- full
-Message-ID: <20210316060624.GF1798@thinkpad>
-References: <1615408803-7016-1-git-send-email-jhugo@codeaurora.org>
+        id S233015AbhCPGIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 02:08:41 -0400
+Received: from mail-am6eur05on2069.outbound.protection.outlook.com ([40.107.22.69]:12545
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232718AbhCPGIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 02:08:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GC5wD6sRQPahT6kMJ536wqJslTwoCcUvgtvjkw3cWqoQ2vFSGOzJRORjAKPkVqYPcKAfc/eDnpPS9DXUJw0A3YO8JQHp8dAoK1+G/m5oceYfe523H4svNL6keVAqBHzgNEQQOKkLY9l00ZtfO24/XPwKClQ4ApLk5fR8wcwp7gCNuKQfnxQ9BMtTTpocCnRJF65vR8MDbsWphR+Ei1GfCgmHlqhN5m6nL0YtSyhcuIDGjqPLv0JUVYHJLa+jVKNkhTAGzDan7gCpKxMeQy0FjN+VpMP27FCwF+ck+e41wjZuXNKCScsrQVBdnD2tbnc9tNxFNghDpA/tErQTodaR5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LyFHmDebShXkul0hDxlq/aE0FTguH3QQdXLSaJv/0+E=;
+ b=JzT9N2QP3Uy4wTiGAQ7Bt/wP4DfAtihPm8v1iVpRGPz13xAkf0j7Ym1nXoj6fUIWB/FkH0MSNGn+Z8ZXEVRIu4ZCaca6MIsW1rqTsH1kqlCMNlKEHlSxB1RY6Co1nWctfuOG4SkEqSfFJ/FiwkvrGbHZac+v4lDMMtJuLgho9bEwoZ6b7Tx5GomLoHQDqVJi11pIX0RHqGyX1S81xWD2IhTnB8ZYM1eaROFHEHh8QPE2S3ZmEzZnp1Yj8+y7x49yinfMrsZhaYr2oqunEpttMN9FHtivyfbEgHMXnbNEU1PVNRr5wasJd2siikUg9vRmcsg55DZUcXosAopum+kA8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LyFHmDebShXkul0hDxlq/aE0FTguH3QQdXLSaJv/0+E=;
+ b=d+IQLwaYErYQAeJDdfdz/mLfLGo1548GBgogFDsplNddk8rlUMTAKm1yimPhjvvJbVfoLA1KDrSSSPKUx5oCIwfkTPCFyJxmHBCM/G6e4IX0aNTyS6YtoKcPlDIi6QeNvMx1+Qe16wM9PStG6b+sBk/bbBbpGuZRfClQR8EfX4U=
+Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com (2603:10a6:4:96::7)
+ by DB8PR04MB6857.eurprd04.prod.outlook.com (2603:10a6:10:114::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Tue, 16 Mar
+ 2021 06:08:17 +0000
+Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com
+ ([fe80::c99c:dbc3:ed75:e6e8]) by DB6PR0402MB2758.eurprd04.prod.outlook.com
+ ([fe80::c99c:dbc3:ed75:e6e8%5]) with mapi id 15.20.3933.032; Tue, 16 Mar 2021
+ 06:08:17 +0000
+From:   Kuldeep Singh <kuldeep.singh@nxp.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+CC:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: RE: [EXT] Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to
+ json schema
+Thread-Topic: [EXT] Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to
+ json schema
+Thread-Index: AQHXGZTp77oN99ywtki2W2/Bm/x6J6qFh6sAgACXclA=
+Date:   Tue, 16 Mar 2021 06:08:17 +0000
+Message-ID: <DB6PR0402MB27580AF77ED738B995616EB5E06B9@DB6PR0402MB2758.eurprd04.prod.outlook.com>
+References: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
+ <20210315205440.lb6hcrvzxtqxdb5x@skbuf>
+In-Reply-To: <20210315205440.lb6hcrvzxtqxdb5x@skbuf>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [223.236.221.34]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 01b4920a-357c-4729-d56f-08d8e841e462
+x-ms-traffictypediagnostic: DB8PR04MB6857:
+x-microsoft-antispam-prvs: <DB8PR04MB6857878C0E34C038A72492B4E06B9@DB8PR04MB6857.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 94thw/Gn4qI9A1Dm1MGZS6+zkj3PCQP/cjZjTyuMK6mGRDIG8m6b5CCK3X1L3wXzfHQkobE8kzgJeyvb3Cd1mxMnZfaiYIzr8PqEzI/kqpPLBW6n2XzGEfruI+V2kpGtNyIuSPD1L9shXTYojWw4/ZyJ/uVEwTVBvz36XRFX400+L28wrl4TDwQ0+FHP5hxgD/HIl1Z9Y/kYLKhUf7YLgaHWkOJrovTAu2Kl4y7XAz7GUI1xRADt4/KSZvab9textHFY0kXirH4u/mVObocpyEC8brD2lRk9PDlYNQmLoNvTH7Z+j1DcNme6lRzh/FratnGTSoc3j1HU3mEPm2nR+7Ko29G0UKjyJnrk/J8TtL87b6yEGvCIItC8BjDykWnSsVNXqrxCvxJNyLvc/XpeviZzQ9yIAWlt9j+7G/1IKja3HXEGRJ/6JkuYjTRI318cstuwzX7A0aZ+ygmdWPwEPGB1m1+U5InWEOecLbevIpUB5kwWDEFaeNzYziefiFoZk/VxQeMb5l2ZG3FzHh5TS2j8wM8/+xKCq6BkYmGYWs7gdx5wPkHGuCO46Bz9POyv
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2758.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(396003)(136003)(376002)(366004)(186003)(316002)(54906003)(7696005)(33656002)(9686003)(71200400001)(53546011)(8676002)(8936002)(83380400001)(6506007)(26005)(44832011)(2906002)(86362001)(66556008)(66946007)(66446008)(64756008)(4326008)(6916009)(76116006)(66476007)(55016002)(52536014)(478600001)(5660300002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?mv0TkaWVc9kMUnISN0hXbYeFxr6oURuIesCG4E0IfJRdBJFTuRYSq1jaVjgx?=
+ =?us-ascii?Q?4s+ckEs/EA0tTIDz7KCezt3IQPlex+6EJMJ/Eu7JVvCk7T+DSy5eK03IQRCr?=
+ =?us-ascii?Q?a3Wncc04FfWcAxSH1/ACR9pHCh4s8mLLZSPt/M2X0e4oXjfcuB8PpMuH5IHD?=
+ =?us-ascii?Q?Mrt5jnrWhyp0YTB17m6vipjINLG0sTc2NTnXVIenj5y41gu8Z+vv0zOzfkdm?=
+ =?us-ascii?Q?KLqCEkxaG+3WQLkrY1slmwkmlkkpd9f05xq2uYh/cKAp1G7TOYKv4XDz9vMo?=
+ =?us-ascii?Q?pXXg8/YVrl58ZCBCoMk14FvPguN5qbwXrInDE9OE5ADXfNxpOZ7jCP3Aem5Z?=
+ =?us-ascii?Q?6fhjPtp07/Up92TBL8hv/Qqk149ZEHpsjtMMlGMA6jJztAUtfuCl2WL3J8A0?=
+ =?us-ascii?Q?JoG43hxNELNALLiW7W+NJr+V24NB/VjfLzktfDWmxRCkjEMME2l3urpxyWs2?=
+ =?us-ascii?Q?a0TO+3xGYC9PHXH9cFM439JJ8+iy5XEyNQXc+dSNfMbR3YAOP7lLWcMkS3uq?=
+ =?us-ascii?Q?LqiG10eLl1z+hIUuVZdKQKAROYKr73fuxhERbvJlrSOzbURf8/8nunl7uPWp?=
+ =?us-ascii?Q?kbbP+vTbu4NFvfwzAHT3y5lhQGP38J1D/zHCS+dWTF5id6lRMpml2nO+gXwD?=
+ =?us-ascii?Q?PhQ5AwhCcsmtuMxP3MI6WmSMQ8629Fk41cb4D/wgXsYmMQWa2ozxmG5y2Q8d?=
+ =?us-ascii?Q?uminJk45scTXcMgMks4aC//sIOnyliACPf5/TXRqy7qe79NgoTtXcHg+ayrD?=
+ =?us-ascii?Q?Wr1IGc+BRDuOgUZZQfYfdb0gz6PKN3GTd2u0H8sqiA1H15siWFYKkt0jMcA/?=
+ =?us-ascii?Q?wUcS2lpmrneYr0fj/mD80G3JiKqWmfv86p99Ts7x+G4G4FxFEfYpwiqrbNOs?=
+ =?us-ascii?Q?7+R5Sgk6XtEMei804xdGXcmMuopdSbXeJpNT5nPa3Ca0vdjmKkENMAhK3+V6?=
+ =?us-ascii?Q?dafIdLGlYcT0bPMKuVfnmeo5RMEv64xUoTyxuQ3bdP2B8/ZfV0hWVEmZz8yL?=
+ =?us-ascii?Q?N/i20CcnDXyNVeBxeHzfQ6LLEFwkgzJZOZWd8UzmBrIhbpaoEz4pYmyGs+bj?=
+ =?us-ascii?Q?nhkcoUy0CeC2+AsPXI2nhV/3+bycblQs3ay/0TyhYYI06jsaex0e7c+uSW7m?=
+ =?us-ascii?Q?BiJjRWokn68OChGlLMu+cVtrBJ2TKC+aGb3K7qusaXBN5Uf6m3XgC6ScYi1R?=
+ =?us-ascii?Q?e7R1fsqUG/RLQqmOTaUdzziPiEgDOFlR0dYu4ZGPhgrhJztZTHlL6Jr9M3ho?=
+ =?us-ascii?Q?em/mkeLmXYBAls4kwwgmlcL5tzrnWEaa8lu8co6fJ5VO9smnMiMukaRDU9Qj?=
+ =?us-ascii?Q?tdng4iMdFQzhA7Q6VI73ojkt?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615408803-7016-1-git-send-email-jhugo@codeaurora.org>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2758.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 01b4920a-357c-4729-d56f-08d8e841e462
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2021 06:08:17.4776
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: JQ5ANNMa0B1yt9IXdF0srTkPq3zbbCNLmWvAthnzxCsglC6gokWmaE0GVW9w9obBTYO/tU5ARdghTlV0HbNITg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6857
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 01:40:03PM -0700, Jeffrey Hugo wrote:
-> From: Fan Wu <wufan@codeaurora.org>
-> 
-> Currently ENOMEM is returned when MHI ring is full. This error code is
-> very misleading. Change to EAGAIN instead.
-> 
-> Signed-off-by: Fan Wu <wufan@codeaurora.org>
-> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
-> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Hi Vladimir,
 
-Applied to mhi-next!
+> -----Original Message-----
+> From: Vladimir Oltean <olteanv@gmail.com>
+> Sent: Tuesday, March 16, 2021 2:25 AM
+> To: Kuldeep Singh <kuldeep.singh@nxp.com>
+> Cc: linux-spi@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org; Mark Brown <broonie@kernel.org>; Rob Herring
+> <robh+dt@kernel.org>
+> Subject: [EXT] Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to js=
+on schema
+>=20
+> Caution: EXT Email
+>=20
+> Hi Kuldeep,
+>=20
+> On Mon, Mar 15, 2021 at 05:45:18PM +0530, Kuldeep Singh wrote:
+> > Convert the Freescale DSPI binding to DT schema format using json-schem=
+a.
+> >
+> > Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+> > ---
+[...]
+> > +
+> > +allOf:
+> > +  - $ref: "spi-controller.yaml#"
+> > +
+> > +properties:
+> > +  compatible:
+> > +    oneOf:
+> > +      - enum:
+> > +          - fsl,vf610-dspi
+> > +          - fsl,ls1021a-v1.0-dspi
+> > +          - fsl,ls1028a-dspi
+> > +          - fsl,ls2085a-dspi
+> > +          - fsl,lx2160a-dspi
+> > +      - items:
+> > +          - enum:
+> > +              - fsl,ls1012a-dspi
+> > +              - fsl,ls1028a-dspi
+> > +              - fsl,ls1043a-dspi
+> > +              - fsl,ls1046a-dspi
+> > +              - fsl,ls1088a-dspi
+> > +          - const: fsl,ls1021a-v1.0-dspi
+> > +      - items:
+> > +          - enum:
+> > +              - fsl,ls2080a-dspi
+> > +              - fsl,lx2160a-dspi
+> > +          - const: fsl,ls2085a-dspi
+>=20
+> Can this simply be:
+>   compatible:
+>     oneOf:
+>       - enum:
+>           - fsl,vf610-dspi
+>           - fsl,ls1021a-v1.0-dspi
+>           - fsl,ls1012a-dspi
+>           - fsl,ls1028a-dspi
+>           - fsl,ls1043a-dspi
+>           - fsl,ls1046a-dspi
+>           - fsl,ls1088a-dspi
+>           - fsl,ls2080a-dspi
+>           - fsl,ls2085a-dspi
+>           - fsl,lx2160a-dspi
+> ?
 
-Thanks,
-Mani
+Compatible entries in conjugation require enum and const pair.
+For example, ls1012a.dtsi uses compatible =3D "fsl,ls1012a-dspi","fsl,ls102=
+1a-v1.0-dspi";
+Same goes for LS1028 as well.
 
-> ---
->  drivers/bus/mhi/core/main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> index 2c61dfd..a7811fb 100644
-> --- a/drivers/bus/mhi/core/main.c
-> +++ b/drivers/bus/mhi/core/main.c
-> @@ -1020,7 +1020,7 @@ static int mhi_queue(struct mhi_device *mhi_dev, struct mhi_buf_info *buf_info,
->  
->  	ret = mhi_is_ring_full(mhi_cntrl, tre_ring);
->  	if (unlikely(ret)) {
-> -		ret = -ENOMEM;
-> +		ret = -EAGAIN;
->  		goto exit_unlock;
->  	}
->  
-> -- 
-> Qualcomm Technologies, Inc. is a member of the
-> Code Aurora Forum, a Linux Foundation Collaborative Project.
-> 
+Therefore, can't mention the compatible entry as single entity otherwise
+it may fail "make dt_binding_check" and "make dtbs_check".
+
+>=20
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/clock/fsl,qoriq-clockgen.h>
+> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > +
+> > +    soc {
+> > +        #address-cells =3D <2>;
+> > +        #size-cells =3D <2>;
+> > +
+> > +        spi@2100000 {
+> > +            compatible =3D "fsl,ls1028a-dspi", "fsl,ls1021a-v1.0-dspi"=
+;
+>=20
+> This doesn't need the "fsl,ls1021a-v1.0-dspi" compatible, can you please =
+remove
+> it?
+
+I have taken this example from LS1028a.dtsi and it uses these compatibles i=
+n conjugation.
+If "fsl,ls1021a-v1.0-dspi" is not required, then it should also be removed =
+from device-tree
+As well as from bindings both.
+
+>=20
+> > +            #address-cells =3D <1>;
+> > +            #size-cells =3D <0>;
+> > +            reg =3D <0x0 0x2100000 0x0 0x10000>;
+> > +            interrupts =3D <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
+> > +            clock-names =3D "dspi";
+> > +            clocks =3D <&clockgen QORIQ_CLK_PLATFORM_PLL
+> QORIQ_CLK_PLL_DIV(2)>;
+> > +            dmas =3D <&edma0 0 62>, <&edma0 0 60>;
+> > +            dma-names =3D "tx", "rx";
+> > +            spi-num-chipselects =3D <4>;
+> > +            little-endian;
+> > +
+> > +            flash@0 {
+> > +                compatible =3D "jedec,spi-nor";
+> > +                spi-max-frequency =3D <10000000>;
+> > +                reg =3D <0>;
+> > +            };
+> > +        };
+> > +    };
+>=20
+> (...)
+>=20
+> > -Optional property:
+> > -- big-endian: If present the dspi device's registers are implemented
+> > -  in big endian mode.
+>=20
+> I don't see "big-endian" being covered in any common yaml, could you plea=
+se not
+> delete it? The driver calls of_device_is_big_endian.
+
+Thanks for mentioning.
+Will consider this in next version after receiving feedback on other thread=
+.
+
+Regards
+Kuldeep
