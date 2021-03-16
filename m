@@ -2,110 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0CF33DCE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF8233DCE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240175AbhCPSuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:50:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52158 "EHLO
+        id S230256AbhCPSvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:51:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhCPSuT (ORCPT
+        with ESMTP id S240153AbhCPSuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:50:19 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5871C06174A;
-        Tue, 16 Mar 2021 11:50:18 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id jt13so73980821ejb.0;
-        Tue, 16 Mar 2021 11:50:18 -0700 (PDT)
+        Tue, 16 Mar 2021 14:50:39 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC466C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:50:38 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id d15so11031486wrv.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:50:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=JIDWJVCtqVTctPuvCcddfFP45PGJhsx7ii6usu9k8kI=;
-        b=r0s92RsLYdx+MT4mzPcDqJIf7njkm7DryrHjr8C8yN5Nr2/DxAd9tzVM6Jg3fk9oEw
-         oNP1xa32uW7a0zKLb+owgbLGCrngGZEwU/Oh+NCtn7hAql3tC9s0tB83soABU5Labjq1
-         OrhZMwqvQSyvCUf79h+gGK+gU3G/bFpmqydafAKuhe/JE1kA02SZnK5a0bFK1Biy9AXt
-         JDanZJmKzPrrIOxMTO2ncU0mpXFFkdl1tBgtSLnqu2sUQlfd+F5tY2taf2WawqIXysGN
-         0A64WFshUOge4vG/+68k1ODWKayXFi6kBuvM0lY13AFuuhLjcqkGVSThBMD8f4eC9fat
-         X1Eg==
+        bh=ZYCIwusXOn9GIbUjPY+Z1gvgGv1eCVcPoYFgPm/ZsBw=;
+        b=PghuLEmcLXD6wtSYmtr9Asf1mywcnZil/eiZ7U/X1wOSv14YPWgKWrVsWXrVB1hskv
+         VYlpRFINPGuL3IZI9bFlqul5iNue6ol4NzZ03u2n2hr1YUVBfUATmDri09NHWfp29/5d
+         hBHdrPxmO2YclrwWMKLBJwWOgdbC/EKrSoMUElY4v9QciAgKuO+hcDFu6UqR9oH6RxWC
+         vg6fauwyLboYvVFuQPAXjN9HO3RE3x3dXKHOwjwFIlkET2f6e2nzLe6uZ/9T+mxD8iKB
+         DC2Rn9ig96MiFGTYWfIrMnLYYIeUL78vQQRmS892ohBei+G9kE7lwkOq/EqAt47sTiL4
+         od8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=JIDWJVCtqVTctPuvCcddfFP45PGJhsx7ii6usu9k8kI=;
-        b=pAwFbzsVH7osOE13y8+8ntLItBdb59rWHKuFs7K/W29nfjHUEu5YrLMyJS5NeW4H8M
-         drA8ftT1tpLuSIySYKwa7h2K3lX5q5Cow5daZtqjnD4xO3/RD+45ptAUTzhxmKGngab4
-         X+UrZuAWw3sLDgOoZErdgmrhlOw+1xG3N5KfrXzsXHqR34S7Wdls6FgBFfUTIQzI23P2
-         pozHGOlKMn9riSYgiSsHXl6oBrEj6oBCkMYALy8tmspg66EpH0B24iemxifuWMmyKk5+
-         f746dKhh3n5LcFwRSDvVrFQDUszpLwzGz5MT69Rw6JypyAxs7i8dgDBYfIDQ6249jTsd
-         Xycw==
-X-Gm-Message-State: AOAM531KeRWyUdVkKj5lsUzD3qtPkMFAEC5tEKb1ZiFgU8KZ5vJfJk2O
-        Q0WeKNQjT6Z6PL8yUXP5Pj8=
-X-Google-Smtp-Source: ABdhPJxcsp8sHhglDnHjuUw4lQyDPqrEFmSQ6145fz7Iaf0s+0BRl7H7zTp9dHnVJ8Gik7sBF16ulw==
-X-Received: by 2002:a17:906:6c93:: with SMTP id s19mr30978725ejr.151.1615920617571;
-        Tue, 16 Mar 2021 11:50:17 -0700 (PDT)
-Received: from BV030612LT ([188.24.140.160])
-        by smtp.gmail.com with ESMTPSA id y20sm2023626ejj.43.2021.03.16.11.50.16
+        bh=ZYCIwusXOn9GIbUjPY+Z1gvgGv1eCVcPoYFgPm/ZsBw=;
+        b=uf9J6olrZIkqOuOAMHajLDK2uJtorkhw9HuQP8G6thBt+3PMJatdQ66+Cbyy94Lbeo
+         WvNB7adGtwdxueyTr+16DDdFtPNCF6nk+0iAFT1VWXtzXLH/P+2NDFsTNNW4/OtK6Ba/
+         h3+omzTscTLlTnls2GT15ZEMcEuThd6bqR2ryL+YAx2EeV5Maddt+WUXopMm/YAy5qzl
+         +kOJi0jcUJXldhJ+KwAVoiZLMxyM193suFGMiu714neVUEc9AjRteATDFCbrN/IS2LVL
+         sscPrNdpn8k6SSWwgCpgCnClKyA0y8SKxrmP/erCEWaOhcbeYnuEwv1ARJtRiQmSQ38O
+         hmuw==
+X-Gm-Message-State: AOAM530CwvLSJDFG9W1Vu4cPlN6rAppSnMg0TxvowVwQ/dfsOagDMj6q
+        Mei4G7F1oAWHKEGmpptf0A==
+X-Google-Smtp-Source: ABdhPJz23hAs8nh3LiixdzIhqWtJL+8yYO+WofDjUQWG5ej1fW8c/lVVl0QS3v0ek7DXHPMRocGRpA==
+X-Received: by 2002:a5d:6342:: with SMTP id b2mr405735wrw.421.1615920637509;
+        Tue, 16 Mar 2021 11:50:37 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.253.49])
+        by smtp.gmail.com with ESMTPSA id y18sm23289935wrw.39.2021.03.16.11.50.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 11:50:16 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 20:50:14 +0200
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Edgar Bernardi Righi <edgar.righi@lsitec.org.br>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 4/6] clk: actions: Fix AHPPREDIV-H-AHB clock chain on Owl
- S500 SoC
-Message-ID: <20210316185014.GD1111731@BV030612LT>
-References: <cover.1615221459.git.cristian.ciocaltea@gmail.com>
- <58225ced4893018792d581c0476a0f1c70e08907.1615221459.git.cristian.ciocaltea@gmail.com>
- <20210316054547.GD1798@thinkpad>
+        Tue, 16 Mar 2021 11:50:37 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 21:50:35 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Cyrill Gorcunov <gorcunov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: auxv stuff (Re: [PATCH] prctl: fix PR_SET_MM_AUXV kernel stack
+ leak)
+Message-ID: <YFD9+0BEvMtwMqVi@localhost.localdomain>
+References: <YE53QiJuxsCUeoiu@localhost.localdomain>
+ <CAHk-=wgMm=PG3uxfpmYpkX-GaDAR09pej=t3nD6hHDNCYCyaRQ@mail.gmail.com>
+ <YE734MgE40jTv9zJ@localhost.localdomain>
+ <YE8B52ET790Y/6WO@grain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210316054547.GD1798@thinkpad>
+In-Reply-To: <YE8B52ET790Y/6WO@grain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 11:15:47AM +0530, Manivannan Sadhasivam wrote:
-> On Mon, Mar 08, 2021 at 07:18:29PM +0200, Cristian Ciocaltea wrote:
-> > There are a few issues with the setup of the Actions Semi Owl S500 SoC's
-> > clock chain involving AHPPREDIV, H and AHB clocks:
+On Mon, Mar 15, 2021 at 09:42:47AM +0300, Cyrill Gorcunov wrote:
+> On Mon, Mar 15, 2021 at 09:00:00AM +0300, Alexey Dobriyan wrote:
+> > On Sun, Mar 14, 2021 at 02:40:05PM -0700, Linus Torvalds wrote:
+> > > [mm->saved_auxv]
+> > > 
+> > > That's a separate issue, and I can't find it in myself to care (and
+> > > nobody has ever complained), but I thought I'd mention it.
 > > 
-> > * AHBPREDIV clock is defined as a muxer only, although it also acts as
-> >   a divider.
-> > * H clock is defined as a standard divider, although the raw value zero
-> >   is not supported.
+> > There is another (non-security) one. Compat 32-bit process will report
+> > 2 longs too many:
 > 
-> What do you mean by not supported? The datasheet lists "0" as the valid divisor
-> value for divide by 1.
+> Good catch! Alexey, should I address it? Or you have fixed it already?
 
-Unfortunately CMU_BUSCLK1 is not documented in my S500 Datasheet
-(Version: 1.6, 2016-03-07). Do you have a newer (or a more official)
-one?
-
-The reference xapp-le code snipped is:
-
-static struct owl_div divider_H_CLK = {
-    .type = DIV_T_NATURE,
-    .range_from = 1,  /* reserve H_CLK divsor 1 */
-    .range_to = 3,
-    .reg = &divbit_H_CLK,
-};
-
-Not sure why divisor 1 has been reserved..
-
-Thanks,
-Cristi
-
-> Rest looks good to me.
-> 
-> Thanks,
-> Mani
-> 
-[...]
+I didn't and I don't know how frankly.
+Something I've noticed during more important auxv rewrite.
