@@ -2,124 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704FE33DB42
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:46:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D82E33DB4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231429AbhCPRqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:46:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36725 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239087AbhCPRqP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:46:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615916773;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=n0Rc9AlR5VZpjh6F9+qzo94812lXmZf2NLEz1UriYA8=;
-        b=Dj3POwKlgtKjWLOvFG/y7TJcJkdIM1LewuyUIKyKQNVMIZmljCJLLTg+SleNQa4NFyvU0f
-        7n5ADa5+r8dET1BX5eaG6j4hvjrErUe+zy0bn8uZevWaOKxGzPsIQvOK5CGjy920LnNEYj
-        tdObM/EgAxrHL3LJPU2jHdmVJyG12l8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-279-nWhwtQY0MxqdtWFpKlBVrg-1; Tue, 16 Mar 2021 13:46:09 -0400
-X-MC-Unique: nWhwtQY0MxqdtWFpKlBVrg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 508B4192D78B;
-        Tue, 16 Mar 2021 17:46:07 +0000 (UTC)
-Received: from [10.36.114.203] (ovpn-114-203.ams2.redhat.com [10.36.114.203])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B328A5D9C0;
-        Tue, 16 Mar 2021 17:46:04 +0000 (UTC)
-Subject: Re: [PATCH] memblock: fix section mismatch warning again
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@linux.ibm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kernel test robot <lkp@intel.com>
-References: <20210316171347.14084-1-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <f47fe1eb-aecf-d12c-ae30-76331227f9dc@redhat.com>
-Date:   Tue, 16 Mar 2021 18:46:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S239297AbhCPRrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:47:03 -0400
+Received: from mga11.intel.com ([192.55.52.93]:6558 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239186AbhCPRqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:46:33 -0400
+IronPort-SDR: cBvrr2H2DYUjbiyu9ENfEz0j2H9BE6bSlam8LWoSE2V51BvRZ69QRcnXrAXkcrlaJ9w7WsQIuP
+ eNWFbvcgJndA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="185945364"
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="185945364"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 10:46:30 -0700
+IronPort-SDR: trMTFlvtMFRW2v2cORu3xAlCZ/Y+CR9CxY8aZ3ZwOpU0f5P38iqD/0th2YJlV6eN+5Fu7ljjAV
+ YYB6C/E7qbwg==
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="449800513"
+Received: from kcarrier-mobl.amr.corp.intel.com (HELO [10.209.124.168]) ([10.209.124.168])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 10:46:28 -0700
+Subject: Re: [PATCH v23 6/9] x86/entry: Introduce ENDBR macro
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>
+References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
+ <20210316151320.6123-7-yu-cheng.yu@intel.com>
+ <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
+ <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
+ <0c0b3663-3c01-c166-03fa-a3dbfb250da3@intel.com>
+ <1cbd8068-60e3-3fc9-9618-3262b179182d@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <5856bc91-cc55-2394-fc11-a3414e48778f@intel.com>
+Date:   Tue, 16 Mar 2021 10:46:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210316171347.14084-1-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1cbd8068-60e3-3fc9-9618-3262b179182d@intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.03.21 18:13, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On 3/16/21 10:44 AM, Yu, Yu-cheng wrote:
+>> Also, Boris asked for two *different* macros for 32 and 64-bit:
+>>
+>> https://lore.kernel.org/linux-api/20210310231731.GK23521@zn.tnic/
+>>
+>> Could you do that in the next version, please?
 > 
-> Commit 34dc2efb39a2 ("memblock: fix section mismatch warning") marked
-> memblock_bottom_up() and memblock_set_bottom_up() as __init, but they could
-> be referenced from non-init functions like memblock_find_in_range_node() on
-> architectures that enable CONFIG_ARCH_KEEP_MEMBLOCK.
-> 
-> For such builds kernel test robot reports:
-> All warnings (new ones prefixed by >>, old ones prefixed by <<):
-> 
->>> WARNING: modpost: vmlinux.o(.text+0x74fea4): Section mismatch in reference from the function memblock_find_in_range_node() to the function .init.text:memblock_bottom_up()
-> The function memblock_find_in_range_node() references
-> the function __init memblock_bottom_up().
-> This is often because memblock_find_in_range_node lacks a __init
-> annotation or the annotation of memblock_bottom_up is wrong.
-> 
-> Replace __init annotations with __init_memblock annotations so that the
-> appropriate section will be selected depending on
-> CONFIG_ARCH_KEEP_MEMBLOCK.
-> 
-> Link: https://lore.kernel.org/lkml/202103160133.UzhgY0wt-lkp@intel.com
-> Fixes: 34dc2efb39a2 ("memblock: fix section mismatch warning")
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> 
-> @Andrew, please let me know if you'd prefer this merged via memblock tree.
-> 
->   include/linux/memblock.h | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> index d13e3cd938b4..5984fff3f175 100644
-> --- a/include/linux/memblock.h
-> +++ b/include/linux/memblock.h
-> @@ -460,7 +460,7 @@ static inline void memblock_free_late(phys_addr_t base, phys_addr_t size)
->   /*
->    * Set the allocation direction to bottom-up or top-down.
->    */
-> -static inline __init void memblock_set_bottom_up(bool enable)
-> +static inline __init_memblock void memblock_set_bottom_up(bool enable)
->   {
->   	memblock.bottom_up = enable;
->   }
-> @@ -470,7 +470,7 @@ static inline __init void memblock_set_bottom_up(bool enable)
->    * if this is true, that said, memblock will allocate memory
->    * in bottom-up direction.
->    */
-> -static inline __init bool memblock_bottom_up(void)
-> +static inline __init_memblock bool memblock_bottom_up(void)
->   {
->   	return memblock.bottom_up;
->   }
-> 
+> Yes, we can do two macros, probably in arch/x86/include/asm/vdso.h.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
--- 
-Thanks,
-
-David / dhildenb
-
+*But*, please do leverage _CET_ENDBR if you can.  It seems awfully close
+to what we need.  If it works out, just use it for the 32/64-bit switch.
