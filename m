@@ -2,192 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E429633DCCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F33D33DCD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240145AbhCPSpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:45:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
+        id S240152AbhCPSrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:47:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240102AbhCPSo7 (ORCPT
+        with ESMTP id S240160AbhCPSqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:44:59 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A72EC0613D9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:44:55 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id u1so42842263ybu.14
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:44:55 -0700 (PDT)
+        Tue, 16 Mar 2021 14:46:45 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB13C06175F;
+        Tue, 16 Mar 2021 11:46:44 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id a1so76044ljp.2;
+        Tue, 16 Mar 2021 11:46:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=R/12KZ3zaKxExl9P4oGh+KcLt9H2c5589aT4NjPenho=;
-        b=HtI+/PW/CGeV3jfOpn4oZnoNWZpFEKnPA0tiCb7KxmejY7U9HT0DkrmGCynfDLXDUj
-         WSTsEJFLVJrp3t3SSObUA5Xykq2pRTUopXQRFZnJrZ5keZcwpVuJVBHsEQu0pvoEYoca
-         H71ZdJeQvEAU9OYSJTukVVQyAHEqy4RSmaJQVogpfDN4R0tRHah5bsW8ZtRppxc7BZ7N
-         9sAAx0968oZMo5uZnCqR7aWftcShv4zBo79a6GzZSky/j/YFqULqSeFU+0SK5u9ArV8k
-         d6Oq1OpVyFTzE4OPKISmmJz2J+i7/a0GL2qwxtEhXLEcL2c63Z9b8ctUIHp1VkiUFbdj
-         McuA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CL63UUQ8vCBeSVhVlVTb0P1mjJWa4M6qfgb4z9iNqSE=;
+        b=Zt+e1KiMHUunYG/pD2qi1HRy0sFULqfqFmXZySKe6t5xblgEh9aRoyvbDjz/2xPT3M
+         YyMVn0Fp5AKyzpzO7KVRArs/Z4WcW1Ql4B9d74MttegLA09QdoYMMgdcaWH7VWqcnMEi
+         zTBCIoqBV1KFBqrx24DdziQQBXmcp3Umr+b4+hMIgu4vnVCT5dfj1V0osH/oq6D318QQ
+         3L20ve0rejI8/pOy/wR466hZigCMwczbaPvygrnp7ot9Dpqeq83taSQg1TmYoUcnUMZn
+         I/1xUc4ktwxwN2Iir1HPM/rZvxgkEKD78Cy3iXKboGJWOG24XmHoXcBN59VmNpCPhwa2
+         lImg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=R/12KZ3zaKxExl9P4oGh+KcLt9H2c5589aT4NjPenho=;
-        b=ulRQpr3q6+B4gG2RFu/6Xcr+tghVsqtUZWiTEqPKot55jOKb8zMJ+n9Y+182frxmch
-         xciCc2h4TaTm8YDfSXJo0F+POBf/JAH06/YLhV0qBLlAjWhmCKy3lr8FSFhSTPk3fPHW
-         WOcId/UyZpLA08kFTMKEVKPzhhjhUqebckVR7tYcHvKURAPqfDYWdW364sgduue7eew1
-         81D0GYwhDoFdT38BHbOcxQxe8wCyWIXJwUKzczc8/RbZcLyzRXawxeuWB8HL53mjHI62
-         P934bz07AzteDN8AOgOYacG1XSgdPTHQihm6QzebpbdnJiH33v2D+zz0tHgEeoF+G+ut
-         BrRg==
-X-Gm-Message-State: AOAM531D2ahi9+PSci55mLNb4B+MRWktVtqXM9vPEHnpB8jDhU+rd3mz
-        sc9Ez7OxrJXDm23bn9lmNkIaqzkTIHs=
-X-Google-Smtp-Source: ABdhPJyiEVdkxgnBExo84dPQasCXv7u3vDsMbqOWlE/fcvuCh16NVpx503AYgR0gw/lKJ/LLP8uJs50vLV8=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:e113:95c2:2d1:e304])
- (user=seanjc job=sendgmr) by 2002:a25:d4d0:: with SMTP id m199mr501324ybf.26.1615920294828;
- Tue, 16 Mar 2021 11:44:54 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 16 Mar 2021 11:44:36 -0700
-In-Reply-To: <20210316184436.2544875-1-seanjc@google.com>
-Message-Id: <20210316184436.2544875-5-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210316184436.2544875-1-seanjc@google.com>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH 4/4] KVM: nVMX: Clean up x2APIC MSR handling for L2
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>,
-        Yuan Yao <yaoyuan0329os@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CL63UUQ8vCBeSVhVlVTb0P1mjJWa4M6qfgb4z9iNqSE=;
+        b=q8krf9G5rS4Wvpix+H5g2KKBCcY9GHoQpF7CsJR4v61qrV5BSzHu5JTB4cT8r/NvsD
+         IuN8C6OzOag0bAo7Ory2ZcrbAGzQkMY5DscWaoMzzPBe5Iaq+Hn/0WhNuOx7qmepDuCu
+         s8SgJLwwyU7zgpx43VhR2OFWhQ6NC8ImcuUa43sPdttP1EER6Ca5E0BU/xGM2hJxM4PS
+         YS/oQF3ArAYkD/PltAkQ+V7tUoi2YpJ2Hp2UCt9y++s9fhBGiYUq1hjrkLp/YvdpjNGl
+         uIDpfKm+VjdijNnqHhI75Fr+R3YQV60a6mWQpcU/AS8CiA5Bt02Gw7H+LnWuZcz9NPeM
+         AYJQ==
+X-Gm-Message-State: AOAM530xjJtWZeJhFTv16f5drNmAX3BHWOxr9lM5Iu8PCAbOsVYcIes4
+        7RM5x5z7vVTZL+Sik5lDU+AngfRzHHjb5uF0/LQ=
+X-Google-Smtp-Source: ABdhPJxatiKANsJRq2VYLZujp8/EauT0iMdPvFErrhhhaZczlihjPhfo0EGkc/gl1dp5E3iWiHCkY+OO34ugbxqdGuY=
+X-Received: by 2002:a2e:b8c9:: with SMTP id s9mr42568ljp.187.1615920402865;
+ Tue, 16 Mar 2021 11:46:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210208051749.1785246-1-sergey.senozhatsky@gmail.com> <20210208051749.1785246-4-sergey.senozhatsky@gmail.com>
+In-Reply-To: <20210208051749.1785246-4-sergey.senozhatsky@gmail.com>
+From:   Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date:   Tue, 16 Mar 2021 19:46:26 +0100
+Message-ID: <CAPybu_10Uz0Eb2U5ZohNV1t0gf98ZBZOa3KFCzdi1RJ0k3c1yQ@mail.gmail.com>
+Subject: Re: [PATCHv2 3/3] media: uvcvideo: add UVC 1.5 ROI control
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up the x2APIC MSR bitmap intereption code for L2, which is the last
-holdout of open coded bitmap manipulations.  Freshen up the SDM/PRM
-comment, rename the function to make it abundantly clear the funky
-behavior is x2APIC specific, and explain _why_ vmcs01's bitmap is ignored
-(the previous comment was flat out wrong for x2APIC behavior).
+Hi Sergey
 
-No functional change intended.
+Thanks for the patch
+On Mon, Feb 8, 2021 at 6:23 AM Sergey Senozhatsky
+<sergey.senozhatsky@gmail.com> wrote:
+>
+> From: Sergey Senozhatsky <senozhatsky@chromium.org>
+>
+> This patch implements parts of UVC 1.5 Region of Interest (ROI)
+> control, using the uvcvideo selection API.
+>
+> There are several things to mention here.
+>
+> First, UVC 1.5 defines CT_DIGITAL_WINDOW_CONTROL; and ROI rectangle
+> coordinates "must be within the current Digital Window as specified
+> by the CT_WINDOW control."  (4.2.2.1.20 Digital Region of Interest
+> (ROI) Control.) This is not entirely clear if we need to implement
+> CT_DIGITAL_WINDOW_CONTROL. ROI is naturally limited by: ROI GET_MIN
+> and GET_MAX rectangles. Besides, the H/W that I'm playing with
+> implements ROI, but doesn't implement CT_DIGITAL_WINDOW_CONTROL,
+> so WINDOW_CONTROL is probably optional.
+>
+> Second, the patch doesn't implement all of the ROI requests.
+> Namely, SEL_TGT_BOUNDS for ROI implements GET_MAX (that is maximal
+> ROI rectangle area). GET_MIN is not implemented (as of now) since
+> it's not very clear if user space would need such information.
+>
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> ---
+>  drivers/media/usb/uvc/uvc_v4l2.c | 143 ++++++++++++++++++++++++++++++-
+>  1 file changed, 140 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+> index 252136cc885c..71b4577196e5 100644
+> --- a/drivers/media/usb/uvc/uvc_v4l2.c
+> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
+> @@ -1139,14 +1139,60 @@ static int uvc_ioctl_querymenu(struct file *file, void *fh,
+>         return uvc_query_v4l2_menu(chain, qm);
+>  }
+>
+> -static int uvc_ioctl_g_selection(struct file *file, void *fh,
+> -                                struct v4l2_selection *sel)
+> +/* UVC 1.5 ROI rectangle is half the size of v4l2_rect */
+> +struct uvc_roi_rect {
+> +       __u16                   top;
+> +       __u16                   left;
+> +       __u16                   bottom;
+> +       __u16                   right;
+> +};
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/vmx/nested.c | 53 +++++++++++----------------------------
- arch/x86/kvm/vmx/vmx.h    |  7 ++++++
- 2 files changed, 21 insertions(+), 39 deletions(-)
+Perhaps __packed; ?
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index aff41a432a56..49eeffb79823 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -476,44 +476,19 @@ static int nested_vmx_check_tpr_shadow_controls(struct kvm_vcpu *vcpu,
- }
- 
- /*
-- * If a msr is allowed by L0, we should check whether it is allowed by L1.
-- * The corresponding bit will be cleared unless both of L0 and L1 allow it.
-+ * For x2APIC MSRs, ignore the vmcs01 bitmap.  L1 can enable x2APIC without L1
-+ * itself utilizing x2APIC.  All MSRs were previously set to be intercepted,
-+ * only the disable intercept case needs to be handled.
-  */
--static void nested_vmx_disable_intercept_for_msr(unsigned long *msr_bitmap_l1,
--					       unsigned long *msr_bitmap_nested,
--					       u32 msr, int type)
-+static void nested_vmx_disable_intercept_for_x2apic_msr(unsigned long *msr_bitmap_l1,
-+							unsigned long *msr_bitmap_l0,
-+							u32 msr, int type)
- {
--	int f = sizeof(unsigned long);
-+	if (type & MSR_TYPE_R && !vmx_test_msr_bitmap_read(msr_bitmap_l1, msr))
-+		vmx_clear_msr_bitmap_read(msr_bitmap_l0, msr);
- 
--	/*
--	 * See Intel PRM Vol. 3, 20.6.9 (MSR-Bitmap Address). Early manuals
--	 * have the write-low and read-high bitmap offsets the wrong way round.
--	 * We can control MSRs 0x00000000-0x00001fff and 0xc0000000-0xc0001fff.
--	 */
--	if (msr <= 0x1fff) {
--		if (type & MSR_TYPE_R &&
--		   !test_bit(msr, msr_bitmap_l1 + 0x000 / f))
--			/* read-low */
--			__clear_bit(msr, msr_bitmap_nested + 0x000 / f);
--
--		if (type & MSR_TYPE_W &&
--		   !test_bit(msr, msr_bitmap_l1 + 0x800 / f))
--			/* write-low */
--			__clear_bit(msr, msr_bitmap_nested + 0x800 / f);
--
--	} else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff)) {
--		msr &= 0x1fff;
--		if (type & MSR_TYPE_R &&
--		   !test_bit(msr, msr_bitmap_l1 + 0x400 / f))
--			/* read-high */
--			__clear_bit(msr, msr_bitmap_nested + 0x400 / f);
--
--		if (type & MSR_TYPE_W &&
--		   !test_bit(msr, msr_bitmap_l1 + 0xc00 / f))
--			/* write-high */
--			__clear_bit(msr, msr_bitmap_nested + 0xc00 / f);
--
--	}
-+	if (type & MSR_TYPE_W && !vmx_test_msr_bitmap_write(msr_bitmap_l1, msr))
-+		vmx_clear_msr_bitmap_write(msr_bitmap_l0, msr);
- }
- 
- static inline void enable_x2apic_msr_intercepts(unsigned long *msr_bitmap)
-@@ -582,7 +557,7 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
- 	/*
- 	 * To keep the control flow simple, pay eight 8-byte writes (sixteen
- 	 * 4-byte writes on 32-bit systems) up front to enable intercepts for
--	 * the x2APIC MSR range and selectively disable them below.
-+	 * the x2APIC MSR range and selectively toggle those relevant to L2.
- 	 */
- 	enable_x2apic_msr_intercepts(msr_bitmap_l0);
- 
-@@ -601,17 +576,17 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
- 			}
- 		}
- 
--		nested_vmx_disable_intercept_for_msr(
-+		nested_vmx_disable_intercept_for_x2apic_msr(
- 			msr_bitmap_l1, msr_bitmap_l0,
- 			X2APIC_MSR(APIC_TASKPRI),
- 			MSR_TYPE_R | MSR_TYPE_W);
- 
- 		if (nested_cpu_has_vid(vmcs12)) {
--			nested_vmx_disable_intercept_for_msr(
-+			nested_vmx_disable_intercept_for_x2apic_msr(
- 				msr_bitmap_l1, msr_bitmap_l0,
- 				X2APIC_MSR(APIC_EOI),
- 				MSR_TYPE_W);
--			nested_vmx_disable_intercept_for_msr(
-+			nested_vmx_disable_intercept_for_x2apic_msr(
- 				msr_bitmap_l1, msr_bitmap_l0,
- 				X2APIC_MSR(APIC_SELF_IPI),
- 				MSR_TYPE_W);
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index aab89e713c8e..bc1a186a5bc2 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -393,6 +393,13 @@ void vmx_set_intercept_for_msr(struct kvm_vcpu *vcpu,
- 	u32 msr, int type, bool value);
- void vmx_update_cpu_dirty_logging(struct kvm_vcpu *vcpu);
- 
-+/*
-+ * Note, early Intel manuals have the write-low and read-high bitmap offsets
-+ * the wrong way round.  The bitmaps control MSRs 0x00000000-0x00001fff and
-+ * 0xc0000000-0xc0001fff.  The former (low) uses bytes 0-0x3ff for reads and
-+ * 0x800-0xbff for writes.  The latter (high) uses 0x400-0x7ff for reads and
-+ * 0xc00-0xfff for writes.
-+ */
- #define VMX_MSR_BITMAP_BASE_read	0x0
- #define VMX_MSR_BITMAP_BASE_write	0x800
- 
+> +
+> +static int uvc_ioctl_g_roi_target(struct file *file, void *fh,
+> +                                 struct v4l2_selection *sel)
+>  {
+>         struct uvc_fh *handle = fh;
+>         struct uvc_streaming *stream = handle->stream;
+> +       struct uvc_roi_rect *roi;
+> +       u8 query;
+> +       int ret;
+>
+> -       if (sel->type != stream->type)
+> +       switch (sel->target) {
+> +       case V4L2_SEL_TGT_ROI_DEFAULT:
+> +               query = UVC_GET_DEF;
+> +               break;
+> +       case V4L2_SEL_TGT_ROI_CURRENT:
+> +               query = UVC_GET_CUR;
+> +               break;
+> +       case V4L2_SEL_TGT_ROI_BOUNDS:
+> +               query = UVC_GET_MAX;
+> +               break;
+> +       default:
+>                 return -EINVAL;
+> +       }
+> +
+> +       roi = kzalloc(sizeof(struct uvc_roi_rect), GFP_KERNEL);
+> +       if (!roi)
+> +               return -ENOMEM;
+> +
+> +       ret = uvc_query_ctrl(stream->dev, query, 1, stream->dev->intfnum,
+> +                            UVC_CT_REGION_OF_INTEREST_CONTROL, roi,
+> +                            sizeof(struct uvc_roi_rect));
+
+It is a pity that we have to alloc memory for this  :(.
+
+@Laurent, do you know a better way?
+
+> +       if (!ret) {
+> +               sel->r.left     = roi->left;
+> +               sel->r.top      = roi->top;
+> +               sel->r.width    = roi->right;
+> +               sel->r.height   = roi->bottom;
+> +       }
+> +
+> +       kfree(roi);
+> +       return ret;
+> +}
+> +
+> +static int uvc_ioctl_g_sel_target(struct file *file, void *fh,
+> +                                 struct v4l2_selection *sel)
+> +{
+> +       struct uvc_fh *handle = fh;
+> +       struct uvc_streaming *stream = handle->stream;
+>
+>         switch (sel->target) {
+>         case V4L2_SEL_TGT_CROP_DEFAULT:
+> @@ -1173,6 +1219,96 @@ static int uvc_ioctl_g_selection(struct file *file, void *fh,
+>         return 0;
+>  }
+>
+> +static int uvc_ioctl_g_selection(struct file *file, void *fh,
+> +                                struct v4l2_selection *sel)
+> +{
+> +       struct uvc_fh *handle = fh;
+> +       struct uvc_streaming *stream = handle->stream;
+> +
+> +       if (sel->type != stream->type)
+> +               return -EINVAL;
+> +
+> +       switch (sel->target) {
+> +       case V4L2_SEL_TGT_CROP_DEFAULT:
+> +       case V4L2_SEL_TGT_CROP_BOUNDS:
+> +       case V4L2_SEL_TGT_COMPOSE_DEFAULT:
+> +       case V4L2_SEL_TGT_COMPOSE_BOUNDS:
+> +               return uvc_ioctl_g_sel_target(file, fh, sel);
+> +       case V4L2_SEL_TGT_ROI_CURRENT:
+> +       case V4L2_SEL_TGT_ROI_DEFAULT:
+> +       case V4L2_SEL_TGT_ROI_BOUNDS:
+> +               return uvc_ioctl_g_roi_target(file, fh, sel);
+> +       }
+> +
+> +       return -EINVAL;
+> +}
+
+Are you sure that there is no lock needed between the control and the
+selection API?
+
+> +
+> +static bool validate_roi_bounds(struct uvc_streaming *stream,
+> +                               struct v4l2_selection *sel)
+> +{
+> +       bool ok = true;
+> +
+> +       if (sel->r.left > USHRT_MAX || sel->r.top > USHRT_MAX ||
+> +           sel->r.width > USHRT_MAX || sel->r.height > USHRT_MAX)
+> +               return false;
+> +
+> +       /* perhaps also can test against ROI GET_MAX */
+> +
+> +       mutex_lock(&stream->mutex);
+Maybe you should not release this mutex until query_ctrl is done?
+
+> +       if ((u16)sel->r.width > stream->cur_frame->wWidth)
+> +               ok = false;
+> +       if ((u16)sel->r.height > stream->cur_frame->wHeight)
+> +               ok = false;
+> +       mutex_unlock(&stream->mutex);
+> +
+> +       return ok;
+> +}
+> +
+> +static int uvc_ioctl_s_roi(struct file *file, void *fh,
+> +                          struct v4l2_selection *sel)
+> +{
+> +       struct uvc_fh *handle = fh;
+> +       struct uvc_streaming *stream = handle->stream;
+> +       struct uvc_roi_rect *roi;
+> +       int ret;
+> +
+> +       if (!validate_roi_bounds(stream, sel))
+> +               return -E2BIG;
+> +
+> +       roi = kzalloc(sizeof(struct uvc_roi_rect), GFP_KERNEL);
+> +       if (!roi)
+> +               return -ENOMEM;
+> +
+> +       roi->left       = sel->r.left;
+> +       roi->top        = sel->r.top;
+> +       roi->right      = sel->r.width;
+> +       roi->bottom     = sel->r.height;
+> +
+> +       ret = uvc_query_ctrl(stream->dev, UVC_SET_CUR, 1, stream->dev->intfnum,
+> +                            UVC_CT_REGION_OF_INTEREST_CONTROL, roi,
+> +                            sizeof(struct uvc_roi_rect));
+
+I think you need to read back from the device the actual value
+
+https://www.kernel.org/doc/html/v4.13/media/uapi/v4l/vidioc-g-selection.html?highlight=vidioc_s_selection
+On success the struct v4l2_rect r field contains the adjusted
+rectangle. When the parameters are unsuitable the application may
+modify the cropping (composing) or image parameters and repeat the
+cycle until satisfactory parameters have been negotiated. If
+constraints flags have to be violated at then ERANGE is returned. The
+error indicates that there exist no rectangle that satisfies the
+constraints.
+
+
+> +
+> +       kfree(roi);
+> +       return ret;
+> +}
+> +
+> +static int uvc_ioctl_s_selection(struct file *file, void *fh,
+> +                                struct v4l2_selection *sel)
+> +{
+> +       struct uvc_fh *handle = fh;
+> +       struct uvc_streaming *stream = handle->stream;
+> +
+> +       if (sel->type != stream->type)
+> +               return -EINVAL;
+> +
+> +       switch (sel->target) {
+> +       case V4L2_SEL_TGT_ROI:
+> +               return uvc_ioctl_s_roi(file, fh, sel);
+> +       }
+> +
+> +       return -EINVAL;
+> +}
+> +
+>  static int uvc_ioctl_g_parm(struct file *file, void *fh,
+>                             struct v4l2_streamparm *parm)
+>  {
+> @@ -1533,6 +1669,7 @@ const struct v4l2_ioctl_ops uvc_ioctl_ops = {
+>         .vidioc_try_ext_ctrls = uvc_ioctl_try_ext_ctrls,
+>         .vidioc_querymenu = uvc_ioctl_querymenu,
+>         .vidioc_g_selection = uvc_ioctl_g_selection,
+> +       .vidioc_s_selection = uvc_ioctl_s_selection,
+>         .vidioc_g_parm = uvc_ioctl_g_parm,
+>         .vidioc_s_parm = uvc_ioctl_s_parm,
+>         .vidioc_enum_framesizes = uvc_ioctl_enum_framesizes,
+> --
+> 2.30.0
+>
+
+
 -- 
-2.31.0.rc2.261.g7f71774620-goog
-
+Ricardo Ribalda
