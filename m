@@ -2,90 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDC333D37E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B43133D37C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:03:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237585AbhCPMDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:03:32 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:52074 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237557AbhCPMDQ (ORCPT
+        id S237571AbhCPMDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 08:03:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232772AbhCPMDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:03:16 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12GC38vE113760;
-        Tue, 16 Mar 2021 07:03:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615896188;
-        bh=JUZxNgAAlZvvc/jMKRjU1b/5rgQyQZ9P6xe6l9jYb4Q=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=P9U4MgeFyjsgys3GcUbucDbseTujEUj1IlkGJX8qeBSulPU2URmWVcNa9zkceGcEc
-         aesueUX4FZk8WZjmIZrxegjzZYjIqv3cWosN8Y5IjVUsJNyGn4V1mTuJLDGCIlVcDb
-         rHMEo9k5jDyIh7JPcs9KsZt58UVRnQo/XELFxRJI=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12GC38tA084521
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 16 Mar 2021 07:03:08 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 16
- Mar 2021 07:03:08 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 16 Mar 2021 07:03:08 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12GC34xc084945;
-        Tue, 16 Mar 2021 07:03:05 -0500
-Subject: Re: [PATCH v5 2/3] arm64: dts: ti: k3-j7200-common-proc-board:
- Disable unused gpio modules
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>, Sekhar Nori <nsekhar@ti.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210310161924.22256-1-a-govindraju@ti.com>
- <20210310161924.22256-3-a-govindraju@ti.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <28391514-7946-4db0-598e-b53b75fc30b5@ti.com>
-Date:   Tue, 16 Mar 2021 14:01:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 16 Mar 2021 08:03:02 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D352C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 05:02:59 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id mm21so71609089ejb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 05:02:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=iPXR+AktNqrwbXoFSMKJafZPW/qVzp+J0tB5dSvdVJE=;
+        b=qV+w76FJKuOM5pWRfhIz/X64Jpgxx+UL3OczdVFqZbRwXxi4ROyJcj/R6vqmDEcqBw
+         ms6hcifAzM8yvT11trjCE4DY49FMsLIB6Jo39LH/YwLimkjOysNO9TZA3NzMDcawfh/t
+         ZN0PlfY5Z2ZrCm052XruJcDgk3QXYplDVliIaBh1utj7AZc+JGlf4V11w01Y6rc6vuhB
+         pPz2LoZZyMCInw2UL3pE01YWFK52BU4EoZzniMSdM4aMmEKI6c5+nKU7Pjn71EtZBGGn
+         nWbGGNHpuJ+CXiMsTL4kCnu04nkz9sgSFAN5qXJSuo73Xymvcp/JpxN9lR3oWc8YaJPq
+         1JhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iPXR+AktNqrwbXoFSMKJafZPW/qVzp+J0tB5dSvdVJE=;
+        b=H90ZvxxNf+WvAr1ZzKzkfYfM5A8W60OX1xWC2qYMKnHnyUygsIiaopQPAcGUV4VQ+P
+         19FZqfxxCtU2MjzZgJbMzi/zOg2nh6LgcS7W24lHDetj0rioB0zpCBAL+GJf0vSgK97Y
+         3GOWMJL8FLpimxoaeNJdJ7wXE2O616KjFwEhxhGMt718BbEzjZiwNotNxKIsTOqTiWxr
+         9VkWZSKKKEZFyuNcHGa37+3HBWpG5dVJFulXwBdrKTUcsbLRZUPeR04ZfIBsV/P9Ia4S
+         mqFV3XyNvzJ2LOEMydQxmrKIjosrwdWnVBvSEfT7dE1g12+w6XPniQxx7YCxwNkNbQzN
+         tBcQ==
+X-Gm-Message-State: AOAM531X8T5cctbSi+Z1xw+IgAzf34XvQAeu6EL20digTbW7p/HDOP9S
+        LgK+1uG+gb0X4/iSNtBt1q6W3nPuJS1Ql49aCHX0B1L2MODv8/ML
+X-Google-Smtp-Source: ABdhPJxvnmKURFAs8b6W8bPA/FkKND/34KcvIRdQrUh4fhl84vjtYB+HBwH6hHQ/KSgPC6vBGBc8QNjb4GLKkOubQ3U=
+X-Received: by 2002:a17:907:7785:: with SMTP id ky5mr17743901ejc.133.1615896178034;
+ Tue, 16 Mar 2021 05:02:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210310161924.22256-3-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210315135212.060847074@linuxfoundation.org>
+In-Reply-To: <20210315135212.060847074@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 16 Mar 2021 17:32:46 +0530
+Message-ID: <CA+G9fYvsDpz+PaznUbW=UmMC7n6QA3k+r74x5N-nmbEHSE1enA@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/78] 4.9.262-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 15 Mar 2021 at 19:23, <gregkh@linuxfoundation.org> wrote:
+>
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+> This is the start of the stable review cycle for the 4.9.262 release.
+> There are 78 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 17 Mar 2021 13:51:58 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.262-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.9.262-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.9.y
+git commit: ed0b71399e2dfd89140732fd60d9435b266598c4
+git describe: v4.9.261-79-ged0b71399e2d
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
+y/build/v4.9.261-79-ged0b71399e2d
+
+No regressions (compared to build v4.9.261)
+
+No fixes (compared to build v4.9.261)
 
 
-On 10/03/2021 18:19, Aswath Govindraju wrote:
-> From: Faiz Abbas <faiz_abbas@ti.com>
-> 
-> There are 6 gpio instances inside SoC with 2 groups as show below:
->      Group one: wkup_gpio0, wkup_gpio1
->      Group two: main_gpio0, main_gpio2, main_gpio4, main_gpio6
-> 
-> Only one instance from each group can be used at a time. So use main_gpio0
-> and wkup_gpio0 in current linux context and disable the rest of the nodes.
-> 
-> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
-> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> ---
->   .../boot/dts/ti/k3-j7200-common-proc-board.dts   | 16 ++++++++++++++++
->   1 file changed, 16 insertions(+)
+Ran 39751 total tests in the following environments and test suites.
 
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-64k_page_size
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
 
--- 
-Best regards,
-grygorii
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* fwts
+* network-basic-tests
+* kselftest-kexec
+* kselftest-sync
+* kselftest-vm
+* kselftest-x86
+* ltp-open-posix-tests
+* kvm-unit-tests
+* igt-gpu-tools
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
