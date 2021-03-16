@@ -2,123 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC2933CC59
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 04:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D36A233CC60
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 04:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232981AbhCPD5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 23:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56322 "EHLO
+        id S229803AbhCPD64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 23:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233328AbhCPD5H (ORCPT
+        with ESMTP id S229720AbhCPD6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 23:57:07 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB89EC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 20:57:06 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id w11so9973320iol.13
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 20:57:06 -0700 (PDT)
+        Mon, 15 Mar 2021 23:58:52 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C7DC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 20:58:52 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so708493pjg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 20:58:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=qa8CZwJOeZFJUfkuJ5OjeuaRp9kzYHq6lZBFu2jA+Gw=;
-        b=K6nq/jUY0UMPI4TsIymeF0yspJqJuN1e2Z/ELnVv5em0SXtGDAABy7ex9PGaTNWwSl
-         N1Fq6HTh6rmKDN3STw8c2mhsUy7YH6cKAPaIiEOI9GVz0Lh+liGEC7CSGEnnSG6YIEat
-         JCmYLtK7lOXFqGwBjPrEKy4YWNkKIwX/H+BY9U/nrbu1dIbmOQI49D77iPSweFNlLspI
-         YWzk8P7mgvaos+kVOn3k1gezit5F1w6aSLY0QPGjjqAMCBilHvtlNvjK6pCPt1ufWI3s
-         0LegBteUZudjGDyj7eQ/2NqYTKnqdQBmHtYLD9yFbEUP3fFmrlJIrh4norJ0TtqqwnSL
-         641g==
+        bh=SzXlqLikayDej+9/WrhYQCMKO1vcITmBgVXKNGZ0bAs=;
+        b=zcIUpwKXaw9vakDsmOY9jbUuRQ9QiW/B6ZxkuPPh2Eher8WapBraPgcs5LoltOkLW4
+         BebV6XUdvP/TgwEvBa8gAnNPBZlbuEix1nkjEArrgf/1Ng6AmP/QlVvJmiVQLgJYusDv
+         CXLGEyNnOe20cykU0evYfKl0rXta3czGG+CFuAlACZ2eEmIZ+wNmi1TmmpbMfDmUPavC
+         UpSORVz/6EtbSEPiWRTP6y8/stOdTxIkpAubJpLiAkRk+91BZzqT/ZJmKTB4dBO+b7TV
+         WAm2G9hUV5wRkVuybbIljyn4Uoby4whwfDRfaY2weFzfUi+novhxqpkGxKWvy8zVIHLF
+         aNGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=qa8CZwJOeZFJUfkuJ5OjeuaRp9kzYHq6lZBFu2jA+Gw=;
-        b=cLgH4Mha5AnoqWZonlKnqyjvv5BxPVPPJr+XaWSYueD009Z/qnkYq0RNprkfcuZmnk
-         HVtLD4HdhPJo7Ox9ocE2SQTvtuWQ5PyYU6H/xreRwc3JyqsflTkOIS8xJCsCsiWmfzzV
-         XXvF2jH0znfbwqFPIrPgslLKUcs7qp0lh6ICIsMsf5/zMLJiCl55JKRDZ3WJqRcVpLlr
-         HYtK7bqVNHvZy6JeWmBanSzLeBcFS1lDd6qG2rIgaCZEQHHoO7hqNBwF2WVIQq+UrnJk
-         lDFS3NFBPLfXanlIvK2dKeZquKy4+i3r9RIj7fa9FzS1bSepXJlqTn7bMcmhwjbmlHMB
-         4czQ==
-X-Gm-Message-State: AOAM5304+7Mite0wXgndhylSz3Z+2ahreyaKoOxsXDTbVN0ESft+P7aw
-        AfZxsxaK7HorBxZNI8c5PlOfbg==
-X-Google-Smtp-Source: ABdhPJwNp0pcHttp9QW2yxQMvwq4OEcBYKJA/vZFr+ygOrf1wEU5FGRF8D/a5+9oMEQRgREz3ckO7Q==
-X-Received: by 2002:a5d:9f4a:: with SMTP id u10mr1932727iot.186.1615867026137;
-        Mon, 15 Mar 2021 20:57:06 -0700 (PDT)
-Received: from google.com ([2620:15c:183:200:d825:37a2:4b55:995f])
-        by smtp.gmail.com with ESMTPSA id y13sm6447282ioc.36.2021.03.15.20.57.04
+        bh=SzXlqLikayDej+9/WrhYQCMKO1vcITmBgVXKNGZ0bAs=;
+        b=PBjlZNMGbMs5lKVH9tyJYREbMT5apqGtYBM+LVu4QdAHklqHnOYzn321kprT1XWLfY
+         fDNTny5TBP4jpjpgTHyhpv7wv9qAMkkLE0pRupUSKCpWYCPEPLetLEi/aqiTsOdeoitI
+         K/VDttBZSzImk4SGYBQbZ7vyoZLhb9rtYRovXJMSvkFci8WrLmol/EyXWa/Qm2MSUyg3
+         zSG817yMtk6BB2z1rGJjtrOps67OBJOfL4jwfIjZkNPKx/d0XLSGqlwuae/WxHR0/RfE
+         7tfJ9YAkch4rF0Ts6RwNvmowenA18TYpfvv3OjYqsGtylMqQXr3aoiccbocbUpDgpaGi
+         O+KQ==
+X-Gm-Message-State: AOAM530ocOE3iuh1EcIxh8Pr1dtKRHETmFiIgd3rKBvpwSq9gYex4ank
+        8HXGB7ZOOFIBg5mxlnr+TxFu
+X-Google-Smtp-Source: ABdhPJwiP6/+R4rhjKOCBg0O/VVBWzkj9vXCgcnKPWE/zir8dyBqI1gn3LPSdppyytdItwMFhZsZaQ==
+X-Received: by 2002:a17:902:e906:b029:e5:c6d2:7dd0 with SMTP id k6-20020a170902e906b02900e5c6d27dd0mr14963791pld.12.1615867132156;
+        Mon, 15 Mar 2021 20:58:52 -0700 (PDT)
+Received: from thinkpad ([103.66.79.72])
+        by smtp.gmail.com with ESMTPSA id g21sm1085109pjl.28.2021.03.15.20.58.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 20:57:05 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 21:57:00 -0600
-From:   Yu Zhao <yuzhao@google.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Yang Shi <shy828301@gmail.com>, linux-kernel@vger.kernel.org,
-        page-reclaim@google.com
-Subject: Re: [PATCH v1 09/14] mm: multigenerational lru: mm_struct list
-Message-ID: <YFAsjP7NIZM5Ld+m@google.com>
-References: <20210313075747.3781593-1-yuzhao@google.com>
- <20210313075747.3781593-10-yuzhao@google.com>
- <048e5e1e977e720c3f9fc536ac54beebcc8319f5.camel@surriel.com>
- <87pmzzsvfb.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        Mon, 15 Mar 2021 20:58:51 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 09:28:45 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Edgar Bernardi Righi <edgar.righi@lsitec.org.br>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/6] clk: actions: Fix SD clocks factor table on Owl S500
+ SoC
+Message-ID: <20210316035845.GB1798@thinkpad>
+References: <cover.1615221459.git.cristian.ciocaltea@gmail.com>
+ <973b08fe414321ba4ade096a4917cadc2013426e.1615221459.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87pmzzsvfb.fsf@yhuang6-desk1.ccr.corp.intel.com>
+In-Reply-To: <973b08fe414321ba4ade096a4917cadc2013426e.1615221459.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 10:07:36AM +0800, Huang, Ying wrote:
-> Rik van Riel <riel@surriel.com> writes:
+On Mon, Mar 08, 2021 at 07:18:27PM +0200, Cristian Ciocaltea wrote:
+> Drop the unsupported entries in the factor table used for the SD[0-2]
+> clocks definitions on the Actions Semi Owl S500 SoC.
 > 
-> > On Sat, 2021-03-13 at 00:57 -0700, Yu Zhao wrote:
-> >
-> >> +/*
-> >> + * After pages are faulted in, they become the youngest generation.
-> >> They must
-> >> + * go through aging process twice before they can be evicted. After
-> >> first scan,
-> >> + * their accessed bit set during initial faults are cleared and they
-> >> become the
-> >> + * second youngest generation. And second scan makes sure they
-> >> haven't been used
-> >> + * since the first.
-> >> + */
-> >
-> > I have to wonder if the reductions in OOM kills and 
-> > low-memory tab discards is due to this aging policy
-> > change, rather than from the switch to virtual scanning.
+> Fixes: ed6b4795ece4 ("clk: actions: Add clock driver for S500 SoC")
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> ---
+>  drivers/clk/actions/owl-s500.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
+> index 75b7186185b0..69cd959205f5 100644
+> --- a/drivers/clk/actions/owl-s500.c
+> +++ b/drivers/clk/actions/owl-s500.c
+> @@ -127,8 +127,6 @@ static struct clk_factor_table sd_factor_table[] = {
+>  	{ 12, 1, 13 }, { 13, 1, 14 }, { 14, 1, 15 }, { 15, 1, 16 },
+>  	{ 16, 1, 17 }, { 17, 1, 18 }, { 18, 1, 19 }, { 19, 1, 20 },
+>  	{ 20, 1, 21 }, { 21, 1, 22 }, { 22, 1, 23 }, { 23, 1, 24 },
+> -	{ 24, 1, 25 }, { 25, 1, 26 }, { 26, 1, 27 }, { 27, 1, 28 },
+> -	{ 28, 1, 29 }, { 29, 1, 30 }, { 30, 1, 31 }, { 31, 1, 32 },
 
-There are no policy changes per se. The current page reclaim also
-scans a faulted-in page at least twice before it can reclaim it.
-That said, the new aging yields a better overall result because it
-discovers every page that has been referenced since the last scan,
-in addition to what Ying has mentioned. The current page scan stops
-stops once it finds enough candidates, which may seem more
-efficiently, but actually pays the price for not finding the best.
+How did you determine that these values are not supported?
 
-> If my understanding were correct, the temperature of the processes is
-> considered in addition to that of the individual pages.  That is, the
-> pages of the processes that haven't been scheduled after the previous
-> scanning will not be scanned.  I guess that this helps OOM kills?
+I've seen cases where the datasheet has the incomplete information about the
+supported ranges but the downstream driver has everything.
 
-Yes, that's correct.
+Thanks,
+Mani
 
-> If so, how about just take advantage of that information for OOM killing
-> and page reclaiming?  For example, if a process hasn't been scheduled
-> for long time, just reclaim its private pages.
-
-This is how it works. Pages that haven't been scanned grow older
-automatically because those that have been scanned will be tagged with
-younger generation numbers. Eviction does bucket sort based on
-generation numbers and attacks the oldest.
+>  
+>  	/* bit8: /128 */
+>  	{ 256, 1, 1 * 128 }, { 257, 1, 2 * 128 }, { 258, 1, 3 * 128 }, { 259, 1, 4 * 128 },
+> @@ -137,8 +135,6 @@ static struct clk_factor_table sd_factor_table[] = {
+>  	{ 268, 1, 13 * 128 }, { 269, 1, 14 * 128 }, { 270, 1, 15 * 128 }, { 271, 1, 16 * 128 },
+>  	{ 272, 1, 17 * 128 }, { 273, 1, 18 * 128 }, { 274, 1, 19 * 128 }, { 275, 1, 20 * 128 },
+>  	{ 276, 1, 21 * 128 }, { 277, 1, 22 * 128 }, { 278, 1, 23 * 128 }, { 279, 1, 24 * 128 },
+> -	{ 280, 1, 25 * 128 }, { 281, 1, 26 * 128 }, { 282, 1, 27 * 128 }, { 283, 1, 28 * 128 },
+> -	{ 284, 1, 29 * 128 }, { 285, 1, 30 * 128 }, { 286, 1, 31 * 128 }, { 287, 1, 32 * 128 },
+>  	{ 0, 0, 0 },
+>  };
+>  
+> -- 
+> 2.30.1
+> 
