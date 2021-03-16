@@ -2,91 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD2D33E0DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B08D33E090
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:32:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhCPVwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 17:52:04 -0400
-Received: from casper.infradead.org ([90.155.50.34]:37684 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232943AbhCPVRA (ORCPT
+        id S229702AbhCPVcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 17:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhCPVbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 17:17:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5gozf9msiE9KxmQI3WyWORDOu9a/cAx+NIytFUdmLig=; b=X/SgE772DCUsq82Z3cmFeX95oO
-        PqfjJ2FRHKtH42r39m6MsvF9e5TdZgVBI17+s6kSwsdLRIH6v9V4li+P1j+8WqrEOiBkH6dTpmXCl
-        zj1Kf2d5mWrKPa8KsbpoPAW1aiwZWNaloYuw/CAIYs+xvotJFNzpXH8o2sLJTPSdxOe8bKxhzoW7R
-        Fj+2vE8z7DbOu1UEzcqo4TMCRdDso4boo0dWkPh4i3GG1J0Wl3oHeTBkK6TokK4mP/RePGYbmcBdt
-        UCFi0He2Yd3bwFvSsH+Qnhs7glJ4VOkYI0qVv+/wM6AHgCid9xL3/c/oJyHftKdVv1DVOVvqYwv5V
-        V7lwKkHg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMH2e-000dKj-Op; Tue, 16 Mar 2021 21:15:57 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 59827981337; Tue, 16 Mar 2021 22:15:52 +0100 (CET)
-Date:   Tue, 16 Mar 2021 22:15:52 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: [PATCH v23 00/28] Control-flow Enforcement: Shadow Stack
-Message-ID: <20210316211552.GU4746@worktop.programming.kicks-ass.net>
-References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316151054.5405-1-yu-cheng.yu@intel.com>
+        Tue, 16 Mar 2021 17:31:48 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F41C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 14:31:47 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id j3so26336515qvo.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 14:31:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=9qIl2h84+tEpR/qPDqw7Ia65+Rx0tWJMRUJLpgSeqnM=;
+        b=VKidfvf+MG8jEETiiE08axf+7iZQSbpLglqhROkebIZt0fikpDpV+kmPgHe73Lb49T
+         F6Jt3upfNFYoCxTLLr1Z2K++BKVf9H7bLpTYOrOCm/U9fkU1VyayTnp28aq/OnASgofU
+         Z6jsIV8CsPGH6Oo95QDA+JzG0J+v1sOJwO1sFf8/SskIpOSdb2U5uPvoBy0gKHGlRm9p
+         jfsnW/ubAhcqY5QOmfnydoebGLjEyF8lN8awAq8SdqJwv7JQ+Q6N+dLLxyAfA/ov9cx0
+         CfTsAP240chH8GQBxFrb83QwL8m9p3jUl09lRYdM759F98i+SG29MZHWRvyLszMsA9pN
+         F2Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=9qIl2h84+tEpR/qPDqw7Ia65+Rx0tWJMRUJLpgSeqnM=;
+        b=sHZtGtS+yRhzZ8Dp5SSuZhK9JGUG/ZRWaDSXKQ2LTmetZ0Afa21D0NaszSY1sNcgGp
+         oT2/TlI/U/bDzqQpfh6gZ2lfeddj0O+gyz4TZc1ViqviS9diLwkko3CH/DYhROkLY+GQ
+         i/0+2cdBCODOZuTs8OT1RRT4W1lovzKLefr5P8jHW4RQamSNQYxFCzsdzyNlt2nkAGoV
+         DPesuSbf7/NkNaN3/QGsJat1x/VTdvghPIMzXvjOfwv/QP1wJJ6gqUTipaXh5HuzK8V3
+         1hg0hqkoFuIISpuz129mDpemmAwI3Ncdboj2zfSMP7byO4jDLzCknO9crk9WdiqzuREg
+         qS8w==
+X-Gm-Message-State: AOAM530VeqzqKtmkCgpZ7PiwuQ9lMSboubRAWUaKKaNI7Qtrjotu5YzI
+        Sf6OBf95lpJ/MV+Wys/FfQjOZCMmYRiMRJw5ttQ=
+X-Google-Smtp-Source: ABdhPJxIW6jDWu6KdNEpIRhbBqjCtyfJcmFkSZFoI1+waUeR+OqLTQtQfV45DrCQ6Cik8oLM3S/lHWzj7Dwr7A4Wpz4=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:b408:7c5f:edf4:6c69])
+ (user=ndesaulniers job=sendgmr) by 2002:a05:6214:2b06:: with SMTP id
+ jx6mr1632764qvb.48.1615930306822; Tue, 16 Mar 2021 14:31:46 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 14:31:33 -0700
+Message-Id: <20210316213136.1866983-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH] scripts: stable: add script to validate backports
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Cc:     Ard Biesheuvel <ard@kernel.org>,
+        clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 08:10:26AM -0700, Yu-cheng Yu wrote:
-> Control-flow Enforcement (CET) is a new Intel processor feature that blocks
-> return/jump-oriented programming attacks.  Details are in "Intel 64 and
-> IA-32 Architectures Software Developer's Manual" [1].
-> 
-> CET can protect applications and the kernel.  This series enables only
-> application-level protection, and has three parts:
-> 
->   - Shadow stack [2],
->   - Indirect branch tracking [3], and
->   - Selftests [4].
+A common recurring mistake made when backporting patches to stable is
+forgetting to check for additional commits tagged with `Fixes:`. This
+script validates that local commits have a `commit <sha40> upstream.`
+line in their commit message, and whether any additional `Fixes:` shas
+exist in the `master` branch but were not included. It can not know
+about fixes yet to be discovered, or fixes sent to the mailing list but
+not yet in mainline.
 
-CET is marketing; afaict SS and IBT are 100% independent and there's no
-reason what so ever to have them share any code, let alone a Kconfig
-knob.
+To save time, it avoids checking all of `master`, stopping early once
+we've reached the commit time of the earliest backport. It takes 0.5s to
+validate 2 patches to linux-5.4.y when master is v5.12-rc3 and 5s to
+validate 27 patches to linux-4.19.y. It does not recheck dependencies of
+found fixes; the user is expected to run this script to a fixed point.
+It depnds on pygit2 python library for working with git, which can be
+installed via:
+$ pip3 install pygit2
 
-In fact, I think all of this would improve is you remove the CET name
-from all of this entirely. Put this series under CONFIG_X86_SHSTK (or
-_SS) and use CONFIG_X86_IBT for the other one.
+It's expected to be run from a stable tree with commits applied.  For
+example, consider 3cce9d44321e which is a fix for f77ac2e378be. Let's
+say I cherry picked f77ac2e378be into linux-5.4.y but forgot
+3cce9d44321e (true story). If I ran:
 
-Similarly with the .c file.
+$ ./scripts/stable/check_backports.py
+Checking 1 local commits for additional Fixes: in master
+Please consider backporting 3cce9d44321e as a fix for f77ac2e378be
 
-All this CET business is just pure confusion.
+So then I could cherry pick 3cce9d44321e as well:
+$ git cherry-pick -sx 3cce9d44321e
+$ ./scripts/stable/check_backports.py
+...
+Exception: Missing 'commit <sha40> upstream.' line
+
+Oops, let me fixup the commit message and retry.
+$ git commit --amend
+<fix commit message>
+$ ./scripts/stable/check_backports.py
+Checking 2 local commits for additional Fixes: in master
+$ echo $?
+0
+
+This allows for client side validation by the backports author, and
+server side validation by the stable kernel maintainers.
+
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ MAINTAINERS                       |  1 +
+ scripts/stable/check_backports.py | 92 +++++++++++++++++++++++++++++++
+ 2 files changed, 93 insertions(+)
+ create mode 100755 scripts/stable/check_backports.py
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index aa84121c5611..a8639e9277c4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16960,6 +16960,7 @@ M:	Sasha Levin <sashal@kernel.org>
+ L:	stable@vger.kernel.org
+ S:	Supported
+ F:	Documentation/process/stable-kernel-rules.rst
++F:	scripts/stable/
+ 
+ STAGING - ATOMISP DRIVER
+ M:	Mauro Carvalho Chehab <mchehab@kernel.org>
+diff --git a/scripts/stable/check_backports.py b/scripts/stable/check_backports.py
+new file mode 100755
+index 000000000000..529294e247ca
+--- /dev/null
++++ b/scripts/stable/check_backports.py
+@@ -0,0 +1,92 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2021 Google, Inc.
++
++import os
++import re
++import sys
++
++import pygit2 as pg
++
++
++def get_head_branch(repo):
++    # Walk the branches to find which is HEAD.
++    for branch_name in repo.branches:
++        branch = repo.branches[branch_name]
++        if branch.is_head():
++            return branch
++
++
++def get_local_commits(repo):
++    head_branch = get_head_branch(repo)
++    # Walk the HEAD ref until we hit the first commit from the upstream.
++    walker = repo.walk(repo.head.target)
++    upstream_branch = head_branch.upstream
++    upstream_commit, _ = repo.resolve_refish(upstream_branch.name)
++    walker.hide(upstream_commit.id)
++    commits = [commit for commit in walker]
++    if not len(commits):
++        raise Exception("No local commits")
++    return commits
++
++
++def get_upstream_shas(commits):
++    upstream_shas = []
++    prog = re.compile('commit ([0-9a-f]{40}) upstream.')
++    # For each line of each commit message, record the
++    # "commit <sha40> upstream." line.
++    for commit in commits:
++        found_upstream_line = False
++        for line in commit.message.splitlines():
++            result = prog.search(line)
++            if result:
++                upstream_shas.append(result.group(1)[:12])
++                found_upstream_line = True
++                break
++        if not found_upstream_line:
++            raise Exception("Missing 'commit <sha40> upstream.' line")
++    return upstream_shas
++
++
++def get_oldest_commit_time(repo, shas):
++    commit_times = [repo.resolve_refish(sha)[0].commit_time for sha in shas]
++    return sorted(commit_times)[0]
++
++
++def get_fixes_for(shas):
++    shas = set(shas)
++    prog = re.compile("Fixes: ([0-9a-f]{12,40})")
++    # Walk commits in the master branch.
++    master_commit, master_ref = repo.resolve_refish("master")
++    walker = repo.walk(master_ref.target)
++    oldest_commit_time = get_oldest_commit_time(repo, shas)
++    fixes = []
++    for commit in walker:
++        # It's not possible for a Fixes: to be committed before a fixed tag, so
++        # don't iterate all of git history.
++        if commit.commit_time < oldest_commit_time:
++            break
++        for line in reversed(commit.message.splitlines()):
++            result = prog.search(line)
++            if not result:
++                continue
++            fixes_sha = result.group(1)[:12]
++            if fixes_sha in shas and commit.id.hex[:12] not in shas:
++                fixes.append((commit.id.hex[:12], fixes_sha))
++    return fixes
++
++
++def report(fixes):
++    if len(fixes):
++        for fix, broke in fixes:
++            print("Please consider backporting %s as a fix for %s" % (fix, broke))
++        sys.exit(1)
++
++
++if __name__ == "__main__":
++    repo = pg.Repository(os.getcwd())
++    commits = get_local_commits(repo)
++    print("Checking %d local commits for additional Fixes: in master" % (len(commits)))
++    upstream_shas = get_upstream_shas(commits)
++    fixes = get_fixes_for(upstream_shas)
++    report(fixes)
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
