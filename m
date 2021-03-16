@@ -2,242 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5EE33DFAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2572F33DFB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232145AbhCPU7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 16:59:43 -0400
-Received: from mail-il1-f175.google.com ([209.85.166.175]:42106 "EHLO
-        mail-il1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232113AbhCPU7J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 16:59:09 -0400
-Received: by mail-il1-f175.google.com with SMTP id p10so14041573ils.9;
-        Tue, 16 Mar 2021 13:59:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=xsVrLqfFpXKxNuoRZpVin2JaTCzQFHIEf5rAhS0t1jc=;
-        b=uetsiHxGzCvdaYcDnNwM426E+oETstT4wGVG20uUbnkIe7D8irE99guviaBuzu1qop
-         8VpdYFyqyE+Rox4QFeyTisTf3wUMzme2dwJU53jlgYxXyEatzQ6554aNds4vrOvj/VXF
-         Zp86DkyXGxYwbXJMJksq3zhm1oEhEYGUm9Z/PSHuUNnczMOgzy7wYQ68Wb2HhgVTATCl
-         Hkwtb0ofmsCWhod3pMIeR6+qScT41Q6PT67to19Fujpjfegv7kcsSqibKzQ49Y8FaKbJ
-         gcx9WXAcy+q64HGqrGbF8PH4kROMfX97eRuccDBRhi3Qs5rJb+KrnBA3dc3ns24ISwR3
-         RC4A==
-X-Gm-Message-State: AOAM530bLg52EzN9igKJdpwmaEhMF3mumtvywyL1FOHBQgUlUcGE2T8h
-        32tWGiVIurdovJqahW7rfYPZjPkLtA==
-X-Google-Smtp-Source: ABdhPJwrwf44s8a491QtBFCu7iMS7CHmGjuCHAa3ym10vpMY+nI/W/uVCU+NEjLTT1bOCf9Kk7E25w==
-X-Received: by 2002:a92:4a0e:: with SMTP id m14mr5359432ilf.117.1615928349009;
-        Tue, 16 Mar 2021 13:59:09 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id t9sm6303046ils.76.2021.03.16.13.59.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 13:59:08 -0700 (PDT)
-Received: (nullmailer pid 3653740 invoked by uid 1000);
-        Tue, 16 Mar 2021 20:59:05 -0000
-Date:   Tue, 16 Mar 2021 14:59:05 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Lee Jones <lee.jones@linaro.org>,
-        Michael Walle <michael@walle.cc>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 05/22] dt-bindings: add BCM6328 pincontroller binding
- documentation
-Message-ID: <20210316205905.GB3629500@robh.at.kernel.org>
-References: <20210315114214.3096-1-noltari@gmail.com>
- <20210315114214.3096-6-noltari@gmail.com>
+        id S232230AbhCPVBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 17:01:50 -0400
+Received: from mga01.intel.com ([192.55.52.88]:4978 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232180AbhCPVBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 17:01:22 -0400
+IronPort-SDR: HDpvjgXKkWS2ZzziY6TCb4v/W+NVz5Xxrp6/pHqnIlA9UMDi5HDayJJzWQWEs4TmT0Hx6lE82C
+ jfR2exyIR4yA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="209280953"
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="209280953"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 14:01:10 -0700
+IronPort-SDR: jl9j5Sr8LukusE8rFQ1CMdcCk1xcgInZq6zKKnBJVDNa5Qkmk5nKItZiqHnumNiZuOXqxc5gf8
+ 4v1qN7ImBUuQ==
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="590805431"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.191.248]) ([10.212.191.248])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 14:01:08 -0700
+Subject: Re: [PATCH v23 6/9] x86/entry: Introduce ENDBR macro
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
+ <20210316151320.6123-7-yu-cheng.yu@intel.com>
+ <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
+ <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
+ <YFENvgrR8JSYq1ae@hirez.programming.kicks-ass.net>
+ <65845773-6cf0-1bdc-1ecf-168de74cc283@intel.com>
+ <YFER79kU+ukn3YZr@hirez.programming.kicks-ass.net>
+ <aff84067-5b9e-1335-e540-ef90ee133ac9@intel.com>
+Message-ID: <9da6397f-326b-7891-5810-a5ac9e0def5d@intel.com>
+Date:   Tue, 16 Mar 2021 14:01:08 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <aff84067-5b9e-1335-e540-ef90ee133ac9@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210315114214.3096-6-noltari@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 12:41:57PM +0100, Álvaro Fernández Rojas wrote:
-> Add binding documentation for the pincontrol core found in BCM6328 SoCs.
+On 3/16/2021 1:26 PM, Yu, Yu-cheng wrote:
+> On 3/16/2021 1:15 PM, Peter Zijlstra wrote:
+>> On Tue, Mar 16, 2021 at 01:05:30PM -0700, Yu, Yu-cheng wrote:
+>>> On 3/16/2021 12:57 PM, Peter Zijlstra wrote:
+>>>> On Tue, Mar 16, 2021 at 10:12:39AM -0700, Yu, Yu-cheng wrote:
+>>>>> Alternatively, there is another compiler-defined macro _CET_ENDBR 
+>>>>> that can
+>>>>> be used.Â  We can put the following in calling.h:
+>>>>>
+>>>>> #ifdef __CET__
+>>>>> #include <cet.h>
+>>>>> #else
+>>>>> #define _CET_ENDBR
+>>>>> #endif
+>>>>>
+>>>>> and then use _CET_ENDBR in other files.Â  How is that?
+>>>>>
+>>>>> In the future, in case we have kernel-mode IBT, ENDBR macros are 
+>>>>> also needed
+>>>>> for other assembly files.
+>>>>
+>>>> Can we please call it IBT_ENDBR or just ENDBR. CET is a horrible name,
+>>>> seeing how it is not specific.
+>>>>
+>>>
+>>> _CET_ENDBR is from the compiler and we cannot change it.Â  We can do:
+>>>
+>>> #define ENDBR _CET_ENDBR
+>>>
+>>> How is that?
+>>
+>> Do we really want to include compiler headers? AFAICT it's not a
+>> built-in. Also what about clang?
+>>
+>> This thing seems trivial enough to build our own, it's a single damn
+>> instruction. That also means we don't have to worry about changes to
+>> header files we don't control.
+>>
 > 
-> Co-developed-by: Jonas Gorski <jonas.gorski@gmail.com>
-> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> ---
->  v7: add changes suggested by Rob Herring
->  v6: add changes suggested by Rob Herring
->  v5: change Documentation to dt-bindings in commit title
->  v4: no changes
->  v3: add new gpio node
->  v2: remove interrupts
+> Then, what about moving what I had earlier to vdso.h?
+> If we don't want __i386__ either, then make it two macros.
 > 
->  .../pinctrl/brcm,bcm6328-pinctrl.yaml         | 132 ++++++++++++++++++
->  1 file changed, 132 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm6328-pinctrl.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/brcm,bcm6328-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/brcm,bcm6328-pinctrl.yaml
-> new file mode 100644
-> index 000000000000..e1ecdc578f32
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pinctrl/brcm,bcm6328-pinctrl.yaml
-> @@ -0,0 +1,132 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pinctrl/brcm,bcm6328-pinctrl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Broadcom BCM6328 pin controller
-> +
-> +maintainers:
-> +  - Álvaro Fernández Rojas <noltari@gmail.com>
-> +  - Jonas Gorski <jonas.gorski@gmail.com>
-> +
-> +description: |+
-> +  The pin controller node should be the child of a syscon node.
-> +
-> +  Refer to the the bindings described in
-> +  Documentation/devicetree/bindings/mfd/syscon.yaml
-> +
-> +properties:
-> +  compatible:
-> +    const: brcm,bcm6328-pinctrl
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +patternProperties:
-> +  '^.*-pins$':
+> +.macro ENDBR
+> +#ifdef CONFIG_X86_CET
+> +#ifdef __i386__
+> +Â Â Â  endbr32
+> +#else
+> +Â Â Â  endbr64
+> +#endif
+> +#endif
+> +.endm
 
-'-pins$' is equivalent.
+I will make it like the following:
 
-> +    if:
-> +      type: object
-> +    then:
+diff --git a/arch/x86/include/asm/vdso.h b/arch/x86/include/asm/vdso.h
+index 98aa103eb4ab..4c0262dcb93d 100644
+--- a/arch/x86/include/asm/vdso.h
++++ b/arch/x86/include/asm/vdso.h
+@@ -52,6 +52,15 @@ extern int map_vdso_once(const struct vdso_image 
+*image, unsigned long addr);
+  extern bool fixup_vdso_exception(struct pt_regs *regs, int trapnr,
+  				 unsigned long error_code,
+  				 unsigned long fault_addr);
+-#endif /* __ASSEMBLER__ */
++#else /* __ASSEMBLER__ */
++
++#ifdef CONFIG_X86_CET
++#define ENDBR64 endbr64
++#define ENDBR32 endbr32
++#else /*!CONFIG_X86_CET */
++#define ENDBR64
++#define ENDBR32
++#endif
 
-You don't need this if/then. This should be:
-
-'-pins$':
-  type: object
-  $ref: pinmux-node.yaml#
-
-  additionalProperties: false
-  properties:
-    ...
-
-> +      properties:
-> +        function:
-> +          $ref: "pinmux-node.yaml#/properties/function"
-
-Drop this as you need the $ref up a level.
-
-> +          enum: [ serial_led_data, serial_led_clk, inet_act_led, pcie_clkreq,
-> +                  led, ephy0_act_led, ephy1_act_led, ephy2_act_led,
-> +                  ephy3_act_led, hsspi_cs1, usb_device_port, usb_host_port ]
-> +
-> +        pins:
-> +          $ref: "pinmux-node.yaml#/properties/pins"
-> +          enum: [ gpio6, gpio7, gpio11, gpio16, gpio17, gpio18, gpio19,
-> +                  gpio20, gpio25, gpio26, gpio27, gpio28, hsspi_cs1,
-> +                  usb_port1 ]
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    pinctrl@18 {
-> +      compatible = "brcm,bcm6328-pinctrl";
-> +      reg = <0x18 0x10>;
-> +
-> +      pinctrl_serial_led: serial_led-pins {
-> +        pinctrl_serial_led_data: serial_led_data-pins {
-> +          function = "serial_led_data";
-> +          pins = "gpio6";
-> +        };
-> +
-> +        pinctrl_serial_led_clk: serial_led_clk-pins {
-> +          function = "serial_led_clk";
-> +          pins = "gpio7";
-> +        };
-> +      };
-> +
-> +      pinctrl_inet_act_led: inet_act_led-pins {
-> +        function = "inet_act_led";
-> +        pins = "gpio11";
-> +      };
-> +
-> +      pinctrl_pcie_clkreq: pcie_clkreq-pins {
-> +        function = "pcie_clkreq";
-> +        pins = "gpio16";
-> +      };
-> +
-> +      pinctrl_ephy0_spd_led: ephy0_spd_led-pins {
-> +        function = "led";
-> +        pins = "gpio17";
-> +      };
-> +
-> +      pinctrl_ephy1_spd_led: ephy1_spd_led-pins {
-> +        function = "led";
-> +        pins = "gpio18";
-> +      };
-> +
-> +      pinctrl_ephy2_spd_led: ephy2_spd_led-pins {
-> +        function = "led";
-> +        pins = "gpio19";
-> +      };
-> +
-> +      pinctrl_ephy3_spd_led: ephy3_spd_led-pins {
-> +        function = "led";
-> +        pins = "gpio20";
-> +      };
-> +
-> +      pinctrl_ephy0_act_led: ephy0_act_led-pins {
-> +        function = "ephy0_act_led";
-> +        pins = "gpio25";
-> +      };
-> +
-> +      pinctrl_ephy1_act_led: ephy1_act_led-pins {
-> +        function = "ephy1_act_led";
-> +        pins = "gpio26";
-> +      };
-> +
-> +      pinctrl_ephy2_act_led: ephy2_act_led-pins {
-> +        function = "ephy2_act_led";
-> +        pins = "gpio27";
-> +      };
-> +
-> +      pinctrl_ephy3_act_led: ephy3_act_led-pins {
-> +        function = "ephy3_act_led";
-> +        pins = "gpio28";
-> +      };
-> +
-> +      pinctrl_hsspi_cs1: hsspi_cs1-pins {
-> +        function = "hsspi_cs1";
-> +        pins = "hsspi_cs1";
-> +      };
-> +
-> +      pinctrl_usb_port1_device: usb_port1_device-pins {
-> +        function = "usb_device_port";
-> +        pins = "usb_port1";
-> +      };
-> +
-> +      pinctrl_usb_port1_host: usb_port1_host-pins {
-> +        function = "usb_host_port";
-> +        pins = "usb_port1";
-> +      };
-> +    };
-> -- 
-> 2.20.1
-> 
++#endif /* __ASSEMBLER__ */
+  #endif /* _ASM_X86_VDSO_H */
