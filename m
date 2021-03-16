@@ -2,71 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B1033D567
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3140F33D56C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235870AbhCPOEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 10:04:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60990 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235373AbhCPOD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 10:03:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FED564F9D;
-        Tue, 16 Mar 2021 14:03:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615903435;
-        bh=ho8VK/nwBd5H2y4bKi45p7YEcMtEVUmmuah52IEH4i4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=qfBlXzqOKN8+OZvXkcSig6NsWRFQ09BsPvxD0eTyC3mDElfi3qpbcjT/puy5EdIBX
-         Uo8/Lz/Vk4fLgYowCsw+dxO1JF9ZLRbW88SjX6JdLQBs/EkZG4Ozp93/3t0yg0s/kh
-         xty6RA9AlV/Ce2yAkox6W6hG2Rykt0TdEYguHOm38Nc0StjP4SnP2oimyEMNzd3kfW
-         vllR0K0GOk0nibk1GLeZ4L0NZAMCvFHIM249/weo6mX3igAPnoqjGXVuPfTi8inhNI
-         sigi/vc8KYEbiZed4fXaNYXmTCD7GwQ5zXe0xRw126ptZxfBbMeO+pjrlLwB5MzU0x
-         aFEng6GGMMPSg==
-Subject: Re: [PATCH] drm/omap: dsi: fix unsigned expression compared with zero
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        angkery <angkery@163.com>
-Cc:     airlied@linux.ie, daniel@ffwll.ch, sebastian.reichel@collabora.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Junlin Yang <yangjunlin@yulong.com>
-References: <20210312071445.1721-1-angkery@163.com>
- <YE1xsg0gm0nNR8hy@pendragon.ideasonboard.com>
-From:   Tomi Valkeinen <tomba@kernel.org>
-Message-ID: <dd0578a1-9726-4be2-f8a1-b164675b1b02@kernel.org>
-Date:   Tue, 16 Mar 2021 16:03:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S235925AbhCPOEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 10:04:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44552 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235403AbhCPOER (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 10:04:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615903456;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lZNEQWnU1MKUmFvt5yn1z/1Cxme6xTcqchzQaFGYGPg=;
+        b=KFm7mFyCM+Zwd+7uOiukQr79O7gMrthNwakUngbmFTyL93PnfPmxPLGQlFPfwzPXhuDw/X
+        ppu307YXu7vxFwxutgd97VeLbynFyZEvInz7xmyCTD+taoJGBAYHvQ2gxFnhbDcbnq+dDv
+        1LcblOYiXzMoMRu9mGaKfsNDKXwAcUA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-8-BaZQag2UOUek8MRyCKd6vw-1; Tue, 16 Mar 2021 10:04:12 -0400
+X-MC-Unique: BaZQag2UOUek8MRyCKd6vw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A90492508;
+        Tue, 16 Mar 2021 14:04:10 +0000 (UTC)
+Received: from krava (unknown [10.40.193.217])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 028715D9D3;
+        Tue, 16 Mar 2021 14:04:07 +0000 (UTC)
+Date:   Tue, 16 Mar 2021 15:04:07 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v2 11/27] perf parse-events: Support hardware events
+ inside PMU
+Message-ID: <YFC615nTdUR/aLw5@krava>
+References: <20210311070742.9318-1-yao.jin@linux.intel.com>
+ <20210311070742.9318-12-yao.jin@linux.intel.com>
+ <YEu9usdFl6VSnOQ7@krava>
+ <c40d6187-9391-40de-aea8-7389bb369555@linux.intel.com>
+ <YE+balbLkG5RL7Lu@krava>
+ <fd88f214-f0a4-87bc-ef52-ee750ca13a8d@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YE1xsg0gm0nNR8hy@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fd88f214-f0a4-87bc-ef52-ee750ca13a8d@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/03/2021 04:15, Laurent Pinchart wrote:
-> Hi Junlin,
-> 
-> Thank you for the patch.
-> 
-> On Fri, Mar 12, 2021 at 03:14:45PM +0800, angkery wrote:
->> From: Junlin Yang <yangjunlin@yulong.com>
->>
->> r is "u32" always >= 0,mipi_dsi_create_packet may return little than zero.
->> so r < 0 condition is never accessible.
->>
->> Fixes coccicheck warnings:
->> ./drivers/gpu/drm/omapdrm/dss/dsi.c:2155:5-6:
->> WARNING: Unsigned expression compared with zero: r < 0
->>
->> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
-> 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> Tomi, will you take this in your tree ?
+On Tue, Mar 16, 2021 at 09:49:42AM +0800, Jin, Yao wrote:
 
-Thanks. Yes, I'll pick this up.
+SNIP
 
-  Tomi
+> 
+>  Performance counter stats for 'system wide':
+> 
+>        136,655,302      cpu_core/branch-instructions/
+> 
+>        1.003171561 seconds time elapsed
+> 
+> So we need special rules for both cycles and branches.
+> 
+> The worse thing is, we also need to process the hardware cache events.
+> 
+> # ./perf stat -e cpu_core/LLC-loads/
+> event syntax error: 'cpu_core/LLC-loads/'
+>                               \___ unknown term 'LLC-loads' for pmu 'cpu_core'
+> 
+> valid terms: event,pc,edge,offcore_rsp,ldlat,inv,umask,frontend,cmask,config,config1,config2,name,period,percore
+> 
+> Initial error:
+> event syntax error: 'cpu_core/LLC-loads/'
+>                               \___ unknown term 'LLC-loads' for pmu 'cpu_core'
+> 
+> If we use special rules for establishing all event mapping, that looks too much. :(
+
+hmmm but wait, currently we do not support events like this:
+
+  'cpu/cycles/'
+  'cpu/branches/'
+
+the pmu style accepts only 'events' or 'format' terms within //
+
+we made hw events like 'cycles','instructions','branches' special
+to be used without the pmu
+
+so why do we need to support cpu_code/cycles/ ?
+
+jirka
 
