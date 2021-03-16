@@ -2,65 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7843B33DED4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7452533DEDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbhCPUdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 16:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46088 "EHLO
+        id S230250AbhCPUek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 16:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhCPUce (ORCPT
+        with ESMTP id S231322AbhCPUeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 16:32:34 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994F5C06174A;
-        Tue, 16 Mar 2021 13:32:33 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1lMGMb-00H4jl-H3; Tue, 16 Mar 2021 21:32:25 +0100
-Message-ID: <8a5845b49b6dc03b8d6f8fe9915034178be992ae.camel@sipsolutions.net>
-Subject: Re: [PATCH] net: wireless: search and hold bss in
- cfg80211_connect_done
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Abhishek Kumar <kuabhs@chromium.org>
-Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        briannorris@chromium.org, linux-wireless@vger.kernel.org
-Date:   Tue, 16 Mar 2021 21:32:24 +0100
-In-Reply-To: <20210316192919.1.I26d48d8a4d06ef9bd2b57f857c58ae681cc33783@changeid> (sfid-20210316_203101_193722_2D56E503)
-References: <20210316192919.1.I26d48d8a4d06ef9bd2b57f857c58ae681cc33783@changeid>
-         (sfid-20210316_203101_193722_2D56E503)
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Tue, 16 Mar 2021 16:34:05 -0400
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 603D8C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 13:34:05 -0700 (PDT)
+Received: by mail-vs1-xe35.google.com with SMTP id l27so18980258vsj.4
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 13:34:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xrwjt/kZB1RxVC21J+b2Rv85znrbxBlQ2xQVtgXaL8Q=;
+        b=po1Ywby6SU2VWLEUyZ5fNbrtGcCnRgD8+IOMID+GlXWQNN/3aWjrKopHkVgecJy3yJ
+         khd4+NGMXkdhaRRLq7oIG7sqA93cOIbt85nnBMxjdoTTob9e2Am24an2yQVbG1o0V5H8
+         7GVzuReTWAlfbF1CAQXu39fgGvH5SXGbKyaDGdlbOZBsDb8/16qHOkbAClu4ucjVnnpq
+         puCa2KojBGupypPIcNHF88u0nBc0j5j5wmxJB5QqbuzbcGhuC3bdhL35d8XTmOmAH5Ze
+         Rv/YonPUJZL/28fPFwgGqtGza8PZ38b3S3xCK35A47xteLDq+UaKkUNMlUmMa3ohiIUa
+         It1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xrwjt/kZB1RxVC21J+b2Rv85znrbxBlQ2xQVtgXaL8Q=;
+        b=Noy7cwwO34x4FvcFBdAEQ7AkhKL4+xiVNLzPJ/xe40mn+E1hHE79Uw7QQXqtYWHSg/
+         uk63vH3dpThgcEsgU2YLCXzUOtgVHGYRgpZhKAEV377A2lddS2kTIQjQWSF9O340D8fG
+         y5wrmfU9thJRsLgspElqQF5W2iYOCcRpJnfOZLHp4m8yhKY5Dwt8SDN6vROwh1k47Mrs
+         lptpP9tJSaJWynn7Aop+3/LjH5qk1hQTDaflWDy+anlcV/S1RueyreQRR9YkjeMU0AbT
+         rTMYLrnzyadhp1npADyUCbPEEUZ2OcXRDX6gR2ccLH9iahjLiXtCnFWu6wmKvVsK3Nn8
+         9sOw==
+X-Gm-Message-State: AOAM533FgoSSocd7Wzsps4MAGj752Im5QgqMO1EYeBJOUpLkLmuTSVQF
+        heZdQK0n4m/MJnp7f3xOO+qfCxpwWySPTxpyfdoP8g==
+X-Google-Smtp-Source: ABdhPJwadRPiAKyB9trsaH6fnnn3nCM/AdtJrbuHIQFIQoIMgPzfKSpazXNSL6neJgetXYxyVdUJ7AZv1KZY68p3ujw=
+X-Received: by 2002:a67:2803:: with SMTP id o3mr1486279vso.36.1615926844137;
+ Tue, 16 Mar 2021 13:34:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+References: <20210312004919.669614-1-samitolvanen@google.com>
+ <20210312004919.669614-8-samitolvanen@google.com> <202103111843.008B935F8@keescook>
+In-Reply-To: <202103111843.008B935F8@keescook>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Tue, 16 Mar 2021 13:33:53 -0700
+Message-ID: <CABCJKufMb_VFwXLkxjdvN6Y92v-Nc4Z+kThbi7SOkVgGhdFz+g@mail.gmail.com>
+Subject: Re: [PATCH 07/17] kallsyms: cfi: strip hashes from static functions
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        bpf@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-03-16 at 19:29 +0000, Abhishek Kumar wrote:
-> If BSS instance is not provided in __cfg80211_connect_result then
-> a get bss is performed. This can return NULL if the BSS for the
-> given SSID is expired due to delayed scheduling of connect result event
-> in rdev->event_work. This can cause WARN_ON(!cr->bss) in
-> __cfg80211_connect_result to be triggered and cause cascading
-> failures. To mitigate this, initiate a get bss call in
-> cfg80211_connect_done itself and hold it to ensure that the BSS
-> instance does not get expired.
+On Thu, Mar 11, 2021 at 6:45 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Thu, Mar 11, 2021 at 04:49:09PM -0800, Sami Tolvanen wrote:
+> > With CONFIG_CFI_CLANG and ThinLTO, Clang appends a hash to the names
+> > of all static functions not marked __used. This can break userspace
+> > tools that don't expect the function name to change, so strip out the
+> > hash from the output.
+> >
+> > Suggested-by: Jack Pham <jackp@codeaurora.org>
+> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+>
+> (Is it possible we could end up with symbol name collisions? ... though
+> I guess we would have had collisions before?)
 
-I'm not sure I see the value in this.
+Yes, these are static functions, so name collisions have always been possible.
 
-You're basically picking a slightly earlier point in time where cfg80211
-might know about the BSS entry still, so you're really just making the
-problem window a few microseconds or perhaps milliseconds (whatever ends
-up being the worker delay) shorter.
-
-Compared to the 30s entry lifetime, that's nothing.
-
-So what's the point? Please fix the driver instead to actually hold on
-to it and report it back.
-
-johannes
-
+Sami
