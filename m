@@ -2,143 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A5F33D064
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE75333D0B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232343AbhCPJRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:17:43 -0400
-Received: from gecko.sbs.de ([194.138.37.40]:35646 "EHLO gecko.sbs.de"
+        id S236036AbhCPJYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:24:03 -0400
+Received: from mga02.intel.com ([134.134.136.20]:46862 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231599AbhCPJRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:17:16 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12G9GSop010735
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Mar 2021 10:16:28 +0100
-Received: from [167.87.27.98] ([167.87.27.98])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12G9GQ9R023727;
-        Tue, 16 Mar 2021 10:16:26 +0100
-Subject: Re: [PATCH 2/3] KVM: x86: guest debug: don't inject interrupts while
- single stepping
-To:     Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
-References: <20210315221020.661693-1-mlevitsk@redhat.com>
- <20210315221020.661693-3-mlevitsk@redhat.com> <YE/vtYYwMakERzTS@google.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <1259724f-1bdb-6229-2772-3192f6d17a4a@siemens.com>
-Date:   Tue, 16 Mar 2021 10:16:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S236223AbhCPJXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 05:23:49 -0400
+IronPort-SDR: fBF0X3rxgJUcQVWEPD4kLyVdgK0EYWh0y7KvNOpl5v9f8mh0sKnqfgXiPqTLBCrtuf2PHNyrGg
+ DMkWPSsUYV0w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="176359553"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="176359553"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 02:23:40 -0700
+IronPort-SDR: CrQEz3Ag/ybTmE/AKIhoS6JlqMs8jIsDGXGu3qBz2a7xb6J+XW5eh5kL00OMxdeOM628wp1Rb5
+ /se5GT1T9v/Q==
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="449660949"
+Received: from yisun1-ubuntu.bj.intel.com (HELO yi.y.sun) ([10.238.156.116])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA256; 16 Mar 2021 02:23:35 -0700
+Date:   Tue, 16 Mar 2021 17:17:51 +0800
+From:   Yi Sun <yi.y.sun@linux.intel.com>
+To:     Keqian Zhu <zhukeqian1@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com,
+        yuzenghui@huawei.com, lushenming@huawei.com
+Subject: Re: [PATCH v2 04/11] iommu/arm-smmu-v3: Split block descriptor when
+ start dirty log
+Message-ID: <20210316091751.GN28580@yi.y.sun>
+References: <20210310090614.26668-1-zhukeqian1@huawei.com>
+ <20210310090614.26668-5-zhukeqian1@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <YE/vtYYwMakERzTS@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210310090614.26668-5-zhukeqian1@huawei.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.03.21 00:37, Sean Christopherson wrote:
-> On Tue, Mar 16, 2021, Maxim Levitsky wrote:
->> This change greatly helps with two issues:
->>
->> * Resuming from a breakpoint is much more reliable.
->>
->>   When resuming execution from a breakpoint, with interrupts enabled, more often
->>   than not, KVM would inject an interrupt and make the CPU jump immediately to
->>   the interrupt handler and eventually return to the breakpoint, to trigger it
->>   again.
->>
->>   From the user point of view it looks like the CPU never executed a
->>   single instruction and in some cases that can even prevent forward progress,
->>   for example, when the breakpoint is placed by an automated script
->>   (e.g lx-symbols), which does something in response to the breakpoint and then
->>   continues the guest automatically.
->>   If the script execution takes enough time for another interrupt to arrive,
->>   the guest will be stuck on the same breakpoint RIP forever.
->>
->> * Normal single stepping is much more predictable, since it won't land the
->>   debugger into an interrupt handler, so it is much more usable.
->>
->>   (If entry to an interrupt handler is desired, the user can still place a
->>   breakpoint at it and resume the guest, which won't activate this workaround
->>   and let the gdb still stop at the interrupt handler)
->>
->> Since this change is only active when guest is debugged, it won't affect
->> KVM running normal 'production' VMs.
->>
->>
->> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
->> Tested-by: Stefano Garzarella <sgarzare@redhat.com>
->> ---
->>  arch/x86/kvm/x86.c | 6 ++++++
->>  1 file changed, 6 insertions(+)
->>
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index a9d95f90a0487..b75d990fcf12b 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -8458,6 +8458,12 @@ static void inject_pending_event(struct kvm_vcpu *vcpu, bool *req_immediate_exit
->>  		can_inject = false;
->>  	}
->>  
->> +	/*
->> +	 * Don't inject interrupts while single stepping to make guest debug easier
->> +	 */
->> +	if (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)
->> +		return;
+On 21-03-10 17:06:07, Keqian Zhu wrote:
+> From: jiangkunkun <jiangkunkun@huawei.com>
 > 
-> Is this something userspace can deal with?  E.g. disable IRQs and/or set NMI
-> blocking at the start of single-stepping, unwind at the end?  Deviating this far
-> from architectural behavior will end in tears at some point.
+> Block descriptor is not a proper granule for dirty log tracking.
+> Take an extreme example, if DMA writes one byte, under 1G mapping,
+> the dirty amount reported to userspace is 1G, but under 4K mapping,
+> the dirty amount is just 4K.
 > 
+> This adds a new interface named start_dirty_log in iommu layer and
+> arm smmuv3 implements it, which splits block descriptor to an span
+> of page descriptors. Other types of IOMMU will perform architecture
+> specific actions to start dirty log.
+> 
+> To allow code reuse, the split_block operation is realized as an
+> iommu_ops too. We flush all iotlbs after the whole procedure is
+> completed to ease the pressure of iommu, as we will hanle a huge
+> range of mapping in general.
+> 
+> Spliting block does not simultaneously work with other pgtable ops,
+> as the only designed user is vfio, which always hold a lock, so race
+> condition is not considered in the pgtable ops.
+> 
+> Co-developed-by: Keqian Zhu <zhukeqian1@huawei.com>
+> Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
+> ---
+> 
+> changelog:
+> 
+> v2:
+>  - Change the return type of split_block(). size_t -> int.
+>  - Change commit message to properly describe race condition. (Robin)
+>  - Change commit message to properly describe the need of split block.
+>  - Add a new interface named start_dirty_log(). (Sun Yi)
+>  - Change commit message to explain the realtionship of split_block() and start_dirty_log().
+> 
+> ---
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |  52 +++++++++
+>  drivers/iommu/io-pgtable-arm.c              | 122 ++++++++++++++++++++
+>  drivers/iommu/iommu.c                       |  48 ++++++++
+>  include/linux/io-pgtable.h                  |   2 +
+>  include/linux/iommu.h                       |  24 ++++
+>  5 files changed, 248 insertions(+)
+> 
+Could you please split iommu common interface to a separate patch?
+This may make review and comments easier.
 
-Does this happen to address this suspicious workaround in the kernel?
+IMHO, I think the start/stop interfaces could be merged into one, e.g:
+    int iommu_domain_set_hwdbm(struct iommu_domain *domain, bool enable,
+                               unsigned long iova, size_t size,
+                               int prot);
 
-        /*
-         * The kernel doesn't use TF single-step outside of:
-         *
-         *  - Kprobes, consumed through kprobe_debug_handler()
-         *  - KGDB, consumed through notify_debug()
-         *
-         * So if we get here with DR_STEP set, something is wonky.
-         *
-         * A known way to trigger this is through QEMU's GDB stub,
-         * which leaks #DB into the guest and causes IST recursion.
-         */
-        if (WARN_ON_ONCE(dr6 & DR_STEP))
-                regs->flags &= ~X86_EFLAGS_TF;
+Same comments to patch 5.
 
-(arch/x86/kernel/traps.c, exc_debug_kernel)
+BRs,
+Yi Sun
 
-I wonder why this got merged while no one fixed QEMU/KVM, for years? Oh,
-yeah, question to myself as well, dancing around broken guest debugging
-for a long time while trying to fix other issues...
-
-Jan
-
->> +
->>  	/*
->>  	 * Finally, inject interrupt events.  If an event cannot be injected
->>  	 * due to architectural conditions (e.g. IF=0) a window-open exit
->> -- 
->> 2.26.2
->>
-
--- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+> -- 
+> 2.19.1
