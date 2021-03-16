@@ -2,87 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3722C33CDA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:50:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1036C33CDA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235621AbhCPFtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:49:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235775AbhCPFtP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:49:15 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B53C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 22:49:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=vfGZwIFnI5xpNBTfsu0YQgelzvrmLaCqnrmimGucXYA=; b=qTxkAR2Uw2if9V5lp6nFtHzZri
-        qHg6kl6ugUMc5YHHmaiLmriOYGRPLdJBdhymMxmVj1FbhJLWiDCwwXyU5Vnr2WhXfAwU1mDiVP68H
-        RX0xUPIuQ67GbBzueUiK14gBB4sITN6QUD9TpT5IeToDRUuDu3dlv7+6sLSi9ORnHrP5+0yphd02C
-        es4gKyJaL/USEbJJSe4YvXqfJm9qPoK8mzA0kgFxV7IfV2jO/6JWTXc20KUkTC1VSBAIJFSK0Okqh
-        f7KKuJ7PSS7GgLo/9qQxx6jijfJrXVZaiK/5HODAHz+fihQPYxTppf83GGJk2dQnPed/CGed2uS5L
-        8TalhLCQ==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lM2Zr-001PdE-8V; Tue, 16 Mar 2021 05:49:11 +0000
-Subject: Re: [PATCH V2] x86: events: intel: A letter change in a word to make
- it sound right,in the file bts.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, tglx@linutronix.de, bp@alien8.de,
-        x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org
-References: <20210316054227.962533-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0ea936c7-0fd1-df2c-6b65-920baf64ba04@infradead.org>
-Date:   Mon, 15 Mar 2021 22:49:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231613AbhCPFwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:52:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229746AbhCPFwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 01:52:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D02C651CB;
+        Tue, 16 Mar 2021 05:52:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615873957;
+        bh=WAf3rld7p8Nfqi3WOJVvzHnkaaAUQ+smOczfIUb7vF8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fb8/FjFPxIdidpNYmvwHU6jrPRj12q9prCDknzpWBcWYjn3jUuNXEzdPUaqwZKsqf
+         UNO3S1GGpE+2Laj4lPLEpcPZJqXZihFo6HAf2AM43cC1I2FsFL1UCKE1QL12qngFAE
+         83f/XPrx/9xf0Ji1G/atWTGCtkMqRipCXXnkmOA4=
+Date:   Tue, 16 Mar 2021 06:52:35 +0100
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christian Eggers <ceggers@arri.de>
+Subject: Re: [PATCH 5.10 113/290] net: dsa: implement a central TX
+ reallocation procedure
+Message-ID: <YFBHo9V5Mh21zdOE@kroah.com>
+References: <20210315135541.921894249@linuxfoundation.org>
+ <20210315135545.737069480@linuxfoundation.org>
+ <20210315195601.auhfy5uafjafgczs@skbuf>
+ <YE/MSHkyR0PXSUox@sashalap>
 MIME-Version: 1.0
-In-Reply-To: <20210316054227.962533-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YE/MSHkyR0PXSUox@sashalap>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/15/21 10:42 PM, Bhaskar Chowdhury wrote:
+On Mon, Mar 15, 2021 at 05:06:16PM -0400, Sasha Levin wrote:
+> On Mon, Mar 15, 2021 at 07:56:02PM +0000, Vladimir Oltean wrote:
+> > > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> > > Tested-by: Christian Eggers <ceggers@arri.de> # For tail taggers only
+> > > Tested-by: Kurt Kanzenbach <kurt@linutronix.de>
+> > > Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> > > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > ---
+> > 
+> > For context, Sasha explains here:
+> > https://www.spinics.net/lists/stable-commits/msg190151.html
+> > (the conversation is somewhat truncated, unfortunately, because
+> > stable-commits@vger.kernel.org ate my replies)
+> > that 13 patches were backported to get the unrelated commit 9200f515c41f
+> > ("net: dsa: tag_mtk: fix 802.1ad VLAN egress") to apply cleanly with git-am.
+> > 
+> > I am not strictly against this, even though I would have liked to know
+> > that the maintainers were explicitly informed about it.
+> > 
+> > Greg, could you make your stable backporting emails include the output
+> > of ./get_maintainer.pl into the list of recipients? Thanks.
 > 
-> s/kernal/kernel/
+> Did it not happen here? I've looked at Greg's script[1] and it seemed to
+> me like it does go through get_maintainer.pl.
 > 
->  A punctuation added too.
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> [1] https://github.com/gregkh/gregkh-linux/blob/master/scripts/generate_cc_list
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+That's just a script I use for "normal" kernel development when creating
+patches, not for stable stuff.
 
-> ---
->  Changes from V1:
->  Punctuation missed, added as per Randy's finding
-> 
->  arch/x86/events/intel/bts.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/events/intel/bts.c b/arch/x86/events/intel/bts.c
-> index 731dd8d0dbb1..1ba93c40fc54 100644
-> --- a/arch/x86/events/intel/bts.c
-> +++ b/arch/x86/events/intel/bts.c
-> @@ -594,7 +594,7 @@ static __init int bts_init(void)
->  		 * we cannot use the user mapping since it will not be available
->  		 * if we're not running the owning process.
->  		 *
-> -		 * With PTI we can't use the kernal map either, because its not
-> +		 * With PTI we can't use the kernel map either, because it's not
->  		 * there when we run userspace.
->  		 *
->  		 * For now, disable this driver when using PTI.
-> --
+thanks,
 
-
--- 
-~Randy
-
+greg k-h
