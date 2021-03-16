@@ -2,70 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E522733E24F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:44:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B79233E25B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:50:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229519AbhCPXnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 19:43:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44368 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229529AbhCPXnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 19:43:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1621864F0F;
-        Tue, 16 Mar 2021 23:43:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615938188;
-        bh=1juVaj8zwVwWX/l7s+BY6ME28H2myziVkvLl+Txp3Gs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=MpwrIgBR1JONIv3OUYtDXVfeTsq7QcBLLXYJsAVdiHgnQ7CSWZEQHHZI8MzV8iFLC
-         dm7I+ovBE2NAA4WT4zHmHBb63FvPunJdfKiuwFZeJEujpHhaeDVWGcEyTtwaXZtcdO
-         Y2ThsOiVqMjzJ8m9Gbwi5TLxuHTVvQj43+K0SElT0g1lB40jYCw7ZQnxDgbomuGFpO
-         iNsbQzMxhslC9AeAeQjfRt70J0qR6yNa9CTP6LR0AI3vilA2aBmp/7m+FdmIRnqaKg
-         9ObIUyI9I6gpIQ02Vqt/nMIHOsVPqk91nwdmGajifQIn1m8P6hp40kMS82IIfjwv+C
-         ycJf4vPWclSNw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B949B3522A5A; Tue, 16 Mar 2021 16:43:07 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 16:43:07 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [rcu:rcu/next 33/36] ERROR: modpost: "rcu_read_unlock_longwait"
- undefined!
-Message-ID: <20210316234307.GZ2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <202103170728.9kxVaZbV-lkp@intel.com>
+        id S229537AbhCPXuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 19:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhCPXuK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 19:50:10 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670A0C06174A;
+        Tue, 16 Mar 2021 16:50:10 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id d3so193322lfg.10;
+        Tue, 16 Mar 2021 16:50:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oXB6+xyPHDZii/8O9jaaLZrloHiccp9uG7TidAIdX0k=;
+        b=kRHoWji8jQln8q8Emkhm9fn17e4lS/p8UsvjfB5cvTetb/Da63gDE39WRgw7dvhu1Y
+         gy9nj9oRpezB2IaqX5GzqvU2ADGDh4HIKqVzPI4WY7cpZl+FguNoXGiiJaeK8d50sht4
+         +w+h2GLqWvKcPGtM2SMGz7s9oNORggO/J2jqjO2PimXt69AEeXMWM0lresu3Jl/eLVEO
+         EveER/6JmJfTjne35NEzUHAecHg2u6oiAruMfEs5YZu57FHHmPCgrkc96jOCUCCUF7TQ
+         ZQvuHF6AT/9HBL4yYzDXgC+fJWbw/UUPh7Z2EfPix4qSYjWCxJJCxz//DoP99uWiJeVS
+         Dv9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oXB6+xyPHDZii/8O9jaaLZrloHiccp9uG7TidAIdX0k=;
+        b=M63n9gTl8ymHB8ulXhh+XEFGljlD5dz/lcsNZ59Jnlv4jFcjNNaUanfQNekcM22xbF
+         FACVR93MstWHUMnjPVmevaNjQyVUlCc/g15d0EpcO6WWXjCE4uNjhLYKpTMG3HRSNnDS
+         S6ISZc8tzoqu2SSKJe2P/G6g+aFfxodMFxml/UOaopmWMup0KtOJqUKIBGS0LU5k14Vw
+         It0vkGXxNW/ytiMZFjgItkr7Kbu/KY7p6o4klhkcqZjI8hFM+yuabjMxiezoH2dNYMss
+         vOqu3KD2sIUwcnNRg86qsk2Y5tpOA58gqQDMWxGsu/ByPsCSjqMx01xIQZmdyo+0fSiZ
+         6gNQ==
+X-Gm-Message-State: AOAM531d37Pf+o1vpIhnt7lmTG8zKSEZy88IgXQfgwp7FY+3poIyEMVU
+        W8nzDOwHBd1UEHj001FdBmNZxkM/doY=
+X-Google-Smtp-Source: ABdhPJxOjUQ/S1fQWKKSlk4V0vmyKUunbtYbvY0y9KlqnwZngvig7Kfff6LvYs+wNYWkZY8F4UebjQ==
+X-Received: by 2002:a05:6512:3709:: with SMTP id z9mr628448lfr.557.1615938608636;
+        Tue, 16 Mar 2021 16:50:08 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id g21sm3170038lfr.212.2021.03.16.16.50.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 16:50:08 -0700 (PDT)
+Subject: Re: [PATCH v5] iommu/tegra-smmu: Add pagetable mappings to debugfs
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     joro@8bytes.org, will@kernel.org, vdumpa@nvidia.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210315203631.24990-1-nicoleotsuka@gmail.com>
+ <YFCTmwpg9pMQqcSu@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <d338d407-8e0a-a94a-dcff-80556174492e@gmail.com>
+Date:   Wed, 17 Mar 2021 02:50:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202103170728.9kxVaZbV-lkp@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YFCTmwpg9pMQqcSu@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 07:18:34AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-> head:   9035ae87fcb36d2a7c8872e1cc0a46c0c5b619a8
-> commit: bd6ae31d1b1f22ab7ff8376b416f09d93d9ef75d [33/36] rcutorture: Add the ability to torture RCU longsleep
-> config: x86_64-randconfig-r015-20210316 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=1 build):
->         # https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?id=bd6ae31d1b1f22ab7ff8376b416f09d93d9ef75d
->         git remote add rcu https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
->         git fetch --no-tags rcu rcu/next
->         git checkout bd6ae31d1b1f22ab7ff8376b416f09d93d9ef75d
->         # save the attached .config to linux build tree
->         make W=1 ARCH=x86_64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>, old ones prefixed by <<):
-> 
-> >> ERROR: modpost: "rcu_read_unlock_longwait" [kernel/rcu/rcutorture.ko] undefined!
-> >> ERROR: modpost: "rcu_read_lock_longwait" [kernel/rcu/rcutorture.ko] undefined!
-> >> ERROR: modpost: "rcu_read_lock_longwait_held" [kernel/rcu/rcutorture.ko] undefined!
+16.03.2021 14:16, Thierry Reding пишет:
+>> +	seq_puts(s, "}\n");
+>> +	seq_printf(s, "Total PDE count: %u\n", pde_count);
+>> +	seq_printf(s, "Total PTE count: %llu\n", pte_count);
+> Some of the above looks like it wouldn't be very easily consumed by
+> scripts. Is that something we want to do? Or is this targetted primarily
+> at human consumption?
 
-Good catch, fixed with attribution, thank you!
-
-							Thanx, Paul
+Output should be parsable using a simple regex. Could you please clarify
+what exactly isn't easy?
