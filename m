@@ -2,92 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F120933D33E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 779E833D33F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:40:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237386AbhCPLjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:39:44 -0400
-Received: from mga05.intel.com ([192.55.52.43]:60586 "EHLO mga05.intel.com"
+        id S237396AbhCPLjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:39:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237378AbhCPLjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:39:16 -0400
-IronPort-SDR: efRc5xOzUO1aTnzdFLwvLotVSiB9C+rZwpRzjOKISAR8Kc3jbMYGZTqhQPHY0wEZfPDelgqS18
- qz2jayj9ryUg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="274285882"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="274285882"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 04:39:14 -0700
-IronPort-SDR: Uu2NYVQV19jKW3IGxrZ2iulFHr94qoOPZaU73rbJrxGCF6Y+mgSxp+07W1GwSt8HuBhreBQCs8
- ChLlPdnlWyYQ==
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="440062397"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 04:39:10 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lM82U-00CwLD-Dt; Tue, 16 Mar 2021 13:39:06 +0200
-Date:   Tue, 16 Mar 2021 13:39:06 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
-        linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 01/13] tools: disable -Wno-type-limits
-Message-ID: <YFCY2s/6+2f7Qycf@smile.fi.intel.com>
-References: <20210316015424.1999082-1-yury.norov@gmail.com>
- <20210316015424.1999082-2-yury.norov@gmail.com>
- <2ec71f83-f903-2775-bf04-7f0a83c9f4cb@rasmusvillemoes.dk>
+        id S233193AbhCPLjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 07:39:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0214265020;
+        Tue, 16 Mar 2021 11:39:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615894761;
+        bh=NZpxAyJTgfolHxBaoIjQXcV5Ku2XxqAWb889DbrpH18=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UblHxmrjtorTSrpz3/ycqYMoksG6QyPIZfpOUH7BIQQbYlbfZDaB0PJ1x9rn00qyV
+         a1t4hJBQVCiCaeZPd1IQ5BeuDi2mN/upZ33VUfC728DVZdCwByIThsCSoqhdZ70bm6
+         CrLaME8r5YPGglgpW7avwCKYZnM+3DPlGjhtZCmI=
+Date:   Tue, 16 Mar 2021 12:39:19 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/15] staging: rtl8723bs: remove unused code blocks
+ conditioned by never set CONFIG_PM
+Message-ID: <YFCY564YYio8lkUT@kroah.com>
+References: <cover.1615801721.git.fabioaiuto83@gmail.com>
+ <77ea39e63246fa4756afcf2bdea573f43fefc74c.1615801721.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2ec71f83-f903-2775-bf04-7f0a83c9f4cb@rasmusvillemoes.dk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <77ea39e63246fa4756afcf2bdea573f43fefc74c.1615801721.git.fabioaiuto83@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 09:17:24AM +0100, Rasmus Villemoes wrote:
-> On 16/03/2021 02.54, Yury Norov wrote:
-> > GENMASK(h, l) may be passed with unsigned types. In such case, type-limits
-> > warning is generated for example in case of GENMASK(h, 0).
-
-...
-
-> I don't like that kind of collateral damage. I seem to recall another
-> instance where a macro was instead rewritten to avoid triggering the
-> type-limits warning (with a comment explaining the uglyness). Something like
+On Mon, Mar 15, 2021 at 11:15:02AM +0100, Fabio Aiuto wrote:
+> remove conditional code blocks checked by unused CONFIG_PM
 > 
-> foo > bar      is the same as
-> !(foo <= bar)  which is the same as
-> !(foo == bar || foo < bar)
+> cleaning required in TODO file:
 > 
-> Dunno if that would work here, but if it did, it would have the bonus
-> that when somebody builds the kernel proper with Wtype-limits enabled
-> (maybe W=1 or W=2) there would be no false positives from GENMASK to
-> wade through.
+> find and remove code blocks guarded by never set CONFIG_FOO defines
 > 
-> Alternatively, we really should consider making use of _Pragma to
-> locally disable/re-enable certain warnings.
+> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> ---
+>  drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 8 --------
+>  1 file changed, 8 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+> index 2ff71d001c07..5748e1c1a25c 100644
+> --- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+> +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+> @@ -3198,14 +3198,6 @@ static void rtw_cfg80211_preinit_wiphy(struct adapter *padapter, struct wiphy *w
+>  	wiphy->flags |= WIPHY_FLAG_HAS_REMAIN_ON_CHANNEL;
+>  	wiphy->flags |= WIPHY_FLAG_OFFCHAN_TX | WIPHY_FLAG_HAVE_AP_SME;
+>  
+> -#if defined(CONFIG_PM)
+> -	wiphy->max_sched_scan_reqs = 1;
+> -#endif
+> -
+> -#if defined(CONFIG_PM)
+> -	wiphy->wowlan = &wowlan_stub;
+> -#endif
 
-Rasmus, in the kernel the same was fixed as per 355a3587d4ca.
-I don't know why tools should be different to that.
+How this is "unused"?  This is a real config option, did you just change
+the logic here?
 
--- 
-With Best Regards,
-Andy Shevchenko
+thanks,
 
-
+greg k-h
