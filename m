@@ -2,189 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A708533D02A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:54:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 704EF33D02C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:55:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235863AbhCPIyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 04:54:20 -0400
-Received: from mga14.intel.com ([192.55.52.115]:42149 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235757AbhCPIyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 04:54:01 -0400
-IronPort-SDR: dIM7rVdX/LYpVgeNoZ5FyfO6m5/2NtIXxI7uq3VzT8IlqhF79dGtrJUxCS+xnAnBCOpgS+2fDd
- ecx6j2JZl9dQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="188584142"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="188584142"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 01:54:00 -0700
-IronPort-SDR: rcRhkGUDl0RczsHA8wP56mUOWLylR+48ApPPlnRhb3QDTJR1FaKwOzDNdJpiVTNlpATD+iBwYC
- cVQkNnLbP+iQ==
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="449654385"
-Received: from unknown (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 01:53:55 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     linux-mm@kvack.org, Alex Shi <alex.shi@linux.alibaba.com>,
+        id S235799AbhCPIyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 04:54:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30697 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235866AbhCPIyV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 04:54:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615884860;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wWL8TXDgSITEncLOH2wDWqKpeFdlpFDWceFXFRX5TOQ=;
+        b=d9zXSe5MUFAtdvKiS17yM2ukn/inISpbfawx/P9Dd7gvv+qH8tYAi94ol7jbBVON6nf0N1
+        Z0DjyoQcAc01GTLwFvc5d20GKX/xL6eENULaYkh88pwT1q0iXfO/+Axex7ZP+DprAO/fke
+        iYLGuMaBInnLmxZva6U3thyPN2sqCg8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-219-qUXa6Pn7PayX9LbBOCiMZA-1; Tue, 16 Mar 2021 04:54:16 -0400
+X-MC-Unique: qUXa6Pn7PayX9LbBOCiMZA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 05C48801597;
+        Tue, 16 Mar 2021 08:54:15 +0000 (UTC)
+Received: from [10.36.114.203] (ovpn-114-203.ams2.redhat.com [10.36.114.203])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 69C1F60C0F;
+        Tue, 16 Mar 2021 08:54:12 +0000 (UTC)
+Subject: Re: slow boot with 7fef431be9c9 ("mm/page_alloc: place pages to tail
+ in __free_pages_core()")
+To:     "Liang, Liang (Leo)" <Liang.Liang@amd.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Cc:     "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Yang Shi <shy828301@gmail.com>, linux-kernel@vger.kernel.org,
-        page-reclaim@google.com
-Subject: Re: [PATCH v1 10/14] mm: multigenerational lru: core
-References: <87im5rsvd8.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <YFA33n+zQb8oomjJ@google.com>
-        <87wnu7y4hn.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <YFBrTXLZygkfJiQs@google.com>
-Date:   Tue, 16 Mar 2021 16:53:53 +0800
-In-Reply-To: <YFBrTXLZygkfJiQs@google.com> (Yu Zhao's message of "Tue, 16 Mar
-        2021 02:24:45 -0600")
-Message-ID: <87sg4vxyvy.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        "Huang, Ray" <Ray.Huang@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        George Kennedy <george.kennedy@oracle.com>
+References: <MW3PR12MB4537B49678884A1EB1F75AB5F36E9@MW3PR12MB4537.namprd12.prod.outlook.com>
+ <0AE49D98-171A-42B9-9CFC-9193A9BD3346@redhat.com>
+ <YEzCm/Uwvw7kKpd7@linux.ibm.com>
+ <22437770-956e-f7b4-a8f6-3f1cc28c3ec2@redhat.com>
+ <MW3PR12MB45371072D7C3FDA6986C6318F36B9@MW3PR12MB4537.namprd12.prod.outlook.com>
+ <YFBVNEC7jMZxwleL@linux.ibm.com>
+ <MW3PR12MB453781F0AD49AF3787DE4230F36B9@MW3PR12MB4537.namprd12.prod.outlook.com>
+ <0cc972a1-5b40-3017-33f8-b2610489ee18@redhat.com>
+ <MW3PR12MB453771424C9B2866BBBAE036F36B9@MW3PR12MB4537.namprd12.prod.outlook.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <b9b324e4-4c98-b81d-ddae-52e4feb33064@redhat.com>
+Date:   Tue, 16 Mar 2021 09:54:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+In-Reply-To: <MW3PR12MB453771424C9B2866BBBAE036F36B9@MW3PR12MB4537.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yu Zhao <yuzhao@google.com> writes:
+On 16.03.21 09:43, Liang, Liang (Leo) wrote:
+> [AMD Public Use]
+> 
+> Hi David,
+> 
+> Thanks for your explanation. We saw slow boot issue on our farm/QA's machines and mine. All of machines are same SoC/board.
 
-> On Tue, Mar 16, 2021 at 02:52:52PM +0800, Huang, Ying wrote:
->> Yu Zhao <yuzhao@google.com> writes:
->> 
->> > On Tue, Mar 16, 2021 at 10:08:51AM +0800, Huang, Ying wrote:
->> >> Yu Zhao <yuzhao@google.com> writes:
->> >> [snip]
->> >> 
->> >> > +/* Main function used by foreground, background and user-triggered aging. */
->> >> > +static bool walk_mm_list(struct lruvec *lruvec, unsigned long next_seq,
->> >> > +			 struct scan_control *sc, int swappiness)
->> >> > +{
->> >> > +	bool last;
->> >> > +	struct mm_struct *mm = NULL;
->> >> > +	int nid = lruvec_pgdat(lruvec)->node_id;
->> >> > +	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
->> >> > +	struct lru_gen_mm_list *mm_list = get_mm_list(memcg);
->> >> > +
->> >> > +	VM_BUG_ON(next_seq > READ_ONCE(lruvec->evictable.max_seq));
->> >> > +
->> >> > +	/*
->> >> > +	 * For each walk of the mm list of a memcg, we decrement the priority
->> >> > +	 * of its lruvec. For each walk of memcgs in kswapd, we increment the
->> >> > +	 * priorities of all lruvecs.
->> >> > +	 *
->> >> > +	 * So if this lruvec has a higher priority (smaller value), it means
->> >> > +	 * other concurrent reclaimers (global or memcg reclaim) have walked
->> >> > +	 * its mm list. Skip it for this priority to balance the pressure on
->> >> > +	 * all memcgs.
->> >> > +	 */
->> >> > +#ifdef CONFIG_MEMCG
->> >> > +	if (!mem_cgroup_disabled() && !cgroup_reclaim(sc) &&
->> >> > +	    sc->priority > atomic_read(&lruvec->evictable.priority))
->> >> > +		return false;
->> >> > +#endif
->> >> > +
->> >> > +	do {
->> >> > +		last = get_next_mm(lruvec, next_seq, swappiness, &mm);
->> >> > +		if (mm)
->> >> > +			walk_mm(lruvec, mm, swappiness);
->> >> > +
->> >> > +		cond_resched();
->> >> > +	} while (mm);
->> >> 
->> >> It appears that we need to scan the whole address space of multiple
->> >> processes in this loop?
->> >> 
->> >> If so, I have some concerns about the duration of the function.  Do you
->> >> have some number of the distribution of the duration of the function?
->> >> And may be the number of mm_struct and the number of pages scanned.
->> >> 
->> >> In comparison, in the traditional LRU algorithm, for each round, only a
->> >> small subset of the whole physical memory is scanned.
->> >
->> > Reasonable concerns, and insightful too. We are sensitive to direct
->> > reclaim latency, and we tuned another path carefully so that direct
->> > reclaims virtually don't hit this path :)
->> >
->> > Some numbers from the cover letter first:
->> >   In addition, direct reclaim latency is reduced by 22% at 99th
->> >   percentile and the number of refaults is reduced 7%. These metrics are
->> >   important to phones and laptops as they are correlated to user
->> >   experience.
->> >
->> > And "another path" is the background aging in kswapd:
->> >   age_active_anon()
->> >     age_lru_gens()
->> >       try_walk_mm_list()
->> >         /* try to spread pages out across spread+1 generations */
->> >         if (old_and_young[0] >= old_and_young[1] * spread &&
->> >             min_nr_gens(max_seq, min_seq, swappiness) > max(spread, MIN_NR_GENS))
->> >                 return;
->> >
->> >         walk_mm_list(lruvec, max_seq, sc, swappiness);
->> >
->> > By default, spread = 2, which makes kswapd slight more aggressive
->> > than direct reclaim for our use cases. This can be entirely disabled
->> > by setting spread to 0, for worloads that don't care about direct
->> > reclaim latency, or larger values, they are more sensitive than
->> > ours.
->> 
->> OK, I see.  That can avoid the long latency in direct reclaim path.
->> 
->> > It's worth noting that walk_mm_list() is multithreaded -- reclaiming
->> > threads can work on different mm_structs on the same list
->> > concurrently. We do occasionally see this function in direct reclaims,
->> > on over-overcommitted systems, i.e., kswapd CPU usage is 100%. Under
->> > the same condition, we saw the current page reclaim live locked and
->> > triggered hardware watchdog timeouts (our hardware watchdog is set to
->> > 2 hours) many times.
->> 
->> Just to confirm, in the current page reclaim, kswapd will keep running
->> until watchdog?  This is avoided in your algorithm mainly via
->> multi-threading?  Or via direct vs. reversing page table scanning?
->
-> Well, don't tell me you've seen the problem :) Let me explain one
-> subtle difference in how the aging works between the current page
-> reclaim and this series, and point you to the code.
->
-> In the current page reclaim, we can't scan a page via the rmap without
-> isolating the page first. So the aging basically isolates a batch of
-> pages from a lru list, walks the rmap for each of the pages, and puts
-> active ones back to the list.
->
-> In this series, aging walks page tables to update the generation
-> numbers of active pages without isolating them. The isolation is the
-> subtle difference: it's not a problem when there are few threads, but
-> it causes live locks when hundreds of threads running the aging and
-> hit the following in shrink_inactive_list():
->
-> 	while (unlikely(too_many_isolated(pgdat, file, sc))) {
-> 		if (stalled)
-> 			return 0;
->
-> 		/* wait a bit for the reclaimer. */
-> 		msleep(100);
-> 		stalled = true;
->
-> 		/* We are about to die and free our memory. Return now. */
-> 		if (fatal_signal_pending(current))
-> 			return SWAP_CLUSTER_MAX;
-> 	}
->
-> Thanks to Michal who has improved it considerably by commit
-> db73ee0d4637 ("mm, vmscan: do not loop on too_many_isolated for
-> ever"). But we still occasionally see live locks on over-overcommitted
-> machines. Reclaiming threads step on each other while interleaving
-> between the msleep() and the aging, on 100+ CPUs.
+I cannot spot anything really special in the logs -- it's just ordinary 
+system ram -- except:
 
-Got it!  Thanks a lot for detailed explanation!
+[    0.000027] MTRR fixed ranges enabled:
+[    0.000028]   00000-9FFFF write-back
+[    0.000029]   A0000-BFFFF uncachable
+[    0.000030]   C0000-FFFFF write-through
+[    0.000031] MTRR variable ranges enabled:
+[    0.000032]   0 base 000000000000 mask FFFF80000000 write-back
+[    0.000034]   1 base 0000FFE00000 mask FFFFFFE00000 write-protect
+[    0.000035]   2 base 000100000000 mask FFFFFF000000 write-protect
+[    0.000036]   3 base 0000FFDE0000 mask FFFFFFFE0000 write-protect
+[    0.000038]   4 base 0000FF000000 mask FFFFFFF80000 write-protect
+[    0.000039]   5 disabled
+[    0.000039]   6 disabled
+[    0.000040]   7 disabled
 
-Best Regards,
-Huang, Ying
+Not sure if "2 base 000100000000" indicates something nasty. Not sure 
+how to interpret the masks.
+
+Can you provide the output of "cat /proc/mtrr" ?
+
+-- 
+Thanks,
+
+David / dhildenb
+
