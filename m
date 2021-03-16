@@ -2,69 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3871C33E189
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0044933E18B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbhCPWkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 18:40:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231391AbhCPWkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 18:40:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B908E64F3A;
-        Tue, 16 Mar 2021 22:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615934407;
-        bh=7Ze08olMH7mJggc5iCGUIXidJGhvC5SOFsLsncbQIXI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=rkoaOB7Pj1j3Fvba/2/rc8aZl8vaMcV5MUk76NQ6uvIzQFCfhftiLs+wVo3Qcz2fy
-         AH/eutfxbG0kG59MvosQXO/CdGD/X6+yZw5zDxwGdRbIYSfpDBxcbpgvKjBb31wh7A
-         zVz32uNABiclVbuKL6F/SXsQujsHkPRzwZQ4p1aP0BEwDy4E7wxr6Ok5p8gIZ8N7X1
-         u8kiW6w/St/hxzGk9PanfJt6lBA0MhH/TqIDtsk8nnZulESAp09aXczIut9/UKI+xO
-         9vV9/2gbGJbKxrexJBhhKhm/jPgkXJYAthugCTWkcSs/aP3ApsCyRwUFS1iroeSIbM
-         +nNOLMvBWO3jQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A97FA60A3D;
-        Tue, 16 Mar 2021 22:40:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231487AbhCPWke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 18:40:34 -0400
+Received: from mail-io1-f51.google.com ([209.85.166.51]:32989 "EHLO
+        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231441AbhCPWkX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 18:40:23 -0400
+Received: by mail-io1-f51.google.com with SMTP id n132so38997737iod.0;
+        Tue, 16 Mar 2021 15:40:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/145PC5Hg1ww6ygBvR/0VABqWnQ0iriNEFn+CsJB+Ek=;
+        b=WDgZSlVJ3GBfjhf+vHihJeDBTqh6+CA7eG77HAV8NvJTZl7QhinN7N2g099Jjkqx4I
+         W7RO87F+Krm1Znwl2gu2cxsuZ6kEgD96wsVhNan303VHWNe1kgop2Tsx/QCEEWxQLLIb
+         dih/vJnbiBzDlvvuOzTaeXJ1AQ5teeHTuYKQdiAuEezabaqL3j/eP39NKZZpbjbiDsaJ
+         zmUZYRksaJiun6zE89PRPwEukjz4lLqxz4IqhYDe0VWM/7dvkVn5lCy89h+ty/n0xLh4
+         KzmiykLiVsFNDp6sHNpRbOcBbdxBCmbD/7wve+XkHjg+JkQtwqC42ma4AeA0xF5k/vLg
+         ixOg==
+X-Gm-Message-State: AOAM530TeVBkMjF270tLn6tEhl9aPdR/Qo8A4X8vYLG3fZ51v7lzSagA
+        WK09MjFAjL9nwky7fU8KFg==
+X-Google-Smtp-Source: ABdhPJykYzwpF/s31VOMoMQtq8It7OKYmAJNheq5ayDxQj1CfG2uZLMm4OLqHvdgxQ3LvSglP1l6vw==
+X-Received: by 2002:a6b:1415:: with SMTP id 21mr5083540iou.147.1615934422755;
+        Tue, 16 Mar 2021 15:40:22 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id a15sm10111499iln.87.2021.03.16.15.40.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 15:40:22 -0700 (PDT)
+Received: (nullmailer pid 3817711 invoked by uid 1000);
+        Tue, 16 Mar 2021 22:40:20 -0000
+Date:   Tue, 16 Mar 2021 16:40:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     robert.foss@linaro.org, dri-devel@lists.freedesktop.org,
+        narmstrong@baylibre.com, mchehab@kernel.org, a.hajda@samsung.com,
+        linux-kernel@vger.kernel.org, Laurent.pinchart@ideasonboard.com,
+        shawnguo@kernel.org, linux-media@vger.kernel.org, airlied@linux.ie,
+        linux-imx@nxp.com, kernel@pengutronix.de, lee.jones@linaro.org,
+        jernej.skrabec@siol.net, s.hauer@pengutronix.de, jonas@kwiboo.se,
+        vkoul@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
+        kishon@ti.com
+Subject: Re: [PATCH v5 08/14] dt-bindings: display: bridge: Add i.MX8qxp
+ pixel link to DPI binding
+Message-ID: <20210316224020.GA3817676@robh.at.kernel.org>
+References: <1615370138-5673-1-git-send-email-victor.liu@nxp.com>
+ <1615370138-5673-9-git-send-email-victor.liu@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] net: broadcom: BCM4908_ENET should not default to y,
- unconditionally
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161593440769.11342.8353249095290612887.git-patchwork-notify@kernel.org>
-Date:   Tue, 16 Mar 2021 22:40:07 +0000
-References: <20210316140341.2399108-1-geert+renesas@glider.be>
-In-Reply-To: <20210316140341.2399108-1-geert+renesas@glider.be>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     davem@davemloft.net, kuba@kernel.org, f.fainelli@gmail.com,
-        rafal@milecki.pl, bcm-kernel-feedback-list@broadcom.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615370138-5673-9-git-send-email-victor.liu@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Tue, 16 Mar 2021 15:03:41 +0100 you wrote:
-> Merely enabling compile-testing should not enable additional code.
-> To fix this, restrict the automatic enabling of BCM4908_ENET to
-> ARCH_BCM4908.
+On Wed, 10 Mar 2021 17:55:32 +0800, Liu Ying wrote:
+> This patch adds bindings for i.MX8qxp pixel link to DPI(PXL2DPI).
 > 
-> Fixes: 4feffeadbcb2e5b1 ("net: broadcom: bcm4908enet: add BCM4908 controller driver")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> ---
+> v4->v5:
+> * No change.
 > 
-> [...]
+> v3->v4:
+> * Add 'fsl,sc-resource' property. (Rob)
+> 
+> v2->v3:
+> * Drop 'fsl,syscon' property. (Rob)
+> * Mention the CSR module controls PXL2DPI.
+> 
+> v1->v2:
+> * Use graph schema. (Laurent)
+> 
+>  .../display/bridge/fsl,imx8qxp-pxl2dpi.yaml        | 108 +++++++++++++++++++++
+>  1 file changed, 108 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pxl2dpi.yaml
+> 
 
-Here is the summary with links:
-  - [v2] net: broadcom: BCM4908_ENET should not default to y, unconditionally
-    https://git.kernel.org/netdev/net/c/a3bc48321665
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Reviewed-by: Rob Herring <robh@kernel.org>
