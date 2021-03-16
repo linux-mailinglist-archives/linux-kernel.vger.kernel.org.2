@@ -2,284 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 119BD33CB69
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 03:28:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E2633CB68
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 03:28:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233697AbhCPC2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 22:28:11 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:33563 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231643AbhCPC1s (ORCPT
+        id S233100AbhCPC2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 22:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232076AbhCPC1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Mar 2021 22:27:48 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id B77A55809B4;
-        Mon, 15 Mar 2021 22:27:47 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 15 Mar 2021 22:27:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=xihCkfjZnCzcr
-        nqNSoSyOVKNoXb242z8lYAQzE/CBkI=; b=SitAAMFclN3QDyfRMmHVA08Wv+gXR
-        fgWy9Tv8R0Ru1Berlq4bFHod1nS1LXo4C9o1dqDQZALLIai1qFeydi6YPlhoihXC
-        I6i6QCQEjfS5B2D4tjPFXmfWJd+BT5hYclDPMNTk3z/N/39LiDIvt+xzoYZEk6Za
-        IJrzAtoelBInJRtlApiM0zEggY8Noz7H8Fbx9ODcgGUBvZ37gzLFW4iPMcqtRvaS
-        af1n5EJfAQTTFL95u0WqSKIUAHaOTEmeR3bFVJdBNDjLQYOAewwtqsmtc74msG68
-        eMORoWPISZY8iuHYYiCQzSRiYP90tJqMuZQlPBVlPaG10YpmLxvHbtKpw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=xihCkfjZnCzcrnqNSoSyOVKNoXb242z8lYAQzE/CBkI=; b=YSX1Lqy/
-        RqvwkH6IX+w6j0Tp7Vt3EE/VikXmTAKl7LV6lnBb4/aCDcTMqWG/MHTxyogulglL
-        Iz8h1jYL4slZ3YkJ14qCV08fay1Z6zrBiRBzFV7zWRWW/EUABFmnMB2U18AgvU1D
-        5MmSMuIEdTFn3BUCU5IxZwydM8xbZRubGIIpHXUnRgB34OVHJw6LFeVfbULv6Bvx
-        wdcnImrhye6bNSWTkKMZUnrahNrf6ViOfWwn2/VdXIQEy0JBw7sYFU83vjxo2Qk0
-        lutZBuwpuMmkngkOYP8+EtFXeNTXXVi5eHf+YfSLUjDsZgRNJBFPTv88nxAME8xm
-        iDq3Tf+u6WERvw==
-X-ME-Sender: <xms:oxdQYPb6GBTB0kWfTkq5JysXjq2kGeuQP9TIOqRes28G0DNqiWC89w>
-    <xme:oxdQYCrUCFD3Z1KC28g1kfp-xN7ToMIDWeYxO9T97ujuM7gyOv-GMkcRgE_dafaY4
-    xeMJ7CracK4_CuoxCQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudefuddggeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomheptehlihhsthgrihhrucfhrhgrnhgtihhsuceorghlihhsthgr
-    ihhrsegrlhhishhtrghirhdvfedrmhgvqeenucggtffrrghtthgvrhhnpeehffejteette
-    ekfffhvdeghfegvedvvdeujeehheefveefudefgeeitdehueejleenucffohhmrghinhep
-    rhgvmhgrrhhkrggslhgvrdgtohhmnecukfhppeeiiedrudduhedrudekledrudejjeenuc
-    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrlhhishht
-    rghirhesrghlihhsthgrihhrvdefrdhmvg
-X-ME-Proxy: <xmx:oxdQYM_-wsZu2dFzz2koGoWt5r75c-zk4nxjj_ANyi61fULa63-5Hw>
-    <xmx:oxdQYJ-Bx0lpUTlEtCmOvvQoc8OHYAccDyMFbT7mmqCFdaJX_f3PcA>
-    <xmx:oxdQYDuqjuG5wXX7UwXasTkH6qJ_LwfcFx-nuAFa-LTgLgnNqUiKxg>
-    <xmx:oxdQYKGTTOWs2p65uU7qPPu6osMUam7MkwIlzmMdf1A_MKcrddOP2g>
-Received: from ThinkpadX1Yoga3.localdomain (unknown [66.115.189.177])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B3548240072;
-        Mon, 15 Mar 2021 22:27:46 -0400 (EDT)
-From:   Alistair Francis <alistair@alistair23.me>
-To:     arnd@arndb.de, olof@lixom.net, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alistair23@gmail.com,
-        Alistair Francis <alistair@alistair23.me>
-Subject: [PATCH v5 3/3] ARM: imx7d-remarkable2.dts: Initial device tree for reMarkable2
-Date:   Mon, 15 Mar 2021 22:27:40 -0400
-Message-Id: <20210316022740.132-3-alistair@alistair23.me>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210316022740.132-1-alistair@alistair23.me>
-References: <20210316022740.132-1-alistair@alistair23.me>
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EAAC06174A;
+        Mon, 15 Mar 2021 19:27:48 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id w195so29993640oif.11;
+        Mon, 15 Mar 2021 19:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w94VrLl/y66bMYiTb+0p4BQ4LAxii2p2ztQYr6K7gO8=;
+        b=WxQQVSUM3aIzehInYjYtZkNb+HPHb6NjDWXKjNLtAluN69NK7VyjLN7o8iR+INavep
+         C0covz9KVOjcB7/YR5Lz7XGb6OGXEQxnMev8NXsKxqU1DmEYtBdSnLcq3AJQBBoBgKMA
+         7EZWHPCECFHnUpdOVAxT6E1I9XuK+gs2iEl7WX0ce6Pbp4KZSaM+zYs+KQic1TpJ7F0k
+         Dsyk0AmrhTAPykQZ/DrP4X2oYL4nkVycTlWiDwFsituHQvu6by4SuLyW2S+Jg9czzMI8
+         vXlvYnorulzA0IznGA9RTIDdBuN39vnegM4MdzyugXts0cy0FDdnCz4Y3GzsZvD6XKrP
+         +gCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=w94VrLl/y66bMYiTb+0p4BQ4LAxii2p2ztQYr6K7gO8=;
+        b=ucKjNv1HGpbxYMk1d40UA+Xhyz35nTHIkmCy0FmirjE/pL+d4BoBu9ETVnqr9JyHYm
+         TQhs1bYhViBaPGDnjsfjLAMHiI9K5mJmcBfzvgR4BRcT08BL3dCZA5r5pegUnvXkZKUC
+         rcDJhT4nx2eRlP2OOXRfpGLyOoaJmxZnawJXh7oOl3YMjQMC8yN+KAH78I18jSiCPUKZ
+         eCnne2UL3fDPManm/PM96nYLGu655W6Hd+XwtiW3QvL1+RV2E9jo+bxYtHsNZdIt+U52
+         UjFCA/V8SFOvZEPWEP+pXPgEIZdAOLe39z5rXFaPu01zz6cNwnAnddICamlTsYWqMk1m
+         9Fag==
+X-Gm-Message-State: AOAM532j0hEI+HcKT28piNyiQ1ehlHqgVCdILm62K534/AqCA+Pw62sx
+        UbSwwec6wmx5wj6hxii5JKU=
+X-Google-Smtp-Source: ABdhPJyRZxya4YyThmWlsbDxq73UkQ8j8ERHxu15+gPYz/Cc2TzIf/MJTKXoGjfbN0w1luu0LDrO4Q==
+X-Received: by 2002:aca:af10:: with SMTP id y16mr1642883oie.120.1615861667809;
+        Mon, 15 Mar 2021 19:27:47 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 101sm7743922otj.44.2021.03.15.19.27.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 19:27:47 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 3/9] watchdog: of_xilinx_wdt: Used dev_dbg()
+To:     Srinivas Neeli <srinivas.neeli@xilinx.com>,
+        michal.simek@xilinx.com, shubhrajyoti.datta@xilinx.com,
+        sgoud@xilinx.com
+Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        git@xilinx.com, Srinivas Goud <srinivas.goud@xilinx.com>
+References: <1615805214-24857-1-git-send-email-srinivas.neeli@xilinx.com>
+ <1615805214-24857-4-git-send-email-srinivas.neeli@xilinx.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <8b4ba82c-d6a8-a0f8-cc3d-e8aece36910a@roeck-us.net>
+Date:   Mon, 15 Mar 2021 19:27:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1615805214-24857-4-git-send-email-srinivas.neeli@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reMarkable2 (https://remarkable.com) is an e-ink tablet based on
-the imx7d SoC.
+On 3/15/21 3:46 AM, Srinivas Neeli wrote:
+> From: Srinivas Goud <srinivas.goud@xilinx.com>
+> 
+> This patch removes pr_info in stop function and adds dev_dbg()
+> in start/stop function to display device specific debug info.
+> 
+> Signed-off-by: Srinivas Goud <srinivas.goud@xilinx.com>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+> ---
+>  drivers/watchdog/of_xilinx_wdt.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/watchdog/of_xilinx_wdt.c b/drivers/watchdog/of_xilinx_wdt.c
+> index 0d7df2370db7..9e67b598907e 100644
+> --- a/drivers/watchdog/of_xilinx_wdt.c
+> +++ b/drivers/watchdog/of_xilinx_wdt.c
+> @@ -50,6 +50,7 @@ static int xilinx_wdt_start(struct watchdog_device *wdd)
+>  	int ret;
+>  	u32 control_status_reg;
+>  	struct xwdt_device *xdev = watchdog_get_drvdata(wdd);
+> +	struct watchdog_device *xilinx_wdt_wdd = &xdev->xilinx_wdt_wdd;
+>  
+This is the same as wdd and thus pointless.
 
-This commit is based on the DTS provide by reMarkable but ported to the
-latest kernel (instead of 4.14). I have removed references to
-non-upstream devices and have changed the UART so that the console can
-be accessed without having to open up the device via the OTG pogo pins.
+>  	ret = clk_enable(xdev->clk);
+>  	if (ret) {
+> @@ -70,6 +71,8 @@ static int xilinx_wdt_start(struct watchdog_device *wdd)
+>  
+>  	spin_unlock(&xdev->spinlock);
+>  
+> +	dev_dbg(xilinx_wdt_wdd->parent, "Watchdog Started!\n");
+> +
+>  	return 0;
+>  }
+>  
+> @@ -77,6 +80,7 @@ static int xilinx_wdt_stop(struct watchdog_device *wdd)
+>  {
+>  	u32 control_status_reg;
+>  	struct xwdt_device *xdev = watchdog_get_drvdata(wdd);
+> +	struct watchdog_device *xilinx_wdt_wdd = &xdev->xilinx_wdt_wdd;
+>  
+Same as above: This is the same as wdd and thus pointless.
 
-Currently the kernel boots, but there is no support for the display.
-
-WiFi is untested (no dispaly or UART RX makes it hard to test), but
-should work with the current upstream driver. As it's untested it's not
-included in this commit.
-
-Signed-off-by: Alistair Francis <alistair@alistair23.me>
----
- arch/arm/boot/dts/Makefile              |   1 +
- arch/arm/boot/dts/imx7d-remarkable2.dts | 166 ++++++++++++++++++++++++
- 2 files changed, 167 insertions(+)
- create mode 100644 arch/arm/boot/dts/imx7d-remarkable2.dts
-
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 8e5d4ab4e75e..dc8e378689af 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -660,6 +660,7 @@ dtb-$(CONFIG_SOC_IMX7D) += \
- 	imx7d-pico-hobbit.dtb \
- 	imx7d-pico-nymph.dtb \
- 	imx7d-pico-pi.dtb \
-+	imx7d-remarkable2.dtb \
- 	imx7d-sbc-imx7.dtb \
- 	imx7d-sdb.dtb \
- 	imx7d-sdb-reva.dtb \
-diff --git a/arch/arm/boot/dts/imx7d-remarkable2.dts b/arch/arm/boot/dts/imx7d-remarkable2.dts
-new file mode 100644
-index 000000000000..86d555bd33c2
---- /dev/null
-+++ b/arch/arm/boot/dts/imx7d-remarkable2.dts
-@@ -0,0 +1,166 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2015 Freescale Semiconductor, Inc.
-+ * Copyright (C) 2019 reMarkable AS - http://www.remarkable.com/
-+ *
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx7d.dtsi"
-+
-+/ {
-+	model = "reMarkable 2.0";
-+	compatible = "remarkable,imx7d-remarkable2", "fsl,imx7d";
-+
-+	chosen {
-+		stdout-path = &uart6;
-+	};
-+
-+	memory {
-+		reg = <0x80000000 0x40000000>;
-+	};
-+};
-+
-+&clks {
-+	assigned-clocks = <&clks IMX7D_CLKO2_ROOT_SRC>,
-+			  <&clks IMX7D_CLKO2_ROOT_DIV>;
-+	assigned-clock-parents = <&clks IMX7D_CKIL>;
-+	assigned-clock-rates = <0>, <32768>;
-+};
-+
-+&crypto {
-+	status = "disabled";
-+};
-+
-+&dma_apbh {
-+	status = "disabled";
-+};
-+
-+&sdma {
-+	status = "okay";
-+};
-+
-+&snvs_pwrkey {
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+	assigned-clocks = <&clks IMX7D_UART1_ROOT_SRC>;
-+	assigned-clock-parents = <&clks IMX7D_OSC_24M_CLK>;
-+	status = "okay";
-+};
-+
-+&uart6 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart6>;
-+	assigned-clocks = <&clks IMX7D_UART6_ROOT_SRC>;
-+	assigned-clock-parents = <&clks IMX7D_OSC_24M_CLK>;
-+	status = "okay";
-+};
-+
-+&usbotg2 {
-+	srp-disable;
-+	hnp-disable;
-+	status = "okay";
-+};
-+
-+&usdhc3 {
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz", "sleep";
-+	pinctrl-0 = <&pinctrl_usdhc3>;
-+	pinctrl-1 = <&pinctrl_usdhc3_100mhz>;
-+	pinctrl-2 = <&pinctrl_usdhc3_200mhz>;
-+	pinctrl-3 = <&pinctrl_usdhc3>;
-+	assigned-clocks = <&clks IMX7D_USDHC3_ROOT_CLK>;
-+	assigned-clock-rates = <400000000>;
-+	bus-width = <8>;
-+	non-removable;
-+	status = "okay";
-+};
-+
-+&wdog1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_wdog>;
-+	fsl,ext-reset-output;
-+};
-+
-+&iomuxc_lpsr {
-+	pinctrl_digitizer_reg: digitizerreggrp {
-+		fsl,pins = <
-+			/* DIGITIZER_PWR_EN */
-+			MX7D_PAD_LPSR_GPIO1_IO06__GPIO1_IO6	0x14
-+		>;
-+	};
-+};
-+
-+&iomuxc {
-+	pinctrl_uart1: uart1grp {
-+		fsl,pins = <
-+			MX7D_PAD_UART1_TX_DATA__UART1_DCE_TX	0x79
-+			MX7D_PAD_UART1_RX_DATA__UART1_DCE_RX	0x79
-+		>;
-+	};
-+
-+	pinctrl_uart6: uart6grp {
-+		fsl,pins = <
-+			MX7D_PAD_EPDC_DATA09__UART6_DCE_TX		0x79
-+			MX7D_PAD_EPDC_DATA08__UART6_DCE_RX		0x79
-+		>;
-+	};
-+
-+	pinctrl_usdhc3: usdhc3grp {
-+		fsl,pins = <
-+			MX7D_PAD_SD3_CMD__SD3_CMD		0x59
-+			MX7D_PAD_SD3_CLK__SD3_CLK		0x19
-+			MX7D_PAD_SD3_DATA0__SD3_DATA0		0x59
-+			MX7D_PAD_SD3_DATA1__SD3_DATA1		0x59
-+			MX7D_PAD_SD3_DATA2__SD3_DATA2		0x59
-+			MX7D_PAD_SD3_DATA3__SD3_DATA3		0x59
-+			MX7D_PAD_SD3_DATA4__SD3_DATA4		0x59
-+			MX7D_PAD_SD3_DATA5__SD3_DATA5		0x59
-+			MX7D_PAD_SD3_DATA6__SD3_DATA6		0x59
-+			MX7D_PAD_SD3_DATA7__SD3_DATA7		0x59
-+			MX7D_PAD_SD3_STROBE__SD3_STROBE		0x19
-+		>;
-+	};
-+
-+	pinctrl_usdhc3_100mhz: usdhc3grp_100mhz {
-+		fsl,pins = <
-+			MX7D_PAD_SD3_CMD__SD3_CMD		0x5a
-+			MX7D_PAD_SD3_CLK__SD3_CLK		0x1a
-+			MX7D_PAD_SD3_DATA0__SD3_DATA0		0x5a
-+			MX7D_PAD_SD3_DATA1__SD3_DATA1		0x5a
-+			MX7D_PAD_SD3_DATA2__SD3_DATA2		0x5a
-+			MX7D_PAD_SD3_DATA3__SD3_DATA3		0x5a
-+			MX7D_PAD_SD3_DATA4__SD3_DATA4		0x5a
-+			MX7D_PAD_SD3_DATA5__SD3_DATA5		0x5a
-+			MX7D_PAD_SD3_DATA6__SD3_DATA6		0x5a
-+			MX7D_PAD_SD3_DATA7__SD3_DATA7		0x5a
-+			MX7D_PAD_SD3_STROBE__SD3_STROBE		0x1a
-+		>;
-+	};
-+
-+	pinctrl_usdhc3_200mhz: usdhc3grp_200mhz {
-+		fsl,pins = <
-+			MX7D_PAD_SD3_CMD__SD3_CMD		0x5b
-+			MX7D_PAD_SD3_CLK__SD3_CLK		0x1b
-+			MX7D_PAD_SD3_DATA0__SD3_DATA0		0x5b
-+			MX7D_PAD_SD3_DATA1__SD3_DATA1		0x5b
-+			MX7D_PAD_SD3_DATA2__SD3_DATA2		0x5b
-+			MX7D_PAD_SD3_DATA3__SD3_DATA3		0x5b
-+			MX7D_PAD_SD3_DATA4__SD3_DATA4		0x5b
-+			MX7D_PAD_SD3_DATA5__SD3_DATA5		0x5b
-+			MX7D_PAD_SD3_DATA6__SD3_DATA6		0x5b
-+			MX7D_PAD_SD3_DATA7__SD3_DATA7		0x5b
-+			MX7D_PAD_SD3_STROBE__SD3_STROBE		0x1b
-+		>;
-+	};
-+
-+	pinctrl_wdog: wdoggrp {
-+		fsl,pins = <
-+			MX7D_PAD_ENET1_COL__WDOG1_WDOG_ANY	0x74
-+		>;
-+	};
-+};
--- 
-2.30.1
+>  	spin_lock(&xdev->spinlock);
+>  
+> @@ -91,7 +95,7 @@ static int xilinx_wdt_stop(struct watchdog_device *wdd)
+>  
+>  	clk_disable(xdev->clk);
+>  
+> -	pr_info("Stopped!\n");
+> +	dev_dbg(xilinx_wdt_wdd->parent, "Watchdog Stopped!\n");
+>  
+>  	return 0;
+>  }
+> 
 
