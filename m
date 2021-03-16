@@ -2,75 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F9633D348
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7639333D349
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:44:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237431AbhCPLni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237392AbhCPLnN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:43:13 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F4FC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 04:43:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hwLsizL7XJFqnGMjmpylTC6CiVb1w0cJP3VBTDn/L3Q=; b=Q2e4J9kztINb6/RaS8BAGTPZ0h
-        688wNGv1dqyj/XZxuBhb6izILoCSqyjpBf9JKoZGE8YdS1JDnIY2sEo7AAzPhLdYVw62Ja4//VtLe
-        El9wobTscRYWjrr6Ql6xMMUyAqseSX9Dyo77na904OND06pc6yOjLzgjJmFAkvWW4vqT8faRq+QHB
-        +pxfh34R4gtFSgwdABs/Ltnb49QcOBNzLsTA+BDSzlUVeuMu1wBcNJjfuW7iukIE8S4PIdA/JGUfV
-        WFSgGG08cEKIl8SDqv2x9mvLwasdIyqgsO2dPUCv0+8egQDl8vxHbcpScQ5IIVL0+PDs3G/qgwQt+
-        rQ//Zf4g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lM86N-000bl2-B0; Tue, 16 Mar 2021 11:43:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 215E3301324;
-        Tue, 16 Mar 2021 12:43:06 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0C48820435D00; Tue, 16 Mar 2021 12:43:06 +0100 (CET)
-Date:   Tue, 16 Mar 2021 12:43:06 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     mingo@kernel.org, acme@redhat.com, linux-kernel@vger.kernel.org,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        eranian@google.com, namhyung@kernel.org, ak@linux.intel.com
-Subject: Re: [PATCH 1/5] perf/x86/intel/uncore: Parse uncore discovery tables
-Message-ID: <YFCZyqz+56bB8n2k@hirez.programming.kicks-ass.net>
-References: <1615566878-70244-1-git-send-email-kan.liang@linux.intel.com>
- <1615566878-70244-2-git-send-email-kan.liang@linux.intel.com>
+        id S237438AbhCPLnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:43:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51854 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237403AbhCPLnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 07:43:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615894995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kcbeDubQYizYjgE6shXG3hzU7La1wyi/suGmhWSBO+I=;
+        b=POpT8cKtqdqeEdVmcB21LBVWPOI45CO4F2sTgJFtGEqkomDlhDmk1QlMmND0d4nEH6a7zC
+        T9eAnpJNc7trcl3LfT2jBYH7g/7aVPBztJ7e8qTxBjyLJh66NUZH8eEn8RM+Xfx4tKwHMr
+        3JPZpc+H6hKMBEDXb6ofXze/4muZhTI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 58460AC5C;
+        Tue, 16 Mar 2021 11:43:15 +0000 (UTC)
+Date:   Tue, 16 Mar 2021 12:43:14 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
+        lkp@lists.01.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Laurence Oberman <loberman@redhat.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: c928e9b143: BUG:soft_lockup-CPU##stuck_for#s![perf:#]
+Message-ID: <YFCZ0mnrTUbVuV9l@alley>
+References: <20210311122130.6788-8-pmladek@suse.com>
+ <20210315140441.GA4401@xsang-OptiPlex-9020>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1615566878-70244-2-git-send-email-kan.liang@linux.intel.com>
+In-Reply-To: <20210315140441.GA4401@xsang-OptiPlex-9020>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 08:34:34AM -0800, kan.liang@linux.intel.com wrote:
-> From: Kan Liang <kan.liang@linux.intel.com>
+On Mon 2021-03-15 22:04:41, kernel test robot wrote:
 > 
-> A self-describing mechanism for the uncore PerfMon hardware has been
-> introduced with the latest Intel platforms. By reading through an MMIO
-> page worth of information, perf can 'discover' all the standard uncore
-> PerfMon registers in a machine.
 > 
-> The discovery mechanism relies on BIOS's support. With a proper BIOS,
-> a PCI device with the unique capability ID 0x23 can be found on each
-> die. Perf can retrieve the information of all available uncore PerfMons
-> from the device via MMIO. The information is composed of one global
-> discovery table and several unit discovery tables.
+> Greeting,
+> 
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: c928e9b1439de4d74b942abd30d5c838a40af777 ("[PATCH v2 7/7] Test softlockup")
+> url: https://github.com/0day-ci/linux/commits/Petr-Mladek/watchdog-softlockup-Report-overall-time-and-some-cleanup/20210311-205501
+> base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git a74e6a014c9d4d4161061f770c9b4f98372ac778
 
-> If a BIOS doesn't support the 'discovery' mechanism, there is nothing
-> changed.
+Just for record. Please, ignore this error. The patch is not intended
+for upstream.
 
-What if the BIOS got it wrong? Will the driver still get it correct if
-it is a known platform?
+This patch was provided only for testing purposes. It causes
+softlockup, so it works as expected.
 
-Do we need a chicken flag to kill the discovery? uncore_no_discover?
+Best Regards,
+Petr
