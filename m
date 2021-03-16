@@ -2,102 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3790733D0B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:24:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC85133D0B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236175AbhCPJXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
+        id S236177AbhCPJYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235979AbhCPJXD (ORCPT
+        with ESMTP id S236174AbhCPJYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:23:03 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C456EC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:23:02 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id dx17so70958234ejb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:23:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/IXhW1O63bmJ8Yd0S7dPhigetZgdpUG2XeBEZKEoOTk=;
-        b=UBceE/SRPgNInEgr1e11s95rOpMzM2O0jAasYVdA1+zDUwLsSJJV5qTVQb3ZGitrtc
-         i2014J51k8OMFvFsEQkmZZ67kycqGpkDu/6F2hLbyjgSXYi3cFNGbX/A1ByyWM7+ZpoM
-         ++SdsHTuNUfognYkuXKo6pnAMCuTgr27vUVLVgycxx5Jf4DD9iJAljX0wlmIjl8jtIif
-         2vlpovJcZq1i1wBQicpzin7jnUN9aQ+rX0RPRlgq9KnUD6oxljr8TxV8Tuwi05F4p32d
-         nmqZ01mh1diT89Qx8Bvu3F4LMWZhwdRFbv8qXzefgPkH/z8rR5p7Kr29kB1XkgOLFa4z
-         ozaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/IXhW1O63bmJ8Yd0S7dPhigetZgdpUG2XeBEZKEoOTk=;
-        b=Tg+hp0RNksd4xhqwAdFTwh2st9CdsC/Jv4LkM9zYb0W9XfSGGeHLh2DvF8pDn9vIIV
-         6hkZEgy3dszv2xalaDahqveXH/Kl1/4ZlBz0sV+aqgeLVe2gbnl3PenetGfzdGaspfp2
-         uV/cssn3IpnXGPSuL61qTEKDwFlb64MK6dkYwGz6PnlCV1/XtpWc4t5kFfPzIdD+tIur
-         0xzO5RvN5JUPwYK77SwXAYEtkhtbMLGkHyOXLIOvGR/2537JUn+Esgbtef6DlHKPS8PC
-         z1h7XBO6Lq+PCnJcwoPA7ubTCuadNeqLihTqSOra1OcH5EVsWfffQfWs+jVBz9O+JgcX
-         5jkA==
-X-Gm-Message-State: AOAM530wy0sM7Fn3syS63ViQwFXMB8TEwyIan8SGKJstIdVtL1dVuaKy
-        n2l290OsjsJB6aViJjgchakHayLv55zQujDg6ihl3w==
-X-Google-Smtp-Source: ABdhPJx58TefNTCARrYlDvqMTau3fnzMU3RG+L1/JXTagjaemGGfsmD89Dj1Lvs3d9ajASHalOeUuGNkYfcWyI9ZhOo=
-X-Received: by 2002:a17:906:c0c8:: with SMTP id bn8mr28225514ejb.445.1615886581573;
- Tue, 16 Mar 2021 02:23:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210315185141.18013-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210315185141.18013-1-andriy.shevchenko@linux.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 16 Mar 2021 10:22:50 +0100
-Message-ID: <CAMpxmJWtuH6JAQxbkqeAJeR99A8N4+RJF=AABK7HfrJ19WJMqA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] gpio: mockup: Drop duplicate NULL check in gpio_mockup_unregister_pdevs()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        Tue, 16 Mar 2021 05:24:32 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDF1C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:24:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=L2lx90o4BdDmWpFbAcu+Og+AgfQH5O8WgM23Jxff4nc=; b=hmARNqg0Svho+vO/JBIUs7EI+
+        1vknHLnSdjHtxZo46iPrDa7FyH0C9PJL0ijLqQqy66n1w3MGzTkKAfbXCX/TiXMb3Wreecw0I9nW9
+        Y6HhVZrFf0h3HfkgS92g9cDuWEMzV3vDWYeIa5c6dreBEdNiDKM/ED99EwxLAtDQ2RW1d/Db2DKfd
+        SmVhQW/HFSLSZ7XXjzdxuinfb0IA6muO+jF3hsVsOzfQmcUXo6vYBGY3ybBVap4VzPvWOCUndKrbw
+        j9MJ0trTgvMCiAJjmM2WeRtNV1pzDAkdWN9/lFZhzoWxTb/mjKay1dXXDDth0YacX02S2KxqcksK3
+        26w7s9jaA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51352)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lM5w7-00018R-8R; Tue, 16 Mar 2021 09:24:23 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lM5w5-00068s-Gs; Tue, 16 Mar 2021 09:24:21 +0000
+Date:   Tue, 16 Mar 2021 09:24:21 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Bamvor Jian Zhang <bamv2005@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux-MM <linux-mm@kvack.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] kernel panic: corrupted stack end in openat
+Message-ID: <20210316092420.GN1463@shell.armlinux.org.uk>
+References: <00000000000069802205bda22b7f@google.com>
+ <CACT4Y+Yaq-zDh5FAzHt4g-5jXrXC3rSLw6CM=kjcfR6oxJ1+CA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+Yaq-zDh5FAzHt4g-5jXrXC3rSLw6CM=kjcfR6oxJ1+CA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 7:51 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> Since platform_device_unregister() is NULL-aware, we don't need to duplicate
-> this check. Remove it and fold the rest of the code.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/gpio/gpio-mockup.c | 9 ++-------
->  1 file changed, 2 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
-> index 28b757d34046..d7e73876a3b9 100644
-> --- a/drivers/gpio/gpio-mockup.c
-> +++ b/drivers/gpio/gpio-mockup.c
-> @@ -479,15 +479,10 @@ static struct platform_device *gpio_mockup_pdevs[GPIO_MOCKUP_MAX_GC];
->
->  static void gpio_mockup_unregister_pdevs(void)
->  {
-> -       struct platform_device *pdev;
->         int i;
->
-> -       for (i = 0; i < GPIO_MOCKUP_MAX_GC; i++) {
-> -               pdev = gpio_mockup_pdevs[i];
-> -
-> -               if (pdev)
-> -                       platform_device_unregister(pdev);
-> -       }
-> +       for (i = 0; i < GPIO_MOCKUP_MAX_GC; i++)
-> +               platform_device_unregister(gpio_mockup_pdevs[i]);
->  }
->
->  static __init char **gpio_mockup_make_line_names(const char *label,
-> --
-> 2.30.2
->
+On Tue, Mar 16, 2021 at 08:59:17AM +0100, Dmitry Vyukov wrote:
+> On Tue, Mar 16, 2021 at 8:18 AM syzbot
+> <syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    1e28eed1 Linux 5.12-rc3
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=167535e6d00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=e0cee1f53de33ca3
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=0b06ef9b44d00d600183
+> > userspace arch: arm
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com
+> 
+> +arm32 maintainer
+> I think this is a real stack overflow on arm32, the stack is indeed deep.
 
-Applied, thanks!
+There's no way to know for sure because there's no indication of the
+stack pointer in this, so we don't know how much space remains.
+Therefore we don't know whether this is something in the dumped
+path, or an interrupt causing it.
 
-Bartosz
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
