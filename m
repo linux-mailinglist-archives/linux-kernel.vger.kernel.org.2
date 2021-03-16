@@ -2,171 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C20533E233
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:34:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5605633E237
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:34:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229840AbhCPXdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 19:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57514 "EHLO
+        id S229887AbhCPXeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 19:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhCPXdc (ORCPT
+        with ESMTP id S229492AbhCPXdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 19:33:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA0AC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 16:33:32 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615937610;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LfM7hJN4/YE2bPc8jKE9fybnKrSZiZEwM5+EqT78KpQ=;
-        b=ZPdkfUkptWzABGwfts3uvtGSL9b4SNLUjj10N30tzsQ3ZrQJekp+vbIvFHhGGKcsbNTUlx
-        yxsb5tZj8WAHhNrsqfKUOvX5QwQuui0a+G1E9upyrU3WEgHfIGyRC5EvcxQcFA4SB8OnvM
-        YPIaisi/k628BVd2Kp6m+OYQolUsO+ydbZBr3hm6Wft0BZHsRb27iNG8iLmlwXpo76ZHJM
-        PDS1YDmoQHb1VP3FCM4KHd8qGnsXmcGs8279G04zHZBH8oj0HPQNiiUFxw/7gKPOiWakTP
-        G1bl2XmSlNqSQMFpvU8bt8ZseFgsxXZBpp37l6BqKnlgaiG7pMvutcd8PND+YQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615937610;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LfM7hJN4/YE2bPc8jKE9fybnKrSZiZEwM5+EqT78KpQ=;
-        b=KLpZH4eXwfxsEp5y3m3oif4FXqauXBq5NHHJa5kx9He2v/d00cL7WFDxyp9R8Km3Nn1yyY
-        wrZt7W/zBBRPNBAw==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Tue, 16 Mar 2021 19:33:45 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A403C06174A;
+        Tue, 16 Mar 2021 16:33:44 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id u4so209900lfs.0;
+        Tue, 16 Mar 2021 16:33:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oaA9aMSbFmvtLvb2TvRiLzy5d0VE78dtkAU/7hwZdZE=;
+        b=DL3J3Sn0vCyNg6eH5/0Dv4LknSut5bq7vbVeMZq59Uk2TYiGHaJY7Ys+dKqEtErXrj
+         3QyMiBAdf37NjnOlgxoy2p/sUeYmI30APuT08xhSVOM7kbpMT9lCUfOdKAMrpT+bSHSY
+         m12YV9AxKyBZTJ7ZfHLXvnjv/Ty5IMmYdo510SqS2ODsN7tQQ2ep2sdNUk9kI4jRv+CW
+         GsuZ4y1tJrXl/Q0zSAUV98V2ZqEsCq9/t2p6HXGrpl5av4rlGG8hH35CatGmn0mrvLyS
+         Jgv3BPZ3OAxP7swnT1QqGkD0nXOD6Ewuf16GndpMwK1D2/LSfkReySpVaRjpCTUiIFGo
+         8Meg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oaA9aMSbFmvtLvb2TvRiLzy5d0VE78dtkAU/7hwZdZE=;
+        b=et1fTkWlnZK3qwDFMcG5j9qA/MFCuzMqdbXg0m9vE77q07DOJJmShi6kXJzjFtovvC
+         Q0FUECtPaULaIJa+zs2f6PZ3UYMfg8J9ij2Zw8bjaqlhFTuFrGgl7URvN//hSaBQcC1Z
+         OHtX7AHig4dHx1+elKqlLY7J2X6Zd2rKhZXRktq5GVhideisQM1obvhXo1sIuhTo1IsT
+         SxkAnr8rWvrrnOZ0/jKdKld66ne5+sVGTwdQFL2EJbenAuaZYThKW4twH8Tn61dnEUr6
+         3t1IZ6NZB5LScjPV9NiuiL/vegULCw128BuSsV6aNBFdXIQonUEhA1wpXHoFmilxsuY9
+         E9lg==
+X-Gm-Message-State: AOAM5324ogV7sirXmWXwrk+pqaAvOObkcrkRzLtAOcL0tYHc2Pm7UxS5
+        u4Dqs/AIqa7nYRapy0JQNOiOrgHJNXg=
+X-Google-Smtp-Source: ABdhPJzvYBL68SGctS5ttbA+a6ftGWGtijNx5S78m8tgSBk/V8Ex98dn8GUgmTKHaNuU45wX8YyjvA==
+X-Received: by 2002:ac2:47e5:: with SMTP id b5mr640818lfp.476.1615937622918;
+        Tue, 16 Mar 2021 16:33:42 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id m19sm828337ljb.10.2021.03.16.16.33.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 16:33:42 -0700 (PDT)
+Subject: Re: [PATCH v5] iommu/tegra-smmu: Add pagetable mappings to debugfs
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        thierry.reding@gmail.com, will@kernel.org
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH next v1 3/3] printk: convert @syslog_lock to spin_lock
-Date:   Wed, 17 Mar 2021 00:33:26 +0100
-Message-Id: <20210316233326.10778-4-john.ogness@linutronix.de>
-In-Reply-To: <20210316233326.10778-1-john.ogness@linutronix.de>
-References: <20210316233326.10778-1-john.ogness@linutronix.de>
+References: <20210315203631.24990-1-nicoleotsuka@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <432fa6a4-23d3-7572-276b-0ee31ff22762@gmail.com>
+Date:   Wed, 17 Mar 2021 02:33:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210315203631.24990-1-nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-@syslog_log was a raw_spin_lock to simplify the transition of
-removing @logbuf_lock and the safe buffers. With that transition
-complete, @syslog_log can become a spin_lock.
+15.03.2021 23:36, Nicolin Chen пишет:
+> +static unsigned long pd_pt_index_iova(unsigned int pd_index, unsigned int pt_index)
+> +{
+> +	return ((dma_addr_t)pd_index & (SMMU_NUM_PDE - 1)) << SMMU_PDE_SHIFT |
+> +	       ((dma_addr_t)pt_index & (SMMU_NUM_PTE - 1)) << SMMU_PTE_SHIFT;
+> +}
 
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
----
- kernel/printk/printk.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
-
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index fa52a5daa232..1e38174583c5 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -356,7 +356,7 @@ enum log_flags {
- };
- 
- /* syslog_lock protects syslog_* variables and write access to clear_seq. */
--static DEFINE_RAW_SPINLOCK(syslog_lock);
-+static DEFINE_SPINLOCK(syslog_lock);
- 
- #ifdef CONFIG_PRINTK
- DECLARE_WAIT_QUEUE_HEAD(log_wait);
-@@ -1478,9 +1478,9 @@ static int syslog_print(char __user *buf, int size)
- 		size_t n;
- 		size_t skip;
- 
--		raw_spin_lock_irq(&syslog_lock);
-+		spin_lock_irq(&syslog_lock);
- 		if (!prb_read_valid(prb, syslog_seq, &r)) {
--			raw_spin_unlock_irq(&syslog_lock);
-+			spin_unlock_irq(&syslog_lock);
- 			break;
- 		}
- 		if (r.info->seq != syslog_seq) {
-@@ -1509,7 +1509,7 @@ static int syslog_print(char __user *buf, int size)
- 			syslog_partial += n;
- 		} else
- 			n = 0;
--		raw_spin_unlock_irq(&syslog_lock);
-+		spin_unlock_irq(&syslog_lock);
- 
- 		if (!n)
- 			break;
-@@ -1573,9 +1573,9 @@ static int syslog_print_all(char __user *buf, int size, bool clear)
- 	}
- 
- 	if (clear) {
--		raw_spin_lock_irq(&syslog_lock);
-+		spin_lock_irq(&syslog_lock);
- 		latched_seq_write(&clear_seq, seq);
--		raw_spin_unlock_irq(&syslog_lock);
-+		spin_unlock_irq(&syslog_lock);
- 	}
- 
- 	kfree(text);
-@@ -1584,9 +1584,9 @@ static int syslog_print_all(char __user *buf, int size, bool clear)
- 
- static void syslog_clear(void)
- {
--	raw_spin_lock_irq(&syslog_lock);
-+	spin_lock_irq(&syslog_lock);
- 	latched_seq_write(&clear_seq, prb_next_seq(prb));
--	raw_spin_unlock_irq(&syslog_lock);
-+	spin_unlock_irq(&syslog_lock);
- }
- 
- /* Return a consistent copy of @syslog_seq. */
-@@ -1594,9 +1594,9 @@ static u64 read_syslog_seq_irq(void)
- {
- 	u64 seq;
- 
--	raw_spin_lock_irq(&syslog_lock);
-+	spin_lock_irq(&syslog_lock);
- 	seq = syslog_seq;
--	raw_spin_unlock_irq(&syslog_lock);
-+	spin_unlock_irq(&syslog_lock);
- 
- 	return seq;
- }
-@@ -1674,10 +1674,10 @@ int do_syslog(int type, char __user *buf, int len, int source)
- 		break;
- 	/* Number of chars in the log buffer */
- 	case SYSLOG_ACTION_SIZE_UNREAD:
--		raw_spin_lock_irq(&syslog_lock);
-+		spin_lock_irq(&syslog_lock);
- 		if (!prb_read_valid_info(prb, syslog_seq, &info, NULL)) {
- 			/* No unread messages. */
--			raw_spin_unlock_irq(&syslog_lock);
-+			spin_unlock_irq(&syslog_lock);
- 			return 0;
- 		}
- 		if (info.seq != syslog_seq) {
-@@ -1705,7 +1705,7 @@ int do_syslog(int type, char __user *buf, int len, int source)
- 			}
- 			error -= syslog_partial;
- 		}
--		raw_spin_unlock_irq(&syslog_lock);
-+		spin_unlock_irq(&syslog_lock);
- 		break;
- 	/* Size of the log buffer */
- 	case SYSLOG_ACTION_SIZE_BUFFER:
-@@ -3013,9 +3013,9 @@ void register_console(struct console *newcon)
- 		exclusive_console_stop_seq = console_seq;
- 
- 		/* Get a consistent copy of @syslog_seq. */
--		raw_spin_lock_irqsave(&syslog_lock, flags);
-+		spin_lock_irqsave(&syslog_lock, flags);
- 		console_seq = syslog_seq;
--		raw_spin_unlock_irqrestore(&syslog_lock, flags);
-+		spin_unlock_irqrestore(&syslog_lock, flags);
- 	}
- 	console_unlock();
- 	console_sysfs_notify();
--- 
-2.20.1
-
+Looking at this again, I'm now wondering whether will be better to
+replace dma_addr_t with u32 everywhere since SMMU only supports 32bits
+for IOVA.
