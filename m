@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A510033DFC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:03:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C34E33DFBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:02:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232307AbhCPVDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 17:03:30 -0400
-Received: from casper.infradead.org ([90.155.50.34]:35976 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232329AbhCPVDF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 17:03:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KHYI63/oZUglLRTw4PB2bT7DWIzsrdEaZn8S9TzaRZE=; b=D6h+y9bDeKRNcXSqcwjogsQbgS
-        +w0dHuFN3mDp9X9h+UAF1zgng94INvYdrPYWUQ11iYiPN/ztFbRhC++N+Gh28jl7Fn8sZApt0XAPd
-        jB8HA3dxks2gsAbVc1piFuFDZ9C4+ijk5wlhsfpk+9GJxKWl4Zfm1MvnHvLc9mh5ldkq2wfIkpYiN
-        CyuQEQl2YZDC2DkrtsGvSJsrskjO0wVgLjAZkRx+cufrhA6C2xyhGY3/EevHxv3XZkBeL0bOQiRMu
-        B81/Zvj8KCI/g6gvqAiWYvVBgFUZrnbUBZBGCBp8kb8tFZ7RMWK+p4GfPrk01+/sB2Y8UDpTampWW
-        eerAmIFA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMGp6-000cD1-UW; Tue, 16 Mar 2021 21:01:56 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8468A986501; Tue, 16 Mar 2021 22:01:54 +0100 (CET)
-Date:   Tue, 16 Mar 2021 22:01:54 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Subject: Re: [PATCH v23 6/9] x86/entry: Introduce ENDBR macro
-Message-ID: <20210316210154.GT4746@worktop.programming.kicks-ass.net>
-References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
- <20210316151320.6123-7-yu-cheng.yu@intel.com>
- <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
- <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
- <YFENvgrR8JSYq1ae@hirez.programming.kicks-ass.net>
- <65845773-6cf0-1bdc-1ecf-168de74cc283@intel.com>
- <YFER79kU+ukn3YZr@hirez.programming.kicks-ass.net>
- <aff84067-5b9e-1335-e540-ef90ee133ac9@intel.com>
+        id S232420AbhCPVC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 17:02:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232329AbhCPVCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 17:02:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E269464F8C;
+        Tue, 16 Mar 2021 21:02:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615928524;
+        bh=JabW6V+JpL9pQaNpNRb0IG759fPR+7+Gv+pQSojDt34=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jOk9a5TPgHzTAN5ehOWPg8HuwPQrH0q3mHqJ37unDnf1PG40sZpnvwxU0T71BAchP
+         hFOCtYBamTnnDN8DKucrMp3+1m+zX0yKiENOlLQ5rhTpz0ZAs5WQUmnNnDoWeV8dYO
+         vaz0OjRFROztRXqg5zRMktFltLTYjih7InXGuqaloONOH1JqpaZHzO3J+Y0fEXWxVb
+         dHDbX9DC8B96C+NvnXBkeKm9VMCExKXNHI3G4dFi1HIPBAGNwoncDrLuF/RkBzZtfS
+         uPoSY6JW+5yhuSk3iT7ZaWnHEBiVPWKbzOgDyBPYKu5pKU/bIrVHdz++B0lMxRqB0G
+         /BhHwJErBjG5A==
+Date:   Tue, 16 Mar 2021 14:02:03 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Arjun Roy <arjunroy@google.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Arjun Roy <arjunroy.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
+Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
+Message-ID: <20210316140203.0d5ddf33@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAOFY-A2q4otqu=pD60tUiD0GTDZnpcm+zajFp6SRDh4VixbV2Q@mail.gmail.com>
+References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
+        <CAOFY-A1L8c626HZYSWm6ZKFO9mqBdBszv6obX4-1_LmDBQ6Z4A@mail.gmail.com>
+        <CALvZod7hgtdrN_KXD_5JdB2vzJzTc8tVz_5YFN53-xZjpHLLRw@mail.gmail.com>
+        <CAOFY-A0v2BEwRinhPXspjL_3dvyw2kDSyzQgUiJxc+P-3OLP8g@mail.gmail.com>
+        <CAOFY-A2q4otqu=pD60tUiD0GTDZnpcm+zajFp6SRDh4VixbV2Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aff84067-5b9e-1335-e540-ef90ee133ac9@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 01:26:52PM -0700, Yu, Yu-cheng wrote:
-> Then, what about moving what I had earlier to vdso.h?
-> If we don't want __i386__ either, then make it two macros.
+On Mon, 15 Mar 2021 23:28:08 -0700 Arjun Roy wrote:
+> On Mon, Mar 15, 2021 at 11:22 PM Arjun Roy <arjunroy@google.com> wrote:
+> >
+> > On Mon, Mar 15, 2021 at 9:29 PM Shakeel Butt <shakeelb@google.com> wrote:  
+> > >
+> > > On Mon, Mar 15, 2021 at 9:20 PM Arjun Roy <arjunroy@google.com> wrote:  
+>  [...]  
+> > > [...]  
+>  [...]  
+>  [...]  
+> > >
+> > > It is due to "mm: page-writeback: simplify memcg handling in
+> > > test_clear_page_writeback()" patch in the mm tree. You would need to
+> > > reintroduce the lock_page_memcg() which returns the memcg and make
+> > > __unlock_page_memcg() non-static.  
+> >
+> > To clarify, Shakeel - the tag "tag: v5.12-rc2-mmots-2021-03-11-21-49"
+> > fails to build on a clean checkout, without this patch, due to a
+> > compilation failure in mm/shmem.c, for reference:
+> > https://pastebin.com/raw/12eSGdGD
+> > (and that's why I'm basing this patch off of net-next in this email).
+> >
+> > -Arjun  
+> 
+> Another seeming anomaly - the patch sent out passes
+> scripts/checkpatch.pl but netdev/checkpatch finds plenty of actionable
+> fixes here: https://patchwork.kernel.org/project/netdevbpf/patch/20210316041645.144249-1-arjunroy.kdev@gmail.com/
+> 
+> Is netdev using some other automated checker instead of scripts/checkpatch.pl?
 
-vdso.h seems to use CONFIG_X86_{64,32} resp.
-
-> +.macro ENDBR
-> +#ifdef CONFIG_X86_CET
-
-And shouldn't that be CONFIG_X86_IBT ?
-
-
-> +#ifdef __i386__
-
-#ifdef CONFIG_X86_32
-
-> +	endbr32
-> +#else
-> +	endbr64
-> +#endif
-> +#endif
-> +.endm
-
+--strict --max-line-length=80
