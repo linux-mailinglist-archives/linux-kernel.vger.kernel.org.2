@@ -2,173 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 920BD33E03B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABF633E033
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232889AbhCPVQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 17:16:51 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:37558 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232848AbhCPVQU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232786AbhCPVQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 16 Mar 2021 17:16:20 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 04270D8B;
-        Tue, 16 Mar 2021 22:16:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615929378;
-        bh=xm3Kv9nMX/YPl1bBvx3Pwh9fbYRq1xW4L9kBDammBsk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g9w8R/9p1wjjTWuKC9tT7WZtyEah4e/KuGk+ocFiOhC6S+faX1wpb0RbrLiV9j8/h
-         H2Ge9WGORhcVyLASVN8C89x13R5hxbHoOxRet1PM4F0hARWA0J/TeIFZHtAV0rtnGy
-         kzG6ZqM3SvYSjnTWH6ogjeGDLXi79t434u5rruTQ=
-Date:   Tue, 16 Mar 2021 23:15:41 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Subject: Re: [PATCH] dt-bindings: media: video-interfaces: Use documented
- bindings in example
-Message-ID: <YFEf/Xpqjxd994g9@pendragon.ideasonboard.com>
-References: <20210316195100.3531414-1-robh@kernel.org>
- <YFEZhyZO+ePjS+fr@pendragon.ideasonboard.com>
- <CAL_JsqJdFf_yRLA-f8QmEC1g-Aq1k8Uh-AAOfiFDy8FhV_aOxg@mail.gmail.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232793AbhCPVPr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 17:15:47 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CBCC06174A;
+        Tue, 16 Mar 2021 14:15:46 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id p24so9284248ota.11;
+        Tue, 16 Mar 2021 14:15:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=yor1EiHWBTylh9kpWP/wCw+xZkPtpXh/+Ths3TbYe0w=;
+        b=FHM728QhNdZyvNZnbLRwhMr7POs7HeQb93i3aK0NTjbEX0TCRXWXK+IqWNF5miwyj1
+         bcjH00mGyQ+dmGW7HrZOByZv0XDKLsK9gF2fV+6Ds2ef1uQ015/RVugX8UyqARMpNkuT
+         481x4m8K8+wGUjDl/aZcOU67x2qh3biB4O3MwxvxySiQrTYE0Cjvnb9arnosXi1rWfvl
+         HJZritG/sbhEsBCdbFb2lSWOljRPCkLq1tXYwzfgRO3rPglkBjwfSMDmLAtXxIXrrOuD
+         HZ8kBN2rJr/i2EMRZ5WU/TSik1ttHnZF4Cvzl6qLtq1pqY2GHNLGiZHtt9IrL8U9s6Cy
+         hXzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=yor1EiHWBTylh9kpWP/wCw+xZkPtpXh/+Ths3TbYe0w=;
+        b=n03d5JERUBS/EreMYoDb8OdjvIGsnFMgA6VbemTyFHWfgQt8AQhcTt9WsOyS6jVDn8
+         pp0tlPg5bf45UKDGUzxgcXvLp/3ykQ1+/rOuDwTTZXV+LhnqyWvI4gCvRrjTrY2fGy8j
+         jF/ecDCY9V0SkTgZdHPA9Q0CMxiMdpuxNYc0BZ08ATvffX6TyGM/eerNeO+uw4R0BpSQ
+         fJQDb20QTLUFdQ8FHW+4nB4G1YOJlfrDxTdgK/h0ASkno/0VYdCedbBxJ/zbPxCVifpl
+         YM40sqiZxnMg0GG3+k370G9Hk0tYHBmgztKptheEoCG+MtgqsoBlP5vd5y58LPCSB2m7
+         zU7Q==
+X-Gm-Message-State: AOAM530pjYy+fk3M3KIpWFEaoGrSslF7090vTrX7pq3O1xkbdjKvaw7k
+        iFpvtVd82RRIapBh2gOu9jc=
+X-Google-Smtp-Source: ABdhPJz+tI/5qUoyqoIXj+lrmspTrR6p+9F7dSCgDDDieF1KKvij53ZFQt/vbOIgPzPDzCZKyrjFFg==
+X-Received: by 2002:a9d:7545:: with SMTP id b5mr579421otl.223.1615929345829;
+        Tue, 16 Mar 2021 14:15:45 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o197sm8075424ooo.44.2021.03.16.14.15.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 16 Mar 2021 14:15:45 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 16 Mar 2021 14:15:44 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Seiya Wang <seiya.wang@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bayi Cheng <bayi.cheng@mediatek.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-serial@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        srv_heupstream@mediatek.com
+Subject: Re: [PATCH 03/10] dt-bindings: watchdog: Add compatible for Mediatek
+ MT8195
+Message-ID: <20210316211544.GE60156@roeck-us.net>
+References: <20210316111443.3332-1-seiya.wang@mediatek.com>
+ <20210316111443.3332-4-seiya.wang@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqJdFf_yRLA-f8QmEC1g-Aq1k8Uh-AAOfiFDy8FhV_aOxg@mail.gmail.com>
+In-Reply-To: <20210316111443.3332-4-seiya.wang@mediatek.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On Tue, Mar 16, 2021 at 03:09:10PM -0600, Rob Herring wrote:
-> On Tue, Mar 16, 2021 at 2:48 PM Laurent Pinchart wrote:
-> > On Tue, Mar 16, 2021 at 01:51:00PM -0600, Rob Herring wrote:
-> > > The example in video-interfaces.yaml managed to use a bunch of undocumented
-> > > bindings. Update the example to use real bindings (and ones with a schema).
-> > >
-> > > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> > > Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > > Cc: linux-media@vger.kernel.org
-> > > Signed-off-by: Rob Herring <robh@kernel.org>
-> > > ---
-> > >  .../bindings/media/video-interfaces.yaml      | 75 ++++++++-----------
-> > >  1 file changed, 33 insertions(+), 42 deletions(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/media/video-interfaces.yaml b/Documentation/devicetree/bindings/media/video-interfaces.yaml
-> > > index 0a7a73fd59f2..f30b9b91717b 100644
-> > > --- a/Documentation/devicetree/bindings/media/video-interfaces.yaml
-> > > +++ b/Documentation/devicetree/bindings/media/video-interfaces.yaml
-> > > @@ -227,17 +227,12 @@ examples:
-> > >    # only one of the following data pipelines can be active:
-> > >    # ov772x -> ceu0 or imx074 -> csi2 -> ceu0.
-> > >    - |
-> > > +    #include <dt-bindings/clock/r8a7796-cpg-mssr.h>
-> > > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > > +    #include <dt-bindings/power/r8a7796-sysc.h>
-> > > +
-> > >      ceu@fe910000 {
-> > > -        compatible = "renesas,sh-mobile-ceu";
-> > >          reg = <0xfe910000 0xa0>;
-> > > -        interrupts = <0x880>;
-> > > -
-> > > -        mclk: master_clock {
-> > > -            compatible = "renesas,ceu-clock";
-> > > -            #clock-cells = <1>;
-> > > -            clock-frequency = <50000000>;  /* Max clock frequency */
-> > > -            clock-output-names = "mclk";
-> > > -        };
-> > >
-> > >          port {
-> > >              #address-cells = <1>;
-> > > @@ -271,18 +266,14 @@ examples:
-> > >          #size-cells = <0>;
-> > >
-> > >          camera@21 {
-> > > -            compatible = "ovti,ov772x";
-> > > +            compatible = "ovti,ov7720";
-> > >              reg = <0x21>;
-> > > -            vddio-supply = <&regulator1>;
-> > > -            vddcore-supply = <&regulator2>;
-> > > -
-> > > -            clock-frequency = <20000000>;
-> > >              clocks = <&mclk 0>;
-> > > -            clock-names = "xclk";
-> > >
-> > >              port {
-> > >                  /* With 1 endpoint per port no need for addresses. */
-> > >                  ov772x_1_1: endpoint {
-> > > +                    bus-type = <5>;
-> > >                      bus-width = <8>;
-> > >                      remote-endpoint = <&ceu0_1>;
-> > >                      hsync-active = <1>;
-> > > @@ -295,48 +286,48 @@ examples:
-> > >          };
-> > >
-> > >          camera@1a {
-> > > -            compatible = "sony,imx074";
-> > > +            compatible = "sony,imx334";
-> > >              reg = <0x1a>;
-> > > -            vddio-supply = <&regulator1>;
-> > > -            vddcore-supply = <&regulator2>;
-> > >
-> > > -            clock-frequency = <30000000>;  /* Shared clock with ov772x_1 */
-> > >              clocks = <&mclk 0>;
-> > > -            clock-names = "sysclk";    /* Assuming this is the
-> > > -                       name in the datasheet */
-> > > +
-> > >              port {
-> > > -                imx074_1: endpoint {
-> > > +                imx334_1: endpoint {
-> > >                      clock-lanes = <0>;
-> > >                      data-lanes = <1 2>;
-> > > +                    link-frequencies = /bits/ 64 <891000000>;
-> > >                      remote-endpoint = <&csi2_1>;
-> > >                  };
-> > >              };
-> > >          };
-> > >      };
-> > >
-> > > -    csi2: csi2@ffc90000 {
-> > > -        compatible = "renesas,sh-mobile-csi2";
-> > > -        reg = <0xffc90000 0x1000>;
-> > > -        interrupts = <0x17a0>;
-> > > -        #address-cells = <1>;
-> > > -        #size-cells = <0>;
-> > > +    csi2@fea80000 {
-> > > +        compatible = "renesas,r8a7796-csi2";
-> >
-> > That's certainly better, but the r8a7796 doesn't have a CEU :-) It has a
-> > VIN. Maybe we could copy the last example from renesas,vin.yaml to
-> > replace the CEU ?
+On Tue, Mar 16, 2021 at 07:14:36PM +0800, Seiya Wang wrote:
+> This commit adds dt-binding documentation of watchdog for Mediatek MT8195 SoC
+> Platform.
 > 
-> What about just removing the example here? It bothers me to have 2
-> copies (maybe 3 with sensor schemas) of an example and we should have
-> plenty of examples.
+> Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
 
-I'd be fine with that.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-> On the flip side, it's nice to have this stand on its own. Another
-> option would be just remove compatibles and make the example barebones
-> with only what's defined in video-interfaces.yaml.
+Guenter
 
-Abstract examples seem good in this context.
-
-> But then it's not validated at all.
-
-But this part isn't nice :-(
-
-If we keep examples that use real bindings, they should match the real
-hardware platforms. Other than that, I have no strong preference, it's
-up to you.
-
--- 
-Regards,
-
-Laurent Pinchart
+> ---
+>  Documentation/devicetree/bindings/watchdog/mtk-wdt.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt b/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
+> index e36ba60de829..a658a0b92b9a 100644
+> --- a/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
+> +++ b/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
+> @@ -13,6 +13,7 @@ Required properties:
+>  	"mediatek,mt8183-wdt": for MT8183
+>  	"mediatek,mt8516-wdt", "mediatek,mt6589-wdt": for MT8516
+>  	"mediatek,mt8192-wdt": for MT8192
+> +	"mediatek,mt8195-wdt", "mediatek,mt6589-wdt": for MT8195
+>  
+>  - reg : Specifies base physical address and size of the registers.
+>  
+> -- 
+> 2.14.1
+> 
