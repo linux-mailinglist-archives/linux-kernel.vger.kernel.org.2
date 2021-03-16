@@ -2,90 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5957F33CDD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0951333CDDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:15:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235765AbhCPGLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 02:11:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44057 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233072AbhCPGLn (ORCPT
+        id S233172AbhCPGPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 02:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230467AbhCPGOj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 02:11:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615875103;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HGFqJnJPWEoWdqThLFH/fQr5tvLwsqAidPoANR0ZVyQ=;
-        b=G84NcFFjKnt2x0P/vKtt/Q+P4kUorRWzXcNqxGsy6SJqgNgCo/IghphM+bqvMcUE3GtXbP
-        0bTNJyQA/BGGGlLG0EBklTyruAege4pDdyRBxQpGx2/vDCmMfcF4e4qvD3FVMpxqD/CGAG
-        Eoi5bdsnEHtWmFU+AGZXcrVyOMbedyw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-162-zTcCLMXFMAiXbYOA1Eq_SA-1; Tue, 16 Mar 2021 02:11:37 -0400
-X-MC-Unique: zTcCLMXFMAiXbYOA1Eq_SA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 084A6107465F;
-        Tue, 16 Mar 2021 06:11:36 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-12-216.pek2.redhat.com [10.72.12.216])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6077019CB4;
-        Tue, 16 Mar 2021 06:11:30 +0000 (UTC)
-Subject: Re: [PATCH V4 4/7] vDPA/ifcvf: remove the version number string
-To:     Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
-        lulu@redhat.com, leonro@nvidia.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210315074501.15868-1-lingshan.zhu@intel.com>
- <20210315074501.15868-5-lingshan.zhu@intel.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <7b46c912-fa81-6e91-f588-3f856177af5b@redhat.com>
-Date:   Tue, 16 Mar 2021 14:11:28 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+        Tue, 16 Mar 2021 02:14:39 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C64CC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 23:14:39 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id v14so14990185pgq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 23:14:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sq0aKBuHdwW/nOfuOJWOVsVvDF01fsFJpD2nAbMcEpc=;
+        b=ipe1xG3iscsMJZsHqMMcXVPiil9KsEDf1dWlWVhKsFYA+fy+4x7j0K1bJEBd9nUzE0
+         PAv5gpEwZdyerwmrPYpX5lTrn10xVRLjq8DPk2zbU3xaJ2AglDi5JJrNioq80lU27oWD
+         ohBTGvxHW10AL3BTbBQccJBhdLD18CyA89pOWpLra2pRZEYVFGJDZBb1ewwbderWwuQN
+         AgEqs180pjV8CxC0/Rj+L6ihz+B0EnDSXg7cI3a6rsubfEgA96lVBTyizq+6MfMQaGDz
+         Hcl6w6w/YVdjr0wikSAR9sRvItI7R6NuPsel4mmLm4CXwszLPRfG909wfqKeSMxhcRO5
+         88hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sq0aKBuHdwW/nOfuOJWOVsVvDF01fsFJpD2nAbMcEpc=;
+        b=Q6F2ommw8o7WPDm69Hucrtkc6cjl8/DLYUy06BTQ3qUutVZbJi0ZFvBgAFoZd4pMeT
+         O6SVNzuQddUAk3u6+UGlKIcBAykpbC3lzuzxZuHLQgfe51lRl9NmR9c5Qc6tZk6wjJWN
+         9OUb7Q59Dktp7NbohuwREV5PG4ccYiFss8zpwFfZSQaeXAzW8y8YeC0I2KyCum/Uocnq
+         wjTeXhl51Pa8PDFji1MHdXSaX7kQ40eYG2F3XS0+9Uvf0AKU6qjuMppBaMzA6UgkKUzn
+         SWGPLlcvlTz5l1+VKktG5a0Ges4B4Cc4ZpuqOpNQg5aFmWlWRHEDk9Yk3aMUuWCPjjft
+         Qp8g==
+X-Gm-Message-State: AOAM532RVQE85AnzBSMmnWbBeFWqs+MYccm+85wv0Q2JxVirpqrH6nML
+        KzJ12wGdN1RLk9mC94ohTj1B
+X-Google-Smtp-Source: ABdhPJxZhzDtAm268qxXTCWaVBdt6NMdYcxRAqevo1T7Rlg5vHz84vtMXzy2Y3eK/LFZUIlrxTY4Tg==
+X-Received: by 2002:a63:f558:: with SMTP id e24mr2600370pgk.153.1615875278492;
+        Mon, 15 Mar 2021 23:14:38 -0700 (PDT)
+Received: from thinkpad ([103.66.79.72])
+        by smtp.gmail.com with ESMTPSA id v18sm16039362pfn.117.2021.03.15.23.14.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 23:14:37 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 11:44:33 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 RESEND] bus: mhi: core: Wait for ready state after
+ reset
+Message-ID: <20210316061433.GG1798@thinkpad>
+References: <1615408918-7242-1-git-send-email-jhugo@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210315074501.15868-5-lingshan.zhu@intel.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615408918-7242-1-git-send-email-jhugo@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-ÔÚ 2021/3/15 ÏÂÎç3:44, Zhu Lingshan Ð´µÀ:
-> This commit removes the version number string, using kernel
-> version is enough.
->
-> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
+On Wed, Mar 10, 2021 at 01:41:58PM -0700, Jeffrey Hugo wrote:
+> After the device has signaled the end of reset by clearing the reset bit,
+> it will automatically reinit MHI and the internal device structures.  Once
+> That is done, the device will signal it has entered the ready state.
+> 
+> Signaling the ready state involves sending an interrupt (MSI) to the host
+> which might cause IOMMU faults if it occurs at the wrong time.
+> 
+> If the controller is being powered down, and possibly removed, then the
+> reset flow would only wait for the end of reset.  At which point, the host
+> and device would start a race.  The host may complete its reset work, and
+> remove the interrupt handler, which would cause the interrupt to be
+> disabled in the IOMMU.  If that occurs before the device signals the ready
+> state, then the IOMMU will fault since it blocked an interrupt.  While
+> harmless, the fault would appear like a serious issue has occurred so let's
+> silence it by making sure the device hits the ready state before the host
+> completes its reset processing.
+> 
+> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
 > ---
->   drivers/vdpa/ifcvf/ifcvf_main.c | 2 --
->   1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-> index fd5befc5cbcc..c34e1eec6b6c 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
-> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-> @@ -14,7 +14,6 @@
->   #include <linux/sysfs.h>
->   #include "ifcvf_base.h"
->   
-> -#define VERSION_STRING  "0.1"
->   #define DRIVER_AUTHOR   "Intel Corporation"
->   #define IFCVF_DRIVER_NAME       "ifcvf"
->   
-> @@ -503,4 +502,3 @@ static struct pci_driver ifcvf_driver = {
->   module_pci_driver(ifcvf_driver);
->   
->   MODULE_LICENSE("GPL v2");
-> -MODULE_VERSION(VERSION_STRING);
+>  drivers/bus/mhi/core/pm.c | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+> index adb0e80..414da4f 100644
+> --- a/drivers/bus/mhi/core/pm.c
+> +++ b/drivers/bus/mhi/core/pm.c
+> @@ -467,7 +467,7 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
+>  
+>  	/* Trigger MHI RESET so that the device will not access host memory */
+>  	if (!MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state)) {
+> -		u32 in_reset = -1;
+> +		u32 in_reset = -1, ready = 0;
+>  		unsigned long timeout = msecs_to_jiffies(mhi_cntrl->timeout_ms);
+>  
+>  		dev_dbg(dev, "Triggering MHI Reset in device\n");
+> @@ -490,6 +490,21 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
+>  		 * hence re-program it
+>  		 */
+>  		mhi_write_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_INTVEC, 0);
+> +
+> +		if (!MHI_IN_PBL(mhi_get_exec_env(mhi_cntrl))) {
+> +			/* wait for ready to be set */
+> +			ret = wait_event_timeout(mhi_cntrl->state_event,
+> +						 mhi_read_reg_field(mhi_cntrl,
+> +							mhi_cntrl->regs,
+> +							MHISTATUS,
+> +							MHISTATUS_READY_MASK,
+> +							MHISTATUS_READY_SHIFT,
+> +							&ready)
+> +						 || ready, timeout);
+> +			if (!ret || !ready)
+> +				dev_warn(dev,
+> +					"Device failed to enter READY state\n");
 
+Wouldn't dev_err be more appropriate here provided that we might get IOMMU fault
+anytime soon?
+
+Thanks,
+Mani
+
+> +		}
+>  	}
+>  
+>  	dev_dbg(dev,
+> -- 
+> Qualcomm Technologies, Inc. is a member of the
+> Code Aurora Forum, a Linux Foundation Collaborative Project.
+> 
