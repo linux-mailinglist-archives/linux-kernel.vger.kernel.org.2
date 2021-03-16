@@ -2,119 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FFD33D836
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2BA33D83B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:52:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237483AbhCPPwA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Mar 2021 11:52:00 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:51838 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237537AbhCPPvW (ORCPT
+        id S230243AbhCPPwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 11:52:24 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:51386 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232711AbhCPPvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 11:51:22 -0400
-Received: from mail-ej1-f69.google.com ([209.85.218.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lMByb-0007iM-9k
-        for linux-kernel@vger.kernel.org; Tue, 16 Mar 2021 15:51:21 +0000
-Received: by mail-ej1-f69.google.com with SMTP id en21so13806049ejc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 08:51:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RZxwh0t8F0/MB+nIBsx55CaTklvvT0q8IQWe2LFV49A=;
-        b=E5Lu750lzR888kBPC3vLaHdGla+ML+ZAgLOu8Iux1rmpUZkcMDHex6ZDBkjzrZmaVu
-         69w2elDPyRcEoC18lTCqxWVk5PVOl/lrzc3kmkMAZ2Ar+KnYyJoEEDjzsT1EKQzbe1ZE
-         JZTDgUHckMT+dOj6PCFDxm4w8v75nFD1ivbgUTsE6zdkYBqoANFFPHESUu+PJKbmr3bi
-         jQlZ/M2xXDulC4wOaHbPCT653Icl4cFTyUeDJlWNY8xaIhsgsvtMBUi6Ex2zk9hRY06b
-         hq+smb96x0xevO9hW21ZIibIDbYcUJFt64PY/sMAihlqlYz3TvVqrLYEKluYaIg/JNcp
-         3VaA==
-X-Gm-Message-State: AOAM5303LNHwlO6JBiF0Z5YjJ33elDps/UtX5w2w6OjP4pw2N512o3AR
-        vPm55jkY6Ncs5o7jdMo1HJPsQKhlSpzDBwQmCPpe6YtZLFZLUZakw/4wtP6xcIrPD5ObX33SMRV
-        Ixo/K0YLHxy0O5AEjJyT7VuVp3uuUm47gNXd74lvj5sEKZ16/cZ2ilKJYLA==
-X-Received: by 2002:a05:6402:26ce:: with SMTP id x14mr36357673edd.359.1615909881051;
-        Tue, 16 Mar 2021 08:51:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzCWwhJRSrCvCm0ahr7KMKeVzMwuwrMmx4YP7y2/DFeymMxrfWCexvNraEJX/4U746unkcfzQQxOpR9gSYKhtM=
-X-Received: by 2002:a05:6402:26ce:: with SMTP id x14mr36357652edd.359.1615909880849;
- Tue, 16 Mar 2021 08:51:20 -0700 (PDT)
+        Tue, 16 Mar 2021 11:51:45 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
+ id c874691c4fc46822; Tue, 16 Mar 2021 16:51:42 +0100
+Received: from kreacher.localnet (89-64-82-37.dynamic.chello.pl [89.64.82.37])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 40065668CF6;
+        Tue, 16 Mar 2021 16:51:41 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Subject: [PATCH] PCI: PM: Do not read power state in pci_enable_device_flags()
+Date:   Tue, 16 Mar 2021 16:51:40 +0100
+Message-ID: <3219454.74lMxhSOWB@kreacher>
 MIME-Version: 1.0
-References: <20210316075551.10259-1-krzysztof.kozlowski@canonical.com>
- <0e52e932-e5d7-8116-710a-50956caaf87c@gmail.com> <CA+Eumj5c2i30Xh2oBGeR5R_9JkPGiAXRGNYc4hKt9s8XuHjGdA@mail.gmail.com>
-In-Reply-To: <CA+Eumj5c2i30Xh2oBGeR5R_9JkPGiAXRGNYc4hKt9s8XuHjGdA@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date:   Tue, 16 Mar 2021 16:51:10 +0100
-Message-ID: <CA+Eumj4WirHRgr3si=nkQpNdUBcCwqLXvs-ihSi2nuJokxg=Xw@mail.gmail.com>
-Subject: Re: [PATCH v2] phy: tegra: depend on COMMON_CLK to fix compile tests
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudefvddgkedvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtvdenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeeiueevhfeigffhffevueekgedtleeitdfhffejleevtddvtdettedvfffffffhjeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeekledrieegrdekvddrfeejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedvrdefjedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehhvghlghgrrghssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehluhiimhgrgihimhhilhhirghnsehgmhgrihhlrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphgtihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhig
+ qdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihhkrgdrfigvshhtvghrsggvrhhgsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021 at 16:47, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On Tue, 16 Mar 2021 at 16:43, Dmitry Osipenko <digetx@gmail.com> wrote:
-> >
-> > 16.03.2021 10:55, Krzysztof Kozlowski пишет:
-> > > From: Krzysztof Kozlowski <krzk@kernel.org>
-> > >
-> > > The Tegra USB PHY driver uses Common Clock Framework thus it cannot be
-> > > built on platforms without it (e.g. compile test on MIPS with RALINK and
-> > > SOC_RT305X):
-> > >
-> > >     /usr/bin/mips-linux-gnu-ld: drivers/usb/phy/phy-tegra-usb.o: in function `tegra_usb_phy_init':
-> > >     phy-tegra-usb.c:(.text+0x1dd4): undefined reference to `clk_get_parent'
-> > >
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > >
-> > > ---
-> > >
-> > > Changes since v1:
-> > > 1. Depend on COMMON_CLK always, not only for compile test.
-> > > ---
-> > >  drivers/usb/phy/Kconfig | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/drivers/usb/phy/Kconfig b/drivers/usb/phy/Kconfig
-> > > index 52eebcb88c1f..7500e77a7d01 100644
-> > > --- a/drivers/usb/phy/Kconfig
-> > > +++ b/drivers/usb/phy/Kconfig
-> > > @@ -163,6 +163,7 @@ config USB_MXS_PHY
-> > >  config USB_TEGRA_PHY
-> > >       tristate "NVIDIA Tegra USB PHY Driver"
-> > >       depends on ARCH_TEGRA || COMPILE_TEST
-> > > +     depends on COMMON_CLK
-> > >       select USB_COMMON
-> > >       select USB_PHY
-> > >       select USB_ULPI
-> > >
-> >
-> > But if COMMON_CLK is disabled, then include/linux/clk.h provides a stub
-> > for clk_get_parent(), meaning that MIPS has its own COMMON_CLK, no?
->
-> Hi,
->
-> It depends on the platform. Not all of them implement every clk API,
-> so you can have failures:
-> https://lore.kernel.org/lkml/202102170017.MgPVy7aZ-lkp@intel.com/
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Ah, you mentioned the stub, so let me clarify more. The common clk
-stubs are not used for cases like !COMMON_CLK && HAVE_LEGACY_CLK (or
-HAVE_CLK, I don't remember). This is why you can have a MIPS platform
-defining some of the clock operations thus not using COMMON_CLK at all
-(and neither the stubs).
+It should not be necessary to update the current_state field of
+struct pci_dev in pci_enable_device_flags() before calling
+do_pci_enable_device() for the device, because none of the
+code between that point and the pci_set_power_state() call in
+do_pci_enable_device() invoked later depends on it.
 
-Best regards,
-Krzysztof
+Moreover, doing that is actively harmful in some cases.  For example,
+if the given PCI device depends on an ACPI power resource whose _STA
+method initially returns 0 ("off"), but the config space of the PCI
+device is accessible and the power state retrieved from the
+PCI_PM_CTRL register is D0, the current_state field in the struct
+pci_dev representing that device will get out of sync with the
+power.state of its ACPI companion object and that will lead to
+power management issues going forward.
+
+To avoid such issues it is better to leave the current_state value
+as is until it is changed to PCI_D0 by do_pci_enable_device() as
+appropriate.  However, the power state of the device is not changed
+to PCI_D0 if it is already enabled when pci_enable_device_flags()
+gets called for it, so update its current_state in that case, but
+use pci_update_current_state() covering platform PM too for that.
+
+Link: https://lore.kernel.org/lkml/20210314000439.3138941-1-luzmaximilian@gmail.com/
+Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
+Tested-by: Maximilian Luz <luzmaximilian@gmail.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+Max, I've added a T-by from you even though the patch is slightly different
+from what you have tested, but the difference shouldn't matter for your case.
+
+---
+ drivers/pci/pci.c |   16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
+
+Index: linux-pm/drivers/pci/pci.c
+===================================================================
+--- linux-pm.orig/drivers/pci/pci.c
++++ linux-pm/drivers/pci/pci.c
+@@ -1870,20 +1870,10 @@ static int pci_enable_device_flags(struc
+ 	int err;
+ 	int i, bars = 0;
+ 
+-	/*
+-	 * Power state could be unknown at this point, either due to a fresh
+-	 * boot or a device removal call.  So get the current power state
+-	 * so that things like MSI message writing will behave as expected
+-	 * (e.g. if the device really is in D0 at enable time).
+-	 */
+-	if (dev->pm_cap) {
+-		u16 pmcsr;
+-		pci_read_config_word(dev, dev->pm_cap + PCI_PM_CTRL, &pmcsr);
+-		dev->current_state = (pmcsr & PCI_PM_CTRL_STATE_MASK);
+-	}
+-
+-	if (atomic_inc_return(&dev->enable_cnt) > 1)
++	if (atomic_inc_return(&dev->enable_cnt) > 1) {
++		pci_update_current_state(dev, dev->current_state);
+ 		return 0;		/* already enabled */
++	}
+ 
+ 	bridge = pci_upstream_bridge(dev);
+ 	if (bridge)
+
+
+
