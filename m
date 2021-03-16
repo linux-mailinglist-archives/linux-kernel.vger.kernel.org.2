@@ -2,84 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E38633DD7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C7433DD86
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240453AbhCPT2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 15:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240442AbhCPT15 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:27:57 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F57C06174A;
-        Tue, 16 Mar 2021 12:27:56 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S240447AbhCPT3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 15:29:14 -0400
+Received: from z11.mailgun.us ([104.130.96.11]:46325 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240446AbhCPT24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 15:28:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615922933; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=it/42LkBB9Nfwqq5ksT70ob4KuhBVB5LnojuZobYYw8=; b=fZgfWOyJHoot/BeHPwNlv+2CIRnHtX+OQBosfbw60mbOUIPmP/m2xe+jY/viLkwkLi1TxNBD
+ YJ2/CdJjGNTKbyafEAmYI2GKxfJYZ3zP7i/zk8ceySb83aqVH/GNiR4Mn7tNJdKsTQguK6eP
+ Xzp+Nk95CrHCELe1epTLZ96GJlQ=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 605106ec6dc1045b7ded3139 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Mar 2021 19:28:44
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C1A48C433ED; Tue, 16 Mar 2021 19:28:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 9DC8522238;
-        Tue, 16 Mar 2021 20:27:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1615922871;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t9oTzvmR9m08GcJX5x4Qj7U6037F+XpGCNpETFyhQBY=;
-        b=QeWpVQNkO+k1G5Jtvp/UlCGLokXMw8tBA4kcpE2dwkb/TWx9sClKBQQu0qlQXS8maK5cJ1
-        JQjses3PkZIxY/mmMs2kC4Vstz1MQsBv3TlB/opvR2HGfgJSgGHVAHE9JgHV8EVUEyzAMW
-        BYsWT+YEmbp1UOMmp2h07AGxkcAnp44=
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A382CC43461;
+        Tue, 16 Mar 2021 19:28:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A382CC43461
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v2 RESEND] bus: mhi: core: Wait for ready state after
+ reset
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1615408918-7242-1-git-send-email-jhugo@codeaurora.org>
+ <20210316061433.GG1798@thinkpad>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <9a1544fd-aa46-0410-41aa-a18d62e2bc1a@codeaurora.org>
+Date:   Tue, 16 Mar 2021 13:28:41 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210316061433.GG1798@thinkpad>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 16 Mar 2021 20:27:51 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Sahil Malhotra <sahil.malhotra@nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>, kernelci-results@groups.io,
-        linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: next/master bisection: baseline.login on kontron-kbox-a-230-ls
-In-Reply-To: <38c31f5c-4400-eed7-d561-8f45e261ab01@collabora.com>
-References: <6050bf47.1c69fb81.59c4d.85f2@mx.google.com>
- <38c31f5c-4400-eed7-d561-8f45e261ab01@collabora.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <edcb6c52f754935341ee8711f30062c4@walle.cc>
-X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-16 19:33, schrieb Guillaume Tucker:
-> Hi Sahil,
+On 3/16/2021 12:14 AM, Manivannan Sadhasivam wrote:
+> On Wed, Mar 10, 2021 at 01:41:58PM -0700, Jeffrey Hugo wrote:
+>> After the device has signaled the end of reset by clearing the reset bit,
+>> it will automatically reinit MHI and the internal device structures.  Once
+>> That is done, the device will signal it has entered the ready state.
+>>
+>> Signaling the ready state involves sending an interrupt (MSI) to the host
+>> which might cause IOMMU faults if it occurs at the wrong time.
+>>
+>> If the controller is being powered down, and possibly removed, then the
+>> reset flow would only wait for the end of reset.  At which point, the host
+>> and device would start a race.  The host may complete its reset work, and
+>> remove the interrupt handler, which would cause the interrupt to be
+>> disabled in the IOMMU.  If that occurs before the device signals the ready
+>> state, then the IOMMU will fault since it blocked an interrupt.  While
+>> harmless, the fault would appear like a serious issue has occurred so let's
+>> silence it by making sure the device hits the ready state before the host
+>> completes its reset processing.
+>>
+>> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
+>> ---
+>>   drivers/bus/mhi/core/pm.c | 17 ++++++++++++++++-
+>>   1 file changed, 16 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+>> index adb0e80..414da4f 100644
+>> --- a/drivers/bus/mhi/core/pm.c
+>> +++ b/drivers/bus/mhi/core/pm.c
+>> @@ -467,7 +467,7 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
+>>   
+>>   	/* Trigger MHI RESET so that the device will not access host memory */
+>>   	if (!MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state)) {
+>> -		u32 in_reset = -1;
+>> +		u32 in_reset = -1, ready = 0;
+>>   		unsigned long timeout = msecs_to_jiffies(mhi_cntrl->timeout_ms);
+>>   
+>>   		dev_dbg(dev, "Triggering MHI Reset in device\n");
+>> @@ -490,6 +490,21 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
+>>   		 * hence re-program it
+>>   		 */
+>>   		mhi_write_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_INTVEC, 0);
+>> +
+>> +		if (!MHI_IN_PBL(mhi_get_exec_env(mhi_cntrl))) {
+>> +			/* wait for ready to be set */
+>> +			ret = wait_event_timeout(mhi_cntrl->state_event,
+>> +						 mhi_read_reg_field(mhi_cntrl,
+>> +							mhi_cntrl->regs,
+>> +							MHISTATUS,
+>> +							MHISTATUS_READY_MASK,
+>> +							MHISTATUS_READY_SHIFT,
+>> +							&ready)
+>> +						 || ready, timeout);
+>> +			if (!ret || !ready)
+>> +				dev_warn(dev,
+>> +					"Device failed to enter READY state\n");
 > 
-> Please see the bisection report below about a boot failure on
-> kontron-kbox-a-230-ls on linux-next.
-> 
-> Reports aren't automatically sent to the public while we're
-> trialing new bisection features on kernelci.org but this one
-> looks valid.
+> Wouldn't dev_err be more appropriate here provided that we might get IOMMU fault
+> anytime soon?
 
-nice! Thanks.
+I supposed.  Didn't feel like a "true" error because nothing has 
+actually failed, the chance of the IOMMU fault is low, and I couldn't 
+enumerate what would be the expected action for the system user to take 
+if they saw this as an error.
 
-[..]
+I don't have a particularly strong opinion one way or the other.  I 
+figured warn was the more conservative option here.
 
->> commit 48787485f8de44915016d4583e898b62bb2d5753
->> Author: Sahil Malhotra <sahil.malhotra@nxp.com>
->> Date:   Fri Mar 5 14:03:51 2021 +0530
->> 
->>     arm64: dts: ls1028a: enable optee node
->> 
->>     optee node was disabled in ls1028a.dtsi, enabling it by default.
+Will change.
 
-Please enable this per board. As it is also indicated by my original
-commit f90931aeefe3 ("arm64: dts: ls1028a: add optee node") message:
-
-   Add the optee node which can either be enabled by a specific board or 
-by
-   the bootloader.
-
--michael
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
