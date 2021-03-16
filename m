@@ -2,110 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FB233CDF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F8E33CDF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbhCPG20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 02:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231162AbhCPG2U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 02:28:20 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7B6C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 23:28:19 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id j6so16455204plx.6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 23:28:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4WMa4KM9fFev9zFfsGZL1hiGSj5b5g6V/60hVlEG9mE=;
-        b=kAcbsz0zpfOoY1eq9SS2Tf5iLTvNd1+VONP1B0IXfqyjIamQ/j4B1AZIk/Xej3gtPO
-         /BIJKwsMq09EtFF7rSx60NCz32pq4F0iifIm3ZnTszJ8+Cy3SC2zDrosJPDUfBgiRw8J
-         WpHLksEvtnHLRgydskPl8+p21gRkN5lpSngr9qTO7Q67KinGKssJ587CCWB7ML6nMOgG
-         WWUtoUx5a3pcObz5xEiO2hZ+De9kS5PVLrzFUU+crJuLFukr7fwGJFKRLugYMJrfpR1W
-         hsEyw9ft7EZKEfo/EfK5YzaCP8Ub44Y9wBc5bjBOgUkNshjVw2aRLRBYfanaGFjrEYd7
-         4B7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4WMa4KM9fFev9zFfsGZL1hiGSj5b5g6V/60hVlEG9mE=;
-        b=iEgD4AipahGeAysgF9yKJahaYJUGpikLDZndm8wWuBNY6C8p5jgkb4qVnq6bvARqiz
-         GUYyRmSyGYb7+TCDvKjGcschTDryYBNS7H/55yuDIn466GpKXNp0kIUanQCU+0hoQ04C
-         092x4KIdpDHv+snU7hEqyIAO+inIp2JaUzzgHEBHgYkZT4PJIiraH5xGTeS87rvBXpBl
-         cxlqKycwu308R774CWnebnUa5XntK4ms03x08W3zFcEzAPqNozazy+L/5yA7D+IillU8
-         bR6Lc3nbYACVS3q34TnV/XPVVaFLLTH1dLUyk147LVPBF6ly4TOBUXfNeRRZ1wZ8XlFc
-         sjrw==
-X-Gm-Message-State: AOAM530Ztvexy+a2PuNutSq8uDg7bmR1rgE0JhKCshk9gOf2UWrFFV9X
-        OtozS7F5m54Bh7Qb8MzdY5GZxBH8XLU7ZXSJzC++qg==
-X-Google-Smtp-Source: ABdhPJyQeEVtil+ykZ9O1pMASi07bihZgTaks/id/aa2GLXNnBC00VJaT6BjOTBO+Z04YQfBs6wAhZp8/sOeI97bcWg=
-X-Received: by 2002:a17:90a:ce0d:: with SMTP id f13mr3175085pju.85.1615876099037;
- Mon, 15 Mar 2021 23:28:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
- <CAOFY-A1L8c626HZYSWm6ZKFO9mqBdBszv6obX4-1_LmDBQ6Z4A@mail.gmail.com>
- <CALvZod7hgtdrN_KXD_5JdB2vzJzTc8tVz_5YFN53-xZjpHLLRw@mail.gmail.com> <CAOFY-A0v2BEwRinhPXspjL_3dvyw2kDSyzQgUiJxc+P-3OLP8g@mail.gmail.com>
-In-Reply-To: <CAOFY-A0v2BEwRinhPXspjL_3dvyw2kDSyzQgUiJxc+P-3OLP8g@mail.gmail.com>
-From:   Arjun Roy <arjunroy@google.com>
-Date:   Mon, 15 Mar 2021 23:28:08 -0700
-Message-ID: <CAOFY-A2q4otqu=pD60tUiD0GTDZnpcm+zajFp6SRDh4VixbV2Q@mail.gmail.com>
-Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Arjun Roy <arjunroy.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S229775AbhCPGae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 02:30:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230478AbhCPGa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 02:30:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 948EB65169;
+        Tue, 16 Mar 2021 06:30:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615876227;
+        bh=9V0KUrLMiXL6VT/H+rjc7n2huomnlDIWLOvYHtisMtE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TpfY2jKZtLeiOYq1Du+xi8AJXy35Cfcxz2F1Q6RvKH/uA1WO2mt8SFIClfFrloM7T
+         a90+TLD7l+lQIK24FVJ05nzEy9Z6qOU04fpWbAUg7KDtToKoLmJEDcANoyzbd7CsEc
+         6kEUScSjytuShT4qq8cyPmMeU3jgAHr8/8JaUPU2CkTKHmTfHYvSFX4NFxZDKVeLtY
+         +RaS9hH/FYjb4+s282y2kwNb/72SksBWIrIDY3V+7WZ26kJgQHVgTmmZ9msmJJyyEm
+         nBa6+uSqF6FU0wxlGZOAfFqq3/AZEYdPX665rfPfoTE/rnShwiqNFMZO2shPxbryd6
+         8BJFs84TZjt+A==
+Date:   Tue, 16 Mar 2021 15:30:22 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com
+Subject: Re: [PATCH -tip v2 00/10] kprobes: Fix stacktrace with kretprobes
+Message-Id: <20210316153022.70cc181a2b3e0f73923e54da@kernel.org>
+In-Reply-To: <20210316023003.xbmgce3ndkouu65e@treble>
+References: <161553130371.1038734.7661319550287837734.stgit@devnote2>
+        <20210316023003.xbmgce3ndkouu65e@treble>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 11:22 PM Arjun Roy <arjunroy@google.com> wrote:
->
-> On Mon, Mar 15, 2021 at 9:29 PM Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > On Mon, Mar 15, 2021 at 9:20 PM Arjun Roy <arjunroy@google.com> wrote:
-> > >
-> > [...]
-> > > >
-> > >
-> > > Apologies for the spam - looks like I forgot to rebase the first time
-> > > I sent this out.
-> > >
-> > > Actually, on a related note, it's not 100% clear to me whether this
-> > > patch (which in its current form, applies to net-next) should instead
-> > > be based on the mm branch - but the most recent (clean) checkout of mm
-> > > fails to build for me so net-next for now.
-> > >
-> >
-> > It is due to "mm: page-writeback: simplify memcg handling in
-> > test_clear_page_writeback()" patch in the mm tree. You would need to
-> > reintroduce the lock_page_memcg() which returns the memcg and make
-> > __unlock_page_memcg() non-static.
->
-> To clarify, Shakeel - the tag "tag: v5.12-rc2-mmots-2021-03-11-21-49"
-> fails to build on a clean checkout, without this patch, due to a
-> compilation failure in mm/shmem.c, for reference:
-> https://pastebin.com/raw/12eSGdGD
-> (and that's why I'm basing this patch off of net-next in this email).
->
-> -Arjun
+On Mon, 15 Mar 2021 21:30:03 -0500
+Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 
-Another seeming anomaly - the patch sent out passes
-scripts/checkpatch.pl but netdev/checkpatch finds plenty of actionable
-fixes here: https://patchwork.kernel.org/project/netdevbpf/patch/20210316041645.144249-1-arjunroy.kdev@gmail.com/
+> On Fri, Mar 12, 2021 at 03:41:44PM +0900, Masami Hiramatsu wrote:
+> > Hello,
+> > 
+> > Here is the 2nd version of the series to fix the stacktrace with kretprobe.
+> > 
+> > The 1st series is here;
+> > 
+> > https://lore.kernel.org/bpf/161495873696.346821.10161501768906432924.stgit@devnote2/
+> > 
+> > In this version I merged the ORC unwinder fix for kretprobe which discussed in the
+> > previous thread. [3/10] is updated according to the Miroslav's comment. [4/10] is
+> > updated for simplify the code. [5/10]-[9/10] are discussed in the previsous tread
+> > and are introduced to the series.
+> > 
+> > Daniel, can you also test this again? I and Josh discussed a bit different
+> > method and I've implemented it on this version.
+> > 
+> > This actually changes the kretprobe behavisor a bit, now the instraction pointer in
+> > the pt_regs passed to kretprobe user handler is correctly set the real return
+> > address. So user handlers can get it via instruction_pointer() API.
+> 
+> When I add WARN_ON(1) to a test kretprobe, it doesn't unwind properly.
+> 
+> show_trace_log_lvl() reads the entire stack in lockstep with calls to
+> the unwinder so that it can decide which addresses get prefixed with
+> '?'.  So it expects to find an actual return address on the stack.
+> Instead it finds %rsp.  So it never syncs up with unwind_next_frame()
+> and shows all remaining addresses as unreliable.
+> 
+>   Call Trace:
+>    __kretprobe_trampoline_handler+0xca/0x1a0
+>    trampoline_handler+0x3d/0x50
+>    kretprobe_trampoline+0x25/0x50
+>    ? init_test_probes.cold+0x323/0x387
+>    ? init_kprobes+0x144/0x14c
+>    ? init_optprobes+0x15/0x15
+>    ? do_one_initcall+0x5b/0x300
+>    ? lock_is_held_type+0xe8/0x140
+>    ? kernel_init_freeable+0x174/0x2cd
+>    ? rest_init+0x233/0x233
+>    ? kernel_init+0xa/0x11d
+>    ? ret_from_fork+0x22/0x30
+> 
+> How about pushing 'kretprobe_trampoline' instead of %rsp for the return
+> address placeholder.  That fixes the above test, and removes the need
+> for the weird 'state->ip == sp' check:
+> 
+>   Call Trace:
+>    __kretprobe_trampoline_handler+0xca/0x150
+>    trampoline_handler+0x3d/0x50
+>    kretprobe_trampoline+0x29/0x50
+>    ? init_test_probes.cold+0x323/0x387
+>    elfcorehdr_read+0x10/0x10
+>    init_kprobes+0x144/0x14c
+>    ? init_optprobes+0x15/0x15
+>    do_one_initcall+0x72/0x280
+>    kernel_init_freeable+0x174/0x2cd
+>    ? rest_init+0x122/0x122
+>    kernel_init+0xa/0x10e
+>    ret_from_fork+0x22/0x30
+> 
+> Though, init_test_probes.cold() (the real return address) is still
+> listed as unreliable.  Maybe we need a call to kretprobe_find_ret_addr()
+> in show_trace_log_lvl(), similar to the ftrace_graph_ret_addr() call
+> there.
 
-Is netdev using some other automated checker instead of scripts/checkpatch.pl?
+Thanks for the test!
+OK, that could be acceptable. However, push %sp still needed for accessing
+stack address from kretprobe handler via pt_regs. (regs->sp must point
+the stack address)
+Anyway, with int3, it pushes one more entry for emulating call, so I think
+it is OK.
+Let me update the series!
 
--Arjun
+Thank you!
+
+> 
+> 
+> 
+> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+> index 06f33bfebc50..70188fdd288e 100644
+> --- a/arch/x86/kernel/kprobes/core.c
+> +++ b/arch/x86/kernel/kprobes/core.c
+> @@ -766,19 +766,19 @@ asm(
+>  	"kretprobe_trampoline:\n"
+>  	/* We don't bother saving the ss register */
+>  #ifdef CONFIG_X86_64
+> -	"	pushq %rsp\n"
+> +	/* Push fake return address to tell the unwinder it's a kretprobe */
+> +	"	pushq $kretprobe_trampoline\n"
+>  	UNWIND_HINT_FUNC
+>  	"	pushfq\n"
+>  	SAVE_REGS_STRING
+>  	"	movq %rsp, %rdi\n"
+>  	"	call trampoline_handler\n"
+> -	/* Replace saved sp with true return address. */
+> +	/* Replace the fake return address with the real one. */
+>  	"	movq %rax, 19*8(%rsp)\n"
+>  	RESTORE_REGS_STRING
+>  	"	popfq\n"
+>  #else
+>  	"	pushl %esp\n"
+> -	UNWIND_HINT_FUNC
+>  	"	pushfl\n"
+>  	SAVE_REGS_STRING
+>  	"	movl %esp, %eax\n"
+> diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+> index 1d1b9388a1b1..1d3de84d2410 100644
+> --- a/arch/x86/kernel/unwind_orc.c
+> +++ b/arch/x86/kernel/unwind_orc.c
+> @@ -548,8 +548,7 @@ bool unwind_next_frame(struct unwind_state *state)
+>  		 * In those cases, find the correct return address from
+>  		 * task->kretprobe_instances list.
+>  		 */
+> -		if (state->ip == sp ||
+> -		    is_kretprobe_trampoline(state->ip))
+> +		if (is_kretprobe_trampoline(state->ip))
+>  			state->ip = kretprobe_find_ret_addr(state->task,
+>  							    &state->kr_iter);
+>  
+> 
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
