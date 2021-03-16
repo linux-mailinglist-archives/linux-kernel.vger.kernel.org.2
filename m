@@ -2,101 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E9733D144
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B2333D147
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236474AbhCPJ5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:57:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236480AbhCPJ4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:56:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBAD665014;
-        Tue, 16 Mar 2021 09:56:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615888603;
-        bh=VZtm7TSm8SzD7rqru+ra4hRXldt8i3ssgmXztshpEgA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YLqiHjh4YLI55r4/HmzYiPyoGVqrBh0rM8DG4WoZaSI+TH2KpSaCyH6jmC6+pp4XZ
-         EAf9FImMvb3TI7Jw5iZGA/9WdRHTESg53CzDcxzD7ssQzk2S17FMJipTbR8cq0muYl
-         rsbtApe/1UYMj1DNbDGjsj7jQWhu9JyUbV1MVMhiAqfXtJ1DXyvsmkHiejZCgMT4n4
-         bIJ8LTykBSwiN8p5qmGfDC/JeXWvHwZW08JAfmFJgrOWltqQldMVFYMmJ6+bb8Sx/1
-         NazFbM/dcO9FgvDXx9VHa6LKTOfbsYaZV/+Pp3BayS1EBcuAFn5cf4L6C01AOlbSHw
-         pXCCNyERqxH8A==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lM6Ra-0000aJ-QE; Tue, 16 Mar 2021 10:56:55 +0100
-Date:   Tue, 16 Mar 2021 10:56:54 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, marcan@marcan.st, arnd@kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH] tty: serial: samsung_tty: remove spinlock flags in
- interrupt handlers
-Message-ID: <YFCA5jFLV0Cu9YNe@hovoldconsulting.com>
-References: <20210315181212.113217-1-krzysztof.kozlowski@canonical.com>
- <YFB0OcBg3Vj555eA@hovoldconsulting.com>
- <7f348e4c-3051-13cf-d461-eeda0ef53fdd@canonical.com>
+        id S235979AbhCPJ7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:59:49 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:41604 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231809AbhCPJ7g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 05:59:36 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id DEFB1B9C13;
+        Tue, 16 Mar 2021 17:59:23 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [111.207.172.18])
+        by smtp.263.net (postfix) whith ESMTP id P24307T139684751603456S1615888764106483_;
+        Tue, 16 Mar 2021 17:59:24 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <d7221418796d3fc50478431db0aa96c7>
+X-RL-SENDER: zhaoxiao@uniontech.com
+X-SENDER: zhaoxiao@uniontech.com
+X-LOGIN-NAME: zhaoxiao@uniontech.com
+X-FST-TO: gregkh@linuxfoundation.org
+X-SENDER-IP: 111.207.172.18
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   zhaoxiao <zhaoxiao@uniontech.com>
+To:     gregkh@linuxfoundation.org
+Cc:     straube.linux@gmail.com, lu@pplo.net, dan.carpenter@oracle.com,
+        serrazimone@gmail.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, zhaoxiao <zhaoxiao@uniontech.com>
+Subject: [PATCH] staging: rtl8192u: remove extra lines
+Date:   Tue, 16 Mar 2021 17:59:22 +0800
+Message-Id: <20210316095922.21123-1-zhaoxiao@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7f348e4c-3051-13cf-d461-eeda0ef53fdd@canonical.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 10:47:53AM +0100, Krzysztof Kozlowski wrote:
-> On 16/03/2021 10:02, Johan Hovold wrote:
-> > On Mon, Mar 15, 2021 at 07:12:12PM +0100, Krzysztof Kozlowski wrote:
-> >> Since interrupt handler is called with disabled local interrupts, there
-> >> is no need to use the spinlock primitives disabling interrupts as well.
-> > 
-> > This isn't generally true due to "threadirqs" and that can lead to
-> > deadlocks if the console code is called from hard irq context.
-> > 
-> > Now, this is *not* the case for this particular driver since it doesn't
-> > even bother to take the port lock in console_write(). That should
-> > probably be fixed instead.
-> > 
-> > See https://lore.kernel.org/r/X7kviiRwuxvPxC8O@localhost.
-> 
-> Thanks for the link, quite interesting! For one type of device we have
-> two interrupts (RX and TX) so I guess it's a valid point/risk. However
-> let me try to understand it more.
-> 
-> Assuming we had only one interrupt line, how this interrupt handler with
-> threadirqs could be called from hardirq context?
+Remove extra lines in the struct r8192_private_args.
 
-No, it's console_write() which can end up being called in hard irq
-context and if that path takes the port lock after the now threaded
-interrupt handler has been preempted you have a deadlock.
+Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+---
+ drivers/staging/rtl8192u/r8192U_wx.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-> You wrote there:
-> > For console drivers this can even happen for the same interrupt as the
-> > generic interrupt code can call printk(), and so can any other handler
-> > that isn't threaded (e.g. hrtimers or explicit IRQF_NO_THREAD).
-> 
-> However I replaced here only interrupt handler's spin lock to non-irq.
-> This code path will be executed only when interrupt is masked therefore
-> for one interrupt line there is *no possibility of*:
-> 
-> -> s3c64xx_serial_handle_irq
->    - interrupts are masked
->    - s3c24xx_serial_tx_irq
->      - spin_lock()
->                        -> hrtimers or other IRQF_NO_THREAD
->                           - console_write() or something
->                             - s3c64xx_serial_handle_irq
+diff --git a/drivers/staging/rtl8192u/r8192U_wx.c b/drivers/staging/rtl8192u/r8192U_wx.c
+index 6ead461e3279..e9de7dc8f049 100644
+--- a/drivers/staging/rtl8192u/r8192U_wx.c
++++ b/drivers/staging/rtl8192u/r8192U_wx.c
+@@ -879,12 +879,10 @@ static iw_handler r8192_wx_handlers[] = {
+ 
+ 
+ static const struct iw_priv_args r8192_private_args[] = {
+-
+ 	{
+ 		SIOCIWFIRSTPRIV + 0x0,
+ 		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "badcrc"
+ 	},
+-
+ 	{
+ 		SIOCIWFIRSTPRIV + 0x1,
+ 		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "activescan"
+@@ -897,7 +895,6 @@ static const struct iw_priv_args r8192_private_args[] = {
+ 	{
+ 		SIOCIWFIRSTPRIV + 0x3,
+ 		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "forcereset"
+-
+ 	}
+ 
+ };
+-- 
+2.20.1
 
-You don't end up in s3c64xx_serial_handle_irq() here. It's just that
-console_write() (typically) takes the port lock which is already held by
-the preempted s3c24xx_serial_tx_irq().
 
->                               - s3c24xx_serial_tx_irq
->                                 - spin_lock()
 
-Johan
