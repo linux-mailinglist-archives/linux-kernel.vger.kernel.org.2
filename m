@@ -2,53 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E61233E0FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5185533E106
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230025AbhCPV7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 17:59:15 -0400
-Received: from elvis.franken.de ([193.175.24.41]:35172 "EHLO elvis.franken.de"
+        id S230097AbhCPWAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 18:00:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229948AbhCPV7D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 17:59:03 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lMHiN-00059F-00; Tue, 16 Mar 2021 22:58:59 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id EA85BC08CC; Tue, 16 Mar 2021 22:58:20 +0100 (CET)
-Date:   Tue, 16 Mar 2021 22:58:20 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
-        linux-tegra@vger.kernel.org, balbi@kernel.org,
-        linux-usb@vger.kernel.org, digetx@gmail.com,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] MIPS: ralink: define stubs for clk_set_parent to fix
- compile testing
-Message-ID: <20210316215820.GA18064@alpha.franken.de>
-References: <20210316175725.79981-1-krzysztof.kozlowski@canonical.com>
+        id S230026AbhCPWAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 18:00:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8273C64DFB;
+        Tue, 16 Mar 2021 22:00:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615932008;
+        bh=j1xrHW25OjlLtqOHq6iNIBMOYHzxKmGu/gVm3Mscqoo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=T6oUqm6/OSSFJ36odaxuwA2k5TVOQihqpeUVWnsji4PE/I5ixrztXXmjoka8dducc
+         +fS+FLokUptsE8gREpZBI7KIxq7ZqMIFQ34uDkToISXWlLfdRavTjir9t9FfUZl+Nh
+         sltl5NdcgaOoEopo2X/bF42djgRNe5vX1SUTeB+ScYsOcg2UL2SJF++qqL/4msPyCz
+         FcRcYc54W+8xcWezXOMEsfuDcG+Ttn8dUWgFGy48HfHCh388yi32v52tVCh+99SPMl
+         ymwouNySQPibeeg+5epXNYUqYweZCqurug9m9H5LGaJFurjVERlDKiD8vjQfqHOYwL
+         TBjG69l7In8CQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 71A2860A3D;
+        Tue, 16 Mar 2021 22:00:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316175725.79981-1-krzysztof.kozlowski@canonical.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: ipv4: route.c: simplify procfs code
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161593200846.27352.1361618268443189646.git-patchwork-notify@kernel.org>
+Date:   Tue, 16 Mar 2021 22:00:08 +0000
+References: <20210316025736.37254-1-yejune.deng@gmail.com>
+In-Reply-To: <20210316025736.37254-1-yejune.deng@gmail.com>
+To:     Yejune Deng <yejune.deng@gmail.com>
+Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 06:57:25PM +0100, Krzysztof Kozlowski wrote:
-> The Ralink MIPS platform does not use Common Clock Framework and does
-> not define certain clock operations leading to compile test failures:
+Hello:
+
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Tue, 16 Mar 2021 10:57:36 +0800 you wrote:
+> proc_creat_seq() that directly take a struct seq_operations,
+> and deal with network namespaces in ->open.
 > 
->     /usr/bin/mips-linux-gnu-ld: drivers/usb/phy/phy-tegra-usb.o: in function `tegra_usb_phy_init':
->     phy-tegra-usb.c:(.text+0x1dd4): undefined reference to `clk_get_parent'
+> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> ---
+>  net/ipv4/route.c | 34 ++++------------------------------
+>  1 file changed, 4 insertions(+), 30 deletions(-)
 
-hmm, why not make it use common clock framework ? And shouldn't 
-include/linux/clk.h provide what you need, if CONFIG_HAVE_CLK is not set ?
+Here is the summary with links:
+  - net: ipv4: route.c: simplify procfs code
+    https://git.kernel.org/netdev/net-next/c/f105f26e4560
 
-Thomas.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+
