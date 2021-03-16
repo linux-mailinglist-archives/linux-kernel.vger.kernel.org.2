@@ -2,89 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AED133DB87
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:54:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3A033DB94
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235915AbhCPRyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:54:35 -0400
-Received: from mail-io1-f50.google.com ([209.85.166.50]:42133 "EHLO
-        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239351AbhCPRyM (ORCPT
+        id S239410AbhCPRy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:54:56 -0400
+Received: from mail-io1-f47.google.com ([209.85.166.47]:45769 "EHLO
+        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239364AbhCPRyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:54:12 -0400
-Received: by mail-io1-f50.google.com with SMTP id u20so38105868iot.9;
-        Tue, 16 Mar 2021 10:54:12 -0700 (PDT)
+        Tue, 16 Mar 2021 13:54:19 -0400
+Received: by mail-io1-f47.google.com with SMTP id a7so38107702iok.12;
+        Tue, 16 Mar 2021 10:54:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=Z93rlUj9sdWeq37uZfM03RuUP74yX70Y9MLTGZ1xQjw=;
-        b=e27tK+eOU1ayF0YZhD4iP21I89e/adqzgnYnwUeMh7rJbNJI8WLG9nfLWL6fZhm3sX
-         sCXxlc+tZKt92fmcbKhwOILvGYli2sZDWpN1rfJsTxuFSzPoPfvauqZKUHpv0wEPYJNz
-         xFzoULuBSL9OQIKBPh3zzuBjWaG+1IBDdGmlqX+Km9+3d0WAINSwhpa7Nw5iYRh1D+uu
-         czpMrUhJMy7Bn6DAGFXQwhRZsEWkxDGAULuIXyxXfLdTS5e79LODYQEr5iToT46823mk
-         9jT5hVZA/M8MR4gEoEspvmZGTKcY4Pxd//AcN8nczrN8+dYhcp5ORNlzCr5BdDATP7Ac
-         Gr7g==
-X-Gm-Message-State: AOAM533oUnr9C7vvlMbHmXNhWW//U16F9pDjnTCd3M5Jngj0qgSKJtj5
-        kyKUPmYlDPUlMi5NFN9Zag==
-X-Google-Smtp-Source: ABdhPJx9NqGassAFyEjEetsnxzPc4LiCv5OZO+q67dVfM9IFfAuk7yGqkR/agnODdaVp/QC2A1v/ig==
-X-Received: by 2002:a05:6602:26cb:: with SMTP id g11mr4090124ioo.180.1615917252062;
-        Tue, 16 Mar 2021 10:54:12 -0700 (PDT)
+        bh=nPCe2pWHJBs2omsExRt0WS0Aom9BtYjVqvEnEmMiJSo=;
+        b=XRzgi924kXQoOgg3WfSSuDu5t3NW/tEZkPW35mSD5yORFeu6p3ShncRrw8BSPWbUiN
+         64JtSXW4McslX+hiZ0abwO1vbNks1r1jvieSn2j0mnW9lh4SG29vhJ79ZsDf0tsjehnc
+         RxRCWzcVMXFwLvyaSB7wr9iedQ78wXEhreVf0GkwNQxK9l6iETSEGfTxNrSL+WzpBRNg
+         ss9rpanFYJ74/NjwfJchjQENzxtO9UW8/OcxwAwqWTn2sANxSxj7Vf1q5ozcC+w1u8py
+         ofXgiiVb2qvJP1CihikjMnGnO/GsKYkCNwqdlW5dT84wOQRLY4PDYHQ0EYaFmRJsM7RG
+         7/Ag==
+X-Gm-Message-State: AOAM532QsrPAEg27gApFbyBd8hxSZnoWuhz9Jrj0OVvMHtgqlMZ5VETr
+        +k2OLccjjEM/XM3MpY9GDA==
+X-Google-Smtp-Source: ABdhPJzl3o8G/UcXREEFWDlU5Y5mDjQ2mG47axCBmFh0qU0v7sR7POdBm08dc/9pW76tGCI3Qv4cFw==
+X-Received: by 2002:a6b:b415:: with SMTP id d21mr4251015iof.149.1615917258833;
+        Tue, 16 Mar 2021 10:54:18 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id l16sm9795688ils.11.2021.03.16.10.54.10
+        by smtp.gmail.com with ESMTPSA id u5sm9092435iob.8.2021.03.16.10.54.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 10:54:11 -0700 (PDT)
-Received: (nullmailer pid 3326118 invoked by uid 1000);
+        Tue, 16 Mar 2021 10:54:18 -0700 (PDT)
+Received: (nullmailer pid 3326121 invoked by uid 1000);
         Tue, 16 Mar 2021 17:54:09 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Roger Lu <roger.lu@mediatek.com>
-Cc:     Kevin Hilman <khilman@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
+To:     satya priya <skakit@codeaurora.org>
+Cc:     David Collins <collinsd@codeaurora.org>,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org,
+        rnayak@codeaurora.org, Mark Brown <broonie@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>, mka@chromium.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         Rob Herring <robh+dt@kernel.org>,
-        HenryC Chen <HenryC.Chen@mediatek.com>,
-        Angus Lin <Angus.Lin@mediatek.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        YT Lee <yt.lee@mediatek.com>, Stephen Boyd <sboyd@kernel.org>,
-        Charles Yang <Charles.Yang@mediatek.com>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Fan Chen <fan.chen@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
-        Nishanth Menon <nm@ti.com>, linux-pm@vger.kernel.org
-In-Reply-To: <20210315133018.4976-2-roger.lu@mediatek.com>
-References: <20210315133018.4976-1-roger.lu@mediatek.com> <20210315133018.4976-2-roger.lu@mediatek.com>
-Subject: Re: [PATCH v12 1/7] dt-bindings: soc: mediatek: add mtk svs dt-bindings
+        Andy Gross <agross@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <1615816454-1733-5-git-send-email-skakit@codeaurora.org>
+References: <1615816454-1733-1-git-send-email-skakit@codeaurora.org> <1615816454-1733-5-git-send-email-skakit@codeaurora.org>
+Subject: Re: [PATCH V2 4/5] dt-bindings: regulator: Convert regulator bindings to YAML format
 Date:   Tue, 16 Mar 2021 11:54:09 -0600
-Message-Id: <1615917249.208932.3326117.nullmailer@robh.at.kernel.org>
+Message-Id: <1615917249.223984.3326120.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021 21:30:12 +0800, Roger Lu wrote:
-> Document the binding for enabling mtk svs on MediaTek SoC.
+On Mon, 15 Mar 2021 19:24:13 +0530, satya priya wrote:
+> Convert regulator bindings from .txt to .yaml format.
 > 
-> Signed-off-by: Roger Lu <roger.lu@mediatek.com>
+> Signed-off-by: satya priya <skakit@codeaurora.org>
 > ---
->  .../bindings/soc/mediatek/mtk-svs.yaml        | 81 +++++++++++++++++++
->  1 file changed, 81 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
+> Changes in V2:
+>  - As per Mark's comment moved this patch to the end of series.
+>  - As per Rob's comments,  added flash and rgb bindings, dropped allOf and
+>    unused labels and fixed few other things.
+> 
+>  .../bindings/regulator/qcom,rpmh-regulator.txt     | 180 ---------------------
+>  .../bindings/regulator/qcom,rpmh-regulator.yaml    | 158 ++++++++++++++++++
+>  2 files changed, 158 insertions(+), 180 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
+>  create mode 100644 Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
 yamllint warnings/errors:
+./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:111:2: [warning] wrong indentation: expected 2 but found 1 (indentation)
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml: properties:nvmem-cells:maxItems: False schema does not allow 2
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml: ignoring, error in schema: properties: nvmem-cells: maxItems
-warning: no schema found in file: ./Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
 
-See https://patchwork.ozlabs.org/patch/1453275
+See https://patchwork.ozlabs.org/patch/1453283
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
