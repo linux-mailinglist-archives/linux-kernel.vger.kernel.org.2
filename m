@@ -2,118 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7B633D494
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D4C33D495
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:08:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234596AbhCPNHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:07:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229756AbhCPNHj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:07:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 113706505E;
-        Tue, 16 Mar 2021 13:07:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615900059;
-        bh=InzVTDbkRPUamCbCr2DtBClQ+kQDWvoD4IiHp+kvbps=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V41AezsBa/v3tkujow7wtm9Tht4tlv4VTP3+JUQr+YpnO/NiSN1Hi+gV5NcurjHcF
-         LAIYFipFTuuZiaf+AArZiuEjQ3OEvxC+0HgoPtOteFCoe7odDzJWmMwe9s1YkWD/xp
-         MpKSpqEqpr+BCNY1oWAwTQfRk9k6fXWoPdX2TbJ8G6NBHo3SXlEzZKsA2arI1ky8aM
-         Dsshm0zhSPkGHvshSOsLkFxa1EDxuAYgOq4dWftZeP+yOqFOKXNsg1pxWQ6Z214I0B
-         TByOdtEpiqPf6XDZSzEKWAhQZkdMo4w+c10op5CjB5MiIpRTxbVGguAZ3QyIKQChmy
-         VKezkYJjhrkZA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D19BC40647; Tue, 16 Mar 2021 10:07:36 -0300 (-03)
-Date:   Tue, 16 Mar 2021 10:07:36 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, yao.jin@linux.intel.com,
-        gustavoars@kernel.org, mliska@suse.cz,
-        linux-kernel@vger.kernel.org, zhangjinhao2@huawei.com
-Subject: Re: [PATCH v5] perf annotate: Fix sample events lost in stdio mode
-Message-ID: <YFCtmEBqsgKnkaV7@kernel.org>
-References: <20210316021759.257503-1-yangjihong1@huawei.com>
+        id S234631AbhCPNIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:08:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48992 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229756AbhCPNH5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 09:07:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615900076;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q8hZdBjy2biDGo/SRhHfsgZJyMCulHjJpjBBHBnHsVU=;
+        b=e4wf1FgMNDE5pFRLiwbib6PTocGkK9l/lobWSdZP7BfCtYpum0eVF5ovxytrxpVSo3pVhe
+        j9P9loVHeQZ84MfewMrbFmVZ2S+sZctX/PSnZ4lzkgOIQVkpNlhuCy3qvQSgGlW/cyyfRA
+        y4CyA/OODKziPlf4glvoVUk72pff6sQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-27woSIwZOmieDc8eUNCEzA-1; Tue, 16 Mar 2021 09:07:54 -0400
+X-MC-Unique: 27woSIwZOmieDc8eUNCEzA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 99714100D926;
+        Tue, 16 Mar 2021 13:07:52 +0000 (UTC)
+Received: from krava (unknown [10.40.193.217])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 92E2460C0F;
+        Tue, 16 Mar 2021 13:07:50 +0000 (UTC)
+Date:   Tue, 16 Mar 2021 14:07:49 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH] perf stat: Align CSV output for summary mode
+Message-ID: <YFCtpVNF8coCX3UR@krava>
+References: <20210316072900.1739-1-yao.jin@linux.intel.com>
+ <YFCtfXlaKbIeEMwk@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210316021759.257503-1-yangjihong1@huawei.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <YFCtfXlaKbIeEMwk@krava>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Mar 16, 2021 at 10:17:59AM +0800, Yang Jihong escreveu:
-> In hist__find_annotations function, since different hist_entry may point to same
-> symbol, we free notes->src to signal already processed this symbol in stdio mode;
-> when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
+On Tue, Mar 16, 2021 at 02:07:12PM +0100, Jiri Olsa wrote:
+> On Tue, Mar 16, 2021 at 03:29:00PM +0800, Jin Yao wrote:
+> > perf-stat has supported the summary mode. But the summary
+> > lines break the CSV output so it's hard for scripts to parse
+> > the result.
+> > 
+> > Before:
+> > 
+> >   # perf stat -x, -I1000 --interval-count 1 --summary
+> >        1.001323097,8013.48,msec,cpu-clock,8013483384,100.00,8.013,CPUs utilized
+> >        1.001323097,270,,context-switches,8013513297,100.00,0.034,K/sec
+> >        1.001323097,13,,cpu-migrations,8013530032,100.00,0.002,K/sec
+> >        1.001323097,184,,page-faults,8013546992,100.00,0.023,K/sec
+> >        1.001323097,20574191,,cycles,8013551506,100.00,0.003,GHz
+> >        1.001323097,10562267,,instructions,8013564958,100.00,0.51,insn per cycle
+> >        1.001323097,2019244,,branches,8013575673,100.00,0.252,M/sec
+> >        1.001323097,106152,,branch-misses,8013585776,100.00,5.26,of all branches
+> >   8013.48,msec,cpu-clock,8013483384,100.00,7.984,CPUs utilized
+> >   270,,context-switches,8013513297,100.00,0.034,K/sec
+> >   13,,cpu-migrations,8013530032,100.00,0.002,K/sec
+> >   184,,page-faults,8013546992,100.00,0.023,K/sec
+> >   20574191,,cycles,8013551506,100.00,0.003,GHz
+> >   10562267,,instructions,8013564958,100.00,0.51,insn per cycle
+> >   2019244,,branches,8013575673,100.00,0.252,M/sec
+> >   106152,,branch-misses,8013585776,100.00,5.26,of all branches
+> > 
+> > The summary line loses the timestamp column, which breaks the
+> > CVS output.
+> > 
+> > We add a column at the 'timestamp' position and it just says 'summary'
+> > for the summary line.
+> > 
+> > After:
+> > 
+> >   # perf stat -x, -I1000 --interval-count 1 --summary
 > 
-> However, there is a problem, for example, run the following command:
+> looks ok, but maybe make the option more related to CVS, like:
 > 
->  # perf record -e branch-misses -e branch-instructions -a sleep 1
-> 
-> perf.data file contains different types of sample event.
-> 
-> If the same IP sample event exists in branch-misses and branch-instructions,
-> this event uses the same symbol. When annotate branch-misses events, notes->src
-> corresponding to this event is set to null, as a result, when annotate
-> branch-instructions events, this event is skipped and no annotate is output.
-> 
-> Solution of this patch is to remove zfree in hists__find_annotations and
-> change sort order to "dso,symbol" to avoid duplicate output when different
-> processes correspond to the same symbol.
-
-You forgot to add your Signed-off-by tag, i.e.:
-
-Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-
-Please take a look at Documentation/process/submitting-patches.rst.
-
-Regards,
-
-- Arnaldo
-
-> ---
->  tools/perf/builtin-annotate.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-> index a23ba6bb99b6..92c55f292c11 100644
-> --- a/tools/perf/builtin-annotate.c
-> +++ b/tools/perf/builtin-annotate.c
-> @@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists *hists,
->  		} else {
->  			hist_entry__tty_annotate(he, evsel, ann);
->  			nd = rb_next(nd);
-> -			/*
-> -			 * Since we have a hist_entry per IP for the same
-> -			 * symbol, free he->ms.sym->src to signal we already
-> -			 * processed this symbol.
-> -			 */
-> -			zfree(&notes->src->cycles_hist);
-> -			zfree(&notes->src);
->  		}
->  	}
->  }
-> @@ -619,6 +612,12 @@ int cmd_annotate(int argc, const char **argv)
->  
->  	setup_browser(true);
->  
-> +	/*
-> +	 * Events of different processes may correspond to the same
-> +	 * symbol, we do not care about the processes in annotate,
-> +	 * set sort order to avoid repeated output.
-> +	 */
-> +	sort_order = "dso,symbol";
->  	if ((use_browser == 1 || annotate.use_stdio2) && annotate.has_br_stack) {
->  		sort__mode = SORT_MODE__BRANCH;
->  		if (setup_sorting(annotate.session->evlist) < 0)
-> -- 
-> 2.30.GIT
+>   --x-summary, --cvs-summary  ...? 
 > 
 
--- 
+and we'll need man page update for that
 
-- Arnaldo
+jirka
+
