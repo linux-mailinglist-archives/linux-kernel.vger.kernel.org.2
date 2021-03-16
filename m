@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9B333E1BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:53:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A26833E1BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231648AbhCPWwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 18:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48092 "EHLO
+        id S231676AbhCPWxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 18:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231684AbhCPWwi (ORCPT
+        with ESMTP id S231684AbhCPWxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 18:52:38 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8F4C06174A;
-        Tue, 16 Mar 2021 15:52:37 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id w125so11276062oib.13;
-        Tue, 16 Mar 2021 15:52:37 -0700 (PDT)
+        Tue, 16 Mar 2021 18:53:11 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B5BC06174A;
+        Tue, 16 Mar 2021 15:53:00 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id y19-20020a0568301d93b02901b9f88a238eso65053oti.11;
+        Tue, 16 Mar 2021 15:53:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:subject:to:cc:references:from:autocrypt:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=DsZA7M2L6ElXBpjZUXtVLrRd/T9BA8yOoed8azovsvw=;
-        b=cqa452dQ0OMw5O1M9HQNaOhhHYxkRg9ubwuTkMzn9Boie5napRdXJIF3B6CVHl/Qe0
-         tbPo+QG1R1wJaMR26XtoZ2LOuHvvhNH6YMGf326x9UJ1QkB8B/NvaN5da3abo3+eWRSr
-         g94hube0EustyXEzawO8DLC3qJutptP4rjBF9Y/bJhuJxIVkkdzW4xYYsRrjEYeIB6St
-         m6+CMNpvdAdYC3PHQZR7Os0MpXSmcSPCaeicOmGixKL42rMFi5nQidx+U5tqKb2XlzLu
-         BxGx/mCLvxbPJcjx6tYfQ6MJUoheTu2e3gZaT/wGf9aphtYT87FMWyUOumeTx30q8ZXN
-         3TGg==
+        bh=b6yGdXTQOJ+IQCcOg8cyC5zJaqGMElqMG8kPZl5XdOc=;
+        b=BfUGhF0XH7lVfIt7VYLe4iuvEJ2WckTYwVK585r9iyZpafm0bZK4UOo6iiZWvHlTPx
+         dgTDOvWeeWIF562hU5yqciI8/6Qe0I/Vg/oLo9/hE3+jh1dCFmIEKi24aMaAobdsyYmi
+         1gBcvLj1L/2eXBLBIYzehzDOmiscnPQkI3+ttKQueXYFzV4KAomIZY/rhG5jx60kYV2W
+         LkQalVCso+NcSSWTmxjN/KaDvNymVDP6vHD/EO7YNDCNND/PpEyI7kGvbVdpo41x7AU8
+         lF1Qf6HTIsyYbO1Dg7UFIpCChx90OAwbKAI8OEQGB1KfHQx0zBuql3aglzoIFWgqR0Eh
+         YWTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=DsZA7M2L6ElXBpjZUXtVLrRd/T9BA8yOoed8azovsvw=;
-        b=EifLy8aJUxJtw7AiAVH3yT78eN2ApFW/X8hwCmczeECeBph3fAL8Z6nP1n4FEBFpdK
-         ZyiPgbyjjdm6oBzIiKORfbcJ4H8TT0Z9GV9rskMY2Vu5EDXqodrNVWILgqPA0YlAzE0a
-         FvL3uaS+4mTmSj+tT0LUor6Aa59uxZAhPW+kslwlXO5VGwt2yFkMrVJ7Ny6CM6SkcAJk
-         sxbE5l7cLS45RU9LUqagHOrltHNi00WkZEovvPV2dI9ZbbpKzsw7lCszpgn+UASOEEIH
-         oaJWTIaNjRqcKrDs/aTF/gfAnWyQKLjiB8+pVCY+P+vLuKwRNhvaeNQ9eeG4ETolgH2b
-         Gm+Q==
-X-Gm-Message-State: AOAM53079jVvCr2w3JNm+KoTISZ3OaKHX6bxkYRYSbV+Rzqrznp9tK7R
-        O0SEPKVAGWRVNcbUYQaS9eU=
-X-Google-Smtp-Source: ABdhPJwbzKF19M/vUu6d3JPZe/7WFHD/GCPtrsOgMWig+R5SIHByrNLbe/PA2FnnBvzY4kDv/BwqwQ==
-X-Received: by 2002:aca:1a01:: with SMTP id a1mr695812oia.33.1615935156424;
-        Tue, 16 Mar 2021 15:52:36 -0700 (PDT)
+        bh=b6yGdXTQOJ+IQCcOg8cyC5zJaqGMElqMG8kPZl5XdOc=;
+        b=tAb7WXQHvhlLjd1Xig9hs2GDW1lcqjbR4o85XaY+2oTApKUWYbYO6TDHTiSLTWhHdO
+         Itctp2FjQU8ps0nW1pMgtDMD1OPHQDSTNzDkT3hjUFX5zsptPcpFiYpDBQFacXjOgQD7
+         FKDm6+P3R9/pGhElAuygDWQ2Unb1f8qIcmjKCiDZDaxYQ7k71UYsqbPMENP70K2iK0zO
+         NeMixuuYinqspgn7taH8VezD9dKAX4Yy86kvKzczgRm7qOInfJC6es1iI5mSsEslU7+o
+         mHMKlgIvm/LDwmXJuBWwYb8Pb72aXZY0UnpjeqHlR8axNkLv/OIg6LHuW+MC/LSsvajO
+         AvgQ==
+X-Gm-Message-State: AOAM531f/ddWUQKa3W2AbY/ke1R0EMFBOgWX2T+8IMXS92H3Uj5p2MdZ
+        SnBk1u/C50e/eSq90grDhtNs695BCiI=
+X-Google-Smtp-Source: ABdhPJy4HKdbkHp9bXegheUel4ABCQH/maVwG82Qkq0qiSPuh0jrK4OAovAFbJSpcO3TunTSHzA1pw==
+X-Received: by 2002:a05:6830:140e:: with SMTP id v14mr883812otp.155.1615935179800;
+        Tue, 16 Mar 2021 15:52:59 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b9sm8214394ooa.47.2021.03.16.15.52.34
+        by smtp.gmail.com with ESMTPSA id 24sm7279988oiq.11.2021.03.16.15.52.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 15:52:35 -0700 (PDT)
+        Tue, 16 Mar 2021 15:52:59 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] usb: typec: tcpm: Invoke power_supply_changed for
- tcpm-source-psy-
+Subject: Re: [PATCH v1] usb: typec: tcpci: Added few missing TCPCI register
+ definitions
 To:     Badhri Jagan Sridharan <badhri@google.com>,
         Heikki Krogerus <heikki.krogerus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-References: <20210316215657.387357-1-badhri@google.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210316221304.391206-1-badhri@google.com>
 From:   Guenter Roeck <linux@roeck-us.net>
 Autocrypt: addr=linux@roeck-us.net; keydata=
  xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
@@ -103,12 +102,12 @@ Autocrypt: addr=linux@roeck-us.net; keydata=
  WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
  HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
  mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <2175cb45-5fdc-eb57-150c-9d7adee73184@roeck-us.net>
-Date:   Tue, 16 Mar 2021 15:52:34 -0700
+Message-ID: <4f077e6c-4e95-ab54-c549-e953bf3c00f3@roeck-us.net>
+Date:   Tue, 16 Mar 2021 15:52:58 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210316215657.387357-1-badhri@google.com>
+In-Reply-To: <20210316221304.391206-1-badhri@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -116,98 +115,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/21 2:56 PM, Badhri Jagan Sridharan wrote:
-> tcpm-source-psy- does not invoke power_supply_changed API when
-> one of the published power supply property is changed.
-
-properties
-
-> power_supply_changed needs to be called to notify
-> userspace clients(uevents) and kernel clients.
+On 3/16/21 3:13 PM, Badhri Jagan Sridharan wrote:
+> This change adds some of the register bit definitions from the TCPCI spec:
+> https://www.usb.org/sites/default/files/documents/
+> usb-port_controller_specification_rev2.0_v1.0_0.pdf
 > 
-> Fixes: f2a8aa053c176("typec: tcpm: Represent source supply through
-> power_supply")
-
-Is that supposed to be split ?
-
 > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
-Otherwise
+Are those going to be used ?
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Guenter
 
 > ---
->  drivers/usb/typec/tcpm/tcpm.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
+>  drivers/usb/typec/tcpm/tcpci.h | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 11d0c40bc47d..e8936ea17f80 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -945,6 +945,7 @@ static int tcpm_set_current_limit(struct tcpm_port *port, u32 max_ma, u32 mv)
+> diff --git a/drivers/usb/typec/tcpm/tcpci.h b/drivers/usb/typec/tcpm/tcpci.h
+> index 57b6e24e0a0c..2be7a77d400e 100644
+> --- a/drivers/usb/typec/tcpm/tcpci.h
+> +++ b/drivers/usb/typec/tcpm/tcpci.h
+> @@ -47,7 +47,10 @@
 >  
->  	port->supply_voltage = mv;
->  	port->current_limit = max_ma;
-> +	power_supply_changed(port->psy);
+>  #define TCPC_TCPC_CTRL			0x19
+>  #define TCPC_TCPC_CTRL_ORIENTATION	BIT(0)
+> +#define PLUG_ORNT_CC1			0
+> +#define PLUG_ORNT_CC2			1
+>  #define TCPC_TCPC_CTRL_BIST_TM		BIT(1)
+> +#define TCPC_TCPC_CTRL_EN_LK4CONN_ALRT	BIT(6)
 >  
->  	if (port->tcpc->set_current_limit)
->  		ret = port->tcpc->set_current_limit(port->tcpc, max_ma, mv);
-> @@ -2931,6 +2932,7 @@ static int tcpm_pd_select_pdo(struct tcpm_port *port, int *sink_pdo,
+>  #define TCPC_EXTENDED_STATUS		0x20
+>  #define TCPC_EXTENDED_STATUS_VSAFE0V	BIT(0)
+> @@ -74,21 +77,28 @@
+>  #define TCPC_POWER_CTRL_VCONN_ENABLE	BIT(0)
+>  #define TCPC_POWER_CTRL_BLEED_DISCHARGE	BIT(3)
+>  #define TCPC_POWER_CTRL_AUTO_DISCHARGE	BIT(4)
+> +#define TCPC_DIS_VOLT_ALRM		BIT(5)
+> +#define TCPC_POWER_CTRL_VBUS_VOLT_MON	BIT(6)
+>  #define TCPC_FAST_ROLE_SWAP_EN		BIT(7)
 >  
->  	port->pps_data.supported = false;
->  	port->usb_type = POWER_SUPPLY_USB_TYPE_PD;
-> +	power_supply_changed(port->psy);
+>  #define TCPC_CC_STATUS			0x1d
+>  #define TCPC_CC_STATUS_TOGGLING		BIT(5)
+>  #define TCPC_CC_STATUS_TERM		BIT(4)
+> +#define TCPC_CC_STATUS_TERM_RP		0
+> +#define TCPC_CC_STATUS_TERM_RD		1
+> +#define TCPC_CC_STATE_SRC_OPEN		0
+>  #define TCPC_CC_STATUS_CC2_SHIFT	2
+>  #define TCPC_CC_STATUS_CC2_MASK		0x3
+>  #define TCPC_CC_STATUS_CC1_SHIFT	0
+>  #define TCPC_CC_STATUS_CC1_MASK		0x3
 >  
->  	/*
->  	 * Select the source PDO providing the most power which has a
-> @@ -2955,6 +2957,7 @@ static int tcpm_pd_select_pdo(struct tcpm_port *port, int *sink_pdo,
->  				port->pps_data.supported = true;
->  				port->usb_type =
->  					POWER_SUPPLY_USB_TYPE_PD_PPS;
-> +				power_supply_changed(port->psy);
->  			}
->  			continue;
->  		default:
-> @@ -3112,6 +3115,7 @@ static unsigned int tcpm_pd_select_pps_apdo(struct tcpm_port *port)
->  						  port->pps_data.out_volt));
->  		port->pps_data.op_curr = min(port->pps_data.max_curr,
->  					     port->pps_data.op_curr);
-> +		power_supply_changed(port->psy);
->  	}
+>  #define TCPC_POWER_STATUS		0x1e
+> +#define TCPC_POWER_STATUS_DBG_ACC_CON	BIT(7)
+>  #define TCPC_POWER_STATUS_UNINIT	BIT(6)
+>  #define TCPC_POWER_STATUS_SOURCING_VBUS	BIT(4)
+>  #define TCPC_POWER_STATUS_VBUS_DET	BIT(3)
+>  #define TCPC_POWER_STATUS_VBUS_PRES	BIT(2)
+> +#define TCPC_POWER_STATUS_SINKING_VBUS	BIT(0)
 >  
->  	return src_pdo;
-> @@ -3347,6 +3351,7 @@ static int tcpm_set_charge(struct tcpm_port *port, bool charge)
->  			return ret;
->  	}
->  	port->vbus_charge = charge;
-> +	power_supply_changed(port->psy);
->  	return 0;
->  }
+>  #define TCPC_FAULT_STATUS		0x1f
 >  
-> @@ -3530,6 +3535,7 @@ static void tcpm_reset_port(struct tcpm_port *port)
->  	port->try_src_count = 0;
->  	port->try_snk_count = 0;
->  	port->usb_type = POWER_SUPPLY_USB_TYPE_C;
-> +	power_supply_changed(port->psy);
->  	port->nr_sink_caps = 0;
->  	port->sink_cap_done = false;
->  	if (port->tcpc->enable_frs)
-> @@ -5957,7 +5963,7 @@ static int tcpm_psy_set_prop(struct power_supply *psy,
->  		ret = -EINVAL;
->  		break;
->  	}
-> -
-> +	power_supply_changed(port->psy);
->  	return ret;
->  }
+> @@ -121,6 +131,10 @@
+>  #define TCPC_RX_DETECT			0x2f
+>  #define TCPC_RX_DETECT_HARD_RESET	BIT(5)
+>  #define TCPC_RX_DETECT_SOP		BIT(0)
+> +#define TCPC_RX_DETECT_SOP1		BIT(1)
+> +#define TCPC_RX_DETECT_SOP2		BIT(2)
+> +#define TCPC_RX_DETECT_DBG1		BIT(3)
+> +#define TCPC_RX_DETECT_DBG2		BIT(4)
 >  
-> @@ -6110,6 +6116,7 @@ struct tcpm_port *tcpm_register_port(struct device *dev, struct tcpc_dev *tcpc)
->  	err = devm_tcpm_psy_register(port);
->  	if (err)
->  		goto out_role_sw_put;
-> +	power_supply_changed(port->psy);
+>  #define TCPC_RX_BYTE_CNT		0x30
+>  #define TCPC_RX_BUF_FRAME_TYPE		0x31
+> @@ -139,6 +153,8 @@
+>  #define TCPC_TX_DATA			0x54 /* through 0x6f */
 >  
->  	port->typec_port = typec_register_port(port->dev, &port->typec_caps);
->  	if (IS_ERR(port->typec_port)) {
+>  #define TCPC_VBUS_VOLTAGE			0x70
+> +#define TCPC_VBUS_VOLTAGE_MASK			0x3ff
+> +#define TCPC_VBUS_VOLTAGE_LSB_MV		25
+>  #define TCPC_VBUS_SINK_DISCONNECT_THRESH	0x72
+>  #define TCPC_VBUS_SINK_DISCONNECT_THRESH_LSB_MV	25
+>  #define TCPC_VBUS_SINK_DISCONNECT_THRESH_MAX	0x3ff
 > 
 
