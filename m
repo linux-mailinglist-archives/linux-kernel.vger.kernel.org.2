@@ -2,64 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2E333DA2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:03:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21AE933DA0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:02:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239036AbhCPRD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237156AbhCPRCU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:02:20 -0400
-Received: from canardo.mork.no (canardo.mork.no [IPv6:2001:4641::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4522EC06174A;
-        Tue, 16 Mar 2021 10:02:19 -0700 (PDT)
-Received: from miraculix.mork.no ([IPv6:2a01:799:c9e:a108:162d:5d96:d792:df29])
-        (authenticated bits=0)
-        by canardo.mork.no (8.15.2/8.15.2) with ESMTPSA id 12GH2BPZ032267
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Tue, 16 Mar 2021 18:02:11 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
-        t=1615914132; bh=vp/GA9v/KL3JbZxcyD1G+bDAmVCA+mobz6mk5cdWMDQ=;
-        h=From:To:Cc:Subject:References:Date:Message-ID:From;
-        b=aO80HNtEntVZG3jsr+2F1tJDI2mlfxFYrDf3ENv/LheAubO0YpileTFd8VyXaRyPh
-         bb4Nsm0RRVy2VfeOSc7FcItoEAZaUU7QatRTZR36yBiTqmfu7vIVJubS8sJE8KEbyx
-         YV7UUuAPznMEa+nTk1/88wCdWM9f2Y8P75vU0bSk=
-Received: from bjorn by miraculix.mork.no with local (Exim 4.94)
-        (envelope-from <bjorn@mork.no>)
-        id 1lMD58-001Iip-O9; Tue, 16 Mar 2021 18:02:10 +0100
-From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>, od@zcrc.me,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: vmlinux.lds.S: Fix appended dtb not properly aligned
-Organization: m
-References: <20210316154515.171543-1-paul@crapouillou.net>
-Date:   Tue, 16 Mar 2021 18:02:10 +0100
-In-Reply-To: <20210316154515.171543-1-paul@crapouillou.net> (Paul Cercueil's
-        message of "Tue, 16 Mar 2021 15:45:15 +0000")
-Message-ID: <87r1kfnib1.fsf@miraculix.mork.no>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S237167AbhCPRBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:01:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33794 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237145AbhCPRBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:01:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 11A0EAC24;
+        Tue, 16 Mar 2021 17:01:23 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 77c30980;
+        Tue, 16 Mar 2021 17:02:37 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Vivek Goyal <vgoyal@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luis Henriques <lhenriques@suse.de>, stable@vger.kernel.org
+Subject: [PATCH] virtiofs: fix memory leak in virtio_fs_probe()
+Date:   Tue, 16 Mar 2021 17:02:34 +0000
+Message-Id: <20210316170234.21736-1-lhenriques@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Virus-Scanned: clamav-milter 0.102.4 at canardo
-X-Virus-Status: Clean
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paul Cercueil <paul@crapouillou.net> writes:
+When accidentally passing twice the same tag to qemu, kmemleak ended up
+reporting a memory leak in virtiofs.  Also, looking at the log I saw the
+following error (that's when I realised the duplicated tag):
 
-> Commit 6654111c893f ("MIPS: vmlinux.lds.S: align raw appended dtb to 8
-> bytes") changed the alignment from STRUCT_ALIGNMENT bytes to 8 bytes.
+  virtiofs: probe of virtio5 failed with error -17
 
-Ouch.  That was not my intention.  I see that there was a mixup with my
-initial patch. My last version used STRUCT_ALIGNMENT, but might have
-been lost since I sent it only as an attachment during the discussion.
+Here's the kmemleak log for reference:
 
-Sorry for not catching this.  And thanks for fixing.
+unreferenced object 0xffff888103d47800 (size 1024):
+  comm "systemd-udevd", pid 118, jiffies 4294893780 (age 18.340s)
+  hex dump (first 32 bytes):
+    00 00 00 00 ad 4e ad de ff ff ff ff 00 00 00 00  .....N..........
+    ff ff ff ff ff ff ff ff 80 90 02 a0 ff ff ff ff  ................
+  backtrace:
+    [<000000000ebb87c1>] virtio_fs_probe+0x171/0x7ae [virtiofs]
+    [<00000000f8aca419>] virtio_dev_probe+0x15f/0x210
+    [<000000004d6baf3c>] really_probe+0xea/0x430
+    [<00000000a6ceeac8>] device_driver_attach+0xa8/0xb0
+    [<00000000196f47a7>] __driver_attach+0x98/0x140
+    [<000000000b20601d>] bus_for_each_dev+0x7b/0xc0
+    [<00000000399c7b7f>] bus_add_driver+0x11b/0x1f0
+    [<0000000032b09ba7>] driver_register+0x8f/0xe0
+    [<00000000cdd55998>] 0xffffffffa002c013
+    [<000000000ea196a2>] do_one_initcall+0x64/0x2e0
+    [<0000000008f727ce>] do_init_module+0x5c/0x260
+    [<000000003cdedab6>] __do_sys_finit_module+0xb5/0x120
+    [<00000000ad2f48c6>] do_syscall_64+0x33/0x40
+    [<00000000809526b5>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
+Cc: stable@vger.kernel.org
+Signed-off-by: Luis Henriques <lhenriques@suse.de>
+---
+ fs/fuse/virtio_fs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Bj=C3=B8rn
+diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+index 8868ac31a3c0..4e6ef9f24e84 100644
+--- a/fs/fuse/virtio_fs.c
++++ b/fs/fuse/virtio_fs.c
+@@ -899,7 +899,7 @@ static int virtio_fs_probe(struct virtio_device *vdev)
+ 
+ out:
+ 	vdev->priv = NULL;
+-	kfree(fs);
++	virtio_fs_put(fs);
+ 	return ret;
+ }
+ 
