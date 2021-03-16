@@ -2,127 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4623233CA71
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 01:42:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4333833CA7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 01:53:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232420AbhCPAlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 20:41:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57598 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232024AbhCPAll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 20:41:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13E0B64F5D;
-        Tue, 16 Mar 2021 00:41:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615855301;
-        bh=VOYpVt5GwO6xxd7dzoJqdqBQftQfoa6f+tTn+g1OspY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=D3D1NwUuG0CuABzkFTHXcEAW+S7iIYvnc+93RHujNFtyOqGnPORw93SC2PO8r5GxT
-         lVPI4D4FhmO4FWooADcYUwTjmCrzDRDqOWo5htEtnoYMQlT7MkeucFC8etgProA2md
-         ad9Xj1r3TvDxivfFzmvitvuV4GhlC0Z8kvFTqTtfHIzSNQkcv2+BULqz07q/38v9Ua
-         NW6dUIrrsXuzhEIzRFrEJrXJAAsBugvAXWqDDOl9owixrrKRpX/9XtX3MkKksdiGjS
-         vP5zxn1qoPU3QgIF9HRB6/dRTBB2emhNh/z9tDH1HDpnoAZCOQ1DR+bEjW4fLAKzPU
-         L03jnisdxoGqQ==
-Date:   Mon, 15 Mar 2021 17:41:40 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     mohammad.athari.ismail@intel.com
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>, vee.khee.wong@intel.com,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/2] net: stmmac: EST interrupts handling and
- error reporting
-Message-ID: <20210315174140.6abb0edf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210315221409.3867-2-mohammad.athari.ismail@intel.com>
-References: <20210315221409.3867-1-mohammad.athari.ismail@intel.com>
-        <20210315221409.3867-2-mohammad.athari.ismail@intel.com>
+        id S233305AbhCPAwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 20:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232118AbhCPAwa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 20:52:30 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C01C06174A;
+        Mon, 15 Mar 2021 17:52:29 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id o3so3018231pfh.11;
+        Mon, 15 Mar 2021 17:52:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xZoZuWb2tBzrGLpbmU0QlJ3nLJM79Q95ZotWRYdo/dU=;
+        b=udPVwzShPfqLnJku3Fi+dpSMekaBCR/1LK2aWf1PcUDLZZrudJibDmi0qfrv/bqFQi
+         2H93ctwVoCfgOr2SN8hWgsDeHQvcBvP8XiGlBtPsy1YjVOKrLNSDioU8RZp8zwqXc3A6
+         oJI2UWvwmwVvKThzHVEDxhD1X5nOp/VOJj4PbXs+hR49oilZocWDgVy25YKK8EOHXYdm
+         qYcsl+P22j8n75mkw0RH4x+LoJ8q9WWI19/8ttIpLAb5Tp5h50c6BXldIRsMApX7ghT4
+         eTArYFObAgWoCrP6O+yFbQ/MxkIiKeK6kzPC9Og6q+TOirm7W6j9lHvVgDGzbYPmZY3q
+         8c5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xZoZuWb2tBzrGLpbmU0QlJ3nLJM79Q95ZotWRYdo/dU=;
+        b=JeikaMJHsgccufQd+KwsVzgCKNDx18kzGUW+c/CrDecwCCZ4Km78qjmoMck8hpUDyO
+         jNCi9RgaJ6NPM3QsPSq3vorycY3Wam5BRGTeafANy8YC11sSJVoilFq9uYmlurgz1YAN
+         R8RpYCKrj+l4VzrK1+8vaOv+8W/otCUJX+z3kMiRAp7UZ2rb6Zb3UOFi8AhqpQUyvttW
+         xIuZRMWjEh8yBWKkwIf/rT0KE4JhEfGH+jBbV4OSD+Yyjg0u6eTt+dJ/96N6Ixa4SZ9T
+         /KiU6LG8b9v+ezrveVPKyGWJVJKtZCVGfSpX1jD+g/TueH1HnJTXGGWXExmmdy2aTAR+
+         g2Vw==
+X-Gm-Message-State: AOAM533uzKO1zw7Fkb9x3mtMQt5+A85y2qraBb1cihclsdO/1ZntwIWm
+        YfZ/6zckNtOkIdYv8UUIuH5lWbvuZt4=
+X-Google-Smtp-Source: ABdhPJxtgToEh90OsCzFZ8X/0t8eT0FJAw1LQkF78w9cJu/2scgskfJvfnWyygm0lV6xkfQGigLdTA==
+X-Received: by 2002:a63:1026:: with SMTP id f38mr1582605pgl.142.1615855949298;
+        Mon, 15 Mar 2021 17:52:29 -0700 (PDT)
+Received: from f8ffc2228008.ant.amazon.com ([54.240.193.129])
+        by smtp.gmail.com with ESMTPSA id gz12sm759496pjb.33.2021.03.15.17.52.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 17:52:28 -0700 (PDT)
+Subject: Re: [PATCH] mm: memcontrol: switch to rstat fix
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+References: <20210315234100.64307-1-hannes@cmpxchg.org>
+From:   "Singh, Balbir" <bsingharora@gmail.com>
+Message-ID: <494a5169-7e18-804b-3975-3a6442aff601@gmail.com>
+Date:   Tue, 16 Mar 2021 11:52:22 +1100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210315234100.64307-1-hannes@cmpxchg.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021 06:14:08 +0800 mohammad.athari.ismail@intel.com
-wrote:
-> From: Voon Weifeng <weifeng.voon@intel.com>
+On 16/3/21 10:41 am, Johannes Weiner wrote:
+> Fix a sleep in atomic section problem: wb_writeback() takes a spinlock
+> and calls wb_over_bg_thresh() -> mem_cgroup_wb_stats, but the regular
+> rstat flushing function called from in there does lockbreaking and may
+> sleep. Switch to the atomic variant, cgroup_rstat_irqsafe().
 > 
-> Enabled EST related interrupts as below:
-> 1) Constant Gate Control Error (CGCE)
-> 2) Head-of-Line Blocking due to Scheduling (HLBS)
-> 3) Head-of-Line Blocking due to Frame Size (HLBF).
-> 4) Base Time Register error (BTRE)
-> 5) Switch to S/W owned list Complete (SWLC)
+> To be consistent with other memcg flush calls, but without adding
+> another memcg wrapper, inline and drop memcg_flush_vmstats() instead.
 > 
-> For HLBS, the user will get the info of all the queues that shows this
-> error. For HLBF, the user will get the info of all the queue with the
-> latest frame size which causes the error. Frame size 0 indicates no
-> error.
-> 
-> The ISR handling takes place when EST feature is enabled by user.
-> 
-> Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
-> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
-> Co-developed-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
-> Signed-off-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> ---
 
-> +	if (status & HLBS) {
-> +		value = readl(ioaddr + MTL_EST_SCH_ERR);
-> +		value &= txqcnt_mask;
-> +
-> +		/* Clear Interrupt */
-> +		writel(value, ioaddr + MTL_EST_SCH_ERR);
-> +
-> +		/* Collecting info to shows all the queues that has HLBS
-> +		 * issue. The only way to clear this is to clear the
-> +		 * statistic
-> +		 */
-> +		if (net_ratelimit())
-> +			netdev_err(dev, "EST: HLB(sched) Queue %u\n", value);
+The patch make sense, but it does break any notion of abstraction we had
+about controllers have some independence in their strategy to maintain
+their own counters and stats. It now couples writeback with rstat instead
+of just memcg.
 
-This is a mask so probably better display it as hex?
-
-> +	}
-> +
-> +	if (status & HLBF) {
-> +		value = readl(ioaddr + MTL_EST_FRM_SZ_ERR);
-> +		feqn = value & txqcnt_mask;
-> +
-> +		value = readl(ioaddr + MTL_EST_FRM_SZ_CAP);
-> +		hbfq = (value & SZ_CAP_HBFQ_MASK(txqcnt)) >> SZ_CAP_HBFQ_SHIFT;
-> +		hbfs = value & SZ_CAP_HBFS_MASK;
-> +
-> +		/* Clear Interrupt */
-> +		writel(feqn, ioaddr + MTL_EST_FRM_SZ_ERR);
-> +
-> +		if (net_ratelimit())
-> +			netdev_err(dev, "EST: HLB(size) Queue %u Size %u\n",
-> +				   hbfq, hbfs);
-> +	}
-> +
-> +	if (status & BTRE) {
-> +		btrl = (status & BTRL) >> BTRL_SHIFT;
-> +
-> +		if (net_ratelimit())
-> +			netdev_info(dev, "EST: BTR Error Loop Count %u\n",
-> +				    btrl);
-> +
-> +		writel(BTRE, ioaddr + MTL_EST_STATUS);
-> +	}
-> +
-> +	if (status & SWLC) {
-> +		writel(SWLC, ioaddr + MTL_EST_STATUS);
-> +		netdev_info(dev, "EST: SWOL has been switched\n");
-> +	}
-> +
-> +	return status;
-
-Caller never checks the return value, it probably should if this driver
-supports shared irqs? Otherwise you can make this function void.
-
-> +}
+Acked-by: Balbir Singh <bsingharora@gmail.com>
