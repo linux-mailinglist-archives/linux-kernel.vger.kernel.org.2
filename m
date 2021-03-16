@@ -2,204 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A31BC33CFCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:25:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E99F633CFD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234690AbhCPIZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 04:25:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233589AbhCPIYv (ORCPT
+        id S234703AbhCPI04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 04:26:56 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13626 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232988AbhCPI0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 04:24:51 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A4DC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 01:24:51 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id z13so36219620iox.8
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 01:24:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OpnffJILt17fHp8Xu2b6sG4C5uMifJxsEdEnBIARqKw=;
-        b=kzOf57e7KIbrgrdXnmJ5x+hAo6YrY9spBvZqOy2y/2vsd9/8pks319xyVpjHNumix3
-         smeueJ0A1okpj8yTFqALWGD460+zJEXqOx7bUElUBYAfo+XC0HcK0xFApc9yLdgQSZsZ
-         rdQenK66GW8qvOQ7B2lye2JppFq1IcnRi/xbTioZf6Kgbelce2VHOdGOp62onCFhWi+w
-         APlUHTaGHsVYINu6n6rNHqdr1oNZMTRJUtQWc7p+vItAm8iwbrt09avTbiErYrf1kPIl
-         7I7hoSM+mulYVCv6rD7j+3JCDrukEQUGtrTzu0I7McT3MoVsKc7n22hxVypS5OYWlZ9/
-         HjvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OpnffJILt17fHp8Xu2b6sG4C5uMifJxsEdEnBIARqKw=;
-        b=KIDSkMNLaXd4/+IbpMstQmTWY9BA+z6x3xO/7PeKwOGU1lD7ULHF4NhiZ5bXQPTr8t
-         HCn0nyG4zuO/iTQvcnvgtOvJ2CR5ZIto5dNSbZx/fcojVePn6ZuYtU6sMjUyc5uJowNe
-         qU/XZARmGbSVmxB/eBpsSa2vYTUIPESYycdudCheIV/X8RMCWwvfWmYxsUteC7chmEYP
-         FWwFTmcSruV4krSAIKYJMtr0He3oxbIzIt+nm8ZGyjhSorRTPGK6gi3sblU7llUIT4tU
-         Pr/kZrK96NUGyySFJAJOnZR6dvSNLjnEaeivdUP9QgaBPKJlKSzC8VbbMzG3XxebemSe
-         dUqA==
-X-Gm-Message-State: AOAM5326+DJWriMdHAyQdBQBujk9Zlc05zaGZLRyCaDcupkadi+CTjbH
-        1gcsPf4RqzFUN10i3cGUt6t9AA==
-X-Google-Smtp-Source: ABdhPJyaXfxKjPvuSm7JOWw7/6YMVUGqmXxhd2ibW+rA+N0FTq58hUfMM2K+okU1J3uplw7Zhrwv6Q==
-X-Received: by 2002:a02:9382:: with SMTP id z2mr13269772jah.120.1615883090614;
-        Tue, 16 Mar 2021 01:24:50 -0700 (PDT)
-Received: from google.com ([2620:15c:183:200:d825:37a2:4b55:995f])
-        by smtp.gmail.com with ESMTPSA id l14sm9113336ilc.33.2021.03.16.01.24.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 01:24:49 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 02:24:45 -0600
-From:   Yu Zhao <yuzhao@google.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     linux-mm@kvack.org, Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Yang Shi <shy828301@gmail.com>, linux-kernel@vger.kernel.org,
-        page-reclaim@google.com
-Subject: Re: [PATCH v1 10/14] mm: multigenerational lru: core
-Message-ID: <YFBrTXLZygkfJiQs@google.com>
-References: <87im5rsvd8.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <YFA33n+zQb8oomjJ@google.com>
- <87wnu7y4hn.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        Tue, 16 Mar 2021 04:26:42 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F05tl6x8Zz17Lxp;
+        Tue, 16 Mar 2021 16:24:47 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 16 Mar
+ 2021 16:26:38 +0800
+Subject: Re: [PATCH v6 2/2] erofs: decompress in endio if possible
+To:     Huang Jianan <huangjianan@oppo.com>, <linux-erofs@lists.ozlabs.org>
+CC:     <linux-kernel@vger.kernel.org>, <guoweichao@oppo.com>,
+        <zhangshiming@oppo.com>
+References: <20210316031515.90954-1-huangjianan@oppo.com>
+ <20210316031515.90954-2-huangjianan@oppo.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <cb51e5de-bfb9-509d-e165-243157404cb9@huawei.com>
+Date:   Tue, 16 Mar 2021 16:26:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wnu7y4hn.fsf@yhuang6-desk1.ccr.corp.intel.com>
+In-Reply-To: <20210316031515.90954-2-huangjianan@oppo.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 02:52:52PM +0800, Huang, Ying wrote:
-> Yu Zhao <yuzhao@google.com> writes:
+Hi Jianan,
+
+On 2021/3/16 11:15, Huang Jianan via Linux-erofs wrote:
+> z_erofs_decompressqueue_endio may not be executed in the atomic
+> context, for example, when dm-verity is turned on. In this scenario,
+> data can be decompressed directly to get rid of additional kworker
+> scheduling overhead. Also, it makes no sense to apply synchronous
+> decompression for such case.
+
+It looks this patch does more than one things:
+- combine dm-verity and erofs workqueue
+- change policy of decompression in context of thread
+
+Normally, we do one thing in one patch, by this way, we will be benefit in
+scenario of when backporting patches and bisecting problematic patch with
+minimum granularity, and also it will help reviewer to focus on reviewing
+single code logic by following patch's goal.
+
+So IMO, it would be better to separate this patch into two.
+
+One more thing is could you explain a little bit more about why we need to
+change policy of decompression in context of thread? for better performance?
+
+BTW, code looks clean to me. :)
+
+Thanks,
+
 > 
-> > On Tue, Mar 16, 2021 at 10:08:51AM +0800, Huang, Ying wrote:
-> >> Yu Zhao <yuzhao@google.com> writes:
-> >> [snip]
-> >> 
-> >> > +/* Main function used by foreground, background and user-triggered aging. */
-> >> > +static bool walk_mm_list(struct lruvec *lruvec, unsigned long next_seq,
-> >> > +			 struct scan_control *sc, int swappiness)
-> >> > +{
-> >> > +	bool last;
-> >> > +	struct mm_struct *mm = NULL;
-> >> > +	int nid = lruvec_pgdat(lruvec)->node_id;
-> >> > +	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
-> >> > +	struct lru_gen_mm_list *mm_list = get_mm_list(memcg);
-> >> > +
-> >> > +	VM_BUG_ON(next_seq > READ_ONCE(lruvec->evictable.max_seq));
-> >> > +
-> >> > +	/*
-> >> > +	 * For each walk of the mm list of a memcg, we decrement the priority
-> >> > +	 * of its lruvec. For each walk of memcgs in kswapd, we increment the
-> >> > +	 * priorities of all lruvecs.
-> >> > +	 *
-> >> > +	 * So if this lruvec has a higher priority (smaller value), it means
-> >> > +	 * other concurrent reclaimers (global or memcg reclaim) have walked
-> >> > +	 * its mm list. Skip it for this priority to balance the pressure on
-> >> > +	 * all memcgs.
-> >> > +	 */
-> >> > +#ifdef CONFIG_MEMCG
-> >> > +	if (!mem_cgroup_disabled() && !cgroup_reclaim(sc) &&
-> >> > +	    sc->priority > atomic_read(&lruvec->evictable.priority))
-> >> > +		return false;
-> >> > +#endif
-> >> > +
-> >> > +	do {
-> >> > +		last = get_next_mm(lruvec, next_seq, swappiness, &mm);
-> >> > +		if (mm)
-> >> > +			walk_mm(lruvec, mm, swappiness);
-> >> > +
-> >> > +		cond_resched();
-> >> > +	} while (mm);
-> >> 
-> >> It appears that we need to scan the whole address space of multiple
-> >> processes in this loop?
-> >> 
-> >> If so, I have some concerns about the duration of the function.  Do you
-> >> have some number of the distribution of the duration of the function?
-> >> And may be the number of mm_struct and the number of pages scanned.
-> >> 
-> >> In comparison, in the traditional LRU algorithm, for each round, only a
-> >> small subset of the whole physical memory is scanned.
-> >
-> > Reasonable concerns, and insightful too. We are sensitive to direct
-> > reclaim latency, and we tuned another path carefully so that direct
-> > reclaims virtually don't hit this path :)
-> >
-> > Some numbers from the cover letter first:
-> >   In addition, direct reclaim latency is reduced by 22% at 99th
-> >   percentile and the number of refaults is reduced 7%. These metrics are
-> >   important to phones and laptops as they are correlated to user
-> >   experience.
-> >
-> > And "another path" is the background aging in kswapd:
-> >   age_active_anon()
-> >     age_lru_gens()
-> >       try_walk_mm_list()
-> >         /* try to spread pages out across spread+1 generations */
-> >         if (old_and_young[0] >= old_and_young[1] * spread &&
-> >             min_nr_gens(max_seq, min_seq, swappiness) > max(spread, MIN_NR_GENS))
-> >                 return;
-> >
-> >         walk_mm_list(lruvec, max_seq, sc, swappiness);
-> >
-> > By default, spread = 2, which makes kswapd slight more aggressive
-> > than direct reclaim for our use cases. This can be entirely disabled
-> > by setting spread to 0, for worloads that don't care about direct
-> > reclaim latency, or larger values, they are more sensitive than
-> > ours.
+> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+> Signed-off-by: Guo Weichao <guoweichao@oppo.com>
+> Reviewed-by: Gao Xiang <hsiangkao@redhat.com>
+> ---
+>   fs/erofs/internal.h |  2 ++
+>   fs/erofs/super.c    |  1 +
+>   fs/erofs/zdata.c    | 15 +++++++++++++--
+>   3 files changed, 16 insertions(+), 2 deletions(-)
 > 
-> OK, I see.  That can avoid the long latency in direct reclaim path.
+> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+> index 67a7ec945686..fbc4040715be 100644
+> --- a/fs/erofs/internal.h
+> +++ b/fs/erofs/internal.h
+> @@ -50,6 +50,8 @@ struct erofs_fs_context {
+>   #ifdef CONFIG_EROFS_FS_ZIP
+>   	/* current strategy of how to use managed cache */
+>   	unsigned char cache_strategy;
+> +	/* strategy of sync decompression (false - auto, true - force on) */
+> +	bool readahead_sync_decompress;
+>   
+>   	/* threshold for decompression synchronously */
+>   	unsigned int max_sync_decompress_pages;
+> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+> index d5a6b9b888a5..0445d09b6331 100644
+> --- a/fs/erofs/super.c
+> +++ b/fs/erofs/super.c
+> @@ -200,6 +200,7 @@ static void erofs_default_options(struct erofs_fs_context *ctx)
+>   #ifdef CONFIG_EROFS_FS_ZIP
+>   	ctx->cache_strategy = EROFS_ZIP_CACHE_READAROUND;
+>   	ctx->max_sync_decompress_pages = 3;
+> +	ctx->readahead_sync_decompress = false;
+>   #endif
+>   #ifdef CONFIG_EROFS_FS_XATTR
+>   	set_opt(ctx, XATTR_USER);
+> diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+> index 6cb356c4217b..25a0c4890d0a 100644
+> --- a/fs/erofs/zdata.c
+> +++ b/fs/erofs/zdata.c
+> @@ -706,9 +706,12 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+>   	goto out;
+>   }
+>   
+> +static void z_erofs_decompressqueue_work(struct work_struct *work);
+>   static void z_erofs_decompress_kickoff(struct z_erofs_decompressqueue *io,
+>   				       bool sync, int bios)
+>   {
+> +	struct erofs_sb_info *const sbi = EROFS_SB(io->sb);
+> +
+>   	/* wake up the caller thread for sync decompression */
+>   	if (sync) {
+>   		unsigned long flags;
+> @@ -720,8 +723,15 @@ static void z_erofs_decompress_kickoff(struct z_erofs_decompressqueue *io,
+>   		return;
+>   	}
+>   
+> -	if (!atomic_add_return(bios, &io->pending_bios))
+> +	if (atomic_add_return(bios, &io->pending_bios))
+> +		return;
+> +	/* Use workqueue and sync decompression for atomic contexts only */
+> +	if (in_atomic() || irqs_disabled()) {
+>   		queue_work(z_erofs_workqueue, &io->u.work);
+> +		sbi->ctx.readahead_sync_decompress = true;
+> +		return;
+> +	}
+> +	z_erofs_decompressqueue_work(&io->u.work);
+>   }
+>   
+>   static bool z_erofs_page_is_invalidated(struct page *page)
+> @@ -1333,7 +1343,8 @@ static void z_erofs_readahead(struct readahead_control *rac)
+>   	struct erofs_sb_info *const sbi = EROFS_I_SB(inode);
+>   
+>   	unsigned int nr_pages = readahead_count(rac);
+> -	bool sync = (nr_pages <= sbi->ctx.max_sync_decompress_pages);
+> +	bool sync = (sbi->ctx.readahead_sync_decompress &&
+> +			nr_pages <= sbi->ctx.max_sync_decompress_pages);
+>   	struct z_erofs_decompress_frontend f = DECOMPRESS_FRONTEND_INIT(inode);
+>   	struct page *page, *head = NULL;
+>   	LIST_HEAD(pagepool);
 > 
-> > It's worth noting that walk_mm_list() is multithreaded -- reclaiming
-> > threads can work on different mm_structs on the same list
-> > concurrently. We do occasionally see this function in direct reclaims,
-> > on over-overcommitted systems, i.e., kswapd CPU usage is 100%. Under
-> > the same condition, we saw the current page reclaim live locked and
-> > triggered hardware watchdog timeouts (our hardware watchdog is set to
-> > 2 hours) many times.
-> 
-> Just to confirm, in the current page reclaim, kswapd will keep running
-> until watchdog?  This is avoided in your algorithm mainly via
-> multi-threading?  Or via direct vs. reversing page table scanning?
-
-Well, don't tell me you've seen the problem :) Let me explain one
-subtle difference in how the aging works between the current page
-reclaim and this series, and point you to the code.
-
-In the current page reclaim, we can't scan a page via the rmap without
-isolating the page first. So the aging basically isolates a batch of
-pages from a lru list, walks the rmap for each of the pages, and puts
-active ones back to the list.
-
-In this series, aging walks page tables to update the generation
-numbers of active pages without isolating them. The isolation is the
-subtle difference: it's not a problem when there are few threads, but
-it causes live locks when hundreds of threads running the aging and
-hit the following in shrink_inactive_list():
-
-	while (unlikely(too_many_isolated(pgdat, file, sc))) {
-		if (stalled)
-			return 0;
-
-		/* wait a bit for the reclaimer. */
-		msleep(100);
-		stalled = true;
-
-		/* We are about to die and free our memory. Return now. */
-		if (fatal_signal_pending(current))
-			return SWAP_CLUSTER_MAX;
-	}
-
-Thanks to Michal who has improved it considerably by commit
-db73ee0d4637 ("mm, vmscan: do not loop on too_many_isolated for
-ever"). But we still occasionally see live locks on over-overcommitted
-machines. Reclaiming threads step on each other while interleaving
-between the msleep() and the aging, on 100+ CPUs.
