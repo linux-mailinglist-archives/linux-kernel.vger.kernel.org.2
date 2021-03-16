@@ -2,251 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED57F33D98C
+	by mail.lfdr.de (Postfix) with ESMTP id A1AEC33D98B
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238751AbhCPQgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 12:36:17 -0400
-Received: from mx4.veeam.com ([104.41.138.86]:59098 "EHLO mx4.veeam.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237871AbhCPQf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238744AbhCPQgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 12:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237965AbhCPQf6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 16 Mar 2021 12:35:58 -0400
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx4.veeam.com (Postfix) with ESMTPS id 3FCF38A77C;
-        Tue, 16 Mar 2021 19:35:53 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
-        t=1615912553; bh=F1gKLL7wk3iE1vLbPnTkUW3slRzh6GWWwMLJyS5YH1U=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-        b=LgzU5IuRT4MU2/aszmA5F9lbIBFZyR0JP9db5s+sCQFZiTjb45y6KnOJxlsOfzgGF
-         2TgpDyaufoHsv+9icTxQL+xZ6vLqIKVJ3pB4tYjq5umA9JBEcWgrbih71QTueezVpN
-         YP/fey343S+4gT4Xc9pWcLfTWJlQBacMoU6aItoE=
-Received: from veeam.com (172.24.14.5) by prgmbx01.amust.local (172.24.0.171)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Tue, 16 Mar 2021
- 17:35:50 +0100
-Date:   Tue, 16 Mar 2021 19:35:44 +0300
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     Christoph Hellwig <hch@infradead.org>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Pavel Tide <Pavel.TIde@veeam.com>
-Subject: Re: [PATCH v7 2/3] block: add bdev_interposer
-Message-ID: <20210316163544.GA31272@veeam.com>
-References: <1615563895-28565-1-git-send-email-sergei.shtepa@veeam.com>
- <1615563895-28565-3-git-send-email-sergei.shtepa@veeam.com>
- <YFBnypYemiR08A/c@T590>
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85FDC06174A;
+        Tue, 16 Mar 2021 09:35:57 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id w8so10918413pjf.4;
+        Tue, 16 Mar 2021 09:35:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=X8fm2+DJNwOrNrRx4Rc+KYylfFcsz9kzw4PQZuyYnFI=;
+        b=JChg9VM+FvanuEGHktJEjKsXSY3j82spZn2xE3N4jfqadLMtZCrgUwPrlWhbhh9bOH
+         0zLdQkoifmXlRBRxlgMf3+cjEwE6TJmowF9XCLdDeVzbo81T3JQOg4v5Z0Rd6ffA+P5N
+         EEh7CumBGXtA/FmfoCwkfP9+w9omNjbodzZW0fCVMvaZGH4u2btdJ7JXgU1/hWuh36dU
+         VkCJbtxED3sd+vl6vcbxHtdp5HcAGaGpycxZzuBw/yFyKvSS1tyErYFb+vf1DWHSvOHI
+         44LQ/bEjPmGkdBA4LEd5pr4/j74RGolDdjk2tCqdW7VA3NCmYLNEBTJMqx+MNPgbUlTi
+         ZN3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=X8fm2+DJNwOrNrRx4Rc+KYylfFcsz9kzw4PQZuyYnFI=;
+        b=QyvmsP/FuU4dUQuXgOWWAdsmXjdqaNgSF7ffy0idqKO3lwwN8MDG4iX28yDXUFHBvq
+         wTVTkkivRJVcjzh2k/KSf+2IRb1tutj/xx4IHKn2DfiNzh64U8ZdIofWiJa5ymQvv4Un
+         gxKQxehtWh6ZJYMEmKMO/Rtgimy8prjVJTaQ1NrIMqiBIs5ld8adDmmlrl1sMfoCLjrd
+         Al3YAhG487vNB39BXxQ1+d1BiwMj3sgSTCe3EdA5eeFZ1Ug2w7UmbL/kN77zHk88B4oq
+         zMkmlhVfpl7EKSMixKSHu0J1wfApZZoksuaOGWUr/AZHXwxVjyh+XAomeuKO6rn4650C
+         44fQ==
+X-Gm-Message-State: AOAM5315w53AUE7IKNdJD/AjX/7psfI76av53ROtlsxL+qDUUL3qzx/w
+        EoD4zvXn1zN4/9YW4NathLtDBcBiJAI=
+X-Google-Smtp-Source: ABdhPJxRZNAjJMeEpbQL/mI3f3qZAS2TGkOteRQJwxfHf3fvlppHPrMzozzAoMhKH/eQXX5oySVUoA==
+X-Received: by 2002:a17:90b:4395:: with SMTP id in21mr445945pjb.201.1615912556986;
+        Tue, 16 Mar 2021 09:35:56 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id w15sm10189998pfn.84.2021.03.16.09.35.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 09:35:56 -0700 (PDT)
+Subject: Re: [PATCH v2] net: broadcom: BCM4908_ENET should not default to y,
+ unconditionally
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210316140341.2399108-1-geert+renesas@glider.be>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <197022d1-dc1c-e471-9b4a-71c0e71c008c@gmail.com>
+Date:   Tue, 16 Mar 2021 09:35:53 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <YFBnypYemiR08A/c@T590>
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx02.amust.local (172.24.0.172) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29D2A50B586D756B
-X-Veeam-MMEX: True
+In-Reply-To: <20210316140341.2399108-1-geert+renesas@glider.be>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 03/16/2021 11:09, Ming Lei wrote:
-> On Fri, Mar 12, 2021 at 06:44:54PM +0300, Sergei Shtepa wrote:
-> > bdev_interposer allows to redirect bio requests to another devices.
-> > 
-> > Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
-> > ---
-> >  block/bio.c               |  2 ++
-> >  block/blk-core.c          | 57 +++++++++++++++++++++++++++++++++++++++
-> >  block/genhd.c             | 54 +++++++++++++++++++++++++++++++++++++
-> >  include/linux/blk_types.h |  3 +++
-> >  include/linux/blkdev.h    |  9 +++++++
-> >  5 files changed, 125 insertions(+)
-> > 
-> > diff --git a/block/bio.c b/block/bio.c
-> > index a1c4d2900c7a..0bfbf06475ee 100644
-> > --- a/block/bio.c
-> > +++ b/block/bio.c
-> > @@ -640,6 +640,8 @@ void __bio_clone_fast(struct bio *bio, struct bio *bio_src)
-> >  		bio_set_flag(bio, BIO_THROTTLED);
-> >  	if (bio_flagged(bio_src, BIO_REMAPPED))
-> >  		bio_set_flag(bio, BIO_REMAPPED);
-> > +	if (bio_flagged(bio_src, BIO_INTERPOSED))
-> > +		bio_set_flag(bio, BIO_INTERPOSED);
-> >  	bio->bi_opf = bio_src->bi_opf;
-> >  	bio->bi_ioprio = bio_src->bi_ioprio;
-> >  	bio->bi_write_hint = bio_src->bi_write_hint;
-> > diff --git a/block/blk-core.c b/block/blk-core.c
-> > index fc60ff208497..da1abc4c27a9 100644
-> > --- a/block/blk-core.c
-> > +++ b/block/blk-core.c
-> > @@ -1018,6 +1018,55 @@ static blk_qc_t __submit_bio_noacct_mq(struct bio *bio)
-> >  	return ret;
-> >  }
-> >  
-> > +static noinline blk_qc_t submit_bio_interposed(struct bio *bio)
-> > +{
-> > +	blk_qc_t ret = BLK_QC_T_NONE;
-> > +	struct bio_list bio_list[2] = { };
-> > +	struct gendisk *orig_disk;
-> > +
-> > +	if (current->bio_list) {
-> > +		bio_list_add(&current->bio_list[0], bio);
-> > +		return BLK_QC_T_NONE;
-> > +	}
-> > +
-> > +	orig_disk = bio->bi_bdev->bd_disk;
-> > +	if (unlikely(bio_queue_enter(bio)))
-> > +		return BLK_QC_T_NONE;
-> > +
-> > +	current->bio_list = bio_list;
-> > +
-> > +	do {
-> > +		struct block_device *interposer = bio->bi_bdev->bd_interposer;
-> > +
-> > +		if (unlikely(!interposer)) {
-> > +			/* interposer was removed */
-> > +			bio_list_add(&current->bio_list[0], bio);
-> > +			break;
-> > +		}
-> > +		/* assign bio to interposer device */
-> > +		bio_set_dev(bio, interposer);
-> > +		bio_set_flag(bio, BIO_INTERPOSED);
-> > +
-> > +		if (!submit_bio_checks(bio))
-> > +			break;
-> > +		/*
-> > +		 * Because the current->bio_list is initialized,
-> > +		 * the submit_bio callback will always return BLK_QC_T_NONE.
-> > +		 */
-> > +		interposer->bd_disk->fops->submit_bio(bio);
-> 
-> Given original request queue may become live when calling attach() and
-> detach(), see below comment. bdev_interposer_detach() may be run
-> when running ->submit_bio(), meantime the interposer device is
-> gone during the period, then kernel oops.
 
-I think that since the bio_queue_enter() function was called,
-q->q_usage_counter will not allow the critical code in the attach/detach
-functions to be executed, which is located between the blk_freeze_queue
-and blk_unfreeze_queue calls.
-Please correct me if I'm wrong.
 
+On 3/16/2021 7:03 AM, Geert Uytterhoeven wrote:
+> Merely enabling compile-testing should not enable additional code.
+> To fix this, restrict the automatic enabling of BCM4908_ENET to
+> ARCH_BCM4908.
 > 
-> > +	} while (false);
-> > +
-> > +	current->bio_list = NULL;
-> > +
-> > +	blk_queue_exit(orig_disk->queue);
-> > +
-> > +	/* Resubmit remaining bios */
-> > +	while ((bio = bio_list_pop(&bio_list[0])))
-> > +		ret = submit_bio_noacct(bio);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> >  /**
-> >   * submit_bio_noacct - re-submit a bio to the block device layer for I/O
-> >   * @bio:  The bio describing the location in memory and on the device.
-> > @@ -1029,6 +1078,14 @@ static blk_qc_t __submit_bio_noacct_mq(struct bio *bio)
-> >   */
-> >  blk_qc_t submit_bio_noacct(struct bio *bio)
-> >  {
-> > +	/*
-> > +	 * Checking the BIO_INTERPOSED flag is necessary so that the bio
-> > +	 * created by the bdev_interposer do not get to it for processing.
-> > +	 */
-> > +	if (bdev_has_interposer(bio->bi_bdev) &&
-> > +	    !bio_flagged(bio, BIO_INTERPOSED))
-> > +		return submit_bio_interposed(bio);
-> > +
-> >  	if (!submit_bio_checks(bio))
-> >  		return BLK_QC_T_NONE;
-> >  
-> > diff --git a/block/genhd.c b/block/genhd.c
-> > index c55e8f0fced1..c840ecffea68 100644
-> > --- a/block/genhd.c
-> > +++ b/block/genhd.c
-> > @@ -30,6 +30,11 @@
-> >  static struct kobject *block_depr;
-> >  
-> >  DECLARE_RWSEM(bdev_lookup_sem);
-> > +/*
-> > + * Prevents different block-layer interposers from attaching or detaching
-> > + * to the block device at the same time.
-> > + */
-> > +static DEFINE_MUTEX(bdev_interposer_attach_lock);
-> >  
-> >  /* for extended dynamic devt allocation, currently only one major is used */
-> >  #define NR_EXT_DEVT		(1 << MINORBITS)
-> > @@ -1940,3 +1945,52 @@ static void disk_release_events(struct gendisk *disk)
-> >  	WARN_ON_ONCE(disk->ev && disk->ev->block != 1);
-> >  	kfree(disk->ev);
-> >  }
-> > +
-> > +int bdev_interposer_attach(struct block_device *original,
-> > +			   struct block_device *interposer)
-> > +{
-> > +	int ret = 0;
-> > +
-> > +	if (WARN_ON(((!original) || (!interposer))))
-> > +		return -EINVAL;
-> > +	/*
-> > +	 * interposer should be simple, no a multi-queue device
-> > +	 */
-> > +	if (!interposer->bd_disk->fops->submit_bio)
-> > +		return -EINVAL;
-> > +
-> > +	if (WARN_ON(!blk_mq_is_queue_frozen(original->bd_disk->queue)))
-> > +		return -EPERM;
-> 
-> The original request queue may become live now...
+> Fixes: 4feffeadbcb2e5b1 ("net: broadcom: bcm4908enet: add BCM4908 controller driver")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Yes.
-I will remove the blk_mq_is_queue_frozen() function and use a different
-approach.
-
-> 
-> > +
-> > +	mutex_lock(&bdev_interposer_attach_lock);
-> > +
-> > +	if (bdev_has_interposer(original))
-> > +		ret = -EBUSY;
-> > +	else {
-> > +		original->bd_interposer = bdgrab(interposer);
-> > +		if (!original->bd_interposer)
-> > +			ret = -ENODEV;
-> > +	}
-> > +
-> > +	mutex_unlock(&bdev_interposer_attach_lock);
-> > +
-> > +	return ret;
-> > +}
-> > +EXPORT_SYMBOL_GPL(bdev_interposer_attach);
-> > +
-> > +void bdev_interposer_detach(struct block_device *original)
-> > +{
-> > +	if (WARN_ON(!original))
-> > +		return;
-> > +
-> > +	if (WARN_ON(!blk_mq_is_queue_frozen(original->bd_disk->queue)))
-> > +		return;
-> 
-> The original request queue may become live now...
-> 
-> 
-> -- 
-> Ming
-> 
-
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Sergei Shtepa
-Veeam Software developer.
+Florian
