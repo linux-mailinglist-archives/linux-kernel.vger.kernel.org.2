@@ -2,106 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8FE33E00E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:10:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E976733E011
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232712AbhCPVJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 17:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232738AbhCPVJK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 17:09:10 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B409FC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 14:09:10 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id y67so9694659pfb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 14:09:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KfsiDRXDWi256dPx6kPXl9YsOHcZPMkcG1NzqoByDb0=;
-        b=XphS2ihI9WIrvODsx4Ck8JNqUzPXAwKiSAqFnJ8gA4zdBn+yes68s/2FZmd4WV7kcD
-         Bu4lRsIullOAq+yZVyDb1A3qVnJXumgwncIrMO4910mbilxgoOp1FRFlA50KtCbPICUj
-         han3RBEsGYPFS7NISEoOcFF6hxH6SrIuyFO7g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KfsiDRXDWi256dPx6kPXl9YsOHcZPMkcG1NzqoByDb0=;
-        b=l39xjtmIbnadlpDyIGCNX2CcfUq6ghrvgNoPdKyhmHR6ODXCz2vCNU/HdmMZWd3IEt
-         bpBeJhgFefJqftPsOFfXsoVuyXW7g/tKatLli2NouY5XU9C14pSt3xLJPlDaFTuJubzb
-         +PO8K2graT77TaZ+yX4iNdAGHcaE9IrP4uQiDi7xwXdXJJ8Df00azHLQb0wm+4qRJzOj
-         MX/x/ibNDzSqnIV/X1qaxf4U45Nyf+rnKUGqpT4rBMZJ+Kfp9qPzzsJ2+7Ra31bXRfma
-         tZ181EavdtydY3a+KgzJ3QdKY4iLq1uTgc2Pk8FpI6ni43QKK8yeNJtbiINc+Iz2PmcZ
-         GO7Q==
-X-Gm-Message-State: AOAM533WoGlxkdi6FO5pQqwDIkgoJXmSUcvwNrUYhz4oVLTRM10Yd+/3
-        CuoALZNaimmzYFOgwwBes0kC2Q==
-X-Google-Smtp-Source: ABdhPJwTR+A25BWQSeSDuRmW9FcIOJrDBaqzzxhAWfpKM6Tv5nAJPFN5eRVDgN+dgwx7ZHqMd6JZ5g==
-X-Received: by 2002:a62:6c6:0:b029:200:49d8:77ae with SMTP id 189-20020a6206c60000b029020049d877aemr1339575pfg.61.1615928950254;
-        Tue, 16 Mar 2021 14:09:10 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:84d6:7fd1:d469:351f])
-        by smtp.gmail.com with ESMTPSA id 192sm17358072pfa.122.2021.03.16.14.09.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 14:09:09 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     robdclark@chromium.org, Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        devicetree@vger.kernel.org, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, Steev Klimaszewski <steev@kali.org>,
-        eballetbo@gmail.com, Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        drinkcat@chromium.org, Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 3/3] arm64: dts: qcom: Don't specify exactly what panel is on pompom
-Date:   Tue, 16 Mar 2021 14:08:21 -0700
-Message-Id: <20210316140707.RFC.3.Id2f7444caac48649e091b00b8a64f30ced65ee5c@changeid>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-In-Reply-To: <20210316140707.RFC.1.I3a21995726282f1e9fcb70da5eb96f19ed96634f@changeid>
-References: <20210316140707.RFC.1.I3a21995726282f1e9fcb70da5eb96f19ed96634f@changeid>
+        id S232769AbhCPVKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 17:10:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231556AbhCPVJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 17:09:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 008A264F9B;
+        Tue, 16 Mar 2021 21:09:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615928963;
+        bh=avaMIHx72RP9ZNnKycFdBrUWXnWNBwiuLsA7WclFLSg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hL+0zZQLRvgB8BMzv22B6HWeX+culxWAXI4xr9HR9d3FGkDb3AEpNupbChEp+OVE/
+         69lkZNLwMp2DMb5HuV9o/Q9yQf/E9RS2ItUXeLX4TzRB2dJyQMe5JgKbHbSvLu4waW
+         YVh5S6KcPJwkAPwus3Rj5lNtLfykzR7Ojhgu2kg/GwOkcEkjLev85k2gxSXsAM0+8s
+         1ffSYE55RvRVVFxvEWal+LNDsoWPukclUV0HlytrN35FVp4DphUZ7iilP38HQ2Wy07
+         HanbgxkD5QLiXEdNL0orfFuaXgpkTCOSBghmqAN/1CgcpZTgLrTRclx70Vp1Rnv6Jm
+         yxmoxh8+LqF+g==
+Received: by mail-qk1-f181.google.com with SMTP id d20so36831767qkc.2;
+        Tue, 16 Mar 2021 14:09:22 -0700 (PDT)
+X-Gm-Message-State: AOAM530NZmlzK7KkE/tRegjB/7FGZWvnOTL36Um6hiYbXZjExpzQEUL5
+        I1QoZE3DCWTLbCK5A/ldzPTQ2F65UOGdSJAwGg==
+X-Google-Smtp-Source: ABdhPJzUwFE/2dpfcP0CH/2O0Bme3HuUw8EojNThTxud4XxdUKO+98Zh4I4xbOnS237W4cfRsPECFxMIQ6/CEDxo73c=
+X-Received: by 2002:a37:6592:: with SMTP id z140mr1096374qkb.464.1615928962215;
+ Tue, 16 Mar 2021 14:09:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210316195100.3531414-1-robh@kernel.org> <YFEZhyZO+ePjS+fr@pendragon.ideasonboard.com>
+In-Reply-To: <YFEZhyZO+ePjS+fr@pendragon.ideasonboard.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 16 Mar 2021 15:09:10 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJdFf_yRLA-f8QmEC1g-Aq1k8Uh-AAOfiFDy8FhV_aOxg@mail.gmail.com>
+Message-ID: <CAL_JsqJdFf_yRLA-f8QmEC1g-Aq1k8Uh-AAOfiFDy8FhV_aOxg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: media: video-interfaces: Use documented
+ bindings in example
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As talked about in the previous patch ("dt-bindings: display: simple:
-Add the panel on sc7180-trogdor-pompom") any number of panels might be
-attached.
+On Tue, Mar 16, 2021 at 2:48 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Rob,
+>
+> Thank you for the patch.
+>
+> On Tue, Mar 16, 2021 at 01:51:00PM -0600, Rob Herring wrote:
+> > The example in video-interfaces.yaml managed to use a bunch of undocumented
+> > bindings. Update the example to use real bindings (and ones with a schema).
+> >
+> > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> > Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > Cc: linux-media@vger.kernel.org
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  .../bindings/media/video-interfaces.yaml      | 75 ++++++++-----------
+> >  1 file changed, 33 insertions(+), 42 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/media/video-interfaces.yaml b/Documentation/devicetree/bindings/media/video-interfaces.yaml
+> > index 0a7a73fd59f2..f30b9b91717b 100644
+> > --- a/Documentation/devicetree/bindings/media/video-interfaces.yaml
+> > +++ b/Documentation/devicetree/bindings/media/video-interfaces.yaml
+> > @@ -227,17 +227,12 @@ examples:
+> >    # only one of the following data pipelines can be active:
+> >    # ov772x -> ceu0 or imx074 -> csi2 -> ceu0.
+> >    - |
+> > +    #include <dt-bindings/clock/r8a7796-cpg-mssr.h>
+> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > +    #include <dt-bindings/power/r8a7796-sysc.h>
+> > +
+> >      ceu@fe910000 {
+> > -        compatible = "renesas,sh-mobile-ceu";
+> >          reg = <0xfe910000 0xa0>;
+> > -        interrupts = <0x880>;
+> > -
+> > -        mclk: master_clock {
+> > -            compatible = "renesas,ceu-clock";
+> > -            #clock-cells = <1>;
+> > -            clock-frequency = <50000000>;  /* Max clock frequency */
+> > -            clock-output-names = "mclk";
+> > -        };
+> >
+> >          port {
+> >              #address-cells = <1>;
+> > @@ -271,18 +266,14 @@ examples:
+> >          #size-cells = <0>;
+> >
+> >          camera@21 {
+> > -            compatible = "ovti,ov772x";
+> > +            compatible = "ovti,ov7720";
+> >              reg = <0x21>;
+> > -            vddio-supply = <&regulator1>;
+> > -            vddcore-supply = <&regulator2>;
+> > -
+> > -            clock-frequency = <20000000>;
+> >              clocks = <&mclk 0>;
+> > -            clock-names = "xclk";
+> >
+> >              port {
+> >                  /* With 1 endpoint per port no need for addresses. */
+> >                  ov772x_1_1: endpoint {
+> > +                    bus-type = <5>;
+> >                      bus-width = <8>;
+> >                      remote-endpoint = <&ceu0_1>;
+> >                      hsync-active = <1>;
+> > @@ -295,48 +286,48 @@ examples:
+> >          };
+> >
+> >          camera@1a {
+> > -            compatible = "sony,imx074";
+> > +            compatible = "sony,imx334";
+> >              reg = <0x1a>;
+> > -            vddio-supply = <&regulator1>;
+> > -            vddcore-supply = <&regulator2>;
+> >
+> > -            clock-frequency = <30000000>;  /* Shared clock with ov772x_1 */
+> >              clocks = <&mclk 0>;
+> > -            clock-names = "sysclk";    /* Assuming this is the
+> > -                       name in the datasheet */
+> > +
+> >              port {
+> > -                imx074_1: endpoint {
+> > +                imx334_1: endpoint {
+> >                      clock-lanes = <0>;
+> >                      data-lanes = <1 2>;
+> > +                    link-frequencies = /bits/ 64 <891000000>;
+> >                      remote-endpoint = <&csi2_1>;
+> >                  };
+> >              };
+> >          };
+> >      };
+> >
+> > -    csi2: csi2@ffc90000 {
+> > -        compatible = "renesas,sh-mobile-csi2";
+> > -        reg = <0xffc90000 0x1000>;
+> > -        interrupts = <0x17a0>;
+> > -        #address-cells = <1>;
+> > -        #size-cells = <0>;
+> > +    csi2@fea80000 {
+> > +        compatible = "renesas,r8a7796-csi2";
+>
+> That's certainly better, but the r8a7796 doesn't have a CEU :-) It has a
+> VIN. Maybe we could copy the last example from renesas,vin.yaml to
+> replace the CEU ?
 
-Let's stop specifying a single panel and just specify that we have a
-"pompom panel".
+What about just removing the example here? It bothers me to have 2
+copies (maybe 3 with sensor schemas) of an example and we should have
+plenty of examples. On the flip side, it's nice to have this stand on
+its own. Another option would be just remove compatibles and make the
+example barebones with only what's defined in video-interfaces.yaml.
+But then it's not validated at all.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-Before landing this we need the patch ("drm/panel: panel-simple: Add
-the panel on sc7180-trogdor-pompom") from earlier in this series. Less
-obviously, though, we also need the patch ("drm/bridge: ti-sn65dsi86:
-Properly get the EDID, but only if refclk") [1].
-
-[1] https://lore.kernel.org/r/20210304155144.3.I60a7fb23ce4589006bc95c64ab8d15c74b876e68@changeid
-
- arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-index d253a08f6fc8..f98c18f6ff94 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-@@ -108,7 +108,7 @@ ap_ts: touchscreen@10 {
- };
- 
- &panel {
--	compatible = "kingdisplay,kd116n21-30nv-a010";
-+	compatible = "google,pompom-panel";
- };
- 
- &pen_insert {
--- 
-2.31.0.rc2.261.g7f71774620-goog
-
+Rob
