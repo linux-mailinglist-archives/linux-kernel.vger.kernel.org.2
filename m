@@ -2,139 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D65633CF8A
+	by mail.lfdr.de (Postfix) with ESMTP id E017933CF8B
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234389AbhCPIRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 04:17:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44375 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234315AbhCPIQy (ORCPT
+        id S234329AbhCPIRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 04:17:21 -0400
+Received: from smtp-8faa.mail.infomaniak.ch ([83.166.143.170]:41207 "EHLO
+        smtp-8faa.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234378AbhCPIRN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 04:16:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615882614;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5NixAWo2L192GjS49CTRpMpnX6TxvYjn/CDZBxz3kWA=;
-        b=fFJpZZb7PxgPZ5ecJALIaNpZV3Ph3k1e+FtPVYtnGww5j745/Ip2v5JpeJsyXFYZT2isEZ
-        AmQKqM8lzY6+g/yjXqT+/CHgOJhhef/gzych7mzNvgCmXn3TH0eAMRZS6rHG4xxgiMSVlT
-        YlmnJw0lNloc08UWf9XulouhEQZOOy0=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-533-bjUnNQePMPOVkJCgjw4www-1; Tue, 16 Mar 2021 04:16:52 -0400
-X-MC-Unique: bjUnNQePMPOVkJCgjw4www-1
-Received: by mail-ej1-f71.google.com with SMTP id t21so5275050ejf.14
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 01:16:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5NixAWo2L192GjS49CTRpMpnX6TxvYjn/CDZBxz3kWA=;
-        b=IZPMrKv3js7UVA8rBpB0ZX0sanxIqpm6be4E+x6IYDL/9fCkA2/xicm7Plba1vkvr/
-         xQDwrounri4k0jyW9aDvOpw+4p3zwdGvu1YcFK/7ERHaLZAWiQaYWa4gAhtKaGOSo0p2
-         C8LNm6wso5MAKMOrGvKLD+F56SXbudS0T6FS3UGj1PvbAxc24j1RvUVsRx+22zppywPA
-         L061Sa6C2pvausaiLY7bxig9a59582zddQmildEyuWsqN9AEgvxbVvIEaDvGPtAM8acs
-         7g4hZAYrjOvjpuHxPb1k/DSIUikx6MAXVnwNZIklwVuRrtg8eBMUw/kK5HXqTL9BNLYp
-         eyMg==
-X-Gm-Message-State: AOAM533hkVBkxiov4mZKJZCILAC9JP9vzkLXnuyofTHDOiUn2JG8hl1v
-        Xe6THytIq9cPDfJQvho+BJRJXbDEMHS58movbSRZQmgsx+8d0n4EHmKJ/2dyKqOYRCHxHFOiD/q
-        TfjaSPnbYcKwA2qt7UPXkRVEG
-X-Received: by 2002:a05:6402:4244:: with SMTP id g4mr23001138edb.204.1615882611040;
-        Tue, 16 Mar 2021 01:16:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz7t3H6KEhXgNFGrOMSYsDwObIjgAAGOnyeOOpn3KmGoF03QOd8bbqUwjVPSy85EYSfsd9kKQ==
-X-Received: by 2002:a05:6402:4244:: with SMTP id g4mr23001122edb.204.1615882610883;
-        Tue, 16 Mar 2021 01:16:50 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id b18sm9024900ejb.77.2021.03.16.01.16.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 01:16:50 -0700 (PDT)
-Subject: Re: [PATCH 2/2] KVM: nSVM: improve SYSENTER emulation on AMD
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>
-References: <20210315174316.477511-1-mlevitsk@redhat.com>
- <20210315174316.477511-3-mlevitsk@redhat.com>
- <0dbcff57-8197-8fbb-809d-b47a4f5e9e77@redhat.com>
- <1a4f35e356c50e38916acef6c86175b24efca0a3.camel@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f1ee6230-760e-b614-5290-663b44fe1436@redhat.com>
-Date:   Tue, 16 Mar 2021 09:16:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 16 Mar 2021 04:17:13 -0400
+Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F05jz237PzMq183;
+        Tue, 16 Mar 2021 09:17:11 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4F05js6zP4zlpq06;
+        Tue, 16 Mar 2021 09:17:05 +0100 (CET)
+Subject: Re: [PATCH v3 1/1] fs: Allow no_new_privs tasks to call chroot(2)
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christoph Hellwig <hch@lst.de>,
+        David Howells <dhowells@redhat.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        kernel-hardening@lists.openwall.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20210311105242.874506-1-mic@digikod.net>
+ <20210311105242.874506-2-mic@digikod.net> <202103151405.88334370F@keescook>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <041935de-83fb-5651-73d9-2ea88d4d84cc@digikod.net>
+Date:   Tue, 16 Mar 2021 09:17:08 +0100
+User-Agent: 
 MIME-Version: 1.0
-In-Reply-To: <1a4f35e356c50e38916acef6c86175b24efca0a3.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <202103151405.88334370F@keescook>
+Content-Type: text/plain; charset=iso-8859-15
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/03/21 19:19, Maxim Levitsky wrote:
-> On Mon, 2021-03-15 at 18:56 +0100, Paolo Bonzini wrote:
->> On 15/03/21 18:43, Maxim Levitsky wrote:
->>> +	if (!guest_cpuid_is_intel(vcpu)) {
->>> +		/*
->>> +		 * If hardware supports Virtual VMLOAD VMSAVE then enable it
->>> +		 * in VMCB and clear intercepts to avoid #VMEXIT.
->>> +		 */
->>> +		if (vls) {
->>> +			svm_clr_intercept(svm, INTERCEPT_VMLOAD);
->>> +			svm_clr_intercept(svm, INTERCEPT_VMSAVE);
->>> +			svm->vmcb->control.virt_ext |= VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK;
->>> +		}
->>> +		/* No need to intercept these msrs either */
->>> +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_SYSENTER_EIP, 1, 1);
->>> +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_SYSENTER_ESP, 1, 1);
->>> +	}
+
+On 15/03/2021 22:17, Kees Cook wrote:
+> On Thu, Mar 11, 2021 at 11:52:42AM +0100, Mickaël Salaün wrote:
+>> [...]
+>> This change may not impact systems relying on other permission models
+>> than POSIX capabilities (e.g. Tomoyo).  Being able to use chroot(2) on
+>> such systems may require to update their security policies.
 >>
->> An "else" is needed here to do the opposite setup (removing the "if
->> (vls)" from init_vmcb).
+>> Only the chroot system call is relaxed with this no_new_privs check; the
+>> init_chroot() helper doesn't require such change.
+>>
+>> Allowing unprivileged users to use chroot(2) is one of the initial
+>> objectives of no_new_privs:
+>> https://www.kernel.org/doc/html/latest/userspace-api/no_new_privs.html
+>> This patch is a follow-up of a previous one sent by Andy Lutomirski:
+>> https://lore.kernel.org/lkml/0e2f0f54e19bff53a3739ecfddb4ffa9a6dbde4d.1327858005.git.luto@amacapital.net/
 > 
-> init_vmcb currently set the INTERCEPT_VMLOAD and INTERCEPT_VMSAVE and it doesn't enable vls
+> I liked it back when Andy first suggested it, and I still like it now.
+> :) I'm curious, do you have a specific user in mind for this feature?
 
-There's also this towards the end of the function:
+Except for development and test purposes, being able to use root
+(without CAP_SYS_CHROOT) would now enable to easily remove ambient
+filesystem access. Indeed, thanks to openat2 with RESOLVE_BENEATH or
+RESOLVE_IN_ROOT, it would be simple for most processes to chroot/chdir
+into an empty directory after opening (or being given) file descriptors
+opened with RESOLVE_BENEATH (e.g. configuration directory, cache
+directory, data directory, etc.). We can get something really close to a
+security capability system (different than POSIX capabilities), which
+wasn't possible when Andy posted the previous patches, and can help
+improve the state of userspace security.
 
-         /*
-          * If hardware supports Virtual VMLOAD VMSAVE then enable it
-          * in VMCB and clear intercepts to avoid #VMEXIT.
-          */
-         if (vls) {
-                 svm_clr_intercept(svm, INTERCEPT_VMLOAD);
-                 svm_clr_intercept(svm, INTERCEPT_VMSAVE);
-                 svm->vmcb->control.virt_ext |= 
-VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK;
-         }
+It is already possible to limit ptrace-like attacks, even when multiple
+processes are running with the same UID, with the help of SELinux, or
+even simply with Yama. This already enables sysadmins or distros to
+harden their system, and this kind of restrictions (with additional
+access-control bits) will be available to userspace developers thanks to
+Landlock.
 
-> thus there is nothing to do if I don't want to enable vls.
-> It seems reasonable to me.
 > 
-> Both msrs I marked as '.always = false' in the
-> 'direct_access_msrs', which makes them be intercepted by the default.
-> If I were to use '.always = true' it would feel a bit wrong as the intercept is not always
-> enabled.
+>> [...]
+>> @@ -546,8 +547,18 @@ SYSCALL_DEFINE1(chroot, const char __user *, filename)
+>>  	if (error)
+>>  		goto dput_and_out;
+>>  
+>> +	/*
+>> +	 * Changing the root directory for the calling task (and its future
+>> +	 * children) requires that this task has CAP_SYS_CHROOT in its
+>> +	 * namespace, or be running with no_new_privs and not sharing its
+>> +	 * fs_struct and not escaping its current root (cf. create_user_ns()).
+>> +	 * As for seccomp, checking no_new_privs avoids scenarios where
+>> +	 * unprivileged tasks can affect the behavior of privileged children.
+>> +	 */
+>>  	error = -EPERM;
+>> -	if (!ns_capable(current_user_ns(), CAP_SYS_CHROOT))
+>> +	if (!ns_capable(current_user_ns(), CAP_SYS_CHROOT) &&
+>> +			!(task_no_new_privs(current) && current->fs->users == 1
+>> +				&& !current_chrooted()))
+>>  		goto dput_and_out;
+>>  	error = security_path_chroot(&path);
+>>  	if (error)
+> 
+> I think the logic here needs to be rearranged to avoid setting
+> PF_SUPERPRIV, and I find the many negations hard to read. Perhaps:
+> 
+> static inline int current_chroot_allowed(void)
+> {
+> 	/* comment here */
+> 	if (task_no_new_privs(current) && current->fs->users == 1 &&
+> 	    !current_chrooted())
+> 		return 0;
+> 
+> 	if (ns_capable(current_user_ns(), CAP_SYS_CHROOT))
+> 		return 0;
+> 
+> 	return -EPERM;
+> }
+> 
+> ...
+> 
+> 	error = current_chroot_allowed();
+> 	if (error)
+> 		goto dput_and_out;
+> 
+> 
+> I can't think of a way to race current->fs->users ...
+> 
 
-I agree that .always = false is correct.
-
-> What do you think?
-
-You can set the CPUID multiple times, so you could go from AMD to Intel 
-and back.
-
-Thanks,
-
-Paolo
-
+OK, I would be a bit bigger patch but easier to read.
