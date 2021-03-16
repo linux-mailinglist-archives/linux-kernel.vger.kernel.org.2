@@ -2,136 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7C533DBB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:58:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C0333DBAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239490AbhCPR5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:57:43 -0400
-Received: from mail-ej1-f43.google.com ([209.85.218.43]:32912 "EHLO
-        mail-ej1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236097AbhCPR4G (ORCPT
+        id S239491AbhCPR5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:57:07 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:44789 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239456AbhCPR4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:56:06 -0400
-Received: by mail-ej1-f43.google.com with SMTP id jt13so73712640ejb.0;
-        Tue, 16 Mar 2021 10:56:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vY2V+uyPZYUFi1y4IUX19nPs6rR9J3Tb7jFOivds7Lw=;
-        b=S8qm0QlU42Y1FFD7itHAI8uJ8bW9BJIy0KtVm0hl6sgJWqMHLG6AimqOrBFKczYSIg
-         jRzQqU7enGZqAdJKaEsqat6TToVR81ZbqYQ4bsT50UsMZDMPJx3Xwy+Su44RdXONNXjw
-         mPyolGBenIXWcm8TnZ26yIAEY4uIqfRsnRHlvGIKOgXncfDiFZPQ/uc2jYs3ezP/veeC
-         Qno6M/G5HFHcV7lOQr96KAIw/YZb/oiGV+lhctiA7AaqDTuvcpJJ12oxACnFtexsY+Dz
-         zOZAne+SKT+z8TECJhNP1Q3q6W49BAIQwAAt+okm0q8/+5zUBaYKn1YwmUKK/FpKkPNr
-         o0lQ==
-X-Gm-Message-State: AOAM531FWDaFuWX/ppjI4oy6xbeW56qR0jecLf3A2qMO4ES7vbKgscrT
-        IBWweVzO6zCarl2Ov+QFs2k=
-X-Google-Smtp-Source: ABdhPJyqpgQnFPJPRAW/6JN4+pTj+vJtCDYYBR2exl1eEWr35NhcruFJGLCH7m31sRtC49vNjGGB+g==
-X-Received: by 2002:a17:906:d71:: with SMTP id s17mr31847965ejh.126.1615917364950;
-        Tue, 16 Mar 2021 10:56:04 -0700 (PDT)
-Received: from localhost ([2a02:8308:387:c900:a7b5:b859:9449:c07b])
-        by smtp.gmail.com with ESMTPSA id r19sm10912390edp.52.2021.03.16.10.56.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 10:56:04 -0700 (PDT)
-From:   =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>
-Cc:     =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] hwmon: (max31790) Update documentation
-Date:   Tue, 16 Mar 2021 18:55:02 +0100
-Message-Id: <20210316175503.1003051-5-kubernat@cesnet.cz>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210316175503.1003051-1-kubernat@cesnet.cz>
-References: <20210316175503.1003051-1-kubernat@cesnet.cz>
+        Tue, 16 Mar 2021 13:56:00 -0400
+Received: from [192.168.178.67] ([91.15.60.56]) by mrelayeu.kundenserver.de
+ (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MRVy9-1l1W8a0nMz-00NU6Y; Tue, 16 Mar 2021 18:55:21 +0100
+Subject: Re: EDAC list as Trojan Horse distribution ??
+From:   Hermann Ruckerbauer <Hermann.Ruckerbauer@EyeKnowHow.de>
+To:     He Zhe <zhe.he@windriver.com>, tony.luck@intel.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        x86@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1583303947-49858-1-git-send-email-zhe.he@windriver.com>
+ <1f449e01-3207-b699-b91f-d1c04626a447@windriver.com>
+ <59d52031-f4e8-e754-c8b6-ca1130bf0cf1@EyeKnowHow.de>
+Message-ID: <c0323578-9db6-74b0-ca6f-1324a2f1e9a1@EyeKnowHow.de>
+Date:   Tue, 16 Mar 2021 18:55:19 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <59d52031-f4e8-e754-c8b6-ca1130bf0cf1@EyeKnowHow.de>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Language: de-DE
+X-Provags-ID: V03:K1:7yG1LTqtMATwziIhWsIPvHUImE1GA7Y8Brk0qx4n/Tqm8l9xdnb
+ TRvsiiRCB++NxNvZ5xKrQGXwgXn1OkOo1ule+hv84rVaVRh51RcZNVxFVQCy5zQqXuagR6c
+ 2eyiDXgY+opdOj99OFwvug5ByHDBW7lkMuKvGoG1v7C0wvVVSEwQsxwAGoOmwvZ2IWPZ97r
+ ppKFkaj9EFNhdOejAbNFg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:w480LvYCMpg=:6bBIGL8ZXfKXbeCDffb1kG
+ JUOoTT8OONJ4fQ7ScmIFAsnt/6rFe1h15UNOd6jENTUD+n/3B2Umesf4HEACAYDT+azf8dArY
+ y9kfrkaKTu6HwrJctKRAng4P1IolLCe0Ew37DznJVm708qj3BfbRLNX6i3trUwkYagEKeHQvm
+ P5ipG6XKhTHTNxNbHHvxVRmR3vsf7TiznPx2nDYrTUSo8TFbmI8a6ahvMhDH/SoFU0BcJ06bj
+ CsKPcJomBGRjD3fL069WigizLwRNfkUCoQXN67p6Q48OT8He2AC1lEfNkr6bwWqYWQtzjU+Zu
+ QhO38vnM1qaGdZRyTdFcGPNw8kwYRK4rRdH5X+lp93FVlfIvEVqSF4QerWoi1ASP0RZU/02v0
+ bB8WJqvWG9zcuxAX5SgkgfaEY5q0FMDq9KbZwMK7fz8BzJ3ewQAg1nTy7e/YyDrgPVwebnH/2
+ Zd7Eg4AdzHgwJqTqgQklfu7JK31zx/8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The conditions for fan fault and its connection to the PWM mode are now
-documented.
 
-The pwm_rate_of_change and fan_window are now mentioned. According to
-our testing with Sunon PF36281BX-000U-S99, these values are crucial in
-how RPM mode works and how long it takes for the RPM to stabilize. For
-example, setting 5000 RPM (the fan goes up to 23000), the
-pwm_rate_of_change needed to be changed to the lowest possible value,
-otherwise the chip would just go from pwm 0 to pwm 60 back and forth and
-never achieving 5000 RPM (and also signaling fan fault). Based on this
-testing, we found out that the pwm_rate_of_change and fan_window values
-need to be changed manually by the user, based on the user's exact fan
-configuration.
-
-Signed-off-by: Václav Kubernát <kubernat@cesnet.cz>
----
- Documentation/hwmon/max31790.rst | 41 +++++++++++++++++++++++++++++++-
- 1 file changed, 40 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/hwmon/max31790.rst b/Documentation/hwmon/max31790.rst
-index 2979addeac8f..6056b67c3a95 100644
---- a/Documentation/hwmon/max31790.rst
-+++ b/Documentation/hwmon/max31790.rst
-@@ -30,6 +30,44 @@ monitoring and control of fan RPM as well as detection of fan failure.
- Six pins are dedicated tachometer inputs. Any of the six PWM outputs can
- also be configured to serve as tachometer inputs.
- 
-+About pwm[1-6]_enable
-+---------------------
-+0 - full-speed
-+    The chip doesn't have a specific way to set "full speed", so setting
-+    pwm[1-6]_enable to 0 is just "set PWM mode with 255 duty cycle".
-+1 - PWM mode
-+    Fan speed is controlled by writing a value to pwm[1-6].
-+2 - RPM mode
-+    Fan speed is controlled by writing a value to fan[1-6]_target.
-+
-+About fan[1-6]_fault
-+--------------------
-+In PWM (or full-speed) mode, if the input RPM goes below what is set
-+in fan[1-6]_target, fan[1-6]_fault gets set to 1. In other words,
-+fan[1-6]_target works as the minimum input RPM before a fan fault goes off.
-+
-+In RPM mode, fan fault is set when the fan spins "too slowly" (exact
-+conditions are in the datasheet). RPM mode depends on four variables:
-+    target_speed:        This is set by fan[1-6]_target.
-+    speed_range:         This is set automatically when setting target_speed
-+                         or manually by fan[1-12]_div.
-+    pwm_rate_of_change:  NOT set by the driver.
-+    fan_window:          NOT set by the driver.
-+
-+The last two values are not set by the driver, because there's no generic way to
-+compute them. You should set them manually through i2c (in the bootloader for
-+example). Check the datasheet for details.
-+
-+The fan fault value latches, to reset it, set a value to pwm[1-6]
-+or fan[1-6]_target.
-+
-+About fan[1-12]_div
-+-------------------
-+This value affects the measurable range of the chip. The driver sets this value
-+automatically in RPM based on fan[1-6]_target. In PWM mode, you should set this
-+value manually based on the details from the datasheet. Setting the speed range
-+is disabled while in RPM mode to prevent overwriting the automatically
-+calculated value.
- 
- Sysfs entries
- -------------
-@@ -39,7 +77,8 @@ fan[1-12]_enable   RW  enable fan speed monitoring
- fan[1-12]_input    RO  fan tachometer speed in RPM
- fan[1-12]_fault    RO  fan experienced fault
- fan[1-12]_div      RW  set the measurable speed range, not available in RPM mode
--fan[1-6]_target    RW  desired fan speed in RPM
-+fan[1-6]_target    RW  RPM mode = desired fan speed
-+                       PWM mode = minimum fan speed until fault
- pwm[1-6]_enable    RW  regulator mode, 0=full speed, 1=manual (pwm) mode, 2=rpm mode
-                        setting rpm mode sets fan*_enable to 1
- pwm[1-6]           RW  fan target duty cycle (0-255)
--- 
-2.30.2
+> Hello *,
+==> one more time as plain text.. 
+>
+>
+> quite some tiem ago i sent a question to the EDAC list..
+> I never receveived an answer.
+>  
+> today i got an answer with my original question quoted  and a .zip
+> file attached:
+>
+> ======================================
+>
+> from:      nikolay.temizov@bpchargemaster.com
+>
+> Hello,
+>
+> Sorry, for my late reply to your question. Attached is the document
+> you need.
+>
+> *Thank you*,
+>
+> ========================================
+>
+> I assume this is just to install a trojan horse when opening the
+> attached zip (also I assume most of you will work on linux and it
+> might not be a Problem for you anyhow   ;-) .
+>
+>  Virus total reports a Trojan horse, but only for with 2 out of 61
+> virus scan engines (and I have to admit, I did not knew K7AntiVirus
+> and Qihoo-360 before, all other engines reported the file as
+> clean!!!!!!! ).
+>
+> So be careful when you get some feedback to old requests from this list
+>
+> Hermann
+>
+>
+> -- 
+> Our next Events:
+>    Online Seminar: Open the Black Box of Memory
+>        Date: 01.03 - 05.03.2021 (5 times 9:00 - 13:00) 
+>
+> EKH - EyeKnowHow 
+> Signal Quality - Made in Bavaria
+> Hermann Ruckerbauer
+> www.EyeKnowHow.de
+> Hermann.Ruckerbauer@EyeKnowHow.de
+> Itzlinger Strasse 21a
+> 94469 Deggendorf
+> Tel.:	+49 (0)991 / 29 69 29 05
+> Mobile:	+49 (0)176  / 787 787 77
+> Fax:	+49 (0)991 / 98158793
+> Hello,
+>
+>
+>
+>
+>
+> Am 16.04.2020 um 10:40 schrieb He Zhe:
+>> Can this be considered for the moment?
+>>
+>> Thanks,
+>> Zhe
+>>
+>> On 3/4/20 2:39 PM, zhe.he@windriver.com wrote:
+>>> From: He Zhe <zhe.he@windriver.com>
+>>>
+>>> 32-bit user-space program would get errors like the following from ioctl
+>>> syscall due to missing compat_ioctl.
+>>> MCE_GET_RECORD_LEN: Inappropriate ioctl for device
+>>>
+>>> compat_ptr_ioctl is provided as a generic implementation of .compat_ioctl
+>>> file operation to ioctl functions that either ignore the argument or pass
+>>> a pointer to a compatible data type.
+>>>
+>>> Signed-off-by: He Zhe <zhe.he@windriver.com>
+>>> ---
+>>>  arch/x86/kernel/cpu/mce/dev-mcelog.c | 1 +
+>>>  1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/arch/x86/kernel/cpu/mce/dev-mcelog.c b/arch/x86/kernel/cpu/mce/dev-mcelog.c
+>>> index 7c8958d..6c9b91b7 100644
+>>> --- a/arch/x86/kernel/cpu/mce/dev-mcelog.c
+>>> +++ b/arch/x86/kernel/cpu/mce/dev-mcelog.c
+>>> @@ -328,6 +328,7 @@ static const struct file_operations mce_chrdev_ops = {
+>>>  	.write			= mce_chrdev_write,
+>>>  	.poll			= mce_chrdev_poll,
+>>>  	.unlocked_ioctl		= mce_chrdev_ioctl,
+>>> +	.compat_ioctl		= compat_ptr_ioctl,
+>>>  	.llseek			= no_llseek,
+>>>  };
+>>>  
+>
 
