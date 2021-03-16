@@ -2,95 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23ACF33DB7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0D933DB86
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239358AbhCPRxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:53:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239269AbhCPRxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:53:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EF196512F;
-        Tue, 16 Mar 2021 17:52:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615917179;
-        bh=W8rr8sTbWk/xigthIkTyoScmrkEHXz8tnd8LeK4Aq5U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=L7Qe6r7cy4oo3a7QC4RU5ShnI1IfUIXGMymWJJL18hoP+qr4a8ZlmErgMfOoQWY2q
-         I+YaFe3FcrFsNCFjwfQA/NUkr5Vyl1hjheDf0cH1T2Fy9kleyC9GyZYS/nxm8JT8MX
-         Dbbhr5IoBUtl+Tfft2wdeXYupzQRO6HVWl8qefQFnqIcrOqRmMhpoS2oHxwfPHATek
-         0US5gr2za1lShVj87zBMfiYTUZv5ZGxPrspuMOfmjVGaTWndwj+YsoEHzjQOoosw41
-         glO5ohMoFTmZgAM4+mYn79CnD7j0IJ0tfFSfUx9sXQKBEawxfJaVtDkHz9jGNYUIB8
-         oewgcyTXbsouw==
-Received: by mail-qt1-f181.google.com with SMTP id l13so12304799qtu.9;
-        Tue, 16 Mar 2021 10:52:59 -0700 (PDT)
-X-Gm-Message-State: AOAM533VVjS1w60iIaXJTU5UsKxHo5+jbuRBGIGT5g5+ieE1mLA6CUas
-        QeIdhgq0SbQYY5h3ufpfo9MVArnB9qQksonKsQ==
-X-Google-Smtp-Source: ABdhPJxG0ZFRjKxTysjTNHhJwM08UgCXG6fkHthhoVafsNybBo0emZ8KLn06OpgaliodW8DNOmRhuSOZzuNZ9pzhXaU=
-X-Received: by 2002:ac8:4ccc:: with SMTP id l12mr58779qtv.137.1615917178617;
- Tue, 16 Mar 2021 10:52:58 -0700 (PDT)
+        id S232661AbhCPRyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:54:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232019AbhCPRxp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:53:45 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B0AC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:53:43 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id s21so11036071pjq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:53:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l7cCd6nspXNqWfZCDlihpaBU82Un768UFhkLI5YdecA=;
+        b=oqhV9HUSqXuokLziiYGQaGZD9a0vvmOFl8k5q6vYZsPrI6VCFKvROrD/JCEpFkpEtJ
+         GjsWOvZTShbysMcvoqo1r3FfEsWergIHb1xBnfZl29JA2K2uZ21z9MbQPg3fVVCEAcGa
+         s1BgeTOzgS6ema+La6r3p7GJO7K5/509sGUZ5kJlHxg3Q9rxuhpDbGSp93c+imYKVCmc
+         VId911dl6zfytPRNWmL2Pec8XWa9uxoVFdRk358YOsy/PY84HaGBF8kERUi8EIr+fi4A
+         eS3J1BF5EgDAMCvYzzlE7aeYDRfMJmtE4jei2lPsUkvLriRNMOSB1hhwXDw9y2OsiQ4w
+         rgRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l7cCd6nspXNqWfZCDlihpaBU82Un768UFhkLI5YdecA=;
+        b=NdrGVqPQy1vTTf5WJN48MCaSv0K/RQz4JbnDTUJCvEPt9ZZccsEcEXnBd6Jj0opRmD
+         My8Gv+TNW5JTiTJ+Eakr+Ea2WcFD7ZgextOINk4o0haOwEMRzHYD/IItEkWozx3jvBV0
+         ODLSP70VW+nSFjfXfKNdW+JJrYIUSkGNy1CdBEaK/AaIV5hpEE07VRTnk0RQ490yi7Hd
+         NtAbd9CVL+t+jbvAeDtTF8PXfsLVVeVF2oZnpPbwJ/YXpKZjjcUjQfuxzcXn6sa37tbr
+         NtNqof62oEVbXMj2h8F1xHaZQW7/xczReQ5eF/oc6cHlKklH53HLhw9Eb4l/QV8CuV1v
+         AsSA==
+X-Gm-Message-State: AOAM533wkgNnZeTs1UCO5gnbYljHA1I9yL8pa3fUFgMSQMaNcqaLEu/v
+        +LWf1rR77o4koajziKP/BBnoB7PnjDgOHnYftElK0Q==
+X-Google-Smtp-Source: ABdhPJwtz2CiY4BGbbujhdm8nXOffcTlbwfFgcze2Eti94js3p4IpOAaFaIVGqnEnh2O8N37QKU/pqnFlGdj6lr8MWw=
+X-Received: by 2002:a17:902:7407:b029:e4:9b2c:528b with SMTP id
+ g7-20020a1709027407b02900e49b2c528bmr602784pll.6.1615917222874; Tue, 16 Mar
+ 2021 10:53:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
- <20210312154357.1561730-17-sebastian.reichel@collabora.com>
- <CAL_JsqLn9Mo_hTuCEPapNz3cFHbC8NKHH0npYrnV+dC85pBAsQ@mail.gmail.com> <20210316162045.cvvb226rpzxbovdl@earth.universe>
-In-Reply-To: <20210316162045.cvvb226rpzxbovdl@earth.universe>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 16 Mar 2021 11:52:47 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+rynEXFCJDL-Xrar1hSam65qP6ZAiOQUKRtDbu26BYSw@mail.gmail.com>
-Message-ID: <CAL_Jsq+rynEXFCJDL-Xrar1hSam65qP6ZAiOQUKRtDbu26BYSw@mail.gmail.com>
-Subject: Re: [PATCH 16/38] dt-bindings: power: supply: tps65217: Convert to DT
- schema format
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>
+References: <20210309231259.78050-1-jbhayana@google.com> <20210309231259.78050-2-jbhayana@google.com>
+ <20210311210844.34371d8d@archlinux> <20210312121639.00001c31@Huawei.com>
+ <20210312133101.GG30179@e120937-lin> <CA+=V6c0boA1Q+k4rM0NOcK4ek_FYU7omEWhvMowqACH_t44sAQ@mail.gmail.com>
+ <20210313171107.4c8215e7@archlinux> <CA+=V6c0a8z9+gkD_M6KNviN-VActtmpTgkuCBn-sgC4Fm2C6QA@mail.gmail.com>
+ <20210314154033.3facf1a2@archlinux> <CA+=V6c341JjXQ+QFpiSES_Lm7PT0qCh2WU0uQWrmrFaPr_2QiA@mail.gmail.com>
+ <20210316131314.GI30179@e120937-lin>
+In-Reply-To: <20210316131314.GI30179@e120937-lin>
+From:   Jyoti Bhayana <jbhayana@google.com>
+Date:   Tue, 16 Mar 2021 10:53:31 -0700
+Message-ID: <CA+=V6c0MPo9ehxtHyf5FmYk9QB--K_N8qkggkN1M=zwKEQ8h3Q@mail.gmail.com>
+Subject: Re: [PATCH v7 1/1] iio/scmi: Adding support for IIO SCMI Based Sensors
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Enrico Granata <egranata@google.com>,
+        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
+        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
+        Peter Hilber <Peter.hilber@opensynergy.com>,
+        Ankit Arora <ankitarora@google.com>,
+        Guru Nagarajan <gurunagarajan@google.com>,
+        kernel test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 10:20 AM Sebastian Reichel
-<sebastian.reichel@collabora.com> wrote:
->
-> Hi Rob,
->
-> On Mon, Mar 15, 2021 at 12:33:23PM -0600, Rob Herring wrote:
-> > On Fri, Mar 12, 2021 at 8:44 AM Sebastian Reichel
-> > <sebastian.reichel@collabora.com> wrote:
-> > > +  interrupts:
-> > > +    minItems: 2
-> > > +    maxItems: 2
-> >
-> > We've lost info that was in the original binding. You could do
-> > something like this:
-> >
-> > items:
-> >   - description: USB charger
-> >     const: 0
-> >   - description: AC charger
-> >     const: 1
-> >
-> > (Usually the interrupt values would be out of scope of the binding,
-> > but I guess here it makes some sense.)
->
-> I initially did this, but it did not work. I see the following for
-> dt_binding_check (dtbs_check triggers the same):
->
-> Documentation/devicetree/bindings/power/supply/tps65217-charger.example.dt.yaml: charger: interrupts:0: [0] is too short
->         From schema: Documentation/devicetree/bindings/power/supply/tps65217-charger.yaml
-> Documentation/devicetree/bindings/power/supply/tps65217-charger.example.dt.yaml: charger: interrupts: [[0], [1]] is too long
->         From schema: Documentation/devicetree/bindings/power/supply/tps65217-charger.yaml
-> Documentation/devicetree/bindings/power/supply/tps65217-charger.example.dt.yaml: charger: interrupts: Additional items are not allowed ([1] was unexpected)
->         From schema: Documentation/devicetree/bindings/power/supply/tps65217-charger.yaml
->
-> Seemed to be a limitation in the validation tool, so I just dropped
-> the extra information. If we do not want to loose information I can
-> add it to the description, or should the validation tool be fixed?
-> I suppose it's kind of unusual, that the binding can provide the
-> interrupt line numbers.
+Hi Christian,
 
-It is, so let's just leave it as-is.
+Thanks for porting the driver to the new interface. I have commented
+on changes in v7-0025-iio-scmi-port-driver-to-the-new-scmi_sensor_proto.patch.
 
-Rob
+Thanks,
+Jyoti
+
+On Tue, Mar 16, 2021 at 6:13 AM Cristian Marussi
+<cristian.marussi@arm.com> wrote:
+>
+> Hi
+>
+> I reposted my series on top of the take3 immutable branch from Jonathan
+> at:
+>
+> https://lore.kernel.org/lkml/20210316124903.35011-1-cristian.marussi@arm.com/T/#t
+>
+> You should have received an email regarding the relevant IIO SCMI patch
+>
+> v7-0025-iio-scmi-port-driver-to-the-new-scmi_sensor_proto.patch
+>
+> which includes the port of your v7 IIO SCMI driver to the new API, and moved
+> also the notification registration to the probe phase to simplify it
+> further.
+>
+> On my side I tested with some fake emulated sensors emitting periodic
+> 100ms SENSOR_UPDATE notifs...and verifying that notifications are still
+> dispatched and received fine. (values are just fakes)
+>
+> If you can have a look, comment and possibly Ack.
+>
+> Thanks
+>
+> Cristian
+>
+> ---
+>
+> (debian-arm64)root@debarm64:~# /root/iio_generic_buffer -a -c -1 -g -l 100 -N 0
+> iio device number being used is 0
+> trigger-less mode selected
+> Enabling all channels
+> Enabling: in_accel_x_en
+> Enabling: in_accel_z_en
+> Enabling: in_timestamp_en
+> Enabling: in_accel_y_en
+> -9465 -9457 -9449 6169807244683640832.000000
+> -9464 -9456 -9448 6169807244683640832.000000
+> -9463 -9455 -9447 6169807244683640832.000000
+> -9462 -9454 -9446 6169807244683640832.000000
+> -9461 -9453 -9445 6169807244683640832.000000
+> -9460 -9452 -9444 6169807244683640832.000000
+> -9459 -9451 -9443 7169807022831960064.000000
+> -9458 -9450 -9442 7169807022831960064.000000
+> -9457 -9449 -9441 7169807022831960064.000000
+> -9456 -9448 -9440 7169807022831960064.000000
+> -9455 -9447 -9439 7169807022831960064.000000
+> -9454 -9446 -9438 7169807022831960064.000000
+> -9453 -9445 -9437 7169807022831960064.000000
+> -9452 -9444 -9436 7169807022831960064.000000
+> -9451 -9443 -9435 7169807022831960064.000000
+> -9450 -9442 -9434 7169807022831960064.000000
+> -9449 -9441 -9433 8169806800980279296.000000
+> -9448 -9440 -9432 8169806800980279296.000000
+> -9447 -9439 -9431 8169806800980279296.000000
+> -9446 -9438 -9430 8169806800980279296.000000
+> -9445 -9437 -9429 8169806800980279296.000000
+> -9444 -9436 -9428 8169806800980279296.000000
+> -9443 -9435 -9427 8169806800980279296.000000
+> -9442 -9434 -9426 8169806800980279296.000000
+> -9441 -9433 -9425 8169806800980279296.000000
+> -9440 -9432 -9424 8169806800980279296.000000
+> -9439 -9431 -9423 9169807128884412416.000000
+> -9438 -9430 -9422 9169807128884412416.000000
+> -9437 -9429 -9421 9169807128884412416.000000
+> -9436 -9428 -9420 9169807128884412416.000000
+> -9435 -9427 -9419 9169807128884412416.000000
+> ^CCaught signal 2
+> Disabling: in_accel_x_en
+> Disabling: in_accel_z_en
+> Disabling: in_timestamp_en
+> Disabling: in_accel_y_en
+>
+>
+> On Sun, Mar 14, 2021 at 11:47:25AM -0700, Jyoti Bhayana wrote:
+> > Hi Jonathan,
+> >
+> > No worries. Thanks for the update. It looks good now.
+> >
+> > Thanks,
+> > Jyoti
+> >
+> > On Sun, Mar 14, 2021 at 8:40 AM Jonathan Cameron <jic23@kernel.org> wrote:
+> > >
+> > > On Sat, 13 Mar 2021 11:55:39 -0800
+> > > Jyoti Bhayana <jbhayana@google.com> wrote:
+> > >
+> > > > Hi Jonathan,
+> > > >
+> > > > I still see the old version 6 in ib-iio-scmi-5.12-rc2-take2 as well.
+> > >
+> > > OK. I'm completely confused as to what is going with my local tree.
+> > > I have the right patch in the history but it didn't end up in the final
+> > > pushed out version.  Fat finger mess-up I guess and too many similarly named
+> > > branches and the fact I didn't check the final result closely enough.
+> > >
+> > > There is now an ib-iio-scmi-5.12-rc2-take3 branch
+> > >
+> > > This time it definitely has your patch from the 9th of March with no
+> > > instances of long long in it.
+> > >
+> > > Sorry I messed this one up (again!)
+> > >
+> > > Jonathan
+> > >
+> > > >
+> > > > Thanks,
+> > > > Jyoti
+> > >
