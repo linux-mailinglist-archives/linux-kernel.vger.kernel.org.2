@@ -2,170 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 043E033CE79
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2419933CE8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:22:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231903AbhCPHSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 03:18:35 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:35276 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbhCPHSO (ORCPT
+        id S232323AbhCPHWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 03:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229952AbhCPHVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 03:18:14 -0400
-Received: by mail-io1-f69.google.com with SMTP id v24so2733031ion.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 00:18:14 -0700 (PDT)
+        Tue, 16 Mar 2021 03:21:47 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629DFC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 00:21:47 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id w203-20020a1c49d40000b029010c706d0642so3324035wma.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 00:21:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=3PC4L/ElKOxjRdktmch4SpZkUtmQpCd/z4zTr/LSIf0=;
+        b=dmH4uVYmL9aJZFOiQxa1fPH8t4BIGG879xw4oi2VAdngKyAF4rV8HldmACFGuWZrTz
+         Ok6tcbNiiEANHgyYotM2KoASgWrtFjhlc+InLx/v93IwDNZhRP3Ru2gVC7hNhG58A/Ah
+         peB46rKLF0udJrXH56zJrU16OqFtYDi4awYmDAt6VfJdgf00n+Jkyz77OsIi29QGdn3S
+         ofzfNuHXwIo1jNxqytt8nNs2HlejZJK4DuwVCNNH6lVm/5BqpqSDLY+qZFNKd+1Ail7X
+         yXVy9uGmrXyy8n8KbamcpEJjkN0xnniPc2VHwsRpWsUgUCoa4hJKA3ytpd00kq6Ts3RW
+         NjVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=uPdVF0FFqAq1L1TlyXksTgpo68NADLQAq6KbNaMlrYA=;
-        b=qpDyLWrrAXhAqOIbGVrrOoCbs9ygmaMRJ4xv5glZI5l+ZDyTOJiqrl7E07OXibNAl8
-         1V/hauM/jtsy7i/3wR5xgrf8SPJzmoO1plWFboZQgQJoRTnDnKcuzntVZZ/kOA2qRuMF
-         cDHmahEJ2omtKj5vRSVqUocAc1XFCGRUGQLLAwqJQVT9wY5mMkx4FhuPgimk7WdylHxo
-         bhH8yrvVredw764GN46PM1hBzVBIopCbfUJwTSlw4c5sTA6XwcyTonEsFlga6i9TqU4e
-         Vk1gk+QY8eeYXSlgRp8kweAsuSn5tZFWGi8eMyjgmPopxDdthKyxoBNNzWYxuc/AsWOD
-         1BOg==
-X-Gm-Message-State: AOAM531Ql7BzZ6H4eyN4tN32A3FbQDRQyeOzjIqlSS6MV0TjyYLU6Hz1
-        mS4Na+fa6qQ6Nb3O0PlQBzoNKRQJDjddMYUFYCb21chUyRSw
-X-Google-Smtp-Source: ABdhPJzSXc7su4hN65WO02ukXiotEGC3PSXdbniB4frf0L/4khdy/NgRk/1x2nYkb7IgcdQtSr3XRvsgCJKTK5WFjtJtEGzeMuV+
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3PC4L/ElKOxjRdktmch4SpZkUtmQpCd/z4zTr/LSIf0=;
+        b=E7skTRvWvfySNsYF9/E9LSp+UCJQ820xJeUQGCo6DNL5B0GV6U0bUd2dwe4xg5Cs2r
+         WKLyABLUTd9R1cENKyF07oGBzkxO/beKE72i36U7HxT5pnK/5TnQFzdX3iuw3LCsoBRh
+         8zHNL2jpSHAZYrmww+j+EYkm3WovrFUQo1B4sfX2Ui5Xf/RzLqoOujm/xlTb5nXhkf9S
+         DdfU5US36j7I37NpMvMRByOTTD35Ay7hJO0nJ1XUfFDT/x/7I/j/3t29je/Z6cHlaBIp
+         /chaQAnMsAd+y7NhAEXXcr0Ltwm1Jk8kgRkQnjts1FxArFX8AdOirY/lSFAqNZIrRnCg
+         a63A==
+X-Gm-Message-State: AOAM531PwTTzoagTRCBo807/LLiOswpUIeWKzxWlVQDgxhOFSFMDvDEo
+        dy0veJFwU9dGVpEM59kz1P+A/Q==
+X-Google-Smtp-Source: ABdhPJz5cQmfQ4Ehxs4LnAG/W0t/jtMCZLitLYsh7qfZESNmRG8HctRVeDDGKCMarxLEo3bvJfb6cA==
+X-Received: by 2002:a05:600c:290a:: with SMTP id i10mr3240122wmd.91.1615879306045;
+        Tue, 16 Mar 2021 00:21:46 -0700 (PDT)
+Received: from dell ([91.110.221.243])
+        by smtp.gmail.com with ESMTPSA id t8sm20888097wrr.10.2021.03.16.00.21.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 00:21:45 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 07:21:43 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mark Jonas <mark.jonas@de.bosch.com>
+Cc:     Support Opensource <support.opensource@diasemi.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        Adam.Thomson.Opensource@diasemi.com, stwiss.opensource@diasemi.com,
+        marek.vasut@gmail.com, tingquan.ruan@cn.bosch.com,
+        hubert.streidl@de.bosch.com, Wolfram Sang <wsa@kernel.org>
+Subject: Re: [PATCH v5] mfd: da9063: Support SMBus and I2C mode
+Message-ID: <20210316072143.GA701493@dell>
+References: <20210315160903.799426-1-mark.jonas@de.bosch.com>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:8ad2:: with SMTP id e18mr2453076iot.51.1615879094237;
- Tue, 16 Mar 2021 00:18:14 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 00:18:14 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000069802205bda22b7f@google.com>
-Subject: [syzbot] kernel panic: corrupted stack end in openat
-From:   syzbot <syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210315160903.799426-1-mark.jonas@de.bosch.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, 15 Mar 2021, Mark Jonas wrote:
 
-syzbot found the following issue on:
+> From: Hubert Streidl <hubert.streidl@de.bosch.com>
+> 
+> By default the PMIC DA9063 2-wire interface is SMBus compliant. This
+> means the PMIC will automatically reset the interface when the clock
+> signal ceases for more than the SMBus timeout of 35 ms.
+> 
+> If the I2C driver / device is not capable of creating atomic I2C
+> transactions, a context change can cause a ceasing of the clock signal.
+> This can happen if for example a real-time thread is scheduled. Then
+> the DA9063 in SMBus mode will reset the 2-wire interface. Subsequently
+> a write message could end up in the wrong register. This could cause
+> unpredictable system behavior.
+> 
+> The DA9063 PMIC also supports an I2C compliant mode for the 2-wire
+> interface. This mode does not reset the interface when the clock
+> signal ceases. Thus the problem depicted above does not occur.
+> 
+> This patch tests for the bus functionality "I2C_FUNC_I2C". It can
+> reasonably be assumed that the bus cannot obey SMBus timings if
+> this functionality is set. SMBus commands most probably are emulated
+> in this case which is prone to the latency issue described above.
+> 
+> This patch enables the I2C bus mode if I2C_FUNC_I2C is set or
+> otherwise keeps the default SMBus mode.
+> 
+> Signed-off-by: Hubert Streidl <hubert.streidl@de.bosch.com>
+> Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
+> ---
+>  drivers/mfd/da9063-i2c.c             | 10 ++++++++++
+>  include/linux/mfd/da9063/registers.h |  3 +++
+>  2 files changed, 13 insertions(+)
 
-HEAD commit:    1e28eed1 Linux 5.12-rc3
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=167535e6d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e0cee1f53de33ca3
-dashboard link: https://syzkaller.appspot.com/bug?extid=0b06ef9b44d00d600183
-userspace arch: arm
+Code looks good to me now, thanks.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+However, this doesn't look like it would pass checkpatch.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com
+Have you tried to build with W=1 and checkpatch?
 
-Kernel panic - not syncing: corrupted stack end detected inside scheduler
-CPU: 0 PID: 3263 Comm: syz-fuzzer Not tainted 5.12.0-rc3-syzkaller #0
-Hardware name: ARM-Versatile Express
-Backtrace: 
-[<81802700>] (dump_backtrace) from [<81802974>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:252)
- r7:00000080 r6:60000093 r5:00000000 r4:82b58544
-[<8180295c>] (show_stack) from [<8180a048>] (__dump_stack lib/dump_stack.c:79 [inline])
-[<8180295c>] (show_stack) from [<8180a048>] (dump_stack+0xb8/0xe8 lib/dump_stack.c:120)
-[<81809f90>] (dump_stack) from [<81803508>] (panic+0x130/0x378 kernel/panic.c:231)
- r7:81f4bdc0 r6:82a392a4 r5:00000000 r4:82c6b0d0
-[<818033d8>] (panic) from [<81820270>] (schedule_debug kernel/sched/core.c:4822 [inline])
-[<818033d8>] (panic) from [<81820270>] (__schedule+0xcb8/0xcc8 kernel/sched/core.c:4967)
- r3:57ac6e9d r2:00040000 r1:81f5a53c r0:81f4bdc0
- r7:00000001
-[<8181f5b8>] (__schedule) from [<8182046c>] (preempt_schedule_common+0x3c/0xac kernel/sched/core.c:5233)
- r10:0000071f r9:ffefd000 r8:00000001 r7:81820510 r6:00000001 r5:81820510
- r4:85888000
-[<81820430>] (preempt_schedule_common) from [<81820510>] (preempt_schedule+0x34/0x38 kernel/sched/core.c:5258)
- r7:82c6a4e0 r6:00000001 r5:85888000 r4:df48d420
-[<818204dc>] (preempt_schedule) from [<8048c884>] (__kunmap_atomic include/linux/highmem-internal.h:114 [inline])
-[<818204dc>] (preempt_schedule) from [<8048c884>] (clear_highpage include/linux/highmem.h:204 [inline])
-[<818204dc>] (preempt_schedule) from [<8048c884>] (kernel_init_free_pages+0xc4/0xd0 mm/page_alloc.c:1212)
-[<8048c7c0>] (kernel_init_free_pages) from [<80492ce8>] (post_alloc_hook mm/page_alloc.c:2305 [inline])
-[<8048c7c0>] (kernel_init_free_pages) from [<80492ce8>] (prep_new_page mm/page_alloc.c:2311 [inline])
-[<8048c7c0>] (kernel_init_free_pages) from [<80492ce8>] (get_page_from_freelist+0x163c/0x1698 mm/page_alloc.c:3951)
- r10:df48d3f0 r9:82bf89c0 r8:df48d3f0 r7:0000000b r6:00000002 r5:00000001
- r4:df48d3f8 r3:00000001
-[<804916ac>] (get_page_from_freelist) from [<804933c8>] (__alloc_pages_nodemask+0x164/0x1850 mm/page_alloc.c:5001)
- r10:00000000 r9:860a9a80 r8:00112cca r7:0000000b r6:00000081 r5:00000008
- r4:00000000
-[<80493264>] (__alloc_pages_nodemask) from [<8042f0f8>] (__alloc_pages include/linux/gfp.h:525 [inline])
-[<80493264>] (__alloc_pages_nodemask) from [<8042f0f8>] (__alloc_pages_node include/linux/gfp.h:538 [inline])
-[<80493264>] (__alloc_pages_nodemask) from [<8042f0f8>] (alloc_pages_node include/linux/gfp.h:552 [inline])
-[<80493264>] (__alloc_pages_nodemask) from [<8042f0f8>] (alloc_pages include/linux/gfp.h:571 [inline])
-[<80493264>] (__alloc_pages_nodemask) from [<8042f0f8>] (__page_cache_alloc include/linux/pagemap.h:289 [inline])
-[<80493264>] (__alloc_pages_nodemask) from [<8042f0f8>] (page_cache_ra_unbounded+0xc4/0x294 mm/readahead.c:216)
- r10:860a9a84 r9:860a9a80 r8:8588956c r7:0000000b r6:00000107 r5:85889688
- r4:df48d3c0
-[<8042f034>] (page_cache_ra_unbounded) from [<8042f3c4>] (do_page_cache_ra+0xfc/0x150 mm/readahead.c:267)
- r10:860a99ac r9:00000001 r8:00000020 r7:80000013 r6:8042f624 r5:85889688
- r4:860a9908
-[<8042f2c8>] (do_page_cache_ra) from [<8042f624>] (ondemand_readahead+0x20c/0x47c mm/readahead.c:549)
- r10:00000001 r9:000000fc r8:00000020 r7:000000dc r6:85889688 r5:00000000
- r4:85aa8ea0
-[<8042f418>] (ondemand_readahead) from [<8042f958>] (page_cache_async_ra mm/readahead.c:607 [inline])
-[<8042f418>] (ondemand_readahead) from [<8042f958>] (page_cache_async_ra+0xc4/0x110 mm/readahead.c:581)
- r10:85889818 r9:df4a4be0 r8:860a9a80 r7:85889714 r6:00000000 r5:85889688
- r4:85aa8ea0
-[<8042f894>] (page_cache_async_ra) from [<80420d1c>] (page_cache_async_readahead include/linux/pagemap.h:863 [inline])
-[<8042f894>] (page_cache_async_ra) from [<80420d1c>] (filemap_readahead mm/filemap.c:2350 [inline])
-[<8042f894>] (page_cache_async_ra) from [<80420d1c>] (filemap_get_pages+0x254/0x648 mm/filemap.c:2391)
- r7:85889714 r6:000000db r5:85889830 r4:000000dc
-[<80420ac8>] (filemap_get_pages) from [<804211d8>] (filemap_read+0xc8/0x4e0 mm/filemap.c:2458)
- r10:85889818 r9:860a9908 r8:805ff484 r7:85889830 r6:00000000 r5:85889818
- r4:85889830
-[<80421110>] (filemap_read) from [<80421788>] (generic_file_read_iter+0x198/0x234 mm/filemap.c:2609)
- r10:00001000 r9:00000000 r8:805ff484 r7:00001000 r6:00000000 r5:85889818
- r4:85889830
-[<804215f0>] (generic_file_read_iter) from [<805ff484>] (ext4_file_read_iter fs/ext4/file.c:130 [inline])
-[<804215f0>] (generic_file_read_iter) from [<805ff484>] (ext4_file_read_iter+0x54/0x118 fs/ext4/file.c:113)
- r10:00001000 r9:00000000 r8:00001000 r7:85889888 r6:860a9908 r5:85889830
- r4:85889818
-[<805ff430>] (ext4_file_read_iter) from [<804da4fc>] (__kernel_read+0x130/0x314 fs/read_write.c:454)
- r7:85889888 r6:00000000 r5:00000000 r4:85aa8dc0
-[<804da3cc>] (__kernel_read) from [<8073774c>] (integrity_kernel_read+0x20/0x28 security/integrity/iint.c:191)
- r9:00000000 r8:00400000 r7:83685000 r6:00000000 r5:85aa8dc0 r4:000db000
-[<8073772c>] (integrity_kernel_read) from [<8073a904>] (ima_calc_file_hash_tfm+0x178/0x228 security/integrity/ima/ima_crypto.c:484)
-[<8073a78c>] (ima_calc_file_hash_tfm) from [<8073ae2c>] (ima_calc_file_shash security/integrity/ima/ima_crypto.c:515 [inline])
-[<8073a78c>] (ima_calc_file_hash_tfm) from [<8073ae2c>] (ima_calc_file_hash+0x124/0x8b8 security/integrity/ima/ima_crypto.c:572)
- r10:860a99ac r9:00000000 r8:00000001 r7:00000013 r6:832fab90 r5:8570f900
- r4:85aa8dc0
-[<8073ad08>] (ima_calc_file_hash) from [<8073c1a8>] (ima_collect_measurement+0x224/0x260 security/integrity/ima/ima_api.c:252)
- r10:860a3344 r9:860a99c4 r8:858796e8 r7:00000003 r6:00000000 r5:858796e8
- r4:85aa8dc0
-[<8073bf84>] (ima_collect_measurement) from [<80739458>] (process_measurement+0x46c/0x7b0 security/integrity/ima/ima_main.c:330)
- r10:00000000 r9:860a99c4 r8:858796e8 r7:00000001 r6:00000001 r5:00000000
- r4:85aa8dc0
-[<80738fec>] (process_measurement) from [<80739814>] (ima_file_check+0x78/0xa0 security/integrity/ima/ima_main.c:499)
- r10:00000000 r9:00000000 r8:85aa8dc0 r7:00000000 r6:00000000 r5:85889d48
- r4:00000006
-[<8073979c>] (ima_file_check) from [<804ec878>] (do_open fs/namei.c:3367 [inline])
-[<8073979c>] (ima_file_check) from [<804ec878>] (path_openat+0x20c/0x10f8 fs/namei.c:3498)
- r7:85889e58 r6:82a3c59c r5:85889f20 r4:00020002
-[<804ec66c>] (path_openat) from [<804ef6ec>] (do_filp_open+0x7c/0x12c fs/namei.c:3525)
- r10:00000142 r9:85888000 r8:80200224 r7:00000001 r6:85889f20 r5:85889e58
- r4:85889f58
-[<804ef670>] (do_filp_open) from [<804d7a6c>] (do_sys_openat2+0xa8/0x160 fs/open.c:1187)
- r7:ffffff9c r6:00000009 r5:8361b000 r4:85889f58
-[<804d79c4>] (do_sys_openat2) from [<804d7f10>] (do_sys_open fs/open.c:1203 [inline])
-[<804d79c4>] (do_sys_openat2) from [<804d7f10>] (__do_sys_openat fs/open.c:1219 [inline])
-[<804d79c4>] (do_sys_openat2) from [<804d7f10>] (sys_openat+0xa4/0xcc fs/open.c:1214)
- r7:00000142 r6:00000000 r5:03af21c0 r4:ffffff9c
-[<804d7e6c>] (sys_openat) from [<80200060>] (ret_fast_syscall+0x0/0x2c arch/arm/mm/proc-v7.S:64)
-Exception stack(0x85889fa8 to 0x85889ff0)
-9fa0:                   00000000 00000000 ffffff9c 03af21c0 000a0002 000001a4
-9fc0: 00000000 00000000 00000000 00000142 00000005 7fff6f7f 00c000e0 00a1f128
-9fe0: 03af21c3 00e4cb78 00012368 000b7738
- r5:00000000 r4:00000000
-Dumping ftrace buffer:
-   (ftrace buffer empty)
-Rebooting in 1 seconds..
+> diff --git a/drivers/mfd/da9063-i2c.c b/drivers/mfd/da9063-i2c.c
+> index 3781d0bb7786..e8a022e697c5 100644
+> --- a/drivers/mfd/da9063-i2c.c
+> +++ b/drivers/mfd/da9063-i2c.c
+> @@ -442,6 +442,16 @@ static int da9063_i2c_probe(struct i2c_client *i2c,
+>  		return ret;
+>  	}
+>  
+> +	/* If SMBus is not available and only I2C is possible, enter I2C mode */
+> +	if (i2c_check_functionality(i2c->adapter, I2C_FUNC_I2C)) {
+> +		ret = regmap_clear_bits(da9063->regmap, DA9063_REG_CONFIG_J,
+> +			  DA9063_TWOWIRE_TO);
+> +		if (ret < 0) {
+> +			dev_err(da9063->dev, "Failed to set Two-Wire Bus Mode.\n");
+> +			return -EIO;
+> +		}
+> +	}
+> +
+>  	return da9063_device_init(da9063, i2c->irq);
+>  }
+>  
+> diff --git a/include/linux/mfd/da9063/registers.h b/include/linux/mfd/da9063/registers.h
+> index 1dbabf1b3cb8..6e0f66a2e727 100644
+> --- a/include/linux/mfd/da9063/registers.h
+> +++ b/include/linux/mfd/da9063/registers.h
+> @@ -1037,6 +1037,9 @@
+>  #define		DA9063_NONKEY_PIN_AUTODOWN	0x02
+>  #define		DA9063_NONKEY_PIN_AUTOFLPRT	0x03
+>  
+> +/* DA9063_REG_CONFIG_J (addr=0x10F) */
+> +#define DA9063_TWOWIRE_TO			0x40
+> +
+>  /* DA9063_REG_MON_REG_5 (addr=0x116) */
+>  #define DA9063_MON_A8_IDX_MASK			0x07
+>  #define		DA9063_MON_A8_IDX_NONE		0x00
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
