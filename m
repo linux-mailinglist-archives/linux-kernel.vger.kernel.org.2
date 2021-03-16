@@ -2,116 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C4733CD4C
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9B833CD4B
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235476AbhCPF2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47814 "EHLO
+        id S235465AbhCPF2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:28:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235458AbhCPF2E (ORCPT
+        with ESMTP id S232319AbhCPF1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:28:04 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1926C06174A;
-        Mon, 15 Mar 2021 22:28:03 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id x27so8963030qvd.2;
-        Mon, 15 Mar 2021 22:28:03 -0700 (PDT)
+        Tue, 16 Mar 2021 01:27:51 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A1AC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 22:27:49 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id e26so8032515pfd.9
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 22:27:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=91l+EZvobumpic5/EQLeULuDDYG6RJlmE6rR5M1RK9c=;
-        b=KJiqHTgZJiA8fA92JzZrJVyRQHrcnMkOFSO+ZUYEGJq9WWcG70XWS/2Q6iP4eV+3Mg
-         n5RvCYvzbvT6U2iuF89VHN0zJ4TKkzZVHKXz+or/WBAfKb01g14wifCI7UIgZtoIfhTL
-         YjAG7ZEVlcuTGHjnVedLl6MUTTmXV5VnO+Bg3BvM6HspHzVI67UeWyJwD/sUQdqRD6qW
-         +3tMl7VMiKXiMQRML3ToDtvdZK7a9AJBZ7qTEkMkghc9BegK7304YWOyaIysbJH7+PXg
-         p4sc4D+M9mUxcIF+5mVROvF7+ZGf7rNZ1+uGg9q87lBjqmFRrRItx2kcEe7cTbVv1faE
-         xwOQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mEGvwxRSdX+26sKEJTAJbfC9LfjSTi3jGS6oVQZmyNk=;
+        b=WtvR0nXW3kcC1fRrCCtKU9xDoW3LofQamKx3fyUgUsvQSa5fIaGYKGS6C2y6/9NMHP
+         l7TYFRgQcmus88lAVg69rz7MrmU+nzkN6faSJLaGwD/pXbAbRiSTaoCyoBiKVcaNXUeY
+         5REkP5L+isnaaxVetMBlrtysFZ0GKPqBSYblFGqCOZYYhp80Ny0E9whVhWkh56A0NajZ
+         deI81soxE+VXCFLhAVqZRBDS+0lv/VDA0jGEnq1MVPlV+ZgsW7y3NP8GIjRaBMNUjDg0
+         XmTe9MDGaT+4eqL9HjiEVdZKKlq/VU0XIUQmqi3MmLVnRm/I6kDAYKbNrBb9a+1SjbOG
+         17pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=91l+EZvobumpic5/EQLeULuDDYG6RJlmE6rR5M1RK9c=;
-        b=runQO0m4uZuwzJKvSSunelF5qs62M2QOuhkHdRo0BhU2XMt0x9bDJ9T9jWtltXGGkd
-         oPt84WbSNacHoO7Hd07Cyrq5aZcZrQmr93V3Bcvho3ng5C+v1zou/kV5nPVlrDdwxDyU
-         4y1GWuruXEXau3juSI/60gqivI0gGTzuQos0aUAsP2klT/+u9AjoxiPGxIOthByIUpY9
-         Jf1qS6jKLVSn6MY0hSTD6Tky76G7pa7QHfbGwhx+S0TuvYamC3ApW3XLuRYDysmktxzC
-         bL4Kc+okC8z8GrlxaW2jDIFfy9LXEfxQErDFzpqNSHWuoCJE5U8zS9OB4RSZRp9bn4qu
-         JSuA==
-X-Gm-Message-State: AOAM530EtLtWd9a45JDVqci17qJ4XHC9xoIV8vudRmJ73qt8nEpN7vTE
-        wOQ3KYROe6QwB80Az1Ek7dg=
-X-Google-Smtp-Source: ABdhPJw3PcD1c3rBh3dmkpZFKOL86X6+IzmMIU2mkAxAU4zW9FQqZQfGpvOXT7Ry/boAWRVC/QYq4A==
-X-Received: by 2002:a0c:b59f:: with SMTP id g31mr14223318qve.28.1615872483128;
-        Mon, 15 Mar 2021 22:28:03 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.58.45])
-        by smtp.gmail.com with ESMTPSA id i8sm12179387qtj.16.2021.03.15.22.27.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 22:28:02 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     ccaulfie@redhat.com, teigland@redhat.com, cluster-devel@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        trivial@vger.kernel.org
-Subject: [PATCH] dlm: Mundane typo fixes throughout the file lock.c
-Date:   Tue, 16 Mar 2021 10:57:32 +0530
-Message-Id: <20210316052732.682020-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mEGvwxRSdX+26sKEJTAJbfC9LfjSTi3jGS6oVQZmyNk=;
+        b=IUUPzirLXtrP9dg0nH4m7yI1ovrrXYSq6tWPKgTjANMjI1dZZZd/wVwlQGvfeEsXQq
+         qohMM4BD3PqkfbU9pSttqKFEh5RjV8HHXl8jKp0U4fiazrLsQefHP1gs5BIB+ryTtXGo
+         HtFLAlbdO/xZ5mPancY0WmgRAl+wdNfuKBZdsZRkiEl3PRnOwOfNv2DLb89WYnZ3jopB
+         sKZ05lxOiilU2fdrfG6YXuvNYrRvXXE1ABRYSvfVSwP9mvY82lCXxr386J6igwkD1ieL
+         iG/AVb9rgVB0ZyFOEW7FCMOdcq8OItdduX3b+8gzBm2ilzTDJ+EiIydPLahTWBQoIRcY
+         hN3Q==
+X-Gm-Message-State: AOAM531P5k4WgkjGxTEBswfW5ZB8uvnHK5oGHYduvvRo5UxXtrGGGHR4
+        eh8EYptFMQqtjPcv1wCR9NBnRw==
+X-Google-Smtp-Source: ABdhPJzeD/97kt/QC9gJzyL77V0bTiQSzKV1/quclmYq2PBmLQg+t9KRE9wkB8ZFNLzfp2L5Hy1zsQ==
+X-Received: by 2002:a65:63d6:: with SMTP id n22mr2376938pgv.393.1615872469248;
+        Mon, 15 Mar 2021 22:27:49 -0700 (PDT)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id q4sm15207633pfq.103.2021.03.15.22.27.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 15 Mar 2021 22:27:48 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 10:57:43 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V11 3/5] kbuild: Allow .dtso format for overlay source
+ files
+Message-ID: <20210316052743.aysh4sooz4s7rwqq@vireshk-i7>
+References: <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
+ <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
+ <20210312044712.srmqfuie7fae55pb@vireshk-i7>
+ <17c65559-865f-f742-660f-0ab30ed45d90@gmail.com>
+ <4d9bee7a-416e-50a1-65a5-0674ae83d42e@gmail.com>
+ <20210312071325.zosmlttse4ym7sit@vireshk-i7>
+ <6f093bb1-1a80-a906-fb4c-3f6fdeed4838@gmail.com>
+ <9068520f-76d6-ec94-716c-02383422ac85@gmail.com>
+ <20210315064051.otcjt3x6vkfdrio6@vireshk-i7>
+ <CAK7LNASHHNmZJ4FXz4Q5-UMEbSSyb_aG+kmfhJQZtCgkSZ_GAQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNASHHNmZJ4FXz4Q5-UMEbSSyb_aG+kmfhJQZtCgkSZ_GAQ@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 16-03-21, 02:43, Masahiro Yamada wrote:
+> On Mon, Mar 15, 2021 at 3:40 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > On 14-03-21, 20:16, Frank Rowand wrote:
+> > What about doing this then in unittest's Makefile instead (which I
+> > already suggested earlier), that will make everything work just fine
+> > without any other changes ?
+> >
+> > +# Required for of unittest files as they can't be renamed to .dtso
+> > +$(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
+> > +       $(call if_changed_dep,dtc)
+> 
+> If those rules are only needed by drivers/of/unittest-data/Makefile,
+> they should not be located in scripts/Makefile.lib.
 
-Trivial typo fixes throughout the file.
+Right, this is exactly what I suggested.
 
-cc: trivial@vger.kernel.org
+> But how can we fix drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a779*.dts
+> if these are doing bad things.
+> They seem to be overlay files even though the file name suffix is .dts
+> 
+> $ find drivers -name '*.dts'
+> drivers/staging/pi433/Documentation/devicetree/pi433-overlay.dts
+> drivers/staging/mt7621-dts/gbpc2.dts
+> drivers/staging/mt7621-dts/gbpc1.dts
+> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7791.dts
+> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7795.dts
+> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7796.dts
+> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7793.dts
+> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7790.dts
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- fs/dlm/lock.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+For all the above files, even if they are really overlay files, we
+won't use fdtoverlay tool to apply them to some base dtb and so if we
+leave them as is, i.e. .dts->.dtb, it won't break anything.
 
-diff --git a/fs/dlm/lock.c b/fs/dlm/lock.c
-index 002123efc6b0..caadc426c8b4 100644
---- a/fs/dlm/lock.c
-+++ b/fs/dlm/lock.c
-@@ -91,7 +91,7 @@ static void del_timeout(struct dlm_lkb *lkb);
- static void toss_rsb(struct kref *kref);
+The problem only happens if someone wants to generate .dtbo for them
+instead and then they should be named .dtso as we won't allow .dts ->
+.dtbo conversion there.
 
- /*
-- * Lock compatibilty matrix - thanks Steve
-+ * Lock compatibility matrix - thanks Steve
-  * UN = Unlocked state. Not really a state, used as a flag
-  * PD = Padding. Used to make the matrix a nice power of two in size
-  * Other states are the same as the VMS DLM.
-@@ -1535,7 +1535,7 @@ static int _remove_from_waiters(struct dlm_lkb *lkb, int mstype,
- 		return -1;
- 	}
-
--	/* Remove for the convert reply, and premptively remove for the
-+	/* Remove for the convert reply, and preemptively remove for the
- 	   cancel reply.  A convert has been granted while there's still
- 	   an outstanding cancel on it (the cancel is moot and the result
- 	   in the cancel reply should be 0).  We preempt the cancel reply
-@@ -2357,14 +2357,14 @@ static int _can_be_granted(struct dlm_rsb *r, struct dlm_lkb *lkb, int now,
- 	 * 6-5: But the default algorithm for deciding whether to grant or
- 	 * queue conversion requests does not by itself guarantee that such
- 	 * requests are serviced on a "first come first serve" basis.  This, in
--	 * turn, can lead to a phenomenon known as "indefinate postponement".
-+	 * turn, can lead to a phenomenon known as "indefinite postponement".
- 	 *
- 	 * 6-7: This issue is dealt with by using the optional QUECVT flag with
- 	 * the system service employed to request a lock conversion.  This flag
- 	 * forces certain conversion requests to be queued, even if they are
- 	 * compatible with the granted modes of other locks on the same
- 	 * resource.  Thus, the use of this flag results in conversion requests
--	 * being ordered on a "first come first servce" basis.
-+	 * being ordered on a "first come first serve" basis.
- 	 *
- 	 * DCT: This condition is all about new conversions being able to occur
- 	 * "in place" while the lock remains on the granted queue (assuming
---
-2.30.2
-
+-- 
+viresh
