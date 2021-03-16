@@ -2,67 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932B533CE99
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B6A33CE9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:30:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232422AbhCPHZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 03:25:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41888 "EHLO mail.kernel.org"
+        id S231144AbhCPH3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 03:29:46 -0400
+Received: from mga01.intel.com ([192.55.52.88]:14524 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231405AbhCPHZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 03:25:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0091664FAB;
-        Tue, 16 Mar 2021 07:25:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615879518;
-        bh=vnkoBWfDOdEgGTTsde3x1q52ycFZlax19/yrDHOJ7QY=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=ZVdU0S5FPfuZSgrrlGP31EVw4qx3xpwK6iLzZ/bNI6B+dLp+9Y9+d/LRIRK2CtCVB
-         92W8zJHCByv8Q6M5UYTulBCl/jcE/jzm06GGdqdpVGdvcwgP13ACPE0TmotYV4e+bQ
-         698p0T5pj2LDSPFuwitbJIyWjy/d/BpxmRcG94ISxrMZjjH2c5y5Xat14hxjtx1Nf1
-         3GpERhrNLsPhI9VM01z6fCVXfSWmpJcTEZZ/YWF70VTdd6/KgiG2IxOMVaPiBPyt+a
-         ToFx2eWde3W5SXUooz+/6b8BYvwZpUJKDdTHPy9lLt47oBeHoS1AM/JDLBjXecLWWd
-         aGB8NnOF8hYJw==
-Date:   Tue, 16 Mar 2021 08:25:14 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Michael Zaidman <michael.zaidman@gmail.com>
-cc:     Aaron Jones <aaron.jones@ftdichip.com>,
-        benjamin.tissoires@redhat.com, wsa@kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Subject: Re: [PATCHv2 1/1] HID: ft260: add usb hid to i2c host bridge
- driver
-In-Reply-To: <20210304124633.GA23038@michael-VirtualBox>
-Message-ID: <nycvar.YFH.7.76.2103160824440.12405@cbobk.fhfr.pm>
-References: <20210219163644.2811-2-michael.zaidman@gmail.com> <20210304111406.3482-1-aaron.jones@ftdichip.com> <20210304124633.GA23038@michael-VirtualBox>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S229780AbhCPH33 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 03:29:29 -0400
+IronPort-SDR: O+hDVeX70alJ4315+z3BD3EqQAQGVY269dBu+i+iSwNTK1K45HrdJROIdCWPiEv5AOLvtbQ3pk
+ cVaZVhUqhpjQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="209143061"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="209143061"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 00:29:29 -0700
+IronPort-SDR: LUymvqHJeRkX4fjAHcTp/JXOI8pz3vYYbJfeA6EYIdKM1k2QQcyg9L0HpyrKvJXQ+qK8pQ57Jl
+ kA0mJVc1WSSg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="432916891"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by fmsmga004.fm.intel.com with ESMTP; 16 Mar 2021 00:29:27 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] perf stat: Align CSV output for summary mode
+Date:   Tue, 16 Mar 2021 15:29:00 +0800
+Message-Id: <20210316072900.1739-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021, Michael Zaidman wrote:
+perf-stat has supported the summary mode. But the summary
+lines break the CSV output so it's hard for scripts to parse
+the result.
 
-> > > The FTDI FT260 chip implements USB to I2C/UART bridges through two
-> > > USB HID class interfaces. The first - for I2C, and the second for UART.
-> > > Each interface is independent, and the kernel detects it as a separate
-> > > USB hidraw device.
-> > >
-> > > This commit adds I2C host adapter support.
-> > >
-> > > Signed-off-by:Michael Zaidman <michael.zaidman@gmail.com>
-> > 
-> > I've applied the patch, ran some tests with a UMFT260EV1A evaluation board,
-> > and found no issues with the functionality it provides.
-> > 
-> > Tested-by: Aaron Jones (FTDI-UK) <aaron.jones@ftdichip.com>
-> 
-> Aaron, thanks for giving it a try - much appreciated!
+Before:
 
-I have now queued the driver in hid.git#for-5.13/ft260. Thanks,
+  # perf stat -x, -I1000 --interval-count 1 --summary
+       1.001323097,8013.48,msec,cpu-clock,8013483384,100.00,8.013,CPUs utilized
+       1.001323097,270,,context-switches,8013513297,100.00,0.034,K/sec
+       1.001323097,13,,cpu-migrations,8013530032,100.00,0.002,K/sec
+       1.001323097,184,,page-faults,8013546992,100.00,0.023,K/sec
+       1.001323097,20574191,,cycles,8013551506,100.00,0.003,GHz
+       1.001323097,10562267,,instructions,8013564958,100.00,0.51,insn per cycle
+       1.001323097,2019244,,branches,8013575673,100.00,0.252,M/sec
+       1.001323097,106152,,branch-misses,8013585776,100.00,5.26,of all branches
+  8013.48,msec,cpu-clock,8013483384,100.00,7.984,CPUs utilized
+  270,,context-switches,8013513297,100.00,0.034,K/sec
+  13,,cpu-migrations,8013530032,100.00,0.002,K/sec
+  184,,page-faults,8013546992,100.00,0.023,K/sec
+  20574191,,cycles,8013551506,100.00,0.003,GHz
+  10562267,,instructions,8013564958,100.00,0.51,insn per cycle
+  2019244,,branches,8013575673,100.00,0.252,M/sec
+  106152,,branch-misses,8013585776,100.00,5.26,of all branches
 
+The summary line loses the timestamp column, which breaks the
+CVS output.
+
+We add a column at the 'timestamp' position and it just says 'summary'
+for the summary line.
+
+After:
+
+  # perf stat -x, -I1000 --interval-count 1 --summary
+       1.001196053,8012.72,msec,cpu-clock,8012722903,100.00,8.013,CPUs utilized
+       1.001196053,218,,context-switches,8012753271,100.00,0.027,K/sec
+       1.001196053,9,,cpu-migrations,8012769767,100.00,0.001,K/sec
+       1.001196053,0,,page-faults,8012786257,100.00,0.000,K/sec
+       1.001196053,15004518,,cycles,8012790637,100.00,0.002,GHz
+       1.001196053,7954691,,instructions,8012804027,100.00,0.53,insn per cycle
+       1.001196053,1590259,,branches,8012814766,100.00,0.198,M/sec
+       1.001196053,82601,,branch-misses,8012824365,100.00,5.19,of all branches
+           summary,8012.72,msec,cpu-clock,8012722903,100.00,7.986,CPUs utilized
+           summary,218,,context-switches,8012753271,100.00,0.027,K/sec
+           summary,9,,cpu-migrations,8012769767,100.00,0.001,K/sec
+           summary,0,,page-faults,8012786257,100.00,0.000,K/sec
+           summary,15004518,,cycles,8012790637,100.00,0.002,GHz
+           summary,7954691,,instructions,8012804027,100.00,0.53,insn per cycle
+           summary,1590259,,branches,8012814766,100.00,0.198,M/sec
+           summary,82601,,branch-misses,8012824365,100.00,5.19,of all branches
+
+Now it's easy for script to analyse the summary lines.
+
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ tools/perf/util/stat-display.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+index 7f09cdaf5b60..c4183d3e87a4 100644
+--- a/tools/perf/util/stat-display.c
++++ b/tools/perf/util/stat-display.c
+@@ -439,6 +439,10 @@ static void printout(struct perf_stat_config *config, struct aggr_cpu_id id, int
+ 		if (counter->cgrp)
+ 			os.nfields++;
+ 	}
++
++	if (config->csv_output && config->summary && !config->interval)
++		fprintf(config->output, "%16s%s", "summary", config->csv_sep);
++
+ 	if (run == 0 || ena == 0 || counter->counts->scaled == -1) {
+ 		if (config->metric_only) {
+ 			pm(config, &os, NULL, "", "", 0);
 -- 
-Jiri Kosina
-SUSE Labs
+2.17.1
 
