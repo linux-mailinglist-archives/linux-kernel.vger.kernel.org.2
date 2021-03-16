@@ -2,117 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FEEA33CC85
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 05:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BB433CC88
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 05:22:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234151AbhCPEUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 00:20:41 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:13936 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233798AbhCPEUV (ORCPT
+        id S233741AbhCPEWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 00:22:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231862AbhCPEWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 00:20:21 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F00Qw4RtQzkZKl;
-        Tue, 16 Mar 2021 12:18:48 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 16 Mar 2021 12:20:16 +0800
-Subject: Re: [PATCH 2/4] KVM: arm64: Use find_vma_intersection()
-To:     Gavin Shan <gshan@redhat.com>, <kvmarm@lists.cs.columbia.edu>
-References: <20210315041844.64915-1-gshan@redhat.com>
- <20210315041844.64915-3-gshan@redhat.com>
- <65dfdca3-af94-7d5a-86fe-24825301655b@huawei.com>
- <2eef2b42-13bd-2414-f748-551039677bf5@redhat.com>
- <d46320a2-7381-a46a-42e5-6bfa75321d31@redhat.com>
-CC:     <maz@kernel.org>, <will@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <shan.gavin@gmail.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <05f08046-9c18-bbef-f502-47733000e9ff@huawei.com>
-Date:   Tue, 16 Mar 2021 12:20:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Tue, 16 Mar 2021 00:22:00 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB7ACC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 21:21:59 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 16170891AE;
+        Tue, 16 Mar 2021 17:21:58 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1615868518;
+        bh=TT0EhtSrRCuCPo99Tf5CmraeqPT2f9p/23xnyCoCNZ4=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=sXARCpmANcI/iPwDYvytx5SLd8ZO//pg1A4VXrD3udnede1jDbr1lf7SjJu6ML7+7
+         KrprhkQO/5P5oImULx+At42wjZ/gzMJT4bWDBrVDmsihzIqHy+rixEPtKzNf9IT8bC
+         k/3Jl+1dZG0ao7ETBKtnd7/Gro85xMEukTE58gY6WE89AzB5fy4UJ9rDyxNiHFMamr
+         Bp6cGjyKzcj8xRXdCOd/iSbsVQZoaOEc/mdmMepkbfdifcXJpebvzsZ/lEnlUm4diK
+         xUdxUZYo3Y6KoGOPIskUO7uLOqK2chQDiGclVsQX9WVIUub7axmv0jlhGM2OjEyguN
+         NVa3VxvSxsDSA==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B605032660000>; Tue, 16 Mar 2021 17:21:58 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Tue, 16 Mar 2021 17:21:57 +1300
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.012; Tue, 16 Mar 2021 17:21:57 +1300
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>
+CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] hwmon: (pmbus): Add driver for BluTek BPA-RS600
+Thread-Topic: [PATCH 2/2] hwmon: (pmbus): Add driver for BluTek BPA-RS600
+Thread-Index: AQHXGg0JQkIPU0GURU+Z4hUV3SNYs6qFHxwAgAAKqAA=
+Date:   Tue, 16 Mar 2021 04:21:56 +0000
+Message-ID: <ea648b3d-f6ac-d7ec-fc5b-2b15c827c3dc@alliedtelesis.co.nz>
+References: <20210316023524.12574-1-chris.packham@alliedtelesis.co.nz>
+ <20210316023524.12574-2-chris.packham@alliedtelesis.co.nz>
+ <46a69700-ae1f-a441-2399-0e8c8e2a588d@roeck-us.net>
+In-Reply-To: <46a69700-ae1f-a441-2399-0e8c8e2a588d@roeck-us.net>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3EAC71656026364FBDBCE7B8FE0DBF71@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <d46320a2-7381-a46a-42e5-6bfa75321d31@redhat.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=GfppYjfL c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=dESyimp9J3IA:10 a=G3IL0jre2ez7scXUKXwA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gavin,
-
-On 2021/3/16 11:52, Gavin Shan wrote:
-> Hi Keqian,
-> 
-> On 3/15/21 8:42 PM, Gavin Shan wrote:
->> On 3/15/21 7:04 PM, Keqian Zhu wrote:
->>> On 2021/3/15 12:18, Gavin Shan wrote:
->>>> find_vma_intersection() has been existing to search the intersected
->>>> vma. This uses the function where it's applicable, to simplify the
->>>> code.
->>>>
->>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
->>>> ---
->>>>   arch/arm64/kvm/mmu.c | 10 ++++++----
->>>>   1 file changed, 6 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
->>>> index 84e70f953de6..286b603ed0d3 100644
->>>> --- a/arch/arm64/kvm/mmu.c
->>>> +++ b/arch/arm64/kvm/mmu.c
->>>> @@ -421,10 +421,11 @@ static void stage2_unmap_memslot(struct kvm *kvm,
->>>>        *     +--------------------------------------------+
->>>>        */
->>>>       do {
->>>> -        struct vm_area_struct *vma = find_vma(current->mm, hva);
->>>> +        struct vm_area_struct *vma;
->>>>           hva_t vm_start, vm_end;
->>>> -        if (!vma || vma->vm_start >= reg_end)
->>>> +        vma = find_vma_intersection(current->mm, hva, reg_end);
->>> Nit: Keep a same style may be better(Assign vma when declare it).
->>> Other looks good to me.
->>>
->>
->> Yeah, I agree. I will adjust the code in v2 and included your r-b.
->> Thanks for your time to review.
->>
-> 
-> After rechecking the code, I think it'd better to keep current style
-> because there is a follow-on validation on @vma. Keeping them together
-> seems a good idea. I think it wouldn't a big deal to you. So I will
-> keep current style with your r-b in v2.
-Sure, both is OK. ;-)
-
-Thanks,
-Keqian
-> 
->     vma = find_vma_intersection(current->mm, hva, reg_end);
->         if (!vma)
->              break;
-> Thanks,
-> Gavin
->  
->>>> +        if (!vma)
->>>>               break;
->>>>           /*
->>>> @@ -1330,10 +1331,11 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
->>>>        *     +--------------------------------------------+
->>>>        */
->>>>       do {
->>>> -        struct vm_area_struct *vma = find_vma(current->mm, hva);
->>>> +        struct vm_area_struct *vma;
->>>>           hva_t vm_start, vm_end;
->>>> -        if (!vma || vma->vm_start >= reg_end)
->>>> +        vma = find_vma_intersection(current->mm, hva, reg_end);
->>>> +        if (!vma)
->>>>               break;
->>>>           /*
->>>>
->>>
->>
-> 
-> .
-> 
+DQpPbiAxNi8wMy8yMSA0OjQzIHBtLCBHdWVudGVyIFJvZWNrIHdyb3RlOg0KPiBPbiAzLzE1LzIx
+IDc6MzUgUE0sIENocmlzIFBhY2toYW0gd3JvdGU6DQo+PiBUaGUgQlBBLVJTNjAwIGlzIGEgY29t
+cGFjdCA2MDBXIEFDIHRvIERDIHJlbW92YWJsZSBwb3dlciBzdXBwbHkgbW9kdWxlLg0KPj4NCj4+
+IFNpZ25lZC1vZmYtYnk6IENocmlzIFBhY2toYW0gPGNocmlzLnBhY2toYW1AYWxsaWVkdGVsZXNp
+cy5jby5uej4NCj4+IC0tLQ0KPHNuaXA+DQo+PiArDQo+PiArc3RhdGljIGludCBicGFfcnM2MDBf
+cmVhZF93b3JkX2RhdGEoc3RydWN0IGkyY19jbGllbnQgKmNsaWVudCwgaW50IHBhZ2UsDQo+PiAr
+CQlpbnQgcGhhc2UsIGludCByZWcpK3sNCj4+ICsJaW50IHJldDsNCj4+ICsNCj4+ICsJaWYgKHBh
+Z2UgPiAwKQ0KPj4gKwkJcmV0dXJuIC1FTlhJTzsNCj4+ICsNCj4+ICsJc3dpdGNoIChyZWcpIHsN
+Cj4+ICsJY2FzZSBQTUJVU19WSU5fVVZfRkFVTFRfTElNSVQ6DQo+PiArCWNhc2UgUE1CVVNfVklO
+X09WX0ZBVUxUX0xJTUlUOg0KPj4gKwljYXNlIFBNQlVTX1ZPVVRfVVZfRkFVTFRfTElNSVQ6DQo+
+PiArCWNhc2UgUE1CVVNfVk9VVF9PVl9GQVVMVF9MSU1JVDoNCj4+ICsJCXJldCA9IC1FTlhJTzsN
+Cj4gSXMgdGhhdCBuZWVkZWQgPyBXaHkgbm90IC1FTk9EQVRBID8NCg0KQmFzaWNhbGx5IHRoZXNl
+IGNvbW1hbmRzIGdldCByZXNwb25zZXMgb24gdGhlIGJ1cyBidXQgdGhleSBkb24ndCBoYXZlIA0K
+dmFsaWQgZGF0YSAobm9yIGFyZSB0aGV5IGRvY3VtZW50ZWQgaW4gdGhlIGRhdGFzaGVldCkuIEkn
+bGwgYWRkIGEgDQpjb21tZW50IHRvIHRoYXQgZWZmZWN0Lg0KDQpJZiBJJ20gcmVhZGluZyB0aGlu
+Z3MgY29ycmVjdGx5IC1FTk9EQVRBIGlzIGEgc2lnbmFsIHRvIA0KX3BtYnVzX3JlYWRfd29yZF9k
+YXRhIHVzZSB0aGUgIm5vcm1hbCIgcmVhZCBvcGVyYXRpb24uIFNvIEkgbmVlZCB0byANCnJldHVy
+biBzb21ldGhpbmcgb3RoZXIgdGhhbiB0aGF0LiBJIGZvdW5kIGFub3RoZXIgZHJpdmVyIChtcDI5
+NzUuYykgDQpkb2luZyB0aGUgc2FtZSB0aGluZyBmb3Igd2hhdCBJIGFzc3VtZSBhcmUgc2ltaWxh
+ciByZWFzb25zIHNvIEkgd2VudCANCndpdGggLUVOWElPLg0KDQo+DQo+PiArCQlicmVhazsNCjxz
+bmlwPg0KPiArDQo+PiArc3RhdGljIGNvbnN0IHN0cnVjdCBpMmNfZGV2aWNlX2lkIGJwYV9yczYw
+MF9pZFtdID0gew0KPj4gKwl7ICJicGFfcnM2MDAiLCAwIH0sDQo+IEhtbSwgbm8sIHRoaXMgaGFz
+IGFuIHVuZGVyc2NvcmUuIEd1ZXNzIHlvdSdsbCBoYXZlIHRvIHVzZSB0aGUgdHJpY2sgZnJvbQ0K
+PiBpaW9faHdtb24uYyBvciBzaW1pbGFyIHRvIGdlbmVyYXRlIGEgdmFsaWQgbmFtZS4NCj4NCj4g
+T2gsIHdhaXQsIHRoaXMgaXMgYSBwbWJ1cyBkcml2ZXIsIGFuZCB0aGUgcG1idXMgY29yZSB1c2Vz
+IGNsaWVudC0+bmFtZS4NCj4gTWF5YmUgd2UgbmVlZCB0byBhZGQgYW4gb3B0aW9uYWwgc3RycmVw
+bGFjZSgpIHRvIHRoZSBwbWJ1cyBjb3JlLg0KTG9va2luZyBpbnRvIHRoaXMgbm93Lg==
