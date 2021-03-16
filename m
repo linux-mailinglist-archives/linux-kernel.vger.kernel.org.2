@@ -2,169 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6B933D2F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:25:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8AF33D2F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234551AbhCPLZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:25:15 -0400
-Received: from mail-dm6nam12on2071.outbound.protection.outlook.com ([40.107.243.71]:27616
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234251AbhCPLYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:24:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JfbUU2BILoye5kGlxwgWXTyUC9BDqYjqmm0EArUqhG+1N0I42+QR1qyfug+zG7VrCxPaNdwMf/LD75UtHMjICySZPrVY6ygZPd230mpeHT/zFRthSPGxZt4tO8AA1hT3azcdzh0xASMcEVHTZiipAMY0OfYmkm6YFb8KcYr1pXTS65PWz0cCRN0sFho8TIRq5cf+P9lBHuiM3x1iB3EJ8JLLV5vz65N/NkOjOUlsgUzhIonUAJmRfK4ay8HR0GvPvRoXGnwG2w/B5yUxkzyY408FkTQKYFM6eVkgqd1C9sVHc1pamZN6WruXZ6vEhOmRGg0DdVnmCH82ebvFDC78MQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nLrqSKl5LomAT1wWEOwc0Vvx8sTrtanRpjjdXZzOLDU=;
- b=b6nkjdy2yztT/VCN4spiWkVGsNktSlElq5ijH+WZp+BRo2Me1/P++Yln0Lup3EqbIf3aMiuocDVP+1ngir3VpH0/+8sSsGpUed/gz/5BaJo8goM8nTC4vCWZ4qBW8q2s3Tyj5t4OrjCfnHop3dWAVmIXPa73EFjbY7avh8JDzmtAanRlRBH6f9ffEIr8jXJdMefUPEpUyJysKCqHDNZZy+pHfjl+lCTLa1UreONsOfxPjAnvha3bK2URKVOJkIgywVfat7aC48SCgyECcl/uzMzXjjEFZ+kv9eGoFh30r8i/B1qHd24in4etNMz/Lx6Q6kvxPBzlLTfIfvPYNW6qmA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nLrqSKl5LomAT1wWEOwc0Vvx8sTrtanRpjjdXZzOLDU=;
- b=YAoV6MGdb7czW7b7vMfvv2glBVTKS7lk60GqmFugt+mHJznvTgBmMgKicehsqkrztjWOk9opP987/wBgUzqqWxDT/MBlLMm5phO23skD6favd2kFm1aXt+juuTJl2nQIr2+21jiWXS41DgIGVA6uBD1mDzXUSiG1hnTsnIn8tQr0R3vLPs8+VnjB29reTaHYPccc+hu/N+/Od+4QhtfueVZcX0KsjRrW+Pnz9XXcHPvRxHxYz9RS76GLiRmlLNejU5RGSHKJL/pWpGNkE5N02EBTuoksRfkc54GisoNu7w0hpMq0Ud/84InNGQeVPhUV4CwrJb4tBXqLGHeVkoXqJg==
-Received: from BN0PR04CA0116.namprd04.prod.outlook.com (2603:10b6:408:ec::31)
- by BN7PR12MB2659.namprd12.prod.outlook.com (2603:10b6:408:27::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Tue, 16 Mar
- 2021 11:24:46 +0000
-Received: from BN8NAM11FT041.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:ec:cafe::63) by BN0PR04CA0116.outlook.office365.com
- (2603:10b6:408:ec::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32 via Frontend
- Transport; Tue, 16 Mar 2021 11:24:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT041.mail.protection.outlook.com (10.13.177.18) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3933.31 via Frontend Transport; Tue, 16 Mar 2021 11:24:46 +0000
-Received: from [10.2.167.16] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Mar
- 2021 11:24:44 +0000
-Subject: Re: [PATCH v1 3/5] dt-bindings: arm: Add cpu-idle-states to Tegra194
- CPU nodes
-To:     Sudeep Holla <sudeep.holla@arm.com>
-CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <daniel.lezcano@linaro.org>, <robh+dt@kernel.org>,
-        <ksitaraman@nvidia.com>, <sanjayc@nvidia.com>,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <1614838092-30398-1-git-send-email-skomatineni@nvidia.com>
- <1614838092-30398-4-git-send-email-skomatineni@nvidia.com>
- <20210308043755.llvdsuz2jwvweovb@bogus>
- <4cebf482-a2f8-5a79-a2f6-4ccd7d31c6ad@nvidia.com>
- <20210311025138.o4ub4j2ss725zpv4@bogus>
- <b31d14ef-81d8-0480-805b-a3cb64404b12@nvidia.com>
- <08ac26c1-8257-4c6d-d274-595fee28a00f@nvidia.com>
- <4b21f4c7-19cd-fcea-dd1b-9203be60a523@nvidia.com>
- <20210316071811.5mqcatmmbvrask2p@bogus>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <f1d49d3b-0d6f-dda0-ea44-1bff21b52fb4@nvidia.com>
-Date:   Tue, 16 Mar 2021 04:24:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234684AbhCPLZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:25:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232994AbhCPLY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 07:24:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 129D26501D;
+        Tue, 16 Mar 2021 11:24:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615893898;
+        bh=Dk4y8iGJZZIjb3solFCTMP0GpGYj5vgAXWPhsjVPmNU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RV6uE8jz8lDq+x+yBjJEBLn8VIYSb5deFoou+Z4qUyBNFUyhPOywUC9efGSjTube+
+         s3/zR8mG6wb/PXyEChG+WSfj09KqgmQj3bsoptJ0/CDD1JJv80blR8VAFXB9og9j9G
+         oDS4Ay5uAQVwvbMtUrF4CpoFBHcSx9Q75Tx3psmzviN3+thRtAxd5igMTIHGpslzdW
+         +h2G69Xc3M2PVsAF8qQ8IBIAgpn5+PKjUDdjG7MCkH3bjAcp44IId/swcdFNrwAdr3
+         J+wp4GRzQnIF5AmidL+R7istxqUb6DosKfu25Wz+TveVVXOBpLySocjIriEQOa8JT/
+         bwm1MUQrVFrvA==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lM7oz-0000xf-2v; Tue, 16 Mar 2021 12:25:09 +0100
+Date:   Tue, 16 Mar 2021 12:25:09 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, marcan@marcan.st, arnd@kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH] tty: serial: samsung_tty: remove spinlock flags in
+ interrupt handlers
+Message-ID: <YFCVldHS7CTf4j2f@hovoldconsulting.com>
+References: <20210315181212.113217-1-krzysztof.kozlowski@canonical.com>
+ <YFB0OcBg3Vj555eA@hovoldconsulting.com>
+ <7f348e4c-3051-13cf-d461-eeda0ef53fdd@canonical.com>
+ <YFCA5jFLV0Cu9YNe@hovoldconsulting.com>
+ <816834ba-8dc2-05cd-9c81-a11d65980cfd@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20210316071811.5mqcatmmbvrask2p@bogus>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c535ab82-3f8b-4199-153d-08d8e86e1aa5
-X-MS-TrafficTypeDiagnostic: BN7PR12MB2659:
-X-Microsoft-Antispam-PRVS: <BN7PR12MB2659896D82EED61F0A60CCD4C26B9@BN7PR12MB2659.namprd12.prod.outlook.com>
-X-MS-Exchange-Transport-Forked: True
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tKxcHlkNxp4sAI006xtFC6wivygvc9Y6P7UI23BbKoyj+izTATlDMoTyw3s8i0uB4H2acVPmnH/o3Lr/frzA/lOuYIMHInolJiZBbAmWQRFntphfn7uRUeN4gu80h5OSRbZDF7dowP/YU2a4DcNkaoWw/8wPJfh7PT1zk0mS8VLapgQ3yLK2MiLQN6MhymH3INkJ50rS4CMApMGJjDEHUkiUEZQD7gbMzWkWbfiCqiypHYw3ZkUQ3gxt0KOIjQZuzsK4y+6IGZ/rS7YFWGFjmwmJBgFoKjtMQuqnZGZ/lO+hDi3pEzAa9QX/tx7hugJnVMe8MjbfLc8dvLXYzevpTliP1+RYKL9TJ8hJqgHdENib9ZLn7uE8Fs/M7+XkuMOuL2u8Oq6RKdtO8MkmylAebmKCDKl2iIMtHzpyfn75SRsm7FEhpS61+hXDSJZS1d1SRsIMmkpPui0oYz1x0xRXNC7jAvnBQMLa2ZWHNuNg7Uf9gYVzEeLgzkM4XW6yFBHqXK6ZpflEAG+wt4i6RLhkiFUvfpfoey+k71VsSA6bm0FlIQucIAfsX600obpVToJ2CLvjoqOBOLAyvDKvj/l+PKLAPlULEu7OWAyzNqrUclUDZDp0wscxHLvIyBjhxJbIJrFoD4EmeNSLn6E4fCdsYrbso9T+rXDHpZgr/YJrtCZJmTvwRPQgBOwIn9dVZ8fR2MnW2vI+xxGDz05ZTQGQXEGOltkxJtdos2+Z0PgKhPQ=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(39860400002)(136003)(46966006)(36840700001)(7636003)(53546011)(36906005)(86362001)(186003)(70586007)(83380400001)(4326008)(34020700004)(16526019)(82740400003)(356005)(47076005)(31696002)(2906002)(36860700001)(82310400003)(316002)(2616005)(26005)(8676002)(6916009)(478600001)(36756003)(54906003)(426003)(336012)(70206006)(8936002)(16576012)(31686004)(5660300002)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Mar 2021 11:24:46.1399
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c535ab82-3f8b-4199-153d-08d8e86e1aa5
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT041.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR12MB2659
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <816834ba-8dc2-05cd-9c81-a11d65980cfd@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 16, 2021 at 11:11:43AM +0100, Krzysztof Kozlowski wrote:
+> On 16/03/2021 10:56, Johan Hovold wrote:
+> > On Tue, Mar 16, 2021 at 10:47:53AM +0100, Krzysztof Kozlowski wrote:
+> >> On 16/03/2021 10:02, Johan Hovold wrote:
+> >>> On Mon, Mar 15, 2021 at 07:12:12PM +0100, Krzysztof Kozlowski wrote:
+> >>>> Since interrupt handler is called with disabled local interrupts, there
+> >>>> is no need to use the spinlock primitives disabling interrupts as well.
+> >>>
+> >>> This isn't generally true due to "threadirqs" and that can lead to
+> >>> deadlocks if the console code is called from hard irq context.
+> >>>
+> >>> Now, this is *not* the case for this particular driver since it doesn't
+> >>> even bother to take the port lock in console_write(). That should
+> >>> probably be fixed instead.
+> >>>
+> >>> See https://lore.kernel.org/r/X7kviiRwuxvPxC8O@localhost.
+> >>
+> >> Thanks for the link, quite interesting! For one type of device we have
+> >> two interrupts (RX and TX) so I guess it's a valid point/risk. However
+> >> let me try to understand it more.
+> >>
+> >> Assuming we had only one interrupt line, how this interrupt handler with
+> >> threadirqs could be called from hardirq context?
+> > 
+> > No, it's console_write() which can end up being called in hard irq
+> > context and if that path takes the port lock after the now threaded
+> > interrupt handler has been preempted you have a deadlock.
+> 
+> Thanks, I understand now. I see three patterns shared by serial drivers:
+> 
+> 1. Do not take the lock in console_write() handler,
+> 2. Take the lock like:
+> if (port->sysrq)
+>     locked = 0;
+> else if (oops_in_progress)
+>     locked = spin_trylock_irqsave(&port->lock, flags);
+> else
+>     spin_lock_irqsave(&port->lock, flags)
+> 
+> 3. Take the lock like above but preceded with local_irq_save().
+> 
+> It seems the choice of pattern depends which driver was used as a base.
 
-On 3/16/21 12:18 AM, Sudeep Holla wrote:
-> On Mon, Mar 15, 2021 at 11:13:24AM -0700, Sowjanya Komatineni wrote:
->> Hi Sudeep,
->>
->> I see you are one of the maintainer of PSCI driver. Please add any other
->> right persons if you think should also agree/comment.
->>
->> Can you please comment on below 2 items based on your feedback?
->>
->> 1. Can you please suggest on proper way of generalizing to pass state
->> residency time run-time along with state during state enter?
->>
->> Not sure if any other drivers need this but for Tegra as MCE firmware is
->> in-charge of states enter and decisions, passing run-time state residency
->> from kernel to ATF is required and agree on not using power_state value for
->> this which is against PSCI spec.
->>
-> Yes, I prefer you need to get this added in the PSCI specification.
-> I have passed this thread to the author of the specification.
-Thanks Sudeep.
->
->> 2. Regarding state thresholds, although state thresholds are policy related
->> in Tegra cpu idle perspective these thresholds are platform specific based
->> on use case and mainly for MCE firmware usage to decide on state transitions
->> for core and core clusters as well.
->>
->  From previous emails, I gather these can be moved to firmware and need not be
-> there in DT ?
+Right, this is messy and we've been playing whack-a-mole with this for
+years (as usual) it seems.
 
-Yes we can move state thresholds programming from kernel driver to ATF 
-but we still need to use DT properties for this to allow users to tweak 
-for their use-cases.
+Some version of 2 above is probably what we want but the sysrq bits
+aren't handled uniformly either (e.g. since 596f63da42b9 ("serial: 8250:
+Process sysrq at port unlock time")).
 
-With DT access in ATF this can be done. But checking internally on 
-having DTB access in ATF as currently we don't support that.
-
->
->> As these are Tegra platform specific, Please comment if any other concerns
->> in having this configured by Tegra CPU Idle kernel driver.
->>
-> I prefer not to have Tegra specific idle driver if we can get the necessary
-> changes in PSCI spec. We must then have just one PSCI idle driver in the
-> kernel.
-
-Agree by adding state residency run-time propagation along with power 
-state to PSCI specification and moving state thresholds update to MCE 
-from kernel driver to AT looks like we can use same PSCI cpu idle driver 
-although we will be using state thresholds additional DT properties 
-under cpu nodes which will be used by ATF firmware once we decide on no 
-concerns to allow DTB access in ATF.
-
-
->> Based on my understanding only above issue-1 is PSCI compliant related.
->> Please confirm.
->>
-> Correct.
->
-> --
-> Regards,
-> Sudeep
+Johan
