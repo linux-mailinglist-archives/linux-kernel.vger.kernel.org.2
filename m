@@ -2,338 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF6433D74F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C6033D752
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236546AbhCPPZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 11:25:39 -0400
-Received: from casper.infradead.org ([90.155.50.34]:37380 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232456AbhCPPZ1 (ORCPT
+        id S236674AbhCPP01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 11:26:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232145AbhCPPZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 11:25:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YKpxXpBnW4nbd5qI6DXunIfxtVthTR1e36xUzlkaskA=; b=BM2YyQ+RcJhc+gUVaiJMbXRBN4
-        9RfoWcqJmOTZ62rocN0WvWm7V4ufUVkSbuqMzNJvP2DNvaQdbY610eFleULsjckdsHV9gixbBJfi9
-        3cXUozMHGwcnaXw4tJX2dXGq6cpK+066wpEmr0xK+mlBnkmaQktuNZ8nImXyqdK3dIkiUo9oVYZLC
-        VCtQhcLHikCpkcFJHeQi0/Tfyw8olOZSHRyKDhFGzGwaPbERAgJTo8hHr1Gx+kYiMFa9KGdAbRWZG
-        YPzMAKBjfrXP+bzms9vhYC8g0Al/9LWRN3eMazdTnNVXF0x3JS67GonT3HC28aYscl3mYZCizF51X
-        SJ78KSdA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMBZ6-000EY4-Kn; Tue, 16 Mar 2021 15:25:00 +0000
-Date:   Tue, 16 Mar 2021 15:25:00 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Sergei Shtepa <sergei.shtepa@veeam.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Pavel Tide <Pavel.TIde@veeam.com>
-Subject: Re: [PATCH v7 3/3] dm: add DM_INTERPOSED_FLAG
-Message-ID: <20210316152500.GA55711@infradead.org>
-References: <1615563895-28565-1-git-send-email-sergei.shtepa@veeam.com>
- <1615563895-28565-4-git-send-email-sergei.shtepa@veeam.com>
- <20210314093038.GC3773360@infradead.org>
- <20210315132509.GD30489@veeam.com>
- <20210316152314.GA55391@infradead.org>
+        Tue, 16 Mar 2021 11:25:51 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BAAAC06174A;
+        Tue, 16 Mar 2021 08:25:49 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 15:25:47 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615908348;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rwQkacUhSYfqj80E6WJVpogHjelAPI8Xa2wZ2lUXs2A=;
+        b=31CpDNa/AaAJFVA6+/LbsJ0mTEnR4cQsDvD3b13Wtpcgo2fD0NL9QnrYg1ZDSBIIa2e4H6
+        bNWr/EVGPS6KzL4LvLqPfd+S3/x/OcNhBawTKPy/ceVRouXqkLOzxi6PUcYbyJKAz5TBpJ
+        Ep2/z+pKmci/KNGu52aCuMFIhWYZDZvr2MJ1YZq+7hlg0Y0lCqa0qhlZBeZtvR1QxBSndk
+        5dWO88DNoj5SHvIigY9W9UM5dt0IJCvGgjcz2CUCVctnkqBWKeTqu6gpw/zBcxJ0YWK1vO
+        TBP6i0n8C7fxfxfbmF1TTt5c0qxZ3ZHhwcYmM3zPPvcvPtX8H4hPsbB34vJxKw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615908348;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rwQkacUhSYfqj80E6WJVpogHjelAPI8Xa2wZ2lUXs2A=;
+        b=WLtGVEnb/Qji6a5KMxTJcEtj6A9eFbzlCffSAe/KuxkKGNcHC6ngDZVMyJ5qHm0NOQsyCR
+        6tyF+l5LuP7LlRAQ==
+From:   "tip-bot2 for Andy Shevchenko" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/urgent] genirq/irq_sim: Fix typos in kernel doc (fnode -> fwnode)
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20210302161453.28540-1-andriy.shevchenko@linux.intel.com>
+References: <20210302161453.28540-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316152314.GA55391@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Message-ID: <161590834731.398.16285162336678712661.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 03:23:14PM +0000, Christoph Hellwig wrote:
-> On Mon, Mar 15, 2021 at 04:25:09PM +0300, Sergei Shtepa wrote:
-> > The 03/14/2021 12:30, Christoph Hellwig wrote:
-> > > On Fri, Mar 12, 2021 at 06:44:55PM +0300, Sergei Shtepa wrote:
-> > > > DM_INTERPOSED_FLAG allow to create DM targets on "the fly".
-> > > > Underlying block device opens without a flag FMODE_EXCL.
-> > > > DM target receives bio from the original device via
-> > > > bdev_interposer.
-> > > 
-> > > This is more of a philopical comment, but the idea of just letting the
-> > > interposed reopen the device by itself seems like a bad idea.  I think
-> > > that is probably better hidden in the block layer interposer attachment
-> > > function, which could do the extra blkdev_get_by_dev for the caller.
-> > 
-> > I suppose this cannot be implemented, since we need to change the behavior
-> > for block devices that already have been opened.
-> 
-> That's not what I mean.  Take a look at the patch relative to your
-> series to let me know what you think.  The new blkdev_interposer_attach
-> now takes a dev_t + mode for the original device and opens it on
-> behalf of the interposer.  It also moves the queue freezing into the
-> API, which should address the concerns about the helper and adds a few
-> more sanity checks.
+The following commit has been merged into the irq/urgent branch of tip:
 
-And now actually with the diff:
+Commit-ID:     ef4cb70a4c22bf301cd757dcc838dc8ca9526477
+Gitweb:        https://git.kernel.org/tip/ef4cb70a4c22bf301cd757dcc838dc8ca9526477
+Author:        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+AuthorDate:    Tue, 02 Mar 2021 18:14:53 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 16 Mar 2021 16:20:58 +01:00
 
+genirq/irq_sim: Fix typos in kernel doc (fnode -> fwnode)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 2f188a865024ac..d4d7c1caa43966 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -161,19 +161,6 @@ int blk_mq_freeze_queue_wait_timeout(struct request_queue *q,
- }
- EXPORT_SYMBOL_GPL(blk_mq_freeze_queue_wait_timeout);
- 
--bool blk_mq_is_queue_frozen(struct request_queue *q)
--{
--	bool frozen;
--
--	mutex_lock(&q->mq_freeze_lock);
--	frozen = percpu_ref_is_dying(&q->q_usage_counter) &&
--		 percpu_ref_is_zero(&q->q_usage_counter);
--	mutex_unlock(&q->mq_freeze_lock);
--
--	return frozen;
--}
--EXPORT_SYMBOL_GPL(blk_mq_is_queue_frozen);
--
- /*
-  * Guarantee no request is in use, so we can change any data structure of
-  * the queue afterward.
-diff --git a/block/genhd.c b/block/genhd.c
-index fa406b972371ae..64d6338b08cc87 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -1944,51 +1944,70 @@ static void disk_release_events(struct gendisk *disk)
- 	kfree(disk->ev);
- }
- 
--int bdev_interposer_attach(struct block_device *original,
-+struct block_device *blkdev_interposer_attach(dev_t dev, fmode_t mode,
- 			   struct block_device *interposer)
- {
-+	struct block_device *bdev;
- 	int ret = 0;
- 
--	if (WARN_ON(((!original) || (!interposer))))
--		return -EINVAL;
--	/*
--	 * interposer should be simple, no a multi-queue device
--	 */
--	if (!interposer->bd_disk->fops->submit_bio)
--		return -EINVAL;
-+	if (WARN_ON_ONCE(!bdev_is_partition(interposer)))
-+		return ERR_PTR(-EINVAL);
-+	if (WARN_ON_ONCE(!queue_is_mq(interposer->bd_disk->queue)))
-+		return ERR_PTR(-EINVAL);
- 
--	if (WARN_ON(!blk_mq_is_queue_frozen(original->bd_disk->queue)))
--		return -EPERM;
-+	bdev = blkdev_get_by_dev(dev, mode, NULL);
-+	if (IS_ERR(bdev))
-+		return bdev;
- 
--	mutex_lock(&bdev_interposer_attach_lock);
-+	ret = -EINVAL;
-+	if (WARN_ON_ONCE(bdev_nr_sectors(bdev) != bdev_nr_sectors(interposer)))
-+		goto out;
- 
--	if (bdev_has_interposer(original))
--		ret = -EBUSY;
--	else {
--		original->bd_interposer = bdgrab(interposer);
--		if (!original->bd_interposer)
--			ret = -ENODEV;
--	}
-+	blk_mq_freeze_queue(bdev->bd_disk->queue);
-+	blk_mq_quiesce_queue(bdev->bd_disk->queue);
- 
-+	mutex_lock(&bdev_interposer_attach_lock);
-+	ret = -EBUSY;
-+	if (bdev_has_interposer(bdev))
-+		goto out_unlock;
-+	ret = -ENODEV;
-+	bdev->bd_interposer = bdgrab(interposer);
-+	if (!bdev->bd_interposer)
-+		goto out_unlock;
-+	ret = 0;
-+out_unlock:
- 	mutex_unlock(&bdev_interposer_attach_lock);
- 
--	return ret;
-+	blk_mq_unquiesce_queue(bdev->bd_disk->queue);
-+	blk_mq_unfreeze_queue(bdev->bd_disk->queue);
-+out:
-+	if (ret) {
-+		blkdev_put(bdev, mode);
-+		bdev = ERR_PTR(ret);
-+	}
-+
-+	return bdev;
- }
--EXPORT_SYMBOL_GPL(bdev_interposer_attach);
-+EXPORT_SYMBOL_GPL(blkdev_interposer_attach);
- 
--void bdev_interposer_detach(struct block_device *original)
-+void blkdev_interposer_detach(struct block_device *bdev, fmode_t mode)
- {
--	if (WARN_ON(!original))
--		return;
-+	struct block_device *interposer;
- 
--	if (WARN_ON(!blk_mq_is_queue_frozen(original->bd_disk->queue)))
-+	if (WARN_ON_ONCE(!bdev_has_interposer(bdev)))
- 		return;
- 
-+	blk_mq_freeze_queue(bdev->bd_disk->queue);
-+	blk_mq_quiesce_queue(bdev->bd_disk->queue);
-+
- 	mutex_lock(&bdev_interposer_attach_lock);
--	if (bdev_has_interposer(original)) {
--		bdput(original->bd_interposer);
--		original->bd_interposer = NULL;
--	}
-+	interposer = bdev->bd_interposer;
-+	bdev->bd_interposer = NULL;
- 	mutex_unlock(&bdev_interposer_attach_lock);
-+
-+	blk_mq_unquiesce_queue(bdev->bd_disk->queue);
-+	blk_mq_unfreeze_queue(bdev->bd_disk->queue);
-+
-+	blkdev_put(interposer, mode);
- }
--EXPORT_SYMBOL_GPL(bdev_interposer_detach);
-+EXPORT_SYMBOL_GPL(blkdev_interposer_detach);
-diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index f6e2eb3f894940..fde57bb5105025 100644
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -359,18 +359,6 @@ dev_t dm_get_dev_t(const char *path)
- }
- EXPORT_SYMBOL_GPL(dm_get_dev_t);
- 
--static inline void dm_disk_freeze(struct gendisk *disk)
--{
--	blk_mq_freeze_queue(disk->queue);
--	blk_mq_quiesce_queue(disk->queue);
--}
--
--static inline void dm_disk_unfreeze(struct gendisk *disk)
--{
--	blk_mq_unquiesce_queue(disk->queue);
--	blk_mq_unfreeze_queue(disk->queue);
--}
--
- /*
-  * Add a device to the list, or just increment the usage count if
-  * it's already present.
-@@ -418,29 +406,11 @@ int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
- 		refcount_inc(&dd->count);
- 	}
- 
--	if (t->md->is_interposed) {
--		struct block_device *original = dd->dm_dev->bdev;
--		struct block_device *interposer = t->md->disk->part0;
--
--		if ((ti->begin != 0) || (ti->len < bdev_nr_sectors(original))) {
--			dm_put_device(ti, dd->dm_dev);
--			DMERR("The interposer device should not be less than the original.");
--			return -EINVAL;
--		}
--
--		/*
--		 * Attach mapped interposer device to original.
--		 * It is quite convenient that device mapper creates
--		 * one disk for one block device.
--		 */
--		dm_disk_freeze(original->bd_disk);
--		r = bdev_interposer_attach(original, interposer);
--		dm_disk_unfreeze(original->bd_disk);
--		if (r) {
--			dm_put_device(ti, dd->dm_dev);
--			DMERR("Failed to attach dm interposer.");
--			return r;
--		}
-+	if (t->md->is_interposed &&
-+	    (ti->begin != 0 || ti->len < bdev_nr_sectors(dd->dm_dev->bdev))) {
-+		dm_put_device(ti, dd->dm_dev);
-+		DMERR("The interposer device should not be less than the original.");
-+		return -EINVAL;
- 	}
- 
- 	*result = dd->dm_dev;
-@@ -496,11 +466,6 @@ void dm_put_device(struct dm_target *ti, struct dm_dev *d)
- 		       dm_device_name(md), d->name);
- 		return;
- 	}
--	if (md->is_interposed) {
--		dm_disk_freeze(d->bdev->bd_disk);
--		bdev_interposer_detach(d->bdev);
--		dm_disk_unfreeze(d->bdev->bd_disk);
--	}
- 
- 	if (refcount_dec_and_test(&dd->count)) {
- 		dm_put_table_device(md, d);
-diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-index c488e9554aa000..532ce17064b1c1 100644
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -763,10 +763,12 @@ static int open_table_device(struct table_device *td, dev_t dev,
- 	BUG_ON(td->dm_dev.bdev);
- 
- 	if (md->is_interposed) {
--
--		bdev = blkdev_get_by_dev(dev, td->dm_dev.mode, NULL);
--		if (IS_ERR(bdev))
-+		bdev = blkdev_interposer_attach(dev, td->dm_dev.mode,
-+						md->disk->part0);
-+		if (IS_ERR(bdev)) {
-+			DMERR("Failed to attach dm interposer.");
- 			return PTR_ERR(bdev);
-+		}
- 	} else {
- 		bdev = blkdev_get_by_dev(dev, td->dm_dev.mode | FMODE_EXCL, _dm_claim_ptr);
- 		if (IS_ERR(bdev))
-@@ -793,9 +795,9 @@ static void close_table_device(struct table_device *td, struct mapped_device *md
- 	if (!td->dm_dev.bdev)
- 		return;
- 
--	if (td->dm_dev.is_interposed)
--		blkdev_put(td->dm_dev.bdev, td->dm_dev.mode);
--	else {
-+	if (td->dm_dev.is_interposed) {
-+		blkdev_interposer_detach(td->dm_dev.bdev, td->dm_dev.mode);
-+	} else {
- 		bd_unlink_disk_holder(td->dm_dev.bdev, dm_disk(md));
- 		blkdev_put(td->dm_dev.bdev, td->dm_dev.mode | FMODE_EXCL);
- 	}
-diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
-index 6f01971abf7b9b..2c473c9b899089 100644
---- a/include/linux/blk-mq.h
-+++ b/include/linux/blk-mq.h
-@@ -533,7 +533,6 @@ void blk_freeze_queue_start(struct request_queue *q);
- void blk_mq_freeze_queue_wait(struct request_queue *q);
- int blk_mq_freeze_queue_wait_timeout(struct request_queue *q,
- 				     unsigned long timeout);
--bool blk_mq_is_queue_frozen(struct request_queue *q);
- 
- int blk_mq_map_queues(struct blk_mq_queue_map *qmap);
- void blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set, int nr_hw_queues);
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 90f62b4197da91..fbc510162c3827 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -2036,8 +2036,8 @@ static inline bool bdev_has_interposer(struct block_device *bdev)
- 	return (bdev->bd_interposer != NULL);
- };
- 
--int bdev_interposer_attach(struct block_device *original,
-+struct block_device *blkdev_interposer_attach(dev_t dev, fmode_t mode,
- 			   struct block_device *interposer);
--void bdev_interposer_detach(struct block_device *original);
-+void blkdev_interposer_detach(struct block_device *bdev, fmode_t mode);
- 
- #endif /* _LINUX_BLKDEV_H */
+Fix typos in kernel doc, otherwise validation script complains:
+
+.../irq_sim.c:170: warning: Function parameter or member 'fwnode' not described in 'irq_domain_create_sim'
+.../irq_sim.c:170: warning: Excess function parameter 'fnode' description in 'irq_domain_create_sim'
+.../irq_sim.c:240: warning: Function parameter or member 'fwnode' not described in 'devm_irq_domain_create_sim'
+.../irq_sim.c:240: warning: Excess function parameter 'fnode' description in 'devm_irq_domain_create_sim'
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210302161453.28540-1-andriy.shevchenko@linux.intel.com
+
+---
+ kernel/irq/irq_sim.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/irq/irq_sim.c b/kernel/irq/irq_sim.c
+index 4800660..40880c3 100644
+--- a/kernel/irq/irq_sim.c
++++ b/kernel/irq/irq_sim.c
+@@ -159,7 +159,7 @@ static const struct irq_domain_ops irq_sim_domain_ops = {
+  * irq_domain_create_sim - Create a new interrupt simulator irq_domain and
+  *                         allocate a range of dummy interrupts.
+  *
+- * @fnode:      struct fwnode_handle to be associated with this domain.
++ * @fwnode:     struct fwnode_handle to be associated with this domain.
+  * @num_irqs:   Number of interrupts to allocate.
+  *
+  * On success: return a new irq_domain object.
+@@ -228,7 +228,7 @@ static void devm_irq_domain_release_sim(struct device *dev, void *res)
+  *                              a managed device.
+  *
+  * @dev:        Device to initialize the simulator object for.
+- * @fnode:      struct fwnode_handle to be associated with this domain.
++ * @fwnode:     struct fwnode_handle to be associated with this domain.
+  * @num_irqs:   Number of interrupts to allocate
+  *
+  * On success: return a new irq_domain object.
