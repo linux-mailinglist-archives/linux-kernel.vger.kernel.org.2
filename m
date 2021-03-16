@@ -2,90 +2,953 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BB033CDAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:58:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 559C133CDAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:58:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232327AbhCPF6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54146 "EHLO
+        id S231926AbhCPF5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231908AbhCPF5a (ORCPT
+        with ESMTP id S235719AbhCPF5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:57:30 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38347C06174A;
-        Mon, 15 Mar 2021 22:57:30 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id p10so11639395ils.9;
-        Mon, 15 Mar 2021 22:57:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=PunuthsHHvFUpjG6XB7E+47qeOKXzni10NlDoUs74g8=;
-        b=hZbWCzK07qG99NA9PnCCun/jjiCiSspOSaYC8JiB0WJ7nK82YS9VmI4csU7HAWKsQ0
-         n4GnMam19zRfk+GdcWstfwo7fwVglIH3aRxCtOeYUCYohMMzImfBGI3HTyk1MG+KE5VK
-         IS7OHhXX5TXZJvTPDeFntJK1Q/4QHkoDg4EyAiGb35gW4lv3Hvly7o5BJIT4DlvuTqpt
-         mvV7YdMH+nUEHW9UKn2k7taxPHPO2PKQSpTDR63cC2lyfPrFx4Ji0vFbXtZFiogks3Df
-         4xwwsr96vIsDEvUqovjcR1YmReEoqQNYmqawuQyGEETEZM9uT38LfBVja/63fYniz2+d
-         qYxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=PunuthsHHvFUpjG6XB7E+47qeOKXzni10NlDoUs74g8=;
-        b=mbmiPyi4kDbykobNt9STsNnQj0FELhUa4ZPK7FEtfHU05tdbf77RfLvEuHpoRPy6p5
-         4ythG3iqPNqNjwVbbtN3cPrbgvocC7UbTheFn6oGf3nAsEM0soSCLU6E6vGq6sYUZkDZ
-         S/fwDH7Kt8Xt3zSKHPGuwk9C8/aY9HPJL/7dvFf/w1fC9GxuCnvFSaL2G8oeMVJLemwR
-         BbYJc91LNOcM23Gq9QuhJ+aLK4+AQdBN1PzTMnaRyFvVk+czGq6kfR3wsJKhcgq0rBiE
-         svXG6YGESwXljtT51rHjyO9aJBLB20LbZXw4xg7hAKMYHU2BxPdMxv70flQarU8QOY+M
-         xsTg==
-X-Gm-Message-State: AOAM532xEVwxalgwX9OYEHvdWRX/rzSBKqVEsw2QeYrVzg3g2B7eA5FI
-        KHSGUu1sbGJRcdu1+2cQ6BTG5848+Y4d983sPfA/KAp5Ib0=
-X-Google-Smtp-Source: ABdhPJyD0aHr9d3HmX8WJ57qBEc0Nie1Huwvep6tIoPan8LXvOowUX1mNkH6JA+vff/FPJUsdyI3R5sRGzZfqEI4imA=
-X-Received: by 2002:a92:444e:: with SMTP id a14mr2482945ilm.215.1615874249620;
- Mon, 15 Mar 2021 22:57:29 -0700 (PDT)
+        Tue, 16 Mar 2021 01:57:24 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5C0C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 22:57:24 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lM2hg-0004QY-9L; Tue, 16 Mar 2021 06:57:16 +0100
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lM2he-0002x1-VU; Tue, 16 Mar 2021 06:57:14 +0100
+Date:   Tue, 16 Mar 2021 06:57:14 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     devicetree@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org,
+        Robin van der Gracht <robin@protonic.nl>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v2 3/3] iio: adc: add ADC driver for the TI TSC2046
+ controller
+Message-ID: <20210316055714.5ud5z27vpyepdw6r@pengutronix.de>
+References: <20210312105515.32055-1-o.rempel@pengutronix.de>
+ <20210312105515.32055-4-o.rempel@pengutronix.de>
+ <20210313161119.5e6253e8@archlinux>
 MIME-Version: 1.0
-References: <CA+icZUVEkA6+5d3NGy7_G8eiaPvJkO_JCAX=XQwT1qpiGkLMWw@mail.gmail.com>
- <20210313121541.GC16144@zn.tnic> <CA+icZUXrJHHDNOC+DAcr9iw4MXn5cBDj-JrDkxeumk978Gtdcg@mail.gmail.com>
- <20210313124919.GD16144@zn.tnic> <CA+icZUWXuknBMdxTQXjJH2JiOgZbWcbk1U=dk6Zp2FgygU5Nyg@mail.gmail.com>
- <20210313132927.GF16144@zn.tnic> <CA+icZUWTSo2vkQO_tRggDFvvF_Q6AdzhvhQvmAsNxKnpGXHi0Q@mail.gmail.com>
- <CA+icZUXLyFqq0y_GnKca8MS4wO2kcj4K-D1kBHLa8u_pnLZ7eQ@mail.gmail.com>
- <YE+i/VWITCCb37tD@hirez.programming.kicks-ass.net> <CA+icZUWQ1kH6muAQbNuVAPj4Cn=8ssDAJfYLKht8ezAgJKWApA@mail.gmail.com>
- <YE/cMeO+oC/5JEC6@hirez.programming.kicks-ass.net>
-In-Reply-To: <YE/cMeO+oC/5JEC6@hirez.programming.kicks-ass.net>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Tue, 16 Mar 2021 06:56:53 +0100
-Message-ID: <CA+icZUXko_Nxh-9_qgjMYyGsh8E1rj2cWmQh0OHjuZECMZxp6Q@mail.gmail.com>
-Subject: Re: [PATCH 0/2] x86: Remove ideal_nops[]
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        rostedt@goodmis.org, hpa@zytor.com, torvalds@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
-        jpoimboe@redhat.com, alexei.starovoitov@gmail.com,
-        mhiramat@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210313161119.5e6253e8@archlinux>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 06:33:47 up 103 days, 19:40, 29 users,  load average: 0.03, 0.03,
+ 0.00
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 11:14 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Mar 15, 2021 at 07:23:29PM +0100, Sedat Dilek wrote:
->
-> > You mean something like that ^^?
-> >
-> > - Sedat -
-> >
-> > [1] https://git.zx2c4.com/laptop-kernel/commit/?id=116badbe0a18bc36ba90acb8b80cff41f9ab0686
->
-> *shudder*, I was more thinking you'd simply add it to you CFLAGS when
-> building. I don't see any point in having that in Kconfig.
+Hi,
 
-Simply adding the CFLAGS to arch/x86/Makefile.
+On Sat, Mar 13, 2021 at 04:11:19PM +0000, Jonathan Cameron wrote:
+> On Fri, 12 Mar 2021 11:55:15 +0100
+> Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+> 
+> > Basically the TI TSC2046 touchscreen controller is 8 channel ADC optimized for
+> > the touchscreen use case. By implementing it as IIO ADC device, we can
+> > make use of resistive-adc-touch and iio-hwmon drivers.
+> > 
+> > So far, this driver was tested with custom version of resistive-adc-touch driver,
+> > since it need to be extended to make use of Z1 and Z2 channels. The X/Y
+> > are working without additional changes.
+> > 
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> 
+> So the flow in here is still rather non obvious and touchscreen specific.
+> Please add some documentation on what the trigger actually is. It seems
+> to be some combination of an hrtimer and a interrupt driven trigger.
+> I 'think' the idea is to ensure you get one 'no touch' measurement once
+> touch is removed?
 
-If I forgot to mention:
 
-   Tested-by: Sedat Dilek <sedat.dilek@gmail.com>. # LLVM/Clang v12.0.0-rc3
+Yes, this IRQ line is just a voltage level converter integrated in to
+controller. As soon voltage level reaches some threshold the IRQ level
+is changed. It means, the IRQ is inactive as soon as nothing is pressing
+on the screen, or the channel is changed. Since we need more sample and not so
+frequent, I made this construction of rate limited IRQ with extra triggering on
+the end.
 
-- Sedat -
+Potentially we can use hrtimer trigger, especially if the IRQ line
+is not attached or can't be used for some reason. But for most use cases
+this trigger will provide better power efficiency.
+
+I can imagine, that in case of field board diagnostic, we may need some extra
+functionality. So the workflow will look like:
+- unbind the touchscreen driver
+- disable oversampling
+- disable settling time
+- attach sysfs trigger
+- enable one of channels
+- start grabbing data over IIO char dev
+
+But this functionality will need some more work and currently has lowest
+prio.
+
+> I guess we don't need the performance but I was a bit surprised that I didn't
+> see this doing overlapping of the previous read out with the config for the
+> next sample.
+
+I can't follow here. Can you please explain.
+
+> Anyhow, overall this looks pretty good to me.  Add that a bit of documentation
+> for the trigger to the comments at the top of the file and tidy up the last
+> few things inline.
+
+ok
+
+> It's a bit unusual as ADC drivers go, but not so strange that it worries
+> me that much.
+
+:)
+
+> Thanks,
+> 
+> Jonathan
+> 
+> > ---
+> >  MAINTAINERS                  |   8 +
+> >  drivers/iio/adc/Kconfig      |  12 +
+> >  drivers/iio/adc/Makefile     |   1 +
+> >  drivers/iio/adc/ti-tsc2046.c | 713 +++++++++++++++++++++++++++++++++++
+> >  4 files changed, 734 insertions(+)
+> >  create mode 100644 drivers/iio/adc/ti-tsc2046.c
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 3fea1a934b32..2d33c6442a55 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -17852,6 +17852,14 @@ S:	Supported
+> >  F:	Documentation/devicetree/bindings/net/nfc/trf7970a.txt
+> >  F:	drivers/nfc/trf7970a.c
+> >  
+> > +TI TSC2046 ADC DRIVER
+> > +M:	Oleksij Rempel <o.rempel@pengutronix.de>
+> > +R:	kernel@pengutronix.de
+> > +L:	linux-iio@vger.kernel.org
+> > +S:	Maintained
+> > +F:	Documentation/devicetree/bindings/iio/adc/ti,tsc2046.yaml
+> > +F:	drivers/iio/adc/ti-tsc2046.c
+> > +
+> >  TI TWL4030 SERIES SOC CODEC DRIVER
+> >  M:	Peter Ujfalusi <peter.ujfalusi@gmail.com>
+> >  L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+> > diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+> > index 15587a1bc80d..6ad6f04dfd20 100644
+> > --- a/drivers/iio/adc/Kconfig
+> > +++ b/drivers/iio/adc/Kconfig
+> > @@ -1175,6 +1175,18 @@ config TI_TLC4541
+> >  	  This driver can also be built as a module. If so, the module will be
+> >  	  called ti-tlc4541.
+> >  
+> > +config TI_TSC2046
+> > +	tristate "Texas Instruments TSC2046 ADC driver"
+> > +	depends on SPI
+> > +	select IIO_BUFFER
+> > +	select IIO_TRIGGERED_BUFFER
+> > +	help
+> > +	  Say yes here to build support for ADC functionality of Texas
+> > +	  Instruments TSC2046 touch screen controller.
+> > +
+> > +	  This driver can also be built as a module. If so, the module will be
+> > +	  called ti-tsc2046.
+> > +
+> >  config TWL4030_MADC
+> >  	tristate "TWL4030 MADC (Monitoring A/D Converter)"
+> >  	depends on TWL4030_CORE
+> > diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
+> > index 5fca90ada0ec..440e18ac6780 100644
+> > --- a/drivers/iio/adc/Makefile
+> > +++ b/drivers/iio/adc/Makefile
+> > @@ -105,6 +105,7 @@ obj-$(CONFIG_TI_ADS8688) += ti-ads8688.o
+> >  obj-$(CONFIG_TI_ADS124S08) += ti-ads124s08.o
+> >  obj-$(CONFIG_TI_AM335X_ADC) += ti_am335x_adc.o
+> >  obj-$(CONFIG_TI_TLC4541) += ti-tlc4541.o
+> > +obj-$(CONFIG_TI_TSC2046) += ti-tsc2046.o
+> >  obj-$(CONFIG_TWL4030_MADC) += twl4030-madc.o
+> >  obj-$(CONFIG_TWL6030_GPADC) += twl6030-gpadc.o
+> >  obj-$(CONFIG_VF610_ADC) += vf610_adc.o
+> > diff --git a/drivers/iio/adc/ti-tsc2046.c b/drivers/iio/adc/ti-tsc2046.c
+> > new file mode 100644
+> > index 000000000000..7c3ae9181164
+> > --- /dev/null
+> > +++ b/drivers/iio/adc/ti-tsc2046.c
+> > @@ -0,0 +1,713 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Texas Instruments TSC2046 SPI ADC driver
+> > + *
+> > + * Copyright (c) 2021 Oleksij Rempel <kernel@pengutronix.de>, Pengutronix
+> > + */
+> > +
+> > +#include <linux/bitfield.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/module.h>
+> > +#include <linux/spi/spi.h>
+> > +
+> > +#include <asm/unaligned.h>
+> > +
+> > +#include <linux/iio/buffer.h>
+> > +#include <linux/iio/trigger_consumer.h>
+> > +#include <linux/iio/triggered_buffer.h>
+> > +#include <linux/iio/trigger.h>
+> > +
+> > +#define TI_TSC2046_NAME				"tsc2046"
+> > +
+> > +/* This driver doesn't aim at the peak continuous sample rate */
+> > +#define	TI_TSC2046_MAX_SAMPLE_RATE		125000
+> > +#define	TI_TSC2046_SAMPLE_BITS			(8 /*cmd*/ + 16 /*sample*/)
+> > +#define	TI_TSC2046_MAX_CLK_FREQ \
+> > +	(TI_TSC2046_MAX_SAMPLE_RATE * TI_TSC2046_SAMPLE_BITS)
+> > +
+> > +#define TI_TSC2046_SAMPLE_INTERVAL_US		10000
+> > +
+> > +#define TI_TSC2046_START			BIT(7)
+> > +#define TI_TSC2046_ADDR				GENMASK(6, 4)
+> > +#define TI_TSC2046_ADDR_TEMP1			7
+> > +#define TI_TSC2046_ADDR_AUX			6
+> > +#define TI_TSC2046_ADDR_X			5
+> > +#define TI_TSC2046_ADDR_Z2			4
+> > +#define TI_TSC2046_ADDR_Z1			3
+> > +#define TI_TSC2046_ADDR_VBAT			2
+> > +#define TI_TSC2046_ADDR_Y			1
+> > +#define TI_TSC2046_ADDR_TEMP0			0
+> > +
+> > +/*
+> > + * The mode bit sets the resolution of the ADC. With this bit low, the next
+> > + * conversion has 12-bit resolution, whereas with this bit high, the next
+> > + * conversion has 8-bit resolution. This driver is optimized for 12-bit mode.
+> > + * So, for this driver, this bit should stay zero.
+> > + */
+> > +#define TI_TSC2046_8BIT_MODE			BIT(3)
+> > +
+> > +/*
+> > + * SER/DFR - The SER/DFR bit controls the reference mode, either single-ended
+> > + * (high) or differential (low).
+> > + */
+> > +#define TI_TSC2046_SER				BIT(2)
+> > +
+> > +/*
+> > + * If VREF_ON and ADC_ON are both zero, then the chip operates in
+> > + * auto-wake/suspend mode. In most case this bits should stay zero.
+> > + */
+> > +#define TI_TSC2046_PD1_VREF_ON			BIT(1)
+> > +#define TI_TSC2046_PD0_ADC_ON			BIT(0)
+> > +
+> > +#define TI_TSC2046_MAX_CHAN			8
+> > +
+> > +/* Represents a HW sample */
+> > +struct tsc2046_adc_atom {
+> > +	/*
+> > +	 * Command transmitted to the controller. This filed is empty on the RX
+> > +	 * buffer.
+> > +	 */
+> > +	u8 cmd;
+> > +	/*
+> > +	 * Data received from the controller. This filed is empty for the TX
+> > +	 * buffer
+> > +	 */
+> > +	__be16 data;
+> > +} __packed;
+> > +
+> > +struct tsc2046_adc_scan_buf {
+> > +	/* Scan data for each channel */
+> > +	u16 data[TI_TSC2046_MAX_CHAN];
+> > +	/* Timestamp */
+> > +	s64 ts __aligned(8);
+> > +};
+> > +
+> > +/* Layout of atomic buffers within big buffer */
+> > +struct tsc2046_adc_group_layout {
+> > +	/* Group offset within the SPI RX buffer */
+> > +	unsigned int offset;
+> > +	/*
+> > +	 * Amount of tsc2046_adc_atom structs within the same command gathered
+> > +	 * within same group.
+> > +	 */
+> > +	unsigned int count;
+> > +	/*
+> > +	 * Settling samples (tsc2046_adc_atom structs) which should be skipped
+> > +	 * before good samples will start.
+> > +	 */
+> > +	unsigned int skip;
+> > +};
+> > +
+> > +struct tsc2046_adc_dcfg {
+> > +	const struct iio_chan_spec *channels;
+> > +	unsigned int num_channels;
+> > +};
+> > +
+> > +struct tsc2046_adc_ch_cfg {
+> > +	unsigned int settling_time_us;
+> > +	unsigned int average_samples;
+> > +};
+> > +
+> > +struct tsc2046_adc_priv {
+> > +	struct spi_device *spi;
+> > +	const struct tsc2046_adc_dcfg *dcfg;
+> > +
+> > +	struct iio_trigger *trig;
+> > +	struct hrtimer trig_timer;
+> > +	spinlock_t trig_lock;
+> > +	atomic_t trig_more_count;
+> > +
+> > +	struct spi_transfer xfer;
+> > +	struct spi_message msg;
+> > +
+> > +	struct tsc2046_adc_scan_buf scan_buf;
+> > +	/*
+> > +	 * Lock to protect the layout and the spi transfer buffer.
+> > +	 * tsc2046_adc_group_layout can be changed within update_scan_mode(),
+> > +	 * in this case the l[] and tx/rx buffer will be out of sync to each
+> > +	 * other.
+> > +	 */
+> > +	struct mutex slock;
+> > +	struct tsc2046_adc_group_layout l[TI_TSC2046_MAX_CHAN];
+> > +	struct tsc2046_adc_atom *rx;
+> > +	struct tsc2046_adc_atom *tx;
+> > +
+> > +	struct tsc2046_adc_atom *rx_one;
+> > +	struct tsc2046_adc_atom *tx_one;
+> > +
+> > +	unsigned int count;
+> > +	unsigned int groups;
+> > +	u32 effective_speed_hz;
+> > +	u32 scan_interval_us;
+> > +	u32 time_per_scan_us;
+> > +	u32 time_per_bit_ns;
+> > +
+> > +	struct tsc2046_adc_ch_cfg ch_cfg[TI_TSC2046_MAX_CHAN];
+> > +};
+> > +
+> > +#define TI_TSC2046_V_CHAN(index, bits, name)			\
+> > +{								\
+> > +	.type = IIO_VOLTAGE,					\
+> > +	.indexed = 1,						\
+> > +	.channel = index,					\
+> > +	.address = index,					\
+> 
+> Don't think you ever use address, so don't set it.
+> 
+> > +	.datasheet_name = "#name",				\
+> > +	.scan_index = index,					\
+> > +	.scan_type = {						\
+> > +		.sign = 'u',					\
+> > +		.realbits = bits,				\
+> > +		.storagebits = 16,				\
+> > +		.shift = 0,					\
+> 
+> Shift of 0 assumed default, so no need to specify that here (it'll end
+> up 0 anyway)
+> 
+> > +		.endianness = IIO_CPU,				\
+> > +	},							\
+> > +}
+> > +
+> > +#define DECLARE_TI_TSC2046_8_CHANNELS(name, bits) \
+> > +const struct iio_chan_spec name ## _channels[] = { \
+> > +	TI_TSC2046_V_CHAN(0, bits, TEMP0), \
+> > +	TI_TSC2046_V_CHAN(1, bits, Y), \
+> > +	TI_TSC2046_V_CHAN(2, bits, VBAT), \
+> > +	TI_TSC2046_V_CHAN(3, bits, Z1), \
+> > +	TI_TSC2046_V_CHAN(4, bits, Z2), \
+> > +	TI_TSC2046_V_CHAN(5, bits, X), \
+> > +	TI_TSC2046_V_CHAN(6, bits, AUX), \
+> > +	TI_TSC2046_V_CHAN(7, bits, TEMP1), \
+> > +	IIO_CHAN_SOFT_TIMESTAMP(8), \
+> > +}
+> > +
+> > +static DECLARE_TI_TSC2046_8_CHANNELS(tsc2046_adc, 12);
+> > +
+> > +static const struct tsc2046_adc_dcfg tsc2046_adc_dcfg_tsc2046e = {
+> > +	.channels = tsc2046_adc_channels,
+> > +	.num_channels = ARRAY_SIZE(tsc2046_adc_channels),
+> > +};
+> > +
+> > +/*
+> > + * Convert time to a number of samples which can be transferred within this
+> > + * time.
+> > + */
+> > +static unsigned int tsc2046_adc_time_to_count(struct tsc2046_adc_priv *priv,
+> > +					      unsigned long time)
+> > +{
+> > +	unsigned int bit_count, sample_count;
+> > +
+> > +	bit_count = DIV_ROUND_UP(time * NSEC_PER_USEC, priv->time_per_bit_ns);
+> > +	sample_count = DIV_ROUND_UP(bit_count, TI_TSC2046_SAMPLE_BITS);
+> > +
+> > +	dev_dbg(&priv->spi->dev, "Effective speed %u, time per bit: %u, count bits: %u, count samples: %u\n",
+> > +		priv->effective_speed_hz, priv->time_per_bit_ns,
+> > +		bit_count, sample_count);
+> > +
+> > +	return sample_count;
+> > +}
+> > +
+> > +static u8 tsc2046_adc_get_cmd(struct tsc2046_adc_priv *priv, int ch_idx,
+> > +			      bool keep_power)
+> > +{
+> > +	u32 pd;
+> > +
+> > +	/*
+> > +	 * if PD bits are 0, controller will automatically disable ADC, VREF and
+> > +	 * enable IRQ.
+> > +	 */
+> > +	if (keep_power)
+> > +		pd = TI_TSC2046_PD0_ADC_ON;
+> > +	else
+> > +		pd = 0;
+> > +
+> > +	return TI_TSC2046_START | FIELD_PREP(TI_TSC2046_ADDR, ch_idx) | pd;
+> > +}
+> > +
+> > +static u16 tsc2046_adc_get_value(struct tsc2046_adc_atom *buf)
+> > +{
+> > +	/* Last 3 bits on the wire are empty */
+> > +	return get_unaligned_be16(&buf->data) >> 3;
+> > +}
+> > +
+> > +static int tsc2046_adc_read_one(struct tsc2046_adc_priv *priv, int ch_idx,
+> > +				u32 *effective_speed_hz)
+> > +{
+> > +	struct spi_transfer xfer;
+> > +	struct spi_message msg;
+> > +	int ret;
+> > +
+> > +	memset(&xfer, 0, sizeof(xfer));
+> > +	priv->tx_one->cmd = tsc2046_adc_get_cmd(priv, ch_idx, false);
+> > +	priv->tx_one->data = 0;
+> > +	xfer.tx_buf = priv->tx_one;
+> > +	xfer.rx_buf = priv->rx_one;
+> > +	xfer.len = sizeof(*priv->tx_one);
+> > +	spi_message_init(&msg);
+> > +	spi_message_add_tail(&xfer, &msg);
+> 
+> Perhaps add a comment that you aren't using spi_write_then_read() because
+> you need to be able to get hold of the effective_speed_hz from the
+> xfer.
+> 
+> > +
+> > +	ret = spi_sync(priv->spi, &msg);
+> > +	if (ret) {
+> > +		dev_err_ratelimited(&priv->spi->dev, "SPI transfer filed %pe\n",
+> > +				    ERR_PTR(ret));
+> > +		return ret;
+> > +	}
+> > +
+> > +	if (effective_speed_hz)
+> > +		*effective_speed_hz = xfer.effective_speed_hz;
+> > +
+> > +	return tsc2046_adc_get_value(priv->rx_one);
+> > +}
+> > +
+> > +static size_t tsc2046_adc_group_set_layout(struct tsc2046_adc_priv *priv,
+> > +					   unsigned int group,
+> > +					   unsigned int ch_idx)
+> > +{
+> > +	struct tsc2046_adc_ch_cfg *ch = &priv->ch_cfg[ch_idx];
+> > +	struct tsc2046_adc_group_layout *prev, *cur;
+> > +	unsigned int max_count, count_skip;
+> > +	unsigned int offset = 0;
+> > +
+> 
+> One blank line almost always enough :)
+> 
+> > +
+> > +	if (group) {
+> > +		prev = &priv->l[group - 1];
+> > +		offset = prev->offset + prev->count;
+> > +	}
+> > +
+> > +	cur = &priv->l[group];
+> > +
+> > +	count_skip = tsc2046_adc_time_to_count(priv, ch->settling_time_us);
+> > +	max_count = count_skip + ch->average_samples;
+> > +
+> > +	cur->offset = offset;
+> > +	cur->count = max_count;
+> > +	cur->skip = count_skip;
+> > +
+> > +	return sizeof(*priv->tx) * max_count;
+> > +}
+> > +
+> > +static void tsc2046_adc_group_set_cmd(struct tsc2046_adc_priv *priv,
+> > +				      unsigned int group, int ch_idx)
+> > +{
+> > +	struct tsc2046_adc_group_layout *l = &priv->l[group];
+> > +	unsigned int i;
+> > +	u8 cmd;
+> > +
+> > +	/*
+> > +	 * Do not enable automatic power down on working samples. Otherwise the
+> > +	 * plates will never be completely charged.
+> > +	 */
+> > +	cmd = tsc2046_adc_get_cmd(priv, ch_idx, true);
+> > +
+> > +	for (i = 0; i < l->count - 1; i++)
+> > +		priv->tx[l->offset + i].cmd = cmd;
+> > +
+> > +	/* automatically power down on last sample */
+> > +	priv->tx[l->offset + i].cmd = tsc2046_adc_get_cmd(priv, ch_idx, false);
+> > +}
+> > +
+> > +static u16 tsc2046_adc_get_val(struct tsc2046_adc_priv *priv, int group)
+> > +{
+> > +	struct tsc2046_adc_group_layout *l;
+> > +	unsigned int val, val_normalized = 0;
+> > +	int valid_count, i;
+> > +
+> > +	l = &priv->l[group];
+> > +	valid_count = l->count - l->skip;
+> > +
+> > +	for (i = 0; i < valid_count; i++) {
+> > +		val = tsc2046_adc_get_value(&priv->rx[l->offset + l->skip + i]);
+> > +		val_normalized += val;
+> > +	}
+> > +
+> > +	return DIV_ROUND_UP(val_normalized, valid_count);
+> > +}
+> > +
+> > +static int tsc2046_adc_scan(struct iio_dev *indio_dev)
+> > +{
+> > +	struct tsc2046_adc_priv *priv = iio_priv(indio_dev);
+> > +	struct device *dev = &priv->spi->dev;
+> > +	int group;
+> > +	int ret;
+> > +
+> > +	ret = spi_sync(priv->spi, &priv->msg);
+> > +	if (ret < 0) {
+> > +		dev_err_ratelimited(dev, "SPI transfer filed: %pe\n",
+> > +				    ERR_PTR(ret));
+> > +		return ret;
+> > +	}
+> > +
+> > +	for (group = 0; group < priv->groups; group++) {
+> > +		u16 val = tsc2046_adc_get_val(priv, group);
+> > +
+> > +		priv->scan_buf.data[group] = val;
+> 
+> nitpick, but why not the more compact:
+> 		priv->scan_buf.data[group] = tsc2046_adc_get_val(priv, group);
+> ?
+> 
+> 
+> > +	}
+> > +
+> > +	ret = iio_push_to_buffers_with_timestamp(indio_dev, &priv->scan_buf,
+> > +						 iio_get_time_ns(indio_dev));
+> > +	/*
+> > +	 * If there's no consumer (or consumer is kfifo), may get a EBUSY here
+> > +	 * - ignore it.
+> 
+> The no consumer case should be impossible (I hope!), but fair enough of kfifo side of
+> things.
+> 
+> > +	 */
+> > +	if (ret < 0 && ret != -EBUSY) {
+> > +		dev_err_ratelimited(dev, "Filed to push scan buffer %pe\n",
+> > +				    ERR_PTR(ret));
+> 
+> Failed
+> 
+> > +
+> > +		return ret;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static irqreturn_t tsc2046_adc_trigger_handler(int irq, void *p)
+> > +{
+> > +	struct iio_poll_func *pf = p;
+> > +	struct iio_dev *indio_dev = pf->indio_dev;
+> > +	struct tsc2046_adc_priv *priv = iio_priv(indio_dev);
+> > +
+> > +	mutex_lock(&priv->slock);
+> > +	tsc2046_adc_scan(indio_dev);
+> > +	mutex_unlock(&priv->slock);
+> > +
+> > +	iio_trigger_notify_done(indio_dev->trig);
+> > +
+> > +	return IRQ_HANDLED;
+> > +}
+> > +
+> > +static int tsc2046_adc_update_scan_mode(struct iio_dev *indio_dev,
+> > +					const unsigned long *active_scan_mask)
+> > +{
+> > +	struct tsc2046_adc_priv *priv = iio_priv(indio_dev);
+> > +	unsigned int ch_idx, group = 0;
+> > +	size_t size = 0;
+> > +
+> > +	mutex_lock(&priv->slock);
+> > +
+> > +	for_each_set_bit(ch_idx, active_scan_mask, indio_dev->num_channels) {
+> > +		size += tsc2046_adc_group_set_layout(priv, group, ch_idx);
+> > +		tsc2046_adc_group_set_cmd(priv, group, ch_idx);
+> > +		group++;
+> > +	}
+> > +
+> > +	priv->groups = group;
+> > +	priv->xfer.len = size;
+> > +	priv->time_per_scan_us = size * 8 * priv->time_per_bit_ns / NSEC_PER_USEC;
+> > +
+> > +	if ((priv->scan_interval_us - priv->time_per_scan_us) < 0)
+> > +		dev_warn(&priv->spi->dev, "The scan interval (%d) is less then calculated scan time (%d)\n",
+> > +			 priv->scan_interval_us, priv->time_per_scan_us);
+> > +
+> > +	mutex_unlock(&priv->slock);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct iio_info tsc2046_adc_info = {
+> > +	.update_scan_mode = tsc2046_adc_update_scan_mode,
+> > +};
+> > +
+> > +static enum hrtimer_restart tsc2046_adc_trig_more(struct hrtimer *hrtimer)
+> > +{
+> > +	struct tsc2046_adc_priv *priv = container_of(hrtimer,
+> > +						     struct tsc2046_adc_priv,
+> > +						     trig_timer);
+> > +	unsigned long flags;
+> > +
+> > +	spin_lock_irqsave(&priv->trig_lock, flags);
+> > +
+> > +	disable_irq_nosync(priv->spi->irq);
+> > +
+> > +	atomic_inc(&priv->trig_more_count);
+> > +	iio_trigger_poll(priv->trig);
+> > +
+> > +	spin_unlock_irqrestore(&priv->trig_lock, flags);
+> > +
+> > +	return HRTIMER_NORESTART;
+> > +}
+> > +
+> > +static irqreturn_t tsc2046_adc_irq(int irq, void *dev_id)
+> > +{
+> > +	struct iio_dev *indio_dev = dev_id;
+> > +	struct tsc2046_adc_priv *priv = iio_priv(indio_dev);
+> > +
+> 
+> One blank line is enough.
+> 
+> > +
+> > +	spin_lock(&priv->trig_lock);
+> > +
+> > +	hrtimer_try_to_cancel(&priv->trig_timer);
+> > +
+> > +	atomic_set(&priv->trig_more_count, 0);
+> > +	disable_irq_nosync(priv->spi->irq);
+> > +	iio_trigger_poll(priv->trig);
+> > +
+> > +	spin_unlock(&priv->trig_lock);
+> > +
+> > +	return IRQ_HANDLED;
+> > +}
+> > +
+> > +static void tsc2046_adc_reenable_trigger(struct iio_trigger *trig)
+> > +{
+> > +	struct iio_dev *indio_dev = iio_trigger_get_drvdata(trig);
+> > +	struct tsc2046_adc_priv *priv = iio_priv(indio_dev);
+> > +	unsigned long flags;
+> > +	int delta;
+> > +
+> > +	/*
+> > +	 * We can sample it as fast as we can, but usually we do not need so
+> > +	 * many samples. Reduce the sample rate for default (touchscreen) use
+> > +	 * case.
+> > +	 * Currently we do not need a highly precise sample rate. It is enough
+> > +	 * to have calculated numbers.
+> > +	 */
+> > +	delta = priv->scan_interval_us - priv->time_per_scan_us;
+> > +	if (delta > 0)
+> > +		fsleep(delta);
+> > +
+> > +	spin_lock_irqsave(&priv->trig_lock, flags);
+> > +
+> > +	/*
+> > +	 * We need to trigger at least one extra sample to detect state
+> > +	 * difference on ADC side.
+> > +	 */
+> > +	if (atomic_read(&priv->trig_more_count) == 0) {
+> > +		int timeout_ms = DIV_ROUND_UP(priv->scan_interval_us,
+> > +					      USEC_PER_MSEC);
+> > +
+> > +		hrtimer_start(&priv->trig_timer, ms_to_ktime(timeout_ms),
+> > +			      HRTIMER_MODE_REL_SOFT);
+> > +	}
+> > +
+> > +	enable_irq(priv->spi->irq);
+> > +
+> > +	spin_unlock_irqrestore(&priv->trig_lock, flags);
+> > +}
+> > +
+> > +static int tsc2046_adc_set_trigger_state(struct iio_trigger *trig, bool enable)
+> > +{
+> > +	struct iio_dev *indio_dev = iio_trigger_get_drvdata(trig);
+> > +	struct tsc2046_adc_priv *priv = iio_priv(indio_dev);
+> > +
+> > +	if (enable) {
+> > +		enable_irq(priv->spi->irq);
+> > +	} else {
+> > +		disable_irq(priv->spi->irq);
+> > +		hrtimer_try_to_cancel(&priv->trig_timer);
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct iio_trigger_ops tsc2046_adc_trigger_ops = {
+> > +	.set_trigger_state = tsc2046_adc_set_trigger_state,
+> > +	.reenable = tsc2046_adc_reenable_trigger,
+> > +};
+> > +
+> > +static int tsc2046_adc_setup_spi_msg(struct tsc2046_adc_priv *priv)
+> > +{
+> > +	unsigned int ch_idx;
+> > +	size_t size = 0;
+> > +	int ret;
+> > +
+> > +	priv->tx_one = devm_kzalloc(&priv->spi->dev, sizeof(*priv->tx_one),
+> > +				    GFP_KERNEL);
+> > +	if (!priv->tx_one)
+> > +		return -ENOMEM;
+> > +
+> > +	priv->rx_one = devm_kzalloc(&priv->spi->dev, sizeof(*priv->rx_one),
+> > +				    GFP_KERNEL);
+> > +	if (!priv->rx_one)
+> > +		return -ENOMEM;
+> > +
+> > +	/*
+> > +	 * Make dummy read to set initial power state and get real SPI clock
+> > +	 * freq. It seems to be not important which channel is used for this
+> > +	 * case.
+> > +	 */
+> > +	ret = tsc2046_adc_read_one(priv, TI_TSC2046_ADDR_TEMP0,
+> > +				   &priv->effective_speed_hz);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	/*
+> > +	 * In case SPI controller do not report effective_speed_hz, use
+> > +	 * configure value and hope it will match
+> > +	 */
+> > +	if (!priv->effective_speed_hz)
+> > +		priv->effective_speed_hz = priv->spi->max_speed_hz;
+> > +
+> > +
+> > +	priv->scan_interval_us = TI_TSC2046_SAMPLE_INTERVAL_US;
+> > +	priv->time_per_bit_ns = DIV_ROUND_UP(NSEC_PER_SEC,
+> > +					     priv->effective_speed_hz);
+> > +
+> > +	/*
+> > +	 * Calculate and allocate maximal size buffer if all channels are
+> > +	 * enabled.
+> > +	 */
+> > +	for (ch_idx = 0; ch_idx < priv->dcfg->num_channels; ch_idx++)
+> > +		size += tsc2046_adc_group_set_layout(priv, ch_idx, ch_idx);
+> > +
+> > +	priv->tx = devm_kzalloc(&priv->spi->dev, size, GFP_KERNEL);
+> > +	if (!priv->tx)
+> > +		return -ENOMEM;
+> > +
+> > +	priv->rx = devm_kzalloc(&priv->spi->dev, size, GFP_KERNEL);
+> > +	if (!priv->rx)
+> > +		return -ENOMEM;
+> > +
+> > +	spi_message_init(&priv->msg);
+> > +	priv->msg.context = priv;
+> > +
+> > +	priv->xfer.tx_buf = priv->tx;
+> > +	priv->xfer.rx_buf = priv->rx;
+> > +	priv->xfer.len = size;
+> > +	spi_message_add_tail(&priv->xfer, &priv->msg);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void tsc2046_adc_parse_fwnode(struct tsc2046_adc_priv *priv)
+> > +{
+> > +	struct fwnode_handle *child;
+> > +	struct device *dev = &priv->spi->dev;
+> > +
+> > +	device_for_each_child_node(dev, child) {
+> > +		u32 stl, aver, reg;
+> > +		int ret;
+> > +
+> > +		ret = fwnode_property_read_u32(child, "reg", &reg);
+> > +		if (ret) {
+> > +			dev_err(dev, "invalid reg on %pfw, err: %pe\n", child,
+> > +				ERR_PTR(ret));
+> > +			continue;
+> > +		}
+> > +
+> > +		if (reg >= ARRAY_SIZE(priv->ch_cfg)) {
+> > +			dev_err(dev, "%pfw: Unsupported reg value: %i, max supported is: %i.\n",
+> > +				child, reg, ARRAY_SIZE(priv->ch_cfg));
+> > +			continue;
+> > +		}
+> > +
+> > +		ret = fwnode_property_read_u32(child, "settling-time-us", &stl);
+> > +		if (!ret)
+> > +			priv->ch_cfg[reg].settling_time_us = stl;
+> > +
+> > +		ret = fwnode_property_read_u32(child, "average-samples", &aver);
+> > +		if (!ret)
+> > +			priv->ch_cfg[reg].average_samples = aver;
+> > +	}
+> > +}
+> > +
+> > +static int tsc2046_adc_probe(struct spi_device *spi)
+> > +{
+> > +	const struct tsc2046_adc_dcfg *dcfg;
+> > +	struct device *dev = &spi->dev;
+> > +	struct tsc2046_adc_priv *priv;
+> > +	struct iio_dev *indio_dev;
+> > +	struct iio_trigger *trig;
+> > +	const char *name;
+> > +	int ret;
+> > +
+> > +	if (spi->max_speed_hz > TI_TSC2046_MAX_CLK_FREQ) {
+> > +		dev_err(dev, "SPI max_speed_hz is too high: %d Hz. Max supported freq is %d Hz\n",
+> > +			spi->max_speed_hz, TI_TSC2046_MAX_CLK_FREQ);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	dcfg = device_get_match_data(dev);
+> > +	if (!dcfg)
+> > +		return -EINVAL;
+> > +
+> > +	spi->bits_per_word = 8;
+> > +	spi->mode &= ~SPI_MODE_X_MASK;
+> > +	spi->mode |= SPI_MODE_0;
+> > +	ret = spi_setup(spi);
+> > +	if (ret < 0)
+> > +		return dev_err_probe(dev, ret, "Error in spi setup\n");
+> > +
+> > +	indio_dev = devm_iio_device_alloc(dev, sizeof(*priv));
+> > +	if (!indio_dev)
+> > +		return -ENOMEM;
+> > +
+> > +	priv = iio_priv(indio_dev);
+> > +	priv->dcfg = dcfg;
+> > +
+> > +	spi_set_drvdata(spi, indio_dev);
+> > +
+> > +	priv->spi = spi;
+> > +
+> > +	name = devm_kasprintf(dev, GFP_KERNEL, "%s-%s",
+> > +			      TI_TSC2046_NAME, dev_name(dev));
+> > +
+> > +	indio_dev->name = name;
+> > +	indio_dev->modes = INDIO_DIRECT_MODE | INDIO_BUFFER_TRIGGERED;
+> > +	indio_dev->channels = dcfg->channels;
+> > +	indio_dev->num_channels = dcfg->num_channels;
+> > +	indio_dev->info = &tsc2046_adc_info;
+> > +
+> > +	tsc2046_adc_parse_fwnode(priv);
+> > +
+> > +	ret = tsc2046_adc_setup_spi_msg(priv);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	mutex_init(&priv->slock);
+> > +
+> > +	/* TODO: remove IRQ_NOAUTOEN after needed patches are mainline */
+> > +	irq_set_status_flags(spi->irq, IRQ_NOAUTOEN);
+> > +	ret = devm_request_irq(dev, spi->irq, &tsc2046_adc_irq,
+> > +			       0, name, indio_dev);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	trig = devm_iio_trigger_alloc(dev, "%s-dev%d", indio_dev->name,
+> > +				      indio_dev->id);
+> 
+> Given the trigger a more descriptive name to reflect that it is 'touch'
+> based.
+> 
+> > +	if (!trig)
+> > +		return -ENOMEM;
+> > +
+> > +	priv->trig = trig;
+> > +	trig->dev.parent = indio_dev->dev.parent;
+> > +	iio_trigger_set_drvdata(trig, indio_dev);
+> > +	trig->ops = &tsc2046_adc_trigger_ops;
+> > +
+> > +	spin_lock_init(&priv->trig_lock);
+> > +	hrtimer_init(&priv->trig_timer, CLOCK_MONOTONIC,
+> > +		     HRTIMER_MODE_REL_SOFT);
+> > +	priv->trig_timer.function = tsc2046_adc_trig_more;
+> > +
+> > +	ret = devm_iio_trigger_register(dev, trig);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to register trigger\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = devm_iio_triggered_buffer_setup(dev, indio_dev, NULL,
+> > +					      &tsc2046_adc_trigger_handler, NULL);
+> > +	if (ret) {
+> > +		dev_err(dev, "Failed to setup triggered buffer\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	/* set default trigger */
+> > +	indio_dev->trig = iio_trigger_get(priv->trig);
+> > +
+> > +	ret = devm_iio_device_register(dev, indio_dev);
+> > +	if (ret) {
+> > +		dev_err(dev, "Failed to register iio device\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct of_device_id ads7950_of_table[] = {
+> > +	{ .compatible = "ti,tsc2046e-adc", .data = &tsc2046_adc_dcfg_tsc2046e },
+> > +	{ }
+> > +};
+> > +MODULE_DEVICE_TABLE(of, ads7950_of_table);
+> > +
+> > +static struct spi_driver tsc2046_adc_driver = {
+> > +	.driver = {
+> > +		.name	= "tsc2046",
+> > +		.of_match_table = ads7950_of_table,
+> > +	},
+> > +	.probe		= tsc2046_adc_probe,
+> > +};
+> > +module_spi_driver(tsc2046_adc_driver);
+> > +
+> > +MODULE_AUTHOR("Oleksij Rempel <kernel@pengutronix.de>");
+> > +MODULE_DESCRIPTION("TI TSC2046 ADC");
+> > +MODULE_LICENSE("GPL v2");
+> 
+> 
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
