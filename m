@@ -2,132 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B93833E029
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:15:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 920BD33E03B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232777AbhCPVPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 17:15:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36708 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231992AbhCPVOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 17:14:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 320EFAD3B;
-        Tue, 16 Mar 2021 21:14:48 +0000 (UTC)
-Received: from localhost (orpheus.olymp [local])
-        by orpheus.olymp (OpenSMTPD) with ESMTPA id 9762cfec;
-        Tue, 16 Mar 2021 21:14:46 +0000 (WET)
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, virtio-fs-list <virtio-fs@redhat.com>
-Subject: Re: [PATCH] virtiofs: fix memory leak in virtio_fs_probe()
-References: <20210316170234.21736-1-lhenriques@suse.de>
-        <20210316181718.GG270529@redhat.com>
-Date:   Tue, 16 Mar 2021 21:14:45 +0000
-In-Reply-To: <20210316181718.GG270529@redhat.com> (Vivek Goyal's message of
-        "Tue, 16 Mar 2021 14:17:18 -0400")
-Message-ID: <874khayf5m.fsf@suse.de>
+        id S232889AbhCPVQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 17:16:51 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:37558 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232848AbhCPVQU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 17:16:20 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 04270D8B;
+        Tue, 16 Mar 2021 22:16:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615929378;
+        bh=xm3Kv9nMX/YPl1bBvx3Pwh9fbYRq1xW4L9kBDammBsk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g9w8R/9p1wjjTWuKC9tT7WZtyEah4e/KuGk+ocFiOhC6S+faX1wpb0RbrLiV9j8/h
+         H2Ge9WGORhcVyLASVN8C89x13R5hxbHoOxRet1PM4F0hARWA0J/TeIFZHtAV0rtnGy
+         kzG6ZqM3SvYSjnTWH6ogjeGDLXi79t434u5rruTQ=
+Date:   Tue, 16 Mar 2021 23:15:41 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Subject: Re: [PATCH] dt-bindings: media: video-interfaces: Use documented
+ bindings in example
+Message-ID: <YFEf/Xpqjxd994g9@pendragon.ideasonboard.com>
+References: <20210316195100.3531414-1-robh@kernel.org>
+ <YFEZhyZO+ePjS+fr@pendragon.ideasonboard.com>
+ <CAL_JsqJdFf_yRLA-f8QmEC1g-Aq1k8Uh-AAOfiFDy8FhV_aOxg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqJdFf_yRLA-f8QmEC1g-Aq1k8Uh-AAOfiFDy8FhV_aOxg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vivek Goyal <vgoyal@redhat.com> writes:
+Hi Rob,
 
-> On Tue, Mar 16, 2021 at 05:02:34PM +0000, Luis Henriques wrote:
->> When accidentally passing twice the same tag to qemu, kmemleak ended up
->> reporting a memory leak in virtiofs.  Also, looking at the log I saw the
->> following error (that's when I realised the duplicated tag):
->> 
->>   virtiofs: probe of virtio5 failed with error -17
->> 
->> Here's the kmemleak log for reference:
->> 
->> unreferenced object 0xffff888103d47800 (size 1024):
->>   comm "systemd-udevd", pid 118, jiffies 4294893780 (age 18.340s)
->>   hex dump (first 32 bytes):
->>     00 00 00 00 ad 4e ad de ff ff ff ff 00 00 00 00  .....N..........
->>     ff ff ff ff ff ff ff ff 80 90 02 a0 ff ff ff ff  ................
->>   backtrace:
->>     [<000000000ebb87c1>] virtio_fs_probe+0x171/0x7ae [virtiofs]
->>     [<00000000f8aca419>] virtio_dev_probe+0x15f/0x210
->>     [<000000004d6baf3c>] really_probe+0xea/0x430
->>     [<00000000a6ceeac8>] device_driver_attach+0xa8/0xb0
->>     [<00000000196f47a7>] __driver_attach+0x98/0x140
->>     [<000000000b20601d>] bus_for_each_dev+0x7b/0xc0
->>     [<00000000399c7b7f>] bus_add_driver+0x11b/0x1f0
->>     [<0000000032b09ba7>] driver_register+0x8f/0xe0
->>     [<00000000cdd55998>] 0xffffffffa002c013
->>     [<000000000ea196a2>] do_one_initcall+0x64/0x2e0
->>     [<0000000008f727ce>] do_init_module+0x5c/0x260
->>     [<000000003cdedab6>] __do_sys_finit_module+0xb5/0x120
->>     [<00000000ad2f48c6>] do_syscall_64+0x33/0x40
->>     [<00000000809526b5>] entry_SYSCALL_64_after_hwframe+0x44/0xae
->> 
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Luis Henriques <lhenriques@suse.de>
->
-> Hi Luis,
->
-> Thanks for the report and the fix. So looks like leak is happening
-> because we are not doing kfree(fs->vqs) in error path.
+On Tue, Mar 16, 2021 at 03:09:10PM -0600, Rob Herring wrote:
+> On Tue, Mar 16, 2021 at 2:48 PM Laurent Pinchart wrote:
+> > On Tue, Mar 16, 2021 at 01:51:00PM -0600, Rob Herring wrote:
+> > > The example in video-interfaces.yaml managed to use a bunch of undocumented
+> > > bindings. Update the example to use real bindings (and ones with a schema).
+> > >
+> > > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> > > Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > > Cc: linux-media@vger.kernel.org
+> > > Signed-off-by: Rob Herring <robh@kernel.org>
+> > > ---
+> > >  .../bindings/media/video-interfaces.yaml      | 75 ++++++++-----------
+> > >  1 file changed, 33 insertions(+), 42 deletions(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/media/video-interfaces.yaml b/Documentation/devicetree/bindings/media/video-interfaces.yaml
+> > > index 0a7a73fd59f2..f30b9b91717b 100644
+> > > --- a/Documentation/devicetree/bindings/media/video-interfaces.yaml
+> > > +++ b/Documentation/devicetree/bindings/media/video-interfaces.yaml
+> > > @@ -227,17 +227,12 @@ examples:
+> > >    # only one of the following data pipelines can be active:
+> > >    # ov772x -> ceu0 or imx074 -> csi2 -> ceu0.
+> > >    - |
+> > > +    #include <dt-bindings/clock/r8a7796-cpg-mssr.h>
+> > > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > > +    #include <dt-bindings/power/r8a7796-sysc.h>
+> > > +
+> > >      ceu@fe910000 {
+> > > -        compatible = "renesas,sh-mobile-ceu";
+> > >          reg = <0xfe910000 0xa0>;
+> > > -        interrupts = <0x880>;
+> > > -
+> > > -        mclk: master_clock {
+> > > -            compatible = "renesas,ceu-clock";
+> > > -            #clock-cells = <1>;
+> > > -            clock-frequency = <50000000>;  /* Max clock frequency */
+> > > -            clock-output-names = "mclk";
+> > > -        };
+> > >
+> > >          port {
+> > >              #address-cells = <1>;
+> > > @@ -271,18 +266,14 @@ examples:
+> > >          #size-cells = <0>;
+> > >
+> > >          camera@21 {
+> > > -            compatible = "ovti,ov772x";
+> > > +            compatible = "ovti,ov7720";
+> > >              reg = <0x21>;
+> > > -            vddio-supply = <&regulator1>;
+> > > -            vddcore-supply = <&regulator2>;
+> > > -
+> > > -            clock-frequency = <20000000>;
+> > >              clocks = <&mclk 0>;
+> > > -            clock-names = "xclk";
+> > >
+> > >              port {
+> > >                  /* With 1 endpoint per port no need for addresses. */
+> > >                  ov772x_1_1: endpoint {
+> > > +                    bus-type = <5>;
+> > >                      bus-width = <8>;
+> > >                      remote-endpoint = <&ceu0_1>;
+> > >                      hsync-active = <1>;
+> > > @@ -295,48 +286,48 @@ examples:
+> > >          };
+> > >
+> > >          camera@1a {
+> > > -            compatible = "sony,imx074";
+> > > +            compatible = "sony,imx334";
+> > >              reg = <0x1a>;
+> > > -            vddio-supply = <&regulator1>;
+> > > -            vddcore-supply = <&regulator2>;
+> > >
+> > > -            clock-frequency = <30000000>;  /* Shared clock with ov772x_1 */
+> > >              clocks = <&mclk 0>;
+> > > -            clock-names = "sysclk";    /* Assuming this is the
+> > > -                       name in the datasheet */
+> > > +
+> > >              port {
+> > > -                imx074_1: endpoint {
+> > > +                imx334_1: endpoint {
+> > >                      clock-lanes = <0>;
+> > >                      data-lanes = <1 2>;
+> > > +                    link-frequencies = /bits/ 64 <891000000>;
+> > >                      remote-endpoint = <&csi2_1>;
+> > >                  };
+> > >              };
+> > >          };
+> > >      };
+> > >
+> > > -    csi2: csi2@ffc90000 {
+> > > -        compatible = "renesas,sh-mobile-csi2";
+> > > -        reg = <0xffc90000 0x1000>;
+> > > -        interrupts = <0x17a0>;
+> > > -        #address-cells = <1>;
+> > > -        #size-cells = <0>;
+> > > +    csi2@fea80000 {
+> > > +        compatible = "renesas,r8a7796-csi2";
+> >
+> > That's certainly better, but the r8a7796 doesn't have a CEU :-) It has a
+> > VIN. Maybe we could copy the last example from renesas,vin.yaml to
+> > replace the CEU ?
+> 
+> What about just removing the example here? It bothers me to have 2
+> copies (maybe 3 with sensor schemas) of an example and we should have
+> plenty of examples.
 
-Yep!
+I'd be fine with that.
 
->> ---
->>  fs/fuse/virtio_fs.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
->> index 8868ac31a3c0..4e6ef9f24e84 100644
->> --- a/fs/fuse/virtio_fs.c
->> +++ b/fs/fuse/virtio_fs.c
->> @@ -899,7 +899,7 @@ static int virtio_fs_probe(struct virtio_device *vdev)
->>  
->>  out:
->>  	vdev->priv = NULL;
->> -	kfree(fs);
->> +	virtio_fs_put(fs);
->
-> [ CC virtio-fs list ]
+> On the flip side, it's nice to have this stand on its own. Another
+> option would be just remove compatibles and make the example barebones
+> with only what's defined in video-interfaces.yaml.
 
-Oops, forgot to include it.  Maybe it should be added to the MAINTAINERS
-file (although IIRC it's not an open list).
+Abstract examples seem good in this context.
 
-> fs object is not fully formed. So calling virtio_fs_put() is little odd.
-> I will expect it to be called if somebody takes a reference using _get()
-> or in the final virtio_fs_remove() when creation reference should go
-> away.
->
-> How about open coding it and free fs->vqs explicitly. Something like
-> as follows.
+> But then it's not validated at all.
 
-Ok, I'll send v2 later (I'm currently away from my devel workstation).  To
-be honest, my initial version was doing exactly what you're suggesting.  I
-decided to change to virtio_fs_put() because the refcount was already
-initialised early in the function.  Bad decision.
+But this part isn't nice :-(
 
-Cheers,
+If we keep examples that use real bindings, they should match the real
+hardware platforms. Other than that, I have no strong preference, it's
+up to you.
+
 -- 
-Luis
+Regards,
 
->
-> @@ -896,7 +896,7 @@ static int virtio_fs_probe(struct virtio
->  out_vqs:
->         vdev->config->reset(vdev);
->         virtio_fs_cleanup_vqs(vdev, fs);
-> -
-> +       kfree(fs->vqs);
->  out:
->         vdev->priv = NULL;
->         kfree(fs);
->
-> Thanks
-> Vivek
->
+Laurent Pinchart
