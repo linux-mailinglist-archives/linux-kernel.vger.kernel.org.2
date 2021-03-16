@@ -2,94 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3751D33D1E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:40:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EC0E33D1EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:40:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236731AbhCPKjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 06:39:23 -0400
-Received: from smtp88.ord1d.emailsrvr.com ([184.106.54.88]:46022 "EHLO
-        smtp88.ord1d.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236698AbhCPKhv (ORCPT
+        id S231511AbhCPKkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 06:40:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35524 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231160AbhCPKjn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 06:37:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1615891069;
-        bh=jlFTONTY/lD7VZftb17Wa6RLu5kygAH6ASxfDO7wv9U=;
-        h=Subject:To:From:Date:From;
-        b=D75qKEsFWQXNCr4swhm3kSOLpjzV53XpqU69Mwjc6vumxWG0VUJMSHzSPbMjFvA5I
-         6SmsQXf8ki1qaexszUGFIMDW8Is6a4qGDHKAEiV4PX19evn+f1NqNyt9x8PBAL7BBB
-         chxCURrRNw3mCb87sJJsIsCqvK4gYoRtfx664tSU=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp12.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 98AFDE012E;
-        Tue, 16 Mar 2021 06:37:48 -0400 (EDT)
-Subject: Re: [PATCH] staging: comedi: replace slash in name
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        devel@driverdev.osuosl.org,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210314035757.2740146-1-ztong0001@gmail.com>
- <5d7a5e1c-35ab-58cb-ebcd-da5b280c802e@mev.co.uk>
- <858341a6-c105-1440-aa4d-ea0217f2ec89@mev.co.uk>
- <CAA5qM4AJRYndkXSiW5Y4OCFcH97mf6UiiEEox+TQs8-N957mJA@mail.gmail.com>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-Message-ID: <92b7c57b-b645-9965-8157-4ca76a803cba@mev.co.uk>
-Date:   Tue, 16 Mar 2021 10:37:47 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 16 Mar 2021 06:39:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615891181;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8dU9IneHGaHNFOjov7DnhzTntJcnj94OUhCbXAz8zI4=;
+        b=Kkcf/BNi41MCk8fy7hPacnabgJQl0tLEqrp1JOWgPikMMfascKBcfU45iyfBIyZ3/kfJTh
+        EOdLXmB2B08SFrDmaZmrm8fnKVd0EggnhspOeA/9ii5TJ5H6kw3dwowDMn+t7FOhSctvVF
+        t6nU3Y1EO7sn39jpAn473blejJynJqc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-520-vXftc9TbM5CF3E0ZmL606w-1; Tue, 16 Mar 2021 06:39:39 -0400
+X-MC-Unique: vXftc9TbM5CF3E0ZmL606w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B49E310866A4;
+        Tue, 16 Mar 2021 10:39:37 +0000 (UTC)
+Received: from starship (unknown [10.35.207.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E64661001281;
+        Tue, 16 Mar 2021 10:39:31 +0000 (UTC)
+Message-ID: <33a306b07a102ae8ad61efb18118a475ff89eba2.camel@redhat.com>
+Subject: Re: [PATCH 2/2] KVM: nSVM: improve SYSENTER emulation on AMD
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>
+Date:   Tue, 16 Mar 2021 12:39:30 +0200
+In-Reply-To: <f1ee6230-760e-b614-5290-663b44fe1436@redhat.com>
+References: <20210315174316.477511-1-mlevitsk@redhat.com>
+         <20210315174316.477511-3-mlevitsk@redhat.com>
+         <0dbcff57-8197-8fbb-809d-b47a4f5e9e77@redhat.com>
+         <1a4f35e356c50e38916acef6c86175b24efca0a3.camel@redhat.com>
+         <f1ee6230-760e-b614-5290-663b44fe1436@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <CAA5qM4AJRYndkXSiW5Y4OCFcH97mf6UiiEEox+TQs8-N957mJA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Classification-ID: 87150a44-81ea-421b-a51a-36bfccef82dc-1-1
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/03/2021 20:00, Tong Zhang wrote:
-> Thanks Ian,
-> I have submitted a v2 patch based on your suggestions.
+On Tue, 2021-03-16 at 09:16 +0100, Paolo Bonzini wrote:
+> On 15/03/21 19:19, Maxim Levitsky wrote:
+> > On Mon, 2021-03-15 at 18:56 +0100, Paolo Bonzini wrote:
+> > > On 15/03/21 18:43, Maxim Levitsky wrote:
+> > > > +	if (!guest_cpuid_is_intel(vcpu)) {
+> > > > +		/*
+> > > > +		 * If hardware supports Virtual VMLOAD VMSAVE then enable it
+> > > > +		 * in VMCB and clear intercepts to avoid #VMEXIT.
+> > > > +		 */
+> > > > +		if (vls) {
+> > > > +			svm_clr_intercept(svm, INTERCEPT_VMLOAD);
+> > > > +			svm_clr_intercept(svm, INTERCEPT_VMSAVE);
+> > > > +			svm->vmcb->control.virt_ext |= VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK;
+> > > > +		}
+> > > > +		/* No need to intercept these msrs either */
+> > > > +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_SYSENTER_EIP, 1, 1);
+> > > > +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_SYSENTER_ESP, 1, 1);
+> > > > +	}
+> > > 
+> > > An "else" is needed here to do the opposite setup (removing the "if
+> > > (vls)" from init_vmcb).
+> > 
+> > init_vmcb currently set the INTERCEPT_VMLOAD and INTERCEPT_VMSAVE and it doesn't enable vls
+> 
+> There's also this towards the end of the function:
+> 
+>          /*
+>           * If hardware supports Virtual VMLOAD VMSAVE then enable it
+>           * in VMCB and clear intercepts to avoid #VMEXIT.
+>           */
+>          if (vls) {
+>                  svm_clr_intercept(svm, INTERCEPT_VMLOAD);
+>                  svm_clr_intercept(svm, INTERCEPT_VMSAVE);
+>                  svm->vmcb->control.virt_ext |= 
+> VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK;
+>          }
+> 
+> > thus there is nothing to do if I don't want to enable vls.
+> > It seems reasonable to me.
+> > 
+> > Both msrs I marked as '.always = false' in the
+> > 'direct_access_msrs', which makes them be intercepted by the default.
+> > If I were to use '.always = true' it would feel a bit wrong as the intercept is not always
+> > enabled.
+> 
+> I agree that .always = false is correct.
+> 
+> > What do you think?
+> 
+> You can set the CPUID multiple times, so you could go from AMD to Intel 
+> and back.
+
+I understand now, I will send V2 with that. Thanks for the review!
+
+Best regards,
+	Maxim Levitsky
+
+> 
 > Thanks,
-> - Tong
+> 
+> Paolo
+> 
 
-Thanks.  I think the only other Comedi driver with the same problem is 
-"drivers/staging/comedi/drivers/das800.c".  It passes dev->board_name as 
-the name argument of request_irq(), but that is "cio-das802/16" for one 
-of the boards supported by the driver.
 
-> On Mon, Mar 15, 2021 at 6:48 AM Ian Abbott <abbotti@mev.co.uk> wrote:
->>
->> On 15/03/2021 10:44, Ian Abbott wrote:
->>> On 14/03/2021 03:57, Tong Zhang wrote:
->>>> request_irq() wont accept a name which contains slash so we need to
->>>> repalce it with something else -- otherwise it will trigger a warning
->>>> and the entry in /proc/irq/ will not be created
->>>>
->>>> [    1.565966] name 'pci-das6402/16'
->>>> [    1.566149] WARNING: CPU: 0 PID: 184 at fs/proc/generic.c:180 __xlate_proc_name+0x93/0xb0
->>>> [    1.568923] RIP: 0010:__xlate_proc_name+0x93/0xb0
->>>> [    1.574200] Call Trace:
->>>> [    1.574722]  proc_mkdir+0x18/0x20
->>>> [    1.576629]  request_threaded_irq+0xfe/0x160
->>>> [    1.576859]  auto_attach+0x60a/0xc40 [cb_pcidas64]
->>>>
->>>> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
->> [snip]
->>> Userspace applications can use these strings to determine the board
->>> type, so changing the strings would break those applications.
->>>
->>> I suggest passing the comedi driver name "cb_pcidas" to request_irq()
->>> for now.
->>
->> Oops, I meant "cb_pcidas64".  But you could reach that via
->> dev->driver->driver_name if you want (where dev is the struct
->> comedi_device * parameter).
-
--- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
