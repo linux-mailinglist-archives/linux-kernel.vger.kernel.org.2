@@ -2,212 +2,353 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0102433D590
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A1033D594
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236095AbhCPOMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 10:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236047AbhCPOMF (ORCPT
+        id S236101AbhCPOOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 10:14:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44186 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236077AbhCPONK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 10:12:05 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FCBC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 07:12:04 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id ox4so56758879ejb.11
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 07:12:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/vFNcj75F3NutZNhPqmGm8JOhCRe7NKkC2BE3t7uSe8=;
-        b=ajRoA1Q2AuTnou/5VTfsUoB3v1iuaL6Jdys0/0dyXnXuMS7pYAV9bE/soz8zyxtBQS
-         ABKLWoYG4u0UzqNHbgsH6z7MDAmhs6K4yk/qsZtS2JRPKdmE15C4JldcqgIWsVfyqPxO
-         VnPsAs6r00LrtZXTxDSLbtPT5Oo28icIz+zvs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/vFNcj75F3NutZNhPqmGm8JOhCRe7NKkC2BE3t7uSe8=;
-        b=Jb2aGJ67OwJPqlPkhrmyzZIIoiy+LInc/zbACvAU6hwL4SfI7UDXeHG5ORvphyuwBo
-         06jzF3mNqAiP3pd8xRSjTBTL6sy6ZNb+fiIphi/Q72kGN5dJzCtht0m4Vt+Dm9YjfYXU
-         Tx4tovOr2thez946szgh/GIBzxJjusSr1XHyK13C0AUPjteGfW47ulFDCK0ssxVQ2ZtZ
-         YZvJmuZuFrWidakZpd5XL6itCPqev8Q1Rl3UeU1qqzLe42JCZnakYbWHzkLrZn7wt5IB
-         Msp8yha6cULtn9+t+oBxRnkb5s7BY+6ogSKQ8xeOSrJrUjBoXE2xQzV/I4B0kiOHt68j
-         8xCA==
-X-Gm-Message-State: AOAM5307yifzZFlkxNvvDZ8tg+YDetGqods4Z7kJkH3rRXUGSwntXIYj
-        ML7NoM0tZiR4aq0wPJ8h23lMZA==
-X-Google-Smtp-Source: ABdhPJyW9HitmKr4gjkxbYOm6U4gcrSYNz7ELomKWnOOL5KQeDBKcx0GknziA/VY5w86xr47cFK25Q==
-X-Received: by 2002:a17:906:1f93:: with SMTP id t19mr30567700ejr.443.1615903923365;
-        Tue, 16 Mar 2021 07:12:03 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id c15sm3596394ejm.52.2021.03.16.07.12.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 07:12:02 -0700 (PDT)
-Subject: Re: [PATCH v5] printk: Userspace format enumeration support
-To:     Chris Down <chris@chrisdown.name>, linux-kernel@vger.kernel.org
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        Tue, 16 Mar 2021 10:13:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615903990;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UVZRtGu3aya80mlgXmhEPVVT/m0iBxUdaLUrPm/zzcM=;
+        b=KuKFnDP+rKMHSNDJJSX0SeT24//qCWIoCoVfJ2uO1ISKRxYd1llJHKhv+25FXk+Ep7LqCZ
+        6lq1f9ExWIqK59X088wRH1ccbIVqicow9fz9YL/9SufPwKxqqVo8BS5+NtcDhBFqfaTw/h
+        dFsgrt2ircCkN2PmkVS/cfejN+FYtaY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-492-IaHZMAN0OJG4NKcHPf3gQQ-1; Tue, 16 Mar 2021 10:13:05 -0400
+X-MC-Unique: IaHZMAN0OJG4NKcHPf3gQQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3217E802B7A;
+        Tue, 16 Mar 2021 14:13:03 +0000 (UTC)
+Received: from starship (unknown [10.35.207.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 052245D9D3;
+        Tue, 16 Mar 2021 14:12:54 +0000 (UTC)
+Message-ID: <4238999574b69e144f4b1bff59968ee6ba317959.camel@redhat.com>
+Subject: Re: [PATCH 1/3] scripts/gdb: rework lx-symbols gdb script
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>, kvm@vger.kernel.org
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-References: <YEgvR6Wc1xt0qupy@chrisdown.name>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <02c3b2f3-ff8e-ceb9-b30b-e533959c0491@rasmusvillemoes.dk>
-Date:   Tue, 16 Mar 2021 15:12:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>
+Date:   Tue, 16 Mar 2021 16:12:53 +0200
+In-Reply-To: <9dcacf3e-bba5-a062-610e-dcf1b0a261a3@siemens.com>
+References: <20210315221020.661693-1-mlevitsk@redhat.com>
+         <20210315221020.661693-2-mlevitsk@redhat.com>
+         <9dcacf3e-bba5-a062-610e-dcf1b0a261a3@siemens.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <YEgvR6Wc1xt0qupy@chrisdown.name>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/03/2021 03.30, Chris Down wrote:
-
-> ---
->  MAINTAINERS                          |   5 +
->  arch/arm/kernel/entry-v7m.S          |   2 +-
->  arch/arm/lib/backtrace-clang.S       |   2 +-
->  arch/arm/lib/backtrace.S             |   2 +-
->  arch/arm/mach-rpc/io-acorn.S         |   2 +-
->  arch/arm/vfp/vfphw.S                 |   6 +-
->  arch/ia64/include/uapi/asm/cmpxchg.h |   4 +-
->  arch/openrisc/kernel/entry.S         |   6 +-
->  arch/powerpc/kernel/head_fsl_booke.S |   2 +-
->  arch/um/include/shared/user.h        |   3 +-
->  arch/x86/kernel/head_32.S            |   2 +-
->  fs/seq_file.c                        |  21 +++
->  include/asm-generic/vmlinux.lds.h    |  13 ++
->  include/linux/module.h               |   6 +
->  include/linux/printk.h               |  72 ++++++++++-
->  include/linux/seq_file.h             |   1 +
->  include/linux/string_helpers.h       |   2 +
->  init/Kconfig                         |  14 ++
->  kernel/module.c                      |  14 +-
->  kernel/printk/Makefile               |   1 +
->  kernel/printk/index.c                | 183 +++++++++++++++++++++++++++
->  kernel/printk/printk.c               |  20 ++-
->  lib/string_helpers.c                 |  29 ++++-
->  lib/test-string_helpers.c            |   6 +
->  24 files changed, 386 insertions(+), 32 deletions(-)
->  create mode 100644 kernel/printk/index.c
+On Tue, 2021-03-16 at 14:38 +0100, Jan Kiszka wrote:
+> On 15.03.21 23:10, Maxim Levitsky wrote:
+> > Fix several issues that are present in lx-symbols script:
+> > 
+> > * Track module unloads by placing another software breakpoint at 'free_module'
+> >   (force uninline this symbol just in case), and use remove-symbol-file
+> >   gdb command to unload the symobls of the module that is unloading.
+> > 
+> >   That gives the gdb a chance to mark all software breakpoints from
+> >   this module as pending again.
+> >   Also remove the module from the 'known' module list once it is unloaded.
+> > 
+> > * Since we now track module unload, we don't need to reload all
+> >   symbols anymore when 'known' module loaded again (that can't happen anymore).
+> >   This allows reloading a module in the debugged kernel to finish much faster,
+> >   while lx-symbols tracks module loads and unloads.
+> > 
+> > * Disable/enable all gdb breakpoints on both module load and unload breakpoint
+> >   hits, and not only in 'load_all_symbols' as was done before.
+> >   (load_all_symbols is no longer called on breakpoint hit)
+> >   That allows gdb to avoid getting confused about the state of the (now two)
+> >   internal breakpoints we place.
+> > 
+> >   Otherwise it will leave them in the kernel code segment, when continuing
+> >   which triggers a guest kernel panic as soon as it skips over the 'int3'
+> >   instruction and executes the garbage tail of the optcode on which
+> >   the breakpoint was placed.
+> > 
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > ---
+> >  kernel/module.c              |   8 ++-
+> >  scripts/gdb/linux/symbols.py | 106 +++++++++++++++++++++++++----------
+> >  2 files changed, 83 insertions(+), 31 deletions(-)
+> > 
+> > diff --git a/kernel/module.c b/kernel/module.c
+> > index 30479355ab850..ea81fc06ea1f5 100644
+> > --- a/kernel/module.c
+> > +++ b/kernel/module.c
+> > @@ -901,8 +901,12 @@ int module_refcount(struct module *mod)
+> >  }
+> >  EXPORT_SYMBOL(module_refcount);
+> >  
+> > -/* This exists whether we can unload or not */
+> > -static void free_module(struct module *mod);
+> > +/* This exists whether we can unload or not
+> > + * Keep it uninlined to provide a reliable breakpoint target,
+> > + * e.g. for the gdb helper command 'lx-symbols'.
+> > + */
+> > +
+> > +static noinline void free_module(struct module *mod);
+> >  
+> >  SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
+> >  		unsigned int, flags)
+> > diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
+> > index 1be9763cf8bb2..4ce879548a1ae 100644
+> > --- a/scripts/gdb/linux/symbols.py
+> > +++ b/scripts/gdb/linux/symbols.py
+> > @@ -17,6 +17,24 @@ import re
+> >  
+> >  from linux import modules, utils
+> >  
+> > +def save_state():
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3353de0c4bc8..328b3e822223 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14314,6 +14314,11 @@ S:	Maintained
->  F:	include/linux/printk.h
->  F:	kernel/printk/
->  
-> +PRINTK INDEXING
-> +R:	Chris Down <chris@chrisdown.name>
-> +S:	Maintained
-> +F:	kernel/printk/index.c
-> +
->  PRISM54 WIRELESS DRIVER
->  M:	Luis Chamberlain <mcgrof@kernel.org>
->  L:	linux-wireless@vger.kernel.org
-> diff --git a/arch/arm/kernel/entry-v7m.S b/arch/arm/kernel/entry-v7m.S
-> index d0e898608d30..7bde93c10962 100644
-> --- a/arch/arm/kernel/entry-v7m.S
-> +++ b/arch/arm/kernel/entry-v7m.S
-> @@ -23,7 +23,7 @@ __invalid_entry:
->  	adr	r0, strerr
->  	mrs	r1, ipsr
->  	mov	r2, lr
-> -	bl	printk
-> +	bl	_printk
+> Naming is a bit too generic. And it's not only saving the state, it's
+> also disabling things.
+> 
+> > +        breakpoints = []
+> > +        if hasattr(gdb, 'breakpoints') and not gdb.breakpoints() is None:
+> > +            for bp in gdb.breakpoints():
+> > +                breakpoints.append({'breakpoint': bp, 'enabled': bp.enabled})
+> > +                bp.enabled = False
+> > +
+> > +        show_pagination = gdb.execute("show pagination", to_string=True)
+> > +        pagination = show_pagination.endswith("on.\n")
+> > +        gdb.execute("set pagination off")
+> > +
+> > +        return {"breakpoints":breakpoints, "show_pagination": show_pagination}
+> > +
+> > +def load_state(state):
+> 
+> Maybe rather something with "restore", to make naming balanced. Or is
+> there a use case where "state" is not coming from the function above?
 
-I think it's pointless renaming the symbol to _printk, with all the
-churn and reduced readability that involves (especially when reading
-assembly "why are we calling _printk and not printk here?"). There's
-nothing wrong with providing a macro wrapper by the same name
+I didn't put much thought into naming these functions. 
+I'll think of something better.
 
-#define printk(bla bla) ({ do_stuff; printk(bla bla); })
+> 
+> > +    for breakpoint in state["breakpoints"]:
+> > +        breakpoint['breakpoint'].enabled = breakpoint['enabled']
+> > +    gdb.execute("set pagination %s" % ("on" if state["show_pagination"] else "off"))
+> > +
+> >  
+> >  if hasattr(gdb, 'Breakpoint'):
+> >      class LoadModuleBreakpoint(gdb.Breakpoint):
+> > @@ -30,26 +48,38 @@ if hasattr(gdb, 'Breakpoint'):
+> >              module_name = module['name'].string()
+> >              cmd = self.gdb_command
+> >  
+> > +            # module already loaded, false alarm
+> > +            if module_name in cmd.loaded_modules:
+> > +                return False
+> 
+> Possibly at all, now that we track unloading? Can our state tracking
+> become out-of-sync?
 
-Only two places would need to be updated to surround the word printk in
-parentheses to suppress macro expansion: The declaration and the
-definition of printk. I.e.
+Sadly yes and that happens a lot unless kvm is patched to
+avoid injecting interrupts on a single step.
+ 
+What is happening is that this breakpoint is hit, then symbols
+are loaded which is a relatively slow process, and by the time
+the gdb resumes the guest, a timer interrupt is already pending
+(kernel local apic timer is running while vcpus are stopped),
+which makes the guest kernel take the interrupt (interrupts are
+not disabled in these two intercepted functions) and eventually
+return to the breakpoint, and trigger its python handler again.
 
-int (printk)(const char *s, ...)
+This happens so often that especially with multiple vcpus,
+it is possible to enter live-lock like state where guest+gdb
+are stuck in this loop forever.
+ 
+When KVM is patched, that indeed shouldn't happen but the check
+won't hurt here.
+ 
+Plus due to the feedback I received on the patch 2, I will end up
+implementing the 'don't inject interrupts on single step' as
+a new KVM debug feature flag, thus you will need a newer qemu
+to make use of it.
 
->  
-> +struct module;
-> +
-> +#ifdef CONFIG_PRINTK_INDEX
-> +extern void pi_sec_store(struct module *mod);
-> +extern void pi_sec_remove(struct module *mod);
-> +
-> +struct pi_object {
-> +	const char *fmt;
-> +	const char *func;
-> +	const char *file;
-> +	unsigned int line;
-> +};
-> +
-> +extern struct pi_object __start_printk_index[];
-> +extern struct pi_object __stop_printk_index[];
+> 
+> > +
+> >              # enforce update if object file is not found
+> >              cmd.module_files_updated = False
+> >  
+> >              # Disable pagination while reporting symbol (re-)loading.
+> >              # The console input is blocked in this context so that we would
+> >              # get stuck waiting for the user to acknowledge paged output.
+> > -            show_pagination = gdb.execute("show pagination", to_string=True)
+> > -            pagination = show_pagination.endswith("on.\n")
+> > -            gdb.execute("set pagination off")
+> > +            state = save_state()
+> > +            cmd.load_module_symbols(module)
+> > +            load_state(state)
+> > +            return False
+> >  
+> > -            if module_name in cmd.loaded_modules:
+> > -                gdb.write("refreshing all symbols to reload module "
+> > -                          "'{0}'\n".format(module_name))
+> > -                cmd.load_all_symbols()
+> > -            else:
+> > -                cmd.load_module_symbols(module)
+> > +    class UnLoadModuleBreakpoint(gdb.Breakpoint):
+> > +        def __init__(self, spec, gdb_command):
+> > +            super(UnLoadModuleBreakpoint, self).__init__(spec, internal=True)
+> > +            self.silent = True
+> > +            self.gdb_command = gdb_command
+> > +
+> > +        def stop(self):
+> > +            module = gdb.parse_and_eval("mod")
+> > +            module_name = module['name'].string()
+> > +            cmd = self.gdb_command
+> >  
+> > -            # restore pagination state
+> > -            gdb.execute("set pagination %s" % ("on" if pagination else "off"))
+> > +            if not module_name in cmd.loaded_modules:
+> > +                return False
+> >  
+> 
+> Same question as above. For robustness, checking is not bad. But maybe
+> it's worth reporting as well.
+> 
+> > +            state = save_state()
+> > +            cmd.unload_module_symbols(module)
+> > +            load_state(state)
+> >              return False
+> >  
+> >  
+> > @@ -64,8 +94,9 @@ lx-symbols command."""
+> >      module_paths = []
+> >      module_files = []
+> >      module_files_updated = False
+> > -    loaded_modules = []
+> > -    breakpoint = None
+> > +    loaded_modules = {}
+> > +    module_load_breakpoint = None
+> > +    module_unload_breakpoint = None
+> >  
+> >      def __init__(self):
+> >          super(LxSymbols, self).__init__("lx-symbols", gdb.COMMAND_FILES,
+> > @@ -129,21 +160,32 @@ lx-symbols command."""
+> >                  filename=module_file,
+> >                  addr=module_addr,
+> >                  sections=self._section_arguments(module))
+> > +
+> >              gdb.execute(cmdline, to_string=True)
+> > -            if module_name not in self.loaded_modules:
+> > -                self.loaded_modules.append(module_name)
+> > +            self.loaded_modules[module_name] = {"module_file": module_file,
+> > +                                                "module_addr": module_addr}
+> >          else:
+> >              gdb.write("no module object found for '{0}'\n".format(module_name))
+> >  
+> > +    def unload_module_symbols(self, module):
+> > +        module_name = module['name'].string()
+> > +
+> > +        module_file = self.loaded_modules[module_name]["module_file"]
+> > +        module_addr = self.loaded_modules[module_name]["module_addr"]
+> > +
+> > +        gdb.write("unloading @{addr}: {filename}\n".format(
+> > +            addr=module_addr, filename=module_file))
+> > +        cmdline = "remove-symbol-file {filename}".format(
+> > +            filename=module_file)
+> > +
+> > +        gdb.execute(cmdline, to_string=True)
+> > +        del self.loaded_modules[module_name]
+> > +
+> > +
+> >      def load_all_symbols(self):
+> >          gdb.write("loading vmlinux\n")
+> >  
+> > -        # Dropping symbols will disable all breakpoints. So save their states
+> > -        # and restore them afterward.
+> > -        saved_states = []
+> > -        if hasattr(gdb, 'breakpoints') and not gdb.breakpoints() is None:
+> > -            for bp in gdb.breakpoints():
+> > -                saved_states.append({'breakpoint': bp, 'enabled': bp.enabled})
+> > +        state = save_state()
+> >  
+> >          # drop all current symbols and reload vmlinux
+> >          orig_vmlinux = 'vmlinux'
+> > @@ -153,15 +195,14 @@ lx-symbols command."""
+> >          gdb.execute("symbol-file", to_string=True)
+> >          gdb.execute("symbol-file {0}".format(orig_vmlinux))
+> >  
+> > -        self.loaded_modules = []
+> > +        self.loaded_modules = {}
+> >          module_list = modules.module_list()
+> >          if not module_list:
+> >              gdb.write("no modules found\n")
+> >          else:
+> >              [self.load_module_symbols(module) for module in module_list]
+> >  
+> > -        for saved_state in saved_states:
+> > -            saved_state['breakpoint'].enabled = saved_state['enabled']
+> > +        load_state(state)
+> >  
+> >      def invoke(self, arg, from_tty):
+> >          self.module_paths = [os.path.expanduser(p) for p in arg.split()]
+> > @@ -174,11 +215,18 @@ lx-symbols command."""
+> >          self.load_all_symbols()
+> >  
+> >          if hasattr(gdb, 'Breakpoint'):
+> > -            if self.breakpoint is not None:
+> > -                self.breakpoint.delete()
+> > -                self.breakpoint = None
+> > -            self.breakpoint = LoadModuleBreakpoint(
+> > -                "kernel/module.c:do_init_module", self)
+> > +            if self.module_load_breakpoint is not None:
+> > +                self.module_load_breakpoint.delete()
+> > +                self.module_load_breakpoint = None
+> > +            self.module_load_breakpoint = \
+> > +                LoadModuleBreakpoint("kernel/module.c:do_init_module", self)
+> > +
+> > +            if self.module_unload_breakpoint is not None:
+> > +                self.module_unload_breakpoint.delete()
+> > +                self.module_unload_breakpoint = None
+> > +            self.module_unload_breakpoint = \
+> > +                UnLoadModuleBreakpoint("kernel/module.c:free_module", self)
+> > +
+> >          else:
+> >              gdb.write("Note: symbol update on module loading not supported "
+> >                        "with this gdb version\n")
+> > 
+> 
+> Good improvement!
 
-Do you need these declarations to be visible to the whole kernel? Can't
-they live in printk/index.c?
+Thanks a lot!
 
-> +
-> +#define pi_sec_elf_embed(_p_func, _fmt, ...)				       \
-> +	({								       \
-> +		int _p_ret;						       \
-> +									       \
-> +		if (__builtin_constant_p(_fmt)) {			       \
-> +			/*
-> +			 * The compiler may not be able to eliminate this, so
-> +			 * we need to make sure that it doesn't see any
-> +			 * hypothetical assignment for non-constants even
-> +			 * though this is already inside the
-> +			 * __builtin_constant_p guard.
-> +			 */						       \
-> +			static struct pi_object _pi			       \
+Best regards,
+	Maxim Levitsky
 
-static const struct pi_object?
+> 
+> Jan
+> 
 
-> +			__section(".printk_index") = {			       \
-> +				.fmt = __builtin_constant_p(_fmt) ? (_fmt) : NULL, \
-> +				.func = __func__,			       \
-> +				.file = __FILE__,			       \
-> +				.line = __LINE__,			       \
-> +			};						       \
-> +			_p_ret = _p_func(_pi.fmt, ##__VA_ARGS__);	       \
 
-Is the use of _pi.fmt here a trick to prevent gcc from eliding the _pi
-object, so it is seen as "used"? That seems a bit fragile, especially if
-the compiler ends up generating the same code in .text - that means gcc
-does not load the format string from the _pi object (which it
-shouldn't), but then I don't see why it (or the next version of gcc)
-couldn't realize that _pi is indeed unused.
-
-There's the __used attribute precisely for this kind of thing. Then you
-could also eliminate
-
-> +		} else							       \
-> +			_p_ret = _p_func(_fmt, ##__VA_ARGS__);		       \
-> +									       \
-
-this and the _p_ret variable
-
-> +		_p_ret;							       \
-
-and just end the ({}) with _p_func(_fmt, ##__VA_ARGS__);
-
-That would also allow you to more easily wrap, say, dev_printk(), which
-returns void - it seems that by not handling dev_printk and friends
-you're missing quite a few format strings.
-
-Rasmus
