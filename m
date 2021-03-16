@@ -2,75 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F372033DA2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5A333DA36
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:05:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238222AbhCPRDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:03:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50098 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238978AbhCPRCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:02:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62C3165111;
-        Tue, 16 Mar 2021 17:02:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615914173;
-        bh=Qb1m/E69RDV9XU0xBvmBWK4MHqIfN0kvYAxOecpMK/8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iniBsUmeJ9bjRyBagWGq6LPk1l+y+NSuAag7Spm3DvmP9WMEXHjAqLzxe/LzklTAc
-         5Vyj9BfaqjWgVIBjXsKJXaB6NrbtxmYTGzo+F5/DC8n7BZC0H7eh+FtscNe80B6BxR
-         rsYsy1iuFHo+oBOWmXT2HFreHoEpNGACLwOm1wo3gxSuF/Jt7V+W3HPAktRzu8tbTx
-         a9RzgrGAtf6jaG+L5iakmqGV825qv7zGdNVM+3FWzVhCqgw5e/IM/+cgm7kt2nNcYP
-         Y20jhc5eeu6RqamiDoaJb7skFeynRm/dWmSDYHVYeXdD2m/RwPSSTeRML9nuPlO5EA
-         uShtQQtjOewcQ==
-Date:   Tue, 16 Mar 2021 10:02:52 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Hariprasad Kelam <hkelam@marvell.com>
-Cc:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <davem@davemloft.net>, <sgoutham@marvell.com>,
-        <lcherian@marvell.com>, <gakula@marvell.com>, <jerinj@marvell.com>,
-        <sbhatta@marvell.com>
-Subject: Re: [net PATCH 1/9] octeontx2-pf: Do not modify number of rules
-Message-ID: <20210316100252.75826dd3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1615886833-71688-2-git-send-email-hkelam@marvell.com>
-References: <1615886833-71688-1-git-send-email-hkelam@marvell.com>
-        <1615886833-71688-2-git-send-email-hkelam@marvell.com>
+        id S239026AbhCPRFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239063AbhCPREY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:04:24 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BF5C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:04:23 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id x21so7938788pfa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:04:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=15RR40P/U9ibYzUk2HWYEWXH7Ht7qXA+g/hLYCQArIg=;
+        b=Z4UGi5ExsBZfzoq+BFyh2Yq7GC8h2n6NxM4BoNOSL9/xUDpgBWMAv6Z8NBxJns1olg
+         JgkflXEdVjrO+XUiC/CGAej/F4ShUOGWKq0YpxLC84rkJrh7R6a1j9Y41b+JGllqPDUL
+         ACgjiA8O+QUiMmbXqHjMY4TFRKrAqfZikyTjQ4PwDiCOHCh12SAF2uhuWfHRxdQgetlr
+         j5lDm6pHk3tpxfMb8kSrlb9+k1PYSz6jafqZv8Vx5GyCdJ/sH5D0A1rvs2/4eZgwFj1e
+         O0zmXhvRgFKkJB1iCaeTQvaJ3yXRa9F6xWeL6QK+sAfc7n7AtOtL2S+BrfhtqbpH1MFW
+         v8vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=15RR40P/U9ibYzUk2HWYEWXH7Ht7qXA+g/hLYCQArIg=;
+        b=jh7sRVPgEEPRs0KDEYY78isTwy6hWg0zMIh3y5Swl51NpiXreKgJnv7SM/gCNjdCw+
+         6Cs9M42UDhd4/T5uQVyKrCWYdFE7Q+UC2N5b0+Lg5FmgjQpVhUFs2iPTSh5QS4Kow6Nj
+         NZ3J2737cgH1yrPRFHXZSBtqmraNke+GmbfltI4oeSYUuRsr4Em2CWqJURYJFMwexC3H
+         p6ckw7ZpdUyr+mjUXyrbQi43Sti+4JMqwGMiaUeppi3GQxBJ35PBAN2t0LvLfRnNnvCP
+         2GlvrWp9LLlB2KFw/SsGBhf5RtX1E6ARRlPznyA4VioVJNqALk4fY2msWt4cww0OQUXB
+         mFjA==
+X-Gm-Message-State: AOAM532nwZ7VQVNXBWpRV6smQCVmqX6pi2J2xN4tafzq1Qc3B14tKP9o
+        WrjOdW6h6dz624v41mcTCM9g4A==
+X-Google-Smtp-Source: ABdhPJz+k96Zn3WSMaYy9/jNXoLVwhv3EWOqtCM3s2WoJJKlEHexKoHv7rIzauY3QMwMBWZ97pkPyw==
+X-Received: by 2002:a63:e44a:: with SMTP id i10mr557230pgk.404.1615914263182;
+        Tue, 16 Mar 2021 10:04:23 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id e11sm17230909pfm.24.2021.03.16.10.04.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 10:04:22 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 11:04:20 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mike.leach@linaro.org, anshuman.khandual@arm.com,
+        leo.yan@linaro.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v4 02/19] perf: aux: Add CoreSight PMU buffer formats
+Message-ID: <20210316170420.GA1387186@xps15>
+References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
+ <20210225193543.2920532-3-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225193543.2920532-3-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021 14:57:05 +0530 Hariprasad Kelam wrote:
-> From: Subbaraya Sundeep <sbhatta@marvell.com>
+On Thu, Feb 25, 2021 at 07:35:26PM +0000, Suzuki K Poulose wrote:
+> CoreSight PMU supports aux-buffer for the ETM tracing. The trace
+> generated by the ETM (associated with individual CPUs, like Intel PT)
+> is captured by a separate IP (CoreSight TMC-ETR/ETF until now).
 > 
-> In the ETHTOOL_GRXCLSRLALL ioctl ethtool uses
-> below structure to read number of rules from the driver.
+> The TMC-ETR applies formatting of the raw ETM trace data, as it
+> can collect traces from multiple ETMs, with the TraceID to indicate
+> the source of a given trace packet.
 > 
->     struct ethtool_rxnfc {
->             __u32                           cmd;
->             __u32                           flow_type;
->             __u64                           data;
->             struct ethtool_rx_flow_spec     fs;
->             union {
->                     __u32                   rule_cnt;
->                     __u32                   rss_context;
->             };
->             __u32                           rule_locs[0];
->     };
+> Arm Trace Buffer Extension is new "sink" IP, attached to individual
+> CPUs and thus do not provide additional formatting, like TMC-ETR.
 > 
-> Driver must not modify rule_cnt member. But currently driver
-> modifies it by modifying rss_context. Hence fix it by using a
-> local variable.
-> 
-> Fixes: 81a43620("octeontx2-pf: Add RSS multi group support")
+> Additionally, a system could have both TRBE *and* TMC-ETR for
+> the trace collection. e.g, TMC-ETR could be used as a single
+> trace buffer to collect data from multiple ETMs to correlate
+> the traces from different CPUs. It is possible to have a
+> perf session where some events end up collecting the trace
+> in TMC-ETR while the others in TRBE. Thus we need a way
+> to identify the type of the trace for each AUX record.
+>
 
-Fixes tag: Fixes: 81a43620("octeontx2-pf: Add RSS multi group support")
-Has these problem(s):
-	- missing space between the SHA1 and the subject
-	- SHA1 should be at least 12 digits long
-	  Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-	  or later) just making sure it is not set (or set to "auto").
+The gist of this patch is to introduce formatted and raw trace format.  To me
+the above paragraph brings confusion to the changelog, especially since we don't
+allow events belonging to the same session to use different types of sinks.  I
+would simply remove it.
+ 
+> Define the trace formats exported by the CoreSight PMU.
+> We don't define the flags following the "ETM" as this
+> information is available to the user when issuing
+> the session. What is missing is the additional
+> formatting applied by the "sink" which is decided
+> at the runtime and the user may not have a control on.
+> 
+> So we define :
+>  - CORESIGHT format (indicates the Frame format)
+>  - RAW format (indicates the format of the source)
+> 
+> The default value is CORESIGHT format for all the records
+> (i,e == 0). Add the RAW format for others that use
+> raw format.
+> 
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Reviewed-by: Mike Leach <mike.leach@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+> Changes from previous:
+>  - Split from the coresight driver specific code
+>    for ease of merging
+> ---
+>  include/uapi/linux/perf_event.h | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+> index f006eeab6f0e..63971eaef127 100644
+> --- a/include/uapi/linux/perf_event.h
+> +++ b/include/uapi/linux/perf_event.h
+> @@ -1162,6 +1162,10 @@ enum perf_callchain_context {
+>  #define PERF_AUX_FLAG_COLLISION			0x08	/* sample collided with another */
+>  #define PERF_AUX_FLAG_PMU_FORMAT_TYPE_MASK	0xff00	/* PMU specific trace format type */
+>  
+> +/* CoreSight PMU AUX buffer formats */
+> +#define PERF_AUX_FLAG_CORESIGHT_FORMAT_CORESIGHT	0x0000 /* Default for backward compatibility */
+> +#define PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW		0x0100 /* Raw format of the source */
+> +
 
-Please fix the entire submission.
+Is "CORESIGHT" really a format?  We are playing with words and the end result is
+the same but I think PERF_AUX_FLAG_CORESIGHT_FORMAT_FORMATTED would be best, or
+event:
+
+#define PERF_AUX_FLAG_CORESIGHT_TRACE_FORMATTED         0x0000 /* Default for backward compatibility */
+#define PERF_AUX_FLAG_CORESIGHT_TRACE_RAW               0x0100 /* Raw format of the source */
+
+Regardless, for patches 01 and 02:
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+>  #define PERF_FLAG_FD_NO_GROUP		(1UL << 0)
+>  #define PERF_FLAG_FD_OUTPUT		(1UL << 1)
+>  #define PERF_FLAG_PID_CGROUP		(1UL << 2) /* pid=cgroup id, per-cpu mode only */
+> -- 
+> 2.24.1
+> 
