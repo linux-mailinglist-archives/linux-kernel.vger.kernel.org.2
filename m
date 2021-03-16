@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7922E33DC45
+	by mail.lfdr.de (Postfix) with ESMTP id C4B0733DC46
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239800AbhCPSLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:11:39 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:44578 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234468AbhCPSKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:10:32 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F0LtQ5qpxz9v0hq;
-        Tue, 16 Mar 2021 19:10:22 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id b9cIQnu_A5rj; Tue, 16 Mar 2021 19:10:22 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F0LtQ3h1Nz9v0hm;
-        Tue, 16 Mar 2021 19:10:22 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2FFD98B7EE;
-        Tue, 16 Mar 2021 19:10:24 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id pg33Skpor4nr; Tue, 16 Mar 2021 19:10:24 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B55658B7E1;
-        Tue, 16 Mar 2021 19:10:23 +0100 (CET)
-Subject: Re: [PATCH] net: ethernet: fs-enet: remove casting dma_alloc_coherent
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Xu Wang <vulab@iscas.ac.cn>,
-        "pantelis.antoniou@gmail.com" <pantelis.antoniou@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201211085212.85457-1-vulab@iscas.ac.cn>
- <34548188-67f4-d3ef-c2e3-871fc520e838@csgroup.eu>
- <6fc4b62ee7754d78b8f7b9c2275bc47e@AcuMS.aculab.com>
- <4a1c2852-781f-e125-afcb-69387660b6af@csgroup.eu>
- <3f31140339c94652b1e7116e91cfd9c8@AcuMS.aculab.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <7f322df3-80b6-dfd0-caf2-afc2ca3950b1@csgroup.eu>
-Date:   Tue, 16 Mar 2021 19:10:19 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S239838AbhCPSLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:11:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60982 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236066AbhCPSKe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 14:10:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615918233;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=va6P0xFjxjiydWkW6mpPyLH4JcckNuT7gN3PQvMk5W0=;
+        b=h1Zp4o3JPNX0OThs/oTROaPFldkzs9zmCkIf0O6ulYScNZXb63JtZkTDpK2mbeARFpWPZM
+        MfPa9Ez2U0XQg8VKtS28qOtpNCKuuhyu5gfu8X4XSV6h2G7BZpD+SAWGE2drZNMI+jwZDJ
+        CebCmjFm94XxtH+aDGFic/hZYF/D/YU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-391-2eo_5XkGNYCAzazGqgkDMQ-1; Tue, 16 Mar 2021 14:10:31 -0400
+X-MC-Unique: 2eo_5XkGNYCAzazGqgkDMQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A2C8D84E20A;
+        Tue, 16 Mar 2021 18:10:29 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.135])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 7A56A5C1A3;
+        Tue, 16 Mar 2021 18:10:23 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 16 Mar 2021 19:10:29 +0100 (CET)
+Date:   Tue, 16 Mar 2021 19:10:22 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Pedro Alves <palves@redhat.com>, Peter Anvin <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH RESEND v4 0/4] x86: fix get_nr_restart_syscall()
+Message-ID: <20210316181022.GA25986@redhat.com>
+References: <20210201174555.GA17819@redhat.com>
+ <20210203231944.GA17467@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <3f31140339c94652b1e7116e91cfd9c8@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203231944.GA17467@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 02/04, Oleg Nesterov wrote:
+>
+> It seems that nobody objects,
+>
+> Andrew, Andy, Thomas, how do you think this series should be routed?
+
+ping...
+
+What can I do to finally get this merged?
+
+Should I resend once again? Whom?
 
 
-Le 11/12/2020 à 17:55, David Laight a écrit :
-> From: Christophe Leroy
->> Sent: 11 December 2020 16:43
->>
->> Le 11/12/2020 à 17:07, David Laight a écrit :
->>> From: Christophe Leroy
->>>> Sent: 11 December 2020 15:22
->>>>
->>>> Le 11/12/2020 à 09:52, Xu Wang a écrit :
->>>>> Remove casting the values returned by dma_alloc_coherent.
->>>>
->>>> Can you explain more in the commit log ?
->>>>
->>>> As far as I can see, dma_alloc_coherent() doesn't return __iomem, and ring_base member is __iomem
->>>
->>> Which is probably wrong - that is the kernel address of kernel memory.
->>> So it shouldn't have the __iomem marker.
->>
->> That's where the buffer descriptors are, the driver accesses to the content of the buffer
->> descriptors using the IO accessors in_be16()/out_be16(). Is it not correct ?
-> 
-> I've just been looking at the crap in there.
-> My understanding is that IO accessors are for IO devices (eg addresses
-> from io_remap() etc).
-> 
-> Buffers allocated by dma_alloc_coherent() are normal kernel memory
-> and don't need any accessors.
-> Now you might need some barriers - mostly because an ethernet chip
-> can typically read a ring entry without being prodded.
-> IIRC there is a barrier in writel() to ensure the dma master will
-> 'see' all memory writes done before the IO write that kicks it into
-> doing some processing.
+> On 02/01, Oleg Nesterov wrote:
+> >
+> > Somehow I forgot about this problem. Let me resend the last version
+> > based on discussion with Linus. IIRC he was agree with this series.
+> >
+> > And let me remind why 3/4 temporary adds the "transient" TS_COMPAT_RESTART
+> > flag killed by the next patch: to simplify the backporting. 1-3 can fix
+> > the problem without breaking the kABI.
+> >
+> > Oleg.
+> > ---
+> >  arch/x86/include/asm/processor.h   |  9 ---------
+> >  arch/x86/include/asm/thread_info.h | 15 ++++++++++++++-
+> >  arch/x86/kernel/signal.c           | 24 +-----------------------
+> >  fs/select.c                        | 10 ++++------
+> >  include/linux/restart_block.h      |  1 +
+> >  include/linux/thread_info.h        | 13 +++++++++++++
+> >  kernel/futex.c                     |  3 +--
+> >  kernel/time/alarmtimer.c           |  2 +-
+> >  kernel/time/hrtimer.c              |  2 +-
+> >  kernel/time/posix-cpu-timers.c     |  2 +-
+> >  10 files changed, 37 insertions(+), 44 deletions(-)
 
-As far as I can see, writel() is using __iomem memory, see 
-https://elixir.bootlin.com/linux/v5.12-rc2/source/include/asm-generic/io.h#L221
-
-> 
-> The fact that the driver contains so many __iomem casts (eg in
-> tx_restart) is an indication that something is badly awry.
-> __iomem exists to check you are using the correct type of pointer.
-> Any __iomem casts are dubious.
-
-I agree, but what else can we do to guarantee proper access to that memory ?
-
-Christophe
