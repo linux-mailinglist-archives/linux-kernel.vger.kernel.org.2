@@ -2,99 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1309F33DECF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35AF933DED2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:31:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbhCPUbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 16:31:00 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:57378 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230439AbhCPUao (ORCPT
+        id S231222AbhCPUbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 16:31:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230486AbhCPUar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 16:30:44 -0400
+        Tue, 16 Mar 2021 16:30:47 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E0BC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 13:30:46 -0700 (PDT)
 Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 1F90F891AC;
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 212F4891AE;
         Wed, 17 Mar 2021 09:30:43 +1300 (NZDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
         s=mail181024; t=1615926643;
-        bh=pOGq5hgGfCf67z265HD7B4d8xp/11sp5yGd9B2e4SaA=;
-        h=From:To:Cc:Subject:Date;
-        b=QDbVNr2BEWayIxf0t30Tyua06+W93QlUmlkUqZ+8G2lTHVAXCnrbSAaNjaMW+MuYa
-         jm0SO6IRTGmmLbHcZMAFf/uQ4we+kx90C7Z4nB217N70jVzFLAsEmMvsdZXs3F67e3
-         PWnUt/HpZP4+rw2XqfLojygzsYVf+yjM6eJ4fioK/F0K36r0vyv/mtCYQFfdiJ1SLi
-         bhc6hMi5YvHfO35rAxLO5TfzOi2vn0URyOpqfw1rrJObn7yTihS1AzGKW11pyKIGoj
-         hTcIhjitXrWFBzBjzsfLLoTUkw3BSY1uNgF+IjcTRKlE1kPaPSqYyxVMje9z6gRqny
-         SiZ7S11XxgpHg==
+        bh=k5It74fCo3SZyb3yhLHt+ItAlTiGZfRApEsd1LOR3Iw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=FeGyIO3n92awPlDvwbi0pCcCftWdgRjwJg8t8II4RMYk4ppFHS+k6iUeiBBFfYdPC
+         vwR2dxhm9vFPiLWNYV489Lp9oE7RaAsDQ/DtE81EwWe/Cr2CFXGoVUDTXAmPI/07CH
+         SS21QjOXFRk6aVEhCqhVTLp6Q4LKo8kxqjfYT+dL2l5CAc92RvfVVFp4vKxOcnZvts
+         ve0xqx59CgXbToZQLdU/2R11Lm+YxkNKcgBqbHbAY+DYgzdjTXwq2Kr4juaxRjLyGw
+         aIMHL0agvn+5gCc3Cg8ftpT1tHcAwCUqQ/2mUCl9FSe/ddtHJq2XW76lFMymMEL/v7
+         a0kOrpNhSW7OQ==
 Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B605115720000>; Wed, 17 Mar 2021 09:30:42 +1300
+        id <B605115720001>; Wed, 17 Mar 2021 09:30:42 +1300
 Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
-        by smtp (Postfix) with ESMTP id D942313EF08;
+        by smtp (Postfix) with ESMTP id DBCBE13EF0D;
         Wed, 17 Mar 2021 09:30:56 +1300 (NZDT)
 Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id D4831284092; Wed, 17 Mar 2021 09:30:42 +1300 (NZDT)
+        id D6CE5284090; Wed, 17 Mar 2021 09:30:42 +1300 (NZDT)
 From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
 To:     robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net
 Cc:     devicetree@vger.kernel.org, linux-hwmon@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v2 1/3] dt-bindings: Add vendor prefix and trivial device for BluTek BPA-RS600
-Date:   Wed, 17 Mar 2021 09:30:34 +1300
-Message-Id: <20210316203036.17674-1-chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v2 2/3] hwmon: (pmbus): Replace - with _ in device names before registration
+Date:   Wed, 17 Mar 2021 09:30:35 +1300
+Message-Id: <20210316203036.17674-2-chris.packham@alliedtelesis.co.nz>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210316203036.17674-1-chris.packham@alliedtelesis.co.nz>
+References: <20210316203036.17674-1-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=GfppYjfL c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=dESyimp9J3IA:10 a=ueuSTYl9OFj5rdJX3qQA:9
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=GfppYjfL c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=dESyimp9J3IA:10 a=1n-tqguRmQ2sXLlbPzAA:9
 X-SEG-SpamProfiler-Score: 0
 x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add vendor prefix "blutek" for BluTek Power.
-Add trivial device entry for BPA-RS600.
+The hwmon sysfs ABI requires that the `name` property doesn't include
+any dashes. But when the pmbus code picks the name up from the device
+tree it quite often does. Replace '-' with '_' before registering the
+device.
 
 Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 ---
 
 Notes:
     Changes in v2:
-    - None
+    - New
 
- Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 2 files changed, 4 insertions(+)
+ drivers/hwmon/pmbus/pmbus_core.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Doc=
-umentation/devicetree/bindings/trivial-devices.yaml
-index a327130d1faa..569236e9bed0 100644
---- a/Documentation/devicetree/bindings/trivial-devices.yaml
-+++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-@@ -50,6 +50,8 @@ properties:
-           - atmel,atsha204a
-             # i2c h/w elliptic curve crypto module
-           - atmel,atecc508a
-+            # BPA-RS600: Power Supply
-+          - blutek,bpa-rs600
-             # Bosch Sensortec pressure, temperature, humididty and VOC s=
-ensor
-           - bosch,bme680
-             # CM32181: Ambient Light Sensor
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Doc=
-umentation/devicetree/bindings/vendor-prefixes.yaml
-index f6064d84a424..d9d7226f5dfe 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -169,6 +169,8 @@ patternProperties:
-     description: Beckhoff Automation GmbH & Co. KG
-   "^bitmain,.*":
-     description: Bitmain Technologies
-+  "^blutek,.*":
-+    description: BluTek Power
-   "^boe,.*":
-     description: BOE Technology Group Co., Ltd.
-   "^bosch,.*":
+diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus=
+_core.c
+index aadea85fe630..7d2f8f032314 100644
+--- a/drivers/hwmon/pmbus/pmbus_core.c
++++ b/drivers/hwmon/pmbus/pmbus_core.c
+@@ -2557,6 +2557,7 @@ int pmbus_do_probe(struct i2c_client *client, struc=
+t pmbus_driver_info *info)
+ 	struct pmbus_data *data;
+ 	size_t groups_num =3D 0;
+ 	int ret;
++	char *name;
+=20
+ 	if (!info)
+ 		return -ENODEV;
+@@ -2606,10 +2607,15 @@ int pmbus_do_probe(struct i2c_client *client, str=
+uct pmbus_driver_info *info)
+ 		return -ENODEV;
+ 	}
+=20
++	name =3D devm_kstrdup(dev, client->name, GFP_KERNEL);
++	if (!name)
++		return -ENOMEM;
++	strreplace(name, '-', '_');
++
+ 	data->groups[0] =3D &data->group;
+ 	memcpy(data->groups + 1, info->groups, sizeof(void *) * groups_num);
+ 	data->hwmon_dev =3D devm_hwmon_device_register_with_groups(dev,
+-					client->name, data, data->groups);
++					name, data, data->groups);
+ 	if (IS_ERR(data->hwmon_dev)) {
+ 		dev_err(dev, "Failed to register hwmon device\n");
+ 		return PTR_ERR(data->hwmon_dev);
 --=20
 2.30.2
 
