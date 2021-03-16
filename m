@@ -2,124 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EED1D33D342
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2346833D347
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237404AbhCPLkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237392AbhCPLkQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:40:16 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB539C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 04:40:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bTUJcGrn5E33KbHSPMj/OesZXrhNWuuNMWDtShWHOq0=; b=AsViUXDZomWYLu/b4MasjjMAqb
-        WWoGG0O4nHmMkUO1KopwyDvvWul35LrrJJ+4SriJFA9Jz3rtLPLF2au2Hd9Db4AdTfVPMHNRljGVL
-        YfB56Q4AT5K+4d55gB+aue2D19qyw6Sf9/HpYiKEhfByG5wYc8/vwTgiwfNV5QlvfOCGSaVtnb0Vx
-        dkTp6pNBjgs4rwLeqm2GdLd5sGqkVsqeeUgwpQdq47px/zKMFw1yhcVF+CcZeql2tKsmFW379MUyt
-        ashPXXz5dF3XdbPpRDliANYZZeSW2zXolVSAiXhY1+NUH+ge1//B6gr8iy6PCmg1Ao21F4MdYeEGB
-        Op9mhXHg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lM83R-000bNM-7n; Tue, 16 Mar 2021 11:40:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D4C14304D58;
-        Tue, 16 Mar 2021 12:40:01 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BBF9820435CE8; Tue, 16 Mar 2021 12:40:01 +0100 (CET)
-Date:   Tue, 16 Mar 2021 12:40:01 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     mingo@kernel.org, acme@redhat.com, linux-kernel@vger.kernel.org,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        eranian@google.com, namhyung@kernel.org, ak@linux.intel.com
-Subject: Re: [PATCH 1/5] perf/x86/intel/uncore: Parse uncore discovery tables
-Message-ID: <YFCZEesJdSJsaxQh@hirez.programming.kicks-ass.net>
-References: <1615566878-70244-1-git-send-email-kan.liang@linux.intel.com>
- <1615566878-70244-2-git-send-email-kan.liang@linux.intel.com>
+        id S237423AbhCPLna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:43:30 -0400
+Received: from mga04.intel.com ([192.55.52.120]:23252 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231549AbhCPLmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 07:42:53 -0400
+IronPort-SDR: dLW/HWKaMiF++7Uze3/MuDgDkss2sPtytO+7GGX+Uuup45FWN+zHa54tbIot/U1JqMd3wycYaG
+ /K57hoKyH4XQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="186865708"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="186865708"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 04:42:53 -0700
+IronPort-SDR: iq7QF47cfPjI7PVPRHUpFvCrZXd4drsp6yCnHY1iy2TO3i3VcUwWQmBw+YfeBa1m+8I5Ce/fBb
+ KbByQ9bFoatQ==
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="440063172"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 04:42:49 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lM861-00CwOC-38; Tue, 16 Mar 2021 13:42:45 +0200
+Date:   Tue, 16 Mar 2021 13:42:45 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
+        linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH 04/13] lib: introduce BITS_{FIRST,LAST} macro
+Message-ID: <YFCZtUuMYVNeNlUO@smile.fi.intel.com>
+References: <20210316015424.1999082-1-yury.norov@gmail.com>
+ <20210316015424.1999082-5-yury.norov@gmail.com>
+ <8021faab-e592-9587-329b-817ae007b89a@rasmusvillemoes.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1615566878-70244-2-git-send-email-kan.liang@linux.intel.com>
+In-Reply-To: <8021faab-e592-9587-329b-817ae007b89a@rasmusvillemoes.dk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 08:34:34AM -0800, kan.liang@linux.intel.com wrote:
-> +static struct intel_uncore_discovery_type *
-> +search_uncore_discovery_type(u16 type_id)
-> +{
-> +	struct rb_node *node = discovery_tables.rb_node;
-> +	struct intel_uncore_discovery_type *type;
-> +
-> +	while (node) {
-> +		type = rb_entry(node, struct intel_uncore_discovery_type, node);
-> +
-> +		if (type->type > type_id)
-> +			node = node->rb_left;
-> +		else if (type->type < type_id)
-> +			node = node->rb_right;
-> +		else
-> +			return type;
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +static struct intel_uncore_discovery_type *
-> +add_uncore_discovery_type(struct uncore_unit_discovery *unit)
-> +{
-> +	struct intel_uncore_discovery_type *type, *cur;
-> +	struct rb_node **node = &discovery_tables.rb_node;
-> +	struct rb_node *parent = *node;
-> +
-> +	if (unit->access_type >= UNCORE_ACCESS_MAX) {
-> +		pr_warn("Unsupported access type %d\n", unit->access_type);
-> +		return NULL;
-> +	}
-> +
-> +	type = kzalloc(sizeof(struct intel_uncore_discovery_type), GFP_KERNEL);
-> +	if (!type)
-> +		return NULL;
-> +
-> +	type->box_ctrl_die = kcalloc(__uncore_max_dies, sizeof(u64), GFP_KERNEL);
-> +	if (!type->box_ctrl_die)
-> +		goto free_type;
-> +
-> +	type->access_type = unit->access_type;
-> +	num_discovered_types[type->access_type]++;
-> +	type->type = unit->box_type;
-> +
-> +	while (*node) {
-> +		parent = *node;
-> +		cur = rb_entry(parent, struct intel_uncore_discovery_type, node);
-> +
-> +		if (cur->type > type->type)
-> +			node = &parent->rb_left;
-> +		else
-> +			node = &parent->rb_right;
-> +	}
-> +
-> +	rb_link_node(&type->node, parent, node);
-> +	rb_insert_color(&type->node, &discovery_tables);
-> +
-> +	return type;
-> +
-> +free_type:
-> +	kfree(type);
-> +
-> +	return NULL;
-> +
-> +}
+On Tue, Mar 16, 2021 at 09:35:35AM +0100, Rasmus Villemoes wrote:
+> On 16/03/2021 02.54, Yury Norov wrote:
+> > BITMAP_{LAST,FIRST}_WORD_MASK() in linux/bitmap.h duplicates the
+> > functionality of GENMASK(). The scope of BITMAP* macros is wider
+> > than just bitmaps. This patch defines 4 new macros: BITS_FIRST(),
+> > BITS_LAST(), BITS_FIRST_MASK() and BITS_LAST_MASK() in linux/bits.h
+> > on top of GENMASK() and replaces BITMAP_{LAST,FIRST}_WORD_MASK()
+> > to avoid duplication and increase the scope of the macros.
+> > 
+> > This change doesn't affect code generation. On ARM64:
+> > scripts/bloat-o-meter vmlinux.before vmlinux
+> > add/remove: 1/2 grow/shrink: 2/0 up/down: 17/-16 (1)
+> > Function                                     old     new   delta
+> > ethtool_get_drvinfo                          900     908      +8
+> > e843419@0cf2_0001309d_7f0                      -       8      +8
+> > vermagic                                      48      49      +1
+> > e843419@0d45_000138bb_f68                      8       -      -8
+> > e843419@0cc9_00012bce_198c                     8       -      -8
+> 
+> [what on earth are those weird symbols?]
+> 
+> 
+> > diff --git a/include/linux/bits.h b/include/linux/bits.h
+> > index 7f475d59a097..8c191c29506e 100644
+> > --- a/include/linux/bits.h
+> > +++ b/include/linux/bits.h
+> > @@ -37,6 +37,12 @@
+> >  #define GENMASK(h, l) \
+> >  	(GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+> >  
+> > +#define BITS_FIRST(nr)		GENMASK((nr), 0)
+> > +#define BITS_LAST(nr)		GENMASK(BITS_PER_LONG - 1, (nr))
+> > +
+> > +#define BITS_FIRST_MASK(nr)	BITS_FIRST((nr) % BITS_PER_LONG)
+> > +#define BITS_LAST_MASK(nr)	BITS_LAST((nr) % BITS_PER_LONG)
+> 
+> I don't think it's a good idea to propagate the unusual closed-range
+> semantics of GENMASK to those wrappers. Almost all C and kernel code
+> uses the 'inclusive lower bound, exclusive upper bound', and I'd expect
+> BITS_FIRST(5) to result in a word with five bits set, not six. So I
+> think these changes as-is make the code much harder to read and understand.
+> 
+> Regardless, please add some comments on the valid input ranges to the
+> macros, whether that ends up being 0 <= nr < BITS_PER_LONG or 0 < nr <=
+> BITS_PER_LONG or whatnot.
+> 
+> It would also be much easier to review if you just redefined the
+> BITMAP_LAST_WORD_MASK macros etc. in terms of these new things, so you
+> wouldn't have to do a lot of mechanical changes at the same time as
+> introducing the new ones - especially when those mechanical changes
+> involve adding a "minus 1" everywhere.
 
-I'm thinking this can use some of this:
+I tend to agree with Rasmus here.
 
-  2d24dd5798d0 ("rbtree: Add generic add and find helpers")
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
