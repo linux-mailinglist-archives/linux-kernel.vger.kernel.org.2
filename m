@@ -2,122 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3250833CEB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 499AB33CEB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:35:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232757AbhCPHeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 03:34:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232549AbhCPHdo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 03:33:44 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0740C06174A;
-        Tue, 16 Mar 2021 00:33:43 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id n17so12976750plc.7;
-        Tue, 16 Mar 2021 00:33:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4uwGLw4oyBg2siguHNzqzxEJ2zioYts2IjBxF9nVxAg=;
-        b=SdXcCZp5eAj0eG7le1UodFJ9kJpKFCcQXFQp8y9qS8SdgjuQUyQtykgdEoNmnyyzKW
-         IQ1GtYSUBCwWSC3WBh0bAoZ1T7a7sfvhhxTRkgQjODrJjpZBbfucYpPO1DICYL7y46U5
-         kVnaM9dnC+obTvaD/Pyd4n4TjkZkW4PzW+0l8hSS3H3HbX+yTGRz1cuTTefF98kwU7/9
-         9jyskWUQbxOckPjq60RBOooNAgPyiBqm2eqoD6AYFhZoYW7UqkZI+ejXh2XmO80BklJ8
-         C/uD2l2ry6DUrtnjfwjnWoB4JMxx2v6vYiNyXeiSwuyG9FbMSR2nPHCgnDmBRLpNRsXe
-         6uew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4uwGLw4oyBg2siguHNzqzxEJ2zioYts2IjBxF9nVxAg=;
-        b=X6gA/qSlTVxWah5/YczMbVHaD+iWPPIiRXzdbkxD5Gu9kaQQFsvZaEgS9MSNZ7uxzH
-         BNTchcTxviMiR6aK0J0+mXuTn5K1LZCJywkMOjioWZOElD36RCPyFJ7FA9z7dxif5YVo
-         3Y4W0Whe2Ro5eZsp6Ctd6OHXXZVYwWNY2Tx9AK8yuq5gDzdE0A3n6beZNaUuk97W1ZPW
-         GlCBxlZRGMPn32PdHemiIPDdAlmb3niM6QPFTsg2mt2ZON1ss7Z2kGMsnceyWFGuMmY5
-         J7OXugJEa2tGAuftgREuT2jxbzlpX7u2U9J1melE+kL0//MhRpPXPo4R2nCcVtou0nmt
-         lw+Q==
-X-Gm-Message-State: AOAM533g7q/ACucvqH1YuZvvrvgLSFhoC8pEYwyaakutxCcDQVTl7OG4
-        /YkGiGfuuNTVDUbsZ8WeTXk=
-X-Google-Smtp-Source: ABdhPJz2vO1LkuhskFr46Ba09gSjtiCwL5zhzdrTzGXkiqsvd3q1KCoj2T2CQeDKwYaintJT/FE2Ew==
-X-Received: by 2002:a17:90a:cb12:: with SMTP id z18mr3298352pjt.132.1615880023387;
-        Tue, 16 Mar 2021 00:33:43 -0700 (PDT)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id d20sm1850131pjv.47.2021.03.16.00.33.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 00:33:42 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: zhang.yunkai@zte.com.cn
-To:     pbonzini@redhat.com
-Cc:     shuah@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, zhang.yunkai@zte.com.cn,
-        akpm@linux-foundation.org, ricardo.canuelo@collabora.com,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH] selftests: remove duplicate include
-Date:   Tue, 16 Mar 2021 00:33:36 -0700
-Message-Id: <20210316073336.426255-1-zhang.yunkai@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S231215AbhCPHfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 03:35:05 -0400
+Received: from mga07.intel.com ([134.134.136.100]:47310 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232838AbhCPHem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 03:34:42 -0400
+IronPort-SDR: E0XN4LYqtuDBwSIO0JkEc2q35r6a8aU4naiXSGtEL3DDBNF81w8vvUKM3W68c1BRXl4igLZG+R
+ YAOkZeijVZow==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="253231572"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="253231572"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 00:34:41 -0700
+IronPort-SDR: XgammK7Fid0KhXiSmkIOAU9ivrhMv/zxVVO9Dy+2AhAo0jvnUfRGUmh11+ffgQTpvTyI6Oh9Mp
+ 9EGNMwmg7L2g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="605158781"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Mar 2021 00:34:40 -0700
+Date:   Tue, 16 Mar 2021 15:34:39 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] tools/x86/kcpuid: Check last token too
+Message-ID: <20210316073439.GB49151@shbuild999.sh.intel.com>
+References: <20210315125901.30315-1-bp@alien8.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315125901.30315-1-bp@alien8.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
-
-'assert.h' included in 'sparsebit.c' is duplicated.
-It is also included in the 161th line.
-'string.h' included in 'mincore_selftest.c' is duplicated.
-It is also included in the 15th line.
-'sched.h' included in 'tlbie_test.c' is duplicated.
-It is also included in the 33th line.
-
-Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
----
- tools/testing/selftests/kvm/lib/sparsebit.c        | 1 -
- tools/testing/selftests/mincore/mincore_selftest.c | 1 -
- tools/testing/selftests/powerpc/mm/tlbie_test.c    | 1 -
- 3 files changed, 3 deletions(-)
-
-diff --git a/tools/testing/selftests/kvm/lib/sparsebit.c b/tools/testing/selftests/kvm/lib/sparsebit.c
-index 031ba3c932ed..a0d0c83d83de 100644
---- a/tools/testing/selftests/kvm/lib/sparsebit.c
-+++ b/tools/testing/selftests/kvm/lib/sparsebit.c
-@@ -1890,7 +1890,6 @@ void sparsebit_validate_internal(struct sparsebit *s)
-  */
+On Mon, Mar 15, 2021 at 01:59:00PM +0100, Borislav Petkov wrote:
+> From: Borislav Petkov <bp@suse.de>
+> 
+> Input lines like
+> 
+>   0x8000001E,     0, EAX,   31:0, Extended APIC ID
+> 
+> where the short name is missing lead to a segfault because the loop
+> takes the long name for the short name and tokens[5] becomes NULL which
+> explodes later in strcpy().
+> 
+> Check its value too before further processing.
  
- #include <stdlib.h>
--#include <assert.h>
- 
- struct range {
- 	sparsebit_idx_t first, last;
-diff --git a/tools/testing/selftests/mincore/mincore_selftest.c b/tools/testing/selftests/mincore/mincore_selftest.c
-index 5a1e85ff5d32..e54106643337 100644
---- a/tools/testing/selftests/mincore/mincore_selftest.c
-+++ b/tools/testing/selftests/mincore/mincore_selftest.c
-@@ -14,7 +14,6 @@
- #include <sys/mman.h>
- #include <string.h>
- #include <fcntl.h>
--#include <string.h>
- 
- #include "../kselftest.h"
- #include "../kselftest_harness.h"
-diff --git a/tools/testing/selftests/powerpc/mm/tlbie_test.c b/tools/testing/selftests/powerpc/mm/tlbie_test.c
-index f85a0938ab25..48344a74b212 100644
---- a/tools/testing/selftests/powerpc/mm/tlbie_test.c
-+++ b/tools/testing/selftests/powerpc/mm/tlbie_test.c
-@@ -33,7 +33,6 @@
- #include <sched.h>
- #include <time.h>
- #include <stdarg.h>
--#include <sched.h>
- #include <pthread.h>
- #include <signal.h>
- #include <sys/prctl.h>
--- 
-2.25.1
+Thanks for the fix!
 
+Acked-by: Feng Tang <feng.tang@intel.com>
+
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> ---
+>  tools/arch/x86/kcpuid/kcpuid.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/tools/arch/x86/kcpuid/kcpuid.c b/tools/arch/x86/kcpuid/kcpuid.c
+> index 6048da34fcc6..dae75511fef7 100644
+> --- a/tools/arch/x86/kcpuid/kcpuid.c
+> +++ b/tools/arch/x86/kcpuid/kcpuid.c
+> @@ -324,6 +324,8 @@ static int parse_line(char *line)
+>  		str = NULL;
+>  	}
+>  	tokens[5] = strtok(str, "\n");
+> +	if (!tokens[5])
+> +		goto err_exit;
+>  
+>  	/* index/main-leaf */
+>  	index = strtoull(tokens[0], NULL, 0);
+> -- 
+> 2.29.2
