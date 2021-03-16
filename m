@@ -2,67 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1C733D278
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:10:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 950DA33D276
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237092AbhCPLKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:10:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43448 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231572AbhCPLJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:09:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 91A16AC1D;
-        Tue, 16 Mar 2021 11:09:26 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 0202FDA6E2; Tue, 16 Mar 2021 12:07:24 +0100 (CET)
-Date:   Tue, 16 Mar 2021 12:07:24 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     dsterba@suse.cz, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 0/4] btrfs: Convert more kmaps to kmap_local_page()
-Message-ID: <20210316110724.GJ7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Ira Weiny <ira.weiny@intel.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <20210217024826.3466046-1-ira.weiny@intel.com>
- <20210312194141.GT7604@suse.cz>
- <20210312200500.GG3014244@iweiny-DESK2.sc.intel.com>
+        id S234019AbhCPLJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:09:32 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13961 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233480AbhCPLJI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 07:09:08 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F09V56rSBzrXBF;
+        Tue, 16 Mar 2021 19:07:09 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 16 Mar
+ 2021 19:08:58 +0800
+Subject: Re: [PATCH v3] f2fs: allow to change discard policy based on cached
+ discard cmds
+To:     Sahitya Tummala <stummala@codeaurora.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+CC:     <linux-kernel@vger.kernel.org>
+References: <1615886958-717-1-git-send-email-stummala@codeaurora.org>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <3c453b72-892f-7044-2edd-224b82202608@huawei.com>
+Date:   Tue, 16 Mar 2021 19:08:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312200500.GG3014244@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <1615886958-717-1-git-send-email-stummala@codeaurora.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 12:05:00PM -0800, Ira Weiny wrote:
-> On Fri, Mar 12, 2021 at 08:41:41PM +0100, David Sterba wrote:
-> > On Tue, Feb 16, 2021 at 06:48:22PM -0800, ira.weiny@intel.com wrote:
-> > > From: Ira Weiny <ira.weiny@intel.com>
-> > > 
-> > > I am submitting these for 5.13.
-> > > 
-> > > Further work to remove more kmap() calls in favor of the kmap_local_page() this
-> > > series converts those calls which required more than a common pattern which
-> > > were covered in my previous series[1].  This is the second of what I hope to be
-> > > 3 series to fully convert btrfs.  However, the 3rd series is going to be an RFC
-> > > because I need to have more eyes on it before I'm sure about what to do.  For
-> > > now this series should be good to go for 5.13.
-> > > 
-> > > Also this series converts the kmaps in the raid5/6 code which required a fix to
-> > > the kmap'ings which was submitted in [2].
-> > 
-> > Branch added to for-next and will be moved to the devel queue next week.
-> > I've added some comments about the ordering requirement, that's
-> > something not obvious. There's a comment under 1st patch but that's
-> > trivial to fix if needed. Thanks.
+On 2021/3/16 17:29, Sahitya Tummala wrote:
+> With the default DPOLICY_BG discard thread is ioaware, which prevents
+> the discard thread from issuing the discard commands. On low RAM setups,
+> it is observed that these discard commands in the cache are consuming
+> high memory. This patch aims to relax the memory pressure on the system
+> due to f2fs pending discard cmds by changing the policy to DPOLICY_FORCE
+> based on the nm_i->ram_thresh configured.
 > 
-> I've replied to the first patch.  LMK if you want me to respin it.
+> Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
 
-No need to respin, patchset now in misc-next. Thanks.
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+
+Thanks,
