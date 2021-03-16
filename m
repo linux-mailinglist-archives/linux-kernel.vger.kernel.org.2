@@ -2,53 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F369C33E08B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:32:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6792B33E091
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:32:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbhCPVbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 17:31:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44092 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhCPVbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 17:31:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A9815AE47;
-        Tue, 16 Mar 2021 21:31:40 +0000 (UTC)
-Date:   Tue, 16 Mar 2021 22:31:37 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Wei Liu <wei.liu@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>
-Subject: Re: linux-next: manual merge of the hyperv tree with the tip tree
-Message-ID: <20210316213137.GG18822@zn.tnic>
-References: <20210315143505.35af617b@canb.auug.org.au>
- <20210316150254.GC18822@zn.tnic>
- <20210316150554.32xtihkhvdkup3eq@liuwe-devbox-debian-v2>
- <20210317080744.33f5c6a9@canb.auug.org.au>
+        id S229725AbhCPVcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 17:32:21 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:52360 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229519AbhCPVbs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 17:31:48 -0400
+Received: from [77.244.183.192] (port=63220 helo=[192.168.178.41])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1lMHHz-0006NM-1C; Tue, 16 Mar 2021 22:31:43 +0100
+Subject: Re: [PATCH] dt-bindings: More cleanup of standard unit properties
+To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kevin Tsai <ktsai@capellamicro.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Mark Brown <broonie@kernel.org>, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20210316194824.3526913-1-robh@kernel.org>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <b2679a96-2751-ec84-33aa-aff8398d8a56@lucaceresoli.net>
+Date:   Tue, 16 Mar 2021 22:31:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <20210316194824.3526913-1-robh@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210317080744.33f5c6a9@canb.auug.org.au>
+Content-Language: it-IT
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 08:07:44AM +1100, Stephen Rothwell wrote:
-> No worries, I will keep applying the patch (my setup allows that to
-> happen automatically).  Linus should apply it as a part of the merge
-> resolution (as do I).
+On 16/03/21 20:48, Rob Herring wrote:
+> Properties with standard unit suffixes already have a type and don't need
+> type references. Fix a few more cases which have gotten added.
+> 
+> Cc: Luca Ceresoli <luca@lucaceresoli.net>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Zhang Rui <rui.zhang@intel.com>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Kevin Tsai <ktsai@capellamicro.com>
+> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Cc: Sebastian Reichel <sre@kernel.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: linux-iio@vger.kernel.org
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Thanks!
+Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
 
 -- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Luca
