@@ -2,151 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10FC733DAFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:30:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDFB33DB06
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:31:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233682AbhCPR3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34536 "EHLO
+        id S236034AbhCPRbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:31:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231372AbhCPR3c (ORCPT
+        with ESMTP id S231637AbhCPRaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:29:32 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5FFC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:29:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=+mXXWIQo5xdD9dB4aceExITJJ/ACvjPp1heUG7+TVPA=; b=iZOYvaXsbHJGnrlV4e19BR52x4
-        F9UpFzlSExPYA2U6lQXea1n/+OWgvyArSi4YzHmvwM5TceZDvy2bkZVs8xTecu5qfW/0bUU0+rLaD
-        UWwSxgMAV4zW/S3eOeRjyAbPgHs8Qkade4++4U/YaBIZ+EY0d18nsv2CM+vSmEbP9pU2CiZtHhmHi
-        /ikaxo0kfHcRPXRQRUKLKohD3HGVnVQmsi6TKDwxMAbJAs6yL8BAcYGiXMveE18Vq7270e78UBAgP
-        JgW8vZrHqh42UFqJriDBDSUscJJKd16uN3xTtvjPN2AR1sxuMvdE8cbgitlSzPD7gg9DsPpiKFEKX
-        rtDlIkgg==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMDVT-001UfE-Uz; Tue, 16 Mar 2021 17:29:24 +0000
-Subject: Re: [PATCH] kernel:kprobe: Fix typo issue
-To:     Xiaofeng Cao <cxfcosmos@gmail.com>, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
-        mhiramat@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Xiaofeng Cao <caoxiaofeng@yulong.com>
-References: <20210316125751.11023-1-caoxiaofeng@yulong.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <570250b7-0f3c-09db-7a62-167146f33fef@infradead.org>
-Date:   Tue, 16 Mar 2021 10:29:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 16 Mar 2021 13:30:52 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB9EC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:30:52 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id r15-20020a05600c35cfb029010e639ca09eso1928484wmq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:30:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ure8kWkdZ5geLP/9Lu+/xSmpVEu0DA6buPVci38aSj0=;
+        b=Z678/QuLnZrG4E0wQ6JR1/nIGj9Fs7Z8+aAZt8Mz8sYdje6igCKN2utV2igPfamrt3
+         ozvC+EoHpQ6EwT08H/KYiIED6ErrciMFxaQijeEGnrXKFlq2jVTYkwhxwFNNL73ZuXNE
+         xNv7p0SDTg0Uv1pWfryHD6ci4FsT4tdONtkEhM1pE1cUFpsPmgdp1umhgu4KJG3vWW5t
+         cWA4iUaDeT8XBmj08MWPoEi/wvTWp6syClumigtyAGVLiHq7G4kDn/y/CllVFlhSnXnP
+         +vRXmM9mX1XZTlXN5/2u5jfOqHTpJ4Wmem107KL0SZARCwPvJACOoO4qe9HzSh/c2wBP
+         4vng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ure8kWkdZ5geLP/9Lu+/xSmpVEu0DA6buPVci38aSj0=;
+        b=AeM1RhkzhfzjPicetlwKzKJibk0zJA5NXUm9vgx/c2EsZZM81XhT4fbAVN74JtDGMj
+         6/uj7dIh78WJjZFiGMmGTb4AyBwVP2ga+n8sQO5WzM+NQaPppFjcYt7KSHRM5e1ABcYa
+         SgCsVyQpMEF/Xkt/5p2IZEJDect/rxq9dHpZLHdQyChazCVdexCMVlcF5dAiU+sGvygt
+         r5Cb/9/ENIxHiocdDs/NS+cEoZ+0zfHRVRqoAoueVW2vQ4cCudeshU2CXZs5S5d1bhsC
+         k0LkutowYIbJ84Raq3NeelFxOLYKOnzqszU4knkjonFj8OTBz09icrjk6oIfUppX+r2G
+         bqHw==
+X-Gm-Message-State: AOAM530Pzq4fJaBvRNwvta1sn/+MDHaIEIm3508MM8uCT233QwU98w8E
+        s7ULv2jm/A4ZOkiqcQYUxh452g==
+X-Google-Smtp-Source: ABdhPJytNagM4AIbMoENHxcjBnrn4JxwikwNeiZ2SKxSVH/A1ANipTJtB19WZ+2dS+sc8ya4+f0huw==
+X-Received: by 2002:a05:600c:1548:: with SMTP id f8mr135921wmg.81.1615915850632;
+        Tue, 16 Mar 2021 10:30:50 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:1d09:9676:5eaa:550])
+        by smtp.gmail.com with ESMTPSA id b65sm101820wmh.4.2021.03.16.10.30.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 10:30:49 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 18:30:00 +0100
+From:   Marco Elver <elver@google.com>
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Issue with kfence and kmemleak
+Message-ID: <YFDrGL45JxFHyajD@elver.google.com>
+References: <YFDf6iKH1p/jGnM0@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20210316125751.11023-1-caoxiaofeng@yulong.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFDf6iKH1p/jGnM0@suse.de>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/21 5:57 AM, Xiaofeng Cao wrote:
-> change 'immmediately' to 'immediately'
-> change 'quiesence' to 'quiescence'
-> change 'unneed' to 'unneeded'
-> change 'sinec' to 'since
-> change 'sefe' to 'safe''
-> change 'And' to 'At the'
-> change 'buy' to 'but'
+On Tue, Mar 16, 2021 at 04:42PM +0000, Luis Henriques wrote:
+> Hi!
 > 
-> Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
+> This is probably a known issue, but just in case: looks like it's not
+> possible to use kmemleak when kfence is enabled:
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Thanks for spotting this.
 
-Thanks.
-
-> ---
->  kernel/kprobes.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
+> [    0.272136] kmemleak: Cannot insert 0xffff888236e02f00 into the object search tree (overlaps existing)
+> [    0.272136] CPU: 0 PID: 8 Comm: kthreadd Not tainted 5.12.0-rc3+ #92
+> [    0.272136] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+> [    0.272136] Call Trace:
+> [    0.272136]  dump_stack+0x6d/0x89
+> [    0.272136]  create_object.isra.0.cold+0x40/0x62
+> [    0.272136]  ? process_one_work+0x5a0/0x5a0
+> [    0.272136]  ? process_one_work+0x5a0/0x5a0
+> [    0.272136]  kmem_cache_alloc_trace+0x110/0x2f0
+> [    0.272136]  ? process_one_work+0x5a0/0x5a0
+> [    0.272136]  kthread+0x3f/0x150
+> [    0.272136]  ? lockdep_hardirqs_on_prepare+0xd4/0x170
+> [    0.272136]  ? __kthread_bind_mask+0x60/0x60
+> [    0.272136]  ret_from_fork+0x22/0x30
+> [    0.272136] kmemleak: Kernel memory leak detector disabled
+> [    0.272136] kmemleak: Object 0xffff888236e00000 (size 2097152):
+> [    0.272136] kmemleak:   comm "swapper", pid 0, jiffies 4294892296
+> [    0.272136] kmemleak:   min_count = 0
+> [    0.272136] kmemleak:   count = 0
+> [    0.272136] kmemleak:   flags = 0x1
+> [    0.272136] kmemleak:   checksum = 0
+> [    0.272136] kmemleak:   backtrace:
+> [    0.272136]      memblock_alloc_internal+0x6d/0xb0
+> [    0.272136]      memblock_alloc_try_nid+0x6c/0x8a
+> [    0.272136]      kfence_alloc_pool+0x26/0x3f
+> [    0.272136]      start_kernel+0x242/0x548
+> [    0.272136]      secondary_startup_64_no_verify+0xb0/0xbb
 > 
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 745f08fdd7a6..ae3a22d2099b 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -506,7 +506,7 @@ static void do_optimize_kprobes(void)
->  	/*
->  	 * The optimization/unoptimization refers online_cpus via
->  	 * stop_machine() and cpu-hotplug modifies online_cpus.
-> -	 * And same time, text_mutex will be held in cpu-hotplug and here.
-> +	 * At the same time, text_mutex will be held in cpu-hotplug and here.
->  	 * This combination can cause a deadlock (cpu-hotplug try to lock
->  	 * text_mutex but stop_machine can not be done because online_cpus
->  	 * has been changed)
-> @@ -592,12 +592,12 @@ static void kprobe_optimizer(struct work_struct *work)
->  
->  	/*
->  	 * Step 1: Unoptimize kprobes and collect cleaned (unused and disarmed)
-> -	 * kprobes before waiting for quiesence period.
-> +	 * kprobes before waiting for quiescence period.
->  	 */
->  	do_unoptimize_kprobes();
->  
->  	/*
-> -	 * Step 2: Wait for quiesence period to ensure all potentially
-> +	 * Step 2: Wait for quiescence period to ensure all potentially
->  	 * preempted tasks to have normally scheduled. Because optprobe
->  	 * may modify multiple instructions, there is a chance that Nth
->  	 * instruction is preempted. In that case, such tasks can return
-> @@ -607,10 +607,10 @@ static void kprobe_optimizer(struct work_struct *work)
->  	 */
->  	synchronize_rcu_tasks();
->  
-> -	/* Step 3: Optimize kprobes after quiesence period */
-> +	/* Step 3: Optimize kprobes after quiescence period */
->  	do_optimize_kprobes();
->  
-> -	/* Step 4: Free cleaned kprobes after quiesence period */
-> +	/* Step 4: Free cleaned kprobes after quiescence period */
->  	do_free_cleaned_kprobes();
->  
->  	mutex_unlock(&text_mutex);
-> @@ -631,7 +631,7 @@ void wait_for_kprobe_optimizer(void)
->  	while (!list_empty(&optimizing_list) || !list_empty(&unoptimizing_list)) {
->  		mutex_unlock(&kprobe_mutex);
->  
-> -		/* this will also make optimizing_work execute immmediately */
-> +		/* this will also make optimizing_work execute immediately */
->  		flush_delayed_work(&optimizing_work);
->  		/* @optimizing_work might not have been queued yet, relax */
->  		cpu_relax();
-> @@ -1057,7 +1057,7 @@ static int __arm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
->  
->  err_ftrace:
->  	/*
-> -	 * At this point, sinec ops is not registered, we should be sefe from
-> +	 * At this point, since ops is not registered, we should be safe from
->  	 * registering empty filter.
->  	 */
->  	ftrace_set_filter_ip(ops, (unsigned long)p->addr, 1, 0);
-> @@ -1712,7 +1712,7 @@ static struct kprobe *__disable_kprobe(struct kprobe *p)
->  			/*
->  			 * If kprobes_all_disarmed is set, orig_p
->  			 * should have already been disarmed, so
-> -			 * skip unneed disarming process.
-> +			 * skip unneeded disarming process.
->  			 */
->  			if (!kprobes_all_disarmed) {
->  				ret = disarm_kprobe(orig_p, true);
-> @@ -2424,7 +2424,7 @@ static int kprobes_module_callback(struct notifier_block *nb,
->  			     within_module_core((unsigned long)p->addr, mod))) {
->  				/*
->  				 * The vaddr this probe is installed will soon
-> -				 * be vfreed buy not synced to disk. Hence,
-> +				 * be vfreed but not synced to disk. Hence,
->  				 * disarming the breakpoint isn't needed.
->  				 *
->  				 * Note, this will also move any optimized probes
+> I've tried the hack below but it didn't really helped.  Obviously I don't
+> really understand what's going on ;-)  But I think the reason for this
+> patch not working as (I) expected is because kfence is initialised
+> *before* kmemleak.
 > 
+> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> index 3b8ec938470a..b4ffd7695268 100644
+> --- a/mm/kfence/core.c
+> +++ b/mm/kfence/core.c
+> @@ -631,6 +631,9 @@ void __init kfence_alloc_pool(void)
+>  
+>  	if (!__kfence_pool)
+>  		pr_err("failed to allocate pool\n");
+> +	kmemleak_no_scan(__kfence_pool);
+>  }
 
+Can you try the below patch?
 
--- 
-~Randy
+Thanks,
+-- Marco
 
+------ >8 ------
+
+diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+index f7106f28443d..5891019721f6 100644
+--- a/mm/kfence/core.c
++++ b/mm/kfence/core.c
+@@ -12,6 +12,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/kcsan-checks.h>
+ #include <linux/kfence.h>
++#include <linux/kmemleak.h>
+ #include <linux/list.h>
+ #include <linux/lockdep.h>
+ #include <linux/memblock.h>
+@@ -481,6 +482,13 @@ static bool __init kfence_init_pool(void)
+ 		addr += 2 * PAGE_SIZE;
+ 	}
+ 
++	/*
++	 * The pool is live and will never be deallocated from this point on;
++	 * tell kmemleak this is now free memory, so that later allocations can
++	 * correctly be tracked.
++	 */
++	kmemleak_free_part_phys(__pa(__kfence_pool), KFENCE_POOL_SIZE);
++
+ 	return true;
+ 
+ err:
