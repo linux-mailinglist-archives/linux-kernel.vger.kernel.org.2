@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7B533D137
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 143F033D13C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:56:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236408AbhCPJzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:55:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48712 "EHLO
+        id S236438AbhCPJ4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:56:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231733AbhCPJyo (ORCPT
+        with ESMTP id S235976AbhCPJzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:54:44 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB21C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:54:43 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id x16so7099816wrn.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:54:43 -0700 (PDT)
+        Tue, 16 Mar 2021 05:55:32 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B3AC06174A;
+        Tue, 16 Mar 2021 02:55:31 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id r17so71041357ejy.13;
+        Tue, 16 Mar 2021 02:55:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=TP1HV3NWFU9A1fInCeM4u3y5tCPNsxpAVXNKL5e46ik=;
-        b=Y5QeeLKgnZZ/6kkOd3l2dwrFCg8dPhfJJhbP4AyjILyn+gHYT0OgW74fE8FkDBjq+7
-         vH0hRKMLqEFfkZerRFuNIBfpeW7obvle3bWfiRDE5BsytEuzSQLDSBqXQTguLD0x1dDL
-         aZONvtP6w7S4Pxt3XioegS8L5xNELIFqMrEA+HRA58kW1OPsi/k1AZ14gcIWSZ8xWubO
-         ep7nvAgV17IkhAE081tHv1dPIqZWD5kNWUNDI0vZLo30mIV+akbYobEdY9NT4jjuLb1j
-         oY36wqLbu3RX6Swrpyir5cwT2vbyu8yHqTBcWmv/ei8RVW2Sg3NIr40CP1zEEtqbjudi
-         2aWQ==
+         :content-disposition:in-reply-to;
+        bh=D8pE+gAt6ykTk6iu18Gsykjh2e+iH3BpnPTvA4JqlAY=;
+        b=XiFI45IJLFKHVOizWJznMDvgItTaoT+GMKNp70BMoRkEIlCLDvWGkTnZL3tkyyR4FM
+         ZhWdpdE5Hmk8vJfqBqgEhOle9ghmPvNAeA7n55zWcfvjMSmei1GV/x4WqAz3c2emWGkk
+         QrGZBBRcQffol+xQTy6MuOKTudSL2zukXg8A38i8xu4jmQ/ALPC+9nJ+fuGBzRTsuPlM
+         PGZyVuX7N3RXkvlXxvR7kw5DT1murOweNYyB+DmjEpYjYVSaSVEu5pRPG05fNkswD+/l
+         +7SYcx2HAiEAheJRqAKckE7v4fa2vT9jISSOpgG8YK4TTbIjkT52UcsydJLXrBljQQvw
+         KFVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=TP1HV3NWFU9A1fInCeM4u3y5tCPNsxpAVXNKL5e46ik=;
-        b=KHpXDjelSQv6z4gGCBZBi5rvegN7sf1MiWLdIUffA7/PKLcDNbuO/bdi0F9ZngwEB4
-         Svgn2tJh5AwDvGg/JEmLEiSJUqtYVgPdxXAuE1N9zxl1ovnNfaAgQ+PyhVz/bUNYRrRv
-         dsyV2lTHRXWRzJeRrH8D4A0r5Nr3s3i/rpObr4WKsxfkndKsAk1T5gA7WyKaoBovZsrY
-         p1hf8rRmax4SWMH44LJsEw32Flbyh1ojBJwTVG6DNwvpGe2Twp79Y3OPbMyovsr3pjqn
-         ntrjhBmIkLPQst+2100Y21HYyE5ayztvOjRrIAsQHQwXCdADMTS1pAQ3e3z2RVMLe1aT
-         9Nrg==
-X-Gm-Message-State: AOAM533wxzLfAb9cUEiue8nqh0UMaes9KWJqBHc+OjaCDYOBnVmGy4K5
-        0vdE9fVAO7+W3XNcDdp+Zdh42A==
-X-Google-Smtp-Source: ABdhPJzVBfkalssVZd1bfrcytFJCBHTuOVyqBg7rHMzb9c5G1qULi8IycGBXrg36LjwgmYacsrcIUQ==
-X-Received: by 2002:a5d:560e:: with SMTP id l14mr3949198wrv.10.1615888482369;
-        Tue, 16 Mar 2021 02:54:42 -0700 (PDT)
-Received: from dell ([91.110.221.243])
-        by smtp.gmail.com with ESMTPSA id f22sm2618973wmc.33.2021.03.16.02.54.41
+         :mime-version:content-disposition:in-reply-to;
+        bh=D8pE+gAt6ykTk6iu18Gsykjh2e+iH3BpnPTvA4JqlAY=;
+        b=W2+G1n3DPcNz49bAO+URBbR035QP9//2yiQLo94VXi3EuE8bR+utm5ZoSVTBcY7gjG
+         Hge/2WGJSH9Be34yQVpFC2U2zdRlhZJtF/QMQtc+Csnr8yO2/EuA+/kCM1UeRXpMUIkR
+         Vi9UsTKH+9s7Ai+UHCzdVIb5PGKIAzCBjKYfp49bxolxdtO6zt2SFV9t0HGkqgGbF1kw
+         z17+9LoBfpxg273kSEjq9togEagaEXIsAMIP1okTG9TmTM7rZddJPQ5n8RJaQ3zVlLBX
+         1P7CfG+mZUXqCGjmnzMkQRJHjhAfnCr7mggO8khf3mHVHn0LQQ5tAH+z+WXzXvCm+e0m
+         Lg3w==
+X-Gm-Message-State: AOAM5315y+dQmLq8rGBemnnV2mg5TH7ueAJw/uAtDEZ4mYuWGh2vrfP0
+        YGbi4BO6cM07w1zYfsL0o+jiVaaNeWw=
+X-Google-Smtp-Source: ABdhPJwlSzu63hjHYO/dHln4WJdHEkcor0oiJEgjcMH7GmLuqXTnl+VEpGHjveeFrFCE9UX1a5Vj/w==
+X-Received: by 2002:a17:906:4d85:: with SMTP id s5mr26962757eju.43.1615888530393;
+        Tue, 16 Mar 2021 02:55:30 -0700 (PDT)
+Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
+        by smtp.gmail.com with ESMTPSA id u14sm8986535ejx.60.2021.03.16.02.55.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 02:54:42 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 09:54:40 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "Jonas Mark (BT-FIR/ENG1-Grb)" <Mark.Jonas@de.bosch.com>
-Cc:     Support Opensource <support.opensource@diasemi.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "Adam.Thomson.Opensource@diasemi.com" 
-        <Adam.Thomson.Opensource@diasemi.com>,
-        "stwiss.opensource@diasemi.com" <stwiss.opensource@diasemi.com>,
-        "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
-        "RUAN Tingquan (BT-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>,
-        "Streidl Hubert (BT-FIR/ENG1-Grb)" <Hubert.Streidl@de.bosch.com>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: Re: [PATCH v5] mfd: da9063: Support SMBus and I2C mode
-Message-ID: <20210316095440.GC701493@dell>
-References: <20210315160903.799426-1-mark.jonas@de.bosch.com>
- <20210316072143.GA701493@dell>
- <4dbc130e769547508be811e61a348255@de.bosch.com>
+        Tue, 16 Mar 2021 02:55:30 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 11:55:28 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>,
+        netdev <netdev@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, linux-kernel@vger.kernel.org,
+        Frank Wunderlich <frank-w@public-files.de>,
+        =?utf-8?B?UmVuw6k=?= van Dorst <opensource@vdorst.com>
+Subject: Re: [PATCH net-next] net: dsa: mt7530: support MDB and bridge flag
+ operations
+Message-ID: <20210316095528.kl37helfv5jblsih@skbuf>
+References: <20210315170940.2414854-1-dqfext@gmail.com>
+ <892918f1-bee6-7603-b8e1-3efb93104f6f@gmail.com>
+ <20210315200939.irwyiru6m62g4a7f@skbuf>
+ <84bb93da-cc3b-d2a5-dda8-a8fb973c3bae@gmail.com>
+ <20210315211541.pj5mpy2foi3wlhbe@skbuf>
+ <CALW65jbZ1_A-HwzKwKfavQQUBfNZuBSdL8xTGuRrS5qDqi6j3A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4dbc130e769547508be811e61a348255@de.bosch.com>
+In-Reply-To: <CALW65jbZ1_A-HwzKwKfavQQUBfNZuBSdL8xTGuRrS5qDqi6j3A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021, Jonas Mark (BT-FIR/ENG1-Grb) wrote:
+On Tue, Mar 16, 2021 at 12:36:24PM +0800, DENG Qingfang wrote:
+> On Tue, Mar 16, 2021 at 5:15 AM Vladimir Oltean <olteanv@gmail.com> wrote:
+> >
+> > Actually this is just how Qingfang explained it:
+> > https://patchwork.kernel.org/project/netdevbpf/patch/20210224081018.24719-1-dqfext@gmail.com/
+> >
+> > I just assume that MT7530/7531 switches don't need to enable flooding on
+> > user ports when the only possible traffic source is the CPU port - the
+> > CPU port can inject traffic into any port regardless of egress flooding
+> > setting. If that's not true, I don't see how traffic in standalone ports
+> > mode would work after this patch.
+> 
+> Correct. Don't forget the earlier version of this driver (before my
+> attempt to fix roaming) disabled unknown unicast flooding (trapped to
+> CPU) in the same way.
 
-> Hi Lee,
-> 
-> > Code looks good to me now, thanks.
-> > 
-> > However, this doesn't look like it would pass checkpatch.
-> > 
-> > Have you tried to build with W=1 and checkpatch?
-> 
-> Yes, we used checkpatch.pl.
-> 
->     $ ./scripts/checkpatch.pl 0001-mfd-da9063-Support-SMBus-and-I2C-mode.v5
->     total: 0 errors, 0 warnings, 25 lines checked
-> 
->     0001-mfd-da9063-Support-SMBus-and-I2C-mode.v5 has no obvious style problems and is ready for submission.
-> 
-> Using the option --strict we get a check hint that the broken line of the regmap_clear_bits() is not aligned. We tried but were not able to make the tool happy. This matches our experience with this check hint and previous patches.
->  
-> Also compiling Linux 5.10.14 with our patch and W=1 does not yield a warning.
-
-FYI, you should be using -next for upstream development.
-
->     $ make W=1
->       CALL    scripts/checksyscalls.sh
->       CALL    scripts/atomic/check-atomics.sh
->       CHK     include/generated/compile.h
->       CC [M]  drivers/mfd/da9063-i2c.o
->       LD [M]  drivers/mfd/da9063.o
->       Kernel: arch/arm/boot/Image is ready
->       Kernel: arch/arm/boot/zImage is ready
->       MODPOST Module.symvers
->       LD [M]  drivers/mfd/da9063.ko
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Ok, so in practice you don't really need to touch this register if it's
+already all ones.
