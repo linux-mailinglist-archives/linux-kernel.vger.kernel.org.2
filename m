@@ -2,79 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD49D33DB40
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:46:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 704FE33DB42
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:46:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239145AbhCPRq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:46:27 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:59151 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239056AbhCPRpv (ORCPT
+        id S231429AbhCPRqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:46:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36725 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239087AbhCPRqP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:45:51 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 9348F22238;
-        Tue, 16 Mar 2021 18:45:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1615916749;
+        Tue, 16 Mar 2021 13:46:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615916773;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=N0IPrSvHYfb2D9+Dd0sH+zRB2NKqcmSi14A5U5gAz1U=;
-        b=vZPeLHy6uNVuYY2qpX/N+aK0vmnYAv16QOqug9shJdIwhIQhfGZ5hPdSipGLf66uqrWM3Y
-        SQN9TmxaDkOgIBYObE3YJf/ggiqo6eeISSs02/yDfOPyKQCvBWVnAleFs2UzZxV6KJpNg2
-        kMgVEKn3ieff9cHXxn0HGhn6RMmex74=
+        bh=n0Rc9AlR5VZpjh6F9+qzo94812lXmZf2NLEz1UriYA8=;
+        b=Dj3POwKlgtKjWLOvFG/y7TJcJkdIM1LewuyUIKyKQNVMIZmljCJLLTg+SleNQa4NFyvU0f
+        7n5ADa5+r8dET1BX5eaG6j4hvjrErUe+zy0bn8uZevWaOKxGzPsIQvOK5CGjy920LnNEYj
+        tdObM/EgAxrHL3LJPU2jHdmVJyG12l8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-279-nWhwtQY0MxqdtWFpKlBVrg-1; Tue, 16 Mar 2021 13:46:09 -0400
+X-MC-Unique: nWhwtQY0MxqdtWFpKlBVrg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 508B4192D78B;
+        Tue, 16 Mar 2021 17:46:07 +0000 (UTC)
+Received: from [10.36.114.203] (ovpn-114-203.ams2.redhat.com [10.36.114.203])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B328A5D9C0;
+        Tue, 16 Mar 2021 17:46:04 +0000 (UTC)
+Subject: Re: [PATCH] memblock: fix section mismatch warning again
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@linux.ibm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kernel test robot <lkp@intel.com>
+References: <20210316171347.14084-1-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <f47fe1eb-aecf-d12c-ae30-76331227f9dc@redhat.com>
+Date:   Tue, 16 Mar 2021 18:46:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210316171347.14084-1-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 16 Mar 2021 18:45:49 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Kuldeep Singh <kuldeep.singh@nxp.com>, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to json schema
-In-Reply-To: <20210315183051.ugvmz4zqrvuo6iqq@ti.com>
-References: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
- <20210315183051.ugvmz4zqrvuo6iqq@ti.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <067c42f3726578ebe60d201a141dfdb6@walle.cc>
-X-Sender: michael@walle.cc
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-15 19:30, schrieb Pratyush Yadav:
+On 16.03.21 18:13, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> Commit 34dc2efb39a2 ("memblock: fix section mismatch warning") marked
+> memblock_bottom_up() and memblock_set_bottom_up() as __init, but they could
+> be referenced from non-init functions like memblock_find_in_range_node() on
+> architectures that enable CONFIG_ARCH_KEEP_MEMBLOCK.
+> 
+> For such builds kernel test robot reports:
+> All warnings (new ones prefixed by >>, old ones prefixed by <<):
+> 
+>>> WARNING: modpost: vmlinux.o(.text+0x74fea4): Section mismatch in reference from the function memblock_find_in_range_node() to the function .init.text:memblock_bottom_up()
+> The function memblock_find_in_range_node() references
+> the function __init memblock_bottom_up().
+> This is often because memblock_find_in_range_node lacks a __init
+> annotation or the annotation of memblock_bottom_up is wrong.
+> 
+> Replace __init annotations with __init_memblock annotations so that the
+> appropriate section will be selected depending on
+> CONFIG_ARCH_KEEP_MEMBLOCK.
+> 
+> Link: https://lore.kernel.org/lkml/202103160133.UzhgY0wt-lkp@intel.com
+> Fixes: 34dc2efb39a2 ("memblock: fix section mismatch warning")
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> 
+> @Andrew, please let me know if you'd prefer this merged via memblock tree.
+> 
+>   include/linux/memblock.h | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> index d13e3cd938b4..5984fff3f175 100644
+> --- a/include/linux/memblock.h
+> +++ b/include/linux/memblock.h
+> @@ -460,7 +460,7 @@ static inline void memblock_free_late(phys_addr_t base, phys_addr_t size)
+>   /*
+>    * Set the allocation direction to bottom-up or top-down.
+>    */
+> -static inline __init void memblock_set_bottom_up(bool enable)
+> +static inline __init_memblock void memblock_set_bottom_up(bool enable)
+>   {
+>   	memblock.bottom_up = enable;
+>   }
+> @@ -470,7 +470,7 @@ static inline __init void memblock_set_bottom_up(bool enable)
+>    * if this is true, that said, memblock will allocate memory
+>    * in bottom-up direction.
+>    */
+> -static inline __init bool memblock_bottom_up(void)
+> +static inline __init_memblock bool memblock_bottom_up(void)
+>   {
+>   	return memblock.bottom_up;
+>   }
+> 
 
-..
->> +patternProperties:
->> +  "@[0-9a-f]+":
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Shouldn't this be "^.*@[0-9a-f]+$"?
+-- 
+Thanks,
 
->> +    type: object
->> +
->> +    properties:
->> +      fsl,spi-cs-sck-delay:
->> +        description:
->> +          Delay in nanoseconds between activating chip select and the 
->> start of
->> +          clock signal, at the start of a transfer.
->> +        $ref: /schemas/types.yaml#/definitions/uint32
->> +
->> +      fsl,spi-sck-cs-delay:
->> +        description:
->> +          Delay in nanoseconds between stopping the clock signal and
->> +          deactivating chip select, at the end of a transfer.
->> +        $ref: /schemas/types.yaml#/definitions/uint32
->> +
-..
+David / dhildenb
 
--michael
