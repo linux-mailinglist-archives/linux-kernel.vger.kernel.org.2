@@ -2,121 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA3C33D326
+	by mail.lfdr.de (Postfix) with ESMTP id CC7A533D327
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237293AbhCPLfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
+        id S237310AbhCPLfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237265AbhCPLfC (ORCPT
+        with ESMTP id S237264AbhCPLfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:35:02 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2953EC06174A;
-        Tue, 16 Mar 2021 04:35:00 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id v9so61903403lfa.1;
-        Tue, 16 Mar 2021 04:35:00 -0700 (PDT)
+        Tue, 16 Mar 2021 07:35:15 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AC6C06174A;
+        Tue, 16 Mar 2021 04:35:15 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id b23so8611206pfo.8;
+        Tue, 16 Mar 2021 04:35:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IKq4ek8vxtJozQIHUfJnIO9yQXnXv6nYePXQr5PXTrs=;
-        b=V4ATfEzNMGqq47uJKyufRl7ICYR2UJ7rBgNH1p5kST43w8cwJ+040tD45YpPXyTx7d
-         JXEUlfA9LXu05xR+F9b73OjxsGZLENz7+ycb9j6vosNd8I/9BuM4qe94+quenCm7LJ/O
-         f2AI6IAtfpU6tgiwVjBhuEdOsY3s94O8q0sdj1MaBgdVoz5HTqK9u8RJN7nw8mFYEFiz
-         RZOAnx/ajMy2d53sf9Bg0bnEYxFsvlPNABbUF3sPUDO5vKLsRqjfJuvzBPV3lZjWTEv7
-         PPSUFV0XvbH2iOBCE8Zq6rj5oT5tMrKESG1lxq+WhqG95qIuFt/ktI3ADrPkAuiLkcZp
-         INcw==
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=fvcQ8OAH/TJgsE8NEXu1PwgUImXZqwrU+pigbTYwyiE=;
+        b=oeKUc0zS425cU7Fz1wKi/AnPB7XhhXu5NTEYOP36Ub653NpcXZjIAZmVtKyW2Aw9Hd
+         Xddg0UwtmGyUiSL1gZBAo5k2nKfKd0wdLGQLCYoZZV1f1m2kJ5gfFpFClc6oG1EQFWZh
+         s6sPpUbRx2Zuab/mrR12JWy0Hqr/TMtrY6MiEoSqpWI1ZoUL04QhRYI6F6fP3gE4gem9
+         xB+CbdyZgoM2j74ljh8lUcggmiOQZctIsdeLU3WSQeuVpfkcR+HYso1UWmicgaQeziCU
+         K/cwbyBei3c6inB08GFDi0OHjl/jeva5q4gvSFZD0QQEjVGS2+CU941pC6tUWPfLvGSi
+         Up8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IKq4ek8vxtJozQIHUfJnIO9yQXnXv6nYePXQr5PXTrs=;
-        b=VmG3MNLHDnwCv41iLI/f4J6h1KziosFOZYE+3Rgi7lJ937XUypxAHpkja5oYGM/Xn3
-         J4ph7j5+1ldXeEdTdfi9kuXQyqVPChDWpMPfWQU/Tqz/d9IvZCiAECVGPDHEnixxuqi0
-         7hjrK2AM+xIbZEFe137qBzkSMJpmQjh6m8hd0IZ2v30Hjpun+jBq4h1kw0YkexDIcaO6
-         FjE0RbkviFUAuxN3MHBE9lzyQkkjyj+AnLT9oK2YxgnvcjaLLpg09899AJf38xw1gv8K
-         fxUiggsdFEc4k5Cpuxkswc/pbi+nwfTwAEmqaV1ZLepgpo093MKYT5Ee3uADGsR9hoih
-         3Gsg==
-X-Gm-Message-State: AOAM530UcvIIWu8abJ6XAcC27mDmkvQXQbk1qcA6pVg7Sw1SLPaTHFEn
-        So/a8qHLQw7k9i1CxdBvvFw=
-X-Google-Smtp-Source: ABdhPJzeTEzowewtj7H/UZHzJr2g65mMPWNwh/mTrCpjuyWHHP8pMMIJwYiVk4gsOPUmOsa0tJ5DYA==
-X-Received: by 2002:a05:6512:21cb:: with SMTP id d11mr10527323lft.177.1615894498617;
-        Tue, 16 Mar 2021 04:34:58 -0700 (PDT)
-Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id y11sm3200770ljc.18.2021.03.16.04.34.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 04:34:58 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 16 Mar 2021 12:34:56 +0100
-To:     Topi Miettinen <toiwoton@gmail.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [PATCH v4] mm/vmalloc: randomize vmalloc() allocations
-Message-ID: <20210316113456.GA31764@pc636>
-References: <20210309135757.5406-1-toiwoton@gmail.com>
- <20210314172312.GA2085@pc638.lan>
- <f2d6965b-1801-ce91-0c7c-2cdc92493393@gmail.com>
- <20210315122410.GA26784@pc636>
- <202103150914.4172D96@keescook>
- <20210315174742.GA2038@pc638.lan>
- <85515ea8-744e-acec-76ba-034b38d0f9fa@gmail.com>
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=fvcQ8OAH/TJgsE8NEXu1PwgUImXZqwrU+pigbTYwyiE=;
+        b=ncsWL4VC0GwLj0bMX7mj+5ZFhe7EOSqRWRhtfoJO/6nIo8uD8+2RpBOwJldSlHXTtl
+         S2fZhU3+eLGuRXPuppLs8icx96hKtNu/6ZxasX6n3tL1u7ItGHeV2Nj4mATvvHbrYg4d
+         gokYMtZZWDZXvbZR+8Xy1kXRDKcNketUKNgeHc+5xR05hwxuZdcYhimOtPF21At2xLHl
+         yFL68o5PLU5vWnEwpCmeS01b7oK8N+FH8fBYr7PLelWYjwy7TWKoYjB1aDbN4QNL4DJs
+         V137O8bhw82oj6dmmf/BvG9SzxNUWlL4qLZ0D3/lcqzCLvKwbUbgAU3N3ezi5emeRQN+
+         obTw==
+X-Gm-Message-State: AOAM531T42nrCsc0DiGZizCCRq8kjTPlnQeZDtkVU9c0BMVKOkDBE25T
+        8lkKWolPyXdEI3vn/qyqk1A=
+X-Google-Smtp-Source: ABdhPJyvxDO9M16manNvH094gDQUww/AIK6ejJcLNpRrFVw/NqNMD/wIm4EMHtewygBmJ6e4eWDhyw==
+X-Received: by 2002:a63:2bc4:: with SMTP id r187mr3663170pgr.131.1615894514838;
+        Tue, 16 Mar 2021 04:35:14 -0700 (PDT)
+Received: from [192.168.109.128] ([103.16.71.206])
+        by smtp.gmail.com with ESMTPSA id b9sm15954989pgn.42.2021.03.16.04.35.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 04:35:14 -0700 (PDT)
+To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bkkarthik@pesu.pes.edu
+From:   Suhas KV <suhas.kv00@gmail.com>
+Subject: [PATCH]net: ipv6: ping.c: fixed open brace error
+Message-ID: <1c3d8cf6-b87a-590d-a055-cca18e2fe608@gmail.com>
+Date:   Tue, 16 Mar 2021 04:35:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85515ea8-744e-acec-76ba-034b38d0f9fa@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 10:01:46AM +0200, Topi Miettinen wrote:
-> On 15.3.2021 19.47, Uladzislau Rezki wrote:
-> > On Mon, Mar 15, 2021 at 09:16:26AM -0700, Kees Cook wrote:
-> > > On Mon, Mar 15, 2021 at 01:24:10PM +0100, Uladzislau Rezki wrote:
-> > > > On Mon, Mar 15, 2021 at 11:04:42AM +0200, Topi Miettinen wrote:
-> > > > > What's the problem with that? It seems to me that nothing relies on specific
-> > > > > addresses of the chunks, so it should be possible to randomize these too.
-> > > > > Also the alignment is honored.
-> > > > > 
-> > > > My concern are:
-> > > > 
-> > > > - it is not a vmalloc allocator;
-> > > > - per-cpu allocator allocates chunks, thus it might be it happens only once. It does not allocate it often;
-> > > 
-> > > That's actually the reason to randomize it: if it always ends up in the
-> > > same place at every boot, it becomes a stable target for attackers.
-> > > 
-> > Probably we can randomize a base address only once when pcpu-allocator
-> > allocates a fist chunk during the boot.
-> > 
-> > > > - changing it will likely introduce issues you are not aware of;
-> > > > - it is not supposed to be interacting with vmalloc allocator. Read the
-> > > >    comment under pcpu_get_vm_areas();
-> > > > 
-> > > > Therefore i propose just not touch it.
-> > > 
-> > > How about splitting it from this patch instead? Then it can get separate
-> > > testing, etc.
-> > > 
-> > It should be split as well as tested.
-> 
-> Would you prefer another kernel option `randomize_percpu_allocator=1`, or
-> would it be OK to make it a flag in `randomize_vmalloc`, like
-> `randomize_vmalloc=3`? Maybe the latter would not be compatible with static
-> branches.
-> 
-I think it is better to have a separate option, because there are two
-different allocators.
+fixed the following error shown by checkpatch ERROR: open
+brace '{' following function definitions go on the next line
 
---
-Vlad Rezki
+Signed-off-by: Suhas KV <suhas.kv00@gmail.com>
+---
+  net/ipv6/ping.c | 4 +++-
+  1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/net/ipv6/ping.c b/net/ipv6/ping.c
+index 6ac88fe24a8e..c0e5d0c79d6f 100644
+--- a/net/ipv6/ping.c
++++ b/net/ipv6/ping.c
+@@ -37,7 +37,9 @@ static int dummy_icmpv6_err_convert(u8 type, u8 code, 
+int *err)
+         return -EAFNOSUPPORT;
+  }
+  static void dummy_ipv6_icmp_error(struct sock *sk, struct sk_buff 
+*skb, int err,
+-                                 __be16 port, u32 info, u8 *payload) {}
++                                 __be16 port, u32 info, u8 *payload)
++{
++}
+  static int dummy_ipv6_chk_addr(struct net *net, const struct in6_addr 
+*addr,
+                                const struct net_device *dev, int strict)
+  {
+-- 
+2.25.1
+
