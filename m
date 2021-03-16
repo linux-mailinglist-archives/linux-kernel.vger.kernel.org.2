@@ -2,124 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA5233DB13
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC7833DB23
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbhCPRhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhCPRg4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:36:56 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89885C06174A;
-        Tue, 16 Mar 2021 10:36:56 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id t37so12270088pga.11;
-        Tue, 16 Mar 2021 10:36:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C2INz9jGth8YqEdF26bQM1k6RpOCFfBaXRyDGUE3fpc=;
-        b=P0OwSngSahcWKM+DXoqhwv+uPm+yg/lInhL1wNxTMQR6yEzaEy57rxnPApK0DJUzoA
-         iReZLBDd+2VyfEZBcCf47SR+034817WZqSOhfji1tJmobI3q9rChdC1n+elSBCl4TpFu
-         LDSk7PGYZOu7TLepnzmNOwSw1t92QGsab6uk1WGcWiMslfGY0aOQ0LP+hS/3By0Zd4/Q
-         nKxgbRpBSQjK69FlerA5FW67aTN6cPTH7cWyTJD6JE3b1IBN4eSNGS607Q3LI72ybnZg
-         OyxTX0bXv3I0eMJG6CBUfMDlpgaV18ZrY/L+XPuepigkNpnp6D4XQPW+oIDWXeamiQNT
-         jqDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C2INz9jGth8YqEdF26bQM1k6RpOCFfBaXRyDGUE3fpc=;
-        b=G2YxRRnHqcVRvusMG9JCuLe16RPgCjtH286EX3FfgFoqYsEMNK2Jbu6ZU/egS0u7ZE
-         t4YeJeJSOMWdWje521K1Op9pWyGc/dLPgbO2C9trNlSww/n+/PdT78l5mQoX4fQkM/Qv
-         n352e8VSCvU7oCoY23cUYUyHtRtJeYEzf/8M12zH87F/k9ONE80+CfxKZv54D2/owlCX
-         1aY1yYxGvU7BTMjXwkrTZWF2JYH28YAl5+TPFDFtQEtlOBHI/Gqqe/roIhA1SBI1Xasq
-         rPecemR5H+tYIELJln1/Hj3dJRZ+bgEBFejx4p8Ju6aeR+ijC1gxccjlR6N1ZM7W0ZVg
-         AqAQ==
-X-Gm-Message-State: AOAM532qPrhIeyTh6MXAJk2vKENb0ZF23n0HUpoBBpcp0QRemzhauW6R
-        fMkWwQ9PFTk8o8Jgw/kA4xuQTJu967Jl4t2gr/nF6P3lMDqxbg==
-X-Google-Smtp-Source: ABdhPJymcDQn3heAnXPpCVSxyZhuxe2XCqoedKL02xJ1Af0X+YC26nDoDK1yat7ZvJ45X1ts4tNHKZRzHGJpIone/Bg=
-X-Received: by 2002:a63:4652:: with SMTP id v18mr655646pgk.87.1615916216114;
- Tue, 16 Mar 2021 10:36:56 -0700 (PDT)
+        id S237494AbhCPRmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:42:40 -0400
+Received: from mga06.intel.com ([134.134.136.31]:20268 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237187AbhCPRmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:42:18 -0400
+IronPort-SDR: Luog/eSVuE5Y+9t2kD8gIGsPke0RSA2R+bWEHH3+qs4U66PyRPq+nfWvwdk62E0UPASxtEsxno
+ V2XPEV+WdS2A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="250669011"
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="250669011"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 10:42:16 -0700
+IronPort-SDR: f0SxOICmOaiqZef26nO4Kc3WGs3J9QmZNrSTvmBXF7jKu2OphHw5eAmOtpcaUMChMLK5TMjVIh
+ v5zl69QEwFdw==
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="439200689"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.191.248]) ([10.212.191.248])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 10:42:14 -0700
+Subject: Re: [PATCH v23 6/9] x86/entry: Introduce ENDBR macro
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
+ <20210316151320.6123-7-yu-cheng.yu@intel.com>
+ <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
+ <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
+ <20210316173032.GE18003@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <b0de1933-29ca-6c18-5a11-e293e9415f19@intel.com>
+Date:   Tue, 16 Mar 2021 10:42:13 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210316124808.11984-1-vincent.whitchurch@axis.com> <93d506a6-5832-5006-3bab-6e8e7203da0e@talpey.com>
-In-Reply-To: <93d506a6-5832-5006-3bab-6e8e7203da0e@talpey.com>
-From:   Rohith Surabattula <rohiths.msft@gmail.com>
-Date:   Tue, 16 Mar 2021 23:06:45 +0530
-Message-ID: <CACdtm0ac+oE1+KNbOGWhy-j9XHmUn4AXG6zAaX-nL0W=NJxQMA@mail.gmail.com>
-Subject: Re: [PATCH v2] cifs: Silently ignore unknown oplock break handle
-To:     Tom Talpey <tom@talpey.com>
-Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Steve French <sfrench@samba.org>,
-        linux-cifs <linux-cifs@vger.kernel.org>, kernel@axis.com,
-        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210316173032.GE18003@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This issue will not be seen once changes related to deferred close for
-files is committed.
-Currently, changes are in review. I will address review comments by this week.
+On 3/16/2021 10:30 AM, Borislav Petkov wrote:
+> On Tue, Mar 16, 2021 at 10:12:39AM -0700, Yu, Yu-cheng wrote:
+>> Alternatively, there is another compiler-defined macro _CET_ENDBR that can
+>> be used.  We can put the following in calling.h:
+> 
+> Not calling.h - this is apparently needed in vdso code only so I guess
+> some header there, arch/x86/include/asm/vdso.h maybe? In the
+> 
+> #else /* __ASSEMBLER__ */
+> 
+> branch maybe...
+> 
+>> #ifdef __CET__
+>> #include <cet.h>
+>> #else
+>> #define _CET_ENDBR
+>> #endif
+>>
+>> and then use _CET_ENDBR in other files.  How is that?
+> 
+> What does that macro do? Issue an ENDBR only?
+> 
 
-Regards,
-Rohith
-
-On Tue, Mar 16, 2021 at 9:33 PM Tom Talpey <tom@talpey.com> wrote:
->
-> On 3/16/2021 8:48 AM, Vincent Whitchurch via samba-technical wrote:
-> > Make SMB2 not print out an error when an oplock break is received for an
-> > unknown handle, similar to SMB1.  The SMB2 lease break path is not
-> > affected by this patch.
-> >
-> > Without this, a program which writes to a file from one thread, and
-> > opens, reads, and writes the same file from another thread triggers the
-> > below errors several times a minute when run against a Samba server
-> > configured with "smb2 leases = no".
-> >
-> >   CIFS: VFS: \\192.168.0.1 No task to wake, unknown frame received! NumMids 2
-> >   00000000: 424d53fe 00000040 00000000 00000012  .SMB@...........
-> >   00000010: 00000001 00000000 ffffffff ffffffff  ................
-> >   00000020: 00000000 00000000 00000000 00000000  ................
-> >   00000030: 00000000 00000000 00000000 00000000  ................
-> >
-> > Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> > ---
-> >
-> > Notes:
-> >      v2:
-> >      - Drop change to lease break
-> >      - Rewrite commit message
-> >
-> >   fs/cifs/smb2misc.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/fs/cifs/smb2misc.c b/fs/cifs/smb2misc.c
-> > index 60d4bd1eae2b..4d8576e202e3 100644
-> > --- a/fs/cifs/smb2misc.c
-> > +++ b/fs/cifs/smb2misc.c
-> > @@ -755,7 +755,7 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
-> >       }
-> >       spin_unlock(&cifs_tcp_ses_lock);
-> >       cifs_dbg(FYI, "Can not process oplock break for non-existent connection\n");
-> > -     return false;
-> > +     return true;
-> >   }
-> >
-> >   void
-> >
->
-> As an oplock-only approach, it looks good. But the old cifs_dbg message
-> "non-existent connection" is possibly misleading, since the connection
-> may be perfectly fine.
->
-> When breaking the loop successfully, the code emits
->         cifs_dbg(FYI, "file id match, oplock break\n");
-> so perhaps
->         cifs_dbg(FYI, "No file id matched, oplock break ignored\n");
-> ?
->
-> Tom.
+Yes, issue endbr32, endbr64, or nothing when cet is not enabled.
