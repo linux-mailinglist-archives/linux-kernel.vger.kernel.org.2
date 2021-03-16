@@ -2,125 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B1233CEAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D57DD33CEA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:31:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbhCPHCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 03:02:02 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:40609 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231553AbhCPHBu (ORCPT
+        id S231878AbhCPHbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 03:31:22 -0400
+Received: from mail-out.m-online.net ([212.18.0.9]:56305 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231405AbhCPHbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 03:01:50 -0400
-X-UUID: e3f23dc7e25f43f59ed5116aec0f4746-20210316
-X-UUID: e3f23dc7e25f43f59ed5116aec0f4746-20210316
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <michael.kao@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 644719353; Tue, 16 Mar 2021 15:01:45 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 16 Mar 2021 15:01:44 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 16 Mar 2021 15:01:43 +0800
-From:   Michael Kao <michael.kao@mediatek.com>
-To:     <michael.kao@mediatek.com>, <fan.chen@mediatek.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        <linux-pm@vger.kernel.org>, <srv_heupstream@mediatek.com>
-CC:     Eduardo Valentin <edubezval@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <hsinyi@chromium.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
+        Tue, 16 Mar 2021 03:31:19 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4F04j10yYGz1qtQs;
+        Tue, 16 Mar 2021 08:31:17 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4F04j073FSz1qqkg;
+        Tue, 16 Mar 2021 08:31:16 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id A_fpO2d_cO2G; Tue, 16 Mar 2021 08:31:13 +0100 (CET)
+X-Auth-Info: X9487WXIvzbJnP0JmYxES60RFfFxCxiPWvV8/AXoFcE=
+Received: from [192.168.1.107] (82-131-155-123.pool.digikabel.hu [82.131.155.123])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Tue, 16 Mar 2021 08:31:13 +0100 (CET)
+Reply-To: hs@denx.de
+Subject: Re: [EXT] [PATCH 0/2] enable flexspi support on imx8mp
+To:     Kuldeep Singh <kuldeep.singh@nxp.com>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [v7,0/3] mt8183: Add Mediatek thermal driver and dtsi
-Date:   Tue, 16 Mar 2021 15:01:41 +0800
-Message-ID: <20210316070144.28440-1-michael.kao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Ashish Kumar <ashish.kumar@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Yogesh Gaur <yogeshgaur.83@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210316050425.1758778-1-hs@denx.de>
+ <DB6PR0402MB2758717E38C20E7BFEC5FED8E06B9@DB6PR0402MB2758.eurprd04.prod.outlook.com>
+From:   Heiko Schocher <hs@denx.de>
+Message-ID: <85bf7b05-ed88-cb99-a501-3be1d5f6a156@denx.de>
+Date:   Tue, 16 Mar 2021 08:31:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <DB6PR0402MB2758717E38C20E7BFEC5FED8E06B9@DB6PR0402MB2758.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset supports for MT8183 chip to mtk_thermal.c.
-Add thermal zone of all the thermal sensor in SoC for
-another get temperatrue. They don't need to thermal throttle.
-And we bind coolers for thermal zone nodes of cpu_thermal.
+Hello Kuldeep,
 
-Changes in v7:  
-    - Fix build error in v6. 
+On 16.03.21 07:42, Kuldeep Singh wrote:
+> Hi Heiko,
+> 
+>> -----Original Message-----
+>> From: Heiko Schocher <hs@denx.de>
+>> Sent: Tuesday, March 16, 2021 10:34 AM
+>> To: linux-spi@vger.kernel.org
+>> Cc: Heiko Schocher <hs@denx.de>; linux-arm-kernel@lists.infradead.org;
+>> Ashish Kumar <ashish.kumar@nxp.com>; Kuldeep Singh
+>> <kuldeep.singh@nxp.com>; Mark Brown <broonie@kernel.org>; Rob Herring
+>> <robh+dt@kernel.org>; Shawn Guo <shawnguo@kernel.org>; Yogesh Gaur
+>> <yogeshgaur.83@gmail.com>; devicetree@vger.kernel.org; linux-
+>> kernel@vger.kernel.org
+>> Subject: [EXT] [PATCH 0/2] enable flexspi support on imx8mp
+>>
+>> Caution: EXT Email
+>>
+>> add compatible entry in nxp_fspi driver for imx8mp
+>>
+>> new in v3:
+>> seperate spi changes from series:
+>> https://eur01.safelinks.protection.outlook.com/?url=http%3A%2F%2Flists.inf
+>> radead.org%2Fpipermail%2Flinux-arm-kernel%2F2021-
+>> March%2F643289.html&amp;data=04%7C01%7Ckuldeep.singh%40nxp.com%
+>> 7C5da0c3da3dbe410baaf508d8e83903f4%7C686ea1d3bc2b4c6fa92cd99c5c3
+>> 01635%7C0%7C0%7C637514678868305498%7CUnknown%7CTWFpbGZsb3d8
+>> eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3
+>> D%7C1000&amp;sdata=2uy0EKUh4Nt0BceSQbIkCZDfakid3wx5uwebw0DhEIQ
+>> %3D&amp;reserved=0
+>>
+>> into own series as Kuldeep suggested and rebased against
+>> git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+>> 144c79ef33536 ("Merge tag 'perf-tools-fixes-for-v5.12-2020-03-07' of
+>> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux")
+> 
+> The changes are not on on top of spi tree
+> git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+> and therefore may not apply seamlessly.
+> 
+> I recently added driver support for imx8dxl which is accepted in spi tree
+> And these patches will cause conflict with it.
+> 
+> Kindly rebase these patches on top of the tree.
 
-Changes in v6:
-    - Rebase to kernel-5.11-rc1.
-    - [1/3]
-	- add interrupts property.
-    - [2/3]
-	- add the Tested-by in the commit message.
-    - [3/3]
-	- use the mt->conf->msr[id] instead of conf->msr[id] in the
-	  _get_sensor_temp and mtk_thermal_bank_temperature.
-	- remove the redundant space in _get_sensor_temp and
-	  mtk_read_sensor_temp.
-	- change kmalloc to dev_kmalloc in mtk_thermal_probe.
+Sorry, my fault. I thought the patches go into for-next ... 3 days
+old ...
 
-Changes in v5:
-    - Rebase to kernel-5.9-rc1.
-    - Revise the title of cover letter.
-    - Drop "[v4,7/7] thermal: mediatek: use spinlock to protect PTPCORESEL"
-    - [2/2]
-        -  Add the judgement to the version of raw_to_mcelsius.
+Ah, I had the wrong base ... I used "144c79ef33536" but it should
+be "a43e89624baea"
 
-Changes in v4:
-    - Rebase to kernel-5.6-rc1.
-    - [1/7]
-        - Squash thermal zone settings in the dtsi from [v3,5/8]
-          arm64: dts: mt8183: Increase polling frequency for CPU thermal zone.
-        - Remove the property of interrupts and mediatek,hw-reset-temp.
-    - [2/7]
-        - Correct commit message.
-    - [4/7]
-        - Change the target temperature to the 80C and change the commit message.
-    - [6/7]
-        - Adjust newline alignment.
-        - Fix the judgement on the return value of registering thermal zone.
+Sorry and thanks for detecting!
 
-Changes in v3:
-    - Rebase to kernel-5.5-rc1.
-    - [1/8]
-        - Update sustainable power of cpu, tzts1~5 and tztsABB.
-    - [7/8]
-        - Bypass the failure that non cpu_thermal sensor is not find in thermal-zones
-          in dts, which is normal for mt8173, so prompt a warning here instead of
-          failing.
+I sent a new version soon...
 
-        Return -EAGAIN instead of -EACCESS on the first read of sensor that
-        often are bogus values. This can avoid following warning on boot:
-
-          thermal thermal_zone6: failed to read out thermal zone (-13)
-
-Changes in v2:
-    - [1/8]
-        - Add the sustainable-power,trips,cooling-maps to the tzts1~tztsABB.
-    - [4/8]
-        - Add the min opp of cpu throttle.
-
-Matthias Kaehlcke (1):
-  arm64: dts: mt8183: Configure CPU cooling
-
-Michael Kao (2):
-  thermal: mediatek: add another get_temp ops for thermal sensors
-  arm64: dts: mt8183: add thermal zone node
-
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 141 +++++++++++++++++++++++
- drivers/thermal/mtk_thermal.c            | 100 ++++++++++++----
- 2 files changed, 216 insertions(+), 25 deletions(-)
-
+bye,
+Heiko
 -- 
-2.18.0
-
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-52   Fax: +49-8142-66989-80   Email: hs@denx.de
