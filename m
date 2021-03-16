@@ -2,109 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 286F333DA5F
+	by mail.lfdr.de (Postfix) with ESMTP id 7461533DA60
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:13:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238535AbhCPRM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238544AbhCPRMI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:12:08 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6EDC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:12:08 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id g185so35979351qkf.6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:12:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l3lfqWe11SmkspT5fw2Bt6LDqCmzocPLSgH05TqfpYc=;
-        b=ncvfoAP8zVWkXHI9mIMt+ffMrllgf+W7NytywHwAYq+4n2acXSWmmx5xJYKjgEKPxX
-         +z7nSfcJgTUnUG//AOLqqQ+MeNrBAj2lCSxFTC7nCKcpLefJ7u8dtS9kYhqQkT7q74ha
-         X3X8UWd09Y6q5bSasrrQOiGIA1V5rfajhjFVs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l3lfqWe11SmkspT5fw2Bt6LDqCmzocPLSgH05TqfpYc=;
-        b=SQPHBXFO//fPE58LcQaVA6YtjHwELXOJnWNzw5Pou6z/eHS1GHE4FkwfMAIwnEZV3g
-         gRiEDvgN0uTkakJuWeq3ECMCRlV6/41Yv7kPxrd9rjRWgsX3i0hQA3QgEMBBgBoAm7ZI
-         H2eKhnFznpjgiQoVXmHqXA4no3Z982e9zLhhxaSSPqXTSB6SJJj95SaMVyGiqivcSNDn
-         rT5gpi5RC3FAw7aN6vrygQoMAlagEeZA5xMKw+BD4KMJXUgPdBrvv+g5rWTgA0L/aDvE
-         qXG5flJlXAOnjtg4P1SGm/eukcN1Pk1N+ebI3tXkzB3AfaRCm1OXhSCBB3U41yPLwfCq
-         VWuA==
-X-Gm-Message-State: AOAM532v1eUf7bQ4yQnPv9ikuaa4vUihowYaGX8wlfGoctFswN4jQ6f/
-        5tDi1250hpl1cjxVznGkpVy61pmX26tYNA==
-X-Google-Smtp-Source: ABdhPJwEQzUO45wbQHahBz3Wu71Z0NdLBlV46koKQbHyUDiJ5vbzbSKMfUOrTNx05DxoZeelkxADkQ==
-X-Received: by 2002:a05:620a:1017:: with SMTP id z23mr26209qkj.23.1615914726813;
-        Tue, 16 Mar 2021 10:12:06 -0700 (PDT)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id r7sm13369088qtw.17.2021.03.16.10.12.05
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 10:12:06 -0700 (PDT)
-Received: by mail-yb1-f175.google.com with SMTP id f145so21202066ybg.11
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:12:05 -0700 (PDT)
-X-Received: by 2002:a05:6902:70a:: with SMTP id k10mr7918658ybt.257.1615914725255;
- Tue, 16 Mar 2021 10:12:05 -0700 (PDT)
+        id S238575AbhCPRNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:13:01 -0400
+Received: from mga01.intel.com ([192.55.52.88]:50270 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239171AbhCPRMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:12:42 -0400
+IronPort-SDR: kupFXEQzqOy4Ngh47OGo92WpruiIVhmacxnCEOG1MjyDormoq4u0xhDWADEvSJZtVmuLTBiWND
+ lEzyeKzwkFIQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="209242689"
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="209242689"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 10:12:41 -0700
+IronPort-SDR: WAufUYiv2hINDLV1Fsm7MR1NscNe9fmWhCNAMYlonQgBJzkCN1Jk6hMv0wjROGIZvRym4QvWLT
+ XQwO7GxNWjGg==
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="412295708"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.191.248]) ([10.212.191.248])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 10:12:40 -0700
+Subject: Re: [PATCH v23 6/9] x86/entry: Introduce ENDBR macro
+To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>
+References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
+ <20210316151320.6123-7-yu-cheng.yu@intel.com>
+ <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
+Date:   Tue, 16 Mar 2021 10:12:39 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210316011516.1314686-1-mka@chromium.org> <20210315181509.v3.3.I95b8a63103b77cab6a7cf9c150f0541db57fda98@changeid>
-In-Reply-To: <20210315181509.v3.3.I95b8a63103b77cab6a7cf9c150f0541db57fda98@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 16 Mar 2021 10:11:53 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UbwiQEq_C_y7P9D-L9Gyb9tpjaqJZ8ZgHCaW=xwDp6xQ@mail.gmail.com>
-Message-ID: <CAD=FV=UbwiQEq_C_y7P9D-L9Gyb9tpjaqJZ8ZgHCaW=xwDp6xQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] arm64: dts: qcom: sc7180: Add CoachZ rev3
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 3/16/2021 8:49 AM, Dave Hansen wrote:
+> On 3/16/21 8:13 AM, Yu-cheng Yu wrote:
+>> --- a/arch/x86/entry/calling.h
+>> +++ b/arch/x86/entry/calling.h
+>> @@ -392,3 +392,21 @@ For 32-bit we have the following conventions - kernel is built with
+>>   .endm
+>>   
+>>   #endif /* CONFIG_SMP */
+>> +/*
+>> + * ENDBR is an instruction for the Indirect Branch Tracking (IBT) component
+>> + * of CET.  IBT prevents attacks by ensuring that (most) indirect branches
+>> + * function calls may only land at ENDBR instructions.  Branches that don't
+>> + * follow the rules will result in control flow (#CF) exceptions.
+>> + * ENDBR is a noop when IBT is unsupported or disabled.  Most ENDBR
+>> + * instructions are inserted automatically by the compiler, but branch
+>> + * targets written in assembly must have ENDBR added manually.
+>> + */
+>> +.macro ENDBR
+>> +#ifdef CONFIG_X86_CET
+>> +#ifdef __i386__
+>> +	endbr32
+>> +#else
+>> +	endbr64
+>> +#endif
+>> +#endif
+>> +.endm
+> 
+> Is "#ifdef __i386__" the right thing to use here?  I guess ENDBR only
+> ends up getting used in the VDSO, but there's a lot of
+> non-userspace-exposed stuff in calling.h.  It seems a bit weird to have
+> the normally userspace-only __i386__ in there.
+> 
+> I don't see any existing direct use of __i386__ in arch/x86/entry/vdso.
+> 
 
-On Mon, Mar 15, 2021 at 6:15 PM Matthias Kaehlcke <mka@chromium.org> wrote:
->
-> CoachZ rev3 uses a 100k NTC thermistor for the charger temperatures,
-> instead of the 47k NTC that is stuffed in earlier revisions. Add .dts
-> files for rev3.
->
-> The 47k NTC currently isn't supported by the PM6150 ADC driver.
-> Disable the charger thermal zone for rev1 and rev2 to avoid the use
-> of bogus temperature values.
->
-> This also gets rid of the explicit DT files for rev2 and handles
-> rev2 in the rev1 .dts instead. There was some back and forth
-> downstream involving the 'dmic_clk_en' pin, after that was sorted
-> out the DT for rev1 and rev2 is the same.
->
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
->
-> Changes in v3:
-> - get rid of separate .dts for rev2
->
-> Changes in v2:
-> - added CoachZ rev3
-> - updated subject and commit message
->
->  arch/arm64/boot/dts/qcom/Makefile                   |  4 ++--
->  .../boot/dts/qcom/sc7180-trogdor-coachz-r1-lte.dts  |  4 ++--
->  .../boot/dts/qcom/sc7180-trogdor-coachz-r1.dts      | 13 +++++++++++--
->  ...-r2-lte.dts => sc7180-trogdor-coachz-r3-lte.dts} |  6 +++---
->  ...r-coachz-r2.dts => sc7180-trogdor-coachz-r3.dts} |  4 ++--
->  5 files changed, 20 insertions(+), 11 deletions(-)
+Good point.  My thought was, __i386__ comes from the compiler having the 
+-m32 command-line option, and it is not dependent on anything else.
 
-Looks keen to me now, thanks!
+Alternatively, there is another compiler-defined macro _CET_ENDBR that 
+can be used.  We can put the following in calling.h:
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+#ifdef __CET__
+#include <cet.h>
+#else
+#define _CET_ENDBR
+#endif
+
+and then use _CET_ENDBR in other files.  How is that?
+
+In the future, in case we have kernel-mode IBT, ENDBR macros are also 
+needed for other assembly files.
+
+Thanks,
+Yu-cheng
