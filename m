@@ -2,115 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326CB33CF30
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD9A33CF33
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:02:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234153AbhCPIBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 04:01:51 -0400
-Received: from mail-vs1-f45.google.com ([209.85.217.45]:41757 "EHLO
-        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232137AbhCPIBm (ORCPT
+        id S231862AbhCPIC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 04:02:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234159AbhCPIBw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 04:01:42 -0400
-Received: by mail-vs1-f45.google.com with SMTP id s8so17704182vsc.8;
-        Tue, 16 Mar 2021 01:01:42 -0700 (PDT)
+        Tue, 16 Mar 2021 04:01:52 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1AEC06174A;
+        Tue, 16 Mar 2021 01:01:51 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id p21so60895317lfu.11;
+        Tue, 16 Mar 2021 01:01:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nhPJC9wzAEpJ+jE+VGfpIliqBXvwzpfxSi1AqRybceE=;
+        b=d5cCDtFG4kTdcsmxqRALSq4WBRWUBYtKaYREhuAdZvZgJ2Kp91SFlGjcoJKJ+critV
+         JUfXmDt6qmdEsYACsQ4YyQdcpSddCdLQE0l8P0ndEEp6/WPv+xlVFH8eG8lk8t9a7QsF
+         1yRGgjS1BJcQgaqqsohpXkLJkWl7htXi9sI5Jw6V7hGVvAtWzxzymly281iO2h27Hu9b
+         X5TwhbrLpu/pOmZWEd3WUXiM/odwODUQHHTqYHvpnuqMVJZTzV611WkDOeplEGyYDLNN
+         82cGVPUjuDJpViav/ltjWvn9pl2BvLqWKFE37YlEB611X0ICwEeETFy++5Mk2/V5kwqr
+         KPYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DgL2LNXP2lxwXX8HbYLpL0RwruXL8cdBwmu8w2k8t08=;
-        b=CCB0ImslYTj4FnGP+pVbmUKey4ZdARZ1OrXDAUXl2+qxxZMAPsnXLQzci/dWsHFQvH
-         EPw1egcFymEMPzFE5TwycIl6DkAhLyT4a7nXOMDmUwx1p3Z7n+JQ7tI0C6hFub/gv+7G
-         m1Oh0noabifxQEKETinuZYbLBsXsNOPzMX/QVh9UQshqnGFaR/0yqATlI3e/uljBYFXu
-         56AlGurXiwT2SRps8duWgGOvh2c4HGbQy3zazmwJVnsJHQC+N+iqIwW4jNbKFcPxkcth
-         f0+5SrX0abz3gTNrmdmP/KpCQnSgiSV+do4PV2LWSvDgSFXQEOoxLz8bi/gwfG7nt23Y
-         BIXw==
-X-Gm-Message-State: AOAM531A4pi81oRcUIXZHi3Ha0OHCURgo7WMG1G8cGjBJ7omaswsimBJ
-        J53IuKriimXFI9RUvWW3x+ouQiEdr12YBnFfnrY=
-X-Google-Smtp-Source: ABdhPJyIladf8aoZOGNW+MTWZTIxZvN/Fhqb4neeaMebTTaWn2gGdiaUzi+iSSTsW9PiA+Ep6nnX+KMixr66IfiduyU=
-X-Received: by 2002:a67:efd0:: with SMTP id s16mr7557528vsp.3.1615881701627;
- Tue, 16 Mar 2021 01:01:41 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nhPJC9wzAEpJ+jE+VGfpIliqBXvwzpfxSi1AqRybceE=;
+        b=TwHyVuQyyMNtR6ssgawPL1453LcC4H/Cbiwrq/9q4PjHITNQGrIMTlkHR9Ljd5nmFe
+         MoQHKnaEQ19lUnkKQaMMf9ybXlKBIxz7iOObwcdLWLQg4Nx6WMekBCrtmCgTUIkXH9Lt
+         1M4yOhSQfLCdcY6Lx84vHPtnqVD+4thGEd6fStinmPPH00NLyroIYqPveXuUhYSt9FCf
+         tPo92Lw3kzD9CAxEtxTPn/yaOdfuQaV//rGoS7OiWTup/xMQiZSLxaxH4i9xvStlSVaH
+         P5sV6SVZG2VjITigdmX1kUepn/h/16p8HbAIURZ5VJR4O9/zJnKcfC7RJ8s5lONevmkm
+         LqEA==
+X-Gm-Message-State: AOAM533zCGzEGsKuY1sH2kl8fVVENxTIWXxNPel5HDRTTiC0EsZfEs+f
+        DK3zp6+ciE+Kd/3nTHlWei8=
+X-Google-Smtp-Source: ABdhPJxbHKpOtwcSZgEDd4Sb73ytAiD+HkMe1ubr8slYwelIN437r1j1b4kFmaIQnAURidQFkDTWBw==
+X-Received: by 2002:a05:6512:3042:: with SMTP id b2mr9693809lfb.480.1615881710506;
+        Tue, 16 Mar 2021 01:01:50 -0700 (PDT)
+Received: from [192.168.1.39] (88-114-223-25.elisa-laajakaista.fi. [88.114.223.25])
+        by smtp.gmail.com with ESMTPSA id v22sm2963626lfr.277.2021.03.16.01.01.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 01:01:49 -0700 (PDT)
+Subject: Re: [PATCH v4] mm/vmalloc: randomize vmalloc() allocations
+To:     Uladzislau Rezki <urezki@gmail.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>
+References: <20210309135757.5406-1-toiwoton@gmail.com>
+ <20210314172312.GA2085@pc638.lan>
+ <f2d6965b-1801-ce91-0c7c-2cdc92493393@gmail.com>
+ <20210315122410.GA26784@pc636> <202103150914.4172D96@keescook>
+ <20210315174742.GA2038@pc638.lan>
+From:   Topi Miettinen <toiwoton@gmail.com>
+Message-ID: <85515ea8-744e-acec-76ba-034b38d0f9fa@gmail.com>
+Date:   Tue, 16 Mar 2021 10:01:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
- <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
- <20210312044712.srmqfuie7fae55pb@vireshk-i7> <17c65559-865f-f742-660f-0ab30ed45d90@gmail.com>
- <4d9bee7a-416e-50a1-65a5-0674ae83d42e@gmail.com> <20210312071325.zosmlttse4ym7sit@vireshk-i7>
- <6f093bb1-1a80-a906-fb4c-3f6fdeed4838@gmail.com> <9068520f-76d6-ec94-716c-02383422ac85@gmail.com>
- <20210315064051.otcjt3x6vkfdrio6@vireshk-i7> <CAK7LNASHHNmZJ4FXz4Q5-UMEbSSyb_aG+kmfhJQZtCgkSZ_GAQ@mail.gmail.com>
- <YE/bzbU4jbgd6uNW@pendragon.ideasonboard.com> <e08f4006-af23-6c58-8557-263901193229@gmail.com>
-In-Reply-To: <e08f4006-af23-6c58-8557-263901193229@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 16 Mar 2021 09:01:30 +0100
-Message-ID: <CAMuHMdWCUQRwUy3s_ApH8Pzafdvh61VRNkMcbZ0OnGcqtJxdkw@mail.gmail.com>
-Subject: Re: [PATCH V11 3/5] kbuild: Allow .dtso format for overlay source files
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210315174742.GA2038@pc638.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frank,
+On 15.3.2021 19.47, Uladzislau Rezki wrote:
+> On Mon, Mar 15, 2021 at 09:16:26AM -0700, Kees Cook wrote:
+>> On Mon, Mar 15, 2021 at 01:24:10PM +0100, Uladzislau Rezki wrote:
+>>> On Mon, Mar 15, 2021 at 11:04:42AM +0200, Topi Miettinen wrote:
+>>>> What's the problem with that? It seems to me that nothing relies on specific
+>>>> addresses of the chunks, so it should be possible to randomize these too.
+>>>> Also the alignment is honored.
+>>>>
+>>> My concern are:
+>>>
+>>> - it is not a vmalloc allocator;
+>>> - per-cpu allocator allocates chunks, thus it might be it happens only once. It does not allocate it often;
+>>
+>> That's actually the reason to randomize it: if it always ends up in the
+>> same place at every boot, it becomes a stable target for attackers.
+>>
+> Probably we can randomize a base address only once when pcpu-allocator
+> allocates a fist chunk during the boot.
+> 
+>>> - changing it will likely introduce issues you are not aware of;
+>>> - it is not supposed to be interacting with vmalloc allocator. Read the
+>>>    comment under pcpu_get_vm_areas();
+>>>
+>>> Therefore i propose just not touch it.
+>>
+>> How about splitting it from this patch instead? Then it can get separate
+>> testing, etc.
+>>
+> It should be split as well as tested.
 
-On Tue, Mar 16, 2021 at 6:39 AM Frank Rowand <frowand.list@gmail.com> wrote:
-> On 3/15/21 5:12 PM, Laurent Pinchart wrote:
-> > On Tue, Mar 16, 2021 at 02:43:45AM +0900, Masahiro Yamada wrote:
-> >> But how can we fix drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a779*.dts
-> >> if these are doing bad things.
-> >> They seem to be overlay files even though the file name suffix is .dts
-> >
-> > That is correct, they are overlays. I have no issue with those files
-> > being renamed to .dtso if that can help (but I haven't checked if that
-> > would have any adverse effect on the R-Car DU driver).
->
-> As Laurent replied, yes these are overlays.  They were grandfathered in
-> as a deprecated use of overlays.
->
-> > These files are there to ensure backward compatibility with older DT
-> > bindings. The change was made 3 years ago and I wouldn't object to
-> > dropping this completely, but I understand I may not be the most
-> > cautious person when it comes to ensuring DT backward compatibility :-)
->
-> My memory is that the goal was to eventually remove these overlays
-> at some point in the future.  If everyone agrees that today is the
-> proper time, it would be helpful to go ahead and remove these .dts
-> files and the code that uses them.
+Would you prefer another kernel option `randomize_percpu_allocator=1`, 
+or would it be OK to make it a flag in `randomize_vmalloc`, like 
+`randomize_vmalloc=3`? Maybe the latter would not be compatible with 
+static branches.
 
-Given [1][2][3] were merged in v4.17, and [4] was merged in v4.20, and
-all were backported to the old v4.14-based R-Car BSP v3.8.0, I think
-it's safe to assume all users have the DTS updates, so the backward
-compatibility mode can be removed?
+-Topi
 
-> >> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7791.dts
-> >> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7795.dts
-> >> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7796.dts
-> >> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7793.dts
-> >> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7790.dts
+> 
+> --
+> Vlad Rezki
+> 
 
-[1] 15a1ff30d8f9bd83 ("ARM: dts: r8a7790: Convert to new LVDS DT bindings")
-[2] e5c3f4707f3956a2 ("ARM: dts: r8a7791: Convert to new LVDS DT bindings")
-[3] edb0c3affe5214a2 ("ARM: dts: r8a7793: Convert to new LVDS DT bindings")
-[4] 58e8ed2ee9abe718 ("arm64: dts: renesas: Convert to new LVDS DT bindings")
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
