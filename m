@@ -2,106 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF8833CD7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:46:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D794D33CD84
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235559AbhCPFqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:46:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232953AbhCPFqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:46:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB67665041;
-        Tue, 16 Mar 2021 05:46:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615873573;
-        bh=5X1sAbjwlO2FZcj8u4oacUCNFUtXmJoGeWPaIvVl8o8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vk8sZAI5lnW3OkA4aUc1D3frY6q5LHJncY8PnVWtDWSYiZ3GD0dgOq7Z3kgwm9ymK
-         i+LBSaa9D1YRBGwk8Z/xbD8ojHWQ4TBoi3/7qkXwKWXFQ/3SgpeNFymlrT3n6PkKo7
-         yXJILjpPckNpW8s1sZAnjThDf1CnwdOZ7Oaplb6c=
-Date:   Tue, 16 Mar 2021 06:46:10 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Christian Eggers <ceggers@arri.de>
-Subject: Re: [PATCH 5.10 113/290] net: dsa: implement a central TX
- reallocation procedure
-Message-ID: <YFBGIt2jRQLmjtln@kroah.com>
-References: <20210315135541.921894249@linuxfoundation.org>
- <20210315135545.737069480@linuxfoundation.org>
- <20210315195601.auhfy5uafjafgczs@skbuf>
+        id S235568AbhCPFrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233064AbhCPFrr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 01:47:47 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F6BC06174A;
+        Mon, 15 Mar 2021 22:47:47 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id 18so8069425pfo.6;
+        Mon, 15 Mar 2021 22:47:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+kjXRUyRx/w7Y8GaJq7eCfF5pid4PKqWc6tkkujLoCo=;
+        b=GOtQLLzKYgSfUtq5WLIWXNJSK0unMMDwpKZvYGLRLdlXUKEUi1ApC9ipDYEdPiZkNv
+         FbxUUp9CdHFBPSebPXM1Ojj/eVFMoYcilQl5r4TOCdUVire12/dV/OUlKJsZJCvE7qaA
+         jUjcuj8MNtedi/XvZxOfWPGcXrBpm6A97jw+sf7W0J39dTrQ3zjGA+rIIQ9ap5pUBe+B
+         NLSP0ArKnJevbfmDr2mSj/G8MNRImqrQqI9FRHYYVim/tdbSigMhO5K3xodfcWS4BX/Q
+         E4NL4SrtYQJ9i11CxieSghuwMpCG/e6tXj4C8rrGEkysN4FX2HW6do/oSCc95Iw4vsA6
+         gEQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+kjXRUyRx/w7Y8GaJq7eCfF5pid4PKqWc6tkkujLoCo=;
+        b=TUa/1LTHssp0upHEhVeTU7Ma4TUKg3guuORHS0quem7t92Z28Fs1DfaQXpRIWHExOV
+         cDrLUVr2b7rmME2+tYKI5yrYi6mWZZQiPNbvKyd727EYi5jRQX0ob8Mjwa9mU6LqmAUQ
+         jbPlBk7e+0iXmXB2XFtSaWDPvebDmZCVeymDqEJYFnrT5ZH3d9gzFYdlYuYdGgwBoKHE
+         8xv/HpYWjaMWTcYpd+veIlJOYKK8PoRRhuyDkLmFyqsV8usNBiimJLLchg1RdNrVF8dz
+         6yw187V/C8azijxiLCWia0fdPJHYh+Wd2kp60Q94Xbw55abivYI1cVbnX/Hkj6iLejiV
+         Dkqw==
+X-Gm-Message-State: AOAM533/2zA1twmBJFVawyYHh2u3xl7dn7kO30CYmxfKWoqdxEAgwYOZ
+        FquIhqxXz9FSDI6Ykr6mwiA=
+X-Google-Smtp-Source: ABdhPJyryS3L9fRf5yllrbFMfwZeFbTAV2mAViIl/f+8AKQAzR+1NqwMUvywyH1/gZxiXxXfUAwDTQ==
+X-Received: by 2002:aa7:8e8f:0:b029:1f1:5a1a:7f82 with SMTP id a15-20020aa78e8f0000b02901f15a1a7f82mr13686329pfr.52.1615873666781;
+        Mon, 15 Mar 2021 22:47:46 -0700 (PDT)
+Received: from cl-arch-kdev.. (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id l22sm15096513pfd.145.2021.03.15.22.47.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 22:47:46 -0700 (PDT)
+From:   Fox Chen <foxhlchen@gmail.com>
+To:     neilb@suse.de
+Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
+        vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
+        rdunlap@infradead.org, grandmaster@al2klimov.de,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org
+Subject: [PATCH v2 00/12] docs: path-lookup: Update pathlookup docs
+Date:   Tue, 16 Mar 2021 13:47:15 +0800
+Message-Id: <20210316054727.25655-1-foxhlchen@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315195601.auhfy5uafjafgczs@skbuf>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 07:56:02PM +0000, Vladimir Oltean wrote:
-> +Andrew, Vivien,
-> 
-> On Mon, Mar 15, 2021 at 02:53:26PM +0100, gregkh@linuxfoundation.org wrote:
-> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >
-> > From: Vladimir Oltean <vladimir.oltean@nxp.com>
-> >
-> > [ Upstream commit a3b0b6479700a5b0af2c631cb2ec0fb7a0d978f2 ]
-> >
-> > At the moment, taggers are left with the task of ensuring that the skb
-> > headers are writable (which they aren't, if the frames were cloned for
-> > TX timestamping, for flooding by the bridge, etc), and that there is
-> > enough space in the skb data area for the DSA tag to be pushed.
-> >
-> > Moreover, the life of tail taggers is even harder, because they need to
-> > ensure that short frames have enough padding, a problem that normal
-> > taggers don't have.
-> >
-> > The principle of the DSA framework is that everything except for the
-> > most intimate hardware specifics (like in this case, the actual packing
-> > of the DSA tag bits) should be done inside the core, to avoid having
-> > code paths that are very rarely tested.
-> >
-> > So provide a TX reallocation procedure that should cover the known needs
-> > of DSA today.
-> >
-> > Note that this patch also gives the network stack a good hint about the
-> > headroom/tailroom it's going to need. Up till now it wasn't doing that.
-> > So the reallocation procedure should really be there only for the
-> > exceptional cases, and for cloned packets which need to be unshared.
-> >
-> > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> > Tested-by: Christian Eggers <ceggers@arri.de> # For tail taggers only
-> > Tested-by: Kurt Kanzenbach <kurt@linutronix.de>
-> > Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > ---
-> 
-> For context, Sasha explains here:
-> https://www.spinics.net/lists/stable-commits/msg190151.html
-> (the conversation is somewhat truncated, unfortunately, because
-> stable-commits@vger.kernel.org ate my replies)
-> that 13 patches were backported to get the unrelated commit 9200f515c41f
-> ("net: dsa: tag_mtk: fix 802.1ad VLAN egress") to apply cleanly with git-am.
-> 
-> I am not strictly against this, even though I would have liked to know
-> that the maintainers were explicitly informed about it.
-> 
-> Greg, could you make your stable backporting emails include the output
-> of ./get_maintainer.pl into the list of recipients? Thanks.
+The Path lookup is a very complex subject in VFS. The path-lookup
+document provides a very detailed guidance to help people understand
+how path lookup works in the kernel. This document was originally
+written based on three lwn articles five years ago. As times goes by,
+some of the content is outdated. This patchset is intended to update
+the document to make it more relevant to current codebase.
 
-I cc: everyone on the signed-off-by list on the patch, why would we need
-to add more?  A maintainer should always be on that list automatically.
 
-thanks,
+---
+v1: https://lore.kernel.org/lkml/20210126072443.33066-1-foxhlchen@gmail.com/
+v2:
+ - Fix problems in v1 reviewed by Neil:
+   1. In Patch 01 and 02 rewrite a new paragrah to describe step_into()
+   2. In Patch 01 instead of changing it to traverse_mounts, remove follow_managed()
+   3. In Patch 03 re-telling the story rather than adding notes
+   4. In Patch 04 do_open() should be outside of loop, fix it and fix other problems
+      in following paragrah
+   5. In Patch 07 use "drop out of RCU-walk"
+   6. In Patch 08 "latter" should be "later", fix it and restructure the next paragrah
+      removing "Finally"
 
-greg k-h
+To help review, I've put a compiled html version here: 
+http://linux-docs.54fox.com/linux_docs/filesystems/path-lookup-v2.html
+
+
+Fox Chen (12):
+  docs: path-lookup: update follow_managed() part
+  docs: path-lookup: update path_to_nameidata() part
+  docs: path-lookup: update path_mountpoint() part
+  docs: path-lookup: update do_last() part
+  docs: path-lookup: remove filename_mountpoint
+  docs: path-lookup: Add macro name to symlink limit description
+  docs: path-lookup: i_op->follow_link replaced with i_op->get_link
+  docs: path-lookup: update i_op->put_link and cookie description
+  docs: path-lookup: no get_link()
+  docs: path-lookup: update WALK_GET, WALK_PUT desc
+  docs: path-lookup: update get_link() ->follow_link description
+  docs: path-lookup: update symlink description
+
+ Documentation/filesystems/path-lookup.rst | 164 ++++++++++------------
+ 1 file changed, 71 insertions(+), 93 deletions(-)
+
+-- 
+2.30.2
+
