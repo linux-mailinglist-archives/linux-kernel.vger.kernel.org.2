@@ -2,119 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FEAF33DC8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:29:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB67933DC92
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239980AbhCPS2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239957AbhCPS2G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:28:06 -0400
-Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C159C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:28:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
-         s=the; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:Sender:
-        Reply-To:Cc:Content-Transfer-Encoding:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=5abAEvlb6RQ//aPbXWSlsFscXPRdObN6cMphxdvzJjg=; b=xg1tvYgAsbdUB+jLBkj30dqmd1
-        xXNF3flKWiQA6A5RpDXb/gRLMMkpDcBWQseNapujwWNGcgD/j3rKawPNtDnKinp5myE2eGIDhpNiJ
-        tV8aMStaMoMtIOdZQCTU0RsyFJXKGzrN5IbYHzp3jfg4jwZbLETRAGvGDfHiSLqqguD+IhFHafnI2
-        FS59nvVC+IU4NxVJRk3jIk3op3MgO0BeWRQeowZoko5Sr7Xo6PPhDw4SvBQrgKLMoXB5N5QflXNNp
-        nBIwWPF8Cac4CimaOARg41uFTWwYtlrFqu0WbEvgclG/qWnBRTLkunR5o/UbGO+Lb/Xk1WPKpuFzH
-        WTJa8e8g==;
-Received: from noodles by the.earth.li with local (Exim 4.92)
-        (envelope-from <noodles@earth.li>)
-        id 1lMEQ5-0006i4-VW; Tue, 16 Mar 2021 18:27:54 +0000
-Date:   Tue, 16 Mar 2021 18:27:53 +0000
-From:   Jonathan McDowell <noodles@earth.li>
-To:     Sandy Huang <hjc@rock-chips.com>,
-        Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/rockchip: Cope with endpoints that haven't been
- registered yet
-Message-ID: <20210316182753.GA25685@earth.li>
+        id S240015AbhCPS3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:29:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236941AbhCPS2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 14:28:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93A7965144;
+        Tue, 16 Mar 2021 18:28:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615919319;
+        bh=o5TDeYcIZfv3w4lnvrTEouEqZDlTghi/yYioRz16sfs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YDMonfeho2P2kYrP1Eouqage1A0JdVUoHkwxBzlILGtvAfJnUe2bImP8a6dwiV3+r
+         qPUBCgpD1rPL1gHhwqpXdBrKWh0yH9WJvAMWpGwv06HgZQQSaZ6F3x36BNWvV3doZJ
+         0KL3Sl5/s0PuvZro2WswQXfgXjRBJtG0JsJaGD7ySV/cCJ41/TSqI3hwAYg/5SqTWN
+         nga/E/y0OHnVKuP9nFJ6+0XGlBIau8fw4fi4qOO17BgEGqYaHK/PNSDG2ZJUc8pt+f
+         hn+vhm5e8suCzAkC5uAEbqKsF2oyiOKyp9izJAzLDY6agFrCxwGZv4mY0XsiGfnetr
+         b+9t50q48YT5A==
+Received: by mail-ot1-f49.google.com with SMTP id t23-20020a0568301e37b02901b65ab30024so7373297otr.4;
+        Tue, 16 Mar 2021 11:28:39 -0700 (PDT)
+X-Gm-Message-State: AOAM533GuKr8BHO38lZ2todszRmeC/E/OpdI6v4sjDOFYRppBB8IyE+W
+        QAPdNDYKRPQPchzvu/rT1jk3UsECA9tTm2ClirE=
+X-Google-Smtp-Source: ABdhPJynsQBaQFgKvT0WbhJ3BjrEydngPdSBWCACEfjcFzWuldKaclgxe6MaGLPLuzRp2PL/b2TMxUBPvs0LYZwI1T0=
+X-Received: by 2002:a9d:6341:: with SMTP id y1mr116073otk.210.1615919318766;
+ Tue, 16 Mar 2021 11:28:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <5532f9ab-7555-d51b-f4d5-f9b72a61f248@redhat.com>
+ <20210312222718.4117508-1-slyfox@gentoo.org> <SN6PR11MB2848561E3D85A8F55EB86977E16B9@SN6PR11MB2848.namprd11.prod.outlook.com>
+In-Reply-To: <SN6PR11MB2848561E3D85A8F55EB86977E16B9@SN6PR11MB2848.namprd11.prod.outlook.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 16 Mar 2021 19:28:22 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3JYmhbN3TXB2cWGfXGKgsUa9Hg=ZvWckTaL_31OMgbtQ@mail.gmail.com>
+Message-ID: <CAK8P3a3JYmhbN3TXB2cWGfXGKgsUa9Hg=ZvWckTaL_31OMgbtQ@mail.gmail.com>
+Subject: Re: [PATCH] hpsa: fix boot on ia64 (atomic_t alignment)
+To:     Don.Brace@microchip.com
+Cc:     Sergei Trofimovich <slyfox@gentoo.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-ia64@vger.kernel.org, storagedev@microchip.com,
+        linux-scsi <linux-scsi@vger.kernel.org>, jszczype@redhat.com,
+        Scott.Benesh@microchip.com, Scott.Teel@microchip.com,
+        thenzl@redhat.com,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Rockchip RGB CRTC output driver attempts to avoid probing Rockchip
-subdrivers to see if they're a connected panel or bridge. However part
-of its checks assumes that if no OF platform device is found then it
-can't be a valid bridge or panel. This causes issues with I2C controlled
-bridges that have not yet been registered to the point they can be
-found.
+On Tue, Mar 16, 2021 at 6:12 PM <Don.Brace@microchip.com> wrote:
 
-Change this to return EPROBE_DEFER instead of ENODEV and don't ignore
-such devices. The subsequent call to drm_of_find_panel_or_bridge() will
-return EPROBE_DEFER as well if there's actually a valid device we should
-wait for.
+>  drivers/scsi/hpsa_cmd.h | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/scsi/hpsa_cmd.h b/drivers/scsi/hpsa_cmd.h index d126bb877250..617bdae9a7de 100644
+> --- a/drivers/scsi/hpsa_cmd.h
+> +++ b/drivers/scsi/hpsa_cmd.h
+> @@ -20,6 +20,9 @@
+>  #ifndef HPSA_CMD_H
+>  #define HPSA_CMD_H
+>
+> +#include <linux/build_bug.h> /* static_assert */ #include
+> +<linux/stddef.h> /* offsetof */
+> +
+>  /* general boundary defintions */
+>  #define SENSEINFOBYTES          32 /* may vary between hbas */
+>  #define SG_ENTRIES_IN_CMD      32 /* Max SG entries excluding chain blocks */
+> @@ -448,11 +451,20 @@ struct CommandList {
+>          */
+>         struct hpsa_scsi_dev_t *phys_disk;
+>
+> -       bool retry_pending;
+> +       int retry_pending;
+>         struct hpsa_scsi_dev_t *device;
+>         atomic_t refcount; /* Must be last to avoid memset in hpsa_cmd_init() */  } __aligned(COMMANDLIST_ALIGNMENT);
+>
+> +/*
+> + * Make sure our embedded atomic variable is aligned. Otherwise we
+> +break atomic
+> + * operations on architectures that don't support unaligned atomics like IA64.
+> + *
+> + * Ideally this header should be cleaned up to only mark individual
+> +structs as
+> + * packed.
+> + */
+> +static_assert(offsetof(struct CommandList, refcount) %
+> +__alignof__(atomic_t) == 0);
+> +
 
-Signed-off-by: Jonathan McDowell <noodles@earth.li>
----
- drivers/gpu/drm/rockchip/rockchip_drm_drv.c | 8 ++++++--
- drivers/gpu/drm/rockchip/rockchip_rgb.c     | 7 ++++---
- 2 files changed, 10 insertions(+), 5 deletions(-)
+Actually that still feels wrong: the annotation of the struct is to pack
+every member, which causes the access to be done in byte units
+on architectures that do not have hardware unaligned load/store
+instructions, at least for things like atomic_read() that does not
+go through a cmpxchg() or ll/sc cycle.
 
-diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-index 212bd87c0c4a..b0d63a566501 100644
---- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-@@ -270,11 +270,15 @@ int rockchip_drm_endpoint_is_subdriver(struct device_node *ep)
- 	if (!node)
- 		return -ENODEV;
- 
--	/* status disabled will prevent creation of platform-devices */
-+	/*
-+	 * status disabled will prevent creation of platform-devices,
-+	 * but equally we can't rely on the driver having been registered
-+	 * yet (e.g. I2C bridges).
-+	 */
- 	pdev = of_find_device_by_node(node);
- 	of_node_put(node);
- 	if (!pdev)
--		return -ENODEV;
-+		return -EPROBE_DEFER;
- 
- 	/*
- 	 * All rockchip subdrivers have probed at this point, so
-diff --git a/drivers/gpu/drm/rockchip/rockchip_rgb.c b/drivers/gpu/drm/rockchip/rockchip_rgb.c
-index c079714477d8..989595087397 100644
---- a/drivers/gpu/drm/rockchip/rockchip_rgb.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_rgb.c
-@@ -77,7 +77,7 @@ struct rockchip_rgb *rockchip_rgb_init(struct device *dev,
- 	struct drm_encoder *encoder;
- 	struct device_node *port, *endpoint;
- 	u32 endpoint_id;
--	int ret = 0, child_count = 0;
-+	int subret, ret = 0, child_count = 0;
- 	struct drm_panel *panel;
- 	struct drm_bridge *bridge;
- 
-@@ -96,8 +96,9 @@ struct rockchip_rgb *rockchip_rgb_init(struct device *dev,
- 		if (of_property_read_u32(endpoint, "reg", &endpoint_id))
- 			endpoint_id = 0;
- 
--		/* if subdriver (> 0) or error case (< 0), ignore entry */
--		if (rockchip_drm_endpoint_is_subdriver(endpoint) != 0)
-+		/* if subdriver (> 0) or non-defer error case (< 0), ignore entry */
-+		subret = rockchip_drm_endpoint_is_subdriver(endpoint);
-+		if (subret != 0 && subret != -EPROBE_DEFER)
- 			continue;
- 
- 		child_count++;
--- 
-2.20.1
+This change may fix itanium, but it's still not correct. Other
+architectures would have already been broken before the recent
+change, but that's not a reason against fixing them now.
 
+I'd recommend marking the entire structure as having default
+alignment, by adding the appropriate pragmas before and after it.
+
+         Arnd
