@@ -2,94 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F41633E250
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:44:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E522733E24F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:44:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhCPXnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 19:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhCPXnD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 19:43:03 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71DDEC06174A;
-        Tue, 16 Mar 2021 16:43:03 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id f26so925569ljp.8;
-        Tue, 16 Mar 2021 16:43:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jYFeGyHV2zNDVLbB4/9V9Cq/DhTaZRm/v1+BiD8VFOw=;
-        b=pNUpWJquTOQ7GETDBARhVTlBvYZv2Ugf0ssuCBNJrHVNUldN7HWfC9c3HLEKrZqUp7
-         3WqcHiK53HI/HzDw+ttHJIqIsBGt/9JoRFsni32AWrM1diyNRlPOs8DDgk9EhFi2aOB7
-         2IT6ivIlQ6RGScxniU6NBKnLIKHAyJkFfT3ltQ0OFA3SiOvd7s46m52XmeHEZHxVOeTc
-         uev4xIbU7Ajc9lLWY2li5KX9bB4q49TxEU1KbPcIYeI8DskKwoN+ti1IZGGndq+lsAVZ
-         LUU0NQ89catzxMdN+QYiyKt30a2USwIHp2RpeEA/Njr5EdSDXTmIPgnfPQlcsLkUHHMX
-         ZxVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jYFeGyHV2zNDVLbB4/9V9Cq/DhTaZRm/v1+BiD8VFOw=;
-        b=YJJAz71WiIQ3wlk/paXgPt2/gU7ire7UF6xX3vkJVTEGSbs5EQzv7GyeuRi4jjDL1y
-         i2z8grdVUF/kq63TtluV/q1SvjbQQ9uOl18Yb0ZC486s/JJ7eAoiBuaxHTOjBsUtgmnQ
-         Si8u3u6dpa6C2Z4NjtokuIKdMYqxNiTUCa6YraiF7iUUqIeAnypgsnUvVu2AOlIKL3af
-         lrpS9+AaYhb6DZEqHasTAijn0v1uQayKRWHZfzAKjwTsJ1pCVNaZcoDAMOxLabtsuJ4T
-         sI0WXm1gH9Qu/xSIJU6tDUVon0x0PedC/+6eYJz8ZTB67u1uVPHZJwzt+Yy0yhcfdJUc
-         iNgw==
-X-Gm-Message-State: AOAM531DGQZfXIzLE7YIDc6DChI6IJvLW3fPHcvVaQQ6pbzySZs17whk
-        B9ruQPUfEB2KkeeYmD9K7cUUkTnRjMY=
-X-Google-Smtp-Source: ABdhPJyTPkrSBR9a2SBJrGXgEoF451Mw3ymhO/O7kZzEk4Swq8DINxPlGHhlhFvHwvHa1KMSWekwCw==
-X-Received: by 2002:a2e:b6c6:: with SMTP id m6mr640889ljo.411.1615938181757;
-        Tue, 16 Mar 2021 16:43:01 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id k1sm3207658lfe.208.2021.03.16.16.43.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 16:43:01 -0700 (PDT)
-Subject: Re: [PATCH v5] iommu/tegra-smmu: Add pagetable mappings to debugfs
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
-        thierry.reding@gmail.com, will@kernel.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210315203631.24990-1-nicoleotsuka@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <acad1a15-b4ad-e74e-647e-d50d15d8d3d1@gmail.com>
-Date:   Wed, 17 Mar 2021 02:43:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229519AbhCPXnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 19:43:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44368 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229529AbhCPXnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 19:43:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1621864F0F;
+        Tue, 16 Mar 2021 23:43:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615938188;
+        bh=1juVaj8zwVwWX/l7s+BY6ME28H2myziVkvLl+Txp3Gs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=MpwrIgBR1JONIv3OUYtDXVfeTsq7QcBLLXYJsAVdiHgnQ7CSWZEQHHZI8MzV8iFLC
+         dm7I+ovBE2NAA4WT4zHmHBb63FvPunJdfKiuwFZeJEujpHhaeDVWGcEyTtwaXZtcdO
+         Y2ThsOiVqMjzJ8m9Gbwi5TLxuHTVvQj43+K0SElT0g1lB40jYCw7ZQnxDgbomuGFpO
+         iNsbQzMxhslC9AeAeQjfRt70J0qR6yNa9CTP6LR0AI3vilA2aBmp/7m+FdmIRnqaKg
+         9ObIUyI9I6gpIQ02Vqt/nMIHOsVPqk91nwdmGajifQIn1m8P6hp40kMS82IIfjwv+C
+         ycJf4vPWclSNw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B949B3522A5A; Tue, 16 Mar 2021 16:43:07 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 16:43:07 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: Re: [rcu:rcu/next 33/36] ERROR: modpost: "rcu_read_unlock_longwait"
+ undefined!
+Message-ID: <20210316234307.GZ2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <202103170728.9kxVaZbV-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210315203631.24990-1-nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202103170728.9kxVaZbV-lkp@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.03.2021 23:36, Nicolin Chen пишет:
-> +static int tegra_smmu_mappings_show(struct seq_file *s, void *data)
-> +{
-> +	struct tegra_smmu_group_debug *group_debug = s->private;
-> +	const struct tegra_smmu_swgroup *group;
-> +	struct tegra_smmu_as *as;
-> +	struct tegra_smmu *smmu;
-> +	unsigned int pd_index;
-> +	unsigned int pt_index;
-> +	unsigned long flags;
-> +	u64 pte_count = 0;
-> +	u32 pde_count = 0;
-> +	u32 val, ptb_reg;
-> +	u32 *pd;
-> +
-> +	if (!group_debug || !group_debug->priv || !group_debug->group)
-> +		return 0;
+On Wed, Mar 17, 2021 at 07:18:34AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+> head:   9035ae87fcb36d2a7c8872e1cc0a46c0c5b619a8
+> commit: bd6ae31d1b1f22ab7ff8376b416f09d93d9ef75d [33/36] rcutorture: Add the ability to torture RCU longsleep
+> config: x86_64-randconfig-r015-20210316 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build):
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?id=bd6ae31d1b1f22ab7ff8376b416f09d93d9ef75d
+>         git remote add rcu https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
+>         git fetch --no-tags rcu rcu/next
+>         git checkout bd6ae31d1b1f22ab7ff8376b416f09d93d9ef75d
+>         # save the attached .config to linux build tree
+>         make W=1 ARCH=x86_64 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>, old ones prefixed by <<):
+> 
+> >> ERROR: modpost: "rcu_read_unlock_longwait" [kernel/rcu/rcutorture.ko] undefined!
+> >> ERROR: modpost: "rcu_read_lock_longwait" [kernel/rcu/rcutorture.ko] undefined!
+> >> ERROR: modpost: "rcu_read_lock_longwait_held" [kernel/rcu/rcutorture.ko] undefined!
 
-I'm also now curious how difficult would be to read out the actual h/w
-state, i.e. check whether ASID is enabled and then dynamically map the
-pointed pages instead of using pages allocated by driver. This will show
-us the real h/w state. For example this may show mappings left after
-bootloader or after reboot/kexec, which could be handy to see.
+Good catch, fixed with attribution, thank you!
+
+							Thanx, Paul
