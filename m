@@ -2,63 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B2033D482
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0CF733D48E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:06:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234496AbhCPNBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:01:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49122 "EHLO mx2.suse.de"
+        id S234531AbhCPNFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:05:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233062AbhCPNBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:01:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615899665; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iGCmVD2U24Jc1j3ZUlBFpOR+1PwTae5lOTW7wdWn/nc=;
-        b=oYaYLy/onN6VQ0mbkpsp1XmAwm9kCvD+zdqURtQBChXqq8oq8Z/3QRzxuci6koCkt5weJh
-        42yV3GSP1OrkEL884Joq8T7ImN8hcospcJfF80X3nu05JjPDfXjILOWg6Ct9fUURg1tXNa
-        C01C1Uk+Q6swtn847u9auldBlksyGFI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D040EAC47;
-        Tue, 16 Mar 2021 13:01:04 +0000 (UTC)
-Date:   Tue, 16 Mar 2021 14:01:04 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] seq_file: Unconditionally use vmalloc for buffer
-Message-ID: <YFCsEGpi6Et3Bu3B@dhcp22.suse.cz>
-References: <20210315174851.622228-1-keescook@chromium.org>
- <YE+oZkSVNyaONMd9@zeniv-ca.linux.org.uk>
- <202103151336.78360DB34D@keescook>
- <YFBdQmT64c+2uBRI@kroah.com>
- <YFCn4ERBMGoqxvUU@zeniv-ca.linux.org.uk>
+        id S234502AbhCPNFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 09:05:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0805A6505D;
+        Tue, 16 Mar 2021 13:05:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615899917;
+        bh=kor5HI4uVqpM15xlGlMQ3Vb/ab3YDAFb7vluRdukJEA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QEfHV44CdBP9Wq/ZcwBuFrlMhC8E88KuYYgwc+gWTmic4oiu/zFhQFfmWENNcPx1n
+         wCod6XSv6D0MCq1SfWyMCj26ZFqQsIrr4XXeH6NFLxpymFS2+cJx9qsrIHBpKwyaHa
+         C1pKYok//XXWRIZNRZT6NZ/6XJXhe7ZwnMRVEYYqjyGy9zbWsFlNyu3C5Wv+Jc0R+u
+         /r8FCGLZIY8rzRPRpQ0uWtfkpEPAZWFS68Ri+eh0jhDsIEkrr9L0S1ih/oh6PDTJ2R
+         k41D5fxz3adrRoKq1Tbf3yY1Be+WRR61U9+vMrSFDJYZRzDqoohzAdgy8QvPbJYR5Y
+         sXOFFQE1yd8iw==
+Date:   Tue, 16 Mar 2021 14:05:14 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Ti Zhou <x2019cwm@stfx.ca>, Yunfeng Ye <yeyunfeng@huawei.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 02/10] tick/nohz: Add tick_nohz_full_this_cpu()
+Message-ID: <20210316130514.GB639918@lothringen>
+References: <20210311123708.23501-1-frederic@kernel.org>
+ <20210311123708.23501-3-frederic@kernel.org>
+ <YFCkUUCYchYpB/0W@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YFCn4ERBMGoqxvUU@zeniv-ca.linux.org.uk>
+In-Reply-To: <YFCkUUCYchYpB/0W@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 16-03-21 12:43:12, Al Viro wrote:
-[...]
-> AFAICS, Kees wants to protect against ->show() instances stomping beyond
-> the page size.  What I don't get is what do you get from using seq_file
-> if you insist on doing raw access to the buffer rather than using
-> seq_printf() and friends.  What's the point?
+On Tue, Mar 16, 2021 at 01:28:01PM +0100, Peter Zijlstra wrote:
+> On Thu, Mar 11, 2021 at 01:37:00PM +0100, Frederic Weisbecker wrote:
+> > Optimize further the check for local full dynticks CPU. Testing directly
+> > tick_nohz_full_cpu(smp_processor_id()) is suboptimal because the
+> > compiler first fetches the CPU number and only then processes the
+> > static key.
+> > 
+> > It's best to evaluate the static branch before anything.
+> 
+> Or you do tricky things like this ;-)
 
-I do not think there is any and as you have said in other response we
-should really make seq_get_buf internal thing to seq_file and be done
-with that. If there is a missing functionality that users workaround by
-abusing seq_get_buf then it should be added into seq_file interface.
--- 
-Michal Hocko
-SUSE Labs
+Good point!
+
+I'll check the asm diff to see if that really does what we want.
+I expect it will.
+
+Thanks.
+
+> 
+> diff --git a/include/linux/tick.h b/include/linux/tick.h
+> index 7340613c7eff..bd4a6b055b80 100644
+> --- a/include/linux/tick.h
+> +++ b/include/linux/tick.h
+> @@ -185,13 +185,12 @@ static inline bool tick_nohz_full_enabled(void)
+>  	return tick_nohz_full_running;
+>  }
+>  
+> -static inline bool tick_nohz_full_cpu(int cpu)
+> -{
+> -	if (!tick_nohz_full_enabled())
+> -		return false;
+> -
+> -	return cpumask_test_cpu(cpu, tick_nohz_full_mask);
+> -}
+> +#define tick_nohz_full_cpu(_cpu) ({					\
+> +	bool __ret = false;						\
+> +	if (tick_nohz_full_enabled())					\
+> +		__ret = cpumask_test_cpu((_cpu), tick_nohz_full_mask);	\
+> +	__ret;								\
+> +})
+>  
+>  static inline void tick_nohz_full_add_cpus_to(struct cpumask *mask)
+>  {
+> 
+> 
