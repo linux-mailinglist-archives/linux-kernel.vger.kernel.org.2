@@ -2,259 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F7433CD03
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB4A33CD08
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:19:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235267AbhCPFQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:16:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45196 "EHLO
+        id S235361AbhCPFSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235204AbhCPFPx (ORCPT
+        with ESMTP id S231837AbhCPFSK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:15:53 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD93C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 22:15:53 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id r17so70014752ejy.13
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 22:15:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LEFPFvt8MF2rFyKja9eaaDVQnks2LWaEMeyDoOUgbCU=;
-        b=zQZYOjElW6H/wgGZfpVu7He5892VE+ZgqHAEKzgVPsqIAQ/gHgQO5t3I8+DFpE8tnX
-         FCFmDzIMKQPJvIMIyq9zuOyqYsVu+5K6adc9qKW1HBTyTvdSnSE3oDZwnTHVt/uj0uit
-         u/bbC0eFT28gB0X1s0k5LNK3m17M47Uc9ltoiEwHz0ZeSSKrbMTIFioAgmn6aZucNd32
-         9rQVoY8DO/FNFbhV5CvPZu8ZKMg6rxouziksZZBbaCCI7Ein8rRd+9mRRmjrYfRbvJu4
-         n2obczjyjUb6U0wwtz1mryBksQUtfh9Y3QSs5KocDTGf+SsVyxulMH4j5IZKBYUjUCos
-         29Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LEFPFvt8MF2rFyKja9eaaDVQnks2LWaEMeyDoOUgbCU=;
-        b=AT8MOpleW476uHz4bW3ML3St9B1UZJXGslWcXTywmnR85A2jJNYD5gQMo5cP9g9OOf
-         woQpsgQhX5SNkrz92PC0NjH7X5ADWNuSX+NfSVrmqIsGXqFhQj0Je3NgL84iCA8MiEf5
-         egHxymB8d2JPo8w+AQDKqbigpgKn3av8SJt0E2slgTKyJlZYTE71J9U5sXBKNyspEv2E
-         H6VNkDk8rUiEsBLg1onDGgl+YAe/C1zA80XhhiVu7NiaaOpW9TYTG+RmUqoQiEIEh2Xf
-         eU9oEG2ZkdA3IV8gz0qKukc5HXKz2F81hfexsMx3AvLbEXk3Ke9neLY60J9eLJFeib9W
-         rSpQ==
-X-Gm-Message-State: AOAM533uNpLoozO073w+d9FkyDXWDqvtTdX5kquEDxOONqSMlQ2eU657
-        qPhSSZyV/KBY9/gZCY3usjFNCF7DHJ4fmjg0f8zaaA==
-X-Google-Smtp-Source: ABdhPJwbG6uVNN/F0ddv4R2N95OyaeqaT44/3JzAScasAmWVJP434nmjFCBKOKVY14jiXK1B7rbRobAeKHwVaL0si8w=
-X-Received: by 2002:a17:906:70d:: with SMTP id y13mr16656551ejb.170.1615871751994;
- Mon, 15 Mar 2021 22:15:51 -0700 (PDT)
+        Tue, 16 Mar 2021 01:18:10 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9854EC06174A;
+        Mon, 15 Mar 2021 22:18:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=m2wlbrLXHGON0ztmTAjK9CypdMjp3CW2spuglhCeX9w=; b=NawVP1nUT9d9PzmC6+dbotGLyu
+        6l3wiDPm/fIA6eep9py0CdMN9PrdNv0NKPZaE5LtNIS7Yu4AjHSFqhzmaqwTKEH6IQZ2q9tUfKMi5
+        eRAIZm1n0rgHefQyz8R/+0/7GusNnRHb0B+zCUmsHfbDRoYthAr6x7hDqLl7X/IVqAGUCcPm4pc9h
+        Z67mTXQMhNbYmHCT0E5lB335A53EO5fJWLJvFEW9VrYzB3JkILVM99Vs8l0cegqLDqk7GFg4Padad
+        Dv40QJe3VRN4YWDExCDaA8F/CoRvCwbFyKceAQ6nqg0CKD4pnZQVlSfnJiPmFdC5DgBcnh3/9uSRL
+        DPpdbw3A==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lM25o-001PQj-6V; Tue, 16 Mar 2021 05:18:08 +0000
+Subject: Re: [PATCH V2] mips: asm: octeon: A typo fix in the file
+ cvmx-address.h
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        tsbogend@alpha.franken.de, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210316043334.2770025-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <7a624cf1-45ef-81b9-0340-baa7cde39950@infradead.org>
+Date:   Mon, 15 Mar 2021 22:18:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210315135507.611436477@linuxfoundation.org>
-In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 16 Mar 2021 10:45:40 +0530
-Message-ID: <CA+G9fYtRqGK2QUWCMQ8W0awGxykCYFMRCXYud9yKHkR3_jooQg@mail.gmail.com>
-Subject: Re: [PATCH 5.11 000/306] 5.11.7-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210316043334.2770025-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021 at 19:27, <gregkh@linuxfoundation.org> wrote:
->
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
-> This is the start of the stable review cycle for the 5.11.7 release.
-> There are 306 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 17 Mar 2021 13:54:26 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.11.7-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.11.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 3/15/21 9:33 PM, Bhaskar Chowdhury wrote:
+> 
+> s/techically/technically/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+> ---
+>  Changes from V1:
+>  Meh, missed the changelog text, so added :)
+> 
+>  arch/mips/include/asm/octeon/cvmx-address.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/include/asm/octeon/cvmx-address.h b/arch/mips/include/asm/octeon/cvmx-address.h
+> index e4444f8c4a61..5df5c90f6a5d 100644
+> --- a/arch/mips/include/asm/octeon/cvmx-address.h
+> +++ b/arch/mips/include/asm/octeon/cvmx-address.h
+> @@ -152,7 +152,7 @@ typedef union {
+> 
+>  	/* physical mem address */
+>  	struct {
+> -		/* techically, <47:40> are dont-cares */
+> +		/* technically, <47:40> are dont-cares */
+>  		uint64_t zeroes:24;
+>  		/* the hardware ignores <39:36> in Octeon I */
+>  		uint64_t unaddr:4;
+> --
 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+-- 
+~Randy
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.11.7-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.11.y
-git commit: f109baa2424b2523fbb975de996fedc7a53ef531
-git describe: v5.11.6-307-gf109baa2424b
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11=
-.y/build/v5.11.6-307-gf109baa2424b
-
-No regressions (compared to build v5.11.6)
-
-No fixes (compared to build v5.11.6)
-
-
-Ran 55999 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-64k_page_size
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-i386-clang
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-lib
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-syscalls-tests
-* perf
-* v4l2-compliance
-* fwts
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* ltp-commands-tests
-* ltp-cve-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* network-basic-tests
-* kselftest-intel_pstate
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-livepatch
-* kselftest-ptrace
-* kselftest-vm
-* kselftest-x86
-* libhugetlbfs
-* ltp-controllers-tests
-* ltp-mm-tests
-* ltp-open-posix-tests
-* kvm-unit-tests
-* rcutorture
-* kunit
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* ssuite
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
