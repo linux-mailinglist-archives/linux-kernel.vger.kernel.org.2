@@ -2,95 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7A533D327
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4B433D32B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237310AbhCPLfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237264AbhCPLfP (ORCPT
+        id S237337AbhCPLgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:36:02 -0400
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:35097 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237315AbhCPLfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:35:15 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AC6C06174A;
-        Tue, 16 Mar 2021 04:35:15 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id b23so8611206pfo.8;
-        Tue, 16 Mar 2021 04:35:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=fvcQ8OAH/TJgsE8NEXu1PwgUImXZqwrU+pigbTYwyiE=;
-        b=oeKUc0zS425cU7Fz1wKi/AnPB7XhhXu5NTEYOP36Ub653NpcXZjIAZmVtKyW2Aw9Hd
-         Xddg0UwtmGyUiSL1gZBAo5k2nKfKd0wdLGQLCYoZZV1f1m2kJ5gfFpFClc6oG1EQFWZh
-         s6sPpUbRx2Zuab/mrR12JWy0Hqr/TMtrY6MiEoSqpWI1ZoUL04QhRYI6F6fP3gE4gem9
-         xB+CbdyZgoM2j74ljh8lUcggmiOQZctIsdeLU3WSQeuVpfkcR+HYso1UWmicgaQeziCU
-         K/cwbyBei3c6inB08GFDi0OHjl/jeva5q4gvSFZD0QQEjVGS2+CU941pC6tUWPfLvGSi
-         Up8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=fvcQ8OAH/TJgsE8NEXu1PwgUImXZqwrU+pigbTYwyiE=;
-        b=ncsWL4VC0GwLj0bMX7mj+5ZFhe7EOSqRWRhtfoJO/6nIo8uD8+2RpBOwJldSlHXTtl
-         S2fZhU3+eLGuRXPuppLs8icx96hKtNu/6ZxasX6n3tL1u7ItGHeV2Nj4mATvvHbrYg4d
-         gokYMtZZWDZXvbZR+8Xy1kXRDKcNketUKNgeHc+5xR05hwxuZdcYhimOtPF21At2xLHl
-         yFL68o5PLU5vWnEwpCmeS01b7oK8N+FH8fBYr7PLelWYjwy7TWKoYjB1aDbN4QNL4DJs
-         V137O8bhw82oj6dmmf/BvG9SzxNUWlL4qLZ0D3/lcqzCLvKwbUbgAU3N3ezi5emeRQN+
-         obTw==
-X-Gm-Message-State: AOAM531T42nrCsc0DiGZizCCRq8kjTPlnQeZDtkVU9c0BMVKOkDBE25T
-        8lkKWolPyXdEI3vn/qyqk1A=
-X-Google-Smtp-Source: ABdhPJyvxDO9M16manNvH094gDQUww/AIK6ejJcLNpRrFVw/NqNMD/wIm4EMHtewygBmJ6e4eWDhyw==
-X-Received: by 2002:a63:2bc4:: with SMTP id r187mr3663170pgr.131.1615894514838;
-        Tue, 16 Mar 2021 04:35:14 -0700 (PDT)
-Received: from [192.168.109.128] ([103.16.71.206])
-        by smtp.gmail.com with ESMTPSA id b9sm15954989pgn.42.2021.03.16.04.35.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 04:35:14 -0700 (PDT)
-To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bkkarthik@pesu.pes.edu
-From:   Suhas KV <suhas.kv00@gmail.com>
-Subject: [PATCH]net: ipv6: ping.c: fixed open brace error
-Message-ID: <1c3d8cf6-b87a-590d-a055-cca18e2fe608@gmail.com>
-Date:   Tue, 16 Mar 2021 04:35:10 -0700
+        Tue, 16 Mar 2021 07:35:51 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id M7zEl1Zf44ywlM7zIlAlme; Tue, 16 Mar 2021 12:35:48 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1615894548; bh=NQGZRkIj9jSeeETDnCrg5G1MdUAhBmYCYcT6Q1xXTQg=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=gLzHCbczBu+/QNCerJ3JJVQM4jpzF9lI1pEZ/OdoT4FLJb0yBY+S60k/6kROPYqPk
+         BO7UILxyub57JeexzRadHs3P28VufaRgIfCtr2mC02Unyohbdi9QafHE8bGQxygLeJ
+         DcPpu2l5j1scMOMd+khOimFWUUu7OhbG30X3p0rWaAky3I6fIf9fFbSVPfiA+/1ioK
+         dyZZuX6Kcfffjt9bFIqik411xauDpptkvWjZ5WB5n3g52NR5SNK7NHzDe+YapO0/17
+         yGhu9US1HfCjiN83M+r4D5my9O2BeoFax39u6rUVxn/FARKtXxqBFWZaGyrMA65dSE
+         WguixTZyt6Fog==
+Subject: Re: [PATCH v5 1/5] v4l: Add new Colorimetry Class
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+References: <20210209162425.3970393-1-stanimir.varbanov@linaro.org>
+ <20210209162425.3970393-2-stanimir.varbanov@linaro.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <e456ca77-7a47-de09-d5c9-41e38b362857@xs4all.nl>
+Date:   Tue, 16 Mar 2021 12:35:44 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210209162425.3970393-2-stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfPfKfoJqaVO1aDly7VB/NT3EcZHKO8fd9VXJYM0mdjgpYY7t384wzRFKgRenNG1w/Y21PxqypytgjEIuRkLpK9wgv4ezsiLQA3Ugj+2mejkIMjeM2kxL
+ LMJeC90Ce9S6e182BmMSAJk6HU/INx9LlqanlhOb6WkDPRt1jUZGYz3/4QOk4KHfLBb0yKTEPzHhnDNHnLNVJNVqDbovWUBqiagQQHR8LNj57YiRESgYAt2f
+ GgntxSWXTOub76n9GDlJZLZxdMFz7+VvAn3I2E3qJolCYEGzfCeI5SEMljRDbPZMuxhLRZEMJQcXDFhYSuPM6tSSm5cUYRiYOVLEiF5jWAddFlgp1mnaWQ5e
+ 8vDAHmojU+8P8A9nuaB87kQVr21ydE7jGdTCyKv4VEPlbpAIdUb07QtjYUUEsYWhwAEvOJAO
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fixed the following error shown by checkpatch ERROR: open
-brace '{' following function definitions go on the next line
+On 09/02/2021 17:24, Stanimir Varbanov wrote:
+> Add Colorimetry control class for colorimetry controls
+> 
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  drivers/media/v4l2-core/v4l2-ctrls.c | 7 ++++++-
+>  include/uapi/linux/v4l2-controls.h   | 4 ++++
+>  2 files changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+> index 016cf6204cbb..335cf354f51b 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+> @@ -1201,6 +1201,10 @@ const char *v4l2_ctrl_get_name(u32 id)
+>  	case V4L2_CID_STATELESS_H264_SLICE_PARAMS:		return "H264 Slice Parameters";
+>  	case V4L2_CID_STATELESS_H264_DECODE_PARAMS:		return "H264 Decode Parameters";
+>  	case V4L2_CID_STATELESS_FWHT_PARAMS:			return "FWHT Stateless Parameters";
+> +
+> +	/* Colorimetry controls */
+> +	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
+> +	case V4L2_CID_COLORIMETRY_CLASS:	return "Colorimetry Controls";
+>  	default:
+>  		return NULL;
+>  	}
+> @@ -1389,8 +1393,9 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>  	case V4L2_CID_RF_TUNER_CLASS:
+>  	case V4L2_CID_DETECT_CLASS:
+>  	case V4L2_CID_CODEC_STATELESS_CLASS:
+> +	case V4L2_CID_COLORIMETRY_CLASS:
+>  		*type = V4L2_CTRL_TYPE_CTRL_CLASS;
+> -		/* You can neither read not write these */
+> +		/* You can neither read nor write these */
+>  		*flags |= V4L2_CTRL_FLAG_READ_ONLY | V4L2_CTRL_FLAG_WRITE_ONLY;
+>  		*min = *max = *step = *def = 0;
+>  		break;
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> index 039c0d7add1b..a41039559193 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -66,6 +66,7 @@
+>  #define V4L2_CTRL_CLASS_RF_TUNER	0x00a20000	/* RF tuner controls */
+>  #define V4L2_CTRL_CLASS_DETECT		0x00a30000	/* Detection controls */
+>  #define V4L2_CTRL_CLASS_CODEC_STATELESS 0x00a40000	/* Stateless codecs controls */
+> +#define V4L2_CTRL_CLASS_COLORIMETRY	0x00a50000	/* Colorimetry controls */
+>  
+>  /* User-class control IDs */
+>  
+> @@ -1657,6 +1658,9 @@ struct v4l2_ctrl_fwht_params {
+>  	__u32 quantization;
+>  };
+>  
+> +#define V4L2_CID_COLORIMETRY_CLASS_BASE	(V4L2_CTRL_CLASS_COLORIMETRY | 0x900)
+> +#define V4L2_CID_COLORIMETRY_CLASS	(V4L2_CTRL_CLASS_COLORIMETRY | 1)
+> +
+>  /* MPEG-compression definitions kept for backwards compatibility */
+>  #ifndef __KERNEL__
+>  #define V4L2_CTRL_CLASS_MPEG            V4L2_CTRL_CLASS_CODEC
+> 
 
-Signed-off-by: Suhas KV <suhas.kv00@gmail.com>
----
-  net/ipv6/ping.c | 4 +++-
-  1 file changed, 3 insertions(+), 1 deletion(-)
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-diff --git a/net/ipv6/ping.c b/net/ipv6/ping.c
-index 6ac88fe24a8e..c0e5d0c79d6f 100644
---- a/net/ipv6/ping.c
-+++ b/net/ipv6/ping.c
-@@ -37,7 +37,9 @@ static int dummy_icmpv6_err_convert(u8 type, u8 code, 
-int *err)
-         return -EAFNOSUPPORT;
-  }
-  static void dummy_ipv6_icmp_error(struct sock *sk, struct sk_buff 
-*skb, int err,
--                                 __be16 port, u32 info, u8 *payload) {}
-+                                 __be16 port, u32 info, u8 *payload)
-+{
-+}
-  static int dummy_ipv6_chk_addr(struct net *net, const struct in6_addr 
-*addr,
-                                const struct net_device *dev, int strict)
-  {
--- 
-2.25.1
+Regards,
 
+	Hans
