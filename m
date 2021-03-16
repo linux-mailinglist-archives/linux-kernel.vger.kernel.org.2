@@ -2,99 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A34B33DE65
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D8C33DE69
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234685AbhCPUGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 16:06:06 -0400
-Received: from mga04.intel.com ([192.55.52.120]:65418 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229529AbhCPUFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 16:05:35 -0400
-IronPort-SDR: 4nFwkHvubkgrKg3A1Q3m3Y7LXdF4dAcJ2S4PWXlt3CeZYRYAzi8p+lrHo1sOC+nUjEeesgupoP
- JMpjs8go4kYQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="186949277"
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="186949277"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 13:05:32 -0700
-IronPort-SDR: m87m/iHLU9EGKxPObdn8zkRbbHBN/x4XyXUxDoK7CHfHQ6aT6A+9dSBc2gLhbCMWwCeQhSvuLA
- tT0wbHj/S9dA==
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="372095298"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.191.248]) ([10.212.191.248])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 13:05:31 -0700
-Subject: Re: [PATCH v23 6/9] x86/entry: Introduce ENDBR macro
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
+        id S238892AbhCPUGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 16:06:35 -0400
+Received: from smtp-8fad.mail.infomaniak.ch ([83.166.143.173]:55577 "EHLO
+        smtp-8fad.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237942AbhCPUG1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 16:06:27 -0400
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F0PSJ3SyNzMqHf6;
+        Tue, 16 Mar 2021 21:06:24 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4F0PSG4YVGzlh8TH;
+        Tue, 16 Mar 2021 21:06:22 +0100 (CET)
+Subject: Re: [PATCH v4 1/1] fs: Allow no_new_privs tasks to call chroot(2)
+To:     Jann Horn <jannh@google.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christoph Hellwig <hch@lst.de>,
+        David Howells <dhowells@redhat.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        John Johansen <john.johansen@canonical.com>,
         Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
- <20210316151320.6123-7-yu-cheng.yu@intel.com>
- <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
- <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
- <YFENvgrR8JSYq1ae@hirez.programming.kicks-ass.net>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <65845773-6cf0-1bdc-1ecf-168de74cc283@intel.com>
-Date:   Tue, 16 Mar 2021 13:05:30 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20210316170135.226381-1-mic@digikod.net>
+ <20210316170135.226381-2-mic@digikod.net>
+ <CAG48ez3=M-5WT73HqmFJr6UHwO0+2FJXxcAgRzp6wcd0P3TN=Q@mail.gmail.com>
+ <ec7a3a21-c402-c153-a932-ce4a40edadaa@digikod.net>
+ <CAG48ez0UHP=B6MW5ySMOAQ677byzyWkwgPto1RdW6FYJH5b7Zg@mail.gmail.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <c7fbf088-02c2-6cac-f353-14bff23d6864@digikod.net>
+Date:   Tue, 16 Mar 2021 21:06:25 +0100
+User-Agent: 
 MIME-Version: 1.0
-In-Reply-To: <YFENvgrR8JSYq1ae@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAG48ez0UHP=B6MW5ySMOAQ677byzyWkwgPto1RdW6FYJH5b7Zg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/2021 12:57 PM, Peter Zijlstra wrote:
-> On Tue, Mar 16, 2021 at 10:12:39AM -0700, Yu, Yu-cheng wrote:
->> Alternatively, there is another compiler-defined macro _CET_ENDBR that can
->> be used.  We can put the following in calling.h:
+
+On 16/03/2021 20:31, Jann Horn wrote:
+> On Tue, Mar 16, 2021 at 8:26 PM Mickaël Salaün <mic@digikod.net> wrote:
+>> On 16/03/2021 20:04, Jann Horn wrote:
+>>> On Tue, Mar 16, 2021 at 6:02 PM Mickaël Salaün <mic@digikod.net> wrote:
+>>>> One could argue that chroot(2) is useless without a properly populated
+>>>> root hierarchy (i.e. without /dev and /proc).  However, there are
+>>>> multiple use cases that don't require the chrooting process to create
+>>>> file hierarchies with special files nor mount points, e.g.:
+>>>> * A process sandboxing itself, once all its libraries are loaded, may
+>>>>   not need files other than regular files, or even no file at all.
+>>>> * Some pre-populated root hierarchies could be used to chroot into,
+>>>>   provided for instance by development environments or tailored
+>>>>   distributions.
+>>>> * Processes executed in a chroot may not require access to these special
+>>>>   files (e.g. with minimal runtimes, or by emulating some special files
+>>>>   with a LD_PRELOADed library or seccomp).
+>>>>
+>>>> Unprivileged chroot is especially interesting for userspace developers
+>>>> wishing to harden their applications.  For instance, chroot(2) and Yama
+>>>> enable to build a capability-based security (i.e. remove filesystem
+>>>> ambient accesses) by calling chroot/chdir with an empty directory and
+>>>> accessing data through dedicated file descriptors obtained with
+>>>> openat2(2) and RESOLVE_BENEATH/RESOLVE_IN_ROOT/RESOLVE_NO_MAGICLINKS.
+>>>
+>>> I don't entirely understand. Are you writing this with the assumption
+>>> that a future change will make it possible to set these RESOLVE flags
+>>> process-wide, or something like that?
 >>
->> #ifdef __CET__
->> #include <cet.h>
->> #else
->> #define _CET_ENDBR
->> #endif
->>
->> and then use _CET_ENDBR in other files.  How is that?
->>
->> In the future, in case we have kernel-mode IBT, ENDBR macros are also needed
->> for other assembly files.
+>> No, this scenario is for applications willing to sandbox themselves and
+>> only use the FDs to access legitimate data.
 > 
-> Can we please call it IBT_ENDBR or just ENDBR. CET is a horrible name,
-> seeing how it is not specific.
+> But if you're chrooted to /proc/self/fdinfo and have an fd to some
+> directory - let's say /home/user/Downloads - there is nothing that
+> ensures that you only use that fd with RESOLVE_BENEATH, right? If the
+> application is compromised, it can do something like openat(fd,
+> "../.bashrc", O_RDWR), right? Or am I missing something?
+
+You're totally right, I was mistaken, this simple use case doesn't work
+without a broker. Perhaps when seccomp will be able to check referenced
+structs, or with a new FD limitation…
+
 > 
+>>> As long as that doesn't exist, I think that to make this safe, you'd
+>>> have to do something like the following - let a child process set up a
+>>> new mount namespace for you, and then chroot() into that namespace's
+>>> root:
+>>>
+>>> struct shared_data {
+>>>   int root_fd;
+>>> };
+>>> int helper_fn(void *args) {
+>>>   struct shared_data *shared = args;
+>>>   mount("none", "/tmp", "tmpfs", MS_NOSUID|MS_NODEV, "");
+>>>   mkdir("/tmp/old_root", 0700);
+>>>   pivot_root("/tmp", "/tmp/old_root");
+>>>   umount("/tmp/old_root", "");
+>>>   shared->root_fd = open("/", O_PATH);
+>>> }
+>>> void setup_chroot() {
+>>>   struct shared_data shared = {};
+>>>   prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
+>>>   clone(helper_fn, my_stack,
+>>> CLONE_VFORK|CLONE_VM|CLONE_FILES|CLONE_NEWUSER|CLONE_NEWNS|SIGCHLD,
+>>> NULL);
+>>>   fchdir(shared.root_fd);
+>>>   chroot(".");
+>>> }
+>>
+>> What about this?
+>> chdir("/proc/self/fdinfo");
+>> chroot(".");
+>> close(all unnecessary FDs);
+> 
+> That breaks down if you can e.g. get a unix domain socket connected to
+> a process in a different chroot, right? Isn't that a bit too fragile?
 
-_CET_ENDBR is from the compiler and we cannot change it.  We can do:
-
-#define ENDBR _CET_ENDBR
-
-How is that?
+This relies on other (trusted) components, and yes it is fragile if the
+process communicates with a service able send FDs.
