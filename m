@@ -2,114 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E070F33CE18
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A1933CE1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:50:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231725AbhCPGsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 02:48:42 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:53571 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231397AbhCPGsN (ORCPT
+        id S233608AbhCPGtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 02:49:46 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13622 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233763AbhCPGtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 02:48:13 -0400
-Received: by mail-io1-f70.google.com with SMTP id r10so22576240iod.20
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 23:48:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=WuZiddlhWjyixnWUAvcAwtP4U5EdkgGf4jw6+WDTIi8=;
-        b=l4kWhDbm5+zYf5cVjzp8USnyFpKL21DWtw4IVrRvDycF36ueUvtc3z3ptUz40TsKsZ
-         1Gd/Tk7vPHs1pm9pTsMYbwlVl368E9vNEr0ndsRMBho51m6nc5TSw+Hq+OMYKKfGoDxv
-         JMYfzomk8PEcBA7BpsGfzs5DRfDdoJKtjDEylCbwj5XpPDPZXfnJMZJWeNi9jgoXh1m5
-         YqsC2cvWvHdVCvmFsmI+JXpnkMDYa7nJAsqgs8FmuwY/9Tdcam9uf8iVCqM3vxPgj0WU
-         bLkAO4FdqfA0htWovM6E/f4w9NYJVJnMi+Iaa+m2xdsm+aBvNWxSBjeBbwsXGoYARMVS
-         7Ypg==
-X-Gm-Message-State: AOAM531C8fky61dsFVyk1n0PTiT1usM/8srUmT/7K42AQWdvc3K/1HEh
-        OdZyYU6TTxZV/fK/PfP8eo37F0WAyjgiVjxAHs6zbfzpSb5z
-X-Google-Smtp-Source: ABdhPJzI9tz1Qm71YI1ggnGgklvoxmExe2I9C6nuY8wqygsLITXHRWZ60FpCwWreka25zWylzLR92yx3SYMGo4XKApbqcZcoB9fs
+        Tue, 16 Mar 2021 02:49:36 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F03kj2D50z17Ltv;
+        Tue, 16 Mar 2021 14:47:41 +0800 (CST)
+Received: from [10.174.177.131] (10.174.177.131) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 16 Mar 2021 14:49:31 +0800
+Subject: Re: [PATCH v2 5/5] mm/hugetlb: avoid calculating fault_mutex_hash in
+ truncate_op case
+To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210316022758.52993-1-linmiaohe@huawei.com>
+ <d87264fb-0005-4f8b-7551-a5439108e9e1@oracle.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <4b3e9ea6-69e3-493c-342e-92117f274e06@huawei.com>
+Date:   Tue, 16 Mar 2021 14:49:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-Received: by 2002:a5e:8d01:: with SMTP id m1mr2319176ioj.72.1615877292614;
- Mon, 15 Mar 2021 23:48:12 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 23:48:12 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000006e7be05bda1c084@google.com>
-Subject: [syzbot] general protection fault in scatterwalk_copychunks (4)
-From:   syzbot <syzbot+66e3ea42c4b176748b9c@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d87264fb-0005-4f8b-7551-a5439108e9e1@oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.131]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2021/3/16 11:07, Mike Kravetz wrote:
+> On 3/15/21 7:27 PM, Miaohe Lin wrote:
+>> The fault_mutex hashing overhead can be avoided in truncate_op case
+>> because page faults can not race with truncation in this routine.  So
+>> calculate hash for fault_mutex only in !truncate_op case to save some cpu
+>> cycles.
+>>
+>> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> Cc: Mike Kravetz <mike.kravetz@oracle.com>
+>> ---
+>> v1->v2:
+>> remove unnecessary initialization for variable hash
+>> collect Reviewed-by tag from Mike Kravetz
+> 
+> My apologies for not replying sooner and any misunderstanding from my
+> previous comments.
+> 
 
-syzbot found the following issue on:
+That's all right.
 
-HEAD commit:    47142ed6 net: dsa: bcm_sf2: Qualify phydev->dev_flags base..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=17fb9376d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=eec733599e95cd87
-dashboard link: https://syzkaller.appspot.com/bug?extid=66e3ea42c4b176748b9c
+> If the compiler is going to produce a warning because the variable is
+> not initialized, then we will need to keep the initialization.
+> Otherwise, this will show up as a build regression.  Ideally, there
+> would be a modifier which could be used to tell the compiler the
+> variable will used.  I do not know if such a modifier exists.
+> 
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I do not know if such a modifier exists too. But maybe not all compilers are intelligent
+enough to not produce a warning. It would be safe to keep the initialization...
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+66e3ea42c4b176748b9c@syzkaller.appspotmail.com
+> The patch can not produce a new warning.  So, if you need to initialize
 
-general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-CPU: 1 PID: 25 Comm: kworker/u4:1 Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: pencrypt_parallel padata_parallel_worker
-RIP: 0010:scatterwalk_start include/crypto/scatterwalk.h:68 [inline]
-RIP: 0010:scatterwalk_pagedone include/crypto/scatterwalk.h:93 [inline]
-RIP: 0010:scatterwalk_pagedone include/crypto/scatterwalk.h:77 [inline]
-RIP: 0010:scatterwalk_copychunks+0x4db/0x6a0 crypto/scatterwalk.c:50
-Code: ff df 80 3c 02 00 0f 85 b4 01 00 00 49 8d 44 24 08 4d 89 26 48 89 c2 48 89 44 24 18 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 77 01 00 00 48 b8 00 00 00 00
-RSP: 0018:ffffc90000dff620 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000001 RSI: ffffffff83c45a33 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88801ba09d1b
-R10: ffffffff83c459e3 R11: 000000000000d9e6 R12: 0000000000000000
-R13: 0000000000000001 R14: ffffc90000dff880 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000540198 CR3: 0000000018d08000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- skcipher_next_slow crypto/skcipher.c:278 [inline]
- skcipher_walk_next+0x7af/0x1680 crypto/skcipher.c:363
- skcipher_walk_first+0xf8/0x3c0 crypto/skcipher.c:446
- skcipher_walk_aead_common+0x7a5/0xbc0 crypto/skcipher.c:539
- gcmaes_crypt_by_sg+0x323/0x8a0 arch/x86/crypto/aesni-intel_glue.c:658
-Modules linked in:
----[ end trace 15593fd836276143 ]---
-RIP: 0010:scatterwalk_start include/crypto/scatterwalk.h:68 [inline]
-RIP: 0010:scatterwalk_pagedone include/crypto/scatterwalk.h:93 [inline]
-RIP: 0010:scatterwalk_pagedone include/crypto/scatterwalk.h:77 [inline]
-RIP: 0010:scatterwalk_copychunks+0x4db/0x6a0 crypto/scatterwalk.c:50
-Code: ff df 80 3c 02 00 0f 85 b4 01 00 00 49 8d 44 24 08 4d 89 26 48 89 c2 48 89 44 24 18 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 77 01 00 00 48 b8 00 00 00 00
-RSP: 0018:ffffc90000dff620 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000001 RSI: ffffffff83c45a33 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88801ba09d1b
-R10: ffffffff83c459e3 R11: 000000000000d9e6 R12: 0000000000000000
-R13: 0000000000000001 R14: ffffc90000dff880 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000540198 CR3: 0000000018d08000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+So just drop this version of the patch? Or should I send a new version with your Reviewed-by tag and
+keep the initialization?
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> the variable then do it.  My Reviewed-by still applies.
+>
