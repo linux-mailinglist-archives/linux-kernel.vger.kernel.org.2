@@ -2,16 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F79A33E052
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6BB33E053
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:17:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbhCPVR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 17:17:27 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44626 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233011AbhCPVRG (ORCPT
+        id S233221AbhCPVR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 17:17:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233075AbhCPVRJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 17:17:06 -0400
+        Tue, 16 Mar 2021 17:17:09 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE4D5C06174A;
+        Tue, 16 Mar 2021 14:17:08 -0700 (PDT)
 Date:   Tue, 16 Mar 2021 21:17:04 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1615929425;
@@ -20,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QoNMDikrzdQnTSZWUxIv2TtLLTCuisaD+z+/cFMHJHM=;
-        b=Bho99YBmF8gqT+TZ+rMVsij0ZW+P32xuSuKl0iaTrhpPWPwugKWILOt8Rs3Rb29r6blZ+Q
-        QHfemJCu1pcTjDpy9kCDccKy0MrDbvkzb3ze5kS9A/rJqdp1m/3QutZZ70Yzxm5mqNI5lS
-        QgQR4j0ffmFDcExgSEmH+JVLxb9vw4QHcQJbNfo5/F61cYTG8LLsEpOmioIMCNcQBw21sc
-        O+TKh/OwSr7v9J9kwI5HE9W24GYdycBYmbMQWhc3/NrnTqxIbu1I9gbIdZ4Gk51bt4A8Ht
-        ZoSq+O9UKfEvNzksTOWZotxDUTGiHm/UVcstC69vPw/zbasLVO2XecF5jPCY0g==
+        bh=qebY6ZiWD5iPa+CvkRUaYcObSvISUruD5kXWTYuHLy0=;
+        b=2PFWRNJJg5/b3zQqAKEYVXPJguSfMIJ4vtJ6TlzEVUUAjX+GzpdEGZSg37aBO/aZOGogU3
+        iYVcYLDVWEBxHUIQkjLxQbxZ5gJ/JEW+U6w8A+ZS1g7no4A4m8Qc6/T7vlchmsF7PgV9a9
+        6yhmwPyfjQoYFMEOmteCZsN6M+YPIea1WoPY9LcfTlOzQCzr3GbLwYgS0exGjiVUY9Bx0r
+        SxSESxtnbk0k/daDPgbhDzjYTR18Y/HXnQo3OnyXw0zw1Bnzkz46uxoH782X0JkRl0Ucww
+        XDxT3TaTVjflh7dUj/bpPUaX01MoBP/oV19/UXLqmW6XPyBTc1WbQOKtUW5dMQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1615929425;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,22 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QoNMDikrzdQnTSZWUxIv2TtLLTCuisaD+z+/cFMHJHM=;
-        b=QpDMfMRjArU3du/c+vv3a9w56CZNia4CkClxkz1l0c4Os3L6MxkZiXFGREk/H/R6U2uisq
-        9odnesIR8Ko/9/Cw==
+        bh=qebY6ZiWD5iPa+CvkRUaYcObSvISUruD5kXWTYuHLy0=;
+        b=yPuCUvaUn2y/3blUHdUvIlXaHmp1IJQ91chvuJmSDaoB5BzILF3Iuw09SlaafTwjM3utam
+        mEmocilSxW5eLzCg==
 From:   "tip-bot2 for Oleg Nesterov" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86: Introduce restart_block->arch_data to remove
- TS_COMPAT_RESTART
+Subject: [tip: x86/urgent] x86: Move TS_COMPAT back to asm/thread_info.h
 Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210201174716.GA17898@redhat.com>
-References: <20210201174716.GA17898@redhat.com>
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210201174649.GA17880@redhat.com>
+References: <20210201174649.GA17880@redhat.com>
 MIME-Version: 1.0
-Message-ID: <161592942436.398.12649793098780339574.tip-bot2@tip-bot2>
+Message-ID: <161592942497.398.7527929638591799982.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,75 +61,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     b2e9df850c58c2b36e915e7d3bed3f6107cccba6
-Gitweb:        https://git.kernel.org/tip/b2e9df850c58c2b36e915e7d3bed3f6107cccba6
+Commit-ID:     66c1b6d74cd7035e85c426f0af4aede19e805c8a
+Gitweb:        https://git.kernel.org/tip/66c1b6d74cd7035e85c426f0af4aede19e805c8a
 Author:        Oleg Nesterov <oleg@redhat.com>
-AuthorDate:    Mon, 01 Feb 2021 18:47:16 +01:00
+AuthorDate:    Mon, 01 Feb 2021 18:46:49 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Tue, 16 Mar 2021 22:13:11 +01:00
 
-x86: Introduce restart_block->arch_data to remove TS_COMPAT_RESTART
+x86: Move TS_COMPAT back to asm/thread_info.h
 
-Save the current_thread_info()->status of X86 in the new
-restart_block->arch_data field so TS_COMPAT_RESTART can be removed again.
+Move TS_COMPAT back to asm/thread_info.h, close to TS_I386_REGS_POKED.
 
+It was moved to asm/processor.h by b9d989c7218a ("x86/asm: Move the
+thread_info::status field to thread_struct"), then later 37a8f7c38339
+("x86/asm: Move 'status' from thread_struct to thread_info") moved the
+'status' field back but TS_COMPAT was forgotten.
+
+Preparatory patch to fix the COMPAT case for get_nr_restart_syscall()
+
+Fixes: 609c19a385c8 ("x86/ptrace: Stop setting TS_COMPAT in ptrace code")
 Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210201174716.GA17898@redhat.com
-
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210201174649.GA17880@redhat.com
 ---
- arch/x86/include/asm/thread_info.h | 12 ++----------
- arch/x86/kernel/signal.c           |  2 +-
- include/linux/restart_block.h      |  1 +
- 3 files changed, 4 insertions(+), 11 deletions(-)
+ arch/x86/include/asm/processor.h   |  9 ---------
+ arch/x86/include/asm/thread_info.h |  9 +++++++++
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index dc6d149..f1b9ed5 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -551,15 +551,6 @@ static inline void arch_thread_struct_whitelist(unsigned long *offset,
+ 	*size = fpu_kernel_xstate_size;
+ }
+ 
+-/*
+- * Thread-synchronous status.
+- *
+- * This is different from the flags in that nobody else
+- * ever touches our thread-synchronous status, so we don't
+- * have to worry about atomic accesses.
+- */
+-#define TS_COMPAT		0x0002	/* 32bit syscall active (64BIT)*/
+-
+ static inline void
+ native_load_sp0(unsigned long sp0)
+ {
 diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
-index 30d1d18..06b740b 100644
+index 0d751d5..c2dc29e 100644
 --- a/arch/x86/include/asm/thread_info.h
 +++ b/arch/x86/include/asm/thread_info.h
-@@ -217,18 +217,10 @@ static inline int arch_within_stack_frames(const void * const stack,
- #ifndef __ASSEMBLY__
+@@ -205,6 +205,15 @@ static inline int arch_within_stack_frames(const void * const stack,
+ 
+ #endif
+ 
++/*
++ * Thread-synchronous status.
++ *
++ * This is different from the flags in that nobody else
++ * ever touches our thread-synchronous status, so we don't
++ * have to worry about atomic accesses.
++ */
++#define TS_COMPAT		0x0002	/* 32bit syscall active (64BIT)*/
++
  #ifdef CONFIG_COMPAT
  #define TS_I386_REGS_POKED	0x0004	/* regs poked by 32-bit ptracer */
--#define TS_COMPAT_RESTART	0x0008
- 
--#define arch_set_restart_data	arch_set_restart_data
-+#define arch_set_restart_data(restart)	\
-+	do { restart->arch_data = current_thread_info()->status; } while (0)
- 
--static inline void arch_set_restart_data(struct restart_block *restart)
--{
--	struct thread_info *ti = current_thread_info();
--	if (ti->status & TS_COMPAT)
--		ti->status |= TS_COMPAT_RESTART;
--	else
--		ti->status &= ~TS_COMPAT_RESTART;
--}
  #endif
- 
- #ifdef CONFIG_X86_32
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index 6c26d2c..f306e85 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -767,7 +767,7 @@ handle_signal(struct ksignal *ksig, struct pt_regs *regs)
- static inline unsigned long get_nr_restart_syscall(const struct pt_regs *regs)
- {
- #ifdef CONFIG_IA32_EMULATION
--	if (current_thread_info()->status & TS_COMPAT_RESTART)
-+	if (current->restart_block.arch_data & TS_COMPAT)
- 		return __NR_ia32_restart_syscall;
- #endif
- #ifdef CONFIG_X86_X32_ABI
-diff --git a/include/linux/restart_block.h b/include/linux/restart_block.h
-index bba2920..980a655 100644
---- a/include/linux/restart_block.h
-+++ b/include/linux/restart_block.h
-@@ -23,6 +23,7 @@ enum timespec_type {
-  * System call restart block.
-  */
- struct restart_block {
-+	unsigned long arch_data;
- 	long (*fn)(struct restart_block *);
- 	union {
- 		/* For futex_wait and futex_wait_requeue_pi */
