@@ -2,83 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21AE933DA0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F372033DA2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:04:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237167AbhCPRBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:01:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33794 "EHLO mx2.suse.de"
+        id S238222AbhCPRDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:03:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237145AbhCPRBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:01:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 11A0EAC24;
-        Tue, 16 Mar 2021 17:01:23 +0000 (UTC)
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 77c30980;
-        Tue, 16 Mar 2021 17:02:37 +0000 (UTC)
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Vivek Goyal <vgoyal@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luis Henriques <lhenriques@suse.de>, stable@vger.kernel.org
-Subject: [PATCH] virtiofs: fix memory leak in virtio_fs_probe()
-Date:   Tue, 16 Mar 2021 17:02:34 +0000
-Message-Id: <20210316170234.21736-1-lhenriques@suse.de>
+        id S238978AbhCPRCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:02:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62C3165111;
+        Tue, 16 Mar 2021 17:02:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615914173;
+        bh=Qb1m/E69RDV9XU0xBvmBWK4MHqIfN0kvYAxOecpMK/8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iniBsUmeJ9bjRyBagWGq6LPk1l+y+NSuAag7Spm3DvmP9WMEXHjAqLzxe/LzklTAc
+         5Vyj9BfaqjWgVIBjXsKJXaB6NrbtxmYTGzo+F5/DC8n7BZC0H7eh+FtscNe80B6BxR
+         rsYsy1iuFHo+oBOWmXT2HFreHoEpNGACLwOm1wo3gxSuF/Jt7V+W3HPAktRzu8tbTx
+         a9RzgrGAtf6jaG+L5iakmqGV825qv7zGdNVM+3FWzVhCqgw5e/IM/+cgm7kt2nNcYP
+         Y20jhc5eeu6RqamiDoaJb7skFeynRm/dWmSDYHVYeXdD2m/RwPSSTeRML9nuPlO5EA
+         uShtQQtjOewcQ==
+Date:   Tue, 16 Mar 2021 10:02:52 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Hariprasad Kelam <hkelam@marvell.com>
+Cc:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <davem@davemloft.net>, <sgoutham@marvell.com>,
+        <lcherian@marvell.com>, <gakula@marvell.com>, <jerinj@marvell.com>,
+        <sbhatta@marvell.com>
+Subject: Re: [net PATCH 1/9] octeontx2-pf: Do not modify number of rules
+Message-ID: <20210316100252.75826dd3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1615886833-71688-2-git-send-email-hkelam@marvell.com>
+References: <1615886833-71688-1-git-send-email-hkelam@marvell.com>
+        <1615886833-71688-2-git-send-email-hkelam@marvell.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When accidentally passing twice the same tag to qemu, kmemleak ended up
-reporting a memory leak in virtiofs.  Also, looking at the log I saw the
-following error (that's when I realised the duplicated tag):
+On Tue, 16 Mar 2021 14:57:05 +0530 Hariprasad Kelam wrote:
+> From: Subbaraya Sundeep <sbhatta@marvell.com>
+> 
+> In the ETHTOOL_GRXCLSRLALL ioctl ethtool uses
+> below structure to read number of rules from the driver.
+> 
+>     struct ethtool_rxnfc {
+>             __u32                           cmd;
+>             __u32                           flow_type;
+>             __u64                           data;
+>             struct ethtool_rx_flow_spec     fs;
+>             union {
+>                     __u32                   rule_cnt;
+>                     __u32                   rss_context;
+>             };
+>             __u32                           rule_locs[0];
+>     };
+> 
+> Driver must not modify rule_cnt member. But currently driver
+> modifies it by modifying rss_context. Hence fix it by using a
+> local variable.
+> 
+> Fixes: 81a43620("octeontx2-pf: Add RSS multi group support")
 
-  virtiofs: probe of virtio5 failed with error -17
+Fixes tag: Fixes: 81a43620("octeontx2-pf: Add RSS multi group support")
+Has these problem(s):
+	- missing space between the SHA1 and the subject
+	- SHA1 should be at least 12 digits long
+	  Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+	  or later) just making sure it is not set (or set to "auto").
 
-Here's the kmemleak log for reference:
-
-unreferenced object 0xffff888103d47800 (size 1024):
-  comm "systemd-udevd", pid 118, jiffies 4294893780 (age 18.340s)
-  hex dump (first 32 bytes):
-    00 00 00 00 ad 4e ad de ff ff ff ff 00 00 00 00  .....N..........
-    ff ff ff ff ff ff ff ff 80 90 02 a0 ff ff ff ff  ................
-  backtrace:
-    [<000000000ebb87c1>] virtio_fs_probe+0x171/0x7ae [virtiofs]
-    [<00000000f8aca419>] virtio_dev_probe+0x15f/0x210
-    [<000000004d6baf3c>] really_probe+0xea/0x430
-    [<00000000a6ceeac8>] device_driver_attach+0xa8/0xb0
-    [<00000000196f47a7>] __driver_attach+0x98/0x140
-    [<000000000b20601d>] bus_for_each_dev+0x7b/0xc0
-    [<00000000399c7b7f>] bus_add_driver+0x11b/0x1f0
-    [<0000000032b09ba7>] driver_register+0x8f/0xe0
-    [<00000000cdd55998>] 0xffffffffa002c013
-    [<000000000ea196a2>] do_one_initcall+0x64/0x2e0
-    [<0000000008f727ce>] do_init_module+0x5c/0x260
-    [<000000003cdedab6>] __do_sys_finit_module+0xb5/0x120
-    [<00000000ad2f48c6>] do_syscall_64+0x33/0x40
-    [<00000000809526b5>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Luis Henriques <lhenriques@suse.de>
----
- fs/fuse/virtio_fs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
-index 8868ac31a3c0..4e6ef9f24e84 100644
---- a/fs/fuse/virtio_fs.c
-+++ b/fs/fuse/virtio_fs.c
-@@ -899,7 +899,7 @@ static int virtio_fs_probe(struct virtio_device *vdev)
- 
- out:
- 	vdev->priv = NULL;
--	kfree(fs);
-+	virtio_fs_put(fs);
- 	return ret;
- }
- 
+Please fix the entire submission.
