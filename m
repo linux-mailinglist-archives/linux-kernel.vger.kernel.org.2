@@ -2,233 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E7833D36E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A8133D36C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:55:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237542AbhCPLzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
+        id S237529AbhCPLz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232391AbhCPLzK (ORCPT
+        with ESMTP id S237530AbhCPLzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:55:10 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBE5C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 04:55:10 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id p7so60317372eju.6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 04:55:09 -0700 (PDT)
+        Tue, 16 Mar 2021 07:55:06 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7889C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 04:55:05 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id x7so8640005pfi.7
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 04:55:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=czxLCL6NCDvGC8nAhkmWQQR24vihQ+0uEiOhuhxLbKY=;
-        b=LZAM3/Ap3vfDvfYWnMlpRRL+5q69zqnBwKv7eXMAiMsVpCgV6kx6Q1lHzmimVq3vSn
-         MjNhs9AKtIb/SPGF+5Nv+hyb3NlMwKqOZSOmxECVXSAVrJMsGOOJA75CHKYbPS7N+zJF
-         ld2x5DsNnGO02qiQ+mATHXCkr2DoFiKuYv+iRzPR/glqwteI42I+uiqYmvK/hDQYZCA2
-         rdBiBWMFDBgOEG2IU7pRYNmeRJCZHXkcLB0OBVNd4fPcb7bySM8CZNV/oYgkfZw9sSsN
-         gWhi70dN+tTq0QnZjJkBVNXBdidhx9XvhcSkRaTUUv/qViamRY3VX0U4hJIYL+pXCgu4
-         npNA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=jWE9eh2B2TDFsfKZq6plW/Qgh7fGvrwGQEU3uEE1lDE=;
+        b=M1exAiX4O77an0oYe+7mH5vA8CmSpcAOX3UebdGH0hQY3Bk/F3e2Gj9VHKb8EGYKwA
+         Vz6rXa50w42/WEvGpRDM+5QUvQT6MWA0CEaaqkTATyl7GPrVoSCDs9dmhy7rqzZU8i7d
+         Rb4s3HKbHtaDUtbLelJxUl+oPX9EeKl3p4sTSWqzgz68ZC8duNVOPlHDSLg2cJUYHR9v
+         ZqxQUj8uEGI7QUXcM9RYMAghcZzAqAjWfxEnXP6/P2jMPwEsNtb7Y1uy5PgU9VwWn1s0
+         HoefiT+yZ3PuM5J0S3MFWtGgHKIgZdX8f5yIhFEFWoUfgud6yqYUSYXYnMtuo8ptIJAu
+         O6cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=czxLCL6NCDvGC8nAhkmWQQR24vihQ+0uEiOhuhxLbKY=;
-        b=Yd9f7KDc0pMNQWrOJ6Tcd9TwENXYl2cULUNd5isy8DxQ7PdcdugWT9nWbPgY9+taat
-         cfb83jDBcXPhru6TNePmAuOQ/E9ruxHG+s/W6gL2Fb/7CBUpRzqZ61BGW5AitIoRCu5h
-         VBCdZOxDM8+oEmpola3heJdz9hBG+MmJDMT2w2GRmFz7uHcSj6zqkgJxed6ygVSo4sTJ
-         2bWexxjBtiDtD8Rsg5ahqMKOs01bApCgu7Bqz9rHCNFKmrGqDVuxs9Y25POVjBuDYpcW
-         8E2Unj4xaeqT4fnVLRtqcmzUV8VEhDAsOvIx4P1q014geESWxeboFZuftJOqWnjdy1T0
-         eTtA==
-X-Gm-Message-State: AOAM530dgPdjd0rjbbkFrYtvRMrRdO+YjHUWQTmsHmaXPWF9DFMSTxtV
-        NaXXXsoKDR35EsCnGVcd5yGl8vMy8QTj/vDkPoXN3Q==
-X-Google-Smtp-Source: ABdhPJzan15ic8sxh2xyeC7XvZBA3sGNHqwFZsxkgSkXdGymGdYmafdnUpmxaBxJ9nhFzSQ2lqeb6lNqQjoAEE/SCVc=
-X-Received: by 2002:a17:907:7785:: with SMTP id ky5mr17707695ejc.133.1615895708688;
- Tue, 16 Mar 2021 04:55:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=jWE9eh2B2TDFsfKZq6plW/Qgh7fGvrwGQEU3uEE1lDE=;
+        b=UQb+rUPSCx6gKCKD03eFceu2K5ShIv4gP/vD2MfY5NCuRJlsww5NOoUKv00VOlP+JT
+         /y6SCLCHikqC1ixbfkPRNYA5fFiAWQzmCIze3wk8Zqff2wcMe+AUrDzVOoGNnPwQJGN9
+         C8LsVbN8axSEyBQWFFTn+GTyh/yBylCj37OCYJnnujBSSYo+MPIR696Nr9zNRHS4pL5y
+         nwzo0xI58fsY85p4k/ExtiprfaxgLvTj01sefQAfUhzbTXfKfd1DXyUjtwtGFUtLKpZH
+         LS9RZ8CcdaiXo/imHMONH7b5ffQbtg6+fJsBCFVkVF9MLe6GAg0jnNJDSVPzkyPKUICi
+         5Zjw==
+X-Gm-Message-State: AOAM532VqPMOtzhEq0rng0R7MsTnjIoG1e8fjajvLO7Xz8sgaH3eMho/
+        2o3coAvIhPYz0Vme0BXT/Go=
+X-Google-Smtp-Source: ABdhPJxVyIZEOPrvRi25YXD/IyvAy2fWxwhWnVNpLCd4x5ADgBjDh0crpLd4NJwWkC4mgvR46wv0vQ==
+X-Received: by 2002:aa7:8d92:0:b029:1ee:75d1:c87 with SMTP id i18-20020aa78d920000b02901ee75d10c87mr29268650pfr.9.1615895705397;
+        Tue, 16 Mar 2021 04:55:05 -0700 (PDT)
+Received: from shreya-VirtualBox ([49.207.217.47])
+        by smtp.gmail.com with ESMTPSA id u66sm9271455pfu.186.2021.03.16.04.55.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 04:55:05 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 17:24:58 +0530
+From:   Shreya AJith <shreya.ajithchb@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        d.straghkov@ispras.ru, dan.carpenter@oracle.com,
+        straube.linux@gmail.com, ross.schm.dev@gmail.com,
+        bkkarthik@pesu.pes.edu, gregkh@linuxfoundation.org
+Subject: [PATCH v3] staging:rtl8723bs:core:rtw_wlan_util:fixed indentation
+ coding style issue
+Message-ID: <20210316115458.GA2302@shreya-VirtualBox>
 MIME-Version: 1.0
-References: <20210315135740.245494252@linuxfoundation.org>
-In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 16 Mar 2021 17:24:57 +0530
-Message-ID: <CA+G9fYucp81Z3xVFwcUjtfLZD8BMgEJguPRXP+z-iDFXCf9ZXA@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/95] 4.14.226-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021 at 19:29, <gregkh@linuxfoundation.org> wrote:
->
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
-> This is the start of the stable review cycle for the 4.14.226 release.
-> There are 95 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 17 Mar 2021 13:57:24 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.226-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Fixed the indentation of the else part of the conditional statement.
 
+Signed-off-by: Shreya Ajith <shreya.ajithchb@gmail.com>
+---
+v1-> v2:
+Changed name in signed-off-by to match name in From.
+v2-> v3:
+Reversed the change and made change in From instead.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+ drivers/staging/rtl8723bs/core/rtw_wlan_util.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+index 975f2830e29e..4b5afaeac916 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
++++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+@@ -1760,7 +1760,7 @@ void update_wireless_mode(struct adapter *padapter)
+ 
+ 	if (pmlmeext->cur_wireless_mode & WIRELESS_11B)
+ 		update_mgnt_tx_rate(padapter, IEEE80211_CCK_RATE_1MB);
+-	 else
++	else
+ 		update_mgnt_tx_rate(padapter, IEEE80211_OFDM_RATE_6MB);
+ }
+ 
+-- 
+2.25.1
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.14.226-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: 57cc62fb2d2b8e81c02cb9197e303c7782dee4cd
-git describe: v4.14.225-96-g57cc62fb2d2b
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
-.y/build/v4.14.225-96-g57cc62fb2d2b
-
-No regressions (compared to build v4.14.225)
-
-No fixes (compared to build v4.14.225)
-
-
-Ran 41401 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-64k_page_size
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-bpf
-* kselftest-intel_pstate
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-io-tests
-* ltp-sched-tests
-* perf
-* v4l2-compliance
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-cve-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* kselftest-android
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-x86
-* ltp-open-posix-tests
-* ltp-tracing-tests
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* kvm-unit-tests
-* rcutorture
-* kselftest-vm
-* fwts
-* ssuite
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
