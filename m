@@ -2,158 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A6133DB54
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:47:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A4833DB5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239330AbhCPRrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38266 "EHLO
+        id S239377AbhCPRrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:47:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239205AbhCPRqi (ORCPT
+        with ESMTP id S239241AbhCPRqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:46:38 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14170C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:46:38 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id a188so9329521pfb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:46:38 -0700 (PDT)
+        Tue, 16 Mar 2021 13:46:47 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6ACC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:46:47 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id e18so7885200wrt.6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:46:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=dPll0wFeLjqlXczZ31P6G+9fptwKfsKgzaV1xhhnBRY=;
-        b=B56yM0IgF0UnhQqaf4wNMeA5sMpba0GQCkZ0SllZPgarPsVVq957A9sZZnRW/svHue
-         lyL6jZdinT8ZVQbJx6+gurMzU6xD0Qx+ULo2eemP55vhsdEmT5NftcWLmddbFAtwv0sk
-         9XLqHm8oqK9awGpMt2Cf0Crw+0xf/+cVfjTRpRyKWpPXEsL0VoFydclKT/IkC3MGTLjb
-         XDswYUHbyRGPwA4hfxQcvXO16BDrmtipqJWdU2g9d6bwZIIm80gyTKiPuCzzW3pKV3+X
-         UEwcphaubJ5ML/E/1fxYPy8lfWADkQlmhL2TOq4YNUWltPFOi9uN8USn7oQLDG4oWHr0
-         0D/g==
+        bh=8CWHxiV0ZKizo+vjFshSgCNglE9MeCQCWx2fDMf8iU8=;
+        b=gYo2kERL9GIyhaZOa6PnViq0BRXBGefSRBZieSYFhlS1lW0yoNCUiliN2Cn6l4BirX
+         BlvvIXzdoXNmkgVaURC+XAcXa0lXCs2NdACd8cPProNkQhZcbPlREIWB6dnrFIdi59j2
+         ytNxz7q3toFgoz1mpxdX75jcbjJoLrOPdzZaDbYTpqgMRrqOu6AACZ92tZBXis10/464
+         GGnBnjTFr9UdrTfL8cl0RFjhKCcegioXqStezi2b2K6dg/2HxW1W8yqM4aaV0DV4AvL+
+         DXyo460cKTkPZQumL0LtSLdIGqDOZLV5FHjZyQlHjCQeXsDDdU2PW1nI+j9hewIITYy4
+         03qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=dPll0wFeLjqlXczZ31P6G+9fptwKfsKgzaV1xhhnBRY=;
-        b=Bqdb+aQYO23Ae461LVNOcxHSfnAo2CvvGt7cmL9e40rp9e7b84uSkKX6HIugiE4JUB
-         JVWmET9tWlORMJgr0pkl4G1rKOUzy/5H0Jie1Hh+qzMZ2At79VBiwIULt719i+Aq3mUM
-         Lry6c5K6wAznv0biXXHb99lXF9mg5uYHU1A4Cxx6XmXhxU4melZDSpRRG48IjOeG3eni
-         g8goE/PsqxxuJ/MfswJvDmUDYdIIYoOrjjBh+/VmZO2fje5j3+7sbAwVzpLYNHyuI1QH
-         d+OmEIYV+JZMIQAPFFNON6+JIYH6BeD3HZWL65QrguUpkx99ZTl6m7mCowVB9xlAfBgo
-         7J1g==
-X-Gm-Message-State: AOAM533BY1953YuH/MyPx2a6WYOH+IKScGHOXRZQWTvEZZD5lO8dwF/b
-        68PFZpxiqAt+ZetXTOITvpSeNA==
-X-Google-Smtp-Source: ABdhPJxx8ABeuG5fMIZs4Co38AliHL5Yh8LOADOFJnU2pLecUuUA1r0pMfq46f+VWWBP7MuJUEP/6A==
-X-Received: by 2002:a63:4502:: with SMTP id s2mr780865pga.94.1615916797429;
-        Tue, 16 Mar 2021 10:46:37 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id z8sm89153pjd.0.2021.03.16.10.46.36
+        bh=8CWHxiV0ZKizo+vjFshSgCNglE9MeCQCWx2fDMf8iU8=;
+        b=p0R9iOAFX8BKYG35yCFu4iMKz7X710pEfTx7lSgz1eLDHAMl8IazDpY93zdakF/e3o
+         NkGl/eEnIC3ZXWRoHefrsMv5NFUvqyGHLsB+dxqhjpVE1OLPFur9n5tPibHXI9Dil4KC
+         mt7f7zRGTql8zoKKi+g9BjDBPBBHuSkcokC88YoMisUw0ealx2UemrgR73ixqKFAXEzt
+         HYqrE3UWs4JgtG30/gRcQzTmED+fS1+a1M1AxxvFhF5qigIlyGDQGZNrbbLCZjALQvl1
+         9glwokOxuECy/AxfVryYMFZY9Nokn25LPEHnyKn36zXSUusR7s86/lKBrSU5muX52KjD
+         bzaQ==
+X-Gm-Message-State: AOAM531sAuUqhDelKIVqb3APSZrtGhQGRQwoqok75JEHJdJe36lYKMIk
+        4ih5VoTS30QE4hDnvqEELihBK9LTaxhOfw==
+X-Google-Smtp-Source: ABdhPJy/Yk1N4Dwd5vCd00S1/qPonp2CAvh1R3Oab2RFqzCIWDW/+HMqKnOh2qKqDNLLxfncBWs3yg==
+X-Received: by 2002:a5d:4d0f:: with SMTP id z15mr216557wrt.192.1615916805635;
+        Tue, 16 Mar 2021 10:46:45 -0700 (PDT)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id t8sm22607136wrr.10.2021.03.16.10.46.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 10:46:37 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 11:46:35 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mike.leach@linaro.org, anshuman.khandual@arm.com,
-        leo.yan@linaro.org, Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH v4 07/19] arm64: Add TRBE definitions
-Message-ID: <20210316174635.GB1387186@xps15>
-References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
- <20210225193543.2920532-8-suzuki.poulose@arm.com>
+        Tue, 16 Mar 2021 10:46:45 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 17:46:42 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Mate Toth-Pal <mate.toth-pal@arm.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
+        james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com, android-kvm@google.com, seanjc@google.com,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org,
+        mark.rutland@arm.com, dbrazdil@google.com
+Subject: Re: [PATCH v5 33/36] KVM: arm64: Wrap the host with a stage 2
+Message-ID: <YFDvAqgimPvpgiwQ@google.com>
+References: <20210315143536.214621-1-qperret@google.com>
+ <20210315143536.214621-34-qperret@google.com>
+ <ec9df9a4-a419-089c-469f-1a1509597dd9@arm.com>
+ <YFCqYT3Ib8kAN7/c@google.com>
+ <YFDAyhjPEsnZ4N3P@google.com>
+ <eb70a071-4d4a-885f-36a7-3b20358e5513@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210225193543.2920532-8-suzuki.poulose@arm.com>
+In-Reply-To: <eb70a071-4d4a-885f-36a7-3b20358e5513@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 07:35:31PM +0000, Suzuki K Poulose wrote:
-> From: Anshuman Khandual <anshuman.khandual@arm.com>
+On Tuesday 16 Mar 2021 at 16:16:18 (+0100), Mate Toth-Pal wrote:
+> On 2021-03-16 15:29, Quentin Perret wrote:
+> > On Tuesday 16 Mar 2021 at 12:53:53 (+0000), Quentin Perret wrote:
+> > > On Tuesday 16 Mar 2021 at 13:28:42 (+0100), Mate Toth-Pal wrote:
+> > > > Changing the value of MT_S2_FWB_NORMAL to 7 would change this behavior, and
+> > > > the resulting memory type would be device.
+> > > 
+> > > Sounds like the correct fix here -- see below.
+> > 
+> > Just to clarify this, I meant this should be the configuration for the
+> > host stage-2. We'll want to keep the existing behaviour for guests I
+> > believe.
 > 
-> This adds TRBE related registers and corresponding feature macros.
-> 
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Reviewed-by: Mike Leach <mike.leach@linaro.org>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  arch/arm64/include/asm/sysreg.h | 50 +++++++++++++++++++++++++++++++++
->  1 file changed, 50 insertions(+)
+> I Agree.
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+OK, so the below seems to boot on my non-FWB-capable hardware and should
+fix the issue. Could you by any chance give it a spin?
 
-> 
-> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-> index dfd4edbfe360..6470d783ea59 100644
-> --- a/arch/arm64/include/asm/sysreg.h
-> +++ b/arch/arm64/include/asm/sysreg.h
-> @@ -333,6 +333,55 @@
->  
->  /*** End of Statistical Profiling Extension ***/
->  
-> +/*
-> + * TRBE Registers
-> + */
-> +#define SYS_TRBLIMITR_EL1		sys_reg(3, 0, 9, 11, 0)
-> +#define SYS_TRBPTR_EL1			sys_reg(3, 0, 9, 11, 1)
-> +#define SYS_TRBBASER_EL1		sys_reg(3, 0, 9, 11, 2)
-> +#define SYS_TRBSR_EL1			sys_reg(3, 0, 9, 11, 3)
-> +#define SYS_TRBMAR_EL1			sys_reg(3, 0, 9, 11, 4)
-> +#define SYS_TRBTRG_EL1			sys_reg(3, 0, 9, 11, 6)
-> +#define SYS_TRBIDR_EL1			sys_reg(3, 0, 9, 11, 7)
-> +
-> +#define TRBLIMITR_LIMIT_MASK		GENMASK_ULL(51, 0)
-> +#define TRBLIMITR_LIMIT_SHIFT		12
-> +#define TRBLIMITR_NVM			BIT(5)
-> +#define TRBLIMITR_TRIG_MODE_MASK	GENMASK(1, 0)
-> +#define TRBLIMITR_TRIG_MODE_SHIFT	3
-> +#define TRBLIMITR_FILL_MODE_MASK	GENMASK(1, 0)
-> +#define TRBLIMITR_FILL_MODE_SHIFT	1
-> +#define TRBLIMITR_ENABLE		BIT(0)
-> +#define TRBPTR_PTR_MASK			GENMASK_ULL(63, 0)
-> +#define TRBPTR_PTR_SHIFT		0
-> +#define TRBBASER_BASE_MASK		GENMASK_ULL(51, 0)
-> +#define TRBBASER_BASE_SHIFT		12
-> +#define TRBSR_EC_MASK			GENMASK(5, 0)
-> +#define TRBSR_EC_SHIFT			26
-> +#define TRBSR_IRQ			BIT(22)
-> +#define TRBSR_TRG			BIT(21)
-> +#define TRBSR_WRAP			BIT(20)
-> +#define TRBSR_ABORT			BIT(18)
-> +#define TRBSR_STOP			BIT(17)
-> +#define TRBSR_MSS_MASK			GENMASK(15, 0)
-> +#define TRBSR_MSS_SHIFT			0
-> +#define TRBSR_BSC_MASK			GENMASK(5, 0)
-> +#define TRBSR_BSC_SHIFT			0
-> +#define TRBSR_FSC_MASK			GENMASK(5, 0)
-> +#define TRBSR_FSC_SHIFT			0
-> +#define TRBMAR_SHARE_MASK		GENMASK(1, 0)
-> +#define TRBMAR_SHARE_SHIFT		8
-> +#define TRBMAR_OUTER_MASK		GENMASK(3, 0)
-> +#define TRBMAR_OUTER_SHIFT		4
-> +#define TRBMAR_INNER_MASK		GENMASK(3, 0)
-> +#define TRBMAR_INNER_SHIFT		0
-> +#define TRBTRG_TRG_MASK			GENMASK(31, 0)
-> +#define TRBTRG_TRG_SHIFT		0
-> +#define TRBIDR_FLAG			BIT(5)
-> +#define TRBIDR_PROG			BIT(4)
-> +#define TRBIDR_ALIGN_MASK		GENMASK(3, 0)
-> +#define TRBIDR_ALIGN_SHIFT		0
-> +
->  #define SYS_PMINTENSET_EL1		sys_reg(3, 0, 9, 14, 1)
->  #define SYS_PMINTENCLR_EL1		sys_reg(3, 0, 9, 14, 2)
->  
-> @@ -835,6 +884,7 @@
->  #define ID_AA64MMFR2_CNP_SHIFT		0
->  
->  /* id_aa64dfr0 */
-> +#define ID_AA64DFR0_TRBE_SHIFT		44
->  #define ID_AA64DFR0_TRACE_FILT_SHIFT	40
->  #define ID_AA64DFR0_DOUBLELOCK_SHIFT	36
->  #define ID_AA64DFR0_PMSVER_SHIFT	32
-> -- 
-> 2.24.1
-> 
+diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+index b93a2a3526ab..b2066bd03ca2 100644
+--- a/arch/arm64/include/asm/kvm_pgtable.h
++++ b/arch/arm64/include/asm/kvm_pgtable.h
+@@ -76,10 +76,11 @@ struct kvm_pgtable {
+
+ /**
+  * enum kvm_pgtable_prot - Page-table permissions and attributes.
+- * @KVM_PGTABLE_PROT_X:                Execute permission.
+- * @KVM_PGTABLE_PROT_W:                Write permission.
+- * @KVM_PGTABLE_PROT_R:                Read permission.
+- * @KVM_PGTABLE_PROT_DEVICE:   Device attributes.
++ * @KVM_PGTABLE_PROT_X:                        Execute permission.
++ * @KVM_PGTABLE_PROT_W:                        Write permission.
++ * @KVM_PGTABLE_PROT_R:                        Read permission.
++ * @KVM_PGTABLE_PROT_DEVICE:           Device attributes.
++ * @KVM_PGTABLE_PROT_S2_NOFWB:         Don't enforce Normal-WB with FWB.
+  */
+ enum kvm_pgtable_prot {
+        KVM_PGTABLE_PROT_X                      = BIT(0),
+@@ -87,6 +88,8 @@ enum kvm_pgtable_prot {
+        KVM_PGTABLE_PROT_R                      = BIT(2),
+
+        KVM_PGTABLE_PROT_DEVICE                 = BIT(3),
++
++       KVM_PGTABLE_PROT_S2_NOFWB               = BIT(4),
+ };
+
+ #define PAGE_HYP               (KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W)
+diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+index c759faf7a1ff..e695d2e1839d 100644
+--- a/arch/arm64/include/asm/memory.h
++++ b/arch/arm64/include/asm/memory.h
+@@ -144,13 +144,16 @@
+  * Memory types for Stage-2 translation
+  */
+ #define MT_S2_NORMAL           0xf
++#define MT_S2_WEAK             MT_S2_NORMAL
+ #define MT_S2_DEVICE_nGnRE     0x1
+
+ /*
+  * Memory types for Stage-2 translation when ID_AA64MMFR2_EL1.FWB is 0001
+- * Stage-2 enforces Normal-WB and Device-nGnRE
++ * Stage-2 enforces Normal-WB and Device-nGnRE by default. The 'weak' mode
++ * honors Stage-1 attributes.
+  */
+ #define MT_S2_FWB_NORMAL       6
++#define MT_S2_FWB_WEAK         7
+ #define MT_S2_FWB_DEVICE_nGnRE 1
+
+ #ifdef CONFIG_ARM64_4K_PAGES
+diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+index dd03252b9574..1ff72babe565 100644
+--- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
++++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+@@ -214,6 +214,8 @@ static int host_stage2_idmap(u64 addr)
+
+        if (is_memory)
+                prot |= KVM_PGTABLE_PROT_X;
++       else
++               prot |= KVM_PGTABLE_PROT_S2_NOFWB;
+
+        hyp_spin_lock(&host_kvm.lock);
+        ret = kvm_pgtable_stage2_find_range(&host_kvm.pgt, addr, prot, &range);
+diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+index 3a971df278bd..bd1b8464a537 100644
+--- a/arch/arm64/kvm/hyp/pgtable.c
++++ b/arch/arm64/kvm/hyp/pgtable.c
+@@ -343,6 +343,9 @@ static int hyp_set_prot_attr(enum kvm_pgtable_prot prot, kvm_pte_t *ptep)
+        if (!(prot & KVM_PGTABLE_PROT_R))
+                return -EINVAL;
+
++       if (prot & KVM_PGTABLE_PROT_S2_NOFWB)
++               return -EINVAL;
++
+        if (prot & KVM_PGTABLE_PROT_X) {
+                if (prot & KVM_PGTABLE_PROT_W)
+                        return -EINVAL;
+@@ -510,9 +513,18 @@ u64 kvm_get_vtcr(u64 mmfr0, u64 mmfr1, u32 phys_shift)
+ static int stage2_set_prot_attr(enum kvm_pgtable_prot prot, kvm_pte_t *ptep)
+ {
+        bool device = prot & KVM_PGTABLE_PROT_DEVICE;
+-       kvm_pte_t attr = device ? PAGE_S2_MEMATTR(DEVICE_nGnRE) :
+-                           PAGE_S2_MEMATTR(NORMAL);
++       bool nofwb = prot & KVM_PGTABLE_PROT_S2_NOFWB;
+        u32 sh = KVM_PTE_LEAF_ATTR_LO_S2_SH_IS;
++       kvm_pte_t attr;
++
++       WARN_ON(nofwb && device);
++
++       if (device)
++               attr = PAGE_S2_MEMATTR(DEVICE_nGnRE);
++       else if (nofwb)
++               attr = PAGE_S2_MEMATTR(WEAK);
++       else
++               attr = PAGE_S2_MEMATTR(NORMAL);
+
+        if (!(prot & KVM_PGTABLE_PROT_X))
+                attr |= KVM_PTE_LEAF_ATTR_HI_S2_XN;
