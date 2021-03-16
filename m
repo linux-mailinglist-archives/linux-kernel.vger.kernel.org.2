@@ -2,75 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F13633DB5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04FD433DB60
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:48:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239337AbhCPRrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:47:49 -0400
-Received: from mail-pj1-f54.google.com ([209.85.216.54]:56319 "EHLO
-        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239242AbhCPRqs (ORCPT
+        id S235139AbhCPRry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:47:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239341AbhCPRrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:46:48 -0400
-Received: by mail-pj1-f54.google.com with SMTP id bt4so11028998pjb.5;
-        Tue, 16 Mar 2021 10:46:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=cDz1OoD3tDdvu9yZyAWDwJ6QedSgxN+Vxkt9EmQTDzc=;
-        b=ZgA11HSZTxPkTPNEIF7Iwm468YzalhPu5PX3ys4YDWcVt0bVN+n8szofus4mJLc6Dz
-         hjy4JSLnblDyKMP8NlbrR0LONq7t0yyaNO4hNYiNLZC1/i7T4uVER5PJHoxYPbTGYrqd
-         OSDTmVc1ZY+odRiEDf7pN/IfkrobrUR/EVQlHcnt2nf8sFHOks+JpQrjJoXzF06FJVO8
-         xdrVDclvwIddxolsereTgxZ52RPTEfc7vSLh2mVKhsuYU97MI3S0rcXYQHmsdjgc5KQE
-         rVQtBgWgYZafUGtSmda1d2Qux8McRrPNdz5pSQuk7po5EGH2Sr8a34Ho3fXfLQ/AgKQf
-         ISgw==
-X-Gm-Message-State: AOAM533zUBewTS6z2gnFoOjIzn4iB4q0wIZTQuq+eIyytYAF7YmFZILu
-        PfcjoGOmlrhy7PmqBMe5tBjXIWihO0Biyg==
-X-Google-Smtp-Source: ABdhPJwzP9XKjt2OANRgMC82UXqNJ/kn6lLddkdek0OKFvBOE6LikIdcIRjIGKw0bk+8oennH3ZpPA==
-X-Received: by 2002:a17:90a:e656:: with SMTP id ep22mr228107pjb.60.1615916807990;
-        Tue, 16 Mar 2021 10:46:47 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id q15sm79386pje.28.2021.03.16.10.46.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 10:46:47 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 7E83B40244; Tue, 16 Mar 2021 17:46:45 +0000 (UTC)
-Date:   Tue, 16 Mar 2021 17:46:45 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     linux-block@vger.kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, linux-scsi@vger.kernel.org,
+        Tue, 16 Mar 2021 13:47:20 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0CCFC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:47:19 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1lMDmo-0006fa-Dw; Tue, 16 Mar 2021 18:47:18 +0100
+Subject: Re: [PATCH v3 0/3] watchdog: f71808e_wdt: migrate to new kernel API
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
         linux-kernel@vger.kernel.org
-Subject: blktests: block/009 next-20210304 failure rate average of 1/448
-Message-ID: <20210316174645.GI4332@42.do-not-panic.com>
+Cc:     linux-watchdog@vger.kernel.org, kernel@pengutronix.de
+References: <cover.dedd9f1159389b0a438076ef5e5a46aded186463.1612457906.git-series.a.fatoum@pengutronix.de>
+Message-ID: <d25d96fa-0b88-930b-3160-fda3e69d3cba@pengutronix.de>
+Date:   Tue, 16 Mar 2021 18:47:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <cover.dedd9f1159389b0a438076ef5e5a46aded186463.1612457906.git-series.a.fatoum@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've managed to reproduce blktests block/009 failures with kdevops [0]
-on linux-next tag next-20210304 with a current failure rate average of
-1/448 (3 counted failures so far). I've documented the failure on
-korg#212305 [1] and provide instructions on how to reproduce. The
-failure happens on KVM virtualized guests, for the host OS I am
-using debian testing, but the target kernel is linux-next.
+Hello,
 
-My personal suspicion is not on the block layer but on scsi_debug
-because this can fail:
+On 04.02.21 18:00, Ahmad Fatoum wrote:
+> This series migrates the driver to the new kernel watchdog API and
+> then to the driver model.
+> 
+> Main feedback from Guenther on v2 was that I need to split it up to
+> enable review. I have done so by removing the extra refactoring for
+> now and focused on the functional changes described above. The diff
+> is now much better readable.
+> 
+> I tested it on a f81866.
 
-modprobe scsi_debug; rmmod scsi_debug
+Gentle ping.
 
-This second issue may be a secondary separate issue, but I figured 
-I'd mention it. To fix this later issue I've looked at ways to
-make scsi_debug_init() wait until its scsi devices are probed,
-however its not clear how to do this correctly. If someone has
-an idea let me know. If that fixes this issue then we know it was
-that.
+> 
+> v2 -> v3:
+>   https://lore.kernel.org/linux-watchdog/20201020062112.6762-1-a.fatoum@pengutronix.de/
+>   - factored out identifier renaming again for easier review
+>   - reordered commits
+>   - removed refactoring that can go in later. Focusing now on kernel watchdog
+>     API and platform device/driver migration
+>   - removed platform_device_id and changed code to match by name
+> 
+> v1 -> v2:
+>   https://lore.kernel.org/linux-watchdog/20200611191750.28096-1-a.fatoum@pengutronix.de/
+>   - reworked to platform device/driver pair (Guenther)
+>   - squashed identifier renaming into the patches that touch
+>     the respective lines anyway
+>   - fixed checkpatch.pl nitpicks (Guenther)
+>   - fixed locally used variable declared without static (0-day)
+>   - fixed unneded line break due to old line limit (Guenther)
+>   - renamed struct fintek_wdog_data to struct fintek_wdt
+> 
+> Ahmad Fatoum (3):
+>   watchdog: f71808e_wdt: rename variant-independent identifiers appropriately
+>   watchdog: f71808e_wdt: migrate to new kernel watchdog API
+>   watchdog: f71808e_wdt: refactor to platform device/driver pair
+> 
+>  drivers/watchdog/Kconfig       |   1 +-
+>  drivers/watchdog/f71808e_wdt.c | 450 +++++++---------------------------
+>  2 files changed, 100 insertions(+), 351 deletions(-)
+> 
+> base-commit: 1048ba83fb1c00cd24172e23e8263972f6b5d9ac
+> 
 
-[0] https://github.com/mcgrof/kdevops
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=212305
-
-  Luis
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
