@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F307533D835
+	by mail.lfdr.de (Postfix) with ESMTP id 336A533D833
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:52:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237576AbhCPPv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 11:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40846 "EHLO
+        id S232712AbhCPPvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 11:51:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237484AbhCPPvP (ORCPT
+        with ESMTP id S237452AbhCPPvM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 11:51:15 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51043C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 08:51:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=0x7tHwkCAch6coHUwoAB3iKvXa/LjrfJZbY/lbq9O0M=; b=kgZuqLN6kffeuqFkpC8KhGiT0
-        qpol77Q7BRzHyKC02hrLQ9GjNk+sIEdh27SOsnYu5uKDg8kjl3Ki3M6MrS/QLh5SmbvOPSAUSJprH
-        O3g2K5xgRHZ39f0pdRe4AE3iMEdw/M5Wkq0GnkntFMopTYvav36pfC5CC4zGOQ4ZA23aXP9aAfqiz
-        H4hsEBKnnZg785gkRs/930B7NNAmirJHOE1d1t8MymgMYLMvoUVw0VQ9rHlj0Jw0HWeoWOh8xV4hP
-        +cB03ub5/eDY8ICw1JTsdZGHVn+aw2Zv6zhjfb8VSSkdZ6VLC48FNNTJm+QkDvSv9Eb1m4b1yQ9TK
-        +JTKPDVug==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51374)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lMByJ-0001VG-OE; Tue, 16 Mar 2021 15:51:03 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lMByI-0006Mc-Ou; Tue, 16 Mar 2021 15:51:02 +0000
-Date:   Tue, 16 Mar 2021 15:51:02 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: [syzbot] kernel panic: corrupted stack end in openat
-Message-ID: <20210316155102.GP1463@shell.armlinux.org.uk>
-References: <00000000000069802205bda22b7f@google.com>
- <CACT4Y+Yaq-zDh5FAzHt4g-5jXrXC3rSLw6CM=kjcfR6oxJ1+CA@mail.gmail.com>
- <CAK8P3a1qtHVBY47FfCa6R9+sObzMCwxkREii+O2g8PPopw87eQ@mail.gmail.com>
- <CACT4Y+aC0YWU6gM32S3NoT+-wR7B1-_rhPyh4w542h21UCRRGw@mail.gmail.com>
- <CAK8P3a0zA9pv005d_P_e64j4EwXDh75yC6gNGRVdyy-VzO+7Fw@mail.gmail.com>
+        Tue, 16 Mar 2021 11:51:12 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F35C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 08:51:12 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id m186so19057234qke.12
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 08:51:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yQaNVzbe+0y3DChgI07Ew0lz4KfYQWP+fk0Zunh0+3E=;
+        b=iD5OzHSybORfccWQBLTsLyAqg2DV2Y8UMZ9bA+J/hefbDq3Ae9oKdMOO3qIFThQBkO
+         WFPDn4oKeMnHMgjPS1Ct2iNNXDQSL/06mOQDCHXHD9pq2tDMTJjYCPVPFTUX652PVrdP
+         A65CPbAMYYP9FpdNP0vbpexHkGQNO4FVgsDZ8ZPdFtMAawoB/MbjTImEzpO61Ib9EnA3
+         lJhkS1NU2V76DapRrXIpEWIvKWe8YvlLYjTz15UTMlWNi0YWItFNE+qb9/QvIk0ovrLI
+         XGJzkXXEYzjNHW03+kCrmFOHrWYCfiJNH7760gQdM178yzNtTikdp6ls2x73tjjdzxiS
+         uRNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yQaNVzbe+0y3DChgI07Ew0lz4KfYQWP+fk0Zunh0+3E=;
+        b=ptIs7KleFFcboW2lIANViHpvTGi2Yfvf78OpFVvDaWD8Wuo1j+0N1ytWRL4JuvbwSW
+         oJ9dnFEJhPZxaxiTjk8N+45PKkSwfFviolCKXeWuXi5pKmUk7P1MTpEKusU1QfbkZq/o
+         +tRlUPz44+a2rLQx+mbz5y6zHRIzZyaVAHJov0SZBcWuxO4hrDQpSa8KRVyK3vApbfzN
+         5gBqx2bhl5IWcFnzW6mwj2TI2gfp90zqnX8gljJ5F48THlm+G1fM3ntu84vEHVpl7LAE
+         6OHXsyK8ZcPGLJ4giGFXfezZFjIKxuEWpurLAATAlBt1uZd6omScTdCkErmPwAuJsfMk
+         k60g==
+X-Gm-Message-State: AOAM531XH3uQhVkbflfpGJyFeoVor6W9+T5oNP149Cyrhizk1+S6v4QW
+        QDPUXAhUrrm0XWBTp1btEr0=
+X-Google-Smtp-Source: ABdhPJzPqVaRBtKbLwZbZ3LmOclY0tRQJwmy80Gdcsayc17uGi1798KbCfG+fPRbowMEkTTSHOnCTA==
+X-Received: by 2002:a37:7985:: with SMTP id u127mr196534qkc.333.1615909871386;
+        Tue, 16 Mar 2021 08:51:11 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:1ee])
+        by smtp.gmail.com with ESMTPSA id p17sm10298758qtx.71.2021.03.16.08.51.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 08:51:11 -0700 (PDT)
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org (open list:PERFORMANCE EVENTS SUBSYSTEM)
+Subject: [PATCH 0/1] Display raw event in perf mem report
+Date:   Tue, 16 Mar 2021 08:51:02 -0700
+Message-Id: <20210316155103.568872-1-schatzberg.dan@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK8P3a0zA9pv005d_P_e64j4EwXDh75yC6gNGRVdyy-VzO+7Fw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 04:44:45PM +0100, Arnd Bergmann wrote:
-> On Tue, Mar 16, 2021 at 11:17 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > On Tue, Mar 16, 2021 at 11:02 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > > On Tue, Mar 16, 2021 at 8:18 AM syzbot
-> >
-> > > > > [<8073772c>] (integrity_kernel_read) from [<8073a904>] (ima_calc_file_hash_tfm+0x178/0x228 security/integrity/ima/ima_crypto.c:484)
-> > > > > [<8073a78c>] (ima_calc_file_hash_tfm) from [<8073ae2c>] (ima_calc_file_shash security/integrity/ima/ima_crypto.c:515 [inline])
-> > > > > [<8073a78c>] (ima_calc_file_hash_tfm) from [<8073ae2c>] (ima_calc_file_hash+0x124/0x8b8 security/integrity/ima/ima_crypto.c:572)
-> > >
-> > > ima_calc_file_hash_tfm() has a SHASH_DESC_ON_STACK(), which by itself can
-> > > use up 512 bytes, but KASAN sometimes triples this number. However, I see
-> > > you do not actually have KASAN enabled, so there is probably more to it.
-> >
-> > The compiler is gcc version 10.2.1 20210110 (Debian 10.2.1-6)
-> 
-> Ok, building with Ubuntu 10.2.1-1ubuntu1 20201207 locally, that's
-> the closest I have installed, and I think the Debian and Ubuntu versions
-> are generally quite close in case of gcc since they are maintained by
-> the same packagers.
-> 
-> I see ima_calc_field_array_hash_tfm() shows up as one of the larger
-> stack users, but not alarmingly high:
-> ../security/integrity/ima/ima_crypto.c: In function
-> ‘ima_calc_field_array_hash_tfm’:
-> ../security/integrity/ima/ima_crypto.c:624:1: warning: the frame size
-> of 664 bytes is larger than 600 bytes [-Wframe-larger-than=]
-> none of the other functions from the call chain have more than 600 bytes
-> in this combination of config/compiler/sourcetree.
-> 
-> In combination, I don't get to more than ~2300 bytes:
+In doing some memory trace analysis I've noticed a lack of a way to
+disambiguate loads from stores in perf mem report. In order to address
+this I've added the raw event name to the output.
 
-... which shouldn't be a problem - that's just over 1/4 of the stack
-space. Could it be the syzbot's gcc is doing something weird and
-inflating the stack frames?
+Please let me know if there's some better way to achieve this instead.
+
+Dan Schatzberg (1):
+  perf: display raw event for mem report
+
+ tools/perf/builtin-mem.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.30.2
+
