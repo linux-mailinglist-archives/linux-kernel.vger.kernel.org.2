@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A424D33D05A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A9633D05C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:11:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235828AbhCPJLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:11:08 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:54484 "EHLO
+        id S235909AbhCPJLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:11:11 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:15499 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231753AbhCPJK0 (ORCPT
+        with ESMTP id S231661AbhCPJKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:10:26 -0400
+        Tue, 16 Mar 2021 05:10:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1615885827; x=1647421827;
+  t=1615885824; x=1647421824;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=vooiXHRAN/ACdm/aZ2hlaMMqq5pvNY4gIzvnzSpHoY8=;
-  b=U3CM7rnehW4+tkFeFjwx8SFxiF+Gr7IiAyedb9sEyRrmUCeBQ+BNDfKT
-   A+3Wpp+k/yq2U7jUbgmFu9VmpuB8wk0AA3yZKkmWNa1pPObn2hntiQ9GZ
-   GSjEw0EG30TRKtXYqlPMJdgJUldChPVHB9Bh9rtfXUwnYOZxyMCaDa6qt
-   PQV5L2tqyryKDU+BCX3Cql7hpv8jyhdTtkSwYAdFL/IdVvwd3+AXJVVZz
-   l/EIdJR6k/f3czR8llqnlBok+DNMO8Rr9299QdtlROOJ5g3vN9HCz44ZM
-   I41sW44obXZl6tsemVm1M9yW9YiToPoalg8MQ2N4K4YeQMa/a2WWP6xbN
-   g==;
-IronPort-SDR: C1P9I08+0b/SQzgHmh8kodcfXW7jkqj6ktzbivIJp1NhT4DZzk1mRw8n69rYEMt8Qvy1C9K1e8
- 9PS8CEK3xqVFtANpo7uoJAnjJJQHmvIdemUbQlLmMZR+CMGKAeBiAZ38KD1tcrU6TyVUwRg5za
- 62eeOPEbKj+iYD8IXvDPTz/KjMph5+cQgROEIb/azwf6w2U3FuKZ1t5eeE8JIXSfdQXQv3swVB
- EEkgUNTaxALqamlullf5KXRSc+7iW9V46s6HJ6dVlSRa83yk58Mob4p2d2plUIcSogGxbpWU/Z
- 0/8=
+  bh=bsY9xqeFhQlA+1yz1j/n0X8Ohp707XUoclyGAVYqWfc=;
+  b=TVRPAk3yqeqF3Xj3ALZk+XUUDCsLdAB3iWdvfutYh0NvivGmQXCbsNho
+   Yl1yElxo0KNYVtsROuR/F8uCTNp2jzwvP/wiBiiY53pQ6ECsJe1v4XHIc
+   b2qlgzBaZ/cm+MwNY9pFyBDf2yBxRlrOJrX6YtaOD0BnZ4SZBMud6p4Vf
+   y3zDy8NpNcP7rCr94x2gknUi1V2Kat0eNioWeGWAC0pRTq22k0l+0Aisu
+   4HPxJt1f1hCJn+vnW3cnnR8xUlIigUsVOTZP2tNXH8tHjJ9nYqs1vMRvL
+   KKXcB5nf2bLDX1FQ70g83MoYOPxreD6xI8e7E/hDAawHGy84ZfgbdGh+K
+   w==;
+IronPort-SDR: WXn338GUR9kSpiH333v67v2x6q9/yXoY6llw8qQ4pCLxwSFTW//DuD6fa/FHLXegjyPznXPSea
+ VcZvXlPiJPil2XCKLXQcl/zMPDFzo1gwbQrULADy5dZA06wCSbOBWcFZFvjMgbFlrnO3mS2Dph
+ CqAdejXwlOoHDpDEP/1ei5hHcJvrP+aYNZYOQ7xqVR2x14L0VBSao3Kec3isE3+j9HGHlm/tgB
+ lFyzpzFbGaIGILtYRrZF9GdGjJT7zEJ7PyydafXr1/2M2+WZS2O2KqdVOnZeuvY7CTOxmFWMff
+ 2Cs=
 X-IronPort-AV: E=Sophos;i="5.81,251,1610434800"; 
-   d="scan'208";a="110146008"
+   d="scan'208";a="47683718"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Mar 2021 02:08:52 -0700
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Mar 2021 02:08:54 -0700
 Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 16 Mar 2021 02:08:51 -0700
+ 15.1.2176.2; Tue, 16 Mar 2021 02:08:53 -0700
 Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Tue, 16 Mar 2021 02:08:49 -0700
+ 15.1.2176.2 via Frontend Transport; Tue, 16 Mar 2021 02:08:52 -0700
 From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
 CC:     Steen Hegelund <steen.hegelund@microchip.com>,
         Andrew Lunn <andrew@lunn.ch>,
         Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Gregory Clement <gregory.clement@bootlin.com>,
         <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>
-Subject: [PATCH v8 1/3] dt-bindings: reset: microchip sparx5 reset driver bindings
-Date:   Tue, 16 Mar 2021 10:08:37 +0100
-Message-ID: <20210316090839.3207930-2-steen.hegelund@microchip.com>
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v8 2/3] reset: mchp: sparx5: add switch reset driver
+Date:   Tue, 16 Mar 2021 10:08:38 +0100
+Message-ID: <20210316090839.3207930-3-steen.hegelund@microchip.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210316090839.3207930-1-steen.hegelund@microchip.com>
 References: <20210316090839.3207930-1-steen.hegelund@microchip.com>
@@ -65,86 +63,211 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the Sparx5 reset device driver bindings
+The Sparx5 Switch SoC has a number of components that can be reset
+indiviually, but at least the Switch Core needs to be in a well defined
+state at power on, when any of the Sparx5 drivers starts to access the
+Switch Core, this reset driver is available.
 
-The driver uses a syscon and an IO range on sparx5 for access to
-the reset control and the reset status.
+The reset driver is loaded early via the postcore_initcall interface, and
+will then be available for the other Sparx5 drivers (SGPIO, SwitchDev etc)
+that are loaded next, and the first of them to be loaded can perform the
+one-time Switch Core reset that is needed.
 
-Sparx5 will no longer use the existing Ocelot chip reset driver, but use
-this new switch reset driver as it has the reset controller interface that
-allows the first client to perform the reset on behalf of all the Sparx5
-component drivers.
+The driver has protection so that the system busses, DDR controller, PCI-E
+and ARM A53 CPU and a few other subsystems are not touched by the reset.
 
 Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 ---
- .../bindings/reset/microchip,rst.yaml         | 58 +++++++++++++++++++
- 1 file changed, 58 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/reset/microchip,rst.yaml
+ drivers/reset/Kconfig                  |   8 ++
+ drivers/reset/Makefile                 |   1 +
+ drivers/reset/reset-microchip-sparx5.c | 146 +++++++++++++++++++++++++
+ 3 files changed, 155 insertions(+)
+ create mode 100644 drivers/reset/reset-microchip-sparx5.c
 
-diff --git a/Documentation/devicetree/bindings/reset/microchip,rst.yaml b/Documentation/devicetree/bindings/reset/microchip,rst.yaml
+diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+index 4171c6f76385..c26798092ccf 100644
+--- a/drivers/reset/Kconfig
++++ b/drivers/reset/Kconfig
+@@ -111,6 +111,14 @@ config RESET_LPC18XX
+ 	help
+ 	  This enables the reset controller driver for NXP LPC18xx/43xx SoCs.
+ 
++config RESET_MCHP_SPARX5
++	bool "Microchip Sparx5 reset driver"
++	depends on HAS_IOMEM || COMPILE_TEST
++	default y if SPARX5_SWITCH
++	select MFD_SYSCON
++	help
++	  This driver supports switch core reset for the Microchip Sparx5 SoC.
++
+ config RESET_MESON
+ 	tristate "Meson Reset Driver"
+ 	depends on ARCH_MESON || COMPILE_TEST
+diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
+index 65a118a91b27..c1d6aa9b1b52 100644
+--- a/drivers/reset/Makefile
++++ b/drivers/reset/Makefile
+@@ -16,6 +16,7 @@ obj-$(CONFIG_RESET_INTEL_GW) += reset-intel-gw.o
+ obj-$(CONFIG_RESET_K210) += reset-k210.o
+ obj-$(CONFIG_RESET_LANTIQ) += reset-lantiq.o
+ obj-$(CONFIG_RESET_LPC18XX) += reset-lpc18xx.o
++obj-$(CONFIG_RESET_MCHP_SPARX5) += reset-microchip-sparx5.o
+ obj-$(CONFIG_RESET_MESON) += reset-meson.o
+ obj-$(CONFIG_RESET_MESON_AUDIO_ARB) += reset-meson-audio-arb.o
+ obj-$(CONFIG_RESET_NPCM) += reset-npcm.o
+diff --git a/drivers/reset/reset-microchip-sparx5.c b/drivers/reset/reset-microchip-sparx5.c
 new file mode 100644
-index 000000000000..370579aeeca1
+index 000000000000..cff39a643a14
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/reset/microchip,rst.yaml
-@@ -0,0 +1,58 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/reset/microchip,rst.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++++ b/drivers/reset/reset-microchip-sparx5.c
+@@ -0,0 +1,146 @@
++// SPDX-License-Identifier: GPL-2.0+
++/* Microchip Sparx5 Switch Reset driver
++ *
++ * Copyright (c) 2020 Microchip Technology Inc. and its subsidiaries.
++ *
++ * The Sparx5 Chip Register Model can be browsed at this location:
++ * https://github.com/microchip-ung/sparx-5_reginfo
++ */
++#include <linux/mfd/syscon.h>
++#include <linux/of_device.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/regmap.h>
++#include <linux/reset-controller.h>
 +
-+title: Microchip Sparx5 Switch Reset Controller
++#define PROTECT_REG    0x84
++#define PROTECT_BIT    BIT(10)
++#define SOFT_RESET_REG 0x00
++#define SOFT_RESET_BIT BIT(1)
 +
-+maintainers:
-+  - Steen Hegelund <steen.hegelund@microchip.com>
-+  - Lars Povlsen <lars.povlsen@microchip.com>
++struct mchp_reset_context {
++	struct regmap *cpu_ctrl;
++	struct regmap *gcb_ctrl;
++	struct reset_controller_dev rcdev;
++};
 +
-+description: |
-+  The Microchip Sparx5 Switch provides reset control and implements the following
-+  functions
-+    - One Time Switch Core Reset (Soft Reset)
++static struct regmap_config sparx5_reset_regmap_config = {
++	.reg_bits	= 32,
++	.val_bits	= 32,
++	.reg_stride	= 4,
++};
 +
-+properties:
-+  $nodename:
-+    pattern: "^reset-controller@[0-9a-f]+$"
++static int sparx5_switch_reset(struct reset_controller_dev *rcdev,
++			       unsigned long id)
++{
++	struct mchp_reset_context *ctx =
++		container_of(rcdev, struct mchp_reset_context, rcdev);
++	u32 val;
 +
-+  compatible:
-+    const: microchip,sparx5-switch-reset
++	/* Make sure the core is PROTECTED from reset */
++	regmap_update_bits(ctx->cpu_ctrl, PROTECT_REG, PROTECT_BIT, PROTECT_BIT);
 +
-+  reg:
-+    items:
-+      - description: global control block registers
++	/* Start soft reset */
++	regmap_write(ctx->gcb_ctrl, SOFT_RESET_REG, SOFT_RESET_BIT);
 +
-+  reg-names:
-+    items:
-+      - const: gcb
++	/* Wait for soft reset done */
++	return regmap_read_poll_timeout(ctx->gcb_ctrl, SOFT_RESET_REG, val,
++					(val & SOFT_RESET_BIT) == 0,
++					1, 100);
++}
 +
-+  "#reset-cells":
-+    const: 1
++static const struct reset_control_ops sparx5_reset_ops = {
++	.reset = sparx5_switch_reset,
++};
 +
-+  cpu-syscon:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: syscon used to access CPU reset
++static int mchp_sparx5_map_syscon(struct platform_device *pdev, char *name,
++				  struct regmap **target)
++{
++	struct device_node *syscon_np;
++	struct regmap *regmap;
++	int err;
 +
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - "#reset-cells"
-+  - cpu-syscon
++	syscon_np = of_parse_phandle(pdev->dev.of_node, name, 0);
++	if (!syscon_np)
++		return -ENODEV;
++	regmap = syscon_node_to_regmap(syscon_np);
++	of_node_put(syscon_np);
++	if (IS_ERR(regmap)) {
++		err = PTR_ERR(regmap);
++		dev_err(&pdev->dev, "No '%s' map: %d\n", name, err);
++		return err;
++	}
++	*target = regmap;
++	return 0;
++}
 +
-+additionalProperties: false
++static int mchp_sparx5_map_io(struct platform_device *pdev, int index,
++			      struct regmap **target)
++{
++	struct resource *res;
++	struct regmap *map;
++	void __iomem *mem;
 +
-+examples:
-+  - |
-+    reset: reset-controller@11010008 {
-+        compatible = "microchip,sparx5-switch-reset";
-+        reg = <0x11010008 0x4>;
-+        reg-names = "gcb";
-+        #reset-cells = <1>;
-+        cpu-syscon = <&cpu_ctrl>;
-+    };
++	mem = devm_platform_get_and_ioremap_resource(pdev, index, &res);
++	if (!mem) {
++		dev_err(&pdev->dev, "Could not map resource %d\n", index);
++		return -ENXIO;
++	}
++	sparx5_reset_regmap_config.name = res->name;
++	map = devm_regmap_init_mmio(&pdev->dev, mem, &sparx5_reset_regmap_config);
++	if (IS_ERR(map))
++		return PTR_ERR(map);
++	*target = map;
++	return 0;
++}
 +
++static int mchp_sparx5_reset_probe(struct platform_device *pdev)
++{
++	struct device_node *dn = pdev->dev.of_node;
++	struct mchp_reset_context *ctx;
++	int err;
++
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
++	if (!ctx)
++		return -ENOMEM;
++
++	err = mchp_sparx5_map_syscon(pdev, "cpu-syscon", &ctx->cpu_ctrl);
++	if (err)
++		return err;
++	err = mchp_sparx5_map_io(pdev, 0, &ctx->gcb_ctrl);
++	if (err)
++		return err;
++
++	ctx->rcdev.owner = THIS_MODULE;
++	ctx->rcdev.nr_resets = 1;
++	ctx->rcdev.ops = &sparx5_reset_ops;
++	ctx->rcdev.of_node = dn;
++
++	return devm_reset_controller_register(&pdev->dev, &ctx->rcdev);
++}
++
++static const struct of_device_id mchp_sparx5_reset_of_match[] = {
++	{
++		.compatible = "microchip,sparx5-switch-reset",
++	},
++	{ }
++};
++
++static struct platform_driver mchp_sparx5_reset_driver = {
++	.probe = mchp_sparx5_reset_probe,
++	.driver = {
++		.name = "sparx5-switch-reset",
++		.of_match_table = mchp_sparx5_reset_of_match,
++	},
++};
++
++static int __init mchp_sparx5_reset_init(void)
++{
++	return platform_driver_register(&mchp_sparx5_reset_driver);
++}
++
++postcore_initcall(mchp_sparx5_reset_init);
++
++MODULE_DESCRIPTION("Microchip Sparx5 switch reset driver");
++MODULE_AUTHOR("Steen Hegelund <steen.hegelund@microchip.com>");
++MODULE_LICENSE("Dual MIT/GPL");
 -- 
 2.30.2
 
