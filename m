@@ -2,105 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55ECE33D753
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 021DB33D763
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236618AbhCPP0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 11:26:55 -0400
-Received: from mga07.intel.com ([134.134.136.100]:13297 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236553AbhCPP0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 11:26:09 -0400
-IronPort-SDR: rUF9XKy77fHPoHUi11zS+RNRZCV5vF1XgR9VBK0JTNqmVggQVBJ1ldkebDN8WZaPGsjauJw/KO
- jVm/7XumMaQA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="253294335"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="253294335"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 08:26:08 -0700
-IronPort-SDR: T1tvaQwjJrhj/w5sG9FACKGib5o9ePzpPZ5JOsPPqCIzE2c9DiWw/37sGBEZCNvTJ2u4sLpXb4
- 4a4xa5UDbAjg==
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="405574234"
-Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.154.190]) ([10.249.154.190])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 08:26:05 -0700
-Subject: Re: [PATCH 01/10] tick/nohz: Prevent tick_nohz_get_sleep_length()
- from returning negative value
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
+        id S236736AbhCPP2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 11:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236708AbhCPP2K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 11:28:10 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D28DC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 08:28:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OGmqb8bd2k4uQAcmFJO02M/bVFEk0pVsLjKNZFO7H8U=; b=IP5DJMboAeWlisUPED4xpD5Z5q
+        2P9jG+CMq9zMK0w2Q+WA0G626LU+QfN+sVTHotGTeyOMmSbuOGtJ5Ple9biZxPpaRllEEo52Nk/1q
+        d67GOHEC1ZEXX1p9fNdgcmf2KQZ3T3/5Uhedee19TEabjyPUl/louoUqsc41RvOhOilWOpRBXHBx6
+        rCKgwTTH+qjP0dQB6scKYet0SZ4hW++rqgqOpJeSWJzvNmh5AV85BheowDVycisAh6rwFcQ+77FRX
+        An8Sf/PsJOhZ7lSlbPklxN5rAKwCiTDPjwbmtHEFePVXG0+USkcXRBc/Zm1llJJKuSPFj6k2oiDkh
+        HOIrQ+eQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMBby-00144d-4y; Tue, 16 Mar 2021 15:27:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1822F3012DF;
+        Tue, 16 Mar 2021 16:27:57 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 067BA23E8EF8D; Tue, 16 Mar 2021 16:27:57 +0100 (CET)
+Date:   Tue, 16 Mar 2021 16:27:56 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         LKML <linux-kernel@vger.kernel.org>,
-        "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>,
-        Yunfeng Ye <yeyunfeng@huawei.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Ti Zhou <x2019cwm@stfx.ca>, Yunfeng Ye <yeyunfeng@huawei.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Marcelo Tosatti <mtosatti@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 06/10] timer: Report ignored local enqueue in nohz mode
+Message-ID: <YFDOfEsr07LN++YD@hirez.programming.kicks-ass.net>
 References: <20210311123708.23501-1-frederic@kernel.org>
- <20210311123708.23501-2-frederic@kernel.org>
- <YFCiycIaViYCy3GH@hirez.programming.kicks-ass.net>
- <20210316133703.GC639918@lothringen>
- <YFDCOYstnDWPSWRU@hirez.programming.kicks-ass.net>
- <20210316145352.GE639918@lothringen>
-From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
- 173, 80-298 Gdansk
-Message-ID: <ab753f1f-b03d-2a26-a552-b91f98708353@intel.com>
-Date:   Tue, 16 Mar 2021 16:26:02 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ <20210311123708.23501-7-frederic@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210316145352.GE639918@lothringen>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311123708.23501-7-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/2021 3:53 PM, Frederic Weisbecker wrote:
-> On Tue, Mar 16, 2021 at 03:35:37PM +0100, Peter Zijlstra wrote:
->> On Tue, Mar 16, 2021 at 02:37:03PM +0100, Frederic Weisbecker wrote:
->>> On Tue, Mar 16, 2021 at 01:21:29PM +0100, Peter Zijlstra wrote:
->>>> On Thu, Mar 11, 2021 at 01:36:59PM +0100, Frederic Weisbecker wrote:
->>>>> From: "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>
->>>>>
->>>>> If the hardware clock happens to fire its interrupts late, two possible
->>>>> issues can happen while calling tick_nohz_get_sleep_length(). Either:
->>>>>
->>>>> 1) The next clockevent device event is due past the last idle entry time.
->>>>>
->>>>> or:
->>>>>
->>>>> 2) The last timekeeping update happened before the last idle entry time
->>>>>     and the next timer callback expires before the last idle entry time.
->>>>>
->>>>> Make sure that both cases are handled to avoid returning a negative
->>>>> duration to the cpuidle governors.
->>>> Why? ... and wouldn't it be cheaper the fix the caller to
->>>> check negative once, instead of adding two branches here?
->>> There are already two callers and potentially two return values to check
->>> for each because the function returns two values.
->>>
->>> I'd rather make the API more robust instead of fixing each callers and worrying
->>> about future ones.
->> But what's the actual problem? The Changelog doesn't say why returning a
->> negative value is a problem, and in fact the return value is explicitly
->> signed.
->>
->> Anyway, I don't terribly mind the patch, I was just confused by the lack
->> of actual justification.
-> And you're right, the motivation is pure FUD: I don't know exactly
-> how the cpuidle governors may react to such negative values and so this
-> is just to prevent from potential accident.
->
-> Rafael, does that look harmless to you?
+On Thu, Mar 11, 2021 at 01:37:04PM +0100, Frederic Weisbecker wrote:
+> Enqueuing a local timer after the tick has been stopped will result in
+> the timer being ignored until the next random interrupt.
+> 
+> Perform sanity checks to report these situations.
+> 
+> Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  kernel/sched/core.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index ca2bb629595f..24552911f92b 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -674,6 +674,22 @@ int get_nohz_timer_target(void)
+>  	return cpu;
+>  }
+>  
+> +/* Make sure the timer won't be ignored in dynticks-idle case */
+> +static void wake_idle_assert_possible(void)
+> +{
+> +#ifdef CONFIG_SCHED_DEBUG
+> +	/*
+> +	 * Timers are re-evaluated after idle IRQs. In case of softirq,
+> +	 * we assume IRQ tail. Ksoftirqd shouldn't reach here as the
+> +	 * timer base wouldn't be idle. And inline softirq processing
+> +	 * after a call to local_bh_enable() within idle loop sound too
+> +	 * fun to be considered here.
+> +	 */
+> +	WARN_ONCE(in_task(),
+> +		  "Late timer enqueue may be ignored\n");
+> +#endif
+> +}
+> +
+>  /*
+>   * When add_timer_on() enqueues a timer into the timer wheel of an
+>   * idle CPU then this timer might expire before the next timer event
+> @@ -688,8 +704,10 @@ static void wake_up_idle_cpu(int cpu)
+>  {
+>  	struct rq *rq = cpu_rq(cpu);
+>  
+> -	if (cpu == smp_processor_id())
+> +	if (cpu == smp_processor_id()) {
+> +		wake_idle_assert_possible();
+>  		return;
+> +	}
+>  
+>  	if (set_nr_and_not_polling(rq->idle))
+>  		smp_send_reschedule(cpu);
 
-No, this is a problem now.  Both governors using this assign the return 
-value of it to a u64 var and so negative values confuse them.
-
-That said I think it's better to deal with the issue in the callers.
-
-I can send a patch for that if needed.
-
-
+I'm not entirely sure I understand this one. What's the callchain that
+leads to this?
