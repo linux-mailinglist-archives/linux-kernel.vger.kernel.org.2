@@ -2,66 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7639333D349
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A2A33D34C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237438AbhCPLnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:43:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51854 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237403AbhCPLnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:43:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615894995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kcbeDubQYizYjgE6shXG3hzU7La1wyi/suGmhWSBO+I=;
-        b=POpT8cKtqdqeEdVmcB21LBVWPOI45CO4F2sTgJFtGEqkomDlhDmk1QlMmND0d4nEH6a7zC
-        T9eAnpJNc7trcl3LfT2jBYH7g/7aVPBztJ7e8qTxBjyLJh66NUZH8eEn8RM+Xfx4tKwHMr
-        3JPZpc+H6hKMBEDXb6ofXze/4muZhTI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 58460AC5C;
-        Tue, 16 Mar 2021 11:43:15 +0000 (UTC)
-Date:   Tue, 16 Mar 2021 12:43:14 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Laurence Oberman <loberman@redhat.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: c928e9b143: BUG:soft_lockup-CPU##stuck_for#s![perf:#]
-Message-ID: <YFCZ0mnrTUbVuV9l@alley>
-References: <20210311122130.6788-8-pmladek@suse.com>
- <20210315140441.GA4401@xsang-OptiPlex-9020>
+        id S237459AbhCPLoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:44:06 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:33824 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237426AbhCPLng (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 07:43:36 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12GBdaPH160273;
+        Tue, 16 Mar 2021 11:43:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=qV1Rq+2H1o2CbC83Mj76nXd65U3V69TV6d/S19mcjpc=;
+ b=fpcLUJHxkujAMjYRWLKXvBPuG8Dq4yC+zwwbbyRV2gyfhWiv128eF1brBs28gxnQRzYl
+ aNz+TXi7ZvSOFDL1Pxns9s++CqI2PenpKiOvRuIQV8iN8SIDqK73lgWZFLStvPksAamd
+ CbiukjlZTcbNsi37ms/GqCPZHMN/bxOKYqfTAy3j8NDKSdxZgN10hWBgL7UTuWXugDWy
+ 4Z87OBnQ1PFvYohcinoSce4avaQZVYy6/1dIsfLhtHF8dUahEwzxB3motl4MdAb37LS9
+ yDAWbTm1MGyKSWZ5ryblQqTAoL2uNO2PsWdfWzDbuD3GdR/cx6zpj1Ao/3EEpfUR+IOk Ew== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 378nbm7cmd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Mar 2021 11:43:27 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12GBacCf004230;
+        Tue, 16 Mar 2021 11:43:25 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 3796ytb1pm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Mar 2021 11:43:25 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 12GBhOKl013102;
+        Tue, 16 Mar 2021 11:43:25 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 16 Mar 2021 04:43:24 -0700
+Date:   Tue, 16 Mar 2021 14:43:16 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] lib/test_hmm.c: fix harmless shift wrapping bug
+Message-ID: <YFCZ1NNfMoixOjWP@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210315140441.GA4401@xsang-OptiPlex-9020>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9924 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0 spamscore=0
+ bulkscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103160081
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9924 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 impostorscore=0
+ malwarescore=0 adultscore=0 mlxscore=0 clxscore=1011 mlxlogscore=999
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 spamscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103160081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-03-15 22:04:41, kernel test robot wrote:
-> 
-> 
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: c928e9b1439de4d74b942abd30d5c838a40af777 ("[PATCH v2 7/7] Test softlockup")
-> url: https://github.com/0day-ci/linux/commits/Petr-Mladek/watchdog-softlockup-Report-overall-time-and-some-cleanup/20210311-205501
-> base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git a74e6a014c9d4d4161061f770c9b4f98372ac778
+The "cmd.npages" variable is a u64 that comes from the user.  I noticed
+during review that it could have a shift wrapping bug when it is used
+in the integer overflow test on the next line.
 
-Just for record. Please, ignore this error. The patch is not intended
-for upstream.
+It turns out this is harmless.  The users all do:
 
-This patch was provided only for testing purposes. It causes
-softlockup, so it works as expected.
+	unsigned long size = cmd->npages << PAGE_SHIFT;
 
-Best Regards,
-Petr
+and after that "size" is used consistently and "cmd->npages" is never
+used again.  So even when there is an integer overflow, everything works
+fine.
+
+Even though this is harmless, I believe syzbot will complain and fixing
+it makes the code easier to read.
+
+Fixes: b2ef9f5a5cb3 ("mm/hmm/test: add selftest driver for HMM")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ lib/test_hmm.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/lib/test_hmm.c b/lib/test_hmm.c
+index 80a78877bd93..541466034a6b 100644
+--- a/lib/test_hmm.c
++++ b/lib/test_hmm.c
+@@ -930,6 +930,8 @@ static long dmirror_fops_unlocked_ioctl(struct file *filp,
+ 
+ 	if (cmd.addr & ~PAGE_MASK)
+ 		return -EINVAL;
++	if (cmd.npages > ULONG_MAX >> PAGE_SHIFT)
++		return -EINVAL;
+ 	if (cmd.addr >= (cmd.addr + (cmd.npages << PAGE_SHIFT)))
+ 		return -EINVAL;
+ 
+-- 
+2.30.1
+
