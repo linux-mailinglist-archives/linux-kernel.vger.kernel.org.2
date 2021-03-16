@@ -2,107 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7428A33D104
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 382D333D13D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:56:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236299AbhCPJmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:42:11 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:52002 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234461AbhCPJll (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:41:41 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 269FD1C0B8B; Tue, 16 Mar 2021 10:41:38 +0100 (CET)
-Date:   Tue, 16 Mar 2021 10:41:37 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 4.19 011/120] tcp: annotate tp->copied_seq lockless reads
-Message-ID: <20210316094137.GA12946@amd>
-References: <20210315135720.002213995@linuxfoundation.org>
- <20210315135720.384809636@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="jRHKVT23PllUwdXP"
-Content-Disposition: inline
-In-Reply-To: <20210315135720.384809636@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        id S232411AbhCPJ43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:56:29 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:50372 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236422AbhCPJzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 05:55:37 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A33FD1A3FC1;
+        Tue, 16 Mar 2021 10:55:35 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id CDA631A3FAB;
+        Tue, 16 Mar 2021 10:55:29 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id A0B3340291;
+        Tue, 16 Mar 2021 10:55:22 +0100 (CET)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_spdif: use snd_ctl_boolean_mono_info
+Date:   Tue, 16 Mar 2021 17:42:16 +0800
+Message-Id: <1615887736-31217-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Viorel Suman <viorel.suman@nxp.com>
 
---jRHKVT23PllUwdXP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Remove redundant code and use snd_ctl_boolean_mono_info
+instead.
 
-Hi!
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_spdif.c | 30 +++---------------------------
+ 1 file changed, 3 insertions(+), 27 deletions(-)
 
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->=20
-> From: Eric Dumazet <edumazet@google.com>
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 174e558224d8..1cd3441d1c03 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -801,18 +801,6 @@ static int fsl_spdif_qget(struct snd_kcontrol *kcontrol,
+ 	return ret;
+ }
+ 
+-/* Valid bit information */
+-static int fsl_spdif_vbit_info(struct snd_kcontrol *kcontrol,
+-				struct snd_ctl_elem_info *uinfo)
+-{
+-	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+-	uinfo->count = 1;
+-	uinfo->value.integer.min = 0;
+-	uinfo->value.integer.max = 1;
+-
+-	return 0;
+-}
+-
+ /* Get valid good bit from interrupt status register */
+ static int fsl_spdif_rx_vbit_get(struct snd_kcontrol *kcontrol,
+ 				 struct snd_ctl_elem_value *ucontrol)
+@@ -925,18 +913,6 @@ static int fsl_spdif_rxrate_get(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
+-/* User bit sync mode info */
+-static int fsl_spdif_usync_info(struct snd_kcontrol *kcontrol,
+-				struct snd_ctl_elem_info *uinfo)
+-{
+-	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+-	uinfo->count = 1;
+-	uinfo->value.integer.min = 0;
+-	uinfo->value.integer.max = 1;
+-
+-	return 0;
+-}
+-
+ /*
+  * User bit sync mode:
+  * 1 CD User channel subcode
+@@ -1018,7 +994,7 @@ static struct snd_kcontrol_new fsl_spdif_ctrls[] = {
+ 		.name = "IEC958 RX V-Bit Errors",
+ 		.access = SNDRV_CTL_ELEM_ACCESS_READ |
+ 			SNDRV_CTL_ELEM_ACCESS_VOLATILE,
+-		.info = fsl_spdif_vbit_info,
++		.info = snd_ctl_boolean_mono_info,
+ 		.get = fsl_spdif_rx_vbit_get,
+ 	},
+ 	{
+@@ -1027,7 +1003,7 @@ static struct snd_kcontrol_new fsl_spdif_ctrls[] = {
+ 		.access = SNDRV_CTL_ELEM_ACCESS_READ |
+ 			SNDRV_CTL_ELEM_ACCESS_WRITE |
+ 			SNDRV_CTL_ELEM_ACCESS_VOLATILE,
+-		.info = fsl_spdif_vbit_info,
++		.info = snd_ctl_boolean_mono_info,
+ 		.get = fsl_spdif_tx_vbit_get,
+ 		.put = fsl_spdif_tx_vbit_put,
+ 	},
+@@ -1047,7 +1023,7 @@ static struct snd_kcontrol_new fsl_spdif_ctrls[] = {
+ 		.access = SNDRV_CTL_ELEM_ACCESS_READ |
+ 			SNDRV_CTL_ELEM_ACCESS_WRITE |
+ 			SNDRV_CTL_ELEM_ACCESS_VOLATILE,
+-		.info = fsl_spdif_usync_info,
++		.info = snd_ctl_boolean_mono_info,
+ 		.get = fsl_spdif_usync_get,
+ 		.put = fsl_spdif_usync_put,
+ 	},
+-- 
+2.27.0
 
-Two From: fields here.
-
-> [ Upstream commit 7db48e983930285b765743ebd665aecf9850582b ]
->=20
-> There are few places where we fetch tp->copied_seq while
-> this field can change from IRQ or other cpu.
-
-And there are few such places even after the patch is applied; I
-quoted them below.
-
-Doing addition to variable without locking... is kind of
-interesting. Are you sure it is okay?
-
-> @@ -2112,7 +2112,7 @@ int tcp_recvmsg(struct sock *sk, struct
->  			if (urg_offset < used) {
->  				if (!urg_offset) {
->  					if (!sock_flag(sk, SOCK_URGINLINE)) {
-> -						++*seq;
-> +						WRITE_ONCE(*seq, *seq + 1);
->  						urg_hole++;
->  						offset++;
->  						used--;
-> @@ -2134,7 +2134,7 @@ int tcp_recvmsg(struct sock *sk, struct
->  			}
->  		}
-> =20
-> -		*seq +=3D used;
-> +		WRITE_ONCE(*seq, *seq + used);
->  		copied +=3D used;
->  		len -=3D used;
-> =20
-> @@ -2163,7 +2163,7 @@ skip_copy:
-> =20
->  	found_fin_ok:
->  		/* Process the FIN. */
-> -		++*seq;
-> +		WRITE_ONCE(*seq, *seq + 1);
->  		if (!(flags & MSG_PEEK))
->  			sk_eat_skb(sk, skb);
->  		break;
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---jRHKVT23PllUwdXP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmBQfVEACgkQMOfwapXb+vJ9VgCfY34c39nassZfZh50cm1j60Ga
-R8gAoI7SBRhkbGI2pxLQRXw5I+v93yzD
-=dGFU
------END PGP SIGNATURE-----
-
---jRHKVT23PllUwdXP--
