@@ -2,166 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E20433DE16
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A3833DE17
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234342AbhCPTsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 15:48:41 -0400
-Received: from mail-il1-f178.google.com ([209.85.166.178]:38136 "EHLO
-        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231516AbhCPTs3 (ORCPT
+        id S237032AbhCPTtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 15:49:15 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44074 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231738AbhCPTs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:48:29 -0400
-Received: by mail-il1-f178.google.com with SMTP id f10so13842395ilq.5;
-        Tue, 16 Mar 2021 12:48:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RdNKGj3FobG6MH1X+dKs4+VSnyyid6fFPtQXmtZq7o4=;
-        b=FwK6JVUO0CXmaLEmwBYx/Vfr7zKgCSvrWXulcsG9FtfTOSMjV9IDF0W0aEEjbHQCYH
-         1XOLbkEh7LTLO+z8jzW9Fjd4q5JUJrquB0Iz9m90ydMR7wtPm0MKA/eKVKmOCWv8gKYw
-         Egg5Mtai88a8jhxCbhkMa+9Bkeej2gTnBSw0gxKiX1uFwHmU31ZQcV/PpvEgsBYOm6FR
-         misFArx9eS2lQ2V33U0rzSW0b4yA9+8qKE1p+dUpe7SmIb8HZmAO8lY6QUjduh70olvu
-         OuuCmR/N6cZ8ZRThVzY/cKP6zgL+G0mnJtAc6bKjaz92JinKLFOu7/Ao7qxOQnu2QI0y
-         Pnfg==
-X-Gm-Message-State: AOAM533jK0xD7lqWMRxzKGlyrpdtZNlgKoWESiaDyTglDNFOAAMHNR4u
-        VBI37/mISv3F5/9O/MWImqtkMguLQg==
-X-Google-Smtp-Source: ABdhPJxr6112TJfnRPR0/Pblh7yamHgST8Dcm9ZPXpcv09y4FtrrYXucVBlNyp/mi8G3zDBhHJPhww==
-X-Received: by 2002:a92:7d0d:: with SMTP id y13mr5263148ilc.269.1615924108645;
-        Tue, 16 Mar 2021 12:48:28 -0700 (PDT)
-Received: from xps15.herring.priv ([64.188.179.253])
-        by smtp.googlemail.com with ESMTPSA id a16sm9928962ild.82.2021.03.16.12.48.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 12:48:27 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Kevin Tsai <ktsai@capellamicro.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Mark Brown <broonie@kernel.org>, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH] dt-bindings: More cleanup of standard unit properties
-Date:   Tue, 16 Mar 2021 13:48:24 -0600
-Message-Id: <20210316194824.3526913-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Tue, 16 Mar 2021 15:48:58 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615924135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uRw7n8NDH/xKVa1BdRtlfYFO/sQ1st+ZQbLu0oouf90=;
+        b=hLtkfOQgvO5903XhIqu2IqWGMNbdFqsSIq0fxxpZvoz5Ke5VpTaF1h6jTSSIRWgaQtO19H
+        nV+1NJGkwP7GWWX0QK6DZM8IUSldMVpCtGYhQzg71tG5+msPFjQFNKJn+K79YRH90gY6mk
+        pm4GcOlG1p8CcUxQRmuXOA1wEscE5BDLr100ZHAxqzfY9WotFRPsTymAkXcfYyrTMieh6z
+        hZL6cJ5gw9sPp0Hk2GZu+AKmo8JmWidw9B2aUuCC52KCPIY2aO/swJgj+no2mirzh3VKsu
+        RzTQYH5SGS2dFBTeH0U1Z+HaIwuM+42w7DSVZdrxKxApwZrtCqqiJO++JDTE6w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615924135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uRw7n8NDH/xKVa1BdRtlfYFO/sQ1st+ZQbLu0oouf90=;
+        b=EZrXTc4LywkCfTMOamwTdFSfC7eJ2r5vL4Rywzzh0exnDiAUCmQI2fxKKew+8JapjTcrvN
+        KeS+PHzXYx0iNKAg==
+To:     Davidlohr Bueso <dave@stgolabs.net>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, dvhart@infradead.org,
+        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH 2/2] futex: Leave the pi lock stealer in a consistent state upon successful fault
+In-Reply-To: <20210316180305.sh7nyi4xjskd3e3j@offworld>
+References: <20210315050224.107056-1-dave@stgolabs.net> <20210315050224.107056-3-dave@stgolabs.net> <YFCUYimuDkUonySp@hirez.programming.kicks-ass.net> <20210316180305.sh7nyi4xjskd3e3j@offworld>
+Date:   Tue, 16 Mar 2021 20:48:54 +0100
+Message-ID: <87im5qzxp5.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Properties with standard unit suffixes already have a type and don't need
-type references. Fix a few more cases which have gotten added.
+On Tue, Mar 16 2021 at 11:03, Davidlohr Bueso wrote:
+> On Tue, 16 Mar 2021, Peter Zijlstra wrote:
+>>IIRC we made the explicit choice to never loop here. That saves having
+>>to worry about getting stuck in in-kernel loops.
+>>
+>>Userspace triggering the case where the futex goes corrupt is UB, after
+>>that we have no obligation for anything to still work. It's on them,
+>>they get to deal with the bits remaining.
+>
+> I was kind of expecting this answer, honestly. After all, we are warned
+> about violations to the 10th:
+>
+>   * [10] There is no transient state which leaves owner and user space
+>   *      TID out of sync. Except one error case where the kernel is denied
+>   *      write access to the user address, see fixup_pi_state_owner().
+>
+> (btw, should we actually WARN_ON_ONCE this case such that the user is
+> well aware things are screwed up?)
+>
+> However, as 34b1a1ce145 describes, it was cared enough about users to
+> protect them against spurious runaway tasks. And this is why I decided
+> to even send the patch; it fixes, without sacrificing performance or
+> additional complexity, a potentially user visible issue which could be
+> due to programming error. And unlike 34b1a1ce145, where a stealer that
+> cannot fault ends up dropping the lock, here the stealer can actually
+> amend things and not break semantics because of another task's stupidity.
+> But yeah, this could also be considered in the category of inept attempts
+> to fix a rotten situation.
 
-Cc: Luca Ceresoli <luca@lucaceresoli.net>
-Cc: Jonathan Cameron <jic23@kernel.org>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Zhang Rui <rui.zhang@intel.com>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Kevin Tsai <ktsai@capellamicro.com>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Sebastian Reichel <sre@kernel.org>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: linux-iio@vger.kernel.org
-Cc: linux-input@vger.kernel.org
-Cc: linux-pm@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/iio/light/capella,cm3605.yaml | 1 -
- Documentation/devicetree/bindings/input/input.yaml              | 1 -
- Documentation/devicetree/bindings/power/supply/bq256xx.yaml     | 1 -
- Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml   | 2 --
- .../devicetree/bindings/regulator/qcom-labibb-regulator.yaml    | 1 -
- .../devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml          | 1 -
- 6 files changed, 7 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/iio/light/capella,cm3605.yaml b/Documentation/devicetree/bindings/iio/light/capella,cm3605.yaml
-index 27972938b60d..c63b79c3351b 100644
---- a/Documentation/devicetree/bindings/iio/light/capella,cm3605.yaml
-+++ b/Documentation/devicetree/bindings/iio/light/capella,cm3605.yaml
-@@ -48,7 +48,6 @@ properties:
-   vdd-supply: true
- 
-   capella,aset-resistance-ohms:
--    $ref: /schemas/types.yaml#/definitions/uint32
-     enum: [50000, 100000, 300000, 600000]
-     description: >
-       Sensitivity calibration resistance. Note that calibration curves
-diff --git a/Documentation/devicetree/bindings/input/input.yaml b/Documentation/devicetree/bindings/input/input.yaml
-index ab407f266bef..3fc37478c0c0 100644
---- a/Documentation/devicetree/bindings/input/input.yaml
-+++ b/Documentation/devicetree/bindings/input/input.yaml
-@@ -32,6 +32,5 @@ properties:
-       Duration in seconds which the key should be kept pressed for device to
-       power off automatically. Device with key pressed shutdown feature can
-       specify this property.
--    $ref: /schemas/types.yaml#/definitions/uint32
- 
- additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/power/supply/bq256xx.yaml b/Documentation/devicetree/bindings/power/supply/bq256xx.yaml
-index 18b54783e11a..92ec7ed25668 100644
---- a/Documentation/devicetree/bindings/power/supply/bq256xx.yaml
-+++ b/Documentation/devicetree/bindings/power/supply/bq256xx.yaml
-@@ -39,7 +39,6 @@ properties:
-     maxItems: 1
- 
-   ti,watchdog-timeout-ms:
--    $ref: /schemas/types.yaml#/definitions/uint32
-     default: 0
-     description: |
-       Watchdog timer in ms. 0 (default) disables the watchdog
-diff --git a/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml b/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
-index 1f88c9e013f4..6d7aa97a6475 100644
---- a/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
-+++ b/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
-@@ -29,12 +29,10 @@ properties:
-     description: I2C address of the charger.
- 
-   lltc,rsnsb-micro-ohms:
--    $ref: /schemas/types.yaml#/definitions/uint32
-     description: Battery sense resistor in microohm.
-     minimum: 1000
- 
-   lltc,rsnsi-micro-ohms:
--    $ref: /schemas/types.yaml#/definitions/uint32
-     description: Input current sense resistor in microohm.
-     minimum: 1000
- 
-diff --git a/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
-index cf784bd1f5e5..1ddc1efd19e2 100644
---- a/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
-+++ b/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
-@@ -23,7 +23,6 @@ properties:
- 
-     properties:
-       qcom,soft-start-us:
--        $ref: /schemas/types.yaml#/definitions/uint32
-         description: Regulator soft start time in microseconds.
-         enum: [200, 400, 600, 800]
-         default: 200
-diff --git a/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml b/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml
-index 7cd364430573..95a728f4d333 100644
---- a/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml
-+++ b/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml
-@@ -78,7 +78,6 @@ patternProperties:
-           also known as absolute calibration.
- 
-       qcom,hw-settle-time-us:
--        $ref: /schemas/types.yaml#/definitions/uint32
-         description: Time between AMUX getting configured and the ADC starting conversion.
-         enum: [15, 100, 200, 300, 400, 500, 600, 700, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000]
- 
--- 
-2.27.0
-
+It's one of the 'Doctor it hurts when I shoot myself in the foot' cases :)
