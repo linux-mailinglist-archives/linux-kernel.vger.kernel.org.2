@@ -2,120 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6BB133D9D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BD333D9D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236237AbhCPQvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 12:51:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232193AbhCPQuu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 12:50:50 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AC74C06174A;
-        Tue, 16 Mar 2021 09:50:50 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id d15so10834425wrv.5;
-        Tue, 16 Mar 2021 09:50:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tw02aSmUfktQUztGp/fYjFJuvv7VDIifDhxKgPk1hm4=;
-        b=TmcmPnRyzmMb32Fpbcut6a5vxRtOoY9vODgqY/NAaySwxusdWl60TaV96SJKnsgSeA
-         WCMtMsIp0YnVUFNXu9X/DY8yKm8BpWQ4rYA2jWU3cyEyO67PXjTOK0BZUjMFNTy6Py1Z
-         OTkjW3Cqso3zb1m+xYL3sM1GY0wOfUgaq0o5T+lWdfeUiZYDaLtvKU7Nh5ewczOdTLiL
-         6Fo0wwsX4lO7A4z2+c85aJ3oEhAF/GDd77j/G1S9fC+oz7DATkMaK3P4kTIvDX+0qcqN
-         ISfgUGWzttyPAPrkG37Kx1gEzYPgLF3uL7sGjzQLRO/glY1avjQlcxE49X0q4Kk8FSJ9
-         v8AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tw02aSmUfktQUztGp/fYjFJuvv7VDIifDhxKgPk1hm4=;
-        b=qePOuEzTRlyjvd/BpaN1koibECzROu2j1emKlgtQPc/hcoJ7Qek7ctqmfstdDpj+UY
-         rgyvDXjkpxc4zfXc1MMaVMs+eOl6bmpcNlQFoRzJtJw3AWoHr0jInjdStjHEBEQHsDYD
-         UsQLYPBt5iYFkf2QctzKSKqjrZc3YtjUwvNjxTQZ98E+dTgisHGin4dDVhJnBvEt7PLO
-         o3KOFeyCcpF0sR6hdEwwXm7P9uBitgEte2iBV3tg4MypqVOfvsB0tb8kdKeubsDyU4/6
-         aGX5yUmToaMxwtoAj/Gqx7KLS2HJh6ww4saib+8MOH+P4HWmGrApz5Q4rNns//w0OZ8G
-         GANQ==
-X-Gm-Message-State: AOAM532kRmXDlxXmsdw1JeUWs2ooDj1Tw2SzZblrJ7mVo1EAEN2/es7D
-        vzYYt1/2zZPHLYNTStcwCTs=
-X-Google-Smtp-Source: ABdhPJwU7xBH/Yg3pLZcWZ6QfVdkrhYt3icWtF/J2XMVUede0zCueTzEq8ERyme24ygcGUFm39kt9A==
-X-Received: by 2002:adf:c641:: with SMTP id u1mr5943933wrg.332.1615913449219;
-        Tue, 16 Mar 2021 09:50:49 -0700 (PDT)
-Received: from [10.8.0.206] ([195.53.121.100])
-        by smtp.gmail.com with ESMTPSA id p10sm24014499wrw.33.2021.03.16.09.50.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 09:50:48 -0700 (PDT)
-Subject: Re: AW: [RFC v3 04/17] arch_prctl.2: SYNOPSIS: Remove unused includes
-To:     Walter Harms <wharms@bfs.de>
-Cc:     "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        "mtk.manpages@gmail.com" <mtk.manpages@gmail.com>
-References: <20210214133907.157320-1-alx.manpages@gmail.com>
- <20210313192526.350200-5-alx.manpages@gmail.com>
- <be6a5420c2de4cd5a772a878a173fd09@bfs.de>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <2c3f8638-4dad-566f-43c0-1579a6ae32ce@gmail.com>
-Date:   Tue, 16 Mar 2021 17:50:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S232193AbhCPQvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 12:51:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231161AbhCPQvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 12:51:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F0016510B;
+        Tue, 16 Mar 2021 16:51:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615913461;
+        bh=IKFMV8fviKwPLGWckodOfPixXKUDsMbn5f1reP5b6r8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=D7cGiauMFZGwXfMvEKjiSV33U3YDdcfwGa3KwyA7olp+MYFdMFZrdmM8sK7bp7286
+         vT304XWBztqZpRYeIUFfhuXsoHcTa3DVI7J6zhUaiQFOZA9EX6LSUhbjQIpE8oDgSn
+         w/4rE2QHm0gTB2hsfAg/6Qx1OFD+T1KxasEDqjvlf0kqY4tM9Kp8aXMQrYsVpL0zxk
+         k7gDaoPi9yq8bzZvw2AifLe3UnfocgU2p0NPeJGs8Xect2kZFFt9mvvlQGtiw/h/WW
+         tJzQLAr3BSL+eBoi9D/wrvFIcqo5QdLY3oATJynLcZI8LjasS63CnQq2eUd17RBaeY
+         Qcn34rcI0G3bQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 4868A352262D; Tue, 16 Mar 2021 09:51:01 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 09:51:01 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 1/3] rcu: Provide polling interfaces for
+ Tree RCU grace periods
+Message-ID: <20210316165101.GW2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
+ <20210304002632.23870-1-paulmck@kernel.org>
+ <20210316151750.GF639918@lothringen>
 MIME-Version: 1.0
-In-Reply-To: <be6a5420c2de4cd5a772a878a173fd09@bfs.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316151750.GF639918@lothringen>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Walter,
-
-On 3/15/21 7:00 PM, Walter Harms wrote:
-> I have learned the other way around:
-> #include <sys/prctl.h>
-> Is a general system header to use that may include
-> the asm/prctrl.h what should never be included by
-> userspace programms.
+On Tue, Mar 16, 2021 at 04:17:50PM +0100, Frederic Weisbecker wrote:
+> On Wed, Mar 03, 2021 at 04:26:30PM -0800, paulmck@kernel.org wrote:
+> > +/**
+> > + * poll_state_synchronize_rcu - Conditionally wait for an RCU grace period
+> > + *
+> > + * @oldstate: return from call to get_state_synchronize_rcu() or start_poll_synchronize_rcu()
+> > + *
+> > + * If a full RCU grace period has elapsed since the earlier call from
+> > + * which oldstate was obtained, return @true, otherwise return @false.
+> > + * Otherwise, invoke synchronize_rcu() to wait for a full grace period.
+> > + *
+> > + * Yes, this function does not take counter wrap into account.
+> > + * But counter wrap is harmless.  If the counter wraps, we have waited for
+> > + * more than 2 billion grace periods (and way more on a 64-bit system!).
+> > + * Those needing to keep oldstate values for very long time periods
+> > + * (many hours even on 32-bit systems) should check them occasionally
+> > + * and either refresh them or set a flag indicating that the grace period
+> > + * has completed.
+> > + */
+> > +bool poll_state_synchronize_rcu(unsigned long oldstate)
+> > +{
+> > +	if (rcu_seq_done(&rcu_state.gp_seq, oldstate)) {
+> > +		smp_mb(); /* Ensure GP ends before subsequent accesses. */
 > 
+> Also as usual I'm a bit lost with the reason behind those memory barriers.
+> So this is ordering the read on rcu_state.gp_seq against something (why not an
+> smp_rmb() btw?). And what does it pair with?
 
-Are you sure that <sys/prctl.h> includes <asm/prctl.h>?
+Because it needs to order subsequent writes as well as reads.
 
-user@debian:/usr/include$ grep -rn '\bARCH_'
-asm-generic/statfs.h:42:#ifndef ARCH_PACK_STATFS64
-asm-generic/statfs.h:43:#define ARCH_PACK_STATFS64
-asm-generic/statfs.h:59:} ARCH_PACK_STATFS64;
-asm-generic/statfs.h:65:#ifndef ARCH_PACK_COMPAT_STATFS64
-asm-generic/statfs.h:66:#define ARCH_PACK_COMPAT_STATFS64
-asm-generic/statfs.h:82:} ARCH_PACK_COMPAT_STATFS64;
-x86_64-linux-gnu/asm/statfs.h:10:#define ARCH_PACK_COMPAT_STATFS64 
-__attribute__((packed,aligned(4)))
-x86_64-linux-gnu/asm/prctl.h:5:#define ARCH_SET_GS		0x1001
-x86_64-linux-gnu/asm/prctl.h:6:#define ARCH_SET_FS		0x1002
-x86_64-linux-gnu/asm/prctl.h:7:#define ARCH_GET_FS		0x1003
-x86_64-linux-gnu/asm/prctl.h:8:#define ARCH_GET_GS		0x1004
-x86_64-linux-gnu/asm/prctl.h:10:#define ARCH_GET_CPUID		0x1011
-x86_64-linux-gnu/asm/prctl.h:11:#define ARCH_SET_CPUID		0x1012
-x86_64-linux-gnu/asm/prctl.h:13:#define ARCH_MAP_VDSO_X32	0x2001
-x86_64-linux-gnu/asm/prctl.h:14:#define ARCH_MAP_VDSO_32	0x2002
-x86_64-linux-gnu/asm/prctl.h:15:#define ARCH_MAP_VDSO_64	0x2003
-x86_64-linux-gnu/asm/auxvec.h:13:/* entries in ARCH_DLINFO: */
-user@debian:/usr/include$ grep -rn 'asm/prctl.h'
-user@debian:/usr/include$
+It is ordering whatever the RCU user wishes to put after the call to
+poll_state_synchronize_rcu() with whatever the RCU user put before
+whatever started the grace period that just now completed.  Please
+see the synchronize_rcu() comment header for the statement of the
+guarantee.  Or that of call_rcu().
 
-At least on my system, no header seems to be including <asm/prctl.h>.
+For more detail on how these guarantees are implemented, please see
+Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+and its many diagrams.
 
-Thanks,
+There are a lot of memory barriers that pair and form larger cycles to
+implement this guarantee.  Pretty much all of the calls to the infamous
+smp_mb__after_unlock_lock() macro form cycles involving this barrier,
+for example.
 
-Alex
+Please do not hesitate to ask more questions.  This underpins RCU.
 
-
-
--- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+							Thanx, Paul
