@@ -2,168 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBEDE33D3E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D7C33D3E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbhCPMcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:32:55 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:57769 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231802AbhCPMc2 (ORCPT
+        id S231886AbhCPMdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 08:33:00 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:40613 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231544AbhCPMcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:32:28 -0400
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id B317EFF80A;
-        Tue, 16 Mar 2021 12:32:20 +0000 (UTC)
-Date:   Tue, 16 Mar 2021 13:32:20 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Lukasz Stelmach <l.stelmach@samsung.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rtc: ds1307: set uie_unsupported if no interrupt is
- available
-Message-ID: <YFClVBShBuy9/VPY@piout.net>
-References: <YE/ZLtdK0ZlVFOhp@piout.net>
- <20210305174411.9657-1-l.stelmach@samsung.com>
- <CGME20210316121218eucas1p1f74d6e6cec7fc897051902a7da478fd0@eucas1p1.samsung.com>
- <dleftj1rcfe1rb.fsf%l.stelmach@samsung.com>
+        Tue, 16 Mar 2021 08:32:42 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MV5G4-1lF1Zv0plu-00SA4J for <linux-kernel@vger.kernel.org>; Tue, 16 Mar
+ 2021 13:32:41 +0100
+Received: by mail-ot1-f52.google.com with SMTP id m1so8377684ote.10
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 05:32:40 -0700 (PDT)
+X-Gm-Message-State: AOAM533rKFt3nM296gaoF2lyim7oKhuzFMhmaWtatxJ/hRyn8e5dEDaO
+        O2zZ1raU4IlPxCxUmBmy6AIOsRECy/s8aVIDk14=
+X-Google-Smtp-Source: ABdhPJxTUHnHXhAN4tXia6iWRwvgcQBgg+nHTP2QDb3F8BwK2hKVm3L1WodVtpIpvIHt60w1eagv+6FsWiWu8tKez3c=
+X-Received: by 2002:a05:6830:14c1:: with SMTP id t1mr3480821otq.305.1615897959980;
+ Tue, 16 Mar 2021 05:32:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dleftj1rcfe1rb.fsf%l.stelmach@samsung.com>
+References: <20210316083254.GR2087@kadam>
+In-Reply-To: <20210316083254.GR2087@kadam>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 16 Mar 2021 13:32:23 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3trJHFLV+Qy+d5hD6=nGJgw8e=UU6BsPaCZDx5yNDKtA@mail.gmail.com>
+Message-ID: <CAK8P3a3trJHFLV+Qy+d5hD6=nGJgw8e=UU6BsPaCZDx5yNDKtA@mail.gmail.com>
+Subject: Re: drivers/usb/host/ohci-hcd.c:1318 ohci_hcd_mod_init() warn:
+ ignoring unreachable code.
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org, Stephen Boyd <sboyd@kernel.org>,
+        kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Dmitry Baryshkov <dbaryshkov@gmail.com>,
+        Ian Molton <spyro@f2s.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:aOOZF4sMnIgwJUipW7WwCLF/QDxXi7unUbWRHbVqjTN3yJ/Q0/J
+ 4Baq0GExLr/nW5uP9MrMfNbbt8xVkPHBaa06fkppEmHcplYc4vvz8MjUiOnS/71VATkChQA
+ Ut5Lilw5emKN0iCRmzQiBcnGuuhp99XqZtGPOIRzU0db9LZZazEI/ALs3YG6sxWLw68OpUz
+ +9ezFMM3VKSPpNx0MNp7Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xKa4uThsZNE=:8/hHakkjaW3fsKhz9Sj7RA
+ EJumHu30/aTlEcyXgVpoDAX1i7qQkqi3Hma8WqYmz8mR8cqJoU1lb7c8QgAg8OUxM3QvtM8Bh
+ JjiHjGuAA/gH9bMFYNXj5LwNI8Yxl0WOdbdlhbiS+c/aQCLzVZMrkA0pQq9W29rFzmx8Ihcac
+ RgtLsEoOiP0HPhJ8XB3Ki93EmK054JESX3a7WkQq/zOA+/oMiLisVo0fPcvrSjdB8bcgX591m
+ FWWC2OexqZi4SY4XePC35PBhkxm3/H07o5QqZkmmYrC7c8Wx7m54zlN3Pzgu2sL46+0pfsE1O
+ mC7fOFpzd6D+7c5Goz5vZKhEBVlTGV7Cu+WCaj1+fRSW0wLYq5pmX31vcJVEPOWHpGA9K9jxn
+ pSx0CQDDWrvJ7ThXtiX87oD3jUt8boPJbd2RlbvJpsywxbizLWdFh/MyhfoGb
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/03/2021 13:12:08+0100, Lukasz Stelmach wrote:
-> It was <2021-03-15 pon 23:01>, when Alexandre Belloni wrote:
-> > Hello,
-> >
-> > On 05/03/2021 18:44:11+0100, Łukasz Stelmach wrote:
-> >> For an RTC without an IRQ assigned rtc_update_irq_enable() should
-> >> return -EINVAL.  It will, when uie_unsupported is set.
-> >> 
-> >
-> > I'm surprised this is an issue because the current code seems to cover
-> > all cases:
-> >
-> >  - no irq and not wakeup-source => set_alarm should fail
-> >  - no irq and wakeup-source => uie_unsupported is set
-> >  - irq => UIE should work
-> >
-> > Can you elaborate on your failing use case?
-> 
-> I've got ds3231 which supports alarms[1] but is not connected to any
-> interrupt line. Hence, client->irq is 0 as well as want_irq[2]. There
-> is also no other indirect connection, so I don't set wakeup-source
-> property and ds1307_can_wakeup_device remains[3] false. Under these
-> conditions
-> 
->     want_irq = 0
->     ds1307_can_wakeup_device = false
-> 
-> uie_unsupported remains[4] false. And this is the problem.
-> 
-> hwclock(8) when setting system clock from rtc (--hctosys) calls
-> synchronize_to_clock_tick_rtc()[5]. There goes
-> 
->     ioctl(rtc_fd, RTC_UIE_ON, 0);
-> 
-> which leads us to
-> 
->     rtc_update_irq_enable(rtc, 1);
-> 
-> and finally here [6]
-> 
->     if (rtc->uie_unsupported) {
->         err = -EINVAL;
->         goto out;
->     }
-> 
-> and we keep going (uie_unsupported = 0). All the following operations
-> succeed because chip supports alarms.
-> 
+On Tue, Mar 16, 2021 at 9:32 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   1a4431a5db2bf800c647ee0ed87f2727b8d6c29c
+> commit: bbd7ffdbef6888459f301c5889f3b14ada38b913 clk: Allow the common clk framework to be selectable
+> config: arm-randconfig-m031-20210316 (attached as .config)
+> compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+>
+> smatch warnings:
+> drivers/usb/host/ohci-hcd.c:1318 ohci_hcd_mod_init() warn: ignoring unreachable code.
+>
+> vim +1318 drivers/usb/host/ohci-hcd.c
+>
+> 78c73414f4f674 Dmitry Eremin-Solenikov 2008-10-08  1313
+> 5e16fabe5dbcff Sylvain Munaut          2006-12-13  1314         return retval;
+>                                                                 ^^^^^^^^^^^^^
+>
+> 5e16fabe5dbcff Sylvain Munaut          2006-12-13  1315
+> 5e16fabe5dbcff Sylvain Munaut          2006-12-13  1316         /* Error path */
+> 78c73414f4f674 Dmitry Eremin-Solenikov 2008-10-08  1317  #ifdef TMIO_OHCI_DRIVER
+> 78c73414f4f674 Dmitry Eremin-Solenikov 2008-10-08 @1318         platform_driver_unregister(&TMIO_OHCI_DRIVER);
+>                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Unreachable
 
-But then, HAS_ALARM is not set and ds1337_set_alarm should fail which
-makes rtc_timer_enqueue return an error. I admit this whole part is a
-mess, I'm just trying to understand how you can hit that.
+It looks like this has been the case since tmio support was added in:
+78c73414f4f6 ("USB: ohci: add support for tmio-ohci cell")
 
-> We go back to hwclock(8) and we start waiting[7] for the update from
-> interrupt which never arrives instead of calling
-> busywiat_for_rtc_clock_tick()[8] (mind the invalid indentation) because
-> of EINVAL returned from ioctl() (conf. [6])
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/rtc/rtc-ds1307.c?h=v5.11#n1032
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/rtc/rtc-ds1307.c?h=v5.11#n1779
-> [3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/rtc/rtc-ds1307.c?h=v5.11#n1802
-> [4] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/rtc/rtc-ds1307.c?h=v5.11#n1977
-> [5] https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/tree/sys-utils/hwclock-rtc.c?h=v2.36.2#n252
-> [6] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/rtc/interface.c?h=v5.11#n564
-> [7] https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/tree/sys-utils/hwclock-rtc.c?h=v2.36.2#n283
-> [8] https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/tree/sys-utils/hwclock-rtc.c?h=v2.36.2#n297
-> 
-> >> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
-> >> ---
-> >>  drivers/rtc/rtc-ds1307.c | 14 +++++++-------
-> >>  1 file changed, 7 insertions(+), 7 deletions(-)
-> >> 
-> >> diff --git a/drivers/rtc/rtc-ds1307.c b/drivers/rtc/rtc-ds1307.c
-> >> index cd8e438bc9c4..b08a9736fa77 100644
-> >> --- a/drivers/rtc/rtc-ds1307.c
-> >> +++ b/drivers/rtc/rtc-ds1307.c
-> >> @@ -1973,13 +1973,6 @@ static int ds1307_probe(struct i2c_client *client,
-> >>  	if (IS_ERR(ds1307->rtc))
-> >>  		return PTR_ERR(ds1307->rtc);
-> >>  
-> >> -	if (ds1307_can_wakeup_device && !want_irq) {
-> >> -		dev_info(ds1307->dev,
-> >> -			 "'wakeup-source' is set, request for an IRQ is disabled!\n");
-> >> -		/* We cannot support UIE mode if we do not have an IRQ line */
-> >> -		ds1307->rtc->uie_unsupported = 1;
-> >> -	}
-> >> -
-> >>  	if (want_irq) {
-> >>  		err = devm_request_threaded_irq(ds1307->dev, client->irq, NULL,
-> >>  						chip->irq_handler ?: ds1307_irq,
-> >> @@ -1993,6 +1986,13 @@ static int ds1307_probe(struct i2c_client *client,
-> >>  		} else {
-> >>  			dev_dbg(ds1307->dev, "got IRQ %d\n", client->irq);
-> >>  		}
-> >> +	} else {
-> >> +		if (ds1307_can_wakeup_device)
-> >> +			dev_info(ds1307->dev,
-> >> +				 "'wakeup-source' is set, request for an IRQ is disabled!\n");
-> >> +
-> >
-> > Honestly, just drop this message, it should have been removed by 82e2d43f6315
-> >
-> >
-> 
-> Done.
-> 
-> >> +		/* We cannot support UIE mode if we do not have an IRQ line */
-> >> +		ds1307->rtc->uie_unsupported = 1;
-> >>  	}
-> >>  
-> >>  	ds1307->rtc->ops = chip->rtc_ops ?: &ds13xx_rtc_ops;
-> >> -- 
-> >> 2.26.2
-> >> 
-> 
-> -- 
-> Łukasz Stelmach
-> Samsung R&D Institute Poland
-> Samsung Electronics
+I wonder if any of the original developers are still around to fix it, it should
+be trivial.
 
-
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+       Arnd
