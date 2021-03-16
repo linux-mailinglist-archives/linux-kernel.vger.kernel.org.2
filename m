@@ -2,89 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD2B33DC62
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 530D333DC72
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:20:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236347AbhCPSRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:17:33 -0400
-Received: from mga11.intel.com ([192.55.52.93]:9049 "EHLO mga11.intel.com"
+        id S239922AbhCPSUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:20:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234366AbhCPSQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:16:46 -0400
-IronPort-SDR: NHvPOs4MwvM542MOoi5r5IGZJ2h2OBY+wfzcdl5U5dcak80yl/joQXTzu5hcGOFIncVGRJLkbi
- Dq6ABb5MRrqg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="185951210"
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="185951210"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 11:16:45 -0700
-IronPort-SDR: Cztyz60fnMHguSV703xnY9lhec9N/0NGqFc6oNBH/4GUyEvAec+gGdEaq38jMD3PJXTjc0NPNo
- K5UgsGOpaZmw==
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="405627942"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 11:16:42 -0700
-Date:   Tue, 16 Mar 2021 11:19:04 -0700
-From:   Jacob Pan <jacob.jun.pan@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Vipin Sharma <vipinsh@google.com>, mkoutny@suse.com,
-        rdunlap@infradead.org, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
-        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        jacob.jun.pan@intel.com
-Subject: Re: [RFC v2 2/2] cgroup: sev: Miscellaneous cgroup documentation.
-Message-ID: <20210316111904.5d92472e@jacob-builder>
-In-Reply-To: <YFAWVJrM86FB17Lk@slm.duckdns.org>
-References: <YEvZ4muXqiSScQ8i@google.com>
-        <20210312145904.4071a9d6@jacob-builder>
-        <YEyR9181Qgzt+Ps9@mtj.duckdns.org>
-        <20210313085701.1fd16a39@jacob-builder>
-        <YEz+8HbfkbGgG5Tm@mtj.duckdns.org>
-        <20210315151155.383a7e6e@jacob-builder>
-        <YE/ddx5+ToNsgUF0@slm.duckdns.org>
-        <20210315164012.4adeabe8@jacob-builder>
-        <YE/zvLkL1vM8/Cdm@slm.duckdns.org>
-        <20210315183030.5b15aea3@jacob-builder>
-        <YFAWVJrM86FB17Lk@slm.duckdns.org>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S236524AbhCPSTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 14:19:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F09A165116;
+        Tue, 16 Mar 2021 18:19:40 +0000 (UTC)
+Date:   Tue, 16 Mar 2021 18:19:38 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Luis Henriques <lhenriques@suse.de>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Issue with kfence and kmemleak
+Message-ID: <20210316181938.GA28565@arm.com>
+References: <YFDf6iKH1p/jGnM0@suse.de>
+ <YFDrGL45JxFHyajD@elver.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFDrGL45JxFHyajD@elver.google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tejun,
-
-On Mon, 15 Mar 2021 22:22:12 -0400, Tejun Heo <tj@kernel.org> wrote:
-
-> On Mon, Mar 15, 2021 at 06:30:30PM -0700, Jacob Pan wrote:
-> > I don't know if this is required. I thought utilities such as cgclassify
-> > need to be supported.
-> > " cgclassify - move running task(s) to given cgroups "
-> > If no such use case, I am fine with dropping the migration support. Just
-> > enforce limit on allocations.  
+On Tue, Mar 16, 2021 at 06:30:00PM +0100, Marco Elver wrote:
+> On Tue, Mar 16, 2021 at 04:42PM +0000, Luis Henriques wrote:
+> > This is probably a known issue, but just in case: looks like it's not
+> > possible to use kmemleak when kfence is enabled:
+> > 
+> > [    0.272136] kmemleak: Cannot insert 0xffff888236e02f00 into the object search tree (overlaps existing)
+> > [    0.272136] CPU: 0 PID: 8 Comm: kthreadd Not tainted 5.12.0-rc3+ #92
+> > [    0.272136] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+> > [    0.272136] Call Trace:
+> > [    0.272136]  dump_stack+0x6d/0x89
+> > [    0.272136]  create_object.isra.0.cold+0x40/0x62
+> > [    0.272136]  ? process_one_work+0x5a0/0x5a0
+> > [    0.272136]  ? process_one_work+0x5a0/0x5a0
+> > [    0.272136]  kmem_cache_alloc_trace+0x110/0x2f0
+> > [    0.272136]  ? process_one_work+0x5a0/0x5a0
+> > [    0.272136]  kthread+0x3f/0x150
+> > [    0.272136]  ? lockdep_hardirqs_on_prepare+0xd4/0x170
+> > [    0.272136]  ? __kthread_bind_mask+0x60/0x60
+> > [    0.272136]  ret_from_fork+0x22/0x30
+> > [    0.272136] kmemleak: Kernel memory leak detector disabled
+> > [    0.272136] kmemleak: Object 0xffff888236e00000 (size 2097152):
+> > [    0.272136] kmemleak:   comm "swapper", pid 0, jiffies 4294892296
+> > [    0.272136] kmemleak:   min_count = 0
+> > [    0.272136] kmemleak:   count = 0
+> > [    0.272136] kmemleak:   flags = 0x1
+> > [    0.272136] kmemleak:   checksum = 0
+> > [    0.272136] kmemleak:   backtrace:
+> > [    0.272136]      memblock_alloc_internal+0x6d/0xb0
+> > [    0.272136]      memblock_alloc_try_nid+0x6c/0x8a
+> > [    0.272136]      kfence_alloc_pool+0x26/0x3f
+> > [    0.272136]      start_kernel+0x242/0x548
+> > [    0.272136]      secondary_startup_64_no_verify+0xb0/0xbb
+> > 
+> > I've tried the hack below but it didn't really helped.  Obviously I don't
+> > really understand what's going on ;-)  But I think the reason for this
+> > patch not working as (I) expected is because kfence is initialised
+> > *before* kmemleak.
+> > 
+> > diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> > index 3b8ec938470a..b4ffd7695268 100644
+> > --- a/mm/kfence/core.c
+> > +++ b/mm/kfence/core.c
+> > @@ -631,6 +631,9 @@ void __init kfence_alloc_pool(void)
+> >  
+> >  	if (!__kfence_pool)
+> >  		pr_err("failed to allocate pool\n");
+> > +	kmemleak_no_scan(__kfence_pool);
+> >  }
 > 
-> Yeah, that's what all other controllers do. Please read the in-tree
-> cgroup2 doc.
+> Can you try the below patch?
 > 
-Thanks for your patience and guidance, will try to merge with misc
-controller and go from there.
+> Thanks,
+> -- Marco
+> 
+> ------ >8 ------
+> 
+> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> index f7106f28443d..5891019721f6 100644
+> --- a/mm/kfence/core.c
+> +++ b/mm/kfence/core.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/debugfs.h>
+>  #include <linux/kcsan-checks.h>
+>  #include <linux/kfence.h>
+> +#include <linux/kmemleak.h>
+>  #include <linux/list.h>
+>  #include <linux/lockdep.h>
+>  #include <linux/memblock.h>
+> @@ -481,6 +482,13 @@ static bool __init kfence_init_pool(void)
+>  		addr += 2 * PAGE_SIZE;
+>  	}
+>  
+> +	/*
+> +	 * The pool is live and will never be deallocated from this point on;
+> +	 * tell kmemleak this is now free memory, so that later allocations can
+> +	 * correctly be tracked.
+> +	 */
+> +	kmemleak_free_part_phys(__pa(__kfence_pool), KFENCE_POOL_SIZE);
 
-Thanks,
+I presume this pool does not refer any objects that are only tracked
+through pool pointers.
 
-Jacob
+kmemleak_free() (or *_free_part) should work, no need for the _phys
+variant (which converts it back with __va).
+
+Since we normally use kmemleak_ignore() (or no_scan) for objects we
+don't care about, I'd expand the comment that this object needs to be
+removed from the kmemleak object tree as it will overlap with subsequent
+allocations handled by kfence which return pointers within this range.
+
+-- 
+Catalin
