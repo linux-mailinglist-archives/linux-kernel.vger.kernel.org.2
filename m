@@ -2,115 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D83533D272
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1C733D278
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237081AbhCPLH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:07:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237060AbhCPLHZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:07:25 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0AFC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 04:07:24 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id jt13so71460570ejb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 04:07:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=w9abddBpqLJVcwq/yZSJOMSeh2fLBW/uaeu5zmX5HK0=;
-        b=d1vPLe6EwY4M1GlCS1kBMqhLkNeuQE3JYieyDurN4YegCZIiEbqLfGLYEGkN9orcyz
-         vyc61V51e+JKnHE/bq8z0+m5d5laIBQD2f+4DEXsR4Dp/mUaU/Rp0cs7tTsrwcRVZTbM
-         D/W/vZgC/hhaLkg4rjuHnnQW+jD5dLlVKbzuaKzDE6I8Fhs+mVnLubq+Di66w2mdj774
-         KuMYxa+0nDF8IIPRwfazvnWtD26BYiFTyetBNR6nXBAIhUa9P/tSLeDpfP6fyARHBiDT
-         WXOVwsD0ASOpj9cmjKa/pKYESwWY+a4/3iV61gzjm4woYAN9wEfi2LtCcKgnteCnVQfk
-         ct7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=w9abddBpqLJVcwq/yZSJOMSeh2fLBW/uaeu5zmX5HK0=;
-        b=NEW8Y1C2KLt2pXLoPZP+3Vh07uN9EziRuNJuMkyGqkRHIxFjlS4C16GzMIgnGQPK5R
-         DsoZcnlfXmlvxzZI8SXtWd5iSbq90FZG1FJlU7a3ZH/TuWaNlsi2rLxzV44c03eS/J/0
-         yhaOMrn++KTAnsUB/42kxlCTGAyPiv1feoXjzRGxq2BtTYn1gGEBJTBmskd353+JoqMV
-         QBxfdN7jp06oQTzTnBeEINWOhDCp/IkY9PdvZxfDSVEJ1U+0JofGJ/snIbocGUQqKMuV
-         Bo6bOIzL0Wr1gkZYt0syeo7GJIrNDkkVyHXkTL8RfWeF0GDLuGsTdYWYNNzjE2VneppW
-         I9Gw==
-X-Gm-Message-State: AOAM53232xMDnQmzAwWFN9eefBmxRCXofuNVY3IbY2ct6ROV78FI+Zy9
-        A3xn1n1Z3M7+FG4VegYGrRlKlw==
-X-Google-Smtp-Source: ABdhPJzsQmd2sfqPJ+a1e6IgeGPuDT6UZst1EyY0SqKUnq5oPBpYP6yWkfSkmXLL/4REnuxiVG01zg==
-X-Received: by 2002:a17:906:489:: with SMTP id f9mr28335796eja.428.1615892843410;
-        Tue, 16 Mar 2021 04:07:23 -0700 (PDT)
-Received: from [192.168.1.19] (hst-221-14.medicom.bg. [84.238.221.14])
-        by smtp.googlemail.com with ESMTPSA id n16sm9105447ejy.35.2021.03.16.04.07.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 04:07:23 -0700 (PDT)
-Subject: Re: [PATCH v5 0/5] HDR10 static metadata
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>
-References: <20210209162425.3970393-1-stanimir.varbanov@linaro.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <24d28844-d7e0-baca-51da-4cd1428bf1da@linaro.org>
-Date:   Tue, 16 Mar 2021 13:07:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S237092AbhCPLKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:10:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43448 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231572AbhCPLJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 07:09:27 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 91A16AC1D;
+        Tue, 16 Mar 2021 11:09:26 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 0202FDA6E2; Tue, 16 Mar 2021 12:07:24 +0100 (CET)
+Date:   Tue, 16 Mar 2021 12:07:24 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     dsterba@suse.cz, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/4] btrfs: Convert more kmaps to kmap_local_page()
+Message-ID: <20210316110724.GJ7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Ira Weiny <ira.weiny@intel.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20210217024826.3466046-1-ira.weiny@intel.com>
+ <20210312194141.GT7604@suse.cz>
+ <20210312200500.GG3014244@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210209162425.3970393-1-stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312200500.GG3014244@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hans, any comments?
+On Fri, Mar 12, 2021 at 12:05:00PM -0800, Ira Weiny wrote:
+> On Fri, Mar 12, 2021 at 08:41:41PM +0100, David Sterba wrote:
+> > On Tue, Feb 16, 2021 at 06:48:22PM -0800, ira.weiny@intel.com wrote:
+> > > From: Ira Weiny <ira.weiny@intel.com>
+> > > 
+> > > I am submitting these for 5.13.
+> > > 
+> > > Further work to remove more kmap() calls in favor of the kmap_local_page() this
+> > > series converts those calls which required more than a common pattern which
+> > > were covered in my previous series[1].  This is the second of what I hope to be
+> > > 3 series to fully convert btrfs.  However, the 3rd series is going to be an RFC
+> > > because I need to have more eyes on it before I'm sure about what to do.  For
+> > > now this series should be good to go for 5.13.
+> > > 
+> > > Also this series converts the kmaps in the raid5/6 code which required a fix to
+> > > the kmap'ings which was submitted in [2].
+> > 
+> > Branch added to for-next and will be moved to the devel queue next week.
+> > I've added some comments about the ordering requirement, that's
+> > something not obvious. There's a comment under 1st patch but that's
+> > trivial to fix if needed. Thanks.
+> 
+> I've replied to the first patch.  LMK if you want me to respin it.
 
-On 2/9/21 6:24 PM, Stanimir Varbanov wrote:
-> Changes since v4:
->   * 1/5 - fixed a typo (Hans)
->   * 2/5 - add some mode info about new colorimetry class (Hans)
->   * 4/5 - correct cd/m2 -> cd/m\ :sup:`2`
->         - change to US spelling for color word
->         - use correct v4l2_ctrl_type in videodev2.h.rst.exceptions
->         - documented p_hdr10_cll and p_hdr10_mastering in vidioc-g-ext-ctrls.rst
-> 
-> Comments are welcome!        
-> 
-> regards,
-> Stan
->         
-> Stanimir Varbanov (5):
->   v4l: Add new Colorimetry Class
->   docs: Document colorimetry class
->   v4l: Add HDR10 static metadata controls
->   docs: Document CLL and Mastering display colorimetry controls
->   venus: venc: Add support for CLL and Mastering display controls
-> 
->  .../userspace-api/media/v4l/common.rst        |  1 +
->  .../media/v4l/ext-ctrls-colorimetry.rst       | 93 +++++++++++++++++++
->  .../media/v4l/vidioc-g-ext-ctrls.rst          | 12 +++
->  .../media/videodev2.h.rst.exceptions          |  2 +
->  drivers/media/platform/qcom/venus/core.h      |  2 +
->  drivers/media/platform/qcom/venus/hfi_cmds.c  |  8 ++
->  .../media/platform/qcom/venus/hfi_helper.h    | 20 ++++
->  drivers/media/platform/qcom/venus/venc.c      | 29 ++++++
->  .../media/platform/qcom/venus/venc_ctrls.c    | 16 +++-
->  drivers/media/v4l2-core/v4l2-ctrls.c          | 74 ++++++++++++++-
->  include/media/v4l2-ctrls.h                    |  4 +
->  include/uapi/linux/v4l2-controls.h            | 35 +++++++
->  include/uapi/linux/videodev2.h                |  3 +
->  13 files changed, 297 insertions(+), 2 deletions(-)
->  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
-> 
-
--- 
-regards,
-Stan
+No need to respin, patchset now in misc-next. Thanks.
