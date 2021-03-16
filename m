@@ -2,149 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47A233CF7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E43C733CF82
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:16:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234276AbhCPIPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 04:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234278AbhCPIPY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 04:15:24 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEA4C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 01:15:24 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id f145so19518458ybg.11
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 01:15:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+D2WnhFAGVgH3O4MSj/CMoZhIgKvhDRo7ugLLfyM64I=;
-        b=lDHPMwGR/57tFSrpx+Pq8Kbzuq2Dr7Hy66EiVBF6asU3s8d+kzPpaC82hpMZLwDp1w
-         Cxnp6S287cUBoN+Gt6UPUMPLeaErcspN2hHYwS+RrHEAGSvLKBqRsUBCv4VeSMOGDaP2
-         0ejgvF2XsFdNx3Mn3RALCNBL1fmCMlwagvBer108ZzKBrAhuoWS4TqKPcc6lZ9XuO+pj
-         KULcfuSizrtEQhNiwPLfbHw5I3knLrbd438Sdk+iJWCxXpCEmgpKazXV7IsgLGUmWc5S
-         Mk9cnbliXEuTD0uOj6v+enYbUZG8GHBLX4j7Hlwr/6lGwhr6Z+hooZ+EKtbsfW+/niQS
-         /wtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+D2WnhFAGVgH3O4MSj/CMoZhIgKvhDRo7ugLLfyM64I=;
-        b=cQzBEpBl3v0xxnKzDzsTPH1b3Qw2WUzDohSLk4ozAQqfE2xAXxNbG4Ruy5vBcXa/GA
-         sL3VdtpA3/Yn2jlf5jRj6UU7RomXr6cBcAU6nMIvfHhkcLNR7XFiRRRS8dTF4qb3ujXl
-         0s7wSOS57qRpaMZcNX7ORSQWXPAhQlkwCeGbLivxEfC9FUrPKYfxeOUOEQgZBI7ddZ2q
-         z66RsZS9sxOOCsmyiJMxCjBERVuzHNOfVtVrApCjbuu69hrTXYiaD6Uj00RI0+J7JYFc
-         ocp8ZQ/eBPaO5YMJOyEvMciDghBZ7b3FCIh71rTGGIKtA+bQMb6QrqYXwAMduQtW3q0b
-         w7ug==
-X-Gm-Message-State: AOAM531xE19/sOJhkGz5ZOWs69vX3ygMzda98o2iv6AD1jX2n57Mw/DM
-        CDQlnv+6feikW0O4lNGTCQNGbxk0DtQPRM0JiDZimw==
-X-Google-Smtp-Source: ABdhPJyZ71zUr7mOXmphdWyGCs2Ih7JkM1ThwGg7bLMZ+bGNFJHhRrWVrFbPwlPRkG2rrKjT8jUHRccZWpHatnKiPrY=
-X-Received: by 2002:a25:2307:: with SMTP id j7mr5403907ybj.518.1615882523533;
- Tue, 16 Mar 2021 01:15:23 -0700 (PDT)
+        id S234300AbhCPIQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 04:16:16 -0400
+Received: from verein.lst.de ([213.95.11.211]:59022 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234278AbhCPIP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 04:15:56 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6154568C4E; Tue, 16 Mar 2021 09:15:54 +0100 (CET)
+Date:   Tue, 16 Mar 2021 09:15:53 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Ira Weiny <iweiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>
+Subject: Re: [RFC PATCH v2 07/11] dma-mapping: Add flags to dma_map_ops to
+ indicate PCI P2PDMA support
+Message-ID: <20210316081553.GC16595@lst.de>
+References: <20210311233142.7900-1-logang@deltatee.com> <20210311233142.7900-8-logang@deltatee.com>
 MIME-Version: 1.0
-References: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
- <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
- <20210315115332.1647e92b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <3838b7c2-c32f-aeda-702a-5cb8f712ec0c@huawei.com>
-In-Reply-To: <3838b7c2-c32f-aeda-702a-5cb8f712ec0c@huawei.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 16 Mar 2021 09:15:11 +0100
-Message-ID: <CANn89iKQOxvGkr3g37xT1qkcc55gbRGNkFGcGLQmR1PVaq8RjA@mail.gmail.com>
-Subject: Re: [RFC v2] net: sched: implement TCQ_F_CAN_BYPASS for lockless qdisc
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311233142.7900-8-logang@deltatee.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 1:35 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> On 2021/3/16 2:53, Jakub Kicinski wrote:
-> > On Mon, 15 Mar 2021 11:10:18 +0800 Yunsheng Lin wrote:
-> >> @@ -606,6 +623,11 @@ static const u8 prio2band[TC_PRIO_MAX + 1] = {
-> >>   */
-> >>  struct pfifo_fast_priv {
-> >>      struct skb_array q[PFIFO_FAST_BANDS];
-> >> +
-> >> +    /* protect against data race between enqueue/dequeue and
-> >> +     * qdisc->empty setting
-> >> +     */
-> >> +    spinlock_t lock;
-> >>  };
-> >>
-> >>  static inline struct skb_array *band2list(struct pfifo_fast_priv *priv,
-> >> @@ -623,7 +645,10 @@ static int pfifo_fast_enqueue(struct sk_buff *skb, struct Qdisc *qdisc,
-> >>      unsigned int pkt_len = qdisc_pkt_len(skb);
-> >>      int err;
-> >>
-> >> -    err = skb_array_produce(q, skb);
-> >> +    spin_lock(&priv->lock);
-> >> +    err = __ptr_ring_produce(&q->ring, skb);
-> >> +    WRITE_ONCE(qdisc->empty, false);
-> >> +    spin_unlock(&priv->lock);
-> >>
-> >>      if (unlikely(err)) {
-> >>              if (qdisc_is_percpu_stats(qdisc))
-> >> @@ -642,6 +667,7 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
-> >>      struct sk_buff *skb = NULL;
-> >>      int band;
-> >>
-> >> +    spin_lock(&priv->lock);
-> >>      for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
-> >>              struct skb_array *q = band2list(priv, band);
-> >>
-> >> @@ -655,6 +681,7 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
-> >>      } else {
-> >>              WRITE_ONCE(qdisc->empty, true);
-> >>      }
-> >> +    spin_unlock(&priv->lock);
-> >>
-> >>      return skb;
-> >>  }
-> >
-> > I thought pfifo was supposed to be "lockless" and this change
-> > re-introduces a lock between producer and consumer, no?
->
-> Yes, the lock breaks the "lockless" of the lockless qdisc for now
-> I do not how to solve the below data race locklessly:
->
->         CPU1:                                   CPU2:
->       dequeue skb                                .
->           .                                      .
->           .                                 enqueue skb
->           .                                      .
->           .                      WRITE_ONCE(qdisc->empty, false);
->           .                                      .
->           .                                      .
-> WRITE_ONCE(qdisc->empty, true);
+On Thu, Mar 11, 2021 at 04:31:37PM -0700, Logan Gunthorpe wrote:
+> +int dma_pci_p2pdma_supported(struct device *dev)
+> +{
+> +	const struct dma_map_ops *ops = get_dma_ops(dev);
+> +
+> +	return !ops || ops->flags & DMA_F_PCI_P2PDMA_SUPPORTED;
+> +}
+> +EXPORT_SYMBOL(dma_pci_p2pdma_supported);
 
-
-Maybe it is time to fully document/explain how this can possibly work.
-
-lockless qdisc used concurrently by multiple cpus, using
-WRITE_ONCE() and READ_ONCE() ?
-
-Just say no to this.
-
->
-> If the above happens, the qdisc->empty is true even if the qdisc has some
-> skb, which may cuase out of order or packet stuck problem.
->
-> It seems we may need to update ptr_ring' status(empty or not) while
-> enqueuing/dequeuing atomically in the ptr_ring implementation.
->
-> Any better idea?
+EXPORT_SYMBOL_GPL like all new DMA APIs.
