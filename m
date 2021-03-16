@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6D633DE35
+	by mail.lfdr.de (Postfix) with ESMTP id ACA9833DE36
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240768AbhCPTwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 15:52:38 -0400
-Received: from mail-io1-f44.google.com ([209.85.166.44]:43179 "EHLO
-        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240737AbhCPTvO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:51:14 -0400
-Received: by mail-io1-f44.google.com with SMTP id f20so38489695ioo.10;
-        Tue, 16 Mar 2021 12:51:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YMNAus66Cv3MGTkhcoT8NihfQA1eHKsYqqZ0WAFNt8w=;
-        b=hvA50IJOKH0iabcmYiOoiyqDE+dS7luhtCsZYqCS8mc1LVjx6Spz9WdI79WCvHbXgG
-         vq1Qrzhj5FJAKobb9/6/S8Q4JWzr4oxKocaYCRkNeT25UBEWKwHu7ZDH9u8GN5hIckye
-         RNLs3H/ao3PJcFO+2XFk1u3iSBFpO3LedEG3BplfKQ/OTK15ztIKQK3NszeSBaUStMPx
-         zHd0AK19PimT3IhYuorpnuphTOcm2Khk6ed6ZRHh4OSR++tA5FTF78Zn8Ut6ZztMJkJj
-         Rgbznuz9GSpxmjJGUFOCClWqXrENX0gTAUpbLBLxfLwwV+CCBv/5595Jzkv9p7lCkgf1
-         re1w==
-X-Gm-Message-State: AOAM531zHwYYrtCc6yxaXD3XUGKNfJsVH1O1DKRt7EaIh0jThOBHc6vR
-        59k7mKFiTgmlULOSQEbcky4XzjdTKA==
-X-Google-Smtp-Source: ABdhPJwWIKKePm09BC8hGBvHNFQ8bS8C38OMqAuItlgQKZAkP0UgDWmNquAO2QyO1Q2gDcxKMBrgAg==
-X-Received: by 2002:a5e:de0d:: with SMTP id e13mr4627602iok.208.1615924273929;
-        Tue, 16 Mar 2021 12:51:13 -0700 (PDT)
-Received: from xps15.herring.priv ([64.188.179.253])
-        by smtp.googlemail.com with ESMTPSA id w9sm9334951iox.20.2021.03.16.12.51.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 12:51:13 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH] dt-bindings: nvmem: use base meta-schema for consumer schema
-Date:   Tue, 16 Mar 2021 13:51:11 -0600
-Message-Id: <20210316195111.3531755-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S229723AbhCPTws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 15:52:48 -0400
+Received: from mga06.intel.com ([134.134.136.31]:30364 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240708AbhCPTwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 15:52:00 -0400
+IronPort-SDR: bkTQu5z30hYNhVg9MmzZ36d4PSoUXmmdEyRQeDzSDjbEgBOxKyygQrsPIoe3gswMeMVJztGNtm
+ bKnhsyZQnzvw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="250687781"
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="250687781"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 12:51:57 -0700
+IronPort-SDR: o6KQgJNCj7RnteGUONcD0qhADDacuyrodiAQFmy02/xvckeBhSqs4KerJhtmcCjYs2PQ1r4YAa
+ 4mtXp0UzcIEg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="373896902"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by orsmga006.jf.intel.com with ESMTP; 16 Mar 2021 12:51:57 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 16 Mar 2021 12:51:57 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 16 Mar 2021 12:51:56 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
+ Tue, 16 Mar 2021 12:51:56 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Hermann Ruckerbauer <Hermann.Ruckerbauer@EyeKnowHow.de>,
+        Borislav Petkov <bp@alien8.de>
+CC:     He Zhe <zhe.he@windriver.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: EDAC list as Trojan Horse distribution ??
+Thread-Topic: EDAC list as Trojan Horse distribution ??
+Thread-Index: AQHXGo0W9hx3/FPQI0m2mXfwu/dM1qqHW0yAgAACaoCAABVaAP//kk+g
+Date:   Tue, 16 Mar 2021 19:51:56 +0000
+Message-ID: <4347e4ad4d544e778631ddd15eb88d28@intel.com>
+References: <20210316180357.GG18003@zn.tnic>
+ <3a2cbcf1-388c-4524-907d-0592438320fc@email.android.com>
+In-Reply-To: <3a2cbcf1-388c-4524-907d-0592438320fc@email.android.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Common consumer schemas need to use the base.yaml meta-schema because
-they need to define different constraints (e.g. the type) from what
-users of the common schema need to define (e.g. how many entries).
-
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml b/Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml
-index 828e4a1ece41..b1da238c8bcb 100644
---- a/Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml
-+++ b/Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml
-@@ -2,7 +2,7 @@
- %YAML 1.2
- ---
- $id: http://devicetree.org/schemas/nvmem/nvmem-consumer.yaml#
--$schema: http://devicetree.org/meta-schemas/core.yaml#
-+$schema: http://devicetree.org/meta-schemas/base.yaml#
- 
- title: NVMEM (Non Volatile Memory) Consumer Device Tree Bindings
- 
--- 
-2.27.0
-
+Pj4gTm90aGluZyBuZXcgLSBqdXN0IHRoZSBuZXh0IHNwYW1tZXIgYXR0ZW1wdC4gDQoNCj4gQnV0
+IHRoaXMgd2FzIGEgbmV3IGNsYXNzIG9mIFNwYW0uIFNvIGZhciBpIGdvdCBvbmx5IG1hc3MgbWFp
+bGluZy4uLiBUaGlzIHdhcyBwZXJzb25hbGl6ZWQgYmFzZWQgb24gbXkgcHJldmlvdXMgZS1NYWls
+IChkaWQgbm90IGluY2x1ZGUgdGhpcyBwYXJ0IGluIG15IG1haWwpDQoNClNvbWV3aGF0IG5ldyAt
+IGNvbWJpbmluZyB0cmF3bGluZyBvZiBwdWJsaWMgbWFpbGluZyBsaXN0cyBmb3IgYWRkcmVzc2Vz
+IHdpdGgNCmEgcGhpc2hpbmcgYXR0YWNrIHRyeWluZyB0byBnZXQgeW91IHRvIG9wZW4gYSAocHJl
+c3VtYWJseSkgbWFsaWNpb3VzIHBheWxvYWQuDQoNCkkgaGF2ZW4ndCBwZXJzb25hbGx5IHNlZW4g
+dGhhdCAuLi4gcHJvYmFibHkgbXkgY29tcGFueSdzIGUtbWFpbCBmaWx0ZXJzIGJsb2NrZWQgaXQu
+DQoNCi1Ub255DQo=
