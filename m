@@ -2,139 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E5D33CC24
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 04:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D847833CC29
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 04:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233533AbhCPDfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 23:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231142AbhCPDff (ORCPT
+        id S232939AbhCPDiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 23:38:00 -0400
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:62970 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229747AbhCPDhj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 23:35:35 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A92C06174A;
-        Mon, 15 Mar 2021 20:35:34 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso6180352otq.3;
-        Mon, 15 Mar 2021 20:35:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BVKJ/YEXTMKBd4NcgbnQ+KwwhmUcOb8iKU4nX6zBVnw=;
-        b=O2AapELg9gqoK9TaZEPc0Zl+QBgHRMWPtWo+zi1VRzcpqL40AT4QfkLAr6Ew0wNpkR
-         aWSoV8L5popGCGc+cNCOo+/e9xg3njNbZzAHNKbyVNEtH+YOHdSVpnYD9UNGielItk0r
-         ztz0PdjbEUccqCURD0+gr/7S9ViDYHtSyu2vS16gX1pExmNMdjgOY3r950gv/0tdYRvB
-         sdEUJ9XqfNe+G4sfF6M1FccvE6CDkzd8eNI9ZdNzoBuusIX/F0C8R29VcrpB4RGP1l7X
-         FgFR8qNgDkKZSl/qCmKoRPX0Ta6Tw6KAlW7NyWe4vnD5RTBaKEfB9pzLYfnebyYS/H2D
-         UWSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=BVKJ/YEXTMKBd4NcgbnQ+KwwhmUcOb8iKU4nX6zBVnw=;
-        b=cAvtbUyBoD5Y999pwMLi8SfwdNws9O9Im8+sYwqAXpqXJGexvp4wwTgPoGAlMdnP4W
-         JoGBvhBPLfGx0e0O1Wp2DSzpw/QjF1oZ6ood48QWfKtkWl43KPjoRiqsiPVkz7rnwIE6
-         ymd1dK/eWdiVWoPkGMk96sCaZJhKjQz+CcmvonEciPh+gZz79qV7/JW6LqjUqSUZ63iI
-         dk+rHdGEYtTCefCAHAIn0Ee3kq2H3SQ1Kben+AUWh3Il664CXOlktNXRl93LIck7hcYM
-         pDspPCYxt0miae2CWTlbKwsPClTcLnxFcviH+mAN+sVNVsiBjUZV+Tu1F2pfWY6k/wFN
-         17qg==
-X-Gm-Message-State: AOAM531JtqioyejivJLhqJQ40aBoMK8dKowVM/p5stKPik6a5GSOIVLy
-        Sb14xE5x8hoywBSgbo8Krp+RPtF/zMs=
-X-Google-Smtp-Source: ABdhPJxw8yjoOGrqIEu2AdFH+Ro5bzVPraSA908mdxupiYQ0CLY5vnPLJo6YcjmccjfFqICcnG3oiQ==
-X-Received: by 2002:a9d:bc9:: with SMTP id 67mr1857063oth.352.1615865733847;
-        Mon, 15 Mar 2021 20:35:33 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e15sm7602994otk.64.2021.03.15.20.35.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 20:35:33 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 2/2] hwmon: (pmbus): Add driver for BluTek BPA-RS600
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>
-Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210316023524.12574-1-chris.packham@alliedtelesis.co.nz>
- <20210316023524.12574-2-chris.packham@alliedtelesis.co.nz>
- <8066478b-26cb-7904-9203-054c74ccd07b@alliedtelesis.co.nz>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <6afe1c65-d50d-4bd7-2ad3-93d9b067afc5@roeck-us.net>
-Date:   Mon, 15 Mar 2021 20:35:31 -0700
+        Mon, 15 Mar 2021 23:37:39 -0400
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id C868B7637D;
+        Tue, 16 Mar 2021 06:37:32 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1615865852;
+        bh=db9micwEwwafqaoj4CzYn012LqXy/DzubQNuOVlOulQ=;
+        h=Subject:From:To:Message-ID:Date:MIME-Version:Content-Type;
+        b=k03vt0qREuuLN+dn40WPo2N73kaC+ry8EzUOdb5iOImzQlNFzFizAZ41dFTU1FuHy
+         HkUQlJQQR2oiD5uti5xYio4Xyc9RCaJqgrI5i6yzQoMhtWaxYTiDnhhDnf96Kh4L5K
+         p2T2lk5A76IcbWwj0tf92TtFG8PHRArIlx0VKz2HPua1QvhjYR8WZ0sVJ/D/USGa7E
+         PvOWrf/036tB0Y1WiZIGzJGMQPZDa4DZiYQOd7UwHtni6cs9ZQZ7BIJsYKxiOalXfQ
+         qM27ETkuA7oPi8s4d5AXfEI3dwx4HOwpwW7auj73wcUOQDBwiG9IfTDzDq6S5cGh8n
+         mH7cit05haHrw==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id E9FA276342;
+        Tue, 16 Mar 2021 06:37:31 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.68.128) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 16
+ Mar 2021 06:37:30 +0300
+Subject: Re: [RFC PATCH v6 00/22] virtio/vsock: introduce SOCK_SEQPACKET
+ support
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210307175722.3464068-1-arseny.krasnov@kaspersky.com>
+ <20210315114027.neacovpmw3nzz77z@steredhat>
+ <c4be25c6-8a53-7947-735b-2afacd989120@kaspersky.com>
+Message-ID: <e2c50a79-0063-71ee-b573-b267ee87e7c5@kaspersky.com>
+Date:   Tue, 16 Mar 2021 06:37:31 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <8066478b-26cb-7904-9203-054c74ccd07b@alliedtelesis.co.nz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <c4be25c6-8a53-7947-735b-2afacd989120@kaspersky.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.68.128]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 03/16/2021 03:25:10
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 162411 [Mar 15 2021]
+X-KSE-AntiSpam-Info: LuaCore: 436 436 4977b9bfeabc3816a6da3614ba6703afbb88002c
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;kaspersky.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 03/16/2021 03:27:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 15.03.2021 23:57:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/03/16 02:36:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/03/15 23:34:00 #16430969
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/15/21 8:30 PM, Chris Packham wrote:
-> 
-> On 16/03/21 3:35 pm, Chris Packham wrote:
->> The BPA-RS600 is a compact 600W AC to DC removable power supply module.
->>
->> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
->>
->> +static const struct of_device_id __maybe_unused bpa_rs600_of_match[] = {
->> +	{ .compatible = "blutek,bpa-rs600" },
->> +	{},
->> +};
-> 
-> I see this will fall foul of the name check in 
-> __hwmon_device_register(). How should I name things to avoid this?
-> 
 
-It isn't the binding. The driver name should not have a '-' in it.
-You could just name it bpa_rs600 instead.
+On 15.03.2021 18:22, Arseny Krasnov wrote:
+> On 15.03.2021 14:40, Stefano Garzarella wrote:
+>> Hi Arseny,
+>>
+>> On Sun, Mar 07, 2021 at 08:57:19PM +0300, Arseny Krasnov wrote:
+>>> 	This patchset implements support of SOCK_SEQPACKET for virtio
+>>> transport.
+>>> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+>>> do it, two new packet operations were added: first for start of record
+>>> and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
+>>> both operations carries metadata - to maintain boundaries and payload
+>>> integrity. Metadata is introduced by adding special header with two
+>>> fields - message id and message length:
+>>>
+>>> 	struct virtio_vsock_seq_hdr {
+>>> 		__le32  msg_id;
+>>> 		__le32  msg_len;
+>>> 	} __attribute__((packed));
+>>>
+>>> 	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
+>>> packets(buffer of second virtio descriptor in chain) in the same way as
+>>> data transmitted in RW packets. Payload was chosen as buffer for this
+>>> header to avoid touching first virtio buffer which carries header of
+>>> packet, because someone could check that size of this buffer is equal
+>>> to size of packet header. To send record, packet with start marker is
+>>> sent first(it's header carries length of record and id),then all data
+>>> is sent as usual 'RW' packets and finally SEQ_END is sent(it carries
+>>> id of message, which is equal to id of SEQ_BEGIN), also after sending
+>>> SEQ_END id is incremented. On receiver's side,size of record is known
+>> >from packet with start record marker. To check that no packets were
+>>> dropped by transport, 'msg_id's of two sequential SEQ_BEGIN and SEQ_END
+>>> are checked to be equal and length of data between two markers is
+>>> compared to then length in SEQ_BEGIN header.
+>>> 	Now as  packets of one socket are not reordered neither on
+>>> vsock nor on vhost transport layers, such markers allows to restore
+>>> original record on receiver's side. If user's buffer is smaller that
+>>> record length, when all out of size data is dropped.
+>>> 	Maximum length of datagram is not limited as in stream socket,
+>>> because same credit logic is used. Difference with stream socket is
+>>> that user is not woken up until whole record is received or error
+>>> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
+>>> 	Tests also implemented.
+>>>
+>>> 	Thanks to stsp2@yandex.ru for encouragements and initial design
+>>> recommendations.
+>>>
+>>> Arseny Krasnov (22):
+>>>  af_vsock: update functions for connectible socket
+>>>  af_vsock: separate wait data loop
+>>>  af_vsock: separate receive data loop
+>>>  af_vsock: implement SEQPACKET receive loop
+>>>  af_vsock: separate wait space loop
+>>>  af_vsock: implement send logic for SEQPACKET
+>>>  af_vsock: rest of SEQPACKET support
+>>>  af_vsock: update comments for stream sockets
+>>>  virtio/vsock: set packet's type in virtio_transport_send_pkt_info()
+>>>  virtio/vsock: simplify credit update function API
+>>>  virtio/vsock: dequeue callback for SOCK_SEQPACKET
+>>>  virtio/vsock: fetch length for SEQPACKET record
+>>>  virtio/vsock: add SEQPACKET receive logic
+>>>  virtio/vsock: rest of SOCK_SEQPACKET support
+>>>  virtio/vsock: SEQPACKET feature bit
+>>>  vhost/vsock: SEQPACKET feature bit support
+>>>  virtio/vsock: SEQPACKET feature bit support
+>>>  virtio/vsock: setup SEQPACKET ops for transport
+>>>  vhost/vsock: setup SEQPACKET ops for transport
+>>>  vsock/loopback: setup SEQPACKET ops for transport
+>>>  vsock_test: add SOCK_SEQPACKET tests
+>>>  virtio/vsock: update trace event for SEQPACKET
+>>>
+>>> drivers/vhost/vsock.c                        |  22 +-
+>>> include/linux/virtio_vsock.h                 |  22 +
+>>> include/net/af_vsock.h                       |  10 +
+>>> .../events/vsock_virtio_transport_common.h   |  48 +-
+>>> include/uapi/linux/virtio_vsock.h            |  19 +
+>>> net/vmw_vsock/af_vsock.c                     | 589 +++++++++++------
+>>> net/vmw_vsock/virtio_transport.c             |  18 +
+>>> net/vmw_vsock/virtio_transport_common.c      | 364 ++++++++--
+>>> net/vmw_vsock/vsock_loopback.c               |  13 +
+>>> tools/testing/vsock/util.c                   |  32 +-
+>>> tools/testing/vsock/util.h                   |   3 +
+>>> tools/testing/vsock/vsock_test.c             | 126 ++++
+>>> 12 files changed, 1013 insertions(+), 253 deletions(-)
+>>>
+>>> v5 -> v6:
+>>> General changelog:
+>>> - virtio transport specific callbacks which send SEQ_BEGIN or
+>>>   SEQ_END now hidden inside virtio transport. Only enqueue,
+>>>   dequeue and record length callbacks are provided by transport.
+>>>
+>>> - virtio feature bit for SEQPACKET socket support introduced:
+>>>   VIRTIO_VSOCK_F_SEQPACKET.
+>>>
+>>> - 'msg_cnt' field in 'struct virtio_vsock_seq_hdr' renamed to
+>>>   'msg_id' and used as id.
+>>>
+>>> Per patch changelog:
+>>> - 'af_vsock: separate wait data loop':
+>>>    1) Commit message updated.
+>>>    2) 'prepare_to_wait()' moved inside while loop(thanks to
+>>>      Jorgen Hansen).
+>>>    Marked 'Reviewed-by' with 1), but as 2) I removed R-b.
+>>>
+>>> - 'af_vsock: separate receive data loop': commit message
+>>>    updated.
+>>>    Marked 'Reviewed-by' with that fix.
+>>>
+>>> - 'af_vsock: implement SEQPACKET receive loop': style fixes.
+>>>
+>>> - 'af_vsock: rest of SEQPACKET support':
+>>>    1) 'module_put()' added when transport callback check failed.
+>>>    2) Now only 'seqpacket_allow()' callback called to check
+>>>       support of SEQPACKET by transport.
+>>>
+>>> - 'af_vsock: update comments for stream sockets': commit message
+>>>    updated.
+>>>    Marked 'Reviewed-by' with that fix.
+>>>
+>>> - 'virtio/vsock: set packet's type in send':
+>>>    1) Commit message updated.
+>>>    2) Parameter 'type' from 'virtio_transport_send_credit_update()'
+>>>       also removed in this patch instead of in next.
+>>>
+>>> - 'virtio/vsock: dequeue callback for SOCK_SEQPACKET': SEQPACKET
+>>>    related state wrapped to special struct.
+>>>
+>>> - 'virtio/vsock: update trace event for SEQPACKET': format strings
+>>>    now not broken by new lines.
+>> I left a bunch of comments in the patches, I hope they are easy to fix 
+>> :-)
+> Thank you, yes, there are still small fixes.
 
-Guenter
+So one more question, this is final review for this version of patchset and can
+
+prepare next version with fixes? All other patches will reviewed in next version?
+
+Thank You
+
+>> Thanks for the changelogs. About 'per patch changelog', it is very 
+>> useful!
+>> Just a suggestion, I think is better to include them in each patch after 
+>> the '---' to simplify the review.
+> Ack
+>> You can use git-notes(1) or you can simply edit the format-patch and add 
+>> the changelog after the 3 dashes, so that they are ignored when the 
+>> patch is applied.
+>>
+>> Thanks,
+>> Stefano
+>>
+>>
