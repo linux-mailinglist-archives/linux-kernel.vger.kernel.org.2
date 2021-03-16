@@ -2,69 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC3733E172
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:33:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5AD433E179
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:36:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbhCPWdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 18:33:21 -0400
-Received: from mail-io1-f50.google.com ([209.85.166.50]:38888 "EHLO
-        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhCPWdI (ORCPT
+        id S231366AbhCPWgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 18:36:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231311AbhCPWgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 18:33:08 -0400
-Received: by mail-io1-f50.google.com with SMTP id k2so39014776ioh.5;
-        Tue, 16 Mar 2021 15:33:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b+euWy4WVr1SVJdj2VBm7OzPgUuY7Q9wvCXwicWf3TI=;
-        b=C53X00dz3BGvHp1WTrAD8LTP5x1DEo8JtiKYd/b6B8yZ8xzccoLRvaiNN5kpUULwO9
-         ja1SAcV5GLFKQnm9i/aI98DIiwp5o/2JZa6U2XijXMB7W+zYzFToFzBAgKCYo/uBW7T+
-         g3NaaBGrU6Z/dlVEGaCfyoS+qs0R5k6LYGUHwKJPlj8wC7oR5oPLnPRKXyZ+YlQi7w+B
-         DUXo36spFVrYXFzrNzmbNTMJegRULTIFRMX75vvX0RAqa/fMm5Z9i/QSkpgYRw9BvuIu
-         kTLs1TDwFRkeV38g/f8WBoFVmDK+Ys/vijg3+y1DKuvt89fVtJZ971flPfmszBVYA24J
-         HLDA==
-X-Gm-Message-State: AOAM531+p568oPpkVOuh2Q3vuHTHNb9bD0Zecwq55nQJwlSV8fUJasoo
-        FMUp1czu7jms9i98jYX5X/cM3nYXWg==
-X-Google-Smtp-Source: ABdhPJwK9EkoZm2zhnMJLQ6MhhalNj9fXzeNOwRkZvGpKlE3CkKajjRPLMmyTq5nX0YQ5Vld9GmKjw==
-X-Received: by 2002:a5d:93c2:: with SMTP id j2mr5106188ioo.166.1615933987869;
-        Tue, 16 Mar 2021 15:33:07 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id g14sm9176897ioc.38.2021.03.16.15.33.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 15:33:06 -0700 (PDT)
-Received: (nullmailer pid 3806232 invoked by uid 1000);
-        Tue, 16 Mar 2021 22:33:04 -0000
-Date:   Tue, 16 Mar 2021 16:33:04 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Rakesh Pillai <pillair@codeaurora.org>
-Cc:     p.zabel@pengutronix.de, linux-remoteproc@vger.kernel.org,
-        bjorn.andersson@linaro.org, sibis@codeaurora.org,
-        mathieu.poirier@linaro.org, ohad@wizery.com,
-        linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: remoteproc: qcom: Add SC7280 WPSS
- support
-Message-ID: <20210316223304.GA3806198@robh.at.kernel.org>
-References: <1615361290-19238-1-git-send-email-pillair@codeaurora.org>
- <1615361290-19238-2-git-send-email-pillair@codeaurora.org>
+        Tue, 16 Mar 2021 18:36:02 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0130CC06174A;
+        Tue, 16 Mar 2021 15:36:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=xvzZnCWrKZT0JYHkyAEkkHGmKAdznp6+1YwBcbQSrOg=; b=SmtyiZMBSnHke3kLrzs7mUN8YT
+        LZb+zuHCPWAIk/mJfTSwvpukCETivUB0LCjz8wQoVvAhxb4DOdxLWa+yOXZAu6WdDpcWrr5mxNeWZ
+        RPvTz7P0U2/giBjwEerlIePvLIr/imEEgr8owZiEdIXZpvD7tCT4glaLWzbn++BP0mZfnQk7LOzrr
+        u4mmU12mF54kAGoILJQh64YMSgSVtafxwMal9CUaKaPWWmCpbX2qO3/wE26pLD2v7rPko5rHkJ/9M
+        eCZyWTUrcWh8AlIuibNPn5MnD/5cGHHkrd9IEPSxV6pDGSBKd50n8Y3LueEGK7DuIrGUo9pYbkVn2
+        l8la76eA==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMII9-001XnS-Ad; Tue, 16 Mar 2021 22:35:57 +0000
+Subject: Re: [PATCH] NFS: fs_context: validate UDP retrans to prevent shift
+ out-of-bounds
+To:     linux-kernel@vger.kernel.org
+Cc:     syzbot+ba2e91df8f74809417fa@syzkaller.appspotmail.com,
+        syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-nfs@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, stable@vger.kernel.org
+References: <20210302001930.2253-1-rdunlap@infradead.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b98720c9-2798-f168-eaaa-01d638d9900d@infradead.org>
+Date:   Tue, 16 Mar 2021 15:35:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615361290-19238-2-git-send-email-pillair@codeaurora.org>
+In-Reply-To: <20210302001930.2253-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 12:58:09 +0530, Rakesh Pillai wrote:
-> Add WPSS PIL loading support for SC7280 SoCs.
+ping?
+
+On 3/1/21 4:19 PM, Randy Dunlap wrote:
+> Fix shift out-of-bounds in xprt_calc_majortimeo(). This is caused
+> by a garbage timeout (retrans) mount option being passed to nfs mount,
+> in this case from syzkaller.
 > 
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> If the protocol is XPRT_TRANSPORT_UDP, then 'retrans' is a shift
+> value for a 64-bit long integer, so 'retrans' cannot be >= 64.
+> If it is >= 64, fail the mount and return an error.
+> 
+> Fixes: 9954bf92c0cd ("NFS: Move mount parameterisation bits into their own file")
+> Reported-by: syzbot+ba2e91df8f74809417fa@syzkaller.appspotmail.com
+> Reported-by: syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+> Cc: Anna Schumaker <anna.schumaker@netapp.com>
+> Cc: linux-nfs@vger.kernel.org
+> Cc: David Howells <dhowells@redhat.com>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: stable@vger.kernel.org
 > ---
->  .../bindings/remoteproc/qcom,hexagon-v56.txt       | 35 ++++++++++++----------
->  1 file changed, 20 insertions(+), 15 deletions(-)
+>  fs/nfs/fs_context.c |   12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> --- lnx-512-rc1.orig/fs/nfs/fs_context.c
+> +++ lnx-512-rc1/fs/nfs/fs_context.c
+> @@ -974,6 +974,15 @@ static int nfs23_parse_monolithic(struct
+>  			       sizeof(mntfh->data) - mntfh->size);
+>  
+>  		/*
+> +		 * for proto == XPRT_TRANSPORT_UDP, which is what uses
+> +		 * to_exponential, implying shift: limit the shift value
+> +		 * to BITS_PER_LONG (majortimeo is unsigned long)
+> +		 */
+> +		if (!(data->flags & NFS_MOUNT_TCP)) /* this will be UDP */
+> +			if (data->retrans >= 64) /* shift value is too large */
+> +				goto out_invalid_data;
+> +
+> +		/*
+>  		 * Translate to nfs_fs_context, which nfs_fill_super
+>  		 * can deal with.
+>  		 */
+> @@ -1073,6 +1082,9 @@ out_no_address:
+>  
+>  out_invalid_fh:
+>  	return nfs_invalf(fc, "NFS: invalid root filehandle");
+> +
+> +out_invalid_data:
+> +	return nfs_invalf(fc, "NFS: invalid binary mount data");
+>  }
+>  
+>  #if IS_ENABLED(CONFIG_NFS_V4)
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+
+-- 
+~Randy
+
