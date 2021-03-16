@@ -2,91 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF3E33D5C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:31:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B02033D5CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:32:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236534AbhCPObQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 10:31:16 -0400
-Received: from casper.infradead.org ([90.155.50.34]:34450 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236532AbhCPObG (ORCPT
+        id S236573AbhCPOcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 10:32:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236542AbhCPObx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 10:31:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=I83FUX8REQnGGM5/pjTJyS9wyrS41rYMBqxzXfh8ivs=; b=Ryq2S/TCnJe/6qxTbp2Pv+nD43
-        Svhcv9AsmtreQyXy+cwpkLiuVfs+GZZcAM/wkick+giUJ6YA+EYDURY9jcyZiLZnqfz/NFzH0R9np
-        3darK4QSLHeIn5OXlBBPCP1VKbDWHx2HzDboiiy+hLUu/Dd431GOeK0EpzfyCYVlC2BBVLBrvm4kU
-        C4RBvJZjFHKibjAYEozTrisNtU3zxZqiUGD6ZGfAom96dfSy7qPYyo/H9O3enKHyKmZSyD4inmsoE
-        jH2NaVKykdggfGBizY4EIZBLpAVanJgxZP/wtosDiwQDb4dq3BwgY0HETFW1LdS53hEuMEcnsm5aJ
-        /C4lphKg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMAid-000BDy-HS; Tue, 16 Mar 2021 14:30:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 85D353012DF;
-        Tue, 16 Mar 2021 15:30:46 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4E48F2CE947F3; Tue, 16 Mar 2021 15:30:46 +0100 (CET)
-Date:   Tue, 16 Mar 2021 15:30:46 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Matthew Garrett <mjg59@google.com>
-Subject: Re: [PATCH] perf/core: fix unconditional security_locked_down() call
-Message-ID: <YFDBFuABYwhKliU9@hirez.programming.kicks-ass.net>
-References: <20210224215628.192519-1-omosnace@redhat.com>
- <CAHC9VhQHrmKHxYuTBOy-JHTXHjGTU9UX-AWk3jbiaNfSkZ+N1A@mail.gmail.com>
+        Tue, 16 Mar 2021 10:31:53 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7419C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 07:31:52 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615905111;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=awxuuWV5rzMg1ETs3GFZYd3MQc31waUDNLde1cS3dpU=;
+        b=4EIkCQX8nkC3NEnPxDommkEVEeqEsSoL24LUQUm4NkUSB/XZylkvj16O4wIfSw2ZEUCEdI
+        6OHdsHFHbG5Ur0V3njBTlCK4Z4KHMW9HvkKtR6j+5nthdXL4JhALZu5iFeg3zvVFlGFgCJ
+        vQvRkKWWkdvSsnMvUbzWTugMx0FEqtQ7VOKHEPydGcIhXRTWu1NMmX8eov+0fkV+1ywzk0
+        78UfHZnCpfdOWrSf1nWlYe624UBJDOiNL5E/YB/arhuDUt6PwpoTB8bc+ZW2rpztTtBi6G
+        3Li3nYqsn4N9tBpXInZT3i6o/6kUqsr0BXN63w4wgW8YJGNQB6293LXJUJdxWQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615905111;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=awxuuWV5rzMg1ETs3GFZYd3MQc31waUDNLde1cS3dpU=;
+        b=2p3OE4h4yQG5hmwgOo4oxj3PWYFa7/pDIe+FDBVKs9+zutIBtyRpXkUQsy0OT5hCpBn2Tf
+        AHVKPUq6HU3BumDQ==
+To:     Eugeniu Rosca <erosca@de.adit-jv.com>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Jiafei Pan <Jiafei.Pan@nxp.com>,
+        Romain Perier <romain.perier@gmail.com>
+Cc:     Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        Dirk Behme <dirk.behme@de.bosch.com>,
+        Eugeniu Rosca <roscaeugeniu@gmail.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>
+Subject: Re: [PATCH] softirq: Be more verbose on t->state BUG()
+In-Reply-To: <20210315154421.11463-1-erosca@de.adit-jv.com>
+References: <20210315154421.11463-1-erosca@de.adit-jv.com>
+Date:   Tue, 16 Mar 2021 15:31:50 +0100
+Message-ID: <87k0q7186h.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhQHrmKHxYuTBOy-JHTXHjGTU9UX-AWk3jbiaNfSkZ+N1A@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 09:53:21AM -0400, Paul Moore wrote:
-> On Wed, Feb 24, 2021 at 4:59 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> >
-> > Currently, the lockdown state is queried unconditionally, even though
-> > its result is used only if the PERF_SAMPLE_REGS_INTR bit is set in
-> > attr.sample_type. While that doesn't matter in case of the Lockdown LSM,
-> > it causes trouble with the SELinux's lockdown hook implementation.
-> >
-> > SELinux implements the locked_down hook with a check whether the current
-> > task's type has the corresponding "lockdown" class permission
-> > ("integrity" or "confidentiality") allowed in the policy. This means
-> > that calling the hook when the access control decision would be ignored
-> > generates a bogus permission check and audit record.
-> >
-> > Fix this by checking sample_type first and only calling the hook when
-> > its result would be honored.
-> >
-> > Fixes: b0c8fdc7fdb7 ("lockdown: Lock down perf when in confidentiality mode")
-> > Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-> > ---
-> >  kernel/events/core.c | 12 ++++++------
-> >  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> Perf/core folks, do you want to pull this in via your tree?  If I
-> don't hear anything in the next day I'll pull this in via the
-> selinux/next tree.
-> 
-> Reviewed-by: Paul Moore <paul@paul-moore.com>
+On Mon, Mar 15 2021 at 16:44, Eugeniu Rosca wrote:
+> From: Dirk Behme <dirk.behme@de.bosch.com>
+>
+> In case this BUG() is hit, it helps debugging a lot to get an idea
+> what tasklet is the root cause. So, be slightly more verbose here.
+>
+> Signed-off-by: Dirk Behme <dirk.behme@de.bosch.com>
+> Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+> ---
+>  kernel/softirq.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/softirq.c b/kernel/softirq.c
+> index 9908ec4a9bfe..a6b602ad48d6 100644
+> --- a/kernel/softirq.c
+> +++ b/kernel/softirq.c
+> @@ -550,9 +550,13 @@ static void tasklet_action_common(struct softirq_action *a,
+>  
+>  		if (tasklet_trylock(t)) {
+>  			if (!atomic_read(&t->count)) {
+> -				if (!test_and_clear_bit(TASKLET_STATE_SCHED,
+> -							&t->state))
+> +				if (!test_and_clear_bit(TASKLET_STATE_SCHED, &t->state)) {
+> +					if (t->use_callback)
+> +						pr_emerg("tasklet failed, cb: %pS\n", t->callback);
+> +					else
+> +						pr_emerg("tasklet failed, func: %pS\n", t->func);
+>  					BUG();
+> +				}
+>  				if (t->use_callback)
+>  					t->callback(t);
+>  				else
 
-Ah, fell in the cracks... I've no idea what Changelog is trying to tell
-me. It is pure gibberish to me. But the patch seems harmless enough to me.
+This belongs into unreadable land and actually the BUG() should just be
+replaced by a WARN_ONCE(). Something like the below. Hmm?
 
-Let me queue it then.
+Thanks,
+
+        tglx
+---
+ 
++static bool tasklet_should_run(struct tasklet_struct *t)
++{
++	if (test_and_clear_bit(TASKLET_STATE_SCHED, &t->state))
++		return true;
++
++	WARN_ONCE(1, "tasklet SCHED state not set: %s %pS\n",
++		  t->use_callback ? "callback" : "func",
++		  t->use_callback ? (void*)t->callback : (void*)t->func);
++
++	return false;
++}
++
+ static void tasklet_action_common(struct softirq_action *a,
+ 				  struct tasklet_head *tl_head,
+ 				  unsigned int softirq_nr)
+@@ -550,13 +562,12 @@ static void tasklet_action_common(struct
+ 
+ 		if (tasklet_trylock(t)) {
+ 			if (!atomic_read(&t->count)) {
+-				if (!test_and_clear_bit(TASKLET_STATE_SCHED,
+-							&t->state))
+-					BUG();
+-				if (t->use_callback)
+-					t->callback(t);
+-				else
+-					t->func(t->data);
++				if (tasklet_should_run(t)) {
++					if (t->use_callback)
++						t->callback(t);
++					else
++						t->func(t->data);
++				}
+ 				tasklet_unlock(t);
+ 				continue;
+ 			}
