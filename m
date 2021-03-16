@@ -2,119 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686CF33D899
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9977033D89C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238367AbhCPQDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 12:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238395AbhCPQD3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 12:03:29 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2B5C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 09:03:28 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id x10so35729105qkm.8
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 09:03:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=beVxRTMBMXPpmNrXHLYtJs0EbkQrNYHRKHyxRcHuRb4=;
-        b=awxSxSy4uwWFzbkMD8sxKddEysDquay9biMF9KhoimOyTg8rI0A8N5JMTqSAw9ZWC3
-         bOIkkGLySwlBbw4sHieL3iZ9itgC0ILzj/+70qwyNrBE7dyRSGHbsoIqvTyW3E3FgoQd
-         gM1tVxMpX6uBYFUNcK996RWmBRyTYkj7MajWME1b9WtW7np9uaWXjQ3MqLplAmG9i4H4
-         FM5681UjVflvNnSWkR3dkwtXrikrXvnjYWf0S34mOGWz3B9AWXwP5W/JVIYvITwD5txy
-         e58n/1O7tqNlBZZM7BefWdolZdlEkCU/672p5RfJFUJ93iUAjQ0OHGrMm8hE2UeJugh2
-         sMGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=beVxRTMBMXPpmNrXHLYtJs0EbkQrNYHRKHyxRcHuRb4=;
-        b=YG1YjgToWAAEpjY3Y8hYTvXacImheO3USpVoyVcl07LFher55OyUrCJBANtXIOcmOV
-         vrJrdTyNGAaTxNU7zt3ZuosGE4gMbMuetbX35zkbo/XyAjdAKY5IN5TcBsS/Se+Qah/x
-         LcQaOp6UFGCk+vYV3MKmGqtrTR5h2adQL98cUxAMEkCq3mjbf7mgU0CPr6sC9C7PFwFA
-         kuwa5xBS8CanPAy3isaEwAx/wVcVnfxZ2Y9c+PWyIzFdtPdgEUJVNFluOqHIgjBuEKns
-         qOhYgoAt3SHbOJTB9Ui+DGky8Mq1WpitNPKvO0c/Do8Fo5bdOTfhnFTJub8T4FO9iWLq
-         XxWw==
-X-Gm-Message-State: AOAM532KoWMvnIjUimCcFXcRw2+ldRg9ONYyV3ZAdSlnPfiCJcuHC2ZO
-        gHrTl+aQeEbY2l99tG2x+mHxUD3WdSfaztx0zxQN/w==
-X-Google-Smtp-Source: ABdhPJyHqFKybJ5rQin3MWnJ3Of9cFOqQpCXXsc44QzH+iUoekUd1pC6hQAeTOhuPETNmLlxujDVr3AMkVf/HKwAzh4=
-X-Received: by 2002:a05:620a:981:: with SMTP id x1mr225906qkx.501.1615910607811;
- Tue, 16 Mar 2021 09:03:27 -0700 (PDT)
+        id S238390AbhCPQEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 12:04:12 -0400
+Received: from m42-2.mailgun.net ([69.72.42.2]:10889 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238407AbhCPQDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 12:03:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615910620; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=jh7HFSQnFs4ajf8ZV8AYNVqo9DcUQaYuT9VGc9cRwRo=; b=MbxbV+gwY/Sv2hoRIFu9soDooAjpnd94zhPbtDsyHqaO/87jeMq8m5KQq4syun4S1f3KQvvH
+ NS6nhPWhTSqwhTeys9lzw9AWM8imMyh8aV9g3WIIElAOY9qAHBdtiY3qyGIfCe1G6/pwrtcx
+ MaHaBLlRvGK0jwfIaKqJTHRU61A=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 6050d6da1de5dd7b99fd01bb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Mar 2021 16:03:38
+ GMT
+Sender: clingutla=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 30392C43465; Tue, 16 Mar 2021 16:03:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.43.40] (unknown [223.185.115.211])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: clingutla)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 508B8C433CA;
+        Tue, 16 Mar 2021 16:03:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 508B8C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=clingutla@codeaurora.org
+Subject: Re: [PATCH v3 1/7] sched/fair: Ignore percpu threads for imbalance
+ pulls
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>
+References: <20210311120527.167870-1-valentin.schneider@arm.com>
+ <20210311120527.167870-2-valentin.schneider@arm.com>
+ <bdea6c4f-262b-c3cb-637e-d4896e688dd3@arm.com>
+From:   Chandra Sekhar Lingutla <clingutla@codeaurora.org>
+Message-ID: <e113aa70-c26b-c43f-a113-5a3b66793e46@codeaurora.org>
+Date:   Tue, 16 Mar 2021 21:33:26 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <00000000000069802205bda22b7f@google.com> <CACT4Y+Yaq-zDh5FAzHt4g-5jXrXC3rSLw6CM=kjcfR6oxJ1+CA@mail.gmail.com>
- <CAK8P3a1qtHVBY47FfCa6R9+sObzMCwxkREii+O2g8PPopw87eQ@mail.gmail.com>
- <CACT4Y+aC0YWU6gM32S3NoT+-wR7B1-_rhPyh4w542h21UCRRGw@mail.gmail.com>
- <CAK8P3a0zA9pv005d_P_e64j4EwXDh75yC6gNGRVdyy-VzO+7Fw@mail.gmail.com> <20210316155102.GP1463@shell.armlinux.org.uk>
-In-Reply-To: <20210316155102.GP1463@shell.armlinux.org.uk>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 16 Mar 2021 17:03:16 +0100
-Message-ID: <CACT4Y+bzBa6+2XFD0=_VVV-XFHgiP2BAnHHGKB=i0qyvP+HXWA@mail.gmail.com>
-Subject: Re: [syzbot] kernel panic: corrupted stack end in openat
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        syzbot <syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <bdea6c4f-262b-c3cb-637e-d4896e688dd3@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 4:51 PM Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
->
-> On Tue, Mar 16, 2021 at 04:44:45PM +0100, Arnd Bergmann wrote:
-> > On Tue, Mar 16, 2021 at 11:17 AM Dmitry Vyukov <dvyukov@google.com> wro=
-te:
-> > > On Tue, Mar 16, 2021 at 11:02 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > > > On Tue, Mar 16, 2021 at 8:18 AM syzbot
-> > >
-> > > > > > [<8073772c>] (integrity_kernel_read) from [<8073a904>] (ima_cal=
-c_file_hash_tfm+0x178/0x228 security/integrity/ima/ima_crypto.c:484)
-> > > > > > [<8073a78c>] (ima_calc_file_hash_tfm) from [<8073ae2c>] (ima_ca=
-lc_file_shash security/integrity/ima/ima_crypto.c:515 [inline])
-> > > > > > [<8073a78c>] (ima_calc_file_hash_tfm) from [<8073ae2c>] (ima_ca=
-lc_file_hash+0x124/0x8b8 security/integrity/ima/ima_crypto.c:572)
-> > > >
-> > > > ima_calc_file_hash_tfm() has a SHASH_DESC_ON_STACK(), which by itse=
-lf can
-> > > > use up 512 bytes, but KASAN sometimes triples this number. However,=
- I see
-> > > > you do not actually have KASAN enabled, so there is probably more t=
-o it.
-> > >
-> > > The compiler is gcc version 10.2.1 20210110 (Debian 10.2.1-6)
-> >
-> > Ok, building with Ubuntu 10.2.1-1ubuntu1 20201207 locally, that's
-> > the closest I have installed, and I think the Debian and Ubuntu version=
-s
-> > are generally quite close in case of gcc since they are maintained by
-> > the same packagers.
-> >
-> > I see ima_calc_field_array_hash_tfm() shows up as one of the larger
-> > stack users, but not alarmingly high:
-> > ../security/integrity/ima/ima_crypto.c: In function
-> > =E2=80=98ima_calc_field_array_hash_tfm=E2=80=99:
-> > ../security/integrity/ima/ima_crypto.c:624:1: warning: the frame size
-> > of 664 bytes is larger than 600 bytes [-Wframe-larger-than=3D]
-> > none of the other functions from the call chain have more than 600 byte=
-s
-> > in this combination of config/compiler/sourcetree.
-> >
-> > In combination, I don't get to more than ~2300 bytes:
->
-> ... which shouldn't be a problem - that's just over 1/4 of the stack
-> space. Could it be the syzbot's gcc is doing something weird and
-> inflating the stack frames?
+Hi Dietmar,
 
-It's just a stock Debian-provided gcc. Which I would assume also just
-a plain gcc.
+On 3/16/2021 9:19 PM, Dietmar Eggemann wrote:
+> On 11/03/2021 13:05, Valentin Schneider wrote:
+>> From: Lingutla Chandrasekhar <clingutla@codeaurora.org>
+>>
+>> In load balancing, when balancing group is unable to pull task
+>> due to ->cpus_ptr constraints from busy group, then it sets
+>> LBF_SOME_PINNED to lb env flags, as a consequence, sgc->imbalance
+>> is set for its parent domain level. which makes the group
+>> classified as imbalance to get help from another balancing cpu.
+>>
+>> Consider a 4-CPU big.LITTLE system with CPUs 0-1 as LITTLEs and
+> Does it have to be a big.LITTLE system? I assume this issue also happens
+> on an SMP system.
+
+Yah, issue can happen on SMP system as well.  I will let Valentin update 
+the commit text on
+his next version of this series.
+
+>> CPUs 2-3 as Bigs with below scenario:
+>> - CPU0 doing newly_idle balancing
+>> - CPU1 running percpu kworker and RT task (small tasks)
+> What's the role of the small RT task here in the story?
+This is to satisfy 'busiest->nr_running > 1' checks.
+>> - CPU2 running 2 big tasks
+>> - CPU3 running 1 medium task
+>>
+>> While CPU0 is doing newly_idle load balance at MC level, it fails to
+>> pull percpu kworker from CPU1 and sets LBF_SOME_PINNED to lb env flag
+>> and set sgc->imbalance at DIE level domain. As LBF_ALL_PINNED not cleared,
+>> it tries to redo the balancing by clearing CPU1 in env cpus, but it don't
+>> find other busiest_group, so CPU0 stops balacing at MC level without
+>> clearing 'sgc->imbalance' and restart the load balacing at DIE level.
+>>
+>> And CPU0 (balancing cpu) finds LITTLE's group as busiest_group with group
+>> type as imbalance, and Bigs that classified the level below imbalance type
+>> would be ignored to pick as busiest, and the balancing would be aborted
+>> without pulling any tasks (by the time, CPU1 might not have running tasks).
+>>
+>> It is suboptimal decision to classify the group as imbalance due to
+>> percpu threads. So don't use LBF_SOME_PINNED for per cpu threads.
+> This sentence mentioned per-cpu threads (and so does the patch name) but
+> the implementation (only) deals with per-cpu kernel threads. IMHO, it
+> would be good to align this.
+I will let Valentin update this on next version.
+>> Signed-off-by: Lingutla Chandrasekhar <clingutla@codeaurora.org>
+>> [Use kthread_is_per_cpu() rather than p->nr_cpus_allowed]
+>> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+>> ---
+>>   kernel/sched/fair.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 2e2ab1e00ef9..83aea97fbf22 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -7565,6 +7565,10 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+>>   	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
+>>   		return 0;
+>>   
+>> +	/* Disregard pcpu kthreads; they are where they need to be. */
+>> +	if ((p->flags & PF_KTHREAD) && kthread_is_per_cpu(p))
+>> +		return 0;
+>> +
+>>   	if (!cpumask_test_cpu(env->dst_cpu, p->cpus_ptr)) {
+>>   		int cpu;
+>>   
+>>
