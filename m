@@ -2,159 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6242F33CCAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 05:46:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C7733CCB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 05:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235072AbhCPEpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 00:45:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38634 "EHLO
+        id S231373AbhCPEsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 00:48:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235077AbhCPEpY (ORCPT
+        with ESMTP id S230239AbhCPEsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 00:45:24 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B5BC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 21:45:24 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id n132so35832376iod.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 21:45:24 -0700 (PDT)
+        Tue, 16 Mar 2021 00:48:33 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB3AC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 21:48:32 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id z5so16379901plg.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 21:48:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DBsfjI7Y9qCZHdzx/JVFP1TkC1/+jN/GH13dkfs78b4=;
-        b=g1xy5TEBHfyPxwIXSOaSp8xTF1R7KhbcM3BdOHdTD05qOZbn9PYJUcQzYtp1Ruj1dw
-         8rzK9epnwJp9Bkl8FdPGMgK1k5JbJhzDY0V5X5xGfivH30XARF+tbRUacnLA9uelzrE2
-         dCC06tiUSl2CxsJBvMquE22cSymjRNRX5fiXHqsPurc0w2/kpRhfr0RNA+bCKiKQU18T
-         98oynbx9Y9+sMVAGdQx2JDQAS7Ndloh0m2yeFDlCOVFXZH3M5iJLyb8Wv1T6a/2SR2/Q
-         gpt/QNM1qKaoiyWYq+qn9PMDTxDDRe3UvQvtQQbBzEJGcKCx/ORO3Nl0jKbXJ1ZmZpHk
-         qRgQ==
+         :content-disposition:in-reply-to:user-agent;
+        bh=SzYgSD52MMc6W9e/iXobaze0AIN/9e342iYaGD6sHwU=;
+        b=pxauHAxjA3A8T1tY4HEnP+igTGGVIKUACufX9aYjS9egmSGpyKIif0XLHdVwAl0u3U
+         b4WtWtPdPL9hxbVDvELPd1VwcPVyUfiO8a0RhDtPiNL1wzZhXqqm4lbmIYL4IE4RRGBD
+         K7FTqdGTt4ihID4e4nFE7Z1yXUTb1TpbhpBWfvSvY9cICq+vVMHQnb+WM5ddHTx2+yYk
+         +4koPT+THDcefMhZKCnSMUNSzlh0MPyRgSiV2hetm+SmvS4szPx0NiO7xdi2SDj4Ayrb
+         Y+EguaYRB87ZZ4uUOOfyN67fq/gpaM/4edN1MCADnFNbh/SmV6GFK5pPfccXwcs2W4Ih
+         dirw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DBsfjI7Y9qCZHdzx/JVFP1TkC1/+jN/GH13dkfs78b4=;
-        b=KPgHihwyf2tkqT0ch0eYAIq0uE9YxTLWDRgxYtgsuZVE1rncS/2CpyupEe+oEoiwd2
-         x6jm0Uycw9pRIB1aAuUNl1YsLjynrz/q4J3vDrijht9wo1FWhsPY2HK+IgVVVYNy7Gde
-         R5muR0NW4/IkYxlnlh4Mq7tMxLBObrWYXwy3Q5PR3Zj4fszsWpzVINyfnBm6StPckDkn
-         xAOTcBZmXg3yLUgXNC8hlXwazLXuW6JGDyqkUcq3P3JQzoblUpcrVGAfE5muVSMlJCjo
-         hVaC/SUgk9zDcIwv5wDdVX7FcgO2tCGHmv7vkYafmmGs0lRogbv4QVUvVSHTrJdmxdjk
-         PU6g==
-X-Gm-Message-State: AOAM532yu0c1jOEZ0jNvuL7AQRDGHxhrnkTRu560m8FXmPwN1UZmYaKE
-        1UpGvQsqbDwm7Qco9BWj32T3yQ==
-X-Google-Smtp-Source: ABdhPJxEpIUeNmedia6BMm/JQ8HjdRr7IDMTVY5N83A2Lur9+0y0RVAnR4BZhFaLMKNV7N3UQ+uY/g==
-X-Received: by 2002:a02:9985:: with SMTP id a5mr12336093jal.122.1615869923602;
-        Mon, 15 Mar 2021 21:45:23 -0700 (PDT)
-Received: from google.com ([2620:15c:183:200:d825:37a2:4b55:995f])
-        by smtp.gmail.com with ESMTPSA id 5sm8716358ill.20.2021.03.15.21.45.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 21:45:22 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 22:45:18 -0600
-From:   Yu Zhao <yuzhao@google.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     linux-mm@kvack.org, Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Yang Shi <shy828301@gmail.com>, linux-kernel@vger.kernel.org,
-        page-reclaim@google.com
-Subject: Re: [PATCH v1 10/14] mm: multigenerational lru: core
-Message-ID: <YFA33n+zQb8oomjJ@google.com>
-References: <87im5rsvd8.fsf@yhuang6-desk1.ccr.corp.intel.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SzYgSD52MMc6W9e/iXobaze0AIN/9e342iYaGD6sHwU=;
+        b=jfBrsnXm26qIUTHY6F/tWleyhTXsPq5wcqN4RL8sB7/6F636n9KkVPavk65JjsPWaW
+         hvkBY9fx3L1RKH8hVIbLUHcha2sVCwJd8Q75EtDt8+RY/wnhaRldosqNFxJu0mienwJH
+         0WBEJrCmwSVbbEK7d2AV2SMWPIOgcY6jOto14hU+kg9kwB+6xnqf6dj/nuSAlEtYl/NT
+         uD35zf/onOEB+6J2loQ5+HrrN8SRXO7LgsDHmg9eQ7P9gFLh52sJhYcmhczFLVwUeyp+
+         4ovadVUuopwMThaV79ssSi8KYNrWcowRXYcbH/g8fMiFwJKq1C+zHJhQeLd8MYaODHeA
+         xD3A==
+X-Gm-Message-State: AOAM532/wSS7TlR5o8hiwcSdkSxMhNmtmul5OTmtorQIRaBgrS2xFJH7
+        AydvdttVWs9F1Usw+dIeATfjKQ==
+X-Google-Smtp-Source: ABdhPJzS2YFHTnUWBJjFUQ/Q8Y1wWNPBBN/k7ix1UJRAYORoxRN0pF/JCu/3etAGj63zduG6RVuWnw==
+X-Received: by 2002:a17:903:31ca:b029:e6:65f:ca87 with SMTP id v10-20020a17090331cab02900e6065fca87mr14664409ple.85.1615870111898;
+        Mon, 15 Mar 2021 21:48:31 -0700 (PDT)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id fa21sm1219533pjb.25.2021.03.15.21.48.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 15 Mar 2021 21:48:31 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 10:18:28 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the opp tree
+Message-ID: <20210316044828.lhl3ex5672kaydhn@vireshk-i7>
+References: <20210316111511.64e7bf21@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87im5rsvd8.fsf@yhuang6-desk1.ccr.corp.intel.com>
+In-Reply-To: <20210316111511.64e7bf21@canb.auug.org.au>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 10:08:51AM +0800, Huang, Ying wrote:
-> Yu Zhao <yuzhao@google.com> writes:
-> [snip]
+On 16-03-21, 11:15, Stephen Rothwell wrote:
+> Hi all,
 > 
-> > +/* Main function used by foreground, background and user-triggered aging. */
-> > +static bool walk_mm_list(struct lruvec *lruvec, unsigned long next_seq,
-> > +			 struct scan_control *sc, int swappiness)
-> > +{
-> > +	bool last;
-> > +	struct mm_struct *mm = NULL;
-> > +	int nid = lruvec_pgdat(lruvec)->node_id;
-> > +	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
-> > +	struct lru_gen_mm_list *mm_list = get_mm_list(memcg);
-> > +
-> > +	VM_BUG_ON(next_seq > READ_ONCE(lruvec->evictable.max_seq));
-> > +
-> > +	/*
-> > +	 * For each walk of the mm list of a memcg, we decrement the priority
-> > +	 * of its lruvec. For each walk of memcgs in kswapd, we increment the
-> > +	 * priorities of all lruvecs.
-> > +	 *
-> > +	 * So if this lruvec has a higher priority (smaller value), it means
-> > +	 * other concurrent reclaimers (global or memcg reclaim) have walked
-> > +	 * its mm list. Skip it for this priority to balance the pressure on
-> > +	 * all memcgs.
-> > +	 */
-> > +#ifdef CONFIG_MEMCG
-> > +	if (!mem_cgroup_disabled() && !cgroup_reclaim(sc) &&
-> > +	    sc->priority > atomic_read(&lruvec->evictable.priority))
-> > +		return false;
-> > +#endif
-> > +
-> > +	do {
-> > +		last = get_next_mm(lruvec, next_seq, swappiness, &mm);
-> > +		if (mm)
-> > +			walk_mm(lruvec, mm, swappiness);
-> > +
-> > +		cond_resched();
-> > +	} while (mm);
+> After merging the opp tree, today's linux-next build (powerpc
+> ppc64_defconfig) produced this warning:
 > 
-> It appears that we need to scan the whole address space of multiple
-> processes in this loop?
+> In file included from include/linux/devfreq.h:15,
+>                  from drivers/base/power/main.c:36:
+> include/linux/pm_opp.h:341:1: warning: 'devm_pm_opp_register_set_opp_helper' defined but not used [-Wunused-function]
+>   341 | devm_pm_opp_register_set_opp_helper(struct device *dev,
+>       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > 
-> If so, I have some concerns about the duration of the function.  Do you
-> have some number of the distribution of the duration of the function?
-> And may be the number of mm_struct and the number of pages scanned.
+> Introduced by commit
 > 
-> In comparison, in the traditional LRU algorithm, for each round, only a
-> small subset of the whole physical memory is scanned.
+>   357b804aa0b9 ("opp: Change return type of devm_pm_opp_register_set_opp_helper()")
+> 
+> The "inline" was removed :-(
 
-Reasonable concerns, and insightful too. We are sensitive to direct
-reclaim latency, and we tuned another path carefully so that direct
-reclaims virtually don't hit this path :)
+Fixed and pushed. Thanks.
 
-Some numbers from the cover letter first:
-  In addition, direct reclaim latency is reduced by 22% at 99th
-  percentile and the number of refaults is reduced 7%. These metrics are
-  important to phones and laptops as they are correlated to user
-  experience.
-
-And "another path" is the background aging in kswapd:
-  age_active_anon()
-    age_lru_gens()
-      try_walk_mm_list()
-        /* try to spread pages out across spread+1 generations */
-        if (old_and_young[0] >= old_and_young[1] * spread &&
-            min_nr_gens(max_seq, min_seq, swappiness) > max(spread, MIN_NR_GENS))
-                return;
-
-        walk_mm_list(lruvec, max_seq, sc, swappiness);
-
-By default, spread = 2, which makes kswapd slight more aggressive
-than direct reclaim for our use cases. This can be entirely disabled
-by setting spread to 0, for worloads that don't care about direct
-reclaim latency, or larger values, they are more sensitive than
-ours.
-
-It's worth noting that walk_mm_list() is multithreaded -- reclaiming
-threads can work on different mm_structs on the same list
-concurrently. We do occasionally see this function in direct reclaims,
-on over-overcommitted systems, i.e., kswapd CPU usage is 100%. Under
-the same condition, we saw the current page reclaim live locked and
-triggered hardware watchdog timeouts (our hardware watchdog is set to
-2 hours) many times.
+-- 
+viresh
