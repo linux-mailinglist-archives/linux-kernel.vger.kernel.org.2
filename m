@@ -2,108 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C4733D4DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5612D33D4BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:21:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhCPN2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:28:39 -0400
-Received: from mail-ej1-f41.google.com ([209.85.218.41]:40978 "EHLO
-        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232908AbhCPN2W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:28:22 -0400
-Received: by mail-ej1-f41.google.com with SMTP id lr13so72194307ejb.8;
-        Tue, 16 Mar 2021 06:28:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bwzBKawa8QrzF0WVxsZqARsh6y5l0ULdbTOzlAVvjf8=;
-        b=c6FcqB/BMTGnio5EhqINUa6dr81ZOtBHnGTha8ev9PzAm1BCjpA4gE/s9dkhkPMUjE
-         VByO1AV+LKyJhAcmRyxthP5XJTt3J+ObZn7nsIBoq4IrRbCfmdHHaQJ16sMKXf/sfBKp
-         DF2evqBibK0DPylLazoO9Zi8/hECakJ3Ll+Ij86uZ3G0E13tXyqgtRZPsMjdn5JX0GA8
-         KJuwaOpfmHQOZua/wNk59rAFs3ApyoO+RKq2AgZE4GPCrJpi3g8dwE+1UtaGwUFpTMBG
-         TosodGLku0CFvUyFhjiUIqLMlG2WCLGXukcxUjlQBURIEznXvppmpdI1BwuS0r7IWki3
-         02xg==
-X-Gm-Message-State: AOAM533uATYPWa0Nf12jJk/vicK6TKLvAF+0c7TZ2jSTECK3+yuiorVR
-        w0Lm28AmhLVWwUFKE7AHADK6CtWCUu8=
-X-Google-Smtp-Source: ABdhPJzNg7/QZMDxSK8P598pTy7ITIHHfnxE3zgDqUEJxHNVIRtOoSDXPTVAWjgwwKFx39he+ZbJ8A==
-X-Received: by 2002:a17:906:a44f:: with SMTP id cb15mr29191920ejb.420.1615901300059;
-        Tue, 16 Mar 2021 06:28:20 -0700 (PDT)
-Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id r4sm9463218ejd.125.2021.03.16.06.28.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 06:28:19 -0700 (PDT)
-Subject: Re: [RESEND PATCH 01/42] mfd: arizona: use PLATFORM_DEVID_NONE
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Shevchenko <andy@kernel.org>, Milo Kim <milo.kim@ti.com>,
-        Tony Lindgren <tony@atomide.com>, Ray Jui <rjui@broadcom.com>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Chen-Yu Tsai <wens@csie.org>, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
-References: <20201028223009.369824-1-krzk@kernel.org>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Message-ID: <fcee4721-1d91-d909-8a03-1c1b0b0ad83b@kernel.org>
-Date:   Tue, 16 Mar 2021 14:28:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20201028223009.369824-1-krzk@kernel.org>
-Content-Type: text/plain; charset=utf-8
+        id S234783AbhCPNUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:20:34 -0400
+Received: from mail-dm6nam12on2073.outbound.protection.outlook.com ([40.107.243.73]:40865
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229585AbhCPNUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 09:20:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B5bDAmBAeTmiS4JIzP14syL/Uyk6U8+A0Oz43Ul0flWGU0bFscdQjxlXv+pXclbpnVZKiTcvZoe105fX7h8GKeEEhur7yZdz5RCzIewI0/oUiO5VjfwL3iq+p7EzCk6qBLTCCLCCz/vh/rDqp6akeitYFcygNFomPXAz40mkOvLyN3F94zTSQwWXmBIkSOP2QgD1ONGArAZz0wlf1e/I7JzduWSlZuWuHG952HokGiBoRy3HMFYs3njS4hlbYAapAu7LmLjUTJiWyQvyL3xU+09m5+33oSgDDx6JRgzYKJft1ACLCOJ1MEmbUMgB/HeO/4sbIAwaH13FqWMB91Gb0w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ht7mVhSpdJD0e130KyXZW/poy1BYv2e3T+jXudAhPcQ=;
+ b=h+nSnpV4+r0+WI9f/GUe+Uxgoa/frOhCEmOPr3lGsoCwkSr+LP0ofIkptAnnpUlnMzcfxPns4U/RIciAOHEp+mg8Quaq2i9q+mXMQMOs/ojWWmg1UgEetUpvEB191zFMar0TBJeenCSSJuoj53XuNTXgIfsAmBu3P5ZaMbEJ+w0dasKaa2SlJUZ+D0tI5oJM//SfgprLdcV8L7kjrQwdHPAlQAI5M9OoBJkbgdgCH61gY8ZTc+DBgZYADfG4RytkgBnKI6yHDkiwwl4wcTV1g/27Qku6GsGZqXqZw+SQoTNKyaJ/LG/ejOlDlQqei17HyPma+InL4OSTpOLtGSydSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ht7mVhSpdJD0e130KyXZW/poy1BYv2e3T+jXudAhPcQ=;
+ b=iRxv9TymZZzKYYq1ePihFxvPka1ma/LrH3r0B/gfu/xa/gLLk4sVOIuivQBgZD/3q33N2u8496gZQebhb/xugti9AC/15drwy+7GMVzvFF2JEo01Fcm/7TsWucbZQq1eoe6vYb3ONMniytDdr+f+8Jv78p9ynkKJ2L17NNP+AK8=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ (2603:10b6:300:e4::23) by MW3PR12MB4540.namprd12.prod.outlook.com
+ (2603:10b6:303:52::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Tue, 16 Mar
+ 2021 13:20:10 +0000
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::c977:4e9:66b8:a7e]) by MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::c977:4e9:66b8:a7e%11]) with mapi id 15.20.3933.032; Tue, 16 Mar 2021
+ 13:20:10 +0000
+Subject: Re: [PATCH v3] ASoC: amd: add support for rt5682 codec in machine
+ driver
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        broonie@kernel.org, alsa-devel@alsa-project.org
+Cc:     Alexander.Deucher@amd.com, Murali-krishna.Vemuri@amd.com,
+        Virendra-Pratap.Arya@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Ravulapati Vishnu vardhan rao 
+        <Vishnuvardhanrao.Ravulapati@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1615824133-21553-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <efa02319-2abf-4fb9-efec-13b6279f3d78@linux.intel.com>
+From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Message-ID: <87f41e68-3158-38f8-5e84-270ab184691b@amd.com>
+Date:   Tue, 16 Mar 2021 19:07:09 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <efa02319-2abf-4fb9-efec-13b6279f3d78@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [165.204.159.242]
+X-ClientProxiedBy: BMXPR01CA0034.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:c::20) To MWHPR1201MB2557.namprd12.prod.outlook.com
+ (2603:10b6:300:e4::23)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.252.93.39] (165.204.159.242) by BMXPR01CA0034.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:c::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31 via Frontend Transport; Tue, 16 Mar 2021 13:20:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 919788b7-e9ea-46fd-76e6-08d8e87e3962
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4540:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW3PR12MB45409ACDBF02DCF8E7348DC5976B9@MW3PR12MB4540.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QRDLh3UebfxK5qGSTgL8FMgYJXeoQXG7jsu86DF4mcQ9zZkbjsWS9VECQDBnDX/ncdtFRqX7Y5iVug9oSc8dxC/nwQBZuM+JVylRh0AdGODr0d/vyzZQW4OhbYXEDVHtfzkr0c9mXOQlH13n2hLrHNZEMNKa2bnBRKGHP95TgvYa4J62zEoUzvVHRqzgvlRIarGueELOxAv0vnG9dPe1wJzqk1RHCWHK/iJgcGnXP4cLRfhCx+W1o06DApxjNL8V+RF6E+dLA+S9xOyZ+0DPiw96/mCGge0saVfNM020+d8Ghbk5J3smDdbCKUjbYN2P94gkh84suljvAIgrkYMrrcnecoceZ/rvUgHJy4WWBvkG7JQCS28W1PS/lZ0KKKd0dPXnzMWEehhsybFD3iqR0xhMPgCb29UB0Sa0v1Y+6RFCVu2TPpN6IFnz5a283L58XolUv6Sop17UGHFsVJp01oy137/m0j/8eOwXvlyeLHDg30XA73G56WbuDdQm0fOm6NlCSby4XiuQ4s7ObOwlLiCeaZJ9NHpPFISlZohMG9N8wv0bWe+HxjaXFHSY+u26taymB0Z2uHQGLtCeVwNqrplk4KpkDq+3AgMveQAHNqPRfJFm8TSBOyzeat+hK8Xf59ie2kGfXuXeQP9VNncyOg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(396003)(346002)(136003)(83380400001)(52116002)(53546011)(31686004)(66556008)(316002)(36756003)(16576012)(8676002)(8936002)(31696002)(5660300002)(66946007)(6486002)(86362001)(478600001)(4326008)(26005)(2616005)(7416002)(186003)(956004)(16526019)(66476007)(2906002)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?T0R5NUhHcmtCOWRBcyt5dEU5S2Z0eHhEWDFObmxyZTNWa3FJSktrYzV2OVFy?=
+ =?utf-8?B?cldPTGY5TFhVUjYyUVZVVmoxN2R6emp6TkdPSk02cEQ5MitaeENXMW5Ja1la?=
+ =?utf-8?B?TVduVjV3MkV3MHdSaE1zaGpSbWU5d2pubWxjZUZpT3U1UjM0a0lUQXczcEVI?=
+ =?utf-8?B?YlVxb1J1M0MrQ090aTh4TEVZeGpmYUt1UEEyK1BzU3JDMzZIdU5sNjdNZjRv?=
+ =?utf-8?B?WWEvY3hyQWJpM0MyeFN0SjJKK25wSTNMcmgxM1ZrSnVKMWIvN1dEUUZGd05t?=
+ =?utf-8?B?OUJ6YXRjRHNvc3lzbkthckswRG4xS29NZ3hwdEtCOWo3bVpuRys0WnpKVjZB?=
+ =?utf-8?B?d3IrUE5qUElaL0VnNTQxRmhaSmN6akUvQjgzUjhZZEROUkNQME42Q1IrNXl4?=
+ =?utf-8?B?VjYyYnQzY3BhbG1GM3lCQ1I1c2lzeEhrYmd2L3g4Y0pucWhzKzRPVWx1aS9y?=
+ =?utf-8?B?dEExblg0RmxPVXVuenNoQVU0TWovOEhBMGVvYXZhQk9xNHFCdlgrbEVaVjJD?=
+ =?utf-8?B?ZTFnSTlYaitFcUxaUkttbEREdXJwZXE4VFpNeGljTkZYY2JUM2ZiRXZSTGdz?=
+ =?utf-8?B?WUVyclp6YUcvd3B1enpEb2dxTzkrc0JBMmxvUUVta1BicXZLREdmWlhYZ2hl?=
+ =?utf-8?B?M003UWk3V1JTL0IrRnRSb01XVjdkK1hQQVVrUUp2K0ZEem1yeThLMU9IdEdw?=
+ =?utf-8?B?b0UvVzIzWFc1ZE5nNE5Ub1hXeVF5MVJHK3FDWmJOai9EOUxJODRIZUNmSm1H?=
+ =?utf-8?B?S09ZNDJ2aXpWcWgraklIZHIzQXlWWnpXOGJITWZjL1VDUVpRV0xzRGlxZUYw?=
+ =?utf-8?B?aWYvQ051OGtnUGdBS1doa3p4VjJDRkhqbUJxODY4Qmw1SGNRakFoQ0gyK1p4?=
+ =?utf-8?B?TGNoK2VNZFMzNkJFZjBESERPZkdLZEphV3Znc1R3TU90YkViY3htVG10Mkxu?=
+ =?utf-8?B?QXVxMklQYVFvcXdpNU9DY0lydnNETUNta0ZscG5SSUpMY2c5KzJjUDZLNHp5?=
+ =?utf-8?B?eXJpQUllTzhaSFJ5TzMrNnBDRHd2THNBb2twR2pxK3Uzb1MxRU56S2pUcHJT?=
+ =?utf-8?B?a3VJSmZSNFVwbmdYWFgxaHg0T1lyWVdqcVFnVlpWNjVSTm9vbFZjS3orcnJU?=
+ =?utf-8?B?cUh6a2twUy8zZTRCL290ZDNKMm9paWFweUJBMWpaVHZQb1RxYVU5TGNrdWs2?=
+ =?utf-8?B?WVRycUV0cEpXYVNHcTlmWW9MckxNd1M4aUtPeFV3SVZKY21kemJTTEJaS0hi?=
+ =?utf-8?B?WGZxWmtNWlJpbG1FRzJZNDFid3RlZCtjdzdkUTV1elY5VHh1bzJmdi82VDZL?=
+ =?utf-8?B?V2NEOUZjOTE0eCsvUlFJczJQNjJOeHBoQk8xWGh1Y2Y2NW9vaXRHdXNBV3pl?=
+ =?utf-8?B?bE9EdEtrcUdqOWFVc2hvN3d2a05FL0l5S1FqbjUvWEx5UmdwV1FPdUNYRW1I?=
+ =?utf-8?B?ZmFzNlRKTVdsaHZHQkFZQnJMUnZpci9JcGJlaGZjcFNtTWZSMG1xbVd1M0Nw?=
+ =?utf-8?B?TmtKcnpZdGZ2NVhIL0lQcjhWTlpVWlNDcmFiRGhqYVYySWp3ek9PcnhIRkdF?=
+ =?utf-8?B?U0FabnN0dHhib2JnT2xMYStYWTNKWXB5VHRDVXJrYUwwRGlTbS9HQUxzckI4?=
+ =?utf-8?B?VnBvYnIvN3hJaW9FcG1EdTY3RW9Lb0VoSmYzMDBSSUJSVmFaRzJEaWFrQXVO?=
+ =?utf-8?B?QmRNNExjbk5WRzRCSzdRa3JBY1d1RTBNMlNRSWd3cm9lbjNSRHhqSE5lMm4w?=
+ =?utf-8?Q?jMTPBOoFXpSgZdOhfapZHiy/ZjoVQt91fmLTufF?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 919788b7-e9ea-46fd-76e6-08d8e87e3962
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Mar 2021 13:20:10.1861
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FhmrJqeYv0UDqz/y49LR6ZlnteJsVesl+QJuTuXSmsWGJFsx4qlJUsH1Fez3XpvhUUWGOHz/7Q0C9VQT9Bfiig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4540
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/2020 23:29, Krzysztof Kozlowski wrote:
-> Use PLATFORM_DEVID_NONE define instead of "-1" value because:
->  - it brings some meaning,
->  - it might point attention why auto device ID was not used.
+
+
+On 15/03/21 9:30 pm, Pierre-Louis Bossart wrote:
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Hi Lee,
-
-I sent this patchset some time ago, then made a resend. I did not get
-any feedback from you so I just wonder - are you still considering this
-patchset and shall I resend?
-
-Best regards,
-Krzysztof
-
-> ---
->  drivers/mfd/arizona-core.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>> +static int rt5682_clk_enable(struct snd_pcm_substream *substream)
+>> +{
+>> +    int ret;
+>> +    struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+>> +
+>> +    /*
+>> +     * Set wclk to 48000 because the rate constraint of this driver is
+>> +     * 48000. ADAU7002 spec: "The ADAU7002 requires a BCLK rate that is
+>> +     * minimum of 64x the LRCLK sample rate." RT5682 is the only clk
+>> +     * source so for all codecs we have to limit bclk to 64X lrclk.
+>> +     */
+>> +    clk_set_rate(rt5682_dai_wclk, 48000);
+>> +    clk_set_rate(rt5682_dai_bclk, 48000 * 64);
+>> +    ret = clk_prepare_enable(rt5682_dai_bclk);
+>> +    if (ret < 0) {
+>> +        dev_err(rtd->dev, "can't enable master clock %d\n", ret);
+>> +        return ret;
+>> +    }
+>> +    return ret;
+>> +}
 > 
-> diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-> index 000cb82023e3..bf48372db605 100644
-> --- a/drivers/mfd/arizona-core.c
-> +++ b/drivers/mfd/arizona-core.c
-> @@ -1043,8 +1043,9 @@ int arizona_dev_init(struct arizona *arizona)
->  	case CS47L24:
->  		break; /* No LDO1 regulator */
->  	default:
-> -		ret = mfd_add_devices(arizona->dev, -1, early_devs,
-> -				      ARRAY_SIZE(early_devs), NULL, 0, NULL);
-> +		ret = mfd_add_devices(arizona->dev, PLATFORM_DEVID_NONE,
-> +				      early_devs, ARRAY_SIZE(early_devs),
-> +				      NULL, 0, NULL);
->  		if (ret != 0) {
->  			dev_err(dev, "Failed to add early children: %d\n", ret);
->  			return ret;
-> 
+> Out of curiosity, is there a reason why you use clk_prepare_enable() for 
+> the bclk but not for the wclk?These changes were shared by codec vendor as an initial patch.
+We should use clk_prepare_enable() for wclk not for bclk.
+We will update and share the new patch.
+
+
+
