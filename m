@@ -2,159 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6FBA33DD35
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C1233DD45
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236404AbhCPTRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 15:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57954 "EHLO
+        id S236657AbhCPTTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 15:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236614AbhCPTRY (ORCPT
+        with ESMTP id S236571AbhCPTSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:17:24 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437B0C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:17:23 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id e7so22878387edu.10
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:17:23 -0700 (PDT)
+        Tue, 16 Mar 2021 15:18:36 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02AE8C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:18:36 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id x21so8192618pfa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:18:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=yJC45Mn+RzMch54aRopaf8f4RskUe/2ksYXX6JxgcXQ=;
-        b=YOPUQaYu61zNCEW0I+0VuGWO+jZ62N18lasnJhhq8o6+iiKFEp81+bfzEpT+OqjUgd
-         6cerNAFAA/uu4CteS1WQ6L3IgnqlVZwoDtfYAtfxR9xGPdrdNnuXux8fHctjnVFTpMYQ
-         gIYFau0JEJGmtVSLYofnl7zDMbxVjmrpemoU+viB43FH0mYKC47dNA5WeBc93Z/L6FB7
-         M4djVFkpVgCs6I1BFXb6bZMcomTthdDmJkJxBf6Buq06raHBgINJ1Tg69iVv8OTsGIOe
-         5ydS/tloN2nzi++WPGP+IWNMPT42Wjpp32gF8RjHMMGLr9Yz+A9g8fP4FZ3VKzCWxYAZ
-         bJpA==
+        bh=kTFGaP3zw/Fu1Vu34NQdT6odvbGU01/j1hv611s2WEk=;
+        b=g+XpbAbEV6nyFc0yI+iTSaDBcvjMUj6QK0H/YiwhY2fWmatsW6E/QWhrvhEbSt0qRI
+         itfH+R+CErgok+kinhtw3NZbGKSpsjcaTAgf/tbECUhXtfZ62kPYd5tiy6vangOzXJSY
+         kYYcfjoKK9Tw9V/fKsSE5iwsER9ubGUm/XI/I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=yJC45Mn+RzMch54aRopaf8f4RskUe/2ksYXX6JxgcXQ=;
-        b=iCbw6+GoWT/T5mquekzULzN/axCcezhvFlp0UGgQh1nVzh0kqvf4p3PmIR1RNtjEWQ
-         r7jJqVK7kGOxwJQ359uBC7YRTYs5vSbDHLyJ+dauZmnabp4TVbM0SwJi8Bp2Ad8knL+C
-         p3yZUI48oYYNTleqbpAzJH+Oeos+fj8lwUnoyz/N0BcnR/QkOCNAnrUtxAQN0Ed0OPui
-         6UQwqcXKYXozrgT8TdaYnY18/Ii6xziGOKrXl2Ev5MDq2MyitR5F4dMiHPsCB5Ygtia8
-         iJyjH7KaEw/hin25E0e0FiWwK+stbXk5dSq/ia3IK9/Rhj4yWXSUpUsVd0jemKO5G7FU
-         kOKg==
-X-Gm-Message-State: AOAM531IY070PLQrfJDakxPL1pUuPyD4CF7Pd1KvTm0k/46wSdBrl95L
-        kxoJqCeH4s/ukNJZSa8E98vtyaks2BnyyLL+
-X-Google-Smtp-Source: ABdhPJx3nc9W89NaX4LY5YY+hb8Y5rL7nTk4bzJZK45Hjhw7No1srHgvS4l5fnzAg1n6yI/g+XSKkA==
-X-Received: by 2002:aa7:de11:: with SMTP id h17mr4925753edv.83.1615922241789;
-        Tue, 16 Mar 2021 12:17:21 -0700 (PDT)
-Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id lx6sm10006261ejb.64.2021.03.16.12.17.20
+        bh=kTFGaP3zw/Fu1Vu34NQdT6odvbGU01/j1hv611s2WEk=;
+        b=OEGN7RwrOgReOLEM6R9zrCnAglWVlVZiozXh5Up0mR1LLtHnQi3yQBrsHFbzP9X21n
+         2LK7yF+nt5fxWFkkck+zlh7HzG+JYz4GbyE+KO1iGmjM2bSdjnSQCRfBipHF9Jx6psHV
+         3Q75LQXCOnQiSNRZ6k/qRqpNMxYD+eJ2Ibq/5BX1K9X/9rbPLH3XxMh/LS/xez5TWuo+
+         W75T5k0Hzx3Z3kIVzuXuWmJSKTS3+dxmvPSmS87VlPtmKVSjuDnPKkhRjRguXFNtHCAM
+         rH5XGm7WL0kEQbdhZyiqFphUUEtd9ZnrxIhN3N3lXmVk52pApKEMb2vFsHKgJt+axxjK
+         GqzQ==
+X-Gm-Message-State: AOAM533t1ylXwQK5Oq1qqTdH5kNOIxrbxSNdC5hHmbaxE1UiIfYpvo6X
+        a15L7ovg8Iq51G29BPfdm64K4g==
+X-Google-Smtp-Source: ABdhPJwBczIEvob3FcudNUCo9qdlk3+Pv2lnIocMJV9rVeke6Yi6PDvwSg2ZOmChbIrhU5ZiKAaruA==
+X-Received: by 2002:a65:6107:: with SMTP id z7mr1040368pgu.435.1615922315588;
+        Tue, 16 Mar 2021 12:18:35 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f14sm18421088pfk.92.2021.03.16.12.18.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 12:17:21 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 19:17:19 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux.cj@gmail.com, netdev@vger.kernel.org,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [net-next PATCH v7 04/16] of: mdio: Refactor of_phy_find_device()
-Message-ID: <20210316191719.d7nxgywwhczo7tyg@holly.lan>
-References: <20210311062011.8054-1-calvin.johnson@oss.nxp.com>
- <20210311062011.8054-5-calvin.johnson@oss.nxp.com>
+        Tue, 16 Mar 2021 12:18:34 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 12:18:33 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] seq_file: Unconditionally use vmalloc for buffer
+Message-ID: <202103161208.22FC78C8C@keescook>
+References: <20210315174851.622228-1-keescook@chromium.org>
+ <YE+oZkSVNyaONMd9@zeniv-ca.linux.org.uk>
+ <202103151336.78360DB34D@keescook>
+ <YFBdQmT64c+2uBRI@kroah.com>
+ <YFCn4ERBMGoqxvUU@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210311062011.8054-5-calvin.johnson@oss.nxp.com>
+In-Reply-To: <YFCn4ERBMGoqxvUU@zeniv-ca.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 11:49:59AM +0530, Calvin Johnson wrote:
-> Refactor of_phy_find_device() to use fwnode_phy_find_device().
+On Tue, Mar 16, 2021 at 12:43:12PM +0000, Al Viro wrote:
+> On Tue, Mar 16, 2021 at 08:24:50AM +0100, Greg Kroah-Hartman wrote:
 > 
-> Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-
-This patch series is provoking depmod dependency cycles for me and
-it bisected down to this patch (although I think later patches in
-the series add further cycles).
-
-The problems emerge when running modules_install either directly or
-indirectly via packaging rules such as bindeb-pkg.
-
-~~~
-make -j16 INSTALL_MOD_PATH=$PWD/modules modules_install
-...
-  INSTALL sound/usb/misc/snd-ua101.ko
-  INSTALL sound/usb/snd-usb-audio.ko
-  INSTALL sound/usb/snd-usbmidi-lib.ko
-  INSTALL sound/xen/snd_xen_front.ko
-  DEPMOD  5.12.0-rc3-00009-g1fda33bf463d
-depmod: ERROR: Cycle detected: fwnode_mdio -> of_mdio -> fwnode_mdio
-depmod: ERROR: Found 2 modules in dependency cycles!
-~~~
-
-Kconfig can be found here:
-https://gist.github.com/daniel-thompson/6a7d224f3d3950ffa3f63f979b636474
-
-This Kconfig file is for a highly modular kernel derived from the Debian
-5.10 arm64 kernel config. I was not able to reproduce using the defconfig
-kernel for arm64.
-
-
-Daniel.
-
-
-> ---
+> > > Completely agreed. seq_get_buf() should be totally ripped out.
+> > > Unfortunately, this is going to be a long road because of sysfs's ATTR
+> > > stuff, there are something like 5000 callers, and the entire API was
+> > > designed to avoid refactoring all those callers from
+> > > sysfs_kf_seq_show().
+> > 
+> > What is wrong with the sysfs ATTR stuff?  That should make it so that we
+> > do not have to change any caller for any specific change like this, why
+> > can't sysfs or kernfs handle it automatically?
 > 
-> Changes in v7: None
-> Changes in v6: None
-> Changes in v5: None
-> Changes in v4: None
-> Changes in v3: None
-> Changes in v2: None
-> 
->  drivers/net/mdio/of_mdio.c | 13 +------------
->  1 file changed, 1 insertion(+), 12 deletions(-)
-> 
-> diff --git a/drivers/net/mdio/of_mdio.c b/drivers/net/mdio/of_mdio.c
-> index d5e0970b2561..b5e0b5b22f1a 100644
-> --- a/drivers/net/mdio/of_mdio.c
-> +++ b/drivers/net/mdio/of_mdio.c
-> @@ -360,18 +360,7 @@ EXPORT_SYMBOL(of_mdio_find_device);
->   */
->  struct phy_device *of_phy_find_device(struct device_node *phy_np)
->  {
-> -	struct mdio_device *mdiodev;
-> -
-> -	mdiodev = of_mdio_find_device(phy_np);
-> -	if (!mdiodev)
-> -		return NULL;
-> -
-> -	if (mdiodev->flags & MDIO_DEVICE_FLAG_PHY)
-> -		return to_phy_device(&mdiodev->dev);
-> -
-> -	put_device(&mdiodev->dev);
-> -
-> -	return NULL;
-> +	return fwnode_phy_find_device(of_fwnode_handle(phy_np));
->  }
->  EXPORT_SYMBOL(of_phy_find_device);
->  
+> Hard to tell, since that would require _finding_ the sodding ->show()
+> instances first.  Good luck with that, seeing that most of those appear
+> to come from templates-done-with-cpp...
+
+I *think* I can get coccinelle to find them all, but my brute-force
+approach was to just do a debug build changing the ATTR macro to be
+typed, and changing the name of "show" and "store" in kobj_attribute
+(to make the compiler find them all).
+
+> AFAICS, Kees wants to protect against ->show() instances stomping beyond
+> the page size.  What I don't get is what do you get from using seq_file
+> if you insist on doing raw access to the buffer rather than using
+> seq_printf() and friends.  What's the point?
+
+To me, it looks like the kernfs/sysfs API happened around the time
+"container_of" was gaining ground. It's trying to do the same thing
+the "modern" callbacks do with finding a pointer from another, but it
+did so by making sure everything had a 0 offset and an identical
+beginning structure layout _but changed prototypes_.
+
+It's the changed prototypes that freaks out CFI.
+
+My current plan consists of these steps:
+
+- add two new callbacks to the kobj_attribute struct (and its clones):
+  "seq_show" and "seq_store", which will pass in the seq_file.
+- convert all callbacks to kobject/kboj_attribute and use container_of()
+  to find their respective pointers.
+- remove "show" and "store"
+- remove external use of seq_get_buf().
+
+The first two steps require thousands of lines of code changed, so
+I'm going to try to minimize it by trying to do as many conversions as
+possible to the appropriate helpers first. e.g. DEVICE_ATTR_INT exists,
+but there are only 2 users, yet there appears to be something like 500
+DEVICE_ATTR callers that have an open-coded '%d':
+
+$ git grep -B10 '\bDEVICE_ATTR' | grep '%d' | wc -l
+530
+
+-- 
+Kees Cook
