@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB0933D5EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:39:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF3E33D5C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:31:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236934AbhCPOi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 10:38:56 -0400
-Received: from casper.infradead.org ([90.155.50.34]:34912 "EHLO
+        id S236534AbhCPObQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 10:31:16 -0400
+Received: from casper.infradead.org ([90.155.50.34]:34450 "EHLO
         casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236705AbhCPOil (ORCPT
+        with ESMTP id S236532AbhCPObG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 10:38:41 -0400
-X-Greylist: delayed 1491 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Mar 2021 10:38:38 EDT
+        Tue, 16 Mar 2021 10:31:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rP6CC9aFyoPKSVnxzeAObDkX6GZ6Hhe9Q4ri+l1u2pA=; b=cH/w8vwNvLgG0SrRl2Nt+Fypv4
-        QOXU8VhtVPS06zEJcVM/wsZRBm/HxFuL7D91SfEotUGCMU+/gi+VzHXFtP6PNZre6qRjHKndk/wf6
-        z8AARNbhLCbMiMuvUhhhoyBo69Wo/Hwzj9NiIzU03/c5iR56Vx/eTWIhLr9nKcrcON+tphU0DDoim
-        RJAaD6OXJH80dt+vLa6fUU3+FlwPldkltU1TStVILQpXKNqpFuu6ErwPUWUDdYmOo9b2kWDe+el9d
-        nYJbWOCmcKwi1+QcVMtubksLCQqN413h1M3QvRxLihBxoVPaLGaE53BZY2nYC3pBwGh9162n2v8Ca
-        9j8ywUOA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMARq-0009xZ-QS; Tue, 16 Mar 2021 14:13:29 +0000
-Date:   Tue, 16 Mar 2021 14:13:26 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lennart Poettering <lennart@poettering.net>,
-        Luca Boccassi <bluca@debian.org>, Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        Javier Gonz?lez <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH -next 1/5] block: add disk sequence number
-Message-ID: <20210316141326.GA37773@infradead.org>
-References: <20210315200242.67355-1-mcroce@linux.microsoft.com>
- <20210315200242.67355-2-mcroce@linux.microsoft.com>
- <20210315201824.GB2577561@casper.infradead.org>
+        bh=I83FUX8REQnGGM5/pjTJyS9wyrS41rYMBqxzXfh8ivs=; b=Ryq2S/TCnJe/6qxTbp2Pv+nD43
+        Svhcv9AsmtreQyXy+cwpkLiuVfs+GZZcAM/wkick+giUJ6YA+EYDURY9jcyZiLZnqfz/NFzH0R9np
+        3darK4QSLHeIn5OXlBBPCP1VKbDWHx2HzDboiiy+hLUu/Dd431GOeK0EpzfyCYVlC2BBVLBrvm4kU
+        C4RBvJZjFHKibjAYEozTrisNtU3zxZqiUGD6ZGfAom96dfSy7qPYyo/H9O3enKHyKmZSyD4inmsoE
+        jH2NaVKykdggfGBizY4EIZBLpAVanJgxZP/wtosDiwQDb4dq3BwgY0HETFW1LdS53hEuMEcnsm5aJ
+        /C4lphKg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMAid-000BDy-HS; Tue, 16 Mar 2021 14:30:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 85D353012DF;
+        Tue, 16 Mar 2021 15:30:46 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4E48F2CE947F3; Tue, 16 Mar 2021 15:30:46 +0100 (CET)
+Date:   Tue, 16 Mar 2021 15:30:46 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        Matthew Garrett <mjg59@google.com>
+Subject: Re: [PATCH] perf/core: fix unconditional security_locked_down() call
+Message-ID: <YFDBFuABYwhKliU9@hirez.programming.kicks-ass.net>
+References: <20210224215628.192519-1-omosnace@redhat.com>
+ <CAHC9VhQHrmKHxYuTBOy-JHTXHjGTU9UX-AWk3jbiaNfSkZ+N1A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210315201824.GB2577561@casper.infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAHC9VhQHrmKHxYuTBOy-JHTXHjGTU9UX-AWk3jbiaNfSkZ+N1A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 08:18:24PM +0000, Matthew Wilcox wrote:
-> On Mon, Mar 15, 2021 at 09:02:38PM +0100, Matteo Croce wrote:
-> > From: Matteo Croce <mcroce@microsoft.com>
-> > 
-> > Add a sequence number to the disk devices. This number is put in the
-> > uevent so userspace can correlate events when a driver reuses a device,
-> > like the loop one.
+On Tue, Mar 16, 2021 at 09:53:21AM -0400, Paul Moore wrote:
+> On Wed, Feb 24, 2021 at 4:59 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> >
+> > Currently, the lockdown state is queried unconditionally, even though
+> > its result is used only if the PERF_SAMPLE_REGS_INTR bit is set in
+> > attr.sample_type. While that doesn't matter in case of the Lockdown LSM,
+> > it causes trouble with the SELinux's lockdown hook implementation.
+> >
+> > SELinux implements the locked_down hook with a check whether the current
+> > task's type has the corresponding "lockdown" class permission
+> > ("integrity" or "confidentiality") allowed in the policy. This means
+> > that calling the hook when the access control decision would be ignored
+> > generates a bogus permission check and audit record.
+> >
+> > Fix this by checking sample_type first and only calling the hook when
+> > its result would be honored.
+> >
+> > Fixes: b0c8fdc7fdb7 ("lockdown: Lock down perf when in confidentiality mode")
+> > Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+> > ---
+> >  kernel/events/core.c | 12 ++++++------
+> >  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> Should this be documented as monotonically increasing?  I think this
-> is actually a media identifier.  Consider (if you will) a floppy disc.
-> Back when such things were common, it was possible with personal computers
-> of the era to have multiple floppy discs "in play" and be prompted to
-> insert them as needed.  So shouldn't it be possible to support something
-> similar here -- you're really removing the media from the loop device.
-> With a monotonically increasing number, you're always destroying the
-> media when you remove it, but in principle, it should be possible to
-> reinsert the same media and have the same media identifier number.
+> Perf/core folks, do you want to pull this in via your tree?  If I
+> don't hear anything in the next day I'll pull this in via the
+> selinux/next tree.
+> 
+> Reviewed-by: Paul Moore <paul@paul-moore.com>
 
-And we have some decent infrastructure related to media changes,
-grep for disk_events.  I think this needs to plug into that
-infrastructure instead of duplicating it.
+Ah, fell in the cracks... I've no idea what Changelog is trying to tell
+me. It is pure gibberish to me. But the patch seems harmless enough to me.
+
+Let me queue it then.
