@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD7833CE45
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:58:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A4433CE4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:58:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235817AbhCPG5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 02:57:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:48936 "EHLO foss.arm.com"
+        id S235856AbhCPG6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 02:58:05 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:53503 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235775AbhCPG5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 02:57:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 33DEAD6E;
-        Mon, 15 Mar 2021 23:57:16 -0700 (PDT)
-Received: from bogus (unknown [10.163.66.225])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 846613F792;
-        Mon, 15 Mar 2021 23:57:12 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 06:57:05 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
-        daniel.lezcano@linaro.org, robh+dt@kernel.org,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>, ksitaraman@nvidia.com,
-        sanjayc@nvidia.com, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 3/5] dt-bindings: arm: Add cpu-idle-states to Tegra194
- CPU nodes
-Message-ID: <20210316065705.bpuhsdjfa5nnwrik@bogus>
-References: <1614838092-30398-1-git-send-email-skomatineni@nvidia.com>
- <1614838092-30398-4-git-send-email-skomatineni@nvidia.com>
- <20210308043755.llvdsuz2jwvweovb@bogus>
- <4cebf482-a2f8-5a79-a2f6-4ccd7d31c6ad@nvidia.com>
- <20210311025138.o4ub4j2ss725zpv4@bogus>
- <b31d14ef-81d8-0480-805b-a3cb64404b12@nvidia.com>
- <08ac26c1-8257-4c6d-d274-595fee28a00f@nvidia.com>
+        id S233679AbhCPG5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 02:57:41 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F03yC1wWpz9v01q;
+        Tue, 16 Mar 2021 07:57:39 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id dAvZpDnyIIEM; Tue, 16 Mar 2021 07:57:39 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F03yC0bC2z9v01p;
+        Tue, 16 Mar 2021 07:57:39 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C604A8B77F;
+        Tue, 16 Mar 2021 07:57:39 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 9y2Jva0TRQda; Tue, 16 Mar 2021 07:57:39 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 061878B766;
+        Tue, 16 Mar 2021 07:57:38 +0100 (CET)
+Subject: Re: [PATCH] powerpc: arch/powerpc/kernel/setup_64.c - cleanup
+ warnings
+To:     He Ying <heying24@huawei.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, npiggin@gmail.com,
+        dja@axtens.net, akpm@linux-foundation.org,
+        aneesh.kumar@linux.ibm.com, rppt@kernel.org, ardb@kernel.org,
+        clg@kaod.org
+Cc:     johnny.chenyi@huawei.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <20210316041148.29694-1-heying24@huawei.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <ae9d758b-d62c-ed60-75e7-2917187d976b@csgroup.eu>
+Date:   Tue, 16 Mar 2021 07:57:38 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210316041148.29694-1-heying24@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <08ac26c1-8257-4c6d-d274-595fee28a00f@nvidia.com>
-User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 02:27:30PM -0800, Sowjanya Komatineni wrote:
-> Hi Sudeep,
->
-> To make our driver PSCI compliant below are few updates to be done
->
-> 1. Standardize passing residency time run-time thru PSCI to ATF.
->
 
-Yes that was my initial understanding, but your previous response was
-confusing. I should have read this first.
 
->     From PSCI specification I only see PSCI_STAT_RESIDENCY and
-> PSCI_STAT_COUNT optional functions for PSCI1.0/PSCI1.1
->
+Le 16/03/2021 à 05:11, He Ying a écrit :
+> warning: symbol 'rfi_flush' was not declared.
+> warning: symbol 'entry_flush' was not declared.
+> warning: symbol 'uaccess_flush' was not declared.
+> We found warnings above in arch/powerpc/kernel/setup_64.c by using
+> sparse tool.
+> 
+> Define 'entry_flush' and 'uaccess_flush' as static because they are not
+> referenced outside the file. Include asm/security_features.h in which
+> 'rfi_flush' is declared.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: He Ying <heying24@huawei.com>
 
-Indeed, we don't have any support to pass run-time residency hints in PSCI
-today.
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
->    Can you please help add right people to explore on possible ways to add
-> PSCI function for passing corresponding state residency time to ATF?
->
-
-Before we jump to implementation in TF-A we need to get agreement to get this
-added to the specification to support in OSPM/Linux. TF-A is just one
-implementation of PSCI and may not be only one.
-
-Formally you can raise any specification related queries to
-https://developer.arm.com/support or support@arm.com. I will ask the author
-of PSCI specification internally to take a look at this thread and chime in
-if they can.
-
-> 2. Tegra CPU Idle support definitely need to pass deepest cluster state and
-> threshold to MCE firmware from DT and looks like we can move this
-> implementation to ATF
->
-
-Yes, I just asked the same question as response to your earlier email. Thanks
-for confirming that it can be moved out of OSPM/Linux and DT
-
->      With both of the above implementation changes Tegra194 driver will be
-> PSCI compliant.
->
-
-We still need to get agreement on the specification front 😉.
-
---
-Regards,
-Sudeep
+> ---
+>   arch/powerpc/kernel/setup_64.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/powerpc/kernel/setup_64.c b/arch/powerpc/kernel/setup_64.c
+> index 560ed8b975e7..f92d72a7e7ce 100644
+> --- a/arch/powerpc/kernel/setup_64.c
+> +++ b/arch/powerpc/kernel/setup_64.c
+> @@ -68,6 +68,7 @@
+>   #include <asm/early_ioremap.h>
+>   #include <asm/pgalloc.h>
+>   #include <asm/asm-prototypes.h>
+> +#include <asm/security_features.h>
+>   
+>   #include "setup.h"
+>   
+> @@ -949,8 +950,8 @@ static bool no_rfi_flush;
+>   static bool no_entry_flush;
+>   static bool no_uaccess_flush;
+>   bool rfi_flush;
+> -bool entry_flush;
+> -bool uaccess_flush;
+> +static bool entry_flush;
+> +static bool uaccess_flush;
+>   DEFINE_STATIC_KEY_FALSE(uaccess_flush_key);
+>   EXPORT_SYMBOL(uaccess_flush_key);
+>   
+> 
