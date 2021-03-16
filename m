@@ -2,141 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF71E33CEA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB1E33CEAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:33:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232697AbhCPHc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 03:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46186 "EHLO
+        id S232489AbhCPHdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 03:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232640AbhCPHcS (ORCPT
+        with ESMTP id S232462AbhCPHch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 03:32:18 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECE7C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 00:32:18 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id y13so8241946pfr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 00:32:18 -0700 (PDT)
+        Tue, 16 Mar 2021 03:32:37 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB33C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 00:32:37 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id v4so6893412wrp.13
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 00:32:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y1bBx21hw1CzzID+X6WsgVeOPSC72x4uJYWEaqJ/Z0k=;
-        b=V2RFEwulx/vmmxCVThpGaX31BjZxPq/HaiAUVz6aPCoy8iz2nArBTYGgfx1+zjz+g9
-         X3hVvheZe+FIm4IJOf7PgnPSEOpqVlmYw0e7IMrvBjk/tHHXtpICNDRQXT0IajSSq3Ld
-         cc9JdHYODvykIGo/xK/W/v7JrN1gMTUlkbn8GcuTuel/kDUq9iL47nSdRN9Aoa1IvdTy
-         rLg5UWxYF3qK9qsj0+901MucOgf5GVS6WoEJ5LV/eH4J+hC6sTKyporZ5A4dp9e1i/Cj
-         TAmv5TbJrrjMBxOuo8MPuvoWGkkLuIEkjHiz6DYAHeU4zTdv91iafj+FceSDtpQ3EZ/U
-         Y7Uw==
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IQY1D4mxt0Au+XEL7JzuOd/XePQEer2cRWwwPZzsh6c=;
+        b=iSTAvxoqL774stNAExAxT0y5w1fZ8YHP4kYJkIwmdTY8g3saMZdTToYrYIbZgKI/1u
+         knkImyw+1b7JynzRKoDvKzk64jkssowNItcW1TCTVqM7mAeiRlocwjk4N7IvQebIRK0U
+         RKSbdVfVX9g03eyIenyc7Qf1Kessf3JSADznxoNKBkoGOEgBSCVS6vcMYUlmn6qR0Fsu
+         /aq6nAogbMsp0ip7/137tjsfR4t9lYBbrOCX20KFcu/K27rwLjkpuP/K+FBS2HxBwdqz
+         nxapU+ZlTPwo4QnRDO+MSFFGgi06bBhYX6srUsf5TruFNqj9Wu24cJGZOJkqIFpEBruf
+         xDoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y1bBx21hw1CzzID+X6WsgVeOPSC72x4uJYWEaqJ/Z0k=;
-        b=Ee2OXmo9uBx8FREWYj0l+caldqnB17c8OxKnoj9nFUoroLeVy8PI0TFPE0POOUd20h
-         HYfDp0zQ9By+2LYKuSp5zfLswMVd8PW5AbBz2oR1tYOIt++hfDYUZkwNw17nU8wHw9xS
-         dfZQcgJSX3oIFj+J1URD3q8tt1v7APBCb+ySEUefw0oNZZNtKsRHtaGP6YzGl8LcLCby
-         Nrh2LKeBgQY+y9wDLAc8sT/FWwhWOOqCdEwH915joKqbZ6QVtXPbdl4bUTZbF9XGYHA0
-         82ZQydT5rI4cuHUMPhoefWsC9heU4iOPSHD50DevOBgcys/CDQ6paJXvEseGo+aclqUS
-         t/bw==
-X-Gm-Message-State: AOAM5328ptqa9aSBVBhB5sG0unJNrR91QH0EE5zxNARSEuoZe4jcLPLh
-        1jeeVAJnFyrdzB/LqFhcGWeJ1w==
-X-Google-Smtp-Source: ABdhPJwFpDuk0kMrQ6RLb/8KVDQfOEee9MhCLT9V+cH6JxfA97NSVTxqnB4RgeFG21Dphm69XzzUfw==
-X-Received: by 2002:a63:c702:: with SMTP id n2mr2696868pgg.382.1615879938106;
-        Tue, 16 Mar 2021 00:32:18 -0700 (PDT)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id b64sm15644839pfa.191.2021.03.16.00.32.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 16 Mar 2021 00:32:17 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Bill Mills <bill.mills@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH V3] kbuild: Allow .dtso format for overlay source files
-Date:   Tue, 16 Mar 2021 13:02:14 +0530
-Message-Id: <01b4b67d8cebc00c94e786f6e06f69fc10d39364.1615877125.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IQY1D4mxt0Au+XEL7JzuOd/XePQEer2cRWwwPZzsh6c=;
+        b=FxoiBr48WVcBMgefJMj9FGXYCv7OJvcZdQTQOI3JMfkXUp9BkoCqGKDqCDv1DBlVmn
+         8ovgMonEMXdfAPaYOh9NUeYu9ryxgqDniq9BjRnx7wjXVPxoDGXyu5Jmj6AUK94J3+RO
+         ClV8UfhOYPJbxDHw34UnszXOXu1h/I7xuqMZ3A3FDwFuSoQaGVtR7QEm8DUX9WZNAhGS
+         us+LiNRT2cgdjDMABkwUwoJ0FBaUwDf8BqYD1+wd6fUN4F+yFz8EbzQnquFjGKhGfTPm
+         ETbt/vFz2vmAyGliTYVth5pKiB4dacTmxvTznbG/ubZMNiSgrSCtQPYVhWizLCJG7gRq
+         y2kg==
+X-Gm-Message-State: AOAM531bIf3k4lIuLLkxXU/B8Eoa640lHQoSg40TOXJkZaaDQGm4HlDm
+        S8dJQbw6OqQsUBn0qOKB9ZqP3g/ZDEx9oYuH8Khy2Q==
+X-Google-Smtp-Source: ABdhPJzyKLcv9vS9Uf7h8wN9YQbsy9k3hKaSESFS8ht62V81yfrY2i1OzPAyVtedxGr/WGvtjH/sUYsFtQKRe7Te7Sk=
+X-Received: by 2002:a5d:5744:: with SMTP id q4mr3424016wrw.390.1615879955825;
+ Tue, 16 Mar 2021 00:32:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210316015328.13516-1-liu@jiuyang.me> <20210316034638.16276-1-liu@jiuyang.me>
+ <CAAhSdy3eEXtba_ebUnPW_OUHRMKsg+O9sBx_DHAmrkTUCfHXNg@mail.gmail.com> <CAPM7DZc+Ysd=VQdzc4_4Np8VAMESBrzD3mhk0ueh92x11bFFNg@mail.gmail.com>
+In-Reply-To: <CAPM7DZc+Ysd=VQdzc4_4Np8VAMESBrzD3mhk0ueh92x11bFFNg@mail.gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 16 Mar 2021 13:02:24 +0530
+Message-ID: <CAAhSdy1HYJJDig3Mg1eWaO=zok9G6+hQM1LLbDKMzH-=Fi2dKw@mail.gmail.com>
+Subject: Re: [PATCH] Insert SFENCE.VMA in function set_pte_at for RISCV
+To:     Jiuyang Liu <liu@jiuyang.me>
+Cc:     Alexandre Ghiti <alex@ghiti.fr>,
+        Andrew Waterman <waterman@eecs.berkeley.edu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Zong Li <zong.li@sifive.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the overlays dtb files are now named as .dtbo, there is a lot of
-interest in similarly naming the overlay source dts files as .dtso.
+On Tue, Mar 16, 2021 at 12:27 PM Jiuyang Liu <liu@jiuyang.me> wrote:
+>
+> > As per my understanding, we don't need to explicitly invalidate local TLB
+> > in set_pte() or set_pet_at() because generic Linux page table management
+> > (<linux>/mm/*) will call the appropriate flush_tlb_xyz() function after page
+> > table updates.
+>
+> I witnessed this bug in our micro-architecture: set_pte instruction is
+> still in the store buffer, no functions are inserting SFENCE.VMA in
+> the stack below, so TLB cannot witness this modification.
+> Here is my call stack:
+> set_pte
+> set_pte_at
+> map_vm_area
+> __vmalloc_area_node
+> __vmalloc_node_range
+> __vmalloc_node
+> __vmalloc_node_flags
+> vzalloc
+> n_tty_open
+>
+> I think this is an architecture specific code, so <linux>/mm/* should
+> not be modified.
+> And spec requires SFENCE.VMA to be inserted on each modification to
+> TLB. So I added code here.
 
-This patch makes the necessary changes to allow .dtso format for overlay
-source files.
+The generic linux/mm/* already calls the appropriate tlb_flush_xyz()
+function defined in arch/riscv/include/asm/tlbflush.h
 
-Note that the device-tree unit-tests name their overlay files as .dts
-and it would take substantial amount of changes to update them to .dtso
-and that would probably involve some local rules in unit-test's Makefile
-as well. This patch goes for a simpler solution instead, i.e. allow .dts
-to .dtbo conversion for device-tree unit-tests.
+Better to have a write-barrier in set_pte().
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
-This was made part of the bigger patchset earlier (most of it already
-got merged) whose last version was V11, but this patch was only sent
-twice earlier and so starting with Version 3.
+>
+> > Also, just local TLB flush is generally not sufficient because
+> > a lot of page tables will be used across on multiple HARTs.
+>
+> Yes, this is the biggest issue, in RISC-V Volume 2, Privileged Spec v.
+> 20190608 page 67 gave a solution:
 
-Changes since V2:
+This is not an issue with RISC-V privilege spec rather it is more about
+placing RISC-V fences at right locations.
 
-- Add the dts -> dtbo rule in unittest-data/Makefile.
-- Remove the -I parameter to dtc.
+> Consequently, other harts must be notified separately when the
+> memory-management data structures have been modified. One approach is
+> to use
+> 1) a local data fence to ensure local writes are visible globally,
+> then 2) an interprocessor interrupt to the other thread,
+> then 3) a local SFENCE.VMA in the interrupt handler of the remote thread,
+> and finally 4) signal back to originating thread that operation is
+> complete. This is, of course, the RISC-V analog to a TLB shootdown.
 
- drivers/of/unittest-data/Makefile | 6 ++++++
- scripts/Makefile.lib              | 5 ++++-
- 2 files changed, 10 insertions(+), 1 deletion(-)
+I would suggest trying approach#1.
 
-diff --git a/drivers/of/unittest-data/Makefile b/drivers/of/unittest-data/Makefile
-index a5d2d9254b2c..e8dd839bdcbb 100644
---- a/drivers/of/unittest-data/Makefile
-+++ b/drivers/of/unittest-data/Makefile
-@@ -86,3 +86,9 @@ static_test_1-dtbs := static_base_1.dtb $(apply_static_overlay_1)
- static_test_2-dtbs := static_base_2.dtb $(apply_static_overlay_2)
- 
- dtb-$(CONFIG_OF_OVERLAY) += static_test_1.dtb static_test_2.dtb
-+
-+# We can't name the overlay files .dtso, it would require much more substantial
-+# changes in Makefile. Instead allow building the overlay .dtbo files from .dts
-+# source files for unittests.
-+$(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
-+	$(call if_changed_dep,dtc)
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index 90b095c60f79..a682869d8f4b 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -347,7 +347,7 @@ cmd_dtc = $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ;
- $(obj)/%.dtb: $(src)/%.dts $(DTC) FORCE
- 	$(call if_changed_dep,dtc)
- 
--$(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
-+$(obj)/%.dtbo: $(src)/%.dtso $(DTC) FORCE
- 	$(call if_changed_dep,dtc)
- 
- overlay-y := $(addprefix $(obj)/, $(overlay-y))
-@@ -376,6 +376,9 @@ endef
- $(obj)/%.dt.yaml: $(src)/%.dts $(DTC) $(DT_TMP_SCHEMA) FORCE
- 	$(call if_changed_rule,dtc,yaml)
- 
-+$(obj)/%.dt.yaml: $(src)/%.dtso $(DTC) $(DT_TMP_SCHEMA) FORCE
-+	$(call if_changed_rule,dtc,yaml)
-+
- dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
- 
- # Bzip2
--- 
-2.25.0.rc1.19.g042ed3e048af
+You can include "asm/barrier.h" here and use wmb() or __smp_wmb()
+in-place of local TLB flush.
 
+>
+> In general, this patch didn't handle the G bit in PTE, kernel trap it
+> to sbi_remote_sfence_vma. do you think I should use flush_tlb_all?
+>
+> Jiuyang
+>
+>
+>
+>
+> arch/arm/mm/mmu.c
+> void set_pte_at(struct mm_struct *mm, unsigned long addr,
+>                               pte_t *ptep, pte_t pteval)
+> {
+>         unsigned long ext = 0;
+>
+>         if (addr < TASK_SIZE && pte_valid_user(pteval)) {
+>                 if (!pte_special(pteval))
+>                         __sync_icache_dcache(pteval);
+>                 ext |= PTE_EXT_NG;
+>         }
+>
+>         set_pte_ext(ptep, pteval, ext);
+> }
+>
+> arch/mips/include/asm/pgtable.h
+> static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
+>                               pte_t *ptep, pte_t pteval)
+> {
+>
+>         if (!pte_present(pteval))
+>                 goto cache_sync_done;
+>
+>         if (pte_present(*ptep) && (pte_pfn(*ptep) == pte_pfn(pteval)))
+>                 goto cache_sync_done;
+>
+>         __update_cache(addr, pteval);
+> cache_sync_done:
+>         set_pte(ptep, pteval);
+> }
+>
+>
+> Also, just local TLB flush is generally not sufficient because
+> > a lot of page tables will be used accross on multiple HARTs.
+>
+>
+> On Tue, Mar 16, 2021 at 5:05 AM Anup Patel <anup@brainfault.org> wrote:
+> >
+> > +Alex
+> >
+> > On Tue, Mar 16, 2021 at 9:20 AM Jiuyang Liu <liu@jiuyang.me> wrote:
+> > >
+> > > This patch inserts SFENCE.VMA after modifying PTE based on RISC-V
+> > > specification.
+> > >
+> > > arch/riscv/include/asm/pgtable.h:
+> > > 1. implement pte_user, pte_global and pte_leaf to check correspond
+> > > attribute of a pte_t.
+> >
+> > Adding pte_user(), pte_global(), and pte_leaf() is fine.
+> >
+> > >
+> > > 2. insert SFENCE.VMA in set_pte_at based on RISC-V Volume 2, Privileged
+> > > Spec v. 20190608 page 66 and 67:
+> > > If software modifies a non-leaf PTE, it should execute SFENCE.VMA with
+> > > rs1=x0. If any PTE along the traversal path had its G bit set, rs2 must
+> > > be x0; otherwise, rs2 should be set to the ASID for which the
+> > > translation is being modified.
+> > > If software modifies a leaf PTE, it should execute SFENCE.VMA with rs1
+> > > set to a virtual address within the page. If any PTE along the traversal
+> > > path had its G bit set, rs2 must be x0; otherwise, rs2 should be set to
+> > > the ASID for which the translation is being modified.
+> > >
+> > > arch/riscv/include/asm/tlbflush.h:
+> > > 1. implement get_current_asid to get current program asid.
+> > > 2. implement local_flush_tlb_asid to flush tlb with asid.
+> >
+> > As per my understanding, we don't need to explicitly invalidate local TLB
+> > in set_pte() or set_pet_at() because generic Linux page table management
+> > (<linux>/mm/*) will call the appropriate flush_tlb_xyz() function after page
+> > table updates. Also, just local TLB flush is generally not sufficient because
+> > a lot of page tables will be used accross on multiple HARTs.
+> >
+> > >
+> > > Signed-off-by: Jiuyang Liu <liu@jiuyang.me>
+> > > ---
+> > >  arch/riscv/include/asm/pgtable.h  | 27 +++++++++++++++++++++++++++
+> > >  arch/riscv/include/asm/tlbflush.h | 12 ++++++++++++
+> > >  2 files changed, 39 insertions(+)
+> > >
+> > > diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> > > index ebf817c1bdf4..5a47c60372c1 100644
+> > > --- a/arch/riscv/include/asm/pgtable.h
+> > > +++ b/arch/riscv/include/asm/pgtable.h
+> > > @@ -222,6 +222,16 @@ static inline int pte_write(pte_t pte)
+> > >         return pte_val(pte) & _PAGE_WRITE;
+> > >  }
+> > >
+> > > +static inline int pte_user(pte_t pte)
+> > > +{
+> > > +       return pte_val(pte) & _PAGE_USER;
+> > > +}
+> > > +
+> > > +static inline int pte_global(pte_t pte)
+> > > +{
+> > > +       return pte_val(pte) & _PAGE_GLOBAL;
+> > > +}
+> > > +
+> > >  static inline int pte_exec(pte_t pte)
+> > >  {
+> > >         return pte_val(pte) & _PAGE_EXEC;
+> > > @@ -248,6 +258,11 @@ static inline int pte_special(pte_t pte)
+> > >         return pte_val(pte) & _PAGE_SPECIAL;
+> > >  }
+> > >
+> > > +static inline int pte_leaf(pte_t pte)
+> > > +{
+> > > +       return pte_val(pte) & (_PAGE_READ | _PAGE_WRITE | _PAGE_EXEC);
+> > > +}
+> > > +
+> > >  /* static inline pte_t pte_rdprotect(pte_t pte) */
+> > >
+> > >  static inline pte_t pte_wrprotect(pte_t pte)
+> > > @@ -358,6 +373,18 @@ static inline void set_pte_at(struct mm_struct *mm,
+> > >                 flush_icache_pte(pteval);
+> > >
+> > >         set_pte(ptep, pteval);
+> > > +
+> > > +       if (pte_present(pteval)) {
+> > > +               if (pte_leaf(pteval)) {
+> > > +                       local_flush_tlb_page(addr);
+> > > +               } else {
+> > > +                       if (pte_global(pteval))
+> > > +                               local_flush_tlb_all();
+> > > +                       else
+> > > +                               local_flush_tlb_asid();
+> > > +
+> > > +               }
+> > > +       }
+> > >  }
+> > >
+> > >  static inline void pte_clear(struct mm_struct *mm,
+> > > diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
+> > > index 394cfbccdcd9..1f9b62b3670b 100644
+> > > --- a/arch/riscv/include/asm/tlbflush.h
+> > > +++ b/arch/riscv/include/asm/tlbflush.h
+> > > @@ -21,6 +21,18 @@ static inline void local_flush_tlb_page(unsigned long addr)
+> > >  {
+> > >         __asm__ __volatile__ ("sfence.vma %0" : : "r" (addr) : "memory");
+> > >  }
+> > > +
+> > > +static inline unsigned long get_current_asid(void)
+> > > +{
+> > > +       return (csr_read(CSR_SATP) >> SATP_ASID_SHIFT) & SATP_ASID_MASK;
+> > > +}
+> > > +
+> > > +static inline void local_flush_tlb_asid(void)
+> > > +{
+> > > +       unsigned long asid = get_current_asid();
+> > > +       __asm__ __volatile__ ("sfence.vma x0, %0" : : "r" (asid) : "memory");
+> > > +}
+> > > +
+> > >  #else /* CONFIG_MMU */
+> > >  #define local_flush_tlb_all()                  do { } while (0)
+> > >  #define local_flush_tlb_page(addr)             do { } while (0)
+> > > --
+> > > 2.30.2
+> > >
+> > >
+> > > _______________________________________________
+> > > linux-riscv mailing list
+> > > linux-riscv@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >
+> > Regards,
+> > Anup
+
+Regards,
+Anup
