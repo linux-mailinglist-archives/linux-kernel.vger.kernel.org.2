@@ -2,309 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A148F33CC2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 04:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8262933CC30
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 04:40:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233725AbhCPDjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 23:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbhCPDib (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 23:38:31 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E65C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 20:38:30 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id e7so11413897ile.7
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 20:38:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vtcOa+7Jfn82RgfkNHogCmMHHCEtwBVt/KyTEvjuHVo=;
-        b=byobSetErHobQnhmJt47XbeiIVDT5OvHVBfFx0MR0rGAh72fAAhi8E0VF56AsMlJM/
-         1ab/UrmBzq5GCe6rtxMpVCl1uMfD6oyURN/ERYQSfu9ZnNf+o779cqzgQtZVwG0LX5aQ
-         bW1YJg1uIuCcAgDwkD8rMdXyqQDzBCeFa4XKb66CqUHiRmgIZ6mEu/7JE6LW4o8jcXlN
-         EvzRFkB698K/9l01g3kc3didtcBxyVC5LEWZj62U+MuCX2ZCd7jZdfRPD2yJdeB5Li0/
-         Pa3jLaheH+7WImh3Qu22P+q/rV4YZ617r0tC9oW5zsgHWeYbPY42WXYdabmPL6+lDxZW
-         znrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vtcOa+7Jfn82RgfkNHogCmMHHCEtwBVt/KyTEvjuHVo=;
-        b=fcTMUDuQVXERPKcV3fXWhEwMQASMiUzdoHEJIj+hxHsfoXB+nHgPbK8wNvp5OhzqeM
-         SVnQPkYVkz/NZM+o2wda6s7xYNfMQODq3k0hlatIWj2GJ2PX+HBasP2B+X8r6wXEXIel
-         VW30JUrHE1FmSz5FRi6AQjlHjaQa4stpEj2DbzeIQxRiXZLWd4NONLm5VdFI42gjmq9Q
-         88Iz2C8XfAVnZe2G6XRSiSqGDwc3zRGxIsRrXlVZginSheCCbZJkeB/mnUrj5bNLC5eC
-         Nq57UcE5Xwh36R3NXpmzf/BMBe0RUPVa5Ha7CqBfnsbmbUTGNajeITKV7ysiw0fmqzI6
-         ScZQ==
-X-Gm-Message-State: AOAM532EN7KaLKxkSkJ2+goIthcWyaxZ+xrP1wxScmAK9sQqf4BPSDgO
-        edv32X6a/EQTUlnSKdrZf28iZQ==
-X-Google-Smtp-Source: ABdhPJzfi2bkvP+g7z5KGPNTYjVAssPjB/Vc66u+Ae6OpHz5mAqTZO3vdjeldyuELZO18fmW2Af9dQ==
-X-Received: by 2002:a92:c5cf:: with SMTP id s15mr2115369ilt.149.1615865909765;
-        Mon, 15 Mar 2021 20:38:29 -0700 (PDT)
-Received: from google.com ([2620:15c:183:200:d825:37a2:4b55:995f])
-        by smtp.gmail.com with ESMTPSA id l1sm1731804iln.63.2021.03.15.20.38.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 20:38:29 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 21:38:25 -0600
-From:   Yu Zhao <yuzhao@google.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Ying Huang <ying.huang@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        page-reclaim@google.com
-Subject: Re: [PATCH v1 00/14] Multigenerational LRU
-Message-ID: <YFAoMS67UeqA3IhW@google.com>
-References: <20210313075747.3781593-1-yuzhao@google.com>
- <CAHbLzkrHQANSeXbVJLQ3TJxoVRJ8Cm6Qmr9Nk9aHbD-BnDRn-w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHbLzkrHQANSeXbVJLQ3TJxoVRJ8Cm6Qmr9Nk9aHbD-BnDRn-w@mail.gmail.com>
+        id S234872AbhCPDjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 23:39:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233371AbhCPDjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 23:39:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CE1F6501D;
+        Tue, 16 Mar 2021 03:39:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1615865942;
+        bh=aDxjmb/Yra0eZ/I+42Y0k2ruoic2qRGjxfY+d84S6KQ=;
+        h=Date:From:To:Subject:From;
+        b=MjGngVAwe0VGgI4akDwBS/3F1HypbjX5GAIQb4w4lOBDJ7fsvJqJuhFszqGO4ykrF
+         QF7bLsZSwKki5t6z1hQ3aWRSXNhYDKcJp63upkAvKF2IN+aCyW89MH66LtYOj5rTrV
+         HeKucVeZfRO6p1eO4zaTt741xlfoyScself638Vw=
+Date:   Mon, 15 Mar 2021 20:39:01 -0700
+From:   akpm@linux-foundation.org
+To:     broonie@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
+Subject:  mmotm 2021-03-15-20-38 uploaded
+Message-ID: <20210316033901.qJL7wWCP9%akpm@linux-foundation.org>
+User-Agent: s-nail v14.8.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 11:38:20AM -0700, Yang Shi wrote:
-> On Fri, Mar 12, 2021 at 11:57 PM Yu Zhao <yuzhao@google.com> wrote:
-> >
-> > TLDR
-> > ====
-> > The current page reclaim is too expensive in terms of CPU usage and
-> > often making poor choices about what to evict. We would like to offer
-> > a performant, versatile and straightforward augment.
-> >
-> > Repo
-> > ====
-> > git fetch https://linux-mm.googlesource.com/page-reclaim refs/changes/01/1101/1
-> >
-> > Gerrit https://linux-mm-review.googlesource.com/c/page-reclaim/+/1101
-> >
-> > Background
-> > ==========
-> > DRAM is a major factor in total cost of ownership, and improving
-> > memory overcommit brings a high return on investment. Over the past
-> > decade of research and experimentation in memory overcommit, we
-> > observed a distinct trend across millions of servers and clients: the
-> > size of page cache has been decreasing because of the growing
-> > popularity of cloud storage. Nowadays anon pages account for more than
-> > 90% of our memory consumption and page cache contains mostly
-> > executable pages.
-> >
-> > Problems
-> > ========
-> > Notion of the active/inactive
-> > -----------------------------
-> > For servers equipped with hundreds of gigabytes of memory, the
-> > granularity of the active/inactive is too coarse to be useful for job
-> > scheduling. And false active/inactive rates are relatively high. In
-> > addition, scans of largely varying numbers of pages are unpredictable
-> > because inactive_is_low() is based on magic numbers.
-> >
-> > For phones and laptops, the eviction is biased toward file pages
-> > because the selection has to resort to heuristics as direct
-> > comparisons between anon and file types are infeasible. On Android and
-> > Chrome OS, executable pages are frequently evicted despite the fact
-> > that there are many less recently used anon pages. This causes "janks"
-> > (slow UI rendering) and negatively impacts user experience.
-> >
-> > For systems with multiple nodes and/or memcgs, it is impossible to
-> > compare lruvecs based on the notion of the active/inactive.
-> >
-> > Incremental scans via the rmap
-> > ------------------------------
-> > Each incremental scan picks up at where the last scan left off and
-> > stops after it has found a handful of unreferenced pages. For most of
-> > the systems running cloud workloads, incremental scans lose the
-> > advantage under sustained memory pressure due to high ratios of the
-> > number of scanned pages to the number of reclaimed pages. In our case,
-> > the average ratio of pgscan to pgsteal is about 7.
-> 
-> So, you mean the reclaim efficiency is just 1/7? It seems quite low.
+The mm-of-the-moment snapshot 2021-03-15-20-38 has been uploaded to
 
-Well, from the perspective of memory utilization, 6/7 is non-idle. And
-in our dictionary, high "reclaim efficiency" is synonym for
-underutilization :)
+   https://www.ozlabs.org/~akpm/mmotm/
 
-> Just out of curiosity, did you have more insights about why it is that
-> low? I think it heavily depends on workload. We have page cache heavy
-> workloads, the efficiency rate is quite high.
+mmotm-readme.txt says
 
-Yes, our observation on (a small group of) page cache heavy workloads
-is the same. They access files via file descriptors, and sometimes
-stream large files, i.e., only reading each file page once. Those
-pages they leave in page cache are highly reclaimable because they
-are clean, not mapped into page tables and therefore can be dropped
-quickly.
+README for mm-of-the-moment:
 
-> > On top of that, the rmap has poor memory locality due to its complex
-> > data structures. The combined effects typically result in a high
-> > amount of CPU usage in the reclaim path. For example, with zram, a
-> > typical kswapd profile on v5.11 looks like:
-> >   31.03%  page_vma_mapped_walk
-> >   25.59%  lzo1x_1_do_compress
-> >    4.63%  do_raw_spin_lock
-> >    3.89%  vma_interval_tree_iter_next
-> >    3.33%  vma_interval_tree_subtree_search
-> >
-> > And with real swap, it looks like:
-> >   45.16%  page_vma_mapped_walk
-> >    7.61%  do_raw_spin_lock
-> >    5.69%  vma_interval_tree_iter_next
-> >    4.91%  vma_interval_tree_subtree_search
-> >    3.71%  page_referenced_one
-> 
-> I guess it is because your workloads have a lot of shared anon pages?
+https://www.ozlabs.org/~akpm/mmotm/
 
-Sharing (map_count > 1) does make kswapd profile look worse. But the
-majority of our anon memory including shmem is not shared but mapped
-(map_count = 1).
+This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+more than once a week.
 
-> > Solutions
-> > =========
-> > Notion of generation numbers
-> > ----------------------------
-> > The notion of generation numbers introduces a quantitative approach to
-> > memory overcommit. A larger number of pages can be spread out across
-> > configurable generations, and thus they have relatively low false
-> > active/inactive rates. Each generation includes all pages that have
-> > been referenced since the last generation.
-> >
-> > Given an lruvec, scans and the selections between anon and file types
-> > are all based on generation numbers, which are simple and yet
-> > effective. For different lruvecs, comparisons are still possible based
-> > on birth times of generations.
-> 
-> It means you replace the active/inactive lists to multiple lists, from
-> most active to least active?
+You will need quilt to apply these patches to the latest Linus release (5.x
+or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+https://ozlabs.org/~akpm/mmotm/series
 
-Precisely.
+The file broken-out.tar.gz contains two datestamp files: .DATE and
+.DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+followed by the base kernel version against which this patch series is to
+be applied.
 
-> > Differential scans via page tables
-> > ----------------------------------
-> > Each differential scan discovers all pages that have been referenced
-> > since the last scan. Specifically, it walks the mm_struct list
-> > associated with an lruvec to scan page tables of processes that have
-> > been scheduled since the last scan. The cost of each differential scan
-> > is roughly proportional to the number of referenced pages it
-> > discovers. Unless address spaces are extremely sparse, page tables
-> > usually have better memory locality than the rmap. The end result is
-> > generally a significant reduction in CPU usage, for most of the
-> > systems running cloud workloads.
-> 
-> How's about unmapped page caches? I think they are still quite common
-> for a lot of workloads.
+This tree is partially included in linux-next.  To see which patches are
+included in linux-next, consult the `series' file.  Only the patches
+within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
+linux-next.
 
-Yes, they are covered too, by mark_page_accessed(), when they are
-read/written via file descriptors.
 
-> > On Chrome OS, our real-world benchmark that browses popular websites
-> > in multiple tabs demonstrates 51% less CPU usage from kswapd and 52%
-> > (full) less PSI on v5.11. And kswapd profile looks like:
-> >   49.36%  lzo1x_1_do_compress
-> >    4.54%  page_vma_mapped_walk
-> >    4.45%  memset_erms
-> >    3.47%  walk_pte_range
-> >    2.88%  zram_bvec_rw
-> >
-> > In addition, direct reclaim latency is reduced by 22% at 99th
-> > percentile and the number of refaults is reduced 7%. These metrics are
-> > important to phones and laptops as they are correlated to user
-> > experience.
-> >
-> > Workflow
-> > ========
-> > Evictable pages are divided into multiple generations for each lruvec.
-> > The youngest generation number is stored in lruvec->evictable.max_seq
-> > for both anon and file types as they are aged on an equal footing. The
-> > oldest generation numbers are stored in lruvec->evictable.min_seq[2]
-> > separately for anon and file types as clean file pages can be evicted
-> > regardless of may_swap or may_writepage. Generation numbers are
-> > truncated into ilog2(MAX_NR_GENS)+1 bits in order to fit into
-> > page->flags. The sliding window technique is used to prevent truncated
-> > generation numbers from overlapping. Each truncated generation number
-> > is an index to
-> > lruvec->evictable.lists[MAX_NR_GENS][ANON_AND_FILE][MAX_NR_ZONES].
-> > Evictable pages are added to the per-zone lists indexed by max_seq or
-> > min_seq[2] (modulo MAX_NR_GENS), depending on whether they are being
-> > faulted in or read ahead. The workflow comprises two conceptually
-> > independent functions: the aging and the eviction.
-> 
-> Could you please illustrate the data structures? I think this would be
-> very helpful to understand the code. I haven't looked into the code
-> closely yet, per my shallow understanding to the above paragraphs, the
-> new lruvec looks like:
-> 
-> ----------------
-> | max_seq  |
-> ----------------
-> | .....            |
-> ----------------
-> | min_seq.  | -----> -------------
-> ----------------          |  Anon    | ---------> -------------------
->                               ------------               | MAX_ZONE  |
-> --------> list of pages
->                              |  File       |              --------------------
->                               -------------              | .......
->           | --------->
->                                                             --------------------
->                                                             | ZONE_DMA
->  | --------->
->                                                             --------------------
-> 
-> And the max_seq/min_seq is per memcg, is my understanding correct?
+A full copy of the full kernel tree with the linux-next and mmotm patches
+already applied is available through git within an hour of the mmotm
+release.  Individual mmotm releases are tagged.  The master branch always
+points to the latest release, so it's constantly rebasing.
 
-Yes, on single-node systems. To be precise, they are per lruvec. Each
-memcg has N lruvecs for N-node systems.
+	https://github.com/hnaz/linux-mm
 
-A crude analogy would be a ring buffer: the aging to the writer
-advancing max_seq and the eviction to the reader advancing min_seq,
-in terms of generations. (The aging only tags pages -- it doesn't add
-pages to the lists; page allocations do.)
+The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
+contains daily snapshots of the -mm tree.  It is updated more frequently
+than mmotm, and is untested.
 
-> > Aging
-> > -----
-> > The aging produces young generations. Given an lruvec, the aging scans
-> > page tables for referenced pages of this lruvec. Upon finding one, the
-> > aging updates its generation number to max_seq. After each round of
-> > scan, the aging increments max_seq. The aging maintains either a
-> > system-wide mm_struct list or per-memcg mm_struct lists and tracks
-> > whether an mm_struct is being used on any CPUs or has been used since
-> > the last scan. Multiple threads can concurrently work on the same
-> > mm_struct list, and each of them will be given a different mm_struct
-> > belonging to a process that has been scheduled since the last scan.
-> 
-> I don't quite get how the "aging" works. IIUC, you have a dedicated
-> kernel thread or threads to scan the page tables periodically to
-> update the generations and promote or demote pages among the lists or
-> the "aging" just happens in reclaimer?
+A git copy of this tree is also available at
 
-The aging can happen in any reclaiming threads, when let's say "the
-inactive" is low. There is no dedicated kernel threads, unless you
-count kswapd as one.
+	https://github.com/hnaz/linux-mm
 
-For example, for memcg reclaim, we have:
-  page charge failure
-    memcg reclaim
-      select a node
-        get lruvec from the node and the memcg
-retry:
-          if max_seq - min_seq < 2, i.e., no inactive pages
-            the aging: scan the mm_struct lists
-              increment max_seq
-          the eviction: scan the page lists
-            if the per-zone lists are empty
-              increment min_seq
-              goto retry
+
+
+This mmotm tree contains the following patches against 5.12-rc3:
+(patches marked "*" will be included in linux-next)
+
+* hugetlb_cgroup-fix-imbalanced-css_get-and-css_put-pair-for-shared-mappings.patch
+* kasan-fix-per-page-tags-for-non-page_alloc-pages.patch
+* mm-mmu_notifiers-esnure-range_end-is-paired-with-range_start.patch
+* selftests-vm-fix-out-of-tree-build.patch
+* z3fold-prevent-reclaim-free-race-for-headless-pages.patch
+* squashfs-fix-inode-lookup-sanity-checks.patch
+* squashfs-fix-xattr-id-and-id-lookup-sanity-checks.patch
+* ia64-mca-allocate-early-mca-with-gfp_atomic.patch
+* ia64-fix-format-strings-for-err_inject.patch
+* gcov-fix-clang-11-support.patch
+* proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
+* proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
+* module-remove-duplicate-include-in-arch-ia64-kernel-heads.patch
+* ia64-kernel-few-typos-fixed-in-the-file-fsyss.patch
+* ia64-include-asm-minor-typo-fixes-in-the-file-pgtableh.patch
+* sparse-can-do-constant-folding-of-__builtin_bswap.patch
+* scripts-spellingtxt-add-overlfow.patch
+* scripts-spellingtxt-add-diabled-typo.patch
+* scripts-spellingtxt-add-overflw.patch
+* sh-remove-duplicate-include-in-tlbh.patch
+* ocfs2-replace-define_simple_attribute-with-define_debugfs_attribute.patch
+* ocfs2-clear-links-count-in-ocfs2_mknod-if-an-error-occurs.patch
+* ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
+* watchdog-rename-__touch_watchdog-to-a-better-descriptive-name.patch
+* watchdog-explicitly-update-timestamp-when-reporting-softlockup.patch
+* watchdog-softlockup-report-the-overall-time-of-softlockups.patch
+* watchdog-softlockup-remove-logic-that-tried-to-prevent-repeated-reports.patch
+* watchdog-fix-barriers-when-printing-backtraces-from-all-cpus.patch
+* watchdog-cleanup-handling-of-false-positives.patch
+  mm.patch
+* mm-slub-enable-slub_debug-static-key-when-creating-cache-with-explicit-debug-flags.patch
+* mm-page_owner-record-the-timestamp-of-all-pages-during-free.patch
+* mm-provide-filemap_range_needs_writeback-helper.patch
+* mm-use-filemap_range_needs_writeback-for-o_direct-reads.patch
+* iomap-use-filemap_range_needs_writeback-for-o_direct-reads.patch
+* mm-filemap-use-filemap_read_page-in-filemap_fault.patch
+* mm-filemap-drop-check-for-truncated-page-after-i-o.patch
+* mm-page-writeback-simplify-memcg-handling-in-test_clear_page_writeback.patch
+* mm-introduce-and-use-mapping_empty.patch
+* mm-stop-accounting-shadow-entries.patch
+* dax-account-dax-entries-as-nrpages.patch
+* mm-remove-nrexceptional-from-inode.patch
+* mm-msync-exit-early-when-the-flags-is-an-ms_async-and-start-vm_start.patch
+* mm-memremap-fixes-improper-spdx-comment-style.patch
+* mm-memcontrol-fix-kernel-stack-account.patch
+* memcg-cleanup-root-memcg-checks.patch
+* memcg-enable-memcg-oom-kill-for-__gfp_nofail.patch
+* memcg-charge-before-adding-to-swapcache-on-swapin.patch
+* mm-memcontrol-fix-cpuhotplug-statistics-flushing.patch
+* mm-memcontrol-kill-mem_cgroup_nodeinfo.patch
+* mm-memcontrol-privatize-memcg_page_state-query-functions.patch
+* cgroup-rstat-support-cgroup1.patch
+* cgroup-rstat-punt-root-level-optimization-to-individual-controllers.patch
+* mm-memcontrol-switch-to-rstat.patch
+* mm-memcontrol-switch-to-rstat-fix.patch
+* mm-memcontrol-switch-to-rstat-fix-2.patch
+* mm-memcontrol-consolidate-lruvec-stat-flushing.patch
+* kselftests-cgroup-update-kmem-test-for-new-vmstat-implementation.patch
+* mm-delete-bool-migrated.patch
+* mm-interval_tree-add-comments-to-improve-code-reading.patch
+* x86-vmemmap-drop-handling-of-4k-unaligned-vmemmap-range.patch
+* x86-vmemmap-drop-handling-of-1gb-vmemmap-ranges.patch
+* x86-vmemmap-handle-unpopulated-sub-pmd-ranges.patch
+* x86-vmemmap-optimize-for-consecutive-sections-in-partial-populated-pmds.patch
+* mm-tracing-improve-rss_stat-tracepoint-message.patch
+* mm-allow-shmem-mappings-with-mremap_dontunmap.patch
+* mm-dmapool-switch-from-strlcpy-to-strscpy.patch
+* samples-vfio-mdev-mdpy-use-remap_vmalloc_range.patch
+* mm-unexport-remap_vmalloc_range_partial.patch
+* mm-vmalloc-use-rb_tree-instead-of-list-for-vread-lookups.patch
+* kasan-remove-redundant-config-option.patch
+* kasan-remove-redundant-config-option-fix.patch
+* mm-kasan-switch-from-strlcpy-to-strscpy.patch
+* kasan-initialize-shadow-to-tag_invalid-for-sw_tags.patch
+* mm-kasan-dont-poison-boot-memory-with-tag-based-modes.patch
+* arm64-kasan-allow-to-init-memory-when-setting-tags.patch
+* kasan-init-memory-in-kasan_unpoison-for-hw_tags.patch
+* kasan-mm-integrate-page_alloc-init-with-hw_tags.patch
+* kasan-mm-integrate-slab-init_on_alloc-with-hw_tags.patch
+* kasan-mm-integrate-slab-init_on_free-with-hw_tags.patch
+* kasan-docs-clean-up-sections.patch
+* kasan-docs-update-overview-section.patch
+* kasan-docs-update-usage-section.patch
+* kasan-docs-update-error-reports-section.patch
+* kasan-docs-update-boot-parameters-section.patch
+* kasan-docs-update-generic-implementation-details-section.patch
+* kasan-docs-update-sw_tags-implementation-details-section.patch
+* kasan-docs-update-hw_tags-implementation-details-section.patch
+* kasan-docs-update-shadow-memory-section.patch
+* kasan-docs-update-ignoring-accesses-section.patch
+* kasan-docs-update-tests-section.patch
+* mm-page_alloc-drop-pr_info_ratelimited-in-alloc_contig_range.patch
+* mm-remove-lru_add_drain_all-in-alloc_contig_range.patch
+* mm-correctly-determine-last_cpupid_width.patch
+* mm-clean-up-include-linux-page-flags-layouth.patch
+* mm-page_alloc-rename-alloc_mask-to-alloc_gfp.patch
+* mm-page_alloc-rename-gfp_mask-to-gfp.patch
+* mm-page_alloc-combine-__alloc_pages-and-__alloc_pages_nodemask.patch
+* mm-mempolicy-rename-alloc_pages_current-to-alloc_pages.patch
+* mm-mempolicy-rewrite-alloc_pages-documentation.patch
+* mm-mempolicy-rewrite-alloc_pages_vma-documentation.patch
+* mm-mempolicy-fix-mpol_misplaced-kernel-doc.patch
+* mm-page_alloc-dump-migrate-failed-pages.patch
+* mm-remove-default-discontigmem_manual.patch
+* hugetlb-pass-vma-into-huge_pte_alloc-and-huge_pmd_share.patch
+* hugetlb-pass-vma-into-huge_pte_alloc-and-huge_pmd_share-fix.patch
+* hugetlb-userfaultfd-forbid-huge-pmd-sharing-when-uffd-enabled.patch
+* hugetlb-userfaultfd-forbid-huge-pmd-sharing-when-uffd-enabled-fix.patch
+* mm-hugetlb-move-flush_hugetlb_tlb_range-into-hugetlbh.patch
+* hugetlb-userfaultfd-unshare-all-pmds-for-hugetlbfs-when-register-wp.patch
+* mm-hugetlb-remove-redundant-reservation-check-condition-in-alloc_huge_page.patch
+* mm-generalize-hugetlb_page_size_variable.patch
+* mm-hugetlb-use-some-helper-functions-to-cleanup-code.patch
+* mm-hugetlb-optimize-the-surplus-state-transfer-code-in-move_hugetlb_state.patch
+* hugetlb_cgroup-remove-unnecessary-vm_bug_on_page-in-hugetlb_cgroup_migrate.patch
+* mm-hugetlb-simplify-the-code-when-alloc_huge_page-failed-in-hugetlb_no_page.patch
+* mm-hugetlb-avoid-calculating-fault_mutex_hash-in-truncate_op-case.patch
+* khugepaged-remove-unneeded-return-value-of-khugepaged_collapse_pte_mapped_thps.patch
+* khugepaged-reuse-the-smp_wmb-inside-__setpageuptodate.patch
+* khugepaged-use-helper-khugepaged_test_exit-in-__khugepaged_enter.patch
+* khugepaged-fix-wrong-result-value-for-trace_mm_collapse_huge_page_isolate.patch
+* mm-huge_memoryc-remove-unnecessary-local-variable-ret2.patch
+* mm-huge_memory-a-new-debugfs-interface-for-splitting-thp-tests.patch
+* mm-memory_hotplug-factor-out-bootmem-core-functions-to-bootmem_infoc.patch
+* mm-hugetlb-introduce-a-new-config-hugetlb_page_free_vmemmap.patch
+* mm-hugetlb-gather-discrete-indexes-of-tail-page.patch
+* mm-hugetlb-free-the-vmemmap-pages-associated-with-each-hugetlb-page.patch
+* mm-hugetlb-alloc-the-vmemmap-pages-associated-with-each-hugetlb-page.patch
+* mm-hugetlb-set-the-pagehwpoison-to-the-raw-error-page.patch
+* mm-hugetlb-add-a-kernel-parameter-hugetlb_free_vmemmap.patch
+* mm-hugetlb-introduce-nr_free_vmemmap_pages-in-the-struct-hstate.patch
+* userfaultfd-add-minor-fault-registration-mode.patch
+* userfaultfd-disable-huge-pmd-sharing-for-minor-registered-vmas.patch
+* userfaultfd-hugetlbfs-only-compile-uffd-helpers-if-config-enabled.patch
+* userfaultfd-add-uffdio_continue-ioctl.patch
+* userfaultfd-update-documentation-to-describe-minor-fault-handling.patch
+* userfaultfd-selftests-add-test-exercising-minor-fault-handling.patch
+* userfaultfd-support-minor-fault-handling-for-shmem.patch
+* userfaultfd-support-minor-fault-handling-for-shmem-fix.patch
+* userfaultfd-selftests-use-memfd_create-for-shmem-test-type.patch
+* userfaultfd-selftests-create-alias-mappings-in-the-shmem-test.patch
+* userfaultfd-selftests-reinitialize-test-context-in-each-test.patch
+* userfaultfd-selftests-exercise-minor-fault-handling-shmem-support.patch
+* userfaultfd-selftests-use-user-mode-only.patch
+* userfaultfd-selftests-remove-the-time-check-on-delayed-uffd.patch
+* userfaultfd-selftests-dropping-verify-check-in-locking_thread.patch
+* userfaultfd-selftests-only-dump-counts-if-mode-enabled.patch
+* userfaultfd-selftests-unify-error-handling.patch
+* mm-vmscan-move-reclaim-bits-to-uapi-header.patch
+* mm-vmscan-replace-implicit-reclaim_zone-checks-with-explicit-checks.patch
+* mm-vmscan-use-nid-from-shrink_control-for-tracepoint.patch
+* mm-vmscan-consolidate-shrinker_maps-handling-code.patch
+* mm-vmscan-use-shrinker_rwsem-to-protect-shrinker_maps-allocation.patch
+* mm-vmscan-remove-memcg_shrinker_map_size.patch
+* mm-vmscan-use-kvfree_rcu-instead-of-call_rcu.patch
+* mm-memcontrol-rename-shrinker_map-to-shrinker_info.patch
+* mm-vmscan-add-shrinker_info_protected-helper.patch
+* mm-vmscan-use-a-new-flag-to-indicate-shrinker-is-registered.patch
+* mm-vmscan-add-per-memcg-shrinker-nr_deferred.patch
+* mm-vmscan-use-per-memcg-nr_deferred-of-shrinker.patch
+* mm-vmscan-dont-need-allocate-shrinker-nr_deferred-for-memcg-aware-shrinkers.patch
+* mm-memcontrol-reparent-nr_deferred-when-memcg-offline.patch
+* mm-vmscan-shrink-deferred-objects-proportional-to-priority.patch
+* mm-compaction-remove-unused-variable-sysctl_compact_memory.patch
+* mm-compaction-update-the-compact-events-properly.patch
+* mm-vmstat-add-cma-statistics.patch
+* mm-cma-use-pr_err_ratelimited-for-cma-warning.patch
+* mm-cma-support-sysfs.patch
+* mm-restore-node-stat-checking-in-proc-sys-vm-stat_refresh.patch
+* mm-no-more-einval-from-proc-sys-vm-stat_refresh.patch
+* mm-proc-sys-vm-stat_refresh-skip-checking-known-negative-stats.patch
+* mm-proc-sys-vm-stat_refresh-stop-checking-monotonic-numa-stats.patch
+* x86-mm-tracking-linear-mapping-split-events.patch
+* mm-mmap-dont-unlock-vmas-in-remap_file_pages.patch
+* mm-reduce-mem_dump_obj-object-size.patch
+* mm-gup-dont-pin-migrated-cma-pages-in-movable-zone.patch
+* mm-gup-check-every-subpage-of-a-compound-page-during-isolation.patch
+* mm-gup-return-an-error-on-migration-failure.patch
+* mm-gup-check-for-isolation-errors.patch
+* mm-cma-rename-pf_memalloc_nocma-to-pf_memalloc_pin.patch
+* mm-apply-per-task-gfp-constraints-in-fast-path.patch
+* mm-honor-pf_memalloc_pin-for-all-movable-pages.patch
+* mm-gup-do-not-migrate-zero-page.patch
+* mm-gup-migrate-pinned-pages-out-of-movable-zone.patch
+* memory-hotplugrst-add-a-note-about-zone_movable-and-page-pinning.patch
+* mm-gup-change-index-type-to-long-as-it-counts-pages.patch
+* mm-gup-longterm-pin-migration-cleanup.patch
+* selftests-vm-gup_test-fix-test-flag.patch
+* selftests-vm-gup_test-test-faulting-in-kernel-and-verify-pinnable-pages.patch
+* mmmemory_hotplug-allocate-memmap-from-the-added-memory-range.patch
+* mmmemory_hotplug-allocate-memmap-from-the-added-memory-range-fix.patch
+* acpimemhotplug-enable-mhp_memmap_on_memory-when-supported.patch
+* mmmemory_hotplug-add-kernel-boot-option-to-enable-memmap_on_memory.patch
+* x86-kconfig-introduce-arch_mhp_memmap_on_memory_enable.patch
+* arm64-kconfig-introduce-arch_mhp_memmap_on_memory_enable.patch
+* mm-zswap-switch-from-strlcpy-to-strscpy.patch
+* iov_iter-lift-memzero_page-to-highmemh.patch
+* btrfs-use-memzero_page-instead-of-open-coded-kmap-pattern.patch
+* mm-highmemc-fix-coding-style-issue.patch
+* mm-highmem-remove-deprecated-kmap_atomic.patch
+* mm-mempool-minor-coding-style-tweaks.patch
+* mm-swapfile-minor-coding-style-tweaks.patch
+* mm-sparse-minor-coding-style-tweaks.patch
+* mm-vmscan-minor-coding-style-tweaks.patch
+* mm-compaction-minor-coding-style-tweaks.patch
+* mm-oom_kill-minor-coding-style-tweaks.patch
+* mm-shmem-minor-coding-style-tweaks.patch
+* mm-page_alloc-minor-coding-style-tweaks.patch
+* mm-filemap-minor-coding-style-tweaks.patch
+* mm-mlock-minor-coding-style-tweaks.patch
+* mm-frontswap-minor-coding-style-tweaks.patch
+* mm-vmalloc-minor-coding-style-tweaks.patch
+* mm-memory_hotplug-minor-coding-style-tweaks.patch
+* mm-mempolicy-minor-coding-style-tweaks.patch
+* mm-process_vm_access-remove-duplicate-include.patch
+* kfence-zero-guard-page-after-out-of-bounds-access.patch
+* info-task-hung-in-generic_file_write_iter.patch
+* info-task-hung-in-generic_file_write-fix.patch
+* kernel-hung_taskc-monitor-killed-tasks.patch
+* procfs-allow-reading-fdinfo-with-ptrace_mode_read.patch
+* procfs-dmabuf-add-inode-number-to-proc-fdinfo.patch
+* proc-sysctl-fix-function-name-error-in-comments.patch
+* proc-sysctl-make-protected_-world-readable.patch
+* include-remove-pagemaph-from-blkdevh.patch
+* kernel-asyncc-fix-pr_debug-statement.patch
+* kernel-credc-make-init_groups-static.patch
+* umh-fix-some-spelling-mistakes.patch
+* lib-fix-a-typo-in-the-file-bchc.patch
+* lib-fix-inconsistent-indenting-in-process_bit1.patch
+* lib-fix-typo-in-function-description.patch
+* compat-remove-unneeded-declaration-from-compat_syscall_definex.patch
+* fs-fat-fix-spelling-typo-of-values.patch
+* do_wait-make-pidtype_pid-case-o1-instead-of-on.patch
+* simplify-copy_mm.patch
+* kernel-crash_core-add-crashkernel=auto-for-vmcore-creation.patch
+* kexec-add-kexec-reboot-string.patch
+* kernel-kexec_file-fix-error-return-code-of-kexec_calculate_store_digests.patch
+* gcov-clang-drop-support-for-clang-10-and-older.patch
+* gcov-combine-common-code.patch
+* gcov-simplify-buffer-allocation.patch
+* gcov-use-kvmalloc.patch
+* aio-simplify-read_events.patch
+* gdb-lx-symbols-store-the-abspath.patch
+* scripts-gdb-document-lx_current-is-only-supported-by-x86.patch
+* scripts-gdb-add-lx_current-support-for-arm64.patch
+* kernel-asyncc-stop-guarding-pr_debug-statements.patch
+* kernel-asyncc-remove-async_unregister_domain.patch
+* init-initramfsc-do-unpacking-asynchronously.patch
+* modules-add-config_modprobe_path.patch
+  linux-next.patch
+  make-sure-nobodys-leaking-resources.patch
+  releasing-resources-with-children.patch
+  mutex-subsystem-synchro-test-module.patch
+  kernel-forkc-export-kernel_thread-to-modules.patch
+  workaround-for-a-pci-restoring-bug.patch
