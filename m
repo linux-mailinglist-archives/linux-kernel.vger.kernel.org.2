@@ -2,141 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8645133DB68
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 060EF33DB70
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:52:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233674AbhCPRvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233139AbhCPRug (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:50:36 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576EDC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:50:35 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id f10so13498054ilq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:50:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JtrNAHIlNGqyu7tY2KgHDa90TRR2iABoGQSIvstGdZs=;
-        b=kN4jETKpOsMT8ujABTKX/KoA1MUTlDRb+Z9NHUYVnpAh0syYrBtdaNgzA3IIHB602i
-         HsTlTbMAjEyLIPblDWQdvaFB6Q6U8xj7Wm6Qa/UJmkrU/ZRuins9KWZSKS1KwDBsxG0K
-         uk71bJAwFyqxS1ex5mOipRhoh7DVGXgqio8WQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JtrNAHIlNGqyu7tY2KgHDa90TRR2iABoGQSIvstGdZs=;
-        b=gBiU8gBPLj2/GWH5m1Jz2wkxwAkR0AmVa3R8XRVbYqYQktsEn4uPnZqvWpqHmC4RJY
-         CVQK9MXZBGXzjkn/mP3j6IVXyr5KhRIM7oLIXkvyhwtpE8HzbjZ8nYzAdLblS+OctyAB
-         wPZJ2w4WqRRsLj++RUtfMU+vBmzNfuuUKWbe6D/8PY0B8lS9vJEQYWEI5FHPXKUn0Zmf
-         xhJL8yx9iTx9USdGAH3zkgnawq8BSK1sTWDMB5xmFgu6hBU/EPxKgR0O1Q9JUYvDUjZy
-         7e2AHRV/M+KFl5RfH0oc+hOJGnOUsmlzwyTYLAlUGYlNdUbMuWsbA4OgTj8Iqm84hJ98
-         XuqQ==
-X-Gm-Message-State: AOAM530GiCVo5PLUq1GiHt2qUKi1NP+8j6NnQZNRdvWoLI/OXlrX7KjO
-        YHz3Zt0L6O4exetfVzEF9HHDyNPq/QeClw==
-X-Google-Smtp-Source: ABdhPJx3jNSKWyMKGoAfd/07MSeXlLqkuN/c5kV7cTMm07q6XgC7HqnfPrnM377tkhhCwipUC7vWLw==
-X-Received: by 2002:a92:cda1:: with SMTP id g1mr3205483ild.141.1615917034520;
-        Tue, 16 Mar 2021 10:50:34 -0700 (PDT)
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com. [209.85.166.52])
-        by smtp.gmail.com with ESMTPSA id b12sm9760065ilr.55.2021.03.16.10.50.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 10:50:33 -0700 (PDT)
-Received: by mail-io1-f52.google.com with SMTP id 81so38104172iou.11
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:50:32 -0700 (PDT)
-X-Received: by 2002:a02:cb4b:: with SMTP id k11mr15230940jap.144.1615917032400;
- Tue, 16 Mar 2021 10:50:32 -0700 (PDT)
+        id S234637AbhCPRvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:51:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233139AbhCPRvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:51:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C46E65104;
+        Tue, 16 Mar 2021 17:51:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615917070;
+        bh=pbJXtCdebP9sYUzCMuDBNQ/VmqE7MtiUhZT+utdKfOM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=t8FdK+fOB70tNbCjuQ/RgrRM2Wd0C3aelP/9AsTK0EhaEK2ioLvQGaB5Wd34h3aV4
+         KeOSzmmPQF7+xTxE2hyu6GKVXMv2IuBhrNvHu8whsMR4uXFvi+vZkx4Gj5NQd0L4OU
+         Bo1wJLI53BN2AHXTfnfvYtV7/pi/7gui09Pu5y7xZ1wlbCIP+xFYNNV27VUfy60xKB
+         PoaAhT12LIWET8j5TYN9IrR1V7fEhgRlTZqFGm5hZpr4Lk6oHG8mHq7HkRigVVQ3SW
+         fQw+RDruVgyKrhNte/jJ8d0vRTxVDuuwvVsgzqbPbKnIEB8G1xq2eQoSnh4Wd7w3Sm
+         usTNR5ULOqoPg==
+Received: by mail-qt1-f173.google.com with SMTP id l13so12300520qtu.9;
+        Tue, 16 Mar 2021 10:51:10 -0700 (PDT)
+X-Gm-Message-State: AOAM533QguOKsQ6ImKqCfxbnNLU8IR4Z58S2fSnIW8z8YiDXUCnu9i4z
+        QaojLrtFXaEjl528t5sjVRDflY8OY7kItYrpSQ==
+X-Google-Smtp-Source: ABdhPJyQ+kzNAOwqUQ5HTBukjAeFUdJ61x9F0CW9p3bMCtDLms1Vd2ObGy7uTjqxjypyXGTzjERW0l+ltG8kH1rSAC0=
+X-Received: by 2002:ac8:70d1:: with SMTP id g17mr75201qtp.306.1615917069540;
+ Tue, 16 Mar 2021 10:51:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210315123406.1523607-1-ribalda@chromium.org> <34c90095-bcbf-5530-786a-e709cc493fa9@linux.intel.com>
-In-Reply-To: <34c90095-bcbf-5530-786a-e709cc493fa9@linux.intel.com>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Tue, 16 Mar 2021 18:50:20 +0100
-X-Gmail-Original-Message-ID: <CANiDSCvMvYVN0+zN3du2pJfGLPJ_f7Ees2YrfybJgUDmBjq2jQ@mail.gmail.com>
-Message-ID: <CANiDSCvMvYVN0+zN3du2pJfGLPJ_f7Ees2YrfybJgUDmBjq2jQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] media: staging/intel-ipu3: Fix memory leak in imu_fmt
-To:     Bingbu Cao <bingbu.cao@linux.intel.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devel@driverdev.osuosl.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org
+References: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
+ <20210312154357.1561730-5-sebastian.reichel@collabora.com>
+ <CAL_JsqKFJPSMyMbcrpnL1WgttHSP+3Q+U8bJ_m5hm=O0gEPe4g@mail.gmail.com> <20210316164602.hupmcy2hjflf4za2@earth.universe>
+In-Reply-To: <20210316164602.hupmcy2hjflf4za2@earth.universe>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 16 Mar 2021 11:50:58 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqK5zBuRHHj523qtBodoJ30YKXFBvnmDBdf0oHtVriESeA@mail.gmail.com>
+Message-ID: <CAL_JsqK5zBuRHHj523qtBodoJ30YKXFBvnmDBdf0oHtVriESeA@mail.gmail.com>
+Subject: Re: [PATCH 04/38] dt-bindings: power: supply: bq25890: Convert to DT
+ schema format
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bingbu
-
-Thanks for your review
-
-On Tue, Mar 16, 2021 at 12:29 PM Bingbu Cao <bingbu.cao@linux.intel.com> wrote:
+On Tue, Mar 16, 2021 at 10:46 AM Sebastian Reichel
+<sebastian.reichel@collabora.com> wrote:
 >
-> Hi, Ricardo
+> Hi,
 >
-> Thanks for your patch.
-> It looks fine for me, do you mind squash 2 patchsets into 1 commit?
-
-Are you sure? There are two different issues that we are solving.
-
-Best regards!
-
+> On Mon, Mar 15, 2021 at 12:21:34PM -0600, Rob Herring wrote:
+> > On Fri, Mar 12, 2021 at 8:44 AM Sebastian Reichel
+> > <sebastian.reichel@collabora.com> wrote:
+> > > +  ti,ibatcomp-clamp-microvolt:
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > +    description: max. charging voltage adjustment due to expected voltage drop on in-series resistor
+> >
+> > You don't need a type $ref on properties with a standard unit suffix.
+> > Though it looks like there's some non-standard ones (-microvolts) in
+> > the series.
 >
-> On 3/15/21 8:34 PM, Ricardo Ribalda wrote:
-> > We are losing the reference to an allocated memory if try. Change the
-> > order of the check to avoid that.
-> >
-> > Cc: stable@vger.kernel.org
-> > Fixes: 6d5f26f2e045 ("media: staging/intel-ipu3-v4l: reduce kernel stack usage")
-> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > ---
-> >  drivers/staging/media/ipu3/ipu3-v4l2.c | 11 +++++++----
-> >  1 file changed, 7 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/staging/media/ipu3/ipu3-v4l2.c b/drivers/staging/media/ipu3/ipu3-v4l2.c
-> > index 60aa02eb7d2a..35a74d99322f 100644
-> > --- a/drivers/staging/media/ipu3/ipu3-v4l2.c
-> > +++ b/drivers/staging/media/ipu3/ipu3-v4l2.c
-> > @@ -693,6 +693,13 @@ static int imgu_fmt(struct imgu_device *imgu, unsigned int pipe, int node,
-> >               if (inode == IMGU_NODE_STAT_3A || inode == IMGU_NODE_PARAMS)
-> >                       continue;
-> >
-> > +             /* CSS expects some format on OUT queue */
-> > +             if (i != IPU3_CSS_QUEUE_OUT &&
-> > +                 !imgu_pipe->nodes[inode].enabled) {
-> > +                     fmts[i] = NULL;
-> > +                     continue;
-> > +             }
-> > +
-> >               if (try) {
-> >                       fmts[i] = kmemdup(&imgu_pipe->nodes[inode].vdev_fmt.fmt.pix_mp,
-> >                                         sizeof(struct v4l2_pix_format_mplane),
-> > @@ -705,10 +712,6 @@ static int imgu_fmt(struct imgu_device *imgu, unsigned int pipe, int node,
-> >                       fmts[i] = &imgu_pipe->nodes[inode].vdev_fmt.fmt.pix_mp;
-> >               }
-> >
-> > -             /* CSS expects some format on OUT queue */
-> > -             if (i != IPU3_CSS_QUEUE_OUT &&
-> > -                 !imgu_pipe->nodes[inode].enabled)
-> > -                     fmts[i] = NULL;
-> >       }
-> >
-> >       if (!try) {
-> >
+> Ok. Unfortunately most properties in this series use non-standard
+> ones :(. Newer bindings using common properties have already been
+> written in YAML and/or make use of simple-battery.
 >
-> --
-> Best regards,
-> Bingbu Cao
+> Can we have a warning for this in the dt_binding_check? Maybe
+> something like
 
+Yeah, I'm working on that.
 
+> superfluous $ref for property with standard suffix
 
--- 
-Ricardo Ribalda
+And having more helpful error messages is on my todo, but not much BW
+to work on ATM.
+
+Rob
