@@ -2,123 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133F833D466
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F95633D472
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232312AbhCPMzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233647AbhCPMx6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:53:58 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FC1C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 05:53:57 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id x16so7384307wrn.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 05:53:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=YhH9qDZ7UYlwG27TDzW+MnA+T1mgb+aVZ+2GGb51p/w=;
-        b=TIM3a2FTxwFa4dUcd5GxP31tl7wKFqCYuHW1RCSsYGdx7PfVWPHK4rzncWHc1Wi7o/
-         d2c3Bkjb6IsOlZBuk6rn54lnPctO+Kra4AXoGrH+tT7zTPwClbOKbkcQ9wbb+rGcmK3R
-         HUv2leFtOacjysyoAyc9t7BDaMfJ4EoYue76wFoHsTLkgUWeXl3xaHcENikgGzeEy2QY
-         2AZ211B1x7jPAMLqwIUBhegCNV14sv6beMz36g1/kzF9w2L1N5tTi2BNhRJlm8CoN6hW
-         YRmJP03BcUurDZRpbei0PZIRVONf2SXSbDMfZVUktwxp5jFGb+cUr/XXkKviaSfLxp2l
-         a+7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=YhH9qDZ7UYlwG27TDzW+MnA+T1mgb+aVZ+2GGb51p/w=;
-        b=bOBHUXNQFJSnKZTQXIWxj00kvKrZRJ+bDakrcx1n6KOXGHlv66vaT/jrNNMVcWOK0V
-         /dFMPP6b7rXnwtfNiju7zBU1bRIQMkreuS7qx+Uwu58y4k88w6ae5E2l4y1qish3xLbg
-         zSNuxPqZ/5oqNbFWnK+YPuNxijPhIVsjNZppYyGDyMLk0af0fZFHBm1z2rr9y7jBFxBv
-         Q2ekFzTjI8uheQWNl4a2hEelujEMnll1HSYYGH/RSHeEh8YJ+4cuvk7XpiSA8Q44y561
-         Qde8jrr/fnAu29cDOuDSLdWejDLMexmY+wMWt7ad7PzmZAJKLuVDe9J4/ptCax7bOMyV
-         K1lg==
-X-Gm-Message-State: AOAM533MxvRuOdagX/AQ97GzymH3SPUexXhbR4Ugd3zzS2VKXydPidU+
-        goY5ttQpEZSmR107ZMGrJGJ+oQ==
-X-Google-Smtp-Source: ABdhPJxGSb04ZRPkSOl7qX8cOElBY2c0oVdgp7I4wyUE4jKYntg8bGYi4e+uakNSKN8b4ZKHwnBiBg==
-X-Received: by 2002:adf:fe48:: with SMTP id m8mr4694101wrs.135.1615899235994;
-        Tue, 16 Mar 2021 05:53:55 -0700 (PDT)
-Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
-        by smtp.gmail.com with ESMTPSA id b186sm3074930wmc.44.2021.03.16.05.53.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 05:53:55 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 12:53:53 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Mate Toth-Pal <mate.toth-pal@arm.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
-        james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com, android-kvm@google.com, seanjc@google.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org,
-        mark.rutland@arm.com, dbrazdil@google.com
-Subject: Re: [PATCH v5 33/36] KVM: arm64: Wrap the host with a stage 2
-Message-ID: <YFCqYT3Ib8kAN7/c@google.com>
-References: <20210315143536.214621-1-qperret@google.com>
- <20210315143536.214621-34-qperret@google.com>
- <ec9df9a4-a419-089c-469f-1a1509597dd9@arm.com>
+        id S233989AbhCPM5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 08:57:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233443AbhCPM4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 08:56:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DF036504F;
+        Tue, 16 Mar 2021 12:56:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615899371;
+        bh=NUrWK1ohdGJAi0VWxxv0wY1aIMFLzvvTPrxsPTaMPN8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fXLxYIFHbmMoGLWMNSZ/WgJY84MJ9Y3/BU63digCWppmet+iBQw0iS2baMk2GcoML
+         W6xAwjqX3x0lhTQyDj3w+8og9DgswCH/O295wE+DGPUejiPmixCJy5XP+72MDg6NPK
+         oKQyORJVSFAMwxq4vIBbQ/pJZD4d/EJuu8X+RdTo=
+Date:   Tue, 16 Mar 2021 13:55:53 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] seq_file: Unconditionally use vmalloc for buffer
+Message-ID: <YFCq2TeHAl1s8/TX@kroah.com>
+References: <20210315174851.622228-1-keescook@chromium.org>
+ <YE+oZkSVNyaONMd9@zeniv-ca.linux.org.uk>
+ <202103151336.78360DB34D@keescook>
+ <YFBdQmT64c+2uBRI@kroah.com>
+ <YFCn4ERBMGoqxvUU@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ec9df9a4-a419-089c-469f-1a1509597dd9@arm.com>
+In-Reply-To: <YFCn4ERBMGoqxvUU@zeniv-ca.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 16 Mar 2021 at 13:28:42 (+0100), Mate Toth-Pal wrote:
-> Testing the latest version of the patchset, we seem to have found another
-> thing related to FEAT_S2FWB.
-
-Argh! I wish I could put my hands on hardware with FWB. Thanks again for
-the report.
-
-> This function always sets Normal memory in the stage 2 table, even if the
-> address in stage 1 was mapped as a device memory. However with the current
-> settings for normal memory (i.e. MT_S2_FWB_NORMAL being defined to 6)
-> according to the architecture (See Arm ARM, 'D5.5.5 Stage 2 memory region
-> type and cacheability attributes when FEAT_S2FWB is implemented') the
-> resulting attributes will be 'Normal Write-Back' even if the stage 1 mapping
-> sets device memory. Accessing device memory mapped like this causes an
-> SError on some platforms with FEAT_S2FWB being implemented.
-
-Right.
-
-> Changing the value of MT_S2_FWB_NORMAL to 7 would change this behavior, and
-> the resulting memory type would be device.
-
-Sounds like the correct fix here -- see below.
-
-> Another solution would be to add an else branch to the last 'if' above like
-> this:
+On Tue, Mar 16, 2021 at 12:43:12PM +0000, Al Viro wrote:
+> On Tue, Mar 16, 2021 at 08:24:50AM +0100, Greg Kroah-Hartman wrote:
 > 
-> diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> index fffa432ce3eb..54e5d3b0b2e1 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> @@ -214,6 +214,8 @@ static int host_stage2_idmap(u64 addr)
+> > > Completely agreed. seq_get_buf() should be totally ripped out.
+> > > Unfortunately, this is going to be a long road because of sysfs's ATTR
+> > > stuff, there are something like 5000 callers, and the entire API was
+> > > designed to avoid refactoring all those callers from
+> > > sysfs_kf_seq_show().
+> > 
+> > What is wrong with the sysfs ATTR stuff?  That should make it so that we
+> > do not have to change any caller for any specific change like this, why
+> > can't sysfs or kernfs handle it automatically?
 > 
->         if (is_memory)
->                 prot |= KVM_PGTABLE_PROT_X;
-> +       else
-> +               prot |= KVM_PGTABLE_PROT_DEVICE;
-> 
->         hyp_spin_lock(&host_kvm.lock);
->         ret = kvm_pgtable_stage2_find_range(&host_kvm.pgt, addr, prot,
-> &range);
+> Hard to tell, since that would require _finding_ the sodding ->show()
+> instances first.  Good luck with that, seeing that most of those appear
+> to come from templates-done-with-cpp...
 
-While this would work in this particular case, I don't think we should
-force all non-RAM accesses as device as the host may have reasons not to
-want this (e.g. accessing SRAM). Your first suggestions allows us to do
-just that, so it is preferable I think.
+Sure, auditing all of this is a pain, but the numbers that take a string
+are low if someone wants to do that and convert them all to sysfs_emit()
+today.
 
-Thanks,
-Quentin
+> AFAICS, Kees wants to protect against ->show() instances stomping beyond
+> the page size.  What I don't get is what do you get from using seq_file
+> if you insist on doing raw access to the buffer rather than using
+> seq_printf() and friends.  What's the point?
+
+I don't understand as I didn't switch kernfs to this api at all anyway,
+as it seems to have come from the original sysfs code moving to kernfs
+way back in 2013 with the work that Tejun did.  So I can't remember any
+of that...
+
+thanks,
+
+greg k-h
