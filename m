@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EFA33D525
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:47:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D19133D52F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231670AbhCPNqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:46:46 -0400
-Received: from mga02.intel.com ([134.134.136.20]:29714 "EHLO mga02.intel.com"
+        id S235490AbhCPNvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:51:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229622AbhCPNq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:46:28 -0400
-IronPort-SDR: j/A9zVAiG0/eWGhphrsHFssp0rpxneWYSOltF13emBkCAywqFp5h6nyqk0KBEPLdECak462UMB
- nPKvOl7GU5JQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="176390304"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="176390304"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 06:46:27 -0700
-IronPort-SDR: RwuFoNRYinpobRJAsQFRDh3AQU3TvAAWAisBI6/B8rZ13aHdK5t+od5VkM58O8Tdm2cBTu7QK2
- i0zFxRx8DQOw==
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="439152743"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 06:46:24 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1lMA1e-00CyW2-5G; Tue, 16 Mar 2021 15:46:22 +0200
-Date:   Tue, 16 Mar 2021 15:46:22 +0200
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Claudius Heine <ch@denx.de>,
-        johannes hahn <johannes-hahn@siemens.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        werner zeh <werner.zeh@siemens.com>,
-        martin mantel <martin.mantel@siemens.com>,
-        val krutov <val.krutov@erd.epson.com>
-Subject: Re: [PATCH v3 1/1] rtc: rx6110: add ACPI bindings to I2C
-Message-ID: <YFC2rnje4KLtjfFQ@smile.fi.intel.com>
-References: <AM0PR10MB25801B7DCB6C1856B5D4F2C09FE10@AM0PR10MB2580.EURPRD10.PROD.OUTLOOK.COM>
- <20210316100805.2630481-2-ch@denx.de>
- <YFCW3Kx9MPm0MT8H@smile.fi.intel.com>
- <20210316125251.64484b3a@md1za8fc.ad001.siemens.net>
+        id S229598AbhCPNud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 09:50:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 118C165053;
+        Tue, 16 Mar 2021 13:50:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615902632;
+        bh=v0MQftmjchfDyMC/gsPtVSaYN1KMEK0Xi5b0nN0zZoY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d2iQ8AfMIkcRJMiwCyMDrEYQ+fm2BuhcqJBrRDiqtLgZgbWR6A2s9flaTfKez135q
+         fdSRDHEXaqaWbIV5WoEHS3ARyh4Y+xL3xUNi+zW+teWI8G+pe/bpgpB0d/TPgyrk6V
+         2b9m5gDUqiCoIqZ8pj5Z10mELK7htU7kbHpvYxm+T3euNlvollP5cYdBCrg5C58Sex
+         0Zj6ic7R1OD5C9FtTyl+m4G1jnOaHtZqmbQgBxRQbWgCljhiYenYXdhL9g1ancsbm/
+         mhS9jEwKaQr+8wwBBQPfjhRhVSFyl0ruRGkoOxu3DHt0qNO+TMQcwsp0w81WV5q+rL
+         s3pH4/TS+Yk8Q==
+Date:   Tue, 16 Mar 2021 13:49:15 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Viorel Suman <viorel.suman@nxp.com>
+Cc:     "S.j. Wang" <shengjiu.wang@nxp.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "timur@kernel.org" <timur@kernel.org>,
+        "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_sai: remove reset code from dai_probe
+Message-ID: <20210316134915.GB4309@sirena.org.uk>
+References: <1615886826-30844-1-git-send-email-shengjiu.wang@nxp.com>
+ <20210316125839.GA4309@sirena.org.uk>
+ <VI1PR0401MB22721D0D266207472B3C7829926B9@VI1PR0401MB2272.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7iMSBzlTiPOCCT2k"
 Content-Disposition: inline
-In-Reply-To: <20210316125251.64484b3a@md1za8fc.ad001.siemens.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <VI1PR0401MB22721D0D266207472B3C7829926B9@VI1PR0401MB2272.eurprd04.prod.outlook.com>
+X-Cookie: Results vary by individual.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 12:52:51PM +0100, Henning Schild wrote:
-> Am Tue, 16 Mar 2021 13:30:36 +0200
-> schrieb Andy Shevchenko <andriy.shevchenko@intel.com>:
-> 
-> > On Tue, Mar 16, 2021 at 11:08:05AM +0100, Claudius Heine wrote:
-> > > From: Johannes Hahn <johannes-hahn@siemens.com>
-> > > 
-> > > This allows the RX6110 driver to be automatically assigned to the
-> > > right device on the I2C bus.  
-> > 
-> > Thanks for all effort!
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> > after addressing the below comments.
-> > 
-> > > Signed-off-by: Johannes Hahn <johannes-hahn@siemens.com>
-> > > Signed-off-by: Claudius Heine <ch@denx.de>  
-> > 
-> > > Signed-off-by: Henning Schild <henning.schild@siemens.com>  
-> 
-> Claudius, just remove that. I guess just add yours and mention authors
-> in the code if they should receive some recognition.
 
-> > > +#ifdef CONFIG_ACPI
-> > > +static const struct acpi_device_id rx6110_i2c_acpi_match[] = {
-> > > +	{ "SECC6110", },
+--7iMSBzlTiPOCCT2k
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > > +	{ },
+On Tue, Mar 16, 2021 at 01:42:40PM +0000, Viorel Suman wrote:
 
-Missed one thing, remove comma here. Terminator lines do not need a comma (and
-it's theoretically may confuse people or scripts while adding a new record to
-the array).
+> To me it makes sense to manage the clocks and reset from the same place.
+> Currently we have the clocks management moved completely into runtime PM
+> fsl_sai_runtime_resume and fsl_sai_runtime_suspend callbacks.=20
 
-> > > +};
-> > > +MODULE_DEVICE_TABLE(acpi, rx6110_i2c_acpi_match);
-> > > +#endif
+Usually the pattern is to have probe() leave everything powered up then
+let runtime PM power things down if it's enabled, you can often do the
+power up by having an open coded call to the resume callback in probe().
 
--- 
-With Best Regards,
-Andy Shevchenko
+--7iMSBzlTiPOCCT2k
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBQt1oACgkQJNaLcl1U
+h9BD2gf8CYq0baSLf4YPI5H7xjw4JepkHBJKPXid4yN7feW5rEKKZIlNzYx5AYT5
+jh10YF8ND602x/tBHwlqL2tNdjBFzSi4dT/1QapmOaS4NqEXPAWU97VUPECfxWLm
+29HZ7+Kw4LfDE2PI/2sKnBYd0wE8w0l2prCM0Ms8JT4hVal8O53kgzjJ6+dzHfpe
+jisKXgGv8qtNVlK+6AMK3H+vs8ROYnTfiYTsFNR4XF1nrvGSxwwvM8KuJb+rYb5+
+VNB58e4KMaolnwOyxf7QAQQpAAQ7gFl/GkRyXquIpeOlV2WER5v9N6rVV1DMpwII
+0zlVO4v7O5Cts1nqzxxdfsUHu1yNjg==
+=3CXS
+-----END PGP SIGNATURE-----
+
+--7iMSBzlTiPOCCT2k--
