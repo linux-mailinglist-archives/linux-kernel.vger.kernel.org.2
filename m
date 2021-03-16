@@ -2,107 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D293333D770
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F86233D774
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236895AbhCPPaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 11:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36086 "EHLO
+        id S236944AbhCPPao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 11:30:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236818AbhCPP3p (ORCPT
+        with ESMTP id S236925AbhCPPaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 11:29:45 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA398C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 08:29:44 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 124-20020a1c00820000b029010b871409cfso1681978wma.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 08:29:44 -0700 (PDT)
+        Tue, 16 Mar 2021 11:30:25 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A410BC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 08:30:23 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id y16so10711482wrw.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 08:30:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=ktNAwTlvxfid44xGOaNhTbS/R1RBktam9MRYoKsMOPY=;
-        b=bApAdIJXw+IMYQonD10JnUzZU9PsXhkEiPEL5M7B/dzXpiCZnJUEc9/uwvi243zIsJ
-         4rueYD3sxXFf2iiGifsAHTWxDc2qVgQmD+XjrLil0fuHvGd6Y/pdYkFO/qhQx/1vwNZu
-         AQZgdY9rrqyyj+lIlFwmrshm7GPipUKIrCWczd14n9Xk4hshtiUazqul72ukhw1IVWtP
-         aMdbSPvGI8KVynj/MXrbqQYEKyHjPI76f2s/jTKgIfZ+tHe2zTpRChyTLnNLSmsBTYa9
-         BKRwoDt+9iuWKzZ6gmR64/rZ+dLI/EfjKglW1hs2C87bMOK2HnJ7zZxiwIh7SnZnvdPs
-         cdNw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8Dp/YU7BjP7tuvO83iJhuaJJVbiqvNcU3OcxU2f06ms=;
+        b=rKVhkwohaMSU3XoibbktudpzsJydYpm1Y/8dn31BNjp94HXr0OCQHKArMfYerOSP2p
+         UftA4wD52BcLy6KesQ69JQYu+JtDT0Nt0Nr97ruTS2WgfC8TyqzHkZb7qBwjdzJV5HmT
+         5pby4HS0Pdb8T94WyFvycqHXrsnx7XDAppg1PE+RVaRQLRTe1q8x3LCC8CaSFzGm7WYY
+         BIMnvyKYB1vwaEfetyV8Hjae1GheKL1gKg6BtbjWENa1FTMoUzrpPH5kErK5hAqj56WX
+         xYgG6t10X9WxjzH5KBb7FdKyy+rbR9cllcwe1Z21C3LQR9TP7IhYu6Fe7YhtEeSSXUDZ
+         xmEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=ktNAwTlvxfid44xGOaNhTbS/R1RBktam9MRYoKsMOPY=;
-        b=GqMdjC3v+cezB5Bi9fgRnxdbXYhk8hKbMA9yB1xjCFKL7/TUkH7CiYote0TLttdEQD
-         u4MyM6mFOtlElDov0QAmi5ktPBXc23zqesQvKADAkt53PvqG5kz/MME1WVliuUmRLpQ9
-         8h0RyeRDEPGCSK8W0bXFAI9vJ2FK/tBoeBfxrCLfaovnWduuOaWolkjGEMzUEBq34kVf
-         5bij3BZ+JagcsTuiQ0VlI+ySOTJQ9zoVqdX96ha6Ume8EtDv5jZALM1pZ6syQ5Es2DFn
-         6xw0WDXulSf15OhYwnHibDbXC84c1BjlHEcqPFoNs5VDzxO5vJEPUGTXVTyCqnYv97/V
-         Kb/A==
-X-Gm-Message-State: AOAM532gYNFLct+51kWNxw7+G8yS+CLOq+ZbOnQzl7bHe/p+qpAS6Q40
-        NDWIg3C3IUEBPYnt4pC8JQ4=
-X-Google-Smtp-Source: ABdhPJwuTZnFJLUBP11jsbmi45bNqn/w/uf9WruOmUv2ktLIUNmyxmTCJuD1AUVozmLu4DM1zSs/NQ==
-X-Received: by 2002:a1c:a5cb:: with SMTP id o194mr171923wme.129.1615908583486;
-        Tue, 16 Mar 2021 08:29:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8Dp/YU7BjP7tuvO83iJhuaJJVbiqvNcU3OcxU2f06ms=;
+        b=U0EoA5UnuKVqDeMzARPzawg4M9eEMrs6V2xz3e0xRSJHRDpl56+nh1bXAfK/BgF1MH
+         pwiLfabk3Sy5ketTOhPRCWrr0CZ6P4Z+jCq/gYp4I93I3ew5E4SPp51N3EBURPBmqEHd
+         5E+MtNdcDWXIrcUatFeCpCNZs8Tlr7lbU4h7bbkh+PfpARKdwFlNEslRNE9fRV90WNDw
+         J7nWF5zQYPdGio3BlBJ9LOOPF7gwq9y+oOc+9AKSB4AWb30s449xwJpWwXFAbis52P04
+         JjA7nR51LxW/3SaRh7+2Iq9G1enVySgiC4ZjCatCnyt/K2QwdAqRomZFqZj+NzM3TGF8
+         r7eA==
+X-Gm-Message-State: AOAM531BFuwXm8XBFgVfjloEL/k29VWh3bLlEcox1h2yOEzzmOs0TKu1
+        58a3af0/4RBhuc9csf6otPKGHef6Yqk=
+X-Google-Smtp-Source: ABdhPJz0PbsHJQqTs7QXhf3BH0KiecR5QtTyhYrhaH+fB4H0yE4v800v9Dl5Bavbr2n9HU8AvN7ceA==
+X-Received: by 2002:a5d:534e:: with SMTP id t14mr5494698wrv.202.1615908622424;
+        Tue, 16 Mar 2021 08:30:22 -0700 (PDT)
 Received: from agape.jhs ([5.171.72.71])
-        by smtp.gmail.com with ESMTPSA id v9sm22798352wrn.86.2021.03.16.08.29.42
+        by smtp.gmail.com with ESMTPSA id v2sm333394wmj.1.2021.03.16.08.30.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 08:29:43 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 16:29:40 +0100
+        Tue, 16 Mar 2021 08:30:22 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 16:30:19 +0100
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 00/12] Remove more unused code blocks
-Message-ID: <cover.1615907632.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 01/12] staging: rtl8723bs: remove unused code blocks
+ conditioned by never set CONFIG_CMCC_TEST
+Message-ID: <c5f84efa3c593a897f0498568a41d8638f7f0f8a.1615907632.git.fabioaiuto83@gmail.com>
+References: <cover.1615907632.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <cover.1615907632.git.fabioaiuto83@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused code clocks, as required in TODO list:
+remove conditional code blocks checked by unused
+CONFIG_CMCC_TEST
 
-	find and remove code blocks guarded by never set CONFIG_FOO defines
+cleaning required in TODO file:
 
-Fabio Aiuto (12):
-  staging: rtl8723bs: remove unused code blocks
-    conditioned by never set CONFIG_CMCC_TEST
-  staging: rtl8723bs: remove unused code blocks conditioned by never set
-    CONFIG_INTERRUPT_BASED_TXBCN*
-  staging: rtl8723bs: remove unused code blocks conditioned by never set
-    CONFIG_DISABLE_MCS13TO15
-  staging: rtl8723bs: remove unused code blocks conditioned by never set
-    CONFIG_UPDATE_INDICATE_SEQ_WHILE_PROCESS_ADDBA_REQ
-  staging: rtl8723bs: remove unused code blocks conditioned by never set
-    CONFIG_VALIDATE_SSID
-  staging: rtl8723bs: remove unused code blocks conditioned by never set
-    CONFIG_LAYER2_ROAMING_ACTIVE
-  staging: rtl8723bs: remove unused code blocks conditioned by never set
-    CONFIG_USB_VENDOR*
-  staging: rtl8723bs: remove unused code blocks conditioned by never set
-    CONFIG_SINGLE_RECV_BUF
-  staging: rtl8723bs: remove unused code blocks conditioned by never set
-    CONFIG_RX_INDICATE_QUEUE
-  staging: rtl8723bs: remove unused code blocks conditioned by never set
-    CONFIG_BSD_RX_USE_MBUF
-  staging: rtl8723bs: remove unused code blocks conditioned by never set
-    CONFIG_R871X_TEST
-  staging: rtl8723bs: remove unused code blocks conditioned by never set
-    CONFIG_MULTI_VIR_IFACES
+find and remove code blocks guarded by never set CONFIG_FOO defines
 
- drivers/staging/rtl8723bs/core/rtw_ap.c       | 30 ++------------
- .../staging/rtl8723bs/core/rtw_ioctl_set.c    | 11 -----
- drivers/staging/rtl8723bs/core/rtw_mlme.c     | 19 +--------
- .../staging/rtl8723bs/core/rtw_wlan_util.c    | 15 -------
- .../staging/rtl8723bs/hal/rtl8723b_hal_init.c | 40 -------------------
- drivers/staging/rtl8723bs/include/drv_conf.h  | 10 -----
- drivers/staging/rtl8723bs/include/drv_types.h |  3 --
- .../staging/rtl8723bs/include/osdep_intf.h    |  6 ---
- drivers/staging/rtl8723bs/include/rtw_recv.h  | 17 +-------
- 9 files changed, 6 insertions(+), 145 deletions(-)
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
+ .../staging/rtl8723bs/hal/rtl8723b_hal_init.c | 19 -------------------
+ 1 file changed, 19 deletions(-)
 
+diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+index 6f08af686f9d..5904b7f9f134 100644
+--- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
++++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+@@ -2115,16 +2115,6 @@ static void UpdateHalRAMask8723B(struct adapter *padapter, u32 mac_id, u8 rssi_l
+ 	rate_bitmap = hal_btcoex_GetRaMask(padapter);
+ 	mask &= ~rate_bitmap;
+ 
+-#ifdef CONFIG_CMCC_TEST
+-	if (pmlmeext->cur_wireless_mode & WIRELESS_11G) {
+-		if (mac_id == 0) {
+-			DBG_871X("CMCC_BT update raid entry, mask = 0x%x\n", mask);
+-			mask &= 0xffffff00; /* disable CCK & <24M OFDM rate for 11G mode for CMCC */
+-			DBG_871X("CMCC_BT update raid entry, mask = 0x%x\n", mask);
+-		}
+-	}
+-#endif
+-
+ 	if (pHalData->fw_ractrl) {
+ 		rtl8723b_set_FwMacIdConfig_cmd(padapter, mac_id, psta->raid, psta->bw_mode, shortGIrate, mask);
+ 	}
+@@ -3082,10 +3072,6 @@ static void rtl8723b_fill_default_txdesc(
+ 				ptxdesc->data_ldpc = 1;
+ 			if (pattrib->stbc)
+ 				ptxdesc->data_stbc = 1;
+-
+-#ifdef CONFIG_CMCC_TEST
+-			ptxdesc->data_short = 1; /* use cck short premble */
+-#endif
+ 		} else {
+ 			/*  EAP data packet and ARP packet. */
+ 			/*  Use the 1M data rate to send the EAP/ARP packet. */
+@@ -3767,11 +3753,6 @@ void SetHwReg8723B(struct adapter *padapter, u8 variable, u8 *val)
+ 		BrateCfg &= rrsr_2g_allow_mask;
+ 		masked = BrateCfg;
+ 
+-		#ifdef CONFIG_CMCC_TEST
+-		BrateCfg |= (RRSR_11M|RRSR_5_5M|RRSR_1M); /* use 11M to send ACK */
+-		BrateCfg |= (RRSR_24M|RRSR_18M|RRSR_12M); /* CMCC_OFDM_ACK 12/18/24M */
+-		#endif
+-
+ 		/* IOT consideration */
+ 		if (mlmext_info->assoc_AP_vendor == HT_IOT_PEER_CISCO) {
+ 			/* if peer is cisco and didn't use ofdm rate, we enable 6M ack */
 -- 
 2.20.1
 
