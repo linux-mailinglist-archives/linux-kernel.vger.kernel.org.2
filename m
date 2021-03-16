@@ -2,89 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF84F33CCAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 05:45:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6242F33CCAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 05:46:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235070AbhCPEpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 00:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38506 "EHLO
+        id S235072AbhCPEpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 00:45:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229962AbhCPEot (ORCPT
+        with ESMTP id S235077AbhCPEpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 00:44:49 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C571C06174A;
-        Mon, 15 Mar 2021 21:44:49 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id h7so4027120qtx.3;
-        Mon, 15 Mar 2021 21:44:49 -0700 (PDT)
+        Tue, 16 Mar 2021 00:45:24 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B5BC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 21:45:24 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id n132so35832376iod.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 21:45:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ln6IROcL0oqmiyWgZVylBCyeTAvDQnVtqaLoFG3jsSA=;
-        b=Lkh6Qx6Q7o3RBAorjTjSkvKFkltnLwjRXu/3fiMeGJEQEMoLLu59QV6qN7aDvOo/21
-         JnVdfWhhzEjz9Ytx66L0CDdqcIHYlV/H5cITChcr+ZvL/TtNtc3W79q807BHlHZNnB3A
-         a1H+tR//ncYKigcDknno3igITuo7a55hTEivqGv77MnSjrx+3oOCng49rOD5UTt52NpY
-         J4nVZjCyz5m+xCvT1cKOlffLFgHjUNPSpbOpOXY0bD+eBA+OxthhUL5jo+pTrpqEOEy7
-         oXMKOVEiRdUfXS+GJHjbyIivWCQPgpTXXIuYLx+eyBsqxl3fACNx3MXb776Tm/7XB7xS
-         LPvg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DBsfjI7Y9qCZHdzx/JVFP1TkC1/+jN/GH13dkfs78b4=;
+        b=g1xy5TEBHfyPxwIXSOaSp8xTF1R7KhbcM3BdOHdTD05qOZbn9PYJUcQzYtp1Ruj1dw
+         8rzK9epnwJp9Bkl8FdPGMgK1k5JbJhzDY0V5X5xGfivH30XARF+tbRUacnLA9uelzrE2
+         dCC06tiUSl2CxsJBvMquE22cSymjRNRX5fiXHqsPurc0w2/kpRhfr0RNA+bCKiKQU18T
+         98oynbx9Y9+sMVAGdQx2JDQAS7Ndloh0m2yeFDlCOVFXZH3M5iJLyb8Wv1T6a/2SR2/Q
+         gpt/QNM1qKaoiyWYq+qn9PMDTxDDRe3UvQvtQQbBzEJGcKCx/ORO3Nl0jKbXJ1ZmZpHk
+         qRgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ln6IROcL0oqmiyWgZVylBCyeTAvDQnVtqaLoFG3jsSA=;
-        b=h4nXQipthQ5VHsq9RetQ0CY+R0JS346n1d5KIA6a1D18Eqh+GHyrfCbT26O0qds/if
-         ZVgxCiijjVdu3bQZW+2GVnx9G0hDdyN36emS/ya3Lhe1mRe8XB73lFQSbxCIaXt85Fhw
-         OkEl9I0ol5IV7aPYEijjmFRmj2pywzJHd9VMWL/n9dFLIbqMjWnaell29hUa0J1VlrBU
-         n3SSSzUS959wDyfHnNl8e8VfZ5Z6LVdF5PPJR0O1IOk1iFylAXBzcfLb2GGFKqtTYLv3
-         U7RougDanxLXyMCZuUGYRiF4Z6YbKOD+EqZmXqXxzyZvbrwCNaWyJZzARu9rpRKzC11A
-         Z33w==
-X-Gm-Message-State: AOAM532PDROGGMuqLgfZ2zhcFephPn5nmAJlCd3aLRGUSZa0Wm1zI/9r
-        wxKakbdmLhJMTzAeYV2Koyw=
-X-Google-Smtp-Source: ABdhPJxRoDEvfZK3pGTpLK8ocuHyLorhAGB8PQ4JCJWBaKlabF+nz/DW1jipdHChWgkcJtt8glqz5Q==
-X-Received: by 2002:ac8:6b8a:: with SMTP id z10mr6231616qts.243.1615869888471;
-        Mon, 15 Mar 2021 21:44:48 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.58.45])
-        by smtp.gmail.com with ESMTPSA id g14sm14306322qkm.98.2021.03.15.21.44.44
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DBsfjI7Y9qCZHdzx/JVFP1TkC1/+jN/GH13dkfs78b4=;
+        b=KPgHihwyf2tkqT0ch0eYAIq0uE9YxTLWDRgxYtgsuZVE1rncS/2CpyupEe+oEoiwd2
+         x6jm0Uycw9pRIB1aAuUNl1YsLjynrz/q4J3vDrijht9wo1FWhsPY2HK+IgVVVYNy7Gde
+         R5muR0NW4/IkYxlnlh4Mq7tMxLBObrWYXwy3Q5PR3Zj4fszsWpzVINyfnBm6StPckDkn
+         xAOTcBZmXg3yLUgXNC8hlXwazLXuW6JGDyqkUcq3P3JQzoblUpcrVGAfE5muVSMlJCjo
+         hVaC/SUgk9zDcIwv5wDdVX7FcgO2tCGHmv7vkYafmmGs0lRogbv4QVUvVSHTrJdmxdjk
+         PU6g==
+X-Gm-Message-State: AOAM532yu0c1jOEZ0jNvuL7AQRDGHxhrnkTRu560m8FXmPwN1UZmYaKE
+        1UpGvQsqbDwm7Qco9BWj32T3yQ==
+X-Google-Smtp-Source: ABdhPJxEpIUeNmedia6BMm/JQ8HjdRr7IDMTVY5N83A2Lur9+0y0RVAnR4BZhFaLMKNV7N3UQ+uY/g==
+X-Received: by 2002:a02:9985:: with SMTP id a5mr12336093jal.122.1615869923602;
+        Mon, 15 Mar 2021 21:45:23 -0700 (PDT)
+Received: from google.com ([2620:15c:183:200:d825:37a2:4b55:995f])
+        by smtp.gmail.com with ESMTPSA id 5sm8716358ill.20.2021.03.15.21.45.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 21:44:47 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     pbonzini@redhat.com, corbet@lwn.net, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] docs: virt: kvm: Trivial typo fix in the file timekeeping.rst
-Date:   Tue, 16 Mar 2021 10:14:24 +0530
-Message-Id: <20210316044424.3068802-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Mon, 15 Mar 2021 21:45:22 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 22:45:18 -0600
+From:   Yu Zhao <yuzhao@google.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     linux-mm@kvack.org, Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Yang Shi <shy828301@gmail.com>, linux-kernel@vger.kernel.org,
+        page-reclaim@google.com
+Subject: Re: [PATCH v1 10/14] mm: multigenerational lru: core
+Message-ID: <YFA33n+zQb8oomjJ@google.com>
+References: <87im5rsvd8.fsf@yhuang6-desk1.ccr.corp.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87im5rsvd8.fsf@yhuang6-desk1.ccr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 16, 2021 at 10:08:51AM +0800, Huang, Ying wrote:
+> Yu Zhao <yuzhao@google.com> writes:
+> [snip]
+> 
+> > +/* Main function used by foreground, background and user-triggered aging. */
+> > +static bool walk_mm_list(struct lruvec *lruvec, unsigned long next_seq,
+> > +			 struct scan_control *sc, int swappiness)
+> > +{
+> > +	bool last;
+> > +	struct mm_struct *mm = NULL;
+> > +	int nid = lruvec_pgdat(lruvec)->node_id;
+> > +	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
+> > +	struct lru_gen_mm_list *mm_list = get_mm_list(memcg);
+> > +
+> > +	VM_BUG_ON(next_seq > READ_ONCE(lruvec->evictable.max_seq));
+> > +
+> > +	/*
+> > +	 * For each walk of the mm list of a memcg, we decrement the priority
+> > +	 * of its lruvec. For each walk of memcgs in kswapd, we increment the
+> > +	 * priorities of all lruvecs.
+> > +	 *
+> > +	 * So if this lruvec has a higher priority (smaller value), it means
+> > +	 * other concurrent reclaimers (global or memcg reclaim) have walked
+> > +	 * its mm list. Skip it for this priority to balance the pressure on
+> > +	 * all memcgs.
+> > +	 */
+> > +#ifdef CONFIG_MEMCG
+> > +	if (!mem_cgroup_disabled() && !cgroup_reclaim(sc) &&
+> > +	    sc->priority > atomic_read(&lruvec->evictable.priority))
+> > +		return false;
+> > +#endif
+> > +
+> > +	do {
+> > +		last = get_next_mm(lruvec, next_seq, swappiness, &mm);
+> > +		if (mm)
+> > +			walk_mm(lruvec, mm, swappiness);
+> > +
+> > +		cond_resched();
+> > +	} while (mm);
+> 
+> It appears that we need to scan the whole address space of multiple
+> processes in this loop?
+> 
+> If so, I have some concerns about the duration of the function.  Do you
+> have some number of the distribution of the duration of the function?
+> And may be the number of mm_struct and the number of pages scanned.
+> 
+> In comparison, in the traditional LRU algorithm, for each round, only a
+> small subset of the whole physical memory is scanned.
 
-s/extremal/external/
+Reasonable concerns, and insightful too. We are sensitive to direct
+reclaim latency, and we tuned another path carefully so that direct
+reclaims virtually don't hit this path :)
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- But...Paolo,is it also "extreme"? I am in a catch-22?
+Some numbers from the cover letter first:
+  In addition, direct reclaim latency is reduced by 22% at 99th
+  percentile and the number of refaults is reduced 7%. These metrics are
+  important to phones and laptops as they are correlated to user
+  experience.
 
- Documentation/virt/kvm/timekeeping.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+And "another path" is the background aging in kswapd:
+  age_active_anon()
+    age_lru_gens()
+      try_walk_mm_list()
+        /* try to spread pages out across spread+1 generations */
+        if (old_and_young[0] >= old_and_young[1] * spread &&
+            min_nr_gens(max_seq, min_seq, swappiness) > max(spread, MIN_NR_GENS))
+                return;
 
-diff --git a/Documentation/virt/kvm/timekeeping.rst b/Documentation/virt/kvm/timekeeping.rst
-index 21ae7efa29ba..932d7f7d1ece 100644
---- a/Documentation/virt/kvm/timekeeping.rst
-+++ b/Documentation/virt/kvm/timekeeping.rst
-@@ -299,7 +299,7 @@ device.
+        walk_mm_list(lruvec, max_seq, sc, swappiness);
 
- The HPET spec is rather loose and vague, requiring at least 3 hardware timers,
- but allowing implementation freedom to support many more.  It also imposes no
--fixed rate on the timer frequency, but does impose some extremal values on
-+fixed rate on the timer frequency, but does impose some external values on
- frequency, error and slew.
+By default, spread = 2, which makes kswapd slight more aggressive
+than direct reclaim for our use cases. This can be entirely disabled
+by setting spread to 0, for worloads that don't care about direct
+reclaim latency, or larger values, they are more sensitive than
+ours.
 
- In general, the HPET is recommended as a high precision (compared to PIT /RTC)
---
-2.30.2
-
+It's worth noting that walk_mm_list() is multithreaded -- reclaiming
+threads can work on different mm_structs on the same list
+concurrently. We do occasionally see this function in direct reclaims,
+on over-overcommitted systems, i.e., kswapd CPU usage is 100%. Under
+the same condition, we saw the current page reclaim live locked and
+triggered hardware watchdog timeouts (our hardware watchdog is set to
+2 hours) many times.
