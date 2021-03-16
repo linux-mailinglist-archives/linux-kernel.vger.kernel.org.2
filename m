@@ -2,133 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80E133E1E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0D433E1EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbhCPXLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 19:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52080 "EHLO
+        id S229634AbhCPXOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 19:14:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhCPXLG (ORCPT
+        with ESMTP id S229491AbhCPXNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 19:11:06 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0E4C06174A;
-        Tue, 16 Mar 2021 16:11:06 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id u7so100443qtq.12;
-        Tue, 16 Mar 2021 16:11:06 -0700 (PDT)
+        Tue, 16 Mar 2021 19:13:52 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC093C06174A;
+        Tue, 16 Mar 2021 16:13:51 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id dm8so53283edb.2;
+        Tue, 16 Mar 2021 16:13:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q/UaZC+XXVUcVdTveyndzmJ58HNMu0OJHwUaCal2y4I=;
-        b=DWIL2oGg7zQM/EYvfmH+wg1SfR48ysllZF1J4pLop4dQhVRrYYZ+27DsrMmrMqfZNk
-         lwIksI+Z9vmnWeE4i2C9m+95ayXZvdr2E5Yt/A/rVBxKZ5iMPFSDVopZFzK17v8xlNta
-         Q1n5CEtyRnvPRClsZ/XS3BLdcRLMzh45zVBoPafx7skLLIOX95CKDTy8JseNCLSiDs9r
-         SGDhYWajiaBY+qYrZ37wZqCRh/dOvxhUBOdyJTiQBRxm+L9f/pMXN6UMwyj10ON4gelV
-         RirPhySNpMVXgzw2y1tGBd1AucsKVn5V7B/S0ERKDL1vR4u18IoMWXvyiYSoi+8x/tSo
-         6reA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=h5N8UTmG4BZkHgZ0YH1ThX18H8zJMwY/JOz1fXn6pws=;
+        b=mzgvGSEhdP9YNGKVnnNL4T/PSMciLfuSgzIsQpdebraeHI8fvFwCeQnn6wuOJZoEZ9
+         TmcY/4aAp5ttXtYOMPOVe6xi5Zm399duWRlrlz9pPqJJPPIeG1S+mRmkUfAKpr1jpWmC
+         t2VSiu+pFEDxmbWllndyuaEa7HeorK7IyPiImZjUTbWIu7u5BfQffJ4XlaXk9SYTn14r
+         mnl6vzwE9tHWGExWMyrFYb4H7R/KnXoalxnLUPZqoUhGseGsexr6D0JHa/fKshl8Q9/F
+         8MOrUaNt+z0GqLGm4AXXhnvpibRmbJE3vrLsN/tfSfibb59+g+9ZtDvGSFFJDkv/u64j
+         BSiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q/UaZC+XXVUcVdTveyndzmJ58HNMu0OJHwUaCal2y4I=;
-        b=fcu2G+moP4pR7s9eqGMbdA+aoZYiFIALoGvjHVf0FLw9WZvx2iMZJ0YqzNaD1/sOe2
-         vz8Vcnd2uii76N2ovY9zrEIEQQxWvg0847xgYaRFKT1iZsYAxx6UROaC2qSJ/0NbHG1Y
-         t8/3TJiQ6r1a6/b7+6LBGMrKUQJvnQzO2QOanxDOiWq57X62lP1UcldHeqf5NF4lmo9s
-         MrJUR3baXXpIJ+IZ1j8h2e8c0n1VEqlRhaMu2SopHQzpRSwP0IErkmiLpdGOVU33nYli
-         85SKsadvdDRQO035YZmvmg+UewbkTuQVGjl10oUEb3QB52UZua/D42Gd8kMhUK9o7tnP
-         p8WA==
-X-Gm-Message-State: AOAM531NjIK7UQNuOVCFh41skrv9pxCsE6QyRAXFcTMFGnJJWDp0r5iZ
-        4qqVzvKMEOBmnIl4npaW/WCIDr+Roedydsk/SD0=
-X-Google-Smtp-Source: ABdhPJxBFEdBNeCzBmhwsG1aiJERpTBfwg0fFaw3iI8a5NkF1tW33vYv8sNXVeRPlYiFnXqtWtTHy9R3MmjOrn3/z5c=
-X-Received: by 2002:ac8:544:: with SMTP id c4mr1170921qth.245.1615936265576;
- Tue, 16 Mar 2021 16:11:05 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=h5N8UTmG4BZkHgZ0YH1ThX18H8zJMwY/JOz1fXn6pws=;
+        b=Gfpx8nnRA4rTSXN79WNAagnk5bnMadRe7F+qmGfzJLpqkWL4yY8Xr8ZAzRs0Gq1TkW
+         MkplI/RVZTe/mrHLN1Lr1uTUk9aveExM/rSfOm8zwJ5c7ly04tt/I+ZveOFYzhZFjcON
+         9UGjr9eaW9R8PaH1rmQw63HMFO3WN1vT2ztatkmNMian8cHhcvvEzs0T4J01jcF627+G
+         CaUgdFET/BUZNwYu7bb4ljCs8C7rhtBsXXorNpSEQFZIeUgUgWgmevZGL4Y9d6qDaSf1
+         oW9UD9FTa7xrRulhPxx4Y89dl1rOGG/MItiA5kxur23niQdlb3iqtKjiLNYYNsXUZvQX
+         wIUQ==
+X-Gm-Message-State: AOAM530uVUggqdNu8LtJye8MZcsKSfIWKVB4wDfh/UVj+tJfv0+8Uk37
+        8Adht36NNA72Up9CBTxYscA=
+X-Google-Smtp-Source: ABdhPJwTG5lrlgdEF8gA6AnOhk+qd5k6M/gFTkc9u3PyR1fo1pesNLyYo3GBIAf8LlV0RTxZHPAYaQ==
+X-Received: by 2002:a05:6402:22bb:: with SMTP id cx27mr38447509edb.148.1615936430519;
+        Tue, 16 Mar 2021 16:13:50 -0700 (PDT)
+Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
+        by smtp.gmail.com with ESMTPSA id r17sm11352598edm.89.2021.03.16.16.13.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 16:13:50 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 01:13:49 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, vladimir.oltean@nxp.com,
+        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
+        andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 1/3] net: ocelot: Add PGID_BLACKHOLE
+Message-ID: <20210316231349.px2b3ofqwjgu2nct@skbuf>
+References: <20210316201019.3081237-1-horatiu.vultur@microchip.com>
+ <20210316201019.3081237-2-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
-References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
-In-Reply-To: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Wed, 17 Mar 2021 00:10:54 +0100
-Message-ID: <CAFLxGvzWLje+_HFeb+hKNch4U1f5uypVUOuP=QrEPn_JNM+scg@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        James Bottomley <jejb@linux.ibm.com>, kernel@pengutronix.de,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@penutronix.de>,
-        David Gstir <david@sigma-star.at>,
-        Franck LENORMAND <franck.lenormand@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316201019.3081237-2-horatiu.vultur@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ahmad,
+On Tue, Mar 16, 2021 at 09:10:17PM +0100, Horatiu Vultur wrote:
+> Add a new PGID that is used not to forward frames anywhere. It is used
+> by MRP to make sure that MRP Test frames will not reach CPU port.
+> 
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> ---
 
-On Tue, Mar 16, 2021 at 6:24 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->
-> The Cryptographic Acceleration and Assurance Module (CAAM) is an IP core
-> built into many newer i.MX and QorIQ SoCs by NXP.
->
-> Its blob mechanism can AES encrypt/decrypt user data using a unique
-> never-disclosed device-specific key. There has been multiple
-> discussions on how to represent this within the kernel:
->
->  - [RFC] crypto: caam - add red blobifier
->    Steffen implemented[1] a PoC sysfs driver to start a discussion on how to
->    best integrate the blob mechanism.
->    Mimi suggested that it could be used to implement trusted keys.
->    Trusted keys back then were a TPM-only feature.
->
->  - security/keys/secure_key: Adds the secure key support based on CAAM.
->    Udit added[2] a new "secure" key type with the CAAM as backend. The key
->    material stays within the kernel only.
->    Mimi and James agreed that this needs a generic interface, not specific
->    to CAAM. Mimi suggested trusted keys. Jan noted that this could serve as
->    basis for TEE-backed keys.
->
->  - [RFC] drivers: crypto: caam: key: Add caam_tk key type
->    Franck added[3] a new "caam_tk" key type based on Udit's work. The key
->    material stays within the kernel only, but can optionally be user-set
->    instead of coming from RNG. James voiced the opinion that there should
->    be just one user-facing generic wrap/unwrap key type with multiple
->    possible handlers. David suggested trusted keys.
->
->  - Introduce TEE based Trusted Keys support
->    Sumit reworked[4] trusted keys to support multiple possible backends with
->    one chosen at boot time and added a new TEE backend along with TPM.
->    This now sits in Jarkko's master branch to be sent out for v5.13
->
-> This patch series builds on top of Sumit's rework to have the CAAM as yet another
-> trusted key backend.
->
-> The CAAM bits are based on Steffen's initial patch from 2015. His work had been
-> used in the field for some years now, so I preferred not to deviate too much from it.
->
-> This series has been tested with dmcrypt[5] on an i.MX6DL.
-
-Do have this series also in a git repo to pull from?
-I'd like to give it a test on various systems.
-
-> Looking forward to your feedback.
-
-Thanks for working on this! David and I will have a closer look these days.
-
--- 
-Thanks,
-//richard
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
