@@ -2,485 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2C633D583
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5469733D588
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:10:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235998AbhCPOJU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Mar 2021 10:09:20 -0400
-Received: from h2.fbrelay.privateemail.com ([131.153.2.43]:40901 "EHLO
-        h2.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235606AbhCPOJE (ORCPT
+        id S236003AbhCPOKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 10:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236008AbhCPOKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 10:09:04 -0400
-Received: from MTA-06-4.privateemail.com (mta-06.privateemail.com [68.65.122.16])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by h1.fbrelay.privateemail.com (Postfix) with ESMTPS id 6135A80C5A;
-        Tue, 16 Mar 2021 10:09:02 -0400 (EDT)
-Received: from MTA-06.privateemail.com (localhost [127.0.0.1])
-        by MTA-06.privateemail.com (Postfix) with ESMTP id 0FD8D600CD;
-        Tue, 16 Mar 2021 10:08:55 -0400 (EDT)
-Received: from localhost (unknown [10.20.151.211])
-        by MTA-06.privateemail.com (Postfix) with ESMTPA id D8B25600CB;
-        Tue, 16 Mar 2021 10:08:53 -0400 (EDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 16 Mar 2021 15:08:52 +0100
-Message-Id: <C9YU2ERIG68L.2ELL5CSK0H628@pwning.systems>
-Subject: Re: [PATCH] Fix use-after-free in io_wqe_inc_running() due to wq
- already being free'd
-From:   "Jordy Zomer" <jordy@pwning.systems>
-To:     "Pavel Begunkov" <asml.silence@gmail.com>, <axboe@kernel.dk>
-Cc:     <io-uring@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210315174425.2201225-1-jordy@pwning.systems>
- <65a85dd1-a9b0-30a1-13b9-559270f31264@gmail.com>
- <C9Y4IZVSXPB4.2JLCVAHTL4CCI@pwning.systems>
- <8a506aa2-eada-1d77-c2d7-f7599c5c8094@gmail.com>
-In-Reply-To: <8a506aa2-eada-1d77-c2d7-f7599c5c8094@gmail.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        Tue, 16 Mar 2021 10:10:08 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05FFC06174A;
+        Tue, 16 Mar 2021 07:10:07 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id x13so7505349wrs.9;
+        Tue, 16 Mar 2021 07:10:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/Ym7C+v+G+nHYA0RKhBciTW1at/iqABpVo+V3RR3W7w=;
+        b=Vyo+juz38tvRQTnW+gpQFSmoqWw9bgG3p09EYc69VfW9scY10FxVrehbA09dQNEYVI
+         dSZ3YA9P2rnbpY82djmntu/4qBvY3ih24Q7SjDZ12PLwjIWxi2a9z2QZCYYi9IbsQ6sP
+         8Qah34E7tU9MotFkJhBiX7KvKxfoLwzqqjQitOxFjPBn3tADFb1r4+2xLSzHMPZBVYZI
+         Bc/enutC7eN1Y4J+BVPV3QdWYAPwQmTf2j9iQjyS9if5YDwoXS7xfHTZKZQuE4g2oOVn
+         6y4FJ98hGBKHx/HxYwpbFOA+3uPaI2LBqYN+JiROsh9SE+JSQkeacBwlKZrF4Pw1OGwF
+         Y73w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/Ym7C+v+G+nHYA0RKhBciTW1at/iqABpVo+V3RR3W7w=;
+        b=d6jAc3X/FEOGca4TB526RJY+8maNwf1MmCM8buRDaxKSRjm6sz//Z+g+DmSt6FFxco
+         Xug/EihEu8JGu+CUzyX/4SApdsaV1BJIJvgkeyGj+M3DNf80XHg2z0lYdPIAD0Q/CrAE
+         wZgJyHSkZH0k10ebRHJ+E2zWb1tEgW3mHUSH1ZQjud5M6bmSg58OzhNHl0tRQr9SrXv2
+         8QJkwh3vLCOWgJst7LmFy+TNfnG7+Kfr83gJphSm8Spl8JAPy1O378aNG2mXLaP4aysl
+         kSGkOwbjwyx1A3ntDWpoSVeTKOLejr1cAFZuLNUMr3Ca9wiYXa9Bl6ISkN+Q5Fh2QEJc
+         ef8Q==
+X-Gm-Message-State: AOAM532qONpo5+CKndGSmim01/TxOywcXDG8YfMJLp8ImcPcqokcbsPI
+        JycnO7OFP7Yeouc9no7Zdc2z8s7Ge1U=
+X-Google-Smtp-Source: ABdhPJwJnTh6pU7UtZmhnYooD/dc7Thfe4HSGgzD6CTj7siYIVAY4ZabwQ4+i80UIWrtdgR7FjHKXg==
+X-Received: by 2002:a5d:4445:: with SMTP id x5mr5283025wrr.30.1615903806343;
+        Tue, 16 Mar 2021 07:10:06 -0700 (PDT)
+Received: from [192.168.2.202] (p5487b93a.dip0.t-ipconnect.de. [84.135.185.58])
+        by smtp.gmail.com with ESMTPSA id o11sm22274687wrq.74.2021.03.16.07.10.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 07:10:05 -0700 (PDT)
+Subject: Re: [PATCH v2] PCI: Run platform power transition on initial D0 entry
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210314000439.3138941-1-luzmaximilian@gmail.com>
+ <CAJZ5v0hY=NgKAU+N_kaya=q3Vk6SnkRTfXuiiP0ttoxHq+pRTA@mail.gmail.com>
+ <781f0963-4ce6-74c9-e884-1e57f1ff9673@gmail.com>
+ <CAJZ5v0g+wkyzrD120yiyyBFjVO=LYS3j0WK1Fi-j+LS5fwgqZg@mail.gmail.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <821c10e8-ef19-4d2e-5ea2-a1964ef58d67@gmail.com>
+Date:   Tue, 16 Mar 2021 15:10:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <CAJZ5v0g+wkyzrD120yiyyBFjVO=LYS3j0WK1Fi-j+LS5fwgqZg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the response!
+On 3/16/21 2:36 PM, Rafael J. Wysocki wrote:
+> On Mon, Mar 15, 2021 at 7:28 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+>>
+>> On 3/15/21 4:34 PM, Rafael J. Wysocki wrote:
+>>> On Sun, Mar 14, 2021 at 1:06 AM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+>>>>
+>>>> On some devices and platforms, the initial platform (e.g. ACPI) power
+>>>> state is not in sync with the power state of the PCI device.
+>>>>
+>>>> This seems like it is, for all intents and purposes, an issue with the
+>>>> device firmware (e.g. ACPI). On some devices, specifically Microsoft
+>>>> Surface Books 2 and 3, we encounter ACPI code akin to the following
+>>>> power resource, corresponding to a PCI device:
+>>>>
+>>>>       PowerResource (PRP5, 0x00, 0x0000)
+>>>>       {
+>>>>           // Initialized to zero, i.e. off. There is no logic for checking
+>>>>           // the actual state dynamically.
+>>>>           Name (_STA, Zero)
+>>>>
+>>>>           Method (_ON, 0, Serialized)
+>>>>           {
+>>>>               // ... code omitted ...
+>>>>               _STA = One
+>>>>           }
+>>>>
+>>>>           Method (_OFF, 0, Serialized)
+>>>>           {
+>>>>               // ... code omitted ...
+>>>>               _STA = Zero
+>>>>           }
+>>>>       }
+>>>>
+>>>> This resource is initialized to 'off' and does not have any logic for
+>>>> checking its actual state, i.e. the state of the corresponding PCI
+>>>> device. The stored state of this resource can only be changed by running
+>>>> the (platform/ACPI) power transition functions (i.e. _ON and _OFF).
+>>>
+>>> Well, there is _STA that returns "off" initially, so the OS should set
+>>> the initial state of the device to D3cold and transition it into D0 as
+>>> appropriate (i.e. starting with setting all of the power resources
+>>> used by it to "on").
+>>>
+>>>> This means that, at boot, the PCI device power state is out of sync with
+>>>> the power state of the corresponding ACPI resource.
+>>>>
+>>>> During initial bring-up of a PCI device, pci_enable_device_flags()
+>>>> updates its PCI core state (from initially 'unknown') by reading from
+>>>> its PCI_PM_CTRL register. It does, however, not check if the platform
+>>>> (here ACPI) state is in sync with/valid for the actual device state and
+>>>> needs updating.
+>>>
+>>> Well, that's inconsistent.
+>>>
+>>> Also, it is rather pointless to update the device's power state at
+>>> this point, because nothing between this point and the later
+>>> do_pci_enable_device() call in this function requires its
+>>> current_state to be up to date AFAICS.
+>>>
+>>> Have you tried to drop the power state update from
+>>> pci_enable_device_flags()?  [Note that we're talking about relatively
+>>> old code here and it looks like that code is not necessary any more.]
+>>
+>> I had not tried this before, as I assumed the comment was still
+>> relevant. I did test that now and it works! I can't detect any
+>> regressions.
+>>
+>> Do you want to send this in or should I do that?
+> 
+> I'll post it, thanks!
 
-I just built the rc3 kernel with the same .config and tried running the
-reproducer, this indeed didn't work on rc3. 
+Thank you!
 
-It looks like this commit fixed it, my instance wac still on rc2.
+Feel free to add my tested-by tag.
 
-Sorry for wasting your time! :)
-
-Best Regards,
-
-Jordy
-
-On Tue Mar 16, 2021 at 1:11 PM CET, Pavel Begunkov wrote:
-> On 15/03/2021 18:08, Jordy Zomer wrote:
-> > Thank you for your response Pavel!
->
-> Thanks, doesn't trigger any problem for me in rc3+
->
-> commit 886d0137f104a440d9dfa1d16efc1db06c9a2c02
-> Author: Jens Axboe <axboe@kernel.dk>
-> Date: Fri Mar 5 12:59:30 2021 -0700
->
-> io-wq: fix race in freeing 'wq' and worker access
->
->
-> Maybe was fixed by it or some other commit. Can you confirm that it's
-> gone in rc3? or git://git.kernel.dk/linux-block io_uring-5.12
->
-> > 
-> > this is the report:
-> > 
-> > 	Syzkaller hit 'KASAN: use-after-free Write in io_wqe_inc_running' bug.
-> > 
-> > 	==================================================================
-> > 	BUG: KASAN: use-after-free in io_wqe_inc_running+0x82/0xb0
-> > 	Write of size 4 at addr ffff8881015ed058 by task iou-wrk-486/488
-> > 
-> > 	CPU: 1 PID: 488 Comm: iou-wrk-486 Not tainted 5.12.0-rc2 #1
-> > 	Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
-> > 	Call Trace:
-> > 	 dump_stack+0x103/0x183
-> > 	 print_address_description.constprop.0+0x1a/0x140
-> > 	 kasan_report.cold+0x7f/0x111
-> > 	 kasan_check_range+0x17c/0x1e0
-> > 	 io_wqe_inc_running+0x82/0xb0
-> > 	 io_wq_worker_running+0xb9/0xe0
-> > 	 schedule_timeout+0x487/0x730
-> > 	 io_wqe_worker+0x3be/0xc90
-> > 	 ret_from_fork+0x22/0x30
-> > 
-> > 	Allocated by task 486:
-> > 	 kasan_save_stack+0x1b/0x40
-> > 	 __kasan_kmalloc+0x99/0xc0
-> > 	 io_wq_create+0x6ad/0xc60
-> > 	 io_uring_alloc_task_context+0x1bd/0x6b0
-> > 	 io_uring_add_task_file+0x203/0x290
-> > 	 io_uring_setup+0x1372/0x26f0
-> > 	 do_syscall_64+0x33/0x40
-> > 	 entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > 
-> > 	Freed by task 486:
-> > 	 kasan_save_stack+0x1b/0x40
-> > 	 kasan_set_track+0x1c/0x30
-> > 	 kasan_set_free_info+0x20/0x30
-> > 	 __kasan_slab_free+0x100/0x130
-> > 	 kfree+0xab/0x240
-> > 	 io_wq_put+0x15e/0x2f0
-> > 	 io_uring_clean_tctx+0x18b/0x220
-> > 	 __io_uring_files_cancel+0x151/0x1b0
-> > 	 do_exit+0x27f/0x2990
-> > 	 do_group_exit+0x113/0x340
-> > 	 __x64_sys_exit_group+0x3a/0x50
-> > 	 do_syscall_64+0x33/0x40
-> > 	 entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > 
-> > 	The buggy address belongs to the object at ffff8881015ed000
-> > 	 which belongs to the cache kmalloc-1k of size 1024
-> > 	The buggy address is located 88 bytes inside of
-> > 	 1024-byte region [ffff8881015ed000, ffff8881015ed400)
-> > 	The buggy address belongs to the page:
-> > 	page:0000000021df10c3 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1015e8
-> > 	head:0000000021df10c3 order:3 compound_mapcount:0 compound_pincount:0
-> > 	flags: 0x200000000010200(slab|head)
-> > 	raw: 0200000000010200 dead000000000100 dead000000000122 ffff888100041dc0
-> > 	raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-> > 	page dumped because: kasan: bad access detected
-> > 
-> > 	Memory state around the buggy address:
-> > 	 ffff8881015ecf00: fc fc fc fc fc fc fc fc fc fc f fc fc fc fc fc
-> > 	 ffff8881015ecf80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> > 	>ffff8881015ed000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > 							    ^
-> > 	 ffff8881015ed080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > 	 ffff8881015ed100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > 	==================================================================
-> > 
-> > 
-> > Apparently io_uring_clean_tctx() sets wq to NULL, therefore I thought it should be worth checking for.
-> > 
-> > Below you can find the reproducer:
-> > 
-> > 	#define _GNU_SOURCE 
-> > 
-> > 	#include <dirent.h>
-> > 	#include <endian.h>
-> > 	#include <errno.h>
-> > 	#include <fcntl.h>
-> > 	#include <signal.h>
-> > 	#include <stdarg.h>
-> > 	#include <stdbool.h>
-> > 	#include <stdint.h>
-> > 	#include <stdio.h>
-> > 	#include <stdlib.h>
-> > 	#include <string.h>
-> > 	#include <sys/mman.h>
-> > 	#include <sys/prctl.h>
-> > 	#include <sys/stat.h>
-> > 	#include <sys/syscall.h>
-> > 	#include <sys/types.h>
-> > 	#include <sys/wait.h>
-> > 	#include <time.h>
-> > 	#include <unistd.h>
-> > 
-> > 	static void sleep_ms(uint64_t ms)
-> > 	{
-> > 		usleep(ms * 1000);
-> > 	}
-> > 
-> > 	static uint64_t current_time_ms(void)
-> > 	{
-> > 		struct timespec ts;
-> > 		if (clock_gettime(CLOCK_MONOTONIC, &ts))
-> > 		exit(1);
-> > 		return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
-> > 	}
-> > 
-> > 	static bool write_file(const char* file, const char* what, ...)
-> > 	{
-> > 		char buf[1024];
-> > 		va_list args;
-> > 		va_start(args, what);
-> > 		vsnprintf(buf, sizeof(buf), what, args);
-> > 		va_end(args);
-> > 		buf[sizeof(buf) - 1] = 0;
-> > 		int len = strlen(buf);
-> > 		int fd = open(file, O_WRONLY | O_CLOEXEC);
-> > 		if (fd == -1)
-> > 			return false;
-> > 		if (write(fd, buf, len) != len) {
-> > 			int err = errno;
-> > 			close(fd);
-> > 			errno = err;
-> > 			return false;
-> > 		}
-> > 		close(fd);
-> > 		return true;
-> > 	}
-> > 
-> > 	#define SIZEOF_IO_URING_SQE 64
-> > 	#define SIZEOF_IO_URING_CQE 16
-> > 	#define SQ_HEAD_OFFSET 0
-> > 	#define SQ_TAIL_OFFSET 64
-> > 	#define SQ_RING_MASK_OFFSET 256
-> > 	#define SQ_RING_ENTRIES_OFFSET 264
-> > 	#define SQ_FLAGS_OFFSET 276
-> > 	#define SQ_DROPPED_OFFSET 272
-> > 	#define CQ_HEAD_OFFSET 128
-> > 	#define CQ_TAIL_OFFSET 192
-> > 	#define CQ_RING_MASK_OFFSET 260
-> > 	#define CQ_RING_ENTRIES_OFFSET 268
-> > 	#define CQ_RING_OVERFLOW_OFFSET 284
-> > 	#define CQ_FLAGS_OFFSET 280
-> > 	#define CQ_CQES_OFFSET 320
-> > 
-> > 	struct io_sqring_offsets {
-> > 		uint32_t head;
-> > 		uint32_t tail;
-> > 		uint32_t ring_mask;
-> > 		uint32_t ring_entries;
-> > 		uint32_t flags;
-> > 		uint32_t dropped;
-> > 		uint32_t array;
-> > 		uint32_t resv1;
-> > 		uint64_t resv2;
-> > 	};
-> > 
-> > 	struct io_cqring_offsets {
-> > 		uint32_t head;
-> > 		uint32_t tail;
-> > 		uint32_t ring_mask;
-> > 		uint32_t ring_entries;
-> > 		uint32_t overflow;
-> > 		uint32_t cqes;
-> > 		uint64_t resv[2];
-> > 	};
-> > 
-> > 	struct io_uring_params {
-> > 		uint32_t sq_entries;
-> > 		uint32_t cq_entries;
-> > 		uint32_t flags;
-> > 		uint32_t sq_thread_cpu;
-> > 		uint32_t sq_thread_idle;
-> > 		uint32_t features;
-> > 		uint32_t resv[4];
-> > 		struct io_sqring_offsets sq_off;
-> > 		struct io_cqring_offsets cq_off;
-> > 	};
-> > 
-> > 	#define IORING_OFF_SQ_RING 0
-> > 	#define IORING_OFF_SQES 0x10000000ULL
-> > 
-> > 	#define sys_io_uring_setup 425
-> > 	static long syz_io_uring_setup(volatile long a0, volatile long a1, volatile long a2, volatile long a3, volatile long a4, volatile long a5)
-> > 	{
-> > 		uint32_t entries = (uint32_t)a0;
-> > 		struct io_uring_params* setup_params = (struct io_uring_params*)a1;
-> > 		void* vma1 = (void*)a2;
-> > 		void* vma2 = (void*)a3;
-> > 		void** ring_ptr_out = (void**)a4;
-> > 		void** sqes_ptr_out = (void**)a5;
-> > 		uint32_t fd_io_uring = syscall(sys_io_uring_setup, entries, setup_params);
-> > 		uint32_t sq_ring_sz = setup_params->sq_off.array + setup_params->sq_entries * sizeof(uint32_t);
-> > 		uint32_t cq_ring_sz = setup_params->cq_off.cqes + setup_params->cq_entries * SIZEOF_IO_URING_CQE;
-> > 		uint32_t ring_sz = sq_ring_sz > cq_ring_sz ? sq_ring_sz : cq_ring_sz;
-> > 		*ring_ptr_out = mmap(vma1, ring_sz, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE | MAP_FIXED, fd_io_uring, IORING_OFF_SQ_RING);
-> > 		uint32_t sqes_sz = setup_params->sq_entries * SIZEOF_IO_URING_SQE;
-> > 		*sqes_ptr_out = mmap(vma2, sqes_sz, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE | MAP_FIXED, fd_io_uring, IORING_OFF_SQES);
-> > 		return fd_io_uring;
-> > 	}
-> > 
-> > 	static long syz_io_uring_submit(volatile long a0, volatile long a1, volatile long a2, volatile long a3)
-> > 	{
-> > 		char* ring_ptr = (char*)a0;
-> > 		char* sqes_ptr = (char*)a1;
-> > 		char* sqe = (char*)a2;
-> > 		uint32_t sqes_index = (uint32_t)a3;
-> > 		uint32_t sq_ring_entries = *(uint32_t*)(ring_ptr + SQ_RING_ENTRIES_OFFSET);
-> > 		uint32_t cq_ring_entries = *(uint32_t*)(ring_ptr + CQ_RING_ENTRIES_OFFSET);
-> > 		uint32_t sq_array_off = (CQ_CQES_OFFSET + cq_ring_entries * SIZEOF_IO_URING_CQE + 63) & ~63;
-> > 		if (sq_ring_entries)
-> > 			sqes_index %= sq_ring_entries;
-> > 		char* sqe_dest = sqes_ptr + sqes_index * SIZEOF_IO_URING_SQE;
-> > 		memcpy(sqe_dest, sqe, SIZEOF_IO_URING_SQE);
-> > 		uint32_t sq_ring_mask = *(uint32_t*)(ring_ptr + SQ_RING_MASK_OFFSET);
-> > 		uint32_t* sq_tail_ptr = (uint32_t*)(ring_ptr + SQ_TAIL_OFFSET);
-> > 		uint32_t sq_tail = *sq_tail_ptr & sq_ring_mask;
-> > 		uint32_t sq_tail_next = *sq_tail_ptr + 1;
-> > 		uint32_t* sq_array = (uint32_t*)(ring_ptr + sq_array_off);
-> > 		*(sq_array + sq_tail) = sqes_index;
-> > 		__atomic_store_n(sq_tail_ptr, sq_tail_next, __ATOMIC_RELEASE);
-> > 		return 0;
-> > 	}
-> > 
-> > 	static void kill_and_wait(int pid, int* status)
-> > 	{
-> > 		kill(-pid, SIGKILL);
-> > 		kill(pid, SIGKILL);
-> > 		for (int i = 0; i < 100; i++) {
-> > 			if (waitpid(-1, status, WNOHANG | __WALL) == pid)
-> > 				return;
-> > 			usleep(1000);
-> > 		}
-> > 		DIR* dir = opendir("/sys/fs/fuse/connections");
-> > 		if (dir) {
-> > 			for (;;) {
-> > 				struct dirent* ent = readdir(dir);
-> > 				if (!ent)
-> > 					break;
-> > 				if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
-> > 					continue;
-> > 				char abort[300];
-> > 				snprintf(abort, sizeof(abort), "/sys/fs/fuse/connections/%s/abort", ent->d_name);
-> > 				int fd = open(abort, O_WRONLY);
-> > 				if (fd == -1) {
-> > 					continue;
-> > 				}
-> > 				if (write(fd, abort, 1) < 0) {
-> > 				}
-> > 				close(fd);
-> > 			}
-> > 			closedir(dir);
-> > 		} else {
-> > 		}
-> > 		while (waitpid(-1, status, __WALL) != pid) {
-> > 		}
-> > 	}
-> > 
-> > 	static void setup_test()
-> > 	{
-> > 		prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
-> > 		setpgrp();
-> > 		write_file("/proc/self/oom_score_adj", "1000");
-> > 	}
-> > 
-> > 	static void execute_one(void);
-> > 
-> > 	#define WAIT_FLAGS __WALL
-> > 
-> > 	static void loop(void)
-> > 	{
-> > 		int iter = 0;
-> > 		for (;; iter++) {
-> > 			int pid = fork();
-> > 			if (pid < 0)
-> > 		exit(1);
-> > 			if (pid == 0) {
-> > 				setup_test();
-> > 				execute_one();
-> > 				exit(0);
-> > 			}
-> > 			int status = 0;
-> > 			uint64_t start = current_time_ms();
-> > 			for (;;) {
-> > 				if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) == pid)
-> > 					break;
-> > 				sleep_ms(1);
-> > 			if (current_time_ms() - start < 5000) {
-> > 				continue;
-> > 			}
-> > 				kill_and_wait(pid, &status);
-> > 				break;
-> > 			}
-> > 		}
-> > 	}
-> > 
-> > 	#ifndef __NR_execveat
-> > 	#define __NR_execveat 322
-> > 	#endif
-> > 	#ifndef __NR_io_uring_enter
-> > 	#define __NR_io_uring_enter 426
-> > 	#endif
-> > 	#ifndef __NR_io_uring_register
-> > 	#define __NR_io_uring_register 427
-> > 	#endif
-> > 
-> > 	uint64_t r[3] = {0xffffffffffffffff, 0x0, 0x0};
-> > 
-> > 	void execute_one(void)
-> > 	{
-> > 			intptr_t res = 0;
-> > 	*(uint32_t*)0x20000004 = 0;
-> > 	*(uint32_t*)0x20000008 = 0;
-> > 	*(uint32_t*)0x2000000c = 0;
-> > 	*(uint32_t*)0x20000010 = 0;
-> > 	*(uint32_t*)0x20000018 = -1;
-> > 	*(uint32_t*)0x2000001c = 0;
-> > 	*(uint32_t*)0x20000020 = 0;
-> > 	*(uint32_t*)0x20000024 = 0;
-> > 		res = -1;
-> > 	res = syz_io_uring_setup(0x1e1b, 0x20000000, 0x200a0000, 0x20ffb000, 0x20000080, 0x200000c0);
-> > 		if (res != -1) {
-> > 			r[0] = res;
-> > 	r[1] = *(uint64_t*)0x20000080;
-> > 	r[2] = *(uint64_t*)0x200000c0;
-> > 		}
-> > 	*(uint8_t*)0x20000640 = 0x1e;
-> > 	*(uint8_t*)0x20000641 = 0;
-> > 	*(uint16_t*)0x20000642 = 0;
-> > 	*(uint32_t*)0x20000644 = r[0];
-> > 	*(uint64_t*)0x20000648 = 0;
-> > 	*(uint32_t*)0x20000650 = 0;
-> > 	*(uint32_t*)0x20000654 = -1;
-> > 	*(uint32_t*)0x20000658 = 0;
-> > 	*(uint32_t*)0x2000065c = 0;
-> > 	*(uint64_t*)0x20000660 = 0;
-> > 	*(uint16_t*)0x20000668 = 0;
-> > 	*(uint16_t*)0x2000066a = 0;
-> > 	*(uint32_t*)0x2000066c = r[0];
-> > 	*(uint64_t*)0x20000670 = 0;
-> > 	*(uint64_t*)0x20000678 = 0;
-> > 	syz_io_uring_submit(r[1], r[2], 0x20000640, 0);
-> > 		syscall(__NR_io_uring_enter, r[0], 0xfffffffe, 0, 0ul, 0ul, 0ul);
-> > 		syscall(__NR_io_uring_register, r[0], 0xaul, 0ul, 0);
-> > 	memcpy((void*)0x20000280, "./file1\000", 8);
-> > 		syscall(__NR_execveat, 0xffffff9c, 0x20000280ul, 0ul, 0ul, 0ul);
-> > 
-> > 	}
-> > 	int main(void)
-> > 	{
-> > 			syscall(__NR_mmap, 0x1ffff000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
-> > 		syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
-> > 		syscall(__NR_mmap, 0x21000000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
-> > 				loop();
-> > 		return 0;
-> > 	}
-> > 
-> > 
-> > Hope that helped!
-> > 
-> > Best Regards,
-> > 
-> > Jordy
-> > 
-> > On Mon Mar 15, 2021 at 6:58 PM CET, Pavel Begunkov wrote:
-> >> On 15/03/2021 17:44, Jordy Zomer wrote:
-> >>> My syzkaller instance reported a use-after-free bug in io_wqe_inc_running.
-> >>> I tried fixing this by checking if wq isn't NULL in io_wqe_worker.
-> >>> If it does; return an -EFAULT. This because create_io_worker() will clean-up the worker if there's an error.
-> >>>
-> >>> If you want I could send you the syzkaller reproducer and crash-logs :)
-> >>
-> >> Yes, please.
-> >>
-> >> Haven't looked up properly, but looks that wq==NULL should
-> >> never happen, so the fix is a bit racy.
-> >>
-> >>>
-> >>> Best Regards,
-> >>>
-> >>> Jordy Zomer
-> >>>
-> >>> Signed-off-by: Jordy Zomer <jordy@pwning.systems>
-> >>> ---
-> >>>  fs/io-wq.c | 4 ++++
-> >>>  1 file changed, 4 insertions(+)
-> >>>
-> >>> diff --git a/fs/io-wq.c b/fs/io-wq.c
-> >>> index 0ae9ecadf295..9ed92d88a088 100644
-> >>> --- a/fs/io-wq.c
-> >>> +++ b/fs/io-wq.c
-> >>> @@ -482,6 +482,10 @@ static int io_wqe_worker(void *data)
-> >>>  	char buf[TASK_COMM_LEN];
-> >>>  
-> >>>  	worker->flags |= (IO_WORKER_F_UP | IO_WORKER_F_RUNNING);
-> >>> +
-> >>> +	if (wq == NULL)
-> >>> +		return -EFAULT;
-> >>> +
-> >>>  	io_wqe_inc_running(worker);
-> >>>  
-> >>>  	sprintf(buf, "iou-wrk-%d", wq->task_pid);
-> >>>
-> >>
-> >> --
-> >> Pavel Begunkov
-> > 
->
-> --
-> Pavel Begunkov
-
+Regards,
+Max
