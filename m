@@ -2,172 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D8833DA10
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA1E33DA39
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:05:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237519AbhCPRCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56620 "EHLO
+        id S239051AbhCPRFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:05:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237027AbhCPRBe (ORCPT
+        with ESMTP id S237362AbhCPREy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:01:34 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E34C06174A;
-        Tue, 16 Mar 2021 10:01:33 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id l12so10860806wry.2;
-        Tue, 16 Mar 2021 10:01:33 -0700 (PDT)
+        Tue, 16 Mar 2021 13:04:54 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091C2C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:04:52 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id q12so6780045plr.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:04:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UCIspVprktpvDlW5+fJtgoq6diu33wX+IaMsKllTfxY=;
-        b=sY6DInO+ou9EU6Bj7StG/JtldJg3uJp2jwi+fveYCXCjlW6CGyIhxWQVbX+McMK4qH
-         FcpKhn/hsnBfBbQoIRMalYHLn13DDNzgljJ1tqrtb8YQTRBpE69f62B8HfhwNIapfmxH
-         QFbUXEdJbgP89VEx/vRBjLDUKvt0b1uBcMvHfNq4gnSm5zXuvfOtulLpj7G26Yt4qhg8
-         KiDHZ4H5kQqQlSOHt7Fx52e8X/OPMG9eVIOAz/nJZCmIAca0VCqdZ1k2myB6DkIXXWB3
-         0D+IcW6/5ftScLwFb1OVb2U9QkrCWPbHVORnT88Ag5KEKqb+yW8CnBY1MA0RoDxRrFlV
-         RbEw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CzC+/B4EdyHDwI6X7IJ9Df2XewW8pzWZg0CKu8OOhaI=;
+        b=slIKtPLW77a7QpWhFJSMudogMAj1TG0SbIbymQVHrTmFmuZR8J2djF/awgtNFuqs7B
+         rLEicR+tlnFpSBnPWWS6U2HEOxg0RUwoJ9lYNp8a0GAtTIRjhHa5H+YGSsRIF2OQtgQ6
+         EqxyCpi/lwjUp5YHqSFZrddKGFSVz6Em68mn7MkNkFZP95koMZVaqHuP0bPCCGLr2+AM
+         Rih3KyMeDgZj29wH5iWo8MtdFiJ56J068PvawyCMSyJR7zD1ld6rqwMkD+PdbBp1wTNd
+         XtEmlewJIgdPgi/iO+OZAHQC4O4KdoYNYceLf56mQz9+ymBp3C9KPt8rj7eUm6qRQV8o
+         R2iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UCIspVprktpvDlW5+fJtgoq6diu33wX+IaMsKllTfxY=;
-        b=QZ8+5DVgCmiucdvNYEfOM4h03yxX1RZgY8F9vNnDYC98slqPYxWbfBervTZ3J13Pjn
-         /3c+YaZUGDb92KaVNxLHq1xlQqgH9werEddFFiySsBzQgOTF+s//NB2PBBWPOJfhyoXM
-         pVHqfF7+CE/OQrG0O8q97+TjfOxAMaY+B23ros+FmLztTG/Mz87FPoqd0YaCldmMfZDW
-         RDBmTQ1AKdCvSkcow0Ehd4WDH+FSmJWpHWUFI3ehnIttusLSADsUcbgJrWWDxqhgF5Hv
-         hUmOD123VxrsFuzfhOAFLPnRFZ43u372m35CHYcZlF2kK6tcSrz+VKuNxD+d9w8nV1Xl
-         DruA==
-X-Gm-Message-State: AOAM533UqxvX8IINN8y93hxM5Jqnsf3vh3cnygKuAc/TCrDCucB1tAgT
-        HcFfW8zj0pJfupQpcwzxJOofZT8J8Jx9iIeJrkw=
-X-Google-Smtp-Source: ABdhPJwxaly562xGO9/e9dVg9dSISs69Ku2PSlFcGVrT7G5fdJJCPPJorQFVU/+BrptWiffWmgj7D+Nyp2DpI1MhHNY=
-X-Received: by 2002:adf:b30f:: with SMTP id j15mr10173wrd.132.1615914092247;
- Tue, 16 Mar 2021 10:01:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CzC+/B4EdyHDwI6X7IJ9Df2XewW8pzWZg0CKu8OOhaI=;
+        b=bonQoU8zO4+FsBfB2GFsmgI4+A4+kB3bvl0o7i6xJaw4WhM/rc6LY5joaVPTMbwUWj
+         frF+NTh0wufLkD9HE5YQjol8QAPwAqZaRkMgrhrQbCDFcC05QLeAX365y+aOpfUXEYTi
+         YAkrFjgFY9MVELsl455iXMtB9fhF8/5JNnfqGCva6YwQxncl7xCVURdenkiSE0lY83ZR
+         UL3SuANJcd/N19HA/xc+xqPNlKvi3dnekTbfaZw0f96YUxGdzYNcorC5TQFDSdNnGmBv
+         mzy3JJT9/fXTQSaEE7dTB0IUuvJ/rtfAby6uOtpudvv6AqgPCo8+SDVcgf+/8QoiwAWp
+         DqoA==
+X-Gm-Message-State: AOAM530IuBg3buIOXOTvJHX87pDk5iX+eNYpcxXn42WbYMJmLliho5Oq
+        sPT5f2q9VSXna2VWwY/EpqDveQ==
+X-Google-Smtp-Source: ABdhPJzaDot0sXCsA9DRJmuhRYgBWvzxvZECQwqhj7HngwE8kLQUGAYZqWa4F8K5huqxKIBABQbiQw==
+X-Received: by 2002:a17:903:4093:b029:e5:b933:fab7 with SMTP id z19-20020a1709034093b02900e5b933fab7mr361281plc.11.1615914291294;
+        Tue, 16 Mar 2021 10:04:51 -0700 (PDT)
+Received: from google.com ([2620:15c:f:10:e113:95c2:2d1:e304])
+        by smtp.gmail.com with ESMTPSA id i17sm18838958pfq.135.2021.03.16.10.04.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 10:04:50 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 10:04:44 -0700
+From:   Sean Christopherson <seanjc@google.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Feng Tang <feng.tang@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] tools/x86/kcpuid: Add AMD leaf 0x8000001E
+Message-ID: <YFDlLHsE7AhOgkDi@google.com>
+References: <20210315125901.30315-1-bp@alien8.de>
+ <20210315125901.30315-2-bp@alien8.de>
+ <20210316074223.GC49151@shbuild999.sh.intel.com>
+ <20210316142825.GB18003@zn.tnic>
 MIME-Version: 1.0
-References: <cover.1610372717.git.saiprakash.ranjan@codeaurora.org>
- <3f589e7de3f9fa93e84c83420c5270c546a0c368.1610372717.git.saiprakash.ranjan@codeaurora.org>
- <20210129090516.GB3998@willie-the-truck> <5d23fce629323bcda71594010824aad0@codeaurora.org>
- <20210201111556.GA7172@willie-the-truck> <CAF6AEGsARmkAFsjaQLfa2miMgeijo183MWDKGtW_ti-UCpzBqA@mail.gmail.com>
- <20210201182016.GA21629@jcrouse1-lnx.qualcomm.com> <7e9aade14d0b7f69285852ade4a5a9f4@codeaurora.org>
- <20210203214612.GB19847@willie-the-truck> <CAF6AEGvjzkRqr8-z56tJdMs-LsoLMr1m5cVAq_++xCdHjTPKrQ@mail.gmail.com>
-In-Reply-To: <CAF6AEGvjzkRqr8-z56tJdMs-LsoLMr1m5cVAq_++xCdHjTPKrQ@mail.gmail.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Tue, 16 Mar 2021 10:04:42 -0700
-Message-ID: <CAF6AEGveB=t0gQ0-WZn_qy=scYR60DEcum53saovg5h31ZMHog@mail.gmail.com>
-Subject: Re: [PATCH 2/3] iommu/io-pgtable-arm: Add IOMMU_LLC page protection flag
-To:     Will Deacon <will@kernel.org>
-Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
-        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>," 
-        <iommu@lists.linux-foundation.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Kristian H Kristensen <hoegsberg@google.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316142825.GB18003@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 2:14 PM Rob Clark <robdclark@gmail.com> wrote:
->
-> On Wed, Feb 3, 2021 at 1:46 PM Will Deacon <will@kernel.org> wrote:
-> >
-> > On Tue, Feb 02, 2021 at 11:56:27AM +0530, Sai Prakash Ranjan wrote:
-> > > On 2021-02-01 23:50, Jordan Crouse wrote:
-> > > > On Mon, Feb 01, 2021 at 08:20:44AM -0800, Rob Clark wrote:
-> > > > > On Mon, Feb 1, 2021 at 3:16 AM Will Deacon <will@kernel.org> wrote:
-> > > > > > On Fri, Jan 29, 2021 at 03:12:59PM +0530, Sai Prakash Ranjan wrote:
-> > > > > > > On 2021-01-29 14:35, Will Deacon wrote:
-> > > > > > > > On Mon, Jan 11, 2021 at 07:45:04PM +0530, Sai Prakash Ranjan wrote:
-> > > > > > > > > +#define IOMMU_LLC        (1 << 6)
-> > > > > > > >
-> > > > > > > > On reflection, I'm a bit worried about exposing this because I think it
-> > > > > > > > will
-> > > > > > > > introduce a mismatched virtual alias with the CPU (we don't even have a
-> > > > > > > > MAIR
-> > > > > > > > set up for this memory type). Now, we also have that issue for the PTW,
-> > > > > > > > but
-> > > > > > > > since we always use cache maintenance (i.e. the streaming API) for
-> > > > > > > > publishing the page-tables to a non-coheren walker, it works out.
-> > > > > > > > However,
-> > > > > > > > if somebody expects IOMMU_LLC to be coherent with a DMA API coherent
-> > > > > > > > allocation, then they're potentially in for a nasty surprise due to the
-> > > > > > > > mismatched outer-cacheability attributes.
-> > > > > > > >
-> > > > > > >
-> > > > > > > Can't we add the syscached memory type similar to what is done on android?
-> > > > > >
-> > > > > > Maybe. How does the GPU driver map these things on the CPU side?
-> > > > >
-> > > > > Currently we use writecombine mappings for everything, although there
-> > > > > are some cases that we'd like to use cached (but have not merged
-> > > > > patches that would give userspace a way to flush/invalidate)
-> > > > >
-> > > >
-> > > > LLC/system cache doesn't have a relationship with the CPU cache.  Its
-> > > > just a
-> > > > little accelerator that sits on the connection from the GPU to DDR and
-> > > > caches
-> > > > accesses. The hint that Sai is suggesting is used to mark the buffers as
-> > > > 'no-write-allocate' to prevent GPU write operations from being cached in
-> > > > the LLC
-> > > > which a) isn't interesting and b) takes up cache space for read
-> > > > operations.
-> > > >
-> > > > Its easiest to think of the LLC as a bonus accelerator that has no cost
-> > > > for
-> > > > us to use outside of the unfortunate per buffer hint.
-> > > >
-> > > > We do have to worry about the CPU cache w.r.t I/O coherency (which is a
-> > > > different hint) and in that case we have all of concerns that Will
-> > > > identified.
-> > > >
-> > >
-> > > For mismatched outer cacheability attributes which Will mentioned, I was
-> > > referring to [1] in android kernel.
-> >
-> > I've lost track of the conversation here :/
-> >
-> > When the GPU has a buffer mapped with IOMMU_LLC, is the buffer also mapped
-> > into the CPU and with what attributes? Rob said "writecombine for
-> > everything" -- does that mean ioremap_wc() / MEMREMAP_WC?
->
-> Currently userspace asks for everything WC, so pgprot_writecombine()
->
-> The kernel doesn't enforce this, but so far provides no UAPI to do
-> anything useful with non-coherent cached mappings (although there is
-> interest to support this)
->
+On Tue, Mar 16, 2021, Borislav Petkov wrote:
+> On Tue, Mar 16, 2021 at 03:42:23PM +0800, Feng Tang wrote:
+> > Also I'm wondering for some basic leaf and extended leaf which
+> > may has different definition for different vendors, do we need
+> > to seprate the csv to a general one and vendor specific ones.
+> 
+> Do you know of such?
+> 
+> Because AFAIK vendors own, more or less, each range. Like, Intel owns
+> the base range and AMD the extended so there should be no conflicts
+> actually...
 
-btw, I'm looking at a benchmark (gl_driver2_off) where (after some
-other in-flight optimizations land) we end up bottlenecked on writing
-to WC cmdstream buffers.  I assume in the current state, WC goes all
-the way to main memory rather than just to system cache?
-
-BR,
--R
-
-> BR,
-> -R
->
-> > Finally, we need to be careful when we use the word "hint" as "allocation
-> > hint" has a specific meaning in the architecture, and if we only mismatch on
-> > those then we're actually ok. But I think IOMMU_LLC is more than just a
-> > hint, since it actually drives eviction policy (i.e. it enables writeback).
-> >
-> > Sorry for the pedantry, but I just want to make sure we're all talking
-> > about the same things!
-> >
-> > Cheers,
-> >
-> > Will
+There are no known conflicts, and all sorts of things would break horribly if
+any CPU vendor (or hypervsior) were careless enough to redefine a CPUID bit.
