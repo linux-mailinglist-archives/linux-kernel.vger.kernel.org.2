@@ -2,79 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7640733D4B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B74533D4B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232816AbhCPNQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:16:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:39926 "EHLO foss.arm.com"
+        id S234740AbhCPNQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:16:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35074 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232133AbhCPNQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:16:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C06FE101E;
-        Tue, 16 Mar 2021 06:16:14 -0700 (PDT)
-Received: from [10.57.20.184] (unknown [10.57.20.184])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CF6A43F792;
-        Tue, 16 Mar 2021 06:16:11 -0700 (PDT)
-Subject: Re: [PATCH] thermal: power_allocator: using round the division when
- re-divvying up power
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     gao.yunxiao6@gmail.com, rui.zhang@intel.com, amitk@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        orsonzhai@gmail.com, zhang.lyra@gmail.com,
-        "jeson.gao" <jeson.gao@unisoc.com>
-References: <1615796737-4688-1-git-send-email-gao.yunxiao6@gmail.com>
- <9c14451e-be6f-0713-4c26-8b67e1fa51a5@arm.com>
- <381a12bf-c917-c2c4-1915-f129221d6475@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <922427b0-4140-6f4a-4bad-9043bdc5ba99@arm.com>
-Date:   Tue, 16 Mar 2021 13:16:09 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S234787AbhCPNQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 09:16:37 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 49836AC47;
+        Tue, 16 Mar 2021 13:16:36 +0000 (UTC)
+Date:   Tue, 16 Mar 2021 14:16:34 +0100
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Huang Rui <ray.huang@amd.com>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Joerg Roedel <joro@8bytes.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Xiaojian Du <xiaojian.du@amd.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] iommu/amd: Fix iommu remap panic while amd_iommu is set
+ to disable
+Message-ID: <YFCvsort3oZGfDBy@suse.de>
+References: <20210311142807.705080-1-ray.huang@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <381a12bf-c917-c2c4-1915-f129221d6475@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311142807.705080-1-ray.huang@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Huang,
 
+On Thu, Mar 11, 2021 at 10:28:07PM +0800, Huang Rui wrote:
+> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+> index f0adbc48fd17..a08e885403b7 100644
+> --- a/drivers/iommu/amd/iommu.c
+> +++ b/drivers/iommu/amd/iommu.c
+> @@ -3862,7 +3862,7 @@ static int irq_remapping_select(struct irq_domain *d, struct irq_fwspec *fwspec,
+>  	else if (x86_fwspec_is_hpet(fwspec))
+>  		devid = get_hpet_devid(fwspec->param[0]);
+>  
+> -	if (devid < 0)
+> +	if (devid < 0 || !amd_iommu_rlookup_table)
+>  		return 0;
 
-On 3/16/21 1:15 PM, Daniel Lezcano wrote:
-> On 15/03/2021 10:51, Lukasz Luba wrote:
->>
->>
->> On 3/15/21 8:25 AM, gao.yunxiao6@gmail.com wrote:
->>> From: "jeson.gao" <jeson.gao@unisoc.com>
->>>
->>> The division is used directly in re-divvying up power, the decimal
->>> part will
->>> be discarded, devices will get less than the extra_actor_power - 1.
->>> if using round the division to make the calculation more accurate.
->>>
->>> For example:
->>> actor0 received more than it's max_power, it has the extra_power 759
->>> actor1 received less than it's max_power, it require extra_actor_power
->>> 395
->>> actor2 received less than it's max_power, it require extra_actor_power
->>> 365
->>> actor1 and actor2 require the total capped_extra_power 760
->>>
->>> using division in re-divvying up power
->>> actor1 would actually get the extra_actor_power 394
->>> actor2 would actually get the extra_actor_power 364
->>>
->>> if using round the division in re-divvying up power
->>> actor1 would actually get the extra_actor_power 394
->>> actor2 would actually get the extra_actor_power 365
->>>
->>> Signed-off-by: Jeson Gao <jeson.gao@unisoc.com>
->>> ---
-> 
-> Applied, thanks
-> 
+The problem is deeper than this fix suggests. I prepared other fixes for
+this particular problem. Please find them here:
 
-thank you Daniel!
+	https://git.kernel.org/pub/scm/linux/kernel/git/joro/linux.git/log/?h=iommu-fixes
+
+Regards,
+
+	Joerg
