@@ -2,90 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB0B33CCD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F9533CCDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:05:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233962AbhCPFDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42472 "EHLO
+        id S235135AbhCPFFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232915AbhCPFDX (ORCPT
+        with ESMTP id S234408AbhCPFEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:03:23 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29202C06174A;
-        Mon, 15 Mar 2021 22:03:23 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id a9so34037253qkn.13;
-        Mon, 15 Mar 2021 22:03:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EDRaMPAHM6tbBcOzhcRZkRdBWMcomnsHavPkhD0j4OI=;
-        b=rMO+c3uSDB2nWjsMTo5HQ1bw6pHlZD2hl+JgS8Bf3msebCfDOJHh+qYRjirYAWW342
-         KFCMEcVloroy4FOsNKcy6/W4HDTwdWBCCVA6xHOZ47A37zqJiig6Pw2htYeEO6W1sVOG
-         jGkUQEfMf2pafHUkeoWKjK4HMG8MXgaYkiCoVavBYasnKN8dXsCxp4X1okkZyJIWtk6N
-         Yz1WP9cc9E3gOhOe1AlFJA72YOEgF0uXjxvftd/hGLH4QKHA7ADwMh3dB0OgE0/BcS+E
-         rNlQEzBFTUdzhH7zdlB559+VnHGUemCUYZIQQOZrhVyknb5lzuAcd9XisU/l31aFmfaF
-         HP3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EDRaMPAHM6tbBcOzhcRZkRdBWMcomnsHavPkhD0j4OI=;
-        b=BTuln1wDRWH8YRksN3K1K8wwwesa+itDuYKX8qxUxOWDZG7OnEqKKaQk3dIlpbXjyb
-         SPIIjF0r/iywgsMaJ/27drR8sVsuBI7tPZijN0AYSk8XKFSro1JPiMriN6Kw1cdX4ssl
-         tfK03jzkQ6etx7c38dFUr42ghSm0kdR7+1Y9H7cArRsh7rDscmTT0qnjrsb2bekG/5uu
-         shpc5aHTeX6+KB2QhEZWl34/LRsewddESethzlDM3jdRoDotXP3kZPsgBkOFfvEMTZyE
-         +fIXvPlgqR/wstq6wMI3bMaSkTYJbqcKsjg18ZGeVggcIcKETaZXk2nI+hxkrFUfZ0rj
-         PdYw==
-X-Gm-Message-State: AOAM531uPew1jJLMSBmtF/7OR9B7kSGFWkqv+4827+htBGDMHeLEI4U4
-        aXEX+EeZjDaKwPl0p2vrg24=
-X-Google-Smtp-Source: ABdhPJxPF4nun4mRDWPIfi975Ub2kiPW5+KYOkn3WBftH0WgpS2RqFknhZGu1LaICTP2guO9jaK6Bg==
-X-Received: by 2002:a37:e315:: with SMTP id y21mr28561941qki.418.1615871002423;
-        Mon, 15 Mar 2021 22:03:22 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.58.45])
-        by smtp.gmail.com with ESMTPSA id g2sm12785588qtu.0.2021.03.15.22.03.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 22:03:21 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] fs: Trivial typo fix in the file coredump.c
-Date:   Tue, 16 Mar 2021 10:33:02 +0530
-Message-Id: <20210316050302.3816253-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 16 Mar 2021 01:04:50 -0400
+Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB43C06174A;
+        Mon, 15 Mar 2021 22:04:50 -0700 (PDT)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4F01S01chmz1s2JH;
+        Tue, 16 Mar 2021 06:04:48 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4F01S01PMsz1qqkp;
+        Tue, 16 Mar 2021 06:04:48 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id wr0rRXowd_A1; Tue, 16 Mar 2021 06:04:46 +0100 (CET)
+X-Auth-Info: JNLiuPkH6Pt/6D4kQhbFJiVI+66XcPjg3FWIgYddH+Y=
+Received: from mail-internal.denx.de (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Tue, 16 Mar 2021 06:04:46 +0100 (CET)
+Received: from pollux.denx.de (pollux [192.168.1.1])
+        by mail-internal.denx.de (Postfix) with ESMTP id BAD33185315;
+        Tue, 16 Mar 2021 06:04:27 +0100 (CET)
+Received: by pollux.denx.de (Postfix, from userid 515)
+        id 926661A0092; Tue, 16 Mar 2021 06:04:27 +0100 (CET)
+From:   Heiko Schocher <hs@denx.de>
+To:     linux-spi@vger.kernel.org
+Cc:     Heiko Schocher <hs@denx.de>, linux-arm-kernel@lists.infradead.org,
+        Ashish Kumar <ashish.kumar@nxp.com>,
+        Kuldeep Singh <kuldeep.singh@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Yogesh Gaur <yogeshgaur.83@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] enable flexspi support on imx8mp
+Date:   Tue, 16 Mar 2021 06:04:23 +0100
+Message-Id: <20210316050425.1758778-1-hs@denx.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+add compatible entry in nxp_fspi driver for imx8mp
 
-s/postion/position/
+new in v3:
+seperate spi changes from series:
+http://lists.infradead.org/pipermail/linux-arm-kernel/2021-March/643289.html
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- Al, I hope this time I read the comments well enough,if still
- I am at fault , curse me!
+into own series as Kuldeep suggested and rebased against
+git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+144c79ef33536 ("Merge tag 'perf-tools-fixes-for-v5.12-2020-03-07' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux")
 
- fs/coredump.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+@Shawn: If this series is accepted, can you apply the DTS patches from
+series v2?
+http://lists.infradead.org/pipermail/linux-arm-kernel/2021-March/643292.html
+http://lists.infradead.org/pipermail/linux-arm-kernel/2021-March/643293.html
 
-diff --git a/fs/coredump.c b/fs/coredump.c
-index 1c0fdc1aa70b..3ecae122ffd9 100644
---- a/fs/coredump.c
-+++ b/fs/coredump.c
-@@ -923,7 +923,7 @@ EXPORT_SYMBOL(dump_align);
 
- /*
-  * Ensures that file size is big enough to contain the current file
-- * postion. This prevents gdb from complaining about a truncated file
-+ * position. This prevents gdb from complaining about a truncated file
-  * if the last "write" to the file was dump_skip.
-  */
- void dump_truncate(struct coredump_params *cprm)
---
-2.30.2
+Changes in v3:
+- seperate spi changes from series:
+  http://lists.infradead.org/pipermail/linux-arm-kernel/2021-March/643289.html
+- no changes, rebased against
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+  144c79ef33536 Merge tag 'perf-tools-fixes-for-v5.12-2020-03-07' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux
+
+Changes in v2:
+- work in comments from Marco
+  add own compatible entry for imx8mp
+
+Heiko Schocher (2):
+  spi: fspi: enable fspi driver for on imx8mp
+  dt-bindings: spi: add compatible entry for imx8mp in FlexSPI
+    controller
+
+ Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt | 1 +
+ drivers/spi/spi-nxp-fspi.c                             | 1 +
+ 2 files changed, 2 insertions(+)
+
+-- 
+2.29.2
 
