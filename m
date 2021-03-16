@@ -2,151 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2419933CE8B
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFDB33CE8C
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:22:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbhCPHWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 03:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbhCPHVr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 03:21:47 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629DFC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 00:21:47 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id w203-20020a1c49d40000b029010c706d0642so3324035wma.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 00:21:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=3PC4L/ElKOxjRdktmch4SpZkUtmQpCd/z4zTr/LSIf0=;
-        b=dmH4uVYmL9aJZFOiQxa1fPH8t4BIGG879xw4oi2VAdngKyAF4rV8HldmACFGuWZrTz
-         Ok6tcbNiiEANHgyYotM2KoASgWrtFjhlc+InLx/v93IwDNZhRP3Ru2gVC7hNhG58A/Ah
-         peB46rKLF0udJrXH56zJrU16OqFtYDi4awYmDAt6VfJdgf00n+Jkyz77OsIi29QGdn3S
-         ofzfNuHXwIo1jNxqytt8nNs2HlejZJK4DuwVCNNH6lVm/5BqpqSDLY+qZFNKd+1Ail7X
-         yXVy9uGmrXyy8n8KbamcpEJjkN0xnniPc2VHwsRpWsUgUCoa4hJKA3ytpd00kq6Ts3RW
-         NjVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=3PC4L/ElKOxjRdktmch4SpZkUtmQpCd/z4zTr/LSIf0=;
-        b=E7skTRvWvfySNsYF9/E9LSp+UCJQ820xJeUQGCo6DNL5B0GV6U0bUd2dwe4xg5Cs2r
-         WKLyABLUTd9R1cENKyF07oGBzkxO/beKE72i36U7HxT5pnK/5TnQFzdX3iuw3LCsoBRh
-         8zHNL2jpSHAZYrmww+j+EYkm3WovrFUQo1B4sfX2Ui5Xf/RzLqoOujm/xlTb5nXhkf9S
-         DdfU5US36j7I37NpMvMRByOTTD35Ay7hJO0nJ1XUfFDT/x/7I/j/3t29je/Z6cHlaBIp
-         /chaQAnMsAd+y7NhAEXXcr0Ltwm1Jk8kgRkQnjts1FxArFX8AdOirY/lSFAqNZIrRnCg
-         a63A==
-X-Gm-Message-State: AOAM531PwTTzoagTRCBo807/LLiOswpUIeWKzxWlVQDgxhOFSFMDvDEo
-        dy0veJFwU9dGVpEM59kz1P+A/Q==
-X-Google-Smtp-Source: ABdhPJz5cQmfQ4Ehxs4LnAG/W0t/jtMCZLitLYsh7qfZESNmRG8HctRVeDDGKCMarxLEo3bvJfb6cA==
-X-Received: by 2002:a05:600c:290a:: with SMTP id i10mr3240122wmd.91.1615879306045;
-        Tue, 16 Mar 2021 00:21:46 -0700 (PDT)
-Received: from dell ([91.110.221.243])
-        by smtp.gmail.com with ESMTPSA id t8sm20888097wrr.10.2021.03.16.00.21.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 00:21:45 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 07:21:43 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mark Jonas <mark.jonas@de.bosch.com>
-Cc:     Support Opensource <support.opensource@diasemi.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        Adam.Thomson.Opensource@diasemi.com, stwiss.opensource@diasemi.com,
-        marek.vasut@gmail.com, tingquan.ruan@cn.bosch.com,
-        hubert.streidl@de.bosch.com, Wolfram Sang <wsa@kernel.org>
-Subject: Re: [PATCH v5] mfd: da9063: Support SMBus and I2C mode
-Message-ID: <20210316072143.GA701493@dell>
-References: <20210315160903.799426-1-mark.jonas@de.bosch.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210315160903.799426-1-mark.jonas@de.bosch.com>
+        id S232415AbhCPHWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 03:22:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49038 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232720AbhCPHWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 03:22:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 63F4AAC5C;
+        Tue, 16 Mar 2021 07:22:05 +0000 (UTC)
+Date:   Tue, 16 Mar 2021 08:22:05 +0100
+Message-ID: <s5hr1kfo95u.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 0/4] ALSA: hda/cirrus: Make CS8409 driver more generic by using fixups
+In-Reply-To: <20210315190716.47686-1-vitalyr@opensource.cirrus.com>
+References: <20210315190716.47686-1-vitalyr@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021, Mark Jonas wrote:
-
-> From: Hubert Streidl <hubert.streidl@de.bosch.com>
+On Mon, 15 Mar 2021 20:07:12 +0100,
+Vitaly Rodionov wrote:
 > 
-> By default the PMIC DA9063 2-wire interface is SMBus compliant. This
-> means the PMIC will automatically reset the interface when the clock
-> signal ceases for more than the SMBus timeout of 35 ms.
+> This series of patches will address comments by Pierre-Louis Bossart,
+> cleans up patch_cirrus.c source, reducing checkpatch.pl warnings from 19 to 0,
+> fixing an issue reported by Canonical: BugLink: https://bugs.launchpad.net/bugs/1918378,
+> and makes the CS8409 patch more generic by using fixups.
 > 
-> If the I2C driver / device is not capable of creating atomic I2C
-> transactions, a context change can cause a ceasing of the clock signal.
-> This can happen if for example a real-time thread is scheduled. Then
-> the DA9063 in SMBus mode will reset the 2-wire interface. Subsequently
-> a write message could end up in the wrong register. This could cause
-> unpredictable system behavior.
-> 
-> The DA9063 PMIC also supports an I2C compliant mode for the 2-wire
-> interface. This mode does not reset the interface when the clock
-> signal ceases. Thus the problem depicted above does not occur.
-> 
-> This patch tests for the bus functionality "I2C_FUNC_I2C". It can
-> reasonably be assumed that the bus cannot obey SMBus timings if
-> this functionality is set. SMBus commands most probably are emulated
-> in this case which is prone to the latency issue described above.
-> 
-> This patch enables the I2C bus mode if I2C_FUNC_I2C is set or
-> otherwise keeps the default SMBus mode.
-> 
-> Signed-off-by: Hubert Streidl <hubert.streidl@de.bosch.com>
-> Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
-> ---
->  drivers/mfd/da9063-i2c.c             | 10 ++++++++++
->  include/linux/mfd/da9063/registers.h |  3 +++
->  2 files changed, 13 insertions(+)
+> Stefan Binding (4):
+>   ALSA: hda/cirrus: Add error handling into CS8409 I2C functions
+>   ALSA: hda/cirrus: Cleanup patch_cirrus.c code.
+>   ALSA: hda/cirrus: Fix CS42L42 Headset Mic volume control name
+>   ALSA: hda/cirrus: Make CS8409 driver more generic by using fixups.
 
-Code looks good to me now, thanks.
+Now applied all four patches.
 
-However, this doesn't look like it would pass checkpatch.
+The patch 4 had the old style fallthrough comment and I corrected with
+the fallthrough macro locally.
 
-Have you tried to build with W=1 and checkpatch?
 
-> diff --git a/drivers/mfd/da9063-i2c.c b/drivers/mfd/da9063-i2c.c
-> index 3781d0bb7786..e8a022e697c5 100644
-> --- a/drivers/mfd/da9063-i2c.c
-> +++ b/drivers/mfd/da9063-i2c.c
-> @@ -442,6 +442,16 @@ static int da9063_i2c_probe(struct i2c_client *i2c,
->  		return ret;
->  	}
->  
-> +	/* If SMBus is not available and only I2C is possible, enter I2C mode */
-> +	if (i2c_check_functionality(i2c->adapter, I2C_FUNC_I2C)) {
-> +		ret = regmap_clear_bits(da9063->regmap, DA9063_REG_CONFIG_J,
-> +			  DA9063_TWOWIRE_TO);
-> +		if (ret < 0) {
-> +			dev_err(da9063->dev, "Failed to set Two-Wire Bus Mode.\n");
-> +			return -EIO;
-> +		}
-> +	}
-> +
->  	return da9063_device_init(da9063, i2c->irq);
->  }
->  
-> diff --git a/include/linux/mfd/da9063/registers.h b/include/linux/mfd/da9063/registers.h
-> index 1dbabf1b3cb8..6e0f66a2e727 100644
-> --- a/include/linux/mfd/da9063/registers.h
-> +++ b/include/linux/mfd/da9063/registers.h
-> @@ -1037,6 +1037,9 @@
->  #define		DA9063_NONKEY_PIN_AUTODOWN	0x02
->  #define		DA9063_NONKEY_PIN_AUTOFLPRT	0x03
->  
-> +/* DA9063_REG_CONFIG_J (addr=0x10F) */
-> +#define DA9063_TWOWIRE_TO			0x40
-> +
->  /* DA9063_REG_MON_REG_5 (addr=0x116) */
->  #define DA9063_MON_A8_IDX_MASK			0x07
->  #define		DA9063_MON_A8_IDX_NONE		0x00
+thanks,
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Takashi
