@@ -2,110 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 898E833D1D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:31:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D14C533D1D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:31:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236603AbhCPKa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 06:30:28 -0400
-Received: from mail.synology.com ([211.23.38.101]:42972 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236569AbhCPKaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 06:30:03 -0400
-Subject: Re: [PATCH v2] block: fix trace completion for chained bio
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1615890602; bh=bytYvWpMK+2SPyQATrsWUcRSbI+iXR9EQhuampwSLxg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=TDFAuZZgIuiLzfDJ5Ze+NAIN7OP/LFyPxwAenzNa9HeznkyuZXIaatG4yTH5JwWE1
-         inPFb+5FlSHQE0UEXM60WldeycIKAAjtS2KoxnkrKOFy42X0M7atVjQ5F8Smx8BRRK
-         bhojU3M4XHLtcHZZ+XWAmU/K9HyzrbSIBy3H6rmc=
-To:     axboe@kernel.dk, neilb@suse.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        s3t@synology.com, bingjingc@synology.com, cccheng@synology.com
-References: <1614741726-28074-1-git-send-email-edwardh@synology.com>
-From:   Edward Hsieh <edwardh@synology.com>
-Message-ID: <c95d2a14-96e2-2e0b-065f-5307782502e5@synology.com>
-Date:   Tue, 16 Mar 2021 18:30:02 +0800
+        id S236691AbhCPKbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 06:31:16 -0400
+Received: from smtp124.ord1c.emailsrvr.com ([108.166.43.124]:34367 "EHLO
+        smtp124.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236599AbhCPKas (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 06:30:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1615890645;
+        bh=HKRipzT9Y4Y7AD4RUtA9VrCLd8S8c4Q7++26hm0spEw=;
+        h=Subject:To:From:Date:From;
+        b=WgWzVeUpqrSjo13ZutIqGnZXQ5rmm3R7o09WbmaFKzalD5jkK++RmXpD5m1kG9lPR
+         cN9NuZfJ/20i+iXTaj7BmgSt13a4I4s3+NPdesKXMOu8jBwmAcYbfMY4/V7NqdBgDS
+         8kSR3WUztKlBiEf+WNe1t+Z8jy/TLxwsbRa6s8zg=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp16.relay.ord1c.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id EA9DBC0172;
+        Tue, 16 Mar 2021 06:30:44 -0400 (EDT)
+Subject: Re: [PATCH v2] staging: comedi: cb_pcidas: fix request_irq() warn
+To:     Tong Zhang <ztong0001@gmail.com>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <393f3925-9dbf-72e5-4d9b-2e213a6a71cb@mev.co.uk>
+ <20210315195914.4801-1-ztong0001@gmail.com>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <e33c1059-cb89-5798-1030-bb1c13994198@mev.co.uk>
+Date:   Tue, 16 Mar 2021 10:30:43 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <1614741726-28074-1-git-send-email-edwardh@synology.com>
+In-Reply-To: <20210315195914.4801-1-ztong0001@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+X-Classification-ID: 1c471611-caf7-4948-a24b-76b433eb8e78-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens and Neil,
-
-Is there any feedback on this patch?
-
-Thank you,
-Edward Hsieh
-
-On 3/3/2021 11:22 AM, Edward Hsieh wrote:
-> From: Edward Hsieh <edwardh@synology.com>
+On 15/03/2021 19:59, Tong Zhang wrote:
+> request_irq() wont accept a name which contains slash so we need to
+> repalce it with something else -- otherwise it will trigger a warning
+> and the entry in /proc/irq/ will not be created
+> since the .name might be used by userspace and we don't want to break
+> userspace, so we are changing the parameters passed to request_irq()
 > 
-> For chained bio, trace_block_bio_complete in bio_endio is currently called
-> only by the parent bio once upon all chained bio completed.
-> However, the sector and size for the parent bio are modified in bio_split.
-> Therefore, the size and sector of the complete events might not match the
-> queue events in blktrace.
+> [    1.630764] name 'pci-das1602/16'
+> [    1.630950] WARNING: CPU: 0 PID: 181 at fs/proc/generic.c:180 __xlate_proc_name+0x93/0xb0
+> [    1.634009] RIP: 0010:__xlate_proc_name+0x93/0xb0
+> [    1.639441] Call Trace:
+> [    1.639976]  proc_mkdir+0x18/0x20
+> [    1.641946]  request_threaded_irq+0xfe/0x160
+> [    1.642186]  cb_pcidas_auto_attach+0xf4/0x610 [cb_pcidas]
 > 
-> The original fix of bio completion trace <fbbaf700e7b1> ("block: trace
-> completion of all bios.") wants multiple complete events to correspond
-> to one queue event but missed this.
-> 
-> md/raid5 read with bio cross chunks can reproduce this issue.
-> 
-> To fix, move trace completion into the loop for every chained bio to call.
-> 
-> Fixes: fbbaf700e7b1 ("block: trace completion of all bios.")
-> Reviewed-by: Wade Liang <wadel@synology.com>
-> Reviewed-by: BingJing Chang <bingjingc@synology.com>
-> Signed-off-by: Edward Hsieh <edwardh@synology.com>
+> Suggested-by: Ian Abbott <abbotti@mev.co.uk>
+> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
 > ---
->   block/bio.c | 13 ++++++-------
->   1 file changed, 6 insertions(+), 7 deletions(-)
+> v2: revert changes to .name field so that we dont break userspace
 > 
-> diff --git a/block/bio.c b/block/bio.c
-> index a1c4d29..2ff72cb 100644
-> --- a/block/bio.c
-> +++ b/block/bio.c
-> @@ -1397,8 +1397,7 @@ static inline bool bio_remaining_done(struct bio *bio)
->    *
->    *   bio_endio() can be called several times on a bio that has been chained
->    *   using bio_chain().  The ->bi_end_io() function will only be called the
-> - *   last time.  At this point the BLK_TA_COMPLETE tracing event will be
-> - *   generated if BIO_TRACE_COMPLETION is set.
-> + *   last time.
->    **/
->   void bio_endio(struct bio *bio)
->   {
-> @@ -1411,6 +1410,11 @@ void bio_endio(struct bio *bio)
->   	if (bio->bi_bdev)
->   		rq_qos_done_bio(bio->bi_bdev->bd_disk->queue, bio);
->   
-> +	if (bio->bi_bdev && bio_flagged(bio, BIO_TRACE_COMPLETION)) {
-> +		trace_block_bio_complete(bio->bi_bdev->bd_disk->queue, bio);
-> +		bio_clear_flag(bio, BIO_TRACE_COMPLETION);
-> +	}
-> +
->   	/*
->   	 * Need to have a real endio function for chained bios, otherwise
->   	 * various corner cases will break (like stacking block devices that
-> @@ -1424,11 +1428,6 @@ void bio_endio(struct bio *bio)
->   		goto again;
->   	}
->   
-> -	if (bio->bi_bdev && bio_flagged(bio, BIO_TRACE_COMPLETION)) {
-> -		trace_block_bio_complete(bio->bi_bdev->bd_disk->queue, bio);
-> -		bio_clear_flag(bio, BIO_TRACE_COMPLETION);
-> -	}
-> -
->   	blk_throtl_bio_endio(bio);
->   	/* release cgroup info */
->   	bio_uninit(bio);
+>   drivers/staging/comedi/drivers/cb_pcidas.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/drivers/staging/comedi/drivers/cb_pcidas.c b/drivers/staging/comedi/drivers/cb_pcidas.c
+> index d740c4782775..2f20bd56ec6c 100644
+> --- a/drivers/staging/comedi/drivers/cb_pcidas.c
+> +++ b/drivers/staging/comedi/drivers/cb_pcidas.c
+> @@ -1281,7 +1281,7 @@ static int cb_pcidas_auto_attach(struct comedi_device *dev,
+>   	     devpriv->amcc + AMCC_OP_REG_INTCSR);
+>   
+>   	ret = request_irq(pcidev->irq, cb_pcidas_interrupt, IRQF_SHARED,
+> -			  dev->board_name, dev);
+> +			  "cb_pcidas", dev);
+>   	if (ret) {
+>   		dev_dbg(dev->class_dev, "unable to allocate irq %d\n",
+>   			pcidev->irq);
+> 
+
+Looks good.
+
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+
+-- 
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
