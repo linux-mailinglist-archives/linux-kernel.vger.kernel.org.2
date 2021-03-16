@@ -2,140 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C94833CE74
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 502D733CE7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhCPHSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 03:18:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbhCPHR3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 03:17:29 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 367EFC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 00:17:29 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id g25so9469354wmh.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 00:17:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=oZuUvGFA5U2S6/itOAzxPtROAaukApCNjMGTGxgU3HQ=;
-        b=GJE1ydr9bcaCTx5Zg7jSOp9KA8TA4vgJxxjqgfzCx7lM7vzrcDp7DDJaxo5y19IuLe
-         Wa6PJP0fKG2kna4IxKVLtxAeAUxUEusGQsxm9VZKT9m6MSXGmJTjd48RluFRz06T0QB2
-         Hcgc5LtxahnTIEuPlzeiGFtPhNcYnOX0ghkeHQsKF78wm55qmtLuZVteLbliM+HfEQDV
-         nmfplYMjeE0EnvtZgIGMpJCHZSwcmz7S4gGK5JXeUBBBsE194HsqEDwuwsYhzmV5b1EM
-         IJLV+K5kwqqP3PE66f84iyg3jdylWaFRj+3OBmb+BwhWcgL2RbxCg9IE7OEYZd8SpFTi
-         vYyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=oZuUvGFA5U2S6/itOAzxPtROAaukApCNjMGTGxgU3HQ=;
-        b=YuHhW5jWwFLlMs9MvtX1HClcfaPAUYUoz5NpYhFCq330BWHZdylbeGGwW+3TWDlxd4
-         dD1CjmV/cHYIyvN3JF8rQMhevSN61Qi3dWrtit/utCYIs/4VC722M4W0Y/apQu8PXw3T
-         k1M6QNi1AcYVVv4meWkDpHW5KhHbZJZPV54DiD6cd3cY6rUg5oqggSSq4aCw3bDQyhCP
-         X2wMlSiN5FfZN82emIu51pEPx0ts046npVQyaC7DVE3RwCfBXOhoFFnjiA53O//RYokT
-         aHoOq+k710uFYnJXLp9vl4JrPZovmx+2SBdVrnilxuvK5ZQM5xPrdlc9o6OPfs0nn+MG
-         1qnw==
-X-Gm-Message-State: AOAM530OkLjECa5yrZ+Ba58p+4gbBKnPL0NjmZU514JCnlg8WjgUdxq/
-        auOKN6sqqMTgzxOOYxBskVPEbmNlh3Y3rw==
-X-Google-Smtp-Source: ABdhPJzgV7Xt6PwMLLbkmCtGY7U3PeWH7Ot13DkNSrnIYuATbE7mWyPIaCkR7zcFI+EbI0VbJyiYxw==
-X-Received: by 2002:a7b:c2f7:: with SMTP id e23mr1578338wmk.30.1615879047977;
-        Tue, 16 Mar 2021 00:17:27 -0700 (PDT)
-Received: from dell ([91.110.221.243])
-        by smtp.gmail.com with ESMTPSA id w11sm22538094wrv.88.2021.03.16.00.17.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 00:17:27 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 07:17:25 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, Adam Radford <aradford@gmail.com>,
-        Alan Cox <alan@lxorguk.ukuu.org.uk>,
-        Ali Akcaagac <aliakc@web.de>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Andre Hedrick <andre@suse.com>,
-        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-        Anil Veerabhadrappa <anilgv@broadcom.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bas Vermeulen <bvermeul@blackstar.xs4all.nl>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        Brian Macy <bmacy@sunshinecomputing.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "C.L. Huang" <ching@tekram.com.tw>, dc395x@twibble.org,
-        de Melo <acme@conectiva.com.br>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Dimitris Michailidis <dm@chelsio.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Eddie Wai <eddie.wai@broadcom.com>,
-        Erich Chen <erich@tekram.com.tw>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Hannes Reinecke <hare@kernel.org>,
-        Hannes Reinecke <hare@suse.de>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        James Smart <james.smart@broadcom.com>,
-        Jamie Lenehan <lenehan@twibble.org>,
-        Jan Kotas <jank@cadence.com>,
-        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
-        Joel Jacobson <linux@3ware.com>, Karen Xie <kxie@chelsio.com>,
-        Ketan Mukadam <ketan.mukadam@broadcom.com>,
-        Kurt Garloff <garloff@suse.de>,
-        "Leonard N. Zubkoff" <lnz@dandelion.com>,
-        linux-drivers@broadcom.com, Linux GmbH <hare@suse.com>,
-        linux-scsi@vger.kernel.org,
-        Manish Rangankar <mrangankar@marvell.com>,
-        Marcelo Tosatti <marcelo@conectiva.com.br>,
-        MPT-FusionLinux.pdl@avagotech.com,
-        MPT-FusionLinux.pdl@broadcom.com,
-        Nathaniel Clark <nate@misrule.us>,
-        "Nicholas A. Bellinger" <nab@kernel.org>,
-        Nilesh Javali <njavali@marvell.com>,
-        Oliver Neukum <oliver@neukum.org>,
-        QLogic-Storage-Upstream@qlogic.com,
-        Santosh Yaraganavi <santosh.sy@samsung.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
-        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Vinayak Holikatti <h.vinayak@samsung.com>,
-        Vladislav Bolkhovitin <vst@vlnb.net>
-Subject: Re: [PATCH 00/30] [Set 2] Rid W=1 warnings in SCSI
-Message-ID: <20210316071725.GZ701493@dell>
-References: <20210312094738.2207817-1-lee.jones@linaro.org>
- <yq15z1r6db8.fsf@ca-mkp.ca.oracle.com>
+        id S232139AbhCPHSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 03:18:37 -0400
+Received: from foss.arm.com ([217.140.110.172]:50050 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231630AbhCPHSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 03:18:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12BABD6E;
+        Tue, 16 Mar 2021 00:18:18 -0700 (PDT)
+Received: from bogus (unknown [10.163.66.225])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 443473F792;
+        Tue, 16 Mar 2021 00:18:14 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 07:18:11 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
+        daniel.lezcano@linaro.org, robh+dt@kernel.org,
+        ksitaraman@nvidia.com, sanjayc@nvidia.com,
+        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
+        Sudeep Holla <Sudeep.Holla@arm.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v1 3/5] dt-bindings: arm: Add cpu-idle-states to Tegra194
+ CPU nodes
+Message-ID: <20210316071811.5mqcatmmbvrask2p@bogus>
+References: <1614838092-30398-1-git-send-email-skomatineni@nvidia.com>
+ <1614838092-30398-4-git-send-email-skomatineni@nvidia.com>
+ <20210308043755.llvdsuz2jwvweovb@bogus>
+ <4cebf482-a2f8-5a79-a2f6-4ccd7d31c6ad@nvidia.com>
+ <20210311025138.o4ub4j2ss725zpv4@bogus>
+ <b31d14ef-81d8-0480-805b-a3cb64404b12@nvidia.com>
+ <08ac26c1-8257-4c6d-d274-595fee28a00f@nvidia.com>
+ <4b21f4c7-19cd-fcea-dd1b-9203be60a523@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <yq15z1r6db8.fsf@ca-mkp.ca.oracle.com>
+In-Reply-To: <4b21f4c7-19cd-fcea-dd1b-9203be60a523@nvidia.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021, Martin K. Petersen wrote:
+On Mon, Mar 15, 2021 at 11:13:24AM -0700, Sowjanya Komatineni wrote:
+> Hi Sudeep,
+>
+> I see you are one of the maintainer of PSCI driver. Please add any other
+> right persons if you think should also agree/comment.
+>
+> Can you please comment on below 2 items based on your feedback?
+>
+> 1. Can you please suggest on proper way of generalizing to pass state
+> residency time run-time along with state during state enter?
+>
+> Not sure if any other drivers need this but for Tegra as MCE firmware is
+> in-charge of states enter and decisions, passing run-time state residency
+> from kernel to ATF is required and agree on not using power_state value for
+> this which is against PSCI spec.
+>
 
-> 
-> Lee,
-> 
-> > This set is part of a larger effort attempting to clean-up W=1 kernel
-> > builds, which are currently overwhelmingly riddled with niggly little
-> > warnings.
-> 
-> Applied to 5.13/scsi-staging, thanks!
+Yes, I prefer you need to get this added in the PSCI specification.
+I have passed this thread to the author of the specification.
 
-Superstar!  Thanks Martin.
+> 2. Regarding state thresholds, although state thresholds are policy related
+> in Tegra cpu idle perspective these thresholds are platform specific based
+> on use case and mainly for MCE firmware usage to decide on state transitions
+> for core and core clusters as well.
+>
+From previous emails, I gather these can be moved to firmware and need not be
+there in DT ?
 
-Just FYI, there are more 44 more patches left until clean.
+> As these are Tegra platform specific, Please comment if any other concerns
+> in having this configured by Tegra CPU Idle kernel driver.
+>
 
-Would you like them in 1 or 2 sets?
+I prefer not to have Tegra specific idle driver if we can get the necessary
+changes in PSCI spec. We must then have just one PSCI idle driver in the
+kernel.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+
+> Based on my understanding only above issue-1 is PSCI compliant related.
+> Please confirm.
+>
+
+Correct.
+
+--
+Regards,
+Sudeep
