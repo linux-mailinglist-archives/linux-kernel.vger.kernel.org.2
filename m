@@ -2,143 +2,596 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7D533D01A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:50:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0BC33D01E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235425AbhCPItv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 04:49:51 -0400
-Received: from us-smtp-delivery-115.mimecast.com ([170.10.133.115]:38003 "EHLO
-        us-smtp-delivery-115.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231538AbhCPItW (ORCPT
+        id S235554AbhCPIwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 04:52:41 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:49181 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231538AbhCPIvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 04:49:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maxlinear.com;
-        s=selector; t=1615884562;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=FP+VKprYVhPXuymFr4GMjIfgx8E2VmDeAhk3b1yTB6Y=;
-        b=Z0TGM7u5H57J2doTLKJLnU6/78k26v92hfeAXxNgM+Mho2+horqE858ilzsJj4vjeQBlO/
-        SPpxZj3Lh1/RtDJuwJhrvaH6+D2ZyIDE03BpNFyFIOTEaPBbQg8XjbNrPjQTiAol+mcrLH
-        qke5OibbF8d4+F7M/eZP16KX7VpnuVc=
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam11lp2177.outbound.protection.outlook.com [104.47.58.177])
- (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-196-xZLl3O3rMhiDG2dE7R3VQA-1; Tue, 16 Mar 2021 04:49:20 -0400
-X-MC-Unique: xZLl3O3rMhiDG2dE7R3VQA-1
-Received: from MN2PR19MB3693.namprd19.prod.outlook.com (2603:10b6:208:18a::19)
- by MN2PR19MB3440.namprd19.prod.outlook.com (2603:10b6:208:18c::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Tue, 16 Mar
- 2021 08:49:18 +0000
-Received: from MN2PR19MB3693.namprd19.prod.outlook.com
- ([fe80::1cd9:22:e5ef:6d10]) by MN2PR19MB3693.namprd19.prod.outlook.com
- ([fe80::1cd9:22:e5ef:6d10%7]) with mapi id 15.20.3933.032; Tue, 16 Mar 2021
- 08:49:18 +0000
-From:   Rahul Tanwar <rtanwar@maxlinear.com>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: TEST EMAIL - PLEASE IGNORE
-Thread-Topic: TEST EMAIL - PLEASE IGNORE
-Thread-Index: AQHXGkFALsdsNvyN3UCmcXvg+vU9TA==
-Date:   Tue, 16 Mar 2021 08:49:18 +0000
-Message-ID: <MN2PR19MB3693A6A082D781FD35CA68A3B16B9@MN2PR19MB3693.namprd19.prod.outlook.com>
-References: <MN2PR19MB36933AFDC4531D0F7A984608B16C9@MN2PR19MB3693.namprd19.prod.outlook.com>
-Accept-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [222.164.90.248]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fb9e0642-d0de-4ee3-e782-08d8e85862cf
-x-ms-traffictypediagnostic: MN2PR19MB3440:
-x-microsoft-antispam-prvs: <MN2PR19MB3440AE602E337AEA25D93212B16B9@MN2PR19MB3440.namprd19.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1728
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0
-x-microsoft-antispam-message-info: 3NCAjSwQzeMwZw57ORNGZWtVlZBI4DIAVkPsy1lEczlXniz1aubdPeosP2S93CaCIYg2rTP0uI3+0iYbdoUkL8jPxLAzI7+7iJeEjVWxDPXjW0pAa1AixoJ/tlCslpHmJT9to0WGx50wE1GuozzAIQI3X4rJQ0arUvBXg63jQ8U/7TMjbYi/uG23++dFDD9UOOTlkxzVWPVHDUQH3OCscWxVBA7ITCnkUYi4NoDg2YSieemlxhKayapW3VENllZHtMzRc6oQcIhEu/s3Z2Xm4Olxw8k2Pv51o+q4ME7DenDmfh7YwMrRUQOnC7t0HbVmEGX5O2jBxX/kN8CK7H3oQHIk03O72cnIdEoyExvDCdgDrOQpMuRPtoadSA4fP6jLpf90txlhUL9glWtSUGaMbb++y6IdpihgLILk+mWLwgC8c2IIN+4FY8ZTldUuI90WgwwVD6qo6w5JH/GLrWiarZ/KPoDhhAoPmVPWPLG/6F++TxI9NaX9hRS5MRSONXHiLZgTs3OFhAfOlpXlgnZv5gy5oRtzxUoSmvIAPz4WVgKR7RAVZNPpkxGbzlNw+m33VWxkXNdjjA6ucpHgoWkDdmaudSppvDu/ZXcrC+Q2UU/8UgI9Ae/K/JWUgdRQew/+POBbiG/dihbEdLVwNZMZuw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR19MB3693.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(39850400004)(136003)(366004)(346002)(6506007)(91956017)(52536014)(33656002)(5660300002)(478600001)(6916009)(64756008)(8676002)(7696005)(186003)(2906002)(316002)(66946007)(53546011)(55016002)(66446008)(66476007)(9686003)(71200400001)(26005)(83380400001)(66556008)(8936002)(76116006)(86362001);DIR:OUT;SFP:1102
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?mLjwCOeUvw5MkPyfzXclIsQ1nH5H0FebzZMqdgEs/ANrm9tFfF59FtiG66xo?=
- =?us-ascii?Q?9UeB4LYISxw+ilRRIk0aAV7ZGBq+kHcj2GBVv66/YQvHZtxb9VBC+gzb61nW?=
- =?us-ascii?Q?AqNzR1Jxuq/F2J5I21KNjBcoy9xevr2C6p8Jqwkz6a01k/bE3V4vP0cJM1Y2?=
- =?us-ascii?Q?+lbT6iEsXXjmfQE3DlovCWhRTus4XLNfsYvX9OOeJU6O/fKWgnIsDTNXgdvF?=
- =?us-ascii?Q?9kDgZSNd/5k/g3JGFrkUura0ivSQpESFbz7wVaxoT5tfZOTJxdbhM1A7/+hs?=
- =?us-ascii?Q?AVIPSCTz6CkA5ZXPnFksrf7VzVMmzsKHUT5bzzZjVnUjQg8Eij5Dpw4A1klt?=
- =?us-ascii?Q?jQXmokPZDBZL0dapAowwSapFWOBsOGc7hbbOR3vvKfwP4ju6wO75EYwdFRZD?=
- =?us-ascii?Q?c3UltO5WBWtUCCoHVMK8ZplGD6ph1EUKB+T+CTKdE8T847OoAFcCULDgIe/l?=
- =?us-ascii?Q?MsLeq7gaAnI7saunAv82mTr2kBD+zIiKKyAny1LyF4Q8v/r06LDF7f06mkd+?=
- =?us-ascii?Q?+h4Hlr0vhOL4n1Y++n6OX+Y39LnVtQIb42iGuLBO4RuwAJAQbbG7JfaHscWe?=
- =?us-ascii?Q?ZsWlKC8uysxILOcj3Vov9o6a36X9jQurduRWWp+Gza5YWvOSaCaWH0E4AxKo?=
- =?us-ascii?Q?rZu7UVISk1DOnfVK4MsrNsWZOZxtfHTBv5/Wf9B1WOjHC1tVoPuNw40bIS7y?=
- =?us-ascii?Q?DnDDfB5lejaB/Sc75Vv+3A9ceXDyHhMY4nDArDpmvBoN5CLMMHREVlIqYTNw?=
- =?us-ascii?Q?0kiaYqEW0mJZ4NoaAaH/up6xqU/ciLLB2HWH96X0KBeKi6OVyDYUbA3Tg6sx?=
- =?us-ascii?Q?5DIMrIqWx5Q9ngP/hsQtOx0ln8t2L+zH+bdWWAU75iFNtCAcHo2aOVQblNkB?=
- =?us-ascii?Q?uEZDRq9IAak3ZqRvZPq9NksKrrxp61woaDTNuKUtdDnthB/mezbibJ3B8wZw?=
- =?us-ascii?Q?MhvlSwT/3HgUrFASI6qjjKINvcy37vDFnI3zkusARtoVJBCReqA95YSIcIIZ?=
- =?us-ascii?Q?EpLm+vtxieeZC+7CmtiZ0ZNZF0e4VwPSc+HyHToLTeaeZo8XWKsSa8nVej42?=
- =?us-ascii?Q?WbInGDNlrQLcoe/tUrZCGE44OdKyswjhmMO5vSRF4Ii/zF44onKyBFkfSlbr?=
- =?us-ascii?Q?BpFdOL+hTDcTM7PO6vdB0tOsEqr7PtUemrgpjSirhrv8os5WO68GDYOhoyDm?=
- =?us-ascii?Q?9Rr11OrpjCB7AktTjjcxiKr4q4fugHLFVqqFZpv1iu3dTDPBZGeAxHUtsBWt?=
- =?us-ascii?Q?88WSafiqW2/trbI9vP5J+iqi5WrNH8pCKLcW1XU5PmqlmSSaBXjtiE3zGSwC?=
- =?us-ascii?Q?i++o1dm+PteAgjL4Glp93ipnIOEkUzjgUB4crL9wEBkhbA=3D=3D?=
-x-ms-exchange-transport-forked: True
+        Tue, 16 Mar 2021 04:51:18 -0400
+Received: by mail-io1-f69.google.com with SMTP id d4so22703803ioc.16
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 01:51:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=4QUdhKjlsSq0ONrUjGfj14EmJ4tiOuVx+A6yHTuWHx0=;
+        b=JUKeKE/9cWfm+GBDdQt9HrCB1YVe0Lye7nCqRAmXGxRP/r7ChKU1V1rnk76j9woiVp
+         B+OWIYtRg6OrlR0OXrGKK5aM69Fzn/CHSmzLpUmN/xSjuIh8dqbPhYG9RQFGkZOlVUK6
+         Rs/lp+TDlezbogxuGk1mo/5YoL/KiVW+Nuuw7dOJGCYMSmrS66Ye0EyLovzQvUTN98iF
+         1OItpAJjFSgYpzA8xjsr0uF4ZewqNjMC2Aik3bWzhyVImkkIQ/F73pSByp3xUgXKBUbz
+         T5Nxl4LicK5KT0klDugZaIDXMr0xN8xLXIKCdnln5Do384U78KTg4j4vYcyHEDsFyoYp
+         l7nA==
+X-Gm-Message-State: AOAM532CVb5Sg16hZPhHCmPQqhQXF8Q7744kWEqdOso73fvJ0NF60BZI
+        NgC4ZqikEhZlCO3NpVYsBJWqFjVgURJEWAeugHfiGO4OZFhx
+X-Google-Smtp-Source: ABdhPJxUrnc3gunKqba2bVgfn2w+0mX2XveK7Foo2gwEUHtgrSjMx2zAsr+BF2CLc8DmPxHrG09i6azSUi5+9aMNalj0nNJCyegN
 MIME-Version: 1.0
-X-OriginatorOrg: maxlinear.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR19MB3693.namprd19.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb9e0642-d0de-4ee3-e782-08d8e85862cf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2021 08:49:18.4284
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: dac28005-13e0-41b8-8280-7663835f2b1d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jXVaACTzNV3s8vBTXVmvcR4uDZqZqxp2X5H0t23AuX4XNpBxrs+c+9mgfBA55A190Opmwp/82MNXPqzRqSvJjg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR19MB3440
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA115A51 smtp.mailfrom=rtanwar@maxlinear.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: maxlinear.com
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a6b:d20e:: with SMTP id q14mr2645087iob.200.1615884677498;
+ Tue, 16 Mar 2021 01:51:17 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 01:51:17 -0700
+In-Reply-To: <00000000000007287c05bd401384@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000334b4905bda378e9@google.com>
+Subject: Re: [syzbot] KMSAN: uninit-value in number (3)
+From:   syzbot <syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com>
+To:     glider@google.com, hverkuil@xs4all.nl,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        mchehab@kernel.org, paskripkin@gmail.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/3/2021 5:44 pm, Rahul Tanwar wrote:=0A> From: Arnd Bergmann<arnd@kern=
-el.org>=0A> To: Pavel Machek<pavel@ucw.cz>,=0A> =09Amireddy Mallikarjuna re=
-ddy=0A> =09<mallikarjunax.reddy@linux.intel.com>=0A> Cc: Arnd Bergmann<arnd=
-@arndb.de>, Dan Murphy<dmurphy@ti.com>,=0A> =09linux-leds@vger.kernel.org,l=
-inux-kernel@vger.kernel.org=0A> Subject:[PATCH] leds: lgm: fix gpiolib depe=
-ndency  <https://lore.kernel.org/lkml/20210308153052.2353885-1-arnd@kernel.=
-org/#r>=0A> Date: Mon,  8 Mar 2021 16:30:46 +0100=0A> Message-ID:<202103081=
-53052.2353885-1-arnd@kernel.org>  (raw  <https://lore.kernel.org/lkml/20210=
-308153052.2353885-1-arnd@kernel.org/raw>)=0A>=20=0A> From: Arnd Bergmann<ar=
-nd@arndb.de>=0A>=20=0A> Without gpiolib, the driver fails to build:=0A>=20=
-=0A>      drivers/leds/blink/leds-lgm-sso.c:123:19: error: field has incomp=
-lete type 'struct gpio_chip'=0A>              struct gpio_chip chip;=0A>   =
-                            ^=0A>      include/linux/gpio.h:107:8: note: fo=
-rward declaration of 'struct gpio_chip'=0A>      struct gpio_chip;=0A>     =
-        ^=0A>      drivers/leds/blink/leds-lgm-sso.c:263:3: error: implicit=
- declaration of function 'gpiod_set_value' [-Werror,-Wimplicit-function-dec=
-laration]=0A>                      gpiod_set_value(led->gpiod, val);=0A>   =
-                   ^=0A>      drivers/leds/blink/leds-lgm-sso.c:263:3: note=
-: did you mean 'gpio_set_value'?=0A>      include/linux/gpio.h:168:20: note=
-: 'gpio_set_value' declared here=0A>      static inline void gpio_set_value=
-(unsigned gpio, int value)=0A>                         ^=0A>      drivers/l=
-eds/blink/leds-lgm-sso.c:345:3: error: implicit declaration of function 'gp=
-iod_set_value' [-Werror,-Wimplicit-function-declaration]=0A>               =
-       gpiod_set_value(led->gpiod, 1);=0A>                      ^=0A>=20=0A=
-> Add the dependency in Kconfig.=0A>=20=0A> Fixes: c3987cd2bca3 ("leds: lgm=
-: Add LED controller driver for LGM SoC")=0A> Signed-off-by: Arnd Bergmann<=
-arnd@arndb.de>=0A> ---=0A>   drivers/leds/blink/Kconfig  <https://lore.kern=
-el.org/lkml/20210308153052.2353885-1-arnd@kernel.org/#Z30drivers:leds:blink=
-:Kconfig>  | 1 +=0A>   1 file changed, 1 insertion(+)=0A>=20=0A> diff=20=0A=
-> <https://lore.kernel.org/lkml/20210308153052.2353885-1-arnd@kernel.org/#i=
-Z30drivers:leds:blink:Kconfig>=20=0A> --git a/drivers/leds/blink/Kconfig b/=
-drivers/leds/blink/Kconfig index=20=0A> 265b53476a80..6dedc58c47b3 100644 -=
--- a/drivers/leds/blink/Kconfig +++=20=0A> b/drivers/leds/blink/Kconfig @@ =
--9,6 +9,7 @@ if LEDS_BLINK  =20=0A>   config LEDS_BLINK_LGM=0A>   =09trista=
-te "LED support for Intel LGM SoC series"=0A> + depends on GPIOLIB   =09dep=
-ends on LEDS_CLASS=0A>   =09depends on MFD_SYSCON=0A>   =09depends on OF=0A=
-> --=20=0A> 2.29.2=0A>=20=0A=0A=0AAcked-by: Rahul Tanwar <rtanwar@maxlinear=
-.com>=0A
+syzbot has found a reproducer for the following issue on:
+
+HEAD commit:    29ad81a1 arch/x86: add missing include to sparsemem.h
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=115abb3ed00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8b976581f6bd1e7d
+dashboard link: https://syzkaller.appspot.com/bug?extid=a4e309017a5f3a24c7b3
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1488adc6d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c409b2d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in number+0x54f/0x2540 lib/vsprintf.c:442
+CPU: 0 PID: 1983 Comm: kworker/0:2 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ number+0x54f/0x2540 lib/vsprintf.c:442
+ vsnprintf+0x1cd6/0x3600 lib/vsprintf.c:2685
+ vprintk_store+0x2ab/0x1df0 kernel/printk/printk.c:1984
+ vprintk_emit+0x29a/0x7f0 kernel/printk/printk.c:2092
+ vprintk_default+0x86/0xa0 kernel/printk/printk.c:2126
+ vprintk_func+0x2ed/0x2f0 kernel/printk/printk_safe.c:393
+ printk+0x180/0x1cd kernel/printk/printk.c:2157
+ sq905_read_data+0x630/0x650 drivers/media/usb/gspca/sq905.c:184
+ sd_init+0x184/0x530 drivers/media/usb/gspca/sq905.c:329
+ gspca_dev_probe2+0x129f/0x23f0 drivers/media/usb/gspca/gspca.c:1532
+ gspca_dev_probe+0x3db/0x440 drivers/media/usb/gspca/gspca.c:1606
+ sd_probe+0x8d/0xa0 drivers/media/usb/gspca/gl860/gl860.c:511
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ worker_thread+0x10ec/0x2340 kernel/workqueue.c:2421
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Local variable ----act_len@sq905_read_data created at:
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in number+0x8d9/0x2540 lib/vsprintf.c:463
+CPU: 0 PID: 1983 Comm: kworker/0:2 Tainted: G    B             5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ number+0x8d9/0x2540 lib/vsprintf.c:463
+ vsnprintf+0x1cd6/0x3600 lib/vsprintf.c:2685
+ vprintk_store+0x2ab/0x1df0 kernel/printk/printk.c:1984
+ vprintk_emit+0x29a/0x7f0 kernel/printk/printk.c:2092
+ vprintk_default+0x86/0xa0 kernel/printk/printk.c:2126
+ vprintk_func+0x2ed/0x2f0 kernel/printk/printk_safe.c:393
+ printk+0x180/0x1cd kernel/printk/printk.c:2157
+ sq905_read_data+0x630/0x650 drivers/media/usb/gspca/sq905.c:184
+ sd_init+0x184/0x530 drivers/media/usb/gspca/sq905.c:329
+ gspca_dev_probe2+0x129f/0x23f0 drivers/media/usb/gspca/gspca.c:1532
+ gspca_dev_probe+0x3db/0x440 drivers/media/usb/gspca/gspca.c:1606
+ sd_probe+0x8d/0xa0 drivers/media/usb/gspca/gl860/gl860.c:511
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ worker_thread+0x10ec/0x2340 kernel/workqueue.c:2421
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Local variable ----act_len@sq905_read_data created at:
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in put_dec+0x1dc/0x260 lib/vsprintf.c:258
+CPU: 0 PID: 1983 Comm: kworker/0:2 Tainted: G    B             5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ put_dec+0x1dc/0x260 lib/vsprintf.c:258
+ number+0x896/0x2540 lib/vsprintf.c:476
+ vsnprintf+0x1cd6/0x3600 lib/vsprintf.c:2685
+ vprintk_store+0x2ab/0x1df0 kernel/printk/printk.c:1984
+ vprintk_emit+0x29a/0x7f0 kernel/printk/printk.c:2092
+ vprintk_default+0x86/0xa0 kernel/printk/printk.c:2126
+ vprintk_func+0x2ed/0x2f0 kernel/printk/printk_safe.c:393
+ printk+0x180/0x1cd kernel/printk/printk.c:2157
+ sq905_read_data+0x630/0x650 drivers/media/usb/gspca/sq905.c:184
+ sd_init+0x184/0x530 drivers/media/usb/gspca/sq905.c:329
+ gspca_dev_probe2+0x129f/0x23f0 drivers/media/usb/gspca/gspca.c:1532
+ gspca_dev_probe+0x3db/0x440 drivers/media/usb/gspca/gspca.c:1606
+ sd_probe+0x8d/0xa0 drivers/media/usb/gspca/gl860/gl860.c:511
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ worker_thread+0x10ec/0x2340 kernel/workqueue.c:2421
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Local variable ----act_len@sq905_read_data created at:
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in put_dec_trunc8+0x31a/0x3c lib/vsprintf.c:193
+Lost 539 message(s)!
+=====================================================
+BUG: KMSAN: uninit-value in number+0x54f/0x2540 lib/vsprintf.c:442
+CPU: 0 PID: 1983 Comm: kworker/0:2 Tainted: G    B             5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ number+0x54f/0x2540 lib/vsprintf.c:442
+ vsnprintf+0x1cd6/0x3600 lib/vsprintf.c:2685
+ vprintk_store+0x2ab/0x1df0 kernel/printk/printk.c:1984
+ vprintk_emit+0x29a/0x7f0 kernel/printk/printk.c:2092
+ vprintk_default+0x86/0xa0 kernel/printk/printk.c:2126
+ vprintk_func+0x2ed/0x2f0 kernel/printk/printk_safe.c:393
+ printk+0x180/0x1cd kernel/printk/printk.c:2157
+ sq905_read_data+0x630/0x650 drivers/media/usb/gspca/sq905.c:184
+ sd_init+0x184/0x530 drivers/media/usb/gspca/sq905.c:329
+ gspca_dev_probe2+0x129f/0x23f0 drivers/media/usb/gspca/gspca.c:1532
+ gspca_dev_probe+0x3db/0x440 drivers/media/usb/gspca/gspca.c:1606
+ sd_probe+0x8d/0xa0 drivers/media/usb/gspca/gl860/gl860.c:511
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ process_scheduled_works kernel/workqueue.c:2337 [inline]
+ worker_thread+0x12bc/0x2340 kernel/workqueue.c:2423
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Local variable ----act_len@sq905_read_data created at:
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in number+0x8d9/0x2540 lib/vsprintf.c:463
+CPU: 0 PID: 1983 Comm: kworker/0:2 Tainted: G    B             5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ number+0x8d9/0x2540 lib/vsprintf.c:463
+ vsnprintf+0x1cd6/0x3600 lib/vsprintf.c:2685
+ vprintk_store+0x2ab/0x1df0 kernel/printk/printk.c:1984
+ vprintk_emit+0x29a/0x7f0 kernel/printk/printk.c:2092
+ vprintk_default+0x86/0xa0 kernel/printk/printk.c:2126
+ vprintk_func+0x2ed/0x2f0 kernel/printk/printk_safe.c:393
+ printk+0x180/0x1cd kernel/printk/printk.c:2157
+ sq905_read_data+0x630/0x650 drivers/media/usb/gspca/sq905.c:184
+ sd_init+0x184/0x530 drivers/media/usb/gspca/sq905.c:329
+ gspca_dev_probe2+0x129f/0x23f0 drivers/media/usb/gspca/gspca.c:1532
+ gspca_dev_probe+0x3db/0x440 drivers/media/usb/gspca/gspca.c:1606
+ sd_probe+0x8d/0xa0 drivers/media/usb/gspca/gl860/gl860.c:511
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ process_scheduled_works kernel/workqueue.c:2337 [inline]
+ worker_thread+0x12bc/0x2340 kernel/workqueue.c:2423
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Local variable ----act_len@sq905_read_data created at:
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in put_dec+0x1dc/0x260 lib/vsprintf.c:258
+CPU: 0 PID: 1983 Comm: kworker/0:2 Tainted: G    B             5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ put_dec+0x1dc/0x260 lib/vsprintf.c:258
+ number+0x896/0x2540 lib/vsprintf.c:476
+ vsnprintf+0x1cd6/0x3600 lib/vsprintf.c:2685
+ vprintk_store+0x2ab/0x1df0 kernel/printk/printk.c:1984
+ vprintk_emit+0x29a/0x7f0 kernel/printk/printk.c:2092
+ vprintk_default+0x86/0xa0 kernel/printk/printk.c:2126
+ vprintk_func+0x2ed/0x2f0 kernel/printk/printk_safe.c:393
+ printk+0x180/0x1cd kernel/printk/printk.c:2157
+ sq905_read_data+0x630/0x650 drivers/media/usb/gspca/sq905.c:184
+ sd_init+0x184/0x530 drivers/media/usb/gspca/sq905.c:329
+ gspca_dev_probe2+0x129f/0x23f0 drivers/media/usb/gspca/gspca.c:1532
+ gspca_dev_probe+0x3db/0x440 drivers/media/usb/gspca/gspca.c:1606
+ sd_probe+0x8d/0xa0 drivers/media/usb/gspca/gl860/gl860.c:511
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ process_scheduled_works kernel/workqueue.c:2337 [inline]
+ worker_thread+0x12bc/0x2340 kernel/workqueue.c:2423
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Local variable ----act_len@sq905_read_data created at:
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+=====================================================
+======================================
+Lost 547 message(s)!
+=====================================================
+BUG: KMSAN: uninit-value in number+0x54f/0x2540 lib/vsprintf.c:442
+CPU: 0 PID: 1983 Comm: kworker/0:2 Tainted: G    B             5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ number+0x54f/0x2540 lib/vsprintf.c:442
+ vsnprintf+0x1cd6/0x3600 lib/vsprintf.c:2685
+ vprintk_store+0x2ab/0x1df0 kernel/printk/printk.c:1984
+ vprintk_emit+0x29a/0x7f0 kernel/printk/printk.c:2092
+ vprintk_default+0x86/0xa0 kernel/printk/printk.c:2126
+ vprintk_func+0x2ed/0x2f0 kernel/printk/printk_safe.c:393
+ printk+0x180/0x1cd kernel/printk/printk.c:2157
+ sq905_read_data+0x630/0x650 drivers/media/usb/gspca/sq905.c:184
+ sd_init+0x184/0x530 drivers/media/usb/gspca/sq905.c:329
+ gspca_dev_probe2+0x129f/0x23f0 drivers/media/usb/gspca/gspca.c:1532
+ gspca_dev_probe+0x3db/0x440 drivers/media/usb/gspca/gspca.c:1606
+ sd_probe+0x8d/0xa0 drivers/media/usb/gspca/gl860/gl860.c:511
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ process_scheduled_works kernel/workqueue.c:2337 [inline]
+ worker_thread+0x12bc/0x2340 kernel/workqueue.c:2423
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Local variable ----act_len@sq905_read_data created at:
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in number+0x8d9/0x2540 lib/vsprintf.c:463
+CPU: 0 PID: 1983 Comm: kworker/0:2 Tainted: G    B             5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ number+0x8d9/0x2540 lib/vsprintf.c:463
+ vsnprintf+0x1cd6/0x3600 lib/vsprintf.c:2685
+ vprintk_store+0x2ab/0x1df0 kernel/printk/printk.c:1984
+ vprintk_emit+0x29a/0x7f0 kernel/printk/printk.c:2092
+ vprintk_default+0x86/0xa0 kernel/printk/printk.c:2126
+ vprintk_func+0x2ed/0x2f0 kernel/printk/printk_safe.c:393
+ printk+0x180/0x1cd kernel/printk/printk.c:2157
+ sq905_read_data+0x630/0x650 drivers/media/usb/gspca/sq905.c:184
+ sd_init+0x184/0x530 drivers/media/usb/gspca/sq905.c:329
+ gspca_dev_probe2+0x129f/0x23f0 drivers/media/usb/gspca/gspca.c:1532
+ gspca_dev_probe+0x3db/0x440 drivers/media/usb/gspca/gspca.c:1606
+ sd_probe+0x8d/0xa0 drivers/media/usb/gspca/gl860/gl860.c:511
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ process_scheduled_works kernel/workqueue.c:2337 [inline]
+ worker_thread+0x12bc/0x2340 kernel/workqueue.c:2423
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Local variable ----act_len@sq905_read_data created at:
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in put_dec+0x1dc/0x260 lib/vsprintf.c:258
+CPU: 0 PID: 1983 Comm: kworker/0:2 Tainted: G    B             5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ put_dec+0x1dc/0x260 lib/vsprintf.c:258
+ number+0x896/0x2540 lib/vsprintf.c:476
+ vsnprintf+0x1cd6/0x3600 lib/vsprintf.c:2685
+ vprintk_store+0x2ab/0x1df0 kernel/printk/printk.c:1984
+ vprintk_emit+0x29a/0x7f0 kernel/printk/printk.c:2092
+ vprintk_default+0x86/0xa0 kernel/printk/printk.c:2126
+ vprintk_func+0x2ed/0x2f0 kernel/printk/printk_safe.c:393
+ printk+0x180/0x1cd kernel/printk/printk.c:2157
+ sq905_read_data+0x630/0x650 drivers/media/usb/gspca/sq905.c:184
+ sd_init+0x184/0x530 drivers/media/usb/gspca/sq905.c:329
+ gspca_dev_probe2+0x129f/0x23f0 drivers/media/usb/gspca/gspca.c:1532
+ gspca_dev_probe+0x3db/0x440 drivers/media/usb/gspca/gspca.c:1606
+ sd_probe+0x8d/0xa0 drivers/media/usb/gspca/gl860/gl860.c:511
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ process_scheduled_works kernel/workqueue.c:2337 [inline]
+ worker_thread+0x12bc/0x2340 kernel/workqueue.c:2423
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Local variable ----act_len@sq905_read_data created at:
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+ sq905_read_data+0x87/0x650 drivers/media/usb/gspca/sq905.c:163
+=====================================================
+======================================
+Lost 547 message(s)!
+=====================================================
+BUG: KMSAN: uninit-value in number+0x54f/0x2540 lib/vsprintf.c:442
+CPU: 0 PID: 1983 Comm: kworker/0:2 Tainted: G    B             5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ number+0x54f/0x2540 lib/vsprintf.c:442
+ vsnprintf+0x1cd6/0x3600 lib/vsprintf.c:2685
+ vprintk_store+0x2ab/0x1df0 kernel/printk/printk.c:1984
 
