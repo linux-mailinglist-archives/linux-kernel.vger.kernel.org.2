@@ -2,118 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43AB433CBA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 03:58:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA5B33CBA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 03:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234711AbhCPC6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 22:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43644 "EHLO
+        id S234739AbhCPC6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 22:58:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233301AbhCPC5b (ORCPT
+        with ESMTP id S230354AbhCPC5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 22:57:31 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 820C0C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 19:57:31 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so675525pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 19:57:31 -0700 (PDT)
+        Mon, 15 Mar 2021 22:57:46 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4939AC06174A;
+        Mon, 15 Mar 2021 19:57:46 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so607952pjh.1;
+        Mon, 15 Mar 2021 19:57:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Rf7S66rR/H+4CcWlMfRSPZkVzNT7/177BSacxGhHD8I=;
-        b=Lm4/9BNVdPZXepl/VdJ6JlRk3/HVO5f/Pc84ftxjWxtzOKX7PUUz+qCOEpm1Fo9tJW
-         EvXNzch85VijjAb9IjFAfg3FG+Zf9uXYcYhWZZD9bdTK9vQjn/7sSSvOFtMWRY57xZwH
-         SokRC8QClLBJuETVBKT8hIX57DElrKsXZHFaBvNFk4hZR/ObcOyPRm6u4ByL8v/oIzES
-         K4792632LJu+mi8bt7kLyy8PzrKVCAjvM/FOWwBFH6Q5V3O/bxG/hupcDaH8/Lrj6WUZ
-         6aIBE16O985eoCZ0d9xH0ycLi9YvgjYjlIbNs0eIyHlcF5Af/14zXAEyv/nlIJiqWknw
-         MqPA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WEHoIRiJ11MpAQNvXLOQqj2IeasLWQWx6RaJGGQ14sQ=;
+        b=JSPjtVlpCpI0dCCa8/oW29iTkFQIu1O43j1vVCIB8kaha0hzojXMjzJs+HGinXswtd
+         T2mE0Ib4PXJAJD12LN0SxZdgkySfwYr/Gy+8etYQvIlKikPr1G+STn9RUalRJEk6Nr00
+         TJYUsk6AXR/6P3L4opINLVULICkYCowmgQTa/TihL446iYB22gSZNz5FE9CfR1GLNUhZ
+         6ZbaHbUlPWCjGMQXhmab7/ppgH+LpZWkfA1xlYdnLLSzxGFJGGuQj9tYL6SXdC1sr8bI
+         ZutaO8idXanegQN0NB68v7Pt4nBurUF2S+cH6foQVIZysDJdN5yRbFxckP8Sn+s/XPMe
+         EhIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Rf7S66rR/H+4CcWlMfRSPZkVzNT7/177BSacxGhHD8I=;
-        b=ruQGSBmJKGI2o34r/2hmD3/P8lReLeWRbokSgdXfj5ZjCiPaiD7jfotpuVen+d+Rxb
-         I/rYvZiCeci5+RWMYsEyqk8IQOuBGUMOBQPyayagxjuO+GhxxDul3B1I0qRUz+ypmX6B
-         BXsGhsDuxcif98h4/y9P4w2Lq1igMuSWfsxZm2X+V0+ghMjcZ+9X6jX3+wMpRcDThUN5
-         2NgBC6ZcdYun1uS/pCnSoVBLKyEauHMKcEee+Lb1XLMS7vbsQIsA08z2h27P44eF0JVf
-         lflXzXPBBXbLRGWFnwOsGbFCvPRiLhewm+F/hy7x/oug7ialMsT38tKunQD2cPc40HOs
-         A/qg==
-X-Gm-Message-State: AOAM532U1qiNInD+r2LdwZ1GbGz/ftH0gIabkxt0EzGPOKRSPpP+kGgc
-        UOzPf/0/ehPrpyNbscnp0buD6ojNvJ5opy9O4ZunRw==
-X-Google-Smtp-Source: ABdhPJzJ5G4QqN5Lc7h2lqNcvKyrM3bMtW5xQLxW/SIEK8yTvF3wRy1bRBm4zQDQFhvQ14n+j3+RDtsxBNiAO/dNwRI=
-X-Received: by 2002:a17:90a:d991:: with SMTP id d17mr2333400pjv.229.1615863450942;
- Mon, 15 Mar 2021 19:57:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WEHoIRiJ11MpAQNvXLOQqj2IeasLWQWx6RaJGGQ14sQ=;
+        b=qkTjsJGroYHTQmF/qiJKyj7s4zoH2BW3ReNHKm6u4vDpL3jC/Uhtl2Bcq8giOhqcI5
+         E9i+vY//xRH15MqHt1nEqw3DrdLfYaN5F81ixFpt+oU+Z/SdJQI0iZQKLsldUHrjnedJ
+         d6I6uwrkBbjoLLhVzFDII8LpYpES6S86vk4eBhZmR0wpEIyeN6tSKjXbvgiOCFlL0Wb4
+         zRa4IBc38QN/QEQdHPAgLRZeGv9/9Ru2M4JxoSRCxsbNhT/qK+lw7a0w2f5KMsiYxTBG
+         VhqTzoQPQPPpfsUL1DVwvze+Cl797n5AKv4w4qBiEg8qNXQvyuGtzF4lzKPUOu48KJgd
+         dVcQ==
+X-Gm-Message-State: AOAM5309SSM5HIJ5O/tz/kQ1VYyegTK/3cYqwkGfrIgXN+1z3FrjQKGq
+        j+YHAlyniDNCXYjZcIumUqA=
+X-Google-Smtp-Source: ABdhPJyOHrPE6aPPD/v3slF7vISGg/YK1yVjlckn5CQh1Zteo+YYCcWhk0E/Kefz+iCEc7DePsXzoA==
+X-Received: by 2002:a17:90a:868c:: with SMTP id p12mr2331569pjn.82.1615863465931;
+        Mon, 15 Mar 2021 19:57:45 -0700 (PDT)
+Received: from localhost.localdomain ([122.10.161.207])
+        by smtp.gmail.com with ESMTPSA id m3sm13871869pgk.47.2021.03.15.19.57.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 15 Mar 2021 19:57:45 -0700 (PDT)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yejune.deng@gmail.com
+Subject: [PATCH] net: ipv4: route.c: simplify procfs code
+Date:   Tue, 16 Mar 2021 10:57:36 +0800
+Message-Id: <20210316025736.37254-1-yejune.deng@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-References: <20210315162428.3719edb2@canb.auug.org.au> <bebcf210-e0a4-31d5-5c56-38643ce77ec4@infradead.org>
-In-Reply-To: <bebcf210-e0a4-31d5-5c56-38643ce77ec4@infradead.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 16 Mar 2021 10:56:53 +0800
-Message-ID: <CAMZfGtWQNhPR0N1cX1aR2R4_7acEE+0VDiHMJEkAPaXnWKhZqA@mail.gmail.com>
-Subject: Re: [External] Re: linux-next: Tree for Mar 15 (arch/x86/mm/init_64.c
- :: vmemmap)
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 12:05 AM Randy Dunlap <rdunlap@infradead.org> wrote=
-:
->
-> On 3/14/21 10:24 PM, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > Warning: Some of the branches in linux-next are still based on v5.12-rc=
-1,
-> > so please be careful if you are trying to bisect a bug.
-> >
-> > News: if your -next included tree is based on Linus' tree tag
-> > v5.12-rc1{,-dontuse} (or somewhere between v5.11 and that tag), please
-> > consider rebasing it onto v5.12-rc2. Also, please check any branches
-> > merged into your branch.
-> >
-> > Changes since 20210312:
-> >
->
-> on x86_64:
->
-> In file included from ../include/asm-generic/bug.h:5:0,
->                  from ../arch/x86/include/asm/bug.h:93,
->                  from ../include/linux/bug.h:5,
->                  from ../include/linux/signal.h:5,
->                  from ../arch/x86/mm/init_64.c:10:
-> ../arch/x86/mm/init_64.c: In function =E2=80=98remove_pmd_table=E2=80=99:
-> ../arch/x86/mm/init_64.c:1127:8: error: implicit declaration of function =
-=E2=80=98vmemmap_pmd_is_unused=E2=80=99; did you mean =E2=80=98vmemmap_pmd_=
-populate=E2=80=99? [-Werror=3Dimplicit-function-declaration]
->         vmemmap_pmd_is_unused(addr, next)) {
->         ^
-> ../include/linux/compiler.h:58:52: note: in definition of macro =E2=80=98=
-__trace_if_var=E2=80=99
->  #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __tr=
-ace_if_value(cond))
->                                                     ^~~~
-> ../arch/x86/mm/init_64.c:1126:11: note: in expansion of macro =E2=80=98if=
-=E2=80=99
->     } else if (IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP) &&
->            ^~
->
+proc_creat_seq() that directly take a struct seq_operations,
+and deal with network namespaces in ->open.
 
-I believe this compiler error is fixed by:
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ net/ipv4/route.c | 34 ++++------------------------------
+ 1 file changed, 4 insertions(+), 30 deletions(-)
 
-https://lore.kernel.org/linux-mm/20210309214050.4674-4-osalvador@suse.de/
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index 80bed4242d40..fa68c2612252 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -234,19 +234,6 @@ static const struct seq_operations rt_cache_seq_ops = {
+ 	.show   = rt_cache_seq_show,
+ };
+ 
+-static int rt_cache_seq_open(struct inode *inode, struct file *file)
+-{
+-	return seq_open(file, &rt_cache_seq_ops);
+-}
+-
+-static const struct proc_ops rt_cache_proc_ops = {
+-	.proc_open	= rt_cache_seq_open,
+-	.proc_read	= seq_read,
+-	.proc_lseek	= seq_lseek,
+-	.proc_release	= seq_release,
+-};
+-
+-
+ static void *rt_cpu_seq_start(struct seq_file *seq, loff_t *pos)
+ {
+ 	int cpu;
+@@ -324,19 +311,6 @@ static const struct seq_operations rt_cpu_seq_ops = {
+ 	.show   = rt_cpu_seq_show,
+ };
+ 
+-
+-static int rt_cpu_seq_open(struct inode *inode, struct file *file)
+-{
+-	return seq_open(file, &rt_cpu_seq_ops);
+-}
+-
+-static const struct proc_ops rt_cpu_proc_ops = {
+-	.proc_open	= rt_cpu_seq_open,
+-	.proc_read	= seq_read,
+-	.proc_lseek	= seq_lseek,
+-	.proc_release	= seq_release,
+-};
+-
+ #ifdef CONFIG_IP_ROUTE_CLASSID
+ static int rt_acct_proc_show(struct seq_file *m, void *v)
+ {
+@@ -367,13 +341,13 @@ static int __net_init ip_rt_do_proc_init(struct net *net)
+ {
+ 	struct proc_dir_entry *pde;
+ 
+-	pde = proc_create("rt_cache", 0444, net->proc_net,
+-			  &rt_cache_proc_ops);
++	pde = proc_create_seq("rt_cache", 0444, net->proc_net,
++			      &rt_cache_seq_ops);
+ 	if (!pde)
+ 		goto err1;
+ 
+-	pde = proc_create("rt_cache", 0444,
+-			  net->proc_net_stat, &rt_cpu_proc_ops);
++	pde = proc_create_seq("rt_cache", 0444, net->proc_net_stat,
++			      &rt_cpu_seq_ops);
+ 	if (!pde)
+ 		goto err2;
+ 
+-- 
+2.29.0
 
-Thanks.
-
->
-> Full randconfig file is attached.
->
-> --
-> ~Randy
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
