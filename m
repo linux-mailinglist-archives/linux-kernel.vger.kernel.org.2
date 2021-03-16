@@ -2,93 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426C133E143
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8B133E14A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhCPWSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 18:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhCPWRw (ORCPT
+        id S231142AbhCPWUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 18:20:02 -0400
+Received: from mail-io1-f50.google.com ([209.85.166.50]:45874 "EHLO
+        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230391AbhCPWTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 18:17:52 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E75C06174A;
-        Tue, 16 Mar 2021 15:17:51 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id e9so8233670wrw.10;
-        Tue, 16 Mar 2021 15:17:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kRA0HCbEjT4GZQCeNIs3PSJKICgvU616s1ESCC3pTK0=;
-        b=NJaUaSprJa36hY/KVAoa+aRlI3mTw2pTEgLdQrvubH4tFieFibPRmLK8HlMfV7EyoB
-         F4L8wblPUyyPpDJuioJUVCzgDAfNXqO0Guhdr1n6U3wowU8ifVbyM1/uKLySO3KyZPvk
-         6qYqMv/ykaogHeItXU/N8Hp6Cb7JmWp8p3jyfxYSR2gUg49UFIYpQfo3ibEbRrG2+V0W
-         cPowHEOno7Coa6TPyrlnCSoEGBXc1HLMb1fox7u8AyR3amKtrvfXKJ38Q0EEI4QXxnzw
-         XBdU5+Hnnw5lk3OJsecQ0ptD4+HNNDufwn/Xk6HVa195cVepsQqVUEUIVclo53cCqsL4
-         AM1A==
+        Tue, 16 Mar 2021 18:19:38 -0400
+Received: by mail-io1-f50.google.com with SMTP id a7so38907511iok.12;
+        Tue, 16 Mar 2021 15:19:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kRA0HCbEjT4GZQCeNIs3PSJKICgvU616s1ESCC3pTK0=;
-        b=tWJTyHQAywJQNl6e7t4PkWN9rrPtHe/4qC0sLFMOIxd+rLRNLjNSSpH9heTRYveHBW
-         18U/4GKqf5zgO/dX1Tpz5o4XQma4VBNpqZPXE0wugPqfeMNipgZp8cC4oLZAnr5u0W9K
-         T32PPr450L4ZJpIQVkZjZirmc4FPwuQBacEdJIWTmlGfJNM4VsZq+E7kP8KrtoVXSta8
-         OVJSnbZEG4HYK4Aw/54GyL55G6enUafaSh589cto8dqDayleiVjtVfK2/MGUqNtIxNkA
-         bLgGFVhd7KyE4QzexENkTI4C8o1/Oo54yN/sOVshWMIy38YnZ6K7hr0ualIbfswd/KKg
-         K14Q==
-X-Gm-Message-State: AOAM532oIugp0V0bMxMwWrCG40Qkc63eJSyfxN6VfQcSgmqH2NL7KHeu
-        gT0nLACmoWkEUWCRKbQnjlI=
-X-Google-Smtp-Source: ABdhPJzOp+ns2T7fZHW0zHZoOIrO5Dx7kB274pAizU3zKUV8TfAPTr9nvT+Xanapt/lbpE21QS/vVg==
-X-Received: by 2002:a5d:4686:: with SMTP id u6mr1168656wrq.60.1615933070114;
-        Tue, 16 Mar 2021 15:17:50 -0700 (PDT)
-Received: from luca020400-laptop-arch.lan ([2001:b07:5d33:19f:ea1f:2342:ea78:219a])
-        by smtp.googlemail.com with ESMTPSA id 1sm1151960wmj.0.2021.03.16.15.17.49
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=oYgQtLAcDkuiiVRZNURhrrpQnYuhErdiIXEJ4Ufn24g=;
+        b=cLdIMxpRFFxAvRtKXubq/Pm0vF/PZwRsj7ASntPhpTSWYqHFGD/lQGPJshilXkaRUe
+         IKHH/BVFAUuvCRnC7jfpKMNPo2mxYVLh9ZxXUlpTTN7r1sgQiyLx+v2HqZeKxmp5C7vE
+         7ffyZgIEBKPbWDmH74q2Zxm5SjR+DM4Doaw83fzlUMJwdt5bFUbFARk2/q3VeNb3YdJK
+         /5S+Du8hDmNsl5hTek8kkGZapc3L/WYuPwfzJYLzMVm8SDkFyNSOKAEKBb7FayxFhnvc
+         fz3qcmuUhe8Zu00H1gAlB8DgWp5CP0hh80bO3YN729/SRENdjkj6WTFUb8jwKlwrNU8V
+         6TLQ==
+X-Gm-Message-State: AOAM531M3ikLKuU3BBhl1/U//X+KEVow9wtaa+wLkaysglpZ62lPo/p4
+        5fPQtafZvO+e7BPeOUcn6z1+gyAFzA==
+X-Google-Smtp-Source: ABdhPJz4K6Y8JD6lcRDjBOoDjvVLizQXfXiKGk1a1rv79FMAkLG2rir+/YbIhr+/u31qoR1eVKZoHw==
+X-Received: by 2002:a5d:93cc:: with SMTP id j12mr4932416ioo.15.1615933177701;
+        Tue, 16 Mar 2021 15:19:37 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id n16sm8831040ilq.71.2021.03.16.15.19.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 15:17:49 -0700 (PDT)
-From:   Luca Stefani <luca.stefani.ge1@gmail.com>
-Cc:     chiu@endlessm.com, Luca Stefani <luca.stefani.ge1@gmail.com>,
-        Corentin Chary <corentin.chary@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        acpi4asus-user@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] platform/x86: asus-wmi: Disable fn-lock mode by default
-Date:   Tue, 16 Mar 2021 23:17:47 +0100
-Message-Id: <20210316221747.90829-1-luca.stefani.ge1@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        Tue, 16 Mar 2021 15:19:37 -0700 (PDT)
+Received: (nullmailer pid 3784287 invoked by uid 1000);
+        Tue, 16 Mar 2021 22:19:34 -0000
+Date:   Tue, 16 Mar 2021 16:19:34 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH robh next] dt-bindings: usb: add USB controller port
+Message-ID: <20210316221934.GA3768880@robh.at.kernel.org>
+References: <20210309121311.7263-1-zajec5@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20210309121311.7263-1-zajec5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* On recent ZenBooks the fn-lock is disabled
-  by default on boot while running Windows.
+On Tue, Mar 09, 2021 at 01:13:11PM +0100, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> USB bindings already allow specifying USB device hard wired to a
+> specific controller port but they don't allow describing port on its
+> own.
+> 
+> This fixes:
+> arch/arm/boot/dts/bcm4708-buffalo-wzr-1750dhp.dt.yaml: usb@23000: port@1: 'compatible' is a required property
+>         From schema: Documentation/devicetree/bindings/usb/generic-xhci.yaml
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+> Please check if I got the $nodename part right. Somehow I don't see any
+> errors / warnings when using:
+> 
+> something@1 {
+> 	reg = <1>;
+> };
 
-* Follow the same paradigm also here.
+$nodename may not work in child nodes of a schema.
 
-Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
----
- drivers/platform/x86/asus-wmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> ---
+>  .../devicetree/bindings/usb/usb-hcd.yaml      |  4 +-
+>  .../devicetree/bindings/usb/usb-port.yaml     | 39 +++++++++++++++++++
+>  2 files changed, 42 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/usb/usb-port.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+> index 56853c17af66..b0c6a79cad57 100644
+> --- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+> +++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+> @@ -33,7 +33,9 @@ patternProperties:
+>    "^.*@[0-9a-f]{1,2}$":
+>      description: The hard wired USB devices
+>      type: object
+> -    $ref: /usb/usb-device.yaml
+> +    oneOf:
+> +      - $ref: /usb/usb-port.yaml
+> +      - $ref: /usb/usb-device.yaml
+>  
+>  additionalProperties: true
+>  
+> diff --git a/Documentation/devicetree/bindings/usb/usb-port.yaml b/Documentation/devicetree/bindings/usb/usb-port.yaml
+> new file mode 100644
+> index 000000000000..68fe16c8703e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/usb-port.yaml
+> @@ -0,0 +1,39 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/usb/usb-port.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: USB port on USB controller
+> +
+> +maintainers:
+> +  - Rafał Miłecki <rafal@milecki.pl>
+> +
+> +description: |
+> +  This binding describes a single USB controller port that doesn't have any
+> +  device hard wired.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^port@[0-9a-f]{1,2}$"
 
-diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index 9ca15f724343..32319f7d6e17 100644
---- a/drivers/platform/x86/asus-wmi.c
-+++ b/drivers/platform/x86/asus-wmi.c
-@@ -2673,7 +2673,7 @@ static int asus_wmi_add(struct platform_device *pdev)
- 		err = asus_wmi_set_devstate(ASUS_WMI_DEVID_BACKLIGHT, 2, NULL);
- 
- 	if (asus_wmi_has_fnlock_key(asus)) {
--		asus->fnlock_locked = true;
-+		asus->fnlock_locked = false;
- 		asus_wmi_fnlock_update(asus);
- 	}
- 
--- 
-2.31.0
+Unfortunately, 'port' is used elsewhere, so this would be applied 
+any node that matches. That's not really a problem as this is simple 
+enough, but then what does it buy us?
 
+I'd be fine just dropping 'compatible' as required in usb-device.yaml.
+
+> +
+> +  reg:
+> +    description: number of USB controller port
+> +    maxItems: 1
+> +
+> +required:
+> +  - reg
+> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  - |
+> +    usb@11270000 {
+> +        reg = <0x11270000 0x1000>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        port@1 {
+> +            reg = <1>;
+> +        };
+> +    };
+> -- 
+> 2.26.2
+> 
