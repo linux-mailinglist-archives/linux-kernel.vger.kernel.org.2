@@ -2,156 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFF733D1CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D686733D1D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236667AbhCPK23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 06:28:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236388AbhCPK2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 06:28:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD23865025;
-        Tue, 16 Mar 2021 10:28:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615890494;
-        bh=Ek1bMmgEROcrwltu3afjHikqeT9vUmjpYs+Ey8ul8Bo=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=MtLDUqpd3tt9CJ5JSTtoiqVd4C8Ho+dQL7vggxZnEI/Hlqd8u6xyrpoybM5MXnV/w
-         1uARuNw7ptB78+1ORMRSxKNRAtz7bEXr9t9sFKMgWtM6wsTJAQtgBXmssQ9Qy9+Bb3
-         BCtS1anUyOp10/Uhzp+YLyth368sOYcwFXsQv6ewqKbFE26c2PBeFfJmHSdANCka+y
-         Yd7ALKIYqCH7LnMf7nCDPvmFB03H8AMWN/dmqMqt/YR0SJBJ63NWEaN1L6H9sws11+
-         mBsgMlDf+pqqI7cQ3oG87wUtoV/Ot73vqICLFFhxtCqQLkRzMh/UrRgEmXTgknrsNY
-         IbDTFXAYsT2hQ==
-Date:   Tue, 16 Mar 2021 11:28:11 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Lockdep report for hci_conn_get_phy()
-In-Reply-To: <nycvar.YFH.7.76.2103041405420.12405@cbobk.fhfr.pm>
-Message-ID: <nycvar.YFH.7.76.2103161125530.12405@cbobk.fhfr.pm>
-References: <nycvar.YFH.7.76.2103041405420.12405@cbobk.fhfr.pm>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S236672AbhCPKaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 06:30:30 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25000 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236599AbhCPKaP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 06:30:15 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12GA46gb184228;
+        Tue, 16 Mar 2021 06:30:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=8Likwmetuj1HQiuXdzd/gBV8nyUeGupi1mI+PQs6coo=;
+ b=Ti02Cky/KiLuk0PVoJ53HMFTuXcVsTMjCaqkT2ZEeUWTajQ0l28lEImxFUqzzXl+615l
+ bi9Rc3QdKbq84EFCBpEMdmMGWvrxKQ3EA8w/VTlPBf4tn1kiChIXKHD73E/zKlD4P/Ir
+ iX8uxoThnfNv8IHSvJ+6FinkwNByXlnpnp+8rFm2qtZ/vZL7CE2v7BX3imdXsXHV2fjS
+ T84RkDrJJI1y4UGDQPaFc8nEmUes0jiP/jYpQpBHBX5XJOhjugIpXKAJO36jakhSV74P
+ w8F6hzobyRb+b+Q+MwIDX2/G1NYvftKrMGbrCOZ+b2igtUGWt3noi4MpVgAX8DoALC/3 Uw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37arj1m7uy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Mar 2021 06:30:08 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12GA5GPL188923;
+        Tue, 16 Mar 2021 06:30:08 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37arj1m7tt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Mar 2021 06:30:08 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12GAMoBc013084;
+        Tue, 16 Mar 2021 10:30:06 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04fra.de.ibm.com with ESMTP id 378n189e8n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Mar 2021 10:30:06 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12GATkZG22413574
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Mar 2021 10:29:47 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 35B92A4080;
+        Tue, 16 Mar 2021 10:30:03 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5E8DBA4083;
+        Tue, 16 Mar 2021 10:30:02 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.148.11.147])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 16 Mar 2021 10:30:02 +0000 (GMT)
+Date:   Tue, 16 Mar 2021 12:30:00 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     "Liang, Liang (Leo)" <Liang.Liang@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Huang, Ray" <Ray.Huang@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        George Kennedy <george.kennedy@oracle.com>
+Subject: Re: slow boot with 7fef431be9c9 ("mm/page_alloc: place pages to tail
+ in __free_pages_core()")
+Message-ID: <YFCIqLmn3u1be1yo@linux.ibm.com>
+References: <YEzCm/Uwvw7kKpd7@linux.ibm.com>
+ <22437770-956e-f7b4-a8f6-3f1cc28c3ec2@redhat.com>
+ <MW3PR12MB45371072D7C3FDA6986C6318F36B9@MW3PR12MB4537.namprd12.prod.outlook.com>
+ <YFBVNEC7jMZxwleL@linux.ibm.com>
+ <MW3PR12MB453781F0AD49AF3787DE4230F36B9@MW3PR12MB4537.namprd12.prod.outlook.com>
+ <0cc972a1-5b40-3017-33f8-b2610489ee18@redhat.com>
+ <MW3PR12MB453771424C9B2866BBBAE036F36B9@MW3PR12MB4537.namprd12.prod.outlook.com>
+ <b9b324e4-4c98-b81d-ddae-52e4feb33064@redhat.com>
+ <MW3PR12MB4537B6D5911092E456220818F36B9@MW3PR12MB4537.namprd12.prod.outlook.com>
+ <9e869214-7a3b-e86d-4832-7117f7c6090f@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9e869214-7a3b-e86d-4832-7117f7c6090f@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-16_03:2021-03-16,2021-03-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ lowpriorityscore=0 malwarescore=0 mlxlogscore=999 adultscore=0 bulkscore=0
+ mlxscore=0 spamscore=0 suspectscore=0 clxscore=1015 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103160067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021, Jiri Kosina wrote:
+On Tue, Mar 16, 2021 at 10:08:10AM +0100, David Hildenbrand wrote:
+> On 16.03.21 09:58, Liang, Liang (Leo) wrote:
+> > [AMD Public Use]
+> > 
+> > Hi David,
+> > 
+> > root@scbu-Chachani:~# cat /proc/mtrr
+> > reg00: base=0x000000000 (    0MB), size= 2048MB, count=1: write-back
+> > reg01: base=0x0ffe00000 ( 4094MB), size=    2MB, count=1: write-protect
+> > reg02: base=0x100000000 ( 4096MB), size=   16MB, count=1: write-protect
+> 
+> ^ there it is
+> 
+> https://wiki.osdev.org/MTRR
+> 
+> "Reads allocate cache lines on a cache miss. All writes update main memory.
+> 
+> Cache lines are not allocated on a write miss. Write hits invalidate the
+> cache line and update main memory. "
+> 
+> AFAIU, writes completely bypass caches and store directly to main mamory. If
+> there are cache lines from a previous read, they are invalidated. So I think
+> especially slow will be read(addr), write(addr), read(addr), ... which is
+> what we have in the kstream benchmark.
+> 
+> 
+> The question is:
+> 
+> who sets this up without owning the memory?
+> Is the memory actually special/slow or is that setting wrong?
 
->  ======================================================
->  WARNING: possible circular locking dependency detected
->  5.12.0-rc1-00026-g73d464503354 #10 Not tainted
->  ------------------------------------------------------
->  bluetoothd/1118 is trying to acquire lock:
->  ffff8f078383c078 (&hdev->lock){+.+.}-{3:3}, at: hci_conn_get_phy+0x1c/0x150 [bluetooth]
->  
->  but task is already holding lock:
->  ffff8f07e831d920 (sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP){+.+.}-{0:0}, at: l2cap_sock_getsockopt+0x8b/0x610 
-> 
->  
->  which lock already depends on the new lock.
-> 
->  
->  the existing dependency chain (in reverse order) is:
->  
->  -> #3 (sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP){+.+.}-{0:0}:
->         lock_sock_nested+0x72/0xa0
->         l2cap_sock_ready_cb+0x18/0x70 [bluetooth]
->         l2cap_config_rsp+0x27a/0x520 [bluetooth]
->         l2cap_sig_channel+0x658/0x1330 [bluetooth]
->         l2cap_recv_frame+0x1ba/0x310 [bluetooth]
->         hci_rx_work+0x1cc/0x640 [bluetooth]
->         process_one_work+0x244/0x5f0
->         worker_thread+0x3c/0x380
->         kthread+0x13e/0x160
->         ret_from_fork+0x22/0x30
->  
->  -> #2 (&chan->lock#2/1){+.+.}-{3:3}:
->         __mutex_lock+0xa3/0xa10
->         l2cap_chan_connect+0x33a/0x940 [bluetooth]
->         l2cap_sock_connect+0x141/0x2a0 [bluetooth]
->         __sys_connect+0x9b/0xc0
->         __x64_sys_connect+0x16/0x20
->         do_syscall_64+0x33/0x80
->         entry_SYSCALL_64_after_hwframe+0x44/0xae
->  
->  -> #1 (&conn->chan_lock){+.+.}-{3:3}:
->         __mutex_lock+0xa3/0xa10
->         l2cap_chan_connect+0x322/0x940 [bluetooth]
->         l2cap_sock_connect+0x141/0x2a0 [bluetooth]
->         __sys_connect+0x9b/0xc0
->         __x64_sys_connect+0x16/0x20
->         do_syscall_64+0x33/0x80
->         entry_SYSCALL_64_after_hwframe+0x44/0xae
->  
->  -> #0 (&hdev->lock){+.+.}-{3:3}:
->         __lock_acquire+0x147a/0x1a50
->         lock_acquire+0x277/0x3d0
->         __mutex_lock+0xa3/0xa10
->         hci_conn_get_phy+0x1c/0x150 [bluetooth]
->         l2cap_sock_getsockopt+0x5a9/0x610 [bluetooth]
->         __sys_getsockopt+0xcc/0x200
->         __x64_sys_getsockopt+0x20/0x30
->         do_syscall_64+0x33/0x80
->         entry_SYSCALL_64_after_hwframe+0x44/0xae
+I really doubt that 16M at 0x100000000 in a system with 8G RAM would
+*physically* differ from the neighbouring memory.
 
-So looking at the code and digging a bit in the history, it seems like the 
-above dependency chain has been there since ever ...
+> Buggy firmware/BIOS?
+> Buggy device driver?
 
->  other info that might help us debug this:
-> 
->  Chain exists of:
->    &hdev->lock --> &chan->lock#2/1 --> sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP
->   Possible unsafe locking scenario:
-> 
->         CPU0                    CPU1
->         ----                    ----
->    lock(sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP);
->                                 lock(&chan->lock#2/1);
->                                 lock(sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP);
->    lock(&hdev->lock);
->  
->   *** DEADLOCK ***
-> 
->  1 lock held by bluetoothd/1118:
->   #0: ffff8f07e831d920 (sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP){+.+.}-{0:0}, at: l2cap_sock_getsockopt+0x8b/0x610 [bluetooth]
->  
->  stack backtrace:
->  CPU: 3 PID: 1118 Comm: bluetoothd Not tainted 5.12.0-rc1-00026-g73d464503354 #10
->  Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/31/2017
->  Call Trace:
->   dump_stack+0x7f/0xa1
->   check_noncircular+0x105/0x120
->   ? __lock_acquire+0x147a/0x1a50
->   __lock_acquire+0x147a/0x1a50
->   lock_acquire+0x277/0x3d0
->   ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
->   ? __lock_acquire+0x2e1/0x1a50
->   ? lock_is_held_type+0xb4/0x120
->   ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
->   __mutex_lock+0xa3/0xa10
->   ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
->   ? lock_acquire+0x277/0x3d0
->   ? mark_held_locks+0x49/0x70
->   ? mark_held_locks+0x49/0x70
->   ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
->   hci_conn_get_phy+0x1c/0x150 [bluetooth]
->   l2cap_sock_getsockopt+0x5a9/0x610 [bluetooth]
->   __sys_getsockopt+0xcc/0x200
->   __x64_sys_getsockopt+0x20/0x30
->   do_syscall_64+0x33/0x80
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
+[    0.000027] MTRR default type: uncachable
+[    0.000028] MTRR fixed ranges enabled:
+[    0.000030]   00000-9FFFF write-back
+[    0.000031]   A0000-BFFFF uncachable
+[    0.000032]   C0000-FFFFF write-through
+[    0.000033] MTRR variable ranges enabled:
+[    0.000034]   0 base 000000000000 mask FFFF80000000 write-back
+[    0.000036]   1 base 0000FFE00000 mask FFFFFFE00000 write-protect
+[    0.000037]   2 base 000100000000 mask FFFFFF000000 write-protect
 
-... but the sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP -> conn->hdev dependency 
-has been added only in eab2404ba798 ("Bluetooth: Add BT_PHY socket 
-option") and I've started to see this splat only now as I've probably 
-recently acquired userspace that excercises this getsockopt(BT_PHY).
+As we have the range at 0x100000000 write-protected reported that early in
+boot I'd say it's BIOS.
+
+The question is how to reliably detect that this is a bogus setting...
+
+[    0.000038]   3 base 0000FFDE0000 mask FFFFFFFE0000 write-protect
+[    0.000039]   4 base 0000FF000000 mask FFFFFFF80000 write-protect
+[    0.000040]   5 disabled
+[    0.000041]   6 disabled
+[    0.000042]   7 disabled
+[    0.000042] TOM2: 0000000280000000 aka 10240M
+
 
 -- 
-Jiri Kosina
-SUSE Labs
-
+Sincerely yours,
+Mike.
