@@ -2,182 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4869333DC7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA6633DC78
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239998AbhCPSU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239933AbhCPSUQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:20:16 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED9DC06174A;
-        Tue, 16 Mar 2021 11:20:16 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id r20so21761927ljk.4;
-        Tue, 16 Mar 2021 11:20:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/EY3L/mBI9A92qs+kcJfia7iM4nIgXa7Eq9egkGrSYQ=;
-        b=ShxQSv1YnF0cA0m72VVBXuOJkv4rMoe/cZcEB2scB3iPD98yKUVaIFHsUQHsvMb+9F
-         Ulv48BWA6vPHbW9Gy3pbWeEv/BRfws287bbrFenYgrmBnhJ0IkXxBBUDQmm44yeNF2fG
-         XFk3UqwpJ2JQbH8wL/kiWkqOPddwzcDUhFPc5v9TpIuseArS9Uz3MSKY6vTsajrWy2V3
-         QqYUB6LvpyCN2+RIrKOhikeIs3dJYUYxqiQgo+o+IPXvMhCgCbOZQDLu/f+RS2pcocdI
-         mQLAzxCO2uhxuFKSaBUpxzWFAdlDp/BRIZb7cUfzpl1HrrxTOITSs09rJEjTUZQz30om
-         h7Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/EY3L/mBI9A92qs+kcJfia7iM4nIgXa7Eq9egkGrSYQ=;
-        b=UdTvLa6eHFBFIYEy9mUkXL4hCFkAgLEa3gRBY1Dk1TFoo6f2ngEpqRA+tLh3MOovZ5
-         yBD1Fufcif3TVWdBzzc/JKfbA3IgShGddmHnZO8dfemGYwKM81/mv5oPAKxk1XF0iSL8
-         zvbT6Z0EQcZfASXN5jzXw9LmEO3w4j0UTPVsuGFFE4H2JetIIz4McbTWLjCPgFaGgAdi
-         y8DIp1+NFLDTY96z+emw5clAmG0eV7eZycQJAH1+Dw944FtgxhqPf7G6iFhQS1384IIm
-         9JCabJ9ahYkZvaBajt7zTluf/2r17BU9krHufVFtNe3DqyRVkFTQ76XJ2NTWAY0TTJMk
-         AxOA==
-X-Gm-Message-State: AOAM531HJK5MTWYPb1SBw6bkL1A5XAQPh9FUdQqAx8vu5IblZBlVyHGw
-        pzfJmmoXzwFh6N93F/GLhmvgUsc6F0fkyqFO0Lg=
-X-Google-Smtp-Source: ABdhPJzS1GwTMKy9q7+dcAKRjRYTkm3ot0+9gSzRXYXGbbM6cKzdnXnGRTNBCsOwG3SQX7GqDjUfMOgI5CLoDMhnrNQ=
-X-Received: by 2002:a2e:7409:: with SMTP id p9mr3392483ljc.165.1615918814407;
- Tue, 16 Mar 2021 11:20:14 -0700 (PDT)
+        id S239984AbhCPSUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:20:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239930AbhCPSUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 14:20:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 16F7465140;
+        Tue, 16 Mar 2021 18:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615918809;
+        bh=WC6zuw4ZSNJO/RKRPqzlquG9bercuNoH/LtZr9g/xLg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=cnxr9rpJOQxjei2S5scOjImMq8ckrHFhu8Iu6tQVhGkTOaoFUZA9BQ6/B9Q/G7DNo
+         xVIVxwchu0cUk84RkWanUJTtRzfyABKViG8tKv66ZjiFIiyY7UsJVGalw/A0L3gN+1
+         Nv0AGh2HliV4SgW+UN96kP/UnIlhGp9iLWRtFMcU5ixAOXCJiTUIKvQKoVlzVLMMZQ
+         8ToaZxFzdFDQOaYM97UeWAPX9QwR9XolwNqrojeM6bMo8BRDJ+Ce5Ujt2pU6DQkVYo
+         pzMSPG0mcGHUA5mXSmPCgmAcY5xndUnaaPocyaPyGo5hLhn9sVQtYcIXEBQysut8Eg
+         bzL/xhe2NRn1Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0AFEF60A60;
+        Tue, 16 Mar 2021 18:20:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210208051749.1785246-1-sergey.senozhatsky@gmail.com> <20210208051749.1785246-2-sergey.senozhatsky@gmail.com>
-In-Reply-To: <20210208051749.1785246-2-sergey.senozhatsky@gmail.com>
-From:   Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Date:   Tue, 16 Mar 2021 19:19:57 +0100
-Message-ID: <CAPybu_19hztQQEi0H40sWZQMb-X7g7dDuW4Mz8_gRv-nG2tghw@mail.gmail.com>
-Subject: Re: [PATCHv2 1/3] media: v4l UAPI docs: document ROI selection targets
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: mdio: Alphabetically sort header inclusion
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161591880904.7330.64380807872631289.git-patchwork-notify@kernel.org>
+Date:   Tue, 16 Mar 2021 18:20:09 +0000
+References: <20210315104905.8683-1-calvin.johnson@oss.nxp.com>
+In-Reply-To: <20210315104905.8683-1-calvin.johnson@oss.nxp.com>
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     andrew@lunn.ch, davem@davemloft.net, opendmb@gmail.com,
+        f.fainelli@gmail.com, hkallweit1@gmail.com,
+        iyappan@os.amperecomputing.com, kuba@kernel.org,
+        keyur@os.amperecomputing.com, quan@os.amperecomputing.com,
+        rjui@broadcom.com, linux@armlinux.org.uk, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergey
+Hello:
 
-Thanks for the patch!
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, Feb 8, 2021 at 6:21 AM Sergey Senozhatsky
-<sergey.senozhatsky@gmail.com> wrote:
->
-> From: Sergey Senozhatsky <senozhatsky@chromium.org>
->
-> Document new v4l2-selection target which will be used for the
-> Region of Interest v4l2 control.
->
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+On Mon, 15 Mar 2021 16:19:05 +0530 you wrote:
+> Alphabetically sort header inclusion
+> 
+> Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
 > ---
->  .../media/v4l/selection-api-configuration.rst | 23 +++++++++++++++++++
->  .../media/v4l/v4l2-selection-targets.rst      | 21 +++++++++++++++++
->  include/uapi/linux/v4l2-common.h              |  8 +++++++
->  3 files changed, 52 insertions(+)
->
-> diff --git a/Documentation/userspace-api/media/v4l/selection-api-configuration.rst b/Documentation/userspace-api/media/v4l/selection-api-configuration.rst
-> index fee49bf1a1c0..9f69d71803f6 100644
-> --- a/Documentation/userspace-api/media/v4l/selection-api-configuration.rst
-> +++ b/Documentation/userspace-api/media/v4l/selection-api-configuration.rst
-> @@ -135,3 +135,26 @@ and the height of rectangles obtained using ``V4L2_SEL_TGT_CROP`` and
->  ``V4L2_SEL_TGT_COMPOSE`` targets. If these are not equal then the
->  scaling is applied. The application can compute the scaling ratios using
->  these values.
-> +
-> +Configuration of Region of Interest (ROI)
-> +=========================================
-> +
-> +The range of coordinates of the top left corner, width and height of
-> +areas that can be ROI is given by the ``V4L2_SEL_TGT_ROI_BOUNDS`` target.
-> +It is recommended for the driver developers to put the top/left corner
-> +at position ``(0,0)``. The rectangle's coordinates are in global sensor
-> +coordinates. The units are in pixels and independent of the field of view.
-> +They are not impacted by any cropping or scaling that is currently being
-> +used.
+> 
+>  drivers/net/mdio/mdio-bcm-unimac.c      | 16 +++++++---------
+>  drivers/net/mdio/mdio-bitbang.c         |  4 ++--
+>  drivers/net/mdio/mdio-cavium.c          |  2 +-
+>  drivers/net/mdio/mdio-gpio.c            | 10 +++++-----
+>  drivers/net/mdio/mdio-ipq4019.c         |  4 ++--
+>  drivers/net/mdio/mdio-ipq8064.c         |  4 ++--
+>  drivers/net/mdio/mdio-mscc-miim.c       |  8 ++++----
+>  drivers/net/mdio/mdio-mux-bcm-iproc.c   | 10 +++++-----
+>  drivers/net/mdio/mdio-mux-gpio.c        |  8 ++++----
+>  drivers/net/mdio/mdio-mux-mmioreg.c     |  6 +++---
+>  drivers/net/mdio/mdio-mux-multiplexer.c |  2 +-
+>  drivers/net/mdio/mdio-mux.c             |  6 +++---
+>  drivers/net/mdio/mdio-octeon.c          |  8 ++++----
+>  drivers/net/mdio/mdio-thunder.c         | 10 +++++-----
+>  drivers/net/mdio/mdio-xgene.c           |  6 +++---
+>  drivers/net/mdio/of_mdio.c              | 10 +++++-----
+>  16 files changed, 56 insertions(+), 58 deletions(-)
 
-Can we also mention binning here?
+Here is the summary with links:
+  - net: mdio: Alphabetically sort header inclusion
+    https://git.kernel.org/netdev/net-next/c/1bf343665057
 
-> +
-> +The top left corner, width and height of the Region of Interest area
-> +currently being employed by the device is given by the
-> +``V4L2_SEL_TGT_ROI_CURRENT`` target. It uses the same coordinate system
-> +as ``V4L2_SEL_TGT_ROI_BOUNDS``.
-
-Why do we need current? Cant we just read back V4L2_SEL_TGT_ROI ?
-
-> +
-> +In order to change active ROI top left, width and height coordinates
-> +use ``V4L2_SEL_TGT_ROI`` target.
-> +
-> +Each capture device has a default ROI rectangle, given by the
-> +``V4L2_SEL_TGT_ROI_DEFAULT`` target. Drivers shall set the ROI rectangle
-> +to the default when the driver is first loaded, but not later.
-> diff --git a/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst b/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst
-> index e877ebbdb32e..cb3809418fa6 100644
-> --- a/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst
-> +++ b/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst
-> @@ -69,3 +69,24 @@ of the two interfaces they are used.
->         modified by hardware.
->        - Yes
->        - No
-> +    * - ``V4L2_SEL_TGT_ROI_CURRENT``
-> +      - 0x0200
-> +      - Current Region of Interest rectangle.
-> +      - Yes
-> +      - No
-> +    * - ``V4L2_SEL_TGT_ROI_DEFAULT``
-> +      - 0x0201
-> +      - Suggested Region of Interest rectangle.
-> +      - Yes
-> +      - No
-> +    * - ``V4L2_SEL_TGT_ROI_BOUNDS``
-> +      - 0x0202
-> +      - Bounds of the Region of Interest rectangle. All valid ROI rectangles fit
-> +       inside the ROI bounds rectangle.
-> +      - Yes
-> +      - No
-> +    * - ``V4L2_SEL_TGT_ROI``
-> +      - 0x0203
-> +      - Sets the new Region of Interest rectangle.
-> +      - Yes
-> +      - No
-As mentioned before I think we should not have TGT_ROI_CURRENT and TGT_ROI
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-> diff --git a/include/uapi/linux/v4l2-common.h b/include/uapi/linux/v4l2-common.h
-> index 7d21c1634b4d..d0c108fba638 100644
-> --- a/include/uapi/linux/v4l2-common.h
-> +++ b/include/uapi/linux/v4l2-common.h
-> @@ -78,6 +78,14 @@
->  #define V4L2_SEL_TGT_COMPOSE_BOUNDS    0x0102
->  /* Current composing area plus all padding pixels */
->  #define V4L2_SEL_TGT_COMPOSE_PADDED    0x0103
-> +/* Current Region of Interest area */
-> +#define V4L2_SEL_TGT_ROI_CURRENT       0x0200
-> +/* Default Region of Interest area */
-> +#define V4L2_SEL_TGT_ROI_DEFAULT       0x0201
-> +/* Region of Interest bounds */
-> +#define V4L2_SEL_TGT_ROI_BOUNDS        0x0202
-> +/* Set Region of Interest area */
-> +#define V4L2_SEL_TGT_ROI               0x0203
-
-Nit: Maybe it could be a good idea to split doc and code. This way the
-backports/fixes are easier.
-
->
->  /* Selection flags */
->  #define V4L2_SEL_FLAG_GE               (1 << 0)
-> --
-> 2.30.0
->
-
-
--- 
-Ricardo Ribalda
