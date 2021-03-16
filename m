@@ -2,146 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C0333DBAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE89A33DBB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239491AbhCPR5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:57:07 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:44789 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239456AbhCPR4A (ORCPT
+        id S236430AbhCPR5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239469AbhCPR4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:56:00 -0400
-Received: from [192.168.178.67] ([91.15.60.56]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MRVy9-1l1W8a0nMz-00NU6Y; Tue, 16 Mar 2021 18:55:21 +0100
-Subject: Re: EDAC list as Trojan Horse distribution ??
-From:   Hermann Ruckerbauer <Hermann.Ruckerbauer@EyeKnowHow.de>
-To:     He Zhe <zhe.he@windriver.com>, tony.luck@intel.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1583303947-49858-1-git-send-email-zhe.he@windriver.com>
- <1f449e01-3207-b699-b91f-d1c04626a447@windriver.com>
- <59d52031-f4e8-e754-c8b6-ca1130bf0cf1@EyeKnowHow.de>
-Message-ID: <c0323578-9db6-74b0-ca6f-1324a2f1e9a1@EyeKnowHow.de>
-Date:   Tue, 16 Mar 2021 18:55:19 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 16 Mar 2021 13:56:07 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2ABC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:56:06 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso1849245pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:56:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1Fb2x79U5zaHbdcvBiPOeYxbZaxlZ4awwzl5b67JIsM=;
+        b=m2j6LyS9YlCfS3STNf7qlGcxc1tXrWIcBoUy3NQ4dKmevWQabCEkq/qd0r63RSAiuC
+         lBXpXtFGc/IvwQL6J1ONaPV8nP/EMtgZQOnq1/GDAhFgDoJMGqUTq99Gh5w5DgZFlAKR
+         GUjRwj2ekreC4yZIHWXklYup63XEoIbSowlLMYeRg1a9viw/vBaLAA1+3AdrU1bFaMPt
+         LhXH7V3YIJ60B9wiLRPUJIcMHYZMzzjQBgDti9bZfILeI0aK7M97vfLpK2YcPwihIpQh
+         2SeBze0R7N4gEosu7o0tYDo+ztj5sBwJuMFEDEO0UIqE7Axq1a4si5vwkN33qkDVJF/0
+         J0aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1Fb2x79U5zaHbdcvBiPOeYxbZaxlZ4awwzl5b67JIsM=;
+        b=Wr/j1+8K02nab+BgrP3zqSMBFGyHa7zyvq89d/BZqIjI15ZujtcpH2BvFnygtSA6qg
+         /+vvNaF19QePxxsqGhGnG9IKgBkWf/8Z03Ikk5Ic/VpwEo32Dx481Bt08R9QGS21i0S3
+         6i0mtB6szJkX+qMAAZS925Zw9kYBKbwChQzLsCP1q07tIANQE+WEVd3SFdE/9iPYVM0C
+         ZpM9pXj/LoUl7xeU5RhCbw0d6vVV2uY6O/AT9flA5FDPZjIDJXr/HWqQSpNrdq65YW8U
+         Y1Wo23FUIILETgGXzkB4hwlJpJ4LMPOM7aKGcQ6SmNKoMKlAmakwwvNlp5XNUBfSJtnW
+         wLIA==
+X-Gm-Message-State: AOAM532roL+R4Xi0kqX+5RUPBSyh94fyFqjbu88oh5Cmjk2r58eL98V8
+        7IcUw5uxwLRQwitUP8ABiPFpew==
+X-Google-Smtp-Source: ABdhPJxsL6PpqPY6ix5HMRn40GECN+ZQ+YyV42zz/Qa0uymjHU0buUNurr3OUlzCGS0ODC+r05iJFA==
+X-Received: by 2002:a17:903:1cb:b029:e5:f712:c13c with SMTP id e11-20020a17090301cbb02900e5f712c13cmr583155plh.22.1615917366104;
+        Tue, 16 Mar 2021 10:56:06 -0700 (PDT)
+Received: from google.com ([2620:15c:f:10:e113:95c2:2d1:e304])
+        by smtp.gmail.com with ESMTPSA id gg22sm90105pjb.20.2021.03.16.10.56.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 10:56:05 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 10:55:59 -0700
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Jim Mattson <jmattson@google.com>
+Subject: Re: [PATCH v3 3/4] KVM: x86/mmu: Factor out tdp_iter_return_to_root
+Message-ID: <YFDxL657K7ApIto0@google.com>
+References: <20210315233803.2706477-1-bgardon@google.com>
+ <20210315233803.2706477-4-bgardon@google.com>
 MIME-Version: 1.0
-In-Reply-To: <59d52031-f4e8-e754-c8b6-ca1130bf0cf1@EyeKnowHow.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: de-DE
-X-Provags-ID: V03:K1:7yG1LTqtMATwziIhWsIPvHUImE1GA7Y8Brk0qx4n/Tqm8l9xdnb
- TRvsiiRCB++NxNvZ5xKrQGXwgXn1OkOo1ule+hv84rVaVRh51RcZNVxFVQCy5zQqXuagR6c
- 2eyiDXgY+opdOj99OFwvug5ByHDBW7lkMuKvGoG1v7C0wvVVSEwQsxwAGoOmwvZ2IWPZ97r
- ppKFkaj9EFNhdOejAbNFg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:w480LvYCMpg=:6bBIGL8ZXfKXbeCDffb1kG
- JUOoTT8OONJ4fQ7ScmIFAsnt/6rFe1h15UNOd6jENTUD+n/3B2Umesf4HEACAYDT+azf8dArY
- y9kfrkaKTu6HwrJctKRAng4P1IolLCe0Ew37DznJVm708qj3BfbRLNX6i3trUwkYagEKeHQvm
- P5ipG6XKhTHTNxNbHHvxVRmR3vsf7TiznPx2nDYrTUSo8TFbmI8a6ahvMhDH/SoFU0BcJ06bj
- CsKPcJomBGRjD3fL069WigizLwRNfkUCoQXN67p6Q48OT8He2AC1lEfNkr6bwWqYWQtzjU+Zu
- QhO38vnM1qaGdZRyTdFcGPNw8kwYRK4rRdH5X+lp93FVlfIvEVqSF4QerWoi1ASP0RZU/02v0
- bB8WJqvWG9zcuxAX5SgkgfaEY5q0FMDq9KbZwMK7fz8BzJ3ewQAg1nTy7e/YyDrgPVwebnH/2
- Zd7Eg4AdzHgwJqTqgQklfu7JK31zx/8=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315233803.2706477-4-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 15, 2021, Ben Gardon wrote:
+> No functional change intended.
 
-> Hello *,
-==> one more time as plain text.. 
->
->
-> quite some tiem ago i sent a question to the EDAC list..
-> I never receveived an answer.
->  
-> today i got an answer with my original question quoted  and a .zip
-> file attached:
->
-> ======================================
->
-> from:      nikolay.temizov@bpchargemaster.com
->
-> Hello,
->
-> Sorry, for my late reply to your question. Attached is the document
-> you need.
->
-> *Thank you*,
->
-> ========================================
->
-> I assume this is just to install a trojan horse when opening the
-> attached zip (also I assume most of you will work on linux and it
-> might not be a Problem for you anyhow   ;-) .
->
->  Virus total reports a Trojan horse, but only for with 2 out of 61
-> virus scan engines (and I have to admit, I did not knew K7AntiVirus
-> and Qihoo-360 before, all other engines reported the file as
-> clean!!!!!!! ).
->
-> So be careful when you get some feedback to old requests from this list
->
-> Hermann
->
->
-> -- 
-> Our next Events:
->    Online Seminar: Open the Black Box of Memory
->        Date: 01.03 - 05.03.2021 (5 times 9:00 - 13:00) 
->
-> EKH - EyeKnowHow 
-> Signal Quality - Made in Bavaria
-> Hermann Ruckerbauer
-> www.EyeKnowHow.de
-> Hermann.Ruckerbauer@EyeKnowHow.de
-> Itzlinger Strasse 21a
-> 94469 Deggendorf
-> Tel.:	+49 (0)991 / 29 69 29 05
-> Mobile:	+49 (0)176  / 787 787 77
-> Fax:	+49 (0)991 / 98158793
-> Hello,
->
->
->
->
->
-> Am 16.04.2020 um 10:40 schrieb He Zhe:
->> Can this be considered for the moment?
->>
->> Thanks,
->> Zhe
->>
->> On 3/4/20 2:39 PM, zhe.he@windriver.com wrote:
->>> From: He Zhe <zhe.he@windriver.com>
->>>
->>> 32-bit user-space program would get errors like the following from ioctl
->>> syscall due to missing compat_ioctl.
->>> MCE_GET_RECORD_LEN: Inappropriate ioctl for device
->>>
->>> compat_ptr_ioctl is provided as a generic implementation of .compat_ioctl
->>> file operation to ioctl functions that either ignore the argument or pass
->>> a pointer to a compatible data type.
->>>
->>> Signed-off-by: He Zhe <zhe.he@windriver.com>
->>> ---
->>>  arch/x86/kernel/cpu/mce/dev-mcelog.c | 1 +
->>>  1 file changed, 1 insertion(+)
->>>
->>> diff --git a/arch/x86/kernel/cpu/mce/dev-mcelog.c b/arch/x86/kernel/cpu/mce/dev-mcelog.c
->>> index 7c8958d..6c9b91b7 100644
->>> --- a/arch/x86/kernel/cpu/mce/dev-mcelog.c
->>> +++ b/arch/x86/kernel/cpu/mce/dev-mcelog.c
->>> @@ -328,6 +328,7 @@ static const struct file_operations mce_chrdev_ops = {
->>>  	.write			= mce_chrdev_write,
->>>  	.poll			= mce_chrdev_poll,
->>>  	.unlocked_ioctl		= mce_chrdev_ioctl,
->>> +	.compat_ioctl		= compat_ptr_ioctl,
->>>  	.llseek			= no_llseek,
->>>  };
->>>  
->
+I want royalties.
 
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+
+Reviewed-by: Sean Christopherson <seanjc@google.com>
