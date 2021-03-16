@@ -2,223 +2,519 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94E333DEFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:39:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2167A33DEFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:39:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbhCPUjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 16:39:03 -0400
-Received: from mail-dm6nam11on2122.outbound.protection.outlook.com ([40.107.223.122]:46977
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        id S231544AbhCPUjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 16:39:06 -0400
+Received: from mail-dm3nam07on2049.outbound.protection.outlook.com ([40.107.95.49]:27467
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231461AbhCPUik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 16:38:40 -0400
+        id S231463AbhCPUiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 16:38:51 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Unz/KEV5MWWalbAeIg45mXQ84+OO656tn+bs/jp57+x6OVvUzAXsdjIrCMUzSjF+5nYAvRJ2DBv6TY8nNx08zO1vU1worTO6nh9mjtUB0d5XIvFxlH2QngyLhm7NXoHhi4w/FWNfV2NhJJFigk0cfdR5UhHfLQLl43JEFzFc3Z4orE5m769TVN3u58foqV4Np1tlDvT7iRlaVrz1aMrAQ+b6MzcEyhQAlCWqKKnmXSIKCr1grHj/JXm1s+X/bBRTbg1RuiXY/+uEGlaHEEDKtp5dDXyiPzQktIr427UJynUpUROpHb5uR96UVKG9+n0gdTuJNFTd1PjYxn/dXF0ncA==
+ b=E3700kFvMzhUStsVTuIROoacFdV466HMb3rdzk5UnRmaXrx33kAjx+sUYePtzeGuRe119ooAwtc9cTjGUNEHd+HrqpNvMOwgqE+GiViuSudE+zv7jA5+zhID8pKhdE6P2YRLTOvW+AUs/B2UrUxS3Hf6lNVLXqQC/+2tEuHiJDStJi0F6X3a+qWmYE9Xb3TKehXPHK/fIQWyU2EOX9sjYaLPXaADo/NS1DhMjDdEkgKUKaHFWDcYF1IzLJOZiKTWrXSg2xj3FTUJoFeAJW9P4KCLRTYK4sSdsJUQ39/ZK8IgnLW12QNj2J53kpt6sApQVOZSwqxtkONU5UA1+E9fZQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uBpmDRQ9VPoKGo1h07U9KUWh18C4JaovklE9E0YCKG8=;
- b=Cd11vyDPJH9PLBhIyJ2cJWvGTTANUmmuUwJ5lSrgDIOMkksbN8h5zjbGK50CKGTkzpjNST8Pams0sEQgcNRwcex05oQdgp1vVm29g/EzyvYfIJSFNxbM3ucwYOyLicLRhYge4DezEtpaDoZFneGMuUKiEXnP404z/tIIUlOS/rMr99HDeDIF21P+UPhrnB/cVp7ws8r29DfjKo4tSlw+GoTi17AjqymH9+hbqXvdVPntDiYFhPYO5j2yvHcWGP+Q/UKekRJ0RQdtSb7To8+sRi/4RcqdLy/Fp/XpqgCTNs3zaFRsLJo+eqQtuxF1rXKrB3RsPx9GmPHHrT26DrNBmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hammerspace.com; dmarc=pass action=none
- header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
- s=selector2;
+ bh=/sbI002qn+F/yaGmA3fqtjH+kM0O8NkPdKfR/nCc7CQ=;
+ b=kQ8FaAdMu7U8jiDLs2ZPpIv/IrJ3PzcmKBAJqutEHQTdS1nwaY4zesUArsuWKDq/LrnDwprPG6WFWibKPNPQrKjP7k2jj7fASgYEZlR5DfV+3W/ql2UcTnRS+ffo8inyYq1hrq10pI825rsi+JaqRhG6180vhsChg7PAK+CXZxSsIgKr1qvL9aBvXQ3oJnBG2NMfcKny1L9sdr6PxCbYiaMG36z872g6laD7zDobZG1wrf1QfZEygwIvjlBFeM/LN+wN30rzvflC8dofvYWIueUGrGXgARIcErk0DiDtxS4YQZ3ecfix+nmFRW109HGNjHBUvglusxdr51b7t52E0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uBpmDRQ9VPoKGo1h07U9KUWh18C4JaovklE9E0YCKG8=;
- b=Ha1Ueun9zxJQrLn1GVXW2NC8MHZcz21AzVC65M9RitDuWR46vcC7dWAIUjG2FUPKOTTuSaQ91FPTfLfr0GrO2AYnMBPDt1UQR7LpK0eczvSQRXxqP31t6QVdub/rGv/8sSqWQx5i4qOU7gWRed/FkuN6OwhpcClZl6Jfc8tHYao=
-Received: from CH2PR13MB3525.namprd13.prod.outlook.com (2603:10b6:610:21::29)
- by CH2PR13MB3816.namprd13.prod.outlook.com (2603:10b6:610:9d::15) with
+ bh=/sbI002qn+F/yaGmA3fqtjH+kM0O8NkPdKfR/nCc7CQ=;
+ b=r5Ke5SxjvdgHw1gzrvwrO1NYNk9htbzyVqejTpIg5Tpzm8gM7ybj8633e/v6XpKJri3NBPEbmenn9vt9t+htD72GMQd9MrW3QoRhyi2JlOHCW6b1n7/oK1AqVKODC5lpI9xTNJirZjS70zdKRYeFEjUex1QHv0blof3YwCO7P20=
+Received: from DM6PR11CA0054.namprd11.prod.outlook.com (2603:10b6:5:14c::31)
+ by BN7PR02MB4995.namprd02.prod.outlook.com (2603:10b6:408:22::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.10; Tue, 16 Mar
- 2021 20:38:34 +0000
-Received: from CH2PR13MB3525.namprd13.prod.outlook.com
- ([fe80::f453:2dd2:675:d063]) by CH2PR13MB3525.namprd13.prod.outlook.com
- ([fe80::f453:2dd2:675:d063%3]) with mapi id 15.20.3955.010; Tue, 16 Mar 2021
- 20:38:34 +0000
-From:   Trond Myklebust <trondmy@hammerspace.com>
-To:     "namrata.janawade@gmail.com" <namrata.janawade@gmail.com>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
-Subject: Re: [PATCH] net: sunrpc: fixed function and extra line coding styles
-Thread-Topic: [PATCH] net: sunrpc: fixed function and extra line coding styles
-Thread-Index: AQHXGp7Nac7XBSKpnUOrX1eJx2nwmaqHE2oA
-Date:   Tue, 16 Mar 2021 20:38:33 +0000
-Message-ID: <dcf799c9eb7d1ba4a30e2b1452b48d68cfe97802.camel@hammerspace.com>
-References: <20210316195833.5063-1-namrata.janawade@gmail.com>
-In-Reply-To: <20210316195833.5063-1-namrata.janawade@gmail.com>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=hammerspace.com;
-x-originating-ip: [68.36.133.222]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 744765f3-5a4b-43e3-be51-08d8e8bb77ee
-x-ms-traffictypediagnostic: CH2PR13MB3816:
-x-microsoft-antispam-prvs: <CH2PR13MB3816B544C6FD4F0D52866178B86B9@CH2PR13MB3816.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1303;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zmdihXnDqWpRh0PjaVLX4jxxfSQ7UffutlRVgEjD30+JmET1pebentUsZrjGvkRupTS2P8kPH+Gr9+J49rcqdawGCXB64RpFEGomnqi81++ELjL/ZPm5yf4DWCMGtSIsTZG0q5nBHNk6c2Wg0cHueuCPwkb0sAcyZ8FMzk2Fgz6A+Op4ivIKyq8GugogljjYZLERfBREARPQFcbzzHF1w08mgASV7lCOURDYSfFcR/sv0MLquTYrlDr64dep/rz8mUQswBg9NbjYBrM4KJfDzlvdxd+geXLjuXUVkO0GmGd2k86diVbX6EsYNAvmNA3Y4xqEO+6cCfwo7H88K0cpHyEBJkAWqB1SXyBujoVtkxWqCjgeB7Z0SLtSo2BLH2/wIvZmwBZ7a3iExeK2/KxFYgeKV2yYuiEWxgtZh7UYF00gsmg/WJuu+/Fo6Z39ZUVMsAkAyTbvNJKbxcC/R/Qnguj7u0zIqxpJqvfwLcQod1G0Eqp7Fp8rNicnbJCUjDVeBl2bNIUjfZDFv2usw6JTOoQknELL7aHJIRiQuitvSce3zQsknns5bZE/OJdlAe/5
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR13MB3525.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(396003)(366004)(376002)(346002)(136003)(64756008)(66446008)(4326008)(83380400001)(76116006)(66476007)(66556008)(2616005)(26005)(5660300002)(66946007)(6506007)(316002)(8936002)(6486002)(478600001)(186003)(6512007)(86362001)(54906003)(6916009)(71200400001)(36756003)(2906002)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?dzlQTVpobzZFb20xemhBelN2S3o0MVg1ZnFBQjBtWm9GVjRMczd6Mmxta0NI?=
- =?utf-8?B?TzBWaW9sVGR4YzBBNmQvdWVweTNlWDR6RWxMMUJ0RThWS2xvQTVaaTdLTlg4?=
- =?utf-8?B?SmcwZmJ1K00yTmQvNGJxWVpiSGdwVHEvZUhkRmtYdzBjcTNEM1Voek1TSW9a?=
- =?utf-8?B?SGxWTzJ5RGthYVZySDhiKzB1RCtzaXorRkRkYlNZblFaVGRrSE1naWJzVDl6?=
- =?utf-8?B?Rit1Y2lSMCs2VTNRZENLeTlZWHZqRGVBMTBoSEcvOVJjclJOK1ZnbjI2Qnl1?=
- =?utf-8?B?Z0NjM04yL2lNQ0tMQ3NmNEU1NjFtNXMwTVUwbTBMUkxtc1A0MXNvM0wzZHZO?=
- =?utf-8?B?Tm1aQmhaR2U2bkVPaFM2UkZsbzI4dEY4UnowWkNYQlp4cHcxQVdTSkJUQ2RN?=
- =?utf-8?B?OGExOWNKTXRvcUhpNVlWN1kxREZKVlh4MkpRNE1XKzdsSVN1MnN3SXJ2bStT?=
- =?utf-8?B?Z2FVdFAwVzZTK1VUYXR6NytmSE9wZmhaNzNneHBjanR2QUhyLzBHenhHaER1?=
- =?utf-8?B?NnJLR3ZPcDZQVlpYditlRStNY1M2Nmwxdm5LeU82YXpMQXZldzdGWGxuNjkv?=
- =?utf-8?B?enByN2NTRXZlU2J4c2RBNkp2Q2FXTzRzam0rOEZOOXNVSG81V05LbklHbFEz?=
- =?utf-8?B?MWM3QTVnV250dGl0dFdpZkl5eUF6WmVCOWgwOCtPTG04cnBGbkU2eWI1VGNz?=
- =?utf-8?B?MGZ5dUNmWjlta3NubGhGUGNVZEc2VFpReUptZWp5Q3JKYjkzbzRndVVPNXJS?=
- =?utf-8?B?YU1MbHZQdlFGY0VLSzBwbHBqSkpPRjViM1BxTUp3OGxzK1ByVkpQUG4yTE5Y?=
- =?utf-8?B?OWVVL0I2WTUvR1Jyc20vNkFvSmNPb3kzZTJKNW1XNmFwV3RkRjNsUnhia2ZB?=
- =?utf-8?B?SjZRQ2RmMWQxQ2lQMTdaZ1JweWg5Tm95K213OVRYT2dnMGEwZEFjbVhGUExZ?=
- =?utf-8?B?V2VSdGNWdVFmQTdXbFhsVXhpSmZjOFNqNi9IZS9ZbUk4eFpBcW1uQ0lBaEFE?=
- =?utf-8?B?ZXVTRzIweTVQQ3U1UWlSZEV5Sm5wQVpnNForNTVLVFpyMW5nRWNNd3JZNjVr?=
- =?utf-8?B?TUxYbjE1RlE0YzgyM2s2NHRmMG5ldmxqUlJRM2dqU3NwWW5kNUgzRjhFbGQ1?=
- =?utf-8?B?MWIrNk9lYnh4aXF1RWE4c3p4eFZ4ak50YjNNNHMwTFVUdCtuQlpRS1lhOHI0?=
- =?utf-8?B?M2NEekpYaVltMHk4V3d0SUJxdjNWWkxIRWgxbWNGY2FoL1pOcDJXSkFNbERs?=
- =?utf-8?B?akdZOFUrd1BKY245cEpyMGFjRmxvVzVUTmNPVHJlcFVKanlDVzMvNnJCTjhs?=
- =?utf-8?B?Q05qaER2NWdGWXN4aDN5ZHRyM3hmQ2dYRU1aUlh6SEhZeGRPc3dRK2xuMVBL?=
- =?utf-8?B?WWkrRVBhUGtYWFBhQk0wZE1JMUZpZDNoaW9lVUw4SGJHemYrSUlPOHI1UlYx?=
- =?utf-8?B?eWdSTXF0a1FFTCtZZTkrQmE0bk5nZDZ1dHNLd0g2MU9nTXViZWthZU8vbkZz?=
- =?utf-8?B?MWw2aEpWdFlKejNuNVljSThxQXJoeXlQbDlGR0dQejlqbXVmMDIrSGkzVlgv?=
- =?utf-8?B?bU1UZkNOSlVQMmJEUmMzRHVINWR0azhwdkJiOWN5SnYvS2x1cjgxZ1pzR0hS?=
- =?utf-8?B?VFpyQ0krZ3FsMzVwZkNtVEdrMWdzQ29yOUJPL3JhNDlETmwvUEhubGtwVnM0?=
- =?utf-8?B?aFBLODl4c3Z6QVlNWmhlTEVsUzdDRGFMTlFaSDRYY0ZJeWdBY2d5am5KdUdp?=
- =?utf-8?Q?iu0x84Zk0m1/Sl3ycbRQYzGW8/ZvEE/3ihLFEKx?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <BF0F96EAB7636447BFBF622B7549D062@namprd13.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Tue, 16 Mar
+ 2021 20:38:47 +0000
+Received: from DM3NAM02FT033.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:5:14c:cafe::68) by DM6PR11CA0054.outlook.office365.com
+ (2603:10b6:5:14c::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32 via Frontend
+ Transport; Tue, 16 Mar 2021 20:38:47 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ DM3NAM02FT033.mail.protection.outlook.com (10.13.4.101) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3933.32 via Frontend Transport; Tue, 16 Mar 2021 20:38:47 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 16 Mar 2021 13:38:46 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2106.2 via Frontend Transport; Tue, 16 Mar 2021 13:38:46 -0700
+Envelope-to: robh@kernel.org,
+ trix@redhat.com,
+ devicetree@vger.kernel.org,
+ linux-fpga@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ mdf@kernel.org
+Received: from [10.17.2.60] (port=54204)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <lizhi.hou@xilinx.com>)
+        id 1lMGSk-0006hc-GO; Tue, 16 Mar 2021 13:38:46 -0700
+Subject: Re: [PATCH V3 XRT Alveo 17/18] fpga: xrt: partition isolation
+ platform driver
+To:     Moritz Fischer <mdf@kernel.org>, Lizhi Hou <lizhi.hou@xilinx.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fpga@vger.kernel.org>,
+        <maxz@xilinx.com>, <sonal.santan@xilinx.com>,
+        <michal.simek@xilinx.com>, <stefanos@xilinx.com>,
+        <devicetree@vger.kernel.org>, <trix@redhat.com>, <robh@kernel.org>,
+        Max Zhen <max.zhen@xilinx.com>
+References: <20210218064019.29189-1-lizhih@xilinx.com>
+ <20210218064019.29189-18-lizhih@xilinx.com> <YDLEO6Bg6ySSoupI@archbook>
+From:   Lizhi Hou <lizhi.hou@xilinx.com>
+Message-ID: <299b66ff-817d-8a01-6fa9-56f7739fdd92@xilinx.com>
+Date:   Tue, 16 Mar 2021 13:38:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-X-OriginatorOrg: hammerspace.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR13MB3525.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 744765f3-5a4b-43e3-be51-08d8e8bb77ee
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2021 20:38:33.9919
+In-Reply-To: <YDLEO6Bg6ySSoupI@archbook>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d4cafcd3-2db1-47fb-1e56-08d8e8bb7fd7
+X-MS-TrafficTypeDiagnostic: BN7PR02MB4995:
+X-Microsoft-Antispam-PRVS: <BN7PR02MB4995B207896F75CE0138A04AA16B9@BN7PR02MB4995.namprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: taP3pu90DxDbMKNOOVPC9c970tVLl22rFx51vWsZJND+w2Hr/qBh65fh43P9VlNqdHUxfrVuuQKuevYH9OSy6RyAcsXlNP3N3ESNaTs1B4szgAsquVA/N1xUz0h9wTCuGIixDu80CX0dldGSKu4d+lBbGAdWGMWdIi0Rls1Lpp3gpwDUKiLgeDbvryXtOblpj/M/U27Rxjq/svjOd9CEeH5Yif6X0rSX7jOICea4bbHeU3gSRXQ3+pV7gVb1NBmTydPvnwnLVYRJ71AwBebW+U8j0vyHv5YVCpVVlEyPikGKtDHVrLmsnwFGcC2C3XPMYkb1NNw2ypQry/yZmsEggLyOWbU0O8rD1fo7zeN48FKiR7P8hyKyB8Aev30v70c41TtS0xPKCTtT3cAIyX83dRaMAx3n0tW+sqop4+70dps8GPpmTizpFwGWJIdqakTWfYjDwtj4MvKsiKI/gdjKbuqPfg/2DToU63tbMwd9un++ChQsDRv6B9sHg60KUNM3cCSrV+JSq61EBaXfBVCHiPsLz8MCcAJriDJQn1qB66qwLqm49ZlVmTXPDIGvX0WlZcrjU+j5fR7r+iJFLlDuGr3oXLX0IZeOV2Lg/XX2wACXp6luwACnUZ8OHn9T2SQWgP5g+VY8CINNKPe8Ej5V8uscZHksat6R5FlIKSNHh5uATc6jXnANyi8uystOd3a3LOT7fK6wZevfivh0UqdE7Q==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(376002)(39850400004)(396003)(346002)(46966006)(36840700001)(44832011)(107886003)(8676002)(30864003)(426003)(7636003)(5660300002)(9786002)(47076005)(2906002)(356005)(36756003)(26005)(36860700001)(2616005)(53546011)(82310400003)(478600001)(82740400003)(70206006)(4326008)(83380400001)(316002)(110136005)(31686004)(54906003)(8936002)(31696002)(70586007)(186003)(336012)(36906005)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Mar 2021 20:38:47.3358
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xYZN1jp/e5Q3aaRnIn3fCnhPPOz1PCOzadD4BKP0YWv14IUGpb8unnfnT+IjVlHhHJDHPsPrS9bBhMUvc/UUFw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR13MB3816
+X-MS-Exchange-CrossTenant-Network-Message-Id: d4cafcd3-2db1-47fb-1e56-08d8e8bb7fd7
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT033.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR02MB4995
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTAzLTE2IGF0IDEyOjU4IC0wNzAwLCBuYW1yYXRhamFuYXdhZGUgd3JvdGU6
-DQo+IEJsb2NrIGNvbW1lbnRzIHdyaXR0ZW4gaW4gZm9ybWF0IHN1Z2dlc3RlZCBieSBjaGVja3Bh
-dGNoLnBsLg0KPiBSZW1vdmVkIHRyYWlsaW5nIHNlbWljb2xvbiBpbiBtYWNyb3MgZGVmaW5pdGlv
-biBhcyBtYWNyb3Mgc2hvdWxkIG5vdA0KPiB1c2UgYSB0cmFpbGluZyBzZW1pY29sb24uDQo+IE9w
-ZW4gYnJhY2VzIHNoaWZ0ZWQgdG8gbmV3IGxpbmUgKGFzIHN1Z2dlc3RlZCBieSBjaGVja3BhdGNo
-LnBsKS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IG5hbXJhdGFqYW5hd2FkZSA8bmFtcmF0YS5qYW5h
-d2FkZUBnbWFpbC5jb20+DQo+IC0tLQ0KPiDCoG5ldC9zdW5ycGMvYXV0aC5jIHwgMzYgKysrKysr
-KysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+IMKgMSBmaWxlIGNoYW5nZWQsIDE0IGlu
-c2VydGlvbnMoKyksIDIyIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL25ldC9zdW5y
-cGMvYXV0aC5jIGIvbmV0L3N1bnJwYy9hdXRoLmMNCj4gaW5kZXggYTlmMGQxN2ZkYjBkLi42ZWY5
-NDgxYTBkMmQgMTAwNjQ0DQo+IC0tLSBhL25ldC9zdW5ycGMvYXV0aC5jDQo+ICsrKyBiL25ldC9z
-dW5ycGMvYXV0aC5jDQo+IEBAIC00NSw4ICs0NSw3IEBAIHN0YXRpYyBzdHJ1Y3QgY3JlZCBtYWNo
-aW5lX2NyZWQgPSB7DQo+IMKgI2VuZGlmDQo+IMKgfTsNCj4gwqANCj4gLS8qDQo+IC0gKiBSZXR1
-cm4gdGhlIG1hY2hpbmVfY3JlZCBwb2ludGVyIHRvIGJlIHVzZWQgd2hlbmV2ZXINCj4gKy8qIFJl
-dHVybiB0aGUgbWFjaGluZV9jcmVkIHBvaW50ZXIgdG8gYmUgdXNlZCB3aGVuZXZlcg0KPiDCoCAq
-IHRoZSBhIGdlbmVyaWMgbWFjaGluZSBjcmVkZW50aWFsIGlzIG5lZWRlZC4NCj4gwqAgKi8NCj4g
-wqBjb25zdCBzdHJ1Y3QgY3JlZCAqcnBjX21hY2hpbmVfY3JlZCh2b2lkKQ0KPiBAQCAtODQsNyAr
-ODMsNyBAQCBzdGF0aWMgaW50IHBhcmFtX2dldF9oYXNodGJsX3N6KGNoYXIgKmJ1ZmZlciwgY29u
-c3QNCj4gc3RydWN0IGtlcm5lbF9wYXJhbSAqa3ApDQo+IMKgwqDCoMKgwqDCoMKgwqByZXR1cm4g
-c3ByaW50ZihidWZmZXIsICIldVxuIiwgMVUgPDwgbmJpdHMpOw0KPiDCoH0NCj4gwqANCj4gLSNk
-ZWZpbmUgcGFyYW1fY2hlY2tfaGFzaHRibF9zeihuYW1lLCBwKSBfX3BhcmFtX2NoZWNrKG5hbWUs
-IHAsDQo+IHVuc2lnbmVkIGludCk7DQo+ICsjZGVmaW5lIHBhcmFtX2NoZWNrX2hhc2h0Ymxfc3oo
-bmFtZSwgcCkgX19wYXJhbV9jaGVjayhuYW1lLCBwLA0KPiB1bnNpZ25lZCBpbnQpDQo+IMKgDQo+
-IMKgc3RhdGljIGNvbnN0IHN0cnVjdCBrZXJuZWxfcGFyYW1fb3BzIHBhcmFtX29wc19oYXNodGJs
-X3N6ID0gew0KPiDCoMKgwqDCoMKgwqDCoMKgLnNldCA9IHBhcmFtX3NldF9oYXNodGJsX3N6LA0K
-PiBAQCAtOTksNyArOTgsOCBAQCBtb2R1bGVfcGFyYW0oYXV0aF9tYXhfY3JlZF9jYWNoZXNpemUs
-IHVsb25nLCAwNjQ0KTsNCj4gwqBNT0RVTEVfUEFSTV9ERVNDKGF1dGhfbWF4X2NyZWRfY2FjaGVz
-aXplLCAiUlBDIGNyZWRlbnRpYWwgbWF4aW11bQ0KPiB0b3RhbCBjYWNoZSBzaXplIik7DQo+IMKg
-DQo+IMKgc3RhdGljIHUzMg0KPiAtcHNldWRvZmxhdm9yX3RvX2ZsYXZvcih1MzIgZmxhdm9yKSB7
-DQo+ICtwc2V1ZG9mbGF2b3JfdG9fZmxhdm9yKHUzMiBmbGF2b3IpIA0KPiArew0KPiDCoMKgwqDC
-oMKgwqDCoMKgaWYgKGZsYXZvciA+IFJQQ19BVVRIX01BWEZMQVZPUikNCj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gUlBDX0FVVEhfR1NTOw0KPiDCoMKgwqDCoMKgwqDC
-oMKgcmV0dXJuIGZsYXZvcjsNCj4gQEAgLTI1Niw4ICsyNTYsNyBAQCBycGNhdXRoX3JlbGVhc2Uo
-c3RydWN0IHJwY19hdXRoICphdXRoKQ0KPiDCoA0KPiDCoHN0YXRpYyBERUZJTkVfU1BJTkxPQ0so
-cnBjX2NyZWRjYWNoZV9sb2NrKTsNCj4gwqANCj4gLS8qDQo+IC0gKiBPbiBzdWNjZXNzLCB0aGUg
-Y2FsbGVyIGlzIHJlc3BvbnNpYmxlIGZvciBmcmVlaW5nIHRoZSByZWZlcmVuY2UNCj4gKy8qIE9u
-IHN1Y2Nlc3MsIHRoZSBjYWxsZXIgaXMgcmVzcG9uc2libGUgZm9yIGZyZWVpbmcgdGhlIHJlZmVy
-ZW5jZQ0KPiDCoCAqIGhlbGQgYnkgdGhlIGhhc2h0YWJsZQ0KPiDCoCAqLw0KPiDCoHN0YXRpYyBi
-b29sDQo+IEBAIC0yODQsOCArMjgzLDcgQEAgcnBjYXV0aF91bmhhc2hfY3JlZChzdHJ1Y3QgcnBj
-X2NyZWQgKmNyZWQpDQo+IMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gcmV0Ow0KPiDCoH0NCj4gwqAN
-Cj4gLS8qDQo+IC0gKiBJbml0aWFsaXplIFJQQyBjcmVkZW50aWFsIGNhY2hlDQo+ICsvKiBJbml0
-aWFsaXplIFJQQyBjcmVkZW50aWFsIGNhY2hlDQo+IMKgICovDQo+IMKgaW50DQo+IMKgcnBjYXV0
-aF9pbml0X2NyZWRjYWNoZShzdHJ1Y3QgcnBjX2F1dGggKmF1dGgpDQo+IEBAIC0zMjAsOCArMzE4
-LDcgQEAgcnBjYXV0aF9zdHJpbmdpZnlfYWNjZXB0b3Ioc3RydWN0IHJwY19jcmVkICpjcmVkKQ0K
-PiDCoH0NCj4gwqBFWFBPUlRfU1lNQk9MX0dQTChycGNhdXRoX3N0cmluZ2lmeV9hY2NlcHRvcik7
-DQo+IMKgDQo+IC0vKg0KPiAtICogRGVzdHJveSBhIGxpc3Qgb2YgY3JlZGVudGlhbHMNCj4gKy8q
-IERlc3Ryb3kgYSBsaXN0IG9mIGNyZWRlbnRpYWxzDQo+IMKgICovDQo+IMKgc3RhdGljIGlubGlu
-ZQ0KPiDCoHZvaWQgcnBjYXV0aF9kZXN0cm95X2NyZWRsaXN0KHN0cnVjdCBsaXN0X2hlYWQgKmhl
-YWQpDQo+IEBAIC0zNzMsOCArMzcwLDcgQEAgcnBjYXV0aF9scnVfcmVtb3ZlKHN0cnVjdCBycGNf
-Y3JlZCAqY3JlZCkNCj4gwqDCoMKgwqDCoMKgwqDCoHNwaW5fdW5sb2NrKCZycGNfY3JlZGNhY2hl
-X2xvY2spOw0KPiDCoH0NCj4gwqANCj4gLS8qDQo+IC0gKiBDbGVhciB0aGUgUlBDIGNyZWRlbnRp
-YWwgY2FjaGUsIGFuZCBkZWxldGUgdGhvc2UgY3JlZGVudGlhbHMNCj4gKy8qIENsZWFyIHRoZSBS
-UEMgY3JlZGVudGlhbCBjYWNoZSwgYW5kIGRlbGV0ZSB0aG9zZSBjcmVkZW50aWFscw0KPiDCoCAq
-IHRoYXQgYXJlIG5vdCByZWZlcmVuY2VkLg0KPiDCoCAqLw0KPiDCoHZvaWQNCj4gQEAgLTQwMyw4
-ICszOTksNyBAQCBycGNhdXRoX2NsZWFyX2NyZWRjYWNoZShzdHJ1Y3QgcnBjX2NyZWRfY2FjaGUN
-Cj4gKmNhY2hlKQ0KPiDCoMKgwqDCoMKgwqDCoMKgcnBjYXV0aF9kZXN0cm95X2NyZWRsaXN0KCZm
-cmVlKTsNCj4gwqB9DQo+IMKgDQo+IC0vKg0KPiAtICogRGVzdHJveSB0aGUgUlBDIGNyZWRlbnRp
-YWwgY2FjaGUNCj4gKy8qIERlc3Ryb3kgdGhlIFJQQyBjcmVkZW50aWFsIGNhY2hlDQo+IMKgICov
-DQo+IMKgdm9pZA0KPiDCoHJwY2F1dGhfZGVzdHJveV9jcmVkY2FjaGUoc3RydWN0IHJwY19hdXRo
-ICphdXRoKQ0KPiBAQCAtNDIzLDggKzQxOCw3IEBAIEVYUE9SVF9TWU1CT0xfR1BMKHJwY2F1dGhf
-ZGVzdHJveV9jcmVkY2FjaGUpOw0KPiDCoA0KPiDCoCNkZWZpbmUgUlBDX0FVVEhfRVhQSVJZX01P
-UkFUT1JJVU0gKDYwICogSFopDQo+IMKgDQo+IC0vKg0KPiAtICogUmVtb3ZlIHN0YWxlIGNyZWRl
-bnRpYWxzLiBBdm9pZCBzbGVlcGluZyBpbnNpZGUgdGhlIGxvb3AuDQo+ICsvKiBSZW1vdmUgc3Rh
-bGUgY3JlZGVudGlhbHMuIEF2b2lkIHNsZWVwaW5nIGluc2lkZSB0aGUgbG9vcC4NCj4gwqAgKi8N
-Cj4gwqBzdGF0aWMgbG9uZw0KPiDCoHJwY2F1dGhfcHJ1bmVfZXhwaXJlZChzdHJ1Y3QgbGlzdF9o
-ZWFkICpmcmVlLCBpbnQgbnJfdG9fc2NhbikNCj4gQEAgLTQ0MSw4ICs0MzUsNyBAQCBycGNhdXRo
-X3BydW5lX2V4cGlyZWQoc3RydWN0IGxpc3RfaGVhZCAqZnJlZSwgaW50DQo+IG5yX3RvX3NjYW4p
-DQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJwY2F1
-dGhfbHJ1X3JlbW92ZV9sb2NrZWQoY3JlZCk7DQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoGNvbnRpbnVlOw0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoH0NCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC8qDQo+IC3CoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKiBFbmZvcmNlIGEgNjAgc2Vjb25kIGdhcmJhZ2Ug
-Y29sbGVjdGlvbiBtb3JhdG9yaXVtDQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAv
-KiBFbmZvcmNlIGEgNjAgc2Vjb25kIGdhcmJhZ2UgY29sbGVjdGlvbiBtb3JhdG9yaXVtDQo+IMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICogTm90ZSB0aGF0IHRoZSBjcmVkX3VudXNl
-ZCBsaXN0IG11c3QgYmUgdGltZS0NCj4gb3JkZXJlZC4NCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgKi8NCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoIXRp
-bWVfaW5fcmFuZ2UoY3JlZC0+Y3JfZXhwaXJlLCBleHBpcmVkLA0KPiBqaWZmaWVzKSkNCj4gQEAg
-LTQ3MSw4ICs0NjQsNyBAQCBycGNhdXRoX2NhY2hlX2RvX3NocmluayhpbnQgbnJfdG9fc2NhbikN
-Cj4gwqDCoMKgwqDCoMKgwqDCoHJldHVybiBmcmVlZDsNCj4gwqB9DQo+IMKgDQo+IC0vKg0KPiAt
-ICogUnVuIG1lbW9yeSBjYWNoZSBzaHJpbmtlci4NCj4gKy8qIFJ1biBtZW1vcnkgY2FjaGUgc2hy
-aW5rZXIuDQo+IMKgICovDQo+IMKgc3RhdGljIHVuc2lnbmVkIGxvbmcNCj4gwqBycGNhdXRoX2Nh
-Y2hlX3Nocmlua19zY2FuKHN0cnVjdCBzaHJpbmtlciAqc2hyaW5rLCBzdHJ1Y3QNCj4gc2hyaW5r
-X2NvbnRyb2wgKnNjKQ0KPiBAQCAtNTEwLDggKzUwMiw3IEBAIHJwY2F1dGhfY2FjaGVfZW5mb3Jj
-ZV9saW1pdCh2b2lkKQ0KPiDCoMKgwqDCoMKgwqDCoMKgcnBjYXV0aF9jYWNoZV9kb19zaHJpbmso
-bnJfdG9fc2Nhbik7DQo+IMKgfQ0KPiDCoA0KPiAtLyoNCj4gLSAqIExvb2sgdXAgYSBwcm9jZXNz
-JyBjcmVkZW50aWFscyBpbiB0aGUgYXV0aGVudGljYXRpb24gY2FjaGUNCj4gKy8qIExvb2sgdXAg
-YSBwcm9jZXNzJyBjcmVkZW50aWFscyBpbiB0aGUgYXV0aGVudGljYXRpb24gY2FjaGUNCj4gwqAg
-Ki8NCj4gwqBzdHJ1Y3QgcnBjX2NyZWQgKg0KPiDCoHJwY2F1dGhfbG9va3VwX2NyZWRjYWNoZShz
-dHJ1Y3QgcnBjX2F1dGggKmF1dGgsIHN0cnVjdCBhdXRoX2NyZWQgKg0KPiBhY3JlZCwNCj4gQEAg
-LTU2Niw2ICs1NTcsNyBAQCBycGNhdXRoX2xvb2t1cF9jcmVkY2FjaGUoc3RydWN0IHJwY19hdXRo
-ICphdXRoLA0KPiBzdHJ1Y3QgYXV0aF9jcmVkICogYWNyZWQsDQo+IMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgY3JlZC0+Y3Jfb3BzLT5jcl9pbml0ICE9IE5VTEwgJiYNCj4gwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCAhKGZsYWdzICYgUlBDQVVUSF9MT09LVVBfTkVXKSkgew0KPiDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoGludCByZXMgPSBjcmVkLT5jcl9vcHMtPmNyX2luaXQoYXV0aCwg
-Y3JlZCk7DQo+ICsNCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAocmVzIDwg
-MCkgew0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBw
-dXRfcnBjY3JlZChjcmVkKTsNCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgY3JlZCA9IEVSUl9QVFIocmVzKTsNCg0KTkFDSy4gVGhpcyBpcyBub3QgY29u
-c2lzdGVudCB3aXRoIHRoZSBwcmVmZXJyZWQgc3R5bGUgZm9yIE5GUyBhbmQNClNVTlJQQyAob3Ig
-dGhlIHByZWZlcnJlZCBzdHlsZSBpbiBEb2N1bWVudGF0aW9uL3Byb2Nlc3MvY29kaW5nLQ0Kc3R5
-bGUucnN0KS4NCg0KLS0gDQpUcm9uZCBNeWtsZWJ1c3QNCkxpbnV4IE5GUyBjbGllbnQgbWFpbnRh
-aW5lciwgSGFtbWVyc3BhY2UNCnRyb25kLm15a2xlYnVzdEBoYW1tZXJzcGFjZS5jb20NCg0KDQo=
+Hi Moritz,
+
+
+On 02/21/2021 12:36 PM, Moritz Fischer wrote:
+>
+> On Wed, Feb 17, 2021 at 10:40:18PM -0800, Lizhi Hou wrote:
+>> Add partition isolation platform driver. partition isolation is
+>> a hardware function discovered by walking firmware metadata.
+>> A platform device node will be created for it. Partition isolation
+>> function isolate the different fpga regions
+>>
+>> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
+>> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
+>> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
+>> ---
+>>   drivers/fpga/xrt/include/xleaf/axigate.h |  25 ++
+>>   drivers/fpga/xrt/lib/xleaf/axigate.c     | 298 +++++++++++++++++++++++
+>>   2 files changed, 323 insertions(+)
+>>   create mode 100644 drivers/fpga/xrt/include/xleaf/axigate.h
+>>   create mode 100644 drivers/fpga/xrt/lib/xleaf/axigate.c
+>>
+>> diff --git a/drivers/fpga/xrt/include/xleaf/axigate.h b/drivers/fpga/xrt/include/xleaf/axigate.h
+>> new file mode 100644
+>> index 000000000000..2cef71e13b30
+>> --- /dev/null
+>> +++ b/drivers/fpga/xrt/include/xleaf/axigate.h
+>> @@ -0,0 +1,25 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/*
+>> + * Header file for XRT Axigate Leaf Driver
+>> + *
+>> + * Copyright (C) 2020-2021 Xilinx, Inc.
+>> + *
+>> + * Authors:
+>> + *   Lizhi Hou <Lizhi.Hou@xilinx.com>
+>> + */
+>> +
+>> +#ifndef _XRT_AXIGATE_H_
+>> +#define _XRT_AXIGATE_H_
+>> +
+>> +#include "xleaf.h"
+>> +#include "metadata.h"
+>> +
+>> +/*
+>> + * AXIGATE driver IOCTL calls.
+>> + */
+>> +enum xrt_axigate_ioctl_cmd {
+>> +     XRT_AXIGATE_FREEZE = XRT_XLEAF_CUSTOM_BASE, /* See comments in xleaf.h */
+>> +     XRT_AXIGATE_FREE,
+>> +};
+>> +
+>> +#endif       /* _XRT_AXIGATE_H_ */
+>> diff --git a/drivers/fpga/xrt/lib/xleaf/axigate.c b/drivers/fpga/xrt/lib/xleaf/axigate.c
+>> new file mode 100644
+>> index 000000000000..382969f9925f
+>> --- /dev/null
+>> +++ b/drivers/fpga/xrt/lib/xleaf/axigate.c
+>> @@ -0,0 +1,298 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Xilinx Alveo FPGA AXI Gate Driver
+>> + *
+>> + * Copyright (C) 2020-2021 Xilinx, Inc.
+>> + *
+>> + * Authors:
+>> + *      Lizhi Hou<Lizhi.Hou@xilinx.com>
+>> + */
+>> +
+>> +#include <linux/mod_devicetable.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/delay.h>
+>> +#include <linux/device.h>
+>> +#include <linux/io.h>
+>> +#include "metadata.h"
+>> +#include "xleaf.h"
+>> +#include "xleaf/axigate.h"
+>> +
+>> +#define XRT_AXIGATE "xrt_axigate"
+>> +
+>> +struct axigate_regs {
+>> +     u32             iag_wr;
+>> +     u32             iag_rvsd;
+>> +     u32             iag_rd;
+>> +} __packed;
+> Just make them #defines, even more so if there are only 3 of them.
+We will use #define and regmap.
+>> +
+>> +struct xrt_axigate {
+>> +     struct platform_device  *pdev;
+>> +     void                    *base;
+>> +     struct mutex            gate_lock; /* gate dev lock */
+>> +
+>> +     void                    *evt_hdl;
+>> +     const char              *ep_name;
+>> +
+>> +     bool                    gate_freezed;
+>> +};
+>> +
+>> +/* the ep names are in the order of hardware layers */
+>> +static const char * const xrt_axigate_epnames[] = {
+>> +     XRT_MD_NODE_GATE_PLP,
+>> +     XRT_MD_NODE_GATE_ULP,
+>> +     NULL
+>> +};
+>> +
+>> +#define reg_rd(g, r)                                         \
+>> +     ioread32((void *)(g)->base + offsetof(struct axigate_regs, r))
+>> +#define reg_wr(g, v, r)                                              \
+>> +     iowrite32(v, (void *)(g)->base + offsetof(struct axigate_regs, r))
+>> +
+>> +static inline void freeze_gate(struct xrt_axigate *gate)
+>> +{
+>> +     reg_wr(gate, 0, iag_wr);
+>> +     ndelay(500);
+>> +     reg_rd(gate, iag_rd);
+>> +}
+>> +
+>> +static inline void free_gate(struct xrt_axigate *gate)
+>> +{
+>> +     reg_wr(gate, 0x2, iag_wr);
+>> +     ndelay(500);
+> Magic constants?
+Will use #define for 500
+>> +     (void)reg_rd(gate, iag_rd);
+> At the very least add a comment on why? Is this for PCI synchronization
+> reasons?
+Will add comment. Some old board requires this extra read and it will 
+not hurt performance.
+>
+>> +     reg_wr(gate, 0x3, iag_wr);
+>> +     ndelay(500);
+> Magic constants?
+>> +     reg_rd(gate, iag_rd);
+> Does it nead a (void) or not? Be consistent, again, why do we read here
+> at all?
+>> +}
+>> +
+>> +static int xrt_axigate_epname_idx(struct platform_device *pdev)
+>> +{
+>> +     int                     i;
+>> +     int                     ret;
+>> +     struct resource         *res;
+> Nope. Indents:
+>
+> struct resource *res;
+> int, i, ret;
+Will change this.
+>
+>> +
+>> +     res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +     if (!res) {
+>> +             xrt_err(pdev, "Empty Resource!");
+>> +             return -EINVAL;
+>> +     }
+>> +
+>> +     for (i = 0; xrt_axigate_epnames[i]; i++) {
+>> +             ret = strncmp(xrt_axigate_epnames[i], res->name,
+>> +                           strlen(xrt_axigate_epnames[i]) + 1);
+>> +             if (!ret)
+>> +                     break;
+>> +     }
+>> +
+>> +     ret = (xrt_axigate_epnames[i]) ? i : -EINVAL;
+> Why not just:
+>
+>          if (xrt_axigate_epnames[i])
+>                  return i;
+>
+>          return -EINVAL;
+Will change this.
+>> +     return ret;
+>> +}
+>> +
+>> +static void xrt_axigate_freeze(struct platform_device *pdev)
+>> +{
+>> +     struct xrt_axigate      *gate;
+>> +     u32                     freeze = 0;
+> Indents. Fix everywhere.
+Will fix this.
+>> +
+>> +     gate = platform_get_drvdata(pdev);
+>> +
+>> +     mutex_lock(&gate->gate_lock);
+>> +     freeze = reg_rd(gate, iag_rd);
+>> +     if (freeze) {           /* gate is opened */
+>> +             xleaf_broadcast_event(pdev, XRT_EVENT_PRE_GATE_CLOSE, false);
+>> +             freeze_gate(gate);
+>> +     }
+>> +
+>> +     gate->gate_freezed = true;
+> s/freezed/frozen
+Will change terms to open / close.
+>> +     mutex_unlock(&gate->gate_lock);
+>> +
+>> +     xrt_info(pdev, "freeze gate %s", gate->ep_name);
+> debug?
+axigate is a very critical part for programming FPGA. We hope to have an 
+explicit printk to indicate the axigate open/close.
+>> +}
+>> +
+>> +static void xrt_axigate_free(struct platform_device *pdev)
+>> +{
+>> +     struct xrt_axigate      *gate;
+>> +     u32                     freeze;
+>> +
+>> +     gate = platform_get_drvdata(pdev);
+>> +
+>> +     mutex_lock(&gate->gate_lock);
+>> +     freeze = reg_rd(gate, iag_rd);
+>> +     if (!freeze) {          /* gate is closed */
+>> +             free_gate(gate);
+>> +             xleaf_broadcast_event(pdev, XRT_EVENT_POST_GATE_OPEN, true);
+>> +             /* xrt_axigate_free() could be called in event cb, thus
+>> +              * we can not wait for the completes
+>> +              */
+>> +     }
+>> +
+>> +     gate->gate_freezed = false;
+>> +     mutex_unlock(&gate->gate_lock);
+>> +
+>> +     xrt_info(pdev, "free gate %s", gate->ep_name);
+>> +}
+>> +
+>> +static void xrt_axigate_event_cb(struct platform_device *pdev, void *arg)
+>> +{
+>> +     struct platform_device *leaf;
+>> +     struct xrt_event *evt = (struct xrt_event *)arg;
+>> +     enum xrt_events e = evt->xe_evt;
+>> +     enum xrt_subdev_id id = evt->xe_subdev.xevt_subdev_id;
+>> +     int instance = evt->xe_subdev.xevt_subdev_instance;
+>> +     struct xrt_axigate *gate = platform_get_drvdata(pdev);
+>> +     struct resource *res;
+> Reverse x-mas tree;
+> xxxxxxxxxx
+> xxxxxxxxx
+> xxxxxxxx
+> xxxxxx
+Will fix this.
+>> +
+>> +     switch (e) {
+>> +     case XRT_EVENT_POST_CREATION:
+>> +             break;
+>> +     default:
+>> +             return;
+>> +     }
+>> +
+>> +     if (id != XRT_SUBDEV_AXIGATE)
+>> +             return;
+>> +
+>> +     leaf = xleaf_get_leaf_by_id(pdev, id, instance);
+>> +     if (!leaf)
+>> +             return;
+>> +
+>> +     res = platform_get_resource(leaf, IORESOURCE_MEM, 0);
+>> +     if (!res || !strncmp(res->name, gate->ep_name, strlen(res->name) + 1)) {
+>> +             (void)xleaf_put_leaf(pdev, leaf);
+>> +             return;
+>> +     }
+>> +
+>> +     /*
+>> +      * higher level axigate instance created,
+>> +      * make sure the gate is openned. This covers 1RP flow which
+>> +      * has plp gate as well.
+>> +      */
+>> +     if (xrt_axigate_epname_idx(leaf) > xrt_axigate_epname_idx(pdev))
+>> +             xrt_axigate_free(pdev);
+>> +     else
+>> +             xleaf_ioctl(leaf, XRT_AXIGATE_FREE, NULL);
+>> +
+>> +     (void)xleaf_put_leaf(pdev, leaf);
+>> +}
+>> +
+>> +static int
+>> +xrt_axigate_leaf_ioctl(struct platform_device *pdev, u32 cmd, void *arg)
+>> +{
+>> +     switch (cmd) {
+>> +     case XRT_XLEAF_EVENT:
+>> +             xrt_axigate_event_cb(pdev, arg);
+>> +             break;
+>> +     case XRT_AXIGATE_FREEZE:
+>> +             xrt_axigate_freeze(pdev);
+>> +             break;
+>> +     case XRT_AXIGATE_FREE:
+>> +             xrt_axigate_free(pdev);
+>> +             break;
+>> +     default:
+>> +             xrt_err(pdev, "unsupported cmd %d", cmd);
+>> +             return -EINVAL;
+>> +     }
+>> +
+>> +     return 0;
+>> +}
+>> +
+>> +static int xrt_axigate_remove(struct platform_device *pdev)
+>> +{
+>> +     struct xrt_axigate      *gate;
+>> +
+>> +     gate = platform_get_drvdata(pdev);
+>> +
+>> +     if (gate->base)
+>> +             iounmap(gate->base);
+>> +
+>> +     platform_set_drvdata(pdev, NULL);
+>> +     devm_kfree(&pdev->dev, gate);
+> No! The point of using devres is so cleanup happens on removal.
+> While you're at it, if you move the ioremap to a devres version, this
+> function can basically go away entirely.
+Will fix this.
+>> +
+>> +     return 0;
+>> +}
+>> +
+>> +static int xrt_axigate_probe(struct platform_device *pdev)
+>> +{
+>> +     struct xrt_axigate      *gate;
+>> +     struct resource         *res;
+>> +     int                     ret;
+>> +
+>> +     gate = devm_kzalloc(&pdev->dev, sizeof(*gate), GFP_KERNEL);
+>> +     if (!gate)
+>> +             return -ENOMEM;
+>> +
+>> +     gate->pdev = pdev;
+>> +     platform_set_drvdata(pdev, gate);
+>> +
+>> +     xrt_info(pdev, "probing...");
+>> +     res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +     if (!res) {
+>> +             xrt_err(pdev, "Empty resource 0");
+>> +             ret = -EINVAL;
+>> +             goto failed;
+>> +     }
+>> +
+>> +     gate->base = ioremap(res->start, res->end - res->start + 1);
+>> +     if (!gate->base) {
+>> +             xrt_err(pdev, "map base iomem failed");
+>> +             ret = -EFAULT;
+>> +             goto failed;
+>> +     }
+>> +
+>> +     gate->ep_name = res->name;
+>> +
+>> +     mutex_init(&gate->gate_lock);
+>> +
+>> +     return 0;
+>> +
+>> +failed:
+>> +     xrt_axigate_remove(pdev);
+>> +     return ret;
+>> +}
+>> +
+>> +static struct xrt_subdev_endpoints xrt_axigate_endpoints[] = {
+>> +     {
+>> +             .xse_names = (struct xrt_subdev_ep_names[]) {
+>> +                     { .ep_name = "ep_pr_isolate_ulp_00" },
+>> +                     { NULL },
+>> +             },
+>> +             .xse_min_ep = 1,
+>> +     },
+>> +     {
+>> +             .xse_names = (struct xrt_subdev_ep_names[]) {
+>> +                     { .ep_name = "ep_pr_isolate_plp_00" },
+>> +                     { NULL },
+>> +             },
+>> +             .xse_min_ep = 1,
+>> +     },
+>> +     { 0 },
+>> +};
+>> +
+>> +static struct xrt_subdev_drvdata xrt_axigate_data = {
+>> +     .xsd_dev_ops = {
+>> +             .xsd_ioctl = xrt_axigate_leaf_ioctl,
+>> +     },
+>> +};
+>> +
+>> +static const struct platform_device_id xrt_axigate_table[] = {
+>> +     { XRT_AXIGATE, (kernel_ulong_t)&xrt_axigate_data },
+>> +     { },
+>> +};
+>> +
+>> +static struct platform_driver xrt_axigate_driver = {
+>> +     .driver = {
+>> +             .name = XRT_AXIGATE,
+>> +     },
+>> +     .probe = xrt_axigate_probe,
+>> +     .remove = xrt_axigate_remove,
+>> +     .id_table = xrt_axigate_table,
+>> +};
+>> +
+>> +void axigate_leaf_init_fini(bool init)
+>> +{
+>> +     if (init) {
+>> +             xleaf_register_driver(XRT_SUBDEV_AXIGATE,
+>> +                                   &xrt_axigate_driver, xrt_axigate_endpoints);
+>> +     } else {
+>> +             xleaf_unregister_driver(XRT_SUBDEV_AXIGATE);
+>> +     }
+>> +}
+> This thing is duplicated in every file, maybe a macro would be an idea.
+Will define a macro.
+
+Thanks,
+Lizhi
+>> --
+>> 2.18.4
+>>
+> - Moritz
+
