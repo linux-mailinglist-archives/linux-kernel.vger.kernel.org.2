@@ -2,157 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DC233D477
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:58:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6899E33D478
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:58:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233443AbhCPM6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234674AbhCPM54 (ORCPT
+        id S234422AbhCPM6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 08:58:15 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:57411 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234670AbhCPM55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:57:56 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D7A3C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 05:57:55 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so1324167pjc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 05:57:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zBApo0Sx/AlIIiA35NhGMVol5VGFpeyIdijCuf/iNHM=;
-        b=ilox2ATAXdavbkJoa7rggl+BZOsqMq3xubCyIls26h5gJ0gLspKAyurQr60q6Tfmpv
-         lOHta7U2CerfwIOuHh9CBwbPZ2vebRCi7sswW0WeVJKErAZVTtnEoLnD8+AAVnS8Dxqp
-         bLgyIA69B+z2qxIeaZq1Z/AG4slV1wA0hQI4wIFIDqWwKzfmaRrv/aHAGyq/5JxDOlma
-         Pa79SYfJvot+A7+emiHrxjU1EeAChoUbGE+M/AeDonfk5KpO8PDOQVj/+SB8cPpG7cDx
-         H5ur2XLoFLkvo1UZ7erRy1MZw5c4aVBovTZY3Ja/T2C3zINur1wwL4+Q8UQm8y/rjGvG
-         P+5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zBApo0Sx/AlIIiA35NhGMVol5VGFpeyIdijCuf/iNHM=;
-        b=BsRs1eJehp6hq5mKySeNnEBjEQSHk9nDNsOh5a8JzkjNNtE01PxYmUTUsRGnhVd+rY
-         RfdoFFWdAjdd3tl2xCwy0u3tvX28gaJ2GFNQIpriZ/b3vTKi3fV/KFoCF9syTgt9x1Gi
-         sFwDB6AKB/Tx3szbbXpvnAACRz4Y7yC7yJyZ2oNlZ+lQhJffzIRy4A1l4l4ahQFQU5CF
-         DaPB7oBFLJhFjgVVKv8xrvDQhMgMaRf90TWWvw1JsPFeocxDld+eiLfKret+njjE03V0
-         c3BiPngmlEdrbyzDBOCscrq+ObvBH5q6nKBrIeA2QOlPFF+JnkB9gM4148zeSxgvCsy6
-         If2A==
-X-Gm-Message-State: AOAM530oAszsEQ2Mj0yhCDK+q61fqZrTFwG17g6nGI+yUm+OiLgutY7X
-        GssYpH2bQzQeGkGsuxl4UGI=
-X-Google-Smtp-Source: ABdhPJxnSqFvjcMMrrVzE3Ar67QffDypvwTQwux100b2QVcdmhuzGBZLcZfZu4J7f77ndgDuvZirSw==
-X-Received: by 2002:a17:90a:3902:: with SMTP id y2mr4835090pjb.202.1615899473495;
-        Tue, 16 Mar 2021 05:57:53 -0700 (PDT)
-Received: from DESKTOP-4V60UBS.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id x4sm16059955pfn.134.2021.03.16.05.57.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 05:57:53 -0700 (PDT)
-From:   Xiaofeng Cao <cxfcosmos@gmail.com>
-X-Google-Original-From: Xiaofeng Cao <caoxiaofeng@yulong.com>
-To:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        davem@davemloft.net, mhiramat@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Xiaofeng Cao <caoxiaofeng@yulong.com>
-Subject: [PATCH] kernel:kprobe: Fix typo issue
-Date:   Tue, 16 Mar 2021 20:57:51 +0800
-Message-Id: <20210316125751.11023-1-caoxiaofeng@yulong.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 16 Mar 2021 08:57:57 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2364A5C00EA;
+        Tue, 16 Mar 2021 08:57:56 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 16 Mar 2021 08:57:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=sXmsn7ETwn6KBKZULi5zANcmyJQ
+        eNFX0um2z+uHMhg8=; b=KUEbD/DqR84PL/7PMww4Jf9q+uMS7ni9+Z031cTqHRw
+        IAo88Uq1pvQ0xXQjGZpgwg/6WnZMOeZfQDfT917zsxrZ6Y+SD64klb/q9DIeWZ8F
+        V3dGydpFq/CvJhp+1gJ8Ftv4gMt4Y1TEAwHltVKBly8eldx0i7N7MMvebywu8+dW
+        VSpEbsLaMdgeATgwyFse7Ouf5X8kngFxKb2kDAUzHKRUQQ08Sj/G6LmgXzO9kY26
+        CLRyj1jaizRaDTrqUh1EV+mCpzZ0hcxaO88O072Y3Q+nX32cwUOP6YqHlvvW5Qph
+        7sGN3qZ17FspdrLEa/L9d+Va+gYYiZuIISX7Ivi/VBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=sXmsn7
+        ETwn6KBKZULi5zANcmyJQeNFX0um2z+uHMhg8=; b=ok/fI9SjAyEbEMt8sNK8FD
+        jg0qShLwpm8WI2HB3i02ItJZtOFXjW4sq9m9fmSzZtmDLoMzGYz3TTT8Lf4Bvl+f
+        NNEl8LgPy6ayu5v9Zrf/L46p85Nxz5wxeP1eSeJmRxgXUOcuoaRV3N9mjywJKmZc
+        qN4l7FjcugOUvUwo5goEdCxVCqYFowJj9TEoAcNyky8cAeWKKcsm92iTawp7O0Et
+        vA++HBTSrZFG1VgOtEe7mI1fkGrj1aLLugg6+xz6W1RL6scJH1BTZSgtuYi2hTtl
+        GElKuZUiAyxirblLFgokL1icICfSvJI5OrnmiwWQ9tRPNB3YkcoN/RvQ/rMALrEQ
+        ==
+X-ME-Sender: <xms:U6tQYAQKlch2MkZ2G2yC3cxFTVo_8GXePQZ9BZqmmify16xzFbQJXA>
+    <xme:U6tQYNz3GkqRLHoMzWvBfuDfao7NviVvIZzA_lFrU0UKzzcXXYJcrHcogxlGyu3WK
+    9Axb1gLWCSdMw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudefvddggeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
+    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:U6tQYN2IWwZ4q8ngz22B_WZe8CV31lhoGv4gHLxMTASB3tq6va1tDg>
+    <xmx:U6tQYEBAjwiRctVUm7B-PY5-AzHIFL4uFs3CacuT5OtsGRkIo_lxjw>
+    <xmx:U6tQYJif-08rKnemuzKLfUCL3syrF0jTVpgQIU0BEgoZ9spUbKMovg>
+    <xmx:VKtQYJIEDN9PtrFd5rynbYirL_7jC7htZXXdiIHT2BFUsb4r5vARyQ>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id EB2D124005B;
+        Tue, 16 Mar 2021 08:57:54 -0400 (EDT)
+Date:   Tue, 16 Mar 2021 13:57:52 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Ronald Warsow <rwarsow@gmx.de>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5.11 000/306] 5.11.7-rc1 review
+Message-ID: <YFCrUP3TPqVK57E9@kroah.com>
+References: <ca67d634-3845-ef3b-1ffc-48471045f3b5@gmx.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca67d634-3845-ef3b-1ffc-48471045f3b5@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-change 'immmediately' to 'immediately'
-change 'quiesence' to 'quiescence'
-change 'unneed' to 'unneeded'
-change 'sinec' to 'since
-change 'sefe' to 'safe''
-change 'And' to 'At the'
-change 'buy' to 'but'
+On Tue, Mar 16, 2021 at 01:34:31PM +0100, Ronald Warsow wrote:
+> Hallo
+> 
+> 5.11.7-rc1 compiles, boots and works fine here (Intel i7-6700)
+> 
+> alas a fix doesn't made it in (correct english ?), but AFAIK it's known
+> and queued in drm-next or so
+> 
+> bug/error (since 5.11.1 or 2):
+> 
+> i915 0000:00:02.0: [drm] *ERROR* mismatch in DDB state pipe A plane 1
+> (expected (0,0), found (0,446))
 
-Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
----
- kernel/kprobes.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+What is the commit id here for the fix that you are looking for?
 
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 745f08fdd7a6..ae3a22d2099b 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -506,7 +506,7 @@ static void do_optimize_kprobes(void)
- 	/*
- 	 * The optimization/unoptimization refers online_cpus via
- 	 * stop_machine() and cpu-hotplug modifies online_cpus.
--	 * And same time, text_mutex will be held in cpu-hotplug and here.
-+	 * At the same time, text_mutex will be held in cpu-hotplug and here.
- 	 * This combination can cause a deadlock (cpu-hotplug try to lock
- 	 * text_mutex but stop_machine can not be done because online_cpus
- 	 * has been changed)
-@@ -592,12 +592,12 @@ static void kprobe_optimizer(struct work_struct *work)
- 
- 	/*
- 	 * Step 1: Unoptimize kprobes and collect cleaned (unused and disarmed)
--	 * kprobes before waiting for quiesence period.
-+	 * kprobes before waiting for quiescence period.
- 	 */
- 	do_unoptimize_kprobes();
- 
- 	/*
--	 * Step 2: Wait for quiesence period to ensure all potentially
-+	 * Step 2: Wait for quiescence period to ensure all potentially
- 	 * preempted tasks to have normally scheduled. Because optprobe
- 	 * may modify multiple instructions, there is a chance that Nth
- 	 * instruction is preempted. In that case, such tasks can return
-@@ -607,10 +607,10 @@ static void kprobe_optimizer(struct work_struct *work)
- 	 */
- 	synchronize_rcu_tasks();
- 
--	/* Step 3: Optimize kprobes after quiesence period */
-+	/* Step 3: Optimize kprobes after quiescence period */
- 	do_optimize_kprobes();
- 
--	/* Step 4: Free cleaned kprobes after quiesence period */
-+	/* Step 4: Free cleaned kprobes after quiescence period */
- 	do_free_cleaned_kprobes();
- 
- 	mutex_unlock(&text_mutex);
-@@ -631,7 +631,7 @@ void wait_for_kprobe_optimizer(void)
- 	while (!list_empty(&optimizing_list) || !list_empty(&unoptimizing_list)) {
- 		mutex_unlock(&kprobe_mutex);
- 
--		/* this will also make optimizing_work execute immmediately */
-+		/* this will also make optimizing_work execute immediately */
- 		flush_delayed_work(&optimizing_work);
- 		/* @optimizing_work might not have been queued yet, relax */
- 		cpu_relax();
-@@ -1057,7 +1057,7 @@ static int __arm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
- 
- err_ftrace:
- 	/*
--	 * At this point, sinec ops is not registered, we should be sefe from
-+	 * At this point, since ops is not registered, we should be safe from
- 	 * registering empty filter.
- 	 */
- 	ftrace_set_filter_ip(ops, (unsigned long)p->addr, 1, 0);
-@@ -1712,7 +1712,7 @@ static struct kprobe *__disable_kprobe(struct kprobe *p)
- 			/*
- 			 * If kprobes_all_disarmed is set, orig_p
- 			 * should have already been disarmed, so
--			 * skip unneed disarming process.
-+			 * skip unneeded disarming process.
- 			 */
- 			if (!kprobes_all_disarmed) {
- 				ret = disarm_kprobe(orig_p, true);
-@@ -2424,7 +2424,7 @@ static int kprobes_module_callback(struct notifier_block *nb,
- 			     within_module_core((unsigned long)p->addr, mod))) {
- 				/*
- 				 * The vaddr this probe is installed will soon
--				 * be vfreed buy not synced to disk. Hence,
-+				 * be vfreed but not synced to disk. Hence,
- 				 * disarming the breakpoint isn't needed.
- 				 *
- 				 * Note, this will also move any optimized probes
--- 
-2.25.1
+thanks,
 
+greg k-h
