@@ -2,195 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9F933DF81
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:49:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B148A33DF84
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:50:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231410AbhCPUtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 16:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbhCPUsp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 16:48:45 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA51DC06174A;
-        Tue, 16 Mar 2021 13:48:44 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1F5EBD8B;
-        Tue, 16 Mar 2021 21:48:43 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615927723;
-        bh=Nu3QpWpARKdoDyOtGlqlTdoM65vNIWcxcmfwJWgA3gM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BSWf5lMLdj1PtVX1Ck91KLfgxci2D/q41wahPibk9vGCcFDnJLXt3Kvci1wa9SyFg
-         6CtShwk/DYohK2occAjN18+1TR4D5Iv6ZhEDO0a2hF9aQWZkq1ONOhziqVAWuD/U+X
-         XujOq+bUl7trZbTUY1ZBUXFNbWnpn532a1s+nrL0=
-Date:   Tue, 16 Mar 2021 22:48:07 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: media: video-interfaces: Use documented
- bindings in example
-Message-ID: <YFEZhyZO+ePjS+fr@pendragon.ideasonboard.com>
-References: <20210316195100.3531414-1-robh@kernel.org>
+        id S231598AbhCPUuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 16:50:08 -0400
+Received: from mga14.intel.com ([192.55.52.115]:33915 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231701AbhCPUtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 16:49:49 -0400
+IronPort-SDR: gBJfmhqMTrgvSLi06RF1jrBVNXkvgFDOhWkLNNMXmCs3ReEHpg25x5wJMI5LDG5TsmHqpzn4HV
+ m38HekheZVCg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="188691410"
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="188691410"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 13:49:49 -0700
+IronPort-SDR: adlCCluqB83BftXXGNsxKzpX8Ftg/JI82srDRY8QKCx2ziuCmWfK6on18+DTngIyBM85j0J7mJ
+ +2KI/4mkiSAw==
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="511503288"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 13:49:47 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lMGdM-00D4YH-UU; Tue, 16 Mar 2021 22:49:44 +0200
+Date:   Tue, 16 Mar 2021 22:49:44 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v4 2/2] gpio: sch: Hook into ACPI SCI handler to catch
+ GPIO edge events
+Message-ID: <YFEZ6GYuXGaX/LP2@smile.fi.intel.com>
+References: <20210316162613.87710-1-andriy.shevchenko@linux.intel.com>
+ <20210316162613.87710-3-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210316195100.3531414-1-robh@kernel.org>
+In-Reply-To: <20210316162613.87710-3-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-Thank you for the patch.
-
-On Tue, Mar 16, 2021 at 01:51:00PM -0600, Rob Herring wrote:
-> The example in video-interfaces.yaml managed to use a bunch of undocumented
-> bindings. Update the example to use real bindings (and ones with a schema).
+On Tue, Mar 16, 2021 at 06:26:13PM +0200, Andy Shevchenko wrote:
+> From: Jan Kiszka <jan.kiszka@siemens.com>
 > 
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Cc: linux-media@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../bindings/media/video-interfaces.yaml      | 75 ++++++++-----------
->  1 file changed, 33 insertions(+), 42 deletions(-)
+> Neither the ACPI description on the Quark platform provides the required
+> information is to do establish generic handling nor hardware capable of
+> doing it. According to the datasheet the hardware can generate SCI events.
+> Therefore, we need to hook from the driver directly into SCI handler of
+> the ACPI subsystem in order to catch and report GPIO-related events.
 > 
-> diff --git a/Documentation/devicetree/bindings/media/video-interfaces.yaml b/Documentation/devicetree/bindings/media/video-interfaces.yaml
-> index 0a7a73fd59f2..f30b9b91717b 100644
-> --- a/Documentation/devicetree/bindings/media/video-interfaces.yaml
-> +++ b/Documentation/devicetree/bindings/media/video-interfaces.yaml
-> @@ -227,17 +227,12 @@ examples:
->    # only one of the following data pipelines can be active:
->    # ov772x -> ceu0 or imx074 -> csi2 -> ceu0.
->    - |
-> +    #include <dt-bindings/clock/r8a7796-cpg-mssr.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/power/r8a7796-sysc.h>
-> +
->      ceu@fe910000 {
-> -        compatible = "renesas,sh-mobile-ceu";
->          reg = <0xfe910000 0xa0>;
-> -        interrupts = <0x880>;
-> -
-> -        mclk: master_clock {
-> -            compatible = "renesas,ceu-clock";
-> -            #clock-cells = <1>;
-> -            clock-frequency = <50000000>;  /* Max clock frequency */
-> -            clock-output-names = "mclk";
-> -        };
->  
->          port {
->              #address-cells = <1>;
-> @@ -271,18 +266,14 @@ examples:
->          #size-cells = <0>;
->  
->          camera@21 {
-> -            compatible = "ovti,ov772x";
-> +            compatible = "ovti,ov7720";
->              reg = <0x21>;
-> -            vddio-supply = <&regulator1>;
-> -            vddcore-supply = <&regulator2>;
-> -
-> -            clock-frequency = <20000000>;
->              clocks = <&mclk 0>;
-> -            clock-names = "xclk";
->  
->              port {
->                  /* With 1 endpoint per port no need for addresses. */
->                  ov772x_1_1: endpoint {
-> +                    bus-type = <5>;
->                      bus-width = <8>;
->                      remote-endpoint = <&ceu0_1>;
->                      hsync-active = <1>;
-> @@ -295,48 +286,48 @@ examples:
->          };
->  
->          camera@1a {
-> -            compatible = "sony,imx074";
-> +            compatible = "sony,imx334";
->              reg = <0x1a>;
-> -            vddio-supply = <&regulator1>;
-> -            vddcore-supply = <&regulator2>;
->  
-> -            clock-frequency = <30000000>;  /* Shared clock with ov772x_1 */
->              clocks = <&mclk 0>;
-> -            clock-names = "sysclk";    /* Assuming this is the
-> -                       name in the datasheet */
-> +
->              port {
-> -                imx074_1: endpoint {
-> +                imx334_1: endpoint {
->                      clock-lanes = <0>;
->                      data-lanes = <1 2>;
-> +                    link-frequencies = /bits/ 64 <891000000>;
->                      remote-endpoint = <&csi2_1>;
->                  };
->              };
->          };
->      };
->  
-> -    csi2: csi2@ffc90000 {
-> -        compatible = "renesas,sh-mobile-csi2";
-> -        reg = <0xffc90000 0x1000>;
-> -        interrupts = <0x17a0>;
-> -        #address-cells = <1>;
-> -        #size-cells = <0>;
-> +    csi2@fea80000 {
-> +        compatible = "renesas,r8a7796-csi2";
+> Validated on the Quark-based IOT2000 platform.
 
-That's certainly better, but the r8a7796 doesn't have a CEU :-) It has a
-VIN. Maybe we could copy the last example from renesas,vin.yaml to
-replace the CEU ?
+This patch must be dropped completely. SCI handler is not correct way to do
+this. The proper way (and we have already few examples in the kernel) is to
+register GPE event.
 
-> +        reg = <0xfea80000 0x10000>;
-> +        interrupts = <0 184 IRQ_TYPE_LEVEL_HIGH>;
-> +        clocks = <&cpg CPG_MOD 714>;
-> +        power-domains = <&sysc R8A7796_PD_ALWAYS_ON>;
-> +        resets = <&cpg 714>;
->  
-> -        port@1 {
-> -            compatible = "renesas,csi2c";  /* One of CSI2I and CSI2C. */
-> -            reg = <1>;      /* CSI-2 PHY #1 of 2: PHY_S,
-> -                       PHY_M has port address 0,
-> -                       is unused. */
-> -            csi2_1: endpoint {
-> -                clock-lanes = <0>;
-> -                data-lanes = <2 1>;
-> -                remote-endpoint = <&imx074_1>;
-> +        ports {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            port@0 {
-> +                reg = <0>;
-> +                csi2_1: endpoint {
-> +                    clock-lanes = <0>;
-> +                    data-lanes = <2 1>;
-> +                    remote-endpoint = <&imx334_1>;
-> +                };
->              };
-> -        };
-> -        port@2 {
-> -            reg = <2>;      /* port 2: link to the CEU */
-> +            port@1 {
-> +                reg = <1>;
->  
-> -            csi2_2: endpoint {
-> -                remote-endpoint = <&ceu0_0>;
-> +                csi2_2: endpoint {
-> +                    remote-endpoint = <&ceu0_0>;
-> +                };
->              };
->          };
->      };
+It took me a while to gather all bits of this puzzle.
+
+At least now I get an event, but kernel oopses, I'll continue debugging
+tomorrow.
 
 -- 
-Regards,
+With Best Regards,
+Andy Shevchenko
 
-Laurent Pinchart
+
