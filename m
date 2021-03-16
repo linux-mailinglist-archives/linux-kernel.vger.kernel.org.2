@@ -2,150 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7255733D993
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0278433D996
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:39:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237921AbhCPQiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 12:38:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51586 "EHLO
+        id S238739AbhCPQjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 12:39:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237903AbhCPQig (ORCPT
+        with ESMTP id S237903AbhCPQi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 12:38:36 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FBBC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 09:38:35 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id a8so10702782plp.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 09:38:35 -0700 (PDT)
+        Tue, 16 Mar 2021 12:38:58 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E27C06174A;
+        Tue, 16 Mar 2021 09:38:57 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id k9so63434295lfo.12;
+        Tue, 16 Mar 2021 09:38:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0cc7JhkiLOxWuVUi1UPI+FxAcFJ60AAFW5ewV8BnPXI=;
-        b=xeHMexJ1ku45FQSEVe6rCoecXA7hrL7Cq5YjnpB3e9h7c255lcDkkMfs2xsMPk8SPN
-         A69SA9WHVoMouqd3krmbreqQCjSRj9zX4CwglEMK4NAX75pVQEvGMtbT1TJ1Nkdp81Aa
-         6HVsNJfeeUu+XOYtMmbK1cVIKpuRIcvCYJ2OqYH2fndZ5kfS4vjNJUKd8nTtqPxPyxHt
-         qAa/3L2wXcl5lBn7we9EFozjX+h9pdwX/o3jV9unuy9l13GJrvb98X+n4WBkbZaJfNSL
-         Txu3P7FpEVT6F9KQxOU+MmQ72jnF54VdvikT7c40fFwcPtG2J0QfeBeLlOIpvZtqBWWq
-         c6fA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=HavWasjxV9NQ1oI4iDdWCtYqPVYFm4z7qKSkYjITAbU=;
+        b=I6yNUVH/2EruY7ZLi2CzCRDe4KA1Ei1x7yCHvFlZImPsmyOwJSzqSUMvidbSIQHZ5C
+         R+vzT0NWXTG7wmaER0xMugBaTZzSMpnFsd/X4Vyp0wr9vPXsURfLOQZrufspTFVK483M
+         NJ7AYjafaVs3bAotWjP97ntjTWKKRAzoZSF2V/GU6qOqcgewa+fuXuwoTxgLH84XJhvp
+         PAdDAtN8dNRUlIcOopu15y0FewGtcCaZjlOjarmAHxrQGJSdK2dir57pHVhI1wWXZ7st
+         VNuoAhRuXNdVJDCSXYjoAr1SOvxZyQzcjVDwk1fffR5ZR4Tx+EJkLWyOm69m4rmLAlAt
+         +cPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0cc7JhkiLOxWuVUi1UPI+FxAcFJ60AAFW5ewV8BnPXI=;
-        b=P1af8Em1+SRCtsf1LfQF/vy1IzVuV2IimbH4bhhtg19Kk5Gga0AtEMl4A6zIHzxX5L
-         Lh7IW8R5KYE0xx3GkyhWp28FOPi2r7pggKrbep4Tka+cI6rMmbNLIasmX3MR30N9pwMJ
-         1arFvyjWcP0sBhqZQ1SgqGUpLK4WvYFXEojVgiTTOlfBf9+hW6HF7jC3QYLcRB3r0Or+
-         u+dNeksLj0fLVCx0Yy5kIlVxVyzyMIpe6btR95wCWcsViYU4akaQgsVhMED+cXMgQ7FO
-         b6+HIvJgkqRkiKINQMOJ6kp+bgyjWgfivSUsnuor79Y47lNoKLBTVlzMCj2+ouha0cqh
-         m1Qg==
-X-Gm-Message-State: AOAM531j5uqpAtMfORxRWbL/Rdb6NGQKlUV0j5elC1T9MZRyg2p8NS7r
-        4AApMyVaiLZC/7J8mB6tA1h0
-X-Google-Smtp-Source: ABdhPJwCBy3Z3oPy7BRTNAqMJedmHDAF04IayrAFqKGFJ/bTmVIy7gtClERs4qcew/blfzYpQiJSrg==
-X-Received: by 2002:a17:902:8306:b029:e6:125c:1a3a with SMTP id bd6-20020a1709028306b02900e6125c1a3amr363428plb.65.1615912714934;
-        Tue, 16 Mar 2021 09:38:34 -0700 (PDT)
-Received: from thinkpad ([103.66.79.72])
-        by smtp.gmail.com with ESMTPSA id q25sm16860923pfh.34.2021.03.16.09.38.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 09:38:34 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 22:08:28 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 0/3] net: ipa: QMI fixes
-Message-ID: <20210316163828.GK1798@thinkpad>
-References: <20210315152112.1907968-1-elder@linaro.org>
- <20210315163807.GA29414@work>
- <3e01bc57-8667-4c56-2806-2ba009887bd4@linaro.org>
- <20210316032557.GB29414@work>
- <54f8962c-6503-8d92-2a6c-875c112441a4@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=HavWasjxV9NQ1oI4iDdWCtYqPVYFm4z7qKSkYjITAbU=;
+        b=YG2i+jzfmvChRwtBQ05z0dXvqiF9ADTNKXmzMAfiuMVuBd+xmMI1tMCPWJymbOSbxs
+         sWLYUy5CR5o3FKOF+46LvJ7vwEFY+MxoV75mCEky5qOjJbO4diKkVbsokzn7uPEwrLMJ
+         njDutPZYOh16ofpobp33OPce9t87+QdZ5KgoTXmV4u5MBHMUwbvmMwTeBwq0ZK63Mlzk
+         Y3KkTZ/XQ3eMvzjuITOzIZJmzqQqH5XqoemBD14v1UZtV95yipm7eU+a7MvlVxFpZVPI
+         Cz28n+AoGhHeo8qZ/xYaQN3K5bhQKzZN17iFnon+pluiFrJFvprtXzjy6jB+3T/ADL18
+         vqEg==
+X-Gm-Message-State: AOAM532qXpB3g06SUIvPwhEe6ZoSnLC130MYRDCuCbpUoCc9Zvgi+LYj
+        GXCGvBi9/R6MFeoO3/Bu4pSJRINs7zW244k+NoI=
+X-Google-Smtp-Source: ABdhPJw4u+xt7+sbHoua05Z3aaUK0a22EuFY82JHHu0pg1Wc73HeDFvQhMj7MCdPu36LP//hg7Uby0M6MugcoHoFxFY=
+X-Received: by 2002:a05:6512:ad3:: with SMTP id n19mr11974682lfu.328.1615912735697;
+ Tue, 16 Mar 2021 09:38:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <54f8962c-6503-8d92-2a6c-875c112441a4@linaro.org>
+References: <CAMuHMdWYrS=YT7F7erM-e6xhDME4judx-T7rdFGi7CpW1_iqkg@mail.gmail.com>
+ <20210316150033.15987-1-cnsztl@gmail.com> <CAMuHMdU+agaOdf4hQhn5JQDHCbuWm3dETJu01baxfDAY=nikow@mail.gmail.com>
+In-Reply-To: <CAMuHMdU+agaOdf4hQhn5JQDHCbuWm3dETJu01baxfDAY=nikow@mail.gmail.com>
+From:   Tianling Shen <cnsztl@gmail.com>
+Date:   Wed, 17 Mar 2021 00:38:43 +0800
+Message-ID: <CAOP2_TheFHfPZYXm0jYV-a-FOudtqFXmTxDi_pb+_Yt5E_W2YA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] rockchip: rk3399: Add support for FriendlyARM
+ NanoPi R4S
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Johan Jonker <jbx6244@gmail.com>,
+        David Bauer <mail@david-bauer.net>,
+        Jensen Huang <jensenhuang@friendlyarm.com>,
+        Marty Jones <mj8263788@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 11:00:37AM -0500, Alex Elder wrote:
-> On 3/15/21 10:25 PM, Manivannan Sadhasivam wrote:
-> > On Mon, Mar 15, 2021 at 11:50:15AM -0500, Alex Elder wrote:
-> > > On 3/15/21 11:38 AM, Manivannan Sadhasivam wrote:
-> > > > Hi Alex,
-> > > > 
-> > > > On Mon, Mar 15, 2021 at 10:21:09AM -0500, Alex Elder wrote:
-> > > > > Mani Sadhasivam discovered some errors in the definitions of some
-> > > > > QMI messages used for IPA.  This series addresses those errors,
-> > > > > and extends the definition of one message type to include some
-> > > > > newly-defined fields.
-> > > > > 
-> > > > 
-> > > > Thanks for the patches. I guess you need to add Fixes tag for patches 1,2 and
-> > > > they should be backported to stable.
-> > > 
-> > > I did not do that, intentionally.  The reason is that the
-> > > existing code only supports IPA v3.5.1 and IPAv4.2.  And
-> > > these bugs seem to cause no problems there.
-> > > 
-> > > There are some patches coming very soon that will add
-> > > more formal support for IPA v4.5 (where I know you
-> > > found these issues).  Those will not be back-ported.
-> > > 
-> > > So these fixes don't appear to be necessary for existing
-> > > supported platforms.
-> > > 
-> > 
-> > Hmm, okay. Then please mention this information in the commit description(s)
-> > that the fix is only needed for IPA4.5.
-> 
-> Mani, you ACKed all three patches after you sent this.
-> 
-> Are you expecting me to send a new version of the code,
-> or are you willing to accept the series as-is?
-> 
+On 2021-03-16 11:35, Geert Uytterhoeven <geert@linux-m68k.org> wrote=EF=BC=
+=9A
+>
+> Hi Tianling,
+>
+> CC Jacek, Pavel
+>
+> On Tue, Mar 16, 2021 at 4:00 PM Tianling Shen <cnsztl@gmail.com> wrote:
+> > On 2021-03-16 02:23 Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > Personally, I'm not so fond of the <foo>-%u node names, and prefer
+> > > <foo>-<function>.  With the former, it's way too easy to have a silen=
+t
+> > > override in your .dts(i) stack.
+> > > Cfr. commit 45f5d5a9e34d3fe4 ("arm64: dts: renesas: r8a77995: draak:
+> > > Fix backlight regulator name")
+> >
+> > How about using `lan-led`, `sys-led` and `wan-led` here?
+>
+> Documentation/devicetree/bindings/leds/leds-gpio.yaml says "led-%u"
+> is the preferred form, but that anything containing "led" as a substring
+> is accepted.  So I'd go for "led-lan" etc.
+>
+> BTW, you can validate your DTB against the leds-gpio DT bindings
+> by running:
+>
+>     make dtbs_check
+> DT_SCHEMA_FILES=3DDocumentation/devicetree/bindings/leds/leds-gpio.yaml
+>
 
-Are you asking me the question? I can't accept IPA code.
+Thank you so much!
+I renamed them to `led-lan` etc., and the result of dtbs_check seems fine.
 
-Thanks,
-Mani
+> Background info for CCed parties:
+> https://lore.kernel.org/linux-arm-kernel/20210316150033.15987-1-cnsztl@gm=
+ail.com/
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
+8k.org
+>
+> In personal conversations with technical people, I call myself a hacker. =
+But
+> when I'm talking to journalists I just say "programmer" or something like=
+ that.
+>                                 -- Linus Torvalds
 
-> Thanks.
-> 
-> 					-Alex
-> 
-> > 
-> > Thanks,
-> > Mani
-> > 
-> > > If you still believe I should have these back-ported,
-> > > I have no objection to re-posting for that.  But I
-> > > wanted to explain my reasoning before doing it.
-> > > 
-> > > --> Do you still think I should have these back-ported?
-> > > 
-> > > Thanks.
-> > > 
-> > > 					-Alex
-> > > 
-> > > > 
-> > > > Thanks,
-> > > > Mani
-> > > > 
-> > > > > 					-Alex
-> > > > > 
-> > > > > Alex Elder (3):
-> > > > >     net: ipa: fix a duplicated tlv_type value
-> > > > >     net: ipa: fix another QMI message definition
-> > > > >     net: ipa: extend the INDICATION_REGISTER request
-> > > > > 
-> > > > >    drivers/net/ipa/ipa_qmi_msg.c | 78 +++++++++++++++++++++++++++++++----
-> > > > >    drivers/net/ipa/ipa_qmi_msg.h |  6 ++-
-> > > > >    2 files changed, 74 insertions(+), 10 deletions(-)
-> > > > > 
-> > > > > -- 
-> > > > > 2.27.0
-> > > > > 
-> > > 
-> 
+Tianling.
