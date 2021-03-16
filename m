@@ -2,160 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65CCF33D25B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C21A33D262
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:03:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236935AbhCPLB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:01:58 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:56157 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237002AbhCPLBX (ORCPT
+        id S237008AbhCPLDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237003AbhCPLCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:01:23 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 71D4122238;
-        Tue, 16 Mar 2021 12:01:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1615892481;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WBKI5HqpKGD/CDbdtKBZ6BpnHmwmYnhqrgtw6eCylnw=;
-        b=Zb02Wr8c797LE+nu+kZ+tgi/grN+PLND2cXVZzd3yA+U4f2w+ErJFzbRfoftlJINrUWz/8
-        9RarBnws8jtYLnxE81djCexekw5vMVCo/5YBljGEF+mlWq3DDgnYmfAok0GCVB+Cfa1UGh
-        K/JUZ2vNG6H5zo8JvqVAn6EyaLtsfhk=
+        Tue, 16 Mar 2021 07:02:33 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17150C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 04:02:33 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id g4so22365614pgj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 04:02:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1LVjUoUKXm7FsxD4sNTz87mVaO1PBBHxa9gw0uYkS4k=;
+        b=IpHXM0oXiw4jjywx+X1sTYVH2tWV+/PlIcYbDKGyTm7jkZE7OMeuxf9ctrW60RcmL8
+         F6tZ+3RiJBgiEgcStQPnilJ9PrKbrfxlKbxTTiDrCbLbFDcNMQv7Hg2Ky+vwbyPB5BLE
+         JehzN3iXDRtsOzC/djFi8HL7RqjVlBvu+n4FEJSMSvTsFaXL/Wii63KsEt+4za9/ZiYq
+         6s+v9qRMe4/U8GwMcwTyEeWEi5weZrgQcDe8wUdRwP/UiAtwdAXk8/x0o5NxKXOLRyCz
+         63v2QMQ4FMEWto9dOuOIh+RkcO5j0bGT2eCf9sdKFNbXmNmGk7cIghIHx6fSnO5Lob1v
+         MYPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1LVjUoUKXm7FsxD4sNTz87mVaO1PBBHxa9gw0uYkS4k=;
+        b=eVBhpS3Ff0iSBMHZUnbDorjhloOv9ZGXVHCSTw5SLSi4T8hjrPOsNz0K8PdGaFkWkV
+         cCssupAPPvJZ7GPgyuFIK48kLP+AEDaCMoYD0OhVWc6vDuAF57C3lx2XrL+PqUFUVjRu
+         j/yUsNrpMGbuvIYCmGMJe6K0ArUMIvHIHJy+T4FLGF3sgyKWT3N9RRQXISyXEA0sAM55
+         J/2ke1aDc1/xDuASz9BWx+pXcB94WFS3pkwAWC/b+O1sEgSdgyk50nQzMh2IVdWNcsgc
+         TuCg9Dp6JCK4xBYXiCG6ZV2qH/y0muqBDAIZ9ODxugzwGM04U4Tqv10JtswW7prmvTQR
+         RThQ==
+X-Gm-Message-State: AOAM531vvYxxUqb/Tq1Yj0BP4JdsGtDr/uHm8cO0F/mFne7TV1K2vCaq
+        cReniKdxpZ09wUeSoSsiDrqRzAr8IVRMYGYFpHcrOg==
+X-Google-Smtp-Source: ABdhPJytwDjMxe8LwG/BHqKor9Zn9/GEW6yMYHEIa7hnTHfy2FDsmrF8YFkhcn/uO9rVH3qYGC1nOyKBKgz94K+bSuU=
+X-Received: by 2002:a05:6a00:b54:b029:207:2a04:7b05 with SMTP id
+ p20-20020a056a000b54b02902072a047b05mr9353340pfo.12.1615892552290; Tue, 16
+ Mar 2021 04:02:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 16 Mar 2021 12:01:21 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [RFC PATCH 1/3] mtd: spi-nor: sfdp: remember sfdp_size
-In-Reply-To: <20210316104223.42tdob3uwjxc5vdz@ti.com>
-References: <20210312190548.6954-1-michael@walle.cc>
- <20210312190548.6954-2-michael@walle.cc>
- <20210316104223.42tdob3uwjxc5vdz@ti.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <065642fa4d4282d3d16e1d4f4c176ce8@walle.cc>
-X-Sender: michael@walle.cc
+References: <20210315155942.640889-1-robert.foss@linaro.org>
+ <20210315155942.640889-7-robert.foss@linaro.org> <d11ad801-e387-dcd8-1737-1cbc69dea046@xs4all.nl>
+In-Reply-To: <d11ad801-e387-dcd8-1737-1cbc69dea046@xs4all.nl>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 16 Mar 2021 12:02:21 +0100
+Message-ID: <CAG3jFyt6fu6VD8Svrupb7MPKeN7boYeOUcUycs4g2jsZLxdbOA@mail.gmail.com>
+Subject: Re: [PATCH v8 06/22] media: camss: Refactor VFE HW version support
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        angelogioacchino.delregno@somainline.org,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jonathan Marek <jonathan@marek.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pratyush,
+Hey Hans,
 
-Am 2021-03-16 11:42, schrieb Pratyush Yadav:
-> On 12/03/21 08:05PM, Michael Walle wrote:
->> Save the sftp_size in the spi_nor struct so we can use it to dump the
->> SFDP table without parsing the headers again.
->> 
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> ---
->>  drivers/mtd/spi-nor/sfdp.c  | 12 ++++++++++++
->>  include/linux/mtd/spi-nor.h |  1 +
->>  2 files changed, 13 insertions(+)
->> 
->> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
->> index 25142ec4737b..b1814afefc33 100644
->> --- a/drivers/mtd/spi-nor/sfdp.c
->> +++ b/drivers/mtd/spi-nor/sfdp.c
->> @@ -16,6 +16,7 @@
->>  	(((p)->parameter_table_pointer[2] << 16) | \
->>  	 ((p)->parameter_table_pointer[1] <<  8) | \
->>  	 ((p)->parameter_table_pointer[0] <<  0))
->> +#define SFDP_PARAM_HEADER_PARAM_LEN(p) ((p)->length * 4)
->> 
->>  #define SFDP_BFPT_ID		0xff00	/* Basic Flash Parameter Table */
->>  #define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
->> @@ -1263,6 +1264,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
->>  	struct sfdp_parameter_header *param_headers = NULL;
->>  	struct sfdp_header header;
->>  	struct device *dev = nor->dev;
->> +	size_t param_max_offset;
->>  	size_t psize;
->>  	int i, err;
->> 
->> @@ -1285,6 +1287,9 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
->>  	    bfpt_header->major != SFDP_JESD216_MAJOR)
->>  		return -EINVAL;
->> 
->> +	nor->sfdp_size = SFDP_PARAM_HEADER_PTP(bfpt_header) +
->> +			 SFDP_PARAM_HEADER_PARAM_LEN(bfpt_header);
->> +
->>  	/*
->>  	 * Allocate memory then read all parameter headers with a single
->>  	 * Read SFDP command. These parameter headers will actually be 
->> parsed
->> @@ -1311,6 +1316,13 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
->>  		}
->>  	}
->> 
->> +	for (i = 0; i < header.nph; i++) {
->> +		param_header = &param_headers[i];
->> +		param_max_offset = SFDP_PARAM_HEADER_PTP(param_header) +
->> +				   SFDP_PARAM_HEADER_PARAM_LEN(param_header);
->> +		nor->sfdp_size = max(nor->sfdp_size, param_max_offset);
->> +	}
->> +
-> 
-> I don't see any mention in the SFDP spec (JESD216D-01) that parameter
-> tables have to be contiguous.
+Thanks for having a look!
 
-ch. 6.1, fig.10 looks like all the headers come after the initial SFDP
-header. If that wasn't the case, how would you find the headers then?
+On Tue, 16 Mar 2021 at 10:41, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>
+> On 15/03/2021 16:59, Robert Foss wrote:
+> > In order to support Qualcomm ISP hardware architectures that diverge
+> > from older architectures, the VFE subdevice driver needs to be refactored
+> > to better abstract the different ISP architectures.
+> >
+> > Gen1 represents the CAMSS ISP architecture. The ISP architecture developed
+> > after CAMSS, Titan, will be referred to as Gen2.
+> >
+> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> > Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+> > ---
+> >
+> >
+>
+> <snip>
+>
+> > diff --git a/drivers/media/platform/qcom/camss/camss-vfe.h b/drivers/media/platform/qcom/camss/camss-vfe.h
+> > index 5bce6736e4bb..ceff4985b1cc 100644
+> > --- a/drivers/media/platform/qcom/camss/camss-vfe.h
+> > +++ b/drivers/media/platform/qcom/camss/camss-vfe.h
+> > @@ -17,15 +17,26 @@
+> >  #include <media/v4l2-subdev.h>
+> >
+> >  #include "camss-video.h"
+> > +#include "camss-vfe-gen1.h"
+> >
+> >  #define MSM_VFE_PAD_SINK 0
+> >  #define MSM_VFE_PAD_SRC 1
+> >  #define MSM_VFE_PADS_NUM 2
+> >
+> > -#define MSM_VFE_LINE_NUM 4
+> >  #define MSM_VFE_IMAGE_MASTERS_NUM 7
+> >  #define MSM_VFE_COMPOSITE_IRQ_NUM 4
+> >
+> > +/* VFE halt timeout */
+> > +#define VFE_HALT_TIMEOUT_MS 100
+> > +/* Frame drop value. VAL + UPDATES - 1 should not exceed 31 */
+> > +#define VFE_FRAME_DROP_VAL 30
+> > +
+> > +#define vfe_line_array(ptr_line)     \
+> > +     ((const struct vfe_line (*)[]) &(ptr_line[-(ptr_line->id)]))
+>
+> I get a checkpatch warning on this:
+>
+> CHECK: Unnecessary parentheses around ptr_line[-(ptr_line->id)]
+> #3612: FILE: drivers/media/platform/qcom/camss/camss-vfe.h:35:
+> +       ((const struct vfe_line (*)[]) &(ptr_line[-(ptr_line->id)]))
+>
+> This should be:
+>
+>         ((const struct vfe_line (*)[]) &(ptr_line)[-(ptr_line)->id])
+>
+> The checkpatch message is a bit odd, the real problem here is the missing
+> parenthesis around ptr_line: this would cause problems if ptr_line is an
+> expression like 'ptr + 5', which would lead to a bad expansion.
+>
 
-Also ch. 6.3
-"""All subsequent parameter headers need to be contiguous and may be
-specified..."""
+Ack
 
-> In fact, it says that "Parameter tables
-> may be located anywhere in the SFDP space. They do not need to
-> immediately follow the parameter headers".
-
-The tables itself, yes, but not the headers for the tables.
-
-> But I guess we can just say
-> the sysfs entry exports the entire SFDP space instead of just the 
-> tables
-> so that is OK.
-> 
-> This patch looks good to me other than the small nitpick that we can
-> merge this loop and the one below that tries to find the latest BFPT
-> version.
-
-btw. I've also added an export for the jedec id and the flash name to
-this patch, which will be included in the next version.
-
->>  	/*
->>  	 * Check other parameter headers to get the latest revision of
->>  	 * the basic flash parameter table.
->> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
->> index a0d572855444..a58118b8b002 100644
->> --- a/include/linux/mtd/spi-nor.h
->> +++ b/include/linux/mtd/spi-nor.h
->> @@ -404,6 +404,7 @@ struct spi_nor {
->>  	bool			sst_write_second;
->>  	u32			flags;
->>  	enum spi_nor_cmd_ext	cmd_ext_type;
->> +	size_t			sfdp_size;
-> 
-> Documentation for this variable missing.
-> 
->> 
->>  	const struct spi_nor_controller_ops *controller_ops;
->> 
->> --
->> 2.20.1
->> 
-
--- 
--michael
+> Regards,
+>
+>         Hans
+>
+> > +
+> > +#define to_vfe(ptr_line)     \
+> > +     container_of(vfe_line_array(ptr_line), struct vfe_device, line)
+> > +
+> >  enum vfe_output_state {
+> >       VFE_OUTPUT_OFF,
+> >       VFE_OUTPUT_RESERVED,
+> > @@ -40,23 +51,30 @@ enum vfe_line_id {
+> >       VFE_LINE_RDI0 = 0,
+> >       VFE_LINE_RDI1 = 1,
+> >       VFE_LINE_RDI2 = 2,
+> > -     VFE_LINE_PIX = 3
+> > +     VFE_LINE_PIX = 3,
+> > +     VFE_LINE_NUM_GEN1 = 4,
+> > +     VFE_LINE_NUM_MAX = 4
+> >  };
+> >
+> >  struct vfe_output {
+> >       u8 wm_num;
+> >       u8 wm_idx[3];
+> >
+> > -     int active_buf;
+> >       struct camss_buffer *buf[2];
+> >       struct camss_buffer *last_buffer;
+> >       struct list_head pending_bufs;
+> >
+> >       unsigned int drop_update_idx;
+> >
+> > +     union {
+> > +             struct {
+> > +                     int active_buf;
+> > +                     int wait_sof;
+> > +             } gen1;
+> > +     };
+> >       enum vfe_output_state state;
+> >       unsigned int sequence;
+> > -     int wait_sof;
+> > +
+> >       int wait_reg_update;
+> >       struct completion sof;
+> >       struct completion reg_update;
+> > @@ -78,59 +96,19 @@ struct vfe_line {
+> >  struct vfe_device;
+> >
+> >  struct vfe_hw_ops {
+> > -     void (*hw_version_read)(struct vfe_device *vfe, struct device *dev);
+> > -     u16 (*get_ub_size)(u8 vfe_id);
+> > +     void (*enable_irq_common)(struct vfe_device *vfe);
+> >       void (*global_reset)(struct vfe_device *vfe);
+> > -     void (*halt_request)(struct vfe_device *vfe);
+> > -     void (*halt_clear)(struct vfe_device *vfe);
+> > -     void (*wm_enable)(struct vfe_device *vfe, u8 wm, u8 enable);
+> > -     void (*wm_frame_based)(struct vfe_device *vfe, u8 wm, u8 enable);
+> > -     void (*wm_line_based)(struct vfe_device *vfe, u32 wm,
+> > -                           struct v4l2_pix_format_mplane *pix,
+> > -                           u8 plane, u32 enable);
+> > -     void (*wm_set_framedrop_period)(struct vfe_device *vfe, u8 wm, u8 per);
+> > -     void (*wm_set_framedrop_pattern)(struct vfe_device *vfe, u8 wm,
+> > -                                      u32 pattern);
+> > -     void (*wm_set_ub_cfg)(struct vfe_device *vfe, u8 wm, u16 offset,
+> > -                           u16 depth);
+> > -     void (*bus_reload_wm)(struct vfe_device *vfe, u8 wm);
+> > -     void (*wm_set_ping_addr)(struct vfe_device *vfe, u8 wm, u32 addr);
+> > -     void (*wm_set_pong_addr)(struct vfe_device *vfe, u8 wm, u32 addr);
+> > -     int (*wm_get_ping_pong_status)(struct vfe_device *vfe, u8 wm);
+> > -     void (*bus_enable_wr_if)(struct vfe_device *vfe, u8 enable);
+> > -     void (*bus_connect_wm_to_rdi)(struct vfe_device *vfe, u8 wm,
+> > -                                   enum vfe_line_id id);
+> > -     void (*wm_set_subsample)(struct vfe_device *vfe, u8 wm);
+> > -     void (*bus_disconnect_wm_from_rdi)(struct vfe_device *vfe, u8 wm,
+> > -                                        enum vfe_line_id id);
+> > -     void (*set_xbar_cfg)(struct vfe_device *vfe, struct vfe_output *output,
+> > -                          u8 enable);
+> > -     void (*set_rdi_cid)(struct vfe_device *vfe, enum vfe_line_id id,
+> > -                         u8 cid);
+> > -     void (*set_realign_cfg)(struct vfe_device *vfe, struct vfe_line *line,
+> > -                             u8 enable);
+> > +     void (*hw_version_read)(struct vfe_device *vfe, struct device *dev);
+> > +     irqreturn_t (*isr)(int irq, void *dev);
+> > +     void (*isr_read)(struct vfe_device *vfe, u32 *value0, u32 *value1);
+> >       void (*reg_update)(struct vfe_device *vfe, enum vfe_line_id line_id);
+> >       void (*reg_update_clear)(struct vfe_device *vfe,
+> >                                enum vfe_line_id line_id);
+> > -     void (*enable_irq_wm_line)(struct vfe_device *vfe, u8 wm,
+> > -                                enum vfe_line_id line_id, u8 enable);
+> > -     void (*enable_irq_pix_line)(struct vfe_device *vfe, u8 comp,
+> > -                                 enum vfe_line_id line_id, u8 enable);
+> > -     void (*enable_irq_common)(struct vfe_device *vfe);
+> > -     void (*set_demux_cfg)(struct vfe_device *vfe, struct vfe_line *line);
+> > -     void (*set_scale_cfg)(struct vfe_device *vfe, struct vfe_line *line);
+> > -     void (*set_crop_cfg)(struct vfe_device *vfe, struct vfe_line *line);
+> > -     void (*set_clamp_cfg)(struct vfe_device *vfe);
+> > -     void (*set_qos)(struct vfe_device *vfe);
+> > -     void (*set_ds)(struct vfe_device *vfe);
+> > -     void (*set_cgc_override)(struct vfe_device *vfe, u8 wm, u8 enable);
+> > -     void (*set_camif_cfg)(struct vfe_device *vfe, struct vfe_line *line);
+> > -     void (*set_camif_cmd)(struct vfe_device *vfe, u8 enable);
+> > -     void (*set_module_cfg)(struct vfe_device *vfe, u8 enable);
+> > -     int (*camif_wait_for_stop)(struct vfe_device *vfe, struct device *dev);
+> > -     void (*isr_read)(struct vfe_device *vfe, u32 *value0, u32 *value1);
+> > +     void (*subdev_init)(struct device *dev, struct vfe_device *vfe);
+> > +     int (*vfe_disable)(struct vfe_line *line);
+> > +     int (*vfe_enable)(struct vfe_line *line);
+> > +     int (*vfe_halt)(struct vfe_device *vfe);
+> >       void (*violation_read)(struct vfe_device *vfe);
+> > -     irqreturn_t (*isr)(int irq, void *dev);
+> >  };
+> >
+> >  struct vfe_isr_ops {
+> > @@ -158,11 +136,14 @@ struct vfe_device {
+> >       int stream_count;
+> >       spinlock_t output_lock;
+> >       enum vfe_line_id wm_output_map[MSM_VFE_IMAGE_MASTERS_NUM];
+> > -     struct vfe_line line[MSM_VFE_LINE_NUM];
+> > +     struct vfe_line line[VFE_LINE_NUM_MAX];
+> > +     u8 line_num;
+> >       u32 reg_update;
+> >       u8 was_streaming;
+> >       const struct vfe_hw_ops *ops;
+> > +     const struct vfe_hw_ops_gen1 *ops_gen1;
+> >       struct vfe_isr_ops isr_ops;
+> > +     struct camss_video_ops video_ops;
+> >  };
+> >
+> >  struct resources;
+> > @@ -178,6 +159,37 @@ void msm_vfe_unregister_entities(struct vfe_device *vfe);
+> >  void msm_vfe_get_vfe_id(struct media_entity *entity, u8 *id);
+> >  void msm_vfe_get_vfe_line_id(struct media_entity *entity, enum vfe_line_id *id);
+> >
+> > +/*
+> > + * vfe_buf_add_pending - Add output buffer to list of pending
+> > + * @output: VFE output
+> > + * @buffer: Video buffer
+> > + */
+> > +void vfe_buf_add_pending(struct vfe_output *output, struct camss_buffer *buffer);
+> > +
+> > +struct camss_buffer *vfe_buf_get_pending(struct vfe_output *output);
+> > +
+> > +/*
+> > + * vfe_disable - Disable streaming on VFE line
+> > + * @line: VFE line
+> > + *
+> > + * Return 0 on success or a negative error code otherwise
+> > + */
+> > +int vfe_disable(struct vfe_line *line);
+> > +
+> > +int vfe_flush_buffers(struct camss_video *vid, enum vb2_buffer_state state);
+> > +
+> > +/*
+> > + * vfe_isr_comp_done - Process composite image done interrupt
+> > + * @vfe: VFE Device
+> > + * @comp: Composite image id
+> > + */
+> > +void vfe_isr_comp_done(struct vfe_device *vfe, u8 comp);
+> > +
+> > +void vfe_isr_reset_ack(struct vfe_device *vfe);
+> > +int vfe_put_output(struct vfe_line *line);
+> > +int vfe_release_wm(struct vfe_device *vfe, u8 wm);
+> > +int vfe_reserve_wm(struct vfe_device *vfe, enum vfe_line_id line_id);
+> > +
+> >  extern const struct vfe_hw_ops vfe_ops_4_1;
+> >  extern const struct vfe_hw_ops vfe_ops_4_7;
+> >  extern const struct vfe_hw_ops vfe_ops_4_8;
+> > diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
+> > index 0c679c97da6d..49e25c837bdc 100644
+> > --- a/drivers/media/platform/qcom/camss/camss.c
+> > +++ b/drivers/media/platform/qcom/camss/camss.c
+> > @@ -881,7 +881,7 @@ static int camss_register_entities(struct camss *camss)
+> >
+> >               for (i = 0; i < camss->ispif->line_num; i++)
+> >                       for (k = 0; k < camss->vfe_num; k++)
+> > -                             for (j = 0; j < ARRAY_SIZE(camss->vfe[k].line); j++) {
+> > +                             for (j = 0; j < camss->vfe[k].line_num; j++) {
+> >                                       struct v4l2_subdev *ispif = &camss->ispif->line[i].subdev;
+> >                                       struct v4l2_subdev *vfe = &camss->vfe[k].line[j].subdev;
+> >
+> > @@ -902,7 +902,7 @@ static int camss_register_entities(struct camss *camss)
+> >       } else {
+> >               for (i = 0; i < camss->csid_num; i++)
+> >                       for (k = 0; k < camss->vfe_num; k++)
+> > -                             for (j = 0; j < ARRAY_SIZE(camss->vfe[k].line); j++) {
+> > +                             for (j = 0; j < camss->vfe[k].line_num; j++) {
+> >                                       struct v4l2_subdev *csid = &camss->csid[i].subdev;
+> >                                       struct v4l2_subdev *vfe = &camss->vfe[k].line[j].subdev;
+> >
+> >
+>
