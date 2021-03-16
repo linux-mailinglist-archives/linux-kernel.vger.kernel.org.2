@@ -2,166 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60ED633D31A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0593833D325
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237212AbhCPLe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:34:28 -0400
-Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:55807 "EHLO
-        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237189AbhCPLeN (ORCPT
+        id S237274AbhCPLfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:35:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58538 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237248AbhCPLe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:34:13 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id M7xfl1ZAO4ywlM7xjlAlXV; Tue, 16 Mar 2021 12:34:11 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1615894451; bh=JkEdXlW1bhCgFYkEP/igDT2s8R0tOEhcNGr/T9WCMLk=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=f0KbRRBk2E6aDJo/dBE3MWpAuoNF9QE2ADbfj4+X8AbSEct/y2SvXmruGMy0U3rOo
-         fJOxXhY+aqXGT1ySV4jFvfRWV92shoeah88O0Wsi3DYmMUuo6ShGo0jB9O+lngoanJ
-         tN+SZ/+16ajJlj9VaCBegkXYOe+QdL20LkSsIL9pXraodchRXa019SQZRbaW3yGf4K
-         IzvxoxRCsRmgnzMDPmdF4xm+NH+Qmzl7BGYnYRTzGRdL65uGSlbwwSFPZ3wRqSPiL8
-         pXdkRueeP/TTIzyxxbxIQN+3k499hpYXFNDtiocnfO7GIiVCKg3Bsg/uROpck/hj2N
-         7S1jFCzGYaEyw==
-Subject: Re: [PATCH v2 1/2] v4l2-ctrl: Add decoder conceal color control
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20210302114430.3594475-1-stanimir.varbanov@linaro.org>
- <20210302114430.3594475-2-stanimir.varbanov@linaro.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <a36a9400-462d-c50e-4b7f-e2e8a181c4e3@xs4all.nl>
-Date:   Tue, 16 Mar 2021 12:34:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        Tue, 16 Mar 2021 07:34:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615894497;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vlqsbtT9COsx+yKS+e8hs6ZYyJT5eXMndMhYe5Gjdjo=;
+        b=M6+0cVOPBYubuhLr7m1vWnilvgjNWbS4w4VSeXMDcBc8GvKGUWjDTwHXRkF2B9W4X95e51
+        x2QM8tvDcm2yIpzegU+twaNBuqFcTXPpwrfnc+OGMTTltFbZQSXti7sKBHamymY7w6xhnb
+        raPZ82FCLjoRVeyVEZ26cLLJvqyeKm0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-498-Q4Hxl9DtPsqAVRmB4OjmRQ-1; Tue, 16 Mar 2021 07:34:54 -0400
+X-MC-Unique: Q4Hxl9DtPsqAVRmB4OjmRQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 052CE193F561;
+        Tue, 16 Mar 2021 11:34:52 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 96C3C60C0F;
+        Tue, 16 Mar 2021 11:34:45 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <161539537375.286939.16642940088716990995.stgit@warthog.procyon.org.uk>
+References: <161539537375.286939.16642940088716990995.stgit@warthog.procyon.org.uk> <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     dhowells@redhat.com, Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org,
+        David Wysochanski <dwysocha@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 08/28] netfs: Provide readahead and readpage netfs helpers
 MIME-Version: 1.0
-In-Reply-To: <20210302114430.3594475-2-stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfImq5vL9PsgjEwQz3Dpb/PGz34BpmFR9uEAxCCND4Pv+CZswM6wL8TDzxMhyNP3+gDNrFxp/6OICOH5wqKdVBBN1R55nqsTAax30xg45tm3HvYF5d8fZ
- VKLSi2UERkoBeEQUTnWldjyLyqkmfdBmm+l9jrapIfQm/0BpwOU9TLKtQsqCyuLA3QJMmtI/kiaY4U1AWaxYI1Q0em0AT5+HhBIQrMpIqUZYqm2xO5TCOCvx
- FvwStzXDS8NAjnqA6wvXWb/E9qBLtocSdiJuUFhElS9daCQpxD/XVoItwaMucpS7X/IDWQm9tR/dpKlRJx9l8utcXgbcXkaH/LcFAta7o+g=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3184203.1615894484.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 16 Mar 2021 11:34:44 +0000
+Message-ID: <3184204.1615894484@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/03/2021 12:44, Stanimir Varbanov wrote:
-> Add decoder v4l2 control to set conceal color.
-> 
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  .../media/v4l/ext-ctrls-codec.rst             | 33 +++++++++++++++++++
->  drivers/media/v4l2-core/v4l2-ctrls.c          |  9 +++++
->  include/uapi/linux/v4l2-controls.h            |  1 +
->  3 files changed, 43 insertions(+)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> index 00944e97d638..817da8a14572 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> @@ -674,6 +674,39 @@ enum v4l2_mpeg_video_frame_skip_mode -
->      is currently displayed (decoded). This value is reset to 0 whenever
->      the decoder is started.
->  
-> +``V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR (integer64)``
-> +    This control sets conceal color in YUV color space. It describes the
+I'm going to make the code generate more information when warning about a
+subread reporting having over-read (see attached).
 
-conceal -> the conceal
+David
+---
+diff --git a/fs/netfs/read_helper.c b/fs/netfs/read_helper.c
+index ce11ca4c32e4..765e88ee132d 100644
+--- a/fs/netfs/read_helper.c
++++ b/fs/netfs/read_helper.c
+@@ -641,7 +641,10 @@ void netfs_subreq_terminated(struct netfs_read_subreq=
+uest *subreq,
+ 		goto failed;
+ 	}
+ =
 
-> +    client preference of error conceal color in case of error where
+-	if (WARN_ON(transferred_or_error > subreq->len - subreq->transferred))
++	if (WARN(transferred_or_error > subreq->len - subreq->transferred,
++		 "R%x[%x] %zd > %zu - %zu",
++		 rreq->debug_id, subreq->debug_index,
++		 transferred_or_error, subreq->len, subreq->transferred))
+ 		transferred_or_error =3D subreq->len - subreq->transferred;
+ =
 
-client preference of the error conceal color in case of an error where the
+ 	subreq->error =3D 0;
 
-> +    reference frame is missing. The decoder should fill the reference
-> +    buffer with preferred color and use it for future decoding. The control
-
-with the
-
-> +    is using 16bits per channel.
-
-16bits -> 16 bits
-
-> +    Applicable to decoders.
-> +
-> +.. flat-table::
-> +    :header-rows:  0
-> +    :stub-columns: 0
-> +
-> +    * -
-> +      - 8bit  format
-> +      - 10bit format
-> +      - 12bit format
-> +    * - Y luminance
-> +      - Bit 0:7
-> +      - Bit 0:9
-> +      - Bit 0:11
-> +    * - Cb chrominance
-> +      - Bit 16:23
-> +      - Bit 16:25
-> +      - Bit 16:27
-> +    * - Cr chrominance
-> +      - Bit 32:39
-> +      - Bit 32:41
-> +      - Bit 32:43
-> +    * - Must be zero
-> +      - Bit 48:63
-> +      - Bit 48:63
-> +      - Bit 48:63
-> +
->  ``V4L2_CID_MPEG_VIDEO_DECODER_SLICE_INTERFACE (boolean)``
->      If enabled the decoder expects to receive a single slice per buffer,
->      otherwise the decoder expects a single frame in per buffer.
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-> index 016cf6204cbb..a3b9d28a00b7 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-> @@ -945,6 +945,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->  	case V4L2_CID_MPEG_VIDEO_VBV_SIZE:			return "VBV Buffer Size";
->  	case V4L2_CID_MPEG_VIDEO_DEC_PTS:			return "Video Decoder PTS";
->  	case V4L2_CID_MPEG_VIDEO_DEC_FRAME:			return "Video Decoder Frame Count";
-> +	case V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR:		return "Video Decoder Conceal Color";
->  	case V4L2_CID_MPEG_VIDEO_VBV_DELAY:			return "Initial Delay for VBV Control";
->  	case V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE:		return "Horizontal MV Search Range";
->  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:		return "Vertical MV Search Range";
-> @@ -1430,6 +1431,14 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
->  		*max = 0x7fffffffffffffffLL;
->  		*step = 1;
->  		break;
-> +	case V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR:
-> +		*type = V4L2_CTRL_TYPE_INTEGER64;
-> +		*min = 0;
-> +		/* default for 8bit black, luma is 16, chroma is 128 */
-
-8bit -> 8 bit
-
-> +		*def = 0x8000800010LL;
-> +		*max = 0xffffffffffffLL;
-> +		*step = 1;
-> +		break;
->  	case V4L2_CID_PIXEL_RATE:
->  		*type = V4L2_CTRL_TYPE_INTEGER64;
->  		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
-> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-> index 039c0d7add1b..5e5a3068be2d 100644
-> --- a/include/uapi/linux/v4l2-controls.h
-> +++ b/include/uapi/linux/v4l2-controls.h
-> @@ -428,6 +428,7 @@ enum v4l2_mpeg_video_multi_slice_mode {
->  #define V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE		(V4L2_CID_CODEC_BASE+228)
->  #define V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME		(V4L2_CID_CODEC_BASE+229)
->  #define V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID	(V4L2_CID_CODEC_BASE+230)
-> +#define V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR		(V4L2_CID_CODEC_BASE+231)
->  
->  /* CIDs for the MPEG-2 Part 2 (H.262) codec */
->  #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_CODEC_BASE+270)
-> 
-
-After fixing the typos:
-
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-
-Regards,
-
-	Hans
