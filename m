@@ -2,84 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B265D33DB78
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23ACF33DB7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239101AbhCPRw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:52:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42924 "EHLO mail.kernel.org"
+        id S239358AbhCPRxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:53:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239353AbhCPRw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:52:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B57765120;
-        Tue, 16 Mar 2021 17:52:27 +0000 (UTC)
+        id S239269AbhCPRxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:53:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EF196512F;
+        Tue, 16 Mar 2021 17:52:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615917148;
-        bh=AzDNWIakpV6kbVyD7mjxNrEJxc3kYf5SEm43UCNUWF4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rFYiJR/9X5zpZaiPy4Jjpf724cR4XAh94ugE3KkSc3qHUKTZWMJ8hMT67XayFNWpc
-         nJJaorFHkN8umklWYKxY0lppxEqqjTxb8aftsIldEvAVsWZyV5DNKeJTFUA8n14Hzo
-         2m7wmdBKNqOvfFt1hUIHMkotK26e2X4v4+2aMiL82hJWDa26DTZfLr4W2IhuHrdo+m
-         bBrvucRxFrUcuuy6ix1EcPLXXhTUr5KlxH0zAABC6dDp+S7Cm5V7X6i/7hZKTR6dET
-         uaIil5JMPAOVXnrXdYQZ34g2JJEcDEfV/Fge5AVj5zgSXw5DusSmK86zAgsD1OZxeU
-         AiF0uMtV1FfCg==
-Date:   Tue, 16 Mar 2021 17:52:25 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Yingjoe Chen <yingjoe.chen@mediatek.com>,
-        Fei Shao <fshao@chromium.org>, Ran Bi <ran.bi@mediatek.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org, srv_heupstream@mediatek.com,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH v6 7/8] regulator: mt6359: Add support for MT6359P
- regulator
-Message-ID: <20210316175225.GD4309@sirena.org.uk>
-References: <1615829757-3223-1-git-send-email-hsin-hsiung.wang@mediatek.com>
- <1615829757-3223-8-git-send-email-hsin-hsiung.wang@mediatek.com>
+        s=k20201202; t=1615917179;
+        bh=W8rr8sTbWk/xigthIkTyoScmrkEHXz8tnd8LeK4Aq5U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=L7Qe6r7cy4oo3a7QC4RU5ShnI1IfUIXGMymWJJL18hoP+qr4a8ZlmErgMfOoQWY2q
+         I+YaFe3FcrFsNCFjwfQA/NUkr5Vyl1hjheDf0cH1T2Fy9kleyC9GyZYS/nxm8JT8MX
+         Dbbhr5IoBUtl+Tfft2wdeXYupzQRO6HVWl8qefQFnqIcrOqRmMhpoS2oHxwfPHATek
+         0US5gr2za1lShVj87zBMfiYTUZv5ZGxPrspuMOfmjVGaTWndwj+YsoEHzjQOoosw41
+         glO5ohMoFTmZgAM4+mYn79CnD7j0IJ0tfFSfUx9sXQKBEawxfJaVtDkHz9jGNYUIB8
+         oewgcyTXbsouw==
+Received: by mail-qt1-f181.google.com with SMTP id l13so12304799qtu.9;
+        Tue, 16 Mar 2021 10:52:59 -0700 (PDT)
+X-Gm-Message-State: AOAM533VVjS1w60iIaXJTU5UsKxHo5+jbuRBGIGT5g5+ieE1mLA6CUas
+        QeIdhgq0SbQYY5h3ufpfo9MVArnB9qQksonKsQ==
+X-Google-Smtp-Source: ABdhPJxG0ZFRjKxTysjTNHhJwM08UgCXG6fkHthhoVafsNybBo0emZ8KLn06OpgaliodW8DNOmRhuSOZzuNZ9pzhXaU=
+X-Received: by 2002:ac8:4ccc:: with SMTP id l12mr58779qtv.137.1615917178617;
+ Tue, 16 Mar 2021 10:52:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SFyWQ0h3ruR435lw"
-Content-Disposition: inline
-In-Reply-To: <1615829757-3223-8-git-send-email-hsin-hsiung.wang@mediatek.com>
-X-Cookie: Results vary by individual.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210312154357.1561730-1-sebastian.reichel@collabora.com>
+ <20210312154357.1561730-17-sebastian.reichel@collabora.com>
+ <CAL_JsqLn9Mo_hTuCEPapNz3cFHbC8NKHH0npYrnV+dC85pBAsQ@mail.gmail.com> <20210316162045.cvvb226rpzxbovdl@earth.universe>
+In-Reply-To: <20210316162045.cvvb226rpzxbovdl@earth.universe>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 16 Mar 2021 11:52:47 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+rynEXFCJDL-Xrar1hSam65qP6ZAiOQUKRtDbu26BYSw@mail.gmail.com>
+Message-ID: <CAL_Jsq+rynEXFCJDL-Xrar1hSam65qP6ZAiOQUKRtDbu26BYSw@mail.gmail.com>
+Subject: Re: [PATCH 16/38] dt-bindings: power: supply: tps65217: Convert to DT
+ schema format
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 16, 2021 at 10:20 AM Sebastian Reichel
+<sebastian.reichel@collabora.com> wrote:
+>
+> Hi Rob,
+>
+> On Mon, Mar 15, 2021 at 12:33:23PM -0600, Rob Herring wrote:
+> > On Fri, Mar 12, 2021 at 8:44 AM Sebastian Reichel
+> > <sebastian.reichel@collabora.com> wrote:
+> > > +  interrupts:
+> > > +    minItems: 2
+> > > +    maxItems: 2
+> >
+> > We've lost info that was in the original binding. You could do
+> > something like this:
+> >
+> > items:
+> >   - description: USB charger
+> >     const: 0
+> >   - description: AC charger
+> >     const: 1
+> >
+> > (Usually the interrupt values would be out of scope of the binding,
+> > but I guess here it makes some sense.)
+>
+> I initially did this, but it did not work. I see the following for
+> dt_binding_check (dtbs_check triggers the same):
+>
+> Documentation/devicetree/bindings/power/supply/tps65217-charger.example.dt.yaml: charger: interrupts:0: [0] is too short
+>         From schema: Documentation/devicetree/bindings/power/supply/tps65217-charger.yaml
+> Documentation/devicetree/bindings/power/supply/tps65217-charger.example.dt.yaml: charger: interrupts: [[0], [1]] is too long
+>         From schema: Documentation/devicetree/bindings/power/supply/tps65217-charger.yaml
+> Documentation/devicetree/bindings/power/supply/tps65217-charger.example.dt.yaml: charger: interrupts: Additional items are not allowed ([1] was unexpected)
+>         From schema: Documentation/devicetree/bindings/power/supply/tps65217-charger.yaml
+>
+> Seemed to be a limitation in the validation tool, so I just dropped
+> the extra information. If we do not want to loose information I can
+> add it to the description, or should the validation tool be fixed?
+> I suppose it's kind of unusual, that the binding can provide the
+> interrupt line numbers.
 
---SFyWQ0h3ruR435lw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It is, so let's just leave it as-is.
 
-On Tue, Mar 16, 2021 at 01:35:56AM +0800, Hsin-Hsiung Wang wrote:
-> The MT6359P is a eco version for MT6359 regulator.
-> We add support based on MT6359 regulator driver.
-
-Acked-by: Mark Brown <broonie@kernel.org>
-
---SFyWQ0h3ruR435lw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBQ8FgACgkQJNaLcl1U
-h9CdkAf9Hbz0m/xv65ZqrW8tLgUxjCTjcWpw/fLlr0NuMnmtYANHKy9Pjs76Vl2W
-2kyXSeAcDdKV4/j8aEK8fd8JOMZTqUuN5OmJDoUvIN7DSDd0E3BFeT5bvBvUTnWN
-BbP8WBJPBF9pIHsv9D2xT/QlaXVvGjohZHFG41XSfllNGw1DjPFAjkAhTOyXzT1t
-s+tuHrpLJxzxyvK07WJnt9LfFMz80mgKT7PEhalXP1KRbkLM2wXuSEBgoy4bm5ZZ
-XF7thh112bug+30SXTGVBzutbHJr3o4YSRNbHOysnpalWONxfVoZjrRoTgeW5SeK
-bbowgAEaY7/4sEMAKWFqF25+fW8QCA==
-=C2bz
------END PGP SIGNATURE-----
-
---SFyWQ0h3ruR435lw--
+Rob
