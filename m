@@ -2,108 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F30E33D27A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:11:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A7B33D27E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237099AbhCPLLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:11:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32512 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237094AbhCPLKg (ORCPT
+        id S237106AbhCPLMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:12:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232731AbhCPLMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:10:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615893035;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9pLs1zGEDar7rmvjegU/ndIm/ewQhz/fax5H5GVpbcM=;
-        b=BLBbYo1rJ8So0ygQH6d+fDDC+Y+1PY980P8zuhy2Nl+XuvXdi2J32IEj6Qq5o6rwD50rj9
-        5YdKmXKKueAkwcwkKFialFRTD9fcFiR6iG9GzC9WMVuz49RQ1ph/hHuAYdHsdynIAWqTQH
-        vQL+Hx0ru2TvYqptqPR42qsa+kGLVXY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-494-ZSPsLwjJM66mBXOm1n7TXw-1; Tue, 16 Mar 2021 07:10:31 -0400
-X-MC-Unique: ZSPsLwjJM66mBXOm1n7TXw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4E9F0760C0;
-        Tue, 16 Mar 2021 11:10:30 +0000 (UTC)
-Received: from [10.36.114.203] (ovpn-114-203.ams2.redhat.com [10.36.114.203])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0D2665C1A1;
-        Tue, 16 Mar 2021 11:10:27 +0000 (UTC)
-Subject: Re: slow boot with 7fef431be9c9 ("mm/page_alloc: place pages to tail
- in __free_pages_core()")
-To:     "Liang, Liang (Leo)" <Liang.Liang@amd.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Cc:     "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Huang, Ray" <Ray.Huang@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        George Kennedy <george.kennedy@oracle.com>
-References: <YEzCm/Uwvw7kKpd7@linux.ibm.com>
- <22437770-956e-f7b4-a8f6-3f1cc28c3ec2@redhat.com>
- <MW3PR12MB45371072D7C3FDA6986C6318F36B9@MW3PR12MB4537.namprd12.prod.outlook.com>
- <YFBVNEC7jMZxwleL@linux.ibm.com>
- <MW3PR12MB453781F0AD49AF3787DE4230F36B9@MW3PR12MB4537.namprd12.prod.outlook.com>
- <0cc972a1-5b40-3017-33f8-b2610489ee18@redhat.com>
- <MW3PR12MB453771424C9B2866BBBAE036F36B9@MW3PR12MB4537.namprd12.prod.outlook.com>
- <b9b324e4-4c98-b81d-ddae-52e4feb33064@redhat.com>
- <MW3PR12MB4537B6D5911092E456220818F36B9@MW3PR12MB4537.namprd12.prod.outlook.com>
- <9e869214-7a3b-e86d-4832-7117f7c6090f@redhat.com>
- <YFCIqLmn3u1be1yo@linux.ibm.com>
- <MW3PR12MB4537C3C6EFD9CA3A4B32084DF36B9@MW3PR12MB4537.namprd12.prod.outlook.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <41dc97ec-d3ab-07b1-d7e3-84dc2bced8fc@redhat.com>
-Date:   Tue, 16 Mar 2021 12:10:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 16 Mar 2021 07:12:21 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792B6C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 04:12:20 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id bt4so10431921pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 04:12:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=co9C6unBdFkpgv7+tGLws46NOGe8/tBYeyT4qQSLwlc=;
+        b=HRiKQVMBFG/A6gPAZpN/MiRsDAwXqD/MYUJKSSh7ybK9TDtdRJgVUyb6DmaBH3WnQz
+         bUs0wPminx/GLoogW8PPeQjVhbHPa352X6JsDfIPqNdBCATDUT3J3rQFcrStCK5u5teb
+         uPL+6lUUTM5+1l0QIFweXzlE8Wu9czn9A/AkON5+Nv1dydAobbQBiG8LCisAx/6LktD0
+         zOvKX19zzAdh0xZ2ghA6NjnjPJL3gi3OLOm118yFanFdHyq97W+0toDndtv/7KPhHdhU
+         I/vo64LXjAEFq++SXAX96lHwWcSD65CTcqqivRLZ9LeEY3d7S8zliAfEvBCWzrlVubZ/
+         lcQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=co9C6unBdFkpgv7+tGLws46NOGe8/tBYeyT4qQSLwlc=;
+        b=OzUuAyigVB9JhQ9HPn4LEdtt0iotTN6gEyd5skcgNx/Ez5eNk51Jr3/toTJ8JQ9Lu9
+         u54tmW6pvML0hm3Ew+LO1EQ/J9SdEtV33Dr7EETWZHn05JZieBkSG4RXkwVBFKPvS7B4
+         zL3hr5fsforb9vuiHsiFJsJSs6mAuvrOKwrqMlXkCUuZw2yXi21vIZSCfSBvWkUZhIy+
+         1dqKRwSoG2meSCqCD7BDEdks67SL/l1vxMZU48/IjhuhZFV+BvwvXRZxHrpsXqLUiHLT
+         149A4dQbePf7ZUsu7XOAf9tUxiUGwy/k4T6a4egbzGeU99TeAvW1w7Vumv+jgY6DGj5z
+         fF9A==
+X-Gm-Message-State: AOAM531R3Jd7y2nmvFqezhhEa/QDoZ3Ghxbv/SzvuXynv+BUcdatd3De
+        xPJT4wXTLR/Ah7pixPueWb7vLV9uOvwlhWBNECGFyQ==
+X-Google-Smtp-Source: ABdhPJxxy+osmijXyuDaa1mP5+f0EErKvMxpTVF7WymI+74vScoiTtjvsZJ0oOoCIDCp368NI1c6lnxCs1T1BBXgrw0=
+X-Received: by 2002:a17:90a:516:: with SMTP id h22mr4143299pjh.222.1615893139917;
+ Tue, 16 Mar 2021 04:12:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <MW3PR12MB4537C3C6EFD9CA3A4B32084DF36B9@MW3PR12MB4537.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210315155942.640889-1-robert.foss@linaro.org>
+ <20210315155942.640889-10-robert.foss@linaro.org> <b06ce7af-4449-fb5c-2920-09ebd5abdf75@xs4all.nl>
+In-Reply-To: <b06ce7af-4449-fb5c-2920-09ebd5abdf75@xs4all.nl>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 16 Mar 2021 12:12:08 +0100
+Message-ID: <CAG3jFytECFBW7mC0=0ZwL2HNof3jOiJ9=KqUhaPb-KvnW5ut2g@mail.gmail.com>
+Subject: Re: [PATCH v8 09/22] media: camss: Refactor CSID HW version support
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        angelogioacchino.delregno@somainline.org,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jonathan Marek <jonathan@marek.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.03.21 12:02, Liang, Liang (Leo) wrote:
-> [AMD Public Use]
-> 
-> Hi David and Mike,
-> 
-> It's BIOS buggy. Now fixed by new BIOS. Thanks you so much! Cheers!
-> 
-> [    0.000034] MTRR variable ranges enabled:
-> [    0.000035]   0 base 000000000000 mask FFFF80000000 write-back
-> [    0.000037]   1 base 0000FFE00000 mask FFFFFFE00000 write-protect
-> [    0.000039]   2 base 0000FFDE0000 mask FFFFFFFE0000 write-protect
-> [    0.000040]   3 base 0000FF000000 mask FFFFFFF80000 write-protect
-> [    0.000041]   4 disabled
-> [    0.000042]   5 disabled
-> [    0.000043]   6 disabled
-> [    0.000044]   7 disabled
-> [    0.000045] TOM2: 0000000280000000 aka 10240M
-> 
-> root@scbu-Chachani:/home/scbu# cat /proc/mtrr
-> reg00: base=0x000000000 (    0MB), size= 2048MB, count=1: write-back
-> reg01: base=0x0ffe00000 ( 4094MB), size=    2MB, count=1: write-protect
-> reg02: base=0x0ffde0000 ( 4093MB), size=  128KB, count=1: write-protect
-> reg03: base=0x0ff000000 ( 4080MB), size=  512KB, count=1: write-protect
+Hey Hans,
 
-Great :)
+Thanks for looking into this.
 
-(another latent BUG found with 7fef431be9c9 :) )
+On Tue, 16 Mar 2021 at 10:36, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>
+> On 15/03/2021 16:59, Robert Foss wrote:
+> > In order to support Qualcomm ISP hardware architectures that diverge
+> > from older architectures, the CSID subdevice drivers needs to be refactored
+> > to better abstract the different ISP hardware architectures.
+> >
+> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> > Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+> > ---
+> >
+> >
+> > Changes since v1:
+> >  - kernel test robot: Add missing include, interrupt.h
+> >
+> > Changes since v4:
+> >  - Andrey: Removed whitespace from some includes
+> >  - Andrey: Removed unused enum
+> >
+> > Changes since v5:
+> >  - Andrey: Fixed test pattern selection logic
+> >  - Andrey: Align test mode enum values with v4l mode selection return values
+> >  - Andrey: r-b
+> >  - Move Titan 170 test modes to the the Titan 170 commit
+> >  - Fixed test pattern boundary check
+> >
+> > Changes since v7:
+> >  - Hans: Fix checkpatch.pl --strict warnings
+> >
+> >
+> >
+> >  drivers/media/platform/qcom/camss/Makefile    |   2 +
+> >  .../platform/qcom/camss/camss-csid-4-1.c      | 328 ++++++++++
+> >  .../platform/qcom/camss/camss-csid-4-7.c      | 404 ++++++++++++
+> >  .../media/platform/qcom/camss/camss-csid.c    | 608 +-----------------
+> >  .../media/platform/qcom/camss/camss-csid.h    | 129 +++-
+> >  5 files changed, 885 insertions(+), 586 deletions(-)
+> >  create mode 100644 drivers/media/platform/qcom/camss/camss-csid-4-1.c
+> >  create mode 100644 drivers/media/platform/qcom/camss/camss-csid-4-7.c
+> >
+>
+> <snip>
+>
+> > diff --git a/drivers/media/platform/qcom/camss/camss-csid.h b/drivers/media/platform/qcom/camss/camss-csid.h
+> > index 479ac1f83836..613ef377b051 100644
+> > --- a/drivers/media/platform/qcom/camss/camss-csid.h
+> > +++ b/drivers/media/platform/qcom/camss/camss-csid.h
+> > @@ -11,6 +11,7 @@
+> >  #define QC_MSM_CAMSS_CSID_H
+> >
+> >  #include <linux/clk.h>
+> > +#include <linux/interrupt.h>
+> >  #include <media/media-entity.h>
+> >  #include <media/v4l2-ctrls.h>
+> >  #include <media/v4l2-device.h>
+> > @@ -44,18 +45,42 @@
+> >  #define DATA_TYPE_RAW_16BIT          0x2e
+> >  #define DATA_TYPE_RAW_20BIT          0x2f
+> >
+> > -enum csid_payload_mode {
+> > -     CSID_PAYLOAD_MODE_INCREMENTING = 0,
+> > -     CSID_PAYLOAD_MODE_ALTERNATING_55_AA = 1,
+> > -     CSID_PAYLOAD_MODE_ALL_ZEROES = 2,
+> > -     CSID_PAYLOAD_MODE_ALL_ONES = 3,
+> > -     CSID_PAYLOAD_MODE_RANDOM = 4,
+> > -     CSID_PAYLOAD_MODE_USER_SPECIFIED = 5,
+> > +#define CSID_RESET_TIMEOUT_MS 500
+> > +
+> > +enum csid_testgen_mode {
+> > +     CSID_PAYLOAD_MODE_DISABLED = 0,
+> > +     CSID_PAYLOAD_MODE_INCREMENTING = 1,
+> > +     CSID_PAYLOAD_MODE_ALTERNATING_55_AA = 2,
+> > +     CSID_PAYLOAD_MODE_ALL_ZEROES = 3,
+> > +     CSID_PAYLOAD_MODE_ALL_ONES = 4,
+> > +     CSID_PAYLOAD_MODE_RANDOM = 5,
+> > +     CSID_PAYLOAD_MODE_USER_SPECIFIED = 6,
+> > +     CSID_PAYLOAD_MODE_NUM_SUPPORTED_GEN1 = 6, /* excluding disabled */
+> > +};
+> > +
+> > +static const char * const csid_testgen_modes[] = {
+> > +     "Disabled",
+> > +     "Incrementing",
+> > +     "Alternating 0x55/0xAA",
+> > +     "All Zeros 0x00",
+> > +     "All Ones 0xFF",
+> > +     "Pseudo-random Data",
+> > +     "User Specified",
+> > +};
+>
+> This gives this sparse warning:
+>
+> 'csid_testgen_modes' defined but not used [-Wunused-const-variable=]
 
--- 
-Thanks,
+Thanks for supplying a patch. I'll merge it into patch 9 & 10.
 
-David / dhildenb
-
+>
+> This array needs to be moved to camss-csid.c and declared as an extern
+> here. Also, this menu array needs to be terminated with a NULL, and the
+> right capitalization needs to be used (first character of each word must
+> be a capital). This is a suggested patch I made to verify that this solves
+> this issue, but really both patch 9 and 10 need to be modified.
+>
+> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> ---
+>  drivers/media/platform/qcom/camss/camss-csid.c | 14 ++++++++++++++
+>  drivers/media/platform/qcom/camss/camss-csid.h | 13 +------------
+>  2 files changed, 15 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
+> index fb94dc03ccd4..1513b3d47fc2 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csid.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csid.c
+> @@ -27,6 +27,20 @@
+>
+>  #define MSM_CSID_NAME "msm_csid"
+>
+> +const char * const csid_testgen_modes[] = {
+> +       "Disabled",
+> +       "Incrementing",
+> +       "Alternating 0x55/0xAA",
+> +       "All Zeros 0x00",
+> +       "All Ones 0xFF",
+> +       "Pseudo-Random Data",
+> +       "User Specified",
+> +       "Complex Pattern",
+> +       "Color Box",
+> +       "Color Bars",
+> +       NULL
+> +};
+> +
+>  u32 csid_find_code(u32 *codes, unsigned int ncodes,
+>                    unsigned int match_format_idx, u32 match_code)
+>  {
+> diff --git a/drivers/media/platform/qcom/camss/camss-csid.h b/drivers/media/platform/qcom/camss/camss-csid.h
+> index c2a025f6846b..81a3704ac0e3 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csid.h
+> +++ b/drivers/media/platform/qcom/camss/camss-csid.h
+> @@ -62,18 +62,7 @@ enum csid_testgen_mode {
+>         CSID_PAYLOAD_MODE_NUM_SUPPORTED_GEN2 = 9, /* excluding disabled */
+>  };
+>
+> -static const char * const csid_testgen_modes[] = {
+> -       "Disabled",
+> -       "Incrementing",
+> -       "Alternating 0x55/0xAA",
+> -       "All Zeros 0x00",
+> -       "All Ones 0xFF",
+> -       "Pseudo-random Data",
+> -       "User Specified",
+> -       "Complex pattern",
+> -       "Color box",
+> -       "Color bars",
+> -};
+> +extern const char * const csid_testgen_modes[];
+>
+>  struct csid_format {
+>         u32 code;
+> --
+> 2.30.1
+>
+> Regards,
+>
+>         Hans
