@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DD133DBF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:03:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 950E733DBF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:03:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239705AbhCPSCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:02:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46736 "EHLO mail.kernel.org"
+        id S239784AbhCPSC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:02:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239551AbhCPSAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:00:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18C136513F;
-        Tue, 16 Mar 2021 18:00:13 +0000 (UTC)
+        id S239575AbhCPSAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 14:00:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3575965134;
+        Tue, 16 Mar 2021 18:00:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615917614;
-        bh=zCkCxox1OLwnderDRZkFV/XZY0rZMifulX6TMpnOfVE=;
+        s=k20201202; t=1615917620;
+        bh=3R/vB/7tMgve+KQBBMahuJ86d+Jwqw3flfkV7zUdYPo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jCoQowmadMlIKMs+WjcPUNyaWB5eP8tFGI5dVLJcYjQUisc3vt8hUiCkLEw+CsfUc
-         CDjeasuFdJcGnQpblAZ5XZSnKnPkhdQ0vWx7cqaIRJq7oo1OW/1ThEDALIXr1jMJBv
-         WBFDppUXneOrl+Y+kdmYy84ON3+5JFuGkHhvYH+rzrncBTiL3zE6IU9ZJILIH/ZJo0
-         miEf64uHbn0suazLJTXu2xcrcTBFsXBm8pOkGvMjNJ8q3XD6WG4ycsIAXPniz/nQPw
-         CaRmZaOj+hlE2mWljwjfkqr4HO5oA+urwooHaLPaZ/AO7McHDvsi7Verv9UVIIKl7W
-         z3wdIDPMiHXSg==
+        b=on8wn5iY+hTmZj0WcRhLLacBP55sAvgJ6lJQWjuz0SxTcA/JhtlNl8CmcvTMjejPY
+         jkxVPvrDOg8LOcnC7iYgCIRDGV2dEL3L3oK4BKkCviDX7HNGkxREk4z5CBgvk2h+PT
+         oVupmcurRB7Xs+RtVTg2pIAWjMN6ABztWP1DfdYrHz1MX7JxYpVnDLF/2MJ0OMjGV+
+         hdEI+fObwtxcD/MEnaKQ/I0x3qD+hfqPjanlldJPcvOQgFZBwUr5Pp/MwvjnPTRzA6
+         nENU/aJDKAh40WjgvxSCtHDZhFZsStfHjpEQnPMnBmj6TU2PvPlZLLQH3H/JsnfWfv
+         GPdxKY1vktzfg==
 From:   Mark Brown <broonie@kernel.org>
-To:     ckeepax@opensource.cirrus.com, kuninori.morimoto.gx@renesas.com,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
-        peter.ujfalusi@ti.com, perex@perex.cz,
-        Shengjiu Wang <shengjiu.wang@nxp.com>, tiwai@suse.com,
-        lgirdwood@gmail.com, gustavoars@kernel.org,
-        alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
-Cc:     Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm8962: Relax bit clock divider searching
-Date:   Tue, 16 Mar 2021 17:59:46 +0000
-Message-Id: <161591744696.13544.17150512683547354902.b4-ty@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>, lgirdwood@gmail.com
+Cc:     Mark Brown <broonie@kernel.org>, kuninori.morimoto.gx@renesas.com,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        oder_chiou@realtek.com, jonathanh@nvidia.com,
+        thierry.reding@gmail.com, michael@walle.cc,
+        alsa-devel@alsa-project.org, sharadg@nvidia.com
+Subject: Re: [PATCH 0/2] Do not handle MCLK device clock in simple-card-utils
+Date:   Tue, 16 Mar 2021 17:59:48 +0000
+Message-Id: <161591744695.13544.12030388405319375507.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1614770488-12861-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1614770488-12861-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1615829492-8972-1-git-send-email-spujar@nvidia.com>
+References: <1615829492-8972-1-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,13 +43,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Mar 2021 19:21:28 +0800, Shengjiu Wang wrote:
-> With S20_3LE format case, the sysclk = rate * 384,
-> the bclk = rate * 20 * 2, there is no proper bclk divider
-> for 384 / 40, because current condition needs exact match.
-> So driver fails to configure the clocking:
+On Mon, 15 Mar 2021 23:01:30 +0530, Sameer Pujar wrote:
+> With commit 1e30f642cf29 ("ASoC: simple-card-utils: Fix device module clock")
+> simple-card-utils can control MCLK clock for rate updates or enable/disable.
+> But this is breaking some platforms where it is expected that codec drivers
+> would actually handle the MCLK clock. One such example is following platform.
+>   - "arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts"
 > 
-> wm8962 3-001a: Unsupported BCLK ratio 9
+> In above case codec, wm8904, is using internal PLL and configures sysclk
+> based on fixed MCLK input. In such cases it is expected that, required PLL
+> output or sysclk, is just passed via set_sysclk() callback and card driver
+> need not actually update MCLK rate. Instead, codec can take ownership of
+> this clock and do the necessary configuration.
 > 
 > [...]
 
@@ -60,8 +64,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: wm8962: Relax bit clock divider searching
-      commit: aa4890f673f9d54d3cb0ea156acfe41958ea7f08
+[1/2] ASoC: simple-card-utils: Do not handle device clock
+      commit: 8ca88d53351cc58d535b2bfc7386835378fb0db2
+[2/2] ASoC: rt5659: Update MCLK rate in set_sysclk()
+      commit: dbf54a9534350d6aebbb34f5c1c606b81a4f35dd
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
