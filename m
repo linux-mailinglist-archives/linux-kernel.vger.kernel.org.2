@@ -2,217 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A452C33CDF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:33:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE79F33CDFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhCPGcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 02:32:42 -0400
-Received: from mail-1.ca.inter.net ([208.85.220.69]:54208 "EHLO
-        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbhCPGcO (ORCPT
+        id S232399AbhCPGfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 02:35:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230118AbhCPGez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 02:32:14 -0400
-Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
-        by mail-1.ca.inter.net (Postfix) with ESMTP id 0F0ED2EA1D1;
-        Tue, 16 Mar 2021 02:32:13 -0400 (EDT)
-Received: from mail-1.ca.inter.net ([208.85.220.69])
-        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
-        with ESMTP id HNDKFMNmeFsJ; Tue, 16 Mar 2021 02:14:52 -0400 (EDT)
-Received: from [192.168.48.23] (host-45-58-219-4.dyn.295.ca [45.58.219.4])
-        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dgilbert@interlog.com)
-        by mail-1.ca.inter.net (Postfix) with ESMTPSA id 04B102EA1C9;
-        Tue, 16 Mar 2021 02:32:12 -0400 (EDT)
-Reply-To: dgilbert@interlog.com
-Subject: Re: [syzbot] KASAN: invalid-free in sg_finish_scsi_blk_rq
-To:     syzbot <syzbot+0a0e8ecea895d38332e6@syzkaller.appspotmail.com>,
-        jejb@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        syzkaller-bugs@googlegroups.com
-References: <000000000000a6bf1605bd9db661@google.com>
-From:   Douglas Gilbert <dgilbert@interlog.com>
-Message-ID: <976bba49-6d5c-b567-36d9-502275252961@interlog.com>
-Date:   Tue, 16 Mar 2021 02:32:11 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 16 Mar 2021 02:34:55 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26233C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 23:34:52 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id l15so9021506qvl.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 23:34:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SByyMFSlLntBAm8fHgqN+CmCCGC2J92yQYTbduz/8F4=;
+        b=s+uLqyFrjkMmW5YeJaqvGeFwM5DpyLE4ZA0G18plRKW6nkBDny7Y1Hg1jB6l1VviZs
+         iVQoYuy06c2imtqXONxNojwDzI11L8Qa06mrjwRw6EcTYvUlMhR+8Lp+oxxpVoz2r6MV
+         HCP6FzftAUKiF/AxuYU1jXZbpbdmmwlN9PG7xFbZmfgZdYL+bi74iBxGEJEqwnRK4pu9
+         Fe9EJOMXK2UxSnubdPd0khIQUofJ3iqj6+JDqsiJeis2fVUrcTajpg9ImNlmjB0Trox9
+         sLfwQf7pNCciXu7qXbTOgcWM9gefBhaZEvrcyCTLdK787ft3FfHDgyoYYOzozCIKWYfd
+         QtFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SByyMFSlLntBAm8fHgqN+CmCCGC2J92yQYTbduz/8F4=;
+        b=DJs7X165n4lUPTtDw2BTv531DEkJ1bxDgA93bhCEBsYjAWCDzYlEUpcS+7LXAlHCk/
+         wbCBnvHwhl7NoBJtBwQRssAjqH/LletvtpMrAzPFY1RpgR0TdgixadmkewJ7OwiLkboK
+         KQR5La1AJrF2V6GXAzjFF3zYW5S2PKGWVmkq4UUBfA2CxI4UFM5J86aNVKo0ix6jPsrm
+         LqNbLbLNQstCfAoLYKLQStdVEBU8dov2BHWP9J53eeZiXCJbfWojUKS80j/uMk1xbPrq
+         9c066Vq0rQJ6urjbkyrvILAX3lSGKxjIt7SD5TInaObJHbNi6Ldxw5LlEkVy3gh2vtJe
+         iSdA==
+X-Gm-Message-State: AOAM531n5b7TSJos9FndJPML68HGpBHz4rwC0XOOyuqZfdUl4TbTLMn5
+        vxjurnwFj9M6JZzKBK9MWK0JJfNaEwrydcuk2z3s7A==
+X-Google-Smtp-Source: ABdhPJwCeQcT66aWyysAq/F0mnL+lIXNOvkkdqOLUYYKOZSFIJs9a705sEfwv8vZeNPeivpqwej8TWOU/YNOMe3w00c=
+X-Received: by 2002:a0c:8304:: with SMTP id j4mr14226424qva.18.1615876491060;
+ Mon, 15 Mar 2021 23:34:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <000000000000a6bf1605bd9db661@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+References: <20210316024410.19967-1-walter-zh.wu@mediatek.com>
+In-Reply-To: <20210316024410.19967-1-walter-zh.wu@mediatek.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 16 Mar 2021 07:34:39 +0100
+Message-ID: <CACT4Y+aMKH24F6DO=iKX0jDmxm4MCuJkA-OTkmgbfDm73LLKhQ@mail.gmail.com>
+Subject: Re: [PATCH v2] task_work: kasan: record task_work_add() call stack
+To:     Walter Wu <walter-zh.wu@mediatek.com>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-15 9:59 p.m., syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    d98f554b Add linux-next specific files for 20210312
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1189318ad00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=e362835d2e58cef6
-> dashboard link: https://syzkaller.appspot.com/bug?extid=0a0e8ecea895d38332e6
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-
-No need, I think I can see how it happens. A particular type of resource
-error from the block layer, together with a 32 byte (or larger) SCSI
-command. I'm testing a patch.
-
-Doug Gilbert
-
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+0a0e8ecea895d38332e6@syzkaller.appspotmail.com
-> 
-> ==================================================================
-> BUG: KASAN: double-free or invalid-free in slab_free mm/slub.c:3161 [inline]
-> BUG: KASAN: double-free or invalid-free in kfree+0xe5/0x7f0 mm/slub.c:4215
-> 
-> CPU: 0 PID: 10481 Comm: syz-executor.5 Not tainted 5.12.0-rc2-next-20210312-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->   __dump_stack lib/dump_stack.c:79 [inline]
->   dump_stack+0x141/0x1d7 lib/dump_stack.c:120
->   print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
->   kasan_report_invalid_free+0x51/0x80 mm/kasan/report.c:357
->   ____kasan_slab_free mm/kasan/common.c:340 [inline]
->   __kasan_slab_free+0x118/0x130 mm/kasan/common.c:367
->   kasan_slab_free include/linux/kasan.h:200 [inline]
->   slab_free_hook mm/slub.c:1562 [inline]
->   slab_free_freelist_hook+0x92/0x210 mm/slub.c:1600
->   slab_free mm/slub.c:3161 [inline]
->   kfree+0xe5/0x7f0 mm/slub.c:4215
->   scsi_req_free_cmd include/scsi/scsi_request.h:28 [inline]
->   sg_finish_scsi_blk_rq+0x690/0x810 drivers/scsi/sg.c:3224
->   sg_common_write+0xa07/0xe70 drivers/scsi/sg.c:1132
->   sg_v3_submit+0x3b1/0x530 drivers/scsi/sg.c:797
->   sg_ctl_sg_io drivers/scsi/sg.c:1785 [inline]
->   sg_ioctl_common+0x3c86/0x97f0 drivers/scsi/sg.c:2014
->   sg_ioctl+0x7c/0x110 drivers/scsi/sg.c:2229
->   vfs_ioctl fs/ioctl.c:48 [inline]
->   __do_sys_ioctl fs/ioctl.c:753 [inline]
->   __se_sys_ioctl fs/ioctl.c:739 [inline]
->   __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
->   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x465f69
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f8413efa188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465f69
-> RDX: 0000000020001780 RSI: 0000000000002285 RDI: 0000000000000003
-> RBP: 00000000004bfa8f R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
-> R13: 00007ffe20e16e2f R14: 00007f8413efa300 R15: 0000000000022000
-> 
-> Allocated by task 10481:
->   kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->   kasan_set_track mm/kasan/common.c:46 [inline]
->   set_alloc_info mm/kasan/common.c:427 [inline]
->   ____kasan_kmalloc mm/kasan/common.c:506 [inline]
->   ____kasan_kmalloc mm/kasan/common.c:465 [inline]
->   __kasan_kmalloc+0x99/0xc0 mm/kasan/common.c:515
->   kmalloc include/linux/slab.h:561 [inline]
->   kzalloc include/linux/slab.h:686 [inline]
->   sg_start_req+0x16f/0x24e0 drivers/scsi/sg.c:3044
->   sg_common_write+0x5fd/0xe70 drivers/scsi/sg.c:1109
->   sg_v3_submit+0x3b1/0x530 drivers/scsi/sg.c:797
->   sg_ctl_sg_io drivers/scsi/sg.c:1785 [inline]
->   sg_ioctl_common+0x3c86/0x97f0 drivers/scsi/sg.c:2014
->   sg_ioctl+0x7c/0x110 drivers/scsi/sg.c:2229
->   vfs_ioctl fs/ioctl.c:48 [inline]
->   __do_sys_ioctl fs/ioctl.c:753 [inline]
->   __se_sys_ioctl fs/ioctl.c:739 [inline]
->   __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
->   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Freed by task 10481:
->   kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->   kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
->   kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
->   ____kasan_slab_free mm/kasan/common.c:360 [inline]
->   ____kasan_slab_free mm/kasan/common.c:325 [inline]
->   __kasan_slab_free+0xf5/0x130 mm/kasan/common.c:367
->   kasan_slab_free include/linux/kasan.h:200 [inline]
->   slab_free_hook mm/slub.c:1562 [inline]
->   slab_free_freelist_hook+0x92/0x210 mm/slub.c:1600
->   slab_free mm/slub.c:3161 [inline]
->   kfree+0xe5/0x7f0 mm/slub.c:4215
->   sg_start_req+0x1b33/0x24e0 drivers/scsi/sg.c:3106
->   sg_common_write+0x5fd/0xe70 drivers/scsi/sg.c:1109
->   sg_v3_submit+0x3b1/0x530 drivers/scsi/sg.c:797
->   sg_ctl_sg_io drivers/scsi/sg.c:1785 [inline]
->   sg_ioctl_common+0x3c86/0x97f0 drivers/scsi/sg.c:2014
->   sg_ioctl+0x7c/0x110 drivers/scsi/sg.c:2229
->   vfs_ioctl fs/ioctl.c:48 [inline]
->   __do_sys_ioctl fs/ioctl.c:753 [inline]
->   __se_sys_ioctl fs/ioctl.c:739 [inline]
->   __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
->   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Last potentially related work creation:
->   kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->   kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
->   kvfree_call_rcu+0x74/0x8c0 kernel/rcu/tree.c:3597
->   drop_sysctl_table+0x3c0/0x4e0 fs/proc/proc_sysctl.c:1646
->   unregister_sysctl_table fs/proc/proc_sysctl.c:1684 [inline]
->   unregister_sysctl_table+0xc2/0x190 fs/proc/proc_sysctl.c:1659
->   mpls_dev_sysctl_unregister net/mpls/af_mpls.c:1442 [inline]
->   mpls_dev_notify+0x64d/0x8b0 net/mpls/af_mpls.c:1632
->   notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
->   call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2063
->   call_netdevice_notifiers_extack net/core/dev.c:2075 [inline]
->   call_netdevice_notifiers net/core/dev.c:2089 [inline]
->   dev_change_name+0x447/0x690 net/core/dev.c:1346
->   do_setlink+0x2c1f/0x3a70 net/core/rtnetlink.c:2688
->   __rtnl_newlink+0xdc6/0x1710 net/core/rtnetlink.c:3376
->   rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3491
->   rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
->   netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
->   netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
->   netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
->   netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
->   sock_sendmsg_nosec net/socket.c:654 [inline]
->   sock_sendmsg+0xcf/0x120 net/socket.c:674
->   __sys_sendto+0x21c/0x320 net/socket.c:1977
->   __do_sys_sendto net/socket.c:1989 [inline]
->   __se_sys_sendto net/socket.c:1985 [inline]
->   __x64_sys_sendto+0xdd/0x1b0 net/socket.c:1985
->   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> The buggy address belongs to the object at ffff88802ae5f400
->   which belongs to the cache kmalloc-256 of size 256
-> The buggy address is located 0 bytes inside of
->   256-byte region [ffff88802ae5f400, ffff88802ae5f500)
-> The buggy address belongs to the page:
-> page:ffffea0000ab9780 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2ae5e
-> head:ffffea0000ab9780 order:1 compound_mapcount:0
-> flags: 0xfff00000010200(slab|head)
-> raw: 00fff00000010200 0000000000000000 0000000600000001 ffff888010841b40
-> raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> 
-> Memory state around the buggy address:
->   ffff88802ae5f300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->   ffff88802ae5f380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->> ffff88802ae5f400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->                     ^
->   ffff88802ae5f480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->   ffff88802ae5f500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> ==================================================================
-> 
-> 
+On Tue, Mar 16, 2021 at 3:44 AM Walter Wu <walter-zh.wu@mediatek.com> wrote:
+>
+> Why record task_work_add() call stack?
+> Syzbot reports many use-after-free issues for task_work, see [1].
+> After see the free stack and the current auxiliary stack, we think
+> they are useless, we don't know where register the work, this work
+> may be the free call stack, so that we miss the root cause and
+> don't solve the use-after-free.
+>
+> Add task_work_add() call stack into KASAN auxiliary stack in
+> order to improve KASAN report. It is useful for programmers
+> to solve use-after-free issues.
+>
+> [1]: https://groups.google.com/g/syzkaller-bugs/search?q=kasan%20use-after-free%20task_work_run
+>
+> Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
+> Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Andrey Konovalov <andreyknvl@google.com>
+> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Oleg Nesterov <oleg@redhat.com>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
+>
+> v2: Fix kasan_record_aux_stack() calling sequence issue.
+>     Thanks for Dmitry's suggestion
 
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+
+> ---
+>  kernel/task_work.c | 3 +++
+>  mm/kasan/kasan.h   | 2 +-
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/task_work.c b/kernel/task_work.c
+> index 9cde961875c0..3d4852891fa8 100644
+> --- a/kernel/task_work.c
+> +++ b/kernel/task_work.c
+> @@ -34,6 +34,9 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
+>  {
+>         struct callback_head *head;
+>
+> +       /* record the work call stack in order to print it in KASAN reports */
+> +       kasan_record_aux_stack(work);
+> +
+>         do {
+>                 head = READ_ONCE(task->task_works);
+>                 if (unlikely(head == &work_exited))
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 3436c6bf7c0c..e4629a971a3c 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -146,7 +146,7 @@ struct kasan_alloc_meta {
+>         struct kasan_track alloc_track;
+>  #ifdef CONFIG_KASAN_GENERIC
+>         /*
+> -        * call_rcu() call stack is stored into struct kasan_alloc_meta.
+> +        * The auxiliary stack is stored into struct kasan_alloc_meta.
+>          * The free stack is stored into struct kasan_free_meta.
+>          */
+>         depot_stack_handle_t aux_stack[2];
+> --
+> 2.18.0
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20210316024410.19967-1-walter-zh.wu%40mediatek.com.
