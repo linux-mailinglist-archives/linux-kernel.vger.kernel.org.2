@@ -2,72 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFBF33DC83
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:23:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A2933DC87
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236791AbhCPSX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:23:26 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:55465 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232419AbhCPSW6 (ORCPT
+        id S236902AbhCPS0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:26:33 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43628 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232874AbhCPS0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:22:58 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 6C16022238;
-        Tue, 16 Mar 2021 19:22:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1615918976;
+        Tue, 16 Mar 2021 14:26:07 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615919162;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=C6lxzdYWjc5HQ4RAtVvQYiQ7satUE+Bd1YcmCxWTW9M=;
-        b=cGzi/3+3BIIcYMVEgjfjfDvy6Gk5lzjULHA6cEiaoUwz0QPbk6UCslKYwhFI7sZ2CDzku+
-        bUkvlIix7mHttd5UxyEZKPWvQUc4eex1XcWpPEVotc44gqY/yTdoKquHnM0W4QLTlE22r0
-        bFo71eWQknIVV00g07JrqYeyzce2q/I=
+        bh=+G5l2ZyXKfPHWIjfEkFRDIpP0OgtWKQdZM7dN4jPv1U=;
+        b=xUkS0kG4omrjwop5jDWp+T4Qz3nAxQLDt8xud+XYe5Ah0h6Ny7/F3FKOlSZR1JRVGMU4GP
+        AgtYn1zX/+/n4X4wz+xxAL9NnpI2Py6LSIZxq2GZCmsK5i3vw/QHZ3AhRnaCzrPKBd7EaO
+        rbXYG8tobyrmEELV3wiZJZgQlZurwpFcxTp3TmvhjzqrXZ6Kg/60F1jjZXt9uSHqlYYAk2
+        zdjgA1cBscis1Nej3yojo9uJVGUYafuDqjTW8CTBAiUumjmZLF37R91n585YkNXYyndUrv
+        hnyzM2jxc05UafJbmew1ePBzMzeh2P5Aslkf1BvaJckXtVwViB0i28Q7QD/QQg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615919162;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+G5l2ZyXKfPHWIjfEkFRDIpP0OgtWKQdZM7dN4jPv1U=;
+        b=HhowCkxdMPqJjyCBuXzCZv6hPm1yiFkPUiVzl2tN6dHcVkWXCOlcb9TiE1w5yhHqIbYzc2
+        iidN/AqFzqKQDmAA==
+To:     Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Pedro Alves <palves@redhat.com>, Peter Anvin <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH RESEND v4 0/4] x86: fix get_nr_restart_syscall()
+In-Reply-To: <20210316181022.GA25986@redhat.com>
+References: <20210201174555.GA17819@redhat.com> <20210203231944.GA17467@redhat.com> <20210316181022.GA25986@redhat.com>
+Date:   Tue, 16 Mar 2021 19:26:01 +0100
+Message-ID: <87r1kfymyu.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 16 Mar 2021 19:22:56 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Kuldeep Singh <kuldeep.singh@nxp.com>, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to json schema
-In-Reply-To: <20210316180655.6oidvffum7yuwknr@ti.com>
-References: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
- <20210315183051.ugvmz4zqrvuo6iqq@ti.com>
- <067c42f3726578ebe60d201a141dfdb6@walle.cc>
- <20210316180655.6oidvffum7yuwknr@ti.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <97410b24785492f9e80999dd7a1ffdea@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-16 19:06, schrieb Pratyush Yadav:
-> On 16/03/21 06:45PM, Michael Walle wrote:
->> Am 2021-03-15 19:30, schrieb Pratyush Yadav:
->> 
->> ..
->> > > +patternProperties:
->> > > +  "@[0-9a-f]+":
->> 
->> Shouldn't this be "^.*@[0-9a-f]+$"?
-> 
-> The pattern has to match _anywhere_ in the string so both should match
-> the flash node. Your pattern is more "strict" or "precise". See the 
-> note
-> at [0].
+On Tue, Mar 16 2021 at 19:10, Oleg Nesterov wrote:
 
-I know, but specifying the whole line is widely used in the bindings.
+> On 02/04, Oleg Nesterov wrote:
+>>
+>> It seems that nobody objects,
+>>
+>> Andrew, Andy, Thomas, how do you think this series should be routed?
+>
+> ping...
+>
+> What can I do to finally get this merged?
+>
+> Should I resend once again? Whom?
 
--michael
+I'll pick it up then
