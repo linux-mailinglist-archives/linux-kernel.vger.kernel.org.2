@@ -2,146 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E5D33D889
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:03:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF07D33D898
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238276AbhCPQCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 12:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238340AbhCPQAs (ORCPT
+        id S238387AbhCPQDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 12:03:11 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:35412 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238281AbhCPQCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 12:00:48 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7DAC0613D9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 09:00:40 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id m7so18667887iow.7
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 09:00:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XVy1i3oJwcI1/KH1Kh17qeuVz7si7JTF7Jumd8bjlz0=;
-        b=PqZBoIM4deh7CCbhnF3C7X9aKO/3ivWr8/mhZhCuBDh6oawhchHtT5PdOXhUgDH6u6
-         TqPUO4th0kMVt7snGzqymgpogBSsuuwqpJZAo3PAOSBv18GTYJdOjBpPgY2gHB+EMquL
-         GIe3A023T3yfnSyJ2IotXoIWqH1p52KVPop33XegRfkqOgGJIwGg6GvG8Hg6Um/sszOi
-         i9FmeH+iP6L0AUOPB4GUyaAeDz9XdbLwFyf9Y1UGJRMia0ZzPXPVE/tzG/ZJ1nXbuhMI
-         hd7zX3LefUW9Zh2sqHHgrBDvFFjDbqOkWhefmi9dKU8BmjS7NydDkB2T/jlyhAQ2tQ5u
-         9zmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XVy1i3oJwcI1/KH1Kh17qeuVz7si7JTF7Jumd8bjlz0=;
-        b=qSDJ48oVAPIwoMdWsx6tJBPVqoHuqOpimcMx5hnJNMZ4+anJoBtlZL85gP9pNc6awq
-         5uxAEDjSCXLWnzEGUvsA/Ydun7VN4MhSsY0bImon4zsN8mH1LvvcaO0eAq3d1uiYaD85
-         BGZjppG7W5M+kSzMZAAvpXzzpot76vhS33D4f65sLzSbo361MAzk25UFRWsHLtSMn1xM
-         1C6UxNmAsuucfbhg+GHJyCPP1yQQAjnPgugTvWfM5I28L5WrBbHW/gXMzRiYpt5WEBUf
-         lTg0Ee2WISTuXykDdI4hrQTHVpQAnKg2n/4RL5zKxW7eV8GHCDewTB1otgGFEj/k5JyL
-         tErQ==
-X-Gm-Message-State: AOAM5337/KROa2sNE68Uq258CGqmu5rOv8MJaUxwTj2MPfKgAaQzcszq
-        tuO/S7I7R6bbm8knZwbZs31Zjaw/A7ZK5HZe
-X-Google-Smtp-Source: ABdhPJxN3vPbvS3WWhuKpN0Lv5nOuTPD1xAs6+/+2Bbmuf/uhiF27eE0WxC3PB+gwOHHWjcrjTQbfg==
-X-Received: by 2002:a6b:d318:: with SMTP id s24mr3965310iob.89.1615910439645;
-        Tue, 16 Mar 2021 09:00:39 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id k125sm8870996iof.14.2021.03.16.09.00.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 09:00:39 -0700 (PDT)
-Subject: Re: [PATCH net-next 0/3] net: ipa: QMI fixes
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210315152112.1907968-1-elder@linaro.org>
- <20210315163807.GA29414@work>
- <3e01bc57-8667-4c56-2806-2ba009887bd4@linaro.org>
- <20210316032557.GB29414@work>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <54f8962c-6503-8d92-2a6c-875c112441a4@linaro.org>
-Date:   Tue, 16 Mar 2021 11:00:37 -0500
+        Tue, 16 Mar 2021 12:02:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=vqqIJKKtZ0Pg96LQ/1Z1q/KlFFpVkNAe+8aEWrs/hj4=; b=aLfuYJGuyB5Vf3NXBbVi7orqFM
+        EDGLeXMnQdoQH9BV1vcMoXyuK9z93wWuPACR4VyTKSTtxBcCGLJv06fHAktuwiezT1YitAoW6wR1X
+        HvT8pZhWTDbPTx4/Yx8zliILh8pVR2V/Q/NfhhuJH6rkKu0rh+ZWSfM71udHN10RroyIwvdLBmi/x
+        JowULXwT9MOdkxVUpQ3witDiL5FZ4SD+ANuLnpzEKngB+XqRkzhMd/UwHnEqGWuGSt5KcVGSR2qz2
+        Hoa0CJ4Ud/gwHBkjHMtsgrO77SVKESL0pH0xqOtjxAQukb1UQXUpq3zW9dr/Uu471yKxzBc7lV11d
+        3TDfQv2Q==;
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1lMC9R-0001Oz-Na; Tue, 16 Mar 2021 10:02:34 -0600
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Ira Weiny <iweiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>
+References: <20210311233142.7900-1-logang@deltatee.com>
+ <20210311233142.7900-10-logang@deltatee.com> <20210316080051.GD15949@lst.de>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <52a9e6e3-fc00-495a-69bb-26ff0b22775a@deltatee.com>
+Date:   Tue, 16 Mar 2021 10:02:33 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210316032557.GB29414@work>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20210316080051.GD15949@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, iweiny@intel.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, hch@lst.de
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [RFC PATCH v2 09/11] block: Add BLK_STS_P2PDMA
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/15/21 10:25 PM, Manivannan Sadhasivam wrote:
-> On Mon, Mar 15, 2021 at 11:50:15AM -0500, Alex Elder wrote:
->> On 3/15/21 11:38 AM, Manivannan Sadhasivam wrote:
->>> Hi Alex,
->>>
->>> On Mon, Mar 15, 2021 at 10:21:09AM -0500, Alex Elder wrote:
->>>> Mani Sadhasivam discovered some errors in the definitions of some
->>>> QMI messages used for IPA.  This series addresses those errors,
->>>> and extends the definition of one message type to include some
->>>> newly-defined fields.
->>>>
->>>
->>> Thanks for the patches. I guess you need to add Fixes tag for patches 1,2 and
->>> they should be backported to stable.
+
+
+On 2021-03-16 2:00 a.m., Christoph Hellwig wrote:
+> On Thu, Mar 11, 2021 at 04:31:39PM -0700, Logan Gunthorpe wrote:
+>> Create a specific error code for when P2PDMA pages are passed to a block
+>> devices that cannot map them (due to no IOMMU support or ACS protections).
 >>
->> I did not do that, intentionally.  The reason is that the
->> existing code only supports IPA v3.5.1 and IPAv4.2.  And
->> these bugs seem to cause no problems there.
->>
->> There are some patches coming very soon that will add
->> more formal support for IPA v4.5 (where I know you
->> found these issues).  Those will not be back-ported.
->>
->> So these fixes don't appear to be necessary for existing
->> supported platforms.
->>
+>> This makes request errors in these cases more informative of as to what
+>> caused the error.
 > 
-> Hmm, okay. Then please mention this information in the commit description(s)
-> that the fix is only needed for IPA4.5.
+> I really don't think we should bother with a specific error code here,
+> we don't add a new status for every single possible logic error in the
+> caller.
 
-Mani, you ACKed all three patches after you sent this.
+I originally had BLK_STS_IOERR but those errors suggested to people that
+the hardware had failed on the request when in fact it was a user error.
+I'll try BLK_STS_TARGET unless there's any objection or someone thinks
+another error code would make more sense.
 
-Are you expecting me to send a new version of the code,
-or are you willing to accept the series as-is?
-
-Thanks.
-
-					-Alex
-
-> 
-> Thanks,
-> Mani
-> 
->> If you still believe I should have these back-ported,
->> I have no objection to re-posting for that.  But I
->> wanted to explain my reasoning before doing it.
->>
->> --> Do you still think I should have these back-ported?
->>
->> Thanks.
->>
->> 					-Alex
->>
->>>
->>> Thanks,
->>> Mani
->>>
->>>> 					-Alex
->>>>
->>>> Alex Elder (3):
->>>>     net: ipa: fix a duplicated tlv_type value
->>>>     net: ipa: fix another QMI message definition
->>>>     net: ipa: extend the INDICATION_REGISTER request
->>>>
->>>>    drivers/net/ipa/ipa_qmi_msg.c | 78 +++++++++++++++++++++++++++++++----
->>>>    drivers/net/ipa/ipa_qmi_msg.h |  6 ++-
->>>>    2 files changed, 74 insertions(+), 10 deletions(-)
->>>>
->>>> -- 
->>>> 2.27.0
->>>>
->>
-
+Logan
