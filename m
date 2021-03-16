@@ -2,84 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7785B33CA5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 01:34:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A370F33CA61
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 01:36:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233684AbhCPAeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 20:34:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230319AbhCPAeD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 20:34:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25B3564EE2;
-        Tue, 16 Mar 2021 00:34:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615854842;
-        bh=DwO2abTrTPCBV+RWz5NIUo7YvPd35VK+3GPjS72Pk2c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GGGl+0vdncBll66DBxDxVWfhi8VZEKl2Hsx6U1GEcS/g+imWRE8u5iSCvACHvy8K3
-         +y4W/0cBVg8kM4IBqSvqtDYwTpwT9hMeFvWxRdod8HA0MwV93WoMWIDTeKlu5uc6jC
-         IpyqIwqfQT67QKOIe+Kb4bHcKYnI2WU1Y5yUWDMXazEBd2ctHQiNnjoSB5vxEg4ucU
-         13ece8s49dFXct+CynmfjXr/xJwCc1lrDzIzAsXMLNn9jeCcNGFJIFIjYY0nS7Gwya
-         a+4AoIPMv/GSTQ+4UwYMbaLqR5dF4ytYnIe4jVMbpIq/g1/SFC0FIBDXF1U/RJjwZ7
-         RN+U+EsMNNarg==
-Date:   Tue, 16 Mar 2021 08:33:57 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Sanket Parmar <sparmar@cadence.com>
-Cc:     Pawel Laszczak <pawell@cadence.com>,
-        "a-govindraju@ti.com" <a-govindraju@ti.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rahul Kumar <kurahul@cadence.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kishon@ti.com" <kishon@ti.com>
-Subject: Re: [PATCH 2/2] usb: cdns3: Optimize DMA request buffer allocation
-Message-ID: <20210316003357.GC15335@b29397-desktop>
-References: <1615267180-9289-1-git-send-email-sparmar@cadence.com>
- <1615267180-9289-2-git-send-email-sparmar@cadence.com>
- <20210314051048.GA30122@b29397-desktop>
- <BY5PR07MB81194FB5A32CE9D6B793FF30B06C9@BY5PR07MB8119.namprd07.prod.outlook.com>
+        id S231686AbhCPAf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 20:35:29 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:13932 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232830AbhCPAf0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 20:35:26 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DzvR64D47zkZ1p;
+        Tue, 16 Mar 2021 08:33:38 +0800 (CST)
+Received: from [127.0.0.1] (10.69.30.204) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Tue, 16 Mar 2021
+ 08:35:08 +0800
+Subject: Re: [RFC v2] net: sched: implement TCQ_F_CAN_BYPASS for lockless
+ qdisc
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
+        <weiwan@google.com>, <cong.wang@bytedance.com>,
+        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>
+References: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
+ <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
+ <20210315115332.1647e92b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <3838b7c2-c32f-aeda-702a-5cb8f712ec0c@huawei.com>
+Date:   Tue, 16 Mar 2021 08:35:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BY5PR07MB81194FB5A32CE9D6B793FF30B06C9@BY5PR07MB8119.namprd07.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210315115332.1647e92b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-03-15 15:51:04, Sanket Parmar wrote:
-> > > +
-> > >  	priv_req->flags |= REQUEST_UNALIGNED;
-> > >  	trace_cdns3_prepare_aligned_request(priv_req);
-> > >
-> > > @@ -3088,11 +3113,11 @@ static void cdns3_gadget_exit(struct cdns
-> > *cdns)
-> > >  		struct cdns3_aligned_buf *buf;
-> > >
-> > >  		buf = cdns3_next_align_buf(&priv_dev->aligned_buf_list);
-> > > -		dma_free_coherent(priv_dev->sysdev, buf->size,
-> > > -				  buf->buf,
-> > > -				  buf->dma);
-> > > +		dma_unmap_single(priv_dev->sysdev, buf->dma, buf->size,
-> > > +			buf->dir);
-> > 
-> > It only needs to DMA unmap after DMA has completed, this buf will not be
-> > used, otherwise, the kfree below will cause issue.
+On 2021/3/16 2:53, Jakub Kicinski wrote:
+> On Mon, 15 Mar 2021 11:10:18 +0800 Yunsheng Lin wrote:
+>> @@ -606,6 +623,11 @@ static const u8 prio2band[TC_PRIO_MAX + 1] = {
+>>   */
+>>  struct pfifo_fast_priv {
+>>  	struct skb_array q[PFIFO_FAST_BANDS];
+>> +
+>> +	/* protect against data race between enqueue/dequeue and
+>> +	 * qdisc->empty setting
+>> +	 */
+>> +	spinlock_t lock;
+>>  };
+>>  
+>>  static inline struct skb_array *band2list(struct pfifo_fast_priv *priv,
+>> @@ -623,7 +645,10 @@ static int pfifo_fast_enqueue(struct sk_buff *skb, struct Qdisc *qdisc,
+>>  	unsigned int pkt_len = qdisc_pkt_len(skb);
+>>  	int err;
+>>  
+>> -	err = skb_array_produce(q, skb);
+>> +	spin_lock(&priv->lock);
+>> +	err = __ptr_ring_produce(&q->ring, skb);
+>> +	WRITE_ONCE(qdisc->empty, false);
+>> +	spin_unlock(&priv->lock);
+>>  
+>>  	if (unlikely(err)) {
+>>  		if (qdisc_is_percpu_stats(qdisc))
+>> @@ -642,6 +667,7 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+>>  	struct sk_buff *skb = NULL;
+>>  	int band;
+>>  
+>> +	spin_lock(&priv->lock);
+>>  	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
+>>  		struct skb_array *q = band2list(priv, band);
+>>  
+>> @@ -655,6 +681,7 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+>>  	} else {
+>>  		WRITE_ONCE(qdisc->empty, true);
+>>  	}
+>> +	spin_unlock(&priv->lock);
+>>  
+>>  	return skb;
+>>  }
 > 
-> This part is not clear.  Aligned DMA buffer is allocated and mapped in cdns3_prepare_aligned_request_buf()
-> and put into aligned_buf_list. While unloading the gadget, We need to undo the same if aligned_buf_list is not
-> empty.  Am I missing something here? 
+> I thought pfifo was supposed to be "lockless" and this change
+> re-introduces a lock between producer and consumer, no?
 
-My point is this unmap operation is useless since there is no user for
-aligned buf, and it calls kfree afterwards. You could also keep it as it has
-no harm.
+Yes, the lock breaks the "lockless" of the lockless qdisc for now
+I do not how to solve the below data race locklessly:
+
+	CPU1:					CPU2:
+      dequeue skb				 .
+	  .				    	 .	
+	  .				    enqueue skb
+	  .					 .
+	  .			 WRITE_ONCE(qdisc->empty, false);
+	  .					 .
+	  .					 .
+WRITE_ONCE(qdisc->empty, true);
+
+If the above happens, the qdisc->empty is true even if the qdisc has some
+skb, which may cuase out of order or packet stuck problem.
+
+It seems we may need to update ptr_ring' status(empty or not) while
+enqueuing/dequeuing atomically in the ptr_ring implementation.
+
+Any better idea?
 
 > 
-> Also, I will post v2 of this patch which uses dma_*_noncoherent APIs suggested by Christoph Hellwig.
-
--- 
-
-Thanks,
-Peter Chen
+> .
+> 
 
