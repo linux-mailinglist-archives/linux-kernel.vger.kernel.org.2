@@ -2,91 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 563EF33D4D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C4733D4DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhCPN1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231703AbhCPN1D (ORCPT
+        id S230169AbhCPN2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:28:39 -0400
+Received: from mail-ej1-f41.google.com ([209.85.218.41]:40978 "EHLO
+        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232908AbhCPN2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:27:03 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8EFC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 06:27:02 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id u16so10468850wrt.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 06:27:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=67uoJKdYBh8tQV40HIG90UexwfHLuY9jTAB6z5BSSrA=;
-        b=HMhpx5SEBC+Au2+GhEcsH/vL4DzQcuHWMUHGM3+CxAfeXPJW5W9c7y+bpE8KQTsGkf
-         8MgD0w1B23LEPRpVlRfUuFf1zgyuuZHkXSrmwHgQfgYh28jTjn+IgpLso6a3uj836qxV
-         K4uJdZdpsEgCSRZEQYnFIbbb85YV6TnJBcDdg=
+        Tue, 16 Mar 2021 09:28:22 -0400
+Received: by mail-ej1-f41.google.com with SMTP id lr13so72194307ejb.8;
+        Tue, 16 Mar 2021 06:28:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=67uoJKdYBh8tQV40HIG90UexwfHLuY9jTAB6z5BSSrA=;
-        b=UpFTM7yP02e6RXUY5TQYhYWYYhstNzSCXoft0I5jsT0wGLTVFiHWrsAB6m4Wzaw51Q
-         d6KyG2NMDOrUy1Cypuv0kqiK0bJ4NHuOHGy9zIvgFGPI3rp8JfhWSI0TioOFMeYAPTQG
-         LBmM3/kg1At6aVBUTaB0FufgdMAFp0O2hgM/XYK2Rfx7CHOWf0nP0pITYuE5nIPGnTbO
-         A9/iBIfb09VW4kXU9UVzwlvqPPEYmJi8Khe+jitcpD6fHfMFhhWVe4C+64Ln5mB0tMq1
-         E9tYYSG91IaOwqs8CW37jfdatfp69ejDQXXjT8hU732BCCGDauHJaYDnhJuXtv4QsqwW
-         XgSg==
-X-Gm-Message-State: AOAM530vShRUv/bFqtVwKftm3R1KTmhvSdO6sxtmKhVcgahtDyyvZxC3
-        k5yI9P/xwqEdgRmU5xHB74U/8g==
-X-Google-Smtp-Source: ABdhPJy2vnjiRPaz8kylIqsrFYYSv6pCZwN9ldhAXs1JicKsDcMJIb0IEWwo7urOQDh+fgApOxjIjw==
-X-Received: by 2002:adf:a219:: with SMTP id p25mr5036828wra.400.1615901221495;
-        Tue, 16 Mar 2021 06:27:01 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::4:54e6])
-        by smtp.gmail.com with ESMTPSA id g11sm21801555wrw.89.2021.03.16.06.27.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 06:27:00 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 13:27:00 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: [PATCH v5] printk: Userspace format enumeration support
-Message-ID: <YFCyJBg26TGdjBxu@chrisdown.name>
-References: <YEgvR6Wc1xt0qupy@chrisdown.name>
- <YEtNKMF3KH1kUDxY@alley>
- <YEtyUM07gsqR6ltG@chrisdown.name>
- <YE8wvGHhbV4nAGGI@alley>
- <YE9RK89jLbLQcSEq@chrisdown.name>
- <YFCY2VIlpYc6cANM@alley>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bwzBKawa8QrzF0WVxsZqARsh6y5l0ULdbTOzlAVvjf8=;
+        b=c6FcqB/BMTGnio5EhqINUa6dr81ZOtBHnGTha8ev9PzAm1BCjpA4gE/s9dkhkPMUjE
+         VByO1AV+LKyJhAcmRyxthP5XJTt3J+ObZn7nsIBoq4IrRbCfmdHHaQJ16sMKXf/sfBKp
+         DF2evqBibK0DPylLazoO9Zi8/hECakJ3Ll+Ij86uZ3G0E13tXyqgtRZPsMjdn5JX0GA8
+         KJuwaOpfmHQOZua/wNk59rAFs3ApyoO+RKq2AgZE4GPCrJpi3g8dwE+1UtaGwUFpTMBG
+         TosodGLku0CFvUyFhjiUIqLMlG2WCLGXukcxUjlQBURIEznXvppmpdI1BwuS0r7IWki3
+         02xg==
+X-Gm-Message-State: AOAM533uATYPWa0Nf12jJk/vicK6TKLvAF+0c7TZ2jSTECK3+yuiorVR
+        w0Lm28AmhLVWwUFKE7AHADK6CtWCUu8=
+X-Google-Smtp-Source: ABdhPJzNg7/QZMDxSK8P598pTy7ITIHHfnxE3zgDqUEJxHNVIRtOoSDXPTVAWjgwwKFx39he+ZbJ8A==
+X-Received: by 2002:a17:906:a44f:: with SMTP id cb15mr29191920ejb.420.1615901300059;
+        Tue, 16 Mar 2021 06:28:20 -0700 (PDT)
+Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id r4sm9463218ejd.125.2021.03.16.06.28.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 06:28:19 -0700 (PDT)
+Subject: Re: [RESEND PATCH 01/42] mfd: arizona: use PLATFORM_DEVID_NONE
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Shevchenko <andy@kernel.org>, Milo Kim <milo.kim@ti.com>,
+        Tony Lindgren <tony@atomide.com>, Ray Jui <rjui@broadcom.com>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Chen-Yu Tsai <wens@csie.org>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
+References: <20201028223009.369824-1-krzk@kernel.org>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Message-ID: <fcee4721-1d91-d909-8a03-1c1b0b0ad83b@kernel.org>
+Date:   Tue, 16 Mar 2021 14:28:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YFCY2VIlpYc6cANM@alley>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+In-Reply-To: <20201028223009.369824-1-krzk@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Petr Mladek writes:
->> In my mind, pi_start is really just a special case of pi_next, so the code
->> flow makes sense to me. I'm happy to change it to whatever you like, but
->> it's not immediately obvious to me what that is :-)
->
->Good question! I have missed that pi_start() can be called also with non-zero
->pos when seeking.
->
->OK, pi_start() has to handle pos == 0 special way, so let's handle it
->there. Call pi_next() only when pos != 0.
->
->The following code should do the job. I took this from my previous reply.
->It is already based on the other suggested changes:
+On 28/10/2020 23:29, Krzysztof Kozlowski wrote:
+> Use PLATFORM_DEVID_NONE define instead of "-1" value because:
+>  - it brings some meaning,
+>  - it might point attention why auto device ID was not used.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-That also looks fine, thanks. I'll hopefully have time to send v6 this week.
+Hi Lee,
 
-Thanks for your detailed feedback! :-)
+I sent this patchset some time ago, then made a resend. I did not get
+any feedback from you so I just wonder - are you still considering this
+patchset and shall I resend?
+
+Best regards,
+Krzysztof
+
+> ---
+>  drivers/mfd/arizona-core.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+> index 000cb82023e3..bf48372db605 100644
+> --- a/drivers/mfd/arizona-core.c
+> +++ b/drivers/mfd/arizona-core.c
+> @@ -1043,8 +1043,9 @@ int arizona_dev_init(struct arizona *arizona)
+>  	case CS47L24:
+>  		break; /* No LDO1 regulator */
+>  	default:
+> -		ret = mfd_add_devices(arizona->dev, -1, early_devs,
+> -				      ARRAY_SIZE(early_devs), NULL, 0, NULL);
+> +		ret = mfd_add_devices(arizona->dev, PLATFORM_DEVID_NONE,
+> +				      early_devs, ARRAY_SIZE(early_devs),
+> +				      NULL, 0, NULL);
+>  		if (ret != 0) {
+>  			dev_err(dev, "Failed to add early children: %d\n", ret);
+>  			return ret;
+> 
