@@ -2,160 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EED33DD14
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A431333DD10
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:05:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236718AbhCPTE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 15:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55238 "EHLO
+        id S240240AbhCPTEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 15:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240251AbhCPTEw (ORCPT
+        with ESMTP id S235157AbhCPTET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:04:52 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC99C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:04:40 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id y1so87263ljm.10
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:04:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4xmctPJghbzCxK0UlOH+Mq1rZavHE0MB6cGIt7/nfNk=;
-        b=Fvq3zYIWJXqeliEpcPw2DlNd4Z7cuzmPSXt5zH7IOtyT/4qCHkCM2dQv/y3Pg7SCE+
-         4fVIx1+gg2iqyDqKxbYreKbYwuAFUwcQCCfb4rwfKEPe1n4XNUFRrJI8fcrdQlE+H9zH
-         5+4OO7YkHLl0ikW3SmS5/GqFseKPGqkKzafSDtVFeURjUbqMK+DW56fyPKUQ5IMboY82
-         x3JzGW+Oy76GhErg03A187ggg/ZAdsMbNoIxe+HVyi4lXCn0+3q2EalQBlrhGdYx5hxz
-         SYyZeuVlO7rUzqKw0jFxB1Pwt6DkBDK6+wvFOkr7GGiSd9iAdQIIh+dlEAyKxYAQfTPd
-         UPxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4xmctPJghbzCxK0UlOH+Mq1rZavHE0MB6cGIt7/nfNk=;
-        b=LNlmCmXuwK6Ps0vJAQca8RDL9vJprp7XW4HFzA048AoDUKUXtIgFTKDKrYjmRieKDk
-         Omh/rGAuUnvmwIkbFfZoNzZcXq4ckhqKMPAgMgOCBsQ6o4aZiE5eBlhLplGx25YaxsWY
-         jnHRaet/CG19lhF9J/nwgLW1NefGPlA0WUOLYbZ6Z5d80m1Y7rptwMwM9qHmgaU+nzHS
-         ArEmrDwko1FFZCCAykF8q8P0tGcmVjTX1oLwmNNHBA198eLwc5FT4hA+9EUFrVGgv/IM
-         HU7zRoa7bTH8E5598EZSoPebHh4LUxQ32NLfeWR9mcGpiL4apPzwUh5qzn/rigmZWTwW
-         lB2g==
-X-Gm-Message-State: AOAM532nvrNHHzwib1p7LMLtu6KvjYSGWn+U5E06rumRsRy25ji+LAN9
-        ywCxh7jS2KGZhrfH3/5/olwGYXB/ZU3+MtznvQS6QQ==
-X-Google-Smtp-Source: ABdhPJyrmH/LPRVMNYATc6gz2AQWx1xdP/yG9jsDmCICyaqlhjb5tCgnL8iOgRomqeM5yTRgmisqkZy0ib5HNjKNj5M=
-X-Received: by 2002:a05:651c:1134:: with SMTP id e20mr76134ljo.385.1615921475761;
- Tue, 16 Mar 2021 12:04:35 -0700 (PDT)
+        Tue, 16 Mar 2021 15:04:19 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F00BC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:04:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=i3w44vElpqaOzl4pzxUXr5h81d686QR3cDbvFGGMtiY=; b=ybBjJn2uJC1snrk5Yk/S56oaQq
+        eqTCgaDuWbteqGmDfAvQG8PSNSERYYUfDR3q92+OAcnRy8cLu4ixzOOudBZRKDi+1KQlGBv00XD3v
+        uxh1S16Q8e6MPX1Mze2wU6nus5sCV1OJ095aUlmeuuZBMWGmsuByjIuPCFluBQrDRzDm5Doo/F6FJ
+        6N7OOaepiGhEi6wePzMLd0bo+vH3k+AlBG0lb+zrPBOAzuPD03v6aYWZwLonvAQo1CSmI5cIwGdLC
+        9ZpXWjqmZiMSrHynaqlwylruy8W6RFTVw9WCW1Jj1Coix+NMN0ShzVaOlS+bGH1YY+c2R6NioZomi
+        TnL7U8SA==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMEzG-001VzF-Fk; Tue, 16 Mar 2021 19:04:14 +0000
+Subject: Re: [PATCH] kernel:sys: Fix typo issue
+To:     Xiaofeng Cao <cxfcosmos@gmail.com>, christian.brauner@ubuntu.com,
+        akpm@linux-foundation.org
+Cc:     walken@google.com, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, Xiaofeng Cao <caoxiaofeng@yulong.com>
+References: <20210316112904.10661-1-cxfcosmos@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <fb826420-dcf4-9c98-90ec-cec604cb307b@infradead.org>
+Date:   Tue, 16 Mar 2021 12:04:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210316170135.226381-1-mic@digikod.net> <20210316170135.226381-2-mic@digikod.net>
-In-Reply-To: <20210316170135.226381-2-mic@digikod.net>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 16 Mar 2021 20:04:09 +0100
-Message-ID: <CAG48ez3=M-5WT73HqmFJr6UHwO0+2FJXxcAgRzp6wcd0P3TN=Q@mail.gmail.com>
-Subject: Re: [PATCH v4 1/1] fs: Allow no_new_privs tasks to call chroot(2)
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christoph Hellwig <hch@lst.de>,
-        David Howells <dhowells@redhat.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        John Johansen <john.johansen@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        Kentaro Takeda <takedakn@nttdata.co.jp>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210316112904.10661-1-cxfcosmos@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 6:02 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> =
-wrote:
-> One could argue that chroot(2) is useless without a properly populated
-> root hierarchy (i.e. without /dev and /proc).  However, there are
-> multiple use cases that don't require the chrooting process to create
-> file hierarchies with special files nor mount points, e.g.:
-> * A process sandboxing itself, once all its libraries are loaded, may
->   not need files other than regular files, or even no file at all.
-> * Some pre-populated root hierarchies could be used to chroot into,
->   provided for instance by development environments or tailored
->   distributions.
-> * Processes executed in a chroot may not require access to these special
->   files (e.g. with minimal runtimes, or by emulating some special files
->   with a LD_PRELOADed library or seccomp).
->
-> Unprivileged chroot is especially interesting for userspace developers
-> wishing to harden their applications.  For instance, chroot(2) and Yama
-> enable to build a capability-based security (i.e. remove filesystem
-> ambient accesses) by calling chroot/chdir with an empty directory and
-> accessing data through dedicated file descriptors obtained with
-> openat2(2) and RESOLVE_BENEATH/RESOLVE_IN_ROOT/RESOLVE_NO_MAGICLINKS.
+On 3/16/21 4:29 AM, Xiaofeng Cao wrote:
+> From: Xiaofeng Cao <caoxiaofeng@yulong.com>
+> 
+> change 'infite'     to 'infinite'
+> change 'concurent'  to 'concurrent'
+> change 'memvers'    to 'members'
+> change 'decendants' to 'descendants'
+> change 'argumets'   to 'arguments'
+> 
+> Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
+> ---
+>  kernel/sys.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/sys.c b/kernel/sys.c
+> index 2e2e3f378d97..ecc2f2efc31b 100644
+> --- a/kernel/sys.c
+> +++ b/kernel/sys.c
+> @@ -1584,7 +1584,7 @@ int do_prlimit(struct task_struct *tsk, unsigned int resource,
+>  
+>  	/*
+>  	 * RLIMIT_CPU handling. Arm the posix CPU timer if the limit is not
+> -	 * infite. In case of RLIM_INFINITY the posix CPU timer code
+> +	 * infinite. In case of RLIM_INFINITY the posix CPU timer code
+>  	 * ignores the rlimit.
+>  	 */
+>  	 if (!retval && new_rlim && resource == RLIMIT_CPU &&
 
-I don't entirely understand. Are you writing this with the assumption
-that a future change will make it possible to set these RESOLVE flags
-process-wide, or something like that?
+It would be better to change "posix" to "POSIX" also.
+
+Anyway:
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
 
-As long as that doesn't exist, I think that to make this safe, you'd
-have to do something like the following - let a child process set up a
-new mount namespace for you, and then chroot() into that namespace's
-root:
+thanks.
+-- 
+~Randy
 
-struct shared_data {
-  int root_fd;
-};
-int helper_fn(void *args) {
-  struct shared_data *shared =3D args;
-  mount("none", "/tmp", "tmpfs", MS_NOSUID|MS_NODEV, "");
-  mkdir("/tmp/old_root", 0700);
-  pivot_root("/tmp", "/tmp/old_root");
-  umount("/tmp/old_root", "");
-  shared->root_fd =3D open("/", O_PATH);
-}
-void setup_chroot() {
-  struct shared_data shared =3D {};
-  prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-  clone(helper_fn, my_stack,
-CLONE_VFORK|CLONE_VM|CLONE_FILES|CLONE_NEWUSER|CLONE_NEWNS|SIGCHLD,
-NULL);
-  fchdir(shared.root_fd);
-  chroot(".");
-}
-
-[...]
-> diff --git a/fs/open.c b/fs/open.c
-[...]
-> +static inline int current_chroot_allowed(void)
-> +{
-> +       /*
-> +        * Changing the root directory for the calling task (and its futu=
-re
-> +        * children) requires that this task has CAP_SYS_CHROOT in its
-> +        * namespace, or be running with no_new_privs and not sharing its
-> +        * fs_struct and not escaping its current root (cf. create_user_n=
-s()).
-> +        * As for seccomp, checking no_new_privs avoids scenarios where
-> +        * unprivileged tasks can affect the behavior of privileged child=
-ren.
-> +        */
-> +       if (task_no_new_privs(current) && current->fs->users =3D=3D 1 &&
-
-this read of current->fs->users should be using READ_ONCE()
-
-> +                       !current_chrooted())
-> +               return 0;
-> +       if (ns_capable(current_user_ns(), CAP_SYS_CHROOT))
-> +               return 0;
-> +       return -EPERM;
-> +}
-[...]
-
-Overall I think this change is a good idea.
