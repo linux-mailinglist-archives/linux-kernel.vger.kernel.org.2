@@ -2,166 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD6D33D1C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:27:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFF733D1CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235311AbhCPK1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 06:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235301AbhCPK1C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 06:27:02 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BD9C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 03:27:00 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id h3so9209016qvh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 03:27:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=V0BTN/Z2jXatx08nLmn2iGZ7O1WuylzrrulrDON6R9k=;
-        b=xCib9ZN+FiOtHqn2f2GIRYRiTffT7uatWQxo/AtFklW7YHFihG2zQ/vTE6gNPQNf+9
-         vRO50HskMB8FxFuo2e/yIPiiEjRMNR2akfE/kxzq3hVHcZW6gbBwrXGM/nkazzsBxspT
-         IDDzm1pyKpT157y7ETbYQl89HFKamnR3YLguRbBuNUGLzFKgCZyAKpgnaNfuYaC+pVa6
-         LpmHEpA95pzB9VWM6M9mop0H7Z1xD8Vy9M7yIxp15Me9nGIHP1oJuFRaG4tLl0wyVweM
-         Pvxba1+vGHWQ9Sr05/mHjYuGYAaztxJfRkzf+J9pX0/vBFCFzOae7JoD3GMPcoWagsvR
-         gusg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=V0BTN/Z2jXatx08nLmn2iGZ7O1WuylzrrulrDON6R9k=;
-        b=Mhw9Q0neutNXnEjrNfzA8+7OgOxTitltUfojevhPx21YSuhCA4VK/eTWXt7VIxVZyZ
-         j9zhWsTwcxq/Ndv4PmrAjr9Ezie61QP1Hq3wnlN6bW5xtgAT2bigeVSpfERNcyaNZFz2
-         xCulHy43jA4Z3sBRNm3fRXGDSWKm/f6wWKyGouByq7mqWt9tIgWKM4anbjzECKfNuXTl
-         Lp5pAjQ3ZXdpIVb3zQe3WQa3ySDwH3t0Q4M3sL84lnZ97vjTkiGNCDHSpgO97F5DvYE0
-         uo5Lwpfl3Pdr6HlS94v8FxAPHHl01z8YiLxsQsy7IvIMvhJQsylgS6mkCTRrNP1/s7mf
-         hzYQ==
-X-Gm-Message-State: AOAM531TErkqDKssh6ZV9XuQkac8lGkDOG1Nf0uK8WGlXk8DgIUivyWY
-        MqUZSrOCTrJot8AI0aXeSozXGg==
-X-Google-Smtp-Source: ABdhPJx1Qe12G4sXm6Hq0b39qzz4yiSC2X02eGBokp2+4l6Cg0jAMpo13TlhKMrD8MSowvisz7/VDA==
-X-Received: by 2002:a0c:f890:: with SMTP id u16mr15165954qvn.21.1615890419711;
-        Tue, 16 Mar 2021 03:26:59 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:7693])
-        by smtp.gmail.com with ESMTPSA id c19sm14587625qkl.78.2021.03.16.03.26.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 03:26:59 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 06:26:58 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Arjun Roy <arjunroy.kdev@gmail.com>
-Cc:     akpm@linux-foundation.org, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org, arjunroy@google.com,
-        shakeelb@google.com, edumazet@google.com, soheil@google.com,
-        kuba@kernel.org, mhocko@kernel.org, shy828301@gmail.com,
-        guro@fb.com
-Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
-Message-ID: <YFCH8vzFGmfFRCvV@cmpxchg.org>
-References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
+        id S236667AbhCPK23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 06:28:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236388AbhCPK2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 06:28:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD23865025;
+        Tue, 16 Mar 2021 10:28:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615890494;
+        bh=Ek1bMmgEROcrwltu3afjHikqeT9vUmjpYs+Ey8ul8Bo=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=MtLDUqpd3tt9CJ5JSTtoiqVd4C8Ho+dQL7vggxZnEI/Hlqd8u6xyrpoybM5MXnV/w
+         1uARuNw7ptB78+1ORMRSxKNRAtz7bEXr9t9sFKMgWtM6wsTJAQtgBXmssQ9Qy9+Bb3
+         BCtS1anUyOp10/Uhzp+YLyth368sOYcwFXsQv6ewqKbFE26c2PBeFfJmHSdANCka+y
+         Yd7ALKIYqCH7LnMf7nCDPvmFB03H8AMWN/dmqMqt/YR0SJBJ63NWEaN1L6H9sws11+
+         mBsgMlDf+pqqI7cQ3oG87wUtoV/Ot73vqICLFFhxtCqQLkRzMh/UrRgEmXTgknrsNY
+         IbDTFXAYsT2hQ==
+Date:   Tue, 16 Mar 2021 11:28:11 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Lockdep report for hci_conn_get_phy()
+In-Reply-To: <nycvar.YFH.7.76.2103041405420.12405@cbobk.fhfr.pm>
+Message-ID: <nycvar.YFH.7.76.2103161125530.12405@cbobk.fhfr.pm>
+References: <nycvar.YFH.7.76.2103041405420.12405@cbobk.fhfr.pm>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, 4 Mar 2021, Jiri Kosina wrote:
 
-On Mon, Mar 15, 2021 at 09:16:45PM -0700, Arjun Roy wrote:
-> From: Arjun Roy <arjunroy@google.com>
+>  ======================================================
+>  WARNING: possible circular locking dependency detected
+>  5.12.0-rc1-00026-g73d464503354 #10 Not tainted
+>  ------------------------------------------------------
+>  bluetoothd/1118 is trying to acquire lock:
+>  ffff8f078383c078 (&hdev->lock){+.+.}-{3:3}, at: hci_conn_get_phy+0x1c/0x150 [bluetooth]
+>  
+>  but task is already holding lock:
+>  ffff8f07e831d920 (sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP){+.+.}-{0:0}, at: l2cap_sock_getsockopt+0x8b/0x610 
 > 
-> TCP zerocopy receive is used by high performance network applications
-> to further scale. For RX zerocopy, the memory containing the network
-> data filled by the network driver is directly mapped into the address
-> space of high performance applications. To keep the TLB cost low,
-> these applications unmap the network memory in big batches. So, this
-> memory can remain mapped for long time. This can cause a memory
-> isolation issue as this memory becomes unaccounted after getting
-> mapped into the application address space. This patch adds the memcg
-> accounting for such memory.
+>  
+>  which lock already depends on the new lock.
 > 
-> Accounting the network memory comes with its own unique challenges.
-> The high performance NIC drivers use page pooling to reuse the pages
-> to eliminate/reduce expensive setup steps like IOMMU. These drivers
-> keep an extra reference on the pages and thus we can not depend on the
-> page reference for the uncharging. The page in the pool may keep a
-> memcg pinned for arbitrary long time or may get used by other memcg.
+>  
+>  the existing dependency chain (in reverse order) is:
+>  
+>  -> #3 (sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP){+.+.}-{0:0}:
+>         lock_sock_nested+0x72/0xa0
+>         l2cap_sock_ready_cb+0x18/0x70 [bluetooth]
+>         l2cap_config_rsp+0x27a/0x520 [bluetooth]
+>         l2cap_sig_channel+0x658/0x1330 [bluetooth]
+>         l2cap_recv_frame+0x1ba/0x310 [bluetooth]
+>         hci_rx_work+0x1cc/0x640 [bluetooth]
+>         process_one_work+0x244/0x5f0
+>         worker_thread+0x3c/0x380
+>         kthread+0x13e/0x160
+>         ret_from_fork+0x22/0x30
+>  
+>  -> #2 (&chan->lock#2/1){+.+.}-{3:3}:
+>         __mutex_lock+0xa3/0xa10
+>         l2cap_chan_connect+0x33a/0x940 [bluetooth]
+>         l2cap_sock_connect+0x141/0x2a0 [bluetooth]
+>         __sys_connect+0x9b/0xc0
+>         __x64_sys_connect+0x16/0x20
+>         do_syscall_64+0x33/0x80
+>         entry_SYSCALL_64_after_hwframe+0x44/0xae
+>  
+>  -> #1 (&conn->chan_lock){+.+.}-{3:3}:
+>         __mutex_lock+0xa3/0xa10
+>         l2cap_chan_connect+0x322/0x940 [bluetooth]
+>         l2cap_sock_connect+0x141/0x2a0 [bluetooth]
+>         __sys_connect+0x9b/0xc0
+>         __x64_sys_connect+0x16/0x20
+>         do_syscall_64+0x33/0x80
+>         entry_SYSCALL_64_after_hwframe+0x44/0xae
+>  
+>  -> #0 (&hdev->lock){+.+.}-{3:3}:
+>         __lock_acquire+0x147a/0x1a50
+>         lock_acquire+0x277/0x3d0
+>         __mutex_lock+0xa3/0xa10
+>         hci_conn_get_phy+0x1c/0x150 [bluetooth]
+>         l2cap_sock_getsockopt+0x5a9/0x610 [bluetooth]
+>         __sys_getsockopt+0xcc/0x200
+>         __x64_sys_getsockopt+0x20/0x30
+>         do_syscall_64+0x33/0x80
+>         entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-The page pool knows when a page is unmapped again and becomes
-available for recycling, right? Essentially the 'free' phase of that
-private allocator. That's where the uncharge should be done.
+So looking at the code and digging a bit in the history, it seems like the 
+above dependency chain has been there since ever ...
 
-For one, it's more aligned with the usual memcg charge lifetime rules.
-
-But also it doesn't add what is essentially a private driver callback
-to the generic file unmapping path.
-
-Finally, this will eliminate the need for making up a new charge type
-(MEMCG_DATA_SOCK) and allow using the standard kmem charging API.
-
-> This patch decouples the uncharging of the page from the refcnt and
-> associates it with the map count i.e. the page gets uncharged when the
-> last address space unmaps it. Now the question is, what if the driver
-> drops its reference while the page is still mapped? That is fine as
-> the address space also holds a reference to the page i.e. the
-> reference count can not drop to zero before the map count.
+>  other info that might help us debug this:
 > 
-> Signed-off-by: Arjun Roy <arjunroy@google.com>
-> Co-developed-by: Shakeel Butt <shakeelb@google.com>
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-> Signed-off-by: Soheil Hassas Yeganeh <soheil@google.com>
-> ---
+>  Chain exists of:
+>    &hdev->lock --> &chan->lock#2/1 --> sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP
+>   Possible unsafe locking scenario:
 > 
-> Changelog since v1:
-> - Pages accounted for in this manner are now tracked via MEMCG_SOCK.
-> - v1 allowed for a brief period of double-charging, now we have a
->   brief period of under-charging to avoid undue memory pressure.
+>         CPU0                    CPU1
+>         ----                    ----
+>    lock(sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP);
+>                                 lock(&chan->lock#2/1);
+>                                 lock(sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP);
+>    lock(&hdev->lock);
+>  
+>   *** DEADLOCK ***
+> 
+>  1 lock held by bluetoothd/1118:
+>   #0: ffff8f07e831d920 (sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP){+.+.}-{0:0}, at: l2cap_sock_getsockopt+0x8b/0x610 [bluetooth]
+>  
+>  stack backtrace:
+>  CPU: 3 PID: 1118 Comm: bluetoothd Not tainted 5.12.0-rc1-00026-g73d464503354 #10
+>  Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/31/2017
+>  Call Trace:
+>   dump_stack+0x7f/0xa1
+>   check_noncircular+0x105/0x120
+>   ? __lock_acquire+0x147a/0x1a50
+>   __lock_acquire+0x147a/0x1a50
+>   lock_acquire+0x277/0x3d0
+>   ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
+>   ? __lock_acquire+0x2e1/0x1a50
+>   ? lock_is_held_type+0xb4/0x120
+>   ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
+>   __mutex_lock+0xa3/0xa10
+>   ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
+>   ? lock_acquire+0x277/0x3d0
+>   ? mark_held_locks+0x49/0x70
+>   ? mark_held_locks+0x49/0x70
+>   ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
+>   hci_conn_get_phy+0x1c/0x150 [bluetooth]
+>   l2cap_sock_getsockopt+0x5a9/0x610 [bluetooth]
+>   __sys_getsockopt+0xcc/0x200
+>   __x64_sys_getsockopt+0x20/0x30
+>   do_syscall_64+0x33/0x80
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-I'm afraid we'll have to go back to v1.
+... but the sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP -> conn->hdev dependency 
+has been added only in eab2404ba798 ("Bluetooth: Add BT_PHY socket 
+option") and I've started to see this splat only now as I've probably 
+recently acquired userspace that excercises this getsockopt(BT_PHY).
 
-Let's address the issues raised with it:
+-- 
+Jiri Kosina
+SUSE Labs
 
-1. The NR_FILE_MAPPED accounting. It is longstanding Linux behavior
-   that driver pages mapped into userspace are accounted as file
-   pages, because userspace is actually doing mmap() against a driver
-   file/fd (as opposed to an anon mmap). That is how they show up in
-   vmstat, in meminfo, and in the per process stats. There is no
-   reason to make memcg deviate from this. If we don't like it, it
-   should be taken on by changing vm_insert_page() - not trick rmap
-   into thinking these arent memcg pages and then fixing it up with
-   additional special-cased accounting callbacks.
-
-   v1 did this right, it charged the pages the way we handle all other
-   userspace pages: before rmap, and then let the generic VM code do
-   the accounting for us with the cgroup-aware vmstat infrastructure.
-
-2. The double charging. Could you elaborate how much we're talking
-   about in any given batch? Is this a problem worth worrying about?
-
-   The way I see it, any conflict here is caused by the pages being
-   counted in the SOCK counter already, but not actually *tracked* on
-   a per page basis. If it's worth addressing, we should look into
-   fixing the root cause over there first if possible, before trying
-   to work around it here.
-
-   The newly-added GFP_NOFAIL is especially worrisome. The pages
-   should be charged before we make promises to userspace, not be
-   force-charged when it's too late.
-
-   We have sk context when charging the inserted pages. Can we
-   uncharge MEMCG_SOCK after each batch of inserts? That's only 32
-   pages worth of overcharging, so not more than the regular charge
-   batch memcg is using.
-
-   An even better way would be to do charge stealing where we reuse
-   the existing MEMCG_SOCK charges and don't have to get any new ones
-   at all - just set up page->memcg and remove the charge from the sk.
-
-   But yeah, it depends a bit if this is a practical concern.
-
-Thanks,
-Johannes
