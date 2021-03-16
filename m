@@ -2,92 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CF733D48E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:06:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F9C33D493
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234531AbhCPNFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:05:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234502AbhCPNFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:05:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0805A6505D;
-        Tue, 16 Mar 2021 13:05:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615899917;
-        bh=kor5HI4uVqpM15xlGlMQ3Vb/ab3YDAFb7vluRdukJEA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QEfHV44CdBP9Wq/ZcwBuFrlMhC8E88KuYYgwc+gWTmic4oiu/zFhQFfmWENNcPx1n
-         wCod6XSv6D0MCq1SfWyMCj26ZFqQsIrr4XXeH6NFLxpymFS2+cJx9qsrIHBpKwyaHa
-         C1pKYok//XXWRIZNRZT6NZ/6XJXhe7ZwnMRVEYYqjyGy9zbWsFlNyu3C5Wv+Jc0R+u
-         /r8FCGLZIY8rzRPRpQ0uWtfkpEPAZWFS68Ri+eh0jhDsIEkrr9L0S1ih/oh6PDTJ2R
-         k41D5fxz3adrRoKq1Tbf3yY1Be+WRR61U9+vMrSFDJYZRzDqoohzAdgy8QvPbJYR5Y
-         sXOFFQE1yd8iw==
-Date:   Tue, 16 Mar 2021 14:05:14 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Ti Zhou <x2019cwm@stfx.ca>, Yunfeng Ye <yeyunfeng@huawei.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 02/10] tick/nohz: Add tick_nohz_full_this_cpu()
-Message-ID: <20210316130514.GB639918@lothringen>
-References: <20210311123708.23501-1-frederic@kernel.org>
- <20210311123708.23501-3-frederic@kernel.org>
- <YFCkUUCYchYpB/0W@hirez.programming.kicks-ass.net>
+        id S234575AbhCPNHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:07:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28240 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234502AbhCPNHR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 09:07:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615900036;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HvjFoEc95RC6hqw+H0cl0nGVkg6yKzxU3LpEodtRCok=;
+        b=RFITR5zGzrzAUNjfN9ezOmV/DoiUZmwh83BpVvTIQ5S+VQE7YYV3v/+zdSEftSFy+YDRuE
+        V8zvInqiSI+bUNHaIMLQ5NdlXi2vcblXl+OZQNyScwT99gRNnePap6rn56Z4is/UY5NL8D
+        ZSMVYCdfab0R4zRLcK4542yL/a2tCe4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-35-e-1oJ1DmNHmI_TxD9vgteA-1; Tue, 16 Mar 2021 09:07:14 -0400
+X-MC-Unique: e-1oJ1DmNHmI_TxD9vgteA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7AA25EC1AA;
+        Tue, 16 Mar 2021 13:07:12 +0000 (UTC)
+Received: from krava (unknown [10.40.193.217])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 301DE62AF8;
+        Tue, 16 Mar 2021 13:07:10 +0000 (UTC)
+Date:   Tue, 16 Mar 2021 14:07:09 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH] perf stat: Align CSV output for summary mode
+Message-ID: <YFCtfXlaKbIeEMwk@krava>
+References: <20210316072900.1739-1-yao.jin@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YFCkUUCYchYpB/0W@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210316072900.1739-1-yao.jin@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 01:28:01PM +0100, Peter Zijlstra wrote:
-> On Thu, Mar 11, 2021 at 01:37:00PM +0100, Frederic Weisbecker wrote:
-> > Optimize further the check for local full dynticks CPU. Testing directly
-> > tick_nohz_full_cpu(smp_processor_id()) is suboptimal because the
-> > compiler first fetches the CPU number and only then processes the
-> > static key.
-> > 
-> > It's best to evaluate the static branch before anything.
+On Tue, Mar 16, 2021 at 03:29:00PM +0800, Jin Yao wrote:
+> perf-stat has supported the summary mode. But the summary
+> lines break the CSV output so it's hard for scripts to parse
+> the result.
 > 
-> Or you do tricky things like this ;-)
-
-Good point!
-
-I'll check the asm diff to see if that really does what we want.
-I expect it will.
-
-Thanks.
-
+> Before:
 > 
-> diff --git a/include/linux/tick.h b/include/linux/tick.h
-> index 7340613c7eff..bd4a6b055b80 100644
-> --- a/include/linux/tick.h
-> +++ b/include/linux/tick.h
-> @@ -185,13 +185,12 @@ static inline bool tick_nohz_full_enabled(void)
->  	return tick_nohz_full_running;
->  }
->  
-> -static inline bool tick_nohz_full_cpu(int cpu)
-> -{
-> -	if (!tick_nohz_full_enabled())
-> -		return false;
-> -
-> -	return cpumask_test_cpu(cpu, tick_nohz_full_mask);
-> -}
-> +#define tick_nohz_full_cpu(_cpu) ({					\
-> +	bool __ret = false;						\
-> +	if (tick_nohz_full_enabled())					\
-> +		__ret = cpumask_test_cpu((_cpu), tick_nohz_full_mask);	\
-> +	__ret;								\
-> +})
->  
->  static inline void tick_nohz_full_add_cpus_to(struct cpumask *mask)
->  {
+>   # perf stat -x, -I1000 --interval-count 1 --summary
+>        1.001323097,8013.48,msec,cpu-clock,8013483384,100.00,8.013,CPUs utilized
+>        1.001323097,270,,context-switches,8013513297,100.00,0.034,K/sec
+>        1.001323097,13,,cpu-migrations,8013530032,100.00,0.002,K/sec
+>        1.001323097,184,,page-faults,8013546992,100.00,0.023,K/sec
+>        1.001323097,20574191,,cycles,8013551506,100.00,0.003,GHz
+>        1.001323097,10562267,,instructions,8013564958,100.00,0.51,insn per cycle
+>        1.001323097,2019244,,branches,8013575673,100.00,0.252,M/sec
+>        1.001323097,106152,,branch-misses,8013585776,100.00,5.26,of all branches
+>   8013.48,msec,cpu-clock,8013483384,100.00,7.984,CPUs utilized
+>   270,,context-switches,8013513297,100.00,0.034,K/sec
+>   13,,cpu-migrations,8013530032,100.00,0.002,K/sec
+>   184,,page-faults,8013546992,100.00,0.023,K/sec
+>   20574191,,cycles,8013551506,100.00,0.003,GHz
+>   10562267,,instructions,8013564958,100.00,0.51,insn per cycle
+>   2019244,,branches,8013575673,100.00,0.252,M/sec
+>   106152,,branch-misses,8013585776,100.00,5.26,of all branches
 > 
+> The summary line loses the timestamp column, which breaks the
+> CVS output.
 > 
+> We add a column at the 'timestamp' position and it just says 'summary'
+> for the summary line.
+> 
+> After:
+> 
+>   # perf stat -x, -I1000 --interval-count 1 --summary
+
+looks ok, but maybe make the option more related to CVS, like:
+
+  --x-summary, --cvs-summary  ...? 
+
+jirka
+
+
+
+
+>        1.001196053,8012.72,msec,cpu-clock,8012722903,100.00,8.013,CPUs utilized
+>        1.001196053,218,,context-switches,8012753271,100.00,0.027,K/sec
+>        1.001196053,9,,cpu-migrations,8012769767,100.00,0.001,K/sec
+>        1.001196053,0,,page-faults,8012786257,100.00,0.000,K/sec
+>        1.001196053,15004518,,cycles,8012790637,100.00,0.002,GHz
+>        1.001196053,7954691,,instructions,8012804027,100.00,0.53,insn per cycle
+>        1.001196053,1590259,,branches,8012814766,100.00,0.198,M/sec
+>        1.001196053,82601,,branch-misses,8012824365,100.00,5.19,of all branches
+>            summary,8012.72,msec,cpu-clock,8012722903,100.00,7.986,CPUs utilized
+>            summary,218,,context-switches,8012753271,100.00,0.027,K/sec
+>            summary,9,,cpu-migrations,8012769767,100.00,0.001,K/sec
+>            summary,0,,page-faults,8012786257,100.00,0.000,K/sec
+>            summary,15004518,,cycles,8012790637,100.00,0.002,GHz
+>            summary,7954691,,instructions,8012804027,100.00,0.53,insn per cycle
+>            summary,1590259,,branches,8012814766,100.00,0.198,M/sec
+>            summary,82601,,branch-misses,8012824365,100.00,5.19,of all branches
+> 
+> Now it's easy for script to analyse the summary lines.
+> 
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> ---
+>  tools/perf/util/stat-display.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+> index 7f09cdaf5b60..c4183d3e87a4 100644
+> --- a/tools/perf/util/stat-display.c
+> +++ b/tools/perf/util/stat-display.c
+> @@ -439,6 +439,10 @@ static void printout(struct perf_stat_config *config, struct aggr_cpu_id id, int
+>  		if (counter->cgrp)
+>  			os.nfields++;
+>  	}
+> +
+> +	if (config->csv_output && config->summary && !config->interval)
+> +		fprintf(config->output, "%16s%s", "summary", config->csv_sep);
+> +
+>  	if (run == 0 || ena == 0 || counter->counts->scaled == -1) {
+>  		if (config->metric_only) {
+>  			pm(config, &os, NULL, "", "", 0);
+> -- 
+> 2.17.1
+> 
+
