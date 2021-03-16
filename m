@@ -2,89 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6899E33D478
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:58:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3757633D47D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234422AbhCPM6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:58:15 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:57411 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234670AbhCPM55 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:57:57 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2364A5C00EA;
-        Tue, 16 Mar 2021 08:57:56 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 16 Mar 2021 08:57:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=sXmsn7ETwn6KBKZULi5zANcmyJQ
-        eNFX0um2z+uHMhg8=; b=KUEbD/DqR84PL/7PMww4Jf9q+uMS7ni9+Z031cTqHRw
-        IAo88Uq1pvQ0xXQjGZpgwg/6WnZMOeZfQDfT917zsxrZ6Y+SD64klb/q9DIeWZ8F
-        V3dGydpFq/CvJhp+1gJ8Ftv4gMt4Y1TEAwHltVKBly8eldx0i7N7MMvebywu8+dW
-        VSpEbsLaMdgeATgwyFse7Ouf5X8kngFxKb2kDAUzHKRUQQ08Sj/G6LmgXzO9kY26
-        CLRyj1jaizRaDTrqUh1EV+mCpzZ0hcxaO88O072Y3Q+nX32cwUOP6YqHlvvW5Qph
-        7sGN3qZ17FspdrLEa/L9d+Va+gYYiZuIISX7Ivi/VBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=sXmsn7
-        ETwn6KBKZULi5zANcmyJQeNFX0um2z+uHMhg8=; b=ok/fI9SjAyEbEMt8sNK8FD
-        jg0qShLwpm8WI2HB3i02ItJZtOFXjW4sq9m9fmSzZtmDLoMzGYz3TTT8Lf4Bvl+f
-        NNEl8LgPy6ayu5v9Zrf/L46p85Nxz5wxeP1eSeJmRxgXUOcuoaRV3N9mjywJKmZc
-        qN4l7FjcugOUvUwo5goEdCxVCqYFowJj9TEoAcNyky8cAeWKKcsm92iTawp7O0Et
-        vA++HBTSrZFG1VgOtEe7mI1fkGrj1aLLugg6+xz6W1RL6scJH1BTZSgtuYi2hTtl
-        GElKuZUiAyxirblLFgokL1icICfSvJI5OrnmiwWQ9tRPNB3YkcoN/RvQ/rMALrEQ
-        ==
-X-ME-Sender: <xms:U6tQYAQKlch2MkZ2G2yC3cxFTVo_8GXePQZ9BZqmmify16xzFbQJXA>
-    <xme:U6tQYNz3GkqRLHoMzWvBfuDfao7NviVvIZzA_lFrU0UKzzcXXYJcrHcogxlGyu3WK
-    9Axb1gLWCSdMw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudefvddggeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:U6tQYN2IWwZ4q8ngz22B_WZe8CV31lhoGv4gHLxMTASB3tq6va1tDg>
-    <xmx:U6tQYEBAjwiRctVUm7B-PY5-AzHIFL4uFs3CacuT5OtsGRkIo_lxjw>
-    <xmx:U6tQYJif-08rKnemuzKLfUCL3syrF0jTVpgQIU0BEgoZ9spUbKMovg>
-    <xmx:VKtQYJIEDN9PtrFd5rynbYirL_7jC7htZXXdiIHT2BFUsb4r5vARyQ>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id EB2D124005B;
-        Tue, 16 Mar 2021 08:57:54 -0400 (EDT)
-Date:   Tue, 16 Mar 2021 13:57:52 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Ronald Warsow <rwarsow@gmx.de>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5.11 000/306] 5.11.7-rc1 review
-Message-ID: <YFCrUP3TPqVK57E9@kroah.com>
-References: <ca67d634-3845-ef3b-1ffc-48471045f3b5@gmx.de>
+        id S234427AbhCPNAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:00:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229602AbhCPM7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 08:59:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F25F65054;
+        Tue, 16 Mar 2021 12:59:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615899595;
+        bh=qwBm7m6FV8Asv3SjFX/QnnnbKfOuU9r79opiM9sj9mw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aKEMIhQCaVn3lLwByE24nqImVHqNJUT+/8j9sbtM2chyG0jSLvPAZM8F4f8axyuJC
+         jybxzpe172SfZXs7qpx2d8s4Qd5wugn26nfNH9T8evegc5LjBsgS2HufHzR6sTDVbG
+         XE8PdCmwfF0CKowDN3d9zh5QtPEsWcllXIT3CrmHYj0QgSFwxguhxamKYdfrEhKFFt
+         vDR7CBPirXnx8k3GpIkjLMNLO6/XIPxcQXLP0WO1rx+gJW9TtC8HNyXPboNaw2UziF
+         4VETN9iyh3qPO+vDqK5V5c26AkvUZqHeW+EwMVuLTZ7pw5Q+9opRUb2vB2Dx5hS5N6
+         UA0XsjjW8xtpw==
+Date:   Tue, 16 Mar 2021 12:58:39 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: fsl_sai: remove reset code from dai_probe
+Message-ID: <20210316125839.GA4309@sirena.org.uk>
+References: <1615886826-30844-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
 Content-Disposition: inline
-In-Reply-To: <ca67d634-3845-ef3b-1ffc-48471045f3b5@gmx.de>
+In-Reply-To: <1615886826-30844-1-git-send-email-shengjiu.wang@nxp.com>
+X-Cookie: Results vary by individual.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 01:34:31PM +0100, Ronald Warsow wrote:
-> Hallo
-> 
-> 5.11.7-rc1 compiles, boots and works fine here (Intel i7-6700)
-> 
-> alas a fix doesn't made it in (correct english ?), but AFAIK it's known
-> and queued in drm-next or so
-> 
-> bug/error (since 5.11.1 or 2):
-> 
-> i915 0000:00:02.0: [drm] *ERROR* mismatch in DDB state pipe A plane 1
-> (expected (0,0), found (0,446))
 
-What is the commit id here for the fix that you are looking for?
+--FCuugMFkClbJLl1L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
+On Tue, Mar 16, 2021 at 05:27:06PM +0800, Shengjiu Wang wrote:
+> From: Viorel Suman <viorel.suman@nxp.com>
+>=20
+> SAI software reset is done in runtime resume,
+> there is no need to do it in fsl_sai_dai_probe.
 
-greg k-h
+People can disable runtime PM in their configurations - do you not still
+need a reset on probe in case there's no runtime PM?  It'd probably make
+sense to factor the rest code out itno a function though.
+
+--FCuugMFkClbJLl1L
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBQq34ACgkQJNaLcl1U
+h9B1lQf0DcB6TePE9N4R6M55ENvpw+3OXeo/AocY7jVKhtvhyr3WBZe8nDwnwbMQ
+m8jPvvIuRx2l6ozvCdpJkIWkjGLEdOG0q/+n7HGEV8EFPa20tQPSkWRt/3zPKaAD
+oSJP/xemNE7Gt9DnZXM+kgI4NxgXXjbHGt06YUPy/h9SGjgpoaggkdI+zwGdWYJZ
+BoJjaI5+cAnAXzp3RFnVmJGwIWER8vF/Mv4vIdbEz5lbamaVpG80yJEiyJOn8GmY
+ZA5Wc/4wOBLOpdCCXklTQi7YU/nJpgCflBrsXtqT9WNUH1OIqYc4oqiMb9acw/G2
+L23Zg+uzwL3ZBYsq5CyQU74jmCTa
+=M0pT
+-----END PGP SIGNATURE-----
+
+--FCuugMFkClbJLl1L--
