@@ -2,93 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3711C33CE23
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A5633CE27
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:56:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233807AbhCPGye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 02:54:34 -0400
-Received: from mail-m972.mail.163.com ([123.126.97.2]:47306 "EHLO
-        mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhCPGyF (ORCPT
+        id S233871AbhCPGzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 02:55:37 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36356 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231960AbhCPGz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 02:54:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=nE5EzAm2XjoMPFmk0d
-        QnsxrzEQUfap6jHGH0saZ6ois=; b=GXfj+Xp7+E9ZVvmk181KABMCb3+D3beo2q
-        z2s7BrAJXmwmxqNSFYXPjtfqGCwwXwuHb+3oKKoa5Z7WAS59AqZWYwFSHgfo4a9Y
-        BLABumgXqxzpqJ3TNXRMa3ocdSljTiaPuDqTw3j5T7Mywpc9Tm1lmXUw66M2dBzu
-        4l+qOtgrY=
-Received: from bf-rmnj-02.ccdomain.com (unknown [218.94.48.178])
-        by smtp2 (Coremail) with SMTP id GtxpCgC3xej_VVBgqgy5AA--.2332S2;
-        Tue, 16 Mar 2021 14:53:59 +0800 (CST)
-From:   Jian Dong <dj0227@163.com>
-To:     sre@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, dongjian <dongjian@yulong.com>
-Subject: [PATCH] power-supply: use kobj_to_dev()
-Date:   Tue, 16 Mar 2021 14:54:12 +0800
-Message-Id: <1615877652-31829-1-git-send-email-dj0227@163.com>
-X-Mailer: git-send-email 1.9.1
-X-CM-TRANSID: GtxpCgC3xej_VVBgqgy5AA--.2332S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7urW3JFWxCryfWry5GF4DJwb_yoW8uF1kpF
-        Z5Ja4YyrW8WrWDWw45Xr4DZa43Kr1vk34fCr97Kw1Sk3s7Jr90gFZ8JFy5Aw15Zr95CFsa
-        qryvkry7AFWfGrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jFUDJUUUUU=
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: dgmqjjqx6rljoofrz/1tbiqAdX3Vc7T8Nq1AAAs7
+        Tue, 16 Mar 2021 02:55:29 -0400
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <jeremy.szu@canonical.com>)
+        id 1lM3bm-00026f-H9; Tue, 16 Mar 2021 06:55:15 +0000
+From:   Jeremy Szu <jeremy.szu@canonical.com>
+To:     tiwai@suse.com
+Cc:     Jeremy Szu <jeremy.szu@canonical.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Kailang Yang <kailang@realtek.com>,
+        Jian-Hong Pan <jhp@endlessos.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Hui Wang <hui.wang@canonical.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Thomas Hebb <tommyhebb@gmail.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs for HP 840 G8
+Date:   Tue, 16 Mar 2021 14:54:50 +0800
+Message-Id: <20210316065452.75659-1-jeremy.szu@canonical.com>
+X-Mailer: git-send-email 2.30.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dongjian <dongjian@yulong.com>
+ * The HP EliteBook 840 G8 Notebook PC is using ALC285 codec which is
+   using 0x04 to control mute LED and 0x01 to control micmute LED.
+   Therefore, add a quirk to make it works.
 
-Use kobj_to_dev() instead of open-coding it
-
-Signed-off-by: dongjian <dongjian@yulong.com>
+Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
 ---
- drivers/power/supply/ds2781_battery.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/power/supply/ds2781_battery.c b/drivers/power/supply/ds2781_battery.c
-index 3df3c82..05b859b 100644
---- a/drivers/power/supply/ds2781_battery.c
-+++ b/drivers/power/supply/ds2781_battery.c
-@@ -626,7 +626,7 @@ static ssize_t ds2781_read_param_eeprom_bin(struct file *filp,
- 				struct bin_attribute *bin_attr,
- 				char *buf, loff_t off, size_t count)
- {
--	struct device *dev = container_of(kobj, struct device, kobj);
-+	struct device *dev = kobj_to_dev(kobj);
- 	struct power_supply *psy = to_power_supply(dev);
- 	struct ds2781_device_info *dev_info = to_ds2781_device_info(psy);
- 
-@@ -639,7 +639,7 @@ static ssize_t ds2781_write_param_eeprom_bin(struct file *filp,
- 				struct bin_attribute *bin_attr,
- 				char *buf, loff_t off, size_t count)
- {
--	struct device *dev = container_of(kobj, struct device, kobj);
-+	struct device *dev = kobj_to_dev(kobj);
- 	struct power_supply *psy = to_power_supply(dev);
- 	struct ds2781_device_info *dev_info = to_ds2781_device_info(psy);
- 	int ret;
-@@ -671,7 +671,7 @@ static ssize_t ds2781_read_user_eeprom_bin(struct file *filp,
- 				struct bin_attribute *bin_attr,
- 				char *buf, loff_t off, size_t count)
- {
--	struct device *dev = container_of(kobj, struct device, kobj);
-+	struct device *dev = kobj_to_dev(kobj);
- 	struct power_supply *psy = to_power_supply(dev);
- 	struct ds2781_device_info *dev_info = to_ds2781_device_info(psy);
- 
-@@ -685,7 +685,7 @@ static ssize_t ds2781_write_user_eeprom_bin(struct file *filp,
- 				struct bin_attribute *bin_attr,
- 				char *buf, loff_t off, size_t count)
- {
--	struct device *dev = container_of(kobj, struct device, kobj);
-+	struct device *dev = kobj_to_dev(kobj);
- 	struct power_supply *psy = to_power_supply(dev);
- 	struct ds2781_device_info *dev_info = to_ds2781_device_info(psy);
- 	int ret;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index b47504fa8dfd..e568bf460bae 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8048,6 +8048,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
++	SND_PCI_QUIRK(0x103c, 0x884c, "HP EliteBook 840 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
+ 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
 -- 
-1.9.1
+2.30.1
 
