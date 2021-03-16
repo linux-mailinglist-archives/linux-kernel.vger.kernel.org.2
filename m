@@ -2,45 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970F333CD5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:35:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB97A33CD63
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235413AbhCPFfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49214 "EHLO
+        id S235502AbhCPFgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:36:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232204AbhCPFeg (ORCPT
+        with ESMTP id S231228AbhCPFgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:34:36 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5F1C06174A;
-        Mon, 15 Mar 2021 22:34:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=1Etpvliau/Qdxgd9hIEg+e7aGJ2zYSyXHdu/56RGYjI=; b=rI8hEdof7Kw6DZP5bqLT30Jzrc
-        Z7t4PUQrBZXKplLdGrHoKPmfIxiMs7JNuR/8/NLu3kBX+Gb7RRvPrkOCtsWFge6E1gmC47c6mzeul
-        qCXX9XWYnAla5XWHntwcsgf5TLMXpQh+2D0BWWNEsVIEMqTqtdi54omq87gac2LAmlZ508JYwsVs+
-        LU7TIwvSAIpi7CKWut4MDDq4EpCuGyj185hOHUc5Be1kBslwljjE/3bHBtd2wc3q4UnFVrH76/jqa
-        GpPrJDZIf6Ri/WuaQ6kanFtZuGt68/iBnHH+Hs7Cb8CCbPVSy207ttV+pDx+HnGqc7wq6+yEc2hGa
-        UWkEy8Tg==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lM2Li-001PXS-5h; Tue, 16 Mar 2021 05:34:34 +0000
-Subject: Re: [PATCH] dlm: Mundane typo fixes throughout the file lock.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, ccaulfie@redhat.com,
-        teigland@redhat.com, cluster-devel@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     trivial@vger.kernel.org
-References: <20210316052732.682020-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d5cc74f7-0534-8168-fcfb-dbcf1c940088@infradead.org>
-Date:   Mon, 15 Mar 2021 22:34:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 16 Mar 2021 01:36:35 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A20CC06174A;
+        Mon, 15 Mar 2021 22:36:35 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id t16so8977943qvr.12;
+        Mon, 15 Mar 2021 22:36:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=woL6zbu27Z+h9jJa1MEjyfk3mAabMy5L5Oe2TEvDgb4=;
+        b=n/ust53ylv2qJX5wCDKAWDUTagH0V54u+0bJnydbTj+aQ9O7qP1nPxZ+OV9UMho4sw
+         lbX0BX8mVajospvaaEge0dMf7is/0HUuc7UlX+wwRccc+WW1FalbpJtW3Qqzl13xGqLt
+         DLioP1GfgNN1MselSs7uPfUL2snEAliN52akg6rmeBA+sxyefIq//SoEbomhxaJvYnp8
+         am/ry+ZW85ppjWONgIvho3+kNh8cKuqYuE6QMujRFuuDLn1FHt5XhHuFAvFSukUqyG7f
+         0wT5yHhefbtLSIJ+HEtqfKaJW4Hed5lefiDmSjkBnPoXLziyJD//gbC1RbvWrdMr8D8k
+         MyJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=woL6zbu27Z+h9jJa1MEjyfk3mAabMy5L5Oe2TEvDgb4=;
+        b=aN57TTOk+FzEJVP/6ovT01D7m16nIjEjx0XHJuXz8hm9Ph/pMJX4vNUt0nf45hUAyx
+         kOVs6T0L6O4jOAvGLerncHqRXC2PCOQReyWV03XQWrJwW4Deb9zF2lV2gld71d6SDtqs
+         nxHJQjWtHoSGA21TKuUVHt8a8dqGrYxY3JBORnL0nFmEPyuDFTWRLyflvZ7KnMbZ0MSU
+         mMiJV5xZZUhVxBz3cwrxud7vLaC3LS42Mn8TO00OmkQHAYOfcXalOelbnYwTJoflt+ur
+         Ag3ZEKUoVsl235Ni6r+JVazhwzXf3vYtBHiR3ksUuhWZkhwH0Rfy8fByO0BfuUy9W9va
+         VhRA==
+X-Gm-Message-State: AOAM530Mn/m7GQbD/2jZYF5jARkRkvarV4duFMygb0/xW343NHD15UEM
+        YaOQwORH/l5Yk6PJT/gEs1V4xF9szI4=
+X-Google-Smtp-Source: ABdhPJwiJK71OJsweC5xKAQhgwUN/EfizlOPVrFJaAVhbG9+6ihtAgbKe2BB5+JcCMUUL5QIfWXbvA==
+X-Received: by 2002:a05:6214:f69:: with SMTP id iy9mr14218210qvb.15.1615872993880;
+        Mon, 15 Mar 2021 22:36:33 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id j24sm14091946qka.67.2021.03.15.22.36.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 22:36:33 -0700 (PDT)
+Subject: Re: [PATCH V11 3/5] kbuild: Allow .dtso format for overlay source
+ files
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1615354376.git.viresh.kumar@linaro.org>
+ <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
+ <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
+ <20210312044712.srmqfuie7fae55pb@vireshk-i7>
+ <17c65559-865f-f742-660f-0ab30ed45d90@gmail.com>
+ <4d9bee7a-416e-50a1-65a5-0674ae83d42e@gmail.com>
+ <20210312071325.zosmlttse4ym7sit@vireshk-i7>
+ <6f093bb1-1a80-a906-fb4c-3f6fdeed4838@gmail.com>
+ <9068520f-76d6-ec94-716c-02383422ac85@gmail.com>
+ <20210315064051.otcjt3x6vkfdrio6@vireshk-i7>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <98697a33-a07d-6c5f-3f21-97a92ac68d3e@gmail.com>
+Date:   Tue, 16 Mar 2021 00:36:32 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210316052732.682020-1-unixbhaskar@gmail.com>
+In-Reply-To: <20210315064051.otcjt3x6vkfdrio6@vireshk-i7>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -48,63 +87,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/15/21 10:27 PM, Bhaskar Chowdhury wrote:
+On 3/15/21 1:40 AM, Viresh Kumar wrote:
+> On 14-03-21, 20:16, Frank Rowand wrote:
+>> On 3/12/21 11:11 PM, Frank Rowand wrote:
+>>> On 3/12/21 1:13 AM, Viresh Kumar wrote:
+>>>> On 12-03-21, 01:09, Frank Rowand wrote:
+>>>>> I suggested having the .dtso files include the .dts file because that is a relatively
+>>>>> small and easy change to test.  What would probably make more sense is the rename
+>>>>> the existing overlay .dts files to be .dtso files and then for each overlay .dtso
+>>>>> file create a new .dts file that #includes the corresponding .dtso file.  This is
+>>>>> more work and churn, but easier to document that the .dts files are a hack that is
+>>>>> needed so that the corresponding .dtb.S files will be generated.
+>>>>
+>>>> What about creating links instead then ?
+>>>>
+>>>
+>>> I don't really like the idea of using links here.
+>>>
+>>> Maybe it is best to make the changes needed to allow the unittest
+>>> overlays to be .dtso instead of .dts.
+>>>
+>>> Off the top of my head:
+>>>
+>>>   scripts/Makefile.lib:
+>>>      The rule for %.dtb.S invokes cmd_dt_S_dtb, which puts the
+>>>      overlay data in section .dtb.init.rodata, with a label
+>>>      pointing to the beginning of the overlay __dtb_XXX_begin and
+>>>      a label pointing to the end of the overlay __dtb_XXX_end,
+>>>      for the overlay named XXX.  I _think_ that you could simply
+>>>      add a corresponding rule for %.dtbo.S using a new command
+>>>      cmd_dt_S_dtbo (the same as cmd_dt_S_dtb, except use labels
+>>>      __dtbo_XXX_begin and __dtbo_XXX_end).
+>>
+>> If you do the above, please put it in drivers/of/unittest-data/Makefile
+>> instead of scripts/Makefile.lib because it is unittest.c specific and
+>> not meant to be anywhere else in the kernel.
 > 
-> Trivial typo fixes throughout the file.
+> What about doing this then in unittest's Makefile instead (which I
+> already suggested earlier), that will make everything work just fine
+> without any other changes ?
 > 
-> cc: trivial@vger.kernel.org
+> +# Required for of unittest files as they can't be renamed to .dtso
+> +$(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
+> +       $(call if_changed_dep,dtc)
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+I should have looked at patch 3/5 more carefully instead of counting on
+Masahiro to check it out and simply build testing.
 
+Patch 3/5 does not seem correct.  I'll look over all the makefile related
+changes that have been accepted (if any) and patch 3/5 later today (Tuesday).
 
-> ---
->  fs/dlm/lock.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/dlm/lock.c b/fs/dlm/lock.c
-> index 002123efc6b0..caadc426c8b4 100644
-> --- a/fs/dlm/lock.c
-> +++ b/fs/dlm/lock.c
-> @@ -91,7 +91,7 @@ static void del_timeout(struct dlm_lkb *lkb);
->  static void toss_rsb(struct kref *kref);
-> 
->  /*
-> - * Lock compatibilty matrix - thanks Steve
-> + * Lock compatibility matrix - thanks Steve
->   * UN = Unlocked state. Not really a state, used as a flag
->   * PD = Padding. Used to make the matrix a nice power of two in size
->   * Other states are the same as the VMS DLM.
-> @@ -1535,7 +1535,7 @@ static int _remove_from_waiters(struct dlm_lkb *lkb, int mstype,
->  		return -1;
->  	}
-> 
-> -	/* Remove for the convert reply, and premptively remove for the
-> +	/* Remove for the convert reply, and preemptively remove for the
->  	   cancel reply.  A convert has been granted while there's still
->  	   an outstanding cancel on it (the cancel is moot and the result
->  	   in the cancel reply should be 0).  We preempt the cancel reply
-> @@ -2357,14 +2357,14 @@ static int _can_be_granted(struct dlm_rsb *r, struct dlm_lkb *lkb, int now,
->  	 * 6-5: But the default algorithm for deciding whether to grant or
->  	 * queue conversion requests does not by itself guarantee that such
->  	 * requests are serviced on a "first come first serve" basis.  This, in
-> -	 * turn, can lead to a phenomenon known as "indefinate postponement".
-> +	 * turn, can lead to a phenomenon known as "indefinite postponement".
->  	 *
->  	 * 6-7: This issue is dealt with by using the optional QUECVT flag with
->  	 * the system service employed to request a lock conversion.  This flag
->  	 * forces certain conversion requests to be queued, even if they are
->  	 * compatible with the granted modes of other locks on the same
->  	 * resource.  Thus, the use of this flag results in conversion requests
-> -	 * being ordered on a "first come first servce" basis.
-> +	 * being ordered on a "first come first serve" basis.
->  	 *
->  	 * DCT: This condition is all about new conversions being able to occur
->  	 * "in place" while the lock remains on the granted queue (assuming
-> --
-
-
--- 
-~Randy
-
+-Frank
