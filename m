@@ -2,176 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26A533E201
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8A433E206
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:20:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbhCPXTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 19:19:46 -0400
-Received: from mail-mw2nam12on2092.outbound.protection.outlook.com ([40.107.244.92]:37633
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        id S229734AbhCPXUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 19:20:15 -0400
+Received: from mail-eopbgr680089.outbound.protection.outlook.com ([40.107.68.89]:55161
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229491AbhCPXTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 19:19:24 -0400
+        id S229536AbhCPXUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 19:20:04 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DBm4ma40rlzhBHINBVpsaUREUY3QXydl/35sl4gC4mDAfeETJc2UIwdbrwnqo27o584t5GZ8gjrfAEkSWd3uUA5Q8QM0XosYYnUuo4CUcpSEj5tBVsxfNYLRlS25O1QncKZk/TkUKX032FisySQKveHumMZjSqqyxb3yHcV1CwDdZDUuAz8LN1jO7lTFk2q05YOLD8l5KNMez3FBiFaWeLF0fFg6oKBfOYlgDDUK2UJIMa/SyBKtrMowKpZornKrWoBnFPR8YiWrXBiE85POlOtJLYXnhN/xa5s6Iprtckb14Konh48ouej1QSWWKmZWecTz/SR3uV04mT+kNiQtwA==
+ b=gJ8tnYzznKDCGvhbnGpCmQ6rdnT+JBMruSnz/QlPYOpMmdKmIs4NO2uPXgWcflO3S3ZoThRzKTX3JWLSySVCnxKIwRsBK0EIeTAfHAdW9WT7SHA1qbokMZZwuOFLYVM+gLORpcX3qF8igQVmIo1SyfaLVIshXxUP45Hw9zghGTtyG8JBPxpiNpM15rkWcTTEp0qvs0+0FsUIArHd9hR3mbtMsFg3b/GQqTgYZ+b6sNFoE4bcEEM8b6af59YW8724RBjkWVT7jqjwBSCSbCZyy3gp9qTeGFxhGKAcTeghZQdPMR0j5xZwB0zgB84WUaKogegqDAW258zQ2KszMksrKQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mUAvQrym7haaa2v2D5qJamqw46MEuxoFUuJau0JSxR8=;
- b=XDjkcx6LzfmNfFhKKJYxix+W80BChc8ZtN2tcU4028Sf553HlLtBMgkZ4l5J1rCba/05chStiuo85hSBI9bw+FzsNfHu4358qEYuNz/fs9V8buAVQwLluWlu7cVZdnAPP4m5A/GwYa7S5n6bUymVd8sSUF+9YCEJsOWq+dO+B2TSTWpBgYLKj6x4gLVmK7+jSOwgOEAJUUvhuCRmwx6b0CXL68THGIoKr+84rD5NBr+0lMYEj/YYsjIRbMpP9YoemD4Y0Ne3ZG9D71Wo5qPZRQk1QsvGhYOJFW9/2B8jUtwi/KVw/IvkI6R4QdFgBxZgsv1AayONgjeL6mlXH5kgYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hammerspace.com; dmarc=pass action=none
- header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
+ bh=ORBRWXR60KeLitV095ZZaonQQxsAfdjtiJLrxLdWIFI=;
+ b=oajHofh8rH9Ot2J8RXpMNIup/h1fPee7/WRP3vrLQU/xI5O1x4gB1biYNxn9qOZqfGet7htkDR5skyJN4bFXAssDzgC2Xe4wQXO8/Kv0W6hgdpyjJfMzSrsb+WhJhPwqM2YD9J/41IEze1CA23Wd6kyy1v0JS7BVvW8UqfUvMCIKVfmKDAvGJYMmUWsrGGzJT0qxgi7r/YhN/kz/DU+7BCBsMHP/Vv9QZCf4XKBbvrFY1m2Gz7AK6WfiuF+T47Ai5Y/9nrDvwfM+AOY2dMGdYtF2KH3ih9xDvI0ppeSQ06f+s+RL4zURB9TI80fQVe5fVe4e5QsC+s9qS9+zrJbPqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mUAvQrym7haaa2v2D5qJamqw46MEuxoFUuJau0JSxR8=;
- b=gZVWiGn8MBu+63UJITZSLFIjbv93hceNNlnXntL59Jdancx2XzLyBUK6IAaf0Z922RViJywsNDK20o47UseiZN0r/rXgNZ4yN743+FktpmNj1NqBY3P1xD/ywoifMp2C3RZ8HhOy2cV6Ivoh8/7zDcY6eYMBcindUBd48mfuwMU=
-Received: from CH2PR13MB3525.namprd13.prod.outlook.com (2603:10b6:610:21::29)
- by CH0PR13MB4732.namprd13.prod.outlook.com (2603:10b6:610:ca::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.11; Tue, 16 Mar
- 2021 23:19:21 +0000
-Received: from CH2PR13MB3525.namprd13.prod.outlook.com
- ([fe80::f453:2dd2:675:d063]) by CH2PR13MB3525.namprd13.prod.outlook.com
- ([fe80::f453:2dd2:675:d063%3]) with mapi id 15.20.3955.010; Tue, 16 Mar 2021
- 23:19:21 +0000
-From:   Trond Myklebust <trondmy@hammerspace.com>
-To:     "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "dhowells@redhat.com" <dhowells@redhat.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "syzbot+ba2e91df8f74809417fa@syzkaller.appspotmail.com" 
-        <syzbot+ba2e91df8f74809417fa@syzkaller.appspotmail.com>,
-        "syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com" 
-        <syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com>
-Subject: Re: [PATCH] NFS: fs_context: validate UDP retrans to prevent shift
- out-of-bounds
-Thread-Topic: [PATCH] NFS: fs_context: validate UDP retrans to prevent shift
- out-of-bounds
-Thread-Index: AQHXDvnAvfNR5PqdykmZVAF5r/Bd4qqHS36AgAAMJAA=
-Date:   Tue, 16 Mar 2021 23:19:21 +0000
-Message-ID: <8a992689a73f6e3481f4a0316adc93a0e032fd96.camel@hammerspace.com>
-References: <20210302001930.2253-1-rdunlap@infradead.org>
-         <b98720c9-2798-f168-eaaa-01d638d9900d@infradead.org>
-In-Reply-To: <b98720c9-2798-f168-eaaa-01d638d9900d@infradead.org>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none
- header.from=hammerspace.com;
-x-originating-ip: [68.36.133.222]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 523a0034-33da-4dd2-a425-08d8e8d1ee36
-x-ms-traffictypediagnostic: CH0PR13MB4732:
-x-microsoft-antispam-prvs: <CH0PR13MB473252838ED76D94A0A978D2B86B9@CH0PR13MB4732.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1091;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: l/cpyBpk4wynM3jxy7eeX/mHbZqDqlt56lR21Bfqx16ylfDE/AK1jj0RqY1j1a9w2rZmfzMynXvTZdGKAR9hvUmRd2b7T6oU2591diVoWKNVKqlA/MR1H3hW3xn/mtXPAb1YtZqFTCIUjdV/tQ2fcWnowARVccw7PQay7QHv7Ua4tBfQ49Zp527TLFg5X3FNvwiLFPn0peSr75D44hLjLzgjT1/Ndjd2lkJ5kEKxYENMtXDxCCkpgYiFG5T+tO1qyxo9YugA/2rsaWnPM6fvqEshd6drt1F3K8eM3eWOY4NbasaIqmGCmHKvBmxY8cLeB3chFIAIgp6/QuuLnTQ4lxDIhlHdvID2owPs5HW6oQ3SaM4IuxklwlvUJCmgvyx0yFKNHTjaN8+AU4NBQOgCunLv783Jr1gkG2CyuytpSKcSPpIQneYP0Ot2p+Vc6X2RyHl4EnmaM3IL4NV3kf4pPD6zTM3Da0RYIUxR29tRMWqM59QukFVC8ZWLfgwWFg/JekUIF9N+7P0ft/vsV6qGxIixeBDcthbQXFtKpqRddT7OCGPfLKAhvHCr/fAN8r9t
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR13MB3525.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(366004)(396003)(376002)(136003)(346002)(66946007)(316002)(2616005)(36756003)(66556008)(8676002)(5660300002)(8936002)(54906003)(4326008)(478600001)(64756008)(76116006)(110136005)(6486002)(6506007)(53546011)(71200400001)(83380400001)(2906002)(66476007)(6512007)(26005)(66446008)(86362001)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?TStKVXM2MVhJQTJndTF4V2ZKTEZRbzVRR2VrSzcvQUZPSDNldEdtWTJsazFS?=
- =?utf-8?B?MzRlOUExeTFOZlFNTkxBRG9iYUYwTHJpMHE4OUpRUEVGLzhEb1VoRjlycy9j?=
- =?utf-8?B?M0toU2tyMG5tM1A0dGo4QlVvYmlCV3VNOUliYnQzZVhQanlJcVFXbE5Jc0Z3?=
- =?utf-8?B?YVVvOGM1RzRnRDR2em04eWRiTTJoY3gyckg4QXZpdFlMUjdrZFUzblpRbjJO?=
- =?utf-8?B?TzM0RldGSFBmWXYwRitnaUZ3WUREOHk4d1IrU2NYZlEzeUo1Z3g5anZsb1pO?=
- =?utf-8?B?UE0vTlZZT28wcmhNYnpET0cvZFhxUzU2anAvM09kUU1xZHVPWWtWeDR0Ymkz?=
- =?utf-8?B?SFNSWllMTjhHdzBxQUFkQ1pTVXpkOGhQMysxZ1ZPVnZvcEpSbk1YUUUxbFZL?=
- =?utf-8?B?R1F4eVAxNEdYRG50OXE0TFNhUFJQbVNrTStMZ3poU2kxRVhYM1JKM0JvcXRp?=
- =?utf-8?B?ZEUwNHNNMGdFSGdoYmVaczh3Y1hpQkFndTZLS1c3TzMzTVJOMjNnSjZodk9B?=
- =?utf-8?B?S0hqcnlpdXNiZnZXcmFTdGl3VFN2eEdmZGJraVJQWlpuVnBJWlNxMWJXQ0Vt?=
- =?utf-8?B?NVhwb01uaUdZVjV2U2JkajlBQ0xSZVZtek9pSFBxVmVvZ28xMUhsVU9tRWtt?=
- =?utf-8?B?a1BsVko0TUtqWTcyVFM2MnVOOWhEb2pqN3E2bEkyeldWNnUvN1EvalZQeEkv?=
- =?utf-8?B?RkFoeXVPZzlGS1UzV2kwOGVSSmRSYVlacUd1M3B5Z0VUSVFwZysvdnpqeGM0?=
- =?utf-8?B?dm5lK3NkMXFxb3BlS0EzMVYwamdOckFERE1GRVhXNmJRdkFtc0s0ZWhLNXky?=
- =?utf-8?B?eXRVaTNMRWdmcllhd0htUzNiN3JhTWZ0SzJSRnRxVzRueDBoYjBpek5tWXVZ?=
- =?utf-8?B?VHlIckRvTTI1c0duVCtGVThRa0lqMHpwK1pNNHUybEYwUGdxOGlqY0JQSnVI?=
- =?utf-8?B?K1pIUW5jL1d5VDl5TnJocEt3TUt5WnRFV0lxaU5uRkU1R01xMWkxclhlbDRi?=
- =?utf-8?B?SXJGOUVoNkNnMEY5WllHUmtpSmhZUWdLWWRWeVdIb2hVWVQrTlhZaXEzUlNS?=
- =?utf-8?B?SEVjMkJ2aUhCam1zZURPcDFUTENEeXFZdnNuNlVnR0ZFeWhoUzBoOWc4Q25B?=
- =?utf-8?B?VTNUcVlFNzY3Ull0V2NqZGxnbVROUThNNlduMnA5STNkTjFhYzc0aFFycHBS?=
- =?utf-8?B?eGUvZW9ZRUxob1M5WGo2amxkZTFiNUxqNHNHQnFEN0NKZnpXNkhkazZDUVk4?=
- =?utf-8?B?ZlNZd295R3pmNU5zWnJIYnJqZ2FtaXd3WTZzZEZTNzlUS1JBc1ErM2F0emdp?=
- =?utf-8?B?R2R2UXphekZBTnBUcVV4UjBpaUs4S0lFTlg0MkdUcXZxWnlnaUwxRW9JMm03?=
- =?utf-8?B?TkhTd2FRV0VoN1lwU2ZWOWFRTVB2eVVRTDNJTjFzSnlDUDM2d3F2cy9lOG00?=
- =?utf-8?B?UGE2UEY0Nkl1ZmFGUkdWMkFOb3VwT2srS1hQMDdoTlRVYmY1SjFNc2FQMm1K?=
- =?utf-8?B?Rnc3d2c0ajJDMzdpQ2U5Mk0rWHhqTWJaUmgwV1QrRkRMSk9oY1ZKaGNSamhM?=
- =?utf-8?B?VEFjeDRQVnhtU09IV1FuazVyTHRUemsxa2haTEVXQjBraVZzY29ldVplRjJI?=
- =?utf-8?B?aFJQNW9GTkpBd0IrUVg3UTIyMkJzRDEyMm1WOFdOVVYyZTRwczhvSStzSU42?=
- =?utf-8?B?bkpQWVJPenVrZHVuTUlWdVhwRWp5ZnF0NzdtNHhxd2VWMFFHbEhjOWNIVDQ5?=
- =?utf-8?Q?7cC27Zwiqhe7lpu/SAbhHZCEka3KV6buecU/er5?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F025EF7F69026B449B3AB67FD382DC35@namprd13.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ bh=ORBRWXR60KeLitV095ZZaonQQxsAfdjtiJLrxLdWIFI=;
+ b=tZAuBwnrye9GJwHRN3XwoAcllEgwIdzX+MrhcUJB+nosqORbiyDXey0dWDtFZe36PSk0l1FL9wSBeBRMjRRYiQ4qMEuCw7ZXNlK3RwSt9R9hUrJmD8M/VKFlhoz31cPyeeUC+1ifopjWh5XpGZshjAgA4F+fDAhog/u8ssPwMpC8xfmOdzP2LGMXU6b1CnWDh9ylQDV9wMFyWDvMwzFJc5eO56bzhuAfF/qDFUjWyTsgSa7KglO5F1d6UZpJIBgO28EjL8mXQKxpC3JtYpL2AkXpef1vD1oa2L5eZxPxDgPJslBI08L5jY66mrNu8W7AxF/7UVc48MQ36UCRYAo4+w==
+Received: from BN6PR22CA0063.namprd22.prod.outlook.com (2603:10b6:404:ca::25)
+ by DM5PR12MB1628.namprd12.prod.outlook.com (2603:10b6:4:7::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3933.31; Tue, 16 Mar 2021 23:20:02 +0000
+Received: from BN8NAM11FT067.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:ca:cafe::fe) by BN6PR22CA0063.outlook.office365.com
+ (2603:10b6:404:ca::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend
+ Transport; Tue, 16 Mar 2021 23:20:02 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT067.mail.protection.outlook.com (10.13.177.159) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3955.18 via Frontend Transport; Tue, 16 Mar 2021 23:20:02 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Mar
+ 2021 23:20:01 +0000
+Received: from vdi.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 16 Mar 2021 23:20:00 +0000
+From:   Liming Sun <limings@nvidia.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Khalil Blaiech <kblaiech@nvidia.com>
+CC:     Liming Sun <limings@nvidia.com>, <linux-mmc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] mmc: sdhci-of-dwcmshc: add ACPI support for BlueField-3 SoC
+Date:   Tue, 16 Mar 2021 19:19:57 -0400
+Message-ID: <1615936797-245197-1-git-send-email-limings@nvidia.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <b62a68d1f8488e7f95befc6723ba5c20d6781628.1615487235.git.limings@nvidia.com>
+References: <b62a68d1f8488e7f95befc6723ba5c20d6781628.1615487235.git.limings@nvidia.com>
 MIME-Version: 1.0
-X-OriginatorOrg: hammerspace.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR13MB3525.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 523a0034-33da-4dd2-a425-08d8e8d1ee36
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2021 23:19:21.4083
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 942f6a75-f928-4e74-b6a9-08d8e8d2067b
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1628:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB162871B70FE621435592E192D36B9@DM5PR12MB1628.namprd12.prod.outlook.com>
+X-MS-Exchange-Transport-Forked: True
+X-MS-Oob-TLC-OOBClassifiers: OLM:341;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lSI/f2HQJLgv+wQXwGVCi7YBUgzhZCE9FuH8JCqmF/gIbFyVVhjKav7d2czxshqfOE9IUKQOR1d8fHTeki/N9bhfM13SwlbJrUrvD3v+jkcv7vVu279RLdfVqfobP7yOpIMJbfW7Q7r1RczyNPgfHowqw0V+c8+a0MyGmBGONsjDjqUGo/SmraW/OV7USH/AZE4xSmEM0U0MIKqICDRrjMSDoe1pt47fL/ccJpx5AQFYy4ai3DgwwcdsIUK7pDo7mHwE7I8AwTfTVtPulyRhqJlzjODe+72ALvsss8rc8jmGyhgibicNEZfnv+pRaeChREpd24BOmVaNZsQJfZmjksu1HwefRWCqcr8ngaR6YI/yWLsR7i8z70rCUikJXSUFgUXU3PdT2WfAVlGkGRfsUNjft8ZP7q26hQskKcC4BO0FlgfdVGrFO+V49zCt00LTTE7ePyo33/zcnts/YekE+ADDuQQIgd/0QuXb9MzY/sA7OccY5jyVsTjpoU/yCD57fRz1uZFUyqYYsQJmDsxF6jo4v5jMo9Q3XrqVEqtLRdrG0MUsxy3V1FegmC+dTcdMV3NFKh/V141rjH/VOcQSu7pD+Lq2z6AmWA9YpdZbPo+S1HBqHUuHhVA9ZeBAqj3pD0CqyWRb9xHvcYX7UwbmVJwf8rMUBdYYv+ezuKfMDDiak15ofFDsk+PkxJqYtvBdrlh7TBUGnC5FMW78SH0wdA==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(136003)(396003)(46966006)(36840700001)(70206006)(36906005)(8676002)(70586007)(336012)(82740400003)(86362001)(316002)(26005)(36860700001)(7636003)(83380400001)(2616005)(5660300002)(54906003)(6636002)(110136005)(8936002)(36756003)(47076005)(356005)(7696005)(186003)(4326008)(6666004)(34020700004)(82310400003)(2906002)(478600001)(426003)(133343001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Mar 2021 23:20:02.0893
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: axqWxekZNX0stgPUnWKg9XY8vUHkBni8ZEYDkGtxH0O20G/V9iE2oDZrhcFGBrJg003z43hyb/dtTHRYRCO5xA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR13MB4732
+X-MS-Exchange-CrossTenant-Network-Message-Id: 942f6a75-f928-4e74-b6a9-08d8e8d2067b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT067.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1628
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUmFuZHksDQoNCk9uIFR1ZSwgMjAyMS0wMy0xNiBhdCAxNTozNSAtMDcwMCwgUmFuZHkgRHVu
-bGFwIHdyb3RlOg0KPiBwaW5nPw0KPiANCg0KSSBjYW4gdGFrZSB0aGlzIHBhdGNoIGZvciB0aGUg
-bmV4dCBtZXJnZSB3aW5kb3cuDQoNCj4gT24gMy8xLzIxIDQ6MTkgUE0sIFJhbmR5IER1bmxhcCB3
-cm90ZToNCj4gPiBGaXggc2hpZnQgb3V0LW9mLWJvdW5kcyBpbiB4cHJ0X2NhbGNfbWFqb3J0aW1l
-bygpLiBUaGlzIGlzIGNhdXNlZA0KPiA+IGJ5IGEgZ2FyYmFnZSB0aW1lb3V0IChyZXRyYW5zKSBt
-b3VudCBvcHRpb24gYmVpbmcgcGFzc2VkIHRvIG5mcw0KPiA+IG1vdW50LA0KPiA+IGluIHRoaXMg
-Y2FzZSBmcm9tIHN5emthbGxlci4NCj4gPiANCj4gPiBJZiB0aGUgcHJvdG9jb2wgaXMgWFBSVF9U
-UkFOU1BPUlRfVURQLCB0aGVuICdyZXRyYW5zJyBpcyBhIHNoaWZ0DQo+ID4gdmFsdWUgZm9yIGEg
-NjQtYml0IGxvbmcgaW50ZWdlciwgc28gJ3JldHJhbnMnIGNhbm5vdCBiZSA+PSA2NC4NCj4gPiBJ
-ZiBpdCBpcyA+PSA2NCwgZmFpbCB0aGUgbW91bnQgYW5kIHJldHVybiBhbiBlcnJvci4NCj4gPiAN
-Cj4gPiBGaXhlczogOTk1NGJmOTJjMGNkICgiTkZTOiBNb3ZlIG1vdW50IHBhcmFtZXRlcmlzYXRp
-b24gYml0cyBpbnRvDQo+ID4gdGhlaXIgb3duIGZpbGUiKQ0KPiA+IFJlcG9ydGVkLWJ5OiBzeXpi
-b3QrYmEyZTkxZGY4Zjc0ODA5NDE3ZmFAc3l6a2FsbGVyLmFwcHNwb3RtYWlsLmNvbQ0KPiA+IFJl
-cG9ydGVkLWJ5OiBzeXpib3QrZjNhMGZhMTEwZmQ2MzBhYjU2YzhAc3l6a2FsbGVyLmFwcHNwb3Rt
-YWlsLmNvbQ0KPiA+IFNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRl
-YWQub3JnPg0KPiA+IENjOiBUcm9uZCBNeWtsZWJ1c3QgPHRyb25kLm15a2xlYnVzdEBoYW1tZXJz
-cGFjZS5jb20+DQo+ID4gQ2M6IEFubmEgU2NodW1ha2VyIDxhbm5hLnNjaHVtYWtlckBuZXRhcHAu
-Y29tPg0KPiA+IENjOiBsaW51eC1uZnNAdmdlci5rZXJuZWwub3JnDQo+ID4gQ2M6IERhdmlkIEhv
-d2VsbHMgPGRob3dlbGxzQHJlZGhhdC5jb20+DQo+ID4gQ2M6IEFsIFZpcm8gPHZpcm9AemVuaXYu
-bGludXgub3JnLnVrPg0KPiA+IENjOiBzdGFibGVAdmdlci5rZXJuZWwub3JnDQo+ID4gLS0tDQo+
-ID4gwqBmcy9uZnMvZnNfY29udGV4dC5jIHzCoMKgIDEyICsrKysrKysrKysrKw0KPiA+IMKgMSBm
-aWxlIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKykNCj4gPiANCj4gPiAtLS0gbG54LTUxMi1yYzEu
-b3JpZy9mcy9uZnMvZnNfY29udGV4dC5jDQo+ID4gKysrIGxueC01MTItcmMxL2ZzL25mcy9mc19j
-b250ZXh0LmMNCj4gPiBAQCAtOTc0LDYgKzk3NCwxNSBAQCBzdGF0aWMgaW50IG5mczIzX3BhcnNl
-X21vbm9saXRoaWMoc3RydWN0DQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNpemVvZihtbnRmaC0+ZGF0YSkgLSBtbnRmaC0+
-c2l6ZSk7DQo+ID4gwqANCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC8qDQo+
-ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIGZvciBwcm90byA9PSBYUFJUX1RS
-QU5TUE9SVF9VRFAsIHdoaWNoIGlzIHdoYXQNCj4gPiB1c2VzDQo+ID4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCAqIHRvX2V4cG9uZW50aWFsLCBpbXBseWluZyBzaGlmdDogbGltaXQg
-dGhlIHNoaWZ0DQo+ID4gdmFsdWUNCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-ICogdG8gQklUU19QRVJfTE9ORyAobWFqb3J0aW1lbyBpcyB1bnNpZ25lZCBsb25nKQ0KPiA+ICvC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKi8NCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgaWYgKCEoZGF0YS0+ZmxhZ3MgJiBORlNfTU9VTlRfVENQKSkgLyogdGhpcyB3
-aWxsIGJlDQo+ID4gVURQICovDQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqBpZiAoZGF0YS0+cmV0cmFucyA+PSA2NCkgLyogc2hpZnQgdmFsdWUgaXMN
-Cj4gPiB0b28gbGFyZ2UgKi8NCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBnb3RvIG91dF9pbnZhbGlkX2RhdGE7DQo+ID4g
-Kw0KPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAvKg0KPiA+IMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgICogVHJhbnNsYXRlIHRvIG5mc19mc19jb250ZXh0LCB3aGlj
-aA0KPiA+IG5mc19maWxsX3N1cGVyDQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgKiBjYW4gZGVhbCB3aXRoLg0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-ICovDQo+ID4gQEAgLTEwNzMsNiArMTA4Miw5IEBAIG91dF9ub19hZGRyZXNzOg0KPiA+IMKgDQo+
-ID4gwqBvdXRfaW52YWxpZF9maDoNCj4gPiDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIG5mc19pbnZh
-bGYoZmMsICJORlM6IGludmFsaWQgcm9vdCBmaWxlaGFuZGxlIik7DQo+ID4gKw0KPiA+ICtvdXRf
-aW52YWxpZF9kYXRhOg0KPiA+ICvCoMKgwqDCoMKgwqDCoHJldHVybiBuZnNfaW52YWxmKGZjLCAi
-TkZTOiBpbnZhbGlkIGJpbmFyeSBtb3VudCBkYXRhIik7DQo+ID4gwqB9DQo+ID4gwqANCj4gPiDC
-oCNpZiBJU19FTkFCTEVEKENPTkZJR19ORlNfVjQpDQo+ID4gDQo+IA0KPiANCg0KLS0gDQpUcm9u
-ZCBNeWtsZWJ1c3QNCkxpbnV4IE5GUyBjbGllbnQgbWFpbnRhaW5lciwgSGFtbWVyc3BhY2UNCnRy
-b25kLm15a2xlYnVzdEBoYW1tZXJzcGFjZS5jb20NCg0KDQo=
+This commit adds ACPI support in the sdhci-of-dwcmshc driver for
+BlueField-3 SoC. It has changes to only use the clock hierarchy
+for Deviec Tree since the clk is not supported by ACPI. Instead,
+ACPI can define 'clock-frequency' which is parsed by existing
+sdhci_get_property(). This clock value will be returned in function
+dwcmshc_get_max_clock().
+
+Signed-off-by: Liming Sun <limings@nvidia.com>
+Reviewed-by: Khalil Blaiech <kblaiech@nvidia.com>
+---
+v1->v2:
+   Changes for comments from Adrian Hunter <adrian.hunter@intel.com>:
+   - Make changes in sdhci-of-dwcmshc instead.
+v1: Initial version which was done in sdhci-acpi.c
+---
+ drivers/mmc/host/sdhci-of-dwcmshc.c | 50 ++++++++++++++++++++++++++-----------
+ 1 file changed, 36 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+index 59d8d96..bf5037a 100644
+--- a/drivers/mmc/host/sdhci-of-dwcmshc.c
++++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+@@ -7,6 +7,7 @@
+  * Author: Jisheng Zhang <jszhang@kernel.org>
+  */
+ 
++#include <linux/acpi.h>
+ #include <linux/clk.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/kernel.h>
+@@ -51,6 +52,16 @@ static void dwcmshc_adma_write_desc(struct sdhci_host *host, void **desc,
+ 	sdhci_adma_write_desc(host, desc, addr, len, cmd);
+ }
+ 
++static unsigned int dwcmshc_get_max_clock(struct sdhci_host *host)
++{
++	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
++
++	if (pltfm_host->clk)
++		return sdhci_pltfm_clk_get_max_clock(host);
++	else
++		return pltfm_host->clock;
++}
++
+ static void dwcmshc_check_auto_cmd23(struct mmc_host *mmc,
+ 				     struct mmc_request *mrq)
+ {
+@@ -104,7 +115,7 @@ static void dwcmshc_set_uhs_signaling(struct sdhci_host *host,
+ 	.set_clock		= sdhci_set_clock,
+ 	.set_bus_width		= sdhci_set_bus_width,
+ 	.set_uhs_signaling	= dwcmshc_set_uhs_signaling,
+-	.get_max_clock		= sdhci_pltfm_clk_get_max_clock,
++	.get_max_clock		= dwcmshc_get_max_clock,
+ 	.reset			= sdhci_reset,
+ 	.adma_write_desc	= dwcmshc_adma_write_desc,
+ };
+@@ -117,6 +128,7 @@ static void dwcmshc_set_uhs_signaling(struct sdhci_host *host,
+ 
+ static int dwcmshc_probe(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
+ 	struct sdhci_pltfm_host *pltfm_host;
+ 	struct sdhci_host *host;
+ 	struct dwcmshc_priv *priv;
+@@ -131,7 +143,7 @@ static int dwcmshc_probe(struct platform_device *pdev)
+ 	/*
+ 	 * extra adma table cnt for cross 128M boundary handling.
+ 	 */
+-	extra = DIV_ROUND_UP_ULL(dma_get_required_mask(&pdev->dev), SZ_128M);
++	extra = DIV_ROUND_UP_ULL(dma_get_required_mask(dev), SZ_128M);
+ 	if (extra > SDHCI_MAX_SEGS)
+ 		extra = SDHCI_MAX_SEGS;
+ 	host->adma_table_cnt += extra;
+@@ -139,19 +151,21 @@ static int dwcmshc_probe(struct platform_device *pdev)
+ 	pltfm_host = sdhci_priv(host);
+ 	priv = sdhci_pltfm_priv(pltfm_host);
+ 
+-	pltfm_host->clk = devm_clk_get(&pdev->dev, "core");
+-	if (IS_ERR(pltfm_host->clk)) {
+-		err = PTR_ERR(pltfm_host->clk);
+-		dev_err(&pdev->dev, "failed to get core clk: %d\n", err);
+-		goto free_pltfm;
++	if (dev->of_node) {
++		pltfm_host->clk = devm_clk_get(dev, "core");
++		if (IS_ERR(pltfm_host->clk)) {
++			err = PTR_ERR(pltfm_host->clk);
++			dev_err(dev, "failed to get core clk: %d\n", err);
++			goto free_pltfm;
++		}
++		err = clk_prepare_enable(pltfm_host->clk);
++		if (err)
++			goto free_pltfm;
++
++		priv->bus_clk = devm_clk_get(dev, "bus");
++		if (!IS_ERR(priv->bus_clk))
++			clk_prepare_enable(priv->bus_clk);
+ 	}
+-	err = clk_prepare_enable(pltfm_host->clk);
+-	if (err)
+-		goto free_pltfm;
+-
+-	priv->bus_clk = devm_clk_get(&pdev->dev, "bus");
+-	if (!IS_ERR(priv->bus_clk))
+-		clk_prepare_enable(priv->bus_clk);
+ 
+ 	err = mmc_of_parse(host->mmc);
+ 	if (err)
+@@ -239,11 +253,19 @@ static int dwcmshc_resume(struct device *dev)
+ };
+ MODULE_DEVICE_TABLE(of, sdhci_dwcmshc_dt_ids);
+ 
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id sdhci_dwcmshc_acpi_ids[] = {
++	{ .id = "MLNXBF30" },
++	{}
++};
++#endif
++
+ static struct platform_driver sdhci_dwcmshc_driver = {
+ 	.driver	= {
+ 		.name	= "sdhci-dwcmshc",
+ 		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+ 		.of_match_table = sdhci_dwcmshc_dt_ids,
++		.acpi_match_table = ACPI_PTR(sdhci_dwcmshc_acpi_ids),
+ 		.pm = &dwcmshc_pmops,
+ 	},
+ 	.probe	= dwcmshc_probe,
+-- 
+1.8.3.1
+
