@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8026833D50B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E17E33D50F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:41:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235360AbhCPNk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40622 "EHLO
+        id S232397AbhCPNlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:41:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235309AbhCPNjv (ORCPT
+        with ESMTP id S235370AbhCPNlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:39:51 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D715EC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 06:39:50 -0700 (PDT)
+        Tue, 16 Mar 2021 09:41:06 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B916C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 06:41:05 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:b1e0:9434:c5b6:aecd])
-        by albert.telenet-ops.be with bizsmtp
-        id h1fo240070UTkXy061fo6Q; Tue, 16 Mar 2021 14:39:48 +0100
+        by michel.telenet-ops.be with bizsmtp
+        id h1h22400P0UTkXy061h25K; Tue, 16 Mar 2021 14:41:04 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1lM9vH-0088S6-Lx; Tue, 16 Mar 2021 14:39:47 +0100
+        id 1lM9wT-0088Uu-DB; Tue, 16 Mar 2021 14:41:01 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1lM9vH-009yMt-1j; Tue, 16 Mar 2021 14:39:47 +0100
+        id 1lM9wS-009yOn-MP; Tue, 16 Mar 2021 14:41:00 +0100
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Amireddy Mallikarjuna reddy 
-        <mallikarjunax.reddy@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jianqun Xu <jay.xu@rock-chips.com>
+Cc:     linux-gpio@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] leds: LEDS_BLINK_LGM should depend on X86
-Date:   Tue, 16 Mar 2021 14:39:46 +0100
-Message-Id: <20210316133946.2376963-1-geert+renesas@glider.be>
+Subject: [PATCH] pinctrl: PINCTRL_ROCKCHIP should depend on ARCH_ROCKCHIP
+Date:   Tue, 16 Mar 2021 14:40:59 +0100
+Message-Id: <20210316134059.2377081-1-geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -43,36 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Intel Lightning Mountain (LGM) Serial Shift Output controller (SSO)
-is only present on Intel Lightning Mountain SoCs.  Hence add a
-dependency on X86, to prevent asking the user about this driver when
-configuring a kernel without Intel Lightning Mountain platform support.
+The Rockchip GPIO and pin control modules are only present on Rockchip
+SoCs.  Hence add a dependency on ARCH_ROCKCHIP, to prevent asking the
+user about this driver when configuring a kernel without Rockchip
+platform support.
 
-While at it, merge the other dependencies into a single statement.
+Note that before, the PINCTRL_ROCKCHIP symbol was not visible, and
+automatically selected when needed.  By making it tristate and
+user-selectable, it became visible for everyone.
 
-Fixes: c3987cd2bca34ddf ("leds: lgm: Add LED controller driver for LGM SoC")
+Fixes: be786ac5a6c4bf4e ("pinctrl: rockchip: make driver be tristate module")
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- drivers/leds/blink/Kconfig | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/pinctrl/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/leds/blink/Kconfig b/drivers/leds/blink/Kconfig
-index 6dedc58c47b3ea16..852e634002cda7cf 100644
---- a/drivers/leds/blink/Kconfig
-+++ b/drivers/leds/blink/Kconfig
-@@ -9,10 +9,8 @@ if LEDS_BLINK
+diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
+index cfde05914abf7260..2a30b26fb30deef5 100644
+--- a/drivers/pinctrl/Kconfig
++++ b/drivers/pinctrl/Kconfig
+@@ -209,6 +209,7 @@ config PINCTRL_OXNAS
  
- config LEDS_BLINK_LGM
- 	tristate "LED support for Intel LGM SoC series"
--	depends on GPIOLIB
--	depends on LEDS_CLASS
--	depends on MFD_SYSCON
--	depends on OF
-+	depends on X86 || COMPILE_TEST
-+	depends on GPIOLIB && LEDS_CLASS && MFD_SYSCON && OF
- 	help
- 	  Parallel to serial conversion, which is also called SSO controller,
- 	  can drive external shift register for LED outputs.
+ config PINCTRL_ROCKCHIP
+ 	tristate "Rockchip gpio and pinctrl driver"
++	depends on ARCH_ROCKCHIP || COMPILE_TEST
+ 	depends on OF
+ 	select GPIOLIB
+ 	select PINMUX
 -- 
 2.25.1
 
