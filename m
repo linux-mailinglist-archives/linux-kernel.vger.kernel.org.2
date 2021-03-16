@@ -2,124 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E91133D125
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:51:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0A533D129
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:52:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235874AbhCPJvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:51:16 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:52956 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236330AbhCPJuw (ORCPT
+        id S236365AbhCPJvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236345AbhCPJv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:50:52 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 446261C0B8B; Tue, 16 Mar 2021 10:50:50 +0100 (CET)
-Date:   Tue, 16 Mar 2021 10:50:49 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 4.19 012/120] tcp: annotate tp->write_seq lockless reads
-Message-ID: <20210316095049.GB12946@amd>
-References: <20210315135720.002213995@linuxfoundation.org>
- <20210315135720.418426545@linuxfoundation.org>
+        Tue, 16 Mar 2021 05:51:27 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A6EC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:51:27 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id g185so34532489qkf.6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:51:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8k+xZvb93ykF04wglRmys4Onz2hVDSpTVTELCwFU/E4=;
+        b=uH7VfeXn2oSR7z9Mym0GtfmwmIVFjVMbSifB9/e27ZooWYMPuUjxpeaphpm8wI0rsK
+         Efa1+kovpL3m9JcaiyMuzZiUkjU/bXKqY7nVmKX+0GyePIXOVDz6+kSCb60U6skgmsDQ
+         H6lGPxQGoUQgv757uIKkuLtj4nAud2TqsCWZT+iPsxNyxRsyyTkI5xtMSKCvWH38AQA7
+         VPPtRM4AUQvxHLSWZeKCMrBT4h4fBau/tkM4LCwhrCoeeXWV1rCMuWPAJtjAd52ZQ4O+
+         ZmC7CwCzwDMIvc6L++gNmLtAh+CwJwmYJl4DvmeqZ4/2fX5hiP4I3hyJjyWQkdoq8IDx
+         DONg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8k+xZvb93ykF04wglRmys4Onz2hVDSpTVTELCwFU/E4=;
+        b=srVfEr8rmSTf+tclODkvc36kcMvJgPqSKEkxnPEFu8x9VjJfPJCJlzL3v7CF8IHZYy
+         i9Tv7R1w99tRlnz6e3HVl/Smy1dtnvypYAb/LLx0TXARyV9UtWPOO6OYmNYYb545NroR
+         mcs+0trnUlq4FhrAjznuXPrTFTVUy7tj5v6AC5SBKtYgVBn0o/W3oidhy5MAeNijgIsl
+         SHXTfgUb+78sB4PtVuPCnSnsUsZG/qEaQ1o1zkct387AGeFLhX2/J9wygb1S9J5RSxku
+         BqIIaA57R2DPksMqypgnp63y6J8YBqJj21rmpXDTryS0zzDuUSl+cG647cvEexwJi404
+         hOJg==
+X-Gm-Message-State: AOAM531ImZyuLapcnDdAED/ZQdU0/SbrCquoV3Q7fsf5qnD+ED7MhgGx
+        odtlOEntHKuEZ1CDu06L3Y5q/G3gediHg/bxzkvFJQ==
+X-Google-Smtp-Source: ABdhPJwCdkQqW5wXTRhCxttbTRQQhBvbFkdnZeCYX+xek6fO36vLgOHSyU6WX9Bjmnsjf7Ye4TfPYj5E4NGxMeGZ38Y=
+X-Received: by 2002:a37:a7cb:: with SMTP id q194mr5652450qke.350.1615888286360;
+ Tue, 16 Mar 2021 02:51:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="4SFOXa2GPu3tIq4H"
-Content-Disposition: inline
-In-Reply-To: <20210315135720.418426545@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <00000000000069802205bda22b7f@google.com> <CACT4Y+Yaq-zDh5FAzHt4g-5jXrXC3rSLw6CM=kjcfR6oxJ1+CA@mail.gmail.com>
+ <20210316092420.GN1463@shell.armlinux.org.uk>
+In-Reply-To: <20210316092420.GN1463@shell.armlinux.org.uk>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 16 Mar 2021 10:51:14 +0100
+Message-ID: <CACT4Y+ZhQCU6g28jD5gVxu=2h-Zd+uE6Ski2-sYmd_HrjLioyg@mail.gmail.com>
+Subject: Re: [syzbot] kernel panic: corrupted stack end in openat
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     syzbot <syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---4SFOXa2GPu3tIq4H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->=20
-> From: Eric Dumazet <edumazet@google.com>
-
-Dup.
-
-
-> We need to add READ_ONCE() annotations, and also make
-> sure write sides use corresponding WRITE_ONCE() to avoid
-> store-tearing.
-
-> @@ -1037,7 +1037,7 @@ new_segment:
->  		sk->sk_wmem_queued +=3D copy;
->  		sk_mem_charge(sk, copy);
->  		skb->ip_summed =3D CHECKSUM_PARTIAL;
-> -		tp->write_seq +=3D copy;
-> +		WRITE_ONCE(tp->write_seq, tp->write_seq + copy);
->  		TCP_SKB_CB(skb)->end_seq +=3D copy;
->  		tcp_skb_pcount_set(skb, 0);
+On Tue, Mar 16, 2021 at 10:24 AM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
 >
-
-I wonder if this needs to do READ_ONCE, too?
-
-> @@ -1391,7 +1391,7 @@ new_segment:
->  		if (!copied)
->  			TCP_SKB_CB(skb)->tcp_flags &=3D ~TCPHDR_PSH;
-> =20
-> -		tp->write_seq +=3D copy;
-> +		WRITE_ONCE(tp->write_seq, tp->write_seq + copy);
->  		TCP_SKB_CB(skb)->end_seq +=3D copy;
->  		tcp_skb_pcount_set(skb, 0);
+> On Tue, Mar 16, 2021 at 08:59:17AM +0100, Dmitry Vyukov wrote:
+> > On Tue, Mar 16, 2021 at 8:18 AM syzbot
+> > <syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    1e28eed1 Linux 5.12-rc3
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=167535e6d00000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=e0cee1f53de33ca3
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=0b06ef9b44d00d600183
+> > > userspace arch: arm
+> > >
+> > > Unfortunately, I don't have any reproducer for this issue yet.
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com
+> >
+> > +arm32 maintainer
+> > I think this is a real stack overflow on arm32, the stack is indeed deep.
 >
+> There's no way to know for sure because there's no indication of the
+> stack pointer in this, so we don't know how much space remains.
+> Therefore we don't know whether this is something in the dumped
+> path, or an interrupt causing it.
 
-And here.
-
-> @@ -2593,9 +2594,12 @@ int tcp_disconnect(struct sock *sk, int
->  	sock_reset_flag(sk, SOCK_DONE);
->  	tp->srtt_us =3D 0;
->  	tp->rcv_rtt_last_tsecr =3D 0;
-> -	tp->write_seq +=3D tp->max_window + 2;
-> -	if (tp->write_seq =3D=3D 0)
-> -		tp->write_seq =3D 1;
-> +
-> +	seq =3D tp->write_seq + tp->max_window + 2;
-> +	if (!seq)
-> +		seq =3D 1;
-> +	WRITE_ONCE(tp->write_seq, seq);
-
-And here.
-
-> --- a/net/ipv4/tcp_minisocks.c
-> +++ b/net/ipv4/tcp_minisocks.c
-> @@ -510,7 +510,7 @@ struct sock *tcp_create_openreq_child(co
->  	newtp->app_limited =3D ~0U;
-> =20
->  	tcp_init_xmit_timers(newsk);
-> -	newtp->write_seq =3D newtp->pushed_seq =3D treq->snt_isn + 1;
-> +	WRITE_ONCE(newtp->write_seq, newtp->pushed_seq =3D treq->snt_isn + 1);
-
-Would it be better to do assignment to pushed_seq outside of
-WRITE_ONCE macro? This is ... "interesting".
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---4SFOXa2GPu3tIq4H
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmBQf3kACgkQMOfwapXb+vKgIwCdHCjqPEK7PmDmmfIAd0twUUWA
-AhsAoIJipW/LvtuR27NuwI01WjMYOpGO
-=8Gfw
------END PGP SIGNATURE-----
-
---4SFOXa2GPu3tIq4H--
+Agree, to know for sure we would need support for VMAP_STACK.
+But do we really need to know it? If it's an interrupt on top, it does
+not make any difference?
