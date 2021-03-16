@@ -2,133 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5968933CFFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C47A133CFFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235088AbhCPIgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 04:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235056AbhCPIfj (ORCPT
+        id S235124AbhCPIgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 04:36:36 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:59075 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235105AbhCPIgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 04:35:39 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B11C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 01:35:38 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id mj10so70712466ejb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 01:35:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CjLHqcRLXQ6dUznEJBtg7nu1kYjN9GGJK8Vh/4Q1wzA=;
-        b=OEJpKcLPxwWKVbTLwSSr7+MNyb9zdWFY/fF18jofgn4mxQMADe2HQsPAkkHa86yGnc
-         y41M7m8CU7Ge6P42bbOxRSyGne/uCklsiZ23yXnW+6QiZlZBOkJLJ8VK+WNVDDC1JJYd
-         slfwgL6ElRonbWkeqSvLi8yBukPzwNQ35X5iU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CjLHqcRLXQ6dUznEJBtg7nu1kYjN9GGJK8Vh/4Q1wzA=;
-        b=D/Y0S6EZz66HFVHD8mTC7aGk6d/2kJTixiZ6aeXbSOYtfGfm4h4svf4PDOokEvjkGj
-         f4yyT+O0W6y6UC4cTyOIKyQICT2F62z1Z2ErLzuTqCa1htf1ODlb0HBVshNjg1hug2GD
-         5oloMMIhBBMk/Gm/InLUHJzm1B9QripYF+TT3hzBaldEBRxw+n8ikRRuhJyBr0Q8lo2P
-         S2GvD8B+NtSbLgG7eLKG8mUycMVdtShBHT+NnXg8XSQ0hyzNyLpGrFZQSaAv0CBHdwr1
-         JrD8xlud1Rm5j1o9CKHBQcwAJURfnlA7Ly0LnvV+AnV7+APvYde/SP2MWJiUW2Hvtd0P
-         Vu7g==
-X-Gm-Message-State: AOAM5307da1SMZ1f+GrHfoA6SltfZZl0e3zRSaNev3GaM6XIpDjrNgxp
-        miDCm0qjQy5KeuBmfPPOrILoPQ==
-X-Google-Smtp-Source: ABdhPJx2FIa6y6g2mUb7m2samZia0k53B/8UOt9Jnn0p4GBRcSqsjeN3Lhlp2gQkf624Vh9osC/gsg==
-X-Received: by 2002:a17:906:aada:: with SMTP id kt26mr27652274ejb.137.1615883737275;
-        Tue, 16 Mar 2021 01:35:37 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id gj26sm8825176ejb.67.2021.03.16.01.35.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 01:35:36 -0700 (PDT)
-Subject: Re: [PATCH 04/13] lib: introduce BITS_{FIRST,LAST} macro
-To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
-        linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-References: <20210316015424.1999082-1-yury.norov@gmail.com>
- <20210316015424.1999082-5-yury.norov@gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <8021faab-e592-9587-329b-817ae007b89a@rasmusvillemoes.dk>
-Date:   Tue, 16 Mar 2021 09:35:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 16 Mar 2021 04:36:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1615883772; x=1647419772;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ZAb2QZBNc9gZgwRbjqXLpn0mCs+bbSoKJvvznqLvH68=;
+  b=TrQitV+bDHalrRMAmaPikaODpsPjA7kYsGRTp+3PqKFeaLzUa94bYFEn
+   F5vqob7NkipJwcOXYYsRqrSpGZ7ojdZvv6xDEXsMzXkMjylMDdY2w4frt
+   KZ0+J8TfDyrSUPAHm5AEGh1fAdMuOevRL4h7Gdun9Sp2jgPYqf8CjdPE3
+   g1mvOr4Gs+rrRepCGHwYw7ULmfQWenxq7C7bRy2DlGP0mnjsx1HNV3FdJ
+   ZCGMkGQdvagODw0+9l8e4fOxOquerJ6+3ajq74Mm7hw3sBWOJ7yt8ZTlw
+   7z1lG/RU4JQig//3lWZSMRvjJgmoK6k8IeEr7XY7z5ErT0au2+GDA426Y
+   Q==;
+IronPort-SDR: 9mj46EXfq7cn3qxr9/Q7OUPQjgBDlYTLpGOwyleVBIZmz9ZCtv/XK7R3GV1Wk8mDbxhlXoxfRA
+ nzfQIv51J5aIyYxmQZykqkUXETLW7qTFeLo96XvaFd9OvFiz4VqGXo+mcX5scAwpZLnvuyrw2n
+ Ez3IUHH5fAwdHIb4BFvvfusD9eVa+O55LwPLGSYDvbFvP397sO00D1Kziz20PTjOna6KD/iMYX
+ ieL3srx17xKRF0H/pNzpFp/KdpuTI5oAyYqSzGrqfAXy88jb2yxSE4xArO7nOPZVB37fPruaNL
+ PEI=
+X-IronPort-AV: E=Sophos;i="5.81,251,1610434800"; 
+   d="scan'208";a="112895607"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Mar 2021 01:36:12 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 16 Mar 2021 01:36:10 -0700
+Received: from tyr.hegelund-hansen.dk (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Tue, 16 Mar 2021 01:36:08 -0700
+Message-ID: <319ae8336916458f416f8ed973feafcbed701b48.camel@microchip.com>
+Subject: Re: [PATCH v7 3/3] arm64: dts: reset: add microchip sparx5 switch
+ reset driver
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>
+Date:   Tue, 16 Mar 2021 09:36:07 +0100
+In-Reply-To: <20210308195934.GA2855503@robh.at.kernel.org>
+References: <20210303081158.684532-1-steen.hegelund@microchip.com>
+         <20210303081158.684532-4-steen.hegelund@microchip.com>
+         <20210308195934.GA2855503@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 
 MIME-Version: 1.0
-In-Reply-To: <20210316015424.1999082-5-yury.norov@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/03/2021 02.54, Yury Norov wrote:
-> BITMAP_{LAST,FIRST}_WORD_MASK() in linux/bitmap.h duplicates the
-> functionality of GENMASK(). The scope of BITMAP* macros is wider
-> than just bitmaps. This patch defines 4 new macros: BITS_FIRST(),
-> BITS_LAST(), BITS_FIRST_MASK() and BITS_LAST_MASK() in linux/bits.h
-> on top of GENMASK() and replaces BITMAP_{LAST,FIRST}_WORD_MASK()
-> to avoid duplication and increase the scope of the macros.
+Hi Rob,
+
+On Mon, 2021-03-08 at 12:59 -0700, Rob Herring wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you
+> know the content is safe
 > 
-> This change doesn't affect code generation. On ARM64:
-> scripts/bloat-o-meter vmlinux.before vmlinux
-> add/remove: 1/2 grow/shrink: 2/0 up/down: 17/-16 (1)
-> Function                                     old     new   delta
-> ethtool_get_drvinfo                          900     908      +8
-> e843419@0cf2_0001309d_7f0                      -       8      +8
-> vermagic                                      48      49      +1
-> e843419@0d45_000138bb_f68                      8       -      -8
-> e843419@0cc9_00012bce_198c                     8       -      -8
+> On Wed, Mar 03, 2021 at 09:11:58AM +0100, Steen Hegelund wrote:
+> > This provides reset driver support for the Microchip Sparx5 PCB134
+> > and
+> > PCB135 reference boards.
+> 
+> This still looks like an incompatible change with no explanation.
+> 
+> What happens on an old kernel that expects "microchip,sparx5-chip-
+> reset"
+> and doesn't understand "microchip,sparx5-switch-reset"?
 
-[what on earth are those weird symbols?]
+Sorry about forgetting that item.
+I will add a note to say that this is an incompatible change.
+In practice, I do not think the reset driver has really been taken into
+use yet.
+
+> 
+> > 
+> > Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+> > ---
+> >  arch/arm64/boot/dts/microchip/sparx5.dtsi | 7 +++++--
+> >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi
+> > b/arch/arm64/boot/dts/microchip/sparx5.dtsi
+> > index 380281f312d8..dc3ada5cf9fc 100644
+> > --- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
+> > +++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
+> > @@ -132,9 +132,12 @@ mux: mux-controller {
+> >                       };
+> >               };
+> > 
+> > -             reset@611010008 {
+> > -                     compatible = "microchip,sparx5-chip-reset";
+> > +             reset: reset-controller@611010008 {
+> > +                     compatible = "microchip,sparx5-switch-reset";
+> >                       reg = <0x6 0x11010008 0x4>;
+> > +                     reg-names = "gcb";
+> > +                     #reset-cells = <1>;
+> > +                     cpu-syscon = <&cpu_ctrl>;
+> >               };
+> > 
+> >               uart0: serial@600100000 {
+> > --
+> > 2.30.1
+> > 
 
 
-> diff --git a/include/linux/bits.h b/include/linux/bits.h
-> index 7f475d59a097..8c191c29506e 100644
-> --- a/include/linux/bits.h
-> +++ b/include/linux/bits.h
-> @@ -37,6 +37,12 @@
->  #define GENMASK(h, l) \
->  	(GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
->  
-> +#define BITS_FIRST(nr)		GENMASK((nr), 0)
-> +#define BITS_LAST(nr)		GENMASK(BITS_PER_LONG - 1, (nr))
-> +
-> +#define BITS_FIRST_MASK(nr)	BITS_FIRST((nr) % BITS_PER_LONG)
-> +#define BITS_LAST_MASK(nr)	BITS_LAST((nr) % BITS_PER_LONG)
+-- 
+BR
+Steen
 
-I don't think it's a good idea to propagate the unusual closed-range
-semantics of GENMASK to those wrappers. Almost all C and kernel code
-uses the 'inclusive lower bound, exclusive upper bound', and I'd expect
-BITS_FIRST(5) to result in a word with five bits set, not six. So I
-think these changes as-is make the code much harder to read and understand.
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+steen.hegelund@microchip.com
 
-Regardless, please add some comments on the valid input ranges to the
-macros, whether that ends up being 0 <= nr < BITS_PER_LONG or 0 < nr <=
-BITS_PER_LONG or whatnot.
-
-It would also be much easier to review if you just redefined the
-BITMAP_LAST_WORD_MASK macros etc. in terms of these new things, so you
-wouldn't have to do a lot of mechanical changes at the same time as
-introducing the new ones - especially when those mechanical changes
-involve adding a "minus 1" everywhere.
-
-Rasmus
