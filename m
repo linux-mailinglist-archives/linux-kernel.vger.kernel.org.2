@@ -2,95 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B0733DC46
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:11:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1A133DC50
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:13:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239838AbhCPSLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:11:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60982 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236066AbhCPSKe (ORCPT
+        id S236179AbhCPSNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:13:12 -0400
+Received: from mail-ej1-f42.google.com ([209.85.218.42]:44220 "EHLO
+        mail-ej1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239895AbhCPSMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:10:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615918233;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=va6P0xFjxjiydWkW6mpPyLH4JcckNuT7gN3PQvMk5W0=;
-        b=h1Zp4o3JPNX0OThs/oTROaPFldkzs9zmCkIf0O6ulYScNZXb63JtZkTDpK2mbeARFpWPZM
-        MfPa9Ez2U0XQg8VKtS28qOtpNCKuuhyu5gfu8X4XSV6h2G7BZpD+SAWGE2drZNMI+jwZDJ
-        CebCmjFm94XxtH+aDGFic/hZYF/D/YU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-391-2eo_5XkGNYCAzazGqgkDMQ-1; Tue, 16 Mar 2021 14:10:31 -0400
-X-MC-Unique: 2eo_5XkGNYCAzazGqgkDMQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A2C8D84E20A;
-        Tue, 16 Mar 2021 18:10:29 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.135])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 7A56A5C1A3;
-        Tue, 16 Mar 2021 18:10:23 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue, 16 Mar 2021 19:10:29 +0100 (CET)
-Date:   Tue, 16 Mar 2021 19:10:22 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Pedro Alves <palves@redhat.com>, Peter Anvin <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH RESEND v4 0/4] x86: fix get_nr_restart_syscall()
-Message-ID: <20210316181022.GA25986@redhat.com>
-References: <20210201174555.GA17819@redhat.com>
- <20210203231944.GA17467@redhat.com>
+        Tue, 16 Mar 2021 14:12:10 -0400
+Received: by mail-ej1-f42.google.com with SMTP id ox4so58100597ejb.11;
+        Tue, 16 Mar 2021 11:12:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9wogD9XPUnroYU9Ue50JM1tKqinHzQ303gftWHDor5A=;
+        b=l7Jvg13TxEnAA8YmpXIkzQcYjIuRsUpkk3Pwhz/p7Yh1y10LvwjY9Wj2ALpG3e9Hl9
+         2GWZF6Lu6K6fsXNzZyGl9c7+ySPftXllWmSl4N/pLsk8sT4Inh2Nd0Tz9yIEMDlIlMkr
+         sFlCsmsw3n1UcSTnkOleI6j2bxvCCE/lRnwYRBZiHH5CAYQjBcCr63pxQo56hk7dq96C
+         DqH7Urpr+NvqDFK5ssk0LoidBOg11bne79s9dQYvxf8PNJzbCvK+HaoDWqQMd3KpRoOH
+         cc//+rC0SGthmHvw2CYQWXKwmyhFoyFNVj/T9WqG4uob3C/hjK3ba6etYejRHV4qeNVZ
+         B4CA==
+X-Gm-Message-State: AOAM533teu5E/ykhHXk6acTzmFk62694hy6DZGjQM2eaCqT3K2AGJhka
+        /IEGukNpPAzXU7hHjMqbiN1RTM1p1AtW626S
+X-Google-Smtp-Source: ABdhPJwDu7T1Db/kHzLsRYwp84hawyltkAMbRc5pRl+zrCw524KbTVvKoZPMPTTkduYFx5j9yCjFow==
+X-Received: by 2002:a17:906:ca02:: with SMTP id jt2mr31122143ejb.312.1615918328061;
+        Tue, 16 Mar 2021 11:12:08 -0700 (PDT)
+Received: from localhost ([2a02:8308:387:c900:a7b5:b859:9449:c07b])
+        by smtp.gmail.com with ESMTPSA id t6sm11017025edq.48.2021.03.16.11.12.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 11:12:07 -0700 (PDT)
+From:   =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>
+Cc:     =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] hwmon: (max31790) Rework to use regmap
+Date:   Tue, 16 Mar 2021 19:11:34 +0100
+Message-Id: <20210316181134.1009226-1-kubernat@cesnet.cz>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210316175503.1003051-1-kubernat@cesnet.cz>
+References: <20210316175503.1003051-1-kubernat@cesnet.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203231944.GA17467@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/04, Oleg Nesterov wrote:
->
-> It seems that nobody objects,
->
-> Andrew, Andy, Thomas, how do you think this series should be routed?
+Hi Guenther,
 
-ping...
+I'm posting v2 of my series on max31790. These are the changes from v1:
+1) The driver uses regmap caching instead of local caching.
+2) I got rid of the "refactor" patch and also the "pulses" patch.
+3) I got rid of unnecessary whitespace changes.
+4) fan*_input now returns -ENODATA when fan*_enable is 0.
+5) Changed the argument of bits_for_speed_range to long.
 
-What can I do to finally get this merged?
-
-Should I resend once again? Whom?
-
-
-> On 02/01, Oleg Nesterov wrote:
-> >
-> > Somehow I forgot about this problem. Let me resend the last version
-> > based on discussion with Linus. IIRC he was agree with this series.
-> >
-> > And let me remind why 3/4 temporary adds the "transient" TS_COMPAT_RESTART
-> > flag killed by the next patch: to simplify the backporting. 1-3 can fix
-> > the problem without breaking the kABI.
-> >
-> > Oleg.
-> > ---
-> >  arch/x86/include/asm/processor.h   |  9 ---------
-> >  arch/x86/include/asm/thread_info.h | 15 ++++++++++++++-
-> >  arch/x86/kernel/signal.c           | 24 +-----------------------
-> >  fs/select.c                        | 10 ++++------
-> >  include/linux/restart_block.h      |  1 +
-> >  include/linux/thread_info.h        | 13 +++++++++++++
-> >  kernel/futex.c                     |  3 +--
-> >  kernel/time/alarmtimer.c           |  2 +-
-> >  kernel/time/hrtimer.c              |  2 +-
-> >  kernel/time/posix-cpu-timers.c     |  2 +-
-> >  10 files changed, 37 insertions(+), 44 deletions(-)
-
+Vaclav
