@@ -2,231 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2ABF33CE5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:03:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0352433CE61
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:05:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233974AbhCPHCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 03:02:36 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:44373 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234012AbhCPHCP (ORCPT
+        id S229893AbhCPHEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 03:04:42 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50154 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229540AbhCPHEL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 03:02:15 -0400
-X-UUID: a18191d57ae143b69c50acdb900aa94e-20210316
-X-UUID: a18191d57ae143b69c50acdb900aa94e-20210316
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <michael.kao@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1421002501; Tue, 16 Mar 2021 15:02:11 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 16 Mar 2021 15:01:44 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 16 Mar 2021 15:01:44 +0800
-From:   Michael Kao <michael.kao@mediatek.com>
-To:     <michael.kao@mediatek.com>, <fan.chen@mediatek.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        <linux-pm@vger.kernel.org>, <srv_heupstream@mediatek.com>
-CC:     Eduardo Valentin <edubezval@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <hsinyi@chromium.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [v7,3/3] thermal: mediatek: add another get_temp ops for thermal sensors
-Date:   Tue, 16 Mar 2021 15:01:44 +0800
-Message-ID: <20210316070144.28440-4-michael.kao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210316070144.28440-1-michael.kao@mediatek.com>
-References: <20210316070144.28440-1-michael.kao@mediatek.com>
+        Tue, 16 Mar 2021 03:04:11 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12G72XXM119941;
+        Tue, 16 Mar 2021 03:04:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=+v4+oo99lYmkSGGgW/Q+P5qZ1gw/VuyyQrJqKexrzvk=;
+ b=SBpZan8ZD70bv+32YpZIO7lFwV8WF1StI1pmF1d1YciIi3sBIysQTRvT/+DNosu+C7qM
+ +voJKB/Xo71KEtvVM5cUH+tl6nieq9CD+a8k+/Z+401IcHtuWUriBGszh/caeycmww5B
+ rOAST/Po/rUGjJtTONkPaxU7kC41BDsrESIgGcX9fJMcVN+ZTzWvJkTQJ0LxnvSRRwMS
+ hyhHQlDg+sLy5TCGu4sCxU3hhjDSCfPgJj4R+vzyMit6pH1uYbXS/QdnmwZ3P5ZPVyVc
+ v8koumk8MvyyIjyTPPIagAY4NLyPOAlQNn16AsElbzKnLlnsoJThh537lVAerCE+0B6Y +w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37ap2t2qjm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Mar 2021 03:04:02 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12G73C9l121473;
+        Tue, 16 Mar 2021 03:04:02 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37ap2t2qgy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Mar 2021 03:04:02 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12G7407N011575;
+        Tue, 16 Mar 2021 07:04:00 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma05fra.de.ibm.com with ESMTP id 378n189bqx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Mar 2021 07:04:00 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12G73vp641943384
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Mar 2021 07:03:58 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D93B611C05E;
+        Tue, 16 Mar 2021 07:03:57 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F076511C04C;
+        Tue, 16 Mar 2021 07:03:56 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.58.148])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 16 Mar 2021 07:03:56 +0000 (GMT)
+Date:   Tue, 16 Mar 2021 09:03:54 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, kbuild-all@lists.01.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: WARNING: modpost: vmlinux.o(.text+0x74fea4): Section mismatch in
+ reference from the function memblock_find_in_range_node() to the function
+ .init.text:memblock_bottom_up()
+Message-ID: <YFBYWjtWJrnGyiVp@linux.ibm.com>
+References: <202103160133.UzhgY0wt-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 5502FE4983EE4EF0C9EE559D06838E1313D22C550A32EAE19895D408E1CEA4032000:8
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202103160133.UzhgY0wt-lkp@intel.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-15_15:2021-03-15,2021-03-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 lowpriorityscore=0 adultscore=0 suspectscore=0
+ priorityscore=1501 spamscore=0 mlxscore=0 phishscore=0 clxscore=1011
+ impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2103160046
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide thermal zone to read thermal sensor
-in the SoC. We can read all the thermal sensors
-value in the SoC by the node /sys/class/thermal/
+On Tue, Mar 16, 2021 at 01:23:08AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   1e28eed17697bcf343c6743f0028cc3b5dd88bf0
+> commit: 34dc2efb39a231280fd6696a59bbe712bf3c5c4a memblock: fix section mismatch warning
+> date:   2 days ago
+> config: arm64-randconfig-r013-20210315 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project a28facba1ccdc957f386b7753f4958307f1bfde8)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install arm64 cross compiling tool for clang build
+>         # apt-get install binutils-aarch64-linux-gnu
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=34dc2efb39a231280fd6696a59bbe712bf3c5c4a
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 34dc2efb39a231280fd6696a59bbe712bf3c5c4a
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>, old ones prefixed by <<):
+> 
+> >> WARNING: modpost: vmlinux.o(.text+0x74fea4): Section mismatch in reference from the function memblock_find_in_range_node() to the function .init.text:memblock_bottom_up()
+> The function memblock_find_in_range_node() references
+> the function __init memblock_bottom_up().
+> This is often because memblock_find_in_range_node lacks a __init
+> annotation or the annotation of memblock_bottom_up is wrong.
 
-In mtk_thermal_bank_temperature, return -EAGAIN instead of -EACCESS
-on the first read of sensor that often are bogus values.
-This can avoid following warning on boot:
+I don't have clang-13 setup handy so I could not check, but I think this
+should be the fix:
 
-  thermal thermal_zone6: failed to read out thermal zone (-13)
-
-Signed-off-by: Michael Kao <michael.kao@mediatek.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
- drivers/thermal/mtk_thermal.c | 100 +++++++++++++++++++++++++---------
- 1 file changed, 75 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
-index 149c6d7fd5a0..57e4f08a947e 100644
---- a/drivers/thermal/mtk_thermal.c
-+++ b/drivers/thermal/mtk_thermal.c
-@@ -245,6 +245,11 @@ enum mtk_thermal_version {
- 
- struct mtk_thermal;
- 
-+struct mtk_thermal_zone {
-+	struct mtk_thermal *mt;
-+	int id;
-+};
-+
- struct thermal_bank_cfg {
- 	unsigned int num_sensors;
- 	const int *sensors;
-@@ -637,6 +642,30 @@ static void mtk_thermal_put_bank(struct mtk_thermal_bank *bank)
- 		mutex_unlock(&mt->lock);
- }
- 
-+static u32 _get_sensor_temp(struct mtk_thermal *mt, int id)
-+{
-+	u32 raw;
-+	int temp;
-+
-+	raw = readl(mt->thermal_base + mt->conf->msr[id]);
-+
-+	if (mt->conf->version == MTK_THERMAL_V1)
-+		temp = raw_to_mcelsius_v1(mt, id, raw);
-+	else
-+		temp = raw_to_mcelsius_v2(mt, id, raw);
-+
-+	/*
-+	 * The first read of a sensor often contains very high bogus
-+	 * temperature value. Filter these out so that the system does
-+	 * not immediately shut down.
-+	 */
-+
-+	if (temp > 200000)
-+		return -EAGAIN;
-+	else
-+		return temp;
-+}
-+
- /**
-  * mtk_thermal_bank_temperature - get the temperature of a bank
-  * @bank:	The bank
-@@ -647,28 +676,11 @@ static void mtk_thermal_put_bank(struct mtk_thermal_bank *bank)
- static int mtk_thermal_bank_temperature(struct mtk_thermal_bank *bank)
+diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+index d13e3cd938b4..5984fff3f175 100644
+--- a/include/linux/memblock.h
++++ b/include/linux/memblock.h
+@@ -460,7 +460,7 @@ static inline void memblock_free_late(phys_addr_t base, phys_addr_t size)
+ /*
+  * Set the allocation direction to bottom-up or top-down.
+  */
+-static inline __init void memblock_set_bottom_up(bool enable)
++static inline __init_memblock void memblock_set_bottom_up(bool enable)
  {
- 	struct mtk_thermal *mt = bank->mt;
--	const struct mtk_thermal_data *conf = mt->conf;
- 	int i, temp = INT_MIN, max = INT_MIN;
--	u32 raw;
--
--	for (i = 0; i < conf->bank_data[bank->id].num_sensors; i++) {
--		raw = readl(mt->thermal_base + conf->msr[i]);
- 
--		if (mt->conf->version == MTK_THERMAL_V1) {
--			temp = raw_to_mcelsius_v1(
--				mt, conf->bank_data[bank->id].sensors[i], raw);
--		} else {
--			temp = raw_to_mcelsius_v2(
--				mt, conf->bank_data[bank->id].sensors[i], raw);
--		}
-+	for (i = 0; i < mt->conf->bank_data[bank->id].num_sensors; i++) {
- 
--		/*
--		 * The first read of a sensor often contains very high bogus
--		 * temperature value. Filter these out so that the system does
--		 * not immediately shut down.
--		 */
--		if (temp > 200000)
--			temp = 0;
-+		temp = _get_sensor_temp(mt, i);
- 
- 		if (temp > max)
- 			max = temp;
-@@ -679,7 +691,8 @@ static int mtk_thermal_bank_temperature(struct mtk_thermal_bank *bank)
- 
- static int mtk_read_temp(void *data, int *temperature)
- {
--	struct mtk_thermal *mt = data;
-+	struct mtk_thermal_zone *tz = data;
-+	struct mtk_thermal *mt = tz->mt;
- 	int i;
- 	int tempmax = INT_MIN;
- 
-@@ -698,10 +711,28 @@ static int mtk_read_temp(void *data, int *temperature)
- 	return 0;
+ 	memblock.bottom_up = enable;
  }
+@@ -470,7 +470,7 @@ static inline __init void memblock_set_bottom_up(bool enable)
+  * if this is true, that said, memblock will allocate memory
+  * in bottom-up direction.
+  */
+-static inline __init bool memblock_bottom_up(void)
++static inline __init_memblock bool memblock_bottom_up(void)
+ {
+ 	return memblock.bottom_up;
+ }
+
  
-+static int mtk_read_sensor_temp(void *data, int *temperature)
-+{
-+	struct mtk_thermal_zone *tz = data;
-+	struct mtk_thermal *mt = tz->mt;
-+	int id = tz->id - 1;
-+
-+	if (id < 0)
-+		return -EACCES;
-+
-+	*temperature = _get_sensor_temp(mt, id);
-+
-+	return 0;
-+}
-+
- static const struct thermal_zone_of_device_ops mtk_thermal_ops = {
- 	.get_temp = mtk_read_temp,
- };
- 
-+static const struct thermal_zone_of_device_ops mtk_thermal_sensor_ops = {
-+	.get_temp = mtk_read_sensor_temp,
-+};
-+
- static void mtk_thermal_init_bank(struct mtk_thermal *mt, int num,
- 				  u32 apmixed_phys_base, u32 auxadc_phys_base,
- 				  int ctrl_id)
-@@ -992,6 +1023,7 @@ static int mtk_thermal_probe(struct platform_device *pdev)
- 	u64 auxadc_phys_base, apmixed_phys_base;
- 	struct thermal_zone_device *tzdev;
- 	void __iomem *apmixed_base, *auxadc_base;
-+	struct mtk_thermal_zone *tz;
- 
- 	mt = devm_kzalloc(&pdev->dev, sizeof(*mt), GFP_KERNEL);
- 	if (!mt)
-@@ -1080,11 +1112,29 @@ static int mtk_thermal_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, mt);
- 
--	tzdev = devm_thermal_zone_of_sensor_register(&pdev->dev, 0, mt,
--						     &mtk_thermal_ops);
--	if (IS_ERR(tzdev)) {
--		ret = PTR_ERR(tzdev);
--		goto err_disable_clk_peri_therm;
-+	for (i = 0; i < mt->conf->num_sensors + 1; i++) {
-+		tz = devm_kmalloc(&pdev->dev, sizeof(*tz), GFP_KERNEL);
-+		if (!tz)
-+			return -ENOMEM;
-+
-+		tz->mt = mt;
-+		tz->id = i;
-+
-+		tzdev = devm_thermal_zone_of_sensor_register(&pdev->dev, i, tz, (i == 0) ?
-+							     &mtk_thermal_ops :
-+							     &mtk_thermal_sensor_ops);
-+
-+		if (IS_ERR(tzdev)) {
-+			if (PTR_ERR(tzdev) == -ENODEV) {
-+				dev_warn(&pdev->dev,
-+					 "sensor %d not registered in thermal zone in dt\n", i);
-+				continue;
-+			}
-+			if (PTR_ERR(tzdev) == -EACCES) {
-+				ret = PTR_ERR(tzdev);
-+				goto err_disable_clk_peri_therm;
-+			}
-+		}
- 	}
- 
- 	return 0;
 -- 
-2.18.0
-
+Sincerely yours,
+Mike.
