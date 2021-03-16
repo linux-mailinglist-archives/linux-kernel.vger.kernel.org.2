@@ -2,123 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8079533E094
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF9233E09B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbhCPVcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 17:32:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhCPVcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 17:32:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F8B264F90;
-        Tue, 16 Mar 2021 21:32:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615930344;
-        bh=A8tS3BLwnxw3/M8kJr1pEOw/ZrskCZFgDoMyFEzKfUM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=uIBaYEjHXoV2WZv0Cjk+kpgy2es1yrAwt2Ja7iQO0R0eH8npYVHk1+SLA2VsU/qDn
-         n/TqTSMBAdefLX4s58L8SdQhJ/YBy6BERA7zScIb/FFaE54RdW7B3EaALBdi+OSCf2
-         5FUbGaw07DRwiL9y6pAViUNpxriH8+1NTfuUBjnr616sh5o2yCobKEs8laSTFr1YLy
-         FsaGGDepmh28SB/fnrCGbsE+IUBtIqwOvkz8MhTC6qoURPSa7Ma9clGb4GUgn26aX1
-         kM1y1NcKh7FuX0kGqhBluWiKyte/W5M5V8WYIVD5422DtI2x2BDJkhmIBBbQyaF9BP
-         csNkFnKDYnS1g==
-Date:   Tue, 16 Mar 2021 14:32:22 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Voon Weifeng <weifeng.voon@intel.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jose Abreu <joabreu@synopsys.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Wong Vee Khee <vee.khee.wong@intel.com>
-Subject: Re: [RESEND v1 net-next 4/5] stmmac: intel: add support for
- multi-vector msi and msi-x
-Message-ID: <20210316143222.74480318@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210316121823.18659-5-weifeng.voon@intel.com>
-References: <20210316121823.18659-1-weifeng.voon@intel.com>
-        <20210316121823.18659-5-weifeng.voon@intel.com>
+        id S229690AbhCPVec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 17:34:32 -0400
+Received: from mail-il1-f172.google.com ([209.85.166.172]:32940 "EHLO
+        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229571AbhCPVeI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 17:34:08 -0400
+Received: by mail-il1-f172.google.com with SMTP id r7so14141272ilb.0;
+        Tue, 16 Mar 2021 14:34:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wtVmsGWaSjLvC34llZbZffJDXkhsenU9qqvAZVKv1/8=;
+        b=FsYj12I7PF1E8QucrpHUxHRQAYLuPgEAYBUSNNfzkPKpHOpZKXmcWjzojdfXdVOLgE
+         Zn3kFTrs03E5/nZnnRe/gGRXL7eCnc1iyrPGNQPoBOLP1bmaMUGZbgOO/SA5wNUvoPBM
+         e6ZvatMueqd9OK61mHKKCpTrX/0VygWRHGyubhowsE3tsIzbUvXKlW7oNJQS5bKtNgCI
+         i3C5PtdSfr1Q0yzsgFQawxaOXc/v2d1OM02++SI9xaO8w7h71LN4vj9wGEz9JMIFTpyw
+         NDdS+ioizNxAkm2tUM5W80rJ7DO0vujV6k3wN5RhsxwDCNSzkUwvyKkdZ7AfwmgCSwly
+         9gpg==
+X-Gm-Message-State: AOAM530s/pd//EEiKASx4W04jM+rp+iJPOgBrQWajFCQ5YSJpTetWBRo
+        Nq1IG8vYspYEqddeWxsnwThwdDAcqw==
+X-Google-Smtp-Source: ABdhPJzBVv7HSI1t2gaU7fAZ+GPPij0ZTroo2DRbrLzDx38CURXW9/HTqY0BthmvVcdgHn2IQ6rywQ==
+X-Received: by 2002:a92:c5cf:: with SMTP id s15mr5219725ilt.149.1615930448006;
+        Tue, 16 Mar 2021 14:34:08 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id k4sm9048115ion.29.2021.03.16.14.34.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 14:34:06 -0700 (PDT)
+Received: (nullmailer pid 3710741 invoked by uid 1000);
+        Tue, 16 Mar 2021 21:34:04 -0000
+Date:   Tue, 16 Mar 2021 15:34:04 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     linux-mtd@lists.infradead.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Richard Weinberger <richard@nod.at>,
+        linux-kernel@vger.kernel.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 3/3] dt-bindings: mtd: Document use of nvmem-cells
+ compatible
+Message-ID: <20210316213404.GA3710556@robh.at.kernel.org>
+References: <20210311095715.17048-1-ansuelsmth@gmail.com>
+ <20210311095715.17048-3-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311095715.17048-3-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021 20:18:22 +0800 Voon Weifeng wrote:
-> From: Ong Boon Leong <boon.leong.ong@intel.com>
+On Thu, 11 Mar 2021 10:57:00 +0100, Ansuel Smith wrote:
+> Document nvmem-cells compatible used to treat mtd partitions as a
+> nvmem provider.
 > 
-> Intel mgbe controller supports multi-vector interrupts:
-> msi_rx_vec	0,2,4,6,8,10,12,14
-> msi_tx_vec	1,3,5,7,9,11,13,15
-> msi_sfty_ue_vec	26
-> msi_sfty_ce_vec	27
-> msi_lpi_vec	28
-> msi_mac_vec	29
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  .../bindings/mtd/partitions/nvmem-cells.yaml  | 99 +++++++++++++++++++
+>  1 file changed, 99 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
 > 
-> During probe(), the driver will starts with request allocation for
-> multi-vector interrupts. If it fails, then it will automatically fallback
-> to request allocation for single interrupts.
-> 
-> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
-> Co-developed-by: Voon Weifeng <weifeng.voon@intel.com>
-> Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
 
-> +
-> +static int stmmac_config_multi_msi(struct pci_dev *pdev,
-> +				   struct plat_stmmacenet_data *plat,
-> +				   struct stmmac_resources *res)
-> +{
-> +	int ret;
-> +	int i;
-> +
-> +	ret = pci_alloc_irq_vectors(pdev, 2, STMMAC_MSI_VEC_MAX,
-> +				    PCI_IRQ_MSI | PCI_IRQ_MSIX);
-> +	if (ret < 0) {
-> +		dev_info(&pdev->dev, "%s: multi MSI enablement failed\n",
-> +			 __func__);
-> +		return ret;
-> +	}
-> +
-> +	if (plat->msi_rx_base_vec >= STMMAC_MSI_VEC_MAX ||
-> +	    plat->msi_tx_base_vec >= STMMAC_MSI_VEC_MAX) {
-> +		dev_info(&pdev->dev, "%s: Invalid RX & TX vector defined\n",
-> +			 __func__);
-> +		return -1;
-
-free_irq_vectors?  Or move the check before alloc if possible.
-
-> +	}
-
-
-> @@ -699,6 +786,19 @@ static int intel_eth_pci_probe(struct pci_dev *pdev,
->  		writel(tx_lpi_usec, res.addr + GMAC_1US_TIC_COUNTER);
->  	}
->  
-> +	ret = stmmac_config_multi_msi(pdev, plat, &res);
-> +	if (!ret)
-> +		goto msi_done;
-
-Please don't use gotos where an if statement would do perfectly well.
-
-> +	ret = stmmac_config_single_msi(pdev, plat, &res);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "%s: ERROR: failed to enable IRQ\n",
-> +			__func__);
-> +		return ret;
-
-return? isn't there some cleanup that needs to happen before exiting?
-
-> +	}
-> +
-> +msi_done:
-> +
->  	ret = stmmac_dvr_probe(&pdev->dev, plat, &res);
->  	if (ret) {
->  		pci_free_irq_vectors(pdev);
-
+Reviewed-by: Rob Herring <robh@kernel.org>
