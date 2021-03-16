@@ -2,251 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CCD533D393
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2910633D3A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbhCPMNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:13:05 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:39743 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhCPMMY (ORCPT
+        id S230015AbhCPMRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 08:17:21 -0400
+Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:34861 "EHLO
+        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229814AbhCPMQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:12:24 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210316121220euoutp01efade31ca33c5bb97e9ab71d87d0847d~s0YYWIjXu2498224982euoutp01G;
-        Tue, 16 Mar 2021 12:12:20 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210316121220euoutp01efade31ca33c5bb97e9ab71d87d0847d~s0YYWIjXu2498224982euoutp01G
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1615896740;
-        bh=EKLZMJpZUDFUGt+KgmrSaCgYBKF2In0VViE9xA/khLI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eTEl8J/7mtZ1H+FuP/uCvQti7BxBs4fkEERfIhwOfpuQVcjg2+oh4x33Z4+q3b6hF
-         5WP4aYHOSghlcjNvPcxSxbl6L9Q7f8tmvPE9p4pJ+iyxmuzgihXf3yQD2WiwycFncC
-         HWTV24ozYbCatWy7W0JQXtMRu3k975bDq1E/33h4=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210316121219eucas1p2498f05b1a32b3648518a5319d2ba7356~s0YXuDEwz0705107051eucas1p2A;
-        Tue, 16 Mar 2021 12:12:19 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id D6.79.09444.3A0A0506; Tue, 16
-        Mar 2021 12:12:19 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210316121218eucas1p1f74d6e6cec7fc897051902a7da478fd0~s0YXFIT_O2423624236eucas1p1i;
-        Tue, 16 Mar 2021 12:12:18 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210316121218eusmtrp271df07341d70ec3213152651a8c86420~s0YXEagHI2950929509eusmtrp2H;
-        Tue, 16 Mar 2021 12:12:18 +0000 (GMT)
-X-AuditID: cbfec7f4-dd5ff700000024e4-01-6050a0a39822
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 61.4A.08705.2A0A0506; Tue, 16
-        Mar 2021 12:12:18 +0000 (GMT)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210316121218eusmtip2fb6f60efb598a44eca3937dffdce32e9~s0YW2xqWh2290822908eusmtip2e;
-        Tue, 16 Mar 2021 12:12:18 +0000 (GMT)
-From:   Lukasz Stelmach <l.stelmach@samsung.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rtc: ds1307: set uie_unsupported if no interrupt is
- available
-Date:   Tue, 16 Mar 2021 13:12:08 +0100
-In-Reply-To: <YE/ZLtdK0ZlVFOhp@piout.net> (Alexandre Belloni's message of
-        "Mon, 15 Mar 2021 23:01:18 +0100")
-Message-ID: <dleftj1rcfe1rb.fsf%l.stelmach@samsung.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 16 Mar 2021 08:16:52 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id M8col1m4V4ywlM8crlArzu; Tue, 16 Mar 2021 13:16:41 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1615897001; bh=eiXJFgGD4s5e7ZImPMrJsDKWM7SFFLr7+jdAldxt3Q8=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=Y5jo7RtNw/DWhwRI0/uc9948mpsnFYzJFscPag7W+q7WTnCyYLYrTkuw9+y65dJIS
+         tf6Y4IvOrcupXLWxdgoW9Ma6O9v2PB0p9DWQXYonlIvUAHtEogziniEb/OIOpa5VmQ
+         4c6Syjv/7EYZiqN8WwGGdNuEyHZOUGHe6czsvvDjeV1TxBdqrB6uxWsWCAw8k4NGTY
+         xgHqihCVYpYWvquyQKVfmuA34y+fYb5K6gTQMSaWWAJPsSQsJbQGyr4h6vGr7hQhEg
+         Hb0XRQhG7A00HzN/3KvYF/UKWkYjKBm8QosoVxRaF/OOBwDc76xt8c8vpougaiWwm8
+         oOs+C1HnQjqKQ==
+Subject: Re: [PATCH v5 3/5] v4l: Add HDR10 static metadata controls
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+References: <20210209162425.3970393-1-stanimir.varbanov@linaro.org>
+ <20210209162425.3970393-4-stanimir.varbanov@linaro.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <77ac3b63-9995-e08f-9e6e-7a7d75c64ec1@xs4all.nl>
+Date:   Tue, 16 Mar 2021 13:16:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
-        protocol="application/pgp-signature"
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNKsWRmVeSWpSXmKPExsWy7djP87qLFwQkGLzvFbdYcvEqu0X7u2Xs
-        FhtnrGe1uLxrDpvFsdVX2CzWHrnL7sDmMW9NtUffllWMHtPn/WTy+LxJLoAlissmJTUnsyy1
-        SN8ugSvj0vwz7AWv1CoufJ7B1MD4XqGLkZNDQsBE4siUPtYuRi4OIYEVjBIXD0+Hcr4wSvw6
-        f4odwvnMKNH+u5MFpuXq161MEInlQC2T+qGqnjNKfJy8jq2LkYODTUBPYu3aCJAGEQFTidbG
-        XWwgNcwCjxgltr+7BjZJWCBEovfDYVYQm0VAVeLBzG2MIDanQJ7E25PbwWp4BcwlmtevAouL
-        ClhKbHlxnx0iLihxcuYTsBpmgVyJmeffMIIskBB4wSHxZMsDVohTXSQuNcyAOltY4tXxLewQ
-        tozE/53zmUAOlRCol5g8yQyit4dRYtucH1D11hJ3zv1ig7AdJbb0X2KBqOeTuPFWEGIvn8Sk
-        bdOZIcK8Eh1tQhDVKhLr+vdATZGS6H21ghGixENiw5cASFCtZZR49e0r0wRGhVlIvpmF5JtZ
-        QC3MApoS63fpQ4S1JZYtfM0MYdtKrFv3nmUBI+sqRvHU0uLc9NRio7zUcr3ixNzi0rx0veT8
-        3E2MwDR0+t/xLzsYl7/6qHeIkYmD8RCjCigKNqy+wCjFkpefl6okwmuaF5AgxJuSWFmVWpQf
-        X1Sak1p8iFGag0VJnDdpy5p4IYH0xJLU7NTUgtQimCwTB6dUA9OCgxkBnFtOlBUYRgWunyJ3
-        7JzynnOv2Mrce3xtgndsC+tm0jlyWuHNp8llk5ojZv6vVbRye9MuoPxy0ZKrLowvPu/9nL6K
-        fdfWOe/Y1gfuFX0tncVlGsm8fQfHN/XZctNN33y2Dtg9PfBWSF5xlOynDQdOmKWbld5cY9X6
-        y65137U/H3X0o5d3361dyO4478xBw8mrmj/EftCy5WZ4umSDTf7Oew7hk02fp0Rb/nYzmBg0
-        X/Hflu3/LxcruDQePGI+2/Clkp716/It/4T61kvX81l0JTfLXF6/N2DpvgV9fG5bJQpfGc/v
-        r5xy0idTc/W+qZsull8zMm3qKgjt3jd58Rs9+5I1nt4J4Qq+88uUWIozEg21mIuKEwEiStlg
-        vgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEIsWRmVeSWpSXmKPExsVy+t/xe7qLFgQkGPzv0bZYcvEqu0X7u2Xs
-        FhtnrGe1uLxrDpvFsdVX2CzWHrnL7sDmMW9NtUffllWMHtPn/WTy+LxJLoAlSs+mKL+0JFUh
-        I7+4xFYp2tDCSM/Q0kLPyMRSz9DYPNbKyFRJ384mJTUnsyy1SN8uQS/j0vwz7AWv1CoufJ7B
-        1MD4XqGLkZNDQsBE4urXrUxdjFwcQgJLGSVWv21l7GLkAEpISaycmw5RIyzx51oXG0TNU0aJ
-        Z/PnsYDUsAnoSaxdGwFSIyJgKtHauAushlngGaPE8fnNrCAJYYEgia3vlzCD1AsJhEvsPxEE
-        EmYRUJV4MHMbI4jNKZAn8fbkdhYQm1fAXKJ5/SqwuKiApcSWF/fZIeKCEidnPgGrYRbIlvi6
-        +jnzBEaBWUhSs5CkZgFtYxbQlFi/Sx8irC2xbOFrZgjbVmLduvcsCxhZVzGKpJYW56bnFhvq
-        FSfmFpfmpesl5+duYgRG0LZjPzfvYJz36qPeIUYmDsZDjCpAnY82rL7AKMWSl5+XqiTCa5oX
-        kCDEm5JYWZValB9fVJqTWnyI0RTotYnMUqLJ+cDYziuJNzQzMDU0MbM0MLU0M1YS5906d028
-        kEB6YklqdmpqQWoRTB8TB6dUA1M539uXRnlvFAtvyN68n7VIWyTCa4513o4Vx4w3OdqHft92
-        4Me1I2Znl379d8KfaduJ152Mn4+LRpYtWH1ec0aC8eKVF/NzSh5Ezd31fd1cA2bXyFzn83Im
-        56Y1WOxrupto+Sih4fuBLTM2bJ4+a7rMvNj4485pLfUrjhsfmnd9ypd2+X1sCZrXgyKOF8ys
-        u7ldb8U6nlz3CV7JZzOK7n+7+vH9nUMTC09/SPn9l8Gy1CqZM0/o6IL/nz/V3dl+pk8sPbv4
-        nPmsZsujx/aEbWd/eOzlrsCH1yY6senPD9Q2rEg0qfHYzCVeXdq/7GHutX28uuf7rI/cM/82
-        Xaqn8tpCNuHsjycOi+6tT115qkNppRJLcUaioRZzUXEiAENHmag1AwAA
-X-CMS-MailID: 20210316121218eucas1p1f74d6e6cec7fc897051902a7da478fd0
-X-Msg-Generator: CA
-X-RootMTR: 20210316121218eucas1p1f74d6e6cec7fc897051902a7da478fd0
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210316121218eucas1p1f74d6e6cec7fc897051902a7da478fd0
-References: <YE/ZLtdK0ZlVFOhp@piout.net>
-        <20210305174411.9657-1-l.stelmach@samsung.com>
-        <CGME20210316121218eucas1p1f74d6e6cec7fc897051902a7da478fd0@eucas1p1.samsung.com>
+In-Reply-To: <20210209162425.3970393-4-stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfPkEmDrYY1btQh32QiFMEBw1wgdZisM6jhQEIM9LbPojV2mG6E8ICG4PreqszKgA1tL6v453KthXrzCdyION+k6b5mx/da1s9F/TeNz1+TZJ476dIAHn
+ fsVoDNNVmaCWHlDhRZsABFg2iX8vBTfTf/XLhANnVYbqlXIWZa81CICFjzjgdaaLt3330TgUYlDr3EEyyMmhS3M+jO9vS9lfN3PtjGYJR78srPlCOsxrl+tD
+ CgO7R2hBKBoYxx/4uMBAXkdG3F7peMzT8HU37ul/7aJtMYfnHoki7KF/nP26s3A8fuRt3dO35wZ2WMCnF7gYrWujHX1QYF22wgxqfc0AvvMqf/dxoZHWXH7P
+ KBleS/88dMJKmWi3IlQ5X5e/30tL4SynbXrO+tHjFMX8YT+2nSC4vxVH9osPLGphK9tdG9OX
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+On 09/02/2021 17:24, Stanimir Varbanov wrote:
+> Introduce Content light level and Mastering display colour
+> volume Colorimetry compound controls with relevant payload
+> structures and validation.
+> 
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  drivers/media/v4l2-core/v4l2-ctrls.c | 67 ++++++++++++++++++++++++++++
+>  include/media/v4l2-ctrls.h           |  4 ++
+>  include/uapi/linux/v4l2-controls.h   | 31 +++++++++++++
+>  include/uapi/linux/videodev2.h       |  3 ++
+>  4 files changed, 105 insertions(+)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+> index 335cf354f51b..8bd3cf0e1e4f 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+> @@ -1205,6 +1205,8 @@ const char *v4l2_ctrl_get_name(u32 id)
+>  	/* Colorimetry controls */
+>  	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
+>  	case V4L2_CID_COLORIMETRY_CLASS:	return "Colorimetry Controls";
+> +	case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:		return "HDR10 Content Light Info";
+> +	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:	return "HDR10 Mastering Display";
+>  	default:
+>  		return NULL;
+>  	}
+> @@ -1491,6 +1493,12 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>  		*type = V4L2_CTRL_TYPE_AREA;
+>  		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
+>  		break;
+> +	case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:
+> +		*type = V4L2_CTRL_TYPE_HDR10_CLL_INFO;
+> +		break;
+> +	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
+> +		*type = V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY;
+> +		break;
+>  	default:
+>  		*type = V4L2_CTRL_TYPE_INTEGER;
+>  		break;
+> @@ -1786,6 +1794,12 @@ static void std_log(const struct v4l2_ctrl *ctrl)
+>  	case V4L2_CTRL_TYPE_FWHT_PARAMS:
+>  		pr_cont("FWHT_PARAMS");
+>  		break;
+> +	case V4L2_CTRL_TYPE_HDR10_CLL_INFO:
+> +		pr_cont("HDR10_CLL_INFO");
+> +		break;
+> +	case V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY:
+> +		pr_cont("HDR10_MASTERING_DISPLAY");
+> +		break;
+>  	default:
+>  		pr_cont("unknown type %d", ctrl->type);
+>  		break;
+> @@ -1838,6 +1852,7 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
+>  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
+>  	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
+> +	struct v4l2_ctrl_hdr10_mastering_display *p_hdr10_mastering;
+>  	struct v4l2_area *area;
+>  	void *p = ptr.p + idx * ctrl->elem_size;
+>  	unsigned int i;
+> @@ -2133,6 +2148,52 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>  		zero_padding(*p_hevc_slice_params);
+>  		break;
+>  
+> +	case V4L2_CTRL_TYPE_HDR10_CLL_INFO:
+> +		break;
+> +
+> +	case V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY:
+> +		p_hdr10_mastering = p;
+> +
+> +		for (i = 0; i < 3; ++i) {
+> +			if (p_hdr10_mastering->display_primaries_x[i] <
+> +				V4L2_HDR10_MASTERING_PRIMARIES_X_LOW ||
+> +			    p_hdr10_mastering->display_primaries_x[i] >
+> +				V4L2_HDR10_MASTERING_PRIMARIES_X_HIGH ||
+> +			    p_hdr10_mastering->display_primaries_y[i] <
+> +				V4L2_HDR10_MASTERING_PRIMARIES_Y_LOW ||
+> +			    p_hdr10_mastering->display_primaries_y[i] >
+> +				V4L2_HDR10_MASTERING_PRIMARIES_Y_HIGH)
+> +				return -EINVAL;
+> +		}
+> +
+> +		if (p_hdr10_mastering->white_point_x <
+> +			V4L2_HDR10_MASTERING_WHITE_POINT_X_LOW ||
+> +		    p_hdr10_mastering->white_point_x >
+> +			V4L2_HDR10_MASTERING_WHITE_POINT_X_HIGH ||
+> +		    p_hdr10_mastering->white_point_y <
+> +			V4L2_HDR10_MASTERING_WHITE_POINT_Y_LOW ||
+> +		    p_hdr10_mastering->white_point_y >
+> +			V4L2_HDR10_MASTERING_WHITE_POINT_Y_HIGH)
+> +			return -EINVAL;
+> +
+> +		if (p_hdr10_mastering->max_display_mastering_luminance <
+> +			V4L2_HDR10_MASTERING_MAX_LUMA_LOW ||
+> +		    p_hdr10_mastering->max_display_mastering_luminance >
+> +			V4L2_HDR10_MASTERING_MAX_LUMA_HIGH ||
+> +		    p_hdr10_mastering->min_display_mastering_luminance <
+> +			V4L2_HDR10_MASTERING_MIN_LUMA_LOW ||
+> +		    p_hdr10_mastering->min_display_mastering_luminance >
+> +			V4L2_HDR10_MASTERING_MIN_LUMA_HIGH)
+> +			return -EINVAL;
+> +
+> +		if (p_hdr10_mastering->max_display_mastering_luminance ==
+> +			V4L2_HDR10_MASTERING_MAX_LUMA_LOW &&
+> +		    p_hdr10_mastering->min_display_mastering_luminance ==
+> +			V4L2_HDR10_MASTERING_MIN_LUMA_HIGH)
 
-It was <2021-03-15 pon 23:01>, when Alexandre Belloni wrote:
-> Hello,
->
-> On 05/03/2021 18:44:11+0100, =C5=81ukasz Stelmach wrote:
->> For an RTC without an IRQ assigned rtc_update_irq_enable() should
->> return -EINVAL.  It will, when uie_unsupported is set.
->>=20
->
-> I'm surprised this is an issue because the current code seems to cover
-> all cases:
->
->  - no irq and not wakeup-source =3D> set_alarm should fail
->  - no irq and wakeup-source =3D> uie_unsupported is set
->  - irq =3D> UIE should work
->
-> Can you elaborate on your failing use case?
+I had to think about this one :-)
 
-I've got ds3231 which supports alarms[1] but is not connected to any
-interrupt line. Hence, client->irq is 0 as well as want_irq[2]. There
-is also no other indirect connection, so I don't set wakeup-source
-property and ds1307_can_wakeup_device remains[3] false. Under these
-conditions
+Isn't it clearer to write:
 
-    want_irq =3D 0
-    ds1307_can_wakeup_device =3D false
+		if (p_hdr10_mastering->min_display_mastering_luminance >=
+		    p_hdr10_mastering->max_display_mastering_luminance)
 
-uie_unsupported remains[4] false. And this is the problem.
+(even though it can't be >, but >= is probably more robust and future proof)
 
-hwclock(8) when setting system clock from rtc (--hctosys) calls
-synchronize_to_clock_tick_rtc()[5]. There goes
+And is it indeed invalid if both are the same?
 
-    ioctl(rtc_fd, RTC_UIE_ON, 0);
+> +			return -EINVAL;
+> +
+> +		break;
+> +
+>  	case V4L2_CTRL_TYPE_AREA:
+>  		area = p;
+>  		if (!area->width || !area->height)
+> @@ -2826,6 +2887,12 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+>  	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
+>  		elem_size = sizeof(struct v4l2_ctrl_hevc_slice_params);
+>  		break;
+> +	case V4L2_CTRL_TYPE_HDR10_CLL_INFO:
+> +		elem_size = sizeof(struct v4l2_ctrl_hdr10_cll_info);
+> +		break;
+> +	case V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY:
+> +		elem_size = sizeof(struct v4l2_ctrl_hdr10_mastering_display);
+> +		break;
+>  	case V4L2_CTRL_TYPE_AREA:
+>  		elem_size = sizeof(struct v4l2_area);
+>  		break;
+> diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
+> index 167ca8c8424f..9c3ddbf3d099 100644
+> --- a/include/media/v4l2-ctrls.h
+> +++ b/include/media/v4l2-ctrls.h
+> @@ -54,6 +54,8 @@ struct video_device;
+>   * @p_hevc_sps:			Pointer to an HEVC sequence parameter set structure.
+>   * @p_hevc_pps:			Pointer to an HEVC picture parameter set structure.
+>   * @p_hevc_slice_params:	Pointer to an HEVC slice parameters structure.
+> + * @p_hdr10_cll:		Pointer to an HDR10 Content Light Level structure.
+> + * @p_hdr10_mastering:		Pointer to an HDR10 Mastering Display structure.
+>   * @p_area:			Pointer to an area.
+>   * @p:				Pointer to a compound value.
+>   * @p_const:			Pointer to a constant compound value.
+> @@ -78,6 +80,8 @@ union v4l2_ctrl_ptr {
+>  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
+>  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
+>  	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
+> +	struct v4l2_ctrl_hdr10_cll_info *p_hdr10_cll;
+> +	struct v4l2_ctrl_hdr10_mastering_display *p_hdr10_mastering;
+>  	struct v4l2_area *p_area;
+>  	void *p;
+>  	const void *p_const;
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> index a41039559193..349e86b18af7 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -1661,6 +1661,37 @@ struct v4l2_ctrl_fwht_params {
+>  #define V4L2_CID_COLORIMETRY_CLASS_BASE	(V4L2_CTRL_CLASS_COLORIMETRY | 0x900)
+>  #define V4L2_CID_COLORIMETRY_CLASS	(V4L2_CTRL_CLASS_COLORIMETRY | 1)
+>  
+> +#define V4L2_CID_COLORIMETRY_HDR10_CLL_INFO	(V4L2_CID_COLORIMETRY_CLASS_BASE + 0)
+> +
+> +struct v4l2_ctrl_hdr10_cll_info {
+> +	__u16 max_content_light_level;
+> +	__u16 max_pic_average_light_level;
+> +};
+> +
+> +#define V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY	(V4L2_CID_COLORIMETRY_CLASS_BASE + 1)
+> +
+> +#define V4L2_HDR10_MASTERING_PRIMARIES_X_LOW	5
+> +#define V4L2_HDR10_MASTERING_PRIMARIES_X_HIGH	37000
+> +#define V4L2_HDR10_MASTERING_PRIMARIES_Y_LOW	5
+> +#define V4L2_HDR10_MASTERING_PRIMARIES_Y_HIGH	42000
+> +#define V4L2_HDR10_MASTERING_WHITE_POINT_X_LOW	5
+> +#define V4L2_HDR10_MASTERING_WHITE_POINT_X_HIGH	37000
+> +#define V4L2_HDR10_MASTERING_WHITE_POINT_Y_LOW	5
+> +#define V4L2_HDR10_MASTERING_WHITE_POINT_Y_HIGH	42000
+> +#define V4L2_HDR10_MASTERING_MAX_LUMA_LOW	50000
+> +#define V4L2_HDR10_MASTERING_MAX_LUMA_HIGH	100000000
+> +#define V4L2_HDR10_MASTERING_MIN_LUMA_LOW	1
+> +#define V4L2_HDR10_MASTERING_MIN_LUMA_HIGH	50000
+> +
+> +struct v4l2_ctrl_hdr10_mastering_display {
+> +	__u16 display_primaries_x[3];
+> +	__u16 display_primaries_y[3];
+> +	__u16 white_point_x;
+> +	__u16 white_point_y;
+> +	__u32 max_display_mastering_luminance;
+> +	__u32 min_display_mastering_luminance;
+> +};
+> +
+>  /* MPEG-compression definitions kept for backwards compatibility */
+>  #ifndef __KERNEL__
+>  #define V4L2_CTRL_CLASS_MPEG            V4L2_CTRL_CLASS_CODEC
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> index 79dbde3bcf8d..f5f971407b66 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -1784,6 +1784,9 @@ enum v4l2_ctrl_type {
+>  	V4L2_CTRL_TYPE_U32	     = 0x0102,
+>  	V4L2_CTRL_TYPE_AREA          = 0x0106,
+>  
+> +	V4L2_CTRL_TYPE_HDR10_CLL_INFO		= 0x0110,
+> +	V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY	= 0x0111,
+> +
+>  	V4L2_CTRL_TYPE_H264_SPS             = 0x0200,
+>  	V4L2_CTRL_TYPE_H264_PPS		    = 0x0201,
+>  	V4L2_CTRL_TYPE_H264_SCALING_MATRIX  = 0x0202,
+> 
 
-which leads us to
+Regards,
 
-    rtc_update_irq_enable(rtc, 1);
-
-and finally here [6]
-
-    if (rtc->uie_unsupported) {
-        err =3D -EINVAL;
-        goto out;
-    }
-
-and we keep going (uie_unsupported =3D 0). All the following operations
-succeed because chip supports alarms.
-
-We go back to hwclock(8) and we start waiting[7] for the update from
-interrupt which never arrives instead of calling
-busywiat_for_rtc_clock_tick()[8] (mind the invalid indentation) because
-of EINVAL returned from ioctl() (conf. [6])
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/drivers/rtc/rtc-ds1307.c?h=3Dv5.11#n1032
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/drivers/rtc/rtc-ds1307.c?h=3Dv5.11#n1779
-[3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/drivers/rtc/rtc-ds1307.c?h=3Dv5.11#n1802
-[4] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/drivers/rtc/rtc-ds1307.c?h=3Dv5.11#n1977
-[5] https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/tree/sys=
--utils/hwclock-rtc.c?h=3Dv2.36.2#n252
-[6] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/drivers/rtc/interface.c?h=3Dv5.11#n564
-[7] https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/tree/sys=
--utils/hwclock-rtc.c?h=3Dv2.36.2#n283
-[8] https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/tree/sys=
--utils/hwclock-rtc.c?h=3Dv2.36.2#n297
-
->> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
->> ---
->>  drivers/rtc/rtc-ds1307.c | 14 +++++++-------
->>  1 file changed, 7 insertions(+), 7 deletions(-)
->>=20
->> diff --git a/drivers/rtc/rtc-ds1307.c b/drivers/rtc/rtc-ds1307.c
->> index cd8e438bc9c4..b08a9736fa77 100644
->> --- a/drivers/rtc/rtc-ds1307.c
->> +++ b/drivers/rtc/rtc-ds1307.c
->> @@ -1973,13 +1973,6 @@ static int ds1307_probe(struct i2c_client *client,
->>  	if (IS_ERR(ds1307->rtc))
->>  		return PTR_ERR(ds1307->rtc);
->>=20=20
->> -	if (ds1307_can_wakeup_device && !want_irq) {
->> -		dev_info(ds1307->dev,
->> -			 "'wakeup-source' is set, request for an IRQ is disabled!\n");
->> -		/* We cannot support UIE mode if we do not have an IRQ line */
->> -		ds1307->rtc->uie_unsupported =3D 1;
->> -	}
->> -
->>  	if (want_irq) {
->>  		err =3D devm_request_threaded_irq(ds1307->dev, client->irq, NULL,
->>  						chip->irq_handler ?: ds1307_irq,
->> @@ -1993,6 +1986,13 @@ static int ds1307_probe(struct i2c_client *client,
->>  		} else {
->>  			dev_dbg(ds1307->dev, "got IRQ %d\n", client->irq);
->>  		}
->> +	} else {
->> +		if (ds1307_can_wakeup_device)
->> +			dev_info(ds1307->dev,
->> +				 "'wakeup-source' is set, request for an IRQ is disabled!\n");
->> +
->
-> Honestly, just drop this message, it should have been removed by 82e2d43f=
-6315
->
->
-
-Done.
-
->> +		/* We cannot support UIE mode if we do not have an IRQ line */
->> +		ds1307->rtc->uie_unsupported =3D 1;
->>  	}
->>=20=20
->>  	ds1307->rtc->ops =3D chip->rtc_ops ?: &ds13xx_rtc_ops;
->> --=20
->> 2.26.2
->>=20
-
-=2D-=20
-=C5=81ukasz Stelmach
-Samsung R&D Institute Poland
-Samsung Electronics
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAmBQoJkACgkQsK4enJil
-gBDK3wf/RAOEvk8xZy90QMhxfRYU8XSE8UvPBaXXPOsJLFIcjbvUX5Q9s1rUrXT7
-LPbKuG3lJDNFthL/wqDj9RNx+bmDK5bf2LWZ0YgfUMuJJc/Ruc2wvr2l6DTXiKp9
-TmeTyC1e5j/VuiEsyJxQ7jss+l4Lp4QevUoVbLB+r6LAsxfbzfx4q77Ivispf+GX
-B45XoUEPzr7FE3UinHY0Zs+L0sOg9ePYd8uHYYFWMiCUTfKzc4TQNrH7WohbNOwB
-/8ocqA094cx0zTWJKnFjzwpIrFWtB/MYKAyvbMmrVlKic3tiHddB7alQWL7mOqn9
-fCm79ml5dWTFwXrkK9GP7zpJHcYxZw==
-=mr4q
------END PGP SIGNATURE-----
---=-=-=--
+	Hans
