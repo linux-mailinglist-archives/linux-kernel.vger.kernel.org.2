@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8351833CF97
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2371233CFBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:23:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234378AbhCPIT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 04:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234399AbhCPISx (ORCPT
+        id S234671AbhCPIWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 04:22:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27046 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234631AbhCPIW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 04:18:53 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27FDC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 01:18:52 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id p7so59313362eju.6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 01:18:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OmmE3ufEAvDgtjy9vpprocD5iN2+Uqu85g8HBGh8RxU=;
-        b=LHEgSMvc3cWqM90kZ4gvD6TaEqf3+6Z+QFwyFujTOXKuj8vhH9mBpNX24ZIrVsOI02
-         U0la/1WtXHDdzlaSo720o1SWFpzEDdwIH9xsmFuVg2t6SfJcr8NK3Jkd0yX8Dq+NDWOJ
-         KChtHzbHPP17LCyJCpNdZf10gUXrkW2ch4mGY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OmmE3ufEAvDgtjy9vpprocD5iN2+Uqu85g8HBGh8RxU=;
-        b=I61vrseugf0aA5vpx3jnVBwYTDXrqAFz0vZ3/BSTUKhqBYqx98smI6nwvfCCvYvlTf
-         4J9BV/p+UOQvJPCCOQEDYaMt/pqK8u10dHkZ3IHyX/qFS3ZKtWLdXbI9AHVQurzPBBOW
-         8TK5XIrvA+tPYkF/MRLC0s28e0s5XGPBXVJgjmH3CnNlQJU3JVYBvA6AKdnNdyWb426/
-         gQbvjFpyMY/szKwsgViU2WQI87JrHeBtPaZbM6mr0MRGPIzdWaPfXsPO2CyVDaQizQjI
-         366yJBvMZKJpZg7JJXJhUrTCCpGyZr8/QpsaSJhPMq2YKCNh3P+3nRwX7ia0QSez6s29
-         s6sA==
-X-Gm-Message-State: AOAM530uhgYS2tl+zc0rnpTOSGl8IEniEMWDpaHlF2HV7e/xbJHzCpvI
-        ZS7nG4y0bbzTUpKltfOSk9I1Sg==
-X-Google-Smtp-Source: ABdhPJwKtInEZcyt1fXWt+TUJ77BSu39uwuRxne2DMvOwoF0XUOOeiBRKdKwwpuOnjLLSOFZ1bvRaA==
-X-Received: by 2002:a17:906:a248:: with SMTP id bi8mr28148535ejb.260.1615882731772;
-        Tue, 16 Mar 2021 01:18:51 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id u24sm5149640edt.85.2021.03.16.01.18.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 01:18:51 -0700 (PDT)
-Subject: Re: [PATCH 02/13] tools: bitmap: sync function declarations with the
- kernel
-To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
-        linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-References: <20210316015424.1999082-1-yury.norov@gmail.com>
- <20210316015424.1999082-3-yury.norov@gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <4d1a1616-1e6d-fcef-82ab-38083a2430b8@rasmusvillemoes.dk>
-Date:   Tue, 16 Mar 2021 09:18:50 +0100
+        Tue, 16 Mar 2021 04:22:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615882948;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jgBW73IfZOFUYHFY6ABzyMEw2s2SPKAK0wW2bLnOaus=;
+        b=FelNlBrixo0CiaHLtxrv5As8eEjguBKaU35YmQAmfUpt1+wHbHF8JWyz7AFDJe5G2yjELt
+        W69ML380YnQ9J0o7BY/C0V/q4BgZqGm8zN8LU+6yWRz4h3VwcDEi3UD/uTdWFcf/xDTjpI
+        zwuOqttYA3F7xU34cN49X105S0wDzEU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-579-7iVAxc8DNEu8pHjCZoVk6w-1; Tue, 16 Mar 2021 04:22:23 -0400
+X-MC-Unique: 7iVAxc8DNEu8pHjCZoVk6w-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A4F0993920;
+        Tue, 16 Mar 2021 08:22:20 +0000 (UTC)
+Received: from [10.36.112.254] (ovpn-112-254.ams2.redhat.com [10.36.112.254])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BB6BF690F0;
+        Tue, 16 Mar 2021 08:22:12 +0000 (UTC)
+Subject: Re: [PATCH v13 00/15] SMMUv3 Nested Stage Setup (IOMMU part)
+To:     Krishna Reddy <vdumpa@nvidia.com>,
+        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "will@kernel.org" <will@kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>
+Cc:     "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "vivek.gautam@arm.com" <vivek.gautam@arm.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        Sachin Nikam <Snikam@nvidia.com>,
+        Yu-Huan Hsu <YHsu@nvidia.com>,
+        Bryan Huntsman <bhuntsman@nvidia.com>,
+        Vikram Sethi <vsethi@nvidia.com>
+References: <20201118112151.25412-1-eric.auger@redhat.com>
+ <BY5PR12MB3764285E7E8064B636132C65B36C9@BY5PR12MB3764.namprd12.prod.outlook.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <d9934ef7-3bf0-b004-3fe9-e0adbcae5c05@redhat.com>
+Date:   Tue, 16 Mar 2021 09:22:11 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210316015424.1999082-3-yury.norov@gmail.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <BY5PR12MB3764285E7E8064B636132C65B36C9@BY5PR12MB3764.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/03/2021 02.54, Yury Norov wrote:
-> Some functions in tools/include/linux/bitmap.h declare nbits as int. In the
-> kernel nbits is declared as unsigned int.
+Hi Krishna,
+On 3/15/21 7:04 PM, Krishna Reddy wrote:
+> Tested-by: Krishna Reddy <vdumpa@nvidia.com>
 > 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+>> 1) pass the guest stage 1 configuration
+> 
+> Validated Nested SMMUv3 translations for NVMe PCIe device from Guest VM along with patch series "v11 SMMUv3 Nested Stage Setup (VFIO part)" and QEMU patch series "vSMMUv3/pSMMUv3 2 stage VFIO integration" from v5.2.0-2stage-rfcv8. 
+> NVMe PCIe device is functional with 2-stage translations and no issues observed.
+Thank you very much for your testing efforts. For your info, there are
+more recent kernel series:
+[PATCH v14 00/13] SMMUv3 Nested Stage Setup (IOMMU part) (Feb 23)
+[PATCH v12 00/13] SMMUv3 Nested Stage Setup (VFIO part) (Feb 23)
 
-Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+working along with QEMU RFC
+[RFC v8 00/28] vSMMUv3/pSMMUv3 2 stage VFIO integration (Feb 25)
+
+If you have cycles to test with those, this would be higly appreciated.
+
+Thanks
+
+Eric
+> 
+> -KR
+> 
+
