@@ -2,93 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7872E33CEF9
+	by mail.lfdr.de (Postfix) with ESMTP id CA7D133CEFA
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:57:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233507AbhCPH47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 03:56:59 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37574 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233421AbhCPH4c (ORCPT
+        id S233340AbhCPH5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 03:57:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233618AbhCPH4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 03:56:32 -0400
-Received: from mail-ed1-f72.google.com ([209.85.208.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lM4Z5-0006SM-AH
-        for linux-kernel@vger.kernel.org; Tue, 16 Mar 2021 07:56:31 +0000
-Received: by mail-ed1-f72.google.com with SMTP id a26so10194393edt.23
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 00:56:31 -0700 (PDT)
+        Tue, 16 Mar 2021 03:56:43 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68180C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 00:56:43 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id f10so11833434ilq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 00:56:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KK5H1cWLW+T5NeYfSobXbOYYO/Cyw/6ADUsxHBOqG+E=;
+        b=YImhSXBrU/IGRXBc5fcSAin0FWnehwYP4u1ZvxnwpV5QTHlTRtUT2/+5bFNlkU5kDl
+         efV2YWpCzK6smA2oGGEMfbxaNdhUf/C55X1GNhf98rQ0klXxRpdh+cQFLr1XuUg0Os+Z
+         osyoA2iZltmgfWxy5utmAhRGAvn4zoYzLBqU0sWV4yU4Nm+yjft/cgrtS99XB6DDj7w2
+         Bs/qRKlw+Ehd9BInyv0R9o9fjy1duV4y9iXs3jkCurzkzw90Dxx34hUAYi8Nc3nkQ4qv
+         YEFglgTbhC1NZ68S57B0fGs4Ar30FbADLGzh39HSVQo9n+FXNjldgo9kjFd71E3IiXQ2
+         tZrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jeu86JaIUAOt2lkwOFI4m9LQf3S54ODIpa4kLZOARnM=;
-        b=IH9BeXkmGEfd2CDYpB6n28MHJ4T5qfQO/w4lb0q5ffGi6BvNvREpMryk+1MhyfrSPw
-         2bERASN1N6cF05N1YcyrEnm2dWxgDgFKPp/51DJHB/UtY66/GWwRRKy+Q8dOkZFKuYHr
-         O+sFwgY5Wlak0GrDNGW/IFCAB6Qmv6sbrM7lsDaMOLqGjSG+82FvU+0Ls97YOPW5vKOh
-         /tB73V/rmXajV4L2qpb9KxZrsZ+9QWStzbjgl3ceuu//lrXR/dsqtXRGTxvubNkK8Kre
-         3jiigXYi2cbupTJZjlGZF0Om10Y+nsAT8GnNM4e7vgvmU0bUdurzUZYTNAl1sFZ8aUcw
-         xdlw==
-X-Gm-Message-State: AOAM533QRqVKVka4ae/nUSUVUjFKUhS6/3U/WL8jCmNR20Y9RafeT0wc
-        dXZ7qeEQ6twM/1I2PODOV80anRhQQU9WXEO5h0iuSV8c2fuera4Iu89O3kd5xb6uMnGsz/zWJYn
-        exEU6oP47PfV8vJIuF6jBFjFH782QWlWyvNwQGoqvQg==
-X-Received: by 2002:a17:906:1b42:: with SMTP id p2mr28178012ejg.236.1615881391094;
-        Tue, 16 Mar 2021 00:56:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwSDWwhSMlE00SSQ6Q68j5cirvJIl8Apo64mYMNnE60g83O/scEiUPyZS5hkkQ+6/Z3THDjqA==
-X-Received: by 2002:a17:906:1b42:: with SMTP id p2mr28178003ejg.236.1615881390996;
-        Tue, 16 Mar 2021 00:56:30 -0700 (PDT)
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id r5sm9725026eds.49.2021.03.16.00.56.30
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KK5H1cWLW+T5NeYfSobXbOYYO/Cyw/6ADUsxHBOqG+E=;
+        b=Z97ngFrRGPCDAT9L96nPAMWY1w99y0a3S6wP59Omp8NQXYPh4q6p3W3v4QdLJXOyn7
+         QPd775ps/U83fzTdjm6dLeGujMiHmWZG8ZONiGdhniS+TvesAhheKk0idq3Vtf4dQost
+         axDlcvofOtEdZ/pRT+Wf6P+VFvGOFMiBNPt6Y+of0Rc915uhkGAurT4/LwZq0wXmpLAB
+         6qVbkk69hgXOaNPEf5+lfxCk7wxYMPHkJStpVHofwulfGjDbV8jrK9Ti3io6f+dT4V85
+         /hZQh0XEv6CPyLupfTDo5mQOm14Uzh4TjgyzLgyVQ9mxItP3oM4w7RnvrhWtuYhIHCx1
+         4Fnw==
+X-Gm-Message-State: AOAM533m7+j/M9E/YGbbdX/MBpvAYxp7YK++w0vz96qFJLwaqUnV9a7R
+        haUGvwW50E0UO8IQz5CdiDKZjg==
+X-Google-Smtp-Source: ABdhPJwYHVB5on0NjhXmVsCJ3pIl8CkZIs/pszN+sRsq2znkHj1R0l2ImEZZH+ntik+KneWAEyEqvw==
+X-Received: by 2002:a92:c6ca:: with SMTP id v10mr2901958ilm.195.1615881402716;
+        Tue, 16 Mar 2021 00:56:42 -0700 (PDT)
+Received: from google.com ([2620:15c:183:200:d825:37a2:4b55:995f])
+        by smtp.gmail.com with ESMTPSA id b5sm8085688ioq.7.2021.03.16.00.56.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 00:56:30 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH RESEND] media: atomisp: do not select COMMON_CLK to fix builds
-Date:   Tue, 16 Mar 2021 08:56:25 +0100
-Message-Id: <20210316075625.10382-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 16 Mar 2021 00:56:41 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 01:56:37 -0600
+From:   Yu Zhao <yuzhao@google.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Yang Shi <shy828301@gmail.com>, linux-kernel@vger.kernel.org,
+        page-reclaim@google.com
+Subject: Re: [PATCH v1 09/14] mm: multigenerational lru: mm_struct list
+Message-ID: <YFBktbCH9JFcT0rL@google.com>
+References: <20210313075747.3781593-1-yuzhao@google.com>
+ <20210313075747.3781593-10-yuzhao@google.com>
+ <048e5e1e977e720c3f9fc536ac54beebcc8319f5.camel@surriel.com>
+ <87pmzzsvfb.fsf@yhuang6-desk1.ccr.corp.intel.com>
+ <YFAsjP7NIZM5Ld+m@google.com>
+ <871rcfzjg0.fsf@yhuang6-desk1.ccr.corp.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871rcfzjg0.fsf@yhuang6-desk1.ccr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+On Tue, Mar 16, 2021 at 02:44:31PM +0800, Huang, Ying wrote:
+> Yu Zhao <yuzhao@google.com> writes:
+> 
+> > On Tue, Mar 16, 2021 at 10:07:36AM +0800, Huang, Ying wrote:
+> >> Rik van Riel <riel@surriel.com> writes:
+> >> 
+> >> > On Sat, 2021-03-13 at 00:57 -0700, Yu Zhao wrote:
+> >> >
+> >> >> +/*
+> >> >> + * After pages are faulted in, they become the youngest generation.
+> >> >> They must
+> >> >> + * go through aging process twice before they can be evicted. After
+> >> >> first scan,
+> >> >> + * their accessed bit set during initial faults are cleared and they
+> >> >> become the
+> >> >> + * second youngest generation. And second scan makes sure they
+> >> >> haven't been used
+> >> >> + * since the first.
+> >> >> + */
+> >> >
+> >> > I have to wonder if the reductions in OOM kills and 
+> >> > low-memory tab discards is due to this aging policy
+> >> > change, rather than from the switch to virtual scanning.
+> >
+> > There are no policy changes per se. The current page reclaim also
+> > scans a faulted-in page at least twice before it can reclaim it.
+> > That said, the new aging yields a better overall result because it
+> > discovers every page that has been referenced since the last scan,
+> > in addition to what Ying has mentioned. The current page scan stops
+> > stops once it finds enough candidates, which may seem more
+> > efficiently, but actually pays the price for not finding the best.
+> >
+> >> If my understanding were correct, the temperature of the processes is
+> >> considered in addition to that of the individual pages.  That is, the
+> >> pages of the processes that haven't been scheduled after the previous
+> >> scanning will not be scanned.  I guess that this helps OOM kills?
+> >
+> > Yes, that's correct.
+> >
+> >> If so, how about just take advantage of that information for OOM killing
+> >> and page reclaiming?  For example, if a process hasn't been scheduled
+> >> for long time, just reclaim its private pages.
+> >
+> > This is how it works. Pages that haven't been scanned grow older
+> > automatically because those that have been scanned will be tagged with
+> > younger generation numbers. Eviction does bucket sort based on
+> > generation numbers and attacks the oldest.
+> 
+> Sorry, my original words are misleading.  What I wanted to say was that
+> is it good enough that
+> 
+> - Do not change the core algorithm of current page reclaiming.
+> 
+> - Add some new logic to reclaim the process private pages regardless of
+>   the Accessed bits if the processes are not scheduled for some long
+>   enough time.  This can be done before the normal page reclaiming.
 
-COMMON_CLK is a user-selectable option with its own dependencies.  The
-most important dependency is !HAVE_LEGACY_CLK.  User-selectable drivers
-should not select COMMON_CLK because they will create a dependency cycle
-and build failures.
+This is a good idea, which being used on Android and Chrome OS. We
+call it per-process reclaim, and I've mentioned here:
+https://lore.kernel.org/linux-mm/YBkT6175GmMWBvw3@google.com/
+  On Android, our most advanced simulation that generates memory
+  pressure from realistic user behavior shows 18% fewer low-memory
+  kills, which in turn reduces cold starts by 16%. This is on top of
+  per-process reclaim, a predecessor of ``MADV_COLD`` and
+  ``MADV_PAGEOUT``, against background apps.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
----
- drivers/staging/media/atomisp/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The patches landed not long a ago :) See mm/madvise.c
 
-diff --git a/drivers/staging/media/atomisp/Kconfig b/drivers/staging/media/atomisp/Kconfig
-index 37577bb72998..742edb261d85 100644
---- a/drivers/staging/media/atomisp/Kconfig
-+++ b/drivers/staging/media/atomisp/Kconfig
-@@ -2,9 +2,9 @@
- menuconfig INTEL_ATOMISP
- 	bool "Enable support to Intel Atom ISP camera drivers"
- 	depends on X86 && EFI && PCI && ACPI
-+	depends on COMMON_CLK
- 	select IOSF_MBI
- 	select MEDIA_CONTROLLER
--	select COMMON_CLK
- 	help
- 	  Enable support for the Intel ISP2 camera interfaces and MIPI
- 	  sensor drivers.
--- 
-2.25.1
+> So this is an one small step improvement to the current page reclaiming
+> algorithm via taking advantage of the scheduler information.  It's
+> clearly not sophisticated as your new algorithm, for example, the cold
+> pages in the hot processes will not be reclaimed in this stage.  But it
+> can reduce the overhead of scanning too.
 
+The general problems with the direction of per-process reclaim:
+  1) we can't find the coldest pages, as you have mentioned.
+  2) we can't reach file pages accessed via file descriptors only,
+  especially those caching config files that were read only once.
+  3) we can't reclaim lru pages and slab objects proportionally and
+  therefore we leave many stale slab objects behind.
+  4) we have to be proactive, as you suggested (once again, you were
+  right), and this has a serious problem: client's battery life can
+  be affected.
+
+The scanning overhead is only one of the two major problems of the
+current page reclaim. The other problem is the granularity of the
+active/inactive (sizes). We stopped using them in making job
+scheduling decision a long time ago. I know another large internet
+company adopted a similar approach as ours, and I'm wondering how
+everybody else is coping with the discrepancy from those counters.
+
+> All in all, some of your ideas may help the original LRU algorithm too.
+> Or some can be experimented without replacing the original algorithm.
+> 
+> But from another point of view, your solution can be seen as a kind of
+> improvement on top of the original LRU algorithm too.  It moves the
+> recently accessed pages to kind of multiple active lists based on
+> scanning page tables directly (instead of reversely).
+
+We hope this series can be a framework or an infrastructure flexible
+enough that people can build their complex use cases upon, e.g.,
+proactive reclaim (machine-wide, not per process), cold memory
+estimation (for job scheduling), AEP demotion, specifically, we want
+people to use it with what you and Dave are working on here:
+https://patchwork.kernel.org/project/linux-mm/cover/20210304235949.7922C1C3@viggo.jf.intel.com/
