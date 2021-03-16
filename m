@@ -2,80 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F95633D472
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC5533D470
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233989AbhCPM5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:57:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233443AbhCPM4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:56:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DF036504F;
-        Tue, 16 Mar 2021 12:56:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615899371;
-        bh=NUrWK1ohdGJAi0VWxxv0wY1aIMFLzvvTPrxsPTaMPN8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fXLxYIFHbmMoGLWMNSZ/WgJY84MJ9Y3/BU63digCWppmet+iBQw0iS2baMk2GcoML
-         W6xAwjqX3x0lhTQyDj3w+8og9DgswCH/O295wE+DGPUejiPmixCJy5XP+72MDg6NPK
-         oKQyORJVSFAMwxq4vIBbQ/pJZD4d/EJuu8X+RdTo=
-Date:   Tue, 16 Mar 2021 13:55:53 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] seq_file: Unconditionally use vmalloc for buffer
-Message-ID: <YFCq2TeHAl1s8/TX@kroah.com>
-References: <20210315174851.622228-1-keescook@chromium.org>
- <YE+oZkSVNyaONMd9@zeniv-ca.linux.org.uk>
- <202103151336.78360DB34D@keescook>
- <YFBdQmT64c+2uBRI@kroah.com>
- <YFCn4ERBMGoqxvUU@zeniv-ca.linux.org.uk>
+        id S234204AbhCPM4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 08:56:54 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:51805 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233865AbhCPMzm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 08:55:42 -0400
+Received: from uno.localdomain (host-79-22-58-175.retail.telecomitalia.it [79.22.58.175])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 9A26524000B;
+        Tue, 16 Mar 2021 12:55:36 +0000 (UTC)
+Date:   Tue, 16 Mar 2021 13:56:07 +0100
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 02/18] media: i2c: rdacm20: Enable noise immunity
+Message-ID: <20210316125607.lxhrgzahxvxfy6ll@uno.localdomain>
+References: <20210315131512.133720-1-jacopo+renesas@jmondi.org>
+ <20210315131512.133720-3-jacopo+renesas@jmondi.org>
+ <YE/TlmrLV4ejOjlF@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YFCn4ERBMGoqxvUU@zeniv-ca.linux.org.uk>
+In-Reply-To: <YE/TlmrLV4ejOjlF@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 12:43:12PM +0000, Al Viro wrote:
-> On Tue, Mar 16, 2021 at 08:24:50AM +0100, Greg Kroah-Hartman wrote:
-> 
-> > > Completely agreed. seq_get_buf() should be totally ripped out.
-> > > Unfortunately, this is going to be a long road because of sysfs's ATTR
-> > > stuff, there are something like 5000 callers, and the entire API was
-> > > designed to avoid refactoring all those callers from
-> > > sysfs_kf_seq_show().
-> > 
-> > What is wrong with the sysfs ATTR stuff?  That should make it so that we
-> > do not have to change any caller for any specific change like this, why
-> > can't sysfs or kernfs handle it automatically?
-> 
-> Hard to tell, since that would require _finding_ the sodding ->show()
-> instances first.  Good luck with that, seeing that most of those appear
-> to come from templates-done-with-cpp...
+Hi Laurent,
 
-Sure, auditing all of this is a pain, but the numbers that take a string
-are low if someone wants to do that and convert them all to sysfs_emit()
-today.
+On Mon, Mar 15, 2021 at 11:37:26PM +0200, Laurent Pinchart wrote:
+> Hi Jacopo,
+>
+> Thank you for the patch.
+>
+> On Mon, Mar 15, 2021 at 02:14:56PM +0100, Jacopo Mondi wrote:
+> > Enable the noise immunity threshold at the end of the rdacm20
+> > initialization routine.
+> >
+> > The rdacm20 camera module has been so far tested with a startup
+> > delay that allowed the embedded MCU to program the serializer. If
+> > the initialization routine is run before the MCU programs the
+> > serializer and the image sensor and their addresses gets changed
+> > by the rdacm20 driver it is required to manually enable the noise
+> > immunity threshold to make the communication on the control channel
+> > more reliable.
+>
+> I'm still worried by the race with the MCU. Any update on dumping the
+> MCU configuration to check what it initializes ?
+>
 
-> AFAICS, Kees wants to protect against ->show() instances stomping beyond
-> the page size.  What I don't get is what do you get from using seq_file
-> if you insist on doing raw access to the buffer rather than using
-> seq_printf() and friends.  What's the point?
+Not yet, you're right ...
 
-I don't understand as I didn't switch kernfs to this api at all anyway,
-as it seems to have come from the original sysfs code moving to kernfs
-way back in 2013 with the work that Tejun did.  So I can't remember any
-of that...
+I mainly focused on testing with rdacm21, what if I strip the rdacm20
+changes out from this series ? I will have to keep the init()
+operation introduction to maintain compatibility with max9286 changes,
+and in case of no regressions, we can keep the 8 seconds delay in the
+.dtsi. However it will break upstream support on Eagle for rdacm20 as
+we don't have a regulator where to insert the startup delay there, and
+a downstream patch that waits for 8 seconds in the deserializer driver
+should be used instead...
 
-thanks,
-
-greg k-h
+> > Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > ---
+> >  drivers/media/i2c/rdacm20.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+> > index 90eb73f0e6e9..f7fd5ae955d0 100644
+> > --- a/drivers/media/i2c/rdacm20.c
+> > +++ b/drivers/media/i2c/rdacm20.c
+> > @@ -541,7 +541,13 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+> >
+> >  	dev_info(dev->dev, "Identified MAX9271 + OV10635 device\n");
+> >
+> > -	return 0;
+> > +	/*
+> > +	 * Set reverse channel high threshold to increase noise immunity.
+> > +	 *
+> > +	 * This should be compensated by increasing the reverse channel
+> > +	 * amplitude on the remote deserializer side.
+> > +	 */
+> > +	return max9271_set_high_threshold(&dev->serializer, true);
+> >  }
+> >
+> >  static int rdacm20_probe(struct i2c_client *client)
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
