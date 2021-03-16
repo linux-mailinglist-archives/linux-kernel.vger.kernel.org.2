@@ -2,116 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C5433DE80
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:17:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7984C33DE83
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhCPUQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 16:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231189AbhCPUQL (ORCPT
+        id S229705AbhCPUSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 16:18:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39816 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229764AbhCPURi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 16:16:11 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40F6C06174A;
-        Tue, 16 Mar 2021 13:16:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=25Try9Vsj8b5XGaRHjhes0qHsMMyPZK0kTaQIOavQ6A=; b=AnHus7XJzGVxIFuzMangQl62Hu
-        v1y8qc5CSlkUQDXqbfOA9DNG4wicfwaNcF84seZZoQ093qg+6T2sWpFwW7GLKvaunoRSedXJg4Q7T
-        IohHNum/GOeZdWKAOk3Wi0OagYHQ3Gi7Q8VP5mUzOz3bcLoZjR6ECx5/23Nda1Yoxn0EVTrNQWIlx
-        jwNMZLzBQ6KQpIz+LHBOAFjJQcsnQWUZ6Eh5ciVqYQqH79Z6C84B4B2no38hwu+QKvvqvYzDQpdNN
-        5HhksWs8e0S/syyl5EvPS2A2CWec9m0KNNhw0zf+6SRhM/PrZbOn7i8/awQsztL82mAIqaTsHH39p
-        6aIHG54Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMG6S-001mTt-7H; Tue, 16 Mar 2021 20:15:44 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3A3E5304D58;
-        Tue, 16 Mar 2021 21:15:43 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2307423CC228C; Tue, 16 Mar 2021 21:15:43 +0100 (CET)
-Date:   Tue, 16 Mar 2021 21:15:43 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Subject: Re: [PATCH v23 6/9] x86/entry: Introduce ENDBR macro
-Message-ID: <YFER79kU+ukn3YZr@hirez.programming.kicks-ass.net>
-References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
- <20210316151320.6123-7-yu-cheng.yu@intel.com>
- <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
- <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
- <YFENvgrR8JSYq1ae@hirez.programming.kicks-ass.net>
- <65845773-6cf0-1bdc-1ecf-168de74cc283@intel.com>
+        Tue, 16 Mar 2021 16:17:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615925858;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rAH+Y0PqchePCmc63qPqb547JnFTHPCLfyKXcC3d+MU=;
+        b=QEXTS8xwQjYR49TzGa9ihGPvbR45txmXqgQTzd0es+fRmhNzlVyhyaRQJnxvJUBauEyQAu
+        BNekiVkzf/1XRHhDfPjGyiJ+AOpCeFYExxHECpjoFSAGNPRVPCeDv/ZER+qMeSR7NG8ME7
+        JRk7Fz6Kt4JzID6UtERDgHcPlKLnzBw=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-11-vKPUfW4YNve60ByQ4lZjvA-1; Tue, 16 Mar 2021 16:17:36 -0400
+X-MC-Unique: vKPUfW4YNve60ByQ4lZjvA-1
+Received: by mail-qv1-f69.google.com with SMTP id d15so26029262qvn.16
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 13:17:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rAH+Y0PqchePCmc63qPqb547JnFTHPCLfyKXcC3d+MU=;
+        b=ePcYE6MEs8Se2MgUEKCvZ5F5V8l3yi0D5LhEtqVYyBaByZ0J8HvXZ7Lc7xXXPV671v
+         Ac+ysnebjXF/OtSR+cvMdBPVmyuT8TSCMVJR55aPyauYQCnj0prvm+vJbS9RRYumADFG
+         GzMv24wjW6lDGGTV31WcGxSwS4HMhNF+wpdJ71zBipf2kcuzHn13z+NpSNCICd+MJheF
+         ees2rK3fFrCghtFYL4eNNiOyKklljkPWIlLs5hALa/uAYl8tmoKKpHUvo6gUftFI3qe6
+         VMVkZt4Lr77dsEYzBCtsNAsduZ/KIFLb2gMZ77PchXcK6UtXEpyEzrsIzqpryyI7VHof
+         4ddA==
+X-Gm-Message-State: AOAM533H0nfJ0BWBCDpCOtkwizKWBD3rlTuKtVTmLeq1/Oy8qzBBfejT
+        6o6mm2zI9fy6m1C6H3/XRObWTf7mraC+GsjKXDsnrkjiEw9locIHdcsHQEbooHqpCO3PZdXoC42
+        P1TuqYzr8BE9pK6ZGV9JlJQqU
+X-Received: by 2002:a05:620a:78b:: with SMTP id 11mr925517qka.0.1615925855682;
+        Tue, 16 Mar 2021 13:17:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxg/+/oLCGxaXXk4ILJXSHUGW/63RO3FZxkH6WXEukwCWHHZ1LfWTUVa14nD3PSw3iQ+bTtRw==
+X-Received: by 2002:a05:620a:78b:: with SMTP id 11mr925478qka.0.1615925855357;
+        Tue, 16 Mar 2021 13:17:35 -0700 (PDT)
+Received: from xz-x1 ([142.126.89.138])
+        by smtp.gmail.com with ESMTPSA id k4sm16119463qke.13.2021.03.16.13.17.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 13:17:34 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 16:17:32 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Brian Geffon <bgeffon@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Dmitry Safonov <dima@arista.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Alejandro Colomar <alx.manpages@gmail.com>
+Subject: Re: [PATCH] mm: Allow shmem mappings with MREMAP_DONTUNMAP
+Message-ID: <20210316201732.GD395976@xz-x1>
+References: <20210303175235.3308220-1-bgeffon@google.com>
+ <alpine.LSU.2.11.2103131934290.18112@eggly.anvils>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <65845773-6cf0-1bdc-1ecf-168de74cc283@intel.com>
+In-Reply-To: <alpine.LSU.2.11.2103131934290.18112@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 01:05:30PM -0700, Yu, Yu-cheng wrote:
-> On 3/16/2021 12:57 PM, Peter Zijlstra wrote:
-> > On Tue, Mar 16, 2021 at 10:12:39AM -0700, Yu, Yu-cheng wrote:
-> > > Alternatively, there is another compiler-defined macro _CET_ENDBR that can
-> > > be used.  We can put the following in calling.h:
-> > > 
-> > > #ifdef __CET__
-> > > #include <cet.h>
-> > > #else
-> > > #define _CET_ENDBR
-> > > #endif
-> > > 
-> > > and then use _CET_ENDBR in other files.  How is that?
-> > > 
-> > > In the future, in case we have kernel-mode IBT, ENDBR macros are also needed
-> > > for other assembly files.
+On Sat, Mar 13, 2021 at 08:19:38PM -0800, Hugh Dickins wrote:
+> On Wed, 3 Mar 2021, Brian Geffon wrote:
+> 
+> > Currently MREMAP_DONTUNMAP only accepts private anonymous mappings. This change
+> > will widen the support to include shmem mappings. The primary use case
+> > is to support MREMAP_DONTUNMAP on mappings which may have been created from
+> > a memfd.
 > > 
-> > Can we please call it IBT_ENDBR or just ENDBR. CET is a horrible name,
-> > seeing how it is not specific.
+> > Lokesh Gidra who works on the Android JVM, provided an explanation of how such
+> > a feature will improve Android JVM garbage collection:
+> > "Android is developing a new garbage collector (GC), based on userfaultfd. The
+> > garbage collector will use userfaultfd (uffd) on the java heap during compaction.
+> > On accessing any uncompacted page, the application threads will find it missing,
+> > at which point the thread will create the compacted page and then use UFFDIO_COPY
+> > ioctl to get it mapped and then resume execution. Before starting this compaction,
+> > in a stop-the-world pause the heap will be mremap(MREMAP_DONTUNMAP) so that the
+> > java heap is ready to receive UFFD_EVENT_PAGEFAULT events after resuming execution.
 > > 
+> > To speedup mremap operations, pagetable movement was optimized by moving PUD entries
+> > instead of PTE entries [1]. It was necessary as mremap of even modest sized memory
+> > ranges also took several milliseconds, and stopping the application for that long
+> > isn't acceptable in response-time sensitive cases. With UFFDIO_CONTINUE feature [2],
+> > it will be even more efficient to implement this GC, particularly the 'non-moveable'
+> > portions of the heap. It will also help in reducing the need to copy (UFFDIO_COPY)
+> > the pages. However, for this to work, the java heap has to be on a 'shared' vma.
+> > Currently MREMAP_DONTUNMAP only supports private anonymous mappings, this patch will
+> > enable using UFFDIO_CONTINUE for the new userfaultfd-based heap compaction."
+> > 
+> > [1] https://lore.kernel.org/linux-mm/20201215030730.NC3CU98e4%25akpm@linux-foundation.org/
+> > [2] https://lore.kernel.org/linux-mm/20210302000133.272579-1-axelrasmussen@google.com/
+> > ---
+> >  mm/mremap.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> > 
+> > diff --git a/mm/mremap.c b/mm/mremap.c
+> > index ec8f840399ed..6934d199da54 100644
+> > --- a/mm/mremap.c
+> > +++ b/mm/mremap.c
+> > @@ -653,8 +653,7 @@ static struct vm_area_struct *vma_to_resize(unsigned long addr,
+> >  		return ERR_PTR(-EINVAL);
+> >  	}
+> >  
+> > -	if (flags & MREMAP_DONTUNMAP && (!vma_is_anonymous(vma) ||
+> > -			vma->vm_flags & VM_SHARED))
+> > +	if (flags & MREMAP_DONTUNMAP && !(vma_is_anonymous(vma) || vma_is_shmem(vma)))
+> >  		return ERR_PTR(-EINVAL);
+> >  
+> >  	if (is_vm_hugetlb_page(vma))
+> > -- 
 > 
-> _CET_ENDBR is from the compiler and we cannot change it.  We can do:
+> Yet something to improve...
 > 
-> #define ENDBR _CET_ENDBR
+> Thanks for extending MREMAP_DONTUNMAP to shmem, but I think this patch
+> goes in the wrong direction, complicating when it should be generalizing:
+> the mremap syscall is about rearranging the user's virtual address space,
+> and is not specific to the underlying anonymous or shmem or file object
+> (though so far you have only been interested in anonymous, and now shmem).
 > 
-> How is that?
+> A better patch would say:
+>  
+> -	if (flags & MREMAP_DONTUNMAP && (!vma_is_anonymous(vma) ||
+> -			vma->vm_flags & VM_SHARED))
+> +	if ((flags & MREMAP_DONTUNMAP) &&
+> +	    (vma->vm_flags & (VM_DONTEXPAND | VM_PFNMAP)))
+>  		return ERR_PTR(-EINVAL);
+> 
+> VM_DONTEXPAND is what has long been used on special mappings, to prevent
+> surprises from mremap changing the size of the mapping: MREMAP_DONTUNMAP
+> introduced a different way of expanding the mapping, so VM_DONTEXPAND
+> still seems a reasonable name (I've thrown in VM_PFNMAP there because
+> it's in the VM_DONTEXPAND test lower down: for safety I guess, and best
+> if both behave the same - though one says -EINVAL and the other -EFAULT).
+> 
+> With that VM_DONTEXPAND check in, Dmitry's commit cd544fd1dc92
+> ("mremap: don't allow MREMAP_DONTUNMAP on special_mappings and aio")
+> can still be reverted (as you agreed on 28th December), even though
+> vma_is_anonymous() will no longer protect it.
+> 
+> Was there an mremap(2) man page update for MREMAP_DONTUNMAP?
+> Whether or not there was before, it ought to get one now.
 
-Do we really want to include compiler headers? AFAICT it's not a
-built-in. Also what about clang?
+I'm curious whether it's okay to expand MREMAP_DONTUNMAP to PFNMAP too..
+E.g. vfio maps device MMIO regions with both VM_DONTEXPAND|VM_PFNMAP, to me it
+makes sense to allow the userspace to get such MMIO region remapped/duplicated
+somewhere else as long as the size won't change.  With the strict check as
+above we kill all those possibilities.
 
-This thing seems trivial enough to build our own, it's a single damn
-instruction. That also means we don't have to worry about changes to
-header files we don't control.
+Though in that case we'll still need commits like cd544fd1dc92 to protect any
+customized ->mremap() when they're not supported.
+
+Thanks,
+
+-- 
+Peter Xu
+
