@@ -2,111 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C49033CA9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 02:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C929D33CABC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 02:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbhCPBOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 21:14:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
+        id S234255AbhCPBPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 21:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234147AbhCPBOC (ORCPT
+        with ESMTP id S234276AbhCPBPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 21:14:02 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD661C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 18:14:01 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id o16so4543266pgu.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 18:14:01 -0700 (PDT)
+        Mon, 15 Mar 2021 21:15:19 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACFAC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 18:15:19 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d23so12952416plq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 18:15:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4dVvMOxTk9Ypr/9Lo2OLdOhByXF6SXWR6ay9T+ieRSM=;
-        b=EZFHovhmAoopzS1sAyFz8LZ7cQ4s1NK8pswQycEvqXhf+v2AtqQRio3wz0Cr2LGLCl
-         WFcPiZnXP9sJan5FmBlCbSTYLFEaGqU3YPyO0p10SMLagxja8xgN1e8zp3ZGeYSJ7PJ8
-         E5vu4fW2VKc26IxakxgX0z9ysMaXZ+NLF4F+Px6KnZax+vUAx2vFOUuCAue1UmLSf9EK
-         80JpMGeXlotsuJoHyec6+eBJHR3keP0EJPLXId0oeQQVLOKCWX86DWBX7Um7lVRPqaaD
-         OAbOirxOoBvg0rS42HGrAosq2kbuFjH0MHnbZFPQNWxbp7h594r434iu3RtArsvp2kBD
-         eaeA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N8PazbWxeQpma3IK9jRB0TxFsaKkwjN5cuc0b0m+m2M=;
+        b=Yucta2XTHd86ALutAlq9i8vYXxo8CaGrEyvfGJ9dgeAaEvR3W6aRRqPI4kdM8RuUWy
+         1po+j965cuiAM754oSDUDRwpiwHMV1yuRM4BI2k8jhzdlAVDxiN66/hxGyjuFV+DTS+O
+         AfurjumWkxNMUz7cOdZk2jMrmeiESEgJT+S/I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4dVvMOxTk9Ypr/9Lo2OLdOhByXF6SXWR6ay9T+ieRSM=;
-        b=mC62BCl1n+faCFpg8xrPDXBjDIsRKlPAxCURU8BLJCMDYAvWa5WJPM32gJMHMOJTSb
-         IzukRuixLu1W7Z/c2qR4B1dKQojIb9S9+OohgHdHsCEpdggxw4/Jat7Ks/2wCnFYZNmS
-         N0OS9zyyx0wzcF7TYvd1kFhfH72gGH6UrQDopn4nErG9GeNvviw+4EmJKZkU3gRs1S01
-         RgOcJrQZ07gbE1PTMlwz2WJjq/IbbP8UgY9TpaS70BMIFP9b1Tyt0uVrcYQq3WQUrugK
-         R1vpNRLKuvWyl/tywj5SKqk/Odk3G/Onc30KDUe5ugsyvF6pH92omiESrpLx9bYWrV2L
-         /M8A==
-X-Gm-Message-State: AOAM531DCC1SO9FJObLo2nV0Lg6bmg7TL+UttiqnyaHVfdiA7XX8NSAE
-        42WfKidsknEFYra2S+G6ASB0vg==
-X-Google-Smtp-Source: ABdhPJyXX8OZIUCZQti15KySpaCRN20Com+8qtotY7KMLGFuHxyDNwcGtBBg+UsS29oa3WcAGUSaLA==
-X-Received: by 2002:a63:dd15:: with SMTP id t21mr1506443pgg.23.1615857240996;
-        Mon, 15 Mar 2021 18:14:00 -0700 (PDT)
-Received: from google.com ([2620:15c:f:10:3d60:4c70:d756:da57])
-        by smtp.gmail.com with ESMTPSA id z8sm833992pjd.0.2021.03.15.18.13.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 18:14:00 -0700 (PDT)
-Date:   Mon, 15 Mar 2021 18:13:53 -0700
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Kai Huang <kai.huang@intel.com>, kvm@vger.kernel.org,
-        linux-sgx@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v2 07/25] x86/sgx: Initialize virtual EPC driver even
- when SGX driver is disabled
-Message-ID: <YFAGUWDYacz1zroI@google.com>
-References: <YE0M/VoETPw7YZIy@kernel.org>
- <YE0NeChRjBlldQ8H@kernel.org>
- <YE4M8JGGl9Xyx51/@kernel.org>
- <YE4rVnfQ9y7CnVvr@kernel.org>
- <20210315161317.9c72479dfcde4e22078abcd2@intel.com>
- <YE9beKYDaG1sMWq+@kernel.org>
- <YE9mVUF0KOPNSfA9@kernel.org>
- <20210316094859.7b5947b743a81dff7434615c@intel.com>
- <YE/oHt92suFDHJ7Z@kernel.org>
- <YE/o/IGBAB8N+fnt@kernel.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N8PazbWxeQpma3IK9jRB0TxFsaKkwjN5cuc0b0m+m2M=;
+        b=EsOyGpdKP883Lh47D/2S9qMEjRKEAP/JuI0Z6HUOvBb7dj/jA+ucUlBh1YpuFT0cwx
+         ph1A4kP0xdXPrdx56o2v4vOaNrF8OkyNknsIhXLyJ1bvbUpXpiki2Qo0+3D3NA4ROHwF
+         pxUqLiv/gz01a3ju0c6xPDGKQgKd1+oyhoytG6BjlsV7sLTFr8x921UJCvn8LZRY9JPs
+         SVUe5F352RZtiPR94LmIVZST3ooyYfDMcDVJO6A2a2k1NCQaipjoDxpkPUCPwZZmVqpG
+         hyj/IHC17bM7qJSBbNqPJegXXxXxWarP8r/d2ABf4yAG6KtW0TiqfPVuXGwMg2A1GiA6
+         xJwA==
+X-Gm-Message-State: AOAM530eiaiPOSCK+ZCPfZTz3MCoot+ReYWzwUjp/zfeS9rCiQnGeoJk
+        Z7pT+rtQbt9MqfuAfeKUQo/EInC8IuBz9Q==
+X-Google-Smtp-Source: ABdhPJwUXEsQ6bCOeQfni68O7RS1LZO5BRxAyA+VB21PrjYoHi6CoRlKsF2rEpEQRvjV6L/PGeH+HA==
+X-Received: by 2002:a17:902:e309:b029:e6:c17b:895a with SMTP id q9-20020a170902e309b02900e6c17b895amr34441plc.74.1615857319034;
+        Mon, 15 Mar 2021 18:15:19 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:9867:b969:5d4f:e017])
+        by smtp.gmail.com with UTF8SMTPSA id gb1sm811159pjb.21.2021.03.15.18.15.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 18:15:18 -0700 (PDT)
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>
+Subject: [PATCH v3 0/3] arm64: dts: qcom: sc7180: Disable the charger thermal zone on more trogdor boards
+Date:   Mon, 15 Mar 2021 18:15:12 -0700
+Message-Id: <20210316011516.1314686-1-mka@chromium.org>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YE/o/IGBAB8N+fnt@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021, Jarkko Sakkinen wrote:
-> On Tue, Mar 16, 2021 at 01:05:05AM +0200, Jarkko Sakkinen wrote:
-> > The way I've understood it is that given that KVM can support SGX
-> > without FLC, vEPC should be available even if driver cannot be
-> > enabled.
-> > 
-> > This is also exactly what the short summary states.
-> > 
-> > "Initialize virtual EPC driver even when SGX driver is disabled"
-> > 
-> > It *does not* state:
-> > 
-> > "Initialize SGX driver even when vEPC driver is disabled"
-> > 
-> > Also, this is how I interpret the inline comment.
-> > 
-> > All this considered, the other direction is undocumented functionality.
-> 
-> Also:
-> 
-> 1. There is *zero* good practical reasons to support the "2nd direction".
+We already disabled the charger thermal zone for lazor to avoid
+bogus temperature readings from an unsupported thermistor. Some
+revisions of other trogdor boards that are added by Doug's
+'arm64: dts: qcom: Update sc7180-trogdor variants from downstream'
+series have the same problem. Disable the charger thermal zone for
+them too.
 
-Uh, yes there is.  CONFIG_KVM_INTEL=n and X86_FEATURE_VMX=n, either of which
-will cause vEPC initialization to fail.  The former is obvious, the latter is
-possible via BIOS configuration.
+This series is based on v2 of the 'arm64: dts: qcom: Update
+sc7180-trogdor variants from downstream' series
+(https://patchwork.kernel.org/project/linux-arm-msm/list/?series=440315)
 
->    For KVM getting init'd with SGX, on the other hand, we have good
->    practical reasons.
-> 2. We can get something practically useful with simpler and more verbose
->    code, i.e. better logging.
-> 
-> /Jarkko
+(no changes since v1)
+
+Matthias Kaehlcke (3):
+  arm64: dts: qcom: sc7180: lazor: Simplify disabling of charger thermal
+    zone
+  arm64: dts: qcom: sc7180: Add pompom rev3
+  arm64: dts: qcom: sc7180: Add CoachZ rev3
+
+ arch/arm64/boot/dts/qcom/Makefile             |  6 ++-
+ .../dts/qcom/sc7180-trogdor-coachz-r1-lte.dts |  4 +-
+ .../dts/qcom/sc7180-trogdor-coachz-r1.dts     | 13 ++++++-
+ ...e.dts => sc7180-trogdor-coachz-r3-lte.dts} |  6 +--
+ ...hz-r2.dts => sc7180-trogdor-coachz-r3.dts} |  4 +-
+ .../boot/dts/qcom/sc7180-trogdor-lazor-r0.dts |  9 -----
+ .../boot/dts/qcom/sc7180-trogdor-lazor-r1.dts |  9 -----
+ .../boot/dts/qcom/sc7180-trogdor-lazor-r3.dts |  9 -----
+ .../boot/dts/qcom/sc7180-trogdor-lazor.dtsi   |  9 +++++
+ .../dts/qcom/sc7180-trogdor-pompom-r1.dts     | 12 ++++++
+ .../dts/qcom/sc7180-trogdor-pompom-r2-lte.dts |  4 +-
+ .../dts/qcom/sc7180-trogdor-pompom-r2.dts     | 38 +++++--------------
+ .../dts/qcom/sc7180-trogdor-pompom-r3-lte.dts | 14 +++++++
+ .../dts/qcom/sc7180-trogdor-pompom-r3.dts     | 15 ++++++++
+ .../boot/dts/qcom/sc7180-trogdor-pompom.dtsi  | 29 ++++++++++++++
+ 15 files changed, 112 insertions(+), 69 deletions(-)
+ rename arch/arm64/boot/dts/qcom/{sc7180-trogdor-coachz-r2-lte.dts => sc7180-trogdor-coachz-r3-lte.dts} (69%)
+ rename arch/arm64/boot/dts/qcom/{sc7180-trogdor-coachz-r2.dts => sc7180-trogdor-coachz-r3.dts} (75%)
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dts
+
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
