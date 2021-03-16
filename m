@@ -2,188 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDE633D6A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:12:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D83E933D683
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237876AbhCPPL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 11:11:58 -0400
-Received: from mga18.intel.com ([134.134.136.126]:62728 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234485AbhCPPL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 11:11:29 -0400
-IronPort-SDR: shirYE1bxsUC173LgUDi/jj8cI5sZbOVQitCSGG5ELFnC2Sy9WHsl7ykogCUuz5jrNxhIQRJzd
- MZWlGj2RZ5tA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="176871718"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="176871718"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 08:11:27 -0700
-IronPort-SDR: 8uLuGSsfb6haAEg3nbh590mkF+vY9M13Lz1D9jmF7Yaj+weg7CX4YsiDBUQU2plxaYwVG/i/+a
- DaX7tPr9a4XQ==
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="405570246"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 08:11:26 -0700
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        id S234418AbhCPPLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 11:11:05 -0400
+Received: from smtp1.de.adit-jv.com ([93.241.18.167]:52844 "EHLO
+        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230255AbhCPPKq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 11:10:46 -0400
+Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
+        by smtp1.de.adit-jv.com (Postfix) with ESMTP id 703CB3C04C0;
+        Tue, 16 Mar 2021 16:10:44 +0100 (CET)
+Received: from smtp1.de.adit-jv.com ([127.0.0.1])
+        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id uZ8oA5G736kb; Tue, 16 Mar 2021 16:10:38 +0100 (CET)
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 5B7EF3C00C0;
+        Tue, 16 Mar 2021 16:10:38 +0100 (CET)
+Received: from lxhi-065.adit-jv.com (10.72.94.12) by hi2exch02.adit-jv.com
+ (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 16 Mar
+ 2021 16:10:37 +0100
+Date:   Tue, 16 Mar 2021 16:10:31 +0100
+From:   Eugeniu Rosca <erosca@de.adit-jv.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+CC:     Eugeniu Rosca <erosca@de.adit-jv.com>,
+        <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: [PATCH v23 04/28] x86/cpufeatures: Introduce X86_FEATURE_CET and setup functions
-Date:   Tue, 16 Mar 2021 08:10:30 -0700
-Message-Id: <20210316151054.5405-5-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210316151054.5405-1-yu-cheng.yu@intel.com>
-References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Jiafei Pan <Jiafei.Pan@nxp.com>,
+        Romain Perier <romain.perier@gmail.com>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        Dirk Behme <dirk.behme@de.bosch.com>,
+        Eugeniu Rosca <roscaeugeniu@gmail.com>
+Subject: Re: [PATCH] softirq: Be more verbose on t->state BUG()
+Message-ID: <YFDKZ5Ukwy/j8Xk3@lxhi-065.adit-jv.com>
+References: <20210315154421.11463-1-erosca@de.adit-jv.com>
+ <87k0q7186h.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <87k0q7186h.fsf@nanos.tec.linutronix.de>
+X-Originating-IP: [10.72.94.12]
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a software-defined X86_FEATURE_CET, which indicates either Shadow
-Stack or Indirect Branch Tracking (or both) is present.  Also introduce
-related cpu init/setup functions.
+Hello Thomas,
 
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- arch/x86/include/asm/cpufeatures.h          |  2 +-
- arch/x86/include/asm/disabled-features.h    |  5 ++++-
- arch/x86/include/uapi/asm/processor-flags.h |  2 ++
- arch/x86/kernel/cpu/common.c                | 14 ++++++++++++++
- arch/x86/kernel/cpu/intel.c                 |  3 +++
- 5 files changed, 24 insertions(+), 2 deletions(-)
+On Tue, Mar 16, 2021 at 03:31:50PM +0100, Thomas Gleixner wrote:
+> On Mon, Mar 15 2021 at 16:44, Eugeniu Rosca wrote:
+> > From: Dirk Behme <dirk.behme@de.bosch.com>
+> >
+> > In case this BUG() is hit, it helps debugging a lot to get an idea
+> > what tasklet is the root cause. So, be slightly more verbose here.
+> >
+> > Signed-off-by: Dirk Behme <dirk.behme@de.bosch.com>
+> > Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+> > ---
+> >  kernel/softirq.c | 8 ++++++--
+> >  1 file changed, 6 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/kernel/softirq.c b/kernel/softirq.c
+> > index 9908ec4a9bfe..a6b602ad48d6 100644
+> > --- a/kernel/softirq.c
+> > +++ b/kernel/softirq.c
+> > @@ -550,9 +550,13 @@ static void tasklet_action_common(struct softirq_action *a,
+> >  
+> >  		if (tasklet_trylock(t)) {
+> >  			if (!atomic_read(&t->count)) {
+> > -				if (!test_and_clear_bit(TASKLET_STATE_SCHED,
+> > -							&t->state))
+> > +				if (!test_and_clear_bit(TASKLET_STATE_SCHED, &t->state)) {
+> > +					if (t->use_callback)
+> > +						pr_emerg("tasklet failed, cb: %pS\n", t->callback);
+> > +					else
+> > +						pr_emerg("tasklet failed, func: %pS\n", t->func);
+> >  					BUG();
+> > +				}
+> >  				if (t->use_callback)
+> >  					t->callback(t);
+> >  				else
+> 
+> This belongs into unreadable land and actually the BUG() should just be
+> replaced by a WARN_ONCE(). Something like the below. Hmm?
 
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index bf861fc89fef..d771e62677de 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -108,7 +108,7 @@
- #define X86_FEATURE_EXTD_APICID		( 3*32+26) /* Extended APICID (8 bits) */
- #define X86_FEATURE_AMD_DCM		( 3*32+27) /* AMD multi-node processor */
- #define X86_FEATURE_APERFMPERF		( 3*32+28) /* P-State hardware coordination feedback capability (APERF/MPERF MSRs) */
--/* free					( 3*32+29) */
-+#define X86_FEATURE_CET			( 3*32+29) /* Control-flow enforcement */
- #define X86_FEATURE_NONSTOP_TSC_S3	( 3*32+30) /* TSC doesn't stop in S3 state */
- #define X86_FEATURE_TSC_KNOWN_FREQ	( 3*32+31) /* TSC has known frequency */
- 
-diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
-index 914b353fe75c..b9a73b882cf9 100644
---- a/arch/x86/include/asm/disabled-features.h
-+++ b/arch/x86/include/asm/disabled-features.h
-@@ -71,9 +71,11 @@
- #ifdef CONFIG_X86_CET
- #define DISABLE_SHSTK	0
- #define DISABLE_IBT	0
-+#define DISABLE_CET	0
- #else
- #define DISABLE_SHSTK	(1 << (X86_FEATURE_SHSTK & 31))
- #define DISABLE_IBT	(1 << (X86_FEATURE_IBT & 31))
-+#define DISABLE_CET	(1 << (X86_FEATURE_CET & 31))
- #endif
- 
- /*
-@@ -82,7 +84,8 @@
- #define DISABLED_MASK0	(DISABLE_VME)
- #define DISABLED_MASK1	0
- #define DISABLED_MASK2	0
--#define DISABLED_MASK3	(DISABLE_CYRIX_ARR|DISABLE_CENTAUR_MCR|DISABLE_K6_MTRR)
-+#define DISABLED_MASK3	(DISABLE_CYRIX_ARR|DISABLE_CENTAUR_MCR|DISABLE_K6_MTRR| \
-+			 DISABLE_CET)
- #define DISABLED_MASK4	(DISABLE_PCID)
- #define DISABLED_MASK5	0
- #define DISABLED_MASK6	0
-diff --git a/arch/x86/include/uapi/asm/processor-flags.h b/arch/x86/include/uapi/asm/processor-flags.h
-index bcba3c643e63..a8df907e8017 100644
---- a/arch/x86/include/uapi/asm/processor-flags.h
-+++ b/arch/x86/include/uapi/asm/processor-flags.h
-@@ -130,6 +130,8 @@
- #define X86_CR4_SMAP		_BITUL(X86_CR4_SMAP_BIT)
- #define X86_CR4_PKE_BIT		22 /* enable Protection Keys support */
- #define X86_CR4_PKE		_BITUL(X86_CR4_PKE_BIT)
-+#define X86_CR4_CET_BIT		23 /* enable Control-flow Enforcement */
-+#define X86_CR4_CET		_BITUL(X86_CR4_CET_BIT)
- 
- /*
-  * x86-64 Task Priority Register, CR8
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index ab640abe26b6..6bd07727089e 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -510,6 +510,14 @@ static __init int setup_disable_pku(char *arg)
- __setup("nopku", setup_disable_pku);
- #endif /* CONFIG_X86_64 */
- 
-+static __always_inline void setup_cet(struct cpuinfo_x86 *c)
-+{
-+	if (!cpu_feature_enabled(X86_FEATURE_CET))
-+		return;
-+
-+	cr4_set_bits(X86_CR4_CET);
-+}
-+
- /*
-  * Some CPU features depend on higher CPUID levels, which may not always
-  * be available due to CPUID level capping or broken virtualization
-@@ -1255,6 +1263,11 @@ static void __init cpu_parse_early_param(void)
- 	if (cmdline_find_option_bool(boot_command_line, "noxsaves"))
- 		setup_clear_cpu_cap(X86_FEATURE_XSAVES);
- 
-+	if (cmdline_find_option_bool(boot_command_line, "no_user_shstk"))
-+		setup_clear_cpu_cap(X86_FEATURE_SHSTK);
-+	if (cmdline_find_option_bool(boot_command_line, "no_user_ibt"))
-+		setup_clear_cpu_cap(X86_FEATURE_IBT);
-+
- 	arglen = cmdline_find_option(boot_command_line, "clearcpuid", arg, sizeof(arg));
- 	if (arglen <= 0)
- 		return;
-@@ -1594,6 +1607,7 @@ static void identify_cpu(struct cpuinfo_x86 *c)
- 
- 	x86_init_rdrand(c);
- 	setup_pku(c);
-+	setup_cet(c);
- 
- 	/*
- 	 * Clear/Set all flags overridden by options, need do it
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index 0e422a544835..2e11d9555e9b 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -334,6 +334,9 @@ static void early_init_intel(struct cpuinfo_x86 *c)
- 
- static void bsp_init_intel(struct cpuinfo_x86 *c)
- {
-+	if (cpu_has(c, X86_FEATURE_SHSTK) || cpu_has(c, X86_FEATURE_IBT))
-+		setup_force_cpu_cap(X86_FEATURE_CET);
-+
- 	resctrl_cpu_detect(c);
- }
- 
+Many thanks for the quick and constructive reply.
+
+If no other comments in the next days, I will resubmit your proposal as
+v2, marked with 'Suggested-by: Thomas Gleixner <tglx@linutronix.de>'.
+
+Alternatively, feel free to author the patch and submit it with us in Cc.
+
+Thanks again.
+
 -- 
-2.21.0
-
+Best regards,
+Eugeniu Rosca
