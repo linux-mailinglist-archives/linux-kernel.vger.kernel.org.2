@@ -2,158 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5612D33D4BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECD233D4E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:31:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234783AbhCPNUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:20:34 -0400
-Received: from mail-dm6nam12on2073.outbound.protection.outlook.com ([40.107.243.73]:40865
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229585AbhCPNUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:20:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B5bDAmBAeTmiS4JIzP14syL/Uyk6U8+A0Oz43Ul0flWGU0bFscdQjxlXv+pXclbpnVZKiTcvZoe105fX7h8GKeEEhur7yZdz5RCzIewI0/oUiO5VjfwL3iq+p7EzCk6qBLTCCLCCz/vh/rDqp6akeitYFcygNFomPXAz40mkOvLyN3F94zTSQwWXmBIkSOP2QgD1ONGArAZz0wlf1e/I7JzduWSlZuWuHG952HokGiBoRy3HMFYs3njS4hlbYAapAu7LmLjUTJiWyQvyL3xU+09m5+33oSgDDx6JRgzYKJft1ACLCOJ1MEmbUMgB/HeO/4sbIAwaH13FqWMB91Gb0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ht7mVhSpdJD0e130KyXZW/poy1BYv2e3T+jXudAhPcQ=;
- b=h+nSnpV4+r0+WI9f/GUe+Uxgoa/frOhCEmOPr3lGsoCwkSr+LP0ofIkptAnnpUlnMzcfxPns4U/RIciAOHEp+mg8Quaq2i9q+mXMQMOs/ojWWmg1UgEetUpvEB191zFMar0TBJeenCSSJuoj53XuNTXgIfsAmBu3P5ZaMbEJ+w0dasKaa2SlJUZ+D0tI5oJM//SfgprLdcV8L7kjrQwdHPAlQAI5M9OoBJkbgdgCH61gY8ZTc+DBgZYADfG4RytkgBnKI6yHDkiwwl4wcTV1g/27Qku6GsGZqXqZw+SQoTNKyaJ/LG/ejOlDlQqei17HyPma+InL4OSTpOLtGSydSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ht7mVhSpdJD0e130KyXZW/poy1BYv2e3T+jXudAhPcQ=;
- b=iRxv9TymZZzKYYq1ePihFxvPka1ma/LrH3r0B/gfu/xa/gLLk4sVOIuivQBgZD/3q33N2u8496gZQebhb/xugti9AC/15drwy+7GMVzvFF2JEo01Fcm/7TsWucbZQq1eoe6vYb3ONMniytDdr+f+8Jv78p9ynkKJ2L17NNP+AK8=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23) by MW3PR12MB4540.namprd12.prod.outlook.com
- (2603:10b6:303:52::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Tue, 16 Mar
- 2021 13:20:10 +0000
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::c977:4e9:66b8:a7e]) by MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::c977:4e9:66b8:a7e%11]) with mapi id 15.20.3933.032; Tue, 16 Mar 2021
- 13:20:10 +0000
-Subject: Re: [PATCH v3] ASoC: amd: add support for rt5682 codec in machine
- driver
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        broonie@kernel.org, alsa-devel@alsa-project.org
-Cc:     Alexander.Deucher@amd.com, Murali-krishna.Vemuri@amd.com,
-        Virendra-Pratap.Arya@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1615824133-21553-1-git-send-email-Vijendar.Mukunda@amd.com>
- <efa02319-2abf-4fb9-efec-13b6279f3d78@linux.intel.com>
-From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Message-ID: <87f41e68-3158-38f8-5e84-270ab184691b@amd.com>
-Date:   Tue, 16 Mar 2021 19:07:09 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <efa02319-2abf-4fb9-efec-13b6279f3d78@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [165.204.159.242]
-X-ClientProxiedBy: BMXPR01CA0034.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:c::20) To MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23)
+        id S235068AbhCPNbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:31:18 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60140 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229931AbhCPNaz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 09:30:55 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12GD40Bi025232;
+        Tue, 16 Mar 2021 09:30:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=qFlyR3IDy3IYTKuc0uPMVh14k8s633tZpdmCYezt/aQ=;
+ b=Ddgt0ZJ9HU6qgjZr+ToipsQ3vVz0sAzRFqnkO0tgGq01Z6ZNNaFEr92OKmSsrY/5Txpp
+ gOAaQx9Loq7y5KEg/gk7FFk35x7NrZqjoQ68mE5/sUl2L6SV8S8nrI8lIKUFxpz252ue
+ E6+Ephq+xmJKGx0Sf+LEc8Kd2cuEggirGSZwDrvMCzWt0+QHLBb+zDWyTH4j0gPPAYSg
+ owxcTKWlTJb5WKARmnAGBk7VYX2aIoUVCtioO5oOCP9ljfcQe9ojyEKXS2LBL4EY9pHU
+ Yv7NnbcGIaMmvm4egwgIJbspXgNgN72+qvaks3Er4Cunqa1vrhWjVnlhyVJpX/nks2/p Tg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37aum043qu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Mar 2021 09:30:50 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12GD4GR0026458;
+        Tue, 16 Mar 2021 09:30:49 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37aum043pt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Mar 2021 09:30:49 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12GDTmKb003038;
+        Tue, 16 Mar 2021 13:30:47 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04fra.de.ibm.com with ESMTP id 378n189grw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Mar 2021 13:30:47 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12GDUjkr42533366
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Mar 2021 13:30:45 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E997C42045;
+        Tue, 16 Mar 2021 13:30:44 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 32B894203F;
+        Tue, 16 Mar 2021 13:30:43 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.165.64])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 16 Mar 2021 13:30:43 +0000 (GMT)
+Date:   Tue, 16 Mar 2021 15:30:40 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Jarvis Jiang <jarvis.w.jiang@gmail.com>
+Cc:     davem@davemloft.net, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, cchen50@lenovo.com, mpearson@lenovo.com
+Subject: Re: [PATCH] Add MHI bus support and driver for T99W175 5G modem
+Message-ID: <YFCzAPkpqO7qslax@linux.ibm.com>
+References: <20210316124237.3469-1-jarvis.w.jiang@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.252.93.39] (165.204.159.242) by BMXPR01CA0034.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:c::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31 via Frontend Transport; Tue, 16 Mar 2021 13:20:06 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 919788b7-e9ea-46fd-76e6-08d8e87e3962
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4540:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW3PR12MB45409ACDBF02DCF8E7348DC5976B9@MW3PR12MB4540.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QRDLh3UebfxK5qGSTgL8FMgYJXeoQXG7jsu86DF4mcQ9zZkbjsWS9VECQDBnDX/ncdtFRqX7Y5iVug9oSc8dxC/nwQBZuM+JVylRh0AdGODr0d/vyzZQW4OhbYXEDVHtfzkr0c9mXOQlH13n2hLrHNZEMNKa2bnBRKGHP95TgvYa4J62zEoUzvVHRqzgvlRIarGueELOxAv0vnG9dPe1wJzqk1RHCWHK/iJgcGnXP4cLRfhCx+W1o06DApxjNL8V+RF6E+dLA+S9xOyZ+0DPiw96/mCGge0saVfNM020+d8Ghbk5J3smDdbCKUjbYN2P94gkh84suljvAIgrkYMrrcnecoceZ/rvUgHJy4WWBvkG7JQCS28W1PS/lZ0KKKd0dPXnzMWEehhsybFD3iqR0xhMPgCb29UB0Sa0v1Y+6RFCVu2TPpN6IFnz5a283L58XolUv6Sop17UGHFsVJp01oy137/m0j/8eOwXvlyeLHDg30XA73G56WbuDdQm0fOm6NlCSby4XiuQ4s7ObOwlLiCeaZJ9NHpPFISlZohMG9N8wv0bWe+HxjaXFHSY+u26taymB0Z2uHQGLtCeVwNqrplk4KpkDq+3AgMveQAHNqPRfJFm8TSBOyzeat+hK8Xf59ie2kGfXuXeQP9VNncyOg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(396003)(346002)(136003)(83380400001)(52116002)(53546011)(31686004)(66556008)(316002)(36756003)(16576012)(8676002)(8936002)(31696002)(5660300002)(66946007)(6486002)(86362001)(478600001)(4326008)(26005)(2616005)(7416002)(186003)(956004)(16526019)(66476007)(2906002)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?T0R5NUhHcmtCOWRBcyt5dEU5S2Z0eHhEWDFObmxyZTNWa3FJSktrYzV2OVFy?=
- =?utf-8?B?cldPTGY5TFhVUjYyUVZVVmoxN2R6emp6TkdPSk02cEQ5MitaeENXMW5Ja1la?=
- =?utf-8?B?TVduVjV3MkV3MHdSaE1zaGpSbWU5d2pubWxjZUZpT3U1UjM0a0lUQXczcEVI?=
- =?utf-8?B?YlVxb1J1M0MrQ090aTh4TEVZeGpmYUt1UEEyK1BzU3JDMzZIdU5sNjdNZjRv?=
- =?utf-8?B?WWEvY3hyQWJpM0MyeFN0SjJKK25wSTNMcmgxM1ZrSnVKMWIvN1dEUUZGd05t?=
- =?utf-8?B?OUJ6YXRjRHNvc3lzbkthckswRG4xS29NZ3hwdEtCOWo3bVpuRys0WnpKVjZB?=
- =?utf-8?B?d3IrUE5qUElaL0VnNTQxRmhaSmN6akUvQjgzUjhZZEROUkNQME42Q1IrNXl4?=
- =?utf-8?B?VjYyYnQzY3BhbG1GM3lCQ1I1c2lzeEhrYmd2L3g4Y0pucWhzKzRPVWx1aS9y?=
- =?utf-8?B?dEExblg0RmxPVXVuenNoQVU0TWovOEhBMGVvYXZhQk9xNHFCdlgrbEVaVjJD?=
- =?utf-8?B?ZTFnSTlYaitFcUxaUkttbEREdXJwZXE4VFpNeGljTkZYY2JUM2ZiRXZSTGdz?=
- =?utf-8?B?WUVyclp6YUcvd3B1enpEb2dxTzkrc0JBMmxvUUVta1BicXZLREdmWlhYZ2hl?=
- =?utf-8?B?M003UWk3V1JTL0IrRnRSb01XVjdkK1hQQVVrUUp2K0ZEem1yeThLMU9IdEdw?=
- =?utf-8?B?b0UvVzIzWFc1ZE5nNE5Ub1hXeVF5MVJHK3FDWmJOai9EOUxJODRIZUNmSm1H?=
- =?utf-8?B?S09ZNDJ2aXpWcWgraklIZHIzQXlWWnpXOGJITWZjL1VDUVpRV0xzRGlxZUYw?=
- =?utf-8?B?aWYvQ051OGtnUGdBS1doa3p4VjJDRkhqbUJxODY4Qmw1SGNRakFoQ0gyK1p4?=
- =?utf-8?B?TGNoK2VNZFMzNkJFZjBESERPZkdLZEphV3Znc1R3TU90YkViY3htVG10Mkxu?=
- =?utf-8?B?QXVxMklQYVFvcXdpNU9DY0lydnNETUNta0ZscG5SSUpMY2c5KzJjUDZLNHp5?=
- =?utf-8?B?eXJpQUllTzhaSFJ5TzMrNnBDRHd2THNBb2twR2pxK3Uzb1MxRU56S2pUcHJT?=
- =?utf-8?B?a3VJSmZSNFVwbmdYWFgxaHg0T1lyWVdqcVFnVlpWNjVSTm9vbFZjS3orcnJU?=
- =?utf-8?B?cUh6a2twUy8zZTRCL290ZDNKMm9paWFweUJBMWpaVHZQb1RxYVU5TGNrdWs2?=
- =?utf-8?B?WVRycUV0cEpXYVNHcTlmWW9MckxNd1M4aUtPeFV3SVZKY21kemJTTEJaS0hi?=
- =?utf-8?B?WGZxWmtNWlJpbG1FRzJZNDFid3RlZCtjdzdkUTV1elY5VHh1bzJmdi82VDZL?=
- =?utf-8?B?V2NEOUZjOTE0eCsvUlFJczJQNjJOeHBoQk8xWGh1Y2Y2NW9vaXRHdXNBV3pl?=
- =?utf-8?B?bE9EdEtrcUdqOWFVc2hvN3d2a05FL0l5S1FqbjUvWEx5UmdwV1FPdUNYRW1I?=
- =?utf-8?B?ZmFzNlRKTVdsaHZHQkFZQnJMUnZpci9JcGJlaGZjcFNtTWZSMG1xbVd1M0Nw?=
- =?utf-8?B?TmtKcnpZdGZ2NVhIL0lQcjhWTlpVWlNDcmFiRGhqYVYySWp3ek9PcnhIRkdF?=
- =?utf-8?B?U0FabnN0dHhib2JnT2xMYStYWTNKWXB5VHRDVXJrYUwwRGlTbS9HQUxzckI4?=
- =?utf-8?B?VnBvYnIvN3hJaW9FcG1EdTY3RW9Lb0VoSmYzMDBSSUJSVmFaRzJEaWFrQXVO?=
- =?utf-8?B?QmRNNExjbk5WRzRCSzdRa3JBY1d1RTBNMlNRSWd3cm9lbjNSRHhqSE5lMm4w?=
- =?utf-8?Q?jMTPBOoFXpSgZdOhfapZHiy/ZjoVQt91fmLTufF?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 919788b7-e9ea-46fd-76e6-08d8e87e3962
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Mar 2021 13:20:10.1861
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FhmrJqeYv0UDqz/y49LR6ZlnteJsVesl+QJuTuXSmsWGJFsx4qlJUsH1Fez3XpvhUUWGOHz/7Q0C9VQT9Bfiig==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4540
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316124237.3469-1-jarvis.w.jiang@gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-16_04:2021-03-16,2021-03-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ lowpriorityscore=0 adultscore=0 clxscore=1011 bulkscore=0 phishscore=0
+ impostorscore=0 priorityscore=1501 mlxlogscore=999 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103160089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 15/03/21 9:30 pm, Pierre-Louis Bossart wrote:
+On Tue, Mar 16, 2021 at 05:42:37AM -0700, Jarvis Jiang wrote:
+> T99W175 using MBIM or RmNet over PCIe interface with
+> MHI protocol support.
+> Ported from IPQ8072 platform, including MHI, MBIM, RmNet
 > 
->> +static int rt5682_clk_enable(struct snd_pcm_substream *substream)
->> +{
->> +    int ret;
->> +    struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
->> +
->> +    /*
->> +     * Set wclk to 48000 because the rate constraint of this driver is
->> +     * 48000. ADAU7002 spec: "The ADAU7002 requires a BCLK rate that is
->> +     * minimum of 64x the LRCLK sample rate." RT5682 is the only clk
->> +     * source so for all codecs we have to limit bclk to 64X lrclk.
->> +     */
->> +    clk_set_rate(rt5682_dai_wclk, 48000);
->> +    clk_set_rate(rt5682_dai_bclk, 48000 * 64);
->> +    ret = clk_prepare_enable(rt5682_dai_bclk);
->> +    if (ret < 0) {
->> +        dev_err(rtd->dev, "can't enable master clock %d\n", ret);
->> +        return ret;
->> +    }
->> +    return ret;
->> +}
+> Supporting below PCI devices:
 > 
-> Out of curiosity, is there a reason why you use clk_prepare_enable() for 
-> the bclk but not for the wclk?These changes were shared by codec vendor as an initial patch.
-We should use clk_prepare_enable() for wclk not for bclk.
-We will update and share the new patch.
+>   PCI_DEVICE(0x17cb, 0x0300)
+>   PCI_DEVICE(0x17cb, 0x0301)
+>   PCI_DEVICE(0x17cb, 0x0302)
+>   PCI_DEVICE(0x17cb, 0x0303)
+>   PCI_DEVICE(0x17cb, 0x0304)
+>   PCI_DEVICE(0x17cb, 0x0305)
+>   PCI_DEVICE(0x17cb, 0x0306)
+>   PCI_DEVICE(0x105b, 0xe0ab)
+>   PCI_DEVICE(0x105b, 0xe0b0)
+>   PCI_DEVICE(0x105b, 0xe0b1)
+>   PCI_DEVICE(0x105b, 0xe0b3)
+>   PCI_DEVICE(0x1269, 0x00b3)
+>   PCI_DEVICE(0x03f0, 0x0a6c)
+> 
+> Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
+> ---
+>  MAINTAINERS                                   |   16 +
+>  drivers/bus/Kconfig                           |    1 +
+>  drivers/bus/Makefile                          |    3 +
+>  drivers/bus/mhi/Kconfig                       |   27 +
+>  drivers/bus/mhi/Makefile                      |    9 +
+>  drivers/bus/mhi/controllers/Kconfig           |   13 +
+>  drivers/bus/mhi/controllers/Makefile          |    2 +
+>  drivers/bus/mhi/controllers/mhi_arch_qti.c    |  275 ++
+>  drivers/bus/mhi/controllers/mhi_qti.c         |  970 +++++++
+>  drivers/bus/mhi/controllers/mhi_qti.h         |   44 +
+>  drivers/bus/mhi/core/Makefile                 |    2 +
+>  drivers/bus/mhi/core/mhi_boot.c               |  590 +++++
+>  drivers/bus/mhi/core/mhi_dtr.c                |  223 ++
+>  drivers/bus/mhi/core/mhi_init.c               | 1901 ++++++++++++++
+>  drivers/bus/mhi/core/mhi_internal.h           |  826 ++++++
+>  drivers/bus/mhi/core/mhi_main.c               | 2261 +++++++++++++++++
+>  drivers/bus/mhi/core/mhi_pm.c                 | 1158 +++++++++
+>  drivers/bus/mhi/devices/Kconfig               |   43 +
+>  drivers/bus/mhi/devices/Makefile              |    3 +
+>  drivers/bus/mhi/devices/mhi_netdev.c          | 1830 +++++++++++++
+>  drivers/bus/mhi/devices/mhi_satellite.c       | 1155 +++++++++
+>  drivers/bus/mhi/devices/mhi_uci.c             |  802 ++++++
+>  drivers/net/ethernet/qualcomm/rmnet/Makefile  |    2 +-
+>  .../ethernet/qualcomm/rmnet/rmnet_config.c    |  131 +-
+>  .../ethernet/qualcomm/rmnet/rmnet_config.h    |  110 +-
+>  .../qualcomm/rmnet/rmnet_descriptor.c         | 1225 +++++++++
+>  .../qualcomm/rmnet/rmnet_descriptor.h         |  152 ++
+>  .../ethernet/qualcomm/rmnet/rmnet_handlers.c  |  321 ++-
+>  .../ethernet/qualcomm/rmnet/rmnet_handlers.h  |   27 +-
+>  .../net/ethernet/qualcomm/rmnet/rmnet_map.h   |  238 +-
+>  .../qualcomm/rmnet/rmnet_map_command.c        |  304 ++-
+>  .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 1029 +++++++-
+>  .../ethernet/qualcomm/rmnet/rmnet_private.h   |   19 +-
+>  .../net/ethernet/qualcomm/rmnet/rmnet_trace.h |  250 ++
+>  .../net/ethernet/qualcomm/rmnet/rmnet_vnd.c   |  101 +-
+>  .../net/ethernet/qualcomm/rmnet/rmnet_vnd.h   |   16 +-
+>  include/linux/ipc_logging.h                   |  291 +++
+>  include/linux/mhi.h                           |  743 ++++++
+>  include/linux/mod_devicetable.h               |   22 +-
+>  include/linux/msm-bus.h                       |  214 ++
+>  include/linux/msm_pcie.h                      |  173 ++
+>  include/linux/netdevice.h                     |   18 +-
+>  include/uapi/linux/if_link.h                  |    4 +
+>  include/uapi/linux/msm_rmnet.h                |  170 ++
+>  mm/memblock.c                                 |    2 +
+>  net/core/dev.c                                |  192 +-
+>  46 files changed, 17700 insertions(+), 208 deletions(-)
 
+This is way too much for a single patch. Please split your changes into a
+series of patches, with one logical change per patch. For instance, you can
+start with adding skeleton infrastructure for MHI, then add particular
+implementations for it, and on top you can add device drivers that rely on
+MHI core.
 
-
+-- 
+Sincerely yours,
+Mike.
