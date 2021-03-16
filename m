@@ -2,87 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E99C33D12F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:53:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C111733D130
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:54:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236383AbhCPJxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:53:24 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:53216 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236376AbhCPJxU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:53:20 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 0CF2A1C0B8B; Tue, 16 Mar 2021 10:53:18 +0100 (CET)
-Date:   Tue, 16 Mar 2021 10:53:17 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 4.19 012/120] tcp: annotate tp->write_seq lockless reads
-Message-ID: <20210316095317.GC12946@amd>
-References: <20210315135720.002213995@linuxfoundation.org>
- <20210315135720.418426545@linuxfoundation.org>
- <20210316095049.GB12946@amd>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="wxDdMuZNg1r63Hyj"
-Content-Disposition: inline
-In-Reply-To: <20210316095049.GB12946@amd>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        id S236393AbhCPJx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:53:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236387AbhCPJxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 05:53:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8596465014;
+        Tue, 16 Mar 2021 09:53:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615888418;
+        bh=GSd93vK/PX+RELBJUAGNOA2GGk8bK957V7g6x/JkYN8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ktruNk3JQNr8Asa3YoQBhtWV+ggfmv8STLoXyAsB3ptcSlY2O0g+QybedGGMBR8ua
+         h7bRfcP5kbvyVbSglRMLpQYiPFNT6G19LYKTZCBlPGsSltA+XvoyQN2nhDgluyB/xV
+         zhxqA+2q2jM0H2b10xNTmyA2AkBdLyQtzBcYlTw+U2qdilYnQpkhp+YEeN7WK0bO6u
+         0XoDK1zcXwg7iiyIWGFu6QvMTMg7UsQ64q+Rfx0z1krADUDiTuBzWAu2PP06hOn4rM
+         sxliERmB9hMslfnt53w+X6CKjPCkLfgibeBPm2dxeeHm7p8Dy9WR0WhHAah+Fdu+eJ
+         Lgv2r/kVtyJDQ==
+Date:   Tue, 16 Mar 2021 18:53:34 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masanari Iida <standby24x7@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tools:bootconfig: Fix a typo in scripts/xbc.sh
+Message-Id: <20210316185334.69a89cc41d814a01dd2519a2@kernel.org>
+In-Reply-To: <20210315122019.1743393-1-standby24x7@gmail.com>
+References: <20210315122019.1743393-1-standby24x7@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 15 Mar 2021 21:20:19 +0900
+Masanari Iida <standby24x7@gmail.com> wrote:
 
---wxDdMuZNg1r63Hyj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> This patch fixes a spelling typo in tools/bootconfig/scripts/xbc.sh
+> 
+> Signed-off-by: Masanari Iida <standby24x7@gmail.com>
 
-Hi!
+Oops, good catch!
 
-> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >=20
-> > From: Eric Dumazet <edumazet@google.com>
->=20
-> Dup.
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-Aha, sorry, crossed mails. Still I wonder if hiding assignment into
-macro is good:
+Thanks!
 
-> > --- a/net/ipv4/tcp_minisocks.c
-> > +++ b/net/ipv4/tcp_minisocks.c
-> > @@ -510,7 +510,7 @@ struct sock *tcp_create_openreq_child(co
-> >  	newtp->app_limited =3D ~0U;
-> > =20
-> >  	tcp_init_xmit_timers(newsk);
-> > -	newtp->write_seq =3D newtp->pushed_seq =3D treq->snt_isn + 1;
-> > +	WRITE_ONCE(newtp->write_seq, newtp->pushed_seq =3D treq->snt_isn + 1);
->=20
-> Would it be better to do assignment to pushed_seq outside of
-> WRITE_ONCE macro? This is ... "interesting".
+> ---
+>  tools/bootconfig/scripts/xbc.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/bootconfig/scripts/xbc.sh b/tools/bootconfig/scripts/xbc.sh
+> index b8c84e654556..808510f6c168 100644
+> --- a/tools/bootconfig/scripts/xbc.sh
+> +++ b/tools/bootconfig/scripts/xbc.sh
+> @@ -9,7 +9,7 @@ BOOTCONFIG=${BOOTCONFIG:=$XBC_BASEDIR/../bootconfig}
+>  if [ ! -x "$BOOTCONFIG" ]; then
+>  	BOOTCONFIG=`which bootconfig`
+>  	if [ -z "$BOOTCONFIG" ]; then
+> -		echo "Erorr: bootconfig command is not found" 1>&2
+> +		echo "Error: bootconfig command is not found" 1>&2
+>  		exit 1
+>  	fi
+>  fi
+> -- 
+> 2.25.0
+> 
 
-Best regards,
-								Pavel
 
-
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---wxDdMuZNg1r63Hyj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmBQgA0ACgkQMOfwapXb+vK3yQCeLJ+76EJmgJy2npJfJUko//zp
-ujEAnj3DgTZ/NUoQ/Zf94PQ/UJBlZxvO
-=aDh+
------END PGP SIGNATURE-----
-
---wxDdMuZNg1r63Hyj--
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
