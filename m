@@ -2,178 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C77D33DC9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:34:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7D433DCA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236992AbhCPSeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:34:03 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:44182 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236941AbhCPSd2 (ORCPT
+        id S240048AbhCPSfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240044AbhCPSeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:33:28 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 884551F44E05
-Subject: Re: next/master bisection: baseline.login on kontron-kbox-a-230-ls
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sahil Malhotra <sahil.malhotra@nxp.com>
-References: <6050bf47.1c69fb81.59c4d.85f2@mx.google.com>
-Cc:     "kernelci-results@groups.io" <kernelci-results@groups.io>,
-        Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org,
-        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <38c31f5c-4400-eed7-d561-8f45e261ab01@collabora.com>
-Date:   Tue, 16 Mar 2021 18:33:22 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 16 Mar 2021 14:34:36 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D6AC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:34:35 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id w203-20020a1c49d40000b029010c706d0642so4292956wma.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:34:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qx/er8fuhccr8BguU05iUFAp9XjYjtQPScA2OOEYemk=;
+        b=W7nFX+hDSdd/0Gd1vIUso7G7eQ2pBaifnzTW/HFzXSIobmLXzfjj7sBaepS+Mkg+Hb
+         OT+KJAc2fDar+48mhpa/WZv0NyOFbiB5H5YKGpWzRy8K2cDsLPjqhdtt7UWUglVWEglY
+         aVhn/VAYwMVPreT1Y6+JncD4cpE+duPK1wIiZgiZrsbRKCwMIE1jOjacEIOr22F/POCR
+         gMjd6NYaoJHFMZ0INDAfFWYEmh/XA3svo9gmma7FChxozGmF5HfmF+/Aye2l94pIPxwe
+         ssH49uIMzv4J4jSsfFfXY4wGEyDdF70zxf2ffdlzzhGsBI9mM1Y24dfAjbtgAqJ2Zepw
+         2SpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qx/er8fuhccr8BguU05iUFAp9XjYjtQPScA2OOEYemk=;
+        b=YwEZh8iu/LHg/my80gYDTn/8W6vaskvSF6ju/uTGhUdWuHGRKHZYnDSi7LIXCmUXcu
+         bgOxncVaHY7SPz5kq9ajWIDDqHH/2sMsZMU5ngatciZg74xL1tGh38WrLahZDYHe8rn+
+         bg3MIjEcVnTjUO9GQKGhI/elbinqtUuap+wofKVcPaIQYENs2ut8mGuVZq2auNbnvghC
+         LiwmC3S83nKjAQ3OHhjHINFpX/cPYIJlzwTbu2R1j/YuH4ENlbe3r5exvzNgZ+xjvVeU
+         qCQLX0Cp42aF7hnu4ufoD/O5M/oUzASzbDhmbjDFjQ46qtwYfIyO5reqzi+A27/QwoVx
+         Tqqw==
+X-Gm-Message-State: AOAM531ig1r/rgOAMSp1/MOgjZFJngREnUYXAGXvN4fcInXAbn/EyvFy
+        dehVUZlMG3rSVs3cd5Uw43RQARK2P78th7VQFhLDdg==
+X-Google-Smtp-Source: ABdhPJylBjVfBvI+iCaqW6tcxwEnN7c+Dq/ObtuOvFB2WXu/no+yKNO/+zVI4piVVjd5YppwHKqgMTP7U6RJTLceCWM=
+X-Received: by 2002:a1c:3d46:: with SMTP id k67mr197595wma.188.1615919674161;
+ Tue, 16 Mar 2021 11:34:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6050bf47.1c69fb81.59c4d.85f2@mx.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1614778938-93092-1-git-send-email-kan.liang@linux.intel.com>
+ <YD/cnnuh/AHOL8hV@hirez.programming.kicks-ass.net> <9484ab6e-a6e5-bb72-106f-ed904e50fc0c@linux.intel.com>
+ <YD/vy2RnkWZYiJHP@hirez.programming.kicks-ass.net> <CAM9d7cjbSGC_mac0CuU3xnDN=bkJ81W+FLn5XSvxbaHb5HL6Fw@mail.gmail.com>
+ <c0fa23c1-bd49-8b98-a61b-5b34ae6a7a78@linux.intel.com>
+In-Reply-To: <c0fa23c1-bd49-8b98-a61b-5b34ae6a7a78@linux.intel.com>
+From:   Stephane Eranian <eranian@google.com>
+Date:   Tue, 16 Mar 2021 11:34:22 -0700
+Message-ID: <CABPqkBTdv-3ZFYy+=K3yYL1ccniC7TNHwv4TGysrxSHuR=_TOA@mail.gmail.com>
+Subject: Re: [PATCH] Revert "perf/x86: Allow zero PEBS status with only single
+ active event"
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        "stable # 4 . 5" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sahil,
+On Tue, Mar 16, 2021 at 5:28 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>
+>
+>
+> On 3/16/2021 3:22 AM, Namhyung Kim wrote:
+> > Hi Peter and Kan,
+> >
+> > On Thu, Mar 4, 2021 at 5:22 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >>
+> >> On Wed, Mar 03, 2021 at 02:53:00PM -0500, Liang, Kan wrote:
+> >>> On 3/3/2021 1:59 PM, Peter Zijlstra wrote:
+> >>>> On Wed, Mar 03, 2021 at 05:42:18AM -0800, kan.liang@linux.intel.com wrote:
+> >>
+> >>>>> +++ b/arch/x86/events/intel/ds.c
+> >>>>> @@ -2000,18 +2000,6 @@ static void intel_pmu_drain_pebs_nhm(struct pt_regs *iregs, struct perf_sample_d
+> >>>>>                            continue;
+> >>>>>                    }
+> >>>>> -         /*
+> >>>>> -          * On some CPUs the PEBS status can be zero when PEBS is
+> >>>>> -          * racing with clearing of GLOBAL_STATUS.
+> >>>>> -          *
+> >>>>> -          * Normally we would drop that record, but in the
+> >>>>> -          * case when there is only a single active PEBS event
+> >>>>> -          * we can assume it's for that event.
+> >>>>> -          */
+> >>>>> -         if (!pebs_status && cpuc->pebs_enabled &&
+> >>>>> -                 !(cpuc->pebs_enabled & (cpuc->pebs_enabled-1)))
+> >>>>> -                 pebs_status = cpuc->pebs_enabled;
+> >>>>
+> >>>> Wouldn't something like:
+> >>>>
+> >>>>                      pebs_status = p->status = cpus->pebs_enabled;
+> >>>>
+> >>>
+> >>> I didn't consider it as a potential solution in this patch because I don't
+> >>> think it's a proper way that SW modifies the buffer, which is supposed to be
+> >>> manipulated by the HW.
+> >>
+> >> Right, but then HW was supposed to write sane values and it doesn't do
+> >> that either ;-)
+> >>
+> >>> It's just a personal preference. I don't see any issue here. We may try it.
+> >>
+> >> So I mostly agree with you, but I think it's a shame to unsupport such
+> >> chips, HSW is still a plenty useable chip today.
+> >
+> > I got a similar issue on ivybridge machines which caused kernel crash.
+> > My case it's related to the branch stack with PEBS events but I think
+> > it's the same issue.  And I can confirm that the above approach of
+> > updating p->status fixed the problem.
+> >
+> > I've talked to Stephane about this, and he wants to make it more
+> > robust when we see stale (or invalid) PEBS records.  I'll send the
+> > patch soon.
+> >
+>
+> Hi Namhyung,
+>
+> In case you didn't see it, I've already submitted a patch to fix the
+> issue last Friday.
+> https://lore.kernel.org/lkml/1615555298-140216-1-git-send-email-kan.liang@linux.intel.com/
+> But if you have a more robust proposal, please feel free to submit it.
+>
+This fixes the problem on the older systems. The other problem we
+identified related to the
+PEBS sample processing code is that you can end up with uninitialized
+perf_sample_data
+struct passed to perf_event_overflow():
 
-Please see the bisection report below about a boot failure on
-kontron-kbox-a-230-ls on linux-next.
+ setup_pebs_fixed_sample_data(pebs, data)
+{
+        if (!pebs)
+                return;
+        perf_sample_data_init(data);  <<< must be moved before the if (!pebs)
+        ...
+}
 
-Reports aren't automatically sent to the public while we're
-trialing new bisection features on kernelci.org but this one
-looks valid.
+__intel_pmu_pebs_event(pebs, data)
+{
+        setup_sample(pebs, data)
+        perf_event_overflow(data);
+        ...
+}
 
-The kernel is hitting this issue:
+If there is any other reason to get a pebs = NULL in fix_sample_data()
+or adaptive_sample_data(), then
+you must call perf_sample_data_init(data) BEFORE you return otherwise
+you end up in perf_event_overflow()
+with uninitialized data and you may die as follows:
 
-[    5.326403] kernel BUG at arch/arm64/kernel/traps.c:406!
+[<ffffffff812f283d>] ? perf_output_copy+0x4d/0xb0
+[<ffffffff812e0fb1>] perf_output_sample+0x561/0xab0
+[<ffffffff812e0952>] ? __perf_event_header__init_id+0x112/0x130
+[<ffffffff812e1be1>] ? perf_prepare_sample+0x1b1/0x730
+[<ffffffff812e21b9>] perf_event_output_forward+0x59/0x80
+[<ffffffff812e0634>] ? perf_event_update_userpage+0xf4/0x110
+[<ffffffff812e4468>] perf_event_overflow+0x88/0xe0
+[<ffffffff810175b8>] __intel_pmu_pebs_event+0x328/0x380
 
-Full log:
+This all stems from get_next_pebs_record_by_bit()  potentially
+returning NULL but the NULL is not handled correctly
+by the callers. This is what I'd like to see cleaned up in
+__intel_pmu_pebs_event() to  avoid future problems.
 
-  https://storage.kernelci.org/next/master/next-20210316/arm64/defconfig/gcc-8/lab-kontron/baseline-kontron-kbox-a-230-ls.html
+I have a patch that moves the perf_sample_data_init() and I can send
+it to LKML but it would also need the cleanup
+for get_next_pebs_record_by_bit() to be complete.
 
-The issue can be reproduced with a plain arm64 defconfig, and
-doesn't seem to be impacting other platforms on kernelci.org.
-More details can be found here:
-
-  https://kernelci.org/test/case/id/605057a041fc669ff0addccc/
-
-Please let us know if you need any help debugging the issue on
-this platform or to try a fix.
-
-Best wishes,
-Guillaume
-
-
-On 16/03/2021 14:23, KernelCI bot wrote:
-> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-> * This automated bisection report was sent to you on the basis  *
-> * that you may be involved with the breaking commit it has      *
-> * found.  No manual investigation has been done to verify it,   *
-> * and the root cause of the problem may be somewhere else.      *
-> *                                                               *
-> * If you do send a fix, please include this trailer:            *
-> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
-> *                                                               *
-> * Hope this helps!                                              *
-> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-> 
-> next/master bisection: baseline.login on kontron-kbox-a-230-ls
-> 
-> Summary:
->   Start:      0f4b0bb396f6 Add linux-next specific files for 20210316
->   Plain log:  https://storage.kernelci.org/next/master/next-20210316/arm64/defconfig+CONFIG_ARM64_64K_PAGES=y/clang-11/lab-kontron/baseline-kontron-kbox-a-230-ls.txt
->   HTML log:   https://storage.kernelci.org/next/master/next-20210316/arm64/defconfig+CONFIG_ARM64_64K_PAGES=y/clang-11/lab-kontron/baseline-kontron-kbox-a-230-ls.html
->   Result:     48787485f8de arm64: dts: ls1028a: enable optee node
-> 
-> Checks:
->   revert:     PASS
->   verify:     PASS
-> 
-> Parameters:
->   Tree:       next
->   URL:        https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
->   Branch:     master
->   Target:     kontron-kbox-a-230-ls
->   CPU arch:   arm64
->   Lab:        lab-kontron
->   Compiler:   clang-11
->   Config:     defconfig+CONFIG_ARM64_64K_PAGES=y
->   Test case:  baseline.login
-> 
-> Breaking commit found:
-> 
-> -------------------------------------------------------------------------------
-> commit 48787485f8de44915016d4583e898b62bb2d5753
-> Author: Sahil Malhotra <sahil.malhotra@nxp.com>
-> Date:   Fri Mar 5 14:03:51 2021 +0530
-> 
->     arm64: dts: ls1028a: enable optee node
->     
->     optee node was disabled in ls1028a.dtsi, enabling it by default.
->     
->     Signed-off-by: Sahil Malhotra <sahil.malhotra@nxp.com>
->     Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> index c1f2f402ad53..3d96c6beb7e2 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> @@ -95,7 +95,6 @@
->  		optee {
->  			compatible = "linaro,optee-tz";
->  			method = "smc";
-> -			status = "disabled";
->  		};
->  	};
-> -------------------------------------------------------------------------------
-> 
-> 
-> Git bisection log:
-> 
-> -------------------------------------------------------------------------------
-> git bisect start
-> # good: [1e28eed17697bcf343c6743f0028cc3b5dd88bf0] Linux 5.12-rc3
-> git bisect good 1e28eed17697bcf343c6743f0028cc3b5dd88bf0
-> # bad: [0f4b0bb396f6f424a7b074d00cb71f5966edcb8a] Add linux-next specific files for 20210316
-> git bisect bad 0f4b0bb396f6f424a7b074d00cb71f5966edcb8a
-> # bad: [edd84c42baeffe66740143a04f24588fded94241] Merge remote-tracking branch 'drm-misc/for-linux-next'
-> git bisect bad edd84c42baeffe66740143a04f24588fded94241
-> # bad: [a76f62d56da82bee1a4c35dd6375a8fdd57eca4e] Merge remote-tracking branch 'cel/for-next'
-> git bisect bad a76f62d56da82bee1a4c35dd6375a8fdd57eca4e
-> # bad: [38872831aa5ec902b861d14e641cfeea97ca913a] Merge remote-tracking branch 'qcom/for-next'
-> git bisect bad 38872831aa5ec902b861d14e641cfeea97ca913a
-> # good: [287bccb5b7f13f88cae2e14f49b0572a3bd43a1c] Merge remote-tracking branch 'dma-mapping/for-next'
-> git bisect good 287bccb5b7f13f88cae2e14f49b0572a3bd43a1c
-> # bad: [b56586a8bfe0fb60a81b804cba49deb0d93e6623] Merge remote-tracking branch 'imx-mxs/for-next'
-> git bisect bad b56586a8bfe0fb60a81b804cba49deb0d93e6623
-> # bad: [8b5531915cf217d205ca813a10fc79987fb528fb] Merge branch 'imx/defconfig' into for-next
-> git bisect bad 8b5531915cf217d205ca813a10fc79987fb528fb
-> # bad: [3a28e405ca096d692df2dd4b61f179b6fbed0da3] arm64: dts: imx8mm: Reorder flexspi clock-names entry
-> git bisect bad 3a28e405ca096d692df2dd4b61f179b6fbed0da3
-> # good: [21480ffda0da794c26a206203c28620ecd5765bb] arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini C.TOUCH 2.0
-> git bisect good 21480ffda0da794c26a206203c28620ecd5765bb
-> # good: [9c5d3663dc1a0f8bb7c14b0b694d63dad2e9b964] arm64: dts: imx8: add adma lpcg clocks
-> git bisect good 9c5d3663dc1a0f8bb7c14b0b694d63dad2e9b964
-> # good: [7add607242d1178b11d8d9a1e9207b73d9058224] arm64: dts: imx8qm: add dma ss support
-> git bisect good 7add607242d1178b11d8d9a1e9207b73d9058224
-> # bad: [48787485f8de44915016d4583e898b62bb2d5753] arm64: dts: ls1028a: enable optee node
-> git bisect bad 48787485f8de44915016d4583e898b62bb2d5753
-> # good: [fb054e1356c0943f70b9b6db542175cd728bd3f6] arm64: dts: imx: add imx8qm mek support
-> git bisect good fb054e1356c0943f70b9b6db542175cd728bd3f6
-> # first bad commit: [48787485f8de44915016d4583e898b62bb2d5753] arm64: dts: ls1028a: enable optee node
-> -------------------------------------------------------------------------------
-> 
-> 
-> -=-=-=-=-=-=-=-=-=-=-=-
-> Groups.io Links: You receive all messages sent to this group.
-> View/Reply Online (#8517): https://groups.io/g/kernelci-results/message/8517
-> Mute This Topic: https://groups.io/mt/81377141/924702
-> Group Owner: kernelci-results+owner@groups.io
-> Unsubscribe: https://groups.io/g/kernelci-results/unsub [guillaume.tucker@collabora.com]
-> -=-=-=-=-=-=-=-=-=-=-=-
-> 
-> 
-
+Thanks.
