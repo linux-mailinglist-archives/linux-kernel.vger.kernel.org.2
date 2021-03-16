@@ -2,63 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529AD33D134
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E99C33D12F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:53:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236416AbhCPJym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231733AbhCPJyY (ORCPT
+        id S236383AbhCPJxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:53:24 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:53216 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236376AbhCPJxU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:54:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85DD0C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:54:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=zEZzqY9NQ1ZwI2e1VnLaWuqATKDABTKkoLPBbQWJzsY=; b=iBfZgHYRuZBm8dVqeDo2tOxY9x
-        fO/nZGER7uniuvOkhig8YAqsphkGbhN7S0X+TgA3a5SQ0NpvN2Bic17eIvkQQk/jTt9BKF5eUe6/D
-        0x2ULHsrPe95AJWiqjhX+NjRY6gOsASBNvArN7OX+3JtW89j8kXw2U0ZQzzfWUNddEK58SjtA0hzm
-        PjT4yOngz3nzySwhvOcwFz6xExb4rSuw1xwi9EupsJb71R166RhesF1cvt3xTKCVs2QlIGHp1zpQC
-        f3LJ104mE7eSjDsYOGIwUGreNLkJ8CyqCEucHsWbHV4uaUqsQXVoON7EVTt42LMp4Atj20tsUPbQp
-        sruoUhHg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lM6Nv-001m4l-30; Tue, 16 Mar 2021 09:53:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D0C23301324;
-        Tue, 16 Mar 2021 10:52:56 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9A09020435CF9; Tue, 16 Mar 2021 10:52:56 +0100 (CET)
-Date:   Tue, 16 Mar 2021 10:52:56 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
-Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
-        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
-        linux-kernel@vger.kernel.org, mgorman@suse.de, mingo@redhat.com,
-        odin@uged.al, odin@ugedal.com, pauld@redhead.com, pjt@google.com,
-        rostedt@goodmis.org, shanpeic@linux.alibaba.com, tj@kernel.org,
-        vincent.guittot@linaro.org, xiyou.wangcong@gmail.com
-Subject: Re: [PATCH v4 2/4] sched/fair: Make CFS bandwidth controller
- burstable
-Message-ID: <YFB/+MltddlbxHLT@hirez.programming.kicks-ass.net>
-References: <20210316044931.39733-1-changhuaixin@linux.alibaba.com>
- <20210316044931.39733-3-changhuaixin@linux.alibaba.com>
+        Tue, 16 Mar 2021 05:53:20 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 0CF2A1C0B8B; Tue, 16 Mar 2021 10:53:18 +0100 (CET)
+Date:   Tue, 16 Mar 2021 10:53:17 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 4.19 012/120] tcp: annotate tp->write_seq lockless reads
+Message-ID: <20210316095317.GC12946@amd>
+References: <20210315135720.002213995@linuxfoundation.org>
+ <20210315135720.418426545@linuxfoundation.org>
+ <20210316095049.GB12946@amd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="wxDdMuZNg1r63Hyj"
 Content-Disposition: inline
-In-Reply-To: <20210316044931.39733-3-changhuaixin@linux.alibaba.com>
+In-Reply-To: <20210316095049.GB12946@amd>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--wxDdMuZNg1r63Hyj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I can't make sense of patch 1 and 2 independent of one another. Why the
-split?
+Hi!
 
+> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >=20
+> > From: Eric Dumazet <edumazet@google.com>
+>=20
+> Dup.
+
+Aha, sorry, crossed mails. Still I wonder if hiding assignment into
+macro is good:
+
+> > --- a/net/ipv4/tcp_minisocks.c
+> > +++ b/net/ipv4/tcp_minisocks.c
+> > @@ -510,7 +510,7 @@ struct sock *tcp_create_openreq_child(co
+> >  	newtp->app_limited =3D ~0U;
+> > =20
+> >  	tcp_init_xmit_timers(newsk);
+> > -	newtp->write_seq =3D newtp->pushed_seq =3D treq->snt_isn + 1;
+> > +	WRITE_ONCE(newtp->write_seq, newtp->pushed_seq =3D treq->snt_isn + 1);
+>=20
+> Would it be better to do assignment to pushed_seq outside of
+> WRITE_ONCE macro? This is ... "interesting".
+
+Best regards,
+								Pavel
+
+
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--wxDdMuZNg1r63Hyj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBQgA0ACgkQMOfwapXb+vK3yQCeLJ+76EJmgJy2npJfJUko//zp
+ujEAnj3DgTZ/NUoQ/Zf94PQ/UJBlZxvO
+=aDh+
+-----END PGP SIGNATURE-----
+
+--wxDdMuZNg1r63Hyj--
