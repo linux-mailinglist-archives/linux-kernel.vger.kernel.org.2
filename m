@@ -2,83 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B395C33DCEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:52:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B48233DCF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240199AbhCPSwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240193AbhCPSwD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:52:03 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8E8C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:52:01 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id n16so64101578lfb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:52:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=QhWyRq+OToNSnhrg5OoFeTMYJ+2XonhBSVkXP0Xaljg=;
-        b=A7KlKmiIQoVTt4r+LmiZ4fRDbLbwF7yq3FZyWg6AZ/drPSuQzxnfi4y2YuTnVIDxdw
-         AEEbGcxiI1Lva1KRNcIfT4v3EmlZhDCrMsIIkrGuaSDNFGSqJPy/okZsX2LjMfCjPBu/
-         +LeoIgk0uIrrABuwT77Johv0AvQ/yR4aXk6wECHqytVvWwi1L1xYE82zeZJVZcxxbHDB
-         gTWT3X7I85taemL+UorPuvMe+wt9ddK+zmXEhA0ALyhu+QiMqCaL1AIpGlbI2iHzE1T3
-         akJGBdtZIIIcw/QkkM/mAhc9dqn3VWZNDKKKFnywJJzqNMstVRe7HDvwPowND9mIL06g
-         jznQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QhWyRq+OToNSnhrg5OoFeTMYJ+2XonhBSVkXP0Xaljg=;
-        b=ET+24xm35RM3RR9JIgRboTIUk/BeWUcCsp3t/uLkyVxp3u76ifLDM5JjVd1M6UunWG
-         yuPWM1aRYbEVSnNa5LtZ+/y5XdS9f2x0/dMmQozUdNWPhcT1VRif4xRYkscX/lCNaVan
-         0kbsIvC7rM1UOh7cTRQCENVpoxEltDv8JC9b/ZT5WBs9fri0O2zsrBQ345xosbbUFp7p
-         805j+DXjf4Rnzn/NGVPJyebAYYCDEH5NUHF75MfZSbK5+nkG5aKe8BTacI5uHj/AZiJZ
-         vH6YiMknqzmM2gCz5VQ6WfdcDXEMllNnr+qjRa9AaM78nLoms/n0zqljHQRUECiRMr2+
-         GXrQ==
-X-Gm-Message-State: AOAM533wEYNZKGUDLsSgdxQ2oLPrU4fUu9S3AUf1KTthKQVcH0ECVk7L
-        gBVqBDEJeSFQnLOTFHGMxrw=
-X-Google-Smtp-Source: ABdhPJyrrIExeTp1CjuwqGxdIAKPUva37fwtFkAElp2FsmsAwnbW+/E6LfV7nLXkNCEGEMcxJCAgWg==
-X-Received: by 2002:a19:6751:: with SMTP id e17mr129592lfj.20.1615920720225;
-        Tue, 16 Mar 2021 11:52:00 -0700 (PDT)
-Received: from grain.localdomain ([5.18.171.94])
-        by smtp.gmail.com with ESMTPSA id y24sm3119161lfj.54.2021.03.16.11.51.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 11:51:59 -0700 (PDT)
-Received: by grain.localdomain (Postfix, from userid 1000)
-        id E7F385601CE; Tue, 16 Mar 2021 21:51:57 +0300 (MSK)
-Date:   Tue, 16 Mar 2021 21:51:57 +0300
-From:   Cyrill Gorcunov <gorcunov@gmail.com>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: auxv stuff (Re: [PATCH] prctl: fix PR_SET_MM_AUXV kernel stack
- leak)
-Message-ID: <YFD+TZyMioO00n5i@grain>
-References: <YE53QiJuxsCUeoiu@localhost.localdomain>
- <CAHk-=wgMm=PG3uxfpmYpkX-GaDAR09pej=t3nD6hHDNCYCyaRQ@mail.gmail.com>
- <YE734MgE40jTv9zJ@localhost.localdomain>
- <YE8B52ET790Y/6WO@grain>
- <YFD9+0BEvMtwMqVi@localhost.localdomain>
+        id S240207AbhCPSyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:54:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240200AbhCPSxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 14:53:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D0856514B;
+        Tue, 16 Mar 2021 18:53:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615920803;
+        bh=SdgPXfd1GX0HxBpnuqAYxYxIA045/B5izyywjEHSB2I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oQQg9sAJMRzTz/mGOagHrIUD2U+4+dxDyV0stlTFPVZ80RKnA9wo0nRo3Ny1i51RP
+         QDbpQjA+VIC1dshlU4TbV2j79GqWGc7OaQasxwizX844yHrJ2QIUYgZqxouNFTkHTg
+         cR+YtKMvCfcJ1BKxZIGysOuWZfIo6Cna5Mr3NbHMSrXgD4xNDf2V+DdS8WUodh1LuP
+         4ueef99fiueVcFJzmH4BwV3ASixsQwE43K8HMRO2MWJoZ7RVe7hJgxg2fG0AbNU3ou
+         3wNAMAGwah7FmqdP8zzDQmB3rtHplYjXCFziVhODWnY4GF8z3XOSkcPLqpwFVoY0GD
+         hFwsiAUOPCsyQ==
+Received: by mail-oo1-f42.google.com with SMTP id n12-20020a4ad12c0000b02901b63e7bc1b4so4406565oor.5;
+        Tue, 16 Mar 2021 11:53:23 -0700 (PDT)
+X-Gm-Message-State: AOAM533O3ojaF195i8dK8TPCURqtQXn7wzvAUSl8diSAPF+Kars+e++c
+        jkPbJqJlvZ5DkHtL4jtRYV51Ty9u6uTPWRpKu8M=
+X-Google-Smtp-Source: ABdhPJzn0i4w3u0huXHq7pnjViu24Wv1YVxCUfI1amFd+69q4KthvnTtLggH8Vm3k4PUwrTQY3HpO0X6NmVh7Tt27Ow=
+X-Received: by 2002:a4a:8ed2:: with SMTP id c18mr197825ool.66.1615920802789;
+ Tue, 16 Mar 2021 11:53:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFD9+0BEvMtwMqVi@localhost.localdomain>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+References: <20210125153057.3623715-1-balsini@android.com> <20210125153057.3623715-3-balsini@android.com>
+In-Reply-To: <20210125153057.3623715-3-balsini@android.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 16 Mar 2021 19:53:06 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2VDH9-reuj8QTkFzbaU9XTUEOWFCmCVg1Snb6RjD6mHw@mail.gmail.com>
+Message-ID: <CAK8P3a2VDH9-reuj8QTkFzbaU9XTUEOWFCmCVg1Snb6RjD6mHw@mail.gmail.com>
+Subject: Re: [PATCH RESEND V12 2/8] fuse: 32-bit user space ioctl compat for
+ fuse device
+To:     Alessio Balsini <balsini@android.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Akilesh Kailash <akailash@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Antonio SJ Musumeci <trapexit@spawn.link>,
+        David Anderson <dvander@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Peng Tao <bergwolf@gmail.com>,
+        Stefano Duo <duostefano93@gmail.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
+        fuse-devel@lists.sourceforge.net,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 09:50:35PM +0300, Alexey Dobriyan wrote:
-> > > 
-> > > There is another (non-security) one. Compat 32-bit process will report
-> > > 2 longs too many:
-> > 
-> > Good catch! Alexey, should I address it? Or you have fixed it already?
-> 
-> I didn't and I don't know how frankly.
-> Something I've noticed during more important auxv rewrite.
+On Mon, Jan 25, 2021 at 4:48 PM Alessio Balsini <balsini@android.com> wrote:
+>
+> With a 64-bit kernel build the FUSE device cannot handle ioctl requests
+> coming from 32-bit user space.
+> This is due to the ioctl command translation that generates different
+> command identifiers that thus cannot be used for direct comparisons
+> without proper manipulation.
+>
+> Explicitly extract type and number from the ioctl command to enable
+> 32-bit user space compatibility on 64-bit kernel builds.
+>
+> Signed-off-by: Alessio Balsini <balsini@android.com>
 
-OK. I will then. Thanks!
+I saw this commit go into the mainline kernel, and I'm worried that this
+doesn't do what the description says. Since the argument is a 'uint32_t',
+it is the same on both 32-bit and 64-bit user space, and the patch won't
+make any difference for compat mode, as long as that is using the normal
+uapi headers.
+
+If there is any user space that has a different definition of
+FUSE_DEV_IOC_CLONE, that may now successfully call
+this ioctl command, but the kernel will now also accept any other
+command code that has the same type and number, but an
+arbitrary direction or size argument.
+
+I think this should be changed back to specifically allow the
+command code(s) that are actually used and nothing else.
+
+       Arnd
