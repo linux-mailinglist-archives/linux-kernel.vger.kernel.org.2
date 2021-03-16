@@ -2,132 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E3033DC68
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5272733DC6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:19:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239889AbhCPSSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:18:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26375 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239967AbhCPSR2 (ORCPT
+        id S239924AbhCPSSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:18:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239934AbhCPSSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:17:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615918648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HAM1TwwmGz08tYIJFcJigdtdBF6Phn1evgG1Tccbtsg=;
-        b=Q9rG+KP3BWgvwJNzCa2Gkqkoev4xmPpVZjhN9k3yvEwnaRFyOVUK8IYjWULg1dJ/vnotN3
-        d7ar81t/92VruQgLLbcIMHOUKyzrobRD2gnAuv7Lfz4l/7nZyQQWtLBvNf2vhP/m/cxE4t
-        qt/K7jPgO18W7K6+roHjZ8LsUAr3MRw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-527-QoVFzhEFMwyyetXQP_FxeQ-1; Tue, 16 Mar 2021 14:17:26 -0400
-X-MC-Unique: QoVFzhEFMwyyetXQP_FxeQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 03632107ACCA;
-        Tue, 16 Mar 2021 18:17:25 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-114-57.rdu2.redhat.com [10.10.114.57])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 892EC5D9C0;
-        Tue, 16 Mar 2021 18:17:18 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 1B80E220BCF; Tue, 16 Mar 2021 14:17:18 -0400 (EDT)
-Date:   Tue, 16 Mar 2021 14:17:18 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, virtio-fs-list <virtio-fs@redhat.com>
-Subject: Re: [PATCH] virtiofs: fix memory leak in virtio_fs_probe()
-Message-ID: <20210316181718.GG270529@redhat.com>
-References: <20210316170234.21736-1-lhenriques@suse.de>
+        Tue, 16 Mar 2021 14:18:15 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 794F8C061762;
+        Tue, 16 Mar 2021 11:18:14 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 16so16741275pgo.13;
+        Tue, 16 Mar 2021 11:18:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+8MVe2A9jN3BC6k8+aXGfRVSRAYyFjS7b+watDuerM0=;
+        b=HmiBulnAWNW/H37EVUjin9X0OUhr9H5V8DHIuveuavs/cREL5pU1aaQ8L6rDhCYP3T
+         0Kh5zPokkX2/pHOsZdAYqEQgEQriIeUclAA2MLUKfZPimoDpDN8h+Zt4VaQtetDmAhjz
+         RaEXHkUOCwG9tGaB1cLljl2/QFth308IlNoaLfVer4yZKcbqCdopUZW6AArdvIHPXEkK
+         fzErrDh3vkmotH3OBDaTGpwsp8t4WissnUyrhTgWamlTR+jmLZe0rQ3ONVjT+/OFBPL5
+         2VwbCHVZJe0PrJc+pU218NttR7UjyU/eRGh6jnGxrD8VicaqtkP7kG5bxKyAq2P/reye
+         HO/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=+8MVe2A9jN3BC6k8+aXGfRVSRAYyFjS7b+watDuerM0=;
+        b=VUuWeLxbTnTZAnfDidDYwT+kfqvIVScBYgSMJQyR7dHkvZzX2VgLnyhhjBZg2DoOMw
+         qMYVkx/yglyATIz5SbDlL6qgbewYL7kFt8O3pwj6eP+pi8Jk9WyJZRCAjzQ1K+sFffQC
+         4JObqM6VLadb2h7l7obxmAu7NMYUbSuvgIJuO/VrI7Ef6Asnkl/fWRlIJGgJP4FJOzHQ
+         GAAKAvTVW9VQ5HEs9dzABbNKIhoHml0quBWOjjJoQOvkU+t2sEwb4y79qRt28VraUJ3c
+         2qb+CFhiapdn+T9UUwLCyN22SDlUM4sZrCdz6f7ePUJ9EyZMCZGNdt9BZc+MaHjcQ2Ts
+         z2YQ==
+X-Gm-Message-State: AOAM53038t7CNqwHowyeL1Ov0fWQQmhb/LTJQL0MAC2RPuA8+P9gFFBf
+        /7W0Ki3XsWnu1ZXYo4u9zvm3RLTiqTY=
+X-Google-Smtp-Source: ABdhPJwYWrBl9apAnMlDOvtNBc5VCTtwgU0L3d7R3y1lbuKWeRTkPGSjSDKyxFbZwlQT/lOWTpA8qw==
+X-Received: by 2002:aa7:9a94:0:b029:1f4:ec7:fd2 with SMTP id w20-20020aa79a940000b02901f40ec70fd2mr618109pfi.48.1615918693992;
+        Tue, 16 Mar 2021 11:18:13 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:4160:1d48:d43e:7513])
+        by smtp.gmail.com with ESMTPSA id u2sm17192423pfn.79.2021.03.16.11.18.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 11:18:12 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Tue, 16 Mar 2021 11:18:11 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the akpm-current tree
+Message-ID: <YFD2Y++LQHmWMx68@google.com>
+References: <20210315163522.589bc67a@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210316170234.21736-1-lhenriques@suse.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210315163522.589bc67a@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 05:02:34PM +0000, Luis Henriques wrote:
-> When accidentally passing twice the same tag to qemu, kmemleak ended up
-> reporting a memory leak in virtiofs.  Also, looking at the log I saw the
-> following error (that's when I realised the duplicated tag):
+On Mon, Mar 15, 2021 at 04:35:22PM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
->   virtiofs: probe of virtio5 failed with error -17
+> After merging the akpm-current tree, today's linux-next build (htmldocs)
+> produced this warning:
 > 
-> Here's the kmemleak log for reference:
+> Documentation/ABI/testing/sysfs-kernel-mm-cma:2: WARNING: Inline interpreted text or phrase reference start-string without end-string.
 > 
-> unreferenced object 0xffff888103d47800 (size 1024):
->   comm "systemd-udevd", pid 118, jiffies 4294893780 (age 18.340s)
->   hex dump (first 32 bytes):
->     00 00 00 00 ad 4e ad de ff ff ff ff 00 00 00 00  .....N..........
->     ff ff ff ff ff ff ff ff 80 90 02 a0 ff ff ff ff  ................
->   backtrace:
->     [<000000000ebb87c1>] virtio_fs_probe+0x171/0x7ae [virtiofs]
->     [<00000000f8aca419>] virtio_dev_probe+0x15f/0x210
->     [<000000004d6baf3c>] really_probe+0xea/0x430
->     [<00000000a6ceeac8>] device_driver_attach+0xa8/0xb0
->     [<00000000196f47a7>] __driver_attach+0x98/0x140
->     [<000000000b20601d>] bus_for_each_dev+0x7b/0xc0
->     [<00000000399c7b7f>] bus_add_driver+0x11b/0x1f0
->     [<0000000032b09ba7>] driver_register+0x8f/0xe0
->     [<00000000cdd55998>] 0xffffffffa002c013
->     [<000000000ea196a2>] do_one_initcall+0x64/0x2e0
->     [<0000000008f727ce>] do_init_module+0x5c/0x260
->     [<000000003cdedab6>] __do_sys_finit_module+0xb5/0x120
->     [<00000000ad2f48c6>] do_syscall_64+0x33/0x40
->     [<00000000809526b5>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> Introduced by commit
 > 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Luis Henriques <lhenriques@suse.de>
-
-Hi Luis,
-
-Thanks for the report and the fix. So looks like leak is happening
-because we are not doing kfree(fs->vqs) in error path.
-
-> ---
->  fs/fuse/virtio_fs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>   439d477342a3 ("mm: cma: support sysfs")
 > 
-> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
-> index 8868ac31a3c0..4e6ef9f24e84 100644
-> --- a/fs/fuse/virtio_fs.c
-> +++ b/fs/fuse/virtio_fs.c
-> @@ -899,7 +899,7 @@ static int virtio_fs_probe(struct virtio_device *vdev)
->  
->  out:
->  	vdev->priv = NULL;
-> -	kfree(fs);
-> +	virtio_fs_put(fs);
 
-[ CC virtio-fs list ]
-
-fs object is not fully formed. So calling virtio_fs_put() is little odd.
-I will expect it to be called if somebody takes a reference using _get()
-or in the final virtio_fs_remove() when creation reference should go
-away.
-
-How about open coding it and free fs->vqs explicitly. Something like
-as follows.
-
-@@ -896,7 +896,7 @@ static int virtio_fs_probe(struct virtio
- out_vqs:
-        vdev->config->reset(vdev);
-        virtio_fs_cleanup_vqs(vdev, fs);
--
-+       kfree(fs->vqs);
- out:
-        vdev->priv = NULL;
-        kfree(fs);
-
-Thanks
-Vivek
-
+Hmm, I don't get it what happened here. Was it false-positive?
