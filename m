@@ -2,181 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE46633D253
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65CCF33D25B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:02:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237028AbhCPLAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:00:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54452 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232693AbhCPK7R (ORCPT
+        id S236935AbhCPLB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:01:58 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:56157 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237002AbhCPLBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 06:59:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615892357;
+        Tue, 16 Mar 2021 07:01:23 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 71D4122238;
+        Tue, 16 Mar 2021 12:01:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1615892481;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=MUrSzI65k7H/2OLfiC0X6pkWi+7Dy5V74c3Lo4KknlY=;
-        b=geVcPxfCry3HYbaWwpEGD/4zps5m6VzESUpmTsbreQXdFUYrsoZZ/Rz7qd1lgYjv2G6yQG
-        XqqgQzmaU/J/FI3tlmDCeATYsfH3cSO0JHwHDvuRSnWq6NNaCNa4CefL5yKLISxqaOtc9x
-        1rqO6ZrmWg59nU3Dlm83PC8u93KjcDk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-372-dBph1urGMY6NK_a46hKiiQ-1; Tue, 16 Mar 2021 06:59:15 -0400
-X-MC-Unique: dBph1urGMY6NK_a46hKiiQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 27444100C61A;
-        Tue, 16 Mar 2021 10:59:13 +0000 (UTC)
-Received: from starship (unknown [10.35.207.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0946260C0F;
-        Tue, 16 Mar 2021 10:59:08 +0000 (UTC)
-Message-ID: <bede3450413a7c5e7e55b19a47c8f079edaa55a2.camel@redhat.com>
-Subject: Re: [PATCH 2/3] KVM: x86: guest debug: don't inject interrupts
- while single stepping
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
-Date:   Tue, 16 Mar 2021 12:59:07 +0200
-In-Reply-To: <1259724f-1bdb-6229-2772-3192f6d17a4a@siemens.com>
-References: <20210315221020.661693-1-mlevitsk@redhat.com>
-         <20210315221020.661693-3-mlevitsk@redhat.com> <YE/vtYYwMakERzTS@google.com>
-         <1259724f-1bdb-6229-2772-3192f6d17a4a@siemens.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        bh=WBKI5HqpKGD/CDbdtKBZ6BpnHmwmYnhqrgtw6eCylnw=;
+        b=Zb02Wr8c797LE+nu+kZ+tgi/grN+PLND2cXVZzd3yA+U4f2w+ErJFzbRfoftlJINrUWz/8
+        9RarBnws8jtYLnxE81djCexekw5vMVCo/5YBljGEF+mlWq3DDgnYmfAok0GCVB+Cfa1UGh
+        K/JUZ2vNG6H5zo8JvqVAn6EyaLtsfhk=
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Date:   Tue, 16 Mar 2021 12:01:21 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [RFC PATCH 1/3] mtd: spi-nor: sfdp: remember sfdp_size
+In-Reply-To: <20210316104223.42tdob3uwjxc5vdz@ti.com>
+References: <20210312190548.6954-1-michael@walle.cc>
+ <20210312190548.6954-2-michael@walle.cc>
+ <20210316104223.42tdob3uwjxc5vdz@ti.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <065642fa4d4282d3d16e1d4f4c176ce8@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-03-16 at 10:16 +0100, Jan Kiszka wrote:
-> On 16.03.21 00:37, Sean Christopherson wrote:
-> > On Tue, Mar 16, 2021, Maxim Levitsky wrote:
-> > > This change greatly helps with two issues:
-> > > 
-> > > * Resuming from a breakpoint is much more reliable.
-> > > 
-> > >   When resuming execution from a breakpoint, with interrupts enabled, more often
-> > >   than not, KVM would inject an interrupt and make the CPU jump immediately to
-> > >   the interrupt handler and eventually return to the breakpoint, to trigger it
-> > >   again.
-> > > 
-> > >   From the user point of view it looks like the CPU never executed a
-> > >   single instruction and in some cases that can even prevent forward progress,
-> > >   for example, when the breakpoint is placed by an automated script
-> > >   (e.g lx-symbols), which does something in response to the breakpoint and then
-> > >   continues the guest automatically.
-> > >   If the script execution takes enough time for another interrupt to arrive,
-> > >   the guest will be stuck on the same breakpoint RIP forever.
-> > > 
-> > > * Normal single stepping is much more predictable, since it won't land the
-> > >   debugger into an interrupt handler, so it is much more usable.
-> > > 
-> > >   (If entry to an interrupt handler is desired, the user can still place a
-> > >   breakpoint at it and resume the guest, which won't activate this workaround
-> > >   and let the gdb still stop at the interrupt handler)
-> > > 
-> > > Since this change is only active when guest is debugged, it won't affect
-> > > KVM running normal 'production' VMs.
-> > > 
-> > > 
-> > > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > > Tested-by: Stefano Garzarella <sgarzare@redhat.com>
-> > > ---
-> > >  arch/x86/kvm/x86.c | 6 ++++++
-> > >  1 file changed, 6 insertions(+)
-> > > 
-> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > > index a9d95f90a0487..b75d990fcf12b 100644
-> > > --- a/arch/x86/kvm/x86.c
-> > > +++ b/arch/x86/kvm/x86.c
-> > > @@ -8458,6 +8458,12 @@ static void inject_pending_event(struct kvm_vcpu *vcpu, bool *req_immediate_exit
-> > >  		can_inject = false;
-> > >  	}
-> > >  
-> > > +	/*
-> > > +	 * Don't inject interrupts while single stepping to make guest debug easier
-> > > +	 */
-> > > +	if (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)
-> > > +		return;
-> > 
-> > Is this something userspace can deal with?  E.g. disable IRQs and/or set NMI
-> > blocking at the start of single-stepping, unwind at the end?  Deviating this far
-> > from architectural behavior will end in tears at some point.
-> > 
+Hi Pratyush,
+
+Am 2021-03-16 11:42, schrieb Pratyush Yadav:
+> On 12/03/21 08:05PM, Michael Walle wrote:
+>> Save the sftp_size in the spi_nor struct so we can use it to dump the
+>> SFDP table without parsing the headers again.
+>> 
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
+>>  drivers/mtd/spi-nor/sfdp.c  | 12 ++++++++++++
+>>  include/linux/mtd/spi-nor.h |  1 +
+>>  2 files changed, 13 insertions(+)
+>> 
+>> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+>> index 25142ec4737b..b1814afefc33 100644
+>> --- a/drivers/mtd/spi-nor/sfdp.c
+>> +++ b/drivers/mtd/spi-nor/sfdp.c
+>> @@ -16,6 +16,7 @@
+>>  	(((p)->parameter_table_pointer[2] << 16) | \
+>>  	 ((p)->parameter_table_pointer[1] <<  8) | \
+>>  	 ((p)->parameter_table_pointer[0] <<  0))
+>> +#define SFDP_PARAM_HEADER_PARAM_LEN(p) ((p)->length * 4)
+>> 
+>>  #define SFDP_BFPT_ID		0xff00	/* Basic Flash Parameter Table */
+>>  #define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
+>> @@ -1263,6 +1264,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+>>  	struct sfdp_parameter_header *param_headers = NULL;
+>>  	struct sfdp_header header;
+>>  	struct device *dev = nor->dev;
+>> +	size_t param_max_offset;
+>>  	size_t psize;
+>>  	int i, err;
+>> 
+>> @@ -1285,6 +1287,9 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+>>  	    bfpt_header->major != SFDP_JESD216_MAJOR)
+>>  		return -EINVAL;
+>> 
+>> +	nor->sfdp_size = SFDP_PARAM_HEADER_PTP(bfpt_header) +
+>> +			 SFDP_PARAM_HEADER_PARAM_LEN(bfpt_header);
+>> +
+>>  	/*
+>>  	 * Allocate memory then read all parameter headers with a single
+>>  	 * Read SFDP command. These parameter headers will actually be 
+>> parsed
+>> @@ -1311,6 +1316,13 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+>>  		}
+>>  	}
+>> 
+>> +	for (i = 0; i < header.nph; i++) {
+>> +		param_header = &param_headers[i];
+>> +		param_max_offset = SFDP_PARAM_HEADER_PTP(param_header) +
+>> +				   SFDP_PARAM_HEADER_PARAM_LEN(param_header);
+>> +		nor->sfdp_size = max(nor->sfdp_size, param_max_offset);
+>> +	}
+>> +
 > 
-> Does this happen to address this suspicious workaround in the kernel?
+> I don't see any mention in the SFDP spec (JESD216D-01) that parameter
+> tables have to be contiguous.
+
+ch. 6.1, fig.10 looks like all the headers come after the initial SFDP
+header. If that wasn't the case, how would you find the headers then?
+
+Also ch. 6.3
+"""All subsequent parameter headers need to be contiguous and may be
+specified..."""
+
+> In fact, it says that "Parameter tables
+> may be located anywhere in the SFDP space. They do not need to
+> immediately follow the parameter headers".
+
+The tables itself, yes, but not the headers for the tables.
+
+> But I guess we can just say
+> the sysfs entry exports the entire SFDP space instead of just the 
+> tables
+> so that is OK.
 > 
->         /*
->          * The kernel doesn't use TF single-step outside of:
->          *
->          *  - Kprobes, consumed through kprobe_debug_handler()
->          *  - KGDB, consumed through notify_debug()
->          *
->          * So if we get here with DR_STEP set, something is wonky.
->          *
->          * A known way to trigger this is through QEMU's GDB stub,
->          * which leaks #DB into the guest and causes IST recursion.
->          */
->         if (WARN_ON_ONCE(dr6 & DR_STEP))
->                 regs->flags &= ~X86_EFLAGS_TF;
+> This patch looks good to me other than the small nitpick that we can
+> merge this loop and the one below that tries to find the latest BFPT
+> version.
+
+btw. I've also added an export for the jedec id and the flash name to
+this patch, which will be included in the next version.
+
+>>  	/*
+>>  	 * Check other parameter headers to get the latest revision of
+>>  	 * the basic flash parameter table.
+>> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+>> index a0d572855444..a58118b8b002 100644
+>> --- a/include/linux/mtd/spi-nor.h
+>> +++ b/include/linux/mtd/spi-nor.h
+>> @@ -404,6 +404,7 @@ struct spi_nor {
+>>  	bool			sst_write_second;
+>>  	u32			flags;
+>>  	enum spi_nor_cmd_ext	cmd_ext_type;
+>> +	size_t			sfdp_size;
 > 
-> (arch/x86/kernel/traps.c, exc_debug_kernel)
+> Documentation for this variable missing.
 > 
-> I wonder why this got merged while no one fixed QEMU/KVM, for years? Oh,
-> yeah, question to myself as well, dancing around broken guest debugging
-> for a long time while trying to fix other issues...
+>> 
+>>  	const struct spi_nor_controller_ops *controller_ops;
+>> 
+>> --
+>> 2.20.1
+>> 
 
-To be honest I didn't see that warning even once, but I can imagine KVM
-leaking #DB due to bugs in that code. That area historically didn't receive
-much attention since it can only be triggered by
-KVM_GET/SET_GUEST_DEBUG which isn't used in production.
-
-The only issue that I on the other hand  did
-see which is mostly gdb fault is that it fails to remove a software breakpoint
-when resuming over it, if that breakpoint's python handler messes up 
-with gdb's symbols, which is what lx-symbols does.
-
-And that despite the fact that lx-symbol doesn't mess with the object
-(that is the kernel) where the breakpoint is defined.
-
-Just adding/removing one symbol file is enough to trigger this issue.
-
-Since lx-symbols already works this around when it reloads all symbols,
-I extended that workaround to happen also when loading/unloading 
-only a single symbol file.
-
-Best regards,
-	Maxim Levitsky
-
-> 
-> Jan
-> 
-> > > +
-> > >  	/*
-> > >  	 * Finally, inject interrupt events.  If an event cannot be injected
-> > >  	 * due to architectural conditions (e.g. IF=0) a window-open exit
-> > > -- 
-> > > 2.26.2
-> > > 
-
-
+-- 
+-michael
