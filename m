@@ -2,120 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CB433CD9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C82033CD9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235706AbhCPFsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235604AbhCPFsD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:48:03 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D5BC06174A;
-        Mon, 15 Mar 2021 22:48:02 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so768075pjq.5;
-        Mon, 15 Mar 2021 22:48:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Y7JniS282f7kpZ2OXZXS7NrcHTFngjSUBwWhD/gNs5E=;
-        b=o8lKTN04BZ94LjuNDIH8DU0oDOV21ta6CbwyNZSvTEdwsvgN9jKLbWAZsuax14aW3c
-         /uG5rk9bVeEjoIz0uHjqghio/y1Rx1JTa5eMe8oARTf0T4OY9OCwgoAe8zPk4UBEV2Nf
-         IWyQYuKcpG/lrFNkdQ9vc0CnRNPJEwdi9C+WR6sI2FAidUr1cEJLvNpPeCwLSXR2Vi5M
-         v//iC/+/uSI4lAUCLyHtOVuWfNHFv/dOIijGF/Di0EXISHHobOW8LMzfBLYatBPuIXbr
-         OI7Cxv5TbXe2/MWZqYUTWv/HWjkapxwXtpHapuKHomAKPeoksB1ptwcQdAYydD+fP5lk
-         o5yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Y7JniS282f7kpZ2OXZXS7NrcHTFngjSUBwWhD/gNs5E=;
-        b=e0f+8lgDEYlMZ9IfbrCfSO0wNaGRFRBCskdkzRabguJW2aKcQKqv/vSyvwhfSxfEV6
-         kr96uAue2TYoPXsujo+p8/FXa4aEoSAWvYvMJvGIUizvlM9OyVpKxu7jOBJrCG7Vc00/
-         MAWrnz4jV5QVVZg1WrnexXy4of6LUKFNRel5TvtJ1tmeJ9be+bzp04eXIQIUpP4J8YIm
-         t+LkHrueBq3B7eiMyCVvqgiUsFLvXQ4NHVuBuXbGmOeIEbz0GNBYXE+7fc0VqtimZ5kb
-         WCdF7VQV/9kIv/lKeLgIfDxnVH0RVo7NbyQssevcvZdn6JHSdvUfoHL1u7mQOolUB4WR
-         ixng==
-X-Gm-Message-State: AOAM533VoOZzXWnaYoGjlM8EbEbs21HglBCIMFUuHr7KHOqE1tEkz7Jn
-        VruVFVgaQ4NSmG1ZryxOpoU=
-X-Google-Smtp-Source: ABdhPJxYZ5T8F98yoGmG9TtJRtXeO8BYIWlcE2M9uU9K6v/OVqcPfzPph7l58shUAZfDZQTij3Q09Q==
-X-Received: by 2002:a17:902:26c:b029:e6:648f:2668 with SMTP id 99-20020a170902026cb02900e6648f2668mr15114228plc.66.1615873682436;
-        Mon, 15 Mar 2021 22:48:02 -0700 (PDT)
-Received: from cl-arch-kdev.. (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id l22sm15096513pfd.145.2021.03.15.22.48.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 22:48:02 -0700 (PDT)
-From:   Fox Chen <foxhlchen@gmail.com>
-To:     neilb@suse.de
-Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
-        vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
-        rdunlap@infradead.org, grandmaster@al2klimov.de,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: [PATCH v2 12/12] docs: path-lookup: update symlink description
-Date:   Tue, 16 Mar 2021 13:47:27 +0800
-Message-Id: <20210316054727.25655-13-foxhlchen@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210316054727.25655-1-foxhlchen@gmail.com>
-References: <20210316054727.25655-1-foxhlchen@gmail.com>
+        id S235713AbhCPFsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:48:43 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:36921 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235605AbhCPFsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 01:48:13 -0400
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12G5llg8020508
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Mar 2021 06:47:48 +0100
+Received: from md1za8fc.ad001.siemens.net ([139.22.41.172])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 12G5llIZ030837;
+        Tue, 16 Mar 2021 06:47:47 +0100
+Date:   Tue, 16 Mar 2021 06:47:43 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH] platform/x86: pmc_atom: use callback for all dmi quirk
+ entries
+Message-ID: <20210316064743.0b5a47cf@md1za8fc.ad001.siemens.net>
+In-Reply-To: <43841119-4839-09d2-b606-7dd40cad4b89@redhat.com>
+References: <ef5fe493-285d-145c-8d05-7f9bd0cb47c5@redhat.com>
+        <20210315145855.17174-1-henning.schild@siemens.com>
+        <8577f3a8-c5e4-3752-1bc1-5937ee164217@redhat.com>
+        <20210315180011.6a3f60b0@md1za8fc.ad001.siemens.net>
+        <43841119-4839-09d2-b606-7dd40cad4b89@redhat.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-instead of lookup_real()/vfs_create(), i_op->lookup() and
-i_op->create() will be called directly.
+Hoi Hans,
 
-update vfs_open() logic
+on a slighly different but also related topic. Did you ever come across
+SMSC SCH5347? Seems to be pretty similar to 56xx, only with spec non
+public ... and probably less often in use
+Maybe you happen to have code, or know the differences. We already have
+it working with a modified copy of sch56xx but that is still rough and
+i thought i ask before we potentially duplicate work.
 
-should_follow_link is merged into lookup_last() or open_last_lookup()
-which returns symlink name instead of an integer.
+groetjes,
+Henning
 
-Signed-off-by: Fox Chen <foxhlchen@gmail.com>
----
- Documentation/filesystems/path-lookup.rst | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+Am Mon, 15 Mar 2021 19:01:13 +0100
+schrieb Hans de Goede <hdegoede@redhat.com>:
 
-diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/filesystems/path-lookup.rst
-index eef6e9f68fba..adbc714740c2 100644
---- a/Documentation/filesystems/path-lookup.rst
-+++ b/Documentation/filesystems/path-lookup.rst
-@@ -1202,16 +1202,15 @@ the code.
-    it.  If the file was found in the dcache, then ``vfs_open()`` is used for
-    this.  If not, then ``lookup_open()`` will either call ``atomic_open()`` (if
-    the filesystem provides it) to combine the final lookup with the open, or
--   will perform the separate ``lookup_real()`` and ``vfs_create()`` steps
-+   will perform the separate ``i_op->lookup()`` and ``i_op->create()`` steps
-    directly.  In the later case the actual "open" of this newly found or
-    created file will be performed by ``vfs_open()``, just as if the name
-    were found in the dcache.
- 
- 2. ``vfs_open()`` can fail with ``-EOPENSTALE`` if the cached information
--   wasn't quite current enough.  Rather than restarting the lookup from
--   the top with ``LOOKUP_REVAL`` set, ``lookup_open()`` is called instead,
--   giving the filesystem a chance to resolve small inconsistencies.
--   If that doesn't work, only then is the lookup restarted from the top.
-+   wasn't quite current enough.  If it's in RCU-walk -ECHILD will be returned
-+   otherwise will return -ESTALE.  When -ESTALE is returned, the caller may
-+   retry with LOOKUP_REVAL flag set.
- 
- 3. An open with O_CREAT **does** follow a symlink in the final component,
-    unlike other creation system calls (like ``mkdir``).  So the sequence::
-@@ -1221,8 +1220,8 @@ the code.
- 
-    will create a file called ``/tmp/bar``.  This is not permitted if
-    ``O_EXCL`` is set but otherwise is handled for an O_CREAT open much
--   like for a non-creating open: ``should_follow_link()`` returns ``1``, and
--   so does ``do_last()`` so that ``trailing_symlink()`` gets called and the
-+   like for a non-creating open: ``lookup_last()`` or ``open_last_lookup()``
-+   returns a non ``Null`` value, and ``link_path_walk()`` gets called and the
-    open process continues on the symlink that was found.
- 
- Updating the access time
--- 
-2.30.2
+> Hi,
+> 
+> On 3/15/21 6:00 PM, Henning Schild wrote:
+> > Am Mon, 15 Mar 2021 17:31:49 +0100
+> > schrieb Hans de Goede <hdegoede@redhat.com>:
+> >   
+> >> Hi,
+> >>
+> >> On 3/15/21 3:58 PM, Henning Schild wrote:  
+> >>> Introduce a global variable to remember the matching entry for
+> >>> later printing. Also having a callback allows to stop matching
+> >>> after the first hit.
+> >>>
+> >>> Signed-off-by: Henning Schild <henning.schild@siemens.com>
+> >>> ---
+> >>>  drivers/platform/x86/pmc_atom.c | 26 ++++++++++++++++++++------
+> >>>  1 file changed, 20 insertions(+), 6 deletions(-)
+> >>>
+> >>> diff --git a/drivers/platform/x86/pmc_atom.c
+> >>> b/drivers/platform/x86/pmc_atom.c index 38542d547f29..d0f74856cd8b
+> >>> 100644 --- a/drivers/platform/x86/pmc_atom.c
+> >>> +++ b/drivers/platform/x86/pmc_atom.c
+> >>> @@ -364,8 +364,16 @@ static void pmc_dbgfs_register(struct pmc_dev
+> >>> *pmc) #endif /* CONFIG_DEBUG_FS */
+> >>>  
+> >>>  static bool pmc_clk_is_critical = true;
+> >>> +static const struct dmi_system_id *dmi_critical;
+> >>>  
+> >>> -static int siemens_clk_is_critical(const struct dmi_system_id *d)
+> >>> +static int dmi_callback(const struct dmi_system_id *d)
+> >>> +{
+> >>> +	dmi_critical = d;    
+> >>
+> >> Don't introduce a global variable for this please. Instead just
+> >> directly print the ident of the matching dmi_system_id here.  
+> > 
+> > Sorry, missed that part. Result looks nice and clean, thanks. I
+> > think i will squash it into 4/4 in v3 and not follow up here for
+> > now.  
+> 
+> Ack, that sounds good to me.
+> 
+> Regards,
+> 
+> Hans
+> 
+> 
+> >>> +
+> >>> +	return 1;
+> >>> +}
+> >>> +
+> >>> +static int dmi_callback_siemens(const struct dmi_system_id *d)
+> >>>  {
+> >>>  	u32 st_id;
+> >>>  
+> >>> @@ -373,7 +381,7 @@ static int siemens_clk_is_critical(const
+> >>> struct dmi_system_id *d) goto out;
+> >>>  
+> >>>  	if (st_id == SIMATIC_IPC_IPC227E || st_id ==
+> >>> SIMATIC_IPC_IPC277E)
+> >>> -		return 1;
+> >>> +		return dmi_callback(d);
+> >>>  
+> >>>  out:
+> >>>  	pmc_clk_is_critical = false;
+> >>> @@ -388,6 +396,7 @@ static const struct dmi_system_id
+> >>> critclk_systems[] = { {
+> >>>  		/* pmc_plt_clk0 is used for an external HSIC USB
+> >>> HUB */ .ident = "MPL CEC1x",
+> >>> +		.callback = dmi_callback,
+> >>>  		.matches = {
+> >>>  			DMI_MATCH(DMI_SYS_VENDOR, "MPL AG"),
+> >>>  			DMI_MATCH(DMI_PRODUCT_NAME, "CEC10
+> >>> Family"), @@ -396,6 +405,7 @@ static const struct dmi_system_id
+> >>> critclk_systems[] = { {
+> >>>  		/* pmc_plt_clk0 - 3 are used for the 4 ethernet
+> >>> controllers */ .ident = "Lex 3I380D",
+> >>> +		.callback = dmi_callback,
+> >>>  		.matches = {
+> >>>  			DMI_MATCH(DMI_SYS_VENDOR, "Lex
+> >>> BayTrail"), DMI_MATCH(DMI_PRODUCT_NAME, "3I380D"),
+> >>> @@ -404,6 +414,7 @@ static const struct dmi_system_id
+> >>> critclk_systems[] = { {
+> >>>  		/* pmc_plt_clk* - are used for ethernet
+> >>> controllers */ .ident = "Lex 2I385SW",
+> >>> +		.callback = dmi_callback,
+> >>>  		.matches = {
+> >>>  			DMI_MATCH(DMI_SYS_VENDOR, "Lex
+> >>> BayTrail"), DMI_MATCH(DMI_PRODUCT_NAME, "2I385SW"),
+> >>> @@ -412,6 +423,7 @@ static const struct dmi_system_id
+> >>> critclk_systems[] = { {
+> >>>  		/* pmc_plt_clk* - are used for ethernet
+> >>> controllers */ .ident = "Beckhoff CB3163",
+> >>> +		.callback = dmi_callback,
+> >>>  		.matches = {
+> >>>  			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff
+> >>> Automation"), DMI_MATCH(DMI_BOARD_NAME, "CB3163"),
+> >>> @@ -420,6 +432,7 @@ static const struct dmi_system_id
+> >>> critclk_systems[] = { {
+> >>>  		/* pmc_plt_clk* - are used for ethernet
+> >>> controllers */ .ident = "Beckhoff CB4063",
+> >>> +		.callback = dmi_callback,
+> >>>  		.matches = {
+> >>>  			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff
+> >>> Automation"), DMI_MATCH(DMI_BOARD_NAME, "CB4063"),
+> >>> @@ -428,6 +441,7 @@ static const struct dmi_system_id
+> >>> critclk_systems[] = { {
+> >>>  		/* pmc_plt_clk* - are used for ethernet
+> >>> controllers */ .ident = "Beckhoff CB6263",
+> >>> +		.callback = dmi_callback,
+> >>>  		.matches = {
+> >>>  			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff
+> >>> Automation"), DMI_MATCH(DMI_BOARD_NAME, "CB6263"),
+> >>> @@ -436,13 +450,14 @@ static const struct dmi_system_id
+> >>> critclk_systems[] = { {
+> >>>  		/* pmc_plt_clk* - are used for ethernet
+> >>> controllers */ .ident = "Beckhoff CB6363",
+> >>> +		.callback = dmi_callback,
+> >>>  		.matches = {
+> >>>  			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff
+> >>> Automation"), DMI_MATCH(DMI_BOARD_NAME, "CB6363"),
+> >>>  		},
+> >>>  	},
+> >>>  	{
+> >>> -		.callback = siemens_clk_is_critical,
+> >>> +		.callback = dmi_callback_siemens,
+> >>>  		.ident = "SIEMENS AG",
+> >>>  		.matches = {
+> >>>  			DMI_MATCH(DMI_SYS_VENDOR, "SIEMENS AG"),
+> >>> @@ -457,7 +472,6 @@ static int pmc_setup_clks(struct pci_dev
+> >>> *pdev, void __iomem *pmc_regmap, {
+> >>>  	struct platform_device *clkdev;
+> >>>  	struct pmc_clk_data *clk_data;
+> >>> -	const struct dmi_system_id *d;
+> >>>  
+> >>>  	clk_data = kzalloc(sizeof(*clk_data), GFP_KERNEL);
+> >>>  	if (!clk_data)
+> >>> @@ -468,8 +482,8 @@ static int pmc_setup_clks(struct pci_dev
+> >>> *pdev, void __iomem *pmc_regmap, if
+> >>> (dmi_check_system(critclk_systems)) { clk_data->critical =
+> >>> pmc_clk_is_critical; if (clk_data->critical) {
+> >>> -			d = dmi_first_match(critclk_systems);
+> >>> -			pr_info("%s critclks quirk enabled\n",
+> >>> d->ident);
+> >>> +			pr_info("%s critclks quirk enabled\n",
+> >>> +				dmi_critical->ident);
+> >>>  		}
+> >>>  	}
+> >>>  
+> >>>     
+> >>  
+> >   
+> 
 
