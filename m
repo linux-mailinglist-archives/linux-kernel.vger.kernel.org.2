@@ -2,155 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDFB33DB06
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF4133DB03
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236034AbhCPRbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:31:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbhCPRaw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:30:52 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB9EC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:30:52 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id r15-20020a05600c35cfb029010e639ca09eso1928484wmq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:30:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ure8kWkdZ5geLP/9Lu+/xSmpVEu0DA6buPVci38aSj0=;
-        b=Z678/QuLnZrG4E0wQ6JR1/nIGj9Fs7Z8+aAZt8Mz8sYdje6igCKN2utV2igPfamrt3
-         ozvC+EoHpQ6EwT08H/KYiIED6ErrciMFxaQijeEGnrXKFlq2jVTYkwhxwFNNL73ZuXNE
-         xNv7p0SDTg0Uv1pWfryHD6ci4FsT4tdONtkEhM1pE1cUFpsPmgdp1umhgu4KJG3vWW5t
-         cWA4iUaDeT8XBmj08MWPoEi/wvTWp6syClumigtyAGVLiHq7G4kDn/y/CllVFlhSnXnP
-         +vRXmM9mX1XZTlXN5/2u5jfOqHTpJ4Wmem107KL0SZARCwPvJACOoO4qe9HzSh/c2wBP
-         4vng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ure8kWkdZ5geLP/9Lu+/xSmpVEu0DA6buPVci38aSj0=;
-        b=AeM1RhkzhfzjPicetlwKzKJibk0zJA5NXUm9vgx/c2EsZZM81XhT4fbAVN74JtDGMj
-         6/uj7dIh78WJjZFiGMmGTb4AyBwVP2ga+n8sQO5WzM+NQaPppFjcYt7KSHRM5e1ABcYa
-         SgCsVyQpMEF/Xkt/5p2IZEJDect/rxq9dHpZLHdQyChazCVdexCMVlcF5dAiU+sGvygt
-         r5Cb/9/ENIxHiocdDs/NS+cEoZ+0zfHRVRqoAoueVW2vQ4cCudeshU2CXZs5S5d1bhsC
-         k0LkutowYIbJ84Raq3NeelFxOLYKOnzqszU4knkjonFj8OTBz09icrjk6oIfUppX+r2G
-         bqHw==
-X-Gm-Message-State: AOAM530Pzq4fJaBvRNwvta1sn/+MDHaIEIm3508MM8uCT233QwU98w8E
-        s7ULv2jm/A4ZOkiqcQYUxh452g==
-X-Google-Smtp-Source: ABdhPJytNagM4AIbMoENHxcjBnrn4JxwikwNeiZ2SKxSVH/A1ANipTJtB19WZ+2dS+sc8ya4+f0huw==
-X-Received: by 2002:a05:600c:1548:: with SMTP id f8mr135921wmg.81.1615915850632;
-        Tue, 16 Mar 2021 10:30:50 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:1d09:9676:5eaa:550])
-        by smtp.gmail.com with ESMTPSA id b65sm101820wmh.4.2021.03.16.10.30.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 10:30:49 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 18:30:00 +0100
-From:   Marco Elver <elver@google.com>
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Issue with kfence and kmemleak
-Message-ID: <YFDrGL45JxFHyajD@elver.google.com>
-References: <YFDf6iKH1p/jGnM0@suse.de>
+        id S232951AbhCPRa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:30:58 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:33406 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233321AbhCPRab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:30:31 -0400
+Received: from zn.tnic (p200300ec2f0a1000f4cd07eb01fab5b0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:1000:f4cd:7eb:1fa:b5b0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AB1AB1EC056D;
+        Tue, 16 Mar 2021 18:30:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1615915829;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=qwNDhXsjyn7zMbvTCUkh+TXYixcjEnNSV28bE8swi88=;
+        b=MkV30Y+zUzz/ZA98kKKFFbNwFgIeusWLPCM1J1vgJbX1XA4KfvzxzSNOsac++vFQoLqcsy
+        owH4CMBawgA60o18K9eCIOV4032LejlLVubpAfO311bhm/ANOSi2AXvA/7BgDz0ugvzBk/
+        S+aExBwBf4u3yNDxNaYa2grVYdb03sM=
+Date:   Tue, 16 Mar 2021 18:30:32 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Subject: Re: [PATCH v23 6/9] x86/entry: Introduce ENDBR macro
+Message-ID: <20210316173032.GE18003@zn.tnic>
+References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
+ <20210316151320.6123-7-yu-cheng.yu@intel.com>
+ <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
+ <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YFDf6iKH1p/jGnM0@suse.de>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 04:42PM +0000, Luis Henriques wrote:
-> Hi!
+On Tue, Mar 16, 2021 at 10:12:39AM -0700, Yu, Yu-cheng wrote:
+> Alternatively, there is another compiler-defined macro _CET_ENDBR that can
+> be used.  We can put the following in calling.h:
+
+Not calling.h - this is apparently needed in vdso code only so I guess
+some header there, arch/x86/include/asm/vdso.h maybe? In the
+
+#else /* __ASSEMBLER__ */
+
+branch maybe...
+
+> #ifdef __CET__
+> #include <cet.h>
+> #else
+> #define _CET_ENDBR
+> #endif
 > 
-> This is probably a known issue, but just in case: looks like it's not
-> possible to use kmemleak when kfence is enabled:
+> and then use _CET_ENDBR in other files.  How is that?
 
-Thanks for spotting this.
+What does that macro do? Issue an ENDBR only?
 
-> [    0.272136] kmemleak: Cannot insert 0xffff888236e02f00 into the object search tree (overlaps existing)
-> [    0.272136] CPU: 0 PID: 8 Comm: kthreadd Not tainted 5.12.0-rc3+ #92
-> [    0.272136] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
-> [    0.272136] Call Trace:
-> [    0.272136]  dump_stack+0x6d/0x89
-> [    0.272136]  create_object.isra.0.cold+0x40/0x62
-> [    0.272136]  ? process_one_work+0x5a0/0x5a0
-> [    0.272136]  ? process_one_work+0x5a0/0x5a0
-> [    0.272136]  kmem_cache_alloc_trace+0x110/0x2f0
-> [    0.272136]  ? process_one_work+0x5a0/0x5a0
-> [    0.272136]  kthread+0x3f/0x150
-> [    0.272136]  ? lockdep_hardirqs_on_prepare+0xd4/0x170
-> [    0.272136]  ? __kthread_bind_mask+0x60/0x60
-> [    0.272136]  ret_from_fork+0x22/0x30
-> [    0.272136] kmemleak: Kernel memory leak detector disabled
-> [    0.272136] kmemleak: Object 0xffff888236e00000 (size 2097152):
-> [    0.272136] kmemleak:   comm "swapper", pid 0, jiffies 4294892296
-> [    0.272136] kmemleak:   min_count = 0
-> [    0.272136] kmemleak:   count = 0
-> [    0.272136] kmemleak:   flags = 0x1
-> [    0.272136] kmemleak:   checksum = 0
-> [    0.272136] kmemleak:   backtrace:
-> [    0.272136]      memblock_alloc_internal+0x6d/0xb0
-> [    0.272136]      memblock_alloc_try_nid+0x6c/0x8a
-> [    0.272136]      kfence_alloc_pool+0x26/0x3f
-> [    0.272136]      start_kernel+0x242/0x548
-> [    0.272136]      secondary_startup_64_no_verify+0xb0/0xbb
-> 
-> I've tried the hack below but it didn't really helped.  Obviously I don't
-> really understand what's going on ;-)  But I think the reason for this
-> patch not working as (I) expected is because kfence is initialised
-> *before* kmemleak.
-> 
-> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-> index 3b8ec938470a..b4ffd7695268 100644
-> --- a/mm/kfence/core.c
-> +++ b/mm/kfence/core.c
-> @@ -631,6 +631,9 @@ void __init kfence_alloc_pool(void)
->  
->  	if (!__kfence_pool)
->  		pr_err("failed to allocate pool\n");
-> +	kmemleak_no_scan(__kfence_pool);
->  }
+-- 
+Regards/Gruss,
+    Boris.
 
-Can you try the below patch?
-
-Thanks,
--- Marco
-
------- >8 ------
-
-diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-index f7106f28443d..5891019721f6 100644
---- a/mm/kfence/core.c
-+++ b/mm/kfence/core.c
-@@ -12,6 +12,7 @@
- #include <linux/debugfs.h>
- #include <linux/kcsan-checks.h>
- #include <linux/kfence.h>
-+#include <linux/kmemleak.h>
- #include <linux/list.h>
- #include <linux/lockdep.h>
- #include <linux/memblock.h>
-@@ -481,6 +482,13 @@ static bool __init kfence_init_pool(void)
- 		addr += 2 * PAGE_SIZE;
- 	}
- 
-+	/*
-+	 * The pool is live and will never be deallocated from this point on;
-+	 * tell kmemleak this is now free memory, so that later allocations can
-+	 * correctly be tracked.
-+	 */
-+	kmemleak_free_part_phys(__pa(__kfence_pool), KFENCE_POOL_SIZE);
-+
- 	return true;
- 
- err:
+https://people.kernel.org/tglx/notes-about-netiquette
