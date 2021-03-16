@@ -2,86 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0DB33D318
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60ED633D31A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237164AbhCPLdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:33:22 -0400
-Received: from mga04.intel.com ([192.55.52.120]:22557 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229800AbhCPLdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:33:09 -0400
-IronPort-SDR: DjQD9wofQTQli23pTm4szS1nFzcPyrRgKXaz2iTOgB7ajDQh5A5x//TGldK/V6rdp9m3mG6QSj
- ifjc4/ioW42Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="186864486"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="186864486"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 04:33:07 -0700
-IronPort-SDR: +FLr21BqECxarTkirLegY7xaD2nLrpkv8qvXUaLrakO45urtbEY25Oi2AJtcMUNWltaCQXFKdz
- 6J8EZnh9KRFA==
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="388436171"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 04:33:04 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1lM7wb-00CwHo-PI; Tue, 16 Mar 2021 13:33:01 +0200
-Date:   Tue, 16 Mar 2021 13:33:01 +0200
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Claudius Heine <ch@denx.de>
-Cc:     johannes hahn <johannes-hahn@siemens.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        werner zeh <werner.zeh@siemens.com>,
-        henning schild <henning.schild@siemens.com>,
-        martin mantel <martin.mantel@siemens.com>,
-        val krutov <val.krutov@erd.epson.com>
-Subject: Re: [PATCH v3 1/1] rtc: rx6110: add ACPI bindings to I2C
-Message-ID: <YFCXbT7AL7DAvO0i@smile.fi.intel.com>
-References: <AM0PR10MB25801B7DCB6C1856B5D4F2C09FE10@AM0PR10MB2580.EURPRD10.PROD.OUTLOOK.COM>
- <20210316100805.2630481-2-ch@denx.de>
- <YFCW3Kx9MPm0MT8H@smile.fi.intel.com>
+        id S237212AbhCPLe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:34:28 -0400
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:55807 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237189AbhCPLeN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 07:34:13 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id M7xfl1ZAO4ywlM7xjlAlXV; Tue, 16 Mar 2021 12:34:11 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1615894451; bh=JkEdXlW1bhCgFYkEP/igDT2s8R0tOEhcNGr/T9WCMLk=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=f0KbRRBk2E6aDJo/dBE3MWpAuoNF9QE2ADbfj4+X8AbSEct/y2SvXmruGMy0U3rOo
+         fJOxXhY+aqXGT1ySV4jFvfRWV92shoeah88O0Wsi3DYmMUuo6ShGo0jB9O+lngoanJ
+         tN+SZ/+16ajJlj9VaCBegkXYOe+QdL20LkSsIL9pXraodchRXa019SQZRbaW3yGf4K
+         IzvxoxRCsRmgnzMDPmdF4xm+NH+Qmzl7BGYnYRTzGRdL65uGSlbwwSFPZ3wRqSPiL8
+         pXdkRueeP/TTIzyxxbxIQN+3k499hpYXFNDtiocnfO7GIiVCKg3Bsg/uROpck/hj2N
+         7S1jFCzGYaEyw==
+Subject: Re: [PATCH v2 1/2] v4l2-ctrl: Add decoder conceal color control
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20210302114430.3594475-1-stanimir.varbanov@linaro.org>
+ <20210302114430.3594475-2-stanimir.varbanov@linaro.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <a36a9400-462d-c50e-4b7f-e2e8a181c4e3@xs4all.nl>
+Date:   Tue, 16 Mar 2021 12:34:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFCW3Kx9MPm0MT8H@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210302114430.3594475-2-stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfImq5vL9PsgjEwQz3Dpb/PGz34BpmFR9uEAxCCND4Pv+CZswM6wL8TDzxMhyNP3+gDNrFxp/6OICOH5wqKdVBBN1R55nqsTAax30xg45tm3HvYF5d8fZ
+ VKLSi2UERkoBeEQUTnWldjyLyqkmfdBmm+l9jrapIfQm/0BpwOU9TLKtQsqCyuLA3QJMmtI/kiaY4U1AWaxYI1Q0em0AT5+HhBIQrMpIqUZYqm2xO5TCOCvx
+ FvwStzXDS8NAjnqA6wvXWb/E9qBLtocSdiJuUFhElS9daCQpxD/XVoItwaMucpS7X/IDWQm9tR/dpKlRJx9l8utcXgbcXkaH/LcFAta7o+g=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 01:30:36PM +0200, Andy Shevchenko wrote:
-> On Tue, Mar 16, 2021 at 11:08:05AM +0100, Claudius Heine wrote:
-> > From: Johannes Hahn <johannes-hahn@siemens.com>
-> > 
-> > This allows the RX6110 driver to be automatically assigned to the right
-> > device on the I2C bus.
+On 02/03/2021 12:44, Stanimir Varbanov wrote:
+> Add decoder v4l2 control to set conceal color.
 > 
-> Thanks for all effort!
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> after addressing the below comments.
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  .../media/v4l/ext-ctrls-codec.rst             | 33 +++++++++++++++++++
+>  drivers/media/v4l2-core/v4l2-ctrls.c          |  9 +++++
+>  include/uapi/linux/v4l2-controls.h            |  1 +
+>  3 files changed, 43 insertions(+)
 > 
-> > Signed-off-by: Johannes Hahn <johannes-hahn@siemens.com>
-> > Signed-off-by: Claudius Heine <ch@denx.de>
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index 00944e97d638..817da8a14572 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -674,6 +674,39 @@ enum v4l2_mpeg_video_frame_skip_mode -
+>      is currently displayed (decoded). This value is reset to 0 whenever
+>      the decoder is started.
+>  
+> +``V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR (integer64)``
+> +    This control sets conceal color in YUV color space. It describes the
+
+conceal -> the conceal
+
+> +    client preference of error conceal color in case of error where
+
+client preference of the error conceal color in case of an error where the
+
+> +    reference frame is missing. The decoder should fill the reference
+> +    buffer with preferred color and use it for future decoding. The control
+
+with the
+
+> +    is using 16bits per channel.
+
+16bits -> 16 bits
+
+> +    Applicable to decoders.
+> +
+> +.. flat-table::
+> +    :header-rows:  0
+> +    :stub-columns: 0
+> +
+> +    * -
+> +      - 8bit  format
+> +      - 10bit format
+> +      - 12bit format
+> +    * - Y luminance
+> +      - Bit 0:7
+> +      - Bit 0:9
+> +      - Bit 0:11
+> +    * - Cb chrominance
+> +      - Bit 16:23
+> +      - Bit 16:25
+> +      - Bit 16:27
+> +    * - Cr chrominance
+> +      - Bit 32:39
+> +      - Bit 32:41
+> +      - Bit 32:43
+> +    * - Must be zero
+> +      - Bit 48:63
+> +      - Bit 48:63
+> +      - Bit 48:63
+> +
+>  ``V4L2_CID_MPEG_VIDEO_DECODER_SLICE_INTERFACE (boolean)``
+>      If enabled the decoder expects to receive a single slice per buffer,
+>      otherwise the decoder expects a single frame in per buffer.
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+> index 016cf6204cbb..a3b9d28a00b7 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+> @@ -945,6 +945,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+>  	case V4L2_CID_MPEG_VIDEO_VBV_SIZE:			return "VBV Buffer Size";
+>  	case V4L2_CID_MPEG_VIDEO_DEC_PTS:			return "Video Decoder PTS";
+>  	case V4L2_CID_MPEG_VIDEO_DEC_FRAME:			return "Video Decoder Frame Count";
+> +	case V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR:		return "Video Decoder Conceal Color";
+>  	case V4L2_CID_MPEG_VIDEO_VBV_DELAY:			return "Initial Delay for VBV Control";
+>  	case V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE:		return "Horizontal MV Search Range";
+>  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:		return "Vertical MV Search Range";
+> @@ -1430,6 +1431,14 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>  		*max = 0x7fffffffffffffffLL;
+>  		*step = 1;
+>  		break;
+> +	case V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR:
+> +		*type = V4L2_CTRL_TYPE_INTEGER64;
+> +		*min = 0;
+> +		/* default for 8bit black, luma is 16, chroma is 128 */
+
+8bit -> 8 bit
+
+> +		*def = 0x8000800010LL;
+> +		*max = 0xffffffffffffLL;
+> +		*step = 1;
+> +		break;
+>  	case V4L2_CID_PIXEL_RATE:
+>  		*type = V4L2_CTRL_TYPE_INTEGER64;
+>  		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> index 039c0d7add1b..5e5a3068be2d 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -428,6 +428,7 @@ enum v4l2_mpeg_video_multi_slice_mode {
+>  #define V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE		(V4L2_CID_CODEC_BASE+228)
+>  #define V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME		(V4L2_CID_CODEC_BASE+229)
+>  #define V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID	(V4L2_CID_CODEC_BASE+230)
+> +#define V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR		(V4L2_CID_CODEC_BASE+231)
+>  
+>  /* CIDs for the MPEG-2 Part 2 (H.262) codec */
+>  #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_CODEC_BASE+270)
 > 
-> > Signed-off-by: Henning Schild <henning.schild@siemens.com>
-> 
-> I think this is somehow confusing. Either you need to add Co-developed-by of
-> the corresponding people, or remove SoB (because of From line), i.o.w seems
-> like Co-dB tag is needed for Johannes or you and something should be done with
-> Henning's SoB.
 
-Since Johannes' name is in the From, then it seems okay for you (either you a
-co-developer, than a Co-dB tag, or a submitter, than it's okay to have no Co-dB
-tag).
+After fixing the typos:
 
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
--- 
-With Best Regards,
-Andy Shevchenko
+Regards,
 
-
+	Hans
