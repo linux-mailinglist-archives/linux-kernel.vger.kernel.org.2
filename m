@@ -2,79 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E9033D9B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669E733D9A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:42:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238937AbhCPQm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 12:42:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238816AbhCPQlq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 12:41:46 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41412C06174A;
-        Tue, 16 Mar 2021 09:41:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=fp851wafBMSyp+A1XTVUbYnllw6+VPptuI+8gjmb6n8=; b=STxmi+g1NdHNPpMQiJKSmZZn1l
-        Xvocf1dcyqBccJ+ZQlZiZneUFIkoQFaGDlTQmA9qA2tBdaFMq9mBBga0sidukp6g5GPnB8xAwvg2z
-        cyp2RlBARE62O8shJaeCO6ON4Y3ImtIEcD08oHgE7ZIlc2P+YixBCqE7xUAr4e53ogmXC2J+QdwhG
-        mm0/fvOXUA7rs03yQ6pLnHMfk/zTKP41kv0JSOBEPw4yI4bW/Suzljhq8v+BWNvjNpiVUaA2NT0ua
-        GbkALsaEOEebvvnWcu4p91lSw1eBji1KTbRA3iHlteuJ2gii3ISHcBgsTOrsldtKuslctFW69T27G
-        6QMtotcA==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMClL-001UBG-1Q; Tue, 16 Mar 2021 16:41:43 +0000
-Subject: Re: [PATCH] riscv: Fix spelling mistake "initialisation" ->
- "initialization
-To:     Muhammad Usama Anjum <musamaanjum@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210316093054.GA1081018@LEGION>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <f59f5c57-ff37-6e53-93ef-bcedf8dd7193@infradead.org>
-Date:   Tue, 16 Mar 2021 09:41:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S238793AbhCPQlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 12:41:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47256 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238764AbhCPQlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 12:41:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BAAF8AC24;
+        Tue, 16 Mar 2021 16:41:03 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 924d4c15;
+        Tue, 16 Mar 2021 16:42:18 +0000 (UTC)
+Date:   Tue, 16 Mar 2021 16:42:18 +0000
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Issue with kfence and kmemleak
+Message-ID: <YFDf6iKH1p/jGnM0@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20210316093054.GA1081018@LEGION>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/21 2:30 AM, Muhammad Usama Anjum wrote:
-> There is a spelling mistake in a comment. Fix it.
-> 
-> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
-> ---
->  arch/riscv/kernel/smp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
-> index ea028d9e0d24..1ec014067855 100644
-> --- a/arch/riscv/kernel/smp.c
-> +++ b/arch/riscv/kernel/smp.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  /*
-> - * SMP initialisation and IPI support
-> + * SMP initialization and IPI support
->   * Based on arch/arm64/kernel/smp.c
->   *
->   * Copyright (C) 2012 ARM Ltd.
+Hi!
 
-Hi--
+This is probably a known issue, but just in case: looks like it's not
+possible to use kmemleak when kfence is enabled:
 
-We accept British or American spellings, so it's OK as it was.
+[    0.272136] kmemleak: Cannot insert 0xffff888236e02f00 into the object search tree (overlaps existing)
+[    0.272136] CPU: 0 PID: 8 Comm: kthreadd Not tainted 5.12.0-rc3+ #92
+[    0.272136] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+[    0.272136] Call Trace:
+[    0.272136]  dump_stack+0x6d/0x89
+[    0.272136]  create_object.isra.0.cold+0x40/0x62
+[    0.272136]  ? process_one_work+0x5a0/0x5a0
+[    0.272136]  ? process_one_work+0x5a0/0x5a0
+[    0.272136]  kmem_cache_alloc_trace+0x110/0x2f0
+[    0.272136]  ? process_one_work+0x5a0/0x5a0
+[    0.272136]  kthread+0x3f/0x150
+[    0.272136]  ? lockdep_hardirqs_on_prepare+0xd4/0x170
+[    0.272136]  ? __kthread_bind_mask+0x60/0x60
+[    0.272136]  ret_from_fork+0x22/0x30
+[    0.272136] kmemleak: Kernel memory leak detector disabled
+[    0.272136] kmemleak: Object 0xffff888236e00000 (size 2097152):
+[    0.272136] kmemleak:   comm "swapper", pid 0, jiffies 4294892296
+[    0.272136] kmemleak:   min_count = 0
+[    0.272136] kmemleak:   count = 0
+[    0.272136] kmemleak:   flags = 0x1
+[    0.272136] kmemleak:   checksum = 0
+[    0.272136] kmemleak:   backtrace:
+[    0.272136]      memblock_alloc_internal+0x6d/0xb0
+[    0.272136]      memblock_alloc_try_nid+0x6c/0x8a
+[    0.272136]      kfence_alloc_pool+0x26/0x3f
+[    0.272136]      start_kernel+0x242/0x548
+[    0.272136]      secondary_startup_64_no_verify+0xb0/0xbb
 
--- 
-~Randy
+I've tried the hack below but it didn't really helped.  Obviously I don't
+really understand what's going on ;-)  But I think the reason for this
+patch not working as (I) expected is because kfence is initialised
+*before* kmemleak.
 
+diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+index 3b8ec938470a..b4ffd7695268 100644
+--- a/mm/kfence/core.c
++++ b/mm/kfence/core.c
+@@ -631,6 +631,9 @@ void __init kfence_alloc_pool(void)
+ 
+ 	if (!__kfence_pool)
+ 		pr_err("failed to allocate pool\n");
++	kmemleak_no_scan(__kfence_pool);
+ }
+
+
+Cheers,
+--
+Luís
