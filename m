@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7CB33D44D
+	by mail.lfdr.de (Postfix) with ESMTP id 6C70133D44E
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhCPMwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:52:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:37928 "EHLO foss.arm.com"
+        id S232201AbhCPMwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 08:52:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:37946 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233167AbhCPMuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:50:12 -0400
+        id S233215AbhCPMuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 08:50:15 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F0CC51529;
-        Tue, 16 Mar 2021 05:50:11 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C73B0152D;
+        Tue, 16 Mar 2021 05:50:14 -0700 (PDT)
 Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A5BC53F792;
-        Tue, 16 Mar 2021 05:50:09 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 804BB3F792;
+        Tue, 16 Mar 2021 05:50:12 -0700 (PDT)
 From:   Cristian Marussi <cristian.marussi@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
@@ -24,11 +24,11 @@ Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
         f.fainelli@gmail.com, etienne.carriere@linaro.org,
         thara.gopinath@linaro.org, vincent.guittot@linaro.org,
         souvik.chakravarty@arm.com, cristian.marussi@arm.com,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>
-Subject: [PATCH v7 24/38] hwmon: (scmi) port driver to the new scmi_sensor_proto_ops interface
-Date:   Tue, 16 Mar 2021 12:48:49 +0000
-Message-Id: <20210316124903.35011-25-cristian.marussi@arm.com>
+        Jyoti Bhayana <jbhayana@google.com>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: [PATCH v7 25/38] iio/scmi: port driver to the new scmi_sensor_proto_ops interface
+Date:   Tue, 16 Mar 2021 12:48:50 +0000
+Message-Id: <20210316124903.35011-26-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210316124903.35011-1-cristian.marussi@arm.com>
 References: <20210316124903.35011-1-cristian.marussi@arm.com>
@@ -39,98 +39,220 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Port driver to the new SCMI Sensor interface based on protocol handles
 and common devm_get_ops().
 
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Jean Delvare <jdelvare@suse.com>
-Acked-by: Guenter Roeck <linux@roeck-us.net>
+Cc: Jyoti Bhayana <jbhayana@google.com>
+Cc: Jonathan Cameron <jic23@kernel.org>
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
-v6 -> v7
-- fixed Copyright
-- renamed non-static function to fit scmi_<OBJ>_<ACTION> naming pattern
-v4 --> v5
-- using renamed devm_get/put_protocol
----
- drivers/hwmon/scmi-hwmon.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+ drivers/iio/common/scmi_sensors/scmi_iio.c | 91 ++++++++++------------
+ 1 file changed, 41 insertions(+), 50 deletions(-)
 
-diff --git a/drivers/hwmon/scmi-hwmon.c b/drivers/hwmon/scmi-hwmon.c
-index 17d064e58938..b1329a58ce40 100644
---- a/drivers/hwmon/scmi-hwmon.c
-+++ b/drivers/hwmon/scmi-hwmon.c
-@@ -2,7 +2,7 @@
- /*
-  * System Control and Management Interface(SCMI) based hwmon sensor driver
-  *
-- * Copyright (C) 2018 ARM Ltd.
-+ * Copyright (C) 2018-2021 ARM Ltd.
-  * Sudeep Holla <sudeep.holla@arm.com>
-  */
+diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
+index 872d87ca6256..b4bdc3f3a946 100644
+--- a/drivers/iio/common/scmi_sensors/scmi_iio.c
++++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+@@ -21,8 +21,10 @@
  
-@@ -13,8 +13,10 @@
- #include <linux/sysfs.h>
- #include <linux/thermal.h>
+ #define SCMI_IIO_NUM_OF_AXIS 3
  
 +static const struct scmi_sensor_proto_ops *sensor_ops;
 +
- struct scmi_sensors {
--	const struct scmi_handle *handle;
-+	const struct scmi_protocol_handle *ph;
- 	const struct scmi_sensor_info **info[hwmon_max];
- };
- 
-@@ -69,10 +71,9 @@ static int scmi_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
- 	u64 value;
- 	const struct scmi_sensor_info *sensor;
- 	struct scmi_sensors *scmi_sensors = dev_get_drvdata(dev);
--	const struct scmi_handle *h = scmi_sensors->handle;
- 
- 	sensor = *(scmi_sensors->info[type] + channel);
--	ret = h->sensor_ops->reading_get(h, sensor->id, &value);
-+	ret = sensor_ops->reading_get(scmi_sensors->ph, sensor->id, &value);
- 	if (ret)
- 		return ret;
- 
-@@ -169,11 +170,16 @@ static int scmi_hwmon_probe(struct scmi_device *sdev)
- 	struct hwmon_channel_info *scmi_hwmon_chan;
- 	const struct hwmon_channel_info **ptr_scmi_ci;
- 	const struct scmi_handle *handle = sdev->handle;
+ struct scmi_iio_priv {
+-	struct scmi_handle *handle;
 +	struct scmi_protocol_handle *ph;
+ 	const struct scmi_sensor_info *sensor_info;
+ 	struct iio_dev *indio_dev;
+ 	/* adding one additional channel for timestamp */
+@@ -82,7 +84,6 @@ static int scmi_iio_sensor_update_cb(struct notifier_block *nb,
+ static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
+ {
+ 	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+-	u32 sensor_id = sensor->sensor_info->id;
+ 	u32 sensor_config = 0;
+ 	int err;
  
--	if (!handle || !handle->sensor_ops)
-+	if (!handle)
- 		return -ENODEV;
+@@ -92,27 +93,11 @@ static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
  
--	nr_sensors = handle->sensor_ops->count_get(handle);
-+	sensor_ops = handle->devm_protocol_get(sdev, SCMI_PROTOCOL_SENSOR, &ph);
-+	if (IS_ERR(sensor_ops))
-+		return PTR_ERR(sensor_ops);
-+
-+	nr_sensors = sensor_ops->count_get(ph);
- 	if (!nr_sensors)
- 		return -EIO;
+ 	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+ 				    SCMI_SENS_CFG_SENSOR_ENABLE);
+-
+-	err = sensor->handle->notify_ops->register_event_notifier(sensor->handle,
+-			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+-			&sensor_id, &sensor->sensor_update_nb);
+-	if (err) {
+-		dev_err(&iio_dev->dev,
+-			"Error in registering sensor update notifier for sensor %s err %d",
+-			sensor->sensor_info->name, err);
+-		return err;
+-	}
+-
+-	err = sensor->handle->sensor_ops->config_set(sensor->handle,
+-			sensor->sensor_info->id, sensor_config);
+-	if (err) {
+-		sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
+-				SCMI_PROTOCOL_SENSOR,
+-				SCMI_EVENT_SENSOR_UPDATE, &sensor_id,
+-				&sensor->sensor_update_nb);
++	err = sensor_ops->config_set(sensor->ph, sensor->sensor_info->id,
++				     sensor_config);
++	if (err)
+ 		dev_err(&iio_dev->dev, "Error in enabling sensor %s err %d",
+ 			sensor->sensor_info->name, err);
+-	}
  
-@@ -181,10 +187,10 @@ static int scmi_hwmon_probe(struct scmi_device *sdev)
- 	if (!scmi_sensors)
- 		return -ENOMEM;
+ 	return err;
+ }
+@@ -120,25 +105,13 @@ static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
+ static int scmi_iio_buffer_postdisable(struct iio_dev *iio_dev)
+ {
+ 	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+-	u32 sensor_id = sensor->sensor_info->id;
+ 	u32 sensor_config = 0;
+ 	int err;
  
--	scmi_sensors->handle = handle;
-+	scmi_sensors->ph = ph;
+ 	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+ 				    SCMI_SENS_CFG_SENSOR_DISABLE);
+-
+-	err = sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
+-			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+-			&sensor_id, &sensor->sensor_update_nb);
+-	if (err) {
+-		dev_err(&iio_dev->dev,
+-			"Error in unregistering sensor update notifier for sensor %s err %d",
+-			sensor->sensor_info->name, err);
+-		return err;
+-	}
+-
+-	err = sensor->handle->sensor_ops->config_set(sensor->handle, sensor_id,
+-						     sensor_config);
++	err = sensor_ops->config_set(sensor->ph, sensor->sensor_info->id,
++				     sensor_config);
+ 	if (err) {
+ 		dev_err(&iio_dev->dev,
+ 			"Error in disabling sensor %s with err %d",
+@@ -161,8 +134,8 @@ static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int val2)
+ 	u32 sensor_config;
+ 	char buf[32];
  
- 	for (i = 0; i < nr_sensors; i++) {
--		sensor = handle->sensor_ops->info_get(handle, i);
-+		sensor = sensor_ops->info_get(ph, i);
- 		if (!sensor)
- 			return -EINVAL;
+-	int err = sensor->handle->sensor_ops->config_get(sensor->handle,
+-			sensor->sensor_info->id, &sensor_config);
++	int err = sensor_ops->config_get(sensor->ph, sensor->sensor_info->id,
++					 &sensor_config);
+ 	if (err) {
+ 		dev_err(&iio_dev->dev,
+ 			"Error in getting sensor config for sensor %s err %d",
+@@ -208,8 +181,8 @@ static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int val2)
+ 	sensor_config |=
+ 		FIELD_PREP(SCMI_SENS_CFG_ROUND_MASK, SCMI_SENS_CFG_ROUND_AUTO);
  
-@@ -236,7 +242,7 @@ static int scmi_hwmon_probe(struct scmi_device *sdev)
+-	err = sensor->handle->sensor_ops->config_set(sensor->handle,
+-			sensor->sensor_info->id, sensor_config);
++	err = sensor_ops->config_set(sensor->ph, sensor->sensor_info->id,
++				     sensor_config);
+ 	if (err)
+ 		dev_err(&iio_dev->dev,
+ 			"Error in setting sensor update interval for sensor %s value %u err %d",
+@@ -274,8 +247,8 @@ static int scmi_iio_get_odr_val(struct iio_dev *iio_dev, int *val, int *val2)
+ 	u32 sensor_config;
+ 	int mult;
+ 
+-	int err = sensor->handle->sensor_ops->config_get(sensor->handle,
+-			sensor->sensor_info->id, &sensor_config);
++	int err = sensor_ops->config_get(sensor->ph, sensor->sensor_info->id,
++					 &sensor_config);
+ 	if (err) {
+ 		dev_err(&iio_dev->dev,
+ 			"Error in getting sensor config for sensor %s err %d",
+@@ -542,15 +515,17 @@ static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
+ 	return 0;
+ }
+ 
+-static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
+-					 struct scmi_handle *handle,
+-					 const struct scmi_sensor_info *sensor_info)
++static struct iio_dev *
++scmi_alloc_iiodev(struct scmi_device *sdev, struct scmi_protocol_handle *ph,
++		  const struct scmi_sensor_info *sensor_info)
+ {
+ 	struct iio_chan_spec *iio_channels;
+ 	struct scmi_iio_priv *sensor;
+ 	enum iio_modifier modifier;
+ 	enum iio_chan_type type;
+ 	struct iio_dev *iiodev;
++	struct device *dev = &sdev->dev;
++	const struct scmi_handle *handle = sdev->handle;
+ 	int i, ret;
+ 
+ 	iiodev = devm_iio_device_alloc(dev, sizeof(*sensor));
+@@ -560,7 +535,7 @@ static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
+ 	iiodev->modes = INDIO_DIRECT_MODE;
+ 	iiodev->dev.parent = dev;
+ 	sensor = iio_priv(iiodev);
+-	sensor->handle = handle;
++	sensor->ph = ph;
+ 	sensor->sensor_info = sensor_info;
+ 	sensor->sensor_update_nb.notifier_call = scmi_iio_sensor_update_cb;
+ 	sensor->indio_dev = iiodev;
+@@ -595,6 +570,17 @@ static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
+ 					  sensor_info->axis[i].id);
  	}
  
- 	for (i = nr_sensors - 1; i >= 0 ; i--) {
--		sensor = handle->sensor_ops->info_get(handle, i);
-+		sensor = sensor_ops->info_get(ph, i);
- 		if (!sensor)
++	ret = handle->notify_ops->devm_event_notifier_register(sdev,
++				SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
++				&sensor->sensor_info->id,
++				&sensor->sensor_update_nb);
++	if (ret) {
++		dev_err(&iiodev->dev,
++			"Error in registering sensor update notifier for sensor %s err %d",
++			sensor->sensor_info->name, ret);
++		return ERR_PTR(ret);
++	}
++
+ 	scmi_iio_set_timestamp_channel(&iio_channels[i], i);
+ 	iiodev->channels = iio_channels;
+ 	return iiodev;
+@@ -604,24 +590,29 @@ static int scmi_iio_dev_probe(struct scmi_device *sdev)
+ {
+ 	const struct scmi_sensor_info *sensor_info;
+ 	struct scmi_handle *handle = sdev->handle;
++	struct scmi_protocol_handle *ph;
+ 	struct device *dev = &sdev->dev;
+ 	struct iio_dev *scmi_iio_dev;
+ 	u16 nr_sensors;
+ 	int err = -ENODEV, i;
+ 
+-	if (!handle || !handle->sensor_ops) {
++	if (!handle)
++		return -ENODEV;
++
++	sensor_ops = handle->devm_protocol_get(sdev, SCMI_PROTOCOL_SENSOR, &ph);
++	if (IS_ERR(sensor_ops)) {
+ 		dev_err(dev, "SCMI device has no sensor interface\n");
+-		return -EINVAL;
++		return PTR_ERR(sensor_ops);
+ 	}
+ 
+-	nr_sensors = handle->sensor_ops->count_get(handle);
++	nr_sensors = sensor_ops->count_get(ph);
+ 	if (!nr_sensors) {
+ 		dev_dbg(dev, "0 sensors found via SCMI bus\n");
+ 		return -ENODEV;
+ 	}
+ 
+ 	for (i = 0; i < nr_sensors; i++) {
+-		sensor_info = handle->sensor_ops->info_get(handle, i);
++		sensor_info = sensor_ops->info_get(ph, i);
+ 		if (!sensor_info) {
+ 			dev_err(dev, "SCMI sensor %d has missing info\n", i);
+ 			return -EINVAL;
+@@ -636,7 +627,7 @@ static int scmi_iio_dev_probe(struct scmi_device *sdev)
+ 		    sensor_info->axis[0].type != RADIANS_SEC)
  			continue;
  
+-		scmi_iio_dev = scmi_alloc_iiodev(dev, handle, sensor_info);
++		scmi_iio_dev = scmi_alloc_iiodev(sdev, ph, sensor_info);
+ 		if (IS_ERR(scmi_iio_dev)) {
+ 			dev_err(dev,
+ 				"failed to allocate IIO device for sensor %s: %ld\n",
 -- 
 2.17.1
 
