@@ -2,103 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0123633E3C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:58:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 122C533E5BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231373AbhCQA5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:57:38 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13635 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbhCQA4X (ORCPT
+        id S229851AbhCQBLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 21:11:08 -0400
+Received: from 18.mo6.mail-out.ovh.net ([46.105.73.110]:58468 "EHLO
+        18.mo6.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhCQBKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:56:23 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F0Wrd6B3Kz19G9M;
-        Wed, 17 Mar 2021 08:54:25 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.206) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 17 Mar
- 2021 08:56:15 +0800
-Subject: Re: [PATCH] zonefs: fix to update .i_wr_refcnt correctly in
- zonefs_open_zone()
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "jth@kernel.org" <jth@kernel.org>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chao@kernel.org" <chao@kernel.org>
-References: <20210316123026.115473-1-yuchao0@huawei.com>
- <BL0PR04MB65145B310933D52C432DA7BAE76B9@BL0PR04MB6514.namprd04.prod.outlook.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <64952e0e-0bd8-cbb2-9400-b4c16a886eee@huawei.com>
-Date:   Wed, 17 Mar 2021 08:56:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Tue, 16 Mar 2021 21:10:44 -0400
+X-Greylist: delayed 8398 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Mar 2021 21:10:43 EDT
+Received: from player760.ha.ovh.net (unknown [10.109.143.220])
+        by mo6.mail-out.ovh.net (Postfix) with ESMTP id 811AD248AB4
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 22:34:18 +0100 (CET)
+Received: from RCM-web8.webmail.mail.ovh.net (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
+        (Authenticated sender: rafal@milecki.pl)
+        by player760.ha.ovh.net (Postfix) with ESMTPSA id 1D3B91C2042E0;
+        Tue, 16 Mar 2021 21:34:12 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <BL0PR04MB65145B310933D52C432DA7BAE76B9@BL0PR04MB6514.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Date:   Tue, 16 Mar 2021 22:34:11 +0100
+From:   =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] net: broadcom: BCM4908_ENET should not default to y,
+ unconditionally
+In-Reply-To: <20210316140341.2399108-1-geert+renesas@glider.be>
+References: <20210316140341.2399108-1-geert+renesas@glider.be>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <461f72384c6c98c4e44e60ef2f058613@milecki.pl>
+X-Sender: rafal@milecki.pl
+X-Originating-IP: 194.187.74.233
+X-Webmail-UserID: rafal@milecki.pl
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 2619406135522528831
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudefvddgudehfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeggfffhvffujghffgfkgihitgfgsehtkehjtddtreejnecuhfhrohhmpeftrghfrghlpgfoihhlvggtkhhiuceorhgrfhgrlhesmhhilhgvtghkihdrphhlqeenucggtffrrghtthgvrhhnpeejffdufffgjefgvdeigedukefffeevheejueeikeehudeiudehvdeifeduteehieenucfkpheptddrtddrtddrtddpudelgedrudekjedrjeegrddvfeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeeitddrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehrrghfrghlsehmihhlvggtkhhirdhplhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/17 7:30, Damien Le Moal wrote:
-> On 2021/03/16 21:30, Chao Yu wrote:
->> In zonefs_open_zone(), if opened zone count is larger than
->> .s_max_open_zones threshold, we missed to recover .i_wr_refcnt,
->> fix this.
->>
->> Fixes: b5c00e975779 ("zonefs: open/close zone on file open/close")
->> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->> ---
->>   fs/zonefs/super.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
->> index 0fe76f376dee..be6b99f7de74 100644
->> --- a/fs/zonefs/super.c
->> +++ b/fs/zonefs/super.c
->> @@ -966,8 +966,7 @@ static int zonefs_open_zone(struct inode *inode)
->>   
->>   	mutex_lock(&zi->i_truncate_mutex);
->>   
->> -	zi->i_wr_refcnt++;
->> -	if (zi->i_wr_refcnt == 1) {
->> +	if (zi->i_wr_refcnt == 0) {
+On 2021-03-16 15:03, Geert Uytterhoeven wrote:
+> Merely enabling compile-testing should not enable additional code.
+> To fix this, restrict the automatic enabling of BCM4908_ENET to
+> ARCH_BCM4908.
 > 
-> Nit: if (!zi->i_wr_refcnt) ? I can change that when applying.
+> Fixes: 4feffeadbcb2e5b1 ("net: broadcom: bcm4908enet: add BCM4908
+> controller driver")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-More clean, thanks. :)
-
-Thanks,
-
-> 
->>   
->>   		if (atomic_inc_return(&sbi->s_open_zones) > sbi->s_max_open_zones) {
->>   			atomic_dec(&sbi->s_open_zones);
->> @@ -978,7 +977,6 @@ static int zonefs_open_zone(struct inode *inode)
->>   		if (i_size_read(inode) < zi->i_max_size) {
->>   			ret = zonefs_zone_mgmt(inode, REQ_OP_ZONE_OPEN);
->>   			if (ret) {
->> -				zi->i_wr_refcnt--;
->>   				atomic_dec(&sbi->s_open_zones);
->>   				goto unlock;
->>   			}
->> @@ -986,6 +984,8 @@ static int zonefs_open_zone(struct inode *inode)
->>   		}
->>   	}
->>   
->> +	zi->i_wr_refcnt++;
->> +
->>   unlock:
->>   	mutex_unlock(&zi->i_truncate_mutex);
->>   
->>
-> 
-> Good catch ! Will apply this and check zonefs test suite as this bug went
-> undetected.
-> 
-> Thanks.
-> 
+Acked-by: Rafał Miłecki <rafal@milecki.pl>
