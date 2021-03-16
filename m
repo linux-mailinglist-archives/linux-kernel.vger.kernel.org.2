@@ -2,201 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A6633DD8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D86E33DD92
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236997AbhCPTa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 15:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60726 "EHLO
+        id S240487AbhCPTbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 15:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236996AbhCPTaL (ORCPT
+        with ESMTP id S240465AbhCPTbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:30:11 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE753C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:30:10 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so43975pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:30:10 -0700 (PDT)
+        Tue, 16 Mar 2021 15:31:00 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7C4C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:30:59 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id g4so23303279pgj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:30:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=26VQ5R8D+Nv978Dw29EblfP/eaxOCXCI2bftOH+FKyc=;
-        b=NLKraj5c80Rza2FJddI2o/SKfGY2EtcGyQHj6Du1+xGxcRK+i0MfKI/wvMUraDTlFI
-         TqWDnY0q1+LSop30sJJZLaZzMHMttEcuuAdtaKWwDaoiRkIF63qG1AtWQWUtLESlAhT1
-         8fFJI8P4EOlrSXWw8e6zTCmhyJxGTdo3exVLGRJbUDbKkHpEfpqCchyM0H/b4fAy/PMl
-         Hva+JH1j6Q7OtSA5A/WJPqvisXeRqVCa9AJwY/D7tIANeWc+iyLv/jrbBYwqkOpzsQRc
-         ZXqAs3hm8vgFtCNKWgrz93+TX8pO52SJ3HhvNDDiwrCW5iPRvJG8wHyuCUaRP5vfEgIp
-         pkuw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pLdF7zoGUozqAe1+lMlJqQTbxjR6BOgEH8RjV/EprUs=;
+        b=S9byXezpGreH4LtkD9u2ztQy1B8C65vjJLVCFOyWBRglz6j8bvwRfaqnDF29WvAy3q
+         FRZxA2UFRBEZ2IDi5SIXjU1ZulqieQZDIBsglTXcYK/l7R2LO7f/sbUBtydFhnsavsMu
+         RKScPGQrJ8kce0XWvyAsS9Xv4hCkT1IQNrz94=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=26VQ5R8D+Nv978Dw29EblfP/eaxOCXCI2bftOH+FKyc=;
-        b=PZpK1GWOgY0GZGRxFt3jQEdmK86SKExD5wG6+LR+VXBJMuGKVwHm8J9PX7qI2jE9V0
-         HnlHo+mus+rf7NwqBuYj4kTU1S4O/w9KE+t+YeXOB2DD0R1qdhqYd/tAQ62HGeYcFJAY
-         A17ww7kncoz/zGjVlQT6rIzaFZNS1yUnJnCmJnlbFZHSh3PAi7Mfu0AAKhJ55P7qOYdk
-         nxi6zSkde413hkz4EcuCTsHJAG/cwE0WmustlujvBGQregD5zfo8OxbCYTlkH4YY0G05
-         mmwY2/vL/gZ/LiJ7pmD0Vm0vzAVeuBISjbZSobuZ8UEmavRrzA73wTeFatcQ0O3xUNfi
-         LFKw==
-X-Gm-Message-State: AOAM5312Wijh0dLnT7N9lAJcKLNSPvL3DaRUVowOrPgkBH+OlVD82kEU
-        O9ZChEpc/zDyRQFu1GPO5Uaz4Q==
-X-Google-Smtp-Source: ABdhPJwBf3I6ij+ULq029hUbUuZmOD7tr52WJf7LJCXxnaMIoXWPHUkHc2sjiXQ8vxKTH7wBmuZuMw==
-X-Received: by 2002:a17:90a:d903:: with SMTP id c3mr590566pjv.27.1615923010233;
-        Tue, 16 Mar 2021 12:30:10 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id i10sm19581504pgo.75.2021.03.16.12.30.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pLdF7zoGUozqAe1+lMlJqQTbxjR6BOgEH8RjV/EprUs=;
+        b=uDfTon/tx6WDluKxW5H6iD5WXFvTFRJbyJUOZkyZjVj8JDAkiHA1rwAQYyvlLLEygo
+         asLoU8fQLJTto8fTH3ucaK17mC7oGjtvLib7DKz1oS4VPP7/Y3vKApEdC1i9txJV2/PW
+         3QIE33o+QhEbEvZsx5uUIzl7r0OfZFXrQEThblUg9yEZgqnM9zdqJxsiIHD+yE8yeBIE
+         v2viLj+oJuF/d5TP+3OCN3Ov978BiqIJ8I+4o9K1AHCCIaA79RS4EWaU6ZKbngXNt6EN
+         2cjgH9AbPtCpHZ0EkGgQYHet1Tqv+GUNCXoF+9PMlqr5O+FQ9ND4NxtjslSH3GpP37EQ
+         VFPA==
+X-Gm-Message-State: AOAM5306o6WKzMobVkUiNQJGcX2Yn7cWLQvuKRPghZFkFwmDlXMg/3ZP
+        HBUBbaFsXLiDs7zWtb8j6jwK4A==
+X-Google-Smtp-Source: ABdhPJyEfD5qyUJpXMnmRwF8LdnvbWjp80VfMkefbF3lX/KgC03qypJ+fvZnPJ5Q4ek1QE9pAW0Wnw==
+X-Received: by 2002:a05:6a00:1390:b029:20a:5a18:ad0f with SMTP id t16-20020a056a001390b029020a5a18ad0fmr886287pfg.66.1615923058874;
+        Tue, 16 Mar 2021 12:30:58 -0700 (PDT)
+Received: from kuabhs-cdev.c.googlers.com.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id d6sm17097605pfq.109.2021.03.16.12.30.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 12:30:09 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 13:30:08 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mike.leach@linaro.org, anshuman.khandual@arm.com,
-        leo.yan@linaro.org
-Subject: Re: [PATCH v4 09/19] coresight: etm4x: Move ETM to prohibited region
- for disable
-Message-ID: <20210316193008.GD1387186@xps15>
-References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
- <20210225193543.2920532-10-suzuki.poulose@arm.com>
+        Tue, 16 Mar 2021 12:30:58 -0700 (PDT)
+From:   Abhishek Kumar <kuabhs@chromium.org>
+To:     johannes@sipsolutions.net
+Cc:     kuabhs@chromium.org, netdev@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        briannorris@chromium.org, linux-wireless@vger.kernel.org
+Subject: [PATCH] net: wireless: search and hold bss in cfg80211_connect_done
+Date:   Tue, 16 Mar 2021 19:29:58 +0000
+Message-Id: <20210316192919.1.I26d48d8a4d06ef9bd2b57f857c58ae681cc33783@changeid>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225193543.2920532-10-suzuki.poulose@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 07:35:33PM +0000, Suzuki K Poulose wrote:
-> If the CPU implements Arm v8.4 Trace filter controls (FEAT_TRF),
-> move the ETM to trace prohibited region using TRFCR, while disabling.
-> 
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
-> New patch
+If BSS instance is not provided in __cfg80211_connect_result then
+a get bss is performed. This can return NULL if the BSS for the
+given SSID is expired due to delayed scheduling of connect result event
+in rdev->event_work. This can cause WARN_ON(!cr->bss) in
+__cfg80211_connect_result to be triggered and cause cascading
+failures. To mitigate this, initiate a get bss call in
+cfg80211_connect_done itself and hold it to ensure that the BSS
+instance does not get expired.
 
-I would ask you to refrain from introducing new patches.  Otherwise the goal
-posts keep on moving with every revision and we'll never get through.  Fixes and
-enhancement can come in later patchsets.  
+Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+---
 
-> ---
->  .../coresight/coresight-etm4x-core.c          | 21 +++++++++++++++++--
->  drivers/hwtracing/coresight/coresight-etm4x.h |  2 ++
->  2 files changed, 21 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 15016f757828..00297906669c 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -31,6 +31,7 @@
->  #include <linux/pm_runtime.h>
->  #include <linux/property.h>
->  
-> +#include <asm/barrier.h>
->  #include <asm/sections.h>
->  #include <asm/sysreg.h>
->  #include <asm/local.h>
-> @@ -654,6 +655,7 @@ static int etm4_enable(struct coresight_device *csdev,
->  static void etm4_disable_hw(void *info)
->  {
->  	u32 control;
-> +	u64 trfcr;
->  	struct etmv4_drvdata *drvdata = info;
->  	struct etmv4_config *config = &drvdata->config;
->  	struct coresight_device *csdev = drvdata->csdev;
-> @@ -676,6 +678,16 @@ static void etm4_disable_hw(void *info)
->  	/* EN, bit[0] Trace unit enable bit */
->  	control &= ~0x1;
->  
-> +	/*
-> +	 * If the CPU supports v8.4 Trace filter Control,
-> +	 * set the ETM to trace prohibited region.
-> +	 */
-> +	if (drvdata->trfc) {
-> +		trfcr = read_sysreg_s(SYS_TRFCR_EL1);
-> +		write_sysreg_s(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE),
-> +			       SYS_TRFCR_EL1);
-> +		isb();
-> +	}
->  	/*
->  	 * Make sure everything completes before disabling, as recommended
->  	 * by section 7.3.77 ("TRCVICTLR, ViewInst Main Control Register,
-> @@ -683,12 +695,16 @@ static void etm4_disable_hw(void *info)
->  	 */
->  	dsb(sy);
->  	isb();
-> +	/* Trace synchronization barrier, is a nop if not supported */
-> +	tsb_csync();
->  	etm4x_relaxed_write32(csa, control, TRCPRGCTLR);
->  
->  	/* wait for TRCSTATR.PMSTABLE to go to '1' */
->  	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_PMSTABLE_BIT, 1))
->  		dev_err(etm_dev,
->  			"timeout while waiting for PM stable Trace Status\n");
-> +	if (drvdata->trfc)
-> +		write_sysreg_s(trfcr, SYS_TRFCR_EL1);
+ net/wireless/sme.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-drvdata->trfc is invariably set to true in cpu_enable_tracing() and as such
-testing for it is not required. 
+diff --git a/net/wireless/sme.c b/net/wireless/sme.c
+index 07756ca5e3b5..52f65991accd 100644
+--- a/net/wireless/sme.c
++++ b/net/wireless/sme.c
+@@ -724,15 +724,8 @@ void __cfg80211_connect_result(struct net_device *dev,
+ 	}
+ #endif
+ 
+-	if (!cr->bss && (cr->status == WLAN_STATUS_SUCCESS)) {
++	if (cr->status == WLAN_STATUS_SUCCESS)
+ 		WARN_ON_ONCE(!wiphy_to_rdev(wdev->wiphy)->ops->connect);
+-		cr->bss = cfg80211_get_bss(wdev->wiphy, NULL, cr->bssid,
+-					   wdev->ssid, wdev->ssid_len,
+-					   wdev->conn_bss_type,
+-					   IEEE80211_PRIVACY_ANY);
+-		if (cr->bss)
+-			cfg80211_hold_bss(bss_from_pub(cr->bss));
+-	}
+ 
+ 	if (wdev->current_bss) {
+ 		cfg80211_unhold_bss(wdev->current_bss);
+@@ -882,6 +875,18 @@ void cfg80211_connect_done(struct net_device *dev,
+ 	ev->cr.fils.update_erp_next_seq_num = params->fils.update_erp_next_seq_num;
+ 	if (params->fils.update_erp_next_seq_num)
+ 		ev->cr.fils.erp_next_seq_num = params->fils.erp_next_seq_num;
++
++	/* Acquire and hold the bss if bss is not provided in argument.
++	 * This ensures that the BSS does not get expired if the schedule
++	 * of the rdev->event_work gets delayed.
++	 */
++	if (!params->bss && params->bssid)
++		params->bss = cfg80211_get_bss(wdev->wiphy, NULL,
++					       params->bssid,
++					       wdev->ssid, wdev->ssid_len,
++					       wdev->conn_bss_type,
++					       IEEE80211_PRIVACY_ANY);
++
+ 	if (params->bss)
+ 		cfg80211_hold_bss(bss_from_pub(params->bss));
+ 	ev->cr.bss = params->bss;
+-- 
+2.31.0.rc2.261.g7f71774620-goog
 
->  
->  	/* read the status of the single shot comparators */
->  	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
-> @@ -873,7 +889,7 @@ static bool etm4_init_csdev_access(struct etmv4_drvdata *drvdata,
->  	return false;
->  }
->  
-> -static void cpu_enable_tracing(void)
-> +static void cpu_enable_tracing(struct etmv4_drvdata *drvdata)
->  {
->  	u64 dfr0 = read_sysreg(id_aa64dfr0_el1);
->  	u64 trfcr;
-> @@ -881,6 +897,7 @@ static void cpu_enable_tracing(void)
->  	if (!cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_TRACE_FILT_SHIFT))
->  		return;
->  
-> +	drvdata->trfc = true;
->  	/*
->  	 * If the CPU supports v8.4 SelfHosted Tracing, enable
->  	 * tracing at the kernel EL and EL0, forcing to use the
-> @@ -1082,7 +1099,7 @@ static void etm4_init_arch_data(void *info)
->  	/* NUMCNTR, bits[30:28] number of counters available for tracing */
->  	drvdata->nr_cntr = BMVAL(etmidr5, 28, 30);
->  	etm4_cs_lock(drvdata, csa);
-> -	cpu_enable_tracing();
-> +	cpu_enable_tracing(drvdata);
-
-At least for this patch, the above three hunks aren't needed.
-
->  }
->  
->  static inline u32 etm4_get_victlr_access_type(struct etmv4_config *config)
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-> index 0af60571aa23..f6478ef642bf 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-> @@ -862,6 +862,7 @@ struct etmv4_save_state {
->   * @nooverflow:	Indicate if overflow prevention is supported.
->   * @atbtrig:	If the implementation can support ATB triggers
->   * @lpoverride:	If the implementation can support low-power state over.
-> + * @trfc:	If the implementation supports Arm v8.4 trace filter controls.
->   * @config:	structure holding configuration parameters.
->   * @save_state:	State to be preserved across power loss
->   * @state_needs_restore: True when there is context to restore after PM exit
-> @@ -912,6 +913,7 @@ struct etmv4_drvdata {
->  	bool				nooverflow;
->  	bool				atbtrig;
->  	bool				lpoverride;
-> +	bool				trfc;
-
-Nor is this one.  
-
->  	struct etmv4_config		config;
->  	struct etmv4_save_state		*save_state;
->  	bool				state_needs_restore;
-> -- 
-> 2.24.1
-> 
