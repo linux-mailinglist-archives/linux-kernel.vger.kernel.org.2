@@ -2,98 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A8933DA3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:06:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FDE33DA42
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239060AbhCPRGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:06:23 -0400
-Received: from mga17.intel.com ([192.55.52.151]:32050 "EHLO mga17.intel.com"
+        id S239078AbhCPRGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:06:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239014AbhCPRFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:05:55 -0400
-IronPort-SDR: Qn0wfbxoMZUatrpKtYDN4yobilay2fQFalwfaqCl+510QvKtsyTygHV93UBpY0Z7Yvc0HFJY75
- HL8sAHKO3hRg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="169213788"
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="169213788"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 10:05:53 -0700
-IronPort-SDR: FA3KiXXjyqZfFiLvNVY1Ehj/bzd5P2bj8V8My5izYkm9lIoSrtSDYT6GG4DsKtdhkrzeu/HMB6
- pCbIZDHxzcLg==
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="405605306"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 10:05:51 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lMD8e-00D0vn-MK; Tue, 16 Mar 2021 19:05:48 +0200
-Date:   Tue, 16 Mar 2021 19:05:48 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v4 2/2] gpio: sch: Hook into ACPI SCI handler to catch
- GPIO edge events
-Message-ID: <YFDlbKD4Q13lDmM3@smile.fi.intel.com>
-References: <20210316162613.87710-1-andriy.shevchenko@linux.intel.com>
- <20210316162613.87710-3-andriy.shevchenko@linux.intel.com>
+        id S239087AbhCPRGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:06:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A4FB65115;
+        Tue, 16 Mar 2021 17:06:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615914377;
+        bh=L3Wwuoc+0jCDrKjluqD3/6h3roo1LSNauhjIL1FD3Do=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ojzkd6/yXh5qbU1uqmYwLzTzJWekdPdfCIJ+mfhGVm0F7aA3R+HvZ9erNBsJeL2UQ
+         aL8l5vTWmzTJUR6mWzQRGA432oA0tFYn94wGQ4uvaH6LVyorsnrThq/VEecvTxJ99h
+         y1dO4VuLua6aUoHkoEwhkmMliNuyUqYQOnUA+GruuYIxSSp5MKB0mHoETtzELYDzO3
+         x+bq9HjIcRrhnt1ud3tiibdsU9FK9mvh5jBWTm6xRCrh1G8HWfRdYUi6arauN7vNQC
+         /lwGC+I5y5/b/lPeCrnqdljrwsjdCS4NKhUavRJ9CpEdUCj3jp+18ej31HwBJBi/Gw
+         uWJogWDiMGIcA==
+Date:   Tue, 16 Mar 2021 10:06:16 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Hariprasad Kelam <hkelam@marvell.com>
+Cc:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <davem@davemloft.net>, <sgoutham@marvell.com>,
+        <lcherian@marvell.com>, <gakula@marvell.com>, <jerinj@marvell.com>,
+        <sbhatta@marvell.com>
+Subject: Re: [net PATCH 4/9] octeontx2-af: Remove TOS field from MKEX TX
+Message-ID: <20210316100616.333704ad@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1615886833-71688-5-git-send-email-hkelam@marvell.com>
+References: <1615886833-71688-1-git-send-email-hkelam@marvell.com>
+        <1615886833-71688-5-git-send-email-hkelam@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316162613.87710-3-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 06:26:13PM +0200, Andy Shevchenko wrote:
-> From: Jan Kiszka <jan.kiszka@siemens.com>
+On Tue, 16 Mar 2021 14:57:08 +0530 Hariprasad Kelam wrote:
+> From: Subbaraya Sundeep <sbhatta@marvell.com>
 > 
-> Neither the ACPI description on the Quark platform provides the required
-> information is to do establish generic handling nor hardware capable of
-> doing it. According to the datasheet the hardware can generate SCI events.
-> Therefore, we need to hook from the driver directly into SCI handler of
-> the ACPI subsystem in order to catch and report GPIO-related events.
+> TOS overlaps with DMAC field in mcam search key and hence installing
+> rules for TX side are failing. Hence remove TOS field from TX profile.
 
-> Validated on the Quark-based IOT2000 platform.
-
-This depends on the test by Jan or somebody with the same hardware available.
-
-> +static u32 sch_gpio_sci_handler(void *context)
-> +{
-> +	struct sch_gpio *sch = context;
-> +	struct gpio_chip *gc = &sch->chip;
-> +	unsigned long core_status, resume_status;
-> +	unsigned long pending;
-> +	int offset;
-
-> +	core_status = inl(sch->iobase + GTS + 0x00);
-> +	resume_status = inl(sch->iobase + GTS + 0x20);
-> +
-> +	pending = (resume_status << sch->resume_base) | core_status;
-> +
-> +	for_each_set_bit(offset, &pending, sch->chip.ngpio)
-> +		generic_handle_irq(irq_find_mapping(gc->irq.domain, offset));
-> +
-> +	outl(core_status, sch->iobase + GTS + 0x00);
-> +	outl(resume_status, sch->iobase + GTS + 0x20);
-
-I guess this still needs to be protected by spin_lock.
-
-> +	return pending ? ACPI_INTERRUPT_HANDLED : ACPI_INTERRUPT_NOT_HANDLED;
-> +}
-
-...
-
-Also I am in doubt that we need to instantiate an IRQ chip if the ACPI SCI
-handler registration fails. But I don't know what is better approach here, to
-NULL the pointer, or try to register handler before we will have an IRQ chip in
-place. Any recommendations?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Could you clarify what "installing rules is failing" means?
+Return error or does not behave correctly?
