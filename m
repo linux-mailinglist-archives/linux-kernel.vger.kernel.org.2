@@ -2,71 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F8033CF51
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60DA233CF57
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:10:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233673AbhCPIJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 04:09:20 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:35677 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233998AbhCPII6 (ORCPT
+        id S234101AbhCPIKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 04:10:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49732 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231156AbhCPIKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 04:08:58 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0US7bm7Q_1615882130;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0US7bm7Q_1615882130)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 16 Mar 2021 16:08:56 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     harry.wentland@amd.com
-Cc:     sunpeng.li@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] drm/amd/display: Remove unnecessary conversion to bool
-Date:   Tue, 16 Mar 2021 16:08:49 +0800
-Message-Id: <1615882129-14822-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 16 Mar 2021 04:10:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615882214;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sHROXA+CQMQiClGXMoA926mIGShsZigtdFiw3Oqg6pI=;
+        b=T97GW9ZD4bu5M521QhhO16UgvCQT1+pTysUlaGnAc2ceBszsjiGiFywf0IvZBKHhvf5c/S
+        XTC70SzMVpTfKmih3MrMp2t9M/IVaMp/312CjtVDaSs25EfZ2l/g9aEam034FaSDS6bBLe
+        mumCo3ZQwvufCYDN1JCcyT8zpoTl1P4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-250-0eejHMe6OYCq_dHeuffm7g-1; Tue, 16 Mar 2021 04:10:11 -0400
+X-MC-Unique: 0eejHMe6OYCq_dHeuffm7g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D0FB107ACCD;
+        Tue, 16 Mar 2021 08:10:10 +0000 (UTC)
+Received: from T590 (ovpn-13-0.pek2.redhat.com [10.72.13.0])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 006DA6A045;
+        Tue, 16 Mar 2021 08:09:51 +0000 (UTC)
+Date:   Tue, 16 Mar 2021 16:09:46 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Sergei Shtepa <sergei.shtepa@veeam.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        pavel.tide@veeam.com
+Subject: Re: [PATCH v7 2/3] block: add bdev_interposer
+Message-ID: <YFBnypYemiR08A/c@T590>
+References: <1615563895-28565-1-git-send-email-sergei.shtepa@veeam.com>
+ <1615563895-28565-3-git-send-email-sergei.shtepa@veeam.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615563895-28565-3-git-send-email-sergei.shtepa@veeam.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+On Fri, Mar 12, 2021 at 06:44:54PM +0300, Sergei Shtepa wrote:
+> bdev_interposer allows to redirect bio requests to another devices.
+> 
+> Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
+> ---
+>  block/bio.c               |  2 ++
+>  block/blk-core.c          | 57 +++++++++++++++++++++++++++++++++++++++
+>  block/genhd.c             | 54 +++++++++++++++++++++++++++++++++++++
+>  include/linux/blk_types.h |  3 +++
+>  include/linux/blkdev.h    |  9 +++++++
+>  5 files changed, 125 insertions(+)
+> 
+> diff --git a/block/bio.c b/block/bio.c
+> index a1c4d2900c7a..0bfbf06475ee 100644
+> --- a/block/bio.c
+> +++ b/block/bio.c
+> @@ -640,6 +640,8 @@ void __bio_clone_fast(struct bio *bio, struct bio *bio_src)
+>  		bio_set_flag(bio, BIO_THROTTLED);
+>  	if (bio_flagged(bio_src, BIO_REMAPPED))
+>  		bio_set_flag(bio, BIO_REMAPPED);
+> +	if (bio_flagged(bio_src, BIO_INTERPOSED))
+> +		bio_set_flag(bio, BIO_INTERPOSED);
+>  	bio->bi_opf = bio_src->bi_opf;
+>  	bio->bi_ioprio = bio_src->bi_ioprio;
+>  	bio->bi_write_hint = bio_src->bi_write_hint;
+> diff --git a/block/blk-core.c b/block/blk-core.c
+> index fc60ff208497..da1abc4c27a9 100644
+> --- a/block/blk-core.c
+> +++ b/block/blk-core.c
+> @@ -1018,6 +1018,55 @@ static blk_qc_t __submit_bio_noacct_mq(struct bio *bio)
+>  	return ret;
+>  }
+>  
+> +static noinline blk_qc_t submit_bio_interposed(struct bio *bio)
+> +{
+> +	blk_qc_t ret = BLK_QC_T_NONE;
+> +	struct bio_list bio_list[2] = { };
+> +	struct gendisk *orig_disk;
+> +
+> +	if (current->bio_list) {
+> +		bio_list_add(&current->bio_list[0], bio);
+> +		return BLK_QC_T_NONE;
+> +	}
+> +
+> +	orig_disk = bio->bi_bdev->bd_disk;
+> +	if (unlikely(bio_queue_enter(bio)))
+> +		return BLK_QC_T_NONE;
+> +
+> +	current->bio_list = bio_list;
+> +
+> +	do {
+> +		struct block_device *interposer = bio->bi_bdev->bd_interposer;
+> +
+> +		if (unlikely(!interposer)) {
+> +			/* interposer was removed */
+> +			bio_list_add(&current->bio_list[0], bio);
+> +			break;
+> +		}
+> +		/* assign bio to interposer device */
+> +		bio_set_dev(bio, interposer);
+> +		bio_set_flag(bio, BIO_INTERPOSED);
+> +
+> +		if (!submit_bio_checks(bio))
+> +			break;
+> +		/*
+> +		 * Because the current->bio_list is initialized,
+> +		 * the submit_bio callback will always return BLK_QC_T_NONE.
+> +		 */
+> +		interposer->bd_disk->fops->submit_bio(bio);
 
-./drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c:721:65-70: WARNING:
-conversion to bool not needed here.
+Given original request queue may become live when calling attach() and
+detach(), see below comment. bdev_interposer_detach() may be run
+when running ->submit_bio(), meantime the interposer device is
+gone during the period, then kernel oops.
 
-./drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c:1139:67-72: WARNING:
-conversion to bool not needed here.
+> +	} while (false);
+> +
+> +	current->bio_list = NULL;
+> +
+> +	blk_queue_exit(orig_disk->queue);
+> +
+> +	/* Resubmit remaining bios */
+> +	while ((bio = bio_list_pop(&bio_list[0])))
+> +		ret = submit_bio_noacct(bio);
+> +
+> +	return ret;
+> +}
+> +
+>  /**
+>   * submit_bio_noacct - re-submit a bio to the block device layer for I/O
+>   * @bio:  The bio describing the location in memory and on the device.
+> @@ -1029,6 +1078,14 @@ static blk_qc_t __submit_bio_noacct_mq(struct bio *bio)
+>   */
+>  blk_qc_t submit_bio_noacct(struct bio *bio)
+>  {
+> +	/*
+> +	 * Checking the BIO_INTERPOSED flag is necessary so that the bio
+> +	 * created by the bdev_interposer do not get to it for processing.
+> +	 */
+> +	if (bdev_has_interposer(bio->bi_bdev) &&
+> +	    !bio_flagged(bio, BIO_INTERPOSED))
+> +		return submit_bio_interposed(bio);
+> +
+>  	if (!submit_bio_checks(bio))
+>  		return BLK_QC_T_NONE;
+>  
+> diff --git a/block/genhd.c b/block/genhd.c
+> index c55e8f0fced1..c840ecffea68 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -30,6 +30,11 @@
+>  static struct kobject *block_depr;
+>  
+>  DECLARE_RWSEM(bdev_lookup_sem);
+> +/*
+> + * Prevents different block-layer interposers from attaching or detaching
+> + * to the block device at the same time.
+> + */
+> +static DEFINE_MUTEX(bdev_interposer_attach_lock);
+>  
+>  /* for extended dynamic devt allocation, currently only one major is used */
+>  #define NR_EXT_DEVT		(1 << MINORBITS)
+> @@ -1940,3 +1945,52 @@ static void disk_release_events(struct gendisk *disk)
+>  	WARN_ON_ONCE(disk->ev && disk->ev->block != 1);
+>  	kfree(disk->ev);
+>  }
+> +
+> +int bdev_interposer_attach(struct block_device *original,
+> +			   struct block_device *interposer)
+> +{
+> +	int ret = 0;
+> +
+> +	if (WARN_ON(((!original) || (!interposer))))
+> +		return -EINVAL;
+> +	/*
+> +	 * interposer should be simple, no a multi-queue device
+> +	 */
+> +	if (!interposer->bd_disk->fops->submit_bio)
+> +		return -EINVAL;
+> +
+> +	if (WARN_ON(!blk_mq_is_queue_frozen(original->bd_disk->queue)))
+> +		return -EPERM;
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The original request queue may become live now...
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c
-index 6e864b1..434d3c4 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c
-@@ -718,7 +718,7 @@ bool dpp3_program_blnd_lut(
- 		next_mode = LUT_RAM_B;
- 
- 	dpp3_power_on_blnd_lut(dpp_base, true);
--	dpp3_configure_blnd_lut(dpp_base, next_mode == LUT_RAM_A ? true:false);
-+	dpp3_configure_blnd_lut(dpp_base, next_mode == LUT_RAM_A);
- 
- 	if (next_mode == LUT_RAM_A)
- 		dpp3_program_blnd_luta_settings(dpp_base, params);
-@@ -1136,7 +1136,7 @@ bool dpp3_program_shaper(
- 	else
- 		next_mode = LUT_RAM_A;
- 
--	dpp3_configure_shaper_lut(dpp_base, next_mode == LUT_RAM_A ? true:false);
-+	dpp3_configure_shaper_lut(dpp_base, next_mode == LUT_RAM_A);
- 
- 	if (next_mode == LUT_RAM_A)
- 		dpp3_program_shaper_luta_settings(dpp_base, params);
+> +
+> +	mutex_lock(&bdev_interposer_attach_lock);
+> +
+> +	if (bdev_has_interposer(original))
+> +		ret = -EBUSY;
+> +	else {
+> +		original->bd_interposer = bdgrab(interposer);
+> +		if (!original->bd_interposer)
+> +			ret = -ENODEV;
+> +	}
+> +
+> +	mutex_unlock(&bdev_interposer_attach_lock);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(bdev_interposer_attach);
+> +
+> +void bdev_interposer_detach(struct block_device *original)
+> +{
+> +	if (WARN_ON(!original))
+> +		return;
+> +
+> +	if (WARN_ON(!blk_mq_is_queue_frozen(original->bd_disk->queue)))
+> +		return;
+
+The original request queue may become live now...
+
+
 -- 
-1.8.3.1
+Ming
 
