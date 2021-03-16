@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7C433DCBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA5E33DCC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:45:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240088AbhCPSoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50706 "EHLO
+        id S240107AbhCPSpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:45:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234517AbhCPSnt (ORCPT
+        with ESMTP id S240092AbhCPSoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:43:49 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879A4C06174A;
-        Tue, 16 Mar 2021 11:43:47 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id x29so23198869pgk.6;
-        Tue, 16 Mar 2021 11:43:47 -0700 (PDT)
+        Tue, 16 Mar 2021 14:44:46 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D315C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:44:46 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id u1so42841876ybu.14
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:44:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7UgBChjZpHGGBdJz45MNfk2R0PgaJI9RIsUqJZWEEBg=;
-        b=l2O/tdtwHTVc0iET1er/VEODA9L9wa5qHiP7wNPIX7Y1qE9OXqg9vOjetPqgmoPwiT
-         h48n5cE9y8647npjRt9zlhxaC1wkH6pqQ7oQ3U+O/x46RImVPz9Dx4a60Tnff3yV2RsW
-         234P6+nT4R7LFEC+WHpFDOwX8Px1gW7wU491sr5BW1ShWYP9VMBFhirTbVWABGvl9kGZ
-         u07bxSP5joMIH61ukdFm7fprNvDDD6R1HBdJEpwHn+9El438e5Uek+7HD4PGJYofe5Yb
-         DIjYdPZmcdfQSICLo2bUFqQBvHvTqCTAVuUN8JwusCe/YU1y+z5lGzLOfO2KQdgZH0B5
-         kyxA==
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=B7pVfJtAzkpAW4g2RjA9F8Hx9jH9epVTR8buiCtjOQY=;
+        b=IdEsbcouCphArUM6+1+XobihwWZocP60WYNQ4DKS/5AwQbJgTBuKe/m843KN+Hlqum
+         rvUGFgkyRm4NIHHBX7VbABhnkub0YGM22LDSHVS0FcLSv7J8PMISZ29743QEgPHIZNCT
+         abhSfEW+w43DCWYcO0xgndK0b4cMWBmMyDiOQdkkCyAfH1goeopGZynOl3EHl2Rkpy9p
+         wF+/W1aDlhCB0Sn+DGpbQbVKPQJDqxiFvk6X0AB8hCvIHlMPEy8230mFyuEXMyQixJqQ
+         7/7D8G2Wj+l4t2uLIenENHfL96u+yxGT/WXpw81B1qTL6WeEyRYmdodvqc7Y4SS6qQf7
+         VE5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7UgBChjZpHGGBdJz45MNfk2R0PgaJI9RIsUqJZWEEBg=;
-        b=A4lmKnD4licSDBnAtFWc37gXDI/7ay1IuWSu54OhKuzvptpdzz/0Lg1Ren/l1pMwz5
-         5fPVedPXlgOXwkRUGSjV4YBJU79/rwmlG/Bc4d35KC6OifADlP35qP+aZwCXYgcbUfUt
-         nMcQPJ86TRaBBkc7XJeOpxIGeLFQ03N/JcW2nRMTbETgOYii4Izm3Rb417aXRDPA41s1
-         qR4bXhfnXUnbtwskCKeFAdOomutWX3UmBBpawofaUc6IR42H8ENx91s5Vu5H2SPFxXSc
-         XLF6A0hLxvc12UQ2pTpymdsnWomOWazcQZKAo+uWBkjVr8llR7efb9AtDGpLuU++OUD5
-         JAkA==
-X-Gm-Message-State: AOAM533mNFGjtpGik1/L9QpeDO6oJ+w+Watw/G67Lwj11TKH2pguKmAf
-        v3QD7DwN8MkTBHWf7RcZssMHUN0/cW/6OZ9cs8s=
-X-Google-Smtp-Source: ABdhPJzkjw+riPDdKPZ7e0APAki+fUeTEDADQ6YafUXUv3g/dKs/k9cOusTUQ7imNWkKGKoCH+Q4mb0do9k4fNjGYDU=
-X-Received: by 2002:a63:1266:: with SMTP id 38mr917541pgs.266.1615920227155;
- Tue, 16 Mar 2021 11:43:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <1615800610-34700-1-git-send-email-linyunsheng@huawei.com> <20210315.164151.1093629330365238718.davem@redhat.com>
-In-Reply-To: <20210315.164151.1093629330365238718.davem@redhat.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Tue, 16 Mar 2021 11:43:36 -0700
-Message-ID: <CAM_iQpWPSouO-JP4xHFqOLM8H4Rn5ucF68sa_EK5hUWSYw8feA@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: sched: remove unnecessay lock protection
- for skb_bad_txq/gso_skb
-To:     David Miller <davem@redhat.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=B7pVfJtAzkpAW4g2RjA9F8Hx9jH9epVTR8buiCtjOQY=;
+        b=oceNVndL8lbUXoYn3CSQNTlZG1XsWMc/ub1apANrpP3NqU4KJPwIkG6l4OFbi6iMIj
+         xaQvpn7HkkYrWcg1SsG2RFAYkcUFFaas3A4UX8tLIm+yH6mqTvChNAtz0Zj55ynMp7+H
+         RPSlNK5BnudhM76izfBTYPRnCycxfCt/BleQ5bPY/PCQ8q15aU2SOYXPCN0XDIktlmlf
+         OAFmSksJ6I4MtA86RdJLFm01R0gzyES/m3eR5XTaiZytlIlTQRPZACzUuds4klL1OE/R
+         M/E/7ojtNmhFkcfaaZ7w3/4xBF9LRpXvaceJcH/dG6l6EdfNrMzSEQ3xT0//mx5fCGXk
+         O39g==
+X-Gm-Message-State: AOAM532xhB8pqzMMjfPGIXUbcuCXri/zrGBLpXJuLpyAFtS5cnV+Eh+1
+        nMQ10Rz2YY+lfbqv4bqLe0eFBruU60E=
+X-Google-Smtp-Source: ABdhPJyekYTrFapZGgOnWObiCCFKwGHsizuQQ3hq48wnHVlvZApvgk42WrY4I/0k/TMh9fye+P0QgCtuAgI=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:e113:95c2:2d1:e304])
+ (user=seanjc job=sendgmr) by 2002:a25:bc41:: with SMTP id d1mr322696ybk.125.1615920285519;
+ Tue, 16 Mar 2021 11:44:45 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue, 16 Mar 2021 11:44:32 -0700
+Message-Id: <20210316184436.2544875-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH 0/4] KVM: x86: MSR filtering and related fixes
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>,
+        Yuan Yao <yaoyuan0329os@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 4:42 PM David Miller <davem@redhat.com> wrote:
->
-> From: Yunsheng Lin <linyunsheng@huawei.com>
-> Date: Mon, 15 Mar 2021 17:30:10 +0800
->
-> > Currently qdisc_lock(q) is taken before enqueuing and dequeuing
-> > for lockless qdisc's skb_bad_txq/gso_skb queue, qdisc->seqlock is
-> > also taken, which can provide the same protection as qdisc_lock(q).
-> >
-> > This patch removes the unnecessay qdisc_lock(q) protection for
-> > lockless qdisc' skb_bad_txq/gso_skb queue.
-> >
-> > And dev_reset_queue() takes the qdisc->seqlock for lockless qdisc
-> > besides taking the qdisc_lock(q) when doing the qdisc reset,
-> > some_qdisc_is_busy() takes both qdisc->seqlock and qdisc_lock(q)
-> > when checking qdisc status. It is unnecessary to take both lock
-> > while the fast path only take one lock, so this patch also changes
-> > it to only take qdisc_lock(q) for locked qdisc, and only take
-> > qdisc->seqlock for lockless qdisc.
-> >
-> > Since qdisc->seqlock is taken for lockless qdisc when calling
-> > qdisc_is_running() in some_qdisc_is_busy(), use qdisc->running
-> > to decide if the lockless qdisc is running.
-> >
-> > Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->
-> What about other things protected by this lock, such as statistics and qlen?
->
-> This change looks too risky to me.
+Rework the MSR filtering implementation to treat a given filter instance
+as an atomic unit, and to properly protect it with SRCU.
 
-They are per-cpu for pfifo_fast which sets TCQ_F_CPUSTATS too.
+Fix two nVMX bugs related to MSR filtering (one directly, one indirectly),
+and additional cleanup on top.
 
-Thanks.
+Regarding the macro insanity in patch 03, I verified the before and after
+binary output for vmx_set_intercept_for_msr() was identical (this required
+wrapping "if (msr <= 0x1fff)" with (un)likely in both the before and after
+versions; gcc made seemingly random choices without forcing it to favor a
+specific branch).
+
+Sean Christopherson (4):
+  KVM: x86: Protect userspace MSR filter with SRCU, and set
+    atomically-ish
+  KVM: nVMX: Handle dynamic MSR intercept toggling
+  KVM: VMX: Macrofy the MSR bitmap getters and setters
+  KVM: nVMX: Clean up x2APIC MSR handling for L2
+
+ Documentation/virt/kvm/api.rst  |   6 +-
+ arch/x86/include/asm/kvm_host.h |  17 ++--
+ arch/x86/kvm/vmx/nested.c       | 161 +++++++++++++-------------------
+ arch/x86/kvm/vmx/vmx.c          |  67 +------------
+ arch/x86/kvm/vmx/vmx.h          |  32 +++++++
+ arch/x86/kvm/x86.c              | 109 ++++++++++++---------
+ 6 files changed, 176 insertions(+), 216 deletions(-)
+
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
