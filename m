@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D794D33CD84
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:48:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A025933CD86
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:48:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235568AbhCPFrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:47:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52040 "EHLO
+        id S235578AbhCPFry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:47:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233064AbhCPFrr (ORCPT
+        with ESMTP id S233240AbhCPFrs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:47:47 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F6BC06174A;
-        Mon, 15 Mar 2021 22:47:47 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id 18so8069425pfo.6;
-        Mon, 15 Mar 2021 22:47:47 -0700 (PDT)
+        Tue, 16 Mar 2021 01:47:48 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C0CC06174A;
+        Mon, 15 Mar 2021 22:47:48 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id y13so8089069pfr.0;
+        Mon, 15 Mar 2021 22:47:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+kjXRUyRx/w7Y8GaJq7eCfF5pid4PKqWc6tkkujLoCo=;
-        b=GOtQLLzKYgSfUtq5WLIWXNJSK0unMMDwpKZvYGLRLdlXUKEUi1ApC9ipDYEdPiZkNv
-         FbxUUp9CdHFBPSebPXM1Ojj/eVFMoYcilQl5r4TOCdUVire12/dV/OUlKJsZJCvE7qaA
-         jUjcuj8MNtedi/XvZxOfWPGcXrBpm6A97jw+sf7W0J39dTrQ3zjGA+rIIQ9ap5pUBe+B
-         NLSP0ArKnJevbfmDr2mSj/G8MNRImqrQqI9FRHYYVim/tdbSigMhO5K3xodfcWS4BX/Q
-         E4NL4SrtYQJ9i11CxieSghuwMpCG/e6tXj4C8rrGEkysN4FX2HW6do/oSCc95Iw4vsA6
-         gEQw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=YdfNXUR2nGRoqtEfb9aHhNleHa9jupSGIQeUUdFEew0=;
+        b=P9jrJsT04yAYKWF0oyEZfa1e8LzChfeYMRYCQYH7IQm6pKficuog+aVw3LJ4BC/cNj
+         XcrXNvtGkLyVgR7Wm8dBPdpKmqEW1ZjWVaQrgcPmL0UbxfmhRcYMe7K97LthKzcM4Jhj
+         cX2NdXEGar8yFlzASn8FtdB3BlOs5vjaqXgkg8VM3kDGLGO/YB6rrr9kFFAKLmQ9rABS
+         iHE4CyG1PJX+VUOSly3m81et63P6XKrvnZzRs5vtaa9vt792C4Nc5+ngfpzt1Y3d8+WV
+         SJ2lF4oU2qARBHaFqSQaHvJo+OeoXrMLQfrbL+IjNuJMi3XGr7er/f/uGMcc2B6+jj/O
+         wJIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+kjXRUyRx/w7Y8GaJq7eCfF5pid4PKqWc6tkkujLoCo=;
-        b=TUa/1LTHssp0upHEhVeTU7Ma4TUKg3guuORHS0quem7t92Z28Fs1DfaQXpRIWHExOV
-         cDrLUVr2b7rmME2+tYKI5yrYi6mWZZQiPNbvKyd727EYi5jRQX0ob8Mjwa9mU6LqmAUQ
-         jbPlBk7e+0iXmXB2XFtSaWDPvebDmZCVeymDqEJYFnrT5ZH3d9gzFYdlYuYdGgwBoKHE
-         8xv/HpYWjaMWTcYpd+veIlJOYKK8PoRRhuyDkLmFyqsV8usNBiimJLLchg1RdNrVF8dz
-         6yw187V/C8azijxiLCWia0fdPJHYh+Wd2kp60Q94Xbw55abivYI1cVbnX/Hkj6iLejiV
-         Dkqw==
-X-Gm-Message-State: AOAM533/2zA1twmBJFVawyYHh2u3xl7dn7kO30CYmxfKWoqdxEAgwYOZ
-        FquIhqxXz9FSDI6Ykr6mwiA=
-X-Google-Smtp-Source: ABdhPJyryS3L9fRf5yllrbFMfwZeFbTAV2mAViIl/f+8AKQAzR+1NqwMUvywyH1/gZxiXxXfUAwDTQ==
-X-Received: by 2002:aa7:8e8f:0:b029:1f1:5a1a:7f82 with SMTP id a15-20020aa78e8f0000b02901f15a1a7f82mr13686329pfr.52.1615873666781;
-        Mon, 15 Mar 2021 22:47:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=YdfNXUR2nGRoqtEfb9aHhNleHa9jupSGIQeUUdFEew0=;
+        b=CBfJ1FSwCb5ijrFZaNwvlCtcqO87emBhMjwunglFPVZFHraYpVpXNxHZIWYzPX5Xnx
+         bEsd2nSi7A1V+TWMDMaV0AWonEZzhhsQstrzUb+k6HMk/7LOHVhnCX/wfLnUbaNpoElF
+         yLcHIYOOAY5r04zsI1TAncyWDj3Y3Swoki/MeNNtI6/7BiYTld/uqFnbD5MhFmXuZ4DH
+         XeXiiYKeH2EInbav4+vCHNPQwcwe5f/BC6+FnaLYIBjLDR5tXHu7kgO1ASjv2zi0onht
+         9MNWY6xRFfDn/s4j3UF/xDDWdwZaxD2DGWNFF2QNVNW43DlxbUkHytS69/YheunlmCv0
+         7SuQ==
+X-Gm-Message-State: AOAM532WY5LdA+iqpljDOD1IuJZsvJE5Y+WI99fsDJSUc3dP9Q5LjeYp
+        ir6bOpkpMb+o/S4klc/MvLSq2XWIPAD9TpbLFrs=
+X-Google-Smtp-Source: ABdhPJw9i6lb9AixyvsBf2+c9EQqY4EhrN1gk67Ar4EuM7uRgKtverysdegB1w/GSBf9Z5P00otzpg==
+X-Received: by 2002:a63:460e:: with SMTP id t14mr2400241pga.230.1615873668091;
+        Mon, 15 Mar 2021 22:47:48 -0700 (PDT)
 Received: from cl-arch-kdev.. (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id l22sm15096513pfd.145.2021.03.15.22.47.45
+        by smtp.gmail.com with ESMTPSA id l22sm15096513pfd.145.2021.03.15.22.47.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 22:47:46 -0700 (PDT)
+        Mon, 15 Mar 2021 22:47:47 -0700 (PDT)
 From:   Fox Chen <foxhlchen@gmail.com>
 To:     neilb@suse.de
 Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
@@ -55,58 +55,56 @@ Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
         rdunlap@infradead.org, grandmaster@al2klimov.de,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         gregkh@linuxfoundation.org
-Subject: [PATCH v2 00/12] docs: path-lookup: Update pathlookup docs
-Date:   Tue, 16 Mar 2021 13:47:15 +0800
-Message-Id: <20210316054727.25655-1-foxhlchen@gmail.com>
+Subject: [PATCH v2 01/12] docs: path-lookup: update follow_managed() part
+Date:   Tue, 16 Mar 2021 13:47:16 +0800
+Message-Id: <20210316054727.25655-2-foxhlchen@gmail.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210316054727.25655-1-foxhlchen@gmail.com>
+References: <20210316054727.25655-1-foxhlchen@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Path lookup is a very complex subject in VFS. The path-lookup
-document provides a very detailed guidance to help people understand
-how path lookup works in the kernel. This document was originally
-written based on three lwn articles five years ago. As times goes by,
-some of the content is outdated. This patchset is intended to update
-the document to make it more relevant to current codebase.
+No follow_managed() anymore, handle_mounts(),
+traverse_mounts(), will do the job.
+see commit 9deed3ebca24 ("new helper: traverse_mounts()")
 
-
+Signed-off-by: Fox Chen <foxhlchen@gmail.com>
 ---
-v1: https://lore.kernel.org/lkml/20210126072443.33066-1-foxhlchen@gmail.com/
-v2:
- - Fix problems in v1 reviewed by Neil:
-   1. In Patch 01 and 02 rewrite a new paragrah to describe step_into()
-   2. In Patch 01 instead of changing it to traverse_mounts, remove follow_managed()
-   3. In Patch 03 re-telling the story rather than adding notes
-   4. In Patch 04 do_open() should be outside of loop, fix it and fix other problems
-      in following paragrah
-   5. In Patch 07 use "drop out of RCU-walk"
-   6. In Patch 08 "latter" should be "later", fix it and restructure the next paragrah
-      removing "Finally"
+ Documentation/filesystems/path-lookup.rst | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-To help review, I've put a compiled html version here: 
-http://linux-docs.54fox.com/linux_docs/filesystems/path-lookup-v2.html
-
-
-Fox Chen (12):
-  docs: path-lookup: update follow_managed() part
-  docs: path-lookup: update path_to_nameidata() part
-  docs: path-lookup: update path_mountpoint() part
-  docs: path-lookup: update do_last() part
-  docs: path-lookup: remove filename_mountpoint
-  docs: path-lookup: Add macro name to symlink limit description
-  docs: path-lookup: i_op->follow_link replaced with i_op->get_link
-  docs: path-lookup: update i_op->put_link and cookie description
-  docs: path-lookup: no get_link()
-  docs: path-lookup: update WALK_GET, WALK_PUT desc
-  docs: path-lookup: update get_link() ->follow_link description
-  docs: path-lookup: update symlink description
-
- Documentation/filesystems/path-lookup.rst | 164 ++++++++++------------
- 1 file changed, 71 insertions(+), 93 deletions(-)
-
+diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/filesystems/path-lookup.rst
+index c482e1619e77..d07766375e13 100644
+--- a/Documentation/filesystems/path-lookup.rst
++++ b/Documentation/filesystems/path-lookup.rst
+@@ -448,10 +448,11 @@ described.  If it finds a ``LAST_NORM`` component it first calls
+ filesystem to revalidate the result if it is that sort of filesystem.
+ If that doesn't get a good result, it calls "``lookup_slow()``" which
+ takes ``i_rwsem``, rechecks the cache, and then asks the filesystem
+-to find a definitive answer.  Each of these will call
+-``follow_managed()`` (as described below) to handle any mount points.
++to find a definitive answer.
+ 
+-In the absence of symbolic links, ``walk_component()`` creates a new
++As the last step of ``walk_component()``, ``step_into()`` will be called either
++directly from walk_component() or from handle_dots().  It calls
++``handle_mount()``, to check and handle mount points, in which a new
+ ``struct path`` containing a counted reference to the new dentry and a
+ reference to the new ``vfsmount`` which is only counted if it is
+ different from the previous ``vfsmount``.  It then calls
+@@ -535,8 +536,7 @@ covered in greater detail in autofs.txt in the Linux documentation
+ tree, but a few notes specifically related to path lookup are in order
+ here.
+ 
+-The Linux VFS has a concept of "managed" dentries which is reflected
+-in function names such as "``follow_managed()``".  There are three
++The Linux VFS has a concept of "managed" dentries.  There are three
+ potentially interesting things about these dentries corresponding
+ to three different flags that might be set in ``dentry->d_flags``:
+ 
 -- 
 2.30.2
 
