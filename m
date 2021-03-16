@@ -2,107 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C0333D5EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:39:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C385833D60F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:48:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237337AbhCPOi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 10:38:59 -0400
-Received: from mout.gmx.net ([212.227.17.21]:42923 "EHLO mout.gmx.net"
+        id S235678AbhCPOrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 10:47:36 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:15635 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235694AbhCPOip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 10:38:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1615905520;
-        bh=CpjLwxV9YayOxOBCFEhv6OMhBXBkEBV9glfTpF+9tTw=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=K+29/BjvYZ37mH2bIqPsUGFm4JGRjIbAmef+3dIHlCL0tUXK6wcclAFDmsiI4DlzJ
-         JUOb0gkTypl8DR2fg9jZUGX0diHSCabB5hpXIp5L5E8VQTpHwMoLsbQQvd4A5o+Upo
-         BoPRJwSLruFj0Mi9zVWbSHUArz2OCbK6Nz5OuCMA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from obelix.fritz.box ([46.142.1.35]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MEm27-1lTeod0ZJL-00GG2y; Tue, 16
- Mar 2021 15:38:40 +0100
-Subject: Re: [PATCH 5.11 000/306] 5.11.7-rc1 review
-To:     Greg KH <greg@kroah.com>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <ca67d634-3845-ef3b-1ffc-48471045f3b5@gmx.de>
- <YFCrUP3TPqVK57E9@kroah.com>
-From:   Ronald Warsow <rwarsow@gmx.de>
-Message-ID: <7874700a-694e-d85f-71c6-731e89832da9@gmx.de>
-Date:   Tue, 16 Mar 2021 15:38:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S236965AbhCPOrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 10:47:20 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F0GMx4VXtz9v0Wx;
+        Tue, 16 Mar 2021 15:47:09 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id vzRrRUF_FtQC; Tue, 16 Mar 2021 15:47:09 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F0GMx3F8vz9v0Ww;
+        Tue, 16 Mar 2021 15:47:09 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 56A228B7E3;
+        Tue, 16 Mar 2021 15:47:11 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id TZSbbu2JPpo4; Tue, 16 Mar 2021 15:47:11 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8C1248B7E1;
+        Tue, 16 Mar 2021 15:47:09 +0100 (CET)
+Subject: Re: [PATCH] mm: Move mem_init_print_info() into mm_init()
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org,
+        Guo Ren <guoren@kernel.org>, sparclinux@vger.kernel.org,
+        linux-riscv@lists.infradead.org, Jonas Bonn <jonas@southpole.se>,
+        linux-s390@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-hexagon@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-csky@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org,
+        openrisc@lists.librecores.org,
+        linux-arm-kernel@lists.infradead.org,
+        Richard Henderson <rth@twiddle.net>,
+        linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        "David S. Miller" <davem@davemloft.net>
+References: <20210316142637.92193-1-wangkefeng.wang@huawei.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <26cca1c0-bd38-3d5b-5ca4-44081c444396@csgroup.eu>
+Date:   Tue, 16 Mar 2021 15:47:05 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <YFCrUP3TPqVK57E9@kroah.com>
+In-Reply-To: <20210316142637.92193-1-wangkefeng.wang@huawei.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:k9t4y/HrP+y5YzZQIG1jSxDHTGkn9tLfeQ3VpjlIUQD452Qn4rO
- ii6iQUaqIDiicxuRUzx+5No7O4nMjxO1+Arx0Rf6npphFOFKstmS11TdaWKCybAMRfbbow2
- wMg3KTFnv6yoN47T85UHmZdRcwoZ3s49uXtOdpSm8PhnMgcRq0ewV7WDNFWIy9+wQwViC2b
- NlF6xTnp+mfdkqH0+Sq2A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:D7esss3lhuQ=:2ylznTPIu4Js+laJUK/xem
- i43b9TCTBcfmQ3mxLT42c+aE89kSpUlFwgtGnHIDjvlDIzLZPlRosu08Sln2RmFav6qPTAkrS
- 83GlSQ1pHhHPZ8JosW/2zJJVqrbOnwLDPTUlK9qnYvKeFP2CDTJBNJ8sl803/Ycl/DCi1nIEH
- 3qVxZdHGiZQkhO0Jx113kzavZLsveeFqAO3x32dHmsZDjsrJIgwEGiLetT1Gq/5NolBPLTdUK
- +daeKRv3yLaTWZ1vKit2KK0cSHg6o3X5aYg7/twz/UEZ1KxglvvraRJkeWBxd1ginVrNBKfRs
- msgnXeTQehxQw2zMCGqjWfMgpzR4plBLxRuilqltVjqm/LWHeFluSOpIZYa8N6muNSONw2khx
- pubr20u/fKvOycBa8bZ/1tfPfHQ4zhaIFVuj/cYf/Pbxs0ubP5gG3vIv+hn2CFSbllH3qRiPf
- CFHFHY1tZ/Uan7WzoO0+eGUpPeQkZj5OgCXphC+eld4TKUdTZRj/oK2nO1vZzqWfPqEQT3SQD
- KStNwVG8vqn2t/Va31tA9HJF5fyfDBnA314AlDRiz/piE4iKBruguk0ruyeErPqXLHxWLqKIB
- OiUy22kqNIQx6m6VfZPZ+j2iMZ8vHIckB9lbVFC56XSnfOz9y8H9PEFEHHH4IbBxYpOpOmnKo
- FL7DifmShqvTuYsRn7VLg/gSt1B124/ukjw07IzwdkBmF3j6aFVdno0gaukYXtyab5fNStfXW
- zXSCIRuA1eXfZr/xAJTZSN0K/u2gbpdYvdZzzlBCv72m6Vp5WQmJBJzOrbno34FV4c6d9nuKL
- vjIF95bTAf9QqUWYqgpj//k2aI+qJLoTeES87TE+P1dkftlqrNcXUOoWlbmNYFMpefcKWuspv
- yQ1qWkMXiqd9hzEckXLg==
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.03.21 13:57, Greg KH wrote:
-> On Tue, Mar 16, 2021 at 01:34:31PM +0100, Ronald Warsow wrote:
-...
->>
->> bug/error (since 5.11.1 or 2):
->>
->> i915 0000:00:02.0: [drm] *ERROR* mismatch in DDB state pipe A plane 1
->> (expected (0,0), found (0,446))
->
-> What is the commit id here for the fix that you are looking for?
->
-> thanks,
->
-> greg k-h
->
-
-sorry, I do not have an commit id.
-
-*An* error report is here:
-
-https://gitlab.freedesktop.org/drm/intel/-/issues/2708
-
-and the fix:
-
-sh*t, I searched and found it yesterday somewhere here:
-https://cgit.freedesktop.org/drm-intel/
-
-but can't find it anymore now.
-Aaarrggghhh !
 
 
-IIRC, it seemed to me that a fix regarding the error in(?)
+Le 16/03/2021 à 15:26, Kefeng Wang a écrit :
+> mem_init_print_info() is called in mem_init() on each architecture,
+> and pass NULL argument, cleanup it by using void argument and move
+> it into mm_init().
+> 
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>   arch/alpha/mm/init.c             | 1 -
+>   arch/arc/mm/init.c               | 1 -
+>   arch/arm/mm/init.c               | 2 --
+>   arch/arm64/mm/init.c             | 2 --
+>   arch/csky/mm/init.c              | 1 -
+>   arch/h8300/mm/init.c             | 2 --
+>   arch/hexagon/mm/init.c           | 1 -
+>   arch/ia64/mm/init.c              | 1 -
+>   arch/m68k/mm/init.c              | 1 -
+>   arch/microblaze/mm/init.c        | 1 -
+>   arch/mips/loongson64/numa.c      | 1 -
+>   arch/mips/mm/init.c              | 1 -
+>   arch/mips/sgi-ip27/ip27-memory.c | 1 -
+>   arch/nds32/mm/init.c             | 1 -
+>   arch/nios2/mm/init.c             | 1 -
+>   arch/openrisc/mm/init.c          | 2 --
+>   arch/parisc/mm/init.c            | 2 --
+>   arch/powerpc/mm/mem.c            | 1 -
+>   arch/riscv/mm/init.c             | 1 -
+>   arch/s390/mm/init.c              | 2 --
+>   arch/sh/mm/init.c                | 1 -
+>   arch/sparc/mm/init_32.c          | 2 --
+>   arch/sparc/mm/init_64.c          | 1 -
+>   arch/um/kernel/mem.c             | 1 -
+>   arch/x86/mm/init_32.c            | 2 --
+>   arch/x86/mm/init_64.c            | 2 --
+>   arch/xtensa/mm/init.c            | 1 -
+>   include/linux/mm.h               | 2 +-
+>   init/main.c                      | 1 +
+>   mm/page_alloc.c                  | 2 +-
+>   30 files changed, 3 insertions(+), 38 deletions(-)
+> 
 
-./drivers/gpu/drm/i915/display/intel_display.c:
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 55d938297ce6..e4a6bf69c806 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -7728,7 +7728,7 @@ unsigned long free_reserved_area(void *start, void *end, int poison, const char
+>   	return pages;
+>   }
+>   
+> -void __init mem_init_print_info(const char *str)
+> +void __init mem_init_print_info(void)
+>   {
+>   	unsigned long physpages, codesize, datasize, rosize, bss_size;
+>   	unsigned long init_code_size, init_data_size;
+> 
 
-was ~queued~ in one of the *next* or *fixes*
+And what about the 'str' in the last line of the function ?
 
-I've no idea which *next* or *fixes* will when go into stable or maybe
-5.12...
+	pr_info("Memory: %luK/%luK available (%luK kernel code, %luK rwdata, %luK rodata, %luK init, %luK 
+bss, %luK reserved, %luK cma-reserved"
+#ifdef	CONFIG_HIGHMEM
+		", %luK highmem"
+#endif
+		"%s%s)\n",
+		nr_free_pages() << (PAGE_SHIFT - 10),
+		physpages << (PAGE_SHIFT - 10),
+		codesize >> 10, datasize >> 10, rosize >> 10,
+		(init_data_size + init_code_size) >> 10, bss_size >> 10,
+		(physpages - totalram_pages() - totalcma_pages) << (PAGE_SHIFT - 10),
+		totalcma_pages << (PAGE_SHIFT - 10),
+#ifdef	CONFIG_HIGHMEM
+		totalhigh_pages() << (PAGE_SHIFT - 10),
+#endif
+		str ? ", " : "", str ? str : "");
 
 
-sorry, I can't help here much
-=2D-
-regards
-
-Ronald
+Christophe
