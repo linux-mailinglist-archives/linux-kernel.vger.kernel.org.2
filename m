@@ -2,128 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F75033D0DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:31:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB1B33D0DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:32:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbhCPJa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:30:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34922 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233767AbhCPJa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:30:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615887056; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lBGk+Iyq4CVjb4mLe0kBH+gokhgg7ZND2EOk7K2C61E=;
-        b=JlKA6J2mMwOl6dNyPKwczKNqW5ujsCX/JNcnjD9w/a3KbTDxWdeRveY6v+nSQvzPy7cTga
-        3jKZunIC3Fc8DEWQ6ZbMVPbPVTw1NjyL651SN0ROIRokZhD4hOlgVvuTLtujB+qwZOCFh+
-        dXNnU/vEJ9SzwTymxFR0IdP57NeyXro=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 174C7AC5C;
-        Tue, 16 Mar 2021 09:30:56 +0000 (UTC)
-Date:   Tue, 16 Mar 2021 10:30:54 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: switch to rstat fix
-Message-ID: <YFB6zkqXx+Z+pO+q@dhcp22.suse.cz>
-References: <20210315234100.64307-1-hannes@cmpxchg.org>
+        id S233670AbhCPJbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:31:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233620AbhCPJbC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 05:31:02 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B26C06174A;
+        Tue, 16 Mar 2021 02:31:01 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id p8so70926360ejb.10;
+        Tue, 16 Mar 2021 02:31:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=mKyD04bglr1Sf3KcK5qmVWfIuzVPHE5LxLl4KNgB9Hk=;
+        b=GZ3Kt6bBjGkStAnyLKXXvKyyYGjZoQTUobzOi2CLdoKJlaxbQOHQ1D3ZB5JgJO8rdJ
+         oce6ew3Z82zlghC4+f8sCeVQ2awNrMrgFVmP8ooNFeTZJtT+VQXhY0ZwxW7fq36bCKJk
+         2QPFmlUB8CnU77AB8BX/3xQt3C3eMxX5rVNHyKIVl09F275O0ZgZPNSNkqnH6iWtPd1k
+         GbCZOJ2GC0pQEssrd3z5nUCT/znzaXcYDTnrGGXpaiV6dGoZ+IMMz/bgQWhBgzKR0bV5
+         hiDMYKX/tJ19sDRuuXZi/cG8ESXC7YCAUTuWEQ3sq3Cnq6cdbYuv7fWng2CbrL4k8cd8
+         RzfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=mKyD04bglr1Sf3KcK5qmVWfIuzVPHE5LxLl4KNgB9Hk=;
+        b=p2WLgC4EbFB2TEYQb273z8QkDoZ8Sy2MYcsNbHTvRzy93mEDMGX9+TyLbYC59w7S2B
+         kN+O6TZNyfW39PTf3xm7j/ep0EXl7GB47U6vCowrlmEz9QBfpR3EJ49iNZ2FKmngMWzE
+         nafxnsD9MZotwryNUdmmtOz4ueIirA2v+/3vqM0nREexv61Fnz9/FuZyys0GFkKtaRGr
+         oem0HKLt1nR4AHyEdEfKmRhDBcGRpezRaghFl/Cl2rZTNmJqfDejupS8uiFmEB1NIyiu
+         XrDep8ZHCQFurJs/9TXQU1zFFv82DTLTxg5htgodlsljmz3V9aO0eLrST3IKINGdUYu2
+         MMPg==
+X-Gm-Message-State: AOAM5322iZMn027hijXmsc6eIOB0027nq7Lsidi47lxypGpzjVcqybxw
+        cs8NnySGoT9G/d6K1RFvPKw=
+X-Google-Smtp-Source: ABdhPJyGC82p29PYH/4Aj46qdXhM0kD2BUKFUFNMkxLnTByq+zAVsDmSgc8Z2uVDcNMDCffcZJtjiQ==
+X-Received: by 2002:a17:906:4d18:: with SMTP id r24mr28021342eju.493.1615887060439;
+        Tue, 16 Mar 2021 02:31:00 -0700 (PDT)
+Received: from LEGION ([27.255.58.138])
+        by smtp.gmail.com with ESMTPSA id a9sm6340486eds.33.2021.03.16.02.30.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 02:31:00 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 14:30:54 +0500
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     musamaanjum@gmail.com, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: Fix spelling mistake "initialisation" ->
+ "initialization
+Message-ID: <20210316093054.GA1081018@LEGION>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210315234100.64307-1-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 15-03-21 19:41:00, Johannes Weiner wrote:
-> Fix a sleep in atomic section problem: wb_writeback() takes a spinlock
-> and calls wb_over_bg_thresh() -> mem_cgroup_wb_stats, but the regular
-> rstat flushing function called from in there does lockbreaking and may
-> sleep. Switch to the atomic variant, cgroup_rstat_irqsafe().
-> 
-> To be consistent with other memcg flush calls, but without adding
-> another memcg wrapper, inline and drop memcg_flush_vmstats() instead.
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+There is a spelling mistake in a comment. Fix it.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+---
+ arch/riscv/kernel/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->  mm/memcontrol.c | 15 +++++----------
->  1 file changed, 5 insertions(+), 10 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index f7fb12d3c2fc..9091913ec877 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -757,11 +757,6 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
->  	return mz;
->  }
->  
-> -static void memcg_flush_vmstats(struct mem_cgroup *memcg)
-> -{
-> -	cgroup_rstat_flush(memcg->css.cgroup);
-> -}
-> -
->  /**
->   * __mod_memcg_state - update cgroup memory statistics
->   * @memcg: the memory cgroup
-> @@ -1572,7 +1567,7 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
->  	 *
->  	 * Current memory state:
->  	 */
-> -	memcg_flush_vmstats(memcg);
-> +	cgroup_rstat_flush(memcg->css.cgroup);
->  
->  	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
->  		u64 size;
-> @@ -3523,7 +3518,7 @@ static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
->  	unsigned long val;
->  
->  	if (mem_cgroup_is_root(memcg)) {
-> -		memcg_flush_vmstats(memcg);
-> +		cgroup_rstat_flush(memcg->css.cgroup);
->  		val = memcg_page_state(memcg, NR_FILE_PAGES) +
->  			memcg_page_state(memcg, NR_ANON_MAPPED);
->  		if (swap)
-> @@ -3925,7 +3920,7 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
->  	int nid;
->  	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
->  
-> -	memcg_flush_vmstats(memcg);
-> +	cgroup_rstat_flush(memcg->css.cgroup);
->  
->  	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
->  		seq_printf(m, "%s=%lu", stat->name,
-> @@ -3997,7 +3992,7 @@ static int memcg_stat_show(struct seq_file *m, void *v)
->  
->  	BUILD_BUG_ON(ARRAY_SIZE(memcg1_stat_names) != ARRAY_SIZE(memcg1_stats));
->  
-> -	memcg_flush_vmstats(memcg);
-> +	cgroup_rstat_flush(memcg->css.cgroup);
->  
->  	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
->  		unsigned long nr;
-> @@ -4500,7 +4495,7 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
->  	struct mem_cgroup *memcg = mem_cgroup_from_css(wb->memcg_css);
->  	struct mem_cgroup *parent;
->  
-> -	memcg_flush_vmstats(memcg);
-> +	cgroup_rstat_flush_irqsafe(memcg->css.cgroup);
->  
->  	*pdirty = memcg_page_state(memcg, NR_FILE_DIRTY);
->  	*pwriteback = memcg_page_state(memcg, NR_WRITEBACK);
-> -- 
-> 2.30.1
-
+diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
+index ea028d9e0d24..1ec014067855 100644
+--- a/arch/riscv/kernel/smp.c
++++ b/arch/riscv/kernel/smp.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * SMP initialisation and IPI support
++ * SMP initialization and IPI support
+  * Based on arch/arm64/kernel/smp.c
+  *
+  * Copyright (C) 2012 ARM Ltd.
 -- 
-Michal Hocko
-SUSE Labs
+2.25.1
+
