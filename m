@@ -2,171 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0822933D5C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB0933D5EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:39:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236520AbhCPOal convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Mar 2021 10:30:41 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:37172 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235497AbhCPOaV (ORCPT
+        id S236934AbhCPOi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 10:38:56 -0400
+Received: from casper.infradead.org ([90.155.50.34]:34912 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236705AbhCPOil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 10:30:21 -0400
-Received: from marcel-macbook.holtmann.net (p4fefc126.dip0.t-ipconnect.de [79.239.193.38])
-        by mail.holtmann.org (Postfix) with ESMTPSA id F073ECECFC;
-        Tue, 16 Mar 2021 15:37:55 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH] Bluetooth: avoid deadlock between hci_dev->lock and
- socket lock
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <nycvar.YFH.7.76.2103161507280.12405@cbobk.fhfr.pm>
-Date:   Tue, 16 Mar 2021 15:30:18 +0100
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <657367AC-ACB8-441D-83E0-2BA1DFCD6B41@holtmann.org>
-References: <nycvar.YFH.7.76.2103041405420.12405@cbobk.fhfr.pm>
- <nycvar.YFH.7.76.2103161125530.12405@cbobk.fhfr.pm>
- <nycvar.YFH.7.76.2103161507280.12405@cbobk.fhfr.pm>
-To:     Jiri Kosina <jikos@kernel.org>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        Tue, 16 Mar 2021 10:38:41 -0400
+X-Greylist: delayed 1491 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Mar 2021 10:38:38 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rP6CC9aFyoPKSVnxzeAObDkX6GZ6Hhe9Q4ri+l1u2pA=; b=cH/w8vwNvLgG0SrRl2Nt+Fypv4
+        QOXU8VhtVPS06zEJcVM/wsZRBm/HxFuL7D91SfEotUGCMU+/gi+VzHXFtP6PNZre6qRjHKndk/wf6
+        z8AARNbhLCbMiMuvUhhhoyBo69Wo/Hwzj9NiIzU03/c5iR56Vx/eTWIhLr9nKcrcON+tphU0DDoim
+        RJAaD6OXJH80dt+vLa6fUU3+FlwPldkltU1TStVILQpXKNqpFuu6ErwPUWUDdYmOo9b2kWDe+el9d
+        nYJbWOCmcKwi1+QcVMtubksLCQqN413h1M3QvRxLihBxoVPaLGaE53BZY2nYC3pBwGh9162n2v8Ca
+        9j8ywUOA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMARq-0009xZ-QS; Tue, 16 Mar 2021 14:13:29 +0000
+Date:   Tue, 16 Mar 2021 14:13:26 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lennart Poettering <lennart@poettering.net>,
+        Luca Boccassi <bluca@debian.org>, Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tejun Heo <tj@kernel.org>,
+        Javier Gonz?lez <javier@javigon.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Hannes Reinecke <hare@suse.de>
+Subject: Re: [PATCH -next 1/5] block: add disk sequence number
+Message-ID: <20210316141326.GA37773@infradead.org>
+References: <20210315200242.67355-1-mcroce@linux.microsoft.com>
+ <20210315200242.67355-2-mcroce@linux.microsoft.com>
+ <20210315201824.GB2577561@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315201824.GB2577561@casper.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+On Mon, Mar 15, 2021 at 08:18:24PM +0000, Matthew Wilcox wrote:
+> On Mon, Mar 15, 2021 at 09:02:38PM +0100, Matteo Croce wrote:
+> > From: Matteo Croce <mcroce@microsoft.com>
+> > 
+> > Add a sequence number to the disk devices. This number is put in the
+> > uevent so userspace can correlate events when a driver reuses a device,
+> > like the loop one.
+> 
+> Should this be documented as monotonically increasing?  I think this
+> is actually a media identifier.  Consider (if you will) a floppy disc.
+> Back when such things were common, it was possible with personal computers
+> of the era to have multiple floppy discs "in play" and be prompted to
+> insert them as needed.  So shouldn't it be possible to support something
+> similar here -- you're really removing the media from the loop device.
+> With a monotonically increasing number, you're always destroying the
+> media when you remove it, but in principle, it should be possible to
+> reinsert the same media and have the same media identifier number.
 
-> Commit eab2404ba798 ("Bluetooth: Add BT_PHY socket option") added a 
-> dependency between socket lock and hci_dev->lock that could lead to 
-> deadlock.
-> 
-> It turns out that hci_conn_get_phy() is not in any way relying on hdev 
-> being immutable during the runtime of this function, neither does it even 
-> look at any of the members of hdev, and as such there is no need to hold 
-> that lock.
-> 
-> This fixes the lockdep splat below:
-> 
-> ======================================================
-> WARNING: possible circular locking dependency detected
-> 5.12.0-rc1-00026-g73d464503354 #10 Not tainted
-> ------------------------------------------------------
-> bluetoothd/1118 is trying to acquire lock:
-> ffff8f078383c078 (&hdev->lock){+.+.}-{3:3}, at: hci_conn_get_phy+0x1c/0x150 [bluetooth]
-> 
-> but task is already holding lock:
-> ffff8f07e831d920 (sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP){+.+.}-{0:0}, at: l2cap_sock_getsockopt+0x8b/0x610
-> 
-> which lock already depends on the new lock.
-> 
-> the existing dependency chain (in reverse order) is:
-> 
-> -> #3 (sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP){+.+.}-{0:0}:
->        lock_sock_nested+0x72/0xa0
->        l2cap_sock_ready_cb+0x18/0x70 [bluetooth]
->        l2cap_config_rsp+0x27a/0x520 [bluetooth]
->        l2cap_sig_channel+0x658/0x1330 [bluetooth]
->        l2cap_recv_frame+0x1ba/0x310 [bluetooth]
->        hci_rx_work+0x1cc/0x640 [bluetooth]
->        process_one_work+0x244/0x5f0
->        worker_thread+0x3c/0x380
->        kthread+0x13e/0x160
->        ret_from_fork+0x22/0x30
-> 
-> -> #2 (&chan->lock#2/1){+.+.}-{3:3}:
->        __mutex_lock+0xa3/0xa10
->        l2cap_chan_connect+0x33a/0x940 [bluetooth]
->        l2cap_sock_connect+0x141/0x2a0 [bluetooth]
->        __sys_connect+0x9b/0xc0
->        __x64_sys_connect+0x16/0x20
->        do_syscall_64+0x33/0x80
->        entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> -> #1 (&conn->chan_lock){+.+.}-{3:3}:
->        __mutex_lock+0xa3/0xa10
->        l2cap_chan_connect+0x322/0x940 [bluetooth]
->        l2cap_sock_connect+0x141/0x2a0 [bluetooth]
->        __sys_connect+0x9b/0xc0
->        __x64_sys_connect+0x16/0x20
->        do_syscall_64+0x33/0x80
->        entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> -> #0 (&hdev->lock){+.+.}-{3:3}:
->        __lock_acquire+0x147a/0x1a50
->        lock_acquire+0x277/0x3d0
->        __mutex_lock+0xa3/0xa10
->        hci_conn_get_phy+0x1c/0x150 [bluetooth]
->        l2cap_sock_getsockopt+0x5a9/0x610 [bluetooth]
->        __sys_getsockopt+0xcc/0x200
->        __x64_sys_getsockopt+0x20/0x30
->        do_syscall_64+0x33/0x80
->        entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> other info that might help us debug this:
-> 
-> Chain exists of:
->   &hdev->lock --> &chan->lock#2/1 --> sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP
-> 
->  Possible unsafe locking scenario:
-> 
->        CPU0                    CPU1
->        ----                    ----
->   lock(sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP);
->                                lock(&chan->lock#2/1);
->                                lock(sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP);
->   lock(&hdev->lock);
-> 
->  *** DEADLOCK ***
-> 
-> 1 lock held by bluetoothd/1118:
->  #0: ffff8f07e831d920 (sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP){+.+.}-{0:0}, at: l2cap_sock_getsockopt+0x8b/0x610 [bluetooth]
-> 
-> stack backtrace:
-> CPU: 3 PID: 1118 Comm: bluetoothd Not tainted 5.12.0-rc1-00026-g73d464503354 #10
-> Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/31/2017
-> Call Trace:
->  dump_stack+0x7f/0xa1
->  check_noncircular+0x105/0x120
->  ? __lock_acquire+0x147a/0x1a50
->  __lock_acquire+0x147a/0x1a50
->  lock_acquire+0x277/0x3d0
->  ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
->  ? __lock_acquire+0x2e1/0x1a50
->  ? lock_is_held_type+0xb4/0x120
->  ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
->  __mutex_lock+0xa3/0xa10
->  ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
->  ? lock_acquire+0x277/0x3d0
->  ? mark_held_locks+0x49/0x70
->  ? mark_held_locks+0x49/0x70
->  ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
->  hci_conn_get_phy+0x1c/0x150 [bluetooth]
->  l2cap_sock_getsockopt+0x5a9/0x610 [bluetooth]
->  __sys_getsockopt+0xcc/0x200
->  __x64_sys_getsockopt+0x20/0x30
->  do_syscall_64+0x33/0x80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x7fb73df33eee
-> Code: 48 8b 0d 85 0f 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 49 89 ca b8 37 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 52 0f 0c 00 f7 d8 64 89 01 48
-> RSP: 002b:00007fffcfbbbf08 EFLAGS: 00000203 ORIG_RAX: 0000000000000037
-> RAX: ffffffffffffffda RBX: 0000000000000019 RCX: 00007fb73df33eee
-> RDX: 000000000000000e RSI: 0000000000000112 RDI: 0000000000000018
-> RBP: 0000000000000000 R08: 00007fffcfbbbf44 R09: 0000000000000000
-> R10: 00007fffcfbbbf3c R11: 0000000000000203 R12: 0000000000000000
-> R13: 0000000000000018 R14: 0000000000000000 R15: 0000556fcefc70d0
-> 
-> Fixes: eab2404ba798 ("Bluetooth: Add BT_PHY socket option")
-> Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-> ---
-> net/bluetooth/hci_conn.c | 4 ----
-> 1 file changed, 4 deletions(-)
-
-patch has been applied to bluetooth-next tree.
-
-Regards
-
-Marcel
-
+And we have some decent infrastructure related to media changes,
+grep for disk_events.  I think this needs to plug into that
+infrastructure instead of duplicating it.
