@@ -2,125 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9B833CD4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:28:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7EE33CD4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235465AbhCPF2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:28:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47762 "EHLO
+        id S235484AbhCPF2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:28:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232319AbhCPF1v (ORCPT
+        with ESMTP id S235459AbhCPF2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:27:51 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A1AC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 22:27:49 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id e26so8032515pfd.9
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 22:27:49 -0700 (PDT)
+        Tue, 16 Mar 2021 01:28:06 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2604C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 22:28:05 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id dm8so20011616edb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 22:28:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=mEGvwxRSdX+26sKEJTAJbfC9LfjSTi3jGS6oVQZmyNk=;
-        b=WtvR0nXW3kcC1fRrCCtKU9xDoW3LofQamKx3fyUgUsvQSa5fIaGYKGS6C2y6/9NMHP
-         l7TYFRgQcmus88lAVg69rz7MrmU+nzkN6faSJLaGwD/pXbAbRiSTaoCyoBiKVcaNXUeY
-         5REkP5L+isnaaxVetMBlrtysFZ0GKPqBSYblFGqCOZYYhp80Ny0E9whVhWkh56A0NajZ
-         deI81soxE+VXCFLhAVqZRBDS+0lv/VDA0jGEnq1MVPlV+ZgsW7y3NP8GIjRaBMNUjDg0
-         XmTe9MDGaT+4eqL9HjiEVdZKKlq/VU0XIUQmqi3MmLVnRm/I6kDAYKbNrBb9a+1SjbOG
-         17pw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=W8cno2jI/q1a7Mp+m2I4l1zQLuFb746zaAM3fMhbI38=;
+        b=LtIQg+e0Y9DlqGto+4IPnaOFvLMkZyX4VP8cj8K4xIETjgZ+3afnXfpGIIuxRbGSU5
+         rGPTz1IhRm4jJeyNezL7FlmdQnGUWdGTFfSFjErOxJQPkSnIVR499589axeDe6WkKCiR
+         g+hCAZmxnJtPt6pd+XLHRhbuSqa3CsZr4TAioE8tkumGmXG/PzHutejfbALnYz320OP2
+         PusP80tnrVbkqNfxhWnVG5LBNdt4y0l6pg9IaUkXvcJ4OK7DOLq2Lja/0syRmogImG+m
+         P5OSMm/r9vcCeAuUI3u2Lz0h6K6HY4aH9SaNrmBIYVHs/uXn/JnRtNWc1WU+J9QURhIg
+         csjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mEGvwxRSdX+26sKEJTAJbfC9LfjSTi3jGS6oVQZmyNk=;
-        b=IUUPzirLXtrP9dg0nH4m7yI1ovrrXYSq6tWPKgTjANMjI1dZZZd/wVwlQGvfeEsXQq
-         qohMM4BD3PqkfbU9pSttqKFEh5RjV8HHXl8jKp0U4fiazrLsQefHP1gs5BIB+ryTtXGo
-         HtFLAlbdO/xZ5mPancY0WmgRAl+wdNfuKBZdsZRkiEl3PRnOwOfNv2DLb89WYnZ3jopB
-         sKZ05lxOiilU2fdrfG6YXuvNYrRvXXE1ABRYSvfVSwP9mvY82lCXxr386J6igwkD1ieL
-         iG/AVb9rgVB0ZyFOEW7FCMOdcq8OItdduX3b+8gzBm2ilzTDJ+EiIydPLahTWBQoIRcY
-         hN3Q==
-X-Gm-Message-State: AOAM531P5k4WgkjGxTEBswfW5ZB8uvnHK5oGHYduvvRo5UxXtrGGGHR4
-        eh8EYptFMQqtjPcv1wCR9NBnRw==
-X-Google-Smtp-Source: ABdhPJzeD/97kt/QC9gJzyL77V0bTiQSzKV1/quclmYq2PBmLQg+t9KRE9wkB8ZFNLzfp2L5Hy1zsQ==
-X-Received: by 2002:a65:63d6:: with SMTP id n22mr2376938pgv.393.1615872469248;
-        Mon, 15 Mar 2021 22:27:49 -0700 (PDT)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id q4sm15207633pfq.103.2021.03.15.22.27.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Mar 2021 22:27:48 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 10:57:43 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V11 3/5] kbuild: Allow .dtso format for overlay source
- files
-Message-ID: <20210316052743.aysh4sooz4s7rwqq@vireshk-i7>
-References: <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
- <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
- <20210312044712.srmqfuie7fae55pb@vireshk-i7>
- <17c65559-865f-f742-660f-0ab30ed45d90@gmail.com>
- <4d9bee7a-416e-50a1-65a5-0674ae83d42e@gmail.com>
- <20210312071325.zosmlttse4ym7sit@vireshk-i7>
- <6f093bb1-1a80-a906-fb4c-3f6fdeed4838@gmail.com>
- <9068520f-76d6-ec94-716c-02383422ac85@gmail.com>
- <20210315064051.otcjt3x6vkfdrio6@vireshk-i7>
- <CAK7LNASHHNmZJ4FXz4Q5-UMEbSSyb_aG+kmfhJQZtCgkSZ_GAQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=W8cno2jI/q1a7Mp+m2I4l1zQLuFb746zaAM3fMhbI38=;
+        b=MPHcx6gtxlMAr/3jDg/KlDQm4xhD3Cax2xv/u0qlYKufTgzyikLwFkvbxwUQ6y6Dhv
+         FUJTu5w7YpCl0CB87UxvnWoVDDq+qkgpusX3TdL9GylhFCEPDzL7Mt55U62xibOXqvYg
+         WTvRflxYtgEnFnq7ROqf6taV+Kas3ijefRflR/aSxhL6xDrmRm+nbEf+1rNdy5hY/BgB
+         fE2/WJKHVP/FbV4E8wFdGOhB4mx7UN4aCLLeN9O1+1ivz1vAbzIYuF79sIoksif/2QR+
+         qv2s6jnJ8RiyHcyDuLHhRtwlBUUywvoTAOax8/BCvXwggNF+671YfNma7esO8MPVGgGm
+         7c4Q==
+X-Gm-Message-State: AOAM53288uU+ouwxvy+DCjLZw8T4xieGQd8e2LZq7jUwSiCplYPVQ7wg
+        HcXvIgGI5vNkb7qk+5of/ta360ZJCH+XC30IYfSVzg==
+X-Google-Smtp-Source: ABdhPJyM14fi89CH30Ia06fF4KyQ0KbVSHA0Ml943Ta/ZexwvPgQDXfPzqM9t3bRGYLz2PUP/NMHHehK+N3WTtw8lEw=
+X-Received: by 2002:a05:6402:13ce:: with SMTP id a14mr33958112edx.365.1615872484610;
+ Mon, 15 Mar 2021 22:28:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNASHHNmZJ4FXz4Q5-UMEbSSyb_aG+kmfhJQZtCgkSZ_GAQ@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20210315135550.333963635@linuxfoundation.org>
+In-Reply-To: <20210315135550.333963635@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 16 Mar 2021 10:57:53 +0530
+Message-ID: <CA+G9fYu7ZwgN-c6sNpdwv2qYjjEdu2h-18FgGQhSumDfimB2mg@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/168] 5.4.106-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-03-21, 02:43, Masahiro Yamada wrote:
-> On Mon, Mar 15, 2021 at 3:40 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > On 14-03-21, 20:16, Frank Rowand wrote:
-> > What about doing this then in unittest's Makefile instead (which I
-> > already suggested earlier), that will make everything work just fine
-> > without any other changes ?
-> >
-> > +# Required for of unittest files as they can't be renamed to .dtso
-> > +$(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
-> > +       $(call if_changed_dep,dtc)
-> 
-> If those rules are only needed by drivers/of/unittest-data/Makefile,
-> they should not be located in scripts/Makefile.lib.
+On Mon, 15 Mar 2021 at 19:35, <gregkh@linuxfoundation.org> wrote:
+>
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+> This is the start of the stable review cycle for the 5.4.106 release.
+> There are 168 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 17 Mar 2021 13:55:26 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.106-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Right, this is exactly what I suggested.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> But how can we fix drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a779*.dts
-> if these are doing bad things.
-> They seem to be overlay files even though the file name suffix is .dts
-> 
-> $ find drivers -name '*.dts'
-> drivers/staging/pi433/Documentation/devicetree/pi433-overlay.dts
-> drivers/staging/mt7621-dts/gbpc2.dts
-> drivers/staging/mt7621-dts/gbpc1.dts
-> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7791.dts
-> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7795.dts
-> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7796.dts
-> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7793.dts
-> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7790.dts
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-For all the above files, even if they are really overlay files, we
-won't use fdtoverlay tool to apply them to some base dtb and so if we
-leave them as is, i.e. .dts->.dtb, it won't break anything.
+Summary
+------------------------------------------------------------------------
 
-The problem only happens if someone wants to generate .dtbo for them
-instead and then they should be named .dtso as we won't allow .dts ->
-.dtbo conversion there.
+kernel: 5.4.106-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: 26ba2df2641dff3b9583fc4d1fbdc668bd346f00
+git describe: v5.4.105-169-g26ba2df2641d
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.105-169-g26ba2df2641d
 
--- 
-viresh
+No regressions (compared to build v5.4.105)
+
+No fixes (compared to build v5.4.105)
+
+Ran 50881 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* libhugetlbfs
+* ltp-controllers-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* fwts
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-tc-testing
+* kvm-unit-tests
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* network-basic-tests
+* kselftest-kexec
+* kselftest-vm
+* kselftest-x86
+* ltp-cap_bounds-test[
+* ltp-open-posix-tests
+* ltp-syscalls-tests
+* rcutorture
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
