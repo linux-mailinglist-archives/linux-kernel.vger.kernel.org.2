@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478A933E108
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD22833E118
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbhCPWAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 18:00:25 -0400
-Received: from mail-io1-f49.google.com ([209.85.166.49]:39255 "EHLO
-        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhCPWAO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 18:00:14 -0400
-Received: by mail-io1-f49.google.com with SMTP id o9so38906003iow.6;
-        Tue, 16 Mar 2021 15:00:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hWQnLy+wlCYyKsfibvRnMmDe6TnPBpLcmFf0o5i5sXo=;
-        b=FoFtp4TVECI7zYuqZr/uv6pcGi+4NhsgyCDtlXjqPA8rP0+HoASBncaT45DB2dpNri
-         oVZKHu3xEkuyMZpzwaOy8PrmbQk7sp9/QNQIsj6JOEXxbRDPJCf7C9RXRmu6/mVY1u7i
-         6NWwNVoBE79Fd0oWkegEtGW7I4diKnHQsRTerHce+WRT4SrH7w5Sn+3G2igv//nSRjPx
-         2L00YUc9Wj63fFzVPf/LCqVoO2gITjVWDVqSBHzShcdZAa6rLJZWlUqWCTkZR5Kuq3ua
-         JBzJXeXTN8h2TKpbbQbVL5hZha7YqFz6DSLrCdJEKa8rjGtoeiZkwEGsjz8c/WfZEjHL
-         kBPw==
-X-Gm-Message-State: AOAM530liCvYkMfQLOk0vS604htL2s4J4ZR4AxVI5GtiuOPM81GCkyy8
-        8WOAq9sZ0KxStDWurYHCCg==
-X-Google-Smtp-Source: ABdhPJwCXPLXH5ryR9zjM8plYiRvPqgWPNS67eAHKVo6mFw4S0V6YZBXB8qtNjD3qRbtCquQg9ctNg==
-X-Received: by 2002:a05:6602:179c:: with SMTP id y28mr4758814iox.151.1615932013916;
-        Tue, 16 Mar 2021 15:00:13 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id n16sm8806315ilq.71.2021.03.16.15.00.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 15:00:12 -0700 (PDT)
-Received: (nullmailer pid 3753212 invoked by uid 1000);
-        Tue, 16 Mar 2021 22:00:09 -0000
-Date:   Tue, 16 Mar 2021 16:00:09 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        "Paul J. Murphy" <paul.j.murphy@intel.com>, arm@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        soc@kernel.org
-Subject: Re: [RESEND 2nd PATCH 01/10] dt-bindings: arm: intel,keembay: limit
- the dtschema to root node
-Message-ID: <20210316220009.GA3753176@robh.at.kernel.org>
-References: <20210308170945.161468-1-krzysztof.kozlowski@canonical.com>
- <20210308170945.161468-2-krzysztof.kozlowski@canonical.com>
+        id S230263AbhCPWFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 18:05:21 -0400
+Received: from elvis.franken.de ([193.175.24.41]:35191 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230139AbhCPWEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 18:04:51 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lMHo2-0005CW-00; Tue, 16 Mar 2021 23:04:50 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 46743C093D; Tue, 16 Mar 2021 22:59:19 +0100 (CET)
+Date:   Tue, 16 Mar 2021 22:59:19 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     od@zcrc.me, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>
+Subject: Re: [PATCH] MIPS: vmlinux.lds.S: Fix appended dtb not properly
+ aligned
+Message-ID: <20210316215919.GA18538@alpha.franken.de>
+References: <20210316154515.171543-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210308170945.161468-2-krzysztof.kozlowski@canonical.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210316154515.171543-1-paul@crapouillou.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Mar 2021 18:09:36 +0100, Krzysztof Kozlowski wrote:
-> From: Krzysztof Kozlowski <krzk@kernel.org>
+On Tue, Mar 16, 2021 at 03:45:15PM +0000, Paul Cercueil wrote:
+> Commit 6654111c893f ("MIPS: vmlinux.lds.S: align raw appended dtb to 8
+> bytes") changed the alignment from STRUCT_ALIGNMENT bytes to 8 bytes.
 > 
-> The check for the board compatible should be limited only to the root
-> node.  Any other nodes with such compatible are not part of this schema
-> and should not match.
+> The commit's message makes it sound like it was actually done on
+> purpose, but this is not the case. The commit was written when raw
+> appended dtb were not aligned at all. The STRUCT_ALIGN() was added a few
+> days before, in commit 7a05293af39f ("MIPS: boot/compressed: Copy DTB to
+> aligned address"). The true purpose of the commit was not to align
+> specifically to 8 bytes, but to make sure that the generated vmlinux'
+> size was properly padded to the alignment required for DTBs.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Acked-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> While the switch to 8-byte alignment worked for vmlinux-appended dtb
+> blobs, it broke vmlinuz-appended dtb blobs, as the decompress routine
+> moves the blob to a STRUCT_ALIGNMENT aligned address.
+> 
+> Fix this by changing the raw appended dtb blob alignment from 8 bytes
+> back to STRUCT_ALIGNMENT bytes in vmlinux.lds.S.
+> 
+> Fixes: 6654111c893f ("MIPS: vmlinux.lds.S: align raw appended dtb to 8 bytes")
+> Cc: Bjørn Mork <bjorn@mork.no>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 > ---
->  Documentation/devicetree/bindings/arm/intel,keembay.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+>  arch/mips/kernel/vmlinux.lds.S | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Rob Herring <robh@kernel.org>
+applied to mips-fixes.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
