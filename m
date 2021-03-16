@@ -2,121 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A82D33D9EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCC333D9EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236811AbhCPQ4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 12:56:14 -0400
-Received: from mga01.intel.com ([192.55.52.88]:48372 "EHLO mga01.intel.com"
+        id S236837AbhCPQ5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 12:57:20 -0400
+Received: from mga11.intel.com ([192.55.52.93]:2203 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229754AbhCPQzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 12:55:51 -0400
-IronPort-SDR: ox9jGUnwGrrK8FWwuzeicagX0SJ4oR/W06xko5VJk8BnpAp1bpVpCGCzWmwIpPyXWPJ3gzz/bF
- Ir64VwDz81SQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="209237585"
+        id S236819AbhCPQ5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 12:57:00 -0400
+IronPort-SDR: zDsb3nro9os8GuU01lAyz+/VxkpdUv7xJIODJgldO1NSaQZDPVC5Ojiux20QeA7xoqpHLKs3Ii
+ yDOn2r9LqGPw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="185935096"
 X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="209237585"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 09:55:47 -0700
-IronPort-SDR: 1ZnLvylQ4cDnB7HnwETShuxZVyI27yQerkVH4GnO+bQWzugyglMctYBvzI70MfgWX3r00ui2Z4
- o7f/VFF9A4Bw==
+   d="scan'208";a="185935096"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 09:56:59 -0700
+IronPort-SDR: 0GXpxfw1ccaDKmouGv4eh+4O8g7EB/sXp/7qBYXgcKa8b91JsjRXVhXJA7l/h/xuPtxyer7xw7
+ nexYuPBMYkDg==
 X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="439189178"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 09:55:45 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lMCys-00D0oo-Gy; Tue, 16 Mar 2021 18:55:42 +0200
-Date:   Tue, 16 Mar 2021 18:55:42 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Claudius Heine <ch@denx.de>
-Cc:     johannes hahn <johannes-hahn@siemens.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        werner zeh <werner.zeh@siemens.com>,
-        henning schild <henning.schild@siemens.com>,
-        martin mantel <martin.mantel@siemens.com>,
-        val krutov <val.krutov@erd.epson.com>
-Subject: Re: [PATCH v4] rtc: rx6110: add ACPI bindings to I2C
-Message-ID: <YFDjDhsCikxtl5rw@smile.fi.intel.com>
-References: <20210316100805.2630481-1-ch@denx.de>
- <20210316144819.4130622-1-ch@denx.de>
+   d="scan'208";a="412288261"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 09:56:58 -0700
+Date:   Tue, 16 Mar 2021 09:56:58 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     dsterba@suse.cz, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/4] btrfs: Convert more kmaps to kmap_local_page()
+Message-ID: <20210316165658.GS3014244@iweiny-DESK2.sc.intel.com>
+References: <20210217024826.3466046-1-ira.weiny@intel.com>
+ <20210312194141.GT7604@suse.cz>
+ <20210312200500.GG3014244@iweiny-DESK2.sc.intel.com>
+ <20210316110724.GJ7604@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210316144819.4130622-1-ch@denx.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210316110724.GJ7604@twin.jikos.cz>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 03:48:18PM +0100, Claudius Heine wrote:
-> From: Johannes Hahn <johannes-hahn@siemens.com>
+On Tue, Mar 16, 2021 at 12:07:24PM +0100, David Sterba wrote:
+> On Fri, Mar 12, 2021 at 12:05:00PM -0800, Ira Weiny wrote:
+> > On Fri, Mar 12, 2021 at 08:41:41PM +0100, David Sterba wrote:
+> > > On Tue, Feb 16, 2021 at 06:48:22PM -0800, ira.weiny@intel.com wrote:
+> > > > From: Ira Weiny <ira.weiny@intel.com>
+> > > > 
+> > > > I am submitting these for 5.13.
+> > > > 
+> > > > Further work to remove more kmap() calls in favor of the kmap_local_page() this
+> > > > series converts those calls which required more than a common pattern which
+> > > > were covered in my previous series[1].  This is the second of what I hope to be
+> > > > 3 series to fully convert btrfs.  However, the 3rd series is going to be an RFC
+> > > > because I need to have more eyes on it before I'm sure about what to do.  For
+> > > > now this series should be good to go for 5.13.
+> > > > 
+> > > > Also this series converts the kmaps in the raid5/6 code which required a fix to
+> > > > the kmap'ings which was submitted in [2].
+> > > 
+> > > Branch added to for-next and will be moved to the devel queue next week.
+> > > I've added some comments about the ordering requirement, that's
+> > > something not obvious. There's a comment under 1st patch but that's
+> > > trivial to fix if needed. Thanks.
+> > 
+> > I've replied to the first patch.  LMK if you want me to respin it.
 > 
-> This allows the RX6110 driver to be automatically assigned to the right
-> device on the I2C bus.
+> No need to respin, patchset now in misc-next. Thanks.
 
-You missed given tag, when somebody sends you one, it's usually your
-responsibility to pick it up. Hint: install b4 tool (likely in your distro, at
-least Debian, Arch Linux have it) and run it against message ID of the version
-in question. It will gather all tags. For example, for this case, run
-
-  % b4 am 20210316144819.4130622-1-ch@denx.de
-
-It will download mailbox suitable for `git am ...` you will read on the screen.
-
-Also, when send a new version, don't attach it to the old thread. It will
-confuse people and maybe even tools (i.o.w. don't supply message ID to be put
-to In-Reply-To header).
-
-So, repeat again my tag and see one fix to be performed below.
-Reviewed-by: From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Signed-off-by: Johannes Hahn <johannes-hahn@siemens.com>
-> Co-developed-by: Claudius Heine <ch@denx.de>
-> Signed-off-by: Claudius Heine <ch@denx.de>
-> ---
->  drivers/rtc/rtc-rx6110.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/rtc/rtc-rx6110.c b/drivers/rtc/rtc-rx6110.c
-> index 79161d4c6ce4..2a06953c0a84 100644
-> --- a/drivers/rtc/rtc-rx6110.c
-> +++ b/drivers/rtc/rtc-rx6110.c
-> @@ -447,6 +447,12 @@ static int rx6110_i2c_probe(struct i2c_client *client,
->  	return rx6110_probe(rx6110, &client->dev);
->  }
->  
-> +static const struct acpi_device_id rx6110_i2c_acpi_match[] = {
-> +	{ "SECC6110" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(acpi, rx6110_i2c_acpi_match);
-> +
->  static const struct i2c_device_id rx6110_i2c_id[] = {
->  	{ "rx6110", 0 },
->  	{ }
-> @@ -456,6 +462,7 @@ MODULE_DEVICE_TABLE(i2c, rx6110_i2c_id);
->  static struct i2c_driver rx6110_i2c_driver = {
->  	.driver = {
->  		.name = RX6110_DRIVER_NAME,
-> +		.acpi_match_table = ACPI_PTR(rx6110_i2c_acpi_match),
-
-Since you drop ifdeffery above, you have to drop ACPI_PTR() (besides that
-ACPI_PTR() requires acpi.h to be included).
-
->  	},
->  	.probe		= rx6110_i2c_probe,
->  	.id_table	= rx6110_i2c_id,
-> -- 
-> 2.30.1
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Sweet!  Thanks!
+Ira
