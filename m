@@ -2,37 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7261D33DBCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ABA533DBD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239591AbhCPSAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:00:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46454 "EHLO mail.kernel.org"
+        id S239570AbhCPSAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:00:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239548AbhCPR74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:59:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36283650D9;
-        Tue, 16 Mar 2021 17:59:55 +0000 (UTC)
+        id S239552AbhCPR76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:59:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7E73650D9;
+        Tue, 16 Mar 2021 17:59:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615917595;
-        bh=LWv2RdOQ+K7J7vxOu5wGgipIwfQAL+SqFszPu4v3NEs=;
+        s=k20201202; t=1615917598;
+        bh=vdy2WpeZI2HCzGdQqz3Y/L//P+ab1QFmmzSf0iTsJxg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HSRXgZNTD4gsIDvZWY4dsu/7l90O0N9RIw0WJugAuyyjXs0q7aPL7MTwd4fhijGRH
-         38qUdUVoSe7DCnKhkRALpnNpif3H96qMZNww5fo2r19IQant4EFuHArT7DX0G1hAf4
-         91E8TWYhYMvP++bc9it8uzDRF8AH/jUO9c3bTlFAXuykEN+iLd+A7IE5R8v0nIOed5
-         foO9cR5SmwR0jYZuyTFWFwkWNGFoSvechRJpz/PcMOFeCdeSGFKT6I/4A9jxu+u8Zr
-         va4bXqylWZfG70d7EHn5C3gTDGqlymhg1PCc+Oeu6jq9gBdUW7xM8lMRyms7t3086h
-         yMTxkCA8ZrE9g==
+        b=UnlsifzFhj3D7YpXvvXOJU1CORovHfvgX17+U2yLJQFIhShbsFwrxhYDfy4n3Qkwp
+         t+tSGUVpZcfEVLKsHejsyo26wxOi/2dh6ZTWags7XmGxJCI20l0YQhkgAwde5K69CO
+         YIqlWdcLppGJR1U8qaT+dlLgjE4mu+nWZT/AxDSIBUfBU5DTVWzc/P2KLpCopE8xRR
+         sDsb4MpkKwRPRZHje7YgqUNa98+5xMgUgPW9ebUDLMUEAeyR5EM18v8RJtQ/MEaKn2
+         vDQEq6I9Ttz8qOessEJAW/UgI04oHXEq5OLCKEljcMW/jc4FwTqIUkWccl49vwuF9k
+         HYyY4rqU9s1TQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] spi: Adding support for software nodes
-Date:   Tue, 16 Mar 2021 17:59:40 +0000
-Message-Id: <161591750212.14124.15654416621714459381.b4-ty@kernel.org>
+To:     timur@kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, Xiubo.Lee@gmail.com,
+        linux-kernel@vger.kernel.org, s.hauer@pengutronix.de,
+        linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, linux-imx@nxp.com,
+        festevam@gmail.com, lgirdwood@gmail.com, nicoleotsuka@gmail.com,
+        alsa-devel@alsa-project.org, shawnguo@kernel.org,
+        shengjiu.wang@gmail.com, kernel@pengutronix.de
+Subject: Re: [PATCH] ASoC: hdmi-codec: fix platform_no_drv_owner.cocci warnings
+Date:   Tue, 16 Mar 2021 17:59:41 +0000
+Message-Id: <161591744695.13544.8415296923566318166.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210303152814.35070-1-heikki.krogerus@linux.intel.com>
-References: <20210303152814.35070-1-heikki.krogerus@linux.intel.com>
+In-Reply-To: <1614761651-86898-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1614761651-86898-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,34 +45,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Mar 2021 18:28:10 +0300, Heikki Krogerus wrote:
-> The older API used to supply additional device properties for the
-> devices - so mainly the function device_add_properties() - is going to
-> be removed. The reason why the API will be removed is because it gives
-> false impression that the properties are assigned directly to the
-> devices, which has actually never been the case - the properties have
-> always been assigned to a software fwnode which was then just directly
-> linked with the device when the old API was used. By only accepting
-> device properties instead of complete software nodes, the subsystems
-> remove any change of taking advantage of the other features the
-> software nodes have.
+On Wed, 3 Mar 2021 16:54:11 +0800, Yang Li wrote:
+> ./sound/soc/fsl/imx-hdmi.c:226:3-8: No need to set .owner here. The core
+> will do it.
 > 
-> [...]
+> Remove .owner field if calls are used which set it automatically
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/4] spi: Add support for software nodes
-      commit: 47afc77bbfeac163d81c7a675d608c18561aa680
-[2/4] ARM: pxa: icontrol: Constify the software node
-      commit: 2df0c4a640c55c0eff7f97907b98ad6fdfedd226
-[3/4] ARM: pxa: zeus: Constify the software node
-      commit: d4272a7adf26c62c5afe86b6829712de519b4a26
-[4/4] spi: Remove support for dangling device properties
-      commit: df41a5dad586c8ead1bb7082b4b6fcb563e02199
+[1/1] ASoC: hdmi-codec: fix platform_no_drv_owner.cocci warnings
+      commit: 2e2bf6d479616a15c54c4e668558f61caffa4db4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
