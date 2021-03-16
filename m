@@ -2,176 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394C733D561
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:03:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA3F33D566
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:04:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235626AbhCPOD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 10:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45592 "EHLO
+        id S235819AbhCPOED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 10:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235315AbhCPOCw (ORCPT
+        with ESMTP id S235801AbhCPODq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 10:02:52 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC19C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 07:02:52 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id n24so5101947qkh.9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 07:02:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Elt0WVZmXpTu0E0qTWN3dbnfpIO0ie/fw4pDAAVKFfQ=;
-        b=d+D6AkHWtx10PKRjT6BaCp/Ihus3rrsRq9ECLFuGgpVQGKpQ2ndyyN8nPDqyK3mnCs
-         8JWOlMrdUvN6Rv15pGy5ZJJtYoqP2UrT+z9JNdBGcC6VNaGtQ66GVtaAoVkXPS+eyuzc
-         4hviY5nTHj5CId+ynl/ICorqJ3/lma/L9HeMb6wkbb/Zi23rG0dukEUIrlFSs2zA+Mii
-         44LFhi6FkhYek3HMOLDGLrOfky9Rhj5nCzJR5+ks3a76/IbiGFAC1/XPpbW8I9s+aoYV
-         912yKXdKI5c7A7Tgwj64y7lfl4dw4L2zO5hoYsOgzmjWiBMh9hmoo9VKbIrXupKB6+8H
-         WazA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Elt0WVZmXpTu0E0qTWN3dbnfpIO0ie/fw4pDAAVKFfQ=;
-        b=FO7vL8eeYLfvg7zVoXeOb33ErwXSww3/XvvUdxdumTkQOwJsE+TlfWXcanZei8NItD
-         tJhNswUhiiaGL7IJkYLBOEpqKZb3bu7NzO2Czd55RG/qksM/6m2fQdAzCiuYDBJLl/AG
-         AmChmqTd/rfcKGECxscH0fVxfs609Ea1gCOwusiXLcEr0H2XImWaoGrMkUuU3KMaPSFr
-         9jQWwj84eFFt2LJW2W0Z9XxUPHVK23KDvzhn4X+Izmtzdvn29OZLSzhcI2VGlJNwrUw2
-         0kZclibvNugYrJZtrOClwY0U4jjrmvEDvzs7TiZgYG0jwsH6rh0K39Bu0ugYMMxFegCc
-         1EVA==
-X-Gm-Message-State: AOAM532VGd5kNXgU61pwp/Qg0HSPXvoFl3DghV1zvOIo6nMCl0YPoyBu
-        nuDnWbDnJ+cmJsceUahoDn6go23uDqibV8gwWZVXQ7HYPY4Puw==
-X-Google-Smtp-Source: ABdhPJy8kZ595VVDN/Wd20548AQYpCPA5hxs0oZeoA7+uKr6CShTWhVR9MQCHVp4L6dZEPabMJLBoO85nABQAnW8k+8=
-X-Received: by 2002:a05:620a:981:: with SMTP id x1mr29248822qkx.501.1615903370401;
- Tue, 16 Mar 2021 07:02:50 -0700 (PDT)
+        Tue, 16 Mar 2021 10:03:46 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F71C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 07:03:44 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:b1e0:9434:c5b6:aecd])
+        by michel.telenet-ops.be with bizsmtp
+        id h23j2400b0UTkXy0623jbk; Tue, 16 Mar 2021 15:03:43 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lMAIR-0088ik-0P; Tue, 16 Mar 2021 15:03:43 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lMAIQ-00A483-GA; Tue, 16 Mar 2021 15:03:42 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2] net: broadcom: BCM4908_ENET should not default to y, unconditionally
+Date:   Tue, 16 Mar 2021 15:03:41 +0100
+Message-Id: <20210316140341.2399108-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <0000000000005ace4405bda4af71@google.com> <CACT4Y+ZJvG+H0Gz9x6cA5qz9=Bf8AdjXaJrQ3GLcwMTj3gPC=Q@mail.gmail.com>
- <CAK8P3a1Ea=NM02jfoWZtV7tbAHbhq7eoP1_SvqcPdRZ49+3dog@mail.gmail.com>
-In-Reply-To: <CAK8P3a1Ea=NM02jfoWZtV7tbAHbhq7eoP1_SvqcPdRZ49+3dog@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 16 Mar 2021 15:02:39 +0100
-Message-ID: <CACT4Y+Y1_WE1z9TVXwbo8ombG8_abD+mY3cwMEigOVYGenDQRA@mail.gmail.com>
-Subject: Re: [syzbot] KMSAN: uninit-value in video_usercopy (2)
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     syzbot <syzbot+142888ffec98ab194028@syzkaller.appspotmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 2:56 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Tue, Mar 16, 2021 at 11:44 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> >
-> > On Tue, Mar 16, 2021 at 11:18 AM syzbot
-> > <syzbot+142888ffec98ab194028@syzkaller.appspotmail.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    29ad81a1 arch/x86: add missing include to sparsemem.h
->
-> This tree seems to be missing fb18802a338b ("media: v4l: ioctl: Fix memory
-> leak in video_usercopy"), which rewrote that function partly and might
-> fix the problem.
->
-> > > Local variable ----sbuf@video_usercopy created at:
-> > >  video_usercopy+0xaa/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3285
-> > >  video_usercopy+0xaa/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3285
-> > > =====================================================
-> > > =====================================================
-> > > BUG: KMSAN: uninit-value in check_fmt+0x864/0x1070 drivers/media/v4l2-core/v4l2-ioctl.c:963
-> > > CPU: 0 PID: 19595 Comm: syz-executor.4 Tainted: G    B             5.11.0-rc7-syzkaller #0
-> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > > Call Trace:
-> > >  __dump_stack lib/dump_stack.c:79 [inline]
-> > >  dump_stack+0x21c/0x280 lib/dump_stack.c:120
-> > >  kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
-> > >  __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
-> > >  check_fmt+0x864/0x1070 drivers/media/v4l2-core/v4l2-ioctl.c:963
-> > >  v4l_prepare_buf+0xbf/0x1d0 drivers/media/v4l2-core/v4l2-ioctl.c:2107
-> > >  __video_do_ioctl+0x15cd/0x1d20 drivers/media/v4l2-core/v4l2-ioctl.c:2993
-> > >  video_usercopy+0x2313/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3345
-> > >  video_ioctl2+0x9f/0xb0 drivers/media/v4l2-core/v4l2-ioctl.c:3391
-> > >  v4l2_ioctl+0x255/0x290 drivers/media/v4l2-core/v4l2-dev.c:360
-> > >  v4l2_compat_ioctl32+0x2c6/0x370 drivers/media/v4l2-core/v4l2-compat-ioctl32.c:1248
-> > >  __do_compat_sys_ioctl fs/ioctl.c:842 [inline]
-> > >  __se_compat_sys_ioctl+0x53d/0x1100 fs/ioctl.c:793
-> > >  __ia32_compat_sys_ioctl+0x4a/0x70 fs/ioctl.c:793
-> > >  do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
-> > >  __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:141
-> > >  do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:166
-> > >  do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:209
-> > >  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> > > RIP: 0023:0xf7fec549
-> > > Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-> > > RSP: 002b:00000000f55e65fc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
-> > > RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000c050565d
-> > > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-> > > RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> > > R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-> > > R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> > >
-> > > Local variable ----sbuf@video_usercopy created at:
-> > >  video_usercopy+0xaa/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3285
-> > >  video_usercopy+0xaa/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3285
-> > > =====================================================
-> >
-> > I did not get to the very bottom of this, but I looked at this a bit.
-> > It seems to be related to some unfortunate interaction of compat
-> > syscall and CONFIG_COMPAT_32BIT_TIME. It seems that in this case
-> > nothing at all is copied from userspace because cmd gets messed up or
-> > something. Perhaps VIDIOC_QUERYBUF is translated into
-> > VIDIOC_QUERYBUF_TIME32 instead of VIDIOC_QUERYBUF32_TIME32 and then
-> > this gets into compat syscall path and v4l2_compat_get_user does not
-> > recognize the command, copies nothing but returns 0.
->
-> User space would be calling VIDIOC_QUERYBUF32_TIME32 here,
-> if it's built against glibc, though with a musl based user space, you
-> would get called with VIDIOC_QUERYBUF32.
+Merely enabling compile-testing should not enable additional code.
+To fix this, restrict the automatic enabling of BCM4908_ENET to
+ARCH_BCM4908.
 
-Or somebody fetching somebody else's credit card number will be
-calling VIDIOC_QUERYBUF_TIME32 directly ;)
+Fixes: 4feffeadbcb2e5b1 ("net: broadcom: bcm4908enet: add BCM4908 controller driver")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+v2:
+  - Enable by default if ARCH_BCM4908.
+---
+ drivers/net/ethernet/broadcom/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> What I notice in get_v4l2_buffer32_time32(), is that we do a full
-> copy_from_user() to the stack of this function, and then copy the
-> members individually to the output v4l2_buffer structure:
->
->         struct v4l2_buffer32_time32 vb32;
->         if (copy_from_user(&vb32, arg, sizeof(vb32)))
->                 return -EFAULT;
->         *vb = (struct v4l2_buffer) {
->                 .index          = vb32.index,
->                 .type           = vb32.type,
->                 .bytesused      = vb32.bytesused,
->                 .flags          = vb32.flags,
->                 .field          = vb32.field,
->                 .timestamp.tv_sec       = vb32.timestamp.tv_sec,
->                 .timestamp.tv_usec      = vb32.timestamp.tv_usec,
->                 .timecode       = vb32.timecode,
->                 .sequence       = vb32.sequence,
->                 .memory         = vb32.memory,
->                 .m.offset       = vb32.m.offset,
->                 .length         = vb32.length,
->                 .request_fd     = vb32.request_fd,
->         };
->
-> This struct assignment will however leave any padding
-> fields uninitialized. There is padding between 'field' and
-> 'timestamp.  Could that trigger a KMSAN bug?
+diff --git a/drivers/net/ethernet/broadcom/Kconfig b/drivers/net/ethernet/broadcom/Kconfig
+index f8a168b73307c03b..cb88ffb8f12fa7ef 100644
+--- a/drivers/net/ethernet/broadcom/Kconfig
++++ b/drivers/net/ethernet/broadcom/Kconfig
+@@ -54,7 +54,7 @@ config B44_PCI
+ config BCM4908_ENET
+ 	tristate "Broadcom BCM4908 internal mac support"
+ 	depends on ARCH_BCM4908 || COMPILE_TEST
+-	default y
++	default y if ARCH_BCM4908
+ 	help
+ 	  This driver supports Ethernet controller integrated into Broadcom
+ 	  BCM4908 family SoCs.
+-- 
+2.25.1
 
-Report seems to be saying it's vb.type that's uninitialized. I suspect
-we copy nothing at all from user space.
