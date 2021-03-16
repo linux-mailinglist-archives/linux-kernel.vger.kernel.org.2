@@ -2,166 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E976733E011
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3D733E019
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232769AbhCPVKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 17:10:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231556AbhCPVJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 17:09:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 008A264F9B;
-        Tue, 16 Mar 2021 21:09:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615928963;
-        bh=avaMIHx72RP9ZNnKycFdBrUWXnWNBwiuLsA7WclFLSg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hL+0zZQLRvgB8BMzv22B6HWeX+culxWAXI4xr9HR9d3FGkDb3AEpNupbChEp+OVE/
-         69lkZNLwMp2DMb5HuV9o/Q9yQf/E9RS2ItUXeLX4TzRB2dJyQMe5JgKbHbSvLu4waW
-         YVh5S6KcPJwkAPwus3Rj5lNtLfykzR7Ojhgu2kg/GwOkcEkjLev85k2gxSXsAM0+8s
-         1ffSYE55RvRVVFxvEWal+LNDsoWPukclUV0HlytrN35FVp4DphUZ7iilP38HQ2Wy07
-         HanbgxkD5QLiXEdNL0orfFuaXgpkTCOSBghmqAN/1CgcpZTgLrTRclx70Vp1Rnv6Jm
-         yxmoxh8+LqF+g==
-Received: by mail-qk1-f181.google.com with SMTP id d20so36831767qkc.2;
-        Tue, 16 Mar 2021 14:09:22 -0700 (PDT)
-X-Gm-Message-State: AOAM530NZmlzK7KkE/tRegjB/7FGZWvnOTL36Um6hiYbXZjExpzQEUL5
-        I1QoZE3DCWTLbCK5A/ldzPTQ2F65UOGdSJAwGg==
-X-Google-Smtp-Source: ABdhPJzUwFE/2dpfcP0CH/2O0Bme3HuUw8EojNThTxud4XxdUKO+98Zh4I4xbOnS237W4cfRsPECFxMIQ6/CEDxo73c=
-X-Received: by 2002:a37:6592:: with SMTP id z140mr1096374qkb.464.1615928962215;
- Tue, 16 Mar 2021 14:09:22 -0700 (PDT)
+        id S232426AbhCPVNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 17:13:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231354AbhCPVNZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 17:13:25 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A03C06174A;
+        Tue, 16 Mar 2021 14:13:25 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so7625832oto.2;
+        Tue, 16 Mar 2021 14:13:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=K0D+w3DtKcf3IG8gV1RKqgq6upop2BjX6Ht46yKIoSw=;
+        b=b0XdM/v9Yd4UUKP4J1lm2Iz8hTHjIX5hiWjGL3ANh/T6V79saDK2qiLxuux+cLTG9m
+         ckCp3z7MXCx67BuXshI5nYgz7V4H4TeagT+/5OX2QTdQDemap5+HtDUeotVeCPeNrefy
+         mfaRk8SjeCfAcohsZZkMmejv1e9cETKFcrRh0YsbG/4g59xo0n0n7uQOQYdEZGXyOt0a
+         W2iZu3/WzoAJh3wLnob9zuha/3f6fno5HjiAMhQgAHhb1e3opHfsaLVKVx+AqI8SFbXU
+         MejoK0yJu/1C3kQFOlbi4Q4UJ7Lsncfz9aG58C3SrhTLHL1Y5jbb2Vdhs4Ouvz0dtTaI
+         iy+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=K0D+w3DtKcf3IG8gV1RKqgq6upop2BjX6Ht46yKIoSw=;
+        b=AsYCuxMcRGm5DMKMddmuigQi5N18m12qLTC1lV1oYpULdJdiKUhUosIsLAEXznizj+
+         STqa/HzGHb5Ga2ospTl5qyEBAnP/aP5LV2NubjXgUXrpX6KlY04X9iU0NLB1HaeliAyn
+         0o70PbIaZvSCUStGifjH+0Mi3EOyuB+7VVTaMAO8QJzyyOTPsX6Cd1G652PvK6gRKknG
+         SXMRV/OjxpVT+UhwM3qtbDNRbAHZU7+jntjiR0I0dO8O4haQCMQBWg+/xYuYy/mfWeM9
+         HFwTNVnzAuC+6aKq3zsq2dP2yuzr+VRMlRWSAZ9voOuJRImdOV6wz8gPnDODPLTy2t4/
+         GFmw==
+X-Gm-Message-State: AOAM532aWHOfefQzQSFPiM3jo2eeSnCQiFKWFz1J6MyuAOlE1z4uVnzm
+        t9qpAQwJYm7/K43S9m5d7poFfiwHC1M=
+X-Google-Smtp-Source: ABdhPJxNybaQ7l5nH58TWqA+g+CapglJyvrgbihfIPqQXUErrr8SwXjEJM+ag4XPyO48u8HXIstE8g==
+X-Received: by 2002:a9d:7081:: with SMTP id l1mr602063otj.358.1615929205057;
+        Tue, 16 Mar 2021 14:13:25 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id s21sm8159812oos.5.2021.03.16.14.13.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 16 Mar 2021 14:13:24 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 16 Mar 2021 14:13:22 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 000/120] 4.19.181-rc1 review
+Message-ID: <20210316211322.GA60156@roeck-us.net>
+References: <20210315135720.002213995@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210316195100.3531414-1-robh@kernel.org> <YFEZhyZO+ePjS+fr@pendragon.ideasonboard.com>
-In-Reply-To: <YFEZhyZO+ePjS+fr@pendragon.ideasonboard.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 16 Mar 2021 15:09:10 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJdFf_yRLA-f8QmEC1g-Aq1k8Uh-AAOfiFDy8FhV_aOxg@mail.gmail.com>
-Message-ID: <CAL_JsqJdFf_yRLA-f8QmEC1g-Aq1k8Uh-AAOfiFDy8FhV_aOxg@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: media: video-interfaces: Use documented
- bindings in example
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 2:48 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Rob,
->
-> Thank you for the patch.
->
-> On Tue, Mar 16, 2021 at 01:51:00PM -0600, Rob Herring wrote:
-> > The example in video-interfaces.yaml managed to use a bunch of undocumented
-> > bindings. Update the example to use real bindings (and ones with a schema).
-> >
-> > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> > Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > Cc: linux-media@vger.kernel.org
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  .../bindings/media/video-interfaces.yaml      | 75 ++++++++-----------
-> >  1 file changed, 33 insertions(+), 42 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/media/video-interfaces.yaml b/Documentation/devicetree/bindings/media/video-interfaces.yaml
-> > index 0a7a73fd59f2..f30b9b91717b 100644
-> > --- a/Documentation/devicetree/bindings/media/video-interfaces.yaml
-> > +++ b/Documentation/devicetree/bindings/media/video-interfaces.yaml
-> > @@ -227,17 +227,12 @@ examples:
-> >    # only one of the following data pipelines can be active:
-> >    # ov772x -> ceu0 or imx074 -> csi2 -> ceu0.
-> >    - |
-> > +    #include <dt-bindings/clock/r8a7796-cpg-mssr.h>
-> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +    #include <dt-bindings/power/r8a7796-sysc.h>
-> > +
-> >      ceu@fe910000 {
-> > -        compatible = "renesas,sh-mobile-ceu";
-> >          reg = <0xfe910000 0xa0>;
-> > -        interrupts = <0x880>;
-> > -
-> > -        mclk: master_clock {
-> > -            compatible = "renesas,ceu-clock";
-> > -            #clock-cells = <1>;
-> > -            clock-frequency = <50000000>;  /* Max clock frequency */
-> > -            clock-output-names = "mclk";
-> > -        };
-> >
-> >          port {
-> >              #address-cells = <1>;
-> > @@ -271,18 +266,14 @@ examples:
-> >          #size-cells = <0>;
-> >
-> >          camera@21 {
-> > -            compatible = "ovti,ov772x";
-> > +            compatible = "ovti,ov7720";
-> >              reg = <0x21>;
-> > -            vddio-supply = <&regulator1>;
-> > -            vddcore-supply = <&regulator2>;
-> > -
-> > -            clock-frequency = <20000000>;
-> >              clocks = <&mclk 0>;
-> > -            clock-names = "xclk";
-> >
-> >              port {
-> >                  /* With 1 endpoint per port no need for addresses. */
-> >                  ov772x_1_1: endpoint {
-> > +                    bus-type = <5>;
-> >                      bus-width = <8>;
-> >                      remote-endpoint = <&ceu0_1>;
-> >                      hsync-active = <1>;
-> > @@ -295,48 +286,48 @@ examples:
-> >          };
-> >
-> >          camera@1a {
-> > -            compatible = "sony,imx074";
-> > +            compatible = "sony,imx334";
-> >              reg = <0x1a>;
-> > -            vddio-supply = <&regulator1>;
-> > -            vddcore-supply = <&regulator2>;
-> >
-> > -            clock-frequency = <30000000>;  /* Shared clock with ov772x_1 */
-> >              clocks = <&mclk 0>;
-> > -            clock-names = "sysclk";    /* Assuming this is the
-> > -                       name in the datasheet */
-> > +
-> >              port {
-> > -                imx074_1: endpoint {
-> > +                imx334_1: endpoint {
-> >                      clock-lanes = <0>;
-> >                      data-lanes = <1 2>;
-> > +                    link-frequencies = /bits/ 64 <891000000>;
-> >                      remote-endpoint = <&csi2_1>;
-> >                  };
-> >              };
-> >          };
-> >      };
-> >
-> > -    csi2: csi2@ffc90000 {
-> > -        compatible = "renesas,sh-mobile-csi2";
-> > -        reg = <0xffc90000 0x1000>;
-> > -        interrupts = <0x17a0>;
-> > -        #address-cells = <1>;
-> > -        #size-cells = <0>;
-> > +    csi2@fea80000 {
-> > +        compatible = "renesas,r8a7796-csi2";
->
-> That's certainly better, but the r8a7796 doesn't have a CEU :-) It has a
-> VIN. Maybe we could copy the last example from renesas,vin.yaml to
-> replace the CEU ?
+On Mon, Mar 15, 2021 at 02:55:51PM +0100, gregkh@linuxfoundation.org wrote:
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> This is the start of the stable review cycle for the 4.19.181 release.
+> There are 120 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 17 Mar 2021 13:57:02 +0000.
+> Anything received after that time might be too late.
+> 
+Build results:
+	total: 155 pass: 155 fail: 0
+Qemu test results:
+	total: 419 pass: 419 fail: 0
 
-What about just removing the example here? It bothers me to have 2
-copies (maybe 3 with sensor schemas) of an example and we should have
-plenty of examples. On the flip side, it's nice to have this stand on
-its own. Another option would be just remove compatibles and make the
-example barebones with only what's defined in video-interfaces.yaml.
-But then it's not validated at all.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Rob
+Guenter
