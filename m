@@ -2,129 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D82E33DB4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:47:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A6133DB54
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:47:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239297AbhCPRrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:47:03 -0400
-Received: from mga11.intel.com ([192.55.52.93]:6558 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239186AbhCPRqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:46:33 -0400
-IronPort-SDR: cBvrr2H2DYUjbiyu9ENfEz0j2H9BE6bSlam8LWoSE2V51BvRZ69QRcnXrAXkcrlaJ9w7WsQIuP
- eNWFbvcgJndA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="185945364"
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="185945364"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 10:46:30 -0700
-IronPort-SDR: trMTFlvtMFRW2v2cORu3xAlCZ/Y+CR9CxY8aZ3ZwOpU0f5P38iqD/0th2YJlV6eN+5Fu7ljjAV
- YYB6C/E7qbwg==
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="449800513"
-Received: from kcarrier-mobl.amr.corp.intel.com (HELO [10.209.124.168]) ([10.209.124.168])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 10:46:28 -0700
-Subject: Re: [PATCH v23 6/9] x86/entry: Introduce ENDBR macro
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>
-References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
- <20210316151320.6123-7-yu-cheng.yu@intel.com>
- <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
- <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
- <0c0b3663-3c01-c166-03fa-a3dbfb250da3@intel.com>
- <1cbd8068-60e3-3fc9-9618-3262b179182d@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <5856bc91-cc55-2394-fc11-a3414e48778f@intel.com>
-Date:   Tue, 16 Mar 2021 10:46:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S239330AbhCPRrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:47:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239205AbhCPRqi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:46:38 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14170C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:46:38 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id a188so9329521pfb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:46:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dPll0wFeLjqlXczZ31P6G+9fptwKfsKgzaV1xhhnBRY=;
+        b=B56yM0IgF0UnhQqaf4wNMeA5sMpba0GQCkZ0SllZPgarPsVVq957A9sZZnRW/svHue
+         lyL6jZdinT8ZVQbJx6+gurMzU6xD0Qx+ULo2eemP55vhsdEmT5NftcWLmddbFAtwv0sk
+         9XLqHm8oqK9awGpMt2Cf0Crw+0xf/+cVfjTRpRyKWpPXEsL0VoFydclKT/IkC3MGTLjb
+         XDswYUHbyRGPwA4hfxQcvXO16BDrmtipqJWdU2g9d6bwZIIm80gyTKiPuCzzW3pKV3+X
+         UEwcphaubJ5ML/E/1fxYPy8lfWADkQlmhL2TOq4YNUWltPFOi9uN8USn7oQLDG4oWHr0
+         0D/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dPll0wFeLjqlXczZ31P6G+9fptwKfsKgzaV1xhhnBRY=;
+        b=Bqdb+aQYO23Ae461LVNOcxHSfnAo2CvvGt7cmL9e40rp9e7b84uSkKX6HIugiE4JUB
+         JVWmET9tWlORMJgr0pkl4G1rKOUzy/5H0Jie1Hh+qzMZ2At79VBiwIULt719i+Aq3mUM
+         Lry6c5K6wAznv0biXXHb99lXF9mg5uYHU1A4Cxx6XmXhxU4melZDSpRRG48IjOeG3eni
+         g8goE/PsqxxuJ/MfswJvDmUDYdIIYoOrjjBh+/VmZO2fje5j3+7sbAwVzpLYNHyuI1QH
+         d+OmEIYV+JZMIQAPFFNON6+JIYH6BeD3HZWL65QrguUpkx99ZTl6m7mCowVB9xlAfBgo
+         7J1g==
+X-Gm-Message-State: AOAM533BY1953YuH/MyPx2a6WYOH+IKScGHOXRZQWTvEZZD5lO8dwF/b
+        68PFZpxiqAt+ZetXTOITvpSeNA==
+X-Google-Smtp-Source: ABdhPJxx8ABeuG5fMIZs4Co38AliHL5Yh8LOADOFJnU2pLecUuUA1r0pMfq46f+VWWBP7MuJUEP/6A==
+X-Received: by 2002:a63:4502:: with SMTP id s2mr780865pga.94.1615916797429;
+        Tue, 16 Mar 2021 10:46:37 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id z8sm89153pjd.0.2021.03.16.10.46.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 10:46:37 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 11:46:35 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mike.leach@linaro.org, anshuman.khandual@arm.com,
+        leo.yan@linaro.org, Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH v4 07/19] arm64: Add TRBE definitions
+Message-ID: <20210316174635.GB1387186@xps15>
+References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
+ <20210225193543.2920532-8-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <1cbd8068-60e3-3fc9-9618-3262b179182d@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225193543.2920532-8-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/21 10:44 AM, Yu, Yu-cheng wrote:
->> Also, Boris asked for two *different* macros for 32 and 64-bit:
->>
->> https://lore.kernel.org/linux-api/20210310231731.GK23521@zn.tnic/
->>
->> Could you do that in the next version, please?
+On Thu, Feb 25, 2021 at 07:35:31PM +0000, Suzuki K Poulose wrote:
+> From: Anshuman Khandual <anshuman.khandual@arm.com>
 > 
-> Yes, we can do two macros, probably in arch/x86/include/asm/vdso.h.
+> This adds TRBE related registers and corresponding feature macros.
+> 
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Reviewed-by: Mike Leach <mike.leach@linaro.org>
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  arch/arm64/include/asm/sysreg.h | 50 +++++++++++++++++++++++++++++++++
+>  1 file changed, 50 insertions(+)
 
-*But*, please do leverage _CET_ENDBR if you can.  It seems awfully close
-to what we need.  If it works out, just use it for the 32/64-bit switch.
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+> 
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index dfd4edbfe360..6470d783ea59 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -333,6 +333,55 @@
+>  
+>  /*** End of Statistical Profiling Extension ***/
+>  
+> +/*
+> + * TRBE Registers
+> + */
+> +#define SYS_TRBLIMITR_EL1		sys_reg(3, 0, 9, 11, 0)
+> +#define SYS_TRBPTR_EL1			sys_reg(3, 0, 9, 11, 1)
+> +#define SYS_TRBBASER_EL1		sys_reg(3, 0, 9, 11, 2)
+> +#define SYS_TRBSR_EL1			sys_reg(3, 0, 9, 11, 3)
+> +#define SYS_TRBMAR_EL1			sys_reg(3, 0, 9, 11, 4)
+> +#define SYS_TRBTRG_EL1			sys_reg(3, 0, 9, 11, 6)
+> +#define SYS_TRBIDR_EL1			sys_reg(3, 0, 9, 11, 7)
+> +
+> +#define TRBLIMITR_LIMIT_MASK		GENMASK_ULL(51, 0)
+> +#define TRBLIMITR_LIMIT_SHIFT		12
+> +#define TRBLIMITR_NVM			BIT(5)
+> +#define TRBLIMITR_TRIG_MODE_MASK	GENMASK(1, 0)
+> +#define TRBLIMITR_TRIG_MODE_SHIFT	3
+> +#define TRBLIMITR_FILL_MODE_MASK	GENMASK(1, 0)
+> +#define TRBLIMITR_FILL_MODE_SHIFT	1
+> +#define TRBLIMITR_ENABLE		BIT(0)
+> +#define TRBPTR_PTR_MASK			GENMASK_ULL(63, 0)
+> +#define TRBPTR_PTR_SHIFT		0
+> +#define TRBBASER_BASE_MASK		GENMASK_ULL(51, 0)
+> +#define TRBBASER_BASE_SHIFT		12
+> +#define TRBSR_EC_MASK			GENMASK(5, 0)
+> +#define TRBSR_EC_SHIFT			26
+> +#define TRBSR_IRQ			BIT(22)
+> +#define TRBSR_TRG			BIT(21)
+> +#define TRBSR_WRAP			BIT(20)
+> +#define TRBSR_ABORT			BIT(18)
+> +#define TRBSR_STOP			BIT(17)
+> +#define TRBSR_MSS_MASK			GENMASK(15, 0)
+> +#define TRBSR_MSS_SHIFT			0
+> +#define TRBSR_BSC_MASK			GENMASK(5, 0)
+> +#define TRBSR_BSC_SHIFT			0
+> +#define TRBSR_FSC_MASK			GENMASK(5, 0)
+> +#define TRBSR_FSC_SHIFT			0
+> +#define TRBMAR_SHARE_MASK		GENMASK(1, 0)
+> +#define TRBMAR_SHARE_SHIFT		8
+> +#define TRBMAR_OUTER_MASK		GENMASK(3, 0)
+> +#define TRBMAR_OUTER_SHIFT		4
+> +#define TRBMAR_INNER_MASK		GENMASK(3, 0)
+> +#define TRBMAR_INNER_SHIFT		0
+> +#define TRBTRG_TRG_MASK			GENMASK(31, 0)
+> +#define TRBTRG_TRG_SHIFT		0
+> +#define TRBIDR_FLAG			BIT(5)
+> +#define TRBIDR_PROG			BIT(4)
+> +#define TRBIDR_ALIGN_MASK		GENMASK(3, 0)
+> +#define TRBIDR_ALIGN_SHIFT		0
+> +
+>  #define SYS_PMINTENSET_EL1		sys_reg(3, 0, 9, 14, 1)
+>  #define SYS_PMINTENCLR_EL1		sys_reg(3, 0, 9, 14, 2)
+>  
+> @@ -835,6 +884,7 @@
+>  #define ID_AA64MMFR2_CNP_SHIFT		0
+>  
+>  /* id_aa64dfr0 */
+> +#define ID_AA64DFR0_TRBE_SHIFT		44
+>  #define ID_AA64DFR0_TRACE_FILT_SHIFT	40
+>  #define ID_AA64DFR0_DOUBLELOCK_SHIFT	36
+>  #define ID_AA64DFR0_PMSVER_SHIFT	32
+> -- 
+> 2.24.1
+> 
