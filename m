@@ -2,140 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E1D33E11C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9E533E121
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhCPWGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 18:06:24 -0400
-Received: from mail-il1-f180.google.com ([209.85.166.180]:34833 "EHLO
-        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbhCPWGC (ORCPT
+        id S230300AbhCPWHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 18:07:34 -0400
+Received: from mail-io1-f52.google.com ([209.85.166.52]:38164 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230434AbhCPWHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 18:06:02 -0400
-Received: by mail-il1-f180.google.com with SMTP id h18so14194031ils.2;
-        Tue, 16 Mar 2021 15:06:02 -0700 (PDT)
+        Tue, 16 Mar 2021 18:07:19 -0400
+Received: by mail-io1-f52.google.com with SMTP id k2so38955544ioh.5;
+        Tue, 16 Mar 2021 15:07:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=X+25j3LtI83/Mlwrw+Su7Sg0G8Kk4KU5YFjDf73z7Tc=;
-        b=Sn7PgJaeMZd7MTUi9JeSg0KIOTkhE1yzzFCXrb2MTqxWEzr54CuCTEwTSqKtahkNpH
-         tlv6pdvFXcUKjKsp3sfX6AyACYnYpAaLuWw9NzVguTzY9LN6tX+smRmO6eA7Uq6f7Iqb
-         9Od5S0jgh+IJmAuNLpCo12ejZQRia0BwcyrdOCwJWskbHaee2q0V51XWxMJiZ92yNJXI
-         eEBN0VpJP1yFFBGJImYRzmXwO271UzTtgkHi4W17/L1JRLK1mPQfOTyUTTK66XsLzzRu
-         kXc12ayftq++3GiVfsPhvZtf5pjVKSmxnu30Kf/H2xtueugnTzgObEo3ZOEER2DT4lAU
-         +MWQ==
-X-Gm-Message-State: AOAM532yxHmGamJGzR/FVpt0dgQauyaMPIj34gvF0SIs3Ai4yknLkPDJ
-        gNJ6nfBYhPcXmhZyixdrGw==
-X-Google-Smtp-Source: ABdhPJw8gqo3WwzUPjdGontwxsD24GlSGV/KjNJ/XjEoHTx6WbbUHwUt3bW0rpGvbcl6dFfqE/09tA==
-X-Received: by 2002:a92:c24a:: with SMTP id k10mr5330643ilo.284.1615932362354;
-        Tue, 16 Mar 2021 15:06:02 -0700 (PDT)
+        bh=xudP/wtMn5ameXFOG9eCHeqe2x+KQ5fsOiLucUPt0ew=;
+        b=jcSRRlBVyYB6Xc+EK0amVidKpxqs0clvHAJ6TQtlRwHYT8jrEShykYhZEIkuAssO3j
+         VNnuv/PLVxdlmMjmvzAViEOjcZGDhJ5LzhO44n+LcdZuqfDOLgY2SwVKLnWBp9QPy21h
+         k2zrPZ88YouTyC/fXUsJnQd0JTl3JSBa4smGExYfujLWwIfAJ4/VpmdnPurMODz57dLi
+         Fd2i1GbfQDmuNG+yL1fKsnqOVC8b5H8rqIYfZcd1TXJ/MdfICSVUbwKFdoFUQQFw7Vm9
+         +qJRN27R9L67zGYEWe6heLICRsRNvySxdQDA+R2ZWGUSmTgHFJzN83g2frV6EhABHjoh
+         aUFg==
+X-Gm-Message-State: AOAM533Gmg3zdp7rGOW9Wj72Yr3sXHHxF33nHdUZBdZZsB8N8sG1SHRD
+        64SrmLQpyjpShpZQiAgiaA==
+X-Google-Smtp-Source: ABdhPJyutVx/ClPCwza7RSsNBjmSP5RGixTDmB/ju3r8yiC4eLWLKO93VURJRfBdjUUYqTouYsJ0Xw==
+X-Received: by 2002:a5e:dd09:: with SMTP id t9mr4799637iop.111.1615932438996;
+        Tue, 16 Mar 2021 15:07:18 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id a5sm10125189ilk.14.2021.03.16.15.05.59
+        by smtp.gmail.com with ESMTPSA id 18sm9993938iln.19.2021.03.16.15.07.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 15:06:01 -0700 (PDT)
-Received: (nullmailer pid 3762495 invoked by uid 1000);
-        Tue, 16 Mar 2021 22:05:58 -0000
-Date:   Tue, 16 Mar 2021 16:05:58 -0600
+        Tue, 16 Mar 2021 15:07:18 -0700 (PDT)
+Received: (nullmailer pid 3764810 invoked by uid 1000);
+        Tue, 16 Mar 2021 22:07:16 -0000
+Date:   Tue, 16 Mar 2021 16:07:16 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kishon Vijay Abraham <kishon@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Praneeth Bajjuri <praneeth@ti.com>,
-        Gowtham Tammana <g-tammana@ti.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Vaibhav Gupta <v_gupta@ti.com>
-Subject: Re: [PATCH v1 1/3] dt-bindings: crypto: ti,sa2ul: Add new compatible
- for AM64
-Message-ID: <20210316220558.GA3754419@robh.at.kernel.org>
-References: <20210308202005.243228-1-vaibhavgupta40@gmail.com>
- <20210308202005.243228-2-vaibhavgupta40@gmail.com>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     mani@kernel.org, linux-kernel@vger.kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org, agross@kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        sboyd@kernel.org, p.zabel@pengutronix.de
+Subject: Re: [PATCH 2/6] dt-bindings: mailbox: Add WPSS client index to IPCC
+Message-ID: <20210316220716.GA3764759@robh.at.kernel.org>
+References: <1615269111-25559-1-git-send-email-sibis@codeaurora.org>
+ <1615269111-25559-3-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210308202005.243228-2-vaibhavgupta40@gmail.com>
+In-Reply-To: <1615269111-25559-3-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 01:50:03AM +0530, Vaibhav Gupta wrote:
-> From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+On Tue, 09 Mar 2021 11:21:47 +0530, Sibi Sankar wrote:
+> Add WPSS remote processor client index to Inter-Processor Communication
+> Controller (IPCC) block.
 > 
-> Add the AM64 version of sa2ul to the compatible list.
-> 
-> [v_gupta@ti.com: Conditional dma-coherent requirement, clocks]
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Signed-off-by: Vaibhav Gupta <v_gupta@ti.com>
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 > ---
->  .../devicetree/bindings/crypto/ti,sa2ul.yaml  | 40 +++++++++++++++----
->  1 file changed, 33 insertions(+), 7 deletions(-)
+>  include/dt-bindings/mailbox/qcom-ipcc.h | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml b/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
-> index 1d48ac712b23..6eb9acd564c2 100644
-> --- a/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
-> +++ b/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
-> @@ -14,6 +14,7 @@ properties:
->      enum:
->        - ti,j721e-sa2ul
->        - ti,am654-sa2ul
-> +      - ti,am64-sa2ul
->  
->    reg:
->      maxItems: 1
-> @@ -45,19 +46,44 @@ properties:
->      description:
->        Address translation for the possible RNG child node for SA2UL
->  
-> +  clocks:
-> +    items:
-> +      - description: Clock used by PKA
-> +      - description: Main Input Clock
-> +      - description: Clock used by rng
-> +
-> +  clock-names:
-> +    items:
-> +      - const: pka_in_clk
-> +      - const: x1_clk
-> +      - const: x2_clk
-> +
->  patternProperties:
->    "^rng@[a-f0-9]+$":
->      type: object
->      description:
->        Child RNG node for SA2UL
->  
-> -required:
-> -  - compatible
-> -  - reg
-> -  - power-domains
-> -  - dmas
-> -  - dma-names
-> -  - dma-coherent
-> +if:
-> +  properties:
-> +    compatible:
-> +      const: ti,am64-sa2ul
-> +then:
-> +  required:
-> +    - compatible
-> +    - reg
-> +    - power-domains
-> +    - dmas
-> +    - dma-names
-> +
-> +else:
-> +  required:
-> +    - compatible
-> +    - reg
-> +    - power-domains
-> +    - dmas
-> +    - dma-names
-> +    - dma-coherent
 
-The only difference is 'dma-coherent'. You can simplify the if/then to 
-just that.
+Acked-by: Rob Herring <robh@kernel.org>
