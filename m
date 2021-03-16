@@ -2,203 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A9A33CAC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 02:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B4833CACB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 02:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234324AbhCPBPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 21:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49922 "EHLO
+        id S231261AbhCPBRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 21:17:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234292AbhCPBPZ (ORCPT
+        with ESMTP id S229690AbhCPBQd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 21:15:25 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA3EC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 18:15:25 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id e2so10906452pld.9
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 18:15:25 -0700 (PDT)
+        Mon, 15 Mar 2021 21:16:33 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920A1C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 18:16:33 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id x21so6408971pfa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 18:16:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FOfzDySgsacq8EWM3EuIBQkeQAY4lRnePxThhSToAH4=;
-        b=WB0ZUD7oyFwn3I79YOyAovO5zWgfXo3Mw/i+uQ07ehqECD27kKYRCc8albCaMBc4ud
-         E86bLNYBEh8hgxIPR/018CrHA3hSkiZ+Q9ZZGzCPX3Z9jhws4J/Ggoqo2idNt7lQYQbJ
-         9smQfYf+5Y+QKMh+sfhhD44/uNiAU+YkfwbwM=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+SfsrsMXLSqXOTLzBAkO12gaj/evRfWmTw9CDzEhlbc=;
+        b=NRQ+OAE+VEiai1Uv40gDDF/yHm4Ndb7UxOHbsQ9LdX1VJ8lrLXlCxrY3TrheGB3FOi
+         Vfc2FrDn/9st9oqYWoUkOA+eUdwXFVGndqmR3x3Ob0ei7ej8zi4AvAHsd6qU8sd/OQgH
+         nvDUlA5QRDTq9Koxhoq0TA46CkXHWdiWaavEg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FOfzDySgsacq8EWM3EuIBQkeQAY4lRnePxThhSToAH4=;
-        b=bVcMjGfVecTFrUjkPxFqr4oTRuakm5ZI+dyQlxu0x5NRPxmOtciPEPNyfamPtvwTBb
-         kMaC2K2rNhtGNj0ejocgsJuOqOL0+Y4KdyHkH5e8Fj8dWuzSn46X+IWPU+Pm4KtweADB
-         m9tAWOpOgF4vKx0gs2up9TngFfiqSzTZ+RC1XHNYhFaZteo1AqHswtfHb/NFcyovQWPM
-         3zQtEyGd4JAerNX5qKqA/q1++Zksk9l8Oho1gB0Vkk/5uHWTchKYfloIVS3Cv8nThYDY
-         awp1U6lJ+lxkyWJ28KlQQ9Nz0/73oWUas87HM7CcMbziUAOt9dqWVI8aslCL7CcwcSWP
-         mfHQ==
-X-Gm-Message-State: AOAM532Xqe6TO9t2zrwElxJvp3X6SXkef+YK6EcSuRrE9K5r9A5fouuc
-        3OHsgDNiTLgIvsE1OcCyJNbiFXWknYCDDg==
-X-Google-Smtp-Source: ABdhPJxq7NnziG+PDvfNwy3oTY/vStLi6lcZzX5Vb1KA7JKMWZ8hlvyRjwY9PIwsfGVRhNEVpBciPQ==
-X-Received: by 2002:a17:90a:e454:: with SMTP id jp20mr2082588pjb.129.1615857324593;
-        Mon, 15 Mar 2021 18:15:24 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:9867:b969:5d4f:e017])
-        by smtp.gmail.com with UTF8SMTPSA id a24sm15019992pff.18.2021.03.15.18.15.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 18:15:24 -0700 (PDT)
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>
-Subject: [PATCH v3 3/3] arm64: dts: qcom: sc7180: Add CoachZ rev3
-Date:   Mon, 15 Mar 2021 18:15:15 -0700
-Message-Id: <20210315181509.v3.3.I95b8a63103b77cab6a7cf9c150f0541db57fda98@changeid>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+SfsrsMXLSqXOTLzBAkO12gaj/evRfWmTw9CDzEhlbc=;
+        b=gJPD8CM7MYBfJYv8a4E9EFLpa8OecKESrGfLCnkX+kCuPGNuCx0WI7DOtu1Ezi0Ah3
+         MIq+iY9enxLAGx+GvYubIP0FGVsJj4G4/3HYkCL8twhyZzZGieiPoits7LmpiN64DePv
+         aSW+UAep9SNu8O9Lqee6Fa/3JtczpF8hUN1rU6JC9xJ5B07xjag0Q4Va/r9RLlUHqtpw
+         VFtaKtyHYZ/Hd+4JmsLm+Hz0W5QPfWtwxSNSDFZVHPKH9f0KYdpQ3Xn9nOP188WDKMR5
+         XEapoFXvUQLphYj+4boN3XOl6LRDlPOoBWtcCMGGOf3ZnZFUOjBStnR0xLHJp5Vh2diy
+         ZVgA==
+X-Gm-Message-State: AOAM532TXqpLGb+6MfeDGeNA2fNSZfcPr2BP8E713m4gRShrtd1vhkmd
+        xIyE/Hbjl62i2i085qiSWz0cYw==
+X-Google-Smtp-Source: ABdhPJyy1mqVV9hxHes7oFUnZLcSEQeYmey0yEBwXV5iaPXNfhgzkzriNgX4M+s8ZPL28iOThsZeog==
+X-Received: by 2002:a63:c343:: with SMTP id e3mr1655564pgd.8.1615857393156;
+        Mon, 15 Mar 2021 18:16:33 -0700 (PDT)
+Received: from li-cloudtop.c.googlers.com.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id 186sm15773381pfb.143.2021.03.15.18.16.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 18:16:32 -0700 (PDT)
+From:   Li Li <dualli@chromium.org>
+To:     dualli@google.com, tkjos@google.com, gregkh@linuxfoundation.org,
+        christian@brauner.io, arve@android.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, maco@google.com, hridya@google.com,
+        surenb@google.com
+Cc:     joel@joelfernandes.org, kernel-team@android.com
+Subject: [PATCH v3 0/3] Binder: Enable App Freezing Capability
+Date:   Mon, 15 Mar 2021 18:16:27 -0700
+Message-Id: <20210316011630.1121213-1-dualli@chromium.org>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-In-Reply-To: <20210316011516.1314686-1-mka@chromium.org>
-References: <20210316011516.1314686-1-mka@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CoachZ rev3 uses a 100k NTC thermistor for the charger temperatures,
-instead of the 47k NTC that is stuffed in earlier revisions. Add .dts
-files for rev3.
+From: Li Li <dualli@google.com>
 
-The 47k NTC currently isn't supported by the PM6150 ADC driver.
-Disable the charger thermal zone for rev1 and rev2 to avoid the use
-of bogus temperature values.
+To improve the user experience when switching between recently used
+applications, the background applications which are not currently needed
+are cached in the memory. Normally, a well designed application will not
+consume valuable CPU resources in the background. However, it's possible
+some applications are not able or willing to behave as expected, wasting
+energy even after being cached.
 
-This also gets rid of the explicit DT files for rev2 and handles
-rev2 in the rev1 .dts instead. There was some back and forth
-downstream involving the 'dmic_clk_en' pin, after that was sorted
-out the DT for rev1 and rev2 is the same.
+It is a good idea to freeze those applications when they're only being
+kept alive for the sake of faster startup and energy saving. These kernel
+patches will provide the necessary infrastructure for user space framework
+to freeze and thaw a cached process, check the current freezing status and
+correctly deal with outstanding binder transactions to frozen processes.
 
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
----
+Changes in v2: avoid panic by using pr_warn for unexpected cases.
+Changes in v3: improved errcode logic in binder_proc_transaction().
 
-Changes in v3:
-- get rid of separate .dts for rev2
+Marco Ballesio (3):
+  binder: BINDER_FREEZE ioctl
+  binder: use EINTR for interrupted wait for work
+  binder: BINDER_GET_FROZEN_INFO ioctl
 
-Changes in v2:
-- added CoachZ rev3
-- updated subject and commit message
+ drivers/android/binder.c            | 198 ++++++++++++++++++++++++++--
+ drivers/android/binder_internal.h   |  18 +++
+ include/uapi/linux/android/binder.h |  20 +++
+ 3 files changed, 224 insertions(+), 12 deletions(-)
 
- arch/arm64/boot/dts/qcom/Makefile                   |  4 ++--
- .../boot/dts/qcom/sc7180-trogdor-coachz-r1-lte.dts  |  4 ++--
- .../boot/dts/qcom/sc7180-trogdor-coachz-r1.dts      | 13 +++++++++++--
- ...-r2-lte.dts => sc7180-trogdor-coachz-r3-lte.dts} |  6 +++---
- ...r-coachz-r2.dts => sc7180-trogdor-coachz-r3.dts} |  4 ++--
- 5 files changed, 20 insertions(+), 11 deletions(-)
- rename arch/arm64/boot/dts/qcom/{sc7180-trogdor-coachz-r2-lte.dts => sc7180-trogdor-coachz-r3-lte.dts} (69%)
- rename arch/arm64/boot/dts/qcom/{sc7180-trogdor-coachz-r2.dts => sc7180-trogdor-coachz-r3.dts} (75%)
-
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 11aa83ca798f..39db370cf1a4 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -33,8 +33,8 @@ dtb-$(CONFIG_ARCH_QCOM)	+= qrb5165-rb5.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-idp.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-coachz-r1.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-coachz-r1-lte.dtb
--dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-coachz-r2.dtb
--dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-coachz-r2-lte.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-coachz-r3.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-coachz-r3-lte.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r0.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r1.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r1-kb.dtb
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1-lte.dts
-index 533c048903ea..82dc00cc7fb9 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1-lte.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1-lte.dts
-@@ -9,8 +9,8 @@
- #include "sc7180-trogdor-lte-sku.dtsi"
- 
- / {
--	model = "Google CoachZ (rev1) with LTE";
--	compatible = "google,coachz-rev1-sku0", "qcom,sc7180";
-+	model = "Google CoachZ (rev1 - 2) with LTE";
-+	compatible = "google,coachz-rev1-sku0", "google,coachz-rev2-sku0", "qcom,sc7180";
- };
- 
- &cros_ec_proximity {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts
-index 86619f6c1134..b9c252df9fa1 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts
-@@ -10,8 +10,17 @@
- #include "sc7180-trogdor-coachz.dtsi"
- 
- / {
--	model = "Google CoachZ (rev1)";
--	compatible = "google,coachz-rev1", "qcom,sc7180";
-+	model = "Google CoachZ (rev1 - 2)";
-+	compatible = "google,coachz-rev1", "google,coachz-rev2", "qcom,sc7180";
-+};
-+
-+/*
-+ * CoachZ rev1 is stuffed with a 47k NTC as charger thermistor which currently
-+ * is not supported by the PM6150 ADC driver. Disable the charger thermal zone
-+ * to avoid using bogus temperature values.
-+ */
-+&charger_thermal {
-+	status = "disabled";
- };
- 
- &tlmm {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3-lte.dts
-similarity index 69%
-rename from arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2-lte.dts
-rename to arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3-lte.dts
-index 6e7745801fae..d23409034e8c 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2-lte.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3-lte.dts
-@@ -2,14 +2,14 @@
- /*
-  * Google CoachZ board device tree source
-  *
-- * Copyright 2020 Google LLC.
-+ * Copyright 2021 Google LLC.
-  */
- 
--#include "sc7180-trogdor-coachz-r2.dts"
-+#include "sc7180-trogdor-coachz-r3.dts"
- #include "sc7180-trogdor-lte-sku.dtsi"
- 
- / {
--	model = "Google CoachZ (rev2+) with LTE";
-+	model = "Google CoachZ (rev3+) with LTE";
- 	compatible = "google,coachz-sku0", "qcom,sc7180";
- };
- 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3.dts
-similarity index 75%
-rename from arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2.dts
-rename to arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3.dts
-index 4f69b6ba299f..a02d2d57c78c 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3.dts
-@@ -2,7 +2,7 @@
- /*
-  * Google CoachZ board device tree source
-  *
-- * Copyright 2020 Google LLC.
-+ * Copyright 2021 Google LLC.
-  */
- 
- /dts-v1/;
-@@ -10,6 +10,6 @@
- #include "sc7180-trogdor-coachz.dtsi"
- 
- / {
--	model = "Google CoachZ (rev2+)";
-+	model = "Google CoachZ (rev3+)";
- 	compatible = "google,coachz", "qcom,sc7180";
- };
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
