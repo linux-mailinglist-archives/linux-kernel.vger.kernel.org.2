@@ -2,72 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6325733D161
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F5933D164
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:08:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236302AbhCPKGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 06:06:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:58288 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233330AbhCPKGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 06:06:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 92DE3D6E;
-        Tue, 16 Mar 2021 03:06:21 -0700 (PDT)
-Received: from [10.37.8.5] (unknown [10.37.8.5])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8BCF73F70D;
-        Tue, 16 Mar 2021 03:06:19 -0700 (PDT)
-Subject: Re: [PATCH v16 6/9] arm64: mte: Conditionally compile
- mte_enable_kernel_*()
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-References: <20210315132019.33202-1-vincenzo.frascino@arm.com>
- <20210315132019.33202-7-vincenzo.frascino@arm.com>
- <20210315184152.GC22897@arm.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <3f0b916b-efa5-ad35-b838-34f1edf2ba3a@arm.com>
-Date:   Tue, 16 Mar 2021 10:06:18 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S236481AbhCPKH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 06:07:58 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:47837 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234292AbhCPKH3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 06:07:29 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 12GA75eS4018098, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmbs04.realtek.com.tw[172.21.6.97])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 12GA75eS4018098
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 16 Mar 2021 18:07:05 +0800
+Received: from localhost.localdomain (172.21.132.99) by
+ RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 16 Mar 2021 18:07:05 +0800
+From:   <hildawu@realtek.com>
+To:     <marcel@holtmann.org>
+CC:     <johan.hedberg@gmail.com>, <luiz.dentz@gmail.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <tientzu@chromium.org>,
+        <max.chou@realtek.com>, <alex_lu@realsil.com.cn>,
+        <kidman@realtek.com>
+Subject: [PATCH v2] Bluetooth: hci_h5: btrtl: Add quirk for keep power in suspend/resume
+Date:   Tue, 16 Mar 2021 18:06:57 +0800
+Message-ID: <20210316100657.16499-1-hildawu@realtek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210315184152.GC22897@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [172.21.132.99]
+X-ClientProxiedBy: RTEXMBS03.realtek.com.tw (172.21.6.96) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: hildawu <hildawu@realtek.com>
 
+RTL8822C devices support BT wakeup Host. Add a quirk for these specific
+devices did not power off during suspend and resume.
+By this change, if the Host support that received BT device signal then
+it can be wakeup.
 
-On 3/15/21 6:41 PM, Catalin Marinas wrote:
-> On Mon, Mar 15, 2021 at 01:20:16PM +0000, Vincenzo Frascino wrote:
->> mte_enable_kernel_*() are not needed if KASAN_HW is disabled.
->>
->> Add ash defines around the functions to conditionally compile the
->> functions.
->>
->> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> 
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> 
-> (BTW, Andrey now has a different email address; use the one in the
-> MAINTAINERS file)
-> 
+Signed-off-by: hildawu <hildawu@realtek.com>
+---
+Changes in v2:
+- Add missing struct member
+- Modify title for fit length
+---
+---
+ drivers/bluetooth/btrtl.c   | 36 ------------------------------------
+ drivers/bluetooth/btrtl.h   | 36 ++++++++++++++++++++++++++++++++++++
+ drivers/bluetooth/hci_h5.c  | 35 ++++++++++++++++++++++++-----------
+ include/net/bluetooth/hci.h |  9 +++++++++
+ 4 files changed, 69 insertions(+), 47 deletions(-)
 
-I did not notice the change, sorry. Than you for updating the address.
-
+diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+index e7fe5fb22753..94d1e7885aee 100644
+--- a/drivers/bluetooth/btrtl.c
++++ b/drivers/bluetooth/btrtl.c
+@@ -38,42 +38,6 @@
+ 	.hci_ver = (hciv), \
+ 	.hci_bus = (bus)
+ 
+-enum btrtl_chip_id {
+-	CHIP_ID_8723A,
+-	CHIP_ID_8723B,
+-	CHIP_ID_8821A,
+-	CHIP_ID_8761A,
+-	CHIP_ID_8822B = 8,
+-	CHIP_ID_8723D,
+-	CHIP_ID_8821C,
+-	CHIP_ID_8822C = 13,
+-	CHIP_ID_8761B,
+-	CHIP_ID_8852A = 18,
+-};
+-
+-struct id_table {
+-	__u16 match_flags;
+-	__u16 lmp_subver;
+-	__u16 hci_rev;
+-	__u8 hci_ver;
+-	__u8 hci_bus;
+-	bool config_needed;
+-	bool has_rom_version;
+-	char *fw_name;
+-	char *cfg_name;
+-};
+-
+-struct btrtl_device_info {
+-	const struct id_table *ic_info;
+-	u8 rom_version;
+-	u8 *fw_data;
+-	int fw_len;
+-	u8 *cfg_data;
+-	int cfg_len;
+-	bool drop_fw;
+-	int project_id;
+-};
+-
+ static const struct id_table ic_id_table[] = {
+ 	/* 8723A */
+ 	{ IC_INFO(RTL_ROM_LMP_8723A, 0xb, 0x6, HCI_USB),
+diff --git a/drivers/bluetooth/btrtl.h b/drivers/bluetooth/btrtl.h
+index 2a582682136d..713768b38e21 100644
+--- a/drivers/bluetooth/btrtl.h
++++ b/drivers/bluetooth/btrtl.h
+@@ -12,6 +12,42 @@
+ #define rtl_dev_info(dev, fmt, ...) bt_dev_info(dev, "RTL: " fmt, ##__VA_ARGS__)
+ #define rtl_dev_dbg(dev, fmt, ...) bt_dev_dbg(dev, "RTL: " fmt, ##__VA_ARGS__)
+ 
++enum btrtl_chip_id {
++	CHIP_ID_8723A,
++	CHIP_ID_8723B,
++	CHIP_ID_8821A,
++	CHIP_ID_8761A,
++	CHIP_ID_8822B = 8,
++	CHIP_ID_8723D,
++	CHIP_ID_8821C,
++	CHIP_ID_8822C = 13,
++	CHIP_ID_8761B,
++	CHIP_ID_8852A = 18,
++};
++
++struct id_table {
++	__u16 match_flags;
++	__u16 lmp_subver;
++	__u16 hci_rev;
++	__u8 hci_ver;
++	__u8 hci_bus;
++	bool config_needed;
++	bool has_rom_version;
++	char *fw_name;
++	char *cfg_name;
++};
++
++struct btrtl_device_info {
++	const struct id_table *ic_info;
++	u8 rom_version;
++	u8 *fw_data;
++	int fw_len;
++	u8 *cfg_data;
++	int cfg_len;
++	bool drop_fw;
++	int project_id;
++};
++
+ struct btrtl_device_info;
+ 
+ struct rtl_download_cmd {
+diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+index 27e96681d583..1ca4ff89ea14 100644
+--- a/drivers/bluetooth/hci_h5.c
++++ b/drivers/bluetooth/hci_h5.c
+@@ -909,7 +909,15 @@ static int h5_btrtl_setup(struct h5 *h5)
+ 	/* Enable controller to do both LE scan and BR/EDR inquiry
+ 	 * simultaneously.
+ 	 */
+-	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
++	switch (btrtl_dev->project_id) {
++	case CHIP_ID_8822C:
++	case CHIP_ID_8852A:
++		set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
++		set_bit(HCI_QUIRK_DEVICES_WAKEUP_SUPPORTED, &h5->hu->hdev->quirks);
++		break;
++	default:
++		break;
++	}
+ 
+ out_free:
+ 	btrtl_free(btrtl_dev);
+@@ -945,8 +953,11 @@ static void h5_btrtl_close(struct h5 *h5)
+ static int h5_btrtl_suspend(struct h5 *h5)
+ {
+ 	serdev_device_set_flow_control(h5->hu->serdev, false);
+-	gpiod_set_value_cansleep(h5->device_wake_gpio, 0);
+-	gpiod_set_value_cansleep(h5->enable_gpio, 0);
++
++	if (!test_bit(HCI_QUIRK_DEVICES_WAKEUP_SUPPORTED, &h5->hu->hdev->quirks)) {
++		gpiod_set_value_cansleep(h5->device_wake_gpio, 0);
++		gpiod_set_value_cansleep(h5->enable_gpio, 0);
++	}
+ 	return 0;
+ }
+ 
+@@ -972,17 +983,19 @@ static void h5_btrtl_reprobe_worker(struct work_struct *work)
+ 
+ static int h5_btrtl_resume(struct h5 *h5)
+ {
+-	struct h5_btrtl_reprobe *reprobe;
++	if (!test_bit(HCI_QUIRK_DEVICES_WAKEUP_SUPPORTED, &h5->hu->hdev->quirks)) {
++		struct h5_btrtl_reprobe *reprobe;
+ 
+-	reprobe = kzalloc(sizeof(*reprobe), GFP_KERNEL);
+-	if (!reprobe)
+-		return -ENOMEM;
++		reprobe = kzalloc(sizeof(*reprobe), GFP_KERNEL);
++		if (!reprobe)
++			return -ENOMEM;
+ 
+-	__module_get(THIS_MODULE);
++		__module_get(THIS_MODULE);
+ 
+-	INIT_WORK(&reprobe->work, h5_btrtl_reprobe_worker);
+-	reprobe->dev = get_device(&h5->hu->serdev->dev);
+-	queue_work(system_long_wq, &reprobe->work);
++		INIT_WORK(&reprobe->work, h5_btrtl_reprobe_worker);
++		reprobe->dev = get_device(&h5->hu->serdev->dev);
++		queue_work(system_long_wq, &reprobe->work);
++	}
+ 	return 0;
+ }
+ 
+diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
+index ea4ae551c426..1e4c2a97ab8d 100644
+--- a/include/net/bluetooth/hci.h
++++ b/include/net/bluetooth/hci.h
+@@ -246,6 +246,15 @@ enum {
+ 	 * HCI after resume.
+ 	 */
+ 	HCI_QUIRK_NO_SUSPEND_NOTIFIER,
++
++	/* When this quirk is set, the controller does not power off
++	 * during suspend and resume. This mechanism lets BT devices wake
++	 * the Host up if the Host and chips support.
++	 *
++	 * This quirk can be set before hci_register_dev is called or
++	 * during the hdev->setup vendor callback.
++	 */
++	HCI_QUIRK_DEVICES_WAKEUP_SUPPORTED,
+ };
+ 
+ /* HCI device flags */
 -- 
-Regards,
-Vincenzo
+2.17.1
+
