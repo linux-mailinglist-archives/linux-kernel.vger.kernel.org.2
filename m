@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FAD933D78E
+	by mail.lfdr.de (Postfix) with ESMTP id CE2EE33D78F
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237953AbhCPPcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 11:32:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30268 "EHLO
+        id S238042AbhCPPcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 11:32:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50759 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237948AbhCPPcG (ORCPT
+        by vger.kernel.org with ESMTP id S238003AbhCPPcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 11:32:06 -0400
+        Tue, 16 Mar 2021 11:32:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615908725;
+        s=mimecast20190719; t=1615908728;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=5lg9c5Rv+OApLdaRlqwCByn2jVsrPFVsUvLb5FWI36k=;
-        b=K7aDVNGrYx8IRmWb1++9yEzw0I2JF+DohOMjBqJX4qyTP/1ZNGBQURuLNBjDS7rCb32GDz
-        ioZEMVbtAwaBSu68/5twFJhMxkzj+2Abuqipa8SNox9LHXCZZfJoH+HhiS5AEIXY3a5Ut9
-        27+2CNI3tyvISJkdbiRtqdhXpQ6aZNk=
+        bh=/aryRHmvAYxNYzA0eFxgiG5XyJHPeCSVTHSDkPFs8YA=;
+        b=AaoYJpDXk98ycAZgtGs7D6ys+2/kjRWNPyH6e4oL9FByW1v4OuYDWmT+0JDxlovVszxUaa
+        fBUvBwPaYdPMMjiKdo4xy4HCjFpP4EE9XII1EMOnxF+SkLYHYZFuPxy62r+43JE5umch7c
+        OTzBRlZ8LiLM4tuaYXmU6YPEn2yLszo=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-242-fIiQkzqFMAiWKhVqnxO_9Q-1; Tue, 16 Mar 2021 11:32:02 -0400
-X-MC-Unique: fIiQkzqFMAiWKhVqnxO_9Q-1
+ us-mta-517-kypjFUdJNoSC1UqcM_2P8Q-1; Tue, 16 Mar 2021 11:32:04 -0400
+X-MC-Unique: kypjFUdJNoSC1UqcM_2P8Q-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 454B73E741;
-        Tue, 16 Mar 2021 15:32:01 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8E7A880D6AA;
+        Tue, 16 Mar 2021 15:32:02 +0000 (UTC)
 Received: from llong.com (ovpn-117-133.rdu2.redhat.com [10.10.117.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F6AA19706;
-        Tue, 16 Mar 2021 15:32:00 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6F0A61992D;
+        Tue, 16 Mar 2021 15:32:01 +0000 (UTC)
 From:   Waiman Long <longman@redhat.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
@@ -40,9 +40,9 @@ To:     Peter Zijlstra <peterz@infradead.org>,
         Davidlohr Bueso <dave@stgolabs.net>
 Cc:     linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
         Waiman Long <longman@redhat.com>
-Subject: [PATCH 3/4] locking/ww_mutex: Treat ww_mutex_lock() like a trylock
-Date:   Tue, 16 Mar 2021 11:31:18 -0400
-Message-Id: <20210316153119.13802-4-longman@redhat.com>
+Subject: [PATCH 4/4] locking/locktorture: Fix incorrect use of ww_acquire_ctx in ww_mutex test
+Date:   Tue, 16 Mar 2021 11:31:19 -0400
+Message-Id: <20210316153119.13802-5-longman@redhat.com>
 In-Reply-To: <20210316153119.13802-1-longman@redhat.com>
 References: <20210316153119.13802-1-longman@redhat.com>
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
@@ -50,97 +50,317 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It was found that running the ww_mutex_lock-torture test produced the
-following lockdep splat almost immediately:
+The ww_acquire_ctx structure for ww_mutex needs to persist for a complete
+lock/unlock cycle. In the ww_mutex test in locktorture, however, both
+ww_acquire_init() and ww_acquire_fini() are called within the lock
+function only. This causes a lockdep splat of "WARNING: Nested lock
+was not taken" when lockdep is enabled in the kernel.
 
-[  103.892638] ======================================================
-[  103.892639] WARNING: possible circular locking dependency detected
-[  103.892641] 5.12.0-rc3-debug+ #2 Tainted: G S      W
-[  103.892643] ------------------------------------------------------
-[  103.892643] lock_torture_wr/3234 is trying to acquire lock:
-[  103.892646] ffffffffc0b35b10 (torture_ww_mutex_2.base){+.+.}-{3:3}, at: torture_ww_mutex_lock+0x316/0x720 [locktorture]
-[  103.892660]
-[  103.892660] but task is already holding lock:
-[  103.892661] ffffffffc0b35cd0 (torture_ww_mutex_0.base){+.+.}-{3:3}, at: torture_ww_mutex_lock+0x3e2/0x720 [locktorture]
-[  103.892669]
-[  103.892669] which lock already depends on the new lock.
-[  103.892669]
-[  103.892670]
-[  103.892670] the existing dependency chain (in reverse order) is:
-[  103.892671]
-[  103.892671] -> #2 (torture_ww_mutex_0.base){+.+.}-{3:3}:
-[  103.892675]        lock_acquire+0x1c5/0x830
-[  103.892682]        __ww_mutex_lock.constprop.15+0x1d1/0x2e50
-[  103.892687]        ww_mutex_lock+0x4b/0x180
-[  103.892690]        torture_ww_mutex_lock+0x316/0x720 [locktorture]
-[  103.892694]        lock_torture_writer+0x142/0x3a0 [locktorture]
-[  103.892698]        kthread+0x35f/0x430
-[  103.892701]        ret_from_fork+0x1f/0x30
-[  103.892706]
-[  103.892706] -> #1 (torture_ww_mutex_1.base){+.+.}-{3:3}:
-[  103.892709]        lock_acquire+0x1c5/0x830
-[  103.892712]        __ww_mutex_lock.constprop.15+0x1d1/0x2e50
-[  103.892715]        ww_mutex_lock+0x4b/0x180
-[  103.892717]        torture_ww_mutex_lock+0x316/0x720 [locktorture]
-[  103.892721]        lock_torture_writer+0x142/0x3a0 [locktorture]
-[  103.892725]        kthread+0x35f/0x430
-[  103.892727]        ret_from_fork+0x1f/0x30
-[  103.892730]
-[  103.892730] -> #0 (torture_ww_mutex_2.base){+.+.}-{3:3}:
-[  103.892733]        check_prevs_add+0x3fd/0x2470
-[  103.892736]        __lock_acquire+0x2602/0x3100
-[  103.892738]        lock_acquire+0x1c5/0x830
-[  103.892740]        __ww_mutex_lock.constprop.15+0x1d1/0x2e50
-[  103.892743]        ww_mutex_lock+0x4b/0x180
-[  103.892746]        torture_ww_mutex_lock+0x316/0x720 [locktorture]
-[  103.892749]        lock_torture_writer+0x142/0x3a0 [locktorture]
-[  103.892753]        kthread+0x35f/0x430
-[  103.892755]        ret_from_fork+0x1f/0x30
-[  103.892757]
-[  103.892757] other info that might help us debug this:
-[  103.892757]
-[  103.892758] Chain exists of:
-[  103.892758]   torture_ww_mutex_2.base --> torture_ww_mutex_1.base --> torture_ww_mutex_0.base
-[  103.892758]
-[  103.892763]  Possible unsafe locking scenario:
-[  103.892763]
-[  103.892764]        CPU0                    CPU1
-[  103.892765]        ----                    ----
-[  103.892765]   lock(torture_ww_mutex_0.base);
-[  103.892767] 				      lock(torture_ww_mutex_1.base);
-[  103.892770] 				      lock(torture_ww_mutex_0.base);
-[  103.892772]   lock(torture_ww_mutex_2.base);
-[  103.892774]
-[  103.892774]  *** DEADLOCK ***
-
-Since ww_mutex is supposed to be deadlock-proof if used properly, such
-deadlock scenario should not happen. To avoid this false positive splat,
-treat ww_mutex_lock() like a trylock().
-
-After applying this patch, the locktorture test can run for a long time
-without triggering the circular locking dependency splat.
+To fix this problem, we need to move the ww_acquire_fini() after the
+ww_mutex_unlock() in torture_ww_mutex_unlock(). In other word, we need
+to pass state information from the lock function to the unlock function.
+Change the writelock and writeunlock function prototypes to allow that
+and change the torture_ww_mutex_lock() and torture_ww_mutex_unlock()
+accordingly.
 
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- kernel/locking/mutex.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ kernel/locking/locktorture.c | 86 +++++++++++++++++++++++-------------
+ 1 file changed, 56 insertions(+), 30 deletions(-)
 
-diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-index 622ebdfcd083..bb89393cd3a2 100644
---- a/kernel/locking/mutex.c
-+++ b/kernel/locking/mutex.c
-@@ -946,7 +946,10 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+index 0ab94e1f1276..782925dcf5d9 100644
+--- a/kernel/locking/locktorture.c
++++ b/kernel/locking/locktorture.c
+@@ -76,10 +76,10 @@ static void lock_torture_cleanup(void);
+ struct lock_torture_ops {
+ 	void (*init)(void);
+ 	void (*exit)(void);
+-	int (*writelock)(void);
++	int (*writelock)(void **parg);
+ 	void (*write_delay)(struct torture_random_state *trsp);
+ 	void (*task_boost)(struct torture_random_state *trsp);
+-	void (*writeunlock)(void);
++	void (*writeunlock)(void *arg);
+ 	int (*readlock)(void);
+ 	void (*read_delay)(struct torture_random_state *trsp);
+ 	void (*readunlock)(void);
+@@ -105,7 +105,7 @@ static struct lock_torture_cxt cxt = { 0, 0, false, false,
+  * Definitions for lock torture testing.
+  */
+ 
+-static int torture_lock_busted_write_lock(void)
++static int torture_lock_busted_write_lock(void **parg __maybe_unused)
+ {
+ 	return 0;  /* BUGGY, do not use in real life!!! */
+ }
+@@ -122,7 +122,7 @@ static void torture_lock_busted_write_delay(struct torture_random_state *trsp)
+ 		torture_preempt_schedule();  /* Allow test to be preempted. */
+ }
+ 
+-static void torture_lock_busted_write_unlock(void)
++static void torture_lock_busted_write_unlock(void *arg __maybe_unused)
+ {
+ 	  /* BUGGY, do not use in real life!!! */
+ }
+@@ -145,7 +145,8 @@ static struct lock_torture_ops lock_busted_ops = {
+ 
+ static DEFINE_SPINLOCK(torture_spinlock);
+ 
+-static int torture_spin_lock_write_lock(void) __acquires(torture_spinlock)
++static int torture_spin_lock_write_lock(void **parg __maybe_unused)
++__acquires(torture_spinlock)
+ {
+ 	spin_lock(&torture_spinlock);
+ 	return 0;
+@@ -169,7 +170,8 @@ static void torture_spin_lock_write_delay(struct torture_random_state *trsp)
+ 		torture_preempt_schedule();  /* Allow test to be preempted. */
+ }
+ 
+-static void torture_spin_lock_write_unlock(void) __releases(torture_spinlock)
++static void torture_spin_lock_write_unlock(void *arg __maybe_unused)
++__releases(torture_spinlock)
+ {
+ 	spin_unlock(&torture_spinlock);
+ }
+@@ -185,7 +187,7 @@ static struct lock_torture_ops spin_lock_ops = {
+ 	.name		= "spin_lock"
+ };
+ 
+-static int torture_spin_lock_write_lock_irq(void)
++static int torture_spin_lock_write_lock_irq(void **parg __maybe_unused)
+ __acquires(torture_spinlock)
+ {
+ 	unsigned long flags;
+@@ -195,7 +197,7 @@ __acquires(torture_spinlock)
+ 	return 0;
+ }
+ 
+-static void torture_lock_spin_write_unlock_irq(void)
++static void torture_lock_spin_write_unlock_irq(void *arg __maybe_unused)
+ __releases(torture_spinlock)
+ {
+ 	spin_unlock_irqrestore(&torture_spinlock, cxt.cur_ops->flags);
+@@ -214,7 +216,8 @@ static struct lock_torture_ops spin_lock_irq_ops = {
+ 
+ static DEFINE_RWLOCK(torture_rwlock);
+ 
+-static int torture_rwlock_write_lock(void) __acquires(torture_rwlock)
++static int torture_rwlock_write_lock(void **parg __maybe_unused)
++__acquires(torture_rwlock)
+ {
+ 	write_lock(&torture_rwlock);
+ 	return 0;
+@@ -235,7 +238,8 @@ static void torture_rwlock_write_delay(struct torture_random_state *trsp)
+ 		udelay(shortdelay_us);
+ }
+ 
+-static void torture_rwlock_write_unlock(void) __releases(torture_rwlock)
++static void torture_rwlock_write_unlock(void *arg __maybe_unused)
++__releases(torture_rwlock)
+ {
+ 	write_unlock(&torture_rwlock);
+ }
+@@ -277,7 +281,8 @@ static struct lock_torture_ops rw_lock_ops = {
+ 	.name		= "rw_lock"
+ };
+ 
+-static int torture_rwlock_write_lock_irq(void) __acquires(torture_rwlock)
++static int torture_rwlock_write_lock_irq(void **parg __maybe_unused)
++__acquires(torture_rwlock)
+ {
+ 	unsigned long flags;
+ 
+@@ -286,7 +291,7 @@ static int torture_rwlock_write_lock_irq(void) __acquires(torture_rwlock)
+ 	return 0;
+ }
+ 
+-static void torture_rwlock_write_unlock_irq(void)
++static void torture_rwlock_write_unlock_irq(void *arg __maybe_unused)
+ __releases(torture_rwlock)
+ {
+ 	write_unlock_irqrestore(&torture_rwlock, cxt.cur_ops->flags);
+@@ -320,7 +325,8 @@ static struct lock_torture_ops rw_lock_irq_ops = {
+ 
+ static DEFINE_MUTEX(torture_mutex);
+ 
+-static int torture_mutex_lock(void) __acquires(torture_mutex)
++static int torture_mutex_lock(void **parg __maybe_unused)
++__acquires(torture_mutex)
+ {
+ 	mutex_lock(&torture_mutex);
+ 	return 0;
+@@ -340,7 +346,8 @@ static void torture_mutex_delay(struct torture_random_state *trsp)
+ 		torture_preempt_schedule();  /* Allow test to be preempted. */
+ }
+ 
+-static void torture_mutex_unlock(void) __releases(torture_mutex)
++static void torture_mutex_unlock(void *arg __maybe_unused)
++__releases(torture_mutex)
+ {
+ 	mutex_unlock(&torture_mutex);
+ }
+@@ -362,7 +369,7 @@ static DEFINE_WW_MUTEX(torture_ww_mutex_0, &torture_ww_class);
+ static DEFINE_WW_MUTEX(torture_ww_mutex_1, &torture_ww_class);
+ static DEFINE_WW_MUTEX(torture_ww_mutex_2, &torture_ww_class);
+ 
+-static int torture_ww_mutex_lock(void)
++static int torture_ww_mutex_lock(void **parg)
+ __acquires(torture_ww_mutex_0)
+ __acquires(torture_ww_mutex_1)
+ __acquires(torture_ww_mutex_2)
+@@ -372,7 +379,12 @@ __acquires(torture_ww_mutex_2)
+ 		struct list_head link;
+ 		struct ww_mutex *lock;
+ 	} locks[3], *ll, *ln;
+-	struct ww_acquire_ctx ctx;
++	struct ww_acquire_ctx *ctx;
++
++	ctx = kmalloc(sizeof(struct ww_acquire_ctx), GFP_KERNEL);
++	if (!ctx)
++		return -ENOMEM;
++	*parg = ctx;
+ 
+ 	locks[0].lock = &torture_ww_mutex_0;
+ 	list_add(&locks[0].link, &list);
+@@ -383,12 +395,12 @@ __acquires(torture_ww_mutex_2)
+ 	locks[2].lock = &torture_ww_mutex_2;
+ 	list_add(&locks[2].link, &list);
+ 
+-	ww_acquire_init(&ctx, &torture_ww_class);
++	ww_acquire_init(ctx, &torture_ww_class);
+ 
+ 	list_for_each_entry(ll, &list, link) {
+ 		int err;
+ 
+-		err = ww_mutex_lock(ll->lock, &ctx);
++		err = ww_mutex_lock(ll->lock, ctx);
+ 		if (!err)
+ 			continue;
+ 
+@@ -399,22 +411,28 @@ __acquires(torture_ww_mutex_2)
+ 		if (err != -EDEADLK)
+ 			return err;
+ 
+-		ww_mutex_lock_slow(ll->lock, &ctx);
++		ww_mutex_lock_slow(ll->lock, ctx);
+ 		list_move(&ll->link, &list);
  	}
  
- 	preempt_disable();
--	mutex_acquire_nest(&lock->dep_map, subclass, 0, nest_lock, ip);
-+	/*
-+	 * Treat as trylock for ww_mutex.
-+	 */
-+	mutex_acquire_nest(&lock->dep_map, subclass, !!ww_ctx, nest_lock, ip);
+-	ww_acquire_fini(&ctx);
+ 	return 0;
+ }
  
- 	if (__mutex_trylock(lock) ||
- 	    mutex_optimistic_spin(lock, ww_ctx, NULL)) {
+-static void torture_ww_mutex_unlock(void)
++static void torture_ww_mutex_unlock(void *arg)
+ __releases(torture_ww_mutex_0)
+ __releases(torture_ww_mutex_1)
+ __releases(torture_ww_mutex_2)
+ {
++	struct ww_acquire_ctx *ctx = arg;
++
++	if (!ctx)
++		return;
++
+ 	ww_mutex_unlock(&torture_ww_mutex_0);
+ 	ww_mutex_unlock(&torture_ww_mutex_1);
+ 	ww_mutex_unlock(&torture_ww_mutex_2);
++	ww_acquire_fini(ctx);
++	kfree(ctx);
+ }
+ 
+ static struct lock_torture_ops ww_mutex_lock_ops = {
+@@ -431,7 +449,8 @@ static struct lock_torture_ops ww_mutex_lock_ops = {
+ #ifdef CONFIG_RT_MUTEXES
+ static DEFINE_RT_MUTEX(torture_rtmutex);
+ 
+-static int torture_rtmutex_lock(void) __acquires(torture_rtmutex)
++static int torture_rtmutex_lock(void **parg __maybe_unused)
++__acquires(torture_rtmutex)
+ {
+ 	rt_mutex_lock(&torture_rtmutex);
+ 	return 0;
+@@ -487,7 +506,8 @@ static void torture_rtmutex_delay(struct torture_random_state *trsp)
+ 		torture_preempt_schedule();  /* Allow test to be preempted. */
+ }
+ 
+-static void torture_rtmutex_unlock(void) __releases(torture_rtmutex)
++static void torture_rtmutex_unlock(void *arg __maybe_unused)
++__releases(torture_rtmutex)
+ {
+ 	rt_mutex_unlock(&torture_rtmutex);
+ }
+@@ -505,7 +525,8 @@ static struct lock_torture_ops rtmutex_lock_ops = {
+ #endif
+ 
+ static DECLARE_RWSEM(torture_rwsem);
+-static int torture_rwsem_down_write(void) __acquires(torture_rwsem)
++static int torture_rwsem_down_write(void **parg __maybe_unused)
++__acquires(torture_rwsem)
+ {
+ 	down_write(&torture_rwsem);
+ 	return 0;
+@@ -525,7 +546,8 @@ static void torture_rwsem_write_delay(struct torture_random_state *trsp)
+ 		torture_preempt_schedule();  /* Allow test to be preempted. */
+ }
+ 
+-static void torture_rwsem_up_write(void) __releases(torture_rwsem)
++static void torture_rwsem_up_write(void *arg __maybe_unused)
++__releases(torture_rwsem)
+ {
+ 	up_write(&torture_rwsem);
+ }
+@@ -579,13 +601,15 @@ static void torture_percpu_rwsem_exit(void)
+ 	percpu_free_rwsem(&pcpu_rwsem);
+ }
+ 
+-static int torture_percpu_rwsem_down_write(void) __acquires(pcpu_rwsem)
++static int torture_percpu_rwsem_down_write(void **parg __maybe_unused)
++__acquires(pcpu_rwsem)
+ {
+ 	percpu_down_write(&pcpu_rwsem);
+ 	return 0;
+ }
+ 
+-static void torture_percpu_rwsem_up_write(void) __releases(pcpu_rwsem)
++static void torture_percpu_rwsem_up_write(void *arg __maybe_unused)
++__releases(pcpu_rwsem)
+ {
+ 	percpu_up_write(&pcpu_rwsem);
+ }
+@@ -618,7 +642,7 @@ static struct lock_torture_ops percpu_rwsem_lock_ops = {
+  * Lock torture writer kthread.  Repeatedly acquires and releases
+  * the lock, checking for duplicate acquisitions.
+  */
+-static int lock_torture_writer(void *arg)
++static int lock_torture_writer(void *arg __maybe_unused)
+ {
+ 	struct lock_stress_stats *lwsp = arg;
+ 	DEFINE_TORTURE_RANDOM(rand);
+@@ -627,11 +651,13 @@ static int lock_torture_writer(void *arg)
+ 	set_user_nice(current, MAX_NICE);
+ 
+ 	do {
++		void *arg = NULL;
++
+ 		if ((torture_random(&rand) & 0xfffff) == 0)
+ 			schedule_timeout_uninterruptible(1);
+ 
+ 		cxt.cur_ops->task_boost(&rand);
+-		cxt.cur_ops->writelock();
++		cxt.cur_ops->writelock(&arg);
+ 		if (WARN_ON_ONCE(lock_is_write_held))
+ 			lwsp->n_lock_fail++;
+ 		lock_is_write_held = true;
+@@ -642,7 +668,7 @@ static int lock_torture_writer(void *arg)
+ 		cxt.cur_ops->write_delay(&rand);
+ 		lock_is_write_held = false;
+ 		WRITE_ONCE(last_lock_release, jiffies);
+-		cxt.cur_ops->writeunlock();
++		cxt.cur_ops->writeunlock(arg);
+ 
+ 		stutter_wait("lock_torture_writer");
+ 	} while (!torture_must_stop());
 -- 
 2.18.1
 
