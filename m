@@ -2,104 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8063733D123
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8E833D121
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:50:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236342AbhCPJuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:50:12 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:59443 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236330AbhCPJtp (ORCPT
+        id S236309AbhCPJtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235638AbhCPJtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:49:45 -0400
+        Tue, 16 Mar 2021 05:49:36 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A46C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:49:26 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id f145so19746325ybg.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:49:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1615888186; x=1647424186;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=Bdv4AWMzINQWXCqWNH2A+ni0wM6jP0NbcmnsluplFJ8=;
-  b=WdJ9PsCKq85lDQRz3X386R+a8TPNS4aZrjNrCleZ9pm6C5bCYaEULi5/
-   1Og1/qMMxN7ON5RELRuHBQPpbqfzqJnQ1T16y/jSpf0j8Gy+y1jwA9smL
-   OI3934Kiyevpl/U7pLGszXo31p+Yv9Tv59IxnipJfcCVBFyxZB7Jw4dc5
-   k=;
-X-IronPort-AV: E=Sophos;i="5.81,251,1610409600"; 
-   d="scan'208";a="97705161"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-2c665b5d.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 16 Mar 2021 09:49:38 +0000
-Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-2c665b5d.us-east-1.amazon.com (Postfix) with ESMTPS id D2C82A18A1;
-        Tue, 16 Mar 2021 09:49:35 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.239) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 16 Mar 2021 09:49:31 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     <hughd@google.com>, <axelrasmussen@google.com>, <amit@kernel.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        SeongJae Park <sjpark@amazon.de>
-Subject: [PATCH] mm/shmem: Enclose shmem_mcopy_atomic_pte() with 'CONFIG_USERFAULTFD'
-Date:   Tue, 16 Mar 2021 10:49:10 +0100
-Message-ID: <20210316094910.23827-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CEiUqhCHKWemSRXXRMGc1PRoqQAnoH+WZsZjki4JAqI=;
+        b=NHK/rhQxZ/cljjp3wVFPcva9hjHqNJiZA5dHjILVBL3+C/kw6Z7VDlGY4bcIqPQoXm
+         rAB0M6L47b7z22HazZ/jsZg1Ptl/K4W+AGnhzEg2tEDnV/tEq15hrTJhkPeFnzG+M8o+
+         TM2C5x3ki58OT0QtmUV6Wu/IYIR/w2ipokYjBOuGet3djfoooZEvyGuj+CM0Xf39BH+w
+         67dveel6DQSfZyNmmdnfXZgJuYUp5YTjDPDQ+NCXt8pHYHDp+mJOFX7kFVM9JhHHHmpx
+         hZpK0tSfhiL0WaH6d0YOS2EjW0jtzNPnDmbq01wDRTu/WBvER0iz1usEGBStPUyO0nAp
+         u1/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CEiUqhCHKWemSRXXRMGc1PRoqQAnoH+WZsZjki4JAqI=;
+        b=dxZGo6Q3aHLv3laxP9ihOncDshhjvihi48CquhTIuNySVmLv1Xejwli32hHIR0BNkO
+         wonkHMXDCDNpgExa1xP/2CnP3GEEZy5C876iD4wrkMOwZkemKubRY2LbCPVsO1aXUGW4
+         spwdmkJHYFvfKOJlYdmxXxGFIngvV4/NFXxNNdj5tjar6cIEOkLmQUD6Son2OCbTJXjH
+         7SIG6mRUSRSLNy8RbUfNK2oVWTvr45B7EoeM0UxlAaqT7H/Dljz3wu2nEEC6vGSCoXLG
+         Zxa4GxN05MpY6VfIAzn8Buqlq8ouFOofTldd5V/EKIxodf/mUNBeBIYiLwBsTMkUJdOh
+         7fzA==
+X-Gm-Message-State: AOAM532vmE/n2xQwwasOioMFw1SupPQw/U8KmSDkrzjPIwkm5joV/kJH
+        aaWZfOLXF2M8/ynAncSyIsiinhgtyWhNVvvcQzlB/uxFcTbiKQ==
+X-Google-Smtp-Source: ABdhPJzWhviGTVvrOXx+L664OkbxTzBgdj1XLLnuYYuP99gEuYR+TFsQKeztLfISeQ2CxU/STkYZp2IJFbRHLPvjBBI=
+X-Received: by 2002:a25:2307:: with SMTP id j7mr5810152ybj.518.1615888165108;
+ Tue, 16 Mar 2021 02:49:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.239]
-X-ClientProxiedBy: EX13D19UWA003.ant.amazon.com (10.43.160.170) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+References: <20210315135720.002213995@linuxfoundation.org> <20210315135720.384809636@linuxfoundation.org>
+ <20210316094137.GA12946@amd>
+In-Reply-To: <20210316094137.GA12946@amd>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 16 Mar 2021 10:49:13 +0100
+Message-ID: <CANn89iKvhq3Bpu5eaZ5mrmRNBqNm9OwoGzCSg3-OaBL8CrAPfA@mail.gmail.com>
+Subject: Re: [PATCH 4.19 011/120] tcp: annotate tp->copied_seq lockless reads
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On Tue, Mar 16, 2021 at 10:41 AM Pavel Machek <pavel@denx.de> wrote:
+>
+> Hi!
+>
+> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >
+> > From: Eric Dumazet <edumazet@google.com>
+>
+> Two From: fields here.
+>
+> > [ Upstream commit 7db48e983930285b765743ebd665aecf9850582b ]
+> >
+> > There are few places where we fetch tp->copied_seq while
+> > this field can change from IRQ or other cpu.
+>
+> And there are few such places even after the patch is applied; I
+> quoted them below.
+>
+> Doing addition to variable without locking... is kind of
+> interesting. Are you sure it is okay?
 
-Commit 49eeab03fa0a ("userfaultfd: support minor fault handling for
-shmem") introduced shmem_mcopy_atomic_pte().  The function is declared
-in 'userfaultfd_k.h' when 'CONFIG_USERFAULTFD' is defined, and defined
-as 'BUG()' if the config is unset.  However, the definition of the
-function in 'shmem.c' is not protected by the '#ifdef' macro.  As a
-result, the build fails when the config is not set.  This commit fixes
-the problem.
+We are holding the socket lock here.
 
-Fixes: 49eeab03fa0a ("userfaultfd: support minor fault handling for shmem")
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
+The WRITE_ONCE() here is paired with sides doing READ_ONCE() while
+socket lock is _not_ held.
 
-cr https://code.amazon.com/reviews/CR-47204463
----
- mm/shmem.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 547df2b766f7..c0d3abefeb3f 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -2359,6 +2359,7 @@ static struct inode *shmem_get_inode(struct super_block *sb, const struct inode
- 	return inode;
- }
- 
-+#ifdef CONFIG_USERFAULTFD
- int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
- 			   struct vm_area_struct *dst_vma,
- 			   unsigned long dst_addr, unsigned long src_addr,
-@@ -2492,6 +2493,7 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
- 	shmem_inode_unacct_blocks(inode, 1);
- 	goto out;
- }
-+#endif
- 
- #ifdef CONFIG_TMPFS
- static const struct inode_operations shmem_symlink_inode_operations;
--- 
-2.17.1
+We want to make sure compiler won't write into this variable one byte at a time,
+or using stupid things.
 
 
 
 
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+>
+> > @@ -2112,7 +2112,7 @@ int tcp_recvmsg(struct sock *sk, struct
+> >                       if (urg_offset < used) {
+> >                               if (!urg_offset) {
+> >                                       if (!sock_flag(sk, SOCK_URGINLINE)) {
+> > -                                             ++*seq;
+> > +                                             WRITE_ONCE(*seq, *seq + 1);
+> >                                               urg_hole++;
+> >                                               offset++;
+> >                                               used--;
+> > @@ -2134,7 +2134,7 @@ int tcp_recvmsg(struct sock *sk, struct
+> >                       }
+> >               }
+> >
+> > -             *seq += used;
+> > +             WRITE_ONCE(*seq, *seq + used);
+> >               copied += used;
+> >               len -= used;
+> >
+> > @@ -2163,7 +2163,7 @@ skip_copy:
+> >
+> >       found_fin_ok:
+> >               /* Process the FIN. */
+> > -             ++*seq;
+> > +             WRITE_ONCE(*seq, *seq + 1);
+> >               if (!(flags & MSG_PEEK))
+> >                       sk_eat_skb(sk, skb);
+> >               break;
+>
+> Best regards,
+>                                                                 Pavel
+> --
+> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
