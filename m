@@ -2,361 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E502B33D58F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:12:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0102433D590
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:13:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236039AbhCPOME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 10:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
+        id S236095AbhCPOMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 10:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236107AbhCPOLj (ORCPT
+        with ESMTP id S236047AbhCPOMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 10:11:39 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546A9C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 07:11:39 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id mj10so72402222ejb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 07:11:39 -0700 (PDT)
+        Tue, 16 Mar 2021 10:12:05 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FCBC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 07:12:04 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id ox4so56758879ejb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 07:12:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8mCxOr7oVMrKRS9BtwO9kn7o5Bq3hP48Kmv49ieiigY=;
-        b=tDDBG6oV9C9vkfHxrKt8nxIJAMMA0AQpcdolBeSLYjzijpU194eNWtJThA6TgSHGXj
-         iPtJLBYVib8pIBp1h2Nof6jtwQFhkF3lRyyxzVFbmIvghl19YGTIuiH/EPPdIc3s+89/
-         4IehsatyF6SyxNizpnChrCV0Y3mfHIXS4gCWTUi9/cSwlQ/zvAT00OByb17B55y56ciA
-         lbaDWFcAkcBmmtumbjTsDw1qQ47Uyqt8pyNK8MBvL2Q3VBU9gqAurdBp0H6W+UOwz6Qo
-         apsBR9XpbT4Zsxtb+JQpV7AlhNnoqHRBxP2cge9j9zIKxIWEJc2JJIW8KVeAbmSo54ZW
-         rlkg==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/vFNcj75F3NutZNhPqmGm8JOhCRe7NKkC2BE3t7uSe8=;
+        b=ajRoA1Q2AuTnou/5VTfsUoB3v1iuaL6Jdys0/0dyXnXuMS7pYAV9bE/soz8zyxtBQS
+         ABKLWoYG4u0UzqNHbgsH6z7MDAmhs6K4yk/qsZtS2JRPKdmE15C4JldcqgIWsVfyqPxO
+         VnPsAs6r00LrtZXTxDSLbtPT5Oo28icIz+zvs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8mCxOr7oVMrKRS9BtwO9kn7o5Bq3hP48Kmv49ieiigY=;
-        b=rET5PlK9xI6qTc8SYwjGpSCmUqsUVuhXr6Y6lVEtiF5XFr4e8r4j3Cxk0Y99vCXVCd
-         PM5oLkNVin0FMwMrDZMjMPHENDHFcOPcKziqCS7Sd0fHB89/chFrbsQiduv+jrQMhzCw
-         AiWpI/gOojZuTEPkV9CspV+cQ/y3mhHN+fXeV30pOKT41GtaXk4op+Fn28nezy6O6Kwk
-         XcgqeAqNtHn+wdm+afZVzf+gYzsnb113uE54JMwwxyQWriH0V2xR/SynOM/26lmGLKMV
-         ZeRVzdgnOnnDbF3PD80zWXBd40xqhw1ATMr0kFc77X3jEUYl7cf3oUrilVyK1jJhfEa5
-         idWQ==
-X-Gm-Message-State: AOAM533skenNlWX5Zy/jHJnqdK0UdU9gEoHf/Mo0Rx3hIemdzsunUEqy
-        f8QskFdmbL/gBgtSVAmyTGa5obryE/gsUWkkLLGTsL4=
-X-Google-Smtp-Source: ABdhPJw7IVU0DlKjhrv9N2i3fDJfInlCfYhaku40wL9sElpTYW+7EcUCVO0n9N/o5h+pqfabCd7BSylZAI1+igmJ3kA=
-X-Received: by 2002:a17:906:66cf:: with SMTP id k15mr29449276ejp.296.1615903898023;
- Tue, 16 Mar 2021 07:11:38 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/vFNcj75F3NutZNhPqmGm8JOhCRe7NKkC2BE3t7uSe8=;
+        b=Jb2aGJ67OwJPqlPkhrmyzZIIoiy+LInc/zbACvAU6hwL4SfI7UDXeHG5ORvphyuwBo
+         06jzF3mNqAiP3pd8xRSjTBTL6sy6ZNb+fiIphi/Q72kGN5dJzCtht0m4Vt+Dm9YjfYXU
+         Tx4tovOr2thez946szgh/GIBzxJjusSr1XHyK13C0AUPjteGfW47ulFDCK0ssxVQ2ZtZ
+         YZvJmuZuFrWidakZpd5XL6itCPqev8Q1Rl3UeU1qqzLe42JCZnakYbWHzkLrZn7wt5IB
+         Msp8yha6cULtn9+t+oBxRnkb5s7BY+6ogSKQ8xeOSrJrUjBoXE2xQzV/I4B0kiOHt68j
+         8xCA==
+X-Gm-Message-State: AOAM5307yifzZFlkxNvvDZ8tg+YDetGqods4Z7kJkH3rRXUGSwntXIYj
+        ML7NoM0tZiR4aq0wPJ8h23lMZA==
+X-Google-Smtp-Source: ABdhPJyW9HitmKr4gjkxbYOm6U4gcrSYNz7ELomKWnOOL5KQeDBKcx0GknziA/VY5w86xr47cFK25Q==
+X-Received: by 2002:a17:906:1f93:: with SMTP id t19mr30567700ejr.443.1615903923365;
+        Tue, 16 Mar 2021 07:12:03 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id c15sm3596394ejm.52.2021.03.16.07.12.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 07:12:02 -0700 (PDT)
+Subject: Re: [PATCH v5] printk: Userspace format enumeration support
+To:     Chris Down <chris@chrisdown.name>, linux-kernel@vger.kernel.org
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+References: <YEgvR6Wc1xt0qupy@chrisdown.name>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <02c3b2f3-ff8e-ceb9-b30b-e533959c0491@rasmusvillemoes.dk>
+Date:   Tue, 16 Mar 2021 15:12:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210312095545.53765-1-rsalvaterra@gmail.com>
-In-Reply-To: <20210312095545.53765-1-rsalvaterra@gmail.com>
-From:   Rui Salvaterra <rsalvaterra@gmail.com>
-Date:   Tue, 16 Mar 2021 14:11:26 +0000
-Message-ID: <CALjTZvYzOd2JV730Y1GoYDqBbdU7Bm9Hmi5CXaMn98ONuXux_g@mail.gmail.com>
-Subject: Re: [RFC PATCH] jffs2: add support for zstd compression
-To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     lizhe67@huawei.com, christian.brauner@ubuntu.com,
-        gustavoars@kernel.org, trix@redhat.com, keescook@chromium.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YEgvR6Wc1xt0qupy@chrisdown.name>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 10/03/2021 03.30, Chris Down wrote:
 
-Please ignore this, I noticed a bug. I'll send a fixed v2 shortly.
-
-Thanks,
-Rui
-
-On Fri, 12 Mar 2021 at 09:56, Rui Salvaterra <rsalvaterra@gmail.com> wrote:
->
-> Implement support for zstd compression in jffs2 at the default compression
-> level (3).
->
-> Lightly tested in OpenWrt, on a single CPU embedded MIPS32 system (AirGrid M2).
->
-> Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
 > ---
-> Sent as RFC, since I have no idea if locking is required (the crypto API
-> implementation doesn't do it, at least).
->
->  fs/jffs2/Kconfig           |   9 +++
->  fs/jffs2/Makefile          |   1 +
->  fs/jffs2/compr.c           |  10 +++
->  fs/jffs2/compr.h           |   6 ++
->  fs/jffs2/compr_zstd.c      | 131 +++++++++++++++++++++++++++++++++++++
->  fs/jffs2/super.c           |   7 ++
->  include/uapi/linux/jffs2.h |   1 +
->  7 files changed, 165 insertions(+)
->  create mode 100644 fs/jffs2/compr_zstd.c
->
-> diff --git a/fs/jffs2/Kconfig b/fs/jffs2/Kconfig
-> index 7c96bc107218..31308eb7267b 100644
-> --- a/fs/jffs2/Kconfig
-> +++ b/fs/jffs2/Kconfig
-> @@ -136,6 +136,15 @@ config JFFS2_LZO
->           This feature was added in July, 2007. Say 'N' if you need
->           compatibility with older bootloaders or kernels.
->
-> +config JFFS2_ZSTD
-> +       bool "JFFS2 zstd compression support" if JFFS2_COMPRESSION_OPTIONS
-> +       select ZSTD_COMPRESS
-> +       select ZSTD_DECOMPRESS
-> +       depends on JFFS2_FS
-> +       default n
-> +       help
-> +         Zstd compression.
+>  MAINTAINERS                          |   5 +
+>  arch/arm/kernel/entry-v7m.S          |   2 +-
+>  arch/arm/lib/backtrace-clang.S       |   2 +-
+>  arch/arm/lib/backtrace.S             |   2 +-
+>  arch/arm/mach-rpc/io-acorn.S         |   2 +-
+>  arch/arm/vfp/vfphw.S                 |   6 +-
+>  arch/ia64/include/uapi/asm/cmpxchg.h |   4 +-
+>  arch/openrisc/kernel/entry.S         |   6 +-
+>  arch/powerpc/kernel/head_fsl_booke.S |   2 +-
+>  arch/um/include/shared/user.h        |   3 +-
+>  arch/x86/kernel/head_32.S            |   2 +-
+>  fs/seq_file.c                        |  21 +++
+>  include/asm-generic/vmlinux.lds.h    |  13 ++
+>  include/linux/module.h               |   6 +
+>  include/linux/printk.h               |  72 ++++++++++-
+>  include/linux/seq_file.h             |   1 +
+>  include/linux/string_helpers.h       |   2 +
+>  init/Kconfig                         |  14 ++
+>  kernel/module.c                      |  14 +-
+>  kernel/printk/Makefile               |   1 +
+>  kernel/printk/index.c                | 183 +++++++++++++++++++++++++++
+>  kernel/printk/printk.c               |  20 ++-
+>  lib/string_helpers.c                 |  29 ++++-
+>  lib/test-string_helpers.c            |   6 +
+>  24 files changed, 386 insertions(+), 32 deletions(-)
+>  create mode 100644 kernel/printk/index.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3353de0c4bc8..328b3e822223 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14314,6 +14314,11 @@ S:	Maintained
+>  F:	include/linux/printk.h
+>  F:	kernel/printk/
+>  
+> +PRINTK INDEXING
+> +R:	Chris Down <chris@chrisdown.name>
+> +S:	Maintained
+> +F:	kernel/printk/index.c
 > +
->  config JFFS2_RTIME
->         bool "JFFS2 RTIME compression support" if JFFS2_COMPRESSION_OPTIONS
->         depends on JFFS2_FS
-> diff --git a/fs/jffs2/Makefile b/fs/jffs2/Makefile
-> index 5294969d5bf9..75f84b1467c5 100644
-> --- a/fs/jffs2/Makefile
-> +++ b/fs/jffs2/Makefile
-> @@ -19,4 +19,5 @@ jffs2-$(CONFIG_JFFS2_RUBIN)   += compr_rubin.o
->  jffs2-$(CONFIG_JFFS2_RTIME)    += compr_rtime.o
->  jffs2-$(CONFIG_JFFS2_ZLIB)     += compr_zlib.o
->  jffs2-$(CONFIG_JFFS2_LZO)      += compr_lzo.o
-> +jffs2-$(CONFIG_JFFS2_ZSTD)     += compr_zstd.o
->  jffs2-$(CONFIG_JFFS2_SUMMARY)   += summary.o
-> diff --git a/fs/jffs2/compr.c b/fs/jffs2/compr.c
-> index 4849a4c9a0e2..d65e0c39c9c5 100644
-> --- a/fs/jffs2/compr.c
-> +++ b/fs/jffs2/compr.c
-> @@ -237,6 +237,10 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
->                 ret = jffs2_selected_compress(JFFS2_COMPR_ZLIB, data_in,
->                                 cpage_out, datalen, cdatalen);
->                 break;
-> +       case JFFS2_COMPR_MODE_FORCEZSTD:
-> +               ret = jffs2_selected_compress(JFFS2_COMPR_ZSTD, data_in,
-> +                               cpage_out, datalen, cdatalen);
-> +               break;
->         default:
->                 pr_err("unknown compression mode\n");
->         }
-> @@ -378,6 +382,9 @@ int __init jffs2_compressors_init(void)
->  #ifdef CONFIG_JFFS2_LZO
->         jffs2_lzo_init();
->  #endif
-> +#ifdef CONFIG_JFFS2_ZSTD
-> +       jffs2_zstd_init();
-> +#endif
->  /* Setting default compression mode */
->  #ifdef CONFIG_JFFS2_CMODE_NONE
->         jffs2_compression_mode = JFFS2_COMPR_MODE_NONE;
-> @@ -413,6 +420,9 @@ int jffs2_compressors_exit(void)
->  #endif
->  #ifdef CONFIG_JFFS2_ZLIB
->         jffs2_zlib_exit();
-> +#endif
-> +#ifdef CONFIG_JFFS2_ZSTD
-> +       jffs2_zstd_exit();
->  #endif
->         return 0;
->  }
-> diff --git a/fs/jffs2/compr.h b/fs/jffs2/compr.h
-> index 5e91d578f4ed..8f7032c5ecb2 100644
-> --- a/fs/jffs2/compr.h
-> +++ b/fs/jffs2/compr.h
-> @@ -31,6 +31,7 @@
->  #define JFFS2_RTIME_PRIORITY     50
->  #define JFFS2_ZLIB_PRIORITY      60
->  #define JFFS2_LZO_PRIORITY       80
-> +#define JFFS2_ZSTD_PRIORITY      90
->
->
->  #define JFFS2_RUBINMIPS_DISABLED /* RUBINs will be used only */
-> @@ -42,6 +43,7 @@
->  #define JFFS2_COMPR_MODE_FAVOURLZO  3
->  #define JFFS2_COMPR_MODE_FORCELZO   4
->  #define JFFS2_COMPR_MODE_FORCEZLIB  5
-> +#define JFFS2_COMPR_MODE_FORCEZSTD  6
->
->  #define FAVOUR_LZO_PERCENT 80
->
-> @@ -101,5 +103,9 @@ void jffs2_zlib_exit(void);
->  int jffs2_lzo_init(void);
->  void jffs2_lzo_exit(void);
->  #endif
-> +#ifdef CONFIG_JFFS2_ZSTD
-> +int jffs2_zstd_init(void);
-> +void jffs2_zstd_exit(void);
-> +#endif
->
->  #endif /* __JFFS2_COMPR_H__ */
-> diff --git a/fs/jffs2/compr_zstd.c b/fs/jffs2/compr_zstd.c
-> new file mode 100644
-> index 000000000000..86b3d28670d7
-> --- /dev/null
-> +++ b/fs/jffs2/compr_zstd.c
-> @@ -0,0 +1,131 @@
+>  PRISM54 WIRELESS DRIVER
+>  M:	Luis Chamberlain <mcgrof@kernel.org>
+>  L:	linux-wireless@vger.kernel.org
+> diff --git a/arch/arm/kernel/entry-v7m.S b/arch/arm/kernel/entry-v7m.S
+> index d0e898608d30..7bde93c10962 100644
+> --- a/arch/arm/kernel/entry-v7m.S
+> +++ b/arch/arm/kernel/entry-v7m.S
+> @@ -23,7 +23,7 @@ __invalid_entry:
+>  	adr	r0, strerr
+>  	mrs	r1, ipsr
+>  	mov	r2, lr
+> -	bl	printk
+> +	bl	_printk
+
+I think it's pointless renaming the symbol to _printk, with all the
+churn and reduced readability that involves (especially when reading
+assembly "why are we calling _printk and not printk here?"). There's
+nothing wrong with providing a macro wrapper by the same name
+
+#define printk(bla bla) ({ do_stuff; printk(bla bla); })
+
+Only two places would need to be updated to surround the word printk in
+parentheses to suppress macro expansion: The declaration and the
+definition of printk. I.e.
+
+int (printk)(const char *s, ...)
+
+>  
+> +struct module;
 > +
-> +#include <linux/zstd.h>
-> +#include "compr.h"
+> +#ifdef CONFIG_PRINTK_INDEX
+> +extern void pi_sec_store(struct module *mod);
+> +extern void pi_sec_remove(struct module *mod);
 > +
-> +#define ZSTD_DEF_LEVEL 3
-> +
-> +static ZSTD_CCtx *cctx;
-> +static ZSTD_DCtx *dctx;
-> +static void *cwksp;
-> +static void *dwksp;
-> +
-> +static ZSTD_parameters zstd_params(void)
-> +{
-> +       return ZSTD_getParams(ZSTD_DEF_LEVEL, 0, 0);
-> +}
-> +
-> +static int zstd_comp_init(void)
-> +{
-> +       int ret = 0;
-> +       const ZSTD_parameters params = zstd_params();
-> +       const size_t wksp_size = ZSTD_CCtxWorkspaceBound(params.cParams);
-> +
-> +       cwksp = vzalloc(wksp_size);
-> +       if (!cwksp) {
-> +               ret = -ENOMEM;
-> +               goto out;
-> +       }
-> +
-> +       cctx = ZSTD_initCCtx(cwksp, wksp_size);
-> +       if (cctx) {
-> +               ret = -EINVAL;
-> +               goto out_free;
-> +       }
-> +out:
-> +       return ret;
-> +out_free:
-> +       vfree(cwksp);
-> +       goto out;
-> +}
-> +
-> +static int zstd_decomp_init(void)
-> +{
-> +       int ret = 0;
-> +       const size_t wksp_size = ZSTD_DCtxWorkspaceBound();
-> +
-> +       dwksp = vzalloc(wksp_size);
-> +       if (!dwksp) {
-> +               ret = -ENOMEM;
-> +               goto out;
-> +       }
-> +
-> +       dctx = ZSTD_initDCtx(dwksp, wksp_size);
-> +       if (!dctx) {
-> +               ret = -EINVAL;
-> +               goto out_free;
-> +       }
-> +out:
-> +       return ret;
-> +out_free:
-> +       vfree(dwksp);
-> +       goto out;
-> +}
-> +
-> +static void zstd_comp_exit(void)
-> +{
-> +       vfree(cwksp);
-> +       cwksp = NULL;
-> +       cctx = NULL;
-> +}
-> +
-> +static void zstd_decomp_exit(void)
-> +{
-> +       vfree(dwksp);
-> +       dwksp = NULL;
-> +       dctx = NULL;
-> +}
-> +
-> +static int jffs2_zstd_compress(unsigned char *data_in, unsigned char *cpage_out,
-> +                             uint32_t *sourcelen, uint32_t *dstlen)
-> +{
-> +       size_t out_len;
-> +       const ZSTD_parameters params = zstd_params();
-> +
-> +       out_len = ZSTD_compressCCtx(cctx, cpage_out, *dstlen, data_in, *sourcelen, params);
-> +       if (ZSTD_isError(out_len) || out_len > *dstlen)
-> +               return -1;
-> +       *dstlen = out_len;
-> +       return 0;
-> +}
-> +
-> +static int jffs2_zstd_decompress(unsigned char *data_in, unsigned char *cpage_out,
-> +                                uint32_t srclen, uint32_t destlen)
-> +{
-> +       size_t out_len;
-> +
-> +       out_len = ZSTD_decompressDCtx(dctx, cpage_out, destlen, data_in, srclen);
-> +       if (ZSTD_isError(out_len) || out_len != destlen)
-> +               return -1;
-> +
-> +       return 0;
-> +}
-> +
-> +static struct jffs2_compressor jffs2_zstd_comp = {
-> +       .priority = JFFS2_ZSTD_PRIORITY,
-> +       .name = "zstd",
-> +       .compr = JFFS2_COMPR_ZSTD,
-> +       .compress = &jffs2_zstd_compress,
-> +       .decompress = &jffs2_zstd_decompress,
-> +       .disabled = 0,
+> +struct pi_object {
+> +	const char *fmt;
+> +	const char *func;
+> +	const char *file;
+> +	unsigned int line;
 > +};
 > +
-> +int __init jffs2_zstd_init(void)
-> +{
-> +       int ret;
+> +extern struct pi_object __start_printk_index[];
+> +extern struct pi_object __stop_printk_index[];
+
+Do you need these declarations to be visible to the whole kernel? Can't
+they live in printk/index.c?
+
 > +
-> +       ret = zstd_comp_init();
-> +       if (ret)
-> +               return ret;
-> +       ret = zstd_decomp_init();
-> +       if (ret)
-> +               zstd_comp_exit();
-> +       ret = jffs2_register_compressor(&jffs2_zstd_comp);
-> +       return ret;
-> +}
-> +
-> +void jffs2_zstd_exit(void)
-> +{
-> +       jffs2_unregister_compressor(&jffs2_zstd_comp);
-> +       zstd_comp_exit();
-> +       zstd_decomp_exit();
-> +}
-> diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-> index 81ca58c10b72..ddce95c55dde 100644
-> --- a/fs/jffs2/super.c
-> +++ b/fs/jffs2/super.c
-> @@ -73,6 +73,10 @@ static const char *jffs2_compr_name(unsigned int compr)
->  #ifdef CONFIG_JFFS2_ZLIB
->         case JFFS2_COMPR_MODE_FORCEZLIB:
->                 return "zlib";
-> +#endif
-> +#ifdef CONFIG_JFFS2_ZSTD
-> +       case JFFS2_COMPR_MODE_FORCEZSTD:
-> +               return "zstd";
->  #endif
->         default:
->                 /* should never happen; programmer error */
-> @@ -174,6 +178,9 @@ static const struct constant_table jffs2_param_compr[] = {
->  #endif
->  #ifdef CONFIG_JFFS2_ZLIB
->         {"zlib",        JFFS2_COMPR_MODE_FORCEZLIB },
-> +#endif
-> +#ifdef CONFIG_JFFS2_ZSTD
-> +       {"zstd",        JFFS2_COMPR_MODE_FORCEZSTD },
->  #endif
->         {}
->  };
-> diff --git a/include/uapi/linux/jffs2.h b/include/uapi/linux/jffs2.h
-> index 784ba0b9690a..af4fb69c8d69 100644
-> --- a/include/uapi/linux/jffs2.h
-> +++ b/include/uapi/linux/jffs2.h
-> @@ -46,6 +46,7 @@
->  #define JFFS2_COMPR_DYNRUBIN   0x05
->  #define JFFS2_COMPR_ZLIB       0x06
->  #define JFFS2_COMPR_LZO                0x07
-> +#define JFFS2_COMPR_ZSTD       0x08
->  /* Compatibility flags. */
->  #define JFFS2_COMPAT_MASK 0xc000      /* What do to if an unknown nodetype is found */
->  #define JFFS2_NODE_ACCURATE 0x2000
-> --
-> 2.30.2
->
+> +#define pi_sec_elf_embed(_p_func, _fmt, ...)				       \
+> +	({								       \
+> +		int _p_ret;						       \
+> +									       \
+> +		if (__builtin_constant_p(_fmt)) {			       \
+> +			/*
+> +			 * The compiler may not be able to eliminate this, so
+> +			 * we need to make sure that it doesn't see any
+> +			 * hypothetical assignment for non-constants even
+> +			 * though this is already inside the
+> +			 * __builtin_constant_p guard.
+> +			 */						       \
+> +			static struct pi_object _pi			       \
+
+static const struct pi_object?
+
+> +			__section(".printk_index") = {			       \
+> +				.fmt = __builtin_constant_p(_fmt) ? (_fmt) : NULL, \
+> +				.func = __func__,			       \
+> +				.file = __FILE__,			       \
+> +				.line = __LINE__,			       \
+> +			};						       \
+> +			_p_ret = _p_func(_pi.fmt, ##__VA_ARGS__);	       \
+
+Is the use of _pi.fmt here a trick to prevent gcc from eliding the _pi
+object, so it is seen as "used"? That seems a bit fragile, especially if
+the compiler ends up generating the same code in .text - that means gcc
+does not load the format string from the _pi object (which it
+shouldn't), but then I don't see why it (or the next version of gcc)
+couldn't realize that _pi is indeed unused.
+
+There's the __used attribute precisely for this kind of thing. Then you
+could also eliminate
+
+> +		} else							       \
+> +			_p_ret = _p_func(_fmt, ##__VA_ARGS__);		       \
+> +									       \
+
+this and the _p_ret variable
+
+> +		_p_ret;							       \
+
+and just end the ({}) with _p_func(_fmt, ##__VA_ARGS__);
+
+That would also allow you to more easily wrap, say, dev_printk(), which
+returns void - it seems that by not handling dev_printk and friends
+you're missing quite a few format strings.
+
+Rasmus
