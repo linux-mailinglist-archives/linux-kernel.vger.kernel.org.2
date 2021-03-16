@@ -2,115 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A644B33D53F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:54:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B2333D545
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235616AbhCPNyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:54:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235569AbhCPNyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:54:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED1E664FED;
-        Tue, 16 Mar 2021 13:54:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615902842;
-        bh=DSp4ZyCdLVrD/515PijNSWVY8esTcirqwL+R08qKkD0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kepDP69Ry/ngCbQbuVnK5sTa8HmjWObQRpY7jKZ/9Hdv2iZjgSp5SHDIReCV41yZ9
-         rlszJk7PyvsUW4DYxuhv/CmMZUFFJpisL35DeJnnbcVWxtl7bLLZMB46dKXWmL6g2/
-         DmSHwku234UB91qYKSL8SGXWRQMfObJB0TanU91Ffh0lRiTl2g3nyixzDT6Q5TYp3k
-         XYr3ZnxDouOsdg759LsDTpkNijYEmApECpUjePgms6NYr3+I5FCPCKs0459YFW5SWF
-         7r10Z3kwUY9YGDVkqEiTxXl33Q7Qi8YANQuFN0JaCuRhlhiI19DDaU8fLVEyBJNmgu
-         iwHD+LAO2CE3g==
-Date:   Tue, 16 Mar 2021 09:54:01 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Christian Eggers <ceggers@arri.de>
-Subject: Re: [PATCH 5.10 113/290] net: dsa: implement a central TX
- reallocation procedure
-Message-ID: <YFC4eVripXbAw2cG@sashalap>
-References: <20210315135541.921894249@linuxfoundation.org>
- <20210315135545.737069480@linuxfoundation.org>
- <20210315195601.auhfy5uafjafgczs@skbuf>
- <YFBGIt2jRQLmjtln@kroah.com>
+        id S229909AbhCPNzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:55:52 -0400
+Received: from mail-vs1-f51.google.com ([209.85.217.51]:33339 "EHLO
+        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232683AbhCPNza (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 09:55:30 -0400
+Received: by mail-vs1-f51.google.com with SMTP id f1so8102077vsl.0;
+        Tue, 16 Mar 2021 06:55:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B3wUKUD0yFWquUSQ0aF+YSPLFm6XuAJmGospQPYqJX8=;
+        b=XHsK4DrX3pXJQPpgpQ2FDAfxj/+xpEqhhem7yGF9/FF6ulnGRSJtVXWR3+d3qw3ToQ
+         IitciApzzX6ukLFnX2ud2LEZylqJIUZg0vmWVM6XiLyOJaAAHDXkk1mHbaUvFqVH1fb3
+         djdVDvsNsSfZSodozQ3XnhLPXM6HrTki/oSNO96vIQk7aTqdWftlDL/Pdrf/ardxziFi
+         L2Vj8kMkI+KyohC6zApb6M/F7XjPe6DvpVwdgjsrvaqt1h5widum8al7vF5sOL/IuD6F
+         WFOT1Ce9GGJlZBAzAFTap6Tdo+qEEHVXmuMc1t8quu0mce4DZeNfLBZ494g6mr3yLbdE
+         9Jvg==
+X-Gm-Message-State: AOAM533iVUiGPQLJkWOM/K27BOtnFR4GlKiM6jCq5QkvBmOrde5sDjBo
+        /vPIG6R7KwU81SvKSN/aSv/uGCTdcCTVhW8NY/U=
+X-Google-Smtp-Source: ABdhPJyQJ274DH4Dxo5JnveoBksTMt2117Vm5jcJGqpROxzRn7Xu6D1paM3dWSOkIE43jm5Q8UlLWaapjmqwUz6Fa/k=
+X-Received: by 2002:a67:fe90:: with SMTP id b16mr8604868vsr.40.1615902929927;
+ Tue, 16 Mar 2021 06:55:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YFBGIt2jRQLmjtln@kroah.com>
+References: <20210311233640.1581526-1-robh@kernel.org> <20210311233640.1581526-2-robh@kernel.org>
+In-Reply-To: <20210311233640.1581526-2-robh@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 16 Mar 2021 14:55:18 +0100
+Message-ID: <CAMuHMdV3hG4ddXo6jBu52+2=n3mBLfbmoCzb4VRUQ8YvanH9+Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kbuild: Enable DT undocumented compatible checks
+To:     Rob Herring <robh@kernel.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 06:46:10AM +0100, gregkh@linuxfoundation.org wrote:
->On Mon, Mar 15, 2021 at 07:56:02PM +0000, Vladimir Oltean wrote:
->> +Andrew, Vivien,
->>
->> On Mon, Mar 15, 2021 at 02:53:26PM +0100, gregkh@linuxfoundation.org wrote:
->> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> >
->> > From: Vladimir Oltean <vladimir.oltean@nxp.com>
->> >
->> > [ Upstream commit a3b0b6479700a5b0af2c631cb2ec0fb7a0d978f2 ]
->> >
->> > At the moment, taggers are left with the task of ensuring that the skb
->> > headers are writable (which they aren't, if the frames were cloned for
->> > TX timestamping, for flooding by the bridge, etc), and that there is
->> > enough space in the skb data area for the DSA tag to be pushed.
->> >
->> > Moreover, the life of tail taggers is even harder, because they need to
->> > ensure that short frames have enough padding, a problem that normal
->> > taggers don't have.
->> >
->> > The principle of the DSA framework is that everything except for the
->> > most intimate hardware specifics (like in this case, the actual packing
->> > of the DSA tag bits) should be done inside the core, to avoid having
->> > code paths that are very rarely tested.
->> >
->> > So provide a TX reallocation procedure that should cover the known needs
->> > of DSA today.
->> >
->> > Note that this patch also gives the network stack a good hint about the
->> > headroom/tailroom it's going to need. Up till now it wasn't doing that.
->> > So the reallocation procedure should really be there only for the
->> > exceptional cases, and for cloned packets which need to be unshared.
->> >
->> > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
->> > Tested-by: Christian Eggers <ceggers@arri.de> # For tail taggers only
->> > Tested-by: Kurt Kanzenbach <kurt@linutronix.de>
->> > Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
->> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
->> > Signed-off-by: Sasha Levin <sashal@kernel.org>
->> > ---
->>
->> For context, Sasha explains here:
->> https://www.spinics.net/lists/stable-commits/msg190151.html
->> (the conversation is somewhat truncated, unfortunately, because
->> stable-commits@vger.kernel.org ate my replies)
->> that 13 patches were backported to get the unrelated commit 9200f515c41f
->> ("net: dsa: tag_mtk: fix 802.1ad VLAN egress") to apply cleanly with git-am.
->>
->> I am not strictly against this, even though I would have liked to know
->> that the maintainers were explicitly informed about it.
->>
->> Greg, could you make your stable backporting emails include the output
->> of ./get_maintainer.pl into the list of recipients? Thanks.
->
->I cc: everyone on the signed-off-by list on the patch, why would we need
->to add more?  A maintainer should always be on that list automatically.
+Hi Rob,
 
-Oh, hm, could this be an issue with subsystems that have a shared
-maintainership model? In that scenario not all maintainers will sign-off
-on a commit.
+On Fri, Mar 12, 2021 at 12:38 AM Rob Herring <robh@kernel.org> wrote:
+> dt-validate has an option to warn on any compatible strings which don't
+> match any schema. The option has recently been improved to fix false
+> positives, so let's enable the option. This is useful for tracking
+> compatibles which are undocumented or not yet converted to DT schema.
+> Previously, the only check of undocumented compatible strings has been
+> an imperfect checkpatch.pl check.
+>
+> The option is enabled by default for 'dtbs_check'. This will add more
+> warnings, but some platforms are down to only a handful of these
+> warnings (good job!).
+>
+> There's about 100 cases in the binding examples, so the option is
+> disabled until these are fixed. In the meantime, they can be checked
+> with:
+>
+> make DT_CHECKER_FLAGS=-m dt_binding_check
+>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Michal Marek <michal.lkml@markovi.net>
+> Cc: linux-kbuild@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+
+Thanks for your patch!
+
+This causes lots of warning when using DT_SCHEMA_FILES, as all
+compatible values in bindings not specified with DT_SCHEMA_FILES
+become unknown.
+
+Perhaps this should be disabled automatically when DT_SCHEMA_FILES
+is specified?
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Thanks,
-Sasha
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
