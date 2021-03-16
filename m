@@ -2,353 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6739133D383
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:06:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BEB433D38A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237596AbhCPMGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:06:13 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:50473 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232012AbhCPMFh (ORCPT
+        id S237604AbhCPMIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 08:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231949AbhCPMHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:05:37 -0400
-X-Originating-IP: 81.185.168.196
-Received: from [192.168.43.237] (196.168.185.81.rev.sfr.net [81.185.168.196])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id A5AEBE000C;
-        Tue, 16 Mar 2021 12:05:28 +0000 (UTC)
-Subject: Re: [PATCH] Insert SFENCE.VMA in function set_pte_at for RISCV
-To:     Anup Patel <anup@brainfault.org>,
-        Andrew Waterman <waterman@eecs.berkeley.edu>
-Cc:     Jiuyang Liu <liu@jiuyang.me>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Zong Li <zong.li@sifive.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-References: <20210316015328.13516-1-liu@jiuyang.me>
- <20210316034638.16276-1-liu@jiuyang.me>
- <CAAhSdy3eEXtba_ebUnPW_OUHRMKsg+O9sBx_DHAmrkTUCfHXNg@mail.gmail.com>
- <CAPM7DZc+Ysd=VQdzc4_4Np8VAMESBrzD3mhk0ueh92x11bFFNg@mail.gmail.com>
- <CAAhSdy1HYJJDig3Mg1eWaO=zok9G6+hQM1LLbDKMzH-=Fi2dKw@mail.gmail.com>
- <CA++6G0AnGVLbM+1j9K7UU_0p6NfwVAxNkcFr8s1=h+wW4G0z_w@mail.gmail.com>
- <CAAhSdy0nAUW-Y9gFONVLUPZCG-zT2MXKacu+StKKmSro+58k8w@mail.gmail.com>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <d4f3f2af-345d-b9a9-6ac5-f4262d0b46c5@ghiti.fr>
-Date:   Tue, 16 Mar 2021 08:05:27 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 16 Mar 2021 08:07:46 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD796C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 05:07:44 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id h13so21184557eds.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 05:07:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6HtHHZ++i9Sp4DSeONedSewEzbhA+aKhuSNlC2WbViw=;
+        b=bDuA03JYRGlE+RRNJLJAj5ywBlu+X1V9M7Jv59P0PcKMCwwB0r4SD3n2/zVaCH0oD1
+         KOVYAvWgNhZKwfvKsEw0ExU4Z6CM8ZsWM7PZtMWoVcE6lNpe+ExV2HRie5uQ/ijksJuS
+         MSeg0vj41sDHyhSpjRtRDJWklOBBGAWV77H9D3JZuciZlTeeQ8xwtKhyIxFpWXR5Z1Sq
+         poS8AxtpmCGPZT02piGBcweTP6dLw8onKrA1fzqW9Zcaj4yhB6XFTP+TkHcpXHvmxnNw
+         Npt/PBSiLjB2npUKGYG1bAWpRkuJ6REATomDxXd5PX7SFG9yH8OM1j+s5B/kERvZzCzG
+         cQqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6HtHHZ++i9Sp4DSeONedSewEzbhA+aKhuSNlC2WbViw=;
+        b=AYvX+svqKIKBQqBlJi2uvxntNF5wobIaKwAiPDx2Ff3yUR4EBXjcLpOBIOUUWI6mSL
+         eGPpgeH2IdUk6tFVZxUEZ67msOKDBuWQ6w6+slf2iea/6aad/fBiFYmrNfoq9KbVQ4Ic
+         vaXXRp+f8gLH37CSn6yxJHSz6MtSAp+RqfMKJzBpZGdLA8pT08obfCcZdz/sJd9SSYoL
+         ex58FINbextVolgbDldEQvnN9Qd8Abi6RaPQyJhIaCVCw5PiNebnOl5/wu8D+A2YCw1I
+         vGPg1SFeonbvi0+aQf1ll5D+U4rgOAxRrIkp7X/qptFymae8wWCe3nCgzJt+dg6OQ7Ry
+         CSTA==
+X-Gm-Message-State: AOAM530vyKS4oa+JcUB4sNhaWI9BIKSWF3qIrS16a9NyfjZGypgADBL4
+        N2O170ffcR1qvURyyyKBvTFRnZdHlXGKQJWtBe3WrA==
+X-Google-Smtp-Source: ABdhPJwv0IrWpnXPCUNOwZDVQNPKDoEEjcP6SQyZFbL/NgmGTvr/LerWYX1xSO6W9lyuQ8YpmA1DeyetKlWs9oPmsWk=
+X-Received: by 2002:a05:6402:5113:: with SMTP id m19mr36289517edd.78.1615896463093;
+ Tue, 16 Mar 2021 05:07:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAAhSdy0nAUW-Y9gFONVLUPZCG-zT2MXKacu+StKKmSro+58k8w@mail.gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <20210315135208.252034256@linuxfoundation.org>
+In-Reply-To: <20210315135208.252034256@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 16 Mar 2021 17:37:31 +0530
+Message-ID: <CA+G9fYso_m+8YaWjVaSxwbv4tjdCRHrEcEKz53oySPuuWYYpJw@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/75] 4.4.262-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 3/16/21 à 4:40 AM, Anup Patel a écrit :
-> On Tue, Mar 16, 2021 at 1:59 PM Andrew Waterman
-> <waterman@eecs.berkeley.edu> wrote:
->>
->> On Tue, Mar 16, 2021 at 12:32 AM Anup Patel <anup@brainfault.org> wrote:
->>>
->>> On Tue, Mar 16, 2021 at 12:27 PM Jiuyang Liu <liu@jiuyang.me> wrote:
->>>>
->>>>> As per my understanding, we don't need to explicitly invalidate local TLB
->>>>> in set_pte() or set_pet_at() because generic Linux page table management
->>>>> (<linux>/mm/*) will call the appropriate flush_tlb_xyz() function after page
->>>>> table updates.
->>>>
->>>> I witnessed this bug in our micro-architecture: set_pte instruction is
->>>> still in the store buffer, no functions are inserting SFENCE.VMA in
->>>> the stack below, so TLB cannot witness this modification.
->>>> Here is my call stack:
->>>> set_pte
->>>> set_pte_at
->>>> map_vm_area
->>>> __vmalloc_area_node
->>>> __vmalloc_node_range
->>>> __vmalloc_node
->>>> __vmalloc_node_flags
->>>> vzalloc
->>>> n_tty_open
->>>>
+On Mon, 15 Mar 2021 at 19:23, <gregkh@linuxfoundation.org> wrote:
+>
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+> This is the start of the stable review cycle for the 4.4.262 release.
+> There are 75 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 17 Mar 2021 13:51:52 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.262-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I don't find this call stack, what I find is (the other way around):
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-n_tty_open
-vzalloc
-__vmalloc_node
-__vmalloc_node_range
-__vmalloc_area_node
-map_kernel_range
--> map_kernel_range_noflush
-    flush_cache_vmap
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Which leads to the fact that we don't have flush_cache_vmap callback 
-implemented: shouldn't we add the sfence.vma here ? Powerpc does 
-something similar with "ptesync" (see below) instruction that seems to 
-do the same as sfence.vma.
+Summary
+------------------------------------------------------------------------
 
-ptesync: "The ptesync instruction after the Store instruction ensures 
-that all searches of the Page Table that are performed after the ptesync 
-instruction completes will use the value stored"
+kernel: 4.4.262-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.4.y
+git commit: 712d2b53fc1193899b028c57bb0fe069936e958e
+git describe: v4.4.261-76-g712d2b53fc11
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
+y/build/v4.4.261-76-g712d2b53fc11
 
->>>> I think this is an architecture specific code, so <linux>/mm/* should
->>>> not be modified.
->>>> And spec requires SFENCE.VMA to be inserted on each modification to
->>>> TLB. So I added code here.
->>>
->>> The generic linux/mm/* already calls the appropriate tlb_flush_xyz()
->>> function defined in arch/riscv/include/asm/tlbflush.h
->>>
->>> Better to have a write-barrier in set_pte().
->>>
->>>>
->>>>> Also, just local TLB flush is generally not sufficient because
->>>>> a lot of page tables will be used across on multiple HARTs.
->>>>
->>>> Yes, this is the biggest issue, in RISC-V Volume 2, Privileged Spec v.
->>>> 20190608 page 67 gave a solution:
->>>
->>> This is not an issue with RISC-V privilege spec rather it is more about
->>> placing RISC-V fences at right locations.
->>>
->>>> Consequently, other harts must be notified separately when the
->>>> memory-management data structures have been modified. One approach is
->>>> to use
->>>> 1) a local data fence to ensure local writes are visible globally,
->>>> then 2) an interprocessor interrupt to the other thread,
->>>> then 3) a local SFENCE.VMA in the interrupt handler of the remote thread,
->>>> and finally 4) signal back to originating thread that operation is
->>>> complete. This is, of course, the RISC-V analog to a TLB shootdown.
->>>
->>> I would suggest trying approach#1.
->>>
->>> You can include "asm/barrier.h" here and use wmb() or __smp_wmb()
->>> in-place of local TLB flush.
->>
->> wmb() doesn't suffice to order older stores before younger page-table
->> walks, so that might hide the problem without actually fixing it.
-> 
-> If we assume page-table walks as reads then mb() might be more
-> suitable in this case ??
-> 
-> ARM64 also has an explicit barrier in set_pte() implementation. They are
-> doing "dsb(ishst); isb()" which is an inner-shareable store barrier followed
-> by an instruction barrier.
-> 
->>
->> Based upon Jiuyang's description, it does sound plausible that we are
->> missing an SFENCE.VMA (or TLB shootdown) somewhere.  But I don't
->> understand the situation well enough to know where that might be, or
->> what the best fix is.
-> 
-> Yes, I agree but set_pte() doesn't seem to be the right place for TLB
-> shootdown based on set_pte() implementations of other architectures.
 
-I agree as "flushing" the TLB after every set_pte() would be very 
-costly, it's better to do it once at the end of the all the updates: 
-like in flush_cache_vmap :)
+No regressions (compared to build v4.4.261)
 
-Alex
+No fixes (compared to build v4.4.261)
 
-> 
-> Regards,
-> Anup
-> 
->>
->>
->>>
->>>>
->>>> In general, this patch didn't handle the G bit in PTE, kernel trap it
->>>> to sbi_remote_sfence_vma. do you think I should use flush_tlb_all?
->>>>
->>>> Jiuyang
->>>>
->>>>
->>>>
->>>>
->>>> arch/arm/mm/mmu.c
->>>> void set_pte_at(struct mm_struct *mm, unsigned long addr,
->>>>                                pte_t *ptep, pte_t pteval)
->>>> {
->>>>          unsigned long ext = 0;
->>>>
->>>>          if (addr < TASK_SIZE && pte_valid_user(pteval)) {
->>>>                  if (!pte_special(pteval))
->>>>                          __sync_icache_dcache(pteval);
->>>>                  ext |= PTE_EXT_NG;
->>>>          }
->>>>
->>>>          set_pte_ext(ptep, pteval, ext);
->>>> }
->>>>
->>>> arch/mips/include/asm/pgtable.h
->>>> static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
->>>>                                pte_t *ptep, pte_t pteval)
->>>> {
->>>>
->>>>          if (!pte_present(pteval))
->>>>                  goto cache_sync_done;
->>>>
->>>>          if (pte_present(*ptep) && (pte_pfn(*ptep) == pte_pfn(pteval)))
->>>>                  goto cache_sync_done;
->>>>
->>>>          __update_cache(addr, pteval);
->>>> cache_sync_done:
->>>>          set_pte(ptep, pteval);
->>>> }
->>>>
->>>>
->>>> Also, just local TLB flush is generally not sufficient because
->>>>> a lot of page tables will be used accross on multiple HARTs.
->>>>
->>>>
->>>> On Tue, Mar 16, 2021 at 5:05 AM Anup Patel <anup@brainfault.org> wrote:
->>>>>
->>>>> +Alex
->>>>>
->>>>> On Tue, Mar 16, 2021 at 9:20 AM Jiuyang Liu <liu@jiuyang.me> wrote:
->>>>>>
->>>>>> This patch inserts SFENCE.VMA after modifying PTE based on RISC-V
->>>>>> specification.
->>>>>>
->>>>>> arch/riscv/include/asm/pgtable.h:
->>>>>> 1. implement pte_user, pte_global and pte_leaf to check correspond
->>>>>> attribute of a pte_t.
->>>>>
->>>>> Adding pte_user(), pte_global(), and pte_leaf() is fine.
->>>>>
->>>>>>
->>>>>> 2. insert SFENCE.VMA in set_pte_at based on RISC-V Volume 2, Privileged
->>>>>> Spec v. 20190608 page 66 and 67:
->>>>>> If software modifies a non-leaf PTE, it should execute SFENCE.VMA with
->>>>>> rs1=x0. If any PTE along the traversal path had its G bit set, rs2 must
->>>>>> be x0; otherwise, rs2 should be set to the ASID for which the
->>>>>> translation is being modified.
->>>>>> If software modifies a leaf PTE, it should execute SFENCE.VMA with rs1
->>>>>> set to a virtual address within the page. If any PTE along the traversal
->>>>>> path had its G bit set, rs2 must be x0; otherwise, rs2 should be set to
->>>>>> the ASID for which the translation is being modified.
->>>>>>
->>>>>> arch/riscv/include/asm/tlbflush.h:
->>>>>> 1. implement get_current_asid to get current program asid.
->>>>>> 2. implement local_flush_tlb_asid to flush tlb with asid.
->>>>>
->>>>> As per my understanding, we don't need to explicitly invalidate local TLB
->>>>> in set_pte() or set_pet_at() because generic Linux page table management
->>>>> (<linux>/mm/*) will call the appropriate flush_tlb_xyz() function after page
->>>>> table updates. Also, just local TLB flush is generally not sufficient because
->>>>> a lot of page tables will be used accross on multiple HARTs.
->>>>>
->>>>>>
->>>>>> Signed-off-by: Jiuyang Liu <liu@jiuyang.me>
->>>>>> ---
->>>>>>   arch/riscv/include/asm/pgtable.h  | 27 +++++++++++++++++++++++++++
->>>>>>   arch/riscv/include/asm/tlbflush.h | 12 ++++++++++++
->>>>>>   2 files changed, 39 insertions(+)
->>>>>>
->>>>>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
->>>>>> index ebf817c1bdf4..5a47c60372c1 100644
->>>>>> --- a/arch/riscv/include/asm/pgtable.h
->>>>>> +++ b/arch/riscv/include/asm/pgtable.h
->>>>>> @@ -222,6 +222,16 @@ static inline int pte_write(pte_t pte)
->>>>>>          return pte_val(pte) & _PAGE_WRITE;
->>>>>>   }
->>>>>>
->>>>>> +static inline int pte_user(pte_t pte)
->>>>>> +{
->>>>>> +       return pte_val(pte) & _PAGE_USER;
->>>>>> +}
->>>>>> +
->>>>>> +static inline int pte_global(pte_t pte)
->>>>>> +{
->>>>>> +       return pte_val(pte) & _PAGE_GLOBAL;
->>>>>> +}
->>>>>> +
->>>>>>   static inline int pte_exec(pte_t pte)
->>>>>>   {
->>>>>>          return pte_val(pte) & _PAGE_EXEC;
->>>>>> @@ -248,6 +258,11 @@ static inline int pte_special(pte_t pte)
->>>>>>          return pte_val(pte) & _PAGE_SPECIAL;
->>>>>>   }
->>>>>>
->>>>>> +static inline int pte_leaf(pte_t pte)
->>>>>> +{
->>>>>> +       return pte_val(pte) & (_PAGE_READ | _PAGE_WRITE | _PAGE_EXEC);
->>>>>> +}
->>>>>> +
->>>>>>   /* static inline pte_t pte_rdprotect(pte_t pte) */
->>>>>>
->>>>>>   static inline pte_t pte_wrprotect(pte_t pte)
->>>>>> @@ -358,6 +373,18 @@ static inline void set_pte_at(struct mm_struct *mm,
->>>>>>                  flush_icache_pte(pteval);
->>>>>>
->>>>>>          set_pte(ptep, pteval);
->>>>>> +
->>>>>> +       if (pte_present(pteval)) {
->>>>>> +               if (pte_leaf(pteval)) {
->>>>>> +                       local_flush_tlb_page(addr);
->>>>>> +               } else {
->>>>>> +                       if (pte_global(pteval))
->>>>>> +                               local_flush_tlb_all();
->>>>>> +                       else
->>>>>> +                               local_flush_tlb_asid();
->>>>>> +
->>>>>> +               }
->>>>>> +       }
->>>>>>   }
->>>>>>
->>>>>>   static inline void pte_clear(struct mm_struct *mm,
->>>>>> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
->>>>>> index 394cfbccdcd9..1f9b62b3670b 100644
->>>>>> --- a/arch/riscv/include/asm/tlbflush.h
->>>>>> +++ b/arch/riscv/include/asm/tlbflush.h
->>>>>> @@ -21,6 +21,18 @@ static inline void local_flush_tlb_page(unsigned long addr)
->>>>>>   {
->>>>>>          __asm__ __volatile__ ("sfence.vma %0" : : "r" (addr) : "memory");
->>>>>>   }
->>>>>> +
->>>>>> +static inline unsigned long get_current_asid(void)
->>>>>> +{
->>>>>> +       return (csr_read(CSR_SATP) >> SATP_ASID_SHIFT) & SATP_ASID_MASK;
->>>>>> +}
->>>>>> +
->>>>>> +static inline void local_flush_tlb_asid(void)
->>>>>> +{
->>>>>> +       unsigned long asid = get_current_asid();
->>>>>> +       __asm__ __volatile__ ("sfence.vma x0, %0" : : "r" (asid) : "memory");
->>>>>> +}
->>>>>> +
->>>>>>   #else /* CONFIG_MMU */
->>>>>>   #define local_flush_tlb_all()                  do { } while (0)
->>>>>>   #define local_flush_tlb_page(addr)             do { } while (0)
->>>>>> --
->>>>>> 2.30.2
->>>>>>
->>>>>>
->>>>>> _______________________________________________
->>>>>> linux-riscv mailing list
->>>>>> linux-riscv@lists.infradead.org
->>>>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
->>>>>
->>>>> Regards,
->>>>> Anup
->>>
->>> Regards,
->>> Anup
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
+Ran 30821 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- i386
+- juno-64k_page_size
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* kselftest-sync
+* kvm-unit-tests
+* v4l2-compliance
+* install-android-platform-tools-r2600
+* fwts
+* ssuite
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.262-rc1
+git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
+git branch: 4.4.262-rc1-hikey-20210315-965
+git commit: 0571025494b76ef8d857a1bbf7937b881e18ba1e
+git describe: 4.4.262-rc1-hikey-20210315-965
+Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
+-oe/build/4.4.262-rc1-hikey-20210315-965
+
+
+No regressions (compared to build 4.4.262-rc1-hikey-20210315-962)
+
+
+No fixes (compared to build 4.4.262-rc1-hikey-20210315-962)
+
+Ran 1966 total tests in the following environments and test suites.
+
+Environments
+--------------
+- hi6220-hikey - arm64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* spectre-meltdown-checker-test
+* v4l2-compliance
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
