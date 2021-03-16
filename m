@@ -2,131 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FFD933E046
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD98933E054
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:17:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232931AbhCPVQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 17:16:57 -0400
-Received: from mga03.intel.com ([134.134.136.65]:64637 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230146AbhCPVQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 17:16:41 -0400
-IronPort-SDR: HErttJKRLYpRviYgutJcAI3XEW8pdZLdOcInu5VkurWJjIESC8uugSgF93406s9wIt0UgdW3en
- +d5HIbbDQpkw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="189384816"
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="189384816"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 14:16:36 -0700
-IronPort-SDR: kYzwUtCZYUqEOoEQHmu+gRoNCbFbQkLf55S1ZP+HniJETq66O3bvvnVX5rBICU1XLXYGfFFXYJ
- J/+P228oqpbg==
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="449852773"
-Received: from kcarrier-mobl.amr.corp.intel.com (HELO [10.209.124.168]) ([10.209.124.168])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 14:16:35 -0700
-Subject: Re: [PATCH] mm: Move mem_init_print_info() into mm_init()
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Guo Ren <guoren@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, linux-mm@kvack.org
-References: <20210316142637.92193-1-wangkefeng.wang@huawei.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <009553ee-8d7b-0b60-8457-f8ac66e27fb4@intel.com>
-Date:   Tue, 16 Mar 2021 14:16:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233156AbhCPVRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 17:17:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233084AbhCPVRJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 17:17:09 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF32C061756;
+        Tue, 16 Mar 2021 14:17:08 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 21:17:04 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615929425;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w+ElagURH1gmaM8b92iEvfWRXDIPmYdOtcE2VlxkqlI=;
+        b=rrEgJpUrtAw8+6ALVScfdf7c0ZKeak4h1TXBKWGEEZnzkMduNL04+4TWaM+omEjNcjqEyY
+        OiKLLogyLJPFtU3OVkGultFL58uZI90sB0V8/PYBQu/c3LPDd+HPT99sp60KizvP9Wi+aR
+        IUBtcs7Xo1IiQLrzFuTgglEXvJHaPp5tLDioSpdX+C14ArxNBcBzPNSWWa1sa+71ldqp6y
+        rCzYp4uf0m+ZUu4OtXCZCiVmV8LUGG23JHuH9jXlXlfXnOyhSQaqdcfcv5Ed5sPloetI6+
+        JukA+WsKiVD3lWktut4embhSR3jrijI6U8zjUuB711/sU50/VUnX8vjqCI7M9Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615929425;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w+ElagURH1gmaM8b92iEvfWRXDIPmYdOtcE2VlxkqlI=;
+        b=DN8bBIkZGxdwzNi+fFVe5qoM7LWb7985beAc5lfNaCcix6H16Z1DilM7QZ0BxZitvvfIhd
+        YLTZcwD/U0EHkrDw==
+From:   "tip-bot2 for Oleg Nesterov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86: Introduce TS_COMPAT_RESTART to fix
+ get_nr_restart_syscall()
+Cc:     Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210201174709.GA17895@redhat.com>
+References: <20210201174709.GA17895@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210316142637.92193-1-wangkefeng.wang@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Message-ID: <161592942471.398.9962549253199373067.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/21 7:26 AM, Kefeng Wang wrote:
-> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-> index 5430c81eefc9..aa8387aab9c1 100644
-> --- a/arch/x86/mm/init_64.c
-> +++ b/arch/x86/mm/init_64.c
-> @@ -1350,8 +1350,6 @@ void __init mem_init(void)
->  		kclist_add(&kcore_vsyscall, (void *)VSYSCALL_ADDR, PAGE_SIZE, KCORE_USER);
->  
->  	preallocate_vmalloc_pages();
-> -
-> -	mem_init_print_info(NULL);
->  }
+The following commit has been merged into the x86/urgent branch of tip:
 
-Ignoring any issues with the printk...
+Commit-ID:     8c150ba2fb5995c84a7a43848250d444a3329a7d
+Gitweb:        https://git.kernel.org/tip/8c150ba2fb5995c84a7a43848250d444a3329a7d
+Author:        Oleg Nesterov <oleg@redhat.com>
+AuthorDate:    Mon, 01 Feb 2021 18:47:09 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 16 Mar 2021 22:13:11 +01:00
 
-Looks harmless enough on x86.  The 32-bit code has some cruft in
-mem_init() after mem_init_print_info(), so this patch will change the
-location of the mem_init_print_info(), but I think it's actually for the
-better, since it will be pushed later in boot.  As long as the x86
-pieces stay the same:
+x86: Introduce TS_COMPAT_RESTART to fix get_nr_restart_syscall()
 
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+The comment in get_nr_restart_syscall() says:
+
+	 * The problem is that we can get here when ptrace pokes
+	 * syscall-like values into regs even if we're not in a syscall
+	 * at all.
+
+Yes, but if not in a syscall then the
+
+	status & (TS_COMPAT|TS_I386_REGS_POKED)
+
+check below can't really help:
+
+	- TS_COMPAT can't be set
+
+	- TS_I386_REGS_POKED is only set if regs->orig_ax was changed by
+	  32bit debugger; and even in this case get_nr_restart_syscall()
+	  is only correct if the tracee is 32bit too.
+
+Suppose that a 64bit debugger plays with a 32bit tracee and
+
+	* Tracee calls sleep(2)	// TS_COMPAT is set
+	* User interrupts the tracee by CTRL-C after 1 sec and does
+	  "(gdb) call func()"
+	* gdb saves the regs by PTRACE_GETREGS
+	* does PTRACE_SETREGS to set %rip='func' and %orig_rax=-1
+	* PTRACE_CONT		// TS_COMPAT is cleared
+	* func() hits int3.
+	* Debugger catches SIGTRAP.
+	* Restore original regs by PTRACE_SETREGS.
+	* PTRACE_CONT
+
+get_nr_restart_syscall() wrongly returns __NR_restart_syscall==219, the
+tracee calls ia32_sys_call_table[219] == sys_madvise.
+
+Add the sticky TS_COMPAT_RESTART flag which survives after return to user
+mode. It's going to be removed in the next step again by storing the
+information in the restart block. As a further cleanup it might be possible
+to remove also TS_I386_REGS_POKED with that.
+
+Test-case:
+
+  $ cvs -d :pserver:anoncvs:anoncvs@sourceware.org:/cvs/systemtap co ptrace-tests
+  $ gcc -o erestartsys-trap-debuggee ptrace-tests/tests/erestartsys-trap-debuggee.c --m32
+  $ gcc -o erestartsys-trap-debugger ptrace-tests/tests/erestartsys-trap-debugger.c -lutil
+  $ ./erestartsys-trap-debugger
+  Unexpected: retval 1, errno 22
+  erestartsys-trap-debugger: ptrace-tests/tests/erestartsys-trap-debugger.c:421
+
+Fixes: 609c19a385c8 ("x86/ptrace: Stop setting TS_COMPAT in ptrace code")
+Reported-by: Jan Kratochvil <jan.kratochvil@redhat.com>
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210201174709.GA17895@redhat.com
+
+---
+ arch/x86/include/asm/thread_info.h | 14 +++++++++++++-
+ arch/x86/kernel/signal.c           | 24 +-----------------------
+ 2 files changed, 14 insertions(+), 24 deletions(-)
+
+diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
+index c2dc29e..30d1d18 100644
+--- a/arch/x86/include/asm/thread_info.h
++++ b/arch/x86/include/asm/thread_info.h
+@@ -214,10 +214,22 @@ static inline int arch_within_stack_frames(const void * const stack,
+  */
+ #define TS_COMPAT		0x0002	/* 32bit syscall active (64BIT)*/
+ 
++#ifndef __ASSEMBLY__
+ #ifdef CONFIG_COMPAT
+ #define TS_I386_REGS_POKED	0x0004	/* regs poked by 32-bit ptracer */
++#define TS_COMPAT_RESTART	0x0008
++
++#define arch_set_restart_data	arch_set_restart_data
++
++static inline void arch_set_restart_data(struct restart_block *restart)
++{
++	struct thread_info *ti = current_thread_info();
++	if (ti->status & TS_COMPAT)
++		ti->status |= TS_COMPAT_RESTART;
++	else
++		ti->status &= ~TS_COMPAT_RESTART;
++}
+ #endif
+-#ifndef __ASSEMBLY__
+ 
+ #ifdef CONFIG_X86_32
+ #define in_ia32_syscall() true
+diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+index ea794a0..6c26d2c 100644
+--- a/arch/x86/kernel/signal.c
++++ b/arch/x86/kernel/signal.c
+@@ -766,30 +766,8 @@ handle_signal(struct ksignal *ksig, struct pt_regs *regs)
+ 
+ static inline unsigned long get_nr_restart_syscall(const struct pt_regs *regs)
+ {
+-	/*
+-	 * This function is fundamentally broken as currently
+-	 * implemented.
+-	 *
+-	 * The idea is that we want to trigger a call to the
+-	 * restart_block() syscall and that we want in_ia32_syscall(),
+-	 * in_x32_syscall(), etc. to match whatever they were in the
+-	 * syscall being restarted.  We assume that the syscall
+-	 * instruction at (regs->ip - 2) matches whatever syscall
+-	 * instruction we used to enter in the first place.
+-	 *
+-	 * The problem is that we can get here when ptrace pokes
+-	 * syscall-like values into regs even if we're not in a syscall
+-	 * at all.
+-	 *
+-	 * For now, we maintain historical behavior and guess based on
+-	 * stored state.  We could do better by saving the actual
+-	 * syscall arch in restart_block or (with caveats on x32) by
+-	 * checking if regs->ip points to 'int $0x80'.  The current
+-	 * behavior is incorrect if a tracer has a different bitness
+-	 * than the tracee.
+-	 */
+ #ifdef CONFIG_IA32_EMULATION
+-	if (current_thread_info()->status & (TS_COMPAT|TS_I386_REGS_POKED))
++	if (current_thread_info()->status & TS_COMPAT_RESTART)
+ 		return __NR_ia32_restart_syscall;
+ #endif
+ #ifdef CONFIG_X86_X32_ABI
