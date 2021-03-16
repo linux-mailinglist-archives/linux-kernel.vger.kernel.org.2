@@ -2,90 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00ED733CC9C
+	by mail.lfdr.de (Postfix) with ESMTP id BD79633CC9E
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 05:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235035AbhCPEhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 00:37:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36628 "EHLO
+        id S235048AbhCPEhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 00:37:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235030AbhCPEgf (ORCPT
+        with ESMTP id S235034AbhCPEgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 00:36:35 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B877C06174A;
-        Mon, 15 Mar 2021 21:36:35 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id n132so35817771iod.0;
-        Mon, 15 Mar 2021 21:36:35 -0700 (PDT)
+        Tue, 16 Mar 2021 00:36:37 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E0F7C06174A;
+        Mon, 15 Mar 2021 21:36:37 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id 133so35503635ybd.5;
+        Mon, 15 Mar 2021 21:36:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xVtwrcyh2/TskgfBA/1goWIwsIJj+WbEku885ymod2c=;
-        b=NjldcXh9x/r3ur8iRua7R1tmsWyqI+uS9FuYw2g607IHXNNT9sZyqn0qMegXJy4mFx
-         NOxHoBoQ1HvvUXjQnYLOMjGKnkogx5eFrKC0QcMJLchcM5ferDu8N+sV1y/nz7+XVzUQ
-         441yCVCcoc7fkCEWi5E3Vb+BgMYplW0e2mhddWqD94Rg3fjlxVCYI7vlnr8LyYW21LK7
-         ME0IrkM/BbVoIeTrDVp6U1Z6JAONSbGAGe+dw57q5yDLQs1zQjQuDfYvp4kVSuQVZVRQ
-         OPVtYNa5H9PdXHQFeX5s/qZP1eE4T0LHSETm3o+t+2uuACGU73HjOooAQ7Pax1SB7Bj9
-         F5Xg==
+        bh=kN7lf9pianI3iI8amWxAia6Kwgs6GRh9yvG1FbniCmE=;
+        b=HthrGG4ws7cGcA3MlPPYj+ZBKhm6c7t4XEb2CCEY5gtDBHVaFm5JcyzepmD18mdXKp
+         2LdmVQyAfjZrEkL43a90TQCcG1fKkreBvRqlOzrpG5iVSbkPPkQNCoVblDxBoUJAfrOW
+         I9M58shdnqGnAC99mtLKC+Q6qIsV7Tg5j7zWAUSNkLQDldEFxQn+zhj2IaT0oSI/PCCA
+         hZmp/2GGGFgFCRysu8z+vJR0O2YVy5O9PksiY/4kK6GC1i0OLQPq/XPK5yygP6YxgZ3o
+         5lMV8w/ckpHxFOmeDiGHjSAXAODxXBSX4ON6MNovhee+fMp/V4Kuhuc8UgIj3/dGOIum
+         5Haw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xVtwrcyh2/TskgfBA/1goWIwsIJj+WbEku885ymod2c=;
-        b=Mcy34cTImSPWy3ODS5TBUW/GHSjPDaGvwrOkfb+dcUMq9P9Le0fslG7/zXeXZRT4Lq
-         YidFITyqNc0DT+Ee2W5HiiHJRBCbvMkmaxNo1VdIAAfyOAUoB4WrCJXNEOp/0AgiknVh
-         sVSS5yh5jriIgifCpxii+ogtO72xUXk8vIEZDmFEVV1ulneKY6/bXNGcN0FI5JGePcNY
-         Tbr31biYBl/XhYIs5CrXbCMmxTvW+WWF7d6qcdBiNGGII01h+BfppHdYW6mqCUvcD+wF
-         AF90seeOKDZgYuNJQZqsIWsM/rLfm0FZaUzMlJt0/do0AOP673es2UaiUDRFQ3g0cC4V
-         AqJA==
-X-Gm-Message-State: AOAM530jgucjwqpZ+LzCHzNrZmH1hpmcrYCQiLt6sOM3RbXuYmuSVG32
-        VCAEXSrJNN1iJ03ZlT5Xk4DSnQeamYStKXSuJ1hxwl3kHzJd3A==
-X-Google-Smtp-Source: ABdhPJzpAjz7V8myg0zt/fX5zYzoWdIz1jJdEhY/c/yCUNT7F5ybwl851XDZ/omqS/1k9sLgJHJ2J13dPWmdHrqoDbo=
-X-Received: by 2002:a6b:7a4d:: with SMTP id k13mr2072399iop.39.1615869394773;
- Mon, 15 Mar 2021 21:36:34 -0700 (PDT)
+        bh=kN7lf9pianI3iI8amWxAia6Kwgs6GRh9yvG1FbniCmE=;
+        b=rNgF7OvKcsLhZfYrP5sDyYREj3QSR07fBjZ4qBaOHYu7G9B1GhVPC7p7YXIJGYDcQy
+         35KgGaTWZNp+6UsrW+YufgJWtIhMVb0bwTEDDwUNLVQe+EaMa4AjgntAfPKaT6IbubUd
+         CoTgJUfBvADM0oFm3s7r/9rBjBdIlynpOJ0rEvY12EHvvGqanCZwPrlI+IE91IzSmccn
+         2XQMM4EL3bum2cFvhSnVMeVjh2jQUBuUkq7T8SdqWK4H4VNy4xq7Z2hE4FsCllkpMJq2
+         fPwJBNVDdnAl54L4j9BGLxR43PjfDamHe5JOzvPf2KknArg8IAsakksP7agDE6PlsT+/
+         3O0w==
+X-Gm-Message-State: AOAM5306u/pCYcxYggYH1MEqTKBR18bq2UxqlcC7ImdH/VzbP7rcjL3P
+        U3gE0IgrF8t51IEPxcaqFZpw9ID5mSE8wjGnZyc=
+X-Google-Smtp-Source: ABdhPJz8MpszVfbHFA4xs5dBU+YmUyruGxaQpteCQEkwmORYb1MFesPzqSyYTEctHxf7zll9qKga5WBAHcyQwchBWfY=
+X-Received: by 2002:a25:c6cb:: with SMTP id k194mr4253818ybf.27.1615869396350;
+ Mon, 15 Mar 2021 21:36:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210315170940.2414854-1-dqfext@gmail.com> <892918f1-bee6-7603-b8e1-3efb93104f6f@gmail.com>
- <20210315200939.irwyiru6m62g4a7f@skbuf> <84bb93da-cc3b-d2a5-dda8-a8fb973c3bae@gmail.com>
- <20210315211541.pj5mpy2foi3wlhbe@skbuf>
-In-Reply-To: <20210315211541.pj5mpy2foi3wlhbe@skbuf>
-From:   DENG Qingfang <dqfext@gmail.com>
-Date:   Tue, 16 Mar 2021 12:36:24 +0800
-Message-ID: <CALW65jbZ1_A-HwzKwKfavQQUBfNZuBSdL8xTGuRrS5qDqi6j3A@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: dsa: mt7530: support MDB and bridge flag operations
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>,
-        netdev <netdev@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, linux-kernel@vger.kernel.org,
-        Frank Wunderlich <frank-w@public-files.de>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>
+References: <20210310220211.1454516-1-revest@chromium.org> <20210310220211.1454516-4-revest@chromium.org>
+In-Reply-To: <20210310220211.1454516-4-revest@chromium.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 15 Mar 2021 21:36:25 -0700
+Message-ID: <CAEf4BzZmQ3C=DfSRckM0AUXhz2MeghwhF6RLspS2u44sx0LP-g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/5] libbpf: Initialize the bpf_seq_printf
+ parameters array field by field
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 5:15 AM Vladimir Oltean <olteanv@gmail.com> wrote:
+On Wed, Mar 10, 2021 at 2:02 PM Florent Revest <revest@chromium.org> wrote:
 >
-> Actually this is just how Qingfang explained it:
-> https://patchwork.kernel.org/project/netdevbpf/patch/20210224081018.24719-1-dqfext@gmail.com/
+> When initializing the __param array with a one liner, if all args are
+> const, the initial array value will be placed in the rodata section but
+> because libbpf does not support relocation in the rodata section, any
+> pointer in this array will stay NULL.
 >
-> I just assume that MT7530/7531 switches don't need to enable flooding on
-> user ports when the only possible traffic source is the CPU port - the
-> CPU port can inject traffic into any port regardless of egress flooding
-> setting. If that's not true, I don't see how traffic in standalone ports
-> mode would work after this patch.
+> This is a workaround, ideally the rodata relocation should be supported
+> by libbpf but this would require a disproportionate amount of work given
+> the actual usecases. (it is very unlikely that one uses a const array of
+> relocated addresses)
+>
+> Signed-off-by: Florent Revest <revest@chromium.org>
+> ---
+>  tools/lib/bpf/bpf_tracing.h | 30 +++++++++++++++++++++++++++++-
+>  1 file changed, 29 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> index f9ef37707888..f6a2deb3cd5b 100644
+> --- a/tools/lib/bpf/bpf_tracing.h
+> +++ b/tools/lib/bpf/bpf_tracing.h
+> @@ -413,6 +413,34 @@ typeof(name(0)) name(struct pt_regs *ctx)                              \
+>  }                                                                          \
+>  static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
+>
+> +#define ___bpf_build_param0(narg, x)
+> +#define ___bpf_build_param1(narg, x) ___param[narg - 1] = x
+> +#define ___bpf_build_param2(narg, x, args...) ___param[narg - 2] = x; \
+> +                                             ___bpf_build_param1(narg, args)
+> +#define ___bpf_build_param3(narg, x, args...) ___param[narg - 3] = x; \
+> +                                             ___bpf_build_param2(narg, args)
+> +#define ___bpf_build_param4(narg, x, args...) ___param[narg - 4] = x; \
+> +                                             ___bpf_build_param3(narg, args)
+> +#define ___bpf_build_param5(narg, x, args...) ___param[narg - 5] = x; \
+> +                                             ___bpf_build_param4(narg, args)
+> +#define ___bpf_build_param6(narg, x, args...) ___param[narg - 6] = x; \
+> +                                             ___bpf_build_param5(narg, args)
+> +#define ___bpf_build_param7(narg, x, args...) ___param[narg - 7] = x; \
+> +                                             ___bpf_build_param6(narg, args)
+> +#define ___bpf_build_param8(narg, x, args...) ___param[narg - 8] = x; \
+> +                                             ___bpf_build_param7(narg, args)
+> +#define ___bpf_build_param9(narg, x, args...) ___param[narg - 9] = x; \
+> +                                             ___bpf_build_param8(narg, args)
+> +#define ___bpf_build_param10(narg, x, args...) ___param[narg - 10] = x; \
+> +                                              ___bpf_build_param9(narg, args)
+> +#define ___bpf_build_param11(narg, x, args...) ___param[narg - 11] = x; \
+> +                                              ___bpf_build_param10(narg, args)
+> +#define ___bpf_build_param12(narg, x, args...) ___param[narg - 12] = x; \
+> +                                              ___bpf_build_param11(narg, args)
 
-Correct. Don't forget the earlier version of this driver (before my
-attempt to fix roaming) disabled unknown unicast flooding (trapped to
-CPU) in the same way.
+took me some time to get why the [narg - 12] :) it makes sense, but
+then I started wondering why not
+
+#define ___bpf_build_param12(narg, x, args...)
+___bpf_build_param11(narg, args); ___param[11] = x
+
+? seems more straightforward, no?
+
+also please keep all of them on single line. And to make lines
+shorter, let's call it ___bpf_fillX? I also don't like hard-coded
+___param, which is both inflexible and is obscure at the point of use
+of this macro. So let's pass it as the first argument?
+
+> +#define ___bpf_build_param(args...) \
+> +       unsigned long long ___param[___bpf_narg(args)];                 \
+> +       ___bpf_apply(___bpf_build_param, ___bpf_narg(args))(___bpf_narg(args), args)
+> +
+
+And here I'd pass array as a parameter and let caller define it, so
+macro is literally just filling the array elements, not defining the
+array itself and what's the type of elements
+
+>  /*
+>   * BPF_SEQ_PRINTF to wrap bpf_seq_printf to-be-printed values
+>   * in a structure.
+> @@ -422,7 +450,7 @@ static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
+>                 _Pragma("GCC diagnostic push")                              \
+>                 _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")      \
+>                 static const char ___fmt[] = fmt;                           \
+> -               unsigned long long ___param[] = { args };                   \
+> +               ___bpf_build_param(args);                                   \
+>                 _Pragma("GCC diagnostic pop")                               \
+>                 int ___ret = bpf_seq_printf(seq, ___fmt, sizeof(___fmt),    \
+>                                             ___param, sizeof(___param));    \
+
+here you are violating separation of variables and code,
+___bpf_build_param is defining a variable, then has code statements,
+then you are declaring ___ret after the code. So please split ___ret
+definition,
+
+> --
+> 2.30.1.766.gb4fecdf3b7-goog
+>
