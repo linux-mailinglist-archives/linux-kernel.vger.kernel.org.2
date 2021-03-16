@@ -2,93 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F137633D8EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E50533D8F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:18:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238539AbhCPQRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 12:17:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238546AbhCPQRH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 12:17:07 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AFEEC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 09:17:07 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id b9so7747403wrt.8
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 09:17:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=egtFw+F15fKKmH2YRQH2CrqY4Mc/N2k166aWKfPwG1Y=;
-        b=FltGq8lrYkYkwYM+V2XPu45T4mcNIee4aKIpDwThXFmCkXHv1NSsUQj3fzwnlsU+uA
-         X0gMwrvn2QFAcbmO82awWTVDyQl5xZQrfdNr25wK+xTvDPjigvZNNLPU+4s4+2OQ3rnx
-         Htv9mtvNFRsGwp+qubVL5CwOaSjxTzFTG+GG0dAF8dN0t6biM0n+Esv+omzTBFgxbkBw
-         dgAJ2HnEo5rRlW5nPMGEzXV/dh/bIEXgl7hB0w0pnkfBzstIFbWHfJ8nD16mWvSsNpUd
-         VtTeYe4+dTCMVY5wnl5Ykh1zT5BttMLuB3tDUz4WpgUG+NYjbYtu/T1nMCaAr3xcUjgl
-         Oxwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=egtFw+F15fKKmH2YRQH2CrqY4Mc/N2k166aWKfPwG1Y=;
-        b=JoYfwRZil5ajdpxLzmT/harToZgfm09djRBsk9E+jIyy4ptJJU+aFFVMaYbx4AIG0Z
-         x+iBpi0xs/ilR85GRDSBE1kNwkT83raXdIjQw97GRypQ9PIOEOTOQxi4QK/5I0J8R/2Q
-         bTIo7t7DqXCvrMnolmFUfWc5zztJadnZ+boopgluaZSxAMZ0RXNgrn77SaZyRLFQaEwb
-         m2unwlMRSua4oZdWiPzQYuz3wY3HsNeqaPbCyLZmSIwsSO/RBl5eqOon4yNWF+8lltw0
-         9QF9n7LCVdwcefcqNGDP9but6l5zimCzED5CntX2aOeHlyNmJ9UH7Oy0n8MD3bkhPpvF
-         TXEQ==
-X-Gm-Message-State: AOAM532pfjkByx+Wh1ptp0ck2KqKxQiif9PZ3kYR6yVgR1gKkKMGmCV7
-        nzllYmmaLgN4JSC1iPjY4Ki92w==
-X-Google-Smtp-Source: ABdhPJzdCwPvuP9H3AT1EWrpwUAoVmiRl3HgwOZ/HTxhQHBLImPATzGBqV+i1LiJHRy52kQ1t/vysQ==
-X-Received: by 2002:a5d:6d0c:: with SMTP id e12mr5588156wrq.136.1615911425935;
-        Tue, 16 Mar 2021 09:17:05 -0700 (PDT)
-Received: from dell ([91.110.221.243])
-        by smtp.gmail.com with ESMTPSA id q19sm23646208wrg.80.2021.03.16.09.17.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 09:17:05 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 16:17:03 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [RESEND PATCH] mfd: sec: initialize driver via
- module_platform_driver
-Message-ID: <20210316161703.GE701493@dell>
-References: <20210316132515.50588-1-krzysztof.kozlowski@canonical.com>
+        id S238566AbhCPQRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 12:17:44 -0400
+Received: from mout.gmx.net ([212.227.15.19]:56727 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238541AbhCPQR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 12:17:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1615911441;
+        bh=t1eWm2oQpCC1c0NIOlF0f18NVJvKps/sDSZ4DlifkSo=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=eK50uKCnz7tGqSsC+71i4Ntj1ozF6PmBpMIPoad5sDjD7O+8dYtQX9VxCkcJeyLvF
+         67Zhqc3Gh9O0HNoKTtIS3/5G2fjcbeCAWWbcZ7mLZru+UDFTGGUapNIKo8Bjl08TKw
+         ibASGpg9yWQ1t2zkm2OTu+2VthazBacuGywgU1aM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [80.245.77.133] ([80.245.77.133]) by web-mail.gmx.net
+ (3c-app-gmx-bs08.server.lan [172.19.170.59]) (via HTTP); Tue, 16 Mar 2021
+ 17:17:21 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210316132515.50588-1-krzysztof.kozlowski@canonical.com>
+Message-ID: <trinity-1d5e191e-69a4-41cd-80e3-f689ede66daf-1615911441288@3c-app-gmx-bs08>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Frank Wunderlich <linux@fw-web.de>
+Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Aw: [PATCH] net: wireguard: fix error with icmp{,v6}_ndo_send in
+ 5.4
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 16 Mar 2021 17:17:21 +0100
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <20210315132103.129386-1-linux@fw-web.de>
+References: <20210315132103.129386-1-linux@fw-web.de>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:xTl/7g5ym5mtf19P92ixeMhAoFxZ81eOvz8VH4RjEN6VUwIDhuIOfbxVwDQbxbliUm6bJ
+ UaSKd2APt1bAC6HeBo65hVVpvsz8qw1J42pGIgTQf1NWATJThDTPEaaCK2IaSMdAUgiuREQuYKqv
+ q3h0EPtGDQw7Opy1vMNYeX+nFO4tO76ia6MZYyD2RSnTNIZ7/U/P0QKw8qXE7dfKHiEHgZ1hDKxe
+ 1xVjDtL4eTFanqTvN8563eRuhGQRGU7HT8AGSP8a95cnKn2FwkomtL/xChsjJ7eM/9+lFBG3cafQ
+ 3Y=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BicDGzdy0Bs=:k1RtC5hcJ1WIZE3mp2Sw5w
+ pwyD3A5vP9IzM6rb8Zn0prcmr49/WMed+IxWt98Q2e/ZFqLU3XIFmDcbfYYkbURDd/pKRLE/1
+ uaQfbWNvfQysMgTYS8MXb51jlKod8W+vr5F1jgfcQKgVHWR3Z9JQunBWF/oAkVuscM7rYWRTf
+ 9r8YCH4/djofKnJKAGVnT2qixfRtuHnUnF3HGuEAbrGJyZA53axmj2kFtwFs0TTZH9daCdEyU
+ ViocfHnec5uOQRIiv8trdpHLFv5t600FfgLytATfoMOs/M079MkzykE60hpj2/U8uRtu1cOdV
+ 1U0ktHvCIc+qd3ZaQfKK9S1fLACZNoX5NVx+jI8/ckFwh144Q6JJJ6WHQ3tCHEV2Zkw17/z3s
+ QFARFNhvxbRQhOH/J6DiTn1cZVMfZkegsYyyiHJTxhKwQuvQ8ArAFhmLGB8TtCTkvvi1E4w1f
+ DYIu02w7yCj/DUNUy9tR++c28FVSk++CFXUP6792w/LhKiu29BJ+eIHx0aH3Ke8KawmuHjacm
+ CyRYgvlFuYj2mqdsEIYiQ60qwSSwg8CL4EntliTFAm2JJuSy6RWodKUFOMnHkx1LzrcI7KLTI
+ wck+0Q3UcD4mw=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021, Krzysztof Kozlowski wrote:
+Hi,
 
-> From: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> The driver was using subsys_initcall() because in old times deferred
-> probe was not supported everywhere and specific ordering was needed.
-> Since probe deferral works fine and specific ordering is discouraged
-> (hides dependencies between drivers and couples their boot order), the
-> driver can be converted to regular module_platform_driver.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
->  drivers/mfd/sec-core.c | 14 +-------------
->  1 file changed, 1 insertion(+), 13 deletions(-)
+sorry, please ignore this
+wireguard was included with 5.6, my 5.4 uses external wireguard
 
-Applied, thanks.
+regards Frank
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
