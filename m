@@ -2,78 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE5533DB96
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C730B33DB95
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239449AbhCPRzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:55:05 -0400
-Received: from mail-il1-f170.google.com ([209.85.166.170]:40269 "EHLO
+        id S239436AbhCPRy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:54:59 -0400
+Received: from mail-il1-f170.google.com ([209.85.166.170]:40260 "EHLO
         mail-il1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235659AbhCPRy1 (ORCPT
+        with ESMTP id S235046AbhCPRyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:54:27 -0400
-Received: by mail-il1-f170.google.com with SMTP id e7so13504492ile.7;
-        Tue, 16 Mar 2021 10:54:25 -0700 (PDT)
+        Tue, 16 Mar 2021 13:54:22 -0400
+Received: by mail-il1-f170.google.com with SMTP id e7so13504292ile.7;
+        Tue, 16 Mar 2021 10:54:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=NkQ5GgQFc/YoK/N0gznOcS3i3bnLKgQpSfAaOAQnpB4=;
-        b=BZ031cnFeprxf0iLfTavP6bX/zzd2cWyDPxosdnWpvwwKV6EjdSTi03UNVWltwx0Zs
-         WpVKkZoO4u8phQWDGdMvIwL6tmLeiJy8hEnRHmp9W2mWjfCx0WV0UuLFBHBXkjGvUb+W
-         a4PVzp1ocOB6XS+ZIMN0N57fvoReDNeme0J+awvgTv25h07m5105rHJxBQVyoI4A2IrK
-         ta1x0d3rfNH1JKYNag5wuPNwFruUkc2fKok2SmSamsgZW7JtJ4OnC6OjJhaRUoZvFAl5
-         dkk/9eGq+yAhunhgBnxBlgVsA+9svyIQPlF3bj7JPLlNn+TZ3IO1Ene47nDnTf/dYAPB
-         tHWA==
-X-Gm-Message-State: AOAM532syBMiHnRDVOpQkw2j91G3ikAoP33pXRayhsAgXNK+WCoolM2z
-        czYUNR7ni2MzWhUrI5rVRA==
-X-Google-Smtp-Source: ABdhPJxS4LuvnNP7YIuCN0rhDra5QwrIwy0id/fLjLEHv7cot0FBcyYEg1H97tD9x5837opgVLDrPw==
-X-Received: by 2002:a05:6e02:1d98:: with SMTP id h24mr5059134ila.88.1615917265039;
-        Tue, 16 Mar 2021 10:54:25 -0700 (PDT)
+        bh=+kI9PWgxxjp5TX4kZseCNqfbTJcpurWf3Z5A5Al1nrg=;
+        b=LhdZQXCYOgqYFqacJpRrnm9d9E973HifJEnt0+vSL/97U2fv0kr2im+mAXbVjIexST
+         WeZJkE2/+5ofkRGgZj03fd5BgU+O9meCfJLdCCCTOSZqRdKqW/WFM36R66mz5Eu79WjX
+         T4ncM8AWybmD0JRpSSe5zXMFHhYw5b42QaZg/1901d4XWDGSO7y28h8PccD6EQPDCzNq
+         R6jlsxKWf4qDQAYQj1xcB6KbPSdGciwcBEqwpy4Exc0C41hmAib6Jl/x6aRc5S2yUT2b
+         nbjchAA8aNPpNRdUIUlZ1CoFMyVIiuUu69VyDbXgMHb2qoQDqgOdQdUnznK12AT8pgCK
+         j7rw==
+X-Gm-Message-State: AOAM531D1BO/fy8iSPFzkjztrgg3eDmbQvv1z1g9aMrsbCSct/SsJ1wx
+        AF06jBxuKSRCituSOr0ygQ==
+X-Google-Smtp-Source: ABdhPJzj4jwke+G26mZFGHSOiXxtNewCW2IJj+QfJpWnFbUQSSzi2iviqzwbAWxsbu9ZU1nAgGlJbQ==
+X-Received: by 2002:a05:6e02:b25:: with SMTP id e5mr4852271ilu.119.1615917261431;
+        Tue, 16 Mar 2021 10:54:21 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id k12sm9424772ilo.8.2021.03.16.10.54.22
+        by smtp.gmail.com with ESMTPSA id h128sm8978507ioa.32.2021.03.16.10.54.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 10:54:24 -0700 (PDT)
-Received: (nullmailer pid 3326125 invoked by uid 1000);
+        Tue, 16 Mar 2021 10:54:21 -0700 (PDT)
+Received: (nullmailer pid 3326127 invoked by uid 1000);
         Tue, 16 Mar 2021 17:54:09 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Anup Patel <anup.patel@wdc.com>
-Cc:     linux-pm@vger.kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, linux-riscv@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup@brainfault.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Liush <liush@allwinnertech.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Sandeep Tripathy <milun.tripathy@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210316104140.878019-8-anup.patel@wdc.com>
-References: <20210316104140.878019-1-anup.patel@wdc.com> <20210316104140.878019-8-anup.patel@wdc.com>
-Subject: Re: [RFC PATCH v2 7/8] dt-bindings: Add bindings documentation for RISC-V idle states
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+        broonie@kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org
+In-Reply-To: <20210316105828.16436-2-srinivas.kandagatla@linaro.org>
+References: <20210316105828.16436-1-srinivas.kandagatla@linaro.org> <20210316105828.16436-2-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v2 1/7] ASoC: dt-bindings: wcd938x: add bindings for wcd938x
 Date:   Tue, 16 Mar 2021 11:54:09 -0600
-Message-Id: <1615917249.246376.3326124.nullmailer@robh.at.kernel.org>
+Message-Id: <1615917249.257390.3326126.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021 16:11:39 +0530, Anup Patel wrote:
-> The RISC-V CPU idle states will be described in DT under the
-> /cpus/idle-states DT node. This patch adds the bindings documentation
-> for riscv-idle-states DT nodes and idle state DT nodes under it.
+On Tue, 16 Mar 2021 10:58:22 +0000, Srinivas Kandagatla wrote:
+> Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC
+> connected over SoundWire. This device has two SoundWire device RX and
+> TX respectively, supporting 4 x ADCs, ClassH, Ear, Aux PA, 2xHPH,
+> 7 x TX diff inputs, 8 DMICs, MBHC.
 > 
-> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > ---
->  .../devicetree/bindings/riscv/cpus.yaml       |   6 +
->  .../bindings/riscv/idle-states.yaml           | 256 ++++++++++++++++++
->  2 files changed, 262 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/riscv/idle-states.yaml
+>  .../bindings/sound/qcom,wcd938x.yaml          | 127 ++++++++++++++++++
+>  1 file changed, 127 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
@@ -81,52 +68,17 @@ My bot found errors running 'make dt_binding_check' on your patch:
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.example.dt.yaml: idle-states: cpu-retentive-0-0:compatible:0: 'arm,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.example.dt.yaml: idle-states: cpu-nonretentive-0-0:compatible:0: 'arm,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.example.dt.yaml: idle-states: cluster-retentive-0:compatible:0: 'arm,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.example.dt.yaml: idle-states: cluster-nonretentive-0:compatible:0: 'arm,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.example.dt.yaml: idle-states: cpu-retentive-1-0:compatible:0: 'arm,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.example.dt.yaml: idle-states: cpu-nonretentive-1-0:compatible:0: 'arm,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.example.dt.yaml: idle-states: cluster-retentive-1:compatible:0: 'arm,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.example.dt.yaml: idle-states: cluster-nonretentive-1:compatible:0: 'arm,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.example.dt.yaml: idle-states: cpu-retention-0-0:compatible:0: 'riscv,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.example.dt.yaml: idle-states: cluster-retention-0:compatible:0: 'riscv,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.example.dt.yaml: idle-states: cpu-sleep-0-0:compatible:0: 'riscv,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.example.dt.yaml: idle-states: cluster-sleep-0:compatible:0: 'riscv,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.example.dt.yaml: idle-states: cpu-retention-1-0:compatible:0: 'riscv,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.example.dt.yaml: idle-states: cluster-retention-1:compatible:0: 'riscv,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.example.dt.yaml: idle-states: cpu-sleep-1-0:compatible:0: 'riscv,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.example.dt.yaml: idle-states: cluster-sleep-1:compatible:0: 'riscv,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.example.dt.yaml: idle-states: 'entry-method' does not match any of the regexes: '^(cpu|cluster)-', 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.example.dt.yaml: idle-states: cpu-sleep-0-0:compatible:0: 'riscv,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.example.dt.yaml: idle-states: cluster-sleep-0:compatible:0: 'riscv,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.example.dt.yaml: idle-states: cpu-sleep-1-0:compatible:0: 'riscv,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/idle-states.example.dt.yaml: idle-states: cluster-sleep-1:compatible:0: 'riscv,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/psci.example.dt.yaml: idle-states: cpu-power-down:compatible:0: 'riscv,idle-state' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/idle-states.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml: properties:qcom,mbhc-vthreshold-microvolt: 'anyOf' conditional failed, one must be fixed:
+	'$ref' is not one of ['maxItems', 'description', 'deprecated']
+	'minItems' is not one of ['maxItems', 'description', 'deprecated']
+	Additional properties are not allowed ('$ref' was unexpected)
+	'minItems' is not one of ['description', 'deprecated', 'const', 'enum', 'minimum', 'maximum', 'multipleOf', 'default', '$ref']
+	'maxItems' is not one of ['description', 'deprecated', 'const', 'enum', 'minimum', 'maximum', 'multipleOf', 'default', '$ref']
+	1 was expected
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml: ignoring, error in schema: properties: qcom,mbhc-vthreshold-microvolt
+warning: no schema found in file: ./Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
 
-See https://patchwork.ozlabs.org/patch/1453810
+See https://patchwork.ozlabs.org/patch/1453827
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
