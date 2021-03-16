@@ -2,162 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447C433D7C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F72433D7C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:38:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbhCPPhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 11:37:50 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:65366 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234498AbhCPPhL (ORCPT
+        id S233342AbhCPPhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 11:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234572AbhCPPhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 11:37:11 -0400
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 12GFamML011503;
-        Wed, 17 Mar 2021 00:36:49 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 12GFamML011503
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615909009;
-        bh=jHrK45JAsa4ty6YFTk/lmdroBH+RYTF+p5pe53mqFZk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=U9WvGSGrCvxKB3Qs6xgLsmYJ8gZXFA0vqADoncsfo7jQpjfmuPuT2IAwktIv+B9/1
-         GbYGJnXP90RkLgxb9AB4Era/kfL1K8fErpKAZyP+kT4xiyhGXpFCyBOv5kMLCC/MMY
-         09K1ndjqGZf63rS5SYHgOj1jrTwu7cmqyD72X6nxX2vvYRvQ+gRBTpA+A5gk7Ew+kS
-         dldBwO6SqH8wO4rGG7/0cBLo8hlF7i14JfPaL2dc2uchRGZtt6KoJBb8sfxj87HXjH
-         pygHzg2PMGdkZuR84P896ClZZFW9JIW0ut0URv+1CVU66PivraOcH3sIgHDeBWecIm
-         ylXxWeKCf+fjA==
-X-Nifty-SrcIP: [209.85.215.177]
-Received: by mail-pg1-f177.google.com with SMTP id o10so22851034pgg.4;
-        Tue, 16 Mar 2021 08:36:49 -0700 (PDT)
-X-Gm-Message-State: AOAM5309yWmvAkK6gNS9h5wPy3gBNgGHmgRlq55B6qL88CbJdwtHcklw
-        F4q9BjAT3Is8vAJEPMmboInkfrGTGjIxdubBcwY=
-X-Google-Smtp-Source: ABdhPJxWWs8IFo6gDWHe6dYM9zFmcJT7GrNpOatf85eFb/MrDPl+LWyKpsZ7Gn0QLoX9CRtchrlygc43PEq0lLSBla0=
-X-Received: by 2002:a63:dd49:: with SMTP id g9mr225426pgj.175.1615909008535;
- Tue, 16 Mar 2021 08:36:48 -0700 (PDT)
+        Tue, 16 Mar 2021 11:37:10 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB0AC06174A;
+        Tue, 16 Mar 2021 08:37:10 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id f12so11932992qtq.4;
+        Tue, 16 Mar 2021 08:37:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Tkj0ia5hpCZDucubv8I4sizyR82LNTriAr2vMPAQj/E=;
+        b=fmqt1PM3c9r4ycT0+M0peIYt0t0qYLcjBuaENLbx/bgURKlepe0/DFmwjyLv+NL1Bp
+         6BU8XJAV59vNYUVC9nXjmBpPTRRNCP/CTiplDVoETJt9qLIDRkS7W2GRQKQczjlEU/yv
+         NJ5y4i+hWh9cJyzwXPEsmB19k3cNXI7y8h4SyZmhZdnIIvSKoXFtqiMXn54u107oblhr
+         qN9rTSkdIoB3UUciSVvUOqZeHFgmPwkCL456MECrA54N5VUoh3QnQqHqs+k3d4jOldwF
+         cDzQ8oeLbXMQ+chuTZxAdS2KeMuB9lkB40aYVhq36Gfdj2n4zSKFXWJ4ANDmsMvl60rK
+         qCuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Tkj0ia5hpCZDucubv8I4sizyR82LNTriAr2vMPAQj/E=;
+        b=HwqfQDaEXxgjg66oPTiVLUDV1OT9+Mw09oUt5+0y+kVampVtzzdFVI8mwu1e8cDXCT
+         qHV5lzZglMgs0EhaWkMFTFVNc3b1CqZ4+iyfZD9kIPF8ZumSI4Q219YvQrwgry2eTsiA
+         XFAWcLVatDmQz27TgOyZc3PBPok+5XMbjj3LzJ8KJMEDKGdrqidObFOSWoiLQ19B+MAf
+         GXxrmDEcOXCVJdYUlOaIIzc5A/PYKbeSNF1xsxW21lKG9Cw1XcHBOwgxR2lbKKobfjaH
+         Jpvv3L46X6wxdfPz/Fu2JCukHt8fbOORw2cLHgPLf0l3lmfU5CQriGBHujTWugdLcEhD
+         aB4g==
+X-Gm-Message-State: AOAM531gUXV57hnjFzFE7SJP57NvuiBdSz07OYCg7dREBf4gVpx8C5A6
+        lv6OEel7qOME8EAgxpWsgwU=
+X-Google-Smtp-Source: ABdhPJwemAre0PlJRoHQM1SeNE4jPOqETZrw2LN1kDiEtB+J4YeYq2Pdj3MbPBjFrm3tG+aawQdU1A==
+X-Received: by 2002:ac8:7f52:: with SMTP id g18mr273540qtk.250.1615909029421;
+        Tue, 16 Mar 2021 08:37:09 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:1ee])
+        by smtp.gmail.com with ESMTPSA id v7sm15321005qkv.86.2021.03.16.08.37.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 08:37:09 -0700 (PDT)
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        linux-block@vger.kernel.org (open list:BLOCK LAYER),
+        linux-kernel@vger.kernel.org (open list),
+        cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
+        linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
+Subject: [PATCH v10 0/3] Charge loop device i/o to issuing cgroup
+Date:   Tue, 16 Mar 2021 08:36:49 -0700
+Message-Id: <20210316153655.500806-1-schatzberg.dan@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210302210646.3044738-1-nathan@kernel.org> <20210309205915.2340265-1-nathan@kernel.org>
- <CAK7LNAQ6goFdV=HuCdiCsr-PSUGxtafHZAa=p=96ieFyFHL8yg@mail.gmail.com> <CA+icZUVRyEGnLnRBiZjmZqmvCLkR8AZR8tihho83Lrr_F9A2BA@mail.gmail.com>
-In-Reply-To: <CA+icZUVRyEGnLnRBiZjmZqmvCLkR8AZR8tihho83Lrr_F9A2BA@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 17 Mar 2021 00:36:11 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATADzwnJt8vBQADGJjGe8jscRTAwvrLNc8AFgZ9SoWDUQ@mail.gmail.com>
-Message-ID: <CAK7LNATADzwnJt8vBQADGJjGe8jscRTAwvrLNc8AFgZ9SoWDUQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] Makefile: Remove '--gcc-toolchain' flag
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 1:42 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Mon, Mar 15, 2021 at 5:22 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > On Wed, Mar 10, 2021 at 5:59 AM Nathan Chancellor <nathan@kernel.org> wrote:
-> > >
-> > > This flag was originally added to allow clang to find the GNU cross
-> > > tools in commit 785f11aa595b ("kbuild: Add better clang cross build
-> > > support"). This flag was not enough to find the tools at times so
-> > > '--prefix' was added to the list in commit ef8c4ed9db80 ("kbuild: allow
-> > > to use GCC toolchain not in Clang search path") and improved upon in
-> > > commit ca9b31f6bb9c ("Makefile: Fix GCC_TOOLCHAIN_DIR prefix for Clang
-> > > cross compilation"). Now that '--prefix' specifies a full path and
-> > > prefix, '--gcc-toolchain' serves no purpose because the kernel builds
-> > > with '-nostdinc' and '-nostdlib'.
-> > >
-> > > This has been verified with self compiled LLVM 10.0.1 and LLVM 13.0.0 as
-> > > well as a distribution version of LLVM 11.1.0 without binutils in the
-> > > LLVM toolchain locations.
-> > >
-> > > Link: https://reviews.llvm.org/D97902
-> > > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> > > ---
-> > >
-> > > v1 -> v2:
-> > >
-> > > * Improve commit message (add history behind flag and link to Fangrui's
-> > >   documentation improvement).
-> >
-> >
-> > Both applied to linux-kbuild. Thanks.
-> >
->
-> Sorry for being pedantic: This misses my Tested-by#s (see [1]).
->
-> Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # LLVM/Clang v13-git
->
-> AFAICS v2 changes some comments in the commit only but not code?
+No major changes, just rebasing and resubmitting
 
+Changes since V10:
 
-For 1/2, yes. The difference is only comments.
+* Added page-cache charging to mm: Charge active memcg when no mm is set
 
+Changes since V9:
 
-For 2/2, the code was changed.
-Actually, v1 was wrong.
-That is why the tags were dropped.
+* Rebased against linus's branch which now includes Roman Gushchin's
+  patch this series is based off of
 
+Changes since V8:
 
-I will re-add the tags to 1/2
-since there is no code diff.
+* Rebased on top of Roman Gushchin's patch
+  (https://lkml.org/lkml/2020/8/21/1464) which provides the nesting
+  support for setting active memcg. Dropped the patch from this series
+  that did the same thing.
 
+Changes since V7:
 
-If you re-test 2/2, I will add your tag again.
+* Rebased against linus's branch
 
+Changes since V6:
 
+* Added separate spinlock for worker synchronization
+* Minor style changes
 
+Changes since V5:
 
+* Fixed a missing css_put when failing to allocate a worker
+* Minor style changes
 
+Changes since V4:
 
+Only patches 1 and 2 have changed.
 
-> - Sedat -
->
-> [1] https://marc.info/?l=linux-kernel&m=161480031518629&w=2
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git/commit/?h=kbuild&id=d4aa405bc9cd506532f075456645716cdd1739c1
->
-> >
-> >
-> >
-> >
-> > > I did not carry tags forward so that people could re-review and test.
-> > >
-> > >  Makefile | 4 ----
-> > >  1 file changed, 4 deletions(-)
-> > >
-> > > diff --git a/Makefile b/Makefile
-> > > index 31dcdb3d61fa..182e93d91198 100644
-> > > --- a/Makefile
-> > > +++ b/Makefile
-> > > @@ -568,10 +568,6 @@ ifneq ($(CROSS_COMPILE),)
-> > >  CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
-> > >  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
-> > >  CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-> > > -GCC_TOOLCHAIN  := $(realpath $(GCC_TOOLCHAIN_DIR)/..)
-> > > -endif
-> > > -ifneq ($(GCC_TOOLCHAIN),)
-> > > -CLANG_FLAGS    += --gcc-toolchain=$(GCC_TOOLCHAIN)
-> > >  endif
-> > >  ifneq ($(LLVM_IAS),1)
-> > >  CLANG_FLAGS    += -no-integrated-as
-> > >
-> > > base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
-> > > --
-> > > 2.31.0.rc1
-> > >
-> >
-> >
-> > --
-> > Best Regards
-> > Masahiro Yamada
+* Fixed irq lock ordering bug
+* Simplified loop detach
+* Added support for nesting memalloc_use_memcg
 
+Changes since V3:
 
+* Fix race on loop device destruction and deferred worker cleanup
+* Ensure charge on shmem_swapin_page works just like getpage
+* Minor style changes
+
+Changes since V2:
+
+* Deferred destruction of workqueue items so in the common case there
+  is no allocation needed
+
+Changes since V1:
+
+* Split out and reordered patches so cgroup charging changes are
+  separate from kworker -> workqueue change
+
+* Add mem_css to struct loop_cmd to simplify logic
+
+The loop device runs all i/o to the backing file on a separate kworker
+thread which results in all i/o being charged to the root cgroup. This
+allows a loop device to be used to trivially bypass resource limits
+and other policy. This patch series fixes this gap in accounting.
+
+A simple script to demonstrate this behavior on cgroupv2 machine:
+
+'''
+#!/bin/bash
+set -e
+
+CGROUP=/sys/fs/cgroup/test.slice
+LOOP_DEV=/dev/loop0
+
+if [[ ! -d $CGROUP ]]
+then
+    sudo mkdir $CGROUP
+fi
+
+grep oom_kill $CGROUP/memory.events
+
+# Set a memory limit, write more than that limit to tmpfs -> OOM kill
+sudo unshare -m bash -c "
+echo \$\$ > $CGROUP/cgroup.procs;
+echo 0 > $CGROUP/memory.swap.max;
+echo 64M > $CGROUP/memory.max;
+mount -t tmpfs -o size=512m tmpfs /tmp;
+dd if=/dev/zero of=/tmp/file bs=1M count=256" || true
+
+grep oom_kill $CGROUP/memory.events
+
+# Set a memory limit, write more than that limit through loopback
+# device -> no OOM kill
+sudo unshare -m bash -c "
+echo \$\$ > $CGROUP/cgroup.procs;
+echo 0 > $CGROUP/memory.swap.max;
+echo 64M > $CGROUP/memory.max;
+mount -t tmpfs -o size=512m tmpfs /tmp;
+truncate -s 512m /tmp/backing_file
+losetup $LOOP_DEV /tmp/backing_file
+dd if=/dev/zero of=$LOOP_DEV bs=1M count=256;
+losetup -D $LOOP_DEV" || true
+
+grep oom_kill $CGROUP/memory.events
+'''
+
+Naively charging cgroups could result in priority inversions through
+the single kworker thread in the case where multiple cgroups are
+reading/writing to the same loop device. This patch series does some
+minor modification to the loop driver so that each cgroup can make
+forward progress independently to avoid this inversion.
+
+With this patch series applied, the above script triggers OOM kills
+when writing through the loop device as expected.
+
+Dan Schatzberg (3):
+  loop: Use worker per cgroup instead of kworker
+  mm: Charge active memcg when no mm is set
+  loop: Charge i/o to mem and blk cg
+
+ drivers/block/loop.c       | 248 ++++++++++++++++++++++++++++++-------
+ drivers/block/loop.h       |  15 ++-
+ include/linux/memcontrol.h |  11 ++
+ kernel/cgroup/cgroup.c     |   1 +
+ mm/filemap.c               |   2 +-
+ mm/memcontrol.c            |  15 ++-
+ mm/shmem.c                 |   4 +-
+ 7 files changed, 242 insertions(+), 54 deletions(-)
 
 -- 
-Best Regards
-Masahiro Yamada
+2.30.2
+
