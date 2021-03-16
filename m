@@ -2,115 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B6A33CE9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B1233CEAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbhCPH3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 03:29:46 -0400
-Received: from mga01.intel.com ([192.55.52.88]:14524 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229780AbhCPH33 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 03:29:29 -0400
-IronPort-SDR: O+hDVeX70alJ4315+z3BD3EqQAQGVY269dBu+i+iSwNTK1K45HrdJROIdCWPiEv5AOLvtbQ3pk
- cVaZVhUqhpjQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="209143061"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="209143061"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 00:29:29 -0700
-IronPort-SDR: LUymvqHJeRkX4fjAHcTp/JXOI8pz3vYYbJfeA6EYIdKM1k2QQcyg9L0HpyrKvJXQ+qK8pQ57Jl
- kA0mJVc1WSSg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="432916891"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Mar 2021 00:29:27 -0700
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH] perf stat: Align CSV output for summary mode
-Date:   Tue, 16 Mar 2021 15:29:00 +0800
-Message-Id: <20210316072900.1739-1-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S232450AbhCPHCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 03:02:02 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:40609 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231553AbhCPHBu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 03:01:50 -0400
+X-UUID: e3f23dc7e25f43f59ed5116aec0f4746-20210316
+X-UUID: e3f23dc7e25f43f59ed5116aec0f4746-20210316
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <michael.kao@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 644719353; Tue, 16 Mar 2021 15:01:45 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 16 Mar 2021 15:01:44 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 16 Mar 2021 15:01:43 +0800
+From:   Michael Kao <michael.kao@mediatek.com>
+To:     <michael.kao@mediatek.com>, <fan.chen@mediatek.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        <linux-pm@vger.kernel.org>, <srv_heupstream@mediatek.com>
+CC:     Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <hsinyi@chromium.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [v7,0/3] mt8183: Add Mediatek thermal driver and dtsi
+Date:   Tue, 16 Mar 2021 15:01:41 +0800
+Message-ID: <20210316070144.28440-1-michael.kao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-perf-stat has supported the summary mode. But the summary
-lines break the CSV output so it's hard for scripts to parse
-the result.
+This patchset supports for MT8183 chip to mtk_thermal.c.
+Add thermal zone of all the thermal sensor in SoC for
+another get temperatrue. They don't need to thermal throttle.
+And we bind coolers for thermal zone nodes of cpu_thermal.
 
-Before:
+Changes in v7:  
+    - Fix build error in v6. 
 
-  # perf stat -x, -I1000 --interval-count 1 --summary
-       1.001323097,8013.48,msec,cpu-clock,8013483384,100.00,8.013,CPUs utilized
-       1.001323097,270,,context-switches,8013513297,100.00,0.034,K/sec
-       1.001323097,13,,cpu-migrations,8013530032,100.00,0.002,K/sec
-       1.001323097,184,,page-faults,8013546992,100.00,0.023,K/sec
-       1.001323097,20574191,,cycles,8013551506,100.00,0.003,GHz
-       1.001323097,10562267,,instructions,8013564958,100.00,0.51,insn per cycle
-       1.001323097,2019244,,branches,8013575673,100.00,0.252,M/sec
-       1.001323097,106152,,branch-misses,8013585776,100.00,5.26,of all branches
-  8013.48,msec,cpu-clock,8013483384,100.00,7.984,CPUs utilized
-  270,,context-switches,8013513297,100.00,0.034,K/sec
-  13,,cpu-migrations,8013530032,100.00,0.002,K/sec
-  184,,page-faults,8013546992,100.00,0.023,K/sec
-  20574191,,cycles,8013551506,100.00,0.003,GHz
-  10562267,,instructions,8013564958,100.00,0.51,insn per cycle
-  2019244,,branches,8013575673,100.00,0.252,M/sec
-  106152,,branch-misses,8013585776,100.00,5.26,of all branches
+Changes in v6:
+    - Rebase to kernel-5.11-rc1.
+    - [1/3]
+	- add interrupts property.
+    - [2/3]
+	- add the Tested-by in the commit message.
+    - [3/3]
+	- use the mt->conf->msr[id] instead of conf->msr[id] in the
+	  _get_sensor_temp and mtk_thermal_bank_temperature.
+	- remove the redundant space in _get_sensor_temp and
+	  mtk_read_sensor_temp.
+	- change kmalloc to dev_kmalloc in mtk_thermal_probe.
 
-The summary line loses the timestamp column, which breaks the
-CVS output.
+Changes in v5:
+    - Rebase to kernel-5.9-rc1.
+    - Revise the title of cover letter.
+    - Drop "[v4,7/7] thermal: mediatek: use spinlock to protect PTPCORESEL"
+    - [2/2]
+        -  Add the judgement to the version of raw_to_mcelsius.
 
-We add a column at the 'timestamp' position and it just says 'summary'
-for the summary line.
+Changes in v4:
+    - Rebase to kernel-5.6-rc1.
+    - [1/7]
+        - Squash thermal zone settings in the dtsi from [v3,5/8]
+          arm64: dts: mt8183: Increase polling frequency for CPU thermal zone.
+        - Remove the property of interrupts and mediatek,hw-reset-temp.
+    - [2/7]
+        - Correct commit message.
+    - [4/7]
+        - Change the target temperature to the 80C and change the commit message.
+    - [6/7]
+        - Adjust newline alignment.
+        - Fix the judgement on the return value of registering thermal zone.
 
-After:
+Changes in v3:
+    - Rebase to kernel-5.5-rc1.
+    - [1/8]
+        - Update sustainable power of cpu, tzts1~5 and tztsABB.
+    - [7/8]
+        - Bypass the failure that non cpu_thermal sensor is not find in thermal-zones
+          in dts, which is normal for mt8173, so prompt a warning here instead of
+          failing.
 
-  # perf stat -x, -I1000 --interval-count 1 --summary
-       1.001196053,8012.72,msec,cpu-clock,8012722903,100.00,8.013,CPUs utilized
-       1.001196053,218,,context-switches,8012753271,100.00,0.027,K/sec
-       1.001196053,9,,cpu-migrations,8012769767,100.00,0.001,K/sec
-       1.001196053,0,,page-faults,8012786257,100.00,0.000,K/sec
-       1.001196053,15004518,,cycles,8012790637,100.00,0.002,GHz
-       1.001196053,7954691,,instructions,8012804027,100.00,0.53,insn per cycle
-       1.001196053,1590259,,branches,8012814766,100.00,0.198,M/sec
-       1.001196053,82601,,branch-misses,8012824365,100.00,5.19,of all branches
-           summary,8012.72,msec,cpu-clock,8012722903,100.00,7.986,CPUs utilized
-           summary,218,,context-switches,8012753271,100.00,0.027,K/sec
-           summary,9,,cpu-migrations,8012769767,100.00,0.001,K/sec
-           summary,0,,page-faults,8012786257,100.00,0.000,K/sec
-           summary,15004518,,cycles,8012790637,100.00,0.002,GHz
-           summary,7954691,,instructions,8012804027,100.00,0.53,insn per cycle
-           summary,1590259,,branches,8012814766,100.00,0.198,M/sec
-           summary,82601,,branch-misses,8012824365,100.00,5.19,of all branches
+        Return -EAGAIN instead of -EACCESS on the first read of sensor that
+        often are bogus values. This can avoid following warning on boot:
 
-Now it's easy for script to analyse the summary lines.
+          thermal thermal_zone6: failed to read out thermal zone (-13)
 
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/util/stat-display.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Changes in v2:
+    - [1/8]
+        - Add the sustainable-power,trips,cooling-maps to the tzts1~tztsABB.
+    - [4/8]
+        - Add the min opp of cpu throttle.
 
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index 7f09cdaf5b60..c4183d3e87a4 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -439,6 +439,10 @@ static void printout(struct perf_stat_config *config, struct aggr_cpu_id id, int
- 		if (counter->cgrp)
- 			os.nfields++;
- 	}
-+
-+	if (config->csv_output && config->summary && !config->interval)
-+		fprintf(config->output, "%16s%s", "summary", config->csv_sep);
-+
- 	if (run == 0 || ena == 0 || counter->counts->scaled == -1) {
- 		if (config->metric_only) {
- 			pm(config, &os, NULL, "", "", 0);
+Matthias Kaehlcke (1):
+  arm64: dts: mt8183: Configure CPU cooling
+
+Michael Kao (2):
+  thermal: mediatek: add another get_temp ops for thermal sensors
+  arm64: dts: mt8183: add thermal zone node
+
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi | 141 +++++++++++++++++++++++
+ drivers/thermal/mtk_thermal.c            | 100 ++++++++++++----
+ 2 files changed, 216 insertions(+), 25 deletions(-)
+
 -- 
-2.17.1
+2.18.0
 
