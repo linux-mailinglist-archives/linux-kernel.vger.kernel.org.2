@@ -2,219 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C82033CD9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3722C33CDA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:50:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235713AbhCPFsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:48:43 -0400
-Received: from gecko.sbs.de ([194.138.37.40]:36921 "EHLO gecko.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235605AbhCPFsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:48:13 -0400
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12G5llg8020508
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Mar 2021 06:47:48 +0100
-Received: from md1za8fc.ad001.siemens.net ([139.22.41.172])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 12G5llIZ030837;
-        Tue, 16 Mar 2021 06:47:47 +0100
-Date:   Tue, 16 Mar 2021 06:47:43 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH] platform/x86: pmc_atom: use callback for all dmi quirk
- entries
-Message-ID: <20210316064743.0b5a47cf@md1za8fc.ad001.siemens.net>
-In-Reply-To: <43841119-4839-09d2-b606-7dd40cad4b89@redhat.com>
-References: <ef5fe493-285d-145c-8d05-7f9bd0cb47c5@redhat.com>
-        <20210315145855.17174-1-henning.schild@siemens.com>
-        <8577f3a8-c5e4-3752-1bc1-5937ee164217@redhat.com>
-        <20210315180011.6a3f60b0@md1za8fc.ad001.siemens.net>
-        <43841119-4839-09d2-b606-7dd40cad4b89@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S235621AbhCPFtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:49:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235775AbhCPFtP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 01:49:15 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B53C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 22:49:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=vfGZwIFnI5xpNBTfsu0YQgelzvrmLaCqnrmimGucXYA=; b=qTxkAR2Uw2if9V5lp6nFtHzZri
+        qHg6kl6ugUMc5YHHmaiLmriOYGRPLdJBdhymMxmVj1FbhJLWiDCwwXyU5Vnr2WhXfAwU1mDiVP68H
+        RX0xUPIuQ67GbBzueUiK14gBB4sITN6QUD9TpT5IeToDRUuDu3dlv7+6sLSi9ORnHrP5+0yphd02C
+        es4gKyJaL/USEbJJSe4YvXqfJm9qPoK8mzA0kgFxV7IfV2jO/6JWTXc20KUkTC1VSBAIJFSK0Okqh
+        f7KKuJ7PSS7GgLo/9qQxx6jijfJrXVZaiK/5HODAHz+fihQPYxTppf83GGJk2dQnPed/CGed2uS5L
+        8TalhLCQ==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lM2Zr-001PdE-8V; Tue, 16 Mar 2021 05:49:11 +0000
+Subject: Re: [PATCH V2] x86: events: intel: A letter change in a word to make
+ it sound right,in the file bts.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, tglx@linutronix.de, bp@alien8.de,
+        x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org
+References: <20210316054227.962533-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <0ea936c7-0fd1-df2c-6b65-920baf64ba04@infradead.org>
+Date:   Mon, 15 Mar 2021 22:49:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210316054227.962533-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hoi Hans,
+On 3/15/21 10:42 PM, Bhaskar Chowdhury wrote:
+> 
+> s/kernal/kernel/
+> 
+>  A punctuation added too.
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-on a slighly different but also related topic. Did you ever come across
-SMSC SCH5347? Seems to be pretty similar to 56xx, only with spec non
-public ... and probably less often in use
-Maybe you happen to have code, or know the differences. We already have
-it working with a modified copy of sch56xx but that is still rough and
-i thought i ask before we potentially duplicate work.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-groetjes,
-Henning
+> ---
+>  Changes from V1:
+>  Punctuation missed, added as per Randy's finding
+> 
+>  arch/x86/events/intel/bts.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/events/intel/bts.c b/arch/x86/events/intel/bts.c
+> index 731dd8d0dbb1..1ba93c40fc54 100644
+> --- a/arch/x86/events/intel/bts.c
+> +++ b/arch/x86/events/intel/bts.c
+> @@ -594,7 +594,7 @@ static __init int bts_init(void)
+>  		 * we cannot use the user mapping since it will not be available
+>  		 * if we're not running the owning process.
+>  		 *
+> -		 * With PTI we can't use the kernal map either, because its not
+> +		 * With PTI we can't use the kernel map either, because it's not
+>  		 * there when we run userspace.
+>  		 *
+>  		 * For now, disable this driver when using PTI.
+> --
 
-Am Mon, 15 Mar 2021 19:01:13 +0100
-schrieb Hans de Goede <hdegoede@redhat.com>:
 
-> Hi,
-> 
-> On 3/15/21 6:00 PM, Henning Schild wrote:
-> > Am Mon, 15 Mar 2021 17:31:49 +0100
-> > schrieb Hans de Goede <hdegoede@redhat.com>:
-> >   
-> >> Hi,
-> >>
-> >> On 3/15/21 3:58 PM, Henning Schild wrote:  
-> >>> Introduce a global variable to remember the matching entry for
-> >>> later printing. Also having a callback allows to stop matching
-> >>> after the first hit.
-> >>>
-> >>> Signed-off-by: Henning Schild <henning.schild@siemens.com>
-> >>> ---
-> >>>  drivers/platform/x86/pmc_atom.c | 26 ++++++++++++++++++++------
-> >>>  1 file changed, 20 insertions(+), 6 deletions(-)
-> >>>
-> >>> diff --git a/drivers/platform/x86/pmc_atom.c
-> >>> b/drivers/platform/x86/pmc_atom.c index 38542d547f29..d0f74856cd8b
-> >>> 100644 --- a/drivers/platform/x86/pmc_atom.c
-> >>> +++ b/drivers/platform/x86/pmc_atom.c
-> >>> @@ -364,8 +364,16 @@ static void pmc_dbgfs_register(struct pmc_dev
-> >>> *pmc) #endif /* CONFIG_DEBUG_FS */
-> >>>  
-> >>>  static bool pmc_clk_is_critical = true;
-> >>> +static const struct dmi_system_id *dmi_critical;
-> >>>  
-> >>> -static int siemens_clk_is_critical(const struct dmi_system_id *d)
-> >>> +static int dmi_callback(const struct dmi_system_id *d)
-> >>> +{
-> >>> +	dmi_critical = d;    
-> >>
-> >> Don't introduce a global variable for this please. Instead just
-> >> directly print the ident of the matching dmi_system_id here.  
-> > 
-> > Sorry, missed that part. Result looks nice and clean, thanks. I
-> > think i will squash it into 4/4 in v3 and not follow up here for
-> > now.  
-> 
-> Ack, that sounds good to me.
-> 
-> Regards,
-> 
-> Hans
-> 
-> 
-> >>> +
-> >>> +	return 1;
-> >>> +}
-> >>> +
-> >>> +static int dmi_callback_siemens(const struct dmi_system_id *d)
-> >>>  {
-> >>>  	u32 st_id;
-> >>>  
-> >>> @@ -373,7 +381,7 @@ static int siemens_clk_is_critical(const
-> >>> struct dmi_system_id *d) goto out;
-> >>>  
-> >>>  	if (st_id == SIMATIC_IPC_IPC227E || st_id ==
-> >>> SIMATIC_IPC_IPC277E)
-> >>> -		return 1;
-> >>> +		return dmi_callback(d);
-> >>>  
-> >>>  out:
-> >>>  	pmc_clk_is_critical = false;
-> >>> @@ -388,6 +396,7 @@ static const struct dmi_system_id
-> >>> critclk_systems[] = { {
-> >>>  		/* pmc_plt_clk0 is used for an external HSIC USB
-> >>> HUB */ .ident = "MPL CEC1x",
-> >>> +		.callback = dmi_callback,
-> >>>  		.matches = {
-> >>>  			DMI_MATCH(DMI_SYS_VENDOR, "MPL AG"),
-> >>>  			DMI_MATCH(DMI_PRODUCT_NAME, "CEC10
-> >>> Family"), @@ -396,6 +405,7 @@ static const struct dmi_system_id
-> >>> critclk_systems[] = { {
-> >>>  		/* pmc_plt_clk0 - 3 are used for the 4 ethernet
-> >>> controllers */ .ident = "Lex 3I380D",
-> >>> +		.callback = dmi_callback,
-> >>>  		.matches = {
-> >>>  			DMI_MATCH(DMI_SYS_VENDOR, "Lex
-> >>> BayTrail"), DMI_MATCH(DMI_PRODUCT_NAME, "3I380D"),
-> >>> @@ -404,6 +414,7 @@ static const struct dmi_system_id
-> >>> critclk_systems[] = { {
-> >>>  		/* pmc_plt_clk* - are used for ethernet
-> >>> controllers */ .ident = "Lex 2I385SW",
-> >>> +		.callback = dmi_callback,
-> >>>  		.matches = {
-> >>>  			DMI_MATCH(DMI_SYS_VENDOR, "Lex
-> >>> BayTrail"), DMI_MATCH(DMI_PRODUCT_NAME, "2I385SW"),
-> >>> @@ -412,6 +423,7 @@ static const struct dmi_system_id
-> >>> critclk_systems[] = { {
-> >>>  		/* pmc_plt_clk* - are used for ethernet
-> >>> controllers */ .ident = "Beckhoff CB3163",
-> >>> +		.callback = dmi_callback,
-> >>>  		.matches = {
-> >>>  			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff
-> >>> Automation"), DMI_MATCH(DMI_BOARD_NAME, "CB3163"),
-> >>> @@ -420,6 +432,7 @@ static const struct dmi_system_id
-> >>> critclk_systems[] = { {
-> >>>  		/* pmc_plt_clk* - are used for ethernet
-> >>> controllers */ .ident = "Beckhoff CB4063",
-> >>> +		.callback = dmi_callback,
-> >>>  		.matches = {
-> >>>  			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff
-> >>> Automation"), DMI_MATCH(DMI_BOARD_NAME, "CB4063"),
-> >>> @@ -428,6 +441,7 @@ static const struct dmi_system_id
-> >>> critclk_systems[] = { {
-> >>>  		/* pmc_plt_clk* - are used for ethernet
-> >>> controllers */ .ident = "Beckhoff CB6263",
-> >>> +		.callback = dmi_callback,
-> >>>  		.matches = {
-> >>>  			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff
-> >>> Automation"), DMI_MATCH(DMI_BOARD_NAME, "CB6263"),
-> >>> @@ -436,13 +450,14 @@ static const struct dmi_system_id
-> >>> critclk_systems[] = { {
-> >>>  		/* pmc_plt_clk* - are used for ethernet
-> >>> controllers */ .ident = "Beckhoff CB6363",
-> >>> +		.callback = dmi_callback,
-> >>>  		.matches = {
-> >>>  			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff
-> >>> Automation"), DMI_MATCH(DMI_BOARD_NAME, "CB6363"),
-> >>>  		},
-> >>>  	},
-> >>>  	{
-> >>> -		.callback = siemens_clk_is_critical,
-> >>> +		.callback = dmi_callback_siemens,
-> >>>  		.ident = "SIEMENS AG",
-> >>>  		.matches = {
-> >>>  			DMI_MATCH(DMI_SYS_VENDOR, "SIEMENS AG"),
-> >>> @@ -457,7 +472,6 @@ static int pmc_setup_clks(struct pci_dev
-> >>> *pdev, void __iomem *pmc_regmap, {
-> >>>  	struct platform_device *clkdev;
-> >>>  	struct pmc_clk_data *clk_data;
-> >>> -	const struct dmi_system_id *d;
-> >>>  
-> >>>  	clk_data = kzalloc(sizeof(*clk_data), GFP_KERNEL);
-> >>>  	if (!clk_data)
-> >>> @@ -468,8 +482,8 @@ static int pmc_setup_clks(struct pci_dev
-> >>> *pdev, void __iomem *pmc_regmap, if
-> >>> (dmi_check_system(critclk_systems)) { clk_data->critical =
-> >>> pmc_clk_is_critical; if (clk_data->critical) {
-> >>> -			d = dmi_first_match(critclk_systems);
-> >>> -			pr_info("%s critclks quirk enabled\n",
-> >>> d->ident);
-> >>> +			pr_info("%s critclks quirk enabled\n",
-> >>> +				dmi_critical->ident);
-> >>>  		}
-> >>>  	}
-> >>>  
-> >>>     
-> >>  
-> >   
-> 
+-- 
+~Randy
 
