@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0577133D9AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:42:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9191333D9AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:42:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238839AbhCPQlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 12:41:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43918 "EHLO mail.kernel.org"
+        id S238874AbhCPQmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 12:42:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238761AbhCPQlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238776AbhCPQlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 16 Mar 2021 12:41:15 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45EA265101;
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B575650D9;
         Tue, 16 Mar 2021 16:41:14 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1lMCkr-000lvc-7c; Tue, 16 Mar 2021 12:41:13 -0400
-Message-ID: <20210316164100.546961804@goodmis.org>
+        id 1lMCkr-000lwF-C9; Tue, 16 Mar 2021 12:41:13 -0400
+Message-ID: <20210316164113.257790481@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 16 Mar 2021 12:41:00 -0400
+Date:   Tue, 16 Mar 2021 12:41:01 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -30,77 +30,153 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Tom Zanussi <zanussi@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         "Yordan Karadzhov" <y.karadz@gmail.com>
-Subject: [PATCH 0/7 v2] tracing: Have ring_buffer_event_time_stamp() work for all events
+Subject: [PATCH 1/7 v2] ring-buffer: Separate out internal use of
+ ring_buffer_event_time_stamp()
+References: <20210316164100.546961804@goodmis.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Yordan has been working on a patch set that will not repeat functions
-in the function tracer but instead show a single event that states that
-the previous function repeated X amount of times. I recommended that
-this should also show the time of the last function that repeated.
-To save on space, Yordan suggested to use a 32 bit delta instead of
-a full 64 bit timestamp of the last event. But to create this delta,
-we need a way to extract the time of the repeat event and use that
-to calculate the delta of the last function event.
+The exported use of ring_buffer_event_time_stamp() is going to become
+different than how it is used internally. Move the internal logic out into a
+static function called rb_event_time_stamp(), and have the internal callers
+call that instead.
 
-But currently the ring_buffer_event_time_stamp() only works if all events
-has an absolute time stamp attached to it. That would be counter productive
-to make all functions record the full time stamp because we wanted to
-use a 32 bit counter instead of a 64 bit counter for the rare repeat event!
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ kernel/trace/ring_buffer.c | 41 +++++++++++++++++++++-----------------
+ 1 file changed, 23 insertions(+), 18 deletions(-)
 
-This patch series makes ring_buffer_event_time_stamp() work for all
-non committed events (after reserve and before it is committed).
-The trick is that the per CPU descriptor of the buffer holds the time
-stamp used for the event being processed. It has a nesting of 5 levels
-to deal with interrupts that add events. Extracting the time for the event
-can only be done for the current event being processed and not yet
-committed.
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 68744c51517e..941ac2021b97 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -287,6 +287,17 @@ EXPORT_SYMBOL_GPL(ring_buffer_event_data);
+ #define TS_MASK		((1ULL << TS_SHIFT) - 1)
+ #define TS_DELTA_TEST	(~TS_MASK)
+ 
++static u64 rb_event_time_stamp(struct ring_buffer_event *event)
++{
++	u64 ts;
++
++	ts = event->array[0];
++	ts <<= TS_SHIFT;
++	ts += event->time_delta;
++
++	return ts;
++}
++
+ /**
+  * ring_buffer_event_time_stamp - return the event's extended timestamp
+  * @event: the event to get the timestamp of
+@@ -299,13 +310,7 @@ EXPORT_SYMBOL_GPL(ring_buffer_event_data);
+  */
+ u64 ring_buffer_event_time_stamp(struct ring_buffer_event *event)
+ {
+-	u64 ts;
+-
+-	ts = event->array[0];
+-	ts <<= TS_SHIFT;
+-	ts += event->time_delta;
+-
+-	return ts;
++	return rb_event_time_stamp(event);
+ }
+ 
+ /* Flag when events were overwritten */
+@@ -2766,7 +2771,7 @@ static u64 rb_time_delta(struct ring_buffer_event *event)
+ 		return 0;
+ 
+ 	case RINGBUF_TYPE_TIME_EXTEND:
+-		return ring_buffer_event_time_stamp(event);
++		return rb_event_time_stamp(event);
+ 
+ 	case RINGBUF_TYPE_TIME_STAMP:
+ 		return 0;
+@@ -3212,13 +3217,13 @@ static void dump_buffer_page(struct buffer_data_page *bpage,
+ 		switch (event->type_len) {
+ 
+ 		case RINGBUF_TYPE_TIME_EXTEND:
+-			delta = ring_buffer_event_time_stamp(event);
++			delta = rb_event_time_stamp(event);
+ 			ts += delta;
+ 			pr_warn("  [%lld] delta:%lld TIME EXTEND\n", ts, delta);
+ 			break;
+ 
+ 		case RINGBUF_TYPE_TIME_STAMP:
+-			delta = ring_buffer_event_time_stamp(event);
++			delta = rb_event_time_stamp(event);
+ 			ts = delta;
+ 			pr_warn("  [%lld] absolute:%lld TIME STAMP\n", ts, delta);
+ 			break;
+@@ -3289,12 +3294,12 @@ static void check_buffer(struct ring_buffer_per_cpu *cpu_buffer,
+ 		switch (event->type_len) {
+ 
+ 		case RINGBUF_TYPE_TIME_EXTEND:
+-			delta = ring_buffer_event_time_stamp(event);
++			delta = rb_event_time_stamp(event);
+ 			ts += delta;
+ 			break;
+ 
+ 		case RINGBUF_TYPE_TIME_STAMP:
+-			delta = ring_buffer_event_time_stamp(event);
++			delta = rb_event_time_stamp(event);
+ 			ts = delta;
+ 			break;
+ 
+@@ -4256,12 +4261,12 @@ rb_update_read_stamp(struct ring_buffer_per_cpu *cpu_buffer,
+ 		return;
+ 
+ 	case RINGBUF_TYPE_TIME_EXTEND:
+-		delta = ring_buffer_event_time_stamp(event);
++		delta = rb_event_time_stamp(event);
+ 		cpu_buffer->read_stamp += delta;
+ 		return;
+ 
+ 	case RINGBUF_TYPE_TIME_STAMP:
+-		delta = ring_buffer_event_time_stamp(event);
++		delta = rb_event_time_stamp(event);
+ 		cpu_buffer->read_stamp = delta;
+ 		return;
+ 
+@@ -4286,12 +4291,12 @@ rb_update_iter_read_stamp(struct ring_buffer_iter *iter,
+ 		return;
+ 
+ 	case RINGBUF_TYPE_TIME_EXTEND:
+-		delta = ring_buffer_event_time_stamp(event);
++		delta = rb_event_time_stamp(event);
+ 		iter->read_stamp += delta;
+ 		return;
+ 
+ 	case RINGBUF_TYPE_TIME_STAMP:
+-		delta = ring_buffer_event_time_stamp(event);
++		delta = rb_event_time_stamp(event);
+ 		iter->read_stamp = delta;
+ 		return;
+ 
+@@ -4544,7 +4549,7 @@ rb_buffer_peek(struct ring_buffer_per_cpu *cpu_buffer, u64 *ts,
+ 
+ 	case RINGBUF_TYPE_TIME_STAMP:
+ 		if (ts) {
+-			*ts = ring_buffer_event_time_stamp(event);
++			*ts = rb_event_time_stamp(event);
+ 			ring_buffer_normalize_time_stamp(cpu_buffer->buffer,
+ 							 cpu_buffer->cpu, ts);
+ 		}
+@@ -4635,7 +4640,7 @@ rb_iter_peek(struct ring_buffer_iter *iter, u64 *ts)
+ 
+ 	case RINGBUF_TYPE_TIME_STAMP:
+ 		if (ts) {
+-			*ts = ring_buffer_event_time_stamp(event);
++			*ts = rb_event_time_stamp(event);
+ 			ring_buffer_normalize_time_stamp(cpu_buffer->buffer,
+ 							 cpu_buffer->cpu, ts);
+ 		}
+-- 
+2.30.1
 
-To achieve this, the buffer that the event is on needs to be passed to
-the ring_buffer_event_time_stamp(). That caused a bit of churn for
-the histogram code, because that buffer wasn't available at the time
-the ring_buffer_event_time_stamp() was called. Although the hist_field
-contained a pointer to the trace_array that holds the ring buffer,
-if tracing was disabled, then a temporary buffer was used instead,
-and that temporary buffer would need to be passed to the
-ring_buffer_event_time_stamp(). That buffer is exposed to the trace event
-logic, but was not passed down into the trigger code. That had to be
-done to take advantage of the new code.
 
-The second to last patch adds verifier logic (although commented out)
-that was used to debug the issue when a temporary buffer was in use.
-It proved to be very valuable and is kept in, in case this needs to be
-debugged again.
-
-Finally the last patch is for use with Yordan's work, and is needed because
-when filtering is enabled, the event being processed may not even be
-on the buffer, and the tracing_event_time_stamp() checks for that and
-will just use the current time stamp if the event is not reserved yet.
-This could be used also for the histogram code, but wanted to hold off
-on that.
-
-Changes since v1:
-
- - Applied change of last patch to pass buffer not trace_array
- - Fixed prototype of stack_track_data_snapshot() when snapshot not configured
-
-Steven Rostedt (VMware) (7):
-      ring-buffer: Separate out internal use of ring_buffer_event_time_stamp()
-      ring-buffer: Add a event_stamp to cpu_buffer for each level of nesting
-      tracing: Pass buffer of event to trigger operations
-      ring-buffer: Allow ring_buffer_event_time_stamp() to return time stamp of all events
-      tracing: Use a no_filter_buffering_ref to stop using the filter buffer
-      ring-buffer: Add verifier for using ring_buffer_event_time_stamp()
-      tracing: Add tracing_event_time_stamp() API
-
-----
- include/linux/ring_buffer.h         |   3 +-
- include/linux/trace_events.h        |   5 +-
- kernel/trace/ring_buffer.c          | 138 ++++++++++++++++++++++++++++++------
- kernel/trace/trace.c                |  38 +++++-----
- kernel/trace/trace.h                |   9 +--
- kernel/trace/trace_events_hist.c    | 100 +++++++++++++++++---------
- kernel/trace/trace_events_trigger.c |  45 +++++++-----
- 7 files changed, 239 insertions(+), 99 deletions(-)
