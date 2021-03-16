@@ -2,86 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381E133CE19
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E070F33CE18
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233563AbhCPGsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 02:48:43 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:52332 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231776AbhCPGsS (ORCPT
+        id S231725AbhCPGsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 02:48:42 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:53571 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231397AbhCPGsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 02:48:18 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12G6i5Ew142077;
-        Tue, 16 Mar 2021 06:48:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=0egzDSH2z3u1DhfuSB6BBjeSwqI3MsOZjiDXmD94e6k=;
- b=GFb204IgUH/i3I80fPuP7gjfTxtv4ArpjTwspHEckyPeCiXD5CGD7zaASHa2vTgFuG7l
- zyaciqNEcNWciBmwEkuFHoyTfON5J7BDXFKEGPc2P09vYEZFs6GPB650CEqq3GhHAhp9
- RydPUBlDuYnS/q6h2KS+FWK4XhXBWTT7g+tCf15P2MfzDmh3yvQj236cOfql0LyUael2
- wHC5w5YHl+rbCO6q5KRDTpDXcT3r3atggeAIVU55FYFNIFkfgpSZMb/tUJGcwy24wg3r
- TqJB35xEZQ6Gky4Nv4WjxIgtQ5fJqdTEC1XQoRkxnV9vt5d+M9jL1Pc2XsavCA6WK+hp rg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 378p1npevk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Mar 2021 06:48:08 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12G6jqDv177680;
-        Tue, 16 Mar 2021 06:48:07 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 3797aynp59-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Mar 2021 06:48:07 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 12G6m5J5006373;
-        Tue, 16 Mar 2021 06:48:05 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 15 Mar 2021 23:48:04 -0700
-Date:   Tue, 16 Mar 2021 09:47:56 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     zhaoxiao <zhaoxiao@uniontech.com>
-Cc:     gregkh@linuxfoundation.org, straube.linux@gmail.com, lu@pplo.net,
-        serrazimone@gmail.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: rtl8192u: remove extra lines
-Message-ID: <20210316064756.GQ21246@kadam>
-References: <20210316024410.24609-1-zhaoxiao@uniontech.com>
+        Tue, 16 Mar 2021 02:48:13 -0400
+Received: by mail-io1-f70.google.com with SMTP id r10so22576240iod.20
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 23:48:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=WuZiddlhWjyixnWUAvcAwtP4U5EdkgGf4jw6+WDTIi8=;
+        b=l4kWhDbm5+zYf5cVjzp8USnyFpKL21DWtw4IVrRvDycF36ueUvtc3z3ptUz40TsKsZ
+         1Gd/Tk7vPHs1pm9pTsMYbwlVl368E9vNEr0ndsRMBho51m6nc5TSw+Hq+OMYKKfGoDxv
+         JMYfzomk8PEcBA7BpsGfzs5DRfDdoJKtjDEylCbwj5XpPDPZXfnJMZJWeNi9jgoXh1m5
+         YqsC2cvWvHdVCvmFsmI+JXpnkMDYa7nJAsqgs8FmuwY/9Tdcam9uf8iVCqM3vxPgj0WU
+         bLkAO4FdqfA0htWovM6E/f4w9NYJVJnMi+Iaa+m2xdsm+aBvNWxSBjeBbwsXGoYARMVS
+         7Ypg==
+X-Gm-Message-State: AOAM531C8fky61dsFVyk1n0PTiT1usM/8srUmT/7K42AQWdvc3K/1HEh
+        OdZyYU6TTxZV/fK/PfP8eo37F0WAyjgiVjxAHs6zbfzpSb5z
+X-Google-Smtp-Source: ABdhPJzI9tz1Qm71YI1ggnGgklvoxmExe2I9C6nuY8wqygsLITXHRWZ60FpCwWreka25zWylzLR92yx3SYMGo4XKApbqcZcoB9fs
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316024410.24609-1-zhaoxiao@uniontech.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9924 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 bulkscore=0
- malwarescore=0 adultscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103160045
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9924 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0 adultscore=0
- spamscore=0 clxscore=1011 phishscore=0 malwarescore=0 priorityscore=1501
- bulkscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103160045
+X-Received: by 2002:a5e:8d01:: with SMTP id m1mr2319176ioj.72.1615877292614;
+ Mon, 15 Mar 2021 23:48:12 -0700 (PDT)
+Date:   Mon, 15 Mar 2021 23:48:12 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000006e7be05bda1c084@google.com>
+Subject: [syzbot] general protection fault in scatterwalk_copychunks (4)
+From:   syzbot <syzbot+66e3ea42c4b176748b9c@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 10:44:10AM +0800, zhaoxiao wrote:
-> Remove extra lines in many functions in r8192U_wx.c.
-> 
-> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
-> ---
->  drivers/staging/rtl8192u/r8192U_wx.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-                   ^^^^^^^^^^^^
-The commit message says you're removing lines but you're also adding
-them.  :P
+Hello,
 
-regards,
-dan carpenter
+syzbot found the following issue on:
 
+HEAD commit:    47142ed6 net: dsa: bcm_sf2: Qualify phydev->dev_flags base..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=17fb9376d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=eec733599e95cd87
+dashboard link: https://syzkaller.appspot.com/bug?extid=66e3ea42c4b176748b9c
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+66e3ea42c4b176748b9c@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+CPU: 1 PID: 25 Comm: kworker/u4:1 Not tainted 5.12.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: pencrypt_parallel padata_parallel_worker
+RIP: 0010:scatterwalk_start include/crypto/scatterwalk.h:68 [inline]
+RIP: 0010:scatterwalk_pagedone include/crypto/scatterwalk.h:93 [inline]
+RIP: 0010:scatterwalk_pagedone include/crypto/scatterwalk.h:77 [inline]
+RIP: 0010:scatterwalk_copychunks+0x4db/0x6a0 crypto/scatterwalk.c:50
+Code: ff df 80 3c 02 00 0f 85 b4 01 00 00 49 8d 44 24 08 4d 89 26 48 89 c2 48 89 44 24 18 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 77 01 00 00 48 b8 00 00 00 00
+RSP: 0018:ffffc90000dff620 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: ffffffff83c45a33 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88801ba09d1b
+R10: ffffffff83c459e3 R11: 000000000000d9e6 R12: 0000000000000000
+R13: 0000000000000001 R14: ffffc90000dff880 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000540198 CR3: 0000000018d08000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ skcipher_next_slow crypto/skcipher.c:278 [inline]
+ skcipher_walk_next+0x7af/0x1680 crypto/skcipher.c:363
+ skcipher_walk_first+0xf8/0x3c0 crypto/skcipher.c:446
+ skcipher_walk_aead_common+0x7a5/0xbc0 crypto/skcipher.c:539
+ gcmaes_crypt_by_sg+0x323/0x8a0 arch/x86/crypto/aesni-intel_glue.c:658
+Modules linked in:
+---[ end trace 15593fd836276143 ]---
+RIP: 0010:scatterwalk_start include/crypto/scatterwalk.h:68 [inline]
+RIP: 0010:scatterwalk_pagedone include/crypto/scatterwalk.h:93 [inline]
+RIP: 0010:scatterwalk_pagedone include/crypto/scatterwalk.h:77 [inline]
+RIP: 0010:scatterwalk_copychunks+0x4db/0x6a0 crypto/scatterwalk.c:50
+Code: ff df 80 3c 02 00 0f 85 b4 01 00 00 49 8d 44 24 08 4d 89 26 48 89 c2 48 89 44 24 18 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 77 01 00 00 48 b8 00 00 00 00
+RSP: 0018:ffffc90000dff620 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: ffffffff83c45a33 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff88801ba09d1b
+R10: ffffffff83c459e3 R11: 000000000000d9e6 R12: 0000000000000000
+R13: 0000000000000001 R14: ffffc90000dff880 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000540198 CR3: 0000000018d08000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
