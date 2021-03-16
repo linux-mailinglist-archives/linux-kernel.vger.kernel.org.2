@@ -2,169 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2B133D9CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:49:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F3C33D9D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238167AbhCPQtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 12:49:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236711AbhCPQsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 12:48:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24C01650B1;
-        Tue, 16 Mar 2021 16:48:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615913319;
-        bh=jHrng6y86349pcP73WoHjvzUqM/dcV7seJ6f9K/+R7w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cM7yppNdgZ+pr8abM2utPACmY4l3T/qxa0YSJUV0PJqszZNFyD4caSYfFN2a7ziZm
-         UjxzP1u6vLLx/VGsMIuSN6XAAunbgQjhri1AJ0afYG2fx9dc63/IuYwE3SG3D5TXvb
-         pnoG7GafA/xy/DpplMEXlI54RU3qqrbw3V+1CT28=
-Date:   Tue, 16 Mar 2021 17:48:37 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mihai Carabas <mihai.carabas@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de,
-        bobo.shaobowang@huawei.com, rdunlap@infradead.org
-Subject: Re: [PATCH v5 3/3] misc/pvpanic: add PCI driver
-Message-ID: <YFDhZbRYE5szZ4l/@kroah.com>
-References: <1615897229-4055-1-git-send-email-mihai.carabas@oracle.com>
- <1615897229-4055-4-git-send-email-mihai.carabas@oracle.com>
+        id S233944AbhCPQvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 12:51:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231923AbhCPQuc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 12:50:32 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59F3C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 09:50:31 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id j6so17223410plx.6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 09:50:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=P3cgybX7ioPXwPBlHSP7Ta0F/dtycULJBVQIjaI9xwU=;
+        b=DfXQ/GWdyAlC4zxhPCDDGwTw2EUrPyaCI0RSD+ug5wU3vDRF2d6gbvVtY3wopM/YAn
+         4V8f83ZQzBY9ZWONW8ntZO6X9TxEyNaN2tmQGTZdzVce2hVVh27ITLx7SobeLsg1cxPe
+         wlpCbtUoEYwaYcjwszpRKAcfekKYdH4LUMZg8daXW9O7p7uwioGZCDBEueR7MBy1DIen
+         sdb4Gr7mmfAVym3aAOXGqLkNjjCTWh0q+DATJUAZxbDenj2Da6bC88VwGl9aoNW6HFU4
+         /QWktyzuxGDohdwxiwaxjs57oYsDnLn2JtPYeolvi0z69+am4f64mUakv0B+Hg9XWQDT
+         9Udw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P3cgybX7ioPXwPBlHSP7Ta0F/dtycULJBVQIjaI9xwU=;
+        b=RAp1F+CoopTfEjfZJoJVSaNqz7eyq2/5y1q7/e6ZK6E9GMbm1UN7G1YIw5stWVjNvN
+         FiU7tvDephaTiRLMKdTU+i9O5lg2qzlPNTmNpzx+FJrOPPfXHusNk4BVyWvobBbrnoZv
+         PGZER2998geNcZiHUiW82/n++SqsOBlQ6bdI2WgaX31cyw3kMswOTgKRNTVSlQvWZXuR
+         V1lAhcfdI1pvjtDTd0Q0u7iyyZ5q0dkV1bnZ1DQpFJcVb/Nd5WbbK+poXUJZDXSEqCLK
+         SxkfeQXT58IFB5u/zQAbZYbImNQwOzIBjDdgOoJPimKoWQ65EqfxZQSNLXfGUw60/VYf
+         4y/Q==
+X-Gm-Message-State: AOAM5317wooTMo2tg2tr+M5wlKbiDQYLS+4Q8393pUdw0f4cNhEn0b9N
+        U4GI+yQnj4J3/ZsN4JcntTLCOg==
+X-Google-Smtp-Source: ABdhPJzCR8CLTITxKuGshBMK1Cl/owU62QdKaPHbGlbkQhYX9aow/ntKz5eQwW06Ah/OquSREOxjzQ==
+X-Received: by 2002:a17:90a:f184:: with SMTP id bv4mr516993pjb.43.1615913430998;
+        Tue, 16 Mar 2021 09:50:30 -0700 (PDT)
+Received: from google.com ([2620:15c:f:10:e113:95c2:2d1:e304])
+        by smtp.gmail.com with ESMTPSA id y23sm16911202pfo.50.2021.03.16.09.50.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 09:50:30 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 09:50:23 -0700
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
+        kvm list <kvm@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jim Mattson <jmattson@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH 2/3] KVM: x86: guest debug: don't inject interrupts while
+ single stepping
+Message-ID: <CAMS+r+XFLsFRFLGLaAH3_EnBcxOmyN-XiZqcmKEx2utjNErYsQ@mail.gmail.com>
+References: <20210315221020.661693-3-mlevitsk@redhat.com>
+ <YE/vtYYwMakERzTS@google.com>
+ <1259724f-1bdb-6229-2772-3192f6d17a4a@siemens.com>
+ <bede3450413a7c5e7e55b19a47c8f079edaa55a2.camel@redhat.com>
+ <ca41fe98-0e5d-3b4c-8ed8-bdd7cd5bc60f@siemens.com>
+ <71ae8b75c30fd0f87e760216ad310ddf72d31c7b.camel@redhat.com>
+ <2a44c302-744e-2794-59f6-c921b895726d@siemens.com>
+ <1d27b215a488f8b8fc175e97c5ab973cc811922d.camel@redhat.com>
+ <727e5ef1-f771-1301-88d6-d76f05540b01@siemens.com>
+ <e2cd978e357155dbab21a523bb8981973bd10da7.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1615897229-4055-4-git-send-email-mihai.carabas@oracle.com>
+In-Reply-To: <e2cd978e357155dbab21a523bb8981973bd10da7.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 02:20:29PM +0200, Mihai Carabas wrote:
-> Add support for pvpanic PCI device added in qemu [1]. At probe time, obtain the
-> address where to read/write pvpanic events and pass it to the generic handling
-> code. Will follow the same logic as pvpanic MMIO device driver. At remove time,
-> unmap base address and disable PCI device.
-> 
-> [1] https://github.com/qemu/qemu/commit/9df52f58e76e904fb141b10318362d718f470db2
-> 
-> Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
-> ---
->  drivers/misc/pvpanic/Kconfig       |   6 +++
->  drivers/misc/pvpanic/Makefile      |   1 +
->  drivers/misc/pvpanic/pvpanic-pci.c | 102 +++++++++++++++++++++++++++++++++++++
->  3 files changed, 109 insertions(+)
->  create mode 100644 drivers/misc/pvpanic/pvpanic-pci.c
-> 
-> diff --git a/drivers/misc/pvpanic/Kconfig b/drivers/misc/pvpanic/Kconfig
-> index 454f1ee..9a081ed 100644
-> --- a/drivers/misc/pvpanic/Kconfig
-> +++ b/drivers/misc/pvpanic/Kconfig
-> @@ -17,3 +17,9 @@ config PVPANIC_MMIO
->  	depends on HAS_IOMEM && (ACPI || OF) && PVPANIC
->  	help
->  	  This driver provides support for the MMIO pvpanic device.
-> +
-> +config PVPANIC_PCI
-> +	tristate "pvpanic PCI device support"
-> +	depends on PCI && PVPANIC
-> +	help
-> +	  This driver provides support for the PCI pvpanic device.
+On Tue, Mar 16, 2021, Maxim Levitsky wrote:
+> On Tue, 2021-03-16 at 16:31 +0100, Jan Kiszka wrote:
+> > Back then, when I was hacking on the gdb-stub and KVM support, the
+> > monitor trap flag was not yet broadly available, but the idea to once
+> > use it was already there. Now it can be considered broadly available,
+> > but it would still require some changes to get it in.
+> >
+> > Unfortunately, we don't have such thing with SVM, even recent versions,
+> > right? So, a proper way of avoiding diverting event injections while we
+> > are having the guest in an "incorrect" state should definitely be the goal.
+> Yes, I am not aware of anything like monitor trap on SVM.
+>
+> >
+> > Given that KVM knows whether TF originates solely from guest debugging
+> > or was (also) injected by the guest, we should be able to identify the
+> > cases where your approach is best to apply. And that without any extra
+> > control knob that everyone will only forget to set.
+> Well I think that the downside of this patch is that the user might actually
+> want to single step into an interrupt handler, and this patch makes it a bit
+> more complicated, and changes the default behavior.
 
-Please provide a bit more information here.
+Yes.  And, as is, this also blocks NMIs and SMIs.  I suspect it also doesn't
+prevent weirdness if the guest is running in L2, since IRQs for L1 will cause
+exits from L2 during nested_ops->check_events().
 
-> diff --git a/drivers/misc/pvpanic/Makefile b/drivers/misc/pvpanic/Makefile
-> index e12a2dc..9471df7 100644
-> --- a/drivers/misc/pvpanic/Makefile
-> +++ b/drivers/misc/pvpanic/Makefile
-> @@ -5,3 +5,4 @@
->  # Copyright (C) 2021 Oracle.
->  #
->  obj-$(CONFIG_PVPANIC_MMIO)	+= pvpanic.o pvpanic-mmio.o
-> +obj-$(CONFIG_PVPANIC_PCI)	+= pvpanic.o pvpanic-pci.o
-> diff --git a/drivers/misc/pvpanic/pvpanic-pci.c b/drivers/misc/pvpanic/pvpanic-pci.c
-> new file mode 100644
-> index 00000000..27526d3
-> --- /dev/null
-> +++ b/drivers/misc/pvpanic/pvpanic-pci.c
-> @@ -0,0 +1,102 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + *  Pvpanic PCI Device Support
-> + *
-> + *  Copyright (C) 2021 Oracle.
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/pci.h>
-> +#include <linux/types.h>
-> +#include "pvpanic.h"
-> +
-> +#define PCI_VENDOR_ID_REDHAT             0x1b36
-> +#define PCI_DEVICE_ID_REDHAT_PVPANIC     0x0011
-> +
-> +static void __iomem *base;
-> +static const struct pci_device_id pvpanic_pci_id_tbl[]  = {
-> +	{ PCI_DEVICE(PCI_VENDOR_ID_REDHAT, PCI_DEVICE_ID_REDHAT_PVPANIC),},
+> I have no objections though to use this patch as is, or at least make this
+> the new default with a new flag to override this.
 
-Why the ")}"?
+That's less bad, but IMO still violates the principle of least surprise, e.g.
+someone that is single-stepping a guest and is expecting an IRQ to fire will be
+all kinds of confused if they see all the proper IRR, ISR, EFLAGS.IF, etc...
+settings, but no interrupt.
 
-Shouldn't it just be "}"?
+> Sean Christopherson, what do you think?
 
-> +	{}
-> +};
-> +static unsigned int capability = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
-> +static unsigned int events;
-> +
-> +static ssize_t capability_show(struct device *dev,
-> +			       struct device_attribute *attr, char *buf)
-> +{
-> +	return sysfs_emit(buf, "%x\n", capability);
-
-A global capability for all devices?  No, this needs to be a per-device
-attttribute as you are showing it to userspace as such.
-
-> +}
-> +static DEVICE_ATTR_RO(capability);
-> +
-> +static ssize_t events_show(struct device *dev,  struct device_attribute *attr, char *buf)
-> +{
-> +	return sysfs_emit(buf, "%x\n", events);
-
-Same here, this is not global for the whole module.
-
-> +}
-> +
-> +static ssize_t events_store(struct device *dev,  struct device_attribute *attr,
-> +			    const char *buf, size_t count)
-> +{
-> +	unsigned int tmp;
-> +	int err;
-> +
-> +	err = kstrtouint(buf, 16, &tmp);
-> +	if (err)
-> +		return err;
-> +
-> +	if ((tmp & capability) != tmp)
-> +		return -EINVAL;
-> +
-> +	events = tmp;
-> +
-> +	pvpanic_set_events(base, events);
-> +
-> +	return count;
-> +
-> +}
-> +static DEVICE_ATTR_RW(events);
-> +
-> +static struct attribute *pvpanic_pci_dev_attrs[] = {
-> +	&dev_attr_capability.attr,
-> +	&dev_attr_events.attr,
-> +	NULL
-> +};
-> +ATTRIBUTE_GROUPS(pvpanici_pci_dev);
-
-You did not document these new sysfs files in Documentation/ABI/ so it's
-hard to judge what they do.  Please do so next version.
-
-thanks,
-
-greg k-h
+Rather than block all events in KVM, what about having QEMU "pause" the timer?
+E.g. save MSR_TSC_DEADLINE and APIC_TMICT (or inspect the guest to find out
+which flavor it's using), clear them to zero, then restore both when
+single-stepping is disabled.  I think that will work?
