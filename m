@@ -2,104 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403EF33CB15
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 02:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C419433CB07
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 02:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234350AbhCPBzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 21:55:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58296 "EHLO
+        id S233375AbhCPBye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 21:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231630AbhCPByc (ORCPT
+        with ESMTP id S230511AbhCPByU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 21:54:32 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6724C061756;
-        Mon, 15 Mar 2021 18:54:30 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id g24so10645936qts.6;
-        Mon, 15 Mar 2021 18:54:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=a7JdQMPMgs8V6p2mIbAAMliZc+Q/jwU8V02vmoeVTgc=;
-        b=q+2JratXAIojiOnbybFMXtp6qteLs7myYpTjGtZUxGtQbOGGKO0ygwLBMT3MEwvH+d
-         ekA/xYjDbAxJtmcA6a4anum1Z0drIuGkeL7kSSk/VwXL/aT7sFiYKSe8ZPrXB2eYzTBZ
-         N+gEEcu3U4arDCnAa4mRZfX6dqdgwdWpMSYgdjZL2FE2MXfThRk5Kk3JHcfM5O59yRnL
-         hLOJc84dITbVMh17TiHQPu0mgWARfz5vB8MquDpPyZdfpWFHr7ZVxH7wdMOLJNMZXpal
-         SDOClxQ97Fq2JVX6z4XxN/grORdOwmotLT53/4oOmkaafttDD4VSepsaWIMZhTG8o21T
-         mmcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=a7JdQMPMgs8V6p2mIbAAMliZc+Q/jwU8V02vmoeVTgc=;
-        b=axywmY+fd7eAu2cig4tiJFm4VPx7v/evauzfZ3IFxmUXcFpwIzq9kqppV+RaR18yKu
-         khBB+LsMTq5d6erJG7663rmSa3csa+OYEePKlfbzla+eFIg5MYkz5/3Kx0WepKUSsJos
-         fJuySld/NHiPxjAKi1tgat96KEqlZf20W6n1j38xPynDuX9lqtIr0hMfwr1Bao6dy7i9
-         mF4JslrX6pmXeKV+qntWSVcypcpaN4xzbrNZovIL7FxbDW5tLCacY5p3JczKFZSlprIT
-         kfpRtvJrJqq4J51g8kEoO2sK/iHyJZ5d4XopBB1NznrlwlteCiJCOj4s61BwyAMyBKUn
-         aY4Q==
-X-Gm-Message-State: AOAM532n4ZLnRl6RES8PqjcwpAfmafRtUOCYCFmK80TDvc3rBChWak2L
-        jpurYFNgzbwHow7zcABEpoiGZ3yZKic=
-X-Google-Smtp-Source: ABdhPJyjbBs7nlG8KEc38wGBab/VGyJ2ZNfYRj+OtifaXJOa0rBZ8Jw6way9C1o+bwbBBpGBDkALDw==
-X-Received: by 2002:aed:2063:: with SMTP id 90mr19621568qta.195.1615859669929;
-        Mon, 15 Mar 2021 18:54:29 -0700 (PDT)
-Received: from localhost ([76.73.146.210])
-        by smtp.gmail.com with ESMTPSA id q15sm12422975qti.9.2021.03.15.18.54.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 18:54:29 -0700 (PDT)
-From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: [PATCH 01/13] tools: disable -Wno-type-limits
+        Mon, 15 Mar 2021 21:54:20 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD39BC06174A;
+        Mon, 15 Mar 2021 18:54:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=JWKAnsu2pp86k4vvBhK5LKLAE6pIvijEW3G7w0H2N6g=; b=vA8yQPegKuxnvz+NVIs4kjWss5
+        +pIxVmKBqRmMg7KiaCsdrqYor9BNIhxdSM5yncpltxvdjG1QZPP8FACCVHJlDWVKQJq+3xF7fX4mA
+        x2prMkbW+IdTSQbbEQO3pEULEpxFVcz57j+8ZeUD17ldYvTSSTYuIMdKoxum/Wh0xfVZehJYn1NKo
+        G40jOTrP8c1FfqbdAf/jGbn++ugKodihQl1IBjynCMR5o4NwJzL4sNxRZeJDAGiscWFB1VtjhhPtN
+        79UZ4Gz/RwA9GE3l2wyM8okAnBeE/qWhNOF8wpN4IQXB1ZJyKcGaSn9eG1G6/F9jw4ldphlhg0ctl
+        EpKwtB7A==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lLyuW-001O15-ML; Tue, 16 Mar 2021 01:54:17 +0000
+Subject: Re: [PATCH v4] docs: usbip: Fix major fields and descriptions in
+ protocol
+To:     "Hongren Zheng (Zenithal)" <i@zenithal.me>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?TcOhcnRvbiBOw6ltZXRo?= <nm127@freemail.hu>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc:     Alexandre Demers <alexandre.f.demers@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        usbip-devel@lists.sourceforge.net
+References: <YE/Od9WNg3Prw1/h@Sun>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <dadd9c38-81e1-0db1-e14f-2bcfb0eebbc4@infradead.org>
 Date:   Mon, 15 Mar 2021 18:54:12 -0700
-Message-Id: <20210316015424.1999082-2-yury.norov@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210316015424.1999082-1-yury.norov@gmail.com>
-References: <20210316015424.1999082-1-yury.norov@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YE/Od9WNg3Prw1/h@Sun>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GENMASK(h, l) may be passed with unsigned types. In such case, type-limits
-warning is generated for example in case of GENMASK(h, 0).
+On 3/15/21 2:15 PM, Hongren Zheng (Zenithal) wrote:
+> 
+> Co-developed-by: Alexandre Demers <alexandre.f.demers@gmail.com>
+> Co-developed-by: Randy Dunlap <rdunlap@infradead.org>
 
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
----
- tools/scripts/Makefile.include | 1 +
- 1 file changed, 1 insertion(+)
+No, I'm not in the Co-developed-by loop here.
 
-diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
-index 84dbf61a7eca..15e99905cb7d 100644
---- a/tools/scripts/Makefile.include
-+++ b/tools/scripts/Makefile.include
-@@ -38,6 +38,7 @@ EXTRA_WARNINGS += -Wswitch-enum
- EXTRA_WARNINGS += -Wundef
- EXTRA_WARNINGS += -Wwrite-strings
- EXTRA_WARNINGS += -Wformat
-+EXTRA_WARNINGS += -Wno-type-limits
- 
- CC_NO_CLANG := $(shell $(CC) -dM -E -x c /dev/null | grep -Fq "__clang__"; echo $$?)
- 
+And then you can add:
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+
+
+> Signed-off-by: Hongren Zheng <i@zenithal.me>
+> ---
+>  Documentation/usb/usbip_protocol.rst | 320 ++++++++++++++-------------
+>  1 file changed, 171 insertions(+), 149 deletions(-)
+> 
+> 
+> PATCH v4:
+> Suggested by https://lore.kernel.org/linux-doc
+> /40351ed6-2907-3966-e69a-a564173b3682@infradead.org/
+>   * Add punctuations for readability
+>   * Move patch changelog after the marker line
+>   * Remove nickname in signed-off-by line
+> 
+> diff --git a/Documentation/usb/usbip_protocol.rst b/Documentation/usb/usbip_protocol.rst
+> index 988c832166cd..54c5677adf4e 100644
+> --- a/Documentation/usb/usbip_protocol.rst
+> +++ b/Documentation/usb/usbip_protocol.rst
+
+
+
 -- 
-2.25.1
+~Randy
 
