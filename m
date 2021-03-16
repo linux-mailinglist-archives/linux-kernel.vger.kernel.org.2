@@ -2,142 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981C833D26F
+	by mail.lfdr.de (Postfix) with ESMTP id 26A1E33D26E
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:07:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237074AbhCPLHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:07:39 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:38762 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237055AbhCPLHE (ORCPT
+        id S237067AbhCPLH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231208AbhCPLG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:07:04 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12GB6kJ1093387;
-        Tue, 16 Mar 2021 06:06:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615892806;
-        bh=h41udtu2aSd3w465ktDorM46ZUhdww0O4nRIWeF2b3I=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=tpwkdWhOdLD0wJPJDuHVmhLwuZdIbF7PeV+k0wR6qhy7uMbCDDNpxUtloiwm93BBL
-         0lS62gV9nROaJltSmdULsNn4ywifN79xvySJEZn6/eWDfKwb7rS2aEQ9D1t70SoU3d
-         0PuwjLu57EBjPSw4bE8rTAnSii8RFH4G7iFuwnWk=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12GB6krE002149
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 16 Mar 2021 06:06:46 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 16
- Mar 2021 06:06:46 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 16 Mar 2021 06:06:45 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12GB6jDw069694;
-        Tue, 16 Mar 2021 06:06:45 -0500
-Date:   Tue, 16 Mar 2021 16:36:44 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Michael Walle <michael@walle.cc>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [RFC PATCH 1/3] mtd: spi-nor: sfdp: remember sfdp_size
-Message-ID: <20210316110642.xvn4sohgkdq2ci7x@ti.com>
-References: <20210312190548.6954-1-michael@walle.cc>
- <20210312190548.6954-2-michael@walle.cc>
- <20210316104223.42tdob3uwjxc5vdz@ti.com>
- <065642fa4d4282d3d16e1d4f4c176ce8@walle.cc>
+        Tue, 16 Mar 2021 07:06:58 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D41C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 04:06:57 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id c10so71325104ejx.9
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 04:06:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SlQ8oAf/ROj/i2pJUiSVLnZWVyAqcbr95/tEIYFMNsI=;
+        b=X195eItOiNMnuN3/lDeuNZFouOIAMJUVO/SzgYna2+mmPFrWekyp30te9XXP6ohTIv
+         W0rtjww7lcgu2YZQ8Gjcu7gcatDrveTwhW1FbMlxQihBcfSG9MMxe0EcyXF+fRk8gfTQ
+         BfpMW5CsgWeWuFpLn5Sf0n1fQ6P+srOt3FBPCOiQvXXOQW2YMNwy/cegu1yRHzudub2s
+         YnpSGAKRfU3YW3zh8A6knf+utHuGGq6xZkO9Mek4x0s4upnyY8ape13wnBqYFwUvk+Cy
+         wOeyhxWb8V9tpbqeHAZHf/uWu8tv2JNLpvSL7X5q07tfR7rsnSe9LtaTDF1G+9eYUj/J
+         1Y5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SlQ8oAf/ROj/i2pJUiSVLnZWVyAqcbr95/tEIYFMNsI=;
+        b=Cz7PBYv+dJ8qs8+iLMcoxlyUs2C9KxU4m1mgvqit54psKptzmxFwbfTOc5f9wBYo7J
+         VKd4Y4RhI7tdPz6NPYooWr/aG8SLZ1a1BzG4yRePysjh7o2Nyn5JNspCD+W9cHlktfHa
+         kpaj5EXPwX73Swkq3jp822TmsIuPnOSQ2ChBg4ooAa8gWft0htwF6fomrLvULCdYRk4R
+         cqFnNJXSpAHFiXvvILy8xEfOpwGtP/QVMzCZJwo1x/BJ22EVAjng1nwycnkI4xNLFwrI
+         zKjz5iuG/8SGaMZnCii/N+ETuLxX3Af11AGyMnDSbczDBJT4lnPRfm7+qgDMOZE9MrsX
+         hYmw==
+X-Gm-Message-State: AOAM5323nID15Kh7Bbqq1pDCapjTUlk85c2XBZjuCIt2T6nYsj4YR0PS
+        uyV1GcXPuy8Jw5rDk4jbqADAoQ==
+X-Google-Smtp-Source: ABdhPJwTN6q9HPzff46bicBabts3M6414B9gMyZHG283RQ9BWUqoBt6nIAWufZ2tHsFrNdF54rRpZg==
+X-Received: by 2002:a17:906:3751:: with SMTP id e17mr29237168ejc.553.1615892816743;
+        Tue, 16 Mar 2021 04:06:56 -0700 (PDT)
+Received: from [192.168.1.19] (hst-208-222.medicom.bg. [84.238.208.222])
+        by smtp.googlemail.com with ESMTPSA id r17sm9111422ejz.109.2021.03.16.04.06.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 04:06:56 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] Add decoder conceal color ctrl
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+References: <20210302114430.3594475-1-stanimir.varbanov@linaro.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <41cb079d-0a9c-a684-661d-05e8c7d97ec3@linaro.org>
+Date:   Tue, 16 Mar 2021 13:06:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <065642fa4d4282d3d16e1d4f4c176ce8@walle.cc>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210302114430.3594475-1-stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/03/21 12:01PM, Michael Walle wrote:
-> Hi Pratyush,
-> 
-> Am 2021-03-16 11:42, schrieb Pratyush Yadav:
-> > On 12/03/21 08:05PM, Michael Walle wrote:
-> > > Save the sftp_size in the spi_nor struct so we can use it to dump the
-> > > SFDP table without parsing the headers again.
-> > > 
-> > > Signed-off-by: Michael Walle <michael@walle.cc>
-> > > ---
-> > >  drivers/mtd/spi-nor/sfdp.c  | 12 ++++++++++++
-> > >  include/linux/mtd/spi-nor.h |  1 +
-> > >  2 files changed, 13 insertions(+)
-> > > 
-> > > diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-> > > index 25142ec4737b..b1814afefc33 100644
-> > > --- a/drivers/mtd/spi-nor/sfdp.c
-> > > +++ b/drivers/mtd/spi-nor/sfdp.c
-> > > @@ -16,6 +16,7 @@
-> > >  	(((p)->parameter_table_pointer[2] << 16) | \
-> > >  	 ((p)->parameter_table_pointer[1] <<  8) | \
-> > >  	 ((p)->parameter_table_pointer[0] <<  0))
-> > > +#define SFDP_PARAM_HEADER_PARAM_LEN(p) ((p)->length * 4)
-> > > 
-> > >  #define SFDP_BFPT_ID		0xff00	/* Basic Flash Parameter Table */
-> > >  #define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
-> > > @@ -1263,6 +1264,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
-> > >  	struct sfdp_parameter_header *param_headers = NULL;
-> > >  	struct sfdp_header header;
-> > >  	struct device *dev = nor->dev;
-> > > +	size_t param_max_offset;
-> > >  	size_t psize;
-> > >  	int i, err;
-> > > 
-> > > @@ -1285,6 +1287,9 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
-> > >  	    bfpt_header->major != SFDP_JESD216_MAJOR)
-> > >  		return -EINVAL;
-> > > 
-> > > +	nor->sfdp_size = SFDP_PARAM_HEADER_PTP(bfpt_header) +
-> > > +			 SFDP_PARAM_HEADER_PARAM_LEN(bfpt_header);
-> > > +
-> > >  	/*
-> > >  	 * Allocate memory then read all parameter headers with a single
-> > >  	 * Read SFDP command. These parameter headers will actually be
-> > > parsed
-> > > @@ -1311,6 +1316,13 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
-> > >  		}
-> > >  	}
-> > > 
-> > > +	for (i = 0; i < header.nph; i++) {
-> > > +		param_header = &param_headers[i];
-> > > +		param_max_offset = SFDP_PARAM_HEADER_PTP(param_header) +
-> > > +				   SFDP_PARAM_HEADER_PARAM_LEN(param_header);
-> > > +		nor->sfdp_size = max(nor->sfdp_size, param_max_offset);
-> > > +	}
-> > > +
-> > 
-> > I don't see any mention in the SFDP spec (JESD216D-01) that parameter
-> > tables have to be contiguous.
-> 
-> ch. 6.1, fig.10 looks like all the headers come after the initial SFDP
-> header. If that wasn't the case, how would you find the headers then?
-> 
-> Also ch. 6.3
-> """All subsequent parameter headers need to be contiguous and may be
-> specified..."""
-> 
-> > In fact, it says that "Parameter tables
-> > may be located anywhere in the SFDP space. They do not need to
-> > immediately follow the parameter headers".
-> 
-> The tables itself, yes, but not the headers for the tables.
+Hans, any comments ?
 
-Yes, I was talking about the tables and not the headers. There might be 
-holes in the SFDP space but I don't think it would be a problem.
+On 3/2/21 1:44 PM, Stanimir Varbanov wrote:
+> Hi,
+> 
+> The changes in v2 includes:
+>  * reformat the table in documetation to define Bits for different
+>    bit-depths of color formats.
+> 
+> regards,
+> Stan
+> 
+> Stanimir Varbanov (2):
+>   v4l2-ctrl: Add decoder conceal color control
+>   venus: vdec: Add support for conceal control
+> 
+>  .../media/v4l/ext-ctrls-codec.rst             | 33 +++++++++++++++++++
+>  drivers/media/platform/qcom/venus/core.h      |  1 +
+>  drivers/media/platform/qcom/venus/hfi_cmds.c  | 18 ++++++++--
+>  .../media/platform/qcom/venus/hfi_helper.h    | 10 ++++++
+>  drivers/media/platform/qcom/venus/vdec.c      | 11 ++++++-
+>  .../media/platform/qcom/venus/vdec_ctrls.c    |  7 ++++
+>  drivers/media/v4l2-core/v4l2-ctrls.c          |  9 +++++
+>  include/uapi/linux/v4l2-controls.h            |  1 +
+>  8 files changed, 87 insertions(+), 3 deletions(-)
+> 
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+regards,
+Stan
