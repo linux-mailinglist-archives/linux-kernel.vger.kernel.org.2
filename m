@@ -2,170 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE9233E1DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8581B33E1E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbhCPXGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 19:06:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhCPXGg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 19:06:36 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EEDEC06174A;
-        Tue, 16 Mar 2021 16:06:36 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id p186so38620958ybg.2;
-        Tue, 16 Mar 2021 16:06:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j2cst11jcwFb+EzWFHn4bvkF3XRi4pyH2UKgp3CnPWw=;
-        b=INlc0bGFKkJ3O5UE+B2tZi2kDdTek1CiGVWGX4doIUWZNydBoMCiGZpqpsjfZwqq35
-         wCS+ujEtx7rI4f92P44MgvF+lPze1OfFcvZNz0y4dExOFslpQ5Xz6rw1AzcqNaJswJiA
-         b6CrGHzmT0oKRR7MTBmtM/lacLPouGvblwElaMiyvSHqJPVw21arJvsiIKil40GQlfAZ
-         CQPnJdqOpa+J7GbaHL4cCHd35DABuJr3i9kwwWTfS8whd598Gs874lcb0kNvCesYwh0g
-         MKwR7VXwDsh8Bl6xsjmsFvYUXNTKTUf5bZm42eOGg6U9ahfxYJDvvLT1xQxwgyAmQaIc
-         1cAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j2cst11jcwFb+EzWFHn4bvkF3XRi4pyH2UKgp3CnPWw=;
-        b=F8VBbgDr33UMl8uuEKUijdaBNq0gu2EofY+TiMt02DzcmJQRvBa5tquqplnsp6KivI
-         pOIB5iwJA0B4s+Ajzxzh/OU3BoO7c95Y94sLU/SaH1qJp26jXLPrZkZJrQtf/lEenwJ2
-         YR1nqKnmqiSlOyUJkcZBKLA0BFZwUiOPFaYOjpTBLL5GAu4bHjLEQ1HaFT2A5eGS58XP
-         nMjw3j7I80cRltQcwG0WqBrXLPdsGGbcawpml558DDv2UDcUSQ5K4bj7i4RHj3Gl5dHZ
-         rXMkWRxSQ5VHAkySXiEq8YHQv7hldwPYCrYY2Lg5+8Eh5j6f8xj4fw/6yMZQOk7JLXsx
-         jERw==
-X-Gm-Message-State: AOAM532R+CNmitiLlLvZ/F6atsZu1s9TdiSc4DKt/+Pzvzr32buSiK2p
-        16nB8BPvOXJdg3vVC86483CooLBjrxy7FMNxLL8=
-X-Google-Smtp-Source: ABdhPJxG4RazZHW/Cng10wBwdsz/robYCwlCEtnda/cFEynSSMA/JXt/a/EQA2RQV12w/NWZO5hHoQBFS14OCJFHf84=
-X-Received: by 2002:a25:874c:: with SMTP id e12mr1409360ybn.403.1615935995690;
- Tue, 16 Mar 2021 16:06:35 -0700 (PDT)
+        id S229646AbhCPXJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 19:09:28 -0400
+Received: from ms.lwn.net ([45.79.88.28]:46964 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229614AbhCPXJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 19:09:22 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 938652C4;
+        Tue, 16 Mar 2021 23:09:21 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 938652C4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1615936161; bh=YhhOvum9iXY4lewyjauMY6yZc3qc/NHGkDJk3gXdbxw=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=rqsqV7eyUX6AKMkFfS+B0R9nN9DVCgJA1A65kCv2G9o5CT8bWYldVmV667Koshj2G
+         kNhxhBDHnWjfbI381HXEHnunlVwtU2WVYXRB0GzvkNEci4jtVfZ7idKqw/BSsyeZwd
+         4zftGOi0kYmM9Lsi/e4ws86WftxHc49lQfKoSNRyDKR8uzAac1J/jbU2Xv2Llc2ApR
+         EiDd0V487/nAtVtISrvI9TZslHdq4F8kdN15Vh+d6aJVA/F8PVdewM2e7pZiCxEvyW
+         7pBkHGbeQh0rSzgZXxMTVCXaI6GgrldRF8o9vzbjajQlAg0dFQzrodB7GQeR0zpqoQ
+         x+Qk5s27e5CxQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: Re: linux-next: build warning after merge of the akpm-current tree
+In-Reply-To: <20210317084924.2ba4c3ea@canb.auug.org.au>
+References: <20210315163522.589bc67a@canb.auug.org.au>
+ <YFD2Y++LQHmWMx68@google.com> <20210317084924.2ba4c3ea@canb.auug.org.au>
+Date:   Tue, 16 Mar 2021 17:09:20 -0600
+Message-ID: <875z1qy9un.fsf@meer.lwn.net>
 MIME-Version: 1.0
-References: <20210310220211.1454516-1-revest@chromium.org> <20210310220211.1454516-4-revest@chromium.org>
- <CAEf4BzZmQ3C=DfSRckM0AUXhz2MeghwhF6RLspS2u44sx0LP-g@mail.gmail.com> <CABRcYmK2o0odG+OkE=-s2QYZ-i=twqup0z_9_9pSh2ipTLLeEg@mail.gmail.com>
-In-Reply-To: <CABRcYmK2o0odG+OkE=-s2QYZ-i=twqup0z_9_9pSh2ipTLLeEg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 16 Mar 2021 16:06:24 -0700
-Message-ID: <CAEf4BzZgL8VbyzBVPC+v=TN_ro-zqZxwkGmCBPbs7DVvCYnMjA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: Initialize the bpf_seq_printf
- parameters array field by field
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 3:43 PM Florent Revest <revest@chromium.org> wrote:
->
-> On Tue, Mar 16, 2021 at 5:36 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > On Wed, Mar 10, 2021 at 2:02 PM Florent Revest <revest@chromium.org> wrote:
-> > > +#define ___bpf_build_param0(narg, x)
-> > > +#define ___bpf_build_param1(narg, x) ___param[narg - 1] = x
-> > > +#define ___bpf_build_param2(narg, x, args...) ___param[narg - 2] = x; \
-> > > +                                             ___bpf_build_param1(narg, args)
-> > > +#define ___bpf_build_param3(narg, x, args...) ___param[narg - 3] = x; \
-> > > +                                             ___bpf_build_param2(narg, args)
-> > > +#define ___bpf_build_param4(narg, x, args...) ___param[narg - 4] = x; \
-> > > +                                             ___bpf_build_param3(narg, args)
-> > > +#define ___bpf_build_param5(narg, x, args...) ___param[narg - 5] = x; \
-> > > +                                             ___bpf_build_param4(narg, args)
-> > > +#define ___bpf_build_param6(narg, x, args...) ___param[narg - 6] = x; \
-> > > +                                             ___bpf_build_param5(narg, args)
-> > > +#define ___bpf_build_param7(narg, x, args...) ___param[narg - 7] = x; \
-> > > +                                             ___bpf_build_param6(narg, args)
-> > > +#define ___bpf_build_param8(narg, x, args...) ___param[narg - 8] = x; \
-> > > +                                             ___bpf_build_param7(narg, args)
-> > > +#define ___bpf_build_param9(narg, x, args...) ___param[narg - 9] = x; \
-> > > +                                             ___bpf_build_param8(narg, args)
-> > > +#define ___bpf_build_param10(narg, x, args...) ___param[narg - 10] = x; \
-> > > +                                              ___bpf_build_param9(narg, args)
-> > > +#define ___bpf_build_param11(narg, x, args...) ___param[narg - 11] = x; \
-> > > +                                              ___bpf_build_param10(narg, args)
-> > > +#define ___bpf_build_param12(narg, x, args...) ___param[narg - 12] = x; \
-> > > +                                              ___bpf_build_param11(narg, args)
-> >
-> > took me some time to get why the [narg - 12] :) it makes sense, but
-> > then I started wondering why not
-> >
-> > #define ___bpf_build_param12(narg, x, args...)
-> > ___bpf_build_param11(narg, args); ___param[11] = x
-> >
-> > ? seems more straightforward, no?
->
-> Unless I'm misunderstanding something, I don't think this would work.
-> The awkward "narg - 12" comes from the fact that these variadic macros
-> work by taking the first argument out of the variadic arguments (x
-> followed by args) and calling another macro with what's left (args).
+Stephen Rothwell <sfr@canb.auug.org.au> writes:
 
-You are right, of course, silly me.
+[Adding Mauro]
 
+> On Tue, 16 Mar 2021 11:18:11 -0700 Minchan Kim <minchan@kernel.org> wrote:
+>>
+>> On Mon, Mar 15, 2021 at 04:35:22PM +1100, Stephen Rothwell wrote:
+>> > Hi all,
+>> > 
+>> > After merging the akpm-current tree, today's linux-next build (htmldocs)
+>> > produced this warning:
+>> > 
+>> > Documentation/ABI/testing/sysfs-kernel-mm-cma:2: WARNING: Inline interpreted text or phrase reference start-string without end-string.
+>> > 
+>> > Introduced by commit
+>> > 
+>> >   439d477342a3 ("mm: cma: support sysfs")
+>> >   
+>> 
+>> Hmm, I don't get it what happened here. Was it false-positive?
 >
-> So if you do __bpf_build_param(arg1, arg2) you will have
-> __bpf_build_param2() called with arg1 and __bpf_build_param1() called
-> with arg2. And if you do __bpf_build_param(arg1, arg2, arg3) you will
-> have __bpf_build_param3() called with arg1, __bpf_build_param2()
-> called with arg2, and __bpf_build_param1() called with arg3.
-> Basically, things are inverted, the position at which you need to
-> insert in ___param evolves in the opposite direction of the X after
-> ___bpf_build_param which is the number of arguments left.
->
-> No matter in which order __bpf_build_paramX calls
-> __bpf_build_param(X-1) (before or after setting ___param[n]) you will
-> be unable to know just from the macro name at which cell in __param
-> you need to write the argument. (except for __bpf_build_param12 which
-> is an exception, because the max number of arg is 12, if this macro
-> gets called, then we know that narg=12 and we will always write at
-> __param[0])
->
-> That being said, I share your concern that this code is hard to read.
-> So instead of giving narg to each macro, I tried to give a pos
-> argument which indicates in which cell the macro should write. pos is
-> basically a counter that goes from 0 to narg as macros go from narg to
-> 0.
->
-> #define ___bpf_fill0(array, pos, x)
-> #define ___bpf_fill1(array, pos, x) array[pos] = x
-> #define ___bpf_fill2(array, pos, x, args...) array[pos] = x;
-> ___bpf_fill1(array, pos + 1, args)
-> #define ___bpf_fill3(array, pos, x, args...) array[pos] = x;
-> ___bpf_fill2(array, pos + 1, args)
-> #define ___bpf_fill4(array, pos, x, args...) array[pos] = x;
-> ___bpf_fill3(array, pos + 1, args)
-> #define ___bpf_fill5(array, pos, x, args...) array[pos] = x;
-> ___bpf_fill4(array, pos + 1, args)
-> #define ___bpf_fill6(array, pos, x, args...) array[pos] = x;
-> ___bpf_fill5(array, pos + 1, args)
-> #define ___bpf_fill7(array, pos, x, args...) array[pos] = x;
-> ___bpf_fill6(array, pos + 1, args)
-> #define ___bpf_fill8(array, pos, x, args...) array[pos] = x;
-> ___bpf_fill7(array, pos + 1, args)
-> #define ___bpf_fill9(array, pos, x, args...) array[pos] = x;
-> ___bpf_fill8(array, pos + 1, args)
-> #define ___bpf_fill10(array, pos, x, args...) array[pos] = x;
-> ___bpf_fill9(array, pos + 1, args)
-> #define ___bpf_fill11(array, pos, x, args...) array[pos] = x;
-> ___bpf_fill10(array, pos + 1, args)
-> #define ___bpf_fill12(array, pos, x, args...) array[pos] = x;
-> ___bpf_fill11(array, pos + 1, args)
-> #define ___bpf_fill(array, args...) \
-> ___bpf_apply(___bpf_fill, ___bpf_narg(args))(array, 0, args)
+> I get the above from a "make htmldocs" run ... I don't know what causes
+> it, sorry.  [cc'ing Jon]
 
-Yeah, this is still more straightforward, I think. Please use shorter
-names to keep it a bit more succinct: arr and p seems clear enough.
+OK, this took a while to figure out.  The problem is this text in
+sysfs-kernel-mm-cma:
 
->
-> I hope this makes things a bit clearer ? (I often joke that BPF is
-> written in preprocessor... :p)
+> 		Each CMA heap subdirectory (that is, each
+> 		/sys/kernel/mm/cma/<cma-heap-name> directory) contains the
+> 		following items:
 
-Definitely true for BPF_CORE_READ macros :)
+When scripts/get_abi.pl sees the /sys/kernel/mm/... string it wants to
+turn it into a link to the matching ABI entry; at that point, the
+<text in angle brackets> collides with the Sphinx directive and you get
+that totally useless warning.
+
+I think this is a bug in get_abi.pl.  Honestly I wonder if all these
+cross-links are needed at all; if they truly are, then we shouldn't be
+making bogus ones.  Mauro, how hard would it be to make this do the
+right thing?
+
+Thanks,
+
+jon
