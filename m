@@ -2,64 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BEDB33D12A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:52:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1384D33D12C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236373AbhCPJvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:51:50 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:56064 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236346AbhCPJvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:51:46 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lM6MN-0007c3-NU; Tue, 16 Mar 2021 20:51:32 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 16 Mar 2021 20:51:31 +1100
-Date:   Tue, 16 Mar 2021 20:51:31 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     rong.a.chen@intel.com, lkp@intel.com, oberpar@linux.ibm.com,
-        akpm@linux-foundation.org, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [kbuild-all] Re: [PATCH] gcov: fail build on gcov_info size
- mismatch
-Message-ID: <20210316095131.GA18709@gondor.apana.org.au>
+        id S236379AbhCPJww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236391AbhCPJwt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 05:52:49 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C9EC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:52:49 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id n195so36142481ybg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:52:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kfVxFqytKWqvy1UjxUsD9Fb71TDdqI2Pc9nXwmKc2jg=;
+        b=IAS6QbnNjP8iASJwity5wb7YMdd9LHdCP+PF/HGFeaggwz8Vc4Kpjiagtj65EAZx/l
+         NgmtvZP4uP+70kuOwG9xMuov9gZP2ebqZzNf5GfJ4iw2u+rDg4yzHh26zxjpP9UP8u7m
+         iTH7tynS/iz3fTu5rjEroN41odvl9hNn4u8MLY4WCYnHkkDATct81RhE7W45CsLiPxSj
+         YX7LY/cmdixq/xI52h/mY+H39p4SImYZP9Xlq5FRDuAwr9IsKKd2CJttwkU5AYF6eanF
+         bOakjn/NbSCEVfzoXRSJgZMWJ5Aqir0Nf96/5aluSTR24QruxXpfVS9VGjvMSL3cb/6E
+         AEQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kfVxFqytKWqvy1UjxUsD9Fb71TDdqI2Pc9nXwmKc2jg=;
+        b=KNm6Jbx72HoWu55VEWbt2cNCdu0tKgd/aYQauRreX36WAjgRBnex7uppOOxrj0bRXc
+         bGeQWlNdidMlRpXys0FP9bFtwhoUajHY0cWHdYc0dVcJuXhti7JiHRgD2Ni/rDuNQ/Cq
+         Oz2p4vIRshpiAAtT8miFicQWLTCanRqeGEirsARYOAXRj7TSN4Go1o2gqXAGut8JjEaE
+         dZhy6ngtB2DDqmdNxeYZeuUw77I3Wp4aTbFAX3jEEjOAfzNSi565qzJVh0nhFFi6hH+T
+         JXJP0I/u4JR6dLHRgY6MsQvcbhZD1TaXlmJupVty0l4M9SGbScwppweNe66EgkHAxIVg
+         ZeKA==
+X-Gm-Message-State: AOAM530s+ZgWdtLXPWLZiOmc82dXu0mOvUmF+dSYmyuxbkf2sE9pKX4A
+        M7ufRW1dSw9HIVMCNZnuN7Ihphw1kXhIL0+gIaZy3g==
+X-Google-Smtp-Source: ABdhPJxoEvSlfVG7oICEoQmecYUhOt4c7CbpPOIWdYZw7ZsFGZP9Jw6P0DQGaXW7Ny+DOc+ihi4tIJYGYfOU5OEP7oc=
+X-Received: by 2002:a25:ac52:: with SMTP id r18mr5626572ybd.303.1615888367899;
+ Tue, 16 Mar 2021 02:52:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wji=we4HQ2m6Z=fnUSM4UW8+X0eTnb9YPGYdcTqpVAL2Q@mail.gmail.com>
-X-Newsgroups: apana.lists.os.linux.kernel
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210315135720.002213995@linuxfoundation.org> <20210315135720.418426545@linuxfoundation.org>
+ <20210316095049.GB12946@amd>
+In-Reply-To: <20210316095049.GB12946@amd>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 16 Mar 2021 10:52:36 +0100
+Message-ID: <CANn89i+kZv9H2fKgSVLh4iDMT0kEu286YySt-m3RnXJxBLmmWw@mail.gmail.com>
+Subject: Re: [PATCH 4.19 012/120] tcp: annotate tp->write_seq lockless reads
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+On Tue, Mar 16, 2021 at 10:50 AM Pavel Machek <pavel@denx.de> wrote:
 >
-> See:
-> 
->   [torvalds@ryzen ~]$ a="!" [ "$a" = ".size" ]
-> 
-> is fine, but
-> 
->   [torvalds@ryzen ~]$ a="!" [ $a = ".size" ]
->   -bash: [: =: unary operator expected
+> Hi!
+>
+> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >
+> > From: Eric Dumazet <edumazet@google.com>
+>
+> Dup.
+>
+>
+> > We need to add READ_ONCE() annotations, and also make
+> > sure write sides use corresponding WRITE_ONCE() to avoid
+> > store-tearing.
+>
+> > @@ -1037,7 +1037,7 @@ new_segment:
+> >               sk->sk_wmem_queued += copy;
+> >               sk_mem_charge(sk, copy);
+> >               skb->ip_summed = CHECKSUM_PARTIAL;
+> > -             tp->write_seq += copy;
+> > +             WRITE_ONCE(tp->write_seq, tp->write_seq + copy);
+> >               TCP_SKB_CB(skb)->end_seq += copy;
+> >               tcp_skb_pcount_set(skb, 0);
+> >
+>
+> I wonder if this needs to do READ_ONCE, too?
 
-This isn't doing what you think it's doing.  The first assignment
-to a is not in effect when the shell is expanding $a so what you're
-actually running is
+No, because we hold the socket lock.
 
-	a="!" [ = .size ]
+This is a backport to ease another backport, please try to review
+patches when they hit mainline, if you have any concerns.
 
-Which is why it bombs out.
-
-To get the desired result you need a semicolon:
-
-$ a="!"; [ $a = ".size" ]
-$ 
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+>
+> > @@ -1391,7 +1391,7 @@ new_segment:
+> >               if (!copied)
+> >                       TCP_SKB_CB(skb)->tcp_flags &= ~TCPHDR_PSH;
+> >
+> > -             tp->write_seq += copy;
+> > +             WRITE_ONCE(tp->write_seq, tp->write_seq + copy);
+> >               TCP_SKB_CB(skb)->end_seq += copy;
+> >               tcp_skb_pcount_set(skb, 0);
+> >
+>
+> And here.
+>
+> > @@ -2593,9 +2594,12 @@ int tcp_disconnect(struct sock *sk, int
+> >       sock_reset_flag(sk, SOCK_DONE);
+> >       tp->srtt_us = 0;
+> >       tp->rcv_rtt_last_tsecr = 0;
+> > -     tp->write_seq += tp->max_window + 2;
+> > -     if (tp->write_seq == 0)
+> > -             tp->write_seq = 1;
+> > +
+> > +     seq = tp->write_seq + tp->max_window + 2;
+> > +     if (!seq)
+> > +             seq = 1;
+> > +     WRITE_ONCE(tp->write_seq, seq);
+>
+> And here.
+>
+> > --- a/net/ipv4/tcp_minisocks.c
+> > +++ b/net/ipv4/tcp_minisocks.c
+> > @@ -510,7 +510,7 @@ struct sock *tcp_create_openreq_child(co
+> >       newtp->app_limited = ~0U;
+> >
+> >       tcp_init_xmit_timers(newsk);
+> > -     newtp->write_seq = newtp->pushed_seq = treq->snt_isn + 1;
+> > +     WRITE_ONCE(newtp->write_seq, newtp->pushed_seq = treq->snt_isn + 1);
+>
+> Would it be better to do assignment to pushed_seq outside of
+> WRITE_ONCE macro? This is ... "interesting".
+>
+> Best regards,
+>                                                                 Pavel
+> --
+> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
