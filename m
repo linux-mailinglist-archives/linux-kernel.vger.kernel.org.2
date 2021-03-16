@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40A333DC05
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:04:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B4933DBF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233348AbhCPSDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41324 "EHLO
+        id S239801AbhCPSDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239593AbhCPSAb (ORCPT
+        with ESMTP id S239579AbhCPSAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:00:31 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DC1C0613E6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:00:18 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id z1so22636593edb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:00:18 -0700 (PDT)
+        Tue, 16 Mar 2021 14:00:21 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0B1C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:00:15 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id h13so22623392eds.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:00:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=uql5w77wLpnV2YOZ1se1wNR76Twqh2llNjdWzvordg8=;
-        b=cz1g4tJeNKq5CcfCkKPZiM4VI6PSB2mfgUlu/60S4qm1s+5wSwL6Is7oJ2SUBf/uLZ
-         DnxT01IqNNiahMNiiPyI3K51ybwsRmT4TeYlcp9CIhpjIm8se8BR2lQoI+Mw7DNCvFyV
-         Ubw1ODrdxtCEagRXcvzVEbTP0TSe8lT7uSHmI=
+        bh=Ja96hdOSrt13HYSO4/ylTT3yA/PsUo6jWkcoY1ITtj0=;
+        b=MoMkgRIA2mYmviw59Dzr7aLEchSK46rI2ViVo9d7MUX3gipw1B2rApSwSth9zcB8dH
+         Yjtw49MeiCYMF/MpJ7+2Ma+bzDv3tbEAtM9tYwyGVu94Ziu65eTzhomKXyhl+0Vm4Vrd
+         zoB/idgHbK4WQ9sUBcStSKGKcp2uaRuyDoJVY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uql5w77wLpnV2YOZ1se1wNR76Twqh2llNjdWzvordg8=;
-        b=CFkm4vVQuATaZyDFKjYliW2TXuQGfSupeSSvAJAwn3N5GJojG4d0x8DOyvTGcO6boi
-         MPzQ6L90JoX6L6CnBEYzVgbOQCgC/+3DZYsxBDSWTpQBs6FOV/Z/UykqQtcYIPISGqk8
-         1HNah4A7OVlOffdSeEDaeTkszgRBuQ5nh2PVvO9AT0uxuk7KQCxg2tFi15delX3hd6Se
-         /lSRAprenRFz5E8peBmMWbQWR8G/kWX1FmeG0Or8Sut7RhC7G8kWTmc8EiTiiHHf0J+3
-         AcBcQdKuc50NG9BWO/jIIdVPd4MbJwqIuZuq79e/sBR8GEshSkBihKTx6CKWCLQZ+1za
-         QFyg==
-X-Gm-Message-State: AOAM530U1yDlNwDMocoQFBq/m33lwUrQX434wH2kfEkbsvDqLMcrpyU4
-        EvVAQyQZMd7oFTs1w0Qc/dawxA==
-X-Google-Smtp-Source: ABdhPJyidFqGAtsSRIhb5eeZ2zyKtBnuaJ/1pdfjxhkunYfFNLYn7PsgoQPGWU+GTlxfhqyk3opEGg==
-X-Received: by 2002:a50:fa92:: with SMTP id w18mr37217544edr.172.1615917612789;
-        Tue, 16 Mar 2021 11:00:12 -0700 (PDT)
+        bh=Ja96hdOSrt13HYSO4/ylTT3yA/PsUo6jWkcoY1ITtj0=;
+        b=CirhdI8z45qMoZlJsgoITc4TWPBFWTku17sEbjXuMguXtTfjouA1p6JbMfqcDm/cKv
+         fDjoxalX35OuLEGlO258qEl9rwOwARQAnhby7b5A9XiFs7+jNJntZrfZNxMzb22LW3hR
+         Kv5DfAveXJdI1MJg3b5VJ0YAjX45DD1iIuA8ecrjkDK8f/7x7GjWSiF2/t41cfvkSPfG
+         oS4YtOkGv82jJjyKyan6FP2D/fSSjRqgqqhAzy99WMcE5hl99qZztZwJxKpQYNMxysP6
+         jJX6KoTxOXPt+ECwLt/xbAFlYxWNRb1GbOtTdviXLfbO4hXiMG6MHAyd/c53BaJFeudo
+         Jy9w==
+X-Gm-Message-State: AOAM530t3fdAM5WFt5AzKFiQDA+V0ANb4UT5hh9DlYsIQs8po9sluSgd
+        lxA/jh2FFDHbDdPQNYuZN+QzuQ==
+X-Google-Smtp-Source: ABdhPJwoUkf+us/T5WW2FCD9aAIUH8TL+oT0Nz8+UpHFq2Z4nDT6l6LVudUTIKbDauXfr9rntSt4mw==
+X-Received: by 2002:a05:6402:1115:: with SMTP id u21mr37523071edv.383.1615917613366;
+        Tue, 16 Mar 2021 11:00:13 -0700 (PDT)
 Received: from alco.lan ([80.71.134.83])
         by smtp.gmail.com with ESMTPSA id c19sm10953182edu.20.2021.03.16.11.00.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 11:00:12 -0700 (PDT)
+        Tue, 16 Mar 2021 11:00:13 -0700 (PDT)
 From:   Ricardo Ribalda <ribalda@chromium.org>
 To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -52,10 +52,11 @@ To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         tfiga@chromium.org
-Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v5 09/13] media: uvcvideo: Increase the size of UVC_METADATA_BUF_SIZE
-Date:   Tue, 16 Mar 2021 18:59:59 +0100
-Message-Id: <20210316180004.1605727-10-ribalda@chromium.org>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Subject: [PATCH v5 10/13] media: uvcvideo: Return -EACCES to inactive controls
+Date:   Tue, 16 Mar 2021 19:00:00 +0100
+Message-Id: <20210316180004.1605727-11-ribalda@chromium.org>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 In-Reply-To: <20210316180004.1605727-1-ribalda@chromium.org>
 References: <20210316180004.1605727-1-ribalda@chromium.org>
@@ -65,54 +66,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hans has discovered that in his test device, for the H264 format
-bytesused goes up to about 570, for YUYV it will actually go up
-to a bit over 5000 bytes, and for MJPG up to about 2706 bytes.
+If a control is inactive return -EACCES to let the userspace know that
+the value will not be applied automatically when the control is active
+again.
 
-We should also, according to V4L2_META_FMT_UVC docs, drop headers when
-the buffer is full.
-
-Credit-to: Hans Verkuil <hverkuil@xs4all.nl>
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Suggested-by: Hans Verkuil <hverkuil@xs4all.nl>
 ---
- drivers/media/usb/uvc/uvc_video.c | 8 +++++---
- drivers/media/usb/uvc/uvcvideo.h  | 2 +-
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ drivers/media/usb/uvc/uvc_ctrl.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-index 25fd8aa23529..ea2903dc3252 100644
---- a/drivers/media/usb/uvc/uvc_video.c
-+++ b/drivers/media/usb/uvc/uvc_video.c
-@@ -1244,11 +1244,13 @@ static void uvc_video_decode_meta(struct uvc_streaming *stream,
- 	if (!meta_buf || length == 2)
- 		return;
+diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+index ba14733db757..98614e1be829 100644
+--- a/drivers/media/usb/uvc/uvc_ctrl.c
++++ b/drivers/media/usb/uvc/uvc_ctrl.c
+@@ -1578,6 +1578,18 @@ int uvc_ctrl_begin(struct uvc_video_chain *chain)
+ 	return mutex_lock_interruptible(&chain->ctrl_mutex) ? -ERESTARTSYS : 0;
+ }
  
-+	/*
-+	 * According to V4L2_META_FMT_UVC docs, we should drop headers when
-+	 * the buffer is full.
-+	 */
- 	if (meta_buf->length - meta_buf->bytesused <
--	    length + sizeof(meta->ns) + sizeof(meta->sof)) {
--		meta_buf->error = 1;
-+	    length + sizeof(meta->ns) + sizeof(meta->sof))
- 		return;
--	}
++static bool uvc_ctrl_is_inactive(struct uvc_control *ctrl)
++{
++	struct uvc_control_mapping *map;
++
++	list_for_each_entry(map, &ctrl->info.mappings, list) {
++		if (map->master_id)
++			return true;
++	}
++
++	return false;
++}
++
+ static int uvc_ctrl_commit_entity(struct uvc_device *dev,
+ 	struct uvc_entity *entity, int rollback)
+ {
+@@ -1621,8 +1633,11 @@ static int uvc_ctrl_commit_entity(struct uvc_device *dev,
  
- 	has_pts = mem[1] & UVC_STREAM_PTS;
- 	has_scr = mem[1] & UVC_STREAM_SCR;
-diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index b81d3f65e52e..a26bbec8d37b 100644
---- a/drivers/media/usb/uvc/uvcvideo.h
-+++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -527,7 +527,7 @@ struct uvc_stats_stream {
- 	unsigned int max_sof;		/* Maximum STC.SOF value */
- };
+ 		ctrl->dirty = 0;
  
--#define UVC_METADATA_BUF_SIZE 1024
-+#define UVC_METADATA_BUF_SIZE 10240
+-		if (ret < 0)
++		if (ret < 0) {
++			if (uvc_ctrl_is_inactive(ctrl))
++				return -EACCES;
+ 			return ret;
++		}
+ 	}
  
- /**
-  * struct uvc_copy_op: Context structure to schedule asynchronous memcpy
+ 	return 0;
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
