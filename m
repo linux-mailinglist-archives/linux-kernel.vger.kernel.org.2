@@ -2,118 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584C033D0EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:36:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E41D833D0EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233250AbhCPJfs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Mar 2021 05:35:48 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:54566 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233885AbhCPJfb (ORCPT
+        id S233890AbhCPJhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:37:23 -0400
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:58883 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233767AbhCPJg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:35:31 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-235-IBslWWs2N5Cmqi95XwcuXQ-1; Tue, 16 Mar 2021 09:35:27 +0000
-X-MC-Unique: IBslWWs2N5Cmqi95XwcuXQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Tue, 16 Mar 2021 09:35:26 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Tue, 16 Mar 2021 09:35:26 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Segher Boessenkool' <segher@kernel.crashing.org>
-CC:     'Rasmus Villemoes' <rasmus.villemoes@prevas.dk>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] powerpc/vdso32: Add missing _restgpr_31_x to fix build
- failure
-Thread-Topic: [PATCH] powerpc/vdso32: Add missing _restgpr_31_x to fix build
- failure
-Thread-Index: AQHXGbeqwOTgfnOElE2I7+OcNDHUgqqFPWMAgAB9u4CAAJjNQA==
-Date:   Tue, 16 Mar 2021 09:35:26 +0000
-Message-ID: <e2493e6aaa454604a10dd811a369d104@AcuMS.aculab.com>
-References: <a7aa198a88bcd33c6e35e99f70f86c7b7f2f9440.1615270757.git.christophe.leroy@csgroup.eu>
- <20210312022940.GO29191@gate.crashing.org>
- <023afd0c-dc61-5891-5145-5bcdce8227be@prevas.dk>
- <14e2cfb8c3f141aaba8fe0fb2d8f1885@AcuMS.aculab.com>
- <20210315235947.GD16691@gate.crashing.org>
-In-Reply-To: <20210315235947.GD16691@gate.crashing.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 16 Mar 2021 05:36:59 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id M689l0xHB4ywlM68ClAQKM; Tue, 16 Mar 2021 10:36:54 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1615887414; bh=tXVjtYh1qnWCnzH2zsvVfBAb1dwXEkt7WykZMDscd0g=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=Vqeg0QMruN2ertgROZvDzgwFCJD5NkqOolPXdB0JzmPlZ1ibLK2RMeDDqgJwQIqCL
+         1kJwtQjb4SrE4PoHdR9YP3X1/LpqopO8Gmuu/N+uH8ody9pu0PG7oKcHgk3O+tT+/O
+         bXAOcFNM8hpwwdHeaQ4L5TsNH/jxd0Evb0Oxu9TxyyShX5L/KZsOy8ci2RmM3RyH5y
+         EfYzUCk/ZhaZtzNYYKhvpO8eIJwuVDRQ+4h7VsEuLvqBHSxkwN/mrgQSEX4jn//U/0
+         iQhPhqwIW3mlevBOOj24nI2KmEDtpu1tYULAQrppIdpYUmLME0ajxGdudkb3tviFPf
+         a5nwNOwincidA==
+Subject: Re: [PATCH v8 09/22] media: camss: Refactor CSID HW version support
+To:     Robert Foss <robert.foss@linaro.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, todor.too@gmail.com,
+        mchehab@kernel.org, robh+dt@kernel.org,
+        angelogioacchino.delregno@somainline.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>, Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jonathan Marek <jonathan@marek.ca>
+References: <20210315155942.640889-1-robert.foss@linaro.org>
+ <20210315155942.640889-10-robert.foss@linaro.org>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <b06ce7af-4449-fb5c-2920-09ebd5abdf75@xs4all.nl>
+Date:   Tue, 16 Mar 2021 10:36:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20210315155942.640889-10-robert.foss@linaro.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfIIjDYU6ZSNsWIq/dGepkDOYuBFz5jmx0QUTXx/K5ZFzVU5BHm97pmEZrW5J2Lmq3pkNDvG+tfqlVC+syz+8IKixMCRzzq2WXE1AZRLoGUZ50gDC5VEs
+ wjPSKVFUX6+LLYCM3ZiGYMuXx6qLh6jlYoJrC/zp9t99DhIX0ASwkVxImXjHfHitmx0qy+ZIm3UGrsjOwsNBmxjL9ChPrjq1t/sK51+npe+2KJ0cnPbmcRn8
+ geO74YRD0VFwP4kji31g8NKkIk+eEU37niqPVa/nObORLOUIs+iTQ9XA2oxyMxN3RVo26MKrshMdnGnV/53tTu4JxHr/NDPi6YgyEhEezFdM1Jm1n19qFM60
+ q4XVdZi4b4QJthx6eIqU4tRsyqPadyedm9VBzRmhoRjT5jOPv9h4QXrPAQbdz8+YP29QXX1fyrkhc8KycY0Em0/s9ys7zBZPlUhmyMi3TWBqvsju2+CTt2N4
+ TIvqkr3hUdTVNVTfZ/pZbtZZuBpkc+WoN+SknyAjXKQpGcCZR62zBUHqG3h8UZMseyI9kp6rPC25dbOZBSzBkrJd4l5FmtH5JvX9N9g1DJ6i3RrS12zZ3x66
+ neaWYFmnZx6et77t75235RM0xaJ86bjM94NESit16QDFDXzrDKsKuIT+AAf01eIKM5x34dmPjDKz9V7H8ZWdz6Ev4lDkQpFwVjbRKemb+1+zVcDi32I3ek1g
+ axnvczdEcAe/yNzpiqa/wLTqOIOfV+i1Zf7LDnsJKvr0PYh0eWZL6pkPSA/nPoy/tpbt0svcFM6J+48qk/QqXNicJGf1hrCd3NEnElmrtpw2SV2eIG5x9Ten
+ O/5fsLH2Oe5zFbXd8VtCtiiRsoVSSTUxE3NkaSDlN37/A6GQftv5sAWxCktjfA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Segher Boessenkool
-> Sent: 16 March 2021 00:00
-...
-> > Although you may need to disable loop unrolling (often dubious at best)
-> > and either force or disable some function inlining.
+On 15/03/2021 16:59, Robert Foss wrote:
+> In order to support Qualcomm ISP hardware architectures that diverge
+> from older architectures, the CSID subdevice drivers needs to be refactored
+> to better abstract the different ISP hardware architectures.
 > 
-> The cases where GCC does loop unrolling at -O2 always help quite a lot.
-> Or, do you have a counter-example?  We'd love to see one.
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+> ---
+> 
+> 
+> Changes since v1:
+>  - kernel test robot: Add missing include, interrupt.h
+> 
+> Changes since v4:
+>  - Andrey: Removed whitespace from some includes
+>  - Andrey: Removed unused enum
+> 
+> Changes since v5:
+>  - Andrey: Fixed test pattern selection logic
+>  - Andrey: Align test mode enum values with v4l mode selection return values
+>  - Andrey: r-b
+>  - Move Titan 170 test modes to the the Titan 170 commit
+>  - Fixed test pattern boundary check
+> 
+> Changes since v7:
+>  - Hans: Fix checkpatch.pl --strict warnings
+> 
+> 
+> 
+>  drivers/media/platform/qcom/camss/Makefile    |   2 +
+>  .../platform/qcom/camss/camss-csid-4-1.c      | 328 ++++++++++
+>  .../platform/qcom/camss/camss-csid-4-7.c      | 404 ++++++++++++
+>  .../media/platform/qcom/camss/camss-csid.c    | 608 +-----------------
+>  .../media/platform/qcom/camss/camss-csid.h    | 129 +++-
+>  5 files changed, 885 insertions(+), 586 deletions(-)
+>  create mode 100644 drivers/media/platform/qcom/camss/camss-csid-4-1.c
+>  create mode 100644 drivers/media/platform/qcom/camss/camss-csid-4-7.c
+> 
 
-The real problem with loop unrolling is that quite often a modern
-out-of-order superscaler processor actually has 'spare' execution
-cycles where the loop control can be done 'for free'.
-Sometimes you do need to unroll (or interleave) a couple of
-times to get enough spare execution cycles.
+<snip>
 
-But the unrolled loop has to read a lot more code into cache
-- so unless the code is 'hot cache' (that is usually arranged
-for benchmarking) those delays apply as well.
-The larger code footprint also displaces other code.
+> diff --git a/drivers/media/platform/qcom/camss/camss-csid.h b/drivers/media/platform/qcom/camss/camss-csid.h
+> index 479ac1f83836..613ef377b051 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csid.h
+> +++ b/drivers/media/platform/qcom/camss/camss-csid.h
+> @@ -11,6 +11,7 @@
+>  #define QC_MSM_CAMSS_CSID_H
+>  
+>  #include <linux/clk.h>
+> +#include <linux/interrupt.h>
+>  #include <media/media-entity.h>
+>  #include <media/v4l2-ctrls.h>
+>  #include <media/v4l2-device.h>
+> @@ -44,18 +45,42 @@
+>  #define DATA_TYPE_RAW_16BIT		0x2e
+>  #define DATA_TYPE_RAW_20BIT		0x2f
+>  
+> -enum csid_payload_mode {
+> -	CSID_PAYLOAD_MODE_INCREMENTING = 0,
+> -	CSID_PAYLOAD_MODE_ALTERNATING_55_AA = 1,
+> -	CSID_PAYLOAD_MODE_ALL_ZEROES = 2,
+> -	CSID_PAYLOAD_MODE_ALL_ONES = 3,
+> -	CSID_PAYLOAD_MODE_RANDOM = 4,
+> -	CSID_PAYLOAD_MODE_USER_SPECIFIED = 5,
+> +#define CSID_RESET_TIMEOUT_MS 500
+> +
+> +enum csid_testgen_mode {
+> +	CSID_PAYLOAD_MODE_DISABLED = 0,
+> +	CSID_PAYLOAD_MODE_INCREMENTING = 1,
+> +	CSID_PAYLOAD_MODE_ALTERNATING_55_AA = 2,
+> +	CSID_PAYLOAD_MODE_ALL_ZEROES = 3,
+> +	CSID_PAYLOAD_MODE_ALL_ONES = 4,
+> +	CSID_PAYLOAD_MODE_RANDOM = 5,
+> +	CSID_PAYLOAD_MODE_USER_SPECIFIED = 6,
+> +	CSID_PAYLOAD_MODE_NUM_SUPPORTED_GEN1 = 6, /* excluding disabled */
+> +};
+> +
+> +static const char * const csid_testgen_modes[] = {
+> +	"Disabled",
+> +	"Incrementing",
+> +	"Alternating 0x55/0xAA",
+> +	"All Zeros 0x00",
+> +	"All Ones 0xFF",
+> +	"Pseudo-random Data",
+> +	"User Specified",
+> +};
 
-My real annoyance with gcc is unrolling (and vectorizing)
-loops that I know are never executed as many times as even one
-copy of the unrolled loop.
+This gives this sparse warning:
 
-As an example intel (ivy bridge onwards) cpu execute the
-following code (the middle of the ip checksum) at 8 bytes/clock.
-(Limited by the carry flag.)
-It just doesn't need any further unrolling.
+'csid_testgen_modes' defined but not used [-Wunused-const-variable=]
 
-+               "10:    jecxz 20f\n"
-+               "       adc   (%[buff], %[len]), %[sum_0]\n"
-+               "       adc   8(%[buff], %[len]), %[sum_1]\n"
-+               "       lea   32(%[len]), %[len_tmp]\n"
-+               "       adc   16(%[buff], %[len]), %[sum_0]\n"
-+               "       adc   24(%[buff], %[len]), %[sum_1]\n"
-+               "       mov   %[len_tmp], %[len]\n"
-+               "       jmp   10b\n"
+This array needs to be moved to camss-csid.c and declared as an extern
+here. Also, this menu array needs to be terminated with a NULL, and the
+right capitalization needs to be used (first character of each word must
+be a capital). This is a suggested patch I made to verify that this solves
+this issue, but really both patch 9 and 10 need to be modified.
 
-Annoyingly that loop is slow on my 8-core atom. 
-The existing code only does 4 bytes/clock on intel cpu prior
-to either broadwell or haswell (forgotten which) in spite
-of much more unroling.
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+---
+ drivers/media/platform/qcom/camss/camss-csid.c | 14 ++++++++++++++
+ drivers/media/platform/qcom/camss/camss-csid.h | 13 +------------
+ 2 files changed, 15 insertions(+), 12 deletions(-)
 
+diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
+index fb94dc03ccd4..1513b3d47fc2 100644
+--- a/drivers/media/platform/qcom/camss/camss-csid.c
++++ b/drivers/media/platform/qcom/camss/camss-csid.c
+@@ -27,6 +27,20 @@
 
-> And yup, inlining is hard.  GCC's heuristics there are very good
-> nowadays, but any single decision has big effects.  Doing the important
-> spots manually (always_inline or noinline) has good payoff.
+ #define MSM_CSID_NAME "msm_csid"
 
-Latest inline gripe was a function replicated about 20 times
-when the non-inline version was a register load and 'tail call'.
-The inlining is just bloat.
++const char * const csid_testgen_modes[] = {
++	"Disabled",
++	"Incrementing",
++	"Alternating 0x55/0xAA",
++	"All Zeros 0x00",
++	"All Ones 0xFF",
++	"Pseudo-Random Data",
++	"User Specified",
++	"Complex Pattern",
++	"Color Box",
++	"Color Bars",
++	NULL
++};
++
+ u32 csid_find_code(u32 *codes, unsigned int ncodes,
+ 		   unsigned int match_format_idx, u32 match_code)
+ {
+diff --git a/drivers/media/platform/qcom/camss/camss-csid.h b/drivers/media/platform/qcom/camss/camss-csid.h
+index c2a025f6846b..81a3704ac0e3 100644
+--- a/drivers/media/platform/qcom/camss/camss-csid.h
++++ b/drivers/media/platform/qcom/camss/camss-csid.h
+@@ -62,18 +62,7 @@ enum csid_testgen_mode {
+ 	CSID_PAYLOAD_MODE_NUM_SUPPORTED_GEN2 = 9, /* excluding disabled */
+ };
 
-	David
+-static const char * const csid_testgen_modes[] = {
+-	"Disabled",
+-	"Incrementing",
+-	"Alternating 0x55/0xAA",
+-	"All Zeros 0x00",
+-	"All Ones 0xFF",
+-	"Pseudo-random Data",
+-	"User Specified",
+-	"Complex pattern",
+-	"Color box",
+-	"Color bars",
+-};
++extern const char * const csid_testgen_modes[];
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+ struct csid_format {
+ 	u32 code;
+-- 
+2.30.1
 
+Regards,
+
+	Hans
