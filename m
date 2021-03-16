@@ -2,155 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95EE33D51E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EFA33D525
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235537AbhCPNol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:44:41 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13546 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235421AbhCPNoS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:44:18 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F0DwQ3jhnzNngl;
-        Tue, 16 Mar 2021 21:41:42 +0800 (CST)
-Received: from DESKTOP-5IS4806.china.huawei.com (10.174.184.42) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 16 Mar 2021 21:43:56 +0800
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, Will Deacon <will@kernel.org>,
-        Marc Zyngier <maz@kernel.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
-        <yuzenghui@huawei.com>, <lushenming@huawei.com>
-Subject: [RFC PATCH v2 2/2] kvm/arm64: Try stage2 block mapping for host device MMIO
-Date:   Tue, 16 Mar 2021 21:43:38 +0800
-Message-ID: <20210316134338.18052-3-zhukeqian1@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20210316134338.18052-1-zhukeqian1@huawei.com>
-References: <20210316134338.18052-1-zhukeqian1@huawei.com>
+        id S231670AbhCPNqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:46:46 -0400
+Received: from mga02.intel.com ([134.134.136.20]:29714 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229622AbhCPNq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 09:46:28 -0400
+IronPort-SDR: j/A9zVAiG0/eWGhphrsHFssp0rpxneWYSOltF13emBkCAywqFp5h6nyqk0KBEPLdECak462UMB
+ nPKvOl7GU5JQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="176390304"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="176390304"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 06:46:27 -0700
+IronPort-SDR: RwuFoNRYinpobRJAsQFRDh3AQU3TvAAWAisBI6/B8rZ13aHdK5t+od5VkM58O8Tdm2cBTu7QK2
+ i0zFxRx8DQOw==
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="439152743"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 06:46:24 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1lMA1e-00CyW2-5G; Tue, 16 Mar 2021 15:46:22 +0200
+Date:   Tue, 16 Mar 2021 15:46:22 +0200
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Henning Schild <henning.schild@siemens.com>
+Cc:     Claudius Heine <ch@denx.de>,
+        johannes hahn <johannes-hahn@siemens.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        werner zeh <werner.zeh@siemens.com>,
+        martin mantel <martin.mantel@siemens.com>,
+        val krutov <val.krutov@erd.epson.com>
+Subject: Re: [PATCH v3 1/1] rtc: rx6110: add ACPI bindings to I2C
+Message-ID: <YFC2rnje4KLtjfFQ@smile.fi.intel.com>
+References: <AM0PR10MB25801B7DCB6C1856B5D4F2C09FE10@AM0PR10MB2580.EURPRD10.PROD.OUTLOOK.COM>
+ <20210316100805.2630481-2-ch@denx.de>
+ <YFCW3Kx9MPm0MT8H@smile.fi.intel.com>
+ <20210316125251.64484b3a@md1za8fc.ad001.siemens.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316125251.64484b3a@md1za8fc.ad001.siemens.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MMIO region of a device maybe huge (GB level), try to use
-block mapping in stage2 to speedup both map and unmap.
+On Tue, Mar 16, 2021 at 12:52:51PM +0100, Henning Schild wrote:
+> Am Tue, 16 Mar 2021 13:30:36 +0200
+> schrieb Andy Shevchenko <andriy.shevchenko@intel.com>:
+> 
+> > On Tue, Mar 16, 2021 at 11:08:05AM +0100, Claudius Heine wrote:
+> > > From: Johannes Hahn <johannes-hahn@siemens.com>
+> > > 
+> > > This allows the RX6110 driver to be automatically assigned to the
+> > > right device on the I2C bus.  
+> > 
+> > Thanks for all effort!
+> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+> > after addressing the below comments.
+> > 
+> > > Signed-off-by: Johannes Hahn <johannes-hahn@siemens.com>
+> > > Signed-off-by: Claudius Heine <ch@denx.de>  
+> > 
+> > > Signed-off-by: Henning Schild <henning.schild@siemens.com>  
+> 
+> Claudius, just remove that. I guess just add yours and mention authors
+> in the code if they should receive some recognition.
 
-Compared to normal memory mapping, we should consider two more
-points when try block mapping for MMIO region:
+> > > +#ifdef CONFIG_ACPI
+> > > +static const struct acpi_device_id rx6110_i2c_acpi_match[] = {
+> > > +	{ "SECC6110", },
 
-1. For normal memory mapping, the PA(host physical address) and
-HVA have same alignment within PUD_SIZE or PMD_SIZE when we use
-the HVA to request hugepage, so we don't need to consider PA
-alignment when verifing block mapping. But for device memory
-mapping, the PA and HVA may have different alignment.
+> > > +	{ },
 
-2. For normal memory mapping, we are sure hugepage size properly
-fit into vma, so we don't check whether the mapping size exceeds
-the boundary of vma. But for device memory mapping, we should pay
-attention to this.
+Missed one thing, remove comma here. Terminator lines do not need a comma (and
+it's theoretically may confuse people or scripts while adding a new record to
+the array).
 
-This adds device_rough_page_shift() to check these two points when
-selecting block mapping size.
+> > > +};
+> > > +MODULE_DEVICE_TABLE(acpi, rx6110_i2c_acpi_match);
+> > > +#endif
 
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
----
-
-Mainly for RFC, not fully tested. I will fully test it when the
-code logic is well accepted.
-
----
- arch/arm64/kvm/mmu.c | 42 ++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 38 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index c59af5ca01b0..224aa15eb4d9 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -624,6 +624,36 @@ static void kvm_send_hwpoison_signal(unsigned long address, short lsb)
- 	send_sig_mceerr(BUS_MCEERR_AR, (void __user *)address, lsb, current);
- }
- 
-+/*
-+ * Find a mapping size that properly insides the intersection of vma and
-+ * memslot. And hva and pa have the same alignment to this mapping size.
-+ * It's rough because there are still other restrictions, which will be
-+ * checked by the following fault_supports_stage2_huge_mapping().
-+ */
-+static short device_rough_page_shift(struct kvm_memory_slot *memslot,
-+				     struct vm_area_struct *vma,
-+				     unsigned long hva)
-+{
-+	size_t size = memslot->npages * PAGE_SIZE;
-+	hva_t sec_start = max(memslot->userspace_addr, vma->vm_start);
-+	hva_t sec_end = min(memslot->userspace_addr + size, vma->vm_end);
-+	phys_addr_t pa = (vma->vm_pgoff << PAGE_SHIFT) + (hva - vma->vm_start);
-+
-+#ifndef __PAGETABLE_PMD_FOLDED
-+	if ((hva & (PUD_SIZE - 1)) == (pa & (PUD_SIZE - 1)) &&
-+	    ALIGN_DOWN(hva, PUD_SIZE) >= sec_start &&
-+	    ALIGN(hva, PUD_SIZE) <= sec_end)
-+		return PUD_SHIFT;
-+#endif
-+
-+	if ((hva & (PMD_SIZE - 1)) == (pa & (PMD_SIZE - 1)) &&
-+	    ALIGN_DOWN(hva, PMD_SIZE) >= sec_start &&
-+	    ALIGN(hva, PMD_SIZE) <= sec_end)
-+		return PMD_SHIFT;
-+
-+	return PAGE_SHIFT;
-+}
-+
- static bool fault_supports_stage2_huge_mapping(struct kvm_memory_slot *memslot,
- 					       unsigned long hva,
- 					       unsigned long map_size)
-@@ -769,7 +799,10 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 		return -EFAULT;
- 	}
- 
--	/* Let's check if we will get back a huge page backed by hugetlbfs */
-+	/*
-+	 * Let's check if we will get back a huge page backed by hugetlbfs, or
-+	 * get block mapping for device MMIO region.
-+	 */
- 	mmap_read_lock(current->mm);
- 	vma = find_vma_intersection(current->mm, hva, hva + 1);
- 	if (unlikely(!vma)) {
-@@ -780,11 +813,12 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 
- 	if (is_vm_hugetlb_page(vma))
- 		vma_shift = huge_page_shift(hstate_vma(vma));
-+	else if (vma->vm_flags & VM_PFNMAP)
-+		vma_shift = device_rough_page_shift(memslot, vma, hva);
- 	else
- 		vma_shift = PAGE_SHIFT;
- 
--	if (logging_active ||
--	    (vma->vm_flags & VM_PFNMAP)) {
-+	if (logging_active) {
- 		force_pte = true;
- 		vma_shift = PAGE_SHIFT;
- 	}
-@@ -855,7 +889,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 
- 	if (kvm_is_device_pfn(pfn)) {
- 		device = true;
--		force_pte = true;
-+		force_pte = (vma_pagesize == PAGE_SIZE);
- 	} else if (logging_active && !write_fault) {
- 		/*
- 		 * Only actually map the page as writable if this was a write
 -- 
-2.19.1
+With Best Regards,
+Andy Shevchenko
+
 
