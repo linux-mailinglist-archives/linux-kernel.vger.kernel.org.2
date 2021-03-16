@@ -2,108 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C6033D752
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55ECE33D753
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236674AbhCPP01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 11:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232145AbhCPPZv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 11:25:51 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BAAAC06174A;
-        Tue, 16 Mar 2021 08:25:49 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 15:25:47 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615908348;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rwQkacUhSYfqj80E6WJVpogHjelAPI8Xa2wZ2lUXs2A=;
-        b=31CpDNa/AaAJFVA6+/LbsJ0mTEnR4cQsDvD3b13Wtpcgo2fD0NL9QnrYg1ZDSBIIa2e4H6
-        bNWr/EVGPS6KzL4LvLqPfd+S3/x/OcNhBawTKPy/ceVRouXqkLOzxi6PUcYbyJKAz5TBpJ
-        Ep2/z+pKmci/KNGu52aCuMFIhWYZDZvr2MJ1YZq+7hlg0Y0lCqa0qhlZBeZtvR1QxBSndk
-        5dWO88DNoj5SHvIigY9W9UM5dt0IJCvGgjcz2CUCVctnkqBWKeTqu6gpw/zBcxJ0YWK1vO
-        TBP6i0n8C7fxfxfbmF1TTt5c0qxZ3ZHhwcYmM3zPPvcvPtX8H4hPsbB34vJxKw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615908348;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rwQkacUhSYfqj80E6WJVpogHjelAPI8Xa2wZ2lUXs2A=;
-        b=WLtGVEnb/Qji6a5KMxTJcEtj6A9eFbzlCffSAe/KuxkKGNcHC6ngDZVMyJ5qHm0NOQsyCR
-        6tyF+l5LuP7LlRAQ==
-From:   "tip-bot2 for Andy Shevchenko" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] genirq/irq_sim: Fix typos in kernel doc (fnode -> fwnode)
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20210302161453.28540-1-andriy.shevchenko@linux.intel.com>
-References: <20210302161453.28540-1-andriy.shevchenko@linux.intel.com>
+        id S236618AbhCPP0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 11:26:55 -0400
+Received: from mga07.intel.com ([134.134.136.100]:13297 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236553AbhCPP0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 11:26:09 -0400
+IronPort-SDR: rUF9XKy77fHPoHUi11zS+RNRZCV5vF1XgR9VBK0JTNqmVggQVBJ1ldkebDN8WZaPGsjauJw/KO
+ jVm/7XumMaQA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="253294335"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="253294335"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 08:26:08 -0700
+IronPort-SDR: T1tvaQwjJrhj/w5sG9FACKGib5o9ePzpPZ5JOsPPqCIzE2c9DiWw/37sGBEZCNvTJ2u4sLpXb4
+ 4a4xa5UDbAjg==
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="405574234"
+Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.154.190]) ([10.249.154.190])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 08:26:05 -0700
+Subject: Re: [PATCH 01/10] tick/nohz: Prevent tick_nohz_get_sleep_length()
+ from returning negative value
+To:     Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>,
+        Yunfeng Ye <yeyunfeng@huawei.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>
+References: <20210311123708.23501-1-frederic@kernel.org>
+ <20210311123708.23501-2-frederic@kernel.org>
+ <YFCiycIaViYCy3GH@hirez.programming.kicks-ass.net>
+ <20210316133703.GC639918@lothringen>
+ <YFDCOYstnDWPSWRU@hirez.programming.kicks-ass.net>
+ <20210316145352.GE639918@lothringen>
+From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
+ 173, 80-298 Gdansk
+Message-ID: <ab753f1f-b03d-2a26-a552-b91f98708353@intel.com>
+Date:   Tue, 16 Mar 2021 16:26:02 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Message-ID: <161590834731.398.16285162336678712661.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210316145352.GE639918@lothringen>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/urgent branch of tip:
+On 3/16/2021 3:53 PM, Frederic Weisbecker wrote:
+> On Tue, Mar 16, 2021 at 03:35:37PM +0100, Peter Zijlstra wrote:
+>> On Tue, Mar 16, 2021 at 02:37:03PM +0100, Frederic Weisbecker wrote:
+>>> On Tue, Mar 16, 2021 at 01:21:29PM +0100, Peter Zijlstra wrote:
+>>>> On Thu, Mar 11, 2021 at 01:36:59PM +0100, Frederic Weisbecker wrote:
+>>>>> From: "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>
+>>>>>
+>>>>> If the hardware clock happens to fire its interrupts late, two possible
+>>>>> issues can happen while calling tick_nohz_get_sleep_length(). Either:
+>>>>>
+>>>>> 1) The next clockevent device event is due past the last idle entry time.
+>>>>>
+>>>>> or:
+>>>>>
+>>>>> 2) The last timekeeping update happened before the last idle entry time
+>>>>>     and the next timer callback expires before the last idle entry time.
+>>>>>
+>>>>> Make sure that both cases are handled to avoid returning a negative
+>>>>> duration to the cpuidle governors.
+>>>> Why? ... and wouldn't it be cheaper the fix the caller to
+>>>> check negative once, instead of adding two branches here?
+>>> There are already two callers and potentially two return values to check
+>>> for each because the function returns two values.
+>>>
+>>> I'd rather make the API more robust instead of fixing each callers and worrying
+>>> about future ones.
+>> But what's the actual problem? The Changelog doesn't say why returning a
+>> negative value is a problem, and in fact the return value is explicitly
+>> signed.
+>>
+>> Anyway, I don't terribly mind the patch, I was just confused by the lack
+>> of actual justification.
+> And you're right, the motivation is pure FUD: I don't know exactly
+> how the cpuidle governors may react to such negative values and so this
+> is just to prevent from potential accident.
+>
+> Rafael, does that look harmless to you?
 
-Commit-ID:     ef4cb70a4c22bf301cd757dcc838dc8ca9526477
-Gitweb:        https://git.kernel.org/tip/ef4cb70a4c22bf301cd757dcc838dc8ca9526477
-Author:        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-AuthorDate:    Tue, 02 Mar 2021 18:14:53 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 16 Mar 2021 16:20:58 +01:00
+No, this is a problem now.  Both governors using this assign the return 
+value of it to a u64 var and so negative values confuse them.
 
-genirq/irq_sim: Fix typos in kernel doc (fnode -> fwnode)
+That said I think it's better to deal with the issue in the callers.
 
-Fix typos in kernel doc, otherwise validation script complains:
+I can send a patch for that if needed.
 
-.../irq_sim.c:170: warning: Function parameter or member 'fwnode' not described in 'irq_domain_create_sim'
-.../irq_sim.c:170: warning: Excess function parameter 'fnode' description in 'irq_domain_create_sim'
-.../irq_sim.c:240: warning: Function parameter or member 'fwnode' not described in 'devm_irq_domain_create_sim'
-.../irq_sim.c:240: warning: Excess function parameter 'fnode' description in 'devm_irq_domain_create_sim'
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210302161453.28540-1-andriy.shevchenko@linux.intel.com
-
----
- kernel/irq/irq_sim.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/irq/irq_sim.c b/kernel/irq/irq_sim.c
-index 4800660..40880c3 100644
---- a/kernel/irq/irq_sim.c
-+++ b/kernel/irq/irq_sim.c
-@@ -159,7 +159,7 @@ static const struct irq_domain_ops irq_sim_domain_ops = {
-  * irq_domain_create_sim - Create a new interrupt simulator irq_domain and
-  *                         allocate a range of dummy interrupts.
-  *
-- * @fnode:      struct fwnode_handle to be associated with this domain.
-+ * @fwnode:     struct fwnode_handle to be associated with this domain.
-  * @num_irqs:   Number of interrupts to allocate.
-  *
-  * On success: return a new irq_domain object.
-@@ -228,7 +228,7 @@ static void devm_irq_domain_release_sim(struct device *dev, void *res)
-  *                              a managed device.
-  *
-  * @dev:        Device to initialize the simulator object for.
-- * @fnode:      struct fwnode_handle to be associated with this domain.
-+ * @fwnode:     struct fwnode_handle to be associated with this domain.
-  * @num_irqs:   Number of interrupts to allocate
-  *
-  * On success: return a new irq_domain object.
