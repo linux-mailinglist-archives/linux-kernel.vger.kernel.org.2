@@ -2,120 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC1C33DB2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF9C833DB30
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238679AbhCPRon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:44:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38792 "EHLO mail.kernel.org"
+        id S239003AbhCPRpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:45:15 -0400
+Received: from mga09.intel.com ([134.134.136.24]:27651 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231978AbhCPRob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:44:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 768546511D;
-        Tue, 16 Mar 2021 17:44:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615916671;
-        bh=70urjVlzuIkBAAt6z/A7aEgLJGDaoFtxXpjtZaip/+I=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=RfJlUe04rO0XegYU6UvIVXzCZTbC5LlaWuudIWIYH50c1pgyq4U5a3vutog1RttNx
-         uRcmoqxQeEjCc2raxL4arPFYnhaSQqS/lwLLDrf74yhqjbCg0kDjLqUuL9rCMlHj6S
-         Y6LO5SAQfiSR+ThRrKq4A78hZQHl1VEaWZT+K3Ag0Hc9YgLGIm81CAz8vVl/VhTBM2
-         pxczDjGsHE95fM072hLdrb30mEB+jKxKuA8phptAv2uHTw+ISLr7RDtZXfTD4euFvn
-         kwnvgkuk/T9wPBKgQCg/L9hNhAW351k4tEtDnjKsCMFkkZ8cwqQYq+DJWSoPDM+RkQ
-         WYkPtLQfpoN9Q==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 42827352262D; Tue, 16 Mar 2021 10:44:31 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 10:44:31 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Maninder Singh <maninder1.s@samsung.com>
-Cc:     linux@armlinux.org.uk, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, vbabka@suse.cz, 0x7f454c46@gmail.com,
-        viro@zeniv.linux.org.uk, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        a.sahrawat@samsung.com, Vaneet Narang <v.narang@samsung.com>
-Subject: Re: [PATCH 1/3] mm/slub: fixing backtrace of objects because of
- redzone adjustment
-Message-ID: <20210316174431.GX2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CGME20210316103723epcas5p1f750d5cfe029fa69aea8d88f0bd408f3@epcas5p1.samsung.com>
- <1615891032-29160-1-git-send-email-maninder1.s@samsung.com>
+        id S231978AbhCPRox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:44:53 -0400
+IronPort-SDR: xPwmdyHycA4CP1DQ9zd6g3uRzySltVrBbEKbcH33xyBTQCDhQTqKVCmLbWWpJRJCOkbQinQL16
+ xORI8b9JOEuA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="189400399"
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="189400399"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 10:44:52 -0700
+IronPort-SDR: MZjiMp03UYJamI4W2nRjnkJKXjIRKPIm2imBomEuZSibBREq9EtVM4UkPwqWtXondLmupytRjs
+ 9OxkjGvzBGxw==
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="439201248"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.191.248]) ([10.212.191.248])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 10:44:46 -0700
+Subject: Re: [PATCH v23 6/9] x86/entry: Introduce ENDBR macro
+To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>
+References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
+ <20210316151320.6123-7-yu-cheng.yu@intel.com>
+ <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
+ <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
+ <0c0b3663-3c01-c166-03fa-a3dbfb250da3@intel.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <1cbd8068-60e3-3fc9-9618-3262b179182d@intel.com>
+Date:   Tue, 16 Mar 2021 10:44:46 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615891032-29160-1-git-send-email-maninder1.s@samsung.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <0c0b3663-3c01-c166-03fa-a3dbfb250da3@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 04:07:10PM +0530, Maninder Singh wrote:
-> fixing commit 8e7f37f2aaa5 ("mm: Add mem_dump_obj() to print source
-> of memory block")
+On 3/16/2021 10:28 AM, Dave Hansen wrote:
+> On 3/16/21 10:12 AM, Yu, Yu-cheng wrote:
+>> On 3/16/2021 8:49 AM, Dave Hansen wrote:
+> ...
+>>> Is "#ifdef __i386__" the right thing to use here?  I guess ENDBR only
+>>> ends up getting used in the VDSO, but there's a lot of
+>>> non-userspace-exposed stuff in calling.h.  It seems a bit weird to have
+>>> the normally userspace-only __i386__ in there.
+>>>
+>>> I don't see any existing direct use of __i386__ in arch/x86/entry/vdso.
+>>
+>> Good point.  My thought was, __i386__ comes from the compiler having the
+>> -m32 command-line option, and it is not dependent on anything else.
+>>
+>> Alternatively, there is another compiler-defined macro _CET_ENDBR that
+>> can be used.  We can put the following in calling.h:
+>>
+>> #ifdef __CET__
+>> #include <cet.h>
+>> #else
+>> #define _CET_ENDBR
+>> #endif
+>>
+>> and then use _CET_ENDBR in other files.  How is that?
+>>
+>> In the future, in case we have kernel-mode IBT, ENDBR macros are also
+>> needed for other assembly files.
 > 
-> with current code, Backtrace of allocated object is coming wrong:
-> / # cat /proc/meminfo
-> [   14.969843]  slab kmalloc-64 start c8ab0140 data offset 64 pointer offset 0 size 64 allocated at 0x6b6b6b6b
-> [   14.970635]     0x6b6b6b6b
-> [   14.970794]     0x6b6b6b6b
-> [   14.970932]     0x6b6b6b6b
-> [   14.971077]     0x6b6b6b6b
-> [   14.971202]     0x6b6b6b6b
-> [   14.971317]     0x6b6b6b6b
-> [   14.971423]     0x6b6b6b6b
-> [   14.971635]     0x6b6b6b6b
-> [   14.971740]     0x6b6b6b6b
-> [   14.971871]     0x6b6b6b6b
-> [   14.972229]     0x6b6b6b6b
-> [   14.972363]     0x6b6b6b6b
-> [   14.972505]     0xa56b6b6b
-> [   14.972631]     0xbbbbbbbb
-> [   14.972734]     0xc8ab0400
-> [   14.972891]     meminfo_proc_show+0x40/0x4fc
+> First of all, I think putting the macro in calling.h is wrong if it will
+> be used exclusively in the VDSO.  If it's VDSO-only, please put it in a
+> local header in the vdso/ directory, maybe even a new cet.h.
 > 
-> And reason is red zone was not adjusted from object address.
-> after adding fixup for redzone, backtrace is coming correct:
-> / # cat /proc/meminfo
-> [   14.870782]  slab kmalloc-64 start c8ab0140 data offset 64 pointer offset 128 size 64 allocated at meminfo_proc_show+0x40/0x4f4
-> [   14.871817]     meminfo_proc_show+0x40/0x4f4
-> [   14.872035]     seq_read_iter+0x18c/0x4c4
-> [   14.872229]     proc_reg_read_iter+0x84/0xac
-> [   14.872433]     generic_file_splice_read+0xe8/0x17c
-> [   14.872621]     splice_direct_to_actor+0xb8/0x290
-> [   14.872747]     do_splice_direct+0xa0/0xe0
-> [   14.872896]     do_sendfile+0x2d0/0x438
-> [   14.873044]     sys_sendfile64+0x12c/0x140
-> [   14.873229]     ret_fast_syscall+0x0/0x58
-> [   14.873372]     0xbe861de4
+> Also, Boris asked for two *different* macros for 32 and 64-bit:
 > 
-> Signed-off-by: Vaneet Narang <v.narang@samsung.com>
-> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-
-Good catch, thank you!  For the series:
-
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-
-On the other hand, if you would like me to take these, we need to get
-a maintainer ack.
-
-							Thanx, Paul
-
-> ---
->  mm/slub.c | 1 +
->  1 file changed, 1 insertion(+)
+> https://lore.kernel.org/linux-api/20210310231731.GK23521@zn.tnic/
 > 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 1912c4614248..9d13f0117ae6 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -4052,6 +4052,7 @@ void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct page *page)
->  	    !(s->flags & SLAB_STORE_USER))
->  		return;
->  #ifdef CONFIG_SLUB_DEBUG
-> +	objp = fixup_red_left(s, objp);
->  	trackp = get_track(s, objp, TRACK_ALLOC);
->  	kpp->kp_ret = (void *)trackp->addr;
->  #ifdef CONFIG_STACKTRACE
-> -- 
-> 2.17.1
+> Could you do that in the next version, please?
 > 
+
+Yes, we can do two macros, probably in arch/x86/include/asm/vdso.h.
