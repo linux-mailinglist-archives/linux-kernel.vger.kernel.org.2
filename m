@@ -2,80 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6792B33E091
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:32:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8079533E094
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhCPVcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 17:32:21 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:52360 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229519AbhCPVbs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 17:31:48 -0400
-Received: from [77.244.183.192] (port=63220 helo=[192.168.178.41])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1lMHHz-0006NM-1C; Tue, 16 Mar 2021 22:31:43 +0100
-Subject: Re: [PATCH] dt-bindings: More cleanup of standard unit properties
-To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Kevin Tsai <ktsai@capellamicro.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Mark Brown <broonie@kernel.org>, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20210316194824.3526913-1-robh@kernel.org>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <b2679a96-2751-ec84-33aa-aff8398d8a56@lucaceresoli.net>
-Date:   Tue, 16 Mar 2021 22:31:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229727AbhCPVcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 17:32:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229498AbhCPVcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 17:32:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F8B264F90;
+        Tue, 16 Mar 2021 21:32:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615930344;
+        bh=A8tS3BLwnxw3/M8kJr1pEOw/ZrskCZFgDoMyFEzKfUM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=uIBaYEjHXoV2WZv0Cjk+kpgy2es1yrAwt2Ja7iQO0R0eH8npYVHk1+SLA2VsU/qDn
+         n/TqTSMBAdefLX4s58L8SdQhJ/YBy6BERA7zScIb/FFaE54RdW7B3EaALBdi+OSCf2
+         5FUbGaw07DRwiL9y6pAViUNpxriH8+1NTfuUBjnr616sh5o2yCobKEs8laSTFr1YLy
+         FsaGGDepmh28SB/fnrCGbsE+IUBtIqwOvkz8MhTC6qoURPSa7Ma9clGb4GUgn26aX1
+         kM1y1NcKh7FuX0kGqhBluWiKyte/W5M5V8WYIVD5422DtI2x2BDJkhmIBBbQyaF9BP
+         csNkFnKDYnS1g==
+Date:   Tue, 16 Mar 2021 14:32:22 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Voon Weifeng <weifeng.voon@intel.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jose Abreu <joabreu@synopsys.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Wong Vee Khee <vee.khee.wong@intel.com>
+Subject: Re: [RESEND v1 net-next 4/5] stmmac: intel: add support for
+ multi-vector msi and msi-x
+Message-ID: <20210316143222.74480318@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210316121823.18659-5-weifeng.voon@intel.com>
+References: <20210316121823.18659-1-weifeng.voon@intel.com>
+        <20210316121823.18659-5-weifeng.voon@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210316194824.3526913-1-robh@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: it-IT
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/03/21 20:48, Rob Herring wrote:
-> Properties with standard unit suffixes already have a type and don't need
-> type references. Fix a few more cases which have gotten added.
+On Tue, 16 Mar 2021 20:18:22 +0800 Voon Weifeng wrote:
+> From: Ong Boon Leong <boon.leong.ong@intel.com>
 > 
-> Cc: Luca Ceresoli <luca@lucaceresoli.net>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Zhang Rui <rui.zhang@intel.com>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Kevin Tsai <ktsai@capellamicro.com>
-> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-input@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> Intel mgbe controller supports multi-vector interrupts:
+> msi_rx_vec	0,2,4,6,8,10,12,14
+> msi_tx_vec	1,3,5,7,9,11,13,15
+> msi_sfty_ue_vec	26
+> msi_sfty_ce_vec	27
+> msi_lpi_vec	28
+> msi_mac_vec	29
+> 
+> During probe(), the driver will starts with request allocation for
+> multi-vector interrupts. If it fails, then it will automatically fallback
+> to request allocation for single interrupts.
+> 
+> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+> Co-developed-by: Voon Weifeng <weifeng.voon@intel.com>
+> Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
 
-Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+> +
+> +static int stmmac_config_multi_msi(struct pci_dev *pdev,
+> +				   struct plat_stmmacenet_data *plat,
+> +				   struct stmmac_resources *res)
+> +{
+> +	int ret;
+> +	int i;
+> +
+> +	ret = pci_alloc_irq_vectors(pdev, 2, STMMAC_MSI_VEC_MAX,
+> +				    PCI_IRQ_MSI | PCI_IRQ_MSIX);
+> +	if (ret < 0) {
+> +		dev_info(&pdev->dev, "%s: multi MSI enablement failed\n",
+> +			 __func__);
+> +		return ret;
+> +	}
+> +
+> +	if (plat->msi_rx_base_vec >= STMMAC_MSI_VEC_MAX ||
+> +	    plat->msi_tx_base_vec >= STMMAC_MSI_VEC_MAX) {
+> +		dev_info(&pdev->dev, "%s: Invalid RX & TX vector defined\n",
+> +			 __func__);
+> +		return -1;
 
--- 
-Luca
+free_irq_vectors?  Or move the check before alloc if possible.
+
+> +	}
+
+
+> @@ -699,6 +786,19 @@ static int intel_eth_pci_probe(struct pci_dev *pdev,
+>  		writel(tx_lpi_usec, res.addr + GMAC_1US_TIC_COUNTER);
+>  	}
+>  
+> +	ret = stmmac_config_multi_msi(pdev, plat, &res);
+> +	if (!ret)
+> +		goto msi_done;
+
+Please don't use gotos where an if statement would do perfectly well.
+
+> +	ret = stmmac_config_single_msi(pdev, plat, &res);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "%s: ERROR: failed to enable IRQ\n",
+> +			__func__);
+> +		return ret;
+
+return? isn't there some cleanup that needs to happen before exiting?
+
+> +	}
+> +
+> +msi_done:
+> +
+>  	ret = stmmac_dvr_probe(&pdev->dev, plat, &res);
+>  	if (ret) {
+>  		pci_free_irq_vectors(pdev);
+
