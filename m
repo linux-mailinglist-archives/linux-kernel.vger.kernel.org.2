@@ -2,93 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0F633D3BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:22:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C51D33D3C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhCPMWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:22:12 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:56788 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhCPMVt (ORCPT
+        id S230518AbhCPMXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 08:23:16 -0400
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:50859 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231189AbhCPMXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:21:49 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12GCLho6120641;
-        Tue, 16 Mar 2021 07:21:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615897303;
-        bh=6XL5ZOrYfi/rYwChu/eVjSbdtk43zT/iZTKZhZl9A3c=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=L48hoEgGZjnf7pW93+fLuTFzgzTpMycg1PT2KGCmk61sa6jXbXyWlOHJpt0d/ZJkO
-         QiFNmt58UvzdAWiQubS9CSaPXXliOmJjlMJOiFB64lZDpDzSlS8l50NgZ4jFfHE+hQ
-         ZITLnOujujiHdJCJFkjE1W/CyZoXR6W2zi7dChGU=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12GCLheT002341
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 16 Mar 2021 07:21:43 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 16
- Mar 2021 07:21:43 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 16 Mar 2021 07:21:43 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12GCLhJv069995;
-        Tue, 16 Mar 2021 07:21:43 -0500
-Date:   Tue, 16 Mar 2021 07:21:42 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/2] AM64: Add USB support
-Message-ID: <20210316122142.y6l2g4whsl45cexj@raven>
-References: <20210310112758.1982-1-a-govindraju@ti.com>
+        Tue, 16 Mar 2021 08:23:03 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id M8itl1o3n4ywlM8iylAt55; Tue, 16 Mar 2021 13:23:00 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1615897380; bh=n53c6yVfIwwrrN7fAagCE8Fcpy6iTVZ0bDnUteVvvkg=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=tWymQcaIN44aHz312ZOo4B2cAhvdZ3YdjC1JvUdXOyoIEUe3ACxSQJN8BFXeJxrLl
+         1Zue0865Cic0KtK+hHkM14hKiSFczCCgfoQNbm+eXLoD2mbuU978KQJU8vJtKNYBOl
+         XAnK8O3igPqrBmt+vcWFYzYYPpeyDrT/nTJFoQ7Ma9prk0yCrupCg6TgotwZvAwDnG
+         lRaq7T2YXyqlLVNSzKrrc0RW3ydwBC7pcmS445f/8m8s0yzmxnZ+R//kjeuRA+Nc4u
+         xPbsOxtYZUh6fMe8+fb3UgfenrnthYrV/k7nzwkrR1NPm2+YRnvGw2TdnFgVCToDdJ
+         i+50sefxqWe7A==
+Subject: Re: [PATCH v5 4/5] docs: Document CLL and Mastering display
+ colorimetry controls
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+References: <20210209162425.3970393-1-stanimir.varbanov@linaro.org>
+ <20210209162425.3970393-5-stanimir.varbanov@linaro.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <ebb4d08f-9af6-f483-f901-4846911cd71b@xs4all.nl>
+Date:   Tue, 16 Mar 2021 13:22:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210310112758.1982-1-a-govindraju@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210209162425.3970393-5-stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfIm4uX2D11uRSgeYbh1Fd1oO8eCM2Sb27lS3Il7Jax/bbnSKpQf3D0crKs6D5KMY3w1a3bR2WHDOxsUQrzLvBU3JKzAeUA5aMj43cjqfUx83mPXen8me
+ D9XNMbK6Vp0xDDAq4Nst+xKla+0POYFk0YpjswbTPLChZR9tDg/hQipgH9yOVTNrBegS/m7T9QpBQ/Nef8FbSeq9kiM+6pvY5h4vHyctz5b2ZkTHdZcWqjQL
+ fbxIq3iAR0jeYS2qV9h6OpSXlBeo0jAo5a9NdjddHKngvD4dBuqNoXs7EZFXns9cVtVeJEvc3n8dft2zZ8sntaeXqXlu3ssfzE7fR6M6cQyIXMM91+QRyVEN
+ lPUAB24m/VD4HGJSAZRVJFg5ZeYYG1ExYHz04C0apr4EL+p7YhxSQ0YW6Qj1RVETWhOQUGsp
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16:57-20210310, Aswath Govindraju wrote:
-> The following series of patches, add USB support for AM642 evm.
+On 09/02/2021 17:24, Stanimir Varbanov wrote:
+> Document Content Light Level and Mastering Display v4l2 colorimetry
+> controls.
 > 
-> USB test logs,
-> https://pastebin.ubuntu.com/p/Qrbb7SGv8N/
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  .../media/v4l/ext-ctrls-colorimetry.rst       | 71 +++++++++++++++++++
+>  .../media/v4l/vidioc-g-ext-ctrls.rst          |  8 +++
+>  .../media/videodev2.h.rst.exceptions          |  2 +
+>  3 files changed, 81 insertions(+)
 > 
-> Changes since v1:
-> - Rebased the patches on top of ti-k3-dts-next
-> - Added test logs
-> 
-> Aswath Govindraju (2):
->   arm64: dts: ti: k3-am64-main: Add DT node for USB subsystem
->   arm64: dts: ti: k3-am642-evm: Add USB support
-> 
->  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 30 ++++++++++++++++++++++++
->  arch/arm64/boot/dts/ti/k3-am642-evm.dts  | 18 ++++++++++++++
->  2 files changed, 48 insertions(+)
-> 
-> -- 
-> 2.17.1
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
+> index 862f78b41b32..a9f206a46175 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
+> @@ -20,3 +20,74 @@ Colorimetry Control IDs
+>      The Colorimetry class descriptor. Calling
+>      :ref:`VIDIOC_QUERYCTRL` for this control will
+>      return a description of this control class.
+> +
+> +``V4L2_CID_COLORIMETRY_HDR10_CLL_INFO (struct)``
+> +    The Content Light Level defines upper bounds for the nominal target
+> +    brightness light level of the pictures.
+> +
+> +.. c:type:: v4l2_ctrl_hdr10_cll_info
+> +
+> +.. cssclass:: longtable
+> +
+> +.. flat-table:: struct v4l2_ctrl_hdr10_cll_info
+> +    :header-rows:  0
+> +    :stub-columns: 0
+> +    :widths:       1 1 2
+> +
+> +    * - __u16
+> +      - ``max_content_light_level``
+> +      - The upper bound for the maximum light level among all individual
+> +        samples for the pictures of a coded video sequence, cd/m\ :sup:`2`.
+
+I think 'coded' should be removed. This is equally valid when receiving
+uncoded HDMI video, after all.
+
+> +        When equal to 0 no such upper bound is present.
+> +    * - __u16
+> +      - ``max_pic_average_light_level``
+> +      - The upper bound for the maximum average light level among the
+> +        samples for any individual picture of a coded video sequence,
+
+ditto.
+
+> +        cd/m\ :sup:`2`. When equal to 0 no such upper bound is present.
+> +
+> +``V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY (struct)``
+> +    The mastering display defines the color volume (the color primaries,
+> +    white point and luminance range) of a display considered to be the
+> +    mastering display for the current video content.
+> +
+> +.. c:type:: v4l2_ctrl_hdr10_mastering_display
+> +
+> +.. cssclass:: longtable
+> +
+> +.. flat-table:: struct v4l2_ctrl_hdr10_mastering_display
+> +    :header-rows:  0
+> +    :stub-columns: 0
+> +    :widths:       1 1 2
+> +
+> +    * - __u16
+> +      - ``display_primaries_x[3]``
+> +      - Specifies the normalized x chromaticity coordinate of the color
+> +        primary component c of the mastering display in increments of 0.00002.
+> +        For describing the mastering display that uses Red, Green and Blue
+> +        color primaries, index value c equal to 0 corresponds to the Green
+> +        primary, c equal to 1 corresponds to Blue primary and c equal to 2
+> +        corresponds to the Red color primary.
+> +    * - __u16
+> +      - ``display_primaries_y[3]``
+> +      - Specifies the normalized y chromaticity coordinate of the color
+> +        primary component c of the mastering display in increments of 0.00002.
+> +        For describing the mastering display that uses Red, Green and Blue
+> +        color primaries, index value c equal to 0 corresponds to the Green
+> +        primary, c equal to 1 corresponds to Blue primary and c equal to 2
+> +        corresponds to Red color primary.
+> +    * - __u16
+> +      - ``white_point_x``
+> +      - Specifies the normalized x chromaticity coordinate of the white
+> +        point of the mastering display in increments of 0.00002.
+> +    * - __u16
+> +      - ``white_point_y``
+> +      - Specifies the normalized y chromaticity coordinate of the white
+> +        point of the mastering display in increments of 0.00002.
+> +    * - __u32
+> +      - ``max_luminance``
+> +      - Specifies the nominal maximum display luminance of the mastering
+> +        display in units of 0.0001 cd/m\ :sup:`2`.
+> +    * - __u32
+> +      - ``min_luminance``
+> +      - specifies the nominal minimum display luminance of the mastering
+> +        display in units of 0.0001 cd/m\ :sup:`2`.
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> index 8a95ebdd499a..2f6d0539fb93 100644
+> --- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> @@ -212,6 +212,14 @@ still cause this situation.
+>        - ``p_fwht_params``
+>        - A pointer to a struct :c:type:`v4l2_ctrl_fwht_params`. Valid if this control is
+>          of type ``V4L2_CTRL_TYPE_FWHT_PARAMS``.
+> +    * - struct :c:type:`v4l2_ctrl_hdr10_cll_info` *
+> +      - ``p_hdr10_cll``
+> +      - A pointer to a struct :c:type:`v4l2_ctrl_hdr10_cll_info`. Valid if this control is
+> +        of type ``V4L2_CTRL_TYPE_HDR10_CLL_INFO``.
+> +    * - struct :c:type:`v4l2_ctrl_hdr10_mastering_display` *
+> +      - ``p_hdr10_mastering``
+> +      - A pointer to a struct :c:type:`v4l2_ctrl_hdr10_mastering_display`. Valid if this control is
+> +        of type ``V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY``.
+>      * - void *
+>        - ``ptr``
+>        - A pointer to a compound type which can be an N-dimensional array
+> diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> index 0ed170c6e720..38b31a9b9580 100644
+> --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> @@ -147,6 +147,8 @@ replace symbol V4L2_CTRL_TYPE_HEVC_PPS :c:type:`v4l2_ctrl_type`
+>  replace symbol V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS :c:type:`v4l2_ctrl_type`
+>  replace symbol V4L2_CTRL_TYPE_AREA :c:type:`v4l2_ctrl_type`
+>  replace symbol V4L2_CTRL_TYPE_FWHT_PARAMS :c:type:`v4l2_ctrl_type`
+> +replace symbol V4L2_CTRL_TYPE_HDR10_CLL_INFO :c:type:`v4l2_ctrl_type`
+> +replace symbol V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY :c:type:`v4l2_ctrl_type`
+>  
+>  # V4L2 capability defines
+>  replace define V4L2_CAP_VIDEO_CAPTURE device-capabilities
 > 
 
-	I see:
-	/workdir/arch/arm64/boot/dts/ti/k3-am642-evm.dt.yaml: cdns-usb@f900000: compatible: 'oneOf' conditional failed, one must be fixed:
+After making the change suggested above, you can add my:
 
-I assume there is a reason for this? Can you capture that in the commit
-message?
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
--- 
 Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
+	Hans
