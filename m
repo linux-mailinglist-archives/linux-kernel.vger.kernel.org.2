@@ -2,234 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4A733DE8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:24:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEB633DE97
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhCPUYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 16:24:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44142 "EHLO
+        id S229979AbhCPUYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 16:24:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhCPUXt (ORCPT
+        with ESMTP id S229731AbhCPUX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 16:23:49 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5758C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 13:23:48 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id e26so9605216pfd.9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 13:23:48 -0700 (PDT)
+        Tue, 16 Mar 2021 16:23:58 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9353AC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 13:23:57 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id m186so20049733qke.12
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 13:23:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kRpApWjSog39CsE2V8rrYvB6wV6tXRr/QolU6+hEFVY=;
-        b=ZbK5tiU9+Ze+z4m+sPOpX9ekbEAhHqEZRo5L3ATa7I+Dvk/9R8Lgma1U9b2V3cAYwo
-         85DMdZkZ5PasJr4Rvkmhr4FHPoRCSODqhMvphFUBR/3tlw+pOBEuj7+vhyOFF7lbjLvE
-         FPO9lsGUU8JCMbO915fIXOdcK23yOH516oELuCKKMwDDf91ulTbLIR9nQzflJeSTgN3N
-         5yU15Jqqu98EFLt8LbNBrB+8m1d+ry+oCmfJTlS0ekLENckRRXnGAFh2KvyAwLzkUq8b
-         m/u4p7h359offwQwfyQWNLOGw3fPf5tFodB92/kHGGhyD97byQSNKDTKx1quYsyDiYqF
-         4WJQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=arCkDDywA9FeKUOpIhe6JHln/l1VSIQXxqyZA+nk/iU=;
+        b=BvH44Pf9lCF5vFRkfQX5yGdlaI8YBDtfQtH+oik0jRpFp1Xvs74iTtbkQ+N3Cep4ve
+         6bN6xad1emcYWV4Dq+v+O7AX45leAkC+MT1vDe3nyrKZN0LXe7Qn1Zd/OldHj6jf87oy
+         zpojZhnhH/QuAPJdkHuSz00E/yJfrDaV472ld1n98PQxMsYTbXaZ86FRSkienG9bn46z
+         mXkxiHDfsl2zmKORUXRCuCGb7t4vLQqrkAxUOdaJKFmWz1UpPsC4ybtvjDMfhAQWDE+n
+         oR8jHzkU12cUl00vEnRwMwHgvuKf29j4TcJ4ylYLNvwrrH4Sgo08vH2Fd00jEFIBeOHd
+         yEkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kRpApWjSog39CsE2V8rrYvB6wV6tXRr/QolU6+hEFVY=;
-        b=I4VperXPk1yIynBzAqPBQzb2Q4DtwDrAnePRHMT6i7xNuXmF2pChqnBmsq8HQBLpt2
-         XSv8dJmcoV2ei0E0oInzSRt7VFjYDmI6mO/ncY73qXnrfx2AzT+cLW0jqsa0pPvfBZc1
-         AEChcIsj8aJkBqLYVFGtw8lnADiOSMgsY0V+qTY+Ie2Ma9FUfVk16rsVsMfqw0fG2IdA
-         ZAFXmDB3QNtZCdU6xPLEzfw4A7mjO7WIdl3FR5gv2WkItIxnAd5rOLztaQ7BGvVNQ1VE
-         tZwMOkvVFXNkHoAeE7iH4/AXuzamiVib+dVwwJ1pJofmkMNl1/VbZ4LhL5zELMf3uru5
-         DxIw==
-X-Gm-Message-State: AOAM5304NY8TMZMCtZlsyxllSirra+i7H0xYOJLLLJlYNWKYL+RONBSD
-        iMEzCciiOTQm4uncDOd6ZfDpMQ==
-X-Google-Smtp-Source: ABdhPJz3k6DWIAM4yVc3PpYl2ZRiZhv+GU9W4TaS3w6K/fEjGfO/qXXp1c7H59UaTA8pdaXRackS1w==
-X-Received: by 2002:a63:695:: with SMTP id 143mr1246647pgg.314.1615926228122;
-        Tue, 16 Mar 2021 13:23:48 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id d20sm228987pjv.47.2021.03.16.13.23.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 13:23:47 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 14:23:45 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mike.leach@linaro.org, anshuman.khandual@arm.com,
-        leo.yan@linaro.org, Linu Cherian <lcherian@marvell.com>
-Subject: Re: [PATCH v4 10/19] coresight: etm-perf: Allow an event to use
- different sinks
-Message-ID: <20210316202345.GE1387186@xps15>
-References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
- <20210225193543.2920532-11-suzuki.poulose@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=arCkDDywA9FeKUOpIhe6JHln/l1VSIQXxqyZA+nk/iU=;
+        b=gIwgM9gY3raGVOy8yg1Wbb4mKGLN7rc+YyNgwVnds9xrSTkimWErYcG7duB5Ojhd1x
+         oNmdyK54edEx/RGjS5MaN2l+7yIN6U7SYYyd23QwI+Nsh/l/INtD32BJx81E5ncw+PAI
+         bPXuDZtbh8kyBoc5yrto5Qc6U76Xtkau/z5RDnhLAGhkxBv1NEUKpQs1JlwdEx2uLQ31
+         fQfrvUJbKNtPSz7AsXUadFAjnkGg4MrSyUK22qqkDj+fGP4ugNsG3tuRDdcKtU1HxIoQ
+         8UvH+49BSlOlL0kQlwEQra0sQjjsLaDyvGxfK97fMjBL0Ze6A8OlE+eErWBIrEu0K2M2
+         UQ2Q==
+X-Gm-Message-State: AOAM533JJonVRaU2G9nXI8N32SvmacBlCwhZRXZuIzF8ol4El3ASo7lw
+        UfhoeKtCEwlM3ZpmbnG73N/edzBsFOs09jkcQhPlIg==
+X-Google-Smtp-Source: ABdhPJxbYTa2/crB/yJv7oUF3BXq7Oe2jWTalZ7eOLLNb1YtuOaiCo40UQaYbJDBSqumTDJo/llAhw8klxAYM84cOwY=
+X-Received: by 2002:a37:b6c4:: with SMTP id g187mr946148qkf.162.1615926236634;
+ Tue, 16 Mar 2021 13:23:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225193543.2920532-11-suzuki.poulose@arm.com>
+References: <20210316194858.3527845-1-robh@kernel.org>
+In-Reply-To: <20210316194858.3527845-1-robh@kernel.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 16 Mar 2021 23:23:45 +0300
+Message-ID: <CAA8EJppX+o6pEYB4qVncWiz9sTDyQ7DyNqGLW--sgNb-WSP7iw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: Drop type references on common properties
+To:     Rob Herring <robh@kernel.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mark Brown <broonie@kernel.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stefan Wahren <wahrenst@gmx.net>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Odelu Kukatla <okukatla@codeaurora.org>,
+        Alex Elder <elder@kernel.org>, Suman Anna <s-anna@ti.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-pm@vger.kernel.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 07:35:34PM +0000, Suzuki K Poulose wrote:
-> When a sink is not specified by the user, the etm perf driver
-> finds a suitable sink automatically, based on the first ETM
-> where this event could be scheduled. Then we allocate the
-> sink buffer based on the selected sink. This is fine for a
-> CPU bound event as the "sink" is always guaranteed to be
-> reachable from the ETM (as this is the only ETM where the
-> event is going to be scheduled). However, if we have a thread
-> bound event, the event could be scheduled on any of the ETMs
-> on the system. In this case, currently we automatically select
-> a sink and exclude any ETMs that cannot reach the selected
-> sink. This is problematic especially for 1x1 configurations.
-> We end up in tracing the event only on the "first" ETM,
-> as the default sink is local to the first ETM and unreachable
-> from the rest. However, we could allow the other ETMs to
-> trace if they all have a sink that is compatible with the
-> "selected" sink and can use the sink buffer. This can be
-> easily done by verifying that they are all driven by the
-> same driver and matches the same subtype. Please note
-> that at anytime there can be only one ETM tracing the event.
-> 
-> Adding support for different types of sinks for a single
-> event is complex and is not something that we expect
-> on a sane configuration.
-> 
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Tested-by: Linu Cherian <lcherian@marvell.com>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+On Tue, 16 Mar 2021 at 22:49, Rob Herring <robh@kernel.org> wrote:
+>
+> Users of common properties shouldn't have a type definition as the
+> common schemas already have one. Drop all the unnecessary type
+> references in the tree.
+>
+> A meta-schema update to catch these is pending.
+>
+> Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Krzysztof Kozlowski <krzk@kernel.org>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Cc: Ohad Ben-Cohen <ohad@wizery.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
+> Cc: Benson Leung <bleung@chromium.org>
+> Cc: Zhang Rui <rui.zhang@intel.com>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Stefan Wahren <wahrenst@gmx.net>
+> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Cc: Odelu Kukatla <okukatla@codeaurora.org>
+> Cc: Alex Elder <elder@kernel.org>
+> Cc: Suman Anna <s-anna@ti.com>
+> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Cc: linux-gpio@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> Cc: linux-can@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: linux-remoteproc@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-usb@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
-> Changes:
-> - Rename sinks_match => sinks_compatible
-> - Tighten the check by matching the sink subtype
-> - Use user_sink instead of "sink_forced" and clean up the code (Mathieu)
-> - More comments, better commit description
-> ---
->  .../hwtracing/coresight/coresight-etm-perf.c  | 60 ++++++++++++++++---
->  1 file changed, 52 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> index 0f603b4094f2..aa0974bd265b 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> @@ -232,6 +232,25 @@ static void etm_free_aux(void *data)
->  	schedule_work(&event_data->work);
->  }
->  
-> +/*
-> + * Check if two given sinks are compatible with each other,
-> + * so that they can use the same sink buffers, when an event
-> + * moves around.
-> + */
-> +static bool sinks_compatible(struct coresight_device *a,
-> +			     struct coresight_device *b)
-> +{
-> +	if (!a || !b)
-> +		return false;
-> +	/*
-> +	 * If the sinks are of the same subtype and driven
-> +	 * by the same driver, we can use the same buffer
-> +	 * on these sinks.
-> +	 */
-> +	return (a->subtype.sink_subtype == b->subtype.sink_subtype) &&
-> +	       (sink_ops(a) == sink_ops(b));
+>  .../bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml       | 5 +----
+>  Documentation/devicetree/bindings/arm/cpus.yaml              | 2 --
+>  .../bindings/display/allwinner,sun4i-a10-tcon.yaml           | 1 -
+>  .../devicetree/bindings/gpio/socionext,uniphier-gpio.yaml    | 3 +--
+>  .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml      | 1 -
+>  .../devicetree/bindings/interconnect/qcom,rpmh.yaml          | 1 -
+>  .../bindings/memory-controllers/nvidia,tegra210-emc.yaml     | 2 +-
+>  Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml   | 1 -
+>  Documentation/devicetree/bindings/net/qcom,ipa.yaml          | 1 -
+>  Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml  | 2 --
+>  .../devicetree/bindings/remoteproc/ti,omap-remoteproc.yaml   | 2 +-
+>  Documentation/devicetree/bindings/sound/ak4642.yaml          | 2 --
+>  .../devicetree/bindings/sound/google,cros-ec-codec.yaml      | 2 +-
+>  Documentation/devicetree/bindings/sound/renesas,rsnd.yaml    | 1 -
+>  .../devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml       | 1 -
+>  Documentation/devicetree/bindings/usb/usb.yaml               | 1 -
+>  16 files changed, 5 insertions(+), 23 deletions(-)
 
-Ok
+For the qcom-spmi-adc-tm5.yaml:
+Acked-by: Dmity Baryshkov <dmitry.baryshkov@linaro.org>
 
-> +}
-> +
->  static void *etm_setup_aux(struct perf_event *event, void **pages,
->  			   int nr_pages, bool overwrite)
->  {
-> @@ -239,6 +258,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
->  	int cpu = event->cpu;
->  	cpumask_t *mask;
->  	struct coresight_device *sink = NULL;
-> +	struct coresight_device *user_sink = NULL, *last_sink = NULL;
->  	struct etm_event_data *event_data = NULL;
->  
->  	event_data = alloc_event_data(cpu);
-> @@ -249,7 +269,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
->  	/* First get the selected sink from user space. */
->  	if (event->attr.config2) {
->  		id = (u32)event->attr.config2;
-> -		sink = coresight_get_sink_by_id(id);
-> +		sink = user_sink = coresight_get_sink_by_id(id);
->  	}
->  
->  	mask = &event_data->mask;
-> @@ -277,14 +297,33 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
->  		}
->  
->  		/*
-> -		 * No sink provided - look for a default sink for one of the
-> -		 * devices. At present we only support topology where all CPUs
-> -		 * use the same sink [N:1], so only need to find one sink. The
-> -		 * coresight_build_path later will remove any CPU that does not
-> -		 * attach to the sink, or if we have not found a sink.
-> +		 * No sink provided - look for a default sink for all the ETMs,
-> +		 * where this event can be scheduled.
-> +		 * We allocate the sink specific buffers only once for this
-> +		 * event. If the ETMs have different default sink devices, we
-> +		 * can only use a single "type" of sink as the event can carry
-> +		 * only one sink specific buffer. Thus we have to make sure
-> +		 * that the sinks are of the same type and driven by the same
-> +		 * driver, as the one we allocate the buffer for. As such
-> +		 * we choose the first sink and check if the remaining ETMs
-> +		 * have a compatible default sink. We don't trace on a CPU
-> +		 * if the sink is not compatible.
->  		 */
-> -		if (!sink)
-> +		if (!user_sink) {
-> +			/* Find the default sink for this ETM */
->  			sink = coresight_find_default_sink(csdev);
-> +			if (!sink) {
-> +				cpumask_clear_cpu(cpu, mask);
-> +				continue;
-> +			}
-> +
-> +			/* Check if this sink compatible with the last sink */
-> +			if (last_sink && !sinks_compatible(last_sink, sink)) {
-> +				cpumask_clear_cpu(cpu, mask);
-> +				continue;
-> +			}
-> +			last_sink = sink;
+>
+> diff --git a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml b/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
+> index a2c63c8b1d10..c6144c8421fa 100644
+> --- a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
+> +++ b/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
+> @@ -26,10 +26,7 @@ properties:
+>        - const: simple-mfd
+>
+>    mboxes:
+> -    $ref: '/schemas/types.yaml#/definitions/phandle'
+> -    description: |
+> -      Phandle to the firmware device's Mailbox.
+> -      (See: ../mailbox/mailbox.txt for more information)
+> +    maxItems: 1
+>
+>    clocks:
+>      type: object
+> diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
+> index 26b886b20b27..6be4a8852ee5 100644
+> --- a/Documentation/devicetree/bindings/arm/cpus.yaml
+> +++ b/Documentation/devicetree/bindings/arm/cpus.yaml
+> @@ -256,13 +256,11 @@ properties:
+>        where voltage is in V, frequency is in MHz.
+>
+>    power-domains:
+> -    $ref: '/schemas/types.yaml#/definitions/phandle-array'
+>      description:
+>        List of phandles and PM domain specifiers, as defined by bindings of the
+>        PM domain provider (see also ../power_domain.txt).
+>
+>    power-domain-names:
+> -    $ref: '/schemas/types.yaml#/definitions/string-array'
+>      description:
+>        A list of power domain name strings sorted in the same order as the
+>        power-domains property.
+> diff --git a/Documentation/devicetree/bindings/display/allwinner,sun4i-a10-tcon.yaml b/Documentation/devicetree/bindings/display/allwinner,sun4i-a10-tcon.yaml
+> index c13faf3e6581..3a7d5d731712 100644
+> --- a/Documentation/devicetree/bindings/display/allwinner,sun4i-a10-tcon.yaml
+> +++ b/Documentation/devicetree/bindings/display/allwinner,sun4i-a10-tcon.yaml
+> @@ -73,7 +73,6 @@ properties:
+>    clock-output-names:
+>      description:
+>        Name of the LCD pixel clock created.
+> -    $ref: /schemas/types.yaml#/definitions/string-array
+>      maxItems: 1
+>
+>    dmas:
+> diff --git a/Documentation/devicetree/bindings/gpio/socionext,uniphier-gpio.yaml b/Documentation/devicetree/bindings/gpio/socionext,uniphier-gpio.yaml
+> index 1a54db04f29d..bcafa494ed7a 100644
+> --- a/Documentation/devicetree/bindings/gpio/socionext,uniphier-gpio.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/socionext,uniphier-gpio.yaml
+> @@ -43,8 +43,7 @@ properties:
+>
+>    gpio-ranges: true
+>
+> -  gpio-ranges-group-names:
+> -    $ref: /schemas/types.yaml#/definitions/string-array
+> +  gpio-ranges-group-names: true
+>
+>    socionext,interrupt-ranges:
+>      description: |
+> diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+> index 6f2398cdc82d..1e7894e524f9 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+> @@ -102,7 +102,6 @@ patternProperties:
+>
+>        st,adc-channel-names:
+>          description: List of single-ended channel names.
+> -        $ref: /schemas/types.yaml#/definitions/string-array
+>
+>        st,filter-order:
+>          description: |
+> diff --git a/Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml b/Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml
+> index 799e73cdb90b..13da7b29c707 100644
+> --- a/Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml
+> +++ b/Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml
+> @@ -82,7 +82,6 @@ properties:
+>        this interconnect to send RPMh commands.
+>
+>    qcom,bcm-voter-names:
+> -    $ref: /schemas/types.yaml#/definitions/string-array
+>      description: |
+>        Names for each of the qcom,bcm-voters specified.
+>
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra210-emc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra210-emc.yaml
+> index 49ab09252e52..bc8477e7ab19 100644
+> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra210-emc.yaml
+> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra210-emc.yaml
+> @@ -34,7 +34,7 @@ properties:
+>        - description: EMC general interrupt
+>
+>    memory-region:
+> -    $ref: /schemas/types.yaml#/definitions/phandle
+> +    maxItems: 1
+>      description:
+>        phandle to a reserved memory region describing the table of EMC
+>        frequencies trained by the firmware
+> diff --git a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
+> index fe6a949a2eab..55bff1586b6f 100644
+> --- a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
+> +++ b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
+> @@ -57,7 +57,6 @@ properties:
+>        - const: per
+>
+>    clock-frequency:
+> -    $ref: /schemas/types.yaml#/definitions/uint32
+>      description: |
+>        The oscillator frequency driving the flexcan device, filled in by the
+>        boot loader. This property should only be used the used operating system
+> diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+> index 8f86084bf12e..4e8dee4aa90d 100644
+> --- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+> +++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+> @@ -100,7 +100,6 @@ properties:
+>        - description: Whether the IPA clock is enabled (if valid)
+>
+>    qcom,smem-state-names:
+> -    $ref: /schemas/types.yaml#/definitions/string-array
+>      description: The names of the state bits used for SMP2P output
+>      items:
+>        - const: ipa-clock-enabled-valid
+> diff --git a/Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml b/Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml
+> index d5d7f113bade..828e4a1ece41 100644
+> --- a/Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml
+> +++ b/Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml
+> @@ -23,12 +23,10 @@ properties:
+>        List of phandle to the nvmem data cells.
+>
+>    nvmem-names:
+> -    $ref: /schemas/types.yaml#/definitions/string-array
+>      description:
+>        Names for the each nvmem provider.
+>
+>    nvmem-cell-names:
+> -    $ref: /schemas/types.yaml#/definitions/string-array
+>      description:
+>        Names for each nvmem-cells specified.
+>
+> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.yaml
+> index 1a1159097a2a..73400bc6e91d 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.yaml
+> +++ b/Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.yaml
+> @@ -93,7 +93,7 @@ properties:
+>  # The following are the optional properties:
+>
+>    memory-region:
+> -    $ref: /schemas/types.yaml#/definitions/phandle
+> +    maxItems: 1
+>      description: |
+>        phandle to the reserved memory node to be associated
+>        with the remoteproc device. The reserved memory node
+> diff --git a/Documentation/devicetree/bindings/sound/ak4642.yaml b/Documentation/devicetree/bindings/sound/ak4642.yaml
+> index 6cd213be2266..1e2caa29790e 100644
+> --- a/Documentation/devicetree/bindings/sound/ak4642.yaml
+> +++ b/Documentation/devicetree/bindings/sound/ak4642.yaml
+> @@ -29,11 +29,9 @@ properties:
+>
+>    clock-frequency:
+>      description: common clock binding; frequency of MCKO
+> -    $ref: /schemas/types.yaml#/definitions/uint32
+>
+>    clock-output-names:
+>      description: common clock name
+> -    $ref: /schemas/types.yaml#/definitions/string
+>
+>  required:
+>    - compatible
+> diff --git a/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml b/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
+> index acfb9db021dc..77adbebed824 100644
+> --- a/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
+> +++ b/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
+> @@ -32,7 +32,7 @@ properties:
+>            The last one integer is the length of the shared memory.
+>
+>    memory-region:
+> -    $ref: '/schemas/types.yaml#/definitions/phandle'
+> +    maxItems: 1
+>      description: |
+>        Shared memory region to EC.  A "shared-dma-pool".
+>        See ../reserved-memory/reserved-memory.txt for details.
+> diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+> index 2e1046513603..e494a0416748 100644
+> --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+> +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+> @@ -78,7 +78,6 @@ properties:
+>
+>    clock-frequency:
+>      description: for audio_clkout0/1/2/3
+> -    $ref: /schemas/types.yaml#/definitions/uint32-array
+>
+>    clkout-lr-asynchronous:
+>      description: audio_clkoutn is asynchronizes with lr-clock.
+> diff --git a/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml b/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml
+> index 95a728f4d333..3ea8c0c1f45f 100644
+> --- a/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml
+> +++ b/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml
+> @@ -59,7 +59,6 @@ patternProperties:
+>
+>      properties:
+>        reg:
+> -        $ref: /schemas/types.yaml#/definitions/uint32
+>          description: Specify the sensor channel. There are 8 channels in PMIC5's ADC TM
+>          minimum: 0
+>          maximum: 7
+> diff --git a/Documentation/devicetree/bindings/usb/usb.yaml b/Documentation/devicetree/bindings/usb/usb.yaml
+> index 78491e66ed24..939f217b8c7b 100644
+> --- a/Documentation/devicetree/bindings/usb/usb.yaml
+> +++ b/Documentation/devicetree/bindings/usb/usb.yaml
+> @@ -16,7 +16,6 @@ properties:
+>      pattern: "^usb(@.*)?"
+>
+>    phys:
+> -    $ref: /schemas/types.yaml#/definitions/phandle-array
+>      description:
+>        List of all the USB PHYs on this HCD
+>
+> --
+> 2.27.0
+>
 
-This is much better.
 
-I thought about something when I first looked a this patch in the previous
-revision...  With the above we are changing the behavior of the CS framework for
-systems that have one sink per CPU _clusters_, but for once it is for the better.
-
-With this patch coresight_find_default_sink() is called for every CPU,
-allowing CPUs in the second cluster to find a valid path and be included in the
-trace session.  Before this patch CPUs in the second cluster couldn't
-establish a valid path to the sink since it was only reachable from the first
-cluster.
-
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
-More comments to come tomorrow.
-
-Thanks,
-Mathieu
-
-> +		}
->  
->  		/*
->  		 * Building a path doesn't enable it, it simply builds a
-> @@ -312,7 +351,12 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
->  	if (!sink_ops(sink)->alloc_buffer || !sink_ops(sink)->free_buffer)
->  		goto err;
->  
-> -	/* Allocate the sink buffer for this session */
-> +	/*
-> +	 * Allocate the sink buffer for this session. All the sinks
-> +	 * where this event can be scheduled are ensured to be of the
-> +	 * same type. Thus the same sink configuration is used by the
-> +	 * sinks.
-> +	 */
->  	event_data->snk_config =
->  			sink_ops(sink)->alloc_buffer(sink, event, pages,
->  						     nr_pages, overwrite);
-> -- 
-> 2.24.1
-> 
+-- 
+With best wishes
+Dmitry
