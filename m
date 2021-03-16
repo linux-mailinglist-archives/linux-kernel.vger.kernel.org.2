@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B45933CD11
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 451D933CD15
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:23:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235433AbhCPFVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
+        id S233736AbhCPFXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:23:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235425AbhCPFUx (ORCPT
+        with ESMTP id S235431AbhCPFXR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:20:53 -0400
+        Tue, 16 Mar 2021 01:23:17 -0400
 Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38DBC06174A;
-        Mon, 15 Mar 2021 22:20:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2572C06174A;
+        Mon, 15 Mar 2021 22:23:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
         Reply-To:Cc:Content-ID:Content-Description;
-        bh=ghCVJsTrlHMG4p9O3S38i1mhCzDfxp7I2wI1zLBETBE=; b=3e9I+Fi2bKf/TEbU/PyNUfbYMl
-        Mjs7kqrgsJf77Tnfns1S00E02TdxV0FzcVpyXkVnF4sbImuTZ3bPnu4HkpS6/fLHst3MxrEZ9GxHv
-        uxI/F61REt2rFV4thEXq4hmkbInSHSpNW2cLgBX4ZbsWBao2/thP+rVwXitEvxPw6YQYPF4BSrnDz
-        K61CQFP3QU3zXy1teXUQwNYZ65QMm/RGlMtSI2XjdVdBI0S5PujkwI6EcbvzZuPc6qUp6ZDPZ4afm
-        ulZtou2eOC+g1P7qBnvnGnKLMz1NO+qw8DlKkz2faFWtNxg6d46HWfnK0JEz0VzXMaLbqWu9/EejB
-        mAUMG0IQ==;
+        bh=pzK6j1BLSUD4GBlBNhV6RS9vkRptruk9iGMar/4N4MQ=; b=gDait91fy1rP3SXxVBrgYA2sB5
+        jki0DZHU9GXlJcZAPXUjFdDFm2W2bgtC34WqAPPkJkA59Gi+TGJl6p/XcmfEiFT24NIXm2MdQ9nFD
+        Q1yuHLQU/+jNT4HvsaLPBBnIgVM/v0X9ONwPejoqEBmJm9FHrgunUhmDTty/0lIYItFgcRsP0ZCUJ
+        TFUlQ/64MqI/ZOET4+Y+jW0PNSYLNYNDVZ/qRNmhmq/3OEbrQJpzD6TKr882wQAS1FS3rOFNcAGAa
+        S02J0HJgZetlREyKDEZMY66O29A4EkCFrKOoZaf+nxWZ6vjMFNKKLPZNx3q7I64i7s2TxSkS7dLiT
+        MYoV4GXw==;
 Received: from [2601:1c0:6280:3f0::9757]
         by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lM28Q-001PSD-W0; Tue, 16 Mar 2021 05:20:51 +0000
-Subject: Re: [PATCH] usb: host: Mundane spello fix in the file sl811_cs.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210316045243.3500228-1-unixbhaskar@gmail.com>
+        id 1lM2Ak-001PTS-N1; Tue, 16 Mar 2021 05:23:15 +0000
+Subject: Re: [PATCH] fs: Trivial typo fix in the file coredump.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210316050302.3816253-1-unixbhaskar@gmail.com>
 From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <4913517e-5d69-0a78-4bb0-981362ffab1e@infradead.org>
-Date:   Mon, 15 Mar 2021 22:20:48 -0700
+Message-ID: <515c0dca-2ce5-4c15-0682-b95374cb73e2@infradead.org>
+Date:   Mon, 15 Mar 2021 22:23:12 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210316045243.3500228-1-unixbhaskar@gmail.com>
+In-Reply-To: <20210316050302.3816253-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -47,31 +46,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/15/21 9:52 PM, Bhaskar Chowdhury wrote:
+On 3/15/21 10:03 PM, Bhaskar Chowdhury wrote:
 > 
-> s/seting/setting/
+> s/postion/position/
 > 
 > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
 Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
 > ---
->  drivers/usb/host/sl811_cs.c | 2 +-
+>  Al, I hope this time I read the comments well enough,if still
+>  I am at fault , curse me!
+> 
+>  fs/coredump.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/usb/host/sl811_cs.c b/drivers/usb/host/sl811_cs.c
-> index 72136373ffab..16d157013018 100644
-> --- a/drivers/usb/host/sl811_cs.c
-> +++ b/drivers/usb/host/sl811_cs.c
-> @@ -94,7 +94,7 @@ static int sl811_hc_init(struct device *parent, resource_size_t base_addr,
->  		return -EBUSY;
->  	platform_dev.dev.parent = parent;
+> diff --git a/fs/coredump.c b/fs/coredump.c
+> index 1c0fdc1aa70b..3ecae122ffd9 100644
+> --- a/fs/coredump.c
+> +++ b/fs/coredump.c
+> @@ -923,7 +923,7 @@ EXPORT_SYMBOL(dump_align);
 > 
-> -	/* finish seting up the platform device */
-> +	/* finish setting up the platform device */
->  	resources[0].start = irq;
-> 
->  	resources[1].start = base_addr;
+>  /*
+>   * Ensures that file size is big enough to contain the current file
+> - * postion. This prevents gdb from complaining about a truncated file
+> + * position. This prevents gdb from complaining about a truncated file
+>   * if the last "write" to the file was dump_skip.
+>   */
+>  void dump_truncate(struct coredump_params *cprm)
 > --
 
 
