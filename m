@@ -2,257 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6107F33CD0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D97A333CD0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235422AbhCPFUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235395AbhCPFUS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:20:18 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF75C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 22:20:17 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id e19so70140354ejt.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 22:20:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=v+vZVoEe73TrJcbOUS3PUc4e2EaY9LkOhiFvpJeSw+A=;
-        b=Uc5SyMzQUCimtVDhO44u6Fk4X8Lrqv4NEk35HlLWrV+luvN+0PxgILOzrZIj2EBxyw
-         kkpvaIN/X49d5JK0JeHt9+yEFoZYFFtDWGxx+KOp//Q7CT9pJoCXtDOLZow2QmF58WtP
-         4ztgkQeCOu/M0+D/fraSmqdqqInrDnaEhOHJ1PFnxh6NFaT+NsJpeJopQIz/CLOg/N0s
-         x3zLVJn6k7IU/1xIAUoyURCvTmrh1yEwtp1jXs553UZu0+WmfMDQX+c+MA113x2JrVnH
-         G8JK09T28QtUjQaQDS6itsQzQkEm1Vy2cv2jM1SW7eIO3ZQwhFqz3quB4KftQVK5KAK3
-         DJxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=v+vZVoEe73TrJcbOUS3PUc4e2EaY9LkOhiFvpJeSw+A=;
-        b=F7M0eVLGYWBgtVypXvrpzKtVLjCsY2fKYpkwe/dGmboxvVVEKmTm6EAfmg4lrZLk/j
-         sTGKGdeyxsNqm1jkMcJdE4uqjl/ceIX64/HcNFvMCGSf+MohFs+GoeucIGwAMyuRCkMz
-         fzFbtbtl70HjYSE8/8R4gxe45HBFWHimjspz89LGthKB1Vc8w22RCQoJzyLKrRzM9b1X
-         m+emQmFI6igI1fhWE4SidgdoB4VZNtFBkPjPIrI3PErmUeLMZCz0Rmbh5Ez82FnUEq4e
-         OmwvviFCVlCzHl3R4CUMX/tLEIb5syIi91WmSAxgKDy1DDfvEWLz5tAOI9Reyn+t+XLv
-         Louw==
-X-Gm-Message-State: AOAM5323c4wtjjA1YcECxAw6zVIROsxMVxYfu3jCrV4J+AqsxoSrIMY6
-        CDQ98chxcl2KfHLLpFJwaGxXVfW8A6oJYu0bOnFlng==
-X-Google-Smtp-Source: ABdhPJy2+LV6iVPlGq4kvhbHckySY6NkPu61DH0IgOBhX7BAdNMGNJOC001vaKg9WngylemOzkMk7ApRBc7rzURjea8=
-X-Received: by 2002:a17:906:a052:: with SMTP id bg18mr27864565ejb.18.1615872016538;
- Mon, 15 Mar 2021 22:20:16 -0700 (PDT)
+        id S235401AbhCPFUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:20:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54580 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231996AbhCPFUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 01:20:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2613265142;
+        Tue, 16 Mar 2021 05:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615872008;
+        bh=JQGbv2BBOZ4RVyZtOK9goL4KQNcS66qOfA0n64oowK4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=lc+gCnW/pmeXAW1yFqQxxkttydWMhQl31yRNlxT23cb+wJRJbgxFVQN5wUCGalEI1
+         S7gJassm09Hi9qAbIi62PpMEBw+GZJ/y1mKHJjUk9ovihhSXdrbtABp60EtdZ/zqj5
+         1e8KgyAyLuHzbA1Hbu9rGZh6L/Oy2pbJqKEOqbxYj55WuJXk5zfToL49+yNhKRrPDe
+         Czh3eTiM+A0TBw/h+ZTDeTer3R6AcHr6wgrgP8ikysyuVVbiWYLVvBGvA0P+sm8ZDL
+         krtm0Zbjb+E7IF/HnTjcWmfDAfipDbp/YV0r+cNjBxrEx50iMpYQjLwa2ZVf7YtwGV
+         ZD0918Mnf/JAw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 149B460A45;
+        Tue, 16 Mar 2021 05:20:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210315135541.921894249@linuxfoundation.org>
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 16 Mar 2021 10:50:04 +0530
-Message-ID: <CA+G9fYswBGH-wTJ30TNxS9Ue6=Htpcr4QGgnA4JV4-Rwc-9F1Q@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/290] 5.10.24-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] samples: bpf: Fix a spelling typo in do_hbm_test.sh
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161587200807.23555.1560644203529610959.git-patchwork-notify@kernel.org>
+Date:   Tue, 16 Mar 2021 05:20:08 +0000
+References: <20210315124454.1744594-1-standby24x7@gmail.com>
+In-Reply-To: <20210315124454.1744594-1-standby24x7@gmail.com>
+To:     Masanari Iida <standby24x7@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, ast@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021 at 19:27, <gregkh@linuxfoundation.org> wrote:
->
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
-> This is the start of the stable review cycle for the 5.10.24 release.
-> There are 290 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 17 Mar 2021 13:55:02 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.24-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hello:
+
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
+
+On Mon, 15 Mar 2021 21:44:54 +0900 you wrote:
+> This patch fixes a spelling typo in do_hbm_test.sh
+> 
+> Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+> ---
+>  samples/bpf/do_hbm_test.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Here is the summary with links:
+  - samples: bpf: Fix a spelling typo in do_hbm_test.sh
+    https://git.kernel.org/bpf/bpf-next/c/d94436a5d1a0
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.10.24-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.10.y
-git commit: c6b3724e56923191dc567ceb626ba15daa49313c
-git describe: v5.10.23-291-gc6b3724e5692
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10=
-.y/build/v5.10.23-291-gc6b3724e5692
-
-No regressions (compared to build v5.10.23)
-
-No fixes (compared to build v5.10.23)
-
-Ran 58761 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-i386-clang
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-lkdtm
-* ltp-containers-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* fwts
-* kselftest-
-* kselftest-bpf
-* kselftest-intel_pstate
-* kselftest-kvm
-* kselftest-livepatch
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-sched-tests
-* ltp-tracing-tests
-* network-basic-tests
-* v4l2-compliance
-* kselftest-android
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-tc-testing
-* kselftest-vm
-* kselftest-x86
-* ltp-controllers-tests
-* ltp-open-posix-tests
-* kselftest-cpufreq
-* kvm-unit-tests
-* kunit
-* rcutorture
-* ssuite
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
