@@ -2,84 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57BF33CC17
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 04:28:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C757733CC1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 04:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232788AbhCPD2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 23:28:08 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:43742 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229705AbhCPD1f (ORCPT
+        id S233537AbhCPD2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 23:28:42 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13960 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231652AbhCPD2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 23:27:35 -0400
-X-UUID: f48e8b9324cb4fcda6dafa4c22fc1ef6-20210316
-X-UUID: f48e8b9324cb4fcda6dafa4c22fc1ef6-20210316
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <rex-bc.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 61645978; Tue, 16 Mar 2021 11:27:32 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 16 Mar 2021 11:27:31 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 16 Mar 2021 11:27:31 +0800
-From:   Rex-BC Chen <rex-bc.chen@mediatek.com>
-To:     <chunkuang.hu@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Rex-BC Chen <rex-bc.chen@mediatek.com>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Subject: [RESEND,v4,2/2] drm/mediatek: mtk_dpi: Add dpi config for mt8192
-Date:   Tue, 16 Mar 2021 11:26:19 +0800
-Message-ID: <1615865179-22051-3-git-send-email-rex-bc.chen@mediatek.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1615865179-22051-1-git-send-email-rex-bc.chen@mediatek.com>
-References: <1615865179-22051-1-git-send-email-rex-bc.chen@mediatek.com>
+        Mon, 15 Mar 2021 23:28:09 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DzzGD4ZBKzrW7T;
+        Tue, 16 Mar 2021 11:26:12 +0800 (CST)
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 16 Mar 2021 11:27:55 +0800
+From:   Zenghui Yu <yuzenghui@huawei.com>
+To:     <netdev@vger.kernel.org>, <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netanel@amazon.com>, <akiyano@amazon.com>, <gtzalik@amazon.com>,
+        <saeedb@amazon.com>, <corbet@lwn.net>,
+        <wanghaibin.wang@huawei.com>, "Zenghui Yu" <yuzenghui@huawei.com>
+Subject: [PATCH net] docs: net: ena: Fix ena_start_xmit() function name typo
+Date:   Tue, 16 Mar 2021 11:27:37 +0800
+Message-ID: <20210316032737.1429-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.185.179]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add mtk_dpi config setting and compatible for MT8192
+The ena.rst documentation referred to end_start_xmit() when it should refer
+to ena_start_xmit(). Fix the typo.
 
-Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
-Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
 ---
- drivers/gpu/drm/mediatek/mtk_dpi.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ Documentation/networking/device_drivers/ethernet/amazon/ena.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-index e1945d4bd7c4..f3896e2d22ca 100644
---- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-@@ -698,6 +698,12 @@ static const struct mtk_dpi_conf mt8183_conf = {
- 	.max_clock_khz = 100000,
- };
+diff --git a/Documentation/networking/device_drivers/ethernet/amazon/ena.rst b/Documentation/networking/device_drivers/ethernet/amazon/ena.rst
+index 3561a8a29fd2..f8c6469f2bd2 100644
+--- a/Documentation/networking/device_drivers/ethernet/amazon/ena.rst
++++ b/Documentation/networking/device_drivers/ethernet/amazon/ena.rst
+@@ -267,7 +267,7 @@ DATA PATH
+ Tx
+ --
  
-+static const struct mtk_dpi_conf mt8192_conf = {
-+	.cal_factor = mt8183_calculate_factor,
-+	.reg_h_fre_con = 0xe0,
-+	.max_clock_khz = 150000,
-+};
-+
- static int mtk_dpi_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -818,6 +824,9 @@ static const struct of_device_id mtk_dpi_of_ids[] = {
- 	{ .compatible = "mediatek,mt8183-dpi",
- 	  .data = &mt8183_conf,
- 	},
-+	{ .compatible = "mediatek,mt8192-dpi",
-+	  .data = &mt8192_conf,
-+	},
- 	{ },
- };
+-end_start_xmit() is called by the stack. This function does the following:
++ena_start_xmit() is called by the stack. This function does the following:
  
+ - Maps data buffers (skb->data and frags).
+ - Populates ena_buf for the push buffer (if the driver and device are
 -- 
-2.18.0
+2.19.1
 
