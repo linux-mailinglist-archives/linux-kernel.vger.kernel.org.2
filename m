@@ -2,77 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B635433E22F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:34:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E17133E230
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:34:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbhCPXdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 19:33:46 -0400
-Received: from casper.infradead.org ([90.155.50.34]:44504 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbhCPXdU (ORCPT
+        id S229807AbhCPXdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 19:33:49 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45336 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhCPXd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 19:33:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ugD/jJZR2x4PlwFOPLM1Z8A1WHyvGKetbXN+yb06xfM=; b=OX7RitBwZ7oc3GO38XAXfxdoij
-        vfKiFKYeao1v7N+9Nx7PTu9Z61XntTa7fENRJtgQ3CooWOi6pFGDLJfOCWvQSPDMt18AuEvLmsG/t
-        w8/YLaN0lddz/EqtFRwAlhyPeA9k4RDxbsO5JOnmoGPMQvITYjkp3S7vUIHxpsbZNUio5Ko0ZVsEk
-        spv1+ANWI7xmV3T6aAKDnp+5lQTDx1iFWg+gZ2u+pQegvhUWAjAjQXwbLjDk4o9yLmXkUmEvsqvJb
-        3MnhN12ApsM12ymiXHH0JigGgpTf+2cbMmzeHJageIJBcRi9noxplnjX/iPmBZqWg1lpllSgZWaT2
-        pwg8kffg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMJB6-000lEX-7N; Tue, 16 Mar 2021 23:32:48 +0000
-Date:   Tue, 16 Mar 2021 23:32:44 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/28] mm: Add an unlock function for
- PG_private_2/PG_fscache
-Message-ID: <20210316233244.GE3420@casper.infradead.org>
-References: <20210316190707.GD3420@casper.infradead.org>
- <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk>
- <161539528910.286939.1252328699383291173.stgit@warthog.procyon.org.uk>
- <3313319.1615927080@warthog.procyon.org.uk>
+        Tue, 16 Mar 2021 19:33:29 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615937607;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=F3yikjHBX3sE+vqVOAg0c4FbXVC7h/jsk7NB+UTl4pY=;
+        b=ZBpkHA3yMsvjOMDQlQDKG/f2JwzyuZ+1kB+44ZuV4SbBS3JtyxSQaVXoT2trt3YilG9rDs
+        L6h8pSjhEe1rzGdGxiJmp3/4WU53keFtoCa68VJYNVnPIbT3x5cOUKKdCN951p9YrzIwJI
+        rbN+scLS88zfxi97ZeQK664T7hhUXrVKfCCKA0sSpKL6al6e2jW7ewe1ZH7680qsr05ZJA
+        U9NI/Wei9c18v8sEnTDwNKjUZEzd7oZ+1SICWdHGblcKh7IYZqqswcrWNoF2iWzul6IM0+
+        2IRQcdXQfgCkqVvLW+4eE/Eu/Eu9QYGmhuIrgWek4uzb63fMPAU5VKCBqXLdtw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615937607;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=F3yikjHBX3sE+vqVOAg0c4FbXVC7h/jsk7NB+UTl4pY=;
+        b=qBoEY0L4Ynny3Z3D6ukRFXsT63ZYZeUutsYPyIJtoUFiA0tC+gFvfCvGeVj8Lgk1jz+F4a
+        9SujFVU6K+engkBQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Alistair Popple <alistair@popple.id.au>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>, Yue Hu <huyue2@yulong.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Rafael Aquini <aquini@redhat.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, kexec@lists.infradead.org
+Subject: [PATCH next v1 0/3] printk: remove safe buffers
+Date:   Wed, 17 Mar 2021 00:33:23 +0100
+Message-Id: <20210316233326.10778-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3313319.1615927080@warthog.procyon.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 08:38:00PM +0000, David Howells wrote:
-> Matthew Wilcox <willy@infradead.org> wrote:
-> 
-> > So ... a page with both flags cleared should have a refcount of N.
-> > A page with one or both flags set should have a refcount of N+1.
-> > ...
-> > How is a poor filesystem supposed to make that true?  Also btrfs has this
-> > problem since it uses private_2 for its own purposes.
-> 
-> It's simpler if it's N+2 for both patches set.  Btw, patch 13 adds that - and
-> possibly that should be merged into an earlier patch.
+Hello,
 
-So ...
+Here is v1 of a series to remove the safe buffers. They are no
+longer needed because messages can be stored directly into the
+log buffer from any context.
 
-static inline int page_has_private(struct page *page)
-{
-	unsigned long flags = page->flags;
-	return ((flags >> PG_private) & 1) + ((flags >> PG_private_2) & 1);
-}
+However, the safe buffers also provided a form of recursion
+protection. For that reason, explicit recursion protection is
+also implemented for this series.
 
-perhaps?
+This series falls in line with the printk-rework plan as
+presented [0] at Linux Plumbers in Lisbon 2019.
+
+This series is based on next-20210316.
+
+John Ogness
+
+[0] https://linuxplumbersconf.org/event/4/contributions/290/attachments/276/463/lpc2019_jogness_printk.pdf (slide 23)
+
+John Ogness (3):
+  printk: track/limit recursion
+  printk: remove safe buffers
+  printk: convert @syslog_lock to spin_lock
+
+ arch/powerpc/kernel/traps.c    |   1 -
+ arch/powerpc/kernel/watchdog.c |   5 -
+ include/linux/printk.h         |  10 -
+ kernel/kexec_core.c            |   1 -
+ kernel/panic.c                 |   3 -
+ kernel/printk/internal.h       |   2 -
+ kernel/printk/printk.c         | 171 +++++++++--------
+ kernel/printk/printk_safe.c    | 332 +--------------------------------
+ lib/nmi_backtrace.c            |   6 -
+ 9 files changed, 100 insertions(+), 431 deletions(-)
+
+-- 
+2.20.1
+
