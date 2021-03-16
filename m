@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2143433DBBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB85833DBCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239451AbhCPR7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:59:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47359 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236422AbhCPR6r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:58:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615917526;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0JF+/EvZtJVhKD33W6FqDvREuQ9YbTe24q46xCPM6xE=;
-        b=Y7y9hSBOjTrMT7ddLN8et8Kl+DLmwK8ezmX459EudpofP+RgQky+NJ9CfrG3puo8lFD+L9
-        gNtN4z5zT7gCkhRzhKBUd81jyH6DLskgz4ifG81NHv5MAGnYV18t6FVAgYxvitGeHVVDEQ
-        fI4gjHzs6B5d2o1FhSJvMRomK60gRBk=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-565-6-h5AlkCNjSj2VfbL_B7bg-1; Tue, 16 Mar 2021 13:58:45 -0400
-X-MC-Unique: 6-h5AlkCNjSj2VfbL_B7bg-1
-Received: by mail-wm1-f71.google.com with SMTP id z26so9935352wml.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:58:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0JF+/EvZtJVhKD33W6FqDvREuQ9YbTe24q46xCPM6xE=;
-        b=suWtER110vkuGzHdCDA6qfOv79LQ5/s9nxtxGSJHdbgSwszbXMpHPWIxajpD+r8300
-         OSwdIezf44yUf7djuUrJJxP2hUCKNNgQb8+zSjCVxhQYrz0VZJZibfcjT8pvJUdEAhF6
-         6cAEvpqBO4pcmiL2Z+i7B9XUyeGyYmvX3O3Rr2BmG4vSQ/xg02kK4VA4sSwk97jHF6cu
-         PmExkxup8BKBnUMuzKxcB2Ebe2Smav7oQoMZ3N823TBMGIlpmdI9k3bgeThURdvURig4
-         8r7b0PC6gDBuwGMbGvRsk1lfJ4zW7u8R1c01bXOT5bfD7SfT0m2fGMpliO1mmykXfjTx
-         +SfA==
-X-Gm-Message-State: AOAM531/KBqFOABL4Kjf91PDyy95mqR/rMW+E3WeOZDFlQ63JsZgmGXU
-        UrZgS+fqTesFtU7Q6DN3eTjsemKFDH8t8SeratPiRiGcSbd+aqiLpQ81YwkhnGG+QYk4N08H4cl
-        J7gg7yPMfXta4oUGacQbVwtoH
-X-Received: by 2002:a05:600c:214d:: with SMTP id v13mr81722wml.162.1615917524173;
-        Tue, 16 Mar 2021 10:58:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwz8qaQiIOeDTIxZu7wmd1Y+fc2q4azsyR8hIQCQE4eF5SdedLniWyjPV6zPBLTn4HqoZPj4w==
-X-Received: by 2002:a05:600c:214d:: with SMTP id v13mr81708wml.162.1615917524031;
-        Tue, 16 Mar 2021 10:58:44 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id j26sm22582822wrh.57.2021.03.16.10.58.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 10:58:43 -0700 (PDT)
-Subject: Re: [RFC] KVM: x86: Support KVM VMs sharing SEV context
-To:     Sean Christopherson <seanjc@google.com>,
-        Nathan Tempelman <natet@google.com>
-Cc:     Thomas Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Steve Rutherford <srutherford@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Ashish Kalra <Ashish.Kalra@amd.com>
-References: <20210224085915.28751-1-natet@google.com>
- <YDaOw48Ug7Tgr+M6@google.com>
- <CAKiEG5qtTbm8dtE3pZDy_rfSfTfvhCYhDCh2DD-uh2w6xZnvcQ@mail.gmail.com>
- <YFDwU3CC/DgRo6Vk@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <df2e2cd9-18d5-f35e-6c05-5ba0c399ccbe@redhat.com>
-Date:   Tue, 16 Mar 2021 18:58:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S239549AbhCPSAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:00:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239547AbhCPR7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:59:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68DBA6512B;
+        Tue, 16 Mar 2021 17:59:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615917592;
+        bh=nXlw2vfyIp1WV4usGhcoH7XilW2OrIy0e0d+yxJsh9E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=e8pqAQMPjtlThMC66+kC/1hiYm64eWZ4wYu4wYB5j5y7/non75NV+4zzyXJ/+Whf9
+         LsklXdLpM/fJxJNyg7ccJ6WdDe7xFKiYpv2nB9fIQUiYIeLbzoGxzdIlAQxx5BJQtj
+         fg9JlGMFIYeHWV7iJ00Ct6qCS2rqxHtF0cOYWY8rsWRzYkdKqZb2UPFQnPsXQZSNGa
+         aupAREoPkP7+LV5Iv7X4CgE5SqmeIchFynOt+etteCZ7Ly3mq8mzFp5pkV8b56iEZf
+         mFvvw9TdSuroBaPuJqFasTU/ZmQQUSXe+4uRAi5ygoUtfFeyL5IdN6r0zaWBGh69I6
+         Z0WRHjPpDrV/g==
+From:   Mark Brown <broonie@kernel.org>
+To:     Seiya Wang <seiya.wang@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, linux-iio@vger.kernel.org,
+        Bayi Cheng <bayi.cheng@mediatek.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        linux-serial@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        Fabien Parent <fparent@baylibre.com>,
+        linux-spi@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Wenbin Mei <wenbin.mei@mediatek.com>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-mmc@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
+        linux-kernel@vger.kernel.org,
+        Stanley Chu <stanley.chu@mediatek.com>
+Subject: Re: (subset) [PATCH 00/10] Add basic node support for Mediatek MT8195 SoC
+Date:   Tue, 16 Mar 2021 17:59:39 +0000
+Message-Id: <161591750213.14124.1270039699331063876.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210316111443.3332-1-seiya.wang@mediatek.com>
+References: <20210316111443.3332-1-seiya.wang@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <YFDwU3CC/DgRo6Vk@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/03/21 18:52, Sean Christopherson wrote:
->> I don't
->> know that holding the fd instead of the kvm makes that much better though,
->> are there advantages to that I'm not seeing?
-> If there's no kvm pointer, it's much more difficult for someone to do the wrong
-> thing, and any such shenanigans stick out like a sore thumb in patches, which
-> makes reviewing future changes easier.
+On Tue, 16 Mar 2021 19:14:33 +0800, Seiya Wang wrote:
+> MT8195 is a SoC based on 64bit ARMv8 architecture.
+> It contains 4 CA55 and 4 CA78 cores.
+> MT8195 share many HW IP with MT65xx series.
+> This patchset was tested on MT8195 evaluation board to shell.
+> 
+> Based on v5.12-rc2
+> 
+> [...]
 
-On the other hand holding the fd open complicates the code, reference 
-counting rules are already hard enough.
+Applied to
 
-I think we only need a replacement for "mirror", what about "dependent"? 
-  "is_dependent_enc_context" seems clear enough.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-Paolo
+Thanks!
 
+[05/10] dt-bindings: spi: Add compatible for Mediatek MT8195
+        commit: 5ac1b909e5b60cc2735bd9174f631dc2c7f44c5a
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
