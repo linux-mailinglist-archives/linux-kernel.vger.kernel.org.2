@@ -2,85 +2,353 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6633B33D382
+	by mail.lfdr.de (Postfix) with ESMTP id 6739133D383
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237589AbhCPMGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:06:06 -0400
-Received: from lucky1.263xmail.com ([211.157.147.130]:57634 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232089AbhCPMFd (ORCPT
+        id S237596AbhCPMGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 08:06:13 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:50473 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232012AbhCPMFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:05:33 -0400
-Received: from localhost (unknown [192.168.167.13])
-        by lucky1.263xmail.com (Postfix) with ESMTP id B472FD0F2F;
-        Tue, 16 Mar 2021 20:05:06 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [111.207.172.18])
-        by smtp.263.net (postfix) whith ESMTP id P13096T140547754784512S1615896302676772_;
-        Tue, 16 Mar 2021 20:05:07 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <afc6effab0856d2a4c2ad824966a2533>
-X-RL-SENDER: maqianga@uniontech.com
-X-SENDER: maqianga@uniontech.com
-X-LOGIN-NAME: maqianga@uniontech.com
-X-FST-TO: gregkh@linuxfoundation.org
-X-SENDER-IP: 111.207.172.18
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Qiang Ma <maqianga@uniontech.com>
-To:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
-        mhocko@suse.com, john.oldman@polehill.co.uk, joe@perches.com,
-        longman@redhat.com, matthew.v.deangelis@gmail.com
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Qiang Ma <maqianga@uniontech.com>
-Subject: [PATCH] staging: rtl8723bs/core: add spaces between operators
-Date:   Tue, 16 Mar 2021 20:05:00 +0800
-Message-Id: <20210316120500.351-1-maqianga@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Tue, 16 Mar 2021 08:05:37 -0400
+X-Originating-IP: 81.185.168.196
+Received: from [192.168.43.237] (196.168.185.81.rev.sfr.net [81.185.168.196])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id A5AEBE000C;
+        Tue, 16 Mar 2021 12:05:28 +0000 (UTC)
+Subject: Re: [PATCH] Insert SFENCE.VMA in function set_pte_at for RISCV
+To:     Anup Patel <anup@brainfault.org>,
+        Andrew Waterman <waterman@eecs.berkeley.edu>
+Cc:     Jiuyang Liu <liu@jiuyang.me>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Zong Li <zong.li@sifive.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+References: <20210316015328.13516-1-liu@jiuyang.me>
+ <20210316034638.16276-1-liu@jiuyang.me>
+ <CAAhSdy3eEXtba_ebUnPW_OUHRMKsg+O9sBx_DHAmrkTUCfHXNg@mail.gmail.com>
+ <CAPM7DZc+Ysd=VQdzc4_4Np8VAMESBrzD3mhk0ueh92x11bFFNg@mail.gmail.com>
+ <CAAhSdy1HYJJDig3Mg1eWaO=zok9G6+hQM1LLbDKMzH-=Fi2dKw@mail.gmail.com>
+ <CA++6G0AnGVLbM+1j9K7UU_0p6NfwVAxNkcFr8s1=h+wW4G0z_w@mail.gmail.com>
+ <CAAhSdy0nAUW-Y9gFONVLUPZCG-zT2MXKacu+StKKmSro+58k8w@mail.gmail.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <d4f3f2af-345d-b9a9-6ac5-f4262d0b46c5@ghiti.fr>
+Date:   Tue, 16 Mar 2021 08:05:27 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <CAAhSdy0nAUW-Y9gFONVLUPZCG-zT2MXKacu+StKKmSro+58k8w@mail.gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add spaces between operators for a better readability
-in function 'rtw_seccalctkipmic'.
+Le 3/16/21 à 4:40 AM, Anup Patel a écrit :
+> On Tue, Mar 16, 2021 at 1:59 PM Andrew Waterman
+> <waterman@eecs.berkeley.edu> wrote:
+>>
+>> On Tue, Mar 16, 2021 at 12:32 AM Anup Patel <anup@brainfault.org> wrote:
+>>>
+>>> On Tue, Mar 16, 2021 at 12:27 PM Jiuyang Liu <liu@jiuyang.me> wrote:
+>>>>
+>>>>> As per my understanding, we don't need to explicitly invalidate local TLB
+>>>>> in set_pte() or set_pet_at() because generic Linux page table management
+>>>>> (<linux>/mm/*) will call the appropriate flush_tlb_xyz() function after page
+>>>>> table updates.
+>>>>
+>>>> I witnessed this bug in our micro-architecture: set_pte instruction is
+>>>> still in the store buffer, no functions are inserting SFENCE.VMA in
+>>>> the stack below, so TLB cannot witness this modification.
+>>>> Here is my call stack:
+>>>> set_pte
+>>>> set_pte_at
+>>>> map_vm_area
+>>>> __vmalloc_area_node
+>>>> __vmalloc_node_range
+>>>> __vmalloc_node
+>>>> __vmalloc_node_flags
+>>>> vzalloc
+>>>> n_tty_open
+>>>>
 
-Signed-off-by: Qiang Ma <maqianga@uniontech.com>
----
- drivers/staging/rtl8723bs/core/rtw_security.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+I don't find this call stack, what I find is (the other way around):
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
-index 3e576cbe4712..469e4d563da1 100644
---- a/drivers/staging/rtl8723bs/core/rtw_security.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_security.c
-@@ -413,15 +413,15 @@ void rtw_seccalctkipmic(u8 *key, u8 *header, u8 *data, u32 data_len, u8 *mic_cod
- 	priority[0] = pri;
- 
- 	/* Michael MIC pseudo header: DA, SA, 3 x 0, Priority */
--	if (header[1]&1) {   /* ToDS == 1 */
-+	if (header[1] & 1) {   /* ToDS == 1 */
- 		rtw_secmicappend(&micdata, &header[16], 6);  /* DA */
--		if (header[1]&2)  /* From Ds == 1 */
-+		if (header[1] & 2)  /* From Ds == 1 */
- 			rtw_secmicappend(&micdata, &header[24], 6);
- 		else
- 			rtw_secmicappend(&micdata, &header[10], 6);
- 	} else {	/* ToDS == 0 */
- 		rtw_secmicappend(&micdata, &header[4], 6);   /* DA */
--		if (header[1]&2)  /* From Ds == 1 */
-+		if (header[1] & 2)  /* From Ds == 1 */
- 			rtw_secmicappend(&micdata, &header[16], 6);
- 		else
- 			rtw_secmicappend(&micdata, &header[10], 6);
--- 
-2.20.1
+n_tty_open
+vzalloc
+__vmalloc_node
+__vmalloc_node_range
+__vmalloc_area_node
+map_kernel_range
+-> map_kernel_range_noflush
+    flush_cache_vmap
 
+Which leads to the fact that we don't have flush_cache_vmap callback 
+implemented: shouldn't we add the sfence.vma here ? Powerpc does 
+something similar with "ptesync" (see below) instruction that seems to 
+do the same as sfence.vma.
 
+ptesync: "The ptesync instruction after the Store instruction ensures 
+that all searches of the Page Table that are performed after the ptesync 
+instruction completes will use the value stored"
 
+>>>> I think this is an architecture specific code, so <linux>/mm/* should
+>>>> not be modified.
+>>>> And spec requires SFENCE.VMA to be inserted on each modification to
+>>>> TLB. So I added code here.
+>>>
+>>> The generic linux/mm/* already calls the appropriate tlb_flush_xyz()
+>>> function defined in arch/riscv/include/asm/tlbflush.h
+>>>
+>>> Better to have a write-barrier in set_pte().
+>>>
+>>>>
+>>>>> Also, just local TLB flush is generally not sufficient because
+>>>>> a lot of page tables will be used across on multiple HARTs.
+>>>>
+>>>> Yes, this is the biggest issue, in RISC-V Volume 2, Privileged Spec v.
+>>>> 20190608 page 67 gave a solution:
+>>>
+>>> This is not an issue with RISC-V privilege spec rather it is more about
+>>> placing RISC-V fences at right locations.
+>>>
+>>>> Consequently, other harts must be notified separately when the
+>>>> memory-management data structures have been modified. One approach is
+>>>> to use
+>>>> 1) a local data fence to ensure local writes are visible globally,
+>>>> then 2) an interprocessor interrupt to the other thread,
+>>>> then 3) a local SFENCE.VMA in the interrupt handler of the remote thread,
+>>>> and finally 4) signal back to originating thread that operation is
+>>>> complete. This is, of course, the RISC-V analog to a TLB shootdown.
+>>>
+>>> I would suggest trying approach#1.
+>>>
+>>> You can include "asm/barrier.h" here and use wmb() or __smp_wmb()
+>>> in-place of local TLB flush.
+>>
+>> wmb() doesn't suffice to order older stores before younger page-table
+>> walks, so that might hide the problem without actually fixing it.
+> 
+> If we assume page-table walks as reads then mb() might be more
+> suitable in this case ??
+> 
+> ARM64 also has an explicit barrier in set_pte() implementation. They are
+> doing "dsb(ishst); isb()" which is an inner-shareable store barrier followed
+> by an instruction barrier.
+> 
+>>
+>> Based upon Jiuyang's description, it does sound plausible that we are
+>> missing an SFENCE.VMA (or TLB shootdown) somewhere.  But I don't
+>> understand the situation well enough to know where that might be, or
+>> what the best fix is.
+> 
+> Yes, I agree but set_pte() doesn't seem to be the right place for TLB
+> shootdown based on set_pte() implementations of other architectures.
+
+I agree as "flushing" the TLB after every set_pte() would be very 
+costly, it's better to do it once at the end of the all the updates: 
+like in flush_cache_vmap :)
+
+Alex
+
+> 
+> Regards,
+> Anup
+> 
+>>
+>>
+>>>
+>>>>
+>>>> In general, this patch didn't handle the G bit in PTE, kernel trap it
+>>>> to sbi_remote_sfence_vma. do you think I should use flush_tlb_all?
+>>>>
+>>>> Jiuyang
+>>>>
+>>>>
+>>>>
+>>>>
+>>>> arch/arm/mm/mmu.c
+>>>> void set_pte_at(struct mm_struct *mm, unsigned long addr,
+>>>>                                pte_t *ptep, pte_t pteval)
+>>>> {
+>>>>          unsigned long ext = 0;
+>>>>
+>>>>          if (addr < TASK_SIZE && pte_valid_user(pteval)) {
+>>>>                  if (!pte_special(pteval))
+>>>>                          __sync_icache_dcache(pteval);
+>>>>                  ext |= PTE_EXT_NG;
+>>>>          }
+>>>>
+>>>>          set_pte_ext(ptep, pteval, ext);
+>>>> }
+>>>>
+>>>> arch/mips/include/asm/pgtable.h
+>>>> static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
+>>>>                                pte_t *ptep, pte_t pteval)
+>>>> {
+>>>>
+>>>>          if (!pte_present(pteval))
+>>>>                  goto cache_sync_done;
+>>>>
+>>>>          if (pte_present(*ptep) && (pte_pfn(*ptep) == pte_pfn(pteval)))
+>>>>                  goto cache_sync_done;
+>>>>
+>>>>          __update_cache(addr, pteval);
+>>>> cache_sync_done:
+>>>>          set_pte(ptep, pteval);
+>>>> }
+>>>>
+>>>>
+>>>> Also, just local TLB flush is generally not sufficient because
+>>>>> a lot of page tables will be used accross on multiple HARTs.
+>>>>
+>>>>
+>>>> On Tue, Mar 16, 2021 at 5:05 AM Anup Patel <anup@brainfault.org> wrote:
+>>>>>
+>>>>> +Alex
+>>>>>
+>>>>> On Tue, Mar 16, 2021 at 9:20 AM Jiuyang Liu <liu@jiuyang.me> wrote:
+>>>>>>
+>>>>>> This patch inserts SFENCE.VMA after modifying PTE based on RISC-V
+>>>>>> specification.
+>>>>>>
+>>>>>> arch/riscv/include/asm/pgtable.h:
+>>>>>> 1. implement pte_user, pte_global and pte_leaf to check correspond
+>>>>>> attribute of a pte_t.
+>>>>>
+>>>>> Adding pte_user(), pte_global(), and pte_leaf() is fine.
+>>>>>
+>>>>>>
+>>>>>> 2. insert SFENCE.VMA in set_pte_at based on RISC-V Volume 2, Privileged
+>>>>>> Spec v. 20190608 page 66 and 67:
+>>>>>> If software modifies a non-leaf PTE, it should execute SFENCE.VMA with
+>>>>>> rs1=x0. If any PTE along the traversal path had its G bit set, rs2 must
+>>>>>> be x0; otherwise, rs2 should be set to the ASID for which the
+>>>>>> translation is being modified.
+>>>>>> If software modifies a leaf PTE, it should execute SFENCE.VMA with rs1
+>>>>>> set to a virtual address within the page. If any PTE along the traversal
+>>>>>> path had its G bit set, rs2 must be x0; otherwise, rs2 should be set to
+>>>>>> the ASID for which the translation is being modified.
+>>>>>>
+>>>>>> arch/riscv/include/asm/tlbflush.h:
+>>>>>> 1. implement get_current_asid to get current program asid.
+>>>>>> 2. implement local_flush_tlb_asid to flush tlb with asid.
+>>>>>
+>>>>> As per my understanding, we don't need to explicitly invalidate local TLB
+>>>>> in set_pte() or set_pet_at() because generic Linux page table management
+>>>>> (<linux>/mm/*) will call the appropriate flush_tlb_xyz() function after page
+>>>>> table updates. Also, just local TLB flush is generally not sufficient because
+>>>>> a lot of page tables will be used accross on multiple HARTs.
+>>>>>
+>>>>>>
+>>>>>> Signed-off-by: Jiuyang Liu <liu@jiuyang.me>
+>>>>>> ---
+>>>>>>   arch/riscv/include/asm/pgtable.h  | 27 +++++++++++++++++++++++++++
+>>>>>>   arch/riscv/include/asm/tlbflush.h | 12 ++++++++++++
+>>>>>>   2 files changed, 39 insertions(+)
+>>>>>>
+>>>>>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+>>>>>> index ebf817c1bdf4..5a47c60372c1 100644
+>>>>>> --- a/arch/riscv/include/asm/pgtable.h
+>>>>>> +++ b/arch/riscv/include/asm/pgtable.h
+>>>>>> @@ -222,6 +222,16 @@ static inline int pte_write(pte_t pte)
+>>>>>>          return pte_val(pte) & _PAGE_WRITE;
+>>>>>>   }
+>>>>>>
+>>>>>> +static inline int pte_user(pte_t pte)
+>>>>>> +{
+>>>>>> +       return pte_val(pte) & _PAGE_USER;
+>>>>>> +}
+>>>>>> +
+>>>>>> +static inline int pte_global(pte_t pte)
+>>>>>> +{
+>>>>>> +       return pte_val(pte) & _PAGE_GLOBAL;
+>>>>>> +}
+>>>>>> +
+>>>>>>   static inline int pte_exec(pte_t pte)
+>>>>>>   {
+>>>>>>          return pte_val(pte) & _PAGE_EXEC;
+>>>>>> @@ -248,6 +258,11 @@ static inline int pte_special(pte_t pte)
+>>>>>>          return pte_val(pte) & _PAGE_SPECIAL;
+>>>>>>   }
+>>>>>>
+>>>>>> +static inline int pte_leaf(pte_t pte)
+>>>>>> +{
+>>>>>> +       return pte_val(pte) & (_PAGE_READ | _PAGE_WRITE | _PAGE_EXEC);
+>>>>>> +}
+>>>>>> +
+>>>>>>   /* static inline pte_t pte_rdprotect(pte_t pte) */
+>>>>>>
+>>>>>>   static inline pte_t pte_wrprotect(pte_t pte)
+>>>>>> @@ -358,6 +373,18 @@ static inline void set_pte_at(struct mm_struct *mm,
+>>>>>>                  flush_icache_pte(pteval);
+>>>>>>
+>>>>>>          set_pte(ptep, pteval);
+>>>>>> +
+>>>>>> +       if (pte_present(pteval)) {
+>>>>>> +               if (pte_leaf(pteval)) {
+>>>>>> +                       local_flush_tlb_page(addr);
+>>>>>> +               } else {
+>>>>>> +                       if (pte_global(pteval))
+>>>>>> +                               local_flush_tlb_all();
+>>>>>> +                       else
+>>>>>> +                               local_flush_tlb_asid();
+>>>>>> +
+>>>>>> +               }
+>>>>>> +       }
+>>>>>>   }
+>>>>>>
+>>>>>>   static inline void pte_clear(struct mm_struct *mm,
+>>>>>> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
+>>>>>> index 394cfbccdcd9..1f9b62b3670b 100644
+>>>>>> --- a/arch/riscv/include/asm/tlbflush.h
+>>>>>> +++ b/arch/riscv/include/asm/tlbflush.h
+>>>>>> @@ -21,6 +21,18 @@ static inline void local_flush_tlb_page(unsigned long addr)
+>>>>>>   {
+>>>>>>          __asm__ __volatile__ ("sfence.vma %0" : : "r" (addr) : "memory");
+>>>>>>   }
+>>>>>> +
+>>>>>> +static inline unsigned long get_current_asid(void)
+>>>>>> +{
+>>>>>> +       return (csr_read(CSR_SATP) >> SATP_ASID_SHIFT) & SATP_ASID_MASK;
+>>>>>> +}
+>>>>>> +
+>>>>>> +static inline void local_flush_tlb_asid(void)
+>>>>>> +{
+>>>>>> +       unsigned long asid = get_current_asid();
+>>>>>> +       __asm__ __volatile__ ("sfence.vma x0, %0" : : "r" (asid) : "memory");
+>>>>>> +}
+>>>>>> +
+>>>>>>   #else /* CONFIG_MMU */
+>>>>>>   #define local_flush_tlb_all()                  do { } while (0)
+>>>>>>   #define local_flush_tlb_page(addr)             do { } while (0)
+>>>>>> --
+>>>>>> 2.30.2
+>>>>>>
+>>>>>>
+>>>>>> _______________________________________________
+>>>>>> linux-riscv mailing list
+>>>>>> linux-riscv@lists.infradead.org
+>>>>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>>>>>
+>>>>> Regards,
+>>>>> Anup
+>>>
+>>> Regards,
+>>> Anup
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
