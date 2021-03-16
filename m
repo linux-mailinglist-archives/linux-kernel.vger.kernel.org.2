@@ -2,98 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC7833DB23
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5BE33DB1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:42:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237494AbhCPRmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:42:40 -0400
-Received: from mga06.intel.com ([134.134.136.31]:20268 "EHLO mga06.intel.com"
+        id S235575AbhCPRlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:41:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50296 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237187AbhCPRmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:42:18 -0400
-IronPort-SDR: Luog/eSVuE5Y+9t2kD8gIGsPke0RSA2R+bWEHH3+qs4U66PyRPq+nfWvwdk62E0UPASxtEsxno
- V2XPEV+WdS2A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="250669011"
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="250669011"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 10:42:16 -0700
-IronPort-SDR: f0SxOICmOaiqZef26nO4Kc3WGs3J9QmZNrSTvmBXF7jKu2OphHw5eAmOtpcaUMChMLK5TMjVIh
- v5zl69QEwFdw==
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="439200689"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.191.248]) ([10.212.191.248])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 10:42:14 -0700
-Subject: Re: [PATCH v23 6/9] x86/entry: Introduce ENDBR macro
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
- <20210316151320.6123-7-yu-cheng.yu@intel.com>
- <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
- <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
- <20210316173032.GE18003@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <b0de1933-29ca-6c18-5a11-e293e9415f19@intel.com>
-Date:   Tue, 16 Mar 2021 10:42:13 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S233930AbhCPRlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:41:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D90A1AC1F;
+        Tue, 16 Mar 2021 17:41:05 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id f6ee1319;
+        Tue, 16 Mar 2021 17:42:20 +0000 (UTC)
+Date:   Tue, 16 Mar 2021 17:42:20 +0000
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Marco Elver <elver@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Issue with kfence and kmemleak
+Message-ID: <YFDt/PunpQydUAq/@suse.de>
+References: <YFDf6iKH1p/jGnM0@suse.de>
+ <YFDrGL45JxFHyajD@elver.google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210316173032.GE18003@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YFDrGL45JxFHyajD@elver.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/2021 10:30 AM, Borislav Petkov wrote:
-> On Tue, Mar 16, 2021 at 10:12:39AM -0700, Yu, Yu-cheng wrote:
->> Alternatively, there is another compiler-defined macro _CET_ENDBR that can
->> be used.  We can put the following in calling.h:
+On Tue, Mar 16, 2021 at 06:30:00PM +0100, Marco Elver wrote:
+> On Tue, Mar 16, 2021 at 04:42PM +0000, Luis Henriques wrote:
+> > Hi!
+> > 
+> > This is probably a known issue, but just in case: looks like it's not
+> > possible to use kmemleak when kfence is enabled:
 > 
-> Not calling.h - this is apparently needed in vdso code only so I guess
-> some header there, arch/x86/include/asm/vdso.h maybe? In the
+> Thanks for spotting this.
 > 
-> #else /* __ASSEMBLER__ */
+> > [    0.272136] kmemleak: Cannot insert 0xffff888236e02f00 into the object search tree (overlaps existing)
+> > [    0.272136] CPU: 0 PID: 8 Comm: kthreadd Not tainted 5.12.0-rc3+ #92
+> > [    0.272136] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+> > [    0.272136] Call Trace:
+> > [    0.272136]  dump_stack+0x6d/0x89
+> > [    0.272136]  create_object.isra.0.cold+0x40/0x62
+> > [    0.272136]  ? process_one_work+0x5a0/0x5a0
+> > [    0.272136]  ? process_one_work+0x5a0/0x5a0
+> > [    0.272136]  kmem_cache_alloc_trace+0x110/0x2f0
+> > [    0.272136]  ? process_one_work+0x5a0/0x5a0
+> > [    0.272136]  kthread+0x3f/0x150
+> > [    0.272136]  ? lockdep_hardirqs_on_prepare+0xd4/0x170
+> > [    0.272136]  ? __kthread_bind_mask+0x60/0x60
+> > [    0.272136]  ret_from_fork+0x22/0x30
+> > [    0.272136] kmemleak: Kernel memory leak detector disabled
+> > [    0.272136] kmemleak: Object 0xffff888236e00000 (size 2097152):
+> > [    0.272136] kmemleak:   comm "swapper", pid 0, jiffies 4294892296
+> > [    0.272136] kmemleak:   min_count = 0
+> > [    0.272136] kmemleak:   count = 0
+> > [    0.272136] kmemleak:   flags = 0x1
+> > [    0.272136] kmemleak:   checksum = 0
+> > [    0.272136] kmemleak:   backtrace:
+> > [    0.272136]      memblock_alloc_internal+0x6d/0xb0
+> > [    0.272136]      memblock_alloc_try_nid+0x6c/0x8a
+> > [    0.272136]      kfence_alloc_pool+0x26/0x3f
+> > [    0.272136]      start_kernel+0x242/0x548
+> > [    0.272136]      secondary_startup_64_no_verify+0xb0/0xbb
+> > 
+> > I've tried the hack below but it didn't really helped.  Obviously I don't
+> > really understand what's going on ;-)  But I think the reason for this
+> > patch not working as (I) expected is because kfence is initialised
+> > *before* kmemleak.
+> > 
+> > diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> > index 3b8ec938470a..b4ffd7695268 100644
+> > --- a/mm/kfence/core.c
+> > +++ b/mm/kfence/core.c
+> > @@ -631,6 +631,9 @@ void __init kfence_alloc_pool(void)
+> >  
+> >  	if (!__kfence_pool)
+> >  		pr_err("failed to allocate pool\n");
+> > +	kmemleak_no_scan(__kfence_pool);
+> >  }
 > 
-> branch maybe...
-> 
->> #ifdef __CET__
->> #include <cet.h>
->> #else
->> #define _CET_ENDBR
->> #endif
->>
->> and then use _CET_ENDBR in other files.  How is that?
-> 
-> What does that macro do? Issue an ENDBR only?
-> 
+> Can you try the below patch?
 
-Yes, issue endbr32, endbr64, or nothing when cet is not enabled.
+Yep, that seems to fix the issue.  Feel free to add my Tested-by.  Thanks!
+
+Cheers,
+--
+Luís
+
+> 
+> Thanks,
+> -- Marco
+> 
+> ------ >8 ------
+> 
+> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> index f7106f28443d..5891019721f6 100644
+> --- a/mm/kfence/core.c
+> +++ b/mm/kfence/core.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/debugfs.h>
+>  #include <linux/kcsan-checks.h>
+>  #include <linux/kfence.h>
+> +#include <linux/kmemleak.h>
+>  #include <linux/list.h>
+>  #include <linux/lockdep.h>
+>  #include <linux/memblock.h>
+> @@ -481,6 +482,13 @@ static bool __init kfence_init_pool(void)
+>  		addr += 2 * PAGE_SIZE;
+>  	}
+>  
+> +	/*
+> +	 * The pool is live and will never be deallocated from this point on;
+> +	 * tell kmemleak this is now free memory, so that later allocations can
+> +	 * correctly be tracked.
+> +	 */
+> +	kmemleak_free_part_phys(__pa(__kfence_pool), KFENCE_POOL_SIZE);
+> +
+>  	return true;
+>  
+>  err:
