@@ -2,146 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8E733D822
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:50:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E22F33D829
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237509AbhCPPts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 11:49:48 -0400
-Received: from mga03.intel.com ([134.134.136.65]:37769 "EHLO mga03.intel.com"
+        id S231800AbhCPPup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 11:50:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:47624 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237458AbhCPPtX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 11:49:23 -0400
-IronPort-SDR: DT8ckuh7qvC95LQ0gDSlqGJNV4QE+6MXSmYMUR51AcHgosOD8rjOXqOrQakPU/OWo5qBimDNbW
- JF+cPNUuSPxQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="189332412"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="189332412"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 08:49:21 -0700
-IronPort-SDR: JkPUD6a3838pbd6FLCGwr0inh1fg6cmihcZMMtfznMaUNMyf4mczZZtF1X3HQxLTetSX992zfz
- uBkYPbNRZU4Q==
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="449759419"
-Received: from kcarrier-mobl.amr.corp.intel.com (HELO [10.209.124.168]) ([10.209.124.168])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 08:49:20 -0700
-Subject: Re: [PATCH v23 6/9] x86/entry: Introduce ENDBR macro
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        id S237468AbhCPPuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 11:50:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0AD1DD6E;
+        Tue, 16 Mar 2021 08:50:19 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D41163F792;
+        Tue, 16 Mar 2021 08:50:16 -0700 (PDT)
+Subject: Re: [PATCH v3 1/7] sched/fair: Ignore percpu threads for imbalance
+ pulls
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lingutla Chandrasekhar <clingutla@codeaurora.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>
-References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
- <20210316151320.6123-7-yu-cheng.yu@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
-Date:   Tue, 16 Mar 2021 08:49:20 -0700
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>
+References: <20210311120527.167870-1-valentin.schneider@arm.com>
+ <20210311120527.167870-2-valentin.schneider@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <bdea6c4f-262b-c3cb-637e-d4896e688dd3@arm.com>
+Date:   Tue, 16 Mar 2021 16:49:59 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210316151320.6123-7-yu-cheng.yu@intel.com>
+In-Reply-To: <20210311120527.167870-2-valentin.schneider@arm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/21 8:13 AM, Yu-cheng Yu wrote:
-> --- a/arch/x86/entry/calling.h
-> +++ b/arch/x86/entry/calling.h
-> @@ -392,3 +392,21 @@ For 32-bit we have the following conventions - kernel is built with
->  .endm
+On 11/03/2021 13:05, Valentin Schneider wrote:
+> From: Lingutla Chandrasekhar <clingutla@codeaurora.org>
+> 
+> In load balancing, when balancing group is unable to pull task
+> due to ->cpus_ptr constraints from busy group, then it sets
+> LBF_SOME_PINNED to lb env flags, as a consequence, sgc->imbalance
+> is set for its parent domain level. which makes the group
+> classified as imbalance to get help from another balancing cpu.
+> 
+> Consider a 4-CPU big.LITTLE system with CPUs 0-1 as LITTLEs and
+
+Does it have to be a big.LITTLE system? I assume this issue also happens
+on an SMP system.
+
+> CPUs 2-3 as Bigs with below scenario:
+> - CPU0 doing newly_idle balancing
+> - CPU1 running percpu kworker and RT task (small tasks)
+
+What's the role of the small RT task here in the story?
+
+> - CPU2 running 2 big tasks
+> - CPU3 running 1 medium task
+> 
+> While CPU0 is doing newly_idle load balance at MC level, it fails to
+> pull percpu kworker from CPU1 and sets LBF_SOME_PINNED to lb env flag
+> and set sgc->imbalance at DIE level domain. As LBF_ALL_PINNED not cleared,
+> it tries to redo the balancing by clearing CPU1 in env cpus, but it don't
+> find other busiest_group, so CPU0 stops balacing at MC level without
+> clearing 'sgc->imbalance' and restart the load balacing at DIE level.
+> 
+> And CPU0 (balancing cpu) finds LITTLE's group as busiest_group with group
+> type as imbalance, and Bigs that classified the level below imbalance type
+> would be ignored to pick as busiest, and the balancing would be aborted
+> without pulling any tasks (by the time, CPU1 might not have running tasks).
+> 
+> It is suboptimal decision to classify the group as imbalance due to
+> percpu threads. So don't use LBF_SOME_PINNED for per cpu threads.
+
+This sentence mentioned per-cpu threads (and so does the patch name) but
+the implementation (only) deals with per-cpu kernel threads. IMHO, it
+would be good to align this.
+
+> 
+> Signed-off-by: Lingutla Chandrasekhar <clingutla@codeaurora.org>
+> [Use kthread_is_per_cpu() rather than p->nr_cpus_allowed]
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> ---
+>  kernel/sched/fair.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 2e2ab1e00ef9..83aea97fbf22 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -7565,6 +7565,10 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+>  	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
+>  		return 0;
 >  
->  #endif /* CONFIG_SMP */
-> +/*
-> + * ENDBR is an instruction for the Indirect Branch Tracking (IBT) component
-> + * of CET.  IBT prevents attacks by ensuring that (most) indirect branches
-> + * function calls may only land at ENDBR instructions.  Branches that don't
-> + * follow the rules will result in control flow (#CF) exceptions.
-> + * ENDBR is a noop when IBT is unsupported or disabled.  Most ENDBR
-> + * instructions are inserted automatically by the compiler, but branch
-> + * targets written in assembly must have ENDBR added manually.
-> + */
-> +.macro ENDBR
-> +#ifdef CONFIG_X86_CET
-> +#ifdef __i386__
-> +	endbr32
-> +#else
-> +	endbr64
-> +#endif
-> +#endif
-> +.endm
+> +	/* Disregard pcpu kthreads; they are where they need to be. */
+> +	if ((p->flags & PF_KTHREAD) && kthread_is_per_cpu(p))
+> +		return 0;
+> +
+>  	if (!cpumask_test_cpu(env->dst_cpu, p->cpus_ptr)) {
+>  		int cpu;
+>  
+> 
 
-Is "#ifdef __i386__" the right thing to use here?  I guess ENDBR only
-ends up getting used in the VDSO, but there's a lot of
-non-userspace-exposed stuff in calling.h.  It seems a bit weird to have
-the normally userspace-only __i386__ in there.
-
-I don't see any existing direct use of __i386__ in arch/x86/entry/vdso.
