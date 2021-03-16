@@ -2,60 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B067E33D44A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 772A633D423
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:44:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234336AbhCPMwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:52:31 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:57978 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232915AbhCPMuG (ORCPT
+        id S232674AbhCPMn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 08:43:59 -0400
+Received: from lucky1.263xmail.com ([211.157.147.134]:44876 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230243AbhCPMnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:50:06 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lM92W-006Vrv-M5; Tue, 16 Mar 2021 12:43:12 +0000
-Date:   Tue, 16 Mar 2021 12:43:12 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] seq_file: Unconditionally use vmalloc for buffer
-Message-ID: <YFCn4ERBMGoqxvUU@zeniv-ca.linux.org.uk>
-References: <20210315174851.622228-1-keescook@chromium.org>
- <YE+oZkSVNyaONMd9@zeniv-ca.linux.org.uk>
- <202103151336.78360DB34D@keescook>
- <YFBdQmT64c+2uBRI@kroah.com>
+        Tue, 16 Mar 2021 08:43:42 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 94BC2C7BA1;
+        Tue, 16 Mar 2021 20:43:18 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by smtp.263.net (postfix) whith ESMTP id P24306T139685101807360S1615898598914842_;
+        Tue, 16 Mar 2021 20:43:19 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <1c0177edf5e0adde2926b1bff475e44c>
+X-RL-SENDER: huangjianghui@uniontech.com
+X-SENDER: huangjianghui@uniontech.com
+X-LOGIN-NAME: huangjianghui@uniontech.com
+X-FST-TO: perex@perex.cz
+X-SENDER-IP: 113.57.152.160
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   hjh <huangjianghui@uniontech.com>
+To:     Jaroslav Kysela <perex@perex.cz>
+Cc:     Takashi Iwai <tiwai@suse.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Mohan Kumar <mkumard@nvidia.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: hda: Fix spelling mistakes
+Date:   Tue, 16 Mar 2021 20:43:17 +0800
+Message-Id: <20210316124317.12990-1-huangjianghui@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFBdQmT64c+2uBRI@kroah.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 08:24:50AM +0100, Greg Kroah-Hartman wrote:
+Signed-off-by: hjh <huangjianghui@uniontech.com>
+---
+ sound/hda/hdac_stream.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > Completely agreed. seq_get_buf() should be totally ripped out.
-> > Unfortunately, this is going to be a long road because of sysfs's ATTR
-> > stuff, there are something like 5000 callers, and the entire API was
-> > designed to avoid refactoring all those callers from
-> > sysfs_kf_seq_show().
-> 
-> What is wrong with the sysfs ATTR stuff?  That should make it so that we
-> do not have to change any caller for any specific change like this, why
-> can't sysfs or kernfs handle it automatically?
+diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
+index a6ed3dc35f7e..1eb8563db2df 100644
+--- a/sound/hda/hdac_stream.c
++++ b/sound/hda/hdac_stream.c
+@@ -618,7 +618,7 @@ void snd_hdac_stream_sync_trigger(struct hdac_stream *azx_dev, bool set,
+ EXPORT_SYMBOL_GPL(snd_hdac_stream_sync_trigger);
+ 
+ /**
+- * snd_hdac_stream_sync - sync with start/strop trigger operation
++ * snd_hdac_stream_sync - sync with start/stop trigger operation
+  * @azx_dev: HD-audio core stream (master stream)
+  * @start: true = start, false = stop
+  * @streams: bit flags of streams to sync
+-- 
+2.20.1
 
-Hard to tell, since that would require _finding_ the sodding ->show()
-instances first.  Good luck with that, seeing that most of those appear
-to come from templates-done-with-cpp...
 
-AFAICS, Kees wants to protect against ->show() instances stomping beyond
-the page size.  What I don't get is what do you get from using seq_file
-if you insist on doing raw access to the buffer rather than using
-seq_printf() and friends.  What's the point?
+
