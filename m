@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4772633CD88
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:48:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B638A33CD8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235597AbhCPFr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:47:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52060 "EHLO
+        id S235622AbhCPFs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:48:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235544AbhCPFrv (ORCPT
+        with ESMTP id S235561AbhCPFrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:47:51 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644A1C06174A;
-        Mon, 15 Mar 2021 22:47:51 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso830434pjb.4;
-        Mon, 15 Mar 2021 22:47:51 -0700 (PDT)
+        Tue, 16 Mar 2021 01:47:53 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A1CC06174A;
+        Mon, 15 Mar 2021 22:47:52 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id o3so3403308pfh.11;
+        Mon, 15 Mar 2021 22:47:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=w3OOWGFDuS1KpijU6u67ageYewW1oT8XP6wyO8n6Q60=;
-        b=GvhNWwQ+7s5qjn8oJG3a7feT717vdyi8r9q9/+B3O/2B2YuZVRVcVzdxOTxeaksnlG
-         PgQs6EjBg/K/ci1r4t0KVDI1VIoUM9l2oI/gCtgmM8V63A5CNMqoLSN/g2BUW0dnC1wH
-         AieMiERdUnZY0CF53XizWSRLp/7KNYtQ5ZqAVxry3lj6WSzmnUBf3URF1m7YYjSdFveZ
-         4qUcQ3HoEYQXbeW3yHIP84IZPJxKga6Ky2hOKXljqzAJ0KecrijiX8DvLJL4RGyITnZw
-         2CxhK241VW3gEg0blXz1YZNBijdlkWQ2ltnEtYDLnScxl4jYlFi2gmT46+OTud34g9Yh
-         RVaQ==
+        bh=IxyyFVinOdnmATR501q3cbcH2hSQV1F8Z0mtVnYBaQo=;
+        b=TiPgWgRWyZ3ZoiKMiDvkOVoErbirvwIvZVSG3pWImPUnV5nrW6XZFMUXwet3QQ+is8
+         ZC8wfTJYu7LL+l5PX7PYMeSDH/wZ5KlLCrOSKObmiqkGOd+yUDCkUqm+yN+akNVNI1uu
+         Yfl75gN/0XjPY9sNXf2lAfRDnbv6kfCKZEGMMvFma2DChoWPPPhe9Jp9yMIf3dpNGXYv
+         /a593P84nZPM9z+i8nLGnDcffigmzqnOzd3WZE5w8iq31Dy4tD007ZeKTTdnfa9Hc1E9
+         YupcKaNHhOeQHiCqksPB6A3yivIgyVJzwPugvgISWeZjtuP1YV2g1vPKtrccY0rGaQRl
+         F8Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=w3OOWGFDuS1KpijU6u67ageYewW1oT8XP6wyO8n6Q60=;
-        b=Y33e1lDxyNltVK3X0ZwNQYQOxBggOxE6Dh5yy4ZJJDll5WkEWuNh9uCaqCdea+H8+M
-         6p2MDd4gMDg+eQknslSFIKXd5tsv0YcuAU4ibP9Fu5eZ7xkqtP3y6Max5C9I25k6LqI5
-         5q+OSv9rTrPSNPSUgMCSOAki1TZRfWDDvFMdYe48vr2yPEBJCubW5rCAO4Nor8Ez/98z
-         2XDTkC42YFRP1KwXkX5vsKr8et5fWJDsGkrZHhFHJaeCT0IdyY85ra1ESdfn2dZavOmS
-         xqEFJ5mLolCpfvqll2fwDXbxLQmXiPNMvqxOSrfSZXcu+tfdK8yoY0CBvaaGNplXSx0w
-         /2Kg==
-X-Gm-Message-State: AOAM533SPZ+zAfa0m9PfShMgv6Iq4pCzxVkWFYcke6JYP62IWPLhr+Pu
-        y7zzhfSeCcxgf8Xtj1yagJ8D+Myg4WM33QOYzeM=
-X-Google-Smtp-Source: ABdhPJzK6PSqJ+VY/zJz7tUyd2cr/8KAwPDPuClheRohk/T8EalKA1Yp34JXe7NHxSbfzfNAZKiU6A==
-X-Received: by 2002:a17:902:e98c:b029:e5:defc:ccf8 with SMTP id f12-20020a170902e98cb02900e5defcccf8mr15278518plb.20.1615873670887;
-        Mon, 15 Mar 2021 22:47:50 -0700 (PDT)
+        bh=IxyyFVinOdnmATR501q3cbcH2hSQV1F8Z0mtVnYBaQo=;
+        b=Q1x5VkEPjPq+paY+vOghagRLmEMu3ZO9WAcTi4WoKFNg1ZqvoWuulBspsyFhqEFCsq
+         G71ouEi8+pYxisFJT3oztbmspZzgNp3aS63n1s1kqj7l4tVl+daZ6jx9VMz99re75ptv
+         j7jFf7BOIT0IytCsICLEW5x6BFwdZ/rdhtBZgqgRx9+a8QE85C3u/qlVhXNSZKH6k8e9
+         xhCNe0MCteNSYQm6JkEwIlA5MH1cbb+90JSAAh37Wx9phJUlMo95RphGdYve6jb0sHO0
+         MuL8JFzPZGHhDha3TsjtB512kbOsKCMgjUUvIr8US/GET1B6VrQqrC1f8r2H3GHcexuW
+         JaKw==
+X-Gm-Message-State: AOAM5311yIhOpl/gjNOofLZzOwAZeKKE93p9ys+LUvWRfxPGqXqKLSGk
+        n9YtlrOMiRvJXubUkZkyUsg=
+X-Google-Smtp-Source: ABdhPJy/CzYjC7mWEyMZmuf/ctFYq8b9VaqUXwTf1jgwaAT6TVJF+1NjSp7qSQQjCbahEQlDxTxuTw==
+X-Received: by 2002:a63:3806:: with SMTP id f6mr2354722pga.239.1615873672201;
+        Mon, 15 Mar 2021 22:47:52 -0700 (PDT)
 Received: from cl-arch-kdev.. (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id l22sm15096513pfd.145.2021.03.15.22.47.49
+        by smtp.gmail.com with ESMTPSA id l22sm15096513pfd.145.2021.03.15.22.47.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 22:47:50 -0700 (PDT)
+        Mon, 15 Mar 2021 22:47:51 -0700 (PDT)
 From:   Fox Chen <foxhlchen@gmail.com>
 To:     neilb@suse.de
 Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
@@ -55,9 +55,9 @@ Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
         rdunlap@infradead.org, grandmaster@al2klimov.de,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         gregkh@linuxfoundation.org
-Subject: [PATCH v2 03/12] docs: path-lookup: update path_mountpoint() part
-Date:   Tue, 16 Mar 2021 13:47:18 +0800
-Message-Id: <20210316054727.25655-4-foxhlchen@gmail.com>
+Subject: [PATCH v2 04/12] docs: path-lookup: update do_last() part
+Date:   Tue, 16 Mar 2021 13:47:19 +0800
+Message-Id: <20210316054727.25655-5-foxhlchen@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210316054727.25655-1-foxhlchen@gmail.com>
 References: <20210316054727.25655-1-foxhlchen@gmail.com>
@@ -67,46 +67,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-path_mountpoint() doesn't exist anymore. Have been folded
-into path_lookup_at when flag is set with LOOKUP_MOUNTPOINT.
-Check commit: commit 161aff1d93abf0e ("LOOKUP_MOUNTPOINT: fold
-path_mountpointat() into path_lookupat()")
+traling_symlink() was merged into lookup_last, do_last().
+
+do_last() has later been split into open_last_lookups()
+and do_open().
+
+see related commit: commit c5971b8c6354 ("take post-lookup
+part of do_last() out of loop")
 
 Signed-off-by: Fox Chen <foxhlchen@gmail.com>
 ---
- Documentation/filesystems/path-lookup.rst | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ Documentation/filesystems/path-lookup.rst | 35 ++++++++++++-----------
+ 1 file changed, 18 insertions(+), 17 deletions(-)
 
 diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/filesystems/path-lookup.rst
-index a29d714431a3..b6a301b78121 100644
+index b6a301b78121..a65cb477d524 100644
 --- a/Documentation/filesystems/path-lookup.rst
 +++ b/Documentation/filesystems/path-lookup.rst
-@@ -472,7 +472,7 @@ Handling the final component
- ``nd->last_type`` to refer to the final component of the path.  It does
- not call ``walk_component()`` that last time.  Handling that final
- component remains for the caller to sort out. Those callers are
--``path_lookupat()``, ``path_parentat()``, ``path_mountpoint()`` and
-+``path_lookupat()``, ``path_parentat()`` and
- ``path_openat()`` each of which handles the differing requirements of
- different system calls.
- 
-@@ -488,12 +488,10 @@ perform their operation.
- object is wanted such as by ``stat()`` or ``chmod()``.  It essentially just
- calls ``walk_component()`` on the final component through a call to
- ``lookup_last()``.  ``path_lookupat()`` returns just the final dentry.
--
--``path_mountpoint()`` handles the special case of unmounting which must
--not try to revalidate the mounted filesystem.  It effectively
--contains, through a call to ``mountpoint_last()``, an alternate
--implementation of ``lookup_slow()`` which skips that step.  This is
--important when unmounting a filesystem that is inaccessible, such as
-+It is worth noting that when flag ``LOOKUP_MOUNTPOINT`` is set,
-+``path_lookupat()`` will unset LOOKUP_JUMPED in nameidata so that in the further
-+path traversal ``d_weak_revalidate()`` won't be called.
-+This is important when unmounting a filesystem that is inaccessible, such as
+@@ -495,11 +495,11 @@ This is important when unmounting a filesystem that is inaccessible, such as
  one provided by a dead NFS server.
  
  Finally ``path_openat()`` is used for the ``open()`` system call; it
+-contains, in support functions starting with "``do_last()``", all the
++contains, in support functions starting with "``open_last_lookups()``", all the
+ complexity needed to handle the different subtleties of O_CREAT (with
+ or without O_EXCL), final "``/``" characters, and trailing symbolic
+ links.  We will revisit this in the final part of this series, which
+-focuses on those symbolic links.  "``do_last()``" will sometimes, but
++focuses on those symbolic links.  "``open_last_lookups()``" will sometimes, but
+ not always, take ``i_rwsem``, depending on what it finds.
+ 
+ Each of these, or the functions which call them, need to be alert to
+@@ -1199,26 +1199,27 @@ symlink.
+ This case is handled by the relevant caller of ``link_path_walk()``, such as
+ ``path_lookupat()`` using a loop that calls ``link_path_walk()``, and then
+ handles the final component.  If the final component is a symlink
+-that needs to be followed, then ``trailing_symlink()`` is called to set
+-things up properly and the loop repeats, calling ``link_path_walk()``
+-again.  This could loop as many as 40 times if the last component of
+-each symlink is another symlink.
++that needs to be followed, then ``open_last_lookups()`` is
++called to set things up properly and the loop repeats, calling
++``link_path_walk()`` again.  This could loop as many as 40 times if the last
++component of each symlink is another symlink.
+ 
+ The various functions that examine the final component and possibly
+-report that it is a symlink are ``lookup_last()``, ``mountpoint_last()``
+-and ``do_last()``, each of which use the same convention as
+-``walk_component()`` of returning ``1`` if a symlink was found that needs
+-to be followed.
++report that it is a symlink are ``lookup_last()``, ``open_last_lookups()``
++, each of which use the same convention as
++``walk_component()`` of returning ``char *name`` if a symlink was found that
++needs to be followed.
+ 
+-Of these, ``do_last()`` is the most interesting as it is used for
+-opening a file.  Part of ``do_last()`` runs with ``i_rwsem`` held and this
+-part is in a separate function: ``lookup_open()``.
++Of these, ``open_last_lookups()`` is the most interesting as it works in tandem
++with ``do_open()`` for opening a file.  Part of ``open_last_lookups()`` runs
++with ``i_rwsem`` held and this part is in a separate function: ``lookup_open()``.
+ 
+-Explaining ``do_last()`` completely is beyond the scope of this article,
+-but a few highlights should help those interested in exploring the
+-code.
++Explaining ``open_last_lookups()`` and ``do_open()`` completely is beyond the scope
++of this article, but a few highlights should help those interested in exploring
++the code.
+ 
+-1. Rather than just finding the target file, ``do_last()`` needs to open
++1. Rather than just finding the target file, ``do_open()`` is used after
++   ``open_last_lookup()`` to open
+    it.  If the file was found in the dcache, then ``vfs_open()`` is used for
+    this.  If not, then ``lookup_open()`` will either call ``atomic_open()`` (if
+    the filesystem provides it) to combine the final lookup with the open, or
 -- 
 2.30.2
 
