@@ -2,101 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75BFB33D19F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29ADE33D1A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236595AbhCPKPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 06:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53126 "EHLO
+        id S236610AbhCPKSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 06:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236411AbhCPKPJ (ORCPT
+        with ESMTP id S236411AbhCPKR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 06:15:09 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FACC06174A;
-        Tue, 16 Mar 2021 03:15:09 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id ci14so70999817ejc.7;
-        Tue, 16 Mar 2021 03:15:08 -0700 (PDT)
+        Tue, 16 Mar 2021 06:17:59 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA79FC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 03:17:58 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id 94so11202096qtc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 03:17:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=77E0sK5htid3cTi1HbVWtxEXQROVn0j5JhaPDUXKt4Y=;
-        b=VTtyWZplkzBRJ3ClYoxTYqpLZXCnWRX+/+7p11pv3yLSAiR0npxgXNCgxqPieONGJI
-         vY08B50lWfSUoJS4LW+WQOerUxCy1i09MV9FzMtIDp0MQ0hn9QbRurCJwxgV/fX2mEqT
-         p3e/R8sjYwBfjRWubRlEyXSQm7/6tgz0G5V4MCj4nyyVwReOJTWHGbncB9KitcwdnaoU
-         Zl5SXby8TNugQtQo2VI6707dEu7uPW+y8rFo07PBro5k4u5OT3X81uaPFfptTNkfVu+V
-         2S2zPJhiJq80MOtUDCM2RvlkexV3hEfW+cdIiIgJzyHb3jfcR9FLeTuyMClDwzdqEUUI
-         /wHQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eFQPVLUfS53IJIXq7EsY2KvnwcOJrlsdzLKjZq2BXDY=;
+        b=fUXspIhe4anHCXrLL7/6HWBV51o5i52Sepbas3YvuBJJQqOxGi1Q6dIpdMoFteNiAc
+         Hf2jwwtlEcoBAEMTMq4HF2rCF5qlnYbca9Jo8WPWi0ufHJt+JcsFezmBEZ+/4AvvtYT0
+         aoSnMKmomgxVY+COSxxGoOc6gxx0NlnsafuaCXjXVZG9cI3Y4NPkt4tfevqcd8i0uCCB
+         HtSyEVSXqZSsID+nVqqYIwXvNzrARebAcSiXxg9DOMWcwa2X0OWBq+wSAXISRGAMA0r1
+         Uh1nir4VmWooaNbvXAS+fraTgXXrpvkurwFNjCRIUgFsSJ31Ta6Ve4NecUBo9LUwsmTp
+         /DKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=77E0sK5htid3cTi1HbVWtxEXQROVn0j5JhaPDUXKt4Y=;
-        b=euqTycbCJW56K/u71+SwYm5IDrMu3A+INA609XCQMP42DsD02wXqZH8ZlVSHt18MHY
-         TMwNYJvL8jo+IWh4SS9o8rRyUstttwUAQUe48P2n1x7b56EG/hiO/1p599sTDiZeX6Xt
-         Mq7Sp8BRhYC8m9Zw3S7EaC+Qs18Q9QAVUrULKzedcYYnsMBEKAhqFo5hhiC9RCF2WwSt
-         ICP2nAtVTyKC76UCarUI6OrJEVxp2aynUEa8rP/kQuxcTW2bx7L4OpzV67Fc9kTklPNK
-         JU1Cm3BK3w96SZTfpbPSJ0TsDqc9sziuKE3MU4q7I/DdEQyFXASvOGqbyVZUBoLrW40+
-         VLfg==
-X-Gm-Message-State: AOAM530+VHCfFek9Z5aj3uIGokrmu4zFZjE6A0OcAyTqmNx40K4ciBwO
-        QJbHn8eLMyvoGewuDM6IGVI=
-X-Google-Smtp-Source: ABdhPJz/KkLwMnv8WASA17OH2zZ16aCXuzYPqwr76GspbnLGslXWyKqWM/X6PLSzNEIXUls6CebgMA==
-X-Received: by 2002:a17:907:2716:: with SMTP id w22mr28748171ejk.328.1615889707842;
-        Tue, 16 Mar 2021 03:15:07 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id y17sm9085001ejf.116.2021.03.16.03.15.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 03:15:07 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 12:15:06 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Kuldeep Singh <kuldeep.singh@nxp.com>
-Cc:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [EXT] Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to
- json schema
-Message-ID: <20210316101506.rkqcxkw6slv4vuhr@skbuf>
-References: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
- <20210315205440.lb6hcrvzxtqxdb5x@skbuf>
- <DB6PR0402MB27580AF77ED738B995616EB5E06B9@DB6PR0402MB2758.eurprd04.prod.outlook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eFQPVLUfS53IJIXq7EsY2KvnwcOJrlsdzLKjZq2BXDY=;
+        b=HCgvugyNzWV6heyE+krG7HaraO+y1FrfZCWbvrgpyD/DuM/LBJWXkLIMbfvjjLkeLv
+         Jr5Sp6byo3Xbg5x9NQ9Je1v2vWP9GLiZkKD3AC+mOYV+J0aqrKok1sbBjY/f0Xib6GdR
+         emIq89kND+XPPC04RfXI2Fh2KmoRPQmqKSUdw5+p2f6EV4MdbISaGkJI1vYg1Cy8d1jJ
+         8tnSnAAgOvkrBLlHq8VbCAhATK32OdjVYHfD0yORr7JjUjAkJ+YtcpMpzDbWkcNRki2I
+         ki03PW/H4ZquUL4JfvD6bWAWQPReEQoCvIN5iLKTqDYqjnpVAqtZO63neey7xNAboqkU
+         JmsQ==
+X-Gm-Message-State: AOAM533t9T2PEETO6Xp5c2ger6oymJvejiUHlzSmQ1VPJe4AcN19vjPY
+        jKyGy7wYBx6ymojMdKEgzNeSwrxt5h4vLsnzpila8A==
+X-Google-Smtp-Source: ABdhPJyrXdmYgwLW+yfTnxygbHdMoq3RO7SC7RN94L7krldLOgF8gr2zvcrbMSKWZX9r1msisPxjBQrY95SB8Ipcf3I=
+X-Received: by 2002:aed:2c61:: with SMTP id f88mr26277893qtd.337.1615889877043;
+ Tue, 16 Mar 2021 03:17:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DB6PR0402MB27580AF77ED738B995616EB5E06B9@DB6PR0402MB2758.eurprd04.prod.outlook.com>
+References: <00000000000069802205bda22b7f@google.com> <CACT4Y+Yaq-zDh5FAzHt4g-5jXrXC3rSLw6CM=kjcfR6oxJ1+CA@mail.gmail.com>
+ <CAK8P3a1qtHVBY47FfCa6R9+sObzMCwxkREii+O2g8PPopw87eQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a1qtHVBY47FfCa6R9+sObzMCwxkREii+O2g8PPopw87eQ@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 16 Mar 2021 11:17:45 +0100
+Message-ID: <CACT4Y+aC0YWU6gM32S3NoT+-wR7B1-_rhPyh4w542h21UCRRGw@mail.gmail.com>
+Subject: Re: [syzbot] kernel panic: corrupted stack end in openat
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     syzbot <syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 06:08:17AM +0000, Kuldeep Singh wrote:
-> Compatible entries in conjugation require enum and const pair.
-> For example, ls1012a.dtsi uses compatible = "fsl,ls1012a-dspi","fsl,ls1021a-v1.0-dspi";
-> Same goes for LS1028 as well.
-> 
-> Therefore, can't mention the compatible entry as single entity otherwise
-> it may fail "make dt_binding_check" and "make dtbs_check".
-> 
-> > 
-> > > +examples:
-> > > +  - |
-> > > +    #include <dt-bindings/clock/fsl,qoriq-clockgen.h>
-> > > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > > +
-> > > +    soc {
-> > > +        #address-cells = <2>;
-> > > +        #size-cells = <2>;
-> > > +
-> > > +        spi@2100000 {
-> > > +            compatible = "fsl,ls1028a-dspi", "fsl,ls1021a-v1.0-dspi";
-> > 
-> > This doesn't need the "fsl,ls1021a-v1.0-dspi" compatible, can you please remove
-> > it?
-> 
-> I have taken this example from LS1028a.dtsi and it uses these compatibles in conjugation.
-> If "fsl,ls1021a-v1.0-dspi" is not required, then it should also be removed from device-tree
-> As well as from bindings both.
+On Tue, Mar 16, 2021 at 11:02 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > On Tue, Mar 16, 2021 at 8:18 AM syzbot
+> > <syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    1e28eed1 Linux 5.12-rc3
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=167535e6d00000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=e0cee1f53de33ca3
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=0b06ef9b44d00d600183
+> > > userspace arch: arm
+> > >
+> > > Unfortunately, I don't have any reproducer for this issue yet.
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com
+> >
+> > +arm32 maintainer
+> > I think this is a real stack overflow on arm32, the stack is indeed deep.
+>
+> Nice find. I see there was already a second report, so it seems to be
+> reproducible as well.
+> If you are able to trigger this reliably, you could try printing the frame
+> pointer while unwinding to see what is actually going on:
+>
+> --- a/arch/arm/kernel/traps.c
+> +++ b/arch/arm/kernel/traps.c
+> @@ -68,8 +68,8 @@ void dump_backtrace_entry(unsigned long where,
+> unsigned long from,
+>         unsigned long end = frame + 4 + sizeof(struct pt_regs);
+>
+>  #ifdef CONFIG_KALLSYMS
+> -       printk("%s[<%08lx>] (%ps) from [<%08lx>] (%pS)\n",
+> -               loglvl, where, (void *)where, from, (void *)from);
+> +       printk("%s[<%08lx>] (%ps) from [<%08lx>] (%pS), frame %08lx\n",
+> +               loglvl, where, (void *)where, from, (void *)from, frame);
+>  #else
+>         printk("%sFunction entered at [<%08lx>] from [<%08lx>]\n",
+>                 loglvl, where, from);
+>
+> If that doesn't help, I could have a look at the binary to see which
+> functions in the call chain take a lot of stack space, if any.
+>
+> Which exact compiler version do you use for building these
+> kernels? I can try doing a build with the same commit and config.
+>
+> This one function is one that I have seen before when looking at build
+> warnings with KASAN:
+>
+> > > [<8073772c>] (integrity_kernel_read) from [<8073a904>] (ima_calc_file_hash_tfm+0x178/0x228 security/integrity/ima/ima_crypto.c:484)
+> > > [<8073a78c>] (ima_calc_file_hash_tfm) from [<8073ae2c>] (ima_calc_file_shash security/integrity/ima/ima_crypto.c:515 [inline])
+> > > [<8073a78c>] (ima_calc_file_hash_tfm) from [<8073ae2c>] (ima_calc_file_hash+0x124/0x8b8 security/integrity/ima/ima_crypto.c:572)
+>
+> ima_calc_file_hash_tfm() has a SHASH_DESC_ON_STACK(), which by itself can
+> use up 512 bytes, but KASAN sometimes triples this number. However, I see
+> you do not actually have KASAN enabled, so there is probably more to it.
 
-Yes, the second compatible is never required by the driver and should be
-removed from existing device trees if that makes "make dtbs_check" fail.
+The compiler is gcc version 10.2.1 20210110 (Debian 10.2.1-6)
+It's available in gcr.io/syzkaller/syzbot container.
+(syzbot should have been provided the compiler version, something
+broke, I've filed https://github.com/google/syzkaller/issues/2498 for
+this)
+
+Yes, KASAN is not enabled on arm32 for now.
+
+Re printing FP, syzbot does not use custom patches:
+http://bit.do/syzbot#no-custom-patches
+But this does not seem to be syzbot-specific. It seems that any arm32
+stack overflow report will be unactionable, so I think it would be
+useful to include this into the mainline kernel to make overflow
+reports useful for everybody (and for syzbot as a side effect).
