@@ -2,174 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F8E33CDF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:31:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A452C33CDF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbhCPGae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 02:30:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230478AbhCPGa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 02:30:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 948EB65169;
-        Tue, 16 Mar 2021 06:30:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615876227;
-        bh=9V0KUrLMiXL6VT/H+rjc7n2huomnlDIWLOvYHtisMtE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TpfY2jKZtLeiOYq1Du+xi8AJXy35Cfcxz2F1Q6RvKH/uA1WO2mt8SFIClfFrloM7T
-         a90+TLD7l+lQIK24FVJ05nzEy9Z6qOU04fpWbAUg7KDtToKoLmJEDcANoyzbd7CsEc
-         6kEUScSjytuShT4qq8cyPmMeU3jgAHr8/8JaUPU2CkTKHmTfHYvSFX4NFxZDKVeLtY
-         +RaS9hH/FYjb4+s282y2kwNb/72SksBWIrIDY3V+7WZ26kJgQHVgTmmZ9msmJJyyEm
-         nBa6+uSqF6FU0wxlGZOAfFqq3/AZEYdPX665rfPfoTE/rnShwiqNFMZO2shPxbryd6
-         8BJFs84TZjt+A==
-Date:   Tue, 16 Mar 2021 15:30:22 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com
-Subject: Re: [PATCH -tip v2 00/10] kprobes: Fix stacktrace with kretprobes
-Message-Id: <20210316153022.70cc181a2b3e0f73923e54da@kernel.org>
-In-Reply-To: <20210316023003.xbmgce3ndkouu65e@treble>
-References: <161553130371.1038734.7661319550287837734.stgit@devnote2>
-        <20210316023003.xbmgce3ndkouu65e@treble>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S232231AbhCPGcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 02:32:42 -0400
+Received: from mail-1.ca.inter.net ([208.85.220.69]:54208 "EHLO
+        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230478AbhCPGcO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 02:32:14 -0400
+Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
+        by mail-1.ca.inter.net (Postfix) with ESMTP id 0F0ED2EA1D1;
+        Tue, 16 Mar 2021 02:32:13 -0400 (EDT)
+Received: from mail-1.ca.inter.net ([208.85.220.69])
+        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
+        with ESMTP id HNDKFMNmeFsJ; Tue, 16 Mar 2021 02:14:52 -0400 (EDT)
+Received: from [192.168.48.23] (host-45-58-219-4.dyn.295.ca [45.58.219.4])
+        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dgilbert@interlog.com)
+        by mail-1.ca.inter.net (Postfix) with ESMTPSA id 04B102EA1C9;
+        Tue, 16 Mar 2021 02:32:12 -0400 (EDT)
+Reply-To: dgilbert@interlog.com
+Subject: Re: [syzbot] KASAN: invalid-free in sg_finish_scsi_blk_rq
+To:     syzbot <syzbot+0a0e8ecea895d38332e6@syzkaller.appspotmail.com>,
+        jejb@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000a6bf1605bd9db661@google.com>
+From:   Douglas Gilbert <dgilbert@interlog.com>
+Message-ID: <976bba49-6d5c-b567-36d9-502275252961@interlog.com>
+Date:   Tue, 16 Mar 2021 02:32:11 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <000000000000a6bf1605bd9db661@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021 21:30:03 -0500
-Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+On 2021-03-15 9:59 p.m., syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    d98f554b Add linux-next specific files for 20210312
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1189318ad00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=e362835d2e58cef6
+> dashboard link: https://syzkaller.appspot.com/bug?extid=0a0e8ecea895d38332e6
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
 
-> On Fri, Mar 12, 2021 at 03:41:44PM +0900, Masami Hiramatsu wrote:
-> > Hello,
-> > 
-> > Here is the 2nd version of the series to fix the stacktrace with kretprobe.
-> > 
-> > The 1st series is here;
-> > 
-> > https://lore.kernel.org/bpf/161495873696.346821.10161501768906432924.stgit@devnote2/
-> > 
-> > In this version I merged the ORC unwinder fix for kretprobe which discussed in the
-> > previous thread. [3/10] is updated according to the Miroslav's comment. [4/10] is
-> > updated for simplify the code. [5/10]-[9/10] are discussed in the previsous tread
-> > and are introduced to the series.
-> > 
-> > Daniel, can you also test this again? I and Josh discussed a bit different
-> > method and I've implemented it on this version.
-> > 
-> > This actually changes the kretprobe behavisor a bit, now the instraction pointer in
-> > the pt_regs passed to kretprobe user handler is correctly set the real return
-> > address. So user handlers can get it via instruction_pointer() API.
-> 
-> When I add WARN_ON(1) to a test kretprobe, it doesn't unwind properly.
-> 
-> show_trace_log_lvl() reads the entire stack in lockstep with calls to
-> the unwinder so that it can decide which addresses get prefixed with
-> '?'.  So it expects to find an actual return address on the stack.
-> Instead it finds %rsp.  So it never syncs up with unwind_next_frame()
-> and shows all remaining addresses as unreliable.
-> 
->   Call Trace:
->    __kretprobe_trampoline_handler+0xca/0x1a0
->    trampoline_handler+0x3d/0x50
->    kretprobe_trampoline+0x25/0x50
->    ? init_test_probes.cold+0x323/0x387
->    ? init_kprobes+0x144/0x14c
->    ? init_optprobes+0x15/0x15
->    ? do_one_initcall+0x5b/0x300
->    ? lock_is_held_type+0xe8/0x140
->    ? kernel_init_freeable+0x174/0x2cd
->    ? rest_init+0x233/0x233
->    ? kernel_init+0xa/0x11d
->    ? ret_from_fork+0x22/0x30
-> 
-> How about pushing 'kretprobe_trampoline' instead of %rsp for the return
-> address placeholder.  That fixes the above test, and removes the need
-> for the weird 'state->ip == sp' check:
-> 
->   Call Trace:
->    __kretprobe_trampoline_handler+0xca/0x150
->    trampoline_handler+0x3d/0x50
->    kretprobe_trampoline+0x29/0x50
->    ? init_test_probes.cold+0x323/0x387
->    elfcorehdr_read+0x10/0x10
->    init_kprobes+0x144/0x14c
->    ? init_optprobes+0x15/0x15
->    do_one_initcall+0x72/0x280
->    kernel_init_freeable+0x174/0x2cd
->    ? rest_init+0x122/0x122
->    kernel_init+0xa/0x10e
->    ret_from_fork+0x22/0x30
-> 
-> Though, init_test_probes.cold() (the real return address) is still
-> listed as unreliable.  Maybe we need a call to kretprobe_find_ret_addr()
-> in show_trace_log_lvl(), similar to the ftrace_graph_ret_addr() call
-> there.
+No need, I think I can see how it happens. A particular type of resource
+error from the block layer, together with a 32 byte (or larger) SCSI
+command. I'm testing a patch.
 
-Thanks for the test!
-OK, that could be acceptable. However, push %sp still needed for accessing
-stack address from kretprobe handler via pt_regs. (regs->sp must point
-the stack address)
-Anyway, with int3, it pushes one more entry for emulating call, so I think
-it is OK.
-Let me update the series!
+Doug Gilbert
 
-Thank you!
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+0a0e8ecea895d38332e6@syzkaller.appspotmail.com
+> 
+> ==================================================================
+> BUG: KASAN: double-free or invalid-free in slab_free mm/slub.c:3161 [inline]
+> BUG: KASAN: double-free or invalid-free in kfree+0xe5/0x7f0 mm/slub.c:4215
+> 
+> CPU: 0 PID: 10481 Comm: syz-executor.5 Not tainted 5.12.0-rc2-next-20210312-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>   __dump_stack lib/dump_stack.c:79 [inline]
+>   dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+>   print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
+>   kasan_report_invalid_free+0x51/0x80 mm/kasan/report.c:357
+>   ____kasan_slab_free mm/kasan/common.c:340 [inline]
+>   __kasan_slab_free+0x118/0x130 mm/kasan/common.c:367
+>   kasan_slab_free include/linux/kasan.h:200 [inline]
+>   slab_free_hook mm/slub.c:1562 [inline]
+>   slab_free_freelist_hook+0x92/0x210 mm/slub.c:1600
+>   slab_free mm/slub.c:3161 [inline]
+>   kfree+0xe5/0x7f0 mm/slub.c:4215
+>   scsi_req_free_cmd include/scsi/scsi_request.h:28 [inline]
+>   sg_finish_scsi_blk_rq+0x690/0x810 drivers/scsi/sg.c:3224
+>   sg_common_write+0xa07/0xe70 drivers/scsi/sg.c:1132
+>   sg_v3_submit+0x3b1/0x530 drivers/scsi/sg.c:797
+>   sg_ctl_sg_io drivers/scsi/sg.c:1785 [inline]
+>   sg_ioctl_common+0x3c86/0x97f0 drivers/scsi/sg.c:2014
+>   sg_ioctl+0x7c/0x110 drivers/scsi/sg.c:2229
+>   vfs_ioctl fs/ioctl.c:48 [inline]
+>   __do_sys_ioctl fs/ioctl.c:753 [inline]
+>   __se_sys_ioctl fs/ioctl.c:739 [inline]
+>   __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+>   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x465f69
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f8413efa188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465f69
+> RDX: 0000000020001780 RSI: 0000000000002285 RDI: 0000000000000003
+> RBP: 00000000004bfa8f R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+> R13: 00007ffe20e16e2f R14: 00007f8413efa300 R15: 0000000000022000
+> 
+> Allocated by task 10481:
+>   kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>   kasan_set_track mm/kasan/common.c:46 [inline]
+>   set_alloc_info mm/kasan/common.c:427 [inline]
+>   ____kasan_kmalloc mm/kasan/common.c:506 [inline]
+>   ____kasan_kmalloc mm/kasan/common.c:465 [inline]
+>   __kasan_kmalloc+0x99/0xc0 mm/kasan/common.c:515
+>   kmalloc include/linux/slab.h:561 [inline]
+>   kzalloc include/linux/slab.h:686 [inline]
+>   sg_start_req+0x16f/0x24e0 drivers/scsi/sg.c:3044
+>   sg_common_write+0x5fd/0xe70 drivers/scsi/sg.c:1109
+>   sg_v3_submit+0x3b1/0x530 drivers/scsi/sg.c:797
+>   sg_ctl_sg_io drivers/scsi/sg.c:1785 [inline]
+>   sg_ioctl_common+0x3c86/0x97f0 drivers/scsi/sg.c:2014
+>   sg_ioctl+0x7c/0x110 drivers/scsi/sg.c:2229
+>   vfs_ioctl fs/ioctl.c:48 [inline]
+>   __do_sys_ioctl fs/ioctl.c:753 [inline]
+>   __se_sys_ioctl fs/ioctl.c:739 [inline]
+>   __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+>   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Freed by task 10481:
+>   kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>   kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+>   kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+>   ____kasan_slab_free mm/kasan/common.c:360 [inline]
+>   ____kasan_slab_free mm/kasan/common.c:325 [inline]
+>   __kasan_slab_free+0xf5/0x130 mm/kasan/common.c:367
+>   kasan_slab_free include/linux/kasan.h:200 [inline]
+>   slab_free_hook mm/slub.c:1562 [inline]
+>   slab_free_freelist_hook+0x92/0x210 mm/slub.c:1600
+>   slab_free mm/slub.c:3161 [inline]
+>   kfree+0xe5/0x7f0 mm/slub.c:4215
+>   sg_start_req+0x1b33/0x24e0 drivers/scsi/sg.c:3106
+>   sg_common_write+0x5fd/0xe70 drivers/scsi/sg.c:1109
+>   sg_v3_submit+0x3b1/0x530 drivers/scsi/sg.c:797
+>   sg_ctl_sg_io drivers/scsi/sg.c:1785 [inline]
+>   sg_ioctl_common+0x3c86/0x97f0 drivers/scsi/sg.c:2014
+>   sg_ioctl+0x7c/0x110 drivers/scsi/sg.c:2229
+>   vfs_ioctl fs/ioctl.c:48 [inline]
+>   __do_sys_ioctl fs/ioctl.c:753 [inline]
+>   __se_sys_ioctl fs/ioctl.c:739 [inline]
+>   __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+>   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Last potentially related work creation:
+>   kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>   kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+>   kvfree_call_rcu+0x74/0x8c0 kernel/rcu/tree.c:3597
+>   drop_sysctl_table+0x3c0/0x4e0 fs/proc/proc_sysctl.c:1646
+>   unregister_sysctl_table fs/proc/proc_sysctl.c:1684 [inline]
+>   unregister_sysctl_table+0xc2/0x190 fs/proc/proc_sysctl.c:1659
+>   mpls_dev_sysctl_unregister net/mpls/af_mpls.c:1442 [inline]
+>   mpls_dev_notify+0x64d/0x8b0 net/mpls/af_mpls.c:1632
+>   notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+>   call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2063
+>   call_netdevice_notifiers_extack net/core/dev.c:2075 [inline]
+>   call_netdevice_notifiers net/core/dev.c:2089 [inline]
+>   dev_change_name+0x447/0x690 net/core/dev.c:1346
+>   do_setlink+0x2c1f/0x3a70 net/core/rtnetlink.c:2688
+>   __rtnl_newlink+0xdc6/0x1710 net/core/rtnetlink.c:3376
+>   rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3491
+>   rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
+>   netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+>   netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+>   netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+>   netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+>   sock_sendmsg_nosec net/socket.c:654 [inline]
+>   sock_sendmsg+0xcf/0x120 net/socket.c:674
+>   __sys_sendto+0x21c/0x320 net/socket.c:1977
+>   __do_sys_sendto net/socket.c:1989 [inline]
+>   __se_sys_sendto net/socket.c:1985 [inline]
+>   __x64_sys_sendto+0xdd/0x1b0 net/socket.c:1985
+>   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> The buggy address belongs to the object at ffff88802ae5f400
+>   which belongs to the cache kmalloc-256 of size 256
+> The buggy address is located 0 bytes inside of
+>   256-byte region [ffff88802ae5f400, ffff88802ae5f500)
+> The buggy address belongs to the page:
+> page:ffffea0000ab9780 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2ae5e
+> head:ffffea0000ab9780 order:1 compound_mapcount:0
+> flags: 0xfff00000010200(slab|head)
+> raw: 00fff00000010200 0000000000000000 0000000600000001 ffff888010841b40
+> raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+> 
+> Memory state around the buggy address:
+>   ffff88802ae5f300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>   ffff88802ae5f380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>> ffff88802ae5f400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>                     ^
+>   ffff88802ae5f480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>   ffff88802ae5f500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> ==================================================================
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
 
-> 
-> 
-> 
-> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-> index 06f33bfebc50..70188fdd288e 100644
-> --- a/arch/x86/kernel/kprobes/core.c
-> +++ b/arch/x86/kernel/kprobes/core.c
-> @@ -766,19 +766,19 @@ asm(
->  	"kretprobe_trampoline:\n"
->  	/* We don't bother saving the ss register */
->  #ifdef CONFIG_X86_64
-> -	"	pushq %rsp\n"
-> +	/* Push fake return address to tell the unwinder it's a kretprobe */
-> +	"	pushq $kretprobe_trampoline\n"
->  	UNWIND_HINT_FUNC
->  	"	pushfq\n"
->  	SAVE_REGS_STRING
->  	"	movq %rsp, %rdi\n"
->  	"	call trampoline_handler\n"
-> -	/* Replace saved sp with true return address. */
-> +	/* Replace the fake return address with the real one. */
->  	"	movq %rax, 19*8(%rsp)\n"
->  	RESTORE_REGS_STRING
->  	"	popfq\n"
->  #else
->  	"	pushl %esp\n"
-> -	UNWIND_HINT_FUNC
->  	"	pushfl\n"
->  	SAVE_REGS_STRING
->  	"	movl %esp, %eax\n"
-> diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-> index 1d1b9388a1b1..1d3de84d2410 100644
-> --- a/arch/x86/kernel/unwind_orc.c
-> +++ b/arch/x86/kernel/unwind_orc.c
-> @@ -548,8 +548,7 @@ bool unwind_next_frame(struct unwind_state *state)
->  		 * In those cases, find the correct return address from
->  		 * task->kretprobe_instances list.
->  		 */
-> -		if (state->ip == sp ||
-> -		    is_kretprobe_trampoline(state->ip))
-> +		if (is_kretprobe_trampoline(state->ip))
->  			state->ip = kretprobe_find_ret_addr(state->task,
->  							    &state->kr_iter);
->  
-> 
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
