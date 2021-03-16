@@ -2,56 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6BB833E0AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:38:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3B133E0C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:46:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbhCPViQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 17:38:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229508AbhCPVh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 17:37:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0524E64DF0;
-        Tue, 16 Mar 2021 21:37:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615930678;
-        bh=/Wp1VJrmKmqXE0oo2vwWwXpBvd/xhNubrkciEhZ7HwQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=K63G76znfslp8HYsGmaz4/ruhH7TzA98kHXqHDymqpYVWjjPKjDpXBIgsBfACk7Jj
-         tq1eAkNNy0bMOjqV7gqsAoM28VOc2is+KjhI2mwA4e9DeaWFcZUoP0ND7YINeNj75b
-         MjVm3jvQo+izo2RgEgCePMkuIT0IUaErMJNadagNG+FWMp4VNfuzej7z8i+IxobrHj
-         zed0lmXAcLZVQAsC+8JIEf5NHHnL3TkkIac2URecudCyxPtrwtRfQfILRUnSk2SmW5
-         CqUlWc7RQ7zYW5aSeFQ3ou3S7wXhTI3fRDinfsW4zBNgtuLyzJGKKhnd1c0O7wISWo
-         YWv83UYNaeNrw==
-Date:   Tue, 16 Mar 2021 14:37:56 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jarvis Jiang <jarvis.w.jiang@gmail.com>
-Cc:     davem@davemloft.net, rppt@linux.ibm.com, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, cchen50@lenovo.com, mpearson@lenovo.com
-Subject: Re: [PATCH] Add MHI bus support and driver for T99W175 5G modem
-Message-ID: <20210316143756.45ef6d91@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210316124237.3469-1-jarvis.w.jiang@gmail.com>
-References: <20210316124237.3469-1-jarvis.w.jiang@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S229586AbhCPVp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 17:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229558AbhCPVpl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 17:45:41 -0400
+Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412A0C06174A;
+        Tue, 16 Mar 2021 14:45:40 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 742724D04126B;
+        Tue, 16 Mar 2021 14:45:37 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 14:45:33 -0700 (PDT)
+Message-Id: <20210316.144533.1015318495899101097.davem@davemloft.net>
+To:     linyunsheng@huawei.com
+Cc:     kuba@kernel.org, jhs@mojatatu.com, xiyou.wangcong@gmail.com,
+        jiri@resnulli.us, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@openeuler.org
+Subject: Re: [PATCH net-next] net: sched: remove unnecessay lock protection
+ for skb_bad_txq/gso_skb
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <1fea8225-69b0-5a73-0e9d-f5bfdecdc840@huawei.com>
+References: <1615800610-34700-1-git-send-email-linyunsheng@huawei.com>
+        <20210315.164151.1093629330365238718.davem@redhat.com>
+        <1fea8225-69b0-5a73-0e9d-f5bfdecdc840@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Tue, 16 Mar 2021 14:45:37 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021 05:42:37 -0700 Jarvis Jiang wrote:
->  drivers/bus/mhi/devices/mhi_netdev.c          | 1830 +++++++++++++
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Date: Tue, 16 Mar 2021 10:40:56 +0800
 
-There's already a drivers/net/mhi/
+> On 2021/3/16 7:41, David Miller wrote:
+>> From: Yunsheng Lin <linyunsheng@huawei.com>
+> 
+> At least for the fast path, taking two locks for lockless qdisc hurts
+> performance when handling requeued skb, especially if the lockless
+> qdisc supports TCQ_F_CAN_BYPASS.
 
-Please make sure the drivers live in their respective subsystem.
-
-Virtio drivers don't sit under drivers/virtio, and most certainly not
-under drivers/bus/virtio...
-
->  drivers/bus/mhi/devices/mhi_satellite.c       | 1155 +++++++++
->  drivers/bus/mhi/devices/mhi_uci.c             |  802 ++++++
-
-Ugh, can you clarify what's the source of this code dump and if you're
-coordinating with others working on Qualcomm drivers?
+The bad txq and gro skb cases are not "fast path", sorry
