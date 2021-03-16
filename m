@@ -2,97 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9314A33DFD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF9E33E010
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232427AbhCPVIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 17:08:18 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:35277 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229584AbhCPVHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 17:07:50 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F0Qq70RfNz9sVm;
-        Wed, 17 Mar 2021 08:07:47 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1615928868;
-        bh=KOfhboZ2EAC/BynPOrI8fT0IbPi+1mIjnRowCgT+YQo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KUB0csnqr3khC2vUcnOlttFhjF5QZ/bZ1RwojvGWUJkuS7KjmGjPGKx69SSsJuNo+
-         TNeCA45q4BRHE8QiDusVHJdGsrJz07ZkOzzRsFT5YICqVO0w9QvSw0fJ+GkY2a8njf
-         gFbtyrlNNMrUIUUHiZXwrIrXTSJhOmMHfGT6GDwjaIYIEabWtC8ARNIT+VaVy3jSCv
-         czMcYCq1am7P4FSroeL7rCVCOcAAgODkwOG3odR80v6yViUCl67A3GrcPZnasgaEm4
-         fAej9UpnXsuAAaCgDXq0K9leWeH+9rOQcZFXkyTAlN2E9s2ohvvp9pSvomZ8NYVf73
-         YFHFNet9RsnJQ==
-Date:   Wed, 17 Mar 2021 08:07:44 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>
-Subject: Re: linux-next: manual merge of the hyperv tree with the tip tree
-Message-ID: <20210317080744.33f5c6a9@canb.auug.org.au>
-In-Reply-To: <20210316150554.32xtihkhvdkup3eq@liuwe-devbox-debian-v2>
-References: <20210315143505.35af617b@canb.auug.org.au>
-        <20210316150254.GC18822@zn.tnic>
-        <20210316150554.32xtihkhvdkup3eq@liuwe-devbox-debian-v2>
+        id S232745AbhCPVKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 17:10:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231658AbhCPVJL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 17:09:11 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7005BC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 14:09:00 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso142659pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 14:09:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9ckCy2DNLTFsurQYOeBCucFOTgTIh9F4lDkIMXpfp3E=;
+        b=EXULXbCbiguUB9WJ14EumXRl/eZVdBDFbhjQVofG2rcVniE4EQg33oVRIMix+ZusLa
+         +8MB143a5/pM7LdnjT+8wtbrqBRVMqORX/Vf6AjSR/nW5F4k3NJWdIESIus0aExuPQbQ
+         mrpxY6qS757zZMH0Z9V3B+PEEx4N0ZpUFMXgE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9ckCy2DNLTFsurQYOeBCucFOTgTIh9F4lDkIMXpfp3E=;
+        b=dmIaNQWLFiusSBawj5DF5A3WoN/wvdpxcLPOXU/WnMmqjhbkQSulQlzwFV8xmhHWXb
+         K2yOoEERTiWJH/hp8WL5h171ZVjSAgCgLOayyB0r4Tg9TD9mYiG4xpuKitnuFfEzYxHA
+         NvETBa5LjOSGMsX8rw0vPqqxJfeMPSnOq+3eVnGTfiPFedilAZ6oWDO69yFFX8kUstSl
+         vNBXXNVwez5JHIOiF1HiRg/Gw6+KEgqpSRGcOxgK3KlThK62jyMvw0B/fAP5d+dqjdqm
+         lSay6lMVUgj7ul3DQOKbUg3a4YgOw+vN0gLpnLdhyQ7rgKc73BKGc+Dm/YUHXgLXNAmH
+         XVeQ==
+X-Gm-Message-State: AOAM532C82F1Qul6h5nDiu8oKsnECeiwxmirFJFov2LtVYSzSyPEHbxO
+        qBJs9W0i5r6NBzM0Rx9maNNGLQ==
+X-Google-Smtp-Source: ABdhPJw15Vdgd1+PLOyaEZb9iqRLOxaBungyupgVM9vCCQtdviVgnn9XFWzvSCOChSmWPYvbHpV5bw==
+X-Received: by 2002:a17:90b:4c87:: with SMTP id my7mr937342pjb.162.1615928939826;
+        Tue, 16 Mar 2021 14:08:59 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:84d6:7fd1:d469:351f])
+        by smtp.gmail.com with ESMTPSA id 192sm17358072pfa.122.2021.03.16.14.08.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 14:08:59 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     robdclark@chromium.org, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        devicetree@vger.kernel.org, swboyd@chromium.org,
+        linux-arm-msm@vger.kernel.org, Steev Klimaszewski <steev@kali.org>,
+        eballetbo@gmail.com, Andy Gross <agross@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        drinkcat@chromium.org, Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 1/3] dt-bindings: display: simple: Add the panel on sc7180-trogdor-pompom
+Date:   Tue, 16 Mar 2021 14:08:19 -0700
+Message-Id: <20210316140707.RFC.1.I3a21995726282f1e9fcb70da5eb96f19ed96634f@changeid>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/WLrdil7jlpsOmUPVPVSbx0I";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/WLrdil7jlpsOmUPVPVSbx0I
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The sc7180-trogdor-pompom board might be attached to any number of a
+pile of eDP panels. At the moment I'm told that the list might include:
+- KD KD116N21-30NV-A010
+- KD KD116N09-30NH-A016
+- Starry 2081116HHD028001-51D
+- Sharp LQ116M1JW10
 
-Hi all,
+It should be noted that while the EDID programmed in the first 3
+panels indicates that they should run with exactly the same timing (to
+keep things simple), the 4th panel not only needs different timing but
+has a different resolution.
 
-On Tue, 16 Mar 2021 15:05:54 +0000 Wei Liu <wei.liu@kernel.org> wrote:
->
-> > Right,
-> >=20
-> > so tglx and I took a quick look and came to the conclusion that it would
-> > be best if you - provided it is not too much trouble - keep applying
-> > this patch so that linux-next can get tested properly and we - Wei or I
-> > - explain this merge conflict in our pull requests during the next merge
-> > window and ask Linus to merge your patch ontop. This way we'll save us
-> > the cross-tree merging dance. =20
->=20
-> Totally agreed. :-)
->=20
-> I've made a note to inform Linus about this in the next merge window.
+As is true in general with eDP panels, we can figure out which panel
+we have and all the info needed to drive its pixel clock by reading
+the EDID. However, we can do this only after we've powered the panel
+on. Powering on the panels requires following the timing diagram in
+each panel's datasheet which specifies delays between certain
+actions. This means that, while we can be quite dynamic about handling
+things we can't just totally skip out on describing the panel like we
+could do if it was connected to an external-facing DP port.
 
-No worries, I will keep applying the patch (my setup allows that to
-happen automatically).  Linus should apply it as a part of the merge
-resolution (as do I).
+While the different panels have slightly different delays, it's
+possible to come up with a set of unified delays that will work on all
+the panels. From reading the datasheets:
+* KD KD116N21-30NV-A010 and KD KD116N09-30NH-A016
+  - HPD absent delay: 200 ms
+  - Unprepare delay: 150 ms (datasheet is confusing, might be 500 ms)
+* Starry 2081116HHD028001-51D
+  - HPD absent delay: 100 ms
+  - Enable delay: (link training done till enable BL): 200 ms
+  - Unprepare delay: 500 ms
+* Sharp LQ116M1JW10
+  - HPD absent delay: 200 ms
+  - Unprepare delay: 500 ms
+  - Prepare to enable delay (power on till backlight): 100 ms
 
---=20
-Cheers,
-Stephen Rothwell
+Unified:
+- HPD absent delay: 200 ms
+- Unprepare delay: 500 ms
+- Enable delay: 200 ms
 
---Sig_/WLrdil7jlpsOmUPVPVSbx0I
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+NOTE: in theory the only thing that we _really_ need unity on is the
+"HPD absent delay" since once the panel asserts HPD we can read the
+EDID and could make per-panel decisions if we wanted.
 
------BEGIN PGP SIGNATURE-----
+Let's create a definition of "a panel that can be attached to pompom"
+as a panel that provides a valid EDID and can work with the standard
+pompom power sequencing. If more panels are later attached to pompom
+then it's fine as long as they work in a compatible way.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBRHiAACgkQAVBC80lX
-0Gx+Rgf/bfAhsBXyqL5Zai6OUKdZbC1+XfBnAGJ8k/fENNYMje8yQ6/h2+T9hsmG
-5I6uoiXQjWwonUfGbDqJ5hu525Ap/qZdYVok7M0GxgtE5Q/reSr8rg51GLY8MFYz
-trZhPblpvMncwQ4QdfvssgZVILz6cnennHAvDDXu//qZM7gYIAwKRg8jZlC/+6uK
-MPuh+OOQw+R+HQGNdUMKJCy91vzGYxO/tHZgvgD5zcDC4RfZeNkiTt6mqT4NUqET
-eTQCFb+F2WP4FhL8HvJ6UiiugGmyFIl5uX9NxLi6Fvp9yc8j6Lj2sdZkuxkZzD4+
-JUTrP4sUmJv5FBXxu0YyRsjKKVhQbw==
-=wI+K
------END PGP SIGNATURE-----
+One might ask why we can't just use a generic string here and provide
+the timings directly in the device tree file. As I understand it,
+trying to describe generic power sequencing in the device tree is
+frowned upon and the one instance (SD/MMC) is regarded as a mistake
+that shouldn't be repeated. Specifying a power sequence per board (or
+per board class) feels like a reasonable compromise. We're not trying
+to define fully generic power sequence bindings but we can also take
+advantage of the semi-probable properties of the attached device.
 
---Sig_/WLrdil7jlpsOmUPVPVSbx0I--
+NOTE: I believe that past instances of supporting this type of thing
+have used the "white lie" approach. One representative panel was
+listed in the device tree. The power sequencings of this
+representative panel were OK to use across all panels that might be
+attached and other differences were handled by EDID. This patch
+attempts to set a new precedent and avoid the need for the white lie.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+
+ .../devicetree/bindings/display/panel/panel-simple.yaml       | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+index 62b0d54d87b7..9807dbc1cceb 100644
+--- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
++++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+@@ -140,6 +140,10 @@ properties:
+       - giantplus,gpg48273qs5
+         # GiantPlus GPM940B0 3.0" QVGA TFT LCD panel
+       - giantplus,gpm940b0
++        # A panel connected to a google,pompom board. Panel is guaranteed to
++        # confirm to google,pompom-panel power sequencing requirements and then
++        # the specific panel will be probed via EDID.
++      - google,pompom-panel
+         # HannStar Display Corp. HSD070PWW1 7.0" WXGA TFT LCD panel
+       - hannstar,hsd070pww1
+         # HannStar Display Corp. HSD100PXN1 10.1" XGA LVDS panel
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
