@@ -2,230 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A5933D93F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:24:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBC033D941
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:24:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238645AbhCPQXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 12:23:37 -0400
-Received: from mail-am6eur05on2063.outbound.protection.outlook.com ([40.107.22.63]:10209
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238656AbhCPQWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 12:22:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VZPPJqf/YU+wroa90QOTLq60GvOmMTAGcrOTsVkLyKVd/lGfzEm6k/+9DUcIA4v7vGX9RP9tRLkiUIYJjn4/AfDlTW0w/TzE5i5bj/R0j2rfFt6OAymf4p1lFe6JQ6lRD04Gw/yqAA7A9oatP5slY2Stnw5e+NyND+LGrbPnKJIsxcpDFbwHKc1e9h2bHC1blRd1vZvMg82s5u/oMqxiTcLb+9PXoSUSdrKF5RvXATKraDRaH7g8NrypKiAzWovAy7gnZjZrrox8/cpLCc4Va8/jHH+kCO7BzG+yUgLS8XGpFmyWD2DsdLb/N9sgf9Rr52mxg0O1Uqz4cKJdpLSC8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MQG5F380bs5dNm8G1TDnJ+4QZ5S3hkHgqAJcpNYeKvQ=;
- b=NbQOsTLnEip0lVrtKhsVMmbeXUs+qUyt5l3rdIkfD0qQAzODzNxbOpu+CRxr0Pr2wtRlfrNBDY54pPvDPORXslm5XEU+oruSURYJkoXK9nvuEh5Bq4piY0iAjtVBnMBmcs1GuJbIoQBNbfE77Y4fy0xWlNtPcWUcV98RTUFg/M43HEj+jz4M6lncioABrI7V46/IB9dUe1i6L40D/7F0m7GLeJ4hk6D5byC/iCamf5CWUIRbbgP195O1yM36xgpWAbQzhmQh+56Om6SpeNnH4cP0ym9CszPOKl5+hXV0NXxIb3QxF1q2pcbnA/QXuu2ccIEIasqgVrnkxW2rlISUmA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MQG5F380bs5dNm8G1TDnJ+4QZ5S3hkHgqAJcpNYeKvQ=;
- b=YGs6xZDUKCCUUSXwKWqaX5TykzrgId0zlDZ1refrCVcYgYV3q08lf7lLjvey6L+C/RbsaSIPjpzklf6ZcjnSO/3sCJ6WyfsFshR6cer9IRVrqI6D57o5r4v/EmeWSwZLaWAD4sWupU3x5cv25p7E0UdfwG1tE0XqqbvBxnK3eUs=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VE1PR04MB6702.eurprd04.prod.outlook.com (2603:10a6:803:123::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Tue, 16 Mar
- 2021 16:22:36 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::f0c0:cb99:d153:e39b]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::f0c0:cb99:d153:e39b%7]) with mapi id 15.20.3933.032; Tue, 16 Mar 2021
- 16:22:36 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     Sasha Levin <sashal@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Christian Eggers <ceggers@arri.de>,
-        Vladimir Oltean <olteanv@gmail.com>
-Subject: Re: [PATCH 5.10 113/290] net: dsa: implement a central TX
- reallocation procedure
-Thread-Topic: [PATCH 5.10 113/290] net: dsa: implement a central TX
- reallocation procedure
-Thread-Index: AQHXGaN2cgk//PsOv0majfm9qALwkKqFdyuAgACk4wCAAIhOgIAAJKWAgAAE3gA=
-Date:   Tue, 16 Mar 2021 16:22:36 +0000
-Message-ID: <20210316162236.vmvulf3wlmtowdvf@skbuf>
-References: <20210315135541.921894249@linuxfoundation.org>
- <20210315135545.737069480@linuxfoundation.org>
- <20210315195601.auhfy5uafjafgczs@skbuf> <YFBGIt2jRQLmjtln@kroah.com>
- <YFC4eVripXbAw2cG@sashalap> <YFDXNxW9w25n/51o@kroah.com>
-In-Reply-To: <YFDXNxW9w25n/51o@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=nxp.com;
-x-originating-ip: [5.12.16.165]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 56529899-83d5-4f84-5378-08d8e897b640
-x-ms-traffictypediagnostic: VE1PR04MB6702:
-x-microsoft-antispam-prvs: <VE1PR04MB6702ED005073569801EB3CBEE06B9@VE1PR04MB6702.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WrTNbI6np11n5BiBKFmje0uk//Y8MuciPDp4kSnqy6t0LF5UV8Jih8mkaQYl9zlQd6PUhaA22fKGq0ry+UwZLALnYEliHjc77f0EOhE+CmFWYZRGgAfprgbaU6UUsmWSujfBI6bReN1+rodcR+1TMAr5q1Y5z7IDQSgQfHla/4qIr0hCrmdssHYJA6JntsNDr8FVMekzyc4thCWDaKQYgpdp4pwmeY6G3y9/JYirQGqvspa2oaR/DJEAX4jj5tLqENJ+kv+uJ8DxduRZeZTclUMrFmZJnkeCqQDjy97eTq4mNXOfa3SpkYwYRr0SfbrrIdg/a1WCdIracSZiCuynjQZp65OPtXfxHfdZVW10t9QdJ1zvz29KXztjkSJV+wD/453ttefDDlmH1CCV18pr3R7y3iwRqoFQuVaLyBOO08tRUuLvQD71b/l/khtSJeGHLXSDpnndUGWC8aZltSSeA87/XfBxCQo0D9iJHikXpmzHp1uIwXe9yI0/C8YMxkZwO/PdLTIxIyKPZtnS07DqRYZe2ABa6VssWVXuca7QVVsBq/LdtZC6ZqngGhFy+Ex0xx6HBIfRLoikjVLSHZSSpw8BtoWwcSevavmT+aIUK3oPp4zl++/38ArCM5PNNkAHUZ/dd83PZi1SGQNr4opTjA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(136003)(39860400002)(396003)(376002)(366004)(346002)(1076003)(4326008)(6486002)(76116006)(186003)(66446008)(6512007)(8936002)(5660300002)(26005)(478600001)(9686003)(71200400001)(8676002)(7416002)(66556008)(6916009)(66946007)(6506007)(86362001)(64756008)(966005)(44832011)(2906002)(33716001)(316002)(54906003)(66476007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?NOBloBpiG/d701o9HH2VVC9G2wwszh9xoY2oQuHrXySsAnjvIQ5zpUPnqY/q?=
- =?us-ascii?Q?7uiGFC5V4JaDcb78P4YWecPNQlRB80UJYQDBlaZohSOp0y822j8DDY81zdj2?=
- =?us-ascii?Q?x2Ir48X8x0kxNsw0DV399/ODvU2wTVfllD1P813qn7MMbsQ2ZnXXtBigRdpb?=
- =?us-ascii?Q?z+39hwOMyVCdhe+wiiJy3+cLLap22mmVoTyTx/lIa5oxZz3Od1iw/53ryC82?=
- =?us-ascii?Q?tMYJLCvgNwW4GdUGHm8UqzQ1HMH6oL3Hi4rZHgFiV1T+WET/EDrWj639uqLe?=
- =?us-ascii?Q?nzmxTtMB1H5KxglNWwLdzvPlXOWUv09oJDtpNg+VqWgNahmoWfuYdk0tmwSJ?=
- =?us-ascii?Q?XTqpS2GY/fbWga33M0k0MBrnCbPEU4lbDQaey2ZrDJEr6OZn+ZncngYb2pnl?=
- =?us-ascii?Q?+nOqN2J2tO3kAQZGcTO2SRNMaXo7b7nvpLZ3ZB/6VRLO/+PW4bFxPiUZXpnI?=
- =?us-ascii?Q?+KF0zjeZMpGKyrY2d31/YNr/2QTxDX1kD5BsXTNukBHNg9++b18nJhGC8E43?=
- =?us-ascii?Q?iQzci+hMQmATGsMlNLnA5JPEvlKoJTWaYua0bHzcMPiDzaWmIDQ4A/byFz/b?=
- =?us-ascii?Q?la4cxa57SNn+WVUDGhPCvHLsAZiNVGxQ+wf60kJTqtqWTHLKXj3EF1INGKNP?=
- =?us-ascii?Q?s0ePtYJopZXR6kEdmo/6G9QI+3i29GCm8/tI9wNe/0ndZ07WQPVXI6ZEtghe?=
- =?us-ascii?Q?pVxZ9VofVmHwMMvWv/I5HPYO99sFsB6CYzi1H1HM6GPNLfp7y7nziLC6+1we?=
- =?us-ascii?Q?Z/qu4ZOSVZnacfQv2K2YbuvMY4sGU8pNzaIyVjzMUmEXbUNiXjOkDvANtErU?=
- =?us-ascii?Q?rExU5/MNtp+iq0XjaR2cujwtTqa3fMRBOOqvLNKiWcVGC4dVLU5eTrbqm1ce?=
- =?us-ascii?Q?aJGmu913CK6R3mPdh7xgxZMgTTFHoa5TKzeRhgUzY+KaMI4X3tXlMJD/LLCW?=
- =?us-ascii?Q?+7u9Sb82AneQ11KLXuhZ7KQ2C9lRKdrIZwlpmAr1hDs7llKGSRDUz1Vr4Ily?=
- =?us-ascii?Q?qe8jSs/KK9GAWar+aawqjwSXWTdXMZ4ZoagmeWnVRW9YhITk3t+hXzq34Eoa?=
- =?us-ascii?Q?B3kiLTq0icb2J2RzJq86n6d+QYv6uCxhlMqv38XInI3Q/96bwEaeeTWf7YJ+?=
- =?us-ascii?Q?Yggitb//JP5d7v7voiPG3rIWA6ZtzHRy+fubd3L7dvlHD0i2CFC4MMCkCbS7?=
- =?us-ascii?Q?5BytfHisfVetT851//mZDL5Wuqf/TOd2DOqLwdzGc4R7ldu0lvEtWunoVzqe?=
- =?us-ascii?Q?VeN9d9oMEmB8kJVs4q4LEm4bwI8HhqTSA3KK3yRizPx23PhhxDCHo5ZAUAqy?=
- =?us-ascii?Q?adyx13epFy5M0dPl+YRuByWb?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <EEBDD465BF5A8A4A965E43091224921D@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S238686AbhCPQXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 12:23:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235575AbhCPQXY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 12:23:24 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51470C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 09:23:23 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id m22so63331889lfg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 09:23:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B9/mKkjqDmqgztA1c+9tojdTY3QmdTa/Mj2dq9ukTTI=;
+        b=oIzhrCUP8uEFhorRa9bXRKUnCNw5P7uxU7YeQNiVmYyG2BvkcJbS6zl23A4SBAOGdG
+         yn3kvlNpGxAiYocjG97D4zXnIklE4MZsuiZllIzDbCA1tjZ+435tFUwJA16biGKJ3si3
+         TNCU41auU5xeQYbn6hj5BY+cgEV2C+lvXrfax/NrK8PhOQmUy4mZVJiQMKjJBhh7rnTh
+         PthhaqHipyHleu8UEU/GpMwWL3aowzpRMrFEA7AkH3PDVBQ5aLQRxwZb6o6QMS/H8aT6
+         ZgH/ZVDbwV+mDTi/pY1MIcnL8uzfSPUcpYO+u1H+QQh9xkufOoK0z329pDR5dV/zPgem
+         gB+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B9/mKkjqDmqgztA1c+9tojdTY3QmdTa/Mj2dq9ukTTI=;
+        b=UrUybvQ3x/DWYO6IreJ1CryVHxWg0toykK4/z99Rvo70EcQ6SE/IOEOmDNctD1SS3B
+         ZoXopiKuHHXhKDOPWHbjbvHQ0XNQI0tWbLxRxDPup1EBxaI8dioqdbv60XheCidWdgIQ
+         W7+eAl7eAVRVsMw8gbU4vBOx+kSV+yq7XnsR2ZNEg/qhGUzA6mdfL+VGYBoupZyb5sej
+         3pDiv5RAJhlxIlCC7tt373YmcH/mmcC829JKGQN7QoVLb6Mk0XntrTYk0JPRv4ZRNtI9
+         /Fr3mDPYzlRTzXyM4uEuvs9zfrInfmy4hRJUukMjW2OcvBN1lcw6nbdKifTz2cr66hZe
+         aebA==
+X-Gm-Message-State: AOAM5319vz4kPR2DwYyf04NTnKoLKyO4l6a4DXWRURjdH9JzZfOAFU4U
+        BV6XA5rkf2hlJNibqWYXJlELxYYVi57ARnbYdvmnVg==
+X-Google-Smtp-Source: ABdhPJxuWanoucLXm4wggJ26jJCzAvFNlj63TFQMKAVOOBhYcNtUY/h9SGFVfpiMVZ3evu02HsYbPIzPxq8/sPXKw7s=
+X-Received: by 2002:a19:8c19:: with SMTP id o25mr11895567lfd.547.1615911802020;
+ Tue, 16 Mar 2021 09:23:22 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56529899-83d5-4f84-5378-08d8e897b640
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2021 16:22:36.6540
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MX9NSo2EBkyv3jOiDpiAFPDRwkOc5Xrx5qpms/RzivNwBZwc/rIWkQkJBcv/6MSAxLU3E5bAaUwtyE4wdNZ+KQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6702
+References: <202103160133.UzhgY0wt-lkp@intel.com> <YFBYWjtWJrnGyiVp@linux.ibm.com>
+In-Reply-To: <YFBYWjtWJrnGyiVp@linux.ibm.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 16 Mar 2021 09:23:09 -0700
+Message-ID: <CAKwvOdmMvvOYBJRZh9w8uQH1ZXZ97Gq+Rs0S4Xi0ZnWufYoxAA@mail.gmail.com>
+Subject: Re: WARNING: modpost: vmlinux.o(.text+0x74fea4): Section mismatch in
+ reference from the function memblock_find_in_range_node() to the function .init.text:memblock_bottom_up()
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+        kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 05:05:11PM +0100, gregkh@linuxfoundation.org wrote:
-> On Tue, Mar 16, 2021 at 09:54:01AM -0400, Sasha Levin wrote:
-> > On Tue, Mar 16, 2021 at 06:46:10AM +0100, gregkh@linuxfoundation.org wr=
-ote:
-> > > On Mon, Mar 15, 2021 at 07:56:02PM +0000, Vladimir Oltean wrote:
-> > > > +Andrew, Vivien,
-> > > >=20
-> > > > On Mon, Mar 15, 2021 at 02:53:26PM +0100, gregkh@linuxfoundation.or=
-g wrote:
-> > > > > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > >
-> > > > > From: Vladimir Oltean <vladimir.oltean@nxp.com>
-> > > > >
-> > > > > [ Upstream commit a3b0b6479700a5b0af2c631cb2ec0fb7a0d978f2 ]
-> > > > >
-> > > > > At the moment, taggers are left with the task of ensuring that th=
-e skb
-> > > > > headers are writable (which they aren't, if the frames were clone=
-d for
-> > > > > TX timestamping, for flooding by the bridge, etc), and that there=
- is
-> > > > > enough space in the skb data area for the DSA tag to be pushed.
-> > > > >
-> > > > > Moreover, the life of tail taggers is even harder, because they n=
-eed to
-> > > > > ensure that short frames have enough padding, a problem that norm=
-al
-> > > > > taggers don't have.
-> > > > >
-> > > > > The principle of the DSA framework is that everything except for =
-the
-> > > > > most intimate hardware specifics (like in this case, the actual p=
-acking
-> > > > > of the DSA tag bits) should be done inside the core, to avoid hav=
-ing
-> > > > > code paths that are very rarely tested.
-> > > > >
-> > > > > So provide a TX reallocation procedure that should cover the know=
-n needs
-> > > > > of DSA today.
-> > > > >
-> > > > > Note that this patch also gives the network stack a good hint abo=
-ut the
-> > > > > headroom/tailroom it's going to need. Up till now it wasn't doing=
- that.
-> > > > > So the reallocation procedure should really be there only for the
-> > > > > exceptional cases, and for cloned packets which need to be unshar=
-ed.
-> > > > >
-> > > > > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> > > > > Tested-by: Christian Eggers <ceggers@arri.de> # For tail taggers =
-only
-> > > > > Tested-by: Kurt Kanzenbach <kurt@linutronix.de>
-> > > > > Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-> > > > > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> > > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > > > ---
-> > > >=20
-> > > > For context, Sasha explains here:
-> > > > https://www.spinics.net/lists/stable-commits/msg190151.html
-> > > > (the conversation is somewhat truncated, unfortunately, because
-> > > > stable-commits@vger.kernel.org ate my replies)
-> > > > that 13 patches were backported to get the unrelated commit 9200f51=
-5c41f
-> > > > ("net: dsa: tag_mtk: fix 802.1ad VLAN egress") to apply cleanly wit=
-h git-am.
-> > > >=20
-> > > > I am not strictly against this, even though I would have liked to k=
-now
-> > > > that the maintainers were explicitly informed about it.
-> > > >=20
-> > > > Greg, could you make your stable backporting emails include the out=
-put
-> > > > of ./get_maintainer.pl into the list of recipients? Thanks.
-> > >=20
-> > > I cc: everyone on the signed-off-by list on the patch, why would we n=
-eed
-> > > to add more?  A maintainer should always be on that list automaticall=
-y.
-> >=20
-> > Oh, hm, could this be an issue with subsystems that have a shared
-> > maintainership model? In that scenario not all maintainers will sign-of=
-f
-> > on a commit.
->=20
-> So a shared maintainer trusts their co-maintainer for reviewing patches
-> for Linus's tree and all future kernels, but NOT into an old backported
-> stable tree?  I doubt that, trust should be the same for both.
+On Tue, Mar 16, 2021 at 12:04 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
+>
+> On Tue, Mar 16, 2021 at 01:23:08AM +0800, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   1e28eed17697bcf343c6743f0028cc3b5dd88bf0
+> > commit: 34dc2efb39a231280fd6696a59bbe712bf3c5c4a memblock: fix section mismatch warning
+> > date:   2 days ago
+> > config: arm64-randconfig-r013-20210315 (attached as .config)
+> > compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project a28facba1ccdc957f386b7753f4958307f1bfde8)
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # install arm64 cross compiling tool for clang build
+> >         # apt-get install binutils-aarch64-linux-gnu
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=34dc2efb39a231280fd6696a59bbe712bf3c5c4a
+> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> >         git fetch --no-tags linus master
+> >         git checkout 34dc2efb39a231280fd6696a59bbe712bf3c5c4a
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All warnings (new ones prefixed by >>, old ones prefixed by <<):
+> >
+> > >> WARNING: modpost: vmlinux.o(.text+0x74fea4): Section mismatch in reference from the function memblock_find_in_range_node() to the function .init.text:memblock_bottom_up()
+> > The function memblock_find_in_range_node() references
+> > the function __init memblock_bottom_up().
+> > This is often because memblock_find_in_range_node lacks a __init
+> > annotation or the annotation of memblock_bottom_up is wrong.
+>
+> I don't have clang-13 setup handy so I could not check, but I think this
+> should be the fix:
 
-Greg, the problem is that we have the following maintainership layout:
+Thanks for taking another look:
+https://lore.kernel.org/lkml/20210225205908.GM1447004@kernel.org/
+Do we want to switch the above to the below?
 
-General networking maintainers (David Miller && Jakub Kicinski)
--> DSA framework maintainers
-   -> DSA hardware driver maintainers
+>
+> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> index d13e3cd938b4..5984fff3f175 100644
+> --- a/include/linux/memblock.h
+> +++ b/include/linux/memblock.h
+> @@ -460,7 +460,7 @@ static inline void memblock_free_late(phys_addr_t base, phys_addr_t size)
+>  /*
+>   * Set the allocation direction to bottom-up or top-down.
+>   */
+> -static inline __init void memblock_set_bottom_up(bool enable)
+> +static inline __init_memblock void memblock_set_bottom_up(bool enable)
+>  {
+>         memblock.bottom_up = enable;
+>  }
+> @@ -470,7 +470,7 @@ static inline __init void memblock_set_bottom_up(bool enable)
+>   * if this is true, that said, memblock will allocate memory
+>   * in bottom-up direction.
+>   */
+> -static inline __init bool memblock_bottom_up(void)
+> +static inline __init_memblock bool memblock_bottom_up(void)
+>  {
+>         return memblock.bottom_up;
+>  }
+>
+>
+> --
+> Sincerely yours,
+> Mike.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/YFBYWjtWJrnGyiVp%40linux.ibm.com.
 
-But there is a single tree with mandatory sign-off from a single
-maintainer, and that would be David or Jakub. And in rare cases it may
-happen for patches to get accepted without the written ACK of any of the
-sub-maintainers.
 
-If the question is whether I trust David or Jakub to pay attention on
-why are 13 patches that don't fix anything being backported to stable,
-and then take the time to check/test whether anything is going to be
-broken in subtle ways because code was backported in places it was never
-meant to belong, then yeah, sorry, but no.
 
-In this case, things could have gone a lot worse: the model you're
-following makes it possible to backport a breaking change into a
-subsystem and the maintainer can never find out until there'a a bug
-report.=
+-- 
+Thanks,
+~Nick Desaulniers
