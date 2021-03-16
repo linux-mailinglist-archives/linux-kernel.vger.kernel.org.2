@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 109D333D140
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:57:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E9733D144
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236464AbhCPJ4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236439AbhCPJ4H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:56:07 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E372DC06174A;
-        Tue, 16 Mar 2021 02:56:06 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id si25so15360245ejb.1;
-        Tue, 16 Mar 2021 02:56:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QYNfh3jaX3N1CtGg7NED72HcSFgmcITNomBhZBJqE/Y=;
-        b=uGMvRB1D0xw70y+CqywgeVFN8O2H8SGeov523gtjUoa3d4JflrPmx1ryXrBFlUdjpF
-         hacp04N79LXlDGf/LQEJQKlgRado5Q5fS8vPFPDhPT8Ug6WXSqpAOyTVaaVc3bIOk0cX
-         ldw1XneeXXuYuimA5flZYweCUnMr6Z36zoHhlsKNvNR4QMUngnYJnU1oqx6/kxLL3vSW
-         64cS96xu3+n9VfJB74iIYUjthP83UwHCV6OE6MiAtUSCH91mdEdkT4jFl+QFOlfizyMk
-         nk3a7yFivK9qkNFyZlCaN9Hj6kXDEsRgvMH7VbLgwClPp6fhx/HL2O1avjXcAuhjYbCV
-         xlgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QYNfh3jaX3N1CtGg7NED72HcSFgmcITNomBhZBJqE/Y=;
-        b=TDsZghrfsU8+wVz4oxG5awLixu0uVEeNf1NqFH/s9w68x0CRfxRXpE92h3nU8LeE8m
-         u2nt0fkCIqAtRVCdz5OOvV906bffqhqu/Gt2WgXWfV/YF1Cw4XHgFAgXG7P6OQ50wpn4
-         mCJDUQsV0DAciXgoCszwBxR4wYqQZa7W93Fz3/rtsgz7poBNp3gybLemciRVknAuKfr5
-         FWElAjPxDjwPWTtcCtPUXN7EItLusgckApBMdMeskwocq0CzfNdtrJdxfBOvHdH8o1/F
-         B68e3Ali7ComC0yvrZW19bMBa08aEIU5klTe7eIAkD1BhXekpbNcSdkbPKfq1u+ADePY
-         2GTQ==
-X-Gm-Message-State: AOAM533itW/BFZC7sJH7t6BOB96iwapeepQqqrMdaI1PbqDPA4NC67Pt
-        fvpj3k6XIWHFrrRrqcDuZNk=
-X-Google-Smtp-Source: ABdhPJzw1VKhJ6YtiLJyj67J0yZSTlZtQfHt+vO+1cr3OxFeMOB954HHMAFSoDcehWnH6I6ZeWT1iw==
-X-Received: by 2002:a17:906:5e50:: with SMTP id b16mr29207175eju.272.1615888565730;
-        Tue, 16 Mar 2021 02:56:05 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id a26sm10649008edm.15.2021.03.16.02.56.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 02:56:05 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 11:56:04 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        id S236474AbhCPJ5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:57:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50768 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236480AbhCPJ4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 05:56:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBAD665014;
+        Tue, 16 Mar 2021 09:56:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615888603;
+        bh=VZtm7TSm8SzD7rqru+ra4hRXldt8i3ssgmXztshpEgA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YLqiHjh4YLI55r4/HmzYiPyoGVqrBh0rM8DG4WoZaSI+TH2KpSaCyH6jmC6+pp4XZ
+         EAf9FImMvb3TI7Jw5iZGA/9WdRHTESg53CzDcxzD7ssQzk2S17FMJipTbR8cq0muYl
+         rsbtApe/1UYMj1DNbDGjsj7jQWhu9JyUbV1MVMhiAqfXtJ1DXyvsmkHiejZCgMT4n4
+         bIJ8LTykBSwiN8p5qmGfDC/JeXWvHwZW08JAfmFJgrOWltqQldMVFYMmJ6+bb8Sx/1
+         NazFbM/dcO9FgvDXx9VHa6LKTOfbsYaZV/+Pp3BayS1EBcuAFn5cf4L6C01AOlbSHw
+         pXCCNyERqxH8A==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lM6Ra-0000aJ-QE; Tue, 16 Mar 2021 10:56:55 +0100
+Date:   Tue, 16 Mar 2021 10:56:54 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
         linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Frank Wunderlich <frank-w@public-files.de>,
-        =?utf-8?B?UmVuw6k=?= van Dorst <opensource@vdorst.com>
-Subject: Re: [PATCH net-next] net: dsa: mt7530: support MDB and bridge flag
- operations
-Message-ID: <20210316095604.dvg32ia5pfdtpenw@skbuf>
-References: <20210315170940.2414854-1-dqfext@gmail.com>
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, marcan@marcan.st, arnd@kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH] tty: serial: samsung_tty: remove spinlock flags in
+ interrupt handlers
+Message-ID: <YFCA5jFLV0Cu9YNe@hovoldconsulting.com>
+References: <20210315181212.113217-1-krzysztof.kozlowski@canonical.com>
+ <YFB0OcBg3Vj555eA@hovoldconsulting.com>
+ <7f348e4c-3051-13cf-d461-eeda0ef53fdd@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210315170940.2414854-1-dqfext@gmail.com>
+In-Reply-To: <7f348e4c-3051-13cf-d461-eeda0ef53fdd@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 01:09:40AM +0800, DENG Qingfang wrote:
-> Support port MDB and bridge flag operations.
+On Tue, Mar 16, 2021 at 10:47:53AM +0100, Krzysztof Kozlowski wrote:
+> On 16/03/2021 10:02, Johan Hovold wrote:
+> > On Mon, Mar 15, 2021 at 07:12:12PM +0100, Krzysztof Kozlowski wrote:
+> >> Since interrupt handler is called with disabled local interrupts, there
+> >> is no need to use the spinlock primitives disabling interrupts as well.
+> > 
+> > This isn't generally true due to "threadirqs" and that can lead to
+> > deadlocks if the console code is called from hard irq context.
+> > 
+> > Now, this is *not* the case for this particular driver since it doesn't
+> > even bother to take the port lock in console_write(). That should
+> > probably be fixed instead.
+> > 
+> > See https://lore.kernel.org/r/X7kviiRwuxvPxC8O@localhost.
 > 
-> As the hardware can manage multicast forwarding itself, offload_fwd_mark
-> can be unconditionally set to true.
+> Thanks for the link, quite interesting! For one type of device we have
+> two interrupts (RX and TX) so I guess it's a valid point/risk. However
+> let me try to understand it more.
 > 
-> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-> ---
+> Assuming we had only one interrupt line, how this interrupt handler with
+> threadirqs could be called from hardirq context?
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+No, it's console_write() which can end up being called in hard irq
+context and if that path takes the port lock after the now threaded
+interrupt handler has been preempted you have a deadlock.
+
+> You wrote there:
+> > For console drivers this can even happen for the same interrupt as the
+> > generic interrupt code can call printk(), and so can any other handler
+> > that isn't threaded (e.g. hrtimers or explicit IRQF_NO_THREAD).
+> 
+> However I replaced here only interrupt handler's spin lock to non-irq.
+> This code path will be executed only when interrupt is masked therefore
+> for one interrupt line there is *no possibility of*:
+> 
+> -> s3c64xx_serial_handle_irq
+>    - interrupts are masked
+>    - s3c24xx_serial_tx_irq
+>      - spin_lock()
+>                        -> hrtimers or other IRQF_NO_THREAD
+>                           - console_write() or something
+>                             - s3c64xx_serial_handle_irq
+
+You don't end up in s3c64xx_serial_handle_irq() here. It's just that
+console_write() (typically) takes the port lock which is already held by
+the preempted s3c24xx_serial_tx_irq().
+
+>                               - s3c24xx_serial_tx_irq
+>                                 - spin_lock()
+
+Johan
