@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAC333D45D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:54:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD8933D460
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbhCPMyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:54:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:38094 "EHLO foss.arm.com"
+        id S234068AbhCPMyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 08:54:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:38110 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233397AbhCPMuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:50:39 -0400
+        id S233419AbhCPMuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 08:50:40 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1CEC168F;
-        Tue, 16 Mar 2021 05:50:37 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E3A291691;
+        Tue, 16 Mar 2021 05:50:39 -0700 (PDT)
 Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9B6F63F792;
-        Tue, 16 Mar 2021 05:50:35 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DAD643F792;
+        Tue, 16 Mar 2021 05:50:37 -0700 (PDT)
 From:   Cristian Marussi <cristian.marussi@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
@@ -24,9 +24,9 @@ Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
         f.fainelli@gmail.com, etienne.carriere@linaro.org,
         thara.gopinath@linaro.org, vincent.guittot@linaro.org,
         souvik.chakravarty@arm.com, cristian.marussi@arm.com
-Subject: [PATCH v7 35/38] firmware: arm_scmi: make notify_priv really private
-Date:   Tue, 16 Mar 2021 12:49:00 +0000
-Message-Id: <20210316124903.35011-36-cristian.marussi@arm.com>
+Subject: [PATCH v7 36/38] firmware: arm_scmi: rename non devres notify_ops
+Date:   Tue, 16 Mar 2021 12:49:01 +0000
+Message-Id: <20210316124903.35011-37-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210316124903.35011-1-cristian.marussi@arm.com>
 References: <20210316124903.35011-1-cristian.marussi@arm.com>
@@ -34,216 +34,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Notification private data is currently accessible via handle->notify_priv;
-this data was indeed meant to be private to the notification core support
-and not to be accessible by SCMI drivers: make it private hiding it inside
-instance descriptor struct scmi_info and accessible only via dedicated
-helpers.
+Rename non devres managed notify_ops to use a naming pattern which exposes
+the performed action verb as last token.
+
+No functional change.
 
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
 v6 --> v7
 - renamed non-static function to fit scmi_<OBJ>_<ACTION> naming pattern
 ---
- drivers/firmware/arm_scmi/common.h |  4 +++
- drivers/firmware/arm_scmi/driver.c | 21 ++++++++++++++
- drivers/firmware/arm_scmi/notify.c | 45 ++++++++++--------------------
- include/linux/scmi_protocol.h      |  3 --
- 4 files changed, 40 insertions(+), 33 deletions(-)
+ drivers/firmware/arm_scmi/notify.c | 18 +++++++++---------
+ include/linux/scmi_protocol.h      |  8 ++++----
+ 2 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-index c4a1262fb18d..c093f332cdcd 100644
---- a/drivers/firmware/arm_scmi/common.h
-+++ b/drivers/firmware/arm_scmi/common.h
-@@ -343,4 +343,8 @@ void shmem_clear_channel(struct scmi_shared_mem __iomem *shmem);
- bool shmem_poll_done(struct scmi_shared_mem __iomem *shmem,
- 		     struct scmi_xfer *xfer);
- 
-+void scmi_notification_instance_data_set(const struct scmi_handle *handle,
-+					 void *priv);
-+void *scmi_notification_instance_data_get(const struct scmi_handle *handle);
-+
- #endif /* _SCMI_COMMON_H */
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 27213bf768c0..563a64131035 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -113,6 +113,7 @@ struct scmi_protocol_instance {
-  * @protocols_mtx: A mutex to protect protocols instances initialization.
-  * @protocols_imp: List of protocols implemented, currently maximum of
-  *	MAX_PROTOCOLS_IMP elements allocated by the base protocol
-+ * @notify_priv: Pointer to private data structure specific to notifications.
-  * @node: List head
-  * @users: Number of users of this instance
-  */
-@@ -129,6 +130,7 @@ struct scmi_info {
- 	/* Ensure mutual exclusive access to protocols instance array */
- 	struct mutex protocols_mtx;
- 	u8 *protocols_imp;
-+	void *notify_priv;
- 	struct list_head node;
- 	int users;
- };
-@@ -170,6 +172,25 @@ static inline void scmi_dump_header_dbg(struct device *dev,
- 		hdr->id, hdr->seq, hdr->protocol_id);
- }
- 
-+void scmi_notification_instance_data_set(const struct scmi_handle *handle,
-+					 void *priv)
-+{
-+	struct scmi_info *info = handle_to_scmi_info(handle);
-+
-+	info->notify_priv = priv;
-+	/* Ensure updated protocol private date are visible */
-+	smp_wmb();
-+}
-+
-+void *scmi_notification_instance_data_get(const struct scmi_handle *handle)
-+{
-+	struct scmi_info *info = handle_to_scmi_info(handle);
-+
-+	/* Ensure protocols_private_data has been updated */
-+	smp_rmb();
-+	return info->notify_priv;
-+}
-+
- /**
-  * scmi_xfer_get() - Allocate one message
-  *
 diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
-index 023c93deb14b..9ca019dd0aeb 100644
+index 9ca019dd0aeb..d860bebd984a 100644
 --- a/drivers/firmware/arm_scmi/notify.c
 +++ b/drivers/firmware/arm_scmi/notify.c
-@@ -582,11 +582,9 @@ int scmi_notify(const struct scmi_handle *handle, u8 proto_id, u8 evt_id,
- 	struct scmi_event_header eh;
- 	struct scmi_notify_instance *ni;
- 
--	/* Ensure notify_priv is updated */
--	smp_rmb();
--	if (!handle->notify_priv)
-+	ni = scmi_notification_instance_data_get(handle);
-+	if (!ni)
- 		return 0;
--	ni = handle->notify_priv;
- 
- 	r_evt = SCMI_GET_REVT(ni, proto_id, evt_id);
- 	if (!r_evt)
-@@ -762,11 +760,9 @@ int scmi_register_protocol_events(const struct scmi_handle *handle, u8 proto_id,
- 	    (!ee->num_sources && !ee->ops->get_num_sources))
- 		return -EINVAL;
- 
--	/* Ensure notify_priv is updated */
--	smp_rmb();
--	if (!handle->notify_priv)
-+	ni = scmi_notification_instance_data_get(handle);
-+	if (!ni)
- 		return -ENOMEM;
--	ni = handle->notify_priv;
- 
- 	/* num_sources cannot be <= 0 */
- 	if (ee->num_sources) {
-@@ -846,12 +842,10 @@ void scmi_deregister_protocol_events(const struct scmi_handle *handle,
- 	struct scmi_notify_instance *ni;
- 	struct scmi_registered_events_desc *pd;
- 
--	/* Ensure notify_priv is updated */
--	smp_rmb();
--	if (!handle->notify_priv)
-+	ni = scmi_notification_instance_data_get(handle);
-+	if (!ni)
- 		return;
- 
--	ni = handle->notify_priv;
- 	pd = ni->registered_protocols[proto_id];
- 	if (!pd)
- 		return;
-@@ -1354,11 +1348,9 @@ static int scmi_register_notifier(const struct scmi_handle *handle,
- 	struct scmi_event_handler *hndl;
- 	struct scmi_notify_instance *ni;
- 
--	/* Ensure notify_priv is updated */
--	smp_rmb();
--	if (!handle->notify_priv)
-+	ni = scmi_notification_instance_data_get(handle);
-+	if (!ni)
- 		return -ENODEV;
--	ni = handle->notify_priv;
- 
- 	evt_key = MAKE_HASH_KEY(proto_id, evt_id,
- 				src_id ? *src_id : SRC_ID_MASK);
-@@ -1402,11 +1394,9 @@ static int scmi_unregister_notifier(const struct scmi_handle *handle,
- 	struct scmi_event_handler *hndl;
- 	struct scmi_notify_instance *ni;
- 
--	/* Ensure notify_priv is updated */
--	smp_rmb();
--	if (!handle->notify_priv)
-+	ni = scmi_notification_instance_data_get(handle);
-+	if (!ni)
- 		return -ENODEV;
--	ni = handle->notify_priv;
- 
- 	evt_key = MAKE_HASH_KEY(proto_id, evt_id,
- 				src_id ? *src_id : SRC_ID_MASK);
-@@ -1681,8 +1671,8 @@ int scmi_notification_init(struct scmi_handle *handle)
- 
- 	INIT_WORK(&ni->init_work, scmi_protocols_late_init);
- 
-+	scmi_notification_instance_data_set(handle, ni);
- 	handle->notify_ops = &notify_ops;
--	handle->notify_priv = ni;
- 	/* Ensure handle is up to date */
- 	smp_wmb();
- 
-@@ -1694,7 +1684,7 @@ int scmi_notification_init(struct scmi_handle *handle)
- 
- err:
- 	dev_warn(handle->dev, "Initialization Failed.\n");
--	devres_release_group(handle->dev, NULL);
-+	devres_release_group(handle->dev, gid);
- 	return -ENOMEM;
+@@ -1307,7 +1307,7 @@ static int scmi_event_handler_enable_events(struct scmi_event_handler *hndl)
  }
  
-@@ -1706,15 +1696,10 @@ void scmi_notification_exit(struct scmi_handle *handle)
- {
- 	struct scmi_notify_instance *ni;
- 
--	/* Ensure notify_priv is updated */
--	smp_rmb();
--	if (!handle->notify_priv)
-+	ni = scmi_notification_instance_data_get(handle);
-+	if (!ni)
- 		return;
--	ni = handle->notify_priv;
--
--	handle->notify_priv = NULL;
--	/* Ensure handle is up to date */
--	smp_wmb();
-+	scmi_notification_instance_data_set(handle, NULL);
- 
- 	/* Destroy while letting pending work complete */
- 	destroy_workqueue(ni->notify_wq);
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index 284dda52006e..114890bd7af0 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -609,8 +609,6 @@ struct scmi_notify_ops {
-  *		       operations and a dedicated protocol handler
-  * @devm_protocol_put: devres managed method to release a protocol
-  * @notify_ops: pointer to set of notifications related operations
-- * @notify_priv: pointer to private data structure specific to notifications
-- *	(for internal use only)
+ /**
+- * scmi_register_notifier()  - Register a notifier_block for an event
++ * scmi_notifier_register()  - Register a notifier_block for an event
+  * @handle: The handle identifying the platform instance against which the
+  *	    callback is registered
+  * @proto_id: Protocol ID
+@@ -1339,7 +1339,7 @@ static int scmi_event_handler_enable_events(struct scmi_event_handler *hndl)
+  *
+  * Return: 0 on Success
   */
- struct scmi_handle {
- 	struct device *dev;
-@@ -622,7 +620,6 @@ struct scmi_handle {
- 	void (*devm_protocol_put)(struct scmi_device *sdev, u8 proto);
+-static int scmi_register_notifier(const struct scmi_handle *handle,
++static int scmi_notifier_register(const struct scmi_handle *handle,
+ 				  u8 proto_id, u8 evt_id, const u32 *src_id,
+ 				  struct notifier_block *nb)
+ {
+@@ -1371,7 +1371,7 @@ static int scmi_register_notifier(const struct scmi_handle *handle,
+ }
  
- 	const struct scmi_notify_ops *notify_ops;
--	void *notify_priv;
+ /**
+- * scmi_unregister_notifier()  - Unregister a notifier_block for an event
++ * scmi_notifier_unregister()  - Unregister a notifier_block for an event
+  * @handle: The handle identifying the platform instance against which the
+  *	    callback is unregistered
+  * @proto_id: Protocol ID
+@@ -1386,7 +1386,7 @@ static int scmi_register_notifier(const struct scmi_handle *handle,
+  *
+  * Return: 0 on Success
+  */
+-static int scmi_unregister_notifier(const struct scmi_handle *handle,
++static int scmi_notifier_unregister(const struct scmi_handle *handle,
+ 				    u8 proto_id, u8 evt_id, const u32 *src_id,
+ 				    struct notifier_block *nb)
+ {
+@@ -1412,7 +1412,7 @@ static int scmi_unregister_notifier(const struct scmi_handle *handle,
+ 	scmi_put_handler(ni, hndl);
+ 
+ 	/*
+-	 * This balances the initial get issued in @scmi_register_notifier.
++	 * This balances the initial get issued in @scmi_notifier_register.
+ 	 * If this notifier_block happened to be the last known user callback
+ 	 * for this event, the handler is here freed and the event's generation
+ 	 * stopped.
+@@ -1440,7 +1440,7 @@ static void scmi_devm_release_notifier(struct device *dev, void *res)
+ {
+ 	struct scmi_notifier_devres *dres = res;
+ 
+-	scmi_unregister_notifier(dres->handle, dres->proto_id, dres->evt_id,
++	scmi_notifier_unregister(dres->handle, dres->proto_id, dres->evt_id,
+ 				 dres->src_id, dres->nb);
+ }
+ 
+@@ -1471,7 +1471,7 @@ static int scmi_devm_notifier_register(struct scmi_device *sdev,
+ 	if (!dres)
+ 		return -ENOMEM;
+ 
+-	ret = scmi_register_notifier(sdev->handle, proto_id,
++	ret = scmi_notifier_register(sdev->handle, proto_id,
+ 				     evt_id, src_id, nb);
+ 	if (ret) {
+ 		devres_free(dres);
+@@ -1609,8 +1609,8 @@ static void scmi_protocols_late_init(struct work_struct *work)
+ static const struct scmi_notify_ops notify_ops = {
+ 	.devm_event_notifier_register = scmi_devm_notifier_register,
+ 	.devm_event_notifier_unregister = scmi_devm_notifier_unregister,
+-	.register_event_notifier = scmi_register_notifier,
+-	.unregister_event_notifier = scmi_unregister_notifier,
++	.event_notifier_register = scmi_notifier_register,
++	.event_notifier_unregister = scmi_notifier_unregister,
  };
  
- enum scmi_std_protocol {
+ /**
+diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
+index 114890bd7af0..b80496d519f3 100644
+--- a/include/linux/scmi_protocol.h
++++ b/include/linux/scmi_protocol.h
+@@ -548,8 +548,8 @@ struct scmi_voltage_proto_ops {
+  *				  the requested event
+  * @devm_event_notifier_unregister: Managed unregistration of a notifier_block
+  *				    for the requested event
+- * @register_event_notifier: Register a notifier_block for the requested event
+- * @unregister_event_notifier: Unregister a notifier_block for the requested
++ * @event_notifier_register: Register a notifier_block for the requested event
++ * @event_notifier_unregister: Unregister a notifier_block for the requested
+  *			       event
+  *
+  * A user can register/unregister its own notifier_block against the wanted
+@@ -590,11 +590,11 @@ struct scmi_notify_ops {
+ 					      u8 proto_id, u8 evt_id,
+ 					      const u32 *src_id,
+ 					      struct notifier_block *nb);
+-	int (*register_event_notifier)(const struct scmi_handle *handle,
++	int (*event_notifier_register)(const struct scmi_handle *handle,
+ 				       u8 proto_id, u8 evt_id,
+ 				       const u32 *src_id,
+ 				       struct notifier_block *nb);
+-	int (*unregister_event_notifier)(const struct scmi_handle *handle,
++	int (*event_notifier_unregister)(const struct scmi_handle *handle,
+ 					 u8 proto_id, u8 evt_id,
+ 					 const u32 *src_id,
+ 					 struct notifier_block *nb);
 -- 
 2.17.1
 
