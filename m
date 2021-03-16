@@ -2,126 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C1233DD45
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DEE33DD4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:22:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236657AbhCPTTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 15:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58212 "EHLO
+        id S240339AbhCPTUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 15:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236571AbhCPTSg (ORCPT
+        with ESMTP id S236659AbhCPTTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:18:36 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02AE8C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:18:36 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id x21so8192618pfa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:18:35 -0700 (PDT)
+        Tue, 16 Mar 2021 15:19:34 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E70C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:19:33 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id z1so22908011edb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:19:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kTFGaP3zw/Fu1Vu34NQdT6odvbGU01/j1hv611s2WEk=;
-        b=g+XpbAbEV6nyFc0yI+iTSaDBcvjMUj6QK0H/YiwhY2fWmatsW6E/QWhrvhEbSt0qRI
-         itfH+R+CErgok+kinhtw3NZbGKSpsjcaTAgf/tbECUhXtfZ62kPYd5tiy6vangOzXJSY
-         kYYcfjoKK9Tw9V/fKsSE5iwsER9ubGUm/XI/I=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h6Vzk8VT7CSO7U742Td38RGtE0keze+h9TLzW6HQXXc=;
+        b=GydREVbKMbv810VnAeG22Q4t4zqHtGsMA9e8miBDPJGGE9w0F9kExYqC06TyXXRPc7
+         iEddchnK6lflk84Nu7mNvXulzjvPFLncGpGAUdnYyV/bNlTZQZiArosRQmNyVGvQF63g
+         gbtomYgz3qPyaX36A2QZ9ug2Pp6FhwhmyKPD3mweUqrbjdBRMmGogPr/Hi2CmT/lkc2b
+         uP+3zZ1auReC4wDx/38GAeC2FGkCg4u1uryGVuzUmFMjVeWlB3VzI5eOwnntuzHiH45C
+         rNYx+/zNWfTkNd70LDaDJLOXfRMtlBOQSGfUrty0sXa6KW/gP1CirEWRF1kz+DAiFaek
+         dE2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kTFGaP3zw/Fu1Vu34NQdT6odvbGU01/j1hv611s2WEk=;
-        b=OEGN7RwrOgReOLEM6R9zrCnAglWVlVZiozXh5Up0mR1LLtHnQi3yQBrsHFbzP9X21n
-         2LK7yF+nt5fxWFkkck+zlh7HzG+JYz4GbyE+KO1iGmjM2bSdjnSQCRfBipHF9Jx6psHV
-         3Q75LQXCOnQiSNRZ6k/qRqpNMxYD+eJ2Ibq/5BX1K9X/9rbPLH3XxMh/LS/xez5TWuo+
-         W75T5k0Hzx3Z3kIVzuXuWmJSKTS3+dxmvPSmS87VlPtmKVSjuDnPKkhRjRguXFNtHCAM
-         rH5XGm7WL0kEQbdhZyiqFphUUEtd9ZnrxIhN3N3lXmVk52pApKEMb2vFsHKgJt+axxjK
-         GqzQ==
-X-Gm-Message-State: AOAM533t1ylXwQK5Oq1qqTdH5kNOIxrbxSNdC5hHmbaxE1UiIfYpvo6X
-        a15L7ovg8Iq51G29BPfdm64K4g==
-X-Google-Smtp-Source: ABdhPJwBczIEvob3FcudNUCo9qdlk3+Pv2lnIocMJV9rVeke6Yi6PDvwSg2ZOmChbIrhU5ZiKAaruA==
-X-Received: by 2002:a65:6107:: with SMTP id z7mr1040368pgu.435.1615922315588;
-        Tue, 16 Mar 2021 12:18:35 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id f14sm18421088pfk.92.2021.03.16.12.18.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 12:18:34 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 12:18:33 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] seq_file: Unconditionally use vmalloc for buffer
-Message-ID: <202103161208.22FC78C8C@keescook>
-References: <20210315174851.622228-1-keescook@chromium.org>
- <YE+oZkSVNyaONMd9@zeniv-ca.linux.org.uk>
- <202103151336.78360DB34D@keescook>
- <YFBdQmT64c+2uBRI@kroah.com>
- <YFCn4ERBMGoqxvUU@zeniv-ca.linux.org.uk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h6Vzk8VT7CSO7U742Td38RGtE0keze+h9TLzW6HQXXc=;
+        b=E/fAymOQ1DrHhi1knyOWE/3LoE7Huy7twMPMjR5WQgIADfRF32ES5OI1e9PMEccZw2
+         CbGwZSDllOB5yncSwLNqxeyl5zjy6rU7TZI9KuDO/MqvQF/UdnPYdgZjiiLWYmKqRCZO
+         Bx0MLANZBB1mEvsCVMxoit+Qsb1nYV7ge/6GS1KeZdse1l/CVhsiXA5U3g6qdSDH+OV6
+         lUOiiCeydh2mWhem1qLGcvdzjEoVIYopK9tXkNidgyBhZRvAfNSLhc/vUE6Fk/Lj+fvP
+         hCb9OBcqAuceBM83V5lXIoqXU7oofpMDWfHqt5zrMoHMBt7th3447SCgJJ4QLirCBAZa
+         X4Hw==
+X-Gm-Message-State: AOAM5318tuo70H/6/2eZ0WVbN5QiI8NdcxC2YqgTDd/lpkBsXhZAdj1a
+        pPwdSx66g1XxKYHJv0rz1DTHhQjiCagxelWP1Qmh6Q==
+X-Google-Smtp-Source: ABdhPJzhGyum+xNFOIbL81WhK9++sMcatEGBHuDj59K3Cg00UwnFJJqkJvO+tbIT+09NtrXSAHWt2g64ElP4JLrxVQ8=
+X-Received: by 2002:a05:6402:304b:: with SMTP id bu11mr36682115edb.157.1615922372300;
+ Tue, 16 Mar 2021 12:19:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFCn4ERBMGoqxvUU@zeniv-ca.linux.org.uk>
+References: <20210303175235.3308220-1-bgeffon@google.com> <alpine.LSU.2.11.2103131934290.18112@eggly.anvils>
+In-Reply-To: <alpine.LSU.2.11.2103131934290.18112@eggly.anvils>
+From:   Brian Geffon <bgeffon@google.com>
+Date:   Tue, 16 Mar 2021 15:18:55 -0400
+Message-ID: <CADyq12z+o0Rtziprkfs=PX2MPRPZyWBSgONYrRggZ8TEifq2sg@mail.gmail.com>
+Subject: Re: [PATCH] mm: Allow shmem mappings with MREMAP_DONTUNMAP
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Dmitry Safonov <dima@arista.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Alejandro Colomar <alx.manpages@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 12:43:12PM +0000, Al Viro wrote:
-> On Tue, Mar 16, 2021 at 08:24:50AM +0100, Greg Kroah-Hartman wrote:
-> 
-> > > Completely agreed. seq_get_buf() should be totally ripped out.
-> > > Unfortunately, this is going to be a long road because of sysfs's ATTR
-> > > stuff, there are something like 5000 callers, and the entire API was
-> > > designed to avoid refactoring all those callers from
-> > > sysfs_kf_seq_show().
-> > 
-> > What is wrong with the sysfs ATTR stuff?  That should make it so that we
-> > do not have to change any caller for any specific change like this, why
-> > can't sysfs or kernfs handle it automatically?
-> 
-> Hard to tell, since that would require _finding_ the sodding ->show()
-> instances first.  Good luck with that, seeing that most of those appear
-> to come from templates-done-with-cpp...
+Hi Hugh,
+Thanks for this suggestion, responses in line.
 
-I *think* I can get coccinelle to find them all, but my brute-force
-approach was to just do a debug build changing the ATTR macro to be
-typed, and changing the name of "show" and "store" in kobj_attribute
-(to make the compiler find them all).
+> A better patch would say:
+>
+> -       if (flags & MREMAP_DONTUNMAP && (!vma_is_anonymous(vma) ||
+> -                       vma->vm_flags & VM_SHARED))
+> +       if ((flags & MREMAP_DONTUNMAP) &&
+> +           (vma->vm_flags & (VM_DONTEXPAND | VM_PFNMAP)))
+>                 return ERR_PTR(-EINVAL);
+>
+> VM_DONTEXPAND is what has long been used on special mappings, to prevent
+> surprises from mremap changing the size of the mapping: MREMAP_DONTUNMAP
+> introduced a different way of expanding the mapping, so VM_DONTEXPAND
+> still seems a reasonable name (I've thrown in VM_PFNMAP there because
+> it's in the VM_DONTEXPAND test lower down: for safety I guess, and best
+> if both behave the same - though one says -EINVAL and the other -EFAULT).
 
-> AFAICS, Kees wants to protect against ->show() instances stomping beyond
-> the page size.  What I don't get is what do you get from using seq_file
-> if you insist on doing raw access to the buffer rather than using
-> seq_printf() and friends.  What's the point?
+I like this idea and am happy to mail a new patch. I think it may make
+sense to bring the lower block up here so that it becomes more clear
+that it's not duplicate code and that the MREMAP_DONTUNMAP case
+returns -EINVAL and other cases return -EFAULT. I wonder if the
+-EFAULT error code would have made more sense from the start for both
+cases, do you have any thoughts on changing the error code at this
+point?
 
-To me, it looks like the kernfs/sysfs API happened around the time
-"container_of" was gaining ground. It's trying to do the same thing
-the "modern" callbacks do with finding a pointer from another, but it
-did so by making sure everything had a 0 offset and an identical
-beginning structure layout _but changed prototypes_.
+> With that VM_DONTEXPAND check in, Dmitry's commit cd544fd1dc92
+> ("mremap: don't allow MREMAP_DONTUNMAP on special_mappings and aio")
+> can still be reverted (as you agreed on 28th December), even though
+> vma_is_anonymous() will no longer protect it.
 
-It's the changed prototypes that freaks out CFI.
+I agree and if Dmitry does not have time I would be happy to mail a
+revert to cd544fd1dc92 as we discussed in [1]. Dmitry, would you like
+me to do that?
 
-My current plan consists of these steps:
+> Was there an mremap(2) man page update for MREMAP_DONTUNMAP?
+> Whether or not there was before, it ought to get one now.
 
-- add two new callbacks to the kobj_attribute struct (and its clones):
-  "seq_show" and "seq_store", which will pass in the seq_file.
-- convert all callbacks to kobject/kboj_attribute and use container_of()
-  to find their respective pointers.
-- remove "show" and "store"
-- remove external use of seq_get_buf().
+Yes, the mremap(2) man page was updated when this flag was added and
+it will require a further update to reflect this expanded mapping
+support.
 
-The first two steps require thousands of lines of code changed, so
-I'm going to try to minimize it by trying to do as many conversions as
-possible to the appropriate helpers first. e.g. DEVICE_ATTR_INT exists,
-but there are only 2 users, yet there appears to be something like 500
-DEVICE_ATTR callers that have an open-coded '%d':
+Thanks
+Brian
 
-$ git grep -B10 '\bDEVICE_ATTR' | grep '%d' | wc -l
-530
-
--- 
-Kees Cook
+1. https://lkml.org/lkml/2020/12/28/2340
