@@ -2,129 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4367033D7E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EECC33D7F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbhCPPpU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Mar 2021 11:45:20 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:39237 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232851AbhCPPpG (ORCPT
+        id S237176AbhCPPpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 11:45:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46734 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233069AbhCPPpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 11:45:06 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MWzwP-1lBQLG2nFZ-00XGv5 for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021
- 16:45:03 +0100
-Received: by mail-oi1-f179.google.com with SMTP id u198so33589434oia.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 08:45:03 -0700 (PDT)
-X-Gm-Message-State: AOAM531iokSjnc+iG+PuRYw9QeTBHgsP4ZqVL4HTiDi4y6SzaqldAOVV
-        CPequf99bcvd2dim5I3xrng96y+FaOgmwGYEt7k=
-X-Google-Smtp-Source: ABdhPJwQtyvp/sivr2QftEdYH8SddtCyezCo0jNI+ji3RO8XF8COcyvnD4V9nkGi2N3qLDq3+QnLIzsSmIgVRDXYLGQ=
-X-Received: by 2002:a05:6808:313:: with SMTP id i19mr132835oie.67.1615909502415;
- Tue, 16 Mar 2021 08:45:02 -0700 (PDT)
+        Tue, 16 Mar 2021 11:45:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615909517;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=Rzi/DnuxqTWJ4y4tp35WijHklZugQQcG9SEJZITAfw4=;
+        b=hsjYjQb5+hRsKgWH8VXxKe22bzReWpva2vW8P+E9sQz9dJpo3iTwkN7jcldQQyVvEfxAeM
+        pCQqAFPCdCRM5J3wCH+NpjZW1EA56B5OSPR8snG/U7pCSpGYHx3K7O4kthvOZvbtJ8kn1d
+        oQFdMCTrPZ20q7TzDpegTBpn41Z1yzw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-66-itSH1_z_Pkivesq8IZt6Mw-1; Tue, 16 Mar 2021 11:45:13 -0400
+X-MC-Unique: itSH1_z_Pkivesq8IZt6Mw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB609100C660;
+        Tue, 16 Mar 2021 15:45:11 +0000 (UTC)
+Received: from krava (unknown [10.40.193.217])
+        by smtp.corp.redhat.com (Postfix) with SMTP id E6B8F1F410;
+        Tue, 16 Mar 2021 15:45:02 +0000 (UTC)
+Date:   Tue, 16 Mar 2021 16:45:02 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Borislav Petkov <bp@alien8.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>
+Cc:     x86@kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Stanislav Kozina <skozina@redhat.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Pierre Amadio <pamadio@redhat.com>, onatalen@redhat.com,
+        darcari@redhat.com
+Subject: unknown NMI on AMD Rome
+Message-ID: <YFDSSxftYw9tCGC6@krava>
 MIME-Version: 1.0
-References: <00000000000069802205bda22b7f@google.com> <CACT4Y+Yaq-zDh5FAzHt4g-5jXrXC3rSLw6CM=kjcfR6oxJ1+CA@mail.gmail.com>
- <CAK8P3a1qtHVBY47FfCa6R9+sObzMCwxkREii+O2g8PPopw87eQ@mail.gmail.com> <CACT4Y+aC0YWU6gM32S3NoT+-wR7B1-_rhPyh4w542h21UCRRGw@mail.gmail.com>
-In-Reply-To: <CACT4Y+aC0YWU6gM32S3NoT+-wR7B1-_rhPyh4w542h21UCRRGw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 16 Mar 2021 16:44:45 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0zA9pv005d_P_e64j4EwXDh75yC6gNGRVdyy-VzO+7Fw@mail.gmail.com>
-Message-ID: <CAK8P3a0zA9pv005d_P_e64j4EwXDh75yC6gNGRVdyy-VzO+7Fw@mail.gmail.com>
-Subject: Re: [syzbot] kernel panic: corrupted stack end in openat
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:7HjwDaBlTzdN/Cr9ACTp1/K/cNKL0OjIF/32kpl/8bh10OCxaEl
- 0mta3vxkSGECxNmZ5lg1xeIoXx71hZx+Wxve0fM6lJW0jU7ulOUNYbPdNvDBEW0yZoyyxry
- KN20jFuAohEBaN7gzS9j2sZqL40F580Ec9hDLn1rFu867f6nJf57VhLkfP5zBxK5D0J8dcF
- 81NvvLjnrj/Ty8r10dV3w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:aJuzn7hWqFY=:BqnJMn2tzojSAcc/rTzVYM
- s/iRJ1gnP0r0yzDudPtIh3RYHfXn1GfB84Hc4xxyeQYibzEwOeFqeErU6FY/iyA8+ssXykTGz
- x1KaVxYMkMuEldHnBk0rutXoiJbJGTawBcIVM4Cbg4U1+VMSdhCgMAtwLkYOXNCxiIqbBCOwO
- x5jPV9+gsASxQEjTN/gTkR1kyllrzx/MfbhE6XP2D3CGCfDu3pddu/2ShuTxmNMmTkBR54yBV
- 3aRLCkZsIuucmtxaAm/VCVmrUaZxBe5y+sgV/rID4TXXcEQatLwPfrS3i5+2CDFkaacxjhb9p
- Mf3kM1Mf29K0M7aHWguszPCo7bGJfQ/uqkW5DFfDQyymcFuRn87XS8kX907BUF5ZOLL/pG09R
- yTjBpApeU0J4W71jizU+esmbq5V+Yo6HHsHCm66ZCnYwhLzTRv+Wdy8N1/lSicQnSClrjyDFf
- Xgtwxqxu4kIfKnUnLWXnNPy6SDDinGf5ET3pLGljlaoQrZNKWwv82lbjYhRboPPBeYztcAnkx
- jzV4q708h5fxPvBWqBomJXMTWstV5zFh7kwlsCiSseCbTb0Tvm9mTDy+oDy+S8W5rBTzHcYjp
- KxSpOzN+MFFR0ZB2gT1+PazJs9egyFizry
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 11:17 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> On Tue, Mar 16, 2021 at 11:02 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > On Tue, Mar 16, 2021 at 8:18 AM syzbot
->
-> > > > [<8073772c>] (integrity_kernel_read) from [<8073a904>] (ima_calc_file_hash_tfm+0x178/0x228 security/integrity/ima/ima_crypto.c:484)
-> > > > [<8073a78c>] (ima_calc_file_hash_tfm) from [<8073ae2c>] (ima_calc_file_shash security/integrity/ima/ima_crypto.c:515 [inline])
-> > > > [<8073a78c>] (ima_calc_file_hash_tfm) from [<8073ae2c>] (ima_calc_file_hash+0x124/0x8b8 security/integrity/ima/ima_crypto.c:572)
-> >
-> > ima_calc_file_hash_tfm() has a SHASH_DESC_ON_STACK(), which by itself can
-> > use up 512 bytes, but KASAN sometimes triples this number. However, I see
-> > you do not actually have KASAN enabled, so there is probably more to it.
->
-> The compiler is gcc version 10.2.1 20210110 (Debian 10.2.1-6)
+hi,
+when running 'perf top' on AMD Rome (/proc/cpuinfo below)
+with fedora 33 kernel 5.10.22-200.fc33.x86_64
 
-Ok, building with Ubuntu 10.2.1-1ubuntu1 20201207 locally, that's
-the closest I have installed, and I think the Debian and Ubuntu versions
-are generally quite close in case of gcc since they are maintained by
-the same packagers.
+we got unknown NMI messages:
 
-I see ima_calc_field_array_hash_tfm() shows up as one of the larger
-stack users, but not alarmingly high:
-../security/integrity/ima/ima_crypto.c: In function
-‘ima_calc_field_array_hash_tfm’:
-../security/integrity/ima/ima_crypto.c:624:1: warning: the frame size
-of 664 bytes is larger than 600 bytes [-Wframe-larger-than=]
-none of the other functions from the call chain have more than 600 bytes
-in this combination of config/compiler/sourcetree.
+[  226.700160] Uhhuh. NMI received for unknown reason 3d on CPU 90.
+[  226.700162] Do you have a strange power saving mode enabled?
+[  226.700163] Dazed and confused, but trying to continue
+[  226.769565] Uhhuh. NMI received for unknown reason 3d on CPU 84.
+[  226.769566] Do you have a strange power saving mode enabled?
+[  226.769567] Dazed and confused, but trying to continue
+[  226.769771] Uhhuh. NMI received for unknown reason 2d on CPU 24.
+[  226.769773] Do you have a strange power saving mode enabled?
+[  226.769774] Dazed and confused, but trying to continue
+[  226.812844] Uhhuh. NMI received for unknown reason 2d on CPU 23.
+[  226.812846] Do you have a strange power saving mode enabled?
+[  226.812847] Dazed and confused, but trying to continue
+[  226.893783] Uhhuh. NMI received for unknown reason 2d on CPU 27.
+[  226.893785] Do you have a strange power saving mode enabled?
+[  226.893786] Dazed and confused, but trying to continue
+[  226.900139] Uhhuh. NMI received for unknown reason 2d on CPU 40.
+[  226.900141] Do you have a strange power saving mode enabled?
+[  226.900143] Dazed and confused, but trying to continue
+[  226.908763] Uhhuh. NMI received for unknown reason 3d on CPU 120.
+[  226.908765] Do you have a strange power saving mode enabled?
+[  226.908766] Dazed and confused, but trying to continue
+[  227.751296] Uhhuh. NMI received for unknown reason 2d on CPU 83.
+[  227.751298] Do you have a strange power saving mode enabled?
+[  227.751299] Dazed and confused, but trying to continue
+[  227.752937] Uhhuh. NMI received for unknown reason 3d on CPU 23.
 
-In combination, I don't get to more than ~2300 bytes:
+also when discussing ths with Borislav, he managed to reproduce easily
+on his AMD Rome machine
 
-    [<818033d8>] (panic)
- 52 [<8181f5b8>] (__schedule)
-  0 [<81820430>] (preempt_schedule_common)
-  0 [<818204dc>] (preempt_schedule)
-  0 [<8048c7c0>] (kernel_init_free_pages)
-148 [<804916ac>] (get_page_from_freelist
-212 [<80493264>] (__alloc_pages_nodemask)
- 44 [<8042f034>] (page_cache_ra_unbounded)
- 36 [<8042f2c8>] (do_page_cache_ra)
- 28 [<8042f418>] (ondemand_readahead)
-  0 [<8042f894>] (page_cache_async_ra)
- 68 [<80420ac8>] (filemap_get_pages)
-120 [<80421110>] (filemap_read)
- 36 [<804215f0>] (generic_file_read_iter)
-  8 [<805ff430>] (ext4_file_read_iter)
- 96 [<804da3cc>] (__kernel_read)
-  8 [<8073772c>] (integrity_kernel_read)
-412 [<8073a78c>] (ima_calc_file_hash_tfm)
-164 [<8073ad08>] (ima_calc_file_hash)
-106 [<8073bf84>] (ima_collect_measurement)
-332 [<80738fec>] (process_measurement)
- 24 [<8073979c>] (ima_file_check)
-172 [<804ec66c>] (path_openat)
-152 [<804ef670>] (do_filp_open)
- 40 [<804d79c4>] (do_sys_openat2)
+any idea?
 
-> Re printing FP, syzbot does not use custom patches:
-> http://bit.do/syzbot#no-custom-patches
-> But this does not seem to be syzbot-specific. It seems that any arm32
-> stack overflow report will be unactionable, so I think it would be
-> useful to include this into the mainline kernel to make overflow
-> reports useful for everybody (and for syzbot as a side effect).
+thanks,
+jirka
 
-ok.
 
-       Arnd
+---
+processor       : 0
+vendor_id       : AuthenticAMD
+cpu family      : 23
+model           : 49
+model name      : AMD EPYC 7742 64-Core Processor
+stepping        : 0
+microcode       : 0x8301034
+cpu MHz         : 1497.024
+cache size      : 512 KB
+physical id     : 0
+siblings        : 64
+core id         : 0
+cpu cores       : 64
+apicid          : 0
+initial apicid  : 0
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 16
+wp              : yes
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate sme ssbd mba sev ibrs ibpb stibp vmmcall sev_es fsgsbase bmi1 avx2 smep bmi2 cqm rdt_a rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local clzero irperf xsaveerptr rdpru wbnoinvd arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif umip rdpid overflow_recov succor smca
+bugs            : sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass
+bogomips        : 4491.76
+TLB size        : 3072 4K pages
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 43 bits physical, 48 bits virtual
+power management: ts ttp tm hwpstate cpb eff_freq_ro [13] [14]
+
