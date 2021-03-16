@@ -2,93 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E94B33CF18
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5A233CF17
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233760AbhCPIAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 04:00:19 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:35323 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbhCPH7x (ORCPT
+        id S229591AbhCPIAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 04:00:15 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:58570 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231848AbhCPH7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 03:59:53 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4F05L00TpJz1qtdm;
-        Tue, 16 Mar 2021 08:59:52 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4F05L00GzXz1qqkr;
-        Tue, 16 Mar 2021 08:59:52 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id Cx8vP1OyQ_Pz; Tue, 16 Mar 2021 08:59:50 +0100 (CET)
-X-Auth-Info: 5fA7AzyF+Ql/xb+Nc4iit4/BKi/tgQXd8vojv+JJC/8=
-Received: from mail-internal.denx.de (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Tue, 16 Mar 2021 08:59:50 +0100 (CET)
-Received: from pollux.denx.de (pollux [192.168.1.1])
-        by mail-internal.denx.de (Postfix) with ESMTP id 9B03D181A2B;
-        Tue, 16 Mar 2021 08:59:30 +0100 (CET)
-Received: by pollux.denx.de (Postfix, from userid 515)
-        id 74D261A0092; Tue, 16 Mar 2021 08:59:30 +0100 (CET)
-From:   Heiko Schocher <hs@denx.de>
-To:     linux-spi@vger.kernel.org
-Cc:     Heiko Schocher <hs@denx.de>, linux-arm-kernel@lists.infradead.org,
-        Ashish Kumar <ashish.kumar@nxp.com>,
-        Kuldeep Singh <kuldeep.singh@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/2] enable flexspi support on imx8mp
-Date:   Tue, 16 Mar 2021 08:59:26 +0100
-Message-Id: <20210316075928.1763460-1-hs@denx.de>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 16 Mar 2021 03:59:48 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0US7E8df_1615881579;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0US7E8df_1615881579)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 16 Mar 2021 15:59:44 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     shuah@kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] selftests/bpf: fix warning comparing pointer to 0
+Date:   Tue, 16 Mar 2021 15:59:37 +0800
+Message-Id: <1615881577-3493-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add compatible entry in nxp_fspi driver for imx8mp
+Fix the following coccicheck warning:
 
-@Shawn: If this series is accepted, can you apply the DTS patches from
-series v2?
-http://lists.infradead.org/pipermail/linux-arm-kernel/2021-March/643292.html
-http://lists.infradead.org/pipermail/linux-arm-kernel/2021-March/643293.html
+./tools/testing/selftests/bpf/progs/fexit_test.c:77:15-16: WARNING
+comparing pointer to 0.
 
+./tools/testing/selftests/bpf/progs/fexit_test.c:68:12-13: WARNING
+comparing pointer to 0.
 
-Changes in v4:
-rebased against:
-git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-a43e89624baea ("Merge remote-tracking branch 'spi/for-5.13' into spi-next")
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ tools/testing/selftests/bpf/progs/fexit_test.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Changes in v3:
-- seperate spi changes from series:
-  http://lists.infradead.org/pipermail/linux-arm-kernel/2021-March/643289.html
-  into own series as Kuldeep suggested and rebased against
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-  144c79ef33536 ("Merge tag 'perf-tools-fixes-for-v5.12-2020-03-07' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux")
-- no changes, rebased against
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-  144c79ef33536 Merge tag 'perf-tools-fixes-for-v5.12-2020-03-07' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux
-
-Changes in v2:
-- work in comments from Marco
-  add own compatible entry for imx8mp
-
-Heiko Schocher (2):
-  spi: fspi: enable fspi driver for on imx8mp
-  dt-bindings: spi: add compatible entry for imx8mp in FlexSPI
-    controller
-
- Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt | 1 +
- drivers/spi/spi-nxp-fspi.c                             | 1 +
- 2 files changed, 2 insertions(+)
-
+diff --git a/tools/testing/selftests/bpf/progs/fexit_test.c b/tools/testing/selftests/bpf/progs/fexit_test.c
+index 0952aff..8f1ccb7 100644
+--- a/tools/testing/selftests/bpf/progs/fexit_test.c
++++ b/tools/testing/selftests/bpf/progs/fexit_test.c
+@@ -65,7 +65,7 @@ struct bpf_fentry_test_t {
+ SEC("fexit/bpf_fentry_test7")
+ int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+ {
+-	if (arg == 0)
++	if (!arg)
+ 		test7_result = 1;
+ 	return 0;
+ }
+@@ -74,7 +74,7 @@ int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+ SEC("fexit/bpf_fentry_test8")
+ int BPF_PROG(test8, struct bpf_fentry_test_t *arg)
+ {
+-	if (arg->a == 0)
++	if (!arg->a)
+ 		test8_result = 1;
+ 	return 0;
+ }
 -- 
-2.29.2
+1.8.3.1
 
