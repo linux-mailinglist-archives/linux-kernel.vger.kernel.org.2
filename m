@@ -2,100 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 396EF33D34F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AC533D353
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:46:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237467AbhCPLpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:45:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51098 "EHLO mail.kernel.org"
+        id S237481AbhCPLqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:46:19 -0400
+Received: from mga09.intel.com ([134.134.136.24]:62753 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237447AbhCPLp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:45:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E21AF65020;
-        Tue, 16 Mar 2021 11:45:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615895129;
-        bh=rHEZ8llIHHXGM7jx1Z2zqiWqFW8Ao6YtWewieSAnCr8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JWjHwLKPgmed3EkyEsDiUo7u71UZGQigx+pLqIfH3roFOPmUpe2LywwbO+VnZbdiF
-         OE/5Y8+9XcrkVYP33bPCpE+doXFIyHODQdzQBqkdNEOjoC3UD/wyKFilNuKmHDDoTZ
-         Jdk3nFRtWx7W72c2x6vBRH3V/YqdhYhFHK1UmVpiHAJS9+vcuB0P4880+oyD9/3xDr
-         WoJj3fra4LljulcZZcfNizKCbgD9Rn3oI9oq+U/PQK7PRhCTiaJj2bIypXIFbHYnB4
-         cHzRpN5OnfORMWOyL+IxzxQSn4YyerkR3gv5vUUJn0+BKt3CfWbMfVoZ2YhZBMzkgK
-         VMpLkTv80kUSg==
-Date:   Tue, 16 Mar 2021 12:45:26 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Stable <stable@vger.kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 12/13] rcu/nocb: Prepare for finegrained deferred wakeup
-Message-ID: <20210316114526.GA639918@lothringen>
-References: <20210223001011.127063-1-frederic@kernel.org>
- <20210223001011.127063-13-frederic@kernel.org>
- <20210316030239.GA13675@paulmck-ThinkPad-P72>
+        id S231286AbhCPLqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 07:46:01 -0400
+IronPort-SDR: xkGZDE2WKvZmKbcnrr6NyAC+zYgZgiVAJlJDFAuHf42ObeqaALizoXT3ZIGfpH68TbVY+3GRWb
+ bTUx3dBxswrg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="189335520"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="189335520"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 04:46:00 -0700
+IronPort-SDR: +LO7YYVov1jwziQmA/UFHBsNWYQ330C4ddAvHBYm2cNzVFbT6szAM9/HRwrk/WbnZ5tlNYi1U6
+ RoT8JaJYXmcA==
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="378845401"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 04:45:55 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lM891-00CwQc-Vf; Tue, 16 Mar 2021 13:45:51 +0200
+Date:   Tue, 16 Mar 2021 13:45:51 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH 13/13] MAINTAINERS: Add entry for the bitmap API
+Message-ID: <YFCabyt9pfPtoQiZ@smile.fi.intel.com>
+References: <20210316015424.1999082-1-yury.norov@gmail.com>
+ <20210316015424.1999082-14-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210316030239.GA13675@paulmck-ThinkPad-P72>
+In-Reply-To: <20210316015424.1999082-14-yury.norov@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 08:02:39PM -0700, Paul E. McKenney wrote:
-> On Tue, Feb 23, 2021 at 01:10:10AM +0100, Frederic Weisbecker wrote:
-> > Provide a way to tune the deferred wakeup level we want to perform from
-> > a safe wakeup point. Currently those sites are:
-> > 
-> > * nocb_timer
-> > * user/idle/guest entry
-> > * CPU down
-> > * softirq/rcuc
-> > 
-> > All of these sites perform the wake up for both RCU_NOCB_WAKE and
-> > RCU_NOCB_WAKE_FORCE.
-> > 
-> > In order to merge nocb_timer and nocb_bypass_timer together, we plan to
-> > add a new RCU_NOCB_WAKE_BYPASS that really want to be deferred until
-> > a timer fires so that we don't wake up the NOCB-gp kthread too early.
-> > 
-> > To prepare for that, integrate a wake up level/limit that a callsite is
-> > deemed to perform.
+On Mon, Mar 15, 2021 at 06:54:24PM -0700, Yury Norov wrote:
+> Add myself as maintainer for bitmap API and Andy and Rasmus as reviewers.
 > 
-> This appears to need the following in order to build for non-NOCB
-> configurations.  I will fold it in and am retesting.
+> I'm an author of current implementation of lib/find_bit and an active
+> contributor to lib/bitmap. It was spotted that there's no maintainer for
+> bitmap API. I'm willing to maintain it.
 > 
-> 							Thanx, Paul
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> ---
+>  MAINTAINERS | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 > 
-> ------------------------------------------------------------------------
-> 
-> commit 55f59dd75a11455cf558fd387fbf9011017dcc8a
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Mon Mar 15 20:00:34 2021 -0700
-> 
->     squash! rcu/nocb: Prepare for fine-grained deferred wakeup
->     
->     [ paulmck: Fix non-NOCB rcu_nocb_need_deferred_wakeup() definition. ]
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index 0cc7f68..dfb048e 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -2926,7 +2926,7 @@ static void __init rcu_boot_init_nocb_percpu_data(struct rcu_data *rdp)
->  {
->  }
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3dd20015696e..44f94cdd5a20 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3151,6 +3151,22 @@ F:	Documentation/filesystems/bfs.rst
+>  F:	fs/bfs/
+>  F:	include/uapi/linux/bfs_fs.h
 >  
-> -static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp)
-> +static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp, int level)
->  {
->  	return false;
->  }
+> +BITMAP API
+> +M:	Yury Norov <yury.norov@gmail.com>
+> +R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> +R:	Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> +S:	Maintained
+> +F:	include/asm-generic/bitops/find.h
+> +F:	include/linux/bitmap.h
+> +F:	lib/bitmap.c
+> +F:	lib/find_bit.c
+
+> +F:	lib/find_find_bit_benchmark.c
+
+Does this file exist?
+I guess checkpatch.pl nowadays has a MAINTAINER data base validation.
+
+> +F:	lib/test_bitmap.c
+> +F:	tools/include/asm-generic/bitops/find.h
+> +F:	tools/include/linux/bitmap.h
+> +F:	tools/lib/bitmap.c
+> +F:	tools/lib/find_bit.c
+> +
+>  BLINKM RGB LED DRIVER
+>  M:	Jan-Simon Moeller <jansimon.moeller@gmx.de>
+>  S:	Maintained
+> -- 
+> 2.25.1
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Oops thanks, I missed that.
