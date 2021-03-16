@@ -2,131 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF5833D3D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:29:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 496E833D3DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbhCPM3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:29:12 -0400
-Received: from mga07.intel.com ([134.134.136.100]:62150 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231506AbhCPM2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:28:52 -0400
-IronPort-SDR: i2em6qd87UX7yKcNRHvJkcPT5/T7NGaPdKHgsR8EfBPIUHs/qt81ZUo7Ec5AM5a73vH7z1ipcm
- 0F7MsS9m6n3w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="253265374"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="253265374"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 05:28:50 -0700
-IronPort-SDR: 2kKqY//LRbKf7xAiLvdRj4sGT+zHhuq455Q6WSEGjswsq3qAqx408dNahVYIbIqYVGBend9yYO
- cgQD76y1OO0g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="590637279"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 16 Mar 2021 05:28:50 -0700
-Received: from [10.254.95.225] (kliang2-MOBL.ccr.corp.intel.com [10.254.95.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 408665807EA;
-        Tue, 16 Mar 2021 05:28:49 -0700 (PDT)
-Subject: Re: [PATCH] Revert "perf/x86: Allow zero PEBS status with only single
- active event"
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Vince Weaver <vincent.weaver@maine.edu>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        "stable # 4 . 5" <stable@vger.kernel.org>
-References: <1614778938-93092-1-git-send-email-kan.liang@linux.intel.com>
- <YD/cnnuh/AHOL8hV@hirez.programming.kicks-ass.net>
- <9484ab6e-a6e5-bb72-106f-ed904e50fc0c@linux.intel.com>
- <YD/vy2RnkWZYiJHP@hirez.programming.kicks-ass.net>
- <CAM9d7cjbSGC_mac0CuU3xnDN=bkJ81W+FLn5XSvxbaHb5HL6Fw@mail.gmail.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <c0fa23c1-bd49-8b98-a61b-5b34ae6a7a78@linux.intel.com>
-Date:   Tue, 16 Mar 2021 08:28:47 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231639AbhCPMaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 08:30:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231483AbhCPM3l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 08:29:41 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6740C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 05:29:39 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id dm8so21286291edb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 05:29:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=frS6cCLPOhoy6WT0w0VG2Zdhbvi3Fgut+iQRwiWciZM=;
+        b=YbgzcrArNyGLlL04bYdE/q4fB1g3O2g7a5l713GEu5fNEryQecu/1Z3UxakkDw8ojo
+         ZVzeZA05ZZ6ZEqaEnGW3Q1EEyENRD/4B8laSjyqDLfiTJMTh2ZsTljIJt4zbb535pV/l
+         dXJ+j+FWboYJoDHWX2gJZu5BXn9qmnyzzViwQ2vSClrpOZ5Jzj0yDxhyXFyd+VWI9198
+         gdZn+d4RVXwYT3MeiYteW3OfwFZMhU/U+Q6gpBVeON/EchAg97u7QfUkoe872zC2af3o
+         4a4aK62qhCGgYfOTpKviLHonayFBEIellXQ/T8AWs+rD0qtxkRG9LQWax41QP0RQIUe5
+         Sm1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=frS6cCLPOhoy6WT0w0VG2Zdhbvi3Fgut+iQRwiWciZM=;
+        b=Uio7ijAFJ55FNoSGRVn2ZuRGuxAjPIx/Jao16j6W1GJFHyrTfnqHJ6m1C7KKlWzOWz
+         1i3CduO99Ba1/qInveRgHGEIKS7wBtAdtMJhkEe7Wy0El6I7+wIJtEf1snz/hx4QG6ji
+         Bakg+hexAckRw4RvJP3kZx60rmUQZlw3MlXJENQiXRJY2Md83UAg6fAxjQ60xQdm83xe
+         HoV795u1/DXIsFG+vOZa283nidKGtIUldiAGDaPz0I58Wo3i1sHzpAJ5kaP3rneVCfmr
+         1JMGywwfBJKCGTaW/BChtj6TCgvxlrGgqj501WVcL8y6WfiWk6uzl3S8J5l3F07LIIFj
+         GjMQ==
+X-Gm-Message-State: AOAM532bGKBW6YZ3QlNmt5AK+RbO4HsBMgedPU9GEiINZaN+DEYMX7js
+        Jcxwj4H98Clm+duaKA0krceY03AQq16gHgGRkNt/uA==
+X-Google-Smtp-Source: ABdhPJx2Ejcwpp4xgO5liW2B5NUm/mY2puj2eqrCQhl327oaZ05ACdKJVa5h+tRxPhEvirjf9wez1kpAGiQdHt4b01Y=
+X-Received: by 2002:a05:6402:b31:: with SMTP id bo17mr35716883edb.113.1615897778669;
+ Tue, 16 Mar 2021 05:29:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAM9d7cjbSGC_mac0CuU3xnDN=bkJ81W+FLn5XSvxbaHb5HL6Fw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210315165940.90055-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210315165940.90055-1-andriy.shevchenko@linux.intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 16 Mar 2021 13:29:28 +0100
+Message-ID: <CAMpxmJVZVD9mRGSkpVKV2jJdWUVOKtQfquuHo7toi2TWqf+ddQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] gpio: mockup: Adjust documentation to the code
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 15, 2021 at 5:59 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> First of all one of the parameter missed 'mockup' in its name,
+> Second, the semantics of the integer pairs depends on the sign
+> of the base (the first value in the pair).
+>
+> Update documentation to reflect the real code behaviour.
+>
+> Fixes: 2fd1abe99e5f ("Documentation: gpio: add documentation for gpio-mockup")
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  Documentation/admin-guide/gpio/gpio-mockup.rst | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/gpio/gpio-mockup.rst b/Documentation/admin-guide/gpio/gpio-mockup.rst
+> index 9fa1618b3adc..493071da1738 100644
+> --- a/Documentation/admin-guide/gpio/gpio-mockup.rst
+> +++ b/Documentation/admin-guide/gpio/gpio-mockup.rst
+> @@ -17,17 +17,18 @@ module.
+>      gpio_mockup_ranges
+>
+>          This parameter takes an argument in the form of an array of integer
+> -        pairs. Each pair defines the base GPIO number (if any) and the number
+> -        of lines exposed by the chip. If the base GPIO is -1, the gpiolib
+> -        will assign it automatically.
+> +        pairs. Each pair defines the base GPIO number (non-negative integer)
+> +        and the first number after the last of this chip. If the base GPIO
+> +        is -1, the gpiolib will assign it automatically. while the following
+> +        parameter is the number of lines exposed by the chip.
+>
+> -        Example: gpio_mockup_ranges=-1,8,-1,16,405,4
+> +        Example: gpio_mockup_ranges=-1,8,-1,16,405,409
+>
+>          The line above creates three chips. The first one will expose 8 lines,
+>          the second 16 and the third 4. The base GPIO for the third chip is set
+>          to 405 while for two first chips it will be assigned automatically.
+>
+> -    gpio_named_lines
+> +    gpio_mockup_named_lines
+>
+>          This parameter doesn't take any arguments. It lets the driver know that
+>          GPIO lines exposed by it should be named.
+> --
+> 2.30.2
+>
 
+Applied, thanks!
 
-On 3/16/2021 3:22 AM, Namhyung Kim wrote:
-> Hi Peter and Kan,
-> 
-> On Thu, Mar 4, 2021 at 5:22 AM Peter Zijlstra <peterz@infradead.org> wrote:
->>
->> On Wed, Mar 03, 2021 at 02:53:00PM -0500, Liang, Kan wrote:
->>> On 3/3/2021 1:59 PM, Peter Zijlstra wrote:
->>>> On Wed, Mar 03, 2021 at 05:42:18AM -0800, kan.liang@linux.intel.com wrote:
->>
->>>>> +++ b/arch/x86/events/intel/ds.c
->>>>> @@ -2000,18 +2000,6 @@ static void intel_pmu_drain_pebs_nhm(struct pt_regs *iregs, struct perf_sample_d
->>>>>                            continue;
->>>>>                    }
->>>>> -         /*
->>>>> -          * On some CPUs the PEBS status can be zero when PEBS is
->>>>> -          * racing with clearing of GLOBAL_STATUS.
->>>>> -          *
->>>>> -          * Normally we would drop that record, but in the
->>>>> -          * case when there is only a single active PEBS event
->>>>> -          * we can assume it's for that event.
->>>>> -          */
->>>>> -         if (!pebs_status && cpuc->pebs_enabled &&
->>>>> -                 !(cpuc->pebs_enabled & (cpuc->pebs_enabled-1)))
->>>>> -                 pebs_status = cpuc->pebs_enabled;
->>>>
->>>> Wouldn't something like:
->>>>
->>>>                      pebs_status = p->status = cpus->pebs_enabled;
->>>>
->>>
->>> I didn't consider it as a potential solution in this patch because I don't
->>> think it's a proper way that SW modifies the buffer, which is supposed to be
->>> manipulated by the HW.
->>
->> Right, but then HW was supposed to write sane values and it doesn't do
->> that either ;-)
->>
->>> It's just a personal preference. I don't see any issue here. We may try it.
->>
->> So I mostly agree with you, but I think it's a shame to unsupport such
->> chips, HSW is still a plenty useable chip today.
-> 
-> I got a similar issue on ivybridge machines which caused kernel crash.
-> My case it's related to the branch stack with PEBS events but I think
-> it's the same issue.  And I can confirm that the above approach of
-> updating p->status fixed the problem.
-> 
-> I've talked to Stephane about this, and he wants to make it more
-> robust when we see stale (or invalid) PEBS records.  I'll send the
-> patch soon.
-> 
-
-Hi Namhyung,
-
-In case you didn't see it, I've already submitted a patch to fix the 
-issue last Friday.
-https://lore.kernel.org/lkml/1615555298-140216-1-git-send-email-kan.liang@linux.intel.com/
-But if you have a more robust proposal, please feel free to submit it.
-
-BTW: The patch set from last Friday also fixed another bug found by the 
-perf_fuzzer test. You may be interested.
-
-Thanks,
-Kan
-
+Bartosz
