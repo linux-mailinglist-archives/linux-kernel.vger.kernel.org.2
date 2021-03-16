@@ -2,77 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278CC33CD46
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:26:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C4733CD4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235456AbhCPF0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:26:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47334 "EHLO
+        id S235476AbhCPF2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:28:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232319AbhCPFZt (ORCPT
+        with ESMTP id S235458AbhCPF2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:25:49 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8CD5C06174A;
-        Mon, 15 Mar 2021 22:25:48 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id lr10-20020a17090b4b8ab02900dd61b95c5eso743305pjb.4;
-        Mon, 15 Mar 2021 22:25:48 -0700 (PDT)
+        Tue, 16 Mar 2021 01:28:04 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1926C06174A;
+        Mon, 15 Mar 2021 22:28:03 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id x27so8963030qvd.2;
+        Mon, 15 Mar 2021 22:28:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LSAEcbf+SATjwHMz9nGIjUC5ggd/JNyrGEMilbpoSyU=;
-        b=ZA1S5oPdRCSgxXx78wP057XdupZU2L/roNuhzEcwzr6v2dzm5Wn+wfe+VTU0F82YBc
-         Y+pf7ASIffpneeXrQNWxAu0FL6iM1XUleDgGGSOq/us7fgnI5eeVPNPbibisg7lQpQHW
-         IMjTC/UMrFncahk6h7Uvy6Sjro1t98NM4rVlfoDSUQazqbUAcz1nFAustUvOdUTM5rmW
-         SZ9sjGwbyBYfrX5NYS+9568kMPMj/rwj5Sl9uJBoptaAUMPS51muSgXhnGT1ESSDbI/a
-         o7qOlW1rk3nE5OoKMMx/rd4W3h3TYoUD7sE8PV7+zQ+oU3+gw9QBkxAbsvbNw/LQDMDT
-         23EQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=91l+EZvobumpic5/EQLeULuDDYG6RJlmE6rR5M1RK9c=;
+        b=KJiqHTgZJiA8fA92JzZrJVyRQHrcnMkOFSO+ZUYEGJq9WWcG70XWS/2Q6iP4eV+3Mg
+         n5RvCYvzbvT6U2iuF89VHN0zJ4TKkzZVHKXz+or/WBAfKb01g14wifCI7UIgZtoIfhTL
+         YjAG7ZEVlcuTGHjnVedLl6MUTTmXV5VnO+Bg3BvM6HspHzVI67UeWyJwD/sUQdqRD6qW
+         +3tMl7VMiKXiMQRML3ToDtvdZK7a9AJBZ7qTEkMkghc9BegK7304YWOyaIysbJH7+PXg
+         p4sc4D+M9mUxcIF+5mVROvF7+ZGf7rNZ1+uGg9q87lBjqmFRrRItx2kcEe7cTbVv1faE
+         xwOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LSAEcbf+SATjwHMz9nGIjUC5ggd/JNyrGEMilbpoSyU=;
-        b=RuP+OEphLkOGwUzzG5KSUu0fx7pjYJfIAAOWWS6NUTPLJKdCs7lXLKPecwn6el/l45
-         nrmGM2KKVDZ0bvJNKdB5bSsNwM7ifz7KjH5wn3TIFNfCpRzYeryfyUbt9jFowLiBL0a0
-         dSoEBcK6lhQq/u8CrAIHZsU1JAQxNjkvLa6BoztwsE0eAeMm3ukHqQ4iJz71Ugd86Q2V
-         UnSbcP6FgCGsuXQTIDdLezYA9Wk0Qhf8i60iJhfKbKgGcQHIwQg1265KVHhGr9VnzkUQ
-         j137g7g4iASagbfYRZhRJ4Hu1dWSNUtliyMDC14gW49edJ3+Rq07fkgt+zH0gGIXLl49
-         TaHQ==
-X-Gm-Message-State: AOAM5303PSq9Y1g9VXn9JR0EhgwiWm60/rwQErmzVaA2SpMrgYHnfFbS
-        LMa9Vtv4PS0YWaxRiP/CDWE=
-X-Google-Smtp-Source: ABdhPJzw8w7ugDq+6cl4fU8wJnCdwIsPRmWI3s6zk0E+f3ulhtqKoOv2NX6GCIuxNGeW3FZeGFZonQ==
-X-Received: by 2002:a17:90b:46d0:: with SMTP id jx16mr2974050pjb.3.1615872348531;
-        Mon, 15 Mar 2021 22:25:48 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:d47a:37d9:be9:acbb])
-        by smtp.gmail.com with ESMTPSA id mp21sm643988pjb.16.2021.03.15.22.25.46
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=91l+EZvobumpic5/EQLeULuDDYG6RJlmE6rR5M1RK9c=;
+        b=runQO0m4uZuwzJKvSSunelF5qs62M2QOuhkHdRo0BhU2XMt0x9bDJ9T9jWtltXGGkd
+         oPt84WbSNacHoO7Hd07Cyrq5aZcZrQmr93V3Bcvho3ng5C+v1zou/kV5nPVlrDdwxDyU
+         4y1GWuruXEXau3juSI/60gqivI0gGTzuQos0aUAsP2klT/+u9AjoxiPGxIOthByIUpY9
+         Jf1qS6jKLVSn6MY0hSTD6Tky76G7pa7QHfbGwhx+S0TuvYamC3ApW3XLuRYDysmktxzC
+         bL4Kc+okC8z8GrlxaW2jDIFfy9LXEfxQErDFzpqNSHWuoCJE5U8zS9OB4RSZRp9bn4qu
+         JSuA==
+X-Gm-Message-State: AOAM530EtLtWd9a45JDVqci17qJ4XHC9xoIV8vudRmJ73qt8nEpN7vTE
+        wOQ3KYROe6QwB80Az1Ek7dg=
+X-Google-Smtp-Source: ABdhPJw3PcD1c3rBh3dmkpZFKOL86X6+IzmMIU2mkAxAU4zW9FQqZQfGpvOXT7Ry/boAWRVC/QYq4A==
+X-Received: by 2002:a0c:b59f:: with SMTP id g31mr14223318qve.28.1615872483128;
+        Mon, 15 Mar 2021 22:28:03 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.58.45])
+        by smtp.gmail.com with ESMTPSA id i8sm12179387qtj.16.2021.03.15.22.27.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 22:25:48 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 14:25:44 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Tomasz Figa <tomasz.figa@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: Re: [PATCHv2 0/3] Add UVC 1.5 Region Of Interest control to uvcvideo
-Message-ID: <YFBBWLaiJkvyt9kM@google.com>
-References: <20210208051749.1785246-1-sergey.senozhatsky@gmail.com>
+        Mon, 15 Mar 2021 22:28:02 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     ccaulfie@redhat.com, teigland@redhat.com, cluster-devel@redhat.com,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        trivial@vger.kernel.org
+Subject: [PATCH] dlm: Mundane typo fixes throughout the file lock.c
+Date:   Tue, 16 Mar 2021 10:57:32 +0530
+Message-Id: <20210316052732.682020-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208051749.1785246-1-sergey.senozhatsky@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/02/08 14:17), Sergey Senozhatsky wrote:
-> 	Hello,
-> 
-> 	RFC
 
-Hi Laurent,
+Trivial typo fixes throughout the file.
 
-Gentle ping.
+cc: trivial@vger.kernel.org
 
-	-ss
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ fs/dlm/lock.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/fs/dlm/lock.c b/fs/dlm/lock.c
+index 002123efc6b0..caadc426c8b4 100644
+--- a/fs/dlm/lock.c
++++ b/fs/dlm/lock.c
+@@ -91,7 +91,7 @@ static void del_timeout(struct dlm_lkb *lkb);
+ static void toss_rsb(struct kref *kref);
+
+ /*
+- * Lock compatibilty matrix - thanks Steve
++ * Lock compatibility matrix - thanks Steve
+  * UN = Unlocked state. Not really a state, used as a flag
+  * PD = Padding. Used to make the matrix a nice power of two in size
+  * Other states are the same as the VMS DLM.
+@@ -1535,7 +1535,7 @@ static int _remove_from_waiters(struct dlm_lkb *lkb, int mstype,
+ 		return -1;
+ 	}
+
+-	/* Remove for the convert reply, and premptively remove for the
++	/* Remove for the convert reply, and preemptively remove for the
+ 	   cancel reply.  A convert has been granted while there's still
+ 	   an outstanding cancel on it (the cancel is moot and the result
+ 	   in the cancel reply should be 0).  We preempt the cancel reply
+@@ -2357,14 +2357,14 @@ static int _can_be_granted(struct dlm_rsb *r, struct dlm_lkb *lkb, int now,
+ 	 * 6-5: But the default algorithm for deciding whether to grant or
+ 	 * queue conversion requests does not by itself guarantee that such
+ 	 * requests are serviced on a "first come first serve" basis.  This, in
+-	 * turn, can lead to a phenomenon known as "indefinate postponement".
++	 * turn, can lead to a phenomenon known as "indefinite postponement".
+ 	 *
+ 	 * 6-7: This issue is dealt with by using the optional QUECVT flag with
+ 	 * the system service employed to request a lock conversion.  This flag
+ 	 * forces certain conversion requests to be queued, even if they are
+ 	 * compatible with the granted modes of other locks on the same
+ 	 * resource.  Thus, the use of this flag results in conversion requests
+-	 * being ordered on a "first come first servce" basis.
++	 * being ordered on a "first come first serve" basis.
+ 	 *
+ 	 * DCT: This condition is all about new conversions being able to occur
+ 	 * "in place" while the lock remains on the granted queue (assuming
+--
+2.30.2
+
