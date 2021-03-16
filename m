@@ -2,114 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB1933DD66
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6E133DD65
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240405AbhCPTZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 15:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59540 "EHLO
+        id S240396AbhCPTZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 15:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240371AbhCPTYl (ORCPT
+        with ESMTP id S240397AbhCPTYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:24:41 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89008C06174A;
-        Tue, 16 Mar 2021 12:24:41 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EED088C8;
-        Tue, 16 Mar 2021 20:24:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615922680;
-        bh=8IOV9swkrnF2YntaMgVClYDlrliiv5d39VZFWxuasgY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ADlB/ful233Uxf4OhdAYcDSV382Z7ChN1L8+YnD9HqIXosdb41veNcIn6x816wfIK
-         N078BmT6lK2ZC6Nobx5juZXZug7iY2kK0nF28TG682+XJfSl6rSIA7f/LKfRMLbzOE
-         7Yh1Nmx70W8dA2jfkBos+p98VH9y6BfDMUQp6kjU=
-Date:   Tue, 16 Mar 2021 21:24:03 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo@jmondi.org>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 02/18] media: i2c: rdacm20: Enable noise immunity
-Message-ID: <YFEF0/ev7bJ8ghN6@pendragon.ideasonboard.com>
-References: <20210315131512.133720-1-jacopo+renesas@jmondi.org>
- <20210315131512.133720-3-jacopo+renesas@jmondi.org>
- <YE/TlmrLV4ejOjlF@pendragon.ideasonboard.com>
- <20210316125607.lxhrgzahxvxfy6ll@uno.localdomain>
+        Tue, 16 Mar 2021 15:24:21 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7AFDC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:24:09 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id s7so17422451plg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:24:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=a1ue4t11OJbVivGpc6C3VCzhlUkhH8Mj6uX3JQk/WHc=;
+        b=Nj8yYDluxqiAG+ej6jhoWTmPa96bXO9MvDia/puQbLS7/lpPxALfueZIRNjkZiCYCy
+         Ljgk8A2MGIt5sqxHhcmGFj9bwRx66ATTPVkIOCfXJarh9XeLaTErjE/lVX2YPbMfkUTR
+         weLoWOS0x3zLp07rZcrp0BhN98BIhcxt1Cq+U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=a1ue4t11OJbVivGpc6C3VCzhlUkhH8Mj6uX3JQk/WHc=;
+        b=Z/bqBX0VUEHxUd8DekmtQK7LE3vmsFCO04fl5AnZMp2IncqP5gEUGLsb6LnVdjKYv5
+         bl4G1iB5rxuKch+bEtIsT78+R36zqmuULVqg95rGqtiPHFpahQP7hUFZCVPiVR6uH/Zw
+         Ja0UE5ptMaq92UKwXj/m15AfiCFv0bD3OypF7wP1HSZrCEFAcHQydEK5yd9hute0L2SU
+         tUfU9pUUSnBo8swMeQl91sWLWkkBEA8RDQKj4vUeQK5+6O66O/Fhl2YcuNTLGuK/omit
+         JkDE71H4JaP2zRNWfWKSreIa2+bHDYYXSd8R62OWtJ7a7JTTka2P913pgL0cE2+REtcI
+         LC8w==
+X-Gm-Message-State: AOAM533syNtGLf8klEf0XzffBH/OTooJ2HN2D4kxpAl7Kabzx25W7Olg
+        NhYuKhd+1dfAvFLJA3lkG/0ssQ==
+X-Google-Smtp-Source: ABdhPJxdA7UfbYsvEPf38xgnGsO41RyHj+iYp3b8oYOJD+h6SmdhD+HE5h/MgGyUxrpMOZysl7Shew==
+X-Received: by 2002:a17:90a:b115:: with SMTP id z21mr594754pjq.162.1615922649291;
+        Tue, 16 Mar 2021 12:24:09 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id e1sm191065pjt.10.2021.03.16.12.24.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 12:24:08 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 12:24:07 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christoph Hellwig <hch@lst.de>,
+        David Howells <dhowells@redhat.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Subject: Re: [PATCH v4 1/1] fs: Allow no_new_privs tasks to call chroot(2)
+Message-ID: <202103161221.8291CC3E6@keescook>
+References: <20210316170135.226381-1-mic@digikod.net>
+ <20210316170135.226381-2-mic@digikod.net>
+ <CAG48ez3=M-5WT73HqmFJr6UHwO0+2FJXxcAgRzp6wcd0P3TN=Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210316125607.lxhrgzahxvxfy6ll@uno.localdomain>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAG48ez3=M-5WT73HqmFJr6UHwO0+2FJXxcAgRzp6wcd0P3TN=Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
-
-On Tue, Mar 16, 2021 at 01:56:07PM +0100, Jacopo Mondi wrote:
-> On Mon, Mar 15, 2021 at 11:37:26PM +0200, Laurent Pinchart wrote:
-> > On Mon, Mar 15, 2021 at 02:14:56PM +0100, Jacopo Mondi wrote:
-> > > Enable the noise immunity threshold at the end of the rdacm20
-> > > initialization routine.
-> > >
-> > > The rdacm20 camera module has been so far tested with a startup
-> > > delay that allowed the embedded MCU to program the serializer. If
-> > > the initialization routine is run before the MCU programs the
-> > > serializer and the image sensor and their addresses gets changed
-> > > by the rdacm20 driver it is required to manually enable the noise
-> > > immunity threshold to make the communication on the control channel
-> > > more reliable.
+On Tue, Mar 16, 2021 at 08:04:09PM +0100, Jann Horn wrote:
+> On Tue, Mar 16, 2021 at 6:02 PM Mickaël Salaün <mic@digikod.net> wrote:
+> > One could argue that chroot(2) is useless without a properly populated
+> > root hierarchy (i.e. without /dev and /proc).  However, there are
+> > multiple use cases that don't require the chrooting process to create
+> > file hierarchies with special files nor mount points, e.g.:
+> > * A process sandboxing itself, once all its libraries are loaded, may
+> >   not need files other than regular files, or even no file at all.
+> > * Some pre-populated root hierarchies could be used to chroot into,
+> >   provided for instance by development environments or tailored
+> >   distributions.
+> > * Processes executed in a chroot may not require access to these special
+> >   files (e.g. with minimal runtimes, or by emulating some special files
+> >   with a LD_PRELOADed library or seccomp).
 > >
-> > I'm still worried by the race with the MCU. Any update on dumping the
-> > MCU configuration to check what it initializes ?
+> > Unprivileged chroot is especially interesting for userspace developers
+> > wishing to harden their applications.  For instance, chroot(2) and Yama
+> > enable to build a capability-based security (i.e. remove filesystem
+> > ambient accesses) by calling chroot/chdir with an empty directory and
+> > accessing data through dedicated file descriptors obtained with
+> > openat2(2) and RESOLVE_BENEATH/RESOLVE_IN_ROOT/RESOLVE_NO_MAGICLINKS.
 > 
-> Not yet, you're right ...
+> I don't entirely understand. Are you writing this with the assumption
+> that a future change will make it possible to set these RESOLVE flags
+> process-wide, or something like that?
+
+I thought it meant "open all out-of-chroot dirs as fds using RESOLVE_...
+flags then chroot". As in, there's no way to then escape "up" for the
+old opens, and the new opens stay in the chroot.
+
+> [...]
+> > diff --git a/fs/open.c b/fs/open.c
+> [...]
+> > +static inline int current_chroot_allowed(void)
+> > +{
+> > +       /*
+> > +        * Changing the root directory for the calling task (and its future
+> > +        * children) requires that this task has CAP_SYS_CHROOT in its
+> > +        * namespace, or be running with no_new_privs and not sharing its
+> > +        * fs_struct and not escaping its current root (cf. create_user_ns()).
+> > +        * As for seccomp, checking no_new_privs avoids scenarios where
+> > +        * unprivileged tasks can affect the behavior of privileged children.
+> > +        */
+> > +       if (task_no_new_privs(current) && current->fs->users == 1 &&
 > 
-> I mainly focused on testing with rdacm21, what if I strip the rdacm20
-> changes out from this series ? I will have to keep the init()
-> operation introduction to maintain compatibility with max9286 changes,
-> and in case of no regressions, we can keep the 8 seconds delay in the
-> .dtsi. However it will break upstream support on Eagle for rdacm20 as
-> we don't have a regulator where to insert the startup delay there, and
-> a downstream patch that waits for 8 seconds in the deserializer driver
-> should be used instead...
+> this read of current->fs->users should be using READ_ONCE()
 
-I don't think the rdacm20 changes need to wait. Even this one could be
-merged as-is, as long as we consider it to be a temporary workaround and
-don't build anything on top that would make it more difficult to address
-the issue properly (a TODO comment in the code could help).
-
-> > > Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> > > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> > > ---
-> > >  drivers/media/i2c/rdacm20.c | 8 +++++++-
-> > >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
-> > > index 90eb73f0e6e9..f7fd5ae955d0 100644
-> > > --- a/drivers/media/i2c/rdacm20.c
-> > > +++ b/drivers/media/i2c/rdacm20.c
-> > > @@ -541,7 +541,13 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
-> > >
-> > >  	dev_info(dev->dev, "Identified MAX9271 + OV10635 device\n");
-> > >
-> > > -	return 0;
-> > > +	/*
-> > > +	 * Set reverse channel high threshold to increase noise immunity.
-> > > +	 *
-> > > +	 * This should be compensated by increasing the reverse channel
-> > > +	 * amplitude on the remote deserializer side.
-> > > +	 */
-> > > +	return max9271_set_high_threshold(&dev->serializer, true);
-> > >  }
-> > >
-> > >  static int rdacm20_probe(struct i2c_client *client)
+Ah yeah, good call. I should remember this when I think "can this race?"
+:P
 
 -- 
-Regards,
-
-Laurent Pinchart
+Kees Cook
