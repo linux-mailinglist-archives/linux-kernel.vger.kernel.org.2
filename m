@@ -2,89 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C7733CCB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 05:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5532C33CCB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 05:49:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231373AbhCPEsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 00:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39312 "EHLO
+        id S232891AbhCPEtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 00:49:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbhCPEsd (ORCPT
+        with ESMTP id S229683AbhCPEtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 00:48:33 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB3AC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 21:48:32 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id z5so16379901plg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 21:48:32 -0700 (PDT)
+        Tue, 16 Mar 2021 00:49:19 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51770C06174A;
+        Mon, 15 Mar 2021 21:49:19 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id n195so35500077ybg.9;
+        Mon, 15 Mar 2021 21:49:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SzYgSD52MMc6W9e/iXobaze0AIN/9e342iYaGD6sHwU=;
-        b=pxauHAxjA3A8T1tY4HEnP+igTGGVIKUACufX9aYjS9egmSGpyKIif0XLHdVwAl0u3U
-         b4WtWtPdPL9hxbVDvELPd1VwcPVyUfiO8a0RhDtPiNL1wzZhXqqm4lbmIYL4IE4RRGBD
-         K7FTqdGTt4ihID4e4nFE7Z1yXUTb1TpbhpBWfvSvY9cICq+vVMHQnb+WM5ddHTx2+yYk
-         +4koPT+THDcefMhZKCnSMUNSzlh0MPyRgSiV2hetm+SmvS4szPx0NiO7xdi2SDj4Ayrb
-         Y+EguaYRB87ZZ4uUOOfyN67fq/gpaM/4edN1MCADnFNbh/SmV6GFK5pPfccXwcs2W4Ih
-         dirw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CfinjcOP/WltgE7VDVEoULBPntit2uuL70TjgkQqusg=;
+        b=s6H6WZuM6/QOl8zJvXnGtqo7FVK6KeDBFpeA0nPhkYQr+qDQ0nVAS1h4716qxiVwia
+         Tmu7fFGKZgIaImdnDnvTmI5VApq7OpYDJGKy/98OVqL7Bj6GusYlWP/UsxP6B4G6Vgw7
+         wP4Yxq7Nr9BfMsM7eeaBGDDE1ZqH8GzXAgyexBHiEXtZgckrqcDtSZn85gOpzch2ku9f
+         00vZCo/x2Y+SoRcUak6MNgvgHiuWIkAMqj7nWuNPjoTLD6PSyH6HpUpCy0JphDCarszV
+         HNhnZ7q5E+dNY9AghKvLSXKbLrtT6Na0rZuOZPm9lVMYMq/f0AThOQ5l0NJJ7pDOdaq4
+         WANg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SzYgSD52MMc6W9e/iXobaze0AIN/9e342iYaGD6sHwU=;
-        b=jfBrsnXm26qIUTHY6F/tWleyhTXsPq5wcqN4RL8sB7/6F636n9KkVPavk65JjsPWaW
-         hvkBY9fx3L1RKH8hVIbLUHcha2sVCwJd8Q75EtDt8+RY/wnhaRldosqNFxJu0mienwJH
-         0WBEJrCmwSVbbEK7d2AV2SMWPIOgcY6jOto14hU+kg9kwB+6xnqf6dj/nuSAlEtYl/NT
-         uD35zf/onOEB+6J2loQ5+HrrN8SRXO7LgsDHmg9eQ7P9gFLh52sJhYcmhczFLVwUeyp+
-         4ovadVUuopwMThaV79ssSi8KYNrWcowRXYcbH/g8fMiFwJKq1C+zHJhQeLd8MYaODHeA
-         xD3A==
-X-Gm-Message-State: AOAM532/wSS7TlR5o8hiwcSdkSxMhNmtmul5OTmtorQIRaBgrS2xFJH7
-        AydvdttVWs9F1Usw+dIeATfjKQ==
-X-Google-Smtp-Source: ABdhPJzS2YFHTnUWBJjFUQ/Q8Y1wWNPBBN/k7ix1UJRAYORoxRN0pF/JCu/3etAGj63zduG6RVuWnw==
-X-Received: by 2002:a17:903:31ca:b029:e6:65f:ca87 with SMTP id v10-20020a17090331cab02900e6065fca87mr14664409ple.85.1615870111898;
-        Mon, 15 Mar 2021 21:48:31 -0700 (PDT)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id fa21sm1219533pjb.25.2021.03.15.21.48.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Mar 2021 21:48:31 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 10:18:28 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the opp tree
-Message-ID: <20210316044828.lhl3ex5672kaydhn@vireshk-i7>
-References: <20210316111511.64e7bf21@canb.auug.org.au>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CfinjcOP/WltgE7VDVEoULBPntit2uuL70TjgkQqusg=;
+        b=MQOaGRwYabMtIE6mXieUtIUKht6tjNcuEMgvJZEMQSUphXcmV+3fgKDFsSS5Wqy7ai
+         sfOkusKlklk0oKGvIgbf88xaizLFEAbsX+oucyviBE8+ofcupBve7c0Ysa5V3G1Pk9nn
+         yo29ZvbfcHpSPjFW/vyb3bj/hGbC1RBNziv7blfiGBZZ7gAI6dr8Tq2zePVGAsTui96h
+         d884XNbSnexH4Pv5wuKdemDT+1jFisshzUIqR/6MV5GqJ6EfXzaeMX2YV38LZ/MvVd5f
+         /V/tJ2dIhykb1qTIWSE7ckjFgOv6OhtG0REThAXnhii7wBrjb4jwJ2VkZuqjGrBuAZcH
+         ylfg==
+X-Gm-Message-State: AOAM532Pp+lV4B5tTZ8yP6dOdJOLdlTJm6xuZl1VOG5I+kS8rYefOPf2
+        2WuIFvjdiVaJEsdWAlBlZrxfc+7ocK7VftWc+xU=
+X-Google-Smtp-Source: ABdhPJxa12hMvy3oFM2qB6rCWJbQDjbOhBNDHFyl1vwMhuVgzbmPGx4gB+Op10dlGs9KQlkh/0kdFdgkqH6qNprMkiw=
+X-Received: by 2002:a25:3d46:: with SMTP id k67mr4174800yba.510.1615870158661;
+ Mon, 15 Mar 2021 21:49:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316111511.64e7bf21@canb.auug.org.au>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20210310220211.1454516-1-revest@chromium.org> <20210310220211.1454516-6-revest@chromium.org>
+In-Reply-To: <20210310220211.1454516-6-revest@chromium.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 15 Mar 2021 21:49:07 -0700
+Message-ID: <CAEf4BzYTMjWWVS8ZLXNs8W89_koAdo2-4ir++He=tXA11VU0xA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: Add a series of tests for bpf_snprintf
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-03-21, 11:15, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the opp tree, today's linux-next build (powerpc
-> ppc64_defconfig) produced this warning:
-> 
-> In file included from include/linux/devfreq.h:15,
->                  from drivers/base/power/main.c:36:
-> include/linux/pm_opp.h:341:1: warning: 'devm_pm_opp_register_set_opp_helper' defined but not used [-Wunused-function]
->   341 | devm_pm_opp_register_set_opp_helper(struct device *dev,
->       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Introduced by commit
-> 
->   357b804aa0b9 ("opp: Change return type of devm_pm_opp_register_set_opp_helper()")
-> 
-> The "inline" was removed :-(
+On Wed, Mar 10, 2021 at 2:02 PM Florent Revest <revest@chromium.org> wrote:
+>
+> This exercices most of the format specifiers when things go well.
 
-Fixed and pushed. Thanks.
+typo: exercises
 
--- 
-viresh
+>
+> Signed-off-by: Florent Revest <revest@chromium.org>
+> ---
+>  .../selftests/bpf/prog_tests/snprintf.c       | 71 +++++++++++++++++++
+>  .../selftests/bpf/progs/test_snprintf.c       | 71 +++++++++++++++++++
+>  2 files changed, 142 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
+> new file mode 100644
+> index 000000000000..23af1dbd1eeb
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
+> @@ -0,0 +1,71 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2021 Google LLC. */
+> +
+> +#include <test_progs.h>
+> +#include "test_snprintf.skel.h"
+> +
+> +static int duration;
+
+if you drop CHECK() below, you won't need duration here at all
+
+> +
+> +#define EXP_NUM_OUT  "-8 9 96 -424242 1337 DABBAD00"
+> +#define EXP_NUM_RET  sizeof(EXP_NUM_OUT)
+> +
+> +#define EXP_IP_OUT   "127.000.000.001 0000:0000:0000:0000:0000:0000:0000:0001"
+> +#define EXP_IP_RET   sizeof(EXP_IP_OUT)
+> +
+> +/* The third specifier, %pB, depends on compiler inlining so don't check it */
+> +#define EXP_SYM_OUT  "schedule schedule+0x0/"
+> +#define MIN_SYM_RET  sizeof(EXP_SYM_OUT)
+> +
+> +/* The third specifier, %p, is a hashed pointer which changes on every reboot */
+> +#define EXP_ADDR_OUT "0000000000000000 ffff00000add4e55 "
+> +#define EXP_ADDR_RET sizeof(EXP_ADDR_OUT "unknownhashedptr")
+> +
+> +#define EXP_STR_OUT  "str1 longstr"
+> +#define EXP_STR_RET  sizeof(EXP_STR_OUT)
+> +
+> +#define EXP_OVER_OUT {'%', 'o', 'v', 'e', 'r'}
+> +#define EXP_OVER_RET 10
+> +
+> +void test_snprintf(void)
+> +{
+> +       char exp_addr_out[] = EXP_ADDR_OUT;
+> +       char exp_over_out[] = EXP_OVER_OUT;
+> +       char exp_sym_out[]  = EXP_SYM_OUT;
+> +       struct test_snprintf *skel;
+> +       int err;
+> +
+> +       skel = test_snprintf__open_and_load();
+> +       if (CHECK(!skel, "skel_open", "failed to open and load skeleton\n"))
+
+ASSERT_OK_PTR
+> +               return;
+> +
+> +       err = test_snprintf__attach(skel);
+> +       if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
+
+ASSERT_OK
+> +               goto cleanup;
+> +
+> +       /* trigger tracepoint */
+> +       usleep(1);
+> +
+> +       ASSERT_STREQ(skel->bss->num_out, EXP_NUM_OUT, "num_out");
+> +       ASSERT_EQ(skel->bss->num_ret, EXP_NUM_RET, "num_ret");
+> +
+> +       ASSERT_STREQ(skel->bss->ip_out, EXP_IP_OUT, "ip_out");
+> +       ASSERT_EQ(skel->bss->ip_ret, EXP_IP_RET, "ip_ret");
+> +
+> +       ASSERT_OK(memcmp(skel->bss->sym_out, exp_sym_out,
+> +                        sizeof(exp_sym_out) - 1), "sym_out");
+> +       ASSERT_LT(MIN_SYM_RET, skel->bss->sym_ret, "sym_ret");
+> +
+> +       ASSERT_OK(memcmp(skel->bss->addr_out, exp_addr_out,
+> +                        sizeof(exp_addr_out) - 1), "addr_out");
+> +       ASSERT_EQ(skel->bss->addr_ret, EXP_ADDR_RET, "addr_ret");
+> +
+> +       ASSERT_STREQ(skel->bss->str_out, EXP_STR_OUT, "str_out");
+> +       ASSERT_EQ(skel->bss->str_ret, EXP_STR_RET, "str_ret");
+> +
+> +       ASSERT_OK(memcmp(skel->bss->over_out, exp_over_out,
+> +                        sizeof(exp_over_out)), "over_out");
+> +       ASSERT_EQ(skel->bss->over_ret, EXP_OVER_RET, "over_ret");
+> +
+> +cleanup:
+> +       test_snprintf__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_snprintf.c b/tools/testing/selftests/bpf/progs/test_snprintf.c
+> new file mode 100644
+> index 000000000000..6c8aa4988e69
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_snprintf.c
+> @@ -0,0 +1,71 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2021 Google LLC. */
+> +
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_endian.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +#define OUT_LEN 64
+> +
+> +/* Integer types */
+> +static const char num_fmt[] = "%d %u %x %li %llu %lX";
+> +#define NUMBERS -8, 9, 150, -424242, 1337, 0xDABBAD00
+
+here I actually don't get the point of #define, can you please just
+inline them at the invocation place? I think that will be nicer and
+simpler (and will match common usage pattern)
+
+> +
+> +char num_out[OUT_LEN] = {};
+> +long num_ret = 0;
+> +
+> +/* IP addresses */
+> +static const char ip_fmt[] = "%pi4 %pI6";
+> +static const __u8 dummy_ipv4[] = {127, 0, 0, 1}; /* 127.0.0.1 */
+> +static const __u32 dummy_ipv6[] = {0, 0, 0, bpf_htonl(1)}; /* ::1/128 */
+> +#define IPS &dummy_ipv4, &dummy_ipv6
+> +
+> +char ip_out[OUT_LEN] = {};
+> +long ip_ret = 0;
+> +
+> +/* Symbol lookup formatting */
+> +static const char sym_fmt[] = "%ps %pS %pB";
+> +extern const void schedule __ksym;
+> +#define SYMBOLS &schedule, &schedule, &schedule
+> +
+> +char sym_out[OUT_LEN] = {};
+> +long sym_ret = 0;
+> +
+> +/* Kernel pointers */
+> +static const char addr_fmt[] = "%pK %px %p";
+> +#define ADDRESSES 0, 0xFFFF00000ADD4E55, 0xFFFF00000ADD4E55
+> +
+> +char addr_out[OUT_LEN] = {};
+> +long addr_ret = 0;
+> +
+> +/* Strings embedding */
+> +static const char str_fmt[] = "%s %+05s";
+> +static const char str1[] = "str1";
+> +static const char longstr[] = "longstr";
+> +#define STRINGS str1, longstr
+> +
+> +char str_out[OUT_LEN] = {};
+> +long str_ret = 0;
+> +
+> +/* Overflow */
+> +static const char over_fmt[] = "%%overflow";
+> +
+> +#define OVER_OUT_LEN 6
+> +char over_out[OVER_OUT_LEN] = {};
+> +long over_ret = 0;
+> +
+
+same for all the above #defines, tests will be easier to follow if you
+just use value in BPF_SNPRINTF below
+
+> +SEC("raw_tp/sys_enter")
+> +int handler(const void *ctx)
+> +{
+> +       num_ret  = BPF_SNPRINTF(num_out,  OUT_LEN, num_fmt,  NUMBERS);
+> +       ip_ret   = BPF_SNPRINTF(ip_out,   OUT_LEN, ip_fmt,   IPS);
+> +       sym_ret  = BPF_SNPRINTF(sym_out,  OUT_LEN, sym_fmt,  SYMBOLS);
+> +       addr_ret = BPF_SNPRINTF(addr_out, OUT_LEN, addr_fmt, ADDRESSES);
+> +       str_ret  = BPF_SNPRINTF(str_out,  OUT_LEN, str_fmt,  STRINGS);
+> +       over_ret = BPF_SNPRINTF(over_out, OVER_OUT_LEN, over_fmt);
+
+in practice you'd do BPF_SNPRINTF(num_out, sizeof(num_out), ...). So
+use that in test code as well please.
+
+> +
+> +       return 0;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+> --
+> 2.30.1.766.gb4fecdf3b7-goog
+>
