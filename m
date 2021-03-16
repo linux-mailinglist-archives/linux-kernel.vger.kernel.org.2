@@ -2,306 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB1E33CEAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF7733CEB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232489AbhCPHdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 03:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232462AbhCPHch (ORCPT
+        id S232640AbhCPHeC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Mar 2021 03:34:02 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2700 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230283AbhCPHdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 03:32:37 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB33C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 00:32:37 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id v4so6893412wrp.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 00:32:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IQY1D4mxt0Au+XEL7JzuOd/XePQEer2cRWwwPZzsh6c=;
-        b=iSTAvxoqL774stNAExAxT0y5w1fZ8YHP4kYJkIwmdTY8g3saMZdTToYrYIbZgKI/1u
-         knkImyw+1b7JynzRKoDvKzk64jkssowNItcW1TCTVqM7mAeiRlocwjk4N7IvQebIRK0U
-         RKSbdVfVX9g03eyIenyc7Qf1Kessf3JSADznxoNKBkoGOEgBSCVS6vcMYUlmn6qR0Fsu
-         /aq6nAogbMsp0ip7/137tjsfR4t9lYBbrOCX20KFcu/K27rwLjkpuP/K+FBS2HxBwdqz
-         nxapU+ZlTPwo4QnRDO+MSFFGgi06bBhYX6srUsf5TruFNqj9Wu24cJGZOJkqIFpEBruf
-         xDoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IQY1D4mxt0Au+XEL7JzuOd/XePQEer2cRWwwPZzsh6c=;
-        b=FxoiBr48WVcBMgefJMj9FGXYCv7OJvcZdQTQOI3JMfkXUp9BkoCqGKDqCDv1DBlVmn
-         8ovgMonEMXdfAPaYOh9NUeYu9ryxgqDniq9BjRnx7wjXVPxoDGXyu5Jmj6AUK94J3+RO
-         ClV8UfhOYPJbxDHw34UnszXOXu1h/I7xuqMZ3A3FDwFuSoQaGVtR7QEm8DUX9WZNAhGS
-         us+LiNRT2cgdjDMABkwUwoJ0FBaUwDf8BqYD1+wd6fUN4F+yFz8EbzQnquFjGKhGfTPm
-         ETbt/vFz2vmAyGliTYVth5pKiB4dacTmxvTznbG/ubZMNiSgrSCtQPYVhWizLCJG7gRq
-         y2kg==
-X-Gm-Message-State: AOAM531bIf3k4lIuLLkxXU/B8Eoa640lHQoSg40TOXJkZaaDQGm4HlDm
-        S8dJQbw6OqQsUBn0qOKB9ZqP3g/ZDEx9oYuH8Khy2Q==
-X-Google-Smtp-Source: ABdhPJzyKLcv9vS9Uf7h8wN9YQbsy9k3hKaSESFS8ht62V81yfrY2i1OzPAyVtedxGr/WGvtjH/sUYsFtQKRe7Te7Sk=
-X-Received: by 2002:a5d:5744:: with SMTP id q4mr3424016wrw.390.1615879955825;
- Tue, 16 Mar 2021 00:32:35 -0700 (PDT)
+        Tue, 16 Mar 2021 03:33:40 -0400
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F04Z543PYz680Fx;
+        Tue, 16 Mar 2021 15:25:17 +0800 (CST)
+Received: from lhreml719-chm.china.huawei.com (10.201.108.70) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 16 Mar 2021 08:33:38 +0100
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ lhreml719-chm.china.huawei.com (10.201.108.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Tue, 16 Mar 2021 07:33:37 +0000
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.013;
+ Tue, 16 Mar 2021 15:33:35 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "hpa@zytor.com" <hpa@zytor.com>
+Subject: RE: [RFC PATCH v4 2/3] scheduler: add scheduler level for clusters
+Thread-Topic: [RFC PATCH v4 2/3] scheduler: add scheduler level for clusters
+Thread-Index: AQHXDu99D3AbdiYnOU2vOW1slo8ZO6pv/bYAgBZLeMA=
+Date:   Tue, 16 Mar 2021 07:33:35 +0000
+Message-ID: <9ac6da7f862347b5af117db74d4d4254@hisilicon.com>
+References: <20210301225940.16728-1-song.bao.hua@hisilicon.com>
+ <20210301225940.16728-3-song.bao.hua@hisilicon.com>
+ <YD4WwrlVNwlSj/Zn@hirez.programming.kicks-ass.net>
+In-Reply-To: <YD4WwrlVNwlSj/Zn@hirez.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.32]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20210316015328.13516-1-liu@jiuyang.me> <20210316034638.16276-1-liu@jiuyang.me>
- <CAAhSdy3eEXtba_ebUnPW_OUHRMKsg+O9sBx_DHAmrkTUCfHXNg@mail.gmail.com> <CAPM7DZc+Ysd=VQdzc4_4Np8VAMESBrzD3mhk0ueh92x11bFFNg@mail.gmail.com>
-In-Reply-To: <CAPM7DZc+Ysd=VQdzc4_4Np8VAMESBrzD3mhk0ueh92x11bFFNg@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 16 Mar 2021 13:02:24 +0530
-Message-ID: <CAAhSdy1HYJJDig3Mg1eWaO=zok9G6+hQM1LLbDKMzH-=Fi2dKw@mail.gmail.com>
-Subject: Re: [PATCH] Insert SFENCE.VMA in function set_pte_at for RISCV
-To:     Jiuyang Liu <liu@jiuyang.me>
-Cc:     Alexandre Ghiti <alex@ghiti.fr>,
-        Andrew Waterman <waterman@eecs.berkeley.edu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Zong Li <zong.li@sifive.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 12:27 PM Jiuyang Liu <liu@jiuyang.me> wrote:
->
-> > As per my understanding, we don't need to explicitly invalidate local TLB
-> > in set_pte() or set_pet_at() because generic Linux page table management
-> > (<linux>/mm/*) will call the appropriate flush_tlb_xyz() function after page
-> > table updates.
->
-> I witnessed this bug in our micro-architecture: set_pte instruction is
-> still in the store buffer, no functions are inserting SFENCE.VMA in
-> the stack below, so TLB cannot witness this modification.
-> Here is my call stack:
-> set_pte
-> set_pte_at
-> map_vm_area
-> __vmalloc_area_node
-> __vmalloc_node_range
-> __vmalloc_node
-> __vmalloc_node_flags
-> vzalloc
-> n_tty_open
->
-> I think this is an architecture specific code, so <linux>/mm/* should
-> not be modified.
-> And spec requires SFENCE.VMA to be inserted on each modification to
-> TLB. So I added code here.
 
-The generic linux/mm/* already calls the appropriate tlb_flush_xyz()
-function defined in arch/riscv/include/asm/tlbflush.h
 
-Better to have a write-barrier in set_pte().
-
->
-> > Also, just local TLB flush is generally not sufficient because
-> > a lot of page tables will be used across on multiple HARTs.
->
-> Yes, this is the biggest issue, in RISC-V Volume 2, Privileged Spec v.
-> 20190608 page 67 gave a solution:
-
-This is not an issue with RISC-V privilege spec rather it is more about
-placing RISC-V fences at right locations.
-
-> Consequently, other harts must be notified separately when the
-> memory-management data structures have been modified. One approach is
-> to use
-> 1) a local data fence to ensure local writes are visible globally,
-> then 2) an interprocessor interrupt to the other thread,
-> then 3) a local SFENCE.VMA in the interrupt handler of the remote thread,
-> and finally 4) signal back to originating thread that operation is
-> complete. This is, of course, the RISC-V analog to a TLB shootdown.
-
-I would suggest trying approach#1.
-
-You can include "asm/barrier.h" here and use wmb() or __smp_wmb()
-in-place of local TLB flush.
-
->
-> In general, this patch didn't handle the G bit in PTE, kernel trap it
-> to sbi_remote_sfence_vma. do you think I should use flush_tlb_all?
->
-> Jiuyang
->
->
->
->
-> arch/arm/mm/mmu.c
-> void set_pte_at(struct mm_struct *mm, unsigned long addr,
->                               pte_t *ptep, pte_t pteval)
-> {
->         unsigned long ext = 0;
->
->         if (addr < TASK_SIZE && pte_valid_user(pteval)) {
->                 if (!pte_special(pteval))
->                         __sync_icache_dcache(pteval);
->                 ext |= PTE_EXT_NG;
->         }
->
->         set_pte_ext(ptep, pteval, ext);
-> }
->
-> arch/mips/include/asm/pgtable.h
-> static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
->                               pte_t *ptep, pte_t pteval)
-> {
->
->         if (!pte_present(pteval))
->                 goto cache_sync_done;
->
->         if (pte_present(*ptep) && (pte_pfn(*ptep) == pte_pfn(pteval)))
->                 goto cache_sync_done;
->
->         __update_cache(addr, pteval);
-> cache_sync_done:
->         set_pte(ptep, pteval);
-> }
->
->
-> Also, just local TLB flush is generally not sufficient because
-> > a lot of page tables will be used accross on multiple HARTs.
->
->
-> On Tue, Mar 16, 2021 at 5:05 AM Anup Patel <anup@brainfault.org> wrote:
+> -----Original Message-----
+> From: Peter Zijlstra [mailto:peterz@infradead.org]
+> Sent: Tuesday, March 2, 2021 11:43 PM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: tim.c.chen@linux.intel.com; catalin.marinas@arm.com; will@kernel.org;
+> rjw@rjwysocki.net; vincent.guittot@linaro.org; bp@alien8.de;
+> tglx@linutronix.de; mingo@redhat.com; lenb@kernel.org;
+> dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
+> mgorman@suse.de; msys.mizuma@gmail.com; valentin.schneider@arm.com;
+> gregkh@linuxfoundation.org; Jonathan Cameron <jonathan.cameron@huawei.com>;
+> juri.lelli@redhat.com; mark.rutland@arm.com; sudeep.holla@arm.com;
+> aubrey.li@linux.intel.com; linux-arm-kernel@lists.infradead.org;
+> linux-kernel@vger.kernel.org; linux-acpi@vger.kernel.org; x86@kernel.org;
+> xuwei (O) <xuwei5@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
+> guodong.xu@linaro.org; yangyicong <yangyicong@huawei.com>; Liguozhu (Kenneth)
+> <liguozhu@hisilicon.com>; linuxarm@openeuler.org; hpa@zytor.com
+> Subject: Re: [RFC PATCH v4 2/3] scheduler: add scheduler level for clusters
+> 
+> On Tue, Mar 02, 2021 at 11:59:39AM +1300, Barry Song wrote:
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 88a2e2b..d805e59 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -7797,6 +7797,16 @@ int sched_cpu_activate(unsigned int cpu)
+> >  	if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
+> >  		static_branch_inc_cpuslocked(&sched_smt_present);
+> >  #endif
+> > +
+> > +#ifdef CONFIG_SCHED_CLUSTER
+> > +	/*
+> > +	 * When going up, increment the number of cluster cpus with
+> > +	 * cluster present.
+> > +	 */
+> > +	if (cpumask_weight(cpu_cluster_mask(cpu)) > 1)
+> > +		static_branch_inc_cpuslocked(&sched_cluster_present);
+> > +#endif
+> > +
+> >  	set_cpu_active(cpu, true);
 > >
-> > +Alex
+> >  	if (sched_smp_initialized) {
+> > @@ -7873,6 +7883,14 @@ int sched_cpu_deactivate(unsigned int cpu)
+> >  		static_branch_dec_cpuslocked(&sched_smt_present);
+> >  #endif
 > >
-> > On Tue, Mar 16, 2021 at 9:20 AM Jiuyang Liu <liu@jiuyang.me> wrote:
-> > >
-> > > This patch inserts SFENCE.VMA after modifying PTE based on RISC-V
-> > > specification.
-> > >
-> > > arch/riscv/include/asm/pgtable.h:
-> > > 1. implement pte_user, pte_global and pte_leaf to check correspond
-> > > attribute of a pte_t.
-> >
-> > Adding pte_user(), pte_global(), and pte_leaf() is fine.
-> >
-> > >
-> > > 2. insert SFENCE.VMA in set_pte_at based on RISC-V Volume 2, Privileged
-> > > Spec v. 20190608 page 66 and 67:
-> > > If software modifies a non-leaf PTE, it should execute SFENCE.VMA with
-> > > rs1=x0. If any PTE along the traversal path had its G bit set, rs2 must
-> > > be x0; otherwise, rs2 should be set to the ASID for which the
-> > > translation is being modified.
-> > > If software modifies a leaf PTE, it should execute SFENCE.VMA with rs1
-> > > set to a virtual address within the page. If any PTE along the traversal
-> > > path had its G bit set, rs2 must be x0; otherwise, rs2 should be set to
-> > > the ASID for which the translation is being modified.
-> > >
-> > > arch/riscv/include/asm/tlbflush.h:
-> > > 1. implement get_current_asid to get current program asid.
-> > > 2. implement local_flush_tlb_asid to flush tlb with asid.
-> >
-> > As per my understanding, we don't need to explicitly invalidate local TLB
-> > in set_pte() or set_pet_at() because generic Linux page table management
-> > (<linux>/mm/*) will call the appropriate flush_tlb_xyz() function after page
-> > table updates. Also, just local TLB flush is generally not sufficient because
-> > a lot of page tables will be used accross on multiple HARTs.
-> >
-> > >
-> > > Signed-off-by: Jiuyang Liu <liu@jiuyang.me>
-> > > ---
-> > >  arch/riscv/include/asm/pgtable.h  | 27 +++++++++++++++++++++++++++
-> > >  arch/riscv/include/asm/tlbflush.h | 12 ++++++++++++
-> > >  2 files changed, 39 insertions(+)
-> > >
-> > > diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> > > index ebf817c1bdf4..5a47c60372c1 100644
-> > > --- a/arch/riscv/include/asm/pgtable.h
-> > > +++ b/arch/riscv/include/asm/pgtable.h
-> > > @@ -222,6 +222,16 @@ static inline int pte_write(pte_t pte)
-> > >         return pte_val(pte) & _PAGE_WRITE;
-> > >  }
-> > >
-> > > +static inline int pte_user(pte_t pte)
-> > > +{
-> > > +       return pte_val(pte) & _PAGE_USER;
-> > > +}
-> > > +
-> > > +static inline int pte_global(pte_t pte)
-> > > +{
-> > > +       return pte_val(pte) & _PAGE_GLOBAL;
-> > > +}
-> > > +
-> > >  static inline int pte_exec(pte_t pte)
-> > >  {
-> > >         return pte_val(pte) & _PAGE_EXEC;
-> > > @@ -248,6 +258,11 @@ static inline int pte_special(pte_t pte)
-> > >         return pte_val(pte) & _PAGE_SPECIAL;
-> > >  }
-> > >
-> > > +static inline int pte_leaf(pte_t pte)
-> > > +{
-> > > +       return pte_val(pte) & (_PAGE_READ | _PAGE_WRITE | _PAGE_EXEC);
-> > > +}
-> > > +
-> > >  /* static inline pte_t pte_rdprotect(pte_t pte) */
-> > >
-> > >  static inline pte_t pte_wrprotect(pte_t pte)
-> > > @@ -358,6 +373,18 @@ static inline void set_pte_at(struct mm_struct *mm,
-> > >                 flush_icache_pte(pteval);
-> > >
-> > >         set_pte(ptep, pteval);
-> > > +
-> > > +       if (pte_present(pteval)) {
-> > > +               if (pte_leaf(pteval)) {
-> > > +                       local_flush_tlb_page(addr);
-> > > +               } else {
-> > > +                       if (pte_global(pteval))
-> > > +                               local_flush_tlb_all();
-> > > +                       else
-> > > +                               local_flush_tlb_asid();
-> > > +
-> > > +               }
-> > > +       }
-> > >  }
-> > >
-> > >  static inline void pte_clear(struct mm_struct *mm,
-> > > diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
-> > > index 394cfbccdcd9..1f9b62b3670b 100644
-> > > --- a/arch/riscv/include/asm/tlbflush.h
-> > > +++ b/arch/riscv/include/asm/tlbflush.h
-> > > @@ -21,6 +21,18 @@ static inline void local_flush_tlb_page(unsigned long addr)
-> > >  {
-> > >         __asm__ __volatile__ ("sfence.vma %0" : : "r" (addr) : "memory");
-> > >  }
-> > > +
-> > > +static inline unsigned long get_current_asid(void)
-> > > +{
-> > > +       return (csr_read(CSR_SATP) >> SATP_ASID_SHIFT) & SATP_ASID_MASK;
-> > > +}
-> > > +
-> > > +static inline void local_flush_tlb_asid(void)
-> > > +{
-> > > +       unsigned long asid = get_current_asid();
-> > > +       __asm__ __volatile__ ("sfence.vma x0, %0" : : "r" (asid) : "memory");
-> > > +}
-> > > +
-> > >  #else /* CONFIG_MMU */
-> > >  #define local_flush_tlb_all()                  do { } while (0)
-> > >  #define local_flush_tlb_page(addr)             do { } while (0)
-> > > --
-> > > 2.30.2
-> > >
-> > >
-> > > _______________________________________________
-> > > linux-riscv mailing list
-> > > linux-riscv@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> >
-> > Regards,
-> > Anup
+> > +#ifdef CONFIG_SCHED_CLUSTER
+> > +	/*
+> > +	 * When going down, decrement the number of cpus with cluster present.
+> > +	 */
+> > +	if (cpumask_weight(cpu_cluster_mask(cpu)) > 1)
+> > +		static_branch_dec_cpuslocked(&sched_cluster_present);
+> > +#endif
+> > +
+> >  	if (!sched_smp_initialized)
+> >  		return 0;
+> 
+> I don't think that's correct. IIUC this will mean the
+> sched_cluster_present thing will be enabled on anything with SMT (very
+> much including x86 big cores after the next patch).
+> 
+> I'm thinking that at the very least you should check a CLS domain
+> exists, but that might be hard at this point, because the sched domains
+> haven't been build yet.
 
-Regards,
-Anup
+might be able to achieve the same goal by:
+
+int cls_wt = cpumask_weight(cpu_cluster_mask(cpu));
+if ((cls_wt > cpumask_weight(cpu_smt_mask(cpu))) &&
+     && (cls_wt < cpumask_weight(cpu_coregroup_mask(cpu))))
+   sched_cluster_present...
+
+> 
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 8a8bd7b..3db7b07 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -6009,6 +6009,11 @@ static inline int __select_idle_cpu(int cpu)
+> >  	return -1;
+> >  }
+> >
+> > +#ifdef CONFIG_SCHED_CLUSTER
+> > +DEFINE_STATIC_KEY_FALSE(sched_cluster_present);
+> > +EXPORT_SYMBOL_GPL(sched_cluster_present);
+> 
+> I really rather think this shouldn't be exported
+
+Ok. Make sense.
+
+> 
+> > +#endif
+> > +
+> >  #ifdef CONFIG_SCHED_SMT
+> >  DEFINE_STATIC_KEY_FALSE(sched_smt_present);
+> >  EXPORT_SYMBOL_GPL(sched_smt_present);
+> 
+> This is a KVM wart, it needs to know because mitigation crap.
+> 
+
+Ok.
+
+> > @@ -6116,6 +6121,26 @@ static inline int select_idle_core(struct task_struct
+> *p, int core, struct cpuma
+> >
+> >  #endif /* CONFIG_SCHED_SMT */
+> >
+> > +static inline int _select_idle_cpu(bool smt, struct task_struct *p, int
+> target, struct cpumask *cpus, int *idle_cpu, int *nr)
+> > +{
+> > +	int cpu, i;
+> > +
+> > +	for_each_cpu_wrap(cpu, cpus, target) {
+> > +		if (smt) {
+> > +			i = select_idle_core(p, cpu, cpus, idle_cpu);
+> > +		} else {
+> > +			if (!--*nr)
+> > +				return -1;
+> > +			i = __select_idle_cpu(cpu);
+> > +		}
+> > +
+> > +		if ((unsigned int)i < nr_cpumask_bits)
+> > +			return i;
+> > +	}
+> > +
+> > +	return -1;
+> > +}
+> > +
+> >  /*
+> >   * Scan the LLC domain for idle CPUs; this is dynamically regulated by
+> >   * comparing the average scan cost (tracked in sd->avg_scan_cost) against
+> the
+> > @@ -6124,7 +6149,7 @@ static inline int select_idle_core(struct task_struct
+> *p, int core, struct cpuma
+> >  static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd,
+> int target)
+> >  {
+> >  	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
+> > -	int i, cpu, idle_cpu = -1, nr = INT_MAX;
+> > +	int i, idle_cpu = -1, nr = INT_MAX;
+> >  	bool smt = test_idle_cores(target, false);
+> >  	int this = smp_processor_id();
+> >  	struct sched_domain *this_sd;
+> > @@ -6134,7 +6159,12 @@ static int select_idle_cpu(struct task_struct *p,
+> struct sched_domain *sd, int t
+> >  	if (!this_sd)
+> >  		return -1;
+> >
+> > -	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> > +	if (!sched_cluster_active())
+> > +		cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> > +#ifdef CONFIG_SCHED_CLUSTER
+> > +	if (sched_cluster_active())
+> > +		cpumask_and(cpus, cpu_cluster_mask(target), p->cpus_ptr);
+> > +#endif
+> >
+> >  	if (sched_feat(SIS_PROP) && !smt) {
+> >  		u64 avg_cost, avg_idle, span_avg;
+> > @@ -6155,24 +6185,32 @@ static int select_idle_cpu(struct task_struct *p,
+> struct sched_domain *sd, int t
+> >  		time = cpu_clock(this);
+> >  	}
+> >
+> > -	for_each_cpu_wrap(cpu, cpus, target) {
+> > -		if (smt) {
+> > -			i = select_idle_core(p, cpu, cpus, &idle_cpu);
+> > -			if ((unsigned int)i < nr_cpumask_bits)
+> > -				return i;
+> > +	/* scan cluster before scanning the whole llc */
+> > +#ifdef CONFIG_SCHED_CLUSTER
+> > +	if (sched_cluster_active()) {
+> > +		i = _select_idle_cpu(smt, p, target, cpus, &idle_cpu, &nr);
+> > +		if ((unsigned int) i < nr_cpumask_bits) {
+> > +			idle_cpu = i;
+> > +			goto done;
+> > +		} else if (nr <= 0)
+> > +			return -1;
+> >
+> > -		} else {
+> > -			if (!--nr)
+> > -				return -1;
+> > -			idle_cpu = __select_idle_cpu(cpu);
+> > -			if ((unsigned int)idle_cpu < nr_cpumask_bits)
+> > -				break;
+> > -		}
+> > +		cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> > +		cpumask_andnot(cpus, cpus, cpu_cluster_mask(target));
+> >  	}
+> > +#endif
+> > +
+> > +	i = _select_idle_cpu(smt, p, target, cpus, &idle_cpu, &nr);
+> > +	if ((unsigned int) i < nr_cpumask_bits) {
+> > +		idle_cpu = i;
+> > +		goto done;
+> > +	} else if (nr <= 0)
+> > +		return -1;
+> >
+> >  	if (smt)
+> >  		set_idle_cores(this, false);
+> >
+> > +done:
+> >  	if (sched_feat(SIS_PROP) && !smt) {
+> >  		time = cpu_clock(this) - time;
+> >  		update_avg(&this_sd->avg_scan_cost, time);
+> 
+> And this is just horrific :-(
+
+I was actually quite struggling with this part.
+Had tried a couple of ways before sending this.
+Still the sent one was quite ugly.
+
+Thanks
+Barry
+
