@@ -2,149 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F5E33D215
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E44A33D212
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236860AbhCPKok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 06:44:40 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:60202 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236802AbhCPKm5 (ORCPT
+        id S236864AbhCPKoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 06:44:11 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:35174 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236775AbhCPKmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 06:42:57 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12GAgQak029751;
-        Tue, 16 Mar 2021 05:42:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615891346;
-        bh=woWUaDHqVhUcUtdUKUvj06vRIr/+mBAcjXA8swBJfz0=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=tR5YiqdCx3SQLgf4rimr8J7hFqWHPBLmYenarpdx29h4mG+p+2Fi/g3o9/xjQeyxa
-         l+tJ62QKDU6NgAO3Cc4yyDEYhYEtKTtdZlnKPUUG+/JgkI0ef2PwA5m7a88gmrOdJ7
-         TRTB5wLLe4JRYB2froHpDCxkB2eJpHXpd9Hc2udw=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12GAgQa1091537
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 16 Mar 2021 05:42:26 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 16
- Mar 2021 05:42:26 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 16 Mar 2021 05:42:26 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12GAgPNe023921;
-        Tue, 16 Mar 2021 05:42:26 -0500
-Date:   Tue, 16 Mar 2021 16:12:25 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Michael Walle <michael@walle.cc>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [RFC PATCH 1/3] mtd: spi-nor: sfdp: remember sfdp_size
-Message-ID: <20210316104223.42tdob3uwjxc5vdz@ti.com>
-References: <20210312190548.6954-1-michael@walle.cc>
- <20210312190548.6954-2-michael@walle.cc>
+        Tue, 16 Mar 2021 06:42:42 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0US9MFIf_1615891358;
+Received: from xunleideMacBook-Pro.local(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0US9MFIf_1615891358)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 16 Mar 2021 18:42:39 +0800
+Reply-To: xlpang@linux.alibaba.com
+Subject: Re: [PATCH v3 0/4] mm/slub: Fix count_partial() problem
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Xunlei Pang <xlpang@linux.alibaba.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Roman Gushchin <guro@fb.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shu Ming <sming56@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Wen Yang <wenyang@linux.alibaba.com>,
+        James Wang <jnwang@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <1615303512-35058-1-git-send-email-xlpang@linux.alibaba.com>
+ <793c884a-9d60-baaf-fab8-3e5f4a024124@suse.cz>
+From:   Xunlei Pang <xlpang@linux.alibaba.com>
+Message-ID: <1b4f7296-cd26-7177-873b-a35f5504ccfb@linux.alibaba.com>
+Date:   Tue, 16 Mar 2021 18:42:38 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210312190548.6954-2-michael@walle.cc>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <793c884a-9d60-baaf-fab8-3e5f4a024124@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/03/21 08:05PM, Michael Walle wrote:
-> Save the sftp_size in the spi_nor struct so we can use it to dump the
-> SFDP table without parsing the headers again.
+On 3/16/21 2:49 AM, Vlastimil Babka wrote:
+> On 3/9/21 4:25 PM, Xunlei Pang wrote:
+>> count_partial() can hold n->list_lock spinlock for quite long, which
+>> makes much trouble to the system. This series eliminate this problem.
 > 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
->  drivers/mtd/spi-nor/sfdp.c  | 12 ++++++++++++
->  include/linux/mtd/spi-nor.h |  1 +
->  2 files changed, 13 insertions(+)
+> Before I check the details, I have two high-level comments:
 > 
-> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-> index 25142ec4737b..b1814afefc33 100644
-> --- a/drivers/mtd/spi-nor/sfdp.c
-> +++ b/drivers/mtd/spi-nor/sfdp.c
-> @@ -16,6 +16,7 @@
->  	(((p)->parameter_table_pointer[2] << 16) | \
->  	 ((p)->parameter_table_pointer[1] <<  8) | \
->  	 ((p)->parameter_table_pointer[0] <<  0))
-> +#define SFDP_PARAM_HEADER_PARAM_LEN(p) ((p)->length * 4)
->  
->  #define SFDP_BFPT_ID		0xff00	/* Basic Flash Parameter Table */
->  #define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
-> @@ -1263,6 +1264,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
->  	struct sfdp_parameter_header *param_headers = NULL;
->  	struct sfdp_header header;
->  	struct device *dev = nor->dev;
-> +	size_t param_max_offset;
->  	size_t psize;
->  	int i, err;
->  
-> @@ -1285,6 +1287,9 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
->  	    bfpt_header->major != SFDP_JESD216_MAJOR)
->  		return -EINVAL;
->  
-> +	nor->sfdp_size = SFDP_PARAM_HEADER_PTP(bfpt_header) +
-> +			 SFDP_PARAM_HEADER_PARAM_LEN(bfpt_header);
-> +
->  	/*
->  	 * Allocate memory then read all parameter headers with a single
->  	 * Read SFDP command. These parameter headers will actually be parsed
-> @@ -1311,6 +1316,13 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
->  		}
->  	}
->  
-> +	for (i = 0; i < header.nph; i++) {
-> +		param_header = &param_headers[i];
-> +		param_max_offset = SFDP_PARAM_HEADER_PTP(param_header) +
-> +				   SFDP_PARAM_HEADER_PARAM_LEN(param_header);
-> +		nor->sfdp_size = max(nor->sfdp_size, param_max_offset);
-> +	}
-> +
-
-I don't see any mention in the SFDP spec (JESD216D-01) that parameter 
-tables have to be contiguous. In fact, it says that "Parameter tables 
-may be located anywhere in the SFDP space. They do not need to 
-immediately follow the parameter headers". But I guess we can just say 
-the sysfs entry exports the entire SFDP space instead of just the tables 
-so that is OK.
-
-This patch looks good to me other than the small nitpick that we can 
-merge this loop and the one below that tries to find the latest BFPT 
-version.
-
->  	/*
->  	 * Check other parameter headers to get the latest revision of
->  	 * the basic flash parameter table.
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index a0d572855444..a58118b8b002 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -404,6 +404,7 @@ struct spi_nor {
->  	bool			sst_write_second;
->  	u32			flags;
->  	enum spi_nor_cmd_ext	cmd_ext_type;
-> +	size_t			sfdp_size;
-
-Documentation for this variable missing.
-
->  
->  	const struct spi_nor_controller_ops *controller_ops;
->  
-> -- 
-> 2.20.1
+> - patch 1 introduces some counting scheme that patch 4 then changes, could we do
+> this in one step to avoid the churn?
 > 
+> - the series addresses the concern that spinlock is being held, but doesn't
+> address the fact that counting partial per-node slabs is not nearly enough if we
+> want accurate <active_objs> in /proc/slabinfo because there are also percpu
+> slabs and per-cpu partial slabs, where we don't track the free objects at all.
+> So after this series while the readers of /proc/slabinfo won't block the
+> spinlock, they will get the same garbage data as before. So Christoph is not
+> wrong to say that we can just report active_objs == num_objs and it won't
+> actually break any ABI.
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+If maintainers don't mind this inaccuracy which I also doubt its
+importance, then it becomes easy. For fear that some people who really
+cares, introducing an extra config(default-off) for it would be a good
+option.
+
+> At the same time somebody might actually want accurate object statistics at the
+> expense of peak performance, and it would be nice to give them such option in
+> SLUB. Right now we don't provide this accuracy even with CONFIG_SLUB_STATS,
+> although that option provides many additional tuning stats, with additional
+> overhead.
+> So my proposal would be a new config for "accurate active objects" (or just tie
+> it to CONFIG_SLUB_DEBUG?) that would extend the approach of percpu counters in
+> patch 4 to all alloc/free, so that it includes percpu slabs. Without this config
+> enabled, let's just report active_objs == num_objs.
+For percpu slabs, the numbers can be retrieved from the existing
+slub_percpu_partial()->pobjects, looks no need extra work.
+
+> 
+> Vlastimil
+> 
+>> v1->v2:
+>> - Improved changelog and variable naming for PATCH 1~2.
+>> - PATCH3 adds per-cpu counter to avoid performance regression
+>>   in concurrent __slab_free().
+>>
+>> v2->v3:
+>> - Changed "page->inuse" to the safe "new.inuse", etc.
+>> - Used CONFIG_SLUB_DEBUG and CONFIG_SYSFS condition for new counters.
+>> - atomic_long_t -> unsigned long
+>>
+>> [Testing]
+>> There seems might be a little performance impact under extreme
+>> __slab_free() concurrent calls according to my tests.
+>>
+>> On my 32-cpu 2-socket physical machine:
+>> Intel(R) Xeon(R) CPU E5-2650 v2 @ 2.60GHz
+>>
+>> 1) perf stat --null --repeat 10 -- hackbench 20 thread 20000
+>>
+>> == original, no patched
+>> Performance counter stats for 'hackbench 20 thread 20000' (10 runs):
+>>
+>>       24.536050899 seconds time elapsed                                          ( +-  0.24% )
+>>
+>>
+>> Performance counter stats for 'hackbench 20 thread 20000' (10 runs):
+>>
+>>       24.588049142 seconds time elapsed                                          ( +-  0.35% )
+>>
+>>
+>> == patched with patch1~4
+>> Performance counter stats for 'hackbench 20 thread 20000' (10 runs):
+>>
+>>       24.670892273 seconds time elapsed                                          ( +-  0.29% )
+>>
+>>
+>> Performance counter stats for 'hackbench 20 thread 20000' (10 runs):
+>>
+>>       24.746755689 seconds time elapsed                                          ( +-  0.21% )
+>>
+>>
+>> 2) perf stat --null --repeat 10 -- hackbench 32 thread 20000
+>>
+>> == original, no patched
+>>  Performance counter stats for 'hackbench 32 thread 20000' (10 runs):
+>>
+>>       39.784911855 seconds time elapsed                                          ( +-  0.14% )
+>>
+>>  Performance counter stats for 'hackbench 32 thread 20000' (10 runs):
+>>
+>>       39.868687608 seconds time elapsed                                          ( +-  0.19% )
+>>
+>> == patched with patch1~4
+>>  Performance counter stats for 'hackbench 32 thread 20000' (10 runs):
+>>
+>>       39.681273015 seconds time elapsed                                          ( +-  0.21% )
+>>
+>>  Performance counter stats for 'hackbench 32 thread 20000' (10 runs):
+>>
+>>       39.681238459 seconds time elapsed                                          ( +-  0.09% )
+>>
+>>
+>> Xunlei Pang (4):
+>>   mm/slub: Introduce two counters for partial objects
+>>   mm/slub: Get rid of count_partial()
+>>   percpu: Export per_cpu_sum()
+>>   mm/slub: Use percpu partial free counter
+>>
+>>  include/linux/percpu-defs.h   |  10 ++++
+>>  kernel/locking/percpu-rwsem.c |  10 ----
+>>  mm/slab.h                     |   4 ++
+>>  mm/slub.c                     | 120 +++++++++++++++++++++++++++++-------------
+>>  4 files changed, 97 insertions(+), 47 deletions(-)
+>>
