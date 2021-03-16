@@ -2,88 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C76133DEB8
+	by mail.lfdr.de (Postfix) with ESMTP id E0E3633DEB9
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhCPU1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 16:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230408AbhCPU01 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 16:26:27 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FF2C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 13:26:07 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id g27so38666646iox.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 13:26:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bvkqNr1q78jgqt9ME2KjhcsSH1MGlZ3R4wsxExVXRtc=;
-        b=aQI+a21P3/jQfp2XBCLpKA2XaF4d5h3u1dOHvC7XfJmy4Pv2OZk9eXfxC3Ka9vZNLg
-         EO21aV6GaVbMhwaByQY77Pz3lOGWZjsBh3Dtk919+/lWVtXwxYwuLSv2mdgmQ6lqIupI
-         nBE5rQzNd5O5jMR29ufLhcU7SA4WqArxE/PD8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bvkqNr1q78jgqt9ME2KjhcsSH1MGlZ3R4wsxExVXRtc=;
-        b=JXobLTDdrjlYew8I5ucgdN4k4CJssfWWmEs4mAprN+TjtK16v20S0X6+ryjZZgVqA4
-         2tGWojJsij6T+rFdmkErfuIVPFAUvBJkFFyjRiv9eMd4n4oSsUliAsR+D8eSTqNUs3TY
-         3k5FuZMwbROy8IHEE33UyLhNlAt1GIGmWrm9cCMAacFy3/bN1yLStXs4Rp/541LGdDCw
-         TgI1GTxDhdU7PkQqe0Y+GLrn2fi3A94WudBDHXOkuV8hUruuk3+2y/L9H/hfcSqV1bYA
-         WvfnmiG0vc+5VOXB8MpXXnswpA5Bhxa0Dc11E2zkSm70Hsk02c5RShUQEX3EI5Z+1Zz4
-         Bfmw==
-X-Gm-Message-State: AOAM532xRHz76xiGzA/ue3wSsUaZI3ROgzdu0phLES/jjRhCBFNbr8br
-        2SztDVevsDO8r7nMIr/eCmXcoQ==
-X-Google-Smtp-Source: ABdhPJzy4mGSz2YUBoXl8UAsu2NnVceuM4ynQkpHc0OrhVOY9bLUogPf0mJ7kYjy/ReSLuG6SxRI0Q==
-X-Received: by 2002:a05:6638:140e:: with SMTP id k14mr376382jad.31.1615926367038;
-        Tue, 16 Mar 2021 13:26:07 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id v4sm9907370ilo.26.2021.03.16.13.26.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 13:26:06 -0700 (PDT)
-Subject: Re: [PATCH] dt-bindings: Drop type references on common properties
-To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mark Brown <broonie@kernel.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Odelu Kukatla <okukatla@codeaurora.org>,
-        Alex Elder <elder@kernel.org>, Suman Anna <s-anna@ti.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-usb@vger.kernel.org
-References: <20210316194858.3527845-1-robh@kernel.org>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <b7599ef5-899f-5c38-d3e4-8ac8cfe06c56@ieee.org>
-Date:   Tue, 16 Mar 2021 15:26:04 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230325AbhCPU10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 16:27:26 -0400
+Received: from mga02.intel.com ([134.134.136.20]:65373 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230497AbhCPU06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 16:26:58 -0400
+IronPort-SDR: hTb7iSmNEUF4RidWHacnxRrpMuQD6ow/LzxrkrfUpZUjUBN5Ambnk5gry1NawO4xVe9ZYIzz2l
+ xoiuglamslxw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="176462915"
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="176462915"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 13:26:54 -0700
+IronPort-SDR: pD5ul5yOwtpfwHTN4BvRRRjbGIMkDXv5lWdENanTMsC4a8NqdJjtNTqy/C6okQOOanN2r8sIaK
+ PlyFizGSP54A==
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="449839286"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.191.248]) ([10.212.191.248])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 13:26:52 -0700
+Subject: Re: [PATCH v23 6/9] x86/entry: Introduce ENDBR macro
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
+ <20210316151320.6123-7-yu-cheng.yu@intel.com>
+ <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
+ <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
+ <YFENvgrR8JSYq1ae@hirez.programming.kicks-ass.net>
+ <65845773-6cf0-1bdc-1ecf-168de74cc283@intel.com>
+ <YFER79kU+ukn3YZr@hirez.programming.kicks-ass.net>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <aff84067-5b9e-1335-e540-ef90ee133ac9@intel.com>
+Date:   Tue, 16 Mar 2021 13:26:52 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210316194858.3527845-1-robh@kernel.org>
+In-Reply-To: <YFER79kU+ukn3YZr@hirez.programming.kicks-ass.net>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -91,284 +75,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/21 2:48 PM, Rob Herring wrote:
-> Users of common properties shouldn't have a type definition as the
-> common schemas already have one. Drop all the unnecessary type
-> references in the tree.
+On 3/16/2021 1:15 PM, Peter Zijlstra wrote:
+> On Tue, Mar 16, 2021 at 01:05:30PM -0700, Yu, Yu-cheng wrote:
+>> On 3/16/2021 12:57 PM, Peter Zijlstra wrote:
+>>> On Tue, Mar 16, 2021 at 10:12:39AM -0700, Yu, Yu-cheng wrote:
+>>>> Alternatively, there is another compiler-defined macro _CET_ENDBR that can
+>>>> be used.  We can put the following in calling.h:
+>>>>
+>>>> #ifdef __CET__
+>>>> #include <cet.h>
+>>>> #else
+>>>> #define _CET_ENDBR
+>>>> #endif
+>>>>
+>>>> and then use _CET_ENDBR in other files.  How is that?
+>>>>
+>>>> In the future, in case we have kernel-mode IBT, ENDBR macros are also needed
+>>>> for other assembly files.
+>>>
+>>> Can we please call it IBT_ENDBR or just ENDBR. CET is a horrible name,
+>>> seeing how it is not specific.
+>>>
+>>
+>> _CET_ENDBR is from the compiler and we cannot change it.  We can do:
+>>
+>> #define ENDBR _CET_ENDBR
+>>
+>> How is that?
 > 
-> A meta-schema update to catch these is pending.
-
-For net/qcom,ipa.yaml:
-
-Acked-by: Alex Elder <elder@linaro.org>
-
+> Do we really want to include compiler headers? AFAICT it's not a
+> built-in. Also what about clang?
 > 
-> Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Krzysztof Kozlowski <krzk@kernel.org>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Cc: Ohad Ben-Cohen <ohad@wizery.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
-> Cc: Benson Leung <bleung@chromium.org>
-> Cc: Zhang Rui <rui.zhang@intel.com>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Stefan Wahren <wahrenst@gmx.net>
-> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Cc: Odelu Kukatla <okukatla@codeaurora.org>
-> Cc: Alex Elder <elder@kernel.org>
-> Cc: Suman Anna <s-anna@ti.com>
-> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Cc: linux-gpio@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: linux-can@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-remoteproc@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-usb@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->   .../bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml       | 5 +----
->   Documentation/devicetree/bindings/arm/cpus.yaml              | 2 --
->   .../bindings/display/allwinner,sun4i-a10-tcon.yaml           | 1 -
->   .../devicetree/bindings/gpio/socionext,uniphier-gpio.yaml    | 3 +--
->   .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml      | 1 -
->   .../devicetree/bindings/interconnect/qcom,rpmh.yaml          | 1 -
->   .../bindings/memory-controllers/nvidia,tegra210-emc.yaml     | 2 +-
->   Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml   | 1 -
->   Documentation/devicetree/bindings/net/qcom,ipa.yaml          | 1 -
->   Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml  | 2 --
->   .../devicetree/bindings/remoteproc/ti,omap-remoteproc.yaml   | 2 +-
->   Documentation/devicetree/bindings/sound/ak4642.yaml          | 2 --
->   .../devicetree/bindings/sound/google,cros-ec-codec.yaml      | 2 +-
->   Documentation/devicetree/bindings/sound/renesas,rsnd.yaml    | 1 -
->   .../devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml       | 1 -
->   Documentation/devicetree/bindings/usb/usb.yaml               | 1 -
->   16 files changed, 5 insertions(+), 23 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml b/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
-> index a2c63c8b1d10..c6144c8421fa 100644
-> --- a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
-> +++ b/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
-> @@ -26,10 +26,7 @@ properties:
->         - const: simple-mfd
->   
->     mboxes:
-> -    $ref: '/schemas/types.yaml#/definitions/phandle'
-> -    description: |
-> -      Phandle to the firmware device's Mailbox.
-> -      (See: ../mailbox/mailbox.txt for more information)
-> +    maxItems: 1
->   
->     clocks:
->       type: object
-> diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
-> index 26b886b20b27..6be4a8852ee5 100644
-> --- a/Documentation/devicetree/bindings/arm/cpus.yaml
-> +++ b/Documentation/devicetree/bindings/arm/cpus.yaml
-> @@ -256,13 +256,11 @@ properties:
->         where voltage is in V, frequency is in MHz.
->   
->     power-domains:
-> -    $ref: '/schemas/types.yaml#/definitions/phandle-array'
->       description:
->         List of phandles and PM domain specifiers, as defined by bindings of the
->         PM domain provider (see also ../power_domain.txt).
->   
->     power-domain-names:
-> -    $ref: '/schemas/types.yaml#/definitions/string-array'
->       description:
->         A list of power domain name strings sorted in the same order as the
->         power-domains property.
-> diff --git a/Documentation/devicetree/bindings/display/allwinner,sun4i-a10-tcon.yaml b/Documentation/devicetree/bindings/display/allwinner,sun4i-a10-tcon.yaml
-> index c13faf3e6581..3a7d5d731712 100644
-> --- a/Documentation/devicetree/bindings/display/allwinner,sun4i-a10-tcon.yaml
-> +++ b/Documentation/devicetree/bindings/display/allwinner,sun4i-a10-tcon.yaml
-> @@ -73,7 +73,6 @@ properties:
->     clock-output-names:
->       description:
->         Name of the LCD pixel clock created.
-> -    $ref: /schemas/types.yaml#/definitions/string-array
->       maxItems: 1
->   
->     dmas:
-> diff --git a/Documentation/devicetree/bindings/gpio/socionext,uniphier-gpio.yaml b/Documentation/devicetree/bindings/gpio/socionext,uniphier-gpio.yaml
-> index 1a54db04f29d..bcafa494ed7a 100644
-> --- a/Documentation/devicetree/bindings/gpio/socionext,uniphier-gpio.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/socionext,uniphier-gpio.yaml
-> @@ -43,8 +43,7 @@ properties:
->   
->     gpio-ranges: true
->   
-> -  gpio-ranges-group-names:
-> -    $ref: /schemas/types.yaml#/definitions/string-array
-> +  gpio-ranges-group-names: true
->   
->     socionext,interrupt-ranges:
->       description: |
-> diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-> index 6f2398cdc82d..1e7894e524f9 100644
-> --- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-> +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-> @@ -102,7 +102,6 @@ patternProperties:
->   
->         st,adc-channel-names:
->           description: List of single-ended channel names.
-> -        $ref: /schemas/types.yaml#/definitions/string-array
->   
->         st,filter-order:
->           description: |
-> diff --git a/Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml b/Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml
-> index 799e73cdb90b..13da7b29c707 100644
-> --- a/Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml
-> +++ b/Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml
-> @@ -82,7 +82,6 @@ properties:
->         this interconnect to send RPMh commands.
->   
->     qcom,bcm-voter-names:
-> -    $ref: /schemas/types.yaml#/definitions/string-array
->       description: |
->         Names for each of the qcom,bcm-voters specified.
->   
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra210-emc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra210-emc.yaml
-> index 49ab09252e52..bc8477e7ab19 100644
-> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra210-emc.yaml
-> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra210-emc.yaml
-> @@ -34,7 +34,7 @@ properties:
->         - description: EMC general interrupt
->   
->     memory-region:
-> -    $ref: /schemas/types.yaml#/definitions/phandle
-> +    maxItems: 1
->       description:
->         phandle to a reserved memory region describing the table of EMC
->         frequencies trained by the firmware
-> diff --git a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-> index fe6a949a2eab..55bff1586b6f 100644
-> --- a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-> +++ b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-> @@ -57,7 +57,6 @@ properties:
->         - const: per
->   
->     clock-frequency:
-> -    $ref: /schemas/types.yaml#/definitions/uint32
->       description: |
->         The oscillator frequency driving the flexcan device, filled in by the
->         boot loader. This property should only be used the used operating system
-> diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> index 8f86084bf12e..4e8dee4aa90d 100644
-> --- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> +++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> @@ -100,7 +100,6 @@ properties:
->         - description: Whether the IPA clock is enabled (if valid)
->   
->     qcom,smem-state-names:
-> -    $ref: /schemas/types.yaml#/definitions/string-array
->       description: The names of the state bits used for SMP2P output
->       items:
->         - const: ipa-clock-enabled-valid
-> diff --git a/Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml b/Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml
-> index d5d7f113bade..828e4a1ece41 100644
-> --- a/Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml
-> +++ b/Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml
-> @@ -23,12 +23,10 @@ properties:
->         List of phandle to the nvmem data cells.
->   
->     nvmem-names:
-> -    $ref: /schemas/types.yaml#/definitions/string-array
->       description:
->         Names for the each nvmem provider.
->   
->     nvmem-cell-names:
-> -    $ref: /schemas/types.yaml#/definitions/string-array
->       description:
->         Names for each nvmem-cells specified.
->   
-> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.yaml
-> index 1a1159097a2a..73400bc6e91d 100644
-> --- a/Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.yaml
-> +++ b/Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.yaml
-> @@ -93,7 +93,7 @@ properties:
->   # The following are the optional properties:
->   
->     memory-region:
-> -    $ref: /schemas/types.yaml#/definitions/phandle
-> +    maxItems: 1
->       description: |
->         phandle to the reserved memory node to be associated
->         with the remoteproc device. The reserved memory node
-> diff --git a/Documentation/devicetree/bindings/sound/ak4642.yaml b/Documentation/devicetree/bindings/sound/ak4642.yaml
-> index 6cd213be2266..1e2caa29790e 100644
-> --- a/Documentation/devicetree/bindings/sound/ak4642.yaml
-> +++ b/Documentation/devicetree/bindings/sound/ak4642.yaml
-> @@ -29,11 +29,9 @@ properties:
->   
->     clock-frequency:
->       description: common clock binding; frequency of MCKO
-> -    $ref: /schemas/types.yaml#/definitions/uint32
->   
->     clock-output-names:
->       description: common clock name
-> -    $ref: /schemas/types.yaml#/definitions/string
->   
->   required:
->     - compatible
-> diff --git a/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml b/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
-> index acfb9db021dc..77adbebed824 100644
-> --- a/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
-> +++ b/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
-> @@ -32,7 +32,7 @@ properties:
->             The last one integer is the length of the shared memory.
->   
->     memory-region:
-> -    $ref: '/schemas/types.yaml#/definitions/phandle'
-> +    maxItems: 1
->       description: |
->         Shared memory region to EC.  A "shared-dma-pool".
->         See ../reserved-memory/reserved-memory.txt for details.
-> diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-> index 2e1046513603..e494a0416748 100644
-> --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-> +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-> @@ -78,7 +78,6 @@ properties:
->   
->     clock-frequency:
->       description: for audio_clkout0/1/2/3
-> -    $ref: /schemas/types.yaml#/definitions/uint32-array
->   
->     clkout-lr-asynchronous:
->       description: audio_clkoutn is asynchronizes with lr-clock.
-> diff --git a/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml b/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml
-> index 95a728f4d333..3ea8c0c1f45f 100644
-> --- a/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml
-> +++ b/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml
-> @@ -59,7 +59,6 @@ patternProperties:
->   
->       properties:
->         reg:
-> -        $ref: /schemas/types.yaml#/definitions/uint32
->           description: Specify the sensor channel. There are 8 channels in PMIC5's ADC TM
->           minimum: 0
->           maximum: 7
-> diff --git a/Documentation/devicetree/bindings/usb/usb.yaml b/Documentation/devicetree/bindings/usb/usb.yaml
-> index 78491e66ed24..939f217b8c7b 100644
-> --- a/Documentation/devicetree/bindings/usb/usb.yaml
-> +++ b/Documentation/devicetree/bindings/usb/usb.yaml
-> @@ -16,7 +16,6 @@ properties:
->       pattern: "^usb(@.*)?"
->   
->     phys:
-> -    $ref: /schemas/types.yaml#/definitions/phandle-array
->       description:
->         List of all the USB PHYs on this HCD
->   
+> This thing seems trivial enough to build our own, it's a single damn
+> instruction. That also means we don't have to worry about changes to
+> header files we don't control.
 > 
 
+Then, what about moving what I had earlier to vdso.h?
+If we don't want __i386__ either, then make it two macros.
+
++.macro ENDBR
++#ifdef CONFIG_X86_CET
++#ifdef __i386__
++	endbr32
++#else
++	endbr64
++#endif
++#endif
++.endm
