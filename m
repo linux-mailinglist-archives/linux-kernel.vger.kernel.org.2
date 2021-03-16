@@ -2,91 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50EE533CA4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 01:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F56B33CA51
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 01:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233403AbhCPAPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 20:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbhCPAPV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 20:15:21 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B860EC06174A;
-        Mon, 15 Mar 2021 17:15:16 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dzv1s3LVpz9sSC;
-        Tue, 16 Mar 2021 11:15:13 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1615853713;
-        bh=m4ncbdeEQwz1oebJJUApmv6oPSUwurLTdA7shT/3K3Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=oSxRTpqyqLh/i5fCapcpfwyvyotzJ5n/VRqJgto7OmwLX4a/nMkaanj6xFhaTBPRY
-         7yCJNx8iGwW/GrgTXKc/Zv2Zcv0cAmGdAK4mpLYEJ5Y5tdxmzSYvb/MGEzYRBvxd9+
-         x4S4ffvhSMdAG6/6wcHsMTVgfcoQXp6BF+1oSQN0z+RnSjcPmK46WktMfQtyPdTB7w
-         ftxHFG967cl3Bsi/4rYC2VBk3hdjab1mXZuLr2LgF3E/y4lMsnhausBNvGFTKEkRVA
-         /0jIDyBeC2glOts/xK+O75k2vSfWkfiVIuyNFiyEee9UNfBZJzzwyGzf+QDid8WNI2
-         hq9NbLYu85GKg==
-Date:   Tue, 16 Mar 2021 11:15:11 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the opp tree
-Message-ID: <20210316111511.64e7bf21@canb.auug.org.au>
+        id S232657AbhCPA0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 20:26:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229956AbhCPAZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 20:25:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F218F64DD7;
+        Tue, 16 Mar 2021 00:25:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615854354;
+        bh=kzru3q3N00y7gWO/p3TyE79suM7+knKvfVLoD0wZ2vc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TeW551lnhnuOC5NGOjdlWCJpP18eO5gNiLy9tGd3Wm2FIURLWImz6IGjeT//sOcsz
+         B0dlJ/7soHVmmhekMWI5CGNbpHDQ6hkbmZSprWkFQ4n1eT8vXqwzBKu7cD872ls0zA
+         f6+0eVSxFUK//JUQw5RLdDLoaXmnXDbx0JwPv21TKbAA45b5eJI97menENmYoxxcEg
+         CRzZW/seIl8sMHYn4OCsXWrUxGbeiJuRo0PcrAnBsOTwwakTqgXSZ1CcEiaqZbrINt
+         19IN/+jaB9OQE4oRzUzVJGufj8UvbDSPPnbuiqgf2yQgYLfdydZt/YaRhphhJ2Oiau
+         893DMQfFpSK9g==
+Date:   Tue, 16 Mar 2021 08:25:49 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Pawel Laszczak <pawell@cadence.com>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        linux-api@vger.kernel.org, laurent.pinchart@ideasonboard.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kurahul@cadence.com
+Subject: Re: [PATCH v4 2/2] usb: webcam: Invalid size of Processing Unit
+ Descriptor
+Message-ID: <20210316002549.GB15335@b29397-desktop>
+References: <20210315071748.29706-1-pawell@gli-login.cadence.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/AE0BKSRafLxCVTIrjf.oX2p";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315071748.29706-1-pawell@gli-login.cadence.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/AE0BKSRafLxCVTIrjf.oX2p
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 21-03-15 08:17:48, Pawel Laszczak wrote:
+> From: Pawel Laszczak <pawell@cadence.com>
+> 
+> According with USB Device Class Definition for Video Device the
+> Processing Unit Descriptor bLength should be 12 (10 + bmControlSize),
+> but it has 11.
+> 
+> Invalid length caused that Processing Unit Descriptor Test Video form
+> CV tool failed. To fix this issue patch adds bmVideoStandards into
+> uvc_processing_unit_descriptor structure.
+> 
+> The bmVideoStandards field was added in UVC 1.1 and it wasn't part of
+> UVC 1.0a.
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+> 
 
-Hi all,
+Reviewed-by: Peter Chen <peter.chen@kernel.org>
 
-After merging the opp tree, today's linux-next build (powerpc
-ppc64_defconfig) produced this warning:
+> ---
+> Changelog:
+> v4:
+> - fixed compilation error caused by v2
+> v3:
+> - updated the commit message
+> - added bmVideoStandard field to UVC gadget driver
+> v2:
+> - updated UVC_DT_PROCESSING_UNIT_SIZE macro
+> 
+>  drivers/usb/gadget/function/f_uvc.c | 1 +
+>  drivers/usb/gadget/legacy/webcam.c  | 1 +
+>  include/uapi/linux/usb/video.h      | 3 ++-
+>  3 files changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
+> index 5d62720bb9e1..e3b0a79c8f01 100644
+> --- a/drivers/usb/gadget/function/f_uvc.c
+> +++ b/drivers/usb/gadget/function/f_uvc.c
+> @@ -823,6 +823,7 @@ static struct usb_function_instance *uvc_alloc_inst(void)
+>  	pd->bmControls[0]		= 1;
+>  	pd->bmControls[1]		= 0;
+>  	pd->iProcessing			= 0;
+> +	pd->bmVideoStandards		= 0;
+>  
+>  	od = &opts->uvc_output_terminal;
+>  	od->bLength			= UVC_DT_OUTPUT_TERMINAL_SIZE;
+> diff --git a/drivers/usb/gadget/legacy/webcam.c b/drivers/usb/gadget/legacy/webcam.c
+> index 3a61de4bb2b1..accb4dacf715 100644
+> --- a/drivers/usb/gadget/legacy/webcam.c
+> +++ b/drivers/usb/gadget/legacy/webcam.c
+> @@ -125,6 +125,7 @@ static const struct uvc_processing_unit_descriptor uvc_processing = {
+>  	.bmControls[0]		= 1,
+>  	.bmControls[1]		= 0,
+>  	.iProcessing		= 0,
+> +	.bmVideoStandards	= 0,
+>  };
+>  
+>  static const struct uvc_output_terminal_descriptor uvc_output_terminal = {
+> diff --git a/include/uapi/linux/usb/video.h b/include/uapi/linux/usb/video.h
+> index d854cb19c42c..bfdae12cdacf 100644
+> --- a/include/uapi/linux/usb/video.h
+> +++ b/include/uapi/linux/usb/video.h
+> @@ -302,9 +302,10 @@ struct uvc_processing_unit_descriptor {
+>  	__u8   bControlSize;
+>  	__u8   bmControls[2];
+>  	__u8   iProcessing;
+> +	__u8   bmVideoStandards;
+>  } __attribute__((__packed__));
+>  
+> -#define UVC_DT_PROCESSING_UNIT_SIZE(n)			(9+(n))
+> +#define UVC_DT_PROCESSING_UNIT_SIZE(n)			(10+(n))
+>  
+>  /* 3.7.2.6. Extension Unit Descriptor */
+>  struct uvc_extension_unit_descriptor {
+> -- 
+> 2.25.1
+> 
 
-In file included from include/linux/devfreq.h:15,
-                 from drivers/base/power/main.c:36:
-include/linux/pm_opp.h:341:1: warning: 'devm_pm_opp_register_set_opp_helper=
-' defined but not used [-Wunused-function]
-  341 | devm_pm_opp_register_set_opp_helper(struct device *dev,
-      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- 
 
-Introduced by commit
+Thanks,
+Peter Chen
 
-  357b804aa0b9 ("opp: Change return type of devm_pm_opp_register_set_opp_he=
-lper()")
-
-The "inline" was removed :-(
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/AE0BKSRafLxCVTIrjf.oX2p
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBP+I8ACgkQAVBC80lX
-0Gxx+gf/Q0Gecrn/a7POrv/7+f11dNA4JRxX0A9NgvA+YhW+QLwxAqRkY/sy7cQY
-CYEljbwalxADI58NDBC61004TSMa/lesW6MlLfXTXUOak4HA4oDWFhWpgM4zYC8b
-vSEZfONowB3p+pHQe9YjP3Sm7lnXJJSYSxFmdruNCPiT7a6ekCZN3cQMirI30GYD
-6e0lCiQ3Bhip69sWsjtgAHdRRn0kk/0zXN22Fx/azvdnR1C+38m5LaEHb2WLtd/T
-BjorCssZPDsKNT35SuTfWw4nDCRR2lVVYX2j6IXNp4Gcn7JYDOuitDQUvXXrzqi7
-i8PCoesmSBFOD+p6U+hNnNq6xwDucA==
-=l+AS
------END PGP SIGNATURE-----
-
---Sig_/AE0BKSRafLxCVTIrjf.oX2p--
