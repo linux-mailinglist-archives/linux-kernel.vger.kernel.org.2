@@ -2,98 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7793A33D79A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A35E33D7A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238054AbhCPPdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 11:33:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36822 "EHLO
+        id S238147AbhCPPdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 11:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238059AbhCPPdF (ORCPT
+        with ESMTP id S238095AbhCPPdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 11:33:05 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B329DC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 08:33:04 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id r15-20020a05600c35cfb029010e639ca09eso1706938wmq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 08:33:04 -0700 (PDT)
+        Tue, 16 Mar 2021 11:33:15 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2AD6C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 08:33:14 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id d191so10320961wmd.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 08:33:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oJWAVqxGMjHMFdENUlaqR+GUs9koSOvHosCFoEJ2b9Y=;
-        b=DDnOft4AONKTvCp72MmHeurGgLkQ5QPNI7Px8jvJKtu2gnzNN+4+NRsAyio8ZMu2SR
-         QFWqiqk57Dh6HxfloA6WyG0NuCECMToFIuGztBLAyIe1VdgOlA9FSf1Uo4zyWm3glDwD
-         lRWGVX4a2JMhW+AguiGrDVdFDeMpmkmzDW8B+QiJL08KLYJcjIgrvlDMMQ6bFG9ym6ry
-         bixeYX7Q3h8DsCpoqGa8h/DeVqGM2pnXff6vwcTaeZ1wgxF8SUrVmTNNWYrlPcmlj9+e
-         CkTNhrEwBrgMjquOPKCKufoCZbVGUvITM8AMFx/0coA6GXyn8qSCsO4/spSIqXENDhz5
-         bE0Q==
+        d=ffwll.ch; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=uUoRAMQqissgQiWNySzwnJOq0uwZjWt9LOiB5Qw/2Hk=;
+        b=hFVpCvjsIApl22/AeCmNwSGg8SmuSyxqnnKJy4mQhR6BGEUcb+6lgx2UbMK4kBz1xN
+         ULwJLX7V5bTAyN4GQ47VfP+7rqU5DByCia8kU6BZffozRa+USNu2ThKAIIOMLY56Z3rg
+         BUM2+rVAKxKT7KfANn1fMFkXKRqHHvmbjo1v4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oJWAVqxGMjHMFdENUlaqR+GUs9koSOvHosCFoEJ2b9Y=;
-        b=jFadNSmSYSuBA8quZy3GqYDuBjrKvP3FOpDwKDyJPHTjxjr1v6dyC1PXBet5hFjHXV
-         qDnn7DLp2SUEJbFcl0q7NRMk7fzRW4YG3DSzO40jCB4r5HUPChgl5zwCL0ItpgHoBm+O
-         gK+3kd0rEe/SK0d7iW3HiQFPSthCOutUZ92T3zAmBWPJe95O85GVqHHNHjPg+jUR56P8
-         w3ddSUC8GRa5LQkOM55021flLgVJGpzfogcwyq/oXNTwi42PMOJJEW3mMfkOFS6NDV0b
-         WF+XmMdZb6EpGSMyP6pOJotSLdwXlh8Diz0dvC0FBjTWMRDVdt4pSiu+n1tLUbztGzwQ
-         7AiQ==
-X-Gm-Message-State: AOAM531OZ+5kwXio1LyPon4DUI00JnZIFaXhzJ3QmMNxryQcYH26KhpZ
-        /tXG1TR/Xg3dsa0kVd/OUMI=
-X-Google-Smtp-Source: ABdhPJxluN9D9kHW8U6CoBmwKy3bve+Pe6x1Xzoe0dFtFayn5GMIDfP/91/5acMbRohz3zccDppHmg==
-X-Received: by 2002:a1c:7fc9:: with SMTP id a192mr203454wmd.15.1615908783497;
-        Tue, 16 Mar 2021 08:33:03 -0700 (PDT)
-Received: from agape.jhs ([5.171.72.71])
-        by smtp.gmail.com with ESMTPSA id h25sm3949902wml.32.2021.03.16.08.33.02
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=uUoRAMQqissgQiWNySzwnJOq0uwZjWt9LOiB5Qw/2Hk=;
+        b=KD2WcRLSwcjQqdP0jTCl6Aa9s5h+gOYkuZd1mbAQ9yQSx797DQOk8tiFP1HzcO8yhv
+         RlzBnoxoW8fYwCtSU8j0b0AHLrzQrtmeN2sL47AG7dXR2N/YRiWhKiUvhPrPWp48ssPO
+         rAXXh2QteYQfb3CmDqPP28OgG/JFEt6kTsyxiOdONzF+rcn/q50ocv/9UnYr7p/9T8lT
+         +NB8acHC7+BpYDOO1BnmWdQYBoCbPxXPcZtG8UqBCkO5/8syShpkWMNPZ6eP33/JzjIS
+         ultlzuNzjIAfiulaWZ2AIo6VLC/kxp1ib1adFRN0/8PxmeIKkidezycmtK1Qe88V+y9x
+         blRQ==
+X-Gm-Message-State: AOAM532HZuKR5VIkcR5OhHo+EQcOA8Y8qe/LWG+Buc6bHa5ydzzY1RmV
+        RZ1VAf1qy3ba5eGbGRtqwPju1Q==
+X-Google-Smtp-Source: ABdhPJzQL7u7xXceY/a/6NO6FFVvbZrOOoq5J4p9hCKPlG2yrzzaPNHWsT+RvFgxM6YyCQy3Zb0SVw==
+X-Received: by 2002:a1c:43c5:: with SMTP id q188mr228308wma.94.1615908793379;
+        Tue, 16 Mar 2021 08:33:13 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id h22sm3985078wmb.36.2021.03.16.08.33.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 08:33:03 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 16:33:00 +0100
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 11/12] staging: rtl8723bs: remove unused code blocks
- conditioned by never set CONFIG_R871X_TEST
-Message-ID: <108837d49bfc158ba9ffa21a06c31a9a0e7fba97.1615907632.git.fabioaiuto83@gmail.com>
-References: <cover.1615907632.git.fabioaiuto83@gmail.com>
+        Tue, 16 Mar 2021 08:33:12 -0700 (PDT)
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+To:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>
+Subject: [PATCH 1/3] mm: Add unsafe_follow_pfn
+Date:   Tue, 16 Mar 2021 16:33:01 +0100
+Message-Id: <20210316153303.3216674-2-daniel.vetter@ffwll.ch>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210316153303.3216674-1-daniel.vetter@ffwll.ch>
+References: <20210316153303.3216674-1-daniel.vetter@ffwll.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1615907632.git.fabioaiuto83@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove conditional code blocks checked by unused
-CONFIG_R871X_TEST
+Way back it was a reasonable assumptions that iomem mappings never
+change the pfn range they point at. But this has changed:
 
-cleaning required in TODO file:
+- gpu drivers dynamically manage their memory nowadays, invalidating
+ptes with unmap_mapping_range when buffers get moved
 
-find and remove code blocks guarded by never set CONFIG_FOO defines
+- contiguous dma allocations have moved from dedicated carvetouts to
+cma regions. This means if we miss the unmap the pfn might contain
+pagecache or anon memory (well anything allocated with GFP_MOVEABLE)
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+- even /dev/mem now invalidates mappings when the kernel requests that
+iomem region when CONFIG_IO_STRICT_DEVMEM is set, see 3234ac664a87
+("/dev/mem: Revoke mappings when a driver claims the region")
+
+Accessing pfns obtained from ptes without holding all the locks is
+therefore no longer a good idea.
+
+Unfortunately there's some users where this is not fixable (like v4l
+userptr of iomem mappings) or involves a pile of work (vfio type1
+iommu). For now annotate these as unsafe and splat appropriately.
+
+This patch adds an unsafe_follow_pfn, which later patches will then
+roll out to all appropriate places.
+
+Also mark up follow_pfn as EXPORT_SYMBOL_GPL. The only safe way to use
+that by drivers/modules is together with an mmu_notifier, and that's
+all _GPL stuff.
+
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Jérôme Glisse <jglisse@redhat.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: linux-mm@kvack.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-samsung-soc@vger.kernel.org
+Cc: linux-media@vger.kernel.org
+Cc: kvm@vger.kernel.org
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+--
+v5: Suggestions from Christoph
+- reindent for less weirdness
+- use IS_ENABLED instead of #ifdef
+- same checks for nommu, for consistency
+- EXPORT_SYMBOL_GPL for follow_pfn.
+- kerneldoc was already updated in previous versions to explain when
+  follow_pfn can be used safely
 ---
- drivers/staging/rtl8723bs/include/osdep_intf.h | 6 ------
- 1 file changed, 6 deletions(-)
+ include/linux/mm.h |  2 ++
+ mm/memory.c        | 34 ++++++++++++++++++++++++++++++++--
+ mm/nommu.c         | 27 ++++++++++++++++++++++++++-
+ security/Kconfig   | 13 +++++++++++++
+ 4 files changed, 73 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/include/osdep_intf.h b/drivers/staging/rtl8723bs/include/osdep_intf.h
-index aa4337686183..5ad85416c598 100644
---- a/drivers/staging/rtl8723bs/include/osdep_intf.h
-+++ b/drivers/staging/rtl8723bs/include/osdep_intf.h
-@@ -35,12 +35,6 @@ The protection mechanism is through the pending queue.
- 	struct mutex ioctl_mutex;
- };
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 64a71bf20536..caec8b25d66f 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1695,6 +1695,8 @@ int follow_pte(struct mm_struct *mm, unsigned long address,
+ 	       pte_t **ptepp, spinlock_t **ptlp);
+ int follow_pfn(struct vm_area_struct *vma, unsigned long address,
+ 	unsigned long *pfn);
++int unsafe_follow_pfn(struct vm_area_struct *vma, unsigned long address,
++		      unsigned long *pfn);
+ int follow_phys(struct vm_area_struct *vma, unsigned long address,
+ 		unsigned int flags, unsigned long *prot, resource_size_t *phys);
+ int generic_access_phys(struct vm_area_struct *vma, unsigned long addr,
+diff --git a/mm/memory.c b/mm/memory.c
+index 5efa07fb6cdc..e8a145505b69 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4741,7 +4741,12 @@ EXPORT_SYMBOL_GPL(follow_pte);
+  * @address: user virtual address
+  * @pfn: location to store found PFN
+  *
+- * Only IO mappings and raw PFN mappings are allowed.
++ * Only IO mappings and raw PFN mappings are allowed. Note that callers must
++ * ensure coherency with pte updates by using a &mmu_notifier to follow updates.
++ * If this is not feasible, or the access to the @pfn is only very short term,
++ * use follow_pte_pmd() instead and hold the pagetable lock for the duration of
++ * the access instead. Any caller not following these requirements must use
++ * unsafe_follow_pfn() instead.
+  *
+  * This function does not allow the caller to read the permissions
+  * of the PTE.  Do not use it.
+@@ -4765,7 +4770,32 @@ int follow_pfn(struct vm_area_struct *vma, unsigned long address,
+ 	pte_unmap_unlock(ptep, ptl);
+ 	return 0;
+ }
+-EXPORT_SYMBOL(follow_pfn);
++EXPORT_SYMBOL_GPL(follow_pfn);
++
++/**
++ * unsafe_follow_pfn - look up PFN at a user virtual address
++ * @vma: memory mapping
++ * @address: user virtual address
++ * @pfn: location to store found PFN
++ *
++ * Only IO mappings and raw PFN mappings are allowed.
++ *
++ * Returns zero and the pfn at @pfn on success, -ve otherwise.
++ */
++int unsafe_follow_pfn(struct vm_area_struct *vma, unsigned long address,
++		      unsigned long *pfn)
++{
++	if (IS_ENABLED(CONFIG_STRICT_FOLLOW_PFN)) {
++		pr_info("unsafe follow_pfn usage rejected, see CONFIG_STRICT_FOLLOW_PFN\n");
++		return -EINVAL;
++	}
++
++	WARN_ONCE(1, "unsafe follow_pfn usage\n");
++	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
++
++	return follow_pfn(vma, address, pfn);
++}
++EXPORT_SYMBOL(unsafe_follow_pfn);
  
--
--#ifdef CONFIG_R871X_TEST
--int rtw_start_pseudo_adhoc(struct adapter *padapter);
--int rtw_stop_pseudo_adhoc(struct adapter *padapter);
--#endif
--
- struct dvobj_priv *devobj_init(void);
- void devobj_deinit(struct dvobj_priv *pdvobj);
+ #ifdef CONFIG_HAVE_IOREMAP_PROT
+ int follow_phys(struct vm_area_struct *vma,
+diff --git a/mm/nommu.c b/mm/nommu.c
+index 5c9ab799c0e6..1dc983f50e2c 100644
+--- a/mm/nommu.c
++++ b/mm/nommu.c
+@@ -130,7 +130,32 @@ int follow_pfn(struct vm_area_struct *vma, unsigned long address,
+ 	*pfn = address >> PAGE_SHIFT;
+ 	return 0;
+ }
+-EXPORT_SYMBOL(follow_pfn);
++EXPORT_SYMBOL_GPL(follow_pfn);
++
++/**
++ * unsafe_follow_pfn - look up PFN at a user virtual address
++ * @vma: memory mapping
++ * @address: user virtual address
++ * @pfn: location to store found PFN
++ *
++ * Only IO mappings and raw PFN mappings are allowed.
++ *
++ * Returns zero and the pfn at @pfn on success, -ve otherwise.
++ */
++int unsafe_follow_pfn(struct vm_area_struct *vma, unsigned long address,
++		      unsigned long *pfn)
++{
++	if (IS_ENABLED(CONFIG_STRICT_FOLLOW_PFN)) {
++		pr_info("unsafe follow_pfn usage rejected, see CONFIG_STRICT_FOLLOW_PFN\n");
++		return -EINVAL;
++	}
++
++	WARN_ONCE(1, "unsafe follow_pfn usage\n");
++	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
++
++	return follow_pfn(vma, address, pfn);
++}
++EXPORT_SYMBOL(unsafe_follow_pfn);
  
+ LIST_HEAD(vmap_area_list);
+ 
+diff --git a/security/Kconfig b/security/Kconfig
+index 7561f6f99f1d..48945402e103 100644
+--- a/security/Kconfig
++++ b/security/Kconfig
+@@ -230,6 +230,19 @@ config STATIC_USERMODEHELPER_PATH
+ 	  If you wish for all usermode helper programs to be disabled,
+ 	  specify an empty string here (i.e. "").
+ 
++config STRICT_FOLLOW_PFN
++	bool "Disable unsafe use of follow_pfn"
++	depends on MMU
++	help
++	  Some functionality in the kernel follows userspace mappings to iomem
++	  ranges in an unsafe matter. Examples include v4l userptr for zero-copy
++	  buffers sharing.
++
++	  If this option is switched on, such access is rejected. Only enable
++	  this option when you must run userspace which requires this.
++
++	  If in doubt, say Y.
++
+ source "security/selinux/Kconfig"
+ source "security/smack/Kconfig"
+ source "security/tomoyo/Kconfig"
 -- 
-2.20.1
+2.30.0
 
