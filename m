@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFCC33CD9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37DF933CD9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235691AbhCPFsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52104 "EHLO
+        id S235699AbhCPFsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235602AbhCPFsA (ORCPT
+        with ESMTP id S235603AbhCPFsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:48:00 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DBEC06174A;
-        Mon, 15 Mar 2021 22:48:00 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so784849pjc.2;
-        Mon, 15 Mar 2021 22:48:00 -0700 (PDT)
+        Tue, 16 Mar 2021 01:48:01 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB8EC06174A;
+        Mon, 15 Mar 2021 22:48:01 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id c16so16445529ply.0;
+        Mon, 15 Mar 2021 22:48:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=e8Vte+BbSap8YpwjFJ75g2azWXd0zsCfSFory9ijCek=;
-        b=LoU/IxOthJou8zwK+tz3hGZJjyEE9k6/05PoHDFjex11wE1IcW2TEm9vDtxBxOdHwN
-         hE9s8SKkv5JQyORt7Fg+1zVz0j4a+0Rg3uuhoe6k+cjVvVh6eLD2ypva9EpbTz22zmGi
-         ghopwouOv6bhOpsVjiq2+dRJCyq6X0kcL7ydnG3YKufVZB2ZsjJm/WG9XsMtLN59NEun
-         xNxIypqQTOS6kG8EZqiKYGB/KG8UiMOh2FGcJ42ZL+DmAfG99GG/V67TEY9go1x6x/jl
-         WpHk4wHYkAzY6hexO6dWGDQvGu4e4GTQyxi15n50j4XkawIYdazZG5gX7mPHxOrQtzYi
-         6pvw==
+        bh=eAcKCPFkG11DboB2nf9szc28nxZUiI//0Byb5oi70DY=;
+        b=Z1EIvGo2Klccv6EAzBLvOz3Wl5iFUbcMkJuO4Zdc6voXh67QzNl7qwF6AjCT7sJPEy
+         MhSbvD3rA1b9U6/RBavtp1lIWk6NqXmMUSP69dW+cBEzWpW5o1cNKhxNEOclgYcO4eR7
+         tUVgCPRvBGIS6R2AIWRX5E1Dg72eP1dhxLJnq08qb3g+ZRzRrM95IKcq4PGj3AbN4UEi
+         ge82UsgXytMkHcwzblAEVkwJuhpTgInD3k+3630ixslWSeCPcVsGs7i65frdJSPu0RzS
+         WLqTThIXXURVIxS3/Vsy+1HjIBqAITT30UELepQNvlZf8YAwrcpK4DiyH4Cutizw4zJs
+         N0vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=e8Vte+BbSap8YpwjFJ75g2azWXd0zsCfSFory9ijCek=;
-        b=L/LgNkmy367sHQdA9i3NoCZK2h7mUOC8vJ9ZIrgygvdJyRd2DMobccMxK/tiCz4Khh
-         AGpkrZl++JBMU5hX3FpH3PahdzQQhLjGqgKegObsUAQtfvRQrEsmaNEid1Pr76Te+H3f
-         SXO70A7zhIEfLtsBQBO2c3+HHroUbYJ2KDfJ4U657yJutpgn51US16QjKQjd26gr0sxt
-         WrYt54994JuThEprqwRIQ2RlMMlaF5iairfCj7wf3wlPSHTT0dOs+wLtkuYz0wGttNZS
-         /oWGL8U91I4/qW2eSFevx9xyGmCdCVl7evedKyQgUr/KeAP+C1CUBXyJ985eWdt9gUDd
-         Larw==
-X-Gm-Message-State: AOAM532Xw0dEWwzk6PZOPJl7QcUz1RnVHUXlACHGRvVabZ+9ZryMTGBX
-        CJaVjUY0iRpxTvFXjvO1sAk=
-X-Google-Smtp-Source: ABdhPJysoBdyt8XhhrlqSQy2CkUGbw0a+AjALMH3pe3uBJ5kBl74wSekDfIF+sLi590XrILtrhLp3A==
-X-Received: by 2002:a17:90b:4d05:: with SMTP id mw5mr3082534pjb.236.1615873679902;
-        Mon, 15 Mar 2021 22:47:59 -0700 (PDT)
+        bh=eAcKCPFkG11DboB2nf9szc28nxZUiI//0Byb5oi70DY=;
+        b=O1ZDbXUxC+0xRNyNMkrD+aa/ZeUy62h7ZJimRs/jtFrBVyn9E9fGo0Uyeyqra7Qeu1
+         PRks3uJ0ahjHWdjEiDlOsIldQuL6y3IVE1RQajiZA6aOLXNccs+U3yQJwEa3P+ytyFyz
+         Br+6MCJwCi1gMYjy3fNAQgESCjPnULAiY5h/eS1X1VmGahslZSf6fZmBKhFW8R//tVkF
+         4/oFhfgFYCYpeXklJd5pm5mra2Og9tPNpPyvdApTEDHL1txwpQ19Po2lgCHfxCYpKr77
+         f/akNFPojy4Y/1HXQfVZ580Xm7PnZWCCjxZRXQDsBJUwFPYgO7oerQeQ4gz2yI6WulZO
+         e+CA==
+X-Gm-Message-State: AOAM532p8GME1rfOhq0bG96G1sa89V7pQevX23YwyJgHAJog60CUfv6m
+        V54g5nI5e9HH3gP6gnRVQiQ=
+X-Google-Smtp-Source: ABdhPJzGtjdD1TOMCzEPE5zlWDsQhXZ72D5X0zYgZm7g+x4pucHiRSs6U7vK4jIKjo26GVtq0hodPw==
+X-Received: by 2002:a17:90b:100a:: with SMTP id gm10mr3047441pjb.0.1615873681177;
+        Mon, 15 Mar 2021 22:48:01 -0700 (PDT)
 Received: from cl-arch-kdev.. (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id l22sm15096513pfd.145.2021.03.15.22.47.58
+        by smtp.gmail.com with ESMTPSA id l22sm15096513pfd.145.2021.03.15.22.48.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 22:47:59 -0700 (PDT)
+        Mon, 15 Mar 2021 22:48:00 -0700 (PDT)
 From:   Fox Chen <foxhlchen@gmail.com>
 To:     neilb@suse.de
 Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
@@ -55,9 +55,9 @@ Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
         rdunlap@infradead.org, grandmaster@al2klimov.de,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         gregkh@linuxfoundation.org
-Subject: [PATCH v2 10/12] docs: path-lookup: update WALK_GET, WALK_PUT desc
-Date:   Tue, 16 Mar 2021 13:47:25 +0800
-Message-Id: <20210316054727.25655-11-foxhlchen@gmail.com>
+Subject: [PATCH v2 11/12] docs: path-lookup: update get_link() ->follow_link description
+Date:   Tue, 16 Mar 2021 13:47:26 +0800
+Message-Id: <20210316054727.25655-12-foxhlchen@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210316054727.25655-1-foxhlchen@gmail.com>
 References: <20210316054727.25655-1-foxhlchen@gmail.com>
@@ -67,46 +67,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-WALK_GET is changed to WALK_TRAILING with a different meaning.
-Here it should be WALK_NOFOLLOW. WALK_PUT dosn't exist, we have
-WALK_MORE.
-
-WALK_PUT == !WALK_MORE
-
-And there is not should_follow_link().
-
-Related commits:
-commit 8c4efe22e7c4 ("namei: invert the meaning of WALK_FOLLOW")
-commit 1c4ff1a87e46 ("namei: invert WALK_PUT logics")
+get_link() is merged into pick_link(). i_op->follow_link is
+replaced with i_op->get_link(). get_link() can return ERR_PTR(0)
+which equals NULL.
 
 Signed-off-by: Fox Chen <foxhlchen@gmail.com>
 ---
- Documentation/filesystems/path-lookup.rst | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ Documentation/filesystems/path-lookup.rst | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/filesystems/path-lookup.rst
-index 0d41c61f7e4f..abd0153e2415 100644
+index abd0153e2415..eef6e9f68fba 100644
 --- a/Documentation/filesystems/path-lookup.rst
 +++ b/Documentation/filesystems/path-lookup.rst
-@@ -1123,13 +1123,11 @@ stack in ``walk_component()`` immediately when the symlink is found;
- old symlink as it walks that last component.  So it is quite
- convenient for ``walk_component()`` to release the old symlink and pop
- the references just before pushing the reference information for the
--new symlink.  It is guided in this by two flags; ``WALK_GET``, which
--gives it permission to follow a symlink if it finds one, and
--``WALK_PUT``, which tells it to release the current symlink after it has been
--followed.  ``WALK_PUT`` is tested first, leading to a call to
--``put_link()``.  ``WALK_GET`` is tested subsequently (by
--``should_follow_link()``) leading to a call to ``pick_link()`` which sets
--up the stack frame.
-+new symlink.  It is guided in this by two flags; ``WALK_NOFOLLOW``, which
-+suggests whether to follow a symlink if it finds one, and
-+``WALK_MORE``, which tells whether to release the current symlink after it has
-+been followed.  ``WALK_MORE`` is tested first, leading to a call to
-+``put_link()``.
+@@ -1134,10 +1134,10 @@ Symlinks with no final component
  
- Symlinks with no final component
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ A pair of special-case symlinks deserve a little further explanation.
+ Both result in a new ``struct path`` (with mount and dentry) being set
+-up in the ``nameidata``, and result in ``get_link()`` returning ``NULL``.
++up in the ``nameidata``, and result in ``pick_link()`` returning ``NULL``.
+ 
+ The more obvious case is a symlink to "``/``".  All symlinks starting
+-with "``/``" are detected in ``get_link()`` which resets the ``nameidata``
++with "``/``" are detected in ``pick_link()`` which resets the ``nameidata``
+ to point to the effective filesystem root.  If the symlink only
+ contains "``/``" then there is nothing more to do, no components at all,
+ so ``NULL`` is returned to indicate that the symlink can be released and
+@@ -1154,12 +1154,11 @@ something that looks like a symlink.  It is really a reference to the
+ target file, not just the name of it.  When you ``readlink`` these
+ objects you get a name that might refer to the same file - unless it
+ has been unlinked or mounted over.  When ``walk_component()`` follows
+-one of these, the ``->follow_link()`` method in "procfs" doesn't return
++one of these, the ``->get_link()`` method in "procfs" doesn't return
+ a string name, but instead calls ``nd_jump_link()`` which updates the
+-``nameidata`` in place to point to that target.  ``->follow_link()`` then
+-returns ``NULL``.  Again there is no final component and ``get_link()``
+-reports this by leaving the ``last_type`` field of ``nameidata`` as
+-``LAST_BIND``.
++``nameidata`` in place to point to that target.  ``->get_link()`` then
++returns ``0``.  Again there is no final component and ``pick_link()``
++returns NULL.
+ 
+ Following the symlink in the final component
+ --------------------------------------------
 -- 
 2.30.2
 
