@@ -2,124 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E3633DEB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D14CD33DEBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:28:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbhCPU10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 16:27:26 -0400
-Received: from mga02.intel.com ([134.134.136.20]:65373 "EHLO mga02.intel.com"
+        id S230482AbhCPU1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 16:27:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230497AbhCPU06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 16:26:58 -0400
-IronPort-SDR: hTb7iSmNEUF4RidWHacnxRrpMuQD6ow/LzxrkrfUpZUjUBN5Ambnk5gry1NawO4xVe9ZYIzz2l
- xoiuglamslxw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="176462915"
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="176462915"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 13:26:54 -0700
-IronPort-SDR: pD5ul5yOwtpfwHTN4BvRRRjbGIMkDXv5lWdENanTMsC4a8NqdJjtNTqy/C6okQOOanN2r8sIaK
- PlyFizGSP54A==
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="449839286"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.191.248]) ([10.212.191.248])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 13:26:52 -0700
-Subject: Re: [PATCH v23 6/9] x86/entry: Introduce ENDBR macro
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
- <20210316151320.6123-7-yu-cheng.yu@intel.com>
- <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
- <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
- <YFENvgrR8JSYq1ae@hirez.programming.kicks-ass.net>
- <65845773-6cf0-1bdc-1ecf-168de74cc283@intel.com>
- <YFER79kU+ukn3YZr@hirez.programming.kicks-ass.net>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <aff84067-5b9e-1335-e540-ef90ee133ac9@intel.com>
-Date:   Tue, 16 Mar 2021 13:26:52 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229994AbhCPU1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 16:27:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B831A64D9D;
+        Tue, 16 Mar 2021 20:27:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615926431;
+        bh=a/wKNvnQeClTwwX3Zb1sG+qaYu9jbLv7DBvliGxU3DU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Yv8zJVDMP4Z59fDbse6DO0bUJh58EAdgk+fpz1cCqfAX7T7wyEAINSMCqnfZQtMs3
+         wW+vxgvoRgaX8stUOeAO/rvxAPtrYlYHcRjGHimsuiVspW6Mtcqqfy61Vep2dRsHhD
+         0z7kuFG8Oe77b0Gjo57Tzo5m7CprlvWhrROljmJEY9IMmEhHha8cexdoy+3qySnzW0
+         lPUv2u7nWCVFNYPYcgjqEzxBn+OBkQbLi+SOHj2aWsD6cIskLOx2MUZKovfXBz5jA7
+         R9SwC+CvrU6SOw4bQx7KpMWCwVS9EZF0fzvLR26O7yf+3kDHcCk1gSgdKwWLVFrZv2
+         02XmaKVBdVXgw==
+Date:   Tue, 16 Mar 2021 13:27:09 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     sundeep subbaraya <sundeep.lkml@gmail.com>
+Cc:     Hariprasad Kelam <hkelam@marvell.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        lcherian@marvell.com, Geetha sowjanya <gakula@marvell.com>,
+        jerinj@marvell.com, Subbaraya Sundeep <sbhatta@marvell.com>
+Subject: Re: [net PATCH 3/9] octeontx2-af: Do not allocate memory for
+ devlink private
+Message-ID: <20210316132709.6b55bcf4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CALHRZupARnUK5PgRjv9-TmFd9mNUg0Ms55zZEC2VuDcaEBZYLQ@mail.gmail.com>
+References: <1615886833-71688-1-git-send-email-hkelam@marvell.com>
+        <1615886833-71688-4-git-send-email-hkelam@marvell.com>
+        <20210316100432.666d9bd5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CALHRZupARnUK5PgRjv9-TmFd9mNUg0Ms55zZEC2VuDcaEBZYLQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YFER79kU+ukn3YZr@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/2021 1:15 PM, Peter Zijlstra wrote:
-> On Tue, Mar 16, 2021 at 01:05:30PM -0700, Yu, Yu-cheng wrote:
->> On 3/16/2021 12:57 PM, Peter Zijlstra wrote:
->>> On Tue, Mar 16, 2021 at 10:12:39AM -0700, Yu, Yu-cheng wrote:
->>>> Alternatively, there is another compiler-defined macro _CET_ENDBR that can
->>>> be used.  We can put the following in calling.h:
->>>>
->>>> #ifdef __CET__
->>>> #include <cet.h>
->>>> #else
->>>> #define _CET_ENDBR
->>>> #endif
->>>>
->>>> and then use _CET_ENDBR in other files.  How is that?
->>>>
->>>> In the future, in case we have kernel-mode IBT, ENDBR macros are also needed
->>>> for other assembly files.
->>>
->>> Can we please call it IBT_ENDBR or just ENDBR. CET is a horrible name,
->>> seeing how it is not specific.
->>>
->>
->> _CET_ENDBR is from the compiler and we cannot change it.  We can do:
->>
->> #define ENDBR _CET_ENDBR
->>
->> How is that?
+On Tue, 16 Mar 2021 23:33:40 +0530 sundeep subbaraya wrote:
+> On Tue, Mar 16, 2021 at 10:53 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> >
+> > On Tue, 16 Mar 2021 14:57:07 +0530 Hariprasad Kelam wrote:  
+> > > From: Subbaraya Sundeep <sbhatta@marvell.com>
+> > >
+> > > Memory for driver private structure rvu_devlink is
+> > > also allocated during devlink_alloc. Hence use
+> > > the allocated memory by devlink_alloc and access it
+> > > by devlink_priv call.
+> > >
+> > > Fixes: fae06da4("octeontx2-af: Add devlink suppoort to af driver")
+> > > Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
+> > > Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+> > > Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>  
+> >
+> > Does it fix any bug? Looks like a coding improvement.  
 > 
-> Do we really want to include compiler headers? AFAICT it's not a
-> built-in. Also what about clang?
-> 
-> This thing seems trivial enough to build our own, it's a single damn
-> instruction. That also means we don't have to worry about changes to
-> header files we don't control.
-> 
+> Without this we cannot fetch our private struct 'rvu_devlink'  from any
+> of the functions in devlink_ops which may get added in future.
 
-Then, what about moving what I had earlier to vdso.h?
-If we don't want __i386__ either, then make it two macros.
+"which may get added in future" does not sound like it's fixing 
+an existing problem to me :(
 
-+.macro ENDBR
-+#ifdef CONFIG_X86_CET
-+#ifdef __i386__
-+	endbr32
-+#else
-+	endbr64
-+#endif
-+#endif
-+.endm
+If you have particular case where the existing setup is problematic
+please describe it in more detail, or mention what other fix depends 
+on this patch. Otherwise sending this one patch for net-next would 
+be better IMHO.
