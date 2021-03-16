@@ -2,137 +2,364 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65AF33CAE0
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1EB33CADF
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 02:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234224AbhCPBZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 21:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52064 "EHLO
+        id S232777AbhCPBZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 21:25:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231376AbhCPBZU (ORCPT
+        with ESMTP id S231305AbhCPBZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 21:25:20 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBB1C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 18:25:20 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so506865pjh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 18:25:20 -0700 (PDT)
+        Mon, 15 Mar 2021 21:25:17 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109CDC06174A;
+        Mon, 15 Mar 2021 18:25:17 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id k184so3123498ybf.1;
+        Mon, 15 Mar 2021 18:25:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Undm6DN4bz9JznMBV7wenQxTrxS4EoxINCTGYg1PmRk=;
-        b=FWGt82CoxTqZKXOV+So5rYJH0qfzY1uKaLV57wujnAp3ojMv684aWJnJzkCqLs/s+4
-         87pOvumcA33t2Rwy8yOgXN4755Zv0bfWPCmk1rWf4QOGcyuvo0M9DHx3r4qNJdBXLsEn
-         brCjzwACz6mrPSN1HPf2AXokV9fwewXB36TRPcO7cfvrOT1XmqOzr78e9NcJJlj8NTDC
-         uCAYuqcth0gKLrWMqFF1HKYWwDQjJGOTrxwxEwQqvLjlmVkqv12r0JXwrNncVXk4U817
-         PDKb2hq7rJYVMckbIuTLod4XwZSogcMPEHLRLyiY0B8HSNo8Kv2O8O2VGD4amxuz86Fq
-         Htpg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qRkD8yDDCVkCSvKfphzV6Jsy/PSncPUXq/J1aMz7E/E=;
+        b=rGk9BdG++vmNQCxooySOu2p38M8GyBUYONz3XSQuG9r9IU2JmtJhm8zY/bZTpE25cS
+         H2JeF820ASXedgW7byRX39fQ/+icl8dp4MJvo1GtZ0yqBdkU/a1gSsDZ/6tJsOvzM5Xt
+         I+PfzwKqG7XuSyzTkzOs7Z6tohel5o10Gkttht9aaqh2r9Jc4s0WeT6q1AHP/UL566xD
+         h69fR4hxTz0/fT2nGZ3NhtqWvUHqGrs4dttRgGSBz2zS0QiKLvKFLP8ctzuHT5egmzyZ
+         lCnyjC+f9+LOt2KiMmUn9q+aSYyrnG3tdvENFdUNP5+cyqLJeeu8yVTaAvJoFY9zDhhM
+         3twQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Undm6DN4bz9JznMBV7wenQxTrxS4EoxINCTGYg1PmRk=;
-        b=obfnchqJzEvuRrn55vH6NmT7dYYvCsxnICVnDIo4nY9RBlRT8FAW/daDd2417nIPvU
-         Uq/z8GnRcVO3bOZ9XIALEMiRqFvc2QrpHu9NND/qNXT7C71DBM0H2Kz+FFi0UO0fjDgF
-         xETyHOirN4JzCSoLHbY9GPAQ+W8I0bCCeM2Gfbi70rPiO/GcLNkTgfbJTigHL0KqHkDH
-         Jm1xlQ0TrzkYOWeFYW0k880pl4aQSNqQXLBQI8b5WWq70lItvARqghPzVpA4RX3l1ewa
-         1xa+kxbLOnlHGmJLe5CaXwySEaxkZDs2TXVW+NTHCeSSziwaqRHqRftP5Qyy18lPBu0Q
-         ju9A==
-X-Gm-Message-State: AOAM530ecporYxnoI2CdoMV4lZVaQrsxylsrmkMXkiUgsLHggc7832wB
-        6TWdlSw20PfyklNLs4PgiJSVx4sS95Q=
-X-Google-Smtp-Source: ABdhPJwhlJOA6YgEKdyzL+qr3K44q2zZg9Fuz+cmJSad8QNmvdNHSNpcUByTOmEgPTZ9w8CycLz5CA==
-X-Received: by 2002:a17:902:7889:b029:e6:b9c3:bc0d with SMTP id q9-20020a1709027889b02900e6b9c3bc0dmr4600232pll.23.1615857919921;
-        Mon, 15 Mar 2021 18:25:19 -0700 (PDT)
-Received: from localhost.localdomain (23.83.224.125.16clouds.com. [23.83.224.125])
-        by smtp.gmail.com with ESMTPSA id y24sm14481600pfn.213.2021.03.15.18.25.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 18:25:19 -0700 (PDT)
-From:   Jackie Liu <jackieliu2113@gmail.com>
-X-Google-Original-From: Jackie Liu <liuyun01@kylinos.cn>
-To:     jolsa@redhat.com, linux-kernel@vger.kernel.org
-Cc:     Jackie Liu <liuyun01@kylinos.cn>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: [PATCH v4] perf tools: perf_event_paranoid and kptr_restrict may crash on 'perf top'
-Date:   Tue, 16 Mar 2021 09:24:53 +0800
-Message-Id: <20210316012453.1156-1-liuyun01@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qRkD8yDDCVkCSvKfphzV6Jsy/PSncPUXq/J1aMz7E/E=;
+        b=sGos2x9uteGnVLVoDg8biu+EKyKWEDZYAsqOuA17Ux1T6VMwwLHqEPgCGIJCN5qbfo
+         0ZUWiiY6IlyQVlSPZto11lcBwV6Xxn5xbPKkV52y8XAMt3biEE5lZsR7mfBiwPuuIssa
+         6o0Xa5VfFhy89Dh1GpTXeBiShgQTBJNozE86VkwAxkTfWoRvECWlmi1Ew+6GWFCBTp4X
+         j73uCWeygy3Lgs7JQaiCDG/k7OskfVEbZ3PDALC4RmenHVFmRi4eIbs0Kml+c1Sv8uyV
+         jR9oNjM+70yjoAGzMLVNCzV8PF8abaTA5GI9QzMQD/WxMZxL6b/EJzuLtFMtAu9GqeFo
+         bmsg==
+X-Gm-Message-State: AOAM531UvaMNwodg/EkwPnKubI9sEST3rO95Qj7MLjhO6H/KnjXdJOF3
+        Bw98514dk2d/dJy21kqTG4uwl3ZOKCHEFz6O9etjJhA+Xbk=
+X-Google-Smtp-Source: ABdhPJwUn2BBX6fvYQAVJXdzzo3AqQxjgBUK4H6pq8WmA8LiuqdRGXLMwL5xTMbIvXfNEpcB0BL5XVBrSATL+whcw4c=
+X-Received: by 2002:a25:3d46:: with SMTP id k67mr3390441yba.510.1615857916086;
+ Mon, 15 Mar 2021 18:25:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210310220211.1454516-1-revest@chromium.org> <20210310220211.1454516-3-revest@chromium.org>
+In-Reply-To: <20210310220211.1454516-3-revest@chromium.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 15 Mar 2021 18:25:04 -0700
+Message-ID: <CAEf4BzZ+vxVA4ed8xEfHdt=XVn7h8tuHy2czABskG0pgiAjooQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/5] bpf: Add a bpf_snprintf helper
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After install the libelf-dev package and compiling perf, kptr_restrict=2
-and perf_event_paranoid=3 will cause perf top to crash, because the
-value of /proc/kallsyms cannot be obtained, which leads to
-info->jited_ksyms == NULL. In order to solve this problem, Add a
-judgment before use.
+On Wed, Mar 10, 2021 at 2:02 PM Florent Revest <revest@chromium.org> wrote:
+>
+> The implementation takes inspiration from the existing bpf_trace_printk
+> helper but there are a few differences:
+>
+> To allow for a large number of format-specifiers, parameters are
+> provided in an array, like in bpf_seq_printf.
+>
+> Because the output string takes two arguments and the array of
+> parameters also takes two arguments, the format string needs to fit in
+> one argument. But because ARG_PTR_TO_CONST_STR guarantees to point to a
+> NULL-terminated read-only map, we don't need a format string length arg.
+>
+> Because the format-string is known at verification time, we also move
+> most of the format string validation, currently done in formatting
+> helper calls, into the verifier logic. This makes debugging easier and
+> also slightly improves the runtime performance.
+>
+> Signed-off-by: Florent Revest <revest@chromium.org>
+> ---
+>  include/linux/bpf.h            |   4 +
+>  include/uapi/linux/bpf.h       |  28 +++++++
+>  kernel/bpf/verifier.c          | 137 +++++++++++++++++++++++++++++++++
+>  kernel/trace/bpf_trace.c       | 110 ++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h |  28 +++++++
+>  5 files changed, 307 insertions(+)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 7b5319d75b3e..d78175c9a887 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1902,6 +1902,10 @@ extern const struct bpf_func_proto bpf_task_storage_get_proto;
+>  extern const struct bpf_func_proto bpf_task_storage_delete_proto;
+>  extern const struct bpf_func_proto bpf_for_each_map_elem_proto;
+>
+> +#define MAX_SNPRINTF_VARARGS           12
+> +#define MAX_SNPRINTF_MEMCPY            6
+> +#define MAX_SNPRINTF_STR_LEN           128
+> +
+>  const struct bpf_func_proto *bpf_tracing_func_proto(
+>         enum bpf_func_id func_id, const struct bpf_prog *prog);
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 2d3036e292a9..3cbdc8ae00e7 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4660,6 +4660,33 @@ union bpf_attr {
+>   *     Return
+>   *             The number of traversed map elements for success, **-EINVAL** for
+>   *             invalid **flags**.
+> + *
+> + * long bpf_snprintf(char *out, u32 out_size, const char *fmt, u64 *data, u32 data_len)
 
-v3->v4:
-Fix memory leaks in more places
+bpf_snprintf_btf calls out and out_size str and str_size, let's be consistent?
 
-v2->v3:
-free info_linear memory and move code above, don't do those extra btf
-checks.
+> + *     Description
+> + *             Outputs a string into the **out** buffer of size **out_size**
+> + *             based on a format string stored in a read-only map pointed by
+> + *             **fmt**.
+> + *
+> + *             Each format specifier in **fmt** corresponds to one u64 element
+> + *             in the **data** array. For strings and pointers where pointees
+> + *             are accessed, only the pointer values are stored in the *data*
+> + *             array. The *data_len* is the size of *data* in bytes.
+> + *
+> + *             Formats **%s** and **%p{i,I}{4,6}** require to read kernel
+> + *             memory. Reading kernel memory may fail due to either invalid
+> + *             address or valid address but requiring a major memory fault. If
+> + *             reading kernel memory fails, the string for **%s** will be an
+> + *             empty string, and the ip address for **%p{i,I}{4,6}** will be 0.
+> + *             Not returning error to bpf program is consistent with what
+> + *             **bpf_trace_printk**\ () does for now.
+> + *
+> + *     Return
+> + *             The strictly positive length of the printed string, including
+> + *             the trailing NUL character. If the return value is greater than
+> + *             **out_size**, **out** contains a truncated string, without a
+> + *             trailing NULL character.
 
-Suggested-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
----
- tools/perf/util/bpf-event.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+this deviates from the behavior in other BPF helpers dealing with
+strings. and it's extremely inconvenient for users to get
+non-zero-terminated string. I think we should always zero-terminate.
 
-diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-index 57d58c81a5f8..cdecda1ddd36 100644
---- a/tools/perf/util/bpf-event.c
-+++ b/tools/perf/util/bpf-event.c
-@@ -196,25 +196,32 @@ static int perf_event__synthesize_one_bpf_prog(struct perf_session *session,
- 	}
- 
- 	if (info_linear->info_len < offsetof(struct bpf_prog_info, prog_tags)) {
-+		free(info_linear);
- 		pr_debug("%s: the kernel is too old, aborting\n", __func__);
- 		return -2;
- 	}
- 
- 	info = &info_linear->info;
-+	if (!info->jited_ksyms) {
-+		free(info_linear);
-+		return -1;
-+	}
- 
- 	/* number of ksyms, func_lengths, and tags should match */
- 	sub_prog_cnt = info->nr_jited_ksyms;
- 	if (sub_prog_cnt != info->nr_prog_tags ||
--	    sub_prog_cnt != info->nr_jited_func_lens)
-+	    sub_prog_cnt != info->nr_jited_func_lens) {
-+		free(info_linear);
- 		return -1;
-+	}
- 
- 	/* check BTF func info support */
- 	if (info->btf_id && info->nr_func_info && info->func_info_rec_size) {
- 		/* btf func info number should be same as sub_prog_cnt */
- 		if (sub_prog_cnt != info->nr_func_info) {
- 			pr_debug("%s: mismatch in BPF sub program count and BTF function info count, aborting\n", __func__);
--			err = -1;
--			goto out;
-+			free(info_linear);
-+			return -1;
- 		}
- 		if (btf__get_from_id(info->btf_id, &btf)) {
- 			pr_debug("%s: failed to get BTF of id %u, aborting\n", __func__, info->btf_id);
--- 
-2.25.1
+> + *
+> + *             Or **-EBUSY** if the per-CPU memory copy buffer is busy.
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)          \
+>         FN(unspec),                     \
+> @@ -4827,6 +4854,7 @@ union bpf_attr {
+>         FN(sock_from_file),             \
+>         FN(check_mtu),                  \
+>         FN(for_each_map_elem),          \
+> +       FN(snprintf),                   \
+>         /* */
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index c99b2b67dc8d..3ab549df817b 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5732,6 +5732,137 @@ static int check_reference_leak(struct bpf_verifier_env *env)
+>         return state->acquired_refs ? -EINVAL : 0;
+>  }
+>
+> +int check_bpf_snprintf_call(struct bpf_verifier_env *env,
+> +                           struct bpf_reg_state *regs)
+> +{
 
+can we please extra the printf format string parsing/checking logic
+and re-use them across all functions? We now have at least 4 variants
+of it, it's not great to say the least. I hope it's possible to
+generalize it in such a way that the same function will parse the
+string, and will record each expected argument and it's type, with
+whatever extra flags we need to. That should make the printing part
+simpler as well, as it will just follow "directions" from the parsing
+part? Devil is in the details, of course :) But it's worthwhile to try
+at least.
+
+> +       struct bpf_reg_state *fmt_reg = &regs[BPF_REG_3];
+> +       struct bpf_reg_state *data_len_reg = &regs[BPF_REG_5];
+> +       struct bpf_map *fmt_map = fmt_reg->map_ptr;
+> +       int err, fmt_map_off, i, fmt_cnt = 0, memcpy_cnt = 0, num_args;
+> +       u64 fmt_addr;
+> +       char *fmt;
+> +
+> +       /* data must be an array of u64 so data_len must be a multiple of 8 */
+> +       if (data_len_reg->var_off.value & 7)
+> +               return -EINVAL;
+> +       num_args = data_len_reg->var_off.value / 8;
+> +
+> +       /* fmt being ARG_PTR_TO_CONST_STR guarantees that var_off is const
+> +        * and map_direct_value_addr is set.
+> +        */
+> +       fmt_map_off = fmt_reg->off + fmt_reg->var_off.value;
+> +       err = fmt_map->ops->map_direct_value_addr(fmt_map, &fmt_addr,
+> +                                                 fmt_map_off);
+> +       if (err)
+> +               return err;
+> +       fmt = (char *)fmt_addr;
+> +
+
+[...] not fun to read this part over and over :)
+
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>                              int *insn_idx_p)
+>  {
+> @@ -5846,6 +5977,12 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>                         return -EINVAL;
+>         }
+>
+> +       if (func_id == BPF_FUNC_snprintf) {
+> +               err = check_bpf_snprintf_call(env, regs);
+> +               if (err < 0)
+> +                       return err;
+> +       }
+> +
+>         /* reset caller saved regs */
+>         for (i = 0; i < CALLER_SAVED_REGS; i++) {
+>                 mark_reg_not_init(env, regs, caller_saved[i]);
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 0d23755c2747..7b80759c10a9 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1271,6 +1271,114 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
+>         .arg5_type      = ARG_ANYTHING,
+>  };
+>
+> +struct bpf_snprintf_buf {
+> +       char buf[MAX_SNPRINTF_MEMCPY][MAX_SNPRINTF_STR_LEN];
+> +};
+> +static DEFINE_PER_CPU(struct bpf_snprintf_buf, bpf_snprintf_buf);
+> +static DEFINE_PER_CPU(int, bpf_snprintf_buf_used);
+> +
+> +BPF_CALL_5(bpf_snprintf, char *, out, u32, out_size, char *, fmt, u64 *, args,
+> +          u32, args_len)
+> +{
+> +       int err, i, buf_used, copy_size, fmt_cnt = 0, memcpy_cnt = 0;
+> +       u64 params[MAX_SNPRINTF_VARARGS];
+> +       struct bpf_snprintf_buf *bufs;
+> +
+> +       buf_used = this_cpu_inc_return(bpf_snprintf_buf_used);
+> +       if (WARN_ON_ONCE(buf_used > 1)) {
+> +               err = -EBUSY;
+> +               goto out;
+> +       }
+> +
+> +       bufs = this_cpu_ptr(&bpf_snprintf_buf);
+> +
+> +       /*
+> +        * The verifier has already done most of the heavy-work for us in
+> +        * check_bpf_snprintf_call. We know that fmt is well formatted and that
+> +        * args_len is valid. The only task left is to convert some of the
+> +        * arguments. For the %s and %pi* specifiers, we need to read buffers
+> +        * from a kernel address during the helper call.
+> +        */
+> +       for (i = 0; fmt[i] != '\0'; i++) {
+
+same function should hopefully be reused here
+
+> +       }
+> +
+> +       /* Maximumly we can have MAX_SNPRINTF_VARARGS parameters, just give
+> +        * all of them to snprintf().
+> +        */
+> +       err = snprintf(out, out_size, fmt, params[0], params[1], params[2],
+> +                      params[3], params[4], params[5], params[6], params[7],
+> +                      params[8], params[9], params[10], params[11]) + 1;
+> +
+> +out:
+> +       this_cpu_dec(bpf_snprintf_buf_used);
+> +       return err;
+> +}
+> +
+> +static const struct bpf_func_proto bpf_snprintf_proto = {
+> +       .func           = bpf_snprintf,
+> +       .gpl_only       = true,
+> +       .ret_type       = RET_INTEGER,
+> +       .arg1_type      = ARG_PTR_TO_MEM,
+> +       .arg2_type      = ARG_CONST_SIZE,
+
+can we mark is CONST_SIZE_OR_ZERO and just do nothing on zero at
+runtime? I still have scars from having to deal (prove, actually) with
+ARG_CONST_SIZE (> 0) limitations in perf_event_output. No need to make
+anyone's life harder, if it's easy to just do something sensible on
+zero (i.e., do nothing, but emit desired amount of bytes).
+
+> +       .arg3_type      = ARG_PTR_TO_CONST_STR,
+> +       .arg4_type      = ARG_PTR_TO_MEM,
+> +       .arg5_type      = ARG_CONST_SIZE_OR_ZERO,
+> +};
+> +
+>  const struct bpf_func_proto *
+>  bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>  {
+> @@ -1373,6 +1481,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>                 return &bpf_task_storage_delete_proto;
+>         case BPF_FUNC_for_each_map_elem:
+>                 return &bpf_for_each_map_elem_proto;
+> +       case BPF_FUNC_snprintf:
+> +               return &bpf_snprintf_proto;
+
+why just tracing? can't all BPF programs use this functionality?
+
+>         default:
+>                 return NULL;
+>         }
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 2d3036e292a9..3cbdc8ae00e7 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -4660,6 +4660,33 @@ union bpf_attr {
+>   *     Return
+>   *             The number of traversed map elements for success, **-EINVAL** for
+>   *             invalid **flags**.
+> + *
+> + * long bpf_snprintf(char *out, u32 out_size, const char *fmt, u64 *data, u32 data_len)
+> + *     Description
+> + *             Outputs a string into the **out** buffer of size **out_size**
+> + *             based on a format string stored in a read-only map pointed by
+> + *             **fmt**.
+> + *
+> + *             Each format specifier in **fmt** corresponds to one u64 element
+> + *             in the **data** array. For strings and pointers where pointees
+> + *             are accessed, only the pointer values are stored in the *data*
+> + *             array. The *data_len* is the size of *data* in bytes.
+> + *
+> + *             Formats **%s** and **%p{i,I}{4,6}** require to read kernel
+> + *             memory. Reading kernel memory may fail due to either invalid
+> + *             address or valid address but requiring a major memory fault. If
+> + *             reading kernel memory fails, the string for **%s** will be an
+> + *             empty string, and the ip address for **%p{i,I}{4,6}** will be 0.
+> + *             Not returning error to bpf program is consistent with what
+> + *             **bpf_trace_printk**\ () does for now.
+> + *
+> + *     Return
+> + *             The strictly positive length of the printed string, including
+> + *             the trailing NUL character. If the return value is greater than
+> + *             **out_size**, **out** contains a truncated string, without a
+> + *             trailing NULL character.
+> + *
+> + *             Or **-EBUSY** if the per-CPU memory copy buffer is busy.
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)          \
+>         FN(unspec),                     \
+> @@ -4827,6 +4854,7 @@ union bpf_attr {
+>         FN(sock_from_file),             \
+>         FN(check_mtu),                  \
+>         FN(for_each_map_elem),          \
+> +       FN(snprintf),                   \
+>         /* */
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> --
+> 2.30.1.766.gb4fecdf3b7-goog
+>
