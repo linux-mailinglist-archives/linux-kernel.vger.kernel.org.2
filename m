@@ -2,112 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92F333CB30
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 02:55:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFEEA33CB08
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 02:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232108AbhCPBz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 21:55:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58450 "EHLO
+        id S234261AbhCPBye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 21:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234328AbhCPBzC (ORCPT
+        with ESMTP id S231575AbhCPBya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 21:55:02 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF73C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 18:55:02 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id t37so10773616pga.11
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 18:55:02 -0700 (PDT)
+        Mon, 15 Mar 2021 21:54:30 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E91CBC061756;
+        Mon, 15 Mar 2021 18:54:29 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id m186so17164962qke.12;
+        Mon, 15 Mar 2021 18:54:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jiuyang-me.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5q/FUsghTIcsJ8LEI0rH+7iHgVJefL/qNsLbH3bIMyE=;
-        b=DZn7Td2xbVs8NZjEwSGxuiKun0khhEHJLByCFwgBrC582ZQ9KrrdSYCJ/+9C+7Oecx
-         AbbWxLiut0bGD3Dzwg25jQAb2gBCbt91q84fKL9Bqza7Ma+uXuyBSq11/zCPR7MDMJb4
-         otUSpsaGolGGcBJPqvtxYEvSwBS6xpOfRjZ8T50HP1cO+EXJcDd+1pV1yQWANINMAssm
-         hmTciRg3y6HssOmgIedl5hpKeaZoY8OB8pfnIutck/idiqOpx22iQqI3xGc0u0tY5pPO
-         wg9u2cauXGiWuoP7/aBROyxW2LOG6DGIITXwSv1hiKidX5d1gvre+H8cZeNUdN8zHqyR
-         Nokg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HRrxGQOEvm+/qrHASsf/SSlT9PdWhy6EY9fxf2NvOu8=;
+        b=G+2o1OZ1MsI8iRpV1SeE5skr4iOeVuLtUmY2erOFTsPPMX+nve/JlUBPWOJZQgab9M
+         hBpHUQIGgSHMAmVJ6YcJuS47G6c6BZA3mW6ZDS7c1mYMSwGr+8regxHvJ7Dw8vxXaGSi
+         9OO+4tEgMi1KPt4Eb9nCtrmrXgH0/gr//G7kDCZkVy7b1667WN5RbMN3PmavhKnQ4ArU
+         mrnS81tOgR513nspmzGd6IYiF21LiZv8+BsT3eIGR8M7IrP2dze4ObQanO4J6cJwds5W
+         T0FF+nH1g5GrnNOzklaYhDBNuTCVfsnTTpouaHF69sNW0mr+piyB8YL/G5Pc0riTO2X5
+         9zug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5q/FUsghTIcsJ8LEI0rH+7iHgVJefL/qNsLbH3bIMyE=;
-        b=U8xGc1Kb24eUZHdZw5BYcEjES7XRu4Qt912J7sUqx7f543iHgOM6XHN9LdfUypnOBT
-         jPl7NXGQy1YgLAW8ASQAlYXtrCXajSJo9tcvUX/ZIgJzyaUIvtKVjFGbHIubZrSFWk6v
-         4swYpvezrIKJ4U0De24ER0Aoe8tjmwYc5Jof5JqyjQSKJOZ6t2G7x634FdEUog2YVs8h
-         6UYeqHakYNN4HHjU8hGInImFi4sU/D3QybjH06te6b4O5e/bVmEukwXZ2Tir914DdTmV
-         Nm1E6HjkFEZJaKp9Ox1DdFl8GPniHSFgI0zMnbN94rz3Nx3t5GYaZTy6N9CRnzTu/sA1
-         aAxQ==
-X-Gm-Message-State: AOAM53355ZmH7CcxBoKONRZJxQAMVHjhiJXLa/RsRS4nt6LSNnVi0cc7
-        /2kp1ATuqOZXfzK2iheG9SAhKw==
-X-Google-Smtp-Source: ABdhPJwIqVw4yhW+idQ908m9N/zKI/xk+pVeWaj6BxEcrOYB6QD8dBl3skulZ7CbQFh2JIUVGij92A==
-X-Received: by 2002:a63:fa02:: with SMTP id y2mr1672518pgh.412.1615859702050;
-        Mon, 15 Mar 2021 18:55:02 -0700 (PDT)
-Received: from localhost.localdomain ([193.110.201.196])
-        by smtp.gmail.com with ESMTPSA id y17sm865180pju.50.2021.03.15.18.54.58
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HRrxGQOEvm+/qrHASsf/SSlT9PdWhy6EY9fxf2NvOu8=;
+        b=lNzWdAuUdS7u7NZ4KThRH3F4CXJrvIBPocY3ClrAqIgTjBMi7mAye+kZBkLXyepDFj
+         KHoCGUVImxy0Qt1VuT92+qMEcGDSbEYQu0LPLOfTB7MtqLMf7nNyVJ1LeXX9JPG1CThL
+         96ezoKFpYokI4hkDKXkkOsT878LhjraOx14TcMkT+BG5Clxb2HZdAjTybuaFTbNM8Nfi
+         GKisy41685BbQ13IVWhLXMJolJX4WinQWeNHpAkqcs+GYxCMwkMe8t3KCSonVerAxooH
+         zH7hVDfbEXMmcicI8o9T7/XOPUYL7flFeTmmPcRbU7bM/PqkDPRvovRvFpPzUCRPfDOv
+         Y23Q==
+X-Gm-Message-State: AOAM530SQj4PgNGDsF+nrnjckzdjJkNNNLcoEliWvSl4SQ40NdmAZcE8
+        ZzKQ8nJ4A2u5WXqvxUsw5cf1ioTTbCw=
+X-Google-Smtp-Source: ABdhPJzCaDNSlwkmiZ9WgCW+TTPmrecogVjoyOnn9rGSp0DPSAaxfU8YRYYMYsrW4+k/TO1pl5Lo5g==
+X-Received: by 2002:a37:c441:: with SMTP id h1mr28347436qkm.123.1615859668840;
+        Mon, 15 Mar 2021 18:54:28 -0700 (PDT)
+Received: from localhost ([76.73.146.210])
+        by smtp.gmail.com with ESMTPSA id i25sm3747177qka.38.2021.03.15.18.54.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 18:55:01 -0700 (PDT)
-From:   Jiuyang Liu <liu@jiuyang.me>
-Cc:     Andrew Waterman <waterman@eecs.berkeley.edu>,
-        Jiuyang Liu <liu@jiuyang.me>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
+        Mon, 15 Mar 2021 18:54:28 -0700 (PDT)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
+        Alexey Klimov <aklimov@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Zong Li <zong.li@sifive.com>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] Bug Fix for last patch
-Date:   Tue, 16 Mar 2021 01:53:25 +0000
-Message-Id: <20210316015328.13516-1-liu@jiuyang.me>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210310062250.74583-1-liu@jiuyang.me>
-References: <20210310062250.74583-1-liu@jiuyang.me>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: [PATCH v4 00/13] lib/find_bit: fast path for small bitmaps
+Date:   Mon, 15 Mar 2021 18:54:11 -0700
+Message-Id: <20210316015424.1999082-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for the noise, Andrew gave me feedbacks, and pointed two bugs in
-last patch.
-1. asid should be thread safe, which is not the intent.
-2. asid extracting logic was wrong.
+Bitmap operations are much simpler and faster in case of small bitmaps
+which fit into a single word. In linux/bitmap.c we have a machinery that
+allows compiler to replace actual function call with a few instructions
+if bitmaps passed into the function are small and their size is known at
+compile time.
 
-This patch fixes these bugs.
+find_*_bit() API lacks this functionality; but users will benefit from it
+a lot. One important example is cpumask subsystem when
+NR_CPUS <= BITS_PER_LONG.
 
-Signed-off-by: Jiuyang Liu <liu@jiuyang.me>
----
- arch/riscv/include/asm/tlbflush.h | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+v1: https://www.spinics.net/lists/kernel/msg3804727.html
+v2: https://www.spinics.net/lists/linux-m68k/msg16945.html
+v3: https://www.spinics.net/lists/kernel/msg3837020.html
+v4: - move le.h header together with find.h for m68 and sh;
+    - preserve small_const_nbits() macro;
+    - drop FAST_PATH config option as this series doesn't increase .text,
+      instead, it compacts it;
+    - add Andy and Rasmus as reviewers of BITMAP API.
 
-diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
-index 4b25f51f163d..1f9b62b3670b 100644
---- a/arch/riscv/include/asm/tlbflush.h
-+++ b/arch/riscv/include/asm/tlbflush.h
-@@ -22,10 +22,14 @@ static inline void local_flush_tlb_page(unsigned long addr)
- 	__asm__ __volatile__ ("sfence.vma %0" : : "r" (addr) : "memory");
- }
- 
--static unsigned long asid;
-+static inline unsigned long get_current_asid(void)
-+{
-+	return (csr_read(CSR_SATP) >> SATP_ASID_SHIFT) & SATP_ASID_MASK;
-+}
-+
- static inline void local_flush_tlb_asid(void)
- {
--	asid = csr_read(CSR_SATP) | (SATP_ASID_MASK << SATP_ASID_SHIFT);
-+	unsigned long asid = get_current_asid();
- 	__asm__ __volatile__ ("sfence.vma x0, %0" : : "r" (asid) : "memory");
- }
- 
+Yury Norov (13):
+  tools: disable -Wno-type-limits
+  tools: bitmap: sync function declarations with the kernel
+  arch: rearrange headers inclusion order in asm/bitops for m68k and sh
+  lib: introduce BITS_{FIRST,LAST} macro
+  tools: sync BITS_MASK macros with the kernel
+  lib: extend the scope of small_const_nbits() macro
+  tools: sync small_const_nbits() macro with the kernel
+  lib: inline _find_next_bit() wrappers
+  tools: sync find_next_bit implementation
+  lib: add fast path for find_next_*_bit()
+  lib: add fast path for find_first_*_bit() and find_last_bit()
+  tools: sync lib/find_bit implementation
+  MAINTAINERS: Add entry for the bitmap API
+
+ MAINTAINERS                             |  16 ++++
+ arch/m68k/include/asm/bitops.h          |   6 +-
+ arch/sh/include/asm/bitops.h            |   5 +-
+ include/asm-generic/bitops/find.h       | 108 +++++++++++++++++++++---
+ include/asm-generic/bitops/le.h         |  38 ++++++++-
+ include/asm-generic/bitsperlong.h       |   9 ++
+ include/linux/bitmap.h                  |  30 +++----
+ include/linux/bitops.h                  |  12 ---
+ include/linux/bits.h                    |   6 ++
+ include/linux/cpumask.h                 |   8 +-
+ include/linux/netdev_features.h         |   2 +-
+ include/linux/nodemask.h                |   2 +-
+ lib/bitmap.c                            |  26 +++---
+ lib/find_bit.c                          |  72 +++-------------
+ lib/genalloc.c                          |   8 +-
+ tools/include/asm-generic/bitops/find.h |  85 +++++++++++++++++--
+ tools/include/asm-generic/bitsperlong.h |   3 +
+ tools/include/linux/bitmap.h            |  31 +++----
+ tools/include/linux/bits.h              |   6 ++
+ tools/lib/bitmap.c                      |  10 +--
+ tools/lib/find_bit.c                    |  56 +++++-------
+ tools/scripts/Makefile.include          |   1 +
+ tools/testing/radix-tree/bitmap.c       |   4 +-
+ 23 files changed, 340 insertions(+), 204 deletions(-)
+
 -- 
-2.30.2
+2.25.1
 
