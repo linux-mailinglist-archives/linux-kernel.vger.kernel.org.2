@@ -2,92 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC85133D0B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 693E233D0C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:28:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236177AbhCPJYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
+        id S236254AbhCPJ15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236174AbhCPJYc (ORCPT
+        with ESMTP id S233163AbhCPJ1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:24:32 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDF1C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:24:26 -0700 (PDT)
+        Tue, 16 Mar 2021 05:27:35 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2220C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:27:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=L2lx90o4BdDmWpFbAcu+Og+AgfQH5O8WgM23Jxff4nc=; b=hmARNqg0Svho+vO/JBIUs7EI+
-        1vknHLnSdjHtxZo46iPrDa7FyH0C9PJL0ijLqQqy66n1w3MGzTkKAfbXCX/TiXMb3Wreecw0I9nW9
-        Y6HhVZrFf0h3HfkgS92g9cDuWEMzV3vDWYeIa5c6dreBEdNiDKM/ED99EwxLAtDQ2RW1d/Db2DKfd
-        SmVhQW/HFSLSZ7XXjzdxuinfb0IA6muO+jF3hsVsOzfQmcUXo6vYBGY3ybBVap4VzPvWOCUndKrbw
-        j9MJ0trTgvMCiAJjmM2WeRtNV1pzDAkdWN9/lFZhzoWxTb/mjKay1dXXDDth0YacX02S2KxqcksK3
-        26w7s9jaA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51352)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lM5w7-00018R-8R; Tue, 16 Mar 2021 09:24:23 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lM5w5-00068s-Gs; Tue, 16 Mar 2021 09:24:21 +0000
-Date:   Tue, 16 Mar 2021 09:24:21 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: [syzbot] kernel panic: corrupted stack end in openat
-Message-ID: <20210316092420.GN1463@shell.armlinux.org.uk>
-References: <00000000000069802205bda22b7f@google.com>
- <CACT4Y+Yaq-zDh5FAzHt4g-5jXrXC3rSLw6CM=kjcfR6oxJ1+CA@mail.gmail.com>
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EB3tWeNP5/eIP99bI0XboXyQSgMvd48ru6ffd1gUxF4=; b=qS+VjI1PDJx//qRaJypPaHwrbL
+        0cxkemuyFwoJMKPg5a+KHuhlPJ80DF42832YkPsjPDV+9Ph6BPTok8/pJPDaq7K/BetszKxvn+qP8
+        rHfGnkKlvlwo/YTvaDsOiO+dZzEQwrjRFbDWEfdyvRb2UmPIuuqwL+rK/kS6cw/txMWnK3zU18CFh
+        srCYawglXAtea2GMDOAwaGc2TisnmMYlDhVyYwfC7475rdSvbmpd/GoDxEOBIerWW6A6kl2WsSrM3
+        aHhkMCrykZIE70qiKP3Dv+ANxehjTYRuMQB2/a1WW6kKNGxpyzbqIYx4Mcu+l89UP9/K1qtK24Oxg
+        l4EsIaoQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lM5ys-000Gvz-UH; Tue, 16 Mar 2021 09:27:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1C69E301124;
+        Tue, 16 Mar 2021 10:27:04 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EF81620435CFB; Tue, 16 Mar 2021 10:27:03 +0100 (CET)
+Date:   Tue, 16 Mar 2021 10:27:03 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
+Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
+        linux-kernel@vger.kernel.org, mgorman@suse.de, mingo@redhat.com,
+        odin@uged.al, odin@ugedal.com, pauld@redhead.com, pjt@google.com,
+        rostedt@goodmis.org, shanpeic@linux.alibaba.com, tj@kernel.org,
+        vincent.guittot@linaro.org, xiyou.wangcong@gmail.com
+Subject: Re: [PATCH v4 1/4] sched/fair: Introduce primitives for CFS
+ bandwidth burst
+Message-ID: <YFB558607TWGeX63@hirez.programming.kicks-ass.net>
+References: <20210316044931.39733-1-changhuaixin@linux.alibaba.com>
+ <20210316044931.39733-2-changhuaixin@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+Yaq-zDh5FAzHt4g-5jXrXC3rSLw6CM=kjcfR6oxJ1+CA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20210316044931.39733-2-changhuaixin@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 08:59:17AM +0100, Dmitry Vyukov wrote:
-> On Tue, Mar 16, 2021 at 8:18 AM syzbot
-> <syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    1e28eed1 Linux 5.12-rc3
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=167535e6d00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=e0cee1f53de33ca3
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=0b06ef9b44d00d600183
-> > userspace arch: arm
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com
-> 
-> +arm32 maintainer
-> I think this is a real stack overflow on arm32, the stack is indeed deep.
+On Tue, Mar 16, 2021 at 12:49:28PM +0800, Huaixin Chang wrote:
+> In this patch, we introduce the notion of CFS bandwidth burst. Unused
 
-There's no way to know for sure because there's no indication of the
-stack pointer in this, so we don't know how much space remains.
-Therefore we don't know whether this is something in the dumped
-path, or an interrupt causing it.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Documentation/process/submitting-patches.rst:instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
