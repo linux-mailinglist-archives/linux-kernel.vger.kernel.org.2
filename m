@@ -2,202 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0819033DA14
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA30433DA44
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:07:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238983AbhCPRCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:02:22 -0400
-Received: from smtp-8faf.mail.infomaniak.ch ([83.166.143.175]:38895 "EHLO
-        smtp-8faf.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237174AbhCPRBn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:01:43 -0400
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F0KM94sN1zMqKRj;
-        Tue, 16 Mar 2021 18:01:41 +0100 (CET)
-Received: from localhost (unknown [23.97.221.149])
-        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4F0KM9254Gzlh8TH;
-        Tue, 16 Mar 2021 18:01:41 +0100 (CET)
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Serge Hallyn <serge@hallyn.com>
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christoph Hellwig <hch@lst.de>,
-        David Howells <dhowells@redhat.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        John Johansen <john.johansen@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        Kentaro Takeda <takedakn@nttdata.co.jp>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        kernel-hardening@lists.openwall.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>
-Subject: [PATCH v4 1/1] fs: Allow no_new_privs tasks to call chroot(2)
-Date:   Tue, 16 Mar 2021 18:01:35 +0100
-Message-Id: <20210316170135.226381-2-mic@digikod.net>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210316170135.226381-1-mic@digikod.net>
-References: <20210316170135.226381-1-mic@digikod.net>
+        id S238328AbhCPRH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:07:29 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:34495 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239084AbhCPRHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:07:08 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12GH6dC0010712
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Mar 2021 18:06:39 +0100
+Received: from [167.87.27.98] ([167.87.27.98])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12GH1al7023551;
+        Tue, 16 Mar 2021 18:01:36 +0100
+Subject: Re: [PATCH 2/3] KVM: x86: guest debug: don't inject interrupts while
+ single stepping
+To:     Sean Christopherson <seanjc@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jim Mattson <jmattson@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>
+References: <20210315221020.661693-3-mlevitsk@redhat.com>
+ <YE/vtYYwMakERzTS@google.com>
+ <1259724f-1bdb-6229-2772-3192f6d17a4a@siemens.com>
+ <bede3450413a7c5e7e55b19a47c8f079edaa55a2.camel@redhat.com>
+ <ca41fe98-0e5d-3b4c-8ed8-bdd7cd5bc60f@siemens.com>
+ <71ae8b75c30fd0f87e760216ad310ddf72d31c7b.camel@redhat.com>
+ <2a44c302-744e-2794-59f6-c921b895726d@siemens.com>
+ <1d27b215a488f8b8fc175e97c5ab973cc811922d.camel@redhat.com>
+ <727e5ef1-f771-1301-88d6-d76f05540b01@siemens.com>
+ <e2cd978e357155dbab21a523bb8981973bd10da7.camel@redhat.com>
+ <CAMS+r+XFLsFRFLGLaAH3_EnBcxOmyN-XiZqcmKEx2utjNErYsQ@mail.gmail.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <31c0bba9-0399-1f15-a59b-a8f035e366e8@siemens.com>
+Date:   Tue, 16 Mar 2021 18:01:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMS+r+XFLsFRFLGLaAH3_EnBcxOmyN-XiZqcmKEx2utjNErYsQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mickaël Salaün <mic@linux.microsoft.com>
+On 16.03.21 17:50, Sean Christopherson wrote:
+> On Tue, Mar 16, 2021, Maxim Levitsky wrote:
+>> On Tue, 2021-03-16 at 16:31 +0100, Jan Kiszka wrote:
+>>> Back then, when I was hacking on the gdb-stub and KVM support, the
+>>> monitor trap flag was not yet broadly available, but the idea to once
+>>> use it was already there. Now it can be considered broadly available,
+>>> but it would still require some changes to get it in.
+>>>
+>>> Unfortunately, we don't have such thing with SVM, even recent versions,
+>>> right? So, a proper way of avoiding diverting event injections while we
+>>> are having the guest in an "incorrect" state should definitely be the goal.
+>> Yes, I am not aware of anything like monitor trap on SVM.
+>>
+>>>
+>>> Given that KVM knows whether TF originates solely from guest debugging
+>>> or was (also) injected by the guest, we should be able to identify the
+>>> cases where your approach is best to apply. And that without any extra
+>>> control knob that everyone will only forget to set.
+>> Well I think that the downside of this patch is that the user might actually
+>> want to single step into an interrupt handler, and this patch makes it a bit
+>> more complicated, and changes the default behavior.
+> 
+> Yes.  And, as is, this also blocks NMIs and SMIs.  I suspect it also doesn't
+> prevent weirdness if the guest is running in L2, since IRQs for L1 will cause
+> exits from L2 during nested_ops->check_events().
+> 
+>> I have no objections though to use this patch as is, or at least make this
+>> the new default with a new flag to override this.
+> 
+> That's less bad, but IMO still violates the principle of least surprise, e.g.
+> someone that is single-stepping a guest and is expecting an IRQ to fire will be
+> all kinds of confused if they see all the proper IRR, ISR, EFLAGS.IF, etc...
+> settings, but no interrupt.
 
-Being able to easily change root directories enables to ease some
-development workflow and can be used as a tool to strengthen
-unprivileged security sandboxes.  chroot(2) is not an access-control
-mechanism per se, but it can be used to limit the absolute view of the
-filesystem, and then limit ways to access data and kernel interfaces
-(e.g. /proc, /sys, /dev, etc.).
+From my practical experience with debugging guests via single step,
+seeing an interrupt in that case is everything but handy and generally
+also not expected (though logical, I agree). IOW: When there is a knob
+for it, it will remain off in 99% of the time.
 
-Users may not wish to expose namespace complexity to potentially
-malicious processes, or limit their use because of limited resources.
-The chroot feature is much more simple (and limited) than the mount
-namespace, but can still be useful.  As for containers, users of
-chroot(2) should take care of file descriptors or data accessible by
-other means (e.g. current working directory, leaked FDs, passed FDs,
-devices, mount points, etc.).  There is a lot of literature that discuss
-the limitations of chroot, and users of this feature should be aware of
-the multiple ways to bypass it.  Using chroot(2) for security purposes
-can make sense if it is combined with other features (e.g. dedicated
-user, seccomp, LSM access-controls, etc.).
+But I see the point of having some control, in an ideal world also an
+indication that there are pending events, permitting the user to decide
+what to do. But I suspect the gdb frontend and protocol does not easily
+permit that.
 
-One could argue that chroot(2) is useless without a properly populated
-root hierarchy (i.e. without /dev and /proc).  However, there are
-multiple use cases that don't require the chrooting process to create
-file hierarchies with special files nor mount points, e.g.:
-* A process sandboxing itself, once all its libraries are loaded, may
-  not need files other than regular files, or even no file at all.
-* Some pre-populated root hierarchies could be used to chroot into,
-  provided for instance by development environments or tailored
-  distributions.
-* Processes executed in a chroot may not require access to these special
-  files (e.g. with minimal runtimes, or by emulating some special files
-  with a LD_PRELOADed library or seccomp).
+> 
+>> Sean Christopherson, what do you think?
+> 
+> Rather than block all events in KVM, what about having QEMU "pause" the timer?
+> E.g. save MSR_TSC_DEADLINE and APIC_TMICT (or inspect the guest to find out
+> which flavor it's using), clear them to zero, then restore both when
+> single-stepping is disabled.  I think that will work?
+> 
 
-Unprivileged chroot is especially interesting for userspace developers
-wishing to harden their applications.  For instance, chroot(2) and Yama
-enable to build a capability-based security (i.e. remove filesystem
-ambient accesses) by calling chroot/chdir with an empty directory and
-accessing data through dedicated file descriptors obtained with
-openat2(2) and RESOLVE_BENEATH/RESOLVE_IN_ROOT/RESOLVE_NO_MAGICLINKS.
+No one can stop the clock, and timers are only one source of interrupts.
+Plus they do not all come from QEMU, some also from KVM or in-kernel
+sources directly. Would quickly become a mess.
 
-Allowing a task to change its own root directory is not a threat to the
-system if we can prevent confused deputy attacks, which could be
-performed through execution of SUID-like binaries.  This can be
-prevented if the calling task sets PR_SET_NO_NEW_PRIVS on itself with
-prctl(2).  To only affect this task, its filesystem information must not
-be shared with other tasks, which can be achieved by not passing
-CLONE_FS to clone(2).  A similar no_new_privs check is already used by
-seccomp to avoid the same kind of security issues.  Furthermore, because
-of its security use and to avoid giving a new way for attackers to get
-out of a chroot (e.g. using /proc/<pid>/root, or chroot/chdir), an
-unprivileged chroot is only allowed if the calling process is not
-already chrooted.  This limitation is the same as for creating user
-namespaces.
+Jan
 
-This change may not impact systems relying on other permission models
-than POSIX capabilities (e.g. Tomoyo).  Being able to use chroot(2) on
-such systems may require to update their security policies.
-
-Only the chroot system call is relaxed with this no_new_privs check; the
-init_chroot() helper doesn't require such change.
-
-Allowing unprivileged users to use chroot(2) is one of the initial
-objectives of no_new_privs:
-https://www.kernel.org/doc/html/latest/userspace-api/no_new_privs.html
-This patch is a follow-up of a previous one sent by Andy Lutomirski:
-https://lore.kernel.org/lkml/0e2f0f54e19bff53a3739ecfddb4ffa9a6dbde4d.1327858005.git.luto@amacapital.net/
-
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: David Howells <dhowells@redhat.com>
-Cc: Dominik Brodowski <linux@dominikbrodowski.net>
-Cc: Eric W. Biederman <ebiederm@xmission.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: John Johansen <john.johansen@canonical.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Kentaro Takeda <takedakn@nttdata.co.jp>
-Cc: Serge Hallyn <serge@hallyn.com>
-Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-Link: https://lore.kernel.org/r/20210316170135.226381-2-mic@digikod.net
----
-
-Changes since v3:
-* Move the new permission checks to a dedicated helper
-  current_chroot_allowed() to make the code easier to read and align
-  with user_path_at(), path_permission() and security_path_chroot()
-  calls (suggested by Kees Cook).
-* Remove now useless included file.
-* Extend commit description.
-* Rebase on v5.12-rc3 .
-
-Changes since v2:
-* Replace path_is_under() check with current_chrooted() to gain the same
-  protection as create_user_ns() (suggested by Jann Horn). See commit
-  3151527ee007 ("userns:  Don't allow creation if the user is chrooted")
-
-Changes since v1:
-* Replace custom is_path_beneath() with existing path_is_under().
----
- fs/open.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
-
-diff --git a/fs/open.c b/fs/open.c
-index e53af13b5835..da46eb28a3a6 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -532,6 +532,24 @@ SYSCALL_DEFINE1(fchdir, unsigned int, fd)
- 	return error;
- }
- 
-+static inline int current_chroot_allowed(void)
-+{
-+	/*
-+	 * Changing the root directory for the calling task (and its future
-+	 * children) requires that this task has CAP_SYS_CHROOT in its
-+	 * namespace, or be running with no_new_privs and not sharing its
-+	 * fs_struct and not escaping its current root (cf. create_user_ns()).
-+	 * As for seccomp, checking no_new_privs avoids scenarios where
-+	 * unprivileged tasks can affect the behavior of privileged children.
-+	 */
-+	if (task_no_new_privs(current) && current->fs->users == 1 &&
-+			!current_chrooted())
-+		return 0;
-+	if (ns_capable(current_user_ns(), CAP_SYS_CHROOT))
-+		return 0;
-+	return -EPERM;
-+}
-+
- SYSCALL_DEFINE1(chroot, const char __user *, filename)
- {
- 	struct path path;
-@@ -546,9 +564,10 @@ SYSCALL_DEFINE1(chroot, const char __user *, filename)
- 	if (error)
- 		goto dput_and_out;
- 
--	error = -EPERM;
--	if (!ns_capable(current_user_ns(), CAP_SYS_CHROOT))
-+	error = current_chroot_allowed();
-+	if (error)
- 		goto dput_and_out;
-+
- 	error = security_path_chroot(&path);
- 	if (error)
- 		goto dput_and_out;
 -- 
-2.30.2
-
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
