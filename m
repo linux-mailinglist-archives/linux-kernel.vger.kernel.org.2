@@ -2,136 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282C633D17D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:13:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD3933D18A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:13:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236542AbhCPKMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 06:12:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52532 "EHLO
+        id S236555AbhCPKNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 06:13:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235926AbhCPKMf (ORCPT
+        with ESMTP id S236562AbhCPKNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 06:12:35 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7CDC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 03:12:34 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id ga11so9840464pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 03:12:34 -0700 (PDT)
+        Tue, 16 Mar 2021 06:13:11 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD66C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 03:13:11 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id s1so12089973ilh.12
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 03:13:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:message-id:date:subject:from:to:cc;
-        bh=sPNBrirzsgarV+3bjwHU9bpa6NDoX062YVrvF8wD1U4=;
-        b=DMM4i3J8S3C36P9kFJQwQ7vdwRtEBdC0febk3sxrwnE4AYpokBI7MNKJ9qyJNycz28
-         yd1ctej9wK0Jx+oXcK+BrPEmmQ2I+hCXHDqxcpKpXsg6xRTJGjye+HdDPO4vTY6U3v48
-         e9tWLRY17XNKMdI/1slxtBYdNfwfo9loBJjvNtW3oHbsGYmXFmooYam+or9bNj/iYrXZ
-         gqcmtMdhUdoi6UTUEsF4zET8MLNQ/n60l38vagGAaC9c2/hoFrqwH62siknxYFK3eE4X
-         AD/00aaUfsvEPY86op5iba1PpJojUP9MzdVgIPwLbSbXu/paacTAvNvVDz0Yb5x1muRa
-         XPDg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=42qDSJSXPcZQsJnJsuJqwY6fdYrDvNWtnSGEkZM3u8w=;
+        b=kUpYqqPG2g7r/f5ONZ7R3/KEWh71vDHg7An4ETTmq73gBjgHFrpc522foSUSs0XttM
+         vV4mU1ydu54axDgQKDd9gDiwUzjav6nKrqOXuIZN4RYxQJtQLnEphOf6GnW6IQSFTbc+
+         23CL2XEe+8ESCRG13/6mOANTueDJQ11woRBXQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:message-id:date:subject:from:to:cc;
-        bh=sPNBrirzsgarV+3bjwHU9bpa6NDoX062YVrvF8wD1U4=;
-        b=pTioOCg+AYp95slYx7dJD+qrTYUF6PsKwxNhE1RWg8Mj8sfuCzYFoSopQoOgwCoM48
-         CCflnSMS0+ebapSAsqJKfSbNFnQ2TMfT3wxaNYYNYYEt6EAeexW3+OmhpRNK6/DaXH7p
-         5RzmG4RTjrl14ed5ktIwfQRH8aQ6gnykaEXueCwZ2E4+rhkWd673moXV0+zq192iWZad
-         AIOBTdfStU0YTLPhuADPDKrUPZSjOq0dFIirYI7sJefkhsS4CBku4RhYzi1IC/7i+bwv
-         pYyrprWkxMe/4H/2BXTbmalz18ab3UVyvV2VP2J4LvSZjwKfNAmj/gHvks4QHKdz1bnP
-         T9Fg==
-X-Gm-Message-State: AOAM530Z3hm7sdBtkxwUtzVK3mKtOmppbE90hbuxTL6RZzZ8TY5cCykf
-        G/ZWmEgpsSTqGx0hoZ6MNXUDl8nvsSDMMnxn
-X-Google-Smtp-Source: ABdhPJztY9SrZJAz+C5uxc+ZJ3iMQYZQ+12zieZ1wkDR3lseCwPGf0fQv2A1FR6AgacrJffp7J7n0iAHegtC8iJP
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=42qDSJSXPcZQsJnJsuJqwY6fdYrDvNWtnSGEkZM3u8w=;
+        b=GQsxrtNyncuV1+sy4sGL383BBI/Q2MKgbdSj6AIYSirgsESC/4Ajxq4ClxPPE6Q6FJ
+         8Vy9HogqMsRrdt+xI1HG9s+wqbdM/SiKEsmN/hek2QtR/HYCx8o6iFYkn5RV4Uf4iSsW
+         p6PUZ/9veStGqkZh4Rhl5rX9Csthk5MLAxKMIqG8rfLTWT9Q9T+XeR+YfTFseqt8D2+4
+         AriS7qdRdCtZRa4bH/4YiJ1NmgoCWLobLOO0BBzcpOEr8zUzRRUG+ziLMX+eUc0tLjWA
+         GiKVdpqCccRzE3Rurp52mtWvClauUE0g1bjKaIpl6yyv3Ri0Rcbj+13Q0V4CPvz1XQ8h
+         UvZg==
+X-Gm-Message-State: AOAM531aVpjXgtuCfPkYKxH0V9B/9R6ARcrCl113XShnhj6u00+N9Yws
+        StaVW7MG7j5I6I3qYd9qfjrefyW1uXuDrQ==
+X-Google-Smtp-Source: ABdhPJzt+Uy9hiCgujPXarNDMB1qJq4osqtG8fdJZhe6ZFBliVfNfLY2spK7mdgicu/MR5GUylMOsw==
+X-Received: by 2002:a05:6e02:1c22:: with SMTP id m2mr3215206ilh.277.1615889590726;
+        Tue, 16 Mar 2021 03:13:10 -0700 (PDT)
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com. [209.85.166.50])
+        by smtp.gmail.com with ESMTPSA id v8sm9306781ilg.21.2021.03.16.03.13.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 03:13:10 -0700 (PDT)
+Received: by mail-io1-f50.google.com with SMTP id u20so36469376iot.9
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 03:13:09 -0700 (PDT)
+X-Received: by 2002:a05:6602:722:: with SMTP id g2mr2734542iox.1.1615889589448;
+ Tue, 16 Mar 2021 03:13:09 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: from josephjang-p920.ntc.corp.google.com ([2401:fa00:fc:1:dc9d:82ae:24c8:961b])
- (user=josephjang job=sendgmr) by 2002:a17:902:a412:b029:e5:d7dd:9e41 with
- SMTP id p18-20020a170902a412b02900e5d7dd9e41mr15814329plq.78.1615889554362;
- Tue, 16 Mar 2021 03:12:34 -0700 (PDT)
-Message-ID: <000000000000e2a17305bda49a5e@google.com>
-Date:   Tue, 16 Mar 2021 10:12:34 +0000
-Subject: Re: [PATCH v6] power: suspend: Move dpm_watchdog to suspend.c and
- enhance it
-From:   <josephjang@google.com>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org, rjw@rjwysocki.net,
-        pavel@ucw.cz, len.brown@intel.com, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        jonglin@google.com, woodylin@google.com, markcheng@google.com,
-        josephjang@google.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+References: <20210315173609.1547857-1-ribalda@chromium.org>
+ <20210315173609.1547857-7-ribalda@chromium.org> <59c2f8dd-db7d-f80c-88fe-0db00c15c741@xs4all.nl>
+ <YFCDi6nSidMNHy52@pendragon.ideasonboard.com>
+In-Reply-To: <YFCDi6nSidMNHy52@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Tue, 16 Mar 2021 11:12:57 +0100
+X-Gmail-Original-Message-ID: <CANiDSCtdArTQ5CzKfk+P5R6+AQgPdZTk5nH6waF+z9+ys8+LTA@mail.gmail.com>
+Message-ID: <CANiDSCtdArTQ5CzKfk+P5R6+AQgPdZTk5nH6waF+z9+ys8+LTA@mail.gmail.com>
+Subject: Re: [PATCH v4 06/11] media: uvcvideo: Add support for V4L2_CTRL_TYPE_CTRL_CLASS
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Since dpm_watchdog just cover two functions __device_suspend() and
-> device_resume(), we proposed to move it to core power suspend.c to extend
-> its coverage and monitor more devices suspend hand issues.
+Hi Laurent
 
-> We propose to use new name suspend watchdog and new timeout handler to
-> cover more sleep hang issues. The new timeout handler will dump disk
-> sleep task call trace at first round timeout and trigger kernel panic
-> at second round timeout.
-> The default timer for each round is defined in
-> CONFIG_PM_SUSPEND_WATCHDOG_TIMEOUT.
+On Tue, Mar 16, 2021 at 11:08 AM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Hans,
+>
+> On Tue, Mar 16, 2021 at 09:37:07AM +0100, Hans Verkuil wrote:
+> > On 15/03/2021 18:36, Ricardo Ribalda wrote:
+> > > Create all the class controls for the device defined controls.
+> > >
+> > > Fixes v4l2-compliance:
+> > > Control ioctls (Input 0):
+> > >             fail: v4l2-test-controls.cpp(216): missing control class for class 00980000
+> > >             fail: v4l2-test-controls.cpp(216): missing control tclass for class 009a0000
+> > >     test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: FAIL
+> > >
+> > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > > ---
+> > >  drivers/media/usb/uvc/uvc_ctrl.c | 96 ++++++++++++++++++++++++++++++++
+> > >  drivers/media/usb/uvc/uvcvideo.h |  6 ++
+> > >  2 files changed, 102 insertions(+)
+> > >
+> > > diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> > > index b75da65115ef..be0fadaf414c 100644
+> > > --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> > > +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> > > @@ -357,6 +357,17 @@ static const struct uvc_control_info uvc_ctrls[] = {
+> > >     },
+> > >  };
+> > >
+> > > +static const struct uvc_control_class uvc_control_class[] = {
+> > > +   {
+> > > +           .id             = V4L2_CID_CAMERA_CLASS,
+> > > +           .name           = "Camera Controls",
+> > > +   },
+> > > +   {
+> > > +           .id             = V4L2_CID_USER_CLASS,
+> > > +           .name           = "User Controls",
+> >
+> > I noticed that uvc_ctrl.c has hardcoded strings for the control names and
+> > control menus.
+> >
+> > It would be good to drop that from the code and instead use v4l2_ctrl_get_menu()
+> > and v4l2_ctrl_get_name() to obtain the names. It ensures consistent naming and
+> > saves a bit of memory.
+> >
+> > This can be done in a separate patch before or after this one.
+>
+> https://git.linuxtv.org/pinchartl/media.git/commit/?h=uvc/dev&id=16a7d79d67cdd06a448d8c4c20e270d1c21828b1
+>
+> It's work in progress, the part that bothers me is the changes in
+> uvc_parse_format(). We lose the human-readable name in a debug message,
+> but maybe more importantly, we lose the distinction between different DV
+> formats. Maybe it's not a big deal.
 
-> Signed-off-by: Joseph Jang <josephjang@google.com>
-> ---
-> Changes since v5:
->   - Remove MAINTAINERS update since we current MAINTAINERS already cover  
-> kernel/power/
->   drivers/base/power/main.c       | 69 ---------------------------
->   kernel/power/Kconfig            | 27 +++++------
->   kernel/power/Makefile           |  1 +
->   kernel/power/suspend.c          | 19 ++++++++
->   kernel/power/suspend_watchdog.c | 84 +++++++++++++++++++++++++++++++++
->   kernel/power/suspend_watchdog.h | 40 ++++++++++++++++
->   kernel/printk/printk.c          |  2 +-
->   7 files changed, 158 insertions(+), 84 deletions(-)
->   create mode 100644 kernel/power/suspend_watchdog.c
->   create mode 100644 kernel/power/suspend_watchdog.h
+That patch is for format descriptions. If you haven't started yet I
+can implement the change for the control names.
 
-> @@ -916,7 +852,6 @@ static int device_resume(struct device *dev,  
-> pm_message_t state, bool async)
->          if (!dpm_wait_for_superior(dev, async))
->                  goto Complete;
+Thanks!
 
-> +
->   /**
->    * pm_suspend_default_s2idle - Check if suspend-to-idle is the default  
-> suspend.
->    *
-> @@ -89,6 +92,8 @@ static void s2idle_enter(void)
->   {
->          trace_suspend_resume(TPS("machine_suspend"), PM_SUSPEND_TO_IDLE,  
-> true);
+>
+> > > +   },
+> > > +};
+> > > +
+> > >  static const struct uvc_menu_info power_line_frequency_controls[] = {
+> > >     { 0, "Disabled" },
+> > >     { 1, "50 Hz" },
+> > > @@ -1024,6 +1035,49 @@ static int __uvc_ctrl_get(struct uvc_video_chain *chain,
+> > >     return 0;
+> > >  }
+> > >
+> > > +static int __uvc_query_v4l2_class(struct uvc_video_chain *chain, u32 req_id,
+> > > +                             u32 found_id)
+> > > +{
+> > > +   bool find_next = req_id & V4L2_CTRL_FLAG_NEXT_CTRL;
+> > > +   unsigned int i;
+> > > +
+> > > +   req_id &= V4L2_CTRL_ID_MASK;
+> > > +
+> > > +   for (i = 0; i < ARRAY_SIZE(uvc_control_class); i++) {
+> > > +           if (!(chain->ctrl_class_bitmap & BIT(i)))
+> > > +                   continue;
+> > > +           if (!find_next) {
+> > > +                   if (uvc_control_class[i].id == req_id)
+> > > +                           return i;
+> > > +                   continue;
+> > > +           }
+> > > +           if (uvc_control_class[i].id > req_id &&
+> > > +               uvc_control_class[i].id < found_id)
+> > > +                   return i;
+> > > +   }
+> > > +
+> > > +   return -ENODEV;
+> > > +}
+> > > +
+> > > +static int uvc_query_v4l2_class(struct uvc_video_chain *chain, u32 req_id,
+> > > +                           u32 found_id, struct v4l2_queryctrl *v4l2_ctrl)
+> > > +{
+> > > +   int idx;
+> > > +
+> > > +   idx = __uvc_query_v4l2_class(chain, req_id, found_id);
+> > > +   if (idx < 0)
+> > > +           return -ENODEV;
+> > > +
+> > > +   memset(v4l2_ctrl, 0, sizeof(*v4l2_ctrl));
+> > > +   v4l2_ctrl->id = uvc_control_class[idx].id;
+> > > +   strscpy(v4l2_ctrl->name, uvc_control_class[idx].name,
+> > > +           sizeof(v4l2_ctrl->name));
+> > > +   v4l2_ctrl->type = V4L2_CTRL_TYPE_CTRL_CLASS;
+> > > +   v4l2_ctrl->flags = V4L2_CTRL_FLAG_WRITE_ONLY
+> > > +                      | V4L2_CTRL_FLAG_READ_ONLY;
+> > > +   return 0;
+> > > +}
+> > > +
+> > >  static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+> > >     struct uvc_control *ctrl,
+> > >     struct uvc_control_mapping *mapping,
+> > > @@ -1127,12 +1181,31 @@ int uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+> > >     if (ret < 0)
+> > >             return -ERESTARTSYS;
+> > >
+> > > +   /* Check if the ctrl is a know class */
+> > > +   if (!(v4l2_ctrl->id & V4L2_CTRL_FLAG_NEXT_CTRL)) {
+> > > +           ret = uvc_query_v4l2_class(chain, v4l2_ctrl->id, 0, v4l2_ctrl);
+> > > +           if (!ret)
+> > > +                   goto done;
+> > > +   }
+> > > +
+> > >     ctrl = uvc_find_control(chain, v4l2_ctrl->id, &mapping);
+> > >     if (ctrl == NULL) {
+> > >             ret = -EINVAL;
+> > >             goto done;
+> > >     }
+> > >
+> > > +   /*
+> > > +    * If we're enumerating control with V4L2_CTRL_FLAG_NEXT_CTRL, check if
+> > > +    * a class should be inserted between the previous control and the one
+> > > +    * we have just found.
+> > > +    */
+> > > +   if (v4l2_ctrl->id & V4L2_CTRL_FLAG_NEXT_CTRL) {
+> > > +           ret = uvc_query_v4l2_class(chain, v4l2_ctrl->id, mapping->id,
+> > > +                                      v4l2_ctrl);
+> > > +           if (!ret)
+> > > +                   goto done;
+> > > +   }
+> > > +
+> > >     ret = __uvc_query_v4l2_ctrl(chain, ctrl, mapping, v4l2_ctrl);
+> > >  done:
+> > >     mutex_unlock(&chain->ctrl_mutex);
+> > > @@ -1426,6 +1499,11 @@ static int uvc_ctrl_add_event(struct v4l2_subscribed_event *sev, unsigned elems)
+> > >     if (ret < 0)
+> > >             return -ERESTARTSYS;
+> > >
+> > > +   if (__uvc_query_v4l2_class(handle->chain, sev->id, 0) >= 0) {
+> > > +           ret = 0;
+> > > +           goto done;
+> > > +   }
+> > > +
+> > >     ctrl = uvc_find_control(handle->chain, sev->id, &mapping);
+> > >     if (ctrl == NULL) {
+> > >             ret = -EINVAL;
+> > > @@ -1459,7 +1537,10 @@ static void uvc_ctrl_del_event(struct v4l2_subscribed_event *sev)
+> > >     struct uvc_fh *handle = container_of(sev->fh, struct uvc_fh, vfh);
+> > >
+> > >     mutex_lock(&handle->chain->ctrl_mutex);
+> > > +   if (__uvc_query_v4l2_class(handle->chain, sev->id, 0) >= 0)
+> > > +           goto done;
+> > >     list_del(&sev->node);
+> > > +done:
+> > >     mutex_unlock(&handle->chain->ctrl_mutex);
+> > >  }
+> > >
+> > > @@ -1577,6 +1658,9 @@ int uvc_ctrl_get(struct uvc_video_chain *chain,
+> > >     struct uvc_control *ctrl;
+> > >     struct uvc_control_mapping *mapping;
+> > >
+> > > +   if (__uvc_query_v4l2_class(chain, xctrl->id, 0) >= 0)
+> > > +           return -EACCES;
+> > > +
+> > >     ctrl = uvc_find_control(chain, xctrl->id, &mapping);
+> > >     if (ctrl == NULL)
+> > >             return -EINVAL;
+> > > @@ -1596,6 +1680,9 @@ int uvc_ctrl_set(struct uvc_fh *handle,
+> > >     s32 max;
+> > >     int ret;
+> > >
+> > > +   if (__uvc_query_v4l2_class(chain, xctrl->id, 0) >= 0)
+> > > +           return -EACCES;
+> > > +
+> > >     ctrl = uvc_find_control(chain, xctrl->id, &mapping);
+> > >     if (ctrl == NULL)
+> > >             return -EINVAL;
+> > > @@ -2062,6 +2149,7 @@ static int __uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
+> > >  {
+> > >     struct uvc_control_mapping *map;
+> > >     unsigned int size;
+> > > +   unsigned int i;
+> > >
+> > >     /* Most mappings come from static kernel data and need to be duplicated.
+> > >      * Mappings that come from userspace will be unnecessarily duplicated,
+> > > @@ -2085,6 +2173,14 @@ static int __uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
+> > >     if (map->set == NULL)
+> > >             map->set = uvc_set_le_value;
+> > >
+> > > +   for (i = 0; i < ARRAY_SIZE(uvc_control_class); i++) {
+> > > +           if (V4L2_CTRL_ID2WHICH(uvc_control_class[i].id) ==
+> > > +                                           V4L2_CTRL_ID2WHICH(map->id)) {
+> > > +                   chain->ctrl_class_bitmap |= BIT(i);
+> > > +                   break;
+> > > +           }
+> > > +   }
+> > > +
+> > >     list_add_tail(&map->list, &ctrl->info.mappings);
+> > >     uvc_dbg(chain->dev, CONTROL, "Adding mapping '%s' to control %pUl/%u\n",
+> > >             map->name, ctrl->info.entity, ctrl->info.selector);
+> > > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> > > index 97df5ecd66c9..1f17e4253673 100644
+> > > --- a/drivers/media/usb/uvc/uvcvideo.h
+> > > +++ b/drivers/media/usb/uvc/uvcvideo.h
+> > > @@ -262,6 +262,11 @@ struct uvc_control_mapping {
+> > >                 u8 *data);
+> > >  };
+> > >
+> > > +struct uvc_control_class {
+> > > +   u32 id;
+> > > +   char name[32];
+> > > +};
+> > > +
+> > >  struct uvc_control {
+> > >     struct uvc_entity *entity;
+> > >     struct uvc_control_info info;
+> > > @@ -475,6 +480,7 @@ struct uvc_video_chain {
+> > >
+> > >     struct v4l2_prio_state prio;            /* V4L2 priority state */
+> > >     u32 caps;                               /* V4L2 chain-wide caps */
+> > > +   u8 ctrl_class_bitmap;                   /* Bitmap of valid classes */
+> > >  };
+> > >
+> > >  struct uvc_stats_frame {
+> > >
+> >
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
 
-> +       stop_suspend_watchdog(&suspend_wd);
-> +
->          raw_spin_lock_irq(&s2idle_lock);
->          if (pm_wakeup_pending())
->                  goto out;
-> @@ -114,6 +119,8 @@ static void s2idle_enter(void)
->          s2idle_state = S2IDLE_STATE_NONE;
->          raw_spin_unlock_irq(&s2idle_lock);
 
-> +       start_suspend_watchdog(&suspend_wd);
-> +
->          trace_suspend_resume(TPS("machine_suspend"), PM_SUSPEND_TO_IDLE,  
-> false);
->   }
 
-> 2.30.0.365.g02bc693789-goog
-
-Hi Greg and Rafael,
-
-Sorry for the interrupt ~
-Since this patch is really help us to narrow down many problems at our  
-platform.
-May I know if you could help to take a look at PATCH#6 again ?
-
-Thank you,
-Joseph.
+-- 
+Ricardo Ribalda
