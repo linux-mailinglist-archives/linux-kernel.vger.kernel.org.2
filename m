@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF4133DB03
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B152733DB08
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232951AbhCPRa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:30:58 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:33406 "EHLO mail.skyhub.de"
+        id S234193AbhCPRcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:32:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:52540 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233321AbhCPRab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:30:31 -0400
-Received: from zn.tnic (p200300ec2f0a1000f4cd07eb01fab5b0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:1000:f4cd:7eb:1fa:b5b0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AB1AB1EC056D;
-        Tue, 16 Mar 2021 18:30:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1615915829;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=qwNDhXsjyn7zMbvTCUkh+TXYixcjEnNSV28bE8swi88=;
-        b=MkV30Y+zUzz/ZA98kKKFFbNwFgIeusWLPCM1J1vgJbX1XA4KfvzxzSNOsac++vFQoLqcsy
-        owH4CMBawgA60o18K9eCIOV4032LejlLVubpAfO311bhm/ANOSi2AXvA/7BgDz0ugvzBk/
-        S+aExBwBf4u3yNDxNaYa2grVYdb03sM=
-Date:   Tue, 16 Mar 2021 18:30:32 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        id S231637AbhCPRbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:31:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3918831B;
+        Tue, 16 Mar 2021 10:31:39 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD80B3F70D;
+        Tue, 16 Mar 2021 10:31:37 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lingutla Chandrasekhar <clingutla@codeaurora.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Subject: Re: [PATCH v23 6/9] x86/entry: Introduce ENDBR macro
-Message-ID: <20210316173032.GE18003@zn.tnic>
-References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
- <20210316151320.6123-7-yu-cheng.yu@intel.com>
- <f98c600a-80e4-62f0-9c97-eeed708d998d@intel.com>
- <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>
+Subject: Re: [PATCH v3 1/7] sched/fair: Ignore percpu threads for imbalance pulls
+In-Reply-To: <bdea6c4f-262b-c3cb-637e-d4896e688dd3@arm.com>
+References: <20210311120527.167870-1-valentin.schneider@arm.com> <20210311120527.167870-2-valentin.schneider@arm.com> <bdea6c4f-262b-c3cb-637e-d4896e688dd3@arm.com>
+Date:   Tue, 16 Mar 2021 17:31:32 +0000
+Message-ID: <87pmzzronf.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <15966857-9be7-3029-7e93-e40596b4649a@intel.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 10:12:39AM -0700, Yu, Yu-cheng wrote:
-> Alternatively, there is another compiler-defined macro _CET_ENDBR that can
-> be used.  We can put the following in calling.h:
+On 16/03/21 16:49, Dietmar Eggemann wrote:
+> On 11/03/2021 13:05, Valentin Schneider wrote:
+>> From: Lingutla Chandrasekhar <clingutla@codeaurora.org>
+>>
+>> In load balancing, when balancing group is unable to pull task
+>> due to ->cpus_ptr constraints from busy group, then it sets
+>> LBF_SOME_PINNED to lb env flags, as a consequence, sgc->imbalance
+>> is set for its parent domain level. which makes the group
+>> classified as imbalance to get help from another balancing cpu.
+>>
+>> Consider a 4-CPU big.LITTLE system with CPUs 0-1 as LITTLEs and
+>
+> Does it have to be a big.LITTLE system? I assume this issue also happens
+> on an SMP system.
+>
 
-Not calling.h - this is apparently needed in vdso code only so I guess
-some header there, arch/x86/include/asm/vdso.h maybe? In the
+Aye, though the consequences are "worse" on asym CPU capacity systems.
 
-#else /* __ASSEMBLER__ */
+>> CPUs 2-3 as Bigs with below scenario:
+>> - CPU0 doing newly_idle balancing
+>> - CPU1 running percpu kworker and RT task (small tasks)
+>
+> What's the role of the small RT task here in the story?
+>
 
-branch maybe...
+I don't think it matters much here.
 
-> #ifdef __CET__
-> #include <cet.h>
-> #else
-> #define _CET_ENDBR
-> #endif
-> 
-> and then use _CET_ENDBR in other files.  How is that?
+>> - CPU2 running 2 big tasks
+>> - CPU3 running 1 medium task
+>>
+>> While CPU0 is doing newly_idle load balance at MC level, it fails to
+>> pull percpu kworker from CPU1 and sets LBF_SOME_PINNED to lb env flag
+>> and set sgc->imbalance at DIE level domain. As LBF_ALL_PINNED not cleared,
+>> it tries to redo the balancing by clearing CPU1 in env cpus, but it don't
+>> find other busiest_group, so CPU0 stops balacing at MC level without
+>> clearing 'sgc->imbalance' and restart the load balacing at DIE level.
+>>
+>> And CPU0 (balancing cpu) finds LITTLE's group as busiest_group with group
+>> type as imbalance, and Bigs that classified the level below imbalance type
+>> would be ignored to pick as busiest, and the balancing would be aborted
+>> without pulling any tasks (by the time, CPU1 might not have running tasks).
+>>
+>> It is suboptimal decision to classify the group as imbalance due to
+>> percpu threads. So don't use LBF_SOME_PINNED for per cpu threads.
+>
+> This sentence mentioned per-cpu threads (and so does the patch name) but
+> the implementation (only) deals with per-cpu kernel threads. IMHO, it
+> would be good to align this.
+>
 
-What does that macro do? Issue an ENDBR only?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Tell you what, I'll go for:
+1) how can pcpu kthreads cause LBF_SOME_PINNED
+2) why we may not want this, but still ignore !kthread pcpu tasks
+3) why this is even more important for big.LITTLE
