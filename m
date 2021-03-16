@@ -2,100 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E4833D459
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A0F33D471
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233912AbhCPMx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:53:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59424 "EHLO mail.kernel.org"
+        id S233384AbhCPM46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 08:56:58 -0400
+Received: from m12-14.163.com ([220.181.12.14]:36054 "EHLO m12-14.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233343AbhCPMu3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:50:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9A8165040;
-        Tue, 16 Mar 2021 12:50:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615899029;
-        bh=KO/dG7XN2AjZk+eZJx7OeL4H10cvuiyRY0B8DPBHjpA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hybklB11Uv8NkUXqIcHKuPzKs1AoKjKn3TtJKWzdtsU3/RrxSrP/4Eesr//Ov0Xup
-         Q44YLtTFfzfozhbxIcb4H8MiZpyJuL1atBfXBa3zgbW5gILMaHHHjHq8MuuiGScE4l
-         yLEN1MkVIsJ2qPlc2N1jqtp+CgtgXOBTdio25DfTQtiwEr69ZDLB38q7m1T5//TCCc
-         LXxIvPI6GfIg0zP4vdPFNLSN4PMgEa7lj0R1cmoHYCIYSgBmgca67znE4gX3mA0x7u
-         S7OV6348nhhpRtVCn4IAk4ILpI28ICU5/nfXLFNKzELroNe9G22ezy5dn8Ki9qCD2T
-         X+K5ubDsi7MLw==
-Date:   Tue, 16 Mar 2021 14:50:04 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] x86/sgx: Use sgx_free_epc_page() in
- sgx_reclaim_pages()
-Message-ID: <YFCpfEaE8k3EzHbt@kernel.org>
-References: <20210313160119.1318533-1-jarkko@kernel.org>
- <20210313160119.1318533-2-jarkko@kernel.org>
- <ab40db7a-234e-b28e-c235-0c720d2d6a5f@intel.com>
- <YE+wMvw4YuDKu1xx@kernel.org>
- <YE+1BPyK5SsizhEi@kernel.org>
+        id S234059AbhCPMzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 08:55:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=L4EhQ
+        n+V7RMC+e9zULsyR5LaAYD6Z7Y5sVnlmmzcacw=; b=nu0SSb2s+rj5WsRoN6tkZ
+        YpN6J2lIQyiOvPcuum5A5+USeYDr+yDwjHebjUuSIow9bj8Q2RZWR74b1+MjSBMd
+        AuD34zQU84INscOTI3lBKDc+qeno8kvY1WvAGO2MYZiEpLB5YvcD4oIxmVsB3ndf
+        OWp+Xv42KMnJ/63+OlhTYE=
+Received: from yangjunlin.ccdomain.com (unknown [218.17.89.92])
+        by smtp10 (Coremail) with SMTP id DsCowAAnP0ukqlBgYhfcpg--.27432S2;
+        Tue, 16 Mar 2021 20:55:02 +0800 (CST)
+From:   angkery <angkery@163.com>
+To:     kishon@ti.com, vkoul@kernel.org, yuehaibing@huawei.com,
+        rikard.falkeborn@gmail.com, weiyongjun1@huawei.com, jsarha@ti.com
+Cc:     linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Junlin Yang <yangjunlin@yulong.com>
+Subject: [PATCH] Revert "phy: ti: j721e-wiz: add missing of_node_put"
+Date:   Tue, 16 Mar 2021 20:51:38 +0800
+Message-Id: <20210316125138.2421-1-angkery@163.com>
+X-Mailer: git-send-email 2.24.0.windows.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YE+1BPyK5SsizhEi@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DsCowAAnP0ukqlBgYhfcpg--.27432S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZF4UGFWrXF1fuF1fuF45KFg_yoW3Zwb_K3
+        409rZ7WrWqv3Wvy3WjqF1fXasFkws7uFWkuFs5K3s5A343A3yj9rnruFn8K3y3ury09r98
+        u3y8Zan7Cr1UGjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU516wtUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5dqjyvlu16il2tof0z/1tbiLRNXI1SIlTYAtgABsC
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 09:27:00PM +0200, Jarkko Sakkinen wrote:
-> On Mon, Mar 15, 2021 at 09:06:29PM +0200, Jarkko Sakkinen wrote:
-> > On Mon, Mar 15, 2021 at 08:32:13AM -0700, Dave Hansen wrote:
-> > > On 3/13/21 8:01 AM, Jarkko Sakkinen wrote:
-> > > > Replace the ad-hoc code with a sgx_free_epc_page(), in order to make sure
-> > > > that all the relevant checks and book keeping is done, while freeing a
-> > > > borrowed EPC page, and remove redundant code. EREMOVE inside
-> > > > sgx_free_epc_page() does not change the semantics, as EREMOVE to an
-> > > > uninitialize pages is a nop.
-> > > 
-> > >   ^ uninitialized
-> > > 
-> > > I know this is a short patch, but this changelog still falls a bit short
-> > > for me.
-> > > 
-> > > Why is this patch a part of _this_ series?  What *problem* does it
-> > > solve, related to this series?
-> > 
-> > I'm thinking of merging sgx_epc_section and sgx_numa_node. That's why I
-> > kept it as part of the series. 
-> > 
-> > Also, in any case it's better to clean up duplicate functionality. The
-> > code is essentially open coded implementation of sgx_free_epc_page()
-> > without EREMOVE.
-> > 
-> > > It would also be nice to remind me why the EREMOVE is redundant.  Why
-> > > didn't we need one before?  What put the page in the uninitialized
-> > > state?  Is EREMOVE guaranteed to do nothing?  How expensive is it?
-> > 
-> > EREMOVE gets removed by KVM series from sgx_free_epc_page() anyway.
-> > 
-> > Maybe should re-send this patch, or series, after KVM series is merged.
-> > Then there is no explaining with EREMOVE, as sgx_free_epc_page() won't
-> > contain it.
-> 
-> Anyway, forgot to put the end statement: I'm cool with dropping this but
-> I'll also send this right after KVM SGX series has landed as separate
-> patch, if I drop this now.
+From: Junlin Yang <yangjunlin@yulong.com>
 
-HOLD ON :-)
+This reverts commit 00f2e6f668b05c259f3f8d1e943318bcad8486e7.
 
-I recalled why I added this patch to this patch set. I had a reason for
-it.
+The duplicate from #796 should be removed.
 
-It's because of the NUMA patch. I have duplicate all the NUMA changes
-here if I don't refactor this somewhat redundant code out.
+Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+---
+ drivers/phy/ti/phy-j721e-wiz.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-So, if I add a note about this to the commit message? IMHO, this is good
-enough reason to carry the patch.
+diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
+index 59439a9..448d8d1 100644
+--- a/drivers/phy/ti/phy-j721e-wiz.c
++++ b/drivers/phy/ti/phy-j721e-wiz.c
+@@ -793,7 +793,6 @@ static int wiz_get_lane_phy_types(struct device *dev, struct wiz *wiz)
+ 			dev_err(dev,
+ 				"%s: Reading \"reg\" from \"%s\" failed: %d\n",
+ 				__func__, subnode->name, ret);
+-			of_node_put(subnode);
+ 			return ret;
+ 		}
+ 		of_property_read_u32(subnode, "cdns,num-lanes", &num_lanes);
+-- 
+1.9.1
 
-/Jarkko
+
