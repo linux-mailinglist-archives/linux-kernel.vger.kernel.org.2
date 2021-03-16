@@ -2,145 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E6333DD7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E38633DD7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:28:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240439AbhCPT1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 15:27:46 -0400
-Received: from mga11.intel.com ([192.55.52.93]:14761 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240453AbhCPT12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:27:28 -0400
-IronPort-SDR: BPioQ3ofRZzr472243qqUpDI55zBo8dO9eroMkx45swn/9s/y1olKtsCqJO1clPem1txbROkak
- FgsajW/8BSrg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="185960786"
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="185960786"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 12:27:22 -0700
-IronPort-SDR: uFgLa216tNsrzWIgcRCdtwQiM9p8zrA76JWNP1+VGm7SvOsa4P1fAsWowUhRqqtgPdRlhqiz7V
- CgKQgK3Q/nHA==
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="372079895"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.191.248]) ([10.212.191.248])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 12:27:18 -0700
-Subject: Re: [PATCH v23 9/9] x86/vdso: Add ENDBR to __vdso_sgx_enter_enclave
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
- <20210316151320.6123-10-yu-cheng.yu@intel.com> <YFEFhoi/SB12HUrg@kernel.org>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <b523b794-3553-f7bb-3a69-24d936f0fefa@intel.com>
-Date:   Tue, 16 Mar 2021 12:27:19 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S240453AbhCPT2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 15:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240442AbhCPT15 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 15:27:57 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F57C06174A;
+        Tue, 16 Mar 2021 12:27:56 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 9DC8522238;
+        Tue, 16 Mar 2021 20:27:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1615922871;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t9oTzvmR9m08GcJX5x4Qj7U6037F+XpGCNpETFyhQBY=;
+        b=QeWpVQNkO+k1G5Jtvp/UlCGLokXMw8tBA4kcpE2dwkb/TWx9sClKBQQu0qlQXS8maK5cJ1
+        JQjses3PkZIxY/mmMs2kC4Vstz1MQsBv3TlB/opvR2HGfgJSgGHVAHE9JgHV8EVUEyzAMW
+        BYsWT+YEmbp1UOMmp2h07AGxkcAnp44=
 MIME-Version: 1.0
-In-Reply-To: <YFEFhoi/SB12HUrg@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Tue, 16 Mar 2021 20:27:51 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Sahil Malhotra <sahil.malhotra@nxp.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>, kernelci-results@groups.io,
+        linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: next/master bisection: baseline.login on kontron-kbox-a-230-ls
+In-Reply-To: <38c31f5c-4400-eed7-d561-8f45e261ab01@collabora.com>
+References: <6050bf47.1c69fb81.59c4d.85f2@mx.google.com>
+ <38c31f5c-4400-eed7-d561-8f45e261ab01@collabora.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <edcb6c52f754935341ee8711f30062c4@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/2021 12:22 PM, Jarkko Sakkinen wrote:
-> On Tue, Mar 16, 2021 at 08:13:19AM -0700, Yu-cheng Yu wrote:
->> ENDBR is a special new instruction for the Indirect Branch Tracking (IBT)
->> component of CET.  IBT prevents attacks by ensuring that (most) indirect
->> branches and function calls may only land at ENDBR instructions.  Branches
->> that don't follow the rules will result in control flow (#CF) exceptions.
->>
->> ENDBR is a noop when IBT is unsupported or disabled.  Most ENDBR
->> instructions are inserted automatically by the compiler, but branch
->> targets written in assembly must have ENDBR added manually.
->>
->> Add ENDBR to __vdso_sgx_enter_enclave() branch targets.
->>
->> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
->> Cc: Andy Lutomirski <luto@kernel.org>
->> Cc: Borislav Petkov <bp@alien8.de>
->> Cc: Dave Hansen <dave.hansen@linux.intel.com>
->> Cc: Jarkko Sakkinen <jarkko@kernel.org>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> ---
->>   arch/x86/entry/vdso/vsgx.S | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/arch/x86/entry/vdso/vsgx.S b/arch/x86/entry/vdso/vsgx.S
->> index 86a0e94f68df..1baa9b49053e 100644
->> --- a/arch/x86/entry/vdso/vsgx.S
->> +++ b/arch/x86/entry/vdso/vsgx.S
->> @@ -6,6 +6,7 @@
->>   #include <asm/enclu.h>
->>   
->>   #include "extable.h"
->> +#include "../calling.h"
->>   
->>   /* Relative to %rbp. */
->>   #define SGX_ENCLAVE_OFFSET_OF_RUN		16
->> @@ -27,6 +28,7 @@
->>   SYM_FUNC_START(__vdso_sgx_enter_enclave)
->>   	/* Prolog */
->>   	.cfi_startproc
->> +	ENDBR
->>   	push	%rbp
->>   	.cfi_adjust_cfa_offset	8
->>   	.cfi_rel_offset		%rbp, 0
->> @@ -62,6 +64,7 @@ SYM_FUNC_START(__vdso_sgx_enter_enclave)
->>   .Lasync_exit_pointer:
->>   .Lenclu_eenter_eresume:
->>   	enclu
->> +	ENDBR
->>   
->>   	/* EEXIT jumps here unless the enclave is doing something fancy. */
->>   	mov	SGX_ENCLAVE_OFFSET_OF_RUN(%rbp), %rbx
->> @@ -91,6 +94,7 @@ SYM_FUNC_START(__vdso_sgx_enter_enclave)
->>   	jmp	.Lout
->>   
->>   .Lhandle_exception:
->> +	ENDBR
->>   	mov	SGX_ENCLAVE_OFFSET_OF_RUN(%rbp), %rbx
->>   
->>   	/* Set the exception info. */
->> -- 
->> 2.21.0
->>
->>
+Am 2021-03-16 19:33, schrieb Guillaume Tucker:
+> Hi Sahil,
 > 
-> Looks good to me.
+> Please see the bisection report below about a boot failure on
+> kontron-kbox-a-230-ls on linux-next.
 > 
-> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+> Reports aren't automatically sent to the public while we're
+> trialing new bisection features on kernelci.org but this one
+> looks valid.
 
-Thanks for reviewing.  In response to Dave's and Boris' comments, I will 
-replace ENDBR macro with _CET_ENDBR that comes from the compiler.  Can I 
-still keep the Reviewed-by?
+nice! Thanks.
 
-> 
-> /Jarkko
->
+[..]
+
+>> commit 48787485f8de44915016d4583e898b62bb2d5753
+>> Author: Sahil Malhotra <sahil.malhotra@nxp.com>
+>> Date:   Fri Mar 5 14:03:51 2021 +0530
+>> 
+>>     arm64: dts: ls1028a: enable optee node
+>> 
+>>     optee node was disabled in ls1028a.dtsi, enabling it by default.
+
+Please enable this per board. As it is also indicated by my original
+commit f90931aeefe3 ("arm64: dts: ls1028a: add optee node") message:
+
+   Add the optee node which can either be enabled by a specific board or 
+by
+   the bootloader.
+
+-michael
