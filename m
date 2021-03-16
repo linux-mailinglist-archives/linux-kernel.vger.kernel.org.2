@@ -2,67 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0443D33DC11
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:04:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8E233DC15
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239638AbhCPSEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:04:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48720 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239862AbhCPSDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:03:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AEBC2AE8F;
-        Tue, 16 Mar 2021 18:03:13 +0000 (UTC)
-Date:   Tue, 16 Mar 2021 11:03:05 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@redhat.com, dvhart@infradead.org,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH 2/2] futex: Leave the pi lock stealer in a consistent
- state upon successful fault
-Message-ID: <20210316180305.sh7nyi4xjskd3e3j@offworld>
-References: <20210315050224.107056-1-dave@stgolabs.net>
- <20210315050224.107056-3-dave@stgolabs.net>
- <YFCUYimuDkUonySp@hirez.programming.kicks-ass.net>
+        id S239775AbhCPSFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232783AbhCPSDw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 14:03:52 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2BF9C06174A;
+        Tue, 16 Mar 2021 11:03:51 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id 81so38154331iou.11;
+        Tue, 16 Mar 2021 11:03:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CafEaY8564FXEYcCceAauk7BwBP9On3BTyx0/8WTv5s=;
+        b=nkiECfBcjbDkFCe0f2FFi1QQ7HqzKuS9ztWFfqjpN9mWjLhQFpLWW9oQxvBx8k1Z9w
+         FLJNr8D9OJ13SKaITpQFVdnjQ9eKJy4MJfWE/NL6Q2nw9ZZJqM2ocf//9/PlFZbRc4lI
+         95Rt0HoZAXiWBZP1ZJktx22gWTh/t85dQE1gJTFMDMCt9yd7AH9Hp3109xtkLGRZhKx5
+         GRpX5UNx5nVfbT8JWPP+p9ewkvDh0fXhC4NUKEAGsYotCkoePwkM4iaAFXD97THiC0Tp
+         MPHUJlUpOE56fs6o3vz0bFby1wsyO8JHenqp3i/oDq60JJn/OGkjhvLeMDsHc6NtBT6T
+         KUVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CafEaY8564FXEYcCceAauk7BwBP9On3BTyx0/8WTv5s=;
+        b=cvZwgW+vecM8owZst8bDE04JgCWaoAzcf4C+tcW2ORYF00IV/LWpm+HlrUYKke0sD7
+         TmtsoEkLeWpHebwZH0q/YPO8Rmu8DyubahPEipQYBxhXQ7Jv9Hy4CElUnXVJNSvNRCNK
+         3edtp4KapTZwpJPvCgftGRTFTEHGxKUtUx6yikwsN61HjAbeAhPk2mJgwQ3YiSoEWton
+         i2j85/Ey0jo9U2FOMMuY7iu50q/jtrilpLnAws8WKLWwIlr20QVbqa9MdQyT18CUgUFT
+         RFzqik9ARlaAbof2D9cHguQd87iYR76dxgLPSuu1Q1mnXtVvZhgwwSJO9J0CFxqrvZNl
+         +TiQ==
+X-Gm-Message-State: AOAM533ZmB2y+zFoSYkK0EZxsYC+62Mnhw0g2Cj3jZ5txQ8MI0mqxuyv
+        t8EZfgxHr8wMRPtgNwcR3PoThBxssfQeewtFoos=
+X-Google-Smtp-Source: ABdhPJxi1FvF+fi+k58yo4fMN7krMCCEGP0T6HQW4wj2wykGCp6iFI7yrCvkeZ0/50PIIQEfkzu8YgDKz4WOWzwaMuc=
+X-Received: by 2002:a02:94cb:: with SMTP id x69mr15581624jah.8.1615917831173;
+ Tue, 16 Mar 2021 11:03:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YFCUYimuDkUonySp@hirez.programming.kicks-ass.net>
-User-Agent: NeoMutt/20201120
+References: <1615886833-71688-1-git-send-email-hkelam@marvell.com>
+ <1615886833-71688-4-git-send-email-hkelam@marvell.com> <20210316100432.666d9bd5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210316100432.666d9bd5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   sundeep subbaraya <sundeep.lkml@gmail.com>
+Date:   Tue, 16 Mar 2021 23:33:40 +0530
+Message-ID: <CALHRZupARnUK5PgRjv9-TmFd9mNUg0Ms55zZEC2VuDcaEBZYLQ@mail.gmail.com>
+Subject: Re: [net PATCH 3/9] octeontx2-af: Do not allocate memory for devlink private
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Hariprasad Kelam <hkelam@marvell.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        lcherian@marvell.com, Geetha sowjanya <gakula@marvell.com>,
+        jerinj@marvell.com, Subbaraya Sundeep <sbhatta@marvell.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021, Peter Zijlstra wrote:
+Hi Jakub,
+
+
+On Tue, Mar 16, 2021 at 10:53 PM Jakub Kicinski <kuba@kernel.org> wrote:
 >
->IIRC we made the explicit choice to never loop here. That saves having
->to worry about getting stuck in in-kernel loops.
+> On Tue, 16 Mar 2021 14:57:07 +0530 Hariprasad Kelam wrote:
+> > From: Subbaraya Sundeep <sbhatta@marvell.com>
+> >
+> > Memory for driver private structure rvu_devlink is
+> > also allocated during devlink_alloc. Hence use
+> > the allocated memory by devlink_alloc and access it
+> > by devlink_priv call.
+> >
+> > Fixes: fae06da4("octeontx2-af: Add devlink suppoort to af driver")
+> > Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
+> > Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+> > Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
 >
->Userspace triggering the case where the futex goes corrupt is UB, after
->that we have no obligation for anything to still work. It's on them,
->they get to deal with the bits remaining.
+> Does it fix any bug? Looks like a coding improvement.
 
-I was kind of expecting this answer, honestly. After all, we are warned
-about violations to the 10th:
-
-  * [10] There is no transient state which leaves owner and user space
-  *      TID out of sync. Except one error case where the kernel is denied
-  *      write access to the user address, see fixup_pi_state_owner().
-
-(btw, should we actually WARN_ON_ONCE this case such that the user is
-well aware things are screwed up?)
-
-However, as 34b1a1ce145 describes, it was cared enough about users to
-protect them against spurious runaway tasks. And this is why I decided
-to even send the patch; it fixes, without sacrificing performance or
-additional complexity, a potentially user visible issue which could be
-due to programming error. And unlike 34b1a1ce145, where a stealer that
-cannot fault ends up dropping the lock, here the stealer can actually
-amend things and not break semantics because of another task's stupidity.
-But yeah, this could also be considered in the category of inept attempts
-to fix a rotten situation.
+Without this we cannot fetch our private struct 'rvu_devlink'  from any
+of the functions in devlink_ops which may get added in future.
 
 Thanks,
-Davidlohr
+Sundeep
