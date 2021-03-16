@@ -2,135 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5820E33D4AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:16:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F1133D4AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233295AbhCPNP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:15:59 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:42576 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233607AbhCPNP3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:15:29 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12GDFIao011863;
-        Tue, 16 Mar 2021 08:15:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615900518;
-        bh=8sGhX9btFJsimS/Vsxuxs9nBnZi+riWzMYvjXMqo0/4=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=RFMwnd/kyaMMkndEA5upZ7aM+xz5vug4Xb8rj9ZaudLQt+AmiyDVogiUXzD71C3Du
-         xJ5NRlcCcW7PPh1bATQW7mBPqU11Z17VChlKSDGiQw2X9v5GQfTc6o+4rzbmGsFeiq
-         n4bVMjt9KRY0u+CJIrm1S7uQfMCty+SNFMUtYabg=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12GDFIes078015
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 16 Mar 2021 08:15:18 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 16
- Mar 2021 08:15:18 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 16 Mar 2021 08:15:18 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12GDFH3D046429;
-        Tue, 16 Mar 2021 08:15:17 -0500
-Date:   Tue, 16 Mar 2021 18:45:16 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Michael Walle <michael@walle.cc>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [RFC PATCH 2/3] mtd: spi-nor: sfdp: fix spi_nor_read_sfdp()
-Message-ID: <20210316131514.tiln7ml2efkj5xkq@ti.com>
-References: <20210312190548.6954-1-michael@walle.cc>
- <20210312190548.6954-3-michael@walle.cc>
- <20210316110400.kepjn6b654lhq4dy@ti.com>
- <25579f51e4e0626ad96bcaf2f8015260@walle.cc>
+        id S234737AbhCPNQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:16:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232606AbhCPNP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 09:15:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2338765036;
+        Tue, 16 Mar 2021 13:15:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615900557;
+        bh=PA9e6syMxf/1A2hfcqNarCNuKvtDZHa0EkOw7JoA6ws=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Qjfrlw8/oYWvvNSPLHwFAT+AGtCvvMp6Kzp/Xf02bF2f1BsVY1N9z5vsEWCZs91nn
+         L4ZHbvANt7KfEMbxy7F9FSE6UHJioVKDk29IZ2rbPeJczkA+n3e4lvtReLRo05tefe
+         OZ5I5lqOm2hk0GXp+GZ7isz66mHsff0c/4UBJs4isPk1oTm360vuXvzy6jbd1nGsn3
+         o2D/YPJoBsYMlRtiFNouJ8zVBuhBBFvJQHflXkiz0BHqbgaPKTLSQ1Eehly368LgMJ
+         bGUjgcm0/2bZEs0hRVlUYtp3YZ3xWlV/3eNWlAJ1VXAceW0GBQ/0ESook0YtjcxKmv
+         Q4y/ueA+kqrHQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E697340647; Tue, 16 Mar 2021 10:15:54 -0300 (-03)
+Date:   Tue, 16 Mar 2021 10:15:54 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jackie Liu <jackieliu2113@gmail.com>
+Cc:     jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        Jackie Liu <liuyun01@kylinos.cn>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: Re: [PATCH v4] perf tools: perf_event_paranoid and kptr_restrict may
+ crash on 'perf top'
+Message-ID: <YFCvimCNsJ4NeRA1@kernel.org>
+References: <20210316012453.1156-1-liuyun01@kylinos.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <25579f51e4e0626ad96bcaf2f8015260@walle.cc>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210316012453.1156-1-liuyun01@kylinos.cn>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/03/21 12:15PM, Michael Walle wrote:
-> Am 2021-03-16 12:04, schrieb Pratyush Yadav:
-> > On 12/03/21 08:05PM, Michael Walle wrote:
-> > > If spi_nor_read_sfdp() is used after probe, we have to set read_proto
-> > > and the read dirmap.
-> > > 
-> > > Signed-off-by: Michael Walle <michael@walle.cc>
-> > > ---
-> > >  drivers/mtd/spi-nor/sfdp.c | 8 ++++++++
-> > >  1 file changed, 8 insertions(+)
-> > > 
-> > > diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-> > > index b1814afefc33..47634ec9b899 100644
-> > > --- a/drivers/mtd/spi-nor/sfdp.c
-> > > +++ b/drivers/mtd/spi-nor/sfdp.c
-> > > @@ -179,19 +179,27 @@ static int spi_nor_read_sfdp(struct spi_nor
-> > > *nor, u32 addr,
-> > >  			     size_t len, void *buf)
-> > >  {
-> > >  	u8 addr_width, read_opcode, read_dummy;
-> > > +	struct spi_mem_dirmap_desc *rdesc;
-> > > +	enum spi_nor_protocol read_proto;
-> > >  	int ret;
-> > > 
-> > >  	read_opcode = nor->read_opcode;
-> > > +	read_proto = nor->read_proto;
-> > > +	rdesc = nor->dirmap.rdesc;
-> > >  	addr_width = nor->addr_width;
-> > >  	read_dummy = nor->read_dummy;
-> > > 
-> > >  	nor->read_opcode = SPINOR_OP_RDSFDP;
-> > > +	nor->read_proto = SNOR_PROTO_1_1_1;
-> > > +	nor->dirmap.rdesc = NULL;
-> > >  	nor->addr_width = 3;
-> > >  	nor->read_dummy = 8;
-> > 
-> > NACK. You can't assume the device is still in 1S-1S-1S mode after probe.
-> > For example, the s28hs512t flash is switched to 8D-8D-8D mode by the
-> > time the probe finishes so this would be an invalid command. Same for
-> > any flash that goes into a stateful mode.
+Em Tue, Mar 16, 2021 at 09:24:53AM +0800, Jackie Liu escreveu:
+> After install the libelf-dev package and compiling perf, kptr_restrict=2
+> and perf_event_paranoid=3 will cause perf top to crash, because the
+> value of /proc/kallsyms cannot be obtained, which leads to
+> info->jited_ksyms == NULL. In order to solve this problem, Add a
+> judgment before use.
 > 
-> I see.
+> v3->v4:
+> Fix memory leaks in more places
 > 
-> > And you can't even keep using nor->read_proto to read SFDP because the
-> > Read SFDP command might not be supported in all modes. xSPI spec
-> > (JESD251) says that the Read SFDP command is optional in 8D-8D-8D mode.
-> > 
-> > I think the best approach for this would be to cache the entire SFDP
-> > table at parse time. This obviously comes with a memory overhead but I
-> > don't think it would be too big. For example, the sfdp table on
-> > s28hs512t is 491 bytes and it has 6 tables. Anyway, if the memory usage
-> > is too much of a problem we can put the feature behind a config.
-> 
-> I don't like to have it a config option, because then, if you really
-> need it, i.e. some user has an unknown flash, it might not be there.
+> v2->v3:
+> free info_linear memory and move code above, don't do those extra btf
+> checks.
 
-Right. Then let's hope people don't mind us using up an extra half 
-kilobyte or so.
+Applied, edited the commit message to:
 
+----
+    perf top: Fix BPF support related crash with perf_event_paranoid=3 + kptr_restrict
+
+    After installing the libelf-dev package and compiling perf, if we have
+    kptr_restrict=2 and perf_event_paranoid=3 'perf top' will crash because
+    the value of /proc/kallsyms cannot be obtained, which leads to
+    info->jited_ksyms == NULL. In order to solve this problem, Add a
+    check before use.
+
+    Also plug some leaks on the error path.
+----
+ 
+> Suggested-by: Jiri Olsa <jolsa@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+> ---
+>  tools/perf/util/bpf-event.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
 > 
-> The next question would be, should I leave the current parsing code
-> as is or should I also change that to use the sftp data cache. I'd
-> prefer to leave it as is.
-
-For this series its fine if you leave it as is. But eventually it would 
-be a good idea to convert all SFDP parsers to use the cache to reduce 
-the number of SFDP reads and potentially speed up flash initialization a 
-bit.
+> diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
+> index 57d58c81a5f8..cdecda1ddd36 100644
+> --- a/tools/perf/util/bpf-event.c
+> +++ b/tools/perf/util/bpf-event.c
+> @@ -196,25 +196,32 @@ static int perf_event__synthesize_one_bpf_prog(struct perf_session *session,
+>  	}
+>  
+>  	if (info_linear->info_len < offsetof(struct bpf_prog_info, prog_tags)) {
+> +		free(info_linear);
+>  		pr_debug("%s: the kernel is too old, aborting\n", __func__);
+>  		return -2;
+>  	}
+>  
+>  	info = &info_linear->info;
+> +	if (!info->jited_ksyms) {
+> +		free(info_linear);
+> +		return -1;
+> +	}
+>  
+>  	/* number of ksyms, func_lengths, and tags should match */
+>  	sub_prog_cnt = info->nr_jited_ksyms;
+>  	if (sub_prog_cnt != info->nr_prog_tags ||
+> -	    sub_prog_cnt != info->nr_jited_func_lens)
+> +	    sub_prog_cnt != info->nr_jited_func_lens) {
+> +		free(info_linear);
+>  		return -1;
+> +	}
+>  
+>  	/* check BTF func info support */
+>  	if (info->btf_id && info->nr_func_info && info->func_info_rec_size) {
+>  		/* btf func info number should be same as sub_prog_cnt */
+>  		if (sub_prog_cnt != info->nr_func_info) {
+>  			pr_debug("%s: mismatch in BPF sub program count and BTF function info count, aborting\n", __func__);
+> -			err = -1;
+> -			goto out;
+> +			free(info_linear);
+> +			return -1;
+>  		}
+>  		if (btf__get_from_id(info->btf_id, &btf)) {
+>  			pr_debug("%s: failed to get BTF of id %u, aborting\n", __func__, info->btf_id);
+> -- 
+> 2.25.1
+> 
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+
+- Arnaldo
