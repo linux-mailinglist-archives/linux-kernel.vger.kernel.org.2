@@ -2,104 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327C933DA3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:05:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A8933DA3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:06:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239061AbhCPRFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238972AbhCPRE6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:04:58 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357D5C061756;
-        Tue, 16 Mar 2021 10:04:58 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id 16so9250976pfn.5;
-        Tue, 16 Mar 2021 10:04:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0lBoqDQGbVDAXmG7Obz/KwLjC/e8VHnkycjoidmWyVI=;
-        b=NIyb7nSw5CTvnOicx0DR0Pqd3PKo/YN8dx4HYS0YShQ7gOabF1wT7cdloVz38e0t0E
-         zmyX82Pz+Z1qkWjnee3uAa5CfIqnXfBLKzJMbLOsWa71O/CbEl2yXatDIVNSHus7XkVB
-         8EOky+SMXsrEvtJq2JQF2NyQRckTMCnYQ9Wd7AinBl+2mACxBM1YwZD4vxsoCIWQSMuH
-         xdi6OYgI4gzmD1eIOlgBKB43YII+LML2pZ8DbzlYUO/+KlnAsPlYZb2pDPGCqg/o3C6R
-         0epjLzKx4GklZ4hFHAntyqd3FSgXHmyptn48dSyoijCDP/28G8haRt6ntS6fMwXCgMvu
-         uCKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0lBoqDQGbVDAXmG7Obz/KwLjC/e8VHnkycjoidmWyVI=;
-        b=Mr3nGOKfJk0FtnbZJKdsoCUj/lnijP3SrU0/zRK0h7wGd6kWLsa+y7dyvkWzn7xxZH
-         krfTy6sc3U17j0w/wYIh+JwygSd23AZaFGT9rwlmDEIfQ7U7o2OX1IZrrgm6hUr+6WZC
-         QPN793Z8j0RzzAWukkwYP8VvZRbW8NOVAu9T20Mx61IBrwBrzOkUDORcsq7mNVVc64Z5
-         xOzQZ1O5PtLFt8BVDoAUHkt/4I9dQTRBK9c9m1/GcROjZL8O81IighHAuV/UImmN2fYu
-         LkHr7e9jtTr1/eWB1Qg9f5OsvEd6eJlIpFQ4CAens7eYKDvT67a5MtLyZUDUR4FcPJhp
-         rqAw==
-X-Gm-Message-State: AOAM532lmzxhT5OlbNL2wgUdrO9fzdB9i/TzbsTp09u67by53DfXGNWz
-        uIezwUqc8bo7buYlOiITprQ=
-X-Google-Smtp-Source: ABdhPJyMN0dn2p8WDL4zzof28yTpopJAfm6Ga+kz8Oc4Ill/NGZWAau9MXh1N0BYHhY5AMtKq2IMPg==
-X-Received: by 2002:a63:c04b:: with SMTP id z11mr621283pgi.60.1615914297538;
-        Tue, 16 Mar 2021 10:04:57 -0700 (PDT)
-Received: from ubuntu.localdomain ([182.156.244.6])
-        by smtp.gmail.com with ESMTPSA id t19sm16832031pgj.8.2021.03.16.10.04.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 10:04:57 -0700 (PDT)
-From:   namratajanawade <namrata.janawade@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bkkarthik@pesu.pes.edu,
-        namrata.janawade@gmail.com
-Subject: [PATCH] unix_diag: addtion of empty line
-Date:   Tue, 16 Mar 2021 10:04:47 -0700
-Message-Id: <20210316170447.3394-1-namrata.janawade@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S239060AbhCPRGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:06:23 -0400
+Received: from mga17.intel.com ([192.55.52.151]:32050 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239014AbhCPRFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:05:55 -0400
+IronPort-SDR: Qn0wfbxoMZUatrpKtYDN4yobilay2fQFalwfaqCl+510QvKtsyTygHV93UBpY0Z7Yvc0HFJY75
+ HL8sAHKO3hRg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="169213788"
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="169213788"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 10:05:53 -0700
+IronPort-SDR: FA3KiXXjyqZfFiLvNVY1Ehj/bzd5P2bj8V8My5izYkm9lIoSrtSDYT6GG4DsKtdhkrzeu/HMB6
+ pCbIZDHxzcLg==
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="405605306"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 10:05:51 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lMD8e-00D0vn-MK; Tue, 16 Mar 2021 19:05:48 +0200
+Date:   Tue, 16 Mar 2021 19:05:48 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v4 2/2] gpio: sch: Hook into ACPI SCI handler to catch
+ GPIO edge events
+Message-ID: <YFDlbKD4Q13lDmM3@smile.fi.intel.com>
+References: <20210316162613.87710-1-andriy.shevchenko@linux.intel.com>
+ <20210316162613.87710-3-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316162613.87710-3-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Warning found by checkpatch.pl.
-New empty line added  before return statement to improve readability
+On Tue, Mar 16, 2021 at 06:26:13PM +0200, Andy Shevchenko wrote:
+> From: Jan Kiszka <jan.kiszka@siemens.com>
+> 
+> Neither the ACPI description on the Quark platform provides the required
+> information is to do establish generic handling nor hardware capable of
+> doing it. According to the datasheet the hardware can generate SCI events.
+> Therefore, we need to hook from the driver directly into SCI handler of
+> the ACPI subsystem in order to catch and report GPIO-related events.
 
-Signed-off-by: namratajanawade <namrata.janawade@gmail.com>
----
- net/unix/diag.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+> Validated on the Quark-based IOT2000 platform.
 
-diff --git a/net/unix/diag.c b/net/unix/diag.c
-index 9ff64f9df1f3..feb79a43944e 100644
---- a/net/unix/diag.c
-+++ b/net/unix/diag.c
-@@ -78,11 +78,11 @@ static int sk_diag_dump_icons(struct sock *sk, struct sk_buff *nlskb)
- 			struct sock *req, *peer;
- 
- 			req = skb->sk;
--			/*
--			 * The state lock is outer for the same sk's
--			 * queue lock. With the other's queue locked it's
--			 * OK to lock the state.
--			 */
-+			 /*
-+			  * The state lock is outer for the same sk's
-+			  * queue lock. With the other's queue locked it's
-+			  * OK to lock the state.
-+			  */
- 			unix_state_lock_nested(req);
- 			peer = unix_sk(req)->peer;
- 			buf[i++] = (peer ? sock_i_ino(peer) : 0);
-@@ -116,6 +116,7 @@ static int sk_diag_show_rqlen(struct sock *sk, struct sk_buff *nlskb)
- static int sk_diag_dump_uid(struct sock *sk, struct sk_buff *nlskb)
- {
- 	uid_t uid = from_kuid_munged(sk_user_ns(nlskb->sk), sock_i_uid(sk));
-+
- 	return nla_put(nlskb, UNIX_DIAG_UID, sizeof(uid_t), &uid);
- }
- 
+This depends on the test by Jan or somebody with the same hardware available.
+
+> +static u32 sch_gpio_sci_handler(void *context)
+> +{
+> +	struct sch_gpio *sch = context;
+> +	struct gpio_chip *gc = &sch->chip;
+> +	unsigned long core_status, resume_status;
+> +	unsigned long pending;
+> +	int offset;
+
+> +	core_status = inl(sch->iobase + GTS + 0x00);
+> +	resume_status = inl(sch->iobase + GTS + 0x20);
+> +
+> +	pending = (resume_status << sch->resume_base) | core_status;
+> +
+> +	for_each_set_bit(offset, &pending, sch->chip.ngpio)
+> +		generic_handle_irq(irq_find_mapping(gc->irq.domain, offset));
+> +
+> +	outl(core_status, sch->iobase + GTS + 0x00);
+> +	outl(resume_status, sch->iobase + GTS + 0x20);
+
+I guess this still needs to be protected by spin_lock.
+
+> +	return pending ? ACPI_INTERRUPT_HANDLED : ACPI_INTERRUPT_NOT_HANDLED;
+> +}
+
+...
+
+Also I am in doubt that we need to instantiate an IRQ chip if the ACPI SCI
+handler registration fails. But I don't know what is better approach here, to
+NULL the pointer, or try to register handler before we will have an IRQ chip in
+place. Any recommendations?
+
 -- 
-2.25.1
+With Best Regards,
+Andy Shevchenko
+
 
