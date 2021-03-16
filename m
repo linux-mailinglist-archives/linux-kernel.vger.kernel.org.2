@@ -2,121 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD9A33CF33
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C23033CF3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231862AbhCPIC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 04:02:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234159AbhCPIBw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 04:01:52 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1AEC06174A;
-        Tue, 16 Mar 2021 01:01:51 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id p21so60895317lfu.11;
-        Tue, 16 Mar 2021 01:01:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nhPJC9wzAEpJ+jE+VGfpIliqBXvwzpfxSi1AqRybceE=;
-        b=d5cCDtFG4kTdcsmxqRALSq4WBRWUBYtKaYREhuAdZvZgJ2Kp91SFlGjcoJKJ+critV
-         JUfXmDt6qmdEsYACsQ4YyQdcpSddCdLQE0l8P0ndEEp6/WPv+xlVFH8eG8lk8t9a7QsF
-         1yRGgjS1BJcQgaqqsohpXkLJkWl7htXi9sI5Jw6V7hGVvAtWzxzymly281iO2h27Hu9b
-         X5TwhbrLpu/pOmZWEd3WUXiM/odwODUQHHTqYHvpnuqMVJZTzV611WkDOeplEGyYDLNN
-         82cGVPUjuDJpViav/ltjWvn9pl2BvLqWKFE37YlEB611X0ICwEeETFy++5Mk2/V5kwqr
-         KPYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nhPJC9wzAEpJ+jE+VGfpIliqBXvwzpfxSi1AqRybceE=;
-        b=TwHyVuQyyMNtR6ssgawPL1453LcC4H/Cbiwrq/9q4PjHITNQGrIMTlkHR9Ljd5nmFe
-         MoQHKnaEQ19lUnkKQaMMf9ybXlKBIxz7iOObwcdLWLQg4Nx6WMekBCrtmCgTUIkXH9Lt
-         1M4yOhSQfLCdcY6Lx84vHPtnqVD+4thGEd6fStinmPPH00NLyroIYqPveXuUhYSt9FCf
-         tPo92Lw3kzD9CAxEtxTPn/yaOdfuQaV//rGoS7OiWTup/xMQiZSLxaxH4i9xvStlSVaH
-         P5sV6SVZG2VjITigdmX1kUepn/h/16p8HbAIURZ5VJR4O9/zJnKcfC7RJ8s5lONevmkm
-         LqEA==
-X-Gm-Message-State: AOAM533zCGzEGsKuY1sH2kl8fVVENxTIWXxNPel5HDRTTiC0EsZfEs+f
-        DK3zp6+ciE+Kd/3nTHlWei8=
-X-Google-Smtp-Source: ABdhPJxbHKpOtwcSZgEDd4Sb73ytAiD+HkMe1ubr8slYwelIN437r1j1b4kFmaIQnAURidQFkDTWBw==
-X-Received: by 2002:a05:6512:3042:: with SMTP id b2mr9693809lfb.480.1615881710506;
-        Tue, 16 Mar 2021 01:01:50 -0700 (PDT)
-Received: from [192.168.1.39] (88-114-223-25.elisa-laajakaista.fi. [88.114.223.25])
-        by smtp.gmail.com with ESMTPSA id v22sm2963626lfr.277.2021.03.16.01.01.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 01:01:49 -0700 (PDT)
-Subject: Re: [PATCH v4] mm/vmalloc: randomize vmalloc() allocations
-To:     Uladzislau Rezki <urezki@gmail.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>
-References: <20210309135757.5406-1-toiwoton@gmail.com>
- <20210314172312.GA2085@pc638.lan>
- <f2d6965b-1801-ce91-0c7c-2cdc92493393@gmail.com>
- <20210315122410.GA26784@pc636> <202103150914.4172D96@keescook>
- <20210315174742.GA2038@pc638.lan>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <85515ea8-744e-acec-76ba-034b38d0f9fa@gmail.com>
-Date:   Tue, 16 Mar 2021 10:01:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <20210315174742.GA2038@pc638.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S232137AbhCPIDd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Mar 2021 04:03:33 -0400
+Received: from mga09.intel.com ([134.134.136.24]:40127 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232577AbhCPIDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 04:03:05 -0400
+IronPort-SDR: baPMBGcSlhUp+sNUWayTAZs6xnV2B4bTwrIepqye1q4pnbEPn2bYJz4Fc22REYeB2FWHRomBHb
+ 5mgeJXvSv8Ew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="189310814"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="189310814"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 01:03:04 -0700
+IronPort-SDR: 4Mlf+xJkj70RZ08Adl2iC52T/Xk6/ENFhy59/2Pj5tyn0kcKwhlsNQJ8+GIkjBJu+nLCvAGJVR
+ VpXWdqS3Y8HQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="590576542"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by orsmga005.jf.intel.com with ESMTP; 16 Mar 2021 01:03:04 -0700
+Received: from shsmsx603.ccr.corp.intel.com (10.109.6.143) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 16 Mar 2021 01:03:03 -0700
+Received: from shsmsx601.ccr.corp.intel.com (10.109.6.141) by
+ SHSMSX603.ccr.corp.intel.com (10.109.6.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 16 Mar 2021 16:03:01 +0800
+Received: from shsmsx601.ccr.corp.intel.com ([10.109.6.141]) by
+ SHSMSX601.ccr.corp.intel.com ([10.109.6.141]) with mapi id 15.01.2106.013;
+ Tue, 16 Mar 2021 16:03:01 +0800
+From:   "Li, Philip" <philip.li@intel.com>
+To:     =?iso-8859-1?Q?J=E9r=F4me_Pouiller?= <jerome.pouiller@silabs.com>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        lkp <lkp@intel.com>
+CC:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Subject: RE: [kbuild-all] Re: [PATCH] wfx: fix irqf_oneshot.cocci warnings
+Thread-Topic: [kbuild-all] Re: [PATCH] wfx: fix irqf_oneshot.cocci warnings
+Thread-Index: AQHXGjluGKy1l/wG8EupGMY1Pavj+qqGQOCw
+Date:   Tue, 16 Mar 2021 08:03:00 +0000
+Message-ID: <a8dba72b92a7407c9f2d531527137643@intel.com>
+References: <20210315132501.441681-25-Jerome.Pouiller@silabs.com>
+ <20210315210920.GA43634@d108da9836c5> <3096745.nmkoU2l6Xm@pc-42>
+In-Reply-To: <3096745.nmkoU2l6Xm@pc-42>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.239.127.36]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.3.2021 19.47, Uladzislau Rezki wrote:
-> On Mon, Mar 15, 2021 at 09:16:26AM -0700, Kees Cook wrote:
->> On Mon, Mar 15, 2021 at 01:24:10PM +0100, Uladzislau Rezki wrote:
->>> On Mon, Mar 15, 2021 at 11:04:42AM +0200, Topi Miettinen wrote:
->>>> What's the problem with that? It seems to me that nothing relies on specific
->>>> addresses of the chunks, so it should be possible to randomize these too.
->>>> Also the alignment is honored.
->>>>
->>> My concern are:
->>>
->>> - it is not a vmalloc allocator;
->>> - per-cpu allocator allocates chunks, thus it might be it happens only once. It does not allocate it often;
->>
->> That's actually the reason to randomize it: if it always ends up in the
->> same place at every boot, it becomes a stable target for attackers.
->>
-> Probably we can randomize a base address only once when pcpu-allocator
-> allocates a fist chunk during the boot.
+> Subject: [kbuild-all] Re: [PATCH] wfx: fix irqf_oneshot.cocci warnings
 > 
->>> - changing it will likely introduce issues you are not aware of;
->>> - it is not supposed to be interacting with vmalloc allocator. Read the
->>>    comment under pcpu_get_vm_areas();
->>>
->>> Therefore i propose just not touch it.
->>
->> How about splitting it from this patch instead? Then it can get separate
->> testing, etc.
->>
-> It should be split as well as tested.
+> Hello,
+> 
+> On Monday 15 March 2021 22:09:20 CET kernel test robot wrote:
+> >
+> > From: kernel test robot <lkp@intel.com>
+> >
+> > drivers/net/wireless/silabs/wfx/bus_sdio.c:134:8-33: ERROR: Threaded IRQ with no primary handler requested without
+> IRQF_ONESHOT
+> >
+> >  Since commit 1c6c69525b40 ("genirq: Reject bogus threaded irq requests")
+> >  threaded IRQs without a primary handler need to be requested with
+> >  IRQF_ONESHOT, otherwise the request will fail.
+> >
+> >  So pass the IRQF_ONESHOT flag in this case.
+> >
+> > Generated by: scripts/coccinelle/misc/irqf_oneshot.cocci
+> >
+> > CC: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: kernel test robot <lkp@intel.com>
+> > ---
+> >
+> > url:    https://github.com/0day-ci/linux/commits/Jerome-Pouiller/wfx-get-out-from-the-staging-area/20210315-212855
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git b828324bba8f575fde487a91fec07303789dda8a
+> >
+> >  bus_sdio.c |    3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > --- a/drivers/net/wireless/silabs/wfx/bus_sdio.c
+> > +++ b/drivers/net/wireless/silabs/wfx/bus_sdio.c
+> > @@ -132,7 +132,8 @@ static int wfx_sdio_irq_subscribe(void *
+> >                 flags = IRQF_TRIGGER_HIGH;
+> >         flags |= IRQF_ONESHOT;
+> >         return devm_request_threaded_irq(&bus->func->dev, bus->of_irq, NULL,
+> > -                                        wfx_sdio_irq_handler_ext, flags,
+> > +                                        wfx_sdio_irq_handler_ext,
+> > +                                        flags | IRQF_ONESHOT,
+> >                                          "wfx", bus);
+> >  }
+> >
+> >
+> 
+> Obviously, "flags" always contains IRQF_ONESHOT. So, it is a false positive.
+Thanks for the feedback. Sorry about this false positive, this had been disabled
+for auto report now.
 
-Would you prefer another kernel option `randomize_percpu_allocator=1`, 
-or would it be OK to make it a flag in `randomize_vmalloc`, like 
-`randomize_vmalloc=3`? Maybe the latter would not be compatible with 
-static branches.
-
--Topi
-
+> 
 > 
 > --
-> Vlad Rezki
+> Jérôme Pouiller
 > 
-
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
