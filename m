@@ -2,136 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630C333E139
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 426C133E143
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhCPWNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 18:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39636 "EHLO
+        id S230512AbhCPWSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 18:18:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230397AbhCPWNL (ORCPT
+        with ESMTP id S229602AbhCPWRw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 18:13:11 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE83C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 15:13:11 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id dz17so26300771qvb.14
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 15:13:11 -0700 (PDT)
+        Tue, 16 Mar 2021 18:17:52 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E75C06174A;
+        Tue, 16 Mar 2021 15:17:51 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id e9so8233670wrw.10;
+        Tue, 16 Mar 2021 15:17:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=vtgRgwp3OG8K6vsJvF4Dtg98thkG7u9zuASSiMamQUE=;
-        b=ijrskwi4mMFIwGdOD/3UdD7CM1bNzbhCcBR9MI66cVybuo1/Wbx/Jh3af0ZJ20EVe6
-         ynTZxggxAzItdPSQvGA2+guqcclfMer4/TMTZv5bSd0nMJUgz0TGFNGjz1kwiQMYq4Fl
-         e9kyB1usbegxxpms9ht0LYP3Xhr++QtQ12WODJeiMDFY2T5KoRTOeFHofBxUpM4aamLX
-         DTtITKL9G6mwHXlEjwSbjcaZm5DaVAzQq4Laytbe798Ey8nWdfGSfXp0QiRaIOQjk8jO
-         ft7aly5LFgSPFcWwzzMn0PlHm6lG0VNT5eY/rd0aUQsUHylzMqwVpti6vZB9Gqz9gwkH
-         yOXg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kRA0HCbEjT4GZQCeNIs3PSJKICgvU616s1ESCC3pTK0=;
+        b=NJaUaSprJa36hY/KVAoa+aRlI3mTw2pTEgLdQrvubH4tFieFibPRmLK8HlMfV7EyoB
+         F4L8wblPUyyPpDJuioJUVCzgDAfNXqO0Guhdr1n6U3wowU8ifVbyM1/uKLySO3KyZPvk
+         6qYqMv/ykaogHeItXU/N8Hp6Cb7JmWp8p3jyfxYSR2gUg49UFIYpQfo3ibEbRrG2+V0W
+         cPowHEOno7Coa6TPyrlnCSoEGBXc1HLMb1fox7u8AyR3amKtrvfXKJ38Q0EEI4QXxnzw
+         XBdU5+Hnnw5lk3OJsecQ0ptD4+HNNDufwn/Xk6HVa195cVepsQqVUEUIVclo53cCqsL4
+         AM1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=vtgRgwp3OG8K6vsJvF4Dtg98thkG7u9zuASSiMamQUE=;
-        b=V4FAWIBO8NjIHyf16MJzaG7ZTJEII46seBg66UbL7u7Xax6vqh2350tmRaDpENDfQp
-         9dgea/LxSAzfqM7w3cPpJGgXw95f5MvdOf96Lzr+s1+Dkbkwskr712OJhdRqTsrIC7BM
-         oR7E04PNrDGuKUL/jRj2x1NOQExomgoK7/rFuerr8hVWxjHBzHPXfzW25SPNCNZQ0wja
-         epQZEzX7ZDxWlfF2KRCfP86SDTIkPTVSbWZIdIi3jcbw5MLLt3SWsloP4ZLWVN0Cqres
-         4g4ljiqHcBv4dL7phZl8JM4UpzdyQhmp7p9y4NczXoAU77YNZEzS8JphSnwcdP+bu4P7
-         cABQ==
-X-Gm-Message-State: AOAM532M3eKXcJpvrsyIW+cDolgjwIHzQOH0n1RNr0j1m5j2GfX5rOp2
-        gpRMiK6kOJjvDJyEsiXStGRRM5mGIuA=
-X-Google-Smtp-Source: ABdhPJxtuQmNVTMcIyTjuNgp/SF3U6Zj7cJYEHydLeEX3QTW1V8z5873ecf9mE3scX2erSDdHnjubwky9u8=
-X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:e53d:77e7:f975:af74])
- (user=badhri job=sendgmr) by 2002:a0c:e9c7:: with SMTP id q7mr2129267qvo.7.1615932790400;
- Tue, 16 Mar 2021 15:13:10 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 15:13:04 -0700
-Message-Id: <20210316221304.391206-1-badhri@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v1] usb: typec: tcpci: Added few missing TCPCI register definitions
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kRA0HCbEjT4GZQCeNIs3PSJKICgvU616s1ESCC3pTK0=;
+        b=tWJTyHQAywJQNl6e7t4PkWN9rrPtHe/4qC0sLFMOIxd+rLRNLjNSSpH9heTRYveHBW
+         18U/4GKqf5zgO/dX1Tpz5o4XQma4VBNpqZPXE0wugPqfeMNipgZp8cC4oLZAnr5u0W9K
+         T32PPr450L4ZJpIQVkZjZirmc4FPwuQBacEdJIWTmlGfJNM4VsZq+E7kP8KrtoVXSta8
+         OVJSnbZEG4HYK4Aw/54GyL55G6enUafaSh589cto8dqDayleiVjtVfK2/MGUqNtIxNkA
+         bLgGFVhd7KyE4QzexENkTI4C8o1/Oo54yN/sOVshWMIy38YnZ6K7hr0ualIbfswd/KKg
+         K14Q==
+X-Gm-Message-State: AOAM532oIugp0V0bMxMwWrCG40Qkc63eJSyfxN6VfQcSgmqH2NL7KHeu
+        gT0nLACmoWkEUWCRKbQnjlI=
+X-Google-Smtp-Source: ABdhPJzOp+ns2T7fZHW0zHZoOIrO5Dx7kB274pAizU3zKUV8TfAPTr9nvT+Xanapt/lbpE21QS/vVg==
+X-Received: by 2002:a5d:4686:: with SMTP id u6mr1168656wrq.60.1615933070114;
+        Tue, 16 Mar 2021 15:17:50 -0700 (PDT)
+Received: from luca020400-laptop-arch.lan ([2001:b07:5d33:19f:ea1f:2342:ea78:219a])
+        by smtp.googlemail.com with ESMTPSA id 1sm1151960wmj.0.2021.03.16.15.17.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 15:17:49 -0700 (PDT)
+From:   Luca Stefani <luca.stefani.ge1@gmail.com>
+Cc:     chiu@endlessm.com, Luca Stefani <luca.stefani.ge1@gmail.com>,
+        Corentin Chary <corentin.chary@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        acpi4asus-user@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/x86: asus-wmi: Disable fn-lock mode by default
+Date:   Tue, 16 Mar 2021 23:17:47 +0100
+Message-Id: <20210316221747.90829-1-luca.stefani.ge1@gmail.com>
+X-Mailer: git-send-email 2.31.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change adds some of the register bit definitions from the TCPCI spec:
-https://www.usb.org/sites/default/files/documents/
-usb-port_controller_specification_rev2.0_v1.0_0.pdf
+* On recent ZenBooks the fn-lock is disabled
+  by default on boot while running Windows.
 
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+* Follow the same paradigm also here.
+
+Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
 ---
- drivers/usb/typec/tcpm/tcpci.h | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/platform/x86/asus-wmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/typec/tcpm/tcpci.h b/drivers/usb/typec/tcpm/tcpci.h
-index 57b6e24e0a0c..2be7a77d400e 100644
---- a/drivers/usb/typec/tcpm/tcpci.h
-+++ b/drivers/usb/typec/tcpm/tcpci.h
-@@ -47,7 +47,10 @@
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index 9ca15f724343..32319f7d6e17 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -2673,7 +2673,7 @@ static int asus_wmi_add(struct platform_device *pdev)
+ 		err = asus_wmi_set_devstate(ASUS_WMI_DEVID_BACKLIGHT, 2, NULL);
  
- #define TCPC_TCPC_CTRL			0x19
- #define TCPC_TCPC_CTRL_ORIENTATION	BIT(0)
-+#define PLUG_ORNT_CC1			0
-+#define PLUG_ORNT_CC2			1
- #define TCPC_TCPC_CTRL_BIST_TM		BIT(1)
-+#define TCPC_TCPC_CTRL_EN_LK4CONN_ALRT	BIT(6)
+ 	if (asus_wmi_has_fnlock_key(asus)) {
+-		asus->fnlock_locked = true;
++		asus->fnlock_locked = false;
+ 		asus_wmi_fnlock_update(asus);
+ 	}
  
- #define TCPC_EXTENDED_STATUS		0x20
- #define TCPC_EXTENDED_STATUS_VSAFE0V	BIT(0)
-@@ -74,21 +77,28 @@
- #define TCPC_POWER_CTRL_VCONN_ENABLE	BIT(0)
- #define TCPC_POWER_CTRL_BLEED_DISCHARGE	BIT(3)
- #define TCPC_POWER_CTRL_AUTO_DISCHARGE	BIT(4)
-+#define TCPC_DIS_VOLT_ALRM		BIT(5)
-+#define TCPC_POWER_CTRL_VBUS_VOLT_MON	BIT(6)
- #define TCPC_FAST_ROLE_SWAP_EN		BIT(7)
- 
- #define TCPC_CC_STATUS			0x1d
- #define TCPC_CC_STATUS_TOGGLING		BIT(5)
- #define TCPC_CC_STATUS_TERM		BIT(4)
-+#define TCPC_CC_STATUS_TERM_RP		0
-+#define TCPC_CC_STATUS_TERM_RD		1
-+#define TCPC_CC_STATE_SRC_OPEN		0
- #define TCPC_CC_STATUS_CC2_SHIFT	2
- #define TCPC_CC_STATUS_CC2_MASK		0x3
- #define TCPC_CC_STATUS_CC1_SHIFT	0
- #define TCPC_CC_STATUS_CC1_MASK		0x3
- 
- #define TCPC_POWER_STATUS		0x1e
-+#define TCPC_POWER_STATUS_DBG_ACC_CON	BIT(7)
- #define TCPC_POWER_STATUS_UNINIT	BIT(6)
- #define TCPC_POWER_STATUS_SOURCING_VBUS	BIT(4)
- #define TCPC_POWER_STATUS_VBUS_DET	BIT(3)
- #define TCPC_POWER_STATUS_VBUS_PRES	BIT(2)
-+#define TCPC_POWER_STATUS_SINKING_VBUS	BIT(0)
- 
- #define TCPC_FAULT_STATUS		0x1f
- 
-@@ -121,6 +131,10 @@
- #define TCPC_RX_DETECT			0x2f
- #define TCPC_RX_DETECT_HARD_RESET	BIT(5)
- #define TCPC_RX_DETECT_SOP		BIT(0)
-+#define TCPC_RX_DETECT_SOP1		BIT(1)
-+#define TCPC_RX_DETECT_SOP2		BIT(2)
-+#define TCPC_RX_DETECT_DBG1		BIT(3)
-+#define TCPC_RX_DETECT_DBG2		BIT(4)
- 
- #define TCPC_RX_BYTE_CNT		0x30
- #define TCPC_RX_BUF_FRAME_TYPE		0x31
-@@ -139,6 +153,8 @@
- #define TCPC_TX_DATA			0x54 /* through 0x6f */
- 
- #define TCPC_VBUS_VOLTAGE			0x70
-+#define TCPC_VBUS_VOLTAGE_MASK			0x3ff
-+#define TCPC_VBUS_VOLTAGE_LSB_MV		25
- #define TCPC_VBUS_SINK_DISCONNECT_THRESH	0x72
- #define TCPC_VBUS_SINK_DISCONNECT_THRESH_LSB_MV	25
- #define TCPC_VBUS_SINK_DISCONNECT_THRESH_MAX	0x3ff
 -- 
-2.31.0.rc2.261.g7f71774620-goog
+2.31.0
 
