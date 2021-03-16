@@ -2,109 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED6433DAEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7CD33DAF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:28:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237052AbhCPR1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234870AbhCPR0o (ORCPT
+        id S238048AbhCPR1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:27:52 -0400
+Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:40457 "EHLO
+        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239011AbhCPR1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:26:44 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1878CC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:26:43 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id z5so17294133plg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:26:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=j2TcsItQe9mXM2OmXCX8WBXwODoYV6ptAcT0XjuWaxM=;
-        b=BlLOKdjSYi530fvJUVRZor11SX8QYxGIJTizXqSLZqbaiDPNo/hd93yLlWm54Ieck5
-         pbhiVeyo3X2+CmWY0rtJ77+WatqV/iiFURp6biPWmZAEuey8ore8I9zeQReMjVwV4w/N
-         +Wq3MhOa8aIiiB6HksiIJlcHOLDcW3gqWVLP0eQPsVxXfgHA1Xsq4QfnrSFabMz5/N4K
-         JtesF5lr6As5uETTk+4V5L7NNZjbqGtPhnIGmLIvStzTWzL5RwWyjAYW/4kus8GOG+85
-         1G6r3r3m5aI5lZ4vod10ujaWdM1LHQaSEJUt7JQeEYyQhfVt2g0BsG7i0JWGZQ20mfkV
-         cktQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j2TcsItQe9mXM2OmXCX8WBXwODoYV6ptAcT0XjuWaxM=;
-        b=mtVCSbYjt4dXi1iiTmvf4R3epeMRAzvQJESEhlmmYkWlw+A8pUpdCYDQC1yEiKz//S
-         /LPIgqFBadA2iLudwV7cTgtO6oJ0yyFvPqoCsZhQBKUybWaZAt30/Pzec48RFw0GnFh3
-         PXg/TORLSDma/aFS3dEHJGPfi3J9jByPSmRjYb3LVmgVTim/K9nzyQfQZw2hIOdnNR+L
-         UfuMyqSl6Htygc7uTSpr1S2jkJc1kPv8FKWKGPtOS5bL5/YSPMOYLRyRwxUjWw1041xB
-         kVbfEe8M6YQmtg28uSNYd/2DmGCGw/zlJyY83XMX8J6Qc7Pl23lKPzzIR2u3HMLcRucP
-         n35A==
-X-Gm-Message-State: AOAM532mcacmYU3ONQqDGvjpfVK3ui7fHHYP9a0vOr7qdhWn0/lt6JOU
-        xk1i5MQf+3YKuhywBFfxcatSsg==
-X-Google-Smtp-Source: ABdhPJxNZcjAFFJsfZ7IAiaY+ADgAHYgbHJvlqfBYXAVaBV7g/B2afo1aLMwBdBB9KW8U/DxDiyCQg==
-X-Received: by 2002:a17:902:edc2:b029:e4:3738:9b23 with SMTP id q2-20020a170902edc2b02900e437389b23mr554373plk.37.1615915602144;
-        Tue, 16 Mar 2021 10:26:42 -0700 (PDT)
-Received: from google.com ([2620:15c:f:10:e113:95c2:2d1:e304])
-        by smtp.gmail.com with ESMTPSA id g26sm17464964pge.67.2021.03.16.10.26.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 10:26:41 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 10:26:34 -0700
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Tue, 16 Mar 2021 13:27:16 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id MDT9lIY9sjVXQMDTDl68iJ; Tue, 16 Mar 2021 18:27:04 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1615915624; bh=FAnL5U6m7KjS6cuB1S5VNJyuQFtvLlu+wZ5hH4230Pg=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=qqswWAhMv703QV0j+ha0crlyaU6Mu1JgLCUIV3SrmgXFvAqGf8ytABNM4DjRDbLD+
+         jBcqk6cAaWqBvMegzieRTmbiyoWS82htf7OfbNJI33knFjh4KOMSm9lwDe6KZvfYAR
+         gKhXypxVuqwhjtpIVdQuIS2Wo1fUgj2npCUaGPdH88N8vsJ6wf6oIMf6/+KTbEK+mV
+         BHItfVPdV4iFh5s/8sD02/yEcSElWkjKzm/8i6eX49HPZdGCGInXIuggQ2DyxIzopg
+         RE0k1v14AoJ5Oc6s9sxcSKnbS26+GSbBwD2cx1laYwU+czzEGEn7FPq1hIYyun9aFx
+         KAkKs0oRowoCw==
+Subject: Re: [syzbot] KMSAN: uninit-value in video_usercopy (2)
+To:     Arnd Bergmann <arnd@arndb.de>, Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+142888ffec98ab194028@syzkaller.appspotmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH 2/3] KVM: x86: guest debug: don't inject interrupts while
- single stepping
-Message-ID: <YFDqSisnoWD5wVdP@google.com>
-References: <1259724f-1bdb-6229-2772-3192f6d17a4a@siemens.com>
- <bede3450413a7c5e7e55b19a47c8f079edaa55a2.camel@redhat.com>
- <ca41fe98-0e5d-3b4c-8ed8-bdd7cd5bc60f@siemens.com>
- <71ae8b75c30fd0f87e760216ad310ddf72d31c7b.camel@redhat.com>
- <2a44c302-744e-2794-59f6-c921b895726d@siemens.com>
- <1d27b215a488f8b8fc175e97c5ab973cc811922d.camel@redhat.com>
- <727e5ef1-f771-1301-88d6-d76f05540b01@siemens.com>
- <e2cd978e357155dbab21a523bb8981973bd10da7.camel@redhat.com>
- <CAMS+r+XFLsFRFLGLaAH3_EnBcxOmyN-XiZqcmKEx2utjNErYsQ@mail.gmail.com>
- <31c0bba9-0399-1f15-a59b-a8f035e366e8@siemens.com>
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Peilin Ye <yepeilin.cs@gmail.com>
+References: <0000000000005ace4405bda4af71@google.com>
+ <CACT4Y+ZJvG+H0Gz9x6cA5qz9=Bf8AdjXaJrQ3GLcwMTj3gPC=Q@mail.gmail.com>
+ <CAK8P3a1Ea=NM02jfoWZtV7tbAHbhq7eoP1_SvqcPdRZ49+3dog@mail.gmail.com>
+ <CACT4Y+Y1_WE1z9TVXwbo8ombG8_abD+mY3cwMEigOVYGenDQRA@mail.gmail.com>
+ <CAK8P3a0k-yaGa+0S_rKo52n4Bd2e3bd=Ybj23xY1vO_atV7QKA@mail.gmail.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <a4a86215-97b8-bb42-6eb4-17dc77c66316@xs4all.nl>
+Date:   Tue, 16 Mar 2021 18:26:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <31c0bba9-0399-1f15-a59b-a8f035e366e8@siemens.com>
+In-Reply-To: <CAK8P3a0k-yaGa+0S_rKo52n4Bd2e3bd=Ybj23xY1vO_atV7QKA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfGwan4mxJOGxdFF+YQx3X+ABUkDFbd4aFfGGJalwE5bO56Wp94GXoOI3L24r4lMtcLEvOgUHDAgEPeZok872qcBA1Y664/lY0LO1VUUtEU4YysTgFg+I
+ 4XAUeC5bVJdhB2l0AlQ23W78vx6sBQihryPmDuI+ETw4RXW7d1lssPq0nYDsOr6bH2AhSPLBYMRAEpZ7juHFWE88Qd7gv9dHdTE7szmGNk7YIa3gfz1ZXt76
+ Bs3aHzLNvpIieA4cw3aMW2ztCf9ZOxRg7OOMwpeQWZdtvrtUlUcKbHVNB/H1BM3TGbQs0QlSIs48aGBjCMcN3aecoR8Fp78Tw97S6eHTiH34DzVj3qUOMRni
+ z+FtUUQsFwrXgSC3rFCZA7m7fYgIM0znbL6VHlH1ZWGaHHIDidePh8OIWdNzAJ6Dgml3xpGEBE65EFlI0PrjQyp4nL1ISO8sPmNEianpccgUxPJS6NV2Jf9S
+ 5hpWT/pOACwLX3JoTn8FkAUvnZu0RySAsTsDxpMH0X+chQIlzmJJL/0Arnf2bSsls7+P6gHBFdHJ29oR2vcsDbE6rzA2Ssq+eYrgmU19j5EC0Py1ZTfcWlWd
+ 3+y28WsB5zbaMsoIngPicI8e2aGFoHASac/QmNQwbMQp2p0LVbSL0QtvXmjkXBF0e8k4UPrqHDSOc7IDDilVBd8C8yjHWqFt6kSCX0AcEXCvFA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021, Jan Kiszka wrote:
-> On 16.03.21 17:50, Sean Christopherson wrote:
-> > Rather than block all events in KVM, what about having QEMU "pause" the timer?
-> > E.g. save MSR_TSC_DEADLINE and APIC_TMICT (or inspect the guest to find out
-> > which flavor it's using), clear them to zero, then restore both when
-> > single-stepping is disabled.  I think that will work?
-> > 
+On 16/03/2021 16:06, Arnd Bergmann wrote:
+> On Tue, Mar 16, 2021 at 3:02 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>> On Tue, Mar 16, 2021 at 2:56 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>>> On Tue, Mar 16, 2021 at 11:44 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>>>> On Tue, Mar 16, 2021 at 11:18 AM syzbot
+>>>> <syzbot+142888ffec98ab194028@syzkaller.appspotmail.com> wrote:
+>>>>>
+>>>>> Hello,
+>>>>>
+>>>>> syzbot found the following issue on:
+>>>>>
+>>>>> HEAD commit:    29ad81a1 arch/x86: add missing include to sparsemem.h
+>>>
+>>> This tree seems to be missing fb18802a338b ("media: v4l: ioctl: Fix memory
+>>> leak in video_usercopy"), which rewrote that function partly and might
+>>> fix the problem.
+>>>
+>>>>> Local variable ----sbuf@video_usercopy created at:
+>>>>>  video_usercopy+0xaa/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3285
+>>>>>  video_usercopy+0xaa/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3285
+>>>>> =====================================================
+>>>>> =====================================================
+>>>>> BUG: KMSAN: uninit-value in check_fmt+0x864/0x1070 drivers/media/v4l2-core/v4l2-ioctl.c:963
+>>>>> CPU: 0 PID: 19595 Comm: syz-executor.4 Tainted: G    B             5.11.0-rc7-syzkaller #0
+>>>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>>>>> Call Trace:
+>>>>>  __dump_stack lib/dump_stack.c:79 [inline]
+>>>>>  dump_stack+0x21c/0x280 lib/dump_stack.c:120
+>>>>>  kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+>>>>>  __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+>>>>>  check_fmt+0x864/0x1070 drivers/media/v4l2-core/v4l2-ioctl.c:963
+>>>>>  v4l_prepare_buf+0xbf/0x1d0 drivers/media/v4l2-core/v4l2-ioctl.c:2107
+>>>>>  __video_do_ioctl+0x15cd/0x1d20 drivers/media/v4l2-core/v4l2-ioctl.c:2993
+>>>>>  video_usercopy+0x2313/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3345
+>>>>>  video_ioctl2+0x9f/0xb0 drivers/media/v4l2-core/v4l2-ioctl.c:3391
+>>>>>  v4l2_ioctl+0x255/0x290 drivers/media/v4l2-core/v4l2-dev.c:360
+>>>>>  v4l2_compat_ioctl32+0x2c6/0x370 drivers/media/v4l2-core/v4l2-compat-ioctl32.c:1248
+>>>>>  __do_compat_sys_ioctl fs/ioctl.c:842 [inline]
+>>>>>  __se_compat_sys_ioctl+0x53d/0x1100 fs/ioctl.c:793
+>>>>>  __ia32_compat_sys_ioctl+0x4a/0x70 fs/ioctl.c:793
+>>>>>  do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+>>>>>  __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:141
+>>>>>  do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:166
+>>>>>  do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:209
+>>>>>  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+>>>>> RIP: 0023:0xf7fec549
+>>>>> Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+>>>>> RSP: 002b:00000000f55e65fc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
+>>>>> RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000c050565d
+>>>>> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+>>>>> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+>>>>> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+>>>>> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+>>>>>
+>>>>> Local variable ----sbuf@video_usercopy created at:
+>>>>>  video_usercopy+0xaa/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3285
+>>>>>  video_usercopy+0xaa/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3285
+>>>>> =====================================================
+>>>>
+>>>> I did not get to the very bottom of this, but I looked at this a bit.
+>>>> It seems to be related to some unfortunate interaction of compat
+>>>> syscall and CONFIG_COMPAT_32BIT_TIME. It seems that in this case
+>>>> nothing at all is copied from userspace because cmd gets messed up or
+>>>> something. Perhaps VIDIOC_QUERYBUF is translated into
+>>>> VIDIOC_QUERYBUF_TIME32 instead of VIDIOC_QUERYBUF32_TIME32 and then
+>>>> this gets into compat syscall path and v4l2_compat_get_user does not
+>>>> recognize the command, copies nothing but returns 0.
+>>>
+>>> User space would be calling VIDIOC_QUERYBUF32_TIME32 here,
+>>> if it's built against glibc, though with a musl based user space, you
+>>> would get called with VIDIOC_QUERYBUF32.
+>>
+>> Or somebody fetching somebody else's credit card number will be
+>> calling VIDIOC_QUERYBUF_TIME32 directly ;)
 > 
-> No one can stop the clock, and timers are only one source of interrupts.
-> Plus they do not all come from QEMU, some also from KVM or in-kernel
-> sources directly.
+> Ah of course, I forgot the ioctl command may already be fuzzed here.
+> 
+> When I look at
+> https://syzkaller.appspot.com/text?tag=CrashLog&x=12bd0e3ad00000
+> 
+> I see 0xc0585609, which would be a VIDIOC_QUERYBUF with
+> size=0x58, which is the native ioctl, not the compat one. This
+> is something we didn't expect to get passed into the compat ioctl
+> handler, but should of course handle gracefully
+> 
+> If the command were to get is the 64-bit version of
+> VIDIOC_QUERYBUF_TIME32 (0xc0505609), then it gets converted to
+> VIDIOC_QUERYBUF by video_translate_cmd().
+> If it's VIDIOC_QUERYBUF, it stays that way.
+> 
+> It does break down in v4l2_compat_get_user() when we get
+> called with VIDIOC_QUERYBUF_TIME32, since that leads
+> to not copying at all, as you guessed.
+> 
+> I think this should fix the case of passing
+> VIDIOC_QUERYBUF_TIME32:
 
-But are any other sources of interrupts a chronic problem?  I 100% agree that
-this would not be a robust solution, but neither is blocking events in KVM.  At
-least with this approach, the blast radius is somewhat contained.
+I tested this and I can confirm that this works.
 
-> Would quickly become a mess.
+Arnd, do you want to make a patch for this? If so, you can add my
 
-Maybe, but it'd be Qemu's mess ;-)
+Tested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+
+Regards,
+
+	Hans
+
+> 
+> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> @@ -3115,7 +3115,7 @@ static int check_array_args(unsigned int cmd,
+> void *parg, size_t *array_size,
+>  static unsigned int video_translate_cmd(unsigned int cmd)
+>  {
+>         switch (cmd) {
+> -#ifdef CONFIG_COMPAT_32BIT_TIME
+> +#if !defined(CONFIG_64BIT) && defined(CONFIG_COMPAT_32BIT_TIME)
+>         case VIDIOC_DQEVENT_TIME32:
+>                 return VIDIOC_DQEVENT;
+>         case VIDIOC_QUERYBUF_TIME32:
+> 
+>        Arnd
+> 
+
