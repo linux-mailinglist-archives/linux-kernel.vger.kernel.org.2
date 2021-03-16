@@ -2,141 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29ADE33D1A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED8333D1A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236610AbhCPKSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 06:18:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236411AbhCPKR7 (ORCPT
+        id S236628AbhCPKSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 06:18:37 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:53739 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236411AbhCPKSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 06:17:59 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA79FC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 03:17:58 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id 94so11202096qtc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 03:17:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eFQPVLUfS53IJIXq7EsY2KvnwcOJrlsdzLKjZq2BXDY=;
-        b=fUXspIhe4anHCXrLL7/6HWBV51o5i52Sepbas3YvuBJJQqOxGi1Q6dIpdMoFteNiAc
-         Hf2jwwtlEcoBAEMTMq4HF2rCF5qlnYbca9Jo8WPWi0ufHJt+JcsFezmBEZ+/4AvvtYT0
-         aoSnMKmomgxVY+COSxxGoOc6gxx0NlnsafuaCXjXVZG9cI3Y4NPkt4tfevqcd8i0uCCB
-         HtSyEVSXqZSsID+nVqqYIwXvNzrARebAcSiXxg9DOMWcwa2X0OWBq+wSAXISRGAMA0r1
-         Uh1nir4VmWooaNbvXAS+fraTgXXrpvkurwFNjCRIUgFsSJ31Ta6Ve4NecUBo9LUwsmTp
-         /DKg==
+        Tue, 16 Mar 2021 06:18:18 -0400
+Received: by mail-io1-f69.google.com with SMTP id r10so22839342iod.20
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 03:18:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eFQPVLUfS53IJIXq7EsY2KvnwcOJrlsdzLKjZq2BXDY=;
-        b=HCgvugyNzWV6heyE+krG7HaraO+y1FrfZCWbvrgpyD/DuM/LBJWXkLIMbfvjjLkeLv
-         Jr5Sp6byo3Xbg5x9NQ9Je1v2vWP9GLiZkKD3AC+mOYV+J0aqrKok1sbBjY/f0Xib6GdR
-         emIq89kND+XPPC04RfXI2Fh2KmoRPQmqKSUdw5+p2f6EV4MdbISaGkJI1vYg1Cy8d1jJ
-         8tnSnAAgOvkrBLlHq8VbCAhATK32OdjVYHfD0yORr7JjUjAkJ+YtcpMpzDbWkcNRki2I
-         ki03PW/H4ZquUL4JfvD6bWAWQPReEQoCvIN5iLKTqDYqjnpVAqtZO63neey7xNAboqkU
-         JmsQ==
-X-Gm-Message-State: AOAM533t9T2PEETO6Xp5c2ger6oymJvejiUHlzSmQ1VPJe4AcN19vjPY
-        jKyGy7wYBx6ymojMdKEgzNeSwrxt5h4vLsnzpila8A==
-X-Google-Smtp-Source: ABdhPJyrXdmYgwLW+yfTnxygbHdMoq3RO7SC7RN94L7krldLOgF8gr2zvcrbMSKWZX9r1msisPxjBQrY95SB8Ipcf3I=
-X-Received: by 2002:aed:2c61:: with SMTP id f88mr26277893qtd.337.1615889877043;
- Tue, 16 Mar 2021 03:17:57 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=BoEvcZGBDH2kT4i9Bl5G2G/txuwNInAz84VzIgpeD4U=;
+        b=fWnF8VqrrOOtd18i2DBZbiuFiozpVkwrRbZmBOuHMgbyaft3yugeIb4/0qbD1A7bHV
+         HRUWS44+Uk0A4e61l1Iy1I8UhNR2le1U8yj3ulUtCqHJzKl6juFHgciLak4ngALfX2yL
+         TUDkZu4poNXOFqptV9KxVX2PfMAOlqx4J4Bg+q3HtGTLby41qYw8zb7ppWa+DsW63dOG
+         7DBLA4RQU/cfLYzgj6OqbYoVgq7fJVMae0nfmLqjuCCO2MlVTMpvbjI4S0eV3p1g59+6
+         PzqHa/aqb6joj7n13z+aAE+hzwDScVV53nlhnISKuQfO/LWRxYbii7BFKaE8G8k829AP
+         8bvA==
+X-Gm-Message-State: AOAM532r8I6R584XQGyUaz0IOYnG5fwl/OYRxu4t8IoPKne5szjHe67o
+        LLO3Cwl/8Z8nB+zThxDColHO39DVZI8fKLIyhGm8LBLATe8y
+X-Google-Smtp-Source: ABdhPJxJrX0QNM+dGP5aboGB+Zxt+rD66/9Py5gSu6IfJdODdVEn/A5pYxo4Y3AEAWATNAV7DyePpP06J/4DAF7n+pefoUk/GiVd
 MIME-Version: 1.0
-References: <00000000000069802205bda22b7f@google.com> <CACT4Y+Yaq-zDh5FAzHt4g-5jXrXC3rSLw6CM=kjcfR6oxJ1+CA@mail.gmail.com>
- <CAK8P3a1qtHVBY47FfCa6R9+sObzMCwxkREii+O2g8PPopw87eQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a1qtHVBY47FfCa6R9+sObzMCwxkREii+O2g8PPopw87eQ@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 16 Mar 2021 11:17:45 +0100
-Message-ID: <CACT4Y+aC0YWU6gM32S3NoT+-wR7B1-_rhPyh4w542h21UCRRGw@mail.gmail.com>
-Subject: Re: [syzbot] kernel panic: corrupted stack end in openat
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     syzbot <syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+X-Received: by 2002:a05:6602:722:: with SMTP id g2mr2745168iox.1.1615889897802;
+ Tue, 16 Mar 2021 03:18:17 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 03:18:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005ace4405bda4af71@google.com>
+Subject: [syzbot] KMSAN: uninit-value in video_usercopy (2)
+From:   syzbot <syzbot+142888ffec98ab194028@syzkaller.appspotmail.com>
+To:     arnd@arndb.de, glider@google.com, hverkuil-cisco@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, mchehab@kernel.org,
+        niklas.soderlund+renesas@ragnatech.se,
+        sakari.ailus@linux.intel.com, sergey.senozhatsky@gmail.com,
+        syzkaller-bugs@googlegroups.com, yepeilin.cs@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 11:02 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> > On Tue, Mar 16, 2021 at 8:18 AM syzbot
-> > <syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    1e28eed1 Linux 5.12-rc3
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=167535e6d00000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=e0cee1f53de33ca3
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=0b06ef9b44d00d600183
-> > > userspace arch: arm
-> > >
-> > > Unfortunately, I don't have any reproducer for this issue yet.
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com
-> >
-> > +arm32 maintainer
-> > I think this is a real stack overflow on arm32, the stack is indeed deep.
->
-> Nice find. I see there was already a second report, so it seems to be
-> reproducible as well.
-> If you are able to trigger this reliably, you could try printing the frame
-> pointer while unwinding to see what is actually going on:
->
-> --- a/arch/arm/kernel/traps.c
-> +++ b/arch/arm/kernel/traps.c
-> @@ -68,8 +68,8 @@ void dump_backtrace_entry(unsigned long where,
-> unsigned long from,
->         unsigned long end = frame + 4 + sizeof(struct pt_regs);
->
->  #ifdef CONFIG_KALLSYMS
-> -       printk("%s[<%08lx>] (%ps) from [<%08lx>] (%pS)\n",
-> -               loglvl, where, (void *)where, from, (void *)from);
-> +       printk("%s[<%08lx>] (%ps) from [<%08lx>] (%pS), frame %08lx\n",
-> +               loglvl, where, (void *)where, from, (void *)from, frame);
->  #else
->         printk("%sFunction entered at [<%08lx>] from [<%08lx>]\n",
->                 loglvl, where, from);
->
-> If that doesn't help, I could have a look at the binary to see which
-> functions in the call chain take a lot of stack space, if any.
->
-> Which exact compiler version do you use for building these
-> kernels? I can try doing a build with the same commit and config.
->
-> This one function is one that I have seen before when looking at build
-> warnings with KASAN:
->
-> > > [<8073772c>] (integrity_kernel_read) from [<8073a904>] (ima_calc_file_hash_tfm+0x178/0x228 security/integrity/ima/ima_crypto.c:484)
-> > > [<8073a78c>] (ima_calc_file_hash_tfm) from [<8073ae2c>] (ima_calc_file_shash security/integrity/ima/ima_crypto.c:515 [inline])
-> > > [<8073a78c>] (ima_calc_file_hash_tfm) from [<8073ae2c>] (ima_calc_file_hash+0x124/0x8b8 security/integrity/ima/ima_crypto.c:572)
->
-> ima_calc_file_hash_tfm() has a SHASH_DESC_ON_STACK(), which by itself can
-> use up 512 bytes, but KASAN sometimes triples this number. However, I see
-> you do not actually have KASAN enabled, so there is probably more to it.
+Hello,
 
-The compiler is gcc version 10.2.1 20210110 (Debian 10.2.1-6)
-It's available in gcr.io/syzkaller/syzbot container.
-(syzbot should have been provided the compiler version, something
-broke, I've filed https://github.com/google/syzkaller/issues/2498 for
-this)
+syzbot found the following issue on:
 
-Yes, KASAN is not enabled on arm32 for now.
+HEAD commit:    29ad81a1 arch/x86: add missing include to sparsemem.h
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=102502dcd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8b976581f6bd1e7d
+dashboard link: https://syzkaller.appspot.com/bug?extid=142888ffec98ab194028
+compiler:       Debian clang version 11.0.1-2
+userspace arch: i386
 
-Re printing FP, syzbot does not use custom patches:
-http://bit.do/syzbot#no-custom-patches
-But this does not seem to be syzbot-specific. It seems that any arm32
-stack overflow report will be unactionable, so I think it would be
-useful to include this into the mainline kernel to make overflow
-reports useful for everybody (and for syzbot as a side effect).
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+142888ffec98ab194028@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in check_array_args drivers/media/v4l2-core/v4l2-ioctl.c:3041 [inline]
+BUG: KMSAN: uninit-value in video_usercopy+0x1631/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3315
+CPU: 0 PID: 19595 Comm: syz-executor.4 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ check_array_args drivers/media/v4l2-core/v4l2-ioctl.c:3041 [inline]
+ video_usercopy+0x1631/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3315
+ video_ioctl2+0x9f/0xb0 drivers/media/v4l2-core/v4l2-ioctl.c:3391
+ v4l2_ioctl+0x255/0x290 drivers/media/v4l2-core/v4l2-dev.c:360
+ v4l2_compat_ioctl32+0x2c6/0x370 drivers/media/v4l2-core/v4l2-compat-ioctl32.c:1248
+ __do_compat_sys_ioctl fs/ioctl.c:842 [inline]
+ __se_compat_sys_ioctl+0x53d/0x1100 fs/ioctl.c:793
+ __ia32_compat_sys_ioctl+0x4a/0x70 fs/ioctl.c:793
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:141
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:166
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:209
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7fec549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f55e65fc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000c050565d
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Local variable ----sbuf@video_usercopy created at:
+ video_usercopy+0xaa/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3285
+ video_usercopy+0xaa/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3285
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in check_fmt+0x864/0x1070 drivers/media/v4l2-core/v4l2-ioctl.c:963
+CPU: 0 PID: 19595 Comm: syz-executor.4 Tainted: G    B             5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ check_fmt+0x864/0x1070 drivers/media/v4l2-core/v4l2-ioctl.c:963
+ v4l_prepare_buf+0xbf/0x1d0 drivers/media/v4l2-core/v4l2-ioctl.c:2107
+ __video_do_ioctl+0x15cd/0x1d20 drivers/media/v4l2-core/v4l2-ioctl.c:2993
+ video_usercopy+0x2313/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3345
+ video_ioctl2+0x9f/0xb0 drivers/media/v4l2-core/v4l2-ioctl.c:3391
+ v4l2_ioctl+0x255/0x290 drivers/media/v4l2-core/v4l2-dev.c:360
+ v4l2_compat_ioctl32+0x2c6/0x370 drivers/media/v4l2-core/v4l2-compat-ioctl32.c:1248
+ __do_compat_sys_ioctl fs/ioctl.c:842 [inline]
+ __se_compat_sys_ioctl+0x53d/0x1100 fs/ioctl.c:793
+ __ia32_compat_sys_ioctl+0x4a/0x70 fs/ioctl.c:793
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:141
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:166
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:209
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7fec549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f55e65fc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000c050565d
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Local variable ----sbuf@video_usercopy created at:
+ video_usercopy+0xaa/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3285
+ video_usercopy+0xaa/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3285
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
