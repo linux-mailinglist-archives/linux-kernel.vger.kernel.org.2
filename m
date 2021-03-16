@@ -2,76 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19C833CC21
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 04:31:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E5D33CC24
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 04:36:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233116AbhCPDar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 23:30:47 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:56462 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhCPDad (ORCPT
+        id S233533AbhCPDfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 23:35:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231142AbhCPDff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 23:30:33 -0400
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id E69D0891AE;
-        Tue, 16 Mar 2021 16:30:29 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1615865429;
-        bh=vmWfl3H3Aa1nxkLwG2dy4DHtQEEA/roKlx2zgxf/RJM=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=12WMCtOUR7yDGv4e4UqZY9HtX2JhehEZs6gDubgLSDgsrwA+OkqPNmVvnR6BQJy1/
-         MfaJNwaPk/llcFVtCcd+WN5lq3slPPBmbKMLOdzxDY82D1YupMrxPMRZ8o9S++EbVw
-         DJt/hJRYaFFvPmTYdsygrwSSRgJz0XKXFlftieBaBsNOOpxJcslesErSa2OkZFR60u
-         dvXoqGYt6+bb5Rd2fqpg/Shlbr2bvQvQLe6ZNmGjSPi7ReTg08RThImz34Hi2WFJi+
-         PWE/McztgcoXVZBwjbvKFql6usrxYc8Bgt6yzST03y4d9t0GzLiBxPDDs591Xp/JtQ
-         6UkNA693RnOoA==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B605026550001>; Tue, 16 Mar 2021 16:30:29 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Tue, 16 Mar 2021 16:30:29 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.012; Tue, 16 Mar 2021 16:30:29 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>
-CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Mon, 15 Mar 2021 23:35:35 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A92C06174A;
+        Mon, 15 Mar 2021 20:35:34 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso6180352otq.3;
+        Mon, 15 Mar 2021 20:35:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BVKJ/YEXTMKBd4NcgbnQ+KwwhmUcOb8iKU4nX6zBVnw=;
+        b=O2AapELg9gqoK9TaZEPc0Zl+QBgHRMWPtWo+zi1VRzcpqL40AT4QfkLAr6Ew0wNpkR
+         aWSoV8L5popGCGc+cNCOo+/e9xg3njNbZzAHNKbyVNEtH+YOHdSVpnYD9UNGielItk0r
+         ztz0PdjbEUccqCURD0+gr/7S9ViDYHtSyu2vS16gX1pExmNMdjgOY3r950gv/0tdYRvB
+         sdEUJ9XqfNe+G4sfF6M1FccvE6CDkzd8eNI9ZdNzoBuusIX/F0C8R29VcrpB4RGP1l7X
+         FgFR8qNgDkKZSl/qCmKoRPX0Ta6Tw6KAlW7NyWe4vnD5RTBaKEfB9pzLYfnebyYS/H2D
+         UWSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=BVKJ/YEXTMKBd4NcgbnQ+KwwhmUcOb8iKU4nX6zBVnw=;
+        b=cAvtbUyBoD5Y999pwMLi8SfwdNws9O9Im8+sYwqAXpqXJGexvp4wwTgPoGAlMdnP4W
+         JoGBvhBPLfGx0e0O1Wp2DSzpw/QjF1oZ6ood48QWfKtkWl43KPjoRiqsiPVkz7rnwIE6
+         ymd1dK/eWdiVWoPkGMk96sCaZJhKjQz+CcmvonEciPh+gZz79qV7/JW6LqjUqSUZ63iI
+         dk+rHdGEYtTCefCAHAIn0Ee3kq2H3SQ1Kben+AUWh3Il664CXOlktNXRl93LIck7hcYM
+         pDspPCYxt0miae2CWTlbKwsPClTcLnxFcviH+mAN+sVNVsiBjUZV+Tu1F2pfWY6k/wFN
+         17qg==
+X-Gm-Message-State: AOAM531JtqioyejivJLhqJQ40aBoMK8dKowVM/p5stKPik6a5GSOIVLy
+        Sb14xE5x8hoywBSgbo8Krp+RPtF/zMs=
+X-Google-Smtp-Source: ABdhPJxw8yjoOGrqIEu2AdFH+Ro5bzVPraSA908mdxupiYQ0CLY5vnPLJo6YcjmccjfFqICcnG3oiQ==
+X-Received: by 2002:a9d:bc9:: with SMTP id 67mr1857063oth.352.1615865733847;
+        Mon, 15 Mar 2021 20:35:33 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e15sm7602994otk.64.2021.03.15.20.35.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 20:35:33 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 2/2] hwmon: (pmbus): Add driver for BluTek BPA-RS600
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
         "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] hwmon: (pmbus): Add driver for BluTek BPA-RS600
-Thread-Topic: [PATCH 2/2] hwmon: (pmbus): Add driver for BluTek BPA-RS600
-Thread-Index: AQHXGg0JQkIPU0GURU+Z4hUV3SNYs6qFG2MA
-Date:   Tue, 16 Mar 2021 03:30:28 +0000
-Message-ID: <8066478b-26cb-7904-9203-054c74ccd07b@alliedtelesis.co.nz>
 References: <20210316023524.12574-1-chris.packham@alliedtelesis.co.nz>
  <20210316023524.12574-2-chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <20210316023524.12574-2-chris.packham@alliedtelesis.co.nz>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F7CF9C0323BA3143B7C61BEF52CF165C@atlnz.lc>
-Content-Transfer-Encoding: base64
+ <8066478b-26cb-7904-9203-054c74ccd07b@alliedtelesis.co.nz>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <6afe1c65-d50d-4bd7-2ad3-93d9b067afc5@roeck-us.net>
+Date:   Mon, 15 Mar 2021 20:35:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=GfppYjfL c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=dESyimp9J3IA:10 a=GpMvjJetwIR_TAr8NAQA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+In-Reply-To: <8066478b-26cb-7904-9203-054c74ccd07b@alliedtelesis.co.nz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAxNi8wMy8yMSAzOjM1IHBtLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPiBUaGUgQlBBLVJT
-NjAwIGlzIGEgY29tcGFjdCA2MDBXIEFDIHRvIERDIHJlbW92YWJsZSBwb3dlciBzdXBwbHkgbW9k
-dWxlLg0KPg0KPiBTaWduZWQtb2ZmLWJ5OiBDaHJpcyBQYWNraGFtIDxjaHJpcy5wYWNraGFtQGFs
-bGllZHRlbGVzaXMuY28ubno+DQo+DQo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9p
-ZCBfX21heWJlX3VudXNlZCBicGFfcnM2MDBfb2ZfbWF0Y2hbXSA9IHsNCj4gKwl7IC5jb21wYXRp
-YmxlID0gImJsdXRlayxicGEtcnM2MDAiIH0sDQo+ICsJe30sDQo+ICt9Ow0KDQpJIHNlZSB0aGlz
-IHdpbGwgZmFsbCBmb3VsIG9mIHRoZSBuYW1lIGNoZWNrIGluIA0KX19od21vbl9kZXZpY2VfcmVn
-aXN0ZXIoKS4gSG93IHNob3VsZCBJIG5hbWUgdGhpbmdzIHRvIGF2b2lkIHRoaXM/DQo=
+On 3/15/21 8:30 PM, Chris Packham wrote:
+> 
+> On 16/03/21 3:35 pm, Chris Packham wrote:
+>> The BPA-RS600 is a compact 600W AC to DC removable power supply module.
+>>
+>> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+>>
+>> +static const struct of_device_id __maybe_unused bpa_rs600_of_match[] = {
+>> +	{ .compatible = "blutek,bpa-rs600" },
+>> +	{},
+>> +};
+> 
+> I see this will fall foul of the name check in 
+> __hwmon_device_register(). How should I name things to avoid this?
+> 
+
+It isn't the binding. The driver name should not have a '-' in it.
+You could just name it bpa_rs600 instead.
+
+Guenter
