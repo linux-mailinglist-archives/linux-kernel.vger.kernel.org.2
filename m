@@ -2,248 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5132633D0E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:34:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8F433D0E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:35:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbhCPJeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhCPJdq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:33:46 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E914BC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:33:45 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id r17so70942286ejy.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:33:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sTSjV0k7aYMh48sDF9lHvN5tVI/LaskmTHtn/37QvSE=;
-        b=C68DfTgNR86XrIUaTSGBWS8al1EK3vK2Z64CHZtf7r2lmPx3u6VDegf6+mmDBBoPsK
-         6iQ04ehtR2kGl6+R/Xupv2fmxBxTLhf/x/1c6iFy3E3Xn1hXVHTTflnMXQnv2cPDrH+t
-         I1X+a3sEoexaLxjAt1m8k21CevpGia7TPUp8Wq+gpDhgEKvo3W3B2z+3wSfTeqy4W0va
-         Dc0h603TyH3rr6XxBG7W8H3WJdFe567QWqpw1bk5o428i8i2tAIEshWs+QfICOKZupsA
-         ETdVDWeCvlu7drZcalPc7PwPFHKnjBOONnPmXJGHmAnAFNVmE8usX4Zx++Jqt4JA6N2k
-         mTZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sTSjV0k7aYMh48sDF9lHvN5tVI/LaskmTHtn/37QvSE=;
-        b=KYuV+8r0TFJhUNC8IMOERPr8xijuY0I+Pxg6jAka4oBwZ4ObR5qn2a50EQ/82YkLoI
-         gwUwxT6V5hO1s58Hbcj9my+LVZgVW2FNlnjZ4/yp9KwF/rNGc8Gt5ZQs35w9tksPBaSq
-         koAup1KsbVZMG/8yb/nsCfumoGIQsgAFK2OyX5qJEQexq5mF5/qjrCnHRj69MezMw8Ll
-         VLB5Aap4IYla7kDsGfM0vwhRiC7ogEoY4HTwSC8zhyfvynHGjMQpTjHvHXgaTNw87zUW
-         QMAS2EpvtjqmG2cSinQmnHeYmuBhUQinxYmOAIc7dHbhH2kQetplVB4Tc822Awn6IN4L
-         7nyg==
-X-Gm-Message-State: AOAM532whpqnw/QimUhntaXG4OYgVESZYoMr2rPzm9P2PFke6LOrF1o7
-        gqDIU/js2S5p7eAgx28b8lgYmZjxFBbBP49eF+aw9ezXDrLDYAiK
-X-Google-Smtp-Source: ABdhPJyL+BaPgKhnE9Y3B0eaZgXDBBma36rIJcw7xSM2pTh9CNYmCGuZUr/oadmLPL33ptVPg+MkQavKHkK9RrxNj+Q=
-X-Received: by 2002:a17:907:7785:: with SMTP id ky5mr17118612ejc.133.1615887224450;
- Tue, 16 Mar 2021 02:33:44 -0700 (PDT)
+        id S232577AbhCPJeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:34:46 -0400
+Received: from m42-2.mailgun.net ([69.72.42.2]:37344 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229618AbhCPJeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 05:34:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615887254; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=9UfEyw436vIESU6W/ayoumRpdy+NziJpgKqhqz2zc6A=; b=Y6Ivj6jLSjXj0WBXqENsr58EZVyn+jJAbBx7SlbydNQbGPOf/EZdy0HnxFCE8CRcLAWgVRk9
+ 8Mchk0T9Ko4VklxXC/KVJw0XQpyq/tdHGy0IGPzrpe9h81hHPIqzPvt/TXvQOdoPbN6BIiug
+ 1xAbHk0sumP3smusVTJX2HNS48U=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60507b943f267701a41fad34 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Mar 2021 09:34:12
+ GMT
+Sender: stummala=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1F8E4C433CA; Tue, 16 Mar 2021 09:34:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: stummala)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 35FC2C433CA;
+        Tue, 16 Mar 2021 09:34:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 35FC2C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=stummala@codeaurora.org
+Date:   Tue, 16 Mar 2021 15:04:06 +0530
+From:   Sahitya Tummala <stummala@codeaurora.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, stummala@codeaurora.org
+Subject: Re: [PATCH] f2fs: fix the discard thread sleep timeout under high
+ utilization
+Message-ID: <20210316093406.GC8562@codeaurora.org>
+References: <1615784186-2693-1-git-send-email-stummala@codeaurora.org>
+ <49be0c70-4fe4-6acd-b508-08621f0623c0@huawei.com>
+ <20210315074645.GA8562@codeaurora.org>
+ <0c7220d7-416e-32b7-96cb-effd3f84d6e2@huawei.com>
+ <20210315094502.GB8562@codeaurora.org>
+ <f0da1e4c-24b0-211c-670a-686067203d08@huawei.com>
 MIME-Version: 1.0
-References: <20210315135720.002213995@linuxfoundation.org>
-In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 16 Mar 2021 15:03:33 +0530
-Message-ID: <CA+G9fYs=fdvsYf3OD2kFHFpJfmnBFHnfQLMxRcn-xxRx3eFGmQ@mail.gmail.com>
-Subject: Re: [PATCH 4.19 000/120] 4.19.181-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f0da1e4c-24b0-211c-670a-686067203d08@huawei.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021 at 19:29, <gregkh@linuxfoundation.org> wrote:
->
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
-> This is the start of the stable review cycle for the 4.19.181 release.
-> There are 120 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 17 Mar 2021 13:57:02 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.181-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi Chao,
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Thanks for the review and suggestions.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+I think the below code should work and cover all the cases we discussed.
+Let me test it and then put up a new patchset for review.
 
-Summary
-------------------------------------------------------------------------
+Thanks,
+Sahitya.
 
-kernel: 4.19.181-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.19.y
-git commit: a636947af93f0a20fdba2c08ae38b7825ebf9c56
-git describe: v4.19.180-121-ga636947af93f
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
-.y/build/v4.19.180-121-ga636947af93f
+Mon, Mar 15, 2021 at 06:31:00PM +0800, Chao Yu wrote:
+> Hi Sahitya,
+> 
+> On 2021/3/15 17:45, Sahitya Tummala wrote:
+> >Hi Chao,
+> >
+> >On Mon, Mar 15, 2021 at 04:10:22PM +0800, Chao Yu wrote:
+> >>Hi Sahitya,
+> >>
+> >>On 2021/3/15 15:46, Sahitya Tummala wrote:
+> >>>Hi Chao,
+> >>>
+> >>>On Mon, Mar 15, 2021 at 02:12:44PM +0800, Chao Yu wrote:
+> >>>>Sahitya,
+> >>>>
+> >>>>On 2021/3/15 12:56, Sahitya Tummala wrote:
+> >>>>>When f2fs is heavily utilized over 80%, the current discard policy
+> >>>>>sets the max sleep timeout of discard thread as 50ms
+> >>>>>(DEF_MIN_DISCARD_ISSUE_TIME). But this is set even when there are
+> >>>>>no pending discard commands to be issued. This results into
+> >>>>>unnecessary frequent and periodic wake ups of the discard thread.
+> >>>>>This patch adds check for pending  discard commands in addition
+> >>>>>to heavy utilization condition to prevent those wake ups.
+> >>>>
+> >>>>Could this commit fix your issue?
+> >>>>
+> >>>>https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev&id=43f8c47ea7d59c7b2270835f1d7c4618a1ea27b6
+> >>>>
+> >>>I don't think it will help because we are changing the max timeout of the
+> >>>dpolicy itself in __init_discard_policy() when util > 80% as below -
+> >>>
+> >>>dpolicy->max_interval = DEF_MIN_DISCARD_ISSUE_TIME;
+> >>>
+> >>>And issue_discard_thread() uses this value as wait_ms, when there
+> >>>are no more pending discard commands to be issued.
+> >>><snip>
+> >>>                 } else {
+> >>>                         wait_ms = dpolicy.max_interval;
+> >>>                 }
+> >>><snip>
+> >>>
+> >>>The new patch posted above is not changing anything related to the  max_interval.
+> >>>Hence, I think it won't help the uncessary wakeup problem I am trying to solve
+> >>>for this condition - util > 80% and when there are no pending discards.
+> >>>
+> >>>Please let me know if i am missing something.
+> >>
+> >>Copied, thanks for the explanation.
+> >>
+> >>But there is another case which can cause this issue in the case of
+> >>disk util < 80%.
+> >>
+> >>wait_ms = DEF_MIN_DISCARD_ISSUE_TIME;
+> >>
+> >>do {
+> >>	wait_event_interruptible_timeout(, wait_ms);
+> >>
+> >>	...
+> >>
+> >>	if (!atomic_read(&dcc->discard_cmd_cnt))
+> >>[1] new statement
+> >>		continue;
+> >>
+> >>} while();
+> >>
+> >>Then the loop will wakeup whenever 50ms timeout.
+> >>
+> >Yes, only for a short period of time i.e., until the first discard command
+> >is issued. Once a discard is issued, it will use
+> >wait_ms = dpolicy.max_interval;
+> >
+> >>So, to avoid this case, shouldn't we reset wait_ms to dpolicy.max_interval
+> >>at [1]?
+> >>
+> >Yes, we can add that to cover the above case.
+> >
+> >>Meanwhile, how about relocating discard_cmd_cnt check after
+> >>__init_discard_policy(DPOLICY_FORCE)? and olny set .max_interval to
+> >>DEF_MAX_DISCARD_ISSUE_TIME if there is no discard command, and keep
+> >>.granularity to 1?
+> >>
+> >
+> >There is not need to change .granularity, right? It will be controlled
+> 
+> I think so.
+> 
+> >as per utilization as it is done today. Only max_interval and wait_ms
+> >needs to be updated. Does this look good?
+> >
+> >diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> >index d7076796..958ad1e 100644
+> >--- a/fs/f2fs/segment.c
+> >+++ b/fs/f2fs/segment.c
+> >@@ -1772,13 +1772,16 @@ static int issue_discard_thread(void *data)
+> >                         wait_ms = dpolicy.max_interval;
+> >                         continue;
+> >                 }
+> >-               if (!atomic_read(&dcc->discard_cmd_cnt))
+> >-                       continue;
+> >-
+> >                 if (sbi->gc_mode == GC_URGENT_HIGH ||
+> >                         !f2fs_available_free_memory(sbi, DISCARD_CACHE))
+> >                         __init_discard_policy(sbi, &dpolicy, DPOLICY_FORCE, 1);
+> >
+> >+               if (!atomic_read(&dcc->discard_cmd_cnt)) {
+> >+                       dpolicy.max_interval = DEF_MAX_DISCARD_ISSUE_TIME;
+> >+                       wait_ms = dpolicy.max_interval;
+> >+                       continue;
+> >+               }
+> 
+> Hmm.. how about cleaning up to configure discard policy in
+> __init_discard_policy()?
+> 
+> Something like:
+> 
+> ---
+>  fs/f2fs/segment.c | 19 ++++++++++++-------
+>  1 file changed, 12 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index 592927ccffa7..684463a70eb9 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -1118,7 +1118,9 @@ static void __init_discard_policy(struct f2fs_sb_info *sbi,
+>  		dpolicy->ordered = true;
+>  		if (utilization(sbi) > DEF_DISCARD_URGENT_UTIL) {
+>  			dpolicy->granularity = 1;
+> -			dpolicy->max_interval = DEF_MIN_DISCARD_ISSUE_TIME;
+> +			if (atomic_read(&SM_I(sbi)->dcc_info->discard_cmd_cnt))
+> +				dpolicy->max_interval =
+> +					DEF_MIN_DISCARD_ISSUE_TIME;
+>  		}
+>  	} else if (discard_type == DPOLICY_FORCE) {
+>  		dpolicy->min_interval = DEF_MIN_DISCARD_ISSUE_TIME;
+> @@ -1734,8 +1736,15 @@ static int issue_discard_thread(void *data)
+>  	set_freezable();
+> 
+>  	do {
+> -		__init_discard_policy(sbi, &dpolicy, DPOLICY_BG,
+> -					dcc->discard_granularity);
+> +		if (sbi->gc_mode == GC_URGENT_HIGH ||
+> +			!f2fs_available_free_memory(sbi, DISCARD_CACHE))
+> +			__init_discard_policy(sbi, &dpolicy, DPOLICY_FORCE, 1);
+> +		else
+> +			__init_discard_policy(sbi, &dpolicy, DPOLICY_BG,
+> +						dcc->discard_granularity);
+> +
+> +		if (!atomic_read(&dcc->discard_cmd_cnt))
+> +			wait_ms = dpolicy.max_interval;
+> 
+>  		wait_event_interruptible_timeout(*q,
+>  				kthread_should_stop() || freezing(current) ||
+> @@ -1762,10 +1771,6 @@ static int issue_discard_thread(void *data)
+>  		if (!atomic_read(&dcc->discard_cmd_cnt))
+>  			continue;
+> 
+> -		if (sbi->gc_mode == GC_URGENT_HIGH ||
+> -			!f2fs_available_free_memory(sbi, DISCARD_CACHE))
+> -			__init_discard_policy(sbi, &dpolicy, DPOLICY_FORCE, 1);
+> -
+>  		sb_start_intwrite(sbi->sb);
+> 
+>  		issued = __issue_discard_cmd(sbi, &dpolicy);
+> -- 
+> 2.29.2
+> 
+> Thoughts?
+> 
+> Thanks,
+> 
+> >+
+> >                 sb_start_intwrite(sbi->sb);
+> >
+> >                 issued = __issue_discard_cmd(sbi, &dpolicy);
+> >
+> >thanks,
+> >Sahitya.
+> >
+> >>Thanks,
+> >>
+> >>>
+> >>>Thanks,
+> >>>Sahitya.
+> >>>
+> >>>>Thanks,
+> >>>>
+> >>>>>
+> >>>>>Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
+> >>>>>---
+> >>>>>  fs/f2fs/segment.c | 5 ++++-
+> >>>>>  1 file changed, 4 insertions(+), 1 deletion(-)
+> >>>>>
+> >>>>>diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> >>>>>index dced46c..df30220 100644
+> >>>>>--- a/fs/f2fs/segment.c
+> >>>>>+++ b/fs/f2fs/segment.c
+> >>>>>@@ -1112,6 +1112,8 @@ static void __init_discard_policy(struct f2fs_sb_info *sbi,
+> >>>>>  				struct discard_policy *dpolicy,
+> >>>>>  				int discard_type, unsigned int granularity)
+> >>>>>  {
+> >>>>>+	struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
+> >>>>>+
+> >>>>>  	/* common policy */
+> >>>>>  	dpolicy->type = discard_type;
+> >>>>>  	dpolicy->sync = true;
+> >>>>>@@ -1129,7 +1131,8 @@ static void __init_discard_policy(struct f2fs_sb_info *sbi,
+> >>>>>  		dpolicy->io_aware = true;
+> >>>>>  		dpolicy->sync = false;
+> >>>>>  		dpolicy->ordered = true;
+> >>>>>-		if (utilization(sbi) > DEF_DISCARD_URGENT_UTIL) {
+> >>>>>+		if (utilization(sbi) > DEF_DISCARD_URGENT_UTIL &&
+> >>>>>+				atomic_read(&dcc->discard_cmd_cnt)) {
+> >>>>>  			dpolicy->granularity = 1;
+> >>>>>  			dpolicy->max_interval = DEF_MIN_DISCARD_ISSUE_TIME;
+> >>>>>  		}
+> >>>>>
+> >>>
+> >
 
-No regressions (compared to build v4.19.180)
-
-No fixes (compared to build v4.19.180)
-
-Ran 49481 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- s390
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-lib
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* fwts
-* kselftest-intel_pstate
-* kselftest-livepatch
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-ptrace
-* kselftest-tc-testing
-* ltp-fs-tests
-* ltp-sched-tests
-* network-basic-tests
-* kselftest-
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-vm
-* kselftest-x86
-* ltp-open-posix-tests
-* kvm-unit-tests
-* rcutorture
-* igt-gpu-tools
-* ssuite
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+--
+Sent by a consultant of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
