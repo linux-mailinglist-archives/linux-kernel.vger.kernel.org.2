@@ -2,77 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEB433E223
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B635433E22F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbhCPXcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 19:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhCPXci (ORCPT
+        id S229772AbhCPXdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 19:33:46 -0400
+Received: from casper.infradead.org ([90.155.50.34]:44504 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229754AbhCPXdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 19:32:38 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77ED0C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 16:32:38 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id mz6-20020a17090b3786b02900c16cb41d63so322158pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 16:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=F0cJwUc4KZwB02z+vjgX8W6JxJc4yQb8N1YQ54VyI5s=;
-        b=h4Zbj1WL9fTPEigyzdvR/mEQftAIJwqjmCa48uJXvCJWjmwbY68dVhEg2APA58oPMi
-         UhjQAJydf0fIvhiyIt7Iv4aPpvRaRIKjbHP1SC7W4JSxvsqfhCo78Uob1HWKeO3out89
-         tpiV3xv9VU52GARyNUHEZ1idoT4c708Hw/fPA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F0cJwUc4KZwB02z+vjgX8W6JxJc4yQb8N1YQ54VyI5s=;
-        b=msciZ83f8ZTY259gKknpshpy+xsMiS7lw/N2ZEMJX8GRKSYvPFV3wtjW8igXUcHzz3
-         XsTwsbWJOIiMwPTn7fvsl06CO7cVrV7saD4756w0BwMJ8lLoGbyBeOiUVpA+jZ+CwL1g
-         qrSrRbPN3hI3CyZwTzuAq8G1tbkQh0Qw5njGrZ1JF7aC/c5NqyLne2AUwuBuvbbYKtW0
-         fvpkWjaciPrve7Yu7Bm5h/BzBFueY/pN3Oszf+y9zlYIT8dK7FegkuyUsM71JPG/NLgn
-         OL5wp7RYfRTXdZWd7B1f2PHkAb/u6gnExT6V/BA/pY6HgUrJu80mAuFNofhDdqj9/tWS
-         DUPw==
-X-Gm-Message-State: AOAM530r+kgr1VCLKXnf2yVxq759eYU59ZCJUZptQY1mZPxIyEr71bhh
-        8Zpv6dmfVSRxl3Cct18hZDeY4A==
-X-Google-Smtp-Source: ABdhPJyQIqOBBEVftxZAD2RPXx1eaq4e9nRCZIit1X1ARQ/y6KObiwcr3NNHojcYQzpajN+MxdA27w==
-X-Received: by 2002:a17:90a:2a46:: with SMTP id d6mr1363262pjg.197.1615937558041;
-        Tue, 16 Mar 2021 16:32:38 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:b471:7d:bf21:d7dd])
-        by smtp.gmail.com with UTF8SMTPSA id a204sm17795326pfd.106.2021.03.16.16.32.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 16:32:37 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 16:32:35 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, rnayak@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org,
-        David Collins <collinsd@codeaurora.org>
-Subject: Re: [PATCH V2 5/5] dt-bindings: regulator: Add compatibles for
- PM7325/PMR735A
-Message-ID: <YFFAE9avDMZS9LIh@google.com>
-References: <1615816454-1733-1-git-send-email-skakit@codeaurora.org>
- <1615816454-1733-6-git-send-email-skakit@codeaurora.org>
+        Tue, 16 Mar 2021 19:33:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ugD/jJZR2x4PlwFOPLM1Z8A1WHyvGKetbXN+yb06xfM=; b=OX7RitBwZ7oc3GO38XAXfxdoij
+        vfKiFKYeao1v7N+9Nx7PTu9Z61XntTa7fENRJtgQ3CooWOi6pFGDLJfOCWvQSPDMt18AuEvLmsG/t
+        w8/YLaN0lddz/EqtFRwAlhyPeA9k4RDxbsO5JOnmoGPMQvITYjkp3S7vUIHxpsbZNUio5Ko0ZVsEk
+        spv1+ANWI7xmV3T6aAKDnp+5lQTDx1iFWg+gZ2u+pQegvhUWAjAjQXwbLjDk4o9yLmXkUmEvsqvJb
+        3MnhN12ApsM12ymiXHH0JigGgpTf+2cbMmzeHJageIJBcRi9noxplnjX/iPmBZqWg1lpllSgZWaT2
+        pwg8kffg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMJB6-000lEX-7N; Tue, 16 Mar 2021 23:32:48 +0000
+Date:   Tue, 16 Mar 2021 23:32:44 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 02/28] mm: Add an unlock function for
+ PG_private_2/PG_fscache
+Message-ID: <20210316233244.GE3420@casper.infradead.org>
+References: <20210316190707.GD3420@casper.infradead.org>
+ <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk>
+ <161539528910.286939.1252328699383291173.stgit@warthog.procyon.org.uk>
+ <3313319.1615927080@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1615816454-1733-6-git-send-email-skakit@codeaurora.org>
+In-Reply-To: <3313319.1615927080@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 07:24:14PM +0530, satya priya wrote:
-> Add PM7325/PMR735A compatibles for Qualcomm SC7280 platform.
+On Tue, Mar 16, 2021 at 08:38:00PM +0000, David Howells wrote:
+> Matthew Wilcox <willy@infradead.org> wrote:
 > 
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> Acked-by: Rob Herring <robh@kernel.org>
+> > So ... a page with both flags cleared should have a refcount of N.
+> > A page with one or both flags set should have a refcount of N+1.
+> > ...
+> > How is a poor filesystem supposed to make that true?  Also btrfs has this
+> > problem since it uses private_2 for its own purposes.
+> 
+> It's simpler if it's N+2 for both patches set.  Btw, patch 13 adds that - and
+> possibly that should be merged into an earlier patch.
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+So ...
+
+static inline int page_has_private(struct page *page)
+{
+	unsigned long flags = page->flags;
+	return ((flags >> PG_private) & 1) + ((flags >> PG_private_2) & 1);
+}
+
+perhaps?
