@@ -2,134 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22AB333CC47
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 04:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 916F433CC4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 04:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234972AbhCPDrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 23:47:40 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3302 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230507AbhCPDr3 (ORCPT
+        id S234989AbhCPDva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 23:51:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234979AbhCPDvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 23:47:29 -0400
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DzzgF5hL1z145Nb;
-        Tue, 16 Mar 2021 11:44:25 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 16 Mar 2021 11:47:25 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Tue, 16 Mar
- 2021 11:47:25 +0800
-Subject: Re: [Linuxarm] Re: [RFC v2] net: sched: implement TCQ_F_CAN_BYPASS
- for lockless qdisc
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
-        <weiwan@google.com>, <cong.wang@bytedance.com>,
-        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>
-References: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
- <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
- <20210315115332.1647e92b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <3838b7c2-c32f-aeda-702a-5cb8f712ec0c@huawei.com>
-Message-ID: <3ddec762-19c8-6743-43dd-3e44f91fd113@huawei.com>
-Date:   Tue, 16 Mar 2021 11:47:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Mon, 15 Mar 2021 23:51:06 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB1EC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 20:51:05 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id ha17so9160499pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 20:51:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8oLEyrZESR6CUt/SxdJhSlTaKMEYXaCbysmUXKIyTNM=;
+        b=E5NTtk7xysRD413RQdLJ0OJeKpRa5NdPspzftI3kyLcfYp6diyqJPmwmx6F2/DzHuR
+         C0iuYjUo4mEk2dvzWnv/LysZGx46VPSea7N/RQL8qn9v4XkEgcifdH5vb8MtIAxiYV3u
+         DH51xiiTfl707KmIQQ/TTJijece0aUEs6aJDa7nY0YXjcizyuGSzNb59vEO7Vbt4B2+7
+         YCzfLhBHlCLpJ/3FnRSvGwoLvpYgTRVm6/grisVu38XgRzZiFW0ELYnWCMp/0QS1i7+9
+         D1xqG1fWZn6ebyAEiqadRfwgZ32zyXdOiOiON0ivm6Of3sUR8s81Gj2EtQlexEGGorfY
+         YOSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8oLEyrZESR6CUt/SxdJhSlTaKMEYXaCbysmUXKIyTNM=;
+        b=kWTNQBmXMcrmyilNuD8PSTUu/WcJ72RHdy9WNBPhcrcEKODqCx+5hVqHtws6cZbQ2d
+         XCoCMAC6bn/OsoGLNLJJddQo3547bbExnpBO/KcBTS9Kexb/aQcvuz+xFBstP3LO1iqQ
+         iszl0QZC7VNPUsL+xLbGugxp0w0anX/903VA62DsOBhHCjfz15vn56okAgdtDyelrFL0
+         aeAyzidNpyUjYThpmenQQTjxDX7w9eQe6+ADQ6u6QqeQI4ZoKgnQ6tJTxSl7/xATm+h9
+         zfBGWVFsCXF5M9NVpACqV99g7J7N1/Xozws4LitoShEYkJ26ukFQo/kRkBZiEGWV79WM
+         w0xg==
+X-Gm-Message-State: AOAM531VCVk6WBOOQRWg3BYe1MpT31bRJ1u/rT9Q/6U2Cg4cgAmWGjn9
+        uDrW7PXnzj7qY/OmtorJzdCA
+X-Google-Smtp-Source: ABdhPJwI75pg7FWR/Yz24jtSICZctpnQaS8RGw0Lkukg9kequDhYBJge4UTHE7HnLibHrqyhpWqzBQ==
+X-Received: by 2002:a17:902:e98c:b029:e5:defc:ccf8 with SMTP id f12-20020a170902e98cb02900e5defcccf8mr14904625plb.20.1615866664997;
+        Mon, 15 Mar 2021 20:51:04 -0700 (PDT)
+Received: from thinkpad ([103.66.79.72])
+        by smtp.gmail.com with ESMTPSA id l3sm14717894pfc.81.2021.03.15.20.51.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 20:51:04 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 09:20:58 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Edgar Bernardi Righi <edgar.righi@lsitec.org.br>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/6] clk: actions: Fix UART clock dividers on Owl S500 SoC
+Message-ID: <20210316035058.GA1798@thinkpad>
+References: <cover.1615221459.git.cristian.ciocaltea@gmail.com>
+ <3d3118fc3e0973cc1cbbdbb98b643f0c82dd74fc.1615221459.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <3838b7c2-c32f-aeda-702a-5cb8f712ec0c@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme717-chm.china.huawei.com (10.1.199.113) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3d3118fc3e0973cc1cbbdbb98b643f0c82dd74fc.1615221459.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/16 8:35, Yunsheng Lin wrote:
-> On 2021/3/16 2:53, Jakub Kicinski wrote:
->> On Mon, 15 Mar 2021 11:10:18 +0800 Yunsheng Lin wrote:
->>> @@ -606,6 +623,11 @@ static const u8 prio2band[TC_PRIO_MAX + 1] = {
->>>   */
->>>  struct pfifo_fast_priv {
->>>  	struct skb_array q[PFIFO_FAST_BANDS];
->>> +
->>> +	/* protect against data race between enqueue/dequeue and
->>> +	 * qdisc->empty setting
->>> +	 */
->>> +	spinlock_t lock;
->>>  };
->>>  
->>>  static inline struct skb_array *band2list(struct pfifo_fast_priv *priv,
->>> @@ -623,7 +645,10 @@ static int pfifo_fast_enqueue(struct sk_buff *skb, struct Qdisc *qdisc,
->>>  	unsigned int pkt_len = qdisc_pkt_len(skb);
->>>  	int err;
->>>  
->>> -	err = skb_array_produce(q, skb);
->>> +	spin_lock(&priv->lock);
->>> +	err = __ptr_ring_produce(&q->ring, skb);
->>> +	WRITE_ONCE(qdisc->empty, false);
->>> +	spin_unlock(&priv->lock);
->>>  
->>>  	if (unlikely(err)) {
->>>  		if (qdisc_is_percpu_stats(qdisc))
->>> @@ -642,6 +667,7 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
->>>  	struct sk_buff *skb = NULL;
->>>  	int band;
->>>  
->>> +	spin_lock(&priv->lock);
->>>  	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
->>>  		struct skb_array *q = band2list(priv, band);
->>>  
->>> @@ -655,6 +681,7 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
->>>  	} else {
->>>  		WRITE_ONCE(qdisc->empty, true);
->>>  	}
->>> +	spin_unlock(&priv->lock);
->>>  
->>>  	return skb;
->>>  }
->>
->> I thought pfifo was supposed to be "lockless" and this change
->> re-introduces a lock between producer and consumer, no?
+On Mon, Mar 08, 2021 at 07:18:26PM +0200, Cristian Ciocaltea wrote:
+> Use correct divider registers for the Actions Semi Owl S500 SoC's UART
+> clocks.
 > 
-> Yes, the lock breaks the "lockless" of the lockless qdisc for now
-> I do not how to solve the below data race locklessly:
-> 
-> 	CPU1:					CPU2:
->       dequeue skb				 .
-> 	  .				    	 .	
-> 	  .				    enqueue skb
-> 	  .					 .
-> 	  .			 WRITE_ONCE(qdisc->empty, false);
-> 	  .					 .
-> 	  .					 .
-> WRITE_ONCE(qdisc->empty, true);
-> 
-> If the above happens, the qdisc->empty is true even if the qdisc has some
-> skb, which may cuase out of order or packet stuck problem.
-> 
-> It seems we may need to update ptr_ring' status(empty or not) while
-> enqueuing/dequeuing atomically in the ptr_ring implementation.
-> 
-> Any better idea?
+> Fixes: ed6b4795ece4 ("clk: actions: Add clock driver for S500 SoC")
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
-It seems we can use __ptr_ring_empty() within the qdisc->seqlock protection,
-because qdisc->seqlock is clearly served as r->consumer_lock.
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-> 
->>
->> .
->>
-> _______________________________________________
-> Linuxarm mailing list -- linuxarm@openeuler.org
-> To unsubscribe send an email to linuxarm-leave@openeuler.org
-> 
+Thanks,
+Mani
 
+> ---
+>  drivers/clk/actions/owl-s500.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
+> index 61bb224f6330..75b7186185b0 100644
+> --- a/drivers/clk/actions/owl-s500.c
+> +++ b/drivers/clk/actions/owl-s500.c
+> @@ -305,7 +305,7 @@ static OWL_COMP_FIXED_FACTOR(i2c3_clk, "i2c3_clk", "ethernet_pll_clk",
+>  static OWL_COMP_DIV(uart0_clk, "uart0_clk", uart_clk_mux_p,
+>  			OWL_MUX_HW(CMU_UART0CLK, 16, 1),
+>  			OWL_GATE_HW(CMU_DEVCLKEN1, 6, 0),
+> -			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+> +			OWL_DIVIDER_HW(CMU_UART0CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+>  			CLK_IGNORE_UNUSED);
+>  
+>  static OWL_COMP_DIV(uart1_clk, "uart1_clk", uart_clk_mux_p,
+> @@ -317,31 +317,31 @@ static OWL_COMP_DIV(uart1_clk, "uart1_clk", uart_clk_mux_p,
+>  static OWL_COMP_DIV(uart2_clk, "uart2_clk", uart_clk_mux_p,
+>  			OWL_MUX_HW(CMU_UART2CLK, 16, 1),
+>  			OWL_GATE_HW(CMU_DEVCLKEN1, 8, 0),
+> -			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+> +			OWL_DIVIDER_HW(CMU_UART2CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+>  			CLK_IGNORE_UNUSED);
+>  
+>  static OWL_COMP_DIV(uart3_clk, "uart3_clk", uart_clk_mux_p,
+>  			OWL_MUX_HW(CMU_UART3CLK, 16, 1),
+>  			OWL_GATE_HW(CMU_DEVCLKEN1, 19, 0),
+> -			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+> +			OWL_DIVIDER_HW(CMU_UART3CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+>  			CLK_IGNORE_UNUSED);
+>  
+>  static OWL_COMP_DIV(uart4_clk, "uart4_clk", uart_clk_mux_p,
+>  			OWL_MUX_HW(CMU_UART4CLK, 16, 1),
+>  			OWL_GATE_HW(CMU_DEVCLKEN1, 20, 0),
+> -			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+> +			OWL_DIVIDER_HW(CMU_UART4CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+>  			CLK_IGNORE_UNUSED);
+>  
+>  static OWL_COMP_DIV(uart5_clk, "uart5_clk", uart_clk_mux_p,
+>  			OWL_MUX_HW(CMU_UART5CLK, 16, 1),
+>  			OWL_GATE_HW(CMU_DEVCLKEN1, 21, 0),
+> -			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+> +			OWL_DIVIDER_HW(CMU_UART5CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+>  			CLK_IGNORE_UNUSED);
+>  
+>  static OWL_COMP_DIV(uart6_clk, "uart6_clk", uart_clk_mux_p,
+>  			OWL_MUX_HW(CMU_UART6CLK, 16, 1),
+>  			OWL_GATE_HW(CMU_DEVCLKEN1, 18, 0),
+> -			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+> +			OWL_DIVIDER_HW(CMU_UART6CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+>  			CLK_IGNORE_UNUSED);
+>  
+>  static OWL_COMP_DIV(i2srx_clk, "i2srx_clk", i2s_clk_mux_p,
+> -- 
+> 2.30.1
+> 
