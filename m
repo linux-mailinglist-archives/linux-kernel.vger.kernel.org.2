@@ -2,91 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4333833CA7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 01:53:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6300333CA83
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 02:00:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233305AbhCPAwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 20:52:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232118AbhCPAwa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 20:52:30 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C01C06174A;
-        Mon, 15 Mar 2021 17:52:29 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id o3so3018231pfh.11;
-        Mon, 15 Mar 2021 17:52:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xZoZuWb2tBzrGLpbmU0QlJ3nLJM79Q95ZotWRYdo/dU=;
-        b=udPVwzShPfqLnJku3Fi+dpSMekaBCR/1LK2aWf1PcUDLZZrudJibDmi0qfrv/bqFQi
-         2H93ctwVoCfgOr2SN8hWgsDeHQvcBvP8XiGlBtPsy1YjVOKrLNSDioU8RZp8zwqXc3A6
-         oJI2UWvwmwVvKThzHVEDxhD1X5nOp/VOJj4PbXs+hR49oilZocWDgVy25YKK8EOHXYdm
-         qYcsl+P22j8n75mkw0RH4x+LoJ8q9WWI19/8ttIpLAb5Tp5h50c6BXldIRsMApX7ghT4
-         eTArYFObAgWoCrP6O+yFbQ/MxkIiKeK6kzPC9Og6q+TOirm7W6j9lHvVgDGzbYPmZY3q
-         8c5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xZoZuWb2tBzrGLpbmU0QlJ3nLJM79Q95ZotWRYdo/dU=;
-        b=JeikaMJHsgccufQd+KwsVzgCKNDx18kzGUW+c/CrDecwCCZ4Km78qjmoMck8hpUDyO
-         jNCi9RgaJ6NPM3QsPSq3vorycY3Wam5BRGTeafANy8YC11sSJVoilFq9uYmlurgz1YAN
-         R8RpYCKrj+l4VzrK1+8vaOv+8W/otCUJX+z3kMiRAp7UZ2rb6Zb3UOFi8AhqpQUyvttW
-         xIuZRMWjEh8yBWKkwIf/rT0KE4JhEfGH+jBbV4OSD+Yyjg0u6eTt+dJ/96N6Ixa4SZ9T
-         /KiU6LG8b9v+ezrveVPKyGWJVJKtZCVGfSpX1jD+g/TueH1HnJTXGGWXExmmdy2aTAR+
-         g2Vw==
-X-Gm-Message-State: AOAM533uzKO1zw7Fkb9x3mtMQt5+A85y2qraBb1cihclsdO/1ZntwIWm
-        YfZ/6zckNtOkIdYv8UUIuH5lWbvuZt4=
-X-Google-Smtp-Source: ABdhPJxtgToEh90OsCzFZ8X/0t8eT0FJAw1LQkF78w9cJu/2scgskfJvfnWyygm0lV6xkfQGigLdTA==
-X-Received: by 2002:a63:1026:: with SMTP id f38mr1582605pgl.142.1615855949298;
-        Mon, 15 Mar 2021 17:52:29 -0700 (PDT)
-Received: from f8ffc2228008.ant.amazon.com ([54.240.193.129])
-        by smtp.gmail.com with ESMTPSA id gz12sm759496pjb.33.2021.03.15.17.52.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 17:52:28 -0700 (PDT)
-Subject: Re: [PATCH] mm: memcontrol: switch to rstat fix
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-References: <20210315234100.64307-1-hannes@cmpxchg.org>
-From:   "Singh, Balbir" <bsingharora@gmail.com>
-Message-ID: <494a5169-7e18-804b-3975-3a6442aff601@gmail.com>
-Date:   Tue, 16 Mar 2021 11:52:22 +1100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+        id S232514AbhCPA77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 20:59:59 -0400
+Received: from mga18.intel.com ([134.134.136.126]:12333 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230389AbhCPA7n (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 20:59:43 -0400
+IronPort-SDR: 0QaEPHzzE3mSUs5v8p0UpN6GxHQ88Be0ZNs7b8y/VKI3R8zwdQIPDhqCoyxCDLUMtaGekh3HKy
+ 9nRx0dIaG5JQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="176771628"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="176771628"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 17:59:42 -0700
+IronPort-SDR: WbvNz1bdyVvI4ef8A0oLjzcVjAjeifJrh3Ek6U2cHeqcQwR8EQFWPCkC21t9ZOZMz5UEnqPqNR
+ KiiIVho6FcXg==
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="449548076"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 17:59:40 -0700
+Subject: Re: [PATCH v2 04/27] perf pmu: Save pmu name
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210311070742.9318-1-yao.jin@linux.intel.com>
+ <20210311070742.9318-5-yao.jin@linux.intel.com> <YE/n3yfo37V+cigN@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <cbb39b21-0529-09e3-8310-a4efd7a6f828@linux.intel.com>
+Date:   Tue, 16 Mar 2021 08:59:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210315234100.64307-1-hannes@cmpxchg.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+In-Reply-To: <YE/n3yfo37V+cigN@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/3/21 10:41 am, Johannes Weiner wrote:
-> Fix a sleep in atomic section problem: wb_writeback() takes a spinlock
-> and calls wb_over_bg_thresh() -> mem_cgroup_wb_stats, but the regular
-> rstat flushing function called from in there does lockbreaking and may
-> sleep. Switch to the atomic variant, cgroup_rstat_irqsafe().
-> 
-> To be consistent with other memcg flush calls, but without adding
-> another memcg wrapper, inline and drop memcg_flush_vmstats() instead.
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> ---
+Hi Jiri,
 
-The patch make sense, but it does break any notion of abstraction we had
-about controllers have some independence in their strategy to maintain
-their own counters and stats. It now couples writeback with rstat instead
-of just memcg.
+On 3/16/2021 7:03 AM, Jiri Olsa wrote:
+> On Thu, Mar 11, 2021 at 03:07:19PM +0800, Jin Yao wrote:
+>> On hybrid platform, one event is available on one pmu
+>> (such as, available on cpu_core or on cpu_atom).
+>>
+>> This patch saves the pmu name to the pmu field of struct perf_pmu_alias.
+>> Then next we can know the pmu which the event can be available on.
+>>
+>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+>> ---
+>>   tools/perf/util/pmu.c | 10 +++++++++-
+>>   tools/perf/util/pmu.h |  1 +
+>>   2 files changed, 10 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+>> index 54e586bf19a5..45d8db1af8d2 100644
+>> --- a/tools/perf/util/pmu.c
+>> +++ b/tools/perf/util/pmu.c
+>> @@ -283,6 +283,7 @@ void perf_pmu_free_alias(struct perf_pmu_alias *newalias)
+>>   	zfree(&newalias->str);
+>>   	zfree(&newalias->metric_expr);
+>>   	zfree(&newalias->metric_name);
+>> +	zfree(&newalias->pmu);
+>>   	parse_events_terms__purge(&newalias->terms);
+>>   	free(newalias);
+>>   }
+>> @@ -297,6 +298,10 @@ static bool perf_pmu_merge_alias(struct perf_pmu_alias *newalias,
+>>   
+>>   	list_for_each_entry(a, alist, list) {
+>>   		if (!strcasecmp(newalias->name, a->name)) {
+>> +			if (newalias->pmu && a->pmu &&
+>> +			    !strcasecmp(newalias->pmu, a->pmu)) {
+>> +				continue;
+>> +			}
+>>   			perf_pmu_update_alias(a, newalias);
+>>   			perf_pmu_free_alias(newalias);
+>>   			return true;
+>> @@ -314,7 +319,8 @@ static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
+>>   	int num;
+>>   	char newval[256];
+>>   	char *long_desc = NULL, *topic = NULL, *unit = NULL, *perpkg = NULL,
+>> -	     *metric_expr = NULL, *metric_name = NULL, *deprecated = NULL;
+>> +	     *metric_expr = NULL, *metric_name = NULL, *deprecated = NULL,
+>> +	     *pmu = NULL;
+>>   
+>>   	if (pe) {
+>>   		long_desc = (char *)pe->long_desc;
+>> @@ -324,6 +330,7 @@ static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
+>>   		metric_expr = (char *)pe->metric_expr;
+>>   		metric_name = (char *)pe->metric_name;
+>>   		deprecated = (char *)pe->deprecated;
+>> +		pmu = (char *)pe->pmu;
+>>   	}
+>>   
+>>   	alias = malloc(sizeof(*alias));
+>> @@ -389,6 +396,7 @@ static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
+>>   	}
+>>   	alias->per_pkg = perpkg && sscanf(perpkg, "%d", &num) == 1 && num == 1;
+>>   	alias->str = strdup(newval);
+>> +	alias->pmu = pmu ? strdup(pmu) : NULL;
+>>   
+>>   	if (deprecated)
+>>   		alias->deprecated = true;
+>> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+>> index 8164388478c6..0e724d5b84c6 100644
+>> --- a/tools/perf/util/pmu.h
+>> +++ b/tools/perf/util/pmu.h
+>> @@ -72,6 +72,7 @@ struct perf_pmu_alias {
+>>   	bool deprecated;
+>>   	char *metric_expr;
+>>   	char *metric_name;
+>> +	char *pmu;
+> 
+> please use pmu_name
+> 
+> thanks,
+> jirka
+> 
 
-Acked-by: Balbir Singh <bsingharora@gmail.com>
+OK, I will use pmu_name in next version.
+
+Thanks
+Jin Yao
+
