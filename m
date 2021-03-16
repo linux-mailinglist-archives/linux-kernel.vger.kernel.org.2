@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A2E33E197
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:43:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F6633E19A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 23:44:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231467AbhCPWnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 18:43:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbhCPWnA (ORCPT
+        id S231593AbhCPWnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 18:43:45 -0400
+Received: from mail-il1-f175.google.com ([209.85.166.175]:36280 "EHLO
+        mail-il1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231501AbhCPWn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 18:43:00 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF652C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 15:42:59 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id f20so38943357ioo.10
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 15:42:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Nuo8qs2E9bNWxjIOzW3JTgzm3d5Dfp8vsCU/3Qa6t88=;
-        b=O+WCe1p3rgOaS++9BFjpMM82u4k7HgZ+tUtI8/i7C8wSfTxjTLsES0Kwkc6Pyjmpn3
-         V+XwqZKcNmpEQ7jeuhuhQMg7zAY31el+OvxW+w6pF68n8+cR4tjnLxB3AwSJl4JMv9nV
-         RKhkbQBQIW/YcSLxl8rUxG/IkkTQ803Ah4muvFR8flWOBL0OASSryQS5R0SjwEBJsOvM
-         A2KaWKRKkxK+QLFuXgHs1MlmwoIk/esovp+dj3tcP+7m1uMzBvwWExTnRAz7NwOrM6bX
-         2+bTjqSTIk3HTqbjYp4UruBs0BAr4d0nHSdq4GgyVKXWxCHwjJO1251FKLd61uEIty9q
-         UmKA==
+        Tue, 16 Mar 2021 18:43:27 -0400
+Received: by mail-il1-f175.google.com with SMTP id g9so14288478ilc.3;
+        Tue, 16 Mar 2021 15:43:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Nuo8qs2E9bNWxjIOzW3JTgzm3d5Dfp8vsCU/3Qa6t88=;
-        b=SMGjspe6mbYQjdymtWIYg6hw2RQk9wbtcsXepcRJFUw2RyVQTwTCRpq0ipFlhjOlJA
-         9tviAZX0Tg8aYabmg65RGYGAL6ZT+9dOe+64izsuhSw3nHxnTPNSev0xPi5PdlUxrNJ9
-         SvJpdFkPkYEii5RbK8oQ0kuH4kpLVaN/8QesW9/PPXz94ZaZq66hrXS94ESdiTeIB7pI
-         xBQghceziieo5/4u9fXF4qpfPrUDUnu2hwJf/o+S1XcJfPLSr3Ifnvar4F+NUf3hSFE6
-         aswnWXO9mgtxjS3hfmxS8NwRQ/KAbRmwurfA04m/PCjQ73XAPPkG763jA49KEOXoFunJ
-         ckpQ==
-X-Gm-Message-State: AOAM530AzgHAbtSTubx3V0/BnP1Wbr6+5EXTfe+YTR1ozxplThMLVa8Z
-        vHoUuA42IcVXjxJjGyfUIHFIUl97X7tOMOp247o8v5e11tc=
-X-Google-Smtp-Source: ABdhPJx3/3mIcSknxKnXWI34tD0kNGwm2EmFMjsjAb/RBupR9xopS7fIkQrzcy1z1BPPkjm5n84JKv4+1daF4b+snkQ=
-X-Received: by 2002:a02:ba13:: with SMTP id z19mr669975jan.131.1615934579422;
- Tue, 16 Mar 2021 15:42:59 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=v1JUvYEIH9Ub70lK5Ho8Ghu0o2QmwUhPR7XOSE+miY0=;
+        b=UYE2rCDlDNk3YDhnwKjTm539CEh85VIHQyBgv/i3Y6cGiwZgxl0GASm8QarWW50Cyv
+         v+RZTtTOR2CZ2xDpWM1Wzsd4KA+n43nk1MfsprUKe1jbmE1lcfNdBcR4S+Xdrge/ZsG2
+         X/UQQaxOlUMpC2dymFs21HyunibVXEX7DY+P1IZ2VOuX/vgBzDm9zW8qkBi+tVTYEFRl
+         MAnBmo/kpwy3mmY9+uHzw3x8IOoqY5iYLaclyCqNIgLzrMLp+TuwsdB5/Kt8t07u+7hL
+         G/97b0yUzLfaDlGgaYM6oouyhDcYTFLNU+8+wp54MV1PeSKJSQOgEgk0sxT3HBAIZSFs
+         Tteg==
+X-Gm-Message-State: AOAM530v4qryuEsg9WKAR/kwre5QEP7olTMvYb3wo11Q6AFJSx5u0JQy
+        GrVqzSZSVAsGihdmvXugog==
+X-Google-Smtp-Source: ABdhPJwFHCjxAZVnZHCADPsgnfi2hSs3Bx7sbtEZaIaGGInNNPtFF2oKacW1Qwq+Sje5/iOXTMeGdw==
+X-Received: by 2002:a92:b749:: with SMTP id c9mr5575039ilm.155.1615934607311;
+        Tue, 16 Mar 2021 15:43:27 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id d10sm6802315ila.47.2021.03.16.15.43.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 15:43:26 -0700 (PDT)
+Received: (nullmailer pid 3822922 invoked by uid 1000);
+        Tue, 16 Mar 2021 22:43:24 -0000
+Date:   Tue, 16 Mar 2021 16:43:24 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Kuldeep Singh <kuldeep.singh@nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Ashish Kumar <ashish.kumar@nxp.com>,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND] dt-bindings: spi: Convert NXP flexspi to json schema
+Message-ID: <20210316224324.GA3822887@robh.at.kernel.org>
+References: <20210310165200.3560970-1-kuldeep.singh@nxp.com>
 MIME-Version: 1.0
-References: <20210314035757.2740146-1-ztong0001@gmail.com> <5d7a5e1c-35ab-58cb-ebcd-da5b280c802e@mev.co.uk>
- <858341a6-c105-1440-aa4d-ea0217f2ec89@mev.co.uk> <CAA5qM4AJRYndkXSiW5Y4OCFcH97mf6UiiEEox+TQs8-N957mJA@mail.gmail.com>
- <92b7c57b-b645-9965-8157-4ca76a803cba@mev.co.uk>
-In-Reply-To: <92b7c57b-b645-9965-8157-4ca76a803cba@mev.co.uk>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Tue, 16 Mar 2021 18:42:48 -0400
-Message-ID: <CAA5qM4BKu-KAc8=S14us5HvgYqB6G6DKzF11ESho8zzMe73VCw@mail.gmail.com>
-Subject: Re: [PATCH] staging: comedi: replace slash in name
-To:     Ian Abbott <abbotti@mev.co.uk>
-Cc:     H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        devel@driverdev.osuosl.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310165200.3560970-1-kuldeep.singh@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 6:37 AM Ian Abbott <abbotti@mev.co.uk> wrote:
->
-> Thanks.  I think the only other Comedi driver with the same problem is
-> "drivers/staging/comedi/drivers/das800.c".  It passes dev->board_name as
-> the name argument of request_irq(), but that is "cio-das802/16" for one
-> of the boards supported by the driver.
->
+On Wed, 10 Mar 2021 22:22:00 +0530, Kuldeep Singh wrote:
+> Convert the NXP FlexSPI binding to DT schema format using json-schema.
+> 
+> Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+> ---
+>  .../bindings/spi/nxp,spi-nxp-fspi.yaml        | 85 +++++++++++++++++++
+>  .../devicetree/bindings/spi/spi-nxp-fspi.txt  | 43 ----------
+>  MAINTAINERS                                   |  2 +-
+>  3 files changed, 86 insertions(+), 44 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+> 
 
-Thanks Ian, I think you are right, das800.c also shares the same issue.
-I have sent a patch for das800.c as well according to your comments.
-Best,
-- Tong
+Reviewed-by: Rob Herring <robh@kernel.org>
