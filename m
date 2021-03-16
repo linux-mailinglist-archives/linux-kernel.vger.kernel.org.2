@@ -2,68 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C368833D8A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6CB33D89E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238457AbhCPQF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 12:05:28 -0400
-Received: from tartarus.angband.pl ([51.83.246.204]:42928 "EHLO
-        tartarus.angband.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232609AbhCPQEw (ORCPT
+        id S238419AbhCPQEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 12:04:23 -0400
+Received: from mail-qk1-f178.google.com ([209.85.222.178]:34367 "EHLO
+        mail-qk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238427AbhCPQDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 12:04:52 -0400
-Received: from kilobyte by tartarus.angband.pl with local (Exim 4.94)
-        (envelope-from <kilobyte@angband.pl>)
-        id 1lMC9T-00HMMy-6J; Tue, 16 Mar 2021 17:02:35 +0100
-Date:   Tue, 16 Mar 2021 17:02:35 +0100
-From:   Adam Borowski <kilobyte@angband.pl>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>, x86@kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Stanislav Kozina <skozina@redhat.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Pierre Amadio <pamadio@redhat.com>, onatalen@redhat.com,
-        darcari@redhat.com
-Subject: Re: unknown NMI on AMD Rome
-Message-ID: <YFDWmwgDa/FzFsIs@angband.pl>
-References: <YFDSSxftYw9tCGC6@krava>
+        Tue, 16 Mar 2021 12:03:51 -0400
+Received: by mail-qk1-f178.google.com with SMTP id t4so35770821qkp.1;
+        Tue, 16 Mar 2021 09:03:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jn7puAXTFIhUgyhOIBysq+fpBrgiBa64dIrmZ+W414k=;
+        b=M+YQ9TlY04X/j18BA/TRM0Oe8hV7wqHEv0dEN0gW4a7p8rQdNY0/3QKHpaPa9mkHST
+         R9+ypkZ1b9xRnTR+MriVC/1u9K3t4dRQ93vTChiUh60rHLx4wD8Z2LqvWsRM/xSJVElt
+         ZH1BvjYYS5zilDWqyJJs20wkbSiG9fl5D/8FAmAjXBByIPRhqGawo42mfwclDJeyXxGQ
+         JHda22+BiqXKufNX1WQBUl26Dp5YwxByXe3evoj4tTb+4kZT2WwMt6mrOs8VnFebXbkC
+         thwjDmTxpP4+tDmcIO/ddkm08uA9/uATI1gl+FXbEzI8rEERhncuWtV66VC+6p4YStEi
+         iW+Q==
+X-Gm-Message-State: AOAM531do70N6FedErJwtxgI2CmSfEtRyzBIiS0W+4stfSaoAsnUJOOl
+        FTCpGSu90uNLtMJrntfkoFg=
+X-Google-Smtp-Source: ABdhPJyqbY6J/1me1tmRW0knalPGMK+IS3TX+RaT2yJfiWve0JHHpTrsJdMXTcl+jVayjXVyv/EdDA==
+X-Received: by 2002:a05:620a:46:: with SMTP id t6mr298549qkt.358.1615910630576;
+        Tue, 16 Mar 2021 09:03:50 -0700 (PDT)
+Received: from MacBook-Pro.internal.carlosedp.com (201-0-65-182.dsl.telesp.net.br. [201.0.65.182])
+        by smtp.googlemail.com with ESMTPSA id k8sm12080356qth.74.2021.03.16.09.03.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Mar 2021 09:03:50 -0700 (PDT)
+From:   Carlos de Paula <me@carlosedp.com>
+Cc:     david.abdurachmanov@sifive.com, Carlos de Paula <me@carlosedp.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH] kbuild: buildtar: add riscv support
+Date:   Tue, 16 Mar 2021 13:02:43 -0300
+Message-Id: <20210316160242.61712-1-me@carlosedp.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YFDSSxftYw9tCGC6@krava>
-X-Junkbait: aaron@angband.pl, zzyx@angband.pl
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: kilobyte@angband.pl
-X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 04:45:02PM +0100, Jiri Olsa wrote:
-> hi,
-> when running 'perf top' on AMD Rome (/proc/cpuinfo below)
-> with fedora 33 kernel 5.10.22-200.fc33.x86_64
-> 
-> we got unknown NMI messages:
-> 
-> [  226.700160] Uhhuh. NMI received for unknown reason 3d on CPU 90.
-> [  226.700162] Do you have a strange power saving mode enabled?
-> [  226.700163] Dazed and confused, but trying to continue
-> 
-> also when discussing ths with Borislav, he managed to reproduce easily
-> on his AMD Rome machine
+Make 'make tar-pkg' and 'tarbz2-pkg' work on riscv.
 
-Likewise, 3c on Pinnacle Ridge.
+Signed-off-by: Carlos de Paula <me@carlosedp.com>
+---
+ scripts/package/buildtar | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-
-Meow!
+diff --git a/scripts/package/buildtar b/scripts/package/buildtar
+index 936198a90477..221aa7df008d 100755
+--- a/scripts/package/buildtar
++++ b/scripts/package/buildtar
+@@ -123,10 +123,18 @@ case "${ARCH}" in
+ 				cp -v -- "${objtree}/arch/arm64/boot/${i}" "${tmpdir}/boot/vmlinuz-${KERNELRELEASE}"
+ 				break
+ 			fi
+ 		done
+ 		;;
++	riscv)
++		for i in Image.bz2 Image.gz Image; do
++			if [ -f "${objtree}/arch/riscv/boot/${i}" ] ; then
++				cp -v -- "${objtree}/arch/riscv/boot/${i}" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}"
++				break
++			fi
++		done
++		;;
+ 	*)
+ 		[ -f "${KBUILD_IMAGE}" ] && cp -v -- "${KBUILD_IMAGE}" "${tmpdir}/boot/vmlinux-kbuild-${KERNELRELEASE}"
+ 		echo "" >&2
+ 		echo '** ** **  WARNING  ** ** **' >&2
+ 		echo "" >&2
 -- 
-⢀⣴⠾⠻⢶⣦⠀
-⣾⠁⢠⠒⠀⣿⡁ in the beginning was the boot and root floppies and they were good.
-⢿⡄⠘⠷⠚⠋⠀                                       -- <willmore> on #linux-sunxi
-⠈⠳⣄⠀⠀⠀⠀
+2.20.1
+
