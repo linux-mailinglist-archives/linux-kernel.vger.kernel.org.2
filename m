@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D25533D0AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3790733D0B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:24:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236135AbhCPJXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:23:17 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:56908 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236021AbhCPJWk (ORCPT
+        id S236175AbhCPJXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235979AbhCPJXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:22:40 -0400
-X-UUID: 94af934e8aa64eefad752738ba325592-20210316
-X-UUID: 94af934e8aa64eefad752738ba325592-20210316
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1344638571; Tue, 16 Mar 2021 17:22:36 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 16 Mar 2021 17:22:35 +0800
-Received: from mtkslt301.mediatek.inc (10.21.14.114) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 16 Mar 2021 17:22:35 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jie Qiu <jie.qiu@mediatek.com>, CK Hu <ck.hu@mediatek.com>,
-        Cawa Cheng <cawa.cheng@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>
-Subject: [PATCH v5 13/13] arm: dts: mt2701: harmonize node names and compatibles
-Date:   Tue, 16 Mar 2021 17:22:32 +0800
-Message-ID: <20210316092232.9806-13-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210316092232.9806-1-chunfeng.yun@mediatek.com>
-References: <20210316092232.9806-1-chunfeng.yun@mediatek.com>
+        Tue, 16 Mar 2021 05:23:03 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C456EC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:23:02 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id dx17so70958234ejb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:23:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/IXhW1O63bmJ8Yd0S7dPhigetZgdpUG2XeBEZKEoOTk=;
+        b=UBceE/SRPgNInEgr1e11s95rOpMzM2O0jAasYVdA1+zDUwLsSJJV5qTVQb3ZGitrtc
+         i2014J51k8OMFvFsEQkmZZ67kycqGpkDu/6F2hLbyjgSXYi3cFNGbX/A1ByyWM7+ZpoM
+         ++SdsHTuNUfognYkuXKo6pnAMCuTgr27vUVLVgycxx5Jf4DD9iJAljX0wlmIjl8jtIif
+         2vlpovJcZq1i1wBQicpzin7jnUN9aQ+rX0RPRlgq9KnUD6oxljr8TxV8Tuwi05F4p32d
+         nmqZ01mh1diT89Qx8Bvu3F4LMWZhwdRFbv8qXzefgPkH/z8rR5p7Kr29kB1XkgOLFa4z
+         ozaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/IXhW1O63bmJ8Yd0S7dPhigetZgdpUG2XeBEZKEoOTk=;
+        b=Tg+hp0RNksd4xhqwAdFTwh2st9CdsC/Jv4LkM9zYb0W9XfSGGeHLh2DvF8pDn9vIIV
+         6hkZEgy3dszv2xalaDahqveXH/Kl1/4ZlBz0sV+aqgeLVe2gbnl3PenetGfzdGaspfp2
+         uV/cssn3IpnXGPSuL61qTEKDwFlb64MK6dkYwGz6PnlCV1/XtpWc4t5kFfPzIdD+tIur
+         0xzO5RvN5JUPwYK77SwXAYEtkhtbMLGkHyOXLIOvGR/2537JUn+Esgbtef6DlHKPS8PC
+         z1h7XBO6Lq+PCnJcwoPA7ubTCuadNeqLihTqSOra1OcH5EVsWfffQfWs+jVBz9O+JgcX
+         5jkA==
+X-Gm-Message-State: AOAM530wy0sM7Fn3syS63ViQwFXMB8TEwyIan8SGKJstIdVtL1dVuaKy
+        n2l290OsjsJB6aViJjgchakHayLv55zQujDg6ihl3w==
+X-Google-Smtp-Source: ABdhPJx58TefNTCARrYlDvqMTau3fnzMU3RG+L1/JXTagjaemGGfsmD89Dj1Lvs3d9ajASHalOeUuGNkYfcWyI9ZhOo=
+X-Received: by 2002:a17:906:c0c8:: with SMTP id bn8mr28225514ejb.445.1615886581573;
+ Tue, 16 Mar 2021 02:23:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20210315185141.18013-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210315185141.18013-1-andriy.shevchenko@linux.intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 16 Mar 2021 10:22:50 +0100
+Message-ID: <CAMpxmJWtuH6JAQxbkqeAJeR99A8N4+RJF=AABK7HfrJ19WJMqA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] gpio: mockup: Drop duplicate NULL check in gpio_mockup_unregister_pdevs()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is used to fix dtbs_check warning
+On Mon, Mar 15, 2021 at 7:51 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> Since platform_device_unregister() is NULL-aware, we don't need to duplicate
+> this check. Remove it and fold the rest of the code.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/gpio/gpio-mockup.c | 9 ++-------
+>  1 file changed, 2 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
+> index 28b757d34046..d7e73876a3b9 100644
+> --- a/drivers/gpio/gpio-mockup.c
+> +++ b/drivers/gpio/gpio-mockup.c
+> @@ -479,15 +479,10 @@ static struct platform_device *gpio_mockup_pdevs[GPIO_MOCKUP_MAX_GC];
+>
+>  static void gpio_mockup_unregister_pdevs(void)
+>  {
+> -       struct platform_device *pdev;
+>         int i;
+>
+> -       for (i = 0; i < GPIO_MOCKUP_MAX_GC; i++) {
+> -               pdev = gpio_mockup_pdevs[i];
+> -
+> -               if (pdev)
+> -                       platform_device_unregister(pdev);
+> -       }
+> +       for (i = 0; i < GPIO_MOCKUP_MAX_GC; i++)
+> +               platform_device_unregister(gpio_mockup_pdevs[i]);
+>  }
+>
+>  static __init char **gpio_mockup_make_line_names(const char *label,
+> --
+> 2.30.2
+>
 
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
-v2~v5: no changes
----
- arch/arm/boot/dts/mt2701.dtsi | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+Applied, thanks!
 
-diff --git a/arch/arm/boot/dts/mt2701.dtsi b/arch/arm/boot/dts/mt2701.dtsi
-index fade14284017..4776f85d6d5b 100644
---- a/arch/arm/boot/dts/mt2701.dtsi
-+++ b/arch/arm/boot/dts/mt2701.dtsi
-@@ -607,7 +607,7 @@
- 	};
- 
- 	usb0: usb@1a1c0000 {
--		compatible = "mediatek,mt8173-xhci";
-+		compatible = "mediatek,mt2701-xhci", "mediatek,mtk-xhci";
- 		reg = <0 0x1a1c0000 0 0x1000>,
- 		      <0 0x1a1c4700 0 0x0100>;
- 		reg-names = "mac", "ippc";
-@@ -620,8 +620,9 @@
- 		status = "disabled";
- 	};
- 
--	u3phy0: usb-phy@1a1c4000 {
--		compatible = "mediatek,mt2701-u3phy";
-+	u3phy0: t-phy@1a1c4000 {
-+		compatible = "mediatek,mt2701-tphy",
-+			     "mediatek,generic-tphy-v1";
- 		reg = <0 0x1a1c4000 0 0x0700>;
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-@@ -646,7 +647,7 @@
- 	};
- 
- 	usb1: usb@1a240000 {
--		compatible = "mediatek,mt8173-xhci";
-+		compatible = "mediatek,mt2701-xhci", "mediatek,mtk-xhci";
- 		reg = <0 0x1a240000 0 0x1000>,
- 		      <0 0x1a244700 0 0x0100>;
- 		reg-names = "mac", "ippc";
-@@ -659,8 +660,9 @@
- 		status = "disabled";
- 	};
- 
--	u3phy1: usb-phy@1a244000 {
--		compatible = "mediatek,mt2701-u3phy";
-+	u3phy1: t-phy@1a244000 {
-+		compatible = "mediatek,mt2701-tphy",
-+			     "mediatek,generic-tphy-v1";
- 		reg = <0 0x1a244000 0 0x0700>;
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-@@ -700,8 +702,9 @@
- 		status = "disabled";
- 	};
- 
--	u2phy0: usb-phy@11210000 {
--		compatible = "mediatek,generic-tphy-v1";
-+	u2phy0: t-phy@11210000 {
-+		compatible = "mediatek,mt2701-tphy",
-+			     "mediatek,generic-tphy-v1";
- 		reg = <0 0x11210000 0 0x0800>;
- 		#address-cells = <2>;
- 		#size-cells = <2>;
--- 
-2.18.0
-
+Bartosz
