@@ -2,89 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2880B33CF23
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C949533CF22
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:01:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234057AbhCPIAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 04:00:48 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:37211 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232616AbhCPIAe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 04:00:34 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4F05Ln1BN6z1qtdn;
-        Tue, 16 Mar 2021 09:00:33 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4F05Ln0sXsz1qqkj;
-        Tue, 16 Mar 2021 09:00:33 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id q70m-y_aXByJ; Tue, 16 Mar 2021 09:00:32 +0100 (CET)
-X-Auth-Info: 4GoRLgFG0dnQm/KKhuLNqCUAGlKokZNVzkfcfJzQpdw=
-Received: from mail-internal.denx.de (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Tue, 16 Mar 2021 09:00:32 +0100 (CET)
-Received: from pollux.denx.de (pollux [192.168.1.1])
-        by mail-internal.denx.de (Postfix) with ESMTP id 4DB33185321;
-        Tue, 16 Mar 2021 08:59:32 +0100 (CET)
-Received: by pollux.denx.de (Postfix, from userid 515)
-        id 431AC1A0092; Tue, 16 Mar 2021 08:59:32 +0100 (CET)
-From:   Heiko Schocher <hs@denx.de>
-To:     linux-spi@vger.kernel.org
-Cc:     Heiko Schocher <hs@denx.de>, linux-arm-kernel@lists.infradead.org,
-        Ashish Kumar <ashish.kumar@nxp.com>,
-        Kuldeep Singh <kuldeep.singh@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] dt-bindings: spi: add compatible entry for imx8mp in FlexSPI controller
-Date:   Tue, 16 Mar 2021 08:59:28 +0100
-Message-Id: <20210316075928.1763460-3-hs@denx.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210316075928.1763460-1-hs@denx.de>
-References: <20210316075928.1763460-1-hs@denx.de>
+        id S233876AbhCPIAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 04:00:44 -0400
+Received: from verein.lst.de ([213.95.11.211]:58883 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231510AbhCPIAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 04:00:17 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 75A4D68C4E; Tue, 16 Mar 2021 09:00:09 +0100 (CET)
+Date:   Tue, 16 Mar 2021 09:00:08 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Ira Weiny <iweiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>
+Subject: Re: [RFC PATCH v2 07/11] dma-mapping: Add flags to dma_map_ops to
+ indicate PCI P2PDMA support
+Message-ID: <20210316080008.GC15949@lst.de>
+References: <20210311233142.7900-1-logang@deltatee.com> <20210311233142.7900-8-logang@deltatee.com> <20210313023657.GC3402637@iweiny-DESK2.sc.intel.com> <e9a6689a-3cb7-aa30-33e7-b27015754b73@deltatee.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e9a6689a-3cb7-aa30-33e7-b27015754b73@deltatee.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add compatible entry "nxp,imx8mp-fspi" in NXP FlexSPI controller
+On Mon, Mar 15, 2021 at 10:33:13AM -0600, Logan Gunthorpe wrote:
+> >> +	return !ops || ops->flags & DMA_F_PCI_P2PDMA_SUPPORTED;
+> > 
+> > Is this logic correct?  I would have expected.
+> > 
+> > 	return (ops && ops->flags & DMA_F_PCI_P2PDMA_SUPPORTED);
+> 
+> 
+> If ops is NULL then the operations in kernel/dma/direct.c are used and
+> support is added to those in patch 6. So it is correct as written.
 
-Signed-off-by: Heiko Schocher <hs@denx.de>
----
-
-Changes in v4:
-rebased against:
-git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-a43e89624baea ("Merge remote-tracking branch 'spi/for-5.13' into spi-next")
-
-Changes in v3:
-- no changes, rebased against
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-  144c79ef33536 Merge tag 'perf-tools-fixes-for-v5.12-2020-03-07' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux
-
- Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-index df178d1b62e67..8f34a7c7d8b84 100644
---- a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-+++ b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-@@ -4,6 +4,7 @@ Required properties:
-   - compatible : Should be "nxp,lx2160a-fspi"
- 			    "nxp,imx8qxp-fspi"
- 			    "nxp,imx8mm-fspi"
-+			    "nxp,imx8mp-fspi"
- 			    "nxp,imx8dxl-fspi"
- 
-   - reg :        First contains the register location and length,
--- 
-2.29.2
-
+It is not quite that easy. There also is the bypass flag and for the
+specific case where that is ignored the code needs a really good
+comment.  And to assist that formatted so that it makes sense.  The
+above line is indeed highly confusing even if it ends up being correct.
