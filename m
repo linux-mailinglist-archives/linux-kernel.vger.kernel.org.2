@@ -2,157 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E9F33D087
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E160033D044
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236027AbhCPJW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:22:28 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:25824 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235977AbhCPJVz (ORCPT
+        id S230119AbhCPJCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233641AbhCPJBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:21:55 -0400
-X-Greylist: delayed 1264 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Mar 2021 05:21:55 EDT
-Received: from twspam01.aspeedtech.com (localhost [127.0.0.2] (may be forged))
-        by twspam01.aspeedtech.com with ESMTP id 12G8q8H0007629
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 16:52:08 +0800 (GMT-8)
-        (envelope-from troy_lee@aspeedtech.com)
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 12G8oqqZ007507;
-        Tue, 16 Mar 2021 16:50:52 +0800 (GMT-8)
-        (envelope-from troy_lee@aspeedtech.com)
-Received: from localhost.localdomain (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Mar
- 2021 16:59:37 +0800
-From:   Troy Lee <troy_lee@aspeedtech.com>
-To:     <wangzhiqiang.bj@bytedance.com>, <yulei.sh@bytedance.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>
-CC:     <leetroy@gmail.com>
-Subject: [PATCH v1] ARM: dts: Fix 64MiB OpenBMC flash layout and aspeed-ast2600-evb.dts
-Date:   Tue, 16 Mar 2021 08:59:32 +0000
-Message-ID: <20210316085932.2601-1-troy_lee@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 16 Mar 2021 05:01:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21DC6C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 02:01:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DmNY+6dWKZNKGNOlByNK9dvF7iFfEFOcLjrOq6DHoRA=; b=CYjrVp0p6ws6XN986oyLGIHnoz
+        HArtugcJbvSPGS2+AV00oRNtB4u6tsQh4tW+tERtpAML2HH62298CWWMwNXZYbVv2VrgBdFSBHUT0
+        6TnWFWnxwIYOLGNRRAJY78CHMpsEn/zBQpvb0nkvZ4zm1uH46kB92dsjYC50K0L1S2FPsDEqYGACl
+        Zk6FnkGo4aF04IyxbFXyhSPk4BZdqAqoBXHW1s30yzRD5Zmc5wKdkbb1+h78l9k9UDxgQ7fn6jw/R
+        51x7wxLsYPXr8OvbJ4I4Ku6oL9QMm+HF25K3eIChyRUWWO/XiRgpADDrWtqVBe9pHWk4BZCyIKr5H
+        9v/+zY4A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lM5Zr-001hp2-Sb; Tue, 16 Mar 2021 09:01:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0B892300130;
+        Tue, 16 Mar 2021 10:01:22 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E5ACE2B87B602; Tue, 16 Mar 2021 10:01:21 +0100 (CET)
+Date:   Tue, 16 Mar 2021 10:01:21 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [tip:x86/cpu 2/3] arch/x86/kernel/alternative.c:96:10: warning:
+ Undefined behaviour, pointer arithmetic 'x86nops+10' is out of bounds.
+Message-ID: <YFBz4ZXSsdUoI9eS@hirez.programming.kicks-ass.net>
+References: <202103160701.3uXlWiWM-lkp@intel.com>
+ <20210316082703.GA18003@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 12G8oqqZ007507
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316082703.GA18003@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Aspeed AST2600 u-boot requires 600KiB+ flash space. Sharing the same
-openbmc-flash-layout-64.dtsi requires to resize the flash partition.
+On Tue, Mar 16, 2021 at 09:27:03AM +0100, Borislav Petkov wrote:
+> Yet another useless report!
+> 
+> On Tue, Mar 16, 2021 at 07:50:10AM +0800, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cpu
+> > head:   301cddc21a157a3072d789a3097857202e550a24
+> > commit: a89dfde3dc3c2dbf56910af75e2d8b11ec5308f6 [2/3] x86: Remove dynamic NOP selection
+> > compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > 
+> > 
+> > cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+> 
+> What's cppcheck?
+> 
+> That?
+> 
+> Description-en: tool for static C/C++ code analysis (CLI)
+>  Cppcheck is a command-line tool that tries to detect bugs that your
+> 
+> 
+> > >> arch/x86/kernel/alternative.c:96:10: warning: Undefined behaviour, pointer arithmetic 'x86nops+10' is out of bounds. [pointerOutOfBounds]
+> >     x86nops + 1 + 2 + 3 + 4,
+> >             ^
+> >    arch/x86/kernel/alternative.c:97:10: warning: Undefined behaviour, pointer arithmetic 'x86nops+15' is out of bounds. [pointerOutOfBounds]
+> >     x86nops + 1 + 2 + 3 + 4 + 5,
+> >             ^
+> >    arch/x86/kernel/alternative.c:98:10: warning: Undefined behaviour, pointer arithmetic 'x86nops+21' is out of bounds. [pointerOutOfBounds]
+> >     x86nops + 1 + 2 + 3 + 4 + 5 + 6,
+> >             ^
+> >    arch/x86/kernel/alternative.c:99:10: warning: Undefined behaviour, pointer arithmetic 'x86nops+28' is out of bounds. [pointerOutOfBounds]
+> >     x86nops + 1 + 2 + 3 + 4 + 5 + 6 + 7,
+> >             ^
+> > >> arch/x86/kernel/ftrace.c:304:7: warning: union member 'ftrace_op_code_union::code' is never used. [unusedStructMember]
+> >     char code[OP_REF_SIZE];
+> >          ^
+> 
+> How do you trigger this?
+> 
+> /me ignores it until there's some info on how those things can be
+> reproduced.
 
-The updated flash layout as follows:
-- u-boot: 896 KiB
-- u-boot-env: 128 KiB
-- kernel: 9MiB
-- rofs: 32 MiB
-- rwfs: 22 MiB
-
-Signed-off-by: Troy Lee <troy_lee@aspeedtech.com>
----
- arch/arm/boot/dts/aspeed-ast2600-evb.dts      | 32 +------------------
- .../arm/boot/dts/openbmc-flash-layout-64.dtsi | 18 +++++------
- 2 files changed, 10 insertions(+), 40 deletions(-)
-
-diff --git a/arch/arm/boot/dts/aspeed-ast2600-evb.dts b/arch/arm/boot/dts/aspeed-ast2600-evb.dts
-index 89be13197780..2cfae9cfed3a 100644
---- a/arch/arm/boot/dts/aspeed-ast2600-evb.dts
-+++ b/arch/arm/boot/dts/aspeed-ast2600-evb.dts
-@@ -121,37 +121,7 @@ flash@0 {
- 		m25p,fast-read;
- 		label = "bmc";
- 		spi-max-frequency = <50000000>;
--
--		partitions {
--			compatible = "fixed-partitions";
--			#address-cells = <1>;
--			#size-cells = <1>;
--
--			u-boot@0 {
--				reg = <0x0 0xe0000>; // 896KB
--				label = "u-boot";
--			};
--
--			u-boot-env@e0000 {
--				reg = <0xe0000 0x20000>; // 128KB
--				label = "u-boot-env";
--			};
--
--			kernel@100000 {
--				reg = <0x100000 0x900000>; // 9MB
--				label = "kernel";
--			};
--
--			rofs@a00000 {
--				reg = <0xa00000 0x2000000>; // 32MB
--				label = "rofs";
--			};
--
--			rwfs@6000000 {
--				reg = <0x2a00000 0x1600000>; // 22MB
--				label = "rwfs";
--			};
--		};
-+#include "openbmc-flash-layout-64.dtsi"
- 	};
- };
- 
-diff --git a/arch/arm/boot/dts/openbmc-flash-layout-64.dtsi b/arch/arm/boot/dts/openbmc-flash-layout-64.dtsi
-index 91163867be34..31f59de5190b 100644
---- a/arch/arm/boot/dts/openbmc-flash-layout-64.dtsi
-+++ b/arch/arm/boot/dts/openbmc-flash-layout-64.dtsi
-@@ -9,27 +9,27 @@ partitions {
- 	#size-cells = <1>;
- 
- 	u-boot@0 {
--		reg = <0x0 0x60000>; // 384KB
-+		reg = <0x0 0xe0000>; // 896KB
- 		label = "u-boot";
- 	};
- 
--	u-boot-env@60000 {
--		reg = <0x60000 0x20000>; // 128KB
-+	u-boot-env@e0000 {
-+		reg = <0xe0000 0x20000>; // 128KB
- 		label = "u-boot-env";
- 	};
- 
--	kernel@80000 {
--		reg = <0x80000 0x500000>; // 5MB
-+	kernel@100000 {
-+		reg = <0x100000 0x900000>; // 9MB
- 		label = "kernel";
- 	};
- 
--	rofs@580000 {
--		reg = <0x580000 0x2a80000>; // 42.5MB
-+	rofs@a00000 {
-+		reg = <0xa00000 0x2000000>; // 32MB
- 		label = "rofs";
- 	};
- 
--	rwfs@3000000 {
--		reg = <0x3000000 0x1000000>; // 16MB
-+	rwfs@6000000 {
-+		reg = <0x2a00000 0x1600000>; // 22MB
- 		label = "rwfs";
- 	};
- };
--- 
-2.25.1
-
+Just ignore, cppcheck is a load of crap. I don't know why they bother
+running it.
