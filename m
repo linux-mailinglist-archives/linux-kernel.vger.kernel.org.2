@@ -2,169 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D210E33D4A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 853FE33D4A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231739AbhCPNNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:13:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:39756 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229838AbhCPNNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:13:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D8D29101E;
-        Tue, 16 Mar 2021 06:13:33 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A75483F792;
-        Tue, 16 Mar 2021 06:13:30 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 13:13:28 +0000
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Jyoti Bhayana <jbhayana@google.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Enrico Granata <egranata@google.com>,
-        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
-        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
-        Peter Hilber <Peter.hilber@opensynergy.com>,
-        Ankit Arora <ankitarora@google.com>,
-        Guru Nagarajan <gurunagarajan@google.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v7 1/1] iio/scmi: Adding support for IIO SCMI Based
- Sensors
-Message-ID: <20210316131314.GI30179@e120937-lin>
-References: <20210309231259.78050-1-jbhayana@google.com>
- <20210309231259.78050-2-jbhayana@google.com>
- <20210311210844.34371d8d@archlinux>
- <20210312121639.00001c31@Huawei.com>
- <20210312133101.GG30179@e120937-lin>
- <CA+=V6c0boA1Q+k4rM0NOcK4ek_FYU7omEWhvMowqACH_t44sAQ@mail.gmail.com>
- <20210313171107.4c8215e7@archlinux>
- <CA+=V6c0a8z9+gkD_M6KNviN-VActtmpTgkuCBn-sgC4Fm2C6QA@mail.gmail.com>
- <20210314154033.3facf1a2@archlinux>
- <CA+=V6c341JjXQ+QFpiSES_Lm7PT0qCh2WU0uQWrmrFaPr_2QiA@mail.gmail.com>
+        id S233072AbhCPNOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:14:44 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:41076 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231435AbhCPNOd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 09:14:33 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12GDEIpx086609;
+        Tue, 16 Mar 2021 08:14:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615900458;
+        bh=0a9+2pwiRj3HgBy0Tmcg4RcLEetQ3bkJHEFZgypmw8c=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=vg0q3bPku6180/hs13QuMC/0ZYA9Qr0BMmrM3c8jNdaeOfFYGP2b7x8NDLhpy4G50
+         jamBZ4+HE8Z8zfsSPmOgRxIrjAxo45QXih1cbYq73N+cGfZ4ejmORvM6DPOVe3dzU0
+         8/QOGMuEDy9w0fa0ce1UV2iEO+hhp1uVG96XuLvA=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12GDEI9W060553
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 16 Mar 2021 08:14:18 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 16
+ Mar 2021 08:14:18 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 16 Mar 2021 08:14:18 -0500
+Received: from [10.250.235.175] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12GDEEH8037551;
+        Tue, 16 Mar 2021 08:14:15 -0500
+Subject: Re: [PATCH v15 2/4] phy: Add media type and speed serdes
+ configuration interfaces
+To:     Steen Hegelund <steen.hegelund@microchip.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>
+References: <20210218161451.3489955-1-steen.hegelund@microchip.com>
+ <20210218161451.3489955-3-steen.hegelund@microchip.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <694b0f66-64ab-626c-96fa-e703abea88c2@ti.com>
+Date:   Tue, 16 Mar 2021 18:44:13 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+=V6c341JjXQ+QFpiSES_Lm7PT0qCh2WU0uQWrmrFaPr_2QiA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210218161451.3489955-3-steen.hegelund@microchip.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-I reposted my series on top of the take3 immutable branch from Jonathan
-at:
-
-https://lore.kernel.org/lkml/20210316124903.35011-1-cristian.marussi@arm.com/T/#t
-
-You should have received an email regarding the relevant IIO SCMI patch
-
-v7-0025-iio-scmi-port-driver-to-the-new-scmi_sensor_proto.patch
-
-which includes the port of your v7 IIO SCMI driver to the new API, and moved
-also the notification registration to the probe phase to simplify it
-further.
-
-On my side I tested with some fake emulated sensors emitting periodic
-100ms SENSOR_UPDATE notifs...and verifying that notifications are still
-dispatched and received fine. (values are just fakes)
-
-If you can have a look, comment and possibly Ack.
-
-Thanks
-
-Cristian
-
----
-
-(debian-arm64)root@debarm64:~# /root/iio_generic_buffer -a -c -1 -g -l 100 -N 0
-iio device number being used is 0
-trigger-less mode selected
-Enabling all channels
-Enabling: in_accel_x_en
-Enabling: in_accel_z_en
-Enabling: in_timestamp_en
-Enabling: in_accel_y_en
--9465 -9457 -9449 6169807244683640832.000000
--9464 -9456 -9448 6169807244683640832.000000
--9463 -9455 -9447 6169807244683640832.000000
--9462 -9454 -9446 6169807244683640832.000000
--9461 -9453 -9445 6169807244683640832.000000
--9460 -9452 -9444 6169807244683640832.000000
--9459 -9451 -9443 7169807022831960064.000000
--9458 -9450 -9442 7169807022831960064.000000
--9457 -9449 -9441 7169807022831960064.000000
--9456 -9448 -9440 7169807022831960064.000000
--9455 -9447 -9439 7169807022831960064.000000
--9454 -9446 -9438 7169807022831960064.000000
--9453 -9445 -9437 7169807022831960064.000000
--9452 -9444 -9436 7169807022831960064.000000
--9451 -9443 -9435 7169807022831960064.000000
--9450 -9442 -9434 7169807022831960064.000000
--9449 -9441 -9433 8169806800980279296.000000
--9448 -9440 -9432 8169806800980279296.000000
--9447 -9439 -9431 8169806800980279296.000000
--9446 -9438 -9430 8169806800980279296.000000
--9445 -9437 -9429 8169806800980279296.000000
--9444 -9436 -9428 8169806800980279296.000000
--9443 -9435 -9427 8169806800980279296.000000
--9442 -9434 -9426 8169806800980279296.000000
--9441 -9433 -9425 8169806800980279296.000000
--9440 -9432 -9424 8169806800980279296.000000
--9439 -9431 -9423 9169807128884412416.000000
--9438 -9430 -9422 9169807128884412416.000000
--9437 -9429 -9421 9169807128884412416.000000
--9436 -9428 -9420 9169807128884412416.000000
--9435 -9427 -9419 9169807128884412416.000000
-^CCaught signal 2
-Disabling: in_accel_x_en
-Disabling: in_accel_z_en
-Disabling: in_timestamp_en
-Disabling: in_accel_y_en
 
 
-On Sun, Mar 14, 2021 at 11:47:25AM -0700, Jyoti Bhayana wrote:
-> Hi Jonathan,
+On 18/02/21 9:44 pm, Steen Hegelund wrote:
+> Provide new phy configuration interfaces for media type and speed that
+> allows e.g. PHYs used for ethernet to be configured with this
+> information.
 > 
-> No worries. Thanks for the update. It looks good now.
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+
+Acked-By: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  drivers/phy/phy-core.c  | 30 ++++++++++++++++++++++++++++++
+>  include/linux/phy/phy.h | 26 ++++++++++++++++++++++++++
+>  2 files changed, 56 insertions(+)
 > 
-> Thanks,
-> Jyoti
+> diff --git a/drivers/phy/phy-core.c b/drivers/phy/phy-core.c
+> index 71cb10826326..ccb575b13777 100644
+> --- a/drivers/phy/phy-core.c
+> +++ b/drivers/phy/phy-core.c
+> @@ -373,6 +373,36 @@ int phy_set_mode_ext(struct phy *phy, enum phy_mode mode, int submode)
+>  }
+>  EXPORT_SYMBOL_GPL(phy_set_mode_ext);
+>  
+> +int phy_set_media(struct phy *phy, enum phy_media media)
+> +{
+> +	int ret;
+> +
+> +	if (!phy || !phy->ops->set_media)
+> +		return 0;
+> +
+> +	mutex_lock(&phy->mutex);
+> +	ret = phy->ops->set_media(phy, media);
+> +	mutex_unlock(&phy->mutex);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(phy_set_media);
+> +
+> +int phy_set_speed(struct phy *phy, int speed)
+> +{
+> +	int ret;
+> +
+> +	if (!phy || !phy->ops->set_speed)
+> +		return 0;
+> +
+> +	mutex_lock(&phy->mutex);
+> +	ret = phy->ops->set_speed(phy, speed);
+> +	mutex_unlock(&phy->mutex);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(phy_set_speed);
+> +
+>  int phy_reset(struct phy *phy)
+>  {
+>  	int ret;
+> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+> index e435bdb0bab3..0ed434d02196 100644
+> --- a/include/linux/phy/phy.h
+> +++ b/include/linux/phy/phy.h
+> @@ -44,6 +44,12 @@ enum phy_mode {
+>  	PHY_MODE_DP
+>  };
+>  
+> +enum phy_media {
+> +	PHY_MEDIA_DEFAULT,
+> +	PHY_MEDIA_SR,
+> +	PHY_MEDIA_DAC,
+> +};
+> +
+>  /**
+>   * union phy_configure_opts - Opaque generic phy configuration
+>   *
+> @@ -64,6 +70,8 @@ union phy_configure_opts {
+>   * @power_on: powering on the phy
+>   * @power_off: powering off the phy
+>   * @set_mode: set the mode of the phy
+> + * @set_media: set the media type of the phy (optional)
+> + * @set_speed: set the speed of the phy (optional)
+>   * @reset: resetting the phy
+>   * @calibrate: calibrate the phy
+>   * @release: ops to be performed while the consumer relinquishes the PHY
+> @@ -75,6 +83,8 @@ struct phy_ops {
+>  	int	(*power_on)(struct phy *phy);
+>  	int	(*power_off)(struct phy *phy);
+>  	int	(*set_mode)(struct phy *phy, enum phy_mode mode, int submode);
+> +	int	(*set_media)(struct phy *phy, enum phy_media media);
+> +	int	(*set_speed)(struct phy *phy, int speed);
+>  
+>  	/**
+>  	 * @configure:
+> @@ -215,6 +225,8 @@ int phy_power_off(struct phy *phy);
+>  int phy_set_mode_ext(struct phy *phy, enum phy_mode mode, int submode);
+>  #define phy_set_mode(phy, mode) \
+>  	phy_set_mode_ext(phy, mode, 0)
+> +int phy_set_media(struct phy *phy, enum phy_media media);
+> +int phy_set_speed(struct phy *phy, int speed);
+>  int phy_configure(struct phy *phy, union phy_configure_opts *opts);
+>  int phy_validate(struct phy *phy, enum phy_mode mode, int submode,
+>  		 union phy_configure_opts *opts);
+> @@ -344,6 +356,20 @@ static inline int phy_set_mode_ext(struct phy *phy, enum phy_mode mode,
+>  #define phy_set_mode(phy, mode) \
+>  	phy_set_mode_ext(phy, mode, 0)
+>  
+> +static inline int phy_set_media(struct phy *phy, enum phy_media media)
+> +{
+> +	if (!phy)
+> +		return 0;
+> +	return -ENODEV;
+> +}
+> +
+> +static inline int phy_set_speed(struct phy *phy, int speed)
+> +{
+> +	if (!phy)
+> +		return 0;
+> +	return -ENODEV;
+> +}
+> +
+>  static inline enum phy_mode phy_get_mode(struct phy *phy)
+>  {
+>  	return PHY_MODE_INVALID;
 > 
-> On Sun, Mar 14, 2021 at 8:40 AM Jonathan Cameron <jic23@kernel.org> wrote:
-> >
-> > On Sat, 13 Mar 2021 11:55:39 -0800
-> > Jyoti Bhayana <jbhayana@google.com> wrote:
-> >
-> > > Hi Jonathan,
-> > >
-> > > I still see the old version 6 in ib-iio-scmi-5.12-rc2-take2 as well.
-> >
-> > OK. I'm completely confused as to what is going with my local tree.
-> > I have the right patch in the history but it didn't end up in the final
-> > pushed out version.  Fat finger mess-up I guess and too many similarly named
-> > branches and the fact I didn't check the final result closely enough.
-> >
-> > There is now an ib-iio-scmi-5.12-rc2-take3 branch
-> >
-> > This time it definitely has your patch from the 9th of March with no
-> > instances of long long in it.
-> >
-> > Sorry I messed this one up (again!)
-> >
-> > Jonathan
-> >
-> > >
-> > > Thanks,
-> > > Jyoti
-> >
