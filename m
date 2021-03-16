@@ -2,110 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C2733D377
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C78E733D37D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:03:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237564AbhCPMAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:00:07 -0400
-Received: from mail-m118208.qiye.163.com ([115.236.118.208]:55294 "EHLO
-        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233477AbhCPL7i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:59:38 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id 5E8F1E02C2;
-        Tue, 16 Mar 2021 19:59:35 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH] sched: rename __prepare_to_swait() to add_swait_queue_locked()
-Date:   Tue, 16 Mar 2021 19:59:29 +0800
-Message-Id: <1615895969-3376-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQ08aTRoZQxoeQkoZVkpNSk5DQk5CTE5DT09VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hNSlVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pio6GCo4MT8UMUorHT45KB8R
-        EzxPCQxVSlVKTUpOQ0JOQkxNSU9OVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFITE5KNwY+
-X-HM-Tid: 0a783ae7d74b2c17kusn5e8f1e02c2
+        id S237578AbhCPMDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 08:03:30 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:34209 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237556AbhCPMDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 08:03:14 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12GC2r5I026410
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Mar 2021 13:02:53 +0100
+Received: from md1za8fc.ad001.siemens.net ([139.25.68.191])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12GBqqrv026921;
+        Tue, 16 Mar 2021 12:52:52 +0100
+Date:   Tue, 16 Mar 2021 12:52:51 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Claudius Heine <ch@denx.de>,
+        johannes hahn <johannes-hahn@siemens.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        werner zeh <werner.zeh@siemens.com>,
+        "martin mantel" <martin.mantel@siemens.com>,
+        val krutov <val.krutov@erd.epson.com>
+Subject: Re: [PATCH v3 1/1] rtc: rx6110: add ACPI bindings to I2C
+Message-ID: <20210316125251.64484b3a@md1za8fc.ad001.siemens.net>
+In-Reply-To: <YFCW3Kx9MPm0MT8H@smile.fi.intel.com>
+References: <AM0PR10MB25801B7DCB6C1856B5D4F2C09FE10@AM0PR10MB2580.EURPRD10.PROD.OUTLOOK.COM>
+        <20210316100805.2630481-2-ch@denx.de>
+        <YFCW3Kx9MPm0MT8H@smile.fi.intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function just puts wait into queue, and does not do an operation similar 
-to prepare_to_wait() in wait.c. 
-And during the operation, the caller needs to hold the lock to protect.
+Am Tue, 16 Mar 2021 13:30:36 +0200
+schrieb Andy Shevchenko <andriy.shevchenko@intel.com>:
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- kernel/sched/completion.c | 2 +-
- kernel/sched/sched.h      | 2 +-
- kernel/sched/swait.c      | 6 +++---
- 3 files changed, 5 insertions(+), 5 deletions(-)
+> On Tue, Mar 16, 2021 at 11:08:05AM +0100, Claudius Heine wrote:
+> > From: Johannes Hahn <johannes-hahn@siemens.com>
+> > 
+> > This allows the RX6110 driver to be automatically assigned to the
+> > right device on the I2C bus.  
+> 
+> Thanks for all effort!
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+> after addressing the below comments.
+> 
+> > Signed-off-by: Johannes Hahn <johannes-hahn@siemens.com>
+> > Signed-off-by: Claudius Heine <ch@denx.de>  
+> 
+> > Signed-off-by: Henning Schild <henning.schild@siemens.com>  
 
-diff --git a/kernel/sched/completion.c b/kernel/sched/completion.c
-index a778554..3d28a5a
---- a/kernel/sched/completion.c
-+++ b/kernel/sched/completion.c
-@@ -79,7 +79,7 @@ do_wait_for_common(struct completion *x,
- 				timeout = -ERESTARTSYS;
- 				break;
- 			}
--			__prepare_to_swait(&x->wait, &wait);
-+			add_swait_queue_locked(&x->wait, &wait);
- 			__set_current_state(state);
- 			raw_spin_unlock_irq(&x->wait.lock);
- 			timeout = action(timeout);
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 10a1522..0516f50
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2719,4 +2719,4 @@ static inline bool is_per_cpu_kthread(struct task_struct *p)
- #endif
- 
- void swake_up_all_locked(struct swait_queue_head *q);
--void __prepare_to_swait(struct swait_queue_head *q, struct swait_queue *wait);
-+void add_swait_queue_locked(struct swait_queue_head *q, struct swait_queue *wait);
-diff --git a/kernel/sched/swait.c b/kernel/sched/swait.c
-index 7a24925..f48a544
---- a/kernel/sched/swait.c
-+++ b/kernel/sched/swait.c
-@@ -82,7 +82,7 @@ void swake_up_all(struct swait_queue_head *q)
- }
- EXPORT_SYMBOL(swake_up_all);
- 
--void __prepare_to_swait(struct swait_queue_head *q, struct swait_queue *wait)
-+void add_swait_queue_locked(struct swait_queue_head *q, struct swait_queue *wait)
- {
- 	wait->task = current;
- 	if (list_empty(&wait->task_list))
-@@ -94,7 +94,7 @@ void prepare_to_swait_exclusive(struct swait_queue_head *q, struct swait_queue *
- 	unsigned long flags;
- 
- 	raw_spin_lock_irqsave(&q->lock, flags);
--	__prepare_to_swait(q, wait);
-+	add_swait_queue_locked(q, wait);
- 	set_current_state(state);
- 	raw_spin_unlock_irqrestore(&q->lock, flags);
- }
-@@ -114,7 +114,7 @@ long prepare_to_swait_event(struct swait_queue_head *q, struct swait_queue *wait
- 		list_del_init(&wait->task_list);
- 		ret = -ERESTARTSYS;
- 	} else {
--		__prepare_to_swait(q, wait);
-+		add_swait_queue_locked(q, wait);
- 		set_current_state(state);
- 	}
- 	raw_spin_unlock_irqrestore(&q->lock, flags);
--- 
-2.7.4
+Claudius, just remove that. I guess just add yours and mention authors
+in the code if they should receive some recognition.
+
+Henning
+
+> I think this is somehow confusing. Either you need to add
+> Co-developed-by of the corresponding people, or remove SoB (because
+> of From line), i.o.w seems like Co-dB tag is needed for Johannes or
+> you and something should be done with Henning's SoB.
+> 
+> > ---
+> >  drivers/rtc/rtc-rx6110.c | 12 ++++++++++++
+> >  1 file changed, 12 insertions(+)
+> > 
+> > diff --git a/drivers/rtc/rtc-rx6110.c b/drivers/rtc/rtc-rx6110.c
+> > index 79161d4c6ce4..29bd697f82cb 100644
+> > --- a/drivers/rtc/rtc-rx6110.c
+> > +++ b/drivers/rtc/rtc-rx6110.c
+> > @@ -13,6 +13,7 @@
+> >  #include <linux/of_gpio.h>
+> >  #include <linux/regmap.h>
+> >  #include <linux/rtc.h>  
+> 
+> > +#include <linux/acpi.h>  
+> 
+> Usually it's not needed if you leave IDs always to be compiled.
+> Instead mod_devicetable.h is used. But it's all up to you and
+> maintainer.
+> 
+> >  #include <linux/of.h>
+> >  #include <linux/of_device.h>
+> >  #include <linux/spi/spi.h>
+> > @@ -447,6 +448,14 @@ static int rx6110_i2c_probe(struct i2c_client
+> > *client, return rx6110_probe(rx6110, &client->dev);
+> >  }
+> >  
+> > +#ifdef CONFIG_ACPI
+> > +static const struct acpi_device_id rx6110_i2c_acpi_match[] = {
+> > +	{ "SECC6110", },
+> > +	{ },
+> > +};
+> > +MODULE_DEVICE_TABLE(acpi, rx6110_i2c_acpi_match);
+> > +#endif
+> > +
+> >  static const struct i2c_device_id rx6110_i2c_id[] = {
+> >  	{ "rx6110", 0 },
+> >  	{ }
+> > @@ -456,6 +465,9 @@ MODULE_DEVICE_TABLE(i2c, rx6110_i2c_id);
+> >  static struct i2c_driver rx6110_i2c_driver = {
+> >  	.driver = {
+> >  		.name = RX6110_DRIVER_NAME,
+> > +#ifdef CONFIG_ACPI  
+> 
+> This is implied by the stub ACPI_PTR() macro for ACPI=n case.
+> I.o.w drop this ugly and redundant ifdeffery.
+> 
+> > +		.acpi_match_table =
+> > ACPI_PTR(rx6110_i2c_acpi_match), +#endif
+> >  	},
+> >  	.probe		= rx6110_i2c_probe,
+> >  	.id_table	= rx6110_i2c_id,
+> > -- 
+> > 2.30.1
+> >   
+> 
 
