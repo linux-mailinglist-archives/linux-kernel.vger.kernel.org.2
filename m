@@ -2,59 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A53EC33DB28
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:43:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8B333DB3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238815AbhCPRnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:43:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237711AbhCPRnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:43:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5450D6511B;
-        Tue, 16 Mar 2021 17:43:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615916580;
-        bh=CbJBd46uYHxcCQtRzWpupewBCyioYqa+SHF3sLTw6Qc=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=IAUj4LVVLY2D8NChuQ5uC/4acm9CgsptjBZ08QpMnDUMkmjWNNMqe6Nlk1Cqn+TnA
-         TktoNPVBv5GNfma+8NdlW7j9WFDrcfwGxoE+td77n+EuGAaqlUtYBqbbF4OJ9GJE1i
-         KvucWCn9u4BWbU5jxPrphAFUwHj05BGz/FCLcrAfmOC9LXDGpl8/dI+h3y1JsXKJDW
-         4m7CBC/QqKScbXT/piJg5TPyaO3CnNi6LDxji7QTjV3ohi1hDYxgPuzHp8G7SatHij
-         sHx9PUoRU5bfWZNhi+b/CC8oF2yT/2LG/pFk4CZ2cXpPFJsHdstueUBCNDEEsrdnsJ
-         M2jhNnwjNSpfQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4F6B760997;
-        Tue, 16 Mar 2021 17:43:00 +0000 (UTC)
-Subject: Re: [GIT PULL] fuse fixes for 5.12-rc4
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210316143435.GC1208880@miu.piliscsaba.redhat.com>
-References: <20210316143435.GC1208880@miu.piliscsaba.redhat.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210316143435.GC1208880@miu.piliscsaba.redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-fixes-5.12-rc4
-X-PR-Tracked-Commit-Id: f8425c9396639cc462bcce44b1051f8b4e62fddb
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 1df27313f50a57497c1faeb6a6ae4ca939c85a7d
-Message-Id: <161591658031.21676.2321210742215971003.pr-tracker-bot@kernel.org>
-Date:   Tue, 16 Mar 2021 17:43:00 +0000
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+        id S239093AbhCPRqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:46:19 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2705 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239017AbhCPRpt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:45:49 -0400
+Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F0LBt3QFQz67yt6;
+        Wed, 17 Mar 2021 01:39:34 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 16 Mar 2021 18:45:46 +0100
+Received: from [10.210.172.72] (10.210.172.72) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 16 Mar 2021 17:45:45 +0000
+Subject: Re: [RFC PATCH v3 2/3] blk-mq: Freeze and quiesce all queues for
+ tagset in elevator_exit()
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Ming Lei <ming.lei@redhat.com>
+CC:     "hare@suse.de" <hare@suse.de>, "axboe@kernel.dk" <axboe@kernel.dk>,
+        "hch@lst.de" <hch@lst.de>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pragalla@codeaurora.org" <pragalla@codeaurora.org>,
+        "kashyap.desai@broadcom.com" <kashyap.desai@broadcom.com>,
+        yuyufen <yuyufen@huawei.com>
+References: <1614957294-188540-1-git-send-email-john.garry@huawei.com>
+ <1614957294-188540-3-git-send-email-john.garry@huawei.com>
+ <YElrSFGyim3rjDN+@T590> <8c6c6783-6152-2332-2f50-14c409e40320@huawei.com>
+ <2b0c66ba-03b3-844c-1684-f8e80d11cdbb@acm.org>
+ <4ffaba53-100a-43a5-8746-b753d4153be5@huawei.com>
+ <fff92b15-d483-ad6a-bb01-ef61117b7cbd@acm.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <82526e78-66e5-fc3c-7acd-38f1813ebe1e@huawei.com>
+Date:   Tue, 16 Mar 2021 17:43:37 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
+MIME-Version: 1.0
+In-Reply-To: <fff92b15-d483-ad6a-bb01-ef61117b7cbd@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.210.172.72]
+X-ClientProxiedBy: lhreml714-chm.china.huawei.com (10.201.108.65) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 16 Mar 2021 15:37:21 +0100:
+On 16/03/2021 17:00, Bart Van Assche wrote:
+> On 3/16/21 9:15 AM, John Garry wrote:
+>> I'll have a look at this ASAP -  a bit busy.
+>>
+>> But a quick scan and I notice this:
+>>
+>>  > @@ -226,6 +226,7 @@ static inline void 
+>> __blk_mq_put_driver_tag(struct blk_mq_hw_ctx *hctx,
+>>  >                          struct request *rq)
+>>  >   {
+>>  >       blk_mq_put_tag(hctx->tags, rq->mq_ctx, rq->tag);
+>>  > +    rcu_assign_pointer(hctx->tags->rqs[rq->tag], NULL);
+>>
+>> Wasn't a requirement to not touch the fastpath at all, including even 
+>> if only NULLifying a pointer?
+>>
+>> IIRC, Kashyap some time ago had a patch like above (but without RCU 
+>> usage), but the request from Jens was to not touch the fastpath.
+>>
+>> Maybe I'm mistaken - I will try to dig up the thread.
+> 
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-fixes-5.12-rc4
+Hi Bart,
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/1df27313f50a57497c1faeb6a6ae4ca939c85a7d
+> 
+> I agree that Jens asked at the end of 2018 not to touch the fast path to 
+> fix this use-after-free (maybe that request has been repeated more 
+> recently). If Jens or anyone else feels strongly about not clearing 
+> hctx->tags->rqs[rq->tag] from the fast path then I will make that 
+> change. 
 
-Thank you!
+Is that possible for this same approach? I need to check the code more..
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+And don't we still have the problem that some iter callbacks may 
+sleep/block, which is not allowed in an RCU read-side critical section?
+
+> My motivation for clearing these pointers from the fast path is 
+> as follows:
+> - This results in code that is easier to read and easier to maintain.
+> - Every modern CPU pipelines store instructions so the performance 
+> impact of adding an additional store should be small.
+> - Since the block layer has a tendency to reuse tags that have been 
+> freed recently, it is likely that hctx->tags->rqs[rq->tag] will be used 
+> for a next request and hence that it will have to be loaded into the CPU 
+> cache anyway.
+> 
+
+Those points make sense to me, but obviously it's the maintainers call.
+
+Thanks,
+john
+
