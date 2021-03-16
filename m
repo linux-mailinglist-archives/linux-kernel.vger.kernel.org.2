@@ -2,98 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6C633D4C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:22:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED77D33D4CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:25:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234868AbhCPNVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:21:52 -0400
-Received: from p3plsmtpa06-05.prod.phx3.secureserver.net ([173.201.192.106]:35541
-        "EHLO p3plsmtpa06-05.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234823AbhCPNVT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:21:19 -0400
-Received: from [192.168.0.116] ([71.184.94.153])
-        by :SMTPAUTH: with ESMTPSA
-        id M9dMlgHaS3MqEM9dMlKzyY; Tue, 16 Mar 2021 06:21:17 -0700
-X-CMAE-Analysis: v=2.4 cv=Ztool/3G c=1 sm=1 tr=0 ts=6050b0cd
- a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
- a=IkcTkHD0fZMA:10 a=3-RhneuVAAAA:8 a=I0sF1hZwEO2LTmVZMWkA:9 a=QEXdDO2ut3YA:10
- a=VLVLkjT_5ZicWzSuYqSo:22
-X-SECURESERVER-ACCT: tom@talpey.com
-Subject: Re: [PATCH v2] cifs: Silently ignore unknown oplock break handle
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Steve French <sfrench@samba.org>
-Cc:     linux-cifs@vger.kernel.org, kernel@axis.com,
-        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org
-References: <20210316124808.11984-1-vincent.whitchurch@axis.com>
-From:   Tom Talpey <tom@talpey.com>
-Message-ID: <93d506a6-5832-5006-3bab-6e8e7203da0e@talpey.com>
-Date:   Tue, 16 Mar 2021 09:21:16 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S234899AbhCPNZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:25:28 -0400
+Received: from ni.piap.pl ([195.187.100.5]:43902 "EHLO ni.piap.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230063AbhCPNZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 09:25:05 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ni.piap.pl (Postfix) with ESMTPSA id 96B264439A5;
+        Tue, 16 Mar 2021 14:25:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 96B264439A5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1615901101; bh=wZdVlT6VbbKipHYc8IYWqAuDe8Y2YOt1tmvRaR9ZA98=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FdoBLBcfi9PmBYw/IX99zz8CS3ymGSkrLmsuCCaLx2QkWOFchrNbFQKOXDF1AHI/T
+         jY/j3Mw20w8mJ7/1llQSfZza6ooo+U7Is5HTzPISEXN+hY49CmW33EY46+7FmuduoX
+         NiLLivOu+Tuai+Gih729fNu2zOkXNTmpdBuRo4aE=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     devicetree@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: RFC: dt-binding: media: document ON Semi AR0521 sensor bindings
+Sender: khalasa@piap.pl
+Date:   Tue, 16 Mar 2021 14:25:01 +0100
+Message-ID: <m3o8fjs02a.fsf@t19.piap.pl>
 MIME-Version: 1.0
-In-Reply-To: <20210316124808.11984-1-vincent.whitchurch@axis.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfMHiaaShf7isCN2tOasRztRt/9PCFV+2jq8EBDYO7Ap6X6hTfBIFUzM6i/rnZIMWwGgFls9g5pFUgKSM/51XYcBFst/vZ3rb4vRgkOJEUqpqbzLCipAW
- WmMkyxfHvSyYL+MUI8uNfp+WTbMdDRY75ZBxsszYxC5HArz2hrCaHFY/AST5YwU/fWlkIvUGNZDBE2aa1uyslwsSwWEouAYj8q2MNT1lE8j3Q5ESN10/Eeoe
- XTfzS5bZYtCO0FiVmK/ZFyqgrXnoKat5F/5as8yQuuAhmyq7GiXGkG5y+LdHMZp+IkqydvIhYi1CnlrlDd2pRMwkgBBXlSZxKpP4ef59CexKEjFVv1Z4GASe
- X8pr/wnmw0VcuNIQRsclje+8HlBH4g==
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 4
+X-KLMS-Message-Action: skipped
+X-KLMS-AntiSpam-Status: not scanned, whitelist
+X-KLMS-AntiPhishing: not scanned, whitelist
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/2021 8:48 AM, Vincent Whitchurch via samba-technical wrote:
-> Make SMB2 not print out an error when an oplock break is received for an
-> unknown handle, similar to SMB1.  The SMB2 lease break path is not
-> affected by this patch.
-> 
-> Without this, a program which writes to a file from one thread, and
-> opens, reads, and writes the same file from another thread triggers the
-> below errors several times a minute when run against a Samba server
-> configured with "smb2 leases = no".
-> 
->   CIFS: VFS: \\192.168.0.1 No task to wake, unknown frame received! NumMids 2
->   00000000: 424d53fe 00000040 00000000 00000012  .SMB@...........
->   00000010: 00000001 00000000 ffffffff ffffffff  ................
->   00000020: 00000000 00000000 00000000 00000000  ................
->   00000030: 00000000 00000000 00000000 00000000  ................
-> 
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> ---
-> 
-> Notes:
->      v2:
->      - Drop change to lease break
->      - Rewrite commit message
-> 
->   fs/cifs/smb2misc.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/cifs/smb2misc.c b/fs/cifs/smb2misc.c
-> index 60d4bd1eae2b..4d8576e202e3 100644
-> --- a/fs/cifs/smb2misc.c
-> +++ b/fs/cifs/smb2misc.c
-> @@ -755,7 +755,7 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
->   	}
->   	spin_unlock(&cifs_tcp_ses_lock);
->   	cifs_dbg(FYI, "Can not process oplock break for non-existent connection\n");
-> -	return false;
-> +	return true;
->   }
->   
->   void
-> 
+This file documents DT bindings for the AR0521 camera sensor driver.
 
-As an oplock-only approach, it looks good. But the old cifs_dbg message
-"non-existent connection" is possibly misleading, since the connection
-may be perfectly fine.
+Signed-off-by: Krzysztof Halasa <khalasa@piap.pl>
 
-When breaking the loop successfully, the code emits
-	cifs_dbg(FYI, "file id match, oplock break\n");
-so perhaps
-	cifs_dbg(FYI, "No file id matched, oplock break ignored\n");
-?
+diff --git a/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml b=
+/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml
+new file mode 100644
+index 000000000000..f649d4cbcb37
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml
+@@ -0,0 +1,76 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/i2c/onnn,ar0521.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ON Semiconductor AR0521 MIPI CSI-2 sensor
++
++maintainers:
++  - Krzysztof Halasa <khalasa@piap.pl>
++
++description: |-
++  The AR0521 is a raw CMOS image sensor with MIPI CSI-2 and
++  I2C-compatible control interface.
++
++properties:
++  compatible:
++    const: on-semi,ar0521
++
++  reg:
++    description: I2C bus address of the sensor device
++    maxItems: 1
++
++  clocks:
++    description: reference to the xclk clock
++    maxItems: 1
++
++  clock-names:
++    const: xclk
++
++  reset-gpios:
++    description: active low reset GPIO
++    maxItems: 1
++
++  port:
++    type: object
++    description: |
++      Output video port: 1, 2 or 4 lanes. See ../video-interfaces.txt.
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - port
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/clock/imx6qdl-clock.h>
++
++    i2c {
++            #address-cells =3D <1>;
++            #size-cells =3D <0>;
++
++            ar0521: camera-sensor@36 {
++                    compatible =3D "onnn,ar0521";
++                    reg =3D <0x36>;
++                    pinctrl-names =3D "default";
++                    pinctrl-0 =3D <&pinctrl_mipi_camera>;
++
++                    clocks =3D <&clks IMX6QDL_CLK_CKO>;
++                    clock-names =3D "xclk";
++
++                    reset-gpios =3D <&gpio1 7 GPIO_ACTIVE_LOW>;
++
++                    port {
++                           mipi_camera_to_mipi_csi2: endpoint {
++                                    remote-endpoint =3D <&mipi_csi2_in>;
++                                    data-lanes =3D <1 2 3 4>;
++                            };
++                    };
++            };
++    };
 
-Tom.
+--=20
+Krzysztof Halasa
+
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
