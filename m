@@ -2,107 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ACEF33D53E
+	by mail.lfdr.de (Postfix) with ESMTP id A644B33D53F
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235577AbhCPNyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:54:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45300 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235566AbhCPNxt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:53:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615902828;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fjg9zTn3hH4sazhIpCESgskhJWxtQP+Lj93o8a/n5Q0=;
-        b=Ig1vRLjQ3Zv33epZh7GrSy46ciRpBJLev9HyX+/SC88ZFVHF82l+T0mZCiSFQO540E5qfZ
-        dmw8Ucp66mXCiRV3D0Z0BGviWgP4eFUoK48X3tcnYM9ppSHN24GTWSp/aRQ1R+2X0xmQc4
-        /R8RWPEOlfmnvCm0cC1TWBwuEWVZg00=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-302-KWfOWIm7ODeS5FviAlH32g-1; Tue, 16 Mar 2021 09:53:45 -0400
-X-MC-Unique: KWfOWIm7ODeS5FviAlH32g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 248AF84B9AB;
-        Tue, 16 Mar 2021 13:53:44 +0000 (UTC)
-Received: from krava (unknown [10.40.193.217])
-        by smtp.corp.redhat.com (Postfix) with SMTP id BDAFC5C1A1;
-        Tue, 16 Mar 2021 13:53:42 +0000 (UTC)
-Date:   Tue, 16 Mar 2021 14:53:41 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH v2] perf stat: improve readability of shadow stats
-Message-ID: <YFC4ZTOhm61QWDgh@krava>
-References: <20210315143047.3867-1-changbin.du@gmail.com>
+        id S235616AbhCPNyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:54:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235569AbhCPNyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 09:54:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED1E664FED;
+        Tue, 16 Mar 2021 13:54:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615902842;
+        bh=DSp4ZyCdLVrD/515PijNSWVY8esTcirqwL+R08qKkD0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kepDP69Ry/ngCbQbuVnK5sTa8HmjWObQRpY7jKZ/9Hdv2iZjgSp5SHDIReCV41yZ9
+         rlszJk7PyvsUW4DYxuhv/CmMZUFFJpisL35DeJnnbcVWxtl7bLLZMB46dKXWmL6g2/
+         DmSHwku234UB91qYKSL8SGXWRQMfObJB0TanU91Ffh0lRiTl2g3nyixzDT6Q5TYp3k
+         XYr3ZnxDouOsdg759LsDTpkNijYEmApECpUjePgms6NYr3+I5FCPCKs0459YFW5SWF
+         7r10Z3kwUY9YGDVkqEiTxXl33Q7Qi8YANQuFN0JaCuRhlhiI19DDaU8fLVEyBJNmgu
+         iwHD+LAO2CE3g==
+Date:   Tue, 16 Mar 2021 09:54:01 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christian Eggers <ceggers@arri.de>
+Subject: Re: [PATCH 5.10 113/290] net: dsa: implement a central TX
+ reallocation procedure
+Message-ID: <YFC4eVripXbAw2cG@sashalap>
+References: <20210315135541.921894249@linuxfoundation.org>
+ <20210315135545.737069480@linuxfoundation.org>
+ <20210315195601.auhfy5uafjafgczs@skbuf>
+ <YFBGIt2jRQLmjtln@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210315143047.3867-1-changbin.du@gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <YFBGIt2jRQLmjtln@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 10:30:47PM +0800, Changbin Du wrote:
+On Tue, Mar 16, 2021 at 06:46:10AM +0100, gregkh@linuxfoundation.org wrote:
+>On Mon, Mar 15, 2021 at 07:56:02PM +0000, Vladimir Oltean wrote:
+>> +Andrew, Vivien,
+>>
+>> On Mon, Mar 15, 2021 at 02:53:26PM +0100, gregkh@linuxfoundation.org wrote:
+>> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> >
+>> > From: Vladimir Oltean <vladimir.oltean@nxp.com>
+>> >
+>> > [ Upstream commit a3b0b6479700a5b0af2c631cb2ec0fb7a0d978f2 ]
+>> >
+>> > At the moment, taggers are left with the task of ensuring that the skb
+>> > headers are writable (which they aren't, if the frames were cloned for
+>> > TX timestamping, for flooding by the bridge, etc), and that there is
+>> > enough space in the skb data area for the DSA tag to be pushed.
+>> >
+>> > Moreover, the life of tail taggers is even harder, because they need to
+>> > ensure that short frames have enough padding, a problem that normal
+>> > taggers don't have.
+>> >
+>> > The principle of the DSA framework is that everything except for the
+>> > most intimate hardware specifics (like in this case, the actual packing
+>> > of the DSA tag bits) should be done inside the core, to avoid having
+>> > code paths that are very rarely tested.
+>> >
+>> > So provide a TX reallocation procedure that should cover the known needs
+>> > of DSA today.
+>> >
+>> > Note that this patch also gives the network stack a good hint about the
+>> > headroom/tailroom it's going to need. Up till now it wasn't doing that.
+>> > So the reallocation procedure should really be there only for the
+>> > exceptional cases, and for cloned packets which need to be unshared.
+>> >
+>> > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+>> > Tested-by: Christian Eggers <ceggers@arri.de> # For tail taggers only
+>> > Tested-by: Kurt Kanzenbach <kurt@linutronix.de>
+>> > Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+>> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+>> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+>> > ---
+>>
+>> For context, Sasha explains here:
+>> https://www.spinics.net/lists/stable-commits/msg190151.html
+>> (the conversation is somewhat truncated, unfortunately, because
+>> stable-commits@vger.kernel.org ate my replies)
+>> that 13 patches were backported to get the unrelated commit 9200f515c41f
+>> ("net: dsa: tag_mtk: fix 802.1ad VLAN egress") to apply cleanly with git-am.
+>>
+>> I am not strictly against this, even though I would have liked to know
+>> that the maintainers were explicitly informed about it.
+>>
+>> Greg, could you make your stable backporting emails include the output
+>> of ./get_maintainer.pl into the list of recipients? Thanks.
+>
+>I cc: everyone on the signed-off-by list on the patch, why would we need
+>to add more?  A maintainer should always be on that list automatically.
 
-SNIP
+Oh, hm, could this be an issue with subsystems that have a shared
+maintainership model? In that scenario not all maintainers will sign-off
+on a commit.
 
-> diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-> index 6ccf21a72f06..3f800e71126f 100644
-> --- a/tools/perf/util/stat-shadow.c
-> +++ b/tools/perf/util/stat-shadow.c
-> @@ -9,6 +9,7 @@
->  #include "expr.h"
->  #include "metricgroup.h"
->  #include "cgroup.h"
-> +#include "units.h"
->  #include <linux/zalloc.h>
->  
->  /*
-> @@ -1270,18 +1271,15 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
->  		generic_metric(config, evsel->metric_expr, evsel->metric_events, NULL,
->  				evsel->name, evsel->metric_name, NULL, 1, cpu, out, st);
->  	} else if (runtime_stat_n(st, STAT_NSECS, cpu, &rsd) != 0) {
-> -		char unit = 'M';
-> -		char unit_buf[10];
-> +		char unit = ' ';
-> +		char unit_buf[10] = "/sec";
->  
->  		total = runtime_stat_avg(st, STAT_NSECS, cpu, &rsd);
-> -
->  		if (total)
-> -			ratio = 1000.0 * avg / total;
-> -		if (ratio < 0.001) {
-> -			ratio *= 1000;
-> -			unit = 'K';
-> -		}
-> -		snprintf(unit_buf, sizeof(unit_buf), "%c/sec", unit);
-> +			ratio = convert_unit_double(1000000000.0 * avg / total, &unit);
-> +
-> +		if (unit != ' ')
-> +			snprintf(unit_buf, sizeof(unit_buf), "%c/sec", unit);
->  		print_metric(config, ctxp, NULL, "%8.3f", unit_buf, ratio);
-
-hum, does this still change the metric unit in the csv output? 'perf -a -x,'
-
-jirka
-
->  	} else if (perf_stat_evsel__is(evsel, SMI_NUM)) {
->  		print_smi_cost(config, cpu, out, st, &rsd);
-> diff --git a/tools/perf/util/units.c b/tools/perf/util/units.c
-> index a46762aec4c9..32c39cfe209b 100644
-> --- a/tools/perf/util/units.c
-> +++ b/tools/perf/util/units.c
-
-SNIP
-
+-- 
+Thanks,
+Sasha
