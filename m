@@ -2,81 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451D933CD15
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DBD33CD45
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233736AbhCPFXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235431AbhCPFXR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:23:17 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2572C06174A;
-        Mon, 15 Mar 2021 22:23:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=pzK6j1BLSUD4GBlBNhV6RS9vkRptruk9iGMar/4N4MQ=; b=gDait91fy1rP3SXxVBrgYA2sB5
-        jki0DZHU9GXlJcZAPXUjFdDFm2W2bgtC34WqAPPkJkA59Gi+TGJl6p/XcmfEiFT24NIXm2MdQ9nFD
-        Q1yuHLQU/+jNT4HvsaLPBBnIgVM/v0X9ONwPejoqEBmJm9FHrgunUhmDTty/0lIYItFgcRsP0ZCUJ
-        TFUlQ/64MqI/ZOET4+Y+jW0PNSYLNYNDVZ/qRNmhmq/3OEbrQJpzD6TKr882wQAS1FS3rOFNcAGAa
-        S02J0HJgZetlREyKDEZMY66O29A4EkCFrKOoZaf+nxWZ6vjMFNKKLPZNx3q7I64i7s2TxSkS7dLiT
-        MYoV4GXw==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lM2Ak-001PTS-N1; Tue, 16 Mar 2021 05:23:15 +0000
-Subject: Re: [PATCH] fs: Trivial typo fix in the file coredump.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210316050302.3816253-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <515c0dca-2ce5-4c15-0682-b95374cb73e2@infradead.org>
-Date:   Mon, 15 Mar 2021 22:23:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S235447AbhCPF0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:26:00 -0400
+Received: from mga14.intel.com ([192.55.52.115]:57480 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230372AbhCPFZe (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 01:25:34 -0400
+IronPort-SDR: JZ7CJrH9gvmDJEKdNiTEgber5lOTJwo/Owx9nqPEbYGrHe/VJUN51VNWfJKCg8wu+lTD7Ug997
+ MPDyheI54EsQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="188563281"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="188563281"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 22:25:34 -0700
+IronPort-SDR: v8xBohP9mDGjV+74qFjjTxJ1z2Z57FhcjKhlXXRpH5ujzi0p2s6eFvVuGHM72EE+cdLgFKXHsi
+ mJhP8dH7/Hxw==
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="449602912"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 22:25:31 -0700
+Subject: Re: [PATCH v2 16/27] perf evlist: Warn as events from different
+ hybrid PMUs in a group
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210311070742.9318-1-yao.jin@linux.intel.com>
+ <20210311070742.9318-17-yao.jin@linux.intel.com> <YE/n2BW1ifH42/o6@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <020eaabf-abdb-4458-a883-2abbd4bbfbbd@linux.intel.com>
+Date:   Tue, 16 Mar 2021 13:25:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210316050302.3816253-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YE/n2BW1ifH42/o6@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/15/21 10:03 PM, Bhaskar Chowdhury wrote:
-> 
-> s/postion/position/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Hi Jiri,
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-> ---
->  Al, I hope this time I read the comments well enough,if still
->  I am at fault , curse me!
+On 3/16/2021 7:03 AM, Jiri Olsa wrote:
+> On Thu, Mar 11, 2021 at 03:07:31PM +0800, Jin Yao wrote:
 > 
->  fs/coredump.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> SNIP
 > 
-> diff --git a/fs/coredump.c b/fs/coredump.c
-> index 1c0fdc1aa70b..3ecae122ffd9 100644
-> --- a/fs/coredump.c
-> +++ b/fs/coredump.c
-> @@ -923,7 +923,7 @@ EXPORT_SYMBOL(dump_align);
+>>   				goto try_again;
+>>   			}
+>> +
+>> +			if (errno == EINVAL && perf_pmu__hybrid_exist())
+>> +				evlist__warn_hybrid_group(evlist);
+>>   			rc = -errno;
+>>   			evsel__open_strerror(pos, &opts->target, errno, msg, sizeof(msg));
+>>   			ui__error("%s\n", msg);
+>> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+>> index 7a732508b2b4..6f780a039db0 100644
+>> --- a/tools/perf/builtin-stat.c
+>> +++ b/tools/perf/builtin-stat.c
+>> @@ -239,6 +239,9 @@ static void evlist__check_cpu_maps(struct evlist *evlist)
+>>   	struct evsel *evsel, *pos, *leader;
+>>   	char buf[1024];
+>>   
+>> +	if (evlist__hybrid_exist(evlist))
+>> +		return;
 > 
->  /*
->   * Ensures that file size is big enough to contain the current file
-> - * postion. This prevents gdb from complaining about a truncated file
-> + * position. This prevents gdb from complaining about a truncated file
->   * if the last "write" to the file was dump_skip.
->   */
->  void dump_truncate(struct coredump_params *cprm)
-> --
+> this should be in separate patch and explained
+> 
 
+Now I have another idea. If a group consists of atom events and core events, we still follow current 
+disabling group solution?
 
--- 
-~Randy
+I mean removing following code:
 
+if (evlist__hybrid_exist(evlist))
+	return;
+
+evlist__check_cpu_maps then continues running and disabling the group. But also report with a 
+warning that says "WARNING: Group has events from different hybrid PMUs".
+
+Do you like this way?
+
+>> +
+>>   	evlist__for_each_entry(evlist, evsel) {
+>>   		leader = evsel->leader;
+>>   
+>> @@ -726,6 +729,10 @@ enum counter_recovery {
+>>   static enum counter_recovery stat_handle_error(struct evsel *counter)
+>>   {
+>>   	char msg[BUFSIZ];
+>> +
+>> +	if (perf_pmu__hybrid_exist() && errno == EINVAL)
+>> +		evlist__warn_hybrid_group(evsel_list);
+>> +
+>>   	/*
+>>   	 * PPC returns ENXIO for HW counters until 2.6.37
+>>   	 * (behavior changed with commit b0a873e).
+>> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+>> index f139151b9433..5ec891418cdd 100644
+>> --- a/tools/perf/util/evlist.c
+>> +++ b/tools/perf/util/evlist.c
+>> @@ -2224,3 +2224,47 @@ void evlist__invalidate_all_cpus(struct evlist *evlist)
+>>   	perf_cpu_map__put(evlist->core.all_cpus);
+>>   	evlist->core.all_cpus = perf_cpu_map__empty_new(1);
+>>   }
+>> +
+>> +static bool group_hybrid_conflict(struct evsel *leader)
+>> +{
+>> +	struct evsel *pos, *prev = NULL;
+>> +
+>> +	for_each_group_evsel(pos, leader) {
+>> +		if (!pos->pmu_name || !perf_pmu__is_hybrid(pos->pmu_name))
+>> +			continue;
+>> +
+>> +		if (prev && strcmp(prev->pmu_name, pos->pmu_name))
+>> +			return true;
+>> +
+>> +		prev = pos;
+>> +	}
+>> +
+>> +	return false;
+>> +}
+>> +
+>> +void evlist__warn_hybrid_group(struct evlist *evlist)
+>> +{
+>> +	struct evsel *evsel;
+>> +
+>> +	evlist__for_each_entry(evlist, evsel) {
+>> +		if (evsel__is_group_leader(evsel) &&
+>> +		    evsel->core.nr_members > 1 &&
+> 
+> hm, could we just iterate all the members and make sure the first found
+> hybrid event's pmu matches the pmu of the rest hybrid events in the list?
+> 
+
+'{cpu_core/event1/,cpu_core/event2/}','{cpu_atom/event3/,cpu_atom/event4/}'
+
+Two or more groups need to be supported. We get the first hybrid event's pmu (cpu_core in this 
+example) but it doesn't match the cpu_atom/event3/ and cpu_atom/event4/. But actually this case 
+should be supported, right?
+
+>> +		    group_hybrid_conflict(evsel)) {
+>> +			WARN_ONCE(1, "WARNING: Group has events from "
+>> +				     "different hybrid PMUs\n");
+>> +			return;
+>> +		}
+>> +	}
+>> +}
+>> +
+>> +bool evlist__hybrid_exist(struct evlist *evlist)
+> 
+> evlist__has_hybrid seems better
+> 
+
+Yes, agree.
+
+Thanks
+Jin Yao
+
+> 
+> jirka
+> 
