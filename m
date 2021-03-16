@@ -2,130 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C0B33CE11
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 381E133CE19
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbhCPGo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 02:44:58 -0400
-Received: from mga07.intel.com ([134.134.136.100]:43881 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231776AbhCPGon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 02:44:43 -0400
-IronPort-SDR: N7a87IcEWEQouSZ4BhJ6ef8kVvedfRsOY/YOC6E86lEYT+J8A3AvVAnq2ud6p7J9E6pc6ahkz4
- CvvQGNN8h4Zg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="253226886"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="253226886"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 23:44:43 -0700
-IronPort-SDR: eNmOZakmhI06o2A0kjTHywFOxYoT+vz/BMfSadEOXIQoseu2BtbLhq0M4oALVwjYLdXenMQZjK
- syr4bLsumLVg==
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="412104182"
-Received: from unknown (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 23:44:38 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Yang Shi <shy828301@gmail.com>, linux-kernel@vger.kernel.org,
-        page-reclaim@google.com
-Subject: Re: [PATCH v1 09/14] mm: multigenerational lru: mm_struct list
-References: <20210313075747.3781593-1-yuzhao@google.com>
-        <20210313075747.3781593-10-yuzhao@google.com>
-        <048e5e1e977e720c3f9fc536ac54beebcc8319f5.camel@surriel.com>
-        <87pmzzsvfb.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <YFAsjP7NIZM5Ld+m@google.com>
-Date:   Tue, 16 Mar 2021 14:44:31 +0800
-In-Reply-To: <YFAsjP7NIZM5Ld+m@google.com> (Yu Zhao's message of "Mon, 15 Mar
-        2021 21:57:00 -0600")
-Message-ID: <871rcfzjg0.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S233563AbhCPGsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 02:48:43 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:52332 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231776AbhCPGsS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 02:48:18 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12G6i5Ew142077;
+        Tue, 16 Mar 2021 06:48:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=0egzDSH2z3u1DhfuSB6BBjeSwqI3MsOZjiDXmD94e6k=;
+ b=GFb204IgUH/i3I80fPuP7gjfTxtv4ArpjTwspHEckyPeCiXD5CGD7zaASHa2vTgFuG7l
+ zyaciqNEcNWciBmwEkuFHoyTfON5J7BDXFKEGPc2P09vYEZFs6GPB650CEqq3GhHAhp9
+ RydPUBlDuYnS/q6h2KS+FWK4XhXBWTT7g+tCf15P2MfzDmh3yvQj236cOfql0LyUael2
+ wHC5w5YHl+rbCO6q5KRDTpDXcT3r3atggeAIVU55FYFNIFkfgpSZMb/tUJGcwy24wg3r
+ TqJB35xEZQ6Gky4Nv4WjxIgtQ5fJqdTEC1XQoRkxnV9vt5d+M9jL1Pc2XsavCA6WK+hp rg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 378p1npevk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Mar 2021 06:48:08 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12G6jqDv177680;
+        Tue, 16 Mar 2021 06:48:07 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 3797aynp59-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Mar 2021 06:48:07 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 12G6m5J5006373;
+        Tue, 16 Mar 2021 06:48:05 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 15 Mar 2021 23:48:04 -0700
+Date:   Tue, 16 Mar 2021 09:47:56 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     zhaoxiao <zhaoxiao@uniontech.com>
+Cc:     gregkh@linuxfoundation.org, straube.linux@gmail.com, lu@pplo.net,
+        serrazimone@gmail.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: rtl8192u: remove extra lines
+Message-ID: <20210316064756.GQ21246@kadam>
+References: <20210316024410.24609-1-zhaoxiao@uniontech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316024410.24609-1-zhaoxiao@uniontech.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9924 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 bulkscore=0
+ malwarescore=0 adultscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103160045
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9924 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0 adultscore=0
+ spamscore=0 clxscore=1011 phishscore=0 malwarescore=0 priorityscore=1501
+ bulkscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103160045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yu Zhao <yuzhao@google.com> writes:
+On Tue, Mar 16, 2021 at 10:44:10AM +0800, zhaoxiao wrote:
+> Remove extra lines in many functions in r8192U_wx.c.
+> 
+> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+> ---
+>  drivers/staging/rtl8192u/r8192U_wx.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+                   ^^^^^^^^^^^^
+The commit message says you're removing lines but you're also adding
+them.  :P
 
-> On Tue, Mar 16, 2021 at 10:07:36AM +0800, Huang, Ying wrote:
->> Rik van Riel <riel@surriel.com> writes:
->> 
->> > On Sat, 2021-03-13 at 00:57 -0700, Yu Zhao wrote:
->> >
->> >> +/*
->> >> + * After pages are faulted in, they become the youngest generation.
->> >> They must
->> >> + * go through aging process twice before they can be evicted. After
->> >> first scan,
->> >> + * their accessed bit set during initial faults are cleared and they
->> >> become the
->> >> + * second youngest generation. And second scan makes sure they
->> >> haven't been used
->> >> + * since the first.
->> >> + */
->> >
->> > I have to wonder if the reductions in OOM kills and 
->> > low-memory tab discards is due to this aging policy
->> > change, rather than from the switch to virtual scanning.
->
-> There are no policy changes per se. The current page reclaim also
-> scans a faulted-in page at least twice before it can reclaim it.
-> That said, the new aging yields a better overall result because it
-> discovers every page that has been referenced since the last scan,
-> in addition to what Ying has mentioned. The current page scan stops
-> stops once it finds enough candidates, which may seem more
-> efficiently, but actually pays the price for not finding the best.
->
->> If my understanding were correct, the temperature of the processes is
->> considered in addition to that of the individual pages.  That is, the
->> pages of the processes that haven't been scheduled after the previous
->> scanning will not be scanned.  I guess that this helps OOM kills?
->
-> Yes, that's correct.
->
->> If so, how about just take advantage of that information for OOM killing
->> and page reclaiming?  For example, if a process hasn't been scheduled
->> for long time, just reclaim its private pages.
->
-> This is how it works. Pages that haven't been scanned grow older
-> automatically because those that have been scanned will be tagged with
-> younger generation numbers. Eviction does bucket sort based on
-> generation numbers and attacks the oldest.
-
-Sorry, my original words are misleading.  What I wanted to say was that
-is it good enough that
-
-- Do not change the core algorithm of current page reclaiming.
-
-- Add some new logic to reclaim the process private pages regardless of
-  the Accessed bits if the processes are not scheduled for some long
-  enough time.  This can be done before the normal page reclaiming.
-
-So this is an one small step improvement to the current page reclaiming
-algorithm via taking advantage of the scheduler information.  It's
-clearly not sophisticated as your new algorithm, for example, the cold
-pages in the hot processes will not be reclaimed in this stage.  But it
-can reduce the overhead of scanning too.
-
-All in all, some of your ideas may help the original LRU algorithm too.
-Or some can be experimented without replacing the original algorithm.
-
-But from another point of view, your solution can be seen as a kind of
-improvement on top of the original LRU algorithm too.  It moves the
-recently accessed pages to kind of multiple active lists based on
-scanning page tables directly (instead of reversely).
-
-Best Regards,
-Huang, Ying
+regards,
+dan carpenter
 
