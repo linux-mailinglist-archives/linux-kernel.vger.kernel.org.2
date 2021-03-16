@@ -2,85 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D19133D52F
+	by mail.lfdr.de (Postfix) with ESMTP id 8087F33D530
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235490AbhCPNvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:51:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229598AbhCPNud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:50:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 118C165053;
-        Tue, 16 Mar 2021 13:50:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615902632;
-        bh=v0MQftmjchfDyMC/gsPtVSaYN1KMEK0Xi5b0nN0zZoY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d2iQ8AfMIkcRJMiwCyMDrEYQ+fm2BuhcqJBrRDiqtLgZgbWR6A2s9flaTfKez135q
-         fdSRDHEXaqaWbIV5WoEHS3ARyh4Y+xL3xUNi+zW+teWI8G+pe/bpgpB0d/TPgyrk6V
-         2b9m5gDUqiCoIqZ8pj5Z10mELK7htU7kbHpvYxm+T3euNlvollP5cYdBCrg5C58Sex
-         0Zj6ic7R1OD5C9FtTyl+m4G1jnOaHtZqmbQgBxRQbWgCljhiYenYXdhL9g1ancsbm/
-         mhS9jEwKaQr+8wwBBQPfjhRhVSFyl0ruRGkoOxu3DHt0qNO+TMQcwsp0w81WV5q+rL
-         s3pH4/TS+Yk8Q==
-Date:   Tue, 16 Mar 2021 13:49:15 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Viorel Suman <viorel.suman@nxp.com>
-Cc:     "S.j. Wang" <shengjiu.wang@nxp.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "timur@kernel.org" <timur@kernel.org>,
-        "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_sai: remove reset code from dai_probe
-Message-ID: <20210316134915.GB4309@sirena.org.uk>
-References: <1615886826-30844-1-git-send-email-shengjiu.wang@nxp.com>
- <20210316125839.GA4309@sirena.org.uk>
- <VI1PR0401MB22721D0D266207472B3C7829926B9@VI1PR0401MB2272.eurprd04.prod.outlook.com>
+        id S235540AbhCPNvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:51:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32061 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231648AbhCPNu7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 09:50:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615902658;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qrIL80gLzBgcUzcfJpyknW634Ri4e2aez0Hjj1VH36I=;
+        b=fhsW+BfyKg7ajVqVcsxNZxf+Yrlivomj8VTGcAnP3SvZP+mpJmQfntpdUxLCcX+qoBItJy
+        3pchOUX5SwuvU2OIW31/l1atAMuqDBWMiBop5PnL2h2tKcPWPIh7Udzym6iqWaLZiGx/r8
+        0SoXrIK2HBAPZmTmEuMpPsrD26RGkzs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-382-N35ij6y6OSCQltlGZi5Kkg-1; Tue, 16 Mar 2021 09:50:53 -0400
+X-MC-Unique: N35ij6y6OSCQltlGZi5Kkg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8810618D6A2A;
+        Tue, 16 Mar 2021 13:50:51 +0000 (UTC)
+Received: from krava (unknown [10.40.193.217])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 9360F5D747;
+        Tue, 16 Mar 2021 13:50:49 +0000 (UTC)
+Date:   Tue, 16 Mar 2021 14:50:48 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH] perf record: Fix memory leak in vDSO
+Message-ID: <YFC3uCHAuqr3NyPp@krava>
+References: <20210315045641.700430-1-namhyung@kernel.org>
+ <YE9g6VIZkEr8Hoyl@krava>
+ <CAM9d7cheph_kjRzfKQSnoowRTQ3p4TF7mHt_3niJWGceSwJPzA@mail.gmail.com>
+ <YFCq+sIS7M9GAcM2@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7iMSBzlTiPOCCT2k"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <VI1PR0401MB22721D0D266207472B3C7829926B9@VI1PR0401MB2272.eurprd04.prod.outlook.com>
-X-Cookie: Results vary by individual.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YFCq+sIS7M9GAcM2@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 16, 2021 at 09:56:26AM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Mar 16, 2021 at 11:28:12AM +0900, Namhyung Kim escreveu:
+> > On Mon, Mar 15, 2021 at 10:28 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> > >
+> > > On Mon, Mar 15, 2021 at 01:56:41PM +0900, Namhyung Kim wrote:
+> > > > I got several memory leak reports from Asan with a simple command.  It
+> > > > was because VDSO is not released due to the refcount.  Like in
+> > > > __dsos_addnew_id(), it should put the refcount after adding to the list.
+> > > >
+> > > >   $ perf record true
+> > > >   [ perf record: Woken up 1 times to write data ]
+> > > >   [ perf record: Captured and wrote 0.030 MB perf.data (10 samples) ]
+> > > >
+> > > >   =================================================================
+> > > >   ==692599==ERROR: LeakSanitizer: detected memory leaks
+> > > >
+> > > >   Direct leak of 439 byte(s) in 1 object(s) allocated from:
+> > > >     #0 0x7fea52341037 in __interceptor_calloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:154
+> > > >     #1 0x559bce4aa8ee in dso__new_id util/dso.c:1256
+> > > >     #2 0x559bce59245a in __machine__addnew_vdso util/vdso.c:132
+> > > >     #3 0x559bce59245a in machine__findnew_vdso util/vdso.c:347
+> > > >     #4 0x559bce50826c in map__new util/map.c:175
+> > > >     #5 0x559bce503c92 in machine__process_mmap2_event util/machine.c:1787
+> > > >     #6 0x559bce512f6b in machines__deliver_event util/session.c:1481
+> > > >     #7 0x559bce515107 in perf_session__deliver_event util/session.c:1551
+> > > >     #8 0x559bce51d4d2 in do_flush util/ordered-events.c:244
+> > > >     #9 0x559bce51d4d2 in __ordered_events__flush util/ordered-events.c:323
+> > > >     #10 0x559bce519bea in __perf_session__process_events util/session.c:2268
+> > > >     #11 0x559bce519bea in perf_session__process_events util/session.c:2297
+> > > >     #12 0x559bce2e7a52 in process_buildids /home/namhyung/project/linux/tools/perf/builtin-record.c:1017
+> > > >     #13 0x559bce2e7a52 in record__finish_output /home/namhyung/project/linux/tools/perf/builtin-record.c:1234
+> > > >     #14 0x559bce2ed4f6 in __cmd_record /home/namhyung/project/linux/tools/perf/builtin-record.c:2026
+> > > >     #15 0x559bce2ed4f6 in cmd_record /home/namhyung/project/linux/tools/perf/builtin-record.c:2858
+> > > >     #16 0x559bce422db4 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:313
+> > > >     #17 0x559bce2acac8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:365
+> > > >     #18 0x559bce2acac8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:409
+> > > >     #19 0x559bce2acac8 in main /home/namhyung/project/linux/tools/perf/perf.c:539
+> > > >     #20 0x7fea51e76d09 in __libc_start_main ../csu/libc-start.c:308
+> > > >
+> > > >   Indirect leak of 32 byte(s) in 1 object(s) allocated from:
+> > > >     #0 0x7fea52341037 in __interceptor_calloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:154
+> > > >     #1 0x559bce520907 in nsinfo__copy util/namespaces.c:169
+> > > >     #2 0x559bce50821b in map__new util/map.c:168
+> > > >     #3 0x559bce503c92 in machine__process_mmap2_event util/machine.c:1787
+> > > >     #4 0x559bce512f6b in machines__deliver_event util/session.c:1481
+> > > >     #5 0x559bce515107 in perf_session__deliver_event util/session.c:1551
+> > > >     #6 0x559bce51d4d2 in do_flush util/ordered-events.c:244
+> > > >     #7 0x559bce51d4d2 in __ordered_events__flush util/ordered-events.c:323
+> > > >     #8 0x559bce519bea in __perf_session__process_events util/session.c:2268
+> > > >     #9 0x559bce519bea in perf_session__process_events util/session.c:2297
+> > > >     #10 0x559bce2e7a52 in process_buildids /home/namhyung/project/linux/tools/perf/builtin-record.c:1017
+> > > >     #11 0x559bce2e7a52 in record__finish_output /home/namhyung/project/linux/tools/perf/builtin-record.c:1234
+> > > >     #12 0x559bce2ed4f6 in __cmd_record /home/namhyung/project/linux/tools/perf/builtin-record.c:2026
+> > > >     #13 0x559bce2ed4f6 in cmd_record /home/namhyung/project/linux/tools/perf/builtin-record.c:2858
+> > > >     #14 0x559bce422db4 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:313
+> > > >     #15 0x559bce2acac8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:365
+> > > >     #16 0x559bce2acac8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:409
+> > > >     #17 0x559bce2acac8 in main /home/namhyung/project/linux/tools/perf/perf.c:539
+> > > >     #18 0x7fea51e76d09 in __libc_start_main ../csu/libc-start.c:308
+> > > >
+> > > >   SUMMARY: AddressSanitizer: 471 byte(s) leaked in 2 allocation(s).
+> > > >
+> > > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > > ---
+> > > >  tools/perf/util/vdso.c | 2 ++
+> > > >  1 file changed, 2 insertions(+)
+> > > >
+> > > > diff --git a/tools/perf/util/vdso.c b/tools/perf/util/vdso.c
+> > > > index 3cc91ad048ea..43beb169631d 100644
+> > > > --- a/tools/perf/util/vdso.c
+> > > > +++ b/tools/perf/util/vdso.c
+> > > > @@ -133,6 +133,8 @@ static struct dso *__machine__addnew_vdso(struct machine *machine, const char *s
+> > > >       if (dso != NULL) {
+> > > >               __dsos__add(&machine->dsos, dso);
+> > > >               dso__set_long_name(dso, long_name, false);
+> > > > +             /* Put dso here because __dsos_add already got it */
+> > > > +             dso__put(dso);
+> > >
+> > > from quick look I don't understand why we take refcnt down
+> > > right after adding to the list.. it would make sense to me
+> 
+> That is the right pattern, i.e. the list has a reference to it, if it is
+> removed outside the __dsos__add(), then list traversal may be corrupted.
+> 
+> > > if dso is not stored elsewhere so we want dsos__exit to
+> > > release it.. but it's still stored in map object
+> > >
+> > > I checked and we do extra dso__get in machine__findnew_vdso
+> > > (and also in dsos__findnew_id) ... so that one seems to me
+> > > like the one we should remove
+> 
+> findnew _needs_ to grab te refcount while holding the lock, so that what
+> it returns won't go away in a different thread.
+> 
+> > > but I might be missing something, I'll try to check more
+> > > deeply later on
+>  
+> > I think we assume the find/findnew APIs include increment of
+> > the refcount, otherwise all callers should be converted to do it
+> > explicitly.
+> 
+> The callers can't grab the reference safely, i.e. its outside the lock.
+>  
+> > Then the 'find' part should increase it but the 'new' part is not
+> > (as it already has 2) and that's why we have that.
 
---7iMSBzlTiPOCCT2k
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+map__new
+{
+  machine__findnew_vdso
+  {
+    __machine__addnew_vdso
+    {
+      dso__new                      refcnt=1
+      __dsos__add                   refcnt=2
+      dso__put                      refcnt=1
+    }
+    dso__get                        refcnt=2
+  }
+  map__init                         refcnt=3
+  dso__put                          refcnt=2
+}
 
-On Tue, Mar 16, 2021 at 01:42:40PM +0000, Viorel Suman wrote:
+we end up with refcnt=2, which is fine, because there's
+dsos list and map owners but the process is tricky ;-)
 
-> To me it makes sense to manage the clocks and reset from the same place.
-> Currently we have the clocks management moved completely into runtime PM
-> fsl_sai_runtime_resume and fsl_sai_runtime_suspend callbacks.=20
+anyway I'm ok with the change
 
-Usually the pattern is to have probe() leave everything powered up then
-let runtime PM power things down if it's enabled, you can often do the
-power up by having an open coded call to the resume callback in probe().
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
---7iMSBzlTiPOCCT2k
-Content-Type: application/pgp-signature; name="signature.asc"
+thanks,
+jirka
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBQt1oACgkQJNaLcl1U
-h9BD2gf8CYq0baSLf4YPI5H7xjw4JepkHBJKPXid4yN7feW5rEKKZIlNzYx5AYT5
-jh10YF8ND602x/tBHwlqL2tNdjBFzSi4dT/1QapmOaS4NqEXPAWU97VUPECfxWLm
-29HZ7+Kw4LfDE2PI/2sKnBYd0wE8w0l2prCM0Ms8JT4hVal8O53kgzjJ6+dzHfpe
-jisKXgGv8qtNVlK+6AMK3H+vs8ROYnTfiYTsFNR4XF1nrvGSxwwvM8KuJb+rYb5+
-VNB58e4KMaolnwOyxf7QAQQpAAQ7gFl/GkRyXquIpeOlV2WER5v9N6rVV1DMpwII
-0zlVO4v7O5Cts1nqzxxdfsUHu1yNjg==
-=3CXS
------END PGP SIGNATURE-----
-
---7iMSBzlTiPOCCT2k--
