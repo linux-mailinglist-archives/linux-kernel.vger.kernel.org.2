@@ -2,105 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01BF33D05B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A5F33D064
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235896AbhCPJLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:11:09 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:15506 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231733AbhCPJK0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:10:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1615885826; x=1647421826;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=2Key+2iKL38M/BSOAh81U/K72xgggpmsGs3yXXt3WQE=;
-  b=gzRLJiqwpRewYCpANX2QivgnvO2Adlc0x33Z3+zopAvUwugGQn5x5kuO
-   OzifIOwTWN4VCNYIwKp8AFHELCxBI6j92vMa42J8RfSvmAyLzCGez1dgG
-   nkEH5rPYN9EBF7E/vnEe6PUti2CBBX0ccj8fDB1n5bkCmuFPfk/x9t7F6
-   cANKLFJsMbLrysxhdi6yO1e9/BL5PnKca5wkcwQS5uTWuM38gEc8o8kGa
-   Ciq1rAlpl5jShlejG3d8AtdPEkkEmgcFY1e5njodWIIM4OOeNZQPljNWr
-   J4diCk1pV9WCVIacOLfDJp0SCuH7bgGa1coI+jExO5Sm7KxgkCJeBBN7H
-   A==;
-IronPort-SDR: cPYFzHQH/xRbNznlMbvR00a9jgdOzuouB3dWYtHCEGiGh6Dhnj5/OIiOZuqokhrCvMGmEQNgsV
- M/QssLNFjsaNym+nfKMhuxToefhDNmpLFxDRjV0tEKckaWPYOujihiVTWq38ydm08OtNX/hWx6
- Px0FAlh7ytlQDoBMDSzek+1NOVTFuabUi5oqskz0Yp+c5+q5sRvo7AoCLpebJ0IuQ3h453zsWJ
- zqPz2H5GiB+PuBQWmvFUGZCUSj2IwUNLTEaXl5TEZC4H2j3EZ0JvLrAc9UGdVO6FcFaGuGIa4T
- xtA=
-X-IronPort-AV: E=Sophos;i="5.81,251,1610434800"; 
-   d="scan'208";a="47683728"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Mar 2021 02:08:56 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 16 Mar 2021 02:08:56 -0700
-Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Tue, 16 Mar 2021 02:08:54 -0700
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>
-Subject: [PATCH v8 3/3] arm64: dts: reset: add microchip sparx5 switch reset driver
-Date:   Tue, 16 Mar 2021 10:08:39 +0100
-Message-ID: <20210316090839.3207930-4-steen.hegelund@microchip.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210316090839.3207930-1-steen.hegelund@microchip.com>
-References: <20210316090839.3207930-1-steen.hegelund@microchip.com>
+        id S232343AbhCPJRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:17:43 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:35646 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231599AbhCPJRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 05:17:16 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12G9GSop010735
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Mar 2021 10:16:28 +0100
+Received: from [167.87.27.98] ([167.87.27.98])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12G9GQ9R023727;
+        Tue, 16 Mar 2021 10:16:26 +0100
+Subject: Re: [PATCH 2/3] KVM: x86: guest debug: don't inject interrupts while
+ single stepping
+To:     Sean Christopherson <seanjc@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jim Mattson <jmattson@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>
+References: <20210315221020.661693-1-mlevitsk@redhat.com>
+ <20210315221020.661693-3-mlevitsk@redhat.com> <YE/vtYYwMakERzTS@google.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <1259724f-1bdb-6229-2772-3192f6d17a4a@siemens.com>
+Date:   Tue, 16 Mar 2021 10:16:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <YE/vtYYwMakERzTS@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This provides reset driver support for the Microchip Sparx5 PCB134 and
-PCB135 reference boards.
+On 16.03.21 00:37, Sean Christopherson wrote:
+> On Tue, Mar 16, 2021, Maxim Levitsky wrote:
+>> This change greatly helps with two issues:
+>>
+>> * Resuming from a breakpoint is much more reliable.
+>>
+>>   When resuming execution from a breakpoint, with interrupts enabled, more often
+>>   than not, KVM would inject an interrupt and make the CPU jump immediately to
+>>   the interrupt handler and eventually return to the breakpoint, to trigger it
+>>   again.
+>>
+>>   From the user point of view it looks like the CPU never executed a
+>>   single instruction and in some cases that can even prevent forward progress,
+>>   for example, when the breakpoint is placed by an automated script
+>>   (e.g lx-symbols), which does something in response to the breakpoint and then
+>>   continues the guest automatically.
+>>   If the script execution takes enough time for another interrupt to arrive,
+>>   the guest will be stuck on the same breakpoint RIP forever.
+>>
+>> * Normal single stepping is much more predictable, since it won't land the
+>>   debugger into an interrupt handler, so it is much more usable.
+>>
+>>   (If entry to an interrupt handler is desired, the user can still place a
+>>   breakpoint at it and resume the guest, which won't activate this workaround
+>>   and let the gdb still stop at the interrupt handler)
+>>
+>> Since this change is only active when guest is debugged, it won't affect
+>> KVM running normal 'production' VMs.
+>>
+>>
+>> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+>> Tested-by: Stefano Garzarella <sgarzare@redhat.com>
+>> ---
+>>  arch/x86/kvm/x86.c | 6 ++++++
+>>  1 file changed, 6 insertions(+)
+>>
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index a9d95f90a0487..b75d990fcf12b 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -8458,6 +8458,12 @@ static void inject_pending_event(struct kvm_vcpu *vcpu, bool *req_immediate_exit
+>>  		can_inject = false;
+>>  	}
+>>  
+>> +	/*
+>> +	 * Don't inject interrupts while single stepping to make guest debug easier
+>> +	 */
+>> +	if (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)
+>> +		return;
+> 
+> Is this something userspace can deal with?  E.g. disable IRQs and/or set NMI
+> blocking at the start of single-stepping, unwind at the end?  Deviating this far
+> from architectural behavior will end in tears at some point.
+> 
 
-The Sparx5 Switch will no longer use the Ocelot Chip Reset Driver (with the
-compatible string "microchip,sparx5-chip-reset"), but use a separate driver
-that exposes a reset controller interface and has the compatiple string
-"microchip,sparx5-switch-reset".
+Does this happen to address this suspicious workaround in the kernel?
 
-Eventually the Sparx5 reset support will be removed from the Ocelot chip
-reset driver.
+        /*
+         * The kernel doesn't use TF single-step outside of:
+         *
+         *  - Kprobes, consumed through kprobe_debug_handler()
+         *  - KGDB, consumed through notify_debug()
+         *
+         * So if we get here with DR_STEP set, something is wonky.
+         *
+         * A known way to trigger this is through QEMU's GDB stub,
+         * which leaks #DB into the guest and causes IST recursion.
+         */
+        if (WARN_ON_ONCE(dr6 & DR_STEP))
+                regs->flags &= ~X86_EFLAGS_TF;
 
-Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+(arch/x86/kernel/traps.c, exc_debug_kernel)
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index 380281f312d8..dc3ada5cf9fc 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -132,9 +132,12 @@ mux: mux-controller {
- 			};
- 		};
- 
--		reset@611010008 {
--			compatible = "microchip,sparx5-chip-reset";
-+		reset: reset-controller@611010008 {
-+			compatible = "microchip,sparx5-switch-reset";
- 			reg = <0x6 0x11010008 0x4>;
-+			reg-names = "gcb";
-+			#reset-cells = <1>;
-+			cpu-syscon = <&cpu_ctrl>;
- 		};
- 
- 		uart0: serial@600100000 {
+I wonder why this got merged while no one fixed QEMU/KVM, for years? Oh,
+yeah, question to myself as well, dancing around broken guest debugging
+for a long time while trying to fix other issues...
+
+Jan
+
+>> +
+>>  	/*
+>>  	 * Finally, inject interrupt events.  If an event cannot be injected
+>>  	 * due to architectural conditions (e.g. IF=0) a window-open exit
+>> -- 
+>> 2.26.2
+>>
+
 -- 
-2.30.2
-
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
