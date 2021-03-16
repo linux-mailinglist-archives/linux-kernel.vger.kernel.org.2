@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE45933E086
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD2D33E0DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 22:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhCPVaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 17:30:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhCPV3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 17:29:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E20E64F90;
-        Tue, 16 Mar 2021 21:29:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615930182;
-        bh=6RWKiVSp1/qWdoI29E3FxmJ1FLp/tfgmDY/WQwvvLS4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BV+6JSsh0pUiBBkUaq94EITX1815VL2FAcI0CYxmiHLEw7StGKU3R73tbHiCfCZBb
-         9a0o3/wOcxnLw+hQv6yqpigxO6LDDXhU79NzC83ZBP+wGC5DRu/HJQYbNsjul2EhCf
-         TMsSblZyWUVHllmCBGdfn0JDAj8wJbmcTU9UDTxpoim5AZRyIbY1q6phTvJfDy+4fq
-         wfS7M9cro5LCPzKD37lTKVsS//BvQ46M1ojS2o32Cu841A90nUK3dPfc5U2iTOnHjl
-         PanDksj4OzL4uyHbKRIzA9Lz579a5hrUZetG8scu2/JaOVEQ0diEZ7pMpttXJ/MvPq
-         pX+1BrXqsahwA==
-Date:   Tue, 16 Mar 2021 14:29:41 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Voon Weifeng <weifeng.voon@intel.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jose Abreu <joabreu@synopsys.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Wong Vee Khee <vee.khee.wong@intel.com>
-Subject: Re: [RESEND v1 net-next 3/5] net: stmmac: introduce MSI Interrupt
- routines for mac, safety, RX & TX
-Message-ID: <20210316142941.3ea1e24d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210316121823.18659-4-weifeng.voon@intel.com>
-References: <20210316121823.18659-1-weifeng.voon@intel.com>
-        <20210316121823.18659-4-weifeng.voon@intel.com>
+        id S229823AbhCPVwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 17:52:04 -0400
+Received: from casper.infradead.org ([90.155.50.34]:37684 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232943AbhCPVRA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 17:17:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5gozf9msiE9KxmQI3WyWORDOu9a/cAx+NIytFUdmLig=; b=X/SgE772DCUsq82Z3cmFeX95oO
+        PqfjJ2FRHKtH42r39m6MsvF9e5TdZgVBI17+s6kSwsdLRIH6v9V4li+P1j+8WqrEOiBkH6dTpmXCl
+        zj1Kf2d5mWrKPa8KsbpoPAW1aiwZWNaloYuw/CAIYs+xvotJFNzpXH8o2sLJTPSdxOe8bKxhzoW7R
+        Fj+2vE8z7DbOu1UEzcqo4TMCRdDso4boo0dWkPh4i3GG1J0Wl3oHeTBkK6TokK4mP/RePGYbmcBdt
+        UCFi0He2Yd3bwFvSsH+Qnhs7glJ4VOkYI0qVv+/wM6AHgCid9xL3/c/oJyHftKdVv1DVOVvqYwv5V
+        V7lwKkHg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMH2e-000dKj-Op; Tue, 16 Mar 2021 21:15:57 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 59827981337; Tue, 16 Mar 2021 22:15:52 +0100 (CET)
+Date:   Tue, 16 Mar 2021 22:15:52 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v23 00/28] Control-flow Enforcement: Shadow Stack
+Message-ID: <20210316211552.GU4746@worktop.programming.kicks-ass.net>
+References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316151054.5405-1-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021 20:18:21 +0800 Voon Weifeng wrote:
-> From: Ong Boon Leong <boon.leong.ong@intel.com>
+On Tue, Mar 16, 2021 at 08:10:26AM -0700, Yu-cheng Yu wrote:
+> Control-flow Enforcement (CET) is a new Intel processor feature that blocks
+> return/jump-oriented programming attacks.  Details are in "Intel 64 and
+> IA-32 Architectures Software Developer's Manual" [1].
 > 
-> Now we introduce MSI interrupt service routines and hook these routines
-> up if stmmac_open() sees valid irq line being requested:-
+> CET can protect applications and the kernel.  This series enables only
+> application-level protection, and has three parts:
 > 
-> stmmac_mac_interrupt()    :- MAC (dev->irq), WOL (wol_irq), LPI (lpi_irq)
-> stmmac_safety_interrupt() :- Safety Feat Correctible Error (sfty_ce_irq)
->                              & Uncorrectible Error (sfty_ue_irq)
-> stmmac_msi_intr_rx()      :- For all RX MSI irq (rx_irq)
-> stmmac_msi_intr_tx()      :- For all TX MSI irq (tx_irq)
+>   - Shadow stack [2],
+>   - Indirect branch tracking [3], and
+>   - Selftests [4].
 
-Do you split RX and TX irqs out on purpose? Most commonly one queue
-pair maps to one CPU, so using single IRQ for Rx and Tx results in
-fewer IRQs being triggered and better system performance.
+CET is marketing; afaict SS and IBT are 100% independent and there's no
+reason what so ever to have them share any code, let alone a Kconfig
+knob.
 
-> Each of IRQs will have its unique name so that we can differentiate
-> them easily under /proc/interrupts.
-> 
-> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
-> Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+In fact, I think all of this would improve is you remove the CET name
+from all of this entirely. Put this series under CONFIG_X86_SHSTK (or
+_SS) and use CONFIG_X86_IBT for the other one.
 
-> +static int stmmac_request_irq(struct net_device *dev)
+Similarly with the .c file.
 
-This function is a one huge if statement, please factor out both sides
-into separate subfunctions.
-
-> +	netdev_info(priv->dev, "PASS: requesting IRQs\n");
-
-Does the user really need to know interrupts were requested on every
-probe?
-
-> +	return ret;
-
-return 0; ?
-
-> +irq_error:
-> +	stmmac_free_irq(dev, irq_err, irq_idx);
-> +	return ret;
-> +}
+All this CET business is just pure confusion.
