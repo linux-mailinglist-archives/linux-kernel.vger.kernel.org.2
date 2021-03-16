@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82CF33DF75
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:46:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD8633DF78
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbhCPUqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 16:46:06 -0400
-Received: from mga17.intel.com ([192.55.52.151]:49650 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231916AbhCPUob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 16:44:31 -0400
-IronPort-SDR: zSDrBY1vOnZwuqcMYJkHHtKLDvJdRNpbx9fJl+eIWcycixD2NI3Lm7Sy1QnQTfIOvRH/U6fpic
- 2i14SOVGDRnQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="169246775"
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="169246775"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 13:44:27 -0700
-IronPort-SDR: 1SKK8UYfs0yG4AQ634nG7+GwP1fusGgEvnmv94dohFPSUe6+1uLGXilYOcN4QmnPDynrg5x6G0
- UlnmrvOyFpYA==
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="511502109"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 13:44:24 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1lMGY9-00D4TP-MQ; Tue, 16 Mar 2021 22:44:21 +0200
-Date:   Tue, 16 Mar 2021 22:44:21 +0200
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Claudius Heine <ch@denx.de>,
-        johannes hahn <johannes-hahn@siemens.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        werner zeh <werner.zeh@siemens.com>,
-        henning schild <henning.schild@siemens.com>,
-        martin mantel <martin.mantel@siemens.com>,
-        val krutov <val.krutov@erd.epson.com>
-Subject: Re: [PATCH v4] rtc: rx6110: add ACPI bindings to I2C
-Message-ID: <YFEYpVwUEygNoPzv@smile.fi.intel.com>
-References: <20210316144819.4130622-1-ch@denx.de>
- <202103170225.yRvbPVxM-lkp@intel.com>
+        id S231912AbhCPUqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 16:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232116AbhCPUoq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 16:44:46 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1E6C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 13:44:45 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id v123so18980472vsv.9
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 13:44:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tLa3leTdMzh1rknpkLUWnm0PAOSso4HRgQA5K7IK6MM=;
+        b=e+TXEaCKvma4VGpnwpOaaFkLknHBGuDmEKybhDxTF83sGcUnhvMjnyd4FKoakznEV3
+         L+49y3mjg3y9zPjYOau5jDdMUzS1QeQc8EZHIuCnYCEvlu/U3MIphrqZ/uP5UmkwxxeL
+         +/myGc8pDphpzzZ7FTh/9hJKxPT9p26Ia2eDhTGk6iETFEiye/52lqU41RoUHrn74DWh
+         Z9MX2qar1Tdy5UlVzs8F5VgOHw+sA5zNyUhbhgEJg7yulcKmANZ/MdTHXU3HQZNR3/3z
+         jprq7sQ3GQvcxl+Y7QEUl59VHWT5WD2/UpeliEvsAr6IQyyxoheHA9cHYYw051xuDx5U
+         BC1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tLa3leTdMzh1rknpkLUWnm0PAOSso4HRgQA5K7IK6MM=;
+        b=jTfdr4KfIE4hYjQp8oDN7qnwYI9+RaqSPW1Vg245rHN5FoSO8hQSO4WhCIMbTPv6RG
+         NkBcTcu4/ZrgpCy6e2+zHozMur70d5V5o02Cf9z2h5DPZePIHnC3EvHZktk/SyiJarSW
+         Qg7k2Q36HTxxXSGCpytsSLcd2gV5ESZVsSaJGjkxumPa3h+nuQM3MmraKZsMVx0ZICcp
+         Rgv+fEaIbcbEhBJED+1cRJrj+6EDV5YzlIbcU5dSEKQEJJZTZtr8UxIwfKh2SS7G04KB
+         lmDvYyJUjbM3guAps3K85drqCsqo5E0oJJKmaacFEDvJl8wAXflAsES37rGE5aUGaGYw
+         xlJw==
+X-Gm-Message-State: AOAM530Owl1P/vH9j6AJSiSAck3eXyFzm1Zsoub+drFyWuEpeXco50nB
+        +Pet2v4xaapdPEn1haGLYnBTM0x3wMqXm6gV4iAlWg==
+X-Google-Smtp-Source: ABdhPJwQSd1vGWBZTCJlQRmCK62EXrLyrNMXIW37KTTCmpBtYEbzwPtXhGB1KcQUzWMwYntm7fopfaHU36IppUu0V+Q=
+X-Received: by 2002:a67:db98:: with SMTP id f24mr1241866vsk.13.1615927484959;
+ Tue, 16 Mar 2021 13:44:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202103170225.yRvbPVxM-lkp@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210312004919.669614-1-samitolvanen@google.com>
+ <20210312004919.669614-18-samitolvanen@google.com> <202103111851.69AA6E59@keescook>
+In-Reply-To: <202103111851.69AA6E59@keescook>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Tue, 16 Mar 2021 13:44:33 -0700
+Message-ID: <CABCJKucpFHC-9rvT7uNF+E-Jh20fz69zdO49_4p8G_Sb634qmw@mail.gmail.com>
+Subject: Re: [PATCH 17/17] arm64: allow CONFIG_CFI_CLANG to be selected
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        bpf@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 03:04:36AM +0800, kernel test robot wrote:
-> Hi Claudius,
-> 
-> Thank you for the patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on abelloni/rtc-next]
-> [also build test WARNING on v5.12-rc3 next-20210316]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Claudius-Heine/rtc-rx6110-add-ACPI-bindings-to-I2C/20210316-225026
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git rtc-next
-> config: powerpc-randconfig-r006-20210316 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 50c7504a93fdb90c26870db8c8ea7add895c7725)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install powerpc cross compiling tool for clang build
->         # apt-get install binutils-powerpc-linux-gnu
->         # https://github.com/0day-ci/linux/commit/ec344b93b1b5f4c2c77ce68b7bde7ec380e356a8
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Claudius-Heine/rtc-rx6110-add-ACPI-bindings-to-I2C/20210316-225026
->         git checkout ec344b93b1b5f4c2c77ce68b7bde7ec380e356a8
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
-> >> drivers/rtc/rtc-rx6110.c:450:36: warning: unused variable 'rx6110_i2c_acpi_match' [-Wunused-const-variable]
->    static const struct acpi_device_id rx6110_i2c_acpi_match[] = {
->                                       ^
->    1 warning generated.
+On Thu, Mar 11, 2021 at 6:51 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Thu, Mar 11, 2021 at 04:49:19PM -0800, Sami Tolvanen wrote:
+> > Select ARCH_SUPPORTS_CFI_CLANG to allow CFI to be enabled.
+> >
+> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+>
+> Random thought: the vDSO doesn't need special handling because it
+> doesn't make any indirect calls, yes?
 
-Precisely!
+That might be true, but we also filter out CC_FLAGS_LTO for the vDSO,
+which disables CFI as well.
 
-This happens due to ACPI_PTR() presence. Either ACPI_PTR() _and_ ifdeffery or
-none of them should be in the code.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Sami
