@@ -2,88 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 950E733DBF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:03:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8409D33DBF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239784AbhCPSC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:02:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239575AbhCPSAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:00:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3575965134;
-        Tue, 16 Mar 2021 18:00:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615917620;
-        bh=3R/vB/7tMgve+KQBBMahuJ86d+Jwqw3flfkV7zUdYPo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=on8wn5iY+hTmZj0WcRhLLacBP55sAvgJ6lJQWjuz0SxTcA/JhtlNl8CmcvTMjejPY
-         jkxVPvrDOg8LOcnC7iYgCIRDGV2dEL3L3oK4BKkCviDX7HNGkxREk4z5CBgvk2h+PT
-         oVupmcurRB7Xs+RtVTg2pIAWjMN6ABztWP1DfdYrHz1MX7JxYpVnDLF/2MJ0OMjGV+
-         hdEI+fObwtxcD/MEnaKQ/I0x3qD+hfqPjanlldJPcvOQgFZBwUr5Pp/MwvjnPTRzA6
-         nENU/aJDKAh40WjgvxSCtHDZhFZsStfHjpEQnPMnBmj6TU2PvPlZLLQH3H/JsnfWfv
-         GPdxKY1vktzfg==
-From:   Mark Brown <broonie@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>, lgirdwood@gmail.com
-Cc:     Mark Brown <broonie@kernel.org>, kuninori.morimoto.gx@renesas.com,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        oder_chiou@realtek.com, jonathanh@nvidia.com,
-        thierry.reding@gmail.com, michael@walle.cc,
-        alsa-devel@alsa-project.org, sharadg@nvidia.com
-Subject: Re: [PATCH 0/2] Do not handle MCLK device clock in simple-card-utils
-Date:   Tue, 16 Mar 2021 17:59:48 +0000
-Message-Id: <161591744695.13544.12030388405319375507.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1615829492-8972-1-git-send-email-spujar@nvidia.com>
-References: <1615829492-8972-1-git-send-email-spujar@nvidia.com>
+        id S239621AbhCPSB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239540AbhCPSAM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 14:00:12 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D47EC061763
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:00:11 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id r17so73663238ejy.13
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 11:00:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ckk2erlqddqu+PG/7Bp2HBZ/AtQ6BgEsYvEVjbfanBw=;
+        b=F4cmoL2cuQ7J+/UksOxy2Cyk73iLpsXM2Lw2bkdu0FlxwBhibMbM7bdd/OrqU5UAHp
+         8+edCkQYZfQZzdpEZOSQ3rm2+upKBaeugDnkfNbmJ4xxRNwfCqM7uL1vjQW7RAa7fAFt
+         +w33wVdBJnI6h+VhoT3mowWvdS/9K2eF9RSCU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ckk2erlqddqu+PG/7Bp2HBZ/AtQ6BgEsYvEVjbfanBw=;
+        b=Yby2nBFbz1YT0JuYoCI2tpsopx/w6UQZWqKXL6mFi4U1wSPx5bmT/PBc87qkVOW3bm
+         8i2SOICr8y4Aa8ZzOdUlC5vOcmEIlUlyfbfm1gEVzacYAuvFUXoa8rdbu656I8QyPJSe
+         qmDWbRaMYfAMpz4g11X33qhgI7z3eduxaGi2AgOEZS7Tf/g90DEeIyvdbzhInSbb42E3
+         SYZ+/fi2tvzA4iCpbjhIweoGQ3FiApvNYwXd0DfST0AeSk4t4FJvSUf2PE610rLNdFpl
+         C2jxY5+XIvR3xxKo6FMP7Sn201aG0uN9lvxBDrBD73MaRQS5xrb7U4GbB+17mMxpohGT
+         Sgwg==
+X-Gm-Message-State: AOAM530uhtdoXlSU38ZHLRnqS4G2IixiSM1eFdUUtQ9WyBcbuyNqen9R
+        B5I/q7rgW6bPnWLtBBOFJIfqzw==
+X-Google-Smtp-Source: ABdhPJwc4piGP+4s8AlfA/HkFlkdi4TkpIECrDLX5CnIQAa932qG9uExuxIDNqGFTJNsXfcvxsx+aw==
+X-Received: by 2002:a17:906:2db2:: with SMTP id g18mr31466097eji.73.1615917607893;
+        Tue, 16 Mar 2021 11:00:07 -0700 (PDT)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id c19sm10953182edu.20.2021.03.16.11.00.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 11:00:07 -0700 (PDT)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org
+Cc:     Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH v5 00/13] uvcvideo: Fix v4l2-compliance errors
+Date:   Tue, 16 Mar 2021 18:59:50 +0100
+Message-Id: <20210316180004.1605727-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021 23:01:30 +0530, Sameer Pujar wrote:
-> With commit 1e30f642cf29 ("ASoC: simple-card-utils: Fix device module clock")
-> simple-card-utils can control MCLK clock for rate updates or enable/disable.
-> But this is breaking some platforms where it is expected that codec drivers
-> would actually handle the MCLK clock. One such example is following platform.
->   - "arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts"
-> 
-> In above case codec, wm8904, is using internal PLL and configures sysclk
-> based on fixed MCLK input. In such cases it is expected that, required PLL
-> output or sysclk, is just passed via set_sysclk() callback and card driver
-> need not actually update MCLK rate. Instead, codec can take ownership of
-> this clock and do the necessary configuration.
-> 
-> [...]
+v4l2-compliance -m /dev/media0 -a -f
+Total for uvcvideo device /dev/media0: 8, Succeeded: 6, Failed: 2, Warnings: 0
+Total for uvcvideo device /dev/video0: 54, Succeeded: 50, Failed: 4, Warnings: 2
+Total for uvcvideo device /dev/video1: 46, Succeeded: 46, Failed: 0, Warnings: 0
+Grand Total for uvcvideo device /dev/media0: 108, Succeeded: 102,
+Failed: 6, Warnings: 2
 
-Applied to
+After fixing all of them we go down to:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Total for uvcvideo device /dev/media0: 8, Succeeded: 8, Failed: 0, Warnings: 0
+Total for uvcvideo device /dev/video0: 54, Succeeded: 54, Failed: 0, Warnings: 0
+Total for uvcvideo device /dev/video1: 46, Succeeded: 46, Failed: 0, Warnings: 0
+Grand Total for uvcvideo device /dev/media0: 108, Succeeded: 108,
+Failed: 0, Warnings: 0
 
-Thanks!
+YES, NO MORE WARNINGS :)
 
-[1/2] ASoC: simple-card-utils: Do not handle device clock
-      commit: 8ca88d53351cc58d535b2bfc7386835378fb0db2
-[2/2] ASoC: rt5659: Update MCLK rate in set_sysclk()
-      commit: dbf54a9534350d6aebbb34f5c1c606b81a4f35dd
+Note that we depend on:
+https://patchwork.linuxtv.org/project/linux-media/patch/20210315172531.101694-1-ribalda@chromium.org/
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+With Hans patch we can also pass v4l2-compliance -s.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Changelog  from v4 (Thanks to Hans and Laurent)
+- Use framework names for controls
+- Check the control flags before accessing them
+- Drop meta headers instead of returning error
+- Fix error_idx handling in v4l2-ioctl
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Hans Verkuil (1):
+  uvc: use vb2 ioctl and fop helpers
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Ricardo Ribalda (12):
+  media: v4l2-ioctl: Fix check_ext_ctrls
+  media: uvcvideo: Set capability in s_param
+  media: uvcvideo: Return -EIO for control errors
+  media: uvcvideo: Check controls flags before accessing them
+  media: uvcvideo: refactor __uvc_ctrl_add_mapping
+  media: uvcvideo: Add support for V4L2_CTRL_TYPE_CTRL_CLASS
+  media: uvcvideo: Use dev->name for querycap()
+  media: uvcvideo: Set unique vdev name based in type
+  media: uvcvideo: Increase the size of UVC_METADATA_BUF_SIZE
+  media: uvcvideo: Return -EACCES to inactive controls
+  media: uvcvideo: Use control names from framework
+  media: v4l2-ioctl: Set error_idx to the right value
 
-Thanks,
-Mark
+ drivers/media/usb/uvc/uvc_ctrl.c     | 209 +++++++++++----
+ drivers/media/usb/uvc/uvc_driver.c   |  22 +-
+ drivers/media/usb/uvc/uvc_metadata.c |   8 +-
+ drivers/media/usb/uvc/uvc_queue.c    | 143 ----------
+ drivers/media/usb/uvc/uvc_v4l2.c     | 373 ++++++---------------------
+ drivers/media/usb/uvc/uvc_video.c    |  13 +-
+ drivers/media/usb/uvc/uvcvideo.h     |  41 +--
+ drivers/media/v4l2-core/v4l2-ioctl.c |  40 ++-
+ 8 files changed, 303 insertions(+), 546 deletions(-)
+
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
