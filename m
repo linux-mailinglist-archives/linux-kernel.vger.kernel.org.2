@@ -2,139 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7139933DAE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:24:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DED6433DAEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:28:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233917AbhCPRYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60744 "EHLO
+        id S237052AbhCPR1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239187AbhCPRUs (ORCPT
+        with ESMTP id S234870AbhCPR0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:20:48 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96809C0613E0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:20:41 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id dm8so22501320edb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:20:41 -0700 (PDT)
+        Tue, 16 Mar 2021 13:26:44 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1878CC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:26:43 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id z5so17294133plg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:26:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/XB5/PYr+gM9dCUnpwZrVC+N0EakV1SQIdmfOjtLP+g=;
-        b=SooMopyFEXzM7T2ZqhupISjYtyPSt8nmqen/c8f7DaKneJF/7CYcS1aa+I/Q7N97QN
-         Xrn3siZIhY2TTSue2YWbTYLjQTwcLs28BaTPfmtt5PHfNc5gq49GNgRDutSvz/DINSP6
-         Ix1znNjI8x0Xgd0VAzXP9/IbjjpSVr9nmOVBMjiZ96Iq3sFrv8/kSB+9mc7X9mg0jSjX
-         AIy8tZbCIL5zpnb8G9+yyzgDSJeoTbYj+UrbTQ5hjR5FQAg00gFXU73jRslpa5mlQYkz
-         zmZeqQ+/e8mASzVQDCc7H35Tqy3WqgR7mnUBacGD2Ozx5wapSWeUnNo/TnPomAVdLQFj
-         I3bw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=j2TcsItQe9mXM2OmXCX8WBXwODoYV6ptAcT0XjuWaxM=;
+        b=BlLOKdjSYi530fvJUVRZor11SX8QYxGIJTizXqSLZqbaiDPNo/hd93yLlWm54Ieck5
+         pbhiVeyo3X2+CmWY0rtJ77+WatqV/iiFURp6biPWmZAEuey8ore8I9zeQReMjVwV4w/N
+         +Wq3MhOa8aIiiB6HksiIJlcHOLDcW3gqWVLP0eQPsVxXfgHA1Xsq4QfnrSFabMz5/N4K
+         JtesF5lr6As5uETTk+4V5L7NNZjbqGtPhnIGmLIvStzTWzL5RwWyjAYW/4kus8GOG+85
+         1G6r3r3m5aI5lZ4vod10ujaWdM1LHQaSEJUt7JQeEYyQhfVt2g0BsG7i0JWGZQ20mfkV
+         cktQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/XB5/PYr+gM9dCUnpwZrVC+N0EakV1SQIdmfOjtLP+g=;
-        b=X8ETQNQ5ZXEjXLBJTd2sUeLLfRy0/4ARQGmSVnWN50RfHVTDIk0SKt+8XnvRlSQGww
-         V4Rl/SsZ0pyQJv/77Vo77iWLYunx66MdIam+iVCi56j0dyxVbRBo63NGFlbJX5bcw1Ib
-         woAvyTPoCcNcqUg+pmYoxd5naN7J12tOnzESBTIOmedqP2g1mqcq433cY2LHM56VUP30
-         JrBoX//2RycUGleCQJWJPN3vPkITFkynnZQMDcQ4f4Tp+u0gSGwMIRAY/qk4jv/QXmbD
-         fEHinXmt0vibIUnq+ln6K5XH91u13s8ND/yw7LEe9/4TxmAOGPWnH7R8302UD7CZNoHZ
-         CDqA==
-X-Gm-Message-State: AOAM533Y75R9VTeoBMegL8rVa08EhJD8SVJ7Faa00ztQSzTfmZ6fKlIE
-        LzCfnDnU1v38rpDrAsPmaJtxYw==
-X-Google-Smtp-Source: ABdhPJwXIVQBnt8J0dl8zckmTs7ih1GrbEuw9Es9sUj/rQKH5skI7toJLHs6lqvscoLiNlMFH1loMg==
-X-Received: by 2002:aa7:da48:: with SMTP id w8mr36508971eds.81.1615915240402;
-        Tue, 16 Mar 2021 10:20:40 -0700 (PDT)
-Received: from localhost.localdomain ([37.120.1.234])
-        by smtp.gmail.com with ESMTPSA id u1sm10571584edv.90.2021.03.16.10.20.38
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j2TcsItQe9mXM2OmXCX8WBXwODoYV6ptAcT0XjuWaxM=;
+        b=mtVCSbYjt4dXi1iiTmvf4R3epeMRAzvQJESEhlmmYkWlw+A8pUpdCYDQC1yEiKz//S
+         /LPIgqFBadA2iLudwV7cTgtO6oJ0yyFvPqoCsZhQBKUybWaZAt30/Pzec48RFw0GnFh3
+         PXg/TORLSDma/aFS3dEHJGPfi3J9jByPSmRjYb3LVmgVTim/K9nzyQfQZw2hIOdnNR+L
+         UfuMyqSl6Htygc7uTSpr1S2jkJc1kPv8FKWKGPtOS5bL5/YSPMOYLRyRwxUjWw1041xB
+         kVbfEe8M6YQmtg28uSNYd/2DmGCGw/zlJyY83XMX8J6Qc7Pl23lKPzzIR2u3HMLcRucP
+         n35A==
+X-Gm-Message-State: AOAM532mcacmYU3ONQqDGvjpfVK3ui7fHHYP9a0vOr7qdhWn0/lt6JOU
+        xk1i5MQf+3YKuhywBFfxcatSsg==
+X-Google-Smtp-Source: ABdhPJxNZcjAFFJsfZ7IAiaY+ADgAHYgbHJvlqfBYXAVaBV7g/B2afo1aLMwBdBB9KW8U/DxDiyCQg==
+X-Received: by 2002:a17:902:edc2:b029:e4:3738:9b23 with SMTP id q2-20020a170902edc2b02900e437389b23mr554373plk.37.1615915602144;
+        Tue, 16 Mar 2021 10:26:42 -0700 (PDT)
+Received: from google.com ([2620:15c:f:10:e113:95c2:2d1:e304])
+        by smtp.gmail.com with ESMTPSA id g26sm17464964pge.67.2021.03.16.10.26.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 10:20:39 -0700 (PDT)
-From:   Robert Foss <robert.foss@linaro.org>
-To:     robert.foss@linaro.org, todor.too@gmail.com, agross@kernel.org,
-        bjorn.andersson@linaro.org, mchehab@kernel.org, robh+dt@kernel.org,
-        angelogioacchino.delregno@somainline.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Rob Herring <robh@kernel.org>, Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonathan Marek <jonathan@marek.ca>
-Subject: [PATCH v9 22/22] arm64: dts: sdm845-db845c: Enable ov8856 sensor and connect to ISP
-Date:   Tue, 16 Mar 2021 18:19:31 +0100
-Message-Id: <20210316171931.812748-23-robert.foss@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210316171931.812748-1-robert.foss@linaro.org>
-References: <20210316171931.812748-1-robert.foss@linaro.org>
+        Tue, 16 Mar 2021 10:26:41 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 10:26:34 -0700
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jim Mattson <jmattson@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH 2/3] KVM: x86: guest debug: don't inject interrupts while
+ single stepping
+Message-ID: <YFDqSisnoWD5wVdP@google.com>
+References: <1259724f-1bdb-6229-2772-3192f6d17a4a@siemens.com>
+ <bede3450413a7c5e7e55b19a47c8f079edaa55a2.camel@redhat.com>
+ <ca41fe98-0e5d-3b4c-8ed8-bdd7cd5bc60f@siemens.com>
+ <71ae8b75c30fd0f87e760216ad310ddf72d31c7b.camel@redhat.com>
+ <2a44c302-744e-2794-59f6-c921b895726d@siemens.com>
+ <1d27b215a488f8b8fc175e97c5ab973cc811922d.camel@redhat.com>
+ <727e5ef1-f771-1301-88d6-d76f05540b01@siemens.com>
+ <e2cd978e357155dbab21a523bb8981973bd10da7.camel@redhat.com>
+ <CAMS+r+XFLsFRFLGLaAH3_EnBcxOmyN-XiZqcmKEx2utjNErYsQ@mail.gmail.com>
+ <31c0bba9-0399-1f15-a59b-a8f035e366e8@siemens.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <31c0bba9-0399-1f15-a59b-a8f035e366e8@siemens.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable camss & ov8856 DT nodes.
+On Tue, Mar 16, 2021, Jan Kiszka wrote:
+> On 16.03.21 17:50, Sean Christopherson wrote:
+> > Rather than block all events in KVM, what about having QEMU "pause" the timer?
+> > E.g. save MSR_TSC_DEADLINE and APIC_TMICT (or inspect the guest to find out
+> > which flavor it's using), clear them to zero, then restore both when
+> > single-stepping is disabled.  I think that will work?
+> > 
+> 
+> No one can stop the clock, and timers are only one source of interrupts.
+> Plus they do not all come from QEMU, some also from KVM or in-kernel
+> sources directly.
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
-Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
----
+But are any other sources of interrupts a chronic problem?  I 100% agree that
+this would not be a robust solution, but neither is blocking events in KVM.  At
+least with this approach, the blast radius is somewhat contained.
 
+> Would quickly become a mess.
 
-Changes since v5:
- - Andrey: Add r-b
- - Change CSI clock & data pins
-
-
-
- arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-index 7e3c9fe4955d..e5a693c8dc42 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-@@ -1110,6 +1110,21 @@ &cci {
- 
- &camss {
- 	vdda-supply = <&vreg_l1a_0p875>;
-+
-+	status = "ok";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		port@0 {
-+			reg = <0>;
-+			csiphy0_ep: endpoint {
-+				clock-lanes = <7>;
-+				data-lanes = <0 1 2 3>;
-+				remote-endpoint = <&ov8856_ep>;
-+			};
-+		};
-+	};
- };
- 
- &cci_i2c0 {
-@@ -1141,7 +1156,7 @@ camera@10 {
- 		avdd-supply = <&cam0_avdd_2v8>;
- 		dvdd-supply = <&cam0_dvdd_1v2>;
- 
--		status = "disable";
-+		status = "ok";
- 
- 		port {
- 			ov8856_ep: endpoint {
-@@ -1149,7 +1164,7 @@ ov8856_ep: endpoint {
- 				link-frequencies = /bits/ 64
- 					<360000000 180000000>;
- 				data-lanes = <1 2 3 4>;
--//				remote-endpoint = <&csiphy0_ep>;
-+				remote-endpoint = <&csiphy0_ep>;
- 			};
- 		};
- 	};
--- 
-2.27.0
-
+Maybe, but it'd be Qemu's mess ;-)
