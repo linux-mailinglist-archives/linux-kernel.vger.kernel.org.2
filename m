@@ -2,55 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BB733CF5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:11:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B25F433CF67
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234191AbhCPIL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 04:11:26 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:51984 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234196AbhCPIKz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 04:10:55 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0US7EAO1_1615882251;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0US7EAO1_1615882251)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 16 Mar 2021 16:10:52 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     colyli@suse.de
-Cc:     kent.overstreet@gmail.com, linux-bcache@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] bcache: use NULL instead of using plain integer as pointer
-Date:   Tue, 16 Mar 2021 16:10:50 +0800
-Message-Id: <1615882250-17846-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S234188AbhCPIMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 04:12:32 -0400
+Received: from verein.lst.de ([213.95.11.211]:58982 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234220AbhCPIME (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 04:12:04 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 68EB168C4E; Tue, 16 Mar 2021 09:11:57 +0100 (CET)
+Date:   Tue, 16 Mar 2021 09:11:56 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Ira Weiny <iweiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>
+Subject: Re: [RFC PATCH v2 06/11] dma-direct: Support PCI P2PDMA pages in
+ dma-direct map_sg
+Message-ID: <20210316081156.GA16595@lst.de>
+References: <20210311233142.7900-1-logang@deltatee.com> <20210311233142.7900-7-logang@deltatee.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311233142.7900-7-logang@deltatee.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes the following sparse warnings:
-drivers/md/bcache/features.c:22:16: warning: Using plain integer as NULL
-pointer
+On Thu, Mar 11, 2021 at 04:31:36PM -0700, Logan Gunthorpe wrote:
+>  	for_each_sg(sgl, sg, nents, i) {
+> +		if (is_pci_p2pdma_page(sg_page(sg))) {
+> +			if (sg_page(sg)->pgmap != pgmap) {
+> +				pgmap = sg_page(sg)->pgmap;
+> +				map = pci_p2pdma_dma_map_type(dev, pgmap);
+> +				bus_off = pci_p2pdma_bus_offset(sg_page(sg));
+> +			}
+> +
+> +			if (map < 0) {
+> +				sg->dma_address = DMA_MAPPING_ERROR;
+> +				ret = -EREMOTEIO;
+> +				goto out_unmap;
+> +			}
+> +
+> +			if (map) {
+> +				sg->dma_address = sg_phys(sg) + sg->offset -
+> +					bus_off;
+> +				sg_dma_len(sg) = sg->length;
+> +				sg_mark_pci_p2pdma(sg);
+> +				continue;
+> +			}
+> +		}
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/md/bcache/features.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/md/bcache/features.c b/drivers/md/bcache/features.c
-index d636b7b..6d2b7b8 100644
---- a/drivers/md/bcache/features.c
-+++ b/drivers/md/bcache/features.c
-@@ -19,7 +19,7 @@ struct feature {
- static struct feature feature_list[] = {
- 	{BCH_FEATURE_INCOMPAT, BCH_FEATURE_INCOMPAT_LOG_LARGE_BUCKET_SIZE,
- 		"large_bucket"},
--	{0, 0, 0 },
-+	{0, 0, NULL },
- };
- 
- #define compose_feature_string(type)				\
--- 
-1.8.3.1
-
+This code needs to go into a separate noinline helper to reduce the impact
+on the fast path.  Also as Robin noted the offset is already
+accounted for in sg_phys.  We also don't ever set the dma_address in
+the scatterlist to DMA_MAPPING_ERROR, that is just a return value
+for the single entry mapping routines.
