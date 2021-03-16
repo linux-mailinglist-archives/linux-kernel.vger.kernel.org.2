@@ -2,93 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D39233D15D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:05:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6325733D161
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236471AbhCPKFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 06:05:17 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:54372 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233330AbhCPKFF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 06:05:05 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id DD45A1C0B8B; Tue, 16 Mar 2021 11:05:02 +0100 (CET)
-Date:   Tue, 16 Mar 2021 11:05:01 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 154/290] PCI/LINK: Remove bandwidth notification
-Message-ID: <20210316100501.GD12946@amd>
-References: <20210315135541.921894249@linuxfoundation.org>
- <20210315135547.125914951@linuxfoundation.org>
+        id S236302AbhCPKGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 06:06:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:58288 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233330AbhCPKGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 06:06:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 92DE3D6E;
+        Tue, 16 Mar 2021 03:06:21 -0700 (PDT)
+Received: from [10.37.8.5] (unknown [10.37.8.5])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8BCF73F70D;
+        Tue, 16 Mar 2021 03:06:19 -0700 (PDT)
+Subject: Re: [PATCH v16 6/9] arm64: mte: Conditionally compile
+ mte_enable_kernel_*()
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+References: <20210315132019.33202-1-vincenzo.frascino@arm.com>
+ <20210315132019.33202-7-vincenzo.frascino@arm.com>
+ <20210315184152.GC22897@arm.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <3f0b916b-efa5-ad35-b838-34f1edf2ba3a@arm.com>
+Date:   Tue, 16 Mar 2021 10:06:18 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="Q0rSlbzrZN6k9QnT"
-Content-Disposition: inline
-In-Reply-To: <20210315135547.125914951@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20210315184152.GC22897@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---Q0rSlbzrZN6k9QnT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
+On 3/15/21 6:41 PM, Catalin Marinas wrote:
+> On Mon, Mar 15, 2021 at 01:20:16PM +0000, Vincenzo Frascino wrote:
+>> mte_enable_kernel_*() are not needed if KASAN_HW is disabled.
+>>
+>> Add ash defines around the functions to conditionally compile the
+>> functions.
+>>
+>> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> 
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> 
+> (BTW, Andrey now has a different email address; use the one in the
+> MAINTAINERS file)
+> 
 
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->=20
-> From: Bjorn Helgaas <bhelgaas@google.com>
+I did not notice the change, sorry. Than you for updating the address.
 
-Dup.
-
-> Remove the bandwidth change notifications for now.  Hopefully we can add
-> this back when we have a better understanding of why this happens and how
-> we can make the messages useful instead of overwhelming.
-
-This is stable, and even for mainline, I'd expect "depends on BROKEN"
-in Kconfig, or something like that, so people can still work on fixing
-it and so that we don't have huge changes floating around.
-
-Best regards,
-								Pavel
-							=09
-> diff --git a/drivers/pci/pcie/Kconfig b/drivers/pci/pcie/Kconfig
-> index 3946555a6042..45a2ef702b45 100644
-> --- a/drivers/pci/pcie/Kconfig
-> +++ b/drivers/pci/pcie/Kconfig
-> @@ -133,14 +133,6 @@ config PCIE_PTM
->  	  This is only useful if you have devices that support PTM, but it
->  	  is safe to enable even if you don't.
-> =20
-> -config PCIE_BW
-> -	bool "PCI Express Bandwidth Change Notification"
-> -	depends on PCIEPORTBUS
-> -	help
-> -	  This enables PCI Express Bandwidth Change Notification.  If
-> -	  you know link width or rate changes occur only to correct
-> -	  unreliable links, you may answer Y.
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---Q0rSlbzrZN6k9QnT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmBQgs0ACgkQMOfwapXb+vLOxgCeN+MQeHtq+scAXlKbL20uT5Sm
-qYQAoKQTFYLSuLvuwE9dRNkfvaN1iRhj
-=9jjp
------END PGP SIGNATURE-----
-
---Q0rSlbzrZN6k9QnT--
+-- 
+Regards,
+Vincenzo
