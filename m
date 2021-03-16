@@ -2,87 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5197A33D99F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0577133D9AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238770AbhCPQkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 12:40:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238767AbhCPQjl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 12:39:41 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9086BC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 09:39:40 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id n17so13660789plc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 09:39:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ml5FEt+zK0js4fhzjALMp1tOuNCzjM/T8NaL99/Vggc=;
-        b=ANm9GbxUUrHzlnbEEnYCqkeoIj5CcEKzRhvXRsIkAvSiEaP3nPwUnwXlEiXWEXa5XV
-         09mmDIqzAKZ0FllK59ppoxw1umbG45v4FlwlrO1zjibVE6L8mTBcZR5ykAe6uIK1LEdx
-         ohZO2BIOhHQmJtDgmE30xdtzFcV6nMs30h5Bzeu2ghobfarnvBRtxIE2eBet1DBC9QK8
-         AuTzzQu6MFMyl8tqQMe8DULEFcPfTIXAEnglYZFio4XUUGyb2xONgVfIjTdwHJdx4n35
-         jQ3Ms8ZCdNbLtFpMg2xztv8C+x/y/WA5BamTPv00ZZEWcWmasHyo2Hw4lF7Hx9vUe95k
-         /9kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ml5FEt+zK0js4fhzjALMp1tOuNCzjM/T8NaL99/Vggc=;
-        b=PsrWe+I8fNgF3ym4+TjG8BnoUIN3GM6VVE0kZRNJYVEBpzoUTTSaF8gQ27akZGFfyl
-         J5Tb9dEXx47fWwJ2PkN6oMqApf/830+85oZBePpdJRdJEqOtvfGW6Id3vcpSdH6UPZ2v
-         fI1dwzgKl+kgv22j5UsEmoF3tJs+58N8Ew19qn5C1R1JZiZarkr0oDIDksZ9OdNR8ZOq
-         uhxvNzaZGc8EVCDNlGxOJ7p79CqiyqFlRsmK67OUST5Bp9ndJbbk3zcuHJYX68hAxceP
-         N7lDDe2W1fgmymI9NtvVdWNpDubUezwM3g9VT8ialJDNvUYwJxa6+k5HnmrfA0IrbRtu
-         VjkA==
-X-Gm-Message-State: AOAM533qt9JCbo5lAyNKwIUPzzWzKPqo8f6YjLbMcsKtwhwVOVq8pG5C
-        BaxckZa6Ey3MO9GOwsAOEnyvB8zcbDQ=
-X-Google-Smtp-Source: ABdhPJzcxSC7CoT4IZvbNMEGydRAHZ27B/c/yhgrPgOBtM6vc5qSYcGCb5boOecmTCMoh2ZDdL9bqA==
-X-Received: by 2002:a17:903:92:b029:e4:bf7c:cbf with SMTP id o18-20020a1709030092b02900e4bf7c0cbfmr250210pld.55.1615912779685;
-        Tue, 16 Mar 2021 09:39:39 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id p7sm6061410pgj.2.2021.03.16.09.39.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 09:39:39 -0700 (PDT)
-Subject: Re: [PATCH] reset: RESET_BRCMSTB_RESCAL should depend on ARCH_BRCMSTB
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jim Quinlan <jim2101024@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-References: <20210316133733.2376745-1-geert+renesas@glider.be>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <edf3dd53-3404-205f-efab-e07b54635a09@gmail.com>
-Date:   Tue, 16 Mar 2021 09:39:36 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210316133733.2376745-1-geert+renesas@glider.be>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S238839AbhCPQlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 12:41:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238761AbhCPQlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 12:41:15 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45EA265101;
+        Tue, 16 Mar 2021 16:41:14 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1lMCkr-000lvc-7c; Tue, 16 Mar 2021 12:41:13 -0400
+Message-ID: <20210316164100.546961804@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Tue, 16 Mar 2021 12:41:00 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Zanussi, Tom" <tom.zanussi@linux.intel.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Yordan Karadzhov" <y.karadz@gmail.com>
+Subject: [PATCH 0/7 v2] tracing: Have ring_buffer_event_time_stamp() work for all events
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Yordan has been working on a patch set that will not repeat functions
+in the function tracer but instead show a single event that states that
+the previous function repeated X amount of times. I recommended that
+this should also show the time of the last function that repeated.
+To save on space, Yordan suggested to use a 32 bit delta instead of
+a full 64 bit timestamp of the last event. But to create this delta,
+we need a way to extract the time of the repeat event and use that
+to calculate the delta of the last function event.
 
-On 3/16/2021 6:37 AM, Geert Uytterhoeven wrote:
-> The Broadcom STB RESCAL reset controller is only present on Broadcom
-> BCM7216 platforms.  Hence add a dependency on ARCH_BRCMSTB, to prevent
-> asking the user about this driver when configuring a kernel without
-> BCM7216 support.
-> 
-> Also, merely enabling CONFIG_COMPILE_TEST should not enable additional
-> code, and thus should not enable this driver by default.
-> 
-> Fixes: 4cf176e52397853e ("reset: Add Broadcom STB RESCAL reset controller")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+But currently the ring_buffer_event_time_stamp() only works if all events
+has an absolute time stamp attached to it. That would be counter productive
+to make all functions record the full time stamp because we wanted to
+use a 32 bit counter instead of a 64 bit counter for the rare repeat event!
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+This patch series makes ring_buffer_event_time_stamp() work for all
+non committed events (after reserve and before it is committed).
+The trick is that the per CPU descriptor of the buffer holds the time
+stamp used for the event being processed. It has a nesting of 5 levels
+to deal with interrupts that add events. Extracting the time for the event
+can only be done for the current event being processed and not yet
+committed.
+
+To achieve this, the buffer that the event is on needs to be passed to
+the ring_buffer_event_time_stamp(). That caused a bit of churn for
+the histogram code, because that buffer wasn't available at the time
+the ring_buffer_event_time_stamp() was called. Although the hist_field
+contained a pointer to the trace_array that holds the ring buffer,
+if tracing was disabled, then a temporary buffer was used instead,
+and that temporary buffer would need to be passed to the
+ring_buffer_event_time_stamp(). That buffer is exposed to the trace event
+logic, but was not passed down into the trigger code. That had to be
+done to take advantage of the new code.
+
+The second to last patch adds verifier logic (although commented out)
+that was used to debug the issue when a temporary buffer was in use.
+It proved to be very valuable and is kept in, in case this needs to be
+debugged again.
+
+Finally the last patch is for use with Yordan's work, and is needed because
+when filtering is enabled, the event being processed may not even be
+on the buffer, and the tracing_event_time_stamp() checks for that and
+will just use the current time stamp if the event is not reserved yet.
+This could be used also for the histogram code, but wanted to hold off
+on that.
+
+Changes since v1:
+
+ - Applied change of last patch to pass buffer not trace_array
+ - Fixed prototype of stack_track_data_snapshot() when snapshot not configured
+
+Steven Rostedt (VMware) (7):
+      ring-buffer: Separate out internal use of ring_buffer_event_time_stamp()
+      ring-buffer: Add a event_stamp to cpu_buffer for each level of nesting
+      tracing: Pass buffer of event to trigger operations
+      ring-buffer: Allow ring_buffer_event_time_stamp() to return time stamp of all events
+      tracing: Use a no_filter_buffering_ref to stop using the filter buffer
+      ring-buffer: Add verifier for using ring_buffer_event_time_stamp()
+      tracing: Add tracing_event_time_stamp() API
+
+----
+ include/linux/ring_buffer.h         |   3 +-
+ include/linux/trace_events.h        |   5 +-
+ kernel/trace/ring_buffer.c          | 138 ++++++++++++++++++++++++++++++------
+ kernel/trace/trace.c                |  38 +++++-----
+ kernel/trace/trace.h                |   9 +--
+ kernel/trace/trace_events_hist.c    | 100 +++++++++++++++++---------
+ kernel/trace/trace_events_trigger.c |  45 +++++++-----
+ 7 files changed, 239 insertions(+), 99 deletions(-)
