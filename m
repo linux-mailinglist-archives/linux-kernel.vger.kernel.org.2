@@ -2,128 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 530D333DC72
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4869333DC7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239922AbhCPSUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:20:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236524AbhCPSTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:19:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F09A165116;
-        Tue, 16 Mar 2021 18:19:40 +0000 (UTC)
-Date:   Tue, 16 Mar 2021 18:19:38 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Luis Henriques <lhenriques@suse.de>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Issue with kfence and kmemleak
-Message-ID: <20210316181938.GA28565@arm.com>
-References: <YFDf6iKH1p/jGnM0@suse.de>
- <YFDrGL45JxFHyajD@elver.google.com>
+        id S239998AbhCPSU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:20:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239933AbhCPSUQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 14:20:16 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED9DC06174A;
+        Tue, 16 Mar 2021 11:20:16 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id r20so21761927ljk.4;
+        Tue, 16 Mar 2021 11:20:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/EY3L/mBI9A92qs+kcJfia7iM4nIgXa7Eq9egkGrSYQ=;
+        b=ShxQSv1YnF0cA0m72VVBXuOJkv4rMoe/cZcEB2scB3iPD98yKUVaIFHsUQHsvMb+9F
+         Ulv48BWA6vPHbW9Gy3pbWeEv/BRfws287bbrFenYgrmBnhJ0IkXxBBUDQmm44yeNF2fG
+         XFk3UqwpJ2JQbH8wL/kiWkqOPddwzcDUhFPc5v9TpIuseArS9Uz3MSKY6vTsajrWy2V3
+         QqYUB6LvpyCN2+RIrKOhikeIs3dJYUYxqiQgo+o+IPXvMhCgCbOZQDLu/f+RS2pcocdI
+         mQLAzxCO2uhxuFKSaBUpxzWFAdlDp/BRIZb7cUfzpl1HrrxTOITSs09rJEjTUZQz30om
+         h7Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/EY3L/mBI9A92qs+kcJfia7iM4nIgXa7Eq9egkGrSYQ=;
+        b=UdTvLa6eHFBFIYEy9mUkXL4hCFkAgLEa3gRBY1Dk1TFoo6f2ngEpqRA+tLh3MOovZ5
+         yBD1Fufcif3TVWdBzzc/JKfbA3IgShGddmHnZO8dfemGYwKM81/mv5oPAKxk1XF0iSL8
+         zvbT6Z0EQcZfASXN5jzXw9LmEO3w4j0UTPVsuGFFE4H2JetIIz4McbTWLjCPgFaGgAdi
+         y8DIp1+NFLDTY96z+emw5clAmG0eV7eZycQJAH1+Dw944FtgxhqPf7G6iFhQS1384IIm
+         9JCabJ9ahYkZvaBajt7zTluf/2r17BU9krHufVFtNe3DqyRVkFTQ76XJ2NTWAY0TTJMk
+         AxOA==
+X-Gm-Message-State: AOAM531HJK5MTWYPb1SBw6bkL1A5XAQPh9FUdQqAx8vu5IblZBlVyHGw
+        pzfJmmoXzwFh6N93F/GLhmvgUsc6F0fkyqFO0Lg=
+X-Google-Smtp-Source: ABdhPJzS1GwTMKy9q7+dcAKRjRYTkm3ot0+9gSzRXYXGbbM6cKzdnXnGRTNBCsOwG3SQX7GqDjUfMOgI5CLoDMhnrNQ=
+X-Received: by 2002:a2e:7409:: with SMTP id p9mr3392483ljc.165.1615918814407;
+ Tue, 16 Mar 2021 11:20:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFDrGL45JxFHyajD@elver.google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210208051749.1785246-1-sergey.senozhatsky@gmail.com> <20210208051749.1785246-2-sergey.senozhatsky@gmail.com>
+In-Reply-To: <20210208051749.1785246-2-sergey.senozhatsky@gmail.com>
+From:   Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date:   Tue, 16 Mar 2021 19:19:57 +0100
+Message-ID: <CAPybu_19hztQQEi0H40sWZQMb-X7g7dDuW4Mz8_gRv-nG2tghw@mail.gmail.com>
+Subject: Re: [PATCHv2 1/3] media: v4l UAPI docs: document ROI selection targets
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 06:30:00PM +0100, Marco Elver wrote:
-> On Tue, Mar 16, 2021 at 04:42PM +0000, Luis Henriques wrote:
-> > This is probably a known issue, but just in case: looks like it's not
-> > possible to use kmemleak when kfence is enabled:
-> > 
-> > [    0.272136] kmemleak: Cannot insert 0xffff888236e02f00 into the object search tree (overlaps existing)
-> > [    0.272136] CPU: 0 PID: 8 Comm: kthreadd Not tainted 5.12.0-rc3+ #92
-> > [    0.272136] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
-> > [    0.272136] Call Trace:
-> > [    0.272136]  dump_stack+0x6d/0x89
-> > [    0.272136]  create_object.isra.0.cold+0x40/0x62
-> > [    0.272136]  ? process_one_work+0x5a0/0x5a0
-> > [    0.272136]  ? process_one_work+0x5a0/0x5a0
-> > [    0.272136]  kmem_cache_alloc_trace+0x110/0x2f0
-> > [    0.272136]  ? process_one_work+0x5a0/0x5a0
-> > [    0.272136]  kthread+0x3f/0x150
-> > [    0.272136]  ? lockdep_hardirqs_on_prepare+0xd4/0x170
-> > [    0.272136]  ? __kthread_bind_mask+0x60/0x60
-> > [    0.272136]  ret_from_fork+0x22/0x30
-> > [    0.272136] kmemleak: Kernel memory leak detector disabled
-> > [    0.272136] kmemleak: Object 0xffff888236e00000 (size 2097152):
-> > [    0.272136] kmemleak:   comm "swapper", pid 0, jiffies 4294892296
-> > [    0.272136] kmemleak:   min_count = 0
-> > [    0.272136] kmemleak:   count = 0
-> > [    0.272136] kmemleak:   flags = 0x1
-> > [    0.272136] kmemleak:   checksum = 0
-> > [    0.272136] kmemleak:   backtrace:
-> > [    0.272136]      memblock_alloc_internal+0x6d/0xb0
-> > [    0.272136]      memblock_alloc_try_nid+0x6c/0x8a
-> > [    0.272136]      kfence_alloc_pool+0x26/0x3f
-> > [    0.272136]      start_kernel+0x242/0x548
-> > [    0.272136]      secondary_startup_64_no_verify+0xb0/0xbb
-> > 
-> > I've tried the hack below but it didn't really helped.  Obviously I don't
-> > really understand what's going on ;-)  But I think the reason for this
-> > patch not working as (I) expected is because kfence is initialised
-> > *before* kmemleak.
-> > 
-> > diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-> > index 3b8ec938470a..b4ffd7695268 100644
-> > --- a/mm/kfence/core.c
-> > +++ b/mm/kfence/core.c
-> > @@ -631,6 +631,9 @@ void __init kfence_alloc_pool(void)
-> >  
-> >  	if (!__kfence_pool)
-> >  		pr_err("failed to allocate pool\n");
-> > +	kmemleak_no_scan(__kfence_pool);
-> >  }
-> 
-> Can you try the below patch?
-> 
-> Thanks,
-> -- Marco
-> 
-> ------ >8 ------
-> 
-> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-> index f7106f28443d..5891019721f6 100644
-> --- a/mm/kfence/core.c
-> +++ b/mm/kfence/core.c
-> @@ -12,6 +12,7 @@
->  #include <linux/debugfs.h>
->  #include <linux/kcsan-checks.h>
->  #include <linux/kfence.h>
-> +#include <linux/kmemleak.h>
->  #include <linux/list.h>
->  #include <linux/lockdep.h>
->  #include <linux/memblock.h>
-> @@ -481,6 +482,13 @@ static bool __init kfence_init_pool(void)
->  		addr += 2 * PAGE_SIZE;
->  	}
->  
-> +	/*
-> +	 * The pool is live and will never be deallocated from this point on;
-> +	 * tell kmemleak this is now free memory, so that later allocations can
-> +	 * correctly be tracked.
-> +	 */
-> +	kmemleak_free_part_phys(__pa(__kfence_pool), KFENCE_POOL_SIZE);
+Hi Sergey
 
-I presume this pool does not refer any objects that are only tracked
-through pool pointers.
+Thanks for the patch!
 
-kmemleak_free() (or *_free_part) should work, no need for the _phys
-variant (which converts it back with __va).
+On Mon, Feb 8, 2021 at 6:21 AM Sergey Senozhatsky
+<sergey.senozhatsky@gmail.com> wrote:
+>
+> From: Sergey Senozhatsky <senozhatsky@chromium.org>
+>
+> Document new v4l2-selection target which will be used for the
+> Region of Interest v4l2 control.
+>
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> ---
+>  .../media/v4l/selection-api-configuration.rst | 23 +++++++++++++++++++
+>  .../media/v4l/v4l2-selection-targets.rst      | 21 +++++++++++++++++
+>  include/uapi/linux/v4l2-common.h              |  8 +++++++
+>  3 files changed, 52 insertions(+)
+>
+> diff --git a/Documentation/userspace-api/media/v4l/selection-api-configuration.rst b/Documentation/userspace-api/media/v4l/selection-api-configuration.rst
+> index fee49bf1a1c0..9f69d71803f6 100644
+> --- a/Documentation/userspace-api/media/v4l/selection-api-configuration.rst
+> +++ b/Documentation/userspace-api/media/v4l/selection-api-configuration.rst
+> @@ -135,3 +135,26 @@ and the height of rectangles obtained using ``V4L2_SEL_TGT_CROP`` and
+>  ``V4L2_SEL_TGT_COMPOSE`` targets. If these are not equal then the
+>  scaling is applied. The application can compute the scaling ratios using
+>  these values.
+> +
+> +Configuration of Region of Interest (ROI)
+> +=========================================
+> +
+> +The range of coordinates of the top left corner, width and height of
+> +areas that can be ROI is given by the ``V4L2_SEL_TGT_ROI_BOUNDS`` target.
+> +It is recommended for the driver developers to put the top/left corner
+> +at position ``(0,0)``. The rectangle's coordinates are in global sensor
+> +coordinates. The units are in pixels and independent of the field of view.
+> +They are not impacted by any cropping or scaling that is currently being
+> +used.
 
-Since we normally use kmemleak_ignore() (or no_scan) for objects we
-don't care about, I'd expand the comment that this object needs to be
-removed from the kmemleak object tree as it will overlap with subsequent
-allocations handled by kfence which return pointers within this range.
+Can we also mention binning here?
+
+> +
+> +The top left corner, width and height of the Region of Interest area
+> +currently being employed by the device is given by the
+> +``V4L2_SEL_TGT_ROI_CURRENT`` target. It uses the same coordinate system
+> +as ``V4L2_SEL_TGT_ROI_BOUNDS``.
+
+Why do we need current? Cant we just read back V4L2_SEL_TGT_ROI ?
+
+> +
+> +In order to change active ROI top left, width and height coordinates
+> +use ``V4L2_SEL_TGT_ROI`` target.
+> +
+> +Each capture device has a default ROI rectangle, given by the
+> +``V4L2_SEL_TGT_ROI_DEFAULT`` target. Drivers shall set the ROI rectangle
+> +to the default when the driver is first loaded, but not later.
+> diff --git a/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst b/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst
+> index e877ebbdb32e..cb3809418fa6 100644
+> --- a/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst
+> +++ b/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst
+> @@ -69,3 +69,24 @@ of the two interfaces they are used.
+>         modified by hardware.
+>        - Yes
+>        - No
+> +    * - ``V4L2_SEL_TGT_ROI_CURRENT``
+> +      - 0x0200
+> +      - Current Region of Interest rectangle.
+> +      - Yes
+> +      - No
+> +    * - ``V4L2_SEL_TGT_ROI_DEFAULT``
+> +      - 0x0201
+> +      - Suggested Region of Interest rectangle.
+> +      - Yes
+> +      - No
+> +    * - ``V4L2_SEL_TGT_ROI_BOUNDS``
+> +      - 0x0202
+> +      - Bounds of the Region of Interest rectangle. All valid ROI rectangles fit
+> +       inside the ROI bounds rectangle.
+> +      - Yes
+> +      - No
+> +    * - ``V4L2_SEL_TGT_ROI``
+> +      - 0x0203
+> +      - Sets the new Region of Interest rectangle.
+> +      - Yes
+> +      - No
+As mentioned before I think we should not have TGT_ROI_CURRENT and TGT_ROI
+
+
+> diff --git a/include/uapi/linux/v4l2-common.h b/include/uapi/linux/v4l2-common.h
+> index 7d21c1634b4d..d0c108fba638 100644
+> --- a/include/uapi/linux/v4l2-common.h
+> +++ b/include/uapi/linux/v4l2-common.h
+> @@ -78,6 +78,14 @@
+>  #define V4L2_SEL_TGT_COMPOSE_BOUNDS    0x0102
+>  /* Current composing area plus all padding pixels */
+>  #define V4L2_SEL_TGT_COMPOSE_PADDED    0x0103
+> +/* Current Region of Interest area */
+> +#define V4L2_SEL_TGT_ROI_CURRENT       0x0200
+> +/* Default Region of Interest area */
+> +#define V4L2_SEL_TGT_ROI_DEFAULT       0x0201
+> +/* Region of Interest bounds */
+> +#define V4L2_SEL_TGT_ROI_BOUNDS        0x0202
+> +/* Set Region of Interest area */
+> +#define V4L2_SEL_TGT_ROI               0x0203
+
+Nit: Maybe it could be a good idea to split doc and code. This way the
+backports/fixes are easier.
+
+>
+>  /* Selection flags */
+>  #define V4L2_SEL_FLAG_GE               (1 << 0)
+> --
+> 2.30.0
+>
+
 
 -- 
-Catalin
+Ricardo Ribalda
