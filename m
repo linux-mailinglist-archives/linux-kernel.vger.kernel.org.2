@@ -2,96 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645E033CB4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 03:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A65B833CB52
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 03:19:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234547AbhCPCQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 22:16:24 -0400
-Received: from mga06.intel.com ([134.134.136.31]:26012 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230080AbhCPCPz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 22:15:55 -0400
-IronPort-SDR: g/oOyX9GElpCtkKe1HaS/o7G3xOnkHEChrM/Lf3N0/fKAQhqSg/MVTx9xYbE/UC7Ac/vPGcvY7
- n9Dbm1MIMVaQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="250550829"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="250550829"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 19:15:54 -0700
-IronPort-SDR: oTD9KtMZ1jjPn6HxxlOF7zsOZemh5Z32NM5g4Up6ZSwF7Ji3sjGKsLHH8syDq4M9M9HH0NvotD
- zELrdGYi2vyQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="432855368"
-Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
-  by fmsmga004.fm.intel.com with ESMTP; 15 Mar 2021 19:15:49 -0700
-Subject: Re: [PATCH v7] i2c: virtio: add a virtio i2c frontend driver
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <cd3b0c9138824b0a5fad9d3bc872d8836e829946.1615554673.git.jie.deng@intel.com>
- <CAK8P3a0zQG3pH91emqAUsaRx4AZeuOEvSrPzXP9w_XhjU6w3ng@mail.gmail.com>
- <8070f03d-8233-636b-5ea9-395e723f7a2c@intel.com>
- <503b88c9-1e82-a3a3-0536-d710ddc834a5@redhat.com>
- <e388b344-a815-aed3-c076-3651b18c39d1@intel.com>
- <CAK8P3a0LjcSs7gvU-jRdZJCFrfxQcSUWqL_fgH_71VjC027M0w@mail.gmail.com>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <770332a7-f34d-fe26-f708-830b587a98d5@intel.com>
-Date:   Tue, 16 Mar 2021 10:15:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+        id S232111AbhCPCSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 22:18:35 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13540 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229723AbhCPCSU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 22:18:20 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Dzxj63VtkzPjjp;
+        Tue, 16 Mar 2021 10:15:54 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.61) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 16 Mar 2021 10:18:11 +0800
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>,
+        <yao.jin@linux.intel.com>, <gustavoars@kernel.org>,
+        <mliska@suse.cz>, <linux-kernel@vger.kernel.org>
+CC:     <yangjihong1@huawei.com>, <zhangjinhao2@huawei.com>
+Subject: [PATCH v5] perf annotate: Fix sample events lost in stdio mode
+Date:   Tue, 16 Mar 2021 10:17:59 +0800
+Message-ID: <20210316021759.257503-1-yangjihong1@huawei.com>
+X-Mailer: git-send-email 2.30.GIT
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a0LjcSs7gvU-jRdZJCFrfxQcSUWqL_fgH_71VjC027M0w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.61]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In hist__find_annotations function, since different hist_entry may point to same
+symbol, we free notes->src to signal already processed this symbol in stdio mode;
+when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
 
-On 2021/3/15 15:52, Arnd Bergmann wrote:
-> On Mon, Mar 15, 2021 at 6:54 AM Jie Deng <jie.deng@intel.com> wrote:
->> On 2021/3/15 11:13, Jason Wang wrote:
->>> On 2021/3/15 9:14 上午, Jie Deng wrote:
->>>> On 2021/3/12 16:58, Arnd Bergmann wrote:
->> Then do you think it is necessary to mark the virtio bufs with
->> ____cacheline_aligned ?
-> I think so, yes.
->
->> I haven't seen any virtio interface being marked yet. If this is a
->> problem, I believe it should  be common for all virtio devices, right ?
-> Yes, but it's not a problem if the buffers are allocated separately
-> because kmalloc provinces a cachelinen aligned buffer on architectures
-> that need it.
->
-> It's only a problem here because there is a single allocation for three
-> objects that have different ownership states during the DMA (device
-> owned to-device, cpu-owned, device owned to-cpu).
->
->         Arnd
-I'm not sure if this will actually cause a problem. But I'm OK to mark 
-the items
-in struct virtio_i2c_req with  ____cacheline_aligned to avoid potential 
-problem
-as you said.
+However, there is a problem, for example, run the following command:
 
-Thank you.
+ # perf record -e branch-misses -e branch-instructions -a sleep 1
+
+perf.data file contains different types of sample event.
+
+If the same IP sample event exists in branch-misses and branch-instructions,
+this event uses the same symbol. When annotate branch-misses events, notes->src
+corresponding to this event is set to null, as a result, when annotate
+branch-instructions events, this event is skipped and no annotate is output.
+
+Solution of this patch is to remove zfree in hists__find_annotations and
+change sort order to "dso,symbol" to avoid duplicate output when different
+processes correspond to the same symbol.
+---
+ tools/perf/builtin-annotate.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+index a23ba6bb99b6..92c55f292c11 100644
+--- a/tools/perf/builtin-annotate.c
++++ b/tools/perf/builtin-annotate.c
+@@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists *hists,
+ 		} else {
+ 			hist_entry__tty_annotate(he, evsel, ann);
+ 			nd = rb_next(nd);
+-			/*
+-			 * Since we have a hist_entry per IP for the same
+-			 * symbol, free he->ms.sym->src to signal we already
+-			 * processed this symbol.
+-			 */
+-			zfree(&notes->src->cycles_hist);
+-			zfree(&notes->src);
+ 		}
+ 	}
+ }
+@@ -619,6 +612,12 @@ int cmd_annotate(int argc, const char **argv)
+ 
+ 	setup_browser(true);
+ 
++	/*
++	 * Events of different processes may correspond to the same
++	 * symbol, we do not care about the processes in annotate,
++	 * set sort order to avoid repeated output.
++	 */
++	sort_order = "dso,symbol";
+ 	if ((use_browser == 1 || annotate.use_stdio2) && annotate.has_br_stack) {
+ 		sort__mode = SORT_MODE__BRANCH;
+ 		if (setup_sorting(annotate.session->evlist) < 0)
+-- 
+2.30.GIT
 
