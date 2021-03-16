@@ -2,117 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E02E33D5D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:35:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 294C133D5DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236583AbhCPOe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 10:34:58 -0400
-Received: from mail-vs1-f42.google.com ([209.85.217.42]:34171 "EHLO
-        mail-vs1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232266AbhCPOet (ORCPT
+        id S235506AbhCPOgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 10:36:32 -0400
+Received: from casper.infradead.org ([90.155.50.34]:34786 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235595AbhCPOgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 10:34:49 -0400
-Received: by mail-vs1-f42.google.com with SMTP id m18so18345213vsa.1;
-        Tue, 16 Mar 2021 07:34:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J/CaSMW6mHvMrxRGMwX6vygFCDnZG5TgrFBraedQTtk=;
-        b=PrDyyZg2UfAEzGcBFrl1w92AHkIj9PUG/BhCw3rHLE4vqye2bl3HNxfr7QimV4bRvW
-         JlK1zWmiw3R5DjSvZssnGEqaA/5q693zHmRvtHKTQ68w8d8ff3/Bf/q4r1nMIfNfvKgH
-         hRJB8mk3dkLwBIaJBN/r6ycCgp4uC0MdAAkE/Ik4YZPVe8QX1uPAILX+jCKF9wTzSn+N
-         56KZQITvbL/1qtbLmAhDSyEBYeqrFlo2bzCZy2FHz8rS8hfKdB2IOOg6aXPHKdaz82/N
-         Nvs6krsikL+lY6V+0zJKSDPbaTAGF+CQ3tXXkwUugYfvRHs94ZWWrLC9IWCpU4WtLM37
-         K6GA==
-X-Gm-Message-State: AOAM530Hk46ZJg2+RjQ34Otd7AwuPremo7Hj6gPUovMRKx1WWtiw4jm5
-        6H1HJvOUo5p2DyfUyPsCBVoTVr6pLIL9vIgAD8MXijt5
-X-Google-Smtp-Source: ABdhPJzA7gtqTSfS56UqGIGIxOsCspglJmqVjbp97rZLkCPKdRRzc2Qqe0tPHbwiHYbsIaRSAu/aZok4oBvcEwC3ax8=
-X-Received: by 2002:a67:8883:: with SMTP id k125mr9034488vsd.18.1615905289017;
- Tue, 16 Mar 2021 07:34:49 -0700 (PDT)
+        Tue, 16 Mar 2021 10:36:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Rjw1WKumRyJtsR4bEBFv737F1QPjf5K33LJyF0RbOX4=; b=KOm0ME0ZCooVqAJKYEgrgA7Ah3
+        5i5Nirsw6NK9IBlXMNB0MLcB98NeQ45Hsy5GKnX7LDyac2tJVJ2OJ9ogW79SoIjpjGFjhSCXYPV55
+        JpCQ3RXlA3cHj4ddkb94as4qt9ssAC4TOm2NHr0YHNbbIl4oCHWzX4RhqFmdBTLuOcfV+KNyzwjiJ
+        2zvNo6CMZfSMGl8KoCjpsG8sbzS/QZeTEL/LJhw4HFThiV2cD+/yFGORc+E+Ox7oQ+AwnNX5m3M09
+        VKV+Zb8cMX3bVAI73DTepwna5jS7d32LOaEvfALOALMOkxfhacwpirZONh0rs8JT5I8roaNp9fMPn
+        SynoETEQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMAnK-000BYm-8s; Tue, 16 Mar 2021 14:35:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 767BE305C22;
+        Tue, 16 Mar 2021 15:35:37 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 167342DAC4D5B; Tue, 16 Mar 2021 15:35:37 +0100 (CET)
+Date:   Tue, 16 Mar 2021 15:35:37 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Yunfeng Ye <yeyunfeng@huawei.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 01/10] tick/nohz: Prevent tick_nohz_get_sleep_length()
+ from returning negative value
+Message-ID: <YFDCOYstnDWPSWRU@hirez.programming.kicks-ass.net>
+References: <20210311123708.23501-1-frederic@kernel.org>
+ <20210311123708.23501-2-frederic@kernel.org>
+ <YFCiycIaViYCy3GH@hirez.programming.kicks-ass.net>
+ <20210316133703.GC639918@lothringen>
 MIME-Version: 1.0
-References: <20210311233640.1581526-1-robh@kernel.org> <20210311233640.1581526-2-robh@kernel.org>
- <CAMuHMdV3hG4ddXo6jBu52+2=n3mBLfbmoCzb4VRUQ8YvanH9+Q@mail.gmail.com> <CAL_JsqKPgB+Zz4VHd9dn27bdiZgE=_QUem8BR76Vfc6Y3G8GVw@mail.gmail.com>
-In-Reply-To: <CAL_JsqKPgB+Zz4VHd9dn27bdiZgE=_QUem8BR76Vfc6Y3G8GVw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 16 Mar 2021 15:34:37 +0100
-Message-ID: <CAMuHMdXqnHq+zdpdr3y7NO-a_JCT-ogfTKDnLLOhFb-UWiGwrA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kbuild: Enable DT undocumented compatible checks
-To:     Rob Herring <robh@kernel.org>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316133703.GC639918@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Tue, Mar 16, 2021 at 02:37:03PM +0100, Frederic Weisbecker wrote:
+> On Tue, Mar 16, 2021 at 01:21:29PM +0100, Peter Zijlstra wrote:
+> > On Thu, Mar 11, 2021 at 01:36:59PM +0100, Frederic Weisbecker wrote:
+> > > From: "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>
+> > > 
+> > > If the hardware clock happens to fire its interrupts late, two possible
+> > > issues can happen while calling tick_nohz_get_sleep_length(). Either:
+> > > 
+> > > 1) The next clockevent device event is due past the last idle entry time.
+> > > 
+> > > or:
+> > > 
+> > > 2) The last timekeeping update happened before the last idle entry time
+> > >    and the next timer callback expires before the last idle entry time.
+> > > 
+> > > Make sure that both cases are handled to avoid returning a negative
+> > > duration to the cpuidle governors.
+> > 
+> > Why? ... and wouldn't it be cheaper the fix the caller to
+> > check negative once, instead of adding two branches here?
+> 
+> There are already two callers and potentially two return values to check
+> for each because the function returns two values.
+> 
+> I'd rather make the API more robust instead of fixing each callers and worrying
+> about future ones.
 
-On Tue, Mar 16, 2021 at 3:28 PM Rob Herring <robh@kernel.org> wrote:
-> On Tue, Mar 16, 2021 at 7:55 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Fri, Mar 12, 2021 at 12:38 AM Rob Herring <robh@kernel.org> wrote:
-> > > dt-validate has an option to warn on any compatible strings which don't
-> > > match any schema. The option has recently been improved to fix false
-> > > positives, so let's enable the option. This is useful for tracking
-> > > compatibles which are undocumented or not yet converted to DT schema.
-> > > Previously, the only check of undocumented compatible strings has been
-> > > an imperfect checkpatch.pl check.
-> > >
-> > > The option is enabled by default for 'dtbs_check'. This will add more
-> > > warnings, but some platforms are down to only a handful of these
-> > > warnings (good job!).
-> > >
-> > > There's about 100 cases in the binding examples, so the option is
-> > > disabled until these are fixed. In the meantime, they can be checked
-> > > with:
-> > >
-> > > make DT_CHECKER_FLAGS=-m dt_binding_check
-> > >
-> > > Cc: Maxime Ripard <mripard@kernel.org>
-> > > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > > Cc: Michal Marek <michal.lkml@markovi.net>
-> > > Cc: linux-kbuild@vger.kernel.org
-> > > Signed-off-by: Rob Herring <robh@kernel.org>
-> >
-> > Thanks for your patch!
-> >
-> > This causes lots of warning when using DT_SCHEMA_FILES, as all
-> > compatible values in bindings not specified with DT_SCHEMA_FILES
-> > become unknown.
-> >
-> > Perhaps this should be disabled automatically when DT_SCHEMA_FILES
-> > is specified?
->
-> Indeed. I'll fix it up like this:
->
-> index 90b095c60f79..ad6938468c11 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -360,7 +360,7 @@ $(overlay-y): FORCE
->  $(call multi_depend, $(overlay-y), .dtb, -dtbs)
->
->  DT_CHECKER ?= dt-validate
-> -DT_CHECKER_FLAGS ?= -m
-> +DT_CHECKER_FLAGS ?= $(if $(DT_SCHEMA_FILES),,-m)
->  DT_BINDING_DIR := Documentation/devicetree/bindings
->  # DT_TMP_SCHEMA may be overridden from
-> Documentation/devicetree/bindings/Makefile
->  DT_TMP_SCHEMA ?= $(objtree)/$(DT_BINDING_DIR)/processed-schema.json
+But what's the actual problem? The Changelog doesn't say why returning a
+negative value is a problem, and in fact the return value is explicitly
+signed.
 
-Thanks, works like a charm!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Anyway, I don't terribly mind the patch, I was just confused by the lack
+of actual justification.
