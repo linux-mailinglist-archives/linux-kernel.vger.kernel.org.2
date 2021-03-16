@@ -2,132 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FBE33CAFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 02:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF8233CB01
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 02:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhCPBsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 21:48:00 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:13933 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbhCPBr2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 21:47:28 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Dzx2W0T2vzkZRl;
-        Tue, 16 Mar 2021 09:45:55 +0800 (CST)
-Received: from [10.174.177.131] (10.174.177.131) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 16 Mar 2021 09:47:23 +0800
-Subject: Re: [PATCH v2] hugetlb_cgroup: fix imbalanced css_get and css_put
- pair for shared mappings
-To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
-CC:     <almasrymina@google.com>, <rientjes@google.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20210301120540.37076-1-linmiaohe@huawei.com>
- <771ee69e-61d9-b1c9-b72d-3a50d2cbe4de@oracle.com>
- <7868ec9c-0762-2a78-2dfc-2bd07dca15f5@huawei.com>
- <2b23bbf7-bb32-4ed7-87ae-5e55b4bc6629@oracle.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <004ebc95-314c-1fbf-be12-cdeeda2b84d7@huawei.com>
-Date:   Tue, 16 Mar 2021 09:47:23 +0800
+        id S231497AbhCPBuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 21:50:18 -0400
+Received: from mga09.intel.com ([134.134.136.24]:39536 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230511AbhCPBts (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 15 Mar 2021 21:49:48 -0400
+IronPort-SDR: vT50fumd3o6UUbnj4O+T7OEuH0Tjk+lsrdltfqxQimTtIXwimUA1v+NdcRGu1p9aabaatd/iqV
+ BD73l0L/bDpA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="189275116"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="189275116"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 18:49:48 -0700
+IronPort-SDR: yZq5FO0AA4wu7Xzi3lFsZr79bsK/E4KtNNIAXZGgse/KU08pHt2zTn6lUKMQSc5RHzAdCADe3p
+ T3zA1Iym/q9w==
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="449560248"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 18:49:44 -0700
+Subject: Re: [PATCH v2 11/27] perf parse-events: Support hardware events
+ inside PMU
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210311070742.9318-1-yao.jin@linux.intel.com>
+ <20210311070742.9318-12-yao.jin@linux.intel.com> <YEu9usdFl6VSnOQ7@krava>
+ <c40d6187-9391-40de-aea8-7389bb369555@linux.intel.com>
+ <YE+balbLkG5RL7Lu@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <fd88f214-f0a4-87bc-ef52-ee750ca13a8d@linux.intel.com>
+Date:   Tue, 16 Mar 2021 09:49:42 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <2b23bbf7-bb32-4ed7-87ae-5e55b4bc6629@oracle.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YE+balbLkG5RL7Lu@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.131]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/16 2:42, Mike Kravetz wrote:
-> On 3/12/21 7:11 PM, Miaohe Lin wrote:
->> On 2021/3/13 3:09, Mike Kravetz wrote:
->>> On 3/1/21 4:05 AM, Miaohe Lin wrote:
->>>> The current implementation of hugetlb_cgroup for shared mappings could have
->>>> different behavior. Consider the following two scenarios:
+Hi Jiri,
+
+On 3/16/2021 1:37 AM, Jiri Olsa wrote:
+> On Mon, Mar 15, 2021 at 10:28:12AM +0800, Jin, Yao wrote:
+>> Hi Jiri,
+>>
+>> On 3/13/2021 3:15 AM, Jiri Olsa wrote:
+>>> On Thu, Mar 11, 2021 at 03:07:26PM +0800, Jin Yao wrote:
+>>>> On hybrid platform, some hardware events are only available
+>>>> on a specific pmu. For example, 'L1-dcache-load-misses' is only
+>>>> available on 'cpu_core' pmu. And even for the event which can be
+>>>> available on both pmus, the user also may want to just enable
+>>>> one event. So now following syntax is supported:
 >>>>
->>>> 1.Assume initial css reference count of hugetlb_cgroup is 1:
->>>>   1.1 Call hugetlb_reserve_pages with from = 1, to = 2. So css reference
->>>> count is 2 associated with 1 file_region.
->>>>   1.2 Call hugetlb_reserve_pages with from = 2, to = 3. So css reference
->>>> count is 3 associated with 2 file_region.
->>>>   1.3 coalesce_file_region will coalesce these two file_regions into one.
->>>> So css reference count is 3 associated with 1 file_region now.
+>>>> cpu_core/<hardware event>/
+>>>> cpu_core/<hardware cache event>/
+>>>> cpu_core/<pmu event>/
 >>>>
->>>> 2.Assume initial css reference count of hugetlb_cgroup is 1 again:
->>>>   2.1 Call hugetlb_reserve_pages with from = 1, to = 3. So css reference
->>>> count is 2 associated with 1 file_region.
+>>>> cpu_atom/<hardware event>/
+>>>> cpu_atom/<hardware cache event>/
+>>>> cpu_atom/<pmu event>/
 >>>>
->>>> Therefore, we might have one file_region while holding one or more css
->>>> reference counts. This inconsistency could lead to imbalanced css_get()
->>>> and css_put() pair. If we do css_put one by one (i.g. hole punch case),
->>>> scenario 2 would put one more css reference. If we do css_put all together
->>>> (i.g. truncate case), scenario 1 will leak one css reference.
+>>>> It limits the event to be enabled only on a specified pmu.
 >>>>
->>>> The imbalanced css_get() and css_put() pair would result in a non-zero
->>>> reference when we try to destroy the hugetlb cgroup. The hugetlb cgroup
->>>> directory is removed __but__ associated resource is not freed. This might
->>>> result in OOM or can not create a new hugetlb cgroup in a busy workload
->>>> ultimately.
->>>>
->>>> In order to fix this, we have to make sure that one file_region must hold
->>>> and only hold one css reference. So in coalesce_file_region case, we should
+>>>> The patch uses this idea, for example, if we use "cpu_core/LLC-loads/",
+>>>> in parse_events_add_pmu(), term->config is "LLC-loads".
 >>>
->>> I think this would sound/read better if stated as:
->>> ... one file_region must hold exactly one css reference ...
->>>
->>> This phrase is repeated in comments throughout the patch.
->>>
->>>> release one css reference before coalescence. Also only put css reference
->>>> when the entire file_region is removed.
->>>>
->>>> The last thing to note is that the caller of region_add() will only hold
->>>> one reference to h_cg->css for the whole contiguous reservation region.
->>>> But this area might be scattered when there are already some file_regions
->>>> reside in it. As a result, many file_regions may share only one h_cg->css
->>>> reference. In order to ensure that one file_region must hold and only hold
->>>> one h_cg->css reference, we should do css_get() for each file_region and
->>>> release the reference held by caller when they are done.
->>>
->>> Thanks for adding this to the commit message.
->>>
->>>>
->>>> Fixes: 075a61d07a8e ("hugetlb_cgroup: add accounting for shared mappings")
->>>> Reported-by: kernel test robot <lkp@intel.com> (auto build test ERROR)
->>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>> Cc: stable@kernel.org
->>>> ---
->>>> v1->v2:
->>>> 	Fix auto build test ERROR when CGROUP_HUGETLB is disabled.
->>>> ---
->>>>  include/linux/hugetlb_cgroup.h | 15 ++++++++++--
->>>>  mm/hugetlb.c                   | 42 ++++++++++++++++++++++++++++++----
->>>>  mm/hugetlb_cgroup.c            | 11 +++++++--
->>>>  3 files changed, 60 insertions(+), 8 deletions(-)
->>>
->>> Just a few minor nits below, all in comments.  It is not required, but
->>> would be nice to update these.  Code looks good.
+>>> hum, I don't understand how this doest not work even now,
+>>> I assume both cpu_core and cpu_atom have sysfs device directory
+>>> with events/ directory right?
 >>>
 >>
->> Many thanks for review! I will fix all this nits. Should I resend this patch or send another
->> one to fix this? Just let me know which is the easiest one for you.
+>> Yes, we have cpu_core and cpu_atom directories with events.
 >>
->> Thanks again. :)
+>> root@ssp-pwrt-002:/sys/devices/cpu_atom/events# ls
+>> branch-instructions  bus-cycles    cache-references  instructions
+>> mem-stores  topdown-bad-spec topdown-fe-bound
+>> branch-misses        cache-misses  cpu-cycles        mem-loads
+>> ref-cycles  topdown-be-bound topdown-retiring
 >>
+>> root@ssp-pwrt-002:/sys/devices/cpu_core/events# ls
+>> branch-instructions  cache-misses      instructions   mem-stores
+>> topdown-bad-spec topdown-fe-bound   topdown-mem-bound
+>> branch-misses        cache-references  mem-loads      ref-cycles
+>> topdown-be-bound topdown-fetch-lat  topdown-retiring
+>> bus-cycles           cpu-cycles        mem-loads-aux  slots
+>> topdown-br-mispredict topdown-heavy-ops
+>>
+>>> and whatever is defined in events we allow in parsing syntax..
+>>>
+>>> why can't we treat them like 2 separated pmus?
+>>>
+>>
+>> But if without this patch, it reports the error,
+>>
+>> root@ssp-pwrt-002:~# ./perf stat -e cpu_core/cycles/ -a -vv -- sleep 1
+>> event syntax error: 'cpu_core/cycles/'
+>>                                \___ unknown term 'cycles' for pmu 'cpu_core'
 > 
-> This is really Andrew's call as it goes through his tree.
+> yep, because there's special care for 'cycles' unfortunately,
+> but you should be able to run 'cpu_core/cpu-cycles/' right?
 > 
 
-Sorry, I should have sought advice from Andrew explictly.
+Yes, cpu_core/cpu-cycles/ is OK.
 
-> I would suggest you just update the comments and send another verion.
-> In that way, Andrew can do whatever is easiest for him.
+# ./perf stat -e cpu_core/cpu-cycles/ -a -- sleep 1
 
-Will send v3. Many thanks.
+  Performance counter stats for 'system wide':
 
+     12,831,980,326      cpu_core/cpu-cycles/
+
+        1.003132639 seconds time elapsed
+
+>>
+>> valid terms: event,pc,edge,offcore_rsp,ldlat,inv,umask,frontend,cmask,config,config1,config2,name,period,percore
+>>
+>> Initial error:
+>> event syntax error: 'cpu_core/cycles/'
+>>                                \___ unknown term 'cycles' for pmu 'cpu_core'
+>>
+>> valid terms: event,pc,edge,offcore_rsp,ldlat,inv,umask,frontend,cmask,config,config1,config2,name,period,percore
+>> Run 'perf list' for a list of valid events
+>>
+>> The 'cycles' is treated as a unknown term, then it errors out.
+> 
+> yep, because it's not in events.. we could add special rule to
+> treat cycles as cpu-cycles inside pmu definition ;-)
+> 
+> jirka
 > 
 
+But not only the cycles, the branches has error too.
+
+# ./perf stat -e cpu_core/branches/ -a -- sleep 1
+event syntax error: 'cpu_core/branches/'
+                               \___ unknown term 'branches' for pmu 'cpu_core'
+
+valid terms: 
+event,pc,edge,offcore_rsp,ldlat,inv,umask,frontend,cmask,config,config1,config2,name,period,percore
+
+Initial error:
+event syntax error: 'cpu_core/branches/'
+                               \___ unknown term 'branches' for pmu 'cpu_core'
+
+Of course, branch-instructions runs OK.
+
+# ./perf stat -e cpu_core/branch-instructions/ -a -- sleep 1
+
+  Performance counter stats for 'system wide':
+
+        136,655,302      cpu_core/branch-instructions/
+
+        1.003171561 seconds time elapsed
+
+So we need special rules for both cycles and branches.
+
+The worse thing is, we also need to process the hardware cache events.
+
+# ./perf stat -e cpu_core/LLC-loads/
+event syntax error: 'cpu_core/LLC-loads/'
+                               \___ unknown term 'LLC-loads' for pmu 'cpu_core'
+
+valid terms: 
+event,pc,edge,offcore_rsp,ldlat,inv,umask,frontend,cmask,config,config1,config2,name,period,percore
+
+Initial error:
+event syntax error: 'cpu_core/LLC-loads/'
+                               \___ unknown term 'LLC-loads' for pmu 'cpu_core'
+
+If we use special rules for establishing all event mapping, that looks too much. :(
+
+Thanks
+Jin Yao
