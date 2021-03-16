@@ -2,91 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669E733D9A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B0F33D9B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:43:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238793AbhCPQlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 12:41:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47256 "EHLO mx2.suse.de"
+        id S238857AbhCPQnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 12:43:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238764AbhCPQlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 12:41:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BAAF8AC24;
-        Tue, 16 Mar 2021 16:41:03 +0000 (UTC)
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 924d4c15;
-        Tue, 16 Mar 2021 16:42:18 +0000 (UTC)
-Date:   Tue, 16 Mar 2021 16:42:18 +0000
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Issue with kfence and kmemleak
-Message-ID: <YFDf6iKH1p/jGnM0@suse.de>
+        id S238942AbhCPQma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 12:42:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 372076510A;
+        Tue, 16 Mar 2021 16:42:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615912950;
+        bh=/863Z1+ljo3+rGSfJ8SjAnwzBa1+q6TEJ2XTFDHatEo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=bIfDg4gED+84DSoSUeRgX+maiFn75KO4sWs/NewKOY1AlSmTkXaVGYdkYlTdhz3N1
+         hyE9InoitNZ3PK5gVI6BTYfGHjiNT2c8LkaFiPER97f3U/3J125QM9I0DS5cv9NpWT
+         9/T3wRr/fY8imZY9XpvPutl128vfrYxuANaTb3MfUEOp5DTrXIADcUNcCZm9cjemtO
+         SO90Xn9yY1r81fGsFzNzc+OzB4lBHYrOMzGDohdIE8fvScspDrB0LIhgcy+jDuap27
+         l8XiWRVFqYvjQgyL4YY1nUtF3YnDjtURC2QXxVhDPBaQqk4woU/qI7uc6aSbhKHhvI
+         ObQqll4kSW4Xw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id ECB2B352262D; Tue, 16 Mar 2021 09:42:29 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 09:42:29 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 1/3] rcu: Provide polling interfaces for
+ Tree RCU grace periods
+Message-ID: <20210316164229.GV2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
+ <20210304002632.23870-1-paulmck@kernel.org>
+ <20210316144722.GD639918@lothringen>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210316144722.GD639918@lothringen>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Tue, Mar 16, 2021 at 03:47:22PM +0100, Frederic Weisbecker wrote:
+> On Wed, Mar 03, 2021 at 04:26:30PM -0800, paulmck@kernel.org wrote:
+> > +/**
+> > + * poll_state_synchronize_rcu - Conditionally wait for an RCU grace period
+> > + *
+> > + * @oldstate: return from call to get_state_synchronize_rcu() or start_poll_synchronize_rcu()
+> > + *
+> > + * If a full RCU grace period has elapsed since the earlier call from
+> > + * which oldstate was obtained, return @true, otherwise return @false.
+> > + * Otherwise, invoke synchronize_rcu() to wait for a full grace period.
+> > + *
+> > + * Yes, this function does not take counter wrap into account.
+> > + * But counter wrap is harmless.  If the counter wraps, we have waited for
+> > + * more than 2 billion grace periods (and way more on a 64-bit system!).
+> > + * Those needing to keep oldstate values for very long time periods
+> > + * (many hours even on 32-bit systems) should check them occasionally
+> > + * and either refresh them or set a flag indicating that the grace period
+> > + * has completed.
+> > + */
+> > +bool poll_state_synchronize_rcu(unsigned long oldstate)
+> > +{
+> > +	if (rcu_seq_done(&rcu_state.gp_seq, oldstate)) {
+> > +		smp_mb(); /* Ensure GP ends before subsequent accesses. */
+> > +		return true;
+> > +	}
+> > +	return false;
+> > +}
+> > +EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
+> > +
+> > +/**
+> >   * cond_synchronize_rcu - Conditionally wait for an RCU grace period
+> >   *
+> >   * @oldstate: return value from earlier call to get_state_synchronize_rcu()
+> >   *
+> >   * If a full RCU grace period has elapsed since the earlier call to
+> > - * get_state_synchronize_rcu(), just return.  Otherwise, invoke
+> > - * synchronize_rcu() to wait for a full grace period.
+> > + * get_state_synchronize_rcu() or start_poll_synchronize_rcu(), just return.
+> > + * Otherwise, invoke synchronize_rcu() to wait for a full grace period.
+> >   *
+> >   * Yes, this function does not take counter wrap into account.  But
+> >   * counter wrap is harmless.  If the counter wraps, we have waited for
+> > @@ -3804,7 +3864,7 @@ EXPORT_SYMBOL_GPL(get_state_synchronize_rcu);
+> >   */
+> >  void cond_synchronize_rcu(unsigned long oldstate)
+> >  {
+> > -	if (!rcu_seq_done(&rcu_state.gp_seq, oldstate))
+> > +	if (!poll_state_synchronize_rcu(oldstate))
+> >  		synchronize_rcu();
+> >  	else
+> >  		smp_mb(); /* Ensure GP ends before subsequent accesses. */
+> 
+> poll_state_synchronize_rcu() already does the full barrier.
 
-This is probably a known issue, but just in case: looks like it's not
-possible to use kmemleak when kfence is enabled:
+Right you are!  Good catch, thank you!!!
 
-[    0.272136] kmemleak: Cannot insert 0xffff888236e02f00 into the object search tree (overlaps existing)
-[    0.272136] CPU: 0 PID: 8 Comm: kthreadd Not tainted 5.12.0-rc3+ #92
-[    0.272136] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
-[    0.272136] Call Trace:
-[    0.272136]  dump_stack+0x6d/0x89
-[    0.272136]  create_object.isra.0.cold+0x40/0x62
-[    0.272136]  ? process_one_work+0x5a0/0x5a0
-[    0.272136]  ? process_one_work+0x5a0/0x5a0
-[    0.272136]  kmem_cache_alloc_trace+0x110/0x2f0
-[    0.272136]  ? process_one_work+0x5a0/0x5a0
-[    0.272136]  kthread+0x3f/0x150
-[    0.272136]  ? lockdep_hardirqs_on_prepare+0xd4/0x170
-[    0.272136]  ? __kthread_bind_mask+0x60/0x60
-[    0.272136]  ret_from_fork+0x22/0x30
-[    0.272136] kmemleak: Kernel memory leak detector disabled
-[    0.272136] kmemleak: Object 0xffff888236e00000 (size 2097152):
-[    0.272136] kmemleak:   comm "swapper", pid 0, jiffies 4294892296
-[    0.272136] kmemleak:   min_count = 0
-[    0.272136] kmemleak:   count = 0
-[    0.272136] kmemleak:   flags = 0x1
-[    0.272136] kmemleak:   checksum = 0
-[    0.272136] kmemleak:   backtrace:
-[    0.272136]      memblock_alloc_internal+0x6d/0xb0
-[    0.272136]      memblock_alloc_try_nid+0x6c/0x8a
-[    0.272136]      kfence_alloc_pool+0x26/0x3f
-[    0.272136]      start_kernel+0x242/0x548
-[    0.272136]      secondary_startup_64_no_verify+0xb0/0xbb
+I will fold removing this smp_mb() in with attribution.
 
-I've tried the hack below but it didn't really helped.  Obviously I don't
-really understand what's going on ;-)  But I think the reason for this
-patch not working as (I) expected is because kfence is initialised
-*before* kmemleak.
-
-diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-index 3b8ec938470a..b4ffd7695268 100644
---- a/mm/kfence/core.c
-+++ b/mm/kfence/core.c
-@@ -631,6 +631,9 @@ void __init kfence_alloc_pool(void)
- 
- 	if (!__kfence_pool)
- 		pr_err("failed to allocate pool\n");
-+	kmemleak_no_scan(__kfence_pool);
- }
-
-
-Cheers,
---
-Luís
+							Thanx, Paul
