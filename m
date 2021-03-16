@@ -2,130 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0A133DD93
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:31:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70ACB33DD9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:33:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240493AbhCPTba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 15:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60958 "EHLO
+        id S237014AbhCPTdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 15:33:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231208AbhCPTbN (ORCPT
+        with ESMTP id S240544AbhCPTcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:31:13 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52AAFC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:31:13 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id p21so23282863pgl.12
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:31:13 -0700 (PDT)
+        Tue, 16 Mar 2021 15:32:25 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D0F1C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:32:24 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id f16so250322ljm.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:32:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ekMKxv3xoEv56PIX/8u6+v+e3tG7LJLMlBeqZEO46pI=;
-        b=iouit/h+6MqphTGzWcQ8N+tNTFxpPm8zhlVMVH6yh3QXNXaTzgAH92BSeqUkabxVVG
-         Bz7XXzgV1OhK1f+sf6ggCh/m26z/h7goie6JPNqNEA6ZWeffPt7IrIxw0Ko8Hs5+/qKl
-         xUVS8/U6IdUSV2TXm5nxf9V7w1jDrfc8rpiygjP50ADf/r1at+dct8MeOpC6jfeRaG7N
-         sCZgwIl7lKP5uoyGPUqkXHYFoQ744alahJdlhbQ950koKsMRyocE8j6I7GaxUoVuCvo+
-         mzpyGkSnl6hmPQqiXFfDzumOgA932tyl4Da6eHXPnQWBtV65AXfzcxPYhRAkiCiGcBLX
-         4BlQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=785OaxI1+asEokVAhJYel0XTVJCjRIlanfaE3sEk6NA=;
+        b=YML5LJOi/F1KCfVmVt+vteVo9RZ0Nf4OfZSU78l6Yo7zVYJNXY4kDB0R9sp6dSuVGv
+         wwG+M9YEHq6hIKnJ+OZf0V/jL0U0+6oEp4dvZISrHGz0VD85aaegQQ0e51E5TkIXwh1w
+         wOrmoK69CB+I15nBsASOeEHTZZcqf43NuyBmzXchlmia61al84mOrYBSPlOPaTyxnGPU
+         PrWfKqddx443z87DJmQ6SIaI0f8dtpRF1nV2c2L7ioUSzmmgzBnNaK4grKubI3YUfxo6
+         qHPjVxbHT1hlE5vAeBqUYJ8nh9hVw1NoR2g9WafVuEz/7KbpyRhGrI4M53SGQGFJW59E
+         xiRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ekMKxv3xoEv56PIX/8u6+v+e3tG7LJLMlBeqZEO46pI=;
-        b=LDW9pJNhaomyrw+QFUyVrPCF4ZbTvP49SW937pzeOiELKa9yV151e2M8wpTrbLsixi
-         tHHLq91OQ2vHL5eh88GbJhD08oyqt48gROmZkRwoe9ILrqiLh3+vT93lVBsCTWNM/obP
-         0FveJA9hThyXXKmvLwEHPsnVruRbTiBDJi/zhYjTNQ1qjgqsih+c1KD+1/9bkTh10OxH
-         Lg79WSDtnyM8OWLqHJrqu6HQ/Eo9QozMdYrOUGLrcxL5bzUMPiFuPYlQx4p2P2nRIKvF
-         4W5XESyVh567amAMZAhXcCoRKn+yAzBzn4jT3oT1112iGcuuqekQd16hJaarDwypEx0N
-         BY5A==
-X-Gm-Message-State: AOAM5333YPmXOrpzB3peophjlvrFC2U02xppGLtBhcyZpiImm8aop2fa
-        Tfj+8Hv/hA5RnuUHavu/mgYPxA==
-X-Google-Smtp-Source: ABdhPJx3vy5Om6W53Jw+2UZUw99YwawZ3UKAZ4rXRb27866O0JGa9hH+eG64CaVVdyO7TwbO8Vm5AA==
-X-Received: by 2002:a62:3503:0:b029:1aa:6f15:b9fe with SMTP id c3-20020a6235030000b02901aa6f15b9femr955714pfa.65.1615923072796;
-        Tue, 16 Mar 2021 12:31:12 -0700 (PDT)
-Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id u24sm17928529pfm.214.2021.03.16.12.31.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 12:31:12 -0700 (PDT)
-Subject: Re: [PATCH] mm: Allow shmem mappings with MREMAP_DONTUNMAP
-To:     Brian Geffon <bgeffon@google.com>, Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Sonny Rao <sonnyrao@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Alejandro Colomar <alx.manpages@gmail.com>
-References: <20210303175235.3308220-1-bgeffon@google.com>
- <alpine.LSU.2.11.2103131934290.18112@eggly.anvils>
- <CADyq12z+o0Rtziprkfs=PX2MPRPZyWBSgONYrRggZ8TEifq2sg@mail.gmail.com>
-From:   Dmitry Safonov <dima@arista.com>
-Message-ID: <98716204-0440-9550-e067-41a984a29512@arista.com>
-Date:   Tue, 16 Mar 2021 19:31:05 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=785OaxI1+asEokVAhJYel0XTVJCjRIlanfaE3sEk6NA=;
+        b=qiHmq0W9rnbrVSrVjQXo+8fyp7/q0LFGsaSWkpwpbuhb1DkPGA0mcWe3KynF9sDhxR
+         xtc/qym6t7rBdG7vXS3k3/HrypsnFSGADua+MhcyjqmIfXqUoHdu4zrB6jp7rQcC3JIu
+         ZF0F886e/4MiWsogQwTB//1UrtDU//uAWEIxj8AC7v9PnPql8QX5sNZjYLYVUdUWJo1W
+         Nj+y51JGIXC3xaRU/2BuG9kaY+bXdq90Ihup+O8jLxW/v9KoWwIOMPtWFi38EzbboEtw
+         4DfeDfhrQSuk/+K0cRrLKNRhG/AOHSDxCP9smAp3WjGSIIcTJn28n5E4V8vwnplCCx4o
+         +ZXA==
+X-Gm-Message-State: AOAM530VXcaF+ZI1uFM9sHiYnXj/EFLlBCiIwPGlxdU6w3PA4p4zGRX0
+        RyJNR2hy9bHYbzgdFV6zR4RdSRiSi2EEp1YHCgc4wg==
+X-Google-Smtp-Source: ABdhPJyUyx1q4KJMLoOhWYhlwjjvjjgRSpoIaPQeL0ZmUDwgR/6ouMp1g0XUOQ8/ryX03IlqhblGhBWKjRnDnx3DdeE=
+X-Received: by 2002:a2e:b6d4:: with SMTP id m20mr157623ljo.448.1615923142605;
+ Tue, 16 Mar 2021 12:32:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CADyq12z+o0Rtziprkfs=PX2MPRPZyWBSgONYrRggZ8TEifq2sg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210316170135.226381-1-mic@digikod.net> <20210316170135.226381-2-mic@digikod.net>
+ <CAG48ez3=M-5WT73HqmFJr6UHwO0+2FJXxcAgRzp6wcd0P3TN=Q@mail.gmail.com> <ec7a3a21-c402-c153-a932-ce4a40edadaa@digikod.net>
+In-Reply-To: <ec7a3a21-c402-c153-a932-ce4a40edadaa@digikod.net>
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 16 Mar 2021 20:31:56 +0100
+Message-ID: <CAG48ez0UHP=B6MW5ySMOAQ677byzyWkwgPto1RdW6FYJH5b7Zg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/1] fs: Allow no_new_privs tasks to call chroot(2)
+To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christoph Hellwig <hch@lst.de>,
+        David Howells <dhowells@redhat.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Kees Cook <keescook@chromium.org>,
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Brian, Hugh,
+On Tue, Mar 16, 2021 at 8:26 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> =
+wrote:
+> On 16/03/2021 20:04, Jann Horn wrote:
+> > On Tue, Mar 16, 2021 at 6:02 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.n=
+et> wrote:
+> >> One could argue that chroot(2) is useless without a properly populated
+> >> root hierarchy (i.e. without /dev and /proc).  However, there are
+> >> multiple use cases that don't require the chrooting process to create
+> >> file hierarchies with special files nor mount points, e.g.:
+> >> * A process sandboxing itself, once all its libraries are loaded, may
+> >>   not need files other than regular files, or even no file at all.
+> >> * Some pre-populated root hierarchies could be used to chroot into,
+> >>   provided for instance by development environments or tailored
+> >>   distributions.
+> >> * Processes executed in a chroot may not require access to these speci=
+al
+> >>   files (e.g. with minimal runtimes, or by emulating some special file=
+s
+> >>   with a LD_PRELOADed library or seccomp).
+> >>
+> >> Unprivileged chroot is especially interesting for userspace developers
+> >> wishing to harden their applications.  For instance, chroot(2) and Yam=
+a
+> >> enable to build a capability-based security (i.e. remove filesystem
+> >> ambient accesses) by calling chroot/chdir with an empty directory and
+> >> accessing data through dedicated file descriptors obtained with
+> >> openat2(2) and RESOLVE_BENEATH/RESOLVE_IN_ROOT/RESOLVE_NO_MAGICLINKS.
+> >
+> > I don't entirely understand. Are you writing this with the assumption
+> > that a future change will make it possible to set these RESOLVE flags
+> > process-wide, or something like that?
+>
+> No, this scenario is for applications willing to sandbox themselves and
+> only use the FDs to access legitimate data.
 
-On 3/16/21 7:18 PM, Brian Geffon wrote:
-> Hi Hugh,
-> Thanks for this suggestion, responses in line.
-> 
->> A better patch would say:
->>
->> -       if (flags & MREMAP_DONTUNMAP && (!vma_is_anonymous(vma) ||
->> -                       vma->vm_flags & VM_SHARED))
->> +       if ((flags & MREMAP_DONTUNMAP) &&
->> +           (vma->vm_flags & (VM_DONTEXPAND | VM_PFNMAP)))
->>                 return ERR_PTR(-EINVAL);
->>
->> VM_DONTEXPAND is what has long been used on special mappings, to prevent
->> surprises from mremap changing the size of the mapping: MREMAP_DONTUNMAP
->> introduced a different way of expanding the mapping, so VM_DONTEXPAND
->> still seems a reasonable name (I've thrown in VM_PFNMAP there because
->> it's in the VM_DONTEXPAND test lower down: for safety I guess, and best
->> if both behave the same - though one says -EINVAL and the other -EFAULT).
-> 
-> I like this idea and am happy to mail a new patch. I think it may make
-> sense to bring the lower block up here so that it becomes more clear
-> that it's not duplicate code and that the MREMAP_DONTUNMAP case
-> returns -EINVAL and other cases return -EFAULT. I wonder if the
-> -EFAULT error code would have made more sense from the start for both
-> cases, do you have any thoughts on changing the error code at this
-> point?
-> 
->> With that VM_DONTEXPAND check in, Dmitry's commit cd544fd1dc92
->> ("mremap: don't allow MREMAP_DONTUNMAP on special_mappings and aio")
->> can still be reverted (as you agreed on 28th December), even though
->> vma_is_anonymous() will no longer protect it.
-> 
-> I agree and if Dmitry does not have time I would be happy to mail a
-> revert to cd544fd1dc92 as we discussed in [1]. Dmitry, would you like
-> me to do that?
+But if you're chrooted to /proc/self/fdinfo and have an fd to some
+directory - let's say /home/user/Downloads - there is nothing that
+ensures that you only use that fd with RESOLVE_BENEATH, right? If the
+application is compromised, it can do something like openat(fd,
+"../.bashrc", O_RDWR), right? Or am I missing something?
 
-Ack. I was planning to send a patches set that includes the revert, but
-that's stalled a bit. As the patch just adds excessive checks, but
-doesn't introduce an issue, I haven't sent it separately.
-Feel free to revert it :-)
+> > As long as that doesn't exist, I think that to make this safe, you'd
+> > have to do something like the following - let a child process set up a
+> > new mount namespace for you, and then chroot() into that namespace's
+> > root:
+> >
+> > struct shared_data {
+> >   int root_fd;
+> > };
+> > int helper_fn(void *args) {
+> >   struct shared_data *shared =3D args;
+> >   mount("none", "/tmp", "tmpfs", MS_NOSUID|MS_NODEV, "");
+> >   mkdir("/tmp/old_root", 0700);
+> >   pivot_root("/tmp", "/tmp/old_root");
+> >   umount("/tmp/old_root", "");
+> >   shared->root_fd =3D open("/", O_PATH);
+> > }
+> > void setup_chroot() {
+> >   struct shared_data shared =3D {};
+> >   prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
+> >   clone(helper_fn, my_stack,
+> > CLONE_VFORK|CLONE_VM|CLONE_FILES|CLONE_NEWUSER|CLONE_NEWNS|SIGCHLD,
+> > NULL);
+> >   fchdir(shared.root_fd);
+> >   chroot(".");
+> > }
+>
+> What about this?
+> chdir("/proc/self/fdinfo");
+> chroot(".");
+> close(all unnecessary FDs);
 
-Thanks,
-          Dmitry
+That breaks down if you can e.g. get a unix domain socket connected to
+a process in a different chroot, right? Isn't that a bit too fragile?
