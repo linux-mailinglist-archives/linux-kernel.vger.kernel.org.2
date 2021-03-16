@@ -2,102 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDCB33D9FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1BD033DA03
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236964AbhCPRAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:00:40 -0400
-Received: from mail-pg1-f175.google.com ([209.85.215.175]:34115 "EHLO
-        mail-pg1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236971AbhCPRAH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:00:07 -0400
-Received: by mail-pg1-f175.google.com with SMTP id l2so23017011pgb.1;
-        Tue, 16 Mar 2021 10:00:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nzyLAzp9XA/aLRyNpG0/Wcg9B/Qt9o8s5jH7pFizpQ4=;
-        b=Rvc6We7+gel/t8EHnvng0RFCNL6j9Pc4mE5ONJY21Ep1Zmuh75JQc3VmwEaQ/ndMjz
-         jCyiiEW6NeaQGcT3x+y+EHw9GWDSth2NGgZ0tbuf57srU1VK2tlmMLX2HecoAQY6A/cO
-         Yay4IGuZ7noVfyMa+OXiQw2PGHUeQBZ1esvGzPtU0vAS0/vUmSrIHHjVqNycDsLkQoAU
-         xE5lrhbHYSt56UGyFGCbdfbIRT+o6HYI8WK8U5mcLa603wPb6DMubqVaa3p/1PIM1VIJ
-         FNuHzkCYYEVihC3etv9pxqO9KDjbZ/sN+0D+L/aY19Ps/l77QaYCPOyzf7IKIbwaesE1
-         gkMg==
-X-Gm-Message-State: AOAM530AOihWkYKAnPYnFG99jNET868Mvn1RkaxTniUpZx9vAlONzkyX
-        YMPgIejIbYLvku3mGWasJO0=
-X-Google-Smtp-Source: ABdhPJzwgAcQRWzQ7BNkdV+5+2zLQZOZCBZ4yDYZU85bxU+58iHR/myQ0FSqa4J/UqY4FEu2DTTm+Q==
-X-Received: by 2002:a05:6a00:138e:b029:204:422e:a87e with SMTP id t14-20020a056a00138eb0290204422ea87emr547433pfg.24.1615914006283;
-        Tue, 16 Mar 2021 10:00:06 -0700 (PDT)
-Received: from [192.168.51.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id 2sm16901197pfi.116.2021.03.16.10.00.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 10:00:05 -0700 (PDT)
-Subject: Re: [RFC PATCH v3 2/3] blk-mq: Freeze and quiesce all queues for
- tagset in elevator_exit()
-To:     John Garry <john.garry@huawei.com>, Ming Lei <ming.lei@redhat.com>
-Cc:     "hare@suse.de" <hare@suse.de>, "axboe@kernel.dk" <axboe@kernel.dk>,
-        "hch@lst.de" <hch@lst.de>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pragalla@codeaurora.org" <pragalla@codeaurora.org>,
-        "kashyap.desai@broadcom.com" <kashyap.desai@broadcom.com>,
-        yuyufen <yuyufen@huawei.com>
-References: <1614957294-188540-1-git-send-email-john.garry@huawei.com>
- <1614957294-188540-3-git-send-email-john.garry@huawei.com>
- <YElrSFGyim3rjDN+@T590> <8c6c6783-6152-2332-2f50-14c409e40320@huawei.com>
- <2b0c66ba-03b3-844c-1684-f8e80d11cdbb@acm.org>
- <4ffaba53-100a-43a5-8746-b753d4153be5@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <fff92b15-d483-ad6a-bb01-ef61117b7cbd@acm.org>
-Date:   Tue, 16 Mar 2021 10:00:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S237128AbhCPRBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:01:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236981AbhCPRAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 13:00:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 476A465111;
+        Tue, 16 Mar 2021 17:00:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615914036;
+        bh=05U73IxY49l9mDFTBQgw9uRw0MCIPYqs1gdMaXeV3JE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t+wbp/m2eh4KPu2YTm1+UO/RugfabPnV3zNooKcLOtWWFrZ1DY4R2kNcC7sSQkbRZ
+         E1kS3fC8+F0NnxDPZHtlKBQPlWxUEWSEGA/ZVDobK9ZrsJzFr0nnr9GC9+jrFx2vzx
+         5TmwQH7y/RTcSGpbgqt3jcBac48j+zS9yyCctIHXRTIa4kYwPvHML+D8Kk4DiqJKW/
+         YvtWqUA9M35pwscRAi9XuoIL7gGZ2G9IDHJSVvAwZuXTBN8+wghW3jQaGtIQR+Fpty
+         y+ffHaWc4juNyMDE+M6yO5t5cc7A1MGEG7HzbnTwmNlO8Of44XxNcTXLMcbtR+Zyfh
+         YDVtlwyhC6N3A==
+Date:   Tue, 16 Mar 2021 18:00:33 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Mark Jonas <mark.jonas@de.bosch.com>
+Cc:     Support Opensource <support.opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, Adam.Thomson.Opensource@diasemi.com,
+        stwiss.opensource@diasemi.com, marek.vasut@gmail.com,
+        tingquan.ruan@cn.bosch.com, hubert.streidl@de.bosch.com
+Subject: Re: [PATCH v6 1/1] mfd: da9063: Support SMBus and I2C mode
+Message-ID: <20210316170033.GB1110@ninjato>
+References: <20210316162237.877436-1-mark.jonas@de.bosch.com>
 MIME-Version: 1.0
-In-Reply-To: <4ffaba53-100a-43a5-8746-b753d4153be5@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kVXhAStRUZ/+rrGn"
+Content-Disposition: inline
+In-Reply-To: <20210316162237.877436-1-mark.jonas@de.bosch.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/21 9:15 AM, John Garry wrote:
-> I'll have a look at this ASAP -  a bit busy.
-> 
-> But a quick scan and I notice this:
-> 
->  > @@ -226,6 +226,7 @@ static inline void __blk_mq_put_driver_tag(struct 
-> blk_mq_hw_ctx *hctx,
->  >                          struct request *rq)
->  >   {
->  >       blk_mq_put_tag(hctx->tags, rq->mq_ctx, rq->tag);
->  > +    rcu_assign_pointer(hctx->tags->rqs[rq->tag], NULL);
-> 
-> Wasn't a requirement to not touch the fastpath at all, including even if 
-> only NULLifying a pointer?
-> 
-> IIRC, Kashyap some time ago had a patch like above (but without RCU 
-> usage), but the request from Jens was to not touch the fastpath.
-> 
-> Maybe I'm mistaken - I will try to dig up the thread.
 
-Hi John,
+--kVXhAStRUZ/+rrGn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I agree that Jens asked at the end of 2018 not to touch the fast path to 
-fix this use-after-free (maybe that request has been repeated more 
-recently). If Jens or anyone else feels strongly about not clearing 
-hctx->tags->rqs[rq->tag] from the fast path then I will make that 
-change. My motivation for clearing these pointers from the fast path is 
-as follows:
-- This results in code that is easier to read and easier to maintain.
-- Every modern CPU pipelines store instructions so the performance 
-impact of adding an additional store should be small.
-- Since the block layer has a tendency to reuse tags that have been 
-freed recently, it is likely that hctx->tags->rqs[rq->tag] will be used 
-for a next request and hence that it will have to be loaded into the CPU 
-cache anyway.
+On Tue, Mar 16, 2021 at 05:22:37PM +0100, Mark Jonas wrote:
+> From: Hubert Streidl <hubert.streidl@de.bosch.com>
+>=20
+> By default the PMIC DA9063 2-wire interface is SMBus compliant. This
+> means the PMIC will automatically reset the interface when the clock
+> signal ceases for more than the SMBus timeout of 35 ms.
+>=20
+> If the I2C driver / device is not capable of creating atomic I2C
+> transactions, a context change can cause a ceasing of the clock signal.
+> This can happen if for example a real-time thread is scheduled. Then
+> the DA9063 in SMBus mode will reset the 2-wire interface. Subsequently
+> a write message could end up in the wrong register. This could cause
+> unpredictable system behavior.
+>=20
+> The DA9063 PMIC also supports an I2C compliant mode for the 2-wire
+> interface. This mode does not reset the interface when the clock
+> signal ceases. Thus the problem depicted above does not occur.
+>=20
+> This patch tests for the bus functionality "I2C_FUNC_I2C". It can
+> reasonably be assumed that the bus cannot obey SMBus timings if
+> this functionality is set. SMBus commands most probably are emulated
+> in this case which is prone to the latency issue described above.
+>=20
+> This patch enables the I2C bus mode if I2C_FUNC_I2C is set or
+> otherwise keeps the default SMBus mode.
+>=20
+> Signed-off-by: Hubert Streidl <hubert.streidl@de.bosch.com>
+> Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
 
-Bart.
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+
+
+--kVXhAStRUZ/+rrGn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBQ5DEACgkQFA3kzBSg
+KbZSJw//WSvavoNZA3U9LAgm5FpQsMZCe/A5A74TjybIM89va6ZOyalu341WhEBz
+DoTjedJYuiCzK2Dh8qHjLaxChrkTPlM8wYQ+hgA7irVb2rM16cCwttoBd1QDcJIK
+lz6iNxZpRonfLCsqB14+LHTgvW+k1mRzjd9pIE1e04+fekb/258zabo5lvM6N8KQ
+0TaYfBGVzIiG/9R7bNw59cE/FK+nwDjUYrEf8o+2hoWe97eCbJcGNkkSYv0hkgO4
+q3HZ2TXZSSOaxVL9lPvk/sMYT7Y+eeHQZbpncKrprvuMSWFHtFDqMC78YJmCyujA
+fXMM6B0QMslwXLBhuuChEiUBm+1Bz+4REDGI0UBpFd8oIN97WP6n19o4zoQXQEqA
+Ld9I6K9hgeb40BHg6tyzr7HOR5pSu4gkipXqxIkPKqxtKBr7shrUzlSIojX9oI4N
+3kpXQSiu9Lxweg6SFMSqbmF5xokYqVu/KpkxCDuI/B0eFJUSA2Enx92Y8PgF8NTT
+C/ajwx/b1VQ8s29kwcSv5y4YivWSz2bbRQNgwe6QAUBgZCi2U2qIM1Q+LfV8E3le
+pD+6V4PpFwveB0T44iCCxp8nSddP6mDsJtK2QC8gLibXAOf4aK7a9be9FBFH7bv7
+ASnBOacxDRNSQJd5jMvG6TVD/N+MMKODVQQPkWW7LVVnY3sBJwI=
+=FXQ3
+-----END PGP SIGNATURE-----
+
+--kVXhAStRUZ/+rrGn--
