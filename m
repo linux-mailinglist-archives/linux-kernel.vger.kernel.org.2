@@ -2,256 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5532C33CCB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 05:49:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A2933CCBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 05:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232891AbhCPEtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 00:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbhCPEtT (ORCPT
+        id S235091AbhCPEuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 00:50:32 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:50392 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235079AbhCPEuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 00:49:19 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51770C06174A;
-        Mon, 15 Mar 2021 21:49:19 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id n195so35500077ybg.9;
-        Mon, 15 Mar 2021 21:49:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CfinjcOP/WltgE7VDVEoULBPntit2uuL70TjgkQqusg=;
-        b=s6H6WZuM6/QOl8zJvXnGtqo7FVK6KeDBFpeA0nPhkYQr+qDQ0nVAS1h4716qxiVwia
-         Tmu7fFGKZgIaImdnDnvTmI5VApq7OpYDJGKy/98OVqL7Bj6GusYlWP/UsxP6B4G6Vgw7
-         wP4Yxq7Nr9BfMsM7eeaBGDDE1ZqH8GzXAgyexBHiEXtZgckrqcDtSZn85gOpzch2ku9f
-         00vZCo/x2Y+SoRcUak6MNgvgHiuWIkAMqj7nWuNPjoTLD6PSyH6HpUpCy0JphDCarszV
-         HNhnZ7q5E+dNY9AghKvLSXKbLrtT6Na0rZuOZPm9lVMYMq/f0AThOQ5l0NJJ7pDOdaq4
-         WANg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CfinjcOP/WltgE7VDVEoULBPntit2uuL70TjgkQqusg=;
-        b=MQOaGRwYabMtIE6mXieUtIUKht6tjNcuEMgvJZEMQSUphXcmV+3fgKDFsSS5Wqy7ai
-         sfOkusKlklk0oKGvIgbf88xaizLFEAbsX+oucyviBE8+ofcupBve7c0Ysa5V3G1Pk9nn
-         yo29ZvbfcHpSPjFW/vyb3bj/hGbC1RBNziv7blfiGBZZ7gAI6dr8Tq2zePVGAsTui96h
-         d884XNbSnexH4Pv5wuKdemDT+1jFisshzUIqR/6MV5GqJ6EfXzaeMX2YV38LZ/MvVd5f
-         /V/tJ2dIhykb1qTIWSE7ckjFgOv6OhtG0REThAXnhii7wBrjb4jwJ2VkZuqjGrBuAZcH
-         ylfg==
-X-Gm-Message-State: AOAM532Pp+lV4B5tTZ8yP6dOdJOLdlTJm6xuZl1VOG5I+kS8rYefOPf2
-        2WuIFvjdiVaJEsdWAlBlZrxfc+7ocK7VftWc+xU=
-X-Google-Smtp-Source: ABdhPJxa12hMvy3oFM2qB6rCWJbQDjbOhBNDHFyl1vwMhuVgzbmPGx4gB+Op10dlGs9KQlkh/0kdFdgkqH6qNprMkiw=
-X-Received: by 2002:a25:3d46:: with SMTP id k67mr4174800yba.510.1615870158661;
- Mon, 15 Mar 2021 21:49:18 -0700 (PDT)
+        Tue, 16 Mar 2021 00:50:13 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0US56CQ._1615870209;
+Received: from localhost(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0US56CQ._1615870209)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 16 Mar 2021 12:50:09 +0800
+From:   Huaixin Chang <changhuaixin@linux.alibaba.com>
+To:     changhuaixin@linux.alibaba.com
+Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
+        linux-kernel@vger.kernel.org, mgorman@suse.de, mingo@redhat.com,
+        odin@uged.al, odin@ugedal.com, pauld@redhead.com,
+        peterz@infradead.org, pjt@google.com, rostedt@goodmis.org,
+        shanpeic@linux.alibaba.com, tj@kernel.org,
+        vincent.guittot@linaro.org, xiyou.wangcong@gmail.com
+Subject: [PATCH v4 0/4] sched/fair: Burstable CFS bandwidth controller
+Date:   Tue, 16 Mar 2021 12:49:27 +0800
+Message-Id: <20210316044931.39733-1-changhuaixin@linux.alibaba.com>
+X-Mailer: git-send-email 2.14.4.44.g2045bb6
 MIME-Version: 1.0
-References: <20210310220211.1454516-1-revest@chromium.org> <20210310220211.1454516-6-revest@chromium.org>
-In-Reply-To: <20210310220211.1454516-6-revest@chromium.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 15 Mar 2021 21:49:07 -0700
-Message-ID: <CAEf4BzYTMjWWVS8ZLXNs8W89_koAdo2-4ir++He=tXA11VU0xA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: Add a series of tests for bpf_snprintf
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 2:02 PM Florent Revest <revest@chromium.org> wrote:
->
-> This exercices most of the format specifiers when things go well.
+Changelog:
 
-typo: exercises
+v4:
+- Adjust assignments in tg_set_cfs_bandwidth(), saving unnecessary
+  assignemnts when quota == RUNTIME_INF.
+- Getting rid of sysctl_sched_cfs_bw_burst_onset_percent, as there seems
+  no justification for both controlling start bandwidth and a percent
+  way.
+- Comment improvement in sched_cfs_period_timer() shifts on explaining
+  why max_overrun shifting to 0 is a problem.
+- Rename previous_runtime to runtime_at_period_start.
+- Add cgroup2 interface and documentation.
+- Getting rid of exposing current_bw as there are not enough
+  justification and the updating problem.
+- Add justification on cpu.stat change in the changelog.
+- Rebase upon v5.12-rc3.
+- Correct SoB chain.
+- Several indentation fixes.
+- Adjust quota in schbench test from 700000 to 600000.
 
->
-> Signed-off-by: Florent Revest <revest@chromium.org>
-> ---
->  .../selftests/bpf/prog_tests/snprintf.c       | 71 +++++++++++++++++++
->  .../selftests/bpf/progs/test_snprintf.c       | 71 +++++++++++++++++++
->  2 files changed, 142 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> new file mode 100644
-> index 000000000000..23af1dbd1eeb
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> @@ -0,0 +1,71 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2021 Google LLC. */
-> +
-> +#include <test_progs.h>
-> +#include "test_snprintf.skel.h"
-> +
-> +static int duration;
+v3:
+- Fix another issue reported by test robot.
+- Update docs as Randy Dunlap suggested.
+Link:
+https://lore.kernel.org/lkml/20210120122715.29493-1-changhuaixin@linux.alibaba.com/
 
-if you drop CHECK() below, you won't need duration here at all
+v2:
+- Fix an issue reported by test robot.
+- Rewriting docs. Appreciate any further suggestions or help.
+Link:
+https://lore.kernel.org/lkml/20210121110453.18899-1-changhuaixin@linux.alibaba.com/
 
-> +
-> +#define EXP_NUM_OUT  "-8 9 96 -424242 1337 DABBAD00"
-> +#define EXP_NUM_RET  sizeof(EXP_NUM_OUT)
-> +
-> +#define EXP_IP_OUT   "127.000.000.001 0000:0000:0000:0000:0000:0000:0000:0001"
-> +#define EXP_IP_RET   sizeof(EXP_IP_OUT)
-> +
-> +/* The third specifier, %pB, depends on compiler inlining so don't check it */
-> +#define EXP_SYM_OUT  "schedule schedule+0x0/"
-> +#define MIN_SYM_RET  sizeof(EXP_SYM_OUT)
-> +
-> +/* The third specifier, %p, is a hashed pointer which changes on every reboot */
-> +#define EXP_ADDR_OUT "0000000000000000 ffff00000add4e55 "
-> +#define EXP_ADDR_RET sizeof(EXP_ADDR_OUT "unknownhashedptr")
-> +
-> +#define EXP_STR_OUT  "str1 longstr"
-> +#define EXP_STR_RET  sizeof(EXP_STR_OUT)
-> +
-> +#define EXP_OVER_OUT {'%', 'o', 'v', 'e', 'r'}
-> +#define EXP_OVER_RET 10
-> +
-> +void test_snprintf(void)
-> +{
-> +       char exp_addr_out[] = EXP_ADDR_OUT;
-> +       char exp_over_out[] = EXP_OVER_OUT;
-> +       char exp_sym_out[]  = EXP_SYM_OUT;
-> +       struct test_snprintf *skel;
-> +       int err;
-> +
-> +       skel = test_snprintf__open_and_load();
-> +       if (CHECK(!skel, "skel_open", "failed to open and load skeleton\n"))
+v1 Link:
+https://lore.kernel.org/lkml/20201217074620.58338-1-changhuaixin@linux.alibaba.com/
 
-ASSERT_OK_PTR
-> +               return;
-> +
-> +       err = test_snprintf__attach(skel);
-> +       if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
+The CFS bandwidth controller limits CPU requests of a task group to
+quota during each period. However, parallel workloads might be bursty
+so that they get throttled. And they are latency sensitive at the same
+time so that throttling them is undesired.
 
-ASSERT_OK
-> +               goto cleanup;
-> +
-> +       /* trigger tracepoint */
-> +       usleep(1);
-> +
-> +       ASSERT_STREQ(skel->bss->num_out, EXP_NUM_OUT, "num_out");
-> +       ASSERT_EQ(skel->bss->num_ret, EXP_NUM_RET, "num_ret");
-> +
-> +       ASSERT_STREQ(skel->bss->ip_out, EXP_IP_OUT, "ip_out");
-> +       ASSERT_EQ(skel->bss->ip_ret, EXP_IP_RET, "ip_ret");
-> +
-> +       ASSERT_OK(memcmp(skel->bss->sym_out, exp_sym_out,
-> +                        sizeof(exp_sym_out) - 1), "sym_out");
-> +       ASSERT_LT(MIN_SYM_RET, skel->bss->sym_ret, "sym_ret");
-> +
-> +       ASSERT_OK(memcmp(skel->bss->addr_out, exp_addr_out,
-> +                        sizeof(exp_addr_out) - 1), "addr_out");
-> +       ASSERT_EQ(skel->bss->addr_ret, EXP_ADDR_RET, "addr_ret");
-> +
-> +       ASSERT_STREQ(skel->bss->str_out, EXP_STR_OUT, "str_out");
-> +       ASSERT_EQ(skel->bss->str_ret, EXP_STR_RET, "str_ret");
-> +
-> +       ASSERT_OK(memcmp(skel->bss->over_out, exp_over_out,
-> +                        sizeof(exp_over_out)), "over_out");
-> +       ASSERT_EQ(skel->bss->over_ret, EXP_OVER_RET, "over_ret");
-> +
-> +cleanup:
-> +       test_snprintf__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_snprintf.c b/tools/testing/selftests/bpf/progs/test_snprintf.c
-> new file mode 100644
-> index 000000000000..6c8aa4988e69
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_snprintf.c
-> @@ -0,0 +1,71 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2021 Google LLC. */
-> +
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_endian.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +#define OUT_LEN 64
-> +
-> +/* Integer types */
-> +static const char num_fmt[] = "%d %u %x %li %llu %lX";
-> +#define NUMBERS -8, 9, 150, -424242, 1337, 0xDABBAD00
+Scaling up period and quota allows greater burst capacity. But it might
+cause longer stuck till next refill. We introduce "burst" to allow
+accumulating unused quota from previous periods, and to be assigned when
+a task group requests more CPU than quota during a specific period. Thus
+allowing CPU time requests as long as the average requested CPU time is
+below quota on the long run. The maximum accumulation is capped by burst
+and is set 0 by default, thus the traditional behaviour remains.
 
-here I actually don't get the point of #define, can you please just
-inline them at the invocation place? I think that will be nicer and
-simpler (and will match common usage pattern)
+A huge drop of 99th tail latency from more than 500ms to 27ms is seen for
+real java workloads when using burst. Similar drops are seen when
+testing with schbench too:
 
-> +
-> +char num_out[OUT_LEN] = {};
-> +long num_ret = 0;
-> +
-> +/* IP addresses */
-> +static const char ip_fmt[] = "%pi4 %pI6";
-> +static const __u8 dummy_ipv4[] = {127, 0, 0, 1}; /* 127.0.0.1 */
-> +static const __u32 dummy_ipv6[] = {0, 0, 0, bpf_htonl(1)}; /* ::1/128 */
-> +#define IPS &dummy_ipv4, &dummy_ipv6
-> +
-> +char ip_out[OUT_LEN] = {};
-> +long ip_ret = 0;
-> +
-> +/* Symbol lookup formatting */
-> +static const char sym_fmt[] = "%ps %pS %pB";
-> +extern const void schedule __ksym;
-> +#define SYMBOLS &schedule, &schedule, &schedule
-> +
-> +char sym_out[OUT_LEN] = {};
-> +long sym_ret = 0;
-> +
-> +/* Kernel pointers */
-> +static const char addr_fmt[] = "%pK %px %p";
-> +#define ADDRESSES 0, 0xFFFF00000ADD4E55, 0xFFFF00000ADD4E55
-> +
-> +char addr_out[OUT_LEN] = {};
-> +long addr_ret = 0;
-> +
-> +/* Strings embedding */
-> +static const char str_fmt[] = "%s %+05s";
-> +static const char str1[] = "str1";
-> +static const char longstr[] = "longstr";
-> +#define STRINGS str1, longstr
-> +
-> +char str_out[OUT_LEN] = {};
-> +long str_ret = 0;
-> +
-> +/* Overflow */
-> +static const char over_fmt[] = "%%overflow";
-> +
-> +#define OVER_OUT_LEN 6
-> +char over_out[OVER_OUT_LEN] = {};
-> +long over_ret = 0;
-> +
+	echo $$ > /sys/fs/cgroup/cpu/test/cgroup.procs
+	echo 600000 > /sys/fs/cgroup/cpu/test/cpu.cfs_quota_us
+	echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_period_us
+	echo 400000 > /sys/fs/cgroup/cpu/test/cpu.cfs_burst_us
 
-same for all the above #defines, tests will be easier to follow if you
-just use value in BPF_SNPRINTF below
+	# The average CPU usage is around 500%, which is 200ms CPU time
+	# every 40ms.
+	./schbench -m 1 -t 30 -r 10 -c 10000 -R 500
 
-> +SEC("raw_tp/sys_enter")
-> +int handler(const void *ctx)
-> +{
-> +       num_ret  = BPF_SNPRINTF(num_out,  OUT_LEN, num_fmt,  NUMBERS);
-> +       ip_ret   = BPF_SNPRINTF(ip_out,   OUT_LEN, ip_fmt,   IPS);
-> +       sym_ret  = BPF_SNPRINTF(sym_out,  OUT_LEN, sym_fmt,  SYMBOLS);
-> +       addr_ret = BPF_SNPRINTF(addr_out, OUT_LEN, addr_fmt, ADDRESSES);
-> +       str_ret  = BPF_SNPRINTF(str_out,  OUT_LEN, str_fmt,  STRINGS);
-> +       over_ret = BPF_SNPRINTF(over_out, OVER_OUT_LEN, over_fmt);
+	Without burst:
 
-in practice you'd do BPF_SNPRINTF(num_out, sizeof(num_out), ...). So
-use that in test code as well please.
+	Latency percentiles (usec)
+	50.0000th: 7
+	75.0000th: 8
+	90.0000th: 9
+	95.0000th: 10
+	*99.0000th: 933
+	99.5000th: 981
+	99.9000th: 3068
+	min=0, max=20054
+	rps: 498.31 p95 (usec) 10 p99 (usec) 933 p95/cputime 0.10% p99/cputime 9.33%
 
-> +
-> +       return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> --
-> 2.30.1.766.gb4fecdf3b7-goog
->
+	With burst:
+
+	Latency percentiles (usec)
+	50.0000th: 7
+	75.0000th: 8
+	90.0000th: 9
+	95.0000th: 9
+	*99.0000th: 12
+	99.5000th: 13
+	99.9000th: 19
+	min=0, max=406
+	rps: 498.36 p95 (usec) 9 p99 (usec) 12 p95/cputime 0.09% p99/cputime 0.12%
+
+How much workloads with benefit from burstable CFS bandwidth control
+depends on how bursty and how latency sensitive they are.
+
+Previously, Cong Wang and Konstantin Khlebnikov proposed similar
+feature:
+https://lore.kernel.org/lkml/20180522062017.5193-1-xiyou.wangcong@gmail.com/
+https://lore.kernel.org/lkml/157476581065.5793.4518979877345136813.stgit@buzz/
+
+This time we present more latency statistics and handle overflow while
+accumulating.
+
+Huaixin Chang (4):
+  sched/fair: Introduce primitives for CFS bandwidth burst
+  sched/fair: Make CFS bandwidth controller burstable
+  sched/fair: Add cfs bandwidth burst statistics
+  sched/fair: Add document for burstable CFS bandwidth control
+
+ Documentation/scheduler/sched-bwc.rst |  49 +++++++++++--
+ include/linux/sched/sysctl.h          |   2 +
+ kernel/sched/core.c                   | 126 +++++++++++++++++++++++++++++-----
+ kernel/sched/fair.c                   |  58 +++++++++++++---
+ kernel/sched/sched.h                  |   9 ++-
+ kernel/sysctl.c                       |  18 +++++
+ 6 files changed, 232 insertions(+), 30 deletions(-)
+
+-- 
+2.14.4.44.g2045bb6
+
