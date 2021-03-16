@@ -2,115 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C560633DDAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:39:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B67933DDB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:40:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240513AbhCPTjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 15:39:16 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:32864 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234578AbhCPTim (ORCPT
+        id S240521AbhCPTjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 15:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240505AbhCPTjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:38:42 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id C00841C0B93; Tue, 16 Mar 2021 20:38:39 +0100 (CET)
-Date:   Tue, 16 Mar 2021 20:38:39 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Tianling Shen <cnsztl@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>,
-        Johan Jonker <jbx6244@gmail.com>,
-        David Bauer <mail@david-bauer.net>,
-        Jensen Huang <jensenhuang@friendlyarm.com>,
-        Marty Jones <mj8263788@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Subject: Re: [PATCH v3 2/2] rockchip: rk3399: Add support for FriendlyARM
- NanoPi R4S
-Message-ID: <20210316193839.GA28184@duo.ucw.cz>
-References: <CAMuHMdWYrS=YT7F7erM-e6xhDME4judx-T7rdFGi7CpW1_iqkg@mail.gmail.com>
- <20210316150033.15987-1-cnsztl@gmail.com>
- <CAMuHMdU+agaOdf4hQhn5JQDHCbuWm3dETJu01baxfDAY=nikow@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="82I3+IH0IqGh5yIs"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdU+agaOdf4hQhn5JQDHCbuWm3dETJu01baxfDAY=nikow@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Tue, 16 Mar 2021 15:39:09 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 242ECC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:39:09 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id u17so43264194ybi.10
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:39:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=DyT2hoANWswY1My2edJBxlO9DN0LrYQonEua2weCt84=;
+        b=fBhUY4KnMhJq9CyPuR22abSB5bODhZt9LZOsPXAPaVrKZVpkZvLsEdwqELYErXRVX8
+         D4F6ayBWlArXiqvIbhhBbG7R2TsPQFIxC3HOmLnLNll7P1Vm5V0jkC5UP/oLTPuUsBHt
+         TyjMMi9zWIfl8uBac3LUFP2iLxmg0VN0ZZ6SotUcD6jGVtXqfLku/XFknVu1IDikm1N/
+         /J11qoZE3p32jpTgXVvQ0VHCVwezqgfNKepiHhE/uWRFCUHkLX3CsYO+YlWIf9y/v1zq
+         2V7GqwPyGvCRZXTxBW1m/3Y8o6sFtiZ2DyW1lDhTQnwNdPzE4dv/eGN9Xt5ZjaMkAu/P
+         JiUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=DyT2hoANWswY1My2edJBxlO9DN0LrYQonEua2weCt84=;
+        b=mc+5seloo8N5KTxa1iOZg5QgyK1luUK9T6Xi2aFRdJRKMVGu4DLTRE9snSRJQtOKKq
+         F9LDp69IHJOOYyV268McaN8A8729AfcYWsNoud4HOplJI03vxix0aWAguUr4OxNlb3gU
+         yWyEzY0SpgEfusvRAutEPkVhhEpml9fOoujM8YYjCJ6OA5jqamgdyEBg3r54Prnig33i
+         E37L+upVsr5oqHTSi3+yW2BzxTx/Jomz7+G/w9kJn4BhRK36TKjLfMXRvHTHJqn9N2kN
+         BQcta28flljOv2PzwaEPhjmFB6BbmnsNZwhyb/Mt6qCUCjVoH2m09wPD6qBhLNmlIu+L
+         UHpQ==
+X-Gm-Message-State: AOAM5321q8m6YHhWxnfa8AfwzWlbpbWgEZTKMemL9b3nEKzfiqO23ytL
+        Wh0aNCXfnJFKqj6ZiC+ZqhZ6YFw/bRY=
+X-Google-Smtp-Source: ABdhPJzRB9OdmVfPBpo9VDbQbkeTJSWjg7KRmAXhc4AiGHtJsgtwJUvlBoFiZExzwossrj59KdlljR34x/4=
+X-Received: from jollys.svl.corp.google.com ([2620:15c:2c5:13:b0b6:1464:754e:83cb])
+ (user=jollys job=sendgmr) by 2002:a25:595:: with SMTP id 143mr663212ybf.177.1615923548383;
+ Tue, 16 Mar 2021 12:39:08 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 12:39:05 -0700
+Message-Id: <20210316193905.1673600-1-jollys@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH] scsi: libsas: Reset num_scatter if libata mark qc as NODATA
+From:   Jolly Shah <jollys@google.com>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        john.garry@huawei.com, a.darwish@linutronix.de,
+        yanaijie@huawei.com, luojiaxing@huawei.com,
+        dan.carpenter@oracle.com, b.zolnierkie@samsung.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jolly Shah <jollys@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When the cache_type for the scsi device is changed, the scsi layer
+issues a MODE_SELECT command. The caching mode details are communicated
+via a request buffer associated with the scsi command with data
+direction set as DMA_TO_DEVICE (scsi_mode_select). When this command
+reaches the libata layer, as a part of generic initial setup, libata
+layer sets up the scatterlist for the command using the scsi command
+(ata_scsi_qc_new). This command is then translated by the libata layer
+into ATA_CMD_SET_FEATURES (ata_scsi_mode_select_xlat). The libata layer
+treats this as a non data command (ata_mselect_caching), since it only
+needs an ata taskfile to pass the caching on/off information to the
+device. It does not need the scatterlist that has been setup, so it does
+not perform dma_map_sg on the scatterlist (ata_qc_issue). Unfortunately,
+when this command reaches the libsas layer(sas_ata_qc_issue), libsas
+layer sees it as a non data command with a scatterlist. It cannot
+extract the correct dma length, since the scatterlist has not been
+mapped with dma_map_sg for a DMA operation. When this partially
+constructed SAS task reaches pm80xx LLDD, it results in below warning.
 
---82I3+IH0IqGh5yIs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+"pm80xx_chip_sata_req 6058: The sg list address
+start_addr=0x0000000000000000 data_len=0x0end_addr_high=0xffffffff
+end_addr_low=0xffffffff has crossed 4G boundary"
 
-On Tue 2021-03-16 16:34:50, Geert Uytterhoeven wrote:
-> Hi Tianling,
->=20
-> CC Jacek, Pavel
->=20
-> On Tue, Mar 16, 2021 at 4:00 PM Tianling Shen <cnsztl@gmail.com> wrote:
-> > On 2021-03-16 02:23 Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > Personally, I'm not so fond of the <foo>-%u node names, and prefer
-> > > <foo>-<function>.  With the former, it's way too easy to have a silent
-> > > override in your .dts(i) stack.
-> > > Cfr. commit 45f5d5a9e34d3fe4 ("arm64: dts: renesas: r8a77995: draak:
-> > > Fix backlight regulator name")
-> >
-> > How about using `lan-led`, `sys-led` and `wan-led` here?
->=20
-> Documentation/devicetree/bindings/leds/leds-gpio.yaml says "led-%u"
-> is the preferred form, but that anything containing "led" as a substring
-> is accepted.  So I'd go for "led-lan" etc.
->=20
-> BTW, you can validate your DTB against the leds-gpio DT bindings
-> by running:
->=20
->     make dtbs_check
-> DT_SCHEMA_FILES=3DDocumentation/devicetree/bindings/leds/leds-gpio.yaml
->=20
-> Background info for CCed parties:
->
-https://lore.kernel.org/linux-arm-kernel/20210316150033.15987-1-cnsztl@gmai=
-l.com/
+This patch assigns appropriate value to  num_sectors for ata non data 
+commands.
 
-I don't care much either way, lan-0 is okay as is lan-led.
+Signed-off-by: Jolly Shah <jollys@google.com>
+---
+ drivers/scsi/libsas/sas_ata.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-but...
+diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
+index 024e5a550759..94ec08cebbaa 100644
+--- a/drivers/scsi/libsas/sas_ata.c
++++ b/drivers/scsi/libsas/sas_ata.c
+@@ -209,10 +209,12 @@ static unsigned int sas_ata_qc_issue(struct ata_queued_cmd *qc)
+ 		task->num_scatter = si;
+ 	}
+ 
+-	if (qc->tf.protocol == ATA_PROT_NODATA)
++	if (qc->tf.protocol == ATA_PROT_NODATA) {
+ 		task->data_dir = DMA_NONE;
+-	else
++		task->num_scatter = 0;
++	} else {
+ 		task->data_dir = qc->dma_dir;
++	}
+ 	task->scatter = qc->sg;
+ 	task->ata_task.retry_count = 1;
+ 	task->task_state_flags = SAS_TASK_STATE_PENDING;
+-- 
+2.31.0.rc2.261.g7f71774620-goog
 
-+			label =3D "nanopi-r4s:green:lan";
-+			label =3D "nanopi-r4s:red:sys";
-+			label =3D "nanopi-r4s:green:wan";
-
-
-It would be good to have common labels, that means LED_FUNCTION_LAN,
-LED_FUNCTION_WAN, and figuring out something better than "sys",
-possibly LED_FUNCTION_FAULT?
-
-Thanks,
-								Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---82I3+IH0IqGh5yIs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYFEJPwAKCRAw5/Bqldv6
-8oJXAKCPwj7rucsgGyf7XZK9sfEne3jGTQCgqNLsTvXmKfFgv9fd007fRTCH1mM=
-=HMgP
------END PGP SIGNATURE-----
-
---82I3+IH0IqGh5yIs--
