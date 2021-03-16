@@ -2,138 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C7433DD86
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B0733DD8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240447AbhCPT3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 15:29:14 -0400
-Received: from z11.mailgun.us ([104.130.96.11]:46325 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240446AbhCPT24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:28:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615922933; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=it/42LkBB9Nfwqq5ksT70ob4KuhBVB5LnojuZobYYw8=; b=fZgfWOyJHoot/BeHPwNlv+2CIRnHtX+OQBosfbw60mbOUIPmP/m2xe+jY/viLkwkLi1TxNBD
- YJ2/CdJjGNTKbyafEAmYI2GKxfJYZ3zP7i/zk8ceySb83aqVH/GNiR4Mn7tNJdKsTQguK6eP
- Xzp+Nk95CrHCELe1epTLZ96GJlQ=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 605106ec6dc1045b7ded3139 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Mar 2021 19:28:44
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C1A48C433ED; Tue, 16 Mar 2021 19:28:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A382CC43461;
-        Tue, 16 Mar 2021 19:28:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A382CC43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH v2 RESEND] bus: mhi: core: Wait for ready state after
- reset
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1615408918-7242-1-git-send-email-jhugo@codeaurora.org>
- <20210316061433.GG1798@thinkpad>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <9a1544fd-aa46-0410-41aa-a18d62e2bc1a@codeaurora.org>
-Date:   Tue, 16 Mar 2021 13:28:41 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S240468AbhCPT3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 15:29:49 -0400
+Received: from p3plsmtpa06-02.prod.phx3.secureserver.net ([173.201.192.103]:46882
+        "EHLO p3plsmtpa06-02.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240454AbhCPT3l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 15:29:41 -0400
+Received: from [192.168.0.116] ([71.184.94.153])
+        by :SMTPAUTH: with ESMTPSA
+        id MFNplOVBiBt9YMFNqlPnBL; Tue, 16 Mar 2021 12:29:38 -0700
+X-CMAE-Analysis: v=2.4 cv=C/0sdSD+ c=1 sm=1 tr=0 ts=60510723
+ a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
+ a=IkcTkHD0fZMA:10 a=SEc3moZ4AAAA:8 a=3-RhneuVAAAA:8 a=ihd_uDuFnh7xnqKYafAA:9
+ a=QEXdDO2ut3YA:10 a=5oRCH6oROnRZc2VpWJZ3:22 a=VLVLkjT_5ZicWzSuYqSo:22
+X-SECURESERVER-ACCT: tom@talpey.com
+Subject: Re: [PATCH v2] cifs: Silently ignore unknown oplock break handle
+To:     Rohith Surabattula <rohiths.msft@gmail.com>
+Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Steve French <sfrench@samba.org>,
+        linux-cifs <linux-cifs@vger.kernel.org>, kernel@axis.com,
+        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org
+References: <20210316124808.11984-1-vincent.whitchurch@axis.com>
+ <93d506a6-5832-5006-3bab-6e8e7203da0e@talpey.com>
+ <CACdtm0ac+oE1+KNbOGWhy-j9XHmUn4AXG6zAaX-nL0W=NJxQMA@mail.gmail.com>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <4836330b-3d2f-9d35-4d03-3a457b0068a4@talpey.com>
+Date:   Tue, 16 Mar 2021 15:29:38 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <20210316061433.GG1798@thinkpad>
+In-Reply-To: <CACdtm0ac+oE1+KNbOGWhy-j9XHmUn4AXG6zAaX-nL0W=NJxQMA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfH6b3PF8QhOqJznv110kIMK+CLaMTn7+5O8zIx0dZa9FNVemvhe0/KfPSyC510OhKOT9JghaMrb3qjtoVCjYAbpoOKhULCOq4cAsrLRbuKdXuHRyeyuA
+ rWj1QAdjnkSU1QN18U2+Insf4dP+C0yHalejORzzgacQEAKJgsg1VI0+mS9mUCnM81Gv6Eb2Zz0cf318OBRDEOlKClrzutpWnHcjZQCtjcwAsifRoSld21to
+ CBxGGxyfajqvxaB6jK2FcXl9Unqc9fmvODToXzyEt70KolifOWp5ynQ6jSFY5mky0cUf5XJiM0fpCa5k9PfzsIl5WxpLRnTpGt675sBCTomtbmMrPJaBCBZp
+ /aismpvUmDzumrOQkNOU09rvy0ea6/apTwWrKclr9yEbmsU5RSFs5nWWZ1J4oHDwQUNbcSoG
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/2021 12:14 AM, Manivannan Sadhasivam wrote:
-> On Wed, Mar 10, 2021 at 01:41:58PM -0700, Jeffrey Hugo wrote:
->> After the device has signaled the end of reset by clearing the reset bit,
->> it will automatically reinit MHI and the internal device structures.  Once
->> That is done, the device will signal it has entered the ready state.
->>
->> Signaling the ready state involves sending an interrupt (MSI) to the host
->> which might cause IOMMU faults if it occurs at the wrong time.
->>
->> If the controller is being powered down, and possibly removed, then the
->> reset flow would only wait for the end of reset.  At which point, the host
->> and device would start a race.  The host may complete its reset work, and
->> remove the interrupt handler, which would cause the interrupt to be
->> disabled in the IOMMU.  If that occurs before the device signals the ready
->> state, then the IOMMU will fault since it blocked an interrupt.  While
->> harmless, the fault would appear like a serious issue has occurred so let's
->> silence it by making sure the device hits the ready state before the host
->> completes its reset processing.
->>
->> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
->> ---
->>   drivers/bus/mhi/core/pm.c | 17 ++++++++++++++++-
->>   1 file changed, 16 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
->> index adb0e80..414da4f 100644
->> --- a/drivers/bus/mhi/core/pm.c
->> +++ b/drivers/bus/mhi/core/pm.c
->> @@ -467,7 +467,7 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
->>   
->>   	/* Trigger MHI RESET so that the device will not access host memory */
->>   	if (!MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state)) {
->> -		u32 in_reset = -1;
->> +		u32 in_reset = -1, ready = 0;
->>   		unsigned long timeout = msecs_to_jiffies(mhi_cntrl->timeout_ms);
->>   
->>   		dev_dbg(dev, "Triggering MHI Reset in device\n");
->> @@ -490,6 +490,21 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
->>   		 * hence re-program it
->>   		 */
->>   		mhi_write_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_INTVEC, 0);
->> +
->> +		if (!MHI_IN_PBL(mhi_get_exec_env(mhi_cntrl))) {
->> +			/* wait for ready to be set */
->> +			ret = wait_event_timeout(mhi_cntrl->state_event,
->> +						 mhi_read_reg_field(mhi_cntrl,
->> +							mhi_cntrl->regs,
->> +							MHISTATUS,
->> +							MHISTATUS_READY_MASK,
->> +							MHISTATUS_READY_SHIFT,
->> +							&ready)
->> +						 || ready, timeout);
->> +			if (!ret || !ready)
->> +				dev_warn(dev,
->> +					"Device failed to enter READY state\n");
+On 3/16/2021 1:36 PM, Rohith Surabattula wrote:
+> This issue will not be seen once changes related to deferred close for
+> files is committed.
+
+That may be, but it's irrelevant to this.
+
+> Currently, changes are in review. I will address review comments by this week.
+
+What do you mean by "in review"? Both threads are active on the
+mailing list. If you or others have something to discuss, please
+post it and don't leave us out of the discussion.
+
+Tom.
+
+
+> Regards,
+> Rohith
 > 
-> Wouldn't dev_err be more appropriate here provided that we might get IOMMU fault
-> anytime soon?
-
-I supposed.  Didn't feel like a "true" error because nothing has 
-actually failed, the chance of the IOMMU fault is low, and I couldn't 
-enumerate what would be the expected action for the system user to take 
-if they saw this as an error.
-
-I don't have a particularly strong opinion one way or the other.  I 
-figured warn was the more conservative option here.
-
-Will change.
-
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+> On Tue, Mar 16, 2021 at 9:33 PM Tom Talpey <tom@talpey.com> wrote:
+>>
+>> On 3/16/2021 8:48 AM, Vincent Whitchurch via samba-technical wrote:
+>>> Make SMB2 not print out an error when an oplock break is received for an
+>>> unknown handle, similar to SMB1.  The SMB2 lease break path is not
+>>> affected by this patch.
+>>>
+>>> Without this, a program which writes to a file from one thread, and
+>>> opens, reads, and writes the same file from another thread triggers the
+>>> below errors several times a minute when run against a Samba server
+>>> configured with "smb2 leases = no".
+>>>
+>>>    CIFS: VFS: \\192.168.0.1 No task to wake, unknown frame received! NumMids 2
+>>>    00000000: 424d53fe 00000040 00000000 00000012  .SMB@...........
+>>>    00000010: 00000001 00000000 ffffffff ffffffff  ................
+>>>    00000020: 00000000 00000000 00000000 00000000  ................
+>>>    00000030: 00000000 00000000 00000000 00000000  ................
+>>>
+>>> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+>>> ---
+>>>
+>>> Notes:
+>>>       v2:
+>>>       - Drop change to lease break
+>>>       - Rewrite commit message
+>>>
+>>>    fs/cifs/smb2misc.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/fs/cifs/smb2misc.c b/fs/cifs/smb2misc.c
+>>> index 60d4bd1eae2b..4d8576e202e3 100644
+>>> --- a/fs/cifs/smb2misc.c
+>>> +++ b/fs/cifs/smb2misc.c
+>>> @@ -755,7 +755,7 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
+>>>        }
+>>>        spin_unlock(&cifs_tcp_ses_lock);
+>>>        cifs_dbg(FYI, "Can not process oplock break for non-existent connection\n");
+>>> -     return false;
+>>> +     return true;
+>>>    }
+>>>
+>>>    void
+>>>
+>>
+>> As an oplock-only approach, it looks good. But the old cifs_dbg message
+>> "non-existent connection" is possibly misleading, since the connection
+>> may be perfectly fine.
+>>
+>> When breaking the loop successfully, the code emits
+>>          cifs_dbg(FYI, "file id match, oplock break\n");
+>> so perhaps
+>>          cifs_dbg(FYI, "No file id matched, oplock break ignored\n");
+>> ?
+>>
+>> Tom.
+> 
