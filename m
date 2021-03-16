@@ -2,74 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA3F33D566
+	by mail.lfdr.de (Postfix) with ESMTP id 59B1033D567
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:04:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235819AbhCPOED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 10:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235801AbhCPODq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 10:03:46 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F71C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 07:03:44 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:b1e0:9434:c5b6:aecd])
-        by michel.telenet-ops.be with bizsmtp
-        id h23j2400b0UTkXy0623jbk; Tue, 16 Mar 2021 15:03:43 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lMAIR-0088ik-0P; Tue, 16 Mar 2021 15:03:43 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lMAIQ-00A483-GA; Tue, 16 Mar 2021 15:03:42 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2] net: broadcom: BCM4908_ENET should not default to y, unconditionally
-Date:   Tue, 16 Mar 2021 15:03:41 +0100
-Message-Id: <20210316140341.2399108-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S235870AbhCPOEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 10:04:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235373AbhCPOD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 10:03:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FED564F9D;
+        Tue, 16 Mar 2021 14:03:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615903435;
+        bh=ho8VK/nwBd5H2y4bKi45p7YEcMtEVUmmuah52IEH4i4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=qfBlXzqOKN8+OZvXkcSig6NsWRFQ09BsPvxD0eTyC3mDElfi3qpbcjT/puy5EdIBX
+         Uo8/Lz/Vk4fLgYowCsw+dxO1JF9ZLRbW88SjX6JdLQBs/EkZG4Ozp93/3t0yg0s/kh
+         xty6RA9AlV/Ce2yAkox6W6hG2Rykt0TdEYguHOm38Nc0StjP4SnP2oimyEMNzd3kfW
+         vllR0K0GOk0nibk1GLeZ4L0NZAMCvFHIM249/weo6mX3igAPnoqjGXVuPfTi8inhNI
+         sigi/vc8KYEbiZed4fXaNYXmTCD7GwQ5zXe0xRw126ptZxfBbMeO+pjrlLwB5MzU0x
+         aFEng6GGMMPSg==
+Subject: Re: [PATCH] drm/omap: dsi: fix unsigned expression compared with zero
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        angkery <angkery@163.com>
+Cc:     airlied@linux.ie, daniel@ffwll.ch, sebastian.reichel@collabora.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Junlin Yang <yangjunlin@yulong.com>
+References: <20210312071445.1721-1-angkery@163.com>
+ <YE1xsg0gm0nNR8hy@pendragon.ideasonboard.com>
+From:   Tomi Valkeinen <tomba@kernel.org>
+Message-ID: <dd0578a1-9726-4be2-f8a1-b164675b1b02@kernel.org>
+Date:   Tue, 16 Mar 2021 16:03:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YE1xsg0gm0nNR8hy@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Merely enabling compile-testing should not enable additional code.
-To fix this, restrict the automatic enabling of BCM4908_ENET to
-ARCH_BCM4908.
+On 14/03/2021 04:15, Laurent Pinchart wrote:
+> Hi Junlin,
+> 
+> Thank you for the patch.
+> 
+> On Fri, Mar 12, 2021 at 03:14:45PM +0800, angkery wrote:
+>> From: Junlin Yang <yangjunlin@yulong.com>
+>>
+>> r is "u32" always >= 0,mipi_dsi_create_packet may return little than zero.
+>> so r < 0 condition is never accessible.
+>>
+>> Fixes coccicheck warnings:
+>> ./drivers/gpu/drm/omapdrm/dss/dsi.c:2155:5-6:
+>> WARNING: Unsigned expression compared with zero: r < 0
+>>
+>> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> 
+> Tomi, will you take this in your tree ?
 
-Fixes: 4feffeadbcb2e5b1 ("net: broadcom: bcm4908enet: add BCM4908 controller driver")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v2:
-  - Enable by default if ARCH_BCM4908.
----
- drivers/net/ethernet/broadcom/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks. Yes, I'll pick this up.
 
-diff --git a/drivers/net/ethernet/broadcom/Kconfig b/drivers/net/ethernet/broadcom/Kconfig
-index f8a168b73307c03b..cb88ffb8f12fa7ef 100644
---- a/drivers/net/ethernet/broadcom/Kconfig
-+++ b/drivers/net/ethernet/broadcom/Kconfig
-@@ -54,7 +54,7 @@ config B44_PCI
- config BCM4908_ENET
- 	tristate "Broadcom BCM4908 internal mac support"
- 	depends on ARCH_BCM4908 || COMPILE_TEST
--	default y
-+	default y if ARCH_BCM4908
- 	help
- 	  This driver supports Ethernet controller integrated into Broadcom
- 	  BCM4908 family SoCs.
--- 
-2.25.1
+  Tomi
 
