@@ -2,130 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C78E733D37D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDC333D37E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 13:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237578AbhCPMDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 08:03:30 -0400
-Received: from gecko.sbs.de ([194.138.37.40]:34209 "EHLO gecko.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237556AbhCPMDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:03:14 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12GC2r5I026410
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Mar 2021 13:02:53 +0100
-Received: from md1za8fc.ad001.siemens.net ([139.25.68.191])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12GBqqrv026921;
-        Tue, 16 Mar 2021 12:52:52 +0100
-Date:   Tue, 16 Mar 2021 12:52:51 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     Claudius Heine <ch@denx.de>,
-        johannes hahn <johannes-hahn@siemens.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        werner zeh <werner.zeh@siemens.com>,
-        "martin mantel" <martin.mantel@siemens.com>,
-        val krutov <val.krutov@erd.epson.com>
-Subject: Re: [PATCH v3 1/1] rtc: rx6110: add ACPI bindings to I2C
-Message-ID: <20210316125251.64484b3a@md1za8fc.ad001.siemens.net>
-In-Reply-To: <YFCW3Kx9MPm0MT8H@smile.fi.intel.com>
-References: <AM0PR10MB25801B7DCB6C1856B5D4F2C09FE10@AM0PR10MB2580.EURPRD10.PROD.OUTLOOK.COM>
-        <20210316100805.2630481-2-ch@denx.de>
-        <YFCW3Kx9MPm0MT8H@smile.fi.intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S237585AbhCPMDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 08:03:32 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:52074 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237557AbhCPMDQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 08:03:16 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12GC38vE113760;
+        Tue, 16 Mar 2021 07:03:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615896188;
+        bh=JUZxNgAAlZvvc/jMKRjU1b/5rgQyQZ9P6xe6l9jYb4Q=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=P9U4MgeFyjsgys3GcUbucDbseTujEUj1IlkGJX8qeBSulPU2URmWVcNa9zkceGcEc
+         aesueUX4FZk8WZjmIZrxegjzZYjIqv3cWosN8Y5IjVUsJNyGn4V1mTuJLDGCIlVcDb
+         rHMEo9k5jDyIh7JPcs9KsZt58UVRnQo/XELFxRJI=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12GC38tA084521
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 16 Mar 2021 07:03:08 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 16
+ Mar 2021 07:03:08 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 16 Mar 2021 07:03:08 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12GC34xc084945;
+        Tue, 16 Mar 2021 07:03:05 -0500
+Subject: Re: [PATCH v5 2/3] arm64: dts: ti: k3-j7200-common-proc-board:
+ Disable unused gpio modules
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>, Sekhar Nori <nsekhar@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210310161924.22256-1-a-govindraju@ti.com>
+ <20210310161924.22256-3-a-govindraju@ti.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <28391514-7946-4db0-598e-b53b75fc30b5@ti.com>
+Date:   Tue, 16 Mar 2021 14:01:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210310161924.22256-3-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Tue, 16 Mar 2021 13:30:36 +0200
-schrieb Andy Shevchenko <andriy.shevchenko@intel.com>:
 
-> On Tue, Mar 16, 2021 at 11:08:05AM +0100, Claudius Heine wrote:
-> > From: Johannes Hahn <johannes-hahn@siemens.com>
-> > 
-> > This allows the RX6110 driver to be automatically assigned to the
-> > right device on the I2C bus.  
-> 
-> Thanks for all effort!
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> after addressing the below comments.
-> 
-> > Signed-off-by: Johannes Hahn <johannes-hahn@siemens.com>
-> > Signed-off-by: Claudius Heine <ch@denx.de>  
-> 
-> > Signed-off-by: Henning Schild <henning.schild@siemens.com>  
 
-Claudius, just remove that. I guess just add yours and mention authors
-in the code if they should receive some recognition.
+On 10/03/2021 18:19, Aswath Govindraju wrote:
+> From: Faiz Abbas <faiz_abbas@ti.com>
+> 
+> There are 6 gpio instances inside SoC with 2 groups as show below:
+>      Group one: wkup_gpio0, wkup_gpio1
+>      Group two: main_gpio0, main_gpio2, main_gpio4, main_gpio6
+> 
+> Only one instance from each group can be used at a time. So use main_gpio0
+> and wkup_gpio0 in current linux context and disable the rest of the nodes.
+> 
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+>   .../boot/dts/ti/k3-j7200-common-proc-board.dts   | 16 ++++++++++++++++
+>   1 file changed, 16 insertions(+)
 
-Henning
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
 
-> I think this is somehow confusing. Either you need to add
-> Co-developed-by of the corresponding people, or remove SoB (because
-> of From line), i.o.w seems like Co-dB tag is needed for Johannes or
-> you and something should be done with Henning's SoB.
-> 
-> > ---
-> >  drivers/rtc/rtc-rx6110.c | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> > 
-> > diff --git a/drivers/rtc/rtc-rx6110.c b/drivers/rtc/rtc-rx6110.c
-> > index 79161d4c6ce4..29bd697f82cb 100644
-> > --- a/drivers/rtc/rtc-rx6110.c
-> > +++ b/drivers/rtc/rtc-rx6110.c
-> > @@ -13,6 +13,7 @@
-> >  #include <linux/of_gpio.h>
-> >  #include <linux/regmap.h>
-> >  #include <linux/rtc.h>  
-> 
-> > +#include <linux/acpi.h>  
-> 
-> Usually it's not needed if you leave IDs always to be compiled.
-> Instead mod_devicetable.h is used. But it's all up to you and
-> maintainer.
-> 
-> >  #include <linux/of.h>
-> >  #include <linux/of_device.h>
-> >  #include <linux/spi/spi.h>
-> > @@ -447,6 +448,14 @@ static int rx6110_i2c_probe(struct i2c_client
-> > *client, return rx6110_probe(rx6110, &client->dev);
-> >  }
-> >  
-> > +#ifdef CONFIG_ACPI
-> > +static const struct acpi_device_id rx6110_i2c_acpi_match[] = {
-> > +	{ "SECC6110", },
-> > +	{ },
-> > +};
-> > +MODULE_DEVICE_TABLE(acpi, rx6110_i2c_acpi_match);
-> > +#endif
-> > +
-> >  static const struct i2c_device_id rx6110_i2c_id[] = {
-> >  	{ "rx6110", 0 },
-> >  	{ }
-> > @@ -456,6 +465,9 @@ MODULE_DEVICE_TABLE(i2c, rx6110_i2c_id);
-> >  static struct i2c_driver rx6110_i2c_driver = {
-> >  	.driver = {
-> >  		.name = RX6110_DRIVER_NAME,
-> > +#ifdef CONFIG_ACPI  
-> 
-> This is implied by the stub ACPI_PTR() macro for ACPI=n case.
-> I.o.w drop this ugly and redundant ifdeffery.
-> 
-> > +		.acpi_match_table =
-> > ACPI_PTR(rx6110_i2c_acpi_match), +#endif
-> >  	},
-> >  	.probe		= rx6110_i2c_probe,
-> >  	.id_table	= rx6110_i2c_id,
-> > -- 
-> > 2.30.1
-> >   
-> 
-
+-- 
+Best regards,
+grygorii
