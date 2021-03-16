@@ -2,202 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD27F33CB7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 03:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFC233CB71
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 03:31:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234642AbhCPCd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 22:33:29 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:33372 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234643AbhCPCdR (ORCPT
+        id S232888AbhCPCau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 22:30:50 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:13934 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232781AbhCPCan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 22:33:17 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12G2U4FD013290;
-        Tue, 16 Mar 2021 02:30:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=67ayGYyPGk5h+zUTA5QWC8yNcymjn9Y/E/omlWbnN04=;
- b=OoCinySZXNzID8WaHK5D4UluCS+SwBwMle1brAqyYZSKHgagv7bajcLOankb5FVVekwo
- B6scfh/JQ/anKMSUB+8hFo2EaDlEKtb4kwpCheYVCpULMLF6xAdw84W1ClxpNHB00tEn
- 8jQbUJNGw7dpLrAVr40cTYNJf/ydwnnRCmUx6OO/TjU0wx5dF0393PNLRcxxvgQccyIs
- q4zR+6B0L09QCGYssq8ZOpAGX2lcMNe4Djphg4EZyyNXcYwCxwQvd8xFEYNhluzihHgI
- UKQpnq2CF4+X7M/7ymZRQ8nAMrfFCELbpHYhr3s02ZXl2vX4TlSe/EIvIZgGt0b5y+zN lw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 378p1np21d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Mar 2021 02:30:04 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12G2PeEb011624;
-        Tue, 16 Mar 2021 02:30:03 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2170.outbound.protection.outlook.com [104.47.59.170])
-        by aserp3020.oracle.com with ESMTP id 3797a0mbyx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Mar 2021 02:30:03 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nfhTe1Sz/yRwwcvJy+Qe5faRnaxqgUah9NQ13pkOiX3hEQ4hCmVV6vUvO5LIAPWHMXYbvBraDY10cyLcPiTpFLOzXs9/LQxLgIhEl1qvGB8uH6Sbhq6VSmxOtKUJ37Z0ciYODIf9xTNUsLcO7GWmqdL7ju9wdHsCpTrDP2BDZRHPZf6S+XaT8HLF8+klXf3aEdxpjyh9LMZRmngS2+rPjNgQLKUMZPiJqmOpWnGplzSq1pQ/HKuYGOrRU1kcEoAWhcOrjNq3v4R0Hs6fdhrYaoEJY/9AALMfAaW3nA4V3csoZSnhfquTnVb9M3fDCPkoDXMGfD38U5ClT4cA6KW4Ng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=67ayGYyPGk5h+zUTA5QWC8yNcymjn9Y/E/omlWbnN04=;
- b=kTg2Ags0DKDOIqzNQUm8Iq50pN8wosxTfijqC1r0meoMe9nwY1A5ErhMzZRab5+TKE2qrvllXEiv70Dwej+WwEIn9hO7KlyKbtKIXdSqTPsK/Qd7nYOGZea4miDVGPTwM00dQmZeoMLGRda8qCTNwHaN/rAyqtawlbeT7/9HA+4c1zUFPbbungQvf8YJPlIzW8M3gsevtCFnxKVLmUN+lMjfbGIDl5d9JT3yjRv4b5s7CKmCmAeHA8nPdvIS2hGzuysJgLVBFyNycJlpTaO5cO0Rz9ggOzkO8BEpTfHfX3ZqUvz+5tL+INc/iD2/qG0gYmwNeLCo6etVr/MioWENYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=67ayGYyPGk5h+zUTA5QWC8yNcymjn9Y/E/omlWbnN04=;
- b=baAJi8rTnbGqrpkBQK+O7F7GuJ/kJ0lulYO2TMHkapyVREm01MAC8XO7h7MXA16G53/g+w/xPj/YTGlMtHv7Cz8Jp+Z2/F6pR/ZNSMG6PitPYZv1+Xwn8vlbyHYsNxmkHgPQpVTbP6tlfaEu0EQhe7VB3+GP+2bIuv8yBNoRpM0=
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4565.namprd10.prod.outlook.com (2603:10b6:510:31::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Tue, 16 Mar
- 2021 02:30:00 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::dc39:c9fa:7365:8c8e]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::dc39:c9fa:7365:8c8e%5]) with mapi id 15.20.3933.032; Tue, 16 Mar 2021
- 02:30:00 +0000
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Adam Radford <aradford@gmail.com>,
-        Alan Cox <alan@lxorguk.ukuu.org.uk>,
-        Ali Akcaagac <aliakc@web.de>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Andre Hedrick <andre@suse.com>,
-        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-        Anil Veerabhadrappa <anilgv@broadcom.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bas Vermeulen <bvermeul@blackstar.xs4all.nl>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        Brian Macy <bmacy@sunshinecomputing.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "C.L. Huang" <ching@tekram.com.tw>, dc395x@twibble.org,
-        de Melo <acme@conectiva.com.br>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Dimitris Michailidis <dm@chelsio.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Eddie Wai <eddie.wai@broadcom.com>,
-        Erich Chen <erich@tekram.com.tw>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Hannes Reinecke <hare@kernel.org>,
-        Hannes Reinecke <hare@suse.de>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        James Smart <james.smart@broadcom.com>,
-        Jamie Lenehan <lenehan@twibble.org>,
-        Jan Kotas <jank@cadence.com>,
-        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
-        Joel Jacobson <linux@3ware.com>, Karen Xie <kxie@chelsio.com>,
-        Ketan Mukadam <ketan.mukadam@broadcom.com>,
-        Kurt Garloff <garloff@suse.de>,
-        "Leonard N. Zubkoff" <lnz@dandelion.com>,
-        linux-drivers@broadcom.com, Linux GmbH <hare@suse.com>,
-        linux-scsi@vger.kernel.org,
-        Manish Rangankar <mrangankar@marvell.com>,
-        Marcelo Tosatti <marcelo@conectiva.com.br>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        MPT-FusionLinux.pdl@avagotech.com,
-        MPT-FusionLinux.pdl@broadcom.com,
-        Nathaniel Clark <nate@misrule.us>,
-        "Nicholas A. Bellinger" <nab@kernel.org>,
-        Nilesh Javali <njavali@marvell.com>,
-        Oliver Neukum <oliver@neukum.org>,
-        QLogic-Storage-Upstream@qlogic.com,
-        Santosh Yaraganavi <santosh.sy@samsung.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
-        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Vinayak Holikatti <h.vinayak@samsung.com>,
-        Vladislav Bolkhovitin <vst@vlnb.net>
-Subject: Re: [PATCH 00/30] [Set 2] Rid W=1 warnings in SCSI
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq15z1r6db8.fsf@ca-mkp.ca.oracle.com>
-References: <20210312094738.2207817-1-lee.jones@linaro.org>
-Date:   Mon, 15 Mar 2021 22:29:57 -0400
-In-Reply-To: <20210312094738.2207817-1-lee.jones@linaro.org> (Lee Jones's
-        message of "Fri, 12 Mar 2021 09:47:08 +0000")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: BY5PR04CA0013.namprd04.prod.outlook.com
- (2603:10b6:a03:1d0::23) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        Mon, 15 Mar 2021 22:30:43 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Dzy0Q2PkNzkYtQ;
+        Tue, 16 Mar 2021 10:29:10 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Tue, 16 Mar 2021
+ 10:30:33 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
+CC:     <almasrymina@google.com>, <sfr@canb.auug.org.au>,
+        <rientjes@google.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
+Subject: [PATCH v3] hugetlb_cgroup: fix imbalanced css_get and css_put pair for shared mappings
+Date:   Mon, 15 Mar 2021 22:30:02 -0400
+Message-ID: <20210316023002.53921-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by BY5PR04CA0013.namprd04.prod.outlook.com (2603:10b6:a03:1d0::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31 via Frontend Transport; Tue, 16 Mar 2021 02:29:59 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 86d45e75-2aa0-4c80-97dc-08d8e823657f
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4565:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB45654A942932203A5CDA2B168E6B9@PH0PR10MB4565.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1227;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XFfaWch+/R7XN0GRNcR5amJXWl3Iq2wZeedOREqy8o0qAywR0URFg4er/y9ssyCipjxpyOmcaqTQcZfg4vMR90vDZpMzbxu85MtmlH9NPOesP1odZebs+upbxvDmmDOue8VQ4PKnQqvYg1zf+CUazHv/0Cbb2WOI7yExlcZqyUXO+rVa8Og+9Wqrfw4kLytnH0W7YdYXlieeNhz62KAn5CW7txdR8gmg9rfNqSsTqEpJ5aQxEHshjqyG9SBXHtGSGT6JYQRy3vjOn9HnK8YEklz3azN1JJfG6zXHDKtkuyIW1zJD8Q3bTehhIsjdPkO/H7ZSCK6blsAssEx8SrbpsBGReJ+0FsafmotNx0of3XI+NkE0Z9C5pKqbc4Cj/S++awuOVMNjETvSEgFVNi9trdSVcds9fTxmnTftwEYV4y/alrmfqelephCvfnbMFjJbCVbjPrY51fgi7TSMp8AS8vbICjr4ifkykSpjic4dwqbLOoGOTjNgSADmML3q5Uuh2uwk2yP041SW6RXx0Bw4HMYpfwGzgkAlCepvh+A9Pp/pl1h7EnWj7x5c2MhJYBup
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(396003)(376002)(366004)(136003)(316002)(36916002)(86362001)(52116002)(26005)(7696005)(956004)(83380400001)(54906003)(55016002)(66476007)(8936002)(186003)(6916009)(7406005)(16526019)(478600001)(66556008)(8676002)(5660300002)(7416002)(66946007)(7366002)(2906002)(558084003)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Ies6HeDKLgO2LehGscsTJ0fGZZ4BG9aUA+PUGn0RoL6muNSI3pps6to/V1j4?=
- =?us-ascii?Q?ZaCaGffgNLoyzs6rGHCuBKTjdxbg2dX2WFqgdD0Z1mfmGKciu/RUo/xsBm9/?=
- =?us-ascii?Q?m6stfUkJ+9S8l2LrZLLkkpgM2EVB+9OzQkKMAkqqsLsz7reNNYy6ErZRrGUs?=
- =?us-ascii?Q?NMfW/+QYpZm/fZ/VEBM/Vb1Csgv1WjNPTn1+Q9mD0FJDSYibFoa3ifdIKKDO?=
- =?us-ascii?Q?kyWbMxp4WpM86XDSZ0IerqZ3PdvMkNlJn+/TLuMCcyOqDZmCxrYTlHxZDtN1?=
- =?us-ascii?Q?rNQptcP8/SCrexMwvneXwg50Vp/evyewoPFT1iyoWO0BcZK+dZzFd1hGvBGu?=
- =?us-ascii?Q?KIsLj1CE86pgXgbxVmc0ZzcvmwodV42QaL+AIeuRYPen2O4s6Woo8kuk18Gy?=
- =?us-ascii?Q?0PDXB3PMDnmYLctNaW5lWB7QG7+Ttidl2DpD2BXCfKyFiIypmnscHMUoC7vC?=
- =?us-ascii?Q?eZqbmuu64l52DjZeuoqe+Juqh2+N2I9LJOPZAybio/jTE3duLffw9Ys2ONAM?=
- =?us-ascii?Q?Fpyfvf/xhDMDm8ccIZT2ShtC/0LVFWryQfx4AuNJbehz1dHNUibIMUluefso?=
- =?us-ascii?Q?LcgTqdFCEInBaPOe+JaPfaMe1VQl/1gdb+p4jw8nxIaK1xICgqtJi2sa6NX3?=
- =?us-ascii?Q?UGzv1MbF8XOgEHr9z1yJFjp4r0RlURBO97nB3lbhk/Gk/wI2L8xztpn/1LNC?=
- =?us-ascii?Q?GA6eTG5re6LrryaRvM/AigbByz+8MPU+uUHfYm83E4FS1pi/nJ5zYKMIfIV2?=
- =?us-ascii?Q?FxQ12GUsPhj0mjMu7oOFocqjFI07ZgcdFrLTe+QL9O6wBmoF+/N2I96fQuyk?=
- =?us-ascii?Q?/TIS82knFVvyrLDFyyp0oAD6mZLHdQryCfUKNaE5PF8qZvfUhygfXXprLeMP?=
- =?us-ascii?Q?pSPA2BWyoLoZ/2zHVf7+9wc6/m27FsXk7VxqrDyH6e+JENjtVVyI8hZ3dzho?=
- =?us-ascii?Q?6svSHEStVzY4SLPtnOC3aMxT0wfZsTja9m9wYc0Ueb6N6psKM5HM2Af4ozAp?=
- =?us-ascii?Q?zRBDCzq16R5fP4+dGpLJqoAKYCvtPzrpe2C1Rz4PHCTo8TVt4CjMfQTBdxZw?=
- =?us-ascii?Q?lKY8cFKvPPsdLJW3d9M+lavsSgNiU2mu1WeFSoHAs4jeaFP+XexBJnEqq4Ni?=
- =?us-ascii?Q?cP/0sxhiDPFVACOQ5+Kj4z3IMyDZh5WzA8jTC2aLNDxBcHaRdERtlgNR6/Rw?=
- =?us-ascii?Q?0YU4ib2yRLbqPp4/L05UunyyRbf73mxdtcE4WY7oCVdDRkfC5zcxNhrs2JQ1?=
- =?us-ascii?Q?4+0l6gxSHCyRthcgwQshB7HVlpxIP2GR7fsF0kVdh3jZCuDgTu5MuqdGCk/M?=
- =?us-ascii?Q?OLxnlMkbE6B7g4SpkdBQuAep?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 86d45e75-2aa0-4c80-97dc-08d8e823657f
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Mar 2021 02:29:59.8888
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Epn2asMRc+i91msDRXSsGZi7+4cHumHGQ4FqgnT78TWu6U7iyJbnKpzGr8J3GLm9HQTul3L0hJT5dlth40z22VPN62WAbNuOrfqjK4FxOFU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4565
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9924 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 spamscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103160016
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9924 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0 adultscore=0
- spamscore=0 clxscore=1011 phishscore=0 malwarescore=0 priorityscore=1501
- bulkscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103160016
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The current implementation of hugetlb_cgroup for shared mappings could have
+different behavior. Consider the following two scenarios:
 
-Lee,
+1.Assume initial css reference count of hugetlb_cgroup is 1:
+  1.1 Call hugetlb_reserve_pages with from = 1, to = 2. So css reference
+count is 2 associated with 1 file_region.
+  1.2 Call hugetlb_reserve_pages with from = 2, to = 3. So css reference
+count is 3 associated with 2 file_region.
+  1.3 coalesce_file_region will coalesce these two file_regions into one.
+So css reference count is 3 associated with 1 file_region now.
 
-> This set is part of a larger effort attempting to clean-up W=1 kernel
-> builds, which are currently overwhelmingly riddled with niggly little
-> warnings.
+2.Assume initial css reference count of hugetlb_cgroup is 1 again:
+  2.1 Call hugetlb_reserve_pages with from = 1, to = 3. So css reference
+count is 2 associated with 1 file_region.
 
-Applied to 5.13/scsi-staging, thanks!
+Therefore, we might have one file_region while holding one or more css
+reference counts. This inconsistency could lead to imbalanced css_get()
+and css_put() pair. If we do css_put one by one (i.g. hole punch case),
+scenario 2 would put one more css reference. If we do css_put all together
+(i.g. truncate case), scenario 1 will leak one css reference.
 
+The imbalanced css_get() and css_put() pair would result in a non-zero
+reference when we try to destroy the hugetlb cgroup. The hugetlb cgroup
+directory is removed __but__ associated resource is not freed. This might
+result in OOM or can not create a new hugetlb cgroup in a busy workload
+ultimately.
+
+In order to fix this, we have to make sure that one file_region must hold
+exactly one css reference. So in coalesce_file_region case, we should
+release one css reference before coalescence. Also only put css reference
+when the entire file_region is removed.
+
+The last thing to note is that the caller of region_add() will only hold
+one reference to h_cg->css for the whole contiguous reservation region.
+But this area might be scattered when there are already some file_regions
+reside in it. As a result, many file_regions may share only one h_cg->css
+reference. In order to ensure that one file_region must hold exactly one
+css reference, we should do css_get() for each file_region and release the
+reference held by caller when they are done.
+
+Fixes: 075a61d07a8e ("hugetlb_cgroup: add accounting for shared mappings")
+Reported-by: kernel test robot <lkp@intel.com> (auto build test ERROR)
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Aneesh Kumar K.V <aneesh.kumar@linux.vnet.ibm.com>
+Cc: Wanpeng Li <liwp.linux@gmail.com>
+Cc: Mina Almasry <almasrymina@google.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: <stable@vger.kernel.org>
+---
+v2->v3:
+reshape some comments suggested by Mike Kravetz.
+collect Reviewed-by tag from Mike Kravetz.
+
+v1->v2:
+fix auto build test ERROR
+---
+ include/linux/hugetlb_cgroup.h | 15 +++++++++++--
+ mm/hugetlb.c                   | 41 ++++++++++++++++++++++++++++++----
+ mm/hugetlb_cgroup.c            | 10 +++++++--
+ 3 files changed, 58 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/hugetlb_cgroup.h b/include/linux/hugetlb_cgroup.h
+index 2ad6e92f124a..0bff345c4bc6 100644
+--- a/include/linux/hugetlb_cgroup.h
++++ b/include/linux/hugetlb_cgroup.h
+@@ -113,6 +113,11 @@ static inline bool hugetlb_cgroup_disabled(void)
+ 	return !cgroup_subsys_enabled(hugetlb_cgrp_subsys);
+ }
+ 
++static inline void hugetlb_cgroup_put_rsvd_cgroup(struct hugetlb_cgroup *h_cg)
++{
++	css_put(&h_cg->css);
++}
++
+ extern int hugetlb_cgroup_charge_cgroup(int idx, unsigned long nr_pages,
+ 					struct hugetlb_cgroup **ptr);
+ extern int hugetlb_cgroup_charge_cgroup_rsvd(int idx, unsigned long nr_pages,
+@@ -138,7 +143,8 @@ extern void hugetlb_cgroup_uncharge_counter(struct resv_map *resv,
+ 
+ extern void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
+ 						struct file_region *rg,
+-						unsigned long nr_pages);
++						unsigned long nr_pages,
++						bool region_del);
+ 
+ extern void hugetlb_cgroup_file_init(void) __init;
+ extern void hugetlb_cgroup_migrate(struct page *oldhpage,
+@@ -147,7 +153,8 @@ extern void hugetlb_cgroup_migrate(struct page *oldhpage,
+ #else
+ static inline void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
+ 						       struct file_region *rg,
+-						       unsigned long nr_pages)
++						       unsigned long nr_pages,
++						       bool region_del)
+ {
+ }
+ 
+@@ -185,6 +192,10 @@ static inline bool hugetlb_cgroup_disabled(void)
+ 	return true;
+ }
+ 
++static inline void hugetlb_cgroup_put_rsvd_cgroup(struct hugetlb_cgroup *h_cg)
++{
++}
++
+ static inline int hugetlb_cgroup_charge_cgroup(int idx, unsigned long nr_pages,
+ 					       struct hugetlb_cgroup **ptr)
+ {
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 8fb42c6dd74b..09814be60412 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -280,6 +280,17 @@ static void record_hugetlb_cgroup_uncharge_info(struct hugetlb_cgroup *h_cg,
+ 		nrg->reservation_counter =
+ 			&h_cg->rsvd_hugepage[hstate_index(h)];
+ 		nrg->css = &h_cg->css;
++		/*
++		 * The caller will hold exactly one h_cg->css reference for the
++		 * whole contiguous reservation region. But this area might be
++		 * scattered when there are already some file_regions reside in
++		 * it. As a result, many file_regions may share only one css
++		 * reference. In order to ensure that one file_region must hold
++		 * exactly one h_cg->css reference, we should do css_get for
++		 * each file_region and leave the reference held by caller
++		 * untouched.
++		 */
++		css_get(&h_cg->css);
+ 		if (!resv->pages_per_hpage)
+ 			resv->pages_per_hpage = pages_per_huge_page(h);
+ 		/* pages_per_hpage should be the same for all entries in
+@@ -293,6 +304,14 @@ static void record_hugetlb_cgroup_uncharge_info(struct hugetlb_cgroup *h_cg,
+ #endif
+ }
+ 
++static void put_uncharge_info(struct file_region *rg)
++{
++#ifdef CONFIG_CGROUP_HUGETLB
++	if (rg->css)
++		css_put(rg->css);
++#endif
++}
++
+ static bool has_same_uncharge_info(struct file_region *rg,
+ 				   struct file_region *org)
+ {
+@@ -316,6 +335,7 @@ static void coalesce_file_region(struct resv_map *resv, struct file_region *rg)
+ 		prg->to = rg->to;
+ 
+ 		list_del(&rg->link);
++		put_uncharge_info(rg);
+ 		kfree(rg);
+ 
+ 		rg = prg;
+@@ -327,6 +347,7 @@ static void coalesce_file_region(struct resv_map *resv, struct file_region *rg)
+ 		nrg->from = rg->from;
+ 
+ 		list_del(&rg->link);
++		put_uncharge_info(rg);
+ 		kfree(rg);
+ 	}
+ }
+@@ -659,7 +680,7 @@ static long region_del(struct resv_map *resv, long f, long t)
+ 
+ 			del += t - f;
+ 			hugetlb_cgroup_uncharge_file_region(
+-				resv, rg, t - f);
++				resv, rg, t - f, false);
+ 
+ 			/* New entry for end of split region */
+ 			nrg->from = t;
+@@ -680,7 +701,7 @@ static long region_del(struct resv_map *resv, long f, long t)
+ 		if (f <= rg->from && t >= rg->to) { /* Remove entire region */
+ 			del += rg->to - rg->from;
+ 			hugetlb_cgroup_uncharge_file_region(resv, rg,
+-							    rg->to - rg->from);
++							    rg->to - rg->from, true);
+ 			list_del(&rg->link);
+ 			kfree(rg);
+ 			continue;
+@@ -688,13 +709,13 @@ static long region_del(struct resv_map *resv, long f, long t)
+ 
+ 		if (f <= rg->from) {	/* Trim beginning of region */
+ 			hugetlb_cgroup_uncharge_file_region(resv, rg,
+-							    t - rg->from);
++							    t - rg->from, false);
+ 
+ 			del += t - rg->from;
+ 			rg->from = t;
+ 		} else {		/* Trim end of region */
+ 			hugetlb_cgroup_uncharge_file_region(resv, rg,
+-							    rg->to - f);
++							    rg->to - f, false);
+ 
+ 			del += rg->to - f;
+ 			rg->to = f;
+@@ -5128,6 +5149,10 @@ bool hugetlb_reserve_pages(struct inode *inode,
+ 			 */
+ 			long rsv_adjust;
+ 
++			/*
++			 * hugetlb_cgroup_uncharge_cgroup_rsvd() will put the
++			 * reference to h_cg->css. See comment below for detail.
++			 */
+ 			hugetlb_cgroup_uncharge_cgroup_rsvd(
+ 				hstate_index(h),
+ 				(chg - add) * pages_per_huge_page(h), h_cg);
+@@ -5135,6 +5160,14 @@ bool hugetlb_reserve_pages(struct inode *inode,
+ 			rsv_adjust = hugepage_subpool_put_pages(spool,
+ 								chg - add);
+ 			hugetlb_acct_memory(h, -rsv_adjust);
++		} else if (h_cg) {
++			/*
++			 * The file_regions will hold their own reference to
++			 * h_cg->css. So we should release the reference held
++			 * via hugetlb_cgroup_charge_cgroup_rsvd() when we are
++			 * done.
++			 */
++			hugetlb_cgroup_put_rsvd_cgroup(h_cg);
+ 		}
+ 	}
+ 	return true;
+diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
+index f68b51fcda3d..603a131e262d 100644
+--- a/mm/hugetlb_cgroup.c
++++ b/mm/hugetlb_cgroup.c
+@@ -391,7 +391,8 @@ void hugetlb_cgroup_uncharge_counter(struct resv_map *resv, unsigned long start,
+ 
+ void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
+ 					 struct file_region *rg,
+-					 unsigned long nr_pages)
++					 unsigned long nr_pages,
++					 bool region_del)
+ {
+ 	if (hugetlb_cgroup_disabled() || !resv || !rg || !nr_pages)
+ 		return;
+@@ -400,7 +401,12 @@ void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
+ 	    !resv->reservation_counter) {
+ 		page_counter_uncharge(rg->reservation_counter,
+ 				      nr_pages * resv->pages_per_hpage);
+-		css_put(rg->css);
++		/*
++		 * Only do css_put(rg->css) when we delete the entire region
++		 * because one file_region must hold exactly one css reference.
++		 */
++		if (region_del)
++			css_put(rg->css);
+ 	}
+ }
+ 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.19.1
+
