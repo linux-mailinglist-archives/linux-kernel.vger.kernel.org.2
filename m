@@ -2,105 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9DF33CC8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 05:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1985433CC8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 05:29:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234953AbhCPE13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 00:27:29 -0400
-Received: from mga07.intel.com ([134.134.136.100]:23114 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235003AbhCPE12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 00:27:28 -0400
-IronPort-SDR: HAWtICA1Z6Gtgf/7HDGIeKG/ynmXe+tC4iwuY88Z1DjVGaWqMEtHVHdzzbSuzkByDXUAGfsKJU
- 2Nzgtccvp2Ow==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="253213911"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="253213911"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 21:27:28 -0700
-IronPort-SDR: TZpwBNAcjt5jDtqXynI0VJW8Y2DZRi0HSNsoJjPQupUAL0cR6g6ivGFQdRd2M6t/wsYUVYBKnj
- KuvNz0rCugMw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="439057412"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
-  by fmsmga002.fm.intel.com with ESMTP; 15 Mar 2021 21:27:24 -0700
-Subject: Re: [PATCH v2] sched/fair: reduce long-tail newly idle balance cost
-To:     Aubrey Li <aubrey.li@intel.com>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com,
-        mgorman@techsingularity.net, bristot@redhat.com
-Cc:     linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-References: <1614154549-116078-1-git-send-email-aubrey.li@intel.com>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <74f65436-09f2-a4f0-345f-8887b11a51bf@linux.intel.com>
-Date:   Tue, 16 Mar 2021 12:27:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S234979AbhCPE2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 00:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233975AbhCPE2b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 00:28:31 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A803C06174A;
+        Mon, 15 Mar 2021 21:28:31 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id l13so10819574qtu.9;
+        Mon, 15 Mar 2021 21:28:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4n3te/HCS3MzzKWHw8ZXQyRQm5oWDCwPsSRFLk9uq9g=;
+        b=YMLups96wnZtw41Rgt1HhJ04nluJrzdkdLyEk11vs81rQYUV0c6/mw63Aejtf70sev
+         5ZC+vyF419NxPnbwXeYMhHiSzCe5blMhiqSQRlEaCU6il3Runpwm97D3Wbavvdw/gt7J
+         ip3nlyBo0M9Jnmgc1EiJladdla39QAoehoBUHUccbRl6PZx86YwFnm99ebrSu2qN3C/T
+         EnMSgUJb73+X6ZYX0dHAeMzBx9Hq+1H8spmQ2EQJdInJlYE3DMLROr2ttod9pxHkWdKs
+         2S/auvJX6YRH+pyL48pewmg6nldyW9M4B0XhfGXbn6s3+inwjyUv63sFSIWsrQvTQbiQ
+         FXEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4n3te/HCS3MzzKWHw8ZXQyRQm5oWDCwPsSRFLk9uq9g=;
+        b=cC+Q/bch82C8vs/WsV+JZlEXRvUY1FxFAeUF7/BI7zTVGfehE1NtQ2B47311z3Kv49
+         2t6jmC5MAzU4cNAEZQ636m1QKVph+3RTOQN71/MdrMuWpJupNvYhCgSkKIPPLC5IkuE+
+         BFdi0KWS9Jc/Sf/bJu4TXQEqzY7WSwvtlODCw3xec3plM4OOyfw6SFREJx9/QO8sTBra
+         4gGnACfj+0ACHWxNF9/CHJGD10kdOP5BSChsXcmPiXvaMRcspG5immRXznoV9zLcy1JC
+         Ocafv8Nzq7Ax9fXjJD7qs83oacQQXeurOblQIvRvOTw7nVPCh4yDP8GMngpOMYDDxp2O
+         gJUA==
+X-Gm-Message-State: AOAM533DHBfhgPGMOt4zCdaGeeF4S5//PpNoEx6fgNXKfbYIrkorAhXx
+        MmpQD5VHIdWK4EQRi6V0KJQbOp/reK6cfEbS
+X-Google-Smtp-Source: ABdhPJxUyjQvHkOYyf/6rcbqfV/4VusWwgBaf7AjqYgmcWbwazpI6QCToAdNpr6o60YNHtIjm69Etw==
+X-Received: by 2002:ac8:7b8b:: with SMTP id p11mr16407573qtu.57.1615868910714;
+        Mon, 15 Mar 2021 21:28:30 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.58.45])
+        by smtp.gmail.com with ESMTPSA id c27sm13972111qko.71.2021.03.15.21.28.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 21:28:30 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     tsbogend@alpha.franken.de, unixbhaskar@gmail.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] mips: include: asm: octeon:  A typo fix in the file cvmx-address.h
+Date:   Tue, 16 Mar 2021 09:58:00 +0530
+Message-Id: <20210316042800.2577822-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <1614154549-116078-1-git-send-email-aubrey.li@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/24 16:15, Aubrey Li wrote:
-> A long-tail load balance cost is observed on the newly idle path,
-> this is caused by a race window between the first nr_running check
-> of the busiest runqueue and its nr_running recheck in detach_tasks.
-> 
-> Before the busiest runqueue is locked, the tasks on the busiest
-> runqueue could be pulled by other CPUs and nr_running of the busiest
-> runqueu becomes 1 or even 0 if the running task becomes idle, this
-> causes detach_tasks breaks with LBF_ALL_PINNED flag set, and triggers
-> load_balance redo at the same sched_domain level.
-> 
-> In order to find the new busiest sched_group and CPU, load balance will
-> recompute and update the various load statistics, which eventually leads
-> to the long-tail load balance cost.
-> 
-> This patch clears LBF_ALL_PINNED flag for this race condition, and hence
-> reduces the long-tail cost of newly idle balance.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ arch/mips/include/asm/octeon/cvmx-address.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ping...
+diff --git a/arch/mips/include/asm/octeon/cvmx-address.h b/arch/mips/include/asm/octeon/cvmx-address.h
+index e4444f8c4a61..5df5c90f6a5d 100644
+--- a/arch/mips/include/asm/octeon/cvmx-address.h
++++ b/arch/mips/include/asm/octeon/cvmx-address.h
+@@ -152,7 +152,7 @@ typedef union {
 
-> 
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Mel Gorman <mgorman@techsingularity.net>
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Tim Chen <tim.c.chen@linux.intel.com>
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-> ---
->  kernel/sched/fair.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 04a3ce2..5c67804 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -7675,6 +7675,15 @@ static int detach_tasks(struct lb_env *env)
->  
->  	lockdep_assert_held(&env->src_rq->lock);
->  
-> +	/*
-> +	 * Source run queue has been emptied by another CPU, clear
-> +	 * LBF_ALL_PINNED flag as we will not test any task.
-> +	 */
-> +	if (env->src_rq->nr_running <= 1) {
-> +		env->flags &= ~LBF_ALL_PINNED;
-> +		return 0;
-> +	}
-> +
->  	if (env->imbalance <= 0)
->  		return 0;
->  
-> 
+ 	/* physical mem address */
+ 	struct {
+-		/* techically, <47:40> are dont-cares */
++		/* technically, <47:40> are dont-cares */
+ 		uint64_t zeroes:24;
+ 		/* the hardware ignores <39:36> in Octeon I */
+ 		uint64_t unaddr:4;
+--
+2.30.2
 
