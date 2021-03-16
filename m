@@ -2,76 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4A333D651
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:02:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D402433D656
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233823AbhCPPBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 11:01:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230227AbhCPPBN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 11:01:13 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2192C06174A;
-        Tue, 16 Mar 2021 08:01:12 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 15so20873537ljj.0;
-        Tue, 16 Mar 2021 08:01:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NNvjVz1vaYlHJshO7OABYsYjC9M/PbANTgTBjitjTL4=;
-        b=sTr2THG5sRsL6Ywlm61WFLumBxXwk1mAoSr1oOk5jccLunuf//Jcwm65OF4gE61h3a
-         ZDO84SV2qOAw9kvZUcWq21efOrWAEcJAyyl3sBUHrQM2OORex+5tiV8OeV4jBoEO7iPU
-         ugJGUsHKJOlghl5t+FxUfz0YopgLDMkRtjHRyjXNZYkc1MU6boQQCRMLxzmyzr0CIovv
-         z84DR+clKjigHbEjmiTfJzWqIrAfdCybba99+TJLyg7KTenrO2kHyYExh1idq0eMO+mb
-         4NySouhStDVWNVK1S7VwWCI9tgpcM7p03BIHdHtcXiTPLm5l0mQksUIYrx/FlThC9tEn
-         teZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NNvjVz1vaYlHJshO7OABYsYjC9M/PbANTgTBjitjTL4=;
-        b=o9jyAhXt748PLBT73yW7iVSjneX0Aw1gpCsJPVtYqf8eSlBxstQCtPvYGR5T1WBbdN
-         j2SyUbh1YkZWNaEH7JdkDgwUDT/kTxCX7xw1hy4HYi/7NUYeR8NbeCHqWBsp+OerAty5
-         IRMsVuLA1CwtcKLqeEcuFUQ/AqaUvhKhuAzml3BEYYDHNTdz9AP31d7q4/S7OuozCuiG
-         uWlzb0kFdwCZfElTme/lDu+yzxYtqBnvrnig54i2BTsBN6geosr2HfnKJOcaTiqvSWy7
-         sRlxzJ1AHlJXkhe/OSw10DmkxV1ESD94ZqxZPod3T6EoNGbmkXB7+kJAHpl6EMleGni3
-         Vj3w==
-X-Gm-Message-State: AOAM532N4Wf8Zf9NVP40jwfHZH61A+Ac92uZ2k/g+0yO49CJ04ewDqqb
-        4V3/zx47O5eVxiUaGRhzj0Opg6VGUo9ywhNnrs4=
-X-Google-Smtp-Source: ABdhPJxPqaGNyiwjULN2DKgfnb4h1VL+o5r2Ai3b5TQE/Q+Z2mYX5ge5RX0uAM50vxiqtToFhzBdlsB4i43aki//iB4=
-X-Received: by 2002:a2e:3608:: with SMTP id d8mr2980276lja.21.1615906870926;
- Tue, 16 Mar 2021 08:01:10 -0700 (PDT)
+        id S237671AbhCPPDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 11:03:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49708 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237673AbhCPPC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 11:02:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BC8E9AC75;
+        Tue, 16 Mar 2021 15:02:57 +0000 (UTC)
+Date:   Tue, 16 Mar 2021 16:02:54 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Wei Liu <wei.liu@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: Re: linux-next: manual merge of the hyperv tree with the tip tree
+Message-ID: <20210316150254.GC18822@zn.tnic>
+References: <20210315143505.35af617b@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210315085816.21413-1-qiang.zhang@windriver.com> <DM6PR11MB4202D95C3B579C7A6F381A97FF6B9@DM6PR11MB4202.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB4202D95C3B579C7A6F381A97FF6B9@DM6PR11MB4202.namprd11.prod.outlook.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 16 Mar 2021 08:00:59 -0700
-Message-ID: <CAADnVQ+r=8xRjsjFq0Kq0EV-s10AqCsuTjwmP1JDA3NnyiuOKw@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf: Fix memory leak in copy_process()
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Cc:     "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzbot+44908bb56d2bfe56b28e@syzkaller.appspotmail.com" 
-        <syzbot+44908bb56d2bfe56b28e@syzkaller.appspotmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210315143505.35af617b@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 4:29 AM Zhang, Qiang <Qiang.Zhang@windriver.com> wrote:
->
-> Hello Alexei Starovoitov Daniel Borkmann
-> Please  review this patch.
+On Mon, Mar 15, 2021 at 02:35:05PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the hyperv tree got a conflict in:
+> 
+>   arch/x86/include/asm/mshyperv.h
+> 
+> between commit:
+> 
+>   a0e2bf7cb700 ("x86/paravirt: Switch time pvops functions to use static_call()")
+> 
+> from the tip tree and commit:
+> 
+>   eb3e1d370b4c ("clocksource/drivers/hyper-v: Handle sched_clock differences inline")
+> 
+> from the hyperv tree.
+> 
+> I fixed it up (I used the latter version of this file and then applied the
+> following patch) and can carry the fix as necessary. This is now fixed
+> as far as linux-next is concerned, but any non trivial conflicts should
+> be mentioned to your upstream maintainer when your tree is submitted for
+> merging.  You may also want to consider cooperating with the maintainer
+> of the conflicting tree to minimise any particularly complex conflicts.
 
-Please don't top post.
+Right,
+
+so tglx and I took a quick look and came to the conclusion that it would
+be best if you - provided it is not too much trouble - keep applying
+this patch so that linux-next can get tested properly and we - Wei or I
+- explain this merge conflict in our pull requests during the next merge
+window and ask Linus to merge your patch ontop. This way we'll save us
+the cross-tree merging dance.
+
+Thx!
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
