@@ -2,92 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B48233DCF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E743B33DCF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 19:56:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240207AbhCPSyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 14:54:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46434 "EHLO mail.kernel.org"
+        id S240211AbhCPS4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 14:56:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41752 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240200AbhCPSxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:53:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D0856514B;
-        Tue, 16 Mar 2021 18:53:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615920803;
-        bh=SdgPXfd1GX0HxBpnuqAYxYxIA045/B5izyywjEHSB2I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oQQg9sAJMRzTz/mGOagHrIUD2U+4+dxDyV0stlTFPVZ80RKnA9wo0nRo3Ny1i51RP
-         QDbpQjA+VIC1dshlU4TbV2j79GqWGc7OaQasxwizX844yHrJ2QIUYgZqxouNFTkHTg
-         cR+YtKMvCfcJ1BKxZIGysOuWZfIo6Cna5Mr3NbHMSrXgD4xNDf2V+DdS8WUodh1LuP
-         4ueef99fiueVcFJzmH4BwV3ASixsQwE43K8HMRO2MWJoZ7RVe7hJgxg2fG0AbNU3ou
-         3wNAMAGwah7FmqdP8zzDQmB3rtHplYjXCFziVhODWnY4GF8z3XOSkcPLqpwFVoY0GD
-         hFwsiAUOPCsyQ==
-Received: by mail-oo1-f42.google.com with SMTP id n12-20020a4ad12c0000b02901b63e7bc1b4so4406565oor.5;
-        Tue, 16 Mar 2021 11:53:23 -0700 (PDT)
-X-Gm-Message-State: AOAM533O3ojaF195i8dK8TPCURqtQXn7wzvAUSl8diSAPF+Kars+e++c
-        jkPbJqJlvZ5DkHtL4jtRYV51Ty9u6uTPWRpKu8M=
-X-Google-Smtp-Source: ABdhPJzn0i4w3u0huXHq7pnjViu24Wv1YVxCUfI1amFd+69q4KthvnTtLggH8Vm3k4PUwrTQY3HpO0X6NmVh7Tt27Ow=
-X-Received: by 2002:a4a:8ed2:: with SMTP id c18mr197825ool.66.1615920802789;
- Tue, 16 Mar 2021 11:53:22 -0700 (PDT)
+        id S240212AbhCPSz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 14:55:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6DCE8AE47;
+        Tue, 16 Mar 2021 18:55:56 +0000 (UTC)
+Date:   Tue, 16 Mar 2021 11:55:47 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: [PATCH 1/4] locking/ww_mutex: Simplify use_ww_ctx & ww_ctx
+ handling
+Message-ID: <20210316185547.4mu6zj2bwjjs2c62@offworld>
+References: <20210316153119.13802-1-longman@redhat.com>
+ <20210316153119.13802-2-longman@redhat.com>
 MIME-Version: 1.0
-References: <20210125153057.3623715-1-balsini@android.com> <20210125153057.3623715-3-balsini@android.com>
-In-Reply-To: <20210125153057.3623715-3-balsini@android.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 16 Mar 2021 19:53:06 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2VDH9-reuj8QTkFzbaU9XTUEOWFCmCVg1Snb6RjD6mHw@mail.gmail.com>
-Message-ID: <CAK8P3a2VDH9-reuj8QTkFzbaU9XTUEOWFCmCVg1Snb6RjD6mHw@mail.gmail.com>
-Subject: Re: [PATCH RESEND V12 2/8] fuse: 32-bit user space ioctl compat for
- fuse device
-To:     Alessio Balsini <balsini@android.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Peng Tao <bergwolf@gmail.com>,
-        Stefano Duo <duostefano93@gmail.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
-        fuse-devel@lists.sourceforge.net,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210316153119.13802-2-longman@redhat.com>
+User-Agent: NeoMutt/20201120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 4:48 PM Alessio Balsini <balsini@android.com> wrote:
+On Tue, 16 Mar 2021, Waiman Long wrote:
+
+>The use_ww_ctx flag is passed to mutex_optimistic_spin(), but the
+>function doesn't use it. The frequent use of the (use_ww_ctx && ww_ctx)
+>combination is repetitive.
+
+I always found that very fugly.
+
 >
-> With a 64-bit kernel build the FUSE device cannot handle ioctl requests
-> coming from 32-bit user space.
-> This is due to the ioctl command translation that generates different
-> command identifiers that thus cannot be used for direct comparisons
-> without proper manipulation.
+>In fact, ww_ctx should not be used at all if !use_ww_ctx.  Simplify
+>ww_mutex code by dropping use_ww_ctx from mutex_optimistic_spin() an
+>clear ww_ctx if !use_ww_ctx. In this way, we can replace (use_ww_ctx &&
+>ww_ctx) by just (ww_ctx).
 >
-> Explicitly extract type and number from the ioctl command to enable
-> 32-bit user space compatibility on 64-bit kernel builds.
+>Signed-off-by: Waiman Long <longman@redhat.com>
+
+Acked-by: Davidlohr Bueso <dbueso@suse.de>
+
+>---
+> kernel/locking/mutex.c | 25 ++++++++++++++-----------
+> 1 file changed, 14 insertions(+), 11 deletions(-)
 >
-> Signed-off-by: Alessio Balsini <balsini@android.com>
-
-I saw this commit go into the mainline kernel, and I'm worried that this
-doesn't do what the description says. Since the argument is a 'uint32_t',
-it is the same on both 32-bit and 64-bit user space, and the patch won't
-make any difference for compat mode, as long as that is using the normal
-uapi headers.
-
-If there is any user space that has a different definition of
-FUSE_DEV_IOC_CLONE, that may now successfully call
-this ioctl command, but the kernel will now also accept any other
-command code that has the same type and number, but an
-arbitrary direction or size argument.
-
-I think this should be changed back to specifically allow the
-command code(s) that are actually used and nothing else.
-
-       Arnd
+>diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+>index adb935090768..622ebdfcd083 100644
+>--- a/kernel/locking/mutex.c
+>+++ b/kernel/locking/mutex.c
+>@@ -626,7 +626,7 @@ static inline int mutex_can_spin_on_owner(struct mutex *lock)
+>  */
+> static __always_inline bool
+> mutex_optimistic_spin(struct mutex *lock, struct ww_acquire_ctx *ww_ctx,
+>-		      const bool use_ww_ctx, struct mutex_waiter *waiter)
+>+		      struct mutex_waiter *waiter)
+> {
+> 	if (!waiter) {
+> 		/*
+>@@ -702,7 +702,7 @@ mutex_optimistic_spin(struct mutex *lock, struct ww_acquire_ctx *ww_ctx,
+> #else
+> static __always_inline bool
+> mutex_optimistic_spin(struct mutex *lock, struct ww_acquire_ctx *ww_ctx,
+>-		      const bool use_ww_ctx, struct mutex_waiter *waiter)
+>+		      struct mutex_waiter *waiter)
+> {
+> 	return false;
+> }
+>@@ -922,6 +922,9 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+> 	struct ww_mutex *ww;
+> 	int ret;
+>
+>+	if (!use_ww_ctx)
+>+		ww_ctx = NULL;
+>+
+> 	might_sleep();
+>
+> #ifdef CONFIG_DEBUG_MUTEXES
+>@@ -929,7 +932,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+> #endif
+>
+> 	ww = container_of(lock, struct ww_mutex, base);
+>-	if (use_ww_ctx && ww_ctx) {
+>+	if (ww_ctx) {
+> 		if (unlikely(ww_ctx == READ_ONCE(ww->ctx)))
+> 			return -EALREADY;
+>
+>@@ -946,10 +949,10 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+> 	mutex_acquire_nest(&lock->dep_map, subclass, 0, nest_lock, ip);
+>
+> 	if (__mutex_trylock(lock) ||
+>-	    mutex_optimistic_spin(lock, ww_ctx, use_ww_ctx, NULL)) {
+>+	    mutex_optimistic_spin(lock, ww_ctx, NULL)) {
+> 		/* got the lock, yay! */
+> 		lock_acquired(&lock->dep_map, ip);
+>-		if (use_ww_ctx && ww_ctx)
+>+		if (ww_ctx)
+> 			ww_mutex_set_context_fastpath(ww, ww_ctx);
+> 		preempt_enable();
+> 		return 0;
+>@@ -960,7 +963,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+> 	 * After waiting to acquire the wait_lock, try again.
+> 	 */
+> 	if (__mutex_trylock(lock)) {
+>-		if (use_ww_ctx && ww_ctx)
+>+		if (ww_ctx)
+> 			__ww_mutex_check_waiters(lock, ww_ctx);
+>
+> 		goto skip_wait;
+>@@ -1013,7 +1016,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+> 			goto err;
+> 		}
+>
+>-		if (use_ww_ctx && ww_ctx) {
+>+		if (ww_ctx) {
+> 			ret = __ww_mutex_check_kill(lock, &waiter, ww_ctx);
+> 			if (ret)
+> 				goto err;
+>@@ -1026,7 +1029,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+> 		 * ww_mutex needs to always recheck its position since its waiter
+> 		 * list is not FIFO ordered.
+> 		 */
+>-		if ((use_ww_ctx && ww_ctx) || !first) {
+>+		if (ww_ctx || !first) {
+> 			first = __mutex_waiter_is_first(lock, &waiter);
+> 			if (first)
+> 				__mutex_set_flag(lock, MUTEX_FLAG_HANDOFF);
+>@@ -1039,7 +1042,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+> 		 * or we must see its unlock and acquire.
+> 		 */
+> 		if (__mutex_trylock(lock) ||
+>-		    (first && mutex_optimistic_spin(lock, ww_ctx, use_ww_ctx, &waiter)))
+>+		    (first && mutex_optimistic_spin(lock, ww_ctx, &waiter)))
+> 			break;
+>
+> 		spin_lock(&lock->wait_lock);
+>@@ -1048,7 +1051,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+> acquired:
+> 	__set_current_state(TASK_RUNNING);
+>
+>-	if (use_ww_ctx && ww_ctx) {
+>+	if (ww_ctx) {
+> 		/*
+> 		 * Wound-Wait; we stole the lock (!first_waiter), check the
+> 		 * waiters as anyone might want to wound us.
+>@@ -1068,7 +1071,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+> 	/* got the lock - cleanup and rejoice! */
+> 	lock_acquired(&lock->dep_map, ip);
+>
+>-	if (use_ww_ctx && ww_ctx)
+>+	if (ww_ctx)
+> 		ww_mutex_lock_acquired(ww, ww_ctx);
+>
+> 	spin_unlock(&lock->wait_lock);
+>-- 
+>2.18.1
+>
