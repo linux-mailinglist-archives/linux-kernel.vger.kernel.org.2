@@ -2,192 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6785233CFF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FB533CFF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 09:35:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234965AbhCPIeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 04:34:23 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:14346 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234980AbhCPIeI (ORCPT
+        id S235013AbhCPIe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 04:34:56 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:57892 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231191AbhCPIeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 04:34:08 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F063J5Gyfz8yYj;
-        Tue, 16 Mar 2021 16:32:12 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.211) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 16 Mar
- 2021 16:34:03 +0800
-Subject: Re: [f2fs] ab2dbddfd0: BUG:kernel_NULL_pointer_dereference,address
-To:     Sahitya Tummala <stummala@codeaurora.org>
-CC:     kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, <lkp@lists.01.org>,
-        <ltp@lists.linux.it>, Jaegeuk Kim <jaegeuk@kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20210316045800.GB11637@xsang-OptiPlex-9020>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <834d5270-ab2e-bd6a-addc-28ae357f67ee@huawei.com>
-Date:   Tue, 16 Mar 2021 16:34:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
-MIME-Version: 1.0
-In-Reply-To: <20210316045800.GB11637@xsang-OptiPlex-9020>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+        Tue, 16 Mar 2021 04:34:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1615883684; x=1647419684;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=kULNo8PAAwsswxq22ejQk/1LIqjTlz0YDM+ns0KH3PM=;
+  b=rUORWwTkn69IsoH30pfyJ/BNnyong9WOijTSXU+WrN1SctYP0uAs6wy6
+   EW6ltf0LOk8clDKosNqQwzmaFt6ssSl/FNIBi3pMPN6190fwjWGF6a8Dy
+   0mMCQuHZh6moR4pN/drzpgKFSQIETDr852av6FQBmnkl1YIiVczCxFNhj
+   O8FE1s2F4iCyhidKKAoB9vmWFzPnUkHmVz1/o7/XhPWDuYaTxBqPDEw5S
+   MdfYqdKEQtydqXLNYahzjdVVfiu+78E84b/0ZfqzIkBYksincTMms4AMK
+   d3O1cUpVHLT/G3qHS6x0HhqEqGhPOmlhjhA+c3gIAqP1PwgzgL0DArflo
+   A==;
+IronPort-SDR: HjzVyhetgzpHqYtTyg8j/QKF2mGh7sr5SujmdyAoYANOEohYL9CWIjMs1mgTnn3pGssqjLG4fp
+ 6VNjByDS8dG+MwwgJN+TNK8QHlcczIlZKh2WY0HKu+VOc7idHui991v2uTaQRm0idKVoRRoMkj
+ qL0C3iwBGzzD2ydD0R3cZHNcAvF5BIXh1PS6/FJB5wvpo4B/5OE5B7oGs4R7q3pTkyZf65GOu9
+ FnFRzfkiQpl6WvLvR70oTba5ScYAFIRxXlzwpo2U7LgbhqgakkBqTP9p8tBvET/5YUDCV/JL7q
+ 2mw=
+X-IronPort-AV: E=Sophos;i="5.81,251,1610380800"; 
+   d="scan'208";a="272962782"
+Received: from mail-dm6nam10lp2101.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.101])
+  by ob1.hgst.iphmx.com with ESMTP; 16 Mar 2021 16:34:43 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Yk7p0c8MI7hm1+g1GC7RnkyxoI4gTD1eAKDV72mNJK4V8FuJvGiVQ2mWqJaMZbzBbsue/cz2XLf0OXtLsicki4o26gTNovvTWGeBh1O80MWkuWl2y7X6zu1xbbtBHP485cru/vqL9MCeyCL4SlUX2YLQm9HxB01G97foc6aBe5qS/J3Xi+4PcvdyHElTflfaslj2Ga6/wsy0FBlvoPnayZdZFVKB5vBA5xClJi9S2zvjyIXYGm8dIzjKVCD6i+xa6SKIBS6flccwTXXJc9YdpkQCurbzGeTQRkbGuP5HjQb/9nJJ0PUN3wvHbDyWgR6hnWi7l/kqZ0+rq9dq+T76oQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m7WPth5DCOeuVmpUbde44JPwx0aMBukTTP7aPCnA52I=;
+ b=jfqcvBy3z+XWE4SppNC6MevinCPDkeB84tSCjho6umYfeDUtp7C8Xa814nhRHQCi5t49gXA3tr5dgnoUMNwrGUn1NB8j/CgCC1vTp4PZtlhy3wnjOviNhrDUymB+bYyVjp3Hqi1J7Xy5i/LtvCVYcgIEeupAOU+ps3T6IL2a/frK/25eminPM/qrCk2vHBxBOdQtNlBhNlB3u71TJ3dmBVuUPaBlH/XTOCEinCGNNoihTkNr4etUI3OVQSNdqg4kU4ZjOF2T++BVpkHzbbBQMltYSaBHR/VHjxBzm9Kqo6PxHtu0tsVBm7R0Dq6fwgCi78knYmalMv/gofExGuGdDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m7WPth5DCOeuVmpUbde44JPwx0aMBukTTP7aPCnA52I=;
+ b=c2IQN6gKTeXiXDK/V4IzejqXF+JXPm9OAduRv85FiUA6T4G3bCARXsxRM5qf3SEcr4XKVTrSTV63lvy3jLKVsj5S6wGr+uIFR1bfyEvDp8riUTA8yS1mKDjMn0PYhKLeH5gpAKLYVDZAIiKpjfDVZE2gIIefbj1k6F7vqHB5TEo=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB6511.namprd04.prod.outlook.com (2603:10b6:5:1bf::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3933.32; Tue, 16 Mar 2021 08:34:42 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::e824:f31b:38cf:ef66]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::e824:f31b:38cf:ef66%3]) with mapi id 15.20.3933.032; Tue, 16 Mar 2021
+ 08:34:42 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
+Subject: RE: [PATCH v5 04/10] scsi: ufshpb: Make eviction depends on region's
+ reads
+Thread-Topic: [PATCH v5 04/10] scsi: ufshpb: Make eviction depends on region's
+ reads
+Thread-Index: AQHXD2enfl0FRI4liUichXYuitc7NaqEzBqAgAGTPPA=
+Date:   Tue, 16 Mar 2021 08:34:42 +0000
+Message-ID: <DM6PR04MB6575FA572C9B325099B7F92CFC6B9@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210302132503.224670-1-avri.altman@wdc.com>
+ <20210302132503.224670-5-avri.altman@wdc.com>
+ <7cf2ce1235075c2925561d180b1bd233@codeaurora.org>
+In-Reply-To: <7cf2ce1235075c2925561d180b1bd233@codeaurora.org>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: codeaurora.org; dkim=none (message not signed)
+ header.d=none;codeaurora.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 82f80b77-9764-4a5e-6be7-08d8e85658eb
+x-ms-traffictypediagnostic: DM6PR04MB6511:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR04MB651136F846038295D400DBB3FC6B9@DM6PR04MB6511.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: FQvtc6aYG+KSPy2OZsz+iSKC3ZxKga0iRk8OoDOnPTFLk5BV5LqdVsoTHFatmuWOugsMm6hpBRj8kv1vSyFn1Xqt2SLvyJoCq7regA/gf2CHmRdWkFMgyZ44GDpVlefGUnGZIyWL3KgFzpo+9EhTd4ulW2oS0Fx7jAfvclyjKiXjXef1kjLXNTpt/R/n0DoyJsrnEAdeC9VWLWTu7+IjtpC9wc0mj6P1776TE6mFNx5KDWDGguswIhTtF064qmL+l6wzthMCT3znLAdA/hJ2ZtQ03JDe0TAPTFosMpZK17CnUnupD5hF8temusjNv9sEiLLqOQy9CqsBCR0WrsOZGztPHXvCV6/8xxYcxO58qDaAX04rDQqwt06wLgtFfsc2+2kGyFCa6nmPbBvu0I8TwwEvJHXBKUkQdbEOP3PcOxQpkR1LXgFDUO+oTdpCCwqgIsFM1gRTnVZaMQ9YIsGvlydFbKt/pSISQcpW3nIymPBdDt7XSX+JkmMFmi+DOzQvtm9u4+iLqZnu2AsQCMMrCOD1nJWkQcYHxZi/bGSZj6edBKnrArZZBF+zGY+8NvCT
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(39860400002)(346002)(366004)(7696005)(52536014)(6506007)(8676002)(9686003)(66556008)(4326008)(71200400001)(54906003)(7416002)(55016002)(4744005)(2906002)(66476007)(8936002)(83380400001)(5660300002)(316002)(186003)(86362001)(6916009)(66946007)(64756008)(26005)(76116006)(478600001)(66446008)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?uumJ4RXsSaqWlUHIwlpT8TLbOQ5CJUEuTu9dg04JlRJNTPydcej7s24zGsk3?=
+ =?us-ascii?Q?/tdbTWIejDjywRCKmvmhmhODjpWLMXNbjh/Y3v2uxnUpWdpdONJInCYRPK2a?=
+ =?us-ascii?Q?T3tAXhu1eeMPG7tMMxjCsr4CSIwOgC/6UUqcK/52a24uM1ZuY4mquJ+wEeY3?=
+ =?us-ascii?Q?OvbZ85dV/16yO9F2K2oqfDrcXs2w2JLjFEMe+5t/P47KrOOc+pmBOeZTxam1?=
+ =?us-ascii?Q?waPijzM8D+RazE+yMrzBmaUNxpuDUOncxgtNwvQVsnQApLXPAAHrLNetWg7e?=
+ =?us-ascii?Q?5gg5QPQKDq7Bq3gleQGJuc8v7H758qAHL41tRR2ITHM6XEYma2wldO7KjEWT?=
+ =?us-ascii?Q?9Ub9y7YLgsoTuR5Sn9x4XFjxU2r05CSd6hxAr6fyKPACYMDqzuTSSVRgialL?=
+ =?us-ascii?Q?dpacgWiKnCNdyZhdn+zCh6m6bjVCkxIKGB7ZzKNpdQbkncjrhEt8VpDem+49?=
+ =?us-ascii?Q?xMfbXTt0dkoIn9E6dcuiZI2jv6980efYVYi9DJXiNQ122WP544ZXJg4Cg/vo?=
+ =?us-ascii?Q?Rj1Y7hxOpNbtiNwwKU0iQ6pPTOHeUaOO6cF9v5CzIaJJQmZ6jteK4ofLsIo7?=
+ =?us-ascii?Q?6lRgpVPAC0d8pCZgNkVMq4noqFnwO0CuZHMFbAzSJDSy0new2HVf9ZSMjoaf?=
+ =?us-ascii?Q?xSB5SUWpn9zp9mFUJL1q2l5+G8p0EIMW+GyNUfNcArT7QUXxahseyHvVBpz+?=
+ =?us-ascii?Q?j4yNB6BQKIcZHNSd/DUzZLwa3bgXW5irsCyE6mGvWVVPe44hwr5j9uGgdXGg?=
+ =?us-ascii?Q?2cMR9poTpAE5+zY0+WaMVeyZtgeAySxw15PAlK51HXryZk4CmejJIn4oSeY3?=
+ =?us-ascii?Q?Zm3ydYUkNcv0ZnIhqpoU3Ebw3rKph5M3kxkWk7QfvPWD8u6QjIlNb41AAoJ+?=
+ =?us-ascii?Q?bR7AvYOmjVD5zLi5uzRf6YcwNYXCuPo6+FTbUum3yj2C9IQZicFwqES+HA4g?=
+ =?us-ascii?Q?HkcOTFF4Pgpc3klR5NDqpG89R8lP2lpr5L5G8mWKWStfyJ/soVtkzGRM2mBi?=
+ =?us-ascii?Q?oOACUD2e3qJ4z+c53XsN0PaKCOtku0k3htQ2y6SC4h8GArFNeUHrJNeL/L4x?=
+ =?us-ascii?Q?mTXmwK+5cqJkt5r2lYQE3fiEC7e/xe+EvyulXvYgREKxBmtm987n678ULs/q?=
+ =?us-ascii?Q?/78UspulxcU7GkvDJzDRYWg2YaKCsMtmfOFVLOUrREdh68AOUlbu77oPnUMJ?=
+ =?us-ascii?Q?+vx+zb9w2XcbSIQnXzaNrMqbCCpc0ocs46gsmZahLgYqykHUsCswbSxsHqlm?=
+ =?us-ascii?Q?aB59jfRaUGu94lTS6QisnFZ3w0bwfbvCvcoP5tRUdhUJnPHpMn95DCOCkeWP?=
+ =?us-ascii?Q?MSgge5LIjp3spw/jnxm5VJ0x?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82f80b77-9764-4a5e-6be7-08d8e85658eb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2021 08:34:42.8066
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rIecMfXsHExzrX1IEeVPumnNfyyO/kVwVw6tG13kQadjn+yvR5nBQcf8vo22EGIypb+iaKiu+ctYoIuHSt26iw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6511
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sahitya,
+> >       int ret =3D 0;
+> > @@ -1263,6 +1271,16 @@ static int ufshpb_add_region(struct ufshpb_lu
+> > *hpb, struct ufshpb_region *rgn)
+> >                        * because the device could detect this region
+> >                        * by not issuing HPB_READ
+> >                        */
+> > +
+> > +                     /*
+> > +                      * in host control mode, verify that the entering
+> > +                      * region has enough reads
+> > +                      */
+>=20
+> Maybe merge the new comments with the original comments above?
+Done.
 
-Node manager was initialized after segment manager's initialization,
-so f2fs_available_free_memory() called from issue_discard_thread()
-may access invalid nm_i pointer, could you please check and fix
-this case?
+Thanks,
+Avri
 
-On 2021/3/16 12:58, kernel test robot wrote:
-> 
-> 
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: ab2dbddfd064f2078a7099e4d65cce54f5ef5e71 ("[PATCH v2] f2fs: allow to change discard policy based on cached discard cmds")
-> url: https://github.com/0day-ci/linux/commits/Sahitya-Tummala/f2fs-allow-to-change-discard-policy-based-on-cached-discard-cmds/20210311-170257
-> 
-> 
-> in testcase: ltp
-> version: ltp-x86_64-14c1f76-1_20210315
-> with following parameters:
-> 
-> 	disk: 1HDD
-> 	fs: f2fs
-> 	test: io
-> 	ucode: 0x21
-> 
-> test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
-> test-url: http://linux-test-project.github.io/
-> 
-> 
-> on test machine: 4 threads Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz with 8G memory
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
-> 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> 
-> 
-> [   38.378402] BUG: kernel NULL pointer dereference, address: 0000000000000010
-> [   38.378526] #PF: supervisor read access in kernel mode
-> [   38.378610] #PF: error_code(0x0000) - not-present page
-> [   38.378694] PGD 0 P4D 0
-> [   38.378739] Oops: 0000 [#1] SMP PTI
-> [   38.378799] CPU: 2 PID: 2436 Comm: f2fs_discard-8: Not tainted 5.12.0-rc2-00001-gab2dbddfd064 #1
-> [   38.378940] Hardware name: Hewlett-Packard p6-1451cx/2ADA, BIOS 8.15 02/05/2013
-> [   38.379057] RIP: 0010:f2fs_available_free_memory (kbuild/src/consumer/fs/f2fs/node.c:96) f2fs
-> [ 38.379237] Code: 04 00 00 48 0f af d6 48 be c3 f5 28 5c 8f c2 f5 28 48 c1 ea 02 48 89 d0 48 f7 e6 48 c1 ea 03 48 39 ca 0f 97 c0 e9 af fe ff ff <41> 8b 54 24 10 49 63 8d 94 20 00 00 48 0f af d6 48 be c3 f5 28 5c
-> All code
-> ========
->     0:	04 00                	add    $0x0,%al
->     2:	00 48 0f             	add    %cl,0xf(%rax)
->     5:	af                   	scas   %es:(%rdi),%eax
->     6:	d6                   	(bad)
->     7:	48 be c3 f5 28 5c 8f 	movabs $0x28f5c28f5c28f5c3,%rsi
->     e:	c2 f5 28
->    11:	48 c1 ea 02          	shr    $0x2,%rdx
->    15:	48 89 d0             	mov    %rdx,%rax
->    18:	48 f7 e6             	mul    %rsi
->    1b:	48 c1 ea 03          	shr    $0x3,%rdx
->    1f:	48 39 ca             	cmp    %rcx,%rdx
->    22:	0f 97 c0             	seta   %al
->    25:	e9 af fe ff ff       	jmpq   0xfffffffffffffed9
->    2a:*	41 8b 54 24 10       	mov    0x10(%r12),%edx		<-- trapping instruction
->    2f:	49 63 8d 94 20 00 00 	movslq 0x2094(%r13),%rcx
->    36:	48 0f af d6          	imul   %rsi,%rdx
->    3a:	48                   	rex.W
->    3b:	be c3 f5 28 5c       	mov    $0x5c28f5c3,%esi
-> 
-> Code starting with the faulting instruction
-> ===========================================
->     0:	41 8b 54 24 10       	mov    0x10(%r12),%edx
->     5:	49 63 8d 94 20 00 00 	movslq 0x2094(%r13),%rcx
->     c:	48 0f af d6          	imul   %rsi,%rdx
->    10:	48                   	rex.W
->    11:	be c3 f5 28 5c       	mov    $0x5c28f5c3,%esi
-> [   38.379531] RSP: 0018:ffffc900006f3dd8 EFLAGS: 00010246
-> [   38.379617] RAX: 0000000000000106 RBX: ffff888213317000 RCX: 00000000001e9c8c
-> [   38.379731] RDX: ffff88810c84b430 RSI: 00000000001e9c8c RDI: ffff88810c84b540
-> [   38.379844] RBP: 0000000000000006 R08: 0000000000000106 R09: ffff88821fb2bc58
-> [   38.379958] R10: 000000000000032e R11: ffff88821fb2a144 R12: 0000000000000000
-> [   38.380071] R13: ffff88820b7e4000 R14: 000000000000ea60 R15: 0000000000000000
-> [   38.380185] FS:  0000000000000000(0000) GS:ffff88821fb00000(0000) knlGS:0000000000000000
-> [   38.380315] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   38.380408] CR2: 0000000000000010 CR3: 000000021e00a003 CR4: 00000000001706e0
-> [   38.380522] Call Trace:
-> [   38.380619] ? del_timer_sync (kbuild/src/consumer/kernel/time/timer.c:1394)
-> [   38.380686] ? prepare_to_wait_event (kbuild/src/consumer/kernel/sched/wait.c:323 (discriminator 15))
-> [   38.380762] ? __next_timer_interrupt (kbuild/src/consumer/kernel/time/timer.c:1816)
-> [   38.380841] issue_discard_thread (kbuild/src/consumer/fs/f2fs/segment.c:1759 (discriminator 1)) f2fs
-> [   38.380937] ? finish_wait (kbuild/src/consumer/kernel/sched/wait.c:403)
-> [   38.380997] ? __issue_discard_cmd (kbuild/src/consumer/fs/f2fs/segment.c:1722) f2fs
-> [   38.381094] kthread (kbuild/src/consumer/kernel/kthread.c:292)
-> [   38.381151] ? kthread_park (kbuild/src/consumer/kernel/kthread.c:245)
-> [   38.381213] ret_from_fork (kbuild/src/consumer/arch/x86/entry/entry_64.S:300)
-> [   38.381276] Modules linked in: dm_mod f2fs netconsole btrfs blake2b_generic xor zstd_compress raid6_pq libcrc32c sd_mod t10_pi sg intel_rapl_msr intel_rapl_common i915 x86_pkg_temp_thermal intel_powerclamp coretemp intel_gtt crct10dif_pclmul crc32_pclmul drm_kms_helper crc32c_intel usb_storage ghash_clmulni_intel syscopyarea rapl ahci libahci sysfillrect sysimgblt fb_sys_fops ipmi_devintf ipmi_msghandler intel_cstate drm libata intel_uncore mei_me mei video ip_tables
-> [   38.381939] CR2: 0000000000000010
-> [   38.381996] ---[ end trace d47b1e3f3cb425e8 ]---
-> [   38.382072] RIP: 0010:f2fs_available_free_memory (kbuild/src/consumer/fs/f2fs/node.c:96) f2fs
-> [ 38.382188] Code: 04 00 00 48 0f af d6 48 be c3 f5 28 5c 8f c2 f5 28 48 c1 ea 02 48 89 d0 48 f7 e6 48 c1 ea 03 48 39 ca 0f 97 c0 e9 af fe ff ff <41> 8b 54 24 10 49 63 8d 94 20 00 00 48 0f af d6 48 be c3 f5 28 5c
-> All code
-> ========
->     0:	04 00                	add    $0x0,%al
->     2:	00 48 0f             	add    %cl,0xf(%rax)
->     5:	af                   	scas   %es:(%rdi),%eax
->     6:	d6                   	(bad)
->     7:	48 be c3 f5 28 5c 8f 	movabs $0x28f5c28f5c28f5c3,%rsi
->     e:	c2 f5 28
->    11:	48 c1 ea 02          	shr    $0x2,%rdx
->    15:	48 89 d0             	mov    %rdx,%rax
->    18:	48 f7 e6             	mul    %rsi
->    1b:	48 c1 ea 03          	shr    $0x3,%rdx
->    1f:	48 39 ca             	cmp    %rcx,%rdx
->    22:	0f 97 c0             	seta   %al
->    25:	e9 af fe ff ff       	jmpq   0xfffffffffffffed9
->    2a:*	41 8b 54 24 10       	mov    0x10(%r12),%edx		<-- trapping instruction
->    2f:	49 63 8d 94 20 00 00 	movslq 0x2094(%r13),%rcx
->    36:	48 0f af d6          	imul   %rsi,%rdx
->    3a:	48                   	rex.W
->    3b:	be c3 f5 28 5c       	mov    $0x5c28f5c3,%esi
-> 
-> Code starting with the faulting instruction
-> ===========================================
->     0:	41 8b 54 24 10       	mov    0x10(%r12),%edx
->     5:	49 63 8d 94 20 00 00 	movslq 0x2094(%r13),%rcx
->     c:	48 0f af d6          	imul   %rsi,%rdx
->    10:	48                   	rex.W
->    11:	be c3 f5 28 5c       	mov    $0x5c28f5c3,%esi
-> 
-> 
-> To reproduce:
-> 
->          git clone https://github.com/intel/lkp-tests.git
->          cd lkp-tests
->          bin/lkp install                job.yaml  # job file is attached in this email
->          bin/lkp split-job --compatible job.yaml
->          bin/lkp run                    compatible-job.yaml
-> 
-> 
-> 
-> ---
-> 0DAY/LKP+ Test Infrastructure                   Open Source Technology Center
-> https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel Corporation
-> 
 > Thanks,
-> Oliver Sang
-> 
+> Can Guo.
