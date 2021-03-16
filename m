@@ -2,153 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C2733DD7C
+	by mail.lfdr.de (Postfix) with ESMTP id 60E6333DD7D
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:28:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240433AbhCPT1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 15:27:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240436AbhCPT0t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:26:49 -0400
-Received: from smtp-190f.mail.infomaniak.ch (smtp-190f.mail.infomaniak.ch [IPv6:2001:1600:3:17::190f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F107C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:26:46 -0700 (PDT)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F0NZY4lYKzMqDZ6;
-        Tue, 16 Mar 2021 20:26:45 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4F0NZX3Hbrzlh8TK;
-        Tue, 16 Mar 2021 20:26:44 +0100 (CET)
-Subject: Re: [PATCH v4 1/1] fs: Allow no_new_privs tasks to call chroot(2)
-To:     Jann Horn <jannh@google.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christoph Hellwig <hch@lst.de>,
-        David Howells <dhowells@redhat.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        John Johansen <john.johansen@canonical.com>,
+        id S240439AbhCPT1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 15:27:46 -0400
+Received: from mga11.intel.com ([192.55.52.93]:14761 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240453AbhCPT12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 15:27:28 -0400
+IronPort-SDR: BPioQ3ofRZzr472243qqUpDI55zBo8dO9eroMkx45swn/9s/y1olKtsCqJO1clPem1txbROkak
+ FgsajW/8BSrg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="185960786"
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="185960786"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 12:27:22 -0700
+IronPort-SDR: uFgLa216tNsrzWIgcRCdtwQiM9p8zrA76JWNP1+VGm7SvOsa4P1fAsWowUhRqqtgPdRlhqiz7V
+ CgKQgK3Q/nHA==
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="372079895"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.191.248]) ([10.212.191.248])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 12:27:18 -0700
+Subject: Re: [PATCH v23 9/9] x86/vdso: Add ENDBR to __vdso_sgx_enter_enclave
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Kees Cook <keescook@chromium.org>,
-        Kentaro Takeda <takedakn@nttdata.co.jp>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20210316170135.226381-1-mic@digikod.net>
- <20210316170135.226381-2-mic@digikod.net>
- <CAG48ez3=M-5WT73HqmFJr6UHwO0+2FJXxcAgRzp6wcd0P3TN=Q@mail.gmail.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <ec7a3a21-c402-c153-a932-ce4a40edadaa@digikod.net>
-Date:   Tue, 16 Mar 2021 20:26:46 +0100
-User-Agent: 
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+References: <20210316151320.6123-1-yu-cheng.yu@intel.com>
+ <20210316151320.6123-10-yu-cheng.yu@intel.com> <YFEFhoi/SB12HUrg@kernel.org>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <b523b794-3553-f7bb-3a69-24d936f0fefa@intel.com>
+Date:   Tue, 16 Mar 2021 12:27:19 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAG48ez3=M-5WT73HqmFJr6UHwO0+2FJXxcAgRzp6wcd0P3TN=Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YFEFhoi/SB12HUrg@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 16/03/2021 20:04, Jann Horn wrote:
-> On Tue, Mar 16, 2021 at 6:02 PM Mickaël Salaün <mic@digikod.net> wrote:
->> One could argue that chroot(2) is useless without a properly populated
->> root hierarchy (i.e. without /dev and /proc).  However, there are
->> multiple use cases that don't require the chrooting process to create
->> file hierarchies with special files nor mount points, e.g.:
->> * A process sandboxing itself, once all its libraries are loaded, may
->>   not need files other than regular files, or even no file at all.
->> * Some pre-populated root hierarchies could be used to chroot into,
->>   provided for instance by development environments or tailored
->>   distributions.
->> * Processes executed in a chroot may not require access to these special
->>   files (e.g. with minimal runtimes, or by emulating some special files
->>   with a LD_PRELOADed library or seccomp).
+On 3/16/2021 12:22 PM, Jarkko Sakkinen wrote:
+> On Tue, Mar 16, 2021 at 08:13:19AM -0700, Yu-cheng Yu wrote:
+>> ENDBR is a special new instruction for the Indirect Branch Tracking (IBT)
+>> component of CET.  IBT prevents attacks by ensuring that (most) indirect
+>> branches and function calls may only land at ENDBR instructions.  Branches
+>> that don't follow the rules will result in control flow (#CF) exceptions.
 >>
->> Unprivileged chroot is especially interesting for userspace developers
->> wishing to harden their applications.  For instance, chroot(2) and Yama
->> enable to build a capability-based security (i.e. remove filesystem
->> ambient accesses) by calling chroot/chdir with an empty directory and
->> accessing data through dedicated file descriptors obtained with
->> openat2(2) and RESOLVE_BENEATH/RESOLVE_IN_ROOT/RESOLVE_NO_MAGICLINKS.
+>> ENDBR is a noop when IBT is unsupported or disabled.  Most ENDBR
+>> instructions are inserted automatically by the compiler, but branch
+>> targets written in assembly must have ENDBR added manually.
+>>
+>> Add ENDBR to __vdso_sgx_enter_enclave() branch targets.
+>>
+>> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+>> Cc: Andy Lutomirski <luto@kernel.org>
+>> Cc: Borislav Petkov <bp@alien8.de>
+>> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+>> Cc: Jarkko Sakkinen <jarkko@kernel.org>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> ---
+>>   arch/x86/entry/vdso/vsgx.S | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/arch/x86/entry/vdso/vsgx.S b/arch/x86/entry/vdso/vsgx.S
+>> index 86a0e94f68df..1baa9b49053e 100644
+>> --- a/arch/x86/entry/vdso/vsgx.S
+>> +++ b/arch/x86/entry/vdso/vsgx.S
+>> @@ -6,6 +6,7 @@
+>>   #include <asm/enclu.h>
+>>   
+>>   #include "extable.h"
+>> +#include "../calling.h"
+>>   
+>>   /* Relative to %rbp. */
+>>   #define SGX_ENCLAVE_OFFSET_OF_RUN		16
+>> @@ -27,6 +28,7 @@
+>>   SYM_FUNC_START(__vdso_sgx_enter_enclave)
+>>   	/* Prolog */
+>>   	.cfi_startproc
+>> +	ENDBR
+>>   	push	%rbp
+>>   	.cfi_adjust_cfa_offset	8
+>>   	.cfi_rel_offset		%rbp, 0
+>> @@ -62,6 +64,7 @@ SYM_FUNC_START(__vdso_sgx_enter_enclave)
+>>   .Lasync_exit_pointer:
+>>   .Lenclu_eenter_eresume:
+>>   	enclu
+>> +	ENDBR
+>>   
+>>   	/* EEXIT jumps here unless the enclave is doing something fancy. */
+>>   	mov	SGX_ENCLAVE_OFFSET_OF_RUN(%rbp), %rbx
+>> @@ -91,6 +94,7 @@ SYM_FUNC_START(__vdso_sgx_enter_enclave)
+>>   	jmp	.Lout
+>>   
+>>   .Lhandle_exception:
+>> +	ENDBR
+>>   	mov	SGX_ENCLAVE_OFFSET_OF_RUN(%rbp), %rbx
+>>   
+>>   	/* Set the exception info. */
+>> -- 
+>> 2.21.0
+>>
+>>
 > 
-> I don't entirely understand. Are you writing this with the assumption
-> that a future change will make it possible to set these RESOLVE flags
-> process-wide, or something like that?
+> Looks good to me.
+> 
+> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-No, this scenario is for applications willing to sandbox themselves and
-only use the FDs to access legitimate data.
-
-> 
-> 
-> As long as that doesn't exist, I think that to make this safe, you'd
-> have to do something like the following - let a child process set up a
-> new mount namespace for you, and then chroot() into that namespace's
-> root:
-> 
-> struct shared_data {
->   int root_fd;
-> };
-> int helper_fn(void *args) {
->   struct shared_data *shared = args;
->   mount("none", "/tmp", "tmpfs", MS_NOSUID|MS_NODEV, "");
->   mkdir("/tmp/old_root", 0700);
->   pivot_root("/tmp", "/tmp/old_root");
->   umount("/tmp/old_root", "");
->   shared->root_fd = open("/", O_PATH);
-> }
-> void setup_chroot() {
->   struct shared_data shared = {};
->   prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
->   clone(helper_fn, my_stack,
-> CLONE_VFORK|CLONE_VM|CLONE_FILES|CLONE_NEWUSER|CLONE_NEWNS|SIGCHLD,
-> NULL);
->   fchdir(shared.root_fd);
->   chroot(".");
-> }
-
-What about this?
-chdir("/proc/self/fdinfo");
-chroot(".");
-close(all unnecessary FDs);
-
-> 
-> [...]
->> diff --git a/fs/open.c b/fs/open.c
-> [...]
->> +static inline int current_chroot_allowed(void)
->> +{
->> +       /*
->> +        * Changing the root directory for the calling task (and its future
->> +        * children) requires that this task has CAP_SYS_CHROOT in its
->> +        * namespace, or be running with no_new_privs and not sharing its
->> +        * fs_struct and not escaping its current root (cf. create_user_ns()).
->> +        * As for seccomp, checking no_new_privs avoids scenarios where
->> +        * unprivileged tasks can affect the behavior of privileged children.
->> +        */
->> +       if (task_no_new_privs(current) && current->fs->users == 1 &&
-> 
-> this read of current->fs->users should be using READ_ONCE()
-
-Right, I'll fix this.
+Thanks for reviewing.  In response to Dave's and Boris' comments, I will 
+replace ENDBR macro with _CET_ENDBR that comes from the compiler.  Can I 
+still keep the Reviewed-by?
 
 > 
->> +                       !current_chrooted())
->> +               return 0;
->> +       if (ns_capable(current_user_ns(), CAP_SYS_CHROOT))
->> +               return 0;
->> +       return -EPERM;
->> +}
-> [...]
-> 
-> Overall I think this change is a good idea.
-> 
+> /Jarkko
+>
