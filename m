@@ -2,163 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7D633D233
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C5133D238
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232665AbhCPK4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 06:56:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58461 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232145AbhCPKzb (ORCPT
+        id S236901AbhCPK5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 06:57:11 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41376 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236878AbhCPK4f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 06:55:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615892131;
+        Tue, 16 Mar 2021 06:56:35 -0400
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615892191;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jRb4B0KcEhZ4s3dOTpeBpsNGyWunNOch3xmQG6Fbmpw=;
-        b=CPt6yNCy/xUUptUrE3wbXagrw/ZIIVVNFzTU8Uqoos92ppCBK/FRi4a8m8eZm7iaP+/04g
-        dWmeUn0ZNhOmUxWYiQcrph4CMZOWaU1bI+bDRvkvC4PX1Do2/FBkkkt6VorfQ8QhBUuXoY
-        cXdLDbofQNg5pSVSOe3ZMro9UCeOWhs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-337-I_-lJ1JOOpyBsehK4z4uTg-1; Tue, 16 Mar 2021 06:55:27 -0400
-X-MC-Unique: I_-lJ1JOOpyBsehK4z4uTg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 351F2107ACCA;
-        Tue, 16 Mar 2021 10:55:25 +0000 (UTC)
-Received: from starship (unknown [10.35.207.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 90F5F63633;
-        Tue, 16 Mar 2021 10:55:20 +0000 (UTC)
-Message-ID: <4cc6b314049d040ef878ee270ec8fa924cf7c9ec.camel@redhat.com>
-Subject: Re: [PATCH 2/3] KVM: x86: guest debug: don't inject interrupts
- while single stepping
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
-Date:   Tue, 16 Mar 2021 12:55:19 +0200
-In-Reply-To: <YE/vtYYwMakERzTS@google.com>
-References: <20210315221020.661693-1-mlevitsk@redhat.com>
-         <20210315221020.661693-3-mlevitsk@redhat.com> <YE/vtYYwMakERzTS@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=INoRzHytORcFF318cgFlEmF9yFvH62+Uzf6e2/NCyl0=;
+        b=w7nQn9wRkTuVsLAN8RR2kmndEtEnruYpbi2GGQ20bOobqxPJ6UeHBrmZLhbj3RVfIeruO1
+        gyTDknu1tW5Byf4Uh5hodvYKy6umho6ZTB7Cao3MeAiNm62/YlNW2tSLr+Tyz2k7tLBnDx
+        7Ip5MMbc+np0Yxl/GROyoSCZAh6j2yIyM+8Y8iA5BH54PxT4SV4tFI+CitD0gjWm7GPUQS
+        laaZe21xt0oX5OCumM9uIYkxYsrz6x0gEYLlGnIWT2vUHqldYNEIJ+c/hG57HgSDc4jbnB
+        n0D1sX2XaIAB6ADQUzhCuQZH6iqa5DpwrTnA8+XHzXfG/4se9OfazmqmPGr2aA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615892191;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=INoRzHytORcFF318cgFlEmF9yFvH62+Uzf6e2/NCyl0=;
+        b=0LuQVMQRUKRody594oJt6NVMtuP1VRFd0y2z3BYZblC11VrCdPseXyLPaM3m7H1QsniTmR
+        BMiDykJK24uvJ8DA==
+To:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <sebastian.siewior@linutronix.de>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Subject: [PATCH v1 0/2] net: xfrm: Use seqcount_spinlock_t
+Date:   Tue, 16 Mar 2021 11:56:28 +0100
+Message-Id: <20210316105630.1020270-1-a.darwish@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-03-15 at 16:37 -0700, Sean Christopherson wrote:
-> On Tue, Mar 16, 2021, Maxim Levitsky wrote:
-> > This change greatly helps with two issues:
-> > 
-> > * Resuming from a breakpoint is much more reliable.
-> > 
-> >   When resuming execution from a breakpoint, with interrupts enabled, more often
-> >   than not, KVM would inject an interrupt and make the CPU jump immediately to
-> >   the interrupt handler and eventually return to the breakpoint, to trigger it
-> >   again.
-> > 
-> >   From the user point of view it looks like the CPU never executed a
-> >   single instruction and in some cases that can even prevent forward progress,
-> >   for example, when the breakpoint is placed by an automated script
-> >   (e.g lx-symbols), which does something in response to the breakpoint and then
-> >   continues the guest automatically.
-> >   If the script execution takes enough time for another interrupt to arrive,
-> >   the guest will be stuck on the same breakpoint RIP forever.
-> > 
-> > * Normal single stepping is much more predictable, since it won't land the
-> >   debugger into an interrupt handler, so it is much more usable.
-> > 
-> >   (If entry to an interrupt handler is desired, the user can still place a
-> >   breakpoint at it and resume the guest, which won't activate this workaround
-> >   and let the gdb still stop at the interrupt handler)
-> > 
-> > Since this change is only active when guest is debugged, it won't affect
-> > KVM running normal 'production' VMs.
-> > 
-> > 
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > Tested-by: Stefano Garzarella <sgarzare@redhat.com>
-> > ---
-> >  arch/x86/kvm/x86.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index a9d95f90a0487..b75d990fcf12b 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -8458,6 +8458,12 @@ static void inject_pending_event(struct kvm_vcpu *vcpu, bool *req_immediate_exit
-> >  		can_inject = false;
-> >  	}
-> >  
-> > +	/*
-> > +	 * Don't inject interrupts while single stepping to make guest debug easier
-> > +	 */
-> > +	if (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)
-> > +		return;
-> 
-> Is this something userspace can deal with?  E.g. disable IRQs and/or set NMI
-> blocking at the start of single-stepping, unwind at the end?  Deviating this far
-> from architectural behavior will end in tears at some point.
+Hi,
 
-I don't worry about NMI, but for IRQs, userspace can clear EFLAGS.IF, but that
-can be messy to unwind, if an instruction that clears the interrupt flag was
-single stepped over.
+This is a small series to trasform xfrm_state_hash_generation sequence
+counter to seqcount_spinlock_t, instead of plain seqcount_t.
 
-There is also notion of interrupt shadow but it also is reserved for things
-like delaying interrupts for one cycle after sti, and such.
+In general, seqcount_LOCKNAME_t sequence counters allows to associate
+the lock used for write serialization with the seqcount. This enables
+lockdep to verify that the write serialization lock is always held
+before entering the seqcount write section.
 
-IMHO KVM_GUESTDBG_SINGLESTEP is already non architectural feature (userspace
-basically tell the KVM to single step the guest but it doesn't set TF flag
-or something like that), so changing its definition shouldn't be a problem.
+If lockdep is disabled, this lock association is compiled out and has
+neither storage size nor runtime overhead.
 
-If you worry about some automated script breaking due to the change,
-(I expect that KVM_GUESTDBG_SINGLESTEP is mostly used manually, especially
-since single stepping is never 100% reliable due to various issues like that),
-I can add another flag to it which will block all the interrupts.
-(like say KVM_GUESTDBG_BLOCKEVENTS).
+The first patch is a general mainline fix, and has a Fixes tag.
 
-In fact qemu already has single step flags, enabled over special qemu gdb extension
-'maintenance packet qqemu.sstepbits'
+Thanks,
 
-Those single step flags allow to disable interrupts and qemu timers during the single stepping,
-(and both modes are enabled by default)
-However kvm code in qemu ignores these bits.
+8<----------
 
+Ahmed S. Darwish (2):
+  net: xfrm: Localize sequence counter per network namespace
+  net: xfrm: Use sequence counter with associated spinlock
 
-What do you think? 
+ include/net/netns/xfrm.h |  4 +++-
+ net/xfrm/xfrm_state.c    | 11 ++++++-----
+ 2 files changed, 9 insertions(+), 6 deletions(-)
 
-Best regards,
-	Maxim Levitsky
-
-
-> 
-> > +
-> >  	/*
-> >  	 * Finally, inject interrupt events.  If an event cannot be injected
-> >  	 * due to architectural conditions (e.g. IF=0) a window-open exit
-> > -- 
-> > 2.26.2
-> > 
-
-
+base-commit: 1e28eed17697bcf343c6743f0028cc3b5dd88bf0
+--
+2.30.2
