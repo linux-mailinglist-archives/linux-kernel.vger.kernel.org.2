@@ -2,91 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160B133D980
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B2C33D983
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238721AbhCPQd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 12:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238712AbhCPQcv (ORCPT
+        id S238731AbhCPQfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 12:35:06 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:42591 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237867AbhCPQef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 12:32:51 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091CAC06174A;
-        Tue, 16 Mar 2021 09:32:45 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id b16so9536839eds.7;
-        Tue, 16 Mar 2021 09:32:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DjTxZT8AqroYP99shdWO695KE0Qo/izOf7I5S4PGebY=;
-        b=eMHU0ZgB9iZLTIKhDQsi86LqQoF4n2XUMbJKievcKjSFjzL5haEqigr0DZHElui9cB
-         5JaBQP2aW1BvQL6g0yEV7mrfwR+Vp7rFSaGia5lBvayHQr7Zs3azVbbMhDEzUH9imeVI
-         svVLaHn8Rho/uRN/hE3RUXfJKLnCIDpcM+RsWJ7Mcb1rnoSmXDRESN1Qx93D2vyFFN98
-         iHw+/g5pMjm8PHSC6Yri7oG4q+Mg/SJLFWe5P+V8PFAAh1JUIgr2I3WMw8tmS/N1sdLK
-         aihwSsUuCs33DfjsEd7yyGVm7LLVF8qXDDHxs97MiAU/mGbzk/qVvtFmiKbO+XXmUXzX
-         7X0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DjTxZT8AqroYP99shdWO695KE0Qo/izOf7I5S4PGebY=;
-        b=XTfHH0V0X2l3+hRw/aPwe5eZKhrd2+TkX4fihr17YFb2y9vIYC0COTwpkKJquu4PRt
-         3/pxDgi9yFeXTQe1Qd7xxNNr1RKPnpK5xz4vKRREGvBy4PDW9xx/KnSjcW2IRzEtHbSe
-         ARxlKC0Rv6ClHg2CIXZjLGTgiLq3bgc7helCrlz1fNfbPez3vWI34kD9BFtobt1B2tih
-         z2SiCpv5hE0SUa/P/bGH4GFFc9aZ0CemLfjEuPoe6+mt2cJw1fCrGw9c6o9mreJmJefY
-         h768C0pwc1NZntZjQqqpcyGS1y8v7LgmQYRLlqE23AG6+fwbb4jaPtljm2YtIHZqs8Q3
-         qPZQ==
-X-Gm-Message-State: AOAM533ru0LdnTUdciog/bam1B8HdHGTBE6F/cXU6qYSoQF8Et//bTWD
-        vS1M/4E6XaFpXt1pvNjia8Y=
-X-Google-Smtp-Source: ABdhPJxtZ4WnHx3NTNAcSmsmTV5p7JCQe4MelLjCfJBcuTeGIGE21s7wKJhvqqqetIqjzZvaCHLdvQ==
-X-Received: by 2002:a05:6402:4309:: with SMTP id m9mr38266598edc.25.1615912363716;
-        Tue, 16 Mar 2021 09:32:43 -0700 (PDT)
-Received: from BV030612LT ([188.24.140.160])
-        by smtp.gmail.com with ESMTPSA id d15sm10818511edx.62.2021.03.16.09.32.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 09:32:43 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 18:32:40 +0200
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     David Miller <davem@redhat.com>
-Cc:     andrew@lunn.ch, kuba@kernel.org, robh+dt@kernel.org,
-        afaerber@suse.de, mani@kernel.org, p.zabel@pengutronix.de,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] net: ethernet: actions: Add Actions Semi Owl
- Ethernet MAC driver
-Message-ID: <20210316163240.GA1111731@BV030612LT>
-References: <cover.1615807292.git.cristian.ciocaltea@gmail.com>
- <a93430bc30d7e733184a2fa3ab5c66180a76d379.1615807292.git.cristian.ciocaltea@gmail.com>
- <20210315.143933.939938434416308507.davem@redhat.com>
+        Tue, 16 Mar 2021 12:34:35 -0400
+Received: from mail-wr1-f44.google.com ([209.85.221.44]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1McYTD-1lypK129td-00d10N for <linux-kernel@vger.kernel.org>; Tue, 16 Mar
+ 2021 17:34:32 +0100
+Received: by mail-wr1-f44.google.com with SMTP id v11so7772962wro.7
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 09:34:32 -0700 (PDT)
+X-Gm-Message-State: AOAM531mQadahtAR4E/gfCOdlV+TVQkU0qpFfuLpWxYSTdq32R4E8ZkS
+        8q3+A1KqUj9abEQotmg5gMMzx2HECyE7eWRatdU=
+X-Google-Smtp-Source: ABdhPJzb9iprP4M8tU0/IT6/VJb45ZSaimIVd+80NDg8EBrdJQjoVOPX+YrkaQIT2NZuyIHCdxe+q5zWdKli+rvEJMs=
+X-Received: by 2002:adf:ed87:: with SMTP id c7mr5923866wro.9.1615912472247;
+ Tue, 16 Mar 2021 09:34:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315.143933.939938434416308507.davem@redhat.com>
+References: <202103160133.UzhgY0wt-lkp@intel.com> <YFBYWjtWJrnGyiVp@linux.ibm.com>
+ <CAKwvOdmMvvOYBJRZh9w8uQH1ZXZ97Gq+Rs0S4Xi0ZnWufYoxAA@mail.gmail.com>
+In-Reply-To: <CAKwvOdmMvvOYBJRZh9w8uQH1ZXZ97Gq+Rs0S4Xi0ZnWufYoxAA@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 16 Mar 2021 17:34:16 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1UvbVh3UKE9N-ch32RZHH5bhfRuz8LN9A3gQew6V3ONA@mail.gmail.com>
+Message-ID: <CAK8P3a1UvbVh3UKE9N-ch32RZHH5bhfRuz8LN9A3gQew6V3ONA@mail.gmail.com>
+Subject: Re: WARNING: modpost: vmlinux.o(.text+0x74fea4): Section mismatch in
+ reference from the function memblock_find_in_range_node() to the function .init.text:memblock_bottom_up()
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:qerm4qleW8sCKaQJZwbtII6Qz7TKe4rSxuMOVs8fFE59ma+CR99
+ l+7xTS1vpQphjbPC9zsxxDIYkaCFkAu7ORAMoVz37z5pNhDhCxcOycpJSWNbA+xmU2gUjA1
+ gNtBWXXrqNzlconO8VU8fTLHJttxfNv4gvV8HqzkIXQ1/b4YFbfP1P3Noj+tT5koMIpT3/9
+ pDBtaR4mWI/4/lhvNOj5g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zbBU9EBoh2I=:WZtyaIETJRaWjfAO0zfAuc
+ +vkkvHY8HbVAo5hFK2VQv93lwYpQvsP9ZtJ2gUACRsn7U18oCF9Tmmy+GMDe87i7A5kWm9A7Z
+ 20euVUlwdJwpF/ITM9ZSkgmSpIF4FZdDJTUkNEaklylBBbvxcoj+XUTwNwJqisr9YgO298/pf
+ VPAtVrcIgWzbolv/28QWvPnRCopwZrE8Y7D9vLQ0e03wO3U6aUJe+XbxopfkwL5NDNPCB+iHd
+ 6GyuC2XtVtnap5ZClBrEz5VmFrdHhAkLkVEK0rQQJsYLBfkvr+qN8t01ujAjWa1GtH1TW2kgg
+ lB4pueQyeMA0HngnevqhXIEmM4rtwQ1GlS7ah7PzSHA/EdclwYr4lJuq4jXRg0g4eWxpkhyRh
+ H9h9OTP+nFWI483KlMM4qWTKss8d0qMfUYKiVex3qmMQ0v9pspFLT5sCOO1QiZVGZcFQW1pfg
+ DZr0F267kUrO8AE4UNldLozP90vC2zl7MbuwsJXmpvf2p5DHepEk6EPO8zj3SHQgeGCFszmSu
+ d74ftK/nTjf/UM4GGd1iEeJtmcM52N8jP23BWyo9gNyqvUlJJC7tGx483xj6hJ44A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 02:39:33PM -0700, David Miller wrote:
-> From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> Date: Mon, 15 Mar 2021 13:29:17 +0200
-> 
-> > +
-> > +#define DEFAULT_MSG_ENABLE (NETIF_MSG_DRV | NETIF_MSG_PROBE | NETIF_MSG_LINK)
-> > +static int debug = -1;
-> > +module_param(debug, int, 0);
-> > +MODULE_PARM_DESC(debug, "Debug level (0=none,...,16=all)");
-> 
-> Module parameters are strongly discouraged in networking drivers, pplease delete this
-> ad just pass the default to netif_mdg_init(), thanks!
+On Tue, Mar 16, 2021 at 5:23 PM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+> On Tue, Mar 16, 2021 at 12:04 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
 
-Ups, I was not aware of this since I've seen it in quite a lot of drivers.
+> >
+> > I don't have clang-13 setup handy so I could not check, but I think this
+> > should be the fix:
+>
+> Thanks for taking another look:
+> https://lore.kernel.org/lkml/20210225205908.GM1447004@kernel.org/
+> Do we want to switch the above to the below?
 
-Thanks for pointing this out, I will take care of it in the next
-revision.
+The patch above is now in mainline and caused the reported problem.
 
-Kind regards,
-Cristi
+> > diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> > index d13e3cd938b4..5984fff3f175 100644
+> > --- a/include/linux/memblock.h
+> > +++ b/include/linux/memblock.h
+> > @@ -460,7 +460,7 @@ static inline void memblock_free_late(phys_addr_t base, phys_addr_t size)
+> >  /*
+> >   * Set the allocation direction to bottom-up or top-down.
+> >   */
+> > -static inline __init void memblock_set_bottom_up(bool enable)
+> > +static inline __init_memblock void memblock_set_bottom_up(bool enable)
+> >  {
+> >         memblock.bottom_up = enable;
+> >  }
+> > @@ -470,7 +470,7 @@ static inline __init void memblock_set_bottom_up(bool enable)
+> >   * if this is true, that said, memblock will allocate memory
+> >   * in bottom-up direction.
+> >   */
+> > -static inline __init bool memblock_bottom_up(void)
+> > +static inline __init_memblock bool memblock_bottom_up(void)
+> >  {
+> >         return memblock.bottom_up;
+> >  }
+
+I don't see the warning on my machine for some reason, but the patch
+does seem correct.
+
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+
+       Arnd
