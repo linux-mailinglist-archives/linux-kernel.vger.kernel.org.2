@@ -2,215 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9612733CE49
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:58:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 388A033CE21
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 07:54:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235845AbhCPG6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 02:58:00 -0400
-Received: from mga07.intel.com ([134.134.136.100]:44618 "EHLO mga07.intel.com"
+        id S233755AbhCPGx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 02:53:29 -0400
+Received: from mga07.intel.com ([134.134.136.100]:44339 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233961AbhCPG5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 02:57:22 -0400
-IronPort-SDR: J5DTteurI4pf87p3K7k9z1/7JNED6cBNKXZw9tNTLxErRF77pp6t1Rv4pOzdPGGvQ+LaSB8UDr
- nly3bekmlOjA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="253227835"
+        id S229958AbhCPGw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 02:52:58 -0400
+IronPort-SDR: YYtSMubYJH3rGFCXv6CO6PC0L7AYtShhwdDWZvAPEAvdPKE0TW6Pqnqb9SeKNeum7QbHiJs2ci
+ /TDx5HG6vL3A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="253227527"
 X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="253227835"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 23:57:12 -0700
-IronPort-SDR: Vb+RlfAxgnOJKXH1GrA4XtO0/DdzBF7w1NUXhEXYGZn8sdiTs9AcQycHbGoltm1IVefpupyg8U
- CytpmuGo5J0g==
-X-ExtLoop1: 1
+   d="scan'208";a="253227527"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 23:52:58 -0700
+IronPort-SDR: LnjIfZaHmv9Bcz9AZRG7h/O8IeMPVbpPXUvyRxZdCw2D343gWtQr++qUoITiT7kMvuFxkONk+j
+ GCBDUdJWej0g==
 X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="511296089"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by fmsmga001.fm.intel.com with ESMTP; 15 Mar 2021 23:57:12 -0700
-From:   "Chang S. Bae" <chang.seok.bae@intel.com>
-To:     bp@suse.de, tglx@linutronix.de, mingo@kernel.org, luto@kernel.org,
-        x86@kernel.org
-Cc:     len.brown@intel.com, dave.hansen@intel.com, hjl.tools@gmail.com,
-        Dave.Martin@arm.com, jannh@google.com, mpe@ellerman.id.au,
-        carlos@redhat.com, tony.luck@intel.com, ravi.v.shankar@intel.com,
-        libc-alpha@sourceware.org, linux-arch@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com, linux-kselftest@vger.kernel.org
-Subject: [PATCH v7 6/6] selftest/x86/signal: Include test cases for validating sigaltstack
-Date:   Mon, 15 Mar 2021 23:52:15 -0700
-Message-Id: <20210316065215.23768-7-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210316065215.23768-1-chang.seok.bae@intel.com>
-References: <20210316065215.23768-1-chang.seok.bae@intel.com>
+   d="scan'208";a="412106243"
+Received: from unknown (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 23:52:54 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     linux-mm@kvack.org, Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Yang Shi <shy828301@gmail.com>, linux-kernel@vger.kernel.org,
+        page-reclaim@google.com
+Subject: Re: [PATCH v1 10/14] mm: multigenerational lru: core
+References: <87im5rsvd8.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <YFA33n+zQb8oomjJ@google.com>
+Date:   Tue, 16 Mar 2021 14:52:52 +0800
+In-Reply-To: <YFA33n+zQb8oomjJ@google.com> (Yu Zhao's message of "Mon, 15 Mar
+        2021 22:45:18 -0600")
+Message-ID: <87wnu7y4hn.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The test measures the kernel's signal delivery with different (enough vs.
-insufficient) stack sizes.
+Yu Zhao <yuzhao@google.com> writes:
 
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Reviewed-by: Len Brown <len.brown@intel.com>
-Cc: x86@kernel.org
-Cc: linux-kselftest@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
-Changes from v3:
-* Revised test messages again (Borislav Petkov)
+> On Tue, Mar 16, 2021 at 10:08:51AM +0800, Huang, Ying wrote:
+>> Yu Zhao <yuzhao@google.com> writes:
+>> [snip]
+>> 
+>> > +/* Main function used by foreground, background and user-triggered aging. */
+>> > +static bool walk_mm_list(struct lruvec *lruvec, unsigned long next_seq,
+>> > +			 struct scan_control *sc, int swappiness)
+>> > +{
+>> > +	bool last;
+>> > +	struct mm_struct *mm = NULL;
+>> > +	int nid = lruvec_pgdat(lruvec)->node_id;
+>> > +	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
+>> > +	struct lru_gen_mm_list *mm_list = get_mm_list(memcg);
+>> > +
+>> > +	VM_BUG_ON(next_seq > READ_ONCE(lruvec->evictable.max_seq));
+>> > +
+>> > +	/*
+>> > +	 * For each walk of the mm list of a memcg, we decrement the priority
+>> > +	 * of its lruvec. For each walk of memcgs in kswapd, we increment the
+>> > +	 * priorities of all lruvecs.
+>> > +	 *
+>> > +	 * So if this lruvec has a higher priority (smaller value), it means
+>> > +	 * other concurrent reclaimers (global or memcg reclaim) have walked
+>> > +	 * its mm list. Skip it for this priority to balance the pressure on
+>> > +	 * all memcgs.
+>> > +	 */
+>> > +#ifdef CONFIG_MEMCG
+>> > +	if (!mem_cgroup_disabled() && !cgroup_reclaim(sc) &&
+>> > +	    sc->priority > atomic_read(&lruvec->evictable.priority))
+>> > +		return false;
+>> > +#endif
+>> > +
+>> > +	do {
+>> > +		last = get_next_mm(lruvec, next_seq, swappiness, &mm);
+>> > +		if (mm)
+>> > +			walk_mm(lruvec, mm, swappiness);
+>> > +
+>> > +		cond_resched();
+>> > +	} while (mm);
+>> 
+>> It appears that we need to scan the whole address space of multiple
+>> processes in this loop?
+>> 
+>> If so, I have some concerns about the duration of the function.  Do you
+>> have some number of the distribution of the duration of the function?
+>> And may be the number of mm_struct and the number of pages scanned.
+>> 
+>> In comparison, in the traditional LRU algorithm, for each round, only a
+>> small subset of the whole physical memory is scanned.
+>
+> Reasonable concerns, and insightful too. We are sensitive to direct
+> reclaim latency, and we tuned another path carefully so that direct
+> reclaims virtually don't hit this path :)
+>
+> Some numbers from the cover letter first:
+>   In addition, direct reclaim latency is reduced by 22% at 99th
+>   percentile and the number of refaults is reduced 7%. These metrics are
+>   important to phones and laptops as they are correlated to user
+>   experience.
+>
+> And "another path" is the background aging in kswapd:
+>   age_active_anon()
+>     age_lru_gens()
+>       try_walk_mm_list()
+>         /* try to spread pages out across spread+1 generations */
+>         if (old_and_young[0] >= old_and_young[1] * spread &&
+>             min_nr_gens(max_seq, min_seq, swappiness) > max(spread, MIN_NR_GENS))
+>                 return;
+>
+>         walk_mm_list(lruvec, max_seq, sc, swappiness);
+>
+> By default, spread = 2, which makes kswapd slight more aggressive
+> than direct reclaim for our use cases. This can be entirely disabled
+> by setting spread to 0, for worloads that don't care about direct
+> reclaim latency, or larger values, they are more sensitive than
+> ours.
 
-Changes from v2:
-* Revised test messages (Borislav Petkov)
----
- tools/testing/selftests/x86/Makefile      |   2 +-
- tools/testing/selftests/x86/sigaltstack.c | 128 ++++++++++++++++++++++
- 2 files changed, 129 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/x86/sigaltstack.c
+OK, I see.  That can avoid the long latency in direct reclaim path.
 
-diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
-index 333980375bc7..65bba2ae86ee 100644
---- a/tools/testing/selftests/x86/Makefile
-+++ b/tools/testing/selftests/x86/Makefile
-@@ -13,7 +13,7 @@ CAN_BUILD_WITH_NOPIE := $(shell ./check_cc.sh $(CC) trivial_program.c -no-pie)
- TARGETS_C_BOTHBITS := single_step_syscall sysret_ss_attrs syscall_nt test_mremap_vdso \
- 			check_initial_reg_state sigreturn iopl ioperm \
- 			test_vsyscall mov_ss_trap \
--			syscall_arg_fault fsgsbase_restore
-+			syscall_arg_fault fsgsbase_restore sigaltstack
- TARGETS_C_32BIT_ONLY := entry_from_vm86 test_syscall_vdso unwind_vdso \
- 			test_FCMOV test_FCOMI test_FISTTP \
- 			vdso_restorer
-diff --git a/tools/testing/selftests/x86/sigaltstack.c b/tools/testing/selftests/x86/sigaltstack.c
-new file mode 100644
-index 000000000000..f689af75e979
---- /dev/null
-+++ b/tools/testing/selftests/x86/sigaltstack.c
-@@ -0,0 +1,128 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#define _GNU_SOURCE
-+#include <signal.h>
-+#include <stdio.h>
-+#include <stdbool.h>
-+#include <string.h>
-+#include <err.h>
-+#include <errno.h>
-+#include <limits.h>
-+#include <sys/mman.h>
-+#include <sys/auxv.h>
-+#include <sys/prctl.h>
-+#include <sys/resource.h>
-+#include <setjmp.h>
-+
-+/* sigaltstack()-enforced minimum stack */
-+#define ENFORCED_MINSIGSTKSZ	2048
-+
-+#ifndef AT_MINSIGSTKSZ
-+#  define AT_MINSIGSTKSZ	51
-+#endif
-+
-+static int nerrs;
-+
-+static bool sigalrm_expected;
-+
-+static unsigned long at_minstack_size;
-+
-+static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
-+		       int flags)
-+{
-+	struct sigaction sa;
-+
-+	memset(&sa, 0, sizeof(sa));
-+	sa.sa_sigaction = handler;
-+	sa.sa_flags = SA_SIGINFO | flags;
-+	sigemptyset(&sa.sa_mask);
-+	if (sigaction(sig, &sa, 0))
-+		err(1, "sigaction");
-+}
-+
-+static void clearhandler(int sig)
-+{
-+	struct sigaction sa;
-+
-+	memset(&sa, 0, sizeof(sa));
-+	sa.sa_handler = SIG_DFL;
-+	sigemptyset(&sa.sa_mask);
-+	if (sigaction(sig, &sa, 0))
-+		err(1, "sigaction");
-+}
-+
-+static int setup_altstack(void *start, unsigned long size)
-+{
-+	stack_t ss;
-+
-+	memset(&ss, 0, sizeof(ss));
-+	ss.ss_size = size;
-+	ss.ss_sp = start;
-+
-+	return sigaltstack(&ss, NULL);
-+}
-+
-+static jmp_buf jmpbuf;
-+
-+static void sigsegv(int sig, siginfo_t *info, void *ctx_void)
-+{
-+	if (sigalrm_expected) {
-+		printf("[FAIL]\tWrong signal delivered: SIGSEGV (expected SIGALRM).");
-+		nerrs++;
-+	} else {
-+		printf("[OK]\tSIGSEGV signal delivered.\n");
-+	}
-+
-+	siglongjmp(jmpbuf, 1);
-+}
-+
-+static void sigalrm(int sig, siginfo_t *info, void *ctx_void)
-+{
-+	if (!sigalrm_expected) {
-+		printf("[FAIL]\tWrong signal delivered: SIGALRM (expected SIGSEGV).");
-+		nerrs++;
-+	} else {
-+		printf("[OK]\tSIGALRM signal delivered.\n");
-+	}
-+}
-+
-+static void test_sigaltstack(void *altstack, unsigned long size)
-+{
-+	if (setup_altstack(altstack, size))
-+		err(1, "sigaltstack()");
-+
-+	sigalrm_expected = (size > at_minstack_size) ? true : false;
-+
-+	sethandler(SIGSEGV, sigsegv, 0);
-+	sethandler(SIGALRM, sigalrm, SA_ONSTACK);
-+
-+	if (!sigsetjmp(jmpbuf, 1)) {
-+		printf("[RUN]\tTest an alternate signal stack of %ssufficient size.\n",
-+		       sigalrm_expected ? "" : "in");
-+		printf("\tRaise SIGALRM. %s is expected to be delivered.\n",
-+		       sigalrm_expected ? "It" : "SIGSEGV");
-+		raise(SIGALRM);
-+	}
-+
-+	clearhandler(SIGALRM);
-+	clearhandler(SIGSEGV);
-+}
-+
-+int main(void)
-+{
-+	void *altstack;
-+
-+	at_minstack_size = getauxval(AT_MINSIGSTKSZ);
-+
-+	altstack = mmap(NULL, at_minstack_size + SIGSTKSZ, PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0);
-+	if (altstack == MAP_FAILED)
-+		err(1, "mmap()");
-+
-+	if ((ENFORCED_MINSIGSTKSZ + 1) < at_minstack_size)
-+		test_sigaltstack(altstack, ENFORCED_MINSIGSTKSZ + 1);
-+
-+	test_sigaltstack(altstack, at_minstack_size + SIGSTKSZ);
-+
-+	return nerrs == 0 ? 0 : 1;
-+}
--- 
-2.17.1
+> It's worth noting that walk_mm_list() is multithreaded -- reclaiming
+> threads can work on different mm_structs on the same list
+> concurrently. We do occasionally see this function in direct reclaims,
+> on over-overcommitted systems, i.e., kswapd CPU usage is 100%. Under
+> the same condition, we saw the current page reclaim live locked and
+> triggered hardware watchdog timeouts (our hardware watchdog is set to
+> 2 hours) many times.
 
+Just to confirm, in the current page reclaim, kswapd will keep running
+until watchdog?  This is avoided in your algorithm mainly via
+multi-threading?  Or via direct vs. reversing page table scanning?
+
+Best Regards,
+Huang, Ying
