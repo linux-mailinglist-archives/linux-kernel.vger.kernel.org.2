@@ -2,149 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B345B33CB6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 03:29:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD27F33CB7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 03:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234515AbhCPC2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Mar 2021 22:28:42 -0400
-Received: from mail-lf1-f53.google.com ([209.85.167.53]:39933 "EHLO
-        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231643AbhCPC2Y (ORCPT
+        id S234642AbhCPCd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Mar 2021 22:33:29 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:33372 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234643AbhCPCdR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Mar 2021 22:28:24 -0400
-Received: by mail-lf1-f53.google.com with SMTP id 18so60009338lff.6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 19:28:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yS6011bMloR7zRKHS4s9pWu4392qTMdCEhzsXiZmMYA=;
-        b=cG3q/Y7ChjUFxcg9zCYxMfrRnJeeUzL+p0WPbYCoJh1jgRaLor8kXl8UlRZ6oyhI5r
-         ehBgcpA32/AHsx69+EtdHjNaF7hANMZnuG7cTXoTYVe4U9s3xYybDBfZy+bTJ/DlNP9G
-         DyqXoxvBbbr17QejWSoAcKYEBnNoR8UXPVcQihGNy/T5D0i090wtBAuFVsfytmkJp8dh
-         YUxqiih77rgbPvk6km3QXjxdXABtuLWs7kDodtT23g3iu8l2z+xoRp2oFkaLm4HVO2OX
-         aZdZ+ShPlJGCd3t8eo29lfTnQW2hMY8efQwIY9sm3aa8tYHtmbN7RIeTEw/PdKckUYtF
-         6JvQ==
-X-Gm-Message-State: AOAM530CStquDYeI3eE3HKFKGPb8IEeQ97qbVDVmOKfEY6htK+SOJbT9
-        bLUFciMyiJ7ZkKYprihPhOi51IKkx/hbldMFWxQ=
-X-Google-Smtp-Source: ABdhPJxztoyNcSn69JXCbCmBD1w9zKvvbx9xL6SGGSNUtOp9c4XZ4ycIsyCE17AawZG1BB33Pg7P3Ay3lVQvQ/bHSZs=
-X-Received: by 2002:a05:6512:a8b:: with SMTP id m11mr9440764lfu.112.1615861703408;
- Mon, 15 Mar 2021 19:28:23 -0700 (PDT)
+        Mon, 15 Mar 2021 22:33:17 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12G2U4FD013290;
+        Tue, 16 Mar 2021 02:30:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=67ayGYyPGk5h+zUTA5QWC8yNcymjn9Y/E/omlWbnN04=;
+ b=OoCinySZXNzID8WaHK5D4UluCS+SwBwMle1brAqyYZSKHgagv7bajcLOankb5FVVekwo
+ B6scfh/JQ/anKMSUB+8hFo2EaDlEKtb4kwpCheYVCpULMLF6xAdw84W1ClxpNHB00tEn
+ 8jQbUJNGw7dpLrAVr40cTYNJf/ydwnnRCmUx6OO/TjU0wx5dF0393PNLRcxxvgQccyIs
+ q4zR+6B0L09QCGYssq8ZOpAGX2lcMNe4Djphg4EZyyNXcYwCxwQvd8xFEYNhluzihHgI
+ UKQpnq2CF4+X7M/7ymZRQ8nAMrfFCELbpHYhr3s02ZXl2vX4TlSe/EIvIZgGt0b5y+zN lw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 378p1np21d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Mar 2021 02:30:04 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12G2PeEb011624;
+        Tue, 16 Mar 2021 02:30:03 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2170.outbound.protection.outlook.com [104.47.59.170])
+        by aserp3020.oracle.com with ESMTP id 3797a0mbyx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Mar 2021 02:30:03 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nfhTe1Sz/yRwwcvJy+Qe5faRnaxqgUah9NQ13pkOiX3hEQ4hCmVV6vUvO5LIAPWHMXYbvBraDY10cyLcPiTpFLOzXs9/LQxLgIhEl1qvGB8uH6Sbhq6VSmxOtKUJ37Z0ciYODIf9xTNUsLcO7GWmqdL7ju9wdHsCpTrDP2BDZRHPZf6S+XaT8HLF8+klXf3aEdxpjyh9LMZRmngS2+rPjNgQLKUMZPiJqmOpWnGplzSq1pQ/HKuYGOrRU1kcEoAWhcOrjNq3v4R0Hs6fdhrYaoEJY/9AALMfAaW3nA4V3csoZSnhfquTnVb9M3fDCPkoDXMGfD38U5ClT4cA6KW4Ng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=67ayGYyPGk5h+zUTA5QWC8yNcymjn9Y/E/omlWbnN04=;
+ b=kTg2Ags0DKDOIqzNQUm8Iq50pN8wosxTfijqC1r0meoMe9nwY1A5ErhMzZRab5+TKE2qrvllXEiv70Dwej+WwEIn9hO7KlyKbtKIXdSqTPsK/Qd7nYOGZea4miDVGPTwM00dQmZeoMLGRda8qCTNwHaN/rAyqtawlbeT7/9HA+4c1zUFPbbungQvf8YJPlIzW8M3gsevtCFnxKVLmUN+lMjfbGIDl5d9JT3yjRv4b5s7CKmCmAeHA8nPdvIS2hGzuysJgLVBFyNycJlpTaO5cO0Rz9ggOzkO8BEpTfHfX3ZqUvz+5tL+INc/iD2/qG0gYmwNeLCo6etVr/MioWENYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=67ayGYyPGk5h+zUTA5QWC8yNcymjn9Y/E/omlWbnN04=;
+ b=baAJi8rTnbGqrpkBQK+O7F7GuJ/kJ0lulYO2TMHkapyVREm01MAC8XO7h7MXA16G53/g+w/xPj/YTGlMtHv7Cz8Jp+Z2/F6pR/ZNSMG6PitPYZv1+Xwn8vlbyHYsNxmkHgPQpVTbP6tlfaEu0EQhe7VB3+GP+2bIuv8yBNoRpM0=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4565.namprd10.prod.outlook.com (2603:10b6:510:31::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Tue, 16 Mar
+ 2021 02:30:00 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::dc39:c9fa:7365:8c8e]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::dc39:c9fa:7365:8c8e%5]) with mapi id 15.20.3933.032; Tue, 16 Mar 2021
+ 02:30:00 +0000
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Adam Radford <aradford@gmail.com>,
+        Alan Cox <alan@lxorguk.ukuu.org.uk>,
+        Ali Akcaagac <aliakc@web.de>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Andre Hedrick <andre@suse.com>,
+        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
+        Anil Veerabhadrappa <anilgv@broadcom.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bas Vermeulen <bvermeul@blackstar.xs4all.nl>,
+        Bradley Grove <linuxdrivers@attotech.com>,
+        Brian Macy <bmacy@sunshinecomputing.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "C.L. Huang" <ching@tekram.com.tw>, dc395x@twibble.org,
+        de Melo <acme@conectiva.com.br>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        Dimitris Michailidis <dm@chelsio.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Eddie Wai <eddie.wai@broadcom.com>,
+        Erich Chen <erich@tekram.com.tw>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        Hannes Reinecke <hare@kernel.org>,
+        Hannes Reinecke <hare@suse.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        James Smart <james.smart@broadcom.com>,
+        Jamie Lenehan <lenehan@twibble.org>,
+        Jan Kotas <jank@cadence.com>,
+        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
+        Joel Jacobson <linux@3ware.com>, Karen Xie <kxie@chelsio.com>,
+        Ketan Mukadam <ketan.mukadam@broadcom.com>,
+        Kurt Garloff <garloff@suse.de>,
+        "Leonard N. Zubkoff" <lnz@dandelion.com>,
+        linux-drivers@broadcom.com, Linux GmbH <hare@suse.com>,
+        linux-scsi@vger.kernel.org,
+        Manish Rangankar <mrangankar@marvell.com>,
+        Marcelo Tosatti <marcelo@conectiva.com.br>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        MPT-FusionLinux.pdl@avagotech.com,
+        MPT-FusionLinux.pdl@broadcom.com,
+        Nathaniel Clark <nate@misrule.us>,
+        "Nicholas A. Bellinger" <nab@kernel.org>,
+        Nilesh Javali <njavali@marvell.com>,
+        Oliver Neukum <oliver@neukum.org>,
+        QLogic-Storage-Upstream@qlogic.com,
+        Santosh Yaraganavi <santosh.sy@samsung.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
+        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Vinayak Holikatti <h.vinayak@samsung.com>,
+        Vladislav Bolkhovitin <vst@vlnb.net>
+Subject: Re: [PATCH 00/30] [Set 2] Rid W=1 warnings in SCSI
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq15z1r6db8.fsf@ca-mkp.ca.oracle.com>
+References: <20210312094738.2207817-1-lee.jones@linaro.org>
+Date:   Mon, 15 Mar 2021 22:29:57 -0400
+In-Reply-To: <20210312094738.2207817-1-lee.jones@linaro.org> (Lee Jones's
+        message of "Fri, 12 Mar 2021 09:47:08 +0000")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: BY5PR04CA0013.namprd04.prod.outlook.com
+ (2603:10b6:a03:1d0::23) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-References: <20210315045641.700430-1-namhyung@kernel.org> <YE9g6VIZkEr8Hoyl@krava>
-In-Reply-To: <YE9g6VIZkEr8Hoyl@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 16 Mar 2021 11:28:12 +0900
-Message-ID: <CAM9d7cheph_kjRzfKQSnoowRTQ3p4TF7mHt_3niJWGceSwJPzA@mail.gmail.com>
-Subject: Re: [PATCH] perf record: Fix memory leak in vDSO
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by BY5PR04CA0013.namprd04.prod.outlook.com (2603:10b6:a03:1d0::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31 via Frontend Transport; Tue, 16 Mar 2021 02:29:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 86d45e75-2aa0-4c80-97dc-08d8e823657f
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4565:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB45654A942932203A5CDA2B168E6B9@PH0PR10MB4565.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1227;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XFfaWch+/R7XN0GRNcR5amJXWl3Iq2wZeedOREqy8o0qAywR0URFg4er/y9ssyCipjxpyOmcaqTQcZfg4vMR90vDZpMzbxu85MtmlH9NPOesP1odZebs+upbxvDmmDOue8VQ4PKnQqvYg1zf+CUazHv/0Cbb2WOI7yExlcZqyUXO+rVa8Og+9Wqrfw4kLytnH0W7YdYXlieeNhz62KAn5CW7txdR8gmg9rfNqSsTqEpJ5aQxEHshjqyG9SBXHtGSGT6JYQRy3vjOn9HnK8YEklz3azN1JJfG6zXHDKtkuyIW1zJD8Q3bTehhIsjdPkO/H7ZSCK6blsAssEx8SrbpsBGReJ+0FsafmotNx0of3XI+NkE0Z9C5pKqbc4Cj/S++awuOVMNjETvSEgFVNi9trdSVcds9fTxmnTftwEYV4y/alrmfqelephCvfnbMFjJbCVbjPrY51fgi7TSMp8AS8vbICjr4ifkykSpjic4dwqbLOoGOTjNgSADmML3q5Uuh2uwk2yP041SW6RXx0Bw4HMYpfwGzgkAlCepvh+A9Pp/pl1h7EnWj7x5c2MhJYBup
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(396003)(376002)(366004)(136003)(316002)(36916002)(86362001)(52116002)(26005)(7696005)(956004)(83380400001)(54906003)(55016002)(66476007)(8936002)(186003)(6916009)(7406005)(16526019)(478600001)(66556008)(8676002)(5660300002)(7416002)(66946007)(7366002)(2906002)(558084003)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Ies6HeDKLgO2LehGscsTJ0fGZZ4BG9aUA+PUGn0RoL6muNSI3pps6to/V1j4?=
+ =?us-ascii?Q?ZaCaGffgNLoyzs6rGHCuBKTjdxbg2dX2WFqgdD0Z1mfmGKciu/RUo/xsBm9/?=
+ =?us-ascii?Q?m6stfUkJ+9S8l2LrZLLkkpgM2EVB+9OzQkKMAkqqsLsz7reNNYy6ErZRrGUs?=
+ =?us-ascii?Q?NMfW/+QYpZm/fZ/VEBM/Vb1Csgv1WjNPTn1+Q9mD0FJDSYibFoa3ifdIKKDO?=
+ =?us-ascii?Q?kyWbMxp4WpM86XDSZ0IerqZ3PdvMkNlJn+/TLuMCcyOqDZmCxrYTlHxZDtN1?=
+ =?us-ascii?Q?rNQptcP8/SCrexMwvneXwg50Vp/evyewoPFT1iyoWO0BcZK+dZzFd1hGvBGu?=
+ =?us-ascii?Q?KIsLj1CE86pgXgbxVmc0ZzcvmwodV42QaL+AIeuRYPen2O4s6Woo8kuk18Gy?=
+ =?us-ascii?Q?0PDXB3PMDnmYLctNaW5lWB7QG7+Ttidl2DpD2BXCfKyFiIypmnscHMUoC7vC?=
+ =?us-ascii?Q?eZqbmuu64l52DjZeuoqe+Juqh2+N2I9LJOPZAybio/jTE3duLffw9Ys2ONAM?=
+ =?us-ascii?Q?Fpyfvf/xhDMDm8ccIZT2ShtC/0LVFWryQfx4AuNJbehz1dHNUibIMUluefso?=
+ =?us-ascii?Q?LcgTqdFCEInBaPOe+JaPfaMe1VQl/1gdb+p4jw8nxIaK1xICgqtJi2sa6NX3?=
+ =?us-ascii?Q?UGzv1MbF8XOgEHr9z1yJFjp4r0RlURBO97nB3lbhk/Gk/wI2L8xztpn/1LNC?=
+ =?us-ascii?Q?GA6eTG5re6LrryaRvM/AigbByz+8MPU+uUHfYm83E4FS1pi/nJ5zYKMIfIV2?=
+ =?us-ascii?Q?FxQ12GUsPhj0mjMu7oOFocqjFI07ZgcdFrLTe+QL9O6wBmoF+/N2I96fQuyk?=
+ =?us-ascii?Q?/TIS82knFVvyrLDFyyp0oAD6mZLHdQryCfUKNaE5PF8qZvfUhygfXXprLeMP?=
+ =?us-ascii?Q?pSPA2BWyoLoZ/2zHVf7+9wc6/m27FsXk7VxqrDyH6e+JENjtVVyI8hZ3dzho?=
+ =?us-ascii?Q?6svSHEStVzY4SLPtnOC3aMxT0wfZsTja9m9wYc0Ueb6N6psKM5HM2Af4ozAp?=
+ =?us-ascii?Q?zRBDCzq16R5fP4+dGpLJqoAKYCvtPzrpe2C1Rz4PHCTo8TVt4CjMfQTBdxZw?=
+ =?us-ascii?Q?lKY8cFKvPPsdLJW3d9M+lavsSgNiU2mu1WeFSoHAs4jeaFP+XexBJnEqq4Ni?=
+ =?us-ascii?Q?cP/0sxhiDPFVACOQ5+Kj4z3IMyDZh5WzA8jTC2aLNDxBcHaRdERtlgNR6/Rw?=
+ =?us-ascii?Q?0YU4ib2yRLbqPp4/L05UunyyRbf73mxdtcE4WY7oCVdDRkfC5zcxNhrs2JQ1?=
+ =?us-ascii?Q?4+0l6gxSHCyRthcgwQshB7HVlpxIP2GR7fsF0kVdh3jZCuDgTu5MuqdGCk/M?=
+ =?us-ascii?Q?OLxnlMkbE6B7g4SpkdBQuAep?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 86d45e75-2aa0-4c80-97dc-08d8e823657f
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Mar 2021 02:29:59.8888
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Epn2asMRc+i91msDRXSsGZi7+4cHumHGQ4FqgnT78TWu6U7iyJbnKpzGr8J3GLm9HQTul3L0hJT5dlth40z22VPN62WAbNuOrfqjK4FxOFU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4565
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9924 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 spamscore=0
+ mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103160016
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9924 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0 adultscore=0
+ spamscore=0 clxscore=1011 phishscore=0 malwarescore=0 priorityscore=1501
+ bulkscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103160016
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 10:28 PM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Mon, Mar 15, 2021 at 01:56:41PM +0900, Namhyung Kim wrote:
-> > I got several memory leak reports from Asan with a simple command.  It
-> > was because VDSO is not released due to the refcount.  Like in
-> > __dsos_addnew_id(), it should put the refcount after adding to the list.
-> >
-> >   $ perf record true
-> >   [ perf record: Woken up 1 times to write data ]
-> >   [ perf record: Captured and wrote 0.030 MB perf.data (10 samples) ]
-> >
-> >   =================================================================
-> >   ==692599==ERROR: LeakSanitizer: detected memory leaks
-> >
-> >   Direct leak of 439 byte(s) in 1 object(s) allocated from:
-> >     #0 0x7fea52341037 in __interceptor_calloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:154
-> >     #1 0x559bce4aa8ee in dso__new_id util/dso.c:1256
-> >     #2 0x559bce59245a in __machine__addnew_vdso util/vdso.c:132
-> >     #3 0x559bce59245a in machine__findnew_vdso util/vdso.c:347
-> >     #4 0x559bce50826c in map__new util/map.c:175
-> >     #5 0x559bce503c92 in machine__process_mmap2_event util/machine.c:1787
-> >     #6 0x559bce512f6b in machines__deliver_event util/session.c:1481
-> >     #7 0x559bce515107 in perf_session__deliver_event util/session.c:1551
-> >     #8 0x559bce51d4d2 in do_flush util/ordered-events.c:244
-> >     #9 0x559bce51d4d2 in __ordered_events__flush util/ordered-events.c:323
-> >     #10 0x559bce519bea in __perf_session__process_events util/session.c:2268
-> >     #11 0x559bce519bea in perf_session__process_events util/session.c:2297
-> >     #12 0x559bce2e7a52 in process_buildids /home/namhyung/project/linux/tools/perf/builtin-record.c:1017
-> >     #13 0x559bce2e7a52 in record__finish_output /home/namhyung/project/linux/tools/perf/builtin-record.c:1234
-> >     #14 0x559bce2ed4f6 in __cmd_record /home/namhyung/project/linux/tools/perf/builtin-record.c:2026
-> >     #15 0x559bce2ed4f6 in cmd_record /home/namhyung/project/linux/tools/perf/builtin-record.c:2858
-> >     #16 0x559bce422db4 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:313
-> >     #17 0x559bce2acac8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:365
-> >     #18 0x559bce2acac8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:409
-> >     #19 0x559bce2acac8 in main /home/namhyung/project/linux/tools/perf/perf.c:539
-> >     #20 0x7fea51e76d09 in __libc_start_main ../csu/libc-start.c:308
-> >
-> >   Indirect leak of 32 byte(s) in 1 object(s) allocated from:
-> >     #0 0x7fea52341037 in __interceptor_calloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:154
-> >     #1 0x559bce520907 in nsinfo__copy util/namespaces.c:169
-> >     #2 0x559bce50821b in map__new util/map.c:168
-> >     #3 0x559bce503c92 in machine__process_mmap2_event util/machine.c:1787
-> >     #4 0x559bce512f6b in machines__deliver_event util/session.c:1481
-> >     #5 0x559bce515107 in perf_session__deliver_event util/session.c:1551
-> >     #6 0x559bce51d4d2 in do_flush util/ordered-events.c:244
-> >     #7 0x559bce51d4d2 in __ordered_events__flush util/ordered-events.c:323
-> >     #8 0x559bce519bea in __perf_session__process_events util/session.c:2268
-> >     #9 0x559bce519bea in perf_session__process_events util/session.c:2297
-> >     #10 0x559bce2e7a52 in process_buildids /home/namhyung/project/linux/tools/perf/builtin-record.c:1017
-> >     #11 0x559bce2e7a52 in record__finish_output /home/namhyung/project/linux/tools/perf/builtin-record.c:1234
-> >     #12 0x559bce2ed4f6 in __cmd_record /home/namhyung/project/linux/tools/perf/builtin-record.c:2026
-> >     #13 0x559bce2ed4f6 in cmd_record /home/namhyung/project/linux/tools/perf/builtin-record.c:2858
-> >     #14 0x559bce422db4 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:313
-> >     #15 0x559bce2acac8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:365
-> >     #16 0x559bce2acac8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:409
-> >     #17 0x559bce2acac8 in main /home/namhyung/project/linux/tools/perf/perf.c:539
-> >     #18 0x7fea51e76d09 in __libc_start_main ../csu/libc-start.c:308
-> >
-> >   SUMMARY: AddressSanitizer: 471 byte(s) leaked in 2 allocation(s).
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/util/vdso.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/tools/perf/util/vdso.c b/tools/perf/util/vdso.c
-> > index 3cc91ad048ea..43beb169631d 100644
-> > --- a/tools/perf/util/vdso.c
-> > +++ b/tools/perf/util/vdso.c
-> > @@ -133,6 +133,8 @@ static struct dso *__machine__addnew_vdso(struct machine *machine, const char *s
-> >       if (dso != NULL) {
-> >               __dsos__add(&machine->dsos, dso);
-> >               dso__set_long_name(dso, long_name, false);
-> > +             /* Put dso here because __dsos_add already got it */
-> > +             dso__put(dso);
->
-> from quick look I don't understand why we take refcnt down
-> right after adding to the list.. it would make sense to me
-> if dso is not stored elsewhere so we want dsos__exit to
-> release it.. but it's still stored in map object
->
-> I checked and we do extra dso__get in machine__findnew_vdso
-> (and also in dsos__findnew_id) ... so that one seems to me
-> like the one we should remove
->
-> but I might be missing something, I'll try to check more
-> deeply later on
 
-I think we assume the find/findnew APIs include increment of
-the refcount, otherwise all callers should be converted to do it
-explicitly.
+Lee,
 
-Then the 'find' part should increase it but the 'new' part is not
-(as it already has 2) and that's why we have that.
+> This set is part of a larger effort attempting to clean-up W=1 kernel
+> builds, which are currently overwhelmingly riddled with niggly little
+> warnings.
 
-Thanks,
-Namhyung
+Applied to 5.13/scsi-staging, thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
