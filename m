@@ -2,113 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B67933DDB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:40:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F1833DDEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 20:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240521AbhCPTjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 15:39:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
+        id S240648AbhCPTpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 15:45:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240505AbhCPTjJ (ORCPT
+        with ESMTP id S240635AbhCPTpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:39:09 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 242ECC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:39:09 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id u17so43264194ybi.10
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 12:39:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=DyT2hoANWswY1My2edJBxlO9DN0LrYQonEua2weCt84=;
-        b=fBhUY4KnMhJq9CyPuR22abSB5bODhZt9LZOsPXAPaVrKZVpkZvLsEdwqELYErXRVX8
-         D4F6ayBWlArXiqvIbhhBbG7R2TsPQFIxC3HOmLnLNll7P1Vm5V0jkC5UP/oLTPuUsBHt
-         TyjMMi9zWIfl8uBac3LUFP2iLxmg0VN0ZZ6SotUcD6jGVtXqfLku/XFknVu1IDikm1N/
-         /J11qoZE3p32jpTgXVvQ0VHCVwezqgfNKepiHhE/uWRFCUHkLX3CsYO+YlWIf9y/v1zq
-         2V7GqwPyGvCRZXTxBW1m/3Y8o6sFtiZ2DyW1lDhTQnwNdPzE4dv/eGN9Xt5ZjaMkAu/P
-         JiUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=DyT2hoANWswY1My2edJBxlO9DN0LrYQonEua2weCt84=;
-        b=mc+5seloo8N5KTxa1iOZg5QgyK1luUK9T6Xi2aFRdJRKMVGu4DLTRE9snSRJQtOKKq
-         F9LDp69IHJOOYyV268McaN8A8729AfcYWsNoud4HOplJI03vxix0aWAguUr4OxNlb3gU
-         yWyEzY0SpgEfusvRAutEPkVhhEpml9fOoujM8YYjCJ6OA5jqamgdyEBg3r54Prnig33i
-         E37L+upVsr5oqHTSi3+yW2BzxTx/Jomz7+G/w9kJn4BhRK36TKjLfMXRvHTHJqn9N2kN
-         BQcta28flljOv2PzwaEPhjmFB6BbmnsNZwhyb/Mt6qCUCjVoH2m09wPD6qBhLNmlIu+L
-         UHpQ==
-X-Gm-Message-State: AOAM5321q8m6YHhWxnfa8AfwzWlbpbWgEZTKMemL9b3nEKzfiqO23ytL
-        Wh0aNCXfnJFKqj6ZiC+ZqhZ6YFw/bRY=
-X-Google-Smtp-Source: ABdhPJzRB9OdmVfPBpo9VDbQbkeTJSWjg7KRmAXhc4AiGHtJsgtwJUvlBoFiZExzwossrj59KdlljR34x/4=
-X-Received: from jollys.svl.corp.google.com ([2620:15c:2c5:13:b0b6:1464:754e:83cb])
- (user=jollys job=sendgmr) by 2002:a25:595:: with SMTP id 143mr663212ybf.177.1615923548383;
- Tue, 16 Mar 2021 12:39:08 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 12:39:05 -0700
-Message-Id: <20210316193905.1673600-1-jollys@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH] scsi: libsas: Reset num_scatter if libata mark qc as NODATA
-From:   Jolly Shah <jollys@google.com>
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        john.garry@huawei.com, a.darwish@linutronix.de,
-        yanaijie@huawei.com, luojiaxing@huawei.com,
-        dan.carpenter@oracle.com, b.zolnierkie@samsung.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jolly Shah <jollys@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 16 Mar 2021 15:45:17 -0400
+Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE03EC06174A;
+        Tue, 16 Mar 2021 12:45:14 -0700 (PDT)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4F0Nzp5fCLz1rxMm;
+        Tue, 16 Mar 2021 20:45:10 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4F0Nzp42vgz1qqlD;
+        Tue, 16 Mar 2021 20:45:10 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id HVprAfGCzxsU; Tue, 16 Mar 2021 20:45:09 +0100 (CET)
+X-Auth-Info: SurgzyzvOEKJPZRKHt6wkP9W5Z0YUNK8ZVcNfo2fRZpxXEba/9GDDNhI7l/OoTV0
+Received: from igel.home (ppp-46-244-163-222.dynamic.mnet-online.de [46.244.163.222])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Tue, 16 Mar 2021 20:45:09 +0100 (CET)
+Received: by igel.home (Postfix, from userid 1000)
+        id E3E372C37EC; Tue, 16 Mar 2021 20:45:08 +0100 (CET)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Zong Li <zong.li@sifive.com>
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com, sboyd@kernel.org,
+        pragnesh.patel@openfive.com, aou@eecs.berkeley.edu,
+        mturquette@baylibre.com, yash.shah@sifive.com,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v7 0/5] clk: add driver for the SiFive FU740
+References: <20201209094916.17383-1-zong.li@sifive.com>
+X-Yow:  When you said ``HEAVILY FORESTED'' it reminded me of an overdue
+ CLEANING BILL..  Don't you SEE?  O'Grogan SWALLOWED a VALUABLE
+ COIN COLLECTION and HAD to murder the ONLY MAN who KNEW!!
+Date:   Tue, 16 Mar 2021 20:45:08 +0100
+In-Reply-To: <20201209094916.17383-1-zong.li@sifive.com> (Zong Li's message of
+        "Wed, 9 Dec 2020 17:49:11 +0800")
+Message-ID: <87v99qyjaz.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1.91 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the cache_type for the scsi device is changed, the scsi layer
-issues a MODE_SELECT command. The caching mode details are communicated
-via a request buffer associated with the scsi command with data
-direction set as DMA_TO_DEVICE (scsi_mode_select). When this command
-reaches the libata layer, as a part of generic initial setup, libata
-layer sets up the scatterlist for the command using the scsi command
-(ata_scsi_qc_new). This command is then translated by the libata layer
-into ATA_CMD_SET_FEATURES (ata_scsi_mode_select_xlat). The libata layer
-treats this as a non data command (ata_mselect_caching), since it only
-needs an ata taskfile to pass the caching on/off information to the
-device. It does not need the scatterlist that has been setup, so it does
-not perform dma_map_sg on the scatterlist (ata_qc_issue). Unfortunately,
-when this command reaches the libsas layer(sas_ata_qc_issue), libsas
-layer sees it as a non data command with a scatterlist. It cannot
-extract the correct dma length, since the scatterlist has not been
-mapped with dma_map_sg for a DMA operation. When this partially
-constructed SAS task reaches pm80xx LLDD, it results in below warning.
+On Dez 09 2020, Zong Li wrote:
 
-"pm80xx_chip_sata_req 6058: The sg list address
-start_addr=0x0000000000000000 data_len=0x0end_addr_high=0xffffffff
-end_addr_low=0xffffffff has crossed 4G boundary"
+> Add a driver for the SiFive FU740 PRCI IP block, which handles more
+> clocks than FU540. These patches also refactor the original
+> implementation by spliting the dependent-code of fu540 and fu740
+> respectively.
 
-This patch assigns appropriate value to  num_sectors for ata non data 
-commands.
+That breaks ethernet on the fu540.
 
-Signed-off-by: Jolly Shah <jollys@google.com>
----
- drivers/scsi/libsas/sas_ata.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Andreas.
 
-diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
-index 024e5a550759..94ec08cebbaa 100644
---- a/drivers/scsi/libsas/sas_ata.c
-+++ b/drivers/scsi/libsas/sas_ata.c
-@@ -209,10 +209,12 @@ static unsigned int sas_ata_qc_issue(struct ata_queued_cmd *qc)
- 		task->num_scatter = si;
- 	}
- 
--	if (qc->tf.protocol == ATA_PROT_NODATA)
-+	if (qc->tf.protocol == ATA_PROT_NODATA) {
- 		task->data_dir = DMA_NONE;
--	else
-+		task->num_scatter = 0;
-+	} else {
- 		task->data_dir = qc->dma_dir;
-+	}
- 	task->scatter = qc->sg;
- 	task->ata_task.retry_count = 1;
- 	task->task_state_flags = SAS_TASK_STATE_PENDING;
 -- 
-2.31.0.rc2.261.g7f71774620-goog
-
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
