@@ -2,156 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B0333D9CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:49:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C580633D97A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 17:32:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238951AbhCPQtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 12:49:06 -0400
-Received: from de-out1.bosch-org.com ([139.15.230.186]:55278 "EHLO
-        de-out1.bosch-org.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236835AbhCPQst (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 12:48:49 -0400
-Received: from fe0vm1649.rbesz01.com (lb41g3-ha-dmz-psi-sl1-mailout.fe.ssn.bosch.com [139.15.230.188])
-        by fe0vms0186.rbdmz01.com (Postfix) with ESMTPS id 4F0K4H17tKz1XLFjP;
-        Tue, 16 Mar 2021 17:48:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=de.bosch.com;
-        s=key3-intmail; t=1615913327;
-        bh=fP74M6HwZDCum3+vzeaerJPkseKxvj4gZV75mefECbo=; l=10;
-        h=From:Subject:From:Reply-To:Sender;
-        b=ZeLKWHlnJJ+gB39tx2cNTI6+V7uo1LisSbu6pDa0ie7dq38NEAFEfD6+irZRD+PS5
-         0PaeUshEXH/QCTnMwteEZ5ez7K/mlWbKEtcZBg17WohLhnwVuJkcqnFug6xD1cJ2py
-         W3uM8TjoUCo+BlUCuFCOMiesLe5OM3FSMX2WXcOU=
-Received: from fe0vm7918.rbesz01.com (unknown [10.58.172.176])
-        by fe0vm1649.rbesz01.com (Postfix) with ESMTPS id 4F0K4H0q36z1bh;
-        Tue, 16 Mar 2021 17:48:47 +0100 (CET)
-X-AuditID: 0a3aad10-e8dff7000000444e-8a-6050e16f62e3
-Received: from fe0vm1652.rbesz01.com ( [10.58.173.29])
-        (using TLS with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by fe0vm7918.rbesz01.com (SMG Outbound) with SMTP id 2D.B5.17486.F61E0506; Tue, 16 Mar 2021 17:48:47 +0100 (CET)
-Received: from FE-HUB2000.de.bosch.com (fe-hub2000.de.bosch.com [10.4.103.109])
-        by fe0vm1652.rbesz01.com (Postfix) with ESMTPS id 4F0K4G71sczV19;
-        Tue, 16 Mar 2021 17:48:46 +0100 (CET)
-Received: from luchador.grb-fir.grb.de.bosch.com (10.19.187.97) by
- FE-HUB2000.de.bosch.com (10.4.103.109) with Microsoft SMTP Server id
- 15.1.2176.2; Tue, 16 Mar 2021 17:48:46 +0100
-From:   Mark Jonas <mark.jonas@de.bosch.com>
-To:     Support Opensource <support.opensource@diasemi.com>,
-        Lee Jones <lee.jones@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <Adam.Thomson.Opensource@diasemi.com>,
-        <stwiss.opensource@diasemi.com>, <marek.vasut@gmail.com>,
-        <tingquan.ruan@cn.bosch.com>, <hubert.streidl@de.bosch.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Mark Jonas <mark.jonas@de.bosch.com>
-Subject: [PATCH v6 1/1] mfd: da9063: Support SMBus and I2C mode
-Date:   Tue, 16 Mar 2021 17:22:37 +0100
-Message-ID: <20210316162237.877436-1-mark.jonas@de.bosch.com>
-X-Mailer: git-send-email 2.25.1
+        id S237748AbhCPQbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 12:31:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233000AbhCPQbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 12:31:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B3CA650AD;
+        Tue, 16 Mar 2021 16:31:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615912278;
+        bh=ArwLhFGNRtoZoDInVsKUoHhbuCP09SA/wa//ULR0++g=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=GvzBm3JkyuMSCl3Oa4qgBW+8umKNRy1KIgcjb34q3DP6Ot6yQfBMuxMBQDFoY/SJz
+         0CTFep3u+Oek/uKp4T0f9L2zdDdgrm0xzqCVyzyV5myi42a0LzOINw9h6Yh87up3YI
+         lixgSmO/28mDs5Vg93bt8PC8fsuqiR8mYo45pmHxMNRXFDKzEoCVTSytlmieXt5WsM
+         8BoGtArpwIi0P28bORztcAYhiFdxO+uWZc2maRkgVeLQROS4rc2kAnKosoQeAbBgfN
+         tQyzZKxDO7y8APkc85M4eYY6Qee3GZAQVrsw3ISthsgfUjtbijjkeMKNy+Hm48NCBT
+         jrTgxQHq3gZnw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id BF644352262D; Tue, 16 Mar 2021 09:31:17 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 09:31:17 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Zhang Qiang <qiang.zhang@windriver.com>
+Subject: Re: [PATCH v2 1/1] kvfree_rcu: Release a page cache under memory
+ pressure
+Message-ID: <20210316163117.GU2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210310200757.32331-1-urezki@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrELMWRmVeSWpSXmKPExsXCZbVWVjf/YUCCwaXtzBZL3y9ltrj/9Sij
-        RcffL4wWl3fNYbO4+ns9i8Xe1ovMFnf3z2V0YPdY8UnfY9OqTjaPO9f2sHl83iQXwBLFZZOS
-        mpNZllqkb5fAlXFiWi9LwXGJir71DUwNjL0iXYycHBICJhJ3J29j6mLk4hASmM4ksfdPCwuE
-        s5tRYuaP54wgVUICOxglDv5RA7HZBLQkbp7YwQxiiwhES7R8PQHWzSywiknizqpd7CAJYQF7
-        ieZLE8CaWQRUJZZ+XQjWwCtgKzH34hE2iNXyEjMvfWeHiAtKnJz5hAXEZgaKN2+dzQxhS0gc
-        fPGCeQIj3ywkZbOQlM1CUraAkXkVo2haqkFZrrmloYVeUVJqcZWBoV5yfu4mRkiwAn1yu/uD
-        3iFGJg7GQ4wSHMxKIrymeQEJQrwpiZVVqUX58UWlOanFhxilOViUxHlVeDbGCQmkJ5akZqem
-        FqQWwWSZODilGpgSmbnerA/e7nrmUR132a/qN4tfun06/mOd0E9Og10xEqdNFt9Mvbk/5Ei8
-        f8ZD30cdig4M3WY+pQcKNK6tCC6YPyMvMtzK4vOHN/8d2a1SXx9xqez3zq75IGqwj+tKfpZ4
-        SnTRKdan6e3CC8s1NpoG2834/Cnvz1T24FgBrkWdPlvm+zFfmj+FwWTtt+WRjBcP7vLIt3us
-        8erSjrStKzUOL5pz4HHZlpU3SyJ+B7P0m6Vvc68Tn7X8X/ptJa/XZ6bdu6r3reF0VI8ko3mN
-        bR9D0Wv1kg9bRBfwFIV2pK3bU3NB8E7soT/Xd5o2HJysOl9/XcNkDeeJQd+yxVP1+T1yD8s2
-        x+7sdX3RKb7Ds16JpTgj0VCLuag4EQCdmo4VxQIAAA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310200757.32331-1-urezki@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hubert Streidl <hubert.streidl@de.bosch.com>
+On Wed, Mar 10, 2021 at 09:07:57PM +0100, Uladzislau Rezki (Sony) wrote:
+> From: Zhang Qiang <qiang.zhang@windriver.com>
+> 
+> Add a drain_page_cache() function to drain a per-cpu page cache.
+> The reason behind of it is a system can run into a low memory
+> condition, in that case a page shrinker can ask for its users
+> to free their caches in order to get extra memory available for
+> other needs in a system.
+> 
+> When a system hits such condition, a page cache is drained for
+> all CPUs in a system. Apart of that a page cache work is delayed
+> with 5 seconds interval until a memory pressure disappears.
 
-By default the PMIC DA9063 2-wire interface is SMBus compliant. This
-means the PMIC will automatically reset the interface when the clock
-signal ceases for more than the SMBus timeout of 35 ms.
+Does this capture it?
 
-If the I2C driver / device is not capable of creating atomic I2C
-transactions, a context change can cause a ceasing of the clock signal.
-This can happen if for example a real-time thread is scheduled. Then
-the DA9063 in SMBus mode will reset the 2-wire interface. Subsequently
-a write message could end up in the wrong register. This could cause
-unpredictable system behavior.
+------------------------------------------------------------------------
 
-The DA9063 PMIC also supports an I2C compliant mode for the 2-wire
-interface. This mode does not reset the interface when the clock
-signal ceases. Thus the problem depicted above does not occur.
+Add a drain_page_cache() function that drains the specified per-cpu
+page cache.  This function is invoked on each CPU when the system
+enters a low-memory state, that is, when the shrinker invokes
+kfree_rcu_shrink_scan().  Thus, when the system is low on memory,
+kvfree_rcu() starts taking its slow paths.
 
-This patch tests for the bus functionality "I2C_FUNC_I2C". It can
-reasonably be assumed that the bus cannot obey SMBus timings if
-this functionality is set. SMBus commands most probably are emulated
-in this case which is prone to the latency issue described above.
+In addition, the first subsequent attempt to refill the caches is
+delayed for five seconds.
 
-This patch enables the I2C bus mode if I2C_FUNC_I2C is set or
-otherwise keeps the default SMBus mode.
+------------------------------------------------------------------------
 
-Signed-off-by: Hubert Streidl <hubert.streidl@de.bosch.com>
-Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
----
-Changes in v6:
-  - Fixed checkpatch check 'unaligned broken line'.
+A few questions below.
 
-Changes in v5:
-  - Restructured according to feedback by Lee Jones.
+							Thanx, Paul
 
-Changes in v4:
-  - Remove logging of selected 2-wire bus mode.
+> Co-developed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> ---
+>  kernel/rcu/tree.c | 59 ++++++++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 51 insertions(+), 8 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 2c9cf4df942c..46b8a98ca077 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3163,7 +3163,7 @@ struct kfree_rcu_cpu {
+>  	bool initialized;
+>  	int count;
+>  
+> -	struct work_struct page_cache_work;
+> +	struct delayed_work page_cache_work;
+>  	atomic_t work_in_progress;
+>  	struct hrtimer hrtimer;
+>  
+> @@ -3175,6 +3175,17 @@ static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
+>  	.lock = __RAW_SPIN_LOCK_UNLOCKED(krc.lock),
+>  };
+>  
+> +// A page shrinker can ask for freeing extra pages
+> +// to get them available for other needs in a system.
+> +// Usually it happens under low memory condition, in
+> +// that case hold on a bit with page cache filling.
+> +static unsigned long backoff_page_cache_fill;
+> +
+> +// 5 seconds delay. That is long enough to reduce
+> +// an interfering and racing with a shrinker where
+> +// the cache is drained.
+> +#define PAGE_CACHE_FILL_DELAY (5 * HZ)
+> +
+>  static __always_inline void
+>  debug_rcu_bhead_unqueue(struct kvfree_rcu_bulk_data *bhead)
+>  {
+> @@ -3229,6 +3240,26 @@ put_cached_bnode(struct kfree_rcu_cpu *krcp,
+>  
+>  }
+>  
+> +static int
+> +drain_page_cache(struct kfree_rcu_cpu *krcp)
+> +{
+> +	unsigned long flags;
+> +	struct llist_node *page_list, *pos, *n;
+> +	int freed = 0;
+> +
+> +	raw_spin_lock_irqsave(&krcp->lock, flags);
+> +	page_list = llist_del_all(&krcp->bkvcache);
+> +	krcp->nr_bkv_objs = 0;
+> +	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> +
+> +	llist_for_each_safe(pos, n, page_list) {
+> +		free_page((unsigned long)pos);
+> +		freed++;
+> +	}
+> +
+> +	return freed;
+> +}
+> +
+>  /*
+>   * This function is invoked in workqueue context after a grace period.
+>   * It frees all the objects queued on ->bhead_free or ->head_free.
+> @@ -3419,7 +3450,7 @@ schedule_page_work_fn(struct hrtimer *t)
+>  	struct kfree_rcu_cpu *krcp =
+>  		container_of(t, struct kfree_rcu_cpu, hrtimer);
+>  
+> -	queue_work(system_highpri_wq, &krcp->page_cache_work);
+> +	queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, 0);
+>  	return HRTIMER_NORESTART;
+>  }
+>  
+> @@ -3428,7 +3459,7 @@ static void fill_page_cache_func(struct work_struct *work)
+>  	struct kvfree_rcu_bulk_data *bnode;
+>  	struct kfree_rcu_cpu *krcp =
+>  		container_of(work, struct kfree_rcu_cpu,
+> -			page_cache_work);
+> +			page_cache_work.work);
+>  	unsigned long flags;
+>  	bool pushed;
+>  	int i;
+> @@ -3457,10 +3488,14 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+>  {
+>  	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+>  			!atomic_xchg(&krcp->work_in_progress, 1)) {
+> -		hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
+> -			HRTIMER_MODE_REL);
+> -		krcp->hrtimer.function = schedule_page_work_fn;
+> -		hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
+> +		if (xchg(&backoff_page_cache_fill, 0UL)) {
 
-Changes in v3:
-  - busmode now contains the correct bit DA9063_TWOWIRE_TO
+How often can run_page_cache_worker() be invoked?  I am a bit
+concerned about the possibility of heavy memory contention on the
+backoff_page_cache_fill variable on large systems.  Unless there
+is something that sharply bounds the frequency of calls to
+run_page_cache_worker(), something like this would be more scalable:
 
-Changes in v2:
-  - Implement proposal by Adam Thomson and Wolfram Sang to check for
-    functionality I2C_FUNC_I2C instead of introducing a new DT property.
+		if (backoff_page_cache_fill &&
+		    xchg(&backoff_page_cache_fill, 0UL)) {
 
- drivers/mfd/da9063-i2c.c             | 10 ++++++++++
- include/linux/mfd/da9063/registers.h |  3 +++
- 2 files changed, 13 insertions(+)
+It looks to me like all the CPUs could invoke run_page_cache_worker()
+at the same time.  Or am I missing something that throttles calls to
+run_page_cache_worker(), even on systems with hundreds of CPUs?
 
-diff --git a/drivers/mfd/da9063-i2c.c b/drivers/mfd/da9063-i2c.c
-index 3781d0bb7786..783a14af18e2 100644
---- a/drivers/mfd/da9063-i2c.c
-+++ b/drivers/mfd/da9063-i2c.c
-@@ -442,6 +442,16 @@ static int da9063_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 
-+	/* If SMBus is not available and only I2C is possible, enter I2C mode */
-+	if (i2c_check_functionality(i2c->adapter, I2C_FUNC_I2C)) {
-+		ret = regmap_clear_bits(da9063->regmap, DA9063_REG_CONFIG_J,
-+					DA9063_TWOWIRE_TO);
-+		if (ret < 0) {
-+			dev_err(da9063->dev, "Failed to set Two-Wire Bus Mode.\n");
-+			return -EIO;
-+		}
-+	}
-+
- 	return da9063_device_init(da9063, i2c->irq);
- }
- 
-diff --git a/include/linux/mfd/da9063/registers.h b/include/linux/mfd/da9063/registers.h
-index 1dbabf1b3cb8..6e0f66a2e727 100644
---- a/include/linux/mfd/da9063/registers.h
-+++ b/include/linux/mfd/da9063/registers.h
-@@ -1037,6 +1037,9 @@
- #define		DA9063_NONKEY_PIN_AUTODOWN	0x02
- #define		DA9063_NONKEY_PIN_AUTOFLPRT	0x03
- 
-+/* DA9063_REG_CONFIG_J (addr=0x10F) */
-+#define DA9063_TWOWIRE_TO			0x40
-+
- /* DA9063_REG_MON_REG_5 (addr=0x116) */
- #define DA9063_MON_A8_IDX_MASK			0x07
- #define		DA9063_MON_A8_IDX_NONE		0x00
--- 
-2.25.1
+Also, if I am reading the code correctly, the unlucky first CPU to
+attempt to refill cache after a shrinker invocation would be delayed
+five seconds (thus invoking the slow path during that time), but other
+CPUs would continue unimpeded.  Is this the intent?
 
+If I understand correctly, the point is to avoid the situation where
+memory needed elsewhere is drained and then immediately refilled.
+But the code will do the immediate refill when the rest of the CPUs show
+up, correct?
+
+Might it be better to put a low cap on the per-CPU caches for some
+period of time after the shrinker runs?  Maybe allow at most one page
+to be cached for the five seconds following?
+
+> +			queue_delayed_work(system_wq,
+> +				&krcp->page_cache_work, PAGE_CACHE_FILL_DELAY);
+> +		} else {
+> +			hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+> +			krcp->hrtimer.function = schedule_page_work_fn;
+> +			hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
+> +		}
+>  	}
+>  }
+>  
+> @@ -3612,14 +3647,20 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+>  {
+>  	int cpu;
+>  	unsigned long count = 0;
+> +	unsigned long flags;
+>  
+>  	/* Snapshot count of all CPUs */
+>  	for_each_possible_cpu(cpu) {
+>  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+>  
+>  		count += READ_ONCE(krcp->count);
+> +
+> +		raw_spin_lock_irqsave(&krcp->lock, flags);
+> +		count += krcp->nr_bkv_objs;
+> +		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+
+Not a big deal given that this should not be invoked often, but couldn't
+the read from ->nr_bkv_objs be READ_ONCE() without the lock?  (This would
+require that updates use WRITE_ONCE() as well.)
+
+>  	}
+>  
+> +	WRITE_ONCE(backoff_page_cache_fill, 1);
+>  	return count;
+>  }
+>  
+> @@ -3634,6 +3675,8 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+>  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+>  
+>  		count = krcp->count;
+> +		count += drain_page_cache(krcp);
+> +
+>  		raw_spin_lock_irqsave(&krcp->lock, flags);
+>  		if (krcp->monitor_todo)
+>  			kfree_rcu_drain_unlock(krcp, flags);
+> @@ -4608,7 +4651,7 @@ static void __init kfree_rcu_batch_init(void)
+>  		}
+>  
+>  		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+> -		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
+> +		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
+>  		krcp->initialized = true;
+>  	}
+>  	if (register_shrinker(&kfree_rcu_shrinker))
+> -- 
+> 2.20.1
+> 
