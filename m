@@ -2,353 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A1033D594
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EA833D59B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236101AbhCPOOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 10:14:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44186 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236077AbhCPONK (ORCPT
+        id S236164AbhCPOT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 10:19:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230325AbhCPOTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 10:13:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615903990;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UVZRtGu3aya80mlgXmhEPVVT/m0iBxUdaLUrPm/zzcM=;
-        b=KuKFnDP+rKMHSNDJJSX0SeT24//qCWIoCoVfJ2uO1ISKRxYd1llJHKhv+25FXk+Ep7LqCZ
-        6lq1f9ExWIqK59X088wRH1ccbIVqicow9fz9YL/9SufPwKxqqVo8BS5+NtcDhBFqfaTw/h
-        dFsgrt2ircCkN2PmkVS/cfejN+FYtaY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-492-IaHZMAN0OJG4NKcHPf3gQQ-1; Tue, 16 Mar 2021 10:13:05 -0400
-X-MC-Unique: IaHZMAN0OJG4NKcHPf3gQQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3217E802B7A;
-        Tue, 16 Mar 2021 14:13:03 +0000 (UTC)
-Received: from starship (unknown [10.35.207.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 052245D9D3;
-        Tue, 16 Mar 2021 14:12:54 +0000 (UTC)
-Message-ID: <4238999574b69e144f4b1bff59968ee6ba317959.camel@redhat.com>
-Subject: Re: [PATCH 1/3] scripts/gdb: rework lx-symbols gdb script
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>, kvm@vger.kernel.org
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
-Date:   Tue, 16 Mar 2021 16:12:53 +0200
-In-Reply-To: <9dcacf3e-bba5-a062-610e-dcf1b0a261a3@siemens.com>
-References: <20210315221020.661693-1-mlevitsk@redhat.com>
-         <20210315221020.661693-2-mlevitsk@redhat.com>
-         <9dcacf3e-bba5-a062-610e-dcf1b0a261a3@siemens.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Tue, 16 Mar 2021 10:19:24 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34EF2C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 07:19:24 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id f22-20020a7bc8d60000b029010c024a1407so1558667wml.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 07:19:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UzHeXhl6aPfjne1/Cu97InzVggy6/RlJuwCCAZP97Cc=;
+        b=Dqn6HyQKqt9la9hobIdd9lIc/dg4OmUfGeexQbSdKLMGTt/qo1xodendIyzi0ThfmZ
+         kTAmxAqcY68yC/XsZM//8pMqtxhUC6N70U+ODBlCETBQmoFrnE8/vbOVfKUTOPqKngbx
+         X89/vNRx/njTHK1xSOWmkqgjlnPmXWnsUUgdbCcBmfoOt6ifWLbyo6cjO+1nLQyMkKK7
+         RGGdFPnMpMuYo203sINS6W3TucYzQFD52+hqTCrd3BLmNebIcVjTcBpmgo9cIxCL7lp6
+         P8BNqYSzxu3JhK0biEtzbUXjlFz0T3+B2u2E6yybWkS0hV2SoYhH4is7Lmp0OtXPVni5
+         I/6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UzHeXhl6aPfjne1/Cu97InzVggy6/RlJuwCCAZP97Cc=;
+        b=mMfUl3yY+pmtvv6Mc5gpqwZebXydlgWHCzvGRc4KoiBURBFsc2FvWgTtjNDb2ERaNT
+         oc2wW+6rc7Wb+S14M+ucbOJu2RoNgXbamUrJKY8jEK4ATlrViY/4Oa0k6iSIjficD5TF
+         AfGPBX7QOVqkzWHQyonhl4zX7+KE8FcqHhSne8yLeQ5WVLFrjFxRR3U0mXVxemowF5SE
+         wmZAOp3oDpr/NPcnx0HisE5eKJcuPB2qKNcc5FrL/8cL1sjxOzMeTZDzKmhMZ/O9mHB8
+         hjwXAmZNlsFXHEaKDur82sKJykF+Mjnr4XsgZOPDfzkQAMsdE/olUtM2U5phCfDYPQn9
+         obFw==
+X-Gm-Message-State: AOAM532db0stPzVJUppLju2qoUUdNvc2+kvBvL6yu7l87Amt19uYTOD6
+        zWnTrQ3Bs+ZJX/a1BAUbYA==
+X-Google-Smtp-Source: ABdhPJyFmvKcIn80Q1edIyO6QYxSW0BcGi0dI59xWyWhEcYIm9WCZd+2/YfeDmia7rpjGiHcoo/YSg==
+X-Received: by 2002:a7b:c0d1:: with SMTP id s17mr4364421wmh.153.1615904362713;
+        Tue, 16 Mar 2021 07:19:22 -0700 (PDT)
+Received: from presler.lan (a95-94-147-174.cpe.netcabo.pt. [95.94.147.174])
+        by smtp.gmail.com with ESMTPSA id i8sm24956856wry.90.2021.03.16.07.19.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 07:19:22 -0700 (PDT)
+From:   Rui Salvaterra <rsalvaterra@gmail.com>
+To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     lizhe67@huawei.com, christian.brauner@ubuntu.com,
+        gustavoars@kernel.org, trix@redhat.com, keescook@chromium.org,
+        Rui Salvaterra <rsalvaterra@gmail.com>
+Subject: [RFC PATCH v2] jffs2: add support for zstd compression
+Date:   Tue, 16 Mar 2021 14:19:16 +0000
+Message-Id: <20210316141916.447493-1-rsalvaterra@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-03-16 at 14:38 +0100, Jan Kiszka wrote:
-> On 15.03.21 23:10, Maxim Levitsky wrote:
-> > Fix several issues that are present in lx-symbols script:
-> > 
-> > * Track module unloads by placing another software breakpoint at 'free_module'
-> >   (force uninline this symbol just in case), and use remove-symbol-file
-> >   gdb command to unload the symobls of the module that is unloading.
-> > 
-> >   That gives the gdb a chance to mark all software breakpoints from
-> >   this module as pending again.
-> >   Also remove the module from the 'known' module list once it is unloaded.
-> > 
-> > * Since we now track module unload, we don't need to reload all
-> >   symbols anymore when 'known' module loaded again (that can't happen anymore).
-> >   This allows reloading a module in the debugged kernel to finish much faster,
-> >   while lx-symbols tracks module loads and unloads.
-> > 
-> > * Disable/enable all gdb breakpoints on both module load and unload breakpoint
-> >   hits, and not only in 'load_all_symbols' as was done before.
-> >   (load_all_symbols is no longer called on breakpoint hit)
-> >   That allows gdb to avoid getting confused about the state of the (now two)
-> >   internal breakpoints we place.
-> > 
-> >   Otherwise it will leave them in the kernel code segment, when continuing
-> >   which triggers a guest kernel panic as soon as it skips over the 'int3'
-> >   instruction and executes the garbage tail of the optcode on which
-> >   the breakpoint was placed.
-> > 
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > ---
-> >  kernel/module.c              |   8 ++-
-> >  scripts/gdb/linux/symbols.py | 106 +++++++++++++++++++++++++----------
-> >  2 files changed, 83 insertions(+), 31 deletions(-)
-> > 
-> > diff --git a/kernel/module.c b/kernel/module.c
-> > index 30479355ab850..ea81fc06ea1f5 100644
-> > --- a/kernel/module.c
-> > +++ b/kernel/module.c
-> > @@ -901,8 +901,12 @@ int module_refcount(struct module *mod)
-> >  }
-> >  EXPORT_SYMBOL(module_refcount);
-> >  
-> > -/* This exists whether we can unload or not */
-> > -static void free_module(struct module *mod);
-> > +/* This exists whether we can unload or not
-> > + * Keep it uninlined to provide a reliable breakpoint target,
-> > + * e.g. for the gdb helper command 'lx-symbols'.
-> > + */
-> > +
-> > +static noinline void free_module(struct module *mod);
-> >  
-> >  SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
-> >  		unsigned int, flags)
-> > diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
-> > index 1be9763cf8bb2..4ce879548a1ae 100644
-> > --- a/scripts/gdb/linux/symbols.py
-> > +++ b/scripts/gdb/linux/symbols.py
-> > @@ -17,6 +17,24 @@ import re
-> >  
-> >  from linux import modules, utils
-> >  
-> > +def save_state():
-> 
-> Naming is a bit too generic. And it's not only saving the state, it's
-> also disabling things.
-> 
-> > +        breakpoints = []
-> > +        if hasattr(gdb, 'breakpoints') and not gdb.breakpoints() is None:
-> > +            for bp in gdb.breakpoints():
-> > +                breakpoints.append({'breakpoint': bp, 'enabled': bp.enabled})
-> > +                bp.enabled = False
-> > +
-> > +        show_pagination = gdb.execute("show pagination", to_string=True)
-> > +        pagination = show_pagination.endswith("on.\n")
-> > +        gdb.execute("set pagination off")
-> > +
-> > +        return {"breakpoints":breakpoints, "show_pagination": show_pagination}
-> > +
-> > +def load_state(state):
-> 
-> Maybe rather something with "restore", to make naming balanced. Or is
-> there a use case where "state" is not coming from the function above?
+Implement support for zstd compression in jffs2 at the default compression
+level (3).
 
-I didn't put much thought into naming these functions. 
-I'll think of something better.
+Lightly tested in OpenWrt, on a single CPU embedded MIPS32 system (AirGrid M2).
 
-> 
-> > +    for breakpoint in state["breakpoints"]:
-> > +        breakpoint['breakpoint'].enabled = breakpoint['enabled']
-> > +    gdb.execute("set pagination %s" % ("on" if state["show_pagination"] else "off"))
-> > +
-> >  
-> >  if hasattr(gdb, 'Breakpoint'):
-> >      class LoadModuleBreakpoint(gdb.Breakpoint):
-> > @@ -30,26 +48,38 @@ if hasattr(gdb, 'Breakpoint'):
-> >              module_name = module['name'].string()
-> >              cmd = self.gdb_command
-> >  
-> > +            # module already loaded, false alarm
-> > +            if module_name in cmd.loaded_modules:
-> > +                return False
-> 
-> Possibly at all, now that we track unloading? Can our state tracking
-> become out-of-sync?
+Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
+---
+v2: fix blunder in compression context allocation
 
-Sadly yes and that happens a lot unless kvm is patched to
-avoid injecting interrupts on a single step.
+ fs/jffs2/Kconfig           |   9 +++
+ fs/jffs2/Makefile          |   1 +
+ fs/jffs2/compr.c           |  10 +++
+ fs/jffs2/compr.h           |   6 ++
+ fs/jffs2/compr_zstd.c      | 131 +++++++++++++++++++++++++++++++++++++
+ fs/jffs2/super.c           |   7 ++
+ include/uapi/linux/jffs2.h |   1 +
+ 7 files changed, 165 insertions(+)
+ create mode 100644 fs/jffs2/compr_zstd.c
+
+diff --git a/fs/jffs2/Kconfig b/fs/jffs2/Kconfig
+index 7c96bc107218..31308eb7267b 100644
+--- a/fs/jffs2/Kconfig
++++ b/fs/jffs2/Kconfig
+@@ -136,6 +136,15 @@ config JFFS2_LZO
+ 	  This feature was added in July, 2007. Say 'N' if you need
+ 	  compatibility with older bootloaders or kernels.
  
-What is happening is that this breakpoint is hit, then symbols
-are loaded which is a relatively slow process, and by the time
-the gdb resumes the guest, a timer interrupt is already pending
-(kernel local apic timer is running while vcpus are stopped),
-which makes the guest kernel take the interrupt (interrupts are
-not disabled in these two intercepted functions) and eventually
-return to the breakpoint, and trigger its python handler again.
-
-This happens so often that especially with multiple vcpus,
-it is possible to enter live-lock like state where guest+gdb
-are stuck in this loop forever.
++config JFFS2_ZSTD
++	bool "JFFS2 zstd compression support" if JFFS2_COMPRESSION_OPTIONS
++	select ZSTD_COMPRESS
++	select ZSTD_DECOMPRESS
++	depends on JFFS2_FS
++	default n
++	help
++	  Zstd compression.
++
+ config JFFS2_RTIME
+ 	bool "JFFS2 RTIME compression support" if JFFS2_COMPRESSION_OPTIONS
+ 	depends on JFFS2_FS
+diff --git a/fs/jffs2/Makefile b/fs/jffs2/Makefile
+index 5294969d5bf9..75f84b1467c5 100644
+--- a/fs/jffs2/Makefile
++++ b/fs/jffs2/Makefile
+@@ -19,4 +19,5 @@ jffs2-$(CONFIG_JFFS2_RUBIN)	+= compr_rubin.o
+ jffs2-$(CONFIG_JFFS2_RTIME)	+= compr_rtime.o
+ jffs2-$(CONFIG_JFFS2_ZLIB)	+= compr_zlib.o
+ jffs2-$(CONFIG_JFFS2_LZO)	+= compr_lzo.o
++jffs2-$(CONFIG_JFFS2_ZSTD)	+= compr_zstd.o
+ jffs2-$(CONFIG_JFFS2_SUMMARY)   += summary.o
+diff --git a/fs/jffs2/compr.c b/fs/jffs2/compr.c
+index 4849a4c9a0e2..d65e0c39c9c5 100644
+--- a/fs/jffs2/compr.c
++++ b/fs/jffs2/compr.c
+@@ -237,6 +237,10 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
+ 		ret = jffs2_selected_compress(JFFS2_COMPR_ZLIB, data_in,
+ 				cpage_out, datalen, cdatalen);
+ 		break;
++	case JFFS2_COMPR_MODE_FORCEZSTD:
++		ret = jffs2_selected_compress(JFFS2_COMPR_ZSTD, data_in,
++				cpage_out, datalen, cdatalen);
++		break;
+ 	default:
+ 		pr_err("unknown compression mode\n");
+ 	}
+@@ -378,6 +382,9 @@ int __init jffs2_compressors_init(void)
+ #ifdef CONFIG_JFFS2_LZO
+ 	jffs2_lzo_init();
+ #endif
++#ifdef CONFIG_JFFS2_ZSTD
++	jffs2_zstd_init();
++#endif
+ /* Setting default compression mode */
+ #ifdef CONFIG_JFFS2_CMODE_NONE
+ 	jffs2_compression_mode = JFFS2_COMPR_MODE_NONE;
+@@ -413,6 +420,9 @@ int jffs2_compressors_exit(void)
+ #endif
+ #ifdef CONFIG_JFFS2_ZLIB
+ 	jffs2_zlib_exit();
++#endif
++#ifdef CONFIG_JFFS2_ZSTD
++	jffs2_zstd_exit();
+ #endif
+ 	return 0;
+ }
+diff --git a/fs/jffs2/compr.h b/fs/jffs2/compr.h
+index 5e91d578f4ed..8f7032c5ecb2 100644
+--- a/fs/jffs2/compr.h
++++ b/fs/jffs2/compr.h
+@@ -31,6 +31,7 @@
+ #define JFFS2_RTIME_PRIORITY     50
+ #define JFFS2_ZLIB_PRIORITY      60
+ #define JFFS2_LZO_PRIORITY       80
++#define JFFS2_ZSTD_PRIORITY      90
  
-When KVM is patched, that indeed shouldn't happen but the check
-won't hurt here.
  
-Plus due to the feedback I received on the patch 2, I will end up
-implementing the 'don't inject interrupts on single step' as
-a new KVM debug feature flag, thus you will need a newer qemu
-to make use of it.
-
-> 
-> > +
-> >              # enforce update if object file is not found
-> >              cmd.module_files_updated = False
-> >  
-> >              # Disable pagination while reporting symbol (re-)loading.
-> >              # The console input is blocked in this context so that we would
-> >              # get stuck waiting for the user to acknowledge paged output.
-> > -            show_pagination = gdb.execute("show pagination", to_string=True)
-> > -            pagination = show_pagination.endswith("on.\n")
-> > -            gdb.execute("set pagination off")
-> > +            state = save_state()
-> > +            cmd.load_module_symbols(module)
-> > +            load_state(state)
-> > +            return False
-> >  
-> > -            if module_name in cmd.loaded_modules:
-> > -                gdb.write("refreshing all symbols to reload module "
-> > -                          "'{0}'\n".format(module_name))
-> > -                cmd.load_all_symbols()
-> > -            else:
-> > -                cmd.load_module_symbols(module)
-> > +    class UnLoadModuleBreakpoint(gdb.Breakpoint):
-> > +        def __init__(self, spec, gdb_command):
-> > +            super(UnLoadModuleBreakpoint, self).__init__(spec, internal=True)
-> > +            self.silent = True
-> > +            self.gdb_command = gdb_command
-> > +
-> > +        def stop(self):
-> > +            module = gdb.parse_and_eval("mod")
-> > +            module_name = module['name'].string()
-> > +            cmd = self.gdb_command
-> >  
-> > -            # restore pagination state
-> > -            gdb.execute("set pagination %s" % ("on" if pagination else "off"))
-> > +            if not module_name in cmd.loaded_modules:
-> > +                return False
-> >  
-> 
-> Same question as above. For robustness, checking is not bad. But maybe
-> it's worth reporting as well.
-> 
-> > +            state = save_state()
-> > +            cmd.unload_module_symbols(module)
-> > +            load_state(state)
-> >              return False
-> >  
-> >  
-> > @@ -64,8 +94,9 @@ lx-symbols command."""
-> >      module_paths = []
-> >      module_files = []
-> >      module_files_updated = False
-> > -    loaded_modules = []
-> > -    breakpoint = None
-> > +    loaded_modules = {}
-> > +    module_load_breakpoint = None
-> > +    module_unload_breakpoint = None
-> >  
-> >      def __init__(self):
-> >          super(LxSymbols, self).__init__("lx-symbols", gdb.COMMAND_FILES,
-> > @@ -129,21 +160,32 @@ lx-symbols command."""
-> >                  filename=module_file,
-> >                  addr=module_addr,
-> >                  sections=self._section_arguments(module))
-> > +
-> >              gdb.execute(cmdline, to_string=True)
-> > -            if module_name not in self.loaded_modules:
-> > -                self.loaded_modules.append(module_name)
-> > +            self.loaded_modules[module_name] = {"module_file": module_file,
-> > +                                                "module_addr": module_addr}
-> >          else:
-> >              gdb.write("no module object found for '{0}'\n".format(module_name))
-> >  
-> > +    def unload_module_symbols(self, module):
-> > +        module_name = module['name'].string()
-> > +
-> > +        module_file = self.loaded_modules[module_name]["module_file"]
-> > +        module_addr = self.loaded_modules[module_name]["module_addr"]
-> > +
-> > +        gdb.write("unloading @{addr}: {filename}\n".format(
-> > +            addr=module_addr, filename=module_file))
-> > +        cmdline = "remove-symbol-file {filename}".format(
-> > +            filename=module_file)
-> > +
-> > +        gdb.execute(cmdline, to_string=True)
-> > +        del self.loaded_modules[module_name]
-> > +
-> > +
-> >      def load_all_symbols(self):
-> >          gdb.write("loading vmlinux\n")
-> >  
-> > -        # Dropping symbols will disable all breakpoints. So save their states
-> > -        # and restore them afterward.
-> > -        saved_states = []
-> > -        if hasattr(gdb, 'breakpoints') and not gdb.breakpoints() is None:
-> > -            for bp in gdb.breakpoints():
-> > -                saved_states.append({'breakpoint': bp, 'enabled': bp.enabled})
-> > +        state = save_state()
-> >  
-> >          # drop all current symbols and reload vmlinux
-> >          orig_vmlinux = 'vmlinux'
-> > @@ -153,15 +195,14 @@ lx-symbols command."""
-> >          gdb.execute("symbol-file", to_string=True)
-> >          gdb.execute("symbol-file {0}".format(orig_vmlinux))
-> >  
-> > -        self.loaded_modules = []
-> > +        self.loaded_modules = {}
-> >          module_list = modules.module_list()
-> >          if not module_list:
-> >              gdb.write("no modules found\n")
-> >          else:
-> >              [self.load_module_symbols(module) for module in module_list]
-> >  
-> > -        for saved_state in saved_states:
-> > -            saved_state['breakpoint'].enabled = saved_state['enabled']
-> > +        load_state(state)
-> >  
-> >      def invoke(self, arg, from_tty):
-> >          self.module_paths = [os.path.expanduser(p) for p in arg.split()]
-> > @@ -174,11 +215,18 @@ lx-symbols command."""
-> >          self.load_all_symbols()
-> >  
-> >          if hasattr(gdb, 'Breakpoint'):
-> > -            if self.breakpoint is not None:
-> > -                self.breakpoint.delete()
-> > -                self.breakpoint = None
-> > -            self.breakpoint = LoadModuleBreakpoint(
-> > -                "kernel/module.c:do_init_module", self)
-> > +            if self.module_load_breakpoint is not None:
-> > +                self.module_load_breakpoint.delete()
-> > +                self.module_load_breakpoint = None
-> > +            self.module_load_breakpoint = \
-> > +                LoadModuleBreakpoint("kernel/module.c:do_init_module", self)
-> > +
-> > +            if self.module_unload_breakpoint is not None:
-> > +                self.module_unload_breakpoint.delete()
-> > +                self.module_unload_breakpoint = None
-> > +            self.module_unload_breakpoint = \
-> > +                UnLoadModuleBreakpoint("kernel/module.c:free_module", self)
-> > +
-> >          else:
-> >              gdb.write("Note: symbol update on module loading not supported "
-> >                        "with this gdb version\n")
-> > 
-> 
-> Good improvement!
-
-Thanks a lot!
-
-Best regards,
-	Maxim Levitsky
-
-> 
-> Jan
-> 
-
+ #define JFFS2_RUBINMIPS_DISABLED /* RUBINs will be used only */
+@@ -42,6 +43,7 @@
+ #define JFFS2_COMPR_MODE_FAVOURLZO  3
+ #define JFFS2_COMPR_MODE_FORCELZO   4
+ #define JFFS2_COMPR_MODE_FORCEZLIB  5
++#define JFFS2_COMPR_MODE_FORCEZSTD  6
+ 
+ #define FAVOUR_LZO_PERCENT 80
+ 
+@@ -101,5 +103,9 @@ void jffs2_zlib_exit(void);
+ int jffs2_lzo_init(void);
+ void jffs2_lzo_exit(void);
+ #endif
++#ifdef CONFIG_JFFS2_ZSTD
++int jffs2_zstd_init(void);
++void jffs2_zstd_exit(void);
++#endif
+ 
+ #endif /* __JFFS2_COMPR_H__ */
+diff --git a/fs/jffs2/compr_zstd.c b/fs/jffs2/compr_zstd.c
+new file mode 100644
+index 000000000000..bfe4607575da
+--- /dev/null
++++ b/fs/jffs2/compr_zstd.c
+@@ -0,0 +1,131 @@
++
++#include <linux/zstd.h>
++#include "compr.h"
++
++#define ZSTD_DEF_LEVEL	3
++
++static ZSTD_CCtx *cctx;
++static ZSTD_DCtx *dctx;
++static void *cwksp;
++static void *dwksp;
++
++static ZSTD_parameters zstd_params(void)
++{
++	return ZSTD_getParams(ZSTD_DEF_LEVEL, 0, 0);
++}
++
++static int zstd_comp_init(void)
++{
++	int ret = 0;
++	const ZSTD_parameters params = zstd_params();
++	const size_t wksp_size = ZSTD_CCtxWorkspaceBound(params.cParams);
++
++	cwksp = vzalloc(wksp_size);
++	if (!cwksp) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	cctx = ZSTD_initCCtx(cwksp, wksp_size);
++	if (!cctx) {
++		ret = -EINVAL;
++		goto out_free;
++	}
++out:
++	return ret;
++out_free:
++	vfree(cwksp);
++	goto out;
++}
++
++static int zstd_decomp_init(void)
++{
++	int ret = 0;
++	const size_t wksp_size = ZSTD_DCtxWorkspaceBound();
++
++	dwksp = vzalloc(wksp_size);
++	if (!dwksp) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	dctx = ZSTD_initDCtx(dwksp, wksp_size);
++	if (!dctx) {
++		ret = -EINVAL;
++		goto out_free;
++	}
++out:
++	return ret;
++out_free:
++	vfree(dwksp);
++	goto out;
++}
++
++static void zstd_comp_exit(void)
++{
++	vfree(cwksp);
++	cwksp = NULL;
++	cctx = NULL;
++}
++
++static void zstd_decomp_exit(void)
++{
++	vfree(dwksp);
++	dwksp = NULL;
++	dctx = NULL;
++}
++
++static int jffs2_zstd_compress(unsigned char *data_in, unsigned char *cpage_out,
++			      uint32_t *sourcelen, uint32_t *dstlen)
++{
++	size_t out_len;
++	const ZSTD_parameters params = zstd_params();
++
++	out_len = ZSTD_compressCCtx(cctx, cpage_out, *dstlen, data_in, *sourcelen, params);
++	if (ZSTD_isError(out_len) || out_len > *dstlen)
++		return -1;
++	*dstlen = out_len;
++	return 0;
++}
++
++static int jffs2_zstd_decompress(unsigned char *data_in, unsigned char *cpage_out,
++				 uint32_t srclen, uint32_t destlen)
++{
++	size_t out_len;
++
++	out_len = ZSTD_decompressDCtx(dctx, cpage_out, destlen, data_in, srclen);
++	if (ZSTD_isError(out_len) || out_len != destlen)
++		return -1;
++
++	return 0;
++}
++
++static struct jffs2_compressor jffs2_zstd_comp = {
++	.priority = JFFS2_ZSTD_PRIORITY,
++	.name = "zstd",
++	.compr = JFFS2_COMPR_ZSTD,
++	.compress = &jffs2_zstd_compress,
++	.decompress = &jffs2_zstd_decompress,
++	.disabled = 0,
++};
++
++int __init jffs2_zstd_init(void)
++{
++	int ret;
++
++	ret = zstd_comp_init();
++	if (ret)
++		return ret;
++	ret = zstd_decomp_init();
++	if (ret)
++		zstd_comp_exit();
++	ret = jffs2_register_compressor(&jffs2_zstd_comp);
++	return ret;
++}
++
++void jffs2_zstd_exit(void)
++{
++	jffs2_unregister_compressor(&jffs2_zstd_comp);
++	zstd_comp_exit();
++	zstd_decomp_exit();
++}
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 81ca58c10b72..ddce95c55dde 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -73,6 +73,10 @@ static const char *jffs2_compr_name(unsigned int compr)
+ #ifdef CONFIG_JFFS2_ZLIB
+ 	case JFFS2_COMPR_MODE_FORCEZLIB:
+ 		return "zlib";
++#endif
++#ifdef CONFIG_JFFS2_ZSTD
++	case JFFS2_COMPR_MODE_FORCEZSTD:
++		return "zstd";
+ #endif
+ 	default:
+ 		/* should never happen; programmer error */
+@@ -174,6 +178,9 @@ static const struct constant_table jffs2_param_compr[] = {
+ #endif
+ #ifdef CONFIG_JFFS2_ZLIB
+ 	{"zlib",	JFFS2_COMPR_MODE_FORCEZLIB },
++#endif
++#ifdef CONFIG_JFFS2_ZSTD
++	{"zstd",	JFFS2_COMPR_MODE_FORCEZSTD },
+ #endif
+ 	{}
+ };
+diff --git a/include/uapi/linux/jffs2.h b/include/uapi/linux/jffs2.h
+index 784ba0b9690a..af4fb69c8d69 100644
+--- a/include/uapi/linux/jffs2.h
++++ b/include/uapi/linux/jffs2.h
+@@ -46,6 +46,7 @@
+ #define JFFS2_COMPR_DYNRUBIN	0x05
+ #define JFFS2_COMPR_ZLIB	0x06
+ #define JFFS2_COMPR_LZO		0x07
++#define JFFS2_COMPR_ZSTD	0x08
+ /* Compatibility flags. */
+ #define JFFS2_COMPAT_MASK 0xc000      /* What do to if an unknown nodetype is found */
+ #define JFFS2_NODE_ACCURATE 0x2000
+-- 
+2.31.0
 
