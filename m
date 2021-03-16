@@ -2,484 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D542A33D75F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:27:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF1633D76E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 16:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236710AbhCPP13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 11:27:29 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13548 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236680AbhCPP1I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 11:27:08 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F0HC82sbmzNnK2;
-        Tue, 16 Mar 2021 23:24:36 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 16 Mar 2021 23:26:51 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Guo Ren <guoren@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, <linux-alpha@vger.kernel.org>,
-        <linux-snps-arc@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-csky@vger.kernel.org>, <linux-hexagon@vger.kernel.org>,
-        <linux-ia64@vger.kernel.org>, <linux-m68k@lists.linux-m68k.org>,
-        <linux-mips@vger.kernel.org>, <openrisc@lists.librecores.org>,
-        <linux-parisc@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-riscv@lists.infradead.org>, <linux-s390@vger.kernel.org>,
-        <linux-sh@vger.kernel.org>, <sparclinux@vger.kernel.org>,
-        <linux-um@lists.infradead.org>, <linux-xtensa@linux-xtensa.org>,
-        <linux-mm@kvack.org>, Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH RESEND] mm: Move mem_init_print_info() into mm_init()
-Date:   Tue, 16 Mar 2021 23:29:01 +0800
-Message-ID: <20210316152901.70662-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210316142637.92193-1-wangkefeng.wang@huawei.com>
-References: <20210316142637.92193-1-wangkefeng.wang@huawei.com>
+        id S236856AbhCPPaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 11:30:12 -0400
+Received: from mail-eopbgr770119.outbound.protection.outlook.com ([40.107.77.119]:39028
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236769AbhCPP3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 11:29:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IqvTptw3sskEXpAfEuWTWpv6FGJVgk3PtbWmv0N/P0ODey7HBk4TQ9ENXbPMpsHQyudKKOXE4yRwOzQJclJtnPKhYzKvUGOtccx/Eb/URIhjP+fw86UuQdt1pI/7gE7FaRk+Z+5IZ0Dhng++g2ukmv07DouY9ciV78kExE2B4rXZrFdL7eBt80qRyWLNnjX64UZ4UvsqN8dwdlFR0JsRvcSnVA6OKvTkBGjF5LfOh3YC0OeAAw8RW7AmToWPqsbF14YUw5qDF5HBScnl6TfP+9tmDzVoZPabF+N0DUG1ry+McADd2Igcvqyrpi2EhfyymVbTNSoyEKcov0IQPGaF4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O/5G/8NOFoP4cr1URKHxPVYCHX07pk4ADDykvFlDw+U=;
+ b=iXLfu4L60eYVvYqwGnWqmyuqJw38moQUiFf3LdNPHmDTiHY+3zk3p8CA+2hq3vi7uclUaoP2c0sjUi5f0Ltd29vc1xceFKutUSxAhzXOEj/SE1q9tUmWAMbWM35vu74euL9TJ1XiORiGC3y7pNKvFB2dnDeYp2eKc8yrs4AV6cw/5AVA4w6V6ZhUifWgFmy4L9sn6ZgmWCslFMYslX/FrSCXtofHP9PfHVyy2sGPZQ1viM7V5ZE1NOWjnEF5Ae862+SsYGX/wbOMtrB/Wfsb6Opvx77h0+pj4FQ43dbWjzvENp9tiZklR1L9x8YHHMhdEctmS/oh2n0WSZpnwbAauw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O/5G/8NOFoP4cr1URKHxPVYCHX07pk4ADDykvFlDw+U=;
+ b=CBkztz5QUBQ2b2jpz8Brk8ZphqIPBWXpcle+R4cn7Kc4YGcsmk9If7lzQ4uGyvLM60yCzlvlaEz3+fBu6laknnr412ZuwTBQMPa9Eqrfw2SxeOZxKsFNtfn9Pl+v0POM9Ai1OE27EnOrEnfUnu+FYVjMoDceuIZDTU4LXH5mMBE=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MW4PR21MB1956.namprd21.prod.outlook.com (2603:10b6:303:7a::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.5; Tue, 16 Mar
+ 2021 15:29:35 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::cbc:735e:a6a5:8b9c]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::cbc:735e:a6a5:8b9c%8]) with mapi id 15.20.3977.004; Tue, 16 Mar 2021
+ 15:29:35 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     "martin.petersen@oracle.com" <martin.petersen@oracle.com>
+CC:     KY Srinivasan <kys@microsoft.com>, Long Li <longli@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>
+Subject: RE: [PATCH v2 1/1] scsi: storvsc: Enable scatterlist entry lengths >
+ 4Kbytes
+Thread-Topic: [PATCH v2 1/1] scsi: storvsc: Enable scatterlist entry lengths >
+ 4Kbytes
+Thread-Index: AQHXCjWQrk6zOFapVE6P9gyPvlFjIapyBSUAgBTYbxA=
+Date:   Tue, 16 Mar 2021 15:29:35 +0000
+Message-ID: <MWHPR21MB1593E5D7A0577A0BA2499CD9D76B9@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <1614120294-1930-1-git-send-email-mikelley@microsoft.com>
+ <87mtvkeh9r.fsf@vitty.brq.redhat.com>
+In-Reply-To: <87mtvkeh9r.fsf@vitty.brq.redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-03-16T15:29:33Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=6525b8a6-eff6-42ce-8a04-22c5546a359c;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [24.22.167.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 6fafa503-3436-4591-992d-08d8e8904e1e
+x-ms-traffictypediagnostic: MW4PR21MB1956:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <MW4PR21MB19561F098D7D7B5FD747A4ECD76B9@MW4PR21MB1956.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:935;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: quKzQzwjCCdnbCd0v5a/hwSBD4T7gyGqDS9qUCq0mkZACT4Rf/chVVIw2/Ah8jjgPtUqo3jeTRJOG/qeBIczaRm4IFUm804X8+YghGWhRbE+4f7yo47v2V57gSRZrCEtKUV1dOKw83mrK1UhBr0CcNswXbBzSsncmnBOJ/K4N8DUUV32+uPgAyzrdPtOTXCYdbFUO4cVjpxubHqUgEeY+ccRSWJ3/AY/JGrFGBuQ8zowjlYpqngmPpJT8FSPlc+JeRZGXoN9Ne8SGKebsxDDueEwfNc/cU5/6/BVm0UwQ+GUs0PVJH4bnUmYpFqo1XFFnGYATMW7U3bsopjvOhxIKeWQvk+fhWvxCo5tkQW6CgHp9Nsalljg54LJ84TAjVxH31sRv6A/hjzM2MWj0MEd7aWNhkmJT7xM76b3K7CskHQ4nK+kkTZ5I8oKM22CkLdSR16dhjhUzdPNsTJAgXQgooIZ6FdPwYTOjbpb6dItcKdl3h8mRHXGdbwFt3DAdMSxU4S9cm4lGlzrmPfd/pPqFIvM7X5+gGQAfHyZ/zeENKrAPF0/JPD9touJeP1fSuff
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(376002)(346002)(396003)(64756008)(82950400001)(26005)(66446008)(76116006)(478600001)(66556008)(82960400001)(316002)(66946007)(8990500004)(54906003)(55016002)(2906002)(9686003)(10290500003)(6916009)(7696005)(6506007)(83380400001)(5660300002)(53546011)(4326008)(71200400001)(186003)(66476007)(33656002)(8936002)(8676002)(52536014)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Jl2lOfSKlzT2S9b3FDIA9i5VzaYaCC7K6kbcbmoDy9kogpbKXzVYSNELWEmb?=
+ =?us-ascii?Q?osH0y3GAiia7aNydn8sZ+keYRcMuS2kc7dqpSn/RTwxDQ3/GCQcyjKA1HBDU?=
+ =?us-ascii?Q?BZtFJmH3xF13/XhqtQUTFyKM7hqlBfTAWQzbL1y6DRMJuUomY982GqZOI26l?=
+ =?us-ascii?Q?87564SOISe2zN9+fXEt1uvzK5+t4E3E0vZPs/kV9GCaD4fDpVSY0WdcCbShV?=
+ =?us-ascii?Q?TTe48n4nYipKQzGt0v9CQXyhJWyWs3BqnjI/nXhBmkOotX9DUwmHDUabRb+X?=
+ =?us-ascii?Q?BzFLY9JLTRNOMfVi8O9AD+Rc8n3b/RX7OKvrUMUiLlBjs3KfEwlQTTYrTjJ5?=
+ =?us-ascii?Q?SfWCDL1Y8SxsG+uetXoT+WAF39Nu4YSF+qExme9LSqrLIzulB/ZqXCXLj/+g?=
+ =?us-ascii?Q?jwy8ST0OTqkoK1y7Qsj3QFhv4NRFW6fwEW5EqRV9qYYnGSbnIZpCM7bBgNGF?=
+ =?us-ascii?Q?1iMQiG2AshBup4VTyEiJec1Ez+rLUDEhhgi1sO4WjpHx4O3hNbg58zXZnE4K?=
+ =?us-ascii?Q?Lu0xw1Ia1ZR9Mocd6tl64ezJIHoSzsr708XO4m6BzF3Mp2y4SQiatmBu8nHz?=
+ =?us-ascii?Q?9rDGg28qF3R6qbfsDioHYgUXO+H1FR70v1VWMu5qkJ6DW3/KwCGFHtvdH9oC?=
+ =?us-ascii?Q?k76c433Vmmx821djtouhqEJu2GNskR1qQijAoGa2OMpk1nPVjPN71xHL8Um5?=
+ =?us-ascii?Q?lQ9OnoJKXamq7FY+MzvTN7rJRqt4DMCLZp/JWmIxXavyA7986sPa58JZtWc4?=
+ =?us-ascii?Q?+CBY2fv1ko3jvVEmim1i1CM/AZCNDfw1LpXAZ0PmbQrnkP23CcMhqklxARlD?=
+ =?us-ascii?Q?XN9iysXbH3LqE4CHJq7vUYgw+V9lbzZiaAMHkABZYUMiTcka9bmrSY0nZARm?=
+ =?us-ascii?Q?yBe7MDbIllwyMoVp46aCLDB1oWrNhx65lay2D8CDlxUiWOucY2qcgQ40max/?=
+ =?us-ascii?Q?9ZeFYev/hRVGpVSBrvXuwqPIrv7xAdinHamPpeGJAKe1UfyyWvlNLXJXPAAs?=
+ =?us-ascii?Q?XG7aw7T8YzQmai6OZwShtwR8LEcRcEVt9xdihz/XPBPjhjg9y/SDfr4Qwr9N?=
+ =?us-ascii?Q?aw3ueGXQg5ve340JxArfwRUAPtmAf2POiM6oYtaDP7fHEK9fwHGyL2tRzhKT?=
+ =?us-ascii?Q?phYbC14B3MrSLORDX5E2AnLH3+sQYyq/+gkIQP+2TUWq2W5nFEeZdsIOjpPF?=
+ =?us-ascii?Q?e31QGIA8Cc//fdvc3vyX7hk3E13AlB+nTiceqvbcxs6Fmc6wTE5My6vsJkGj?=
+ =?us-ascii?Q?AUciysSIoqEj4FdxNyA6wuGPN7Eyk4oVNu78HObEI/7wQwy7eZ5wxCuoszCd?=
+ =?us-ascii?Q?aBbHp8bqIy1udjgOZZAdgoWc?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6fafa503-3436-4591-992d-08d8e8904e1e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2021 15:29:35.5248
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: B0zFlQrJVXDb7GMbFMDc80UHBzIuaByXdJKET22L6DK5SqeVTIwLk/cOS1g9hvhHge36ikKSW25XeSUH5pZdaojyHV0SgApaRwOhiRhkTSU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1956
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mem_init_print_info() is called in mem_init() on each architecture,
-and pass NULL argument, so using void argument and move it into mm_init().
+From: Vitaly Kuznetsov <vkuznets@redhat.com> Sent: Wednesday, March 3, 2021=
+ 1:09 AM
+> To: Michael Kelley <mikelley@microsoft.com>
+> Cc: KY Srinivasan <kys@microsoft.com>; martin.petersen@oracle.com; Long L=
+i
+> <longli@microsoft.com>; wei.liu@kernel.org; jejb@linux.ibm.com; linux-
+> hyperv@vger.kernel.org; linux-kernel@vger.kernel.org; linux-scsi@vger.ker=
+nel.org
+> Subject: Re: [PATCH v2 1/1] scsi: storvsc: Enable scatterlist entry lengt=
+hs > 4Kbytes
+>=20
+> Michael Kelley <mikelley@microsoft.com> writes:
+>=20
+> > storvsc currently sets .dma_boundary to limit scatterlist entries
+> > to 4 Kbytes, which is less efficient with huge pages that offer
+> > large chunks of contiguous physical memory. Improve the algorithm
+> > for creating the Hyper-V guest physical address PFN array so
+> > that scatterlist entries with lengths > 4Kbytes are handled.
+> > As a result, remove the .dma_boundary setting.
+> >
+> > The improved algorithm also adds support for scatterlist
+> > entries with offsets >=3D 4Kbytes, which is supported by many
+> > other SCSI low-level drivers.  And it retains support for
+> > architectures where possibly PAGE_SIZE !=3D HV_HYP_PAGE_SIZE
+> > (such as ARM64).
+> >
+> > Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+> > ---
+> >
+> > Changes in v2:
+> > * Add HVPFN_DOWN() macro and use it instead of open coding
+> >   [Vitaly Kuznetsov]
+> > * Change loop that fills pfn array and its initialization
+> >   [Vitaly Kuznetsov]
+> > * Use offset_in_hvpage() instead of open coding
+> >
+> >
+> >  drivers/scsi/storvsc_drv.c | 66 ++++++++++++++++----------------------=
+--------
+> >  include/linux/hyperv.h     |  1 +
+> >  2 files changed, 24 insertions(+), 43 deletions(-)
+> >
+> > diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+> > index 2e4fa77..5ba3145 100644
+> > --- a/drivers/scsi/storvsc_drv.c
+> > +++ b/drivers/scsi/storvsc_drv.c
+> > @@ -1678,9 +1678,8 @@ static int storvsc_queuecommand(struct Scsi_Host =
+*host, struct
+> scsi_cmnd *scmnd)
+> >  	struct storvsc_cmd_request *cmd_request =3D scsi_cmd_priv(scmnd);
+> >  	int i;
+> >  	struct scatterlist *sgl;
+> > -	unsigned int sg_count =3D 0;
+> > +	unsigned int sg_count;
+> >  	struct vmscsi_request *vm_srb;
+> > -	struct scatterlist *cur_sgl;
+> >  	struct vmbus_packet_mpb_array  *payload;
+> >  	u32 payload_sz;
+> >  	u32 length;
+> > @@ -1759,8 +1758,8 @@ static int storvsc_queuecommand(struct Scsi_Host =
+*host, struct
+> scsi_cmnd *scmnd)
+> >  	payload_sz =3D sizeof(cmd_request->mpb);
+> >
+> >  	if (sg_count) {
+> > -		unsigned int hvpgoff =3D 0;
+> > -		unsigned long offset_in_hvpg =3D sgl->offset & ~HV_HYP_PAGE_MASK;
+> > +		unsigned int hvpgoff, hvpfns_to_add;
+> > +		unsigned long offset_in_hvpg =3D offset_in_hvpage(sgl->offset);
+> >  		unsigned int hvpg_count =3D HVPFN_UP(offset_in_hvpg + length);
+> >  		u64 hvpfn;
+> >
+> > @@ -1773,51 +1772,34 @@ static int storvsc_queuecommand(struct Scsi_Hos=
+t *host,
+> struct scsi_cmnd *scmnd)
+> >  				return SCSI_MLQUEUE_DEVICE_BUSY;
+> >  		}
+> >
+> > -		/*
+> > -		 * sgl is a list of PAGEs, and payload->range.pfn_array
+> > -		 * expects the page number in the unit of HV_HYP_PAGE_SIZE (the
+> > -		 * page size that Hyper-V uses, so here we need to divide PAGEs
+> > -		 * into HV_HYP_PAGE in case that PAGE_SIZE > HV_HYP_PAGE_SIZE.
+> > -		 * Besides, payload->range.offset should be the offset in one
+> > -		 * HV_HYP_PAGE.
+> > -		 */
+> >  		payload->range.len =3D length;
+> >  		payload->range.offset =3D offset_in_hvpg;
+> > -		hvpgoff =3D sgl->offset >> HV_HYP_PAGE_SHIFT;
+> >
+> > -		cur_sgl =3D sgl;
+> > -		for (i =3D 0; i < hvpg_count; i++) {
+> > +
+> > +		for (i =3D 0; sgl !=3D NULL; sgl =3D sg_next(sgl)) {
+> >  			/*
+> > -			 * 'i' is the index of hv pages in the payload and
+> > -			 * 'hvpgoff' is the offset (in hv pages) of the first
+> > -			 * hv page in the the first page. The relationship
+> > -			 * between the sum of 'i' and 'hvpgoff' and the offset
+> > -			 * (in hv pages) in a payload page ('hvpgoff_in_page')
+> > -			 * is as follow:
+> > -			 *
+> > -			 * |------------------ PAGE -------------------|
+> > -			 * |   NR_HV_HYP_PAGES_IN_PAGE hvpgs in total  |
+> > -			 * |hvpg|hvpg| ...              |hvpg|... |hvpg|
+> > -			 * ^         ^                                 ^                 ^
+> > -			 * +-hvpgoff-+                                 +-hvpgoff_in_page-+
+> > -			 *           ^                                                   |
+> > -			 *           +--------------------- i ---------------------------+
+> > +			 * Init values for the current sgl entry. hvpgoff
+> > +			 * and hvpfns_to_add are in units of Hyper-V size
+> > +			 * pages. Handling the PAGE_SIZE !=3D HV_HYP_PAGE_SIZE
+> > +			 * case also handles values of sgl->offset that are
+> > +			 * larger than PAGE_SIZE. Such offsets are handled
+> > +			 * even on other than the first sgl entry, provided
+> > +			 * they are a multiple of PAGE_SIZE.
+> >  			 */
+> > -			unsigned int hvpgoff_in_page =3D
+> > -				(i + hvpgoff) % NR_HV_HYP_PAGES_IN_PAGE;
+> > +			hvpgoff =3D HVPFN_DOWN(sgl->offset);
+> > +			hvpfn =3D page_to_hvpfn(sg_page(sgl)) + hvpgoff;
+> > +			hvpfns_to_add =3D	HVPFN_UP(sgl->offset + sgl->length) -
+> > +						hvpgoff;
+> >
+> >  			/*
+> > -			 * Two cases that we need to fetch a page:
+> > -			 * 1) i =3D=3D 0, the first step or
+> > -			 * 2) hvpgoff_in_page =3D=3D 0, when we reach the boundary
+> > -			 *    of a page.
+> > +			 * Fill the next portion of the PFN array with
+> > +			 * sequential Hyper-V PFNs for the continguous physical
+> > +			 * memory described by the sgl entry. The end of the
+> > +			 * last sgl should be reached at the same time that
+> > +			 * the PFN array is filled.
+> >  			 */
+> > -			if (hvpgoff_in_page =3D=3D 0 || i =3D=3D 0) {
+> > -				hvpfn =3D page_to_hvpfn(sg_page(cur_sgl));
+> > -				cur_sgl =3D sg_next(cur_sgl);
+> > -			}
+> > -
+> > -			payload->range.pfn_array[i] =3D hvpfn + hvpgoff_in_page;
+> > +			while (hvpfns_to_add--)
+> > +				payload->range.pfn_array[i++] =3D	hvpfn++;
+> >  		}
+> >  	}
+> >
+> > @@ -1851,8 +1833,6 @@ static int storvsc_queuecommand(struct Scsi_Host =
+*host, struct
+> scsi_cmnd *scmnd)
+> >  	.slave_configure =3D	storvsc_device_configure,
+> >  	.cmd_per_lun =3D		2048,
+> >  	.this_id =3D		-1,
+> > -	/* Make sure we dont get a sg segment crosses a page boundary */
+> > -	.dma_boundary =3D		PAGE_SIZE-1,
+> >  	/* Ensure there are no gaps in presented sgls */
+> >  	.virt_boundary_mask =3D	PAGE_SIZE-1,
+> >  	.no_write_same =3D	1,
+> > diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+> > index 5ddb479..a1eed76 100644
+> > --- a/include/linux/hyperv.h
+> > +++ b/include/linux/hyperv.h
+> > @@ -1717,6 +1717,7 @@ static inline unsigned long virt_to_hvpfn(void *a=
+ddr)
+> >  #define NR_HV_HYP_PAGES_IN_PAGE	(PAGE_SIZE / HV_HYP_PAGE_SIZE)
+> >  #define offset_in_hvpage(ptr)	((unsigned long)(ptr) & ~HV_HYP_PAGE_MAS=
+K)
+> >  #define HVPFN_UP(x)	(((x) + HV_HYP_PAGE_SIZE-1) >> HV_HYP_PAGE_SHIFT)
+> > +#define HVPFN_DOWN(x)	((x) >> HV_HYP_PAGE_SHIFT)
+> >  #define page_to_hvpfn(page)	(page_to_pfn(page) *
+> NR_HV_HYP_PAGES_IN_PAGE)
+> >
+> >  #endif /* _HYPERV_H */
+>=20
+> Thank you for implementing my suggestion in v2,
+>=20
+> Reviewed-by:  Vitaly Kuznetsov <vkuznets@redhat.com>
+>=20
+> --
+> Vitaly
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
+Martin -- Is anything else needed for you to pick up this patch?
 
-Resend with 'str' line cleanup, and only test on ARM64 qemu.
+Michael
 
- arch/alpha/mm/init.c             | 1 -
- arch/arc/mm/init.c               | 1 -
- arch/arm/mm/init.c               | 2 --
- arch/arm64/mm/init.c             | 2 --
- arch/csky/mm/init.c              | 1 -
- arch/h8300/mm/init.c             | 2 --
- arch/hexagon/mm/init.c           | 1 -
- arch/ia64/mm/init.c              | 1 -
- arch/m68k/mm/init.c              | 1 -
- arch/microblaze/mm/init.c        | 1 -
- arch/mips/loongson64/numa.c      | 1 -
- arch/mips/mm/init.c              | 1 -
- arch/mips/sgi-ip27/ip27-memory.c | 1 -
- arch/nds32/mm/init.c             | 1 -
- arch/nios2/mm/init.c             | 1 -
- arch/openrisc/mm/init.c          | 2 --
- arch/parisc/mm/init.c            | 2 --
- arch/powerpc/mm/mem.c            | 1 -
- arch/riscv/mm/init.c             | 1 -
- arch/s390/mm/init.c              | 2 --
- arch/sh/mm/init.c                | 1 -
- arch/sparc/mm/init_32.c          | 2 --
- arch/sparc/mm/init_64.c          | 1 -
- arch/um/kernel/mem.c             | 1 -
- arch/x86/mm/init_32.c            | 2 --
- arch/x86/mm/init_64.c            | 2 --
- arch/xtensa/mm/init.c            | 1 -
- include/linux/mm.h               | 2 +-
- init/main.c                      | 1 +
- mm/page_alloc.c                  | 6 +++---
- 30 files changed, 5 insertions(+), 40 deletions(-)
-
-diff --git a/arch/alpha/mm/init.c b/arch/alpha/mm/init.c
-index 3c42b3147fd6..a97650a618f1 100644
---- a/arch/alpha/mm/init.c
-+++ b/arch/alpha/mm/init.c
-@@ -282,5 +282,4 @@ mem_init(void)
- 	set_max_mapnr(max_low_pfn);
- 	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE);
- 	memblock_free_all();
--	mem_init_print_info(NULL);
- }
-diff --git a/arch/arc/mm/init.c b/arch/arc/mm/init.c
-index ce07e697916c..33832e36bdb7 100644
---- a/arch/arc/mm/init.c
-+++ b/arch/arc/mm/init.c
-@@ -194,7 +194,6 @@ void __init mem_init(void)
- {
- 	memblock_free_all();
- 	highmem_init();
--	mem_init_print_info(NULL);
- }
- 
- #ifdef CONFIG_HIGHMEM
-diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-index 828a2561b229..7022b7b5c400 100644
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -316,8 +316,6 @@ void __init mem_init(void)
- 
- 	free_highpages();
- 
--	mem_init_print_info(NULL);
--
- 	/*
- 	 * Check boundaries twice: Some fundamental inconsistencies can
- 	 * be detected at build time already.
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 3685e12aba9b..e8f29a0bb2f1 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -491,8 +491,6 @@ void __init mem_init(void)
- 	/* this will put all unused low memory onto the freelists */
- 	memblock_free_all();
- 
--	mem_init_print_info(NULL);
--
- 	/*
- 	 * Check boundaries twice: Some fundamental inconsistencies can be
- 	 * detected at build time already.
-diff --git a/arch/csky/mm/init.c b/arch/csky/mm/init.c
-index 894050a8ce09..bf2004aa811a 100644
---- a/arch/csky/mm/init.c
-+++ b/arch/csky/mm/init.c
-@@ -107,7 +107,6 @@ void __init mem_init(void)
- 			free_highmem_page(page);
- 	}
- #endif
--	mem_init_print_info(NULL);
- }
- 
- void free_initmem(void)
-diff --git a/arch/h8300/mm/init.c b/arch/h8300/mm/init.c
-index 1f3b345d68b9..f7bf4693e3b2 100644
---- a/arch/h8300/mm/init.c
-+++ b/arch/h8300/mm/init.c
-@@ -98,6 +98,4 @@ void __init mem_init(void)
- 
- 	/* this will put all low memory onto the freelists */
- 	memblock_free_all();
--
--	mem_init_print_info(NULL);
- }
-diff --git a/arch/hexagon/mm/init.c b/arch/hexagon/mm/init.c
-index f2e6c868e477..f01e91e10d95 100644
---- a/arch/hexagon/mm/init.c
-+++ b/arch/hexagon/mm/init.c
-@@ -55,7 +55,6 @@ void __init mem_init(void)
- {
- 	/*  No idea where this is actually declared.  Seems to evade LXR.  */
- 	memblock_free_all();
--	mem_init_print_info(NULL);
- 
- 	/*
- 	 *  To-Do:  someone somewhere should wipe out the bootmem map
-diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-index 16d0d7d22657..83280e2df807 100644
---- a/arch/ia64/mm/init.c
-+++ b/arch/ia64/mm/init.c
-@@ -659,7 +659,6 @@ mem_init (void)
- 	set_max_mapnr(max_low_pfn);
- 	high_memory = __va(max_low_pfn * PAGE_SIZE);
- 	memblock_free_all();
--	mem_init_print_info(NULL);
- 
- 	/*
- 	 * For fsyscall entrpoints with no light-weight handler, use the ordinary
-diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-index 14c1e541451c..1759ab875d47 100644
---- a/arch/m68k/mm/init.c
-+++ b/arch/m68k/mm/init.c
-@@ -153,5 +153,4 @@ void __init mem_init(void)
- 	/* this will put all memory onto the freelists */
- 	memblock_free_all();
- 	init_pointer_tables();
--	mem_init_print_info(NULL);
- }
-diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
-index 05cf1fb3f5ff..ab55c70380a5 100644
---- a/arch/microblaze/mm/init.c
-+++ b/arch/microblaze/mm/init.c
-@@ -131,7 +131,6 @@ void __init mem_init(void)
- 	highmem_setup();
- #endif
- 
--	mem_init_print_info(NULL);
- 	mem_init_done = 1;
- }
- 
-diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
-index 8315c871c435..fa9b4a487a47 100644
---- a/arch/mips/loongson64/numa.c
-+++ b/arch/mips/loongson64/numa.c
-@@ -178,7 +178,6 @@ void __init mem_init(void)
- 	high_memory = (void *) __va(get_num_physpages() << PAGE_SHIFT);
- 	memblock_free_all();
- 	setup_zero_pages();	/* This comes from node 0 */
--	mem_init_print_info(NULL);
- }
- 
- /* All PCI device belongs to logical Node-0 */
-diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index 5cb73bf74a8b..c36358758969 100644
---- a/arch/mips/mm/init.c
-+++ b/arch/mips/mm/init.c
-@@ -467,7 +467,6 @@ void __init mem_init(void)
- 	memblock_free_all();
- 	setup_zero_pages();	/* Setup zeroed pages.  */
- 	mem_init_free_highmem();
--	mem_init_print_info(NULL);
- 
- #ifdef CONFIG_64BIT
- 	if ((unsigned long) &_text > (unsigned long) CKSEG0)
-diff --git a/arch/mips/sgi-ip27/ip27-memory.c b/arch/mips/sgi-ip27/ip27-memory.c
-index 87bb6945ec25..6173684b5aaa 100644
---- a/arch/mips/sgi-ip27/ip27-memory.c
-+++ b/arch/mips/sgi-ip27/ip27-memory.c
-@@ -420,5 +420,4 @@ void __init mem_init(void)
- 	high_memory = (void *) __va(get_num_physpages() << PAGE_SHIFT);
- 	memblock_free_all();
- 	setup_zero_pages();	/* This comes from node 0 */
--	mem_init_print_info(NULL);
- }
-diff --git a/arch/nds32/mm/init.c b/arch/nds32/mm/init.c
-index fa86f7b2f416..f63f839738c4 100644
---- a/arch/nds32/mm/init.c
-+++ b/arch/nds32/mm/init.c
-@@ -191,7 +191,6 @@ void __init mem_init(void)
- 
- 	/* this will put all low memory onto the freelists */
- 	memblock_free_all();
--	mem_init_print_info(NULL);
- 
- 	pr_info("virtual kernel memory layout:\n"
- 		"    fixmap  : 0x%08lx - 0x%08lx   (%4ld kB)\n"
-diff --git a/arch/nios2/mm/init.c b/arch/nios2/mm/init.c
-index 61862dbb0e32..613fcaa5988a 100644
---- a/arch/nios2/mm/init.c
-+++ b/arch/nios2/mm/init.c
-@@ -71,7 +71,6 @@ void __init mem_init(void)
- 
- 	/* this will put all memory onto the freelists */
- 	memblock_free_all();
--	mem_init_print_info(NULL);
- }
- 
- void __init mmu_init(void)
-diff --git a/arch/openrisc/mm/init.c b/arch/openrisc/mm/init.c
-index bf9b2310fc93..d5641198b90c 100644
---- a/arch/openrisc/mm/init.c
-+++ b/arch/openrisc/mm/init.c
-@@ -211,8 +211,6 @@ void __init mem_init(void)
- 	/* this will put all low memory onto the freelists */
- 	memblock_free_all();
- 
--	mem_init_print_info(NULL);
--
- 	printk("mem_init_done ...........................................\n");
- 	mem_init_done = 1;
- 	return;
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index 9ca4e4ff6895..591a4e939415 100644
---- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -573,8 +573,6 @@ void __init mem_init(void)
- #endif
- 		parisc_vmalloc_start = SET_MAP_OFFSET(MAP_START);
- 
--	mem_init_print_info(NULL);
--
- #if 0
- 	/*
- 	 * Do not expose the virtual kernel memory layout to userspace.
-diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index 4e8ce6d85232..7e11c4cb08b8 100644
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -312,7 +312,6 @@ void __init mem_init(void)
- 		(mfspr(SPRN_TLB1CFG) & TLBnCFG_N_ENTRY) - 1;
- #endif
- 
--	mem_init_print_info(NULL);
- #ifdef CONFIG_PPC32
- 	pr_info("Kernel virtual memory layout:\n");
- #ifdef CONFIG_KASAN
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 7f5036fbee8c..3c5ee3b7d811 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -102,7 +102,6 @@ void __init mem_init(void)
- 	high_memory = (void *)(__va(PFN_PHYS(max_low_pfn)));
- 	memblock_free_all();
- 
--	mem_init_print_info(NULL);
- 	print_vm_layout();
- }
- 
-diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-index 0e76b2127dc6..8ac710de1ab1 100644
---- a/arch/s390/mm/init.c
-+++ b/arch/s390/mm/init.c
-@@ -209,8 +209,6 @@ void __init mem_init(void)
- 	setup_zero_pages();	/* Setup zeroed pages. */
- 
- 	cmma_init_nodat();
--
--	mem_init_print_info(NULL);
- }
- 
- void free_initmem(void)
-diff --git a/arch/sh/mm/init.c b/arch/sh/mm/init.c
-index 0db6919af8d3..168d7d4dd735 100644
---- a/arch/sh/mm/init.c
-+++ b/arch/sh/mm/init.c
-@@ -359,7 +359,6 @@ void __init mem_init(void)
- 
- 	vsyscall_init();
- 
--	mem_init_print_info(NULL);
- 	pr_info("virtual kernel memory layout:\n"
- 		"    fixmap  : 0x%08lx - 0x%08lx   (%4ld kB)\n"
- 		"    vmalloc : 0x%08lx - 0x%08lx   (%4ld MB)\n"
-diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
-index 6139c5700ccc..1e9f577f084d 100644
---- a/arch/sparc/mm/init_32.c
-+++ b/arch/sparc/mm/init_32.c
-@@ -292,8 +292,6 @@ void __init mem_init(void)
- 
- 		map_high_region(start_pfn, end_pfn);
- 	}
--
--	mem_init_print_info(NULL);
- }
- 
- void sparc_flush_page_to_ram(struct page *page)
-diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
-index 182bb7bdaa0a..e454f179cf5d 100644
---- a/arch/sparc/mm/init_64.c
-+++ b/arch/sparc/mm/init_64.c
-@@ -2520,7 +2520,6 @@ void __init mem_init(void)
- 	}
- 	mark_page_reserved(mem_map_zero);
- 
--	mem_init_print_info(NULL);
- 
- 	if (tlb_type == cheetah || tlb_type == cheetah_plus)
- 		cheetah_ecache_flush_init();
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 9242dc91d751..9019ff5905b1 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -54,7 +54,6 @@ void __init mem_init(void)
- 	memblock_free_all();
- 	max_low_pfn = totalram_pages();
- 	max_pfn = max_low_pfn;
--	mem_init_print_info(NULL);
- 	kmalloc_ok = 1;
- }
- 
-diff --git a/arch/x86/mm/init_32.c b/arch/x86/mm/init_32.c
-index da31c2635ee4..21ffb03f6c72 100644
---- a/arch/x86/mm/init_32.c
-+++ b/arch/x86/mm/init_32.c
-@@ -755,8 +755,6 @@ void __init mem_init(void)
- 	after_bootmem = 1;
- 	x86_init.hyper.init_after_bootmem();
- 
--	mem_init_print_info(NULL);
--
- 	/*
- 	 * Check boundaries twice: Some fundamental inconsistencies can
- 	 * be detected at build time already.
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index 5430c81eefc9..aa8387aab9c1 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -1350,8 +1350,6 @@ void __init mem_init(void)
- 		kclist_add(&kcore_vsyscall, (void *)VSYSCALL_ADDR, PAGE_SIZE, KCORE_USER);
- 
- 	preallocate_vmalloc_pages();
--
--	mem_init_print_info(NULL);
- }
- 
- #ifdef CONFIG_DEFERRED_STRUCT_PAGE_INIT
-diff --git a/arch/xtensa/mm/init.c b/arch/xtensa/mm/init.c
-index 2daeba9e454e..6a32b2cf2718 100644
---- a/arch/xtensa/mm/init.c
-+++ b/arch/xtensa/mm/init.c
-@@ -119,7 +119,6 @@ void __init mem_init(void)
- 
- 	memblock_free_all();
- 
--	mem_init_print_info(NULL);
- 	pr_info("virtual kernel memory layout:\n"
- #ifdef CONFIG_KASAN
- 		"    kasan   : 0x%08lx - 0x%08lx  (%5lu MB)\n"
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 89314651dd62..c2e0b3495c5a 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2373,7 +2373,7 @@ extern unsigned long free_reserved_area(void *start, void *end,
- 					int poison, const char *s);
- 
- extern void adjust_managed_page_count(struct page *page, long count);
--extern void mem_init_print_info(const char *str);
-+extern void mem_init_print_info(void);
- 
- extern void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
- 
-diff --git a/init/main.c b/init/main.c
-index 53b278845b88..5581af5b4cb7 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -830,6 +830,7 @@ static void __init mm_init(void)
- 	report_meminit();
- 	stack_depot_init();
- 	mem_init();
-+	mem_init_print_info();
- 	/* page_owner must be initialized after buddy is ready */
- 	page_ext_init_flatmem_late();
- 	kmem_cache_init();
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 55d938297ce6..cf5a2114c6d4 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -7728,7 +7728,7 @@ unsigned long free_reserved_area(void *start, void *end, int poison, const char
- 	return pages;
- }
- 
--void __init mem_init_print_info(const char *str)
-+void __init mem_init_print_info(void)
- {
- 	unsigned long physpages, codesize, datasize, rosize, bss_size;
- 	unsigned long init_code_size, init_data_size;
-@@ -7767,7 +7767,7 @@ void __init mem_init_print_info(const char *str)
- #ifdef	CONFIG_HIGHMEM
- 		", %luK highmem"
- #endif
--		"%s%s)\n",
-+		"%s)\n",
- 		nr_free_pages() << (PAGE_SHIFT - 10),
- 		physpages << (PAGE_SHIFT - 10),
- 		codesize >> 10, datasize >> 10, rosize >> 10,
-@@ -7777,7 +7777,7 @@ void __init mem_init_print_info(const char *str)
- #ifdef	CONFIG_HIGHMEM
- 		totalhigh_pages() << (PAGE_SHIFT - 10),
- #endif
--		str ? ", " : "", str ? str : "");
-+		"");
- }
- 
- /**
--- 
-2.26.2
 
