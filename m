@@ -2,102 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92ED733DBC0
+	by mail.lfdr.de (Postfix) with ESMTP id 2143433DBBF
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 18:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239486AbhCPR7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 13:59:09 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55425 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239437AbhCPR6s (ORCPT
+        id S239451AbhCPR7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 13:59:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47359 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236422AbhCPR6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 13:58:48 -0400
-Received: from mail-ed1-f69.google.com ([209.85.208.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lMDxu-0003ia-Dt
-        for linux-kernel@vger.kernel.org; Tue, 16 Mar 2021 17:58:46 +0000
-Received: by mail-ed1-f69.google.com with SMTP id h5so18076951edf.17
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:58:46 -0700 (PDT)
+        Tue, 16 Mar 2021 13:58:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615917526;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0JF+/EvZtJVhKD33W6FqDvREuQ9YbTe24q46xCPM6xE=;
+        b=Y7y9hSBOjTrMT7ddLN8et8Kl+DLmwK8ezmX459EudpofP+RgQky+NJ9CfrG3puo8lFD+L9
+        gNtN4z5zT7gCkhRzhKBUd81jyH6DLskgz4ifG81NHv5MAGnYV18t6FVAgYxvitGeHVVDEQ
+        fI4gjHzs6B5d2o1FhSJvMRomK60gRBk=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-6-h5AlkCNjSj2VfbL_B7bg-1; Tue, 16 Mar 2021 13:58:45 -0400
+X-MC-Unique: 6-h5AlkCNjSj2VfbL_B7bg-1
+Received: by mail-wm1-f71.google.com with SMTP id z26so9935352wml.4
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 10:58:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=6yF86hItxVjdF00mkSd3V9reGH3tNOZvxmWSGP21D5c=;
-        b=KqVrYrExC3FbkMa1tMImAVd8NuCytIv7rM71eZXhuvrqwMqLa+WZtBrO/4EGxjd/VP
-         qvWdHQ3zp+3gBLBnqrCjxdT+SPygT5tREXd0VgA8/hM1qfXOOj5DCFG7IY5xRURl1717
-         iLraFPKYqk1h7pe0EZ5PdmIsYkrHouZMacFZYJSxJIUAml9zhzNq5UMN7llCno3dcLAy
-         r9UzRaH9MlKH88QRi1LYJ1c6kc1vSEV8WGmx0gDzq6TP7oKq16tbhGN7gNPAX7t1/M9H
-         YK8CLs6F6rn5ny6lHj74HFO4up/IgAr0CoW1z5eR4f1BNoLKB6Yy60ipx4URly8p0zpp
-         k/ag==
-X-Gm-Message-State: AOAM530m+pm8f1pcWuRMDD7o6Qtj5eYNeuf83pf7Gqoin0VhQ8I1ERHu
-        BPP42pjRvpJB/mqel6bvugFQfDkeU4m28x5flbUMfqHpAn/FidVDrDhIzOSj84VRC1krPThA9Gw
-        hSQquHJScgexnhcV4sSSqaeS+Ri2ABNWGtazi+uZ1xw==
-X-Received: by 2002:a05:6402:8d7:: with SMTP id d23mr38353357edz.256.1615917525834;
-        Tue, 16 Mar 2021 10:58:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxizmFWFc7QpRfLd8R4IVOXUZ7C6tYUXVLXOgwdmYrenYqYy0+6m8vxkgzfJFApBbM5vwKsHA==
-X-Received: by 2002:a05:6402:8d7:: with SMTP id d23mr38353340edz.256.1615917525678;
-        Tue, 16 Mar 2021 10:58:45 -0700 (PDT)
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id bm6sm9927848ejb.50.2021.03.16.10.58.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 10:58:45 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     John Crispin <john@phrozen.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     thierry.reding@gmail.com, linux-tegra@vger.kernel.org,
-        balbi@kernel.org, linux-usb@vger.kernel.org, digetx@gmail.com,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] MIPS: ralink: define stubs for clk_set_parent to fix compile testing
-Date:   Tue, 16 Mar 2021 18:57:25 +0100
-Message-Id: <20210316175725.79981-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        bh=0JF+/EvZtJVhKD33W6FqDvREuQ9YbTe24q46xCPM6xE=;
+        b=suWtER110vkuGzHdCDA6qfOv79LQ5/s9nxtxGSJHdbgSwszbXMpHPWIxajpD+r8300
+         OSwdIezf44yUf7djuUrJJxP2hUCKNNgQb8+zSjCVxhQYrz0VZJZibfcjT8pvJUdEAhF6
+         6cAEvpqBO4pcmiL2Z+i7B9XUyeGyYmvX3O3Rr2BmG4vSQ/xg02kK4VA4sSwk97jHF6cu
+         PmExkxup8BKBnUMuzKxcB2Ebe2Smav7oQoMZ3N823TBMGIlpmdI9k3bgeThURdvURig4
+         8r7b0PC6gDBuwGMbGvRsk1lfJ4zW7u8R1c01bXOT5bfD7SfT0m2fGMpliO1mmykXfjTx
+         +SfA==
+X-Gm-Message-State: AOAM531/KBqFOABL4Kjf91PDyy95mqR/rMW+E3WeOZDFlQ63JsZgmGXU
+        UrZgS+fqTesFtU7Q6DN3eTjsemKFDH8t8SeratPiRiGcSbd+aqiLpQ81YwkhnGG+QYk4N08H4cl
+        J7gg7yPMfXta4oUGacQbVwtoH
+X-Received: by 2002:a05:600c:214d:: with SMTP id v13mr81722wml.162.1615917524173;
+        Tue, 16 Mar 2021 10:58:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwz8qaQiIOeDTIxZu7wmd1Y+fc2q4azsyR8hIQCQE4eF5SdedLniWyjPV6zPBLTn4HqoZPj4w==
+X-Received: by 2002:a05:600c:214d:: with SMTP id v13mr81708wml.162.1615917524031;
+        Tue, 16 Mar 2021 10:58:44 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id j26sm22582822wrh.57.2021.03.16.10.58.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 10:58:43 -0700 (PDT)
+Subject: Re: [RFC] KVM: x86: Support KVM VMs sharing SEV context
+To:     Sean Christopherson <seanjc@google.com>,
+        Nathan Tempelman <natet@google.com>
+Cc:     Thomas Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Steve Rutherford <srutherford@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Ashish Kalra <Ashish.Kalra@amd.com>
+References: <20210224085915.28751-1-natet@google.com>
+ <YDaOw48Ug7Tgr+M6@google.com>
+ <CAKiEG5qtTbm8dtE3pZDy_rfSfTfvhCYhDCh2DD-uh2w6xZnvcQ@mail.gmail.com>
+ <YFDwU3CC/DgRo6Vk@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <df2e2cd9-18d5-f35e-6c05-5ba0c399ccbe@redhat.com>
+Date:   Tue, 16 Mar 2021 18:58:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YFDwU3CC/DgRo6Vk@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Ralink MIPS platform does not use Common Clock Framework and does
-not define certain clock operations leading to compile test failures:
+On 16/03/21 18:52, Sean Christopherson wrote:
+>> I don't
+>> know that holding the fd instead of the kvm makes that much better though,
+>> are there advantages to that I'm not seeing?
+> If there's no kvm pointer, it's much more difficult for someone to do the wrong
+> thing, and any such shenanigans stick out like a sore thumb in patches, which
+> makes reviewing future changes easier.
 
-    /usr/bin/mips-linux-gnu-ld: drivers/usb/phy/phy-tegra-usb.o: in function `tegra_usb_phy_init':
-    phy-tegra-usb.c:(.text+0x1dd4): undefined reference to `clk_get_parent'
+On the other hand holding the fd open complicates the code, reference 
+counting rules are already hard enough.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- arch/mips/ralink/clk.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+I think we only need a replacement for "mirror", what about "dependent"? 
+  "is_dependent_enc_context" seems clear enough.
 
-diff --git a/arch/mips/ralink/clk.c b/arch/mips/ralink/clk.c
-index 2f9d5acb38ea..8387177a47ef 100644
---- a/arch/mips/ralink/clk.c
-+++ b/arch/mips/ralink/clk.c
-@@ -70,6 +70,20 @@ long clk_round_rate(struct clk *clk, unsigned long rate)
- }
- EXPORT_SYMBOL_GPL(clk_round_rate);
- 
-+int clk_set_parent(struct clk *clk, struct clk *parent)
-+{
-+	WARN_ON(clk);
-+	return -1;
-+}
-+EXPORT_SYMBOL(clk_set_parent);
-+
-+struct clk *clk_get_parent(struct clk *clk)
-+{
-+	WARN_ON(clk);
-+	return NULL;
-+}
-+EXPORT_SYMBOL(clk_get_parent);
-+
- void __init plat_time_init(void)
- {
- 	struct clk *clk;
--- 
-2.25.1
+Paolo
 
