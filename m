@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE76C33D128
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEDB33D12A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 10:52:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236357AbhCPJvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 05:51:48 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40699 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236330AbhCPJvV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:51:21 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lM6M9-000548-IN; Tue, 16 Mar 2021 09:51:17 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] RDMA/mlx5: Fix missing assignment of rc when calling mlx5_ib_dereg_mr
-Date:   Tue, 16 Mar 2021 09:51:17 +0000
-Message-Id: <20210316095117.17089-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        id S236373AbhCPJvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 05:51:50 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:56064 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236346AbhCPJvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 05:51:46 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1lM6MN-0007c3-NU; Tue, 16 Mar 2021 20:51:32 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 16 Mar 2021 20:51:31 +1100
+Date:   Tue, 16 Mar 2021 20:51:31 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     rong.a.chen@intel.com, lkp@intel.com, oberpar@linux.ibm.com,
+        akpm@linux-foundation.org, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [kbuild-all] Re: [PATCH] gcov: fail build on gcov_info size
+ mismatch
+Message-ID: <20210316095131.GA18709@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wji=we4HQ2m6Z=fnUSM4UW8+X0eTnb9YPGYdcTqpVAL2Q@mail.gmail.com>
+X-Newsgroups: apana.lists.os.linux.kernel
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
+>
+> See:
+> 
+>   [torvalds@ryzen ~]$ a="!" [ "$a" = ".size" ]
+> 
+> is fine, but
+> 
+>   [torvalds@ryzen ~]$ a="!" [ $a = ".size" ]
+>   -bash: [: =: unary operator expected
 
-The assignment of the return code to rc when calling mlx5_ib_dereg_mr is
-missing and there is an error check on an uninitialized rc. Fix this by
-adding in the assignment.
+This isn't doing what you think it's doing.  The first assignment
+to a is not in effect when the shell is expanding $a so what you're
+actually running is
 
-Addresses-Coverity: ("Uninitialized scalar variable")
-Fixes: e6fb246ccafb ("RDMA/mlx5: Consolidate MR destruction to mlx5_ib_dereg_mr()")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/infiniband/hw/mlx5/mr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+	a="!" [ = .size ]
 
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 86ffc7e5ef96..9dcb9fb4eeaa 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -1946,7 +1946,7 @@ int mlx5_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
- 			mr->mtt_mr = NULL;
- 		}
- 		if (mr->klm_mr) {
--			mlx5_ib_dereg_mr(&mr->klm_mr->ibmr, NULL);
-+			rc = mlx5_ib_dereg_mr(&mr->klm_mr->ibmr, NULL);
- 			if (rc)
- 				return rc;
- 			mr->klm_mr = NULL;
+Which is why it bombs out.
+
+To get the desired result you need a semicolon:
+
+$ a="!"; [ $a = ".size" ]
+$ 
+
+Cheers,
 -- 
-2.30.2
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
