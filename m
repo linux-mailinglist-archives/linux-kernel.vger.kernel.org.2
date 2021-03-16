@@ -2,404 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F4533D624
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BAF033D628
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 15:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237472AbhCPOto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 10:49:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237293AbhCPOtT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 10:49:19 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440A0C06174A;
-        Tue, 16 Mar 2021 07:49:19 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id b5so12877743ilq.10;
-        Tue, 16 Mar 2021 07:49:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JVPpQW2mM7eMcXo/2OtBaimiBNrHKr/09oT1dgBiYKc=;
-        b=uEeuHXURZCqrNAroRmu67dj4ng1plskwJlZW8jjmcGlastdy6jatBLJ/fwlgGWn7Mh
-         PzzUcykEA0uOABI9ziXPvDKxPkQnz0IPV0W/2doeAZBqIEivUr7iwpMCqJ51/HEGAp04
-         VdnN4+H91N7VUMOYV8aVyxJ6B2BfsQX8IycWXrXzRrJ7NxPm0RFbNSjcZA0qhR1gBpGq
-         xPrH09LxDgcOSxqDiZQKsNJOlG5aqOMvd7r0UQ89T5U2SRMZJQeiSCVZEk07FPdYiCGK
-         8Jc0HJ8j5FVwOe2+2pQB4pUnm5O5hBnlosQVs9MTK6R8ouYKBQxwH4HB4o/TzyejDVg/
-         fmmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JVPpQW2mM7eMcXo/2OtBaimiBNrHKr/09oT1dgBiYKc=;
-        b=kME+FPr6tGVIBVRxz1xyak8D4nhOj0WRvolKfzI0bt4YRE00hp+NpMdtHwwSrpczpn
-         ZTz6rZEH9Hga1olvJ4i4EGxv/vDMVlwqPipAxUk4/oSs4JGBNdsFo9LQ3oogxtYscYRp
-         dm9HK+2+EUIXniMCLM8ZoaDX7LmCRJUm/XthDpq5B2ghqPu4ezGoWCFA0LgD2XqV7oLs
-         rIBh2DyDXE2JdxHxR/VCSv6Es3MLUh0tdg6GykkUiWVvRNacj5Q7vd+u6Shf3o+s/L/Q
-         uZqzQqmDxXPdIQI5jspN0/Jn4nzQBVTEdS2nvdQYwVq8ntWmiVdurYGH5A6NDo0dhVqk
-         B5sw==
-X-Gm-Message-State: AOAM532Yp4NmRrItVSOe1ZbIha8tW2jv5qIH5ql5MXsIcpW60VOYwU7E
-        O+fyL+0vjSkt9A3MumN8uNg=
-X-Google-Smtp-Source: ABdhPJxs3cwTuUwrRXS8JK/slrHmsvZk0FDcihO3TPF19AB2XU3UAcFsgxTVcX1IvQe6gghmQ4eTQg==
-X-Received: by 2002:a92:3652:: with SMTP id d18mr4091306ilf.100.1615906158583;
-        Tue, 16 Mar 2021 07:49:18 -0700 (PDT)
-Received: from localhost.localdomain (tunnel525895-pt.tunnel.tserv15.lax1.ipv6.he.net. [2001:470:c:1200::2])
-        by smtp.googlemail.com with ESMTPSA id q15sm9525809ilt.30.2021.03.16.07.49.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 07:49:17 -0700 (PDT)
-From:   Tianling Shen <cnsztl@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
-        Tianling Shen <cnsztl@gmail.com>,
-        Johan Jonker <jbx6244@gmail.com>,
-        David Bauer <mail@david-bauer.net>,
-        Jensen Huang <jensenhuang@friendlyarm.com>,
-        Marty Jones <mj8263788@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] rockchip: rk3399: Add support for FriendlyARM NanoPi R4S
-Date:   Tue, 16 Mar 2021 22:49:12 +0800
-Message-Id: <20210316144912.6057-1-cnsztl@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S237242AbhCPOur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 10:50:47 -0400
+Received: from mga09.intel.com ([134.134.136.24]:11637 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237549AbhCPOuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 10:50:25 -0400
+IronPort-SDR: ejHloLz8SsRHhqvDCD57qblc1xi0wjk9bLtQZ8RvPUspGr0PLTc8f4wMsDbAWCqbxNE9ugrqnU
+ g6b0WmHp3nfw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="189364484"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="189364484"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 07:50:24 -0700
+IronPort-SDR: dduCDcrqNHwBtIHWmbo41zv1TZ4439pS/93WddD+L98QVReXubOHa0J1o38YoR6SOTgf027/SJ
+ 2Fju8tl6A+Gg==
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="449740667"
+Received: from kcarrier-mobl.amr.corp.intel.com (HELO [10.209.124.168]) ([10.209.124.168])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 07:50:23 -0700
+Subject: Re: [PATCH v1 00/14] Multigenerational LRU
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     linux-mm@kvack.org, Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Ying Huang <ying.huang@intel.com>,
+        linux-kernel@vger.kernel.org, page-reclaim@google.com
+References: <20210313075747.3781593-1-yuzhao@google.com>
+ <5f621dd6-4bbd-dbf7-8fa1-d63d9a5bfc16@intel.com>
+ <YFAW+PtJS7DEngFZ@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <7378f56e-4bc0-51d0-4a61-26aa6969c0de@intel.com>
+Date:   Tue, 16 Mar 2021 07:50:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <YFAW+PtJS7DEngFZ@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-16 12:32, Robin Murphy <robin.murphy@arm.com> wrote:
->
-> On 2021-03-13 13:22, CN_SZTL wrote:
-> > Robin Murphy <robin.murphy@arm.com> 于2021年3月13日周六 下午7:55写道：
-> >>
-> >> On 2021-03-13 03:25, Tianling Shen wrote:
-> >>> This adds support for the NanoPi R4S from FriendlyArm.
-> >>>
-> >>> Rockchip RK3399 SoC
-> >>> 1GB DDR3 or 4GB LPDDR4 RAM
-> >>> Gigabit Ethernet (WAN)
-> >>> Gigabit Ethernet (PCIe) (LAN)
-> >>> USB 3.0 Port x 2
-> >>> MicroSD slot
-> >>> Reset button
-> >>> WAN - LAN - SYS LED
-> >>>
-> >>> [initial DTS file]
-> >>> Co-developed-by: Jensen Huang <jensenhuang@friendlyarm.com>
-> >>> Signed-off-by: Jensen Huang <jensenhuang@friendlyarm.com>
-> >>> [minor adjustments]
-> >>> Co-developed-by: Marty Jones <mj8263788@gmail.com>
-> >>> Signed-off-by: Marty Jones <mj8263788@gmail.com>
-> >>> [fixed format issues]
-> >>> Signed-off-by: Tianling Shen <cnsztl@gmail.com>
-> >>>
-> >>> Reported-by: kernel test robot <lkp@intel.com>
-> >>> ---
-> >>>    arch/arm64/boot/dts/rockchip/Makefile         |   1 +
-> >>>    .../boot/dts/rockchip/rk3399-nanopi-r4s.dts   | 179 ++++++++++++++++++
-> >>>    2 files changed, 180 insertions(+)
-> >>>    create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> >>>
-> >>> diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-> >>> index 62d3abc17a24..c3e00c0e2db7 100644
-> >>> --- a/arch/arm64/boot/dts/rockchip/Makefile
-> >>> +++ b/arch/arm64/boot/dts/rockchip/Makefile
-> >>> @@ -36,6 +36,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopc-t4.dtb
-> >>>    dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-m4.dtb
-> >>>    dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-m4b.dtb
-> >>>    dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-neo4.dtb
-> >>> +dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-r4s.dtb
-> >>>    dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-orangepi.dtb
-> >>>    dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-pinebook-pro.dtb
-> >>>    dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-puma-haikou.dtb
-> >>> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> >>> new file mode 100644
-> >>> index 000000000000..41b3d5c5043c
-> >>> --- /dev/null
-> >>> +++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> >>> @@ -0,0 +1,179 @@
-> >>> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> >>> +/*
-> >>> + * FriendlyElec NanoPC-T4 board device tree source
-> >>> + *
-> >>> + * Copyright (c) 2020 FriendlyElec Computer Tech. Co., Ltd.
-> >>> + * (http://www.friendlyarm.com)
-> >>> + *
-> >>> + * Copyright (c) 2018 Collabora Ltd.
-> >>> + *
-> >>> + * Copyright (c) 2020 Jensen Huang <jensenhuang@friendlyarm.com>
-> >>> + * Copyright (c) 2020 Marty Jones <mj8263788@gmail.com>
-> >>> + * Copyright (c) 2021 Tianling Shen <cnsztl@gmail.com>
-> >>> + */
-> >>> +
-> >>> +/dts-v1/;
-> >>> +#include "rk3399-nanopi4.dtsi"
-> >>> +
-> >>> +/ {
-> >>> +     model = "FriendlyElec NanoPi R4S";
-> >>> +     compatible = "friendlyarm,nanopi-r4s", "rockchip,rk3399";
-> >>> +
-> >>> +     /delete-node/ gpio-leds;
-> >>
-> >> Why? You could justify deleting &status_led, but redefining the whole
-> >> node from scratch seems unnecessary.
-> >
-> > First of all, thank you for reviewing, and sorry for my poor English.
-> >
-> > I need to redefine `pinctrl-0`, but if I use `/delete-property/
-> > pinctrl-0;`, it will throw an error,
-> > so maybe I made a mistake? And I will try again...
->
-> You don't need to delete the property itself though - simply specifying
-> it replaces whatever previous value was inherited from the DTSI. Think
-> about how all those "status = ..." lines work, for example.
+On 3/15/21 7:24 PM, Yu Zhao wrote:
+> On Mon, Mar 15, 2021 at 11:00:06AM -0700, Dave Hansen wrote:
+>> How bad does this scanning get in the worst case if there's a lot of
+>> sharing?
+> 
+> Actually the improvement is larger when there is more sharing, i.e.,
+> higher map_count larger improvement. Let's assume we have a shmem
+> page mapped by two processes. To reclaim this page, we need to make
+> sure neither PTE from the two sets of page tables has the accessed
+> bit. The current page reclaim uses the rmap, i.e., rmap_walk_file().
+> It first looks up the two VMAs (from the two processes mapping this
+> shmem file) in the interval tree of this shmem file, then from each
+> VMA, it goes through PGD/PUD/PMD to reach the PTE. The page can't be
+> reclaimed if either of the PTEs has the accessed bit, therefore cost
+> of the scanning is more than proportional to the number of accesses,
+> when there is a lot sharing.
+> 
+> Why this series makes it better? We track the usage of page tables.
+> Specifically, we work alongside switch_mm(): if one of the processes
+> above hasn't be scheduled since the last scan, we don't need to scan
+> its page tables. So the cost is roughly proportional to the number of
+> accesses, regardless of how many processes. And instead of scanning
+> pages one by one, we do it in large batches. However, page tables can
+> be very sparse -- this is not a problem for the rmap because it knows
+> exactly where the PTEs are (by vma_address()). We only know ranges (by
+> vma->vm_start/vm_end). This is where the accessed bit on non-leaf
+> PMDs can be of help.
 
-I see, thank you so much!
+That's an interesting argument.  *But*, this pivoted into describing an
+optimization.  My takeaway from this is that large amounts of sharing
+are probably only handled well if the processes doing the sharing are
+not running constantly.
 
->
-> Similarly, given that you're redefining the led-0 node anyway you
-> wouldn't really *need* to delete that either; doing so just avoids the
-> extra &status_led label hanging around if the DTB is built with symbols,
-> and saves having to explicitly override/delete the default trigger
-> property if necessary.
+> But I guess you are wondering what downsides are. Well, we haven't
+> seen any (yet). We do have page cache (non-shmem) heavy workloads,
+> but not at a scale large enough to make any statistically meaningful
+> observations. We are very interested in working with anybody who has
+> page cache (non-shmem) heavy workloads and is willing to try out this
+> series.
 
-I plan to take advice from Geert, rename them to `lan-led`, `sys-led`,`wan-led`, so deleting `led-0` might to be need here...>
+I would also be very interested to see some synthetic, worst-case
+micros.  Maybe take a few thousand processes with very sparse page
+tables that all map some shared memory.  They wake up long enough to
+touch a few pages, then go back to sleep.
 
-> >>> +     gpio-leds {
-> >>> +             compatible = "gpio-leds";
-> >>> +             pinctrl-0 = <&lan_led_pin>, <&sys_led_pin>, <&wan_led_pin>;
-> >>> +             pinctrl-names = "default";
-> >>> +
-> >>> +             lan_led: led-0 {
-> >>> +                     gpios = <&gpio1 RK_PA1 GPIO_ACTIVE_HIGH>;
-> >>> +                     label = "nanopi-r4s:green:lan";
-> >>> +             };
-> >>> +
-> >>> +             sys_led: led-1 {
-> >>> +                     gpios = <&gpio0 RK_PB5 GPIO_ACTIVE_HIGH>;
-> >>> +                     label = "nanopi-r4s:red:sys";
-> >>> +                     default-state = "on";
-> >>> +             };
-> >>> +
-> >>> +             wan_led: led-2 {
-> >>> +                     gpios = <&gpio1 RK_PA0 GPIO_ACTIVE_HIGH>;
-> >>> +                     label = "nanopi-r4s:green:wan";
-> >>> +             };
->
-> Nit: (apologies for overlooking it before) there isn't an obvious
-> definitive order for the LEDs, but the order here is certainly not
-> consistent with anything. The most logical would probably be sys, wan,
-> lan since that's both in order of GPIO number and how they are
-> physically positioned relative to each other on the board/case (although
-> you could also argue for wan, lan, sys in that regard, depending on how
-> you look at it).
->
-> >>> +     };
-> >>> +
-> >>> +     /delete-node/ gpio-keys;
-> >>
-> >> Ditto - just removing the power key node itself should suffice.
-> >
-> > Just like gpio-leds.
-> >>
-> >>> +     gpio-keys {
-> >>> +             compatible = "gpio-keys";
-> >>> +             pinctrl-names = "default";
-> >>> +             pinctrl-0 = <&reset_button_pin>;
-> >>> +
-> >>> +             reset {
-> >>> +                     debounce-interval = <50>;
-> >>> +                     gpios = <&gpio1 RK_PC6 GPIO_ACTIVE_LOW>;
-> >>> +                     label = "reset";
-> >>> +                     linux,code = <KEY_RESTART>;
-> >>> +             };
-> >>> +     };
-> >>> +
-> >>> +     vdd_5v: vdd-5v {
-> >>> +             compatible = "regulator-fixed";
-> >>> +             regulator-name = "vdd_5v";
-> >>> +             regulator-always-on;
-> >>> +             regulator-boot-on;
-> >>> +     };
-> >>> +
-> >>> +     fan: pwm-fan {
-> >>> +             compatible = "pwm-fan";
-> >>> +             /*
-> >>> +              * With 20KHz PWM and an EVERCOOL EC4007H12SA fan, these levels
-> >>> +              * work out to 0, ~1200, ~3000, and 5000RPM respectively.
-> >>> +              */
-> >>> +             cooling-levels = <0 12 18 255>;
-> >>
-> >> This is clearly not true - those numbers refer to a 12V fan on my
-> >> NanoPC-T4's 12V PWM circuit, while the output circuit here is 5V. If you
-> >> really want a placeholder here maybe just use <0 255>, or figure out
-> >> some empirical values with a suitable 5V fan that are actually meaningful.
-> >
-> > Okay... I'll drop these as they're not really meaningful.
-> >>
-> >>> +             #cooling-cells = <2>;
-> >>> +             fan-supply = <&vdd_5v>;
-> >>> +             pwms = <&pwm1 0 50000 0>;
-> >>> +     };
-> >>> +};
-> >>> +
-> >>> +&cpu_thermal {
-> >>> +     trips {
-> >>> +             cpu_warm: cpu_warm {
-> >>> +                     temperature = <55000>;
-> >>> +                     hysteresis = <2000>;
-> >>> +                     type = "active";
-> >>> +             };
-> >>> +
-> >>> +             cpu_hot: cpu_hot {
-> >>> +                     temperature = <65000>;
-> >>> +                     hysteresis = <2000>;
-> >>> +                     type = "active";
-> >>> +             };
-> >>> +     };
-> >>> +
-> >>> +     cooling-maps {
-> >>> +             map2 {
-> >>> +                     trip = <&cpu_warm>;
-> >>> +                     cooling-device = <&fan THERMAL_NO_LIMIT 1>;
-> >>> +             };
-> >>> +
-> >>> +             map3 {
-> >>> +                     trip = <&cpu_hot>;
-> >>> +                     cooling-device = <&fan 2 THERMAL_NO_LIMIT>;
-> >>> +             };
-> >>> +     };
-> >>> +};
-> >>> +
-> >>> +&emmc_phy {
-> >>> +     status = "disabled";
-> >>> +};
-> >>> +
-> >>> +&fusb0 {
-> >>> +     status = "disabled";
-> >>
-> >> This can never be enabled since it doesn't exist in the design at all,
-> >> so it's one place where deletion *would* make good sense. AFAICS this
-> >> means you also don't need i2c4 enabled either.
-> >
-> > Is it fine to disable i2c4 directly?
->
-> I think it would make sense, since it's not physically available short
-> of trying to solder on to the 0201 pull-up resistors.
->
-> >>
-> >>> +};
-> >>
-> >> It might be nice to disable HDMI and all the other display pieces given
-> >> that the board is physically headless.
-> >
-> > Fine, I will delete `display-subsystem` node.
-> >>
-> >>> +
-> >>> +&pcie0 {
-> >>> +     max-link-speed = <1>;
-> >>> +     num-lanes = <1>;
-> >>> +     vpcie3v3-supply = <&vcc3v3_sys>;
-> >>> +
-> >>> +     pcie@0 {
-> >>> +             reg = <0x00000000 0 0 0 0>;
-> >>> +             #address-cells = <3>;
-> >>> +             #size-cells = <2>;
-> >>> +     };
-> >>
-> >> What's this for?
-> >
-> > This is for the on-board PCIe ethernet adapter (RTL8111h).
->
-> OK, but *how* exactly does the ethernet adapter need an empty DT node
-> describing the root port?
+What happens if we do that?  I'm not saying this is a good workload or
+that things must behave well, but I do find it interesting to watch the
+worst case.
 
-Actually I just took this from the vendor.
-This seems useless, and I'll drop it.
+I think it would also be very worthwhile to include some research in
+this series about why the kernel moved away from page table scanning.
+What has changed?  Are the workloads we were concerned about way back
+then not around any more?  Has faster I/O or larger memory sizes with a
+stagnating page size changed something?
 
->
-> >>
-> >>> +};
-> >>> +
-> >>> +&pinctrl {
-> >>> +     /delete-node/ gpio-leds;
-> >>
-> >> Again, at most you'd only need to delete &status_led_pin.
-> >
-> > Yes, I will do it.
-> >>
-> >>> +     gpio-leds {
-> >>> +             lan_led_pin: lan-led-pin {
-> >>> +                     rockchip,pins = <1 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;
-> >>> +             };
-> >>> +
-> >>> +             sys_led_pin: sys-led-pin {
-> >>> +                     rockchip,pins = <0 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
-> >>> +             };
-> >>> +
-> >>> +             wan_led_pin: wan-led-pin {
-> >>> +                     rockchip,pins = <1 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
-> >>> +             };
-> >>> +     };
-> >>> +
-> >>> +     /delete-node/ rockchip-key;
-> >>
-> >> Ditto for &power_key.
-> >
-> > Yes.
-> >>
-> >>> +     rockchip-key {
-> >>> +             reset_button_pin: reset-button-pin {
-> >>> +                     rockchip,pins = <1 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>;
-> >>> +             };
-> >>> +     };
-> >>> +};
-> >>> +
-> >>> +&sdhci {
-> >>> +     status = "disabled";
-> >>> +};
-> >>> +
-> >>> +&sdio0 {
-> >>> +     status = "disabled";
-> >>> +};
-> >>> +
-> >>> +&sdmmc {
-> >>> +     sd-uhs-sdr12;
-> >>> +     sd-uhs-sdr25;
-> >>> +     sd-uhs-sdr50;
-> >>
-> >> Are those modes unique to this particular board?
-> >
-> > These seem not right and I will drop them.
->
-> I mean that if the other boards already support SDR104, they can
-> presumably support slower modes as well, so if these are worth having at
-> all then they could probably go in the common DTSI.
+>> I'm kinda surprised by this, but my 16GB laptop has a lot more page
+>> cache than I would have guessed:
+>>
+>>> Active(anon):    4065088 kB
+>>> Inactive(anon):  3981928 kB
+>>> Active(file):    2260580 kB
+>>> Inactive(file):  3738096 kB
+>>> AnonPages:       6624776 kB
+>>> Mapped:           692036 kB
+>>> Shmem:            776276 kB
+>>
+>> Most of it isn't mapped, but it's far from all being used for text.
+> 
+> We have categorized two groups:
+>   1) average users that haven't experienced memory pressure since
+>   their systems have booted. The booting process fills up page cache
+>   with one-off file pages, and they remain until users experience
+>   memory pressure. This can be confirmed by looking at those counters
+>   of a freshly rebooted and idle system. My guess this is the case for
+>   your laptop.
 
-I'm not sure, just based on the dts of R2S, and I added them here.
-However they should be general for all NanoPi4 boards.
+It's been up ~12 days.  There is ~10GB of data in swap, and there's been
+a lot of scanning activity which I would associate with memory pressure:
 
->
-> >>
-> >>> +};
-> >>> +
-> >>
-> >> What about the Bluetooth stuff on uart0?
-> >
-> > R4S doesn't have it, so I guess I should disable uart0, like i2c4.
->
-> Yes, the UART itself isn't available on the board, and either way you
-> certainly don't want the kernel wasting time and possibly throwing
-> errors trying to probe a non-existent device through it.
->
-> Thanks,
-> Robin.
+> SwapCached:      1187596 kB
+> SwapTotal:      51199996 kB
+> SwapFree:       40419428 kB
+...
+> nr_vmscan_write 24900719
+> nr_vmscan_immediate_reclaim 115535
+> pgscan_kswapd 320831544
+> pgscan_direct 23396383
+> pgscan_direct_throttle 0
+> pgscan_anon 127491077
+> pgscan_file 216736850
+> slabs_scanned 400469680
+> compact_migrate_scanned 1092813949
+> compact_free_scanned 4919523035
+> compact_daemon_migrate_scanned 2372223
+> compact_daemon_free_scanned 20989310
+> unevictable_pgs_scanned 307388545
 
-Thanks,
-Tianling.
+
+>   2) engineering users who store git repos and compile locally. They
+>   complained about their browsers being janky because anon memory got
+>   swapped even though their systems had a lot of stale file pages in
+>   page cache, with the current page reclaim. They are what we consider
+>   part of the page cache (non-shmem) heavy group.
+
+Interesting.  You shouldn't have a shortage of folks like that among
+kernel developers.
