@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9CC33CCBD
+	by mail.lfdr.de (Postfix) with ESMTP id 767B933CCBE
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 05:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235106AbhCPEuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 00:50:37 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:53690 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235083AbhCPEuU (ORCPT
+        id S235113AbhCPEuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 00:50:39 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:35464 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231156AbhCPEuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 00:50:20 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0US4yKUp_1615870216;
-Received: from localhost(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0US4yKUp_1615870216)
+        Tue, 16 Mar 2021 00:50:24 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0US4yKV6_1615870218;
+Received: from localhost(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0US4yKV6_1615870218)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 16 Mar 2021 12:50:16 +0800
+          Tue, 16 Mar 2021 12:50:18 +0800
 From:   Huaixin Chang <changhuaixin@linux.alibaba.com>
 To:     changhuaixin@linux.alibaba.com
 Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
@@ -25,9 +25,9 @@ Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
         peterz@infradead.org, pjt@google.com, rostedt@goodmis.org,
         shanpeic@linux.alibaba.com, tj@kernel.org,
         vincent.guittot@linaro.org, xiyou.wangcong@gmail.com
-Subject: [PATCH v4 3/4] sched/fair: Add cfs bandwidth burst statistics
-Date:   Tue, 16 Mar 2021 12:49:30 +0800
-Message-Id: <20210316044931.39733-4-changhuaixin@linux.alibaba.com>
+Subject: [PATCH v4 4/4] sched/fair: Add document for burstable CFS bandwidth control
+Date:   Tue, 16 Mar 2021 12:49:31 +0800
+Message-Id: <20210316044931.39733-5-changhuaixin@linux.alibaba.com>
 X-Mailer: git-send-email 2.14.4.44.g2045bb6
 In-Reply-To: <20210316044931.39733-1-changhuaixin@linux.alibaba.com>
 References: <20210316044931.39733-1-changhuaixin@linux.alibaba.com>
@@ -38,128 +38,170 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using cfs_b and meeting with some throttled periods, users shall
-use burst buffer to allow bursty workloads. Apart from configuring some
-burst buffer and watch whether throttled periods disappears, some
-statistics on burst buffer using are also helpful. Thus expose the
-following statistics into cpu.stat file:
-
-nr_burst:   number of periods bandwidth burst occurs
-burst_time: cumulative wall-time that any cpus has
-	    used above quota in respective periods
+Basic description of usage and effect for CFS Bandwidth Control Burst.
 
 Co-developed-by: Shanpei Chen <shanpeic@linux.alibaba.com>
 Signed-off-by: Shanpei Chen <shanpeic@linux.alibaba.com>
 Signed-off-by: Huaixin Chang <changhuaixin@linux.alibaba.com>
 ---
- kernel/sched/core.c  | 14 +++++++++++---
- kernel/sched/fair.c  | 13 ++++++++++++-
- kernel/sched/sched.h |  3 +++
- 3 files changed, 26 insertions(+), 4 deletions(-)
+ Documentation/admin-guide/cgroup-v2.rst | 16 +++++----
+ Documentation/scheduler/sched-bwc.rst   | 64 ++++++++++++++++++++++++++++++---
+ 2 files changed, 69 insertions(+), 11 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 16e23a2499ef..f60232862300 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9016,6 +9016,7 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota,
- 		cfs_b->buffer = min(max_cfs_runtime, quota + burst);
- 		cfs_b->max_overrun = DIV_ROUND_UP_ULL(max_cfs_runtime, quota);
- 		cfs_b->runtime = cfs_b->quota;
-+		cfs_b->runtime_at_period_start = cfs_b->runtime;
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 64c62b979f2f..17ec571ab4a8 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -997,6 +997,8 @@ All time durations are in microseconds.
+ 	- nr_periods
+ 	- nr_throttled
+ 	- throttled_usec
++	- nr_burst
++	- burst_usec
  
- 		/* Restart the period timer (if active) to handle new period expiry: */
- 		start_cfs_bandwidth(cfs_b, 1);
-@@ -9265,6 +9266,9 @@ static int cpu_cfs_stat_show(struct seq_file *sf, void *v)
- 		seq_printf(sf, "wait_sum %llu\n", ws);
- 	}
+   cpu.weight
+ 	A read-write single value file which exists on non-root
+@@ -1017,16 +1019,18 @@ All time durations are in microseconds.
+ 	the closest approximation of the current weight.
  
-+	seq_printf(sf, "nr_burst %d\n", cfs_b->nr_burst);
-+	seq_printf(sf, "burst_time %llu\n", cfs_b->burst_time);
+   cpu.max
+-	A read-write two value file which exists on non-root cgroups.
+-	The default is "max 100000".
++	A read-write three value file which exists on non-root cgroups.
++	The default is "max 100000 0".
+ 
+ 	The maximum bandwidth limit.  It's in the following format::
+ 
+-	  $MAX $PERIOD
++	  $MAX $PERIOD $BURST
+ 
+-	which indicates that the group may consume upto $MAX in each
+-	$PERIOD duration.  "max" for $MAX indicates no limit.  If only
+-	one number is written, $MAX is updated.
++	which indicates that the group may consume upto $MAX from this
++	period plus $BURST carried over from previous periods in each
++	$PERIOD duration.  "max" for $MAX indicates no limit. "0" for
++	$BURST indicates no bandwidth can be carried over. On partial
++	writing, values are updated accordingly.
+ 
+   cpu.pressure
+ 	A read-write nested-keyed file.
+diff --git a/Documentation/scheduler/sched-bwc.rst b/Documentation/scheduler/sched-bwc.rst
+index 845eee659199..42e0773c0eed 100644
+--- a/Documentation/scheduler/sched-bwc.rst
++++ b/Documentation/scheduler/sched-bwc.rst
+@@ -22,24 +22,51 @@ cfs_quota units at each period boundary. As threads consume this bandwidth it
+ is transferred to cpu-local "silos" on a demand basis. The amount transferred
+ within each of these updates is tunable and described as the "slice".
+ 
++By default, CPU bandwidth consumption is strictly limited to quota within each
++given period. For the sequence of CPU usage u_i served under CFS bandwidth
++control, if for any j <= k N(j,k) is the number of periods from u_j to u_k:
 +
- 	return 0;
- }
- #endif /* CONFIG_CFS_BANDWIDTH */
-@@ -9361,16 +9365,20 @@ static int cpu_extra_stat_show(struct seq_file *sf,
- 	{
- 		struct task_group *tg = css_tg(css);
- 		struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
--		u64 throttled_usec;
-+		u64 throttled_usec, burst_usec;
- 
- 		throttled_usec = cfs_b->throttled_time;
- 		do_div(throttled_usec, NSEC_PER_USEC);
-+		burst_usec = cfs_b->burst_time;
-+		do_div(burst_usec, NSEC_PER_USEC);
- 
- 		seq_printf(sf, "nr_periods %d\n"
- 			   "nr_throttled %d\n"
--			   "throttled_usec %llu\n",
-+			   "throttled_usec %llu\n"
-+			   "nr_burst %d\n"
-+			   "burst_usec %llu\n",
- 			   cfs_b->nr_periods, cfs_b->nr_throttled,
--			   throttled_usec);
-+			   throttled_usec, cfs_b->nr_burst, burst_usec);
- 	}
- #endif
- 	return 0;
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index c981d4845c96..e7574d8bc11a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4612,7 +4612,7 @@ static inline u64 sched_cfs_bandwidth_slice(void)
- static void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b,
- 					   u64 overrun)
- {
--	u64 refill;
-+	u64 refill, runtime;
- 
- 	if (cfs_b->quota != RUNTIME_INF) {
- 
-@@ -4621,10 +4621,21 @@ static void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b,
- 			return;
- 		}
- 
-+		if (cfs_b->runtime_at_period_start > cfs_b->runtime) {
-+			runtime = cfs_b->runtime_at_period_start
-+				- cfs_b->runtime;
-+			if (runtime > cfs_b->quota) {
-+				cfs_b->burst_time += runtime - cfs_b->quota;
-+				cfs_b->nr_burst++;
-+			}
-+		}
++        u_j+...+u_k <= quota * N(j,k)
 +
- 		overrun = min(overrun, cfs_b->max_overrun);
- 		refill = cfs_b->quota * overrun;
- 		cfs_b->runtime += refill;
- 		cfs_b->runtime = min(cfs_b->runtime, cfs_b->buffer);
++For a bursty sequence among which interval u_j...u_k are at the peak, CPU
++requests might have to wait for more periods to replenish enough quota.
++Otherwise, larger quota is required.
 +
-+		cfs_b->runtime_at_period_start = cfs_b->runtime;
- 	}
- }
++With "burst" buffer, CPU requests might be served as long as:
++
++        u_j+...+u_k <= B_j + quota * N(j,k)
++
++if for any j <= k N(j,k) is the number of periods from u_j to u_k and B_j is
++the accumulated quota from previous periods in burst buffer serving u_j.
++Burst buffer helps in that serving whole bursty CPU requests without throttling
++them can be done with moderate quota setting and accumulated quota in burst
++buffer, if:
++
++        u_0+...+u_n <= B_0 + quota * N(0,n)
++
++where B_0 is the initial state of burst buffer. The maximum accumulated quota in
++the burst buffer is capped by burst. With proper burst setting, the available
++bandwidth is still determined by quota and period on the long run.
++
+ Management
+ ----------
+-Quota and period are managed within the cpu subsystem via cgroupfs.
++Quota, period and burst are managed within the cpu subsystem via cgroupfs.
  
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index efcbbfc31619..7ef8d4733791 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -360,6 +360,7 @@ struct cfs_bandwidth {
- 	u64			burst;
- 	u64			buffer;
- 	u64			max_overrun;
-+	u64			runtime_at_period_start;
- 	s64			hierarchical_quota;
+ .. note::
+    The cgroupfs files described in this section are only applicable
+    to cgroup v1. For cgroup v2, see
+    :ref:`Documentation/admin-guide/cgroupv2.rst <cgroup-v2-cpu>`.
  
- 	u8			idle;
-@@ -372,7 +373,9 @@ struct cfs_bandwidth {
- 	/* Statistics: */
- 	int			nr_periods;
- 	int			nr_throttled;
-+	int			nr_burst;
- 	u64			throttled_time;
-+	u64			burst_time;
- #endif
- };
+-- cpu.cfs_quota_us: the total available run-time within a period (in
+-  microseconds)
++- cpu.cfs_quota_us: run-time replenished within a period (in microseconds)
+ - cpu.cfs_period_us: the length of a period (in microseconds)
+ - cpu.stat: exports throttling statistics [explained further below]
++- cpu.cfs_burst_us: the maximum accumulated run-time (in microseconds)
  
+ The default values are::
+ 
+ 	cpu.cfs_period_us=100ms
+-	cpu.cfs_quota=-1
++	cpu.cfs_quota_us=-1
++	cpu.cfs_burst_us=0
+ 
+ A value of -1 for cpu.cfs_quota_us indicates that the group does not have any
+ bandwidth restriction in place, such a group is described as an unconstrained
+@@ -55,6 +82,11 @@ more detail below.
+ Writing any negative value to cpu.cfs_quota_us will remove the bandwidth limit
+ and return the group to an unconstrained state once more.
+ 
++A value of 0 for cpu.cfs_burst_us indicates that the group can not accumulate
++any unused bandwidth. It makes the traditional bandwidth control behavior for
++CFS unchanged. Writing any (valid) positive value(s) into cpu.cfs_burst_us
++will enact the cap on unused bandwidth accumulation.
++
+ Any updates to a group's bandwidth specification will result in it becoming
+ unthrottled if it is in a constrained state.
+ 
+@@ -72,9 +104,15 @@ This is tunable via procfs::
+ Larger slice values will reduce transfer overheads, while smaller values allow
+ for more fine-grained consumption.
+ 
++There is also a global switch to turn off burst for all groups::
++       /proc/sys/kernel/sched_cfs_bw_burst_enabled (default=1)
++
++By default it is enabled. Writing a 0 value means no accumulated CPU time can be
++used for any group, even if cpu.cfs_burst_us is configured.
++
+ Statistics
+ ----------
+-A group's bandwidth statistics are exported via 3 fields in cpu.stat.
++A group's bandwidth statistics are exported via 6 fields in cpu.stat.
+ 
+ cpu.stat:
+ 
+@@ -82,6 +120,10 @@ cpu.stat:
+ - nr_throttled: Number of times the group has been throttled/limited.
+ - throttled_time: The total time duration (in nanoseconds) for which entities
+   of the group have been throttled.
++- nr_burst: Number of periods burst occurs.
++- burst_time: Cumulative wall-time that any CPUs has used above quota in
++  respective periods
++
+ 
+ This interface is read-only.
+ 
+@@ -179,3 +221,15 @@ Examples
+ 
+    By using a small period here we are ensuring a consistent latency
+    response at the expense of burst capacity.
++
++4. Limit a group to 20% of 1 CPU, and allow accumulate up to 60% of 1 CPU
++   additionally, in case accumulation has been done.
++
++   With 50ms period, 10ms quota will be equivalent to 20% of 1 CPU.
++   And 30ms burst will be equivalent to 60% of 1 CPU.
++
++	# echo 10000 > cpu.cfs_quota_us /* quota = 10ms */
++	# echo 50000 > cpu.cfs_period_us /* period = 50ms */
++	# echo 30000 > cpu.cfs_burst_us /* burst = 30ms */
++
++   Larger buffer setting allows greater burst capacity.
 -- 
 2.14.4.44.g2045bb6
 
