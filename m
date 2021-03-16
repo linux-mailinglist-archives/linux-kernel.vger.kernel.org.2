@@ -2,87 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7452533DEDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCE633DEDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhCPUek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 16:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231322AbhCPUeF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 16:34:05 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 603D8C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 13:34:05 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id l27so18980258vsj.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 13:34:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xrwjt/kZB1RxVC21J+b2Rv85znrbxBlQ2xQVtgXaL8Q=;
-        b=po1Ywby6SU2VWLEUyZ5fNbrtGcCnRgD8+IOMID+GlXWQNN/3aWjrKopHkVgecJy3yJ
-         khd4+NGMXkdhaRRLq7oIG7sqA93cOIbt85nnBMxjdoTTob9e2Am24an2yQVbG1o0V5H8
-         7GVzuReTWAlfbF1CAQXu39fgGvH5SXGbKyaDGdlbOZBsDb8/16qHOkbAClu4ucjVnnpq
-         puCa2KojBGupypPIcNHF88u0nBc0j5j5wmxJB5QqbuzbcGhuC3bdhL35d8XTmOmAH5Ze
-         Rv/YonPUJZL/28fPFwgGqtGza8PZ38b3S3xCK35A47xteLDq+UaKkUNMlUmMa3ohiIUa
-         It1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xrwjt/kZB1RxVC21J+b2Rv85znrbxBlQ2xQVtgXaL8Q=;
-        b=Noy7cwwO34x4FvcFBdAEQ7AkhKL4+xiVNLzPJ/xe40mn+E1hHE79Uw7QQXqtYWHSg/
-         uk63vH3dpThgcEsgU2YLCXzUOtgVHGYRgpZhKAEV377A2lddS2kTIQjQWSF9O340D8fG
-         y5wrmfU9thJRsLgspElqQF5W2iYOCcRpJnfOZLHp4m8yhKY5Dwt8SDN6vROwh1k47Mrs
-         lptpP9tJSaJWynn7Aop+3/LjH5qk1hQTDaflWDy+anlcV/S1RueyreQRR9YkjeMU0AbT
-         rTMYLrnzyadhp1npADyUCbPEEUZ2OcXRDX6gR2ccLH9iahjLiXtCnFWu6wmKvVsK3Nn8
-         9sOw==
-X-Gm-Message-State: AOAM533FgoSSocd7Wzsps4MAGj752Im5QgqMO1EYeBJOUpLkLmuTSVQF
-        heZdQK0n4m/MJnp7f3xOO+qfCxpwWySPTxpyfdoP8g==
-X-Google-Smtp-Source: ABdhPJwadRPiAKyB9trsaH6fnnn3nCM/AdtJrbuHIQFIQoIMgPzfKSpazXNSL6neJgetXYxyVdUJ7AZv1KZY68p3ujw=
-X-Received: by 2002:a67:2803:: with SMTP id o3mr1486279vso.36.1615926844137;
- Tue, 16 Mar 2021 13:34:04 -0700 (PDT)
+        id S231301AbhCPUfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 16:35:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231247AbhCPUex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 16:34:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BBBD64F80;
+        Tue, 16 Mar 2021 20:34:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615926893;
+        bh=okRMItYdKasGgTRYd7gy0EpX6yF0Jgr0clwpOBDEkcc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZqoeJGGV9lud2AQhRJAgyemOws0smvXmgWPVFr0SuSHJqUfxOldFhGU4fDP/sl8iE
+         sRFD/5OxGLJYeBT31PhFYIlR22qDa2BdP2egRTflCnxcHO0liyz0D4VRod+Ymj6s+1
+         GO/JgBrT2mh/qtUv7ekSL+6JM8Z+U789lqnDas+Jkzj7seNHedILQF7jYmBoI+/yXs
+         cmaq7syNqOKinqqU8Tcqpt3bWN6+1GeUT4dBsQ20w03A+y2ohy7Em+SW6kH25YLE+4
+         TZYSqoSu1xn0+d76s3pLiyxTcL//gzszrE2UlA7znsIdq5E0LODte7rg2JKEL1X0yJ
+         tIf3oX2YqZd2Q==
+Date:   Tue, 16 Mar 2021 13:34:52 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yejune Deng <yejune.deng@gmail.com>
+Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: ipv4: route.c: simplify procfs code
+Message-ID: <20210316133452.2e64eeaa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210316025736.37254-1-yejune.deng@gmail.com>
+References: <20210316025736.37254-1-yejune.deng@gmail.com>
 MIME-Version: 1.0
-References: <20210312004919.669614-1-samitolvanen@google.com>
- <20210312004919.669614-8-samitolvanen@google.com> <202103111843.008B935F8@keescook>
-In-Reply-To: <202103111843.008B935F8@keescook>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 16 Mar 2021 13:33:53 -0700
-Message-ID: <CABCJKufMb_VFwXLkxjdvN6Y92v-Nc4Z+kThbi7SOkVgGhdFz+g@mail.gmail.com>
-Subject: Re: [PATCH 07/17] kallsyms: cfi: strip hashes from static functions
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        bpf@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 6:45 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Thu, Mar 11, 2021 at 04:49:09PM -0800, Sami Tolvanen wrote:
-> > With CONFIG_CFI_CLANG and ThinLTO, Clang appends a hash to the names
-> > of all static functions not marked __used. This can break userspace
-> > tools that don't expect the function name to change, so strip out the
-> > hash from the output.
-> >
-> > Suggested-by: Jack Pham <jackp@codeaurora.org>
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
->
-> (Is it possible we could end up with symbol name collisions? ... though
-> I guess we would have had collisions before?)
+On Tue, 16 Mar 2021 10:57:36 +0800 Yejune Deng wrote:
+> proc_creat_seq() that directly take a struct seq_operations,
+> and deal with network namespaces in ->open.
+> 
+> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
 
-Yes, these are static functions, so name collisions have always been possible.
+Looks equivalent to me:
 
-Sami
+Reviewed-by: Jakub Kicinski <kuba@kernel.org>
