@@ -2,90 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8581B33E1E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D80E133E1E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbhCPXJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 19:09:28 -0400
-Received: from ms.lwn.net ([45.79.88.28]:46964 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229614AbhCPXJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 19:09:22 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 938652C4;
-        Tue, 16 Mar 2021 23:09:21 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 938652C4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1615936161; bh=YhhOvum9iXY4lewyjauMY6yZc3qc/NHGkDJk3gXdbxw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=rqsqV7eyUX6AKMkFfS+B0R9nN9DVCgJA1A65kCv2G9o5CT8bWYldVmV667Koshj2G
-         kNhxhBDHnWjfbI381HXEHnunlVwtU2WVYXRB0GzvkNEci4jtVfZ7idKqw/BSsyeZwd
-         4zftGOi0kYmM9Lsi/e4ws86WftxHc49lQfKoSNRyDKR8uzAac1J/jbU2Xv2Llc2ApR
-         EiDd0V487/nAtVtISrvI9TZslHdq4F8kdN15Vh+d6aJVA/F8PVdewM2e7pZiCxEvyW
-         7pBkHGbeQh0rSzgZXxMTVCXaI6GgrldRF8o9vzbjajQlAg0dFQzrodB7GQeR0zpqoQ
-         x+Qk5s27e5CxQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: linux-next: build warning after merge of the akpm-current tree
-In-Reply-To: <20210317084924.2ba4c3ea@canb.auug.org.au>
-References: <20210315163522.589bc67a@canb.auug.org.au>
- <YFD2Y++LQHmWMx68@google.com> <20210317084924.2ba4c3ea@canb.auug.org.au>
-Date:   Tue, 16 Mar 2021 17:09:20 -0600
-Message-ID: <875z1qy9un.fsf@meer.lwn.net>
+        id S229675AbhCPXLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 19:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhCPXLG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 19:11:06 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0E4C06174A;
+        Tue, 16 Mar 2021 16:11:06 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id u7so100443qtq.12;
+        Tue, 16 Mar 2021 16:11:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q/UaZC+XXVUcVdTveyndzmJ58HNMu0OJHwUaCal2y4I=;
+        b=DWIL2oGg7zQM/EYvfmH+wg1SfR48ysllZF1J4pLop4dQhVRrYYZ+27DsrMmrMqfZNk
+         lwIksI+Z9vmnWeE4i2C9m+95ayXZvdr2E5Yt/A/rVBxKZ5iMPFSDVopZFzK17v8xlNta
+         Q1n5CEtyRnvPRClsZ/XS3BLdcRLMzh45zVBoPafx7skLLIOX95CKDTy8JseNCLSiDs9r
+         SGDhYWajiaBY+qYrZ37wZqCRh/dOvxhUBOdyJTiQBRxm+L9f/pMXN6UMwyj10ON4gelV
+         RirPhySNpMVXgzw2y1tGBd1AucsKVn5V7B/S0ERKDL1vR4u18IoMWXvyiYSoi+8x/tSo
+         6reA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q/UaZC+XXVUcVdTveyndzmJ58HNMu0OJHwUaCal2y4I=;
+        b=fcu2G+moP4pR7s9eqGMbdA+aoZYiFIALoGvjHVf0FLw9WZvx2iMZJ0YqzNaD1/sOe2
+         vz8Vcnd2uii76N2ovY9zrEIEQQxWvg0847xgYaRFKT1iZsYAxx6UROaC2qSJ/0NbHG1Y
+         t8/3TJiQ6r1a6/b7+6LBGMrKUQJvnQzO2QOanxDOiWq57X62lP1UcldHeqf5NF4lmo9s
+         MrJUR3baXXpIJ+IZ1j8h2e8c0n1VEqlRhaMu2SopHQzpRSwP0IErkmiLpdGOVU33nYli
+         85SKsadvdDRQO035YZmvmg+UewbkTuQVGjl10oUEb3QB52UZua/D42Gd8kMhUK9o7tnP
+         p8WA==
+X-Gm-Message-State: AOAM531NjIK7UQNuOVCFh41skrv9pxCsE6QyRAXFcTMFGnJJWDp0r5iZ
+        4qqVzvKMEOBmnIl4npaW/WCIDr+Roedydsk/SD0=
+X-Google-Smtp-Source: ABdhPJxBFEdBNeCzBmhwsG1aiJERpTBfwg0fFaw3iI8a5NkF1tW33vYv8sNXVeRPlYiFnXqtWtTHy9R3MmjOrn3/z5c=
+X-Received: by 2002:ac8:544:: with SMTP id c4mr1170921qth.245.1615936265576;
+ Tue, 16 Mar 2021 16:11:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+In-Reply-To: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Wed, 17 Mar 2021 00:10:54 +0100
+Message-ID: <CAFLxGvzWLje+_HFeb+hKNch4U1f5uypVUOuP=QrEPn_JNM+scg@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        James Bottomley <jejb@linux.ibm.com>, kernel@pengutronix.de,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@penutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
+Ahmad,
 
-[Adding Mauro]
-
-> On Tue, 16 Mar 2021 11:18:11 -0700 Minchan Kim <minchan@kernel.org> wrote:
->>
->> On Mon, Mar 15, 2021 at 04:35:22PM +1100, Stephen Rothwell wrote:
->> > Hi all,
->> > 
->> > After merging the akpm-current tree, today's linux-next build (htmldocs)
->> > produced this warning:
->> > 
->> > Documentation/ABI/testing/sysfs-kernel-mm-cma:2: WARNING: Inline interpreted text or phrase reference start-string without end-string.
->> > 
->> > Introduced by commit
->> > 
->> >   439d477342a3 ("mm: cma: support sysfs")
->> >   
->> 
->> Hmm, I don't get it what happened here. Was it false-positive?
+On Tue, Mar 16, 2021 at 6:24 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
 >
-> I get the above from a "make htmldocs" run ... I don't know what causes
-> it, sorry.  [cc'ing Jon]
+> The Cryptographic Acceleration and Assurance Module (CAAM) is an IP core
+> built into many newer i.MX and QorIQ SoCs by NXP.
+>
+> Its blob mechanism can AES encrypt/decrypt user data using a unique
+> never-disclosed device-specific key. There has been multiple
+> discussions on how to represent this within the kernel:
+>
+>  - [RFC] crypto: caam - add red blobifier
+>    Steffen implemented[1] a PoC sysfs driver to start a discussion on how to
+>    best integrate the blob mechanism.
+>    Mimi suggested that it could be used to implement trusted keys.
+>    Trusted keys back then were a TPM-only feature.
+>
+>  - security/keys/secure_key: Adds the secure key support based on CAAM.
+>    Udit added[2] a new "secure" key type with the CAAM as backend. The key
+>    material stays within the kernel only.
+>    Mimi and James agreed that this needs a generic interface, not specific
+>    to CAAM. Mimi suggested trusted keys. Jan noted that this could serve as
+>    basis for TEE-backed keys.
+>
+>  - [RFC] drivers: crypto: caam: key: Add caam_tk key type
+>    Franck added[3] a new "caam_tk" key type based on Udit's work. The key
+>    material stays within the kernel only, but can optionally be user-set
+>    instead of coming from RNG. James voiced the opinion that there should
+>    be just one user-facing generic wrap/unwrap key type with multiple
+>    possible handlers. David suggested trusted keys.
+>
+>  - Introduce TEE based Trusted Keys support
+>    Sumit reworked[4] trusted keys to support multiple possible backends with
+>    one chosen at boot time and added a new TEE backend along with TPM.
+>    This now sits in Jarkko's master branch to be sent out for v5.13
+>
+> This patch series builds on top of Sumit's rework to have the CAAM as yet another
+> trusted key backend.
+>
+> The CAAM bits are based on Steffen's initial patch from 2015. His work had been
+> used in the field for some years now, so I preferred not to deviate too much from it.
+>
+> This series has been tested with dmcrypt[5] on an i.MX6DL.
 
-OK, this took a while to figure out.  The problem is this text in
-sysfs-kernel-mm-cma:
+Do have this series also in a git repo to pull from?
+I'd like to give it a test on various systems.
 
-> 		Each CMA heap subdirectory (that is, each
-> 		/sys/kernel/mm/cma/<cma-heap-name> directory) contains the
-> 		following items:
+> Looking forward to your feedback.
 
-When scripts/get_abi.pl sees the /sys/kernel/mm/... string it wants to
-turn it into a link to the matching ABI entry; at that point, the
-<text in angle brackets> collides with the Sphinx directive and you get
-that totally useless warning.
+Thanks for working on this! David and I will have a closer look these days.
 
-I think this is a bug in get_abi.pl.  Honestly I wonder if all these
-cross-links are needed at all; if they truly are, then we shouldn't be
-making bogus ones.  Mauro, how hard would it be to make this do the
-right thing?
-
+-- 
 Thanks,
-
-jon
+//richard
