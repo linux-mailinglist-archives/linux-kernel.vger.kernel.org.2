@@ -2,157 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8703533CDA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A1333CDA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 06:56:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232141AbhCPFxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 01:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbhCPFwr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:52:47 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8804C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 22:52:47 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id 30so11870852ple.4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Mar 2021 22:52:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Pe69Q5DUzNzxEuJPgJPZ95TpFdLl5kEHOCKbCnUbXHI=;
-        b=zvMkaebn3tc8Ocjfkjmznf/o4FqM5cTQ4GfsFvjx8E8Ba0CrOnfgm5XxJuKGr7b+7v
-         GBM6CSLLFXve5S4VXD8Kw5tTs1QNISGUY71rkHwFXYsBskx7DPXril75dtZd7HmQD9p4
-         S/cfY65iIThKnwtdUbDdPxFkvojmXe9DHkeEX57DocjgQJg1lGYacorxXW/lZeVhC9Jq
-         RqVzDuPzki83xtwYJAQJDp8dgPgOlBwwfoF/t7qXwG/6sUuWbm5fOeUcrlMjwScqPXiH
-         o2Z0RAbIp7TH6WJuvZVX1Y2wZ1XvOJ3U1n9yR0d8tqhuFZLCdfLHrI6ysuaQXgJr8qIJ
-         qdGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Pe69Q5DUzNzxEuJPgJPZ95TpFdLl5kEHOCKbCnUbXHI=;
-        b=NE/wmQzCjvvomOr+AqduTbiecoP2d4r366lfRjazKfzZevftwQh1YmQabUPPb/36tc
-         UD7sghiWbKhfblOUNN5aTN11JcgVHj+7GXjO3Jqs71KJX/nTYzUSMDRKDVNy1RQ3gPPQ
-         sQ2sYWbDEhjjzJvG/HIKkjb6FpL36X68wHmtTN0GtxZDsH74Mug96VgwSPuTddoXfdnd
-         LPuk3Fvcc8feHNSryn5kBcxuJYDRcg9XRWGzINtWoMdb2/RV4NFQ0W+k7hVeMRhIBSK5
-         D9GZQX8URpM9osI2Vww8rBASOOw5CQUD6Zi9EQG5sfEUob7xunoj24zFziIivRG3cPly
-         H9gw==
-X-Gm-Message-State: AOAM53142ht07JL//gUnOXMRRLNZ8D8kmL6LcKQwk2BCA6oTwjALRaAG
-        a7YIS1+8oI9NQxzy0v2tnhwd
-X-Google-Smtp-Source: ABdhPJzsaa7YWAVypSTahZiALp/IK2FzXMbiaxkoMp0PKFHI+/VZn5CZGl6hS4V0desqd1wrN2nHVg==
-X-Received: by 2002:a17:90b:1a89:: with SMTP id ng9mr3111070pjb.36.1615873966899;
-        Mon, 15 Mar 2021 22:52:46 -0700 (PDT)
-Received: from thinkpad ([103.66.79.72])
-        by smtp.gmail.com with ESMTPSA id z18sm4298905pfa.39.2021.03.15.22.52.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 22:52:46 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 11:22:40 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Edgar Bernardi Righi <edgar.righi@lsitec.org.br>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 6/6] clk: actions: Add NIC and ETHERNET clock support for
- Actions S500 SoC
-Message-ID: <20210316055240.GE1798@thinkpad>
-References: <cover.1615221459.git.cristian.ciocaltea@gmail.com>
- <ddafbffafe48fc55bed050728e2ce2610c934e7b.1615221459.git.cristian.ciocaltea@gmail.com>
+        id S231713AbhCPF40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 01:56:26 -0400
+Received: from mail-vi1eur05on2083.outbound.protection.outlook.com ([40.107.21.83]:42496
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229873AbhCPF4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 01:56:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TOiUipaB0vRqukzAcWxDX6wI7Zg58bF0Jt4F2Hee9883mrXYgGF+Q5zchwHCA+83i2v/9XoOyzPOvhym1Hi7ix0dL0MJBV55+oVqKYydotM88Kcs4wntBDAUmI2h9m+RskBeCSveFmKjkso/qwdqd0lZVgKNXFhNbNKVdB29LSvO17JwhVYMdzkHmXHpFQKOlzKMEmo6E0reTdpigFy9AyANUiui1sj8g+kLBnlvqVxmAQPSJYNLGhcDHj8qqHxy1KxzbOrZgvhbi66NGTuCN8t7HueViE0OUAt4OCnhF/Fbkb3Vl0C0if5gJPTRzmpb0zxyfXL5k8KP97lHrJ0eVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GfrZGZ2AD2LLrzUDMvMHTfG0XEqT7tGtoqz1zpltbfU=;
+ b=ijpqtuAP9qhiW3tyoBbex12ROIWphnYg9Kk6Sy4T1SSZhl+1EoxtGSNB1Pqw+RKVty4cYM5bhOK5NvgklmnjVCMrcXwF/CjSyZ8MQB7NWndzHn3mrmpSZbnup0dThV7/FZY6KtDsQGbzJcmwoqzy4rWhksliGDE0iRHL/4kHM4HheV2xqjKmXFm6iVauGsYLd2eAE6347z0Sx5wsTYPVrvEhnbADkuZe2EVpCHsCEKP2HIpiTF/27KBETb+N+Lb6AWZeqKo10ly2DZJR7SYM4M+V1xWk2+j69N02kB2Bi02U2wFqLsMtR87ZQ5k/AF2tfRZQg6UC/RA9Y8H7h+5pTg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GfrZGZ2AD2LLrzUDMvMHTfG0XEqT7tGtoqz1zpltbfU=;
+ b=QTwZlRsuXhQuywVUTvON39H94HEX7I/ENX6r69NQA7A9v6L4AzIST0J8HlEFPUYa/nuFjR/JRIbByx9igWWK+XIGasWNa8C3uZDJlXl0YOT2TWmZYYFyEUy5g3K0q7haTK9tr5v/H85zwZ1LfjCbhd583jx7o7d2FM2OpkrR+4g=
+Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com (2603:10a6:4:96::7)
+ by DB6PR0401MB2534.eurprd04.prod.outlook.com (2603:10a6:4:3c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Tue, 16 Mar
+ 2021 05:56:02 +0000
+Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com
+ ([fe80::c99c:dbc3:ed75:e6e8]) by DB6PR0402MB2758.eurprd04.prod.outlook.com
+ ([fe80::c99c:dbc3:ed75:e6e8%5]) with mapi id 15.20.3933.032; Tue, 16 Mar 2021
+ 05:56:02 +0000
+From:   Kuldeep Singh <kuldeep.singh@nxp.com>
+To:     Pratyush Yadav <p.yadav@ti.com>
+CC:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: [EXT] Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to
+ json schema
+Thread-Topic: [EXT] Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to
+ json schema
+Thread-Index: AQHXGZTp77oN99ywtki2W2/Bm/x6J6qFX34AgAAK43A=
+Date:   Tue, 16 Mar 2021 05:56:02 +0000
+Message-ID: <DB6PR0402MB27581D0E1BB152AEF6DA2BF2E06B9@DB6PR0402MB2758.eurprd04.prod.outlook.com>
+References: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
+ <20210315183051.ugvmz4zqrvuo6iqq@ti.com>
+In-Reply-To: <20210315183051.ugvmz4zqrvuo6iqq@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [223.236.221.34]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 76a88ad7-1f97-4549-e8ba-08d8e8402e38
+x-ms-traffictypediagnostic: DB6PR0401MB2534:
+x-microsoft-antispam-prvs: <DB6PR0401MB2534D6FA4C22C323B462A777E06B9@DB6PR0401MB2534.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Nnwa1Vq5/XZ9JqX6q2nUuUUM2odETdLbvvh0x8HwuenEjhn06IHwgEx17TDcEJH9h9ut2CMgmUW6nfWXweTqeyacpohyMvHAhUo8un37OUHY6uFs5BKVNUlzKkmSsXNTpsxDvRriZQLodVVDs6/4bRQ8Loh1Y/oZtDajuCtbHBPa+bvxR5bvKhGM2QupAjDZ5mvY8Ln3I8aOVTqwviAjk8QHmfDwT6VDn77lc9WFelL09xGL4IyZv3g9Cj9X2E34wtARTMI14TBAdQYbAOzxax0il8r5lmpvhuhvc3wWLX3ICjKZpeHUXTgdVCrneJhvIOJnpt+NxrPkde6LBOSNmFolt6brWejzsMNbpZMNR+v104KjqmydYVr4YbCDvjo0c8fnAvEJaYb5t6LwvN44OTz5zgDbwxrwsEhShjn8N08NOLQqHRChlHJza3jUgcyn1RAqquJF7GBGWGlBTZoBl0nHhKLIV7l7P6mnx4w2WkUm5MV3r2OsPl0BPYBxJXIDb6O26vMRhbJPRiSTs+85PcpodBXEq2XITlLzterdLXe1R3saDWr4N9C4894Wf6U0xcnKlzWuSIYCfqf5ArVr9pRt+otdTNadVvpm8c1DvgVSfJ9uvK1CdzyuRNj0cwvh
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2758.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(346002)(39860400002)(396003)(376002)(83380400001)(478600001)(4326008)(76116006)(66476007)(6916009)(33656002)(44832011)(66556008)(66446008)(66946007)(64756008)(71200400001)(9686003)(55016002)(52536014)(186003)(8936002)(2906002)(8676002)(7696005)(26005)(86362001)(54906003)(966005)(53546011)(6506007)(5660300002)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?/MThq3UhR+d4ai8MFbEYzWhulAYcBedqxR8HJFxEPVSM9uSxHhTVaLWQDCcb?=
+ =?us-ascii?Q?xt9N9+ZV+fPDgcdxfMHMPEfdBnIF7m8J/LiaJzbQmd/w1ZGt6OGtnV2ul0j2?=
+ =?us-ascii?Q?tydXsWXviexMF9m+ihJe8Jq5CGd5BJD/nOAP5hV9lMr5LySQJrZ+HRK5oHUB?=
+ =?us-ascii?Q?mboLludujqhBpYtE1BCUPeMhRvEfgPZXHJ5zTNO1DfTgDI79vIY27QrrnaaS?=
+ =?us-ascii?Q?2agyRrsjeVZALbBJ6GGWsGGALEKrylaxuq97RUHwhHREkxcDYLYPpfocH6/+?=
+ =?us-ascii?Q?4OwzlKDRgIaERh92prjVk21g/+ZE5R+MO8q7A7XhTGWQefrWZL9XxnAo425x?=
+ =?us-ascii?Q?svkq2TCUVV3dWkTWM1TfnmYdubJXJp2XN7OQVMg/rzTBP87VxTG0BqTO7ei4?=
+ =?us-ascii?Q?+BfpDT11fDJo8KbfTagN6ZJ4nUbxglM2E8UBu46qRDwhLHEAsHr5hypuB+9Z?=
+ =?us-ascii?Q?OCeqh1u1Z1b75tHGLeJ/5teLE0vZtAa2VLKBQ0iyu2qLOXZdd7T8jvO06UNS?=
+ =?us-ascii?Q?nQtrc8ZmovOLw0BPtQrWIGDmNKBv3w2vo8VW9fjEYSU50cfhALvsLEk9Tuy9?=
+ =?us-ascii?Q?1XaZ1fFh/nNtQcDVoMW/BlrA0zteodHoqMuB81RRjsgCEECFGYdGGd5m+x2P?=
+ =?us-ascii?Q?1f5WaXmjPUJjniwdvKt7vy5I3Ycn8oNJIdqXxznmC2IULkUomQoZcy/b0Ho4?=
+ =?us-ascii?Q?C+HUEoFJYAti9ASQEeDOvClY+A9IMy0CYNepqJKNC6yn4cn9RnNl4AxEZZ/S?=
+ =?us-ascii?Q?3Knba1TDt8v/+3SbHkYlTfp4BrLKDam5v/Xh5890VExCOKGPw7y4kpqh5hY1?=
+ =?us-ascii?Q?3Qej4ccDauasLDhOFIq8m4RId+e9ogc/CBwXdkb3BEyOKa7DPb7v5ANHOmo+?=
+ =?us-ascii?Q?UWIxUtZB2L5s1jUoETEVfL4jSCQhA5zWZ7EpsIV6gDt2R1C6eq9oyECaAOq8?=
+ =?us-ascii?Q?JZuLobKiqtujKlIufxQ7xMoVCjFtgDjNTmRlVzHEaOeQ2ju98hfgFyU15Pv/?=
+ =?us-ascii?Q?9iAoC8mbilPwnL/UkFUAsdu8WC02Xw8crYd6v8DY+tcmDv6elbTSHswVRmLG?=
+ =?us-ascii?Q?zPtJ/YtjGqcdWhr7v3dlBOnMWVhQgXYnp8op5rs/JsHdCR9j2CQ3zf5lLJZf?=
+ =?us-ascii?Q?ReKrAHBKK9M9r8OnRpj21xM7F7q/un4TLFgLmIeizp8lYIDznp9xZDKp0R8W?=
+ =?us-ascii?Q?xElhN2aBbjbTpDtLuawL+RXJKMKL0Fw1M6wZMfIVzz/Z6+bjCwFsBQbGFj0v?=
+ =?us-ascii?Q?NK5sgUe0qK4EV1R42dLt1TbdCvCdIuIO/73B+5JHSYrxFFwliYuTrCI9jt4/?=
+ =?us-ascii?Q?rXo=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ddafbffafe48fc55bed050728e2ce2610c934e7b.1615221459.git.cristian.ciocaltea@gmail.com>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2758.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 76a88ad7-1f97-4549-e8ba-08d8e8402e38
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2021 05:56:02.2758
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lSU60ktRDeDatG1LHNTf/97DCKqO4CYS7n4IkYQ36zhFYB98gWRuy08n1uoveIXs7ij+ywx5HRwSU4Uz4ah4sA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0401MB2534
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 07:18:31PM +0200, Cristian Ciocaltea wrote:
-> Add support for the missing NIC and ETHERNET clocks in the Actions Semi
-> Owl S500 SoC clock driver.
-> 
-> Additionally, change APB clock parent from AHB to the newly added NIC.
-> 
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> ---
->  drivers/clk/actions/owl-s500.c | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
-> index b9e434173b4f..0ccc9619b302 100644
-> --- a/drivers/clk/actions/owl-s500.c
-> +++ b/drivers/clk/actions/owl-s500.c
-> @@ -112,6 +112,7 @@ static const char * const bisp_clk_mux_p[] = { "display_pll_clk", "dev_clk" };
->  static const char * const sensor_clk_mux_p[] = { "hosc", "bisp_clk" };
->  static const char * const sd_clk_mux_p[] = { "dev_clk", "nand_pll_clk" };
->  static const char * const pwm_clk_mux_p[] = { "losc", "hosc" };
-> +static const char * const nic_clk_mux_p[] = { "dev_clk", "display_pll_clk", "nand_pll_clk", "ddr_pll_clk" };
+> -----Original Message-----
+> From: Pratyush Yadav <p.yadav@ti.com>
+> Sent: Tuesday, March 16, 2021 12:01 AM
+> To: Kuldeep Singh <kuldeep.singh@nxp.com>
+> Cc: linux-spi@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org; Mark Brown <broonie@kernel.org>; Rob Herring
+> <robh+dt@kernel.org>; Vladimir Oltean <olteanv@gmail.com>; linux-
+> mtd@lists.infradead.org
+> Subject: [EXT] Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to js=
+on schema
+>=20
+> Caution: EXT Email
+>=20
+> +Cc mtd list
+>=20
+> Hi,
+>=20
+> On 15/03/21 05:45PM, Kuldeep Singh wrote:
+> > Convert the Freescale DSPI binding to DT schema format using json-schem=
+a.
+> >
+> > Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+> > ---
+> > Hi Rob,
+> > This patch is checked with following commands with no warnings observed=
+.
+> > make distclean; make allmodconfig;
+> > make dt_binding_check
+> > DT_SCHEMA_FILES=3DDocumentation/devicetree/bindings/spi/fsl,spi-fsl-dsp=
+i
+> > .yaml; make dtbs_check
+> > DT_SCHEMA_FILES=3DDocumentation/devicetree/bindings/spi/fsl,spi-fsl-dsp=
+i
+> > .yaml
+>=20
+> When I add the "fsl,spi-cs-sck-delay" property under the flash@0 node in =
+the
+> example and run dt_binding_check, I see the below error:
+>=20
+>   /home/pratyush/src/linux/Documentation/devicetree/bindings/spi/fsl,spi-=
+fsl-
+> dspi.example.dt.yaml: flash@0: 'fsl,spi-cs-sck-delay' does not match any =
+of the
+> regexes: '^partition@', 'pinctrl-[0-9]+'
+>      From schema:
+> /home/pratyush/src/lin/Documentation/devicetree/bindings/mtd/jedec,spi-
+> nor.yaml
 
-As per the reg field order, this should come after "ahbprediv_clk_mux_p"
+Hi Pratyush,
 
-Rest looks good.
+Thanks for mentioning, I just noticed the same error after adding fsl,spi-c=
+s-sck-delay property.
+Since my example is not using the property, the error went unnoticed.
 
-Thanks,
-Mani
+Taking example of nvidia qspi bindings i.e=20
+https://lore.kernel.org/linux-devicetree/1608585459-17250-3-git-send-email-=
+skomatineni@nvidia.com/
 
->  static const char * const ahbprediv_clk_mux_p[] = { "dev_clk", "display_pll_clk", "nand_pll_clk", "ddr_pll_clk" };
->  static const char * const uart_clk_mux_p[] = { "hosc", "dev_pll_clk" };
->  static const char * const de_clk_mux_p[] = { "display_pll_clk", "dev_clk" };
-> @@ -197,7 +198,7 @@ static OWL_GATE(hdmi_clk, "hdmi_clk", "hosc", CMU_DEVCLKEN1, 3, 0, 0);
->  
->  /* divider clocks */
->  static OWL_DIVIDER(h_clk, "h_clk", "ahbprediv_clk", CMU_BUSCLK1, 2, 2, h_div_table, 0, 0);
-> -static OWL_DIVIDER(apb_clk, "apb_clk", "ahb_clk", CMU_BUSCLK1, 14, 2, NULL, 0, 0);
-> +static OWL_DIVIDER(apb_clk, "apb_clk", "nic_clk", CMU_BUSCLK1, 14, 2, NULL, 0, 0);
->  static OWL_DIVIDER(rmii_ref_clk, "rmii_ref_clk", "ethernet_pll_clk", CMU_ETHERNETPLL, 1, 1, rmii_ref_div_table, 0, 0);
->  
->  /* factor clocks */
-> @@ -205,6 +206,12 @@ static OWL_FACTOR(de1_clk, "de_clk1", "de_clk", CMU_DECLK, 0, 4, de_factor_table
->  static OWL_FACTOR(de2_clk, "de_clk2", "de_clk", CMU_DECLK, 4, 4, de_factor_table, 0, 0);
->  
->  /* composite clocks */
-> +static OWL_COMP_DIV(nic_clk, "nic_clk", nic_clk_mux_p,
-> +			OWL_MUX_HW(CMU_BUSCLK1, 4, 3),
-> +			{ 0 },
-> +			OWL_DIVIDER_HW(CMU_BUSCLK1, 16, 2, 0, NULL),
-> +			0);
-> +
->  static OWL_COMP_DIV(ahbprediv_clk, "ahbprediv_clk", ahbprediv_clk_mux_p,
->  			OWL_MUX_HW(CMU_BUSCLK1, 8, 3),
->  			{ 0 },
-> @@ -320,6 +327,10 @@ static OWL_COMP_FIXED_FACTOR(i2c3_clk, "i2c3_clk", "ethernet_pll_clk",
->  			OWL_GATE_HW(CMU_DEVCLKEN1, 31, 0),
->  			1, 5, 0);
->  
-> +static OWL_COMP_FIXED_FACTOR(ethernet_clk, "ethernet_clk", "ethernet_pll_clk",
-> +			OWL_GATE_HW(CMU_DEVCLKEN1, 22, 0),
-> +			1, 20, 0);
-> +
->  static OWL_COMP_DIV(uart0_clk, "uart0_clk", uart_clk_mux_p,
->  			OWL_MUX_HW(CMU_UART0CLK, 16, 1),
->  			OWL_GATE_HW(CMU_DEVCLKEN1, 6, 0),
-> @@ -454,6 +465,8 @@ static struct owl_clk_common *s500_clks[] = {
->  	&apb_clk.common,
->  	&dmac_clk.common,
->  	&gpio_clk.common,
-> +	&nic_clk.common,
-> +	&ethernet_clk.common,
->  };
->  
->  static struct clk_hw_onecell_data s500_hw_clks = {
-> @@ -513,6 +526,8 @@ static struct clk_hw_onecell_data s500_hw_clks = {
->  		[CLK_APB]		= &apb_clk.common.hw,
->  		[CLK_DMAC]		= &dmac_clk.common.hw,
->  		[CLK_GPIO]		= &gpio_clk.common.hw,
-> +		[CLK_NIC]		= &nic_clk.common.hw,
-> +		[CLK_ETHERNET]		= &ethernet_clk.common.hw,
->  	},
->  	.num = CLK_NR_CLKS,
->  };
-> -- 
-> 2.30.1
-> 
+I constructed other properties in similar fashion and later noticed that
+example in nvidia bindings uses compatibes as "spi-nor" instead of "jedec,s=
+pi-nor"
+and therefore passes "make dt_binding_check".
+
+> I am trying to solve a similar problem for the Cadence QSPI controller bi=
+nding and
+> I wonder what the best solution for this is. The obvious one would be to =
+add
+> these properties to jedec,spi-nor.yaml. I haven't managed to come up with=
+ any
+> other solution to this problem.
+
+I agree with the solution to add properties in jedec,spi-nor.yaml and addin=
+g properties
+particular to specific controllers for flashes in generic jedec,spi-nor.yam=
+l may not be
+a good solution though. Please let me know your views.
+
+Other approach is to add these properties in same binding itself (if possib=
+le) so as=20
+to limit the scope of these properties. Looking forward for more suggestion=
+s.
+
+Regards
+Kuldeep
