@@ -2,133 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD0533DED7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:33:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7843B33DED4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 21:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231238AbhCPUdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 16:33:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46180 "EHLO
+        id S231168AbhCPUdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 16:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbhCPUc7 (ORCPT
+        with ESMTP id S229535AbhCPUce (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 16:32:59 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE58DC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 13:32:58 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7CCEAD8B;
-        Tue, 16 Mar 2021 21:32:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615926776;
-        bh=k8tM2NOiK7JhC0RBT3aIvWY7N+SOv2q0Ygeh8ZxmVgg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qZTzTvYeM+dB5B60dksSpa+fn2RM+0k4ySkkysvbX+Tv8Qy/f9uzFIG+wqFIGGVpd
-         TEPzHoJu9vDzN2aVAvvKjqOzgQaD0jA177OSiT3JJfXs7s6Qp2R1697Mt5KfSfoDwq
-         +Bv2Jd6lpWoTfVv45j2RH/OOYwdCb3USFDETF+Os=
-Date:   Tue, 16 Mar 2021 22:32:21 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     quanyang.wang@windriver.com
-Cc:     Hyun Kwon <hyun.kwon@xilinx.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Michal Simek <michal.simek@xilinx.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm: xlnx: call pm_runtime_get_sync before setting pixel
- clock
-Message-ID: <YFEV1ehZfivgBoKn@pendragon.ideasonboard.com>
-References: <20210310045945.3034364-1-quanyang.wang@windriver.com>
+        Tue, 16 Mar 2021 16:32:34 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994F5C06174A;
+        Tue, 16 Mar 2021 13:32:33 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1lMGMb-00H4jl-H3; Tue, 16 Mar 2021 21:32:25 +0100
+Message-ID: <8a5845b49b6dc03b8d6f8fe9915034178be992ae.camel@sipsolutions.net>
+Subject: Re: [PATCH] net: wireless: search and hold bss in
+ cfg80211_connect_done
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Abhishek Kumar <kuabhs@chromium.org>
+Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        briannorris@chromium.org, linux-wireless@vger.kernel.org
+Date:   Tue, 16 Mar 2021 21:32:24 +0100
+In-Reply-To: <20210316192919.1.I26d48d8a4d06ef9bd2b57f857c58ae681cc33783@changeid> (sfid-20210316_203101_193722_2D56E503)
+References: <20210316192919.1.I26d48d8a4d06ef9bd2b57f857c58ae681cc33783@changeid>
+         (sfid-20210316_203101_193722_2D56E503)
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210310045945.3034364-1-quanyang.wang@windriver.com>
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quanyang,
+On Tue, 2021-03-16 at 19:29 +0000, Abhishek Kumar wrote:
+> If BSS instance is not provided in __cfg80211_connect_result then
+> a get bss is performed. This can return NULL if the BSS for the
+> given SSID is expired due to delayed scheduling of connect result event
+> in rdev->event_work. This can cause WARN_ON(!cr->bss) in
+> __cfg80211_connect_result to be triggered and cause cascading
+> failures. To mitigate this, initiate a get bss call in
+> cfg80211_connect_done itself and hold it to ensure that the BSS
+> instance does not get expired.
 
-Thank you for the patch.
+I'm not sure I see the value in this.
 
-On Wed, Mar 10, 2021 at 12:59:45PM +0800, quanyang.wang@windriver.com wrote:
-> From: Quanyang Wang <quanyang.wang@windriver.com>
-> 
-> The Runtime PM subsystem will force the device "fd4a0000.zynqmp-display"
-> to enter suspend state while booting if the following conditions are met:
-> - the usage counter is zero (pm_runtime_get_sync hasn't been called yet)
-> - no 'active' children (no zynqmp-dp-snd-xx node under dpsub node)
-> - no other device in the same power domain (dpdma node has no
-> 		"power-domains = <&zynqmp_firmware PD_DP>" property)
-> 
-> So there is a scenario as below:
-> 1) DP device enters suspend state   <- call zynqmp_gpd_power_off
-> 2) zynqmp_disp_crtc_setup_clock	    <- configurate register VPLL_FRAC_CFG
-> 3) pm_runtime_get_sync		    <- call zynqmp_gpd_power_on and clear previous
-> 				       VPLL_FRAC_CFG configuration
-> 4) clk_prepare_enable(disp->pclk)   <- enable failed since VPLL_FRAC_CFG
-> 				       configuration is corrupted
-> 
-> From above, we can see that pm_runtime_get_sync may clear register
-> VPLL_FRAC_CFG configuration and result the failure of clk enabling.
-> Putting pm_runtime_get_sync at the very beginning of the function
-> zynqmp_disp_crtc_atomic_enable can resolve this issue.
+You're basically picking a slightly earlier point in time where cfg80211
+might know about the BSS entry still, so you're really just making the
+problem window a few microseconds or perhaps milliseconds (whatever ends
+up being the worker delay) shorter.
 
-Isn't this an issue in the firmware though, which shouldn't clear the
-previous VPLLF_FRAC_CFG ?
+Compared to the 30s entry lifetime, that's nothing.
 
-> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+So what's the point? Please fix the driver instead to actually hold on
+to it and report it back.
 
-Nonetheless, this change looks good to me, I actually had the same patch
-in my tree while investigation issues related to the clock rate, so
+johannes
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Tested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-I was hoping it would solve the issue I'm experiencing with the DP
-clock, but that's not the case :-( In a nutshell, when the DP is first
-started, the clock frequency is incorrect. The following quick & dirty
-patch fixes the problem:
-
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-index 74ac0a064eb5..fdbe1b0640aa 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-+++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-@@ -1439,6 +1439,10 @@ zynqmp_disp_crtc_atomic_enable(struct drm_crtc *crtc,
-
- 	pm_runtime_get_sync(disp->dev);
-
-+	ret = clk_prepare_enable(disp->pclk);
-+	if (!ret)
-+		clk_disable_unprepare(disp->pclk);
-+
- 	zynqmp_disp_crtc_setup_clock(crtc, adjusted_mode);
-
- 	ret = clk_prepare_enable(disp->pclk);
-
-The problem doesn't seem to be in the kernel, but on the TF-A or PMU
-firmware side. Have you experienced this by any chance ?
-
-> ---
->  drivers/gpu/drm/xlnx/zynqmp_disp.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> index 148add0ca1d6..909e6c265406 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> @@ -1445,9 +1445,10 @@ zynqmp_disp_crtc_atomic_enable(struct drm_crtc *crtc,
->  	struct drm_display_mode *adjusted_mode = &crtc->state->adjusted_mode;
->  	int ret, vrefresh;
->  
-> +	pm_runtime_get_sync(disp->dev);
-> +
->  	zynqmp_disp_crtc_setup_clock(crtc, adjusted_mode);
->  
-> -	pm_runtime_get_sync(disp->dev);
->  	ret = clk_prepare_enable(disp->pclk);
->  	if (ret) {
->  		dev_err(disp->dev, "failed to enable a pixel clock\n");
-
--- 
-Regards,
-
-Laurent Pinchart
