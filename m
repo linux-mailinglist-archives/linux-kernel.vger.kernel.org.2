@@ -2,80 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B10233E20F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:25:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8155433E215
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:27:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbhCPXYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 19:24:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55330 "EHLO
+        id S229491AbhCPX0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 19:26:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbhCPXYT (ORCPT
+        with ESMTP id S229548AbhCPX0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 19:24:19 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7897C06174A;
-        Tue, 16 Mar 2021 16:24:18 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id r17so74933448ejy.13;
-        Tue, 16 Mar 2021 16:24:18 -0700 (PDT)
+        Tue, 16 Mar 2021 19:26:19 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4451C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 16:26:19 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so2192889pjh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 16:26:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=9OOhgWbqr67LfYXMSnmxTKZM8wBTW3XFbMhBmmpGoQY=;
-        b=fYkXsmAGvfeWQg39peggYjDSvx+cD8AScd8R2/tIT0BouooMtLsMsmZsTe92jffS4I
-         tFiIIeSxS80hnjMLfPEFxFu7Gou4g9gNvla2861KYAsgOLSvth13jT0VBQub/5PMxLah
-         fusCTc+UplJAC5mSlt4XUfi6CJxejywkqL0Vzk/IuKMDXk9uG5CmPp0uhRVg6pWbi3C7
-         EUPfnRhXWdoe6js9lIaDvjRG0VQgW9QKqEfhbOfdFc7ArExpnWd3uJwGyRxkcxv0Arlq
-         QPdGvgmCC7b+sWgeHxXLqE4yt9M4jGtZXNAdJtI+io+yFSPjFMZPUMctEBtYDkDSJC1t
-         jt3g==
+        bh=w5QajIxS6y5Fi0iTPRAGrD8S6mOwAPT15FoB2waGPFM=;
+        b=FzPs1avgRjsFZ3d35srKz+eBOPtuhZPWPiqY8vX4CiI+UonDB4LwUENMF1EWSIYIOS
+         57SgIkt4SgO4qJ5h+GZBUaY/AWZld2KW49mvMOi5iTScTH9ojaR4ieyLJIgbJLatef46
+         zCepIuqzZRDAbX/HbgGNRErpChZRZ8jjiDmC0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=9OOhgWbqr67LfYXMSnmxTKZM8wBTW3XFbMhBmmpGoQY=;
-        b=ha5Gi8qYdYJ4b4S5S4/xx5/RvtmLLFK1jpfnBs4cOAntqhvh04nqw8ptezcS3aKxpX
-         GzFjWAAwfvK73u71iI1pK1Y51Zz0L96m1m8hNrXfIG5FOLdPchG+5vPLnarVNpmPi3hB
-         p7XiOEaQY06lMDR5a5dQUn9SSP+8QM+50+ljZ6EgOnOqT+iAjXmJpZS7oAKbI1QUTdMd
-         xIrJ0NFBPdxl5J2lwM62voE3mX2ivzAUCZL9K+hW/zItOGHBI91kcWelzYUQB8oKKOts
-         egOWVTZYjfLeEmlUjUJuL8I5LvcR4ndxu6rC+KimJHAnIs6xtOghdfPq7XkWGufj6EYj
-         nFAQ==
-X-Gm-Message-State: AOAM5305uAkEbZwOyujjG3Wr2iL+pWPJElbI2OvplOsKnS4cEO8DJz1F
-        oMG6SAhSvBSC/1ZslqdhDRUayekVXAw=
-X-Google-Smtp-Source: ABdhPJxQplHzZrrW6AwrRpcgJ12DXKFWvCJrDgBEXPq2GslgDUTFanpGZwtWHadJVhA+yeERc8eXjg==
-X-Received: by 2002:a17:906:8043:: with SMTP id x3mr31743039ejw.149.1615937057480;
-        Tue, 16 Mar 2021 16:24:17 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id q16sm4114347edv.61.2021.03.16.16.24.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 16:24:17 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 01:24:16 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, vladimir.oltean@nxp.com,
-        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
-        andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 3/3] net: ocelot: Remove ocelot_xfh_get_cpuq
-Message-ID: <20210316232416.nlam67bweyfokr6o@skbuf>
-References: <20210316201019.3081237-1-horatiu.vultur@microchip.com>
- <20210316201019.3081237-4-horatiu.vultur@microchip.com>
+        bh=w5QajIxS6y5Fi0iTPRAGrD8S6mOwAPT15FoB2waGPFM=;
+        b=WxXmqp+eEUTTZnLRXZJGcrRzCFinBbX+QP/cOhopNjwSerh076OJD1moNkZuaX8IMD
+         u6Nffdz2DEQqax+UKHb6aoFnISSbs7g2g5WarZ/NNs7Njc1tEC5XC7kf0arYE2mUkSVn
+         R3Uj0TXqDM6GR5olwVzc5XBGR+C1hKw7FlAKnVMpQffEoppvDwOJvdK//i1BxJk3tiJP
+         fOUU7hzvk1Cv5R7+RZOWQGIE8b4bYYlvtryCpnwVdzadpLlkReFwOKY8G9/nqwCEZPQr
+         zSiEsJRR+LuTR3ormuxg27VqjTIug80JmCV4NlrMzCLejoTyzq2FEt+b1PIpAkcTqOfn
+         8nPQ==
+X-Gm-Message-State: AOAM532oVuezLG80dmKVV+IDOvf5MWnhX2uF8AP30LLBoZ1xMd+YkRM3
+        gnFE71B0LYhS7XuplwKpr2eg3Q==
+X-Google-Smtp-Source: ABdhPJzA1Ew/ucDvRg38/OJGbarhjjqP83rSwho6aOC3HYRd5w679AuzfHyi8xZpQhflL2/8N0zgFA==
+X-Received: by 2002:a17:90a:b63:: with SMTP id 90mr1424994pjq.124.1615937179059;
+        Tue, 16 Mar 2021 16:26:19 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:b471:7d:bf21:d7dd])
+        by smtp.gmail.com with UTF8SMTPSA id v7sm17515668pfv.93.2021.03.16.16.26.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 16:26:18 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 16:26:16 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, rnayak@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org,
+        David Collins <collinsd@codeaurora.org>
+Subject: Re: [PATCH V2 3/5] arm64: dts: qcom: sc7280: Add RPMh regulators for
+ sc7280-idp
+Message-ID: <YFE+mC0dP0atFA8A@google.com>
+References: <1615816454-1733-1-git-send-email-skakit@codeaurora.org>
+ <1615816454-1733-4-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210316201019.3081237-4-horatiu.vultur@microchip.com>
+In-Reply-To: <1615816454-1733-4-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 09:10:19PM +0100, Horatiu Vultur wrote:
-> Now when extracting frames from CPU the cpuq is not used anymore so
-> remove it.
+On Mon, Mar 15, 2021 at 07:24:12PM +0530, satya priya wrote:
+> Add regulator devices for SC7280 as RPMh regulators. This ensures
+> that consumers are able to modify the physical state of PMIC
+> regulators.
 > 
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> Signed-off-by: satya priya <skakit@codeaurora.org>
 > ---
+> Changes in V2:
+>  - Corrected the indentation for "compatible" and "qcom,pmic-id" under
+>    pm8350c-regulators as per Konrad's comment.
+> 
+>  arch/arm64/boot/dts/qcom/sc7280-idp.dts | 212 ++++++++++++++++++++++++++++++++
+>  1 file changed, 212 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> index 428f863..78effe5 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> @@ -22,6 +22,218 @@
+>  	};
+>  };
+>  
+> +&apps_rsc {
+> +	pm7325-regulators {
+> +		compatible = "qcom,pm7325-rpmh-regulators";
+> +		qcom,pmic-id = "b";
+> +
+> +		vreg_s1b_1p8: smps1 {
+> +			regulator-min-microvolt = <1856000>;
 
-OCELOT_MRP_CPUQ should have disappeared too. Doesn't matter too much
-though.
+For most LDOs their 'Active minimum voltage' is specified as their
+minimum, however for S1B and S8B it's the 'Nominal voltage. Is that
+intentional?
 
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+There might be a misunderstanding on my side what the values in the
+datasheet actually mean, see my comment at the end.
+
+> +			regulator-max-microvolt = <2040000>;
+> +		};
+> +
+> +		vreg_s7b_0p9: smps7 {
+> +			regulator-min-microvolt = <535000>;
+
+According to the datasheet the minimum voltage of the S7B regulator
+is 904 mV.
+
+> +			regulator-max-microvolt = <1120000>;
+> +		};
+> +
+> +		vreg_s8b_1p2: smps8 {
+> +			regulator-min-microvolt = <1256000>;
+> +			regulator-max-microvolt = <1500000>;
+> +		};
+> +
+> +		vreg_l1b_0p8: ldo1 {
+> +			regulator-min-microvolt = <825000>;
+> +			regulator-max-microvolt = <925000>;
+> +		};
+> +
+> +		vreg_l2b_3p0: ldo2 {
+> +			regulator-min-microvolt = <2700000>;
+> +			regulator-max-microvolt = <3544000>;
+> +		};
+
+Another question that came up for sc7180-trogdor regulators,
+whose core regulator config was derived from sc7180-idp: the
+label suggests that this regulator is supposed to supply 3V,
+however the range spans from 2.7 to 3.54V. Shouldn't it be
+narrower around 3V? Same for other some regulators.
+
+> +
+> +		vreg_l6b_1p2: ldo6 {
+> +			regulator-min-microvolt = <1140000>;
+
+The datasheet says the minimum for L6B is 1.2V.
+
+> +			regulator-max-microvolt = <1260000>;
+> +		};
+> +
+> +		vreg_l7b_2p9: ldo7 {
+> +			regulator-min-microvolt = <2960000>;
+> +			regulator-max-microvolt = <2960000>;
+> +		};
+
+This regulator has a fixed voltage in difference to the others, why
+is that?
+
+> +
+> +		vreg_l8b_0p9: ldo8 {
+> +			regulator-min-microvolt = <870000>;
+> +			regulator-max-microvolt = <970000>;
+> +		};
+> +
+> +		vreg_l9b_1p2: ldo9 {
+> +			regulator-min-microvolt = <1080000>;
+> +			regulator-max-microvolt = <1304000>;
+> +		};
+> +
+> +		vreg_l11b_1p7: ldo11 {
+> +			regulator-min-microvolt = <1504000>;
+
+The datasheet says the mininum voltage for L11B is 1.776V.
+
+> +			regulator-max-microvolt = <2000000>;
+> +		};
+> +
+> +		vreg_l12b_0p8: ldo12 {
+> +			regulator-min-microvolt = <751000>;
+> +			regulator-max-microvolt = <824000>;
+> +		};
+> +
+> +		vreg_l13b_0p8: ldo13 {
+> +			regulator-min-microvolt = <530000>;
+> +			regulator-max-microvolt = <824000>;
+
+The max for L13B is 880mV, is this a copy and paste from L12B?
+
+> +		};
+> +
+> +		vreg_l14b_1p2: ldo14 {
+> +			regulator-min-microvolt = <1080000>;
+
+The datasheet says the mininum voltage for L14B is 1.2V.
+
+> +			regulator-max-microvolt = <1304000>;
+> +		};
+> +
+> +		vreg_l15b_0p8: ldo15 {
+> +			regulator-min-microvolt = <765000>;
+> +			regulator-max-microvolt = <1020000>;
+> +		};
+> +
+> +		vreg_l16b_1p2: ldo16 {
+> +			regulator-min-microvolt = <1100000>;
+
+The datasheet says the mininum voltage for L16B is 1.2V.
+
+> +			regulator-max-microvolt = <1300000>;
+> +		};
+> +
+> +		vreg_l17b_1p8: ldo17 {
+> +			regulator-min-microvolt = <1700000>;
+
+The datasheet says the mininum voltage for L17B is 1.8V.
+
+> +			regulator-max-microvolt = <1900000>;
+> +		};
+> +
+> +		vreg_l18b_1p8: ldo18 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <2000000>;
+> +		};
+> +
+> +		vreg_l19b_1p8: ldo19 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <1800000>;
+
+Is a fixed voltage intentional here?
+
+> +		};
+> +	};
+> +
+> +	pm8350c-regulators {
+> +		compatible = "qcom,pm8350c-rpmh-regulators";
+
+I can't find the datasheet for this chip, skipping this part.
+
+
+> +	pmr735a-regulators {
+> +		compatible = "qcom,pmr735a-rpmh-regulators";
+> +		qcom,pmic-id = "e";
+> +
+> +		vreg_l2e_1p2: ldo2 {
+> +			regulator-min-microvolt = <1200000>;
+> +			regulator-max-microvolt = <1200000>;
+> +		};
+> +
+> +		vreg_l3e_0p9: ldo3 {
+> +			regulator-min-microvolt = <912000>;
+> +			regulator-max-microvolt = <1020000>;
+
+According to the datasheet min and max for L3E is 1.2V. The
+datasheet lists different voltages for 'SM8350 lineup' and
+'SM8xyz' lineup though, does that mean that the voltages
+aren't limitations of what the regulators can provide but
+what their consumers support?
+
+There are also deltas for the remaining regulators, but now
+I'm in doubt about what the info in the datasheet actually
+means.
+
+> +		};
+> +
+> +		vreg_l4e_1p7: ldo4 {
+> +			regulator-min-microvolt = <1776000>;
+> +			regulator-max-microvolt = <1890000>;
+> +		};
+> +
+> +		vreg_l5e_0p8: ldo5 {
+> +			regulator-min-microvolt = <800000>;
+> +			regulator-max-microvolt = <800000>;
+> +		};
+> +
+> +		vreg_l6e_0p8: ldo6 {
+> +			regulator-min-microvolt = <480000>;
+> +			regulator-max-microvolt = <904000>;
+> +		};
+> +	};
+> +};
+> +
+>  &qupv3_id_0 {
+>  	status = "okay";
+>  };
