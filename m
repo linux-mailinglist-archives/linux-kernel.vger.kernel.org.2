@@ -2,152 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5425A33D312
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5628333D314
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234880AbhCPLaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:30:05 -0400
-Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:45651 "EHLO
-        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234636AbhCPL3p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:29:45 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id M7tJl1XkZ4ywlM7tNlAko9; Tue, 16 Mar 2021 12:29:41 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1615894181; bh=jKrzBut6DNXk6+ZmMihSkMyQ7s1INSFwS5dGdAbNyU4=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=THmDfPkFI4c6vEpv22okVMy7WRImNsdTGGbuhHQCs48/sDDG6RcOKSPUJHPaI/z4Y
-         NZLdVN7Quo+HH35JIp0WocIWtX2rIHgce+Jme7HF6f7ey9GFxImYBDdKcZDDGwcOot
-         opiUQ3zTMT7fcWflEOd+pmLwYGaG8x8Cj7J7+uaIHvsPMzaCWqxdWjaAERDGEZxr/K
-         cwhNRSE+JH1tbT0RUv9fYzPlsIS4joSHtaonBupXTT0sGv9jra605D02asdCkYEbBq
-         Bp1DvT9SiOQFmqa5TYnVToQOeaYOwuSLo5TAsicB5Y3/NfUHbclLBTSXxZ7pvvZ/Qw
-         xUQ7Ukt8I2UdA==
-Subject: Re: [PATCH v4 11/11] uvc: use vb2 ioctl and fop helpers
-To:     Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>
-References: <20210315173609.1547857-1-ribalda@chromium.org>
- <20210315173609.1547857-12-ribalda@chromium.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <286aaafa-549a-6728-dc76-8ab2b1e6c581@xs4all.nl>
-Date:   Tue, 16 Mar 2021 12:29:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        id S234614AbhCPLbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:31:04 -0400
+Received: from mga11.intel.com ([192.55.52.93]:39090 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237164AbhCPLap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 07:30:45 -0400
+IronPort-SDR: JM9nifR9OtbHBmSIjSUbtyxD+FVqgzDjZUPfaATNv7QEVjIz6tUBMv3A8F5L+Orf1+MUGUenhk
+ Z7XJHF3vWa1A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="185880954"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="185880954"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 04:30:42 -0700
+IronPort-SDR: ZVKwbcwwsCKJONUcPCa4daCsOEKrNpj90LeDkeI6p0fo4fqZPVJkeRmwWtGkiJNqcvfLw0aNq4
+ 0K0Q5Qrpf2ew==
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
+   d="scan'208";a="522473255"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 04:30:39 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1lM7uG-00CwGT-S5; Tue, 16 Mar 2021 13:30:36 +0200
+Date:   Tue, 16 Mar 2021 13:30:36 +0200
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Claudius Heine <ch@denx.de>
+Cc:     johannes hahn <johannes-hahn@siemens.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        werner zeh <werner.zeh@siemens.com>,
+        henning schild <henning.schild@siemens.com>,
+        martin mantel <martin.mantel@siemens.com>,
+        val krutov <val.krutov@erd.epson.com>
+Subject: Re: [PATCH v3 1/1] rtc: rx6110: add ACPI bindings to I2C
+Message-ID: <YFCW3Kx9MPm0MT8H@smile.fi.intel.com>
+References: <AM0PR10MB25801B7DCB6C1856B5D4F2C09FE10@AM0PR10MB2580.EURPRD10.PROD.OUTLOOK.COM>
+ <20210316100805.2630481-2-ch@denx.de>
 MIME-Version: 1.0
-In-Reply-To: <20210315173609.1547857-12-ribalda@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfLCqxChpxEFxZqVLYcP49M+6q1yKHlAHKFXV4CWShQ7RxRuoqlVPYv+G3Hi25GJ9p0KtW7paRL/eEs6+iwJ4liT0nJJTWtF0j9FL1Wp+0qK9RN35+nAh
- 5G/TPB8Ws5VFLAYagdmf5IBkNs7Anx0fm/XCCmu/JwG12SharXsI2gD5Hqf36e7S6lvdiPx7sToVus/bglS7+95QyJUylTTC9rJ9xQi2hHQbg0kXxgmzHIRG
- +P3uzbDGvjXsTPMN7Jj4cwjkGTaYSTCaY2Vceg9fozq2tmZw82UdPCJFuzP39mwVALcygXfu67PixjYcI8PiaKrwoT9/T6hU1w6d2vxDgMxuXBBOy9rSqkSq
- oIbRITlxpvpECc/qyiNFCaapuMZryy9ZpwnY9c/nZpZ9aCIHKNamUHmH8p5NPzKhQXkwOjpa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316100805.2630481-2-ch@denx.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
-
-On 15/03/2021 18:36, Ricardo Ribalda wrote:
-> From: Hans Verkuil <hverkuil@xs4all.nl>
+On Tue, Mar 16, 2021 at 11:08:05AM +0100, Claudius Heine wrote:
+> From: Johannes Hahn <johannes-hahn@siemens.com>
 > 
-> When uvc was written the vb2 ioctl and file operation helpers didn't exist.
+> This allows the RX6110 driver to be automatically assigned to the right
+> device on the I2C bus.
+
+Thanks for all effort!
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+after addressing the below comments.
+
+> Signed-off-by: Johannes Hahn <johannes-hahn@siemens.com>
+> Signed-off-by: Claudius Heine <ch@denx.de>
+
+> Signed-off-by: Henning Schild <henning.schild@siemens.com>
+
+I think this is somehow confusing. Either you need to add Co-developed-by of
+the corresponding people, or remove SoB (because of From line), i.o.w seems
+like Co-dB tag is needed for Johannes or you and something should be done with
+Henning's SoB.
+
+> ---
+>  drivers/rtc/rtc-rx6110.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 > 
-> This patch switches uvc over to those helpers, which removes a lot of boilerplate
-> code and simplifies VIDIOC_G/S_PRIORITY handling and allows us to drop the
-> 'privileges' scheme, since that's now handled inside the vb2 helpers.
+> diff --git a/drivers/rtc/rtc-rx6110.c b/drivers/rtc/rtc-rx6110.c
+> index 79161d4c6ce4..29bd697f82cb 100644
+> --- a/drivers/rtc/rtc-rx6110.c
+> +++ b/drivers/rtc/rtc-rx6110.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/of_gpio.h>
+>  #include <linux/regmap.h>
+>  #include <linux/rtc.h>
+
+> +#include <linux/acpi.h>
+
+Usually it's not needed if you leave IDs always to be compiled.
+Instead mod_devicetable.h is used. But it's all up to you and maintainer.
+
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+>  #include <linux/spi/spi.h>
+> @@ -447,6 +448,14 @@ static int rx6110_i2c_probe(struct i2c_client *client,
+>  	return rx6110_probe(rx6110, &client->dev);
+>  }
+>  
+> +#ifdef CONFIG_ACPI
+> +static const struct acpi_device_id rx6110_i2c_acpi_match[] = {
+> +	{ "SECC6110", },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(acpi, rx6110_i2c_acpi_match);
+> +#endif
+> +
+>  static const struct i2c_device_id rx6110_i2c_id[] = {
+>  	{ "rx6110", 0 },
+>  	{ }
+> @@ -456,6 +465,9 @@ MODULE_DEVICE_TABLE(i2c, rx6110_i2c_id);
+>  static struct i2c_driver rx6110_i2c_driver = {
+>  	.driver = {
+>  		.name = RX6110_DRIVER_NAME,
+> +#ifdef CONFIG_ACPI
+
+This is implied by the stub ACPI_PTR() macro for ACPI=n case.
+I.o.w drop this ugly and redundant ifdeffery.
+
+> +		.acpi_match_table = ACPI_PTR(rx6110_i2c_acpi_match),
+> +#endif
+>  	},
+>  	.probe		= rx6110_i2c_probe,
+>  	.id_table	= rx6110_i2c_id,
+> -- 
+> 2.30.1
 > 
-> This makes it possible for uvc to pass the v4l2-compliance streaming tests.
-> 
-> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-You can merge this patch into 11/11. I analyzed the uvc get_unmapped_area
-implementation and it is 100% identical to the vb2_fop_get_unmapped_area
-implementation, so let's use that one instead.
-
-Regards.
-
-	Hans
-
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
----
-diff --git a/drivers/media/usb/uvc/uvc_queue.c b/drivers/media/usb/uvc/uvc_queue.c
-index fba9646c8ba5..437e48b32480 100644
---- a/drivers/media/usb/uvc/uvc_queue.c
-+++ b/drivers/media/usb/uvc/uvc_queue.c
-@@ -247,18 +247,6 @@ int uvc_queue_init(struct uvc_video_queue *queue, enum v4l2_buf_type type,
- 	return 0;
- }
-
--/* -----------------------------------------------------------------------------
-- * V4L2 queue operations
-- */
--
--#ifndef CONFIG_MMU
--unsigned long uvc_queue_get_unmapped_area(struct uvc_video_queue *queue,
--		unsigned long pgoff)
--{
--	return vb2_get_unmapped_area(&queue->queue, 0, 0, pgoff, 0);
--}
--#endif
--
- /* -----------------------------------------------------------------------------
-  *
-  */
-diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-index 348a46637852..172336d6018c 100644
---- a/drivers/media/usb/uvc/uvc_v4l2.c
-+++ b/drivers/media/usb/uvc/uvc_v4l2.c
-@@ -1260,20 +1260,6 @@ static long uvc_v4l2_compat_ioctl32(struct file *file,
- }
- #endif
-
--#ifndef CONFIG_MMU
--static unsigned long uvc_v4l2_get_unmapped_area(struct file *file,
--		unsigned long addr, unsigned long len, unsigned long pgoff,
--		unsigned long flags)
--{
--	struct uvc_fh *handle = file->private_data;
--	struct uvc_streaming *stream = handle->stream;
--
--	uvc_dbg(stream->dev, CALLS, "%s\n", __func__);
--
--	return uvc_queue_get_unmapped_area(&stream->queue, pgoff);
--}
--#endif
--
- const struct v4l2_ioctl_ops uvc_ioctl_ops = {
- 	.vidioc_querycap = uvc_ioctl_querycap,
- 	.vidioc_enum_fmt_vid_cap = uvc_ioctl_enum_fmt_vid_cap,
-@@ -1325,7 +1311,7 @@ const struct v4l2_file_operations uvc_fops = {
- 	.mmap		= vb2_fop_mmap,
- 	.poll		= vb2_fop_poll,
- #ifndef CONFIG_MMU
--	.get_unmapped_area = uvc_v4l2_get_unmapped_area,
-+	.get_unmapped_area = vb2_fop_get_unmapped_area,
- #endif
- };
-
-diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index 4e6f0a25b940..a83b16ba6e6a 100644
---- a/drivers/media/usb/uvc/uvcvideo.h
-+++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -787,10 +787,7 @@ struct uvc_buffer *uvc_queue_next_buffer(struct uvc_video_queue *queue,
- 					 struct uvc_buffer *buf);
- struct uvc_buffer *uvc_queue_get_current_buffer(struct uvc_video_queue *queue);
- void uvc_queue_buffer_release(struct uvc_buffer *buf);
--#ifndef CONFIG_MMU
--unsigned long uvc_queue_get_unmapped_area(struct uvc_video_queue *queue,
--					  unsigned long pgoff);
--#endif
-+
- static inline int uvc_queue_streaming(struct uvc_video_queue *queue)
- {
- 	return vb2_is_streaming(&queue->queue);
