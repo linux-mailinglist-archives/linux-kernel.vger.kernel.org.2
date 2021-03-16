@@ -2,246 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A7B33D27E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A60D33D28C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 12:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237106AbhCPLMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 07:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232731AbhCPLMV (ORCPT
+        id S237143AbhCPLP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 07:15:29 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:48763 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231918AbhCPLPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:12:21 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792B6C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 04:12:20 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id bt4so10431921pjb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 04:12:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=co9C6unBdFkpgv7+tGLws46NOGe8/tBYeyT4qQSLwlc=;
-        b=HRiKQVMBFG/A6gPAZpN/MiRsDAwXqD/MYUJKSSh7ybK9TDtdRJgVUyb6DmaBH3WnQz
-         bUs0wPminx/GLoogW8PPeQjVhbHPa352X6JsDfIPqNdBCATDUT3J3rQFcrStCK5u5teb
-         uPL+6lUUTM5+1l0QIFweXzlE8Wu9czn9A/AkON5+Nv1dydAobbQBiG8LCisAx/6LktD0
-         zOvKX19zzAdh0xZ2ghA6NjnjPJL3gi3OLOm118yFanFdHyq97W+0toDndtv/7KPhHdhU
-         I/vo64LXjAEFq++SXAX96lHwWcSD65CTcqqivRLZ9LeEY3d7S8zliAfEvBCWzrlVubZ/
-         lcQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=co9C6unBdFkpgv7+tGLws46NOGe8/tBYeyT4qQSLwlc=;
-        b=OzUuAyigVB9JhQ9HPn4LEdtt0iotTN6gEyd5skcgNx/Ez5eNk51Jr3/toTJ8JQ9Lu9
-         u54tmW6pvML0hm3Ew+LO1EQ/J9SdEtV33Dr7EETWZHn05JZieBkSG4RXkwVBFKPvS7B4
-         zL3hr5fsforb9vuiHsiFJsJSs6mAuvrOKwrqMlXkCUuZw2yXi21vIZSCfSBvWkUZhIy+
-         1dqKRwSoG2meSCqCD7BDEdks67SL/l1vxMZU48/IjhuhZFV+BvwvXRZxHrpsXqLUiHLT
-         149A4dQbePf7ZUsu7XOAf9tUxiUGwy/k4T6a4egbzGeU99TeAvW1w7Vumv+jgY6DGj5z
-         fF9A==
-X-Gm-Message-State: AOAM531R3Jd7y2nmvFqezhhEa/QDoZ3Ghxbv/SzvuXynv+BUcdatd3De
-        xPJT4wXTLR/Ah7pixPueWb7vLV9uOvwlhWBNECGFyQ==
-X-Google-Smtp-Source: ABdhPJxxy+osmijXyuDaa1mP5+f0EErKvMxpTVF7WymI+74vScoiTtjvsZJ0oOoCIDCp368NI1c6lnxCs1T1BBXgrw0=
-X-Received: by 2002:a17:90a:516:: with SMTP id h22mr4143299pjh.222.1615893139917;
- Tue, 16 Mar 2021 04:12:19 -0700 (PDT)
+        Tue, 16 Mar 2021 07:15:12 -0400
+X-UUID: ac5815ebc7ad4d688bf8836e49b6a38d-20210316
+X-UUID: ac5815ebc7ad4d688bf8836e49b6a38d-20210316
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <seiya.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 20464300; Tue, 16 Mar 2021 19:15:07 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 16 Mar 2021 19:15:04 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 16 Mar 2021 19:15:04 +0800
+From:   Seiya Wang <seiya.wang@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bayi Cheng <bayi.cheng@mediatek.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-serial@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-watchdog@vger.kernel.org>, <srv_heupstream@mediatek.com>
+Subject: [PATCH 00/10] Add basic node support for Mediatek MT8195 SoC
+Date:   Tue, 16 Mar 2021 19:14:33 +0800
+Message-ID: <20210316111443.3332-1-seiya.wang@mediatek.com>
+X-Mailer: git-send-email 2.14.1
 MIME-Version: 1.0
-References: <20210315155942.640889-1-robert.foss@linaro.org>
- <20210315155942.640889-10-robert.foss@linaro.org> <b06ce7af-4449-fb5c-2920-09ebd5abdf75@xs4all.nl>
-In-Reply-To: <b06ce7af-4449-fb5c-2920-09ebd5abdf75@xs4all.nl>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 16 Mar 2021 12:12:08 +0100
-Message-ID: <CAG3jFytECFBW7mC0=0ZwL2HNof3jOiJ9=KqUhaPb-KvnW5ut2g@mail.gmail.com>
-Subject: Re: [PATCH v8 09/22] media: camss: Refactor CSID HW version support
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        angelogioacchino.delregno@somainline.org,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonathan Marek <jonathan@marek.ca>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 34B5F28517A2B2BB210610747DFA29DBD96DC8560E0C1DF5C1860E28986D62C82000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Hans,
 
-Thanks for looking into this.
+MT8195 is a SoC based on 64bit ARMv8 architecture.
+It contains 4 CA55 and 4 CA78 cores.
+MT8195 share many HW IP with MT65xx series.
+This patchset was tested on MT8195 evaluation board to shell.
 
-On Tue, 16 Mar 2021 at 10:36, Hans Verkuil <hverkuil@xs4all.nl> wrote:
->
-> On 15/03/2021 16:59, Robert Foss wrote:
-> > In order to support Qualcomm ISP hardware architectures that diverge
-> > from older architectures, the CSID subdevice drivers needs to be refactored
-> > to better abstract the different ISP hardware architectures.
-> >
-> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> > Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
-> > ---
-> >
-> >
-> > Changes since v1:
-> >  - kernel test robot: Add missing include, interrupt.h
-> >
-> > Changes since v4:
-> >  - Andrey: Removed whitespace from some includes
-> >  - Andrey: Removed unused enum
-> >
-> > Changes since v5:
-> >  - Andrey: Fixed test pattern selection logic
-> >  - Andrey: Align test mode enum values with v4l mode selection return values
-> >  - Andrey: r-b
-> >  - Move Titan 170 test modes to the the Titan 170 commit
-> >  - Fixed test pattern boundary check
-> >
-> > Changes since v7:
-> >  - Hans: Fix checkpatch.pl --strict warnings
-> >
-> >
-> >
-> >  drivers/media/platform/qcom/camss/Makefile    |   2 +
-> >  .../platform/qcom/camss/camss-csid-4-1.c      | 328 ++++++++++
-> >  .../platform/qcom/camss/camss-csid-4-7.c      | 404 ++++++++++++
-> >  .../media/platform/qcom/camss/camss-csid.c    | 608 +-----------------
-> >  .../media/platform/qcom/camss/camss-csid.h    | 129 +++-
-> >  5 files changed, 885 insertions(+), 586 deletions(-)
-> >  create mode 100644 drivers/media/platform/qcom/camss/camss-csid-4-1.c
-> >  create mode 100644 drivers/media/platform/qcom/camss/camss-csid-4-7.c
-> >
->
-> <snip>
->
-> > diff --git a/drivers/media/platform/qcom/camss/camss-csid.h b/drivers/media/platform/qcom/camss/camss-csid.h
-> > index 479ac1f83836..613ef377b051 100644
-> > --- a/drivers/media/platform/qcom/camss/camss-csid.h
-> > +++ b/drivers/media/platform/qcom/camss/camss-csid.h
-> > @@ -11,6 +11,7 @@
-> >  #define QC_MSM_CAMSS_CSID_H
-> >
-> >  #include <linux/clk.h>
-> > +#include <linux/interrupt.h>
-> >  #include <media/media-entity.h>
-> >  #include <media/v4l2-ctrls.h>
-> >  #include <media/v4l2-device.h>
-> > @@ -44,18 +45,42 @@
-> >  #define DATA_TYPE_RAW_16BIT          0x2e
-> >  #define DATA_TYPE_RAW_20BIT          0x2f
-> >
-> > -enum csid_payload_mode {
-> > -     CSID_PAYLOAD_MODE_INCREMENTING = 0,
-> > -     CSID_PAYLOAD_MODE_ALTERNATING_55_AA = 1,
-> > -     CSID_PAYLOAD_MODE_ALL_ZEROES = 2,
-> > -     CSID_PAYLOAD_MODE_ALL_ONES = 3,
-> > -     CSID_PAYLOAD_MODE_RANDOM = 4,
-> > -     CSID_PAYLOAD_MODE_USER_SPECIFIED = 5,
-> > +#define CSID_RESET_TIMEOUT_MS 500
-> > +
-> > +enum csid_testgen_mode {
-> > +     CSID_PAYLOAD_MODE_DISABLED = 0,
-> > +     CSID_PAYLOAD_MODE_INCREMENTING = 1,
-> > +     CSID_PAYLOAD_MODE_ALTERNATING_55_AA = 2,
-> > +     CSID_PAYLOAD_MODE_ALL_ZEROES = 3,
-> > +     CSID_PAYLOAD_MODE_ALL_ONES = 4,
-> > +     CSID_PAYLOAD_MODE_RANDOM = 5,
-> > +     CSID_PAYLOAD_MODE_USER_SPECIFIED = 6,
-> > +     CSID_PAYLOAD_MODE_NUM_SUPPORTED_GEN1 = 6, /* excluding disabled */
-> > +};
-> > +
-> > +static const char * const csid_testgen_modes[] = {
-> > +     "Disabled",
-> > +     "Incrementing",
-> > +     "Alternating 0x55/0xAA",
-> > +     "All Zeros 0x00",
-> > +     "All Ones 0xFF",
-> > +     "Pseudo-random Data",
-> > +     "User Specified",
-> > +};
->
-> This gives this sparse warning:
->
-> 'csid_testgen_modes' defined but not used [-Wunused-const-variable=]
+Based on v5.12-rc2
 
-Thanks for supplying a patch. I'll merge it into patch 9 & 10.
+Seiya Wang (10):
+  dt-bindings: timer: Add compatible for Mediatek MT8195
+  dt-bindings: serial: Add compatible for Mediatek MT8195
+  dt-bindings: watchdog: Add compatible for Mediatek MT8195
+  dt-bindings: mmc: Add compatible for Mediatek MT8195
+  dt-bindings: spi: Add compatible for Mediatek MT8195
+  dt-bindings: iio: adc: Add compatible for Mediatek MT8195
+  dt-bindings: phy: Add compatible for Mediatek MT8195
+  dt-bindings: phy: Add compatible for Mediatek MT8195
+  dt-bindings: arm: Add compatible for Mediatek MT8195
+  arm64: dts: Add Mediatek SoC MT8195 and evaluation board dts and
+    Makefile
 
->
-> This array needs to be moved to camss-csid.c and declared as an extern
-> here. Also, this menu array needs to be terminated with a NULL, and the
-> right capitalization needs to be used (first character of each word must
-> be a capital). This is a suggested patch I made to verify that this solves
-> this issue, but really both patch 9 and 10 need to be modified.
->
-> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> ---
->  drivers/media/platform/qcom/camss/camss-csid.c | 14 ++++++++++++++
->  drivers/media/platform/qcom/camss/camss-csid.h | 13 +------------
->  2 files changed, 15 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
-> index fb94dc03ccd4..1513b3d47fc2 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csid.c
-> +++ b/drivers/media/platform/qcom/camss/camss-csid.c
-> @@ -27,6 +27,20 @@
->
->  #define MSM_CSID_NAME "msm_csid"
->
-> +const char * const csid_testgen_modes[] = {
-> +       "Disabled",
-> +       "Incrementing",
-> +       "Alternating 0x55/0xAA",
-> +       "All Zeros 0x00",
-> +       "All Ones 0xFF",
-> +       "Pseudo-Random Data",
-> +       "User Specified",
-> +       "Complex Pattern",
-> +       "Color Box",
-> +       "Color Bars",
-> +       NULL
-> +};
-> +
->  u32 csid_find_code(u32 *codes, unsigned int ncodes,
->                    unsigned int match_format_idx, u32 match_code)
->  {
-> diff --git a/drivers/media/platform/qcom/camss/camss-csid.h b/drivers/media/platform/qcom/camss/camss-csid.h
-> index c2a025f6846b..81a3704ac0e3 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csid.h
-> +++ b/drivers/media/platform/qcom/camss/camss-csid.h
-> @@ -62,18 +62,7 @@ enum csid_testgen_mode {
->         CSID_PAYLOAD_MODE_NUM_SUPPORTED_GEN2 = 9, /* excluding disabled */
->  };
->
-> -static const char * const csid_testgen_modes[] = {
-> -       "Disabled",
-> -       "Incrementing",
-> -       "Alternating 0x55/0xAA",
-> -       "All Zeros 0x00",
-> -       "All Ones 0xFF",
-> -       "Pseudo-random Data",
-> -       "User Specified",
-> -       "Complex pattern",
-> -       "Color box",
-> -       "Color bars",
-> -};
-> +extern const char * const csid_testgen_modes[];
->
->  struct csid_format {
->         u32 code;
-> --
-> 2.30.1
->
-> Regards,
->
->         Hans
+ .../devicetree/bindings/arm/mediatek.yaml          |   4 +
+ .../bindings/iio/adc/mediatek,mt2701-auxadc.yaml   |   1 +
+ Documentation/devicetree/bindings/mmc/mtk-sd.yaml  |   1 +
+ .../devicetree/bindings/phy/mediatek,tphy.yaml     |   1 +
+ .../devicetree/bindings/phy/mediatek,ufs-phy.yaml  |   1 +
+ .../devicetree/bindings/serial/mtk-uart.txt        |   1 +
+ .../bindings/spi/mediatek,spi-mtk-nor.yaml         |   1 +
+ .../bindings/timer/mediatek,mtk-timer.txt          |   1 +
+ .../devicetree/bindings/watchdog/mtk-wdt.txt       |   1 +
+ arch/arm64/boot/dts/mediatek/Makefile              |   1 +
+ arch/arm64/boot/dts/mediatek/mt8195-evb.dts        |  29 ++
+ arch/arm64/boot/dts/mediatek/mt8195.dtsi           | 477 +++++++++++++++++++++
+ 12 files changed, 519 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8195-evb.dts
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8195.dtsi
+
+--
+2.14.1
+
