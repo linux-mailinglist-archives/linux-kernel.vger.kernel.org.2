@@ -2,190 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853FE33D4A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0215D33D4AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 14:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbhCPNOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 09:14:44 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:41076 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231435AbhCPNOd (ORCPT
+        id S232132AbhCPNPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 09:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231806AbhCPNPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:14:33 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12GDEIpx086609;
-        Tue, 16 Mar 2021 08:14:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615900458;
-        bh=0a9+2pwiRj3HgBy0Tmcg4RcLEetQ3bkJHEFZgypmw8c=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=vg0q3bPku6180/hs13QuMC/0ZYA9Qr0BMmrM3c8jNdaeOfFYGP2b7x8NDLhpy4G50
-         jamBZ4+HE8Z8zfsSPmOgRxIrjAxo45QXih1cbYq73N+cGfZ4ejmORvM6DPOVe3dzU0
-         8/QOGMuEDy9w0fa0ce1UV2iEO+hhp1uVG96XuLvA=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12GDEI9W060553
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 16 Mar 2021 08:14:18 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 16
- Mar 2021 08:14:18 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 16 Mar 2021 08:14:18 -0500
-Received: from [10.250.235.175] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12GDEEH8037551;
-        Tue, 16 Mar 2021 08:14:15 -0500
-Subject: Re: [PATCH v15 2/4] phy: Add media type and speed serdes
- configuration interfaces
-To:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>
-References: <20210218161451.3489955-1-steen.hegelund@microchip.com>
- <20210218161451.3489955-3-steen.hegelund@microchip.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <694b0f66-64ab-626c-96fa-e703abea88c2@ti.com>
-Date:   Tue, 16 Mar 2021 18:44:13 +0530
+        Tue, 16 Mar 2021 09:15:19 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B4DC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 06:15:18 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id l12so10441013wry.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 06:15:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qTk5N1IpkxIibwyn9bbhUralfnLiAzs7yG7ASyyW9kw=;
+        b=qtreXu9j7BKmXxpIigSADC5KNdGIlXWAKszx/c0u4zPrR9zyY9zOGtI+Y5bXQMGRBP
+         cBi0R3nLKr5TfYoE1mUtRCPd2096OqUq5XCJGSJx/jB1E3gk0eHA/AMbmPzuSMUdyKeR
+         G4g+0uHqQVw8rIiJBpypv7hV2Vhmg6go60jfSLZrqXrk3Fn63K4TxiOSIewak0PuqTOB
+         ZOwdCVyMMnEg43K0vUqUsh15YQxaGr27ivuaEO++SQN4Igv1dTUVgdaqSqVGWKw7Hex2
+         pqCern2i6er1fqkMoY1y+bRziHDG0KTvyhBhjFuSPEniJyVRBwOIJ/mIhKpxCR+1WeRn
+         adyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qTk5N1IpkxIibwyn9bbhUralfnLiAzs7yG7ASyyW9kw=;
+        b=R6kg5VhB4Ek4/S4MJOvY9fVSMREt/e94trGoprHIAiQwYS8sQBRPQugmtfI0SyUGid
+         Xej8xLw0ZMWUAJESoBsPLY6NKpZSuw+EfnwAYGlxOijQ4+v6YHJz5buFY0mRp/35dz0g
+         H5MpcwhZyB/yKL40TJeHVZvMCtTRE0MICdLYF99aUyTeC5S+g1Un4zJq8xrmLJR3IyaS
+         2591BgwiWff8uHHpQxjQV5D5rBnDlMIcSe01uLkaaVtwEpGnBv7S05A0GL/eMQ86c2eL
+         A0WVg2vyFmT+cCft1AqAzfZXwOCy59I65mR4gsfk+t8153t0FctWujSJwsLwYZyxjIti
+         YSZQ==
+X-Gm-Message-State: AOAM532Ue8Limb7ZLOVvanNrm9GEL4mfmm36vvdWoqLpaD+vrvVkQAXX
+        swR+a/6zyUB2nITVt2EOafnHeg==
+X-Google-Smtp-Source: ABdhPJyFQrQrzmwwosnMOODesI33pDMMRoLEdk6wRm8zQLVhwcWbbIhZCHARhvxNy6Om9VPt1Bud0g==
+X-Received: by 2002:adf:e94a:: with SMTP id m10mr4847478wrn.55.1615900516782;
+        Tue, 16 Mar 2021 06:15:16 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:fcf7:1d46:a8c5:fa1b? ([2a01:e34:ed2f:f020:fcf7:1d46:a8c5:fa1b])
+        by smtp.googlemail.com with ESMTPSA id m17sm22591275wrx.92.2021.03.16.06.15.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 06:15:16 -0700 (PDT)
+Subject: Re: [PATCH] thermal: power_allocator: using round the division when
+ re-divvying up power
+To:     Lukasz Luba <lukasz.luba@arm.com>, gao.yunxiao6@gmail.com
+Cc:     rui.zhang@intel.com, amitk@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, orsonzhai@gmail.com,
+        zhang.lyra@gmail.com, "jeson.gao" <jeson.gao@unisoc.com>
+References: <1615796737-4688-1-git-send-email-gao.yunxiao6@gmail.com>
+ <9c14451e-be6f-0713-4c26-8b67e1fa51a5@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <381a12bf-c917-c2c4-1915-f129221d6475@linaro.org>
+Date:   Tue, 16 Mar 2021 14:15:15 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210218161451.3489955-3-steen.hegelund@microchip.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <9c14451e-be6f-0713-4c26-8b67e1fa51a5@arm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 18/02/21 9:44 pm, Steen Hegelund wrote:
-> Provide new phy configuration interfaces for media type and speed that
-> allows e.g. PHYs used for ethernet to be configured with this
-> information.
+On 15/03/2021 10:51, Lukasz Luba wrote:
 > 
-> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> 
+> On 3/15/21 8:25 AM, gao.yunxiao6@gmail.com wrote:
+>> From: "jeson.gao" <jeson.gao@unisoc.com>
+>>
+>> The division is used directly in re-divvying up power, the decimal
+>> part will
+>> be discarded, devices will get less than the extra_actor_power - 1.
+>> if using round the division to make the calculation more accurate.
+>>
+>> For example:
+>> actor0 received more than it's max_power, it has the extra_power 759
+>> actor1 received less than it's max_power, it require extra_actor_power
+>> 395
+>> actor2 received less than it's max_power, it require extra_actor_power
+>> 365
+>> actor1 and actor2 require the total capped_extra_power 760
+>>
+>> using division in re-divvying up power
+>> actor1 would actually get the extra_actor_power 394
+>> actor2 would actually get the extra_actor_power 364
+>>
+>> if using round the division in re-divvying up power
+>> actor1 would actually get the extra_actor_power 394
+>> actor2 would actually get the extra_actor_power 365
+>>
+>> Signed-off-by: Jeson Gao <jeson.gao@unisoc.com>
+>> ---
 
-Acked-By: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  drivers/phy/phy-core.c  | 30 ++++++++++++++++++++++++++++++
->  include/linux/phy/phy.h | 26 ++++++++++++++++++++++++++
->  2 files changed, 56 insertions(+)
-> 
-> diff --git a/drivers/phy/phy-core.c b/drivers/phy/phy-core.c
-> index 71cb10826326..ccb575b13777 100644
-> --- a/drivers/phy/phy-core.c
-> +++ b/drivers/phy/phy-core.c
-> @@ -373,6 +373,36 @@ int phy_set_mode_ext(struct phy *phy, enum phy_mode mode, int submode)
->  }
->  EXPORT_SYMBOL_GPL(phy_set_mode_ext);
->  
-> +int phy_set_media(struct phy *phy, enum phy_media media)
-> +{
-> +	int ret;
-> +
-> +	if (!phy || !phy->ops->set_media)
-> +		return 0;
-> +
-> +	mutex_lock(&phy->mutex);
-> +	ret = phy->ops->set_media(phy, media);
-> +	mutex_unlock(&phy->mutex);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(phy_set_media);
-> +
-> +int phy_set_speed(struct phy *phy, int speed)
-> +{
-> +	int ret;
-> +
-> +	if (!phy || !phy->ops->set_speed)
-> +		return 0;
-> +
-> +	mutex_lock(&phy->mutex);
-> +	ret = phy->ops->set_speed(phy, speed);
-> +	mutex_unlock(&phy->mutex);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(phy_set_speed);
-> +
->  int phy_reset(struct phy *phy)
->  {
->  	int ret;
-> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
-> index e435bdb0bab3..0ed434d02196 100644
-> --- a/include/linux/phy/phy.h
-> +++ b/include/linux/phy/phy.h
-> @@ -44,6 +44,12 @@ enum phy_mode {
->  	PHY_MODE_DP
->  };
->  
-> +enum phy_media {
-> +	PHY_MEDIA_DEFAULT,
-> +	PHY_MEDIA_SR,
-> +	PHY_MEDIA_DAC,
-> +};
-> +
->  /**
->   * union phy_configure_opts - Opaque generic phy configuration
->   *
-> @@ -64,6 +70,8 @@ union phy_configure_opts {
->   * @power_on: powering on the phy
->   * @power_off: powering off the phy
->   * @set_mode: set the mode of the phy
-> + * @set_media: set the media type of the phy (optional)
-> + * @set_speed: set the speed of the phy (optional)
->   * @reset: resetting the phy
->   * @calibrate: calibrate the phy
->   * @release: ops to be performed while the consumer relinquishes the PHY
-> @@ -75,6 +83,8 @@ struct phy_ops {
->  	int	(*power_on)(struct phy *phy);
->  	int	(*power_off)(struct phy *phy);
->  	int	(*set_mode)(struct phy *phy, enum phy_mode mode, int submode);
-> +	int	(*set_media)(struct phy *phy, enum phy_media media);
-> +	int	(*set_speed)(struct phy *phy, int speed);
->  
->  	/**
->  	 * @configure:
-> @@ -215,6 +225,8 @@ int phy_power_off(struct phy *phy);
->  int phy_set_mode_ext(struct phy *phy, enum phy_mode mode, int submode);
->  #define phy_set_mode(phy, mode) \
->  	phy_set_mode_ext(phy, mode, 0)
-> +int phy_set_media(struct phy *phy, enum phy_media media);
-> +int phy_set_speed(struct phy *phy, int speed);
->  int phy_configure(struct phy *phy, union phy_configure_opts *opts);
->  int phy_validate(struct phy *phy, enum phy_mode mode, int submode,
->  		 union phy_configure_opts *opts);
-> @@ -344,6 +356,20 @@ static inline int phy_set_mode_ext(struct phy *phy, enum phy_mode mode,
->  #define phy_set_mode(phy, mode) \
->  	phy_set_mode_ext(phy, mode, 0)
->  
-> +static inline int phy_set_media(struct phy *phy, enum phy_media media)
-> +{
-> +	if (!phy)
-> +		return 0;
-> +	return -ENODEV;
-> +}
-> +
-> +static inline int phy_set_speed(struct phy *phy, int speed)
-> +{
-> +	if (!phy)
-> +		return 0;
-> +	return -ENODEV;
-> +}
-> +
->  static inline enum phy_mode phy_get_mode(struct phy *phy)
->  {
->  	return PHY_MODE_INVALID;
-> 
+Applied, thanks
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
