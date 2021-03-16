@@ -2,361 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB70133E1FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:19:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E26A533E201
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhCPXTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 19:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhCPXTD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 19:19:03 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0715C06174A;
-        Tue, 16 Mar 2021 16:19:02 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id y6so68913eds.1;
-        Tue, 16 Mar 2021 16:19:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YzO6qlspMoccvL4j6YTNH7ow8gj9tE1MOD0NCZAbpEk=;
-        b=XlP5x52JBJttoi2LWeBiQyBJUnjpc0wEzhRwizGqokeTP7GyqJf+SinAdF9MCz3HOt
-         ZWOm/07dvQyE592Q7W6IwL/qNqfcQ+4TyzfKaWVhNUqWoa9nW6689HMFWRqSosmSTsRL
-         a8SGxXOjkS3/d7FGq4g0oYy7IUN1Goi4Z+pjNpQ9I59P51+9Z2/mt2PYkUp2LL/3Gnzu
-         MOWqkm1G1CUsGBp5Qt+GtXDPpigl5KtCF99qRwSYpZ3A74QGj/TLRUlBqebnRwMLfvID
-         jr30HR885TvAm60LikrIsR5Z7Vgs3izg3T09eJmyQl9iTB1iGcKLxfCxytp42+15mW+e
-         qL0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YzO6qlspMoccvL4j6YTNH7ow8gj9tE1MOD0NCZAbpEk=;
-        b=YVaAbMNZ9kQWi5HWUCRZOVw5P3pzGV45BSp+5Bt6OzcbkDmr0oN6LVbbWD4anOUdsi
-         +W5/alMFKTwHRR9WjOpTp6h503quVrt1mC0ymCp47CHLQ6b3mU9413Fuwx+mLU6ceKVp
-         6JYnHQvK0be89omYgIvUDgNxcucyG/2QkpAXkuSUpRU0e0++YYnrWr2ipYJf2Mebejp6
-         8h0hY1goJxZawvZMSUmqGvjUK3qVhfqRJhdudm7stJD9Q6HdI9e16mmdkiolNCEMa7UW
-         BDwW5IJy1hSw6PGNZyEUEa2LuYHtJ9JhFLX5GmvqUmHAYbhUvCjNDuqSzlLqczTRLUf3
-         G+pg==
-X-Gm-Message-State: AOAM5304gFposYdwqhaTXx/g/c+OlW0DYNCF69KzdCSDP6/0wEVbZKjW
-        d7IEZ+udoSzJ3QZShDVUd4sn/V7Y4z3MCiZM/lk=
-X-Google-Smtp-Source: ABdhPJwWAFE7FtMknt4N6qEMuwLHU2Y2IE4lQNqNT8qjXehfKxnz++6zOQPh96ruJ0et2TbJaFN8GfF7EojU1ktxJCw=
-X-Received: by 2002:aa7:c403:: with SMTP id j3mr38873366edq.137.1615936741604;
- Tue, 16 Mar 2021 16:19:01 -0700 (PDT)
+        id S229735AbhCPXTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 19:19:46 -0400
+Received: from mail-mw2nam12on2092.outbound.protection.outlook.com ([40.107.244.92]:37633
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229491AbhCPXTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 19:19:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DBm4ma40rlzhBHINBVpsaUREUY3QXydl/35sl4gC4mDAfeETJc2UIwdbrwnqo27o584t5GZ8gjrfAEkSWd3uUA5Q8QM0XosYYnUuo4CUcpSEj5tBVsxfNYLRlS25O1QncKZk/TkUKX032FisySQKveHumMZjSqqyxb3yHcV1CwDdZDUuAz8LN1jO7lTFk2q05YOLD8l5KNMez3FBiFaWeLF0fFg6oKBfOYlgDDUK2UJIMa/SyBKtrMowKpZornKrWoBnFPR8YiWrXBiE85POlOtJLYXnhN/xa5s6Iprtckb14Konh48ouej1QSWWKmZWecTz/SR3uV04mT+kNiQtwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mUAvQrym7haaa2v2D5qJamqw46MEuxoFUuJau0JSxR8=;
+ b=XDjkcx6LzfmNfFhKKJYxix+W80BChc8ZtN2tcU4028Sf553HlLtBMgkZ4l5J1rCba/05chStiuo85hSBI9bw+FzsNfHu4358qEYuNz/fs9V8buAVQwLluWlu7cVZdnAPP4m5A/GwYa7S5n6bUymVd8sSUF+9YCEJsOWq+dO+B2TSTWpBgYLKj6x4gLVmK7+jSOwgOEAJUUvhuCRmwx6b0CXL68THGIoKr+84rD5NBr+0lMYEj/YYsjIRbMpP9YoemD4Y0Ne3ZG9D71Wo5qPZRQk1QsvGhYOJFW9/2B8jUtwi/KVw/IvkI6R4QdFgBxZgsv1AayONgjeL6mlXH5kgYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hammerspace.com; dmarc=pass action=none
+ header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mUAvQrym7haaa2v2D5qJamqw46MEuxoFUuJau0JSxR8=;
+ b=gZVWiGn8MBu+63UJITZSLFIjbv93hceNNlnXntL59Jdancx2XzLyBUK6IAaf0Z922RViJywsNDK20o47UseiZN0r/rXgNZ4yN743+FktpmNj1NqBY3P1xD/ywoifMp2C3RZ8HhOy2cV6Ivoh8/7zDcY6eYMBcindUBd48mfuwMU=
+Received: from CH2PR13MB3525.namprd13.prod.outlook.com (2603:10b6:610:21::29)
+ by CH0PR13MB4732.namprd13.prod.outlook.com (2603:10b6:610:ca::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.11; Tue, 16 Mar
+ 2021 23:19:21 +0000
+Received: from CH2PR13MB3525.namprd13.prod.outlook.com
+ ([fe80::f453:2dd2:675:d063]) by CH2PR13MB3525.namprd13.prod.outlook.com
+ ([fe80::f453:2dd2:675:d063%3]) with mapi id 15.20.3955.010; Tue, 16 Mar 2021
+ 23:19:21 +0000
+From:   Trond Myklebust <trondmy@hammerspace.com>
+To:     "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "dhowells@redhat.com" <dhowells@redhat.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "syzbot+ba2e91df8f74809417fa@syzkaller.appspotmail.com" 
+        <syzbot+ba2e91df8f74809417fa@syzkaller.appspotmail.com>,
+        "syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com" 
+        <syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com>
+Subject: Re: [PATCH] NFS: fs_context: validate UDP retrans to prevent shift
+ out-of-bounds
+Thread-Topic: [PATCH] NFS: fs_context: validate UDP retrans to prevent shift
+ out-of-bounds
+Thread-Index: AQHXDvnAvfNR5PqdykmZVAF5r/Bd4qqHS36AgAAMJAA=
+Date:   Tue, 16 Mar 2021 23:19:21 +0000
+Message-ID: <8a992689a73f6e3481f4a0316adc93a0e032fd96.camel@hammerspace.com>
+References: <20210302001930.2253-1-rdunlap@infradead.org>
+         <b98720c9-2798-f168-eaaa-01d638d9900d@infradead.org>
+In-Reply-To: <b98720c9-2798-f168-eaaa-01d638d9900d@infradead.org>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none
+ header.from=hammerspace.com;
+x-originating-ip: [68.36.133.222]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 523a0034-33da-4dd2-a425-08d8e8d1ee36
+x-ms-traffictypediagnostic: CH0PR13MB4732:
+x-microsoft-antispam-prvs: <CH0PR13MB473252838ED76D94A0A978D2B86B9@CH0PR13MB4732.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1091;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: l/cpyBpk4wynM3jxy7eeX/mHbZqDqlt56lR21Bfqx16ylfDE/AK1jj0RqY1j1a9w2rZmfzMynXvTZdGKAR9hvUmRd2b7T6oU2591diVoWKNVKqlA/MR1H3hW3xn/mtXPAb1YtZqFTCIUjdV/tQ2fcWnowARVccw7PQay7QHv7Ua4tBfQ49Zp527TLFg5X3FNvwiLFPn0peSr75D44hLjLzgjT1/Ndjd2lkJ5kEKxYENMtXDxCCkpgYiFG5T+tO1qyxo9YugA/2rsaWnPM6fvqEshd6drt1F3K8eM3eWOY4NbasaIqmGCmHKvBmxY8cLeB3chFIAIgp6/QuuLnTQ4lxDIhlHdvID2owPs5HW6oQ3SaM4IuxklwlvUJCmgvyx0yFKNHTjaN8+AU4NBQOgCunLv783Jr1gkG2CyuytpSKcSPpIQneYP0Ot2p+Vc6X2RyHl4EnmaM3IL4NV3kf4pPD6zTM3Da0RYIUxR29tRMWqM59QukFVC8ZWLfgwWFg/JekUIF9N+7P0ft/vsV6qGxIixeBDcthbQXFtKpqRddT7OCGPfLKAhvHCr/fAN8r9t
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR13MB3525.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(366004)(396003)(376002)(136003)(346002)(66946007)(316002)(2616005)(36756003)(66556008)(8676002)(5660300002)(8936002)(54906003)(4326008)(478600001)(64756008)(76116006)(110136005)(6486002)(6506007)(53546011)(71200400001)(83380400001)(2906002)(66476007)(6512007)(26005)(66446008)(86362001)(186003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?TStKVXM2MVhJQTJndTF4V2ZKTEZRbzVRR2VrSzcvQUZPSDNldEdtWTJsazFS?=
+ =?utf-8?B?MzRlOUExeTFOZlFNTkxBRG9iYUYwTHJpMHE4OUpRUEVGLzhEb1VoRjlycy9j?=
+ =?utf-8?B?M0toU2tyMG5tM1A0dGo4QlVvYmlCV3VNOUliYnQzZVhQanlJcVFXbE5Jc0Z3?=
+ =?utf-8?B?YVVvOGM1RzRnRDR2em04eWRiTTJoY3gyckg4QXZpdFlMUjdrZFUzblpRbjJO?=
+ =?utf-8?B?TzM0RldGSFBmWXYwRitnaUZ3WUREOHk4d1IrU2NYZlEzeUo1Z3g5anZsb1pO?=
+ =?utf-8?B?UE0vTlZZT28wcmhNYnpET0cvZFhxUzU2anAvM09kUU1xZHVPWWtWeDR0Ymkz?=
+ =?utf-8?B?SFNSWllMTjhHdzBxQUFkQ1pTVXpkOGhQMysxZ1ZPVnZvcEpSbk1YUUUxbFZL?=
+ =?utf-8?B?R1F4eVAxNEdYRG50OXE0TFNhUFJQbVNrTStMZ3poU2kxRVhYM1JKM0JvcXRp?=
+ =?utf-8?B?ZEUwNHNNMGdFSGdoYmVaczh3Y1hpQkFndTZLS1c3TzMzTVJOMjNnSjZodk9B?=
+ =?utf-8?B?S0hqcnlpdXNiZnZXcmFTdGl3VFN2eEdmZGJraVJQWlpuVnBJWlNxMWJXQ0Vt?=
+ =?utf-8?B?NVhwb01uaUdZVjV2U2JkajlBQ0xSZVZtek9pSFBxVmVvZ28xMUhsVU9tRWtt?=
+ =?utf-8?B?a1BsVko0TUtqWTcyVFM2MnVOOWhEb2pqN3E2bEkyeldWNnUvN1EvalZQeEkv?=
+ =?utf-8?B?RkFoeXVPZzlGS1UzV2kwOGVSSmRSYVlacUd1M3B5Z0VUSVFwZysvdnpqeGM0?=
+ =?utf-8?B?dm5lK3NkMXFxb3BlS0EzMVYwamdOckFERE1GRVhXNmJRdkFtc0s0ZWhLNXky?=
+ =?utf-8?B?eXRVaTNMRWdmcllhd0htUzNiN3JhTWZ0SzJSRnRxVzRueDBoYjBpek5tWXVZ?=
+ =?utf-8?B?VHlIckRvTTI1c0duVCtGVThRa0lqMHpwK1pNNHUybEYwUGdxOGlqY0JQSnVI?=
+ =?utf-8?B?K1pIUW5jL1d5VDl5TnJocEt3TUt5WnRFV0lxaU5uRkU1R01xMWkxclhlbDRi?=
+ =?utf-8?B?SXJGOUVoNkNnMEY5WllHUmtpSmhZUWdLWWRWeVdIb2hVWVQrTlhZaXEzUlNS?=
+ =?utf-8?B?SEVjMkJ2aUhCam1zZURPcDFUTENEeXFZdnNuNlVnR0ZFeWhoUzBoOWc4Q25B?=
+ =?utf-8?B?VTNUcVlFNzY3Ull0V2NqZGxnbVROUThNNlduMnA5STNkTjFhYzc0aFFycHBS?=
+ =?utf-8?B?eGUvZW9ZRUxob1M5WGo2amxkZTFiNUxqNHNHQnFEN0NKZnpXNkhkazZDUVk4?=
+ =?utf-8?B?ZlNZd295R3pmNU5zWnJIYnJqZ2FtaXd3WTZzZEZTNzlUS1JBc1ErM2F0emdp?=
+ =?utf-8?B?R2R2UXphekZBTnBUcVV4UjBpaUs4S0lFTlg0MkdUcXZxWnlnaUwxRW9JMm03?=
+ =?utf-8?B?TkhTd2FRV0VoN1lwU2ZWOWFRTVB2eVVRTDNJTjFzSnlDUDM2d3F2cy9lOG00?=
+ =?utf-8?B?UGE2UEY0Nkl1ZmFGUkdWMkFOb3VwT2srS1hQMDdoTlRVYmY1SjFNc2FQMm1K?=
+ =?utf-8?B?Rnc3d2c0ajJDMzdpQ2U5Mk0rWHhqTWJaUmgwV1QrRkRMSk9oY1ZKaGNSamhM?=
+ =?utf-8?B?VEFjeDRQVnhtU09IV1FuazVyTHRUemsxa2haTEVXQjBraVZzY29ldVplRjJI?=
+ =?utf-8?B?aFJQNW9GTkpBd0IrUVg3UTIyMkJzRDEyMm1WOFdOVVYyZTRwczhvSStzSU42?=
+ =?utf-8?B?bkpQWVJPenVrZHVuTUlWdVhwRWp5ZnF0NzdtNHhxd2VWMFFHbEhjOWNIVDQ5?=
+ =?utf-8?Q?7cC27Zwiqhe7lpu/SAbhHZCEka3KV6buecU/er5?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F025EF7F69026B449B3AB67FD382DC35@namprd13.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210315203349.171760-1-zi.yan@sent.com> <20210315203349.171760-2-zi.yan@sent.com>
-In-Reply-To: <20210315203349.171760-2-zi.yan@sent.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 16 Mar 2021 16:18:50 -0700
-Message-ID: <CAHbLzkpmFhBxMRetg8QM4BQ4fDiTS823XBm73+5BV-eXsoCP+Q@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] mm: huge_memory: debugfs for file-backed THP split.
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mika Penttila <mika.penttila@nextfour.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: hammerspace.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR13MB3525.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 523a0034-33da-4dd2-a425-08d8e8d1ee36
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2021 23:19:21.4083
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: axqWxekZNX0stgPUnWKg9XY8vUHkBni8ZEYDkGtxH0O20G/V9iE2oDZrhcFGBrJg003z43hyb/dtTHRYRCO5xA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR13MB4732
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 1:34 PM Zi Yan <zi.yan@sent.com> wrote:
->
-> From: Zi Yan <ziy@nvidia.com>
->
-> Further extend <debugfs>/split_huge_pages to accept
-> "<path>,<off_start>,<off_end>" for file-backed THP split tests since
-> tmpfs may have file backed by THP that mapped nowhere.
->
-> Update selftest program to test file-backed THP split too.
->
-> Suggested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> ---
->  mm/huge_memory.c                              | 95 ++++++++++++++++++-
->  .../selftests/vm/split_huge_page_test.c       | 79 ++++++++++++++-
->  2 files changed, 166 insertions(+), 8 deletions(-)
->
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 3bfee54e2cd0..da91ee97d944 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -3043,12 +3043,72 @@ static int split_huge_pages_pid(int pid, unsigned long vaddr_start,
->         return ret;
->  }
->
-> +static int split_huge_pages_in_file(const char *file_path, pgoff_t off_start,
-> +                               pgoff_t off_end)
-> +{
-> +       struct filename *file;
-> +       struct file *candidate;
-> +       struct address_space *mapping;
-> +       int ret = -EINVAL;
-> +       pgoff_t off_cur;
-> +       unsigned long total = 0, split = 0;
-> +
-> +       file = getname_kernel(file_path);
-> +       if (IS_ERR(file))
-> +               return ret;
-> +
-> +       candidate = file_open_name(file, O_RDONLY, 0);
-> +       if (IS_ERR(candidate))
-> +               goto out;
-> +
-> +       pr_info("split file-backed THPs in file: %s, offset: [0x%lx - 0x%lx]\n",
-> +                file_path, off_start, off_end);
-> +
-> +       mapping = candidate->f_mapping;
-> +
-> +       for (off_cur = off_start; off_cur < off_end;) {
-> +               struct page *fpage = pagecache_get_page(mapping, off_cur,
-> +                                               FGP_ENTRY | FGP_HEAD, 0);
-> +
-> +               if (xa_is_value(fpage) || !fpage) {
-
-Why do you have FGP_ENTRY? It seems it would return page instead of
-NULL if page is value. So I think you could remove FGP_ENTRY and
-xa_is_value() check as well.
-
-
-> +                       off_cur += PAGE_SIZE;
-> +                       continue;
-> +               }
-> +
-> +               if (!is_transparent_hugepage(fpage)) {
-> +                       off_cur += PAGE_SIZE;
-> +                       goto next;
-> +               }
-> +               total++;
-> +               off_cur = fpage->index + thp_size(fpage);
-> +
-> +               if (!trylock_page(fpage))
-> +                       goto next;
-> +
-> +               if (!split_huge_page(fpage))
-> +                       split++;
-> +
-> +               unlock_page(fpage);
-> +next:
-> +               put_page(fpage);
-> +       }
-> +
-> +       filp_close(candidate, NULL);
-> +       ret = 0;
-> +
-> +       pr_info("%lu of %lu file-backed THP split\n", split, total);
-> +out:
-> +       putname(file);
-> +       return ret;
-> +}
-> +
->  static ssize_t split_huge_pages_write(struct file *file, const char __user *buf,
->                                 size_t count, loff_t *ppops)
->  {
->         static DEFINE_MUTEX(mutex);
->         ssize_t ret;
-> -       char input_buf[80]; /* hold pid, start_vaddr, end_vaddr */
-> +       /* hold pid, start_vaddr, end_vaddr or file_path, off_start, off_end */
-> +       char input_buf[MAX_INPUT];
-
-I didn't find where MAX_INPUT is defined in your patch. Just saw
-include/uapi/linux/limits.h have it defined. Is it the one you really
-refer to?
-
->         int pid;
->         unsigned long vaddr_start, vaddr_end;
->
-> @@ -3058,11 +3118,40 @@ static ssize_t split_huge_pages_write(struct file *file, const char __user *buf,
->
->         ret = -EFAULT;
->
-> -       memset(input_buf, 0, 80);
-> +       memset(input_buf, 0, MAX_INPUT);
->         if (copy_from_user(input_buf, buf, min_t(size_t, count, 80)))
->                 goto out;
->
-> -       input_buf[79] = '\0';
-> +       input_buf[MAX_INPUT - 1] = '\0';
-> +
-> +       if (input_buf[0] == '/') {
-> +               char *tok;
-> +               char *buf = input_buf;
-> +               char file_path[MAX_INPUT];
-> +               pgoff_t off_start = 0, off_end = 0;
-> +               size_t input_len = strlen(input_buf);
-> +
-> +               tok = strsep(&buf, ",");
-> +               if (tok) {
-> +                       strncpy(file_path, tok, MAX_INPUT);
-> +               } else {
-> +                       ret = -EINVAL;
-> +                       goto out;
-> +               }
-> +
-> +               ret = sscanf(buf, "0x%lx,0x%lx", &off_start, &off_end);
-> +               if (ret != 2) {
-> +                       pr_info("ret: %ld\n", ret);
-> +                       ret = -EINVAL;
-> +                       goto out;
-> +               }
-> +               ret = split_huge_pages_in_file(file_path, off_start, off_end);
-> +               if (!ret)
-> +                       ret = input_len;
-> +
-> +               goto out;
-> +       }
-> +
->         ret = sscanf(input_buf, "%d,0x%lx,0x%lx", &pid, &vaddr_start, &vaddr_end);
->         if (ret == 1 && pid == 1) {
->                 split_huge_pages_all();
-> diff --git a/tools/testing/selftests/vm/split_huge_page_test.c b/tools/testing/selftests/vm/split_huge_page_test.c
-> index 9f33ddbb3182..0202702f7eda 100644
-> --- a/tools/testing/selftests/vm/split_huge_page_test.c
-> +++ b/tools/testing/selftests/vm/split_huge_page_test.c
-> @@ -7,11 +7,13 @@
->  #define _GNU_SOURCE
->  #include <stdio.h>
->  #include <stdlib.h>
-> +#include <stdarg.h>
->  #include <unistd.h>
->  #include <inttypes.h>
->  #include <string.h>
->  #include <fcntl.h>
->  #include <sys/mman.h>
-> +#include <sys/mount.h>
->  #include <malloc.h>
->  #include <stdbool.h>
->
-> @@ -24,6 +26,9 @@ uint64_t pmd_pagesize;
->  #define SMAP_PATH "/proc/self/smaps"
->  #define INPUT_MAX 80
->
-> +#define PID_FMT "%d,0x%lx,0x%lx"
-> +#define PATH_FMT "%s,0x%lx,0x%lx"
-> +
->  #define PFN_MASK     ((1UL<<55)-1)
->  #define KPF_THP      (1UL<<22)
->
-> @@ -87,13 +92,16 @@ static int write_file(const char *path, const char *buf, size_t buflen)
->         return (unsigned int) numwritten;
->  }
->
-> -static void write_debugfs(int pid, uint64_t vaddr_start, uint64_t vaddr_end)
-> +static void write_debugfs(const char *fmt, ...)
->  {
->         char input[INPUT_MAX];
->         int ret;
-> +       va_list argp;
-> +
-> +       va_start(argp, fmt);
-> +       ret = vsnprintf(input, INPUT_MAX, fmt, argp);
-> +       va_end(argp);
->
-> -       ret = snprintf(input, INPUT_MAX, "%d,0x%lx,0x%lx", pid, vaddr_start,
-> -                       vaddr_end);
->         if (ret >= INPUT_MAX) {
->                 printf("%s: Debugfs input is too long\n", __func__);
->                 exit(EXIT_FAILURE);
-> @@ -178,7 +186,8 @@ void split_pmd_thp(void)
->         }
->
->         /* split all THPs */
-> -       write_debugfs(getpid(), (uint64_t)one_page, (uint64_t)one_page + len);
-> +       write_debugfs(PID_FMT, getpid(), (uint64_t)one_page,
-> +               (uint64_t)one_page + len);
->
->         for (i = 0; i < len; i++)
->                 if (one_page[i] != (char)i) {
-> @@ -269,7 +278,7 @@ void split_pte_mapped_thp(void)
->         }
->
->         /* split all remapped THPs */
-> -       write_debugfs(getpid(), (uint64_t)pte_mapped,
-> +       write_debugfs(PID_FMT, getpid(), (uint64_t)pte_mapped,
->                       (uint64_t)pte_mapped + pagesize * 4);
->
->         /* smap does not show THPs after mremap, use kpageflags instead */
-> @@ -295,6 +304,65 @@ void split_pte_mapped_thp(void)
->         close(kpageflags_fd);
->  }
->
-> +void split_file_backed_thp(void)
-> +{
-> +       int status;
-> +       int fd;
-> +       ssize_t num_written;
-> +       char tmpfs_template[] = "/tmp/thp_split_XXXXXX";
-> +       const char *tmpfs_loc = mkdtemp(tmpfs_template);
-> +       char testfile[INPUT_MAX];
-> +
-> +       status = mount("tmpfs", tmpfs_loc, "tmpfs", 0, "huge=always,size=4m");
-> +
-> +       if (status) {
-> +               printf("Unable to create a tmpfs for testing\n");
-> +               exit(EXIT_FAILURE);
-> +       }
-> +
-> +       status = snprintf(testfile, INPUT_MAX, "%s/thp_file", tmpfs_loc);
-> +       if (status >= INPUT_MAX) {
-> +               printf("Fail to create file-backed THP split testing file\n");
-> +               goto cleanup;
-> +       }
-> +
-> +       fd = open(testfile, O_CREAT|O_WRONLY);
-> +       if (fd == -1) {
-> +               perror("Cannot open testing file\n");
-> +               goto cleanup;
-> +       }
-> +
-> +       /* write something to the file, so a file-backed THP can be allocated */
-> +       num_written = write(fd, tmpfs_loc, sizeof(tmpfs_loc));
-> +       close(fd);
-> +
-> +       if (num_written < 1) {
-> +               printf("Fail to write data to testing file\n");
-> +               goto cleanup;
-> +       }
-> +
-> +       /* split the file-backed THP */
-> +       write_debugfs(PATH_FMT, testfile, 0, 1024);
-> +
-> +       status = unlink(testfile);
-> +       if (status)
-> +               perror("Cannot remove testing file\n");
-> +
-> +cleanup:
-> +       status = umount(tmpfs_loc);
-> +       if (status) {
-> +               printf("Unable to umount %s\n", tmpfs_loc);
-> +               exit(EXIT_FAILURE);
-> +       }
-> +       status = rmdir(tmpfs_loc);
-> +       if (status) {
-> +               perror("cannot remove tmp dir");
-> +               exit(EXIT_FAILURE);
-> +       }
-> +
-> +       printf("file-backed THP split test done, please check dmesg for more information\n");
-> +}
-> +
->  int main(int argc, char **argv)
->  {
->         if (geteuid() != 0) {
-> @@ -308,6 +376,7 @@ int main(int argc, char **argv)
->
->         split_pmd_thp();
->         split_pte_mapped_thp();
-> +       split_file_backed_thp();
->
->         return 0;
->  }
-> --
-> 2.30.1
->
+SGkgUmFuZHksDQoNCk9uIFR1ZSwgMjAyMS0wMy0xNiBhdCAxNTozNSAtMDcwMCwgUmFuZHkgRHVu
+bGFwIHdyb3RlOg0KPiBwaW5nPw0KPiANCg0KSSBjYW4gdGFrZSB0aGlzIHBhdGNoIGZvciB0aGUg
+bmV4dCBtZXJnZSB3aW5kb3cuDQoNCj4gT24gMy8xLzIxIDQ6MTkgUE0sIFJhbmR5IER1bmxhcCB3
+cm90ZToNCj4gPiBGaXggc2hpZnQgb3V0LW9mLWJvdW5kcyBpbiB4cHJ0X2NhbGNfbWFqb3J0aW1l
+bygpLiBUaGlzIGlzIGNhdXNlZA0KPiA+IGJ5IGEgZ2FyYmFnZSB0aW1lb3V0IChyZXRyYW5zKSBt
+b3VudCBvcHRpb24gYmVpbmcgcGFzc2VkIHRvIG5mcw0KPiA+IG1vdW50LA0KPiA+IGluIHRoaXMg
+Y2FzZSBmcm9tIHN5emthbGxlci4NCj4gPiANCj4gPiBJZiB0aGUgcHJvdG9jb2wgaXMgWFBSVF9U
+UkFOU1BPUlRfVURQLCB0aGVuICdyZXRyYW5zJyBpcyBhIHNoaWZ0DQo+ID4gdmFsdWUgZm9yIGEg
+NjQtYml0IGxvbmcgaW50ZWdlciwgc28gJ3JldHJhbnMnIGNhbm5vdCBiZSA+PSA2NC4NCj4gPiBJ
+ZiBpdCBpcyA+PSA2NCwgZmFpbCB0aGUgbW91bnQgYW5kIHJldHVybiBhbiBlcnJvci4NCj4gPiAN
+Cj4gPiBGaXhlczogOTk1NGJmOTJjMGNkICgiTkZTOiBNb3ZlIG1vdW50IHBhcmFtZXRlcmlzYXRp
+b24gYml0cyBpbnRvDQo+ID4gdGhlaXIgb3duIGZpbGUiKQ0KPiA+IFJlcG9ydGVkLWJ5OiBzeXpi
+b3QrYmEyZTkxZGY4Zjc0ODA5NDE3ZmFAc3l6a2FsbGVyLmFwcHNwb3RtYWlsLmNvbQ0KPiA+IFJl
+cG9ydGVkLWJ5OiBzeXpib3QrZjNhMGZhMTEwZmQ2MzBhYjU2YzhAc3l6a2FsbGVyLmFwcHNwb3Rt
+YWlsLmNvbQ0KPiA+IFNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRl
+YWQub3JnPg0KPiA+IENjOiBUcm9uZCBNeWtsZWJ1c3QgPHRyb25kLm15a2xlYnVzdEBoYW1tZXJz
+cGFjZS5jb20+DQo+ID4gQ2M6IEFubmEgU2NodW1ha2VyIDxhbm5hLnNjaHVtYWtlckBuZXRhcHAu
+Y29tPg0KPiA+IENjOiBsaW51eC1uZnNAdmdlci5rZXJuZWwub3JnDQo+ID4gQ2M6IERhdmlkIEhv
+d2VsbHMgPGRob3dlbGxzQHJlZGhhdC5jb20+DQo+ID4gQ2M6IEFsIFZpcm8gPHZpcm9AemVuaXYu
+bGludXgub3JnLnVrPg0KPiA+IENjOiBzdGFibGVAdmdlci5rZXJuZWwub3JnDQo+ID4gLS0tDQo+
+ID4gwqBmcy9uZnMvZnNfY29udGV4dC5jIHzCoMKgIDEyICsrKysrKysrKysrKw0KPiA+IMKgMSBm
+aWxlIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKykNCj4gPiANCj4gPiAtLS0gbG54LTUxMi1yYzEu
+b3JpZy9mcy9uZnMvZnNfY29udGV4dC5jDQo+ID4gKysrIGxueC01MTItcmMxL2ZzL25mcy9mc19j
+b250ZXh0LmMNCj4gPiBAQCAtOTc0LDYgKzk3NCwxNSBAQCBzdGF0aWMgaW50IG5mczIzX3BhcnNl
+X21vbm9saXRoaWMoc3RydWN0DQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNpemVvZihtbnRmaC0+ZGF0YSkgLSBtbnRmaC0+
+c2l6ZSk7DQo+ID4gwqANCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC8qDQo+
+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIGZvciBwcm90byA9PSBYUFJUX1RS
+QU5TUE9SVF9VRFAsIHdoaWNoIGlzIHdoYXQNCj4gPiB1c2VzDQo+ID4gK8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCAqIHRvX2V4cG9uZW50aWFsLCBpbXBseWluZyBzaGlmdDogbGltaXQg
+dGhlIHNoaWZ0DQo+ID4gdmFsdWUNCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+ICogdG8gQklUU19QRVJfTE9ORyAobWFqb3J0aW1lbyBpcyB1bnNpZ25lZCBsb25nKQ0KPiA+ICvC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKi8NCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgaWYgKCEoZGF0YS0+ZmxhZ3MgJiBORlNfTU9VTlRfVENQKSkgLyogdGhpcyB3
+aWxsIGJlDQo+ID4gVURQICovDQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqBpZiAoZGF0YS0+cmV0cmFucyA+PSA2NCkgLyogc2hpZnQgdmFsdWUgaXMN
+Cj4gPiB0b28gbGFyZ2UgKi8NCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBnb3RvIG91dF9pbnZhbGlkX2RhdGE7DQo+ID4g
+Kw0KPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAvKg0KPiA+IMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgICogVHJhbnNsYXRlIHRvIG5mc19mc19jb250ZXh0LCB3aGlj
+aA0KPiA+IG5mc19maWxsX3N1cGVyDQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgKiBjYW4gZGVhbCB3aXRoLg0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+ICovDQo+ID4gQEAgLTEwNzMsNiArMTA4Miw5IEBAIG91dF9ub19hZGRyZXNzOg0KPiA+IMKgDQo+
+ID4gwqBvdXRfaW52YWxpZF9maDoNCj4gPiDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIG5mc19pbnZh
+bGYoZmMsICJORlM6IGludmFsaWQgcm9vdCBmaWxlaGFuZGxlIik7DQo+ID4gKw0KPiA+ICtvdXRf
+aW52YWxpZF9kYXRhOg0KPiA+ICvCoMKgwqDCoMKgwqDCoHJldHVybiBuZnNfaW52YWxmKGZjLCAi
+TkZTOiBpbnZhbGlkIGJpbmFyeSBtb3VudCBkYXRhIik7DQo+ID4gwqB9DQo+ID4gwqANCj4gPiDC
+oCNpZiBJU19FTkFCTEVEKENPTkZJR19ORlNfVjQpDQo+ID4gDQo+IA0KPiANCg0KLS0gDQpUcm9u
+ZCBNeWtsZWJ1c3QNCkxpbnV4IE5GUyBjbGllbnQgbWFpbnRhaW5lciwgSGFtbWVyc3BhY2UNCnRy
+b25kLm15a2xlYnVzdEBoYW1tZXJzcGFjZS5jb20NCg0KDQo=
