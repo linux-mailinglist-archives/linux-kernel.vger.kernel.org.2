@@ -2,105 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F53A33D16A
+	by mail.lfdr.de (Postfix) with ESMTP id 03B8833D169
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 11:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236490AbhCPKJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 06:09:05 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:57091 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236486AbhCPKIx (ORCPT
+        id S235922AbhCPKJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 06:09:02 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:57036 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236482AbhCPKIs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 06:08:53 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4F08Bq4gQDz1qsjl;
-        Tue, 16 Mar 2021 11:08:51 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4F08Bq3nKlz1qql0;
-        Tue, 16 Mar 2021 11:08:51 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id nSAP13fhQmTa; Tue, 16 Mar 2021 11:08:50 +0100 (CET)
-X-Auth-Info: iVq4xeNxB5/6ASxd6BuHk52u1Mv/bXUCd4eNvIEuL20=
-Received: from localhost (dslb-084-056-254-233.084.056.pools.vodafone-ip.de [84.56.254.233])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Tue, 16 Mar 2021 11:08:50 +0100 (CET)
-From:   Claudius Heine <ch@denx.de>
-To:     johannes hahn <johannes-hahn@siemens.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org (open list:REAL TIME CLOCK (RTC) SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     werner zeh <werner.zeh@siemens.com>,
-        henning schild <henning.schild@siemens.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        martin mantel <martin.mantel@siemens.com>,
-        val krutov <val.krutov@erd.epson.com>,
-        Claudius Heine <ch@denx.de>
-Subject: [PATCH v3 1/1] rtc: rx6110: add ACPI bindings to I2C
-Date:   Tue, 16 Mar 2021 11:08:05 +0100
-Message-Id: <20210316100805.2630481-2-ch@denx.de>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <AM0PR10MB25801B7DCB6C1856B5D4F2C09FE10@AM0PR10MB2580.EURPRD10.PROD.OUTLOOK.COM>
-References: <AM0PR10MB25801B7DCB6C1856B5D4F2C09FE10@AM0PR10MB2580.EURPRD10.PROD.OUTLOOK.COM>
+        Tue, 16 Mar 2021 06:08:48 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D6DCDD8B;
+        Tue, 16 Mar 2021 11:08:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615889327;
+        bh=22Ct6epTDYbMoW1l2Xu8cPkLadja9VQY+KkxYOhhOg8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ncfrT9UMZoWvJTXh7GiiUIyau/TmJbbf5jUEKV2mpuyIREYHElCwx9z84701Xy5FC
+         mNdY6A936y238Hsl4bausRBVJ7S3V9sJr5OHd0xhWhk2IzjKjuBNUXMnpxrXIxe59Z
+         iJf8TeG8zSJ4BwEwd+2mGHleMWLtLdh2i2Bq2akM=
+Date:   Tue, 16 Mar 2021 12:08:11 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 06/11] media: uvcvideo: Add support for
+ V4L2_CTRL_TYPE_CTRL_CLASS
+Message-ID: <YFCDi6nSidMNHy52@pendragon.ideasonboard.com>
+References: <20210315173609.1547857-1-ribalda@chromium.org>
+ <20210315173609.1547857-7-ribalda@chromium.org>
+ <59c2f8dd-db7d-f80c-88fe-0db00c15c741@xs4all.nl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <59c2f8dd-db7d-f80c-88fe-0db00c15c741@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Hahn <johannes-hahn@siemens.com>
+Hi Hans,
 
-This allows the RX6110 driver to be automatically assigned to the right
-device on the I2C bus.
+On Tue, Mar 16, 2021 at 09:37:07AM +0100, Hans Verkuil wrote:
+> On 15/03/2021 18:36, Ricardo Ribalda wrote:
+> > Create all the class controls for the device defined controls.
+> > 
+> > Fixes v4l2-compliance:
+> > Control ioctls (Input 0):
+> > 		fail: v4l2-test-controls.cpp(216): missing control class for class 00980000
+> > 		fail: v4l2-test-controls.cpp(216): missing control tclass for class 009a0000
+> > 	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: FAIL
+> > 
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> >  drivers/media/usb/uvc/uvc_ctrl.c | 96 ++++++++++++++++++++++++++++++++
+> >  drivers/media/usb/uvc/uvcvideo.h |  6 ++
+> >  2 files changed, 102 insertions(+)
+> > 
+> > diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> > index b75da65115ef..be0fadaf414c 100644
+> > --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> > +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> > @@ -357,6 +357,17 @@ static const struct uvc_control_info uvc_ctrls[] = {
+> >  	},
+> >  };
+> >  
+> > +static const struct uvc_control_class uvc_control_class[] = {
+> > +	{
+> > +		.id		= V4L2_CID_CAMERA_CLASS,
+> > +		.name		= "Camera Controls",
+> > +	},
+> > +	{
+> > +		.id		= V4L2_CID_USER_CLASS,
+> > +		.name		= "User Controls",
+> 
+> I noticed that uvc_ctrl.c has hardcoded strings for the control names and
+> control menus.
+> 
+> It would be good to drop that from the code and instead use v4l2_ctrl_get_menu()
+> and v4l2_ctrl_get_name() to obtain the names. It ensures consistent naming and
+> saves a bit of memory.
+> 
+> This can be done in a separate patch before or after this one.
 
-Signed-off-by: Johannes Hahn <johannes-hahn@siemens.com>
-Signed-off-by: Claudius Heine <ch@denx.de>
-Signed-off-by: Henning Schild <henning.schild@siemens.com>
----
- drivers/rtc/rtc-rx6110.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+https://git.linuxtv.org/pinchartl/media.git/commit/?h=uvc/dev&id=16a7d79d67cdd06a448d8c4c20e270d1c21828b1
 
-diff --git a/drivers/rtc/rtc-rx6110.c b/drivers/rtc/rtc-rx6110.c
-index 79161d4c6ce4..29bd697f82cb 100644
---- a/drivers/rtc/rtc-rx6110.c
-+++ b/drivers/rtc/rtc-rx6110.c
-@@ -13,6 +13,7 @@
- #include <linux/of_gpio.h>
- #include <linux/regmap.h>
- #include <linux/rtc.h>
-+#include <linux/acpi.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/spi/spi.h>
-@@ -447,6 +448,14 @@ static int rx6110_i2c_probe(struct i2c_client *client,
- 	return rx6110_probe(rx6110, &client->dev);
- }
- 
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id rx6110_i2c_acpi_match[] = {
-+	{ "SECC6110", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(acpi, rx6110_i2c_acpi_match);
-+#endif
-+
- static const struct i2c_device_id rx6110_i2c_id[] = {
- 	{ "rx6110", 0 },
- 	{ }
-@@ -456,6 +465,9 @@ MODULE_DEVICE_TABLE(i2c, rx6110_i2c_id);
- static struct i2c_driver rx6110_i2c_driver = {
- 	.driver = {
- 		.name = RX6110_DRIVER_NAME,
-+#ifdef CONFIG_ACPI
-+		.acpi_match_table = ACPI_PTR(rx6110_i2c_acpi_match),
-+#endif
- 	},
- 	.probe		= rx6110_i2c_probe,
- 	.id_table	= rx6110_i2c_id,
+It's work in progress, the part that bothers me is the changes in
+uvc_parse_format(). We lose the human-readable name in a debug message,
+but maybe more importantly, we lose the distinction between different DV
+formats. Maybe it's not a big deal.
+
+> > +	},
+> > +};
+> > +
+> >  static const struct uvc_menu_info power_line_frequency_controls[] = {
+> >  	{ 0, "Disabled" },
+> >  	{ 1, "50 Hz" },
+> > @@ -1024,6 +1035,49 @@ static int __uvc_ctrl_get(struct uvc_video_chain *chain,
+> >  	return 0;
+> >  }
+> >  
+> > +static int __uvc_query_v4l2_class(struct uvc_video_chain *chain, u32 req_id,
+> > +				  u32 found_id)
+> > +{
+> > +	bool find_next = req_id & V4L2_CTRL_FLAG_NEXT_CTRL;
+> > +	unsigned int i;
+> > +
+> > +	req_id &= V4L2_CTRL_ID_MASK;
+> > +
+> > +	for (i = 0; i < ARRAY_SIZE(uvc_control_class); i++) {
+> > +		if (!(chain->ctrl_class_bitmap & BIT(i)))
+> > +			continue;
+> > +		if (!find_next) {
+> > +			if (uvc_control_class[i].id == req_id)
+> > +				return i;
+> > +			continue;
+> > +		}
+> > +		if (uvc_control_class[i].id > req_id &&
+> > +		    uvc_control_class[i].id < found_id)
+> > +			return i;
+> > +	}
+> > +
+> > +	return -ENODEV;
+> > +}
+> > +
+> > +static int uvc_query_v4l2_class(struct uvc_video_chain *chain, u32 req_id,
+> > +				u32 found_id, struct v4l2_queryctrl *v4l2_ctrl)
+> > +{
+> > +	int idx;
+> > +
+> > +	idx = __uvc_query_v4l2_class(chain, req_id, found_id);
+> > +	if (idx < 0)
+> > +		return -ENODEV;
+> > +
+> > +	memset(v4l2_ctrl, 0, sizeof(*v4l2_ctrl));
+> > +	v4l2_ctrl->id = uvc_control_class[idx].id;
+> > +	strscpy(v4l2_ctrl->name, uvc_control_class[idx].name,
+> > +		sizeof(v4l2_ctrl->name));
+> > +	v4l2_ctrl->type = V4L2_CTRL_TYPE_CTRL_CLASS;
+> > +	v4l2_ctrl->flags = V4L2_CTRL_FLAG_WRITE_ONLY
+> > +			   | V4L2_CTRL_FLAG_READ_ONLY;
+> > +	return 0;
+> > +}
+> > +
+> >  static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+> >  	struct uvc_control *ctrl,
+> >  	struct uvc_control_mapping *mapping,
+> > @@ -1127,12 +1181,31 @@ int uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+> >  	if (ret < 0)
+> >  		return -ERESTARTSYS;
+> >  
+> > +	/* Check if the ctrl is a know class */
+> > +	if (!(v4l2_ctrl->id & V4L2_CTRL_FLAG_NEXT_CTRL)) {
+> > +		ret = uvc_query_v4l2_class(chain, v4l2_ctrl->id, 0, v4l2_ctrl);
+> > +		if (!ret)
+> > +			goto done;
+> > +	}
+> > +
+> >  	ctrl = uvc_find_control(chain, v4l2_ctrl->id, &mapping);
+> >  	if (ctrl == NULL) {
+> >  		ret = -EINVAL;
+> >  		goto done;
+> >  	}
+> >  
+> > +	/*
+> > +	 * If we're enumerating control with V4L2_CTRL_FLAG_NEXT_CTRL, check if
+> > +	 * a class should be inserted between the previous control and the one
+> > +	 * we have just found.
+> > +	 */
+> > +	if (v4l2_ctrl->id & V4L2_CTRL_FLAG_NEXT_CTRL) {
+> > +		ret = uvc_query_v4l2_class(chain, v4l2_ctrl->id, mapping->id,
+> > +					   v4l2_ctrl);
+> > +		if (!ret)
+> > +			goto done;
+> > +	}
+> > +
+> >  	ret = __uvc_query_v4l2_ctrl(chain, ctrl, mapping, v4l2_ctrl);
+> >  done:
+> >  	mutex_unlock(&chain->ctrl_mutex);
+> > @@ -1426,6 +1499,11 @@ static int uvc_ctrl_add_event(struct v4l2_subscribed_event *sev, unsigned elems)
+> >  	if (ret < 0)
+> >  		return -ERESTARTSYS;
+> >  
+> > +	if (__uvc_query_v4l2_class(handle->chain, sev->id, 0) >= 0) {
+> > +		ret = 0;
+> > +		goto done;
+> > +	}
+> > +
+> >  	ctrl = uvc_find_control(handle->chain, sev->id, &mapping);
+> >  	if (ctrl == NULL) {
+> >  		ret = -EINVAL;
+> > @@ -1459,7 +1537,10 @@ static void uvc_ctrl_del_event(struct v4l2_subscribed_event *sev)
+> >  	struct uvc_fh *handle = container_of(sev->fh, struct uvc_fh, vfh);
+> >  
+> >  	mutex_lock(&handle->chain->ctrl_mutex);
+> > +	if (__uvc_query_v4l2_class(handle->chain, sev->id, 0) >= 0)
+> > +		goto done;
+> >  	list_del(&sev->node);
+> > +done:
+> >  	mutex_unlock(&handle->chain->ctrl_mutex);
+> >  }
+> >  
+> > @@ -1577,6 +1658,9 @@ int uvc_ctrl_get(struct uvc_video_chain *chain,
+> >  	struct uvc_control *ctrl;
+> >  	struct uvc_control_mapping *mapping;
+> >  
+> > +	if (__uvc_query_v4l2_class(chain, xctrl->id, 0) >= 0)
+> > +		return -EACCES;
+> > +
+> >  	ctrl = uvc_find_control(chain, xctrl->id, &mapping);
+> >  	if (ctrl == NULL)
+> >  		return -EINVAL;
+> > @@ -1596,6 +1680,9 @@ int uvc_ctrl_set(struct uvc_fh *handle,
+> >  	s32 max;
+> >  	int ret;
+> >  
+> > +	if (__uvc_query_v4l2_class(chain, xctrl->id, 0) >= 0)
+> > +		return -EACCES;
+> > +
+> >  	ctrl = uvc_find_control(chain, xctrl->id, &mapping);
+> >  	if (ctrl == NULL)
+> >  		return -EINVAL;
+> > @@ -2062,6 +2149,7 @@ static int __uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
+> >  {
+> >  	struct uvc_control_mapping *map;
+> >  	unsigned int size;
+> > +	unsigned int i;
+> >  
+> >  	/* Most mappings come from static kernel data and need to be duplicated.
+> >  	 * Mappings that come from userspace will be unnecessarily duplicated,
+> > @@ -2085,6 +2173,14 @@ static int __uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
+> >  	if (map->set == NULL)
+> >  		map->set = uvc_set_le_value;
+> >  
+> > +	for (i = 0; i < ARRAY_SIZE(uvc_control_class); i++) {
+> > +		if (V4L2_CTRL_ID2WHICH(uvc_control_class[i].id) ==
+> > +						V4L2_CTRL_ID2WHICH(map->id)) {
+> > +			chain->ctrl_class_bitmap |= BIT(i);
+> > +			break;
+> > +		}
+> > +	}
+> > +
+> >  	list_add_tail(&map->list, &ctrl->info.mappings);
+> >  	uvc_dbg(chain->dev, CONTROL, "Adding mapping '%s' to control %pUl/%u\n",
+> >  		map->name, ctrl->info.entity, ctrl->info.selector);
+> > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> > index 97df5ecd66c9..1f17e4253673 100644
+> > --- a/drivers/media/usb/uvc/uvcvideo.h
+> > +++ b/drivers/media/usb/uvc/uvcvideo.h
+> > @@ -262,6 +262,11 @@ struct uvc_control_mapping {
+> >  		    u8 *data);
+> >  };
+> >  
+> > +struct uvc_control_class {
+> > +	u32 id;
+> > +	char name[32];
+> > +};
+> > +
+> >  struct uvc_control {
+> >  	struct uvc_entity *entity;
+> >  	struct uvc_control_info info;
+> > @@ -475,6 +480,7 @@ struct uvc_video_chain {
+> >  
+> >  	struct v4l2_prio_state prio;		/* V4L2 priority state */
+> >  	u32 caps;				/* V4L2 chain-wide caps */
+> > +	u8 ctrl_class_bitmap;			/* Bitmap of valid classes */
+> >  };
+> >  
+> >  struct uvc_stats_frame {
+> > 
+> 
+
 -- 
-2.30.1
+Regards,
 
+Laurent Pinchart
