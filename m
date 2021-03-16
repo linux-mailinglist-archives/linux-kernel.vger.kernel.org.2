@@ -2,193 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E6B33CE4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:02:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 618D933CE5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Mar 2021 08:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231301AbhCPHBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 03:01:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231195AbhCPHBX (ORCPT
+        id S232673AbhCPHCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 03:02:34 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:44328 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231356AbhCPHCM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 03:01:23 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277BCC06174A;
-        Tue, 16 Mar 2021 00:01:23 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id r3so52596343lfc.13;
-        Tue, 16 Mar 2021 00:01:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JxGKDkVfXGKRna8iTes4kKAsxWi/i4GQ3tOLDP6GpoQ=;
-        b=vBUkvWkwbtG8vyiRoj73LMOZGE5jZs6YXdymjwqFgRrn7JBgNqAz1g/FeqyO9Lo7aV
-         wDd0ovRVBne4iF+lNUuw+xOOLejKKloq3TXqOfDS++B+JfRwj1imgVnDe6coNFsE0nge
-         OQlJ9AuqLuEH7qAAprpzScUxNTzqvV3DTpPfqVDavOTqifjzVgPrX/T3ZTix1mMmTHio
-         9YPAF3GTetgOmohJpy753d5Q9Vc4A+RQPgS4JyV4R8Mt+1ouxReKo2oA8HlKLNm2ICcH
-         mHCSHmvQzkMQp9eGiNCUrwnvao49mvYuVMQvMcDO59S8Y8GTjRL0UoZIOooDoJZxmaF+
-         wj9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JxGKDkVfXGKRna8iTes4kKAsxWi/i4GQ3tOLDP6GpoQ=;
-        b=eYOU1GZEZ6X0Pct4NCAJ2ulGaSrzs7U6sUjYfFU1H99rjZ2WICQeVT7TKyaaTJPCre
-         toibFS8MbmgG/U+M4dkfdrrl07MI8WrhfSdCt7WwvtRQLEz9xQKCMlrqMR69++x6iQIW
-         PCP7vn549QKoc+H8qnSKnqBn87uOln2shNTSKWvbLFRVCPR4sK9XzapRa6DhuDP8koai
-         MVekP65YarlvLYgHVfx23VP0OpjXThDKbIGjBp2FtUZFqjibmFQltbGvZ6gyAqCV7caL
-         w7/1TXh4A5jDu34KmW2j457l0DatSbTg16cTjinrc17Aa7bqUIzOo14GAv6kzhd8IjQN
-         kKYQ==
-X-Gm-Message-State: AOAM533x6QGkFZ9wZ6SQDU/oHmYc9IErxHJZr/4RvoLW/8hVLO67yjTp
-        kRd7UHE5LSDJ5GyjwhhtAK8=
-X-Google-Smtp-Source: ABdhPJyMAE8C/sIfU75yfYl+rcee6p15k6kf1B6GndQrRvtbx/qWrWoqKFUHhIBzwyqHx380aPHg6A==
-X-Received: by 2002:a19:488e:: with SMTP id v136mr10457749lfa.611.1615878075482;
-        Tue, 16 Mar 2021 00:01:15 -0700 (PDT)
-Received: from [192.168.1.39] (88-114-223-25.elisa-laajakaista.fi. [88.114.223.25])
-        by smtp.gmail.com with ESMTPSA id t201sm3028596lff.70.2021.03.16.00.01.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 00:01:14 -0700 (PDT)
-Subject: Re: [PATCH v4] mm/vmalloc: randomize vmalloc() allocations
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>
-References: <20210309135757.5406-1-toiwoton@gmail.com>
- <20210314172312.GA2085@pc638.lan>
- <ba975607-9493-c78c-bbd8-6a85573114d1@gmail.com>
- <20210315153510.GA1865@pc638.lan>
- <4649f69d-b7cd-d1a6-26e0-9b8bf3b17df5@gmail.com>
- <20210315180239.GA2117@pc638.lan>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <b2103eff-1181-4192-aaa3-003d115eaf97@gmail.com>
-Date:   Tue, 16 Mar 2021 09:01:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 16 Mar 2021 03:02:12 -0400
+X-UUID: 5abef9c256ff417386aec7eb5af5cbf7-20210316
+X-UUID: 5abef9c256ff417386aec7eb5af5cbf7-20210316
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <michael.kao@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1502989313; Tue, 16 Mar 2021 15:02:11 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 16 Mar 2021 15:01:44 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 16 Mar 2021 15:01:44 +0800
+From:   Michael Kao <michael.kao@mediatek.com>
+To:     <michael.kao@mediatek.com>, <fan.chen@mediatek.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        <linux-pm@vger.kernel.org>, <srv_heupstream@mediatek.com>
+CC:     Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <hsinyi@chromium.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [v7,1/3] arm64: dts: mt8183: add thermal zone node
+Date:   Tue, 16 Mar 2021 15:01:42 +0800
+Message-ID: <20210316070144.28440-2-michael.kao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210316070144.28440-1-michael.kao@mediatek.com>
+References: <20210316070144.28440-1-michael.kao@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20210315180239.GA2117@pc638.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 18D33057B35F074E492F7361681F86E71698E3215D951BD9CBBD6C0687251D1E2000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.3.2021 20.02, Uladzislau Rezki wrote:
-> On Mon, Mar 15, 2021 at 06:23:37PM +0200, Topi Miettinen wrote:
->> On 15.3.2021 17.35, Uladzislau Rezki wrote:
->>>> On 14.3.2021 19.23, Uladzislau Rezki wrote:
->>>>> Also, using vmaloc test driver i can trigger a kernel BUG:
->>>>>
->>>>> <snip>
->>>>> [   24.627577] kernel BUG at mm/vmalloc.c:1272!
->>>>
->>>> It seems that most tests indeed fail. Perhaps the vmalloc subsystem isn't
->>>> very robust in face of fragmented virtual memory. What could be done to fix
->>>> that?
->>>>
->>> Your patch is broken in context of checking "vend" when you try to
->>> allocate next time after first attempt. Passed "vend" is different
->>> there comparing what is checked later to figure out if an allocation
->>> failed or not:
->>>
->>> <snip>
->>>       if (unlikely(addr == vend))
->>>           goto overflow;
->>> <snip>
->>
->>
->> Thanks, I'll fix that.
->>
->>>
->>>>
->>>> In this patch, I could retry __alloc_vmap_area() with the whole region after
->>>> failure of both [random, vend] and [vstart, random] but I'm not sure that
->>>> would help much. Worth a try of course.
->>>>
->>> There is no need in your second [vstart, random]. If a first bigger range
->>> has not been successful, the smaller one will never be success anyway. The
->>> best way to go here is to repeat with real [vsart:vend], if it still fails
->>> on a real range, then it will not be possible to accomplish an allocation
->>> request with given parameters.
->>>
->>>>
->>>> By the way, some of the tests in test_vmalloc.c don't check for vmalloc()
->>>> failure, for example in full_fit_alloc_test().
->>>>
->>> Where?
->>
->> Something like this:
->>
->> diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
->> index 5cf2fe9aab9e..27e5db9a96b4 100644
->> --- a/lib/test_vmalloc.c
->> +++ b/lib/test_vmalloc.c
->> @@ -182,9 +182,14 @@ static int long_busy_list_alloc_test(void)
->>          if (!ptr)
->>                  return rv;
->>
->> -       for (i = 0; i < 15000; i++)
->> +       for (i = 0; i < 15000; i++) {
->>                  ptr[i] = vmalloc(1 * PAGE_SIZE);
->>
->> +               if (!ptr[i])
->> +                       goto leave;
->> +       }
->> +
->>
-> Hmm. That is for creating a long list of allocated areas before running
-> a test. For example if one allocation among 15 000 fails, some index will
-> be set to NULL. Later on after "leave" label vfree() will bypass NULL freeing.
-> 
-> Either we have 15 000 extra elements or 10 000 does not really matter
-> and is considered as a corner case that is probably never happens. Yes,
-> you can simulate such precondition, but then a regular vmalloc()s will
-> likely also fails, thus the final results will be screwed up.
+From: "michael.kao" <michael.kao@mediatek.com>
 
-I'd argue that if the allocations fail, the test should be aborted 
-immediately since the results are not representative.
+Add thermal zone node to Mediatek MT8183 dts file.
 
--Topi
+Evaluate the thermal zone every 500ms while not cooling
+and every 100ms when passive cooling is performed.
 
-> 
->> +
->>          for (i = 0; i < test_loop_count; i++) {
->>                  ptr_1 = vmalloc(100 * PAGE_SIZE);
->>                  if (!ptr_1)
->> @@ -236,7 +241,11 @@ static int full_fit_alloc_test(void)
->>
->>          for (i = 0; i < junk_length; i++) {
->>                  ptr[i] = vmalloc(1 * PAGE_SIZE);
->> +               if (!ptr[i])
->> +                       goto error;
->>                  junk_ptr[i] = vmalloc(1 * PAGE_SIZE);
->> +               if (!junk_ptr[i])
->> +                       goto error;
->>          }
->>
->>          for (i = 0; i < junk_length; i++)
->> @@ -256,8 +265,10 @@ static int full_fit_alloc_test(void)
->>          rv = 0;
->>
->>   error:
->> -       for (i = 0; i < junk_length; i++)
->> +       for (i = 0; i < junk_length; i++) {
->>                  vfree(ptr[i]);
->> +               vfree(junk_ptr[i]);
->> +       }
->>
->>          vfree(ptr);
->>          vfree(junk_ptr);
->>
-> Same here.
-> 
-> --
-> Vlad Rezki
-> 
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Signed-off-by: Michael Kao <michael.kao@mediatek.com>
+---
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi | 85 ++++++++++++++++++++++++
+ 1 file changed, 85 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+index 5b782a4769e7..d3550af06408 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+@@ -657,6 +657,87 @@
+ 			status = "disabled";
+ 		};
+ 
++		thermal: thermal@1100b000 {
++			#thermal-sensor-cells = <1>;
++			compatible = "mediatek,mt8183-thermal";
++			reg = <0 0x1100b000 0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_THERM>,
++				 <&infracfg CLK_INFRA_AUXADC>;
++			clock-names = "therm", "auxadc";
++			resets = <&infracfg  MT8183_INFRACFG_AO_THERM_SW_RST>;
++			interrupts = <0 76 IRQ_TYPE_LEVEL_LOW>;
++			mediatek,auxadc = <&auxadc>;
++			mediatek,apmixedsys = <&apmixedsys>;
++			nvmem-cells = <&thermal_calibration>;
++			nvmem-cell-names = "calibration-data";
++		};
++
++		thermal-zones {
++			cpu_thermal: cpu_thermal {
++				polling-delay-passive = <100>;
++				polling-delay = <500>;
++				thermal-sensors = <&thermal 0>;
++				sustainable-power = <5000>;
++			};
++
++			/* The tzts1 ~ tzts6 don't need to polling */
++			/* The tzts1 ~ tzts6 don't need to thermal throttle */
++
++			tzts1: tzts1 {
++				polling-delay-passive = <0>;
++				polling-delay = <0>;
++				thermal-sensors = <&thermal 1>;
++				sustainable-power = <5000>;
++				trips {};
++				cooling-maps {};
++			};
++
++			tzts2: tzts2 {
++				polling-delay-passive = <0>;
++				polling-delay = <0>;
++				thermal-sensors = <&thermal 2>;
++				sustainable-power = <5000>;
++				trips {};
++				cooling-maps {};
++			};
++
++			tzts3: tzts3 {
++				polling-delay-passive = <0>;
++				polling-delay = <0>;
++				thermal-sensors = <&thermal 3>;
++				sustainable-power = <5000>;
++				trips {};
++				cooling-maps {};
++			};
++
++			tzts4: tzts4 {
++				polling-delay-passive = <0>;
++				polling-delay = <0>;
++				thermal-sensors = <&thermal 4>;
++				sustainable-power = <5000>;
++				trips {};
++				cooling-maps {};
++			};
++
++			tzts5: tzts5 {
++				polling-delay-passive = <0>;
++				polling-delay = <0>;
++				thermal-sensors = <&thermal 5>;
++				sustainable-power = <5000>;
++				trips {};
++				cooling-maps {};
++			};
++
++			tztsABB: tztsABB {
++				polling-delay-passive = <0>;
++				polling-delay = <0>;
++				thermal-sensors = <&thermal 6>;
++				sustainable-power = <5000>;
++				trips {};
++				cooling-maps {};
++			};
++		};
++
+ 		pwm0: pwm@1100e000 {
+ 			compatible = "mediatek,mt8183-disp-pwm";
+ 			reg = <0 0x1100e000 0 0x1000>;
+@@ -926,6 +1007,10 @@
+ 			reg = <0 0x11f10000 0 0x1000>;
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
++			thermal_calibration: calib@180 {
++				reg = <0x180 0xc>;
++			};
++
+ 			mipi_tx_calibration: calib@190 {
+ 				reg = <0x190 0xc>;
+ 			};
+-- 
+2.18.0
 
