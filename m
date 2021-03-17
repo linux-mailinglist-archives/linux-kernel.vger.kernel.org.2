@@ -2,98 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3252F33F538
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B5233F571
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232080AbhCQQN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 12:13:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42650 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231956AbhCQQNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 12:13:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A08D64F69;
-        Wed, 17 Mar 2021 14:55:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615992928;
-        bh=6x56BQwiCuKyvHSUTWbTvG2cvq4XP+bZqvITAcrVOp4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aE0NotDFD5/0MpPuyJcc3xJ0zfOcrCqi9pyGNe8v2CUflJR0NKCgEbXHSMxlSpAqv
-         g0nzes1bDfz6uR8Hfls0rJKktdE8uxjKvDGELVcpZ3bskfGGBFIHlzjyMGIYiMH70a
-         FI6Baux86dhK5TnqtbhzGVb7yHykfbW4Cn+4Vsm92dS7H/GYxnyGHETpi0kKCH63Ch
-         oQhXf/eux0ZLs5JJZY0yXDtic4PcfYQLndymzgCFdhTy33cEiytlb/4GJem/ZXnWqW
-         bn5ZyZ22ujcGsGKIQZMPTRhCDbc899qsJ3ZQn1qeQaTlvpu9cQAm7VXELug5nr60kx
-         HuW5M4ttmpgpg==
-Date:   Wed, 17 Mar 2021 23:55:22 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH -tip 0/3] x86/kprobes: Remoev single-step trap from x86
- kprobes
-Message-Id: <20210317235522.f327f2a8f43af2e27e5bccea@kernel.org>
-In-Reply-To: <161469871251.49483.9142858308048988638.stgit@devnote2>
-References: <20210225112245.607c70ec13cf8d279390e89e@kernel.org>
-        <161469871251.49483.9142858308048988638.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232476AbhCQQ0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 12:26:37 -0400
+Received: from smtprelay0212.hostedemail.com ([216.40.44.212]:46016 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232006AbhCQQZ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 12:25:57 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave02.hostedemail.com (Postfix) with ESMTP id C4BE018091592
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 14:59:03 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id D3071182CF668;
+        Wed, 17 Mar 2021 14:58:02 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:1981:2194:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:4321:5007:7652:10004:10400:11026:11232:11658:11914:12048:12297:12438:12740:12895:13069:13311:13357:13439:13894:14659:14721:21080:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: top41_5206c062773f
+X-Filterd-Recvd-Size: 1942
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 17 Mar 2021 14:58:00 +0000 (UTC)
+Message-ID: <eae7016a8cd8f426987dd5c4a2a56c4ec6d28a6e.camel@perches.com>
+Subject: Re: [PATCH 2/3] drivers/perf: convert sysfs scnprintf family to
+ sysfs_emit_at
+From:   Joe Perches <joe@perches.com>
+To:     Qi Liu <liuqi115@huawei.com>, john.garry@huawei.com,
+        zhangshaokun@hisilicon.com, will@kernel.org, mark.rutland@arm.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linuxarm@openeuler.org
+Date:   Wed, 17 Mar 2021 07:57:59 -0700
+In-Reply-To: <1615974111-45601-3-git-send-email-liuqi115@huawei.com>
+References: <1615974111-45601-1-git-send-email-liuqi115@huawei.com>
+         <1615974111-45601-3-git-send-email-liuqi115@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Wed, 2021-03-17 at 17:41 +0800, Qi Liu wrote:
+> Use the generic sysfs_emit_at() function take place of scnprintf()
+[]
+> diff --git a/drivers/perf/arm-ccn.c b/drivers/perf/arm-ccn.c
+[]
+> @@ -328,41 +328,37 @@ static ssize_t arm_ccn_pmu_event_show(struct device *dev,
+>  			struct arm_ccn_pmu_event, attr);
+>  	ssize_t res;
+>  
+> 
+> -	res = scnprintf(buf, PAGE_SIZE, "type=0x%x", event->type);
+> +	res = sysfs_emit(buf, "type=0x%x", event->type);
+>  	if (event->event)
+> -		res += scnprintf(buf + res, PAGE_SIZE - res, ",event=0x%x",
+> +		res += sysfs_emit_at(buf + res, res, ",event=0x%x",
+>  				event->event);
 
-Would you think you still need this series to remove iret to kernel?
+sysfs_emit_at should always use buf, not buf + offset.
+res should be int and is the offset from buf for the output
 
-Thank you,
+so the form should be similar to
 
-On Wed,  3 Mar 2021 00:25:12 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+	int len;
 
-> Hi,
-> 
-> Here is a series of patches to remove the single-step debug trap from the
-> x86 kprobe.
-> 
-> The first 2 patches ([1/3][2/3]) are bugfixes which I've sent recently;
-> 
->  https://lore.kernel.org/lkml/161425451732.93763.18329509061375062554.stgit@devnote2/
-> 
-> And [3/3] is actually the patch to remove single-step from kprobes. The RFC
-> version is here;
-> 
->  https://lore.kernel.org/lkml/161460768474.430263.18425867006584111900.stgit@devnote2/
-> 
-> This uses int3 as Andy suggested instead of the debug trap, for removing the
-> IRET which returns to kernel.
-> Some instructions must be emulated and some instructions becomes not able
-> to be probed, but as far as I can see those are not rare case.
-> 
-> Thank you,
-> 
-> ---
-> 
-> Masami Hiramatsu (3):
->       x86/kprobes: Retrieve correct opcode for group instruction
->       x86/kprobes: Identify far indirect JMP correctly
->       x86/kprobes: Use int3 instead of debug trap for single-step
-> 
-> 
->  arch/x86/include/asm/kprobes.h |   21 +-
->  arch/x86/kernel/kprobes/core.c |  524 ++++++++++++++++++++++++++--------------
->  arch/x86/kernel/traps.c        |    3 
->  3 files changed, 358 insertions(+), 190 deletions(-)
-> 
-> --
-> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+	len = sysfs_emit(buf, "type=0x%x", event->type);
+	if (event->event) {
+		len += sysfs_emit_at(buf, len, ",event=0x%x", event->event);
+
+		etc...
 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
