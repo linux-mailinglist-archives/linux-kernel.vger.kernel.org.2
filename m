@@ -2,355 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766CF33E29E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B09A633E2AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbhCQA2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:28:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229517AbhCQA17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:27:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4197764F51;
-        Wed, 17 Mar 2021 00:27:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615940877;
-        bh=0zM86IeZ16gQbh2WjS9qneWbXsvsXsFQFH+1uBs/HsU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fioM8UYQY3gJjibcr6fntv31+P0JQUSmSn0WcM7OY0rZcFvO5WVK6HRNaFDFrSYlc
-         XW7A/CktPRELD3jtBKHBPIXuE5RDvvxETeiT1gVyH+J9A1BH+y31oRM5lp7qmgtj+P
-         /i6Pga7qpU5G4GtyHf4g/d1/K14XkJ35LmmGQq3Mj1D0W4tq1JNM1zPYJnNfhqXDqI
-         qCgTLivkMpBfELjzAsrb7reuLGBIrmKVI4WYx3UlXgfPj1vnyJNy9y1FXrTCGbfqNt
-         P6hh1JamWsR7er6oX4EFIkARRBZrPdgRG+ec8lF/7TnQslsL6wc/jOfm4VLFPiQ28j
-         j7jvdJTzyXnGg==
-Date:   Wed, 17 Mar 2021 09:27:51 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH -tip v2 04/10] kprobes: stacktrace: Recover the address
- changed by kretprobe
-Message-Id: <20210317092751.f29dd7dbcfb504efede83b43@kernel.org>
-In-Reply-To: <161553134798.1038734.10913826398325010608.stgit@devnote2>
-References: <161553130371.1038734.7661319550287837734.stgit@devnote2>
-        <161553134798.1038734.10913826398325010608.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S229683AbhCQA24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:28:56 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:57266 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229588AbhCQA2g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 20:28:36 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12H0DvPQ020518;
+        Wed, 17 Mar 2021 00:28:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=rrMNDZRHw3/5tvJ/f0NFSDfikPvbKq3hmNNorlrRR2A=;
+ b=BotGGNAaKObMl3sMWg29bBOzhvk98KwJnFV98nD4uaByf8M1dyNnX2Mn26HXFJnfSom+
+ 0ArL8dZNks3vqNf7fLlLKg0awVypdXaO3c6DN8vf9AjDZJJRmWMB4fSv1VEan3iozJmu
+ M0Nv5hu/bR3PipXNp75dx8STp3hHuWJGUMt0VuA6NNZalWSRcjLLwyEzdcP7SM44KuEo
+ qQND9BT0+Swf9FcKZKVx5bZNEFt2zoYKYWcy6YZl+xppKPXsOor5M62/dvY5o+5lxW6A
+ atAKIAnQNX6m/9C8au6PZXtuxLJlBqY+7twEnXuKh91nzajBYf+u/Ygh0+QUSZokDYGK Rg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 378jwbjfs0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Mar 2021 00:28:25 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12H0Fuuv030412;
+        Wed, 17 Mar 2021 00:28:24 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
+        by userp3030.oracle.com with ESMTP id 3797b0t5hc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Mar 2021 00:28:24 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i0fGQjEtNt/Z80/nJhN8CrWr/pCjg1/Su7ITzLeYdA5Q0LJ2XHz/Wp5se3UsQyoDpGIUUetlXgjKsL4bcevisfJFRws19QLxW0nCZKhIIjxG1f2GIJYF6ttJ3PuvzYmQhPmOwwDVLwScXJl0T8PPe6mqs2BSLPzgKWQtso07rEGijWDdk83FCH+DzouSBb735dspZC8wa6PebbJcdfUGTrXSu1dSb+FKXLO5Rfx2P8czs8wg7ZF68yCUECLxBty5oqUNdvt4F1NZdqguCmPnwMQmRuD6n4a7DoMvlYBdglJynBO5Fwr6af47fl/v6lxg/OJS3DDztlF18KflmShN9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rrMNDZRHw3/5tvJ/f0NFSDfikPvbKq3hmNNorlrRR2A=;
+ b=is8fwilzAdMq1zk5eTq18PhXmJ70WvopqBIb+pXx/vdYkdVbl2bF/uMADCPbMXN0qgQkIbjVIz0lOXzo5Tqkpkn77iqMQMpXFy//zEUKZwlG5DjIw1EF02CZKhkVSRi5Pmdlsa5dsyA0pIiWv1CfeRHvhm9z5GrqE6qAY8ajoYMho0B1BpVRyi7ZD1LN7GgE4XUpZkP7Fc4oC4pxWnkAuGKXyzeXwsy7NIjbUyWe9gfVf5EQovfcnaJJ2Iwk7j98fkfpLdA/ffHjvuvpsBnW9FiF+NwWns2FOSZPpzn94PK8922zOeezh8BtADaE3ApaYqz4LelH8dXsk4MrWSy6ig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rrMNDZRHw3/5tvJ/f0NFSDfikPvbKq3hmNNorlrRR2A=;
+ b=Zubxfj2WpBfOA9uynEF6w+s5zlQQ90qU2S7k6IgP2F0zff3iW2VCkNG7OQ5xHwcyVZEbov2o8xvUF+HDXYX4c6uSaE8ITZDV4F4axq0MvYYAN8B3OGmZCQKL1pe55LQrRTBvzjn+KVtI25WwUHb9mamlpbLIu7dp3PL24gKBD74=
+Authentication-Results: kvack.org; dkim=none (message not signed)
+ header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by BYAPR10MB3542.namprd10.prod.outlook.com (2603:10b6:a03:11a::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Wed, 17 Mar
+ 2021 00:28:22 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::980e:61ba:57d2:47ee%8]) with mapi id 15.20.3933.032; Wed, 17 Mar 2021
+ 00:28:22 +0000
+Subject: Re: [PATCH v2 5/5] mm/hugetlb: avoid calculating fault_mutex_hash in
+ truncate_op case
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20210316022758.52993-1-linmiaohe@huawei.com>
+ <d87264fb-0005-4f8b-7551-a5439108e9e1@oracle.com>
+ <4b3e9ea6-69e3-493c-342e-92117f274e06@huawei.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <952e9130-a084-20a7-aa7c-486fe9ccc8c6@oracle.com>
+Date:   Tue, 16 Mar 2021 17:27:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <4b3e9ea6-69e3-493c-342e-92117f274e06@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: MW4PR04CA0012.namprd04.prod.outlook.com
+ (2603:10b6:303:69::17) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.112] (50.38.35.18) by MW4PR04CA0012.namprd04.prod.outlook.com (2603:10b6:303:69::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Wed, 17 Mar 2021 00:28:21 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 43caa8f7-c145-4a64-a93c-08d8e8db920c
+X-MS-TrafficTypeDiagnostic: BYAPR10MB3542:
+X-Microsoft-Antispam-PRVS: <BYAPR10MB354258E730B19E6D392DA2BBE26A9@BYAPR10MB3542.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:612;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DgGcW9VnYYMOETKSJl3iksu951+AGTeGDtzm8mvE49i3hLIMQwttvi+WbTMnU5GGhwZTloD0GNMwS/SVqQ72f3Pe8lGdDdo9SFOg5Pc9F78tQ+waxG4ROMKEBiN7FG3sLEmStCcRub7aVdquP989hWe5MNBpzxcFj24Am7AIxZFaLpbf0Kv3mFuH9t1r0ydNT1fgJvUa+mhEtML45iASOPRWoyQ57d6D/dF9myfp/O3jbPGQertZsasV0TdU40Vm5Z378c9xIGvJ9WKPLK7Q4dnzuc+vTI9KhVxFJjmHWXpww2ol9/EOHd1137EjXjhtAu0RYHV8DGcPOGupJshA6kvcqjMUlMhzT6MwQTyKTDvBUunVycBpR5CxvhZR4dhSwouBYKjQKrGEW4yN8sbLr2DKFgfJVBJpvSIa2ocOTzzXULIl9+YEJ7KQhZMl32d2qDJO1oT0Tz87Zi4fRNVxqZ6i917JAkRHGfPez3nk0u0Eh1f47ydgyo+S3ZiMEQwy54UuBND3VlNbrQBO0E/DPCvjuryUAa34z22GK8sF4gKjztSwq5E5xsw7r3ylO5OSsAQrTcIAr7fBFECKKvDFEO8QZHsSeJL4Cd3qNk+6YPuPX/NhI7RMII4vAG/SPz5MQOG+xRDJ+uJSt0YZjK7HuA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(39860400002)(136003)(346002)(396003)(83380400001)(316002)(31686004)(478600001)(8676002)(186003)(16576012)(6486002)(8936002)(2906002)(52116002)(6666004)(44832011)(16526019)(4326008)(66946007)(31696002)(26005)(66476007)(66556008)(53546011)(956004)(36756003)(2616005)(86362001)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WEhtRXZQVDZ2alkxMUJkZUJta09qejNiU3BLclVTek5May9HZkcvcmZza1F0?=
+ =?utf-8?B?U1V5OXVsbzRIaUdIK0d5NlVoaVRxM3p6bzZnV0JnalcwbGErYUROWmd3ZUVn?=
+ =?utf-8?B?dUx3Qms4L2k1TXBmdXU5SlRVclo0Z0NPZGg4eDcxZ1lXa0V3THJod3VEMGUy?=
+ =?utf-8?B?SGRURzdTWTRPSEhVZXdvb1VqajU4eVFHSERBVTdBeU95K1pZT05aZlpLT0t0?=
+ =?utf-8?B?WUFlTlRwV2VkRW0vMjdhamJOMExEZDNiZDhyc3ZWYU5kNmFyYWNWMit1azR0?=
+ =?utf-8?B?VnZYZ3VhSVVLa2pnc0xvY1Urbm5WL2ZwV1ExVm11RjNZeHVweE1IejVpb1lQ?=
+ =?utf-8?B?KzJNa1F1RkozRHhtNnpCOHI4bjR2NEZMZ21peDlSWGIrUTM5NVp6ampCN0Jx?=
+ =?utf-8?B?UXBzRjk4VHJtZFppQVNUcVZCZ1hJTUI5WVZFSnk0Q1lVZlNXc0FSZU9LZXEw?=
+ =?utf-8?B?UTVaZ0JVa0RVTlZ2L2dTZVNGRWI5SDdrZWRGNUI3WklkNHBuMW54ZHIyNlZY?=
+ =?utf-8?B?ZGNxMk5zKzZUaDFiUDMzTk5DNG01a3FxcTUySjhtSFRzcEpQVTZpQzdkNFM3?=
+ =?utf-8?B?UmxsbmI3NXJRNnlqSGlDSk1lcm1XUTB0SE9aNC9ST0pFcjBZTi9IQlF2YWFr?=
+ =?utf-8?B?RVhndm5Tem9IVHdaMlJhSWQwZXNlTUYvRkRNd1h2Y2g4eHhVTlFvdytyKzdV?=
+ =?utf-8?B?aFlsTWw0alJGWmJWaFhvWlUrZlc3TkU1Y1VWUmd2Wmo2RlhEWFhTd2RLRTI2?=
+ =?utf-8?B?SFdSQ3g3dDN6YU9PNnVkRzFaVEdPMW9XblFkQlpLZGNBT255VGtwNmZpQWlk?=
+ =?utf-8?B?ZEhPZkdaelZVSk5Vc2p5M3NwN3lacUVaVUlLWmtqMlVFU2N5WXpyV3ZKbU9j?=
+ =?utf-8?B?WDBxcDZLdXFUL3VTS05yNUcwRlpGdkdETnlSQWF3K01NTnJsbEd3VTJHZ0pq?=
+ =?utf-8?B?UWVGT3B2RE1qWU9WQ0REcFd3ZkJvYmpIYUVNS3o0dlBDZjk1d2JhNzk4WjFM?=
+ =?utf-8?B?dERnQXpia00xMmtmQjNMNmF5dUNuN2NicjJNbUkvRWI0a2M3SlNWUEdubjhP?=
+ =?utf-8?B?N1NIRU1VNXBRdEtsck95aEdmVi9VVkV5RU40QjFQLzh4dVBNM25BUFZnUXBq?=
+ =?utf-8?B?K1ZaSUZpZ0hOVXIrYVkveUpFQnZyeCszQjVXN3B2eHAwaEhtMGZmTGE5Zmlh?=
+ =?utf-8?B?QjFNZlkyeXRMYWw4UTlhVlJCaEdJZXZwVXZpZ3J5ZW5ONk1xVWpzUWg5WmR2?=
+ =?utf-8?B?bG9mdkM4alBiOFFFOUtnK0JoWld2SlgvUi9ZK0E3TEJqbWpBbkVldW0xdUlX?=
+ =?utf-8?B?czFZUHZsc1RnS21jQ3RCV1d6Snh0UlJaYmRCRlZPM2RrWlRNYzNEWHlVTFpO?=
+ =?utf-8?B?R1hETllmTzFESU1NNTRPaUhhbVpORHViOW9KNGYrY2NNTUhSb2Q5UmIzUnJy?=
+ =?utf-8?B?V29QYVFiM0RlRE9DSVhwMm13Q2NYMk54OXBUZlcxRmZjTmhCM015RlhzaDZU?=
+ =?utf-8?B?N25yUGk4WUFWZ00vYWl1YXU4NGxEMmMrTEkyTXlOWmJFMFBKbUdhMkZHWmxX?=
+ =?utf-8?B?YXpteTRlN2g4QXJZWFRsbzlFNTNWbmRhMU1xUm5Tb0ZVTzRoWFlZMTEvc1JC?=
+ =?utf-8?B?YjNuQmNnRk55dXhvSjNBcERDbmswckxNQUI3bENZWGJzWFJMSE5ORVlDZllr?=
+ =?utf-8?B?cUdFY2dOK3JyRE1QT3VZdU40OFNDL1NrSFhJbGluVjNscmdsVXllOVJVNG0w?=
+ =?utf-8?Q?Zt2p+cHDdSfQPPoQnV4hDuHctpbZwkxZyYdN1P3?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 43caa8f7-c145-4a64-a93c-08d8e8db920c
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 00:28:22.2872
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4zLYzRO5VpCSaXxOn1DKTGLfUky/0q2ezBAvTrv8iwNShbXS33cAeM9fmU6uUdUyNgB9+e1Z5blk8YvbkSaMPQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3542
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9925 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 bulkscore=0
+ malwarescore=0 adultscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103170000
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9925 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ spamscore=0 mlxscore=0 bulkscore=0 suspectscore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1015 adultscore=0 phishscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103170000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Mar 2021 15:42:28 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> Recover the return address on the stack which changed by the
-> kretprobe. Note that this does not recover the address on the
-> !current stack trace if CONFIG_ARCH_STACKWALK=n because old
-> stack trace interface doesn't lock the stack in the generic
-> stack_trace_save*() functions.
-
-I found that v2 didn't work correctly with FP unwinder,
-because this changes the unlink timing.
-
-With frame pointer, the unwinder skips the first (on-going)
-kretprobe_trampoline because kretprobe_trampoline doesn't
-setup the frame pointer (push bp; mov sp, bp).
-If there are 2 or more kretprobes on the stack, when the last
-kretprobe_trampoline is running, the unwinder finds the 2nd
-kretprobe_trampoline on the unwinding call stack at first.
-However, while the user kretprobe handler is running, the last
-real return address is still linked to the current->kretprobe_instances.
-
-Thus, this will decode the 2nd kretprobe_trampoline with the
-last real return address.
-
-If the kretprobe_trampoline sets up the frame pointer at the entry
-this can be avoided. However, that helps only x86.
-Refering kretprobe_instance.fp (which should point the address of
-replaced stack entry) to find correct return address seems better
-solution, but this is implemented on the arch on which "call"
-instruction stores the return address on the stack. E.g. arm and
-some other RISCs stores the return address to the link register,
-which has no "address".
-
-So I would like to drop this arch-independent recovery routine.
-Instead, it should be fixed per-arch basis.
-
-Thank you,
-
+On 3/15/21 11:49 PM, Miaohe Lin wrote:
+> On 2021/3/16 11:07, Mike Kravetz wrote:
+>> On 3/15/21 7:27 PM, Miaohe Lin wrote:
+>>> The fault_mutex hashing overhead can be avoided in truncate_op case
+>>> because page faults can not race with truncation in this routine.  So
+>>> calculate hash for fault_mutex only in !truncate_op case to save some cpu
+>>> cycles.
+>>>
+>>> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>> Cc: Mike Kravetz <mike.kravetz@oracle.com>
+>>> ---
+>>> v1->v2:
+>>> remove unnecessary initialization for variable hash
+>>> collect Reviewed-by tag from Mike Kravetz
+>>
+>> My apologies for not replying sooner and any misunderstanding from my
+>> previous comments.
+>>
 > 
-> So with this patch, ftrace correctly shows the stacktrace
-> as below;
+> That's all right.
 > 
->  # echo r vfs_read > kprobe_events
->  # echo stacktrace > events/kprobes/r_vfs_read_0/trigger
->  # echo 1 > events/kprobes/r_vfs_read_0/enable
->  # echo 1 > options/sym-offset
->  # less trace
-> ...
+>> If the compiler is going to produce a warning because the variable is
+>> not initialized, then we will need to keep the initialization.
+>> Otherwise, this will show up as a build regression.  Ideally, there
+>> would be a modifier which could be used to tell the compiler the
+>> variable will used.  I do not know if such a modifier exists.
+>>
 > 
->               sh-132     [007] ...1    22.524917: <stack trace>
->  => kretprobe_dispatcher+0x7d/0xc0
->  => __kretprobe_trampoline_handler+0xdb/0x1b0
->  => trampoline_handler+0x48/0x60
->  => kretprobe_trampoline+0x2a/0x50
->  => ksys_read+0x70/0xf0
->  => __x64_sys_read+0x1a/0x20
->  => do_syscall_64+0x38/0x50
->  => entry_SYSCALL_64_after_hwframe+0x44/0xae
->  => 0
+> I do not know if such a modifier exists too. But maybe not all compilers are intelligent
+> enough to not produce a warning. It would be safe to keep the initialization...
 > 
-> The trampoline_handler+0x48 is actual call site address,
-> not modified by kretprobe.
+>> The patch can not produce a new warning.  So, if you need to initialize
 > 
-> Reported-by: Daniel Xu <dxu@dxuuu.xyz>
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> ---
->  Changes in v2:
->   - Add is_kretprobe_trampoline() for checking address outside of
->     kretprobe_find_ret_addr()
->   - Remove unneeded addr from kretprobe_find_ret_addr()
->   - Rename fixup_kretprobe_tramp_addr() to fixup_kretprobe_trampoline()
-> ---
->  include/linux/kprobes.h |   22 ++++++++++++++
->  kernel/kprobes.c        |   73 ++++++++++++++++++++++++++++++-----------------
->  kernel/stacktrace.c     |   22 ++++++++++++++
->  3 files changed, 91 insertions(+), 26 deletions(-)
-> 
-> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-> index 65dadd4238a2..674b5adad281 100644
-> --- a/include/linux/kprobes.h
-> +++ b/include/linux/kprobes.h
-> @@ -215,6 +215,14 @@ static nokprobe_inline void *kretprobe_trampoline_addr(void)
->  	return dereference_function_descriptor(kretprobe_trampoline);
->  }
->  
-> +static nokprobe_inline bool is_kretprobe_trampoline(unsigned long addr)
-> +{
-> +	return (void *)addr == kretprobe_trampoline_addr();
-> +}
-> +
-> +unsigned long kretprobe_find_ret_addr(struct task_struct *tsk,
-> +				      struct llist_node **cur);
-> +
->  /* If the trampoline handler called from a kprobe, use this version */
->  unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
->  					     void *frame_pointer);
-> @@ -514,6 +522,20 @@ static inline bool is_kprobe_optinsn_slot(unsigned long addr)
->  }
->  #endif
->  
-> +#if !defined(CONFIG_KRETPROBES)
-> +static nokprobe_inline bool is_kretprobe_trampoline(unsigned long addr)
-> +{
-> +	return false;
-> +}
-> +
-> +static nokprobe_inline
-> +unsigned long kretprobe_find_ret_addr(struct task_struct *tsk,
-> +				      struct llist_node **cur)
-> +{
-> +	return 0;
-> +}
-> +#endif
-> +
->  /* Returns true if kprobes handled the fault */
->  static nokprobe_inline bool kprobe_page_fault(struct pt_regs *regs,
->  					      unsigned int trap)
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 75c0a58c19c2..2550521ff64d 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -1858,45 +1858,51 @@ static struct notifier_block kprobe_exceptions_nb = {
->  
->  #ifdef CONFIG_KRETPROBES
->  
-> -unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
-> -					     void *frame_pointer)
-> +/* This assumes the tsk is current or the task which is not running. */
-> +unsigned long kretprobe_find_ret_addr(struct task_struct *tsk,
-> +				      struct llist_node **cur)
->  {
-> -	kprobe_opcode_t *correct_ret_addr = NULL;
->  	struct kretprobe_instance *ri = NULL;
-> -	struct llist_node *first, *node;
-> -	struct kretprobe *rp;
-> +	struct llist_node *node = *cur;
-> +
-> +	if (!node)
-> +		node = tsk->kretprobe_instances.first;
-> +	else
-> +		node = node->next;
->  
-> -	/* Find all nodes for this frame. */
-> -	first = node = current->kretprobe_instances.first;
->  	while (node) {
->  		ri = container_of(node, struct kretprobe_instance, llist);
-> -
-> -		BUG_ON(ri->fp != frame_pointer);
-> -
->  		if (ri->ret_addr != kretprobe_trampoline_addr()) {
-> -			correct_ret_addr = ri->ret_addr;
-> -			/*
-> -			 * This is the real return address. Any other
-> -			 * instances associated with this task are for
-> -			 * other calls deeper on the call stack
-> -			 */
-> -			goto found;
-> +			*cur = node;
-> +			return (unsigned long)ri->ret_addr;
->  		}
-> -
->  		node = node->next;
->  	}
-> -	pr_err("Oops! Kretprobe fails to find correct return address.\n");
-> -	BUG_ON(1);
-> +	return 0;
-> +}
-> +NOKPROBE_SYMBOL(kretprobe_find_ret_addr);
->  
-> -found:
-> -	/* Unlink all nodes for this frame. */
-> -	current->kretprobe_instances.first = node->next;
-> -	node->next = NULL;
-> +unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
-> +					     void *frame_pointer)
-> +{
-> +	kprobe_opcode_t *correct_ret_addr = NULL;
-> +	struct kretprobe_instance *ri = NULL;
-> +	struct llist_node *first, *node = NULL;
-> +	struct kretprobe *rp;
-> +
-> +	/* Find correct address and all nodes for this frame. */
-> +	correct_ret_addr = (void *)kretprobe_find_ret_addr(current, &node);
-> +	if (!correct_ret_addr) {
-> +		pr_err("Oops! Kretprobe fails to find correct return address.\n");
-> +		BUG_ON(1);
-> +	}
->  
-> -	/* Run them..  */
-> +	/* Run them. */
-> +	first = current->kretprobe_instances.first;
->  	while (first) {
->  		ri = container_of(first, struct kretprobe_instance, llist);
-> -		first = first->next;
-> +
-> +		BUG_ON(ri->fp != frame_pointer);
->  
->  		rp = get_kretprobe(ri);
->  		if (rp && rp->handler) {
-> @@ -1907,6 +1913,21 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
->  			rp->handler(ri, regs);
->  			__this_cpu_write(current_kprobe, prev);
->  		}
-> +		if (first == node)
-> +			break;
-> +
-> +		first = first->next;
-> +	}
-> +
-> +	/* Unlink all nodes for this frame. */
-> +	first = current->kretprobe_instances.first;
-> +	current->kretprobe_instances.first = node->next;
-> +	node->next = NULL;
-> +
-> +	/* Recycle them.  */
-> +	while (first) {
-> +		ri = container_of(first, struct kretprobe_instance, llist);
-> +		first = first->next;
->  
->  		recycle_rp_inst(ri);
->  	}
-> diff --git a/kernel/stacktrace.c b/kernel/stacktrace.c
-> index 9f8117c7cfdd..511287069473 100644
-> --- a/kernel/stacktrace.c
-> +++ b/kernel/stacktrace.c
-> @@ -13,6 +13,7 @@
->  #include <linux/export.h>
->  #include <linux/kallsyms.h>
->  #include <linux/stacktrace.h>
-> +#include <linux/kprobes.h>
->  
->  /**
->   * stack_trace_print - Print the entries in the stack trace
-> @@ -69,6 +70,18 @@ int stack_trace_snprint(char *buf, size_t size, const unsigned long *entries,
->  }
->  EXPORT_SYMBOL_GPL(stack_trace_snprint);
->  
-> +static void fixup_kretprobe_trampoline(unsigned long *store, unsigned int len,
-> +				       struct task_struct *tsk)
-> +{
-> +	struct llist_node *cur = NULL;
-> +
-> +	while (len--) {
-> +		if (is_kretprobe_trampoline(*store))
-> +			*store = kretprobe_find_ret_addr(tsk, &cur);
-> +		store++;
-> +	}
-> +}
-> +
->  #ifdef CONFIG_ARCH_STACKWALK
->  
->  struct stacktrace_cookie {
-> @@ -119,6 +132,7 @@ unsigned int stack_trace_save(unsigned long *store, unsigned int size,
->  	};
->  
->  	arch_stack_walk(consume_entry, &c, current, NULL);
-> +	fixup_kretprobe_trampoline(store, c.len, current);
->  	return c.len;
->  }
->  EXPORT_SYMBOL_GPL(stack_trace_save);
-> @@ -147,6 +161,7 @@ unsigned int stack_trace_save_tsk(struct task_struct *tsk, unsigned long *store,
->  		return 0;
->  
->  	arch_stack_walk(consume_entry, &c, tsk, NULL);
-> +	fixup_kretprobe_trampoline(store, c.len, tsk);
->  	put_task_stack(tsk);
->  	return c.len;
->  }
-> @@ -171,6 +186,7 @@ unsigned int stack_trace_save_regs(struct pt_regs *regs, unsigned long *store,
->  	};
->  
->  	arch_stack_walk(consume_entry, &c, current, regs);
-> +	fixup_kretprobe_trampoline(store, c.len, current);
->  	return c.len;
->  }
->  
-> @@ -205,6 +221,8 @@ int stack_trace_save_tsk_reliable(struct task_struct *tsk, unsigned long *store,
->  		return 0;
->  
->  	ret = arch_stack_walk_reliable(consume_entry, &c, tsk);
-> +	if (!ret)
-> +		fixup_kretprobe_trampoline(store, c.len, tsk);
->  	put_task_stack(tsk);
->  	return ret ? ret : c.len;
->  }
-> @@ -276,6 +294,8 @@ unsigned int stack_trace_save(unsigned long *store, unsigned int size,
->  	};
->  
->  	save_stack_trace(&trace);
-> +	fixup_kretprobe_trampoline(store, trace.nr_entries, current);
-> +
->  	return trace.nr_entries;
->  }
->  EXPORT_SYMBOL_GPL(stack_trace_save);
-> @@ -323,6 +343,8 @@ unsigned int stack_trace_save_regs(struct pt_regs *regs, unsigned long *store,
->  	};
->  
->  	save_stack_trace_regs(regs, &trace);
-> +	fixup_kretprobe_trampoline(store, trace.nr_entries, current);
-> +
->  	return trace.nr_entries;
->  }
->  
+> So just drop this version of the patch? Or should I send a new version with your Reviewed-by tag and
+> keep the initialization?
 > 
 
+Yes, drop this version of the patch.  You can add my Reviewed-by to the
+previous version that included the initialization and resend.
 
+All the cleanup patches in this series should be good to go.
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Mike Kravetz
