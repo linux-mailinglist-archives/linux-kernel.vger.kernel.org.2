@@ -2,160 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E955B33F175
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D833333F1A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:50:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbhCQNs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 09:48:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231391AbhCQNsE (ORCPT
+        id S231621AbhCQNtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 09:49:50 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:56130 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231394AbhCQNtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 09:48:04 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5368DC06174A;
-        Wed, 17 Mar 2021 06:48:04 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso1371926pjb.4;
-        Wed, 17 Mar 2021 06:48:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X0Kd/gVFWEpxhzoIaYRw9w3BiHsoDUdiQGPAy++5+UQ=;
-        b=uIskyRGOQTlGpH9G9n0ufXVvvPLqC9vsJNQKEhkHb2ej8r6vK++4thbru0d5D+QBeE
-         ixQqlK3cAE5+XwasutWgXtGQXX+LTJR5xrpkLMzqzNX2a2U37xvZpZukPDaAMVk63zv4
-         nbLIytQQ2ef3aZZIFmXNFle1RgynEG83AWhRB38m8ujPpAs2LyF+Oj+HYvHeFTlv0lvb
-         TwlsAN0h3i9Ldhxf05IuCtROayDpt+8AxQgL1gcpAPdmQgkJb3UIPTQR80ZIXJueMAI8
-         istajSi+A7n0//RPZzRWRmBen3lKrCJIk1T3Rx7zt0kp1gd/Wccpyn9M4KMwWlqiPrNr
-         xezA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X0Kd/gVFWEpxhzoIaYRw9w3BiHsoDUdiQGPAy++5+UQ=;
-        b=LP6UbVzLk3kPKtJTdD9cu6Mk/nYFKPNCXov5zXMpiCypek86IrpIFuFQwB0+6u7P85
-         uqatvhzoA7z07oVXFSBMgrx+PXMB45mXrHBIktRyZILFWRx2Yb8XWIqPCIU5p1Te+Jaa
-         34dzPEZhfF4pW6aiHEbtxoWzTpIRRq2hTE2vOWc1U1ZjQsIj/zNqA9CdjGWbZkzvbgpl
-         5+7awhZ8lbR8S61ITF9QzLNpNjqzAyJCaY3IXH+wMcRIufwGsv8vRgYEV5w6iltYSprJ
-         hCmvs6YXtIoFSCareaOTYqc2yKMiOi2p6WzABIzrGaB0rqpG0upyz9eMq4RgGjsLmlSF
-         8i/w==
-X-Gm-Message-State: AOAM531jgGuuu/Mvpboo6uSZJxkMF/T7fSCsNvki7DwBPRdX7c+kffh/
-        BWLHAF7hID4PCO1z0+LFhsWZwRs/IVO3Aj6jNOICSu7uJOMNtg==
-X-Google-Smtp-Source: ABdhPJwG0FivMhLbpcIji+7dR87R2XVFxDEGj1pOwRW4U8RxEbX/oSFf59Do89cEX/bxapux9KjUGVp7bPh8EjoxvSw=
-X-Received: by 2002:a17:90a:cb8c:: with SMTP id a12mr4906594pju.35.1615988883923;
- Wed, 17 Mar 2021 06:48:03 -0700 (PDT)
+        Wed, 17 Mar 2021 09:49:10 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 4FA751F44133
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id B8E054800C3; Wed, 17 Mar 2021 14:49:05 +0100 (CET)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCHv2 00/38] Convert power-supply DT bindings to YAML
+Date:   Wed, 17 Mar 2021 14:48:26 +0100
+Message-Id: <20210317134904.80737-1-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210316124808.11984-1-vincent.whitchurch@axis.com>
- <93d506a6-5832-5006-3bab-6e8e7203da0e@talpey.com> <CACdtm0ac+oE1+KNbOGWhy-j9XHmUn4AXG6zAaX-nL0W=NJxQMA@mail.gmail.com>
- <4836330b-3d2f-9d35-4d03-3a457b0068a4@talpey.com>
-In-Reply-To: <4836330b-3d2f-9d35-4d03-3a457b0068a4@talpey.com>
-From:   Rohith Surabattula <rohiths.msft@gmail.com>
-Date:   Wed, 17 Mar 2021 19:17:52 +0530
-Message-ID: <CACdtm0bkVyAOJSPnu9sFhO1MnSxtnfH7Z13e_+40WM3Qn6xFbQ@mail.gmail.com>
-Subject: Re: [PATCH v2] cifs: Silently ignore unknown oplock break handle
-To:     Tom Talpey <tom@talpey.com>
-Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Steve French <sfrench@samba.org>,
-        linux-cifs <linux-cifs@vger.kernel.org>, kernel@axis.com,
-        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/2021 1:36 PM, Rohith Surabattula wrote:
->> This issue will not be seen once changes related to deferred close for
->> files is committed.
+Hi,
 
->That may be, but it's irrelevant to this.
-Got it.
+I keep getting patches for existing drivers, that modify DT behaviour
+without updating the binding file. Let's move everything to DT schema
+files, so that this can easily be cached automatically by dtbs_check.
 
->> Currently, changes are in review. I will address review comments by this week.
+After this series only three bindings are left unconverted:
 
->What do you mean by "in review"? Both threads are active on the
->mailing list. If you or others have something to discuss, please
->post it and don't leave us out of the discussion.
+1. max8925_battery.txt
+   This describes a node below the PMIC, which does not have its own
+   compatible value. It needs to be described in the PMIC binding
+   file, which has not yet been converted.
 
-I mean, there is an active thread for patch "deferred close for
-files". As I was busy with other activities, I didn't update the
-thread. Will update the thread once i get to it.
+2. stericsson,ab8500-battery.txt
+   This also describes a node below the PMIC, which does not have
+   its own compatible value. The same applies.
 
-Regards,
-Rohith
+3. charger-manager.txt
+   This is far more complex to convert than the other files, due
+   to the 'cm-regulator-name' / "<>-supply" thing. I skipped it
+   for now.
 
-On Wed, Mar 17, 2021 at 12:59 AM Tom Talpey <tom@talpey.com> wrote:
->
-> On 3/16/2021 1:36 PM, Rohith Surabattula wrote:
-> > This issue will not be seen once changes related to deferred close for
-> > files is committed.
->
-> That may be, but it's irrelevant to this.
->
-> > Currently, changes are in review. I will address review comments by this week.
->
-> What do you mean by "in review"? Both threads are active on the
-> mailing list. If you or others have something to discuss, please
-> post it and don't leave us out of the discussion.
->
-> Tom.
->
->
-> > Regards,
-> > Rohith
-> >
-> > On Tue, Mar 16, 2021 at 9:33 PM Tom Talpey <tom@talpey.com> wrote:
-> >>
-> >> On 3/16/2021 8:48 AM, Vincent Whitchurch via samba-technical wrote:
-> >>> Make SMB2 not print out an error when an oplock break is received for an
-> >>> unknown handle, similar to SMB1.  The SMB2 lease break path is not
-> >>> affected by this patch.
-> >>>
-> >>> Without this, a program which writes to a file from one thread, and
-> >>> opens, reads, and writes the same file from another thread triggers the
-> >>> below errors several times a minute when run against a Samba server
-> >>> configured with "smb2 leases = no".
-> >>>
-> >>>    CIFS: VFS: \\192.168.0.1 No task to wake, unknown frame received! NumMids 2
-> >>>    00000000: 424d53fe 00000040 00000000 00000012  .SMB@...........
-> >>>    00000010: 00000001 00000000 ffffffff ffffffff  ................
-> >>>    00000020: 00000000 00000000 00000000 00000000  ................
-> >>>    00000030: 00000000 00000000 00000000 00000000  ................
-> >>>
-> >>> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> >>> ---
-> >>>
-> >>> Notes:
-> >>>       v2:
-> >>>       - Drop change to lease break
-> >>>       - Rewrite commit message
-> >>>
-> >>>    fs/cifs/smb2misc.c | 2 +-
-> >>>    1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/fs/cifs/smb2misc.c b/fs/cifs/smb2misc.c
-> >>> index 60d4bd1eae2b..4d8576e202e3 100644
-> >>> --- a/fs/cifs/smb2misc.c
-> >>> +++ b/fs/cifs/smb2misc.c
-> >>> @@ -755,7 +755,7 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
-> >>>        }
-> >>>        spin_unlock(&cifs_tcp_ses_lock);
-> >>>        cifs_dbg(FYI, "Can not process oplock break for non-existent connection\n");
-> >>> -     return false;
-> >>> +     return true;
-> >>>    }
-> >>>
-> >>>    void
-> >>>
-> >>
-> >> As an oplock-only approach, it looks good. But the old cifs_dbg message
-> >> "non-existent connection" is possibly misleading, since the connection
-> >> may be perfectly fine.
-> >>
-> >> When breaking the loop successfully, the code emits
-> >>          cifs_dbg(FYI, "file id match, oplock break\n");
-> >> so perhaps
-> >>          cifs_dbg(FYI, "No file id matched, oplock break ignored\n");
-> >> ?
-> >>
-> >> Tom.
-> >
+I tested the series using dt-validate 2021.3.dev6+g38efe3f and nothing
+is reported when running dtbs_check like this:
+
+make -s -j100 dtbs_check DT_SCHEMA_FILES="Documentation/devicetree/bindings/power/supply/*.yaml"
+
+Also nothing is reported when checking the power-supply binding files
+like this:
+
+for file in Documentation/devicetree/bindings/power/supply/*yaml ; do
+    make -s -j42 dt_binding_check DT_SCHEMA_FILES=$file ;
+done
+
+This is also available as 'psy-yaml-binding' branch from my repository:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git
+
+Changes since PATCHv1:
+[1] https://lore.kernel.org/linux-devicetree/20210312154357.1561730-1-sebastian.reichel@collabora.com/
+ * Drop #gpio-cells/gpio-controller dependency (inherited from standard binding)
+ * Drop $ref for properties with standard suffix
+ * ti,bq24735: Add $ref property for poll-interval
+ * ti,lp8727: Combine usb and ac property information using patternProperties
+
+Thanks for reviewing it,
+
+-- Sebastian
+
+Sebastian Reichel (38):
+  ARM: dts: motorola-cpcap-mapphone: Prepare for dtbs_check parsing
+  dt-bindings: power: supply: cpcap-battery: Convert to DT schema format
+  dt-bindings: power: supply: cpcap-charger: Convert to DT schema format
+  dt-bindings: power: supply: bq25890: Convert to DT schema format
+  dt-bindings: power: supply: bq24257: Convert to DT schema format
+  dt-bindings: power: supply: bq24190: Convert to DT schema format
+  dt-bindings: power: supply: bq2415x: Convert to DT schema format
+  dt-bindings: power: supply: bq24735: Convert to DT schema format
+  dt-bindings: power: supply: isp1704: Convert to DT schema format
+  dt-bindings: power: supply: sbs-charger: Convert to DT schema format
+  dt-bindings: power: supply: sbs-manager: Convert to DT schema format
+  dt-bindings: power: supply: ds2760: Convert to DT schema format
+  dt-bindings: power: supply: sc27xx-fg: Convert to DT schema format
+  dt-bindings: power: supply: sc2731-charger: Convert to DT schema
+    format
+  dt-bindings: power: supply: tps65090: Convert to DT schema format
+  dt-bindings: power: supply: tps65217: Convert to DT schema format
+  dt-bindings: power: supply: twl4030: Convert to DT schema format
+  dt-bindings: power: supply: n900-battery: Convert to DT schema format
+  dt-bindings: power: supply: lego-ev3-battery: Convert to DT schema
+    format
+  dt-bindings: power: supply: max17040: Convert to DT schema format
+  dt-bindings: power: supply: max14656: Convert to DT schema format
+  dt-bindings: power: supply: max17042: Convert to DT schema format
+  dt-bindings: power: supply: max8903: Convert to DT schema format
+  dt-bindings: power: supply: ucs1002: Convert to DT schema format
+  dt-bindings: power: supply: pm8941-charger: Convert to DT schema
+    format
+  dt-bindings: power: supply: pm8941-coincell: Convert to DT schema
+    format
+  dt-bindings: power: supply: act8945a: Convert to DT schema format
+  dt-bindings: power: supply: axp20x: Convert to DT schema format
+  dt-bindings: power: supply: da9150: Convert to DT schema format
+  dt-bindings: power: supply: lp8727: Convert to DT schema format
+  dt-bindings: power: supply: lt3651: Convert to DT schema format
+  dt-bindings: power: supply: ltc294x: Convert to DT schema format
+  dt-bindings: power: supply: rt9455: Convert to DT schema format
+  dt-bindings: power: supply: olpc-battery: Convert to DT schema format
+  dt-bindings: power: supply: ab8500: Convert to DT schema format
+  dt-bindings: power: supply: sbs-battery: Fix dtbs_check
+  dt-bindings: power: supply: Fix remaining battery.txt links
+  dt-bindings: power: supply: Drop power_supply.txt
+
+ .../bindings/power/supply/ab8500/btemp.txt    |  16 --
+ .../bindings/power/supply/ab8500/chargalg.txt |  16 --
+ .../bindings/power/supply/ab8500/charger.txt  |  25 ---
+ .../power/supply/act8945a-charger.txt         |  44 -----
+ .../supply/active-semi,act8945a-charger.yaml  |  76 ++++++++
+ .../bindings/power/supply/axp20x_ac_power.txt |  25 ---
+ .../bindings/power/supply/axp20x_battery.txt  |  20 ---
+ .../power/supply/axp20x_usb_power.txt         |  41 -----
+ .../bindings/power/supply/battery.txt         |   3 -
+ .../bindings/power/supply/bq2415x.txt         |  47 -----
+ .../bindings/power/supply/bq2415x.yaml        |  98 ++++++++++
+ .../bindings/power/supply/bq24190.txt         |  61 -------
+ .../bindings/power/supply/bq24190.yaml        |  92 ++++++++++
+ .../bindings/power/supply/bq24257.txt         |  62 -------
+ .../bindings/power/supply/bq24257.yaml        | 124 +++++++++++++
+ .../bindings/power/supply/bq24735.yaml        |  89 +++++++++
+ .../bindings/power/supply/bq25890.txt         |  60 -------
+ .../bindings/power/supply/bq25890.yaml        | 123 +++++++++++++
+ .../bindings/power/supply/bq27xxx.yaml        |   2 +-
+ .../bindings/power/supply/cpcap-battery.txt   |  31 ----
+ .../bindings/power/supply/cpcap-battery.yaml  |  87 +++++++++
+ .../bindings/power/supply/cpcap-charger.txt   |  40 -----
+ .../bindings/power/supply/cpcap-charger.yaml  | 106 +++++++++++
+ .../bindings/power/supply/da9150-charger.txt  |  26 ---
+ .../bindings/power/supply/da9150-fg.txt       |  23 ---
+ .../power/supply/dlg,da9150-charger.yaml      |  52 ++++++
+ .../power/supply/dlg,da9150-fuel-gauge.yaml   |  51 ++++++
+ .../bindings/power/supply/isp1704.txt         |  17 --
+ .../bindings/power/supply/isp1704.yaml        |  42 +++++
+ .../power/supply/lego,ev3-battery.yaml        |  55 ++++++
+ .../power/supply/lego_ev3_battery.txt         |  21 ---
+ .../power/supply/lltc,lt3651-charger.yaml     |  44 +++++
+ .../bindings/power/supply/lltc,ltc294x.yaml   |  66 +++++++
+ .../bindings/power/supply/lp8727_charger.txt  |  43 -----
+ .../bindings/power/supply/lt3651-charger.txt  |  29 ---
+ .../bindings/power/supply/ltc2941.txt         |  28 ---
+ .../power/supply/max17040_battery.txt         |  52 ------
+ .../power/supply/max17042_battery.txt         |  35 ----
+ .../bindings/power/supply/max8903-charger.txt |  24 ---
+ .../bindings/power/supply/maxim,ds2760.txt    |  26 ---
+ .../bindings/power/supply/maxim,ds2760.yaml   |  43 +++++
+ .../bindings/power/supply/maxim,max14656.txt  |  23 ---
+ .../bindings/power/supply/maxim,max14656.yaml |  45 +++++
+ .../bindings/power/supply/maxim,max17040.yaml |  95 ++++++++++
+ .../bindings/power/supply/maxim,max17042.yaml |  78 ++++++++
+ .../bindings/power/supply/maxim,max8903.yaml  |  67 +++++++
+ .../power/supply/microchip,ucs1002.txt        |  27 ---
+ .../power/supply/microchip,ucs1002.yaml       |  51 ++++++
+ .../power/supply/nokia,n900-battery.yaml      |  49 +++++
+ .../bindings/power/supply/olpc-battery.yaml   |  27 +++
+ .../bindings/power/supply/olpc_battery.txt    |   5 -
+ .../bindings/power/supply/power_supply.txt    |   2 -
+ .../power/supply/qcom,coincell-charger.txt    |  48 -----
+ .../power/supply/qcom,pm8941-charger.yaml     | 169 ++++++++++++++++++
+ .../power/supply/qcom,pm8941-coincell.yaml    |  57 ++++++
+ .../bindings/power/supply/qcom_smbb.txt       | 150 ----------------
+ .../bindings/power/supply/richtek,rt9455.yaml |  90 ++++++++++
+ .../bindings/power/supply/rohm,bd99954.yaml   |   2 +-
+ .../bindings/power/supply/rt9455_charger.txt  |  46 -----
+ .../bindings/power/supply/rx51-battery.txt    |  25 ---
+ .../power/supply/sbs,sbs-battery.yaml         |   7 +-
+ .../power/supply/sbs,sbs-charger.yaml         |  55 ++++++
+ .../bindings/power/supply/sbs,sbs-manager.txt |  66 -------
+ .../power/supply/sbs,sbs-manager.yaml         | 107 +++++++++++
+ .../bindings/power/supply/sbs_sbs-charger.txt |  21 ---
+ .../bindings/power/supply/sc2731-charger.yaml |  53 ++++++
+ .../bindings/power/supply/sc2731_charger.txt  |  40 -----
+ .../bindings/power/supply/sc27xx-fg.txt       |  59 ------
+ .../bindings/power/supply/sc27xx-fg.yaml      |  98 ++++++++++
+ .../fg.txt => stericsson,ab8500-battery.txt}  |  32 +---
+ .../power/supply/stericsson,ab8500-btemp.yaml |  73 ++++++++
+ .../supply/stericsson,ab8500-chargalg.yaml    |  37 ++++
+ .../supply/stericsson,ab8500-charger.yaml     | 123 +++++++++++++
+ .../power/supply/stericsson,ab8500-fg.yaml    |  72 ++++++++
+ .../bindings/power/supply/ti,bq24735.txt      |  39 ----
+ .../bindings/power/supply/ti,lp8727.yaml      |  90 ++++++++++
+ .../power/supply/tps65090-charger.yaml        |  36 ++++
+ .../bindings/power/supply/tps65090.txt        |  17 --
+ .../power/supply/tps65217-charger.yaml        |  43 +++++
+ .../power/supply/tps65217_charger.txt         |  17 --
+ .../bindings/power/supply/twl-charger.txt     |  30 ----
+ .../power/supply/twl4030-charger.yaml         |  68 +++++++
+ .../x-powers,axp20x-ac-power-supply.yaml      |  32 ++++
+ .../x-powers,axp20x-battery-power-supply.yaml |  30 ++++
+ .../x-powers,axp20x-usb-power-supply.yaml     |  33 ++++
+ .../arm/boot/dts/motorola-cpcap-mapphone.dtsi |  59 +++---
+ 86 files changed, 2865 insertions(+), 1493 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/ab8500/btemp.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/ab8500/chargalg.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/ab8500/charger.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/act8945a-charger.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/active-semi,act8945a-charger.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/axp20x_ac_power.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/axp20x_battery.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/axp20x_usb_power.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/battery.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/bq2415x.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/bq2415x.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/bq24190.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/bq24190.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/bq24257.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/bq24257.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/bq24735.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/bq25890.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/bq25890.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/cpcap-battery.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/cpcap-battery.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/cpcap-charger.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/cpcap-charger.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/da9150-charger.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/da9150-fg.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/dlg,da9150-charger.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/dlg,da9150-fuel-gauge.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/isp1704.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/isp1704.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/lego,ev3-battery.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/lego_ev3_battery.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/lltc,lt3651-charger.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/lltc,ltc294x.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/lp8727_charger.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/lt3651-charger.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/ltc2941.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/max17040_battery.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/max17042_battery.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/max8903-charger.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/maxim,ds2760.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/maxim,ds2760.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/maxim,max14656.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/maxim,max14656.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/maxim,max17040.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/maxim,max17042.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/maxim,max8903.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/microchip,ucs1002.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/microchip,ucs1002.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/nokia,n900-battery.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/olpc-battery.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/olpc_battery.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/power_supply.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/qcom,coincell-charger.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/qcom,pm8941-charger.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/qcom,pm8941-coincell.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/qcom_smbb.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/richtek,rt9455.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/rt9455_charger.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/rx51-battery.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/sbs,sbs-charger.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/sbs_sbs-charger.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/sc2731-charger.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/sc2731_charger.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/sc27xx-fg.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/sc27xx-fg.yaml
+ rename Documentation/devicetree/bindings/power/supply/{ab8500/fg.txt => stericsson,ab8500-battery.txt} (52%)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/stericsson,ab8500-btemp.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/stericsson,ab8500-chargalg.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/stericsson,ab8500-charger.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/stericsson,ab8500-fg.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/ti,bq24735.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/ti,lp8727.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/tps65090-charger.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/tps65090.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/tps65217-charger.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/tps65217_charger.txt
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/twl-charger.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/twl4030-charger.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/x-powers,axp20x-ac-power-supply.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/x-powers,axp20x-battery-power-supply.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/x-powers,axp20x-usb-power-supply.yaml
+
+-- 
+2.30.2
+
