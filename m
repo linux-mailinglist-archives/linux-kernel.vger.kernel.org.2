@@ -2,178 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F021F33E9E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D332533E9F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:40:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbhCQGjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 02:39:36 -0400
-Received: from mail-vi1eur05on2093.outbound.protection.outlook.com ([40.107.21.93]:62176
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230227AbhCQGjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 02:39:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N+bks1Huf2JRsGWkfOqVmQhQOA1e/ZSAD3Hfd5faBfDxt7qE/SF1a+L7wPQJDDrEYewaB4eMVW9Zbl/W7vcdKqNm8yPQfMNRGqV2gSBzMOVUjO4NsJXHwLwZd8XmDXlzYlEQ7MvNIS7AlBkUIucYez0wA/88P+LPqIX3MCNJlGK6ApI/8KEz5aV07d5aKsKxMK5A2NAhMiA3AO3RzKwikEo4q2yeR9yHEBaNzsgw236h8daIRV9f8iwgPNmCdt6j0zV33kBQ9jAOhBWm1RIu7SLwMi/88vNfSlWDg5CQ8m9MkTirCoQCYkE/kz0uz5NYxqfvhe2DR061HK5HsxlH7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UamZbRvTo5QsVShDn24V3tzUphVzoncacvTSgb5pLzM=;
- b=IOrX5nMu3XKdzy0zxQxqDlC36vfHQScQiDpapfZtusDWzejwcII/US1kM7/fn9Yo4W6j8ZdsyC5AMSF20d2cBqHOWZeTbtgXC8b+tpMPOeY6Y6VGv3hMjNtpM9k6P6Lal1FNrUE9Z6QvKAFM4so9I8L07KBVm36lnfaxlYkVs4IrpiFo+9z2Bqqr7no2YKMYy5ni9stbx9N0fY0JZkSg7HKsxXyN6JfODrBblm3PHQVaZqtR+tIvYaKq8+OaczmFDhOeuKdZcirOLm4EeGGBUt3Sq006yB3yeEvb+oNyF1xmxBd7IfPP40K608bmInVnWII5wCtv4fjyKKRjGQMrjw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 193.8.40.99) smtp.rcpttodomain=kernel.org
- smtp.mailfrom=leica-geosystems.com.cn; dmarc=pass (p=quarantine sp=quarantine
- pct=100) action=none header.from=leica-geosystems.com.cn; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=leica-geosystems.com.cn; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UamZbRvTo5QsVShDn24V3tzUphVzoncacvTSgb5pLzM=;
- b=e7S1sn09XV52GMWQPjMa7HUE46KxIl8zTa0aYj5GEhn5mSmHZORngoOb5jF4KYG+d9nGlwVwicX2QjvYJI4ZfXHxbcp0j/F+x+PqT2tx2dbhrqw7x0MMR518ZK+2pKegLXGXkH0uPFUH6RbMNSiLh6I9c++lSIRoq4jcPU0QnHM=
-Received: from AM6P193CA0066.EURP193.PROD.OUTLOOK.COM (2603:10a6:209:8e::43)
- by AM9PR06MB7827.eurprd06.prod.outlook.com (2603:10a6:20b:3a1::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Wed, 17 Mar
- 2021 06:39:11 +0000
-Received: from VE1EUR02FT041.eop-EUR02.prod.protection.outlook.com
- (2603:10a6:209:8e:cafe::99) by AM6P193CA0066.outlook.office365.com
- (2603:10a6:209:8e::43) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend
- Transport; Wed, 17 Mar 2021 06:39:11 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 193.8.40.99)
- smtp.mailfrom=leica-geosystems.com.cn; kernel.org; dkim=none (message not
- signed) header.d=none;kernel.org; dmarc=pass action=none
- header.from=leica-geosystems.com.cn;
-Received-SPF: Pass (protection.outlook.com: domain of leica-geosystems.com.cn
- designates 193.8.40.99 as permitted sender) receiver=protection.outlook.com;
- client-ip=193.8.40.99; helo=aherlnxbspsrv01.lgs-net.com;
-Received: from aherlnxbspsrv01.lgs-net.com (193.8.40.99) by
- VE1EUR02FT041.mail.protection.outlook.com (10.152.13.33) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3933.31 via Frontend Transport; Wed, 17 Mar 2021 06:39:11 +0000
-From:   LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>
-To:     jic23@kernel.org, lars@metafoo.de, pmeerw@pmeerw.net,
-        robh+dt@kernel.org, andriy.shevchenko@linux.intel.com,
-        denis.ciocca@st.com, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     grygorii.tertychnyi@leica-geosystems.com,
-        andrey.zhizhikin@leica-geosystems.com,
-        LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>
-Subject: [PATCH V3 2/2] iio:magnetometer: Add Support for ST IIS2MDC
-Date:   Wed, 17 Mar 2021 06:39:02 +0000
-Message-Id: <20210317063902.19300-3-Qing-wu.Li@leica-geosystems.com.cn>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210317063902.19300-1-Qing-wu.Li@leica-geosystems.com.cn>
-References: <20210317063902.19300-1-Qing-wu.Li@leica-geosystems.com.cn>
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
+        id S230423AbhCQGkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 02:40:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53042 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229550AbhCQGjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 02:39:48 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615963186; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=p4pkJwcjOAUjEhPObB1E1iI3xCuJn+YRSoryJ2nSrX8=;
+        b=kUlqgxeuoQYZo9NvHK4wQCIwb5X+R0mR9PKy90XG2mRLxD9Cobm2Mrx9PuY86UbJflynxD
+        8WTuYVios6X3emRQitQxrrtPDbAJplDhk5Vl6WxJ0sBTY61zkAk8gvhWx5GNpqN49037a+
+        u5D7LjyzNVy15eiLVlc7xkKuuau1GHc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5FD5DAC1F;
+        Wed, 17 Mar 2021 06:39:46 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: Use immediate assignment when referencing
+ cc-option
+To:     Victor Erminpour <victor.erminpour@oracle.com>, clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1615934770-395-1-git-send-email-victor.erminpour@oracle.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <8d9d9142-ae55-c40a-5546-e1c0384641fa@suse.com>
+Date:   Wed, 17 Mar 2021 08:39:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 4658bda2-ed60-4278-888c-08d8e90f5fda
-X-MS-TrafficTypeDiagnostic: AM9PR06MB7827:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM9PR06MB7827C95A24CF51315AEFA410D76A9@AM9PR06MB7827.eurprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nYeFltj04i7HDqnVVPRDFbdQbD9uOrIieusgCzUaY48Nz3aonI3KZF+MuOB0TGHcSUkb9o1RwFPKTH1tVTQC1Rq9tmfk4Z4QQW4gx1UwFpxGxOnGfQp2N2v1qJ9C0uRe1ZNYtdtvnq/vXj/cL4u9KamiuCPmWyH/1HTMAKxG/H0fXy/efyiWOXetbqU09pM5HCB237pHZomrSC18+U5egtfc6rZ1QsNHhY65PjGY3N+dpuRW1+MoV2Xecy60MFgjlmVe87aouLwqVsoVThu1PaIkDS2F0gu600c1fb7qkgQLIY42OQR/7eHnuJKbEeixk3ZXTxlpUsFcLNv48FTLxs8gKqy5VfUPHf6FR+92t+Mi8P3rrIK/lBTrbnyq48gd0mhSZbIuaosAqNTboUsei0tq7e7xoil78pUb5THTQVaVAPlwaiQOsE432rRhYnZKdoyl20i0FIRI3QE/j9T6bSXMBQj4cKf0dprpVmYhvFs5cNiqx1BNfEyy8TWIvMLgCWUT3K2Ovi+vJXQMgzvbt1IBkm30Tw5gvBhq3JAITCcRijZVNVkHYnvKxgZzn7TmKOwNtZzr15ze9khMWBabBglwBKy0WopKhtXw5dGC++c06WX2S4iwEO5o5H5Uyxm5PqXHjvoqPMrgNqhMKi4iYQ==
-X-Forefront-Antispam-Report: CIP:193.8.40.99;CTRY:CH;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:aherlnxbspsrv01.lgs-net.com;PTR:ahersrvdom51.leica-geosystems.com;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(136003)(396003)(36840700001)(46966006)(82740400003)(316002)(36736006)(6486002)(8676002)(2616005)(36756003)(26005)(107886003)(36860700001)(70206006)(186003)(356005)(81166007)(1076003)(6512007)(4326008)(47076005)(956004)(82310400003)(478600001)(86362001)(118246002)(5660300002)(336012)(6506007)(8936002)(2906002)(6666004)(70586007);DIR:OUT;SFP:1102;
-X-OriginatorOrg: leica-geosystems.com.cn
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 06:39:11.2233
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4658bda2-ed60-4278-888c-08d8e90f5fda
-X-MS-Exchange-CrossTenant-Id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a;Ip=[193.8.40.99];Helo=[aherlnxbspsrv01.lgs-net.com]
-X-MS-Exchange-CrossTenant-AuthSource: VE1EUR02FT041.eop-EUR02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR06MB7827
+In-Reply-To: <1615934770-395-1-git-send-email-victor.erminpour@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for ST magnetometer IIS2MDC,
-an I2C/SPI interface 3-axis magnetometer.
-The patch was tested on the instrument with IIS2MDC via I2C interface.
 
-Signed-off-by: LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>
----
- drivers/iio/magnetometer/st_magn.h      | 1 +
- drivers/iio/magnetometer/st_magn_core.c | 1 +
- drivers/iio/magnetometer/st_magn_i2c.c  | 5 +++++
- drivers/iio/magnetometer/st_magn_spi.c  | 5 +++++
- 4 files changed, 12 insertions(+)
 
-diff --git a/drivers/iio/magnetometer/st_magn.h b/drivers/iio/magnetometer/st_magn.h
-index 204b285725c8..7ba6a6ba5c58 100644
---- a/drivers/iio/magnetometer/st_magn.h
-+++ b/drivers/iio/magnetometer/st_magn.h
-@@ -21,6 +21,7 @@
- #define LSM303AGR_MAGN_DEV_NAME		"lsm303agr_magn"
- #define LIS2MDL_MAGN_DEV_NAME		"lis2mdl"
- #define LSM9DS1_MAGN_DEV_NAME		"lsm9ds1_magn"
-+#define IIS2MDC_MAGN_DEV_NAME		"iis2mdc"
- 
- const struct st_sensor_settings *st_magn_get_settings(const char *name);
- int st_magn_common_probe(struct iio_dev *indio_dev);
-diff --git a/drivers/iio/magnetometer/st_magn_core.c b/drivers/iio/magnetometer/st_magn_core.c
-index 79de721e6015..71faebd07feb 100644
---- a/drivers/iio/magnetometer/st_magn_core.c
-+++ b/drivers/iio/magnetometer/st_magn_core.c
-@@ -337,6 +337,7 @@ static const struct st_sensor_settings st_magn_sensors_settings[] = {
- 		.sensors_supported = {
- 			[0] = LSM303AGR_MAGN_DEV_NAME,
- 			[1] = LIS2MDL_MAGN_DEV_NAME,
-+			[2] = IIS2MDC_MAGN_DEV_NAME,
- 		},
- 		.ch = (struct iio_chan_spec *)st_magn_3_16bit_channels,
- 		.odr = {
-diff --git a/drivers/iio/magnetometer/st_magn_i2c.c b/drivers/iio/magnetometer/st_magn_i2c.c
-index c6bb4ce77594..36f4e7b53b24 100644
---- a/drivers/iio/magnetometer/st_magn_i2c.c
-+++ b/drivers/iio/magnetometer/st_magn_i2c.c
-@@ -46,6 +46,10 @@ static const struct of_device_id st_magn_of_match[] = {
- 		.compatible = "st,lsm9ds1-magn",
- 		.data = LSM9DS1_MAGN_DEV_NAME,
- 	},
-+	{
-+		.compatible = "st,iis2mdc",
-+		.data = IIS2MDC_MAGN_DEV_NAME,
-+	},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, st_magn_of_match);
-@@ -101,6 +105,7 @@ static const struct i2c_device_id st_magn_id_table[] = {
- 	{ LSM303AGR_MAGN_DEV_NAME },
- 	{ LIS2MDL_MAGN_DEV_NAME },
- 	{ LSM9DS1_MAGN_DEV_NAME },
-+	{ IIS2MDC_MAGN_DEV_NAME },
- 	{},
- };
- MODULE_DEVICE_TABLE(i2c, st_magn_id_table);
-diff --git a/drivers/iio/magnetometer/st_magn_spi.c b/drivers/iio/magnetometer/st_magn_spi.c
-index 3d08d74c367d..0e2323dfc687 100644
---- a/drivers/iio/magnetometer/st_magn_spi.c
-+++ b/drivers/iio/magnetometer/st_magn_spi.c
-@@ -41,6 +41,10 @@ static const struct of_device_id st_magn_of_match[] = {
- 		.compatible = "st,lsm9ds1-magn",
- 		.data = LSM9DS1_MAGN_DEV_NAME,
- 	},
-+	{
-+		.compatible = "st,iis2mdc",
-+		.data = IIS2MDC_MAGN_DEV_NAME,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, st_magn_of_match);
-@@ -92,6 +96,7 @@ static const struct spi_device_id st_magn_id_table[] = {
- 	{ LSM303AGR_MAGN_DEV_NAME },
- 	{ LIS2MDL_MAGN_DEV_NAME },
- 	{ LSM9DS1_MAGN_DEV_NAME },
-+	{ IIS2MDC_MAGN_DEV_NAME },
- 	{},
- };
- MODULE_DEVICE_TABLE(spi, st_magn_id_table);
--- 
-2.17.1
+On 17.03.21 г. 0:46 ч., Victor Erminpour wrote:
+> Calling cc-option will use KBUILD_CFLAGS, which when lazy setting
+> subdir-ccflags-y produces the following build error:
+> 
+> scripts/Makefile.lib:10: *** Recursive variable `KBUILD_CFLAGS' \
+> 	references itself (eventually).  Stop.
+> 
+> Use := assignment to subdir-ccflags-y when referencing cc-option.
+> This causes make to also evaluate += immediately, cc-option
+> calls are done right away and we don't end up with KBUILD_CFLAGS
+> referencing itself.
+> 
+> Signed-off-by: Victor Erminpour <victor.erminpour@oracle.com>
+> ---
+>  fs/btrfs/Makefile | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
+> index b634c42115ea..3dba1336fa95 100644
+> --- a/fs/btrfs/Makefile
+> +++ b/fs/btrfs/Makefile
+> @@ -7,10 +7,10 @@ subdir-ccflags-y += -Wmissing-format-attribute
+>  subdir-ccflags-y += -Wmissing-prototypes
+>  subdir-ccflags-y += -Wold-style-definition
+>  subdir-ccflags-y += -Wmissing-include-dirs
+> -subdir-ccflags-y += $(call cc-option, -Wunused-but-set-variable)
+> -subdir-ccflags-y += $(call cc-option, -Wunused-const-variable)
+> -subdir-ccflags-y += $(call cc-option, -Wpacked-not-aligned)
+> -subdir-ccflags-y += $(call cc-option, -Wstringop-truncation)
+> +subdir-ccflags-y := $(call cc-option, -Wunused-but-set-variable)
+> +subdir-ccflags-y := $(call cc-option, -Wunused-const-variable)
+> +subdir-ccflags-y := $(call cc-option, -Wpacked-not-aligned)
+> +subdir-ccflags-y := $(call cc-option, -Wstringop-truncation)
+>  # The following turn off the warnings enabled by -Wextra
+>  subdir-ccflags-y += -Wno-missing-field-initializers
+>  subdir-ccflags-y += -Wno-sign-compare
+> 
 
+Why does this patch change only some assignments and others are left as
+they were?
