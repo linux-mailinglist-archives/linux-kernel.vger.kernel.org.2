@@ -2,133 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C52C833FA80
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 22:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E54E033FA84
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 22:37:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbhCQVbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 17:31:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbhCQVau (ORCPT
+        id S230063AbhCQVge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 17:36:34 -0400
+Received: from angie.orcam.me.uk ([157.25.102.26]:37764 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhCQVgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 17:30:50 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368DAC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 14:30:50 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id k24so64631pgl.6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 14:30:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JcYcWHGmVNPGMhsAQmoPEgDMVOP5uAD1xio0p93SpaM=;
-        b=F2SGL0ebm1WN1AAXVrYPAflE0RRGNbDqRh5zWT6E/VDAvVhncHQW9rlh7inOf5XErV
-         eT01CBORU4s/hPImJxaRVOnYWJURa/EpWjUwCeBqyX1w70HMPLVFmoVGwzzKxMu/dyNs
-         /XSl3en+t+yMb+Vh+lIsSzolMrZwLO+UCWLC0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JcYcWHGmVNPGMhsAQmoPEgDMVOP5uAD1xio0p93SpaM=;
-        b=oikdUxfKpNAki/mboZCT4+0s75PNeEt+XACyZChou2WRULW5XEVsRgT6nLm4XH9Zl6
-         xQ8k7D+IWsol2GEIELTBtqnaTRlc4b/dSd2125tRI6lEjJcBmskbxMXfVSBCi1D7sKIc
-         HyX4j/HrjQf0B+5yFwULcVFJiQKOxewShOWh47XzzvV/2M86x9qJoZOTHzg/mf6RpkEA
-         tSFi/rdfuT5dzdEyYQyoPaD1eOU4hPDochSlbl8W4ArLh+m383eCtqD93aRJnXz4D13j
-         1GfwducnapuYYIymA0vjlYthPCEperk0Az5D96owCS5YL8h/tZs07v3xyzDi1Wi4CsQD
-         gTzA==
-X-Gm-Message-State: AOAM530BWCCBVjTVvLLlTXLVAvGw4itvegMmejPl3XmI7dhk8p/b5AhB
-        lFbaN1woDijTTxMJOFUlvFmjuQ==
-X-Google-Smtp-Source: ABdhPJxMlmgNJs/pSay3PORwaQblP+ABwko4SMVjMmgn6A+Fl8jjpE6/b/waFyC28qknA4CB+JWDTw==
-X-Received: by 2002:a05:6a00:78c:b029:1f5:d587:1701 with SMTP id g12-20020a056a00078cb02901f5d5871701mr889400pfu.59.1616016649608;
-        Wed, 17 Mar 2021 14:30:49 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x190sm42856pfx.166.2021.03.17.14.30.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 14:30:48 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 14:30:47 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [PATCH v2] seq_file: Unconditionally use vmalloc for buffer
-Message-ID: <202103171425.CB0F4619A8@keescook>
-References: <20210315174851.622228-1-keescook@chromium.org>
- <YFBs202BqG9uqify@dhcp22.suse.cz>
- <202103161205.B2181BDE38@keescook>
- <YFHxNT1Pwoslmhxq@dhcp22.suse.cz>
- <YFIFY7mj65sStba1@kroah.com>
- <YFIVwPWTo48ITkHs@dhcp22.suse.cz>
- <YFIYrMVTC42boZ/Z@kroah.com>
- <YFIeVLDsfBMa7fHW@dhcp22.suse.cz>
- <YFIikaNixD57o3pk@kroah.com>
+        Wed, 17 Mar 2021 17:36:22 -0400
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id F1D3192009C; Wed, 17 Mar 2021 22:36:20 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id E84EA92009B;
+        Wed, 17 Mar 2021 22:36:20 +0100 (CET)
+Date:   Wed, 17 Mar 2021 22:36:20 +0100 (CET)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     David Laight <David.Laight@ACULAB.COM>
+cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: RE: [PATCH v2] MIPS: Check __clang__ to avoid performance influence
+ with GCC in csum_tcpudp_nofold()
+In-Reply-To: <6e7bc85a3f92419f89117fc1381511be@AcuMS.aculab.com>
+Message-ID: <alpine.DEB.2.21.2103172009070.21463@angie.orcam.me.uk>
+References: <1615263493-10609-1-git-send-email-yangtiezhu@loongson.cn> <alpine.DEB.2.21.2103142140000.33195@angie.orcam.me.uk> <bdfe753d-0ef2-8f66-7716-acadfc3917a5@loongson.cn> <913665e71fd44c5d810d006cd179725c@AcuMS.aculab.com> <5ee86b3b-81d2-790c-f67b-e250f60272fd@loongson.cn>
+ <alpine.DEB.2.21.2103171541590.21463@angie.orcam.me.uk> <6e7bc85a3f92419f89117fc1381511be@AcuMS.aculab.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFIikaNixD57o3pk@kroah.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 04:38:57PM +0100, Greg Kroah-Hartman wrote:
-> On Wed, Mar 17, 2021 at 04:20:52PM +0100, Michal Hocko wrote:
-> > On Wed 17-03-21 15:56:44, Greg KH wrote:
-> > > On Wed, Mar 17, 2021 at 03:44:16PM +0100, Michal Hocko wrote:
-> > > > On Wed 17-03-21 14:34:27, Greg KH wrote:
-> > > > > On Wed, Mar 17, 2021 at 01:08:21PM +0100, Michal Hocko wrote:
-> > > > > > Btw. I still have problems with the approach. seq_file is intended to
-> > > > > > provide safe way to dump values to the userspace. Sacrificing
-> > > > > > performance just because of some abuser seems like a wrong way to go as
-> > > > > > Al pointed out earlier. Can we simply stop the abuse and disallow to
-> > > > > > manipulate the buffer directly? I do realize this might be more tricky
-> > > > > > for reasons mentioned in other emails but this is definitely worth
-> > > > > > doing.
-> > > > > 
-> > > > > We have to provide a buffer to "write into" somehow, so what is the best
-> > > > > way to stop "abuse" like this?
-> > > > 
-> > > > What is wrong about using seq_* interface directly?
-> > > 
-> > > Right now every show() callback of sysfs would have to be changed :(
+On Wed, 17 Mar 2021, David Laight wrote:
+
+> > > > Not that I grok the mips opcodes.
+> > > > But that code has horridness on its side.
 > > 
-> > Is this really the case? Would it be too ugly to have an intermediate
-> > buffer and then seq_puts it into the seq file inside sysfs_kf_seq_show.
+> >  It's a 32-bit one's-complement addition.  The use of 64-bit operations
+> > reduces the number of calculations as any 32-bit carries accumulate in the
+> > high 32-bit word allowing one instruction to be saved total compared to
+> > the 32-bit variant.  Nothing particularly unusual for me here; I've seen
+> > worse stuff with x86.
 > 
-> Oh, good idea.
-> 
-> > Sure one copy more than necessary but it this shouldn't be a hot path or
-> > even visible on small strings. So that might be worth destroying an
-> > inherently dangerous seq API (seq_get_buf).
-> 
-> I'm all for that, let me see if I can carve out some time tomorrow to
-> try this out.
+> The 'problem' is that mips doesn't have a carry flag.
+> So the 64-bit maths is 'tricky'.
+> It may well be that a loop based on:
+> 	do {
+> 		val = *ptr++;
+> 		sum += val;
+> 		carry += sum < val;
+> 	} while (ptr != limit)
+> will generate much better code.
 
-The trouble has been that C string APIs are just so impossibly fragile.
-We just get too many bugs with it, so we really do need to rewrite the
-callbacks to use seq_file, since it has a safe API.
+ This piece of assembly appears to me as good as you can get, but it is 
+somewhat dated, going back to 1999 and LMO commit 0458ce25ec4e ("Fix 
+MIPS64 IP checksums.") as far as the 64-bit variant is concerned, with a 
+much later bug fix applied for a corner case with commit 66fd848cadaa 
+("MIPS: Fix special case in 64 bit IP checksumming.") back in 2017 (!), 
+which added two instructions.  It may well be that GCC has since improved 
+and would produce code of similar or better quality.  Anyone is welcome to 
+try it of course and submit a patch if it turns out beneficial.
 
-I've been trying to write coccinelle scripts to do some of this
-refactoring, but I have not found a silver bullet. (This is why I've
-suggested adding the temporary "seq_show" and "seq_store" functions, so
-we can transition all the callbacks without a flag day.)
+ NB I note there's an earlyclobber specifier missing on the output 
+operand, lost with the merge of the separate mips and mips64 ports with 
+LMO commit a69fb3990ea9 ("Goodbye mips64.  31704 lines of code bite the 
+dust."), back in 2003, which I previously added myself, back in 2002 with 
+LMO commit acc75ed18471 ("Bug fixes for constraints and type casts.").  
+Sigh.  I think the overlap with operand #1 has prevented damage from 
+happening as a result of the missing specifier, but IMO it would best be 
+reinstated just in case.
 
-> But, you don't get rid of the "ability" to have a driver write more than
-> a PAGE_SIZE into the buffer passed to it.  I guess I could be paranoid
-> and do some internal checks (allocate a bunch of memory and check for
-> overflow by hand), if this is something to really be concerned about...
+> I think there is a 'setlt' instruction for the compare.
 
-Besides the CFI prototype enforcement changes (which I can build into
-the new seq_show/seq_store callbacks), the buffer management is the
-primary issue: we just can't hand drivers a string (even with a length)
-because the C functions are terrible. e.g. just look at the snprintf vs
-scnprintf -- we constantly have to just build completely new API when
-what we need is a safe way (i.e. obfuscated away from the caller) to
-build a string. Luckily seq_file does this already, so leaning into that
-is good here.
+ Yes and it's used in the piece of code quoted (SLT).
 
--- 
-Kees Cook
+> It certainly would on the nios (which is mips-like).
+> That is (probably) 6 instructions for 4 bytes.
+> I suspect there may be a data stall after the memory read.
+> So an interleaved unroll would remove that stall.
+> That would be 10 clocks for 8 bytes.
+
+ There's no memory read involved in this code; of course there could be in 
+the paster of the inline function as shown in the piece shown by Tiezhu.  
+There are a couple of instructions in between though, which should keep 
+the pipeline occupied as long as data retrieved is hot in the cache 
+(prefetch instructions could be used to assist with that).
+
+ OTOH if data were to come from the main memory, I doubt anything could 
+help here.
+
+> The x86-64 code is 'interesting'.
+> It has repeated 'add carry' instructions.
+> On Intel cpus prior to (at least) Haswell they take two clocks each.
+> So the code is no faster than adding 32bit values to a 64bit sum.
+
+ GCC has DFA pipeline descriptions for various MIPS processors, so the 
+details may vary, but it is assumed overall that plain ALU operations 
+cause no pipeline stalls or slips, so nominally they take 1 pipeline clock 
+each for scalar implementations.  This includes all the instructions in 
+the piece of code discussed here.
+
+ (Actual clock counts will of course depend on the number of pipeline 
+stages a given microarchitecture implements and are not a concern here. 
+The earliest MIPS chips had as few as four stages only and the inclusion 
+of branch and load delay slots prevented pipeline slips from occuring or 
+even actually being implemented, as in what MIPS used to stand for, that 
+is Microprocessor without Interlocked Pipeline Stages.  Stalls could still 
+happen of course in the case of cache misses.)
+
+  Maciej
