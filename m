@@ -2,298 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF9633EAEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B10C733EAF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhCQH5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 03:57:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60076 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230221AbhCQH5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 03:57:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615967848; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mee6Y3oBKYswlI6OGhWkSltHQeRklEfp7DNpmFJ+4UA=;
-        b=qU27V+83mFteQx0y9W41H09Fb9/cnRQw26xu6Owi/2aM/djNaWJdA0hFhr/PlDzE789xik
-        +AZNCaykQ70yd/tHT/9PHFj/cdT8ghO9iufkW8ogM3xQiHnohZvMXFQYudb//waE8OpbHS
-        hWKLP6UAfTj9/eyBtAKURhEPXwdI1mE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A7D4CAE05;
-        Wed, 17 Mar 2021 07:57:28 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 08:57:27 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH] KVM: arm: memcg awareness
-Message-ID: <YFG2Z1q9MJGr8Zek@dhcp22.suse.cz>
-References: <1615959984-7122-1-git-send-email-wanpengli@tencent.com>
+        id S230037AbhCQH6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 03:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229944AbhCQH6S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 03:58:18 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20DDC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 00:58:18 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id t18so652933pjs.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 00:58:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=I20ao//jp0K+ljf1zyYRmUDybDGX4o2ZQ8hxDCPtACs=;
+        b=grlmjP9cLtgbJiOVVtTbtM9/sum9yzN6kUjg+qj2AT2HHoCwMg/hZ+ajTEmXhLd4Go
+         8IUt/u2OhcF0Lg0BI2M4P2BRFgLjpNL/Uf1kuek5vH0u5J1q6gEKYQWGCymwOT/Mg3W4
+         AXckl48lO3Q2vWc0mSuVaGOKfDPvABPsJIDaU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=I20ao//jp0K+ljf1zyYRmUDybDGX4o2ZQ8hxDCPtACs=;
+        b=KNcuxgm/OrEiywOkp/PdGoVNT7/GJVs3gq3b3Ta+1HCSgRGKiyVRAbbD47pNul9G26
+         yzE/zD9Gzb/FNbkAEHSXwe95MHz1Ig9BMrU3cfwXR4YQ+whbqiR8pTlWpMrkM3bcZZBS
+         TKUFa7AS8+L5Qz+wa9E4TYq4dKce8Jehs/6MVost+ajo4fbFzCINmH0QzWDoeDdombm2
+         uBXKMaPYD3+NJQt+NrwL1hoqV6mbwrxDcgBa3kKte6JmLH9a7XKVxfgY+diDj9p1UTyB
+         0zon9XgIrK7e1A5r2s86p5jgoZVpk+oLp+UpB7kXqj2MUB2N/W9XPuArjSgx7g4PT/d9
+         G9sw==
+X-Gm-Message-State: AOAM531DbGek/YdlhjuIIHYrry9fCwkg44IZtxlek8gf8PgEzFsoiYRs
+        r7V9s/uVpKhnAGg4Td+h246DtA==
+X-Google-Smtp-Source: ABdhPJxYxOzfNLuJLRkClYD1JdcEoh936YPYAebHe0scmNtkzZ7wQeI3uoofXXe493EipbmEgLeTBQ==
+X-Received: by 2002:a17:90a:ce0d:: with SMTP id f13mr3249699pju.85.1615967898257;
+        Wed, 17 Mar 2021 00:58:18 -0700 (PDT)
+Received: from localhost (2001-44b8-1113-6700-13b2-19b2-2ae0-4d54.static.ipv6.internode.on.net. [2001:44b8:1113:6700:13b2:19b2:2ae0:4d54])
+        by smtp.gmail.com with ESMTPSA id nk3sm1717212pjb.17.2021.03.17.00.58.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 00:58:17 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     "heying \(H\)" <heying24@huawei.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, npiggin@gmail.com,
+        akpm@linux-foundation.org, aneesh.kumar@linux.ibm.com,
+        rppt@kernel.org, ardb@kernel.org, clg@kaod.org,
+        christophe.leroy@csgroup.eu
+Cc:     johnny.chenyi@huawei.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc: arch/powerpc/kernel/setup_64.c - cleanup warnings
+In-Reply-To: <f0130916-a8f3-75ba-b5da-7d37d9139ff3@huawei.com>
+References: <20210316041148.29694-1-heying24@huawei.com> <87wnu6bhvi.fsf@dja-thinkpad.axtens.net> <f0130916-a8f3-75ba-b5da-7d37d9139ff3@huawei.com>
+Date:   Wed, 17 Mar 2021 18:58:14 +1100
+Message-ID: <87tupab4a1.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615959984-7122-1-git-send-email-wanpengli@tencent.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 17-03-21 13:46:24, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> KVM allocations in the arm kvm code which are tied to the life 
-> of the VM process should be charged to the VM process's cgroup.
+"heying (H)" <heying24@huawei.com> writes:
 
-How much memory are we talking about?
+> Thank you for your reply.
+>
+>
+> =E5=9C=A8 2021/3/17 11:04, Daniel Axtens =E5=86=99=E9=81=93:
+>> Hi He Ying,
+>>
+>> Thank you for this patch.
+>>
+>> I'm not sure what the precise rules for Fixes are, but I wonder if this
+>> should have:
+>>
+>> Fixes: 9a32a7e78bd0 ("powerpc/64s: flush L1D after user accesses")
+>> Fixes: f79643787e0a ("powerpc/64s: flush L1D on kernel entry")
+>
+> Is that necessary for warning cleanups? I thought 'Fixes' tags are=20
+> needed only for
+>
+> bugfix patches. Can someone tell me whether I am right?
 
-> This will help the memcg controler to do the right decisions.
+Yeah, I'm not sure either. Hopefully mpe will let us know.
 
-This is a bit vague. What is the right decision? AFAICS none of that
-memory is considered during oom victim selection. The only thing memcg
-controler can help with is to contain and account this additional
-memory. This might help to better isolate multiple workloads on the same
-system. Maybe this is what you wanted to say? Or maybe this is a way to
-prevent untrusted users from consuming a lot of memory?
+Kind regards,
+Daniel
 
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
->  arch/arm64/kvm/arm.c               |  5 +++--
->  arch/arm64/kvm/hyp/pgtable.c       |  4 ++--
->  arch/arm64/kvm/mmu.c               |  4 ++--
->  arch/arm64/kvm/pmu-emul.c          |  2 +-
->  arch/arm64/kvm/reset.c             |  2 +-
->  arch/arm64/kvm/vgic/vgic-debug.c   |  2 +-
->  arch/arm64/kvm/vgic/vgic-init.c    |  2 +-
->  arch/arm64/kvm/vgic/vgic-irqfd.c   |  2 +-
->  arch/arm64/kvm/vgic/vgic-its.c     | 14 +++++++-------
->  arch/arm64/kvm/vgic/vgic-mmio-v3.c |  2 +-
->  arch/arm64/kvm/vgic/vgic-v4.c      |  2 +-
->  11 files changed, 21 insertions(+), 20 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index 7f06ba7..8040874 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -278,9 +278,10 @@ long kvm_arch_dev_ioctl(struct file *filp,
->  struct kvm *kvm_arch_alloc_vm(void)
->  {
->  	if (!has_vhe())
-> -		return kzalloc(sizeof(struct kvm), GFP_KERNEL);
-> +		return kzalloc(sizeof(struct kvm), GFP_KERNEL_ACCOUNT);
->  
-> -	return vzalloc(sizeof(struct kvm));
-> +	return __vmalloc(sizeof(struct kvm),
-> +			GFP_KERNEL_ACCOUNT | __GFP_ZERO);
->  }
->  
->  void kvm_arch_free_vm(struct kvm *kvm)
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index 926fc07..a0845d3 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -366,7 +366,7 @@ static int hyp_map_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
->  	if (WARN_ON(level == KVM_PGTABLE_MAX_LEVELS - 1))
->  		return -EINVAL;
->  
-> -	childp = (kvm_pte_t *)get_zeroed_page(GFP_KERNEL);
-> +	childp = (kvm_pte_t *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
->  	if (!childp)
->  		return -ENOMEM;
->  
-> @@ -401,7 +401,7 @@ int kvm_pgtable_hyp_init(struct kvm_pgtable *pgt, u32 va_bits)
->  {
->  	u64 levels = ARM64_HW_PGTABLE_LEVELS(va_bits);
->  
-> -	pgt->pgd = (kvm_pte_t *)get_zeroed_page(GFP_KERNEL);
-> +	pgt->pgd = (kvm_pte_t *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
->  	if (!pgt->pgd)
->  		return -ENOMEM;
->  
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 8711894..8c9dc49 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -370,7 +370,7 @@ int kvm_init_stage2_mmu(struct kvm *kvm, struct kvm_s2_mmu *mmu)
->  		return -EINVAL;
->  	}
->  
-> -	pgt = kzalloc(sizeof(*pgt), GFP_KERNEL);
-> +	pgt = kzalloc(sizeof(*pgt), GFP_KERNEL_ACCOUNT);
->  	if (!pgt)
->  		return -ENOMEM;
->  
-> @@ -1244,7 +1244,7 @@ int kvm_mmu_init(void)
->  		goto out;
->  	}
->  
-> -	hyp_pgtable = kzalloc(sizeof(*hyp_pgtable), GFP_KERNEL);
-> +	hyp_pgtable = kzalloc(sizeof(*hyp_pgtable), GFP_KERNEL_ACCOUNT);
->  	if (!hyp_pgtable) {
->  		kvm_err("Hyp mode page-table not allocated\n");
->  		err = -ENOMEM;
-> diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
-> index e32c6e1..00cf750 100644
-> --- a/arch/arm64/kvm/pmu-emul.c
-> +++ b/arch/arm64/kvm/pmu-emul.c
-> @@ -967,7 +967,7 @@ int kvm_arm_pmu_v3_set_attr(struct kvm_vcpu *vcpu, struct kvm_device_attr *attr)
->  		mutex_lock(&vcpu->kvm->lock);
->  
->  		if (!vcpu->kvm->arch.pmu_filter) {
-> -			vcpu->kvm->arch.pmu_filter = bitmap_alloc(nr_events, GFP_KERNEL);
-> +			vcpu->kvm->arch.pmu_filter = bitmap_alloc(nr_events, GFP_KERNEL_ACCOUNT);
->  			if (!vcpu->kvm->arch.pmu_filter) {
->  				mutex_unlock(&vcpu->kvm->lock);
->  				return -ENOMEM;
-> diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
-> index bd354cd..3cbcf6b 100644
-> --- a/arch/arm64/kvm/reset.c
-> +++ b/arch/arm64/kvm/reset.c
-> @@ -110,7 +110,7 @@ static int kvm_vcpu_finalize_sve(struct kvm_vcpu *vcpu)
->  		    vl > SVE_VL_ARCH_MAX))
->  		return -EIO;
->  
-> -	buf = kzalloc(SVE_SIG_REGS_SIZE(sve_vq_from_vl(vl)), GFP_KERNEL);
-> +	buf = kzalloc(SVE_SIG_REGS_SIZE(sve_vq_from_vl(vl)), GFP_KERNEL_ACCOUNT);
->  	if (!buf)
->  		return -ENOMEM;
->  
-> diff --git a/arch/arm64/kvm/vgic/vgic-debug.c b/arch/arm64/kvm/vgic/vgic-debug.c
-> index f38c40a..e6a01f2 100644
-> --- a/arch/arm64/kvm/vgic/vgic-debug.c
-> +++ b/arch/arm64/kvm/vgic/vgic-debug.c
-> @@ -92,7 +92,7 @@ static void *vgic_debug_start(struct seq_file *s, loff_t *pos)
->  		goto out;
->  	}
->  
-> -	iter = kmalloc(sizeof(*iter), GFP_KERNEL);
-> +	iter = kmalloc(sizeof(*iter), GFP_KERNEL_ACCOUNT);
->  	if (!iter) {
->  		iter = ERR_PTR(-ENOMEM);
->  		goto out;
-> diff --git a/arch/arm64/kvm/vgic/vgic-init.c b/arch/arm64/kvm/vgic/vgic-init.c
-> index 052917d..27d1513 100644
-> --- a/arch/arm64/kvm/vgic/vgic-init.c
-> +++ b/arch/arm64/kvm/vgic/vgic-init.c
-> @@ -134,7 +134,7 @@ static int kvm_vgic_dist_init(struct kvm *kvm, unsigned int nr_spis)
->  	struct kvm_vcpu *vcpu0 = kvm_get_vcpu(kvm, 0);
->  	int i;
->  
-> -	dist->spis = kcalloc(nr_spis, sizeof(struct vgic_irq), GFP_KERNEL);
-> +	dist->spis = kcalloc(nr_spis, sizeof(struct vgic_irq), GFP_KERNEL_ACCOUNT);
->  	if (!dist->spis)
->  		return  -ENOMEM;
->  
-> diff --git a/arch/arm64/kvm/vgic/vgic-irqfd.c b/arch/arm64/kvm/vgic/vgic-irqfd.c
-> index 79f8899..475059b 100644
-> --- a/arch/arm64/kvm/vgic/vgic-irqfd.c
-> +++ b/arch/arm64/kvm/vgic/vgic-irqfd.c
-> @@ -139,7 +139,7 @@ int kvm_vgic_setup_default_irq_routing(struct kvm *kvm)
->  	u32 nr = dist->nr_spis;
->  	int i, ret;
->  
-> -	entries = kcalloc(nr, sizeof(*entries), GFP_KERNEL);
-> +	entries = kcalloc(nr, sizeof(*entries), GFP_KERNEL_ACCOUNT);
->  	if (!entries)
->  		return -ENOMEM;
->  
-> diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
-> index 40cbaca..bd90730 100644
-> --- a/arch/arm64/kvm/vgic/vgic-its.c
-> +++ b/arch/arm64/kvm/vgic/vgic-its.c
-> @@ -48,7 +48,7 @@ static struct vgic_irq *vgic_add_lpi(struct kvm *kvm, u32 intid,
->  	if (irq)
->  		return irq;
->  
-> -	irq = kzalloc(sizeof(struct vgic_irq), GFP_KERNEL);
-> +	irq = kzalloc(sizeof(struct vgic_irq), GFP_KERNEL_ACCOUNT);
->  	if (!irq)
->  		return ERR_PTR(-ENOMEM);
->  
-> @@ -332,7 +332,7 @@ int vgic_copy_lpi_list(struct kvm *kvm, struct kvm_vcpu *vcpu, u32 **intid_ptr)
->  	 * we must be careful not to overrun the array.
->  	 */
->  	irq_count = READ_ONCE(dist->lpi_list_count);
-> -	intids = kmalloc_array(irq_count, sizeof(intids[0]), GFP_KERNEL);
-> +	intids = kmalloc_array(irq_count, sizeof(intids[0]), GFP_KERNEL_ACCOUNT);
->  	if (!intids)
->  		return -ENOMEM;
->  
-> @@ -985,7 +985,7 @@ static int vgic_its_alloc_collection(struct vgic_its *its,
->  	if (!vgic_its_check_id(its, its->baser_coll_table, coll_id, NULL))
->  		return E_ITS_MAPC_COLLECTION_OOR;
->  
-> -	collection = kzalloc(sizeof(*collection), GFP_KERNEL);
-> +	collection = kzalloc(sizeof(*collection), GFP_KERNEL_ACCOUNT);
->  	if (!collection)
->  		return -ENOMEM;
->  
-> @@ -1029,7 +1029,7 @@ static struct its_ite *vgic_its_alloc_ite(struct its_device *device,
->  {
->  	struct its_ite *ite;
->  
-> -	ite = kzalloc(sizeof(*ite), GFP_KERNEL);
-> +	ite = kzalloc(sizeof(*ite), GFP_KERNEL_ACCOUNT);
->  	if (!ite)
->  		return ERR_PTR(-ENOMEM);
->  
-> @@ -1150,7 +1150,7 @@ static struct its_device *vgic_its_alloc_device(struct vgic_its *its,
->  {
->  	struct its_device *device;
->  
-> -	device = kzalloc(sizeof(*device), GFP_KERNEL);
-> +	device = kzalloc(sizeof(*device), GFP_KERNEL_ACCOUNT);
->  	if (!device)
->  		return ERR_PTR(-ENOMEM);
->  
-> @@ -1847,7 +1847,7 @@ void vgic_lpi_translation_cache_init(struct kvm *kvm)
->  		struct vgic_translation_cache_entry *cte;
->  
->  		/* An allocation failure is not fatal */
-> -		cte = kzalloc(sizeof(*cte), GFP_KERNEL);
-> +		cte = kzalloc(sizeof(*cte), GFP_KERNEL_ACCOUNT);
->  		if (WARN_ON(!cte))
->  			break;
->  
-> @@ -1888,7 +1888,7 @@ static int vgic_its_create(struct kvm_device *dev, u32 type)
->  	if (type != KVM_DEV_TYPE_ARM_VGIC_ITS)
->  		return -ENODEV;
->  
-> -	its = kzalloc(sizeof(struct vgic_its), GFP_KERNEL);
-> +	its = kzalloc(sizeof(struct vgic_its), GFP_KERNEL_ACCOUNT);
->  	if (!its)
->  		return -ENOMEM;
->  
-> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-> index 15a6c98..22ab4ba 100644
-> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-> @@ -826,7 +826,7 @@ static int vgic_v3_insert_redist_region(struct kvm *kvm, uint32_t index,
->  	if (vgic_v3_rdist_overlap(kvm, base, size))
->  		return -EINVAL;
->  
-> -	rdreg = kzalloc(sizeof(*rdreg), GFP_KERNEL);
-> +	rdreg = kzalloc(sizeof(*rdreg), GFP_KERNEL_ACCOUNT);
->  	if (!rdreg)
->  		return -ENOMEM;
->  
-> diff --git a/arch/arm64/kvm/vgic/vgic-v4.c b/arch/arm64/kvm/vgic/vgic-v4.c
-> index 66508b0..a80cc37 100644
-> --- a/arch/arm64/kvm/vgic/vgic-v4.c
-> +++ b/arch/arm64/kvm/vgic/vgic-v4.c
-> @@ -227,7 +227,7 @@ int vgic_v4_init(struct kvm *kvm)
->  	nr_vcpus = atomic_read(&kvm->online_vcpus);
->  
->  	dist->its_vm.vpes = kcalloc(nr_vcpus, sizeof(*dist->its_vm.vpes),
-> -				    GFP_KERNEL);
-> +				    GFP_KERNEL_ACCOUNT);
->  	if (!dist->its_vm.vpes)
->  		return -ENOMEM;
->  
-> -- 
-> 2.7.4
-
--- 
-Michal Hocko
-SUSE Labs
+>
+>>
+>> Those are the commits that added the entry_flush and uaccess_flush
+>> symbols. Perhaps one for rfi_flush too but I'm not sure what commit
+>> introduced that.
+>>
+>> Kind regards,
+>> Daniel
+>>
+>>> warning: symbol 'rfi_flush' was not declared.
+>>> warning: symbol 'entry_flush' was not declared.
+>>> warning: symbol 'uaccess_flush' was not declared.
+>>> We found warnings above in arch/powerpc/kernel/setup_64.c by using
+>>> sparse tool.
+>>>
+>>> Define 'entry_flush' and 'uaccess_flush' as static because they are not
+>>> referenced outside the file. Include asm/security_features.h in which
+>>> 'rfi_flush' is declared.
+>>>
+>>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>>> Signed-off-by: He Ying <heying24@huawei.com>
+>>> ---
+>>>   arch/powerpc/kernel/setup_64.c | 5 +++--
+>>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/arch/powerpc/kernel/setup_64.c b/arch/powerpc/kernel/setup=
+_64.c
+>>> index 560ed8b975e7..f92d72a7e7ce 100644
+>>> --- a/arch/powerpc/kernel/setup_64.c
+>>> +++ b/arch/powerpc/kernel/setup_64.c
+>>> @@ -68,6 +68,7 @@
+>>>   #include <asm/early_ioremap.h>
+>>>   #include <asm/pgalloc.h>
+>>>   #include <asm/asm-prototypes.h>
+>>> +#include <asm/security_features.h>
+>>>=20=20=20
+>>>   #include "setup.h"
+>>>=20=20=20
+>>> @@ -949,8 +950,8 @@ static bool no_rfi_flush;
+>>>   static bool no_entry_flush;
+>>>   static bool no_uaccess_flush;
+>>>   bool rfi_flush;
+>>> -bool entry_flush;
+>>> -bool uaccess_flush;
+>>> +static bool entry_flush;
+>>> +static bool uaccess_flush;
+>>>   DEFINE_STATIC_KEY_FALSE(uaccess_flush_key);
+>>>   EXPORT_SYMBOL(uaccess_flush_key);
+>>>=20=20=20
+>>> --=20
+>>> 2.17.1
+>> .
