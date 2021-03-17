@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C7C33F950
+	by mail.lfdr.de (Postfix) with ESMTP id A7BB233F951
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233226AbhCQTbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35852 "EHLO
+        id S233361AbhCQTbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233320AbhCQTbY (ORCPT
+        with ESMTP id S233322AbhCQTbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:31:24 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83604C06174A;
-        Wed, 17 Mar 2021 12:31:24 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id f16so4683539ljm.1;
-        Wed, 17 Mar 2021 12:31:24 -0700 (PDT)
+        Wed, 17 Mar 2021 15:31:25 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FAA5C06174A;
+        Wed, 17 Mar 2021 12:31:25 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id q13so681716lfu.8;
+        Wed, 17 Mar 2021 12:31:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ofiUnTNVmdhSCPXFUakdrcB5fFxVu8qvsddsoETV6Zo=;
-        b=iveVSg0Mzq0AYZUHI9SLEu1YAn3765NXbf8cmC8RuaJUuq4hd81iq4VuA+acqH+Hi6
-         cFZdsnRTbhzYlJ6w8YlIyBCaiClFiduFLR1SeAK3XybA4DbZYHk1eyovjKPd9Kyp3lqO
-         7iLW8HKLHCvThKNNiPOcxaONyqTzYTYWMnu04cQwCQnIarinL5X0zuC+twWPkRDK88F2
-         l5RZ/x1tuVVzK6lhI1ojfT04OmxWB8YT+kS+ha9ngDc5ozfCh0wjKZjEVKkQq6HNO9sc
-         1MB5iJyojFaO4mV+Vc96Wfu0ziJCJcmaCSm2COOu1hZlmpnJuEsGuO0eWklC/GlCXKeK
-         wthQ==
+        bh=cE7Xhb4R1ec/urqT85FnfO3K3ytlWXcrcBT7U1yj31U=;
+        b=fRMHKlVrMSAwP7NyZx3tDeRwBf+968CJB1mmm6TqNsLujLBrUm+3JHqjfkfoeGRcio
+         YjqM0xJ2eH07zkh3J9Im/K0PSHNol29Lc0QaOjWHOsWiBG+7kk1wXPelOA0HwD9tokEX
+         3LL7zpcid4M6kxSmrtuEJUqvaUiYMYWmH+wjlyNCeAEgMbrfozR1XhF4OSnaBB2dn5i+
+         vEuGV24PeDFtzMzCC9OsJ/Y+EKgsq/YkTh+Dc4le+0WwKRS1kRsNb/Fcq8Mg0z2WX0sw
+         9olztSD7/jWRGnsJFq1PRq/gX2jsaCf4BMcQTqkXiKA56pZh2tlCV/y14b7ETq7M402m
+         1KRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ofiUnTNVmdhSCPXFUakdrcB5fFxVu8qvsddsoETV6Zo=;
-        b=fzH6Hb5AjVCzV5iLn6w5V9Fcio1oHd0rZrjQWD/Po9NiBPYZzC7uZJLon6BZM13+kv
-         2wdqktjnGnRRSJLU80EJvtsd2EcJvCHqipVvijrLKYJtJtKNiXL+jeEEsp/EHXP+DSUZ
-         bw647TRnnRjOhfa+JLqjau0x1ryc4RgdvLZeC2fn3dB8qR85ccfJLdoTuQUIM9D084XW
-         P1ANKpQoJud2UmI4+zAo1S2FtgiIqRYwd0FxcAXylVG8jgEt6bsFfQkc7WSuK69uG7z5
-         /cTeBgpEYJQ+QdsK2f1mOylJSeh7YHcvEmAmVaDVx4Y+vGXNL7xWLQ5gDit7FmlOGMLs
-         gGYg==
-X-Gm-Message-State: AOAM53106qcbkYzN/YSRR+QFk4AqhDPBECdIjDr0MN/yAqLEPklbiMB2
-        Lu5mNNiv1bpIuNTWkcJh25U=
-X-Google-Smtp-Source: ABdhPJyVu3L9PDejWp+duHNyY8pXjPyRpJ5zoSUWJBpNlL1nA9s9yhPcL8fRJwBlyIqtRk75bg9g2g==
-X-Received: by 2002:a2e:87c9:: with SMTP id v9mr3269111ljj.321.1616009482931;
-        Wed, 17 Mar 2021 12:31:22 -0700 (PDT)
+        bh=cE7Xhb4R1ec/urqT85FnfO3K3ytlWXcrcBT7U1yj31U=;
+        b=eDAZaAp+hFB76QFDpLj3DfRJi1UdHMQbZXLTGGZr6L9M10LiLLmcrqvoPQu4NM09hN
+         U4AfDvSTS/rnGB0jM9ZNc5mEnIIDOt31V5m1Nhhls8n7DiYixnb7m6e3jygyJh1iuA8U
+         PvcAoUyn2pmnrnC9F1eAV912dS01c+B2TmAEkIHdq1O0UWXeh8LLpxIoVKP/0OBFUu8e
+         OwGvO7K7xM7xCJF9rg2UrWlWh8+p1QGwSSV1BAzy1kyv/3lXVXZ12O5NYjAqveAfbF2a
+         7wjDzvJsORAHFrk2HmBCWozEEWa1rzbRWEuksbddaLXDCyMpmkQrMEG0M6p4XUcEzOhE
+         3P6Q==
+X-Gm-Message-State: AOAM532/TzGlcgjQj1dlKyMVgrxpNakovBKGmksUUwDLYOZs1g33sVll
+        Rc2SG5B9ici72u3zREmMEd8=
+X-Google-Smtp-Source: ABdhPJyszzFsqL1bLb/vZZMAPsZUlYGaS/QXrtVRZio/vwoYcFiKTekC9g80GwJ1thU15fMVvviWvg==
+X-Received: by 2002:a05:6512:3055:: with SMTP id b21mr3058816lfb.356.1616009483662;
+        Wed, 17 Mar 2021 12:31:23 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id q24sm3623098lji.40.2021.03.17.12.31.22
+        by smtp.gmail.com with ESMTPSA id q24sm3623098lji.40.2021.03.17.12.31.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 12:31:22 -0700 (PDT)
+        Wed, 17 Mar 2021 12:31:23 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -58,9 +58,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Rob Herring <robh+dt@kernel.org>
 Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v5 1/7] clk: tegra30: Use 300MHz for video decoder by default
-Date:   Wed, 17 Mar 2021 22:30:00 +0300
-Message-Id: <20210317193006.29633-2-digetx@gmail.com>
+Subject: [PATCH v5 2/7] clk: tegra: Fix refcounting of gate clocks
+Date:   Wed, 17 Mar 2021 22:30:01 +0300
+Message-Id: <20210317193006.29633-3-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210317193006.29633-1-digetx@gmail.com>
 References: <20210317193006.29633-1-digetx@gmail.com>
@@ -70,30 +70,183 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 600MHz is a too high clock rate for some SoC versions for the video
-decoder hardware and this may cause stability issues. Use 300MHz for the
-video decoder by default, which is supported by all hardware versions.
+The refcounting of the gate clocks has a bug causing the enable_refcnt
+to underflow when unused clocks are disabled. This happens because clk
+provider erroneously bumps the refcount if clock is enabled at a boot
+time, which it shouldn't be doing, and it does this only for the gate
+clocks, while peripheral clocks are using the same gate ops and the
+peripheral clocks are missing the initial bump. Hence the refcount of
+the peripheral clocks is 0 when unused clocks are disabled and then the
+counter is decremented further by the gate ops, causing the integer
+underflow.
 
-Fixes: ed1a2459e20c ("clk: tegra: Add Tegra20/30 EMC clock implementation")
+Fix this problem by removing the erroneous bump and by implementing the
+disable_unused() callback, which disables the unused gates properly.
+
+The visible effect of the bug is such that the unused clocks are never
+gated if a loaded kernel module grabs the unused clocks and starts to use
+them. In practice this shouldn't cause any real problems for the drivers
+and boards supported by the kernel today.
+
 Acked-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/clk/tegra/clk-tegra30.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/tegra/clk-periph-gate.c | 72 +++++++++++++++++++----------
+ drivers/clk/tegra/clk-periph.c      | 11 +++++
+ 2 files changed, 58 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/clk/tegra/clk-tegra30.c b/drivers/clk/tegra/clk-tegra30.c
-index 16dbf83d2f62..a33688b2359e 100644
---- a/drivers/clk/tegra/clk-tegra30.c
-+++ b/drivers/clk/tegra/clk-tegra30.c
-@@ -1245,7 +1245,7 @@ static struct tegra_clk_init_table init_table[] __initdata = {
- 	{ TEGRA30_CLK_GR3D, TEGRA30_CLK_PLL_C, 300000000, 0 },
- 	{ TEGRA30_CLK_GR3D2, TEGRA30_CLK_PLL_C, 300000000, 0 },
- 	{ TEGRA30_CLK_PLL_U, TEGRA30_CLK_CLK_MAX, 480000000, 0 },
--	{ TEGRA30_CLK_VDE, TEGRA30_CLK_PLL_C, 600000000, 0 },
-+	{ TEGRA30_CLK_VDE, TEGRA30_CLK_PLL_C, 300000000, 0 },
- 	{ TEGRA30_CLK_SPDIF_IN_SYNC, TEGRA30_CLK_CLK_MAX, 24000000, 0 },
- 	{ TEGRA30_CLK_I2S0_SYNC, TEGRA30_CLK_CLK_MAX, 24000000, 0 },
- 	{ TEGRA30_CLK_I2S1_SYNC, TEGRA30_CLK_CLK_MAX, 24000000, 0 },
+diff --git a/drivers/clk/tegra/clk-periph-gate.c b/drivers/clk/tegra/clk-periph-gate.c
+index 4b31beefc9fc..3c4259fec82e 100644
+--- a/drivers/clk/tegra/clk-periph-gate.c
++++ b/drivers/clk/tegra/clk-periph-gate.c
+@@ -48,18 +48,9 @@ static int clk_periph_is_enabled(struct clk_hw *hw)
+ 	return state;
+ }
+ 
+-static int clk_periph_enable(struct clk_hw *hw)
++static void clk_periph_enable_locked(struct clk_hw *hw)
+ {
+ 	struct tegra_clk_periph_gate *gate = to_clk_periph_gate(hw);
+-	unsigned long flags = 0;
+-
+-	spin_lock_irqsave(&periph_ref_lock, flags);
+-
+-	gate->enable_refcnt[gate->clk_num]++;
+-	if (gate->enable_refcnt[gate->clk_num] > 1) {
+-		spin_unlock_irqrestore(&periph_ref_lock, flags);
+-		return 0;
+-	}
+ 
+ 	write_enb_set(periph_clk_to_bit(gate), gate);
+ 	udelay(2);
+@@ -78,6 +69,32 @@ static int clk_periph_enable(struct clk_hw *hw)
+ 		udelay(1);
+ 		writel_relaxed(0, gate->clk_base + LVL2_CLK_GATE_OVRE);
+ 	}
++}
++
++static void clk_periph_disable_locked(struct clk_hw *hw)
++{
++	struct tegra_clk_periph_gate *gate = to_clk_periph_gate(hw);
++
++	/*
++	 * If peripheral is in the APB bus then read the APB bus to
++	 * flush the write operation in apb bus. This will avoid the
++	 * peripheral access after disabling clock
++	 */
++	if (gate->flags & TEGRA_PERIPH_ON_APB)
++		tegra_read_chipid();
++
++	write_enb_clr(periph_clk_to_bit(gate), gate);
++}
++
++static int clk_periph_enable(struct clk_hw *hw)
++{
++	struct tegra_clk_periph_gate *gate = to_clk_periph_gate(hw);
++	unsigned long flags = 0;
++
++	spin_lock_irqsave(&periph_ref_lock, flags);
++
++	if (!gate->enable_refcnt[gate->clk_num]++)
++		clk_periph_enable_locked(hw);
+ 
+ 	spin_unlock_irqrestore(&periph_ref_lock, flags);
+ 
+@@ -91,21 +108,28 @@ static void clk_periph_disable(struct clk_hw *hw)
+ 
+ 	spin_lock_irqsave(&periph_ref_lock, flags);
+ 
+-	gate->enable_refcnt[gate->clk_num]--;
+-	if (gate->enable_refcnt[gate->clk_num] > 0) {
+-		spin_unlock_irqrestore(&periph_ref_lock, flags);
+-		return;
+-	}
++	WARN_ON(!gate->enable_refcnt[gate->clk_num]);
++
++	if (gate->enable_refcnt[gate->clk_num]-- == 1)
++		clk_periph_disable_locked(hw);
++
++	spin_unlock_irqrestore(&periph_ref_lock, flags);
++}
++
++static void clk_periph_disable_unused(struct clk_hw *hw)
++{
++	struct tegra_clk_periph_gate *gate = to_clk_periph_gate(hw);
++	unsigned long flags = 0;
++
++	spin_lock_irqsave(&periph_ref_lock, flags);
+ 
+ 	/*
+-	 * If peripheral is in the APB bus then read the APB bus to
+-	 * flush the write operation in apb bus. This will avoid the
+-	 * peripheral access after disabling clock
++	 * Some clocks are duplicated and some of them are marked as critical,
++	 * like fuse and fuse_burn for example, thus the enable_refcnt will
++	 * be non-zero here id the "unused" duplicate is disabled by CCF.
+ 	 */
+-	if (gate->flags & TEGRA_PERIPH_ON_APB)
+-		tegra_read_chipid();
+-
+-	write_enb_clr(periph_clk_to_bit(gate), gate);
++	if (!gate->enable_refcnt[gate->clk_num])
++		clk_periph_disable_locked(hw);
+ 
+ 	spin_unlock_irqrestore(&periph_ref_lock, flags);
+ }
+@@ -114,6 +138,7 @@ const struct clk_ops tegra_clk_periph_gate_ops = {
+ 	.is_enabled = clk_periph_is_enabled,
+ 	.enable = clk_periph_enable,
+ 	.disable = clk_periph_disable,
++	.disable_unused = clk_periph_disable_unused,
+ };
+ 
+ struct clk *tegra_clk_register_periph_gate(const char *name,
+@@ -148,9 +173,6 @@ struct clk *tegra_clk_register_periph_gate(const char *name,
+ 	gate->enable_refcnt = enable_refcnt;
+ 	gate->regs = pregs;
+ 
+-	if (read_enb(gate) & periph_clk_to_bit(gate))
+-		enable_refcnt[clk_num]++;
+-
+ 	/* Data in .init is copied by clk_register(), so stack variable OK */
+ 	gate->hw.init = &init;
+ 
+diff --git a/drivers/clk/tegra/clk-periph.c b/drivers/clk/tegra/clk-periph.c
+index 67620c7ecd9e..79ca3aa072b7 100644
+--- a/drivers/clk/tegra/clk-periph.c
++++ b/drivers/clk/tegra/clk-periph.c
+@@ -100,6 +100,15 @@ static void clk_periph_disable(struct clk_hw *hw)
+ 	gate_ops->disable(gate_hw);
+ }
+ 
++static void clk_periph_disable_unused(struct clk_hw *hw)
++{
++	struct tegra_clk_periph *periph = to_clk_periph(hw);
++	const struct clk_ops *gate_ops = periph->gate_ops;
++	struct clk_hw *gate_hw = &periph->gate.hw;
++
++	gate_ops->disable_unused(gate_hw);
++}
++
+ static void clk_periph_restore_context(struct clk_hw *hw)
+ {
+ 	struct tegra_clk_periph *periph = to_clk_periph(hw);
+@@ -126,6 +135,7 @@ const struct clk_ops tegra_clk_periph_ops = {
+ 	.is_enabled = clk_periph_is_enabled,
+ 	.enable = clk_periph_enable,
+ 	.disable = clk_periph_disable,
++	.disable_unused = clk_periph_disable_unused,
+ 	.restore_context = clk_periph_restore_context,
+ };
+ 
+@@ -135,6 +145,7 @@ static const struct clk_ops tegra_clk_periph_nodiv_ops = {
+ 	.is_enabled = clk_periph_is_enabled,
+ 	.enable = clk_periph_enable,
+ 	.disable = clk_periph_disable,
++	.disable_unused = clk_periph_disable_unused,
+ 	.restore_context = clk_periph_restore_context,
+ };
+ 
 -- 
 2.30.2
 
