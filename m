@@ -2,85 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587DF33ED4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F5233ED4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhCQJoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:44:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42366 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229535AbhCQJoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:44:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615974248; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=15SYZUOsoJrtHlD7au1IPSvMhYe6ENPbMXJkbZtfksA=;
-        b=dnwcW+yYQOAKzjFfBsPO6BtIwTwnPdajOyVerDHNue20QLH8yCOrCRdlnUJR1xMcwzyYwt
-        QXg49q5jxymBUMCTic3MEhn9xxxc/k490Pw3Ur9tcuOkA/oQbHaYG9wtxEd/XblLvuGhOM
-        BPLp23zWhfiMnPN3eGIQakgwhhpAZTU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 00502AB8C;
-        Wed, 17 Mar 2021 09:44:07 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 10:44:06 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH] KVM: arm: memcg awareness
-Message-ID: <YFHPZjyUn3AsQnN2@dhcp22.suse.cz>
-References: <1615959984-7122-1-git-send-email-wanpengli@tencent.com>
- <YFG2Z1q9MJGr8Zek@dhcp22.suse.cz>
- <CANRm+Cxi4qupXkYyZpPbvHcLkuWGxin4+w7EC+z0+Aidi5+B5A@mail.gmail.com>
- <CANRm+CwLBAPwwZzHB8U2SDMHKer_NtOKfAk52=EHUpG-SqxJWg@mail.gmail.com>
+        id S229974AbhCQJpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:45:04 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13183 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229673AbhCQJo3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 05:44:29 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F0lYR1tcqzmYhp;
+        Wed, 17 Mar 2021 17:42:03 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.61) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 17 Mar 2021 17:44:19 +0800
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>,
+        <yao.jin@linux.intel.com>, <gustavoars@kernel.org>,
+        <mliska@suse.cz>, <linux-kernel@vger.kernel.org>
+CC:     <yangjihong1@huawei.com>
+Subject: [PATCH v6] perf annotate: Fix sample events lost in stdio mode
+Date:   Wed, 17 Mar 2021 17:44:09 +0800
+Message-ID: <20210317094409.94293-1-yangjihong1@huawei.com>
+X-Mailer: git-send-email 2.30.GIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANRm+CwLBAPwwZzHB8U2SDMHKer_NtOKfAk52=EHUpG-SqxJWg@mail.gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.61]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 17-03-21 16:04:51, Wanpeng Li wrote:
-> On Wed, 17 Mar 2021 at 16:04, Wanpeng Li <kernellwp@gmail.com> wrote:
-> >
-> > On Wed, 17 Mar 2021 at 15:57, Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Wed 17-03-21 13:46:24, Wanpeng Li wrote:
-> > > > From: Wanpeng Li <wanpengli@tencent.com>
-> > > >
-> > > > KVM allocations in the arm kvm code which are tied to the life
-> > > > of the VM process should be charged to the VM process's cgroup.
-> > >
-> > > How much memory are we talking about?
-> > >
-> > > > This will help the memcg controler to do the right decisions.
-> > >
-> > > This is a bit vague. What is the right decision? AFAICS none of that
-> > > memory is considered during oom victim selection. The only thing memcg
-> > > controler can help with is to contain and account this additional
-> > > memory. This might help to better isolate multiple workloads on the same
-> > > system. Maybe this is what you wanted to say? Or maybe this is a way to
-> > > prevent untrusted users from consuming a lot of memory?
-> >
-> 
-> https://patchwork.kernel.org/project/kvm/patch/20190211190252.198101-1-bgardon@google.com/
-> 
-> > It is explained in this patchset for x86 kvm which is upstream, I
-> > think I don't need to copy and paste. :)
+In hist__find_annotations function, since different hist_entry may point to same
+symbol, we free notes->src to signal already processed this symbol in stdio mode;
+when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
 
-How is one supposed to know that? If you want to spare some typing then
-you could have referenced 4183683918ef ("kvm: vmx: Add memcg accounting
-to KVM allocations").
+However, there is a problem, for example, run the following command:
 
-Btw. that explanation is rather vague as well. It doesn't explain any of
-my above questions. It is not my take to judge whether these are
-important for the respective maintainers I just want to point out that
-once somebody revisits this code and try to find out why the accounting
-has been added then this will be far from clear because "memcg doing the
-right thing" doesn't tell much in itself.
+ # perf record -e branch-misses -e branch-instructions -a sleep 1
+
+perf.data file contains different types of sample event.
+
+If the same IP sample event exists in branch-misses and branch-instructions,
+this event uses the same symbol. When annotate branch-misses events, notes->src
+corresponding to this event is set to null, as a result, when annotate
+branch-instructions events, this event is skipped and no annotate is output.
+
+Solution of this patch is to remove zfree in hists__find_annotations and
+change sort order to "dso,symbol" to avoid duplicate output when different
+processes correspond to the same symbol.
+
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+---
+
+Changes since v5:
+  - Add Signed-off-by tag.
+
+Changes since v4:
+  - Use the same sort key "dso,symbol" in branch stack mode.
+
+Changes since v3:
+  - Modify the first line of comments.
+
+Changes since v2:
+  - Remove zfree in hists__find_annotations.
+  - Change sort order to avoid duplicate output.
+
+Changes since v1:
+  - Change processed flag variable from u8 to bool.
+
+ tools/perf/builtin-annotate.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+index a23ba6bb99b6..92c55f292c11 100644
+--- a/tools/perf/builtin-annotate.c
++++ b/tools/perf/builtin-annotate.c
+@@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists *hists,
+ 		} else {
+ 			hist_entry__tty_annotate(he, evsel, ann);
+ 			nd = rb_next(nd);
+-			/*
+-			 * Since we have a hist_entry per IP for the same
+-			 * symbol, free he->ms.sym->src to signal we already
+-			 * processed this symbol.
+-			 */
+-			zfree(&notes->src->cycles_hist);
+-			zfree(&notes->src);
+ 		}
+ 	}
+ }
+@@ -619,6 +612,12 @@ int cmd_annotate(int argc, const char **argv)
+ 
+ 	setup_browser(true);
+ 
++	/*
++	 * Events of different processes may correspond to the same
++	 * symbol, we do not care about the processes in annotate,
++	 * set sort order to avoid repeated output.
++	 */
++	sort_order = "dso,symbol";
+ 	if ((use_browser == 1 || annotate.use_stdio2) && annotate.has_br_stack) {
+ 		sort__mode = SORT_MODE__BRANCH;
+ 		if (setup_sorting(annotate.session->evlist) < 0)
 -- 
-Michal Hocko
-SUSE Labs
+2.30.GIT
+
