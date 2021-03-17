@@ -2,132 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBD533ED1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 927DC33ED24
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbhCQJge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhCQJgT (ORCPT
+        id S229876AbhCQJhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:37:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32034 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229712AbhCQJhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:36:19 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204FEC06174A;
-        Wed, 17 Mar 2021 02:36:19 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id u18so481656plc.12;
-        Wed, 17 Mar 2021 02:36:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1/UwIMPoiNTEqVW0NAKbZeVG8BLAecJh/rLT+yCxwwI=;
-        b=UMka2ac9aQY4VVpveKW1x+nSPk6NcsEi5BJzvbH7+H44Z3SXFiehVbQ7b1YGwlfOiS
-         2U/I/6nxgvUW4soT2SXb898IFTfd79zmKeCDHfRO/GiyO/dFCGZ19LiKkIeJny8lOe8L
-         gmvWvd9qmFQ2VjWJb+fFZ0o92nFFcDHHkhU2ksX9SxLqfmuSi0WRLJa7XJo7loyMwgDI
-         GXWmM9X5xinTGeZBO2rSJwQF14e8CI/tymix7biwY5je41SWfFt7zM0imdClCl/wvnc8
-         RyLOEFVjsdKGNNHC+cHk9uRXR4JXVB+yfCwQcjekLOKGkk8X/Y1jyjh/b4IoRHcY5vvt
-         SiPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1/UwIMPoiNTEqVW0NAKbZeVG8BLAecJh/rLT+yCxwwI=;
-        b=ST2JoPOO1VPeKSGjPaUy/YZxmqIi03UNK3tud6rwcvBrfiNzD20EsroolK5HaiJdul
-         Y34bFf3I6RRTpU2tklPCnLDsFPViKFP7IpTxmW1kPy14bUCaUrHbo86ZrpCcKAg/Iugv
-         DzOaYDRJ9J1zCOhASCXDZvTQ9MBzRFCAQ7gHHAufLQLUMgckB36dG64lIuTLjNW+ZduP
-         ccac26HL+J6IOn6bYx0ziv+vkfAMJ5yaLoL26IYRaBom9zrAbIUvKE6+TZY/ZwVfqlRr
-         9RGEXilOU426TQTnGCa1+qLPowH97GMtGM31lrXAONBfcUxQCxMgHVHfzl+1vGYMLiJO
-         o0Og==
-X-Gm-Message-State: AOAM532bWjr55p3XHtegJDxOGQdlWuQ4HRbToDSqCWCDgE86tQxdUXaZ
-        AoNFwHi5uVBOYhPtkXPHAGxtmzQeTO5f1KdGexM=
-X-Google-Smtp-Source: ABdhPJy8lTvDxNpJseFrB/g8WC6xXJd25OBlaebo7gfMhZfooldUWzMtKuIO2o1MfQx8jrw1mLZL5BG7Vg+9vTMQr3Y=
-X-Received: by 2002:a17:90a:e454:: with SMTP id jp20mr3851271pjb.129.1615973778514;
- Wed, 17 Mar 2021 02:36:18 -0700 (PDT)
+        Wed, 17 Mar 2021 05:37:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615973823;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SPq25jtfYHNoMdRcDr249FaN2pikM90IE2m6m6T2KCQ=;
+        b=OFqgWb6Fgz6ZC391su4fTz77+KXqPgcXZ5EkdfI3P92wvvTAwZRdklXCqUg7iiVw1jtIp1
+        FGGv/YTT1bDr+IsSUJBS/WivwKinOJhQAaoetKcC5GypojVMBD5wZX9KViHREBPa8sDXxc
+        /dSlLPz9+EGcIYjn3sqazieR9gST7A8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-337-JmLCvksuO3-LxUz5PFZ9UA-1; Wed, 17 Mar 2021 05:36:59 -0400
+X-MC-Unique: JmLCvksuO3-LxUz5PFZ9UA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76F6B802B45;
+        Wed, 17 Mar 2021 09:36:57 +0000 (UTC)
+Received: from localhost (ovpn-114-113.ams2.redhat.com [10.36.114.113])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 26B095C8BE;
+        Wed, 17 Mar 2021 09:36:47 +0000 (UTC)
+Date:   Wed, 17 Mar 2021 09:36:47 +0000
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Vivek Goyal <vgoyal@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2] virtiofs: fix memory leak in virtio_fs_probe()
+Message-ID: <YFHNr/Sqgo6QnoGV@stefanha-x1.localdomain>
+References: <20210317084443.22657-1-lhenriques@suse.de>
 MIME-Version: 1.0
-References: <20210310015135.293794-1-dong.menglong@zte.com.cn>
- <20210316224820.GA225411@roeck-us.net> <CAHp75VdE3fkCjb53vBso5uJX9aEFtAOAdh5NVOSbK0YR64+jOg@mail.gmail.com>
- <20210317013758.GA134033@roeck-us.net> <CADxym3bu0Ds6dD6OhyvdzbWDW-KqXsqGGxt3HKj-dsedFn9GXg@mail.gmail.com>
-In-Reply-To: <CADxym3bu0Ds6dD6OhyvdzbWDW-KqXsqGGxt3HKj-dsedFn9GXg@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 17 Mar 2021 11:36:02 +0200
-Message-ID: <CAHp75Vfo=rtK0=nRTZNwL3peUXGt5PTo4d_epCgLChSD0CKRVw@mail.gmail.com>
-Subject: Re: [PATCH v4 RESEND net-next] net: socket: use BIT() for MSG_*
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "dong.menglong@zte.com.cn" <dong.menglong@zte.com.cn>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Ut6GBzXLkDIRjWkj"
+Content-Disposition: inline
+In-Reply-To: <20210317084443.22657-1-lhenriques@suse.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 10:21 AM Menglong Dong <menglong8.dong@gmail.com> wrote:
-> On Wed, Mar 17, 2021 at 9:38 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> > On Wed, Mar 17, 2021 at 01:02:51AM +0200, Andy Shevchenko wrote:
-> > > On Wednesday, March 17, 2021, Guenter Roeck <linux@roeck-us.net> wrote:
-> > >
-> ...
-> >
-> > The problem is in net/packet/af_packet.c:packet_recvmsg(). This function,
-> > as well as all other rcvmsg functions, is declared as
-> >
-> > static int packet_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-> >                           int flags)
-> >
-> > MSG_CMSG_COMPAT (0x80000000) is set in flags, meaning its value is negative.
-> > This is then evaluated in
-> >
-> >        if (flags & ~(MSG_PEEK|MSG_DONTWAIT|MSG_TRUNC|MSG_CMSG_COMPAT|MSG_ERRQUEUE))
-> >                 goto out;
-> >
-> > If any of those flags is declared as BIT() and thus long, flags is
-> > sign-extended to long. Since it is negative, its upper 32 bits will be set,
-> > the if statement evaluates as true, and the function bails out.
-> >
-> > This is relatively easy to fix here with, for example,
-> >
-> >         if ((unsigned int)flags & ~(MSG_PEEK|MSG_DONTWAIT|MSG_TRUNC|MSG_CMSG_COMPAT|MSG_ERRQUEUE))
-> >                 goto out;
-> >
-> > but that is just a hack, and it doesn't solve the real problem:
-> > Each function in struct proto_ops which passes flags passes it as int
-> > (see include/linux/net.h:struct proto_ops). Each such function, if
-> > called with MSG_CMSG_COMPAT set, will fail a match against
-> > ~(MSG_anything) if MSG_anything is declared as BIT() or long.
-> >
-> > As it turns out, I was kind of lucky to catch the problem: So far I have
-> > seen it only on mips64 kernels with N32 userspace.
-> >
-> > Guenter
->
->  Wow, now the usages of 'msg_flag' really puzzle me. Seems that
-> it is used as 'unsigned int' somewhere, but 'int' somewhere
-> else.
->
-> As I found, It is used as 'int' in 'netlink_recvmsg()',
-> 'io_sr_msg->msg_flags', 'atalk_sendmsg()',
-> 'dn_recvmsg()',  'proto_ops->recvmsg()', etc.
->
-> So what should I do? Revert this patch? Or fix the usages of 'flags'?
-> Or change the type of MSG_* to 'unsigned int'? I prefer the last
-> one(the usages of 'flags' can be fixed too, maybe later).
 
-The problematic code is negation of the flags when it's done in
-operations like &.
-It maybe fixed by swapping positions of the arguments, i.e. ~(FOO |
-BAR) & flags.
+--Ut6GBzXLkDIRjWkj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All this is a beast called "integer promotions" in the C standard.
+On Wed, Mar 17, 2021 at 08:44:43AM +0000, Luis Henriques wrote:
+> When accidentally passing twice the same tag to qemu, kmemleak ended up
+> reporting a memory leak in virtiofs.  Also, looking at the log I saw the
+> following error (that's when I realised the duplicated tag):
+>=20
+>   virtiofs: probe of virtio5 failed with error -17
+>=20
+> Here's the kmemleak log for reference:
+>=20
+> unreferenced object 0xffff888103d47800 (size 1024):
+>   comm "systemd-udevd", pid 118, jiffies 4294893780 (age 18.340s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 ad 4e ad de ff ff ff ff 00 00 00 00  .....N..........
+>     ff ff ff ff ff ff ff ff 80 90 02 a0 ff ff ff ff  ................
+>   backtrace:
+>     [<000000000ebb87c1>] virtio_fs_probe+0x171/0x7ae [virtiofs]
+>     [<00000000f8aca419>] virtio_dev_probe+0x15f/0x210
+>     [<000000004d6baf3c>] really_probe+0xea/0x430
+>     [<00000000a6ceeac8>] device_driver_attach+0xa8/0xb0
+>     [<00000000196f47a7>] __driver_attach+0x98/0x140
+>     [<000000000b20601d>] bus_for_each_dev+0x7b/0xc0
+>     [<00000000399c7b7f>] bus_add_driver+0x11b/0x1f0
+>     [<0000000032b09ba7>] driver_register+0x8f/0xe0
+>     [<00000000cdd55998>] 0xffffffffa002c013
+>     [<000000000ea196a2>] do_one_initcall+0x64/0x2e0
+>     [<0000000008f727ce>] do_init_module+0x5c/0x260
+>     [<000000003cdedab6>] __do_sys_finit_module+0xb5/0x120
+>     [<00000000ad2f48c6>] do_syscall_64+0x33/0x40
+>     [<00000000809526b5>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+>=20
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> ---
+> Changes since v1:
+> - Use kfree() to free fs->vqs instead of calling virtio_fs_put()
+>=20
+>  fs/fuse/virtio_fs.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-The best is to try to get flags to be unsigned. By how invasive it may be?
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
 
--- 
-With Best Regards,
-Andy Shevchenko
+--Ut6GBzXLkDIRjWkj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmBRza8ACgkQnKSrs4Gr
+c8jnxQgArLrpuXxh9hc3EbwX0Cb5eLWUCOMDFF3Nd6fM4WjDFDc/ZBYzk2W8iZIj
+S8uH8ZpSF1RTgM327Zo+XqkFFfuSgdjqCrmW9z6iR7gSpnqOuSD2HReZcu3XxRln
+gfW+XA3v0IB97Xpm6mDgdJFnZaowJVPiGafLQsc6VZiv3UtkHI4FXwYJzM7pWknS
+HX/lMfSAi1TRkkJEY4zAkZKPVV3Jmgx5MOsMLbjjIa8griE4FnHQ7q5FlU3xDXla
+ooBxfh2hqUb/p9SAlNh6zxg8VCgQTRMo6a5kZupcH9PhVorr8Ki2tYvZUpmKwEwm
+y/8FuXXLTWEGnuX27koOOzoGvcl1Ag==
+=3lq4
+-----END PGP SIGNATURE-----
+
+--Ut6GBzXLkDIRjWkj--
+
