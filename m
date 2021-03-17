@@ -2,70 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F49733F430
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 126E333F4D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:00:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231963AbhCQPsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 11:48:11 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:59485 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S232348AbhCQPsF (ORCPT
+        id S232085AbhCQP70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 11:59:26 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:38833 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231962AbhCQP7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 11:48:05 -0400
-Received: (qmail 489791 invoked by uid 1000); 17 Mar 2021 11:11:59 -0400
-Date:   Wed, 17 Mar 2021 11:11:59 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     taehyun cho <taehyun.cho@samsung.com>
-Cc:     balbi@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: dwc3: remove 'pm_runtime_set_active' in resume
- callback
-Message-ID: <20210317151159.GA488655@rowland.harvard.edu>
-References: <CGME20210315074223epcas2p11ddf190ec730f8629c1310117135f813@epcas2p1.samsung.com>
- <20210315074317.7736-1-taehyun.cho@samsung.com>
- <20210315141335.GA402778@rowland.harvard.edu>
- <20210317082520.GB138912@rack03>
+        Wed, 17 Mar 2021 11:59:08 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-60-oQ0pwa1TOHujcwRSYTLDnQ-1; Wed, 17 Mar 2021 15:12:09 +0000
+X-MC-Unique: oQ0pwa1TOHujcwRSYTLDnQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Wed, 17 Mar 2021 15:12:08 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Wed, 17 Mar 2021 15:12:08 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Guenter Roeck' <linux@roeck-us.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     "menglong8.dong@gmail.com" <menglong8.dong@gmail.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "dong.menglong@zte.com.cn" <dong.menglong@zte.com.cn>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: RE: [PATCH v4 RESEND net-next] net: socket: use BIT() for MSG_*
+Thread-Topic: [PATCH v4 RESEND net-next] net: socket: use BIT() for MSG_*
+Thread-Index: AQHXGs5TpdCa8vtrqUa2nPH93KR5PaqISaGw
+Date:   Wed, 17 Mar 2021 15:12:08 +0000
+Message-ID: <a4dbb6f5b86649e2a46878eb00853f44@AcuMS.aculab.com>
+References: <20210310015135.293794-1-dong.menglong@zte.com.cn>
+ <20210316224820.GA225411@roeck-us.net>
+ <CAHp75VdE3fkCjb53vBso5uJX9aEFtAOAdh5NVOSbK0YR64+jOg@mail.gmail.com>
+ <20210317013758.GA134033@roeck-us.net>
+In-Reply-To: <20210317013758.GA134033@roeck-us.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210317082520.GB138912@rack03>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 05:25:20PM +0900, taehyun cho wrote:
-> On Mon, Mar 15, 2021 at 10:13:35AM -0400, Alan Stern wrote:
-> > On Mon, Mar 15, 2021 at 04:43:17PM +0900, taehyun cho wrote:
-> > > 'pm_runtime_set_active' sets a flag to describe rumtime status.
-> > > This flag is automatically set in pm_runtime_get_sync/put_sync API.
-> > > 'pm_runtime_set_active' checks the runtime status of parent device.
-> > > As a result, the below error message is printed.
-> > > dwc3 11110000.dwc3: runtime PM trying to activate child device
-> > > 11110000.dwc3 but parent (11110000.usb) is not active.
-> > 
-> > This is very suspicious.  That error message indicates a real error is 
-> > present; removing these pm_runtime_set_active calls won't fix the error.
-> > 
-> > You need to determine why the parent platform device 11110000.usb isn't 
-> > active when the dwc3 probe and resume routines are called.  It seems 
-> > likely that there is a bug in the platform device's driver.
-> > 
-> > Alan Stern
-> >
-> 
-> Alan,
-> 
-> Thanks to your comments, I checked our platform device driver and found
-> the problem. Our parent platform device didn't set active in resume
-> callback. This made a problem.
+RnJvbTogR3VlbnRlciBSb2Vjaw0KPiBTZW50OiAxNyBNYXJjaCAyMDIxIDAxOjM4DQouLi4NCj4g
+TVNHX0NNU0dfQ09NUEFUICgweDgwMDAwMDAwKSBpcyBzZXQgaW4gZmxhZ3MsIG1lYW5pbmcgaXRz
+IHZhbHVlIGlzIG5lZ2F0aXZlLg0KPiBUaGlzIGlzIHRoZW4gZXZhbHVhdGVkIGluDQo+IA0KPiAg
+ICAgICAgaWYgKGZsYWdzICYgfihNU0dfUEVFS3xNU0dfRE9OVFdBSVR8TVNHX1RSVU5DfE1TR19D
+TVNHX0NPTVBBVHxNU0dfRVJSUVVFVUUpKQ0KPiAgICAgICAgICAgICAgICAgZ290byBvdXQ7DQo+
+IA0KPiBJZiBhbnkgb2YgdGhvc2UgZmxhZ3MgaXMgZGVjbGFyZWQgYXMgQklUKCkgYW5kIHRodXMg
+bG9uZywgZmxhZ3MgaXMNCj4gc2lnbi1leHRlbmRlZCB0byBsb25nLiBTaW5jZSBpdCBpcyBuZWdh
+dGl2ZSwgaXRzIHVwcGVyIDMyIGJpdHMgd2lsbCBiZSBzZXQsDQo+IHRoZSBpZiBzdGF0ZW1lbnQg
+ZXZhbHVhdGVzIGFzIHRydWUsIGFuZCB0aGUgZnVuY3Rpb24gYmFpbHMgb3V0Lg0KPiANCj4gVGhp
+cyBpcyByZWxhdGl2ZWx5IGVhc3kgdG8gZml4IGhlcmUgd2l0aCwgZm9yIGV4YW1wbGUsDQo+IA0K
+PiAgICAgICAgIGlmICgodW5zaWduZWQgaW50KWZsYWdzICYgfihNU0dfUEVFS3xNU0dfRE9OVFdB
+SVR8TVNHX1RSVU5DfE1TR19DTVNHX0NPTVBBVHxNU0dfRVJSUVVFVUUpKQ0KPiAgICAgICAgICAg
+ICAgICAgZ290byBvdXQ7DQo+IA0KPiBidXQgdGhhdCBpcyBqdXN0IGEgaGFjaywgYW5kIGl0IGRv
+ZXNuJ3Qgc29sdmUgdGhlIHJlYWwgcHJvYmxlbToNCj4gRWFjaCBmdW5jdGlvbiBpbiBzdHJ1Y3Qg
+cHJvdG9fb3BzIHdoaWNoIHBhc3NlcyBmbGFncyBwYXNzZXMgaXQgYXMgaW50DQo+IChzZWUgaW5j
+bHVkZS9saW51eC9uZXQuaDpzdHJ1Y3QgcHJvdG9fb3BzKS4gRWFjaCBzdWNoIGZ1bmN0aW9uLCBp
+Zg0KPiBjYWxsZWQgd2l0aCBNU0dfQ01TR19DT01QQVQgc2V0LCB3aWxsIGZhaWwgYSBtYXRjaCBh
+Z2FpbnN0DQo+IH4oTVNHX2FueXRoaW5nKSBpZiBNU0dfYW55dGhpbmcgaXMgZGVjbGFyZWQgYXMg
+QklUKCkgb3IgbG9uZy4NCg0KSXNuJ3QgTVNHX0NNU0dfQ09NUEFUIGFuIGludGVybmFsIHZhbHVl
+Pw0KQ291bGQgaXQgYmUgY2hhbmdlZCB0byAxdSA8PCAzMCBpbnN0ZWFkIG9mIDF1IDw8IDMxID8N
+ClRoZW4gaXQgd291bGRuJ3QgbWF0dGVyIGlmIHRoZSBoaWdoIGJpdCBvZiBmbGFncyBnb3QgcmVw
+bGljYXRlZC4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJh
+bWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0
+cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-Ah, good.  Does the platform driver set the active flag in its probe 
-routine?
-
->  Thank you for the help and sorry for
-> disturbing you.
-
-No problem at all.
-
-Alan Stern
