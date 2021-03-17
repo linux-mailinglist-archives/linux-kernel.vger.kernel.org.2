@@ -2,122 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D332333F35C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 151B633F327
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:40:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbhCQOk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:40:58 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50684 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbhCQOkn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:40:43 -0400
-Message-Id: <20210317143859.513307808@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615992042;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=8QMGgYnI70uugMofu3OLkpYTvIgYFZIdrl1oEimDU2o=;
-        b=rmgC+l+KeJUNxw7DayqAHUq9NF4ItzQL4kWBGhC0Blnj6lOs0ihHR0KopYyOUd5vb/KOvx
-        zPNQAfPKO5lC4/eiC3idrqjeA1ENh4sWv7IRnlv5/KTmnACRTW8pNJhZhTIGVxFcZwnYEk
-        5WCU1lSPTYinnQ84+mmluEIIKxdFiRwbQ4VRGuvnIgMGRZjoFDvMxR8Vz4HA1pPalDco97
-        5xL1Umdr3qjxfNSeAIR8z1haObrJBE3PmqCqx66/+ZZ5CTSS+kjvAQprMBiqOQAPjRumeI
-        kw+d9PNB6SX20f++KsknCyZttPjMCFdYM535vFiBHmGPu6eOLdUrhPizN2y05Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615992042;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=8QMGgYnI70uugMofu3OLkpYTvIgYFZIdrl1oEimDU2o=;
-        b=OBk0pWKATGPe0cnOU+iBZDG8oGm/nxdWDLtvPEsrsVytfpKq8sAidYOKW5xPy/oatjv9ki
-        zClOj1w65s0FXnDg==
-Date:   Wed, 17 Mar 2021 15:38:52 +0100
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-serial@vger.kernel.org
-Subject: [patch 1/1] genirq: Disable interrupts for force threaded handlers
+        id S231993AbhCQOkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:40:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37652 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232163AbhCQOkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 10:40:00 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ACA4FAD74;
+        Wed, 17 Mar 2021 14:39:59 +0000 (UTC)
+Date:   Wed, 17 Mar 2021 15:39:59 +0100 (CET)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Peter Zijlstra <peterz@infradead.org>
+cc:     x86@kernel.org, jpoimboe@redhat.com, jgross@suse.com,
+        linux-kernel@vger.kernel.org, samitolvanen@google.com
+Subject: Re: [PATCH 6/9] objtool: Add elf_create_undef_symbol()
+In-Reply-To: <YFIOl/3NcnnV0jDa@hirez.programming.kicks-ass.net>
+Message-ID: <alpine.LSU.2.21.2103171539270.23081@pobox.suse.cz>
+References: <20210312171613.533405394@infradead.org> <20210312171653.710872453@infradead.org> <alpine.LSU.2.21.2103171444570.23081@pobox.suse.cz> <YFIOl/3NcnnV0jDa@hirez.programming.kicks-ass.net>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With interrupt force threading all device interrupt handlers are invoked
-from kernel threads. Contrary to hard interrupt context the invocation only
-disables bottom halfs, but not interrupts. This was an oversight back then
-because any code like this will have an issue:
+On Wed, 17 Mar 2021, Peter Zijlstra wrote:
 
-thread(irq_A)
-  irq_handler(A)
-    spin_lock(&foo->lock);
+> On Wed, Mar 17, 2021 at 02:52:23PM +0100, Miroslav Benes wrote:
+> 
+> > > +	if (!elf_symbol_add(elf, sym, SHN_XINDEX)) {
+> > > +		WARN("elf_symbol_add");
+> > > +		return NULL;
+> > > +	}
+> > 
+> > SHN_XINDEX means that the extended section index is used. Above you seem 
+> > to use it in the opposite sense too (assigning to shndx when shndx_data is 
+> > NULL). While it makes the code easier to handle, it is a bit confusing 
+> > (and maybe I am just confused now). Could you add a comment about that, 
+> > please? elf_symbol_add() seems like a good place.
+> 
+> Yes, that was a horrible thing to do :/ And you understood it right.
+> 
+> Looking at it again, I'm not sure it is actually correct tho; shouldn't
+> elf_create_undef_symbol() also look at gelf_getsymshndx() of symtab ?
 
-interrupt(irq_B)
-  irq_handler(B)
-    spin_lock(&foo->lock);
-
-This has been triggered with networking (NAPI vs. hrtimers) and console
-drivers where printk() happens from an interrupt which interrupted the
-force threaded handler.
-
-Now people noticed and started to change the spin_lock() in the handler to
-spin_lock_irqsave() which affects performance or add IRQF_NOTHREAD to the
-interrupt request which in turn breaks RT.
-
-Fix the root cause and not the symptom and disable interrupts before
-invoking the force threaded handler which preserves the regular semantics
-and the usefulness of the interrupt force threading as a general debugging
-tool.
-
-For not RT this is not changing much, except that during the execution of
-the threaded handler interrupts are delayed until the handler
-returns. Vs. scheduling and softirq processing there is no difference.
-
-For RT kernels there is no issue.
-
-Fixes: 8d32a307e4fa ("genirq: Provide forced interrupt threading")
-Reported-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: netdev <netdev@vger.kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-CC: Peter Zijlstra <peterz@infradead.org>
-Cc: linux-serial@vger.kernel.org
-Cc: netdev <netdev@vger.kernel.org>
----
- kernel/irq/manage.c |    4 ++++
- 1 file changed, 4 insertions(+)
-
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -1142,11 +1142,15 @@ irq_forced_thread_fn(struct irq_desc *de
- 	irqreturn_t ret;
+Probably yes.
  
- 	local_bh_disable();
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		local_irq_disable();
- 	ret = action->thread_fn(action->irq, action->dev_id);
- 	if (ret == IRQ_HANDLED)
- 		atomic_inc(&desc->threads_handled);
- 
- 	irq_finalize_oneshot(desc, action);
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		local_irq_enable();
- 	local_bh_enable();
- 	return ret;
- }
+> What toolchain generates these extended sections and how? That is, how
+> do I test this crud..
 
+Sami might know.
+
+Miroslav
