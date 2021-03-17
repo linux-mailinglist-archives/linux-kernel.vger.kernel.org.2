@@ -2,92 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD5E33F261
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0B133F26A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231672AbhCQOPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52082 "EHLO
+        id S231565AbhCQORZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231648AbhCQOPc (ORCPT
+        with ESMTP id S231822AbhCQORM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:15:32 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E0ECC06174A;
-        Wed, 17 Mar 2021 07:15:32 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id u4so3362051ljo.6;
-        Wed, 17 Mar 2021 07:15:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gpCEjkMZEUC+j/o8wrSlaggSpGIA33fcqJm29MZK2L0=;
-        b=QBGrnHjac18WK28E2rOZL5cV5Ia6MYPSykeLh81qaIbzp6GCFf2u2WCOEcKoJVpVR4
-         hC6bqNvNQWltHeuEI6drnzoxmQ0t2Rdsgz4cxx5BBfWLQXdET9AYG0+HlMJnx/jEfUq6
-         cHY6mKar0AUFhHu1Ke/OQYHW6OdnfxDW5p+WxJXKfMrDjBL4CB93//NPIC/npT6Nj9ot
-         XXYIz5k0lFKfFBy9AYjQZg93lhmHEp+IvL4eo4JGibHZC9WRW2vyA3JdpWKk8Fn7/xuM
-         FAQlSssyKhJKIcsfFnfPIQK7V0WnEfK85va7RAD5nxOw9emv48TsmVUBkqrOkycTudxV
-         y8MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gpCEjkMZEUC+j/o8wrSlaggSpGIA33fcqJm29MZK2L0=;
-        b=duhRE/KLVu/VTkdMW3n9QAj64EaUqurRTNfKbJct7FxhDxrtv0rAaTADgsvOlT1Ybp
-         3IEgkvkV/DK4EG9UEkajfobl0RYOMbLD1CjkQGZZ7YJi/97UgOzze81KSB6S5kb0iFgi
-         4YrTRoSCoOeI5d2zJGLClzzqgthh3e8xEcU/MwgPvAAUftcTJpcu6QQlMaYA4uVte6Vc
-         FaT+NzOACWsHZFocNdI3DTrZ/c6THDUFIey05buugvQbIIELgOb9s2lKy3vb2S5LG8k6
-         tx9Sz1SGozc+UrI6VcUhcaCAvjzfTrrqI/fiGzSkTlH3qx5byPHYyrnxNRGONdACQYKX
-         pBbQ==
-X-Gm-Message-State: AOAM533+QbfLKzDJuXLvNx1bsEhgoDsZl4xGIEbZ2bnpUnmNUlmUn0mZ
-        vuSEtnuPhCAwBgnJEM457aeVIYbUdRvSr7lPs8TSS2tsv1o=
-X-Google-Smtp-Source: ABdhPJyvTDdf8GNCcx3d2xJN323xPcFjXiTwpn5Es0DOdIuxeEJYBoUc/UZu7TXySMEzzj3iVyx1nOUMJQQWfAZRDCY=
-X-Received: by 2002:a05:651c:1214:: with SMTP id i20mr2552046lja.423.1615990531034;
- Wed, 17 Mar 2021 07:15:31 -0700 (PDT)
+        Wed, 17 Mar 2021 10:17:12 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE34C06174A;
+        Wed, 17 Mar 2021 07:17:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ySJwnXmmut2FRkHGqONP6uMpr1gdDk9gWPXbqHdMFeU=; b=D1eg6Xkib9+0luGkFQ1ugveZHi
+        V2Qf5V4mqRzFbPfGpGS3ZidSxjMdx8OjvGUydu5qiQO8fnkd1HqGHvRrdspQn1Dh4DbWmdw6cqvP2
+        O9mp4l5rASAfA8WUrxNgmPt6pnELvPvSN7iSRDJntAmDAUcPXzFPC4jf3y1Nonw7FKJx7kkpTubDg
+        4qpu5vEKZ17hidVmN1eeZeUQ84FtPd9kCPVK0v3EBJDcdluqekdXAZv/bQOPeVsrZbIwsTg+5QJns
+        ZSYZJzg/FSA9LZGH0v2q7kWA4MC7W5zL7cJ36NYia+3j8Et2SkYj2OPmkUU94V6LtjtCDKetCJLo1
+        cRiOJzDw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMWyx-003EiT-Pz; Wed, 17 Mar 2021 14:17:08 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E87103050F0;
+        Wed, 17 Mar 2021 15:17:06 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D05B42078107C; Wed, 17 Mar 2021 15:17:06 +0100 (CET)
+Date:   Wed, 17 Mar 2021 15:17:06 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Davidlohr Bueso <dbueso@suse.de>, x86@kernel.org
+Subject: Re: [tip: locking/urgent] locking/ww_mutex: Simplify use_ww_ctx &
+ ww_ctx handling
+Message-ID: <YFIPYmFE7ChGrpf2@hirez.programming.kicks-ass.net>
+References: <20210316153119.13802-2-longman@redhat.com>
+ <161598470257.398.5006518584847290113.tip-bot2@tip-bot2>
+ <YFH9Pw3kwCZC1UTB@hirez.programming.kicks-ass.net>
+ <85fbce04-c544-6041-6e7d-76f47b90e263@redhat.com>
+ <YFIKWCUAZabBsji0@hirez.programming.kicks-ass.net>
+ <bbfca577-b680-4c73-3f35-22179bd1a498@redhat.com>
 MIME-Version: 1.0
-References: <20210310015135.293794-1-dong.menglong@zte.com.cn>
- <20210316224820.GA225411@roeck-us.net> <CAHp75VdE3fkCjb53vBso5uJX9aEFtAOAdh5NVOSbK0YR64+jOg@mail.gmail.com>
- <20210317013758.GA134033@roeck-us.net> <CADxym3bu0Ds6dD6OhyvdzbWDW-KqXsqGGxt3HKj-dsedFn9GXg@mail.gmail.com>
- <CAHp75Vfo=rtK0=nRTZNwL3peUXGt5PTo4d_epCgLChSD0CKRVw@mail.gmail.com> <CADxym3bHyaiy=kOhmxYdoMTZ_QaG9-JWqC1j6ucOBOeobVBoPg@mail.gmail.com>
-In-Reply-To: <CADxym3bHyaiy=kOhmxYdoMTZ_QaG9-JWqC1j6ucOBOeobVBoPg@mail.gmail.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Wed, 17 Mar 2021 22:15:19 +0800
-Message-ID: <CADxym3YKnwFce1D9w4xz83E8cRot1BMeTES8azJc1U3EJEeh7A@mail.gmail.com>
-Subject: Re: [PATCH v4 RESEND net-next] net: socket: use BIT() for MSG_*
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "dong.menglong@zte.com.cn" <dong.menglong@zte.com.cn>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bbfca577-b680-4c73-3f35-22179bd1a498@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 9:53 PM Menglong Dong <menglong8.dong@gmail.com> wrote:
->
-...
->
-> Seems that the inconsistent usages of 'msg_flags' is a lot, for example the
-> 'recvmsg()' in 'struct proto' and 'recvmsg()' in 'struct proto_ops':
->
-> int (*recvmsg)(struct sock *sk, struct msghdr *msg,
->         size_t len, int noblock, int flags,
->         int *addr_len);
->
-> This function prototype is used in many places, It's not easy to fix them.
-> This patch is already reverted, and I think maybe
-> I can resend it after I fix these 'int' flags.
->
+On Wed, Mar 17, 2021 at 10:10:16AM -0400, Waiman Long wrote:
+> On 3/17/21 9:55 AM, Peter Zijlstra wrote:
+> > On Wed, Mar 17, 2021 at 09:43:20AM -0400, Waiman Long wrote:
+> > 
+> > > Using gcc 8.4.1, the generated __mutex_lock function has the same size (with
+> > > last instruction at offset +5179) with or without this patch. Well, you can
+> > > say that this patch is an no-op wrt generated code.
+> > OK, then GCC has gotten better. Because back then I tried really hard
+> > but it wouldn't remove the if (ww_ctx) branches unless I had that extra
+> > const bool argument.
+> > 
+> I think ww_mutex was merged in 2013. That is almost 8 years ago. It could
+> still be the case that older gcc compilers may not generate the right code.
+> I will try the RHEL7 gcc compiler (4.8.5) to see how it fares.
 
-I doubt it now...there are hundreds of functions that are defined as
-'proto_ops->recvmsg()'.
-enn...will this kind of patch be acceptable? Is it the time to give up?
+I really don't care about code generation qualitee of anything before
+8-ish at this point. That's already an old compiler.
 
-With Best Regards,
-Menglong Dong
+If you run on ancient compilers, you simply don't care about code
+quality.
