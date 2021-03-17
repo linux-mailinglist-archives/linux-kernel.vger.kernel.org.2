@@ -2,222 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE1E33E856
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5418C33E85E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:21:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbhCQENy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 00:13:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33622 "EHLO
+        id S229707AbhCQEUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 00:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhCQENr (ORCPT
+        with ESMTP id S229587AbhCQET7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 00:13:47 -0400
-X-Greylist: delayed 24951 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 16 Mar 2021 21:13:46 PDT
-Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [IPv6:2a01:37:1000::53df:5f64:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC29C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 21:13:45 -0700 (PDT)
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout1.hostsharing.net (Postfix) with ESMTPS id 09FEF30000CC4;
-        Wed, 17 Mar 2021 05:13:43 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id F17634F33A; Wed, 17 Mar 2021 05:13:42 +0100 (CET)
-Date:   Wed, 17 Mar 2021 05:13:42 +0100
-From:   Lukas Wunner <lukas@wunner.de>
-To:     sathyanarayanan.kuppuswamy@linux.intel.com
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        dan.j.williams@intel.com, kbusch@kernel.org, knsathya@kernel.org,
-        Sinan Kaya <okaya@kernel.org>
-Subject: Re: [PATCH v2 1/1] PCI: pciehp: Skip DLLSC handling if DPC is
- triggered
-Message-ID: <20210317041342.GA19198@wunner.de>
-References: <59cb30f5e5ac6d65427ceaadf1012b2ba8dbf66c.1615606143.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+        Wed, 17 Mar 2021 00:19:59 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6CFC06174A;
+        Tue, 16 Mar 2021 21:19:59 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id e2so143655pld.9;
+        Tue, 16 Mar 2021 21:19:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=noDJG0O0IWEUpmFsatAS1NpPqP7TLehQO6ORX+ZK5tM=;
+        b=oBwzozzmcjkKAvkdms978WNvR1tQsctTxIP7gml9zFve7PpQjIAb1sRL8CAn8CWRzV
+         St98yTgzgcST5WgxdZSRgvmjCXnFZsjrYRkGoPCRHN6vAAFKuTbiaOCT20rYmstMCK86
+         xZ3ZfBJA7m2a3pOsiFmFgpeGWcmY2geOD9u/V6Ulvl8iNQRCETP7kotgSww2nouvuNC8
+         IQwRyRfAtnhHTB6+PTmPazcPkxEoM8IsXEXQM8+td2u1TptFNUK20mcKJDnAI+ruWubg
+         rbKcJjoLFs68Vrp743SuF253exwbAuIh5raIAC1pZZ3SzEoqo1wQrx2Rh+J0eKmXSyXF
+         bVEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=noDJG0O0IWEUpmFsatAS1NpPqP7TLehQO6ORX+ZK5tM=;
+        b=nKKUtkL1xkaXcjsfYmZHO8Ym5UgY/SSuGlq1SZ9jWu5l/w/3YyBR79ltA1FTNi6nry
+         rToN2+MazbrGFKq0HRsuwFuXULAO/+9yuCPBG/wSKUU2+GSLasfy78Dy4S4HUEFfwSl/
+         btetPT2nbJ60P0ZZXdP2HCJTB6f68RQwoM+isIFBjQAD8zT+Tde+to32m0DKzUg9GquA
+         W+uzqGZXTbYRVlQBvmau5lSd74cH010peWAE1faEHKPywZFdFRN9eAcLuJjuhHAK+o3+
+         iGLdIbgYUmPX2CYPEr0hPbSXEdU503sUxK+DksTG87ho5FdfMz5DrWsSK8tCYYSWymHv
+         nm+Q==
+X-Gm-Message-State: AOAM531jZ929xUw9VFCQCGsSEJXj0bj/pPjaiD5JglSW0hu1tV3QOIg+
+        iv0nlG8hqYHn2twYFJV2o/k=
+X-Google-Smtp-Source: ABdhPJwa3SHLOa4Wkp8GeGZGva9TAEJOLKujkktaI8Jk+f83RKA50I65StFDtJsgveRzR7Y3NVSe3Q==
+X-Received: by 2002:a17:902:a406:b029:e6:78c4:71c8 with SMTP id p6-20020a170902a406b02900e678c471c8mr2637410plq.17.1615954799008;
+        Tue, 16 Mar 2021 21:19:59 -0700 (PDT)
+Received: from gmail.com ([223.179.156.119])
+        by smtp.gmail.com with ESMTPSA id o18sm844046pji.10.2021.03.16.21.19.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 21:19:58 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 09:46:32 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kishon Vijay Abraham <kishon@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Praneeth Bajjuri <praneeth@ti.com>,
+        Gowtham Tammana <g-tammana@ti.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Vaibhav Gupta <v_gupta@ti.com>
+Subject: Re: [PATCH v1 1/3] dt-bindings: crypto: ti,sa2ul: Add new compatible
+ for AM64
+Message-ID: <YFGCoMk7Kemrwizc@gmail.com>
+References: <20210308202005.243228-1-vaibhavgupta40@gmail.com>
+ <20210308202005.243228-2-vaibhavgupta40@gmail.com>
+ <20210316220558.GA3754419@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <59cb30f5e5ac6d65427ceaadf1012b2ba8dbf66c.1615606143.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210316220558.GA3754419@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 07:32:08PM -0800, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
-> +	if ((events == PCI_EXP_SLTSTA_DLLSC) && is_dpc_reset_active(pdev)) {
-> +		ctrl_info(ctrl, "Slot(%s): DLLSC event(DPC), skipped\n",
-> +			  slot_name(ctrl));
-> +		ret = IRQ_HANDLED;
-> +		goto out;
-> +	}
+On Tue, Mar 16, 2021 at 04:05:58PM -0600, Rob Herring wrote:
+> On Tue, Mar 09, 2021 at 01:50:03AM +0530, Vaibhav Gupta wrote:
+> > From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> > 
+> > Add the AM64 version of sa2ul to the compatible list.
+> > 
+> > [v_gupta@ti.com: Conditional dma-coherent requirement, clocks]
+> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> > Signed-off-by: Vaibhav Gupta <v_gupta@ti.com>
+> > ---
+> >  .../devicetree/bindings/crypto/ti,sa2ul.yaml  | 40 +++++++++++++++----
+> >  1 file changed, 33 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml b/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
+> > index 1d48ac712b23..6eb9acd564c2 100644
+> > --- a/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
+> > +++ b/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
+> > @@ -14,6 +14,7 @@ properties:
+> >      enum:
+> >        - ti,j721e-sa2ul
+> >        - ti,am654-sa2ul
+> > +      - ti,am64-sa2ul
+> >  
+> >    reg:
+> >      maxItems: 1
+> > @@ -45,19 +46,44 @@ properties:
+> >      description:
+> >        Address translation for the possible RNG child node for SA2UL
+> >  
+> > +  clocks:
+> > +    items:
+> > +      - description: Clock used by PKA
+> > +      - description: Main Input Clock
+> > +      - description: Clock used by rng
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: pka_in_clk
+> > +      - const: x1_clk
+> > +      - const: x2_clk
+> > +
+> >  patternProperties:
+> >    "^rng@[a-f0-9]+$":
+> >      type: object
+> >      description:
+> >        Child RNG node for SA2UL
+> >  
+> > -required:
+> > -  - compatible
+> > -  - reg
+> > -  - power-domains
+> > -  - dmas
+> > -  - dma-names
+> > -  - dma-coherent
+> > +if:
+> > +  properties:
+> > +    compatible:
+> > +      const: ti,am64-sa2ul
+> > +then:
+> > +  required:
+> > +    - compatible
+> > +    - reg
+> > +    - power-domains
+> > +    - dmas
+> > +    - dma-names
+> > +
+> > +else:
+> > +  required:
+> > +    - compatible
+> > +    - reg
+> > +    - power-domains
+> > +    - dmas
+> > +    - dma-names
+> > +    - dma-coherent
+> 
+> The only difference is 'dma-coherent'. You can simplify the if/then to 
+> just that.
+Hello Rob,
 
-Two problems here:
+I agree with your point. But with that case we will have to modify/append the
+'required' list. Something like:
 
-(1) If recovery fails, the link will *remain* down, so there'll be
-    no Link Up event.  You've filtered the Link Down event, thus the
-    slot will remain in ON_STATE even though the device in the slot is
-    no longer accessible.  That's not good, the slot should be brought
-    down in this case.
+	if !(properties.compatible == 'ti,am64-sa2ul')
+		required += dma-coherent
 
-(2) If recovery succeeds, there's a race where pciehp may call
-    is_dpc_reset_active() *after* dpc_reset_link() has finished.
-    So both the DPC Trigger Status bit as well as pdev->dpc_reset_active
-    will be cleared.  Thus, the Link Up event is not filtered by pciehp
-    and the slot is brought down and back up even though DPC recovery
-    was succesful, which seems undesirable.
+I even tried to use anchors but that didn't help. I didn't find it even in
+examples. Any hint how to achieve that?
 
-The only viable solution I see is to wait until DPC has completed.
-Sinan (+cc) proposed something along those lines a couple years back:
-
-https://patchwork.ozlabs.org/project/linux-pci/patch/20180818065126.77912-1-okaya@kernel.org/
-
-Included below please find my suggestion for how to fix this.
-I've sort of combined yours and Sinan's approach, but I'm
-using a waitqueue (Sinan used polling) and I'm using atomic bitops
-on pdev->priv_flags (you're using an atomic_t instead, which needs
-additionally space in struct pci_dev).  Note: It's compile-tested
-only, I don't have any DPC-capable hardware at my disposal.
-
-Would this work for you?  If so, I can add a commit message to the
-patch and submit it properly.  Let me know what you think.  Thanks!
-
--- >8 --
-Subject: [PATCH] PCI: pciehp: Ignore Link Down/Up caused by DPC
-
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
----
- drivers/pci/hotplug/pciehp_hpc.c | 11 +++++++++
- drivers/pci/pci.h                |  4 ++++
- drivers/pci/pcie/dpc.c           | 51 ++++++++++++++++++++++++++++++++++++++--
- 3 files changed, 64 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/pci/hotplug/pciehp_hpc.c b/drivers/pci/hotplug/pciehp_hpc.c
-index fb3840e..bcc018e 100644
---- a/drivers/pci/hotplug/pciehp_hpc.c
-+++ b/drivers/pci/hotplug/pciehp_hpc.c
-@@ -707,6 +707,17 @@ static irqreturn_t pciehp_ist(int irq, void *dev_id)
- 	}
- 
- 	/*
-+	 * Ignore Link Down/Up caused by Downstream Port Containment
-+	 * if recovery from the error succeeded.
-+	 */
-+	if ((events & PCI_EXP_SLTSTA_DLLSC) && pci_dpc_recovered(pdev) &&
-+	    ctrl->state == ON_STATE) {
-+		atomic_and(~PCI_EXP_SLTSTA_DLLSC, &ctrl->pending_events);
-+		if (pciehp_check_link_active(ctrl) > 0)
-+			events &= ~PCI_EXP_SLTSTA_DLLSC;
-+	}
-+
-+	/*
- 	 * Disable requests have higher priority than Presence Detect Changed
- 	 * or Data Link Layer State Changed events.
- 	 */
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 9684b46..e5ae5e8 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -392,6 +392,8 @@ static inline bool pci_dev_is_disconnected(const struct pci_dev *dev)
- 
- /* pci_dev priv_flags */
- #define PCI_DEV_ADDED 0
-+#define PCI_DPC_RECOVERED 1
-+#define PCI_DPC_RECOVERING 2
- 
- static inline void pci_dev_assign_added(struct pci_dev *dev, bool added)
- {
-@@ -446,10 +448,12 @@ struct rcec_ea {
- void pci_dpc_init(struct pci_dev *pdev);
- void dpc_process_error(struct pci_dev *pdev);
- pci_ers_result_t dpc_reset_link(struct pci_dev *pdev);
-+bool pci_dpc_recovered(struct pci_dev *pdev);
- #else
- static inline void pci_save_dpc_state(struct pci_dev *dev) {}
- static inline void pci_restore_dpc_state(struct pci_dev *dev) {}
- static inline void pci_dpc_init(struct pci_dev *pdev) {}
-+static inline bool pci_dpc_recovered(struct pci_dev *pdev) { return false; }
- #endif
- 
- #ifdef CONFIG_PCIEPORTBUS
-diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
-index e05aba8..7328d9c4 100644
---- a/drivers/pci/pcie/dpc.c
-+++ b/drivers/pci/pcie/dpc.c
-@@ -71,6 +71,44 @@ void pci_restore_dpc_state(struct pci_dev *dev)
- 	pci_write_config_word(dev, dev->dpc_cap + PCI_EXP_DPC_CTL, *cap);
- }
- 
-+static bool dpc_completed(struct pci_dev *pdev)
-+{
-+	u16 status;
-+
-+	pci_read_config_word(pdev, pdev->dpc_cap + PCI_EXP_DPC_STATUS, &status);
-+	if (status & PCI_EXP_DPC_STATUS_TRIGGER)
-+		return false;
-+
-+	if (test_bit(PCI_DPC_RECOVERING, &pdev->priv_flags))
-+		return false;
-+
-+	return true;
-+}
-+
-+static DECLARE_WAIT_QUEUE_HEAD(dpc_completed_waitqueue);
-+
-+bool pci_dpc_recovered(struct pci_dev *pdev)
-+{
-+	struct pci_host_bridge *host;
-+
-+	if (!pdev->dpc_cap)
-+		return false;
-+
-+	/*
-+	 * If DPC is owned by firmware and EDR is not supported, there is
-+	 * no race between hotplug and DPC recovery handler. So return
-+	 * false.
-+	 */
-+	host = pci_find_host_bridge(pdev->bus);
-+	if (!host->native_dpc && !IS_ENABLED(CONFIG_PCIE_EDR))
-+		return false;
-+
-+	wait_event_timeout(dpc_completed_waitqueue, dpc_completed(pdev),
-+			   msecs_to_jiffies(5000));
-+
-+	return test_and_clear_bit(PCI_DPC_RECOVERED, &pdev->priv_flags);
-+}
-+
- static int dpc_wait_rp_inactive(struct pci_dev *pdev)
- {
- 	unsigned long timeout = jiffies + HZ;
-@@ -91,8 +129,12 @@ static int dpc_wait_rp_inactive(struct pci_dev *pdev)
- 
- pci_ers_result_t dpc_reset_link(struct pci_dev *pdev)
- {
-+	pci_ers_result_t ret;
- 	u16 cap;
- 
-+	clear_bit(PCI_DPC_RECOVERED, &pdev->priv_flags);
-+	set_bit(PCI_DPC_RECOVERING, &pdev->priv_flags);
-+
- 	/*
- 	 * DPC disables the Link automatically in hardware, so it has
- 	 * already been reset by the time we get here.
-@@ -114,10 +156,15 @@ pci_ers_result_t dpc_reset_link(struct pci_dev *pdev)
- 
- 	if (!pcie_wait_for_link(pdev, true)) {
- 		pci_info(pdev, "Data Link Layer Link Active not set in 1000 msec\n");
--		return PCI_ERS_RESULT_DISCONNECT;
-+		ret = PCI_ERS_RESULT_DISCONNECT;
-+	} else {
-+		set_bit(PCI_DPC_RECOVERED, &pdev->priv_flags);
-+		ret = PCI_ERS_RESULT_RECOVERED;
- 	}
- 
--	return PCI_ERS_RESULT_RECOVERED;
-+	clear_bit(PCI_DPC_RECOVERING, &pdev->priv_flags);
-+	wake_up_all(&dpc_completed_waitqueue);
-+	return ret;
- }
- 
- static void dpc_process_rp_pio_error(struct pci_dev *pdev)
--- 
-2.30.1
+Thanks,
+Vaibhav
