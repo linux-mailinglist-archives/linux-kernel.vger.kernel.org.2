@@ -2,102 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653A933F1DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:54:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A97233F1EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhCQNxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 09:53:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231512AbhCQNxg (ORCPT
+        id S231461AbhCQN4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 09:56:35 -0400
+Received: from casper.infradead.org ([90.155.50.34]:36766 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231431AbhCQNz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 09:53:36 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC428C06174A;
-        Wed, 17 Mar 2021 06:53:35 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 20so3053244lfj.13;
-        Wed, 17 Mar 2021 06:53:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aq/73TPDwz11pwoOS9ndvgWShmQVCgtX2IbCysGWuy8=;
-        b=kKzAla3XFykBIfQ/U+UVyQLoTHNF+1yEutb87wa1p9feTM21RhBCeK67YDV/LKT23g
-         1N46UiGHyitru2CrH5cYI4S3OaHtJw1BnkJhNWDYQrkFWmtXsLNBUYnagc+e+wP2L7ax
-         7pEdbAEuATEJqPz/qHSUjPSFNsQtmRMamEkPeDQ0+DJswLkxpyax4n0xkS2JuG4Rg8ef
-         ejn1QXd4Rj8EQduzyRunS7uWpCG4dgld+OdSadWci4CDk8mkaqmaEfAAVHqmYamDKXI0
-         y2OteH7hSyi14AFbxCS3qO80D/kJMdrS6O/FMEUfQN2NE2zIPOo81q3GrL2miPw4eS7m
-         zYbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aq/73TPDwz11pwoOS9ndvgWShmQVCgtX2IbCysGWuy8=;
-        b=IEe9Iz4+tkAviY9qrqhGOx/mdQ3tGzw9C8os3qKzsab9a+jsnYDx1exBbpThBZyFcr
-         tK0uI29HpmHpgKAJtOtJdL7pr5i2LhF2/4HX9xGJcieCxoH+0EjIp208sIyb8SO2yq/S
-         YE0ILbzp6E4JyZFDTBs6PALBpmCU+Q3kmY2qcgrhmh9/PACdcAkG0l3k2L2XmrVt+5K4
-         amicdci55NpsD7dsY/MMqP3WDRfN05TzW3bk0Uox2Utrk8iu2vVqxekA0tBLvcbWfgYn
-         OsALybLuvZJAJSbt3WQRCkLiJ05W6r9cDjksqn55daUHhgorm6TUaBy0DPcPmhqVuVDv
-         ugTA==
-X-Gm-Message-State: AOAM532XyRNYYmGQN238tJwkivKfM5OR2usDa0HQUosafANHdselz43c
-        V0fAVcK5gC+26MDRzyIxoJD1vmJlemdJfOyRmyiuXxSB8SM=
-X-Google-Smtp-Source: ABdhPJxcO47AXoUjjwUtemm8UYA54YK8YqdEt2PSOdGghyUci4dUNbRxBtB70emIuxvORqoZ4WDk7p2oZerpC4HiyZ8=
-X-Received: by 2002:a19:6d07:: with SMTP id i7mr2434139lfc.568.1615989214339;
- Wed, 17 Mar 2021 06:53:34 -0700 (PDT)
+        Wed, 17 Mar 2021 09:55:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oyq8/UTMFX2svFvS7h/tZWSi3AUrFmAIgDYpVCoWS2E=; b=N/IEnLA769w9TNWclakM6RqUMR
+        HcAAdGZhNTFVNs7UzlrW9lJIHpnPXto612S7aK/m0d7rM81pZzw1SplZNyEgANmAkHsl/B8WRuDfS
+        /cVa1bYt4Up0nWnHIo6y3VjSDDQRDeX93OZU7IY9O0Xp9hm9a8ik77QC+Poktwi6yo2ezQH6dVwdp
+        SnNCZljBChz8XkUnfe0//1wGAOWdmd6rmwzGQVwNVhx62uTxPVnzEClkXfoDL2hwkHLPN1j+uJhUk
+        tJXvcz+7I1Gq4hwReFP7I1h+FQ1+tzIpEMp2NVLAOsFAd1fPUkn6T6/MA792tfpo9OlizqgDytFls
+        WWs/doJQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMWe8-001X8Q-Ob; Wed, 17 Mar 2021 13:55:39 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 60596300130;
+        Wed, 17 Mar 2021 14:55:36 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 565C620781083; Wed, 17 Mar 2021 14:55:36 +0100 (CET)
+Date:   Wed, 17 Mar 2021 14:55:36 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Davidlohr Bueso <dbueso@suse.de>, x86@kernel.org
+Subject: Re: [tip: locking/urgent] locking/ww_mutex: Simplify use_ww_ctx &
+ ww_ctx handling
+Message-ID: <YFIKWCUAZabBsji0@hirez.programming.kicks-ass.net>
+References: <20210316153119.13802-2-longman@redhat.com>
+ <161598470257.398.5006518584847290113.tip-bot2@tip-bot2>
+ <YFH9Pw3kwCZC1UTB@hirez.programming.kicks-ass.net>
+ <85fbce04-c544-6041-6e7d-76f47b90e263@redhat.com>
 MIME-Version: 1.0
-References: <20210310015135.293794-1-dong.menglong@zte.com.cn>
- <20210316224820.GA225411@roeck-us.net> <CAHp75VdE3fkCjb53vBso5uJX9aEFtAOAdh5NVOSbK0YR64+jOg@mail.gmail.com>
- <20210317013758.GA134033@roeck-us.net> <CADxym3bu0Ds6dD6OhyvdzbWDW-KqXsqGGxt3HKj-dsedFn9GXg@mail.gmail.com>
- <CAHp75Vfo=rtK0=nRTZNwL3peUXGt5PTo4d_epCgLChSD0CKRVw@mail.gmail.com>
-In-Reply-To: <CAHp75Vfo=rtK0=nRTZNwL3peUXGt5PTo4d_epCgLChSD0CKRVw@mail.gmail.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Wed, 17 Mar 2021 21:53:23 +0800
-Message-ID: <CADxym3bHyaiy=kOhmxYdoMTZ_QaG9-JWqC1j6ucOBOeobVBoPg@mail.gmail.com>
-Subject: Re: [PATCH v4 RESEND net-next] net: socket: use BIT() for MSG_*
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "dong.menglong@zte.com.cn" <dong.menglong@zte.com.cn>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85fbce04-c544-6041-6e7d-76f47b90e263@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 5:36 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-...
->
-> The problematic code is negation of the flags when it's done in
-> operations like &.
-> It maybe fixed by swapping positions of the arguments, i.e. ~(FOO |
-> BAR) & flags.
->
-> All this is a beast called "integer promotions" in the C standard.
->
-> The best is to try to get flags to be unsigned. By how invasive it may be?
+On Wed, Mar 17, 2021 at 09:43:20AM -0400, Waiman Long wrote:
 
-Seems that the inconsistent usages of 'msg_flags' is a lot, for example the
-'recvmsg()' in 'struct proto' and 'recvmsg()' in 'struct proto_ops':
+> Using gcc 8.4.1, the generated __mutex_lock function has the same size (with
+> last instruction at offset +5179) with or without this patch. Well, you can
+> say that this patch is an no-op wrt generated code.
 
-int (*recvmsg)(struct sock *sk, struct msghdr *msg,
-        size_t len, int noblock, int flags,
-        int *addr_len);
-
-This function prototype is used in many places, It's not easy to fix them.
-This patch is already reverted, and I think maybe
-I can resend it after I fix these 'int' flags.
-
->
-> --
-> With Best Regards,
-> Andy Shevchenko
-
-Thanks!
-Menglong Dong
+OK, then GCC has gotten better. Because back then I tried really hard
+but it wouldn't remove the if (ww_ctx) branches unless I had that extra
+const bool argument.
