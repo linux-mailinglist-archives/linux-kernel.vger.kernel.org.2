@@ -2,101 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457B833E276
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 00:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A307933E278
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbhCPX65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 19:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhCPX6q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 19:58:46 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03229C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 16:58:41 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id z13so39133460iox.8
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 16:58:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/IklMf9X34RfFB2tD5VBL6tlFQuCAFSd3dj+6sxly+A=;
-        b=NCG+NcBXFzlueVVDEW9J9YjBNnzPpY5Cjw5qCl393AdvUcFzcbdxlqKkHcdGk52iF+
-         d5X6yUChO9YoSWyrJgZkuSz7LLF9OFDpxZJWuhuoONPWaw+rK9MYe1L94r+C+f2ukCEW
-         T9c9N9+UJN1DZGpv7/94RHbfAzbSQXqV3e+lI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/IklMf9X34RfFB2tD5VBL6tlFQuCAFSd3dj+6sxly+A=;
-        b=BgSuS0sgA3BRuSADxiCBAQKhZwMKUeRZXv2Up9F4aAKTMxYtQCkQYeqjCkZc588QdT
-         DW+84qZ2nyDfL07Ozsnx1ZQVDML8xf/DM8aRYPVR08HTxhGTxbT7dYlRK9fkrSpaDYaG
-         4wbcQ2CjXELmagST4wWsxUd5B56JigCKzMGoSQsqeLcSTSjMyibN0hXNIao0fRzdp+Sz
-         H6gd0Qayjnkvtqzzxq7aZLAoSjBq0krrhIqLEEjKB8t8hlm1lCSaHYAB1GeLdC6dnTFL
-         zJuu5H4LLALrxX9ESnxKb3IApctrJOk5q0bnMDwkz6riwgLXmBOcBi8Whe7c9SccTioi
-         yYmQ==
-X-Gm-Message-State: AOAM530xTYSyYzdgnAG45+aYahR6aM42RVcGSnE2q1BV1aeymSP1Ic+/
-        fs18YBxnFF3SF6QlKpyn1ON3zzHIdOlv8yiZqs/uKg==
-X-Google-Smtp-Source: ABdhPJypZMQsaLnE/8+WaJbv9a9Wlrdij5WiDNuBRMzDTmnV5GeqmjdcedhThVo9TT0P8SRqefrtd9iK7bZtdRAxGfQ=
-X-Received: by 2002:a02:cb48:: with SMTP id k8mr900560jap.52.1615939121345;
- Tue, 16 Mar 2021 16:58:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210310220211.1454516-1-revest@chromium.org> <20210310220211.1454516-2-revest@chromium.org>
- <CAEf4BzZ6Lfmn9pEJSLVhROjkPGJO_mT4nHot8AOjZ_9HTC1rEQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ6Lfmn9pEJSLVhROjkPGJO_mT4nHot8AOjZ_9HTC1rEQ@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Wed, 17 Mar 2021 00:58:30 +0100
-Message-ID: <CABRcYmJ3W88bTKwuO9Aav8A+TXmSE=SpxX++6OR77n=ya9hfgw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] bpf: Add a ARG_PTR_TO_CONST_STR argument type
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S229487AbhCQACO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:02:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47372 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229469AbhCQAB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 20:01:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2581464F38;
+        Wed, 17 Mar 2021 00:01:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615939318;
+        bh=6jN7ZF2FOHtclliC68HU01PlBZ8L+9xblvhPgm1xFyQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IBpBGOkz8ULooiEJ7TfR6214zuBRm7H9kd5M0WrgBx76xfCyCBvgxu+Ml4XEO5CZJ
+         EjpW4LNSl4avXXtkjiLQyN6DcvcAVpHIwIW7M/vOpKXrVpmSPl7TiUEZ51AYE2UbKv
+         ZjVd2LqBCEIKOKX/q9NjXOjdPCtN/oOy4yi9gZtJqLnS+/U/pT+RjpQ/dLiCqDOK6N
+         SU1w7ZT6p0HTU6LLth3jWGWK8IaVh7UfrZ1rT/Obz8FlFblCiV8Ii0BJyVjeDgXyw0
+         lbUnsy2wn4DrtufqMu4GzW1f0LvZuyDdrAPTbmcW6rDQHIWYanc+o6RffqGX+LOOoe
+         xR5t4FL33/dMw==
+Date:   Wed, 17 Mar 2021 09:01:54 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Xiaofeng Cao <cxfcosmos@gmail.com>
+Cc:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, linux-kernel@vger.kernel.org,
+        Xiaofeng Cao <caoxiaofeng@yulong.com>
+Subject: Re: [PATCH] kernel:kprobe: Fix typo issue
+Message-Id: <20210317090154.70aaf7e8c21eda290fc13d4e@kernel.org>
+In-Reply-To: <20210316125751.11023-1-caoxiaofeng@yulong.com>
+References: <20210316125751.11023-1-caoxiaofeng@yulong.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 2:03 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> On Wed, Mar 10, 2021 at 2:02 PM Florent Revest <revest@chromium.org> wrote:
-> > +       } else if (arg_type == ARG_PTR_TO_CONST_STR) {
-> > +               struct bpf_map *map = reg->map_ptr;
-> > +               int map_off, i;
-> > +               u64 map_addr;
-> > +               char *map_ptr;
-> > +
-> > +               if (!map || !bpf_map_is_rdonly(map)) {
-> > +                       verbose(env, "R%d does not point to a readonly map'\n", regno);
-> > +                       return -EACCES;
-> > +               }
-> > +
-> > +               if (!tnum_is_const(reg->var_off)) {
-> > +                       verbose(env, "R%d is not a constant address'\n", regno);
-> > +                       return -EACCES;
-> > +               }
-> > +
-> > +               if (!map->ops->map_direct_value_addr) {
-> > +                       verbose(env, "no direct value access support for this map type\n");
-> > +                       return -EACCES;
-> > +               }
-> > +
-> > +               err = check_helper_mem_access(env, regno,
-> > +                                             map->value_size - reg->off,
-> > +                                             false, meta);
->
-> you expect reg to be PTR_TO_MAP_VALUE, so probably better to directly
-> use check_map_access(). And double-check that register is of expected
-> type. just the presence of ref->map_ptr might not be sufficient?
+Hi Xiaofeng,
 
-Sorry, just making sure I understand your comment correctly, are you
-suggesting that we:
-1- skip the check_map_access_type() currently done by
-check_helper_mem_access()? or did you implicitly mean that we should
-call it as well next to check_map_access() ?
-2- enforce (reg->type == PTR_TO_MAP_VALUE) even if currently
-guaranteed by compatible_reg_types, just to stay on the safe side ?
+On Tue, 16 Mar 2021 20:57:51 +0800
+Xiaofeng Cao <cxfcosmos@gmail.com> wrote:
+
+> change 'immmediately' to 'immediately'
+> change 'quiesence' to 'quiescence'
+> change 'unneed' to 'unneeded'
+> change 'sinec' to 'since
+> change 'sefe' to 'safe''
+> change 'And' to 'At the'
+> change 'buy' to 'but'
+
+Thanks for the fix!
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+
+
+> 
+> Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
+> ---
+>  kernel/kprobes.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index 745f08fdd7a6..ae3a22d2099b 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -506,7 +506,7 @@ static void do_optimize_kprobes(void)
+>  	/*
+>  	 * The optimization/unoptimization refers online_cpus via
+>  	 * stop_machine() and cpu-hotplug modifies online_cpus.
+> -	 * And same time, text_mutex will be held in cpu-hotplug and here.
+> +	 * At the same time, text_mutex will be held in cpu-hotplug and here.
+>  	 * This combination can cause a deadlock (cpu-hotplug try to lock
+>  	 * text_mutex but stop_machine can not be done because online_cpus
+>  	 * has been changed)
+> @@ -592,12 +592,12 @@ static void kprobe_optimizer(struct work_struct *work)
+>  
+>  	/*
+>  	 * Step 1: Unoptimize kprobes and collect cleaned (unused and disarmed)
+> -	 * kprobes before waiting for quiesence period.
+> +	 * kprobes before waiting for quiescence period.
+>  	 */
+>  	do_unoptimize_kprobes();
+>  
+>  	/*
+> -	 * Step 2: Wait for quiesence period to ensure all potentially
+> +	 * Step 2: Wait for quiescence period to ensure all potentially
+>  	 * preempted tasks to have normally scheduled. Because optprobe
+>  	 * may modify multiple instructions, there is a chance that Nth
+>  	 * instruction is preempted. In that case, such tasks can return
+> @@ -607,10 +607,10 @@ static void kprobe_optimizer(struct work_struct *work)
+>  	 */
+>  	synchronize_rcu_tasks();
+>  
+> -	/* Step 3: Optimize kprobes after quiesence period */
+> +	/* Step 3: Optimize kprobes after quiescence period */
+>  	do_optimize_kprobes();
+>  
+> -	/* Step 4: Free cleaned kprobes after quiesence period */
+> +	/* Step 4: Free cleaned kprobes after quiescence period */
+>  	do_free_cleaned_kprobes();
+>  
+>  	mutex_unlock(&text_mutex);
+> @@ -631,7 +631,7 @@ void wait_for_kprobe_optimizer(void)
+>  	while (!list_empty(&optimizing_list) || !list_empty(&unoptimizing_list)) {
+>  		mutex_unlock(&kprobe_mutex);
+>  
+> -		/* this will also make optimizing_work execute immmediately */
+> +		/* this will also make optimizing_work execute immediately */
+>  		flush_delayed_work(&optimizing_work);
+>  		/* @optimizing_work might not have been queued yet, relax */
+>  		cpu_relax();
+> @@ -1057,7 +1057,7 @@ static int __arm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
+>  
+>  err_ftrace:
+>  	/*
+> -	 * At this point, sinec ops is not registered, we should be sefe from
+> +	 * At this point, since ops is not registered, we should be safe from
+>  	 * registering empty filter.
+>  	 */
+>  	ftrace_set_filter_ip(ops, (unsigned long)p->addr, 1, 0);
+> @@ -1712,7 +1712,7 @@ static struct kprobe *__disable_kprobe(struct kprobe *p)
+>  			/*
+>  			 * If kprobes_all_disarmed is set, orig_p
+>  			 * should have already been disarmed, so
+> -			 * skip unneed disarming process.
+> +			 * skip unneeded disarming process.
+>  			 */
+>  			if (!kprobes_all_disarmed) {
+>  				ret = disarm_kprobe(orig_p, true);
+> @@ -2424,7 +2424,7 @@ static int kprobes_module_callback(struct notifier_block *nb,
+>  			     within_module_core((unsigned long)p->addr, mod))) {
+>  				/*
+>  				 * The vaddr this probe is installed will soon
+> -				 * be vfreed buy not synced to disk. Hence,
+> +				 * be vfreed but not synced to disk. Hence,
+>  				 * disarming the breakpoint isn't needed.
+>  				 *
+>  				 * Note, this will also move any optimized probes
+> -- 
+> 2.25.1
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
