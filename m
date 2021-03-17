@@ -2,131 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E494433F73D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:40:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 945CC33F74A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbhCQRjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:39:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27493 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231741AbhCQRjJ (ORCPT
+        id S230236AbhCQRmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230456AbhCQRlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:39:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616002748;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cmp3AOe6/8OTUuf+//7xGx20rFpuBW0gLXu6HX63aaI=;
-        b=HTUri1WpkCizMiyIDH46qc2Or9bkJ3VrjYGs9VqQ/adnUqEs3nZtDZ2hj08F+fKTZkTkHz
-        5tGGnjzEIA7kCRHi8Pm4SXbiEE5zTOT2nvxzLcdqUkJ699ljGsCcqeUcc58Dx7ywmPJ08r
-        qjL7QfHITOORv9YDHTamqkNRsP4p44E=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-302-eWEAQDMwNTe5maaWUj3hkg-1; Wed, 17 Mar 2021 13:39:06 -0400
-X-MC-Unique: eWEAQDMwNTe5maaWUj3hkg-1
-Received: by mail-ej1-f72.google.com with SMTP id v27so10737163ejq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:39:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Cmp3AOe6/8OTUuf+//7xGx20rFpuBW0gLXu6HX63aaI=;
-        b=Ma1SF/SS8/7OSDWr/0yOI6wvVLPRiRPeU7ai8YW9pls58Udv/XYJGOrnc+I1wXGdda
-         vPqLI23fmimanz3hbQEUFALNizsrtL8//IIUXn65eF2evkHJZQHZ1ArzDWXnO3B9ZpdR
-         qGk98Z8RyyFE9gA4kYrgYPsk7EpW3rUk81uYVehfvR1TmV7nPPCSbiOB04iRg5pqGLWS
-         dOzebQ+C+H3DyPGj2LfOdOCaRmfAFPYQ41xIlLoCZXyMmIg0EM38U31xRc/VT2N2kNqC
-         FQrzCjc9KPPadb+T0rfcZH10sUkmixSVelLxRaz/mGi4r7LiM67afzc2L4zxlIYNCd7G
-         TRiA==
-X-Gm-Message-State: AOAM530cduKTv8uDeBZZQMV44jfUu9NIDMSqWi3iPtPO+kyZnFdMDwiC
-        3kdqsuweJcT1DBDKWL/+6bqil+Tij1TJbk8bJdPJHeGfbL8vTovY/TZHgP6WfjxQaxDVRqCXxZR
-        785Odm06xIvVjRj7paasNvJ3c4uis2zlRjnx+GEFHfyJHuuEshm92/VYQtELXijQQXzbhyOeXIy
-        Ar
-X-Received: by 2002:aa7:d954:: with SMTP id l20mr43572190eds.1.1616002745442;
-        Wed, 17 Mar 2021 10:39:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwWI+Nz3oJ3aTMnmdebMc2YpP79z+h1kTt/FVhtFdhiJfuJf8XpXTs93ZM6FYn4/LO5RVWggg==
-X-Received: by 2002:aa7:d954:: with SMTP id l20mr43572165eds.1.1616002745191;
-        Wed, 17 Mar 2021 10:39:05 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id gx2sm6670203ejc.82.2021.03.17.10.39.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 10:39:04 -0700 (PDT)
-Subject: Re: [PATCH 0/2] power: supply: Add battery and AC drivers for Surface
- devices
-To:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>
-Cc:     linux-pm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210309000530.2165752-1-luzmaximilian@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <edcbe108-8cd7-4034-222f-c8ce56918dee@redhat.com>
-Date:   Wed, 17 Mar 2021 18:39:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 17 Mar 2021 13:41:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EF0C06174A;
+        Wed, 17 Mar 2021 10:41:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FpOCNlGLmjPJhj1fuEhys0yX7aI4LJ/EMSq9Vu3moFY=; b=YU2gItud2sL1cw1Aifsrz1cFpx
+        M7bWLZmF+tboQztj/Zh+aIVLRPi1m2GCah9bRmtWuVRVrWqlP0sUPputrC/aLG/Gr4r6uF29IOEK5
+        CAL1s3NCbKweYs8w6YMs5l9s/BR8ZbbL8XEMfFf0rsyMP/DKC7UvspJmyjjdxhuiSaihKzSRHHQzC
+        B8WZSReKQV/hT5olM/1BrQ4k2ARZObnJrh2ngxkNpHEtNWSGOBLglVx4z+hKynhenZASHrPk7wgA6
+        PmX96g67cBy3B8kVncSsdTMOr8TMBApSZ2CLcMayaW1ytF10mPGkjU83wdEG7bF0qIoJ/JMoDwgfC
+        mM6IePaA==;
+Received: from 089144199244.atnat0008.highway.a1.net ([89.144.199.244] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMaAh-001vdy-FG; Wed, 17 Mar 2021 17:41:29 +0000
+Date:   Wed, 17 Mar 2021 18:39:16 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v4 20/25] mm/filemap: Convert wait_on_page_bit to
+ wait_on_folio_bit
+Message-ID: <YFI+xNeN+NrgszI7@infradead.org>
+References: <20210305041901.2396498-1-willy@infradead.org>
+ <20210305041901.2396498-21-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210309000530.2165752-1-luzmaximilian@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305041901.2396498-21-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+> +	if (FolioWriteback(folio) &&
+> +	    wait_on_folio_bit_killable(folio, PG_writeback) < 0)
+>  		return VM_FAULT_RETRY;
 
-On 3/9/21 1:05 AM, Maximilian Luz wrote:
-> This series provides battery and AC drivers for Microsoft Surface
-> devices, where this information is provided via an embedded controller
-> (the Surface System Aggregator Module, SSAM) instead of the usual ACPI
-> interface.
-> 
-> Specifically, 7th generation Surface devices, i.e. Surface Pro 7,
-> Surface Book 3, Surface Laptop 3, as well as the Surface Laptop Go use
-> this new interface.
-> 
-> Note: This series depends on the
-> 
->     platform/surface: Add Surface Aggregator device registry
-> 
-> series. More specifically patch
-> 
->     platform/surface: Set up Surface Aggregator device registry
-> 
-> The full series has been merged into the for-next branch of the
-> platform-drivers-x86 tree [1]. The commit in question can be found at
-> [2].
-> 
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=for-next
-> [2]: https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/commit/?h=for-next&id=fc622b3d36e6d91330fb21506b9ad1e3206a4dde
+This really screams for a proper wait_on_page_writeback_killable helper
+rather than hardcoding the PG_* bit in a random file system.  It also
+seems to have missed the conversion to a while loop in
+wait_on_page_writeback.
 
-Sebastian, I guess you want a pull-req from an immutable branch from me for
-that dependend commit and then you will merge these 2 patches ?
+Also this patch seems to be different in style to other by not for now
+always using page wrappers in the file systems.  Not that I really care
+either way, but it seems inconsistent with the rest.
 
-Maximillian, this only needs that commit right, or would it be better if
-I send Sebastian a pull-req for a branch with the entire series?
+>  /*
+> - * This is exported only for wait_on_page_locked/wait_on_page_writeback, etc.,
+> + * This is exported only for wait_on_folio_locked/wait_on_folio_writeback, etc.,
+>   * and should not be used directly.
+>   */
+> -extern void wait_on_page_bit(struct page *page, int bit_nr);
+> -extern int wait_on_page_bit_killable(struct page *page, int bit_nr);
+> +extern void wait_on_folio_bit(struct folio *folio, int bit_nr);
+> +extern int wait_on_folio_bit_killable(struct folio *folio, int bit_nr);
 
-Regards,
-
-Hans
-
-
-
-
-
-> 
-> Maximilian Luz (2):
->   power: supply: Add battery driver for Surface Aggregator Module
->   power: supply: Add AC driver for Surface Aggregator Module
-> 
->  MAINTAINERS                            |   8 +
->  drivers/power/supply/Kconfig           |  32 +
->  drivers/power/supply/Makefile          |   2 +
->  drivers/power/supply/surface_battery.c | 901 +++++++++++++++++++++++++
->  drivers/power/supply/surface_charger.c | 296 ++++++++
->  5 files changed, 1239 insertions(+)
->  create mode 100644 drivers/power/supply/surface_battery.c
->  create mode 100644 drivers/power/supply/surface_charger.c
-> 
-
+Well, the above code obviously ignored this comment :(  Maybe an
+__ prefix is a bit more of hint? 
