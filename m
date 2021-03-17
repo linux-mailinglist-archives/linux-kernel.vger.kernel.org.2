@@ -2,71 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692A333EE19
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:08:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A580D33EE18
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:08:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbhCQKIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:08:19 -0400
-Received: from mail-m963.mail.126.com ([123.126.96.3]:58238 "EHLO
-        mail-m963.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhCQKII (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:08:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=6myTYJ/6oXihRxGonF
-        RwbGYMjlu+sduVYchFyN3kgEE=; b=FroKIg9E10IEsfVhExlbkntjUINapaat5x
-        KmtHqtGmSyhSMwaMi9YsmULg6/DQO9fypijWXYcwbepEVEtVdNsuAIBWkgUeteP5
-        nUJlRSslv5OKz3KgjRSz2qMfVwrVel0aMPPkEaXuIUWj1NtsESyYHOfo0/MZJyZ8
-        xi1mrmqeQ=
-Received: from localhost.localdomain (unknown [116.162.2.6])
-        by smtp8 (Coremail) with SMTP id NORpCgDHqWiyzVFgW2EYFw--.6516S2;
-        Wed, 17 Mar 2021 17:36:51 +0800 (CST)
-From:   wangyingjie55@126.com
-To:     dan.j.williams@intel.com, vishal.l.verma@intel.com,
-        dave.jiang@intel.com, ira.weiny@intel.com
-Cc:     wangyingjie55@126.com, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] libnvdimm, dax: Fix a missing check in nd_dax_probe()
-Date:   Wed, 17 Mar 2021 02:36:39 -0700
-Message-Id: <1615973799-16077-1-git-send-email-wangyingjie55@126.com>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: NORpCgDHqWiyzVFgW2EYFw--.6516S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtFykKr4rJFyxArykKFy5XFb_yoWfKFbEkF
-        y7Zr929Fy0krnayr42vr1fu34vyrn29r1kur4jgw13Ar4j9r13GrWkur9Ikrsagr4xZr1D
-        urnFqFnxuF15ujkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUj-J57UUUUU==
-X-Originating-IP: [116.162.2.6]
-X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbiWBRYp11w5leZjgABs5
+        id S229723AbhCQKIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:08:16 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:37801 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230001AbhCQKHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 06:07:50 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12HA7fur024269
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Mar 2021 11:07:41 +0100
+Received: from [167.87.41.130] ([167.87.41.130])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12H9vdCQ006344;
+        Wed, 17 Mar 2021 10:57:40 +0100
+Subject: Re: [PATCH v4 2/2] gpio: sch: Hook into ACPI SCI handler to catch
+ GPIO edge events
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20210316162613.87710-1-andriy.shevchenko@linux.intel.com>
+ <20210316162613.87710-3-andriy.shevchenko@linux.intel.com>
+ <YFEZ6GYuXGaX/LP2@smile.fi.intel.com>
+ <a3a6c80a-724c-e2fb-9597-b14a302c5ff4@siemens.com>
+ <YFHRWm6YIh9NU1I/@smile.fi.intel.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <86f3a770-3b90-5fdb-7811-789118dad375@siemens.com>
+Date:   Wed, 17 Mar 2021 10:57:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <YFHRWm6YIh9NU1I/@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yingjie Wang <wangyingjie55@126.com>
+On 17.03.21 10:52, Andy Shevchenko wrote:
+> On Wed, Mar 17, 2021 at 07:57:44AM +0100, Jan Kiszka wrote:
+>> On 16.03.21 21:49, Andy Shevchenko wrote:
+>>> On Tue, Mar 16, 2021 at 06:26:13PM +0200, Andy Shevchenko wrote:
+>>>> From: Jan Kiszka <jan.kiszka@siemens.com>
+>>>>
+>>>> Neither the ACPI description on the Quark platform provides the required
+>>>> information is to do establish generic handling nor hardware capable of
+>>>> doing it. According to the datasheet the hardware can generate SCI events.
+>>>> Therefore, we need to hook from the driver directly into SCI handler of
+>>>> the ACPI subsystem in order to catch and report GPIO-related events.
+>>>>
+>>>> Validated on the Quark-based IOT2000 platform.
+>>>
+>>> This patch must be dropped completely. SCI handler is not correct way to do
+>>> this. The proper way (and we have already few examples in the kernel) is to
+>>> register GPE event.
+>>
+>> As explained above, this is not supported by the preexisting firmware,
+>> and there won't be any updates to it anymore.
+>>
+>> This platform is history, the SoC was discontinued by Intel long ago,
+>> and our devices reaching their support end as well. The race to upstream
+>> was lost in this case - backlog too long, we being too slow.
+> 
+> So you have no device to test and there is actually no device which has this
+> capability in the wild.
+> 
+> Am I reading this correct?
 
-In nd_dax_probe(), 'nd_dax' is allocated by nd_dax_alloc().
-nd_dax_alloc() may fail and return NULL, so we should better check
-it's return value to avoid a NULL pointer dereference
-a bit later in the code.
+No. We do have devices but we don't have the time to invest further into
+bringing missing features upstream - not to speak of changing the
+firmware in order to support cleaner upstream integration.
 
-Fixes: c5ed9268643c ("libnvdimm, dax: autodetect support")
-Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
----
- drivers/nvdimm/dax_devs.c | 2 ++
- 1 file changed, 2 insertions(+)
+For the remaining lifetime of the devices, we are stuck on 4.4.y-cip
+with a few additional patches, including this one.
 
-diff --git a/drivers/nvdimm/dax_devs.c b/drivers/nvdimm/dax_devs.c
-index 99965077bac4..b1426ac03f01 100644
---- a/drivers/nvdimm/dax_devs.c
-+++ b/drivers/nvdimm/dax_devs.c
-@@ -106,6 +106,8 @@ int nd_dax_probe(struct device *dev, struct nd_namespace_common *ndns)
- 
- 	nvdimm_bus_lock(&ndns->dev);
- 	nd_dax = nd_dax_alloc(nd_region);
-+	if (!nd_dax)
-+		return -ENOMEM;
- 	nd_pfn = &nd_dax->nd_pfn;
- 	dax_dev = nd_pfn_devinit(nd_pfn, ndns);
- 	nvdimm_bus_unlock(&ndns->dev);
+> 
+> In any case, we have platforms in the wild that actually support GPEs and this
+> makes sense for them.
+
+Sure, I don't want to judge for them. Just our original target of this
+patch is no longer relevant for upstream.
+
+Jan
+
 -- 
-2.7.4
-
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
