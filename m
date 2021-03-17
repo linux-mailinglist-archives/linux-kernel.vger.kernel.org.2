@@ -2,282 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF89D33F9AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:04:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5168033F9B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:04:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233348AbhCQUDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233373AbhCQUED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 16:04:03 -0400
+Received: from mail-co1nam11on2056.outbound.protection.outlook.com ([40.107.220.56]:62817
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233351AbhCQUDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Mar 2021 16:03:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51256 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233354AbhCQUDN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 16:03:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616011392;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HwJ9TXTu++FXWJPVVeBtvy+lQhOEWQWY2oBpOepSq6I=;
-        b=Q/j4CfltEC89VAatrd+32fELhgJJcTrSsLIqsKgvLeWQ2mRp5OaOtXdUt4DXZHIUojOnni
-        2DrjrQUV6ngJgRQ0oP0jaqouJNh+rNg6gMpD6zzdkmh8rHzGWeZv4XE9KZf4TmLZT/M7Qq
-        kPmoHmxDz5xZAnCtj+cE4qvwyOnGd0k=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-260-EqYw4lavPG6yRhwffJWWzg-1; Wed, 17 Mar 2021 16:03:10 -0400
-X-MC-Unique: EqYw4lavPG6yRhwffJWWzg-1
-Received: by mail-ej1-f71.google.com with SMTP id v10so15672858ejh.15
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:03:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HwJ9TXTu++FXWJPVVeBtvy+lQhOEWQWY2oBpOepSq6I=;
-        b=Y07B5oW3ZOvcniDr5+xnNXywB2EBJNjbFsnXuTv9lJT9BC4sr+NZbQ6JvwCk23ULi2
-         j17Woml9YS+jdE8cTmp+wxLqAeYzVKk164njHTTSlzyob/xHqN7+QtKhfhPNG540YjqX
-         316V3cJXyst6JkhcFeGq5W028Zs7lZF9Dh/a6E5Xpi5HonZxdQ3+ZKEPwMGxRz4LJqf8
-         RRy9yNR+7bvVRha3A/ftMSxBep00WLmSGdBI0r6UGydUCRaaTGAP06hy9uSZa9rLP6az
-         +dzQtEziQXEfUafkjfPRKZXHViUSyq8+1Kk4AIMLjnwa3fpfarHYXBCMZaNKRRJHsWTN
-         3xIQ==
-X-Gm-Message-State: AOAM531Zxavx0S7fNVBY2NHbjmy+JTP1j2omi7p7Qc0tw5i86Wo0Vb3F
-        6F4jPDd5EBGoJyOnqxQ5DJdjR2P9Fkxq7kCSeNbY8f08ad8EKyCREHnprvH1SJAKfzoVZgIi6Uw
-        IEHBtbUEGWzuYn0WE85Z1pGda
-X-Received: by 2002:a05:6402:1115:: with SMTP id u21mr44199731edv.383.1616011389274;
-        Wed, 17 Mar 2021 13:03:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxo4c8JjgJKYU4UbOZ7P7IHLU7WgoQ+vXAgJua3OZItOXAYRcju0/gF7IIHAJjnPsNY6k8hcQ==
-X-Received: by 2002:a05:6402:1115:: with SMTP id u21mr44199693edv.383.1616011389050;
-        Wed, 17 Mar 2021 13:03:09 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id n16sm12252728ejy.35.2021.03.17.13.03.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 13:03:08 -0700 (PDT)
-Subject: Re: [PATCH v2 1/4] platform/x86: simatic-ipc: add main driver for
- Siemens devices
-To:     Henning Schild <henning.schild@siemens.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Pavel Machek <pavel@ucw.cz>
-References: <20210315095710.7140-1-henning.schild@siemens.com>
- <20210315095710.7140-2-henning.schild@siemens.com>
- <CAHp75VdXDcTfNL9QRQ5XE-zVLHacfMKHUxhse3=dAfJbOJdObQ@mail.gmail.com>
- <20210317201311.70528fd4@md1za8fc.ad001.siemens.net>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <92080a68-9029-3103-9240-65c92d17bf16@redhat.com>
-Date:   Wed, 17 Mar 2021 21:03:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210317201311.70528fd4@md1za8fc.ad001.siemens.net>
-Content-Type: text/plain; charset=utf-8
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=huj/EE9iTgNi9VNJQc+iKI/FtBTWuCuWrJSGqpantolw9435azVSC4Mk/QUxuwik5ywouVw2swz43ruW3tGk1Kqk4v36RnOpGE8yHsTbidwtScgKfFqkUc/lceyMzyjSQDwTg6eetySHi7pAA7Pgl110fTcJvlf1OXn5dyIW5OtYLRvAFvJdLb03HjSUCwcu1rHx0385GmoBqndYqUQ3Tm2NwJxjgyWiWC/pG95r0Q7hIrEups/qGRrLFwKN+OoyR9LaUcDV5z/EVogzaoEex8x0Yg6WSAwCp+Pb8BiZh+dxCisF16B7V+4Jy6cG4UAEOtmgFqutx7AUYH6GYZh6RQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=16R7k/vHmCdZRi7ZpaEBS7Faq2O98toQ9Hq7sARC1P0=;
+ b=Aly2edkHknDgUclk2FgKsPeLKCWdcyWZmIyfeneMqkOYh1rkQO6DlqG+nA8V+dU1hms4t2ehgE3vb03N15YzDOa7x8TLSgtQKUNhxwLWNwxw/7PkkatOgQcv9TWoAgOPImpuOdpIHgmnw9E8ZDmjgxKNDBUExWDPgkCzeBnCF9xTpZIMmq+w6CJEs3rV0AjlrrVuD+FpLP2a+yAQ2ayeC4yk8qloHYpAQFAx2Fe8OVjtT2IC797nDxT4bE2B+Q1C0JndiggpQSKyroJxnwX3Ua4LZoaGooAS+i7MztLG6xdN0nc5Aun/8+0YlYl5PEKvQmnPL/2slEhg+wCn6LHfAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=16R7k/vHmCdZRi7ZpaEBS7Faq2O98toQ9Hq7sARC1P0=;
+ b=LHRImBCJgW3hJEmalF/Q6SsRAmK4zROJAP9jAkbbM/r7inZCAWku5CBzQBxtu1XrLYUMPIzMuB6x2gAAR2um9louETmUmXle5DT/8TttVE3yOvdW0pZB190f/HhI8ksyt7pt6ajglQ1e6dXOFMXiyRKcK42mQExTe9ipvV/6JRhuePA40gDRU5496dxYfzg5gJxTG/dw4eaDtj9dqHqgsI+TTv2g0Y1WsluTglPcDz0Ge7DoROWxfemEgGvvMF3o+Af4gEdP0lhHqe0iJBdmkyoDo4nRzA9t1pBelHfrHdzS9qvoT0Emg23esTm3IU3Po1rH25mj7DrYTkFX/Cd3vg==
+Received: from BYAPR12MB3557.namprd12.prod.outlook.com (2603:10b6:a03:ad::31)
+ by BY5PR12MB4817.namprd12.prod.outlook.com (2603:10b6:a03:1fe::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Wed, 17 Mar
+ 2021 20:03:28 +0000
+Received: from BYAPR12MB3557.namprd12.prod.outlook.com
+ ([fe80::5cba:37fd:e15:2d50]) by BYAPR12MB3557.namprd12.prod.outlook.com
+ ([fe80::5cba:37fd:e15:2d50%3]) with mapi id 15.20.3933.032; Wed, 17 Mar 2021
+ 20:03:28 +0000
+From:   Liming Sun <limings@nvidia.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Khalil Blaiech <kblaiech@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+CC:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v1 1/1] mmc: sdhci-acpi: Add support for NVIDIA
+ BlueField-3 SoC
+Thread-Topic: [PATCH v1 1/1] mmc: sdhci-acpi: Add support for NVIDIA
+ BlueField-3 SoC
+Thread-Index: AQHXFqRbrJDl4sCpM0SDcm8Vo3MluKqEvngAgABU/YCAAALUoIAAXOCAgAMwX2A=
+Date:   Wed, 17 Mar 2021 20:03:28 +0000
+Message-ID: <BYAPR12MB3557199EC1DDEDB07F30DC0AD36A9@BYAPR12MB3557.namprd12.prod.outlook.com>
+References: <b62a68d1f8488e7f95befc6723ba5c20d6781628.1615487235.git.limings@nvidia.com>
+ <8236f89c-720e-f8bd-86d0-9654175de659@intel.com>
+ <MN2PR12MB361668C9AC2463E1E89478E0AB6C9@MN2PR12MB3616.namprd12.prod.outlook.com>
+ <BN8PR12MB35561363D36DA2E37DBA5461D36C9@BN8PR12MB3556.namprd12.prod.outlook.com>
+ <040a6307-9fba-0185-f913-a81816f1da62@intel.com>
+In-Reply-To: <040a6307-9fba-0185-f913-a81816f1da62@intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [173.76.169.242]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 46386063-2e83-4fcd-ceda-08d8e97fbb49
+x-ms-traffictypediagnostic: BY5PR12MB4817:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR12MB48172A4FC6001402D69A690DD36A9@BY5PR12MB4817.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: f+6vZINBe07sZrfIPtgjWKtlXM7eTMzcQ7IbEmTRBx8EO+1ZmiRc0zVZi4736FqwV2eYCJdFLrNNS9vSWVg5ShDG4ppDvov6aG9IbxdOw6IgsCJhl3dpT62eNDDKzgb8YgyTFUZTG4Kzt4eCAvQq6jBkh2BF9YQ09diVSl5QK3IiXe4dC4ydn2MNtEyaaULIDKe9uiBlCRu4LMxyMyqKpFL+4ng88szBCvQNyiQoD2r5hsOoa17ermByujstxiiKKjDnC0Q3lJHbA900G9jVlCiuA5I+iTJUiHeCDWamJK4jP+5dqwBN0aExUrisJgyBjzi6dAB35XBJXBv5BpT7M0RnFz5ZLYMbkJ1bhP/XfiRY1yU5vN8ObYhinGBaPX4GfZV3ITLf+YF1jcG8kqxUXcQMLzn6BO43mIPrnLRaSgI00Rrrh4xsYj6gtEtwaywrE0HbHPhtnKnlrIeosnkx8W8MhU1ySv82+xeOycqwAFfD92HMGQOc7a0LOJTHedBh7vx+ARGet11hfvPBuM8Ajq0R8fP0R8PJkpyhPYn+PwuF4jPf8K8QlYETgLKuESkN
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(39860400002)(346002)(376002)(54906003)(52536014)(66476007)(8676002)(64756008)(5660300002)(9686003)(8936002)(66946007)(110136005)(7696005)(66556008)(26005)(316002)(53546011)(76116006)(71200400001)(4744005)(83380400001)(478600001)(33656002)(6506007)(4326008)(2906002)(55016002)(186003)(86362001)(66446008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?bVFidWJGSEhBdFZyYm9BUVd6Zy9mMHFvb1VVT3BOZzRtTFkxaE1NY2tFSjRj?=
+ =?utf-8?B?Y2E3bExHaDAveW1iY1ZLTnhxdzErTndoMEVITjV0aThSN0NCakhzeXMvT1Vt?=
+ =?utf-8?B?QThOK0RuU25JaEZPVnFaMDJpLzZyNm4zc1BySG9NZzlGSTBDUVpXeENINW1X?=
+ =?utf-8?B?a0RPdHBkMzl1RkRVM0hyWDBWaWdSWVcvemZYdEdhTFI1VXpmeEh6eUV4dWR2?=
+ =?utf-8?B?S1RSSXExY0VhRlBSUVptbWFYeXJYTFRyZklnZSszMFJmcEZ6UmY0T21tczFY?=
+ =?utf-8?B?ZHM1WkZPOFJ6ZzBYZGl5a1hTUzNxUjZubi9qRHBqZ1RySzRoUEF6djdwdU1P?=
+ =?utf-8?B?aEFRZjYyUGVvTXF0R0RzQndFcHZIdjRIa2xMbzJQWFZuV3BHUjRFMmpiVkVy?=
+ =?utf-8?B?a2p1K0JVRFZNZkwxMWt1bEdQLzBIdDY3akhDWGdiN2FzMkJ0U043S1haYkVC?=
+ =?utf-8?B?RmpVTWQwaDRrZUFqb2NKVjR0UE5Kd0hJb0w2UGNxRjVONzFqTDd3WXNZelRa?=
+ =?utf-8?B?b1hEK1N5NUxhSnZWSjBDYXp4dkdTekpkRVkvL1c0cWdXV1FXUzllby9aL1A3?=
+ =?utf-8?B?SWdkZ0huVjBXKzVLT2NXKzNHTXdhQThiSVZma2pPNnBWZEp4RW1nc0xSeVZx?=
+ =?utf-8?B?eVI5WGpvUy9oLzB4QWZjTzhDNCtQeXpLUWxxai9SbXVHR0dpRDcwMG5RcjBv?=
+ =?utf-8?B?bnZXMW9HRm9aYmxGNjBMQzh2YkFCRnBqbUtEYW9OTHhoVHFaOExqRXhrdzBB?=
+ =?utf-8?B?WkMzRTRDR3NBWEhMYzVaalJTczJLN3BCSDhHN0x6bnh6MEdqbVAwQXdJbHo0?=
+ =?utf-8?B?ckxJS01yWjRLVDRCUEY5UTByZjl0OGxXMzZnbGV6RlgxYWZlbk1BQ0t6U2VF?=
+ =?utf-8?B?WEhsSWwrVExOODVBMENlZUd5VUtJSVQ2c2xBenk4MmQ0TnkzdnVjN0RtNEdC?=
+ =?utf-8?B?bUNuMkJJQS80UkZ3ZFBBRGtWRTZSaTdmekhsU2tldGhDM3BtbWVOUGV4QnhY?=
+ =?utf-8?B?WCtZcWxiMWJhazZ2WDFlVTBNcmgzaHdLVFR6Ty9jZHdUenB4azYyWUlsa3VO?=
+ =?utf-8?B?dW1QaDVkVUFZYUprazJWUFBwT2JaRWU4ckpPcWtnZGZxNHlwbTBpNDU4ZDhC?=
+ =?utf-8?B?R3d0emlTaFRXdmlVaXphejBjRFZHdkg3SEp4eDBtUTFKWGMzMnpQQm8zWFFw?=
+ =?utf-8?B?dEQvTnB1N1FsRGUvcTdrWjlqblRVeVZSVEFJM3N4OUhnaEFQZFdEOU9xMXdM?=
+ =?utf-8?B?bURxS1hNZTRXOWtyY1AvTmJ5VTBGRlNOTHg1Y0M4TFBhU29iN09jWkJad1lF?=
+ =?utf-8?B?WDRHRWVrQTdMWmQ2YUVSSGFWL1hUUW10NEh1UFp2VGIzUlY0OWNxWDVHQXV6?=
+ =?utf-8?B?MVl0RWlpUGZXeTFxSEpuZEx4Z2ZaMWlZblkreW9UbGRMQ3p6anFveWRpd0ZU?=
+ =?utf-8?B?ZFJsdjB1aDRRTUxuOW5NeU5aR3RhMUdyUUxPNE5EeWZpMHFkZU1hODBUTTV4?=
+ =?utf-8?B?SnUxMHFST1VTWC9lMVdRYXRISDA5ZzFlWHpHZ0IxSU56dG44NzNCMXpKRGVR?=
+ =?utf-8?B?cEY5a3hsTkRVTjQ4VG9LN05YbkhCd3U3L0hSQnI5d1pJTVBIZ21nWGwzelF3?=
+ =?utf-8?B?QnpIUEhvRGZ3WmhQengyT2l1dE1QUjA1bzhuazhWMWRyZXRwSm54OVBvNTho?=
+ =?utf-8?B?bk84VFI0MnM2MmhzTHFJd3V1RTI1L3d3cG1INE40WmFWajNFOXJXODd6SnNJ?=
+ =?utf-8?Q?YUoEFRnKLEpeDP3qrCzA7qeZmT+cwXiV0zEkixj?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3557.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 46386063-2e83-4fcd-ceda-08d8e97fbb49
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Mar 2021 20:03:28.3750
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: IUo7GPlJxZd+HLBYIKJuLe04YicDqMhCbJ9kmb3hDN4LT3t6VeRthtyX9jfz6Mvovi8DBETFjtURhQonHF4/RQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4817
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 3/17/21 8:13 PM, Henning Schild wrote:
-> Am Mon, 15 Mar 2021 12:31:11 +0200
-> schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
-> 
->> On Mon, Mar 15, 2021 at 12:02 PM Henning Schild
->> <henning.schild@siemens.com> wrote:
->>>
->>> This mainly implements detection of these devices and will allow
->>> secondary drivers to work on such machines.
->>>
->>> The identification is DMI-based with a vendor specific way to tell
->>> them apart in a reliable way.
->>>
->>> Drivers for LEDs and Watchdogs will follow to make use of that
->>> platform detection.  
->>
->> ...
->>
->>> +static int register_platform_devices(u32 station_id)
->>> +{
->>> +       u8 ledmode = SIMATIC_IPC_DEVICE_NONE;
->>> +       u8 wdtmode = SIMATIC_IPC_DEVICE_NONE;
->>> +       int i;
->>> +
->>> +       platform_data.devmode = SIMATIC_IPC_DEVICE_NONE;
->>> +
->>> +       for (i = 0; i < ARRAY_SIZE(device_modes); i++) {
->>> +               if (device_modes[i].station_id == station_id) {
->>> +                       ledmode = device_modes[i].led_mode;
->>> +                       wdtmode = device_modes[i].wdt_mode;
->>> +                       break;
->>> +               }
->>> +       }
->>> +
->>> +       if (ledmode != SIMATIC_IPC_DEVICE_NONE) {
->>> +               platform_data.devmode = ledmode;
->>> +               ipc_led_platform_device =
->>> +                       platform_device_register_data(NULL,
->>> +                               KBUILD_MODNAME "_leds",
->>> PLATFORM_DEVID_NONE,
->>> +                               &platform_data,
->>> +                               sizeof(struct
->>> simatic_ipc_platform));
->>> +               if (IS_ERR(ipc_led_platform_device))
->>> +                       return PTR_ERR(ipc_led_platform_device);
->>> +
->>> +               pr_debug("device=%s created\n",
->>> +                        ipc_led_platform_device->name);
->>> +       }
->>> +
->>> +       if (wdtmode != SIMATIC_IPC_DEVICE_NONE) {
->>> +               platform_data.devmode = wdtmode;
->>> +               ipc_wdt_platform_device =
->>> +                       platform_device_register_data(NULL,
->>> +                               KBUILD_MODNAME "_wdt",
->>> PLATFORM_DEVID_NONE,
->>> +                               &platform_data,
->>> +                               sizeof(struct
->>> simatic_ipc_platform));
->>> +               if (IS_ERR(ipc_wdt_platform_device))
->>> +                       return PTR_ERR(ipc_wdt_platform_device);
->>> +
->>> +               pr_debug("device=%s created\n",
->>> +                        ipc_wdt_platform_device->name);
->>> +       }
->>> +
->>> +       if (ledmode == SIMATIC_IPC_DEVICE_NONE &&
->>> +           wdtmode == SIMATIC_IPC_DEVICE_NONE) {
->>> +               pr_warn("unsupported IPC detected, station
->>> id=%08x\n",
->>> +                       station_id);
->>> +               return -EINVAL;
->>> +       }
->>> +
->>> +       return 0;
->>> +}  
->>
->> Why not use MFD here?
-> 
-> Never had a close look at mfd to be honest. I might
-> 
-> With the custom dmi matching on 129 being part of the header, and the
-> p2sb unhide moving out as well ... that first driver ends up being not
-> too valuable indeed
-> 
-> It just identifies the box and tells subsequent drivers which one it
-> is, which watchdog and LED path to take. Moving the knowledge of which
-> box has which LED/watchdog into the respective drivers seems to be the
-> better way to go.
-> 
-> So we would end up with a LED and a watchdog driver both
-> MODULE_ALIAS("dmi:*:svnSIEMENSAG:*");
-> and doing the identification with the inline dmi from that header,
-> doing p2sb with the support to come ... possibly a "//TODO\ninline" in
-> the meantime.
-> 
-> So no "main platform" driver anymore, but still central platform
-> headers.
-> 
-> Not sure how this sounds, but i think making that change should be
-> possible. And that is what i will try and go for in v3.
-
-Dropping the main drivers/platform/x86 driver sounds good to me,
-I was already wondering a bit about its function since it just
-instantiates devs to which the other ones bind to then instantiate
-more devs (in the LED case).
-
-Regards,
-
-Hans
-
-
->> ...
->>
->>> +/*
->>> + * Get membase address from PCI, used in leds and wdt modul. Here
->>> we read
->>> + * the bar0. The final address calculation is done in the
->>> appropriate modules
->>> + */  
->>
->> No blank line here.
->>
->> I would add FIXME or REVISIT here to point out that this should be
->> deduplicated in the future.
->>
->>> +u32 simatic_ipc_get_membase0(unsigned int p2sb)
->>> +{
->>> +       struct pci_bus *bus;
->>> +       u32 bar0 = 0;
->>> +
->>> +       /*
->>> +        * The GPIO memory is bar0 of the hidden P2SB device.
->>> Unhide the device  
->>
->> No, it's not a GPIO's bar. It's P2SB's one. GPIO resides in that bar
->> somewhere.
->>
->>> +        * to have a quick look at it, before we hide it again.
->>> +        * Also grab the pci rescan lock so that device does not
->>> get discovered
->>> +        * and remapped while it is visible.
->>> +        * This code is inspired by drivers/mfd/lpc_ich.c
->>> +        */
->>> +       bus = pci_find_bus(0, 0);
->>> +       pci_lock_rescan_remove();
->>> +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x0);
->>> +       pci_bus_read_config_dword(bus, p2sb, PCI_BASE_ADDRESS_0,
->>> &bar0); +
->>> +       bar0 &= ~0xf;
->>> +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x1);
->>> +       pci_unlock_rescan_remove();
->>> +
->>> +       return bar0;
->>> +}
->>> +EXPORT_SYMBOL(simatic_ipc_get_membase0);  
->>
->> ...
->>
->>> +static inline u32 simatic_ipc_get_station_id(u8 *data, int max_len)
->>> +{
->>> +       u32 station_id = SIMATIC_IPC_INVALID_STATION_ID;
->>> +       int i;  
->>
->> Reversed xmas tree order, please.
->>
->>> +       struct {
->>> +               u8      type;           /* type (0xff = binary) */
->>> +               u8      len;            /* len of data entry */
->>> +               u8      reserved[3];
->>> +               u32     station_id;     /* station id (LE) */  
->>
->>> +       } __packed
->>> +       *data_entry = (void *)data + sizeof(struct dmi_header);  
->>
->> Can be one line.
->>
->>> +       /* find 4th entry in OEM data */
->>> +       for (i = 0; i < 3; i++)  
->>
->> 3 is magic!
->>
->>> +               data_entry = (void *)((u8 *)(data_entry) +
->>> data_entry->len); +
->>> +       /* decode station id */
->>> +       if (data_entry && (u8 *)data_entry < data + max_len &&
->>> +           data_entry->type == 0xff && data_entry->len == 9)
->>> +               station_id = le32_to_cpu(data_entry->station_id);
->>> +
->>> +       return station_id;
->>> +}  
->>
-> 
-
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBZHJpYW4gSHVudGVyIDxhZHJp
+YW4uaHVudGVyQGludGVsLmNvbT4NCj4gU2VudDogTW9uZGF5LCBNYXJjaCAxNSwgMjAyMSAzOjIw
+IFBNDQo+IFRvOiBMaW1pbmcgU3VuIDxsaW1pbmdzQG52aWRpYS5jb20+OyBLaGFsaWwgQmxhaWVj
+aCA8a2JsYWllY2hAbnZpZGlhLmNvbT47DQo+IFVsZiBIYW5zc29uIDx1bGYuaGFuc3NvbkBsaW5h
+cm8ub3JnPg0KPiBDYzogbGludXgtbW1jQHZnZXIua2VybmVsLm9yZzsgTGludXggS2VybmVsIE1h
+aWxpbmcgTGlzdCA8bGludXgtDQo+IGtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+DQo+IFN1YmplY3Q6
+IFJlOiBbUEFUQ0ggdjEgMS8xXSBtbWM6IHNkaGNpLWFjcGk6IEFkZCBzdXBwb3J0IGZvciBOVklE
+SUENCj4gQmx1ZUZpZWxkLTMgU29DDQo+IA0KPiBPbiAxNS8wMy8yMSA3OjAwIHBtLCBMaW1pbmcg
+U3VuIHdyb3RlOg0KPiA+IFRoYW5rcyBBZHJpYW4uIFllcywgSSBkaWQgY29uc2lkZXIgYWRkaW5n
+IHRoaXMgQUNQSSBzdXBwb3J0IGludG8gc2RoY2ktb2YtDQo+IGR3Y21zaGMuYywgYnV0IG5vdCBz
+dXJlIHdoaWNoIG9uZSBpcyB0aGUgcHJlZmVycmVkIHdheS4NCj4gPiBJcyB0aGlzIChzZGhjaS1v
+Zi1kd2Ntc2hjLmMpIHdoYXQgeW91IHJlY29tbWVuZD8gSSdsbCBwb3N0IHRoZSByZXZpc2VkDQo+
+IGNoYW5nZXMgaW4gcGF0Y2ggdjIuDQo+IA0KPiBZZXMsIHRoYXQgaXMgZ2VuZXJhbGx5IHByZWZl
+cnJlZCBJIHRoaW5rLg0KDQpUaGFua3MgQWRyaWFuLiBQb3N0ZWQgIltQQVRDSCB2Ml0gbW1jOiBz
+ZGhjaS1vZi1kd2Ntc2hjOiBhZGQgQUNQSSBzdXBwb3J0IGZvciBCbHVlRmllbGQtMyBTb0MiIGZv
+ciB0aGlzIGNoYW5nZS4NCg==
