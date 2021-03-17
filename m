@@ -2,120 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B119933EAA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3989D33EAB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbhCQHka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 03:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhCQHkG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 03:40:06 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F881C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 00:40:06 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 16so1908798ljc.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 00:40:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iObzIxFvftTdKH1/yXifJjIJYlGMiIva4oZnIqTHzmM=;
-        b=ZX9iixsaVwsqr/Cn1A2WeoWoFrumH7sNtxSYawUL91Lphse0MaPfjacqjM1FDqo5NV
-         bAiKDQJaSGz8eQYBN13LKfX3quYfLXHo06AKoEXrU/lwTNqcjKeZJITR936O79VQUhI6
-         wobMISUTMmR4vRvl+SKxW9AWPCf4zKqBsL+w/IbYyVN/yTUpMOLeId+WA+mlkBmeuAfT
-         SR6z4Mx3EcIwnv9OPgV9OMrbBmDQxsgYRPycRLcC3dtH0VHkmwD+z9Zc6xICnfWyuCGQ
-         b3W1JCznoQqe9WgRzA4SyoIn3U+7fBtfqpAO6ndTTp+GB7kTenXE1vAdmc5JnfW18Ni6
-         Usog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iObzIxFvftTdKH1/yXifJjIJYlGMiIva4oZnIqTHzmM=;
-        b=f1TIiuq1WFDUj/aSylwbr7sWUlRp0HemW0yun2LNqcUr5ZJIMs8lg0YDPI7wczxsGO
-         ONHicssoZqubzsv7RXwsKIueZwu6mYl1imlAD5mnE177FGUv6NBYat9BrarwUpEoN5wQ
-         mmyx447MjOlI+58s+oyKL0dZt57LfyVx9h9fIhN9iXLq9I9jJ0P6F+Q9Gz973Zpe1Icz
-         HsEy6yABbxELFxJQJEbQPQaomfNUFQBgRjJO5s3q0l5R7PEfENIwX2Fm2ANrh0toQNIQ
-         1h7+4Dbhtwd7SBY2b2tPGP4Ndyj+Xg8Qs6lDugDZlwqSJC6ziWvrcsLrTMEuDyih44aY
-         zUsg==
-X-Gm-Message-State: AOAM530JfOskDwr/fUq0Lda28CDbjv0cxWLpsLUe3cWErmodw3itRE2r
-        6zq/U+TiecXWAw0lRof4xLzCl0E3AVal6VQNvlz2yw==
-X-Google-Smtp-Source: ABdhPJxkZg9XDXYoY6hqQYdLLQExVMsp4ITka98+Ps8S1hFlsNeIPJBrvg4kY7aeSo/+tIGP5LduAXhwxBknckTLNck=
-X-Received: by 2002:a05:651c:481:: with SMTP id s1mr1539339ljc.152.1615966804665;
- Wed, 17 Mar 2021 00:40:04 -0700 (PDT)
+        id S230196AbhCQHmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 03:42:54 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:36489 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229508AbhCQHmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 03:42:42 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F0hvg315yz9sRR;
+        Wed, 17 Mar 2021 18:42:38 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1615966960;
+        bh=9B1kDwqk2Aq7cnBTJ/I8PjOF7FYoKDp9U+aU5IvgsTM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=EMKtdlMbtZUkDYlV1t/0TUE9oY8RFcuASR3/Aa00ANZliq9pCmc3dX4nMH7gMBnNi
+         rMl+VTM98i1nOVxhGJj0JRhuVc++a7ZsLfqLNSPuz+hJbpzPs6G425ozbiJi46bwqf
+         z3MkbenalvyMxMq68A6aU5EYkZ/4W49wni8lV5DoQyOb+ChTJveuuTxSBnDxOJM0zu
+         LrvG0anUyW63M/cYgNiSzZnvr3y0LRj8okjues/DyGlyS6HMmyBAvEOD5gJb2etGd7
+         KXOoCMoI37Gc3mfm5aVyhoGGwvgNWPEFG02r4Kf7dmgLXEYAu9WbTNV9Q4eVsNAlEo
+         B70OTcpGHzYuw==
+Date:   Wed, 17 Mar 2021 18:42:37 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the drm tree
+Message-ID: <20210317184237.7b0de3db@canb.auug.org.au>
 MIME-Version: 1.0
-References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
- <319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de>
- <CAFLxGvxmRcvkweGSRSLGEm5MJDM4M7nzkp9FwOwmhZ+h2RE0vA@mail.gmail.com>
-In-Reply-To: <CAFLxGvxmRcvkweGSRSLGEm5MJDM4M7nzkp9FwOwmhZ+h2RE0vA@mail.gmail.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Wed, 17 Mar 2021 13:09:53 +0530
-Message-ID: <CAFA6WYNyMzQJNhGds2Ff9waF6mAr_0E-izXA2GBooTJgVDp-3A@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-To:     Richard Weinberger <richard.weinberger@gmail.com>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>, kernel@pengutronix.de,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@penutronix.de>,
-        David Gstir <david@sigma-star.at>,
-        Franck LENORMAND <franck.lenormand@nxp.com>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/VFXPai4zRYQv_2HI6H6V7tJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
+--Sig_/VFXPai4zRYQv_2HI6H6V7tJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 17 Mar 2021 at 04:45, Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
->
-> Ahmad,
->
-> On Tue, Mar 16, 2021 at 6:24 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> > +#include <keys/trusted_caam.h>
-> > +#include <keys/trusted-type.h>
-> > +#include <linux/build_bug.h>
-> > +#include <linux/key-type.h>
-> > +#include <soc/fsl/caam-blob.h>
-> > +
-> > +struct caam_blob_priv *blobifier;
->
-> Who is using this pointer too?
-> Otherwise I'd suggest marking it static.
->
-> >  module_param_named(source, trusted_key_source, charp, 0);
-> > -MODULE_PARM_DESC(source, "Select trusted keys source (tpm or tee)");
-> > +MODULE_PARM_DESC(source, "Select trusted keys source (tpm, tee or caam)");
->
-> I didn't closely follow the previous discussions, but is a module
-> parameter really the right approach?
-> Is there also a way to set it via something like device tree?
->
+Hi all,
 
-It's there to support a platform which possesses multiple trusted keys
-backends. So that a user is able to select during boot which one to
-use as a backend.
+After merging the drm tree, today's linux-next build (htmldocs) produced
+this warning:
 
--Sumit
+include/drm/gpu_scheduler.h:304: warning: Function parameter or member '_sc=
+ore' not described in 'drm_gpu_scheduler'
 
-> --
-> Thanks,
-> //richard
+Introduced by commit
+
+  f2f12eb9c32b ("drm/scheduler: provide scheduler score externally")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/VFXPai4zRYQv_2HI6H6V7tJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBRsu0ACgkQAVBC80lX
+0GyNPQf9E2nEPp3fGgyYTtoL5IqYrtgq466WBskGcOMNzFfPGq8m72yrRKMYMP69
+Jx/Aclzhij8qYHVTtGukAACD/HRapGOFcMuy0Bjkha9305D+oeNFv6R6uOHEoxYT
+HnuN4QvMhYJC6IWi1XW51dX+R3qyF6pjPcqsx9Y0kPdsExOSHeVIJEPaUa0XVn4P
+ZmNyc19/BigZhlAVIKYV6uLetMeaKGA/pv3zVXnnUAwqgDrvbFiaGYgbGt5qItDf
+r9aj5LzMImCaRqJUjblsFHbbrx5QytAwUd80I5vO/xMRi2TNYKGotpxB2w5qarUs
+8nj89Bg8e3BFCejd41GDRR5fBWbdNQ==
+=1WmV
+-----END PGP SIGNATURE-----
+
+--Sig_/VFXPai4zRYQv_2HI6H6V7tJ--
