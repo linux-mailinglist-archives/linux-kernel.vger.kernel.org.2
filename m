@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D132533E8BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D0433E8B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:05:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbhCQFGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 01:06:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44708 "EHLO
+        id S229541AbhCQFEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 01:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhCQFFa (ORCPT
+        with ESMTP id S229526AbhCQFEs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 01:05:30 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735FEC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 22:05:30 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id x26so287459pfn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 22:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
-         :from:to;
-        bh=74MWaAFPWeZRrJY/C5d35d6IGwQth/42igzA+G1JWys=;
-        b=MGlPr2zNtZRWeH0WPOublJqa7uHznf2J3FG5zh7XjRx3S/ZeQ0KuQ5NQ3dS3AAqbnT
-         /uJmhIvdium6Xrztsyx/YkwvWvPttDavnm8mmA7FBQ3fDtVD6QOFNnqW1uzRt5RoFEwq
-         JFkW9Ys2gnzv6EItdJXk0H13KxkjBJLbeWCnQgLImGOw2yoodaX33yRLsWhTjy+1h/JX
-         AQC7cWBzHXq0QMAUNTQonFITBCYf6wid1mA1ZfZcRot9q5XDH+s/U7m75NyPvM5lhx7r
-         UpE+CDWBtTWQnFkQijdqLyyQIk2JXVmMxBELY9eb3EpV1TALRUP0oUpFjTsh1OYkp+QQ
-         ZNcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=74MWaAFPWeZRrJY/C5d35d6IGwQth/42igzA+G1JWys=;
-        b=jhwDcK+qK+DB4Wkzn+/qUjUWMxtcar+rmMLtLRfSGpUXR/aBqnZ7oJ6KGuAbN04bny
-         qmoRj4ej17V3YMxoE0TzJFcOkos+C/8At3jyzlB9/yrqK3KPphSSRkCQR27QTs/pZs+T
-         2gZMPBbcYOVN2ijz7Z1o4F9A/aTKk4JDCOuUPIdNHjgvXgTNJvOezcd7MW/zyN+RKU4S
-         1he6MC2l0/fOC6q58V8pMdRUYc5+G4JGbMXYNKeGiX9g30iWjB6zDnZxv6Qtf8s/qsnv
-         8geW6ukA1yQFEOlzWnSL8HnmFzHlDeojPJ/MQfaxqMC6LKAGINETOc+KDkKlvorupcii
-         qSOg==
-X-Gm-Message-State: AOAM531+5iq3lipYvCyYBrAM6bpshiQkD4aa/qvc636L0iSJc2lmiQt7
-        BqHqqD7gmdZRocl2tDYUEZoxJg==
-X-Google-Smtp-Source: ABdhPJwyAS37AVZmYTT26BlYGq3rImNXpjkfbo7T3Sset77tFACl1dGuMH197K5UPPZZ6GRFEWR1bw==
-X-Received: by 2002:a05:6a00:b86:b029:207:8ac9:85de with SMTP id g6-20020a056a000b86b02902078ac985demr2671100pfj.66.1615957530001;
-        Tue, 16 Mar 2021 22:05:30 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id d14sm1031270pji.22.2021.03.16.22.05.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 22:05:29 -0700 (PDT)
-Subject: [PATCH] RISC-V: kasan: Declare kasan_shallow_populate() static
-Date:   Tue, 16 Mar 2021 22:02:48 -0700
-Message-Id: <20210317050247.411628-1-palmer@dabbelt.com>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+        Wed, 17 Mar 2021 01:04:48 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB49C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 22:04:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=ybbA4Qi9mtcUePCf0pVWByz7C3Rp/x6OKM+5Ccd/J+I=; b=QvKt3HZUTI7fND+CVc0p9jUW1E
+        kDoMcjUb28gm5orH9Yf748KWyxXYhXjAiCxgrz99Mn3pbYNb5YB5kPOAo62NriLHCS5QY2Vm8VkG+
+        FKEvR7HSwhaePuVvcCFDiwTEp53L4xkHNYS0jI9+rosUq4Wbb7Y/HjF5g8VgQWm9XpYih36OOFHoG
+        Ejb+qGGb/Mvfwk+B32WQnCNKN8gVAQLyR04CSYIrZ/3+qiUYYT84lvG7yGXlAtj/j5iAcB0OxrKD2
+        hhpgWNhCJ79uRoBIIwGIB3fettobGivoy19AlAO2j8XdYrgHXILCSzX6BV3fjBDUsdHaT2aOqC/En
+        kNzc2J0A==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMOMH-001bQq-H8; Wed, 17 Mar 2021 05:04:37 +0000
+Subject: Re: [PATCH] iio:imu:mpu6050: Modify matricies to matrices
+To:     Guoqing chi <chi962464zy@163.com>, jic23@kernel.org
+Cc:     linux-kernel@vger.kernel.org, chiguoqing@yulong.com
+References: <20210317024102.419-1-chi962464zy@163.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <23d4b482-212f-dde5-dc83-7401b14f3638@infradead.org>
+Date:   Tue, 16 Mar 2021 22:04:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc:     ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
-        dvyukov@google.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, aou@eecs.berkeley.edu,
-        kasan-dev@googlegroups.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        kernel test robot <lkp@intel.com>, stable@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:         linux-riscv@lists.infradead.org
+In-Reply-To: <20210317024102.419-1-chi962464zy@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Palmer Dabbelt <palmerdabbelt@google.com>
+On 3/16/21 7:41 PM, Guoqing chi wrote:
+> From: Guoqing Chi <chiguoqing@yulong.com>
+> 
+> The complex number of "matrix" is "matrices".
 
-Without this I get a missing prototype warning.
+(I would say that the plural of matrix is matrices.)
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: e178d670f251 ("riscv/kasan: add KASAN_VMALLOC support")
-Cc: stable@vger.kernel.org
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
----
- arch/riscv/mm/kasan_init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Signed-off-by: Guoqing Chi <chiguoqing@yulong.com>
 
-diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
-index 5c35e0f71e88..4f85c6d0ddf8 100644
---- a/arch/riscv/mm/kasan_init.c
-+++ b/arch/riscv/mm/kasan_init.c
-@@ -155,7 +155,7 @@ static void __init kasan_populate(void *start, void *end)
- 	memset(start, KASAN_SHADOW_INIT, end - start);
- }
- 
--void __init kasan_shallow_populate(void *start, void *end)
-+static void __init kasan_shallow_populate(void *start, void *end)
- {
- 	unsigned long vaddr = (unsigned long)start & PAGE_MASK;
- 	unsigned long vend = PAGE_ALIGN((unsigned long)end);
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
+> ---
+>  include/linux/platform_data/invensense_mpu6050.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/platform_data/invensense_mpu6050.h b/include/linux/platform_data/invensense_mpu6050.h
+> index 93974f4cfba1..f05b37521f67 100644
+> --- a/include/linux/platform_data/invensense_mpu6050.h
+> +++ b/include/linux/platform_data/invensense_mpu6050.h
+> @@ -12,7 +12,7 @@
+>   *			mounting matrix retrieved from device-tree)
+>   *
+>   * Contains platform specific information on how to configure the MPU6050 to
+> - * work on this platform.  The orientation matricies are 3x3 rotation matricies
+> + * work on this platform.  The orientation matrices are 3x3 rotation matrices
+>   * that are applied to the data to rotate from the mounting orientation to the
+>   * platform orientation.  The values must be one of 0, 1, or -1 and each row and
+>   * column should have exactly 1 non-zero value.
+> 
+
+
 -- 
-2.31.0.rc2.261.g7f71774620-goog
+~Randy
 
