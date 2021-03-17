@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8505433EF50
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:14:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE7233EF52
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhCQLN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 07:13:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53770 "EHLO mx2.suse.de"
+        id S231262AbhCQLN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 07:13:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53796 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230331AbhCQLNF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 07:13:05 -0400
+        id S231152AbhCQLNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 07:13:06 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8143EAD72;
-        Wed, 17 Mar 2021 11:13:04 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 3D787AD74;
+        Wed, 17 Mar 2021 11:13:05 +0000 (UTC)
 From:   Oscar Salvador <osalvador@suse.de>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Vlastimil Babka <vbabka@suse.cz>,
@@ -23,9 +23,9 @@ Cc:     Vlastimil Babka <vbabka@suse.cz>,
         Muchun Song <songmuchun@bytedance.com>,
         Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH v5 2/5] mm,compaction: Let isolate_migratepages_{range,block} return error codes
-Date:   Wed, 17 Mar 2021 12:12:48 +0100
-Message-Id: <20210317111251.17808-3-osalvador@suse.de>
+Subject: [PATCH v5 3/5] mm: Make alloc_contig_range handle free hugetlb pages
+Date:   Wed, 17 Mar 2021 12:12:49 +0100
+Message-Id: <20210317111251.17808-4-osalvador@suse.de>
 X-Mailer: git-send-email 2.13.7
 In-Reply-To: <20210317111251.17808-1-osalvador@suse.de>
 References: <20210317111251.17808-1-osalvador@suse.de>
@@ -33,197 +33,290 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, isolate_migratepages_{range,block} and their callers use
-a pfn == 0 vs pfn != 0 scheme to let the caller know whether there was
-any error during isolation.
-This does not work as soon as we need to start reporting different error
-codes and make sure we pass them down the chain, so they are properly
-interpreted by functions like e.g: alloc_contig_range.
+alloc_contig_range will fail if it ever sees a HugeTLB page within the
+range we are trying to allocate, even when that page is free and can be
+easily reallocated.
+This has proved to be problematic for some users of alloc_contic_range,
+e.g: CMA and virtio-mem, where those would fail the call even when those
+pages lay in ZONE_MOVABLE and are free.
 
-Let us rework isolate_migratepages_{range,block} so we can report error
-codes.
-Since isolate_migratepages_block will stop returning the next pfn to be
-scanned, we reuse the cc->migrate_pfn field to keep track of that.
+We can do better by trying to replace such page.
+
+Free hugepages are tricky to handle so as to no userspace application
+notices disruption, we need to replace the current free hugepage with
+a new one.
+
+In order to do that, a new function called alloc_and_dissolve_huge_page
+is introduced.
+This function will first try to get a new fresh hugepage, and if it
+succeeds, it will replace the old one in the free hugepage pool.
+
+All operations are being handled under hugetlb_lock, so no races are
+possible. The only exception is when page's refcount is 0, but it still
+has not been flagged as PageHugeFreed.
+E.g, below scenario:
+
+CPU0				CPU1
+__free_huge_page()		isolate_or_dissolve_huge_page
+				  PageHuge() == T
+				  alloc_and_dissolve_huge_page
+				    alloc_fresh_huge_page()
+				    spin_lock(hugetlb_lock)
+				    // PageHuge() && !PageHugeFreed &&
+				    // !PageCount()
+				    spin_unlock(hugetlb_lock)
+  spin_lock(hugetlb_lock)
+  1) update_and_free_page
+       PageHuge() == F
+       __free_pages()
+  2) enqueue_huge_page
+       SetPageHugeFreed()
+  spin_unlock(&hugetlb_lock)
+				  spin_lock(hugetlb_lock)
+                                   1) PageHuge() == F (freed by case#1 from CPU0)
+				   2) PageHuge() == T
+                                       PageHugeFreed() == T
+                                       - proceed with replacing the page
+
+In the case above we retry as the window race is quite small and we have high
+chances to succeed next time.
+
+With regard to the allocation, we restrict it to the node the page belongs
+to with __GFP_THISNODE, meaning we do not fallback on other node's zones.
+
+Note that gigantic hugetlb pages are fenced off since there is a cyclic
+dependency between them and alloc_contig_range.
 
 Signed-off-by: Oscar Salvador <osalvador@suse.de>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
 ---
- mm/compaction.c | 48 ++++++++++++++++++++++++------------------------
- mm/internal.h   |  2 +-
- mm/page_alloc.c |  7 +++----
- 3 files changed, 28 insertions(+), 29 deletions(-)
+ include/linux/hugetlb.h |   6 +++
+ mm/compaction.c         |  33 ++++++++++++++-
+ mm/hugetlb.c            | 109 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 145 insertions(+), 3 deletions(-)
 
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index cccd1aab69dd..bcff86ca616f 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -583,6 +583,7 @@ struct huge_bootmem_page {
+ 	struct hstate *hstate;
+ };
+ 
++int isolate_or_dissolve_huge_page(struct page *page);
+ struct page *alloc_huge_page(struct vm_area_struct *vma,
+ 				unsigned long addr, int avoid_reserve);
+ struct page *alloc_huge_page_nodemask(struct hstate *h, int preferred_nid,
+@@ -865,6 +866,11 @@ static inline void huge_ptep_modify_prot_commit(struct vm_area_struct *vma,
+ #else	/* CONFIG_HUGETLB_PAGE */
+ struct hstate {};
+ 
++static inline int isolate_or_dissolve_huge_page(struct page *page)
++{
++	return -ENOMEM;
++}
++
+ static inline struct page *alloc_huge_page(struct vm_area_struct *vma,
+ 					   unsigned long addr,
+ 					   int avoid_reserve)
 diff --git a/mm/compaction.c b/mm/compaction.c
-index e04f4476e68e..5769753a8f60 100644
+index 5769753a8f60..9f253fc3b4f9 100644
 --- a/mm/compaction.c
 +++ b/mm/compaction.c
-@@ -787,15 +787,16 @@ static bool too_many_isolated(pg_data_t *pgdat)
-  *
-  * Isolate all pages that can be migrated from the range specified by
-  * [low_pfn, end_pfn). The range is expected to be within same pageblock.
-- * Returns zero if there is a fatal signal pending, otherwise PFN of the
-- * first page that was not scanned (which may be both less, equal to or more
-- * than end_pfn).
-+ * Returns -EINTR in case we need to abort when we have too many isolated pages
-+ * due to e.g: signal pending, async mode or having still pages to migrate, or 0.
-+ * cc->migrate_pfn will contain the next pfn to scan (which may be both less,
-+ * equal to or more that end_pfn).
-  *
-  * The pages are isolated on cc->migratepages list (not required to be empty),
-  * and cc->nr_migratepages is updated accordingly. The cc->migrate_pfn field
-  * is neither read nor updated.
-  */
--static unsigned long
-+static int
- isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 			unsigned long end_pfn, isolate_mode_t isolate_mode)
- {
-@@ -810,6 +811,8 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+@@ -810,6 +810,8 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 	bool skip_on_failure = false;
  	unsigned long next_skip_pfn = 0;
  	bool skip_updated = false;
- 
-+	cc->migrate_pfn = low_pfn;
-+
- 	/*
- 	 * Ensure that there are not too many pages isolated from the LRU
- 	 * list by either parallel reclaimers or compaction. If there are,
-@@ -818,16 +821,16 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 	while (unlikely(too_many_isolated(pgdat))) {
- 		/* stop isolation if there are still pages not migrated */
- 		if (cc->nr_migratepages)
--			return 0;
-+			return -EINTR;
- 
- 		/* async migration should just abort */
- 		if (cc->mode == MIGRATE_ASYNC)
--			return 0;
-+			return -EINTR;
- 
- 		congestion_wait(BLK_RW_ASYNC, HZ/10);
- 
- 		if (fatal_signal_pending(current))
--			return 0;
-+			return -EINTR;
- 	}
- 
- 	cond_resched();
-@@ -1130,7 +1133,9 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 	if (nr_isolated)
- 		count_compact_events(COMPACTISOLATED, nr_isolated);
- 
--	return low_pfn;
-+	cc->migrate_pfn = low_pfn;
-+
-+	return 0;
- }
- 
- /**
-@@ -1139,15 +1144,15 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
-  * @start_pfn: The first PFN to start isolating.
-  * @end_pfn:   The one-past-last PFN.
-  *
-- * Returns zero if isolation fails fatally due to e.g. pending signal.
-- * Otherwise, function returns one-past-the-last PFN of isolated page
-- * (which may be greater than end_pfn if end fell in a middle of a THP page).
-+ * Returns -EINTR in case isolation fails fatally due to e.g. pending signal,
-+ * or 0.
-  */
--unsigned long
-+int
- isolate_migratepages_range(struct compact_control *cc, unsigned long start_pfn,
- 							unsigned long end_pfn)
- {
- 	unsigned long pfn, block_start_pfn, block_end_pfn;
++	bool fatal_error = false;
 +	int ret = 0;
  
- 	/* Scan block by block. First and last block may be incomplete */
- 	pfn = start_pfn;
-@@ -1166,17 +1171,17 @@ isolate_migratepages_range(struct compact_control *cc, unsigned long start_pfn,
- 					block_end_pfn, cc->zone))
- 			continue;
+ 	cc->migrate_pfn = low_pfn;
  
--		pfn = isolate_migratepages_block(cc, pfn, block_end_pfn,
--							ISOLATE_UNEVICTABLE);
-+		ret = isolate_migratepages_block(cc, pfn, block_end_pfn,
-+						 ISOLATE_UNEVICTABLE);
+@@ -907,6 +909,32 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 			valid_page = page;
+ 		}
  
--		if (!pfn)
-+		if (ret)
- 			break;
- 
- 		if (cc->nr_migratepages >= COMPACT_CLUSTER_MAX)
- 			break;
++		if (PageHuge(page) && cc->alloc_contig) {
++			ret = isolate_or_dissolve_huge_page(page);
++
++			/*
++			 * Fail isolation in case isolate_or_dissolve_huge_page
++			 * reports an error. In case of -ENOMEM, abort right away.
++			 */
++			if (ret < 0) {
++				/*
++				 * Do not report -EBUSY down the chain.
++				 */
++				if (ret == -ENOMEM)
++					fatal_error = true;
++				else
++					ret = 0;
++				goto isolate_fail;
++			}
++
++			/*
++			 * Ok, the hugepage was dissolved. Now these pages are
++			 * Buddy and cannot be re-allocated because they are
++			 * isolated. Fall-through as the check below handles
++			 * Buddy pages.
++			 */
++		}
++
+ 		/*
+ 		 * Skip if free. We read page order here without zone lock
+ 		 * which is generally unsafe, but the race window is small and
+@@ -1092,6 +1120,9 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 			 */
+ 			next_skip_pfn += 1UL << cc->order;
+ 		}
++
++		if (fatal_error)
++			break;
  	}
  
--	return pfn;
+ 	/*
+@@ -1135,7 +1166,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 
+ 	cc->migrate_pfn = low_pfn;
+ 
+-	return 0;
 +	return ret;
  }
  
- #endif /* CONFIG_COMPACTION || CONFIG_CMA */
-@@ -1847,7 +1852,7 @@ static isolate_migrate_t isolate_migratepages(struct compact_control *cc)
- 	 */
- 	for (; block_end_pfn <= cc->free_pfn;
- 			fast_find_block = false,
--			low_pfn = block_end_pfn,
-+			cc->migrate_pfn = low_pfn = block_end_pfn,
- 			block_start_pfn = block_end_pfn,
- 			block_end_pfn += pageblock_nr_pages) {
- 
-@@ -1889,10 +1894,8 @@ static isolate_migrate_t isolate_migratepages(struct compact_control *cc)
- 		}
- 
- 		/* Perform the isolation */
--		low_pfn = isolate_migratepages_block(cc, low_pfn,
--						block_end_pfn, isolate_mode);
--
--		if (!low_pfn)
-+		if (isolate_migratepages_block(cc, low_pfn, block_end_pfn,
-+						isolate_mode))
- 			return ISOLATE_ABORT;
- 
- 		/*
-@@ -1903,9 +1906,6 @@ static isolate_migrate_t isolate_migratepages(struct compact_control *cc)
- 		break;
- 	}
- 
--	/* Record where migration scanner will be restarted. */
--	cc->migrate_pfn = low_pfn;
--
- 	return cc->nr_migratepages ? ISOLATE_SUCCESS : ISOLATE_NONE;
+ /**
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 5b1ab1f427c5..3194c1bd9e32 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1035,13 +1035,18 @@ static bool vma_has_reserves(struct vm_area_struct *vma, long chg)
+ 	return false;
  }
  
-diff --git a/mm/internal.h b/mm/internal.h
-index 1432feec62df..1f2ccba8e289 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -261,7 +261,7 @@ struct capture_control {
- unsigned long
- isolate_freepages_range(struct compact_control *cc,
- 			unsigned long start_pfn, unsigned long end_pfn);
--unsigned long
-+int
- isolate_migratepages_range(struct compact_control *cc,
- 			   unsigned long low_pfn, unsigned long end_pfn);
- int find_suitable_fallback(struct free_area *area, unsigned int order,
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index a4f67063b85f..4cb455355f6d 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8474,11 +8474,10 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
++static void __enqueue_huge_page(struct list_head *list, struct page *page)
++{
++	list_move(&page->lru, list);
++	SetHPageFreed(page);
++}
++
+ static void enqueue_huge_page(struct hstate *h, struct page *page)
+ {
+ 	int nid = page_to_nid(page);
+-	list_move(&page->lru, &h->hugepage_freelists[nid]);
++	__enqueue_huge_page(&h->hugepage_freelists[nid], page);
+ 	h->free_huge_pages++;
+ 	h->free_huge_pages_node[nid]++;
+-	SetHPageFreed(page);
+ }
  
- 		if (list_empty(&cc->migratepages)) {
- 			cc->nr_migratepages = 0;
--			pfn = isolate_migratepages_range(cc, pfn, end);
--			if (!pfn) {
--				ret = -EINTR;
-+			ret = isolate_migratepages_range(cc, pfn, end);
-+			if (ret)
- 				break;
--			}
-+			pfn = cc->migrate_pfn;
- 			tries = 0;
- 		} else if (++tries == 5) {
- 			ret = -EBUSY;
+ static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
+@@ -2245,6 +2250,106 @@ static void restore_reserve_on_error(struct hstate *h,
+ 	}
+ }
+ 
++/*
++ * alloc_and_dissolve_huge_page - Allocate a new page and dissolve the old one
++ * @h: struct hstate old page belongs to
++ * @old_page: Old page to dissolve
++ * Returns 0 on success, otherwise negated error.
++ */
++
++static int alloc_and_dissolve_huge_page(struct hstate *h, struct page *old_page)
++{
++	gfp_t gfp_mask = htlb_alloc_mask(h) | __GFP_THISNODE;
++	int nid = page_to_nid(old_page);
++	struct page *new_page;
++	int ret = 0;
++
++	/*
++	 * Before dissolving the page, we need to allocate a new one,
++	 * so the pool remains stable.
++	 */
++	new_page = alloc_fresh_huge_page(h, gfp_mask, nid, NULL, NULL);
++	if (!new_page)
++		return -ENOMEM;
++
++	/*
++	 * Pages got from Buddy are self-refcounted, but free hugepages
++	 * need to have a refcount of 0.
++	 */
++	page_ref_dec(new_page);
++retry:
++	spin_lock(&hugetlb_lock);
++	if (!PageHuge(old_page)) {
++		/*
++		 * Freed from under us. Drop new_page too.
++		 */
++		update_and_free_page(h, new_page);
++		goto unlock;
++	} else if (page_count(old_page)) {
++		/*
++		 * Someone has grabbed the page, fail for now.
++		 */
++		ret = -EBUSY;
++		update_and_free_page(h, new_page);
++		goto unlock;
++	} else if (!HPageFreed(old_page)) {
++		/*
++		 * Page's refcount is 0 but it has not been enqueued in the
++		 * freelist yet. Race window is small, so we can succed here if
++		 * we retry.
++		 */
++		spin_unlock(&hugetlb_lock);
++		cond_resched();
++		goto retry;
++	} else {
++		/*
++		 * Ok, old_page is still a genuine free hugepage. Replace it
++		 * with the new one.
++		 */
++		list_del(&old_page->lru);
++		update_and_free_page(h, old_page);
++		/*
++		 * h->free_huge_pages{_node} counters do not need to be updated.
++		 */
++		__enqueue_huge_page(&h->hugepage_freelists[nid], new_page);
++	}
++unlock:
++	spin_unlock(&hugetlb_lock);
++
++	return ret;
++}
++
++int isolate_or_dissolve_huge_page(struct page *page)
++{
++	struct hstate *h;
++	struct page *head;
++
++	/*
++	 * The page might have been dissolved from under our feet, so make sure
++	 * to carefully check the state under the lock.
++	 * Return success when racing as if we dissolved the page ourselves.
++	 */
++	spin_lock(&hugetlb_lock);
++	if (PageHuge(page)) {
++		head = compound_head(page);
++		h = page_hstate(head);
++	} else {
++		spin_unlock(&hugetlb_lock);
++		return 0;
++	}
++	spin_unlock(&hugetlb_lock);
++
++	/*
++	 * Fence off gigantic pages as there is a cyclic dependency between
++	 * alloc_contig_range and them. Return -ENOME as this has the effect
++	 * of bailing out right away without further retrying.
++	 */
++	if (hstate_is_gigantic(h))
++		return -ENOMEM;
++
++	return alloc_and_dissolve_huge_page(h, head);
++}
++
+ struct page *alloc_huge_page(struct vm_area_struct *vma,
+ 				    unsigned long addr, int avoid_reserve)
+ {
 -- 
 2.16.3
 
