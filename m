@@ -2,88 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FEF133E63D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:36:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3755133E646
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:39:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhCQBfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 21:35:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhCQBfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 21:35:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F4F364E76;
-        Wed, 17 Mar 2021 01:35:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615944948;
-        bh=wfVsG34NpnkPgDNvkfeM6rHhymxXjOqDbCNsoIlma9s=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=YIqypZavA3LNYBIPc1EreM/QDPJFqyeB+Xdvbxq1wCfvXWZPydjiMAe93cDQh4+eP
-         gNfTj7D7paWO1O1uNQp5ZMkVeXR4tM+BdMTxVPf7ZHJgcbbQYFnHQUnkS0MbaK6aBI
-         1lYIEDicUaOY6H5SCN9STWjcGvWH9N6oQxERx16WPgjZ+GZOtcqa4v8Cv9dr0er7bD
-         zXQaQIScBIieUeVWBkI/izQUVGrDePmYFQnkIK9ggZdGQlXuXgCXkOD/lXjuMFUPAa
-         ElY2b6rfq+i9r07KPQ0xNtZvpLo2I2UF9Ks3/hgj/xLiUs+4v6dyI4uRkLJEViE+go
-         QGH6AH4BQz8Jg==
-Content-Type: text/plain; charset="utf-8"
+        id S229876AbhCQBib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 21:38:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229829AbhCQBiN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 21:38:13 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7AAC06174A;
+        Tue, 16 Mar 2021 18:38:01 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so310611oto.2;
+        Tue, 16 Mar 2021 18:38:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=ygJ0qGMlZLdyRRUICYstxcV17G5DTyYvHgZcVYxiHc4=;
+        b=hlays0fm13sewi1zSN6YvfIDRfmL4+7hMs+9qNwSJb8YpxnkR87NPck3T4vH8gd4ep
+         RjY5OW0eAkP0mcv8GMS4bstWli8jih9VQoAjimteQGQX9sdSigrMglwwKMPETBLZnBpq
+         5nO15OA7JwHNGYoSKh4gQNdv0sOD64ZvEDjprwrVwezsSvQ8OPiO50m+IGCu9ZZmhraX
+         256H72HGA/MbW5z2xRKRFA/JRMsJl56U+S9V76LdU7DlGt0bYZ6LBjk8ctDKDMiRXjRp
+         s4aVKXFgmgu4wq3SGcRllaazz7B7ljp6yz5u5EUQsNRKsp06eFN9c8ensYEiwiYSNRfV
+         17jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=ygJ0qGMlZLdyRRUICYstxcV17G5DTyYvHgZcVYxiHc4=;
+        b=LrolSoyxWs8Q4CzSUFz1EgzXbaH4gstq4cH7Cs3yeCyZpFDW7TEF9xG43g/CDZelB0
+         MGkoPXkHAz2d47a9Iu/8VONkicn+OvGmHMIpL52WnQ758d0ddCNZKi2/OsIwGSpiVECr
+         2BllBeoY4LUlJuPNCAU4fy7D/OiS1GmblWYrpQBpQvP++8XmaxEorXSGYSuIkPI0DsrN
+         bvmzgZCvroa6NIeWXzaApUpUNg9fa0wA0qYh78LQLv4klhp7zz1lUftoGSLFFzyxNZr+
+         4O6YVvgsKqP6kSD+FRlVq0xTlaL7g4koHOiU88BfdD/kigcXDTQBGNSFvA94i7qJcr46
+         QoNw==
+X-Gm-Message-State: AOAM533hhXzHe5HXLdS39Ya+3F5+V6PUi2OxAERT8YS6E6HKrkxhjhsc
+        p/pkq5/gbKb0N0x2bBHJQWo=
+X-Google-Smtp-Source: ABdhPJy6vqZE3keXM2WxPxzCZ3xB+weik4lNstb18TIjnfbUssen5oangjtnu+p5Is9/wg9XmLX1qQ==
+X-Received: by 2002:a9d:1ca1:: with SMTP id l33mr1315358ota.368.1615945081112;
+        Tue, 16 Mar 2021 18:38:01 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m8sm8105519otl.50.2021.03.16.18.37.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 16 Mar 2021 18:38:00 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 16 Mar 2021 18:37:58 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "menglong8.dong@gmail.com" <menglong8.dong@gmail.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "dong.menglong@zte.com.cn" <dong.menglong@zte.com.cn>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v4 RESEND net-next] net: socket: use BIT() for MSG_*
+Message-ID: <20210317013758.GA134033@roeck-us.net>
+References: <20210310015135.293794-1-dong.menglong@zte.com.cn>
+ <20210316224820.GA225411@roeck-us.net>
+ <CAHp75VdE3fkCjb53vBso5uJX9aEFtAOAdh5NVOSbK0YR64+jOg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210316194918.3528417-1-robh@kernel.org>
-References: <20210316194918.3528417-1-robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: Clean-up undocumented compatible strings
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Vinod Koul <vkoul@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-clk@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-i3c@lists.infradead.org, linux-iio@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-spi@vger.kernel.org
-To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Date:   Tue, 16 Mar 2021 18:35:46 -0700
-Message-ID: <161594494696.1478170.13888306623342465859@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VdE3fkCjb53vBso5uJX9aEFtAOAdh5NVOSbK0YR64+jOg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rob Herring (2021-03-16 12:49:18)
-> Adding checks for undocumented compatible strings reveals a bunch of
-> warnings in the DT binding examples. Fix the cases which are typos, just
-> a mismatch between the schema and the example, or aren't documented at al=
-l.
-> In a couple of cases, fixing the compatible revealed some schema errors
-> which are fixed.
->=20
-> There's a bunch of others remaining after this which have bindings, but
-> those aren't converted to schema yet.
->=20
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-clk@vger.kernel.org
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-i3c@lists.infradead.org
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-leds@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: linux-serial@vger.kernel.org
-> Cc: linux-spi@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
+On Wed, Mar 17, 2021 at 01:02:51AM +0200, Andy Shevchenko wrote:
+> On Wednesday, March 17, 2021, Guenter Roeck <linux@roeck-us.net> wrote:
+> 
+> > Hi,
+> >
+> > On Tue, Mar 09, 2021 at 05:51:35PM -0800, menglong8.dong@gmail.com wrote:
+> > > From: Menglong Dong <dong.menglong@zte.com.cn>
+> > >
+> > > The bit mask for MSG_* seems a little confused here. Replace it
+> > > with BIT() to make it clear to understand.
+> > >
+> > > Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+> >
+> > I must admit that I am a bit puzzled,
+> 
+> 
+> I have checked the values and don’t see a problem. So, the only difference
+> is the type int vs. unsigned long. I think this simply reveals an issue
+> somewhere in the code.
+> 
+The problem is in net/packet/af_packet.c:packet_recvmsg(). This function,
+as well as all other rcvmsg functions, is declared as
 
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+static int packet_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+                          int flags)
+
+MSG_CMSG_COMPAT (0x80000000) is set in flags, meaning its value is negative.
+This is then evaluated in
+
+       if (flags & ~(MSG_PEEK|MSG_DONTWAIT|MSG_TRUNC|MSG_CMSG_COMPAT|MSG_ERRQUEUE))
+                goto out;
+
+If any of those flags is declared as BIT() and thus long, flags is
+sign-extended to long. Since it is negative, its upper 32 bits will be set,
+the if statement evaluates as true, and the function bails out.
+
+This is relatively easy to fix here with, for example,
+
+        if ((unsigned int)flags & ~(MSG_PEEK|MSG_DONTWAIT|MSG_TRUNC|MSG_CMSG_COMPAT|MSG_ERRQUEUE))
+                goto out;
+
+but that is just a hack, and it doesn't solve the real problem:
+Each function in struct proto_ops which passes flags passes it as int
+(see include/linux/net.h:struct proto_ops). Each such function, if
+called with MSG_CMSG_COMPAT set, will fail a match against
+~(MSG_anything) if MSG_anything is declared as BIT() or long.
+
+As it turns out, I was kind of lucky to catch the problem: So far I have
+seen it only on mips64 kernels with N32 userspace.
+
+Guenter
