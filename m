@@ -2,107 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35FB833F9D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 897B633F9D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233397AbhCQUO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 16:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
+        id S233416AbhCQUPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 16:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233285AbhCQUOv (ORCPT
+        with ESMTP id S233399AbhCQUPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 16:14:51 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA255C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:14:51 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616012090;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U8a9tIgg8DQfwAiJAIJSvHbvJRzm9suhkCKdCJHq90U=;
-        b=bw+QdD4c2I2mFuhb2xIlZrsB3nkdKm4ZOIqZ3SpsJPwzZAjnTxtX3J8GgVCRfaEQ4AXfDk
-        F87UpC/f88Xn6fAKo+jbtVQFUV1KNz3F8/8bpwcGwqzvSAlshRa4z4PHbDkhhQMD0IjBcB
-        k6L4CmLNO/0rYAeVjSaHmXFZZ+L8VZJxYzbfofHdpHgwBI60Y0IQpHecKZLhdIf0us5u+u
-        cW/50fNUtPthWnqs2/wTKpD9tlfJZZoBV1sP0yYap65xE5d+7haixZJ22oEnfxH8jk1v/Y
-        aSq5+R+hwsIhuy23RKwO/NsBPkTyiId05yxE7ps7192WtD880T+KmgnRTKQ7wg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616012090;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U8a9tIgg8DQfwAiJAIJSvHbvJRzm9suhkCKdCJHq90U=;
-        b=XfJlh3+sIDjlcDqx36lbJm9kTA8mhHbJreCQCPOzORqwXNsNeET3Zgru4HkmfuxL6+TryS
-        fsphfxuiDMOyqvBA==
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, x86@kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 1/2] x86/apic: Do not make an exception for PIC_CASCADE_IR when marking legacy irqs in irq_matrix
-In-Reply-To: <20210219113101.967508-2-vkuznets@redhat.com>
-References: <20210219113101.967508-1-vkuznets@redhat.com> <20210219113101.967508-2-vkuznets@redhat.com>
-Date:   Wed, 17 Mar 2021 21:14:49 +0100
-Message-ID: <87im5py1ty.fsf@nanos.tec.linutronix.de>
+        Wed, 17 Mar 2021 16:15:08 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEEE3C06174A;
+        Wed, 17 Mar 2021 13:15:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=ru69haEibh+ffOzYRRKW+Sr7WwY3YK8dW6vGs4l/0Bw=; b=ck6KxvHyEjihgIqcU1jqf5YnMM
+        eI7A9pxY9VB2OIsXOSfPhQ/Y1dY68LofspY2ArCRMEyvgGM5Kyl46VMwI6iTT3zlnNgBnVoRDIR3x
+        59mEN2NPT6MdGteHu2OlbTG68MDJKH4ZHX/NhrmXVmfV3O+2USNVesXB3QbqJiYf/exmMcZvLP1Q0
+        bnWciV0b/On5jPj6S7MIve8sdpQP0Iu0/ON0pol9xGTlqRJHohW6jJcPVCZPgU08/SUHi06q8Iv2w
+        p30uAuTkLdYmXumDHfBvEDmbSXRRUqFdd3LNSAtn1L7hMiUG1xZycuJNXBG8M5H2fMjIYswKyuEnF
+        M1kkttXA==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMcZM-001gYT-Ry; Wed, 17 Mar 2021 20:15:06 +0000
+Subject: Re: [PATCH V3] parisc: math-emu: Few spelling fixes in the file fpu.h
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210317192427.2050913-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d0f09036-b493-ac22-8986-92116496188f@infradead.org>
+Date:   Wed, 17 Mar 2021 13:15:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210317192427.2050913-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19 2021 at 12:31, Vitaly Kuznetsov wrote:
-> Trying to offline/online CPU0 seems to work only once:
->
->  # echo 0 > /sys/devices/system/cpu/cpu0/online
->  # echo 1 > /sys/devices/system/cpu/cpu0/online
->  # echo 0 > /sys/devices/system/cpu/cpu0/online
->  -bash: echo: write error: No space left on device
->
-> with the following in dmesg:
->
->  [ ... ] CPU 0 has 4294967295 vectors, 589 available. Cannot disable CPU
->
-> Clearly, we went negative with cm->allocated in irq_matrix and think that
-> there are too many vectors require re-assigning.
->
-> The problem turns to be: lapic_assign_system_vectors() called from
-> native_init_IRQ() makes an exception for PIC_CASCADE_IR and doesn't
-> mark it in irq_matrix. Later, when x86_vector_alloc_irqs() called
-> from setup_IO_APIC() does clear_irq_vector() for all legacy entries,
-> it doesn't make an exception so we go negative.
->
-> CPU0 offlining still works for the first time because some other vectors
-> get assigned and the overall balance remains positive (it's off-by-one, but
-> the check passes). When we online CPU0 back, no vectors get assigned and
-> the overall balance remains '-1'.
->
-> The simplest solution seems to be to not make an exception for
-> PIC_CASCADE_IR. Nothing seems to blow up immediately.
+On 3/17/21 12:24 PM, Bhaskar Chowdhury wrote:
+> 
+> s/synopis/synopsis/
+> s/differeniate/differentiate/
+> s/differeniation/differentiation/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Well no. This does not make sense. Just a few lines above the code which
-you are fiddling with is:
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-	if (nr_legacy_irqs() > 1)
-		lapic_assign_legacy_vector(PIC_CASCADE_IR, false);
+although you should be modifying the Subject: order so that the filename
+is not near the end...
 
-Which is there for a reason because this _MUST_ stay at exactly this
-place and not move randomly around.
+> ---
+>   Changes from V2:
+>   Incorporated the changes suggested by Randy
+> 
+>  arch/parisc/math-emu/fpu.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/parisc/math-emu/fpu.h b/arch/parisc/math-emu/fpu.h
+> index 853c19c03828..ea1c8c3539c6 100644
+> --- a/arch/parisc/math-emu/fpu.h
+> +++ b/arch/parisc/math-emu/fpu.h
+> @@ -12,7 +12,7 @@
+>   *      @(#)	pa/fp/fpu.h		$Revision: 1.1 $
+>   *
+>   *  Purpose:
+> - *      <<please update with a synopis of the functionality provided by this file>>
+> + *      <<please update with a synopsis of the functionality provided by this file>>
+>   *
+>   *
+>   * END_DESC
+> @@ -50,9 +50,9 @@
+>  #define EMULATION_VERSION 4
+> 
+>  /*
+> - * The only was to differeniate between TIMEX and ROLEX (or PCX-S and PCX-T)
+> - * is thorough the potential type field from the PDC_MODEL call.  The
+> - * following flags are used at assist this differeniation.
+> + * The only way to differentiate between TIMEX and ROLEX (or PCX-S and PCX-T)
+> + * is through the potential type field from the PDC_MODEL call.  The
+> + * following flags are used to assist this differentiation.
+>   */
+> 
+>  #define ROLEX_POTENTIAL_KEY_FLAGS	PDC_MODEL_CPU_KEY_WORD_TO_IO
+> --
 
-Even without looking at the machine I can tell you what's going on. MP
-config or ACPI has a pin assigned to IRQ 2 which I've not seen before.
-The code there is ignoring IRQ 2 because that's how the original code
-worked as well as it is reserved for the PIC_CASCADE_IRQ which should
-never fire and we actually want to catch an spurious interrupt on it.
 
-So depending on the overall configuration of that system and the
-resulting delivery modes this might be ok, but I'm really nervous about
-doing this wholesale as it might break old machines.
+-- 
+~Randy
 
-Out of paranoia I'd rather ignore that IO/APIC pin completely if it
-claims to be IRQ2. I assume there is no device connected to it at all,
-right?
-
-Can you please provide a dmesg with apic=verbose on the command line?
-
-Thanks,
-
-        tglx
