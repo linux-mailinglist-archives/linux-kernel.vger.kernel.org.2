@@ -2,69 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6117033F7BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2934B33F7BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:02:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232878AbhCQSBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:01:09 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37741 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbhCQSAy (ORCPT
+        id S232716AbhCQSBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:01:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232912AbhCQSBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:00:54 -0400
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1lMaTS-0001oJ-Bj; Wed, 17 Mar 2021 18:00:50 +0000
-Date:   Wed, 17 Mar 2021 19:00:48 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Li Li <dualli@chromium.org>
-Cc:     dualli@google.com, tkjos@google.com, gregkh@linuxfoundation.org,
-        christian@brauner.io, arve@android.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, maco@google.com, hridya@google.com,
-        surenb@google.com, joel@joelfernandes.org, kernel-team@android.com,
-        jannh@google.com
-Subject: Re: [PATCH v3 0/3] Binder: Enable App Freezing Capability
-Message-ID: <20210317180048.inzdursqmnvxkgwp@wittgenstein>
-References: <20210316011630.1121213-1-dualli@chromium.org>
+        Wed, 17 Mar 2021 14:01:12 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CD5C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:01:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=Cr9fPafVtZmLkwhizdfsYcidk4N7PSIymYUeNb5Ej1U=; b=KNc68Q7thVlVC9mnMd/C7+9ehu
+        Kla/IaQ3jfjmklC0Ub/ridF+ohvETYDK1mlEpP4lmb+Mm2aBZ4I57F26EbANfvKObQefbTLbYwupL
+        agTG6j0r8gC1P7g78oTkc0S8jkkA2RbYzkjA1yeMg6cPf53tsENv7nTzz+KfosPKR7RPt2aPG+yq3
+        pq3C4LKzI5djQaQXz2lmnm9EGgt/h2BfS1vnsXZ/+rQS5ruN2BPf34HeKHSDOiIabvgq9KnVj/ROM
+        msrfWkTfnAFzR8QfSsxqElq9vy4R6a0a31Y4tEHOob262F88f9Z3bY3GIQSod0iZcxFVEmo8BhgBs
+        jQ2f3vug==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMaTl-001fjG-CS; Wed, 17 Mar 2021 18:01:09 +0000
+Subject: Re: [PATCH] kernel: cpu: resctrl: Minor typo fix in the file
+ pseudo_lock.c
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linux-kernel@vger.kernel.org
+References: <20210317084016.3787380-1-unixbhaskar@gmail.com>
+ <b29afbff-67f4-397b-e289-c3e21755fec0@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <99a7e1fc-0a05-9222-f913-b2d85141a08a@infradead.org>
+Date:   Wed, 17 Mar 2021 11:01:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <b29afbff-67f4-397b-e289-c3e21755fec0@intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210316011630.1121213-1-dualli@chromium.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 06:16:27PM -0700, Li Li wrote:
-> From: Li Li <dualli@google.com>
+On 3/17/21 10:54 AM, Reinette Chatre wrote:
+> Hi Bhaskar,
 > 
-> To improve the user experience when switching between recently used
-> applications, the background applications which are not currently needed
-> are cached in the memory. Normally, a well designed application will not
-> consume valuable CPU resources in the background. However, it's possible
-> some applications are not able or willing to behave as expected, wasting
-> energy even after being cached.
+> Thank you very much for catching this typo.
 > 
-> It is a good idea to freeze those applications when they're only being
-> kept alive for the sake of faster startup and energy saving. These kernel
-> patches will provide the necessary infrastructure for user space framework
-> to freeze and thaw a cached process, check the current freezing status and
-> correctly deal with outstanding binder transactions to frozen processes.
-> 
-> Changes in v2: avoid panic by using pr_warn for unexpected cases.
-> Changes in v3: improved errcode logic in binder_proc_transaction().
-> 
-> Marco Ballesio (3):
->   binder: BINDER_FREEZE ioctl
->   binder: use EINTR for interrupted wait for work
->   binder: BINDER_GET_FROZEN_INFO ioctl
-> 
->  drivers/android/binder.c            | 198 ++++++++++++++++++++++++++--
->  drivers/android/binder_internal.h   |  18 +++
->  include/uapi/linux/android/binder.h |  20 +++
->  3 files changed, 224 insertions(+), 12 deletions(-)
+> My feedback [1] to a previous patch from you applies here also. The prefix should be "x86/resctrl:" for contributions to this area.
 
-[+Cc Jann]
+Bhaskar,
+Pretty much all of your patches need to have improved Subject: lines.
+The file name that is being modified should not be at the end of the Subject.
 
-Christian
+> 
+> [1] https://lore.kernel.org/lkml/7e3a5c13-db5c-7399-2b80-f1284786ea77@intel.com/
+> 
+> On 3/17/2021 1:40 AM, Bhaskar Chowdhury wrote:
+>>
+>> s/derefence/dereference/
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
+>>   arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+>> index e916646adc69..43990a882b36 100644
+>> --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+>> +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+>> @@ -1307,7 +1307,7 @@ int rdtgroup_pseudo_lock_create(struct rdtgroup *rdtgrp)
+>>            * If the thread does not get on the CPU for whatever
+>>            * reason and the process which sets up the region is
+>>            * interrupted then this will leave the thread in runnable
+>> -         * state and once it gets on the CPU it will derefence
+>> +         * state and once it gets on the CPU it will dereference
+>>            * the cleared, but not freed, plr struct resulting in an
+>>            * empty pseudo-locking loop.
+>>            */
+>> -- 
+>> 2.30.2
+>>
+> 
+> Reinette
+
+
+-- 
+~Randy
+
