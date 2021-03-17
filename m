@@ -2,128 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB3A33F9B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:05:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3277A33F9B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233403AbhCQUEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 16:04:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:45690 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232499AbhCQUEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 16:04:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9ECD51FB;
+        id S233412AbhCQUEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 16:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233322AbhCQUEN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 16:04:13 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32AAC06174A;
+        Wed, 17 Mar 2021 13:04:12 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id z6-20020a1c4c060000b029010f13694ba2so2018929wmf.5;
+        Wed, 17 Mar 2021 13:04:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iXDvF5CUz9LOByKR7QUQdMqBawMPMdYTHD7CyIz+LY8=;
+        b=SoQ9fIej6WAb/cTw/E+DBPWmxxkWmCVSO1U2BMavkYOCUtgtRzU2wOpl/QTaUaWdTS
+         qdv8xdybwJk9eCQvrxxJomawpMKRHCKIQzvbXIbiRSXg2y1w3PDzoOZT2pLl5BGaOHve
+         ioBTexO6bAiHDeRboes6n7AKUDRGX73rDeRFc3lIMbID59iexHVj2bK3E8pFQGH5fbZn
+         BX81qVJOQlkA4yQwuTZVJ6nNxuAWACpw4YPwWUZ2UrA7ek1jJIjgK+8WGo0qJ5PSS23t
+         Dh9AI76CDPDA3F4aJwIWZRzxOLQIWw1JEdrZGGOwUMZfOU2vWbkpZXJm/DCHo37AeWRI
+         54eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=iXDvF5CUz9LOByKR7QUQdMqBawMPMdYTHD7CyIz+LY8=;
+        b=YeIQmi5pjnyVu8FhUht05u7Ph/+RsG0RV8dpTPpSrWNdji+ugBKtjXSpWtv2D/813v
+         w5KUK20/YaExyCW80SAFTUb6dfPTS6Jyo+rWe4v1Q3dOKqurIfLHRegT7GMY1ngwMNJt
+         DiWJKFGPSDbUCTVIn6AdezWrR5xQNsahMsJ2g1GAVWityiDpKeHDjuQ5TPa+vniLv0MO
+         61konzNrGouQWRMNEEoFNvFQAb5QKbAM8haXzLFMSMSPhQ6C3w8GYQKzG3tNFWgMs09m
+         V7vKIf5dINqGbB1UCbE3RkcRcKAhy9IEVAhYqYf1UWYgsv04PdgnJcvuuVKLfxqozlja
+         3EsA==
+X-Gm-Message-State: AOAM533j5N7IyeHiwDDal0Rfy3NOWYDw7dnntnlUPZrPw1sZHpmEib4b
+        PzDFd2prI86mOehgyFSaQVA=
+X-Google-Smtp-Source: ABdhPJzPkFdf4EsXz5AUD5fk5N6/OYaKJgTNyZTrBNhI/8FFZ/4P7IND3sEyBX26ZZYicY23xkvyxg==
+X-Received: by 2002:a7b:c10c:: with SMTP id w12mr474793wmi.112.1616011451404;
+        Wed, 17 Mar 2021 13:04:11 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id s9sm3520343wmh.31.2021.03.17.13.04.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 17 Mar 2021 13:04:10 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B6D223F70D;
-        Wed, 17 Mar 2021 13:04:09 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 17 Mar 2021 21:04:08 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Borislav Petkov <bp@suse.de>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Ian Rogers <irogers@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-ia64\@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        debian-ia64 <debian-ia64@lists.debian.org>
-Subject: Re: [PATCH 0/1] sched/topology: NUMA distance deduplication
-In-Reply-To: <cf4d7277-54a0-8bc7-60fb-9b2f6befb511@physik.fu-berlin.de>
-References: <255d6b5d-194e-eb0e-ecdd-97477a534441@physik.fu-berlin.de> <8735wtr2ro.mognet@arm.com> <cf4d7277-54a0-8bc7-60fb-9b2f6befb511@physik.fu-berlin.de>
-Date:   Wed, 17 Mar 2021 20:04:07 +0000
-Message-ID: <87zgz1pmx4.mognet@arm.com>
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the tip tree
+Message-ID: <20210317200408.GA3830960@gmail.com>
+References: <20210317150858.02b1bbc8@canb.auug.org.au>
+ <20210317105432.GA32135@zn.tnic>
+ <CAP-5=fWKCtJq-9zd5A-XALJWNf8tsds44m-G07sc+kCUoXB8zg@mail.gmail.com>
+ <20210317180236.GF32135@zn.tnic>
+ <20210318054921.64c0fc75@canb.auug.org.au>
+ <20210317191847.GG32135@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210317191847.GG32135@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/03/21 20:47, John Paul Adrian Glaubitz wrote:
-> Helo Valentin!
->
-> On 3/17/21 8:36 PM, Valentin Schneider wrote:
->> I see ACPI in your boot logs, so I'm guessing you have a bogus SLIT table
->> (the ACPI table with node distances). You should be able to double check
->> this with something like:
->>
->> $ acpidump > acpi.dump
->> $ acpixtract -a acpi.dump
->> $ iasl -d *.dat
->> $ cat slit.dsl
->
-> There does not seem to be a SLIT table in my firmware:
->
-> root@glendronach:~# acpidump > acpi.dump
-> root@glendronach:~# acpixtract -a acpi.dump
->
-> Intel ACPI Component Architecture
-> ACPI Binary Table Extraction Utility version 20200925
-> Copyright (c) 2000 - 2020 Intel Corporation
->
-> acpixtract(31194): unaligned access to 0x60000fffff9b3925, ip=0x4000000000003e91
->   SSDT -    3768 bytes written (0x00000EB8) - ssdt1.dat
-> acpixtract(31194): unaligned access to 0x60000fffff9b3925, ip=0x4000000000003e00
-> acpixtract(31194): unaligned access to 0x60000fffff9b3925, ip=0x4000000000003e91
->   SPCR -      80 bytes written (0x00000050) - spcr.dat
-> acpixtract(31194): unaligned access to 0x60000fffff9b3925, ip=0x4000000000003e00
-> acpixtract(31194): unaligned access to 0x60000fffff9b3925, ip=0x4000000000003e91
->   APIC -     200 bytes written (0x000000C8) - apic.dat
->   SSDT -    1110 bytes written (0x00000456) - ssdt2.dat
->   SSDT -     316 bytes written (0x0000013C) - ssdt3.dat
->   SPMI -      80 bytes written (0x00000050) - spmi.dat
->   DSDT -   58726 bytes written (0x0000E566) - dsdt.dat
->   SSDT -     312 bytes written (0x00000138) - ssdt4.dat
->   SSDT -    2150 bytes written (0x00000866) - ssdt5.dat
->   SSDT -     316 bytes written (0x0000013C) - ssdt6.dat
->   SSDT -    3768 bytes written (0x00000EB8) - ssdt7.dat
->   FACP -     244 bytes written (0x000000F4) - facp.dat
->   SSDT -    1203 bytes written (0x000004B3) - ssdt8.dat
->   CPEP -      52 bytes written (0x00000034) - cpep.dat
->   SSDT -     316 bytes written (0x0000013C) - ssdt9.dat
->   DBGP -      52 bytes written (0x00000034) - dbgp.dat
->   SSDT -    3768 bytes written (0x00000EB8) - ssdt10.dat
->   FACS -      64 bytes written (0x00000040) - facs.dat
-> root@glendronach:~#
->
-> root@glendronach:~# ls *.dsl *.dat
-> apic.dat  cpep.dsl  dsdt.dat  facp.dsl  spcr.dat  spmi.dsl    ssdt1.dat  ssdt2.dsl  ssdt4.dat  ssdt5.dsl  ssdt7.dat  ssdt8.dsl
-> apic.dsl  dbgp.dat  dsdt.dsl  facs.dat  spcr.dsl  ssdt10.dat  ssdt1.dsl  ssdt3.dat  ssdt4.dsl  ssdt6.dat  ssdt7.dsl  ssdt9.dat
-> cpep.dat  dbgp.dsl  facp.dat  facs.dsl  spmi.dat  ssdt10.dsl  ssdt2.dat  ssdt3.dsl  ssdt5.dat  ssdt6.dsl  ssdt8.dat  ssdt9.dsl
-> root@glendronach:~#
->
 
-Huh, then this might be some initialization fail that leaves nr_node_ids to
-MAX_NUMNODES, which must be 256 in your case (NODES_SHIFT==8). Devicetree
-can provide node distances, but something tells me you're not using that :-)
+* Borislav Petkov <bp@suse.de> wrote:
 
->> a) Complain to your hardware vendor to have them fix the table and ship a
->>    firmware fix
->
-> The hardware is probably too old for the vendor to care about fixing it.
->
+> On Thu, Mar 18, 2021 at 05:49:21AM +1100, Stephen Rothwell wrote:
+> > That fixes the powerpc build for me, thanks.
+> 
+> Thx, adding your Tested-by and pushing out.
 
-Indeed, I only realized that after googling your machine
+I've pushed this out into tip:auto-latest as well, so that tomorrow's 
+-next should pick this up automatically. (Assuming everything else is 
+fine.)
 
->> b) Fix the ACPI table yourself - I've been told it's doable for *some* of
->>    them, but I've never done that myself
->> c) Compile your kernel with CONFIG_NUMA=n, as AFAICT you only actually have
->>    a single node
->> d) Ignore the warning
->>
->>
->> c) is clearly not ideal if you want to use a somewhat generic kernel image
->> on a wide host of machines; d) is also a bit yucky...
->
-> Shouldn't the kernel be able to cope with quirky hardware? From what I remember in the past,
-> ACPI tables used to be broken quite a lot and the kernel contained workarounds for such cases,
-> didn't it?
->
+Thanks,
 
-Technically it *is* coping with it, it's just dumping the entire NUMA
-distance matrix in the process... Let me see if I can't figure out why your
-system doesn't end up with nr_node_ids=1.
-
-> Adrian
->
-> --
->  .''`.  John Paul Adrian Glaubitz
-> : :' :  Debian Developer - glaubitz@debian.org
-> `. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
->   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+	Ingo
