@@ -2,136 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231D933EAEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F2133EAEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhCQH4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 03:56:34 -0400
-Received: from mga01.intel.com ([192.55.52.88]:4772 "EHLO mga01.intel.com"
+        id S230505AbhCQH4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 03:56:32 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:39051 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230192AbhCQH4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230506AbhCQH4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Mar 2021 03:56:08 -0400
-IronPort-SDR: hT06F8oU2iWsNNCMv+RXMkpMxu8TidJ7pPloKVOOKBhxYL5y0f1vwdBF1RhM81A6fjdj1vqfgB
- vFvcfHGgMTFA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="209374137"
-X-IronPort-AV: E=Sophos;i="5.81,255,1610438400"; 
-   d="scan'208";a="209374137"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 00:56:07 -0700
-IronPort-SDR: mSgWDomlrrV6GH7Preaa18CmJgLxGH3sB+bdT41bhEXQhjAChRZWSnjyU3WV8wXBZbkbVvwfKv
- WoxYFtwPbg1g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,255,1610438400"; 
-   d="scan'208";a="511644820"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 17 Mar 2021 00:56:04 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 17 Mar 2021 09:56:03 +0200
-Date:   Wed, 17 Mar 2021 09:56:03 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [PATCH] usb: typec: tcpm: Invoke power_supply_changed for
- tcpm-source-psy-
-Message-ID: <YFG2E43hAW0q6CG1@kuha.fi.intel.com>
-References: <20210316215657.387357-1-badhri@google.com>
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F0jCB26KZz9sWm;
+        Wed, 17 Mar 2021 18:56:06 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1615967766;
+        bh=PmIeaa/WNTkX5nlR7ItkwBd6zESnAME1BiN4vooce7g=;
+        h=Date:From:To:Cc:Subject:From;
+        b=c3nSradtsTjQlzjhUwmPX5Wcrjn77XQSQwdaFm5IKK8UGJ/9MIJ2NwU/x0WLkffEg
+         FRxJKjWV7DKn8TCM6ajaZPZypG22pkCwwg2XeE387XrKiddyHCQfwIrh92Kx5XlKw6
+         BkQPXEFy6rsJEstmOfbv2zWeq4yg9alxYpb73vtZcpIq9DXYPs4XiBteZKj74UG9mu
+         CkZ9LnmDyhu9EYwuD3QNq1DNmnaA1P0F4YaUUjEhokcNhmPSCi2sPgIoSA0PmVeeJ6
+         /QpaaidglmhGYeL5IasQnOq7Yc5zetUk/0uhCmVb89mIn+Yi5jOT6MYsNpF5upFjlG
+         csBNIvTi5kZfg==
+Date:   Wed, 17 Mar 2021 18:56:05 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Chen Yu <yu.c.chen@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the net-next tree
+Message-ID: <20210317185605.3f9c70cc@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316215657.387357-1-badhri@google.com>
+Content-Type: multipart/signed; boundary="Sig_/hy02d1WUuMg=_M+_Mhruz6x";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 02:56:57PM -0700, Badhri Jagan Sridharan wrote:
-> tcpm-source-psy- does not invoke power_supply_changed API when
-> one of the published power supply property is changed.
-> power_supply_changed needs to be called to notify
-> userspace clients(uevents) and kernel clients.
-> 
-> Fixes: f2a8aa053c176("typec: tcpm: Represent source supply through
-> power_supply")
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+--Sig_/hy02d1WUuMg=_M+_Mhruz6x
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Hi all,
 
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 11d0c40bc47d..e8936ea17f80 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -945,6 +945,7 @@ static int tcpm_set_current_limit(struct tcpm_port *port, u32 max_ma, u32 mv)
->  
->  	port->supply_voltage = mv;
->  	port->current_limit = max_ma;
-> +	power_supply_changed(port->psy);
->  
->  	if (port->tcpc->set_current_limit)
->  		ret = port->tcpc->set_current_limit(port->tcpc, max_ma, mv);
-> @@ -2931,6 +2932,7 @@ static int tcpm_pd_select_pdo(struct tcpm_port *port, int *sink_pdo,
->  
->  	port->pps_data.supported = false;
->  	port->usb_type = POWER_SUPPLY_USB_TYPE_PD;
-> +	power_supply_changed(port->psy);
->  
->  	/*
->  	 * Select the source PDO providing the most power which has a
-> @@ -2955,6 +2957,7 @@ static int tcpm_pd_select_pdo(struct tcpm_port *port, int *sink_pdo,
->  				port->pps_data.supported = true;
->  				port->usb_type =
->  					POWER_SUPPLY_USB_TYPE_PD_PPS;
-> +				power_supply_changed(port->psy);
->  			}
->  			continue;
->  		default:
-> @@ -3112,6 +3115,7 @@ static unsigned int tcpm_pd_select_pps_apdo(struct tcpm_port *port)
->  						  port->pps_data.out_volt));
->  		port->pps_data.op_curr = min(port->pps_data.max_curr,
->  					     port->pps_data.op_curr);
-> +		power_supply_changed(port->psy);
->  	}
->  
->  	return src_pdo;
-> @@ -3347,6 +3351,7 @@ static int tcpm_set_charge(struct tcpm_port *port, bool charge)
->  			return ret;
->  	}
->  	port->vbus_charge = charge;
-> +	power_supply_changed(port->psy);
->  	return 0;
->  }
->  
-> @@ -3530,6 +3535,7 @@ static void tcpm_reset_port(struct tcpm_port *port)
->  	port->try_src_count = 0;
->  	port->try_snk_count = 0;
->  	port->usb_type = POWER_SUPPLY_USB_TYPE_C;
-> +	power_supply_changed(port->psy);
->  	port->nr_sink_caps = 0;
->  	port->sink_cap_done = false;
->  	if (port->tcpc->enable_frs)
-> @@ -5957,7 +5963,7 @@ static int tcpm_psy_set_prop(struct power_supply *psy,
->  		ret = -EINVAL;
->  		break;
->  	}
-> -
-> +	power_supply_changed(port->psy);
->  	return ret;
->  }
->  
-> @@ -6110,6 +6116,7 @@ struct tcpm_port *tcpm_register_port(struct device *dev, struct tcpc_dev *tcpc)
->  	err = devm_tcpm_psy_register(port);
->  	if (err)
->  		goto out_role_sw_put;
-> +	power_supply_changed(port->psy);
->  
->  	port->typec_port = typec_register_port(port->dev, &port->typec_caps);
->  	if (IS_ERR(port->typec_port)) {
-> -- 
-> 2.31.0.rc2.261.g7f71774620-goog
+After merging the net-next tree, today's linux-next build (sparc64
+defconfig) produced this warning:
 
--- 
-heikki
+drivers/net/ethernet/intel/e1000e/netdev.c:6926:12: warning: 'e1000e_pm_pre=
+pare' defined but not used [-Wunused-function]
+ static int e1000e_pm_prepare(struct device *dev)
+            ^~~~~~~~~~~~~~~~~
+
+Introduced by commit
+
+  ccf8b940e5fd ("e1000e: Leverage direct_complete to speed up s2ram")
+
+CONFIG_PM_SLEEP is not set for this build.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/hy02d1WUuMg=_M+_Mhruz6x
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBRthUACgkQAVBC80lX
+0Gx5Zwf8DlACa0xqip6DHHefI3ggZtk+CEmd2PwORaoHgBaGJZ/DlK6QmXs6w0tz
+wJIoNsrlMyhaqZlygozW3v0v1vZt7J8YkAiZFv4BaHGwigs7ohGS+H9EqBqUNwRu
+HfkFnpw0vD/3vHFOdOcIWZZ4Y/dbEH99iO7XdQLTf17n5+i3YdIhGdY18dyPBdwi
+Kx5k6etFozJZNEbZvBLp5wvW8qmJdTqABx/uQzXv+XqKcxpWcU3P4g/fqI6SE1Xm
+L9cMzcDlIKYnX9kmO1I9aFkuXKQqdR/wXe6o+WBEAh1Q3/9+LhBsTcAWysL2G3EM
+CjXvHKTJT+RIiOpk+XnfBU6FFGsWIQ==
+=b72g
+-----END PGP SIGNATURE-----
+
+--Sig_/hy02d1WUuMg=_M+_Mhruz6x--
