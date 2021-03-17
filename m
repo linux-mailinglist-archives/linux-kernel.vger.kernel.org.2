@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D0533F8D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:10:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBC433F8D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:10:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233112AbhCQTKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:10:18 -0400
-Received: from bmailout3.hostsharing.net ([176.9.242.62]:44953 "EHLO
-        bmailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232976AbhCQTJ4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:09:56 -0400
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout3.hostsharing.net (Postfix) with ESMTPS id BC444100D940D;
-        Wed, 17 Mar 2021 20:09:52 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 88A032A9D51; Wed, 17 Mar 2021 20:09:52 +0100 (CET)
-Date:   Wed, 17 Mar 2021 20:09:52 +0100
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Sathyanarayanan Kuppuswamy Natarajan 
-        <sathyanarayanan.nkuppuswamy@gmail.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Keith Busch <kbusch@kernel.org>, knsathya@kernel.org,
-        Sinan Kaya <okaya@kernel.org>
-Subject: Re: [PATCH v2 1/1] PCI: pciehp: Skip DLLSC handling if DPC is
- triggered
-Message-ID: <20210317190952.GB27146@wunner.de>
-References: <59cb30f5e5ac6d65427ceaadf1012b2ba8dbf66c.1615606143.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210317041342.GA19198@wunner.de>
- <CAPcyv4jxTcUEgcfPRckHqrUPy8gR7ZJsxDaeU__pSq6PqJERAQ@mail.gmail.com>
- <20210317053114.GA32370@wunner.de>
- <CAPcyv4j8t4Y=kpRSvOjOfVHd107YemiRcW0BNQRwp-d9oCddUw@mail.gmail.com>
- <CAC41dw8sX4T-FrwBju2H3TbjDhJMLGw_KHqs+20qzvKU1b5QTA@mail.gmail.com>
- <CAPcyv4gfBTuEj494aeg0opeL=PSbk_Cs16fX7A-cLvSV6EZg-Q@mail.gmail.com>
+        id S233119AbhCQTKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:10:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229796AbhCQTKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 15:10:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 333A864EC4;
+        Wed, 17 Mar 2021 19:10:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616008209;
+        bh=GVu/ESRM2qGynOK7RfgL/yy6B12R+6ZanQ9WH7/Wf9A=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=MXaxK5J8cShy4IqDXXjjKAwKPuFemzWY9azouoDzumjohoBSmn3UVxTzOYmu1r+iC
+         d9Ce1px8crmPZiUeYtRojD7X6+ZqnZp7dsPhqWEgSjfg/VhCuoO2o2zvI0+VozX7Ob
+         sbBDxsIOlURERvt6z/gTEX3Vmadif5AjOn+qacNDIA5t7sotXYnXSXp8x8Xpi+9Vtq
+         3k3pzvxJ7aTLHVfVNAr3tfHhKxlebV4PX0oMpSzTylwET0ArezNdoO2d89nAGaLEI5
+         +X6mm9xbHbOj2/UlOFzuq2r4vujVoE3JZfimoBReQFpZjDfNPfWY1tHCQIuZIckh7O
+         qehe0ogCznM8A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 29C9360A3D;
+        Wed, 17 Mar 2021 19:10:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4gfBTuEj494aeg0opeL=PSbk_Cs16fX7A-cLvSV6EZg-Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 1/1] net: stmmac: add timestamp correction to rid CDC
+ sync error
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161600820916.10311.6670976012285886015.git-patchwork-notify@kernel.org>
+Date:   Wed, 17 Mar 2021 19:10:09 +0000
+References: <20210317040904.816-1-vee.khee.wong@intel.com>
+In-Reply-To: <20210317040904.816-1-vee.khee.wong@intel.com>
+To:     Wong Vee Khee <vee.khee.wong@intel.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        boon.leong.ong@intel.com, weifeng.voon@intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 10:45:21AM -0700, Dan Williams wrote:
-> Ah, ok, we're missing a flush of the hotplug event handler after the
-> link is up to make sure the hotplug handler does not see the Link Up.
-> I'm not immediately seeing how the new proposal ensures that there is
-> no Link Up event still in flight after DPC completes its work.
-> Wouldn't it be required to throw away Link Up to Link Up transitions?
+Hello:
 
-If you look at the new code added to pciehp_ist() by my patch...
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-      atomic_and(~PCI_EXP_SLTSTA_DLLSC, &ctrl->pending_events);
-      if (pciehp_check_link_active(ctrl) > 0)
-              events &= ~PCI_EXP_SLTSTA_DLLSC;
+On Wed, 17 Mar 2021 12:09:04 +0800 you wrote:
+> From: Voon Weifeng <weifeng.voon@intel.com>
+> 
+> According to Synopsis DesignWare EQoS Databook, the Clock Domain Cross
+> synchronization error is introduced tue to the clock(GMII Tx/Rx clock)
+> being different at the capture as compared to the PTP
+> clock(clk_ptp_ref_i) that is used to generate the time.
+> 
+> [...]
 
-... the atomic_and() ignores the Link Up event which was picked
-up by the hardirq handler pciehp_isr() while pciehp_ist() waited for
-link recovery.  Afterwards, the Link Down event is only ignored if the
-link is still up:  If the link has gone down again before the call to
-pciehp_check_link_active(), that event is honored immediately (because
-the DLLSC event is then not filtered).  If it goes down after the call,
-that event will be picked up by pciehp_isr().  Thus, only the DLLSC
-events caused by DPC are ignored, but no others.
+Here is the summary with links:
+  - [net-next,1/1] net: stmmac: add timestamp correction to rid CDC sync error
+    https://git.kernel.org/netdev/net-next/c/3600be5f58c1
 
-A DLLSC event caused by surprise removal during DPC may be incorrectly
-ignored, but the expectation is that the ensuing Presence Detect Changed
-event will still cause bringdown of the slot after DPC has completed.
-Hardware does exist which erroneously hardwires Presence Detect to zero,
-but that's rare and DPC-capable systems are likely not affected.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I've realized today that I forgot to add a "synchronize_hardirq(irq);"
-before the call to atomic_and().  Sorry, that will be fixed in the
-next iteration.
 
-Thanks,
-
-Lukas
