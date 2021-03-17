@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B1233F63F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1326433F646
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:08:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232213AbhCQREe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:04:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40946 "EHLO mail.kernel.org"
+        id S229766AbhCQRHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:07:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59406 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229545AbhCQRET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:04:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C73BA64E90;
-        Wed, 17 Mar 2021 17:04:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616000658;
-        bh=YecZ1+74PL0EiJdVgEbcbAb4OOfTrH7w3uHot9RGdq4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lu//GtLnTgjXYhm9esClHt8hR8sh/TVP6pNKtWo+MI7yVxrTMiA0sNuR7XVlOgdJc
-         tz6Sd/GmVSnhirzXjrKY40U5Y2Z8zE/homaXsGzUDnRZlbZK3Ui0I9r6VxXlFL6fFC
-         cgK3YsNXD+C5lw9byeBxwJBSG79kJQ4txCw34WEHi5q3eQK8571ufwpH61HNVpz4L7
-         n9gj1PaVUuebEKDk0JV5MisibcOpL+dDmgsjhlfu2Tw8uUr4hDmFNy+2v9Nh7JC25y
-         /cr3F1ah42VAX7J1ZOb5cfbT6eJqLDUsUpnf59PzVxL649yi1MaJKFIkcqC0p+3jbZ
-         V1fkgNvRm/v2A==
-Date:   Wed, 17 Mar 2021 19:04:14 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        id S229490AbhCQRHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 13:07:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BD68CAE27;
+        Wed, 17 Mar 2021 17:07:33 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 99686DA6E2; Wed, 17 Mar 2021 18:05:31 +0100 (CET)
+Date:   Wed, 17 Mar 2021 18:05:31 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Victor Erminpour <victor.erminpour@oracle.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: Use immediate assignment when referencing
+ cc-option
+Message-ID: <20210317170531.GU7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Victor Erminpour <victor.erminpour@oracle.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] RDMA/mlx5: Fix missing assignment of rc when
- calling mlx5_ib_dereg_mr
-Message-ID: <YFI2jt/nTpn//Zc0@unreal>
-References: <20210316095117.17089-1-colin.king@canonical.com>
+References: <1615997328-24677-1-git-send-email-victor.erminpour@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210316095117.17089-1-colin.king@canonical.com>
+In-Reply-To: <1615997328-24677-1-git-send-email-victor.erminpour@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 09:51:17AM +0000, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
->
-> The assignment of the return code to rc when calling mlx5_ib_dereg_mr is
-> missing and there is an error check on an uninitialized rc. Fix this by
-> adding in the assignment.
->
-> Addresses-Coverity: ("Uninitialized scalar variable")
-> Fixes: e6fb246ccafb ("RDMA/mlx5: Consolidate MR destruction to mlx5_ib_dereg_mr()")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+On Wed, Mar 17, 2021 at 09:08:48AM -0700, Victor Erminpour wrote:
+> Calling cc-option will use KBUILD_CFLAGS, which when lazy setting
+> subdir-ccflags-y produces the following build error:
+> 
+> scripts/Makefile.lib:10: *** Recursive variable `KBUILD_CFLAGS' \
+> 	references itself (eventually).  Stop.
+> 
+> Use single := assignment for subdir-ccflags-y. The cc-option calls
+> are done right away and we don't end up with KBUILD_CFLAGS
+> referencing itself.
+> 
+> Signed-off-by: Victor Erminpour <victor.erminpour@oracle.com>
 > ---
->  drivers/infiniband/hw/mlx5/mr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  fs/btrfs/Makefile | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
+> index b634c42115ea..583ca2028e08 100644
+> --- a/fs/btrfs/Makefile
+> +++ b/fs/btrfs/Makefile
+> @@ -1,16 +1,16 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+>  # Subset of W=1 warnings
+> +subdir-ccflags-y := $(call cc-option, -Wunused-but-set-variable) \
+> +	$(call cc-option, -Wunused-const-variable) \
+> +	$(call cc-option, -Wpacked-not-aligned) \
+> +	$(call cc-option, -Wstringop-truncation)
 
-It was already sent, thanks.
-https://lore.kernel.org/linux-rdma/20210314082250.10143-1-leon@kernel.org/
+That's still overwriting the value unconditionally, the idea was a
+separate variable
 
->
-> diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-> index 86ffc7e5ef96..9dcb9fb4eeaa 100644
-> --- a/drivers/infiniband/hw/mlx5/mr.c
-> +++ b/drivers/infiniband/hw/mlx5/mr.c
-> @@ -1946,7 +1946,7 @@ int mlx5_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
->  			mr->mtt_mr = NULL;
->  		}
->  		if (mr->klm_mr) {
-> -			mlx5_ib_dereg_mr(&mr->klm_mr->ibmr, NULL);
-> +			rc = mlx5_ib_dereg_mr(&mr->klm_mr->ibmr, NULL);
->  			if (rc)
->  				return rc;
->  			mr->klm_mr = NULL;
-> --
-> 2.30.2
->
+https://lore.kernel.org/linux-btrfs/20210317104313.17028-1-dsterba@suse.com
