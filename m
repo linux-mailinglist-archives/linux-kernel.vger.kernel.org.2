@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACDB33F51F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 356DF33F530
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:11:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232369AbhCQQJm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Mar 2021 12:09:42 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:40780 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232375AbhCQQJV (ORCPT
+        id S232446AbhCQQKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 12:10:50 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:27706 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232419AbhCQQKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 12:09:21 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-141-CgiPIEZCN1CWsvSmGNeuiQ-1; Wed, 17 Mar 2021 16:09:17 +0000
-X-MC-Unique: CgiPIEZCN1CWsvSmGNeuiQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 17 Mar 2021 16:09:17 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Wed, 17 Mar 2021 16:09:17 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'Maciej W. Rozycki'" <macro@orcam.me.uk>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-CC:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: RE: [PATCH v2] MIPS: Check __clang__ to avoid performance influence
- with GCC in csum_tcpudp_nofold()
-Thread-Topic: [PATCH v2] MIPS: Check __clang__ to avoid performance influence
- with GCC in csum_tcpudp_nofold()
-Thread-Index: AQHXGZZkp8sV3w87mU2VG3u7laRZUqqE/LVwgANWf5KAAAUfwA==
-Date:   Wed, 17 Mar 2021 16:09:17 +0000
-Message-ID: <6e7bc85a3f92419f89117fc1381511be@AcuMS.aculab.com>
-References: <1615263493-10609-1-git-send-email-yangtiezhu@loongson.cn>
- <alpine.DEB.2.21.2103142140000.33195@angie.orcam.me.uk>
- <bdfe753d-0ef2-8f66-7716-acadfc3917a5@loongson.cn>
- <913665e71fd44c5d810d006cd179725c@AcuMS.aculab.com>
- <5ee86b3b-81d2-790c-f67b-e250f60272fd@loongson.cn>
- <alpine.DEB.2.21.2103171541590.21463@angie.orcam.me.uk>
-In-Reply-To: <alpine.DEB.2.21.2103171541590.21463@angie.orcam.me.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 17 Mar 2021 12:10:25 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12HFlk8E009540;
+        Wed, 17 Mar 2021 17:10:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=Iz7+Lyw7xDy/yfHdJRZxvAco5e3gTiWzHz1ThRW4Ph8=;
+ b=s8ZHEx63Owo1nhicnpGs4gsRTuS6gbMUnRAnLO154i+Gx+HMNjbtGuujGvbDG69yZc45
+ ers4wZEWIFGmyOkNlKrNaWGqf3or8ZX0B0niT05LWvdTbwn1/8qPg4s6o9Qmy+HZtbCy
+ PlqKAayRxWKx+UWhRy7E1Ue1KS39TCZ+hPANetszjw5/CtLcQL4rPMveNnq7Z8SRLa3r
+ g057Sg70FEnURZt58w5bkInwmulHwhkXo36KzPO3R16ke8LDn/J78IS5Ul2igyMpofMu
+ 4kTbdWwjCTq8NPhVO5I9RO93Y3+6i6VwFHnTGFoXvWMUdGXxOyXqMhBMZkYfmRliOLXz 3Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37a8pr67jd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Mar 2021 17:10:06 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AF17E10002A;
+        Wed, 17 Mar 2021 17:10:05 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9939A23E915;
+        Wed, 17 Mar 2021 17:10:05 +0100 (CET)
+Received: from localhost (10.75.127.45) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 17 Mar 2021 17:10:05
+ +0100
+From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+CC:     <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>
+Subject: [PATCH 0/2] STM32 USBPHYC vbus-supply property support
+Date:   Wed, 17 Mar 2021 17:09:52 +0100
+Message-ID: <20210317160954.15487-1-amelie.delaunay@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-17_10:2021-03-17,2021-03-17 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej W. Rozycki
-> Sent: 17 March 2021 15:36
-..
-> > > Not that I grok the mips opcodes.
-> > > But that code has horridness on its side.
-> 
->  It's a 32-bit one's-complement addition.  The use of 64-bit operations
-> reduces the number of calculations as any 32-bit carries accumulate in the
-> high 32-bit word allowing one instruction to be saved total compared to
-> the 32-bit variant.  Nothing particularly unusual for me here; I've seen
-> worse stuff with x86.
+STM32 USBPHYC provides two USB High-Speed ports which are used by controllers
+with Host capabilities. That's why vbus-supply has to be supported on each
+phy node.
 
-The 'problem' is that mips doesn't have a carry flag.
-So the 64-bit maths is 'tricky'.
-It may well be that a loop based on:
-	do {
-		val = *ptr++;
-		sum += val;
-		carry += sum < val;
-	} while (ptr != limit)
-will generate much better code.
-I think there is a 'setlt' instruction for the compare.
-It certainly would on the nios (which is mips-like).
-That is (probably) 6 instructions for 4 bytes.
-I suspect there may be a data stall after the memory read.
-So an interleaved unroll would remove that stall.
-That would be 10 clocks for 8 bytes.
+Amelie Delaunay (2):
+  dt-bindings: phy: add vbus-supply optional property to
+    phy-stm32-usbphyc
+  phy: stm32: manage optional vbus regulator on phy_power_on/off
 
-The x86-64 code is 'interesting'.
-It has repeated 'add carry' instructions.
-On Intel cpus prior to (at least) Haswell they take two clocks each.
-So the code is no faster than adding 32bit values to a 64bit sum.
+ .../bindings/phy/phy-stm32-usbphyc.yaml       |  3 ++
+ drivers/phy/st/phy-stm32-usbphyc.c            | 31 +++++++++++++++++++
+ 2 files changed, 34 insertions(+)
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+-- 
+2.17.1
 
