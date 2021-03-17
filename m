@@ -2,143 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D38AE33F99B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:59:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E4433F99E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:59:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233300AbhCQT6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:58:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41558 "EHLO
+        id S233328AbhCQT7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232738AbhCQT6I (ORCPT
+        with ESMTP id S232738AbhCQT6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:58:08 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04132C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:58:07 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id b7so277687ejv.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:58:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=x4IGcsHfRHycoSHLPZQ+NuslKEl3l2YvsWJ1PFXzklk=;
-        b=JqxN+CFe/NaS/NzFERcRLLKPg0TfFvh8Fz5nf9sL33Ck2ghJ4rk5zvve728WVXGwd4
-         3ZX/jpSaOU656oLPHszQN2j7Splt5awsSBLMH9OPyZ254djlW64zTdNNVPAZ2aawpw0+
-         swaKQpDJiXYmM158b7CJczbK8uKQ4xwZuTZz4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x4IGcsHfRHycoSHLPZQ+NuslKEl3l2YvsWJ1PFXzklk=;
-        b=dZSO/VHz+OlMhaCnCdtgGdGBb+OEncS7vbBbLQjgVrRth7KLsG3E6IWOP0mXZ1OoF1
-         zj4BLgfV90zbNGgmsFtiurLA8wHoQT+KwHqoAcSTx9S+msRRsfTe2wglpu6jFWrzpAma
-         4H9fKiyFsc4kAdbBuiDpE3jidpSwO/8XYRDlk2R0VtHJXiEE5CEzt3+IyKGDFjI5gheo
-         XKutolqTooduW9XFRsjjMKt/7VJttSjiTt80afFzOyy6t8CSm8bgc4ntBqq0USNsFY51
-         Ur1chgq/R3XzcrjJKRonlJCzTz+kZ46K6cHzNzgaOpTJ8EFkkBz8ZgFs/oXp2yapfJ3x
-         682w==
-X-Gm-Message-State: AOAM532RZ102gmCgkNjUCrpeRbM5y70oqqRq3aSe3B9Z45ckYAr2DIMd
-        FJk/b1N+k8pszN1F6BKwjqgOiQ==
-X-Google-Smtp-Source: ABdhPJz3x0Kx2IcUjecWgHYdTHTJSzGTzvplsxljz1MpSf63wyaqqdylSKRC8kjeIJypJsGKxgxOZQ==
-X-Received: by 2002:a17:907:628a:: with SMTP id nd10mr34493570ejc.326.1616011086544;
-        Wed, 17 Mar 2021 12:58:06 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id j14sm13504206eds.78.2021.03.17.12.58.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 12:58:05 -0700 (PDT)
-Subject: Re: [PATCH 04/13] lib: introduce BITS_{FIRST,LAST} macro
-To:     Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-References: <20210316015424.1999082-1-yury.norov@gmail.com>
- <20210316015424.1999082-5-yury.norov@gmail.com>
- <8021faab-e592-9587-329b-817ae007b89a@rasmusvillemoes.dk>
- <YFCZtUuMYVNeNlUO@smile.fi.intel.com>
- <20210317054057.GC2114775@yury-ThinkPad>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <8bcffb72-f9cb-7ca0-950d-527dda6545ac@rasmusvillemoes.dk>
-Date:   Wed, 17 Mar 2021 20:58:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 17 Mar 2021 15:58:40 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5020BC06174A;
+        Wed, 17 Mar 2021 12:58:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oC8GCTmvlsFkDJ1hgVzSWJ6fGOhXyrj/G6vJTANh9M8=; b=C3bq/xcLSTWNKn1DdXGc9MAbWW
+        fCr5UDHnFBlDxsz5Zs1UKZGPsQet+8IBqS+ZdB+wE0cFiFF8MCvhlRg7mRdIzSpd6d2tFmvHPzK0c
+        l3g6CjXPdAgPmNKvmhAQXxexruIHJYpAQqNWDcseryOORJGbsOMzddTPIsoMSSTz5Z3tTbl2WE9W2
+        1iLQSnwrEMd0EDAa2PwEuftQnXuDZLf+EnqgSJq/WgSCrvw2zG6ewwTOI4bZeP2rSRIL13jg6skOH
+        cOsWf2XeVlLZD28QP1OHB+HWpnfW4SJftzMQt/YRBc6IUFrwzhlEJOxW46JUkCw3172u/vQRw4dr9
+        yTjLBZ2A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMcJP-003qKE-Hm; Wed, 17 Mar 2021 19:58:36 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B1D54980BEF; Wed, 17 Mar 2021 20:58:34 +0100 (CET)
+Date:   Wed, 17 Mar 2021 20:58:34 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org
+Subject: Re: [tip: locking/urgent] locking/ww_mutex: Treat ww_mutex_lock()
+ like a trylock
+Message-ID: <20210317195834.GV4746@worktop.programming.kicks-ass.net>
+References: <20210316153119.13802-4-longman@redhat.com>
+ <161598470197.398.8903908266426306140.tip-bot2@tip-bot2>
+ <YFIASRkXowQWgj2s@hirez.programming.kicks-ass.net>
+ <YFIEo8IVQ/Mm9jUE@hirez.programming.kicks-ass.net>
+ <e1bcd7fb-3a40-f207-ee19-d276c8b8bb75@redhat.com>
+ <e39f4e37-e3c0-e62a-7062-fdd2c8b3d3b9@redhat.com>
+ <YFIy8Bzj7WAHFmlG@hirez.programming.kicks-ass.net>
+ <YFI/C4VZuWjyHLNK@hirez.programming.kicks-ass.net>
+ <YFJAP8x917Ef0Khj@hirez.programming.kicks-ass.net>
+ <36d26109-f08a-6254-2fd3-ad1a28fcc260@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210317054057.GC2114775@yury-ThinkPad>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <36d26109-f08a-6254-2fd3-ad1a28fcc260@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/03/2021 06.40, Yury Norov wrote:
-> On Tue, Mar 16, 2021 at 01:42:45PM +0200, Andy Shevchenko wrote:
+On Wed, Mar 17, 2021 at 02:32:27PM -0400, Waiman Long wrote:
+> On 3/17/21 1:45 PM, Peter Zijlstra wrote:
 
->>> It would also be much easier to review if you just redefined the
->>> BITMAP_LAST_WORD_MASK macros etc. in terms of these new things, so you
->>> wouldn't have to do a lot of mechanical changes at the same time as
->>> introducing the new ones - especially when those mechanical changes
->>> involve adding a "minus 1" everywhere.
->>
->> I tend to agree with Rasmus here.
+> > > +# define __DEP_MAP_WW_MUTEX_INITIALIZER(lockname, class) \
+> > > +		, .dep_map = { \
+> > > +			.key = &(class).mutex_key, \
+> > > +			.name = (class).mutex_name, \
+> > 			,name = #class "_mutex", \
+> > 
+> > and it 'works', but shees!
 > 
-> OK. All this plus terrible GENMASK(high, low) design, when high goes
-> first, makes me feel like we need to deprecate GENMASK and propose a
-> new interface.
-> 
-> What do you think about this:
-> BITS_FIRST(bitnum)      -> [0, bitnum)
-> BITS_LAST(bitnum)       -> [bitnum, BITS_PER_LONG)
-> BITS_RANGE(begin, end)  -> [begin, end)
+> The name string itself may be duplicated for multiple instances of
+> DEFINE_WW_MUTEX(). Do you want to keep DEFINE_WW_MUTEX() or just use
+> ww_mutex_init() for all?
 
-Better, though I'm not too happy about BITS_LAST(n) not producing a word
-with the n highest bits set. I dunno, I don't have better names.
-BITS_FROM/BITS_UPTO perhaps, but not really (and upto sounds like it is
-inclusive). BITS_LOW/BITS_HIGH have the same problem as BITS_LAST.
+So linkers can merge literals, but no guarantee. But yeah, lets just
+kill the thing, less tricky macro crud to worry about.
 
-Also, be careful to document what one can expect from the boundary
-values 0/BITS_PER_LONG. Is BITS_FIRST(0) a valid invocation? Does it
-yield 0UL? How about BITS_FIRST(BITS_PER_LONG), does that give ~0UL?
-Note that BITMAP_{FIRST,LAST}_WORD_MASK never produce 0, they're never
-used except with a word we know to be part of the bitmap.
+> I notice that the problem with DEFINE_WW_MUTEX is that the ww_mutex
+> themselves has null key instead of the same key from the ww_class as with
+> ww_mutex_init().
 
-> We can pick BITS_{LAST,FIRST} implementation from existing BITMAP_*_WORD_MASK
-> analogues, and make the BITS_RANGE like:
->         #define BITS_RANGE(begin, end) BITS_FIRST(end) & BITS_LAST(begin)
-> 
-> Regarding BITMAP_*_WORD_MASK, I can save them in bitmap.h as aliases
-> to BITS_{LAST,FIRST} to avoid massive renaming. (Should I?)
-
-Yes, now that I read these again, I definitely think the
-BITMAP_{FIRST,LAST}_WORD_MASK should stay (whether their implementation
-change I don't care). Their names document what they do much better than
-if you replace them with their potential new implementations:
-BITMAP_FIRST_WORD_MASK(start) is obviously about having to mask off some
-low bits of the first word we're looking at because we're looking at an
-offset into the bitmap, and similarly BITMAP_LAST_WORD_MASK(nbits)
-explains itself: nbits is such that the last word needs some masking.
-But their replacements would be BITS_LAST(start) and BITS_FIRST(nbits)
-respectively (possibly with those arguments reduced mod N), which is
-quite confusing.
-
-> Would this all work for you?
-
-Maybe, I think I'd have to see the implementation and how those new
-macros get used.
-
-Thanks,
-Rasmus
+Correct.
