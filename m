@@ -2,61 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687B033EA03
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:44:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5FD633EA05
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhCQGoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 02:44:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229469AbhCQGnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 02:43:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9B1664E41;
-        Wed, 17 Mar 2021 06:43:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615963430;
-        bh=iH8Ve2p8zpUYfjNYH7sqjyMrbwB/8XRj3S+UrLJdl/4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rbYf0LrBh9t2c+fWBoVZjVVfhu9bbqf/+JW632isYl29N1IWLdHcIF9KqAxU+xk+E
-         ushv7wjZFePrNMu+xj+UEPnBsgitoYmI35w0z3N5h5Xv0XZxups6KT+6SPdWm+JkcM
-         5Eeh04kVQLwFPQb4UpVJs7rzhd56qdsozNZ2kfQaAyBZbspIvmVLzMJaQE5InCL5+O
-         47lLeVf/4VvtEbLR3IjQAatknyvvWjay9KxpmeeRk0Hj8Epi7ySgYv4vY4rfpPJAJq
-         TgkbAvNmKUINISsggC94RN9sTvDRwYA7m9FWCSdVRGVZUoRFgQKf9w/mwhFg/A4a3p
-         OVRWNL7NOEN/Q==
-Date:   Wed, 17 Mar 2021 12:13:46 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Steen Hegelund <steen.hegelund@microchip.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v15 0/4] Adding the Sparx5 Serdes driver
-Message-ID: <YFGlIuKahuFePpY0@vkoul-mobl.Dlink>
-References: <20210218161451.3489955-1-steen.hegelund@microchip.com>
+        id S230037AbhCQGo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 02:44:58 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:13948 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230020AbhCQGo0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 02:44:26 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F0gZg5H8VzkZ02;
+        Wed, 17 Mar 2021 14:42:51 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 17 Mar
+ 2021 14:44:18 +0800
+Subject: Re: [PATCH 1/2] erofs: use workqueue decompression for atomic
+ contexts only
+To:     Huang Jianan <huangjianan@oppo.com>, <linux-erofs@lists.ozlabs.org>
+CC:     <linux-kernel@vger.kernel.org>, <guoweichao@oppo.com>,
+        <zhangshiming@oppo.com>
+References: <20210317035448.13921-1-huangjianan@oppo.com>
+ <20210317035448.13921-2-huangjianan@oppo.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <0ea35878-61b8-35c3-4471-432c510389ec@huawei.com>
+Date:   Wed, 17 Mar 2021 14:44:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218161451.3489955-1-steen.hegelund@microchip.com>
+In-Reply-To: <20210317035448.13921-2-huangjianan@oppo.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-02-21, 17:14, Steen Hegelund wrote:
-> Adding the Sparx5 Serdes driver
+On 2021/3/17 11:54, Huang Jianan via Linux-erofs wrote:
+> z_erofs_decompressqueue_endio may not be executed in the atomic
+> context, for example, when dm-verity is turned on. In this scenario,
+> data can be decompressed directly to get rid of additional kworker
+> scheduling overhead.
 > 
-> This series of patches provides the serdes driver for the Microchip Sparx5
-> ethernet switch.
-> 
-> The serdes driver supports the 10G and 25G serdes instances available in the
-> Sparx5.
-> 
-> The Sparx5 serdes support several interface modes with several speeds and also
-> allows the client to change the mode and the speed according to changing in the
-> environment such as changing cables from DAC to fiber.
+> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+> Signed-off-by: Guo Weichao <guoweichao@oppo.com>
+> Reviewed-by: Gao Xiang <hsiangkao@redhat.com>
 
-Applied patch 1 thru 3... thanks
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
--- 
-~Vinod
+Thanks,
