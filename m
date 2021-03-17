@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A9133F2A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D5733F2B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231897AbhCQObg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:31:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50982 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231730AbhCQObE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:31:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615991463; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S231907AbhCQOdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:33:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46314 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231726AbhCQOdR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 10:33:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615991597;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RFm4+Qk4kqX2XZDIGRshWo3nhfXZZ/zyIpZzIP26KRM=;
-        b=o4RnNYzAF0XVZy7kq+ZdRr9yJKIrUn3BJqtHrUj1I74F/dK5tnJXTXv+cybyeDCLy5Gt/0
-        47evnvHH1AcSSZuJB2N+9ZTU0tMY1CKgV6Xx7c8kgCeKPV6707q3Ndowk1zkkG6c+UgHHj
-        EFwAztYm82mw9P6TM2WtLTiY32SyRHc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 87E4BAEBD;
-        Wed, 17 Mar 2021 14:31:02 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 15:31:01 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 5/5] mm,page_alloc: Drop unnecessary checks from
- pfn_range_valid_contig
-Message-ID: <YFISpUUxusP4T1xw@dhcp22.suse.cz>
-References: <20210317111251.17808-1-osalvador@suse.de>
- <20210317111251.17808-6-osalvador@suse.de>
+        bh=usqdCKtdXoW4nYQBrZ9v4lz6SSdt8idRgvW77OKUkAc=;
+        b=U2bM/9z7rSaQKvJfBjnoG65rIxzaQ/uvP21QVfPlV/wj5lz6RtTTKvjRyUsSEecxAaU09J
+        X7wFW/twRv6dHhg1Vs+/X8wKXOQjQNPY8SDta1kgzWumw3UDLiO19g2auK4cVHZ5zf7UpO
+        nneCuS+c7CJCCuPdg/kjxgivED/0sBU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-151-64uKjlpHPgir_JH28Zo4Ng-1; Wed, 17 Mar 2021 10:33:15 -0400
+X-MC-Unique: 64uKjlpHPgir_JH28Zo4Ng-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C8EA08189CB;
+        Wed, 17 Mar 2021 14:33:13 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-117-171.rdu2.redhat.com [10.10.117.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 164345C1CF;
+        Wed, 17 Mar 2021 14:33:12 +0000 (UTC)
+Subject: Re: [tip: locking/urgent] locking/ww_mutex: Simplify use_ww_ctx &
+ ww_ctx handling
+From:   Waiman Long <longman@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Davidlohr Bueso <dbueso@suse.de>, x86@kernel.org
+References: <20210316153119.13802-2-longman@redhat.com>
+ <161598470257.398.5006518584847290113.tip-bot2@tip-bot2>
+ <YFH9Pw3kwCZC1UTB@hirez.programming.kicks-ass.net>
+ <85fbce04-c544-6041-6e7d-76f47b90e263@redhat.com>
+ <YFIKWCUAZabBsji0@hirez.programming.kicks-ass.net>
+ <bbfca577-b680-4c73-3f35-22179bd1a498@redhat.com>
+Organization: Red Hat
+Message-ID: <4a40bcd9-f0ff-4fd5-19dc-e71961c3c4c6@redhat.com>
+Date:   Wed, 17 Mar 2021 10:33:12 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210317111251.17808-6-osalvador@suse.de>
+In-Reply-To: <bbfca577-b680-4c73-3f35-22179bd1a498@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 17-03-21 12:12:51, Oscar Salvador wrote:
-> pfn_range_valid_contig() bails out when it finds an in-use page or a
-> hugetlb page, among other things.
-> We can drop the in-use page check since __alloc_contig_pages can migrate
-> away those pages, and the hugetlb page check can go too since
-> isolate_migratepages_range is now capable of dealing with hugetlb pages.
-> Either way, those checks are racy so let the end function handle it
-> when the time comes.
+On 3/17/21 10:10 AM, Waiman Long wrote:
+> On 3/17/21 9:55 AM, Peter Zijlstra wrote:
+>> On Wed, Mar 17, 2021 at 09:43:20AM -0400, Waiman Long wrote:
+>>
+>>> Using gcc 8.4.1, the generated __mutex_lock function has the same 
+>>> size (with
+>>> last instruction at offset +5179) with or without this patch. Well, 
+>>> you can
+>>> say that this patch is an no-op wrt generated code.
+>> OK, then GCC has gotten better. Because back then I tried really hard
+>> but it wouldn't remove the if (ww_ctx) branches unless I had that extra
+>> const bool argument.
+>>
+> I think ww_mutex was merged in 2013. That is almost 8 years ago. It 
+> could still be the case that older gcc compilers may not generate the 
+> right code. I will try the RHEL7 gcc compiler (4.8.5) to see how it 
+> fares. 
 
-I haven't realized PageHuge check is done this early. This means that
-previous patches are not actually active until now which is not really
-greate for bisectability. Can we remove the HugePage check earlier?
+I got the same result with the 4.8.5 compiler. The __mutex_lock() 
+function has the same size with or without the patch. Note that I used 
+the debug config during my RHEL8 compiler test, so the generated code 
+size is much larger. With the non-debug config that I used for the 4.8.5 
+compiler test, the code is only about 1236 bytes.
 
-Act to the page_count check removal. We should rely on migrate_pages
-here.
+Since the current Linux kernel requires gcc 4.9 or above (I downgraded 
+the kernel to v5.4 for my 4.8.5 compiler test), the fear of generating 
+inferior code due to this patch should be a moot point.
 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> ---
->  mm/page_alloc.c | 6 ------
->  1 file changed, 6 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 4cb455355f6d..50d73e68b79e 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8685,12 +8685,6 @@ static bool pfn_range_valid_contig(struct zone *z, unsigned long start_pfn,
->  
->  		if (PageReserved(page))
->  			return false;
-> -
-> -		if (page_count(page) > 0)
-> -			return false;
-> -
-> -		if (PageHuge(page))
-> -			return false;
->  	}
->  	return true;
->  }
-> -- 
-> 2.16.3
+Cheers,
+Longman
 
--- 
-Michal Hocko
-SUSE Labs
