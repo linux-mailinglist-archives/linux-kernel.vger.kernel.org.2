@@ -2,86 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8224E33F003
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A24E833F00C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231571AbhCQMIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 08:08:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35618 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231590AbhCQMIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 08:08:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615982903; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EzSShNBc+a8YeE9Atm1rFDpCfXSt5KJELlWzCgJ3hd8=;
-        b=GAAR2fNv7ycSCNW1tT0QHZbrZLE2FXxmr44WsCufiP+c3d5rB0ODeb0DBCIgJ3m8GNK7Vo
-        bKs4zX6qm8UjHUASqpC1g1dULhYe1dRCoLhu96z1xXCESHBTCN1QzaJ2sso2O+1xsqB63k
-        ymNyrupM0xSCu+tnr2lhk9xuqvB1MAU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 62407AC24;
-        Wed, 17 Mar 2021 12:08:23 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 13:08:21 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [PATCH v2] seq_file: Unconditionally use vmalloc for buffer
-Message-ID: <YFHxNT1Pwoslmhxq@dhcp22.suse.cz>
-References: <20210315174851.622228-1-keescook@chromium.org>
- <YFBs202BqG9uqify@dhcp22.suse.cz>
- <202103161205.B2181BDE38@keescook>
+        id S229512AbhCQMMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 08:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhCQMLw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 08:11:52 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB24C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 05:11:52 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id r15-20020a05600c35cfb029010e639ca09eso3254573wmq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 05:11:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ldblq7Vb7cxp8+wcYSniKSm/VJ2FDNg1/QRrPmH/VVY=;
+        b=FL48WkTHhMJJIkroO5yH5Ojgj73oIdrWpr+6pn/UaB2n0DtHjj0f0QktOGb8fBCgYC
+         QvAgRvoDWDcoLxWCX19KabbE9ygEhsnqqQ2sreY2p5gaAlfhkt0hDt584gVIlpXB4bCm
+         mAes8UKFiUwZIetZFDuEzCtS7HLhF5jql8triChy082V5RD5gFfL5rrgaE+nrM1uQ/rd
+         IJNA2jM5XTfGL7J548uBw+CIhookRCvmZ8IHSOOtqRcs7Bx77fW95lQWiu2PZ+UwrJwi
+         rV+WIBig7+SCxEE98np2cZdK2HhQ8P/OAoBz4ajhx6FU2Isg6zDMcZ9D8exQx4BS+ow6
+         F9Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ldblq7Vb7cxp8+wcYSniKSm/VJ2FDNg1/QRrPmH/VVY=;
+        b=dJre5zGyJWscv6T4zzncVAfaxR4CwoXMs6IE/DqQLYxS3Ie+NiaM5WaJ4CrFAgZQuC
+         xiaGKMdHaVVaEufaM/4cEZfz/5F5IUw03hA5/BA5j0oGhHwC2z5fgPajpjE2jDNzXrY+
+         MnrP1gkAMpGPOFJc9ThRBj58OgBvQF6nUQ7Oe+MRq7BN1pK69AEnCf4Vsv2HWaKeZ1Ru
+         HMn/H2XsIx1ueyjkpk7sE0r3Iw6lHFcmC8RGUBex7VqXX/PeGL0SRs7bpCmOieiU0kzG
+         9t3BLayuEOIOZjH4SSPc3iJ7DNdymOy+JC5Ju2c+I0iVSIK1hwNK3r9eZa+OMKqTPJVT
+         g+Ew==
+X-Gm-Message-State: AOAM531HXJDXc4MLsSpXyy+VVlVxFM7DnsM4DIwP/nyvY/BhpZcs6JPZ
+        svsYxNkGxDcErmTyHdyJKc6+YVYk2kcuM1Xn
+X-Google-Smtp-Source: ABdhPJz5iMgHCktM9jfXw+fxxb1Fud4xod4WnnNL+5gN9m+1BpIL+LvnHOofsQTsX8eZwI33zryuaA==
+X-Received: by 2002:a7b:c4c9:: with SMTP id g9mr3451490wmk.82.1615983111000;
+        Wed, 17 Mar 2021 05:11:51 -0700 (PDT)
+Received: from hthiery.fritz.box (ip1f1322f8.dynamic.kabel-deutschland.de. [31.19.34.248])
+        by smtp.gmail.com with ESMTPSA id f7sm2239586wmq.11.2021.03.17.05.11.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 05:11:50 -0700 (PDT)
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        Chris Healy <cphealy@gmail.com>,
+        Heiko Thiery <heiko.thiery@gmail.com>
+Subject: [PATCH v3] arm64: configs: Enable PCIe support for imx8mq boards
+Date:   Wed, 17 Mar 2021 13:11:37 +0100
+Message-Id: <20210317121136.7023-1-heiko.thiery@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202103161205.B2181BDE38@keescook>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 16-03-21 12:08:02, Kees Cook wrote:
-> On Tue, Mar 16, 2021 at 09:31:23AM +0100, Michal Hocko wrote:
-[...]
-> > Also this cannot really be done for configurations with a very limited
-> > vmalloc space (32b for example). Those systems are more and more rare
-> > but you shouldn't really allow userspace to deplete the vmalloc space.
->
-> This sounds like two objections:
-> - 32b has a small vmalloc space
-> - userspace shouldn't allow depletion of vmalloc space
->
-> I'd be happy to make this 64b only. For the latter, I would imagine
-> there are other vmalloc-exposed-to-userspace cases, but yes, this would
-> be much more direct. Is that a problem in practice?
+Enable PCI_IMX6 to get PCI support for imx8mq boards like imx8mq-evk,
+imx8mq-kontron-pitx-imx8m and imx8mq-zii-ultra.
 
-vmalloc space shouldn't be a problem for 64b systems but I am not sure
-how does vmalloc scale with many small allocations. There were some
-changes by Uladzislau who might give us more insight (CCed).
+The driver only has build-in support and cannot be compiled as module.
 
-> > I would be also curious to see how vmalloc scales with huge number of
-> > single page allocations which would be easy to trigger with this patch.
->
-> Right -- what the best way to measure this (and what would be "too
-> much")?
+Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
+---
+v2:
+ - slightly modified the commit message (Fabio Estevam)
 
-Proc is used quite heavily for all sorts of monitoring so I would be
-worried about a noticeable slow down.
+v3:
+ - add comment in the commit message to clarify why the driver has to be
+   build as built-in
 
-Btw. I still have problems with the approach. seq_file is intended to
-provide safe way to dump values to the userspace. Sacrificing
-performance just because of some abuser seems like a wrong way to go as
-Al pointed out earlier. Can we simply stop the abuse and disallow to
-manipulate the buffer directly? I do realize this might be more tricky
-for reasons mentioned in other emails but this is definitely worth
-doing.
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 72ba52ad5a3c..54445b936066 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -225,6 +225,7 @@ CONFIG_PCI_HOST_THUNDER_PEM=y
+ CONFIG_PCI_HOST_THUNDER_ECAM=y
+ CONFIG_PCIE_ROCKCHIP_HOST=m
+ CONFIG_PCIE_BRCMSTB=m
++CONFIG_PCI_IMX6=y
+ CONFIG_PCI_LAYERSCAPE=y
+ CONFIG_PCIE_LAYERSCAPE_GEN4=y
+ CONFIG_PCI_HISI=y
 -- 
-Michal Hocko
-SUSE Labs
+2.30.0
+
