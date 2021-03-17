@@ -2,116 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1096A33EC2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B325C33EC2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbhCQJFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:05:53 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:59688 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhCQJFV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S229699AbhCQJFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 17 Mar 2021 05:05:21 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12H958gd031480;
-        Wed, 17 Mar 2021 04:05:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615971908;
-        bh=CFJ2+PiQFeamPdSmnwEFhov7N4y6g4MKwY4Bys1qRy8=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=d0Xw+e0yE60NtlZf2yx0zPj25LqHxiIJyGRMVezXFVQti0sx4ED/kAwdGPCE8aD+t
-         qnMx4FwJCaKRcoq+5qpdei8DqHEJ4eAhamnShFX/l8bGegcBwx2iedqQrTHMwRS9y2
-         lqBRPRYXwTZoBlqBNokZ0HRfChHCQpz1nuGXuJcg=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12H9589H118204
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 17 Mar 2021 04:05:08 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 17
- Mar 2021 04:05:08 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 17 Mar 2021 04:05:08 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12H957XS105253;
-        Wed, 17 Mar 2021 04:05:08 -0500
-Date:   Wed, 17 Mar 2021 14:35:06 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     <Tudor.Ambarus@microchip.com>
-CC:     <vigneshr@ti.com>, <michael@walle.cc>,
-        <linux-mtd@lists.infradead.org>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/5] mtd: spi-nor: Move Software Write Protection
- logic out of the core
-Message-ID: <20210317090504.ra3vm76xexhaqg2l@ti.com>
-References: <20210306095002.22983-1-tudor.ambarus@microchip.com>
- <20210306095002.22983-5-tudor.ambarus@microchip.com>
- <963232a4-9100-ebca-927c-7f5a1e947fbe@ti.com>
- <9889bae0-8eba-7cbc-d9bb-04e038bd28c8@microchip.com>
- <6016b725-a779-1d2c-9884-099c58f53557@ti.com>
- <45d00a12-cb79-774e-f8e8-d65602629a90@microchip.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhCQJFR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 05:05:17 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0862C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:05:16 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id k8so981564wrc.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:05:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=OcOkwCkyvLuke/iNw2LLAogSWUiyJtcxO/hC/X9eTec=;
+        b=YYc0KLEbBxgH+ZUG7LiDYEtZcpBX4RqAPYmaegxRr+9NyuAkGQTaj9vShjjBp1kz4G
+         xRjTbxsmGrK2E+8mvtXdJ/1lYYdR/lE/s5YzOBGfvtH/p2nb3GgXN9avsy/spkxpqP8l
+         q1K4fnyloW5Al7EXVqZXBQKueUdoEM1Wl+9IUQMyiCCozmQjeXudZHHFEJZ1/3dVvyXi
+         ZBSGjq8Wwq2ZoRTgheOFZV8Hjw9BT7LMD4gr6AlaCmCCqxHkHgWBKmnee6Wr0dHG31wD
+         NYvtj0e9xx5DXQt+3YuFkZlKKNHMvZZSECEc+Ng5H8w55K2qTxzKie+GWL63tSdTMVfN
+         mnhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=OcOkwCkyvLuke/iNw2LLAogSWUiyJtcxO/hC/X9eTec=;
+        b=H/vgB6MSHSIwfIAC5BXz1F54mAQTTf0DZenIcuXJIlK87h7SrVVafEMk+0T7vOfkud
+         FKTvekZGioUndjCYoUVQNVrLstHHqp9CHEgiGclIltpNBOsw8BVIyDCfoArM4FH5ZFm4
+         RcQV6elhwUGV2mzjZSM9EQMjW9dw/yCfyHcRyx5zKDLiK+4Y7U7zNQ/q1cDEY0/MgIPg
+         cAaC4OuXab+DHtmQ5C5schOa4cTc70NBc4BFDAYPK2HFMYTJoJvcHIQcvhkIrao7q9ku
+         buT2x2cgbUstxa2pAk+JDbiL6DFoPEnTP6b7PDb+YSNTaolkUew5wa5iQODnGmlZ+xNc
+         iS0A==
+X-Gm-Message-State: AOAM533VwVGoimj29hrCB4+9E00iv7NkGr6ad5pQEEtc42Q7NJYdf2P1
+        8P8p36wvj2H/uSnK0y2EQB2Jpp6+TxiLCQ==
+X-Google-Smtp-Source: ABdhPJxlU7tk/HVjonZcyAbzBtH+m2MESpX+2byaucGFATA64RJfU7n4jVMSy1FWKxWcitvmtWV8KA==
+X-Received: by 2002:adf:f3c2:: with SMTP id g2mr3331553wrp.300.1615971915310;
+        Wed, 17 Mar 2021 02:05:15 -0700 (PDT)
+Received: from dell ([91.110.221.194])
+        by smtp.gmail.com with ESMTPSA id o7sm24710724wrs.16.2021.03.17.02.05.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 02:05:14 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 09:05:12 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     linux-kernel@vger.kernel.org, Adam Radford <aradford@gmail.com>,
+        Alan Cox <alan@lxorguk.ukuu.org.uk>,
+        Andre Hedrick <andre@suse.com>,
+        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
+        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+        Bas Vermeulen <bvermeul@blackstar.xs4all.nl>,
+        Bradley Grove <linuxdrivers@attotech.com>,
+        Brian Macy <bmacy@sunshinecomputing.com>,
+        c by <James.Bottomley@steeleye.com>,
+        Christoph Hellwig <hch@lst.de>,
+        David Chaw <david_chaw@adaptec.com>,
+        de Melo <acme@conectiva.com.br>,
+        Doug Ledford <dledford@redhat.com>,
+        GOTO Masanori <gotom@debian.or.jp>, gotom@debian.org,
+        Hannes Reinecke <hare@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Joel Jacobson <linux@3ware.com>,
+        Khalid Aziz <khalid@gonehiking.org>,
+        "Leonard N. Zubkoff" <lnz@dandelion.com>,
+        Linux GmbH <hare@suse.com>, linux-scsi@vger.kernel.org,
+        Luben Tuikov <luben_tuikov@adaptec.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        MPT-FusionLinux.pdl@avagotech.com,
+        MPT-FusionLinux.pdl@broadcom.com,
+        Richard Hirst <richard@sleepie.demon.co.uk>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        YOKOTA Hiroshi <yokota@netlab.is.tsukuba.ac.jp>
+Subject: Re: [PATCH 00/18] [Set 3] Rid W=1 warnings in SCSI
+Message-ID: <20210317090512.GI701493@dell>
+References: <20210317085701.2891231-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <45d00a12-cb79-774e-f8e8-d65602629a90@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210317085701.2891231-1-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/03/21 06:09AM, Tudor.Ambarus@microchip.com wrote:
-> On 3/15/21 8:23 AM, Vignesh Raghavendra wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > On 3/9/21 12:58 PM, Tudor.Ambarus@microchip.com wrote:
-> >> On 3/8/21 7:28 PM, Vignesh Raghavendra wrote:
-> >>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> >>>
-> >>> On 3/6/21 3:20 PM, Tudor Ambarus wrote:
-> >>>> It makes the core file a bit smaller and provides better separation
-> >>>> between the Software Write Protection features and the core logic.
-> >>>> All the next generic software write protection features (e.g. Individual
-> >>>> Block Protection) will reside in swp.c.
-> >>>>
-> >>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> >>>> ---
-> >>>>  drivers/mtd/spi-nor/Makefile |   2 +-
-> >>>>  drivers/mtd/spi-nor/core.c   | 407 +---------------------------------
-> >>>>  drivers/mtd/spi-nor/core.h   |   4 +
-> >>>>  drivers/mtd/spi-nor/swp.c    | 419 +++++++++++++++++++++++++++++++++++
-> >>>
-> >>> Hmmm, name swp.c does not seem intuitive to me. How about expanding it a
-> >>> bit:
-> >>>
-> >>> soft-wr-protect.c or software-write-protect.c ?
-> 
-> Having in mind that we have the SWP configs, I think I prefer swp.c.
-> But let's see what majority thinks, we'll do as majority prefers.
-> Michael, Pratyush?
+On Wed, 17 Mar 2021, Lee Jones wrote:
 
-I don't have much of an opinion on this tbh. But I usually prefer short 
-names so I'd go with swp.c here. Maybe also add a comment at the top of 
-the file mentioning the full name "Software Write Protection logic" or 
-something similar for clarification.
+> MIME-Version: 1.0
+> Content-Type: text/plain; charset=UTF-8
+> Content-Transfer-Encoding: 8bit
+> 
+> This set contains functional changes.
+> 
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
+> 
+> Lee Jones (18):
+>   scsi: aic94xx: aic94xx_dump: Remove code that has been unused for at
+>     least 13 years
+>   scsi: mpt3sas: mpt3sas_scs: Move a little data from the stack onto the
+>     heap
+>   scsi: bfa: bfa_fcs_lport: Move a large struct from the stack onto the
+>     heap
+>   scsi: esas2r: esas2r_log: Supply __printf(x, y) formatting for
+>     esas2r_log_master()
+>   scsi: BusLogic: Supply __printf(x, y) formatting for blogic_msg()
+>   scsi: nsp32: Supply __printf(x, y) formatting for nsp32_message()
+>   scsi: initio: Remove unused variable 'prev'
+>   scsi: a100u2w: Remove unused variable 'bios_phys'
+>   scsi: myrs: Remove a couple of unused 'status' variables
+>   scsi: 3w-xxxx: Remove 2 unused variables 'response_que_value' and
+>     'tw_dev'
+>   scsi: 3w-9xxx: Remove a few set but unused variables
+>   scsi: 3w-sas: Remove unused variables 'sglist' and 'tw_dev'
+>   scsi: nsp32: Remove or exclude unused variables
+>   scsi: FlashPoint: Remove unused variable 'TID' from
+>     'FlashPoint_AbortCCB()'
+>   scsi: sim710: Remove unused variable 'err' from sim710_init()
+>   scsi: isci: port: Make local function 'port_state_name()' static
+>   scsi: isci: remote_device: Make local function
+>     isci_remote_device_wait_for_resume_from_abort() static
+>   scsi: nsp32: Correct expected types in debug print formatting
 
-> 
-> >>>
-> >>
-> 
-> cut
-> 
-> > 
-> > I am not a fan of renaming Kconfig options as it breaks make
-> > olddefconfig flow which many developers rely on.
-> > 
-> 
-> I'm fine keeping them as they are for now. If someone else screams we will
-> reconsider.
+Oh dear! Looks like I also took functional patches from sets that
+have already been sent out.
+
+Please silently disregard this set. Sorry for the noise.
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
