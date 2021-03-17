@@ -2,197 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1186033F9CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:14:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C4833F9D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:15:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233324AbhCQUNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 16:13:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231398AbhCQUNu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 16:13:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 754C364F04;
-        Wed, 17 Mar 2021 20:13:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616012029;
-        bh=khQLFq23w2t02jejmWk4dHnPyu+tEJeOprEkv6/XtCY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CwoGws9v3BGbaMh1QFzMJJfoRpRBgf8YXc8D6cH+OCeifnFFeKK6nUZs6stYSwkNO
-         i7kTwppKAfvSoP6rBhyTEmobVydytTBWQlNp7Vhg2mCsnDpm/hpjdP8hcrjwWHW/9Q
-         h3ihIpXytuASWpJS/+DaQM18iz1TGtMgOLpNpyrj0uVL4q4tzgssx/aBWW9Koo2fBq
-         Gn8bOfFT4H4W14LFaFLDN/PHPa+jAIQTWAjvEWeLs82kaPk2GywrS/VKAJaRzd4wOB
-         NBSCTlOZRcTOyI1jltQCUeqD46Ad0fdodjaM+/uzfPRPBOVWw4VNo6G98uyRj+BFPn
-         AmRPBFvUMDAKQ==
-Received: by pali.im (Postfix)
-        id 011138A9; Wed, 17 Mar 2021 21:13:46 +0100 (CET)
-Date:   Wed, 17 Mar 2021 21:13:46 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Amey Narkhede <ameynarkhede03@gmail.com>, bhelgaas@google.com,
-        raphael.norwitz@nutanix.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <20210317201346.v6t4rde6nzmt7fwr@pali>
-References: <20210315135226.avwmnhkfsgof6ihw@pali>
- <20210315083409.08b1359b@x1.home.shazbot.org>
- <20210315145238.6sg5deblr2z2pupu@pali>
- <20210315090339.54546e91@x1.home.shazbot.org>
- <20210317190206.zrtzwgskxdogl7dz@pali>
- <20210317131536.38f398b0@omen.home.shazbot.org>
- <20210317192424.kpfybcrsen3ivr4f@pali>
- <20210317133245.7d95909c@omen.home.shazbot.org>
- <20210317194024.nkzrbbvi6utoznze@pali>
- <20210317140020.4375ba76@omen.home.shazbot.org>
+        id S233373AbhCQUO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 16:14:57 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:42072 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231398AbhCQUOm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 16:14:42 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
+ id 333110543e0e6429; Wed, 17 Mar 2021 21:14:41 +0100
+Received: from kreacher.localnet (89-64-80-90.dynamic.chello.pl [89.64.80.90])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id AA602668ED9;
+        Wed, 17 Mar 2021 21:14:38 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Mike Rapoport <rppt@linux.ibm.com>,
+        Erik Kaneda <erik.kaneda@intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
+Date:   Wed, 17 Mar 2021 21:14:37 +0100
+Message-ID: <3236337.DtqTXxM43S@kreacher>
+In-Reply-To: <CAJZ5v0g1H6hCVbAAFajhn0AYRMU4GkZOqggOB6LVdgFx_vfwOA@mail.gmail.com>
+References: <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com> <YE5dJ6U3nPWsXY4D@linux.ibm.com> <CAJZ5v0g1H6hCVbAAFajhn0AYRMU4GkZOqggOB6LVdgFx_vfwOA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210317140020.4375ba76@omen.home.shazbot.org>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudefgedgudeflecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttddvnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgfelheffhfetffelhfelteejffetteetgfetkeejvdfhfeeftdeufeevgeevieevnecukfhppeekledrieegrdektddrledtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedtrdeltddphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehrphhptheslhhinhhugidrihgsmhdrtghomhdprhgtphhtthhopegvrhhikhdrkhgrnhgvuggrsehinhhtvghlrdgtohhmpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghvihgusehrvgguhhgrthdrtghomhdprhgtphhtthhopehgvghorhhgvgdrkhgvnhhnvgguhiesohhrrggtlhgvrdgtohhmpdhrtghpthhtoheprhhosggvrhhtrdhmohho
+ rhgvsehinhhtvghlrdgtohhmpdhrtghpthhtoheprhgrfhgrvghlrdhjrdifhihsohgtkhhisehinhhtvghlrdgtohhmpdhrtghpthhtoheplhgvnhgssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopeguvghvvghlsegrtghpihgtrgdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkohhnrhgrugdrfihilhhksehorhgrtghlvgdrtghomhdprhgtphhtthhopegurghnrdgtrghrphgvnhhtvghrsehorhgrtghlvgdrtghomhdprhgtphhtthhopeguhhgrvhgrlhdrghhirghnihesohhrrggtlhgvrdgtohhmpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphhtthhopehvsggrsghkrgesshhushgvrdgtiidprhgtphhtthhopehoshgrlhhvrgguohhrsehsuhhsvgdruggvpdhrtghpthhtoheprhhitghhrghrugdrfigvihihrghngheslhhinhhugidrrghlihgsrggsrgdrtghomhdprhgtphhtthhopehprghnkhgrjhdrghhuphhtrgdrlhhinhhugiesghhmrghilhdrtghomhdprhgtphhtthhopehmhhhotghkohesshhushgvrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=20 Fuz1=20 Fuz2=20
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 17 March 2021 14:00:20 Alex Williamson wrote:
-> On Wed, 17 Mar 2021 20:40:24 +0100
-> Pali Rohár <pali@kernel.org> wrote:
+On Monday, March 15, 2021 5:19:29 PM CET Rafael J. Wysocki wrote:
+> On Sun, Mar 14, 2021 at 8:00 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
+> >
+> > On Thu, Mar 11, 2021 at 04:36:31PM +0100, Rafael J. Wysocki wrote:
+> > > On Wed, Mar 10, 2021 at 8:47 PM David Hildenbrand <david@redhat.com> wrote:
+> > > > >
+> > > > > There is some care that should be taken to make sure we get the order
+> > > > > right, but I don't see a fundamental issue here.
+> > >
+> > > Me neither.
+> > >
+> > > > > If I understand correctly, Rafael's concern is about changing the parts of
+> > > > > ACPICA that should be OS agnostic, so I think we just need another place to
+> > > > > call memblock_reserve() rather than acpi_tb_install_table_with_override().
+> > >
+> > > Something like this.
+> > >
+> > > There is also the problem that memblock_reserve() needs to be called
+> > > for all of the tables early enough, which will require some reordering
+> > > of the early init code.
+> > >
+> > > > > Since the reservation should be done early in x86::setup_arch() (and
+> > > > > probably in arm64::setup_arch()) we might just have a function that parses
+> > > > > table headers and reserves them, similarly to how we parse the tables
+> > > > > during KASLR setup.
+> > >
+> > > Right.
+> >
+> > I've looked at it a bit more and we do something like the patch below that
+> > nearly duplicates acpi_tb_parse_root_table() which is not very nice.
 > 
-> > On Wednesday 17 March 2021 13:32:45 Alex Williamson wrote:
-> > > On Wed, 17 Mar 2021 20:24:24 +0100
-> > > Pali Rohár <pali@kernel.org> wrote:
-> > >   
-> > > > On Wednesday 17 March 2021 13:15:36 Alex Williamson wrote:  
-> > > > > On Wed, 17 Mar 2021 20:02:06 +0100
-> > > > > Pali Rohár <pali@kernel.org> wrote:
-> > > > >     
-> > > > > > On Monday 15 March 2021 09:03:39 Alex Williamson wrote:    
-> > > > > > > On Mon, 15 Mar 2021 15:52:38 +0100
-> > > > > > > Pali Rohár <pali@kernel.org> wrote:
-> > > > > > >       
-> > > > > > > > On Monday 15 March 2021 08:34:09 Alex Williamson wrote:      
-> > > > > > > > > On Mon, 15 Mar 2021 14:52:26 +0100
-> > > > > > > > > Pali Rohár <pali@kernel.org> wrote:
-> > > > > > > > >         
-> > > > > > > > > > On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:        
-> > > > > > > > > > > slot reset (pci_dev_reset_slot_function) and secondary bus
-> > > > > > > > > > > reset(pci_parent_bus_reset) which I think are hot reset and
-> > > > > > > > > > > warm reset respectively.          
-> > > > > > > > > > 
-> > > > > > > > > > No. PCI secondary bus reset = PCIe Hot Reset. Slot reset is just another
-> > > > > > > > > > type of reset, which is currently implemented only for PCIe hot plug
-> > > > > > > > > > bridges and for PowerPC PowerNV platform and it just call PCI secondary
-> > > > > > > > > > bus reset with some other hook. PCIe Warm Reset does not have API in
-> > > > > > > > > > kernel and therefore drivers do not export this type of reset via any
-> > > > > > > > > > kernel function (yet).        
-> > > > > > > > > 
-> > > > > > > > > Warm reset is beyond the scope of this series, but could be implemented
-> > > > > > > > > in a compatible way to fit within the pci_reset_fn_methods[] array
-> > > > > > > > > defined here.        
-> > > > > > > > 
-> > > > > > > > Ok!
-> > > > > > > >       
-> > > > > > > > > Note that with this series the resets available through
-> > > > > > > > > pci_reset_function() and the per device reset attribute is sysfs remain
-> > > > > > > > > exactly the same as they are currently.  The bus and slot reset
-> > > > > > > > > methods used here are limited to devices where only a single function is
-> > > > > > > > > affected by the reset, therefore it is not like the patch you proposed
-> > > > > > > > > which performed a reset irrespective of the downstream devices.  This
-> > > > > > > > > series only enables selection of the existing methods.  Thanks,
-> > > > > > > > > 
-> > > > > > > > > Alex
-> > > > > > > > >         
-> > > > > > > > 
-> > > > > > > > But with this patch series, there is still an issue with PCI secondary
-> > > > > > > > bus reset mechanism as exported sysfs attribute does not do that
-> > > > > > > > remove-reset-rescan procedure. As discussed in other thread, this reset
-> > > > > > > > let device in unconfigured / broken state.      
-> > > > > > > 
-> > > > > > > No, there's not:
-> > > > > > > 
-> > > > > > > int pci_reset_function(struct pci_dev *dev)
-> > > > > > > {
-> > > > > > >         int rc;
-> > > > > > > 
-> > > > > > >         if (!dev->reset_fn)
-> > > > > > >                 return -ENOTTY;
-> > > > > > > 
-> > > > > > >         pci_dev_lock(dev);      
-> > > > > > > >>>     pci_dev_save_and_disable(dev);      
-> > > > > > > 
-> > > > > > >         rc = __pci_reset_function_locked(dev);
-> > > > > > >       
-> > > > > > > >>>     pci_dev_restore(dev);      
-> > > > > > >         pci_dev_unlock(dev);
-> > > > > > > 
-> > > > > > >         return rc;
-> > > > > > > }
-> > > > > > > 
-> > > > > > > The remove/re-scan was discussed primarily because your patch performed
-> > > > > > > a bus reset regardless of what devices were affected by that reset and
-> > > > > > > it's difficult to manage the scope where multiple devices are affected.
-> > > > > > > Here, the bus and slot reset functions will fail unless the scope is
-> > > > > > > limited to the single device triggering this reset.  Thanks,
-> > > > > > > 
-> > > > > > > Alex
-> > > > > > >       
-> > > > > > 
-> > > > > > I was thinking a bit more about it and I'm really sure how it would
-> > > > > > behave with hotplugging PCIe bridge.
-> > > > > > 
-> > > > > > On aardvark PCIe controller I have already tested that secondary bus
-> > > > > > reset bit is triggering Hot Reset event and then also Link Down event.
-> > > > > > These events are not handled by aardvark driver yet (needs to
-> > > > > > implemented into kernel's emulated root bridge code).
-> > > > > > 
-> > > > > > But I'm not sure how it would behave on real HW PCIe hotplugging bridge.
-> > > > > > Kernel has already code which removes PCIe device if it changes presence
-> > > > > > bit (and inform via interrupt). And Link Down event triggers this
-> > > > > > change.    
-> > > > > 
-> > > > > This is the difference between slot and bus resets, the slot reset is
-> > > > > implemented by the hotplug controller and disables presence detection
-> > > > > around the bus reset.  Thanks,    
-> > > > 
-> > > > Yes, but I'm talking about bus reset, not about slot reset.
-> > > > 
-> > > > I mean: to use bus reset via sysfs on hardware which supports slots and
-> > > > hotplugging.
-> > > > 
-> > > > And if I'm reading code correctly, this combination is allowed, right?
-> > > > Via these new patches it is possible to disable slot reset and enable
-> > > > bus reset.  
-> > > 
-> > > That's true, a slot reset is simply a bus reset wrapped around code
-> > > that prevents the device from getting ejected.  
-> > 
-> > Yes, this makes slot reset "safe". But bus reset is "unsafe".
-> > 
-> > > Maybe it would make
-> > > sense to combine the two as far as this interface is concerned, ie. a
-> > > single "bus" reset method that will always use slot reset when
-> > > available.  Thanks,  
-> > 
-> > That should work when slot reset is available.
-> > 
-> > Other option is that mentioned remove-reset-rescan procedure.
+> It looks to me that the code need not be duplicated (see below).
 > 
-> That's not something we can introduce to the pci_reset_function() path
-> without a fair bit of collateral in using it through vfio-pci.
+> > Besides, reserving ACPI tables early and then calling acpi_table_init()
+> > (and acpi_tb_parse_root_table() again would mean doing the dance with
+> > early_memremap() twice for no good reason.
 > 
-> > But quick search in drivers/pci/hotplug/ results that not all hotplug
-> > drivers implement reset_slot method.
-> > 
-> > So there is a possible issue with hotplug driver which may eject device
-> > during bus reset (because e.g. slot reset is not implemented)?
+> That'd be simply inefficient which is kind of acceptable to me to start with.
 > 
-> People aren't reporting it, so maybe those controllers aren't being
-> used for this use case.  Or maybe introducing this patch will make
-> these reset methods more readily accessible for testing.  We can fix or
-> blacklist those controllers for bus reset when reports come in.  Thanks,
+> And I changing the ACPICA code can be avoided at least initially, it
+> by itself would be a good enough reason.
+> 
+> > I believe the most effective way to deal with this would be to have a
+> > function that does parsing, reservation and installs the tables supplied by
+> > the firmware which can be called really early and then another function
+> > that overrides tables if needed a some later point.
+> 
+> I agree that this should be the direction to go into.
 
-Ok! I do not know neither if those controllers are used, but looks like
-that there are still changes in hotplug code.
+So maybe something like the patch below?
 
-So I guess with these patches people can test it and report issues when
-such thing happen.
+I'm not sure if acpi_boot_table_prepare() gets called early enough, though.
+
+Also this still may not play well with initrd-based table overrides. Erik, do
+you have any insights here?
+
+And ia64 needs to be updated too.
+
+---
+ arch/x86/kernel/acpi/boot.c |   12 +++++++++---
+ arch/x86/kernel/setup.c     |    3 +++
+ drivers/acpi/tables.c       |   24 +++++++++++++++++++++---
+ include/linux/acpi.h        |    9 +++++++--
+ 4 files changed, 40 insertions(+), 8 deletions(-)
+
+Index: linux-pm/arch/x86/kernel/acpi/boot.c
+===================================================================
+--- linux-pm.orig/arch/x86/kernel/acpi/boot.c
++++ linux-pm/arch/x86/kernel/acpi/boot.c
+@@ -1541,7 +1541,7 @@ static const struct dmi_system_id acpi_d
+  *	...
+  */
+ 
+-void __init acpi_boot_table_init(void)
++void __init acpi_boot_table_prepare(void)
+ {
+ 	dmi_check_system(acpi_dmi_table);
+ 
+@@ -1554,10 +1554,16 @@ void __init acpi_boot_table_init(void)
+ 	/*
+ 	 * Initialize the ACPI boot-time table parser.
+ 	 */
+-	if (acpi_table_init()) {
++	if (acpi_table_prepare())
+ 		disable_acpi();
++}
++
++void __init acpi_boot_table_init(void)
++{
++	if (acpi_disabled)
+ 		return;
+-	}
++
++	acpi_table_init();
+ 
+ 	acpi_table_parse(ACPI_SIG_BOOT, acpi_parse_sbf);
+ 
+Index: linux-pm/arch/x86/kernel/setup.c
+===================================================================
+--- linux-pm.orig/arch/x86/kernel/setup.c
++++ linux-pm/arch/x86/kernel/setup.c
+@@ -1070,6 +1070,9 @@ void __init setup_arch(char **cmdline_p)
+ 	/* preallocate 4k for mptable mpc */
+ 	e820__memblock_alloc_reserved_mpc_new();
+ 
++	/* Look for ACPI tables and reserve memory occupied by them. */
++	acpi_boot_table_prepare();
++
+ #ifdef CONFIG_X86_CHECK_BIOS_CORRUPTION
+ 	setup_bios_corruption_check();
+ #endif
+Index: linux-pm/include/linux/acpi.h
+===================================================================
+--- linux-pm.orig/include/linux/acpi.h
++++ linux-pm/include/linux/acpi.h
+@@ -222,11 +222,13 @@ void __iomem *__acpi_map_table(unsigned
+ void __acpi_unmap_table(void __iomem *map, unsigned long size);
+ int early_acpi_boot_init(void);
+ int acpi_boot_init (void);
++void acpi_boot_table_prepare (void);
+ void acpi_boot_table_init (void);
+ int acpi_mps_check (void);
+ int acpi_numa_init (void);
+ 
+-int acpi_table_init (void);
++int acpi_table_prepare (void);
++void acpi_table_init (void);
+ int acpi_table_parse(char *id, acpi_tbl_table_handler handler);
+ int __init acpi_table_parse_entries(char *id, unsigned long table_size,
+ 			      int entry_id,
+@@ -814,9 +816,12 @@ static inline int acpi_boot_init(void)
+ 	return 0;
+ }
+ 
++static inline void acpi_boot_table_prepare(void)
++{
++}
++
+ static inline void acpi_boot_table_init(void)
+ {
+-	return;
+ }
+ 
+ static inline int acpi_mps_check(void)
+Index: linux-pm/drivers/acpi/tables.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/tables.c
++++ linux-pm/drivers/acpi/tables.c
+@@ -788,9 +788,10 @@ acpi_status acpi_os_table_override(struc
+  * result: sdt_entry[] is initialized
+  */
+ 
+-int __init acpi_table_init(void)
++int __init acpi_table_prepare(void)
+ {
+ 	acpi_status status;
++	int i;
+ 
+ 	if (acpi_verify_table_checksum) {
+ 		pr_info("Early table checksum verification enabled\n");
+@@ -803,12 +804,29 @@ int __init acpi_table_init(void)
+ 	status = acpi_initialize_tables(initial_tables, ACPI_MAX_TABLES, 0);
+ 	if (ACPI_FAILURE(status))
+ 		return -EINVAL;
+-	acpi_table_initrd_scan();
+ 
+-	check_multiple_madt();
++	for (i = 0; i < ACPI_MAX_TABLES; i++) {
++		struct acpi_table_desc *table_desc = &initial_tables[i];
++
++		if (!table_desc->address || !table_desc->length)
++			break;
++
++		pr_info("Reserving %4s table memory at [0x%llx - 0x%llx]\n",
++			table_desc->signature.ascii, table_desc->address,
++			table_desc->address + table_desc->length - 1);
++
++		memblock_reserve(table_desc->address, table_desc->length);
++	}
++
+ 	return 0;
+ }
+ 
++void __init acpi_table_init(void)
++{
++	acpi_table_initrd_scan();
++	check_multiple_madt();
++}
++
+ static int __init acpi_parse_apic_instance(char *str)
+ {
+ 	if (!str)
+
+
+
