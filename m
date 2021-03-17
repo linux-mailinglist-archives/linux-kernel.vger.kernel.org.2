@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB1733F11B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1589233F11F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:24:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbhCQNXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 09:23:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52299 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231154AbhCQNWs (ORCPT
+        id S230448AbhCQNYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 09:24:24 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50242 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230394AbhCQNYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 09:22:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615987368;
+        Wed, 17 Mar 2021 09:24:05 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615987444;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GSnnG24IL66GaSFjDi7U5DCQjtxnKgGm2JKqvViBmIc=;
-        b=TgixGFY0oLaLak3skEIMUAbCkPyggNZUMbGVB4sk6D6QdfK8EdPqk7DuYt3CCuey+rjuir
-        E/ic6NtltyrVjAsgTcArQGXsnZxi/1aq8+HkH1kjontG2rJpwfw7PioTHSJSzqrjM1Qd0p
-        UhB2S7A15DA5l6dYvW2VkbeN39td6RY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231-09nPzWmOMKuiqSUwbxBybg-1; Wed, 17 Mar 2021 09:22:46 -0400
-X-MC-Unique: 09nPzWmOMKuiqSUwbxBybg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CEBF7107ACCD;
-        Wed, 17 Mar 2021 13:22:44 +0000 (UTC)
-Received: from [10.36.112.124] (ovpn-112-124.ams2.redhat.com [10.36.112.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7DDCA5D9C0;
-        Wed, 17 Mar 2021 13:22:43 +0000 (UTC)
-Subject: Re: [PATCH] mm: Remove default DISCONTIGMEM_MANUAL
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210312141208.3465520-1-geert@linux-m68k.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <96c306db-ac18-cf35-76fa-0e122c01bc0f@redhat.com>
-Date:   Wed, 17 Mar 2021 14:22:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        bh=FsC2NWZVyQTIHkn6v/zVO7fICB/cBhGynvclYmJUo2Y=;
+        b=xNYt07/nHp4zDi8WV0B2YyirsX6XPCgCBqR5YbIbwcXWm2vpjSHGw1ASHSlI6O6z4XjGL8
+        UGlucQzh30nXIzOE99S8tb1FIr/nzSQmeCYKPUeq+GwZBZNafCcI94FN9cA37Li+uTyGnp
+        luk48zJCwfw45bajZb1YCX6sRL0xHiGD+Gg8d7HNwmnpuCx+FgPcz1jIyc4ByZwxRyeyez
+        HZZ0bOkFCaKrgA+8VSmrofOMdM+UUnSY43OpysikJ54ARvTcofgA7Ot6pApLI69Ty0zbt8
+        rmjek/wds0ZoyhAKj3xSHqv35qO/HQFlwJd+yaxirr1m/DQTrYRhFEKQ0O4Yfg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615987444;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FsC2NWZVyQTIHkn6v/zVO7fICB/cBhGynvclYmJUo2Y=;
+        b=vUCaLIQPEVZuiZXfKWwaKAJcVBlSNPBEoQN+1L9JN4jFj2z6ec3vps9E748SyE7u/egxXU
+        yUDySZQKQSKPj6Dg==
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: threadirqs deadlocks
+In-Reply-To: <YFCO+FEjWPGytb2W@hovoldconsulting.com>
+References: <YFCO+FEjWPGytb2W@hovoldconsulting.com>
+Date:   Wed, 17 Mar 2021 14:24:04 +0100
+Message-ID: <87eegdzzez.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210312141208.3465520-1-geert@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.03.21 15:12, Geert Uytterhoeven wrote:
-> Commit 214496cb18700fd7 ("ia64: make SPARSEMEM default and disable
-> DISCONTIGMEM") removed the last enabler of ARCH_DISCONTIGMEM_DEFAULT,
-> hence the memory model can no longer default to DISCONTIGMEM_MANUAL.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
-> DISCONTIGMEM_MANUAL depends on ARCH_DISCONTIGMEM_ENABLE, which in turns
-> depends on BROKEN, so probably all discontig memory support can be
-> removed, too?
-> ---
->   mm/Kconfig | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index 24c045b24b95069b..579254f10fb1bac6 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -9,7 +9,6 @@ config SELECT_MEMORY_MODEL
->   choice
->   	prompt "Memory model"
->   	depends on SELECT_MEMORY_MODEL
-> -	default DISCONTIGMEM_MANUAL if ARCH_DISCONTIGMEM_DEFAULT
->   	default SPARSEMEM_MANUAL if ARCH_SPARSEMEM_DEFAULT
->   	default FLATMEM_MANUAL
->   	help
-> 
+Johan,
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+On Tue, Mar 16 2021 at 11:56, Johan Hovold wrote:
+> We've gotten reports of lockdep splats correctly identifying a potential
+> deadlock in serial drivers when running with forced interrupt threading.
+>
+> Typically, a serial driver takes the port spin lock in its interrupt
+> handler, but unless also disabling interrupts the handler can be
+> preempted by another interrupt which can end up calling printk. The
+> console code takes then tries to take the port lock and we deadlock.
+>
+> It seems to me that forced interrupt threading cannot generally work
+> without updating drivers that expose locks that can be taken by other
+> interrupt handlers, for example, by using spin_lock_irqsave() in their
+> interrupt handlers or marking their interrupts as IRQF_NO_THREAD.
 
--- 
+The latter is the worst option because that will break PREEMPT_RT.
+
+> What are your thoughts on this given that forced threading isn't that
+> widely used and was said to be "mostly a debug option". Do we need to
+> vet all current and future drivers and adapt them for "threadirqs"?
+>
+> Note that we now have people sending cleanup patches for interrupt
+> handlers by search-and-replacing spin_lock_irqsave() with spin_lock()
+> which can end up exposing this more.
+
+It's true that for !RT it's primarily a debug option, but occasionaly a
+very valuable one because it does not take the whole machine down when
+something explodes in an interrupt handler. Used it just a couple of
+weeks ago successfully :)
+
+So we have several ways out of that:
+
+  1) Do the lock() -> lock_irqsave() dance
+
+  2) Delay printing from hard interrupt context (which is what RT does)
+
+  3) Actually disable interrupts before calling the force threaded
+     handler.
+
+I'd say #3 is the right fix here. It's preserving the !RT semantics
+and the usefulness of threadirqs for debugging and spare us dealing with
+the script kiddies.
+
+Something like the below.
+
 Thanks,
 
-David / dhildenb
-
+        tglx
+---
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -1142,11 +1142,15 @@ irq_forced_thread_fn(struct irq_desc *de
+ 	irqreturn_t ret;
+ 
+ 	local_bh_disable();
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
++		local_irq_disable();
+ 	ret = action->thread_fn(action->irq, action->dev_id);
+ 	if (ret == IRQ_HANDLED)
+ 		atomic_inc(&desc->threads_handled);
+ 
+ 	irq_finalize_oneshot(desc, action);
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
++		local_enable();
+ 	local_bh_enable();
+ 	return ret;
+ }
