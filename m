@@ -2,218 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7E833F64B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:10:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A06633F653
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhCQRKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33400 "EHLO
+        id S229863AbhCQRMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhCQRJs (ORCPT
+        with ESMTP id S230196AbhCQRL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:09:48 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC18C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:09:48 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so3607497pjc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:09:48 -0700 (PDT)
+        Wed, 17 Mar 2021 13:11:58 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A15C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:11:57 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id x4so4067763lfu.7
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:11:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ABmEQK7k0d4RtWhDeFiXEcixsJixRYbiFKQWtkomMPQ=;
-        b=Tv3ARliU1iNPKpMdCio6RTSbAoNQZA7T8/fuzqgPuw4ADlNcJGKfYdwVYiBNDGDav1
-         7JJ1R33Hdemk8n/s0fcn20LFUQxe9/E2F+fUKBuhfTPWgVRaBjx+rt4amShgBhZDywo0
-         QUDPd3Nx2IltpU5mAO16PELm7QdR1lxhgQe+WpxQI8PJ9Ok4gXfjPDRwNSt7pqg4zKSU
-         oGVKnDd14Tfk3tMmeI9Nsa8rFBMExPjFuuv2ClNcfer74L8ryILYRPQH5PuHhNsZNtCC
-         Kf2anGHZJtodd6aFf4N3gLl5kvxtJKRKUMmk5xR6QWvnTIpCLDGmsutkDU3hixogJIMQ
-         RQ2w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Jzrcb4snjLsfCfgL7oJZ6fFGa4UZcs/jVCaFF495Y9I=;
+        b=jhsTx4u3bX6dnuVOods1QVHxDvDRiLqaGF+PGS54cjNTi9eg9MypoGpTSGldjNDPn4
+         WpwX3M8TKZuSW/TAGQkVP9BS/k6wwj2WpG5ssv7ZXigAiiLALXIWU/T8oLqh32ji2/ph
+         8/G/6m3jCydCfwIjD8/cBRg+tvtl67RTRYxHJcP6LqnTbVgq/JeFyGr0I4Oam0Mf24fB
+         d8JRTAbUa0HJOsPpSaomCtqmexfQZUBd30in19OoWMB44of9N6YcEIZ/Iz6CrDL4Q7ba
+         kPCaUhZ69478SbyyCqVG5sRGOWAzYWe3ayXkl0fe5uDUJngVJmExKdU3bcAzmOM75kIs
+         xR+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ABmEQK7k0d4RtWhDeFiXEcixsJixRYbiFKQWtkomMPQ=;
-        b=G30NW1dllRYMS3NTYpO0bwZpx0App73KrNovwFm9ejUBq6XkzoiDGi1ofGhCnfd8Fy
-         2AfYM9JBmUY5DNdX/I9wad03VMOix4FcOq/MpyzgJJH2f9C18Nq6EF/2gvgiqTIkPlcw
-         yiX9iXh/tzQEHH3VZcNo4w5nDi8ZuoAfS+k635wyJ3j5FnMIoVus65cWyWFSSI5++BiQ
-         ZnhdMKlKfxOHLAPt8cILuoCPjjDJjuwn9twtpCMLlnjfi0+y+/EWTsIcFty3b7kOl6uX
-         UcPI+OPRyNc3jucqr8Uhg70xAhyelxeRQTGtZtxGqvmxGfLRKTqwx1Sl9wwU0haICdZo
-         iydQ==
-X-Gm-Message-State: AOAM531uw9oDJzS9t9jOW/Ex5etIh3YvHltcmJbEfMseLG23t2lY35Tu
-        aken+QxL6CsmCltRsc8aiB28vg==
-X-Google-Smtp-Source: ABdhPJzv3oKCBsfvtS2oEZqrt2d3tbwn/cgZETrd98clJUtz6iNVAu2SPYzqzP0RCbcudtezjHyoCg==
-X-Received: by 2002:a17:902:e98c:b029:e5:defc:ccf8 with SMTP id f12-20020a170902e98cb02900e5defcccf8mr5515223plb.20.1616000987635;
-        Wed, 17 Mar 2021 10:09:47 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id l22sm20462709pfd.145.2021.03.17.10.09.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 10:09:46 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 11:09:45 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mike.leach@linaro.org, anshuman.khandual@arm.com,
-        leo.yan@linaro.org
-Subject: Re: [PATCH v4 09/19] coresight: etm4x: Move ETM to prohibited region
- for disable
-Message-ID: <20210317170945.GA1498234@xps15>
-References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
- <20210225193543.2920532-10-suzuki.poulose@arm.com>
- <20210316193008.GD1387186@xps15>
- <7e8569f8-9da2-096c-a35a-14248329026a@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Jzrcb4snjLsfCfgL7oJZ6fFGa4UZcs/jVCaFF495Y9I=;
+        b=KJGOxFdWMerw/C75LQrwwjHQFXOx/DY7QzK/RYd8ydAWIqzocRC8rIcJHIYkbB6dLX
+         rOa/7CM5jVWJaM5bGnaJjDrDgSTw2XTkG/BErmXj/ylBWTZdasbQpnsGvkjeVvna29WE
+         C33u3NDrTitSYnxD887xvdr3f93b60wlNjV11I7Py5OfPT9U5nhB9A8/HMTBnKqQUpgH
+         AvWhgDC37j36Wil6jpxRexkqeT82Oz4emp9Te55zYJvdvcCDsMyFzkLY3lzomOLC2iOv
+         hC7KuXFjo0NIbQeQg9HR4PxLwh5sXPAfDPaq7B5lOvu77lynjEFtoB0Zweuj6eRzdMLn
+         S+GA==
+X-Gm-Message-State: AOAM533XwpWWpiFGIgxDRGe2QqUdcwzd1RMAEnFYJ8vxYi6dbvZfxAxb
+        VyiVs2Yb4g0vJQMB9pP8Blk8EHQ6v9wCVzBnH1oh4w==
+X-Google-Smtp-Source: ABdhPJwy1vfNQZQDVVE72SA1/HppIJ+ANP8e2YQaMqPQRoEHa1oHuTdWoG9xh3SZl2KCgAetkOywA6CCUAUxOlAF/5U=
+X-Received: by 2002:a05:6512:3481:: with SMTP id v1mr2853789lfr.193.1616001116260;
+ Wed, 17 Mar 2021 10:11:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7e8569f8-9da2-096c-a35a-14248329026a@arm.com>
+References: <20210317064148.GA55123@embeddedor>
+In-Reply-To: <20210317064148.GA55123@embeddedor>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 17 Mar 2021 18:11:29 +0100
+Message-ID: <CAG48ez2RDqKwx=umOHjo_1mYyNQgzvcP=KOw1HgSo4Prs_VQDw@mail.gmail.com>
+Subject: Re: [PATCH][next] ixgbe: Fix out-of-bounds warning in ixgbe_host_interface_command()
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        intel-wired-lan@lists.osuosl.org,
+        Network Development <netdev@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 10:44:51AM +0000, Suzuki K Poulose wrote:
-> Hi Mathieu
-> 
-> On 3/16/21 7:30 PM, Mathieu Poirier wrote:
-> > On Thu, Feb 25, 2021 at 07:35:33PM +0000, Suzuki K Poulose wrote:
-> > > If the CPU implements Arm v8.4 Trace filter controls (FEAT_TRF),
-> > > move the ETM to trace prohibited region using TRFCR, while disabling.
-> > > 
-> > > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > > Cc: Mike Leach <mike.leach@linaro.org>
-> > > Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> > > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > > ---
-> > > New patch
-> > 
-> > I would ask you to refrain from introducing new patches.  Otherwise the goal
-> > posts keep on moving with every revision and we'll never get through.  Fixes and
-> > enhancement can come in later patchsets.
-> > 
-> 
-> While I agree that this is a fix and a new patch, it also attests what
-> we do in the nvhe hypervisor to disable tracing while we enter the guest, by
-> using the Trace filter controls.
-> 
-> > > ---
-> > >   .../coresight/coresight-etm4x-core.c          | 21 +++++++++++++++++--
-> > >   drivers/hwtracing/coresight/coresight-etm4x.h |  2 ++
-> > >   2 files changed, 21 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> > > index 15016f757828..00297906669c 100644
-> > > --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> > > +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> > > @@ -31,6 +31,7 @@
-> > >   #include <linux/pm_runtime.h>
-> > >   #include <linux/property.h>
-> > > +#include <asm/barrier.h>
-> > >   #include <asm/sections.h>
-> > >   #include <asm/sysreg.h>
-> > >   #include <asm/local.h>
-> > > @@ -654,6 +655,7 @@ static int etm4_enable(struct coresight_device *csdev,
-> > >   static void etm4_disable_hw(void *info)
-> > >   {
-> > >   	u32 control;
-> > > +	u64 trfcr;
-> > >   	struct etmv4_drvdata *drvdata = info;
-> > >   	struct etmv4_config *config = &drvdata->config;
-> > >   	struct coresight_device *csdev = drvdata->csdev;
-> > > @@ -676,6 +678,16 @@ static void etm4_disable_hw(void *info)
-> > >   	/* EN, bit[0] Trace unit enable bit */
-> > >   	control &= ~0x1;
-> > > +	/*
-> > > +	 * If the CPU supports v8.4 Trace filter Control,
-> > > +	 * set the ETM to trace prohibited region.
-> > > +	 */
-> > > +	if (drvdata->trfc) {
-> > > +		trfcr = read_sysreg_s(SYS_TRFCR_EL1);
-> > > +		write_sysreg_s(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE),
-> > > +			       SYS_TRFCR_EL1);
-> > > +		isb();
-> > > +	}
-> > >   	/*
-> > >   	 * Make sure everything completes before disabling, as recommended
-> > >   	 * by section 7.3.77 ("TRCVICTLR, ViewInst Main Control Register,
-> > > @@ -683,12 +695,16 @@ static void etm4_disable_hw(void *info)
-> > >   	 */
-> > >   	dsb(sy);
-> > >   	isb();
-> > > +	/* Trace synchronization barrier, is a nop if not supported */
-> > > +	tsb_csync();
-> > >   	etm4x_relaxed_write32(csa, control, TRCPRGCTLR);
-> > >   	/* wait for TRCSTATR.PMSTABLE to go to '1' */
-> > >   	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_PMSTABLE_BIT, 1))
-> > >   		dev_err(etm_dev,
-> > >   			"timeout while waiting for PM stable Trace Status\n");
-> > > +	if (drvdata->trfc)
-> > > +		write_sysreg_s(trfcr, SYS_TRFCR_EL1);
-> > 
-> > drvdata->trfc is invariably set to true in cpu_enable_tracing() and as such
-> > testing for it is not required.
-> 
-> That is not true. This is only set when the CPU supports trace filtering.
-> So, this is more of a capability field for the CPU where the ETM is bound.
-> Only v8.4+ CPUs implement trace filtering controls.
+On Wed, Mar 17, 2021 at 8:43 AM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+> Fix the following out-of-bounds warning by replacing the one-element
+> array in an anonymous union with a pointer:
+>
+>   CC [M]  drivers/net/ethernet/intel/ixgbe/ixgbe_common.o
+> drivers/net/ethernet/intel/ixgbe/ixgbe_common.c: In function =E2=80=98ixg=
+be_host_interface_command=E2=80=99:
+> drivers/net/ethernet/intel/ixgbe/ixgbe_common.c:3729:13: warning: array s=
+ubscript 1 is above array bounds of =E2=80=98u32[1]=E2=80=99 {aka =E2=80=98=
+unsigned int[1]=E2=80=99} [-Warray-bounds]
+>  3729 |   bp->u32arr[bi] =3D IXGBE_READ_REG_ARRAY(hw, IXGBE_FLEX_MNG, bi)=
+;
+>       |   ~~~~~~~~~~^~~~
+> drivers/net/ethernet/intel/ixgbe/ixgbe_common.c:3682:7: note: while refer=
+encing =E2=80=98u32arr=E2=80=99
+>  3682 |   u32 u32arr[1];
+>       |       ^~~~~~
+>
+> This helps with the ongoing efforts to globally enable -Warray-bounds.
+>
+> Notice that, the usual approach to fix these sorts of issues is to
+> replace the one-element array with a flexible-array member. However,
+> flexible arrays should not be used in unions. That, together with the
+> fact that the array notation is not being affected in any ways, is why
+> the pointer approach was chosen in this case.
+>
+> Link: https://github.com/KSPP/linux/issues/109
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_common.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c b/drivers/ne=
+t/ethernet/intel/ixgbe/ixgbe_common.c
+> index 62ddb452f862..bff3dc1af702 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
+> @@ -3679,7 +3679,7 @@ s32 ixgbe_host_interface_command(struct ixgbe_hw *h=
+w, void *buffer,
+>         u32 hdr_size =3D sizeof(struct ixgbe_hic_hdr);
+>         union {
+>                 struct ixgbe_hic_hdr hdr;
+> -               u32 u32arr[1];
+> +               u32 *u32arr;
+>         } *bp =3D buffer;
+>         u16 buf_len, dword_len;
+>         s32 status;
 
-Ah yes, you are correct - this patch makes sense now.
-
-> 
-> Cheers
-> Suzuki
-> 
-> 
-> > 
-> > >   	/* read the status of the single shot comparators */
-> > >   	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
-> > > @@ -873,7 +889,7 @@ static bool etm4_init_csdev_access(struct etmv4_drvdata *drvdata,
-> > >   	return false;
-> > >   }
-> > > -static void cpu_enable_tracing(void)
-> > > +static void cpu_enable_tracing(struct etmv4_drvdata *drvdata)
-> > >   {
-> > >   	u64 dfr0 = read_sysreg(id_aa64dfr0_el1);
-> > >   	u64 trfcr;
-> > > @@ -881,6 +897,7 @@ static void cpu_enable_tracing(void)
-> > >   	if (!cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_TRACE_FILT_SHIFT))
-> > >   		return;
-> > > +	drvdata->trfc = true;
-> > >   	/*
-> > >   	 * If the CPU supports v8.4 SelfHosted Tracing, enable
-> > >   	 * tracing at the kernel EL and EL0, forcing to use the
-> > > @@ -1082,7 +1099,7 @@ static void etm4_init_arch_data(void *info)
-> > >   	/* NUMCNTR, bits[30:28] number of counters available for tracing */
-> > >   	drvdata->nr_cntr = BMVAL(etmidr5, 28, 30);
-> > >   	etm4_cs_lock(drvdata, csa);
-> > > -	cpu_enable_tracing();
-> > > +	cpu_enable_tracing(drvdata);
-> > 
-> > At least for this patch, the above three hunks aren't needed.
-> > 
-> > >   }
-> > >   static inline u32 etm4_get_victlr_access_type(struct etmv4_config *config)
-> > > diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-> > > index 0af60571aa23..f6478ef642bf 100644
-> > > --- a/drivers/hwtracing/coresight/coresight-etm4x.h
-> > > +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-> > > @@ -862,6 +862,7 @@ struct etmv4_save_state {
-> > >    * @nooverflow:	Indicate if overflow prevention is supported.
-> > >    * @atbtrig:	If the implementation can support ATB triggers
-> > >    * @lpoverride:	If the implementation can support low-power state over.
-> > > + * @trfc:	If the implementation supports Arm v8.4 trace filter controls.
-> > >    * @config:	structure holding configuration parameters.
-> > >    * @save_state:	State to be preserved across power loss
-> > >    * @state_needs_restore: True when there is context to restore after PM exit
-> > > @@ -912,6 +913,7 @@ struct etmv4_drvdata {
-> > >   	bool				nooverflow;
-> > >   	bool				atbtrig;
-> > >   	bool				lpoverride;
-> > > +	bool				trfc;
-> > 
-> > Nor is this one.
-> > 
-> > >   	struct etmv4_config		config;
-> > >   	struct etmv4_save_state		*save_state;
-> > >   	bool				state_needs_restore;
-> > > -- 
-> > > 2.24.1
-> > > 
-> 
+This looks bogus. An array is inline, a pointer points elsewhere -
+they're not interchangeable.
