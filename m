@@ -2,162 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0627433F56B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E583033F540
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:16:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232213AbhCQQZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 12:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51948 "EHLO
+        id S232383AbhCQQQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 12:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232109AbhCQQZX (ORCPT
+        with ESMTP id S232392AbhCQQPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 12:25:23 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C119C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:25:23 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id w8so1403142pjf.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:25:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=T8ZVDRngx7SfOHOksYEtUxmnvVwRwyIdjJ9TXCeErI0=;
-        b=vKJV7Zr2kO1BbXKDI4W1yjK3GY0tGe5TJ7VcEi+BHFVjD6lAQZlcwrWzvzIriTUqsw
-         RN24cMy2wS1V2+sWbgoH+Z/UcJNQhJR5EsJ07mcWyWQ0fPRFlTRJUSG8jba/D394CuX0
-         V3VowweoXBfnnkW/PAAhbuuRI/U5a4wKmVo5svH3GXnijgYRDJblDfxT9ZRjEDVjXK54
-         OMKxWShbm/YwQ7GK8BUVrh9yyZf9nlWRRzqlchzshHuN/zZmMvatS1Jag7dmwdxO8xCi
-         FtYv8fw14opDuhzBq//Y1/CSywkOuCKAQXJcavOzGp+1cOGcdj6ldKh95SDh0o7nGQ3U
-         +u4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=T8ZVDRngx7SfOHOksYEtUxmnvVwRwyIdjJ9TXCeErI0=;
-        b=rct2zn5TL93j4jdV7k+y8FWlRvrXKwYJlmDrCY64UcsX59ZJofk9ePwfWiOFnlRkDy
-         EBU+/FriDh34jTSqfaTUE70fA1J1N9xeBBZ23/LhT6D8PaGM0y7MrkZbYmJvw1FfjTKv
-         ypOoasebdxSrs8xMfxXHdlZgN0VM8pSAn54pwx8CX70q1nNG1wzN1A8RYCJmSOXUSthz
-         9agX/yYsOrfLYq2dUt0QmUfuSq6cGnvhKnmv13AEPvKOjpVFdNKFB5W0EEQOemhWfn20
-         5IuwPbHKxQB5c/2/Tmx0VvGVCp+IYNu/LMaKYEYYDzwGYo16f2taPDpKFLslPyKwJ83a
-         Cz/A==
-X-Gm-Message-State: AOAM530XL0I+Zri1XjvDntjX1i+rZyclBl01d4wMXWtkY56xg3nxejdM
-        MY4xwvhNH5c24KjsHR1U2D9/N0rr5qNqMCEI
-X-Google-Smtp-Source: ABdhPJzn+X0lUmMP3xjGdhzRR/GqWE9lHN7gXgNMa/Jja6A78fZAVsrellf1eHvVgOiS2JkYuKRG5w==
-X-Received: by 2002:ad4:5ce7:: with SMTP id iv7mr5503229qvb.7.1615994363393;
-        Wed, 17 Mar 2021 08:19:23 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id l186sm17703862qke.92.2021.03.17.08.19.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 08:19:22 -0700 (PDT)
-Subject: Re: [PATCH][RESEND] Revert "PM: ACPI: reboot: Use S5 for reboot"
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-References: <b8db79e6857c41dab4ef08bdf826ea7c47e3bafc.1615947283.git.josef@toxicpanda.com>
- <CAAd53p5Vh_+tUeEQx3xf_aLiCiKP1u5Y3VgYCUzZ82Kgtr-iYw@mail.gmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <bebcaffc-d485-912d-0c42-c0781f9c7603@toxicpanda.com>
-Date:   Wed, 17 Mar 2021 11:19:21 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Wed, 17 Mar 2021 12:15:39 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4332C06175F;
+        Wed, 17 Mar 2021 09:15:38 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 15:19:45 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615994386;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mgV51ibPcfISQ+sGgS3nDU4tWskT7lkLqjb/sl1ES4A=;
+        b=G4wI4MlO+npTQQtQ8Y7Q1ggXBrLXqhcqMDIn4qsIWKQmmkDpsGY2M5FdUcizGKgAhBsn+x
+        3CeKL6Y5f/7Y+Kj4xfM2AKBB32fHAVrhs9hTIPAS/w3RADU0nLVyL6nEIAwfyBH7kBwUZJ
+        HNaF4XMf2cZkMiLJcBfjivORNiDvXrW5uySvHuPAmrAszu8I65SJRvropAcxVJLxxnevN0
+        jrBd5xPLludk86UsK1/V0JV7mscIpVDYECvfW4JYvxCnQ1x/EsNGwJbn8ipZhJ/168XCtx
+        3BHjWzWxki96txOVAs4SEqULje+ot7HHd5wEusLxp53oVmfOPGHYln36d2Fucg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615994386;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mgV51ibPcfISQ+sGgS3nDU4tWskT7lkLqjb/sl1ES4A=;
+        b=F6bVIt9n8RRhLoTuA1xSzXQibL4p/HFgmxVnR4BeLWzMU/Tw5gIw3kfVl7ec44WuitNU7O
+        ogk4Pr5aIniY7QAw==
+From:   "tip-bot2 for Piotr Figiel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] rseq, ptrace: Add PTRACE_GET_RSEQ_CONFIGURATION request
+Cc:     Piotr Figiel <figiel@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michal Miroslaw <emmir@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Oleg Nesterov <oleg@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210226135156.1081606-1-figiel@google.com>
+References: <20210226135156.1081606-1-figiel@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAd53p5Vh_+tUeEQx3xf_aLiCiKP1u5Y3VgYCUzZ82Kgtr-iYw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Message-ID: <161599438512.398.10240803553618340072.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/21 10:50 PM, Kai-Heng Feng wrote:
-> Hi,
-> 
-> On Wed, Mar 17, 2021 at 10:17 AM Josef Bacik <josef@toxicpanda.com> wrote:
->>
->> This reverts commit d60cd06331a3566d3305b3c7b566e79edf4e2095.
->>
->> This patch causes a panic when rebooting my Dell Poweredge r440.  I do
->> not have the full panic log as it's lost at that stage of the reboot and
->> I do not have a serial console.  Reverting this patch makes my system
->> able to reboot again.
-> 
-> But this patch also helps many HP laptops, so maybe we should figure
-> out what's going on on Poweredge r440.
-> Does it also panic on shutdown?
-> 
+The following commit has been merged into the sched/core branch of tip:
 
-Sure I'll test whatever to get it fixed, but I just wasted 3 days bisecting and 
-lost a weekend of performance testing on btrfs because of this regression, so 
-until you figure out how it broke it needs to be reverted so people don't have 
-to figure out why reboot suddenly isn't working.
+Commit-ID:     90f093fa8ea48e5d991332cee160b761423d55c1
+Gitweb:        https://git.kernel.org/tip/90f093fa8ea48e5d991332cee160b761423d55c1
+Author:        Piotr Figiel <figiel@google.com>
+AuthorDate:    Fri, 26 Feb 2021 14:51:56 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 17 Mar 2021 16:15:39 +01:00
 
-Running "halt" has the same effect with and without your patch, it gets to 
-"system halted" and just sits there without powering off.  Not entirely sure why 
-that is, but there's no panic.
+rseq, ptrace: Add PTRACE_GET_RSEQ_CONFIGURATION request
 
-The panic itself is lost, but I see there's an NMI and I have the RIP
+For userspace checkpoint and restore (C/R) a way of getting process state
+containing RSEQ configuration is needed.
 
-(gdb) list *('mwait_idle_with_hints.constprop.0'+0x4b)
-0xffffffff816dabdb is in mwait_idle_with_hints 
-(./arch/x86/include/asm/current.h:15).
-10
-11	DECLARE_PER_CPU(struct task_struct *, current_task);
-12
-13	static __always_inline struct task_struct *get_current(void)
-14	{
-15		return this_cpu_read_stable(current_task);
-16	}
-17
-18	#define current get_current()
-19
+There are two ways this information is going to be used:
+ - to re-enable RSEQ for threads which had it enabled before C/R
+ - to detect if a thread was in a critical section during C/R
 
-<mwait_idle_with_hints.constprop.0>:    jmp    0xffffffff936dac02 
-<mwait_idle_with_hints.constprop.0+0x72>
-<mwait_idle_with_hints.constprop.0+0x2>:        nopl   (%rax)
-<mwait_idle_with_hints.constprop.0+0x5>:        jmp    0xffffffff936dabac 
-<mwait_idle_with_hints.constprop.0+0x1c>
-<mwait_idle_with_hints.constprop.0+0x7>:        nopl   (%rax)
-<mwait_idle_with_hints.constprop.0+0xa>:        mfence
-<mwait_idle_with_hints.constprop.0+0xd>:        mov    %gs:0x17bc0,%rax
-<mwait_idle_with_hints.constprop.0+0x16>:       clflush (%rax)
-<mwait_idle_with_hints.constprop.0+0x19>:       mfence
-<mwait_idle_with_hints.constprop.0+0x1c>:       xor    %edx,%edx
-<mwait_idle_with_hints.constprop.0+0x1e>:       mov    %rdx,%rcx
-<mwait_idle_with_hints.constprop.0+0x21>:       mov    %gs:0x17bc0,%rax
-<mwait_idle_with_hints.constprop.0+0x2a>:       monitor %rax,%rcx,%rdx
-<mwait_idle_with_hints.constprop.0+0x2d>:       mov    (%rax),%rax
-<mwait_idle_with_hints.constprop.0+0x30>:       test   $0x8,%al
-<mwait_idle_with_hints.constprop.0+0x32>:       jne    0xffffffff936dabdb 
-<mwait_idle_with_hints.constprop.0+0x4b>
-<mwait_idle_with_hints.constprop.0+0x34>:       jmpq   0xffffffff936dabd0 
-<mwait_idle_with_hints.constprop.0+0x40>
-<mwait_idle_with_hints.constprop.0+0x39>:       verw   0x9f9fec(%rip)        # 
-0xffffffff940d4bbc
-<mwait_idle_with_hints.constprop.0+0x40>:       mov    $0x1,%ecx
-<mwait_idle_with_hints.constprop.0+0x45>:       mov    %rdi,%rax
-<mwait_idle_with_hints.constprop.0+0x48>:       mwait  %rax,%rcx
-<mwait_idle_with_hints.constprop.0+0x4b>:       mov    %gs:0x17bc0,%rax
-<mwait_idle_with_hints.constprop.0+0x54>:       lock andb $0xdf,0x2(%rax)
-<mwait_idle_with_hints.constprop.0+0x59>:       lock addl $0x0,-0x4(%rsp)
-<mwait_idle_with_hints.constprop.0+0x5f>:       mov    (%rax),%rax
-<mwait_idle_with_hints.constprop.0+0x62>:       test   $0x8,%al
-<mwait_idle_with_hints.constprop.0+0x64>:       je     0xffffffff936dac01 
-<mwait_idle_with_hints.constprop.0+0x71>
-<mwait_idle_with_hints.constprop.0+0x66>:       andl 
-$0x7fffffff,%gs:0x6c93cf7f(%rip)        # 0x17b80
-<mwait_idle_with_hints.constprop.0+0x71>:       retq
-<mwait_idle_with_hints.constprop.0+0x72>:       mov    %gs:0x17bc0,%rax
-<mwait_idle_with_hints.constprop.0+0x7b>:       lock orb $0x20,0x2(%rax)
-<mwait_idle_with_hints.constprop.0+0x80>:       mov    (%rax),%rax
-<mwait_idle_with_hints.constprop.0+0x83>:       test   $0x8,%al
-<mwait_idle_with_hints.constprop.0+0x85>:       jne    0xffffffff936dabdb 
-<mwait_idle_with_hints.constprop.0+0x4b>
-<mwait_idle_with_hints.constprop.0+0x87>:       jmpq   0xffffffff936dab95 
-<mwait_idle_with_hints.constprop.0+0x5>
-<mwait_idle_with_hints.constprop.0+0x8c>:       nopl   0x0(%rax)
+Since C/R preserves TLS memory and addresses RSEQ ABI will be restored
+using the address registered before C/R.
 
-0x4b is after the mwait, which means we're panicing in the 
-current_clr_polling(), where we do clear_thread_flag(TIF_POLLING_NRFLAG).  Thanks,
+Detection whether the thread is in a critical section during C/R is needed
+to enforce behavior of RSEQ abort during C/R. Attaching with ptrace()
+before registers are dumped itself doesn't cause RSEQ abort.
+Restoring the instruction pointer within the critical section is
+problematic because rseq_cs may get cleared before the control is passed
+to the migrated application code leading to RSEQ invariants not being
+preserved. C/R code will use RSEQ ABI address to find the abort handler
+to which the instruction pointer needs to be set.
 
-Josef
+To achieve above goals expose the RSEQ ABI address and the signature value
+with the new ptrace request PTRACE_GET_RSEQ_CONFIGURATION.
+
+This new ptrace request can also be used by debuggers so they are aware
+of stops within restartable sequences in progress.
+
+Signed-off-by: Piotr Figiel <figiel@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Michal Miroslaw <emmir@google.com>
+Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Acked-by: Oleg Nesterov <oleg@redhat.com>
+Link: https://lkml.kernel.org/r/20210226135156.1081606-1-figiel@google.com
+---
+ include/uapi/linux/ptrace.h | 10 ++++++++++
+ kernel/ptrace.c             | 25 +++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+)
+
+diff --git a/include/uapi/linux/ptrace.h b/include/uapi/linux/ptrace.h
+index 83ee45f..3747bf8 100644
+--- a/include/uapi/linux/ptrace.h
++++ b/include/uapi/linux/ptrace.h
+@@ -102,6 +102,16 @@ struct ptrace_syscall_info {
+ 	};
+ };
+ 
++#define PTRACE_GET_RSEQ_CONFIGURATION	0x420f
++
++struct ptrace_rseq_configuration {
++	__u64 rseq_abi_pointer;
++	__u32 rseq_abi_size;
++	__u32 signature;
++	__u32 flags;
++	__u32 pad;
++};
++
+ /*
+  * These values are stored in task->ptrace_message
+  * by tracehook_report_syscall_* to describe the current syscall-stop.
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 821cf17..c71270a 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -31,6 +31,7 @@
+ #include <linux/cn_proc.h>
+ #include <linux/compat.h>
+ #include <linux/sched/signal.h>
++#include <linux/minmax.h>
+ 
+ #include <asm/syscall.h>	/* for syscall_get_* */
+ 
+@@ -779,6 +780,24 @@ static int ptrace_peek_siginfo(struct task_struct *child,
+ 	return ret;
+ }
+ 
++#ifdef CONFIG_RSEQ
++static long ptrace_get_rseq_configuration(struct task_struct *task,
++					  unsigned long size, void __user *data)
++{
++	struct ptrace_rseq_configuration conf = {
++		.rseq_abi_pointer = (u64)(uintptr_t)task->rseq,
++		.rseq_abi_size = sizeof(*task->rseq),
++		.signature = task->rseq_sig,
++		.flags = 0,
++	};
++
++	size = min_t(unsigned long, size, sizeof(conf));
++	if (copy_to_user(data, &conf, size))
++		return -EFAULT;
++	return sizeof(conf);
++}
++#endif
++
+ #ifdef PTRACE_SINGLESTEP
+ #define is_singlestep(request)		((request) == PTRACE_SINGLESTEP)
+ #else
+@@ -1222,6 +1241,12 @@ int ptrace_request(struct task_struct *child, long request,
+ 		ret = seccomp_get_metadata(child, addr, datavp);
+ 		break;
+ 
++#ifdef CONFIG_RSEQ
++	case PTRACE_GET_RSEQ_CONFIGURATION:
++		ret = ptrace_get_rseq_configuration(child, addr, datavp);
++		break;
++#endif
++
+ 	default:
+ 		break;
+ 	}
