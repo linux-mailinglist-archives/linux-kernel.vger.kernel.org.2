@@ -2,78 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC0433EA5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:08:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E323D33EA57
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbhCQHI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 03:08:26 -0400
-Received: from lizzard.sbs.de ([194.138.37.39]:52630 "EHLO lizzard.sbs.de"
+        id S229712AbhCQHBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 03:01:19 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:38509 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229472AbhCQHH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 03:07:59 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 12H77lLO019222
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Mar 2021 08:07:47 +0100
-Received: from [167.87.41.130] ([167.87.41.130])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12H6vja0026646;
-        Wed, 17 Mar 2021 07:57:46 +0100
-Subject: Re: [PATCH v4 2/2] gpio: sch: Hook into ACPI SCI handler to catch
- GPIO edge events
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-References: <20210316162613.87710-1-andriy.shevchenko@linux.intel.com>
- <20210316162613.87710-3-andriy.shevchenko@linux.intel.com>
- <YFEZ6GYuXGaX/LP2@smile.fi.intel.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <a3a6c80a-724c-e2fb-9597-b14a302c5ff4@siemens.com>
-Date:   Wed, 17 Mar 2021 07:57:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229469AbhCQHBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 03:01:02 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F0gzb65jfz9vBn3;
+        Wed, 17 Mar 2021 08:00:59 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id arCS8u5r8lUa; Wed, 17 Mar 2021 08:00:59 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F0gzb4LkTz9vBn2;
+        Wed, 17 Mar 2021 08:00:59 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 764C98B819;
+        Wed, 17 Mar 2021 08:01:00 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id TI4ffKCC1lw8; Wed, 17 Mar 2021 08:01:00 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 173228B81B;
+        Wed, 17 Mar 2021 08:01:00 +0100 (CET)
+Subject: Re: [PATCH] sched: replace if (cond) BUG() with BUG_ON()
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, jk@ozlabs.org
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <1615963510-89830-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <188541f6-e047-0dfd-8f57-edfce5fae49b@csgroup.eu>
+Date:   Wed, 17 Mar 2021 08:00:57 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YFEZ6GYuXGaX/LP2@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1615963510-89830-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.03.21 21:49, Andy Shevchenko wrote:
-> On Tue, Mar 16, 2021 at 06:26:13PM +0200, Andy Shevchenko wrote:
->> From: Jan Kiszka <jan.kiszka@siemens.com>
->>
->> Neither the ACPI description on the Quark platform provides the required
->> information is to do establish generic handling nor hardware capable of
->> doing it. According to the datasheet the hardware can generate SCI events.
->> Therefore, we need to hook from the driver directly into SCI handler of
->> the ACPI subsystem in order to catch and report GPIO-related events.
->>
->> Validated on the Quark-based IOT2000 platform.
+
+
+Le 17/03/2021 à 07:45, Jiapeng Chong a écrit :
+> Fix the following coccicheck warnings:
 > 
-> This patch must be dropped completely. SCI handler is not correct way to do
-> this. The proper way (and we have already few examples in the kernel) is to
-> register GPE event.
+> ./arch/powerpc/platforms/cell/spufs/sched.c:908:2-5: WARNING: Use BUG_ON
+> instead of if condition followed by BUG.
 
-As explained above, this is not supported by the preexisting firmware,
-and there won't be any updates to it anymore.
+Consider using WARN_ON() instead of BUG_ON() if relevant. If not, explain in the commit message why 
+we need to keep a BUG_ON().
 
-This platform is history, the SoC was discontinued by Intel long ago,
-and our devices reaching their support end as well. The race to upstream
-was lost in this case - backlog too long, we being too slow.
+See https://www.kernel.org/doc/html/latest/process/deprecated.html#bug-and-bug-on
 
-Jan
 
 > 
-> It took me a while to gather all bits of this puzzle.
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>   arch/powerpc/platforms/cell/spufs/sched.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> At least now I get an event, but kernel oopses, I'll continue debugging
-> tomorrow.
+> diff --git a/arch/powerpc/platforms/cell/spufs/sched.c b/arch/powerpc/platforms/cell/spufs/sched.c
+> index 3692064..139a6ec 100644
+> --- a/arch/powerpc/platforms/cell/spufs/sched.c
+> +++ b/arch/powerpc/platforms/cell/spufs/sched.c
+> @@ -904,8 +904,7 @@ static noinline void spusched_tick(struct spu_context *ctx)
+>   	struct spu_context *new = NULL;
+>   	struct spu *spu = NULL;
+>   
+> -	if (spu_acquire(ctx))
+> -		BUG();	/* a kernel thread never has signals pending */
+> +	BUG_ON(spu_acquire(ctx));	/* a kernel thread never has signals pending */
+>   
+>   	if (ctx->state != SPU_STATE_RUNNABLE)
+>   		goto out;
 > 
-
--- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
