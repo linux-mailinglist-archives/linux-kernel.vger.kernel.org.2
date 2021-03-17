@@ -2,139 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F74A33E62C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:30:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AF133E62A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231354AbhCQB36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 21:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229876AbhCQB3i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 21:29:38 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C30C06174A;
-        Tue, 16 Mar 2021 18:29:38 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id 130so37349454qkh.11;
-        Tue, 16 Mar 2021 18:29:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=vK6w6Y188j7PtwuhViCoYrourMldbwVA3dovNdE8N40=;
-        b=r10+Yb4pgBdcizibkIfKkaywAgl4ptZYGzbsmWCYgZopaDI7qjsAVVvP4vPC+CMl7X
-         +Ml3rl0RpPX4M8MmOKdCviswzQLGk7JUpCmA93wVksPMsHW/R3zfCeOHaibsMc1cOxe6
-         8u4ICBe6ro5iQMLbwzTqNu+BDihXRjsyomAp22PwxiMKzqU+l83eFQmaeN6wPid96uPq
-         fecXS1Wg7qvy8k9PWKf/sx/OU1GL6JJLXNc94+WeBHgpPmqktH1qN4w1HnwWwwjycckb
-         csLB2j/fwjj+bwS31A/yUXzgMBadu7+49BdZSAOvtGm/OOXqOMRvvoEXqeYbyWZcchUY
-         +F5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vK6w6Y188j7PtwuhViCoYrourMldbwVA3dovNdE8N40=;
-        b=Ygued1el9VCKarJoUk7aIXVP1NJPiZQ4L5taC1zZqeTlIaLcbJJycWJ6MPJjqmusGp
-         9pX1iZMX6pI0A/KhAv4GDC1Kh37gwWAbHkf6TKenSmgmSgagi6NqHlftSN6g6am/i3oE
-         kDOb8hBMEgH3S8fLCkSatZT4sTlw0+akgNVAubr/9wY8fou/FAohnjWuqzZhZ4/Glif4
-         bHlijGaCMGRNmi2Ba73VBKXvwCEkU5hBht19kEWr2J1MgkXknugq1JDuPxAnhpTF5oto
-         ExKg9bWBc7hPho3otkvzQV8dLj9kmWrSYtelH2SGesyDMgFI91kXR6NDXtvzYitdUpfb
-         jQKQ==
-X-Gm-Message-State: AOAM5329yxQ4amprn4lwL/q/d7nYHOtcX+9mEsmXehgjozJZ5zod/pk7
-        DTVF0gjsNu4oDUqyz6YdhKLLNUrdYhoObnN41bSafPA39a6aE/Up
-X-Google-Smtp-Source: ABdhPJwsh5qFe3qDfSfYLvRP8kZmnSEjEkbALPF8K1fgbPSXSy29I6k0woyl/tgcGXGLEP7qD3zagx7nVir9edbYRTg=
-X-Received: by 2002:a37:596:: with SMTP id 144mr2169848qkf.387.1615944577156;
- Tue, 16 Mar 2021 18:29:37 -0700 (PDT)
+        id S231260AbhCQB30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 21:29:26 -0400
+Received: from mga03.intel.com ([134.134.136.65]:17059 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231217AbhCQB2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 21:28:54 -0400
+IronPort-SDR: 06p45kS12+W6hLX4b5PK/KSZoGbE9NQXw/AKIXVpDe7LZBejUSJNs7WPeEcNaAM2sIMve3cUmf
+ ImqADkKl6ifw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="189413698"
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="189413698"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 18:28:53 -0700
+IronPort-SDR: XFkO0W416w+dXTE9Buk9yXsw/G0I5PpohdJeptwReNVAW0ombMWJwvJuXSdUGlSsQfxWL5CkVS
+ zUgC2P4s4lYw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="605493928"
+Received: from glass.png.intel.com ([10.158.65.59])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Mar 2021 18:28:48 -0700
+From:   Ong Boon Leong <boon.leong.ong@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Wong Vee Khee <vee.khee.wong@intel.com>
+Subject: [PATCH net-next 0/1] stmmac: add PCH and PSE PTP clock setting
+Date:   Wed, 17 Mar 2021 09:32:46 +0800
+Message-Id: <20210317013247.25131-1-boon.leong.ong@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210317012054.238334-1-davispuh@gmail.com>
-In-Reply-To: <20210317012054.238334-1-davispuh@gmail.com>
-From:   =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
-Date:   Wed, 17 Mar 2021 03:29:24 +0200
-Message-ID: <CAOE4rSwj9_DMWLszPE5adiTsQeK+G_Hqya_HkDR=uEC7L4Fj3A@mail.gmail.com>
-Subject: Re: [RFC] btrfs: Allow read-only mount with corrupted extent tree
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tre=C5=A1d., 2021. g. 17. marts, plkst. 03:18 =E2=80=94 lietot=C4=81js D=C4=
-=81vis Mos=C4=81ns
-(<davispuh@gmail.com>) rakst=C4=ABja:
->
-> Currently if there's any corruption at all in extent tree
-> (eg. even single bit) then mounting will fail with:
-> "failed to read block groups: -5" (-EIO)
-> It happens because we immediately abort on first error when
-> searching in extent tree for block groups.
->
-> Now with this patch if `ignorebadroots` option is specified
-> then we handle such case and continue by removing already
-> created block groups and creating dummy block groups.
->
-> Signed-off-by: D=C4=81vis Mos=C4=81ns <davispuh@gmail.com>
-> ---
->  fs/btrfs/block-group.c | 14 ++++++++++++++
->  fs/btrfs/disk-io.c     |  4 ++--
->  fs/btrfs/disk-io.h     |  2 ++
->  3 files changed, 18 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 48ebc106a606..827a977614b3 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -2048,6 +2048,20 @@ int btrfs_read_block_groups(struct btrfs_fs_info *=
-info)
->         ret =3D check_chunk_block_group_mappings(info);
->  error:
->         btrfs_free_path(path);
-> +
-> +       if (ret =3D=3D -EIO && btrfs_test_opt(info, IGNOREBADROOTS)) {
-> +               btrfs_put_block_group_cache(info);
-> +               btrfs_stop_all_workers(info);
-> +               btrfs_free_block_groups(info);
-> +               ret =3D btrfs_init_workqueues(info, NULL);
-> +               if (ret)
-> +                       return ret;
-> +               ret =3D btrfs_init_space_info(info);
-> +               if (ret)
-> +                       return ret;
-> +               return fill_dummy_bgs(info);
+Hi,
 
-This isn't that nice, but I don't really know how to properly clean up
-everything related to already created block groups so this was easiest
-way. It seems to work fine.
-But looks like need to do something about replay log aswell because if
-it's not disabled then it fails with:
+Intel mGBE controllers that are integrated into EHL, TGL SoC have
+different clock source selection. This patch adds the required setting for
+running linuxptp time-sync.
 
-[ 1397.246869] BTRFS info (device sde): start tree-log replay
-[ 1398.218685] BTRFS warning (device sde): sde checksum verify failed
-on 21057127661568 wanted 0xd1506ed9 found 0x22ab750a level 0
-[ 1398.218803] BTRFS warning (device sde): sde checksum verify failed
-on 21057127661568 wanted 0xd1506ed9 found 0x7dd54bb9 level 0
-[ 1398.218813] BTRFS: error (device sde) in __btrfs_free_extent:3054:
-errno=3D-5 IO failure
-[ 1398.218828] BTRFS: error (device sde) in
-btrfs_run_delayed_refs:2124: errno=3D-5 IO failure
-[ 1398.219002] BTRFS: error (device sde) in btrfs_replay_log:2254:
-errno=3D-5 IO failure (Failed to recover log tree)
-[ 1398.229048] BTRFS error (device sde): open_ctree failed
+The patch has been tested on both PSE (/dev/ptp0) and PCH TSN(/dev/ptp2)
+and the results for the time sync looks correct.
 
-Ideally it should replay everything except extent refs.
+############################ PSE TSN ####################################
+> cat gPTP.conf
+[global]
+gmCapable               1
+priority1               248
+priority2               248
+logAnnounceInterval     0
+logSyncInterval         -3
+syncReceiptTimeout      3
+neighborPropDelayThresh 800
+min_neighbor_prop_delay -20000000
+assume_two_step         1
+path_trace_enabled      1
+follow_up_info          1
+transportSpecific       0x1
+ptp_dst_mac             01:80:C2:00:00:0E
+network_transport       L2
+delay_mechanism         P2P
+ingressLatency          231
+egressLatency           147
+tx_timestamp_timeout    50
+> /usr/local/sbin/ptp4l -v
+3.1
 
+#################################
+# Start ptp4l eth0 [verbose mode]
+#################################
 
-I also noticed that after unmount there is:
-
-[11000.562504] BTRFS warning (device sde): page private not zero on
-page 21057098481664
-[11000.562510] BTRFS warning (device sde): page private not zero on
-page 21057098485760
-
-not sure what it means.
+> /usr/local/sbin/ptp4l -P2Hi eth0 -f gPTP.conf --step_threshold=1 -m
+ptp4l[8380.510]: selected /dev/ptp0 as PTP clock
+ptp4l[8380.535]: port 1: INITIALIZING to LISTENING on INIT_COMPLETE
+ptp4l[8380.535]: port 0: INITIALIZING to LISTENING on INIT_COMPLETE
+ptp4l[8381.655]: port 1: link down
+ptp4l[8381.655]: port 1: LISTENING to FAULTY on FAULT_DETECTED (FT_UNSPECIFIED)
+ptp4l[8381.676]: selected local clock f6cd9d.fffe.e6dc36 as best master
+ptp4l[8381.676]: port 1: assuming the grand master role
+ptp4l[8383.705]: port 1: link up
+ptp4l[8383.727]: port 1: FAULTY to LISTENING on INIT_COMPLETE
+ptp4l[8387.099]: port 1: LISTENING to MASTER on ANNOUNCE_RECEIPT_TIMEOUT_EXPIRES
+ptp4l[8387.099]: selected local clock f6cd9d.fffe.e6dc36 as best master
+ptp4l[8387.099]: port 1: assuming the grand master role
+ptp4l[8388.357]: port 1: new foreign master d63d87.fffe.60a9eb-1
+ptp4l[8390.357]: selected best master clock d63d87.fffe.60a9eb
+ptp4l[8390.357]: port 1: MASTER to UNCALIBRATED on RS_SLAVE
+ptp4l[8390.981]: port 1: UNCALIBRATED to SLAVE on MASTER_CLOCK_SELECTED
+ptp4l[8391.607]: rms 24333463708388 max 48666927416912 freq  -1919 +/- 725 delay   101 +/-   0
+ptp4l[8392.607]: rms    2 max    6 freq  -2194 +/-   3 delay   101 +/-   0
+ptp4l[8393.607]: rms    5 max   10 freq  -2192 +/-   7 delay   101 +/-   0
+ptp4l[8394.607]: rms    4 max    5 freq  -2195 +/-   5 delay   100 +/-   0
+ptp4l[8395.607]: rms    4 max    9 freq  -2198 +/-   4 delay   100 +/-   0
+ptp4l[8396.607]: rms    5 max    9 freq  -2201 +/-   6 delay   100 +/-   0
+ptp4l[8397.607]: rms    6 max    8 freq  -2196 +/-   8 delay   101 +/-   0
+ptp4l[8398.607]: rms    5 max    9 freq  -2195 +/-   7 delay   102 +/-   0
+ptp4l[8399.607]: rms    7 max   13 freq  -2199 +/-   9 delay   102 +/-   0
+ptp4l[8400.608]: rms    6 max   14 freq  -2198 +/-   8 delay   101 +/-   0
+ptp4l[8401.608]: rms    8 max   10 freq  -2195 +/-  10 delay   101 +/-   0
+#########################################################################
 
 
-Best regards,
-D=C4=81vis
+############################ PCH TSN ####################################
+> cat gPTP.conf
+[global]
+gmCapable               1
+priority1               248
+priority2               248
+logAnnounceInterval     0
+logSyncInterval         -3
+syncReceiptTimeout      3
+neighborPropDelayThresh 800
+min_neighbor_prop_delay -20000000
+assume_two_step         1
+path_trace_enabled      1
+follow_up_info          1
+transportSpecific       0x1
+ptp_dst_mac             01:80:C2:00:00:0E
+network_transport       L2
+delay_mechanism         P2P
+ingressLatency          503
+egressLatency           275
+tx_timestamp_timeout    50
+> /usr/local/sbin/ptp4l -v
+3.1
+
+#################################
+# Start ptp4l eth2 [verbose mode]
+#################################
+
+> /usr/local/sbin/ptp4l -P2Hi eth2 -f gPTP.conf          --step_threshold=1 -m
+ptp4l[8526.902]: selected /dev/ptp2 as PTP clock
+ptp4l[8526.957]: port 1: INITIALIZING to LISTENING on INIT_COMPLETE
+ptp4l[8526.957]: port 0: INITIALIZING to LISTENING on INIT_COMPLETE
+ptp4l[8526.957]: port 1: link down
+ptp4l[8526.957]: port 1: LISTENING to FAULTY on FAULT_DETECTED (FT_UNSPECIFIED)
+ptp4l[8526.978]: selected local clock 7ab054.fffe.8aaa86 as best master
+ptp4l[8526.979]: port 1: assuming the grand master role
+ptp4l[8528.026]: port 1: link up
+ptp4l[8528.058]: port 1: FAULTY to LISTENING on INIT_COMPLETE
+ptp4l[8531.070]: port 1: LISTENING to MASTER on ANNOUNCE_RECEIPT_TIMEOUT_EXPIRES
+ptp4l[8531.070]: selected local clock 7ab054.fffe.8aaa86 as best master
+ptp4l[8531.070]: port 1: assuming the grand master role
+ptp4l[8532.878]: port 1: new foreign master 5ee86b.fffe.dd4586-1
+ptp4l[8534.878]: selected best master clock 5ee86b.fffe.dd4586
+ptp4l[8534.878]: port 1: MASTER to UNCALIBRATED on RS_SLAVE
+ptp4l[8535.387]: port 1: UNCALIBRATED to SLAVE on MASTER_CLOCK_SELECTED
+ptp4l[8536.012]: rms 24333477164408 max 48666954328964 freq  -1980 +/- 749 delay   224 +/-   0
+ptp4l[8537.012]: rms   48 max   61 freq  -2195 +/-  13 delay   221 +/-   0
+ptp4l[8538.012]: rms   29 max   43 freq  -2182 +/-   6 delay   221 +/-   0
+ptp4l[8539.012]: rms   13 max   27 freq  -2192 +/-  14 delay   221 +/-   0
+ptp4l[8540.012]: rms    8 max   13 freq  -2205 +/-  10 delay   221 +/-   0
+ptp4l[8541.013]: rms   12 max   20 freq  -2217 +/-  13 delay   224 +/-   0
+ptp4l[8542.013]: rms    7 max   17 freq  -2214 +/-  10 delay   221 +/-   0
+ptp4l[8543.013]: rms    7 max   11 freq  -2208 +/-  10 delay   221 +/-   0
+ptp4l[8544.013]: rms    8 max   16 freq  -2214 +/-  10 delay   220 +/-   0
+#########################################################################
+
+Thanks
+Boon Leong
+
+Wong, Vee Khee (1):
+  stmmac: intel: Add PSE and PCH PTP clock source selection
+
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 46 +++++++++++++++++++
+ drivers/net/ethernet/stmicro/stmmac/dwmac4.h  |  7 +++
+ .../net/ethernet/stmicro/stmmac/stmmac_ptp.c  |  3 ++
+ include/linux/stmmac.h                        |  1 +
+ 4 files changed, 57 insertions(+)
+
+-- 
+2.25.1
+
