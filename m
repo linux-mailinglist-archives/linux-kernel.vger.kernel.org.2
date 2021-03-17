@@ -2,260 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01DC633E921
+	by mail.lfdr.de (Postfix) with ESMTP id BD59A33E923
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhCQFb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 01:31:27 -0400
-Received: from m42-10.mailgun.net ([69.72.42.10]:45871 "EHLO
-        m42-10.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbhCQFbK (ORCPT
+        id S229990AbhCQFb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 01:31:28 -0400
+Received: from bmailout3.hostsharing.net ([176.9.242.62]:33683 "EHLO
+        bmailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229803AbhCQFbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 01:31:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615959070; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=Qn1EGVzoTdINw2+hqTjiHPEI9NrorXmW2zMWADONTNo=; b=R7w1pWq4o1M91cmhz2tAlDyEJj+xF8bSFqaEdfZ7mAUJriIJBVNduqzfXE49o5vP6Ewwqk1u
- 8vkm+m/DXtD4q7XNDwQVLpYzLbCnJMhbiVufAmkLTQafU8oDmSsTgSiePNNf+QdU7dTeQ7xC
- 5/8Gry9XO0qvD2fA8xp0uNGR+6Q=
-X-Mailgun-Sending-Ip: 69.72.42.10
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6051941d5d70193f88e71e13 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Mar 2021 05:31:09
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7CAFCC433ED; Wed, 17 Mar 2021 05:31:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BF2F5C43461;
-        Wed, 17 Mar 2021 05:31:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BF2F5C43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
-From:   Maulik Shah <mkshah@codeaurora.org>
-To:     swboyd@chromium.org, bjorn.andersson@linaro.org, maz@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, dianders@chromium.org, rnayak@codeaurora.org,
-        lsrao@codeaurora.org, Maulik Shah <mkshah@codeaurora.org>,
-        devicetree@vger.kernel.org
-Subject: [PATCH 3/3] dt-bindings: interrupt-controller: Convert bindings to yaml for qcom,pdc
-Date:   Wed, 17 Mar 2021 10:59:56 +0530
-Message-Id: <1615958996-31807-3-git-send-email-mkshah@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1615958996-31807-1-git-send-email-mkshah@codeaurora.org>
-References: <1615958996-31807-1-git-send-email-mkshah@codeaurora.org>
+        Wed, 17 Mar 2021 01:31:21 -0400
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout3.hostsharing.net (Postfix) with ESMTPS id 6BBA9100C059A;
+        Wed, 17 Mar 2021 06:31:14 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 3AF1A10A3C; Wed, 17 Mar 2021 06:31:14 +0100 (CET)
+Date:   Wed, 17 Mar 2021 06:31:14 +0100
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Keith Busch <kbusch@kernel.org>, knsathya@kernel.org,
+        Sinan Kaya <okaya@kernel.org>
+Subject: Re: [PATCH v2 1/1] PCI: pciehp: Skip DLLSC handling if DPC is
+ triggered
+Message-ID: <20210317053114.GA32370@wunner.de>
+References: <59cb30f5e5ac6d65427ceaadf1012b2ba8dbf66c.1615606143.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210317041342.GA19198@wunner.de>
+ <CAPcyv4jxTcUEgcfPRckHqrUPy8gR7ZJsxDaeU__pSq6PqJERAQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4jxTcUEgcfPRckHqrUPy8gR7ZJsxDaeU__pSq6PqJERAQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change converts PDC interrupt controller bindings to yaml.
+On Tue, Mar 16, 2021 at 10:08:31PM -0700, Dan Williams wrote:
+> On Tue, Mar 16, 2021 at 9:14 PM Lukas Wunner <lukas@wunner.de> wrote:
+> >
+> > On Fri, Mar 12, 2021 at 07:32:08PM -0800, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
+> > > +     if ((events == PCI_EXP_SLTSTA_DLLSC) && is_dpc_reset_active(pdev)) {
+> > > +             ctrl_info(ctrl, "Slot(%s): DLLSC event(DPC), skipped\n",
+> > > +                       slot_name(ctrl));
+> > > +             ret = IRQ_HANDLED;
+> > > +             goto out;
+> > > +     }
+> >
+> > Two problems here:
+> >
+> > (1) If recovery fails, the link will *remain* down, so there'll be
+> >     no Link Up event.  You've filtered the Link Down event, thus the
+> >     slot will remain in ON_STATE even though the device in the slot is
+> >     no longer accessible.  That's not good, the slot should be brought
+> >     down in this case.
+> 
+> Can you elaborate on why that is "not good" from the end user
+> perspective? From a driver perspective the device driver context is
+> lost and the card needs servicing. The service event starts a new
+> cycle of slot-attention being triggered and that syncs the slot-down
+> state at that time.
 
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
----
-This change depends on [1] which adds sc7280 compatible for PDC
+All of pciehp's code assumes that if the link is down, the slot must be
+off.  A slot which is in ON_STATE for a prolonged period of time even
+though the link is down is an oddity the code doesn't account for.
 
-[1] https://patchwork.kernel.org/project/linux-arm-msm/list/?series=440315
----
- .../bindings/interrupt-controller/qcom,pdc.txt     | 76 ------------------
- .../bindings/interrupt-controller/qcom,pdc.yaml    | 93 ++++++++++++++++++++++
- 2 files changed, 93 insertions(+), 76 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
+If the link goes down, the slot should be brought into OFF_STATE.
+(It's okay though to delay bringdown until DPC recovery has completed
+unsuccessfully, which is what the patch I'm proposing does.)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt
-deleted file mode 100644
-index 98d89e5..0000000
---- a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt
-+++ /dev/null
-@@ -1,76 +0,0 @@
--PDC interrupt controller
--
--Qualcomm Technologies Inc. SoCs based on the RPM Hardened architecture have a
--Power Domain Controller (PDC) that is on always-on domain. In addition to
--providing power control for the power domains, the hardware also has an
--interrupt controller that can be used to help detect edge low interrupts as
--well detect interrupts when the GIC is non-operational.
--
--GIC is parent interrupt controller at the highest level. Platform interrupt
--controller PDC is next in hierarchy, followed by others. Drivers requiring
--wakeup capabilities of their device interrupts routed through the PDC, must
--specify PDC as their interrupt controller and request the PDC port associated
--with the GIC interrupt. See example below.
--
--Properties:
--
--- compatible:
--	Usage: required
--	Value type: <string>
--	Definition: Should contain "qcom,<soc>-pdc" and "qcom,pdc"
--		    - "qcom,sc7180-pdc": For SC7180
--		    - "qcom,sc7280-pdc": For SC7280
--		    - "qcom,sdm845-pdc": For SDM845
--		    - "qcom,sdm8250-pdc": For SM8250
--		    - "qcom,sdm8350-pdc": For SM8350
--
--- reg:
--	Usage: required
--	Value type: <prop-encoded-array>
--	Definition: Specifies the base physical address for PDC hardware.
--
--- interrupt-cells:
--	Usage: required
--	Value type: <u32>
--	Definition: Specifies the number of cells needed to encode an interrupt
--		    source.
--		    Must be 2.
--		    The first element of the tuple is the PDC pin for the
--		    interrupt.
--		    The second element is the trigger type.
--
--- interrupt-controller:
--	Usage: required
--	Value type: <bool>
--	Definition: Identifies the node as an interrupt controller.
--
--- qcom,pdc-ranges:
--	Usage: required
--	Value type: <u32 array>
--	Definition: Specifies the PDC pin offset and the number of PDC ports.
--		    The tuples indicates the valid mapping of valid PDC ports
--		    and their hwirq mapping.
--		    The first element of the tuple is the starting PDC port.
--		    The second element is the GIC hwirq number for the PDC port.
--		    The third element is the number of interrupts in sequence.
--
--Example:
--
--	pdc: interrupt-controller@b220000 {
--		compatible = "qcom,sdm845-pdc";
--		reg = <0xb220000 0x30000>;
--		qcom,pdc-ranges = <0 512 94>, <94 641 15>, <115 662 7>;
--		#interrupt-cells = <2>;
--		interrupt-parent = <&intc>;
--		interrupt-controller;
--	};
--
--DT binding of a device that wants to use the GIC SPI 514 as a wakeup
--interrupt, must do -
--
--	wake-device {
--		interrupts-extended = <&pdc 2 IRQ_TYPE_LEVEL_HIGH>;
--	};
--
--In this case interrupt 514 would be mapped to port 2 on the PDC as defined by
--the qcom,pdc-ranges property.
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
-new file mode 100644
-index 0000000..26ae77c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
-@@ -0,0 +1,93 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/interrupt-controller/qcom,pdc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm Technologies, Inc. PDC interrupt controller
-+
-+maintainers:
-+  - Maulik Shah <mkshah@codeaurora.org>
-+
-+description: |
-+  Qualcomm Technologies, Inc. SoCs based on the RPM Hardened architecture have a
-+  Power Domain Controller (PDC) that is on always-on domain. In addition to
-+  providing power control for the power domains, the hardware also has an
-+  interrupt controller that can be used to help detect edge low interrupts as
-+  well detect interrupts when the GIC is non-operational.
-+
-+  GIC is parent interrupt controller at the highest level. Platform interrupt
-+  controller PDC is next in hierarchy, followed by others. Drivers requiring
-+  wakeup capabilities of their device interrupts routed through the PDC, must
-+  specify PDC as their interrupt controller and request the PDC port associated
-+  with the GIC interrupt. See example below.
-+
-+properties:
-+ compatible:
-+   items:
-+     - enum:
-+        # Should contain "qcom,<soc>-pdc" and "qcom,pdc"
-+         - qcom,sc7180-pdc #For SC7180
-+         - qcom,sc7280-pdc #For SC7280
-+         - qcom,sdm845-pdc #For SDM845
-+         - qcom,sm8250-pdc #For SM8250
-+         - qcom,sm8350-pdc #For SM8350
-+     - const: qcom,pdc
-+
-+ reg:
-+    minItems: 1
-+    items:
-+      - description: PDC register base address
-+
-+ '#interrupt-cells':
-+    # Specifies the number of cells needed to encode an interrupt.
-+    # The first element of the tuple is the PDC pin for the interrupt.
-+    # The second element is the trigger type.
-+    const: 2
-+
-+ interrupt-controller: true
-+
-+ qcom,pdc-ranges:
-+   description: |
-+      Specifies the PDC pin offset and the number of PDC ports.
-+      The tuples indicates the valid mapping of valid PDC ports
-+      and their hwirq mapping.
-+   $ref: /schemas/types.yaml#/definitions/uint32-matrix
-+   items:
-+      items:
-+        - description: |
-+           "a" The first element of the tuple is the starting PDC port.
-+        - description: |
-+           "b" The second element is the GIC SPI number for the PDC port.
-+        - description: |
-+           "c" The third element is the number of interrupts in sequence.
-+
-+required:
-+    - compatible
-+    - reg
-+    - '#interrupt-cells'
-+    - interrupt-controller
-+    - qcom,pdc-ranges
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    pdc: interrupt-controller@b220000 {
-+            compatible = "qcom,sdm845-pdc", "qcom,pdc";
-+            reg = <0xb220000 0x30000>;
-+            qcom,pdc-ranges = <0 512 94>, <94 641 15>, <115 662 7>;
-+            #interrupt-cells = <2>;
-+            interrupt-parent = <&intc>;
-+            interrupt-controller;
-+    };
-+
-+   # DT binding of a device that wants to use the GIC SPI 514 as a wakeup
-+   # interrupt, must do -
-+   # wake-device {
-+   #     interrupts-extended = <&pdc 2 IRQ_TYPE_LEVEL_HIGH>;
-+   # };
-+
-+   # In this case interrupt 514 would be mapped to port 2 on the PDC as defined
-+   # by the qcom,pdc-ranges property.
-+...
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+I don't understand what you mean by "service event".  Someone unplugging
+and replugging the NVMe drive?
 
+
+> > (2) If recovery succeeds, there's a race where pciehp may call
+> >     is_dpc_reset_active() *after* dpc_reset_link() has finished.
+> >     So both the DPC Trigger Status bit as well as pdev->dpc_reset_active
+> >     will be cleared.  Thus, the Link Up event is not filtered by pciehp
+> >     and the slot is brought down and back up even though DPC recovery
+> >     was succesful, which seems undesirable.
+> 
+> The hotplug driver never saw the Link Down, so what does it do when
+> the slot transitions from Link Up to Link Up? Do you mean the Link
+> Down might fire after the dpc recovery has completed if the hotplug
+> notification was delayed?
+
+If the Link Down is filtered and the Link Up is not, pciehp will
+bring down the slot and then bring it back up.  That's because pciehp
+can't really tell whether a DLLSC event is Link Up or Link Down.
+
+It just knows that the link was previously up, is now up again,
+but must have been down intermittently, so transactions to the
+device in the slot may have been lost and the slot is therefore
+brought down for safety.  Because the link is up, it is then
+brought back up.
+
+Thanks,
+
+Lukas
