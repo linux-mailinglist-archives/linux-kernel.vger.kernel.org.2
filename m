@@ -2,88 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF06333F0DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:05:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDB533F105
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbhCQNFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 09:05:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39157 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230044AbhCQNEu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 09:04:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615986289;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h5K1eWFevd/HHcWFLKscE1HUL+tCoTqGMwfzyUYEhIo=;
-        b=CpGI4p3jb4V68Hg00Jd8A4P1ftZRtMraRMZXmYCU9AD/nlxL6q2gwe+zqV8Nr0qrd1FgFH
-        HM1mFFhsykTERImS+6wqm09gKJtBk1XShiQd60ZrvG6qjHuwe7f5e3E8h274e3UVADJoPE
-        hLLc7pYz6r4SHYwjee8ON0MzZPss+Mw=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-486-CsXvmVNyOiuw3eVNzSerpg-1; Wed, 17 Mar 2021 09:04:48 -0400
-X-MC-Unique: CsXvmVNyOiuw3eVNzSerpg-1
-Received: by mail-ed1-f69.google.com with SMTP id o24so19270123edt.15
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 06:04:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=h5K1eWFevd/HHcWFLKscE1HUL+tCoTqGMwfzyUYEhIo=;
-        b=ii1bshVIxvZQrkJbT6mo3h/SEtNmiGGZOXhCXVhHDhNCosuUW9F2pLeizzWkPKbnp0
-         S/8NJ2XVum1tZ4qgrssi/+qHFZbwVvjZyrIPUE5omOajMgeQ354Bc5TaHogGxFpw8pii
-         rSjkRBy79J7mRxxOeniTbFpwJfgDUiu7pMygkWY6kAxSVcezRrJk1PT9J9jYErTgtUpS
-         hq9cHHXxN/W9udW7CvZVHNAKtlaHDsM9qm94em5Si+5Tugtvx3jZpmTYRgeUn7TR4dEw
-         LkDeTAHrrEGvEXzUBuTmYLHUYl5qxEJlautGePwDK33NB0oo9y/nCjO5+Z68Uyd+i7in
-         pcQQ==
-X-Gm-Message-State: AOAM530xRqh+0wi+qia1pDowCmY5amS6cF0JXTIFypg0LWikKwUZqwNm
-        PMUwqgLn2DarXMDHSnXbtyVt9Ii7AbXRSvz8pFHopWX1hp9v32NuRn0Rb5D4y6dvPl1hTyRxiJK
-        ciZtsMj4T5/wqlNh8KXyF7rr2
-X-Received: by 2002:aa7:d98b:: with SMTP id u11mr42842487eds.352.1615986283543;
-        Wed, 17 Mar 2021 06:04:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxyDhSRwms9eliBndoHdtnij7qZI8LvV0vW97nB6OL4IrtYBHURFzssnERHOda1/sbEJA5eYQ==
-X-Received: by 2002:aa7:d98b:: with SMTP id u11mr42842187eds.352.1615986280598;
-        Wed, 17 Mar 2021 06:04:40 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id x1sm1426421eji.8.2021.03.17.06.04.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 06:04:40 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 73A53181F55; Wed, 17 Mar 2021 14:04:38 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, ast@kernel.org
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2] libbpf: use SOCK_CLOEXEC when opening the
- netlink socket
-In-Reply-To: <20210317115857.6536-1-memxor@gmail.com>
-References: <20210317115857.6536-1-memxor@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 17 Mar 2021 14:04:38 +0100
-Message-ID: <87lfamc4nt.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S230397AbhCQNS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 09:18:58 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:56626 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230507AbhCQNSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 09:18:45 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D8C1E1A06D7;
+        Wed, 17 Mar 2021 14:18:43 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 40C771A06F2;
+        Wed, 17 Mar 2021 14:18:37 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id AC28D4029D;
+        Wed, 17 Mar 2021 14:18:28 +0100 (CET)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH 1/2] ASoC: fsl-asoc-card: Add support for WM8958 codec
+Date:   Wed, 17 Mar 2021 21:05:02 +0800
+Message-Id: <1615986303-27959-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+WM8958 codec is used on some i.MX based platform.
+So add it support in this generic driver.
 
-> Otherwise, there exists a small window between the opening and closing
-> of the socket fd where it may leak into processes launched by some other
-> thread.
->
-> Fixes: 949abbe88436 ("libbpf: add function to setup XDP")
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/Kconfig         |  2 ++
+ sound/soc/fsl/fsl-asoc-card.c | 17 +++++++++++++++--
+ 2 files changed, 17 insertions(+), 2 deletions(-)
 
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index c71c6024320b..0917d65d6921 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -310,6 +310,8 @@ config SND_SOC_FSL_ASOC_CARD
+ 	select SND_SOC_FSL_ESAI
+ 	select SND_SOC_FSL_SAI
+ 	select SND_SOC_FSL_SSI
++	select SND_SOC_WM8994
++	select MFD_WM8994
+ 	help
+ 	 ALSA SoC Audio support with ASRC feature for Freescale SoCs that have
+ 	 ESAI/SAI/SSI and connect with external CODECs such as WM8962, CS42888,
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index f62f81ceab0d..c62bfd1c3ac7 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -25,6 +25,7 @@
+ #include "../codecs/sgtl5000.h"
+ #include "../codecs/wm8962.h"
+ #include "../codecs/wm8960.h"
++#include "../codecs/wm8994.h"
+ 
+ #define CS427x_SYSCLK_MCLK 0
+ 
+@@ -37,12 +38,14 @@
+ /**
+  * struct codec_priv - CODEC private data
+  * @mclk_freq: Clock rate of MCLK
++ * @free_freq: Clock rate of MCLK for hw_free()
+  * @mclk_id: MCLK (or main clock) id for set_sysclk()
+  * @fll_id: FLL (or secordary clock) id for set_sysclk()
+  * @pll_id: PLL id for set_pll()
+  */
+ struct codec_priv {
+ 	unsigned long mclk_freq;
++	unsigned long free_freq;
+ 	u32 mclk_id;
+ 	u32 fll_id;
+ 	u32 pll_id;
+@@ -235,10 +238,10 @@ static int fsl_asoc_card_hw_free(struct snd_pcm_substream *substream)
+ 	priv->streams &= ~BIT(substream->stream);
+ 
+ 	if (!priv->streams && codec_priv->pll_id && codec_priv->fll_id) {
+-		/* Force freq to be 0 to avoid error message in codec */
++		/* Force freq to be free_freq to avoid error message in codec */
+ 		ret = snd_soc_dai_set_sysclk(asoc_rtd_to_codec(rtd, 0),
+ 					     codec_priv->mclk_id,
+-					     0,
++					     codec_priv->free_freq,
+ 					     SND_SOC_CLOCK_IN);
+ 		if (ret) {
+ 			dev_err(dev, "failed to switch away from FLL: %d\n", ret);
+@@ -665,6 +668,15 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		priv->dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
+ 		priv->card.dapm_routes = audio_map_rx;
+ 		priv->card.num_dapm_routes = ARRAY_SIZE(audio_map_rx);
++	} else if (of_device_is_compatible(np, "fsl,imx-audio-wm8958")) {
++		codec_dai_name = "wm8994-aif1";
++		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
++		priv->codec_priv.mclk_id = WM8994_FLL_SRC_MCLK1;
++		priv->codec_priv.fll_id = WM8994_SYSCLK_FLL1;
++		priv->codec_priv.pll_id = WM8994_FLL1;
++		priv->codec_priv.free_freq = priv->codec_priv.mclk_freq;
++		priv->card.dapm_routes = NULL;
++		priv->card.num_dapm_routes = 0;
+ 	} else {
+ 		dev_err(&pdev->dev, "unknown Device Tree compatible\n");
+ 		ret = -EINVAL;
+@@ -882,6 +894,7 @@ static const struct of_device_id fsl_asoc_card_dt_ids[] = {
+ 	{ .compatible = "fsl,imx-audio-mqs", },
+ 	{ .compatible = "fsl,imx-audio-wm8524", },
+ 	{ .compatible = "fsl,imx-audio-si476x", },
++	{ .compatible = "fsl,imx-audio-wm8958", },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, fsl_asoc_card_dt_ids);
+-- 
+2.27.0
 
