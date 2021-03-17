@@ -2,193 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1060E33E2DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7617133E2E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhCQAgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbhCQAgB (ORCPT
+        id S230171AbhCQAhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:37:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45219 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229928AbhCQAgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:36:01 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3483DC061762;
-        Tue, 16 Mar 2021 17:36:01 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id c17so6400046pfv.12;
-        Tue, 16 Mar 2021 17:36:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+QAzmdz2J3myHOyB8tlALQV+gjhvFNmvosUKr/OQ9fw=;
-        b=k0U8bNya3Q8ZPOCSg2peKRr4EHRWXOVdljUniyhMn8DwVQVP++a+9IPugiWqAC5Nrq
-         GdFyHWuBKE/BLBLdh66LPdZwij3+T0WRTFPDxD5zKDaxxW1G58DyyxTJ1q9f7Wa//tD0
-         H9f3qeBPMMw+E5vgyMr4yVAcBI1WokFNNOidD5fNQM1xhO54sGP/bC7pw6K2KnoP2b0c
-         YB6G5W+LduvGd2OdRNEDwjJ5cF0chm6W+zugLmj0QsmWz9cbFlRb38G7KZt9tlILtilP
-         0hXQdl0XtlIr4lratrQz2izJp0bQyWYMS4vmQebyymnUyjy1HXdHFB2dfHO8OZWFDcg2
-         Yzbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+QAzmdz2J3myHOyB8tlALQV+gjhvFNmvosUKr/OQ9fw=;
-        b=k6IeAjf643SE2BnMmmAKcYWqSs0dj3jEFGYk/CFb9bjL4ngouRnRoSNLNhPWKSWhb8
-         WIEv7/SC7lsM2WBamtqYSikEdL8HeYFSBPBCLefQBUVqa88qYyIH8fm1NM5Z1ejI0PQg
-         qGPhWkVUbWrulx+RHT04UyVx/GjsAAqrx6OWxbZHv/y53pa+HdFwuMF/5uyj2apU3A+D
-         R1G7BjwlI/ElCfBDqZa/PM2fy38vis61yaU5fs90+kM8gUlGp2nwz4tM8zyR8Rhyto9C
-         LbSa6X/Vgeiq32eczkcZVAZCfXtdb/t5Kccby9tpQK3/11l2gyt7o73SiNarJpqsgXhR
-         yT3Q==
-X-Gm-Message-State: AOAM5333wDfkpAJIZGlfdhWpxnbsI+PxK0Kns6/kYbB7NpqU4GufSiOR
-        /V7/QZHC/8pa/jH6wREDCw6aU3/pB0o=
-X-Google-Smtp-Source: ABdhPJz2aanHtNw0pamoXapFjVhVflcb7TbqRHDBJwvIJA6kh3t27UUMudkriyJ5bJMrbgcnfJRV0A==
-X-Received: by 2002:a63:d17:: with SMTP id c23mr323358pgl.251.1615941360322;
-        Tue, 16 Mar 2021 17:36:00 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id k63sm18796512pfd.48.2021.03.16.17.35.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 17:35:59 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel@vger.kernel.org (open list), stable@vger.kernel.org,
-        gregkh@linuxfoundation.org, sashal@kernel.org
-Subject: [PATCH stable 5.11] net: dsa: b53: Correct learning for standalone ports
-Date:   Tue, 16 Mar 2021 17:35:49 -0700
-Message-Id: <20210317003549.3964522-7-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210317003549.3964522-1-f.fainelli@gmail.com>
-References: <20210317003549.3964522-1-f.fainelli@gmail.com>
+        Tue, 16 Mar 2021 20:36:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615941385;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=q+WBXT2Z0GX5Wb5Zd+rdqHW22JpjwdirbYKXvw2UcrI=;
+        b=T+vMORernoYQjSPAODtmu3/nFcoq0dSRFoZTMd/7roLh8Iz3HUR1egpDL+pyaoBimihTG6
+        H18i7VWWqKYBSjdT7iY7IblX5FvmR1sxhshLyb7reHtonXCC96AG6vuBQP10gmTffuVd8Z
+        vlrkUU2O8/R0Vc/cg7LOs5ejGlAVULU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-295-tQh8DwWuOwOKSt4ZJMGVhw-1; Tue, 16 Mar 2021 20:36:23 -0400
+X-MC-Unique: tQh8DwWuOwOKSt4ZJMGVhw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B44378030D7;
+        Wed, 17 Mar 2021 00:36:20 +0000 (UTC)
+Received: from rtux.redhat.com (unknown [10.33.36.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8B02F6C32E;
+        Wed, 17 Mar 2021 00:36:17 +0000 (UTC)
+From:   Alexey Klimov <aklimov@redhat.com>
+To:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Cc:     peterz@infradead.org, yury.norov@gmail.com,
+        daniel.m.jordan@oracle.com, tglx@linutronix.de, jobaker@redhat.com,
+        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
+        rafael@kernel.org, tj@kernel.org, qais.yousef@arm.com,
+        hannes@cmpxchg.org, klimov.linux@gmail.com
+Subject: [PATCH v3] cpu/hotplug: wait for cpuset_hotplug_work to finish on cpu onlining
+Date:   Wed, 17 Mar 2021 00:36:16 +0000
+Message-Id: <20210317003616.2817418-1-aklimov@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Standalone ports should not have learning enabled since all the frames
-are always copied to the CPU port. This is particularly important in
-case an user-facing port intentionally spoofs the CPU port's MAC
-address. With learning enabled we would end up with the switch having
-incorrectly learned the address of the CPU port which typically results
-in a complete break down of network connectivity until the address
-learned ages out and gets re-learned, from the correct port this time.
+When a CPU offlined and onlined via device_offline() and device_online()
+the userspace gets uevent notification. If, after receiving "online" uevent,
+userspace executes sched_setaffinity() on some task trying to move it
+to a recently onlined CPU, then it sometimes fails with -EINVAL. Userspace
+needs to wait around 5..30 ms before sched_setaffinity() will succeed for
+recently onlined CPU after receiving uevent.
 
-There was no control of the BR_LEARNING flag until upstream commit
-4098ced4680a485c5953f60ac63dff19f3fb3d42 ("Merge branch 'brport-flags'")
-which is why we default to enabling learning when the ports gets added
-as a bridge member.
+If in_mask argument for sched_setaffinity() has only recently onlined CPU,
+it could fail with such flow:
 
-Fixes: 967dd82ffc52 ("net: dsa: b53: Add support for Broadcom RoboSwitch")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+  sched_setaffinity()
+    cpuset_cpus_allowed()
+      guarantee_online_cpus()   <-- cs->effective_cpus mask does not
+                                        contain recently onlined cpu
+    cpumask_and()               <-- final new_mask is empty
+    __set_cpus_allowed_ptr()
+      cpumask_any_and_distribute() <-- returns dest_cpu equal to nr_cpu_ids
+      returns -EINVAL
+
+Cpusets used in guarantee_online_cpus() are updated using workqueue from
+cpuset_update_active_cpus() which in its turn is called from cpu hotplug callback
+sched_cpu_activate() hence it may not be observable by sched_setaffinity() if
+it is called immediately after uevent.
+
+Out of line uevent can be avoided if we will ensure that cpuset_hotplug_work
+has run to completion using cpuset_wait_for_hotplug() after onlining the
+cpu in cpu_device_up() and in cpuhp_smt_enable().
+
+Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+Reviewed-by: Qais Yousef <qais.yousef@arm.com>
+Co-analyzed-by: Joshua Baker <jobaker@redhat.com>
+Signed-off-by: Alexey Klimov <aklimov@redhat.com>
 ---
- drivers/net/dsa/b53/b53_common.c | 18 ++++++++++++++++++
- drivers/net/dsa/b53/b53_regs.h   |  1 +
- drivers/net/dsa/bcm_sf2.c        | 15 +--------------
- 3 files changed, 20 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
-index 95c7fa171e35..f504b6858ed2 100644
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -510,6 +510,19 @@ void b53_imp_vlan_setup(struct dsa_switch *ds, int cpu_port)
- }
- EXPORT_SYMBOL(b53_imp_vlan_setup);
- 
-+static void b53_port_set_learning(struct b53_device *dev, int port,
-+				  bool learning)
-+{
-+	u16 reg;
-+
-+	b53_read16(dev, B53_CTRL_PAGE, B53_DIS_LEARNING, &reg);
-+	if (learning)
-+		reg &= ~BIT(port);
-+	else
-+		reg |= BIT(port);
-+	b53_write16(dev, B53_CTRL_PAGE, B53_DIS_LEARNING, reg);
-+}
-+
- int b53_enable_port(struct dsa_switch *ds, int port, struct phy_device *phy)
+Changes since v2:
+	- restore cpuhp_{online,offline}_cpu_device back and move it out
+		of cpu maps lock;
+	- use Reviewed-by from Qais;
+	- minor corrections in commit message and in comment in code.
+
+Changes since v1:
+	- cpuset_wait_for_hotplug() moved to cpu_device_up();
+	- corrections in comments;
+	- removed cpuhp_{online,offline}_cpu_device.
+
+Changes since RFC:
+	- cpuset_wait_for_hotplug() used in cpuhp_smt_enable().
+
+Previous patches and discussion are:
+RFC patch: https://lore.kernel.org/lkml/20201203171431.256675-1-aklimov@redhat.com/
+v1 patch:  https://lore.kernel.org/lkml/20210204010157.1823669-1-aklimov@redhat.com/
+v2 patch: https://lore.kernel.org/lkml/20210212003032.2037750-1-aklimov@redhat.com/
+
+The commit a49e4629b5ed "cpuset: Make cpuset hotplug synchronous"
+would also get rid of the early uevent but it was reverted (deadlocks).
+
+The nature of this bug is also described here (with different consequences):
+https://lore.kernel.org/lkml/20200211141554.24181-1-qais.yousef@arm.com/
+
+Reproducer: https://gitlab.com/0xeafffffe/xlam
+
+Currently with such changes the reproducer code continues to work without issues.
+The idea is to avoid the situation when userspace receives the event about
+onlined CPU which is not ready to take tasks for a while after uevent.
+
+ kernel/cpu.c | 74 +++++++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 56 insertions(+), 18 deletions(-)
+
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 1b6302ecbabe..9b091d8a8811 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -15,6 +15,7 @@
+ #include <linux/sched/smt.h>
+ #include <linux/unistd.h>
+ #include <linux/cpu.h>
++#include <linux/cpuset.h>
+ #include <linux/oom.h>
+ #include <linux/rcupdate.h>
+ #include <linux/export.h>
+@@ -1301,7 +1302,17 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
+  */
+ int cpu_device_up(struct device *dev)
  {
- 	struct b53_device *dev = ds->priv;
-@@ -523,6 +536,7 @@ int b53_enable_port(struct dsa_switch *ds, int port, struct phy_device *phy)
- 	cpu_port = dsa_to_port(ds, port)->cpu_dp->index;
- 
- 	b53_br_egress_floods(ds, port, true, true);
-+	b53_port_set_learning(dev, port, false);
- 
- 	if (dev->ops->irq_enable)
- 		ret = dev->ops->irq_enable(dev, port);
-@@ -656,6 +670,7 @@ static void b53_enable_cpu_port(struct b53_device *dev, int port)
- 	b53_brcm_hdr_setup(dev->ds, port);
- 
- 	b53_br_egress_floods(dev->ds, port, true, true);
-+	b53_port_set_learning(dev, port, false);
- }
- 
- static void b53_enable_mib(struct b53_device *dev)
-@@ -1839,6 +1854,8 @@ int b53_br_join(struct dsa_switch *ds, int port, struct net_device *br)
- 	b53_write16(dev, B53_PVLAN_PAGE, B53_PVLAN_PORT_MASK(port), pvlan);
- 	dev->ports[port].vlan_ctl_mask = pvlan;
- 
-+	b53_port_set_learning(dev, port, true);
+-	return cpu_up(dev->id, CPUHP_ONLINE);
++	int err;
 +
- 	return 0;
++	err = cpu_up(dev->id, CPUHP_ONLINE);
++	/*
++	 * Wait for cpuset updates to cpumasks to finish.  Later on this path
++	 * may generate uevents whose consumers rely on the updates.
++	 */
++	if (!err)
++		cpuset_wait_for_hotplug();
++
++	return err;
  }
- EXPORT_SYMBOL(b53_br_join);
-@@ -1886,6 +1903,7 @@ void b53_br_leave(struct dsa_switch *ds, int port, struct net_device *br)
- 		vl->untag |= BIT(port) | BIT(cpu_port);
- 		b53_set_vlan_entry(dev, pvid, vl);
+ 
+ int add_cpu(unsigned int cpu)
+@@ -2084,8 +2095,13 @@ static void cpuhp_online_cpu_device(unsigned int cpu)
+ 
+ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
+ {
+-	int cpu, ret = 0;
++	cpumask_var_t mask;
++	int cpu, ret;
+ 
++	if (!zalloc_cpumask_var(&mask, GFP_KERNEL))
++		return -ENOMEM;
++
++	ret = 0;
+ 	cpu_maps_update_begin();
+ 	for_each_online_cpu(cpu) {
+ 		if (topology_is_primary_thread(cpu))
+@@ -2093,31 +2109,42 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
+ 		ret = cpu_down_maps_locked(cpu, CPUHP_OFFLINE);
+ 		if (ret)
+ 			break;
+-		/*
+-		 * As this needs to hold the cpu maps lock it's impossible
+-		 * to call device_offline() because that ends up calling
+-		 * cpu_down() which takes cpu maps lock. cpu maps lock
+-		 * needs to be held as this might race against in kernel
+-		 * abusers of the hotplug machinery (thermal management).
+-		 *
+-		 * So nothing would update device:offline state. That would
+-		 * leave the sysfs entry stale and prevent onlining after
+-		 * smt control has been changed to 'off' again. This is
+-		 * called under the sysfs hotplug lock, so it is properly
+-		 * serialized against the regular offline usage.
+-		 */
+-		cpuhp_offline_cpu_device(cpu);
++
++		cpumask_set_cpu(cpu, mask);
  	}
-+	b53_port_set_learning(dev, port, false);
+ 	if (!ret)
+ 		cpu_smt_control = ctrlval;
+ 	cpu_maps_update_done();
++
++	/*
++	 * When the cpu maps lock was taken above it was impossible
++	 * to call device_offline() because that ends up calling
++	 * cpu_down() which takes cpu maps lock. cpu maps lock
++	 * needed to be held as this might race against in-kernel
++	 * abusers of the hotplug machinery (thermal management).
++	 *
++	 * So nothing would update device:offline state. That would
++	 * leave the sysfs entry stale and prevent onlining after
++	 * smt control has been changed to 'off' again. This is
++	 * called under the sysfs hotplug lock, so it is properly
++	 * serialized against the regular offline usage.
++	 */
++	for_each_cpu(cpu, mask)
++		cpuhp_offline_cpu_device(cpu);
++
++	free_cpumask_var(mask);
+ 	return ret;
  }
- EXPORT_SYMBOL(b53_br_leave);
  
-diff --git a/drivers/net/dsa/b53/b53_regs.h b/drivers/net/dsa/b53/b53_regs.h
-index c90985c294a2..b2c539a42154 100644
---- a/drivers/net/dsa/b53/b53_regs.h
-+++ b/drivers/net/dsa/b53/b53_regs.h
-@@ -115,6 +115,7 @@
- #define B53_UC_FLOOD_MASK		0x32
- #define B53_MC_FLOOD_MASK		0x34
- #define B53_IPMC_FLOOD_MASK		0x36
-+#define B53_DIS_LEARNING		0x3c
+ int cpuhp_smt_enable(void)
+ {
+-	int cpu, ret = 0;
++	cpumask_var_t mask;
++	int cpu, ret;
++
++	if (!zalloc_cpumask_var(&mask, GFP_KERNEL))
++		return -ENOMEM;
  
- /*
-  * Override Ports 0-7 State on devices with xMII interfaces (8 bit)
-diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
-index 445226720ff2..edb0a1027b38 100644
---- a/drivers/net/dsa/bcm_sf2.c
-+++ b/drivers/net/dsa/bcm_sf2.c
-@@ -222,23 +222,10 @@ static int bcm_sf2_port_setup(struct dsa_switch *ds, int port,
- 	reg &= ~P_TXQ_PSM_VDD(port);
- 	core_writel(priv, reg, CORE_MEM_PSM_VDD_CTRL);
- 
--	/* Enable learning */
--	reg = core_readl(priv, CORE_DIS_LEARN);
--	reg &= ~BIT(port);
--	core_writel(priv, reg, CORE_DIS_LEARN);
--
- 	/* Enable Broadcom tags for that port if requested */
--	if (priv->brcm_tag_mask & BIT(port)) {
-+	if (priv->brcm_tag_mask & BIT(port))
- 		b53_brcm_hdr_setup(ds, port);
- 
--		/* Disable learning on ASP port */
--		if (port == 7) {
--			reg = core_readl(priv, CORE_DIS_LEARN);
--			reg |= BIT(port);
--			core_writel(priv, reg, CORE_DIS_LEARN);
--		}
--	}
--
- 	/* Configure Traffic Class to QoS mapping, allow each priority to map
- 	 * to a different queue number
- 	 */
++	ret = 0;
+ 	cpu_maps_update_begin();
+ 	cpu_smt_control = CPU_SMT_ENABLED;
+ 	for_each_present_cpu(cpu) {
+@@ -2128,9 +2155,20 @@ int cpuhp_smt_enable(void)
+ 		if (ret)
+ 			break;
+ 		/* See comment in cpuhp_smt_disable() */
+-		cpuhp_online_cpu_device(cpu);
++		cpumask_set_cpu(cpu, mask);
+ 	}
+ 	cpu_maps_update_done();
++
++	/*
++	 * Wait for cpuset updates to cpumasks to finish.  Later on this path
++	 * may generate uevents whose consumers rely on the updates.
++	 */
++	cpuset_wait_for_hotplug();
++
++	for_each_cpu(cpu, mask)
++		cpuhp_online_cpu_device(cpu);
++
++	free_cpumask_var(mask);
+ 	return ret;
+ }
+ #endif
 -- 
-2.25.1
+2.31.0
 
