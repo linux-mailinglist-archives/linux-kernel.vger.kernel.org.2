@@ -2,108 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD59A33E923
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:32:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4C633E926
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbhCQFb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 01:31:28 -0400
-Received: from bmailout3.hostsharing.net ([176.9.242.62]:33683 "EHLO
-        bmailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhCQFbV (ORCPT
+        id S229862AbhCQFem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 01:34:42 -0400
+Received: from m42-10.mailgun.net ([69.72.42.10]:55594 "EHLO
+        m42-10.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhCQFeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 01:31:21 -0400
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout3.hostsharing.net (Postfix) with ESMTPS id 6BBA9100C059A;
-        Wed, 17 Mar 2021 06:31:14 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 3AF1A10A3C; Wed, 17 Mar 2021 06:31:14 +0100 (CET)
-Date:   Wed, 17 Mar 2021 06:31:14 +0100
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Keith Busch <kbusch@kernel.org>, knsathya@kernel.org,
-        Sinan Kaya <okaya@kernel.org>
-Subject: Re: [PATCH v2 1/1] PCI: pciehp: Skip DLLSC handling if DPC is
- triggered
-Message-ID: <20210317053114.GA32370@wunner.de>
-References: <59cb30f5e5ac6d65427ceaadf1012b2ba8dbf66c.1615606143.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210317041342.GA19198@wunner.de>
- <CAPcyv4jxTcUEgcfPRckHqrUPy8gR7ZJsxDaeU__pSq6PqJERAQ@mail.gmail.com>
+        Wed, 17 Mar 2021 01:34:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615959257; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=d/u3tI1DepCfLnIa6rIn3JLbEb1AR0kvLruAKZtROAk=;
+ b=SxPv080DC0Oj/SkzSXWnX5jlA4ycPI3pgzpzObiMnF5XDw+G4NO9UunizVT9Lr4fUs6vsuXF
+ NoMFkR2XMtJYTpOn1LCnpDW+55m9Q1WFYHvizwe5ia+Nfu+TKpCaHeBwbH7avPXmGW3u5JsM
+ 284VMpM71n3teYHpdGF4BG0tNRA=
+X-Mailgun-Sending-Ip: 69.72.42.10
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 605194d6e3fca7d0a6b7ad0e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Mar 2021 05:34:14
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6C1EDC43461; Wed, 17 Mar 2021 05:34:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2DC2FC433CA;
+        Wed, 17 Mar 2021 05:34:12 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4jxTcUEgcfPRckHqrUPy8gR7ZJsxDaeU__pSq6PqJERAQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 17 Mar 2021 13:34:12 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     daejun7.park@samsung.com
+Cc:     Avri Altman <Avri.Altman@wdc.com>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
+Subject: Re: [PATCH v5 05/10] scsi: ufshpb: Region inactivation in host mode
+In-Reply-To: <1796371666.41615958582147.JavaMail.epsvc@epcpadp4>
+References: <064483451ff0d9ef8703871332ea5c3b@codeaurora.org>
+ <DM6PR04MB65751EE32D25C7E57A6BABE8FC6B9@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <20210302132503.224670-1-avri.altman@wdc.com>
+ <20210302132503.224670-6-avri.altman@wdc.com>
+ <25da7378d5bf4c52443ae9b47f3fd778@codeaurora.org>
+ <57afb2b5d7edda61a40493d8545785b1@codeaurora.org>
+ <2038148563.21615949282962.JavaMail.epsvc@epcpadp4>
+ <CGME20210316083014epcas2p32d6b84e689cdbe06ee065c870b236d65@epcms2p4>
+ <1796371666.41615958582147.JavaMail.epsvc@epcpadp4>
+Message-ID: <a5958ce2eca11b6ddcf75fa3aeeaaa4f@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 10:08:31PM -0700, Dan Williams wrote:
-> On Tue, Mar 16, 2021 at 9:14 PM Lukas Wunner <lukas@wunner.de> wrote:
-> >
-> > On Fri, Mar 12, 2021 at 07:32:08PM -0800, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
-> > > +     if ((events == PCI_EXP_SLTSTA_DLLSC) && is_dpc_reset_active(pdev)) {
-> > > +             ctrl_info(ctrl, "Slot(%s): DLLSC event(DPC), skipped\n",
-> > > +                       slot_name(ctrl));
-> > > +             ret = IRQ_HANDLED;
-> > > +             goto out;
-> > > +     }
-> >
-> > Two problems here:
-> >
-> > (1) If recovery fails, the link will *remain* down, so there'll be
-> >     no Link Up event.  You've filtered the Link Down event, thus the
-> >     slot will remain in ON_STATE even though the device in the slot is
-> >     no longer accessible.  That's not good, the slot should be brought
-> >     down in this case.
+On 2021-03-17 13:19, Daejun Park wrote:
+>>>>> >> ---
+>>>>> >>  drivers/scsi/ufs/ufshpb.c | 14 ++++++++++++++
+>>>>> >>  drivers/scsi/ufs/ufshpb.h |  1 +
+>>>>> >>  2 files changed, 15 insertions(+)
+>>>>> >>
+>>>>> >> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+>>>>> >> index 6f4fd22eaf2f..0744feb4d484 100644
+>>>>> >> --- a/drivers/scsi/ufs/ufshpb.c
+>>>>> >> +++ b/drivers/scsi/ufs/ufshpb.c
+>>>>> >> @@ -907,6 +907,7 @@ static int ufshpb_execute_umap_req(struct
+>>>>> >> ufshpb_lu *hpb,
+>>>>> >>
+>>>>> >>      blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_umap_req_compl_fn);
+>>>>> >>
+>>>>> >> +    hpb->stats.umap_req_cnt++;
+>>>>> >>      return 0;
+>>>>> >>  }
+>>>>> >>
+>>>>> >> @@ -1103,6 +1104,12 @@ static int ufshpb_issue_umap_req(struct
+>>>>> >> ufshpb_lu *hpb,
+>>>>> >>      return -EAGAIN;
+>>>>> >>  }
+>>>>> >>
+>>>>> >> +static int ufshpb_issue_umap_single_req(struct ufshpb_lu *hpb,
+>>>>> >> +                                    struct ufshpb_region *rgn)
+>>>>> >> +{
+>>>>> >> +    return ufshpb_issue_umap_req(hpb, rgn);
+>>>>> >> +}
+>>>>> >> +
+>>>>> >>  static int ufshpb_issue_umap_all_req(struct ufshpb_lu *hpb)
+>>>>> >>  {
+>>>>> >>      return ufshpb_issue_umap_req(hpb, NULL);
+>>>>> >> @@ -1115,6 +1122,10 @@ static void __ufshpb_evict_region(struct
+>>>>> >> ufshpb_lu *hpb,
+>>>>> >>      struct ufshpb_subregion *srgn;
+>>>>> >>      int srgn_idx;
+>>>>> >>
+>>>>> >> +
+>>>>> >> +    if (hpb->is_hcm && ufshpb_issue_umap_single_req(hpb, rgn))
+>>>>> >
+>>>>> > __ufshpb_evict_region() is called with rgn_state_lock held and IRQ
+>>>>> > disabled,
+>>>>> > when ufshpb_issue_umap_single_req() invokes blk_execute_rq_nowait(),
+>>>>> > below
+>>>>> > warning shall pop up every time, fix it?
+>>>>> >
+>>>>> > void blk_execute_rq_nowait(struct request_queue *q, struct gendisk
+>>>>> > *bd_disk,
+>>>>> >                  struct request *rq, int at_head,
+>>>>> >                          rq_end_io_fn *done)
+>>>>> > {
+>>>>> >       WARN_ON(irqs_disabled());
+>>>>> > ...
+>>>>> >
+>>>>> 
+>>>>> Moreover, since we are here with rgn_state_lock held and IRQ
+>>>>> disabled,
+>>>>> in ufshpb_get_req(), rq = kmem_cache_alloc(hpb->map_req_cache,
+>>>>> GFP_KERNEL)
+>>>>> has the GFP_KERNEL flag, scheduling while atomic???
+>>>> I think your comment applies to  ufshpb_issue_umap_all_req as well,
+>>>> Which is called from slave_configure/scsi_add_lun.
+>>>> 
+>>>> Since the host-mode series is utilizing the framework laid by the
+>>>> device-mode,
+>>>> Maybe you can add this comment to  Daejun's last version?
+>>> 
+>>> Hi Avri, Can Guo
+>>> 
+>>> I think ufshpb_issue_umap_single_req() can be moved to end of
+>>> ufshpb_evict_region().
+>>> Then we can avoid rgn_state_lock when it sends unmap command.
+>> 
+>> I am not the expert here, please you two fix it. I am just reporting
+>> what can be wrong. Anyways, ufshpb_issue_umap_single_req() should not
+>> be called with rgn_state_lock held - think about below (another 
+>> deadly)
+>> scenario.
+>> 
+>> lock(rgn_state_lock)
+>>   ufshpb_issue_umap_single_req()
+>>     ufshpb_prep()
+>>        lock(rgn_state_lock)   <---------- recursive spin_lock
+>> 
+>> BTW, @Daejun shouldn't we stop passthrough cmds from stepping
+>> into ufshpb_prep()? In current code, you are trying to use below
+>> check to block cmds other than write/discard/read, but a passthrough
+>> cmd can not be blocked by the check.
+>> 
+>>          if (!ufshpb_is_write_or_discard_cmd(cmd) &&
+>>              !ufshpb_is_read_cmd(cmd) )
+>>                  return 0;
 > 
-> Can you elaborate on why that is "not good" from the end user
-> perspective? From a driver perspective the device driver context is
-> lost and the card needs servicing. The service event starts a new
-> cycle of slot-attention being triggered and that syncs the slot-down
-> state at that time.
+> I found this problem too. I fixed it and submit next patch.
 
-All of pciehp's code assumes that if the link is down, the slot must be
-off.  A slot which is in ON_STATE for a prolonged period of time even
-though the link is down is an oddity the code doesn't account for.
-
-If the link goes down, the slot should be brought into OFF_STATE.
-(It's okay though to delay bringdown until DPC recovery has completed
-unsuccessfully, which is what the patch I'm proposing does.)
-
-I don't understand what you mean by "service event".  Someone unplugging
-and replugging the NVMe drive?
-
-
-> > (2) If recovery succeeds, there's a race where pciehp may call
-> >     is_dpc_reset_active() *after* dpc_reset_link() has finished.
-> >     So both the DPC Trigger Status bit as well as pdev->dpc_reset_active
-> >     will be cleared.  Thus, the Link Up event is not filtered by pciehp
-> >     and the slot is brought down and back up even though DPC recovery
-> >     was succesful, which seems undesirable.
-> 
-> The hotplug driver never saw the Link Down, so what does it do when
-> the slot transitions from Link Up to Link Up? Do you mean the Link
-> Down might fire after the dpc recovery has completed if the hotplug
-> notification was delayed?
-
-If the Link Down is filtered and the Link Up is not, pciehp will
-bring down the slot and then bring it back up.  That's because pciehp
-can't really tell whether a DLLSC event is Link Up or Link Down.
-
-It just knows that the link was previously up, is now up again,
-but must have been down intermittently, so transactions to the
-device in the slot may have been lost and the slot is therefore
-brought down for safety.  Because the link is up, it is then
-brought back up.
+You mean in V30, which has not been uploaded yet, right?
 
 Thanks,
+Can Guo.
 
-Lukas
+> 
+> if (blk_rq_is_scsi(cmd->request) ||
+> 	    (!ufshpb_is_write_or_discard_cmd(cmd) &&
+> 	    !ufshpb_is_read_cmd(cmd)))
+> 		return 0;
+> 
+> 
+> Thanks,
+> Daejun
+> 
+>> Thanks,
+>> Can Guo.
+>> 
+>>> 
+>>> Thanks,
+>>> Daejun
+>>> 
+>>> 
+>>>> Thanks,
+>>>> Avri
+>>>> 
+>>>>> 
+>>>>> Can Guo.
+>>>>> 
+>>>>> > Thanks.
+>>>>> > Can Guo.
+>>>>> >
+>>>>> >> +            return;
+>>>>> >> +
+>>>>> >>      lru_info = &hpb->lru_info;
+>>>>> >>
+>>>>> >>      dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n",
+>>>>> >> rgn->rgn_idx);
+>>>>> >> @@ -1855,6 +1866,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
+>>>>> >>  ufshpb_sysfs_attr_show_func(rb_active_cnt);
+>>>>> >>  ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
+>>>>> >>  ufshpb_sysfs_attr_show_func(map_req_cnt);
+>>>>> >> +ufshpb_sysfs_attr_show_func(umap_req_cnt);
+>>>>> >>
+>>>>> >>  static struct attribute *hpb_dev_stat_attrs[] = {
+>>>>> >>      &dev_attr_hit_cnt.attr,
+>>>>> >> @@ -1863,6 +1875,7 @@ static struct attribute *hpb_dev_stat_attrs[] =
+>>>>> >> {
+>>>>> >>      &dev_attr_rb_active_cnt.attr,
+>>>>> >>      &dev_attr_rb_inactive_cnt.attr,
+>>>>> >>      &dev_attr_map_req_cnt.attr,
+>>>>> >> +    &dev_attr_umap_req_cnt.attr,
+>>>>> >>      NULL,
+>>>>> >>  };
+>>>>> >>
+>>>>> >> @@ -1978,6 +1991,7 @@ static void ufshpb_stat_init(struct ufshpb_lu
+>>>>> >> *hpb)
+>>>>> >>      hpb->stats.rb_active_cnt = 0;
+>>>>> >>      hpb->stats.rb_inactive_cnt = 0;
+>>>>> >>      hpb->stats.map_req_cnt = 0;
+>>>>> >> +    hpb->stats.umap_req_cnt = 0;
+>>>>> >>  }
+>>>>> >>
+>>>>> >>  static void ufshpb_param_init(struct ufshpb_lu *hpb)
+>>>>> >> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+>>>>> >> index bd4308010466..84598a317897 100644
+>>>>> >> --- a/drivers/scsi/ufs/ufshpb.h
+>>>>> >> +++ b/drivers/scsi/ufs/ufshpb.h
+>>>>> >> @@ -186,6 +186,7 @@ struct ufshpb_stats {
+>>>>> >>      u64 rb_inactive_cnt;
+>>>>> >>      u64 map_req_cnt;
+>>>>> >>      u64 pre_req_cnt;
+>>>>> >> +    u64 umap_req_cnt;
+>>>>> >>  };
+>>>>> >>
+>>>>> >>  struct ufshpb_lu {
+>>>> 
+>>>> 
+>>>> 
+>> 
+>> 
+>> 
