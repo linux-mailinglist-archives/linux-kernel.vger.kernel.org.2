@@ -2,375 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D96B33F518
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6A633F52D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhCQQIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 12:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48248 "EHLO
+        id S232418AbhCQQKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 12:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232346AbhCQQIY (ORCPT
+        with ESMTP id S232374AbhCQQKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 12:08:24 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED1CC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:08:23 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id g8so1784570wmd.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:08:23 -0700 (PDT)
+        Wed, 17 Mar 2021 12:10:12 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FE0C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:10:12 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id n132so41541853iod.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:10:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8XDMv1l7XAvPIRZCp+58wmK6/e7cNobRtB9Ufy6uc9M=;
-        b=nwPTF7pDSnHH3Es3Iq1rOSMIIXvxOFqefNZqEtlEJoGPFFTUjOSW9l4D0hPGVm/B+M
-         frNbiFFBzsLYDueELZkibCgO7IgKhSTlA56HkvIIztRpBC2bh9RE+trur/qrEOwBLQV+
-         N5/NkBYix41z5ZX3pEfIebjqR87x4iXd95j+idTEm77EKWCY12Scciq+M57RhbgF3+UO
-         /dR0TDLi9p+kUjmQDX9tJBY9riau7H54Mzp9vnxaJX/udQ6AmfThFMsGv0C8GhEWRMKi
-         9unQ7GULSbVZZu3KL8Bt2vTLISD6FoVqkWQjtrWHYFZOlUEITFvtlwO+R2m/0qJDUcSg
-         iSZQ==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TM7+lzl1LSJKUe4zDj6BKysuV/V7IQ8pfAUZqy6AqQc=;
+        b=KQV7+qiTaaTFfLCb4Ta+a5reqtMXZctLNeuHniJ1g3ZeeA4zDXM/YNsfLC64ZlzSVI
+         5TmegRuS5vt89jHsXbCQtpxoEHL5GDsEkaL0kYgCw2apEvkrmAAKfv/JTxIgSI/DTl1L
+         smIZBicW0xu6P0zH3u1itlr2xt+bON3GpTVQ8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8XDMv1l7XAvPIRZCp+58wmK6/e7cNobRtB9Ufy6uc9M=;
-        b=gs6LrcD5ebwj1gTcKXLYAYJgu0K6pTZOqoF1T+vqKl+97blkrN9xGaiMUKurKkSP8C
-         xxiWPYKRixBMj1bsRZvI3T5sP2KbZmcKZWhNKxvPfBYZQeHzYfb6mnkJRCydlukzyCQn
-         4/ZRT5x6mCkCufKmJT+Nokg0jV80N53D7TfZUMpidLxon2wzknGNF5nW5iCbF0eirBA0
-         X+8pqKKYw34gCrQkpgZDW6qNN3AFWnbbKiD3DpUNx7KHWp9C5fWrINNAU+5XzyAOekkQ
-         rLKgqIQmcZI29AXmUW8nAaVH4qEaLiF+sWw3s9s5UYmlZcXoeKahefsnc/1f5Iy7NXzp
-         rIPg==
-X-Gm-Message-State: AOAM5320oedZOpoP/NgS5SRgCU1IMeNwtcrAWgLNv/OfCzoW46N2Yrpy
-        d8eG+wS8Gc0Qljg53aqvHZohlZbu38iR0b68OlCxK8+M4o4=
-X-Google-Smtp-Source: ABdhPJz+OuLzsHEG/wkrZphnViraRX5y1YPemL1jnIMIAc4cTYNU8Yji1dHKFv/B3EpDZIatCiRAbMqFriHRE3qjkZY=
-X-Received: by 2002:a7b:c209:: with SMTP id x9mr4130958wmi.92.1615993488753;
- Wed, 17 Mar 2021 08:04:48 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TM7+lzl1LSJKUe4zDj6BKysuV/V7IQ8pfAUZqy6AqQc=;
+        b=DaqL2K8OeeLd7r9P+K4vf+83uzoEgYIpvYxHAViqnWSOOBWTjWOI12B+hg6+jWzhhB
+         KsclARHsH9QOjCQOc239ia5efsZLTUcprqL6NlHlNlJQYwzFDyk8UD2YthXyRuDNnGjd
+         M/6Xfw81lbpCr+A4J25TvQZROEgCWMllXXiIQW7L2AOqBVU+F8Vxcx2QJ/PMs0Gj1hGJ
+         QRyKx/4hUTFl6Ctdz8VNoHc288M+hhd+/No8x4dPe9vUEaT5cGzqyHxM2GyJ5I5FDGBR
+         YVjUJvGCde9pJdtSAqFP+aHPphHyUIifsyGmq+dE2HVEo8uRWAjFlCNRq/9mpzpGrAqm
+         W0OA==
+X-Gm-Message-State: AOAM533FqEU6D/HYqLtxM1Mr0sn9wfbvUfNluhlwI8E4SLZcqWMS0Pl3
+        qp5qqMxXgUuTR5IsgskzObNS/w02OnbajQ==
+X-Google-Smtp-Source: ABdhPJy/pwoFdluO/whJN8eY/KG9zuwMjWOW9vVmirNxfeofy4HVowqll60980s1cwaba39COZa3+Q==
+X-Received: by 2002:a92:c246:: with SMTP id k6mr7696091ilo.263.1615993608567;
+        Wed, 17 Mar 2021 08:06:48 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id h2sm9585199ioj.30.2021.03.17.08.06.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 08:06:47 -0700 (PDT)
+Subject: Re: [PATCH 0/6] usbip fixes to crashes found by syzbot
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, shuah@kernel.org
+Cc:     valentina.manea.m@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1615171203.git.skhan@linuxfoundation.org>
+ <YEkQ4qS7tkwmjzDn@kroah.com>
+ <5baf6b94-72c4-6e69-65a5-35c5cfb8ca0e@i-love.sakura.ne.jp>
+ <YEoTw7CoK7Ob0YR+@kroah.com>
+ <8dc1e893-4338-90ff-ea61-de727cad1d11@i-love.sakura.ne.jp>
+ <afd1341b-2ed1-f781-d6c8-6064fea3aeb8@i-love.sakura.ne.jp>
+ <192bdb07-da84-ce96-2e25-7c0df749940a@i-love.sakura.ne.jp>
+ <9e089560-388a-a82d-4841-8092578b9d5d@i-love.sakura.ne.jp>
+ <465479ca-544e-3703-cf4e-30f5be04fa11@i-love.sakura.ne.jp>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <fbf64c33-87c3-137c-4faf-66de651243fc@linuxfoundation.org>
+Date:   Wed, 17 Mar 2021 09:06:47 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210128170936.9222-1-mike.leach@linaro.org> <20210128170936.9222-8-mike.leach@linaro.org>
- <a82fe115-69b2-9b90-ed28-b75248811343@arm.com>
-In-Reply-To: <a82fe115-69b2-9b90-ed28-b75248811343@arm.com>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Wed, 17 Mar 2021 15:04:38 +0000
-Message-ID: <CAJ9a7VjKp16y7zmOSmbLbBH=AhHf7J+YaMcQVj0+1J1yM9hptQ@mail.gmail.com>
-Subject: Re: [PATCH v4 07/10] coresight: etm4x: Add complex configuration
- handlers to etmv4
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Yabin Cui <yabinc@google.com>,
-        Jonathan Corbet <corbet@lwn.net>, Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Tingwei Zhang <tingwei@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <465479ca-544e-3703-cf4e-30f5be04fa11@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
+On 3/17/21 12:21 AM, Tetsuo Handa wrote:
+> Shuah, this driver is getting more and more cryptic and buggy.
+> Please explain the strategy for serialization before you write patches.
+> 
+>> - Fix attach_store() to check usbip_event_happened() before
+>>    waking up threads.
+> 
+> No, this helps nothing.
+> 
+>> diff --git a/drivers/usb/usbip/vhci_sysfs.c b/drivers/usb/usbip/vhci_sysfs.c
+>> index c4b4256e5dad3..f0a770adebd97 100644
+>> --- a/drivers/usb/usbip/vhci_sysfs.c
+>> +++ b/drivers/usb/usbip/vhci_sysfs.c
+>> @@ -418,6 +418,15 @@ static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
+>>   	spin_unlock_irqrestore(&vhci->lock, flags);
+>>   	/* end the lock */
+>>   
+>> +	if (usbip_event_happened(&vdev->ud)) {
+>> +		/*
+>> +		 * something went wrong - event handler shutting
+>> +		 * the connection and doing reset - bail out
+>> +		 */
+>> +		dev_err(dev, "Event happended - handler is active\n");
+>> +		return -EAGAIN;
+>> +	}
+>> +
+> 
+> detach_store() can queue shutdown event as soon as reaching "/* end the lock */" line
+> but attach_store() might be preempted immediately after verifying that
+> usbip_event_happened() was false (i.e. at this location) in order to wait for
+> shutdown event posted by detach_store() to be processed.
+> 
 
-Realised I hadn't answered the question below...
+Yes. I haven't sent the patch for that reason. I am trying to test a
+solution. I haven't come up with a solution yet.
 
-On Fri, 5 Mar 2021 at 10:18, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->
-> On 1/28/21 5:09 PM, Mike Leach wrote:
-> > Adds in handlers to allow the ETMv4 to use the complex configuration
-> > support. Features and configurations can be loaded and selected in the
-> > device.
-> >
-> > Signed-off-by: Mike Leach <mike.leach@linaro.org>
-> > ---
-> >   drivers/hwtracing/coresight/Makefile          |   3 +-
-> >   .../hwtracing/coresight/coresight-etm4x-cfg.c | 184 ++++++++++++++++++
-> >   .../hwtracing/coresight/coresight-etm4x-cfg.h |  29 +++
-> >   .../coresight/coresight-etm4x-core.c          |  38 +++-
-> >   .../coresight/coresight-etm4x-sysfs.c         |   3 +
-> >   5 files changed, 254 insertions(+), 3 deletions(-)
-> >   create mode 100644 drivers/hwtracing/coresight/coresight-etm4x-cfg.c
-> >   create mode 100644 drivers/hwtracing/coresight/coresight-etm4x-cfg.h
-> >
-> > diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
-> > index daad9f103a78..ea544206204d 100644
-> > --- a/drivers/hwtracing/coresight/Makefile
-> > +++ b/drivers/hwtracing/coresight/Makefile
-> > @@ -16,7 +16,8 @@ obj-$(CONFIG_CORESIGHT_SOURCE_ETM3X) += coresight-etm3x.o
-> >   coresight-etm3x-y := coresight-etm3x-core.o coresight-etm-cp14.o \
-> >                    coresight-etm3x-sysfs.o
-> >   obj-$(CONFIG_CORESIGHT_SOURCE_ETM4X) += coresight-etm4x.o
-> > -coresight-etm4x-y := coresight-etm4x-core.o coresight-etm4x-sysfs.o
-> > +coresight-etm4x-y := coresight-etm4x-core.o coresight-etm4x-sysfs.o \
-> > +                     coresight-etm4x-cfg.o
-> >   obj-$(CONFIG_CORESIGHT_STM) += coresight-stm.o
-> >   obj-$(CONFIG_CORESIGHT_CPU_DEBUG) += coresight-cpu-debug.o
-> >   obj-$(CONFIG_CORESIGHT_CATU) += coresight-catu.o
-> > diff --git a/drivers/hwtracing/coresight/coresight-etm4x-cfg.c b/drivers/hwtracing/coresight/coresight-etm4x-cfg.c
-> > new file mode 100644
-> > index 000000000000..f237a8d02360
-> > --- /dev/null
-> > +++ b/drivers/hwtracing/coresight/coresight-etm4x-cfg.c
-> > @@ -0,0 +1,184 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright(C) 2020 Linaro Limited. All rights reserved.
-> > + * Author: Mike Leach <mike.leach@linaro.org>
-> > + */
-> > +
-> > +#include "coresight-etm4x.h"
-> > +#include "coresight-etm4x-cfg.h"
-> > +#include "coresight-priv.h"
-> > +#include "coresight-syscfg.h"
-> > +
-> > +/**
-> > + * etm4_cfg_map_reg_offset - validate and map the register offset into a
-> > + *                        location in the driver config struct.
-> > + *
-> > + * Limits the number of registers that can be accessed and programmed in
-> > + * features, to those which are used to control the trace capture parameters.
-> > + *
-> > + * Omits or limits access to those which the driver must use exclusively.
-> > + *
-> > + * Invalid offsets will result in fail code return and feature load failure.
-> > + *
-> > + * @drvdata: driver data to map into.
-> > + * @reg:     register to map.
-> > + * @offset:  device offset for the register
-> > + */
-> > +static int etm4_cfg_map_reg_offset(struct etmv4_drvdata *drvdata,
-> > +                                struct cscfg_reg_csdev *reg, u32 offset)
-> > +{
-> > +     int err = -EINVAL, idx;
-> > +     struct etmv4_config *drvcfg = &drvdata->config;
-> > +     u32 off_mask;
-> > +
-> > +#define CHECKREG(cval, elem) \
-> > +     { \
-> > +             if (offset == cval) { \
-> > +                     reg->drv_store = &drvcfg->elem; \
-> > +                     err = 0; \
-> > +                     break; \
-> > +             } \
-> > +     }
-> > +
-> > +#define CHECKREGIDX(cval, elem, off_idx, mask)       \
-> > +     { \
-> > +             if (mask == cval) { \
-> > +                     reg->drv_store = &drvcfg->elem[off_idx]; \
-> > +                     err = 0; \
-> > +                     break; \
-> > +             } \
-> > +     }
-> > +
->
-> I think we can live with switch-case, ignoring the Warnings generated by the
-> checkpatch, making the code much more readable and less error prone.
->
-> Otherwise, please could you move the above macro definitions to the top,
-> outside this function ?
->
-> > +     if (((offset >= TRCEVENTCTL0R) && (offset <= TRCVIPCSSCTLR)) ||
-> > +         ((offset >= TRCSEQRSTEVR) && (offset <= TRCEXTINSELR)) ||
-> > +         ((offset >= TRCCIDCCTLR0) && (offset <= TRCVMIDCCTLR1))) {
-> > +             do {
-> > +                     CHECKREG(TRCEVENTCTL0R, eventctrl0);
-> > +                     CHECKREG(TRCEVENTCTL1R, eventctrl1);
-> > +                     CHECKREG(TRCSTALLCTLR, stall_ctrl);
-> > +                     CHECKREG(TRCTSCTLR, ts_ctrl);
-> > +                     CHECKREG(TRCSYNCPR, syncfreq);
-> > +                     CHECKREG(TRCCCCTLR, ccctlr);
-> > +                     CHECKREG(TRCBBCTLR, bb_ctrl);
-> > +                     CHECKREG(TRCVICTLR, vinst_ctrl);
-> > +                     CHECKREG(TRCVIIECTLR, viiectlr);
-> > +                     CHECKREG(TRCVISSCTLR, vissctlr);
-> > +                     CHECKREG(TRCVIPCSSCTLR, vipcssctlr);
-> > +                     CHECKREG(TRCSEQRSTEVR, seq_rst);
-> > +                     CHECKREG(TRCSEQSTR, seq_state);
-> > +                     CHECKREG(TRCEXTINSELR, ext_inp);
-> > +                     CHECKREG(TRCCIDCCTLR0, ctxid_mask0);
-> > +                     CHECKREG(TRCCIDCCTLR1, ctxid_mask1);
-> > +                     CHECKREG(TRCVMIDCCTLR0, vmid_mask0);
-> > +                     CHECKREG(TRCVMIDCCTLR1, vmid_mask1);
-> > +             } while (0);
-> > +     } else if ((offset & GENMASK(11, 4)) == TRCSEQEVRn(0)) {
-> > +             /* sequencer state control registers */
-> > +             idx = (offset & GENMASK(3, 0)) / 4;
-> > +             if (idx < ETM_MAX_SEQ_STATES) {
-> > +                     reg->drv_store = &drvcfg->seq_ctrl[idx];
-> > +                     err = 0;
-> > +             }
-> > +     } else if ((offset >= TRCSSCCRn(0)) && (offset <= TRCSSPCICRn(7))) {
-> > +             /* 32 bit, 8 off indexed register sets */
-> > +             idx = (offset & GENMASK(4, 0)) / 4;
-> > +             off_mask =  (offset & GENMASK(11, 5));
-> > +             do {
-> > +                     CHECKREGIDX(TRCSSCCRn(0), ss_ctrl, idx, off_mask);
-> > +                     CHECKREGIDX(TRCSSCSRn(0), ss_status, idx, off_mask);
-> > +                     CHECKREGIDX(TRCSSPCICRn(0), ss_pe_cmp, idx, off_mask);
-> > +             } while (0);
-> > +     } else if ((offset >= TRCCIDCVRn(0)) && (offset <= TRCVMIDCVRn(7))) {
-> > +             /* 64 bit, 8 off indexed register sets */
-> > +             idx = (offset & GENMASK(5, 0)) / 8;
-> > +             off_mask = (offset & GENMASK(11, 6));
-> > +             do {
-> > +                     CHECKREGIDX(TRCCIDCVRn(0), ctxid_pid, idx, off_mask);
-> > +                     CHECKREGIDX(TRCVMIDCVRn(0), vmid_val, idx, off_mask);
-> > +             } while (0);
-> > +     } else if ((offset >= TRCRSCTLRn(2)) &&
-> > +                (offset <= TRCRSCTLRn((ETM_MAX_RES_SEL - 1)))) {
-> > +             /* 32 bit resource selection regs, 32 off, skip fixed 0,1 */
-> > +             idx = (offset & GENMASK(6, 0)) / 4;
-> > +             if (idx < ETM_MAX_RES_SEL) {
-> > +                     reg->drv_store = &drvcfg->res_ctrl[idx];
-> > +                     err = 0;
-> > +             }
-> > +     } else if ((offset >= TRCACVRn(0)) &&
-> > +                (offset <= TRCACATRn((ETM_MAX_SINGLE_ADDR_CMP - 1)))) {
-> > +             /* 64 bit addr cmp regs, 16 off */
-> > +             idx = (offset & GENMASK(6, 0)) / 8;
-> > +             off_mask = offset & GENMASK(11, 7);
-> > +             do {
-> > +                     CHECKREGIDX(TRCACVRn(0), addr_val, idx, off_mask);
-> > +                     CHECKREGIDX(TRCACATRn(0), addr_acc, idx, off_mask);
->
-> What happens if the ETM doesn't have enough resources ? Do we fail the load
-> here ? Or do we fail the activation during enabling the ETM ? Or do we assume
-> all ETMs have the resources required for statically defined configs ?
->
+Holding event_lock isn't the right solution. I am not going to accept
+that. This is a window that gets triggered by syzbot injecting errors
+in a sequence. Fixing this should be done taking other moving parts of
+the driver into account.
 
-Resource management will be in a follow-up set - dynamic load of
-features and configurations will be gated on sufficient resources.
-There are two stages where this can fail:-
-1) a feature requires resources that the ETM does not have - this will
-fail on load.  Any dependent configuration will fail at this point
-too. Where this is the result of dynamic load of a configuration and
-features the load of that module will be failed.
-2) a configuration uses more features than devices have total
-resources for - this will fail on enable as a feature cannot be
-programmed due to lack of resources.
-
-For the built in config - for now we assume any platform has the
-resources - in future we will fail the load of the feature, but not
-the load of coresight itself.
-Moving forwards I would expect that we will avoid having too many
-built-in configs and push for all new ones to be a separate loadable
-module as a minimum.
-
-Thanks
-
-Mike
-
-
-> > +             } while (0);
-> > +     } else if ((offset >= TRCCNTRLDVRn(0)) &&
-> > +                (offset <= TRCCNTVRn((ETMv4_MAX_CNTR - 1)))) {
-> > +             /* 32 bit counter regs, 4 off (ETMv4_MAX_CNTR - 1) */
-> > +             idx = (offset &  GENMASK(3, 0)) / 4;
-> > +             off_mask = offset &  GENMASK(11, 4);
-> > +             do {
-> > +                     CHECKREGIDX(TRCCNTRLDVRn(0), cntrldvr, idx, off_mask);
-> > +                     CHECKREGIDX(TRCCNTCTLRn(0), cntr_ctrl, idx, off_mask);
-> > +                     CHECKREGIDX(TRCCNTVRn(0), cntr_val, idx, off_mask);
-> > +             } while (0);
-> > +     }
-> > +     return err;
-> > +}
-> > +
-> > +/**
-> > + * etm4_cfg_load_feature - load a feature into a device instance.
-> > + *
-> > + * @csdev:   An ETMv4 CoreSight device.
-> > + * @feat:    The feature to be loaded.
-> > + *
-> > + * The function will load a feature instance into the device, checking that
-> > + * the register definitions are valid for the device.
-> > + *
-> > + * Parameter and register definitions will be converted into internal
-> > + * structures that are used to set the values in the driver when the
-> > + * feature is enabled for the device.
-> > + *
-> > + * The feature spinlock pointer is initialised to the same spinlock
-> > + * that the driver uses to protect the internal register values.
-> > + */
-> > +static int etm4_cfg_load_feature(struct coresight_device *csdev,
-> > +                              struct cscfg_feature_csdev *feat)
-> > +{
-> > +     struct device *dev = csdev->dev.parent;
-> > +     struct etmv4_drvdata *drvdata = dev_get_drvdata(dev);
-> > +     const struct cscfg_feature_desc *feat_desc = feat->desc;
-> > +     u32 offset;
-> > +     int i = 0, err = 0;
-> > +
-> > +     /*
-> > +      * essential we set the device spinlock - this is used in the generic
-> > +      * programming routines when copying values into the drvdata structures
-> > +      * via the pointers setup in etm4_cfg_map_reg_offset().
-> > +      */
-> > +     feat->csdev_spinlock = &drvdata->spinlock;
-> > +
-> > +     /* process the register descriptions */
-> > +     for (i = 0; i < feat->nr_regs && !err; i++) {
-> > +             offset = feat_desc->regs[i].offset;
-> > +             err = etm4_cfg_map_reg_offset(drvdata, &feat->regs[i], offset);
-> > +     }
-> > +     return err;
-> > +}
-> > +
-> > +/* match information when loading configurations */
-> > +#define CS_CFG_ETM4_MATCH_FLAGS      (CS_CFG_MATCH_CLASS_SRC_ALL | \
-> > +                                      CS_CFG_MATCH_CLASS_SRC_ETM4)
-> > +
-> > +int etm4_cscfg_register(struct coresight_device *csdev, const char *dev_name)
-> > +{
-> > +     struct cscfg_match_desc cfg_info;
-> > +     struct cscfg_csdev_feat_ops ops;
-> > +
-> > +     cfg_info.match_flags = CS_CFG_ETM4_MATCH_FLAGS;
-> > +
-> > +     ops.load_feat = &etm4_cfg_load_feature;
-> > +
-> > +     return cscfg_register_csdev(csdev, &cfg_info, &ops);
-> > +}
-> > diff --git a/drivers/hwtracing/coresight/coresight-etm4x-cfg.h b/drivers/hwtracing/coresight/coresight-etm4x-cfg.h
-> > new file mode 100644
-> > index 000000000000..9e279c5da55d
-> > --- /dev/null
-> > +++ b/drivers/hwtracing/coresight/coresight-etm4x-cfg.h
-> > @@ -0,0 +1,29 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (c) 2014-2015, The Linux Foundation. All rights reserved.
-> > + */
-> > +
-> > +#ifndef _CORESIGHT_CORESIGHT_ETM4X_CFG_H
-> > +#define _CORESIGHT_CORESIGHT_ETM4X_CFG_H
-> > +
-> > +#include "coresight-config.h"
-> > +#include "coresight-etm4x.h"
-> > +
-> > +/* ETMv4 specific config defines */
-> > +
-> > +/* resource IDs */
-> > +
-> > +#define ETM4_CFG_RES_CTR     0x001
-> > +#define ETM4_CFG_RES_CMP     0x002
-> > +#define ETM4_CFG_RES_CMP_PAIR0       0x003
-> > +#define ETM4_CFG_RES_CMP_PAIR1       0x004
-> > +#define ETM4_CFG_RES_SEL     0x005
-> > +#define ETM4_CFG_RES_SEL_PAIR0       0x006
-> > +#define ETM4_CFG_RES_SEL_PAIR1       0x007
-> > +#define ETM4_CFG_RES_SEQ     0x008
-> > +#define ETM4_CFG_RES_TS              0x009
-> > +#define ETM4_CFG_RES_MASK    0x00F
->
-> Where are these used ? Probably better to move it to the patch
-> where they are actually used.
->
-> Suzuki
-
-
-
--- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+thanks,
+-- Shuah
