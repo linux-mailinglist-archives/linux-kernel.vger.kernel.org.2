@@ -2,113 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7B433E7D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 04:41:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8BE33E7CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 04:41:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhCQDlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 23:41:22 -0400
-Received: from mga05.intel.com ([192.55.52.43]:57774 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230147AbhCQDlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 23:41:03 -0400
-IronPort-SDR: uj87DGqwH5JDDqP75B0vJ3vwarrW+I2+8DzvnOZuArmInbvMw2Pmy4LQnn5+rSluf0uaW87iwI
- JhjJlA86w71Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="274426137"
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="274426137"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 20:41:03 -0700
-IronPort-SDR: 0QhJdy7QGydoeAImcsOKM4oPxEqMCJtV7/yKuRK9ebdUYdHqIU+Xrlr22K+IVoE/z+HiATTO9U
- goKah0qb01Pg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="602076101"
-Received: from shbuild999.sh.intel.com ([10.239.147.94])
-  by fmsmga006.fm.intel.com with ESMTP; 16 Mar 2021 20:41:00 -0700
-From:   Feng Tang <feng.tang@intel.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Feng Tang <feng.tang@intel.com>
-Subject: [PATCH v4 13/13] mem/mempolicy: unify mpol_new_preferred() and mpol_new_preferred_many()
-Date:   Wed, 17 Mar 2021 11:40:10 +0800
-Message-Id: <1615952410-36895-14-git-send-email-feng.tang@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1615952410-36895-1-git-send-email-feng.tang@intel.com>
-References: <1615952410-36895-1-git-send-email-feng.tang@intel.com>
+        id S230104AbhCQDlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 23:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230097AbhCQDkk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 23:40:40 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93A8C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 20:40:39 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so2449865pjq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 20:40:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t280vDZQWk0iZZ+xQFR7BI6xACbsATSb7UzAA7K2/a0=;
+        b=Humdt9srb74JTFtTLWQFozZx4MkuAbxcuC0K/hAZ5mVCgDHroQ+B5lp/tFiHSs+1fB
+         38gITDQeMM6jaALv1oRJIz5cyKYq/Klf5POvfPvYtHVUeU3zrlO27iPji+39hoa5tAfi
+         PWVpnulycTQuCx4y5nsc0oV4FK4GErfmmnFNxAl1GKnhOfAr223cbIpIXY0qcBi/h/q6
+         VgrM8+ttoNi4HncnjFBaJKF04RnkD2OL7B2k/kMDKinkug3q9vebo84Bq4mJ0LaTv/bU
+         7npOzBfb0uicwUxurpmoO4aR08rauCjmBjyyBiS46a7dVMNmHkq3ANaOSjgqKGnRbTFe
+         2ZMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=t280vDZQWk0iZZ+xQFR7BI6xACbsATSb7UzAA7K2/a0=;
+        b=OKPRxqpvNRXkEgyhdqJreB1vq62kUzeFU5QMMdChPci5Cu64NhDdVaY7+PDYmAFig5
+         B+fwBflM7iNYpqAb8Tp4xKS1H04nACZRNMORXDaHygov6E0kSlKG1+MyjFFM7flsVx1z
+         iVWKJe7AMtomhFoUhaccH8LYVJddrL7zfF/lQHEbTRr2L7/WOufQ//73FpzAqvdskjqc
+         HVgHIHohfunijdvuxpZpo0cI0Mx+Bq+/90Cf6Nnb/pFglvVfbL/BfWtJyq0jh7kbIx8n
+         1EDKzHmXCKbYmzSLrP33cXiVFU1d6ora6IizG1+rbyE6YunEzvwtdr0FhNOCHM1/za98
+         EzGg==
+X-Gm-Message-State: AOAM531zNWgoaSExkihfDrj/GTioDZvRNxuYFchngJNN409kWbdYp4Ns
+        ZijbeD64My0xFBvIKGUCA9TCZg==
+X-Google-Smtp-Source: ABdhPJw+fTIoWjUDX5CUuSKCp+cvthbxVN3kxlUImWClYDjMZlRLuSxvAy55TEc3ABlo9funImT0rQ==
+X-Received: by 2002:a17:902:ed41:b029:e5:c92d:ec24 with SMTP id y1-20020a170902ed41b02900e5c92dec24mr2356365plb.57.1615952439246;
+        Tue, 16 Mar 2021 20:40:39 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id s200sm17957184pfs.53.2021.03.16.20.40.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 20:40:38 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 20:40:38 -0700 (PDT)
+X-Google-Original-Date: Tue, 16 Mar 2021 20:40:31 PDT (-0700)
+Subject:     Re: [PATCH 2/2] riscv: Enable generic clockevent broadcast
+In-Reply-To: <20210307022446.63732-2-guoren@kernel.org>
+CC:     Arnd Bergmann <arnd@arndb.de>, guoren@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        guoren@linux.alibaba.com, tglx@linutronix.de,
+        daniel.lezcano@linaro.org, Anup Patel <Anup.Patel@wdc.com>,
+        Atish Patra <Atish.Patra@wdc.com>, greentime.hu@sifive.com
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     guoren@kernel.org
+Message-ID: <mhng-25b45eaf-1d0b-4292-9228-1ac3ac68832b@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To reduce some code duplication.
+On Sat, 06 Mar 2021 18:24:46 PST (-0800), guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
+>
+> When percpu-timers are stopped by deep power saving mode, we
+> need system timer help to broadcast IPI_TIMER.
+>
+> This is first introduced by broken x86 hardware, where the local apic
+> timer stops in C3 state. But many other architectures(powerpc, mips,
+> arm, hexagon, openrisc, sh) have supported the infrastructure to
+> deal with Power Management issues.
+>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Anup Patel <anup.patel@wdc.com>
+> Cc: Atish Patra <atish.patra@wdc.com>
+> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> Cc: Greentime Hu <greentime.hu@sifive.com>
+> ---
+>  arch/riscv/Kconfig      |  2 ++
+>  arch/riscv/kernel/smp.c | 16 ++++++++++++++++
+>  2 files changed, 18 insertions(+)
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 85d626b8ce5e..8637e7344abe 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -28,6 +28,7 @@ config RISCV
+>  	select ARCH_HAS_SET_DIRECT_MAP
+>  	select ARCH_HAS_SET_MEMORY
+>  	select ARCH_HAS_STRICT_KERNEL_RWX if MMU
+> +	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+>  	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
+>  	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
+>  	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
+> @@ -39,6 +40,7 @@ config RISCV
+>  	select EDAC_SUPPORT
+>  	select GENERIC_ARCH_TOPOLOGY if SMP
+>  	select GENERIC_ATOMIC64 if !64BIT
+> +	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
+>  	select GENERIC_EARLY_IOREMAP
+>  	select GENERIC_GETTIMEOFDAY if HAVE_GENERIC_VDSO
+>  	select GENERIC_IOREMAP
+> diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
+> index ea028d9e0d24..8325d33411d8 100644
+> --- a/arch/riscv/kernel/smp.c
+> +++ b/arch/riscv/kernel/smp.c
+> @@ -9,6 +9,7 @@
+>   */
+>
+>  #include <linux/cpu.h>
+> +#include <linux/clockchips.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/module.h>
+>  #include <linux/profile.h>
+> @@ -27,6 +28,7 @@ enum ipi_message_type {
+>  	IPI_CALL_FUNC,
+>  	IPI_CPU_STOP,
+>  	IPI_IRQ_WORK,
+> +	IPI_TIMER,
+>  	IPI_MAX
+>  };
+>
+> @@ -176,6 +178,12 @@ void handle_IPI(struct pt_regs *regs)
+>  			irq_work_run();
+>  		}
+>
+> +#ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
+> +		if (ops & (1 << IPI_TIMER)) {
+> +			stats[IPI_TIMER]++;
+> +			tick_receive_broadcast();
+> +		}
+> +#endif
+>  		BUG_ON((ops >> IPI_MAX) != 0);
+>
+>  		/* Order data access and bit testing. */
+> @@ -192,6 +200,7 @@ static const char * const ipi_names[] = {
+>  	[IPI_CALL_FUNC]		= "Function call interrupts",
+>  	[IPI_CPU_STOP]		= "CPU stop interrupts",
+>  	[IPI_IRQ_WORK]		= "IRQ work interrupts",
+> +	[IPI_TIMER]		= "Timer broadcast interrupts",
+>  };
+>
+>  void show_ipi_stats(struct seq_file *p, int prec)
+> @@ -217,6 +226,13 @@ void arch_send_call_function_single_ipi(int cpu)
+>  	send_ipi_single(cpu, IPI_CALL_FUNC);
+>  }
+>
+> +#ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
+> +void tick_broadcast(const struct cpumask *mask)
+> +{
+> +	send_ipi_mask(mask, IPI_TIMER);
+> +}
+> +#endif
+> +
+>  void smp_send_stop(void)
+>  {
+>  	unsigned long timeout;
 
-Signed-off-by: Feng Tang <feng.tang@intel.com>
----
- mm/mempolicy.c | 25 +++++++------------------
- 1 file changed, 7 insertions(+), 18 deletions(-)
-
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 18aa7dc..ee99ecc 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -201,32 +201,21 @@ static int mpol_new_interleave(struct mempolicy *pol, const nodemask_t *nodes)
- 	return 0;
- }
- 
--static int mpol_new_preferred_many(struct mempolicy *pol,
-+/* cover both MPOL_PREFERRED and MPOL_PREFERRED_MANY */
-+static int mpol_new_preferred(struct mempolicy *pol,
- 				   const nodemask_t *nodes)
- {
- 	if (!nodes)
- 		pol->flags |= MPOL_F_LOCAL;	/* local allocation */
- 	else if (nodes_empty(*nodes))
- 		return -EINVAL;			/*  no allowed nodes */
--	else
--		pol->nodes = *nodes;
--	return 0;
--}
--
--static int mpol_new_preferred(struct mempolicy *pol, const nodemask_t *nodes)
--{
--	if (nodes) {
-+	else {
- 		/* MPOL_PREFERRED can only take a single node: */
--		nodemask_t tmp;
-+		nodemask_t tmp = nodemask_of_node(first_node(*nodes));
- 
--		if (nodes_empty(*nodes))
--			return -EINVAL;
--
--		tmp = nodemask_of_node(first_node(*nodes));
--		return mpol_new_preferred_many(pol, &tmp);
-+		pol->nodes = (pol->mode == MPOL_PREFERRED) ? tmp : *nodes;
- 	}
--
--	return mpol_new_preferred_many(pol, NULL);
-+	return 0;
- }
- 
- static int mpol_new_bind(struct mempolicy *pol, const nodemask_t *nodes)
-@@ -468,7 +457,7 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
- 	},
- 	/* [MPOL_LOCAL] - see mpol_new() */
- 	[MPOL_PREFERRED_MANY] = {
--		.create = mpol_new_preferred_many,
-+		.create = mpol_new_preferred,
- 		.rebind = mpol_rebind_preferred_many,
- 	},
- };
--- 
-2.7.4
-
+Thanks, this is on for-next.
