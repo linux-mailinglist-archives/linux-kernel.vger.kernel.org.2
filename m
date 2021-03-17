@@ -2,134 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4292F33EB45
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB6033EB4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhCQISx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:18:53 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:38462 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhCQISs (ORCPT
+        id S229598AbhCQIT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:19:57 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:25132 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhCQITs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:18:48 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210317081846epoutp01c3bb1d65eac1d31359405ae21768eb32~tE1vJP7_Z0113301133epoutp01m
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 08:18:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210317081846epoutp01c3bb1d65eac1d31359405ae21768eb32~tE1vJP7_Z0113301133epoutp01m
+        Wed, 17 Mar 2021 04:19:48 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210317081945euoutp02418a84f1ba8795948da5e9d6ad48cb34~tE2mdUXWG0639206392euoutp02-
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 08:19:45 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210317081945euoutp02418a84f1ba8795948da5e9d6ad48cb34~tE2mdUXWG0639206392euoutp02-
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1615969126;
-        bh=PHNEyIXmBWyKEQx9IvXm0SCLGTdQ5DkDqePnERzAv34=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=eJeOZxpI5up5BQXRg3lxQCDk1YiH9PykX+l2e4oyREBRtWC7MFGhaqcU/055BLhlM
-         LwNQ6N4dp3vE4epVBbIxSGC9V3MqvHN4RJp9ZIji/aWsvEua/mxQ/U/jKtOm3q5fGj
-         vVVCu8IlwzblNLgvs+OMI2wLQuqGEduART+5YurU=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210317081846epcas1p3f61820b940b33c913897cc4412ed30ac~tE1u81Of80299702997epcas1p3E;
-        Wed, 17 Mar 2021 08:18:46 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.161]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4F0jjJ4hcJz4x9Q1; Wed, 17 Mar
-        2021 08:18:44 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        7E.4E.02418.26BB1506; Wed, 17 Mar 2021 17:18:42 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210317081841epcas1p14f10de56101c3850675d5bc2e6eebab0~tE1rGIQSE0757107571epcas1p1r;
-        Wed, 17 Mar 2021 08:18:41 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210317081841epsmtrp23d178101c7b26a73c0d67ca5f7275df5~tE1rFXnxy2674426744epsmtrp2X;
-        Wed, 17 Mar 2021 08:18:41 +0000 (GMT)
-X-AuditID: b6c32a35-c23ff70000010972-97-6051bb629197
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        FA.67.13470.16BB1506; Wed, 17 Mar 2021 17:18:41 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip1.samsung.com
+        s=mail20170921; t=1615969185;
+        bh=hLfG1mLh/mmQm3ZtzhfOcgpbBnnOXvRKhCNQzWA7meA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=nwLc/q3OM0PnROAP10E7jrli3uZrW8LP9J+9ul92w44umNQixXzFQo7rgLD4EvTr+
+         Je14c9jAoAZfKNDjfubYecPDZCa1x+/CLjHqMvgNSPIrTRl+PvSZweQW9lNp1LHqOQ
+         dPAGI3n2fszSSKWqrocxin9fHix8AEi05qf02WMg=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210317081944eucas1p2a8414c40a85ebb288eb330aa6ef073a6~tE2lvgm4r0565005650eucas1p2w;
+        Wed, 17 Mar 2021 08:19:44 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 29.56.09452.0ABB1506; Wed, 17
+        Mar 2021 08:19:44 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210317081944eucas1p123bd27f3203c937d2969a66fb06d6d9e~tE2laXpAt3196031960eucas1p1r;
+        Wed, 17 Mar 2021 08:19:44 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210317081944eusmtrp2cba4efe2928405d112d2361eeb95de27~tE2lZkuZn1423714237eusmtrp2h;
+        Wed, 17 Mar 2021 08:19:44 +0000 (GMT)
+X-AuditID: cbfec7f2-a9fff700000024ec-f1-6051bba0a4ef
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id E3.B7.08696.0ABB1506; Wed, 17
+        Mar 2021 08:19:44 +0000 (GMT)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
         (KnoxPortal) with ESMTPA id
-        20210317081841epsmtip159ab0b2f35f6157163a9e2c286ebba37~tE1q3FCKG1683616836epsmtip1g;
-        Wed, 17 Mar 2021 08:18:41 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Stephen Rothwell'" <sfr@canb.auug.org.au>,
-        "'Steve French'" <smfrench@gmail.com>
-Cc:     "'Linux Kernel Mailing List'" <linux-kernel@vger.kernel.org>,
-        "'Linux Next Mailing List'" <linux-next@vger.kernel.org>
-In-Reply-To: <20210317184655.4d369e9e@canb.auug.org.au>
-Subject: RE: linux-next: build warning after merge of the cifsd tree
-Date:   Wed, 17 Mar 2021 17:18:41 +0900
-Message-ID: <012501d71b06$23f65960$6be30c20$@samsung.com>
+        20210317081944eusmtip2b2a2731d21436519728ef0f29878a5e1~tE2lOCMoe1399213992eusmtip2Z;
+        Wed, 17 Mar 2021 08:19:44 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     alexandre.belloni@bootlin.com
+Cc:     l.stelmach@samsung.com, a.zummo@towertech.it,
+        b.zolnierkie@samsung.com, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org, m.szyprowski@samsung.com
+Subject: [PATCH 1/2] WIP: Introduce has_alarm method for rtc devices
+Date:   Wed, 17 Mar 2021 09:19:35 +0100
+Message-Id: <20210317081936.26583-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <dleftjblbjc6w1.fsf%l.stelmach@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQD0cfsrGuLMy31vK4WpkBQ0SCD1eQHz/oTkrD2IBMA=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrDKsWRmVeSWpSXmKPExsWy7bCmvm7S7sAEg0ctAhaXd81hszi4sI3R
-        Yuveq+wWb14cZnNg8Wi8cYPNY+esu+wenzfJBTBH5dhkpCampBYppOYl56dk5qXbKnkHxzvH
-        m5oZGOoaWlqYKynkJeam2iq5+AToumXmAG1TUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gq
-        pRak5BQYGhToFSfmFpfmpesl5+daGRoYGJkCVSbkZFx81MFYcJ2l4vn86gbGR8xdjJwcEgIm
-        EscWvWfvYuTiEBLYwSixa+U8ZgjnE6PEvFNbWEGqhAS+MUosuV8M0/H5xls2iKK9jBIbthxg
-        gnBeMkpcOLqSDaSKTUBX4t+f/WC2iECExPmGvSwgNrNAjcT9hbvZQWxOAXOJyWuegt0hLOAi
-        cbVvHdg2FgFViWMXNjOB2LwClhIfnu9hhrAFJU7OfAI1R15i+9s5UD8oSPx8uowVYpeVxJyf
-        L5ggakQkZne2gb0jIfCRXWL9svtAzRxAjovEwvZIiF5hiVfHt7BD2FISn9/tZYMoqZb4uB9q
-        fAejxIvvthC2scTN9RtYQUqYBTQl1u/ShwgrSuz8PZcRYiufxLuvPawQU3glOtqEIEpUJfou
-        HWaCsKUluto/sE9gVJqF5K9ZSP6aheT+WQjLFjCyrGIUSy0ozk1PLTYsMESO6U2M4GSoZbqD
-        ceLbD3qHGJk4GA8xSnAwK4nwmuYFJAjxpiRWVqUW5ccXleakFh9iNAWG9ERmKdHkfGA6ziuJ
-        NzQ1MjY2tjAxMzczNVYS500yeBAvJJCeWJKanZpakFoE08fEwSnVwKSdNStjZuZju5R7O/5W
-        3Ax/0ubA+X/Gp0vv5X7+3mnM7KMfsyCzzZ77mwdvT25kbMbsFYLfP059Om1n5Rll2cJXOvzL
-        9cvTi1h2uBwtn8P7W/p4x7mqxGdsXAcYZOuuMkwJuLTQZEpFSvzd9aH7eyO457LH8itnzjnx
-        w3FdpvDc1Hcf/v76sZznWMbkGxtS7Se/NwxaUuf1/uvcuZlyl1Oa861jclRtFq5Qv9IQHpF1
-        WEPD9IXj6h5Jrnuemo3yFyfnyqRdM311Q2qpov+mgvtch66qrlTxLYuvfnOzukr3i4+s7THz
-        Z/1vBTxjXp/0+Rnu9ULwXHZcWHTJhJmblZ+90aoSfG0rmfDzju6vFiWW4oxEQy3mouJEADUK
-        +n4PBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOLMWRmVeSWpSXmKPExsWy7bCSnG7i7sAEg6OH9Swu75rDZnFwYRuj
-        xda9V9kt3rw4zObA4tF44wabx85Zd9k9Pm+SC2CO4rJJSc3JLEst0rdL4Mq4+KiDseA6S8Xz
-        +dUNjI+Yuxg5OSQETCQ+33jL1sXIxSEksJtR4tWV/SwQCWmJYyfOABVxANnCEocPF0PUPGeU
-        WL10ORNIDZuArsS/P/vZQGwRgQiJtX0PWUFsZoEaicv7DzBDNHQwSrxZsIQRJMEpYC4xec1T
-        sM3CAi4SV/vWgTWwCKhKHLuwGWwor4ClxIfne5ghbEGJkzOfsIAcwSygJ9G2kRFivrzE9rdz
-        oB5QkPj5dBkrxA1WEnN+vmCCqBGRmN3ZxjyBUXgWkkmzECbNQjJpFpKOBYwsqxglUwuKc9Nz
-        iw0LDPNSy/WKE3OLS/PS9ZLzczcxguNCS3MH4/ZVH/QOMTJxMB5ilOBgVhLhNc0LSBDiTUms
-        rEotyo8vKs1JLT7EKM3BoiTOe6HrZLyQQHpiSWp2ampBahFMlomDU6qBaZ5yh+BH5Zz1q78q
-        va46lGx+uls/5uU3xtotrM+fuxnIiV37y7tcwtR3gnXD51mnW/J//LyzxzCY/8n1WysmcJrr
-        vLLmaj0+9dIR3jfrbrdrG9nHOX3I3SrKV86eJ75Hq9ulY9HuqikLC8skrmrkKe57wXA1yFjj
-        sLax+tL4wr/Gs7Mq2lYwzV6ZU3Lh0ueSq5dMyh6sbCv8/XPTlcOp6+4pcuoffR4TZ53PWGnY
-        r7lAdjvPpK8K8nOWf+l882hzVcf+336Ln1ap696+y1SwLHlvzfZ3vCs7Tv/o2vfC6PYV6aZ1
-        p22/Hgp69DZ5hpd00FddDm3brJ5z5vtYVDU7+hqPfTxbEhWzL2x5pD/vLyWW4oxEQy3mouJE
-        AEtBmqT6AgAA
-X-CMS-MailID: 20210317081841epcas1p14f10de56101c3850675d5bc2e6eebab0
+Organization: Samsung R&D Institute Poland
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphleLIzCtJLcpLzFFi42LZduzned0FuwMTDL68MLBYcvEqu0X7u2Xs
+        FhtnrGe1uHloBaPF5V1z2CyOrb7CZrH2yF12B3aPeWuqPfq2rGL0mD7vJ5PH501yASxRXDYp
+        qTmZZalF+nYJXBmbztxmLJjBW/Gkq5e5gfEDVxcjJ4eEgInElK2PmbsYuTiEBFYwSjye3QTl
+        fGGUOHf4CRuE85lRYlbnO1aYlm3TbjJBJJYzShy6Pp8RwnnOKHFvazsTSBWbgKNE/9ITYB0i
+        AooSt/c9BJvLLLCQUeLBqnVgRcICLhKHD38Es1kEVCX+Ln/OAmLzClhLPH+/CWqdvET78u1s
+        IDangIXEpwlvmSFqBCVOznwCVs8voCWxpuk6mM0MVN+8dTbYMgmBCxwSj36/YIIY5CLRdBbm
+        B2GJV8e3sEPYMhL/d84HquEAsuslJk8yg+jtYZTYNucHC0SNtcSdc7/YQGqYBTQl1u/ShwgD
+        PfnlKyNEK5/EjbeCECfwSUzaNp0ZIswr0dEmBFGtIrGufw/UQCmJ3lcrGCcwKs1C8swsJA/M
+        Qti1gJF5FaN4amlxbnpqsWFearlecWJucWleul5yfu4mRmCCOf3v+KcdjHNffdQ7xMjEwXiI
+        UYKDWUmE1zQvIEGINyWxsiq1KD++qDQntfgQozQHi5I476rZa+KFBNITS1KzU1MLUotgskwc
+        nFINTHLPz+8Q3K3c0X3h7Ktk49wHnm3ymzP31/QvP6m1aauyVnXzezVtuc9nfqtetAmQfq79
+        iunTFla+O6vyjx1cc3z34oun9mYWOIjcy50wZU/j1o+lHF5HN64+9M7zjLqIaqdCwuPo1duu
+        mvqwsMw55xDzojx79VZGxn95V3ZzGl3oWajnVhcSM+vp0UtaE1kcdt95sc+n/6hjcVv5pk2W
+        fLsUD7e/uOdRv3uKPvtztW8LLM+JpDRMFtsQfa3EXOvPwhemT1kvTLqb2g103Ude1qMzJBP2
+        aXe1XYj9vfHy9b7Lx34s+CE36Z7ZSZP+N7ekfUM/hxbtElwuMmFr5uv6jJqSJQzVb+ZOjTu0
+        8Ntc/xlKLMUZiYZazEXFiQDz39CinwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFIsWRmVeSWpSXmKPExsVy+t/xe7oLdgcmGKx+Lmmx5OJVdov2d8vY
+        LTbOWM9qcfPQCkaLy7vmsFkcW32FzWLtkbvsDuwe89ZUe/RtWcXoMX3eTyaPz5vkAlii9GyK
+        8ktLUhUy8otLbJWiDS2M9AwtLfSMTCz1DI3NY62MTJX07WxSUnMyy1KL9O0S9DI2nbnNWDCD
+        t+JJVy9zA+MHri5GTg4JAROJbdNuMoHYQgJLGSU+LPDoYuQAiktJrJybDlEiLPHnWhcbRMlT
+        RolfZ/hBbDYBR4n+pSdYQWwRAUWJ2/seMncxcnEwCyxnlHj49QRYg7CAi8Thwx/B5rMIqEr8
+        Xf6cBcTmFbCWeP5+EyvEAnmJ9uXbweo5BSwkPk14ywyxzFzixKtHTBD1ghInZz5hAbmNWUBd
+        Yv08IZAwv4CWxJqm62AjmYHGNG+dzTyBUWgWko5ZCB2zkFQtYGRexSiSWlqcm55bbKRXnJhb
+        XJqXrpecn7uJERhJ24793LKDceWrj3qHGJk4GA8xSnAwK4nwmuYFJAjxpiRWVqUW5ccXleak
+        Fh9iNAX6bCKzlGhyPjCW80riDc0MTA1NzCwNTC3NjJXEeU2OrIkXEkhPLEnNTk0tSC2C6WPi
+        4JRqYMqrea3NFybZ1tvwRmeyWNIJvXs8q45Om/OSWehn6aKFu69ei4h9uemPqp7we60PG+2C
+        Te/+sH0+6e7tC3cDXGvvNB5PUxV2ym3b3O7Fs6Rz1SGd2x93KFRznl4jd1zmulsqn9A0bbVc
+        hu6DrQuDf/dmutuuOdTd8DYru5Vz12vvsLnFU6u+3da/fU7511xD5YnhV7rs2Z//5Vrze1JE
+        pYp/Qt97GTeZn9WbUtatamniPBzumZG+WXxDwLLjPI7hhmpFovJ1F/8a3njzd0v3rF2/7hz5
+        VOWw5rez8Obpj2svTlEIML91TVzTYMGV/Cb+JtnXvi7Kky+2M7vs/6N7VLEqINc2qmtiaJyG
+        sfKJDiWW4oxEQy3mouJEAFznvEYtAwAA
+X-CMS-MailID: 20210317081944eucas1p123bd27f3203c937d2969a66fb06d6d9e
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210317074706epcas1p2c0898e1b2bf0e875dc6056c360a3236b
-References: <CGME20210317074706epcas1p2c0898e1b2bf0e875dc6056c360a3236b@epcas1p2.samsung.com>
-        <20210317184655.4d369e9e@canb.auug.org.au>
+X-RootMTR: 20210317081944eucas1p123bd27f3203c937d2969a66fb06d6d9e
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210317081944eucas1p123bd27f3203c937d2969a66fb06d6d9e
+References: <dleftjblbjc6w1.fsf%l.stelmach@samsung.com>
+        <CGME20210317081944eucas1p123bd27f3203c937d2969a66fb06d6d9e@eucas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+The method enables determining whether a device supports
+setting alarms or not before checking if the alarm to be
+set is in the past; thus, provides clear indication of
+support for alarms in a given configuration.
 
-> Hi all,
-> 
-> After merging the cifsd tree, today's linux-next build (htmldocs) produced this warning:
-> 
-> Documentation/filesystems/cifs/cifsd.rst:3: WARNING: Title overline too short.
-> 
-> =========================
-> CIFSD - SMB3 Kernel Server
-> =========================
-> Documentation/filesystems/cifs/cifsd.rst: WARNING: document isn't included in any toctree
-> 
-> Introduced by commit
-> 
->   597357deeecf ("cifsd: update cifsd.rst file")
-I sent a pull request to Steve to fix this failure.
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+---
+How about has_alarm() method. It can be checked at the beginning of
+__rtc_set_alarm() like RTC_HAS_ALARM flag I proposed above, but doesn't
+need to be introduced in all drivers at once.
 
-Thanks for your report!
-> 
-> --
-> Cheers,
-> Stephen Rothwell
+See the following message for the implementation in the ds1307 driver.
 
+The first uie_unsupported patch should be kept regardless of these two.
+
+ drivers/rtc/interface.c | 6 ++++++
+ include/linux/rtc.h     | 1 +
+ 2 files changed, 7 insertions(+)
+
+diff --git a/drivers/rtc/interface.c b/drivers/rtc/interface.c
+index 794a4f036b99..1eb180370d9b 100644
+--- a/drivers/rtc/interface.c
++++ b/drivers/rtc/interface.c
+@@ -412,6 +412,12 @@ static int __rtc_set_alarm(struct rtc_device *rtc, struct rtc_wkalrm *alarm)
+ 	time64_t now, scheduled;
+ 	int err;
+ 
++	if (!rtc->ops)
++		err = -ENODEV;
++	else if (rtc->ops->has_alarm &&
++		 !rtc->ops->has_alarm(rtc->dev.parent))
++		return -EINVAL;
++
+ 	err = rtc_valid_tm(&alarm->time);
+ 	if (err)
+ 		return err;
+diff --git a/include/linux/rtc.h b/include/linux/rtc.h
+index 22d1575e4991..ce9fc77ccd02 100644
+--- a/include/linux/rtc.h
++++ b/include/linux/rtc.h
+@@ -66,6 +66,7 @@ struct rtc_class_ops {
+ 	int (*alarm_irq_enable)(struct device *, unsigned int enabled);
+ 	int (*read_offset)(struct device *, long *offset);
+ 	int (*set_offset)(struct device *, long offset);
++	int (*has_alarm)(struct device *);
+ };
+ 
+ struct rtc_device;
+-- 
+2.26.2
