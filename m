@@ -2,57 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C46F33FAA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 22:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB0433FAB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 22:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhCQVwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 17:52:07 -0400
-Received: from mga05.intel.com ([192.55.52.43]:38295 "EHLO mga05.intel.com"
+        id S229814AbhCQV43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 17:56:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhCQVvo (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 17:51:44 -0400
-IronPort-SDR: i+mGVPX9xJlnun/1RByZOpVv2ShLsjhvHUCbpnswMkiLao388B1plx61AfbJkjrgsrjBCy6u9G
- e+N7YrfGE+BA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="274603628"
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="274603628"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 14:51:44 -0700
-IronPort-SDR: geSoaf3xIPqi0U+RyRij9dGg3crcOoswPF7KDxhcepK7ej4h5gzxvesr9cmU1qwlkAm92lTM7Z
- 3aKzTYIhxpQQ==
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="388992994"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 14:51:43 -0700
-Date:   Wed, 17 Mar 2021 14:51:42 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jin Yao <yao.jin@linux.intel.com>, jolsa@kernel.org,
-        peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v2] perf stat: Align CSV output for summary mode
-Message-ID: <20210317215142.GB1369306@tassilo.jf.intel.com>
-References: <20210317070205.10315-1-yao.jin@linux.intel.com>
- <YFID6MjXSc21YzE2@kernel.org>
+        id S229545AbhCQV4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 17:56:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D83F64F17;
+        Wed, 17 Mar 2021 21:56:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616018181;
+        bh=LKtXIOp/a8yh3wmmlOrWfUAaMdE0+NwQfxFBBSNTRj8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dw9Eagjt4sQMdDNYcYtYKOgRJsvQ6bqglxnUFS4NDZYqXxv12vrJb0mDmFClD1bvW
+         vM8gKoGLAhVrmUKBU9SRX0E7yiEC0MGgMRMjGFeDOr3SZAPbhl1M0xuqVMa3O9qRBf
+         m5/yJkNZ+ofox5QkZt6GupeQPG/W06lk5pbSKIZa99XBBPTKzpAy5Ga8bdYLd37PQ/
+         qiaR37/JVlZUVumeo1BQkXax6+5pznEI4YlhZMBLXHQo9oMrnRN3oE1/Kps4MLPYf2
+         MLLw2YwCoA8lz//Z2Tvv77k8y8RYEGTGx43nahNGLQBFEzCFPpntzf6PfvrilvHm8J
+         Aw257WxmQD7pw==
+Date:   Wed, 17 Mar 2021 23:55:54 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Oliver Sang <oliver.sang@intel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, jbaron@akamai.com,
+        lkp@lists.01.org, kbuild test robot <lkp@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] objtool,static_call: Don't emit static_call_site for
+ .exit.text
+Message-ID: <YFJ66nW0vabAgGqm@kernel.org>
+References: <20210315142345.GB4401@xsang-OptiPlex-9020>
+ <CAFA6WYNMHAqqmNfncmJm3+BUYCktXouRtV_udSxQb7eifPmX+Q@mail.gmail.com>
+ <20210317030101.GB22345@xsang-OptiPlex-9020>
+ <CAFA6WYMb-C2L7DmGnhWgxjuuvP=qxPA4-s4q+knxH+iWXypHmw@mail.gmail.com>
+ <YFHAsgNhe8c3ZHQN@hirez.programming.kicks-ass.net>
+ <YFHE9CjanDAD4l5M@hirez.programming.kicks-ass.net>
+ <YFHFjarVo7HAP7pg@hirez.programming.kicks-ass.net>
+ <CAFA6WYNs-rQLUGPMwc-p0q_KRvR16rm-x55gDqw828c7-C1qeA@mail.gmail.com>
+ <YFH6BR61b5GK8ITo@hirez.programming.kicks-ass.net>
+ <CAFA6WYNr8SR=20LKJD0+AyrVXLY2CqQPqRE_60EestYv9L5AcA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YFID6MjXSc21YzE2@kernel.org>
+In-Reply-To: <CAFA6WYNr8SR=20LKJD0+AyrVXLY2CqQPqRE_60EestYv9L5AcA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> If you care about not breaking existing scripts, then the output they
-> get with what they use as command line options must continue to produce
-> the same output.
+On Wed, Mar 17, 2021 at 07:07:07PM +0530, Sumit Garg wrote:
+> On Wed, 17 Mar 2021 at 18:16, Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Wed, Mar 17, 2021 at 05:25:48PM +0530, Sumit Garg wrote:
+> > > Thanks Peter for this fix. It does work for me on qemu for x86. Can
+> > > you turn this into a proper fix patch? BTW, feel free to add:
+> >
+> > Per the below, the original patch ought to be fixed as well, to not use
+> > static_call() in __exit.
+> 
+> Okay, fair enough.
+> 
+> Jarkko,
+> 
+> Can you please incorporate the following change to the original patch as well?
 
-It's not clear there are any useful ones (except for tools that handle
-both). It's really hard to parse the previous mess. It's simply not
-valid CSV.
+Can you roll-out a proper patch of this?
 
-That's why I'm arguing that keeping compatibility is not useful here.
-
-We would be stuck with the broken mess as default forever.
-
--Andi
+/Jarkko
