@@ -2,52 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CB633F62D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8710533F634
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232636AbhCQRBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:01:17 -0400
-Received: from mga04.intel.com ([192.55.52.120]:29483 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232329AbhCQRAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:00:46 -0400
-IronPort-SDR: gyy1r5ohmXI+5i7K8RRGBJWkwVKAXEaLxgmduqVIdsaKIZwEdyg9cYwWpZlhT3UJw4qSSIvdwf
- SuuLcpo85xkA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="187134824"
-X-IronPort-AV: E=Sophos;i="5.81,256,1610438400"; 
-   d="scan'208";a="187134824"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 10:00:45 -0700
-IronPort-SDR: OvHxno4mREoUHFZRIKk5WYAoZWHH+n2AbIKte/Ujez80a/FP4ygTb/5KVdBotqhXhzep7NhyEZ
- 2Uz4kxzF+Ydw==
-X-IronPort-AV: E=Sophos;i="5.81,256,1610438400"; 
-   d="scan'208";a="372414118"
-Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.209.10.230])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 10:00:45 -0700
-Date:   Wed, 17 Mar 2021 10:00:44 -0700
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] net: ethernet: intel: Fix a typo in the file
- ixgbe_dcb_nl.c
-Message-ID: <20210317100044.00005f65@intel.com>
-In-Reply-To: <20210317100001.2172893-1-unixbhaskar@gmail.com>
-References: <20210317100001.2172893-1-unixbhaskar@gmail.com>
-X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
+        id S232664AbhCQRBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:01:55 -0400
+Received: from mailout.easymail.ca ([64.68.200.34]:35962 "EHLO
+        mailout.easymail.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232328AbhCQRBi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 13:01:38 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mailout.easymail.ca (Postfix) with ESMTP id A22DAA0E13;
+        Wed, 17 Mar 2021 17:01:37 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at emo05-pco.easydns.vpn
+Received: from mailout.easymail.ca ([127.0.0.1])
+        by localhost (emo05-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id yY_tvHsFiwWa; Wed, 17 Mar 2021 17:01:37 +0000 (UTC)
+Received: from mail.gonehiking.org (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        by mailout.easymail.ca (Postfix) with ESMTPA id DCCBDA021E;
+        Wed, 17 Mar 2021 17:01:31 +0000 (UTC)
+Received: from [192.168.1.4] (rhapsody.internal [192.168.1.4])
+        by mail.gonehiking.org (Postfix) with ESMTP id 025E83EF3B;
+        Wed, 17 Mar 2021 11:01:30 -0600 (MDT)
+Subject: Re: [PATCH 1/8] scsi: BusLogic: Supply __printf(x, y) formatting for
+ blogic_msg()
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+References: <20210317091125.2910058-1-lee.jones@linaro.org>
+ <20210317091125.2910058-2-lee.jones@linaro.org>
+From:   Khalid Aziz <khalid@gonehiking.org>
+Message-ID: <08dddf10-d020-93ae-3783-2a911ff88f42@gonehiking.org>
+Date:   Wed, 17 Mar 2021 11:01:30 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210317091125.2910058-2-lee.jones@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bhaskar Chowdhury wrote:
-
+On 3/17/21 3:11 AM, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
-> s/Reprogam/Reprogram/
+>  In file included from drivers/scsi/BusLogic.c:51:
+>  drivers/scsi/BusLogic.c: In function ‘blogic_msg’:
+>  drivers/scsi/BusLogic.c:3591:2: warning: function ‘blogic_msg’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> Cc: Khalid Aziz <khalid@gonehiking.org>
+> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+> Cc: "Leonard N. Zubkoff" <lnz@dandelion.com>
+> Cc: linux-scsi@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/scsi/BusLogic.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/BusLogic.c b/drivers/scsi/BusLogic.c
+> index ccb061ab0a0ad..0ac3f713fc212 100644
+> --- a/drivers/scsi/BusLogic.c
+> +++ b/drivers/scsi/BusLogic.c
+> @@ -3578,7 +3578,7 @@ Target	Requested Completed  Requested Completed  Requested Completed\n\
+>  /*
+>    blogic_msg prints Driver Messages.
+>  */
+> -
+> +__printf(2, 4)
+>  static void blogic_msg(enum blogic_msglevel msglevel, char *fmt,
+>  			struct blogic_adapter *adapter, ...)
+>  {
+> 
 
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Acked-by: Khalid Aziz <khalid@gonehiking.org>
