@@ -2,87 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FF233EAAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5274A33EA9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:34:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhCQHmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 03:42:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229508AbhCQHmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 03:42:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC80264F7E;
-        Wed, 17 Mar 2021 07:41:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615966920;
-        bh=EYGJXau039RZLyL38UOfqfxwXxGxY0dFocwb73Hllnk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=opVdpcE6BozNAt187Nv5guzqHXXdZIL/CO9KsOCPP+dnYbXVBfkRio46QrzoRNN5I
-         ff2B13XPhWGhGBU+y/1Mze5xfFUtQ0xX6GqdEJ9kz6C0j3Uzs/kXpX4aCQyAQ7UAQA
-         +JA3gCpKajN50U1WUNyxpZQPBQo4wElcoI1WDUUJEuRv6U0CnK71rEAnCEaAGD+Mz9
-         dTzMhpkf+mV+9FTbTvnGZ39gZTorw6uxRKTNzFQLmYtwDjslvjRgBe0C8C23nKT19r
-         LTOcCn/Ku7OnvZ5+akmumHxLLF+H+7HYAxEy7pIW8nf+ha442kF1gbTACRyb6RFCGr
-         mMRYGrWLP5APg==
-Date:   Wed, 17 Mar 2021 01:41:48 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        id S230020AbhCQHeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 03:34:00 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:37334 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230033AbhCQHdy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 03:33:54 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0USELFXx_1615966422;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0USELFXx_1615966422)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 17 Mar 2021 15:33:52 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     jk@ozlabs.org
+Cc:     arnd@arndb.de, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, linuxppc-dev@lists.ozlabs.org,
         linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] ixgbe: Fix out-of-bounds warning in
- ixgbe_host_interface_command()
-Message-ID: <20210317064148.GA55123@embeddedor>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH v2] sched: replace if (cond) BUG() with WARN_ON()
+Date:   Wed, 17 Mar 2021 15:33:39 +0800
+Message-Id: <1615966419-20549-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following out-of-bounds warning by replacing the one-element
-array in an anonymous union with a pointer:
+Fix the following coccicheck warnings:
 
-  CC [M]  drivers/net/ethernet/intel/ixgbe/ixgbe_common.o
-drivers/net/ethernet/intel/ixgbe/ixgbe_common.c: In function ‘ixgbe_host_interface_command’:
-drivers/net/ethernet/intel/ixgbe/ixgbe_common.c:3729:13: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
- 3729 |   bp->u32arr[bi] = IXGBE_READ_REG_ARRAY(hw, IXGBE_FLEX_MNG, bi);
-      |   ~~~~~~~~~~^~~~
-drivers/net/ethernet/intel/ixgbe/ixgbe_common.c:3682:7: note: while referencing ‘u32arr’
- 3682 |   u32 u32arr[1];
-      |       ^~~~~~
+./arch/powerpc/platforms/cell/spufs/sched.c:908:2-5: WARNING: Use BUG_ON
+instead of if condition followed by BUG.
 
-This helps with the ongoing efforts to globally enable -Warray-bounds.
-
-Notice that, the usual approach to fix these sorts of issues is to
-replace the one-element array with a flexible-array member. However,
-flexible arrays should not be used in unions. That, together with the
-fact that the array notation is not being affected in any ways, is why
-the pointer approach was chosen in this case.
-
-Link: https://github.com/KSPP/linux/issues/109
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_common.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in v2:
+  - replace BUG with WARN_ON.
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
-index 62ddb452f862..bff3dc1af702 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
-@@ -3679,7 +3679,7 @@ s32 ixgbe_host_interface_command(struct ixgbe_hw *hw, void *buffer,
- 	u32 hdr_size = sizeof(struct ixgbe_hic_hdr);
- 	union {
- 		struct ixgbe_hic_hdr hdr;
--		u32 u32arr[1];
-+		u32 *u32arr;
- 	} *bp = buffer;
- 	u16 buf_len, dword_len;
- 	s32 status;
+ arch/powerpc/platforms/cell/spufs/sched.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/powerpc/platforms/cell/spufs/sched.c b/arch/powerpc/platforms/cell/spufs/sched.c
+index 3692064..1031448 100644
+--- a/arch/powerpc/platforms/cell/spufs/sched.c
++++ b/arch/powerpc/platforms/cell/spufs/sched.c
+@@ -904,8 +904,7 @@ static noinline void spusched_tick(struct spu_context *ctx)
+ 	struct spu_context *new = NULL;
+ 	struct spu *spu = NULL;
+ 
+-	if (spu_acquire(ctx))
+-		BUG();	/* a kernel thread never has signals pending */
++	WARN_ON(spu_acquire(ctx));	/* a kernel thread never has signals pending */
+ 
+ 	if (ctx->state != SPU_STATE_RUNNABLE)
+ 		goto out;
 -- 
-2.27.0
+1.8.3.1
 
