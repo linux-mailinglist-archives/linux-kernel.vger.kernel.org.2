@@ -2,235 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7D533EEA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A39433EEA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhCQKrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:47:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35292 "EHLO
+        id S230397AbhCQKrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbhCQKqv (ORCPT
+        with ESMTP id S229535AbhCQKqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:46:51 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90CDC06174A;
-        Wed, 17 Mar 2021 03:46:50 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id p19so1188372wmq.1;
-        Wed, 17 Mar 2021 03:46:50 -0700 (PDT)
+        Wed, 17 Mar 2021 06:46:54 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBA9C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 03:46:54 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id n14so40446237iog.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 03:46:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=mBhYd1whOo+t48mTdmJpbe2HyNgyGZFf5/2QgCIN15w=;
-        b=E+8UnBvqBwHgWNDYiiDGGavXPU8l6OxlTZq4s3u9CtM09j79Vv4SPCaSsY7dWq9IGo
-         +GK/YHoWshQffxDeoJIpDJq3sdt4l2vwh+fncOS3sL7c2gR5EHxiAA/DPaobRUbNFSZu
-         SHxpYLx0YkyVRYZkLg6MLRnzyPVVKDxWa/cKKAXn6g3Wsz35n/knZl1UNT9rBh41a3X8
-         k49fRVgPB3gvkpug/NWpygedMcX9ibkjL3sv8FihVKrSP3jlVbrCvycUiVjZrq9Cs1ee
-         aZwZZc8+qtAs85H64q8DpSyn4d+kvLcCdIVWcMX1KOTFiCsSXlhbNdlyyTJ1RxN/U/2Y
-         1Vlw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EcLzHfwNPr9gGEtA+CwtCHVdRs0StUxL7B8m523U/P4=;
+        b=spjqwtfz/oJIKZs9makfe2go6mKd9bV4cTuNl5By1eJkDKwc655dP9Y+0jspa8V4y+
+         uZAIzNzl1d4sFEj7Dm47s9D5D8RnnPDPrEeHysDYdIosJtEMfLXkVa3LxaeH+KnB4/4H
+         dzIEcscnC+jfcDW46MrbOVXX+ll6tXAbXLAr/61NHcCACbTL8A3eilSjP1w9TCVOrCOJ
+         8LenI+M0sVQP3ae5HEdbER0F4/ej+ZHejRbZNro43Kn2im1Jk1X6hATVDZKFwaLhhXik
+         vc43/ASeaOtEKsiQMqN4Kuw0Ht0aR3NcqMLrIzW9AJhmHdkIopdoKor370KjV6orwA9r
+         4hPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=mBhYd1whOo+t48mTdmJpbe2HyNgyGZFf5/2QgCIN15w=;
-        b=VjXZXG24cu5XwpQ1zzMMXK/u8JfVxh32P0Jw+01JbBbmg6GpMoN8Zy8mb+tzEyLmEX
-         sbOxhxJG3gTu+JCVV1ixQ73AQbfA3yrt16BP5t5JlbqDlEKgHQjS6wnFroxMyn8w4rLJ
-         gwpQDwfUGLXWBKSb++g+yIy/Osj7sZiO1xCXJeQQ1RDW8DE5ujI6ujk5Ss8PBwuWcjVu
-         E88Gzy5i1TFL+i9hZqd3Ljry48QjidHomfguSIcwfTAQEYoD+7huJBePtV7WdAL39eIL
-         WLGi+YhLzIVQU+URV8QfPq2blWbC0e57jjo5tHU4iAppvJl3zoD1pPWSmLGVwAZ7RWW9
-         i3eg==
-X-Gm-Message-State: AOAM5307eoE0MikFOlynGXwDYGHovlOpiZScs3GS7ZV2IyoATnVUZnp+
-        Jl2uNIXpM2Mvizf9wIbGV8dqX285ZgkoYg==
-X-Google-Smtp-Source: ABdhPJzvU+zUdzdQEuvMKKXVkMFzwCcIdjE03EAvmUNWLs/uTk6mEz+K+A4T7ENLNVtNdm3BL9fp5A==
-X-Received: by 2002:a05:600c:22c7:: with SMTP id 7mr3096514wmg.85.1615978009406;
-        Wed, 17 Mar 2021 03:46:49 -0700 (PDT)
-Received: from macbook-pro-alvaro.lan ([80.31.204.166])
-        by smtp.gmail.com with ESMTPSA id s84sm2095526wme.11.2021.03.17.03.46.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 17 Mar 2021 03:46:49 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH v7 03/22] dt-bindings: add BCM63XX GPIO binding
- documentation
-From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-In-Reply-To: <20210316205451.GA3629500@robh.at.kernel.org>
-Date:   Wed, 17 Mar 2021 11:46:46 +0100
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Lee Jones <lee.jones@linaro.org>,
-        Michael Walle <michael@walle.cc>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <4079680C-60B0-492D-B94A-814EED12F7DF@gmail.com>
-References: <20210315114214.3096-1-noltari@gmail.com>
- <20210315114214.3096-4-noltari@gmail.com>
- <20210316205451.GA3629500@robh.at.kernel.org>
-To:     Rob Herring <robh@kernel.org>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EcLzHfwNPr9gGEtA+CwtCHVdRs0StUxL7B8m523U/P4=;
+        b=Jk4+AB20b8FN/RwYnd1MyO25eBTMX8QjX3WWAmtByGHIGXw/bEkI0mhQspSpb3o3u7
+         /znD4BSfdDzzfcVIhFWa4ew5iShpv10pC6ioK3gmZ+9y0tXdL54/yjUdjDLS25sExR4R
+         s6o1QT0s2q4q8KXz/5X4fEMr8LoEe6NEqU182CZAONhie1Hkpfx/hNuyUDrMXoyRDwPA
+         /+DZpcOMUZPYAj4BRSY/OCTK29hIRCTS96kjF1rXbFYFW0jvC3KFOqv6i8q6IPslHSQJ
+         /3vnqGTcegZKPDJd+cj4rES7DufJtTjUo6bGVjGhayd2nzb7HeaQn7T+e8cbpn97KHeT
+         6qlg==
+X-Gm-Message-State: AOAM532sPl29pBi6G4mDPTHsI6r5e9RGbxaUkv+Y9GwNT1sTVgJlSXjO
+        DZNcE0cAPpBMsA6m9IrbwICv/Q==
+X-Google-Smtp-Source: ABdhPJzORvg+qeqzSdKR1+f1IMU+oK5a8htF4//PRyfmZLe8tfdiLYz1254gp1+CaXupcgk6mPgxIg==
+X-Received: by 2002:a6b:d80d:: with SMTP id y13mr6400739iob.75.1615978013518;
+        Wed, 17 Mar 2021 03:46:53 -0700 (PDT)
+Received: from google.com ([2620:15c:183:200:85db:6a0d:7a4d:5606])
+        by smtp.gmail.com with ESMTPSA id i4sm10636156ila.70.2021.03.17.03.46.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 03:46:52 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 04:46:46 -0600
+From:   Yu Zhao <yuzhao@google.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Yang Shi <shy828301@gmail.com>, linux-kernel@vger.kernel.org,
+        page-reclaim@google.com
+Subject: Re: [PATCH v1 09/14] mm: multigenerational lru: mm_struct list
+Message-ID: <YFHeFslZ85/h3o/q@google.com>
+References: <20210313075747.3781593-1-yuzhao@google.com>
+ <20210313075747.3781593-10-yuzhao@google.com>
+ <048e5e1e977e720c3f9fc536ac54beebcc8319f5.camel@surriel.com>
+ <87pmzzsvfb.fsf@yhuang6-desk1.ccr.corp.intel.com>
+ <YFAsjP7NIZM5Ld+m@google.com>
+ <871rcfzjg0.fsf@yhuang6-desk1.ccr.corp.intel.com>
+ <YFBktbCH9JFcT0rL@google.com>
+ <87o8fixxfh.fsf@yhuang6-desk1.ccr.corp.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87o8fixxfh.fsf@yhuang6-desk1.ccr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Wed, Mar 17, 2021 at 11:37:38AM +0800, Huang, Ying wrote:
+> Yu Zhao <yuzhao@google.com> writes:
+> 
+> > On Tue, Mar 16, 2021 at 02:44:31PM +0800, Huang, Ying wrote:
+> >> Yu Zhao <yuzhao@google.com> writes:
+> >> 
+> >> > On Tue, Mar 16, 2021 at 10:07:36AM +0800, Huang, Ying wrote:
+> >> >> Rik van Riel <riel@surriel.com> writes:
+> >> >> 
+> >> >> > On Sat, 2021-03-13 at 00:57 -0700, Yu Zhao wrote:
+> >> >> >
+> >> >> >> +/*
+> >> >> >> + * After pages are faulted in, they become the youngest generation.
+> >> >> >> They must
+> >> >> >> + * go through aging process twice before they can be evicted. After
+> >> >> >> first scan,
+> >> >> >> + * their accessed bit set during initial faults are cleared and they
+> >> >> >> become the
+> >> >> >> + * second youngest generation. And second scan makes sure they
+> >> >> >> haven't been used
+> >> >> >> + * since the first.
+> >> >> >> + */
+> >> >> >
+> >> >> > I have to wonder if the reductions in OOM kills and 
+> >> >> > low-memory tab discards is due to this aging policy
+> >> >> > change, rather than from the switch to virtual scanning.
+> >> >
+> >> > There are no policy changes per se. The current page reclaim also
+> >> > scans a faulted-in page at least twice before it can reclaim it.
+> >> > That said, the new aging yields a better overall result because it
+> >> > discovers every page that has been referenced since the last scan,
+> >> > in addition to what Ying has mentioned. The current page scan stops
+> >> > stops once it finds enough candidates, which may seem more
+> >> > efficiently, but actually pays the price for not finding the best.
+> >> >
+> >> >> If my understanding were correct, the temperature of the processes is
+> >> >> considered in addition to that of the individual pages.  That is, the
+> >> >> pages of the processes that haven't been scheduled after the previous
+> >> >> scanning will not be scanned.  I guess that this helps OOM kills?
+> >> >
+> >> > Yes, that's correct.
+> >> >
+> >> >> If so, how about just take advantage of that information for OOM killing
+> >> >> and page reclaiming?  For example, if a process hasn't been scheduled
+> >> >> for long time, just reclaim its private pages.
+> >> >
+> >> > This is how it works. Pages that haven't been scanned grow older
+> >> > automatically because those that have been scanned will be tagged with
+> >> > younger generation numbers. Eviction does bucket sort based on
+> >> > generation numbers and attacks the oldest.
+> >> 
+> >> Sorry, my original words are misleading.  What I wanted to say was that
+> >> is it good enough that
+> >> 
+> >> - Do not change the core algorithm of current page reclaiming.
+> >> 
+> >> - Add some new logic to reclaim the process private pages regardless of
+> >>   the Accessed bits if the processes are not scheduled for some long
+> >>   enough time.  This can be done before the normal page reclaiming.
+> >
+> > This is a good idea, which being used on Android and Chrome OS. We
+> > call it per-process reclaim, and I've mentioned here:
+> > https://lore.kernel.org/linux-mm/YBkT6175GmMWBvw3@google.com/
+> >   On Android, our most advanced simulation that generates memory
+> >   pressure from realistic user behavior shows 18% fewer low-memory
+> >   kills, which in turn reduces cold starts by 16%. This is on top of
+> >   per-process reclaim, a predecessor of ``MADV_COLD`` and
+> >   ``MADV_PAGEOUT``, against background apps.
+> 
+> Thanks, now I see your improvement compared with the per-process
+> reclaim.  How about the per-process reclaim compared with the normal
+> page reclaiming for the similar test cases?
+> 
+> My intention behind this is that your solution includes several
+> improvements,
+> 
+> a) take advantage of scheduler information
+> b) more fine-grained active/inactive dividing
+> c) page table scanning instead of rmap
+> 
+> Is it possible to evaluate the benefit of the each step?  And is there
+> still some potential to optimize the current LRU based algorithm before
+> adopting a totally new algorithm?
 
-> El 16 mar 2021, a las 21:54, Rob Herring <robh@kernel.org> escribi=C3=B3=
-:
->=20
-> On Mon, Mar 15, 2021 at 12:41:55PM +0100, =C3=81lvaro Fern=C3=A1ndez =
-Rojas wrote:
->> Add binding documentation for the GPIO controller found in BCM6318, =
-BCM6328,
->> BCM6358, BCM6362, BCM6368 and BCM63268 SoCs.
->>=20
->> Co-developed-by: Jonas Gorski <jonas.gorski@gmail.com>
->> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
->> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
->> ---
->> v7: new patch, splitted from pinctrl documentation
->>=20
->> .../bindings/gpio/brcm,bcm63xx-gpio.yaml      | 83 =
-+++++++++++++++++++
->> 1 file changed, 83 insertions(+)
->> create mode 100644 =
-Documentation/devicetree/bindings/gpio/brcm,bcm63xx-gpio.yaml
->>=20
->> diff --git =
-a/Documentation/devicetree/bindings/gpio/brcm,bcm63xx-gpio.yaml =
-b/Documentation/devicetree/bindings/gpio/brcm,bcm63xx-gpio.yaml
->> new file mode 100644
->> index 000000000000..94a4f00ae2c7
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/gpio/brcm,bcm63xx-gpio.yaml
->> @@ -0,0 +1,83 @@
->> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/gpio/brcm,bcm63xx-gpio.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Broadcom BCM63xx GPIO controller
->> +
->> +maintainers:
->> +  - =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
->> +  - Jonas Gorski <jonas.gorski@gmail.com>
->> +
->> +description: |+
->> +  The GPIO controller node should be the child of a syscon node.
->> +
->> +  Refer to the the bindings described in
->> +  Documentation/devicetree/bindings/mfd/syscon.yaml
->=20
-> The above description is not too useful because it should hopefully=20
-> later on in the series be expressed as a schema. IOW, the syscon =
-schema=20
-> should have a gpio child node with a $ref to this schema.
+Well, there isn't really any new algorithm -- it's still the LRU
+(algorithm). But I do see your point. In another survey we posted
+here:
+https://lore.kernel.org/linux-mm/YBkT6175GmMWBvw3@google.com/
+we stated:
+  Why not try to improve the existing code?
+  -----------------------------------------
+  We have tried but concluded the two limiting factors [note]_ in the
+  existing code are fundamental, and therefore changes made atop them
+  will not result in substantial gains on any of the aspects above.
 
-Is the following OK?
-description:
-  BCM63XX GPIO controller driver which supports the SoC system =
-controller supplied GPIO registers.
-  The BCM63XX GPIO controller node must be defined as a child node of =
-the BCM63XX GPIO system controller node.
+We learned this the hard way.
 
->=20
-> What would be useful is to say something about the GPIO block.
+> > The patches landed not long a ago :) See mm/madvise.c
+> 
+> :) I'm too out-dated.
+> 
+> >> So this is an one small step improvement to the current page reclaiming
+> >> algorithm via taking advantage of the scheduler information.  It's
+> >> clearly not sophisticated as your new algorithm, for example, the cold
+> >> pages in the hot processes will not be reclaimed in this stage.  But it
+> >> can reduce the overhead of scanning too.
+> >
+> > The general problems with the direction of per-process reclaim:
+> >   1) we can't find the coldest pages, as you have mentioned.
+> >   2) we can't reach file pages accessed via file descriptors only,
+> >   especially those caching config files that were read only once.
+> 
+> In theory, this is possible, we can build a inode list based on the
+> accessing time too.  Although this may not be necessary.  We can reclaim
+> the read-once file cache before the per-process reclaim in theory.
 
-Something like=E2=80=A6?
+You have to search for unmapped clean pages in page cache. Generally
+searching page cache is a lot more expensive than walking lru lists
+because page cache can be sparse but lru lists can't.
 
->=20
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - brcm,bcm6318-gpio
->> +      - brcm,bcm6328-gpio
->> +      - brcm,bcm6358-gpio
->> +      - brcm,bcm6362-gpio
->> +      - brcm,bcm6368-gpio
->> +      - brcm,bcm63268-gpio
->> +
->> +  data:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description: |
->> +      Offset in the register map for the data register (in bytes).
->> +
->> +  dirout:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description: |
->> +      Offset in the register map for the dirout register (in bytes).
->=20
-> As I said earlier, copy what brcm,bcm6345-gpio.txt did and use reg=20
-> instead of data and dirout properties.
+> >   3) we can't reclaim lru pages and slab objects proportionally and
+> >   therefore we leave many stale slab objects behind.
+> >   4) we have to be proactive, as you suggested (once again, you were
+> >   right), and this has a serious problem: client's battery life can
+> >   be affected.
+> 
+> Why can this not be done reactively? We can start per-process reclaim
+> under memory pressure.
 
-Ok, I will remove dirout and data properties.
+Under memory pressure, we could scan a lot of idle processes and find
+nothing to reclaim, e.g., mlockall(). In addition, address spaces can
+be sparse too.
 
->=20
-> That binding says it is for bcm63xx SoCs, too. So that should be=20
-> resolved. It looks like it should be 1 binding IMO. The only =
-difference=20
-> I see is the number of GPIO lines and register size. The fact that the=20=
+You are now looking at the direction of cold memory tracking using
+page tables, which is not practical. Apparent this series has given
+you a bad idea... Page tables are only good at discovering hot memory.
+Take my word for it :)
 
-> parent is a syscon in some cases is irrelevant.
+> This has been used in phone and laptop now, so
+> there's a solution for this issue?
 
-Please be more specific.
-What do you want me to do with this? How should I handle that?
+madvise() is called based on user behavior, which we don't have in
+kernel space.
 
->=20
->> +
->> +  gpio-controller: true
->> +
->> +  "#gpio-cells":
->> +    const: 2
->> +
->> +  gpio-ranges:
->> +    maxItems: 1
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +required:
->> +  - compatible
->> +  - gpio-controller
->> +  - gpio-ranges
->> +  - '#gpio-cells'
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    gpio@0 {
->> +      compatible =3D "brcm,bcm6328-gpio";
->> +      reg =3D <0x0 0x10>;
->> +
->> +      data =3D <0xc>;
->> +      dirout =3D <0x4>;
->> +
->> +      gpio-controller;
->> +      gpio-ranges =3D <&pinctrl 0 0 32>;
->> +      #gpio-cells =3D <2>;
->> +    };
->> +
->> +  - |
->> +    gpio@0 {
->> +      compatible =3D "brcm,bcm63268-gpio";
->> +      reg =3D <0x0 0x10>;
->> +
->> +      data =3D <0xc>;
->> +      dirout =3D <0x4>;
->> +
->> +      gpio-controller;
->> +      gpio-ranges =3D <&pinctrl 0 0 52>;
->> +      #gpio-cells =3D <2>;
->> +    };
->> --=20
->> 2.20.1
+> > The scanning overhead is only one of the two major problems of the
+> > current page reclaim. The other problem is the granularity of the
+> > active/inactive (sizes). We stopped using them in making job
+> > scheduling decision a long time ago. I know another large internet
+> > company adopted a similar approach as ours, and I'm wondering how
+> > everybody else is coping with the discrepancy from those counters.
+> 
+> From intuition, the scanning overhead of the full page table scanning
+> appears higher than that of the rmap scanning for a small portion of
+> system memory.  But form your words, you think the reality is the
+> reverse?  If others concern about the overhead too, finally, I think you
+> need to prove the overhead of the page table scanning isn't too higher,
+> or even lower with more data and theory.
 
+There is a misunderstanding here. I never said anything about full
+page table scanning. And this is not how it's done in this series
+either. I guess the misunderstanding has something to do with the cold
+memory tracking you are thinking about?
+
+This series uses page tables to discover page accesses when a system
+has run out of inactive pages. Under such a situation, the system is
+very likely to have a lot of page accesses, and using the rmap is
+likely to cost a lot more because its poor memory locality compared
+with page tables.
+
+But, page tables can be sparse too, in terms of hot memory tracking.
+Dave has asked me to test the worst case scenario, which I'll do.
+And I'd be happy to share more data. Any specific workload you are
+interested in?
