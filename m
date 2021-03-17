@@ -2,158 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2FA33F8D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:12:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDBFA33F8E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233137AbhCQTMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:12:01 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:39286 "EHLO mail.skyhub.de"
+        id S233159AbhCQTON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:14:13 -0400
+Received: from lizzard.sbs.de ([194.138.37.39]:33307 "EHLO lizzard.sbs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233128AbhCQTLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:11:35 -0400
-Received: from zn.tnic (p200300ec2f094a00b347ff8542af806f.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:4a00:b347:ff85:42af:806f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 98A221EC0595;
-        Wed, 17 Mar 2021 20:11:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616008294;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=IT+sbYUhPj57E3jyY3OyM34CWzd4arptbC0XaW/cWmw=;
-        b=GEtmvyXPMkvnX4TkiBU+igaONJvSvyheptTH1PBaDK8ddLHMtnsSGb8tntO1HL8RYk8s0x
-        XBO7g/lGyH1oYqNDnb66zFbqovpYoW4TEkXccRNWKJ+LqC7mKvH9Q1btdLweTd6uZYebVu
-        TRYkb+rj79J9ZY4PVzNpDMzbguOzCtY=
-Date:   Wed, 17 Mar 2021 20:11:32 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Joerg Roedel <joro@8bytes.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Peter Gonda <pgonda@google.com>
-Subject: Re: [PATCH] x86/cpu/AMD: Adjust x86_phys_bits to account for reduced
- PA in SEV-* guests
-Message-ID: <20210317191132.GD25069@zn.tnic>
-References: <20210317183243.2904919-1-seanjc@google.com>
+        id S233087AbhCQTNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 15:13:39 -0400
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 12HJDE7x004592
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Mar 2021 20:13:14 +0100
+Received: from md1za8fc.ad001.siemens.net ([167.87.41.250])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 12HJDCYx007184;
+        Wed, 17 Mar 2021 20:13:13 +0100
+Date:   Wed, 17 Mar 2021 20:13:11 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH v2 1/4] platform/x86: simatic-ipc: add main driver for
+ Siemens devices
+Message-ID: <20210317201311.70528fd4@md1za8fc.ad001.siemens.net>
+In-Reply-To: <CAHp75VdXDcTfNL9QRQ5XE-zVLHacfMKHUxhse3=dAfJbOJdObQ@mail.gmail.com>
+References: <20210315095710.7140-1-henning.schild@siemens.com>
+        <20210315095710.7140-2-henning.schild@siemens.com>
+        <CAHp75VdXDcTfNL9QRQ5XE-zVLHacfMKHUxhse3=dAfJbOJdObQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210317183243.2904919-1-seanjc@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 11:32:43AM -0700, Sean Christopherson wrote:
-> Always reduce x86_phys_bits per CPUID.0x8000001f[11:6] for SEV-* guests;
-> the existing flow that queries X86_FEATURE_SEV may or may not trigger
-> depending on what the VMM emulates, e.g. the VMM likely does not emulate
-> MSR_K8_SYSCFG.
+Am Mon, 15 Mar 2021 12:31:11 +0200
+schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
+
+> On Mon, Mar 15, 2021 at 12:02 PM Henning Schild
+> <henning.schild@siemens.com> wrote:
+> >
+> > This mainly implements detection of these devices and will allow
+> > secondary drivers to work on such machines.
+> >
+> > The identification is DMI-based with a vendor specific way to tell
+> > them apart in a reliable way.
+> >
+> > Drivers for LEDs and Watchdogs will follow to make use of that
+> > platform detection.  
 > 
-> Print a somewhat scary message and override x86_phys_bits if the VMM
-> doesn't omit the C-bit from MAXPHYADDR, which can be done either by
-> enumerating a lower MAXPHYADDR or by enumerating a non-zero
-> PhysAddrReduction.
+> ...
 > 
-> Failure to adjust x86_phys_bits results in a false positive for
-> phys_addr_valid() if the address sets the C-bit, and may also result in
-> false positives for virt_addr_valid().  This is likely benign for a well-
-> functioning kernel+drivers, but it's nearly impossible to confidently
-> audit all users of the *_addr_valid() helpers, so who knows.
+> > +static int register_platform_devices(u32 station_id)
+> > +{
+> > +       u8 ledmode = SIMATIC_IPC_DEVICE_NONE;
+> > +       u8 wdtmode = SIMATIC_IPC_DEVICE_NONE;
+> > +       int i;
+> > +
+> > +       platform_data.devmode = SIMATIC_IPC_DEVICE_NONE;
+> > +
+> > +       for (i = 0; i < ARRAY_SIZE(device_modes); i++) {
+> > +               if (device_modes[i].station_id == station_id) {
+> > +                       ledmode = device_modes[i].led_mode;
+> > +                       wdtmode = device_modes[i].wdt_mode;
+> > +                       break;
+> > +               }
+> > +       }
+> > +
+> > +       if (ledmode != SIMATIC_IPC_DEVICE_NONE) {
+> > +               platform_data.devmode = ledmode;
+> > +               ipc_led_platform_device =
+> > +                       platform_device_register_data(NULL,
+> > +                               KBUILD_MODNAME "_leds",
+> > PLATFORM_DEVID_NONE,
+> > +                               &platform_data,
+> > +                               sizeof(struct
+> > simatic_ipc_platform));
+> > +               if (IS_ERR(ipc_led_platform_device))
+> > +                       return PTR_ERR(ipc_led_platform_device);
+> > +
+> > +               pr_debug("device=%s created\n",
+> > +                        ipc_led_platform_device->name);
+> > +       }
+> > +
+> > +       if (wdtmode != SIMATIC_IPC_DEVICE_NONE) {
+> > +               platform_data.devmode = wdtmode;
+> > +               ipc_wdt_platform_device =
+> > +                       platform_device_register_data(NULL,
+> > +                               KBUILD_MODNAME "_wdt",
+> > PLATFORM_DEVID_NONE,
+> > +                               &platform_data,
+> > +                               sizeof(struct
+> > simatic_ipc_platform));
+> > +               if (IS_ERR(ipc_wdt_platform_device))
+> > +                       return PTR_ERR(ipc_wdt_platform_device);
+> > +
+> > +               pr_debug("device=%s created\n",
+> > +                        ipc_wdt_platform_device->name);
+> > +       }
+> > +
+> > +       if (ledmode == SIMATIC_IPC_DEVICE_NONE &&
+> > +           wdtmode == SIMATIC_IPC_DEVICE_NONE) {
+> > +               pr_warn("unsupported IPC detected, station
+> > id=%08x\n",
+> > +                       station_id);
+> > +               return -EINVAL;
+> > +       }
+> > +
+> > +       return 0;
+> > +}  
 > 
-> Opportunistically force clearing of SME, SEV, and SEV_ES in this case,
-> as the kernel and KVM treat those feature flags as host capabilities, not
-> guest capabilities.  This is likely a nop for most deployments, e.g. KVM
-> doesn't emulate MSR_K8_SYSCFG.
+> Why not use MFD here?
+
+Never had a close look at mfd to be honest. I might
+
+With the custom dmi matching on 129 being part of the header, and the
+p2sb unhide moving out as well ... that first driver ends up being not
+too valuable indeed
+
+It just identifies the box and tells subsequent drivers which one it
+is, which watchdog and LED path to take. Moving the knowledge of which
+box has which LED/watchdog into the respective drivers seems to be the
+better way to go.
+
+So we would end up with a LED and a watchdog driver both
+MODULE_ALIAS("dmi:*:svnSIEMENSAG:*");
+and doing the identification with the inline dmi from that header,
+doing p2sb with the support to come ... possibly a "//TODO\ninline" in
+the meantime.
+
+So no "main platform" driver anymore, but still central platform
+headers.
+
+Not sure how this sounds, but i think making that change should be
+possible. And that is what i will try and go for in v3.
+
+regards,
+Henning
+
+> ...
 > 
-> Note, early kernel boot code for SEV-*, e.g. get_sev_encryption_bit(),
-> _requires_ the SEV feature flag to be set in CPUID in order to identify
-> SEV (this requirement comes from the SEV-ES GHCB standard).  But, that
-> requirement does not mean the kernel must also "advertise" SEV in its own
-> CPU features array.
-
-Sure it does - /proc/cpuinfo contains feature bits of stuff which has
-been enabled in the kernel. And when it comes to SEV, yeah, that was a
-lot of enablement. :-)
-
+> > +/*
+> > + * Get membase address from PCI, used in leds and wdt modul. Here
+> > we read
+> > + * the bar0. The final address calculation is done in the
+> > appropriate modules
+> > + */  
 > 
-> Fixes: d8aa7eea78a1 ("x86/mm: Add Secure Encrypted Virtualization (SEV) support")
-> Cc: stable@vger.kernel.org
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Cc: Peter Gonda <pgonda@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
+> No blank line here.
 > 
-> Regarding clearing SME, SEV, SEV_ES, etc..., it's obviously not required,
-> but to avoid false postives, identifying "SEV guest" within the kernel
-> must be done with sev_active().  And if we want to display support in
-> /proc/cpuinfo, IMO it should be a separate synthetic feature so that
-> userspace sees "sev_guest" instead of "sev".
-
-I'm on the fence here, frankly. We issue capabilities in the guest dmesg
-in print_mem_encrypt_feature_info(). However, if someone wants to query
-SEV* status in the guest, then I don't have a good suggestion where to
-put it. cpuinfo is probably ok-ish, a new /sys/devices/system/cpu/caps/
-or so, should work too, considering the vuln stuff we stuck there so we
-can extend that. We'll see.
-
+> I would add FIXME or REVISIT here to point out that this should be
+> deduplicated in the future.
 > 
->  arch/x86/kernel/cpu/amd.c | 32 ++++++++++++++++++++++++++++----
->  1 file changed, 28 insertions(+), 4 deletions(-)
+> > +u32 simatic_ipc_get_membase0(unsigned int p2sb)
+> > +{
+> > +       struct pci_bus *bus;
+> > +       u32 bar0 = 0;
+> > +
+> > +       /*
+> > +        * The GPIO memory is bar0 of the hidden P2SB device.
+> > Unhide the device  
 > 
-> diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-> index 2d11384dc9ab..0f7f8c905226 100644
-> --- a/arch/x86/kernel/cpu/amd.c
-> +++ b/arch/x86/kernel/cpu/amd.c
-> @@ -15,6 +15,7 @@
->  #include <asm/cpu.h>
->  #include <asm/spec-ctrl.h>
->  #include <asm/smp.h>
-> +#include <asm/mem_encrypt.h>
->  #include <asm/numa.h>
->  #include <asm/pci-direct.h>
->  #include <asm/delay.h>
-> @@ -575,10 +576,33 @@ static void bsp_init_amd(struct cpuinfo_x86 *c)
->  	resctrl_cpu_detect(c);
->  }
->  
-> +#define SEV_CBIT_MSG "SEV: C-bit (bit %d), overlaps MAXPHYADDR (%d bits).  VMM is buggy or malicious, overriding MAXPHYADDR to %d.\n"
+> No, it's not a GPIO's bar. It's P2SB's one. GPIO resides in that bar
+> somewhere.
+> 
+> > +        * to have a quick look at it, before we hide it again.
+> > +        * Also grab the pci rescan lock so that device does not
+> > get discovered
+> > +        * and remapped while it is visible.
+> > +        * This code is inspired by drivers/mfd/lpc_ich.c
+> > +        */
+> > +       bus = pci_find_bus(0, 0);
+> > +       pci_lock_rescan_remove();
+> > +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x0);
+> > +       pci_bus_read_config_dword(bus, p2sb, PCI_BASE_ADDRESS_0,
+> > &bar0); +
+> > +       bar0 &= ~0xf;
+> > +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x1);
+> > +       pci_unlock_rescan_remove();
+> > +
+> > +       return bar0;
+> > +}
+> > +EXPORT_SYMBOL(simatic_ipc_get_membase0);  
+> 
+> ...
+> 
+> > +static inline u32 simatic_ipc_get_station_id(u8 *data, int max_len)
+> > +{
+> > +       u32 station_id = SIMATIC_IPC_INVALID_STATION_ID;
+> > +       int i;  
+> 
+> Reversed xmas tree order, please.
+> 
+> > +       struct {
+> > +               u8      type;           /* type (0xff = binary) */
+> > +               u8      len;            /* len of data entry */
+> > +               u8      reserved[3];
+> > +               u32     station_id;     /* station id (LE) */  
+> 
+> > +       } __packed
+> > +       *data_entry = (void *)data + sizeof(struct dmi_header);  
+> 
+> Can be one line.
+> 
+> > +       /* find 4th entry in OEM data */
+> > +       for (i = 0; i < 3; i++)  
+> 
+> 3 is magic!
+> 
+> > +               data_entry = (void *)((u8 *)(data_entry) +
+> > data_entry->len); +
+> > +       /* decode station id */
+> > +       if (data_entry && (u8 *)data_entry < data + max_len &&
+> > +           data_entry->type == 0xff && data_entry->len == 9)
+> > +               station_id = le32_to_cpu(data_entry->station_id);
+> > +
+> > +       return station_id;
+> > +}  
+> 
 
-Not sure about that. This will make a lot of users run scared, not
-knowing what's going on and open bugzillas.
-
-> +
->  static void early_detect_mem_encrypt(struct cpuinfo_x86 *c)
->  {
->  	u64 msr;
->  
-> +	/*
-> +	 * When running as an SEV guest of any flavor, update the physical
-> +	 * address width to account for the C-bit and clear all of the SME/SVE
-> +	 * feature flags.  As far as the kernel is concerned, the SEV flags
-> +	 * enumerate what features can be used by the kernel/KVM, not what
-> +	 * features have been activated by the VMM.
-> +	 */
-> +	if (sev_active()) {
-> +		int c_bit = ilog2(sme_me_mask);
-> +
-> +		BUG_ON(!sme_me_mask);
-> +
-> +		c->x86_phys_bits -= (cpuid_ebx(0x8000001f) >> 6) & 0x3f;
-
-Well, if that leaf is intercepted, how do you wanna trust this at all?
-
-IOW, you have c_bit so your valid address space is [0 .. c_bit-1] no?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
