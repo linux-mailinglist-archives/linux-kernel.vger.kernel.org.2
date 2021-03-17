@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEAB933FB3A
+	by mail.lfdr.de (Postfix) with ESMTP id 9304933FB39
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 23:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhCQWaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 18:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46116 "EHLO
+        id S231322AbhCQWaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 18:30:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231331AbhCQW3x (ORCPT
+        with ESMTP id S231346AbhCQW3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Mar 2021 18:29:53 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70ECC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:29:52 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id j26so237056iog.13
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:29:52 -0700 (PDT)
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05D8C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:29:53 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id k8so236094iop.12
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:29:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bzduqesNyjPNy/1mWpQa5IsmwasAg4tlgXssFjc1C9k=;
-        b=s9EKsfQ+8ayTPBV8HzWfcuM18JvhhpmjfB+c7EFu/EXaJGjE8xY4z6w2IVAGuYeH/q
-         ropBOGzgfJIPT3XiHAITBxlzeM1iN0EVh0Hk2fcfw6uk7NOlR5WyzveSTLxtCxNY5I6d
-         z/QmzvkNehgF4Pi3gZJFve4FzGzjNtcT6++qtuVI59O2PGEV4nzaHbm7jebR3ObckH/2
-         y7gVu+/Qogf9locgp8VaJrX24l6IQiL5DCz0RmcsTeUXrLB6QznNRWesBmjlcOLmnAEL
-         p5m4Ybl63Bh09VYRA5TiEZ5IcOvvaykm0BFw/yaxFB1Lm4FLR3sbNHJkUQHsVTXnLaSM
-         hMBg==
+        bh=mJHY8qu/zb8ROas4WV0ki8PTfXxIvdJCtkC7EQYxU/c=;
+        b=uXrdEig5Q8aCl1RmZxxC9heobx+8PUPj8zBCf68sGS3hl/B21E3YDLBvV60dnyzv/a
+         b51ixW1V2GvEMmyfRXpf7wx2nkZMeMEcA9zgVdNHajKV6tdVTlM1xZqctm6kdr1YQEqR
+         iyTUFD+jkrXmvLoEWPNvK+VSG4AQWP1cbOm4AKCOJxuQm9KZZTOnS4fCzO13zHBM053d
+         DoRc/gAuYEltZVjBA3VXsQKMuFk6fqASc+AJnP0N1cPnBirs+minRT/G/BXYTkT0BEvC
+         wUNog2ve70IdlV2bvX/tBr0MDbdjxJ4ZJbVEEOJwWoY7Vx+Yc15EXzaB7yVEoLjHNhKx
+         2OSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bzduqesNyjPNy/1mWpQa5IsmwasAg4tlgXssFjc1C9k=;
-        b=DRvrDkSF5/mplzZRqgNRcWUqIBgvgEIACmaoJB+jOh70xTxkTOmfptPncJB8DcTOEb
-         M3Fhm2IHJEJHpdn+qkFoLLELFkoQ2s/ePOcrYdhY1+z233dgNaW9+O2Z2HJd6nem5Xdh
-         6EkB/6btDpLAKdYSbT8PHCYLBa+dGGt9GbGPrPwwrItzhSu5iskCP1hBz3mJdlA019HC
-         U6nTi3uqjOYxF5Qh5x8tCaOGdHJ4q3UvTCSyGjSmP6kTixHn/wUsCC1yfxweHmEwS21i
-         WOCycGgKJ0XVEBL/IuLhooUtYU9grJtYLy9ERMye2EvP/fdgueCK0aXdAXX8UiqhYXcx
-         axow==
-X-Gm-Message-State: AOAM530mJkkwjOusrtTi+uW3+qQENJX0q1PGurKW4BKwxZr19VIhJM5l
-        4XeDem7eTSL8WAlK9QkNAc/RPg==
-X-Google-Smtp-Source: ABdhPJzQ8p9tZPhWpJl2bLJuVCaAjPwrnY4gLQ0c1jNk+XIivTBb7/Q9383/enx5RFvIXka4MuwkxA==
-X-Received: by 2002:a02:7410:: with SMTP id o16mr4632619jac.37.1616020192373;
-        Wed, 17 Mar 2021 15:29:52 -0700 (PDT)
+        bh=mJHY8qu/zb8ROas4WV0ki8PTfXxIvdJCtkC7EQYxU/c=;
+        b=FHmKXXbJgDBfN9e0sMdwGpMAbfJwLTauKi0tz/PVNbjzCqdLhiz0IHWL51Khrmcdll
+         xjU70EqebRzVHicQvz82/+43yMAGpzcXjymRmFGaNvVSsa7wVg1UFEuin0QnRUY14oGD
+         UWlTLhCZ9L2lFRJ6FjwHWjmtBorW++k+iV1UKkwoJTkPyy0dn/QF6Zhk6LLoW9Wx7r7m
+         ABd6ni8zZZ0KsCQmQAKJz396Q2Xc9FdNPkJb3AfZ6FpwxNCcTwsDFqHXZFDUuHet6ttQ
+         VKbbwh5K235DYyr9lW/59YG+PobiiBgcviW78k9rAKV+M83PtoCM34gkJIqJ87vdKhU2
+         iDiw==
+X-Gm-Message-State: AOAM530YsczcRGg9xXLn02nA4S3gDEOdoVey1knX2vWDvgT656hWU2/t
+        thmR6WPFuV/jrKL9X5ZRH2X6qA==
+X-Google-Smtp-Source: ABdhPJw6YnjvWAUfRm9waslOSl/uRPGYD7PG21A0gPfUrkpwUIetoveKR7JKJzqsngPOskX6vQcdPw==
+X-Received: by 2002:a02:c8d4:: with SMTP id q20mr4593415jao.90.1616020193197;
+        Wed, 17 Mar 2021 15:29:53 -0700 (PDT)
 Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id f3sm176405ilk.74.2021.03.17.15.29.51
+        by smtp.gmail.com with ESMTPSA id f3sm176405ilk.74.2021.03.17.15.29.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 17 Mar 2021 15:29:52 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
@@ -53,9 +53,9 @@ To:     davem@davemloft.net, kuba@kernel.org
 Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/4] net: ipa: introduce dma_addr_high32()
-Date:   Wed, 17 Mar 2021 17:29:44 -0500
-Message-Id: <20210317222946.118125-3-elder@linaro.org>
+Subject: [PATCH net-next 3/4] net: ipa: fix table alignment requirement
+Date:   Wed, 17 Mar 2021 17:29:45 -0500
+Message-Id: <20210317222946.118125-4-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210317222946.118125-1-elder@linaro.org>
 References: <20210317222946.118125-1-elder@linaro.org>
@@ -65,57 +65,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create a new helper function to encapsulate extracting the
-high-order 32 bits of a DMA address.  It returns 0 for builds
-in which a DMA address is not 64 bits.
+We currently have a build-time check to ensure that the minimum DMA
+allocation alignment satisfies the constraint that IPA filter and
+route tables must point to rules that are 128-byte aligned.
 
-This avoids doing a 32-position shift on a DMA address if it
-happens not to be 64 bits wide.
+But what's really important is that the actual allocated DMA memory
+has that alignment, even if the minimum is smaller than that.
+
+Remove the BUILD_BUG_ON() call checking against minimim DMA alignment
+and instead verify at rutime that the allocated memory is properly
+aligned.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/gsi.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ drivers/net/ipa/ipa_table.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index 2119367b93ea9..53698c64cf882 100644
---- a/drivers/net/ipa/gsi.c
-+++ b/drivers/net/ipa/gsi.c
-@@ -688,6 +688,16 @@ static void gsi_evt_ring_doorbell(struct gsi *gsi, u32 evt_ring_id, u32 index)
- 	iowrite32(val, gsi->virt + GSI_EV_CH_E_DOORBELL_0_OFFSET(evt_ring_id));
- }
- 
-+/* Encapsulate extracting high-order 32 bits of DMA address */
-+static u32 dma_addr_high32(dma_addr_t addr)
-+{
-+#ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
-+	return (u32)(addr >> 32);
-+#else /* !CONFIG_ARCH_DMA_ADDR_T_64BIT */
-+	return 0;
-+#endif /* !CONFIG_ARCH_DMA_ADDR_T_64BIT */
-+}
-+
- /* Program an event ring for use */
- static void gsi_evt_ring_program(struct gsi *gsi, u32 evt_ring_id)
+diff --git a/drivers/net/ipa/ipa_table.c b/drivers/net/ipa/ipa_table.c
+index dd07fe9dd87a3..988f2c2886b95 100644
+--- a/drivers/net/ipa/ipa_table.c
++++ b/drivers/net/ipa/ipa_table.c
+@@ -118,14 +118,6 @@
+ /* Check things that can be validated at build time. */
+ static void ipa_table_validate_build(void)
  {
-@@ -711,7 +721,7 @@ static void gsi_evt_ring_program(struct gsi *gsi, u32 evt_ring_id)
- 	val = evt_ring->ring.addr & GENMASK(31, 0);
- 	iowrite32(val, gsi->virt + GSI_EV_CH_E_CNTXT_2_OFFSET(evt_ring_id));
+-	/* IPA hardware accesses memory 128 bytes at a time.  Addresses
+-	 * referred to by entries in filter and route tables must be
+-	 * aligned on 128-byte byte boundaries.  The only rule address
+-	 * ever use is the "zero rule", and it's aligned at the base
+-	 * of a coherent DMA allocation.
+-	 */
+-	BUILD_BUG_ON(ARCH_DMA_MINALIGN % IPA_TABLE_ALIGN);
+-
+ 	/* Filter and route tables contain DMA addresses that refer
+ 	 * to filter or route rules.  But the size of a table entry
+ 	 * is 64 bits regardless of what the size of an AP DMA address
+@@ -665,6 +657,18 @@ int ipa_table_init(struct ipa *ipa)
+ 	if (!virt)
+ 		return -ENOMEM;
  
--	val = evt_ring->ring.addr >> 32;
-+	val = dma_addr_high32(evt_ring->ring.addr);
- 	iowrite32(val, gsi->virt + GSI_EV_CH_E_CNTXT_3_OFFSET(evt_ring_id));
++	/* We put the "zero rule" at the base of our table area.  The IPA
++	 * hardware requires rules to be aligned on a 128-byte boundary.
++	 * Make sure the allocation satisfies this constraint.
++	 */
++	if (addr % IPA_TABLE_ALIGN) {
++		dev_err(dev, "table address %pad not %u-byte aligned\n",
++			&addr, IPA_TABLE_ALIGN);
++		dma_free_coherent(dev, size, virt, addr);
++
++		return -ERANGE;
++	}
++
+ 	ipa->table_virt = virt;
+ 	ipa->table_addr = addr;
  
- 	/* Enable interrupt moderation by setting the moderation delay */
-@@ -819,7 +829,7 @@ static void gsi_channel_program(struct gsi_channel *channel, bool doorbell)
- 	val = channel->tre_ring.addr & GENMASK(31, 0);
- 	iowrite32(val, gsi->virt + GSI_CH_C_CNTXT_2_OFFSET(channel_id));
- 
--	val = channel->tre_ring.addr >> 32;
-+	val = dma_addr_high32(channel->tre_ring.addr);
- 	iowrite32(val, gsi->virt + GSI_CH_C_CNTXT_3_OFFSET(channel_id));
- 
- 	/* Command channel gets low weighted round-robin priority */
 -- 
 2.27.0
 
