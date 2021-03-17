@@ -2,115 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D07A033F696
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D3A33F6A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbhCQRVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:21:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32160 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231820AbhCQRT6 (ORCPT
+        id S232141AbhCQRVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232635AbhCQRU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:19:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616001597;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0NhvvvHmyT/STmm3le4+4DkjnpET7hVpc/Bo+3kH164=;
-        b=E0i8ADBm0ma7+2R/RZj3aAj0Csb+rTsteeDDinbdqgU8Ooiv97CSxvN/OTi926Ejzo+XuB
-        B/YErfR6sUQRPW3EYzIzA5bMsGWI//e7nM2sJjCj6fmjQ/fkE6uGAZQg4KZbW/lVhkFZP+
-        TsDXp59eH/3nmhbuPMKLR2gukPtPRXs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-594-5zsbSrqYM2e8rRrQeWjybg-1; Wed, 17 Mar 2021 13:19:53 -0400
-X-MC-Unique: 5zsbSrqYM2e8rRrQeWjybg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0954A9CC00;
-        Wed, 17 Mar 2021 17:19:51 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 02EB919C45;
-        Wed, 17 Mar 2021 17:19:44 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 18:19:43 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>, brouer@redhat.com
-Subject: Re: [PATCH 0/7 v4] Introduce a bulk order-0 page allocator with two
- in-tree users
-Message-ID: <20210317181943.1a339b1e@carbon>
-In-Reply-To: <20210317165220.808975-1-alobakin@pm.me>
-References: <20210312154331.32229-1-mgorman@techsingularity.net>
-        <20210317163055.800210-1-alobakin@pm.me>
-        <20210317173844.6b10f879@carbon>
-        <20210317165220.808975-1-alobakin@pm.me>
+        Wed, 17 Mar 2021 13:20:29 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E7EC06175F;
+        Wed, 17 Mar 2021 10:20:28 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id a198so83898lfd.7;
+        Wed, 17 Mar 2021 10:20:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NFi1kFhrUTgn5FvPk8wh5i9n6BvR2USVpUn/9xflTkk=;
+        b=OoZX2tiIQyHFy7a/jirVKoULGhIrjwPvuvQYgCktz4ZesxRQIDzLxjYERGMvcaXbl7
+         ryx5JZPNhEiujaONPvnTEyRdEh2Ng2lheMKTZRstYdQVPM/2jB3HUccjYkZXVPtkuvCL
+         EqfZCMS7EewunrhZM9O7vYe+c200rM1v8egLvPZN2bAYMqGlTxg7Asacma/8LAFUbrts
+         IOGgi9jIHiCuEn5jWEstEXVelAIqOj77bkrhQkwwnuj3vQ3N6xqO/u/DKvCK3iEs3TeY
+         NKspi5cJRrgqwvKgXLBFsQnrkviRb9cN8vW0kJjjPSRkzLj5itjRAq50N/XjuEgvfjLd
+         Zpug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NFi1kFhrUTgn5FvPk8wh5i9n6BvR2USVpUn/9xflTkk=;
+        b=Rxx6u42TXi2atrCvsWOxN9DRcnQGoPOa0vtj8FzkifIJHj7pJn7h+tjHuxVfSgb/0H
+         xVmDHOiVEawAGnYM9dfHPpzNIRBWU7RYZbiDjyI3JSl3ycUxYQgTqdO9EYE5MSGtKGdq
+         TSlrW6ZOTZT6Pxx9XfyTDN1zh0WFhxmoj2FHnA0ZxPB9Xe2nBkz5WyaG2kQBxFbSIEjN
+         9fvCKC8SjWeLe6weoaqfAH9ObisT2KbzeSsVETA8qTz912wAdettsE7d3ufJt3OS8v7I
+         wgh353TesubwD4yVXnH1uR1BlWgHNuian2ZPG+dwCT0oQu5uyffi87UrRze3qTsosJJU
+         t5AA==
+X-Gm-Message-State: AOAM531xlKFpWcLYcso0sTB1ZUT/4cnXBi9B6Xhki0j+X7fFX56bPywb
+        f9UTMBElCiq7+oPY2XHjuX6OXlhxeg4=
+X-Google-Smtp-Source: ABdhPJxMJd14k9yjtgxRwNLmMWFGlgc0PX7nuLmBb8FfvmGKIWsxLnOUuuJIpmAAfPUbW+HjT4CY2A==
+X-Received: by 2002:a05:6512:108e:: with SMTP id j14mr2741412lfg.364.1616001611659;
+        Wed, 17 Mar 2021 10:20:11 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id v2sm3576654ljg.89.2021.03.17.10.20.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 10:20:11 -0700 (PDT)
+Subject: Re: [PATCH v5 00/17] Fix reset controls and RPM of NVIDIA Tegra ASoC
+ drivers
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Paul Fertser <fercerpav@gmail.com>
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210314154459.15375-1-digetx@gmail.com>
+Message-ID: <be93d088-fefe-77f0-9b8e-9c815cc0d0f0@gmail.com>
+Date:   Wed, 17 Mar 2021 20:20:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20210314154459.15375-1-digetx@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Mar 2021 16:52:32 +0000
-Alexander Lobakin <alobakin@pm.me> wrote:
-
-> From: Jesper Dangaard Brouer <brouer@redhat.com>
-> Date: Wed, 17 Mar 2021 17:38:44 +0100
+14.03.2021 18:44, Dmitry Osipenko пишет:
+> Hi,
 > 
-> > On Wed, 17 Mar 2021 16:31:07 +0000
-> > Alexander Lobakin <alobakin@pm.me> wrote:
-> >  
-> > > From: Mel Gorman <mgorman@techsingularity.net>
-> > > Date: Fri, 12 Mar 2021 15:43:24 +0000
-> > >
-> > > Hi there,
-> > >  
-> > > > This series is based on top of Matthew Wilcox's series "Rationalise
-> > > > __alloc_pages wrapper" and does not apply to 5.12-rc2. If you want to
-> > > > test and are not using Andrew's tree as a baseline, I suggest using the
-> > > > following git tree
-> > > >
-> > > > git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v4r2  
-> > >
-> > > I gave this series a go on my setup, it showed a bump of 10 Mbps on
-> > > UDP forwarding, but dropped TCP forwarding by almost 50 Mbps.
-> > >
-> > > (4 core 1.2GHz MIPS32 R2, page size of 16 Kb, Page Pool order-0
-> > > allocations with MTU of 1508 bytes, linear frames via build_skb(),
-> > > GRO + TSO/USO)  
-> >
-> > What NIC driver is this?  
+> This series adds missing hardware reset controls to I2S and AC97 drivers,
+> corrects runtime PM usage and drivers probe/remove order. Currently drivers
+> happen to work properly because reset is implicitly deasserted by tegra-clk
+> driver, but clk driver shouldn't touch the resets and we need to fix it
+> because this breaks other Tegra drivers. Previously we fixed the resets of
+> the AHUB and HDMI codec drivers, but turned out that we missed the I2C and
+> AC97 drivers.
 > 
-> Ah, forgot to mention. It's a WIP driver, not yet mainlined.
-> The NIC itself is basically on-SoC 1G chip.
+> Thanks to Paul Fertser for testing the pending clk patches and finding
+> that audio got broken on Tegra20 AC100 netbook because of the missing I2S
+> reset.
+....
+> Dmitry Osipenko (16):
+>   ASoC: tegra20: ac97: Add reset control
+>   ASoC: tegra20: i2s: Add reset control
+>   ASoC: tegra30: i2s: Restore hardware state on runtime PM resume
+>   ASoC: tegra30: ahub: Switch to use reset-bulk API
+>   ASoC: tegra20: spdif: Correct driver removal order
+>   ASoC: tegra20: spdif: Remove handing of disabled runtime PM
+>   ASoC: tegra20: i2s: Add system level suspend-resume callbacks
+>   ASoC: tegra20: i2s: Correct driver removal order
+>   ASoC: tegra20: i2s: Use devm_clk_get()
+>   ASoC: tegra20: i2s: Remove handing of disabled runtime PM
+>   ASoC: tegra30: i2s: Correct driver removal order
+>   ASoC: tegra30: i2s: Use devm_clk_get()
+>   ASoC: tegra30: i2s: Remove handing of disabled runtime PM
+>   ASoC: tegra30: ahub: Reset global variable
+>   ASoC: tegra30: ahub: Correct suspend-resume callbacks
+>   ASoC: tegra30: ahub: Remove handing of disabled runtime PM
+> 
+> Philipp Zabel (1):
+>   reset: Add reset_control_bulk API
 
-Hmm, then it is really hard to check if your driver is doing something
-else that could cause this.
-
-Well, can you try to lower the page_pool bulking size, to test the
-theory from Wilcox that we should do smaller bulking to avoid pushing
-cachelines into L2 when walking the LRU list.  You might have to go as
-low as bulk=8 (for N-way associative level of L1 cache).
-
-In function: __page_pool_alloc_pages_slow() adjust variable:
-  const int bulk = PP_ALLOC_CACHE_REFILL;
-
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Mark / Takashi, I may try to split up this series into two or three
+smaller patchsets and then the reset/ patch from Philipp Zabel could be
+merged by Philipp himself. I primarily want to have the audio resets
+fixed and the reset API extended with reset_control_bulk in 5.13 because
+this will unblock other patches. Please let me know what you prefer more.
