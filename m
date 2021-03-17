@@ -2,68 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD8333F283
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:24:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C06CA33F288
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbhCQOYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:24:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52452 "EHLO mail.kernel.org"
+        id S231755AbhCQOZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:25:08 -0400
+Received: from 8bytes.org ([81.169.241.247]:59472 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231139AbhCQOXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:23:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5F7D64F26;
-        Wed, 17 Mar 2021 14:23:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615991030;
-        bh=JYn4ilW4yR/GNK9YFAJ+3j22BGLGZ6dc4O+X0LJU1T4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HLIavrV6qYHdxZsWCsw7EiumTCCuqFt+lda3GxQndKs5YZOX93WACe3rK0EZAvsMA
-         XVkUkekkBPMtDwP3wDajy68q68KGhxX2JaLXiOeeaF7TI2LYJICb2/goK8S4I7A6c9
-         WWw/hIeFkPXv03ZUNroYQwwpMEgko7gCUNldRm3Ej9XO1ryjUK2EqCq1e7cnIzirTY
-         bgDzqMZK/at9ROPYn2AQy3K3ynh22pnSzPqx6zXXMXxhJEWrKyebXEOf/yMnSiYoJS
-         YLH9FBmhWpySB37XVW5vw57W/mwEIgxvZF1iu1dn4AIiUUjWK/4XIWq4L5j2UxyW/N
-         qz/oc8Is3Bf8Q==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 2A2E735226FD; Wed, 17 Mar 2021 07:23:50 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 07:23:50 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the rcu tree
-Message-ID: <20210317142350.GC2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210317163613.02cd2246@canb.auug.org.au>
+        id S231786AbhCQOYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 10:24:49 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id B857A3A4; Wed, 17 Mar 2021 15:24:47 +0100 (CET)
+Date:   Wed, 17 Mar 2021 15:24:46 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Huang Rui <ray.huang@amd.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Xiaojian Du <xiaojian.du@amd.com>,
+        Joerg Roedel <jroedel@suse.de>, stable@vger.kernel.org
+Subject: Re: [PATCH 2/3] iommu/amd: Don't call early_amd_iommu_init() when
+ AMD IOMMU is disabled
+Message-ID: <YFIRLh3PPiW1hCQZ@8bytes.org>
+References: <20210317091037.31374-1-joro@8bytes.org>
+ <20210317091037.31374-3-joro@8bytes.org>
+ <449d4a2d192d23eb504e43b13c35c326f2d0309a.camel@infradead.org>
+ <YFIE8xnr/HWqxm4p@8bytes.org>
+ <3014DA56-84D8-474B-94FE-6FDBB6241F9F@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210317163613.02cd2246@canb.auug.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <3014DA56-84D8-474B-94FE-6FDBB6241F9F@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 04:36:13PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the rcu tree, today's linux-next build (x86_64 allmodconfig)
-> failed like this:
-> 
-> ERROR: modpost: "rcu_read_lock_longwait_held" [kernel/rcu/rcutorture.ko] undefined!
-> ERROR: modpost: "rcu_read_unlock_longwait" [kernel/rcu/rcutorture.ko] undefined!
-> ERROR: modpost: "rcu_read_lock_longwait" [kernel/rcu/rcutorture.ko] undefined!
-> 
-> Caused by commit
-> 
->   bd6ae31d1b1f ("rcutorture: Add the ability to torture RCU longsleep")
-> 
-> CONFIG_LONGWAIT_RCU=y
-> CONFIG_RCU_TORTURE_TEST=m
-> 
-> I have used the rcu tree from next-20210316 for today.
+On Wed, Mar 17, 2021 at 01:37:16PM +0000, David Woodhouse wrote:
+> If we can get to the point where we don't even need to check
+> amd_iommu_irq_remap in the ...select() function because the IRQ domain
+> is never even registered in the case where the flag ends up false, all
+> the better :)
 
-Gah!  Rebase first, then retest, -then- adjust rcu/next...
+This should already be achieved with this patch :)
 
-Will fix, apologies for the hassle!
+But the check is still needed if something goes wrong during IOMMU
+initialization. In this case the IOMMUs are teared down and the memory
+is freed. But the IRQ domains stay registered for now, mostly because
+the upper-level APIs to register them lack a deregister function.
 
-							Thanx, Paul
+I havn't looked into the details yet whether it is suffient to call
+irq_domain_remove() on a domain created with
+arch_create_remap_msi_irq_domain() for example. This needs more research
+on my side :)
+
+Regards,
+
+	Joerg
