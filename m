@@ -2,208 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E63633F500
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A621833F50B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232172AbhCQQFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 12:05:54 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:4852 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232023AbhCQQF3 (ORCPT
+        id S232291AbhCQQGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 12:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232224AbhCQQF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 12:05:29 -0400
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12HFksnS014326;
-        Wed, 17 Mar 2021 09:05:17 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=proofpoint;
- bh=xTmEhTrKLs0vPdfFeDDoRPykGzGmzmtFOdv53q0HUfU=;
- b=b09CkUloPEFsEPuvZHgMfqSj0xKfA3+LtaCTla7ME0YjTPNH+ACelQMficVueVWtT6pG
- qePAZNftGHFPU6WBbO4jV4B5pUvDb3yrRIVTJmTI4gho7nGtxnv095NpWeeIU00j06aA
- 66GEZo3hV/fe2Wo9N5MX3kIw9UB6jFB/IoomiLlrXiBjgf/hx0Y+Wtv/5jGgwEY/qowj
- fMvlMEktiG/FPi99MKQeRZead1OUJrLXcOWNOcVcyv7wIbcpEmIJBGEpZOXMcJqtXS+3
- 91lpAnNzue//vCv68VSGT6d7XFVHDA+w5VBtWg48PeKAxfh/wlYdxgMblIt/G7q3Ezrq Hw== 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2172.outbound.protection.outlook.com [104.47.57.172])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 378tu25sda-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Mar 2021 09:05:17 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qk3AxSihKtf32kR8oBXx5NW602APlgz7eFwcvYHSE2AQouk3x47+Hrfs3v1jJfCT2A8qThR9UxuD+ZDDZ65ldtsmiElUSvMPy1hnVUJ2rCuyEA3oiJwppDJeCkVfLad7MJAc3nb2q6Sb5BFfciV7d7RWxQV3BZa6xqjeYkYyrcQLPn6OKNycY5pl6q2nxa+wNlbiEeCtLzTF9RM57oPze6NEzXync2sZtwK3ojOc3+ROP6BJlH2mE/Fy2gw27izHSoJzdOEIcPEqtl55LcvaXV2WSLwbhlMCZFuGVvxHjdeBoD1aDF4g6gUBnQ8v9fXOdLbI+oOWz0LNggLwVF37kw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xTmEhTrKLs0vPdfFeDDoRPykGzGmzmtFOdv53q0HUfU=;
- b=Dnwv31TP90Fx5LNUBx7QkyVBzBw0DB6joA38VKRiIraGgKw/wK8hbhZZohbrSj98VPkJrFKwSRpHZfuhP64ZF2Yd9iXPAdq+pALIX9tBqEg8t+9jMkfgsjTP/OEBEpiFIXTF4/4Am8ziV7REuzucKNK7+k8p1UZ9aoWLIWpQ9DlHK9eWHjRzzd3tnLXrPHCa6rncHnooJfJgU9AG1mi2uJMz937eKTZfLVkETfQq3ulbRpU0q8j0RNMCka+lAbg+LeOzGuW8cd/+RnF5kCoGc3an8KnAgDHWgfZMPdkT1HfGtoQEQoFCzsBDMIPpsspbqg9I2tf/2esIpa0TBMhpvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 158.140.1.147) smtp.rcpttodomain=linux.ie smtp.mailfrom=cadence.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xTmEhTrKLs0vPdfFeDDoRPykGzGmzmtFOdv53q0HUfU=;
- b=odrQ9iTA0dSzRMtvePFs6xD1P2D2Et8T1qfqGTbl5DA0c8a5TqkctWGkiVn8MZQA2M7KPQu8AXbC2DIbCmGRQwpt70CsjszvhEJusWGkb4Vvr24zujVE32NMA/1PlAfIVSTjNG63QpLViwfxRcfkVz1kP1/7Lk1Ia/Fw/3vglKQ=
-Received: from CO2PR18CA0043.namprd18.prod.outlook.com (2603:10b6:104:2::11)
- by BYAPR07MB4949.namprd07.prod.outlook.com (2603:10b6:a03:16::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Wed, 17 Mar
- 2021 16:05:13 +0000
-Received: from MW2NAM12FT049.eop-nam12.prod.protection.outlook.com
- (2603:10b6:104:2:cafe::6e) by CO2PR18CA0043.outlook.office365.com
- (2603:10b6:104:2::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend
- Transport; Wed, 17 Mar 2021 16:05:13 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.147)
- smtp.mailfrom=cadence.com; linux.ie; dkim=none (message not signed)
- header.d=none;linux.ie; dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
- client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com;
-Received: from sjmaillnx1.cadence.com (158.140.1.147) by
- MW2NAM12FT049.mail.protection.outlook.com (10.13.181.183) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3955.9 via Frontend Transport; Wed, 17 Mar 2021 16:05:12 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 12HG58Qn018504
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Mar 2021 09:05:09 -0700
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 17 Mar 2021 17:05:07 +0100
-Received: from vleu-orange.cadence.com (10.160.88.83) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Wed, 17 Mar 2021 17:05:07 +0100
-Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 12HG57iZ016467;
-        Wed, 17 Mar 2021 17:05:07 +0100
-Received: (from pthombar@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 12HG570R016441;
-        Wed, 17 Mar 2021 17:05:07 +0100
-From:   Parshuram Thombare <pthombar@cadence.com>
-To:     <robert.foss@linaro.org>, <robh+dt@kernel.org>,
-        <laurent.pinchart@ideasonboard.com>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <a.hajda@samsung.com>,
-        <narmstrong@baylibre.com>, <nikhil.nd@ti.com>, <kishon@ti.com>,
-        <sjakhade@cadence.com>, <mparab@cadence.com>,
-        Parshuram Thombare <pthombar@cadence.com>
-Subject: [PATCH v3 1/2] dt-bindings: drm/bridge: MHDP8546 bridge binding changes for HDCP
-Date:   Wed, 17 Mar 2021 17:05:04 +0100
-Message-ID: <1615997104-16386-1-git-send-email-pthombar@cadence.com>
-X-Mailer: git-send-email 2.2.2
-In-Reply-To: <1615997048-16043-1-git-send-email-pthombar@cadence.com>
-References: <1615997048-16043-1-git-send-email-pthombar@cadence.com>
+        Wed, 17 Mar 2021 12:05:57 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C314C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:05:56 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id a15so1338476vsi.7
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:05:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v2KL8kozO5erdsP6tss56cJzIGTvQeUixy1fwBfyf9E=;
+        b=L+sKGzrqRGkayjrIbx3UhJgUwtMmmzJiP7xVkweSApuxYoYxI4LeRgqnM7E2cVNFT2
+         L45AC/pwNU1fz3kkRnhcRp5Khlan5/Osp695ao4Zeq1DMR4U7/JYz+4t7MEdHv1+9qwG
+         zwxXB5v4s7x+iSvmDyAA8j6J5F/LEkxHHfS2qwphtbLFYhEDWUv95/kvZL3Trdu79AyT
+         NNZbI9fnUQcz8+iyHBFSLC3Wa55Q+r5QDMMipTfIOHdnYaK4LSCdSwlrvXeW0lhZ4AF5
+         WXtzd1I3zdoC7C//HbblJCanoQNzLOyg1wur/OGHsKtTZ3gw78PQ17RnksLC/ossk+fU
+         fcmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v2KL8kozO5erdsP6tss56cJzIGTvQeUixy1fwBfyf9E=;
+        b=G+8JSUwnYPLmRP1fiuqvOHKAntT8czyiW2QRv9LWK8PRaCKd1JqG6FRAxgdKXKI0TQ
+         vdzKayABGEDVctXWvLiWgM50UkIloJwLFMmbpB6peV3iRfjbNlS8+zwr9X66tNyfE250
+         /iS7g3AJkXfYNyS5YHMFMlQ1cQ62x1esXdCXIafAsWeXJQqccbDbRni2WwqF6MoWosPN
+         b70b8b6LEiu9b3bvTdUApJXnEYjIUHszxHU/Se7S71ATNc9daIGky4InEg1G0dRPOFeT
+         79eipYyhjPhioOki0zGpEBAa7YiixBoE4r+sAHJfb8A3F+3NGgFYhIsdw3OhE2NwjoxI
+         1HDQ==
+X-Gm-Message-State: AOAM5332xsegfSAnu2+LPaK/tB5TRhoiv1pDAjjkyeGA9+7aYWszp4Ox
+        IMMYfMlTDl9iurGSvFyPcP2O5d9HEm7d8qJQ+LS8Qw==
+X-Google-Smtp-Source: ABdhPJxaHsoJ+bz7hvftL5zgwqX9DbDHuTiz3ir8dA5jWQPZop9wwdoJTujQjPIzJwP11rynhQBtRWijCPDqibIFRy4=
+X-Received: by 2002:a67:db98:: with SMTP id f24mr4264884vsk.13.1615997155510;
+ Wed, 17 Mar 2021 09:05:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e468245e-47eb-438d-9b41-08d8e95e725a
-X-MS-TrafficTypeDiagnostic: BYAPR07MB4949:
-X-Microsoft-Antispam-PRVS: <BYAPR07MB4949E4F06F04092860730490C16A9@BYAPR07MB4949.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oaorood5QR4T+eZBEPg4pJfOmpE+iD4cueKy+9WllpW+oJS+iaACHqfxuoczKP8xC9AYBoS8tqRSCZL11yuDGWjiLKtTuMdxLFJ+loXQZkQPx2aDmMZBeWAxk9S+L00K1Jhosdb2WItt22OxJO9rWm5/vKPtNjxf8UM2fjv4CCL+23Eq0ib8I8h0+ccLKkvXC2ZL4dnibl1v2Qq3pDPKofKI8TY5rXq03Ix4/c+stuqLUseMPvH1lG1ACsLKF7IyhoWE7J8Y+36xozyBmhD0TSDKniB7bA9u+Q85jcUfVmAfYX4NrLOhBttS9ezCOQOFJleBSFnVhkXNb0FaAooPsR8zjQ0pMbCFJVXafDeEN1Lm7kCLyEBOP0M61JmnaXdxWeMGtyk0t2Xv2Q3345TiAu5s8v95iKYryuzJslr8YJ1Cca4PkdKT+6qhhiDfVn8VMJd86lbOKEhQhJxrx4PkuGBnwm4kcKl5JUrvWY/zwZbXj7L3hk3KIAxNWQbB1JAI+JaqR7xanATSMJVbcS0OveHAL4EsmgP0uEF499sj/vnVGaqki3r9qY2numI/IG+fH3DH7ALVVguav2PHYhM5wye7ASeeVoar2JfUGReqVewvQt8tOgjJVLjGJw+vj1Twa8YLhnO7/c8lI2hnmDnKB64dr9AhWDtUZBr/w+KaI1JPt6Kf7vKhNoI0R6iAFd3mqwb3TQ+ba57M+c8QKoCqTg==
-X-Forefront-Antispam-Report: CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(39860400002)(376002)(36092001)(36840700001)(46966006)(2906002)(107886003)(7416002)(6666004)(336012)(8936002)(5660300002)(36860700001)(86362001)(36756003)(186003)(36906005)(42186006)(82310400003)(47076005)(7636003)(83380400001)(26005)(110136005)(54906003)(426003)(356005)(82740400003)(2616005)(70586007)(8676002)(478600001)(70206006)(316002)(4326008)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 16:05:12.7083
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e468245e-47eb-438d-9b41-08d8e95e725a
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: MW2NAM12FT049.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR07MB4949
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-17_10:2021-03-17,2021-03-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 adultscore=0
- priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1015
- lowpriorityscore=0 malwarescore=0 spamscore=0 suspectscore=0
- impostorscore=0 mlxscore=0 mlxlogscore=999 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103170113
+References: <20210312004919.669614-1-samitolvanen@google.com>
+ <20210312004919.669614-7-samitolvanen@google.com> <20210312061304.GA2321497@infradead.org>
+In-Reply-To: <20210312061304.GA2321497@infradead.org>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Wed, 17 Mar 2021 09:05:44 -0700
+Message-ID: <CABCJKud-wRfmRLFv71QQ6etUMFX6KXsErmL6u0dPH4SU8HS-BQ@mail.gmail.com>
+Subject: Re: [PATCH 06/17] kthread: cfi: disable callback pointer check with modules
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        bpf@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add binding changes for HDCP in the MHDP8546 DPI/DP bridge binding.
+On Thu, Mar 11, 2021 at 10:13 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Thu, Mar 11, 2021 at 04:49:08PM -0800, Sami Tolvanen wrote:
+> > With CONFIG_CFI_CLANG, a callback function passed to
+> > __kthread_queue_delayed_work from a module points to a jump table
+> > entry defined in the module instead of the one used in the core
+> > kernel, which breaks function address equality in this check:
+> >
+> >   WARN_ON_ONCE(timer->function != kthread_delayed_work_timer_fn);
+> >
+> > Disable the warning when CFI and modules are enabled.
+> >
+> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > ---
+> >  kernel/kthread.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/kthread.c b/kernel/kthread.c
+> > index 1578973c5740..af5fee350586 100644
+> > --- a/kernel/kthread.c
+> > +++ b/kernel/kthread.c
+> > @@ -963,7 +963,13 @@ static void __kthread_queue_delayed_work(struct kthread_worker *worker,
+> >       struct timer_list *timer = &dwork->timer;
+> >       struct kthread_work *work = &dwork->work;
+> >
+> > -     WARN_ON_ONCE(timer->function != kthread_delayed_work_timer_fn);
+> > +     /*
+> > +      * With CFI, timer->function can point to a jump table entry in a module,
+>
+> you keep spewing this comment line that has exactly 81 characters and
+> thus badly messes up read it with a normal termina everywhere.
+>
+> Maybe instead of fixing that in ever duplication hide the whole check in
+> a well documented helper (which would have to be a macro due to the
+> typing involved).
 
-Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
----
- .../display/bridge/cdns,mhdp8546.yaml         | 24 +++++++++++--------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+Sure, that sounds cleaner. I'll add a helper macro in v2.
 
-diff --git a/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
-index 63427878715e..8a85768f6202 100644
---- a/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
-+++ b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
-@@ -17,8 +17,8 @@ properties:
-       - ti,j721e-mhdp8546
- 
-   reg:
--    minItems: 1
--    maxItems: 2
-+    minItems: 2
-+    maxItems: 3
-     items:
-       - description:
-           Register block of mhdptx apb registers up to PHY mapped area (AUX_CONFIG_P).
-@@ -26,13 +26,16 @@ properties:
-           included in the associated PHY.
-       - description:
-           Register block for DSS_EDP0_INTG_CFG_VP registers in case of TI J7 SoCs.
-+      - description:
-+          Register block of mhdptx sapb registers.
- 
-   reg-names:
--    minItems: 1
--    maxItems: 2
-+    minItems: 2
-+    maxItems: 3
-     items:
-       - const: mhdptx
-       - const: j721e-intg
-+      - const: mhdptx-sapb
- 
-   clocks:
-     maxItems: 1
-@@ -98,15 +101,15 @@ allOf:
-     then:
-       properties:
-         reg:
--          minItems: 2
-+          minItems: 3
-         reg-names:
--          minItems: 2
-+          minItems: 3
-     else:
-       properties:
-         reg:
--          maxItems: 1
-+          maxItems: 2
-         reg-names:
--          maxItems: 1
-+          maxItems: 2
- 
- required:
-   - compatible
-@@ -129,8 +132,9 @@ examples:
- 
-         mhdp: dp-bridge@f0fb000000 {
-             compatible = "cdns,mhdp8546";
--            reg = <0xf0 0xfb000000 0x0 0x1000000>;
--            reg-names = "mhdptx";
-+            reg = <0xf0 0xfb000000 0x0 0x1000000>,
-+                  <0x0 0x4f48000 0x0 0x74>;
-+            reg-names = "mhdptx", "mhdptx-sapb";
-             clocks = <&mhdp_clock>;
-             phys = <&dp_phy>;
-             phy-names = "dpphy";
--- 
-2.25.1
-
+Sami
