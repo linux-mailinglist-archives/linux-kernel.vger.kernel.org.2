@@ -2,102 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE74833EBE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A69333EBF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbhCQIzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38728 "EHLO
+        id S229843AbhCQI5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:57:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhCQIyr (ORCPT
+        with ESMTP id S229675AbhCQI5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:54:47 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27801C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:54:47 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id v11so944948wro.7
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:54:47 -0700 (PDT)
+        Wed, 17 Mar 2021 04:57:15 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D51C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:57:07 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so811022wmi.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:57:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1ep4RAOuLpsLyK7c13YsySxBNqK6BBmFhVdnhfjr9A8=;
-        b=kbVjdlr56gNt7X0U4NNzNAphXMwon7ggznxDhWnZZ4kGmfPCg6kWlUy25REgbi6ET8
-         M3L5aQRoOA1usapyXbO9G2Av6ITaFP9ddwYsiFVT0TJpw3Bf5MYInj9QF98sND8hUWBF
-         PaGo+UNFVet02vQsHWJHQC6Ss+VpM65HvKCUjMyqQfPHL0meCeHvJGIsVIypwZgTiHW9
-         xYdxfdIWFRa61Zmxb/kN9AaIveL1keVi0FOKoOV9j4HdiMnhWnLyuEVCrcAJe/ZNUZWu
-         7nMjyBfiICdSVEl035rQ0qf1Gwr9ri73OvWlGXvuuufDRQRj2HheO+3gTm/BGRyzUqfN
-         fB3g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8wVUxohbsfODPlJl3e1edTwvvrJeFWzCJfamwkCreXQ=;
+        b=IYgLtZTY7WoXHTe6XoxbNP9IG4gzinQ889fwNtBUHEwHJHDn6k7qtirS8GXP3SKz7I
+         w3HBQ6W9vCxmK7fVqv3FBzzGZHOX3SVfoJWzx3Gv1u8L3g/DpAqI3xIyOtAvtoiBPU70
+         ps1ABIYnj6hrxqYGR2AGbyF7EH+klmkDnKa+aEcZrnbakW+kUy7lvKGksZQvN1yr1MHj
+         RFO597U0OwGxuVBE0o3W60iIGe2Dd5VFEBYnRKtOK61GqUr6WZC8ixFskprN8M9T7fA5
+         73MGEIEijX6EJuk408gV+6NULmlapZcAU5huUAKTcdYATmJiEjCoSBJdTaQMjLS9fuJb
+         7cHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1ep4RAOuLpsLyK7c13YsySxBNqK6BBmFhVdnhfjr9A8=;
-        b=pATWU2Sc7JZ6wvyG3XUYGC8DhpNDgN+t4mUo9LYFBVsZISrC9HA3lcFYL++Onwilqd
-         Ra+lkTjveIaZjTSlvumV2Xwe8pFPdtQ4t1LhyBOAhtSLIija9KeKBhF6mh2oiJziKxKl
-         UX+xW8e15OekzyCK8BCZ3QtMCyM1nNOpFFR51IRNT9wbQJNhtLmORsz3yd8MEUtCsqMt
-         YkjJWyzxcM/iL8x5kCfhD8nL94DUdQujYY18qMUs3kacvlzj3qJ0TCf/9vQA3twGttu2
-         hUmyS0reBpL9GAcM2uKsHz7VD3fQeOeeuSKBExMIPFhnzv46m86wSCNhNGeZgnIqB3PT
-         Ez3g==
-X-Gm-Message-State: AOAM533i13jVjI/poMCbD0xZDsxxLmOSXUYEgta+F5BtVqXceaPOfEhM
-        e2arkG3P+K74VU010Llh4z3rjC2D+WmaqA==
-X-Google-Smtp-Source: ABdhPJwxh1HB2ueQyw/RPGx9iR32jttFoPuAd7ri2XiENH5A1B0vgz0mLsZuP8B+JeZADiwF7MhpzQ==
-X-Received: by 2002:a5d:5487:: with SMTP id h7mr3286509wrv.348.1615971285523;
-        Wed, 17 Mar 2021 01:54:45 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id p10sm26188538wrw.33.2021.03.17.01.54.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 17 Mar 2021 01:54:44 -0700 (PDT)
-Subject: Re: [PATCH] dt-bindings: nvmem: use base meta-schema for consumer
- schema
-To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20210316195111.3531755-1-robh@kernel.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <b91daddf-6162-3679-ff7b-354170e0d0fb@linaro.org>
-Date:   Wed, 17 Mar 2021 08:54:43 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        bh=8wVUxohbsfODPlJl3e1edTwvvrJeFWzCJfamwkCreXQ=;
+        b=Gl+BA1mmxgkIZmLxSF4rzhIcgGX78j9qdFIl5QsdKdejePk2Ec0IF42h78s+rPty05
+         TbolUIB2tXezjnELIcDaNC2k+kLHVOQTeyXW7hrEB7U0sTh+DOoBRPecjJETETIUwwy/
+         4YdDWXz6OV0Rg4sMVBvwOqqYnhsJWCAkD8Kd5/4Yg6QOHU1kzvarAXDpfvMD1YeSNhSq
+         hc9aE5uMX4qgTZTGFOijwtBp5FA8LurZR7+pMYD334BAT9/KAYEImK4K+DrEdRMudkfd
+         04sBBFftB0cBbR6lJX/NiNQbBIp0jp/vCk8mtHtc8U9b+FvVHeUNP1rPj5nuTcxo/jje
+         HqBg==
+X-Gm-Message-State: AOAM533EluzSF0FUtxjOUJocZpbfxyt5Xd/WhcDLaCYFHA32k9P3Rsxf
+        jBHcrEBirVgAuUxSoVg2x3QQLg==
+X-Google-Smtp-Source: ABdhPJy1WxEldnSEoa91DUSjnpGbdUAkrmiOqKjHsdynmfFCTAvvvqZPHQkJcQwmBl7uSWswCqHJrg==
+X-Received: by 2002:a7b:c151:: with SMTP id z17mr2653536wmi.189.1615971426070;
+        Wed, 17 Mar 2021 01:57:06 -0700 (PDT)
+Received: from dell.default ([91.110.221.194])
+        by smtp.gmail.com with ESMTPSA id j123sm1807243wmb.1.2021.03.17.01.57.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 01:57:05 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, Adam Radford <aradford@gmail.com>,
+        Alan Cox <alan@lxorguk.ukuu.org.uk>,
+        Andre Hedrick <andre@suse.com>,
+        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
+        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+        Bas Vermeulen <bvermeul@blackstar.xs4all.nl>,
+        Bradley Grove <linuxdrivers@attotech.com>,
+        Brian Macy <bmacy@sunshinecomputing.com>,
+        c by <James.Bottomley@SteelEye.com>,
+        Christoph Hellwig <hch@lst.de>,
+        David Chaw <david_chaw@adaptec.com>,
+        de Melo <acme@conectiva.com.br>,
+        Doug Ledford <dledford@redhat.com>,
+        GOTO Masanori <gotom@debian.or.jp>, gotom@debian.org,
+        Hannes Reinecke <hare@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Joel Jacobson <linux@3ware.com>,
+        Khalid Aziz <khalid@gonehiking.org>,
+        "Leonard N. Zubkoff" <lnz@dandelion.com>,
+        Linux GmbH <hare@suse.com>, linux-scsi@vger.kernel.org,
+        Luben Tuikov <luben_tuikov@adaptec.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        MPT-FusionLinux.pdl@avagotech.com,
+        MPT-FusionLinux.pdl@broadcom.com,
+        Richard Hirst <richard@sleepie.demon.co.uk>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        YOKOTA Hiroshi <yokota@netlab.is.tsukuba.ac.jp>
+Subject: [PATCH 00/18] [Set 3] Rid W=1 warnings in SCSI
+Date:   Wed, 17 Mar 2021 08:56:43 +0000
+Message-Id: <20210317085701.2891231-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210316195111.3531755-1-robh@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+This set contains functional changes.
 
-On 16/03/2021 19:51, Rob Herring wrote:
-> Common consumer schemas need to use the base.yaml meta-schema because
-> they need to define different constraints (e.g. the type) from what
-> users of the common schema need to define (e.g. how many entries).
-> 
-> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Lee Jones (18):
+  scsi: aic94xx: aic94xx_dump: Remove code that has been unused for at
+    least 13 years
+  scsi: mpt3sas: mpt3sas_scs: Move a little data from the stack onto the
+    heap
+  scsi: bfa: bfa_fcs_lport: Move a large struct from the stack onto the
+    heap
+  scsi: esas2r: esas2r_log: Supply __printf(x, y) formatting for
+    esas2r_log_master()
+  scsi: BusLogic: Supply __printf(x, y) formatting for blogic_msg()
+  scsi: nsp32: Supply __printf(x, y) formatting for nsp32_message()
+  scsi: initio: Remove unused variable 'prev'
+  scsi: a100u2w: Remove unused variable 'bios_phys'
+  scsi: myrs: Remove a couple of unused 'status' variables
+  scsi: 3w-xxxx: Remove 2 unused variables 'response_que_value' and
+    'tw_dev'
+  scsi: 3w-9xxx: Remove a few set but unused variables
+  scsi: 3w-sas: Remove unused variables 'sglist' and 'tw_dev'
+  scsi: nsp32: Remove or exclude unused variables
+  scsi: FlashPoint: Remove unused variable 'TID' from
+    'FlashPoint_AbortCCB()'
+  scsi: sim710: Remove unused variable 'err' from sim710_init()
+  scsi: isci: port: Make local function 'port_state_name()' static
+  scsi: isci: remote_device: Make local function
+    isci_remote_device_wait_for_resume_from_abort() static
+  scsi: nsp32: Correct expected types in debug print formatting
 
---srini
+ drivers/scsi/3w-9xxx.c               |  14 +-
+ drivers/scsi/3w-sas.c                |  10 +-
+ drivers/scsi/3w-xxxx.c               |   6 +-
+ drivers/scsi/BusLogic.c              |   2 +-
+ drivers/scsi/FlashPoint.c            |   4 -
+ drivers/scsi/a100u2w.c               |   2 -
+ drivers/scsi/aic94xx/aic94xx_dump.c  | 184 ---------------------------
+ drivers/scsi/bfa/bfa_fcs_lport.c     |  20 ++-
+ drivers/scsi/esas2r/esas2r_log.c     |   7 +
+ drivers/scsi/initio.c                |   5 +-
+ drivers/scsi/isci/port.c             |   2 +-
+ drivers/scsi/isci/remote_device.c    |   2 +-
+ drivers/scsi/mpt3sas/mpt3sas_scsih.c |  38 ++++--
+ drivers/scsi/myrs.c                  |   6 +-
+ drivers/scsi/nsp32.c                 |  31 ++---
+ drivers/scsi/sim710.c                |  14 +-
+ 16 files changed, 77 insertions(+), 270 deletions(-)
 
+Cc: Adam Radford <aradford@gmail.com>
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: Andre Hedrick <andre@suse.com>
+Cc: Anil Gurumurthy <anil.gurumurthy@qlogic.com>
+Cc: Artur Paszkiewicz <artur.paszkiewicz@intel.com>
+Cc: Bas Vermeulen <bvermeul@blackstar.xs4all.nl>
+Cc: Bradley Grove <linuxdrivers@attotech.com>
+Cc: Brian Macy <bmacy@sunshinecomputing.com>
+Cc: c by <James.Bottomley@SteelEye.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: David Chaw <david_chaw@adaptec.com>
+Cc: de Melo <acme@conectiva.com.br>
+Cc: Doug Ledford <dledford@redhat.com>
+Cc: GOTO Masanori <gotom@debian.or.jp>
+Cc: gotom@debian.org
+Cc: Hannes Reinecke <hare@kernel.org>
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: Joel Jacobson <linux@3ware.com>
+Cc: Khalid Aziz <khalid@gonehiking.org>
+Cc: "Leonard N. Zubkoff" <lnz@dandelion.com>
+Cc: Linux GmbH <hare@suse.com>
+Cc: linux-scsi@vger.kernel.org
+Cc: Luben Tuikov <luben_tuikov@adaptec.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: MPT-FusionLinux.pdl@avagotech.com
+Cc: MPT-FusionLinux.pdl@broadcom.com
+Cc: Richard Hirst <richard@sleepie.demon.co.uk>
+Cc: Sathya Prakash <sathya.prakash@broadcom.com>
+Cc: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+Cc: Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>
+Cc: Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>
+Cc: YOKOTA Hiroshi <yokota@netlab.is.tsukuba.ac.jp>
+-- 
+2.27.0
 
->   Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml b/Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml
-> index 828e4a1ece41..b1da238c8bcb 100644
-> --- a/Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml
-> +++ b/Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml
-> @@ -2,7 +2,7 @@
->   %YAML 1.2
->   ---
->   $id: http://devicetree.org/schemas/nvmem/nvmem-consumer.yaml#
-> -$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +$schema: http://devicetree.org/meta-schemas/base.yaml#
->   
->   title: NVMEM (Non Volatile Memory) Consumer Device Tree Bindings
->   
-> 
