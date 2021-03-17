@@ -2,84 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D4133EE21
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0CCD33EE26
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229460AbhCQKNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhCQKMr (ORCPT
+        id S229710AbhCQKNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:13:40 -0400
+Received: from casper.infradead.org ([90.155.50.34]:57108 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229686AbhCQKNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:12:47 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8CD2C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 03:12:46 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id u4so1502770edv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 03:12:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=g6jWkldAHO5fX2fG11foqEywJJvIYAjFVfktp5dG8UE=;
-        b=dmWU5CkJN4qow5UZOOVDkEx2U/1U2Td7MwDJq8e/465o/XY1/bklUN4eFHZyMj9Em4
-         y+MjuRKKxuVY++jC+LMab0eIS7ngeRN2FEMbMzpwNGG26bGp8ieVxWYFqceptZ1KWUjz
-         g5utfiSnjU5NJO5sNoXcXxlPTavsPz7n98QRE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=g6jWkldAHO5fX2fG11foqEywJJvIYAjFVfktp5dG8UE=;
-        b=VNvH51ue2naFk99VeG+jJyoE85HWj1aTQloiPsysG7UNi9W4+iGipv73wHpEulOJA3
-         NIE4CZMesKnk2wc7cp6tre2lV1iO1xriBOJ6EXtdJQsQTzX3JOwIIo9UvrpzfqDhagEE
-         tQBRXnOc5udFaNzmmLDlZYPIOFy0jQta9NrSO9I6pCp8VBVE2pqi0SXXVwCK0OGMJ95g
-         fpvVoE7UkwrO8Dg2lUNGYDMyDskKf75tlRf/Opc3Lg0Q/cqQQNkJO3Dy+xxZlCTnYcil
-         /wQeiq65xpuUpE1aBqjgaiPSNIIUqiSxoZi5Jztn49eq9pochyUbjAvpRTkj6XbkWUU8
-         FBEA==
-X-Gm-Message-State: AOAM532QBQOPqCLukRBgV1bLQbewlKKxidxId7ezY7M641+YXgUAYxwe
-        3t6MG0noi6xOtqWSgzM4h8Pe2Q==
-X-Google-Smtp-Source: ABdhPJwU+dmqZqqJcrlBnwk2GG7j9R7yBflLt8u0uwaTSwxwQTw1HuU1HGn4BQglcxrKOhmq/1fALQ==
-X-Received: by 2002:a05:6402:17d6:: with SMTP id s22mr40687326edy.232.1615975965680;
-        Wed, 17 Mar 2021 03:12:45 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id si7sm11098174ejb.84.2021.03.17.03.12.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 03:12:45 -0700 (PDT)
-Subject: Re: [PATCH v2] Increase page and bit waitqueue hash size
-To:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, Anton Blanchard <anton@ozlabs.org>,
-        Ingo Molnar <mingo@kernel.org>
-References: <20210317075427.587806-1-npiggin@gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <89cb49c0-2736-dd4c-f401-4b88c22cc11f@rasmusvillemoes.dk>
-Date:   Wed, 17 Mar 2021 11:12:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 17 Mar 2021 06:13:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ldg8P+ntHqhW13UFSCgwfQWUuj8y81ZkwHhfEwqZwlg=; b=KoqbwD6jrkk+2HGJvS+4wSDpbv
+        974mecgUwOBbcvj0ogNZ0lXo6sRy0WTSl7wIMMo2/1q0mnDsjG7hT4vl9S6U7/yBfolgRTVU/BC/v
+        Le1BIEjmOcDIikwNREiHbnlv6lNXkNZwrMfCMu9cLcgaM2f2iDKdHyvrTUGxndB2+A9R/yAg3nMQC
+        0lqCSjICMctUioZxKQ0lvFOtlTLYP2/tcXE/zfNzYZS+P/0w1SCPDhQn6PxMNLvchgeQPAIiaeGyJ
+        XpRqyD9wzyO3zFip+smRmOzVM2Gh4xOxlG1JOiGHkYUIv5pbTp3EknPIPegtfuO3ZgVAuXJROp9Mn
+        VKrzn1hA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMTAs-001MYH-9x; Wed, 17 Mar 2021 10:13:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3AE4E3006E0;
+        Wed, 17 Mar 2021 11:13:09 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 23AE82C3C233E; Wed, 17 Mar 2021 11:13:09 +0100 (CET)
+Date:   Wed, 17 Mar 2021 11:13:09 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Kim Phillips <kim.phillips@amd.com>, Jiri Olsa <jolsa@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Stanislav Kozina <skozina@redhat.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Pierre Amadio <pamadio@redhat.com>, onatalen@redhat.com,
+        darcari@redhat.com, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: unknown NMI on AMD Rome
+Message-ID: <YFHWNWBAQ4rsyAMG@hirez.programming.kicks-ass.net>
+References: <YFDSSxftYw9tCGC6@krava>
+ <YFEMpo6GxxJS9Wvl@hirez.programming.kicks-ass.net>
+ <36397980-f897-147f-df55-f37805d869c9@amd.com>
+ <20210317084829.GA474581@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210317075427.587806-1-npiggin@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210317084829.GA474581@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/03/2021 08.54, Nicholas Piggin wrote:
+On Wed, Mar 17, 2021 at 09:48:29AM +0100, Ingo Molnar wrote:
+> > https://developer.amd.com/wp-content/resources/56323-PUB_0.78.pdf
+> 
+> So:
+> 
+> 
+>   1215 IBS (Instruction Based Sampling) Counter Valid Value
+>   May be Incorrect After Exit From Core C6 (CC6) State
+> 
+>   Description
+> 
+>   If a core's IBS feature is enabled and configured to generate an interrupt, including NMI (Non-Maskable
+>   Interrupt), and the IBS counter overflows during the entry into the Core C6 (CC6) state, the interrupt may be
+>   issued, but an invalid value of the valid bit may be restored when the core exits CC6.
+>   Potential Effect on System
+> 
+>   The operating system may receive interrupts due to an IBS counter event, including NMI, and not observe an
+>   valid IBS register. Console messages indicating "NMI received for unknown reason" have been observed on
+>   Linux systems.
+> 
+>   Suggested Workaround: None
+>   Fix Planned: No fix planned
 
-> +#if CONFIG_BASE_SMALL
-> +static const unsigned int page_wait_table_bits = 4;
->  static wait_queue_head_t page_wait_table[PAGE_WAIT_TABLE_SIZE] __cacheline_aligned;
-
->  
-> +	if (!CONFIG_BASE_SMALL) {
-> +		page_wait_table = alloc_large_system_hash("page waitqueue hash",
-> +							sizeof(wait_queue_head_t),
-> +							0,
-
-So, how does the compiler not scream at you for assigning to an array,
-even if it's inside an if (0)?
-
-Rasmus
+Should be simple enough to disable CC6 while IBS is in use. Kim, can you
+please make that happen?
