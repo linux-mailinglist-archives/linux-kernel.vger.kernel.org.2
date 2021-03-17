@@ -2,61 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5294633EC6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE7933EC6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbhCQJNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:13:02 -0400
+        id S230217AbhCQJNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:13:04 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhCQJMo (ORCPT
+        with ESMTP id S230180AbhCQJMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:12:44 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA73C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:43 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id 61so990751wrm.12
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:43 -0700 (PDT)
+        Wed, 17 Mar 2021 05:12:45 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9335C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:44 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id z2so1002323wrl.5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+02nW2PCCLBAyTUDbzKGlxZllc8oSt5ULWtL7I/vEo0=;
-        b=cTTi5LmX6VahXgRKVRGD5W5vktQwvHyWromSFIZbDUbKKC8WcwJWRsZgTD5g1y8QgJ
-         mxWgu7mmNQfduLkX/GOYaAHoxej51MY/Aczry9GcFTeXZULPPhxSvO7YY/v2D2G/PHsv
-         ZHsMEu3Jm1pvSndWEPqCZ+FXPSKAjQrVeAsPfEaYpqJAkmDP4ysx2tPy4zewHxTwXUXb
-         bFfCRbOpDYS5GeXSqU7JlzAnx2I58ZhOKmxGxzoX27ADuuZPTKHpBB6IVGjiEZZwNw3N
-         OfoG4z4sAmw28Wnz+xSx8TCngOS8RSPeyWgHMR9ka9FKYDfWOzS2RZbxlBuQ5mF3BeX3
-         5bLQ==
+        bh=4JQChJrJ8kh/QX5GDHmU/NgjW9SKy0ixrD8GB81+Yao=;
+        b=okAQv3RjlV9ZaNNVDcKjLsomhYzxhr4oD6fJFOAwmr5rRTu8VFX8yb2E3SHIselm0l
+         I0cWZkRI6AR1WjHsNnzSNL3y2aO9KF/FmdS/M4Ul9LpbLnylwWiGXp0crsoX6KldnEWy
+         a/50lCBknJ0UC536Vn+04VKmyMl5ObPWHb0e5ysqVlu9rkdR6pZHtxQMfNGlQH0NUxAA
+         CqGWDSC1jBc+ZJJ0LsIleZ894Srcji12b1tGe53uUvWyAyZZ3M5monKS/dEMD/ANs7Vq
+         oKtKmW6mYFIILSm1X3pJ/jRZ1007toWHnF/dkRw0AhljPTU/XIJA2TzUGZfOQ69hl3j0
+         HE0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+02nW2PCCLBAyTUDbzKGlxZllc8oSt5ULWtL7I/vEo0=;
-        b=pbx1LydU17oyyouc772apxXhKtEHm1yGnp48gg4fGSs6xPNw8YQjEGp82I0QHwelAZ
-         9StQOgHNwzGSdlp+9UbnA4mgY7VJVRJiIITBhoRIVdfSKTALj7H3QLqzPTW5QA6/gJHN
-         bLUjOgiBI9pXqxgq6iifAP2X6V8m2H/t6kkmRcB5biJ73rdZGgovkAlr8YCuoyXLAGwC
-         HjGOyHtKssi5oQ2dtyLXuj+XCoOXWeE9+dK3mronheSilXPAc9XAUaRu8/wWAZZSVIy0
-         CFvVK1nEkeeiZrzAcw5ekHWPheOdbfzol8cYRG81wfTGv3lftJfYi/QlKcT6FYCxdgtZ
-         NIFg==
-X-Gm-Message-State: AOAM5312+kcLV0s19kC/5H3hk/e/9jByaMVfREMbK5oBFMyXIeh+dgYE
-        hpLO5BcRH8cQkOH/6dHWLNN9Arm7omPNWA==
-X-Google-Smtp-Source: ABdhPJyU45kX2/PlxruLrGXwhwH6nAexQ69XI7I/JBevUAPcSR1P/Jpqui2zWNpkzg0+WIwHOR1tLA==
-X-Received: by 2002:adf:b30f:: with SMTP id j15mr3359420wrd.132.1615972362691;
-        Wed, 17 Mar 2021 02:12:42 -0700 (PDT)
+        bh=4JQChJrJ8kh/QX5GDHmU/NgjW9SKy0ixrD8GB81+Yao=;
+        b=OZXX3NkaqcP0EEx6e/gMvAyMKIJJM1o4h5Z4RO1+XsQSpVoFC8gnAG0Ekly55uwV2N
+         C35NVeYNc+ARrvqTjQuj05cxdXO4yNvfKR4i8ZOXAVUqGAPyI2lZRcBXstxI6FQebVCq
+         RKwXa1v/6nAJiIfiSOeIrNVmqU+nWZ7qkMgpWioGlTEl9mNTdCm0xfjnUVwxori4/hhh
+         6bimPfF5xHZGEnK2vYba7KSx+ImvEUKXG9ws6Q9MSQLJdkg7R+K9D7SXAcTvpxeXnD1Q
+         AM3ug466mQZ4sX+XgVqxVnj7AEkQJ6T+QfwPv4y2eIx/VIwDIUFbSXs1XDk7P8DQY/6U
+         hyGQ==
+X-Gm-Message-State: AOAM530fTYwaoq/4/4ViFHVRuc7jXM9qjd+gtV0x3lCpqBhBB270eDOX
+        mQJKDepIxA8d2WnmOghF7E1/XA==
+X-Google-Smtp-Source: ABdhPJzrjGJ14rqOz4j2ylZJl+rxT1yYNDgxlBe1p+wbFshm3If+itDmT3lSktI7JdoScVZTwK5vCw==
+X-Received: by 2002:adf:eb8e:: with SMTP id t14mr3340153wrn.20.1615972363572;
+        Wed, 17 Mar 2021 02:12:43 -0700 (PDT)
 Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id e18sm12695886wru.73.2021.03.17.02.12.41
+        by smtp.gmail.com with ESMTPSA id e18sm12695886wru.73.2021.03.17.02.12.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 02:12:42 -0700 (PDT)
+        Wed, 17 Mar 2021 02:12:43 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Marvell <jyli@marvell.com>, linux-scsi@vger.kernel.org
-Subject: [PATCH 03/36] scsi: mvumi: Fix formatting and doc-rot issues
-Date:   Wed, 17 Mar 2021 09:11:57 +0000
-Message-Id: <20210317091230.2912389-4-lee.jones@linaro.org>
+        Hannes Reinecke <hare@suse.de>,
+        Le Moal <damien.lemoal@hgst.com>,
+        Shaun Tancheff <shaun.tancheff@seagate.com>,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH 04/36] scsi: sd_zbc: Place function name into header
+Date:   Wed, 17 Mar 2021 09:11:58 +0000
+Message-Id: <20210317091230.2912389-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210317091230.2912389-1-lee.jones@linaro.org>
 References: <20210317091230.2912389-1-lee.jones@linaro.org>
@@ -68,51 +71,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/mvumi.c:191: warning: Function parameter or member 'sg_count' not described in 'mvumi_make_sgl'
- drivers/scsi/mvumi.c:1301: warning: Function parameter or member 'ob_frame' not described in 'mvumi_complete_cmd'
- drivers/scsi/mvumi.c:2084: warning: Function parameter or member 'shost' not described in 'mvumi_queue_command'
- drivers/scsi/mvumi.c:2084: warning: Excess function parameter 'done' description in 'mvumi_queue_command'
+ drivers/scsi/sd_zbc.c:137: warning: wrong kernel-doc identifier on line:
 
 Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Marvell <jyli@marvell.com>
+Cc: Hannes Reinecke <hare@suse.de>
+Cc: Le Moal <damien.lemoal@hgst.com>
+Cc: Shaun Tancheff <shaun.tancheff@seagate.com>
 Cc: linux-scsi@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/mvumi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/scsi/sd_zbc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/mvumi.c b/drivers/scsi/mvumi.c
-index 71b6a1f834cd7..f41982a4b3abd 100644
---- a/drivers/scsi/mvumi.c
-+++ b/drivers/scsi/mvumi.c
-@@ -182,7 +182,7 @@ static void mvumi_release_mem_resource(struct mvumi_hba *mhba)
-  * @mhba:		Adapter soft state
-  * @scmd:		SCSI command from the mid-layer
-  * @sgl_p:		SGL to be filled in
-- * @sg_count		return the number of SG elements
-+ * @sg_count:		return the number of SG elements
-  *
-  * If successful, this function returns 0. otherwise, it returns -1.
-  */
-@@ -1295,6 +1295,7 @@ static unsigned char mvumi_start(struct mvumi_hba *mhba)
-  * mvumi_complete_cmd -	Completes a command
-  * @mhba:			Adapter soft state
-  * @cmd:			Command to be completed
-+ * @ob_frame:			Command response
-  */
- static void mvumi_complete_cmd(struct mvumi_hba *mhba, struct mvumi_cmd *cmd,
- 					struct mvumi_rsp_frame *ob_frame)
-@@ -2076,8 +2077,8 @@ static unsigned char mvumi_build_frame(struct mvumi_hba *mhba,
+diff --git a/drivers/scsi/sd_zbc.c b/drivers/scsi/sd_zbc.c
+index ee558675eab4a..232f624c3704f 100644
+--- a/drivers/scsi/sd_zbc.c
++++ b/drivers/scsi/sd_zbc.c
+@@ -134,7 +134,7 @@ static int sd_zbc_do_report_zones(struct scsi_disk *sdkp, unsigned char *buf,
+ }
  
  /**
-  * mvumi_queue_command -	Queue entry point
-+ * @shost:			Scsi host to queue command on
-  * @scmd:			SCSI command to be queued
-- * @done:			Callback entry point
-  */
- static int mvumi_queue_command(struct Scsi_Host *shost,
- 					struct scsi_cmnd *scmd)
+- * Allocate a buffer for report zones reply.
++ * sd_zbc_alloc_report_buffer() - Allocate a buffer for report zones reply.
+  * @sdkp: The target disk
+  * @nr_zones: Maximum number of zones to report
+  * @buflen: Size of the buffer allocated
 -- 
 2.27.0
 
