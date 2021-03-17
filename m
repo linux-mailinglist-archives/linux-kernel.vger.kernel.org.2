@@ -2,80 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ADE733F853
+	by mail.lfdr.de (Postfix) with ESMTP id 9610C33F854
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:46:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233028AbhCQSqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:46:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:43648 "EHLO foss.arm.com"
+        id S233053AbhCQSqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:46:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45084 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232981AbhCQSpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232777AbhCQSpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Mar 2021 14:45:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3501ED6E;
-        Wed, 17 Mar 2021 11:45:47 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1F6F53F70D;
-        Wed, 17 Mar 2021 11:45:44 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 18:45:38 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     maz@kernel.org, Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        syzkaller <syzkaller@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: arm64 syzbot instances
-Message-ID: <20210317184538.GB2508@C02TD0UTHF1T.local>
-References: <CACT4Y+beyZ7rjmy7im0KdSU-Pcqd4Rud3xsxonBbYVk0wU-B9g@mail.gmail.com>
- <20210311123315.GF37303@C02TD0UTHF1T.local>
- <CACT4Y+ZPO7D1hGHZvuBQ52Vy2W7UUSW+YFE-Ax6-NMDnmrKTBA@mail.gmail.com>
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B81EAABD7;
+        Wed, 17 Mar 2021 18:45:50 +0000 (UTC)
+To:     Xunlei Pang <xlpang@linux.alibaba.com>,
+        Christoph Lameter <cl@linux.com>,
+        Christoph Lameter <cl@gentwo.de>,
+        Pekka Enberg <penberg@kernel.org>,
+        Roman Gushchin <guro@fb.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shu Ming <sming56@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Wen Yang <wenyang@linux.alibaba.com>,
+        James Wang <jnwang@linux.alibaba.com>
+References: <1615967692-80524-1-git-send-email-xlpang@linux.alibaba.com>
+ <1615967692-80524-2-git-send-email-xlpang@linux.alibaba.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v4 1/3] mm/slub: Introduce two counters for partial
+ objects
+Message-ID: <322e2b18-e529-3004-c19a-8c4a3b97c532@suse.cz>
+Date:   Wed, 17 Mar 2021 19:45:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+ZPO7D1hGHZvuBQ52Vy2W7UUSW+YFE-Ax6-NMDnmrKTBA@mail.gmail.com>
+In-Reply-To: <1615967692-80524-2-git-send-email-xlpang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 05:56:46PM +0100, Dmitry Vyukov wrote:
-> On Thu, Mar 11, 2021 at 1:33 PM Mark Rutland <mark.rutland@arm.com> wrote:
-> > FWIW, I keep my fuzzing config fragment in my fuzzing/* branches on
-> > git.kernel.org, and for comparison my fragment for v5.12-rc1 is:
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/commit/?h=fuzzing/5.12-rc1&id=6d9f7f8a2514fe882823fadbe7478228f71d7ab1
-> >
-> > ... I'm not sure whether there's anything in that which is novel to you.
+On 3/17/21 8:54 AM, Xunlei Pang wrote:
+> The node list_lock in count_partial() spends long time iterating
+> in case of large amount of partial page lists, which can cause
+> thunder herd effect to the list_lock contention.
 > 
-> Hi Mark,
+> We have HSF RT(High-speed Service Framework Response-Time) monitors,
+> the RT figures fluctuated randomly, then we deployed a tool detecting
+> "irq off" and "preempt off" to dump the culprit's calltrace, capturing
+> the list_lock cost nearly 100ms with irq off issued by "ss", this also
+> caused network timeouts.
 > 
-> I've learned about DEBUG_TIMEKEEPING which we had disabled. I am enabling it.
-> We also have CONTEXT_TRACKING_FORCE disabled. I don't completely
-> understand what it's doing. Is it also "more debug checks" type of
-> config?
+> This patch introduces two counters to maintain the actual number
+> of partial objects dynamically instead of iterating the partial
+> page lists with list_lock held.
+> 
+> New counters of kmem_cache_node: partial_free_objs, partial_total_objs.
+> The main operations are under list_lock in slow path, its performance
+> impact is expected to be minimal except the __slab_free() path.
+> 
+> The only concern of introducing partial counter is that partial_free_objs
+> may cause cacheline contention and false sharing issues in case of same
+> SLUB concurrent __slab_free(), so define it to be a percpu counter and
+> places it carefully.
 
-Context tracking tracks user<->kernel transitions, and tries to disable
-RCU when it is not needed (e.g. while a CPU is in usersspace), to avoid
-the need to perturb that CPU with IPIs and so on. Normally this is not
-enabled unless CPUs are set aside for NOHZ usage, as there's some
-expense in doing this tracking. I haven't measured how expensive it is
-in practice.
+Hm I wonder, is it possible that this will eventually overflow/underflow the
+counter on some CPU? (I guess practially only on 32bit). Maybe the operations
+that are already done under n->list_lock should flush the percpu counter to a
+shared counter?
 
-CONTEXT_TRACKING_FORCE enables that tracking regardless of whether any
-CPUs are set aside for NOHZ usage, and makes it easier to find bugs in
-that tracking code, or where it is not being used correctly (e.g. missed
-calls, or called in the wrong places).
+...
 
-I added it to my debug fragment back when I fixed the arm64 entry code
-accounting for lockdep, and I keep it around to make sure that we don't
-accidentally regress any of that.
+> @@ -3039,6 +3066,13 @@ static void __slab_free(struct kmem_cache *s, struct page *page,
+>  		head, new.counters,
+>  		"__slab_free"));
+>  
+> +	if (!was_frozen && prior) {
+> +		if (n)
+> +			__update_partial_free(n, cnt);
+> +		else
+> +			__update_partial_free(get_node(s, page_to_nid(page)), cnt);
+> +	}
 
-Thanks,
-Mark.
+I would guess this is the part that makes your measurements notice that
+(although tiny) difference. We didn't need to obtain the node pointer before and
+now we do. And that is really done just for the per-node breakdown in "objects"
+and "objects_partial" files under /sys/kernel/slab - distinguishing nodes is not
+needed for /proc/slabinfo. So that kinda justifies putting this under a new
+CONFIG as you did. Although perhaps somebody interested in these kind of stats
+would enable CONFIG_SLUB_STATS anyway, so that's still an option to use instead
+of introducing a new oddly specific CONFIG? At least until somebody comes up and
+presents an use case where they want the per-node breakdowns in /sys but cannot
+afford CONFIG_SLUB_STATS.
 
-> FWIW we have more debug configs:
-> https://github.com/google/syzkaller/blob/master/dashboard/config/linux/bits/debug.yml
-> https://github.com/google/syzkaller/blob/master/dashboard/config/linux/bits/base.yml
-> https://github.com/google/syzkaller/blob/master/dashboard/config/linux/bits/kasan.yml
-> https://github.com/google/syzkaller/blob/master/dashboard/config/linux/bits/kmemleak.yml
+But I'm also still thinking about simply counting all free objects (for the
+purposes of accurate <active_objs> in /proc/slabinfo) as a percpu variable in
+struct kmem_cache itself. That would basically put this_cpu_add() in all the
+fast paths, but AFAICS thanks to the segment register it doesn't mean disabling
+interrupts nor a LOCK operation, so maybe it wouldn't be that bad? And it
+shouldn't need to deal with these node pointers. So maybe that would be
+acceptable for CONFIG_SLUB_DEBUG? Guess I'll have to try...
+
