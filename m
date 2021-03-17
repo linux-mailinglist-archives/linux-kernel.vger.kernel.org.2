@@ -2,532 +2,523 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9050E33EEF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:59:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0DAF33EEFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbhCQK62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:58:28 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:7736 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230308AbhCQK6H (ORCPT
+        id S230493AbhCQK7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:59:31 -0400
+Received: from alln-iport-6.cisco.com ([173.37.142.93]:39694 "EHLO
+        alln-iport-6.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231161AbhCQK7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:58:07 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12HApwTB027743;
-        Wed, 17 Mar 2021 11:57:41 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=selector1; bh=ywy0JW8wYUOY2VcO+XEXq2HaVDdPgp6t1+DV/zS0bVI=;
- b=K3P5kFh0vPO8qD0+W7Ip0SxREySWHhHchyu7R+h94GNyb0WlCUadf/fRAybvdHWzcwqH
- Pnus+1LkWIobyUoM20+sEOdNRY0aHrz3lnkk7Dp5pFd+mro3V0xI9C2dO5rzGcai8hR8
- YH5DQeJ6Jw1z6vibs55WWQCoNnZHtYIAeDBLdE8riZmEq8P/sSsuYuWKsirr33mw1R85
- o7Pk+9/Lt2hkNSVKnaNcBTDCceRNHw6qHIEuE/6YzGKC4zh5jJFlBlNbAM81JUe8Yd/J
- 1TSJvaIuW80W7C0QiXlPQGu2Md/cn1AfnPpg+fdaSA0VeyFnzV0ShTPOI9vvCZgyQKzx yA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 378pr5xppd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Mar 2021 11:57:41 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B6542100034;
-        Wed, 17 Mar 2021 11:57:39 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7004D226D05;
-        Wed, 17 Mar 2021 11:57:39 +0100 (CET)
-Received: from gnbcxd0016.gnb.st.com (10.75.127.51) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 17 Mar
- 2021 11:57:38 +0100
-Date:   Wed, 17 Mar 2021 11:57:31 +0100
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Vinod Koul <vkoul@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-clk@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-i3c@lists.infradead.org>, <linux-iio@vger.kernel.org>,
-        <linux-leds@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-serial@vger.kernel.org>, <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH] dt-bindings: Clean-up undocumented compatible strings
-Message-ID: <20210317105731.GA21081@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Vinod Koul <vkoul@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jonathan Cameron <jic23@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Sebastian Reichel <sre@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-clk@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-i3c@lists.infradead.org, linux-iio@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-spi@vger.kernel.org
-References: <20210316194918.3528417-1-robh@kernel.org>
-MIME-Version: 1.0
+        Wed, 17 Mar 2021 06:59:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=12654; q=dns/txt;
+  s=iport; t=1615978758; x=1617188358;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=BIfT7AbEVFE/RJchNr9LMS+jb6t19XauqcE8iTPipNA=;
+  b=BqyphX9dKEU30dmfQ6vQQZqV2LTGPbuNsoZO65G/y0p+tJXKVmpCytCq
+   /ZaUFNyHtbtkEBc7OXwic2tBWu5g1yyXNQsf4Zt3PgzrWe31ZkMKzlZgk
+   v9PrsA8nRisVZblyfTWdB7nfAyTggCFSecNTk6I55vyPQxXjjPLm6XXHn
+   M=;
+X-IPAS-Result: =?us-ascii?q?A0DzBAAD4FFgkIkNJK1agQmDI1F9WjYxCogAA4U5iEMDm?=
+ =?us-ascii?q?S2CUwNUCwEBAQ0BASASAgQBAYEWAYM5AoF2AiU4EwIDAQEBAwIDAQEBAQUBA?=
+ =?us-ascii?q?QECAQYEFAEBAQEBAYYLCCUNhkQBAQEBAgEnEwYBATcBBAsCAQgOAwICAQEBH?=
+ =?us-ascii?q?hAyHQgCBA4FCIJoAYJVAw4hAaB5AooedYEBM4MEAQEGhQQYghQJgTmCdopNJ?=
+ =?us-ascii?q?hyBSkKBEUOCWD6EQQKDSYIrgjkLB1MoEwETEFhQgRmQV4MTpk8KIYJjiVKTG?=
+ =?us-ascii?q?INAgTuJJQSVerdTAgQCBAUCDgEBBoFrIYFZcBWDJAlHFwINjC2Bfg0JgzQZh?=
+ =?us-ascii?q?nGDaHMCNgIGCgEBAwl8jnMBgQ4BAQ?=
+IronPort-PHdr: A9a23:/cEYZxPjRF/AlJQ4lyol6nfxWUAX047cNxMJ6pchl7NFe7ii+JKnJ
+ kHE+PFxlzfhR4jX6/tYzeHRtvOoVW8B5MOHt3YPONxJWgQegMob1wonHIaeCEL9IfKrCk5yH
+ MlLWFJ/uX3uN09TFZXkalHSq2H05jkXSV3zMANvLbHzHYjfx828y+G1/cjVZANFzDqwaL9/N
+ lO4twLU48IXmoBlbK02z0ihnw==
+IronPort-HdrOrdr: A9a23:DGBNc6BKpVyUgQblHejdtceALOonbusQ8zAX/mhLY1h8btGYm8
+ eynP4SyB/zj3IrVGs9nM2bUZPgfVr1zrQwxYUKJ7+tUE3duGWuJJx/9oeK+VPdMgXE3Kpm2a
+ 9kGpIQNPTZB1J3lNu/xQG+HcopztXvytHWuc715R5WPGZXQotn6Bp0DRveN0VwShVPC5ZRLu
+ vj2uNsoT28dXMLKvmhDn4eUOTZ4/HNnpTqYRkJbiRXqTWmpzWu9bL8Dlykzg4TOgk/j4sK3E
+ rkt0jC5qulu+ym0RO07Q/uxrlfhdeJ8Ko5OOWikc4QQw+c7zqARIMkYLGauSBwnefH0idXrP
+ DpgzMNe/t+8GnQeGbdm2qs5yDF3Cw143HvjX+06EGT2/DRfz4xB8pfiY8xSHKwgCBM0KAeoc
+ B29lmUuJZNARTLkD6V3am0azhRikG2rXA++NRj6UB3bIoEZLdd6awZ8U9Fea1wZB7S1YE9HO
+ FiSPzb/fZdGGnqFkzxg28H+q3JYl0DWjO9BmQSsM2c1DZb2FpjyVED+cAZlnAcsLogVpht/Y
+ 3/Q+dVvYALavVTQbN2Be8HT8fyIHfKWwjwPGWbJkmiPL0bOkjKt4X87NwOlaOXUa1N6KF3tI
+ XKUVteu2J3UVnpE9ey0JpC9Q2IZ2mhQzL3yIV764JisrPxAJrnWBfzDWwGoo+FmbEyE8fbU/
+ G8NNZ9GPn4N1bjHo5PwknwQJ9XJX4CUNAEu9oyVl6Uy/i7bbHCh6j+SrL+NbDtGTErVifUGX
+ 0YRgX+I81G8wSqVxbD8V7sckKoXna60YN7EaDc8eRW4pMKLJdwvg8cjkn84smKLDZFo7EnZU
+ cWGsK/roqL4U2NuUrY5WRgPRRQSmxP5q/7bn9MrQgWd0XucbgCvN2bcXtI3GSOIwJ+S8++Kn
+ 8am31HvYaMa7CAzyErDNyqdkiAiWEImX6MR5AA3rGY6dz9YZM+BJY+UKl3HQHGfiYFwTpCmS
+ NmUkspV0XfHjThheGZl5QSHvjYbMQ5qhysO9RopXXWsli8qckjSmAAZSOnVdeajG8VNmFpr2
+ w015VaobKb3R6zNGM0gY0DQSxxQVXSJIgDMSOoS8F/nKvxdAR5UGGQ7Abq+y0bSy7N7EUdhm
+ voMCuOX+rEa2At4Exw4+LN7E5+cHmbcgZWbH132LcNSVjuizJUzfKBYLa13i+qTmY6hssZMD
+ 3DfFIpU15T7tiqyR+YnyuDH306xpMoevfQFqgnbqu74ALfFKSY0a4BBPNa55BjKZTntfIKS/
+ uWf0uPICr/EP5B4X3Zml81fC11omIji/XmxVns63W5xmc2BZPpUR9bbqBeJ9GX9G7/QfmUlJ
+ 1/kNIupOO1dmH8cMSPx62SbzlNLHro0CSLZvBtrZBfpqQpsrRvW5HdTDvTzXlCmAwkM92crj
+ JpfI1rpLTafoN/dc0bfCxUulIvidSUNUMu9gj7GPU3c10hh2LSVun5r4bguP4qGAmMtQHwMV
+ 6Q/2lG8/DJUzCK2LQaB6gzSF4mIHQU+TBn5qePZofQAAKle6Vf51K8KGa6a6IYR66fG7kcxy
+ wKrO2gjquSbW7/1w/Rtzcgff4L/GajXM+oAAWDXeRP6Me3PFyQgq2spM6/5Q2HPQeTegAdn8
+ lCc0dVc8FIzj8lh4cz2jKpSqP2rlk++mEuqA1PhxrowMy+/GzfHUtaKgXXjZVdQClLPhGz/L
+ H42Pnd0G64/SNM1pbCHlpBZ91CG9AfSY7sMidlQPJgy4KA7u4omSRMYBAnEm46hnT8xopdrM
+ WE5Mk=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.81,256,1610409600"; 
+   d="scan'208";a="704138938"
+Received: from alln-core-4.cisco.com ([173.36.13.137])
+  by alln-iport-6.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 17 Mar 2021 10:59:17 +0000
+Received: from mail.cisco.com (xbe-aln-002.cisco.com [173.36.7.17])
+        by alln-core-4.cisco.com (8.15.2/8.15.2) with ESMTPS id 12HAxHxw031766
+        (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=OK);
+        Wed, 17 Mar 2021 10:59:17 GMT
+Received: from xfe-aln-002.cisco.com (173.37.135.122) by xbe-aln-002.cisco.com
+ (173.36.7.17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3; Wed, 17 Mar 2021
+ 05:59:17 -0500
+Received: from xfe-aln-005.cisco.com (173.37.135.125) by xfe-aln-002.cisco.com
+ (173.37.135.122) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3; Wed, 17 Mar 2021
+ 05:59:16 -0500
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (173.37.151.57)
+ by xfe-aln-005.cisco.com (173.37.135.125) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3
+ via Frontend Transport; Wed, 17 Mar 2021 05:59:16 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BU7zL77MUhQ5Qk3oOQtFG49qWh7vzeGg2JKIHMkoBq6DKdbU9xZzD+iu4a71/KvmbY3V8YDFXxmmEguQ64QCNX4Scir5DuRK78A+PDUYGFdfjTRKWf7mLpKupwFfYO4vUo8sEMW2dpvyA3rwIbOFn4r/UcOJgzBVKi0elMzP0iCFSIN3NPIrKa/txRrttn/zjN2cEocYy24B1AOKrBvq1tq//y0kA8QbxDqY+ASjibdb6JJei55N2mMIQ0emQCMGgfe3ZuHmJo5QTKQCsnnj/8Iit+9AmSECrt+gWn4cG45dbvzvo51WTb3MeWWzPYqUvWhCUUUk7c1qIFIgS+zN3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=syaby9oJYskqvXY0mu6EfsgShIeFBNG+cvfzw5f87IM=;
+ b=hqTfevK1Ky6nyNqsDXTyLxaLiZsWhztEk7zbZYaLg0Tyj+stF+ddHEVGKKGyX5o9qe/jje4fUxwwN9yZWru1pjAC0iCf7o83OqKeoGux8fXNlgpXSbWb+wMSpPWUgPXXuwl/cHtGqEe+jx4xLNr22LfsT/iWBwbdvn8Nnp6Vn1I4kKcb62cwe3q546xtbUl/8dKFDVnkMAB4YxLjq3G4+eqkNN+z+NVGyqIbj+cgFv+Nbfaps2j1Ey3PWSMerT3gfQdrQN60GBzAZuRMuQBrv2SYbFUTcjSQSnGDVwdxlrGxXpiZPEptzwGlFS/wEOs5B0zMm8i9gSNKAyDz3FBzCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
+ dkim=pass header.d=cisco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.onmicrosoft.com;
+ s=selector2-cisco-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=syaby9oJYskqvXY0mu6EfsgShIeFBNG+cvfzw5f87IM=;
+ b=fIqAEBqXLkhnmD3fk0iLyO0LRP+ookI69kDjks84CTsZqd3Cuj0pv60Y+iwWBpOF4yBkhkDz0vILnwiNyvTDb0wyLpJdJSCu0lSiLdFL8y3JvyJnTRTKvwKV9oIGs/woxO/haXVOsU7LVpWHVeZviQ04YvvuLHOfWlAdw2F9f1U=
+Received: from BY5PR11MB4024.namprd11.prod.outlook.com (2603:10b6:a03:192::24)
+ by BYAPR11MB3799.namprd11.prod.outlook.com (2603:10b6:a03:fb::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Wed, 17 Mar
+ 2021 10:59:15 +0000
+Received: from BY5PR11MB4024.namprd11.prod.outlook.com
+ ([fe80::6505:b3:4118:8336]) by BY5PR11MB4024.namprd11.prod.outlook.com
+ ([fe80::6505:b3:4118:8336%4]) with mapi id 15.20.3933.032; Wed, 17 Mar 2021
+ 10:59:15 +0000
+From:   "Denys Zagorui -X (dzagorui - GLOBALLOGIC INC at Cisco)" 
+        <dzagorui@cisco.com>
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] perf: build reproducibility improvements
+Thread-Topic: [PATCH v2] perf: build reproducibility improvements
+Thread-Index: AQHXGcE7kgnyH+4E+0m6Z4V0aosUgKqH/vPM
+Date:   Wed, 17 Mar 2021 10:59:15 +0000
+Message-ID: <BY5PR11MB4024B1E617096A3232435FA1D96A9@BY5PR11MB4024.namprd11.prod.outlook.com>
+References: <20210315164635.119575-1-dzagorui@cisco.com>,<YE+aLdhcXJv5jmKK@krava>
+In-Reply-To: <YE+aLdhcXJv5jmKK@krava>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=cisco.com;
+x-originating-ip: [173.38.209.11]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c61ca457-32ef-4dde-c313-08d8e933b488
+x-ms-traffictypediagnostic: BYAPR11MB3799:
+x-microsoft-antispam-prvs: <BYAPR11MB37998E14AE73EFD6D7C9B994D96A9@BYAPR11MB3799.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3383;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6qiQGKayvReU52RGDX7aFYp4H+inInDWzwpUkdpKcTqglyY9QdVmYI+QJT0urHFgI1LxjKWONy4v3uecqsgt8CqmxQjb9OZJ4qXTox3Ttwxk9TWtOhSfpCoTovRHttSBS7BDInhoOXWSrXh/tk4NzaI9GIerk2dzQmfhZC2XHa2XD5gnpsJFbJXZk+v2SGlA1XRpxkxVY1ngNKiCAxDv5AcayBuud60mhAcLbCLXJvrBsfXFpJoU46yroJwuv29VxOC+IiPouCNB3Vi/24lsVuO8l3E49h2a2npecHj7dhya1ymBW/b36X4K7Xfd3zpdTSBt1VxE5nXgmk1Sewmy0xejaBhbNA6DS3bU78/ftdkvSW83+T/ZVfj2dUDvTtKOeTzZtWBbi1ZmUFUeYYfSvjwCxBEoyMobxtcXq7AFyQNnz8wFmxOEOmjxyThowd+dJIXubV3hHjpxWzC4gHbbgPsd6k8I5xSfydLhFj4R/pyZwYIKWO/tdynLf8V+X3Ey64r/IZdj2UNH9O6fL1R/o8QMGfU7xc9JkHcnJCg8OTdAA+ag62Dnkl5/IhNMj++B
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4024.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(346002)(366004)(39860400002)(396003)(478600001)(71200400001)(7696005)(55016002)(86362001)(26005)(66476007)(6506007)(53546011)(64756008)(66946007)(66446008)(66556008)(9686003)(30864003)(5660300002)(186003)(91956017)(8936002)(54906003)(8676002)(316002)(33656002)(66574015)(2906002)(6916009)(83380400001)(52536014)(4326008)(76116006);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?t/rI5dZglD1Ucuf32n7v32oVaD7nq2JeywCKKvkBOP7RUT69oh9531egTUgy?=
+ =?us-ascii?Q?pd2vyRkXAbp3u9lBUvuT8F/KM3WPE3FFnGhCLgXCKvu1d0lT742rS8GOdlxX?=
+ =?us-ascii?Q?x2uI+NokoLkgGOME8B6ZWi5XkCS+vN5p2Aal0TNeJi3SjozWjIqhShLTQUEG?=
+ =?us-ascii?Q?j+jtFubyTP//uiVTt5Gh2LFzV7jrrrTrt/GaMqp2wtw+XuVfnLSMfmU5mLz+?=
+ =?us-ascii?Q?5iWMl9gD07Kp0tqfbvDurWknJ9Wuq/sPGmDkWnXySU3vdSlYj3bPMy17/SF1?=
+ =?us-ascii?Q?VxnSxVG3IPztNorejZ+2UW+MAED1r9wfIO2y/yR6PqhP1eOOK1rve/qSllXe?=
+ =?us-ascii?Q?pe6loqzohqbC9/RQxa8iWikmpMRcXSD8k1h5r9bFc4ghvDb+bcdXNWJC2/uN?=
+ =?us-ascii?Q?PYCTl1p6c1zaUgxt0cWNdW2pC5VEuugzFkcN/mhcj4hwTzjCA0dR87z3hoxP?=
+ =?us-ascii?Q?ZwEQdJRT1jMoBNldRfgQPo5PFK5kSn2IWaghRPqQcwyzBNvbYBeaX5E+AuXz?=
+ =?us-ascii?Q?K6ViCT8xhC3J9CxrqnQkEGHteuE+oXoNIiXYoZ4yV47GpK+WuHs7Iu+nAUr+?=
+ =?us-ascii?Q?lvk9ToJ87iXI2BeJh0l5YbNbdYDyI/AIqDbKabbTI5AAqo9kFP7yznBguYwe?=
+ =?us-ascii?Q?NxfRL6Pf5iG824QOrb/29tTyHQduvUb0xxFTGyE2CWCoUpO6xVMC+wAkxUYG?=
+ =?us-ascii?Q?8nR/F42L9BKh/CEaUHqEnWwwZgvFuXljdzkFSFmSZ3U7YKsWRQJZ4uXdWO33?=
+ =?us-ascii?Q?Lxou4RvQAqrM8kSGh+72OMxjPMw4j7gpC2cOxBtyScMdDw0RPOLLCsN6Efqn?=
+ =?us-ascii?Q?B7byCZP/jWCcxuBkdkrO0hvDLrJ4EramLvHDZkMTb6XvZ4Jnxk67KZE4P72Q?=
+ =?us-ascii?Q?FBFA4cznxd71MwjY4FMZv8t7VVbyKoaRE+ilf+oSQ6uJk/ZHxtZm864c5Spn?=
+ =?us-ascii?Q?BQRMhwjIeVZxnpze+BL2vWILtE0lEl5tssO29Z/b41paSbwZgwZc7Gw2NOnk?=
+ =?us-ascii?Q?zi/3JktAoPHrXW3CDheLw9Q4/uCePPFA0l7o4tRm/WxUHTEWrU/kZEQE2Hdv?=
+ =?us-ascii?Q?XDoOuIpXEpli0owaGfZ8Ut0JMasX0RGQPqcQJ7Vi28Q/Uu4BNMsnfEO9XrZq?=
+ =?us-ascii?Q?DixKkDHdMmwYihbgNzIE+O4FfKDrcqRMxm1x+AAZAvu/zeSxG/yGJK5UCYO1?=
+ =?us-ascii?Q?gz+Lu78o40UJX1R82c4jm+J+gxJMjqlwccp1GMWzanDHHW66xFT8E9LgCUpU?=
+ =?us-ascii?Q?jaicc6si7zl2mKPp3spcl9hQep5WoJ9HTi7rfzRyOCUNr0orGcn22mWoRf61?=
+ =?us-ascii?Q?AWo=3D?=
+x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210316194918.3528417-1-robh@kernel.org>
-X-Disclaimer: ce message est personnel / this message is private
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-17_05:2021-03-17,2021-03-17 signatures=0
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4024.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c61ca457-32ef-4dde-c313-08d8e933b488
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Mar 2021 10:59:15.2421
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Wj7mufZevsf5ixX9pDcxB08oNbL7NlHeCthxcuJYvPXj5lA5TUYV4SfoR7BAT/Yni/hcl7Ipo5A08w3Fz7jIkg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3799
+X-OriginatorOrg: cisco.com
+X-Outbound-SMTP-Client: 173.36.7.17, xbe-aln-002.cisco.com
+X-Outbound-Node: alln-core-4.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 01:49:18PM -0600, Rob Herring wrote:
-> Adding checks for undocumented compatible strings reveals a bunch of
-> warnings in the DT binding examples. Fix the cases which are typos, just
-> a mismatch between the schema and the example, or aren't documented at all.
-> In a couple of cases, fixing the compatible revealed some schema errors
-> which are fixed.
-> 
-> There's a bunch of others remaining after this which have bindings, but
-> those aren't converted to schema yet.
-> 
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-clk@vger.kernel.org
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-i3c@lists.infradead.org
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-leds@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: linux-serial@vger.kernel.org
-> Cc: linux-spi@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> > index f6e609673de2..c9e3aae6c47f 100644
+> > --- a/tools/perf/Makefile.perf
+> > +++ b/tools/perf/Makefile.perf
+> > @@ -627,6 +627,9 @@ $(OUTPUT)python/perf.so: $(PYTHON_EXT_SRCS) $(PYTHO=
+N_EXT_DEPS) $(LIBTRACEEVENT_D
+> >          --quiet build_ext; \
+> >        cp $(PYTHON_EXTBUILD_LIB)perf*.so $(OUTPUT)python/
+> >
+> > +_dummy :=3D $(shell [ -d '$(OUTPUT)Documentation' ] || (mkdir -p '$(OU=
+TPUT)Documentation' && \
+> > +             cp '$(srcdir)/Documentation/tips.txt' '$(OUTPUT)Documenta=
+tion/'))
+> > +
+>
+> why do we need this? also should be in Documentation make
+
+I added this for case when we build perf with O=3D . Further in runtime per=
+f will try to find tips.txt file
+in Documentation directory. Documentation has to be in the same location as=
+ perf executable. If we
+build perf without O=3D option this copying is not needed as Documentation =
+is already in the same
+location as perf.
+
+> > diff --git a/tools/perf/tests/python-use.c b/tools/perf/tests/python-us=
+e.c
+> > index 98c6d474aa6f..8b4865c90d5d 100644
+> > --- a/tools/perf/tests/python-use.c
+> > +++ b/tools/perf/tests/python-use.c
+> > @@ -8,16 +8,28 @@
+> >  #include <linux/compiler.h>
+> >  #include "tests.h"
+> >  #include "util/debug.h"
+> > +#include <subcmd/exec-cmd.h>
+> >
+> >  int test__python_use(struct test *test __maybe_unused, int subtest __m=
+aybe_unused)
+> >  {
+> >        char *cmd;
+> >        int ret;
+> > +     char *exec_path =3D NULL;
+> > +     char *pythonpath;
+> > +
+> > +     exec_path =3D get_exec_abs_path();
+> > +     if (exec_path =3D=3D NULL)
+> > +             return -1;
+> > +
+> > +     if (asprintf(&pythonpath, "%spython", exec_path) < 0)
+>
+> are we sure there's always trailing '/' in exec_path ?
+
+Yes, it should be. /proc/self/exe is a absolute symlink to running executab=
+le
+
+________________________________________
+From: Jiri Olsa <jolsa@redhat.com>
+Sent: 15 March 2021 19:32
+To: Denys Zagorui -X (dzagorui - GLOBALLOGIC INC at Cisco)
+Cc: peterz@infradead.org; mingo@redhat.com; acme@kernel.org; mark.rutland@a=
+rm.com; alexander.shishkin@linux.intel.com; namhyung@kernel.org; linux-kern=
+el@vger.kernel.org
+Subject: Re: [PATCH v2] perf: build reproducibility improvements
+
+On Mon, Mar 15, 2021 at 09:46:35AM -0700, Denys Zagorui wrote:
+> This patch helps to make perf build more reproducible
+>
+> It seems there is some need to have an ability to invoke
+> perf from build directory without installation
+> (84cfac7f05e1: perf tools: Set and pass DOCDIR to builtin-report.c)
+> DOCDIR contains an absolute path to kernel source directory.
+> In such case this path can be determined in runtime by using
+> /proc/self/exe link. In case of building perf with O=3D
+> Documentation/tips.txt can be copied to output directory.
+>
+> There is also python binding test where PYTHONPATH is used to store
+> absolute path to python/perf.so library. This path can be
+> also determined in runtime.
+>
+> bison stores full paths in generated files. This can be
+> remapped by using --file-prefix-map option that is available
+> starting from version 3.7.1.
+>
+> Signed-off-by: Denys Zagorui <dzagorui@cisco.com>
 > ---
->  .../clock/allwinner,sun4i-a10-pll1-clk.yaml   |  2 +-
->  .../bindings/clock/milbeaut-clock.yaml        | 12 +++++----
->  .../bindings/display/brcm,bcm2835-dsi0.yaml   |  6 -----
->  .../bindings/display/panel/panel-dpi.yaml     |  2 +-
->  .../devicetree/bindings/dma/qcom,gpi.yaml     |  2 +-
->  .../devicetree/bindings/i3c/i3c.yaml          |  7 ++---
->  .../iio/adc/brcm,iproc-static-adc.yaml        |  5 ----
->  .../iio/gyroscope/nxp,fxas21002c.yaml         |  2 +-
->  .../bindings/iio/light/upisemi,us5182.yaml    |  4 +--
->  .../interrupt-controller/loongson,htpic.yaml  |  2 +-
->  .../devicetree/bindings/leds/leds-lgm.yaml    | 26 ++++++++++++++++---
->  .../bindings/phy/ti,phy-j721e-wiz.yaml        |  2 +-
->  .../bindings/power/supply/cw2015_battery.yaml |  2 +-
->  .../bindings/power/supply/power-supply.yaml   | 22 ----------------
->  .../devicetree/bindings/serial/serial.yaml    |  2 +-
->  .../bindings/spi/amlogic,meson-gx-spicc.yaml  |  4 +--
->  .../bindings/spi/spi-controller.yaml          | 21 ++++++++-------
->  .../devicetree/bindings/spi/spi-mux.yaml      |  8 ++----
->  .../devicetree/bindings/spi/st,stm32-spi.yaml |  6 -----
+>  tools/lib/subcmd/exec-cmd.c   | 21 +++++++++++++++++++++
+>  tools/lib/subcmd/exec-cmd.h   |  1 +
+>  tools/perf/Build              |  1 -
+>  tools/perf/Makefile.perf      |  3 +++
+>  tools/perf/builtin-report.c   | 21 ++++++++++++++++++---
+>  tools/perf/tests/Build        |  2 +-
+>  tools/perf/tests/python-use.c | 14 +++++++++++++-
+>  tools/perf/util/Build         | 10 +++++++---
+>  8 files changed, 64 insertions(+), 9 deletions(-)
+>
+> diff --git a/tools/lib/subcmd/exec-cmd.c b/tools/lib/subcmd/exec-cmd.c
+> index 33e94fb83986..3116246ec629 100644
+> --- a/tools/lib/subcmd/exec-cmd.c
+> +++ b/tools/lib/subcmd/exec-cmd.c
+> @@ -208,3 +208,24 @@ int execl_cmd(const char *cmd,...)
+>       argv[argc] =3D NULL;
+>       return execv_cmd(argv);
+>  }
+> +
+> +/* The caller is responsible to free the returned buffer */
+> +char *get_exec_abs_path(void)
+> +{
 
-Acked-by: Alain Volmat <alain.volmat@foss.st.com>
+we have perf_exe for the whole perf binary, so let's call this perf_exe_pat=
+h
 
->  19 files changed, 58 insertions(+), 79 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/allwinner,sun4i-a10-pll1-clk.yaml b/Documentation/devicetree/bindings/clock/allwinner,sun4i-a10-pll1-clk.yaml
-> index e9c4cf834aa7..e5d9d45dab8a 100644
-> --- a/Documentation/devicetree/bindings/clock/allwinner,sun4i-a10-pll1-clk.yaml
-> +++ b/Documentation/devicetree/bindings/clock/allwinner,sun4i-a10-pll1-clk.yaml
-> @@ -44,7 +44,7 @@ examples:
->    - |
->      clk@1c20000 {
->          #clock-cells = <0>;
-> -        compatible = "allwinner,sun4i-a10-pll1";
-> +        compatible = "allwinner,sun4i-a10-pll1-clk";
->          reg = <0x01c20000 0x4>;
->          clocks = <&osc24M>;
->          clock-output-names = "osc24M";
-> diff --git a/Documentation/devicetree/bindings/clock/milbeaut-clock.yaml b/Documentation/devicetree/bindings/clock/milbeaut-clock.yaml
-> index 0e8b07710451..6d39344d2b70 100644
-> --- a/Documentation/devicetree/bindings/clock/milbeaut-clock.yaml
-> +++ b/Documentation/devicetree/bindings/clock/milbeaut-clock.yaml
-> @@ -18,10 +18,12 @@ description: |
->  
->  properties:
->    compatible:
-> -    oneOf:
-> -      - items:
-> -          - enum:
-> -              - socionext,milbeaut-m10v-ccu
-> +    enum:
-> +      - socionext,milbeaut-m10v-ccu
+> +     int ret;
+> +     int i;
+> +     char *buf;
 > +
-> +  reg:
-> +    maxItems: 1
+> +     buf =3D malloc(PATH_MAX);
+> +     ret =3D readlink("/proc/self/exe", buf, PATH_MAX - 1);
+> +     if (ret <=3D 0) {
+> +             free(buf);
+> +             return NULL;
+> +     }
+
+you could call perf_exe for this ^^^
+
 > +
->    clocks:
->      maxItems: 1
->      description: external clock
-> @@ -41,7 +43,7 @@ examples:
->    # Clock controller node:
->    - |
->      m10v-clk-ctrl@1d021000 {
-> -        compatible = "socionext,milbeaut-m10v-clk-ccu";
-> +        compatible = "socionext,milbeaut-m10v-ccu";
->          reg = <0x1d021000 0x4000>;
->          #clock-cells = <1>;
->          clocks = <&clki40mhz>;
-> diff --git a/Documentation/devicetree/bindings/display/brcm,bcm2835-dsi0.yaml b/Documentation/devicetree/bindings/display/brcm,bcm2835-dsi0.yaml
-> index 55c60919991f..32608578a352 100644
-> --- a/Documentation/devicetree/bindings/display/brcm,bcm2835-dsi0.yaml
-> +++ b/Documentation/devicetree/bindings/display/brcm,bcm2835-dsi0.yaml
-> @@ -77,12 +77,6 @@ examples:
->  
->          clock-output-names = "dsi1_byte", "dsi1_ddr2", "dsi1_ddr";
->  
-> -        pitouchscreen: panel@0 {
-> -            compatible = "raspberrypi,touchscreen";
-> -            reg = <0>;
-> -
-> -            /* ... */
-> -        };
->      };
->  
->  ...
-> diff --git a/Documentation/devicetree/bindings/display/panel/panel-dpi.yaml b/Documentation/devicetree/bindings/display/panel/panel-dpi.yaml
-> index 0cd74c8dab42..dae0676b5c6e 100644
-> --- a/Documentation/devicetree/bindings/display/panel/panel-dpi.yaml
-> +++ b/Documentation/devicetree/bindings/display/panel/panel-dpi.yaml
-> @@ -40,7 +40,7 @@ additionalProperties: false
->  examples:
->    - |
->      panel {
-> -        compatible = "osddisplays,osd057T0559-34ts", "panel-dpi";
-> +        compatible = "startek,startek-kd050c", "panel-dpi";
->          label = "osddisplay";
->          power-supply = <&vcc_supply>;
->          backlight = <&backlight>;
-> diff --git a/Documentation/devicetree/bindings/dma/qcom,gpi.yaml b/Documentation/devicetree/bindings/dma/qcom,gpi.yaml
-> index f8142adf9aea..2e66840a78fe 100644
-> --- a/Documentation/devicetree/bindings/dma/qcom,gpi.yaml
-> +++ b/Documentation/devicetree/bindings/dma/qcom,gpi.yaml
-> @@ -64,7 +64,7 @@ examples:
->      #include <dt-bindings/interrupt-controller/arm-gic.h>
->      #include <dt-bindings/dma/qcom-gpi.h>
->      gpi_dma0: dma-controller@800000 {
-> -        compatible = "qcom,gpi-dma";
-> +        compatible = "qcom,sdm845-gpi-dma";
->          #dma-cells = <3>;
->          reg = <0x00800000 0x60000>;
->          iommus = <&apps_smmu 0x0016 0x0>;
-> diff --git a/Documentation/devicetree/bindings/i3c/i3c.yaml b/Documentation/devicetree/bindings/i3c/i3c.yaml
-> index 52042aa44d19..1f82fc923799 100644
-> --- a/Documentation/devicetree/bindings/i3c/i3c.yaml
-> +++ b/Documentation/devicetree/bindings/i3c/i3c.yaml
-> @@ -157,9 +157,10 @@ examples:
->          i2c-scl-hz = <100000>;
->  
->          /* I2C device. */
-> -        nunchuk: nunchuk@52 {
-> -            compatible = "nintendo,nunchuk";
-> -            reg = <0x52 0x0 0x10>;
-> +        eeprom@57 {
-> +            compatible = "atmel,24c01";
-> +            reg = <0x57 0x0 0x10>;
-> +            pagesize = <0x8>;
->          };
->  
->          /* I3C device with a static I2C address. */
-> diff --git a/Documentation/devicetree/bindings/iio/adc/brcm,iproc-static-adc.yaml b/Documentation/devicetree/bindings/iio/adc/brcm,iproc-static-adc.yaml
-> index c562d25bee3b..547697e8bc8b 100644
-> --- a/Documentation/devicetree/bindings/iio/adc/brcm,iproc-static-adc.yaml
-> +++ b/Documentation/devicetree/bindings/iio/adc/brcm,iproc-static-adc.yaml
-> @@ -53,11 +53,6 @@ examples:
->          #address-cells = <1>;
->          #size-cells = <1>;
->  
-> -        ts_adc_syscon: ts_adc_syscon@180a6000 {
-> -            compatible = "brcm,iproc-ts-adc-syscon","syscon";
-> -            reg = <0x180a6000 0xc30>;
-> -        };
-> -
->          adc {
->              compatible = "brcm,iproc-static-adc";
->              adc-syscon = <&ts_adc_syscon>;
-> diff --git a/Documentation/devicetree/bindings/iio/gyroscope/nxp,fxas21002c.yaml b/Documentation/devicetree/bindings/iio/gyroscope/nxp,fxas21002c.yaml
-> index d97ee774d6a6..3f57a1b813e6 100644
-> --- a/Documentation/devicetree/bindings/iio/gyroscope/nxp,fxas21002c.yaml
-> +++ b/Documentation/devicetree/bindings/iio/gyroscope/nxp,fxas21002c.yaml
-> @@ -83,7 +83,7 @@ examples:
->          #size-cells = <0>;
->  
->          gyroscope@0 {
-> -          compatible = "nxp,fxas2102c";
-> +          compatible = "nxp,fxas21002c";
->            reg = <0x0>;
->  
->            spi-max-frequency = <2000000>;
-> diff --git a/Documentation/devicetree/bindings/iio/light/upisemi,us5182.yaml b/Documentation/devicetree/bindings/iio/light/upisemi,us5182.yaml
-> index de5882cb3360..dd78abe0ec8d 100644
-> --- a/Documentation/devicetree/bindings/iio/light/upisemi,us5182.yaml
-> +++ b/Documentation/devicetree/bindings/iio/light/upisemi,us5182.yaml
-> @@ -11,12 +11,12 @@ maintainers:
->  
->  properties:
->    compatible:
-> -    const: upisemi,asd5182
-> +    const: upisemi,usd5182
->  
->    reg:
->      maxItems: 1
->  
-> -  upsemi,glass-coef:
-> +  upisemi,glass-coef:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      description: |
->        glass attenuation factor - compensation factor of resolution 1000
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,htpic.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,htpic.yaml
-> index d1d52d1db2be..d6bc1a687fc7 100644
-> --- a/Documentation/devicetree/bindings/interrupt-controller/loongson,htpic.yaml
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,htpic.yaml
-> @@ -47,7 +47,7 @@ examples:
->    - |
->      #include <dt-bindings/interrupt-controller/irq.h>
->      htintc: interrupt-controller@1fb000080 {
-> -      compatible = "loongson,htintc-1.0";
-> +      compatible = "loongson,htpic-1.0";
->        reg = <0xfb000080 0x40>;
->        interrupt-controller;
->        #interrupt-cells = <1>;
-> diff --git a/Documentation/devicetree/bindings/leds/leds-lgm.yaml b/Documentation/devicetree/bindings/leds/leds-lgm.yaml
-> index 32bbf146c01d..f8d7963c3a13 100644
-> --- a/Documentation/devicetree/bindings/leds/leds-lgm.yaml
-> +++ b/Documentation/devicetree/bindings/leds/leds-lgm.yaml
-> @@ -14,6 +14,17 @@ properties:
->    compatible:
->      const: intel,lgm-ssoled
->  
-> +  reg:
-> +    maxItems: 1
+> +     for (i =3D ret - 1; buf[i] !=3D '/'; i--);
 > +
-> +  clocks:
-> +    maxItems: 2
+> +     buf[i + 1] =3D 0;
 > +
-> +  clock-names:
-> +    items:
-> +      - const: sso
-> +      - const: fpid
+> +     return buf;
+> +}
+> diff --git a/tools/lib/subcmd/exec-cmd.h b/tools/lib/subcmd/exec-cmd.h
+> index aba591b8d254..9dc98248dadf 100644
+> --- a/tools/lib/subcmd/exec-cmd.h
+> +++ b/tools/lib/subcmd/exec-cmd.h
+> @@ -13,5 +13,6 @@ extern int execl_cmd(const char *cmd, ...);
+>  /* get_argv_exec_path and system_path return malloc'd string, caller mus=
+t free it */
+>  extern char *get_argv_exec_path(void);
+>  extern char *system_path(const char *path);
+> +extern char *get_exec_abs_path(void);
+>
+>  #endif /* __SUBCMD_EXEC_CMD_H */
+> diff --git a/tools/perf/Build b/tools/perf/Build
+> index db61dbe2b543..56d0189f1029 100644
+> --- a/tools/perf/Build
+> +++ b/tools/perf/Build
+> @@ -45,7 +45,6 @@ CFLAGS_perf.o              +=3D -DPERF_HTML_PATH=3D"BUI=
+LD_STR($(htmldir_SQ))"   \
+>                             -DPREFIX=3D"BUILD_STR($(prefix_SQ))"
+>  CFLAGS_builtin-trace.o          +=3D -DSTRACE_GROUPS_DIR=3D"BUILD_STR($(=
+STRACE_GROUPS_DIR_SQ))"
+>  CFLAGS_builtin-report.o         +=3D -DTIPDIR=3D"BUILD_STR($(tipdir_SQ))=
+"
+> -CFLAGS_builtin-report.o         +=3D -DDOCDIR=3D"BUILD_STR($(srcdir_SQ)/=
+Documentation)"
+>
+>  perf-y +=3D util/
+>  perf-y +=3D arch/
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index f6e609673de2..c9e3aae6c47f 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -627,6 +627,9 @@ $(OUTPUT)python/perf.so: $(PYTHON_EXT_SRCS) $(PYTHON_=
+EXT_DEPS) $(LIBTRACEEVENT_D
+>         --quiet build_ext; \
+>       cp $(PYTHON_EXTBUILD_LIB)perf*.so $(OUTPUT)python/
+>
+> +_dummy :=3D $(shell [ -d '$(OUTPUT)Documentation' ] || (mkdir -p '$(OUTP=
+UT)Documentation' && \
+> +             cp '$(srcdir)/Documentation/tips.txt' '$(OUTPUT)Documentati=
+on/'))
 > +
->    gpio-controller: true
->  
->    '#gpio-cells':
-> @@ -36,8 +47,15 @@ properties:
->  
->      additionalProperties: false
->  
-> +    properties:
-> +      '#address-cells':
-> +        const: 1
+
+why do we need this? also should be in Documentation make
+
+>  please_set_SHELL_PATH_to_a_more_modern_shell:
+>       $(Q)$$(:)
+>
+> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+> index 2a845d6cac09..d9441055357e 100644
+> --- a/tools/perf/builtin-report.c
+> +++ b/tools/perf/builtin-report.c
+> @@ -610,12 +610,27 @@ static int report__browse_hists(struct report *rep)
+>       struct perf_session *session =3D rep->session;
+>       struct evlist *evlist =3D session->evlist;
+>       const char *help =3D perf_tip(system_path(TIPDIR));
+> +     char *exec_path;
+> +     char *docdir;
+>
+>       if (help =3D=3D NULL) {
+>               /* fallback for people who don't install perf ;-) */
+> -             help =3D perf_tip(DOCDIR);
+> -             if (help =3D=3D NULL)
+> -                     help =3D "Cannot load tips.txt file, please install=
+ perf!";
+> +             exec_path =3D get_exec_abs_path();
+> +             if (exec_path =3D=3D NULL || asprintf(&docdir, "%sDocumenta=
+tion", exec_path) < 0) {
+> +                     docdir =3D NULL;
+> +                     help =3D "Not enough memory or some other internal =
+error occurred!";
+> +             }
 > +
-> +      '#size-cells':
-> +        const: 0
+> +             if (docdir !=3D NULL) {
+> +                     help =3D perf_tip(docdir);
+> +                     if (help =3D=3D NULL)
+> +                             help =3D "Cannot load tips.txt file, please=
+ install perf!";
+> +             }
 > +
->      patternProperties:
-> -      "^led@[0-23]$":
-> +      "^led@[0-2]$":
->          type: object
->  
->          properties:
-> @@ -81,7 +99,7 @@ examples:
->      #include <dt-bindings/leds/common.h>
->  
->      ssogpio: ssogpio@e0d40000 {
-> -      compatible = "intel,sso-led";
-> +      compatible = "intel,lgm-ssoled";
->        reg = <0xE0D40000 0x2E4>;
->        gpio-controller;
->        #gpio-cells = <2>;
-> @@ -103,8 +121,8 @@ examples:
->            led-gpio = <&ssogpio 0 0>;
->          };
->  
-> -        led@23 {
-> -          reg = <23>;
-> +        led@2 {
-> +          reg = <2>;
->            function = LED_FUNCTION_POWER;
->            color = <LED_COLOR_ID_GREEN>;
->            led-gpio = <&ssogpio 23 0>;
-> diff --git a/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml b/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
-> index bbbd85501ada..d0040255c591 100644
-> --- a/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
-> +++ b/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
-> @@ -218,7 +218,7 @@ examples:
->             };
->  
->             serdes@5000000 {
-> -                  compatible = "cdns,ti,sierra-phy-t0";
-> +                  compatible = "ti,sierra-phy-t0";
->                    reg-names = "serdes";
->                    reg = <0x5000000 0x10000>;
->                    #address-cells = <1>;
-> diff --git a/Documentation/devicetree/bindings/power/supply/cw2015_battery.yaml b/Documentation/devicetree/bindings/power/supply/cw2015_battery.yaml
-> index 5fcdf5801536..c73abb2ff513 100644
-> --- a/Documentation/devicetree/bindings/power/supply/cw2015_battery.yaml
-> +++ b/Documentation/devicetree/bindings/power/supply/cw2015_battery.yaml
-> @@ -61,7 +61,7 @@ examples:
->          #size-cells = <0>;
->  
->          cw2015@62 {
-> -            compatible = "cellwise,cw201x";
-> +            compatible = "cellwise,cw2015";
->              reg = <0x62>;
->              cellwise,battery-profile = /bits/ 8 <
->                  0x17 0x67 0x80 0x73 0x6E 0x6C 0x6B 0x63
-> diff --git a/Documentation/devicetree/bindings/power/supply/power-supply.yaml b/Documentation/devicetree/bindings/power/supply/power-supply.yaml
-> index c5c55f627251..259760167759 100644
-> --- a/Documentation/devicetree/bindings/power/supply/power-supply.yaml
-> +++ b/Documentation/devicetree/bindings/power/supply/power-supply.yaml
-> @@ -18,25 +18,3 @@ properties:
->  
->  additionalProperties: true
->  
-> -examples:
-> -  - |
-> -    power {
-> -      #address-cells = <1>;
-> -      #size-cells = <0>;
-> -
-> -      usb_charger:charger@e {
-> -        compatible = "some,usb-charger";
-> -        reg = <0xe>;
-> -      };
-> -
-> -      ac_charger:charger@c {
-> -        compatible = "some,ac-charger";
-> -        reg = <0xc>;
-> -      };
-> -
-> -      battery:battery@b {
-> -        compatible = "some,battery";
-> -        reg = <0xb>;
-> -        power-supplies = <&usb_charger>, <&ac_charger>;
-> -      };
-> -    };
-> diff --git a/Documentation/devicetree/bindings/serial/serial.yaml b/Documentation/devicetree/bindings/serial/serial.yaml
-> index 65e75d040521..eea300405816 100644
-> --- a/Documentation/devicetree/bindings/serial/serial.yaml
-> +++ b/Documentation/devicetree/bindings/serial/serial.yaml
-> @@ -134,7 +134,7 @@ examples:
->              interrupts = <1>;
->  
->              bluetooth {
-> -                    compatible = "brcm,bcm43341-bt";
-> +                    compatible = "brcm,bcm4330-bt";
->                      interrupt-parent = <&gpio>;
->                      interrupts = <10>;
->              };
-> diff --git a/Documentation/devicetree/bindings/spi/amlogic,meson-gx-spicc.yaml b/Documentation/devicetree/bindings/spi/amlogic,meson-gx-spicc.yaml
-> index 667dedefd69f..e3fb553d9180 100644
-> --- a/Documentation/devicetree/bindings/spi/amlogic,meson-gx-spicc.yaml
-> +++ b/Documentation/devicetree/bindings/spi/amlogic,meson-gx-spicc.yaml
-> @@ -90,8 +90,8 @@ examples:
->            #address-cells = <1>;
->            #size-cells = <0>;
->  
-> -          ethernet-switch@0 {
-> -              compatible = "micrel,ks8995m";
-> +          display@0 {
-> +              compatible = "lg,lg4573";
->                spi-max-frequency = <1000000>;
->                reg = <0>;
->            };
-> diff --git a/Documentation/devicetree/bindings/spi/spi-controller.yaml b/Documentation/devicetree/bindings/spi/spi-controller.yaml
-> index 06786f1b43d2..0477396e4945 100644
-> --- a/Documentation/devicetree/bindings/spi/spi-controller.yaml
-> +++ b/Documentation/devicetree/bindings/spi/spi-controller.yaml
-> @@ -181,22 +181,23 @@ additionalProperties: true
->  
->  examples:
->    - |
-> -    spi@f00 {
-> +    spi@80010000 {
->          #address-cells = <1>;
->          #size-cells = <0>;
-> -        compatible = "fsl,mpc5200b-spi","fsl,mpc5200-spi";
-> -        reg = <0xf00 0x20>;
-> -        interrupts = <2 13 0 2 14 0>;
-> -        interrupt-parent = <&mpc5200_pic>;
-> -
-> -        ethernet-switch@0 {
-> -            compatible = "micrel,ks8995m";
-> +        compatible = "fsl,imx28-spi";
-> +        reg = <0x80010000 0x2000>;
-> +        interrupts = <96>;
-> +        dmas = <&dma_apbh 0>;
-> +        dma-names = "rx-tx";
+> +             if (exec_path)
+> +                     free(exec_path);
+> +             if (docdir)
+> +                     free(docdir);
+>       }
+>
+>       switch (use_browser) {
+> diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
+> index 650aec19d490..a20098dcdbc4 100644
+> --- a/tools/perf/tests/Build
+> +++ b/tools/perf/tests/Build
+> @@ -98,5 +98,5 @@ perf-$(CONFIG_DWARF_UNWIND) +=3D dwarf-unwind.o
+>  endif
+>
+>  CFLAGS_attr.o         +=3D -DBINDIR=3D"BUILD_STR($(bindir_SQ))" -DPYTHON=
+=3D"BUILD_STR($(PYTHON_WORD))"
+> -CFLAGS_python-use.o   +=3D -DPYTHONPATH=3D"BUILD_STR($(OUTPUT)python)" -=
+DPYTHON=3D"BUILD_STR($(PYTHON_WORD))"
+> +CFLAGS_python-use.o   +=3D -DPYTHON=3D"BUILD_STR($(PYTHON_WORD))"
+>  CFLAGS_dwarf-unwind.o +=3D -fno-optimize-sibling-calls
+> diff --git a/tools/perf/tests/python-use.c b/tools/perf/tests/python-use.=
+c
+> index 98c6d474aa6f..8b4865c90d5d 100644
+> --- a/tools/perf/tests/python-use.c
+> +++ b/tools/perf/tests/python-use.c
+> @@ -8,16 +8,28 @@
+>  #include <linux/compiler.h>
+>  #include "tests.h"
+>  #include "util/debug.h"
+> +#include <subcmd/exec-cmd.h>
+>
+>  int test__python_use(struct test *test __maybe_unused, int subtest __may=
+be_unused)
+>  {
+>       char *cmd;
+>       int ret;
+> +     char *exec_path =3D NULL;
+> +     char *pythonpath;
 > +
-> +        display@0 {
-> +            compatible = "lg,lg4573";
->              spi-max-frequency = <1000000>;
->              reg = <0>;
->          };
->  
-> -        codec@1 {
-> -            compatible = "ti,tlv320aic26";
-> +        sensor@1 {
-> +            compatible = "bosch,bme680";
->              spi-max-frequency = <100000>;
->              reg = <1>;
->          };
-> diff --git a/Documentation/devicetree/bindings/spi/spi-mux.yaml b/Documentation/devicetree/bindings/spi/spi-mux.yaml
-> index 6c21a132b51f..d09c6355e22d 100644
-> --- a/Documentation/devicetree/bindings/spi/spi-mux.yaml
-> +++ b/Documentation/devicetree/bindings/spi/spi-mux.yaml
-> @@ -75,16 +75,12 @@ examples:
->              spi-flash@0 {
->                  compatible = "jedec,spi-nor";
->                  reg = <0>;
-> -                #address-cells = <1>;
-> -                #size-cells = <0>;
->                  spi-max-frequency = <40000000>;
->              };
->  
-> -            spi-device@1 {
-> -                compatible = "lineartechnology,ltc2488";
-> +            sensor@1 {
-> +                compatible = "bosch,bme680";
->                  reg = <1>;
-> -                #address-cells = <1>;
-> -                #size-cells = <0>;
->                  spi-max-frequency = <10000000>;
->              };
->          };
-> diff --git a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
-> index d11806b1ede3..2d9af4c506bb 100644
-> --- a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
-> +++ b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
-> @@ -96,12 +96,6 @@ examples:
->        dma-names = "rx", "tx";
->        cs-gpios = <&gpioa 11 0>;
->  
-> -      aardvark@0 {
-> -        compatible = "totalphase,aardvark";
-> -        reg = <0>;
-> -        spi-max-frequency = <4000000>;
-> -        st,spi-midi-ns = <4000>;
-> -      };
->      };
->  
->  ...
-> -- 
-> 2.27.0
-> 
+> +     exec_path =3D get_exec_abs_path();
+> +     if (exec_path =3D=3D NULL)
+> +             return -1;
+> +
+> +     if (asprintf(&pythonpath, "%spython", exec_path) < 0)
+
+are we sure there's always trailing '/' in exec_path ?
+
+> +             return -1;
+>
+>       if (asprintf(&cmd, "echo \"import sys ; sys.path.append('%s'); impo=
+rt perf\" | %s %s",
+> -                  PYTHONPATH, PYTHON, verbose > 0 ? "" : "2> /dev/null")=
+ < 0)
+> +                  pythonpath, PYTHON, verbose > 0 ? "" : "2> /dev/null")=
+ < 0)
+>               return -1;
+>
+> +     free(exec_path);
+> +     free(pythonpath);
+>       pr_debug("python usage test: \"%s\"\n", cmd);
+>       ret =3D system(cmd) ? -1 : 0;
+>       free(cmd);
+> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+> index e3e12f9d4733..11ad0fdaf71e 100644
+> --- a/tools/perf/util/Build
+> +++ b/tools/perf/util/Build
+> @@ -197,6 +197,10 @@ CFLAGS_llvm-utils.o +=3D -DPERF_INCLUDE_DIR=3D"BUILD=
+_STR($(perf_include_dir_SQ))"
+>  # avoid compiler warnings in 32-bit mode
+>  CFLAGS_genelf_debug.o  +=3D -Wno-packed
+>
+> +ifeq ($(shell expr $(shell $(BISON) --version | grep bison | sed -e 's/.=
+\+ \([0-9]\+\).\([0-9]\+\).\([0-9]\+\)/\1\2\3/g') \>\=3D 371), 1)
+> +  BISON_FILE_PREFIX_MAP :=3D --file-prefix-map=3D$(OUTPUT)=3D
+> +endif
+
+seems too small for feature detection, but please add it to
+Makefile.config and make new variable under .config-detected
+
+thanks,
+jirka
+
+> +
+>  $(OUTPUT)util/parse-events-flex.c $(OUTPUT)util/parse-events-flex.h: uti=
+l/parse-events.l $(OUTPUT)util/parse-events-bison.c
+>       $(call rule_mkdir)
+>       $(Q)$(call echo-cmd,flex)$(FLEX) -o $(OUTPUT)util/parse-events-flex=
+.c \
+> @@ -204,7 +208,7 @@ $(OUTPUT)util/parse-events-flex.c $(OUTPUT)util/parse=
+-events-flex.h: util/parse-
+>
+>  $(OUTPUT)util/parse-events-bison.c $(OUTPUT)util/parse-events-bison.h: u=
+til/parse-events.y
+>       $(call rule_mkdir)
+> -     $(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) \
+> +     $(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) $=
+(BISON_FILE_PREFIX_MAP) \
+>               -o $(OUTPUT)util/parse-events-bison.c -p parse_events_
+>
+>  $(OUTPUT)util/expr-flex.c $(OUTPUT)util/expr-flex.h: util/expr.l $(OUTPU=
+T)util/expr-bison.c
+> @@ -214,7 +218,7 @@ $(OUTPUT)util/expr-flex.c $(OUTPUT)util/expr-flex.h: =
+util/expr.l $(OUTPUT)util/e
+>
+>  $(OUTPUT)util/expr-bison.c $(OUTPUT)util/expr-bison.h: util/expr.y
+>       $(call rule_mkdir)
+> -     $(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) \
+> +     $(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) $=
+(BISON_FILE_PREFIX_MAP) \
+>               -o $(OUTPUT)util/expr-bison.c -p expr_
+>
+>  $(OUTPUT)util/pmu-flex.c $(OUTPUT)util/pmu-flex.h: util/pmu.l $(OUTPUT)u=
+til/pmu-bison.c
+> @@ -224,7 +228,7 @@ $(OUTPUT)util/pmu-flex.c $(OUTPUT)util/pmu-flex.h: ut=
+il/pmu.l $(OUTPUT)util/pmu-
+>
+>  $(OUTPUT)util/pmu-bison.c $(OUTPUT)util/pmu-bison.h: util/pmu.y
+>       $(call rule_mkdir)
+> -     $(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) \
+> +     $(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) $=
+(BISON_FILE_PREFIX_MAP) \
+>               -o $(OUTPUT)util/pmu-bison.c -p perf_pmu_
+>
+>  FLEX_GE_26 :=3D $(shell expr $(shell $(FLEX) --version | sed -e  's/flex=
+ \([0-9]\+\).\([0-9]\+\)/\1\2/g') \>\=3D 26)
+> --
+> 2.26.2.Cisco
+>
+
