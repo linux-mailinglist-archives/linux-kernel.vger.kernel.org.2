@@ -2,220 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD1633F957
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:32:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B7233F95C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:33:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233410AbhCQTb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233343AbhCQTbj (ORCPT
+        id S233218AbhCQTdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:33:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23449 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233191AbhCQTcv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:31:39 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95AAC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:31:38 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id mz6-20020a17090b3786b02900c16cb41d63so1890468pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:31:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gOINERHmieuwiuvM3DF70DRFGOBE0N4CRVVT5JEdKUI=;
-        b=hdYVaEU8zYye5U51YYae9hQw/H5tgU5sTsFgUwWJMRIGDgXdKEILBxlSNnQcbhjOOw
-         pdbVXjz5HGfp8c9ZICp3j9j4g8Ck4yqDDvCWrbxW/R2EqBcwJi6qzV1DxyqNjl9VS8lJ
-         PWpfglBS1C0w4gcBXc9u97zXaWLQ3jj8uJXXA/EbRkFNRnxz9sus5S6p0LkljA97AHgA
-         mJ2/pBXt1Q1J1FnHoB+jV4AR7EoA8O/p+22GwJZ73PEjYHHAKe2JCebs1sbzLOT/WM2z
-         1PtVguMbrflgAUSlp9NwaKk017iKH9XuE1KshG80dWALPxlcVYsnajhWXd59Ft5vK277
-         6MtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gOINERHmieuwiuvM3DF70DRFGOBE0N4CRVVT5JEdKUI=;
-        b=eScTCsynQCvmjf70yzlGvhyyiNDWXmXpbtKMpsTuI+9Jvkxaan+a27XZ/1gQzUVSWA
-         qfX3tHYN9FuqCjc5nihs85tLGUdufu+4krMxx3SiOry/+YpiUX1/TwJ43EEM32vad5gQ
-         QFzD2yISJK4BnQ2/FE/4ddWwRsTyPE4CnD9nP26qYCNyUt8PorJQpSYclLMS+oGgTHp1
-         rTYxVCKbd5vzppHAZtYINCNQqhPNPp637lv9Gkvpj2lKkqLG76If0pZtZW9fc4eSezKN
-         ygC4Nuq+3z1XVQEXYYFvaIj9dZrJyRloY69sNziDDiilXrw8HuesOlAz/UqnRVJGiENu
-         99MQ==
-X-Gm-Message-State: AOAM533rhzz+HxtB/4biooz5Sn0NRf0eDCcsZWVXBoXS9EZK9XKOEyWh
-        ybXw6Mekwkc5aJdhW34ffUGvug==
-X-Google-Smtp-Source: ABdhPJxT4hcGV1+KfLJYucco05CI4nKXUvozud9Gj0nWBK8A9PDOHr4G+M5XxT94PDL+XqPBwrLUoA==
-X-Received: by 2002:a17:90a:e00c:: with SMTP id u12mr393122pjy.133.1616009498414;
-        Wed, 17 Mar 2021 12:31:38 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id s28sm21096325pfd.155.2021.03.17.12.31.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 12:31:37 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 13:31:36 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mike.leach@linaro.org, anshuman.khandual@arm.com,
-        leo.yan@linaro.org
-Subject: Re: [PATCH v4 17/19] coresight: core: Add support for dedicated
- percpu sinks
-Message-ID: <20210317193136.GB1498234@xps15>
-References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
- <20210225193543.2920532-18-suzuki.poulose@arm.com>
+        Wed, 17 Mar 2021 15:32:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616009569;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PdAQqv2znUyJGHKP0rUSqIjMCYDHVuDQjM9e5TLBxfo=;
+        b=S3b9Ut/XVQnrukoyLkPyu5cyyMait4O7MGdoiXWeHFYCkzlEnBABvfZdmlQQuWjZDE/WS/
+        6JaXDamjyutUfm2YOA3letc7gfg7wlBZtUntq9F4WMjltwHdCpI4arEL8M9mLsmBoVr9JQ
+        AcYOiCcOnUt6Be+twThxlgCHeFAe8CQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-402-Q51B6FILMMSWnsfeKv5N0A-1; Wed, 17 Mar 2021 15:32:47 -0400
+X-MC-Unique: Q51B6FILMMSWnsfeKv5N0A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B02481425A;
+        Wed, 17 Mar 2021 19:32:46 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1EC1A5D9C0;
+        Wed, 17 Mar 2021 19:32:46 +0000 (UTC)
+Date:   Wed, 17 Mar 2021 13:32:45 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     Amey Narkhede <ameynarkhede03@gmail.com>, bhelgaas@google.com,
+        raphael.norwitz@nutanix.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210317133245.7d95909c@omen.home.shazbot.org>
+In-Reply-To: <20210317192424.kpfybcrsen3ivr4f@pali>
+References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
+        <20210312173452.3855-5-ameynarkhede03@gmail.com>
+        <20210314235545.girtrazsdxtrqo2q@pali>
+        <20210315134323.llz2o7yhezwgealp@archlinux>
+        <20210315135226.avwmnhkfsgof6ihw@pali>
+        <20210315083409.08b1359b@x1.home.shazbot.org>
+        <20210315145238.6sg5deblr2z2pupu@pali>
+        <20210315090339.54546e91@x1.home.shazbot.org>
+        <20210317190206.zrtzwgskxdogl7dz@pali>
+        <20210317131536.38f398b0@omen.home.shazbot.org>
+        <20210317192424.kpfybcrsen3ivr4f@pali>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225193543.2920532-18-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 07:35:41PM +0000, Suzuki K Poulose wrote:
-> From: Anshuman Khandual <anshuman.khandual@arm.com>
-> 
-> Add support for dedicated sinks that are bound to individual CPUs. (e.g,
-> TRBE). To allow quicker access to the sink for a given CPU bound source,
-> keep a percpu array of the sink devices. Also, add support for building
-> a path to the CPU local sink from the ETM.
-> 
-> This adds a new percpu sink type CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM.
-> This new sink type is exclusively available and can only work with percpu
-> source type device CORESIGHT_DEV_SUBTYPE_SOURCE_PROC.
-> 
-> This defines a percpu structure that accommodates a single coresight_device
-> which can be used to store an initialized instance from a sink driver. As
-> these sinks are exclusively linked and dependent on corresponding percpu
-> sources devices, they should also be the default sink device during a perf
-> session.
-> 
-> Outwards device connections are scanned while establishing paths between a
-> source and a sink device. But such connections are not present for certain
-> percpu source and sink devices which are exclusively linked and dependent.
-> Build the path directly and skip connection scanning for such devices.
-> 
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Tested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> [Moved the set/get percpu sink APIs from TRBE patch to here]
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
-> Changes:
->  - Export methods to set/get percpu sinks for fixing module
->    build for TRBE
->  - Addressed coding style comments (Suzuki)
->  - Check status of _coresight_build_path() (Mathieu)
-> ---
->  drivers/hwtracing/coresight/coresight-core.c | 29 ++++++++++++++++++--
->  drivers/hwtracing/coresight/coresight-priv.h |  3 ++
->  include/linux/coresight.h                    | 12 ++++++++
->  3 files changed, 42 insertions(+), 2 deletions(-)
+On Wed, 17 Mar 2021 20:24:24 +0100
+Pali Roh=C3=A1r <pali@kernel.org> wrote:
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> On Wednesday 17 March 2021 13:15:36 Alex Williamson wrote:
+> > On Wed, 17 Mar 2021 20:02:06 +0100
+> > Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> >  =20
+> > > On Monday 15 March 2021 09:03:39 Alex Williamson wrote: =20
+> > > > On Mon, 15 Mar 2021 15:52:38 +0100
+> > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> > > >    =20
+> > > > > On Monday 15 March 2021 08:34:09 Alex Williamson wrote:   =20
+> > > > > > On Mon, 15 Mar 2021 14:52:26 +0100
+> > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> > > > > >      =20
+> > > > > > > On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:     =20
+> > > > > > > > slot reset (pci_dev_reset_slot_function) and secondary bus
+> > > > > > > > reset(pci_parent_bus_reset) which I think are hot reset and
+> > > > > > > > warm reset respectively.       =20
+> > > > > > >=20
+> > > > > > > No. PCI secondary bus reset =3D PCIe Hot Reset. Slot reset is=
+ just another
+> > > > > > > type of reset, which is currently implemented only for PCIe h=
+ot plug
+> > > > > > > bridges and for PowerPC PowerNV platform and it just call PCI=
+ secondary
+> > > > > > > bus reset with some other hook. PCIe Warm Reset does not have=
+ API in
+> > > > > > > kernel and therefore drivers do not export this type of reset=
+ via any
+> > > > > > > kernel function (yet).     =20
+> > > > > >=20
+> > > > > > Warm reset is beyond the scope of this series, but could be imp=
+lemented
+> > > > > > in a compatible way to fit within the pci_reset_fn_methods[] ar=
+ray
+> > > > > > defined here.     =20
+> > > > >=20
+> > > > > Ok!
+> > > > >    =20
+> > > > > > Note that with this series the resets available through
+> > > > > > pci_reset_function() and the per device reset attribute is sysf=
+s remain
+> > > > > > exactly the same as they are currently.  The bus and slot reset
+> > > > > > methods used here are limited to devices where only a single fu=
+nction is
+> > > > > > affected by the reset, therefore it is not like the patch you p=
+roposed
+> > > > > > which performed a reset irrespective of the downstream devices.=
+  This
+> > > > > > series only enables selection of the existing methods.  Thanks,
+> > > > > >=20
+> > > > > > Alex
+> > > > > >      =20
+> > > > >=20
+> > > > > But with this patch series, there is still an issue with PCI seco=
+ndary
+> > > > > bus reset mechanism as exported sysfs attribute does not do that
+> > > > > remove-reset-rescan procedure. As discussed in other thread, this=
+ reset
+> > > > > let device in unconfigured / broken state.   =20
+> > > >=20
+> > > > No, there's not:
+> > > >=20
+> > > > int pci_reset_function(struct pci_dev *dev)
+> > > > {
+> > > >         int rc;
+> > > >=20
+> > > >         if (!dev->reset_fn)
+> > > >                 return -ENOTTY;
+> > > >=20
+> > > >         pci_dev_lock(dev);   =20
+> > > > >>>     pci_dev_save_and_disable(dev);   =20
+> > > >=20
+> > > >         rc =3D __pci_reset_function_locked(dev);
+> > > >    =20
+> > > > >>>     pci_dev_restore(dev);   =20
+> > > >         pci_dev_unlock(dev);
+> > > >=20
+> > > >         return rc;
+> > > > }
+> > > >=20
+> > > > The remove/re-scan was discussed primarily because your patch perfo=
+rmed
+> > > > a bus reset regardless of what devices were affected by that reset =
+and
+> > > > it's difficult to manage the scope where multiple devices are affec=
+ted.
+> > > > Here, the bus and slot reset functions will fail unless the scope is
+> > > > limited to the single device triggering this reset.  Thanks,
+> > > >=20
+> > > > Alex
+> > > >    =20
+> > >=20
+> > > I was thinking a bit more about it and I'm really sure how it would
+> > > behave with hotplugging PCIe bridge.
+> > >=20
+> > > On aardvark PCIe controller I have already tested that secondary bus
+> > > reset bit is triggering Hot Reset event and then also Link Down event.
+> > > These events are not handled by aardvark driver yet (needs to
+> > > implemented into kernel's emulated root bridge code).
+> > >=20
+> > > But I'm not sure how it would behave on real HW PCIe hotplugging brid=
+ge.
+> > > Kernel has already code which removes PCIe device if it changes prese=
+nce
+> > > bit (and inform via interrupt). And Link Down event triggers this
+> > > change. =20
+> >=20
+> > This is the difference between slot and bus resets, the slot reset is
+> > implemented by the hotplug controller and disables presence detection
+> > around the bus reset.  Thanks, =20
+>=20
+> Yes, but I'm talking about bus reset, not about slot reset.
+>=20
+> I mean: to use bus reset via sysfs on hardware which supports slots and
+> hotplugging.
+>=20
+> And if I'm reading code correctly, this combination is allowed, right?
+> Via these new patches it is possible to disable slot reset and enable
+> bus reset.
 
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-> index 0062c8935653..55c645616bf6 100644
-> --- a/drivers/hwtracing/coresight/coresight-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-core.c
-> @@ -23,6 +23,7 @@
->  #include "coresight-priv.h"
->  
->  static DEFINE_MUTEX(coresight_mutex);
-> +DEFINE_PER_CPU(struct coresight_device *, csdev_sink);
->  
->  /**
->   * struct coresight_node - elements of a path, from source to sink
-> @@ -70,6 +71,18 @@ void coresight_remove_cti_ops(void)
->  }
->  EXPORT_SYMBOL_GPL(coresight_remove_cti_ops);
->  
-> +void coresight_set_percpu_sink(int cpu, struct coresight_device *csdev)
-> +{
-> +	per_cpu(csdev_sink, cpu) = csdev;
-> +}
-> +EXPORT_SYMBOL_GPL(coresight_set_percpu_sink);
-> +
-> +struct coresight_device *coresight_get_percpu_sink(int cpu)
-> +{
-> +	return per_cpu(csdev_sink, cpu);
-> +}
-> +EXPORT_SYMBOL_GPL(coresight_get_percpu_sink);
-> +
->  static int coresight_id_match(struct device *dev, void *data)
->  {
->  	int trace_id, i_trace_id;
-> @@ -784,6 +797,14 @@ static int _coresight_build_path(struct coresight_device *csdev,
->  	if (csdev == sink)
->  		goto out;
->  
-> +	if (coresight_is_percpu_source(csdev) && coresight_is_percpu_sink(sink) &&
-> +	    sink == per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev))) {
-> +		if (_coresight_build_path(sink, sink, path) == 0) {
-> +			found = true;
-> +			goto out;
-> +		}
-> +	}
-> +
->  	/* Not a sink - recursively explore each port found on this element */
->  	for (i = 0; i < csdev->pdata->nr_outport; i++) {
->  		struct coresight_device *child_dev;
-> @@ -999,8 +1020,12 @@ coresight_find_default_sink(struct coresight_device *csdev)
->  	int depth = 0;
->  
->  	/* look for a default sink if we have not found for this device */
-> -	if (!csdev->def_sink)
-> -		csdev->def_sink = coresight_find_sink(csdev, &depth);
-> +	if (!csdev->def_sink) {
-> +		if (coresight_is_percpu_source(csdev))
-> +			csdev->def_sink = per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev));
-> +		if (!csdev->def_sink)
-> +			csdev->def_sink = coresight_find_sink(csdev, &depth);
-> +	}
->  	return csdev->def_sink;
->  }
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
-> index f5f654ea2994..ff1dd2092ac5 100644
-> --- a/drivers/hwtracing/coresight/coresight-priv.h
-> +++ b/drivers/hwtracing/coresight/coresight-priv.h
-> @@ -232,4 +232,7 @@ coresight_find_csdev_by_fwnode(struct fwnode_handle *r_fwnode);
->  void coresight_set_assoc_ectdev_mutex(struct coresight_device *csdev,
->  				      struct coresight_device *ect_csdev);
->  
-> +void coresight_set_percpu_sink(int cpu, struct coresight_device *csdev);
-> +struct coresight_device *coresight_get_percpu_sink(int cpu);
-> +
->  #endif
-> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-> index 976ec2697610..8a3a3c199087 100644
-> --- a/include/linux/coresight.h
-> +++ b/include/linux/coresight.h
-> @@ -50,6 +50,7 @@ enum coresight_dev_subtype_sink {
->  	CORESIGHT_DEV_SUBTYPE_SINK_PORT,
->  	CORESIGHT_DEV_SUBTYPE_SINK_BUFFER,
->  	CORESIGHT_DEV_SUBTYPE_SINK_SYSMEM,
-> +	CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM,
->  };
->  
->  enum coresight_dev_subtype_link {
-> @@ -428,6 +429,17 @@ static inline void csdev_access_write64(struct csdev_access *csa, u64 val, u32 o
->  		csa->write(val, offset, false, true);
->  }
->  
-> +static inline bool coresight_is_percpu_source(struct coresight_device *csdev)
-> +{
-> +	return csdev && (csdev->type == CORESIGHT_DEV_TYPE_SOURCE) &&
-> +	       (csdev->subtype.source_subtype == CORESIGHT_DEV_SUBTYPE_SOURCE_PROC);
-> +}
-> +
-> +static inline bool coresight_is_percpu_sink(struct coresight_device *csdev)
-> +{
-> +	return csdev && (csdev->type == CORESIGHT_DEV_TYPE_SINK) &&
-> +	       (csdev->subtype.sink_subtype == CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM);
-> +}
->  #else	/* !CONFIG_64BIT */
->  
->  static inline u64 csdev_access_relaxed_read64(struct csdev_access *csa,
-> -- 
-> 2.24.1
-> 
+That's true, a slot reset is simply a bus reset wrapped around code
+that prevents the device from getting ejected.  Maybe it would make
+sense to combine the two as far as this interface is concerned, ie. a
+single "bus" reset method that will always use slot reset when
+available.  Thanks,
+
+Alex
+
