@@ -2,140 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DFA33E882
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 519BF33E885
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbhCQEji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 00:39:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhCQEjH (ORCPT
+        id S229587AbhCQElr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 00:41:47 -0400
+Received: from m42-10.mailgun.net ([69.72.42.10]:32508 "EHLO
+        m42-10.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229540AbhCQEl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 00:39:07 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A10C06174A;
-        Tue, 16 Mar 2021 21:39:06 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 16so1503103ljc.11;
-        Tue, 16 Mar 2021 21:39:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RxzVzaQfgXYz8ydNKeFmWagcL6oo0NX1A8C+kfVFZQ8=;
-        b=DseltBcrTEORJTvKX7i8YctxoVG0MXqz2BT28bVNnuRX9NYat3Gy8T7o51GsDK7HNs
-         HxOlvl0xfPJIQgP1F5WA0gijlc6MdSJcQgVjjVmCt8Q6Tu/ykVghG1Kxwy0VsyvVYnq8
-         I51VHmRaQwApankQRB9H9eH9sHt4yezvZYO7Uv/2K3kLh0Jb1v76YLKv27FmrKocMn5w
-         /btsOtcofrj/6hZTZ8s6dVI56Kj+EY7G+ol/VBc4FpfPRKKckITNsXf1JdGFyv2CzoO/
-         8RhvWXY6tuG+D4zcxf1cXOtTzf2f/oY1xMvEhYoGe7Ts5lQrYfJYCGJtUvp93fTM/TDm
-         eKzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RxzVzaQfgXYz8ydNKeFmWagcL6oo0NX1A8C+kfVFZQ8=;
-        b=eWgWCMUvQjE298kqqEIOhKJfbBklhT5WFh+qWHaBnMHBOfHx4dzbTGuWgwMs9l2Yz0
-         El/uoCRVVXLVIfoCDr+bJ2c0qcjDuTAZzmm1FO2JKbqt+mrOmJhfVDx4D8kgyNXbh/07
-         57NP7CjUbhzKo8OdLW2j4d/Y9EKzkRNKCF81J5NAFdi+W6UyfXFolmLSdb0+vR52EVgw
-         E/dfy6MiHkAeXVOPXLCapHG31swDcxQNfKNe8/8t6CRENht6C4jIdDJ66pLRWU91yUf5
-         lYA6bnsq4EF/5ISJVu6fI5jAHhVxJryh2cJAtZyr0+52FZ0KpHuL6x0wq3KQECjGAf+S
-         lLqA==
-X-Gm-Message-State: AOAM532o9l3OAFqgEjwVPJJOUh/OKeN0j/yI7ynlP74SpYFF7KhHqcAu
-        QXTi8hJWNzkvzarnjoQE6BZ6Q/FbuOfiH87H+XY=
-X-Google-Smtp-Source: ABdhPJx5411lQBzPrOF8A4yvPEiz6jFoToaQnrsy9XR0MrguKzg+imDJnV7handvwz7nhSmLs1CXJI4hpO5h2e05h0g=
-X-Received: by 2002:a2e:a54b:: with SMTP id e11mr1182129ljn.458.1615955945356;
- Tue, 16 Mar 2021 21:39:05 -0700 (PDT)
+        Wed, 17 Mar 2021 00:41:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615956087; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=eGTA0+I6gJJJ1efJFiJ/1XC/rmCP98XQ3G6teytT6zA=;
+ b=FOfG4cJG0JprU89SIns7N+z9qYQbB8NrCYl9Vb4HyAIVTSohA+DVi7sBlXnBbk2KRzZn1HY7
+ onE2u45MS8Pv1UCnFeAYjdwOb2GtgH9v5L6iqdEQ32rg26c7fWGp9XGktc70SsbKhzzQ0k86
+ dZMBEiUrqAVNSgnuPrrKE/a1JgU=
+X-Mailgun-Sending-Ip: 69.72.42.10
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 605188704db3bb68016708ae (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Mar 2021 04:41:20
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1147EC43463; Wed, 17 Mar 2021 04:41:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E73C9C433C6;
+        Wed, 17 Mar 2021 04:41:18 +0000 (UTC)
 MIME-Version: 1.0
-References: <CAMuHMdWYrS=YT7F7erM-e6xhDME4judx-T7rdFGi7CpW1_iqkg@mail.gmail.com>
- <20210316150033.15987-1-cnsztl@gmail.com> <CAMuHMdU+agaOdf4hQhn5JQDHCbuWm3dETJu01baxfDAY=nikow@mail.gmail.com>
- <20210316193839.GA28184@duo.ucw.cz>
-In-Reply-To: <20210316193839.GA28184@duo.ucw.cz>
-From:   Tianling Shen <cnsztl@gmail.com>
-Date:   Wed, 17 Mar 2021 12:38:53 +0800
-Message-ID: <CAOP2_TjFtBqBP8wOY-wxSd89yYuYF4bwqWCP4c6FXNMNH=2t-w@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] rockchip: rk3399: Add support for FriendlyARM
- NanoPi R4S
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>,
-        Johan Jonker <jbx6244@gmail.com>,
-        David Bauer <mail@david-bauer.net>,
-        Jensen Huang <jensenhuang@friendlyarm.com>,
-        Marty Jones <mj8263788@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 17 Mar 2021 12:41:18 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     daejun7.park@samsung.com
+Cc:     Avri Altman <Avri.Altman@wdc.com>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
+Subject: Re: [PATCH v5 05/10] scsi: ufshpb: Region inactivation in host mode
+In-Reply-To: <2038148563.21615949282962.JavaMail.epsvc@epcpadp4>
+References: <DM6PR04MB65751EE32D25C7E57A6BABE8FC6B9@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <20210302132503.224670-1-avri.altman@wdc.com>
+ <20210302132503.224670-6-avri.altman@wdc.com>
+ <25da7378d5bf4c52443ae9b47f3fd778@codeaurora.org>
+ <57afb2b5d7edda61a40493d8545785b1@codeaurora.org>
+ <CGME20210316083014epcas2p32d6b84e689cdbe06ee065c870b236d65@epcms2p3>
+ <2038148563.21615949282962.JavaMail.epsvc@epcpadp4>
+Message-ID: <064483451ff0d9ef8703871332ea5c3b@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+On 2021-03-17 10:28, Daejun Park wrote:
+>>> >> ---
+>>> >>  drivers/scsi/ufs/ufshpb.c | 14 ++++++++++++++
+>>> >>  drivers/scsi/ufs/ufshpb.h |  1 +
+>>> >>  2 files changed, 15 insertions(+)
+>>> >>
+>>> >> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+>>> >> index 6f4fd22eaf2f..0744feb4d484 100644
+>>> >> --- a/drivers/scsi/ufs/ufshpb.c
+>>> >> +++ b/drivers/scsi/ufs/ufshpb.c
+>>> >> @@ -907,6 +907,7 @@ static int ufshpb_execute_umap_req(struct
+>>> >> ufshpb_lu *hpb,
+>>> >>
+>>> >>      blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_umap_req_compl_fn);
+>>> >>
+>>> >> +    hpb->stats.umap_req_cnt++;
+>>> >>      return 0;
+>>> >>  }
+>>> >>
+>>> >> @@ -1103,6 +1104,12 @@ static int ufshpb_issue_umap_req(struct
+>>> >> ufshpb_lu *hpb,
+>>> >>      return -EAGAIN;
+>>> >>  }
+>>> >>
+>>> >> +static int ufshpb_issue_umap_single_req(struct ufshpb_lu *hpb,
+>>> >> +                                    struct ufshpb_region *rgn)
+>>> >> +{
+>>> >> +    return ufshpb_issue_umap_req(hpb, rgn);
+>>> >> +}
+>>> >> +
+>>> >>  static int ufshpb_issue_umap_all_req(struct ufshpb_lu *hpb)
+>>> >>  {
+>>> >>      return ufshpb_issue_umap_req(hpb, NULL);
+>>> >> @@ -1115,6 +1122,10 @@ static void __ufshpb_evict_region(struct
+>>> >> ufshpb_lu *hpb,
+>>> >>      struct ufshpb_subregion *srgn;
+>>> >>      int srgn_idx;
+>>> >>
+>>> >> +
+>>> >> +    if (hpb->is_hcm && ufshpb_issue_umap_single_req(hpb, rgn))
+>>> >
+>>> > __ufshpb_evict_region() is called with rgn_state_lock held and IRQ
+>>> > disabled,
+>>> > when ufshpb_issue_umap_single_req() invokes blk_execute_rq_nowait(),
+>>> > below
+>>> > warning shall pop up every time, fix it?
+>>> >
+>>> > void blk_execute_rq_nowait(struct request_queue *q, struct gendisk
+>>> > *bd_disk,
+>>> >                  struct request *rq, int at_head,
+>>> >                          rq_end_io_fn *done)
+>>> > {
+>>> >       WARN_ON(irqs_disabled());
+>>> > ...
+>>> >
+>>> 
+>>> Moreover, since we are here with rgn_state_lock held and IRQ 
+>>> disabled,
+>>> in ufshpb_get_req(), rq = kmem_cache_alloc(hpb->map_req_cache,
+>>> GFP_KERNEL)
+>>> has the GFP_KERNEL flag, scheduling while atomic???
+>> I think your comment applies to  ufshpb_issue_umap_all_req as well,
+>> Which is called from slave_configure/scsi_add_lun.
+>> 
+>> Since the host-mode series is utilizing the framework laid by the 
+>> device-mode,
+>> Maybe you can add this comment to  Daejun's last version?
+> 
+> Hi Avri, Can Guo
+> 
+> I think ufshpb_issue_umap_single_req() can be moved to end of
+> ufshpb_evict_region().
+> Then we can avoid rgn_state_lock when it sends unmap command.
 
-On 2021-03-17 03:38, Pavel Machek <pavel@ucw.cz> wrote:
->
-> On Tue 2021-03-16 16:34:50, Geert Uytterhoeven wrote:
-> > Hi Tianling,
-> >
-> > CC Jacek, Pavel
-> >
-> > On Tue, Mar 16, 2021 at 4:00 PM Tianling Shen <cnsztl@gmail.com> wrote:
-> > > On 2021-03-16 02:23 Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > Personally, I'm not so fond of the <foo>-%u node names, and prefer
-> > > > <foo>-<function>.  With the former, it's way too easy to have a silent
-> > > > override in your .dts(i) stack.
-> > > > Cfr. commit 45f5d5a9e34d3fe4 ("arm64: dts: renesas: r8a77995: draak:
-> > > > Fix backlight regulator name")
-> > >
-> > > How about using `lan-led`, `sys-led` and `wan-led` here?
-> >
-> > Documentation/devicetree/bindings/leds/leds-gpio.yaml says "led-%u"
-> > is the preferred form, but that anything containing "led" as a substring
-> > is accepted.  So I'd go for "led-lan" etc.
-> >
-> > BTW, you can validate your DTB against the leds-gpio DT bindings
-> > by running:
-> >
-> >     make dtbs_check
-> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/leds/leds-gpio.yaml
-> >
-> > Background info for CCed parties:
-> >
-> https://lore.kernel.org/linux-arm-kernel/20210316150033.15987-1-cnsztl@gmail.com/
->
-> I don't care much either way, lan-0 is okay as is lan-led.
->
-> but...
->
-> +                       label = "nanopi-r4s:green:lan";
-> +                       label = "nanopi-r4s:red:sys";
-> +                       label = "nanopi-r4s:green:wan";
->
->
-> It would be good to have common labels, that means LED_FUNCTION_LAN,
-> LED_FUNCTION_WAN, and figuring out something better than "sys",
-> possibly LED_FUNCTION_FAULT?
+I am not the expert here, please you two fix it. I am just reporting
+what can be wrong. Anyways, ufshpb_issue_umap_single_req() should not
+be called with rgn_state_lock held - think about below (another deadly)
+scenario.
 
-LED_FUNCTION_POWER for "sys" would be fine, I think.
+lock(rgn_state_lock)
+   ufshpb_issue_umap_single_req()
+     ufshpb_prep()
+        lock(rgn_state_lock)   <---------- recursive spin_lock
 
-However, Documentation/leds/leds-class.rst says the form of naming is
-"devicename:color:function",
-and according to the given examples, as well as other dts(i), would it
-be okay to use `green:lan`
-etc. as the lable?
+BTW, @Daejun shouldn't we stop passthrough cmds from stepping
+into ufshpb_prep()? In current code, you are trying to use below
+check to block cmds other than write/discard/read, but a passthrough
+cmd can not be blocked by the check.
 
->
-> Thanks,
->                                                                 Pavel
->
-> --
-> http://www.livejournal.com/~pavelmachek
+          if (!ufshpb_is_write_or_discard_cmd(cmd) &&
+              !ufshpb_is_read_cmd(cmd))
+                  return 0;
 
 Thanks,
-Tianling.
+Can Guo.
+
+> 
+> Thanks,
+> Daejun
+> 
+> 
+>> Thanks,
+>> Avri
+>> 
+>>> 
+>>> Can Guo.
+>>> 
+>>> > Thanks.
+>>> > Can Guo.
+>>> >
+>>> >> +            return;
+>>> >> +
+>>> >>      lru_info = &hpb->lru_info;
+>>> >>
+>>> >>      dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n",
+>>> >> rgn->rgn_idx);
+>>> >> @@ -1855,6 +1866,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
+>>> >>  ufshpb_sysfs_attr_show_func(rb_active_cnt);
+>>> >>  ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
+>>> >>  ufshpb_sysfs_attr_show_func(map_req_cnt);
+>>> >> +ufshpb_sysfs_attr_show_func(umap_req_cnt);
+>>> >>
+>>> >>  static struct attribute *hpb_dev_stat_attrs[] = {
+>>> >>      &dev_attr_hit_cnt.attr,
+>>> >> @@ -1863,6 +1875,7 @@ static struct attribute *hpb_dev_stat_attrs[] =
+>>> >> {
+>>> >>      &dev_attr_rb_active_cnt.attr,
+>>> >>      &dev_attr_rb_inactive_cnt.attr,
+>>> >>      &dev_attr_map_req_cnt.attr,
+>>> >> +    &dev_attr_umap_req_cnt.attr,
+>>> >>      NULL,
+>>> >>  };
+>>> >>
+>>> >> @@ -1978,6 +1991,7 @@ static void ufshpb_stat_init(struct ufshpb_lu
+>>> >> *hpb)
+>>> >>      hpb->stats.rb_active_cnt = 0;
+>>> >>      hpb->stats.rb_inactive_cnt = 0;
+>>> >>      hpb->stats.map_req_cnt = 0;
+>>> >> +    hpb->stats.umap_req_cnt = 0;
+>>> >>  }
+>>> >>
+>>> >>  static void ufshpb_param_init(struct ufshpb_lu *hpb)
+>>> >> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+>>> >> index bd4308010466..84598a317897 100644
+>>> >> --- a/drivers/scsi/ufs/ufshpb.h
+>>> >> +++ b/drivers/scsi/ufs/ufshpb.h
+>>> >> @@ -186,6 +186,7 @@ struct ufshpb_stats {
+>>> >>      u64 rb_inactive_cnt;
+>>> >>      u64 map_req_cnt;
+>>> >>      u64 pre_req_cnt;
+>>> >> +    u64 umap_req_cnt;
+>>> >>  };
+>>> >>
+>>> >>  struct ufshpb_lu {
+>> 
+>> 
+>> 
