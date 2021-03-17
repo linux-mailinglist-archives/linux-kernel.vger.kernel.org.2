@@ -2,68 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A6233EDEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC8133EDEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:03:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbhCQKDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:03:30 -0400
-Received: from m12-18.163.com ([220.181.12.18]:37018 "EHLO m12-18.163.com"
+        id S229972AbhCQKD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:03:29 -0400
+Received: from mga02.intel.com ([134.134.136.20]:36068 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229732AbhCQKDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:03:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=4IVqN
-        wtKiLiWyR0ANej24u825g4yhB6K/L2kUWe+Ojc=; b=JPHmfT1etg3/axMmhgP49
-        d3CQJcnWSFACjpg5n0G2uqESBfgElx/IwSNeG5Pu9ZL97V0uqWT1aGddCWQGwRgy
-        qw942Ep/3vdTIL/JFjr3FGiToYA0tf7HeW0zRZDxKiGRTGbdt4OvqD+tmTh8SM47
-        4y0rpM5Bm2ZKDX/W7jzybo=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp14 (Coremail) with SMTP id EsCowAC3tfO601Fgn5EZZQ--.44733S2;
-        Wed, 17 Mar 2021 18:02:38 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org
-Cc:     linux-kernel@vger.kernel.org, zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] rtl8821ae: Fix spelling typo
-Date:   Wed, 17 Mar 2021 18:02:44 +0800
-Message-Id: <20210317100244.1239-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+        id S229578AbhCQKDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 06:03:06 -0400
+IronPort-SDR: g896kbeENddyzL2K10byCum2y6BRviAoIM62P8wmj7vtclsr7ghZr3/RFRVRQ1yNMCT96TKGiG
+ q+dwLw3q/dzw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="176562401"
+X-IronPort-AV: E=Sophos;i="5.81,255,1610438400"; 
+   d="scan'208";a="176562401"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 03:03:05 -0700
+IronPort-SDR: iqCEgAM5vKX1cI4CyzlvjVLZGpGhIl64UTyUWyugrhvvbM03gLJrzJTGhJQxPs/1cOZX1GYBhg
+ zAnWx6RKhOQw==
+X-IronPort-AV: E=Sophos;i="5.81,255,1610438400"; 
+   d="scan'208";a="372290793"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 03:03:02 -0700
+Received: by lahna (sSMTP sendmail emulation); Wed, 17 Mar 2021 12:02:59 +0200
+Date:   Wed, 17 Mar 2021 12:02:59 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH] PCI: PM: Do not read power state in
+ pci_enable_device_flags()
+Message-ID: <20210317100259.GZ2542@lahna.fi.intel.com>
+References: <3219454.74lMxhSOWB@kreacher>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowAC3tfO601Fgn5EZZQ--.44733S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWruFyUtr15GF4UJrWrWry3Jwb_yoWfKrX_W3
-        WIqF1jvr1ruFyIyay7AFsxuF1IgF4Y9FWrtrWDW3sxArWrJan5XFZ8CrZ7JF1Yg3WUA34a
-        qw1vkw47ur4UujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8iqXJUUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbiHh5YiVSItTc+uQAAsI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3219454.74lMxhSOWB@kreacher>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
+On Tue, Mar 16, 2021 at 04:51:40PM +0100, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> It should not be necessary to update the current_state field of
+> struct pci_dev in pci_enable_device_flags() before calling
+> do_pci_enable_device() for the device, because none of the
+> code between that point and the pci_set_power_state() call in
+> do_pci_enable_device() invoked later depends on it.
+> 
+> Moreover, doing that is actively harmful in some cases.  For example,
+> if the given PCI device depends on an ACPI power resource whose _STA
+> method initially returns 0 ("off"), but the config space of the PCI
+> device is accessible and the power state retrieved from the
+> PCI_PM_CTRL register is D0, the current_state field in the struct
+> pci_dev representing that device will get out of sync with the
+> power.state of its ACPI companion object and that will lead to
+> power management issues going forward.
+> 
+> To avoid such issues it is better to leave the current_state value
+> as is until it is changed to PCI_D0 by do_pci_enable_device() as
+> appropriate.  However, the power state of the device is not changed
+> to PCI_D0 if it is already enabled when pci_enable_device_flags()
+> gets called for it, so update its current_state in that case, but
+> use pci_update_current_state() covering platform PM too for that.
+> 
+> Link: https://lore.kernel.org/lkml/20210314000439.3138941-1-luzmaximilian@gmail.com/
+> Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
+> Tested-by: Maximilian Luz <luzmaximilian@gmail.com>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Change 'revsions' to 'revisions'.
-
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
----
- tools/perf/util/header.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-index 20effdf..4572aa9 100644
---- a/tools/perf/util/header.c
-+++ b/tools/perf/util/header.c
-@@ -3485,7 +3485,7 @@ static int try_all_file_abis(uint64_t hdr_sz, struct perf_header *ph)
-  * between host recording the samples, and host parsing the samples is the
-  * same. This is not always the case given that the pipe output may always be
-  * redirected into a file and analyzed on a different machine with possibly a
-- * different endianness and perf_event ABI revsions in the perf tool itself.
-+ * different endianness and perf_event ABI revisions in the perf tool itself.
-  */
- static int try_all_pipe_abis(uint64_t hdr_sz, struct perf_header *ph)
- {
--- 
-1.9.1
-
-
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
