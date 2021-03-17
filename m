@@ -2,139 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826FB33FB77
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 23:48:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F2533FB82
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 23:50:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbhCQWsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 18:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49964 "EHLO
+        id S229703AbhCQWuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 18:50:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhCQWru (ORCPT
+        with ESMTP id S229558AbhCQWtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 18:47:50 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94868C06174A;
-        Wed, 17 Mar 2021 15:47:50 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id n11so168785pgm.12;
-        Wed, 17 Mar 2021 15:47:50 -0700 (PDT)
+        Wed, 17 Mar 2021 18:49:51 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AC9C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:49:51 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id t6so3098160ilp.11
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:49:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=ieee.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AZQlG8sfqVYekS3pQFGKTyi8VGzITZR4qzf1zhijQFo=;
-        b=ALZ1VE0LjbIRB2fJBolEdDSQVlBgdLAhjfQ1p0zidMdgRuoDdEOLIv71AdJPHgcRpo
-         APFCzTCeWkr9e7pKMu+fcR3rRnukr2jgmZGNjF8fyXI2prnKkxIi3UvTu699wE5tVHIG
-         NUkLBIvGP/iWfFVgnHwmUSONAB9K7yYkMU1AydYfN2cNlP+StfbLfB0m7PORlVILJdLW
-         DWhJ/g8hVz8TPO7P++gO0qi9KvzX/K53qL+Fm1X+oA88bhpzc/urp73XR9/Je70D5ihC
-         gxsmP1cve67ldDKV62WP4u6AKBvuUV/dEm20/LpFXhF0rk5CR4cgxFvLLOJEveUVE2dO
-         NjUw==
+        bh=A76Ll2cPy1caYrVV3BwNuFe9RGXU0Tlri1xHjMBctEo=;
+        b=DoMVUsaB0b3+ZrpeqKQ7oBIrIRIqzmcSim6CbL4noy2UthcD1OxtEHyiGvP3c9IuLS
+         6nASGOLuYyRLsZvZMnHAZHG9/zdVbvpwyBEzLx8G0J+UcvZD8yctBt4AmggfU2i/zHVS
+         S7AHJBEppg55gxejMxHiOTb+APl4+Pwv4Opo8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=AZQlG8sfqVYekS3pQFGKTyi8VGzITZR4qzf1zhijQFo=;
-        b=laiUYcYelIXSFLSt9YlhJMabvTvyv86gJnieyUGohWr2IX4AOeedfH4VyLJH3MaWJ3
-         3MSboY7T+mFQrpixAE7ro6WSq6Rdp+UxTVrMvBK5EX26miZYUzSWLWsGZ4nWTmHlMLIX
-         xn82Jk0Yim5JK/TN++dPKYafoEeKaKAnmgh44NsU/WTbUISPKGR6hbAaL3Vjw8VjImGN
-         hFuhkDCO83EteSp0FBlK4fUGtJrULxM/LE4Q17pXU1jBj+Ko1Axcup+C9bZytz+EKxCO
-         6p+CvSLtMZ1f411dmawqjoDEVJyncS+IVacyEbQ9taA2TVfuHnosHddV+cxZiLTXXyAJ
-         ZWow==
-X-Gm-Message-State: AOAM530UmjWk5S+q+d1idaugoURh6wvFsXDPiD9xxATMaCARtiq76pIB
-        L2Lhm/HerZ8PovCXJY80TGpCFiK4FYs=
-X-Google-Smtp-Source: ABdhPJz69XyQa2AZP5IQXw/ofOSkrD2zxcYnwqOI1/2kpgk23ahjCbVqMpJQZtF3ZvO7hiST/ij+tw==
-X-Received: by 2002:a65:4942:: with SMTP id q2mr4332175pgs.34.1616021269760;
-        Wed, 17 Mar 2021 15:47:49 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id a19sm115940pfn.181.2021.03.17.15.47.48
+        bh=A76Ll2cPy1caYrVV3BwNuFe9RGXU0Tlri1xHjMBctEo=;
+        b=AafYtuZwRHRuKqcoUAy+S0WL7K9iCCuIgeuveasJEH22oZTW9hl3FASFjzUM7g6ocG
+         r+U3V9ZZxNGnvpjwGl9D+MTOK1d8a0UYmfMdZI6hObMPb2CjJKT0tWlUmxDqqIdaz9JV
+         muvwi4Ng+PR9fGH307jm8clv7JxdtO9j7BJOUoORu/hMlOPe3YGeZHiBXTA+G48bBimN
+         dL3erTyJYe/5pl9Xl5PQF7cW7h/9jJx0pO3jHAnKdSC/7AS5k//RnoR35ZBgzDuQ+evH
+         HydPp1fi7Ndm83/qq4l671iQzoho2/+z++vXguggldFyz4upbkTyw8VIFOxlCC/pUd1n
+         xSAw==
+X-Gm-Message-State: AOAM530KbaR0YwDBySOk53kPn4esv5BjIYpeh1iMlYu62NOgrxC3EKDx
+        4XRh7H9T4inJutwEy6bzg0xNDzzIwULytA==
+X-Google-Smtp-Source: ABdhPJzYZibsyqKxbBpc2XiQZ6pO8hjBPmHN47BGQP81qejjd7X6baLkfpqzjIm8xey2f/FpKN3P7A==
+X-Received: by 2002:a05:6e02:174b:: with SMTP id y11mr9475632ill.152.1616021390375;
+        Wed, 17 Mar 2021 15:49:50 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id v3sm181671ioh.25.2021.03.17.15.49.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 15:47:49 -0700 (PDT)
+        Wed, 17 Mar 2021 15:49:49 -0700 (PDT)
 Subject: Re: [PATCH net-next 2/4] net: ipa: introduce dma_addr_high32()
-To:     Alex Elder <elder@linaro.org>, davem@davemloft.net, kuba@kernel.org
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Alex Elder <elder@linaro.org>, davem@davemloft.net,
+        kuba@kernel.org
 Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20210317222946.118125-1-elder@linaro.org>
  <20210317222946.118125-3-elder@linaro.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <36b9977b-32b1-eb4a-0056-4f742e3fe4d6@gmail.com>
-Date:   Wed, 17 Mar 2021 15:47:47 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.1
+ <36b9977b-32b1-eb4a-0056-4f742e3fe4d6@gmail.com>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <60106d7b-ad70-01fa-9f90-fe384cc428f8@ieee.org>
+Date:   Wed, 17 Mar 2021 17:49:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210317222946.118125-3-elder@linaro.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <36b9977b-32b1-eb4a-0056-4f742e3fe4d6@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/17/21 5:47 PM, Florian Fainelli wrote:
+>> +/* Encapsulate extracting high-order 32 bits of DMA address */
+>> +static u32 dma_addr_high32(dma_addr_t addr)
+>> +{
+>> +#ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
+>> +	return (u32)(addr >> 32);
+> You can probably use upper_32bits() here...
 
+Where is that defined?  I'd be glad to use it.	-Alex
 
-On 3/17/2021 3:29 PM, Alex Elder wrote:
-> Create a new helper function to encapsulate extracting the
-> high-order 32 bits of a DMA address.  It returns 0 for builds
-> in which a DMA address is not 64 bits.
-> 
-> This avoids doing a 32-position shift on a DMA address if it
-> happens not to be 64 bits wide.
-> 
-> Signed-off-by: Alex Elder <elder@linaro.org>
-> ---
->  drivers/net/ipa/gsi.c | 14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-> index 2119367b93ea9..53698c64cf882 100644
-> --- a/drivers/net/ipa/gsi.c
-> +++ b/drivers/net/ipa/gsi.c
-> @@ -688,6 +688,16 @@ static void gsi_evt_ring_doorbell(struct gsi *gsi, u32 evt_ring_id, u32 index)
->  	iowrite32(val, gsi->virt + GSI_EV_CH_E_DOORBELL_0_OFFSET(evt_ring_id));
->  }
->  
-> +/* Encapsulate extracting high-order 32 bits of DMA address */
-> +static u32 dma_addr_high32(dma_addr_t addr)
-> +{
-> +#ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
-> +	return (u32)(addr >> 32);
-
-You can probably use upper_32bits() here...
-
-> +#else /* !CONFIG_ARCH_DMA_ADDR_T_64BIT */
-> +	return 0;
-> +#endif /* !CONFIG_ARCH_DMA_ADDR_T_64BIT */
-> +}
-> +
->  /* Program an event ring for use */
->  static void gsi_evt_ring_program(struct gsi *gsi, u32 evt_ring_id)
->  {
-> @@ -711,7 +721,7 @@ static void gsi_evt_ring_program(struct gsi *gsi, u32 evt_ring_id)
->  	val = evt_ring->ring.addr & GENMASK(31, 0);
-
-...and you can use lower_32bits() here.
-
->  	iowrite32(val, gsi->virt + GSI_EV_CH_E_CNTXT_2_OFFSET(evt_ring_id));
->  
-> -	val = evt_ring->ring.addr >> 32;
-> +	val = dma_addr_high32(evt_ring->ring.addr);
-
-Does the compiler do a good job at eliminating the assignment when
-CONFIG_ARCH_DMA_ADDR_T_64BIT is not defined?
-
->  	iowrite32(val, gsi->virt + GSI_EV_CH_E_CNTXT_3_OFFSET(evt_ring_id));
->  
->  	/* Enable interrupt moderation by setting the moderation delay */
-> @@ -819,7 +829,7 @@ static void gsi_channel_program(struct gsi_channel *channel, bool doorbell)
->  	val = channel->tre_ring.addr & GENMASK(31, 0);
->  	iowrite32(val, gsi->virt + GSI_CH_C_CNTXT_2_OFFSET(channel_id));
->  
-> -	val = channel->tre_ring.addr >> 32;
-> +	val = dma_addr_high32(channel->tre_ring.addr);
->  	iowrite32(val, gsi->virt + GSI_CH_C_CNTXT_3_OFFSET(channel_id));
->  
->  	/* Command channel gets low weighted round-robin priority */
-> 
-
--- 
-Florian
