@@ -2,253 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A57733E8E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1178A33E912
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229492AbhCQFXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 01:23:13 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:33170 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhCQFXE (ORCPT
+        id S229795AbhCQFYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 01:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhCQFYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 01:23:04 -0400
-Received: from epcas3p4.samsung.com (unknown [182.195.41.22])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210317052302epoutp01f33985e481fddb35b0567171a77db440~tCcTsYuhK0574705747epoutp01y
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 05:23:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210317052302epoutp01f33985e481fddb35b0567171a77db440~tCcTsYuhK0574705747epoutp01y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1615958582;
-        bh=DVtWrgx72eD0p5wOixQxKrdO+TikHd1O8+yYAV+yPbk=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=bZ5TwmfSaNPf9lTxtDrs0poMd0y/t8S1hNIONdZC9KiSeH5gvU6aj8aogHbFD5a6m
-         guNP3VD9/Ap7tA29dAMceZtmjpQAE0M8CBz4qvzB8UYJxE+xLGXRd47ayCWRc549fU
-         /oAoP8dfZZgerPc3kUROXZyNopbWxadmFaoG3CAQ=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas3p4.samsung.com (KnoxPortal) with ESMTP id
-        20210317052302epcas3p4dd6b57a2147328246370f71107b34f61~tCcTQ8w_s1797617976epcas3p4W;
-        Wed, 17 Mar 2021 05:23:02 +0000 (GMT)
-Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp3.localdomain
-        (Postfix) with ESMTP id 4F0dpZ16KNz4x9QP; Wed, 17 Mar 2021 05:23:02 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v5 05/10] scsi: ufshpb: Region inactivation in host
- mode
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Can Guo <cang@codeaurora.org>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     Avri Altman <Avri.Altman@wdc.com>,
-        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <064483451ff0d9ef8703871332ea5c3b@codeaurora.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1796371666.41615958582147.JavaMail.epsvc@epcpadp4>
-Date:   Wed, 17 Mar 2021 14:19:30 +0900
-X-CMS-MailID: 20210317051930epcms2p49258bf002276be3568cb7feb48503e37
+        Wed, 17 Mar 2021 01:24:51 -0400
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33BF9C06174A;
+        Tue, 16 Mar 2021 22:24:40 -0700 (PDT)
+Received: by mail-oo1-xc35.google.com with SMTP id c12-20020a4ae24c0000b02901bad05f40e4so274755oot.4;
+        Tue, 16 Mar 2021 22:24:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sm0vv7Bw8qzZvqf4rj/IQABigFIjjDzJ9qj5xNPEtXE=;
+        b=VJdOYlA7vZtzm3fifG6/KSSqJLAui6sSB5tBvmNIyHPZ8cVbC6Nyr6iKf+MnuUArTk
+         egJuqGxRReMm/o2vxxdCkTQWnVnheNyNb33ZjkL5FtwN4b3snryUtocGt16nE+0iNH5s
+         vpl572b4cUhsBgCnhuj9mUwJVqI7Uldo5dEYSCXDwzOdl83SWk8+tfphWWpiHblI3qbJ
+         t2Qv51kFISiTIf190j5eXavGsOIJEgCtxw//FgrvIB4ANS2Ejd3JdvdIhmatlKds45CX
+         Po9TV1jUeWirkQIGayo0ulUihYHUuzgWbvdqZSrNip6XDlhBOjkPV70NCU85zIH1lJsO
+         lnqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=sm0vv7Bw8qzZvqf4rj/IQABigFIjjDzJ9qj5xNPEtXE=;
+        b=UcgXOT2eWvRcyV5GrOmn7Hut+89zkcM0AfRlQSGZ6olktRSZn2mYWXO/klYcMpisGi
+         MzOLuOM+Ma9QDm1j66oLABGk7c5c9UgLpKs/7kMkZBhnqzCPVXHJnOxwohXKQjxC8kiH
+         VMrZF3zvQqwgCFqbeX8e2B7X6XzMRBFDKEp6o9EwM2qz+vpAzUVDDqo2WHtfy/2t6ytb
+         h0cRc8DEQ4537gFUPzUXWaYsFCKF61+3ahTj5cxWaJSWkt8KnFKifI/rBmZJdV9kdWW8
+         dW51ZuVcXF1H9g16r4zphhMlPL3Bp4XNiQlg405xS25D6SS4DNunkpki5ul27f27xuMs
+         6HJQ==
+X-Gm-Message-State: AOAM532nwyrQQ2uchY8KJgRqxfzC6cqtmJRjZv0UXiKPltcQcBNh8oaE
+        aQwN6HCli4bLLAzoYQcCtL0=
+X-Google-Smtp-Source: ABdhPJwc/4Q02QzoFqiiGYZ+YTMr4cGVn28pu9eXIori/3kZtWDTRjT4Oc4IZoJV6eGAHz3MAOPqZg==
+X-Received: by 2002:a05:6820:273:: with SMTP id c19mr1933776ooe.54.1615958679477;
+        Tue, 16 Mar 2021 22:24:39 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x18sm7730885otr.73.2021.03.16.22.24.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 22:24:38 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] watchdog: Fix a typo in the file orion_wdt.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, wim@linux-watchdog.org,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+References: <20210317051734.97314-1-unixbhaskar@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
+ RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
+ nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
+ 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
+ gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
+ IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
+ kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
+ VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
+ jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
+ BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
+ ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
+ CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
+ nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
+ hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
+ c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
+ 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
+ GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
+ sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
+ Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
+ HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
+ BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
+ l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
+ 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
+ pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
+ J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
+ pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
+ 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
+ ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
+ I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
+ nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
+ HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
+ JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
+ J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
+ cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
+ wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
+ hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
+ nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
+ QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
+ trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
+ WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
+ HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <e262dcb0-89fb-d4a2-6692-af04cbd1fead@roeck-us.net>
+Date:   Tue, 16 Mar 2021 22:24:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210317051734.97314-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210316083014epcas2p32d6b84e689cdbe06ee065c870b236d65
-References: <064483451ff0d9ef8703871332ea5c3b@codeaurora.org>
-        <DM6PR04MB65751EE32D25C7E57A6BABE8FC6B9@DM6PR04MB6575.namprd04.prod.outlook.com>
-        <20210302132503.224670-1-avri.altman@wdc.com>
-        <20210302132503.224670-6-avri.altman@wdc.com>
-        <25da7378d5bf4c52443ae9b47f3fd778@codeaurora.org>
-        <57afb2b5d7edda61a40493d8545785b1@codeaurora.org>
-        <2038148563.21615949282962.JavaMail.epsvc@epcpadp4>
-        <CGME20210316083014epcas2p32d6b84e689cdbe06ee065c870b236d65@epcms2p4>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>> >> ---
->>>> >>  drivers/scsi/ufs/ufshpb.c | 14 ++++++++++++++
->>>> >>  drivers/scsi/ufs/ufshpb.h |  1 +
->>>> >>  2 files changed, 15 insertions(+)
->>>> >>
->>>> >> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
->>>> >> index 6f4fd22eaf2f..0744feb4d484 100644
->>>> >> --- a/drivers/scsi/ufs/ufshpb.c
->>>> >> +++ b/drivers/scsi/ufs/ufshpb.c
->>>> >> @@ -907,6 +907,7 @@ static int ufshpb_execute_umap_req(struct
->>>> >> ufshpb_lu *hpb,
->>>> >>
->>>> >>      blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_umap_req_compl_fn);
->>>> >>
->>>> >> +    hpb->stats.umap_req_cnt++;
->>>> >>      return 0;
->>>> >>  }
->>>> >>
->>>> >> @@ -1103,6 +1104,12 @@ static int ufshpb_issue_umap_req(struct
->>>> >> ufshpb_lu *hpb,
->>>> >>      return -EAGAIN;
->>>> >>  }
->>>> >>
->>>> >> +static int ufshpb_issue_umap_single_req(struct ufshpb_lu *hpb,
->>>> >> +                                    struct ufshpb_region *rgn)
->>>> >> +{
->>>> >> +    return ufshpb_issue_umap_req(hpb, rgn);
->>>> >> +}
->>>> >> +
->>>> >>  static int ufshpb_issue_umap_all_req(struct ufshpb_lu *hpb)
->>>> >>  {
->>>> >>      return ufshpb_issue_umap_req(hpb, NULL);
->>>> >> @@ -1115,6 +1122,10 @@ static void __ufshpb_evict_region(struct
->>>> >> ufshpb_lu *hpb,
->>>> >>      struct ufshpb_subregion *srgn;
->>>> >>      int srgn_idx;
->>>> >>
->>>> >> +
->>>> >> +    if (hpb->is_hcm && ufshpb_issue_umap_single_req(hpb, rgn))
->>>> >
->>>> > __ufshpb_evict_region() is called with rgn_state_lock held and IRQ
->>>> > disabled,
->>>> > when ufshpb_issue_umap_single_req() invokes blk_execute_rq_nowait(),
->>>> > below
->>>> > warning shall pop up every time, fix it?
->>>> >
->>>> > void blk_execute_rq_nowait(struct request_queue *q, struct gendisk
->>>> > *bd_disk,
->>>> >                  struct request *rq, int at_head,
->>>> >                          rq_end_io_fn *done)
->>>> > {
->>>> >       WARN_ON(irqs_disabled());
->>>> > ...
->>>> >
->>>> 
->>>> Moreover, since we are here with rgn_state_lock held and IRQ 
->>>> disabled,
->>>> in ufshpb_get_req(), rq = kmem_cache_alloc(hpb->map_req_cache,
->>>> GFP_KERNEL)
->>>> has the GFP_KERNEL flag, scheduling while atomic???
->>> I think your comment applies to  ufshpb_issue_umap_all_req as well,
->>> Which is called from slave_configure/scsi_add_lun.
->>> 
->>> Since the host-mode series is utilizing the framework laid by the 
->>> device-mode,
->>> Maybe you can add this comment to  Daejun's last version?
->> 
->> Hi Avri, Can Guo
->> 
->> I think ufshpb_issue_umap_single_req() can be moved to end of
->> ufshpb_evict_region().
->> Then we can avoid rgn_state_lock when it sends unmap command.
+On 3/16/21 10:17 PM, Bhaskar Chowdhury wrote:
 > 
->I am not the expert here, please you two fix it. I am just reporting
->what can be wrong. Anyways, ufshpb_issue_umap_single_req() should not
->be called with rgn_state_lock held - think about below (another deadly)
->scenario.
+> s/freqency/frequency/
 > 
->lock(rgn_state_lock)
->   ufshpb_issue_umap_single_req()
->     ufshpb_prep()
->        lock(rgn_state_lock)   <---------- recursive spin_lock
-> 
->BTW, @Daejun shouldn't we stop passthrough cmds from stepping
->into ufshpb_prep()? In current code, you are trying to use below
->check to block cmds other than write/discard/read, but a passthrough
->cmd can not be blocked by the check.
-> 
->          if (!ufshpb_is_write_or_discard_cmd(cmd) &&
->              !ufshpb_is_read_cmd(cmd) )
->                  return 0;
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-I found this problem too. I fixed it and submit next patch.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-if (blk_rq_is_scsi(cmd->request) ||
-	    (!ufshpb_is_write_or_discard_cmd(cmd) &&
-	    !ufshpb_is_read_cmd(cmd)))
-		return 0;
-
-
-Thanks,
-Daejun
-
->Thanks,
->Can Guo.
+> ---
+>  drivers/watchdog/orion_wdt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->> 
->> Thanks,
->> Daejun
->> 
->> 
->>> Thanks,
->>> Avri
->>> 
->>>> 
->>>> Can Guo.
->>>> 
->>>> > Thanks.
->>>> > Can Guo.
->>>> >
->>>> >> +            return;
->>>> >> +
->>>> >>      lru_info = &hpb->lru_info;
->>>> >>
->>>> >>      dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n",
->>>> >> rgn->rgn_idx);
->>>> >> @@ -1855,6 +1866,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
->>>> >>  ufshpb_sysfs_attr_show_func(rb_active_cnt);
->>>> >>  ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
->>>> >>  ufshpb_sysfs_attr_show_func(map_req_cnt);
->>>> >> +ufshpb_sysfs_attr_show_func(umap_req_cnt);
->>>> >>
->>>> >>  static struct attribute *hpb_dev_stat_attrs[] = {
->>>> >>      &dev_attr_hit_cnt.attr,
->>>> >> @@ -1863,6 +1875,7 @@ static struct attribute *hpb_dev_stat_attrs[] =
->>>> >> {
->>>> >>      &dev_attr_rb_active_cnt.attr,
->>>> >>      &dev_attr_rb_inactive_cnt.attr,
->>>> >>      &dev_attr_map_req_cnt.attr,
->>>> >> +    &dev_attr_umap_req_cnt.attr,
->>>> >>      NULL,
->>>> >>  };
->>>> >>
->>>> >> @@ -1978,6 +1991,7 @@ static void ufshpb_stat_init(struct ufshpb_lu
->>>> >> *hpb)
->>>> >>      hpb->stats.rb_active_cnt = 0;
->>>> >>      hpb->stats.rb_inactive_cnt = 0;
->>>> >>      hpb->stats.map_req_cnt = 0;
->>>> >> +    hpb->stats.umap_req_cnt = 0;
->>>> >>  }
->>>> >>
->>>> >>  static void ufshpb_param_init(struct ufshpb_lu *hpb)
->>>> >> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
->>>> >> index bd4308010466..84598a317897 100644
->>>> >> --- a/drivers/scsi/ufs/ufshpb.h
->>>> >> +++ b/drivers/scsi/ufs/ufshpb.h
->>>> >> @@ -186,6 +186,7 @@ struct ufshpb_stats {
->>>> >>      u64 rb_inactive_cnt;
->>>> >>      u64 map_req_cnt;
->>>> >>      u64 pre_req_cnt;
->>>> >> +    u64 umap_req_cnt;
->>>> >>  };
->>>> >>
->>>> >>  struct ufshpb_lu {
->>> 
->>> 
->>> 
+> diff --git a/drivers/watchdog/orion_wdt.c b/drivers/watchdog/orion_wdt.c
+> index 4ddb4ea2e4a3..127eefc9161d 100644
+> --- a/drivers/watchdog/orion_wdt.c
+> +++ b/drivers/watchdog/orion_wdt.c
+> @@ -174,7 +174,7 @@ static int armadaxp_wdt_clock_init(struct platform_device *pdev,
+>  		return ret;
+>  	}
 > 
+> -	/* Fix the wdt and timer1 clock freqency to 25MHz */
+> +	/* Fix the wdt and timer1 clock frequency to 25MHz */
+>  	val = WDT_AXP_FIXED_ENABLE_BIT | TIMER1_FIXED_ENABLE_BIT;
+>  	atomic_io_modify(dev->reg + TIMER_CTRL, val, val);
 > 
->  
+> --
+> 2.30.2
+> 
+
