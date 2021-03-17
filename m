@@ -2,164 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766E533EF5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:19:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E12033EF65
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbhCQLSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 07:18:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53643 "EHLO
+        id S231209AbhCQLUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 07:20:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39293 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230308AbhCQLSQ (ORCPT
+        by vger.kernel.org with ESMTP id S229960AbhCQLUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 07:18:16 -0400
+        Wed, 17 Mar 2021 07:20:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615979895;
+        s=mimecast20190719; t=1615980022;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7ICFrnCYA6WU/nyO91rMalKC6CyiSa92VZImMiLqiv4=;
-        b=G+dZe7KXSMCZlQ18zc3jN1JhY7immZx2TnMhUMbeFsiek6w8GI11T0ZfXDuWmLf7RMbeyT
-        FRKInE0KYUklwT2d53UXqSI+UGCohhKQHej4revogRIQfJPQROzvcc9pjnc1neBczLyDte
-        TfryFGTAEAzOnibAPJ/LjW3lQVOicEg=
+        bh=QaEGLo4X+NXL8tELF4RXIvdfb6RpjHhM2xKHX0rYoII=;
+        b=eRpkPngK4+BG1H7lUe73NJJDxiVf2Ocx/7rbcfkPYmP/7JErzSOU5OF76KoRpos8G4BhaD
+        QPiyiUX7i09RUklsynEVmFCYM6zqXkkbEg/HEuzcqFCyZFwhFWPV2zRW4KenDIjBUMPIYF
+        cAQwvBRSQBQNZt1y4Vy0BHi94aXqykI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-98-amxZMycaOZKvHSdvPBTREg-1; Wed, 17 Mar 2021 07:18:13 -0400
-X-MC-Unique: amxZMycaOZKvHSdvPBTREg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+ us-mta-151-R_kdP-m1Nz2gWLDFCNTusQ-1; Wed, 17 Mar 2021 07:20:20 -0400
+X-MC-Unique: R_kdP-m1Nz2gWLDFCNTusQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 87B43101371C;
-        Wed, 17 Mar 2021 11:18:11 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 09D6F83DD21;
+        Wed, 17 Mar 2021 11:20:19 +0000 (UTC)
 Received: from [10.36.112.124] (ovpn-112-124.ams2.redhat.com [10.36.112.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9FC03629DA;
-        Wed, 17 Mar 2021 11:18:08 +0000 (UTC)
-Subject: Re: [PATCH v3 3/3] mm: fs: Invalidate BH LRU during page migration
-To:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        joaodias@google.com, surenb@google.com, cgoldswo@codeaurora.org,
-        willy@infradead.org, mhocko@suse.com, vbabka@suse.cz,
-        linux-fsdevel@vger.kernel.org
-References: <20210310161429.399432-1-minchan@kernel.org>
- <20210310161429.399432-3-minchan@kernel.org>
- <1bdc93e5-e5d4-f166-c467-5b94ac347857@redhat.com>
- <1527f16f-4376-a10d-4e72-041926cf38da@redhat.com>
- <YEuiI44IRjBOQ8Wy@google.com> <YFD4cz6+0U2jgTzH@google.com>
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8683A5D9C0;
+        Wed, 17 Mar 2021 11:20:16 +0000 (UTC)
+Subject: Re: [RFC] mm: Enable generic pfn_valid() to handle early sections
+ with memmap holes
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1615174073-10520-1-git-send-email-anshuman.khandual@arm.com>
+ <745496f5-e099-8780-e42e-f347b55e8476@redhat.com>
+ <72902ace-5f00-b484-aa71-e6841fb7d082@arm.com>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat GmbH
-Message-ID: <239b45ff-dad0-6cd0-4f6e-18159185cd6d@redhat.com>
-Date:   Wed, 17 Mar 2021 12:18:07 +0100
+Message-ID: <2541b182-1f1c-c1ed-c15c-9d71160eb6fe@redhat.com>
+Date:   Wed, 17 Mar 2021 12:20:15 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <YFD4cz6+0U2jgTzH@google.com>
+In-Reply-To: <72902ace-5f00-b484-aa71-e6841fb7d082@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.03.21 19:26, Minchan Kim wrote:
-> On Fri, Mar 12, 2021 at 09:17:23AM -0800, Minchan Kim wrote:
->> On Fri, Mar 12, 2021 at 10:33:48AM +0100, David Hildenbrand wrote:
->>> On 12.03.21 10:03, David Hildenbrand wrote:
->>>> On 10.03.21 17:14, Minchan Kim wrote:
->>>>> ffer_head LRU caches will be pinned and thus cannot be migrated.
->>>>> This can prevent CMA allocations from succeeding, which are often used
->>>>> on platforms with co-processors (such as a DSP) that can only use
->>>>> physically contiguous memory. It can also prevent memory
->>>>> hot-unplugging from succeeding, which involves migrating at least
->>>>> MIN_MEMORY_BLOCK_SIZE bytes of memory, which ranges from 8 MiB to 1
->>>>> GiB based on the architecture in use.
->>>>
->>>> Actually, it's memory_block_size_bytes(), which can be even bigger
->>>> (IIRC, 128MiB..2 GiB on x86-64) that fails to get offlined. But that
->>>> will prevent bigger granularity (e.g., a whole DIMM) from getting unplugged.
->>>>
->>>>>
->>>>> Correspondingly, invalidate the BH LRU caches before a migration
->>>>> starts and stop any buffer_head from being cached in the LRU caches,
->>>>> until migration has finished.
->>>>
->>>> Sounds sane to me.
->>>>
+On 11.03.21 05:29, Anshuman Khandual wrote:
+> 
+> 
+> On 3/8/21 2:07 PM, David Hildenbrand wrote:
+>> On 08.03.21 04:27, Anshuman Khandual wrote:
+>>> Platforms like arm and arm64 have redefined pfn_valid() because their early
+>>> memory sections might have contained memmap holes caused by memblock areas
+>>> tagged with MEMBLOCK_NOMAP, which should be skipped while validating a pfn
+>>> for struct page backing. This scenario could be captured with a new option
+>>> CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES and then generic pfn_valid() can be
+>>> improved to accommodate such platforms. This reduces overall code footprint
+>>> and also improves maintainability.
 >>>
->>> Diving a bit into the code, I am wondering:
+>>> Commit 4f5b0c178996 ("arm, arm64: move free_unused_memmap() to generic mm")
+>>> had used CONFIG_HAVE_ARCH_PFN_VALID to gate free_unused_memmap(), which in
+>>> turn had expanded its scope to new platforms like arc and m68k. Rather lets
+>>> restrict back the scope for free_unused_memmap() to arm and arm64 platforms
+>>> using this new config option i.e CONFIG_HAVE_EARLY_SECTION_MEMMAP.
 >>>
+>>> While here, it exports the symbol memblock_is_map_memory() to build drivers
+>>> that depend on pfn_valid() but does not have the required visibility. After
+>>> this new config is in place, just drop CONFIG_HAVE_ARCH_PFN_VALID from both
+>>> arm and arm64 platforms.
 >>>
->>> a) Are these buffer head pages marked as movable?
->>>
->>> IOW, are they either PageLRU() or __PageMovable()?
->>>
->>>
->>> b) How do these pages end up on ZONE_MOVABLE or MIGRATE_CMA?
->>>
->>> I assume these pages come via
->>> alloc_page_buffers()->alloc_buffer_head()->kmem_cache_zalloc(GFP_NOFS |
->>> __GFP_ACCOUNT)
->>>
+>>> Cc: Russell King <linux@armlinux.org.uk>
+>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>>> Cc: Will Deacon <will@kernel.org>
+>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>> Cc: Mike Rapoport <rppt@kernel.org>
+>>> Cc: David Hildenbrand <david@redhat.com>
+>>> Cc: linux-arm-kernel@lists.infradead.org
+>>> Cc: linux-kernel@vger.kernel.org
+>>> Cc: linux-mm@kvack.org
+>>> Suggested-by: David Hildenbrand <david@redhat.com>
+>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> ---
+>>> This applies on 5.12-rc2 along with arm64 pfn_valid() fix patches [1] and
+>>> has been lightly tested on the arm64 platform. The idea to represent this
+>>> unique situation on the arm and arm64 platforms with a config option was
+>>> proposed by David H during an earlier discussion [2]. This still does not
+>>> build on arm platform due to pfn_valid() resolution errors. Nonetheless
+>>> wanted to get some early feedback whether the overall approach here, is
+>>> acceptable or not.
 >>
->> It's indirect it was not clear
+>> It might make sense to keep the arm variant for now. The arm64 variant is where the magic happens and where we missed updates when working on the generic variant.
+> 
+> Sure, will drop the changes on arm.
+> 
 >>
->> try_to_release_page
->>      try_to_free_buffers
->>          buffer_busy
->>              failed
+>> The generic variant really only applies to 64bit targets where we have SPARSEMEM. See x86 as an example.
+> 
+> Okay.
+> 
 >>
->> Yeah, comment is misleading. This one would be better.
+>> [...]
 >>
->>          /*
->>           * the refcount of buffer_head in bh_lru prevents dropping the
->>           * attached page(i.e., try_to_free_buffers) so it could cause
->>           * failing page migrationn.
->>           * Skip putting upcoming bh into bh_lru until migration is done.
->>           */
+>>>    /*
+>>> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+>>> index 47946cec7584..93532994113f 100644
+>>> --- a/include/linux/mmzone.h
+>>> +++ b/include/linux/mmzone.h
+>>> @@ -1409,8 +1409,23 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
+>>>    }
+>>>    #endif
+>>>    +bool memblock_is_map_memory(phys_addr_t addr);
+>>> +
+>>>    #ifndef CONFIG_HAVE_ARCH_PFN_VALID
+>>>    static inline int pfn_valid(unsigned long pfn)
+>>> +{
+>>> +    phys_addr_t addr = PFN_PHYS(pfn);
+>>> +
+>>> +    /*
+>>> +     * Ensure the upper PAGE_SHIFT bits are clear in the
+>>> +     * pfn. Else it might lead to false positives when
+>>> +     * some of the upper bits are set, but the lower bits
+>>> +     * match a valid pfn.
+>>> +     */
+>>> +    if (PHYS_PFN(addr) != pfn)
+>>> +        return 0;
+>>
+>> I think this should be fine for other archs as well.
+>>
+>>> +
+>>> +#ifdef CONFIG_SPARSEMEM
+>>
+>> Why do we need the ifdef now? If that's to cover the arm case, then please consider the arm64 case only for now.
+> 
+> Yes, it is not needed.
+> 
+>>
+>>>    {
+>>>        struct mem_section *ms;
+>>>    @@ -1423,7 +1438,14 @@ static inline int pfn_valid(unsigned long pfn)
+>>>         * Traditionally early sections always returned pfn_valid() for
+>>>         * the entire section-sized span.
+>>>         */
+>>> -    return early_section(ms) || pfn_section_valid(ms, pfn);
+>>> +    if (early_section(ms))
+>>> +        return IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ?
+>>> +            memblock_is_map_memory(pfn << PAGE_SHIFT) : 1;
+>>> +
+>>> +    return pfn_section_valid(ms, pfn);
+>>> +}
+>>> +#endif
+>>> +    return 1;
+>>>    }
+>>>    #endif
+>>>    diff --git a/mm/Kconfig b/mm/Kconfig
+>>> index 24c045b24b95..0ec20f661b3f 100644
+>>> --- a/mm/Kconfig
+>>> +++ b/mm/Kconfig
+>>> @@ -135,6 +135,16 @@ config HAVE_FAST_GUP
+>>>    config ARCH_KEEP_MEMBLOCK
+>>>        bool
+>>>    +config HAVE_EARLY_SECTION_MEMMAP_HOLES
+>>> +    depends on ARCH_KEEP_MEMBLOCK && SPARSEMEM_VMEMMAP
+>>> +    def_bool n
+>>> +    help
+>>> +      Early sections on certain platforms might have portions which are
+>>> +      not backed with struct page mapping as their memblock entries are
+>>> +      marked with MEMBLOCK_NOMAP. When subscribed, this option enables
+>>> +      specific handling for those memory sections in certain situations
+>>> +      such as pfn_valid().
+>>> +
+>>>    # Keep arch NUMA mapping infrastructure post-init.
+>>>    config NUMA_KEEP_MEMINFO
+>>>        bool
+>>> diff --git a/mm/memblock.c b/mm/memblock.c
+>>> index afaefa8fc6ab..d9fa2e62ab7a 100644
+>>> --- a/mm/memblock.c
+>>> +++ b/mm/memblock.c
+>>> @@ -1744,6 +1744,7 @@ bool __init_memblock memblock_is_map_memory(phys_addr_t addr)
+>>>            return false;
+>>>        return !memblock_is_nomap(&memblock.memory.regions[i]);
+>>>    }
+>>> +EXPORT_SYMBOL(memblock_is_map_memory);
+>>>      int __init_memblock memblock_search_pfn_nid(unsigned long pfn,
+>>>                 unsigned long *start_pfn, unsigned long *end_pfn)
+>>> @@ -1926,7 +1927,7 @@ static void __init free_unused_memmap(void)
+>>>        unsigned long start, end, prev_end = 0;
+>>>        int i;
+>>>    -    if (!IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) ||
+>>> +    if (!IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ||
+>>>            IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
+>>>            return;
+>>>   
+>>
+>> With
+>>
+>> commit 1f90a3477df3ff1a91e064af554cdc887c8f9e5e
+>> Author: Dan Williams <dan.j.williams@intel.com>
+>> Date:   Thu Feb 25 17:17:05 2021 -0800
+>>
+>>      mm: teach pfn_to_online_page() about ZONE_DEVICE section collisions
+>>
+>> (still in -next I think)
+> 
+> Already has merged mainline.
+> 
+>>
+>> You'll also have to take care of pfn_to_online_page().
+>>
+> 
+> Something like this would work ?
+> 
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 5ba51a8bdaeb..19812deb807f 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -309,6 +309,11 @@ struct page *pfn_to_online_page(unsigned long pfn)
+>           * Save some code text when online_section() +
+>           * pfn_section_valid() are sufficient.
+>           */
+> +       if (IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES)) {
+> +               if (early_section(ms) && !memblock_is_map_memory(PFN_PHYS(pfn)))
+> +                       return NULL;
+> +       }
+> +
+>          if (IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) && !pfn_valid(pfn))
+>                  return NULL;
 > 
 
-Thanks, that makes more sense to me now :)
+Sorry for the late reply, just stumbled over this again.
 
-> Hi Andrew,
-> 
-> Could you fold this comment fix patch? If you prefer formal patch,
-> let me know. I will resend it.
-> 
-> Thank you.
-> 
->  From 0774f21e2dc8220fc2be80c25f711cb061363519 Mon Sep 17 00:00:00 2001
-> From: Minchan Kim <minchan@kernel.org>
-> Date: Fri, 12 Mar 2021 09:17:34 -0800
-> Subject: [PATCH] comment fix
-> 
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> ---
->   fs/buffer.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/buffer.c b/fs/buffer.c
-> index ca9dd736bcb8..8602dcbe0327 100644
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -1265,8 +1265,9 @@ static void bh_lru_install(struct buffer_head *bh)
->   
->   	check_irqs_on();
->   	/*
-> -	 * buffer_head in bh_lru could increase refcount of the page
-> -	 * until it will be invalidated. It causes page migraion failure.
-> +	 * the refcount of buffer_head in bh_lru prevents dropping the
-> +	 * attached page(i.e., try_to_free_buffers) so it could cause
-> +	 * failing page migratoin.
-
-s/migratoin/migration/
-
->   	 * Skip putting upcoming bh into bh_lru until migration is done.
->   	 */
->   	if (lru_cache_disabled())
-> 
-
-Acked-by: David Hildenbrand <david@redhat.com>
+I think, yes. I do wonder if we then still need the 
+CONFIG_HAVE_ARCH_PFN_VALID handling below - are there any custom 
+pfn_valid() implementation with SPARSE remaining? I don't think so.
 
 -- 
 Thanks,
