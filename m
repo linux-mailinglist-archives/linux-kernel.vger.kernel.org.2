@@ -2,302 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2CE33E935
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:47:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 844D033E942
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhCQFrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 01:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhCQFqi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 01:46:38 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8106FC06174A;
-        Tue, 16 Mar 2021 22:46:38 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so735967pjv.1;
-        Tue, 16 Mar 2021 22:46:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=sFTz8R2vigLKi9iWMm18EDY9PtezCXHbF1qxsbTA9V8=;
-        b=kF9n2d9+uTFBuq2VaPeXXOyF8Qnw1Wsqzb7UKEXl7ar5PrLbwd81nsHSLfxkTVnISc
-         +aXQilVPfyfwK44D51PHoVex0TA1TPmC5yROYAtk5/cWEu0NJaxjaIKTV82p7wDXu48H
-         eGEfJjAB7swZi1FGw/A1cKBUeKM3puivg64cJMimefTVBOwVIUjs3wrelmPY2qhBPKvM
-         Mlb5FAQgk8+sfP8ZqpdF9fJLdVjTQ5fJW4d0wG82iON+8xSnqJHEygMj5nwAUhB/urvB
-         bC8jVOerxWilrEloQm+MyCipAiKexn7GicaUl2sqkrE6Gn/GYZvJPCmBcU6jmntoJbrX
-         GyQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=sFTz8R2vigLKi9iWMm18EDY9PtezCXHbF1qxsbTA9V8=;
-        b=bXfV/2qHCxjHTuXMuiXcu20UY4GkFbgCdrQg9YcEqq66uwJ4+6CfDAv1BuhtuxMfEM
-         iZCej1br8/IKlkzt1Gbod4h0V9rJ0Qk7lkQlfTgT6q+6icBS07NiomyYq2dLMx4/ymZP
-         ml6o3qdOeiu0T/UBXrNBLwCwMbHBMScYriQ8ySxgi0kwn95I3bEc19Fj9NaHHOZSmlOH
-         ZC6xEHWeVIm2JI9gvq4t+pebsdPd/iNSrpPTCUO6cjVqgpl5uu6aPJJQ0bbVqttC6SkL
-         xeC7EQmI55vyfbVENIVhLmGuwjX3WXrh3iEluYBpGNv+GDSMKrZV/Kg6+0ZN4WXpE3JG
-         JAig==
-X-Gm-Message-State: AOAM533turufVoFXQ4la5n/8KUWy0LaEnZShuyFtllP8Vxf88bMpVSZW
-        4dcB8NHcU6mnqWzEUrNliQFuKGf/DW8=
-X-Google-Smtp-Source: ABdhPJyUgQR7mBw9H3mhAkzBcPXVCK0KCgfJTy/xGnHVDgoL/DbAKl8A/M7m1DsNAdhvsQmkHpXT3g==
-X-Received: by 2002:a17:902:9786:b029:e6:508a:7b8c with SMTP id q6-20020a1709029786b02900e6508a7b8cmr2928412plp.44.1615959997715;
-        Tue, 16 Mar 2021 22:46:37 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.6])
-        by smtp.googlemail.com with ESMTPSA id gw20sm1183198pjb.3.2021.03.16.22.46.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 16 Mar 2021 22:46:36 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>
-Subject: [PATCH] KVM: arm: memcg awareness
-Date:   Wed, 17 Mar 2021 13:46:24 +0800
-Message-Id: <1615959984-7122-1-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
+        id S230006AbhCQFst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 01:48:49 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:28234 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229953AbhCQFsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 01:48:35 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F0fMz3RQ5z9vBLs;
+        Wed, 17 Mar 2021 06:48:31 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 5HAfcpzaS9zh; Wed, 17 Mar 2021 06:48:31 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F0fMz2JZBz9vBLr;
+        Wed, 17 Mar 2021 06:48:31 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 434728B7F7;
+        Wed, 17 Mar 2021 06:48:31 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id G8uQhGY3jGja; Wed, 17 Mar 2021 06:48:30 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 82F468B768;
+        Wed, 17 Mar 2021 06:48:18 +0100 (CET)
+Subject: Re: [PATCH v2] mm: Move mem_init_print_info() into mm_init()
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org,
+        Guo Ren <guoren@kernel.org>, sparclinux@vger.kernel.org,
+        linux-riscv@lists.infradead.org, Jonas Bonn <jonas@southpole.se>,
+        linux-s390@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-hexagon@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-csky@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org,
+        openrisc@lists.librecores.org,
+        linux-arm-kernel@lists.infradead.org,
+        Richard Henderson <rth@twiddle.net>,
+        linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        "David S. Miller" <davem@davemloft.net>
+References: <4d488195-7281-9238-b30d-9f89a6100fb9@csgroup.eu>
+ <20210317015210.33641-1-wangkefeng.wang@huawei.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <3f6959d6-1f37-8baf-a12e-3fbda6a17c7d@csgroup.eu>
+Date:   Wed, 17 Mar 2021 06:48:15 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210317015210.33641-1-wangkefeng.wang@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
 
-KVM allocations in the arm kvm code which are tied to the life 
-of the VM process should be charged to the VM process's cgroup.
-This will help the memcg controler to do the right decisions.
 
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- arch/arm64/kvm/arm.c               |  5 +++--
- arch/arm64/kvm/hyp/pgtable.c       |  4 ++--
- arch/arm64/kvm/mmu.c               |  4 ++--
- arch/arm64/kvm/pmu-emul.c          |  2 +-
- arch/arm64/kvm/reset.c             |  2 +-
- arch/arm64/kvm/vgic/vgic-debug.c   |  2 +-
- arch/arm64/kvm/vgic/vgic-init.c    |  2 +-
- arch/arm64/kvm/vgic/vgic-irqfd.c   |  2 +-
- arch/arm64/kvm/vgic/vgic-its.c     | 14 +++++++-------
- arch/arm64/kvm/vgic/vgic-mmio-v3.c |  2 +-
- arch/arm64/kvm/vgic/vgic-v4.c      |  2 +-
- 11 files changed, 21 insertions(+), 20 deletions(-)
+Le 17/03/2021 à 02:52, Kefeng Wang a écrit :
+> mem_init_print_info() is called in mem_init() on each architecture,
+> and pass NULL argument, so using void argument and move it into mm_init().
+> 
+> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+> v2:
+> - Cleanup 'str' line suggested by Christophe and ACK
+> 
+>   arch/alpha/mm/init.c             |  1 -
+>   arch/arc/mm/init.c               |  1 -
+>   arch/arm/mm/init.c               |  2 --
+>   arch/arm64/mm/init.c             |  2 --
+>   arch/csky/mm/init.c              |  1 -
+>   arch/h8300/mm/init.c             |  2 --
+>   arch/hexagon/mm/init.c           |  1 -
+>   arch/ia64/mm/init.c              |  1 -
+>   arch/m68k/mm/init.c              |  1 -
+>   arch/microblaze/mm/init.c        |  1 -
+>   arch/mips/loongson64/numa.c      |  1 -
+>   arch/mips/mm/init.c              |  1 -
+>   arch/mips/sgi-ip27/ip27-memory.c |  1 -
+>   arch/nds32/mm/init.c             |  1 -
+>   arch/nios2/mm/init.c             |  1 -
+>   arch/openrisc/mm/init.c          |  2 --
+>   arch/parisc/mm/init.c            |  2 --
+>   arch/powerpc/mm/mem.c            |  1 -
+>   arch/riscv/mm/init.c             |  1 -
+>   arch/s390/mm/init.c              |  2 --
+>   arch/sh/mm/init.c                |  1 -
+>   arch/sparc/mm/init_32.c          |  2 --
+>   arch/sparc/mm/init_64.c          |  1 -
+>   arch/um/kernel/mem.c             |  1 -
+>   arch/x86/mm/init_32.c            |  2 --
+>   arch/x86/mm/init_64.c            |  2 --
+>   arch/xtensa/mm/init.c            |  1 -
+>   include/linux/mm.h               |  2 +-
+>   init/main.c                      |  1 +
+>   mm/page_alloc.c                  | 10 +++++-----
+>   30 files changed, 7 insertions(+), 42 deletions(-)
+> 
 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 7f06ba7..8040874 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -278,9 +278,10 @@ long kvm_arch_dev_ioctl(struct file *filp,
- struct kvm *kvm_arch_alloc_vm(void)
- {
- 	if (!has_vhe())
--		return kzalloc(sizeof(struct kvm), GFP_KERNEL);
-+		return kzalloc(sizeof(struct kvm), GFP_KERNEL_ACCOUNT);
- 
--	return vzalloc(sizeof(struct kvm));
-+	return __vmalloc(sizeof(struct kvm),
-+			GFP_KERNEL_ACCOUNT | __GFP_ZERO);
- }
- 
- void kvm_arch_free_vm(struct kvm *kvm)
-diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-index 926fc07..a0845d3 100644
---- a/arch/arm64/kvm/hyp/pgtable.c
-+++ b/arch/arm64/kvm/hyp/pgtable.c
-@@ -366,7 +366,7 @@ static int hyp_map_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
- 	if (WARN_ON(level == KVM_PGTABLE_MAX_LEVELS - 1))
- 		return -EINVAL;
- 
--	childp = (kvm_pte_t *)get_zeroed_page(GFP_KERNEL);
-+	childp = (kvm_pte_t *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
- 	if (!childp)
- 		return -ENOMEM;
- 
-@@ -401,7 +401,7 @@ int kvm_pgtable_hyp_init(struct kvm_pgtable *pgt, u32 va_bits)
- {
- 	u64 levels = ARM64_HW_PGTABLE_LEVELS(va_bits);
- 
--	pgt->pgd = (kvm_pte_t *)get_zeroed_page(GFP_KERNEL);
-+	pgt->pgd = (kvm_pte_t *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
- 	if (!pgt->pgd)
- 		return -ENOMEM;
- 
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 8711894..8c9dc49 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -370,7 +370,7 @@ int kvm_init_stage2_mmu(struct kvm *kvm, struct kvm_s2_mmu *mmu)
- 		return -EINVAL;
- 	}
- 
--	pgt = kzalloc(sizeof(*pgt), GFP_KERNEL);
-+	pgt = kzalloc(sizeof(*pgt), GFP_KERNEL_ACCOUNT);
- 	if (!pgt)
- 		return -ENOMEM;
- 
-@@ -1244,7 +1244,7 @@ int kvm_mmu_init(void)
- 		goto out;
- 	}
- 
--	hyp_pgtable = kzalloc(sizeof(*hyp_pgtable), GFP_KERNEL);
-+	hyp_pgtable = kzalloc(sizeof(*hyp_pgtable), GFP_KERNEL_ACCOUNT);
- 	if (!hyp_pgtable) {
- 		kvm_err("Hyp mode page-table not allocated\n");
- 		err = -ENOMEM;
-diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
-index e32c6e1..00cf750 100644
---- a/arch/arm64/kvm/pmu-emul.c
-+++ b/arch/arm64/kvm/pmu-emul.c
-@@ -967,7 +967,7 @@ int kvm_arm_pmu_v3_set_attr(struct kvm_vcpu *vcpu, struct kvm_device_attr *attr)
- 		mutex_lock(&vcpu->kvm->lock);
- 
- 		if (!vcpu->kvm->arch.pmu_filter) {
--			vcpu->kvm->arch.pmu_filter = bitmap_alloc(nr_events, GFP_KERNEL);
-+			vcpu->kvm->arch.pmu_filter = bitmap_alloc(nr_events, GFP_KERNEL_ACCOUNT);
- 			if (!vcpu->kvm->arch.pmu_filter) {
- 				mutex_unlock(&vcpu->kvm->lock);
- 				return -ENOMEM;
-diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
-index bd354cd..3cbcf6b 100644
---- a/arch/arm64/kvm/reset.c
-+++ b/arch/arm64/kvm/reset.c
-@@ -110,7 +110,7 @@ static int kvm_vcpu_finalize_sve(struct kvm_vcpu *vcpu)
- 		    vl > SVE_VL_ARCH_MAX))
- 		return -EIO;
- 
--	buf = kzalloc(SVE_SIG_REGS_SIZE(sve_vq_from_vl(vl)), GFP_KERNEL);
-+	buf = kzalloc(SVE_SIG_REGS_SIZE(sve_vq_from_vl(vl)), GFP_KERNEL_ACCOUNT);
- 	if (!buf)
- 		return -ENOMEM;
- 
-diff --git a/arch/arm64/kvm/vgic/vgic-debug.c b/arch/arm64/kvm/vgic/vgic-debug.c
-index f38c40a..e6a01f2 100644
---- a/arch/arm64/kvm/vgic/vgic-debug.c
-+++ b/arch/arm64/kvm/vgic/vgic-debug.c
-@@ -92,7 +92,7 @@ static void *vgic_debug_start(struct seq_file *s, loff_t *pos)
- 		goto out;
- 	}
- 
--	iter = kmalloc(sizeof(*iter), GFP_KERNEL);
-+	iter = kmalloc(sizeof(*iter), GFP_KERNEL_ACCOUNT);
- 	if (!iter) {
- 		iter = ERR_PTR(-ENOMEM);
- 		goto out;
-diff --git a/arch/arm64/kvm/vgic/vgic-init.c b/arch/arm64/kvm/vgic/vgic-init.c
-index 052917d..27d1513 100644
---- a/arch/arm64/kvm/vgic/vgic-init.c
-+++ b/arch/arm64/kvm/vgic/vgic-init.c
-@@ -134,7 +134,7 @@ static int kvm_vgic_dist_init(struct kvm *kvm, unsigned int nr_spis)
- 	struct kvm_vcpu *vcpu0 = kvm_get_vcpu(kvm, 0);
- 	int i;
- 
--	dist->spis = kcalloc(nr_spis, sizeof(struct vgic_irq), GFP_KERNEL);
-+	dist->spis = kcalloc(nr_spis, sizeof(struct vgic_irq), GFP_KERNEL_ACCOUNT);
- 	if (!dist->spis)
- 		return  -ENOMEM;
- 
-diff --git a/arch/arm64/kvm/vgic/vgic-irqfd.c b/arch/arm64/kvm/vgic/vgic-irqfd.c
-index 79f8899..475059b 100644
---- a/arch/arm64/kvm/vgic/vgic-irqfd.c
-+++ b/arch/arm64/kvm/vgic/vgic-irqfd.c
-@@ -139,7 +139,7 @@ int kvm_vgic_setup_default_irq_routing(struct kvm *kvm)
- 	u32 nr = dist->nr_spis;
- 	int i, ret;
- 
--	entries = kcalloc(nr, sizeof(*entries), GFP_KERNEL);
-+	entries = kcalloc(nr, sizeof(*entries), GFP_KERNEL_ACCOUNT);
- 	if (!entries)
- 		return -ENOMEM;
- 
-diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
-index 40cbaca..bd90730 100644
---- a/arch/arm64/kvm/vgic/vgic-its.c
-+++ b/arch/arm64/kvm/vgic/vgic-its.c
-@@ -48,7 +48,7 @@ static struct vgic_irq *vgic_add_lpi(struct kvm *kvm, u32 intid,
- 	if (irq)
- 		return irq;
- 
--	irq = kzalloc(sizeof(struct vgic_irq), GFP_KERNEL);
-+	irq = kzalloc(sizeof(struct vgic_irq), GFP_KERNEL_ACCOUNT);
- 	if (!irq)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -332,7 +332,7 @@ int vgic_copy_lpi_list(struct kvm *kvm, struct kvm_vcpu *vcpu, u32 **intid_ptr)
- 	 * we must be careful not to overrun the array.
- 	 */
- 	irq_count = READ_ONCE(dist->lpi_list_count);
--	intids = kmalloc_array(irq_count, sizeof(intids[0]), GFP_KERNEL);
-+	intids = kmalloc_array(irq_count, sizeof(intids[0]), GFP_KERNEL_ACCOUNT);
- 	if (!intids)
- 		return -ENOMEM;
- 
-@@ -985,7 +985,7 @@ static int vgic_its_alloc_collection(struct vgic_its *its,
- 	if (!vgic_its_check_id(its, its->baser_coll_table, coll_id, NULL))
- 		return E_ITS_MAPC_COLLECTION_OOR;
- 
--	collection = kzalloc(sizeof(*collection), GFP_KERNEL);
-+	collection = kzalloc(sizeof(*collection), GFP_KERNEL_ACCOUNT);
- 	if (!collection)
- 		return -ENOMEM;
- 
-@@ -1029,7 +1029,7 @@ static struct its_ite *vgic_its_alloc_ite(struct its_device *device,
- {
- 	struct its_ite *ite;
- 
--	ite = kzalloc(sizeof(*ite), GFP_KERNEL);
-+	ite = kzalloc(sizeof(*ite), GFP_KERNEL_ACCOUNT);
- 	if (!ite)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -1150,7 +1150,7 @@ static struct its_device *vgic_its_alloc_device(struct vgic_its *its,
- {
- 	struct its_device *device;
- 
--	device = kzalloc(sizeof(*device), GFP_KERNEL);
-+	device = kzalloc(sizeof(*device), GFP_KERNEL_ACCOUNT);
- 	if (!device)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -1847,7 +1847,7 @@ void vgic_lpi_translation_cache_init(struct kvm *kvm)
- 		struct vgic_translation_cache_entry *cte;
- 
- 		/* An allocation failure is not fatal */
--		cte = kzalloc(sizeof(*cte), GFP_KERNEL);
-+		cte = kzalloc(sizeof(*cte), GFP_KERNEL_ACCOUNT);
- 		if (WARN_ON(!cte))
- 			break;
- 
-@@ -1888,7 +1888,7 @@ static int vgic_its_create(struct kvm_device *dev, u32 type)
- 	if (type != KVM_DEV_TYPE_ARM_VGIC_ITS)
- 		return -ENODEV;
- 
--	its = kzalloc(sizeof(struct vgic_its), GFP_KERNEL);
-+	its = kzalloc(sizeof(struct vgic_its), GFP_KERNEL_ACCOUNT);
- 	if (!its)
- 		return -ENOMEM;
- 
-diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-index 15a6c98..22ab4ba 100644
---- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-+++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-@@ -826,7 +826,7 @@ static int vgic_v3_insert_redist_region(struct kvm *kvm, uint32_t index,
- 	if (vgic_v3_rdist_overlap(kvm, base, size))
- 		return -EINVAL;
- 
--	rdreg = kzalloc(sizeof(*rdreg), GFP_KERNEL);
-+	rdreg = kzalloc(sizeof(*rdreg), GFP_KERNEL_ACCOUNT);
- 	if (!rdreg)
- 		return -ENOMEM;
- 
-diff --git a/arch/arm64/kvm/vgic/vgic-v4.c b/arch/arm64/kvm/vgic/vgic-v4.c
-index 66508b0..a80cc37 100644
---- a/arch/arm64/kvm/vgic/vgic-v4.c
-+++ b/arch/arm64/kvm/vgic/vgic-v4.c
-@@ -227,7 +227,7 @@ int vgic_v4_init(struct kvm *kvm)
- 	nr_vcpus = atomic_read(&kvm->online_vcpus);
- 
- 	dist->its_vm.vpes = kcalloc(nr_vcpus, sizeof(*dist->its_vm.vpes),
--				    GFP_KERNEL);
-+				    GFP_KERNEL_ACCOUNT);
- 	if (!dist->its_vm.vpes)
- 		return -ENOMEM;
- 
--- 
-2.7.4
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 89314651dd62..c2e0b3495c5a 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2373,7 +2373,7 @@ extern unsigned long free_reserved_area(void *start, void *end,
+>   					int poison, const char *s);
+>   
+>   extern void adjust_managed_page_count(struct page *page, long count);
+> -extern void mem_init_print_info(const char *str);
+> +extern void mem_init_print_info(void);
 
+Sorry I didn't see that in previous patch.
+
+'extern' keyword is pointless for function prototypes and is deprecated, you should remove it.
+
+That said,
+
+Reviewed-by: Christophe Leroy <christophe.leroy@c-s.fr> # focussed on powerpc
+
+>   
+>   extern void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
+>   
