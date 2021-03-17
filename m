@@ -2,91 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F9633F753
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:44:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FEE33F757
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232263AbhCQRo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbhCQRoS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:44:18 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CDEC06174A;
-        Wed, 17 Mar 2021 10:44:18 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 16so4204093ljc.11;
-        Wed, 17 Mar 2021 10:44:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mSBxrt8q9DwvAyZBfywSCWXzmfoomEQKl5omuxCNzII=;
-        b=Idr/9rQLPqul7i01/KOaoymxiOPXrsLsOEqDPuJlyYc69QQ0ilUZ/lTwIRF2RruyW7
-         cjzQMlgAlGYFMbj+Ph1Miujbudm8NavramFluaxtMEeGhXhRLaHlcyfHKkwv4SYsJJtI
-         rF460YQL76wItNdfmvRSQRNdaFQNlOfea0HS3OvY3SWyDSM9R6pfZk1JRGFn3CODDelv
-         D4t/Zm3j77R/3T9x9aQyBrH4ojRtrEHYGknz4xxPBmwlRBXIR3q+MdokSnhqmJ7DetOX
-         ytHJAav4qxCbQaOQynFcx0BHD/7Jhl+U1XAhKuKt9olpFKCGkFf23Y//hSJGI1LciqB5
-         Dpkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mSBxrt8q9DwvAyZBfywSCWXzmfoomEQKl5omuxCNzII=;
-        b=c8lR1o1MZ2j2GOeXbNeIsOJ5kmX3sv7z6WnhppGCJ7sxXdDWhH7Z8AblobbZ7A6ax7
-         YfpmT3JHi3remCiVBaWZllKowmPq2hYXMd752E37gkyMPSvWMECGLDo+sx3WprK0URyn
-         Z17QS5SYw5Za2tuKJJJPDlwIPpujAbCYYAb4QfB0gk5r/nChS+MSihcQy00dohWzwRfA
-         ojba+/KOPlVZ8VTDFkxf2uA2W1S/9PV6aPeAu87cRWeUl7FpMlg5euZTjlPbnjDJiPx1
-         Rv5BCwIEoRoEAmYTvmc+Wil4OMj3ncPKj4XhB6Fe8SW8vAZpQvs5cNUQVdOmvRRm0wuR
-         hPJg==
-X-Gm-Message-State: AOAM530VuKFLkoNJMkmGMdVFWFHQMUbA7Qm/wPBBaZltsNcQGwaV2mXX
-        YbkuWpzkK2mLhcweUB8zRiI=
-X-Google-Smtp-Source: ABdhPJyFL0v6HaUzAfe1jE2ZqT9UQc02bio2NiVOkXwzCpQ/IQUCZdf2mELXuzdVML9HSEFCkVdvJg==
-X-Received: by 2002:a2e:557:: with SMTP id 84mr3075252ljf.480.1616003056785;
-        Wed, 17 Mar 2021 10:44:16 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id f25sm3448156lfh.226.2021.03.17.10.44.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 10:44:16 -0700 (PDT)
-Subject: Re: [PATCH v15 2/2] drm/tegra: dc: Extend debug stats with total
- number of events
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20210311172255.25213-1-digetx@gmail.com>
- <20210311172255.25213-3-digetx@gmail.com>
- <20210314221130.GB2733@qmqm.qmqm.pl>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c68ea34c-6b9f-61ce-a58a-8def27a1127a@gmail.com>
-Date:   Wed, 17 Mar 2021 20:44:15 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232421AbhCQRpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:45:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232537AbhCQRpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 13:45:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70D4064F0C
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 17:45:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616003121;
+        bh=8Tj3I72LOIK6tGuJySNUpX/YpMZm0lEhjA0kPdspS2M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TwuYHZC3p1sJh9532eVEf9MmSLSSIlLSwkcC7r5E8hR4vFvwqoGnrVGDXlN0htlG5
+         9P1Uocs7y5BiRW4r3L7/iLQ3VG/P2NRRyKFdS0cvBZVIWEWlZEK1+MA1sPo96BW4EF
+         /jsn1PbdXCZLaoXAr0y7MGod2LagmOH0ZsGc9feM/GEpyRUFUxcc19lRdUByLxVaJF
+         d2Pc2zzAw02DUaQJpBUMDkNIzHGbJExuAF43SzAyNUTGmxMNKC8Nf36qPhi3d4l5ZO
+         E4elGY2g1AdCymvs0FwEJUjxyd5UJ/qeS2TfgsCK3/k398BlFOrFY+KkXfiG0GYfKF
+         pS/XYUd4W3owQ==
+Received: by mail-ej1-f48.google.com with SMTP id p7so4009320eju.6
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:45:21 -0700 (PDT)
+X-Gm-Message-State: AOAM530IDoEWAvCG0delZ1hT4UC4bQHvINnMbggFHRAovxDoVzVoOud3
+        Yw8G9cOVr+JU9XGwaBGAQ/CqBPi0ASkXVyIkexsUJg==
+X-Google-Smtp-Source: ABdhPJyG3JGQxjCqucEkDMgzctVaiZggmcu1+XhtQwlSQl66Bv+Vns3Nl0Z9qJqd0QqCWboDs4Xmx+D3EsRC5AWPXc8=
+X-Received: by 2002:a17:906:7e12:: with SMTP id e18mr38033207ejr.316.1616003119842;
+ Wed, 17 Mar 2021 10:45:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210314221130.GB2733@qmqm.qmqm.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210225112245.607c70ec13cf8d279390e89e@kernel.org>
+ <161469871251.49483.9142858308048988638.stgit@devnote2> <20210317235522.f327f2a8f43af2e27e5bccea@kernel.org>
+ <YFIttoNvw1TTMR3a@hirez.programming.kicks-ass.net>
+In-Reply-To: <YFIttoNvw1TTMR3a@hirez.programming.kicks-ass.net>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 17 Mar 2021 10:45:08 -0700
+X-Gmail-Original-Message-ID: <CALCETrW6=UTa6DmrPHcjkbpNTBNoTxkxn=kqX2FMnHWcmZYs=g@mail.gmail.com>
+Message-ID: <CALCETrW6=UTa6DmrPHcjkbpNTBNoTxkxn=kqX2FMnHWcmZYs=g@mail.gmail.com>
+Subject: Re: [PATCH -tip 0/3] x86/kprobes: Remoev single-step trap from x86 kprobes
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.03.2021 01:11, Michał Mirosław пишет:
-> On Thu, Mar 11, 2021 at 08:22:55PM +0300, Dmitry Osipenko wrote:
->> It's useful to know the total number of underflow events and currently
->> the debug stats are getting reset each time CRTC is being disabled. Let's
->> account the overall number of events that doesn't get a reset.
-> [...]
-> 
-> Looks good. It seems independent from the other patch.
-> 
-> Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-> 
+On Wed, Mar 17, 2021 at 9:27 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Mar 17, 2021 at 11:55:22PM +0900, Masami Hiramatsu wrote:
+> > Hi Andy,
+> >
+> > Would you think you still need this series to remove iret to kernel?
+>
+> They're an improvement anyway, let me queue them so that they don't get
+> lost.
+>
+> I'll line them up for tip/x86/core unless anybody else thinks of a
+> better place for them and tells me in time ;-)
 
-This patch was created in order to help with debugging of the bandwidth
-management, but technically it's independent. Thank you for the review.
+I agree.  The new code is quite nice.  I'm still not quite sure what
+I'm doing with IRET, but thank you very much for the kprobe
+improvements.
