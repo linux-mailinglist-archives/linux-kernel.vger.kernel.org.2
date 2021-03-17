@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E7633E8D8
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7E833E8D9
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCQFOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 01:14:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46830 "EHLO
+        id S229972AbhCQFOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 01:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229962AbhCQFOP (ORCPT
+        with ESMTP id S229979AbhCQFOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 01:14:15 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF02C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 22:14:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=xVb9Z3C8bKi+BlcriFEqPTf9+usx4e/evvS7bsiKw2g=; b=ihzuLRhT842wOeWeQKZ3jPsLwq
-        pzxewLTKtBPkmSOO4m/gjSeqVm6q8SeTubliqa8qMN34eRcNFzHn43YaCS3+hbXxfmth3O+E6veLk
-        8OLHsuiRyYVHylcBX78a4+9R19qPYZ09cx+V6eS83Ke/zpqEzAztPVXr+leMSeX1m18nlVRdRgLBR
-        XtALi10rMJySbjtjMdxoIHiYACyKRpd+gdLMs3ghLRfKd2zMulxGBAb8I67KlyWXTxVDjrYqG+fHh
-        TBv4V/+s0rvkKSojbzC2swht41HOagM9PIE9HjcWKdTrThsmJQuwIsiSYFkPvw3z+8GWgP0q1ys6W
-        okwxQOuQ==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMOVX-001bTu-Py; Wed, 17 Mar 2021 05:14:12 +0000
-Subject: Re: [PATCH] kernel: Fix a typo in the file up.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20210317032732.3260835-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <b5d63656-d01f-2e66-d630-1179b2653b53@infradead.org>
-Date:   Tue, 16 Mar 2021 22:14:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <20210317032732.3260835-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 17 Mar 2021 01:14:18 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36AFBC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 22:14:17 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id l3so302827pfc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 22:14:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CNdGMKqM0pQjbLelZc2KiS3A+5IeroB8GexfPgW33zQ=;
+        b=TmZoZANKCbUzvYSCuu4tjz9Bzddgny2LMOa5H1sRP7Wxx8uuhohlb1a3hXvBAENyX0
+         aShFNO/ASaCOGZKhT2ctrEYhV6n0w1tz0UuzmGHCAeQWGniBI4Dk0XBmgE/nSQBLOGb/
+         Gi8iO+FW+nLrvrRc6GOdOpz9+cmY7uf76EFxZARRAUFnK7VNINsnXpwfA7A1RS5nVTgF
+         7rrTASfr/QpecMXavnF1HagwNhvCCIc05BgJh4C0aOPykHIa6VDQbbgKPnw2Q3irDstp
+         gaUpUUO22k3edr6SMaVENWAip9dylik5QOWuComOHrM3LR4omDvpBuRgUjmEPAhAqWRR
+         x/Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=CNdGMKqM0pQjbLelZc2KiS3A+5IeroB8GexfPgW33zQ=;
+        b=fjTi+eQcwSS6mhpdfrBkpCwYY9Ar2ZOHV2cwIMx1ByLblEFSrtbqaBFo/AMKJdgx7N
+         srQli8sD46tOqs64mlPsoLo3EyCEleKeSMEy65nhBo1m4jH9Cn4fuxT7DZtGNkBfP+3S
+         XXUNg4Tfxr6OpXdLi+TBLPm+4BJGp2mXhReisXw5k9I5LTiVEeF//bAxPUa/O/R3JI6+
+         VSnNr/VoyVi/tat5KyRVdkNQZ1LytoOK+5wGyCDrpnv1KYyc5burQ+DhOpbIMxOS4fQH
+         DQnFZv1QOESwEHnNhciz8zJWe3DxZFO6rTK0Q2aaB2jGjhFqW9ED6WW+o/0OJVYGm+eV
+         wLSw==
+X-Gm-Message-State: AOAM530Hp/xOy1dV4+n+J4Csam4rGzvHfzZzx8fVvxdqntM0LfRtom7d
+        msn92Jfebl0I3wJpD3th6g5UEA==
+X-Google-Smtp-Source: ABdhPJx25sOT3lNg8mxIzP8z3booUHLSdwDwXkB5viC5Gl5IpBe7X1pW34ymCnnaL1K9kU0v6sIZfQ==
+X-Received: by 2002:aa7:908c:0:b029:209:aacd:d8b with SMTP id i12-20020aa7908c0000b0290209aacd0d8bmr2748693pfa.74.1615958056674;
+        Tue, 16 Mar 2021 22:14:16 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id 14sm18249938pfo.141.2021.03.16.22.14.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 22:14:15 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 22:14:15 -0700 (PDT)
+X-Google-Original-Date: Tue, 16 Mar 2021 22:14:14 PDT (-0700)
+Subject:     Re: [PATCH] riscv: Fix spelling mistake "initialisation" -> "initialization
+In-Reply-To: <20210316093054.GA1081018@LEGION>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        musamaanjum@gmail.com, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     musamaanjum@gmail.com
+Message-ID: <mhng-884ba68c-f5f0-4808-869a-611720dec5ee@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/21 8:27 PM, Bhaskar Chowdhury wrote:
-> 
-> s/condtions/conditions/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
+On Tue, 16 Mar 2021 02:30:54 PDT (-0700), musamaanjum@gmail.com wrote:
+> There is a spelling mistake in a comment. Fix it.
+>
+> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
 > ---
->  Adding Andrew in the to list, becasue this file has no maintainer attached
-
-                                 because
-
-> 
->  kernel/up.c | 2 +-
+>  arch/riscv/kernel/smp.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/up.c b/kernel/up.c
-> index c6f323dcd45b..1b9b135e77dd 100644
-> --- a/kernel/up.c
-> +++ b/kernel/up.c
-> @@ -67,7 +67,7 @@ EXPORT_SYMBOL(on_each_cpu_mask);
-> 
+>
+> diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
+> index ea028d9e0d24..1ec014067855 100644
+> --- a/arch/riscv/kernel/smp.c
+> +++ b/arch/riscv/kernel/smp.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
 >  /*
->   * Preemption is disabled here to make sure the cond_func is called under the
-> - * same condtions in UP and SMP.
-> + * same conditions in UP and SMP.
->   */
->  void on_each_cpu_cond_mask(smp_cond_func_t cond_func, smp_call_func_t func,
->  			   void *info, bool wait, const struct cpumask *mask)
-> --
+> - * SMP initialisation and IPI support
+> + * SMP initialization and IPI support
+>   * Based on arch/arm64/kernel/smp.c
+>   *
+>   * Copyright (C) 2012 ARM Ltd.
 
-
--- 
-~Randy
-
+The internet seems to suggest that both of these are words and that they mean
+the same thing.
