@@ -2,102 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6234F33EF56
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:16:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C3733EF59
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbhCQLQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 07:16:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32029 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229960AbhCQLP4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 07:15:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615979756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GFyEZNWKonRodWhCRVOl3ZSa9WnT0DrLppB1MwFbx2w=;
-        b=R7YG6ClG09J5dmyRQFPDewe0BOMGhaa4KoOlmeepZMeo15mIybwR08L3G2CRWtG0bYb14A
-        c6Kw6ta1zTxYK8Bx0UsimQGbGZno+1qEc2cOsbRMk5MgM+BQAWR0C66JagFxG/fBft1tIj
-        oehLvOVFAUZCTcuiB7n3pqxmqIJ0k4k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-359-BBbtoLJxNJW1XzY-sQAIjQ-1; Wed, 17 Mar 2021 07:15:54 -0400
-X-MC-Unique: BBbtoLJxNJW1XzY-sQAIjQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71C1B107B7C4;
-        Wed, 17 Mar 2021 11:15:51 +0000 (UTC)
-Received: from [10.36.112.124] (ovpn-112-124.ams2.redhat.com [10.36.112.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 170795D74F;
-        Wed, 17 Mar 2021 11:15:48 +0000 (UTC)
-Subject: Re: [PATCH v5 5/5] mm,page_alloc: Drop unnecessary checks from
- pfn_range_valid_contig
-To:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210317111251.17808-1-osalvador@suse.de>
- <20210317111251.17808-6-osalvador@suse.de>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <001bc29f-ba70-b8f3-c77d-61345e30c0d7@redhat.com>
-Date:   Wed, 17 Mar 2021 12:15:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231134AbhCQLRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 07:17:12 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:22797 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230511AbhCQLQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 07:16:48 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F0nfj2rTDzB09ZW;
+        Wed, 17 Mar 2021 12:16:45 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id iJOc5MavERfd; Wed, 17 Mar 2021 12:16:45 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F0nfj1D2GzB09ZV;
+        Wed, 17 Mar 2021 12:16:45 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5AA448B839;
+        Wed, 17 Mar 2021 12:16:46 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id U2BdR0nXF4_F; Wed, 17 Mar 2021 12:16:46 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7FD3B8B82F;
+        Wed, 17 Mar 2021 12:16:45 +0100 (CET)
+Subject: Re: [PATCH -next] powerpc: kernel/time.c - cleanup warnings
+To:     He Ying <heying24@huawei.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, npiggin@gmail.com,
+        msuchanek@suse.de, peterz@infradead.org, geert+renesas@glider.be,
+        kernelfans@gmail.com, frederic@kernel.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210317103438.177428-1-heying24@huawei.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <3f4d196b-0a8e-d4c9-cabe-591f5916a2b9@csgroup.eu>
+Date:   Wed, 17 Mar 2021 12:16:26 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210317111251.17808-6-osalvador@suse.de>
+In-Reply-To: <20210317103438.177428-1-heying24@huawei.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.03.21 12:12, Oscar Salvador wrote:
-> pfn_range_valid_contig() bails out when it finds an in-use page or a
-> hugetlb page, among other things.
-> We can drop the in-use page check since __alloc_contig_pages can migrate
-> away those pages, and the hugetlb page check can go too since
-> isolate_migratepages_range is now capable of dealing with hugetlb pages.
-> Either way, those checks are racy so let the end function handle it
-> when the time comes.
+
+
+Le 17/03/2021 à 11:34, He Ying a écrit :
+> We found these warnings in arch/powerpc/kernel/time.c as follows:
+> warning: symbol 'decrementer_max' was not declared. Should it be static?
+> warning: symbol 'rtc_lock' was not declared. Should it be static?
+> warning: symbol 'dtl_consumer' was not declared. Should it be static?
 > 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Suggested-by: David Hildenbrand <david@redhat.com>
+> Declare 'decrementer_max' in arch/powerpc/include/asm/time.h. And include
+> proper header in which 'rtc_lock' is declared. Move 'dtl_consumer'
+> definition behind "include <asm/dtl.h>" because 'dtl_consumer' is declared
+> there.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: He Ying <heying24@huawei.com>
 > ---
->   mm/page_alloc.c | 6 ------
->   1 file changed, 6 deletions(-)
+>   arch/powerpc/include/asm/time.h | 1 +
+>   arch/powerpc/kernel/time.c      | 7 +++----
+>   2 files changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 4cb455355f6d..50d73e68b79e 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8685,12 +8685,6 @@ static bool pfn_range_valid_contig(struct zone *z, unsigned long start_pfn,
+> diff --git a/arch/powerpc/include/asm/time.h b/arch/powerpc/include/asm/time.h
+> index 8dd3cdb25338..2cd2b50bedda 100644
+> --- a/arch/powerpc/include/asm/time.h
+> +++ b/arch/powerpc/include/asm/time.h
+> @@ -22,6 +22,7 @@ extern unsigned long tb_ticks_per_jiffy;
+>   extern unsigned long tb_ticks_per_usec;
+>   extern unsigned long tb_ticks_per_sec;
+>   extern struct clock_event_device decrementer_clockevent;
+> +extern u64 decrementer_max;
 >   
->   		if (PageReserved(page))
->   			return false;
+>   
+>   extern void generic_calibrate_decr(void);
+> diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
+> index b67d93a609a2..409967713ca6 100644
+> --- a/arch/powerpc/kernel/time.c
+> +++ b/arch/powerpc/kernel/time.c
+> @@ -55,6 +55,7 @@
+>   #include <linux/sched/cputime.h>
+>   #include <linux/sched/clock.h>
+>   #include <linux/processor.h>
+> +#include <linux/mc146818rtc.h>
+
+I don't think that's the good place. It has no link to powerpc, it is only by chance that it has the 
+same name.
+
+As rtc_lock is defined in powerpc time.c, I think you should declare it in powerpc asm/time.h
+
+
+>   #include <asm/trace.h>
+>   
+>   #include <asm/interrupt.h>
+> @@ -150,10 +151,6 @@ bool tb_invalid;
+>   u64 __cputime_usec_factor;
+>   EXPORT_SYMBOL(__cputime_usec_factor);
+>   
+> -#ifdef CONFIG_PPC_SPLPAR
+> -void (*dtl_consumer)(struct dtl_entry *, u64);
+> -#endif
 > -
-> -		if (page_count(page) > 0)
-> -			return false;
-> -
-> -		if (PageHuge(page))
-> -			return false;
->   	}
->   	return true;
->   }
+>   static void calc_cputime_factors(void)
+>   {
+>   	struct div_result res;
+> @@ -179,6 +176,8 @@ static inline unsigned long read_spurr(unsigned long tb)
+>   
+>   #include <asm/dtl.h>
+>   
+> +void (*dtl_consumer)(struct dtl_entry *, u64);
+> +
+>   /*
+>    * Scan the dispatch trace log and count up the stolen time.
+>    * Should be called with interrupts disabled.
 > 
-
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
--- 
-Thanks,
-
-David / dhildenb
-
