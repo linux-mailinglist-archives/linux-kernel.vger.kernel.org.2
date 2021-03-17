@@ -2,125 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C3733EF59
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766E533EF5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:19:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbhCQLRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 07:17:12 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:22797 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230511AbhCQLQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 07:16:48 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F0nfj2rTDzB09ZW;
-        Wed, 17 Mar 2021 12:16:45 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id iJOc5MavERfd; Wed, 17 Mar 2021 12:16:45 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F0nfj1D2GzB09ZV;
-        Wed, 17 Mar 2021 12:16:45 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5AA448B839;
-        Wed, 17 Mar 2021 12:16:46 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id U2BdR0nXF4_F; Wed, 17 Mar 2021 12:16:46 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7FD3B8B82F;
-        Wed, 17 Mar 2021 12:16:45 +0100 (CET)
-Subject: Re: [PATCH -next] powerpc: kernel/time.c - cleanup warnings
-To:     He Ying <heying24@huawei.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, npiggin@gmail.com,
-        msuchanek@suse.de, peterz@infradead.org, geert+renesas@glider.be,
-        kernelfans@gmail.com, frederic@kernel.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210317103438.177428-1-heying24@huawei.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <3f4d196b-0a8e-d4c9-cabe-591f5916a2b9@csgroup.eu>
-Date:   Wed, 17 Mar 2021 12:16:26 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231194AbhCQLSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 07:18:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53643 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230308AbhCQLSQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 07:18:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615979895;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ICFrnCYA6WU/nyO91rMalKC6CyiSa92VZImMiLqiv4=;
+        b=G+dZe7KXSMCZlQ18zc3jN1JhY7immZx2TnMhUMbeFsiek6w8GI11T0ZfXDuWmLf7RMbeyT
+        FRKInE0KYUklwT2d53UXqSI+UGCohhKQHej4revogRIQfJPQROzvcc9pjnc1neBczLyDte
+        TfryFGTAEAzOnibAPJ/LjW3lQVOicEg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-98-amxZMycaOZKvHSdvPBTREg-1; Wed, 17 Mar 2021 07:18:13 -0400
+X-MC-Unique: amxZMycaOZKvHSdvPBTREg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 87B43101371C;
+        Wed, 17 Mar 2021 11:18:11 +0000 (UTC)
+Received: from [10.36.112.124] (ovpn-112-124.ams2.redhat.com [10.36.112.124])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9FC03629DA;
+        Wed, 17 Mar 2021 11:18:08 +0000 (UTC)
+Subject: Re: [PATCH v3 3/3] mm: fs: Invalidate BH LRU during page migration
+To:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        joaodias@google.com, surenb@google.com, cgoldswo@codeaurora.org,
+        willy@infradead.org, mhocko@suse.com, vbabka@suse.cz,
+        linux-fsdevel@vger.kernel.org
+References: <20210310161429.399432-1-minchan@kernel.org>
+ <20210310161429.399432-3-minchan@kernel.org>
+ <1bdc93e5-e5d4-f166-c467-5b94ac347857@redhat.com>
+ <1527f16f-4376-a10d-4e72-041926cf38da@redhat.com>
+ <YEuiI44IRjBOQ8Wy@google.com> <YFD4cz6+0U2jgTzH@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <239b45ff-dad0-6cd0-4f6e-18159185cd6d@redhat.com>
+Date:   Wed, 17 Mar 2021 12:18:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210317103438.177428-1-heying24@huawei.com>
+In-Reply-To: <YFD4cz6+0U2jgTzH@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 17/03/2021 à 11:34, He Ying a écrit :
-> We found these warnings in arch/powerpc/kernel/time.c as follows:
-> warning: symbol 'decrementer_max' was not declared. Should it be static?
-> warning: symbol 'rtc_lock' was not declared. Should it be static?
-> warning: symbol 'dtl_consumer' was not declared. Should it be static?
+On 16.03.21 19:26, Minchan Kim wrote:
+> On Fri, Mar 12, 2021 at 09:17:23AM -0800, Minchan Kim wrote:
+>> On Fri, Mar 12, 2021 at 10:33:48AM +0100, David Hildenbrand wrote:
+>>> On 12.03.21 10:03, David Hildenbrand wrote:
+>>>> On 10.03.21 17:14, Minchan Kim wrote:
+>>>>> ffer_head LRU caches will be pinned and thus cannot be migrated.
+>>>>> This can prevent CMA allocations from succeeding, which are often used
+>>>>> on platforms with co-processors (such as a DSP) that can only use
+>>>>> physically contiguous memory. It can also prevent memory
+>>>>> hot-unplugging from succeeding, which involves migrating at least
+>>>>> MIN_MEMORY_BLOCK_SIZE bytes of memory, which ranges from 8 MiB to 1
+>>>>> GiB based on the architecture in use.
+>>>>
+>>>> Actually, it's memory_block_size_bytes(), which can be even bigger
+>>>> (IIRC, 128MiB..2 GiB on x86-64) that fails to get offlined. But that
+>>>> will prevent bigger granularity (e.g., a whole DIMM) from getting unplugged.
+>>>>
+>>>>>
+>>>>> Correspondingly, invalidate the BH LRU caches before a migration
+>>>>> starts and stop any buffer_head from being cached in the LRU caches,
+>>>>> until migration has finished.
+>>>>
+>>>> Sounds sane to me.
+>>>>
+>>>
+>>> Diving a bit into the code, I am wondering:
+>>>
+>>>
+>>> a) Are these buffer head pages marked as movable?
+>>>
+>>> IOW, are they either PageLRU() or __PageMovable()?
+>>>
+>>>
+>>> b) How do these pages end up on ZONE_MOVABLE or MIGRATE_CMA?
+>>>
+>>> I assume these pages come via
+>>> alloc_page_buffers()->alloc_buffer_head()->kmem_cache_zalloc(GFP_NOFS |
+>>> __GFP_ACCOUNT)
+>>>
+>>
+>> It's indirect it was not clear
+>>
+>> try_to_release_page
+>>      try_to_free_buffers
+>>          buffer_busy
+>>              failed
+>>
+>> Yeah, comment is misleading. This one would be better.
+>>
+>>          /*
+>>           * the refcount of buffer_head in bh_lru prevents dropping the
+>>           * attached page(i.e., try_to_free_buffers) so it could cause
+>>           * failing page migrationn.
+>>           * Skip putting upcoming bh into bh_lru until migration is done.
+>>           */
 > 
-> Declare 'decrementer_max' in arch/powerpc/include/asm/time.h. And include
-> proper header in which 'rtc_lock' is declared. Move 'dtl_consumer'
-> definition behind "include <asm/dtl.h>" because 'dtl_consumer' is declared
-> there.
+
+Thanks, that makes more sense to me now :)
+
+> Hi Andrew,
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: He Ying <heying24@huawei.com>
+> Could you fold this comment fix patch? If you prefer formal patch,
+> let me know. I will resend it.
+> 
+> Thank you.
+> 
+>  From 0774f21e2dc8220fc2be80c25f711cb061363519 Mon Sep 17 00:00:00 2001
+> From: Minchan Kim <minchan@kernel.org>
+> Date: Fri, 12 Mar 2021 09:17:34 -0800
+> Subject: [PATCH] comment fix
+> 
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
 > ---
->   arch/powerpc/include/asm/time.h | 1 +
->   arch/powerpc/kernel/time.c      | 7 +++----
->   2 files changed, 4 insertions(+), 4 deletions(-)
+>   fs/buffer.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/powerpc/include/asm/time.h b/arch/powerpc/include/asm/time.h
-> index 8dd3cdb25338..2cd2b50bedda 100644
-> --- a/arch/powerpc/include/asm/time.h
-> +++ b/arch/powerpc/include/asm/time.h
-> @@ -22,6 +22,7 @@ extern unsigned long tb_ticks_per_jiffy;
->   extern unsigned long tb_ticks_per_usec;
->   extern unsigned long tb_ticks_per_sec;
->   extern struct clock_event_device decrementer_clockevent;
-> +extern u64 decrementer_max;
+> diff --git a/fs/buffer.c b/fs/buffer.c
+> index ca9dd736bcb8..8602dcbe0327 100644
+> --- a/fs/buffer.c
+> +++ b/fs/buffer.c
+> @@ -1265,8 +1265,9 @@ static void bh_lru_install(struct buffer_head *bh)
 >   
->   
->   extern void generic_calibrate_decr(void);
-> diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
-> index b67d93a609a2..409967713ca6 100644
-> --- a/arch/powerpc/kernel/time.c
-> +++ b/arch/powerpc/kernel/time.c
-> @@ -55,6 +55,7 @@
->   #include <linux/sched/cputime.h>
->   #include <linux/sched/clock.h>
->   #include <linux/processor.h>
-> +#include <linux/mc146818rtc.h>
+>   	check_irqs_on();
+>   	/*
+> -	 * buffer_head in bh_lru could increase refcount of the page
+> -	 * until it will be invalidated. It causes page migraion failure.
+> +	 * the refcount of buffer_head in bh_lru prevents dropping the
+> +	 * attached page(i.e., try_to_free_buffers) so it could cause
+> +	 * failing page migratoin.
 
-I don't think that's the good place. It has no link to powerpc, it is only by chance that it has the 
-same name.
+s/migratoin/migration/
 
-As rtc_lock is defined in powerpc time.c, I think you should declare it in powerpc asm/time.h
-
-
->   #include <asm/trace.h>
->   
->   #include <asm/interrupt.h>
-> @@ -150,10 +151,6 @@ bool tb_invalid;
->   u64 __cputime_usec_factor;
->   EXPORT_SYMBOL(__cputime_usec_factor);
->   
-> -#ifdef CONFIG_PPC_SPLPAR
-> -void (*dtl_consumer)(struct dtl_entry *, u64);
-> -#endif
-> -
->   static void calc_cputime_factors(void)
->   {
->   	struct div_result res;
-> @@ -179,6 +176,8 @@ static inline unsigned long read_spurr(unsigned long tb)
->   
->   #include <asm/dtl.h>
->   
-> +void (*dtl_consumer)(struct dtl_entry *, u64);
-> +
->   /*
->    * Scan the dispatch trace log and count up the stolen time.
->    * Should be called with interrupts disabled.
+>   	 * Skip putting upcoming bh into bh_lru until migration is done.
+>   	 */
+>   	if (lru_cache_disabled())
 > 
+
+Acked-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Thanks,
+
+David / dhildenb
+
