@@ -2,129 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D5B833EAC6
+	by mail.lfdr.de (Postfix) with ESMTP id E93EE33EAC7
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:49:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbhCQHs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 03:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbhCQHsL (ORCPT
+        id S230353AbhCQHs2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Mar 2021 03:48:28 -0400
+Received: from mail.kingsoft.com ([114.255.44.145]:15481 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229944AbhCQHsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 03:48:11 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3C6C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 00:48:10 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id g8so978302qvx.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 00:48:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=btQk/571WPXOLRNGWmF0j/+OmLEhVuOUexCPHcpCZx0=;
-        b=QL8u6TGl+3a2WsVabpO4KATQNI6e9Hhu1B3qAUkU9UJ5GLQrAjbrXGIYLt+HggEwHk
-         wYiEI80YewbedAws5JcOE9V0fZbS+M4TKHCOY/0t+QqePgCf4137RKyAX81T2qqKMaz3
-         IR3Od4O3op9t3TxqwpkOACvI70wSNfSaJNnFmOB7J6RgzwSKwyPJHCUCIjvCwGGCad1X
-         1471nba0x4pth0NTbNrvEJnuqlMyFLPcCocgEGYmQetmeOEGm+iUHf5v80FMNRtTQCCq
-         b6XE00NVWL2SqSfRx2PBB5nxrZ5/Qqri4V3AsBGh9hUXUOenDX8NDAwanNNM7GR/9TCl
-         FK2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=btQk/571WPXOLRNGWmF0j/+OmLEhVuOUexCPHcpCZx0=;
-        b=obWck1BMW9NcxR8SXg0Ez+2jMut0SDo1W1nSykhNTQum6Ru8ijOWZ6CsBXUwPlggdj
-         h12x4KW46stR6ibqv+IrwBvF3T6ZMGH9vgdRNETD6e5ynEArM2nT/n2PpcmqrhTH2InC
-         M3gI+YXO3L3S8eJQswBHwzUzvlNJ+kUDmUB9X65eHcc/iDWFt7gZ1tkucMcRyi6YxGao
-         rRKz78r5PGlEQrUthkhaqpS9YryzRjqU4mZ0qBoURSzbJ8710RHTlPY+XFN25HgDYAMb
-         ddQKeWAit84zQZm3PfiJ0nfDogZImixHcld89vORRZSDEBV2kOqmz37/x+IFS48+0k6S
-         FzNA==
-X-Gm-Message-State: AOAM533L0hmvyVrdgYO9tpRmhCgxJMdXc+ORpz6gnilAXr3/cEi3AItf
-        JzzcEw2jyjIW1DMSITVsnuYTN9Cxa9ocW31i8JNWoQ==
-X-Google-Smtp-Source: ABdhPJxKysoN3vBI2CACYHFn97THSD/zihm3s6XrfUVyvAAdSCBB3dWitGdhszi6FKxipStzIhsBOK4PgeQxMLQDCt4=
-X-Received: by 2002:a05:6214:1870:: with SMTP id eh16mr4078540qvb.23.1615967289939;
- Wed, 17 Mar 2021 00:48:09 -0700 (PDT)
+        Wed, 17 Mar 2021 03:48:17 -0400
+X-AuditID: 0a580157-463ff70000021a79-27-6051ad662f1b
+Received: from mail.kingsoft.com (localhost [10.88.1.32])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id 2C.D1.06777.66DA1506; Wed, 17 Mar 2021 15:19:02 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
+ (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 17 Mar
+ 2021 15:48:13 +0800
+Date:   Wed, 17 Mar 2021 15:48:12 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     "HORIGUCHI =?UTF-8?B?TkFPWUE=?=(=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
+        <naoya.horiguchi@nec.com>, "Luck, Tony" <tony.luck@intel.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+CC:     Oscar Salvador <osalvador@suse.de>,
+        "david@redhat.com" <david@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
+        <yaoaili@kingsoft.com>, <sunhao2@kingsoft.com>
+Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
+Message-ID: <20210317154812.4173f423@alex-virtual-machine>
+In-Reply-To: <20210311085529.GA22268@hori.linux.bs1.fc.nec.co.jp>
+References: <20210303115710.2e9f8e23@alex-virtual-machine>
+        <20210303163912.3d508e0f@alex-virtual-machine>
+        <1a78e9abdc134e35a5efcbf6b2fd2263@intel.com>
+        <20210304101653.546a9da1@alex-virtual-machine>
+        <20210304121941.667047c3@alex-virtual-machine>
+        <20210304144524.795872d7@alex-virtual-machine>
+        <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
+        <20210305093016.40c87375@alex-virtual-machine>
+        <aee5176eafb54c88b19a5b2671d0a1fc@intel.com>
+        <20210310141042.4db9ea29@alex-virtual-machine>
+        <20210311085529.GA22268@hori.linux.bs1.fc.nec.co.jp>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <00000000000069802205bda22b7f@google.com> <CACT4Y+Yaq-zDh5FAzHt4g-5jXrXC3rSLw6CM=kjcfR6oxJ1+CA@mail.gmail.com>
- <CAK8P3a1qtHVBY47FfCa6R9+sObzMCwxkREii+O2g8PPopw87eQ@mail.gmail.com>
- <CACT4Y+aC0YWU6gM32S3NoT+-wR7B1-_rhPyh4w542h21UCRRGw@mail.gmail.com>
- <CAK8P3a0zA9pv005d_P_e64j4EwXDh75yC6gNGRVdyy-VzO+7Fw@mail.gmail.com>
- <20210316155102.GP1463@shell.armlinux.org.uk> <CAK8P3a3A=TVWWmog=1YsALUhsaSkqReNrao5OTRd5mwyd0pnig@mail.gmail.com>
- <CACT4Y+a0UxqLCYY8P2qNcS_19LmesXMJf=+DaCOBFVZyS0DkWQ@mail.gmail.com> <CAK8P3a3+hfb2so28xH4cJ_t8mf3H5U0oQJeNOWUAk5dOiQSdTw@mail.gmail.com>
-In-Reply-To: <CAK8P3a3+hfb2so28xH4cJ_t8mf3H5U0oQJeNOWUAk5dOiQSdTw@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 17 Mar 2021 08:47:58 +0100
-Message-ID: <CACT4Y+bwfWJxNaqfcfW7uw4EFFWKpRj-ktjkTkfFCLaZ=p2xDg@mail.gmail.com>
-Subject: Re: [syzbot] kernel panic: corrupted stack end in openat
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        syzbot <syzbot+0b06ef9b44d00d600183@syzkaller.appspotmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
+ (10.88.1.32)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFIsWRmVeSWpSXmKPExsXCFcGooJu2NjDB4N5yVYs569ewWXze8I/N
+        4uv6X8wW0zaKW1w41cBkcXnXHDaLe2v+s1pcOrCAyeJi4wFGizPTiiw2b5rKbPHmwj0Wix8b
+        HrM68Hp8b+1j8Vi85yWTx6ZVnWwemz5NYvd4d+4cu8eJGb9ZPF5c3cji8X7fVTaPzaerPT5v
+        kvM40fKFNYA7issmJTUnsyy1SN8ugStjztSnTAXf3SqePvrB3sB4wbKLkZNDQsBEYt/16Sxd
+        jFwcQgLTmSRmLJsB5bxilPjy/DdTFyMHB4uAqsSVSX4gDWxA5q57s1hBbBGBg4wSa68ygdQz
+        C8xgkTi57CMjSEJYwEviy/21jCC9vAJWEq/264KYnAKOEnvma0CM38giceLOGbA5/AJiEr1X
+        /jNBHGQv0bZlEdgYXgFBiZMzn7CA2MwCOhInVh1jhrC1JZYtfA1mCwkoShxe8osdoldJ4kj3
+        DDYIO1Zi2bxXrBMYhWchGTULyahZSEYtYGRexchSnJtuuIkREn3hOxjnNX3UO8TIxMF4iFGC
+        g1lJhNc0LyBBiDclsbIqtSg/vqg0J7X4EKM0B4uSOK9IFFBKID2xJDU7NbUgtQgmy8TBKdXA
+        1P/DJ/x0UuzHVFm+2NSyjayrZ0l78H1YFhLzPrlKen19jMSZXxcKfrvGflSb7X3kvez2Cjfv
+        /27XwnYKu5/pmLX2VPxF599fa3b4XfWQPP/0tyXfgiSGSyv6lXI1y+51OL5b2MP8VzlF7G7n
+        twd9D5dEtAsZnX05RXKJ1Wp/4+UqbQf/333wPMY36KedddKaiYIG8VECM/WMDj/IkHvHtHSm
+        24XXM7s18hi/NifJ6/ZkF3Qt858VtumT1CeW+dezPVw3NHwNemcU+9Unzqkhr6+2Ptx7cVeA
+        EVPoDpudXD79n++ZNgfs5v/pvmrRtMTo75775+m/Xqfd9dKu8a1HqPr6PUy7U7QemMr5pOQp
+        sRRnJBpqMRcVJwIA9czwZi0DAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 5:28 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Tue, Mar 16, 2021 at 5:13 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> >
-> > On Tue, Mar 16, 2021 at 5:03 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > >
-> > > On Tue, Mar 16, 2021 at 4:51 PM Russell King - ARM Linux admin
-> > > <linux@armlinux.org.uk> wrote:
-> > > > On Tue, Mar 16, 2021 at 04:44:45PM +0100, Arnd Bergmann wrote:
-> > > > > On Tue, Mar 16, 2021 at 11:17 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > > > > > The compiler is gcc version 10.2.1 20210110 (Debian 10.2.1-6)
-> > > > >
-> > > > > Ok, building with Ubuntu 10.2.1-1ubuntu1 20201207 locally, that's
-> > > > > the closest I have installed, and I think the Debian and Ubuntu versions
-> > > > > are generally quite close in case of gcc since they are maintained by
-> > > > > the same packagers.
-> > > >
-> > > > ... which shouldn't be a problem - that's just over 1/4 of the stack
-> > > > space. Could it be the syzbot's gcc is doing something weird and
-> > > > inflating the stack frames?
-> > >
-> > > It's possible, I think that's really unlikely given that it's just Debian's
-> > > gcc, which is as close to mainline as the version I was using.
-> > >
-> > > Uwe's DEBUG_STACKOVERFLOW patch from a while ago might
-> > > help if this was the problem though:
-> > > https://lore.kernel.org/linux-arm-kernel/20200108082913.29710-1-u.kleine-koenig@pengutronix.de/
-> > >
-> > > My best guess is something going wrong in the interrupt
-> > > that triggered the preempt_schedule() which ended up calling
-> > > task_stack_end_corrupted() in schedule_debug(), as you suggested
-> > > earlier.
-> >
-> > FWIW I see slightly larger frames with the config:
-> >
-> > 073ab64 <ima_calc_field_array_hash_tfm>:
-> > 8073ab64:       e1a0c00d        mov     ip, sp
-> > 8073ab68:       e92ddff0        push    {r4, r5, r6, r7, r8, r9, sl,
-> > fp, ip, lr, pc}
-> > 8073ab6c:       e24cb004        sub     fp, ip, #4
-> > 8073ab70:       e24ddfa7        sub     sp, sp, #668    ; 0x29c
->
-> Yes, this is the one that the compiler complained about when warning
-> for stack over 600 bytes. It's not called in this call chain though.
->
-> > page_alloc can also do reclaim, I had the impression that reclaim can
-> > be quite heavy-weight in all respects.
->
-> Yes, that is another possibility. What writable file systems or swap
-> do you normally have mounted that it could be writing to, and on
-> what storage device?
 
-The root fs is ext4 on virtio-blk.
+> 
+> Returning true means you stop walking when you find the first entry pointing
+> to a given pfn. But there could be multiple such entries, so if MCE SRAR is
+> triggered by memory access to the larger address in hwpoisoned entries, the
+> returned virtual address might be wrong.
+> 
 
-There are also several dozens of shrinkers that can be called during reclaim:
-https://elixir.bootlin.com/linux/latest/C/ident/unregister_shrinker
+I can't find the way to fix this, maybe the virtual address is contained in
+related register, but this is really beyong my knowledge.
+
+This is a v2 RFC patch, add support for thp and 1G huge page errors.
+
+Thanks
+Aili Yao
+
+From 31b685609610b3b06c8fd98d866913dbfeb7e159 Mon Sep 17 00:00:00 2001
+From: Aili Yao <yaoaili@kingsoft.com>
+Date: Wed, 17 Mar 2021 15:34:15 +0800
+Subject: [PATCH] fix invalid SIGBUS address for recovery fail
+
+Walk the current process pages and compare with the pfn, then get the
+user address and related page_shift.
+
+For thp pages, we can only split anonoums thp page, so I think there may
+be no race condition for walking and searching the thp error page for such
+case; For non anonymous thp, the page flag and pte will not be change. so
+when code goes into this place, it may be race condition for non-anonoums
+thp page or from a recovery fail for anonoums thp, the page status will
+not change, i am not so sure about this;
+
+For the case we don't find the related virtual address, Maybe sending one
+BUS_MCEERR_AR signal with invalid address NULL is a better option, but i am
+not sure.
+
+And this may get the wrong virtual address if process have multiple entry
+for a same page, I don't find a way to get it correct.
+
+Maybe other issues is not recognized.
+---
+ arch/x86/kernel/cpu/mce/core.c |  16 ++---
+ include/linux/mm.h             |   1 +
+ mm/memory-failure.c            | 145 ++++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 152 insertions(+), 10 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index db4afc5..1bf21cc 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -28,8 +28,12 @@
+ #include <linux/sysfs.h>
+ #include <linux/types.h>
+ #include <linux/slab.h>
++#include <linux/hugetlb.h>
++#include <linux/swap.h>
++#include <linux/swapops.h>
+ #include <linux/init.h>
+ #include <linux/kmod.h>
++#include <linux/pagewalk.h>
+ #include <linux/poll.h>
+ #include <linux/nmi.h>
+ #include <linux/cpu.h>
+@@ -1246,7 +1250,7 @@ static void kill_me_maybe(struct callback_head *cb)
+ 	struct task_struct *p = container_of(cb, struct task_struct, mce_kill_me);
+ 	int flags = MF_ACTION_REQUIRED;
+ 
+-	pr_err("Uncorrected hardware memory error in user-access at %llx", p->mce_addr);
++	pr_err("Uncorrected hardware memory error in user-access at %llx, %llx", p->mce_addr, p->mce_vaddr);
+ 
+ 	if (!p->mce_ripv)
+ 		flags |= MF_MUST_KILL;
+@@ -1258,14 +1262,8 @@ static void kill_me_maybe(struct callback_head *cb)
+ 		return;
+ 	}
+ 
+-	if (p->mce_vaddr != (void __user *)-1l) {
+-		pr_err("Memory error may not recovered: %#lx: Sending SIGBUS to %s:%d due to hardware memory corruption\n",
+-			p->mce_addr >> PAGE_SHIFT, p->comm, p->pid);
+-		force_sig_mceerr(BUS_MCEERR_AR, p->mce_vaddr, PAGE_SHIFT);
+-	} else {
+-		pr_err("Memory error not recovered");
+-		kill_me_now(cb);
+-	}
++	memory_failure_error(current, p->mce_addr >> PAGE_SHIFT);
++
+ }
+ 
+ static void queue_task_work(struct mce *m, int kill_current_task)
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index ecdf8a8..cff2f02 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -3046,6 +3046,7 @@ enum mf_flags {
+ 	MF_SOFT_OFFLINE = 1 << 3,
+ };
+ extern int memory_failure(unsigned long pfn, int flags);
++extern void memory_failure_error(struct task_struct *p, unsigned long pfn);
+ extern void memory_failure_queue(unsigned long pfn, int flags);
+ extern void memory_failure_queue_kick(int cpu);
+ extern int unpoison_memory(unsigned long pfn);
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 06f0061..aaf99a7 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -56,8 +56,10 @@
+ #include <linux/kfifo.h>
+ #include <linux/ratelimit.h>
+ #include <linux/page-isolation.h>
++#include <linux/pagewalk.h>
+ #include "internal.h"
+ #include "ras/ras_event.h"
++#include <linux/delay.h>
+ 
+ int sysctl_memory_failure_early_kill __read_mostly = 0;
+ 
+@@ -240,7 +242,7 @@ static int kill_proc(struct to_kill *tk, unsigned long pfn, int flags)
+ 	int ret = 0;
+ 
+ 	pr_err("Memory failure: %#lx: Sending SIGBUS to %s:%d due to hardware memory corruption\n",
+-			pfn, t->comm, t->pid);
++			tk->addr, t->comm, t->pid);
+ 
+ 	if (flags & MF_ACTION_REQUIRED) {
+ 		WARN_ON_ONCE(t != current);
+@@ -1417,6 +1419,7 @@ int memory_failure(unsigned long pfn, int flags)
+ try_again:
+ 	if (PageHuge(p))
+ 		return memory_failure_hugetlb(pfn, flags);
++
+ 	if (TestSetPageHWPoison(p)) {
+ 		pr_err("Memory failure: %#lx: already hardware poisoned\n",
+ 			pfn);
+@@ -1553,6 +1556,146 @@ int memory_failure(unsigned long pfn, int flags)
+ }
+ EXPORT_SYMBOL_GPL(memory_failure);
+ 
++static int pte_range(pte_t *ptep, unsigned long addr, unsigned long next, struct mm_walk *walk)
++{
++	u64 *buff = (u64 *)walk->private;
++	u64 pfn = buff[0];
++	pte_t pte = *ptep;
++
++	if (!pte_none(pte) && !pte_present(pte)) {
++		swp_entry_t swp_temp = pte_to_swp_entry(pte);
++		
++		printk("%s, %d \n", __FUNCTION__, __LINE__);
++		if (is_hwpoison_entry(swp_temp) && swp_offset(swp_temp) == pfn) {
++			printk("%s, %d \n", __FUNCTION__, __LINE__);
++			goto find;
++		}
++	} else if (pte_pfn(pte) == pfn) {
++		printk("%s, %d \n", __FUNCTION__, __LINE__);
++		goto find;
++	}
++
++	return 0;
++
++find:
++	buff[0] = addr;
++	buff[1] = PAGE_SHIFT;
++	return true;
++}
++
++static int pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
++			     struct mm_walk *walk)
++{
++	u64 *buff = (u64 *)walk->private;
++	struct page *page = (struct page *)buff[0];
++	u64 pfn = buff[1];
++	pmd_t pmd = *pmdp;
++
++	if (likely(!pmd_trans_huge(pmd)))
++		return 0;
++
++	if (pmd_none(pmd) || !pmd_present(pmd))
++		return 0;
++
++	if (pmd_page(pmd) != page)
++		return 0;
++
++	for (; addr != end; page++, addr += PAGE_SIZE) {
++		if (page_to_pfn(page) == pfn) {
++			printk("%s, %d \n", __FUNCTION__, __LINE__);
++			buff[0] = addr;
++			buff[1] = PAGE_SHIFT;
++			return true;
++		}
++	}
++
++	return 0;
++}
++
++static int hugetlb_range(pte_t *ptep, unsigned long hmask,
++				 unsigned long addr, unsigned long end,
++				 struct mm_walk *walk)
++{
++	u64 *buff = (u64 *)walk->private;
++	u64 pfn = buff[0];
++	pte_t pte =  huge_ptep_get(ptep);
++	struct page *page = pfn_to_page(pfn);
++
++	if (!huge_pte_none(pte) && !pte_present(pte)) {
++		swp_entry_t swp_temp = pte_to_swp_entry(pte);
++		printk("%s, %d \n", __FUNCTION__, __LINE__);
++		if (is_hwpoison_entry(swp_temp) && swp_offset(swp_temp) == pfn) {
++			printk("%s, %d \n", __FUNCTION__, __LINE__);
++			goto find;
++		}
++	}
++	if (pte_pfn(pte) == pfn) {
++		printk("%s, %d \n", __FUNCTION__, __LINE__);
++		goto find;
++	}
++	return 0;
++
++find:
++	buff[0] = addr;
++	buff[1] = (huge_page_size(page_hstate(page)) > PMD_SIZE) ? PUD_SHIFT : PMD_SHIFT;
++	return true;
++}
++
++void memory_failure_error(struct task_struct *p, unsigned long pfn)
++{
++	u64 buff[2] = {0};
++	struct page *page;
++	int ret = -1;
++	struct mm_walk_ops walk = {0};
++
++	if (p->mce_vaddr != (void __user *)-1l && p->mce_vaddr != (void __user *)0) {
++		printk("%s, %d \n", __FUNCTION__, __LINE__);
++		force_sig_mceerr(BUS_MCEERR_AR, p->mce_vaddr, PAGE_SHIFT);
++		return;
++	}
++
++	page = pfn_to_page(pfn);
++	if (!page)
++		goto force_sigbus;
++
++	if (is_zone_device_page(page))
++		goto force_sigbus;
++
++	page = compound_head(page);
++
++	if (PageHuge(page)) {
++		printk("%s, %d \n", __FUNCTION__, __LINE__);
++		walk.hugetlb_entry = hugetlb_range;
++		buff[0] = page_to_pfn(page);
++	} else if (PageTransHuge(page)) {
++		printk("%s, %d \n", __FUNCTION__, __LINE__);
++		walk.pmd_entry = pmd_range;
++		buff[0] = (u64)page;
++		buff[1] = pfn;
++	} else {
++		printk("%s, %d \n", __FUNCTION__, __LINE__);
++		walk.pte_entry = pte_range;
++		buff[0] = pfn;
++	}
++	msleep(1000);
++	mmap_read_lock(p->mm);
++	ret = walk_page_range(p->mm, 0, TASK_SIZE_MAX, &walk, (void *)buff);
++	mmap_read_unlock(p->mm);
++
++	pr_err("Memory error may not recovered: %#lx: Sending SIGBUS to %s:%d due to hardware memory corruption\n",
++	pfn, p->comm, p->pid);
++
++	if (ret) {
++		printk("%s, %d \n", __FUNCTION__, __LINE__);
++		force_sig_mceerr(BUS_MCEERR_AR, (void __user *)buff[0], buff[1]);
++	} else {
++force_sigbus:
++		printk("%s, %d \n", __FUNCTION__, __LINE__);
++		force_sig_mceerr(BUS_MCEERR_AR, (void __user *)0, PAGE_SHIFT);
++	}
++}
++EXPORT_SYMBOL_GPL(memory_failure_error);
++
+ #define MEMORY_FAILURE_FIFO_ORDER	4
+ #define MEMORY_FAILURE_FIFO_SIZE	(1 << MEMORY_FAILURE_FIFO_ORDER)
+ 
+-- 
+1.8.3.1
+
+
