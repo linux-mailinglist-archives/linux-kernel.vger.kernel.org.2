@@ -2,129 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F397833EF30
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 132BE33EF32
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbhCQLG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 07:06:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229979AbhCQLGt (ORCPT
+        id S231241AbhCQLHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 07:07:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31795 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231218AbhCQLHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 07:06:49 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302C5C06174A;
-        Wed, 17 Mar 2021 04:06:49 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A547645D;
-        Wed, 17 Mar 2021 12:06:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1615979206;
-        bh=tBP7VD5WThau02RaxGa18EeBpUVvfVzB0cm8HgluGnY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rJd8g6JAfQwACfhdLUnfpYlDJ3rFKKrQWfbsjyX1Ss+SD06jL9EluSkgrmrVjYZnL
-         Baq9j7ZiGv5xMvJNKZFlyCu/AcoB7WEwMiN/MB1HdjXscgd07UlW4XwTVOhBea64ET
-         LJFGb8BedaibMrLMb/i3Ipr3vLz2/yh5RZaM51gg=
-Date:   Wed, 17 Mar 2021 13:06:11 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo@jmondi.org>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: media: max9286: Describe gpio-hog
-Message-ID: <YFHio3hpaE3ugoLF@pendragon.ideasonboard.com>
-References: <20210315163028.173148-1-jacopo+renesas@jmondi.org>
- <20210315163028.173148-2-jacopo+renesas@jmondi.org>
- <YE/cdBtSx3cDIqCY@pendragon.ideasonboard.com>
- <20210317101412.srdzao52nxsvtq3r@uno.localdomain>
+        Wed, 17 Mar 2021 07:07:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615979232;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=IwjEMMT3RPtm6JyY0ASCQIpX+lhDqbTUqfP/62uVVEY=;
+        b=VrFPGLWL1r44ylhFjvVU+PMnOnRjnMuK9PrbX5UEEs4sOWn/SGb/u4Ntp6hzKEPxFIjiFX
+        X0kLtPHIjpxAq0dcbvb2ra1tWfomo8Q7FxbBCjO+j2a2qd7bklInY8aN3reRu69B5rL5hs
+        SjbxLzkxx0kcOO28E0rc8l1EEVv3e4E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-BjG_LOKEN1mdN0p7ad2jYg-1; Wed, 17 Mar 2021 07:07:08 -0400
+X-MC-Unique: BjG_LOKEN1mdN0p7ad2jYg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 637B61009446;
+        Wed, 17 Mar 2021 11:07:04 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-112-124.ams2.redhat.com [10.36.112.124])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3888B50FAF;
+        Wed, 17 Mar 2021 11:06:45 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Chris Zankel <chris@zankel.net>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Helge Deller <deller@gmx.de>, Hugh Dickins <hughd@google.com>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Jann Horn <jannh@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Xu <peterx@redhat.com>, Ram Pai <linuxram@us.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Rik van Riel <riel@surriel.com>,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH v1 0/5] mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to prefault/prealloc memory
+Date:   Wed, 17 Mar 2021 12:06:39 +0100
+Message-Id: <20210317110644.25343-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210317101412.srdzao52nxsvtq3r@uno.localdomain>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+Excessive details on MADV_POPULATE_(READ|WRITE) can be found in patch #2.
 
-On Wed, Mar 17, 2021 at 11:14:12AM +0100, Jacopo Mondi wrote:
-> On Tue, Mar 16, 2021 at 12:15:16AM +0200, Laurent Pinchart wrote:
-> > On Mon, Mar 15, 2021 at 05:30:25PM +0100, Jacopo Mondi wrote:
-> > > The MAX9286 GMSL deserializer features gpio controller capabilities,
-> > > as it provides 2 GPIO lines.
-> > >
-> > > As establishing a regulator that uses one of the GPIO lines and
-> > > enabling/disabling it at run-time in the max9286 won't work due to
-> > > a circular dependency on the gpio-controller/regulator creation, allow
-> > > the usage of a gpio-hog for that purpose.
-> > >
-> > > The usage of the gpio-hog is required in designs where the MAX9286
-> > > GPIO lines control the remote cameras power.
-> > >
-> > > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> >
-> > That's really a workaround until we can find a good solution, do we have
-> > to officially support it in the DT bindings ?
-> >
-> 
-> That's an interesting question. The 'good' solution implies resolving
-> the circular dependency on the regulator/gpio-controller creation and
-> I feel like it might take a while to find a proper solution.
+Now accompanied by minor adjustments and selftests/vm tests.
 
-How about not using a regulator in that case ? If a MAX9286 GPIO is used
-to controlled the camera power, we could describe that specifically in
-DT, and handle everything within the MAX9286 driver in that case. It
-could be considered as a bit of a hack, but it would be very localized,
-and I think that trying to fix it in a way that would involve the
-regulator framework would actually be worse as the complexity would be
-bigger, for little gain.
+RFCv2 -> v1
+- "mm: fix variable name in declaration of populate_vma_page_range()"
+-- Added
+- "mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to prefault ..."
+-- Fix detection of memory holes when we have to re-lookup the VMA
+-- Return -EHWPOISON to user space when we hit HW poisoned pages
+-- Make variable names in definition and declaration consistent
+- "MAINTAINERS: add tools/testing/selftests/vm/ to MEMORY MANAGEMENT"
+-- Added
+- "selftests/vm: add protection_keys_32 / protection_keys_64 to gitignore"
+-- Added
+- "selftests/vm: add test for MADV_POPULATE_(READ|WRITE)"
+-- Added
 
-> In the meantime, all designs like Eagle that control the camera power
-> through a MAX9286 gpio have to rely on this. I'll go with the majority
-> here: either we add this and upstream the gmsl .dtsi for eagle, or we
-> keep out-of-tree patches :/
+RFC -> RFCv2:
+- Fix re-locking (-> set "locked = 1;")
+- Don't mimic MAP_POPULATE semantics:
+--> Explicit READ/WRITE request instead of selecting it automatically,
+    which makes it more generic and better suited for some use cases (e.g., we
+    usually want to prefault shmem writable)
+--> Require proper access permissions
+- Introduce and use faultin_vma_page_range()
+--> Properly handle HWPOISON pages (FOLL_HWPOISON)
+--> Require proper access permissions (!FOLL_FORCE)
+- Let faultin_vma_page_range() check for compatible mappings/permissions
+- Extend patch description and add some performance numbers
 
-I don't mind having it upstream in the driver as a workaround, but I'd
-like to keep it out of the DT bindings as it shouldn't be considered as
-an officially supported option. Would that work for you ?
+David Hildenbrand (5):
+  mm: make variable names for populate_vma_page_range() consistent
+  mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to prefault/prealloc
+    memory
+  MAINTAINERS: add tools/testing/selftests/vm/ to MEMORY MANAGEMENT
+  selftests/vm: add protection_keys_32 / protection_keys_64 to gitignore
+  selftests/vm: add test for MADV_POPULATE_(READ|WRITE)
 
-> > > ---
-> > >  .../bindings/media/i2c/maxim,max9286.yaml        | 16 ++++++++++++++++
-> > >  1 file changed, 16 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> > > index ee16102fdfe7..9038300e373c 100644
-> > > --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> > > +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> > > @@ -177,6 +177,22 @@ properties:
-> > >
-> > >      additionalProperties: false
-> > >
-> > > +patternProperties:
-> > > +  "^(hog-[0-9]+|.+-hog(-[0-9]+)?)$":
-> > > +    type: object
-> > > +    properties:
-> > > +      gpio-hog: true
-> > > +      gpios: true
-> > > +      output-low: true
-> > > +      line-name: true
-> > > +
-> > > +    required:
-> > > +      - gpio-hog
-> > > +      - gpios
-> > > +      - output-low
-> > > +
-> > > +    additionalProperties: false
-> > > +
-> > >  required:
-> > >    - compatible
-> > >    - reg
+ MAINTAINERS                                |   1 +
+ arch/alpha/include/uapi/asm/mman.h         |   3 +
+ arch/mips/include/uapi/asm/mman.h          |   3 +
+ arch/parisc/include/uapi/asm/mman.h        |   3 +
+ arch/xtensa/include/uapi/asm/mman.h        |   3 +
+ include/uapi/asm-generic/mman-common.h     |   3 +
+ mm/gup.c                                   |  54 ++++
+ mm/internal.h                              |   5 +-
+ mm/madvise.c                               |  69 +++++
+ tools/testing/selftests/vm/.gitignore      |   3 +
+ tools/testing/selftests/vm/Makefile        |   1 +
+ tools/testing/selftests/vm/madv_populate.c | 342 +++++++++++++++++++++
+ tools/testing/selftests/vm/run_vmtests.sh  |  16 +
+ 13 files changed, 505 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/vm/madv_populate.c
 
 -- 
-Regards,
+2.29.2
 
-Laurent Pinchart
