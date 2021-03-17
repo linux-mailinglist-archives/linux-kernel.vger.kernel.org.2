@@ -2,111 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE7033ED0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C837A33ED12
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:33:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhCQJcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhCQJbk (ORCPT
+        id S229824AbhCQJcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:32:48 -0400
+Received: from mail-out.m-online.net ([212.18.0.9]:41352 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhCQJcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:31:40 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FA6C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:31:40 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id y1so2248018ljm.10
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:31:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j1JvQrYJAeTY2r8foioHnWU1JA8C4SZadDv1a3LsN+s=;
-        b=Dshl4/mLY+2y8/eaHHS6lolq9b33VAfEGJy0pKnf7R52ed2jlnzPZ/tlMkPI6hsR2k
-         imdlAfMONM6HW/2qZHOCPqFQcSRd2ij4NSrIYqCe7g9vaFz7bIqfO7SoYkz0hPgooduh
-         9ECFo7zKKRFwAGrvLLnnzdRDaOVy8ckKVbGGU5nG6nmVhDBpdfuYoREeBoDqlUQHn3gG
-         pNw5l+LxEmZmGr4o/WO51IMmcR6N3E/EgyCt73T8ThcjsoaZpJpy4Yvp3Q0nl6a/LrHj
-         sAIWX+GBIXFh+DPnfhWyj4DuUdnl5D8Cuq6gdFXcfsRfCATkdG1uu/F+7c9CZsbKJshv
-         jvIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j1JvQrYJAeTY2r8foioHnWU1JA8C4SZadDv1a3LsN+s=;
-        b=ESbUrz8mHoFrRrbOVR+tNxRs5OG2WiqJrZWqdvGL4XOCbz9z5JVBMLU3uxx5QFJqtn
-         cKogukiAEqGd7Hi4Ij8h3IYCNoHvCpSbgR2Q1FZnXXMLiWCPhXMGwjiBvutdF5GSLbKk
-         LYauu19N4bTuqcd8knZ1DtBLify7xQT4uA9NTVWDihA+b0BOO2E+PgUJAFv0HRhLnIVM
-         W4fJjkc7nPyEcHcnv9XPY5fYgLNGSVv/pZ5jo+oDhcFPekuFdvblH/VF18TH+RdqsbfC
-         2BNkV8dEnF4Sr8TGmKpCoJSFQ0gJP1orXZCmBvrVkK6lZaGkobczvrwDoPb+Vat6467A
-         Bf7w==
-X-Gm-Message-State: AOAM531J5YNynNMi4ivSujrX0RXBLUJ9dXA60/HBTPXu2Uj4uTOk89aa
-        5INIO/7VrPsndHFT1ahsMMgzcA==
-X-Google-Smtp-Source: ABdhPJyNfuEMCSNz8/hVScTKZYXXn0qF+hw3di3P3T1w/Q0cuhs93WfGVDIH4QxfoZvt4zGMFnGyaQ==
-X-Received: by 2002:a2e:868e:: with SMTP id l14mr1853124lji.479.1615973498694;
-        Wed, 17 Mar 2021 02:31:38 -0700 (PDT)
-Received: from localhost.localdomain (h-155-4-129-234.NA.cust.bahnhof.se. [155.4.129.234])
-        by smtp.gmail.com with ESMTPSA id j19sm3342054lfb.15.2021.03.17.02.31.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 02:31:37 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Liu Ying <victor.liu@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] firmware: imx: scu-pd: Update comments for single global power domain
-Date:   Wed, 17 Mar 2021 10:31:17 +0100
-Message-Id: <20210317093117.16091-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 17 Mar 2021 05:32:43 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4F0lLd61srz1qs3H;
+        Wed, 17 Mar 2021 10:32:41 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4F0lLd4X2xz1r1MT;
+        Wed, 17 Mar 2021 10:32:41 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id OUpL12vtdwYq; Wed, 17 Mar 2021 10:32:40 +0100 (CET)
+X-Auth-Info: LYzhXtsDzwoP8l6wMTCp3dtKemNxNs492NXkKUWXCRo=
+Received: from [10.88.0.186] (dslb-084-056-254-233.084.056.pools.vodafone-ip.de [84.56.254.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Wed, 17 Mar 2021 10:32:40 +0100 (CET)
+Subject: Re: [PATCH v5] rtc: rx6110: add ACPI bindings to I2C
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     johannes hahn <johannes-hahn@siemens.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        werner zeh <werner.zeh@siemens.com>,
+        henning schild <henning.schild@siemens.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        martin mantel <martin.mantel@siemens.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        kernel test robot <lkp@intel.com>
+References: <20210317075228.683184-1-ch@denx.de>
+ <CAHp75VdRFqK6Tp+dFCHb_6ZBR32mNRLgyRKaMky43aoj1MOjcw@mail.gmail.com>
+From:   Claudius Heine <ch@denx.de>
+Organization: Denx Software Engineering
+Message-ID: <3215fc7e-ae1d-4e51-51d0-24ff386419bd@denx.de>
+Date:   Wed, 17 Mar 2021 10:32:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VdRFqK6Tp+dFCHb_6ZBR32mNRLgyRKaMky43aoj1MOjcw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the introduction of the PM domain support for the scu-pd, the genpd
-framework has been continuously improved. More preciously, using a single
-global power domain can quite easily be deployed for imx platforms.
+Hi Andy,
 
-To avoid confusions, let's therefore make an update to the comments about
-the missing pieces.
+On 2021-03-17 10:28, Andy Shevchenko wrote:
+> On Wed, Mar 17, 2021 at 9:56 AM Claudius Heine <ch@denx.de> wrote:
+>>
+>> From: Johannes Hahn <johannes-hahn@siemens.com>
+>>
+>> This allows the RX6110 driver to be automatically assigned to the right
+>> device on the I2C bus.
+> 
+> Thanks for an update!
+> 
+>> Signed-off-by: Johannes Hahn <johannes-hahn@siemens.com>
+>> Co-developed-by: Claudius Heine <ch@denx.de>
+>> Signed-off-by: Claudius Heine <ch@denx.de>
+>> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+>> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> This is usually for patches that do fix found problems, here it's a
+> completely new item and the report was done in the middle of the
+> development. That said, you may give credit to LKP by just mentioning
+> it in the comments section (after the cutter '---' line). I'll leave
+> this to Alexandre and Alessandro to decide if you need a resend or
+> they may remove it when applying. (In my opinion resend is not needed
+> right now)
+Ok. Thanks a lot for your reviews and patience!
 
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
----
- drivers/firmware/imx/scu-pd.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/firmware/imx/scu-pd.c b/drivers/firmware/imx/scu-pd.c
-index 08533ee67626..6e178a63442d 100644
---- a/drivers/firmware/imx/scu-pd.c
-+++ b/drivers/firmware/imx/scu-pd.c
-@@ -29,6 +29,10 @@
-  *    The framework needs some proper extension to support multi power
-  *    domain cases.
-  *
-+ *    Update: Genpd assigns the ->of_node for the virtual device before it
-+ *    invokes ->attach_dev() callback, hence parsing for device resources via
-+ *    DT should work fine.
-+ *
-  * 2. It also breaks most of current drivers as the driver probe sequence
-  *    behavior changed if removing ->power_on|off() callback and use
-  *    ->start() and ->stop() instead. genpd_dev_pm_attach will only power
-@@ -39,8 +43,11 @@
-  *    domain enabled will trigger a HW access error. That means we need fix
-  *    most drivers probe sequence with proper runtime pm.
-  *
-- * In summary, we need fix above two issue before being able to switch to
-- * the "single global power domain" way.
-+ *    Update: Runtime PM support isn't necessary. Instead, this can easily be
-+ *    fixed in drivers by adding a call to dev_pm_domain_start() during probe.
-+ *
-+ * In summary, the second part needs to be addressed via minor updates to the
-+ * relevant drivers, before the "single global power domain" model can be used.
-  *
-  */
- 
--- 
-2.25.1
-
+regards,
+Claudius
