@@ -2,210 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F388E33E71D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 03:48:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5866833E70A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 03:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhCQCsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 22:48:10 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:43960 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbhCQCsF (ORCPT
+        id S230080AbhCQCgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 22:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229741AbhCQCfq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 22:48:05 -0400
-Received: from epcas3p1.samsung.com (unknown [182.195.41.19])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210317024803epoutp037fef4e0aab6cee8159fe45e34f28dc59~tAU-NAbup3239332393epoutp03H
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:48:03 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210317024803epoutp037fef4e0aab6cee8159fe45e34f28dc59~tAU-NAbup3239332393epoutp03H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1615949283;
-        bh=bfExUxnKegOWp6W/y7hdz5ArFPx8jVEPrZCmuu0WVDs=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=Pa6p8HHJo4m2RMUKtg5pUnpNEYAv1aYOVAV5iwyWYEEQC4+gBJbZWEmCJtU2pbzzk
-         m2Ek9ahLq2rFs1Bcj7BH13oRTB1m5Ct5rLMZbph+siQZijW1kCMW34ti5iWUCrV5b2
-         Q5+jRVC16XLcjzsnWuviWMtypLmNtyWHymrmAXPA=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas3p4.samsung.com (KnoxPortal) with ESMTP id
-        20210317024803epcas3p4e31b63ad570b303cc4296439e8617aa1~tAU_t3xJ_0166101661epcas3p4A;
-        Wed, 17 Mar 2021 02:48:03 +0000 (GMT)
-Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp4.localdomain
-        (Postfix) with ESMTP id 4F0ZMk71GVz4x9QH; Wed, 17 Mar 2021 02:48:02 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: RE: RE: [PATCH v5 05/10] scsi: ufshpb: Region inactivation in host
- mode
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Avri Altman <Avri.Altman@wdc.com>, Can Guo <cang@codeaurora.org>
-CC:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <DM6PR04MB65751EE32D25C7E57A6BABE8FC6B9@DM6PR04MB6575.namprd04.prod.outlook.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <2038148563.21615949282962.JavaMail.epsvc@epcpadp4>
-Date:   Wed, 17 Mar 2021 11:28:48 +0900
-X-CMS-MailID: 20210317022848epcms2p3e17fe87903f54d520bef8c4a815afa59
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210316083014epcas2p32d6b84e689cdbe06ee065c870b236d65
-References: <DM6PR04MB65751EE32D25C7E57A6BABE8FC6B9@DM6PR04MB6575.namprd04.prod.outlook.com>
-        <20210302132503.224670-1-avri.altman@wdc.com>
-        <20210302132503.224670-6-avri.altman@wdc.com>
-        <25da7378d5bf4c52443ae9b47f3fd778@codeaurora.org>
-        <57afb2b5d7edda61a40493d8545785b1@codeaurora.org>
-        <CGME20210316083014epcas2p32d6b84e689cdbe06ee065c870b236d65@epcms2p3>
+        Tue, 16 Mar 2021 22:35:46 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D945CC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 19:35:45 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id j3so406224edp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 19:35:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GvkSjbOflTYrrhQW/IujV+Vj77yNYWLHdlNlegrHH4E=;
+        b=ASGp57d2AB3YJwzE0HztUK7znMoqHLdCpnr808cyahGXOlRg55T2zYUWxFwELsX85a
+         rS35PH4RkUyQRe4gbJq52No3U0lb3SmDBGMBrHHk9qd67i95PxSvEvT+Mngdku3IDOLo
+         nnwpKbepa9C5Dlkm18/FC8Ew/qk9tKjgUsJpA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GvkSjbOflTYrrhQW/IujV+Vj77yNYWLHdlNlegrHH4E=;
+        b=b+r7of/6+UuI0FV7KYJzxFtuA7kv2c9de3HofRWzWMQqt9N8A+Fwy+np7D6EYq4vTs
+         oNb3kYgoxgLOzSdsqmv8qb2H3O3wbPDsFe2lVg1CzFCabhHtk4bbAdqRM+Tjdbu9NuBq
+         Ig0EU9v9qAb81JrrFtICQv/5MXywsSEXTOA6T7bWIhcCdNIunBPrzTkneBAPjCzdHMD7
+         bBXzFfstcBPvkRLbf0k2shHjUGywU/UoftL0leIyhklxHy1X+55yJUsdAwmC5rImHeqt
+         8f3/NW8OPgxcwsoKPQkB37nemy8RCtl3e0apGObqDOuRkT9M7kNWR4/Oz1J2nFYpHyMA
+         cmuA==
+X-Gm-Message-State: AOAM532+jrmoPEPapNbEYVXlxnmX6/uirK42JPHJCSrBzKLZlgFSH1fX
+        LBRXYMefep0ixoxFE8RbKiy6ojcKokOa+Q==
+X-Google-Smtp-Source: ABdhPJzStM2BaQiP8jtmHJKAiTPwZ9blhCC+L7RNMLs+3B0l8sDsWC3xN5bfDmhcTkmxZ1sESTnMyw==
+X-Received: by 2002:aa7:da14:: with SMTP id r20mr38839441eds.181.1615948544408;
+        Tue, 16 Mar 2021 19:35:44 -0700 (PDT)
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
+        by smtp.gmail.com with ESMTPSA id z20sm5680422edd.0.2021.03.16.19.35.44
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 19:35:44 -0700 (PDT)
+Received: by mail-ed1-f49.google.com with SMTP id bf3so430972edb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 19:35:44 -0700 (PDT)
+X-Received: by 2002:a05:6512:398d:: with SMTP id j13mr922688lfu.41.1615948533286;
+ Tue, 16 Mar 2021 19:35:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk>
+ <161539528910.286939.1252328699383291173.stgit@warthog.procyon.org.uk>
+ <20210316190707.GD3420@casper.infradead.org> <CAHk-=wjSGsRj7xwhSMQ6dAQiz53xA39pOG+XA_WeTgwBBu4uqg@mail.gmail.com>
+ <887b9eb7-2764-3659-d0bf-6a034a031618@toxicpanda.com>
+In-Reply-To: <887b9eb7-2764-3659-d0bf-6a034a031618@toxicpanda.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 16 Mar 2021 19:35:17 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whWoJhGeMn85LOh9FX-5d2-Upzmv1m2ZmYxvD31TKpUTA@mail.gmail.com>
+Message-ID: <CAHk-=whWoJhGeMn85LOh9FX-5d2-Upzmv1m2ZmYxvD31TKpUTA@mail.gmail.com>
+Subject: Re: [PATCH v4 02/28] mm: Add an unlock function for PG_private_2/PG_fscache
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        David Howells <dhowells@redhat.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linux-MM <linux-mm@kvack.org>, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org,
+        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> >> ---
->> >>  drivers/scsi/ufs/ufshpb.c | 14 ++++++++++++++
->> >>  drivers/scsi/ufs/ufshpb.h |  1 +
->> >>  2 files changed, 15 insertions(+)
->> >>
->> >> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
->> >> index 6f4fd22eaf2f..0744feb4d484 100644
->> >> --- a/drivers/scsi/ufs/ufshpb.c
->> >> +++ b/drivers/scsi/ufs/ufshpb.c
->> >> @@ -907,6 +907,7 @@ static int ufshpb_execute_umap_req(struct
->> >> ufshpb_lu *hpb,
->> >>
->> >>      blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_umap_req_compl_fn);
->> >>
->> >> +    hpb->stats.umap_req_cnt++;
->> >>      return 0;
->> >>  }
->> >>
->> >> @@ -1103,6 +1104,12 @@ static int ufshpb_issue_umap_req(struct
->> >> ufshpb_lu *hpb,
->> >>      return -EAGAIN;
->> >>  }
->> >>
->> >> +static int ufshpb_issue_umap_single_req(struct ufshpb_lu *hpb,
->> >> +                                    struct ufshpb_region *rgn)
->> >> +{
->> >> +    return ufshpb_issue_umap_req(hpb, rgn);
->> >> +}
->> >> +
->> >>  static int ufshpb_issue_umap_all_req(struct ufshpb_lu *hpb)
->> >>  {
->> >>      return ufshpb_issue_umap_req(hpb, NULL);
->> >> @@ -1115,6 +1122,10 @@ static void __ufshpb_evict_region(struct
->> >> ufshpb_lu *hpb,
->> >>      struct ufshpb_subregion *srgn;
->> >>      int srgn_idx;
->> >>
->> >> +
->> >> +    if (hpb->is_hcm && ufshpb_issue_umap_single_req(hpb, rgn))
->> >
->> > __ufshpb_evict_region() is called with rgn_state_lock held and IRQ
->> > disabled,
->> > when ufshpb_issue_umap_single_req() invokes blk_execute_rq_nowait(),
->> > below
->> > warning shall pop up every time, fix it?
->> >
->> > void blk_execute_rq_nowait(struct request_queue *q, struct gendisk
->> > *bd_disk,
->> >                  struct request *rq, int at_head,
->> >                          rq_end_io_fn *done)
->> > {
->> >       WARN_ON(irqs_disabled());
->> > ...
->> >
->> 
->> Moreover, since we are here with rgn_state_lock held and IRQ disabled,
->> in ufshpb_get_req(), rq = kmem_cache_alloc(hpb->map_req_cache,
->> GFP_KERNEL)
->> has the GFP_KERNEL flag, scheduling while atomic???
->I think your comment applies to  ufshpb_issue_umap_all_req as well,
->Which is called from slave_configure/scsi_add_lun.
-> 
->Since the host-mode series is utilizing the framework laid by the device-mode,
->Maybe you can add this comment to  Daejun's last version?
+On Tue, Mar 16, 2021 at 7:12 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+>
+> Yeah it's just a flag, we use it to tell that the page is part of a range that
+> has been allocated for IO.  The lifetime of the page is independent of the page,
+> but is generally either dirty or under writeback, so either it goes through
+> truncate and we clear PagePrivate2 there, or it actually goes through IO and is
+> cleared before we drop the page in our endio.
 
-Hi Avri, Can Guo
+Ok, that's what it looked like from my very limited "looking at a
+couple of grep cases", but I didn't go any further than that.
 
-I think ufshpb_issue_umap_single_req() can be moved to end of ufshpb_evict_region().
-Then we can avoid rgn_state_lock when it sends unmap command.
+> We _always_ have PG_private set on the page as long as we own it, and
+> PG_private_2 is only set in this IO related context, so we're safe
+> there because of the rules around PG_dirty/PG_writeback. We don't need
+> it to have an extra ref for it being set.
 
-Thanks,
-Daejun
+Perfect. That means that at least as far as btrfs is concerned, we
+could trivially remove PG_private_2 from that page_has_private() math
+- you'd always see the same result anyway, exactly because you have
+PG_private set.
 
+And as far as I can tell, fscache doesn't want that PG_private_2 bit
+to interact with the random VM lifetime or migration rules either, and
+should rely entirely on the page count. David?
 
->Thanks,
->Avri
-> 
->> 
->> Can Guo.
->> 
->> > Thanks.
->> > Can Guo.
->> >
->> >> +            return;
->> >> +
->> >>      lru_info = &hpb->lru_info;
->> >>
->> >>      dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n",
->> >> rgn->rgn_idx);
->> >> @@ -1855,6 +1866,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
->> >>  ufshpb_sysfs_attr_show_func(rb_active_cnt);
->> >>  ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
->> >>  ufshpb_sysfs_attr_show_func(map_req_cnt);
->> >> +ufshpb_sysfs_attr_show_func(umap_req_cnt);
->> >>
->> >>  static struct attribute *hpb_dev_stat_attrs[] = {
->> >>      &dev_attr_hit_cnt.attr,
->> >> @@ -1863,6 +1875,7 @@ static struct attribute *hpb_dev_stat_attrs[] =
->> >> {
->> >>      &dev_attr_rb_active_cnt.attr,
->> >>      &dev_attr_rb_inactive_cnt.attr,
->> >>      &dev_attr_map_req_cnt.attr,
->> >> +    &dev_attr_umap_req_cnt.attr,
->> >>      NULL,
->> >>  };
->> >>
->> >> @@ -1978,6 +1991,7 @@ static void ufshpb_stat_init(struct ufshpb_lu
->> >> *hpb)
->> >>      hpb->stats.rb_active_cnt = 0;
->> >>      hpb->stats.rb_inactive_cnt = 0;
->> >>      hpb->stats.map_req_cnt = 0;
->> >> +    hpb->stats.umap_req_cnt = 0;
->> >>  }
->> >>
->> >>  static void ufshpb_param_init(struct ufshpb_lu *hpb)
->> >> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
->> >> index bd4308010466..84598a317897 100644
->> >> --- a/drivers/scsi/ufs/ufshpb.h
->> >> +++ b/drivers/scsi/ufs/ufshpb.h
->> >> @@ -186,6 +186,7 @@ struct ufshpb_stats {
->> >>      u64 rb_inactive_cnt;
->> >>      u64 map_req_cnt;
->> >>      u64 pre_req_cnt;
->> >> +    u64 umap_req_cnt;
->> >>  };
->> >>
->> >>  struct ufshpb_lu {
-> 
-> 
->  
+There's actually a fair number of page_has_private() users, so we'd
+better make sure that's the case. But it's simplified by this but
+really only being used by btrfs (which doesn't care) and fscache, so
+this cleanup would basically be entirely up to the whole fscache
+series.
+
+Hmm? Objections?
+
+            Linus
