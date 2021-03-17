@@ -2,71 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB92133F44E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:49:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A1833F458
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbhCQPs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 11:48:57 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:49868 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232415AbhCQPsN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 11:48:13 -0400
-Received: from fsav304.sakura.ne.jp (fsav304.sakura.ne.jp [153.120.85.135])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 12HFcvwH085191;
-        Thu, 18 Mar 2021 00:38:58 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav304.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp);
- Thu, 18 Mar 2021 00:38:57 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 12HFcrHG085100
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 18 Mar 2021 00:38:57 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH 0/6] usbip fixes to crashes found by syzbot
-To:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org
-Cc:     valentina.manea.m@gmail.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
-References: <cover.1615171203.git.skhan@linuxfoundation.org>
- <YEkQ4qS7tkwmjzDn@kroah.com>
- <5baf6b94-72c4-6e69-65a5-35c5cfb8ca0e@i-love.sakura.ne.jp>
- <YEoTw7CoK7Ob0YR+@kroah.com>
- <8dc1e893-4338-90ff-ea61-de727cad1d11@i-love.sakura.ne.jp>
- <afd1341b-2ed1-f781-d6c8-6064fea3aeb8@i-love.sakura.ne.jp>
- <192bdb07-da84-ce96-2e25-7c0df749940a@i-love.sakura.ne.jp>
- <9e089560-388a-a82d-4841-8092578b9d5d@i-love.sakura.ne.jp>
- <465479ca-544e-3703-cf4e-30f5be04fa11@i-love.sakura.ne.jp>
- <fbf64c33-87c3-137c-4faf-66de651243fc@linuxfoundation.org>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <c4172173-3e54-4b09-303d-9c368b2b49c4@i-love.sakura.ne.jp>
-Date:   Thu, 18 Mar 2021 00:38:51 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232498AbhCQPtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 11:49:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232000AbhCQPsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 11:48:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2665664F79;
+        Wed, 17 Mar 2021 15:38:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615995540;
+        bh=dRMFBcsJPQLbRf+F2GnTT8HZD6K7smJG9tJcKpHlzZQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=x0Pslo20SOFOFOQGgLFdw1xmTRR4RzT8vop+FZzT9vNbxyc/rAgf1TQVNQu36NzYB
+         l0+hhrzC1MptmAlnbN8PSoFi47FzX2hlsMiADDGRDOOgwuUS6rNVwru4IkoQrRm2as
+         zNSkF6Vv4gidWLNSHqIgMpXVuIgVWaHddYT6Q2F0=
+Date:   Wed, 17 Mar 2021 16:38:57 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [PATCH v2] seq_file: Unconditionally use vmalloc for buffer
+Message-ID: <YFIikaNixD57o3pk@kroah.com>
+References: <20210315174851.622228-1-keescook@chromium.org>
+ <YFBs202BqG9uqify@dhcp22.suse.cz>
+ <202103161205.B2181BDE38@keescook>
+ <YFHxNT1Pwoslmhxq@dhcp22.suse.cz>
+ <YFIFY7mj65sStba1@kroah.com>
+ <YFIVwPWTo48ITkHs@dhcp22.suse.cz>
+ <YFIYrMVTC42boZ/Z@kroah.com>
+ <YFIeVLDsfBMa7fHW@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <fbf64c33-87c3-137c-4faf-66de651243fc@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFIeVLDsfBMa7fHW@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/03/18 0:06, Shuah Khan wrote:
-> Yes. I haven't sent the patch for that reason. I am trying to test a
-> solution. I haven't come up with a solution yet.
+On Wed, Mar 17, 2021 at 04:20:52PM +0100, Michal Hocko wrote:
+> On Wed 17-03-21 15:56:44, Greg KH wrote:
+> > On Wed, Mar 17, 2021 at 03:44:16PM +0100, Michal Hocko wrote:
+> > > On Wed 17-03-21 14:34:27, Greg KH wrote:
+> > > > On Wed, Mar 17, 2021 at 01:08:21PM +0100, Michal Hocko wrote:
+> > > > > Btw. I still have problems with the approach. seq_file is intended to
+> > > > > provide safe way to dump values to the userspace. Sacrificing
+> > > > > performance just because of some abuser seems like a wrong way to go as
+> > > > > Al pointed out earlier. Can we simply stop the abuse and disallow to
+> > > > > manipulate the buffer directly? I do realize this might be more tricky
+> > > > > for reasons mentioned in other emails but this is definitely worth
+> > > > > doing.
+> > > > 
+> > > > We have to provide a buffer to "write into" somehow, so what is the best
+> > > > way to stop "abuse" like this?
+> > > 
+> > > What is wrong about using seq_* interface directly?
+> > 
+> > Right now every show() callback of sysfs would have to be changed :(
 > 
-> Holding event_lock isn't the right solution. I am not going to accept
-> that. This is a window that gets triggered by syzbot injecting errors
-> in a sequence. Fixing this should be done taking other moving parts of
-> the driver into account.
+> Is this really the case? Would it be too ugly to have an intermediate
+> buffer and then seq_puts it into the seq file inside sysfs_kf_seq_show.
 
-What is event_lock ? I questioned you what the event_lock is at
-https://lkml.kernel.org/r/3dab66dc-2981-bc88-a370-4b3178dfd390@i-love.sakura.ne.jp ,
-but you haven't responded to that post.
+Oh, good idea.
 
-Also, you need to send https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux.git/commit/?h=usbip_test&id=f345de0d2e51a20a2a1c30fc22fa1527670d2095
-because Greg already sent this regression into upstream and stable kernels.
+> Sure one copy more than necessary but it this shouldn't be a hot path or
+> even visible on small strings. So that might be worth destroying an
+> inherently dangerous seq API (seq_get_buf).
 
+I'm all for that, let me see if I can carve out some time tomorrow to
+try this out.
+
+But, you don't get rid of the "ability" to have a driver write more than
+a PAGE_SIZE into the buffer passed to it.  I guess I could be paranoid
+and do some internal checks (allocate a bunch of memory and check for
+overflow by hand), if this is something to really be concerned about...
+
+thanks,
+
+greg k-h
