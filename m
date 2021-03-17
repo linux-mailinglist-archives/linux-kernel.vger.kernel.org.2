@@ -2,130 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 860DE33E8BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB90433E8C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbhCQFGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 01:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
+        id S229806AbhCQFHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 01:07:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbhCQFF3 (ORCPT
+        with ESMTP id S229469AbhCQFHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 01:05:29 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03815C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 22:05:28 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id l123so289467pfl.8
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 22:05:28 -0700 (PDT)
+        Wed, 17 Mar 2021 01:07:13 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701F5C06174A;
+        Tue, 16 Mar 2021 22:07:13 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id g185so37718860qkf.6;
+        Tue, 16 Mar 2021 22:07:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=MIc7mavbJhN4OuOMILSSjW63cQv0oc3j9t7W7Zfvn3k=;
-        b=fU9xwamVIvSaTTINr66eyaN/9vLWy/U3RHTRoQtlV+QGM22cjCkVK6UdNds3atZs+v
-         lwrY+tDyL/ppBr9hKvCmc5IxfzdMip2gaTAgZDGXQ6Xs04cFN2LQ24LlJRHotVOKvUCH
-         3JTOqAzlDX8icJ+kSfK70sn7CrFvm1RYy3tiSUBmK5a1Qe6+mTFpFeTnFypUUxw9fUu+
-         hmf2R+m08ZuVrQbnJz+5Z8NNKAvjRoeEgTM+fUUo3ZGYXk8A+F9ucXE8MBG9I3okFz/m
-         2Vpx5x4E0li1OV10ow0sYyZw5BNS2RTRFdcPPoFDjl2yv+JiAs3XTkXMoVO32+7qLasj
-         1GLA==
+        bh=jZoar7PUvRHqzJ3ILx7H4A48d5LO3+tDAtgPdf0mrvs=;
+        b=LMgKNRGRkE7jbUxNl6P1jhJC99dK4rtR4k7ae6r5AgGjxqL7Gfo4VNvfOgfgnvNZ2r
+         SlWNBWw9Lj5AoKI0BvfopCPob6qno7EzTvd5g7chjtM8gI4bNFQSBBkzqjqbdeRjI4CY
+         bAIR6tljL1NzYX0HWImBXWMPXzRj13PZMt7XT3DYXzGIHsQJEIXp+w//r9wU5+1waRwf
+         HH4WOiXV+SdLPrZeFYwZLwYDsxHsO5IgLZbe8QXUaV+5IEjVEwEDRULNwYYi/5mtglm7
+         O2ugDHpFqtBs2NmHXXypkoZMmUx/0INstMm7kyE5v0tqJOvt6Z+n/9S69jXGXJfkzdsZ
+         yHbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=MIc7mavbJhN4OuOMILSSjW63cQv0oc3j9t7W7Zfvn3k=;
-        b=iTYtzXwq2ytP9MF3Sb0RRT5PSh5I3JPozjd7Hqob3K7ro6yyzD6zjpejAtzSTlzANZ
-         ypfdkMbudFCgXTSOSyqzxFVV2aNSCrcjZwQXJbqaPTfCbNOl8KsT6WdyhDH3k/5ObMFo
-         8v4C/DHcogLBU8fKI7fctnu1mS/RNzvPlO+65toLh/pTQRa9BwG+ske2sf7JKE3QNbee
-         nDEytblOv9UINPLD1Ncg+5cEPm0Dg3HAOhtnOqnmj7b47Ezkb7TN66tVIKRWtVBftabw
-         TrFC8M8xy4IlPX2CBF2+BYt1H+7C035vafv4rh4LTDoV3HWKHtJ3eQS/5wBZIOjHW50s
-         uZOA==
-X-Gm-Message-State: AOAM530e0vx6aMwOshSYqArW+osyiwBcyHnlG5p9pycNdAJ58wB7CSLu
-        DBM5Urkw5fuamUArEMg9Tz9hUw==
-X-Google-Smtp-Source: ABdhPJyDuEZydtGMqDr8/DG+kP9sdLoSZtmtej+zUMoDcsn6rZDQkEvlHQ9u8k2GdIn70gdBhSt7iA==
-X-Received: by 2002:a62:e708:0:b029:1f8:c092:ff93 with SMTP id s8-20020a62e7080000b02901f8c092ff93mr2675554pfh.21.1615957528395;
-        Tue, 16 Mar 2021 22:05:28 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id i17sm19789935pfq.135.2021.03.16.22.05.27
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jZoar7PUvRHqzJ3ILx7H4A48d5LO3+tDAtgPdf0mrvs=;
+        b=t4t8IMVJHQ4dVq6/+YH0O5oUti+mOZVTTGrNrE/Lk+KZ2qUsL6cimKwvJoCss1RVQr
+         z+33Tj78giNqQvMH5tjJQcTKTHN+u9uo17FyE3gvFvY+JRsNctzxlQujgWSYWmVQM+9H
+         B/NqSYzEpJEyYvrNWJ0YtwpUCeS5NntwNH/splFNY8JywZzXx4N0QMg/BkEOZul0Kx+E
+         whgsAaL8igNM+tYH5UIaqhNurM6D5lpoMmvqo8G2CpMsueEkmhqn/Km5re88nT9pKQpD
+         EOEP+uaEwD6JD9521SK2FUjzKrj/ZYhjyl81yl7l+WHtCbZOHFuvo+v9hdk3czYWKXcE
+         z0Fw==
+X-Gm-Message-State: AOAM5321OO8gyWx8QEVA6mmEXPjUelezrpguT5Jv/GF2pEDVugO2/Cdq
+        kXkigMuDqOuvQxo/D78CnsEDQvn+/KgbR3Mq
+X-Google-Smtp-Source: ABdhPJyMndMzCrXDV6Uu7dSI2gL/MvnkHfTcCkATA/mTX1K13XByi3EEWDAytLryJLhQsThs3RlxXw==
+X-Received: by 2002:a37:2749:: with SMTP id n70mr2790915qkn.105.1615957632646;
+        Tue, 16 Mar 2021 22:07:12 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.5])
+        by smtp.gmail.com with ESMTPSA id j30sm14843697qtv.90.2021.03.16.22.07.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 22:05:27 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 22:05:27 -0700 (PDT)
-X-Google-Original-Date: Tue, 16 Mar 2021 21:58:03 PDT (-0700)
-Subject:     Re: [PATCH 0/3] Move kernel mapping outside the linear mapping
-In-Reply-To: <0bb85388-c4e1-523a-9bf3-0ccec6c4041e@ghiti.fr>
-CC:     corbet@lwn.net, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, Arnd Bergmann <arnd@arndb.de>,
-        aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
-        linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     alex@ghiti.fr
-Message-ID: <mhng-08cda2bf-fcd9-4848-b549-632d015e1acd@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Tue, 16 Mar 2021 22:07:11 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     robert.moore@intel.com, erik.kaneda@intel.com,
+        rafael.j.wysocki@intel.com, lenb@kernel.org,
+        linux-acpi@vger.kernel.org, devel@acpica.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] include: acpi: A typo fix in the file cppc_acpi.h
+Date:   Wed, 17 Mar 2021 10:36:41 +0530
+Message-Id: <20210317050641.4158096-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 13 Mar 2021 01:26:47 PST (-0800), alex@ghiti.fr wrote:
-> Hi Palmer,
->
-> Le 3/9/21 à 9:54 PM, Palmer Dabbelt a écrit :
->> On Thu, 25 Feb 2021 00:04:50 PST (-0800), alex@ghiti.fr wrote:
->>> I decided to split sv48 support in small series to ease the review.
->>>
->>> This patchset pushes the kernel mapping (modules and BPF too) to the last
->>> 4GB of the 64bit address space, this allows to:
->>> - implement relocatable kernel (that will come later in another
->>>   patchset) that requires to move the kernel mapping out of the linear
->>>   mapping to avoid to copy the kernel at a different physical address.
->>> - have a single kernel that is not relocatable (and then that avoids the
->>>   performance penalty imposed by PIC kernel) for both sv39 and sv48.
->>>
->>> The first patch implements this behaviour, the second patch introduces a
->>> documentation that describes the virtual address space layout of the
->>> 64bit
->>> kernel and the last patch is taken from my sv48 series where I simply
->>> added
->>> the dump of the modules/kernel/BPF mapping.
->>>
->>> I removed the Reviewed-by on the first patch since it changed enough from
->>> last time and deserves a second look.
->>>
->>> Alexandre Ghiti (3):
->>>   riscv: Move kernel mapping outside of linear mapping
->>>   Documentation: riscv: Add documentation that describes the VM layout
->>>   riscv: Prepare ptdump for vm layout dynamic addresses
->>>
->>>  Documentation/riscv/index.rst       |  1 +
->>>  Documentation/riscv/vm-layout.rst   | 61 ++++++++++++++++++++++
->>>  arch/riscv/boot/loader.lds.S        |  3 +-
->>>  arch/riscv/include/asm/page.h       | 18 ++++++-
->>>  arch/riscv/include/asm/pgtable.h    | 37 +++++++++----
->>>  arch/riscv/include/asm/set_memory.h |  1 +
->>>  arch/riscv/kernel/head.S            |  3 +-
->>>  arch/riscv/kernel/module.c          |  6 +--
->>>  arch/riscv/kernel/setup.c           |  3 ++
->>>  arch/riscv/kernel/vmlinux.lds.S     |  3 +-
->>>  arch/riscv/mm/fault.c               | 13 +++++
->>>  arch/riscv/mm/init.c                | 81 +++++++++++++++++++++++------
->>>  arch/riscv/mm/kasan_init.c          |  9 ++++
->>>  arch/riscv/mm/physaddr.c            |  2 +-
->>>  arch/riscv/mm/ptdump.c              | 67 +++++++++++++++++++-----
->>>  15 files changed, 258 insertions(+), 50 deletions(-)
->>>  create mode 100644 Documentation/riscv/vm-layout.rst
->>
->> This generally looks good, but I'm getting a bunch of checkpatch
->> warnings and some conflicts, do you mind fixing those up (and including
->> your other kasan patch, as that's likely to conflict)?
->
->
-> I fixed a few checkpatch warnings and rebased on top of for-next but had
-> not conflicts.
->
-> I have just sent the v2.
 
-Thanks.  These (and the second patch of the one I just put on fixes) are
-for-next things, so I'm not going to get a look at them tonight because I want
-to make sure we don't have any more fixes outstanding.
+s/folowing/following/
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ include/acpi/cppc_acpi.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+index c7fc4524e151..d174721bab33 100644
+--- a/include/acpi/cppc_acpi.h
++++ b/include/acpi/cppc_acpi.h
+@@ -31,7 +31,7 @@
+ #define	CMD_READ 0
+ #define	CMD_WRITE 1
+
+-/* Each register has the folowing format. */
++/* Each register has the following format. */
+ struct cpc_reg {
+ 	u8 descriptor;
+ 	u16 length;
+--
+2.30.2
+
