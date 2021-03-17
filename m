@@ -2,121 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D6233ED6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7510533ED77
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:53:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbhCQJvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:51:03 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13975 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhCQJui (ORCPT
+        id S229863AbhCQJwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhCQJwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:50:38 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F0lj55vP1zrXnw;
-        Wed, 17 Mar 2021 17:48:41 +0800 (CST)
-Received: from [10.67.102.248] (10.67.102.248) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 17 Mar 2021 17:50:25 +0800
-Subject: Re: [PATCH v5] perf annotate: Fix sample events lost in stdio mode
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-CC:     <peterz@infradead.org>, <mingo@redhat.com>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
-        <yao.jin@linux.intel.com>, <gustavoars@kernel.org>,
-        <mliska@suse.cz>, <linux-kernel@vger.kernel.org>,
-        <zhangjinhao2@huawei.com>
-References: <20210316021759.257503-1-yangjihong1@huawei.com>
- <YFCtmEBqsgKnkaV7@kernel.org>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <8d9cc941-c85e-34c2-e703-a8d52b615eff@huawei.com>
-Date:   Wed, 17 Mar 2021 17:50:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Wed, 17 Mar 2021 05:52:23 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CBF1C06174A;
+        Wed, 17 Mar 2021 02:52:22 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id v9so2047013lfa.1;
+        Wed, 17 Mar 2021 02:52:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ni2BVUyOVxy8Q5T7Y2ORvrYM9+lertlhmJx4LiUX5Ig=;
+        b=OfORvD0YNsxiec2uVYSZpqhI5sIKgx3jah+I6llqsJ9VvUeTxUa+o07fCHtVHDao8s
+         v0/JBXn+b9yTYgw6/MDB2xD7yguSuPAkbStwTUDMCPNgLAaInvdviwuh7mkQve4uwr2i
+         kMQtCvPuwsdWVix1Tn4idaxztPg2bPdASPvvb2qO0B+OtU2JciCJw8ILk7aidlwY0MFW
+         H/qd5KttUBi0shOUn8Qt3oMb2dxJ19N0wZf6zLqHA2Euc2I5dsmcqX2bID8ZZqOr3Wjc
+         lcDRWzXiSEonp4VM/lI1dtLjZRBI5L/fxmXjAjgspg76Qq8lbeAl/7Yf6URVVsSTMk2C
+         +GuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Ni2BVUyOVxy8Q5T7Y2ORvrYM9+lertlhmJx4LiUX5Ig=;
+        b=NMNjKmCqwATy0MZJld7NUEfwhvDnrY4YixRVoTs52m87FkxoFWh1WAN+EPF59tXCV8
+         vWB+Gi4nSCUmcLRCIOzHi0mPQqRnlFOw0+tjJPth0nJiBmvQSlaueYtihddkYPogPgtp
+         QJdavDmL94CA6Y1g1HEX/LG+AI6PPloB8uENkV05GrDDicrqdIp6isdkJ7AYGOeYXikK
+         MA/QhaT/2a82Jx/t/1UsI6QVOs9Iw2SiCq/YPG/ZpK5JEJ5JqhMo++SO/2gGQvt2FLXi
+         /TlxK3bh83WN59OqbqaTLb4WUPUf01nZty0QwNuasD5iXRkbO4ttVPiS1B+W61cviP0B
+         TP6Q==
+X-Gm-Message-State: AOAM53142EhDHMtm/b+e/yB/0DP1hVZsPHbQnJDxdod5TL26xQTNSjaq
+        Mm1CfA4So7VhDbQxJkUbyiI=
+X-Google-Smtp-Source: ABdhPJxTvEJk2/JJSa9u+SMudEYTNx2T39WOwc8CfNReaMKv/b5D+AsWUYXEYKpU6WbK0wASLmd6Xw==
+X-Received: by 2002:ac2:5b9b:: with SMTP id o27mr1910136lfn.143.1615974741096;
+        Wed, 17 Mar 2021 02:52:21 -0700 (PDT)
+Received: from [192.168.1.100] ([178.176.79.25])
+        by smtp.gmail.com with ESMTPSA id e20sm3380324lfc.20.2021.03.17.02.52.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 02:52:20 -0700 (PDT)
+Subject: Re: [PATCH] MIPS: ralink: define stubs for clk_set_parent to fix
+ compile testing
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        John Crispin <john@phrozen.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     thierry.reding@gmail.com, linux-tegra@vger.kernel.org,
+        balbi@kernel.org, linux-usb@vger.kernel.org, digetx@gmail.com,
+        kernel test robot <lkp@intel.com>
+References: <20210316175725.79981-1-krzysztof.kozlowski@canonical.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <880d5e61-fec5-e7d6-7403-b1823c77b3c1@gmail.com>
+Date:   Wed, 17 Mar 2021 12:52:14 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YFCtmEBqsgKnkaV7@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210316175725.79981-1-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.248]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hello!
 
-On 2021/3/16 21:07, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Mar 16, 2021 at 10:17:59AM +0800, Yang Jihong escreveu:
->> In hist__find_annotations function, since different hist_entry may point to same
->> symbol, we free notes->src to signal already processed this symbol in stdio mode;
->> when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
->>
->> However, there is a problem, for example, run the following command:
->>
->>   # perf record -e branch-misses -e branch-instructions -a sleep 1
->>
->> perf.data file contains different types of sample event.
->>
->> If the same IP sample event exists in branch-misses and branch-instructions,
->> this event uses the same symbol. When annotate branch-misses events, notes->src
->> corresponding to this event is set to null, as a result, when annotate
->> branch-instructions events, this event is skipped and no annotate is output.
->>
->> Solution of this patch is to remove zfree in hists__find_annotations and
->> change sort order to "dso,symbol" to avoid duplicate output when different
->> processes correspond to the same symbol.
-> 
-> You forgot to add your Signed-off-by tag, i.e.:
-> 
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> 
-> Please take a look at Documentation/process/submitting-patches.rst.
-> 
-> Regards,
-> 
-> - Arnaldo
-> 
-Thanks for the patient instructions :)
-I've submitted the v6 patch, look forward to your review:
-https://lore.kernel.org/patchwork/patch/1397675
+On 16.03.2021 20:57, Krzysztof Kozlowski wrote:
 
->> ---
->>   tools/perf/builtin-annotate.c | 13 ++++++-------
->>   1 file changed, 6 insertions(+), 7 deletions(-)
->>
->> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
->> index a23ba6bb99b6..92c55f292c11 100644
->> --- a/tools/perf/builtin-annotate.c
->> +++ b/tools/perf/builtin-annotate.c
->> @@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists *hists,
->>   		} else {
->>   			hist_entry__tty_annotate(he, evsel, ann);
->>   			nd = rb_next(nd);
->> -			/*
->> -			 * Since we have a hist_entry per IP for the same
->> -			 * symbol, free he->ms.sym->src to signal we already
->> -			 * processed this symbol.
->> -			 */
->> -			zfree(&notes->src->cycles_hist);
->> -			zfree(&notes->src);
->>   		}
->>   	}
->>   }
->> @@ -619,6 +612,12 @@ int cmd_annotate(int argc, const char **argv)
->>   
->>   	setup_browser(true);
->>   
->> +	/*
->> +	 * Events of different processes may correspond to the same
->> +	 * symbol, we do not care about the processes in annotate,
->> +	 * set sort order to avoid repeated output.
->> +	 */
->> +	sort_order = "dso,symbol";
->>   	if ((use_browser == 1 || annotate.use_stdio2) && annotate.has_br_stack) {
->>   		sort__mode = SORT_MODE__BRANCH;
->>   		if (setup_sorting(annotate.session->evlist) < 0)
->> -- 
->> 2.30.GIT
->>
+> The Ralink MIPS platform does not use Common Clock Framework and does
+> not define certain clock operations leading to compile test failures:
 > 
+>      /usr/bin/mips-linux-gnu-ld: drivers/usb/phy/phy-tegra-usb.o: in function `tegra_usb_phy_init':
+>      phy-tegra-usb.c:(.text+0x1dd4): undefined reference to `clk_get_parent'
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>   arch/mips/ralink/clk.c | 14 ++++++++++++++
+>   1 file changed, 14 insertions(+)
+> 
+> diff --git a/arch/mips/ralink/clk.c b/arch/mips/ralink/clk.c
+> index 2f9d5acb38ea..8387177a47ef 100644
+> --- a/arch/mips/ralink/clk.c
+> +++ b/arch/mips/ralink/clk.c
+> @@ -70,6 +70,20 @@ long clk_round_rate(struct clk *clk, unsigned long rate)
+>   }
+>   EXPORT_SYMBOL_GPL(clk_round_rate);
+>   
+> +int clk_set_parent(struct clk *clk, struct clk *parent)
+> +{
+> +	WARN_ON(clk);
+> +	return -1;
+
+    Shouldn't this be a proepr error code (-1 corresponds to -EPRERM)?
+
+> +}
+> +EXPORT_SYMBOL(clk_set_parent);
+> +
+> +struct clk *clk_get_parent(struct clk *clk)
+> +{
+> +	WARN_ON(clk);
+> +	return NULL;
+> +}
+> +EXPORT_SYMBOL(clk_get_parent);
+> +
+>   void __init plat_time_init(void)
+>   {
+>   	struct clk *clk;
+
+MBR, Sergei
