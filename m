@@ -2,200 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C8333F823
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B5B33F828
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232907AbhCQSag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232860AbhCQSaG (ORCPT
+        id S232926AbhCQScs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:32:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42704 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232860AbhCQScc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:30:06 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0DE3C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:30:06 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so5675249pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:30:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=UAxYgTJ8xiP4XZVnDR92h/oyODoJt823YPaFX/5CcQk=;
-        b=O7R9c2WVL3DtF3LatZ0VWcRSvZ+xM1Rz3Dg7NnRZYkAn5yXENuAgwo/e78WXjJXpnd
-         boo7rzIZNH/Fw5uc5hmEX9ZiXXufDm/o/B9wna3Hed952P21HPXdWWPrAGIh/ZGtLRrM
-         t39nfxeMwTg0r1DxDgUQX9yFgZ5vEsQj2eGUEkyN4oP3a1uKMhdljlyiQ8hI8azsm+Bi
-         B6QOQE4x8/xrB0mxwUpq1FV6VybbvHy7Vqz9iLCwLwli1upK6YasSDdRgqqBQJTQQ2r2
-         K0wJyod0B1aG3ImtCzz3I+v9iKWY2QhyZwvAB8EV71UPBq48llT2zOwEU/wrwuJFL1Ji
-         QfGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=UAxYgTJ8xiP4XZVnDR92h/oyODoJt823YPaFX/5CcQk=;
-        b=HQcJkSYLpBfuWZRIqsRA5zl7jVjtJ/OFQwG0FNMI3PF7EiPtgHasP9Ah7SMWSZCvqn
-         6B7+jRbD4gk0HMj902ikpOYP4lkrF19/Gs3oqvDPjjJlkvfuMFF/WyspqN2gHVhCNvYA
-         Kg8PjHzFRqaKKziXf62oalDgD3O2/HoBGeFtjOy9WGcFl+fG1hb3/tiKgxa9+jzVDLzm
-         H+hk4ntS9iJ30UvkuqrVZeKQd85WRtPRH2vpzy+ldEMufCrqNiVSjaRIgoEMsojs8FV9
-         7i9jsORBuzF1AHiNNZ0sA+No2lD6oyPppXIWH6IikCA2vOCcM1G+oSd4YHYmtJnmEEMi
-         YVuA==
-X-Gm-Message-State: AOAM533Hw3ALYFcYUmQda2d5s8DmkBcQl216Dsbe7Q13GbGDbWfzHZBY
-        ZRpkQ6HrJhgBUM9UHt4Lm2c=
-X-Google-Smtp-Source: ABdhPJwHjwyxoeJUs9eLxkM9BwJnJs7cNI7fX+NEBcl44ZW+0XKKWRWkwqLi+BOGCAmF4vdXaYuIkg==
-X-Received: by 2002:a17:90b:e95:: with SMTP id fv21mr130236pjb.217.1616005806178;
-        Wed, 17 Mar 2021 11:30:06 -0700 (PDT)
-Received: from mahak-Inspiron-7570 ([103.37.201.168])
-        by smtp.gmail.com with ESMTPSA id w22sm19741366pfi.133.2021.03.17.11.30.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 11:30:05 -0700 (PDT)
-From:   Mahak Gupta <gmahak1@gmail.com>
-To:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        Richard Yeh <rcy@google.com>, benchan@chromium.org,
-        toddpoynor@google.com, Rob Springer <rspringer@google.com>
-Cc:     Mahak Gupta <gmahak1@gmail.com>
-Subject: [PATCH] staging: octeon-usb: Match alignment with open parenthesis
-Date:   Wed, 17 Mar 2021 23:59:53 +0530
-Message-Id: <20210317182953.3826-1-gmahak1@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 17 Mar 2021 14:32:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616005951;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pj0R5VrQedcfD5YEftKL4qdHxeZ+Ev/Ff2XmPsp8Sw4=;
+        b=GRcdEdLLpxhS3gqyKIn+SC0dtE7O2xFkhzhWcot/NCeun8opnSFX77/+yrWv3BzRwJx8In
+        ETs7UhgH4ZqbgmJGRz7sRzTokJkyBnZkBTcnQ41hO8BRnHKXgZtTVKUO0FQqmdeQ1/QEwC
+        wxNl/eya7ZKrW8TXaL+6/zR6SwYRxb4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-219-1XAU-iLUOb-_ZtsCHaXK7w-1; Wed, 17 Mar 2021 14:32:29 -0400
+X-MC-Unique: 1XAU-iLUOb-_ZtsCHaXK7w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 20EA018C89C4;
+        Wed, 17 Mar 2021 18:32:28 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-117-171.rdu2.redhat.com [10.10.117.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 88EEE5D9C0;
+        Wed, 17 Mar 2021 18:32:27 +0000 (UTC)
+Subject: Re: [tip: locking/urgent] locking/ww_mutex: Treat ww_mutex_lock()
+ like a trylock
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org
+References: <20210316153119.13802-4-longman@redhat.com>
+ <161598470197.398.8903908266426306140.tip-bot2@tip-bot2>
+ <YFIASRkXowQWgj2s@hirez.programming.kicks-ass.net>
+ <YFIEo8IVQ/Mm9jUE@hirez.programming.kicks-ass.net>
+ <e1bcd7fb-3a40-f207-ee19-d276c8b8bb75@redhat.com>
+ <e39f4e37-e3c0-e62a-7062-fdd2c8b3d3b9@redhat.com>
+ <YFIy8Bzj7WAHFmlG@hirez.programming.kicks-ass.net>
+ <YFI/C4VZuWjyHLNK@hirez.programming.kicks-ass.net>
+ <YFJAP8x917Ef0Khj@hirez.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <36d26109-f08a-6254-2fd3-ad1a28fcc260@redhat.com>
+Date:   Wed, 17 Mar 2021 14:32:27 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <YFJAP8x917Ef0Khj@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patches fixes the checks- 'Alignment should match open parenthesis'
-of 'checkpatch.pl'.
+On 3/17/21 1:45 PM, Peter Zijlstra wrote:
+> On Wed, Mar 17, 2021 at 06:40:27PM +0100, Peter Zijlstra wrote:
+>> On Wed, Mar 17, 2021 at 05:48:48PM +0100, Peter Zijlstra wrote:
+>>
+>>> I think you'll find that if you use ww_mutex_init() it'll all work. Let
+>>> me go and zap this patch, and then I'll try and figure out why
+>>> DEFINE_WW_MUTEX() is buggered.
+>> Moo, I can't get the compiler to do as I want :/
+>>
+>> The below is so close but doesn't actually compile.. Maybe we should
+>> just give up on DEFINE_WW_MUTEX and simply remove it.
+>>
+>> ---
+>> diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+>> index 0cd631a19727..85f50538f26a 100644
+>> --- a/include/linux/mutex.h
+>> +++ b/include/linux/mutex.h
+>> @@ -129,12 +129,15 @@ do {									\
+>>   # define __DEP_MAP_MUTEX_INITIALIZER(lockname)
+>>   #endif
+>>   
+>> -#define __MUTEX_INITIALIZER(lockname) \
+>> +#define ___MUTEX_INITIALIZER(lockname, depmap) \
+>>   		{ .owner = ATOMIC_LONG_INIT(0) \
+>>   		, .wait_lock = __SPIN_LOCK_UNLOCKED(lockname.wait_lock) \
+>>   		, .wait_list = LIST_HEAD_INIT(lockname.wait_list) \
+>>   		__DEBUG_MUTEX_INITIALIZER(lockname) \
+>> -		__DEP_MAP_MUTEX_INITIALIZER(lockname) }
+>> +		depmap }
+>> +
+>> +#define __MUTEX_INITIALIZER(lockname) \
+>> +		___MUTEX_INITIALIZER(lockname, __DEP_MAP_MUTEX_INITIALIZER(lockname))
+>>   
+>>   #define DEFINE_MUTEX(mutexname) \
+>>   	struct mutex mutexname = __MUTEX_INITIALIZER(mutexname)
+>> diff --git a/include/linux/ww_mutex.h b/include/linux/ww_mutex.h
+>> index 6ecf2a0220db..c62a030652b4 100644
+>> --- a/include/linux/ww_mutex.h
+>> +++ b/include/linux/ww_mutex.h
+>> @@ -50,9 +50,17 @@ struct ww_acquire_ctx {
+>>   
+>>   #ifdef CONFIG_DEBUG_LOCK_ALLOC
+>>   # define __WW_CLASS_MUTEX_INITIALIZER(lockname, class) \
+>> -		, .ww_class = class
+>> +		, .ww_class = &(class)
+>> +
+>> +# define __DEP_MAP_WW_MUTEX_INITIALIZER(lockname, class) \
+>> +		, .dep_map = { \
+>> +			.key = &(class).mutex_key, \
+>> +			.name = (class).mutex_name, \
+> 			,name = #class "_mutex", \
+>
+> and it 'works', but shees!
 
-Signed-off-by: Mahak Gupta <gmahak1@gmail.com>
----
- drivers/staging/octeon-usb/octeon-hcd.c | 32 +++++++++++++------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+The name string itself may be duplicated for multiple instances of 
+DEFINE_WW_MUTEX(). Do you want to keep DEFINE_WW_MUTEX() or just use 
+ww_mutex_init() for all?
 
-diff --git a/drivers/staging/octeon-usb/octeon-hcd.c b/drivers/staging/octeon-usb/octeon-hcd.c
-index e2f8b6b67f75..f27f20a4aa2d 100644
---- a/drivers/staging/octeon-usb/octeon-hcd.c
-+++ b/drivers/staging/octeon-usb/octeon-hcd.c
-@@ -1258,7 +1258,7 @@ static void cvmx_usb_poll_tx_fifo(struct octeon_hcd *usb)
- 		union cvmx_usbcx_hptxsts tx_status;
- 
- 		tx_status.u32 = cvmx_usb_read_csr32(usb,
--					CVMX_USBCX_HPTXSTS(usb->index));
-+						    CVMX_USBCX_HPTXSTS(usb->index));
- 		if (cvmx_usb_fill_tx_hw(usb, &usb->periodic,
- 					tx_status.s.ptxfspcavail))
- 			USB_SET_FIELD32(CVMX_USBCX_GINTMSK(usb->index),
-@@ -1272,7 +1272,7 @@ static void cvmx_usb_poll_tx_fifo(struct octeon_hcd *usb)
- 		union cvmx_usbcx_gnptxsts tx_status;
- 
- 		tx_status.u32 = cvmx_usb_read_csr32(usb,
--					CVMX_USBCX_GNPTXSTS(usb->index));
-+						    CVMX_USBCX_GNPTXSTS(usb->index));
- 		if (cvmx_usb_fill_tx_hw(usb, &usb->nonperiodic,
- 					tx_status.s.nptxfspcavail))
- 			USB_SET_FIELD32(CVMX_USBCX_GINTMSK(usb->index),
-@@ -1298,13 +1298,13 @@ static void cvmx_usb_fill_tx_fifo(struct octeon_hcd *usb, int channel)
- 
- 	/* We only need to fill data on outbound channels */
- 	hcchar.u32 = cvmx_usb_read_csr32(usb,
--			CVMX_USBCX_HCCHARX(channel, usb->index));
-+					 CVMX_USBCX_HCCHARX(channel, usb->index));
- 	if (hcchar.s.epdir != CVMX_USB_DIRECTION_OUT)
- 		return;
- 
- 	/* OUT Splits only have data on the start and not the complete */
- 	usbc_hcsplt.u32 = cvmx_usb_read_csr32(usb,
--				CVMX_USBCX_HCSPLTX(channel, usb->index));
-+					      CVMX_USBCX_HCSPLTX(channel, usb->index));
- 	if (usbc_hcsplt.s.spltena && usbc_hcsplt.s.compsplt)
- 		return;
- 
-@@ -1313,7 +1313,7 @@ static void cvmx_usb_fill_tx_fifo(struct octeon_hcd *usb, int channel)
- 	 * words.
- 	 */
- 	usbc_hctsiz.u32 = cvmx_usb_read_csr32(usb,
--				CVMX_USBCX_HCTSIZX(channel, usb->index));
-+					      CVMX_USBCX_HCTSIZX(channel, usb->index));
- 	if (!usbc_hctsiz.s.xfersize)
- 		return;
- 
-@@ -1360,7 +1360,7 @@ static void cvmx_usb_start_channel_control(struct octeon_hcd *usb,
- 	union cvmx_usbcx_hctsizx usbc_hctsiz;
- 
- 	usbc_hctsiz.u32 = cvmx_usb_read_csr32(usb,
--				CVMX_USBCX_HCTSIZX(channel, usb->index));
-+					      CVMX_USBCX_HCTSIZX(channel, usb->index));
- 
- 	switch (transaction->stage) {
- 	case CVMX_USB_STAGE_NON_CONTROL:
-@@ -1517,7 +1517,7 @@ static void cvmx_usb_start_channel(struct octeon_hcd *usb, int channel,
- 
- 		/* Clear all channel status bits */
- 		usbc_hcint.u32 = cvmx_usb_read_csr32(usb,
--					CVMX_USBCX_HCINTX(channel, usb->index));
-+						     CVMX_USBCX_HCINTX(channel, usb->index));
- 
- 		cvmx_usb_write_csr32(usb,
- 				     CVMX_USBCX_HCINTX(channel, usb->index),
-@@ -1552,7 +1552,7 @@ static void cvmx_usb_start_channel(struct octeon_hcd *usb, int channel,
- 
- 		/* Enable the channel interrupt to propagate */
- 		usbc_haintmsk.u32 = cvmx_usb_read_csr32(usb,
--					CVMX_USBCX_HAINTMSK(usb->index));
-+							CVMX_USBCX_HAINTMSK(usb->index));
- 		usbc_haintmsk.s.haintmsk |= 1 << channel;
- 		cvmx_usb_write_csr32(usb, CVMX_USBCX_HAINTMSK(usb->index),
- 				     usbc_haintmsk.u32);
-@@ -1836,7 +1836,7 @@ static void cvmx_usb_start_channel(struct octeon_hcd *usb, int channel,
-  * Returns: Pipe or NULL if none are ready
-  */
- static struct cvmx_usb_pipe *cvmx_usb_find_ready_pipe(struct octeon_hcd *usb,
--		enum cvmx_usb_transfer xfer_type)
-+						      enum cvmx_usb_transfer xfer_type)
- {
- 	struct list_head *list = usb->active_pipes + xfer_type;
- 	u64 current_frame = usb->frame_number;
-@@ -2309,7 +2309,8 @@ static int cvmx_usb_cancel(struct octeon_hcd *usb,
- 		CVMX_SYNCW;
- 
- 		usbc_hcchar.u32 = cvmx_usb_read_csr32(usb,
--				CVMX_USBCX_HCCHARX(pipe->channel, usb->index));
-+						      CVMX_USBCX_HCCHARX(pipe->channel,
-+									 usb->index));
- 		/*
- 		 * If the channel isn't enabled then the transaction already
- 		 * completed.
-@@ -2605,11 +2606,12 @@ static int cvmx_usb_poll_channel(struct octeon_hcd *usb, int channel)
- 
- 	/* Read the interrupt status bits for the channel */
- 	usbc_hcint.u32 = cvmx_usb_read_csr32(usb,
--				CVMX_USBCX_HCINTX(channel, usb->index));
-+					     CVMX_USBCX_HCINTX(channel, usb->index));
- 
- 	if (usb->init_flags & CVMX_USB_INITIALIZE_FLAGS_NO_DMA) {
- 		usbc_hcchar.u32 = cvmx_usb_read_csr32(usb,
--				CVMX_USBCX_HCCHARX(channel, usb->index));
-+						      CVMX_USBCX_HCCHARX(channel,
-+									 usb->index));
- 
- 		if (usbc_hcchar.s.chena && usbc_hcchar.s.chdis) {
- 			/*
-@@ -2688,9 +2690,9 @@ static int cvmx_usb_poll_channel(struct octeon_hcd *usb, int channel)
- 	 * transferred
- 	 */
- 	usbc_hcchar.u32 = cvmx_usb_read_csr32(usb,
--			CVMX_USBCX_HCCHARX(channel, usb->index));
-+					      CVMX_USBCX_HCCHARX(channel, usb->index));
- 	usbc_hctsiz.u32 = cvmx_usb_read_csr32(usb,
--			CVMX_USBCX_HCTSIZX(channel, usb->index));
-+					      CVMX_USBCX_HCTSIZX(channel, usb->index));
- 
- 	/*
- 	 * Calculating the number of bytes successfully transferred is dependent
-@@ -3010,7 +3012,7 @@ static int cvmx_usb_poll(struct octeon_hcd *usb)
- 		union cvmx_usbcx_haint usbc_haint;
- 
- 		usbc_haint.u32 = cvmx_usb_read_csr32(usb,
--					CVMX_USBCX_HAINT(usb->index));
-+						     CVMX_USBCX_HAINT(usb->index));
- 		while (usbc_haint.u32) {
- 			int channel;
- 
--- 
-2.17.1
+I notice that the problem with DEFINE_WW_MUTEX is that the ww_mutex 
+themselves has null key instead of the same key from the ww_class as 
+with ww_mutex_init().
+
+Cheers,
+Longman
+
 
