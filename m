@@ -2,149 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C2833EB25
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B82B33EB2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:16:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229673AbhCQINb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57574 "EHLO
+        id S229584AbhCQIPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:15:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhCQINU (ORCPT
+        with ESMTP id S229510AbhCQIPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:13:20 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25DA9C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:13:09 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id r15-20020a05600c35cfb029010e639ca09eso2860764wmq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:13:09 -0700 (PDT)
+        Wed, 17 Mar 2021 04:15:18 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACDC1C06174A;
+        Wed, 17 Mar 2021 01:15:17 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 12so917050wmf.5;
+        Wed, 17 Mar 2021 01:15:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=WfpCUY1UJ7qOjlg2Vr5i3kzC42xTpe413tD2Ys270Wk=;
-        b=Brjewc+eW72WLOrPIXgP+4LnvrrU5icL+fe4ssNdXpQsMMs+He+yT/vts95CzF/B/I
-         FTt9l2SN5akVEdwbeW3WNKqYfwzvW91O7FJo3WwELqO8Ov2oYXbVJI/Ev4t7+dcZPtOj
-         Nyom49utEuVUo/dLRtFcF3AWzNHoJzpTEXcf6e+DObmFQ5RE2vaYLD049jn7iyXbFj+0
-         FtuyO7sSCXgLCar1zW78DHkJCv/IHSmCs9vup1GF38m9eCy6u4XOlgdLcvJcQXck8Pcb
-         E55exTcG0ABs4KM1mQH3VpCoBB5Qd8eePSj9IQmt+JWxJLN0b61GBIvstS40RPm00qKt
-         bNQw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2C2nS2FuL5jIhqAY/uOCR718M7JpaJd6K5UxD7QBZ0c=;
+        b=gKEcCTAzqvl6UcV0JWtxYfgS4mkNy0j7CKcuoZN0yc1FuCnS7UWDHaH9tUkIbPWw8S
+         PpWTOg/bdzs8nexa2qdaE4CwxflXq8MOZ0fUIqJRjktExHNx5L+73lmykE64Bx2iU1pw
+         jqSR6Hzcmd95d8FUroe/k5CvPz5IdtNDSgA/qi0Nqa+2AFSoE2eCC++keWgca+yhdKZF
+         KD8KLfVtPkPGKPmqo+n7ksyh9WFH5pqf+nGP5mUzc3gymPo3yUvOQo/MFVrfCvBUgx3A
+         GmH7VSxJx0RNhcec/1D8osxwGFnCzouAYDOTwKzmLvzTTbvX/7tuwGUFntIhTgZfj9NY
+         2fuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=WfpCUY1UJ7qOjlg2Vr5i3kzC42xTpe413tD2Ys270Wk=;
-        b=K88EyqXR9xuHqub3LrAIs0rmL/GY8ul8UNW8PWL55DbgVoDQAulJtqmTDjvTfBNsHz
-         pIj9jdEBQw5uHPBEMBVNVZX29pKcHuEBdesjz/Oo1ObIfhL+G6RSEpwo2IDdX6E0kW5c
-         rrC1rZv/+g9g7pCAlH0xSnaRfkAJLHNuVurFQdU1r6O6xCP9jB1IeClRqPnrXUaMqviC
-         VivYxwdnSC3hVlu2xjDUh8MuNbN16Jxf7SQhIjv1vqI6RDIMlCuINAeKNx91Jj6pfbfa
-         aa147UNdFJSQNe0XdbEHslNSS+DOdh3ff05iad+Z60ICCGrruwgxYQnHQyhLF+tJAuxA
-         vOpw==
-X-Gm-Message-State: AOAM533DhQZckRKgzN3oUDAo9hWA4SMtoMuWHNbqm6n1vOCwsLquyd76
-        OPPVwRUoMZDkEYhJx+uMNa56Fg==
-X-Google-Smtp-Source: ABdhPJwgpHrWLMZdfq2X+/lLanw+UKg8Df4rEePqI9mV3ANK2dNkjgLsi5sL+tj0DF9anOlKjFU6jw==
-X-Received: by 2002:a7b:cb89:: with SMTP id m9mr2461194wmi.27.1615968787897;
-        Wed, 17 Mar 2021 01:13:07 -0700 (PDT)
-Received: from dell ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id 18sm1621033wmj.21.2021.03.17.01.13.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 01:13:07 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 08:13:04 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, Adam Radford <aradford@gmail.com>,
-        Alan Cox <alan@lxorguk.ukuu.org.uk>,
-        Ali Akcaagac <aliakc@web.de>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Andre Hedrick <andre@suse.com>,
-        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-        Anil Veerabhadrappa <anilgv@broadcom.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bas Vermeulen <bvermeul@blackstar.xs4all.nl>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        Brian Macy <bmacy@sunshinecomputing.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "C.L. Huang" <ching@tekram.com.tw>, dc395x@twibble.org,
-        de Melo <acme@conectiva.com.br>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Dimitris Michailidis <dm@chelsio.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Eddie Wai <eddie.wai@broadcom.com>,
-        Erich Chen <erich@tekram.com.tw>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Hannes Reinecke <hare@kernel.org>,
-        Hannes Reinecke <hare@suse.de>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        James Smart <james.smart@broadcom.com>,
-        Jamie Lenehan <lenehan@twibble.org>,
-        Jan Kotas <jank@cadence.com>,
-        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
-        Joel Jacobson <linux@3ware.com>, Karen Xie <kxie@chelsio.com>,
-        Ketan Mukadam <ketan.mukadam@broadcom.com>,
-        Kurt Garloff <garloff@suse.de>,
-        "Leonard N. Zubkoff" <lnz@dandelion.com>,
-        linux-drivers@broadcom.com, Linux GmbH <hare@suse.com>,
-        linux-scsi@vger.kernel.org,
-        Manish Rangankar <mrangankar@marvell.com>,
-        Marcelo Tosatti <marcelo@conectiva.com.br>,
-        MPT-FusionLinux.pdl@avagotech.com,
-        MPT-FusionLinux.pdl@broadcom.com,
-        Nathaniel Clark <nate@misrule.us>,
-        "Nicholas A. Bellinger" <nab@kernel.org>,
-        Nilesh Javali <njavali@marvell.com>,
-        Oliver Neukum <oliver@neukum.org>,
-        QLogic-Storage-Upstream@qlogic.com,
-        Santosh Yaraganavi <santosh.sy@samsung.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
-        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Vinayak Holikatti <h.vinayak@samsung.com>,
-        Vladislav Bolkhovitin <vst@vlnb.net>
-Subject: Re: [PATCH 00/30] [Set 2] Rid W=1 warnings in SCSI
-Message-ID: <20210317081304.GG701493@dell>
-References: <20210312094738.2207817-1-lee.jones@linaro.org>
- <yq15z1r6db8.fsf@ca-mkp.ca.oracle.com>
- <20210316071725.GZ701493@dell>
- <yq1blbi36zm.fsf@ca-mkp.ca.oracle.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2C2nS2FuL5jIhqAY/uOCR718M7JpaJd6K5UxD7QBZ0c=;
+        b=IEApST4Z2fEgoSRxE0VBp236IUuOlqEG2qrCnq9Vlt+48O/nCWfP0g+u3//B2wNDRp
+         1nQnxA5ow/q3odR0flVbtK6oT5LiF3EM8ns1+BxXXk4OJpK5h7CsA/ojMTHC8hU0Oafo
+         wX9GIhAOaOZYpXLXfova3sUfPuSYo5prTFUaTYZYl+MZ12TNp4c2YWbKuQ2/SCULC/sk
+         fe5XbUyBi1OsMcoqXcU+RdWIujS7Toi90Y/XUPDLQYuHfcNSXo/k5PfjDrOYS1ir4Q5W
+         9Ri/7VWqFPmBxmgeTyDwFNdJOON5s6aBGEK7RpImF06aEAQdu0bNYcUr5X4D488r1p8o
+         /J1g==
+X-Gm-Message-State: AOAM532p85Oq9/yTSnRV8Zptpy+wV8OoTgu7sp2xHPdA8kl/ZyplFxWO
+        t3XZjP3OAi6xyXqdXxGYNiQ=
+X-Google-Smtp-Source: ABdhPJzX4WCDwk6IxuS01Nm/yXC+ACwGHPPl9kypRe2EEfWymsCJ9UtVYQFLKhDE/japhuJA+VrwPw==
+X-Received: by 2002:a1c:a916:: with SMTP id s22mr2568037wme.82.1615968914088;
+        Wed, 17 Mar 2021 01:15:14 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f1f:bb00:c04c:c4a7:d0c5:8ae7? (p200300ea8f1fbb00c04cc4a7d0c58ae7.dip0.t-ipconnect.de. [2003:ea:8f1f:bb00:c04c:c4a7:d0c5:8ae7])
+        by smtp.googlemail.com with ESMTPSA id s84sm1694787wme.11.2021.03.17.01.15.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 01:15:13 -0700 (PDT)
+Subject: Re: [PATCH net-next 1/1] net: phy: fix invalid phy id when probe
+ using C22
+To:     Wong Vee Khee <vee.khee.wong@intel.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Voon Weifeng <voon.weifeng@intel.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>
+References: <20210316085748.3017-1-vee.khee.wong@intel.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <eba4f81c-adc0-61d1-8cb9-4c0c5995bc49@gmail.com>
+Date:   Wed, 17 Mar 2021 09:15:03 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210316085748.3017-1-vee.khee.wong@intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <yq1blbi36zm.fsf@ca-mkp.ca.oracle.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021, Martin K. Petersen wrote:
+On 16.03.2021 09:57, Wong Vee Khee wrote:
+> When using Clause-22 to probe for PHY devices such as the Marvell
+> 88E2110, PHY ID with value 0 is read from the MII PHYID registers
+> which caused the PHY framework failed to attach the Marvell PHY
+> driver.
+> 
 
-> 
-> Lee,
-> 
-> > Would you like them in 1 or 2 sets?
-> 
-> As long as they are trivial, one set is fine.
-> 
-> What does help is to split by complexity. In your two previous series I
-> would have preferred the mpt3sas and bfa patches that actually change
-> code to be posted separately. Just to make sure they don't get lost in a
-> sea of trivial changes.
-> 
-> IOW, if the patches contain substantial functional changes I'd prefer
-> them to be separate from all the kernel-doc, function prototype,
-> etc. fixes.
+The issue occurs with a MAC driver that sets MDIO bus capability
+flag MDIOBUS_C22_C45, like stmmac? Or what is the affected MAC
+driver?
 
-At the moment, my process involves a script which opens each file and
-works it's way through the reported issues.
+And if you state it's a fix, a Fixes tag would be needed.
 
-I'll take a look through the remaining patches and try to pull out any
-that are more complex.
+> Fixed this by adding a check of PHY ID equals to all zeroes.
+> 
+> Cc: stable@vger.kernel.org
+> Reviewed-by: Voon Weifeng <voon.weifeng@intel.com>
+> Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
+> ---
+>  drivers/net/phy/phy_device.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> index a009d1769b08..f1afc00fcba2 100644
+> --- a/drivers/net/phy/phy_device.c
+> +++ b/drivers/net/phy/phy_device.c
+> @@ -820,8 +820,8 @@ static int get_phy_c22_id(struct mii_bus *bus, int addr, u32 *phy_id)
+>  
+>  	*phy_id |= phy_reg;
+>  
+> -	/* If the phy_id is mostly Fs, there is no device there */
+> -	if ((*phy_id & 0x1fffffff) == 0x1fffffff)
+> +	/* If the phy_id is mostly Fs or all zeroes, there is no device there */
+> +	if (((*phy_id & 0x1fffffff) == 0x1fffffff) || (*phy_id == 0))
+>  		return -ENODEV;
+>  
+>  	return 0;
+> 
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
