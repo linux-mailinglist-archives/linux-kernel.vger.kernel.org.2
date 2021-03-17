@@ -2,138 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2151333E916
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:27:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 768C733E8E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:18:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhCQF0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 01:26:31 -0400
-Received: from mga12.intel.com ([192.55.52.136]:18632 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229487AbhCQF0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 01:26:13 -0400
-IronPort-SDR: zfcDJGCeXw8RcMpmgQUAB4YDdhrGxzaNG+m7XaIttT6m1m/DHeJjQ/lmtIk5ypDOz5MLgVhORf
- z3FdJS7w/p0g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="168667102"
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="168667102"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 22:26:12 -0700
-IronPort-SDR: pP2Ftc14oJmJzDdv3e0Lpze7LE3K7W50dR1K6vJZG7oxorwpgDDiAAHo0l7q8/mz3X8X4gkqQv
- P5by0FTZB6eg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="433266629"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Mar 2021 22:26:10 -0700
-Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>, chenjiashang@huawei.com
-Subject: =?UTF-8?Q?Re=3a_A_problem_of_Intel_IOMMU_hardware_=ef=bc=9f?=
-To:     "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>, dwmw2@infradead.org, joro@8bytes.org,
-        will@kernel.org, alex.williamson@redhat.com
-References: <670baaf8-4ff8-4e84-4be3-030b95ab5a5e@huawei.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <692186fd-42b8-4054-ead2-f6c6b1bf5b2d@linux.intel.com>
-Date:   Wed, 17 Mar 2021 13:16:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229505AbhCQFSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 01:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229900AbhCQFSG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 01:18:06 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50AFCC06174A;
+        Tue, 16 Mar 2021 22:17:55 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id n79so37760588qke.3;
+        Tue, 16 Mar 2021 22:17:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v07pVEuhchhVaClqZdD0F36yggYeNuNt5/OwGOdNFhQ=;
+        b=MuJ2vxbwbm/u/KzX/OGGGMdH8CSEMTCcTuRl9TYuJijrVNapUUDnuMa7zkoRR9TdXn
+         fQ60G2am4zpKvbdmlYFpNIfY6X/rSGZubWy0f+cS2K/ByMzXE8Xr27Zcykf2gSnbY5T+
+         wWIyrtMTRAV+xXq/u0UPGgCjT0SeDcSOn9upDFI+ZkHN7xTXINCbsb3Du9eGUvJv5gj1
+         XVbCfJsFHjNr11MYHbsehobsKByQBvRznd33FsZU8dv03oqJPxsoAynm92isUfjy9KPg
+         Hgs8iU0yHglLgBvRaJnNWESmPpvKTN2sNeVx7iqIIM06+KuGuC72pfBRljb2PCLtcQ2w
+         NDAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v07pVEuhchhVaClqZdD0F36yggYeNuNt5/OwGOdNFhQ=;
+        b=UceA/+JSsiHa8bv9rC9wjW9X4Rk1Rf2PyMciT1T8jnUqmo1Xws5A5t8O4FpcEKsceB
+         9D7OWUf6jGpF09UShOMXbVOToKbPBPHCg3EjtMXnN5v0fvIc3WChyQxxZYYLqdEnvrUa
+         qMvCkgZhU+FEs7V7IY67Cjyen8gdMqFNGfGKlnvISi5KisxcGuHQafEwORP445/5AhIj
+         Dsjw7H3SCnjkV10+jj+2sudLle9VE6WjR0PZ9B4uokIM6IhJGPf5apoWW1G2zg1WceiY
+         98oXPIC1/YbdueQFGU+eUuwprXghxJKugZLvk2o9U2EXImd2pIhqtOnPTiZiK3dqVmiX
+         fdAw==
+X-Gm-Message-State: AOAM53267YeAH0UVZCFW3sP44avIOFfI3ohsWHXQMWcE03+KBnPG9yMT
+        dL+Rrw+DYCj+y4SCNzzMDoA=
+X-Google-Smtp-Source: ABdhPJxP8NXwAi4p8Z+v7Xpg4Lb+qgkDSyQ7heJzZT1/AMBR+dNlWEfbWA/82k59S3VpQhhqKcuhYw==
+X-Received: by 2002:a05:620a:248e:: with SMTP id i14mr2852935qkn.245.1615958272724;
+        Tue, 16 Mar 2021 22:17:52 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.5])
+        by smtp.gmail.com with ESMTPSA id w5sm17111868qkc.85.2021.03.16.22.17.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 22:17:52 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     wim@linux-watchdog.org, linux@roeck-us.net,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] watchdog: Fix a typo in the file orion_wdt.c
+Date:   Wed, 17 Mar 2021 10:47:34 +0530
+Message-Id: <20210317051734.97314-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <670baaf8-4ff8-4e84-4be3-030b95ab5a5e@huawei.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Longpeng,
 
-On 3/17/21 11:16 AM, Longpeng (Mike, Cloud Infrastructure Service 
-Product Dept.) wrote:
-> Hi guys,
-> 
-> We find the Intel iommu cache (i.e. iotlb) maybe works wrong in a special
-> situation, it would cause DMA fails or get wrong data.
-> 
-> The reproducer (based on Alex's vfio testsuite[1]) is in attachment, it can
-> reproduce the problem with high probability (~50%).
-> 
-> The machine we used is:
-> processor	: 47
-> vendor_id	: GenuineIntel
-> cpu family	: 6
-> model		: 85
-> model name	: Intel(R) Xeon(R) Gold 6146 CPU @ 3.20GHz
-> stepping	: 4
-> microcode	: 0x2000069
-> 
-> And the iommu capability reported is:
-> ver 1:0 cap 8d2078c106f0466 ecap f020df
-> (caching mode = 0 , page-selective invalidation = 1)
-> 
-> (The problem is also on 'Intel(R) Xeon(R) Silver 4114 CPU @ 2.20GHz' and
-> 'Intel(R) Xeon(R) Platinum 8378A CPU @ 3.00GHz')
-> 
-> We run the reproducer on Linux 4.18 and it works as follow:
-> 
-> Step 1. alloc 4G *2M-hugetlb* memory (N.B. no problem with 4K-page mapping)
+s/freqency/frequency/
 
-I don't understand 2M-hugetlb here means exactly. The IOMMU hardware
-supports both 2M and 1G super page. The mapping physical memory is 4G.
-Why couldn't it use 1G super page?
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/watchdog/orion_wdt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Step 2. DMA Map 4G memory
-> Step 3.
->      while (1) {
->          {UNMAP, 0x0, 0xa0000}, ------------------------------------ (a)
->          {UNMAP, 0xc0000, 0xbff40000},
+diff --git a/drivers/watchdog/orion_wdt.c b/drivers/watchdog/orion_wdt.c
+index 4ddb4ea2e4a3..127eefc9161d 100644
+--- a/drivers/watchdog/orion_wdt.c
++++ b/drivers/watchdog/orion_wdt.c
+@@ -174,7 +174,7 @@ static int armadaxp_wdt_clock_init(struct platform_device *pdev,
+ 		return ret;
+ 	}
 
-Have these two ranges been mapped before? Does the IOMMU driver
-complains when you trying to unmap a range which has never been
-mapped? The IOMMU driver implicitly assumes that mapping and
-unmapping are paired.
+-	/* Fix the wdt and timer1 clock freqency to 25MHz */
++	/* Fix the wdt and timer1 clock frequency to 25MHz */
+ 	val = WDT_AXP_FIXED_ENABLE_BIT | TIMER1_FIXED_ENABLE_BIT;
+ 	atomic_io_modify(dev->reg + TIMER_CTRL, val, val);
 
->          {MAP,   0x0, 0xc0000000}, --------------------------------- (b)
->                  use GDB to pause at here, and then DMA read IOVA=0,
+--
+2.30.2
 
-IOVA 0 seems to be a special one. Have you verified with other addresses
-than IOVA 0?
-
->                  sometimes DMA success (as expected),
->                  but sometimes DMA error (report not-present).
->          {UNMAP, 0x0, 0xc0000000}, --------------------------------- (c)
->          {MAP,   0x0, 0xa0000},
->          {MAP,   0xc0000, 0xbff40000},
->      }
-> 
-> The DMA read operations sholud success between (b) and (c), it should NOT report
-> not-present at least!
-> 
-> After analysis the problem, we think maybe it's caused by the Intel iommu iotlb.
-> It seems the DMA Remapping hardware still uses the IOTLB or other caches of (a).
-> 
-> When do DMA unmap at (a), the iotlb will be flush:
->      intel_iommu_unmap
->          domain_unmap
->              iommu_flush_iotlb_psi
-> 
-> When do DMA map at (b), no need to flush the iotlb according to the capability
-> of this iommu:
->      intel_iommu_map
->          domain_pfn_mapping
->              domain_mapping
->                  __mapping_notify_one
->                      if (cap_caching_mode(iommu->cap)) // FALSE
->                          iommu_flush_iotlb_psi
-
-That's true. The iotlb flushing is not needed in case of PTE been
-changed from non-present to present unless caching mode.
-
-> But the problem will disappear if we FORCE flush here. So we suspect the iommu
-> hardware.
-> 
-> Do you have any suggestion ?
-
-Best regards,
-baolu
