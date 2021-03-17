@@ -2,85 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE7D33F992
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7DB33F996
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233274AbhCQTvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40174 "EHLO
+        id S233280AbhCQTzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231398AbhCQTvk (ORCPT
+        with ESMTP id S232738AbhCQTyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:51:40 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAE7C06174A;
-        Wed, 17 Mar 2021 12:51:40 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 15so4781826ljj.0;
-        Wed, 17 Mar 2021 12:51:40 -0700 (PDT)
+        Wed, 17 Mar 2021 15:54:54 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD4EC06174A;
+        Wed, 17 Mar 2021 12:54:54 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso2049158wmi.0;
+        Wed, 17 Mar 2021 12:54:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VzQBD837Zk1zEE5Iz7CRU5SLWREGhnXHICCVYkscOfc=;
-        b=No5LWjJXssMUs0UXhpwbVW0DuHSXGjX1P2/w7D3hj4mYl3VvTG3P5VAmH0SM62x/dT
-         PqrG00moq/L7hqU6fXua3oramWcVCzElc/GzyDOJ9e7udlSeaStUw5CHq6fSGBJaza4p
-         TohikbLMye+bT7zmNfG+PVUvnKXDt/wquXD969rer5t3QB+NFex0DD64oshMyLHfAYtM
-         n1g3axMAGsi6NbsB7wc6N87VW2Pu6wjhaobYZ2puA20/0me5dy9Q6VK/86Om1cU/5hJP
-         cHHvnb/P/dkOZ6KYzIlihzhLvmT96jUg5QskD6XvOxYajvr2ZUe8mzuZgyMeHFf7fqfX
-         Ma3w==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=scVZEoQst6gY9XYErRxOo2D348FMWQF9KFFYCoS/wjM=;
+        b=sLAFHXIxxcAvhDrVwfjb1W2K+qCyYROgKbDg+Lh2Z2lvfm3ACQZH5oKvjboDKQBIOQ
+         GhTBWyj+2QMkW4UQh5xhOaQpPlI2MzpU+oecIiWPM3QtFrV2o5ppp1GjMmVLXQNwAH3A
+         anC8chTojKoC622Bn/Fn6N6Un6vHXj3DKb0yAu20fYjIM2atCgniXVt9WkbNgsxz8NKN
+         Tus/+smXvI4SIQzpOt3RBg1sZCReI+uAFGDzuu1LOHzg4gNFTO6k8PMnMft1yeO7veH+
+         1NDmXm6cM7h/PT0bMu4kOR8WtaclhqsBEHVLRSw6Nx1wJ1u20Bczxt7N+xZ1jlZXFYTf
+         Qylw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VzQBD837Zk1zEE5Iz7CRU5SLWREGhnXHICCVYkscOfc=;
-        b=hrVQonJGX7KmVFuyRceNeZdisnjZJaDRzPxpvmyH3LuS1w5h7A3QzUPWl66aQ4vnYV
-         W6WvVrEm4QPSvYlf0ZSo2EKv8sJesVKVzI50CxXvCFoz0aWylvhASuCmZiwKz+KC2N1q
-         SMLXzesEeOhGetzxS9j9ijE21UoFbKxIETa6v+L9jZY/ER5sPuEal6M58jBoVKJ4a+Bi
-         ykZJ8c0RBRNLOSiPECAQqJoY8+Mj6ND9zzRvmmNgJUiCUS5nR97U3dFdwcVsFAvQT+MK
-         ttfVA8DHl/l5/FdRYmdqldWlXEquGEQ73hpbSczTp2mImuIVC+pdMT/h7OKDQfwYwzOU
-         l1hQ==
-X-Gm-Message-State: AOAM531W7Qu2scdPlQvKDchVG6jbdkhK5JWJx6GnK+jYgpK0meTe4tuj
-        q+7STHn27r8oCC9bR3nO+IJGTUoQ1ifY4CRIo5Y=
-X-Google-Smtp-Source: ABdhPJyDl038EMrMS8D0eUwFstC4lVMlO1PBhSPXP5inoBsNmAyT40HGMm8TW7qZ156bRzt7NxGocN1usLMO4lmkz7Y=
-X-Received: by 2002:a2e:900b:: with SMTP id h11mr3340022ljg.258.1616010698713;
- Wed, 17 Mar 2021 12:51:38 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=scVZEoQst6gY9XYErRxOo2D348FMWQF9KFFYCoS/wjM=;
+        b=jrJvYOvoec6F1ZuNX98iGHxlJd8TWZNm0RmQetSaBD2edMGCCSFujrf1MvQLX7R6Q0
+         6aF/PD7crpZLdeMiFb3CVTPPep0V9cyb06v1+8dElOEnoZ+/u9xyQ3CyIawmHCtEKPjq
+         YFxMOqQp8sQiqLGVsVQX3PpAS9W94KmoI1Um6omJgcZCsANT5fCqMH0OzaKONrBSUab8
+         WNpbP2FkkcZFTgNBqhwrefvCJvyxkWuHGwzugLsZLSZHMQ3Bif/nmHic53l4cpzoASOz
+         anl/dtnHpBEVBrl+K2emYf0F0CHmkFei0D1RSto5NB8yUOzszbf+8cPdpbSamu+s+cT3
+         J+OQ==
+X-Gm-Message-State: AOAM532PwMH1ueYV9GfMSDp0DRpRu8H7KAn+PtoS9NT001bntysYlyPj
+        S7HCtdV/Lulakt9+mZKi748=
+X-Google-Smtp-Source: ABdhPJxBFZ429tKCOUz47tGiVOK9+zUMzuz7N85RkUXRdaDwDDJ3jf0+xJEQLOdLA6aJ5uLNIkZDYA==
+X-Received: by 2002:a05:600c:4ed1:: with SMTP id g17mr404824wmq.67.1616010892936;
+        Wed, 17 Mar 2021 12:54:52 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id p18sm6390504wrs.68.2021.03.17.12.54.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 12:54:52 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 17 Mar 2021 20:54:50 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     tip-bot2 for Nicholas Piggin <tip-bot2@linutronix.de>,
+        linux-tip-commits@vger.kernel.org,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [tip: sched/core] sched/wait_bit, mm/filemap: Increase page and
+ bit waitqueue hash size
+Message-ID: <20210317195450.GA811242@gmail.com>
+References: <20210317075427.587806-1-npiggin@gmail.com>
+ <161598470782.398.7078277215554525953.tip-bot2@tip-bot2>
+ <87v99pyfmp.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210317125147.2159512-1-Jianlin.Lv@arm.com>
-In-Reply-To: <20210317125147.2159512-1-Jianlin.Lv@arm.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 17 Mar 2021 12:51:27 -0700
-Message-ID: <CAADnVQLB1MoqHekQa1FrjybqmA9gBHcBcaezULb=v5PgthRB6A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Simplify expression for identify bpf mem type
-To:     Jianlin Lv <Jianlin.Lv@arm.com>
-Cc:     bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-        Simon Horman <simon.horman@netronome.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        OSS Drivers <oss-drivers@netronome.com>,
-        Linux API <linux-api@vger.kernel.org>, iecedge@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87v99pyfmp.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 5:52 AM Jianlin Lv <Jianlin.Lv@arm.com> wrote:
->         return BPF_CLASS(meta->insn.code);
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 2d3036e292a9..5d77675e7112 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -21,6 +21,7 @@
->  #define BPF_DW         0x18    /* double word (64-bit) */
->  #define BPF_ATOMIC     0xc0    /* atomic memory ops - op type in immediate */
->  #define BPF_XADD       0xc0    /* exclusive add - legacy name */
-> +#define BPF_SIZE_MASK  0x18    /* mask of size modifier */
 
-Pls don't add kernel internal defines to uapi.
+* Thomas Gleixner <tglx@linutronix.de> wrote:
+
+> On Wed, Mar 17 2021 at 12:38, tip-bot wrote:
+> > The following commit has been merged into the sched/core branch of tip:
+> >
+> > Commit-ID:     873d7c4c6a920d43ff82e44121e54053d4edba93
+> > Gitweb:        https://git.kernel.org/tip/873d7c4c6a920d43ff82e44121e54053d4edba93
+> > Author:        Nicholas Piggin <npiggin@gmail.com>
+> > AuthorDate:    Wed, 17 Mar 2021 17:54:27 +10:00
+> > Committer:     Ingo Molnar <mingo@kernel.org>
+> > CommitterDate: Wed, 17 Mar 2021 09:32:30 +01:00
+> 
+> Groan. This does not even compile and Nicholas already sent a V3 in the
+> very same thread. Zapped ...
+
+Yeah, thanks - got that too late and got distracted, groan #2.
+
+Thanks!
+
+	Ingo
