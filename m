@@ -2,116 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A1133F24D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:09:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7621D33F250
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:10:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbhCQOJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:09:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45054 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231168AbhCQOIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:08:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 51B69ACA8;
-        Wed, 17 Mar 2021 14:08:54 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 15:08:51 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <20210317140847.GA20407@linux>
-References: <20210309175546.5877-1-osalvador@suse.de>
- <20210309175546.5877-2-osalvador@suse.de>
- <f600451e-48aa-184f-ae71-94e0abe9d6b1@redhat.com>
- <20210315102224.GA24699@linux>
- <a2bf7b25-1e7a-bb6b-2fcd-08a4f4636ed5@redhat.com>
- <a03fcbb3-5b77-8671-6376-13c360f5ae25@redhat.com>
+        id S231184AbhCQOKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:10:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37411 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231211AbhCQOKV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 10:10:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615990220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=65P6PL5OL/2717NBzXNqPQ+q5PP+bR0voBu5yKlNlo8=;
+        b=K1qmvEhBz7rIT+4lQYGPYQxAzPDu8T1vBEYhZ6CG6k9/MxajeuH6upiBOBPTBcPpLehCII
+        GrWJkk9r43QVQab7fR1KkEISGQlrVihyDxRJyfMBXSQUKGgeCLUmE6h/9G7/1Btb+0y6yx
+        VQOhUoU/y87N6sGb+8WhqjMBeFyzcuE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-148-BWa9y-b_NPC7rsWPf4OW1Q-1; Wed, 17 Mar 2021 10:10:18 -0400
+X-MC-Unique: BWa9y-b_NPC7rsWPf4OW1Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9016AEC1A1;
+        Wed, 17 Mar 2021 14:10:17 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-117-171.rdu2.redhat.com [10.10.117.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D5DE650DDB;
+        Wed, 17 Mar 2021 14:10:16 +0000 (UTC)
+Subject: Re: [tip: locking/urgent] locking/ww_mutex: Simplify use_ww_ctx &
+ ww_ctx handling
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Davidlohr Bueso <dbueso@suse.de>, x86@kernel.org
+References: <20210316153119.13802-2-longman@redhat.com>
+ <161598470257.398.5006518584847290113.tip-bot2@tip-bot2>
+ <YFH9Pw3kwCZC1UTB@hirez.programming.kicks-ass.net>
+ <85fbce04-c544-6041-6e7d-76f47b90e263@redhat.com>
+ <YFIKWCUAZabBsji0@hirez.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <bbfca577-b680-4c73-3f35-22179bd1a498@redhat.com>
+Date:   Wed, 17 Mar 2021 10:10:16 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a03fcbb3-5b77-8671-6376-13c360f5ae25@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YFIKWCUAZabBsji0@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 06:45:17PM +0100, David Hildenbrand wrote:
-> > I find that cross reference to vmemmap code a little hard to digest.
-> > I would have assume that we don't have to care about PMDs in this
-> > code here at all. The vmemmap population code should handle that.
-> > 
-> > I think I already mentioned that somewhere, I think it should be like this:
-> > 
-> > a) vmemmap code should *never* populate more memory than requested for
-> > a single memory section when we are populating from the altmap.
-> > If that cannot be guaranteed for PMDs, then we have to fallback
-> > to populating base pages. Populating PMDs from an altmap with
-> > sizeof(struct page) == 64 is highly dangerous.
+On 3/17/21 9:55 AM, Peter Zijlstra wrote:
+> On Wed, Mar 17, 2021 at 09:43:20AM -0400, Waiman Long wrote:
+>
+>> Using gcc 8.4.1, the generated __mutex_lock function has the same size (with
+>> last instruction at offset +5179) with or without this patch. Well, you can
+>> say that this patch is an no-op wrt generated code.
+> OK, then GCC has gotten better. Because back then I tried really hard
+> but it wouldn't remove the if (ww_ctx) branches unless I had that extra
+> const bool argument.
+>
+I think ww_mutex was merged in 2013. That is almost 8 years ago. It 
+could still be the case that older gcc compilers may not generate the 
+right code. I will try the RHEL7 gcc compiler (4.8.5) to see how it fares.
 
-I guess you meant sizeof(struct page) != 64
+Cheers,
+Longman
 
-But other usecases of using altmap (ZONE_DEVICE stuff) might not care whether
-they have sub-populated PMDs when populating sections from altmap?
-
-Current vmemmap code populates PMD with PMD_SIZE if empty, and with basepages
-if there are still holes.
-
-> > Assume we have sizeof(struct page) == 56. A 128 MiB section
-> > spans 32768 pages -  we need 32768 * sizeof(struct page)
-> > space for the vmemmap.
-> > With 64k pages we *can* use exactly one PMD. With 56k pages
-> > we need 448 individual (full!) pages for the vmemmap.
-> > 
-> > IOW, we don't care how vmemmap code will do the mapping.
-> > vmemmap code has to get it right. IMHO, asserting it in
-> > this code is wrong.
-> > 
-> > 
-> > b) In this code, we really should only care about what
-> > memory onlining/offlining code can or can't do.
-> > We really only care that
-> > 
-> > 1) size == memory_block_size_bytes()
-> > 2) remaining_size
-> > 3) IS_ALIGNED(remaining_size, pageblock_size);
-
-I agree with the above, but see below:
-
-> > Okay, please document the statement about single sections, that's
-> > important to understand what's happening.
-> > 
-> > My take would be
-> > 
-> > bool mhp_supports_memmap_on_memory(unsigned long size)
-> > {
-> > 	/*
-> > 	 * Note: We calculate for a single memory section. The calculation
-> > 	 */
-> > 	unsigned long nr_vmemmap_pages = SECTION_SIZE / PAGE_SIZE;
-> > 	unsigned long vmemmap_size = nr_vmemmap_pages * sizeof(struct page);
-> > 	unsigned long remaining_size = size - vmemmap_size;
-
-While it might be true that we need to back off from populating with altmap in
-case PMDs are not going to be fully populated because of the size of the struct
-page (I am not still not sure though as I said above, other usecases might not
-care at all), I would go __for now__ with placing vmemmap_size == PMD_SIZE in
-the check below as well.
-
-If the check comes true, we know that we fully populate PMDs when populating
-sections, so the feature can be used.
-
-Then I commit to have a look whether we need to back off in vmemmap-populating
-code in case altmap && !NOT_FULLY_POPULATED_PMDS. 
-
-What do you think?
-
--- 
-Oscar Salvador
-SUSE L3
