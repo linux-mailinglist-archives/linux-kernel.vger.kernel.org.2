@@ -2,428 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED0D33EF92
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D513833EF96
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:30:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbhCQL31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 07:29:27 -0400
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:56167 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229979AbhCQL3H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 07:29:07 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id MUMJlAQyLGEYcMUMMlNHor; Wed, 17 Mar 2021 12:29:06 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1615980546; bh=GXcEXJF6bYyBibmeQ9bM+aRtI5FOI5oUgoGxcHFPdqY=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=FBoQMyxxZipy9mKGRRcbGNUNhDxf8L6k9/kezR2X7E7YOu5oySTCXPp1a+8tRPUtQ
-         G6dNay8EbhXxLidGHVUTekSMMNnz8bJGqMY3/LWRAO5Sou+OWc5S5TXuobu2yPnB1G
-         WzG56nmJkTb/TKQdrbzVQxnHRhMCYLBnZyJM0sCCxLcBkVSBT/0x7MXK5+vqQtlojD
-         QPW0rJO/Nv2f98cBJmG2nt/I/9jKUroU3EgOXI2tOhRTJvYTTgM1meTO68Db0tJv+L
-         +C/ixwTv/BhTsmc3+5lQJkkaIpnAouzJxrTJAuGBcbz4zLk9w8gcQshMcSBSCE3feV
-         p4YlxPqow6SBQ==
-Subject: Re: [PATCH v5 11/13] media: uvcvideo: Use control names from
- framework
-To:     Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>
-References: <20210316180004.1605727-1-ribalda@chromium.org>
- <20210316180004.1605727-12-ribalda@chromium.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <3d9c1964-330e-1fc6-bd5b-932619eb5bc3@xs4all.nl>
-Date:   Wed, 17 Mar 2021 12:29:02 +0100
+        id S231365AbhCQLaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 07:30:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46762 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231324AbhCQL3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 07:29:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8F50CAB8C;
+        Wed, 17 Mar 2021 11:29:41 +0000 (UTC)
+Subject: Re: [selftests] e48d82b67a:
+ BUG_TestSlub_RZ_alloc(Not_tainted):Redzone_overwritten
+To:     kernel test robot <oliver.sang@intel.com>, glittao@gmail.com,
+        kernel test robot <oliver.sang@intel.com>
+Cc:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
+        lkp@lists.01.org, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, shuah@kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20210317083612.GD22345@xsang-OptiPlex-9020>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <a389a8fb-2043-3b13-5180-e1f87e4d4a66@suse.cz>
+Date:   Wed, 17 Mar 2021 12:29:40 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210316180004.1605727-12-ribalda@chromium.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210317083612.GD22345@xsang-OptiPlex-9020>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfBWblWgm1EvsX4UbLfQADhJU13kc5RLxxoxUXE3tOB7w2x4cBpIkKjpQlJfvwLJ20dXsVUZDByhK9xXT+UHK5UljB4zRIUea783xtjUr41NUkIoJMhhw
- 9yHegc+2O29uwAZWude96x0pdzu42cwMHrSDGit5i3lsACB6sgwmphfzW6YVOP/8MF6ES5eADru23PRYAvDJjVmRRLhih0cHhlMsPsrqcqMpuhVAbepHBXnU
- +/T3t+8DI/OEuyd6c3tI2Q8VlEmZtFE1wvEzbpH7G57WtfB3Flfwaf2bsKzO9qoIjbawiwxfFA6CFaN4PRhf0Ekjpw0fwM0nlg7dVukmPDQ+LeLUIoPt1LiG
- ubYP0yVKWh59kpH+F1ZdHK9gEZMnfVSa5ehM75FJfsJ8XVD0pG6O35/0WdGa/20jj3zK0dMo0K2tgwAW9ng9Ni56okPLTha9/C2M07GCdHChlIOhfyI=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/03/2021 19:00, Ricardo Ribalda wrote:
-> The framework already contains a map of IDs to names, lets use it when
-> possible.
+On 3/17/21 9:36 AM, kernel test robot wrote:
 > 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> Suggested-by: Hans Verkuil <hverkuil@xs4all.nl>
-
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-
-Regards,
-
-	Hans
-
-> ---
->  drivers/media/usb/uvc/uvc_ctrl.c | 57 ++++++++++++--------------------
->  drivers/media/usb/uvc/uvc_v4l2.c |  8 ++++-
->  drivers/media/usb/uvc/uvcvideo.h |  2 +-
->  3 files changed, 30 insertions(+), 37 deletions(-)
 > 
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> index 98614e1be829..efbdd49ad8ec 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -436,7 +436,6 @@ static void uvc_ctrl_set_rel_speed(struct uvc_control_mapping *mapping,
->  static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	{
->  		.id		= V4L2_CID_BRIGHTNESS,
-> -		.name		= "Brightness",
->  		.entity		= UVC_GUID_UVC_PROCESSING,
->  		.selector	= UVC_PU_BRIGHTNESS_CONTROL,
->  		.size		= 16,
-> @@ -446,7 +445,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_CONTRAST,
-> -		.name		= "Contrast",
->  		.entity		= UVC_GUID_UVC_PROCESSING,
->  		.selector	= UVC_PU_CONTRAST_CONTROL,
->  		.size		= 16,
-> @@ -456,7 +454,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_HUE,
-> -		.name		= "Hue",
->  		.entity		= UVC_GUID_UVC_PROCESSING,
->  		.selector	= UVC_PU_HUE_CONTROL,
->  		.size		= 16,
-> @@ -468,7 +465,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_SATURATION,
-> -		.name		= "Saturation",
->  		.entity		= UVC_GUID_UVC_PROCESSING,
->  		.selector	= UVC_PU_SATURATION_CONTROL,
->  		.size		= 16,
-> @@ -478,7 +474,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_SHARPNESS,
-> -		.name		= "Sharpness",
->  		.entity		= UVC_GUID_UVC_PROCESSING,
->  		.selector	= UVC_PU_SHARPNESS_CONTROL,
->  		.size		= 16,
-> @@ -488,7 +483,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_GAMMA,
-> -		.name		= "Gamma",
->  		.entity		= UVC_GUID_UVC_PROCESSING,
->  		.selector	= UVC_PU_GAMMA_CONTROL,
->  		.size		= 16,
-> @@ -498,7 +492,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_BACKLIGHT_COMPENSATION,
-> -		.name		= "Backlight Compensation",
->  		.entity		= UVC_GUID_UVC_PROCESSING,
->  		.selector	= UVC_PU_BACKLIGHT_COMPENSATION_CONTROL,
->  		.size		= 16,
-> @@ -508,7 +501,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_GAIN,
-> -		.name		= "Gain",
->  		.entity		= UVC_GUID_UVC_PROCESSING,
->  		.selector	= UVC_PU_GAIN_CONTROL,
->  		.size		= 16,
-> @@ -518,7 +510,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_POWER_LINE_FREQUENCY,
-> -		.name		= "Power Line Frequency",
->  		.entity		= UVC_GUID_UVC_PROCESSING,
->  		.selector	= UVC_PU_POWER_LINE_FREQUENCY_CONTROL,
->  		.size		= 2,
-> @@ -530,7 +521,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_HUE_AUTO,
-> -		.name		= "Hue, Auto",
->  		.entity		= UVC_GUID_UVC_PROCESSING,
->  		.selector	= UVC_PU_HUE_AUTO_CONTROL,
->  		.size		= 1,
-> @@ -541,7 +531,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_EXPOSURE_AUTO,
-> -		.name		= "Exposure, Auto",
->  		.entity		= UVC_GUID_UVC_CAMERA,
->  		.selector	= UVC_CT_AE_MODE_CONTROL,
->  		.size		= 4,
-> @@ -554,7 +543,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_EXPOSURE_AUTO_PRIORITY,
-> -		.name		= "Exposure, Auto Priority",
->  		.entity		= UVC_GUID_UVC_CAMERA,
->  		.selector	= UVC_CT_AE_PRIORITY_CONTROL,
->  		.size		= 1,
-> @@ -564,7 +552,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_EXPOSURE_ABSOLUTE,
-> -		.name		= "Exposure (Absolute)",
->  		.entity		= UVC_GUID_UVC_CAMERA,
->  		.selector	= UVC_CT_EXPOSURE_TIME_ABSOLUTE_CONTROL,
->  		.size		= 32,
-> @@ -576,7 +563,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_AUTO_WHITE_BALANCE,
-> -		.name		= "White Balance Temperature, Auto",
->  		.entity		= UVC_GUID_UVC_PROCESSING,
->  		.selector	= UVC_PU_WHITE_BALANCE_TEMPERATURE_AUTO_CONTROL,
->  		.size		= 1,
-> @@ -587,7 +573,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_WHITE_BALANCE_TEMPERATURE,
-> -		.name		= "White Balance Temperature",
->  		.entity		= UVC_GUID_UVC_PROCESSING,
->  		.selector	= UVC_PU_WHITE_BALANCE_TEMPERATURE_CONTROL,
->  		.size		= 16,
-> @@ -599,7 +584,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_AUTO_WHITE_BALANCE,
-> -		.name		= "White Balance Component, Auto",
->  		.entity		= UVC_GUID_UVC_PROCESSING,
->  		.selector	= UVC_PU_WHITE_BALANCE_COMPONENT_AUTO_CONTROL,
->  		.size		= 1,
-> @@ -611,7 +595,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_BLUE_BALANCE,
-> -		.name		= "White Balance Blue Component",
->  		.entity		= UVC_GUID_UVC_PROCESSING,
->  		.selector	= UVC_PU_WHITE_BALANCE_COMPONENT_CONTROL,
->  		.size		= 16,
-> @@ -623,7 +606,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_RED_BALANCE,
-> -		.name		= "White Balance Red Component",
->  		.entity		= UVC_GUID_UVC_PROCESSING,
->  		.selector	= UVC_PU_WHITE_BALANCE_COMPONENT_CONTROL,
->  		.size		= 16,
-> @@ -635,7 +617,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_FOCUS_ABSOLUTE,
-> -		.name		= "Focus (absolute)",
->  		.entity		= UVC_GUID_UVC_CAMERA,
->  		.selector	= UVC_CT_FOCUS_ABSOLUTE_CONTROL,
->  		.size		= 16,
-> @@ -647,7 +628,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_FOCUS_AUTO,
-> -		.name		= "Focus, Auto",
->  		.entity		= UVC_GUID_UVC_CAMERA,
->  		.selector	= UVC_CT_FOCUS_AUTO_CONTROL,
->  		.size		= 1,
-> @@ -658,7 +638,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_IRIS_ABSOLUTE,
-> -		.name		= "Iris, Absolute",
->  		.entity		= UVC_GUID_UVC_CAMERA,
->  		.selector	= UVC_CT_IRIS_ABSOLUTE_CONTROL,
->  		.size		= 16,
-> @@ -668,7 +647,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_IRIS_RELATIVE,
-> -		.name		= "Iris, Relative",
->  		.entity		= UVC_GUID_UVC_CAMERA,
->  		.selector	= UVC_CT_IRIS_RELATIVE_CONTROL,
->  		.size		= 8,
-> @@ -678,7 +656,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_ZOOM_ABSOLUTE,
-> -		.name		= "Zoom, Absolute",
->  		.entity		= UVC_GUID_UVC_CAMERA,
->  		.selector	= UVC_CT_ZOOM_ABSOLUTE_CONTROL,
->  		.size		= 16,
-> @@ -688,7 +665,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_ZOOM_CONTINUOUS,
-> -		.name		= "Zoom, Continuous",
->  		.entity		= UVC_GUID_UVC_CAMERA,
->  		.selector	= UVC_CT_ZOOM_RELATIVE_CONTROL,
->  		.size		= 0,
-> @@ -700,7 +676,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_PAN_ABSOLUTE,
-> -		.name		= "Pan (Absolute)",
->  		.entity		= UVC_GUID_UVC_CAMERA,
->  		.selector	= UVC_CT_PANTILT_ABSOLUTE_CONTROL,
->  		.size		= 32,
-> @@ -710,7 +685,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_TILT_ABSOLUTE,
-> -		.name		= "Tilt (Absolute)",
->  		.entity		= UVC_GUID_UVC_CAMERA,
->  		.selector	= UVC_CT_PANTILT_ABSOLUTE_CONTROL,
->  		.size		= 32,
-> @@ -720,7 +694,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_PAN_SPEED,
-> -		.name		= "Pan (Speed)",
->  		.entity		= UVC_GUID_UVC_CAMERA,
->  		.selector	= UVC_CT_PANTILT_RELATIVE_CONTROL,
->  		.size		= 16,
-> @@ -732,7 +705,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_TILT_SPEED,
-> -		.name		= "Tilt (Speed)",
->  		.entity		= UVC_GUID_UVC_CAMERA,
->  		.selector	= UVC_CT_PANTILT_RELATIVE_CONTROL,
->  		.size		= 16,
-> @@ -744,7 +716,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_PRIVACY,
-> -		.name		= "Privacy",
->  		.entity		= UVC_GUID_UVC_CAMERA,
->  		.selector	= UVC_CT_PRIVACY_CONTROL,
->  		.size		= 1,
-> @@ -754,7 +725,6 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  	},
->  	{
->  		.id		= V4L2_CID_PRIVACY,
-> -		.name		= "Privacy",
->  		.entity		= UVC_GUID_EXT_GPIO_CONTROLLER,
->  		.selector	= UVC_CT_PRIVACY_CONTROL,
->  		.size		= 1,
-> @@ -1076,6 +1046,20 @@ static int uvc_query_v4l2_class(struct uvc_video_chain *chain, u32 req_id,
->  	return 0;
->  }
->  
-> +static const char *uvc_map_get_name(const struct uvc_control_mapping *map)
-> +{
-> +	const char *name;
-> +
-> +	if (map->name)
-> +		return map->name;
-> +
-> +	name = v4l2_ctrl_get_name(map->id);
-> +	if (name)
-> +		return name;
-> +
-> +	return "Unknown Control";
-> +}
-> +
->  static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
->  	struct uvc_control *ctrl,
->  	struct uvc_control_mapping *mapping,
-> @@ -1089,7 +1073,8 @@ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
->  	memset(v4l2_ctrl, 0, sizeof(*v4l2_ctrl));
->  	v4l2_ctrl->id = mapping->id;
->  	v4l2_ctrl->type = mapping->v4l2_type;
-> -	strscpy(v4l2_ctrl->name, mapping->name, sizeof(v4l2_ctrl->name));
-> +	strscpy(v4l2_ctrl->name, uvc_map_get_name(mapping),
-> +		sizeof(v4l2_ctrl->name));
->  	v4l2_ctrl->flags = 0;
->  
->  	if (!(ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR))
-> @@ -2196,7 +2181,8 @@ static int __uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
->  
->  	list_add_tail(&map->list, &ctrl->info.mappings);
->  	uvc_dbg(chain->dev, CONTROL, "Adding mapping '%s' to control %pUl/%u\n",
-> -		map->name, ctrl->info.entity, ctrl->info.selector);
-> +		uvc_map_get_name(map), ctrl->info.entity,
-> +		ctrl->info.selector);
->  
->  	return 0;
->  }
-> @@ -2214,7 +2200,7 @@ int uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
->  	if (mapping->id & ~V4L2_CTRL_ID_MASK) {
->  		uvc_dbg(dev, CONTROL,
->  			"Can't add mapping '%s', control id 0x%08x is invalid\n",
-> -			mapping->name, mapping->id);
-> +			uvc_map_get_name(mapping), mapping->id);
->  		return -EINVAL;
->  	}
->  
-> @@ -2261,7 +2247,7 @@ int uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
->  		if (mapping->id == map->id) {
->  			uvc_dbg(dev, CONTROL,
->  				"Can't add mapping '%s', control id 0x%08x already exists\n",
-> -				mapping->name, mapping->id);
-> +				uvc_map_get_name(mapping), mapping->id);
->  			ret = -EEXIST;
->  			goto done;
->  		}
-> @@ -2272,7 +2258,7 @@ int uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
->  		atomic_dec(&dev->nmappings);
->  		uvc_dbg(dev, CONTROL,
->  			"Can't add mapping '%s', maximum mappings count (%u) exceeded\n",
-> -			mapping->name, UVC_MAX_CONTROL_MAPPINGS);
-> +			uvc_map_get_name(mapping), UVC_MAX_CONTROL_MAPPINGS);
->  		ret = -ENOMEM;
->  		goto done;
->  	}
-> @@ -2481,6 +2467,7 @@ static void uvc_ctrl_cleanup_mappings(struct uvc_device *dev,
->  	list_for_each_entry_safe(mapping, nm, &ctrl->info.mappings, list) {
->  		list_del(&mapping->list);
->  		kfree(mapping->menu_info);
-> +		kfree(mapping->name);
->  		kfree(mapping);
->  	}
->  }
-> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-> index d780065f3716..74d862c358fd 100644
-> --- a/drivers/media/usb/uvc/uvc_v4l2.c
-> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
-> @@ -40,7 +40,13 @@ static int uvc_ioctl_ctrl_map(struct uvc_video_chain *chain,
->  		return -ENOMEM;
->  
->  	map->id = xmap->id;
-> -	memcpy(map->name, xmap->name, sizeof(map->name));
-> +	/* Non standard control id. */
-> +	if (v4l2_ctrl_get_name(map->id) == NULL) {
-> +		map->name = kmemdup(xmap->name, sizeof(xmap->name),
-> +				    GFP_KERNEL);
-> +		if (!map->name)
-> +			return -ENOMEM;
-> +	}
->  	memcpy(map->entity, xmap->entity, sizeof(map->entity));
->  	map->selector = xmap->selector;
->  	map->size = xmap->size;
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index a26bbec8d37b..dc20021f7ee0 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -240,7 +240,7 @@ struct uvc_control_mapping {
->  	struct list_head ev_subs;
->  
->  	u32 id;
-> -	u8 name[32];
-> +	char *name;
->  	u8 entity[16];
->  	u8 selector;
->  
+> Greeting,
 > 
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: e48d82b67a2b760eedf7b95ca15f41267496386c ("[PATCH 1/2] selftests: add a kselftest for SLUB debugging functionality")
+> url: https://github.com/0day-ci/linux/commits/glittao-gmail-com/selftests-add-a-kselftest-for-SLUB-debugging-functionality/20210316-204257
+> base: https://git.kernel.org/cgit/linux/kernel/git/shuah/linux-kselftest.git next
+> 
+> in testcase: trinity
+> version: trinity-static-i386-x86_64-f93256fb_2019-08-28
+> with following parameters:
+> 
+> 	group: group-04
+> 
+> test-description: Trinity is a linux system call fuzz tester.
+> test-url: http://codemonkey.org.uk/projects/trinity/
+> 
+> 
+> on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
+> 
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> 
+> 
+> +---------------------------------------------------------------------------------------------------------------+-----------+------------+
+> |                                                                                                               | v5.12-rc2 | e48d82b67a |
+> +---------------------------------------------------------------------------------------------------------------+-----------+------------+
+> | BUG_TestSlub_RZ_alloc(Not_tainted):Redzone_overwritten                                                        | 0         | 69         |
+> | INFO:0x(ptrval)-0x(ptrval)@offset=#.First_byte#instead_of                                                     | 0         | 69         |
+> | INFO:Allocated_in_resiliency_test_age=#cpu=#pid=                                                              | 0         | 69         |
+> | INFO:Slab0x(ptrval)objects=#used=#fp=0x(ptrval)flags=                                                         | 0         | 69         |
+> | INFO:Object0x(ptrval)@offset=#fp=0x(ptrval)                                                                   | 0         | 69         |
+> | BUG_TestSlub_next_ptr_free(Tainted:G_B):Freechain_corrupt                                                     | 0         | 69         |
+> | INFO:Freed_in_resiliency_test_age=#cpu=#pid=                                                                  | 0         | 69         |
+> | BUG_TestSlub_next_ptr_free(Tainted:G_B):Wrong_object_count.Counter_is#but_counted_were                        | 0         | 69         |
+> | BUG_TestSlub_next_ptr_free(Tainted:G_B):Redzone_overwritten                                                   | 0         | 69         |
+> | BUG_TestSlub_next_ptr_free(Tainted:G_B):Objects_remaining_in_TestSlub_next_ptr_free_on__kmem_cache_shutdown() | 0         | 69         |
+> | INFO:Object0x(ptrval)@offset=                                                                                 | 0         | 69         |
+> | BUG_TestSlub_1th_word_free(Tainted:G_B):Poison_overwritten                                                    | 0         | 69         |
+> | BUG_TestSlub_50th_word_free(Tainted:G_B):Poison_overwritten                                                   | 0         | 69         |
+> | BUG_TestSlub_RZ_free(Tainted:G_B):Redzone_overwritten                                                         | 0         | 69         |
+> +---------------------------------------------------------------------------------------------------------------+-----------+------------+
+> 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> 
+> 
+> 
+> [   22.154049] random: get_random_u32 called from __kmem_cache_create+0x23/0x3e0 with crng_init=0 
+> [   22.154070] random: get_random_u32 called from cache_random_seq_create+0x7c/0x140 with crng_init=0 
+> [   22.154167] random: get_random_u32 called from allocate_slab+0x155/0x5e0 with crng_init=0 
+> [   22.154690] test_slub: 1. kmem_cache: Clobber Redzone 0x12->0x(ptrval)
+> [   22.164499] =============================================================================
+> [   22.166629] BUG TestSlub_RZ_alloc (Not tainted): Redzone overwritten
+> [   22.168179] -----------------------------------------------------------------------------
+> [   22.168179]
+> [   22.168372] Disabling lock debugging due to kernel taint
+> [   22.168372] INFO: 0x(ptrval)-0x(ptrval) @offset=1064. First byte 0x12 instead of 0xcc
+> [   22.168372] INFO: Allocated in resiliency_test+0x47/0x1be age=3 cpu=0 pid=1 
+> [   22.168372] __slab_alloc+0x57/0x80 
+> [   22.168372] kmem_cache_alloc (kbuild/src/consumer/mm/slub.c:2871 kbuild/src/consumer/mm/slub.c:2915 kbuild/src/consumer/mm/slub.c:2920) 
+> [   22.168372] resiliency_test (kbuild/src/consumer/lib/test_slub.c:34 kbuild/src/consumer/lib/test_slub.c:107) 
+> [   22.168372] test_slub_init (kbuild/src/consumer/lib/test_slub.c:124) 
+> [   22.168372] do_one_initcall (kbuild/src/consumer/init/main.c:1226) 
+> [   22.168372] kernel_init_freeable (kbuild/src/consumer/init/main.c:1298 kbuild/src/consumer/init/main.c:1315 kbuild/src/consumer/init/main.c:1335 kbuild/src/consumer/init/main.c:1537) 
+> [   22.168372] kernel_init (kbuild/src/consumer/init/main.c:1426) 
+> [   22.168372] ret_from_fork (kbuild/src/consumer/arch/x86/entry/entry_32.S:856) 
+> [   22.168372] INFO: Slab 0x(ptrval) objects=16 used=1 fp=0x(ptrval) flags=0x40000201
+> [   22.168372] INFO: Object 0x(ptrval) @offset=1000 fp=0x(ptrval)
+> [   22.168372]
+> [   22.168372] Redzone (ptrval): cc cc cc cc cc cc cc cc                          ........
+> [   22.168372] Object (ptrval): 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+> [   22.168372] Object (ptrval): 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b a5  kkkkkkkkkkkkkkk.
+> [   22.168372] Redzone (ptrval): 12 cc cc cc                                      ....
+> [   22.168372] Padding (ptrval): 5a 5a 5a 5a 5a 5a 5a 5a                          ZZZZZZZZ
+> [   22.168372] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G    B             5.12.0-rc2-00001-ge48d82b67a2b #1
+> [   22.168372] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+> [   22.168372] Call Trace:
+> [   22.168372] dump_stack (kbuild/src/consumer/lib/dump_stack.c:122) 
+> [   22.168372] print_trailer (kbuild/src/consumer/mm/slub.c:737) 
+> [   22.168372] check_bytes_and_report.cold (kbuild/src/consumer/mm/slub.c:807) 
+> [   22.168372] check_object (kbuild/src/consumer/mm/slub.c:914) 
+> [   22.168372] validate_slab (kbuild/src/consumer/mm/slub.c:4635) 
 
+Hm but in this case the output means the tested functionality (slub debugging)
+is working as intended. So what can we do? Indicate/teach somehow to the bot
+that this is OK? Does kselftest have some support for this? Or silence the
+validation output for testing purposes? (I would prefer not to)
+
+Thanks,
+Vlastimil
