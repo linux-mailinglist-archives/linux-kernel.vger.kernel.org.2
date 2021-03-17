@@ -2,232 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519BF33E885
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F02F33E889
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbhCQElr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 00:41:47 -0400
-Received: from m42-10.mailgun.net ([69.72.42.10]:32508 "EHLO
-        m42-10.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhCQEl1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 00:41:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615956087; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=eGTA0+I6gJJJ1efJFiJ/1XC/rmCP98XQ3G6teytT6zA=;
- b=FOfG4cJG0JprU89SIns7N+z9qYQbB8NrCYl9Vb4HyAIVTSohA+DVi7sBlXnBbk2KRzZn1HY7
- onE2u45MS8Pv1UCnFeAYjdwOb2GtgH9v5L6iqdEQ32rg26c7fWGp9XGktc70SsbKhzzQ0k86
- dZMBEiUrqAVNSgnuPrrKE/a1JgU=
-X-Mailgun-Sending-Ip: 69.72.42.10
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 605188704db3bb68016708ae (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Mar 2021 04:41:20
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1147EC43463; Wed, 17 Mar 2021 04:41:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E73C9C433C6;
-        Wed, 17 Mar 2021 04:41:18 +0000 (UTC)
+        id S229519AbhCQEof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 00:44:35 -0400
+Received: from mout.gmx.net ([212.227.17.20]:58975 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229492AbhCQEoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 00:44:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1615956212;
+        bh=pJbsKm9VwSvKzTX5rhriYfLdd1mLkTppfCsPSlXn1xA=;
+        h=X-UI-Sender-Class:Subject:From:To:Date:In-Reply-To:References;
+        b=anTancwGPTYecb84D3R6tj0iJugMLjgzZnJFzu47pL/Sl66EMFYh3sdIpKT/Pq1Km
+         0f0g33/DC920y7PULr27pO8j2iuy67bCNzZs9AkvKfsv1yW0PEQ7mzerWn1UMuHLxX
+         jS1QP0RZHWVo7hs+PrhXiD2+2YcQPyInM/CdC+GE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.149.247]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MV63q-1lFLWf45IM-00S4Zz; Wed, 17
+ Mar 2021 05:43:32 +0100
+Message-ID: <4cb1a9ae15c414435020630cf6362163ddda1550.camel@gmx.de>
+Subject: Re: [PATCH] sched: swait: use wake_up_process() instead of
+ wake_up_state()
+From:   Mike Galbraith <efault@gmx.de>
+To:     Wang Qing <wangqing@vivo.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 17 Mar 2021 05:43:27 +0100
+In-Reply-To: <1615893602-22260-1-git-send-email-wangqing@vivo.com>
+References: <1615893602-22260-1-git-send-email-wangqing@vivo.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 17 Mar 2021 12:41:18 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     daejun7.park@samsung.com
-Cc:     Avri Altman <Avri.Altman@wdc.com>,
-        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
-Subject: Re: [PATCH v5 05/10] scsi: ufshpb: Region inactivation in host mode
-In-Reply-To: <2038148563.21615949282962.JavaMail.epsvc@epcpadp4>
-References: <DM6PR04MB65751EE32D25C7E57A6BABE8FC6B9@DM6PR04MB6575.namprd04.prod.outlook.com>
- <20210302132503.224670-1-avri.altman@wdc.com>
- <20210302132503.224670-6-avri.altman@wdc.com>
- <25da7378d5bf4c52443ae9b47f3fd778@codeaurora.org>
- <57afb2b5d7edda61a40493d8545785b1@codeaurora.org>
- <CGME20210316083014epcas2p32d6b84e689cdbe06ee065c870b236d65@epcms2p3>
- <2038148563.21615949282962.JavaMail.epsvc@epcpadp4>
-Message-ID: <064483451ff0d9ef8703871332ea5c3b@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:rU/gNnqafSnt4CS9ugYpgBNx6tZUek2JAIwlo0Oqrv5IMIatL4M
+ /oJI2MY5A1fF0LrB4k1pd7Xi3apz2IerfwjymTmAeLqtP4JWg7OJG380M2a47UZG86HbrN1
+ Udb3EdHK9yOC7zeYLeSn3UiM/nIdnQo7GYjOXrtYJv7bV+e8KDEzkzIxeiWUJuio9iM5dfO
+ AQpCkO5KdcKPGXVyWte4g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:GDxoxjcQJF8=:n47DPI62ygiA5No/BNVv9i
+ GPXfjgnczmWRqsI+79dxf66wyIL6Y8PReddgedLCDp8I5karhrga5Jfpx9JlyI+shISyQL3wp
+ x4M9S/eWqQG9HHzAZLvewC1fwDMmB0hElsRNRDGg1p7nQLvnye8N7kM5ONTDQJCtiit+lMYRM
+ UEv1V9kutpp7I6hPULPCo3GOB03GuoBACaHmNKNXpD5xjykPZKZeDPUKAvYPu1XPWlBcalJa9
+ Utr0w4x0/M6Qi7Zwc9w3r0ExaX93sJ0jdzg6HUqQuKuY8sJSyRyYUV2UT1R039QgQ6jQz6hKx
+ De1+4FeWj2HCJjhs5OgotgV+v7N+pXEmV0gZYy1lItKokgTG9aG9yOpkssaf/5I02tXtxKyBq
+ hB1Qwtr7ha7/5jwAHjF12rN10PwDH1MlgIutLL2jhngA6xYnWx09YtQJ9TTj6S2AnwDJniQEW
+ RB3LSPqiDh/g8QN/HnBW/EcwGpelKwrIcglqPzLxP4/pfPBrowImHSfOp0p0XiaKghroOINgS
+ JIYAre+rddP86zlqom7G+sqRJoSm3+Oy9Dm2eciejSdc20JFbK2MaiBrkSP+y6hh57ROSUWMT
+ V2U4boKco6Uwa8PFgxd9ThV/a0izdPTR+ri/1fFIArfA2fxG0yz88j44a8eWRaIxq5y9xoVMR
+ aZH8WaN4+IdNRjtPsTrcEYV463oLS1zeWlL8ZjbwEgEZnEXfOWmWFQ3YRcEgkQkRA91QbBtsO
+ O5RvKIAUuTGaXiI68vJVlWHCNVEWvkf4Jy4XpJwVtZ6X3LMDXkU6X0czdI5hCFoy+AvofZFBK
+ +8yWC6OipBZlQeQH3iVeSitdZpX5tW9SWlrUed6NOPmjywhXqIfZ8K5+sd9XqalrZysaN889I
+ ZRTNl1Cnd+9h7r7ZpR1A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-17 10:28, Daejun Park wrote:
->>> >> ---
->>> >>  drivers/scsi/ufs/ufshpb.c | 14 ++++++++++++++
->>> >>  drivers/scsi/ufs/ufshpb.h |  1 +
->>> >>  2 files changed, 15 insertions(+)
->>> >>
->>> >> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
->>> >> index 6f4fd22eaf2f..0744feb4d484 100644
->>> >> --- a/drivers/scsi/ufs/ufshpb.c
->>> >> +++ b/drivers/scsi/ufs/ufshpb.c
->>> >> @@ -907,6 +907,7 @@ static int ufshpb_execute_umap_req(struct
->>> >> ufshpb_lu *hpb,
->>> >>
->>> >>      blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_umap_req_compl_fn);
->>> >>
->>> >> +    hpb->stats.umap_req_cnt++;
->>> >>      return 0;
->>> >>  }
->>> >>
->>> >> @@ -1103,6 +1104,12 @@ static int ufshpb_issue_umap_req(struct
->>> >> ufshpb_lu *hpb,
->>> >>      return -EAGAIN;
->>> >>  }
->>> >>
->>> >> +static int ufshpb_issue_umap_single_req(struct ufshpb_lu *hpb,
->>> >> +                                    struct ufshpb_region *rgn)
->>> >> +{
->>> >> +    return ufshpb_issue_umap_req(hpb, rgn);
->>> >> +}
->>> >> +
->>> >>  static int ufshpb_issue_umap_all_req(struct ufshpb_lu *hpb)
->>> >>  {
->>> >>      return ufshpb_issue_umap_req(hpb, NULL);
->>> >> @@ -1115,6 +1122,10 @@ static void __ufshpb_evict_region(struct
->>> >> ufshpb_lu *hpb,
->>> >>      struct ufshpb_subregion *srgn;
->>> >>      int srgn_idx;
->>> >>
->>> >> +
->>> >> +    if (hpb->is_hcm && ufshpb_issue_umap_single_req(hpb, rgn))
->>> >
->>> > __ufshpb_evict_region() is called with rgn_state_lock held and IRQ
->>> > disabled,
->>> > when ufshpb_issue_umap_single_req() invokes blk_execute_rq_nowait(),
->>> > below
->>> > warning shall pop up every time, fix it?
->>> >
->>> > void blk_execute_rq_nowait(struct request_queue *q, struct gendisk
->>> > *bd_disk,
->>> >                  struct request *rq, int at_head,
->>> >                          rq_end_io_fn *done)
->>> > {
->>> >       WARN_ON(irqs_disabled());
->>> > ...
->>> >
->>> 
->>> Moreover, since we are here with rgn_state_lock held and IRQ 
->>> disabled,
->>> in ufshpb_get_req(), rq = kmem_cache_alloc(hpb->map_req_cache,
->>> GFP_KERNEL)
->>> has the GFP_KERNEL flag, scheduling while atomic???
->> I think your comment applies to  ufshpb_issue_umap_all_req as well,
->> Which is called from slave_configure/scsi_add_lun.
->> 
->> Since the host-mode series is utilizing the framework laid by the 
->> device-mode,
->> Maybe you can add this comment to  Daejun's last version?
-> 
-> Hi Avri, Can Guo
-> 
-> I think ufshpb_issue_umap_single_req() can be moved to end of
-> ufshpb_evict_region().
-> Then we can avoid rgn_state_lock when it sends unmap command.
+On Tue, 2021-03-16 at 19:20 +0800, Wang Qing wrote:
+> Why not just use wake_up_process().
 
-I am not the expert here, please you two fix it. I am just reporting
-what can be wrong. Anyways, ufshpb_issue_umap_single_req() should not
-be called with rgn_state_lock held - think about below (another deadly)
-scenario.
+IMO this is not an improvement.  There are other places where explicit
+TASK_NORMAL is used as well, and they're all perfectly clear as is.
 
-lock(rgn_state_lock)
-   ufshpb_issue_umap_single_req()
-     ufshpb_prep()
-        lock(rgn_state_lock)   <---------- recursive spin_lock
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> ---
+>  kernel/sched/swait.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/swait.c b/kernel/sched/swait.c
+> index e1c655f..7a24925
+> --- a/kernel/sched/swait.c
+> +++ b/kernel/sched/swait.c
+> @@ -69,7 +69,7 @@ void swake_up_all(struct swait_queue_head *q)
+>  	while (!list_empty(&tmp)) {
+>  		curr =3D list_first_entry(&tmp, typeof(*curr), task_list);
+>
+> -		wake_up_state(curr->task, TASK_NORMAL);
+> +		wake_up_process(curr->task);
+>  		list_del_init(&curr->task_list);
+>
+>  		if (list_empty(&tmp))
 
-BTW, @Daejun shouldn't we stop passthrough cmds from stepping
-into ufshpb_prep()? In current code, you are trying to use below
-check to block cmds other than write/discard/read, but a passthrough
-cmd can not be blocked by the check.
-
-          if (!ufshpb_is_write_or_discard_cmd(cmd) &&
-              !ufshpb_is_read_cmd(cmd))
-                  return 0;
-
-Thanks,
-Can Guo.
-
-> 
-> Thanks,
-> Daejun
-> 
-> 
->> Thanks,
->> Avri
->> 
->>> 
->>> Can Guo.
->>> 
->>> > Thanks.
->>> > Can Guo.
->>> >
->>> >> +            return;
->>> >> +
->>> >>      lru_info = &hpb->lru_info;
->>> >>
->>> >>      dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n",
->>> >> rgn->rgn_idx);
->>> >> @@ -1855,6 +1866,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
->>> >>  ufshpb_sysfs_attr_show_func(rb_active_cnt);
->>> >>  ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
->>> >>  ufshpb_sysfs_attr_show_func(map_req_cnt);
->>> >> +ufshpb_sysfs_attr_show_func(umap_req_cnt);
->>> >>
->>> >>  static struct attribute *hpb_dev_stat_attrs[] = {
->>> >>      &dev_attr_hit_cnt.attr,
->>> >> @@ -1863,6 +1875,7 @@ static struct attribute *hpb_dev_stat_attrs[] =
->>> >> {
->>> >>      &dev_attr_rb_active_cnt.attr,
->>> >>      &dev_attr_rb_inactive_cnt.attr,
->>> >>      &dev_attr_map_req_cnt.attr,
->>> >> +    &dev_attr_umap_req_cnt.attr,
->>> >>      NULL,
->>> >>  };
->>> >>
->>> >> @@ -1978,6 +1991,7 @@ static void ufshpb_stat_init(struct ufshpb_lu
->>> >> *hpb)
->>> >>      hpb->stats.rb_active_cnt = 0;
->>> >>      hpb->stats.rb_inactive_cnt = 0;
->>> >>      hpb->stats.map_req_cnt = 0;
->>> >> +    hpb->stats.umap_req_cnt = 0;
->>> >>  }
->>> >>
->>> >>  static void ufshpb_param_init(struct ufshpb_lu *hpb)
->>> >> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
->>> >> index bd4308010466..84598a317897 100644
->>> >> --- a/drivers/scsi/ufs/ufshpb.h
->>> >> +++ b/drivers/scsi/ufs/ufshpb.h
->>> >> @@ -186,6 +186,7 @@ struct ufshpb_stats {
->>> >>      u64 rb_inactive_cnt;
->>> >>      u64 map_req_cnt;
->>> >>      u64 pre_req_cnt;
->>> >> +    u64 umap_req_cnt;
->>> >>  };
->>> >>
->>> >>  struct ufshpb_lu {
->> 
->> 
->> 
