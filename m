@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE5633F4A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7B133F4B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232260AbhCQPwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 11:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232601AbhCQPwB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 11:52:01 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B911AC061760;
-        Wed, 17 Mar 2021 07:54:20 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id g15so1281897pfq.3;
-        Wed, 17 Mar 2021 07:54:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VX8xHL+87BW1KLwBi9gunx33qho2YZRZxASXIV7grFw=;
-        b=O9LTjZNCsR9gSSAS+S8FvfugaFJ75IngmN7wDk/aTR6vvVj+58f7H+crABZO9DV+d2
-         v7rUGLBY0T42bTYQvj+u1nUuKW15KVOzOAaeyembU52SXZMktL1TDX+ShLFSUgdy7ebD
-         Buebn2I0ry8Et/OCCHpxEj6stBlHCeTVGI8iVq+le09+iCFBrB3PDH86FYmnmxtVmAYV
-         rqQGHsFH5epsVYZ/jIOOdb4ws+0holHCI0SsdAx2HpyFGBSHP1weEUflFlNYmvuAgAGZ
-         t7JvgoerfGrf4kuQhySJwtRtxzaQinU70aNmPckqAnsGu301M1K36ZJU8Q8dOOXWrtm1
-         UdAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=VX8xHL+87BW1KLwBi9gunx33qho2YZRZxASXIV7grFw=;
-        b=kjJze3HqKgJ1jDoSXs2rB1aiuxtqtM9kYjjE1jGsLayGAw+HPwJmXp26oIIf9OlUbF
-         tb9Yix0kfQ3cFdJVWcwIxjl+y6aoEYC1VyEsTxf054jvNTuzaON9a+E7YzMgib76Fbkh
-         9RWnlkoslEzLOAhy8ttDdJADgKj1jVHqVONws1CLvRDBwJCTGW5nt4oAhX/EdDEPZmNG
-         V/WnOTaPRfjFM0evj8N0QOLkRmPtwchl4Yz8Hn5HBNnD6H4o6Ug92V2Hh1k5BUTpkhmK
-         pgekBXM0TJbd4sOzPemUNgb51yUinN8Tyod6AaGxLqXpFqx5Mtv1qYtT7BKWLLUQJ8Ny
-         VlMg==
-X-Gm-Message-State: AOAM531K2t4gKtCfBMP1gF6ONFywzXKHf5AGMa6Fh19IGn80EP8VHeFw
-        cGURw1LQ2m4YMZKs4/hWYnQ=
-X-Google-Smtp-Source: ABdhPJwbAGPp4ws0MaZtGJkBqm1DZmMs5QuR3yhHECr1wnRYWABNXQoGOhIDe/BozfrUnBjzWKgEbg==
-X-Received: by 2002:a65:6a48:: with SMTP id o8mr2937671pgu.424.1615992860178;
-        Wed, 17 Mar 2021 07:54:20 -0700 (PDT)
-Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id a19sm19926273pfn.181.2021.03.17.07.54.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 07:54:19 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] libbpf: Fix error path in bpf_object__elf_init()
-Date:   Wed, 17 Mar 2021 23:54:14 +0900
-Message-Id: <20210317145414.884817-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+        id S232301AbhCQPyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 11:54:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33716 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232185AbhCQPxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 11:53:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAAD264F6E;
+        Wed, 17 Mar 2021 14:56:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615993007;
+        bh=gDQD75TMDCBqwGcS8/6DWiM6ZUznIP9nwwkyyF+j8Rg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LOygU8AGnawuGblKbYnL84HONQ4oOWp27ZbL+v/iwlI+fVmNe/sneHFNCpdp02Vt7
+         yNkau1/uydbSwxRVEj950IpuMoX6LPbdLK+sgqHolhjCUEwIONczarsdFyimlllvQr
+         ZLKe0Olm2ALbYRhoaL4WN++JvYdgGlofrUvwI88U=
+Date:   Wed, 17 Mar 2021 15:56:44 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [PATCH v2] seq_file: Unconditionally use vmalloc for buffer
+Message-ID: <YFIYrMVTC42boZ/Z@kroah.com>
+References: <20210315174851.622228-1-keescook@chromium.org>
+ <YFBs202BqG9uqify@dhcp22.suse.cz>
+ <202103161205.B2181BDE38@keescook>
+ <YFHxNT1Pwoslmhxq@dhcp22.suse.cz>
+ <YFIFY7mj65sStba1@kroah.com>
+ <YFIVwPWTo48ITkHs@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFIVwPWTo48ITkHs@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When it failed to get section names, it should call
-bpf_object__elf_finish() like others.
+On Wed, Mar 17, 2021 at 03:44:16PM +0100, Michal Hocko wrote:
+> On Wed 17-03-21 14:34:27, Greg KH wrote:
+> > On Wed, Mar 17, 2021 at 01:08:21PM +0100, Michal Hocko wrote:
+> > > Btw. I still have problems with the approach. seq_file is intended to
+> > > provide safe way to dump values to the userspace. Sacrificing
+> > > performance just because of some abuser seems like a wrong way to go as
+> > > Al pointed out earlier. Can we simply stop the abuse and disallow to
+> > > manipulate the buffer directly? I do realize this might be more tricky
+> > > for reasons mentioned in other emails but this is definitely worth
+> > > doing.
+> > 
+> > We have to provide a buffer to "write into" somehow, so what is the best
+> > way to stop "abuse" like this?
+> 
+> What is wrong about using seq_* interface directly?
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/lib/bpf/libbpf.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Right now every show() callback of sysfs would have to be changed :(
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 2f351d3ad3e7..8d610259f4be 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1194,7 +1194,8 @@ static int bpf_object__elf_init(struct bpf_object *obj)
- 	if (!elf_rawdata(elf_getscn(obj->efile.elf, obj->efile.shstrndx), NULL)) {
- 		pr_warn("elf: failed to get section names strings from %s: %s\n",
- 			obj->path, elf_errmsg(-1));
--		return -LIBBPF_ERRNO__FORMAT;
-+		err = -LIBBPF_ERRNO__FORMAT;
-+		goto errout;
- 	}
- 
- 	/* Old LLVM set e_machine to EM_NONE */
--- 
-2.31.0.rc2.261.g7f71774620-goog
+> > Right now, we do have helper functions, sysfs_emit(), that know to stop
+> > the overflow of the buffer size, but porting the whole kernel to them is
+> > going to take a bunch of churn, for almost no real benefit except a
+> > potential random driver that might be doing bad things here that we have
+> > not noticed yet.
+> 
+> I am not familiar with sysfs, I just got lost in all the indirection but
+> replacing buffer by the seq_file and operate on that should be possible,
+> no?
 
+sysfs files should be very simple and easy, and have a single value
+being written to userspace.  I guess seq_printf() does handle the issue
+of "big buffers", but there should not be a big buffer here to worry
+about in the first place (yes, there was a bug where a driver took
+unchecked data and sent it to userspace overflowing the buffer which
+started this whole thread...)
+
+I guess Kees wants to change all show functions to use the seq_ api,
+which now makes a bit more sense, but still seems like a huge overkill.
+But I now understand the idea here, the buffer management is handled by
+the core kernel and overflows are impossible.
+
+A "simpler" fix is to keep the api the same today, and just "force"
+everyone to use sysfs_emit() which does the length checking
+automatically.
+
+I don't know, it all depends on how much effort we want to put into the
+"drivers can not do stupid things because we prevent them from it"
+type of work here...
+
+thanks,
+
+greg k-h
