@@ -2,67 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143C333F780
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:50:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C68433F781
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:51:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232806AbhCQRuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:50:03 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:33222 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232483AbhCQRtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:49:40 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lMaIR-00BV78-QU; Wed, 17 Mar 2021 18:49:27 +0100
-Date:   Wed, 17 Mar 2021 18:49:27 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] net: mdio: Add BCM6368 MDIO mux bus controller
-Message-ID: <YFJBJ1IHpkXXaGvc@lunn.ch>
-References: <20210308184102.3921-1-noltari@gmail.com>
- <20210308184102.3921-3-noltari@gmail.com>
- <YEaQdXwrmVekXp4G@lunn.ch>
- <D39D163A-C6B3-4B66-B650-8FF0A06EF7A2@gmail.com>
+        id S232607AbhCQRu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229814AbhCQRuv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 13:50:51 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 130A2C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:50:51 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id AB4A522238;
+        Wed, 17 Mar 2021 18:50:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1616003449;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0uX4a5pODJdDNUMqLG8CU+20HuPGvlsPYfESg66SL6o=;
+        b=boqbQMVM7v9iaMAXLSnDxGpy19fhxBAn5JkBmLbxXeoSZY6iNJWg3Sc55OzTlyRlw09QeO
+        kU2JSOGCzR+4+Qzxt3GKg2mcZmlm/IWWCsbnkjjkJ7qfWotAWK3EwhZ6uSn+v4kaGmMS6j
+        y7tzS+epo3eZW0qFmPqJkRPxn1DgMIg=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <D39D163A-C6B3-4B66-B650-8FF0A06EF7A2@gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 17 Mar 2021 18:50:48 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor.Ambarus@microchip.com
+Cc:     vigneshr@ti.com, p.yadav@ti.com, linux-mtd@lists.infradead.org,
+        miquel.raynal@bootlin.com, richard@nod.at,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] mtd: spi-nor: Move Software Write Protection logic
+ out of the core
+In-Reply-To: <fe28e8f9-a3a5-b445-e7fc-01c8743bacbe@microchip.com>
+References: <20210306095002.22983-1-tudor.ambarus@microchip.com>
+ <20210306095002.22983-5-tudor.ambarus@microchip.com>
+ <963232a4-9100-ebca-927c-7f5a1e947fbe@ti.com>
+ <9889bae0-8eba-7cbc-d9bb-04e038bd28c8@microchip.com>
+ <6016b725-a779-1d2c-9884-099c58f53557@ti.com>
+ <45d00a12-cb79-774e-f8e8-d65602629a90@microchip.com>
+ <a9e1e18c034dfa185eeb5492acf2dff7@walle.cc>
+ <fe28e8f9-a3a5-b445-e7fc-01c8743bacbe@microchip.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <c02857fe33611ba5794f233ef117c687@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> BCM6368 (and newer) SoCs have an integrated ethernet switch controller with dedicated internal phys, but it also supports connecting to external phys not integrated in the internal switch.
-> Ports 0-3 are internal, ports 4-7 are external and can be connected to external switches or phys and port 8 is the CPU.
-> This MDIO bus device is integrated in the BCM63xx switch registers, which corresponds to the same registers present in drivers/net/dsa/b53/b53_regs.h.
-> As you can see in the source code, registers are the same for the internal and external bus. The only difference is that if MDIOC_EXT_MASK (bit 16) is set, the MDIO bus accessed will be the external, and on the contrary, if bit 16 isn’t set, the MDIO bus accessed will be the internal one.
+Am 2021-03-17 10:30, schrieb Tudor.Ambarus@microchip.com:
+>>>>>> soft-wr-protect.c or software-write-protect.c ?
+>>> 
+>>> Having in mind that we have the SWP configs, I think I prefer swp.c.
+>>> But let's see what majority thinks, we'll do as majority prefers.
+>>> Michael, Pratyush?
+>> 
+>> It's just an internal name, thus as long as it remotely makes sense,
+>> I'm fine. It's just a matter of taste, isn't it?
 > 
-> I don’t know if this answers your question, but I think that adding it as mdiomux is the way to go.
+> Sure, it's a matter of preference. What's yours?
 
-Hi Álvaro
+if i have to choose, swp.c
 
-The Marvell mv88e6390 family of switches has a very similar setup. An
-internal and an external MDIO bus, one bit difference in a
-register. When i wrote the code for that, i decided it was not a mux
-as such, but two MDIO busses. So i register two MDIO busses, and rely
-on a higher level switch register mutex to prevent parallel operations
-on the two busses.
+>> But here's one technical reason that would bother me more: name
+>> clashes between the core modules: core, sfdp, otp, swp and the
+>> vendor names. It is very unlikely, but there is a non-zero chance ;)
+>> 
+> 
+> We can move all manufacturers to a manufacturers/ folder. Each 
+> manufacturer
+> driver will have to #include "../core.h", about what I have some mixed
+> feelings.
 
-The reason i decided it was not a mux, is that all the other mux
-drivers are separate drivers which rely on another MDIO bus
-driver. The mux driver gets a handle to the underlying MDIO bus
-driver, and and builds on it. Here you have it all combined in one, so
-it does not follow the pattern.
+I don't think it makes sense as long as there is no clash; or until 
+there
+are many more core modules, so you can't keep them apart anymore.
+It will just make it harder to follow the git history.
 
-So if you want to use a max, please break this up into an MDIO driver,
-and a mux driver. Or have one driver which registers two mdio busses,
-no mux.
-
-   Andrew
+-michael
