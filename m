@@ -2,82 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A77633F7FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 729E133F804
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:18:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbhCQSQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:16:03 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:33262 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233090AbhCQSPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:15:32 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lMahT-00BVJR-Ql; Wed, 17 Mar 2021 19:15:19 +0100
-Date:   Wed, 17 Mar 2021 19:15:19 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Don Bollinger <don@thebollingers.org>
-Cc:     'Jakub Kicinski' <kuba@kernel.org>, arndb@arndb.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        brandon_chuang@edge-core.com, wally_wang@accton.com,
-        aken_liu@edge-core.com, gulv@microsoft.com, jolevequ@microsoft.com,
-        xinxliu@microsoft.com, 'netdev' <netdev@vger.kernel.org>,
-        'Moshe Shemesh' <moshe@nvidia.com>
-Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
- EEPROMS
-Message-ID: <YFJHN+raumcJ5/7M@lunn.ch>
-References: <YD1ScQ+w8+1H//Y+@lunn.ch>
- <003901d711f2$be2f55d0$3a8e0170$@thebollingers.org>
- <20210305145518.57a765bc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <005e01d71230$ad203be0$0760b3a0$@thebollingers.org>
- <YEL3ksdKIW7cVRh5@lunn.ch>
- <018701d71772$7b0ba3f0$7122ebd0$@thebollingers.org>
- <YEvILa9FK8qQs5QK@lunn.ch>
- <01ae01d71850$db4f5a20$91ee0e60$@thebollingers.org>
- <20210315103950.65fedf2c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <001201d719c6$6ac826c0$40587440$@thebollingers.org>
+        id S232924AbhCQSRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:17:39 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:59328 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232836AbhCQSRT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 14:17:19 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id A0F991F45484
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
+        weiyi.lu@mediatek.com, Collabora Kernel ML <kernel@collabora.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v2 0/2] soc: mediatek: Prepare MMSYS for DDP routing using tables
+Date:   Wed, 17 Mar 2021 19:17:08 +0100
+Message-Id: <20210317181711.795245-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <001201d719c6$6ac826c0$40587440$@thebollingers.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I have offered, in every response, to collaborate with the simple
-> integration to use optoe as the default upstream driver to access the module
-> EEPROMs.  optoe would be superior to the existing default routines in sfp.c
+Dear all,
 
-Actually, i'm not sure they would be. Since the KAPI issues are pretty
-much a NACK on their own, i didn't bother raising other issues. Both
-Russell King and I has issues with quirks and hotplug.
+This is the second version of this series intended to prepare the
+mtk-mmsys driver to allow different DDP (Data Display Path) routing
+tables per SoC. Note that the series has been tested only on MT8173 platform,
+for MT2701 and MT2712 based devices we're using a default routing table
+that should just work.
 
-Our experience is that a number of SFPs are broken, they don't follow
-the standard. Some you cannot perform more than 16 bytes reads without
-them locking up. Others will perform a 16 byte read, but only give you
-one useful byte of data. So you have to read enough of the EEPROM a
-byte at a time to get the vendor and product strings in order to
-determine what quirks need to be applied. optoe has nothing like
-this. Either you don't care and only support well behaved SFPs, or you
-have the quirk handling in user space, in the various vendor code
-blobs, repeated again and again. To make optoe generically usable, you
-are going to have to push the quirk handling into optoe. The
-brokenness should be hidden from userspace.
+Thanks,
+  Enric
 
-And then you repeat all the quirk handling sfp.c has. That does not
-scale, we don't want the same quirks in two different places. However,
-because SFPs are hot pluggable, you need to re-evaluate the quirks
-whenever there is a hot-plug event. optoe has no idea if there has
-been a hotplug event, since it does not have access to the GPIOs. Your
-user space vendor code might know, it has access to the GPIOs. So
-maybe you could add an IOCTL call or something, to let optoe know the
-module has changed and it needs to update its quirks. Or for every
-user space read, you actually re-read the vendor IDs and refresh the
-quirks before performing the read the user actually wants. That all
-seems ugly and is missing from the current patch.
+Changes in v2:
+- Use a default table for mt2701, mt2712 and mt8173.
+- Remove the mask field from routes struct as is not needed.
 
-I fully agree with Jakub NACK.
+CK Hu (2):
+  soc: mediatek: mmsys: Create struct mtk_mmsys to store context data
+  soc: mediatek: mmsys: Use an array for setting the routing registers
 
-  Andrew
+ drivers/soc/mediatek/mtk-mmsys.c | 300 +++++--------------------------
+ drivers/soc/mediatek/mtk-mmsys.h | 215 ++++++++++++++++++++++
+ 2 files changed, 257 insertions(+), 258 deletions(-)
+ create mode 100644 drivers/soc/mediatek/mtk-mmsys.h
 
+-- 
+2.30.2
 
