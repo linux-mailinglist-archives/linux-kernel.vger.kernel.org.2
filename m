@@ -2,61 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4BA33F6A2
+	by mail.lfdr.de (Postfix) with ESMTP id C968933F6A3
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232676AbhCQRWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35828 "EHLO
+        id S232740AbhCQRWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232659AbhCQRVE (ORCPT
+        with ESMTP id S231938AbhCQRVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:21:04 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79337C06174A;
-        Wed, 17 Mar 2021 10:21:04 -0700 (PDT)
+        Wed, 17 Mar 2021 13:21:43 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9485C06174A;
+        Wed, 17 Mar 2021 10:21:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aZBesko0L2dLYUae48wU74XHUup8GCRSf+aPZedgtJk=; b=IZYkq1TdY42T5Bvl3xE61WR1SD
-        GR/5U8EhQJTK9y20f3Nwg9B2QuYK7L0tcrs9PxoX4LcxNZz+fRJTIWLa4rcZsuUELYSDn259br6n+
-        CHJ1FKtSWoyS259HNed9Gb9n9UQ1oOiKl96pKmk7A7q9ra85oQp8KWSfwdaoo8DIHuytLYly70HOo
-        7FUxC/uxz/UIGb0EGvFEyZlrgDk08rZaQM0/D0b6s5uHIRxEeVuT4kV/tlNkpMC4VN+Owd94Etfqs
-        kbtcWRqpe1kighYOS7UXtbnzh21ZW7EJKaX3ARH8sCJxYRtU0ys7WIIh5BuCa6Pj1tdSxY5/tQ9DD
-        EPXDQkYQ==;
-Received: from [2001:4bb8:18c:bb3:e3eb:4a4b:ba2f:224b] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMZqT-001u9b-2R; Wed, 17 Mar 2021 17:20:46 +0000
-Date:   Wed, 17 Mar 2021 18:20:32 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 08/25] mm: Handle per-folio private data
-Message-ID: <YFI6YOe2uU/n2vR6@infradead.org>
-References: <20210305041901.2396498-1-willy@infradead.org>
- <20210305041901.2396498-9-willy@infradead.org>
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=bXtH3POBG9ts1jOXokUaPXgQERIp/+u738KvYgy6+H4=; b=l4ILtQkJ3cZoo8mL5nPYoN81Dt
+        htomJrreX64A6nziTEBmi4IciEQdSOvKoJ+/DKBqbpJw/PPHxx//HOp4s7QUtMu/MnQA+M0VeKXvm
+        mbKEt4jrE2IowOhv6RUyRGtDaqHbpYlVO+Z+BgNIGiuc3NX9hvVm9MBg26LcRoWRWQx77kwZFb2Q7
+        yLg+B9CZJhsgBAd7ut7vXjkUphx1DOWbQTTj9ICN5Z1VzJZbTinfe0QeLu8W2oUP8A+dvMJjj/Ifx
+        iT8IWNWDPqMcChTUPnf1lr/bcl6i5E6aHuQYep+Dqg1GfKPsfPbD1Y2iGLV3ooAbuihOBB5jN93kz
+        0/cUcCEw==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMZrY-001fNC-DP; Wed, 17 Mar 2021 17:21:40 +0000
+Subject: Re: [PATCH] parisc: math-emu: Fix a typo in the file float.h
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210317103917.3869933-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ec8744a7-66dc-b687-5471-7da4411084c8@infradead.org>
+Date:   Wed, 17 Mar 2021 10:21:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305041901.2396498-9-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210317103917.3869933-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static inline void attach_page_private(struct page *page, void *data)
-> +{
-> +	attach_folio_private((struct folio *)page, data);
-> +}
-> +
-> +static inline void *detach_page_private(struct page *page)
-> +{
-> +	return detach_folio_private((struct folio *)page);
-> +}
+On 3/17/21 3:39 AM, Bhaskar Chowdhury wrote:
+> 
+> s/synopis/synopsis/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-I hate these open code casts.  Can't we have a single central
-page_to_folio helper, which could also grow a debug check (maybe
-under a new config option) to check that it really is called on a
-head page?
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+> ---
+>  arch/parisc/math-emu/float.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/parisc/math-emu/float.h b/arch/parisc/math-emu/float.h
+> index 531bbda5e31f..77b1b5bf1a65 100644
+> --- a/arch/parisc/math-emu/float.h
+> +++ b/arch/parisc/math-emu/float.h
+> @@ -12,7 +12,7 @@
+>   *      @(#)	pa/spmath/float.h		$Revision: 1.1 $
+>   *
+>   *  Purpose:
+> - *      <<please update with a synopis of the functionality provided by this file>>
+> + *      <<please update with a synopsis of the functionality provided by this file>>
+>   *
+>   *  BE header:  no
+>   *
+> --
+
+
+-- 
+~Randy
+
