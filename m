@@ -2,383 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B74533F0F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4C333F100
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:18:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbhCQNQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 09:16:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27813 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230044AbhCQNPq (ORCPT
+        id S230489AbhCQNSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 09:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230434AbhCQNSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 09:15:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615986946;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aQpAGIOZCMr6zrvsbjgOgyUw3PapdDNaxrsZT0anQzg=;
-        b=SbpJxSP9LJ84o6tsk4Vt9yu4HNF4sVOsvAJw5rc5h31zhtvN6RPTBssmdedjyQZRVKDEb2
-        98TLJucYh/36CBXTBoXZL1/UITKtLsOJ6pGAQjbXIXhPfDfZKYa/muKzXLHIpLCMqUNunI
-        UXwnAcUIWt2FIupD6245VkxG+J7bgQ8=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-znHyg0sUODq8tSjccGsCnA-1; Wed, 17 Mar 2021 09:15:42 -0400
-X-MC-Unique: znHyg0sUODq8tSjccGsCnA-1
-Received: by mail-wr1-f71.google.com with SMTP id f3so18382782wrt.14
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 06:15:42 -0700 (PDT)
+        Wed, 17 Mar 2021 09:18:13 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E02C06174A;
+        Wed, 17 Mar 2021 06:18:02 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id j25so1083723pfe.2;
+        Wed, 17 Mar 2021 06:18:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=5vT/eDDB8bb1mbvIFsQc8hatBbQbyytVF3slTgeiXPg=;
+        b=n1UfrUrvTupANEHpSD12z4KQlD91GER/yykTc/0i0gP1Fp1j/qEaJKREGpZHQ93aw0
+         rzjCTFe7HgbgVkZM4TJ7j7q/XS7bhjAcnD2AQPjrcY4Unw7YG7MsIuypYA/j1Q3yVit4
+         /cef5pb3YSaIOPJTJyY6kf8Qn5OWBOLZYm82/7gCBUUHoTFbHoYtlpYv+AoZy6NRGwnL
+         RR3thPYg7MdsnoTCqiI0DOXuOWeEY+veah5PJbHpbhw9OKGkW3t9W1mpoPPPsVBcnOjg
+         2HfxD3H4lDtEhQRdB+R3SUcJX/3ppMJCWkDTsgafJovh8sIyzNM79PgzRLdeHzgpqIsm
+         ytYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aQpAGIOZCMr6zrvsbjgOgyUw3PapdDNaxrsZT0anQzg=;
-        b=NgkjuX4UJd2R8uVzJpu0gbTfYbppTwn58BFeKOFD5JB3FF8vneH0UC09e8JGNFCcvG
-         k57z3FmrioGJR1IwBGWq9vzLltCw7TmmdoAZpF+LgmfZFmjhjzAcSrhxOiudoSecmt1o
-         n2zr7lcb2TVPnviO8TkXBEtb/kXTmqnWYnfFnXjau7G3/KytISR4DkK7RrJOhNKqKd+P
-         rdBZTYIY5g7yUQBUWkBOfdAa0PDfzcTtlc4fp1Mt5areCh6lPkKc9L2lb2k7tQQAVrlG
-         dUNvUyDb0zg/oF1pNzwFT/djWzAKiPc7wU4pIluv6eZ7hmf8MG1v0H5l4QBIAr+sJhch
-         kKGA==
-X-Gm-Message-State: AOAM5307CIMLg00/nxdldBFk8EpT9ygXqSvUjD0uyEAHXrXG0tyiipUh
-        wNz2+Ie2FMhHj46RoMflSFDZUXWGxhBkiQEzXUnMN3uRzL+AZymc4IkiBcy4C3/DjPbe+I8dGqr
-        Y18CrjptIrizjXwgMq4iCJim1
-X-Received: by 2002:adf:f303:: with SMTP id i3mr4306594wro.67.1615986940756;
-        Wed, 17 Mar 2021 06:15:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx9PHSdun3TFAYRY50AzF6uibM0PIjRHbT2qtWhgFAEDlR+SZ9X0pUPC7H1ESHRU38j6UbWwg==
-X-Received: by 2002:adf:f303:: with SMTP id i3mr4306563wro.67.1615986940484;
-        Wed, 17 Mar 2021 06:15:40 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id e1sm26781395wrd.44.2021.03.17.06.15.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 06:15:39 -0700 (PDT)
-Subject: Re: [PATCH 1/4] KVM: x86: Protect userspace MSR filter with SRCU, and
- set atomically-ish
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>,
-        Yuan Yao <yaoyuan0329os@gmail.com>
-References: <20210316184436.2544875-1-seanjc@google.com>
- <20210316184436.2544875-2-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <cdf00201-b24c-0337-a49f-01df61a45fd1@redhat.com>
-Date:   Wed, 17 Mar 2021 14:15:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=5vT/eDDB8bb1mbvIFsQc8hatBbQbyytVF3slTgeiXPg=;
+        b=MdikU7NtWokzN/rZ5hdzjXp1L1jLVydaxn5MTO2CC5XMTHMyo7nAdzRixt2Y7EEOPU
+         Tb76eHL73HctgHPGF0/ztEHsoivgNGwYnERv0TDzG5+MWF9bUJ0rbWD0KL41cAera5qG
+         y7YdbxR2LrK3UrnwcqySCIxHp3emHwh9ejDLmdYdBJel+Y+b485Isifx4Pbv5A+c1DH0
+         3+lZV6wo+PDJ7BMcUpA4XCqA3dcGl+vpgZ3EoozThPMvMNNk4XjCoNorfEiD++n/Awbm
+         KMp1BAQvlNdWy/hJ147P3AVcopJZjwxNzQP4MS8rg9WlmrPgW3dfpSIi+6kU63cNR1Zp
+         Db5w==
+X-Gm-Message-State: AOAM533X7lM4AYHoUzzYNXypLV/h7AuOTLVAY7fCqhtpI0D7CkPLtk37
+        z6AjkXmtto7ZQn5YqM8c+d4=
+X-Google-Smtp-Source: ABdhPJz+s0gm0d2B/TE+YSJcLnevBLwGJQz0kw2vEwQf8hum46D1ml5DnAMkzD4xXWvQxBeHcdaQ/A==
+X-Received: by 2002:a63:410:: with SMTP id 16mr2640193pge.220.1615987081582;
+        Wed, 17 Mar 2021 06:18:01 -0700 (PDT)
+Received: from localhost ([103.248.31.158])
+        by smtp.gmail.com with ESMTPSA id w191sm7321229pfd.25.2021.03.17.06.18.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 06:18:01 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 18:47:18 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     alex.williamson@redhat.com, raphael.norwitz@nutanix.com,
+        linux-pci@vger.kernel.org, bhelgaas@google.com,
+        linux-kernel@vger.kernel.org, alay.shah@nutanix.com,
+        suresh.gumpula@nutanix.com, shyam.rajendran@nutanix.com,
+        felipe@nutanix.com
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210317131718.3uz7zxnvoofpunng@archlinux>
+References: <20210315083409.08b1359b@x1.home.shazbot.org>
+ <YE94InPHLWmOaH/b@unreal>
+ <20210315153341.miip637z35mwv7fv@archlinux>
+ <20210315102950.230de1d6@x1.home.shazbot.org>
+ <20210315183226.GA14801@raphael-debian-dev>
+ <YFGDgqdTLBhQL8mN@unreal>
+ <20210317102447.73no7mhox75xetlf@archlinux>
+ <YFHh3bopQo/CRepV@unreal>
+ <20210317112309.nborigwfd26px2mj@archlinux>
+ <YFHsW/1MF6ZSm8I2@unreal>
 MIME-Version: 1.0
-In-Reply-To: <20210316184436.2544875-2-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YFHsW/1MF6ZSm8I2@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/03/21 19:44, Sean Christopherson wrote:
-> Fix a plethora of issues with MSR filtering by installing the resulting
-> filter as an atomic bundle instead of updating the live filter one range
-> at a time.  The KVM_X86_SET_MSR_FILTER ioctl() isn't truly atomic, as
-> the hardware MSR bitmaps won't be updated until the next VM-Enter, but
-> the relevant software struct is atomically updated, which is what KVM
-> really needs.
-> 
-> Similar to the approach used for modifying memslots, make arch.msr_filter
-> a SRCU-protected pointer, do all the work configuring the new filter
-> outside of kvm->lock, and then acquire kvm->lock only when the new filter
-> has been vetted and created.  That way vCPU readers either see the old
-> filter or the new filter in their entirety, not some half-baked state.
-> 
-> Yuan Yao pointed out a use-after-free in ksm_msr_allowed() due to a
-> TOCTOU bug, but that's just the tip of the iceberg...
-> 
->    - Nothing is __rcu annotated, making it nigh impossible to audit the
->      code for correctness.
->    - kvm_add_msr_filter() has an unpaired smp_wmb().  Violation of kernel
->      coding style aside, the lack of a smb_rmb() anywhere casts all code
->      into doubt.
->    - kvm_clear_msr_filter() has a double free TOCTOU bug, as it grabs
->      count before taking the lock.
->    - kvm_clear_msr_filter() also has memory leak due to the same TOCTOU bug.
-> 
-> The entire approach of updating the live filter is also flawed.  While
-> installing a new filter is inherently racy if vCPUs are running, fixing
-> the above issues also makes it trivial to ensure certain behavior is
-> deterministic, e.g. KVM can provide deterministic behavior for MSRs with
-> identical settings in the old and new filters.  An atomic update of the
-> filter also prevents KVM from getting into a half-baked state, e.g. if
-> installing a filter fails, the existing approach would leave the filter
-> in a half-baked state, having already committed whatever bits of the
-> filter were already processed.
-> 
-> [*] https://lkml.kernel.org/r/20210312083157.25403-1-yaoyuan0329os@gmail.com
-> 
-> Fixes: 1a155254ff93 ("KVM: x86: Introduce MSR filtering")
-> Cc: stable@vger.kernel.org
-> Cc: Alexander Graf <graf@amazon.com>
-> Reported-by: Yuan Yao <yaoyuan0329os@gmail.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   Documentation/virt/kvm/api.rst  |   6 +-
->   arch/x86/include/asm/kvm_host.h |  17 ++---
->   arch/x86/kvm/x86.c              | 109 +++++++++++++++++++-------------
->   3 files changed, 78 insertions(+), 54 deletions(-)
-> 
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index 38e327d4b479..2898d3e86b08 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -4806,8 +4806,10 @@ If an MSR access is not permitted through the filtering, it generates a
->   allows user space to deflect and potentially handle various MSR accesses
->   into user space.
->   
-> -If a vCPU is in running state while this ioctl is invoked, the vCPU may
-> -experience inconsistent filtering behavior on MSR accesses.
-> +Note, invoking this ioctl with a vCPU is running is inherently racy.  However,
-> +KVM does guarantee that vCPUs will see either the previous filter or the new
-> +filter, e.g. MSRs with identical settings in both the old and new filter will
-> +have deterministic behavior.
->   
->   4.127 KVM_XEN_HVM_SET_ATTR
->   --------------------------
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index a52f973bdff6..84198c403a48 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -931,6 +931,12 @@ enum kvm_irqchip_mode {
->   	KVM_IRQCHIP_SPLIT,        /* created with KVM_CAP_SPLIT_IRQCHIP */
->   };
->   
-> +struct kvm_x86_msr_filter {
-> +	u8 count;
-> +	bool default_allow:1;
-> +	struct msr_bitmap_range ranges[16];
-> +};
-> +
->   #define APICV_INHIBIT_REASON_DISABLE    0
->   #define APICV_INHIBIT_REASON_HYPERV     1
->   #define APICV_INHIBIT_REASON_NESTED     2
-> @@ -1025,16 +1031,11 @@ struct kvm_arch {
->   	bool guest_can_read_msr_platform_info;
->   	bool exception_payload_enabled;
->   
-> +	bool bus_lock_detection_enabled;
-> +
->   	/* Deflect RDMSR and WRMSR to user space when they trigger a #GP */
->   	u32 user_space_msr_mask;
-> -
-> -	struct {
-> -		u8 count;
-> -		bool default_allow:1;
-> -		struct msr_bitmap_range ranges[16];
-> -	} msr_filter;
-> -
-> -	bool bus_lock_detection_enabled;
-> +	struct kvm_x86_msr_filter __rcu *msr_filter;
->   
->   	struct kvm_pmu_event_filter __rcu *pmu_event_filter;
->   	struct task_struct *nx_lpage_recovery_thread;
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index a9d95f90a048..c55769620b9a 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -1529,35 +1529,44 @@ EXPORT_SYMBOL_GPL(kvm_enable_efer_bits);
->   
->   bool kvm_msr_allowed(struct kvm_vcpu *vcpu, u32 index, u32 type)
->   {
-> +	struct kvm_x86_msr_filter *msr_filter;
-> +	struct msr_bitmap_range *ranges;
->   	struct kvm *kvm = vcpu->kvm;
-> -	struct msr_bitmap_range *ranges = kvm->arch.msr_filter.ranges;
-> -	u32 count = kvm->arch.msr_filter.count;
-> -	u32 i;
-> -	bool r = kvm->arch.msr_filter.default_allow;
-> +	bool allowed;
->   	int idx;
-> +	u32 i;
->   
-> -	/* MSR filtering not set up or x2APIC enabled, allow everything */
-> -	if (!count || (index >= 0x800 && index <= 0x8ff))
-> +	/* x2APIC MSRs do not support filtering. */
-> +	if (index >= 0x800 && index <= 0x8ff)
->   		return true;
->   
-> -	/* Prevent collision with set_msr_filter */
->   	idx = srcu_read_lock(&kvm->srcu);
->   
-> -	for (i = 0; i < count; i++) {
-> +	msr_filter = srcu_dereference(kvm->arch.msr_filter, &kvm->srcu);
-> +	if (!msr_filter) {
-> +		allowed = true;
-> +		goto out;
-> +	}
-> +
-> +	allowed = msr_filter->default_allow;
-> +	ranges = msr_filter->ranges;
-> +
-> +	for (i = 0; i < msr_filter->count; i++) {
->   		u32 start = ranges[i].base;
->   		u32 end = start + ranges[i].nmsrs;
->   		u32 flags = ranges[i].flags;
->   		unsigned long *bitmap = ranges[i].bitmap;
->   
->   		if ((index >= start) && (index < end) && (flags & type)) {
-> -			r = !!test_bit(index - start, bitmap);
-> +			allowed = !!test_bit(index - start, bitmap);
->   			break;
->   		}
->   	}
->   
-> +out:
->   	srcu_read_unlock(&kvm->srcu, idx);
->   
-> -	return r;
-> +	return allowed;
->   }
->   EXPORT_SYMBOL_GPL(kvm_msr_allowed);
->   
-> @@ -5389,25 +5398,34 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
->   	return r;
->   }
->   
-> -static void kvm_clear_msr_filter(struct kvm *kvm)
-> +static struct kvm_x86_msr_filter *kvm_alloc_msr_filter(bool default_allow)
-> +{
-> +	struct kvm_x86_msr_filter *msr_filter;
-> +
-> +	msr_filter = kzalloc(sizeof(*msr_filter), GFP_KERNEL_ACCOUNT);
-> +	if (!msr_filter)
-> +		return NULL;
-> +
-> +	msr_filter->default_allow = default_allow;
-> +	return msr_filter;
-> +}
-> +
-> +static void kvm_free_msr_filter(struct kvm_x86_msr_filter *msr_filter)
->   {
->   	u32 i;
-> -	u32 count = kvm->arch.msr_filter.count;
-> -	struct msr_bitmap_range ranges[16];
->   
-> -	mutex_lock(&kvm->lock);
-> -	kvm->arch.msr_filter.count = 0;
-> -	memcpy(ranges, kvm->arch.msr_filter.ranges, count * sizeof(ranges[0]));
-> -	mutex_unlock(&kvm->lock);
-> -	synchronize_srcu(&kvm->srcu);
-> +	if (!msr_filter)
-> +		return;
->   
-> -	for (i = 0; i < count; i++)
-> -		kfree(ranges[i].bitmap);
-> +	for (i = 0; i < msr_filter->count; i++)
-> +		kfree(msr_filter->ranges[i].bitmap);
-> +
-> +	kfree(msr_filter);
->   }
->   
-> -static int kvm_add_msr_filter(struct kvm *kvm, struct kvm_msr_filter_range *user_range)
-> +static int kvm_add_msr_filter(struct kvm_x86_msr_filter *msr_filter,
-> +			      struct kvm_msr_filter_range *user_range)
->   {
-> -	struct msr_bitmap_range *ranges = kvm->arch.msr_filter.ranges;
->   	struct msr_bitmap_range range;
->   	unsigned long *bitmap = NULL;
->   	size_t bitmap_size;
-> @@ -5441,11 +5459,9 @@ static int kvm_add_msr_filter(struct kvm *kvm, struct kvm_msr_filter_range *user
->   		goto err;
->   	}
->   
-> -	/* Everything ok, add this range identifier to our global pool */
-> -	ranges[kvm->arch.msr_filter.count] = range;
-> -	/* Make sure we filled the array before we tell anyone to walk it */
-> -	smp_wmb();
-> -	kvm->arch.msr_filter.count++;
-> +	/* Everything ok, add this range identifier. */
-> +	msr_filter->ranges[msr_filter->count] = range;
-> +	msr_filter->count++;
->   
->   	return 0;
->   err:
-> @@ -5456,10 +5472,11 @@ static int kvm_add_msr_filter(struct kvm *kvm, struct kvm_msr_filter_range *user
->   static int kvm_vm_ioctl_set_msr_filter(struct kvm *kvm, void __user *argp)
->   {
->   	struct kvm_msr_filter __user *user_msr_filter = argp;
-> +	struct kvm_x86_msr_filter *new_filter, *old_filter;
->   	struct kvm_msr_filter filter;
->   	bool default_allow;
-> -	int r = 0;
->   	bool empty = true;
-> +	int r = 0;
->   	u32 i;
->   
->   	if (copy_from_user(&filter, user_msr_filter, sizeof(filter)))
-> @@ -5472,25 +5489,32 @@ static int kvm_vm_ioctl_set_msr_filter(struct kvm *kvm, void __user *argp)
->   	if (empty && !default_allow)
->   		return -EINVAL;
->   
-> -	kvm_clear_msr_filter(kvm);
-> +	new_filter = kvm_alloc_msr_filter(default_allow);
-> +	if (!new_filter)
-> +		return -ENOMEM;
->   
-> -	kvm->arch.msr_filter.default_allow = default_allow;
-> -
-> -	/*
-> -	 * Protect from concurrent calls to this function that could trigger
-> -	 * a TOCTOU violation on kvm->arch.msr_filter.count.
-> -	 */
-> -	mutex_lock(&kvm->lock);
->   	for (i = 0; i < ARRAY_SIZE(filter.ranges); i++) {
-> -		r = kvm_add_msr_filter(kvm, &filter.ranges[i]);
-> -		if (r)
-> -			break;
-> +		r = kvm_add_msr_filter(new_filter, &filter.ranges[i]);
-> +		if (r) {
-> +			kvm_free_msr_filter(new_filter);
-> +			return r;
-> +		}
->   	}
->   
-> +	mutex_lock(&kvm->lock);
-> +
-> +	/* The per-VM filter is protected by kvm->lock... */
-> +	old_filter = srcu_dereference_check(kvm->arch.msr_filter, &kvm->srcu, 1);
-> +
-> +	rcu_assign_pointer(kvm->arch.msr_filter, new_filter);
-> +	synchronize_srcu(&kvm->srcu);
-> +
-> +	kvm_free_msr_filter(old_filter);
-> +
->   	kvm_make_all_cpus_request(kvm, KVM_REQ_MSR_FILTER_CHANGED);
->   	mutex_unlock(&kvm->lock);
->   
-> -	return r;
-> +	return 0;
->   }
->   
->   long kvm_arch_vm_ioctl(struct file *filp,
-> @@ -10693,8 +10717,6 @@ void kvm_arch_pre_destroy_vm(struct kvm *kvm)
->   
->   void kvm_arch_destroy_vm(struct kvm *kvm)
->   {
-> -	u32 i;
-> -
->   	if (current->mm == kvm->mm) {
->   		/*
->   		 * Free memory regions allocated on behalf of userspace,
-> @@ -10710,8 +10732,7 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
->   		mutex_unlock(&kvm->slots_lock);
->   	}
->   	static_call_cond(kvm_x86_vm_destroy)(kvm);
-> -	for (i = 0; i < kvm->arch.msr_filter.count; i++)
-> -		kfree(kvm->arch.msr_filter.ranges[i].bitmap);
-> +	kvm_free_msr_filter(srcu_dereference_check(kvm->arch.msr_filter, &kvm->srcu, 1));
->   	kvm_pic_destroy(kvm);
->   	kvm_ioapic_destroy(kvm);
->   	kvm_free_vcpus(kvm);
-> 
+On 21/03/17 01:47PM, Leon Romanovsky wrote:
+> On Wed, Mar 17, 2021 at 04:53:09PM +0530, Amey Narkhede wrote:
+> > On 21/03/17 01:02PM, Leon Romanovsky wrote:
+> > > On Wed, Mar 17, 2021 at 03:54:47PM +0530, Amey Narkhede wrote:
+> > > > On 21/03/17 06:20AM, Leon Romanovsky wrote:
+> > > > > On Mon, Mar 15, 2021 at 06:32:32PM +0000, Raphael Norwitz wrote:
+> > > > > > On Mon, Mar 15, 2021 at 10:29:50AM -0600, Alex Williamson wrote:
+> > > > > > > On Mon, 15 Mar 2021 21:03:41 +0530
+> > > > > > > Amey Narkhede <ameynarkhede03@gmail.com> wrote:
+> > > > > > >
+> > > > > > > > On 21/03/15 05:07PM, Leon Romanovsky wrote:
+> > > > > > > > > On Mon, Mar 15, 2021 at 08:34:09AM -0600, Alex Williamson wrote:
+> > > > > > > > > > On Mon, 15 Mar 2021 14:52:26 +0100
+> > > > > > > > > > Pali Rohár <pali@kernel.org> wrote:
+> > > > > > > > > >
+> > > > > > > > > > > On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:
+> > > > > > > > > > > > slot reset (pci_dev_reset_slot_function) and secondary bus
+> > > > > > > > > > > > reset(pci_parent_bus_reset) which I think are hot reset and
+> > > > > > > > > > > > warm reset respectively.
+> > > > > > > > > > >
+> > > > > > > > > > > No. PCI secondary bus reset = PCIe Hot Reset. Slot reset is just another
+> > > > > > > > > > > type of reset, which is currently implemented only for PCIe hot plug
+> > > > > > > > > > > bridges and for PowerPC PowerNV platform and it just call PCI secondary
+> > > > > > > > > > > bus reset with some other hook. PCIe Warm Reset does not have API in
+> > > > > > > > > > > kernel and therefore drivers do not export this type of reset via any
+> > > > > > > > > > > kernel function (yet).
+> > > > > > > > > >
+> > > > > > > > > > Warm reset is beyond the scope of this series, but could be implemented
+> > > > > > > > > > in a compatible way to fit within the pci_reset_fn_methods[] array
+> > > > > > > > > > defined here.  Note that with this series the resets available through
+> > > > > > > > > > pci_reset_function() and the per device reset attribute is sysfs remain
+> > > > > > > > > > exactly the same as they are currently.  The bus and slot reset
+> > > > > > > > > > methods used here are limited to devices where only a single function is
+> > > > > > > > > > affected by the reset, therefore it is not like the patch you proposed
+> > > > > > > > > > which performed a reset irrespective of the downstream devices.  This
+> > > > > > > > > > series only enables selection of the existing methods.  Thanks,
+> > > > > > > > >
+> > > > > > > > > Alex,
+> > > > > > > > >
+> > > > > > > > > I asked the patch author here [1], but didn't get any response, maybe
+> > > > > > > > > you can answer me. What is the use case scenario for this functionality?
+> > > > > > > > >
+> > > > > > > > > Thanks
+> > > > > > > > >
+> > > > > > > > > [1] https://lore.kernel.org/lkml/YE389lAqjJSeTolM@unreal/
+> > > > > > > > >
+> > > > > > > > Sorry for not responding immediately. There were some buggy wifi cards
+> > > > > > > > which needed FLR explicitly not sure if that behavior is fixed in
+> > > > > > > > drivers. Also there is use a case at Nutanix but the engineer who
+> > > > > > > > is involved is on PTO that is why I did not respond immediately as
+> > > > > > > > I don't know the details yet.
+> > > > > > >
+> > > > > > > And more generally, devices continue to have reset issues and we
+> > > > > > > impose a fixed priority in our ordering.  We can and probably should
+> > > > > > > continue to quirk devices when we find broken resets so that we have
+> > > > > > > the best default behavior, but it's currently not easy for an end user
+> > > > > > > to experiment, ie. this reset works, that one doesn't.  We might also
+> > > > > > > have platform issues where a given reset works better on a certain
+> > > > > > > platform.  Exposing a way to test these things might lead to better
+> > > > > > > quirks.  In the case I think Pali was looking for, they wanted a
+> > > > > > > mechanism to force a bus reset, if this was in reference to a single
+> > > > > > > function device, this could be accomplished by setting a priority for
+> > > > > > > that mechanism, which would translate to not only the sysfs reset
+> > > > > > > attribute, but also the reset mechanism used by vfio-pci.  Thanks,
+> > > > > > >
+> > > > > > > Alex
+> > > > > > >
+> > > > > >
+> > > > > > To confirm from our end - we have seen many such instances where default
+> > > > > > reset methods have not worked well on our platform. Debugging these
+> > > > > > issues is painful in practice, and this interface would make it far
+> > > > > > easier.
+> > > > > >
+> > > > > > Having an interface like this would also help us better communicate the
+> > > > > > issues we find with upstream. Allowing others to more easily test our
+> > > > > > (or other entities') findings should give better visibility into
+> > > > > > which issues apply to the device in general and which are platform
+> > > > > > specific. In disambiguating the former from the latter, we should be
+> > > > > > able to better quirk devices for everyone, and in the latter cases, this
+> > > > > > interface allows for a safer and more elegant solution than any of the
+> > > > > > current alternatives.
+> > > > >
+> > > > > So to summarize, we are talking about test and debug interface to
+> > > > > overcome HW bugs, am I right?
+> > > > >
+> > > > > My personal experience shows that once the easy workaround exists
+> > > > > (and write to generally available sysfs is very simple), the vendors
+> > > > > and users desire for proper fix decreases drastically. IMHO, we will
+> > > > > see increase of copy/paste in SO and blog posts, but reduce in quirks.
+> > > > >
+> > > > > My 2-cents.
+> > > > >
+> > > > I agree with your point but at least it gives the userspace ability
+> > > > to use broken device until bug is fixed in upstream.
+> > >
+> > > As I said, I don't expect many fixes once "userspace" will be able to
+> > > use cheap workaround. There is no incentive to fix it.
+> > >
+> > > > This is also applicable for obscure devices without upstream
+> > > > drivers for example custom FPGA based devices.
+> > >
+> > > This is not relevant to upstream kernel. Those vendors ship everything
+> > > custom, they don't need upstream, we don't need them :)
+> > >
+> > By custom I meant hobbyists who could tinker with their custom FPGA.
+>
+> I invite such hobbyists to send patches and include their FPGA in
+> upstream kernel.
+>
+> >
+> > > > Another main application which I forgot to mention is virtualization
+> > > > where vmm wants to reset the device when the guest is reset,
+> > > > to emulate machine reboot as closely as possible.
+> > >
+> > > It can work in very narrow case, because reset will cause to device
+> > > reprobe and most likely the driver will be different from the one that
+> > > started reset. I can imagine that net devices will lose their state and
+> > > config after such reset too.
+> > >
+> > Not sure if I got that 100% right. The pci_reset_function() function
+> > saves and restores device state over the reset.
+>
+> I'm talking about netdev state, but whatever given the existence of
+> sysfs reset knob.
+>
+> >
+> > > IMHO, it will be saner for everyone if virtualization don't try such resets.
+> > >
+> > > Thanks
+> > >
+> > The exists reset sysfs attribute was added for exactly this case
+> > though.
+>
+> I didn't know the rationale behind that file till you said and I
+> googled libvirt discussion, so ok. Do you propose that libvirt
+> will manage database of devices and their working reset types?
+>
+I don't have much idea about internals of libvirt but why would
+it need to manage database of working reset types? It could just
+read new reset_methods attribute to get the list of supported reset
+methods.
+> I'm not against this patch, just want to raise an attention that the
+> outcome of this patch will be decrease in fixes of broken devices.
+>
+> Thanks
+>
+That makes sense but that isn't any different from existing reset
+attribute. This patch inhances it and allows selecting a device supported
+reset method instead of using first available reset method according to
+existing hardcoded policy.
 
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-
+Thanks,
+Amey
