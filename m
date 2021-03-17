@@ -2,248 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7617133E2E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:37:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A7833E2F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:45:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbhCQAhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:37:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45219 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229928AbhCQAgb (ORCPT
+        id S229658AbhCQAok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:44:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhCQAoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:36:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615941385;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=q+WBXT2Z0GX5Wb5Zd+rdqHW22JpjwdirbYKXvw2UcrI=;
-        b=T+vMORernoYQjSPAODtmu3/nFcoq0dSRFoZTMd/7roLh8Iz3HUR1egpDL+pyaoBimihTG6
-        H18i7VWWqKYBSjdT7iY7IblX5FvmR1sxhshLyb7reHtonXCC96AG6vuBQP10gmTffuVd8Z
-        vlrkUU2O8/R0Vc/cg7LOs5ejGlAVULU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-295-tQh8DwWuOwOKSt4ZJMGVhw-1; Tue, 16 Mar 2021 20:36:23 -0400
-X-MC-Unique: tQh8DwWuOwOKSt4ZJMGVhw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B44378030D7;
-        Wed, 17 Mar 2021 00:36:20 +0000 (UTC)
-Received: from rtux.redhat.com (unknown [10.33.36.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8B02F6C32E;
-        Wed, 17 Mar 2021 00:36:17 +0000 (UTC)
-From:   Alexey Klimov <aklimov@redhat.com>
-To:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Cc:     peterz@infradead.org, yury.norov@gmail.com,
-        daniel.m.jordan@oracle.com, tglx@linutronix.de, jobaker@redhat.com,
-        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
-        rafael@kernel.org, tj@kernel.org, qais.yousef@arm.com,
-        hannes@cmpxchg.org, klimov.linux@gmail.com
-Subject: [PATCH v3] cpu/hotplug: wait for cpuset_hotplug_work to finish on cpu onlining
-Date:   Wed, 17 Mar 2021 00:36:16 +0000
-Message-Id: <20210317003616.2817418-1-aklimov@redhat.com>
+        Tue, 16 Mar 2021 20:44:30 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E11AC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:44:19 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id p8so75141067ejb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:44:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Hdc3Z4qXX9l8XXJJcPsajObPuLYLca+A1Hq/au570EA=;
+        b=YqsIQMoBpBXzCzWbXra19j5jdGRkI2qmReN0oKioV0Shal06ZaKrGs1JdX7FzgzYcr
+         nVdCUGWHZEm/QGFrHGtKf2wWR/L5xQyhWnIB3r3hvDiwBN64JQlL/ROMD8G8P5PUnBxO
+         I6l7MXffemgprdgtj4mLDpX7ZtfZ2Y1ecu3YE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Hdc3Z4qXX9l8XXJJcPsajObPuLYLca+A1Hq/au570EA=;
+        b=S27Xv8WOu/cT1gx6jfWlXDvECnNG0QN1jrzRPdJ3c8H5cEH/IuSxvnTzchL7Apldhv
+         yhl8pNxefIkWT1YqAl6TuOJnpm2l8am/tYz4/kvtZG9UZmlpvE2S/KqC0q2Xghb8iMy3
+         XvYzBbtMr2+BNOGfKxIkpAZGjB5OsGJMI45o30TChg35BvT5rHYB5SUWLVqkXKbTsF6z
+         L5QuogjzJmg3eZGJInz32BS0GsWnKXPWGh3H0lD2nFnQlNNjuyVK/KGh0CGI31zUv3ML
+         Pj7K6LtXdcdK7lHF9ZPrlWV/xXBy7TGf+OUrjjBZKHGTn6lh65Z21GRVhfUL346YOfbV
+         uLqg==
+X-Gm-Message-State: AOAM533ApIe4rasxLrMy1xooWg67WfO4umta6E8tEOzr6JtF+i9IMDXf
+        aWjWfzhUxlN6EOcT1SBBV9TJNK6eNJP/Eg==
+X-Google-Smtp-Source: ABdhPJyQrhT9N90H03nIxQESChTKD4J4wrHIGCkGxI4LadWkYRP/jWp7jfN8k+mXQyDQ2BAizHQC5g==
+X-Received: by 2002:a17:907:e8f:: with SMTP id ho15mr33500658ejc.541.1615941858017;
+        Tue, 16 Mar 2021 17:44:18 -0700 (PDT)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
+        by smtp.gmail.com with ESMTPSA id m9sm2190431ejo.65.2021.03.16.17.44.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 17:44:17 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id ox4so59528104ejb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:44:17 -0700 (PDT)
+X-Received: by 2002:ac2:4250:: with SMTP id m16mr745431lfl.40.1615941846610;
+ Tue, 16 Mar 2021 17:44:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk>
+ <161539528910.286939.1252328699383291173.stgit@warthog.procyon.org.uk> <20210316190707.GD3420@casper.infradead.org>
+In-Reply-To: <20210316190707.GD3420@casper.infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 16 Mar 2021 17:43:50 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjSGsRj7xwhSMQ6dAQiz53xA39pOG+XA_WeTgwBBu4uqg@mail.gmail.com>
+Message-ID: <CAHk-=wjSGsRj7xwhSMQ6dAQiz53xA39pOG+XA_WeTgwBBu4uqg@mail.gmail.com>
+Subject: Re: [PATCH v4 02/28] mm: Add an unlock function for PG_private_2/PG_fscache
+To:     Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linux-MM <linux-mm@kvack.org>, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org,
+        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a CPU offlined and onlined via device_offline() and device_online()
-the userspace gets uevent notification. If, after receiving "online" uevent,
-userspace executes sched_setaffinity() on some task trying to move it
-to a recently onlined CPU, then it sometimes fails with -EINVAL. Userspace
-needs to wait around 5..30 ms before sched_setaffinity() will succeed for
-recently onlined CPU after receiving uevent.
+[ Adding btrfs people explicitly, maybe they see this on the fs-devel
+list, but maybe they don't react .. ]
 
-If in_mask argument for sched_setaffinity() has only recently onlined CPU,
-it could fail with such flow:
+On Tue, Mar 16, 2021 at 12:07 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> This isn't a problem with this patch per se, but I'm concerned about
+> private2 and expected page refcounts.
 
-  sched_setaffinity()
-    cpuset_cpus_allowed()
-      guarantee_online_cpus()   <-- cs->effective_cpus mask does not
-                                        contain recently onlined cpu
-    cpumask_and()               <-- final new_mask is empty
-    __set_cpus_allowed_ptr()
-      cpumask_any_and_distribute() <-- returns dest_cpu equal to nr_cpu_ids
-      returns -EINVAL
+Ugh. You are very right.
 
-Cpusets used in guarantee_online_cpus() are updated using workqueue from
-cpuset_update_active_cpus() which in its turn is called from cpu hotplug callback
-sched_cpu_activate() hence it may not be observable by sched_setaffinity() if
-it is called immediately after uevent.
+It would be good to just change the rules - I get the feeling nobody
+actually depended on them anyway because they were _so_ esoteric.
 
-Out of line uevent can be avoided if we will ensure that cpuset_hotplug_work
-has run to completion using cpuset_wait_for_hotplug() after onlining the
-cpu in cpu_device_up() and in cpuhp_smt_enable().
+> static inline int is_page_cache_freeable(struct page *page)
+> {
+>         /*
+>          * A freeable page cache page is referenced only by the caller
+>          * that isolated the page, the page cache and optional buffer
+>          * heads at page->private.
+>          */
+>         int page_cache_pins = thp_nr_pages(page);
+>         return page_count(page) - page_has_private(page) == 1 + page_cache_pins;
 
-Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
-Reviewed-by: Qais Yousef <qais.yousef@arm.com>
-Co-analyzed-by: Joshua Baker <jobaker@redhat.com>
-Signed-off-by: Alexey Klimov <aklimov@redhat.com>
----
+You're right, that "page_has_private()" is really really nasty.
 
-Changes since v2:
-	- restore cpuhp_{online,offline}_cpu_device back and move it out
-		of cpu maps lock;
-	- use Reviewed-by from Qais;
-	- minor corrections in commit message and in comment in code.
+The comment is, I think, the traditional usage case, which used to be
+about page->buffers. Obviously these days it is now about
+page->private with PG_private set, pointing to buffers
+(attach_page_private() and detach_page_private()).
 
-Changes since v1:
-	- cpuset_wait_for_hotplug() moved to cpu_device_up();
-	- corrections in comments;
-	- removed cpuhp_{online,offline}_cpu_device.
+But as you point out:
 
-Changes since RFC:
-	- cpuset_wait_for_hotplug() used in cpuhp_smt_enable().
+> #define PAGE_FLAGS_PRIVATE                              \
+>         (1UL << PG_private | 1UL << PG_private_2)
+>
+> So ... a page with both flags cleared should have a refcount of N.
+> A page with one or both flags set should have a refcount of N+1.
 
-Previous patches and discussion are:
-RFC patch: https://lore.kernel.org/lkml/20201203171431.256675-1-aklimov@redhat.com/
-v1 patch:  https://lore.kernel.org/lkml/20210204010157.1823669-1-aklimov@redhat.com/
-v2 patch: https://lore.kernel.org/lkml/20210212003032.2037750-1-aklimov@redhat.com/
+Could we just remove the PG_private_2 thing in this context entirely,
+and make the rule be that
 
-The commit a49e4629b5ed "cpuset: Make cpuset hotplug synchronous"
-would also get rid of the early uevent but it was reverted (deadlocks).
+ (a) PG_private means that you have some local private data in
+page->private, and that's all that matters for the "freeable" thing.
 
-The nature of this bug is also described here (with different consequences):
-https://lore.kernel.org/lkml/20200211141554.24181-1-qais.yousef@arm.com/
+ (b) PG_private_2 does *not* have the same meaning, and has no bearing
+on freeability (and only the refcount matters)
 
-Reproducer: https://gitlab.com/0xeafffffe/xlam
+I _)think_ the btrfs behavior is to only use PagePrivate2() when it
+has a reference to the page, so btrfs doesn't care?
 
-Currently with such changes the reproducer code continues to work without issues.
-The idea is to avoid the situation when userspace receives the event about
-onlined CPU which is not ready to take tasks for a while after uevent.
+I think fscache is already happy to take the page count when using
+PG_private_2 for locking, exactly because I didn't want to have any
+confusion about lifetimes. But this "page_has_private()" math ends up
+meaning it's confusing anyway.
 
- kernel/cpu.c | 74 +++++++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 56 insertions(+), 18 deletions(-)
+btrfs people? What are the semantics for PG_private_2? Is it just a
+flag, and you really don't want it to have anything to do with any
+page lifetime decisions? Or?
 
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 1b6302ecbabe..9b091d8a8811 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -15,6 +15,7 @@
- #include <linux/sched/smt.h>
- #include <linux/unistd.h>
- #include <linux/cpu.h>
-+#include <linux/cpuset.h>
- #include <linux/oom.h>
- #include <linux/rcupdate.h>
- #include <linux/export.h>
-@@ -1301,7 +1302,17 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
-  */
- int cpu_device_up(struct device *dev)
- {
--	return cpu_up(dev->id, CPUHP_ONLINE);
-+	int err;
-+
-+	err = cpu_up(dev->id, CPUHP_ONLINE);
-+	/*
-+	 * Wait for cpuset updates to cpumasks to finish.  Later on this path
-+	 * may generate uevents whose consumers rely on the updates.
-+	 */
-+	if (!err)
-+		cpuset_wait_for_hotplug();
-+
-+	return err;
- }
- 
- int add_cpu(unsigned int cpu)
-@@ -2084,8 +2095,13 @@ static void cpuhp_online_cpu_device(unsigned int cpu)
- 
- int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
- {
--	int cpu, ret = 0;
-+	cpumask_var_t mask;
-+	int cpu, ret;
- 
-+	if (!zalloc_cpumask_var(&mask, GFP_KERNEL))
-+		return -ENOMEM;
-+
-+	ret = 0;
- 	cpu_maps_update_begin();
- 	for_each_online_cpu(cpu) {
- 		if (topology_is_primary_thread(cpu))
-@@ -2093,31 +2109,42 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
- 		ret = cpu_down_maps_locked(cpu, CPUHP_OFFLINE);
- 		if (ret)
- 			break;
--		/*
--		 * As this needs to hold the cpu maps lock it's impossible
--		 * to call device_offline() because that ends up calling
--		 * cpu_down() which takes cpu maps lock. cpu maps lock
--		 * needs to be held as this might race against in kernel
--		 * abusers of the hotplug machinery (thermal management).
--		 *
--		 * So nothing would update device:offline state. That would
--		 * leave the sysfs entry stale and prevent onlining after
--		 * smt control has been changed to 'off' again. This is
--		 * called under the sysfs hotplug lock, so it is properly
--		 * serialized against the regular offline usage.
--		 */
--		cpuhp_offline_cpu_device(cpu);
-+
-+		cpumask_set_cpu(cpu, mask);
- 	}
- 	if (!ret)
- 		cpu_smt_control = ctrlval;
- 	cpu_maps_update_done();
-+
-+	/*
-+	 * When the cpu maps lock was taken above it was impossible
-+	 * to call device_offline() because that ends up calling
-+	 * cpu_down() which takes cpu maps lock. cpu maps lock
-+	 * needed to be held as this might race against in-kernel
-+	 * abusers of the hotplug machinery (thermal management).
-+	 *
-+	 * So nothing would update device:offline state. That would
-+	 * leave the sysfs entry stale and prevent onlining after
-+	 * smt control has been changed to 'off' again. This is
-+	 * called under the sysfs hotplug lock, so it is properly
-+	 * serialized against the regular offline usage.
-+	 */
-+	for_each_cpu(cpu, mask)
-+		cpuhp_offline_cpu_device(cpu);
-+
-+	free_cpumask_var(mask);
- 	return ret;
- }
- 
- int cpuhp_smt_enable(void)
- {
--	int cpu, ret = 0;
-+	cpumask_var_t mask;
-+	int cpu, ret;
-+
-+	if (!zalloc_cpumask_var(&mask, GFP_KERNEL))
-+		return -ENOMEM;
- 
-+	ret = 0;
- 	cpu_maps_update_begin();
- 	cpu_smt_control = CPU_SMT_ENABLED;
- 	for_each_present_cpu(cpu) {
-@@ -2128,9 +2155,20 @@ int cpuhp_smt_enable(void)
- 		if (ret)
- 			break;
- 		/* See comment in cpuhp_smt_disable() */
--		cpuhp_online_cpu_device(cpu);
-+		cpumask_set_cpu(cpu, mask);
- 	}
- 	cpu_maps_update_done();
-+
-+	/*
-+	 * Wait for cpuset updates to cpumasks to finish.  Later on this path
-+	 * may generate uevents whose consumers rely on the updates.
-+	 */
-+	cpuset_wait_for_hotplug();
-+
-+	for_each_cpu(cpu, mask)
-+		cpuhp_online_cpu_device(cpu);
-+
-+	free_cpumask_var(mask);
- 	return ret;
- }
- #endif
--- 
-2.31.0
-
+        Linus
