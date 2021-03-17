@@ -2,150 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF6E33ED9E
+	by mail.lfdr.de (Postfix) with ESMTP id 4D38233ED9D
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:57:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhCQJ4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:56:33 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:14391 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230443AbhCQJ4X (ORCPT
+        id S229915AbhCQJ4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:56:31 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49490 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230401AbhCQJ4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:56:23 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F0lr90phfzkZ6Y;
-        Wed, 17 Mar 2021 17:54:49 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 17 Mar 2021 17:56:12 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH 2/2] f2fs: fix error path of f2fs_remount()
-Date:   Wed, 17 Mar 2021 17:56:04 +0800
-Message-ID: <20210317095604.125820-2-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210317095604.125820-1-yuchao0@huawei.com>
-References: <20210317095604.125820-1-yuchao0@huawei.com>
+        Wed, 17 Mar 2021 05:56:15 -0400
+Received: from mail-ed1-f69.google.com ([209.85.208.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lMSuT-0006e9-DJ
+        for linux-kernel@vger.kernel.org; Wed, 17 Mar 2021 09:56:13 +0000
+Received: by mail-ed1-f69.google.com with SMTP id o24so19023152edt.15
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:56:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0OR+NA5iXYs5Hx3O1xYcQ4bDsjPq6HwTw7iNrWZV+1U=;
+        b=byS7nECs4T2jjeV7pLdQxVvr2BYKqJlDBsh7g7TWZgwFuaDd8Xor0FAdLDWuYHbcsJ
+         6iKYK7kl/hETQPE0cA0HGwYnUrX6rtEpUQfHHJpc9kUJ14+cqtHfPSLEZ3a4TfH0wZO3
+         90ijTmeQevWfWa2A9n4k9WV2GaoMbtAB8W3vicvg/Uduzn36BmrMC+7dBMc7UwZ3xwfJ
+         Krwt7wkXfsCbB5Iy8urYbuQpFr7WjHXkJoX7U/lxYm36HnLJyMJb2Wc0mVEe07qzpgWD
+         Ttmvv95P54I+68aQOYT9apIheZGTXp//OI3TVFZW+0X4ExDd1Z5XrWKprGmycZIn3/Ne
+         eD0A==
+X-Gm-Message-State: AOAM531yWjWyDyFWV33VrORadGGvOqiSL39b/iKks44F/N23E+J8mPkA
+        2EDp8gjqI7i6VCN7E+SVejv6owCjYQ+VPxn2xZfJhMvglUDYFWgnsgSGrvLprBbOFZuBHzxMyTM
+        ZXWHqoHyNqD68EorZCh0GjmzaRNsx7yNLUkqHBSP9nQ==
+X-Received: by 2002:aa7:c957:: with SMTP id h23mr35930032edt.301.1615974973039;
+        Wed, 17 Mar 2021 02:56:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxKNRjNZyBOhnwv1azPBEsuZfI4Rho3JZRbmen39IJTtWFb2ddjWUNbr9EawFm5lmsC0A830w==
+X-Received: by 2002:aa7:c957:: with SMTP id h23mr35930023edt.301.1615974972870;
+        Wed, 17 Mar 2021 02:56:12 -0700 (PDT)
+Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.gmail.com with ESMTPSA id r17sm11873586edt.70.2021.03.17.02.56.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 02:56:12 -0700 (PDT)
+Subject: Re: [PATCH] MIPS: ralink: define stubs for clk_set_parent to fix
+ compile testing
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     thierry.reding@gmail.com, linux-tegra@vger.kernel.org,
+        balbi@kernel.org, linux-usb@vger.kernel.org, digetx@gmail.com,
+        kernel test robot <lkp@intel.com>
+References: <20210316175725.79981-1-krzysztof.kozlowski@canonical.com>
+ <880d5e61-fec5-e7d6-7403-b1823c77b3c1@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <856fbd45-67ae-fed2-97c4-b555993d5ae9@canonical.com>
+Date:   Wed, 17 Mar 2021 10:56:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+In-Reply-To: <880d5e61-fec5-e7d6-7403-b1823c77b3c1@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In error path of f2fs_remount(), it missed to restart/stop kernel thread
-or enable/disable checkpoint, then mount option status may not be
-consistent with real condition of filesystem, so let's reorder remount
-flow a bit as below and do recovery correctly in error path:
+On 17/03/2021 10:52, Sergei Shtylyov wrote:
+> Hello!
+> 
+> On 16.03.2021 20:57, Krzysztof Kozlowski wrote:
+> 
+>> The Ralink MIPS platform does not use Common Clock Framework and does
+>> not define certain clock operations leading to compile test failures:
+>>
+>>      /usr/bin/mips-linux-gnu-ld: drivers/usb/phy/phy-tegra-usb.o: in function `tegra_usb_phy_init':
+>>      phy-tegra-usb.c:(.text+0x1dd4): undefined reference to `clk_get_parent'
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>> ---
+>>   arch/mips/ralink/clk.c | 14 ++++++++++++++
+>>   1 file changed, 14 insertions(+)
+>>
+>> diff --git a/arch/mips/ralink/clk.c b/arch/mips/ralink/clk.c
+>> index 2f9d5acb38ea..8387177a47ef 100644
+>> --- a/arch/mips/ralink/clk.c
+>> +++ b/arch/mips/ralink/clk.c
+>> @@ -70,6 +70,20 @@ long clk_round_rate(struct clk *clk, unsigned long rate)
+>>   }
+>>   EXPORT_SYMBOL_GPL(clk_round_rate);
+>>   
+>> +int clk_set_parent(struct clk *clk, struct clk *parent)
+>> +{
+>> +	WARN_ON(clk);
+>> +	return -1;
+> 
+>     Shouldn't this be a proepr error code (-1 corresponds to -EPRERM)?
 
-1) handle gc thread
-2) handle ckpt thread
-3) handle flush thread
-4) handle checkpoint disabling
+Could be ENODEV or EINVAL but all other stubs here and in ar7/clock.c
+use -1. Do you prefer it then to have it inconsistent with others?
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- fs/f2fs/super.c | 47 ++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 34 insertions(+), 13 deletions(-)
-
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 6716af216dca..fa60f08c30bb 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -1942,8 +1942,9 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 	struct f2fs_mount_info org_mount_opt;
- 	unsigned long old_sb_flags;
- 	int err;
--	bool need_restart_gc = false;
--	bool need_stop_gc = false;
-+	bool need_restart_gc = false, need_stop_gc = false;
-+	bool need_restart_ckpt = false, need_stop_ckpt = false;
-+	bool need_restart_flush = false, need_stop_flush = false;
- 	bool no_extent_cache = !test_opt(sbi, EXTENT_CACHE);
- 	bool disable_checkpoint = test_opt(sbi, DISABLE_CHECKPOINT);
- 	bool no_io_align = !F2FS_IO_ALIGNED(sbi);
-@@ -2081,19 +2082,10 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 		clear_sbi_flag(sbi, SBI_IS_CLOSE);
- 	}
- 
--	if (checkpoint_changed) {
--		if (test_opt(sbi, DISABLE_CHECKPOINT)) {
--			err = f2fs_disable_checkpoint(sbi);
--			if (err)
--				goto restore_gc;
--		} else {
--			f2fs_enable_checkpoint(sbi);
--		}
--	}
--
- 	if ((*flags & SB_RDONLY) || test_opt(sbi, DISABLE_CHECKPOINT) ||
- 			!test_opt(sbi, MERGE_CHECKPOINT)) {
- 		f2fs_stop_ckpt_thread(sbi);
-+		need_restart_ckpt = true;
- 	} else {
- 		err = f2fs_start_ckpt_thread(sbi);
- 		if (err) {
-@@ -2102,6 +2094,7 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 			    err);
- 			goto restore_gc;
- 		}
-+		need_stop_ckpt = true;
- 	}
- 
- 	/*
-@@ -2111,11 +2104,24 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 	if ((*flags & SB_RDONLY) || !test_opt(sbi, FLUSH_MERGE)) {
- 		clear_opt(sbi, FLUSH_MERGE);
- 		f2fs_destroy_flush_cmd_control(sbi, false);
-+		need_restart_flush = true;
- 	} else {
- 		err = f2fs_create_flush_cmd_control(sbi);
- 		if (err)
--			goto restore_gc;
-+			goto restore_ckpt;
-+		need_stop_flush = true;
- 	}
-+
-+	if (checkpoint_changed) {
-+		if (test_opt(sbi, DISABLE_CHECKPOINT)) {
-+			err = f2fs_disable_checkpoint(sbi);
-+			if (err)
-+				goto restore_flush;
-+		} else {
-+			f2fs_enable_checkpoint(sbi);
-+		}
-+	}
-+
- skip:
- #ifdef CONFIG_QUOTA
- 	/* Release old quota file names */
-@@ -2130,6 +2136,21 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 	adjust_unusable_cap_perc(sbi);
- 	*flags = (*flags & ~SB_LAZYTIME) | (sb->s_flags & SB_LAZYTIME);
- 	return 0;
-+restore_flush:
-+	if (need_restart_flush) {
-+		if (f2fs_create_flush_cmd_control(sbi))
-+			f2fs_warn(sbi, "background flush thread has stopped");
-+	} else if (need_stop_flush) {
-+		clear_opt(sbi, FLUSH_MERGE);
-+		f2fs_destroy_flush_cmd_control(sbi, false);
-+	}
-+restore_ckpt:
-+	if (need_restart_ckpt) {
-+		if (f2fs_start_ckpt_thread(sbi))
-+			f2fs_warn(sbi, "background ckpt thread has stopped");
-+	} else if (need_stop_ckpt) {
-+		f2fs_stop_ckpt_thread(sbi);
-+	}
- restore_gc:
- 	if (need_restart_gc) {
- 		if (f2fs_start_gc_thread(sbi))
--- 
-2.29.2
-
+Best regards,
+Krzysztof
