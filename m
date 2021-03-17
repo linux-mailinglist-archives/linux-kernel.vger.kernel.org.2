@@ -2,112 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 615E833FA63
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 22:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F63E33FA66
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 22:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbhCQVTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 17:19:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46949 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230369AbhCQVTD (ORCPT
+        id S231725AbhCQVTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 17:19:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230369AbhCQVTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 17:19:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616015942;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zJuWBirWZevEe1qdUUJUM0zyPqke25oP95wtgMd+Sq8=;
-        b=aTg/e9ZPgfAWEYs6mpO5Ag8F6NNL5WX1csSTgPgvkhx/n0lJu4mzsbatcbaRc/DYSqOGhQ
-        Mxmf4/R+NUue3Kb/D9l60aigCQtHNxJ7Ar48/Cdm1m3ugB6s8lv9NsggXwszIUXkahJj8B
-        UDwlyD5EAhLXqZH8xcYDb2KqEXb8QwA=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-345-nNhksLcmPTCH_8b0Ursh1Q-1; Wed, 17 Mar 2021 17:19:00 -0400
-X-MC-Unique: nNhksLcmPTCH_8b0Ursh1Q-1
-Received: by mail-qk1-f197.google.com with SMTP id x11so27060712qki.22
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 14:19:00 -0700 (PDT)
+        Wed, 17 Mar 2021 17:19:35 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F681C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 14:19:35 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id g10so203000plt.8
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 14:19:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZCl7wm+rg+7YdxDRvddMtggI/CCto6o7F3c4jWSDx1s=;
+        b=K991Jlgq3FuxzlY2VOYfCRhMGNagbKqPw1F818Bqfjk9Lf1hCAlStw1xaDZV8H9/aS
+         BA7JScOMgoxv/B9y6pbQ6ixojP0HkhRuf/wyCrCUnYaQI8+saOu9sSKGIC68JG/0CB3K
+         HJO+mhSj/6uey96LussfTTk68eT8Iv+8rkq4D57Q8/Pa6UaweTc+GsbzLJWrrlmKuI2o
+         1zQyiv0jz9hobn2/8MiYK7xiG6GvpOCI7i+8zTajdzTzEX1UxFCwkGdlDtSx+9nFdstM
+         iug3BNi1hMfc5EjJSp3+jGIc+RMK87AGPodEPpm0EFz0yYD+/z3ctzkzQ3MnddB+yryw
+         Dotw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=zJuWBirWZevEe1qdUUJUM0zyPqke25oP95wtgMd+Sq8=;
-        b=qUU93l0vZIs+GAvhnDhp3/ROmY6HV1btHu+gQBN89M8SxrkRmAToK/ruFLcaY5GhKn
-         ppLqtEIS+7peodW6sT3W5KpZr13U+z3HJGYMBqCi8Lf6gYtOufm3djkA65ngg11IZKqG
-         cjFHujPE5WTQPKQQ5IvGlA7/Qi2wQKXh3XBTbqi6ygfTekwMT7tQUn4WUjzO2zuv9x1f
-         fqwto1hHQ3ztKIwzeQ4uUNS4YGNUXCALczT4wgTb3fZL86Y75zqEnpjacpt9OWzPVG31
-         EK/bGKDgX1MQdNvnKVl4/g//K8Y7MjsE/ApvbiKdbyPOz3gQHu8b+5DYqLGgMxPwRlgh
-         zzAg==
-X-Gm-Message-State: AOAM532pZgfUhAlSc/bNwmXcd8DlOWavsvd3y6RG6la/lS3aP5LbX2fj
-        vKKPmD4m+OBuiAlKgSJZCWbsxVcz+2mrBlC7GEY+qtiIigorZ08Ny5bgCdFrkTWnFEiZ4Q67quq
-        ZNBoE0fquEfyUFJSvvmyK+Zuc
-X-Received: by 2002:a05:620a:85e:: with SMTP id u30mr1252416qku.427.1616015939333;
-        Wed, 17 Mar 2021 14:18:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyhq6bqTA0FWK73UvJDzjgEn5ktBSk9FLI7tTjvi91rAjqHANwIaMUmYjcYzF3aSRStcgNLfQ==
-X-Received: by 2002:a05:620a:85e:: with SMTP id u30mr1252388qku.427.1616015939099;
-        Wed, 17 Mar 2021 14:18:59 -0700 (PDT)
-Received: from xz-x1 ([142.126.89.138])
-        by smtp.gmail.com with ESMTPSA id h8sm146847qkk.116.2021.03.17.14.18.57
+        bh=ZCl7wm+rg+7YdxDRvddMtggI/CCto6o7F3c4jWSDx1s=;
+        b=B+sz3Aw85p7gL4oM74v0409AoDBdY/Ppbra0s13xEJW+HrF2WfS3Y+kwiXs9OBdUL0
+         sMR4p/Z8L2slCQw0yjpqRjZy7lKeSZkg95MHUkpG+ObPnvyvvHapqu+uILcv9nxxgI6B
+         b22ksfK32/byrCWJD3oipqZtTZgWnXq3wOTdX4l9GFI0RDXpk4LrQeCXXgH54ab8amD0
+         A1PU8ioJPscOdcROXJbDBDQmU3Ra4LyjA2VQkP47AIUdc9jUCdjnUcdlE3LKupZS8tH0
+         Lck6S13tyo1vnZAlQMPXar1ugIHd72RqMr9YHGIDSBS+lFvjRm9WIwciqvNcx/tH8Y7X
+         c05A==
+X-Gm-Message-State: AOAM530+DUBq4o8BMIRFe+5iJ25qq/Idk10+2J55tKhpH7ciMlEjg7w2
+        C+YLIimr1CyURym+GCTr/DOJ0Q==
+X-Google-Smtp-Source: ABdhPJyujNquT6pOn2lBA3SU/ja5oES6AA9+IQBQdZCbEmuJ8JH7+Y+2X0MY/+6PYQs893ANp2QqOQ==
+X-Received: by 2002:a17:90a:db51:: with SMTP id u17mr788836pjx.194.1616015974590;
+        Wed, 17 Mar 2021 14:19:34 -0700 (PDT)
+Received: from google.com ([2620:15c:f:10:e113:95c2:2d1:e304])
+        by smtp.gmail.com with ESMTPSA id iq6sm59012pjb.31.2021.03.17.14.19.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 14:18:58 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 17:18:57 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Brian Geffon <bgeffon@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Sonny Rao <sonnyrao@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Dmitry Safonov <dima@arista.com>
-Subject: Re: [PATCH v2 1/2] mm: Allow non-VM_DONTEXPAND and VM_PFNMAP
- mappings with MREMAP_DONTUNMAP
-Message-ID: <20210317211857.GN395976@xz-x1>
-References: <20210303175235.3308220-1-bgeffon@google.com>
- <20210317191334.564944-1-bgeffon@google.com>
- <20210317204015.GM395976@xz-x1>
- <CADyq12z6vQ0qHs14aVOFgqfn9pvFak-vwEVmLTObMQ1exsOM+g@mail.gmail.com>
+        Wed, 17 Mar 2021 14:19:33 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 14:19:27 -0700
+From:   Sean Christopherson <seanjc@google.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Joerg Roedel <joro@8bytes.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Peter Gonda <pgonda@google.com>
+Subject: Re: [PATCH] x86/cpu/AMD: Adjust x86_phys_bits to account for reduced
+ PA in SEV-* guests
+Message-ID: <YFJyX/MludiiS+dN@google.com>
+References: <20210317183243.2904919-1-seanjc@google.com>
+ <20210317191132.GD25069@zn.tnic>
+ <YFJbzIrGLXu2UsFv@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CADyq12z6vQ0qHs14aVOFgqfn9pvFak-vwEVmLTObMQ1exsOM+g@mail.gmail.com>
+In-Reply-To: <YFJbzIrGLXu2UsFv@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 04:44:25PM -0400, Brian Geffon wrote:
-> Hi Peter,
+On Wed, Mar 17, 2021, Sean Christopherson wrote:
+> On Wed, Mar 17, 2021, Borislav Petkov wrote:
+> > IOW, you have c_bit so your valid address space is [0 .. c_bit-1] no?
+> 
+> I haven't found anything in the GHCB that dictates that MAXPHYADDR == C_BIT-1,
+> or more specifically that MAXPHYADDR == C_BIT - PhysAddrReduction.  E.g. AFAICT,
+> a VMM could do C_BIT=47, MAXPHYADDR=36, PhysAddrReduction=0, and that would be
+> allowed by the GHCB.
+> 
+> Forcing "c->x86_phys_bits = c_bit - 1" doesn't seem like it would break anything,
+> but it's also technically wrong.
 
-Hi, Brian,
-
-> Thank you as always for taking a look. This change relies on the
-> existing check in vma_to_resize on line 686:
-> https://elixir.bootlin.com/linux/v5.12-rc3/source/mm/mremap.c#L686
-> which returns -EFAULT when the vma is VM_DONTEXPAND or VM_PFNMAP.
-
-Do you mean line 676?
-
-https://elixir.bootlin.com/linux/v5.12-rc3/source/mm/mremap.c#L676
-
-I'm not sure whether it'll work for MREMAP_DONTUNMAP, since IIUC
-MREMAP_DONTUNMAP only works for the remap case with no size change, however in
-that case in vma_to_resize() we'll bail out even earlier than line 676 when
-checking against the size:
-
-https://elixir.bootlin.com/linux/v5.12-rc3/source/mm/mremap.c#L667
-
-So IIUC we'll still need the change as Hugh suggested previously.
-
-Thanks,
-
--- 
-Peter Xu
-
+On the other hand, "C_BIT=47, MAXPHYADDR=36, PhysAddrReduction=0" would mean the
+C-bit is an illegal PA bit from the guest's perspective.  That's rather
+nonsensical, but also not technically disallowed by the APM or GHCB specs.
