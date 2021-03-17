@@ -2,152 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8584333EC16
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA55E33EC1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbhCQJA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39894 "EHLO
+        id S229769AbhCQJBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbhCQJAD (ORCPT
+        with ESMTP id S229741AbhCQJBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:00:03 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C5CC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:00:03 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id o16so978361wrn.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:00:02 -0700 (PDT)
+        Wed, 17 Mar 2021 05:01:19 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A64C06174A;
+        Wed, 17 Mar 2021 02:01:19 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id x10so38115474qkm.8;
+        Wed, 17 Mar 2021 02:01:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NVFDyKO2ygUhA+HtmUiSLptg/TxB303zHN8TrRH0yhE=;
-        b=or4XyHJGYy7z/dShZG1PvqNQ3+mrCRPDpPdx3PI6+1HwU8DEjPF4JQ3oy1zyni9pND
-         +3mwGjlcdWHO6loLexzfwiDwlYaMrZ+Mat11LPLoJzLks0dNZDeVznd3o9Bkh22yAdxx
-         aMAShraWmd/P7VcYr5ttJ5A1V0dgI7FmJsZjcsPD91Y2lyaioIkw3downPUsGLClM5aE
-         bJk5cIPKAKbr3oI/YbZMh43PxIIf55zSoYn7FR3tkQ1vit7fyCDDmv1xHjvuoIGVV3Ok
-         ZI5iNHKZQCuIiM7FKPo1g+jlfDUQ3SzWXk5/fUba8z2cTLeASOVi8vFa11WHyj2w8TI/
-         lV1g==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OOGalcDRWwdkAJXAlYfO7jnsNJIQo9l/xYUGpYBQdO4=;
+        b=GRfvE3UKtmfM7Crem5G2ZbN0Kl6XApuimBKwVqNXcaChLjetVEav/7YuuovCBZJkjR
+         GIsNrytiGg9jZU9ANfpqq2UKbNQi+aGI6wjjMekldVsWUwpSTraxtxFLqsEwHIOJP9xy
+         5bDS5EtT3KM1I5VBlo/WVZo2hn4fynC3Zb+iJZNljGHMdOnpjVZ51sXprPvSqa0SRZl5
+         khlvPs4DBVvMKxCtgSQIAdctS/4qEGA1dCgRXmDtxgJpFs2sB4Am0jlhHVElK1LThjhz
+         I3/zy2R5GXww72vAqBukJHmdbP8vUzpTxfPyVbIA4c2g1NNQNyxfGRD16TWjWynbyHtH
+         +SYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NVFDyKO2ygUhA+HtmUiSLptg/TxB303zHN8TrRH0yhE=;
-        b=PKjwLc/IzNA/RcIUtDU/a3TtmXffsGITbrFHVqUDG5JW7MXV6JJiRvw/gdFsli+LyQ
-         kya2w3npEKuilHL2bWTIyMqpOfT8NqAIV1MTaI1VDh2OIYCGzIwpK4srmIp/Sggjez/n
-         Ii70bOoTOI9hdYJmeze2k0iSjh7z0rJSthTFyBcxDJ9vYW0oBvh9JKYgQ/+2DHK63ld6
-         USjyrZzC0lKt27I1UGgiY0omTZeej4JS9LvoAye02Sa1/9lJcquJ57MgiQwOLGq1gejA
-         etejtYmrmUyLZeVRcnpN6ZRLfzIYq27MzxOua9wUgXnCXRL4ZUmoYB418WSOHTjwOJGp
-         E5Ug==
-X-Gm-Message-State: AOAM533m1yv0XrgRW6MAqkiDVocs3Nu9pE3L0BpoB4NsEzpmosAT1JHY
-        N+VZ41w/EcDTj4o+9KVZx+ecNA==
-X-Google-Smtp-Source: ABdhPJyFsp2Dg+7R5QEB0wMODNdEp2hrkl7dZYkRMuhX4iedkaQnZgEMAu9IeLIWguFwdF0mzGxzDQ==
-X-Received: by 2002:a5d:4f0e:: with SMTP id c14mr3221240wru.78.1615971601574;
-        Wed, 17 Mar 2021 02:00:01 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id l4sm24505097wrt.60.2021.03.17.01.59.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 17 Mar 2021 02:00:00 -0700 (PDT)
-Subject: Re: [PATCH] dt-bindings: Drop type references on common properties
-To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mark Brown <broonie@kernel.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Odelu Kukatla <okukatla@codeaurora.org>,
-        Alex Elder <elder@kernel.org>, Suman Anna <s-anna@ti.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-usb@vger.kernel.org
-References: <20210316194858.3527845-1-robh@kernel.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <265c3486-2c85-5c63-e1b5-9b88eaddbb14@linaro.org>
-Date:   Wed, 17 Mar 2021 08:59:59 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        bh=OOGalcDRWwdkAJXAlYfO7jnsNJIQo9l/xYUGpYBQdO4=;
+        b=Artl6IdcZtui5IkOALM7qCbZ/aSi7uNLmXP7tFuf4JJURx75nJCMIxYOCFxLqTvMqq
+         Rbhu3Fjdo4TJ/XUuK68POV7WcL6bOhMnufJvqst1wGTPczRIcprMgb7rnZbIOtmOcPQk
+         VsCRbl0Fe5vh8tJoNhKqUOq+BEDlojROZMNF5W92aWr78+aa257WH+wwAsrXIUx4qOpk
+         OuqqtW3mCcXy1iFo5Mb/JA64X+JymQi5KpUChpWDCUZLJKOvSx/ubr6I7r2HIK41WJOi
+         1Q0rUaB3Oi3ANZGf/IvjFY/tJQQIiXAxFPa9mMFqTg5EnMEyu9biyANVm78GHcoq5XlL
+         QFvw==
+X-Gm-Message-State: AOAM531emR3KcyNknEknqk0yD7iWYyy42vFGgo5wc4xtrEePUZFnjWYe
+        xhPuUOyU0y7a7jS8Yn3NA/I=
+X-Google-Smtp-Source: ABdhPJzW/jbru4vvcnwvb6kLLw2KTUVMy2V0GQcN9LTEWJpJJWe3emkAApbrVZcAD5V136dRWvGZvQ==
+X-Received: by 2002:a37:a38e:: with SMTP id m136mr3627415qke.250.1615971678602;
+        Wed, 17 Mar 2021 02:01:18 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.48])
+        by smtp.gmail.com with ESMTPSA id e190sm17004163qkd.122.2021.03.17.02.01.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 02:01:18 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     mostrows@earthlink.net, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] net: ppp: Mundane typo fixes in the file pppoe.c
+Date:   Wed, 17 Mar 2021 14:30:59 +0530
+Message-Id: <20210317090059.4145144-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210316194858.3527845-1-robh@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+s/procesing/processing/
+s/comparations/comparisons/
 
-On 16/03/2021 19:48, Rob Herring wrote:
-> Users of common properties shouldn't have a type definition as the
-> common schemas already have one. Drop all the unnecessary type
-> references in the tree.
-> 
-> A meta-schema update to catch these is pending.
-> 
-> Cc: Nicolas Saenz Julienne<nsaenzjulienne@suse.de>
-> Cc: Maxime Ripard<mripard@kernel.org>
-> Cc: Linus Walleij<linus.walleij@linaro.org>
-> Cc: Bartosz Golaszewski<bgolaszewski@baylibre.com>
-> Cc: Bjorn Andersson<bjorn.andersson@linaro.org>
-> Cc: Krzysztof Kozlowski<krzk@kernel.org>
-> Cc: Marc Kleine-Budde<mkl@pengutronix.de>
-> Cc: "David S. Miller"<davem@davemloft.net>
-> Cc: Jakub Kicinski<kuba@kernel.org>
-> Cc: Srinivas Kandagatla<srinivas.kandagatla@linaro.org>
-> Cc: Ohad Ben-Cohen<ohad@wizery.com>
-> Cc: Mark Brown<broonie@kernel.org>
-> Cc: Cheng-Yi Chiang<cychiang@chromium.org>
-> Cc: Benson Leung<bleung@chromium.org>
-> Cc: Zhang Rui<rui.zhang@intel.com>
-> Cc: Daniel Lezcano<daniel.lezcano@linaro.org>
-> Cc: Greg Kroah-Hartman<gregkh@linuxfoundation.org>
-> Cc: Stefan Wahren<wahrenst@gmx.net>
-> Cc: Masahiro Yamada<yamada.masahiro@socionext.com>
-> Cc: Odelu Kukatla<okukatla@codeaurora.org>
-> Cc: Alex Elder<elder@kernel.org>
-> Cc: Suman Anna<s-anna@ti.com>
-> Cc: Kuninori Morimoto<kuninori.morimoto.gx@renesas.com>
-> Cc: Dmitry Baryshkov<dmitry.baryshkov@linaro.org>
-> Cc:linux-gpio@vger.kernel.org
-> Cc:linux-pm@vger.kernel.org
-> Cc:linux-can@vger.kernel.org
-> Cc:netdev@vger.kernel.org
-> Cc:linux-remoteproc@vger.kernel.org
-> Cc:alsa-devel@alsa-project.org
-> Cc:linux-usb@vger.kernel.org
-> Signed-off-by: Rob Herring<robh@kernel.org>
-> ---
->   .../bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml       | 5 +----
->   Documentation/devicetree/bindings/arm/cpus.yaml              | 2 --
->   .../bindings/display/allwinner,sun4i-a10-tcon.yaml           | 1 -
->   .../devicetree/bindings/gpio/socionext,uniphier-gpio.yaml    | 3 +--
->   .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml      | 1 -
->   .../devicetree/bindings/interconnect/qcom,rpmh.yaml          | 1 -
->   .../bindings/memory-controllers/nvidia,tegra210-emc.yaml     | 2 +-
->   Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml   | 1 -
->   Documentation/devicetree/bindings/net/qcom,ipa.yaml          | 1 -
->   Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml  | 2 --
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/net/ppp/pppoe.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-For nvmem parts,
+diff --git a/drivers/net/ppp/pppoe.c b/drivers/net/ppp/pppoe.c
+index d7f50b835050..9dc7f4b93d51 100644
+--- a/drivers/net/ppp/pppoe.c
++++ b/drivers/net/ppp/pppoe.c
+@@ -25,7 +25,7 @@
+  *		in pppoe_release.
+  * 051000 :	Initialization cleanup.
+  * 111100 :	Fix recvmsg.
+- * 050101 :	Fix PADT procesing.
++ * 050101 :	Fix PADT processing.
+  * 140501 :	Use pppoe_rcv_core to handle all backlog. (Alexey)
+  * 170701 :	Do not lock_sock with rwlock held. (DaveM)
+  *		Ignore discovery frames if user has socket
+@@ -96,7 +96,7 @@ struct pppoe_net {
+ 	 * we could use _single_ hash table for all
+ 	 * nets by injecting net id into the hash but
+ 	 * it would increase hash chains and add
+-	 * a few additional math comparations messy
++	 * a few additional math comparisons messy
+ 	 * as well, moreover in case of SMP less locking
+ 	 * controversy here
+ 	 */
+--
+2.30.2
 
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
---srini
