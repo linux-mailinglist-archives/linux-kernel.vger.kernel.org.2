@@ -2,96 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBF833F230
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:04:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B113B33F236
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbhCQOEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:04:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231750AbhCQODe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:03:34 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5743BC06174A;
-        Wed, 17 Mar 2021 07:03:34 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id h82so40555446ybc.13;
-        Wed, 17 Mar 2021 07:03:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6OaFjyFWgg4m3b9LuLpqb/rP6tn5J4G93CnXJEjgfLQ=;
-        b=i2DpCpQM7JeSSiS/pjMxgtMmRWaqyEUnqOkpir3k6hjfU9Oor7nDorySG4w47CoCGd
-         HaiLgTyqU0kC8zA/M2kZQM1sH1E1LbWud/WbA8om7HWvSV+BUakqiOwPUeTLcoqCLPGf
-         JedwFXQpUMM2xc1N014Ahaw2YTMoAf2cj3FsgDsCKv3ZOzvpAcW8c+eMj3EENF375f8x
-         11rayPkdrSyY5YcS7+D3f2mNmy0iI8qzZ8PRIa+NRFehp669D1SyF0qYVVKeD+gzVYK8
-         LIsktzMZcnA20N+P0QIhTw/wSHTpN81axxWdN3YKq6VrI5qwWqPf0cj92aOsspj4iCYa
-         aQLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6OaFjyFWgg4m3b9LuLpqb/rP6tn5J4G93CnXJEjgfLQ=;
-        b=bEUxvKmIPKCyxJ/STwqn0nT8JeKSy63asIyOyju2QZvTR+yvanfV/cFC9wNYb3hz0V
-         t/b+nT7Ag8aJ/pAjonS87XhLsRUaeihZt+QkC9CSQ0f+vg8oLMEF0ZkOtGqRgov63kqr
-         2OamdQbpY0cB+Fyux7SIb8iJg1AKVHfz6UVz0dB0iqLBpVL+eRP00fgHZEycmW1Pf4/z
-         3+Y16vvjfux3pRzjxFHlBsphjI3k572SXs52haRBXruQ1T/FbMtGYgDXXr/Io5hWifOo
-         Uk6wZYkPiDJnssYbxrGThiHGIksmZwDpMIVplGAZVCTTmGYZsojlkNlTio8NVCUd/RFf
-         MY3g==
-X-Gm-Message-State: AOAM531HNTbVWb29pXxB62HSRRm7MvH3l56ACL8LHNBOrIAFh963uPdb
-        soVcscHLQEjJqILnH9lyHOFq6c/gT9HjilUki5i/1OJ6iZHnmg==
-X-Google-Smtp-Source: ABdhPJxYwg2QBX1owqFPtrq2F/9pLRU/hzhKTzIOR3dpydN55snYMjquLkj00WQN+8aJP9sdN02xLmqhMTlZQxWC8Dc=
-X-Received: by 2002:a25:dad4:: with SMTP id n203mr4746316ybf.233.1615989813490;
- Wed, 17 Mar 2021 07:03:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <4d488195-7281-9238-b30d-9f89a6100fb9@csgroup.eu> <20210317015210.33641-1-wangkefeng.wang@huawei.com>
-In-Reply-To: <20210317015210.33641-1-wangkefeng.wang@huawei.com>
-From:   Anatoly Pugachev <matorola@gmail.com>
-Date:   Wed, 17 Mar 2021 17:03:22 +0300
-Message-ID: <CADxRZqwFokuZrhA6GFr=whM3s7BqZpzo8yq=TW6YEr=eeEUH0A@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: Move mem_init_print_info() into mm_init()
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Guo Ren <guoren@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+        id S231536AbhCQOFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:05:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231735AbhCQOEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 10:04:39 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 12BC364F69;
+        Wed, 17 Mar 2021 14:04:39 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lMWmq-002DkG-OQ; Wed, 17 Mar 2021 14:04:36 +0000
+Date:   Wed, 17 Mar 2021 14:04:36 +0000
+Message-ID: <87blbhj2q3.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        LAKML <linux-arm-kernel@lists.infradead.org>,
+        KVM <kvm@vger.kernel.org>
+Subject: Re: [PATCH v3 1/1] irqchip/gic-v4.1: Disable vSGI upon (GIC CPUIF < v4.1) detection
+In-Reply-To: <20210317100719.3331-2-lorenzo.pieralisi@arm.com>
+References: <20210302102744.12692-1-lorenzo.pieralisi@arm.com>
+        <20210317100719.3331-1-lorenzo.pieralisi@arm.com>
+        <20210317100719.3331-2-lorenzo.pieralisi@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: lorenzo.pieralisi@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 4:51 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->
-> mem_init_print_info() is called in mem_init() on each architecture,
-> and pass NULL argument, so using void argument and move it into mm_init().
->
-> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
-> v2:
-> - Cleanup 'str' line suggested by Christophe and ACK
+Hi Lorenzo,
 
-applied patch (5.12.0-rc3-00020-g1df27313f50a-dirty) over linus.git
-and tested boot on a sparc64 virtual machine (ldom) - boots.
+Wed, 17 Mar 2021 10:07:19 +0000,
+Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> wrote:
+> 
+> GIC CPU interfaces versions predating GIC v4.1 were not built to
+> accommodate vINTID within the vSGI range; as reported in the GIC
+> specifications (8.2 "Changes to the CPU interface"), it is
+> CONSTRAINED UNPREDICTABLE to deliver a vSGI to a PE with
+> ID_AA64PFR0_EL1.GIC < b0011.
+> 
+> Check the GIC CPUIF version by reading the SYS_ID_AA64_PFR0_EL1.
+> 
+> Disable vSGIs if a CPUIF version < 4.1 is detected to prevent using
+> vSGIs on systems where they may misbehave.
+> 
+> Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+
+Does it need to go in as a fix? or can it just be pushed into 5.13?
+Given that there is no such HW in the wild just yet, I'm inclined to
+do the latter...
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
