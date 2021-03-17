@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E22FC33E458
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 810C033E448
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232341AbhCQA7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:59:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34890 "EHLO mail.kernel.org"
+        id S229871AbhCQA7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:59:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231446AbhCQA5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:57:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6937D64F9F;
-        Wed, 17 Mar 2021 00:57:04 +0000 (UTC)
+        id S230051AbhCQA5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 20:57:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2442A64FA8;
+        Wed, 17 Mar 2021 00:57:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615942625;
-        bh=8lIR2o4v18WR/2YlHYIn96RC4k9ZocX631GO7STRiBc=;
+        s=k20201202; t=1615942628;
+        bh=F2Am5AgcwvHFfovPrzkmneKKrUDiOXkJDhQ6FIxVmD8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CD9kiTehxE2y44ygNtYNxfOzjTYukk4P0IlLAz6S8z8Sso9MHKWR56Q+iVNujTOA+
-         qmxTinHsNk1+m2A5PcCbug5+bSjYluinwjLjIylxLCASuf2iiUKN5evkH7VxKODTQZ
-         hQXug5sJfC08L3dmEu3MCKg8vJYf1wAcG2Movy9VBEw/J3dOgQdQ6MaS8vSnlBn5S5
-         PIZvMAlsEDZ0DQVF4ChoLfIIOghKE7uFvi5612KrbOvAq3oCL3lJ59AXX2poqyjJ2g
-         iHZWSEmYOEkm1+5w8zar/cpRuRSEXhMV4m/O4NeACyPgXSXQHZh2KCgcpfT8u3lzwZ
-         UfsF86zGlVc9w==
+        b=UxhPKLnpIpGo4X6W/13KZ3QL4JX0lkxoqgloMPXoiA0H64Pvr4S1aX82Wr30q2La4
+         O41J1uM3yAe7dE8thfavHUWwhgt8PB7HcYVV/Te/DFpqnrdzT56UFRck92+G4Fh6dS
+         NNjcNW002J/JB+nvulxj7apKgaIhIJ1xKSFUQ8xRH0jHJxMYbz4fZSH4IbNQo25U6q
+         A3RRfamAx0ZnnJEm1Foq6HKHMd61k5Lu/rLYmZsHkgxEGkcTgxfOtQQ4Alrw2efVXq
+         VcsO4tMOr2SoTf60vIPB0X8p7yCrRJRr2nueUTaTu67TIyIEUVG77mZaptVsXa0G7T
+         RtdHXQC0Mef7g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mark Pearson <markpearson@lenovo.com>,
-        Philipp Leskovitz <philipp.leskovitz@secunet.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
-        alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.10 08/54] ALSA: hda: ignore invalid NHLT table
-Date:   Tue, 16 Mar 2021 20:56:07 -0400
-Message-Id: <20210317005654.724862-8-sashal@kernel.org>
+Cc:     Nitin Rawat <nitirawa@codeaurora.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        Can Guo <cang@codeaurora.org>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 10/54] scsi: ufs: ufs-qcom: Disable interrupt in reset path
+Date:   Tue, 16 Mar 2021 20:56:09 -0400
+Message-Id: <20210317005654.724862-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210317005654.724862-1-sashal@kernel.org>
 References: <20210317005654.724862-1-sashal@kernel.org>
@@ -44,48 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Pearson <markpearson@lenovo.com>
+From: Nitin Rawat <nitirawa@codeaurora.org>
 
-[ Upstream commit a14a6219996ee6f6e858d83b11affc7907633687 ]
+[ Upstream commit 4a791574a0ccf36eb3a0a46fbd71d2768df3eef9 ]
 
-On some Lenovo systems if the microphone is disabled in the BIOS
-only the NHLT table header is created, with no data. This means
-the endpoints field is not correctly set to zero - leading to an
-unintialised variable and hence invalid descriptors are parsed
-leading to page faults.
+Disable interrupt in reset path to flush pending IRQ handler in order to
+avoid possible NoC issues.
 
-The Lenovo firmware team is addressing this, but adding a check
-preventing invalid tables being parsed is worthwhile.
-
-Tested on a Lenovo T14.
-
-Tested-by: Philipp Leskovitz <philipp.leskovitz@secunet.com>
-Reported-by: Philipp Leskovitz <philipp.leskovitz@secunet.com>
-Signed-off-by: Mark Pearson <markpearson@lenovo.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210302141003.7342-1-markpearson@lenovo.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/1614145010-36079-3-git-send-email-cang@codeaurora.org
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
+Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
+Signed-off-by: Can Guo <cang@codeaurora.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/intel-nhlt.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/scsi/ufs/ufs-qcom.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
-index d053beccfaec..e2237239d922 100644
---- a/sound/hda/intel-nhlt.c
-+++ b/sound/hda/intel-nhlt.c
-@@ -39,6 +39,11 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
- 	if (!nhlt)
- 		return 0;
+diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+index a244c8ae1b4e..20182e39cb28 100644
+--- a/drivers/scsi/ufs/ufs-qcom.c
++++ b/drivers/scsi/ufs/ufs-qcom.c
+@@ -253,12 +253,17 @@ static int ufs_qcom_host_reset(struct ufs_hba *hba)
+ {
+ 	int ret = 0;
+ 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
++	bool reenable_intr = false;
  
-+	if (nhlt->header.length <= sizeof(struct acpi_table_header)) {
-+		dev_warn(dev, "Invalid DMIC description table\n");
-+		return 0;
+ 	if (!host->core_reset) {
+ 		dev_warn(hba->dev, "%s: reset control not set\n", __func__);
+ 		goto out;
+ 	}
+ 
++	reenable_intr = hba->is_irq_enabled;
++	disable_irq(hba->irq);
++	hba->is_irq_enabled = false;
++
+ 	ret = reset_control_assert(host->core_reset);
+ 	if (ret) {
+ 		dev_err(hba->dev, "%s: core_reset assert failed, err = %d\n",
+@@ -280,6 +285,11 @@ static int ufs_qcom_host_reset(struct ufs_hba *hba)
+ 
+ 	usleep_range(1000, 1100);
+ 
++	if (reenable_intr) {
++		enable_irq(hba->irq);
++		hba->is_irq_enabled = true;
 +	}
 +
- 	for (j = 0, epnt = nhlt->desc; j < nhlt->endpoint_count; j++,
- 	     epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length)) {
- 
+ out:
+ 	return ret;
+ }
 -- 
 2.30.1
 
