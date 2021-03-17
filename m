@@ -2,117 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD7B33FBC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 00:18:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F0233FBCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 00:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229472AbhCQXRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 19:17:42 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15154 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229494AbhCQXRl (ORCPT
+        id S229681AbhCQX0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 19:26:38 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:50145 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229508AbhCQX0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 19:17:41 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12HN40hK113226;
-        Wed, 17 Mar 2021 19:17:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=HwTFj9YWtjFoFZ5fUL/TzRKtrvD01QdclZb5heatb5E=;
- b=DGiOz2pytOubrRitLQ75yfB0/tSjs0bmwTqkY93t201E+cL/Y9PYqx3B/fdwoCowv2dX
- zIaTyQosFjzsgt/GyNPqqfttFBBchUNP+8x8HEqeglHbXFitUrui0V6I9pQK6iYixlZb
- 4U5YryPLUo6OfTu1LoDqxt42uVtBu3TjxEmITg52YN9pi3Xws+cIkrhPNp2JQzL8avD1
- zK/7LmQwRXW4hOX312uo6NSj05zy/HsKqXIf6fQfjSEgJiM3UUWONiVM5oM50LlyYF0u
- tq1LZrPPxQ0cHiywrPg12Kid2CJTHw2J6zULOzC1dAsmiKe7KAOuQZOug0YEG5+uX6oQ hg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37bnrehtma-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Mar 2021 19:17:38 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12HN5Hii120950;
-        Wed, 17 Mar 2021 19:17:38 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37bnrehtkj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Mar 2021 19:17:37 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12HNDI53001296;
-        Wed, 17 Mar 2021 23:17:35 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma05fra.de.ibm.com with ESMTP id 378n18a7rb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Mar 2021 23:17:35 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12HNHWpF39846396
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Mar 2021 23:17:32 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A7B52A4051;
-        Wed, 17 Mar 2021 23:17:32 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C26CBA4040;
-        Wed, 17 Mar 2021 23:17:31 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.80.101])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed, 17 Mar 2021 23:17:31 +0000 (GMT)
-Date:   Thu, 18 Mar 2021 00:17:29 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, stable@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
-        pbonzini@redhat.com, alex.williamson@redhat.com,
-        pasic@linux.vnet.ibm.com
-Subject: Re: [PATCH v4 1/1] s390/vfio-ap: fix circular lockdep when
- setting/clearing crypto masks
-Message-ID: <20210318001729.06cdb8d6.pasic@linux.ibm.com>
-In-Reply-To: <20210310150559.8956-2-akrowiak@linux.ibm.com>
-References: <20210310150559.8956-1-akrowiak@linux.ibm.com>
-        <20210310150559.8956-2-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 17 Mar 2021 19:26:33 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1lMfYb-000Ghx-1Z; Thu, 18 Mar 2021 00:26:29 +0100
+Received: from p5b13a966.dip0.t-ipconnect.de ([91.19.169.102] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lMfYa-000U7D-RT; Thu, 18 Mar 2021 00:26:29 +0100
+Subject: Re: [PATCH 0/1] sched/topology: NUMA distance deduplication
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        debian-ia64 <debian-ia64@lists.debian.org>
+References: <255d6b5d-194e-eb0e-ecdd-97477a534441@physik.fu-berlin.de>
+ <8735wtr2ro.mognet@arm.com>
+ <cf4d7277-54a0-8bc7-60fb-9b2f6befb511@physik.fu-berlin.de>
+ <87zgz1pmx4.mognet@arm.com> <87wnu5pkib.mognet@arm.com>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <132937a8-0514-5a62-2897-569187e355a7@physik.fu-berlin.de>
+Date:   Thu, 18 Mar 2021 00:26:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-17_13:2021-03-17,2021-03-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- lowpriorityscore=0 adultscore=0 bulkscore=0 suspectscore=0 phishscore=0
- mlxlogscore=910 clxscore=1015 spamscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103170163
+In-Reply-To: <87wnu5pkib.mognet@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.169.102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 10:05:59 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+Hi Valentin!
 
-> -		ret = vfio_ap_mdev_reset_queues(mdev);
-> +		matrix_mdev = mdev_get_drvdata(mdev);
+On 3/17/21 9:56 PM, Valentin Schneider wrote:
+> On 17/03/21 20:04, Valentin Schneider wrote:
+>> Technically it *is* coping with it, it's just dumping the entire NUMA
+>> distance matrix in the process... Let me see if I can't figure out why your
+>> system doesn't end up with nr_node_ids=1.
+>>
+> 
+> Does the below
+> a) compile
 
-Is it guaranteed that matrix_mdev can't be NULL here? If yes, please
-remind me of the mechanism that ensures this.
+Yes.
 
-> +
-> +		/*
-> +		 * If the KVM pointer is in the process of being set, wait until
-> +		 * the process has completed.
-> +		 */
-> +		wait_event_cmd(matrix_mdev->wait_for_kvm,
-> +			       matrix_mdev->kvm_busy == false,
-> +			       mutex_unlock(&matrix_dev->lock),
-> +			       mutex_lock(&matrix_dev->lock));
-> +
-> +		if (matrix_mdev->kvm)
-> +			ret = vfio_ap_mdev_reset_queues(mdev);
-> +		else
-> +			ret = -ENODEV;
+> b) do anything?
 
-Didn't we agree to make the call to vfio_ap_mdev_reset_queues()
-unconditional again (for reference please take look at 
-Message-ID: <64afa72c-2d6a-2ca1-e576-34e15fa579ed@linux.ibm.com>)?
+It fixes the problem for me.
 
-Regards,
-Halil
+Will test Sergei's patch now.
+
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
