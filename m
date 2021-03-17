@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E972933ED67
+	by mail.lfdr.de (Postfix) with ESMTP id 52C0433ED65
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhCQJs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbhCQJsw (ORCPT
+        id S229905AbhCQJs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:48:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20454 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229903AbhCQJsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:48:52 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98A7C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:48:40 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id t5so1064639qvs.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:48:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LXFx5mVxBa1Pa0shsdjl9mOOnBsXD49A5V8O38pzRhE=;
-        b=e0az2cDlbWxEb19vuubACALjyPkGPpdIEWAVYgBE9WVOeo7U0KMNink2j2z/6KVZnO
-         oTq9AZn8SbJSN3Qi7OmuM0y2YLnU4d1ML8rNdRFnEm+oEYg3fGzPGCahPl0KaCwl2I2B
-         h+fDeA6QuueTTUEcL4Xe31M8yyFktLQNVJEVBJfcXXF1tLJcrDqUUL3tm8+T10O/KhX/
-         pVF9siI5ycxB1iLiaIqTF/hhiFddMCjYTjUWziO8VRVFig6B4eooQ3GB5zxSCNQa9Hb5
-         X5Wzaqz9HX3gJCLTt6kMM1g9/ph/3jUZTf6gSYSS0n0lWjE6DdT1jg0CkQBCVdZme63A
-         RxFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LXFx5mVxBa1Pa0shsdjl9mOOnBsXD49A5V8O38pzRhE=;
-        b=SDCsWvdqVzq4vsJEEHfzZyEr+8PMkxecDrUyAMxns6LW/9cYpT+VWH0pQyzaQc2xax
-         O5w/amDnuzWPo/8eDhcpfMArlKn+bNuDnZ/e3uYcKGN1Irjq7m5GX9DieNVDpyqBlObJ
-         2dlV23Wb9Hyc8HMfJGp1HKN27HVmcuvdk9jQJkJNM6TGA9baDvrlnuw20rFsw7OM2Laq
-         DSg7sLS/ioAX6xo+l3B6NmclwdgezsHAzbogpGMmbprKShe/OkvghKsfhlYMNGtNYMv+
-         lDpaT5PyRtGisJXMKtHcmERe3EUacK74Bm90iYmQlIunPoVrwvKQ+Il+T0TA7Zx8qU+L
-         9zAg==
-X-Gm-Message-State: AOAM533BLuKodwa0ROmdKgWKKZh5mkwlYhs6yPzIJ26n0pgJudmXGtWb
-        MvbRT3I3JBfowPjWQ+c4jiAl+0e3kPaDq3tn
-X-Google-Smtp-Source: ABdhPJzTLnT3O4s+JR2v44hyKay3WgkWSYt20Io1o+Jqc7ZLbvZxqZcYqmrQTuYnoPTw8IaKmLA/nw==
-X-Received: by 2002:ad4:4c83:: with SMTP id bs3mr4458147qvb.41.1615974520100;
-        Wed, 17 Mar 2021 02:48:40 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.48])
-        by smtp.gmail.com with ESMTPSA id k28sm17537187qki.101.2021.03.17.02.48.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 02:48:39 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     tytso@mit.edu, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] char: Fix a typo in the file random.c
-Date:   Wed, 17 Mar 2021 15:18:22 +0530
-Message-Id: <20210317094822.1630276-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 17 Mar 2021 05:48:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615974518;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cy/a1Z/HUF5zY1QTMNBd7dixVMe1UxNpkW4BGe5sLnY=;
+        b=bY9lTsaFf0lRBs1jV5dBUnbtFQQ7IlGph5UyzWywWy4A0unkV+UVkWA/cWSHTX48qLqqOf
+        yQsf/uTHisiUV+fFSMPA24sHPK9WxN+OQ0sgXH+wks6coaSOonzw7aEouKjOns/Y7I1NwF
+        bVeW1XjjTKo39GOzZWsAjpln9lc6y1k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-280-o_sZjHjVPY2itaVRMayfqg-1; Wed, 17 Mar 2021 05:48:37 -0400
+X-MC-Unique: o_sZjHjVPY2itaVRMayfqg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 627FC1922023;
+        Wed, 17 Mar 2021 09:48:35 +0000 (UTC)
+Received: from [10.36.112.124] (ovpn-112-124.ams2.redhat.com [10.36.112.124])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0F472690F6;
+        Wed, 17 Mar 2021 09:48:32 +0000 (UTC)
+Subject: Re: [PATCH v4 0/4] Make alloc_contig_range handle Hugetlb pages
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+References: <20210310150853.13541-1-osalvador@suse.de>
+ <c7ba5bba-77fb-6c43-2067-2ebc83b014da@redhat.com>
+ <b04aaf5534f9ec0a40937e23a2500fdf@suse.de>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <01d2ee6a-f0aa-4580-b1f4-f0e8a2ded4f8@redhat.com>
+Date:   Wed, 17 Mar 2021 10:48:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <b04aaf5534f9ec0a40937e23a2500fdf@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 17.03.21 10:43, Oscar Salvador wrote:
+> On 2021-03-15 10:06, David Hildenbrand wrote:
+>> BTW, I stumbled yesterday over
+>>
+>> alloc_contig_pages()->pfn_range_valid_contig():
+>>
+>> 	if (page_count(page) > 0)
+>> 		rerurn false;
+>> 	if (PageHuge(page))
+>> 		return false;
+>>
+>> As used by memtrace and for gigantic pages. We can now
+>>
+>> a) Drop these check completely, as it's best-effort only and racy.
+>> alloc_contig_pages()/alloc_contig_range() will handle it properly.
+> 
+> I was preparing v5, and I wanted to be sure I understood you here.
+> 
+> Right you are that the in-use page check can be dropped, as those pages
+> can
+> be migrated away, and the Hugetlb page check can also be dropped since
+> isolate_migratepages_range is now capable of dealing with those kind of
+> pages.
+> 
+>> b) Similarly, check for gigantic pages and/or movability/migratability.
+> 
+> I lost you here.
+> 
+> isolate_or_dissolve_huge_page() already bails out on hugetlb-gigantic
+> pages.
+> 
+> Or do you mean to place an upfront check here? (hstate_is_gigantic())?
 
-s/progams/programs/
+Yes. But I prefer a) and keeping it simple here -- just doing basic 
+sanity checks (online, zone, PageReserved()) that are absolutely necessary.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/char/random.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 0fe9e200e4c8..afb0195e06f3 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -763,7 +763,7 @@ static DECLARE_WAIT_QUEUE_HEAD(crng_init_wait);
 
- #ifdef CONFIG_NUMA
- /*
-- * Hack to deal with crazy userspace progams when they are all trying
-+ * Hack to deal with crazy userspace programs when they are all trying
-  * to access /dev/urandom in parallel.  The programs are almost
-  * certainly doing something terribly wrong, but we'll work around
-  * their brain damage.
---
-2.30.2
+-- 
+Thanks,
+
+David / dhildenb
 
