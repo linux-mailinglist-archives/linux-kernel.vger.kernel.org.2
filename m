@@ -2,96 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2934B33F7BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:02:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A537233F7C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232716AbhCQSBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:01:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44528 "EHLO
+        id S232756AbhCQSCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:02:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232912AbhCQSBM (ORCPT
+        with ESMTP id S230308AbhCQSCU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:01:12 -0400
+        Wed, 17 Mar 2021 14:02:20 -0400
 Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CD5C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:01:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25718C06174A;
+        Wed, 17 Mar 2021 11:02:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
         Reply-To:Cc:Content-ID:Content-Description;
-        bh=Cr9fPafVtZmLkwhizdfsYcidk4N7PSIymYUeNb5Ej1U=; b=KNc68Q7thVlVC9mnMd/C7+9ehu
-        Kla/IaQ3jfjmklC0Ub/ridF+ohvETYDK1mlEpP4lmb+Mm2aBZ4I57F26EbANfvKObQefbTLbYwupL
-        agTG6j0r8gC1P7g78oTkc0S8jkkA2RbYzkjA1yeMg6cPf53tsENv7nTzz+KfosPKR7RPt2aPG+yq3
-        pq3C4LKzI5djQaQXz2lmnm9EGgt/h2BfS1vnsXZ/+rQS5ruN2BPf34HeKHSDOiIabvgq9KnVj/ROM
-        msrfWkTfnAFzR8QfSsxqElq9vy4R6a0a31Y4tEHOob262F88f9Z3bY3GIQSod0iZcxFVEmo8BhgBs
-        jQ2f3vug==;
+        bh=9lsHS9lOU27LyGTG7QJBu3yVy8h5bkH/PgY8pAOOR6k=; b=f4pi4tMaDfirLHGE08FIvAgRrr
+        emtuq8/Wn4S30m/LlkVScDaZjuS6e18BBe653aSuW19aCIasGjXIOS21WDVhFx5287m20ib43T3xL
+        0JhMHMUjY5whZQ/6HhuUy8oTP2bPTgHjWTs9w3y/jRxGT6ks6HitaR0boEEjd2eVudVzvX1PQOS2K
+        Ic7SXOoLv2omP2NCkHMfNlMcc5IZCgvJ11X9xy5Civg44+CmMqej/mdvVqJUUpOTurtZlvKHaqY6v
+        YJ42GMxeTJUWbnO427ZFaH9Km3JLKVECucn5zXLrZF6B0P2vG7jR72xq4aBjKdn/eQFFWyBBDUoJt
+        eIL6GPlA==;
 Received: from [2601:1c0:6280:3f0::9757]
         by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMaTl-001fjG-CS; Wed, 17 Mar 2021 18:01:09 +0000
-Subject: Re: [PATCH] kernel: cpu: resctrl: Minor typo fix in the file
- pseudo_lock.c
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linux-kernel@vger.kernel.org
-References: <20210317084016.3787380-1-unixbhaskar@gmail.com>
- <b29afbff-67f4-397b-e289-c3e21755fec0@intel.com>
+        id 1lMaUp-001fk0-4S; Wed, 17 Mar 2021 18:02:15 +0000
+Subject: Re: [PATCH] platform: mellanox: Typo fix in the file mlxbf-bootctl.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, andy@infradead.org,
+        dvhart@infradead.org, vadimp@nvidia.com,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210317095650.2036419-1-unixbhaskar@gmail.com>
 From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <99a7e1fc-0a05-9222-f913-b2d85141a08a@infradead.org>
-Date:   Wed, 17 Mar 2021 11:01:04 -0700
+Message-ID: <e7f14e71-87fe-3619-3d4b-fff47643c14e@infradead.org>
+Date:   Wed, 17 Mar 2021 11:02:12 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <b29afbff-67f4-397b-e289-c3e21755fec0@intel.com>
+In-Reply-To: <20210317095650.2036419-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 10:54 AM, Reinette Chatre wrote:
-> Hi Bhaskar,
+On 3/17/21 2:56 AM, Bhaskar Chowdhury wrote:
 > 
-> Thank you very much for catching this typo.
+> s/progamming/programming/
 > 
-> My feedback [1] to a previous patch from you applies here also. The prefix should be "x86/resctrl:" for contributions to this area.
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Bhaskar,
-Pretty much all of your patches need to have improved Subject: lines.
-The file name that is being modified should not be at the end of the Subject.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
+> ---
+>  drivers/platform/mellanox/mlxbf-bootctl.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> [1] https://lore.kernel.org/lkml/7e3a5c13-db5c-7399-2b80-f1284786ea77@intel.com/
-> 
-> On 3/17/2021 1:40 AM, Bhaskar Chowdhury wrote:
->>
->> s/derefence/dereference/
->>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->> ---
->>   arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
->> index e916646adc69..43990a882b36 100644
->> --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
->> +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
->> @@ -1307,7 +1307,7 @@ int rdtgroup_pseudo_lock_create(struct rdtgroup *rdtgrp)
->>            * If the thread does not get on the CPU for whatever
->>            * reason and the process which sets up the region is
->>            * interrupted then this will leave the thread in runnable
->> -         * state and once it gets on the CPU it will derefence
->> +         * state and once it gets on the CPU it will dereference
->>            * the cleared, but not freed, plr struct resulting in an
->>            * empty pseudo-locking loop.
->>            */
->> -- 
->> 2.30.2
->>
-> 
-> Reinette
+> diff --git a/drivers/platform/mellanox/mlxbf-bootctl.c b/drivers/platform/mellanox/mlxbf-bootctl.c
+> index 5d21c6adf1ab..1c7a288b59a5 100644
+> --- a/drivers/platform/mellanox/mlxbf-bootctl.c
+> +++ b/drivers/platform/mellanox/mlxbf-bootctl.c
+> @@ -208,7 +208,7 @@ static ssize_t secure_boot_fuse_state_show(struct device *dev,
+>  	 * 0011 = version 1, 0111 = version 2, 1111 = version 3). Upper 4 bits
+>  	 * are a thermometer code indicating key programming has completed for
+>  	 * key n (same encodings as the start bits). This allows for detection
+> -	 * of an interruption in the progamming process which has left the key
+> +	 * of an interruption in the programming process which has left the key
+>  	 * partially programmed (and thus invalid). The process is to burn the
+>  	 * eFuse for the new key start bit, burn the key eFuses, then burn the
+>  	 * eFuse for the new key complete bit.
+> --
 
 
 -- 
