@@ -2,72 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C68533EE85
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8180933EE60
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhCQKmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:42:24 -0400
-Received: from trem.minaslivre.org ([195.201.159.152]:37790 "EHLO
-        grilo.cascardo.info" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhCQKmR (ORCPT
+        id S229996AbhCQKfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:35:25 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14077 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229960AbhCQKe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:42:17 -0400
-X-Greylist: delayed 454 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Mar 2021 06:42:16 EDT
-Received: from siri.cascardo.eti.br (unknown [IPv6:2804:431:e7c5:4bc1:6a17:29ff:fe00:4f38])
-        by grilo.cascardo.info (Postfix) with ESMTPSA id A0B33200156;
-        Wed, 17 Mar 2021 10:34:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=cascardo.eti.br;
-        s=mail; t=1615977273;
-        bh=054+NtLT3avzruiBiKwFLs2LAnxdQ1eXdhwm1LKFnbM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SVkzbYlHbJFCTIMaf+HuouUA2ISO2IEqgXWekvQ+KL2WN7AiZ98XrJC/Xk+3DJuDS
-         JPAxDWbKtaG6yE+IFPlWLqyef8uwfJsijX/GT+RVYTU9cKUZvF78bCpyCXEI39ZT/7
-         cEfdtIX8PMgvt/qsTOVuKoh/rozFT3YqD1gznaFcbcvt/MNExBSlgZOI6liTi1cRN6
-         P9QZjdi7nymHG2PQmB+K6SS3aa1cruCw5C1l4x3Uf0ShaAEMQiuGIY4HvwVLPRvNCV
-         EKRZbGtwKfbgn7x0r60UwYaqo4UE3rolapulHjJrILQMBh07c0hGlq3jIddxIp3VhO
-         z/1PLdIhsY96A==
-Date:   Wed, 17 Mar 2021 07:34:18 -0300
-From:   Thadeu Lima de Souza Cascardo <cascardo@cascardo.eti.br>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     don@syst.com.br, hdegoede@redhat.com, mgross@linux.intel.com,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] platform: x86: Typo fix in the file classmate-laptop.c
-Message-ID: <YFHbKkyOrBLW6BCY@siri.cascardo.eti.br>
-References: <20210317084343.3788084-1-unixbhaskar@gmail.com>
+        Wed, 17 Mar 2021 06:34:58 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F0mhH3BRmz19GKZ;
+        Wed, 17 Mar 2021 18:33:03 +0800 (CST)
+Received: from huawei.com (10.67.174.47) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Wed, 17 Mar 2021
+ 18:34:49 +0800
+From:   He Ying <heying24@huawei.com>
+To:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>, <christophe.leroy@csgroup.eu>,
+        <npiggin@gmail.com>, <msuchanek@suse.de>, <heying24@huawei.com>,
+        <peterz@infradead.org>, <geert+renesas@glider.be>,
+        <kernelfans@gmail.com>, <frederic@kernel.org>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] powerpc: kernel/time.c - cleanup warnings
+Date:   Wed, 17 Mar 2021 06:34:38 -0400
+Message-ID: <20210317103438.177428-1-heying24@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210317084343.3788084-1-unixbhaskar@gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.47]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 02:13:43PM +0530, Bhaskar Chowdhury wrote:
-> 
-> s/derefence/dereference/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+We found these warnings in arch/powerpc/kernel/time.c as follows:
+warning: symbol 'decrementer_max' was not declared. Should it be static?
+warning: symbol 'rtc_lock' was not declared. Should it be static?
+warning: symbol 'dtl_consumer' was not declared. Should it be static?
 
-Acked-by: Thadeu Lima de Souza Cascardo <cascardo@cascardo.eti.br>
+Declare 'decrementer_max' in arch/powerpc/include/asm/time.h. And include
+proper header in which 'rtc_lock' is declared. Move 'dtl_consumer'
+definition behind "include <asm/dtl.h>" because 'dtl_consumer' is declared
+there.
 
-> ---
->  drivers/platform/x86/classmate-laptop.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/classmate-laptop.c b/drivers/platform/x86/classmate-laptop.c
-> index 3e03e8d3a07f..9309ab5792cb 100644
-> --- a/drivers/platform/x86/classmate-laptop.c
-> +++ b/drivers/platform/x86/classmate-laptop.c
-> @@ -956,7 +956,7 @@ static int cmpc_ipml_add(struct acpi_device *acpi)
->  	/*
->  	 * If RFKILL is disabled, rfkill_alloc will return ERR_PTR(-ENODEV).
->  	 * This is OK, however, since all other uses of the device will not
-> -	 * derefence it.
-> +	 * dereference it.
->  	 */
->  	if (ipml->rf) {
->  		retval = rfkill_register(ipml->rf);
-> --
-> 2.30.2
-> 
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: He Ying <heying24@huawei.com>
+---
+ arch/powerpc/include/asm/time.h | 1 +
+ arch/powerpc/kernel/time.c      | 7 +++----
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/time.h b/arch/powerpc/include/asm/time.h
+index 8dd3cdb25338..2cd2b50bedda 100644
+--- a/arch/powerpc/include/asm/time.h
++++ b/arch/powerpc/include/asm/time.h
+@@ -22,6 +22,7 @@ extern unsigned long tb_ticks_per_jiffy;
+ extern unsigned long tb_ticks_per_usec;
+ extern unsigned long tb_ticks_per_sec;
+ extern struct clock_event_device decrementer_clockevent;
++extern u64 decrementer_max;
+ 
+ 
+ extern void generic_calibrate_decr(void);
+diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
+index b67d93a609a2..409967713ca6 100644
+--- a/arch/powerpc/kernel/time.c
++++ b/arch/powerpc/kernel/time.c
+@@ -55,6 +55,7 @@
+ #include <linux/sched/cputime.h>
+ #include <linux/sched/clock.h>
+ #include <linux/processor.h>
++#include <linux/mc146818rtc.h>
+ #include <asm/trace.h>
+ 
+ #include <asm/interrupt.h>
+@@ -150,10 +151,6 @@ bool tb_invalid;
+ u64 __cputime_usec_factor;
+ EXPORT_SYMBOL(__cputime_usec_factor);
+ 
+-#ifdef CONFIG_PPC_SPLPAR
+-void (*dtl_consumer)(struct dtl_entry *, u64);
+-#endif
+-
+ static void calc_cputime_factors(void)
+ {
+ 	struct div_result res;
+@@ -179,6 +176,8 @@ static inline unsigned long read_spurr(unsigned long tb)
+ 
+ #include <asm/dtl.h>
+ 
++void (*dtl_consumer)(struct dtl_entry *, u64);
++
+ /*
+  * Scan the dispatch trace log and count up the stolen time.
+  * Should be called with interrupts disabled.
+-- 
+2.17.1
+
