@@ -2,146 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 558DA33F9DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC3933FA26
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:54:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233434AbhCQURN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 16:17:13 -0400
-Received: from mail-bn8nam12on2049.outbound.protection.outlook.com ([40.107.237.49]:14690
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233348AbhCQUQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 16:16:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=odvOusFEz7Sfw+5iuadFc/n8RR03fPOL+WbBHf76ENro7/5hqIN7N/B81k+rEflB29BBbyiOQ5x4Cpqi0RdOrUdv6PpsHXsoio9Zo6xn+GGHoWBd/J0dBy3dF1ejNzBwSQHiQZ/eFqQP23bWuXR7f0v129bp9gjGaTvjbu332s848/rWcBk3wrzvGglzDP7u3tfFMcuhNyp7TEk31X3zxzwHsTRo0PmYmCDPx/aVfkJprRJmblBaztMII3ccgmyoNIzovbCypfZdzfyP7o0s2FBrZ7AzKnlul5arp3WSzoVrt1DlrhO8HtxqKefZTzQRbsbtSQFspB3hFqHbdWGj4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3x41Rb2I6orly7EQDa5DfFOmjXOnn5NIBnDb4DBxO9A=;
- b=fqAeyz5PPXP+5xg21+O4UPhqgM8hYjrKATVWUv4kN2lOfBKZJdaL9/IMfyZQk1p4BlKBCvldjHmF1pbwbVGU07RxZJWNI0SOXt5Gol5JH89/2yv77XqEiOVkqXjpJc9cV4QVSUgmoTLLR8UHhd/DGLhiDuQsFv9HCjm+6JU6a3B9hRzQgXm1X48J7Jampdl2RydEceL+bFFADplZG/ebZObq8dyytMjlmjr7WRnngE7d9A/3iEcJ2lYa6Ad176JyF500jrhjgj6iktkVQdYIOq2wFY0jJbvDuQE1RxjC+KKP04AzLHMflXzSSU70i6ZmJ5jfSyYjWIzO4FQZH1HOTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=amd.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3x41Rb2I6orly7EQDa5DfFOmjXOnn5NIBnDb4DBxO9A=;
- b=S2Hk3aD4yFEbqjUPrA2nKp9WX8+xbVTNGcLmJLbfdAWvWSiH82VftjIvSOEzI29JJCyKYxl0uC6sEswKThMpAxeboc6DMZDoBVibnNmnGpu4XyLV6WSDtpZwu8dgUjnqqjEvpgJaCJXEsS+Av4+4rgo3eQExAmamntcPFTWhjQ8=
-Received: from DM5PR07CA0108.namprd07.prod.outlook.com (2603:10b6:4:ae::37) by
- CH2PR12MB3880.namprd12.prod.outlook.com (2603:10b6:610:2b::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3933.32; Wed, 17 Mar 2021 20:16:53 +0000
-Received: from DM6NAM11FT052.eop-nam11.prod.protection.outlook.com
- (2603:10b6:4:ae:cafe::f7) by DM5PR07CA0108.outlook.office365.com
- (2603:10b6:4:ae::37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend
- Transport; Wed, 17 Mar 2021 20:16:53 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB01.amd.com;
-Received: from SATLEXMB01.amd.com (165.204.84.17) by
- DM6NAM11FT052.mail.protection.outlook.com (10.13.172.111) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3955.18 via Frontend Transport; Wed, 17 Mar 2021 20:16:53 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB01.amd.com
- (10.181.40.142) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 17 Mar
- 2021 15:16:52 -0500
-Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2106.2 via Frontend
- Transport; Wed, 17 Mar 2021 15:16:48 -0500
-From:   Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <shumingf@realtek.com>, <flove@realtek.com>,
-        <derek.fang@realtek.com>, <Alexander.Deucher@amd.com>,
-        <Basavaraj.Hiregoudar@amd.com>, <Sunil-kumar.Dommati@amd.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 2/2] ASoC: amd: fix multiple definition error
-Date:   Thu, 18 Mar 2021 02:03:47 +0530
-Message-ID: <1616013238-12254-2-git-send-email-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616013238-12254-1-git-send-email-Vijendar.Mukunda@amd.com>
-References: <1616013238-12254-1-git-send-email-Vijendar.Mukunda@amd.com>
+        id S233482AbhCQUxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 16:53:34 -0400
+Received: from gateway36.websitewelcome.com ([50.116.127.2]:45835 "EHLO
+        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233416AbhCQUxP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 16:53:15 -0400
+X-Greylist: delayed 1498 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Mar 2021 16:53:15 EDT
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway36.websitewelcome.com (Postfix) with ESMTP id 6F6C5400D3FF5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:04:17 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id McOvlkvVAw11MMcOvlj3Sj; Wed, 17 Mar 2021 15:04:17 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=D8jlraIWCpRmgNot1k3zhHVL68RtL3nZfNp9Ci7QXGc=; b=wT9iZ75rdYBI8q0oAJMJJ921tV
+        X0EyaqaeXNl6TqwJMi1jrUMMOrtW3DhSF/uGyfy3/jhSMgZitmrYjomKVxIO5FK3kLObYWJAegVyt
+        5SLq1nuTvl06FylCEIphqedo3Bq1aRhyQR7utbMXIyuCL5ll0r4H6Z//FxcVHp8FGJjbreapk4lbQ
+        LQggvdpZJm1f7H22S2tI055at3tf5h9Ydkml9VMFK10L5YuQhAp6lC3yt0zvv9au9+fE2mXz6fn9D
+        OyZAMSmJ9rumg0aApRXQGIPYBdss2ta4nCobrcGWmw9i7ce9i+3xhPq/qqEU0ZED1qAFoZoJK8aMC
+        QNfpSzdw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:59896 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lMcOu-003Fbj-P8; Wed, 17 Mar 2021 15:04:16 -0500
+Subject: Re: [Intel-wired-lan] [PATCH][next] ixgbe: Fix out-of-bounds warning
+ in ixgbe_host_interface_command()
+To:     Jann Horn <jannh@google.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        intel-wired-lan@lists.osuosl.org, linux-hardening@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+References: <20210317064148.GA55123@embeddedor>
+ <CAG48ez2RDqKwx=umOHjo_1mYyNQgzvcP=KOw1HgSo4Prs_VQDw@mail.gmail.com>
+ <3bd8d009-2ad2-c24d-5c34-5970c52502de@embeddedor.com>
+ <CAG48ez2jr_8MbY_sNXfwvs7WsF-5f9j=U4-66dTcgXd2msr39A@mail.gmail.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <03c013b8-4ddb-8e9f-af86-3c43cd746dbb@embeddedor.com>
+Date:   Wed, 17 Mar 2021 14:04:06 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a6cae124-3933-4f46-0828-08d8e9819b1c
-X-MS-TrafficTypeDiagnostic: CH2PR12MB3880:
-X-Microsoft-Antispam-PRVS: <CH2PR12MB38805A1AF5AF8881244452D4976A9@CH2PR12MB3880.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:376;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Kzrbnm81qso/fHXwFcSKWLJ2dz6S0zfviIHSZgyy15JKnmlxdk0nEtGrGdgwD5ZZhOU1f1pcmDIPdod2WjiefelUl7XA+oxeO6TjWA1T/UUbeQn4uWx9MByaH1EMb9NbfEZ23niausID9BDo7Xx9/Jzc4dwGTKEE6/QVQkoUR7fXjoGutTCpo+dZLry7hZs4cGPlEPETCEK+EBmSYU+ZGpR3cVszsGO8LO9Czl9ewwuO7s84hPvfK1FsTZuRjLJSonVq8txMjsFAuyFRjYedZHysQbCtiA3/iOcZbUi1/lcbNfELx2cZcqAhMZFyqLUVnTxHc+X/fFFRDA1OIx3/xa7OiLy9xsM95IwCDZxYaKvvGrp+REpyfsuBTGdl6Ui9Bm0ax3YiMUqBRfyzYSFHCXV2zAYb3fYA/xE6eB0/7uiD6zwfT73NUlgQ6jIKAy4oT4mRqJVpHMOE3O92FNMespn6ZSgu7ec0GHVjyUVyzPmor7bcXUbx7CQBqXS0ZMf55tXUc0n5zoBY/GQys6pPYKGgr1H2ZDtkjhZVfUhux9oLoWIyILkahKNzNgqN5DAlfBm7rH8CSCHdVkcXC/0huSk88T/XZopFXh/0CjNBXtswWEfyZ67P5lP95JBAg+lErfoChNEj7IzX+Up7PemL0k5yYyxJ9WB/EeXTWFwfe3/Bc6G0XhfX2q8OkCLB4C1l
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB01.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(396003)(39860400002)(46966006)(36840700001)(4326008)(82310400003)(2906002)(186003)(47076005)(54906003)(83380400001)(2616005)(82740400003)(110136005)(7696005)(356005)(5660300002)(81166007)(426003)(36756003)(316002)(7416002)(8936002)(336012)(8676002)(36860700001)(26005)(86362001)(478600001)(70206006)(70586007)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 20:16:53.4284
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a6cae124-3933-4f46-0828-08d8e9819b1c
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB01.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT052.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3880
+In-Reply-To: <CAG48ez2jr_8MbY_sNXfwvs7WsF-5f9j=U4-66dTcgXd2msr39A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lMcOu-003Fbj-P8
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:59896
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 4
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-make W=1 ARCH=x86_64 error:
-acp3x-rt5682-max9836.c:(.text+0x840): multiple definition of
-`soc_is_rltk_max';
-sound/soc/amd/acp-da7219-max98357a.o:acp-da7219-max98357a.c:
-(.text+0xd00):first defined here
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
- sound/soc/amd/acp-da7219-max98357a.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index 7fca4e78..458d9fdca 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -34,7 +34,7 @@ static struct clk *da7219_dai_bclk;
- static struct clk *rt5682_dai_wclk;
- static struct clk *rt5682_dai_bclk;
- extern bool bt_uart_enable;
--void *soc_is_rltk_max(struct device *dev);
-+void *acp_soc_is_rltk_max(struct device *dev);
- 
- static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- {
-@@ -666,7 +666,7 @@ static struct snd_soc_card cz_rt5682_card = {
- 	.num_controls = ARRAY_SIZE(cz_mc_controls),
- };
- 
--void *soc_is_rltk_max(struct device *dev)
-+void *acp_soc_is_rltk_max(struct device *dev)
- {
- 	const struct acpi_device_id *match;
- 
-@@ -715,7 +715,7 @@ static int cz_probe(struct platform_device *pdev)
- 	struct regulator_dev *rdev;
- 	struct device *dev = &pdev->dev;
- 
--	card = (struct snd_soc_card *)soc_is_rltk_max(dev);
-+	card = (struct snd_soc_card *)acp_soc_is_rltk_max(dev);
- 	if (!card)
- 		return -ENODEV;
- 	if (!strcmp(card->name, "acpd7219m98357")) {
--- 
-2.7.4
+On 3/17/21 13:57, Jann Horn wrote:
 
+>>>> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
+>>>> index 62ddb452f862..bff3dc1af702 100644
+>>>> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
+>>>> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
+>>>> @@ -3679,7 +3679,7 @@ s32 ixgbe_host_interface_command(struct ixgbe_hw *hw, void *buffer,
+>>>>         u32 hdr_size = sizeof(struct ixgbe_hic_hdr);
+>>>>         union {
+>>>>                 struct ixgbe_hic_hdr hdr;
+>>>> -               u32 u32arr[1];
+>>>> +               u32 *u32arr;
+>>>>         } *bp = buffer;
+>>>>         u16 buf_len, dword_len;
+>>>>         s32 status;
+>>>
+>>> This looks bogus. An array is inline, a pointer points elsewhere -
+>>> they're not interchangeable.
+>>
+>> Yep; but in this case these are the only places in the code where _u32arr_ is
+>> being used:
+>>
+>> 3707         /* first pull in the header so we know the buffer length */
+>> 3708         for (bi = 0; bi < dword_len; bi++) {
+>> 3709                 bp->u32arr[bi] = IXGBE_READ_REG_ARRAY(hw, IXGBE_FLEX_MNG, bi);
+>> 3710                 le32_to_cpus(&bp->u32arr[bi]);
+>> 3711         }
+> 
+> So now line 3709 means: Read a pointer from bp->u32arr (the value
+> being read from there is not actually a valid pointer), and write to
+> that pointer at offset `bi`. I don't see how that line could execute
+> without crashing.
+
+Yeah; you're right. I see my confusion now. Apparently, there is no escape
+from allocating heap memory to fix this issue, as I was proposing in my
+last email.
+
+I really appreciate the feedback. Thanks!
+--
+Gustavo
