@@ -2,277 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D303F33E981
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB07833E984
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCQGF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 02:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbhCQGFX (ORCPT
+        id S229863AbhCQGJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 02:09:46 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:46578 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhCQGJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 02:05:23 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E27C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 23:05:23 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id o10so24164935pgg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 23:05:23 -0700 (PDT)
+        Wed, 17 Mar 2021 02:09:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1615961360; x=1647497360;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=Plha3SIXw9hzITUmYy8bPF611zQMYl621i997gP1BI0=;
+  b=fO9Qwte7eKSXbBCGRvu39keHdfPA8LXfu7i87ZCfHanLlAECZaXCagrA
+   2VVpUy2PNGZX1jgVgonlEYJBUQQaYABGCJT5RnC5NAUd9jZECjnurT4Yg
+   SWmAE4GPvoU1VdEn2DhNgLlTUvi27/OYviXNk1oa6elR4/+3ChQ1PP7Cw
+   SYPIrLMebmAYLSDgJ48Y03+LmN0fQDrZbd3RzZA1xrq5hdPdsIhFOH5mM
+   EoAaqjf66DRnZjIVFEV6wCkUlGpffcXngfILkgn4dgTPkSd8NunXMlJ8M
+   RW4c9tpXHhbU2jlc3uFc/2VPeWK0eE3vr6BgNWU4zr6VZTs/OgaEyiJuv
+   w==;
+IronPort-SDR: xtt/XVsYvALAuQ5p2FZ6/Dk/tHWrCor5jJCo4ZqPg2EHEdaC40uwm3Z5jmA1VWv8OQRjlNR486
+ TUOCV+xGD9SsIYMQXTXGWnEcxwki/pxTr2qjWoUsDY3oB86EabE1yvR+XXRK/JwyQ8sKp9e1bi
+ iD/bteLlahmjvqjpzR/SMj4vRAwdYXKjXuO7Abnt3OfVAisYPYvs8ymFgh0cdORjbnq7SNjVQd
+ taN087m0YR22yq4NgrGpSuhFAJApwW3vhmVawMax/eK+2QrwESP6OsoAFB2QfoUuxzqs0pd5/8
+ SXQ=
+X-IronPort-AV: E=Sophos;i="5.81,255,1610434800"; 
+   d="scan'208";a="113046639"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Mar 2021 23:09:19 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 16 Mar 2021 23:09:18 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2 via Frontend
+ Transport; Tue, 16 Mar 2021 23:09:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MhAN9772/kAYsRv5kVCnfMrwXUWnUgNLzPZXl7kkD74KJVTPkX1nuWzXouf1hm3UpGFOl6VAf8SGDTaVBWTdcq3V7pOxbAqWj7vcp7VxlysGuSC96KMVVHCJrAWPFDLkHLELKoPaBOhVC9dFl+aidYsON82/MvY5x7Cw/NzEh7Cg9bTsW8pWeDUqamEjkG6hAy93dapqwVV605GR2AYA05nfrAs29g8UG7N+IKUkFLn5gFeQMz8GB2p0KZC50dt6scxIp51GkoareHdaH223MEIKaRTOSdljm9YSrx7oOKkQ0R6uFcXTSybAEEnyBG5c5NlTu+AgqGBU5+1EdSNcCA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Plha3SIXw9hzITUmYy8bPF611zQMYl621i997gP1BI0=;
+ b=PTwysHSy/M6fjn/tBD6MlYHrwgOsEHDKvy3Yl9oENE08iY9AlSKSg6ioMgyYcMRgb9PYD63d2v/Fxl6xNb8ms5iWW1fF2fa6mHiuOhicF/cEz5Aa0L4SES7HuqR4CRsqcgp7NX+Bfp6aoSVHfomQMS3WS23ttIyvGQ/cRiODK2hlTGgTHBqEAvxHOBueo5/+GBeEBmotrwJu4H58abkGE+V2tZybk51e3QYmL1DEECCqL9gWvqUuoHV18O0lALbtHAWwfl/Tj505rkQaqKxThHGwd0NTuobUyUKAsD5TsN99ZRXvnQcEYvB2CAfgX0v4lpwRDHt44GyKbmSUIoudLg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BZV91l3Kb8EFINEr5Dzile2PDT5SHthUyDAm4nn5Ats=;
-        b=FGiS2PmzaeDH4WF0bP7Hv4fgzprSnD1b+qFC24/T4VD3FAaCWtiibTviZQNnPhNvnw
-         1q6y6hWlFrJhmNjCMgkm1m/n71JgRwgcghwBE1ZZzlWvSblahgxHCO/zMfSUaohMYxcV
-         cKt+lhi8X1ptWPDzZeT9wdbaQkGO+xB3rWyDFnY1xIt3NI5KiY+LC3ZIuQf6CC17gu/n
-         dvObaXhKRQDLfZrX3CxwdXGBv2j83MeFRPlQvrbX4eqHiUjE1xlJFynkrvKiJirl26Zb
-         5LXmoAFZgFcBT27k/CBmzk0ftyXVk/eK+Yl2YFZhxza3iphST+KXgsIAHC9afWJfilvV
-         c8DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BZV91l3Kb8EFINEr5Dzile2PDT5SHthUyDAm4nn5Ats=;
-        b=tgm9fT9ijc5m6W4P1iPidej6jN2p6GM0O/2Bl7GJ5QzgUHN8/lSeX1LpGmGKddyTuT
-         l+vaLd89sQPvJy87uhnP4XjRRDJiUDe3pacv/zykqe7Kne5EFw91xURIeRvT5lvCVMAJ
-         wfw6vyrY8PgY12o8nsNzQd0duSyhTtTnUnT+TDW5crM+379M37btSgXFCsMx+Bv7rdO0
-         yRJIM06cj+aBRRlB+i5bpUZWzdosRsVcJO5VqO0F131XdtC6LdrCyeb/9Q+B5awKIWlh
-         eeIGso1Vp/5bt+K0b0lGMSQCDUhGd7s0XfYMkW7t/DD2ULCTlzTej71kgT8uUPY8+6r3
-         cu8Q==
-X-Gm-Message-State: AOAM532ZKaa3qlVGOko9Sqhcth8PZ51s6CRo1pJDGrx49paVfuOn7hKg
-        tYH5aTmXsS4jywV6+RfTo8K0IAOVhf/xZJDjjQdH8Q==
-X-Google-Smtp-Source: ABdhPJyJcrTbVIn9pi8wPLARDF+/xlOglVeFbitDiERPWcTVLcpNzitUPYB3AokLYmQD1+p0SdEfZnZ8dJmg2aRbwA4=
-X-Received: by 2002:a63:1843:: with SMTP id 3mr1281148pgy.253.1615961122794;
- Tue, 16 Mar 2021 23:05:22 -0700 (PDT)
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Plha3SIXw9hzITUmYy8bPF611zQMYl621i997gP1BI0=;
+ b=XfqFr2e+VBseiDEWmlydPxCcF9uj9FSCN4XqHg44Y/sjR0BfuiWL4WDAdU4gyL7oFwB6jydbsN0Rp0ExiXfMwXVp0C8yAskaqkzxVrxpjsBNoAigjH+/pSmW6AmgBDRoyyW7tiL0D2IdzgmTGUmJA6/9YUyiMB5n2uoDfv+guBw=
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
+ by SN6PR11MB2832.namprd11.prod.outlook.com (2603:10b6:805:5b::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Wed, 17 Mar
+ 2021 06:09:17 +0000
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::c9e8:9bf4:b08c:c30f]) by SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::c9e8:9bf4:b08c:c30f%7]) with mapi id 15.20.3955.018; Wed, 17 Mar 2021
+ 06:09:17 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <vigneshr@ti.com>, <p.yadav@ti.com>, <michael@walle.cc>
+CC:     <linux-mtd@lists.infradead.org>, <miquel.raynal@bootlin.com>,
+        <richard@nod.at>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/5] mtd: spi-nor: Move Software Write Protection logic
+ out of the core
+Thread-Topic: [PATCH v2 4/5] mtd: spi-nor: Move Software Write Protection
+ logic out of the core
+Thread-Index: AQHXFLXahW+TwdBlzkur1VDkcdYBtg==
+Date:   Wed, 17 Mar 2021 06:09:17 +0000
+Message-ID: <45d00a12-cb79-774e-f8e8-d65602629a90@microchip.com>
+References: <20210306095002.22983-1-tudor.ambarus@microchip.com>
+ <20210306095002.22983-5-tudor.ambarus@microchip.com>
+ <963232a4-9100-ebca-927c-7f5a1e947fbe@ti.com>
+ <9889bae0-8eba-7cbc-d9bb-04e038bd28c8@microchip.com>
+ <6016b725-a779-1d2c-9884-099c58f53557@ti.com>
+In-Reply-To: <6016b725-a779-1d2c-9884-099c58f53557@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [79.115.63.16]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2bb69ad3-2fc3-44c0-0e4d-08d8e90b329c
+x-ms-traffictypediagnostic: SN6PR11MB2832:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR11MB28322E6443C4F4BF59E54128F06A9@SN6PR11MB2832.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3513;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6oI/ryQqoEh6uWOcK1NdjvbY3MM4xqBZP7+RGvEUhABfR95DFgG4H2naxXG2Q1CPpeTtmdTD5Sqhlmt7Op/H5iQKgJ7NXA+DsLwirdetyGVdrZp2fUGh2Qd6YsXezGufeEE8QPRAqQowfkRVdkV3Q87CuS49Jyu44MUpXukG2CJb70Tjj2+J4dLg9j7H+KrV5wo74CR+zlHO/gensYhBkSzPboPlkUNPxvnA5idjmDaDvCz3aWKNewD4doDQ1SpAhTZBePze8IiBIcOjMfoo7L1lNHItrj8Y/s6O5M53Iyu3x9ViY+cd/XON+hODnPZgtm6ZzhxNCySqbmeWVsdycXhducpyd5WRxsc/FYgWvyuq8OpOsDh+UnPeGazQg8WAcSqjugTmldoS4yvnp778cIZFtY+fUbCKn0x/u9k/J+NkmzU364YbiVMj568k5t3CuIo0rdYgC9kZxJABF4dBxxTWalGSGw6ZAnOu6ATJsFp48I2PsFIfMuZJ9TiE0auXyae0ggIvhWy1OYcTaYWJ41xw8HPM9OQeIaRQCxreG2G/ZfYS45w6bLkllVN4viPcFOZPHWZUbxKl3YMlE8c5C8exmxO7ltnErqkID74YACZUu28pTnB8cBqg+UozLINQ3PBYgcafCD0UkEcEq4c4zg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB4874.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(39860400002)(136003)(366004)(376002)(4326008)(36756003)(53546011)(316002)(31686004)(54906003)(86362001)(6506007)(8936002)(31696002)(66446008)(8676002)(110136005)(186003)(64756008)(2906002)(478600001)(76116006)(26005)(71200400001)(91956017)(66476007)(66946007)(83380400001)(2616005)(6512007)(6486002)(5660300002)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?bk9XWXNkaFdmaDF4Y1I5OHU2dVYvbmVBSExFb1JjcDVRd3NaSm0yeTZKck9k?=
+ =?utf-8?B?MXQrYlQ3WkFCcGd6cmFuZ0ttRFZnWjhEYm1UN0xORVQra2pGcWU5bFcrZmlj?=
+ =?utf-8?B?OTZ2bEZTMHM3bjF0R1pOTy9mVUt0SGFSa3EyVFVRb01WWmx5eE9LcEFwZkFl?=
+ =?utf-8?B?bHJ1Y21OOUd3T0lYUkIzVzdDL05RYjBWcndwaHFkL2FvRmxKQVFVL2pqVUZW?=
+ =?utf-8?B?QjVnRzZUM2I2b2l0NE4zUko5cnBXRy91NzJTYjY5WjhycEZta1RNZnhxMG5j?=
+ =?utf-8?B?TmlJcDd0NUdjVVUwNitiR3RWN2RzNmJ5S3lhUi9jRHZvSXhjbi9SaU9uSlpI?=
+ =?utf-8?B?WnF2OW1mVjcxd3lNY2FVZmFDQ3EzT005cjlHQ3RVbWF0Z2xnQTQzOHB1bHNK?=
+ =?utf-8?B?K1dhenlmWkpQMlM4ekZzQnFaQkN4QWJSVTV3ZXJlUWwvRHVrS2t0Q2RIS1lS?=
+ =?utf-8?B?cng4M2ZHM3ZXbjduSTZIcCtXYnBhajBJbnlHWE9icmROZ0YwSE5zdDZjU0dt?=
+ =?utf-8?B?bUgrM0R6TFpkRDVMTUREeUR1V0Vjd3lNSWZtbktCZElURTBuZWQzUGFYb29k?=
+ =?utf-8?B?Ly9kdkhrMGFvK2FvbkJTUFVIREFQRzM5cUNya0IzNTRxNmZESGpOSjJMb3gz?=
+ =?utf-8?B?WXI3SU5JR1N0OGJMaWZFbklSbFBwdVNWWVNFUkdLcFROVVcrMWIrS1ZWV1lS?=
+ =?utf-8?B?UUc1SERCd2dUMUFCdFY0cVd1YkZOSDBETU02RmF6UGFvMWlzUmJ5OXZKM1pu?=
+ =?utf-8?B?UlRlbytSUzc0SjdpUzhNci9SZ1JXdmU1THNPMmpBTnJDMXJxeUt0b3pKa3h1?=
+ =?utf-8?B?TGdvYU00K3JLZmxCQUhXMHJaSjU3VFZFVm1zTk9jTmJkeUlqWGNFRUI1c3l3?=
+ =?utf-8?B?ZTZlVDBJZWZ6dVM3YVp1TmJYTmNXby9ENFRiVEIyLzlicWo0cVJSMDQ0L0g1?=
+ =?utf-8?B?aWxkdHNyZnFFd1FVWThzNXF5UW5tNG5zdURpY1V4Y1dodEY2aUxnSE16OW9S?=
+ =?utf-8?B?b0FVT3NQRzA5NC9VV0syUFV6dURrMFlTcVlOWjhyR3ByUjlldjJwN2g3d3VL?=
+ =?utf-8?B?VlNnQm5KYlVJM3hOaDhRb0x3dHQrdWF4ZlQ2TU56cTBDTUx1QzZ3a25wRkdH?=
+ =?utf-8?B?WExkK0t4VVYzazJTT2VXamhWN0ZBT05UNmM1NnUxWlJZZVBWRm9vbTk1ek13?=
+ =?utf-8?B?N2RpZHNhVEFIdlFzN0kxcFZVVU0zc1ZKRWVNSzFpM0ticzRiQlErS2phVm80?=
+ =?utf-8?B?TVRXeGlRS1NHamRTTGlHZzFURFJGeUFZMXgxNkxPbHdhWHBLQkFHUi92TGhp?=
+ =?utf-8?B?bDFjQXJJU1h1bUxrc2xheElDOVFoWkxmMEw4OE9uTjBEczFodHJZaFBtRGhP?=
+ =?utf-8?B?NURTQVVZeFhGNkduOUU1K2RNQ0szb3YrTk1vTkp1eG1YaGYwdk1WeHlCaHJL?=
+ =?utf-8?B?NE9NQ1hNMU5RZCtHZ3pwYWFBNTlpL3k4cFVjY0RWUldya3p5M0EvMUJQQ0Q0?=
+ =?utf-8?B?WmRmbkpzMUdiNTJmc1FhOWtaR3RIWDJ2TnlqTkd2VUsxK3g5REw5bGRlYTlO?=
+ =?utf-8?B?TyszcWNwWTQ2Wk9lblVqWTBZbkx2ejh6Tk1YVFZqc05zdFdrVkNZMlRqNjJD?=
+ =?utf-8?B?Q25DNzlkQzR5VUVPRnpDTGlEVmJaZldaaDdJZUJPV3lDUU9xcnBNWTd5NXdt?=
+ =?utf-8?B?UHFIQzJsOCtHZWY5N1RucGtBWWZQQXRLNm9hQ254b2IvcHRpbjVJREFlZ1Bx?=
+ =?utf-8?Q?1tuY4KQzSCcjZMsaiM=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <731C115E97BB7F4287E77759502BECCC@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210316041645.144249-1-arjunroy.kdev@gmail.com> <YFCH8vzFGmfFRCvV@cmpxchg.org>
-In-Reply-To: <YFCH8vzFGmfFRCvV@cmpxchg.org>
-From:   Arjun Roy <arjunroy@google.com>
-Date:   Tue, 16 Mar 2021 23:05:11 -0700
-Message-ID: <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
-Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Arjun Roy <arjunroy.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2bb69ad3-2fc3-44c0-0e4d-08d8e90b329c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Mar 2021 06:09:17.4531
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iGawYEJlLCU+ZsQybVGhlyNeuKuo4LkVh73knTkIjKFJZGJiOGH8Mr2SWsozhOu2elJtSrGQ4aQ8GX8K9ZlPH8xyE6PhKvtHIqczOSZTkxs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2832
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 3:27 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> Hello,
->
-> On Mon, Mar 15, 2021 at 09:16:45PM -0700, Arjun Roy wrote:
-> > From: Arjun Roy <arjunroy@google.com>
-> >
-> > TCP zerocopy receive is used by high performance network applications
-> > to further scale. For RX zerocopy, the memory containing the network
-> > data filled by the network driver is directly mapped into the address
-> > space of high performance applications. To keep the TLB cost low,
-> > these applications unmap the network memory in big batches. So, this
-> > memory can remain mapped for long time. This can cause a memory
-> > isolation issue as this memory becomes unaccounted after getting
-> > mapped into the application address space. This patch adds the memcg
-> > accounting for such memory.
-> >
-> > Accounting the network memory comes with its own unique challenges.
-> > The high performance NIC drivers use page pooling to reuse the pages
-> > to eliminate/reduce expensive setup steps like IOMMU. These drivers
-> > keep an extra reference on the pages and thus we can not depend on the
-> > page reference for the uncharging. The page in the pool may keep a
-> > memcg pinned for arbitrary long time or may get used by other memcg.
->
-> The page pool knows when a page is unmapped again and becomes
-> available for recycling, right? Essentially the 'free' phase of that
-> private allocator. That's where the uncharge should be done.
->
-
-In general, no it does not.  The page pool, how it operates and whether it
-exists in the first place, is an optimization that a given NIC driver can choose
-to make - and so there's no generic plumbing that ties page unmap events to
-something that a page pool could subscribe to that I am aware of. All it can do
-is check, at a given point, whether it can reuse a page or not, typically by
-checking the current page refcount.
-
-A couple of examples for drivers with such a mechanism - mlx5:
-(https://github.com/torvalds/linux/blob/master/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c#L248)
-
-Or intel fm10k:
-(https://github.com/torvalds/linux/blob/master/drivers/net/ethernet/intel/fm10k/fm10k_main.c#L207)
-
-Note that typically map count is not checked (maybe because page-flipping
-receive zerocopy did not exist as a consideration when the driver was written).
-
-So given that the page pool is essentially checking on demand for whether a page
-is usable or not - since there is no specific plumbing invoked when a page is
-usable again (i.e. unmapped, in this case) - we opted to hook into when the
-mapcount is decremented inside unmap() path.
-
-
-> For one, it's more aligned with the usual memcg charge lifetime rules.
->
-> But also it doesn't add what is essentially a private driver callback
-> to the generic file unmapping path.
->
-
-I understand the concern, and share it - the specific thing we'd like to avoid
-is to have driver specific code in the unmap path, and not in the least because
-any given driver could do its own thing.
-
-Rather, we consider this mechanism that we added as generic to zerocopy network
-data reception - that it does the right thing, no matter what the driver is
-doing. This would be transparent to the driver, in other words - all the driver
-has to do is to continue doing what it was before, using page->refcnt == 1 to
-decide whether it can use a page or if it is not already in use.
-
-
-Consider this instead as a broadly applicable networking feature adding a
-callback to the unmap path, instead of a particular driver. And while it is just
-TCP at present, it fundamentally isn't limited to TCP.
-
-I do have a request for clarification, if you could specify the usual memcg
-charge lifetime rules that you are referring to here? Just to make sure we're on
-the same page.
-
-> Finally, this will eliminate the need for making up a new charge type
-> (MEMCG_DATA_SOCK) and allow using the standard kmem charging API.
->
-> > This patch decouples the uncharging of the page from the refcnt and
-> > associates it with the map count i.e. the page gets uncharged when the
-> > last address space unmaps it. Now the question is, what if the driver
-> > drops its reference while the page is still mapped? That is fine as
-> > the address space also holds a reference to the page i.e. the
-> > reference count can not drop to zero before the map count.
-> >
-> > Signed-off-by: Arjun Roy <arjunroy@google.com>
-> > Co-developed-by: Shakeel Butt <shakeelb@google.com>
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> > Signed-off-by: Eric Dumazet <edumazet@google.com>
-> > Signed-off-by: Soheil Hassas Yeganeh <soheil@google.com>
-> > ---
-> >
-> > Changelog since v1:
-> > - Pages accounted for in this manner are now tracked via MEMCG_SOCK.
-> > - v1 allowed for a brief period of double-charging, now we have a
-> >   brief period of under-charging to avoid undue memory pressure.
->
-> I'm afraid we'll have to go back to v1.
->
-> Let's address the issues raised with it:
->
-> 1. The NR_FILE_MAPPED accounting. It is longstanding Linux behavior
->    that driver pages mapped into userspace are accounted as file
->    pages, because userspace is actually doing mmap() against a driver
->    file/fd (as opposed to an anon mmap). That is how they show up in
->    vmstat, in meminfo, and in the per process stats. There is no
->    reason to make memcg deviate from this. If we don't like it, it
->    should be taken on by changing vm_insert_page() - not trick rmap
->    into thinking these arent memcg pages and then fixing it up with
->    additional special-cased accounting callbacks.
->
->    v1 did this right, it charged the pages the way we handle all other
->    userspace pages: before rmap, and then let the generic VM code do
->    the accounting for us with the cgroup-aware vmstat infrastructure.
-
-To clarify, are you referring to the v1 approach for this patch from a
-few weeks ago?
-(i.e. charging for the page before vm_insert_page()). This patch changes when
-the charging happens, and, as you note, makes it a forced charge since we've
-already inserted the mappings into the user's address space - but it isn't
-otherwise fundamentally different from v1 in what it does. And unmap is the
-same.
-
->
-> 2. The double charging. Could you elaborate how much we're talking
->    about in any given batch? Is this a problem worth worrying about?
->
-
-The period of double counting in v1 of this patch was from around the time we do
-vm_insert_page() (note that the pages were accounted just prior to being
-inserted) till the struct sk_buff's were disposed of - for an skb
-that's up to 45 pages.
-But note that is for one socket, and there can be quite a lot of open
-sockets and
-depending on what happens in terms of scheduling the period of time we're
-double counting can be a bit high.
-
-v1 patch series had some discussion on this:
-https://www.spinics.net/lists/cgroups/msg27665.html which is why we
-have post-charging
-in v2.
-
->
->    The way I see it, any conflict here is caused by the pages being
->    counted in the SOCK counter already, but not actually *tracked* on
->    a per page basis. If it's worth addressing, we should look into
->    fixing the root cause over there first if possible, before trying
->    to work around it here.
->
-
-When you say tracked on a per-page basis, I assume you mean using the usual
-mechanism where a page has a non-null memcg set, with unaccounting occuring when
-the refcount goes to 0.
-
-Networking currently will account/unaccount bytes just based on a
-page count (and the memcg set in struct sock) rather than setting it in the page
-itself - because the recycling of pages means the next time around it could be
-charged to another memcg. And the refcount never goes to 1 due to the pooling
-(in the absence of eviction for busy pages during packet reception). When
-sitting in the driver page pool, non-null memcg does not work since we do not
-know which socket (thus which memcg) the page would be destined for since we do
-not know whose packet arrives next.
-
-The page pooling does make this all this a bit awkward, and the approach
-in this patch seems to me the cleanest solution.
-
-
->
->
->    The newly-added GFP_NOFAIL is especially worrisome. The pages
->    should be charged before we make promises to userspace, not be
->    force-charged when it's too late.
->
->    We have sk context when charging the inserted pages. Can we
->    uncharge MEMCG_SOCK after each batch of inserts? That's only 32
->    pages worth of overcharging, so not more than the regular charge
->    batch memcg is using.
-
-Right now sock uncharging is happening as we cleanup the skb, which can have up
-to 45 pages. So if we tried uncharging per SKB we'd then have up to 45 pages
-worth of overcharging per socket, multiplied by however many sockets are
-currently being overcharged in this manner.
-
-
->
->    An even better way would be to do charge stealing where we reuse
->    the existing MEMCG_SOCK charges and don't have to get any new ones
->    at all - just set up page->memcg and remove the charge from the sk.
->
-
-That gets a bit complicated since we have to be careful with forward allocs in
-the socket layer - and the bookkeeping gets a bit complicated since now for the
-struct sock we'll need to track how many bytes were 'stolen' and update all the
-code where socket accounting happens. It ends up being a larger/messier code
-change then.
-
-Thanks,
--Arjun
-
->
->
->
->    But yeah, it depends a bit if this is a practical concern.
->
-> Thanks,
-> Johannes
+T24gMy8xNS8yMSA4OjIzIEFNLCBWaWduZXNoIFJhZ2hhdmVuZHJhIHdyb3RlOg0KPiBFWFRFUk5B
+TCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlv
+dSBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IE9uIDMvOS8yMSAxMjo1OCBQTSwgVHVk
+b3IuQW1iYXJ1c0BtaWNyb2NoaXAuY29tIHdyb3RlOg0KPj4gT24gMy84LzIxIDc6MjggUE0sIFZp
+Z25lc2ggUmFnaGF2ZW5kcmEgd3JvdGU6DQo+Pj4gRVhURVJOQUwgRU1BSUw6IERvIG5vdCBjbGlj
+ayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Uga25vdyB0aGUgY29udGVudCBp
+cyBzYWZlDQo+Pj4NCj4+PiBPbiAzLzYvMjEgMzoyMCBQTSwgVHVkb3IgQW1iYXJ1cyB3cm90ZToN
+Cj4+Pj4gSXQgbWFrZXMgdGhlIGNvcmUgZmlsZSBhIGJpdCBzbWFsbGVyIGFuZCBwcm92aWRlcyBi
+ZXR0ZXIgc2VwYXJhdGlvbg0KPj4+PiBiZXR3ZWVuIHRoZSBTb2Z0d2FyZSBXcml0ZSBQcm90ZWN0
+aW9uIGZlYXR1cmVzIGFuZCB0aGUgY29yZSBsb2dpYy4NCj4+Pj4gQWxsIHRoZSBuZXh0IGdlbmVy
+aWMgc29mdHdhcmUgd3JpdGUgcHJvdGVjdGlvbiBmZWF0dXJlcyAoZS5nLiBJbmRpdmlkdWFsDQo+
+Pj4+IEJsb2NrIFByb3RlY3Rpb24pIHdpbGwgcmVzaWRlIGluIHN3cC5jLg0KPj4+Pg0KPj4+PiBT
+aWduZWQtb2ZmLWJ5OiBUdWRvciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+
+DQo+Pj4+IC0tLQ0KPj4+PiAgZHJpdmVycy9tdGQvc3BpLW5vci9NYWtlZmlsZSB8ICAgMiArLQ0K
+Pj4+PiAgZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMgICB8IDQwNyArLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tDQo+Pj4+ICBkcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuaCAgIHwg
+ICA0ICsNCj4+Pj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3dwLmMgICAgfCA0MTkgKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysNCj4+Pg0KPj4+IEhtbW0sIG5hbWUgc3dwLmMgZG9l
+cyBub3Qgc2VlbSBpbnR1aXRpdmUgdG8gbWUuIEhvdyBhYm91dCBleHBhbmRpbmcgaXQgYQ0KPj4+
+IGJpdDoNCj4+Pg0KPj4+IHNvZnQtd3ItcHJvdGVjdC5jIG9yIHNvZnR3YXJlLXdyaXRlLXByb3Rl
+Y3QuYyA/DQoNCkhhdmluZyBpbiBtaW5kIHRoYXQgd2UgaGF2ZSB0aGUgU1dQIGNvbmZpZ3MsIEkg
+dGhpbmsgSSBwcmVmZXIgc3dwLmMuDQpCdXQgbGV0J3Mgc2VlIHdoYXQgbWFqb3JpdHkgdGhpbmtz
+LCB3ZSdsbCBkbyBhcyBtYWpvcml0eSBwcmVmZXJzLg0KTWljaGFlbCwgUHJhdHl1c2g/DQoNCj4+
+Pg0KPj4NCg0KY3V0DQoNCj4gDQo+IEkgYW0gbm90IGEgZmFuIG9mIHJlbmFtaW5nIEtjb25maWcg
+b3B0aW9ucyBhcyBpdCBicmVha3MgbWFrZQ0KPiBvbGRkZWZjb25maWcgZmxvdyB3aGljaCBtYW55
+IGRldmVsb3BlcnMgcmVseSBvbi4NCj4gDQoNCkknbSBmaW5lIGtlZXBpbmcgdGhlbSBhcyB0aGV5
+IGFyZSBmb3Igbm93LiBJZiBzb21lb25lIGVsc2Ugc2NyZWFtcyB3ZSB3aWxsDQpyZWNvbnNpZGVy
+Lg0K
