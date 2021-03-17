@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35FA633EFE4
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4A433EFE5
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231484AbhCQL5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 07:57:49 -0400
-Received: from ozlabs.org ([203.11.71.1]:40001 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231151AbhCQL5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 07:57:22 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F0pYT4yrVz9sTD;
-        Wed, 17 Mar 2021 22:57:17 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1615982241;
-        bh=Zhmy2g9i1U4R/4NbsT62uiLktGvcjXOQHf91TVlASCo=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=o7FCwonQdnQAExLznUTypn+iMH7d97qDlNwxwgN8+JhdS3g9O3FWkMU/0jcrxay33
-         HPYyHpQC+h/b3SmyS4YD8WBu/RCdQeGZKuDqmJ92xAK81UgMvecMxw2D0l09LBS3Mh
-         jp0/+Bu3vk29Fe1xYt15TMLoK1++2Pz/2ZS8wERNgh8l+xAdecH8QsOdSCwZOPNf9b
-         SkxsVnrq6nYjioVDGvZZ1LVabuLbT89sQW+ldA32nBHewmYpk5dmxY2ztHRSjdy1JE
-         eg+q86EOvnBvxxUX133QQHy1ta89glwyc2rrJOUrYECjoP9IvpViKENHK4NF618IaQ
-         OnG7EKuQu8sWQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Daniel Axtens <dja@axtens.net>, "heying (H)" <heying24@huawei.com>,
-        benh@kernel.crashing.org, paulus@samba.org, npiggin@gmail.com,
-        akpm@linux-foundation.org, aneesh.kumar@linux.ibm.com,
-        rppt@kernel.org, ardb@kernel.org, clg@kaod.org,
-        christophe.leroy@csgroup.eu
-Cc:     johnny.chenyi@huawei.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc: arch/powerpc/kernel/setup_64.c - cleanup warnings
-In-Reply-To: <87tupab4a1.fsf@dja-thinkpad.axtens.net>
-References: <20210316041148.29694-1-heying24@huawei.com>
- <87wnu6bhvi.fsf@dja-thinkpad.axtens.net>
- <f0130916-a8f3-75ba-b5da-7d37d9139ff3@huawei.com>
- <87tupab4a1.fsf@dja-thinkpad.axtens.net>
-Date:   Wed, 17 Mar 2021 22:57:14 +1100
-Message-ID: <877dm6ouw5.fsf@mpe.ellerman.id.au>
+        id S231543AbhCQL5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 07:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231319AbhCQL5o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 07:57:44 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702DAC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 04:57:44 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id u10so2766843lju.7
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 04:57:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1n8lEKAP5tmFeQAnYvwrYiTflTL44w750U5WdG9uU0E=;
+        b=D97uK5relVNUag4c14xbhpiGR63UmxR5Vgcyjg/JiHrBCt7q+Or0Twxt/OaOxa0608
+         RM+lN+lwEZoWgWRuEBtnn9n1SmHX4TJHxGlwm2YLGqXDvmIMF/PwFnno+5C0pAbaz4oO
+         AkH5CDGPj6KDuo1PvaPjVUON2lz2FhmmeizlwdSGCQcS95YrXPBpKhexL08n3jkM0XNr
+         RTKJSEKwwR06JBy5JtJushv5Ss/S6oENbPTCODbEu74NaHm3tRHVEsKZh/BJvBj0W5j9
+         wI84uL2kw2jKert808KLU9qX6PVB+ayVfk9U5gQs7i4FoHsDvtXzC5KDi02Tgg+3mXvk
+         a74g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1n8lEKAP5tmFeQAnYvwrYiTflTL44w750U5WdG9uU0E=;
+        b=Lt6Gn+kQGijul/4opCg7OKg1VayzCgr1c5cgXGmP1K7g4jL15VFaelWzsiI6V35kS3
+         qp+YnRP/gvHAbU/eX8bmnViFFZlfg1Oom9xwbAdLfQPAz53xCJklQ5ZERIuCERV/PQKQ
+         d10rsN6wN7Ks+OISzjNzXTUtiScqR+4Ed2fLqR3tOtBtR1DRiefLIb5zb75v6wkPaFiy
+         3vfoYngoISLEY2Pt4LpAeMI8r2U7QSIR6sObe59oZarR3/hHiACTCvrrxVlWeOsH90fJ
+         y7lVvsbYV2EcdkAq9YRkz/VebJd/emFFp5qlhk8HUkzwDodiJt7slMN1ETvCL6LZsJuD
+         0lkQ==
+X-Gm-Message-State: AOAM533TBo1prlfq34JP4ackp7WS8+Vyrz6FJjWHisZ27zAPgRxOxh8i
+        WtIKjFkB117LVb8a7h/TgmhsV0+Gz9rfbyAcneU=
+X-Google-Smtp-Source: ABdhPJwDiRxBiJIhWHpBHtNBplCV2HbWRI82c+TkdyI2ovMw94noWimGzg8EUEvXacIFHJ8313fNSp7h1pkLa3s54KA=
+X-Received: by 2002:a2e:a58d:: with SMTP id m13mr2183644ljp.347.1615982262942;
+ Wed, 17 Mar 2021 04:57:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210311192746.7362-1-heiko.thiery@gmail.com> <20210317080249.GT11246@dragon>
+ <CAEyMn7b3qGupUh28rgf3THW7+8aNwCVnxtmOyS8MJXgJ3UuE7A@mail.gmail.com>
+In-Reply-To: <CAEyMn7b3qGupUh28rgf3THW7+8aNwCVnxtmOyS8MJXgJ3UuE7A@mail.gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Wed, 17 Mar 2021 08:57:31 -0300
+Message-ID: <CAOMZO5B9hGHei56riPCvOjx-TmwLiEtB=3m4WZh5b8bsWowBpw@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: configs: Enable PCIe support for imx8mq boards
+To:     Heiko Thiery <heiko.thiery@gmail.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        Chris Healy <cphealy@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Axtens <dja@axtens.net> writes:
-> "heying (H)" <heying24@huawei.com> writes:
+Hi Heiko,
+
+On Wed, Mar 17, 2021 at 8:52 AM Heiko Thiery <heiko.thiery@gmail.com> wrote:
+
+> > Do we really want it to be built-in?  If so, it would be nice to have some
+> > comments about that in commit log.
 >
->> Thank you for your reply.
->>
->> =E5=9C=A8 2021/3/17 11:04, Daniel Axtens =E5=86=99=E9=81=93:
->>> Hi He Ying,
->>>
->>> Thank you for this patch.
->>>
->>> I'm not sure what the precise rules for Fixes are, but I wonder if this
->>> should have:
->>>
->>> Fixes: 9a32a7e78bd0 ("powerpc/64s: flush L1D after user accesses")
->>> Fixes: f79643787e0a ("powerpc/64s: flush L1D on kernel entry")
->>
->> Is that necessary for warning cleanups? I thought 'Fixes' tags are=20
->> needed only for
->>
->> bugfix patches. Can someone tell me whether I am right?
+> Why would you not want it? I see other SOC PCI controllers are also
+> enabled. I would like to have it because we have an Intel e1000 on our
+> pitx-imx8m board and the seconds PCI slot is for a m.2 card. So we
+> would have the PCI support with the default defconfig. On the NXP
+> imx8mq EVK a m.2 is connected to the PCI interface.
 >
-> Yeah, I'm not sure either. Hopefully mpe will let us know.
+> Is this the kind of comments you want?
 
-It's not necessary to add a Fixes tag for a patch like this, but you can
-add one if you think it's important that the fix gets backported.
+You have selected the driver to be built-in:
+CONFIG_PCI_IMX6=y
 
-I don't think the cleanups in this case are that important, so I
-wouldn't bother with a Fixes tag.
+Shawn's question is why it needs to be built-in instead of a kernel module:
 
-cheers
+CONFIG_PCI_IMX6=m
+
+On arch/arm64/configs/defconfig the preference is to select the
+options as modules, whenever possible.
+
+If it can't be a module and needs to be built-in, then please provide
+a justification in the commit log.
+
+Hope this can clarify.
