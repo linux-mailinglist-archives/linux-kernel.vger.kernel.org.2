@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6B533F74B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:42:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F9633F753
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbhCQRmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:42:19 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:59831 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232386AbhCQRmI (ORCPT
+        id S232263AbhCQRo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229699AbhCQRoS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:42:08 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1lMaBK-002oQy-Po; Wed, 17 Mar 2021 18:42:06 +0100
-Received: from p5b13a966.dip0.t-ipconnect.de ([91.19.169.102] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lMaBK-003xU6-J8; Wed, 17 Mar 2021 18:42:06 +0100
-Subject: Re: 5.11 regression: "ia64: add support for TIF_NOTIFY_SIGNAL" breaks
- ia64 boot
-To:     Sergei Trofimovich <slyich@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210222230519.73f3e239@sf>
- <cc658b61-530e-90bf-3858-36cc60468a24@kernel.dk>
- <8decdd2e-a380-9951-3ebb-2bc3e48aa1c3@physik.fu-berlin.de>
- <20210223083507.43b5a6dd@sf>
- <51cbf584-07ef-1e62-7a3b-81494a04faa6@physik.fu-berlin.de>
- <9441757f-d4bc-a5b5-5fb0-967c9aaca693@physik.fu-berlin.de>
- <20210223192743.0198d4a9@sf>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <8d54dd1d-a035-8dff-64dc-7175aba6033f@physik.fu-berlin.de>
-Date:   Wed, 17 Mar 2021 18:42:06 +0100
+        Wed, 17 Mar 2021 13:44:18 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CDEC06174A;
+        Wed, 17 Mar 2021 10:44:18 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 16so4204093ljc.11;
+        Wed, 17 Mar 2021 10:44:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mSBxrt8q9DwvAyZBfywSCWXzmfoomEQKl5omuxCNzII=;
+        b=Idr/9rQLPqul7i01/KOaoymxiOPXrsLsOEqDPuJlyYc69QQ0ilUZ/lTwIRF2RruyW7
+         cjzQMlgAlGYFMbj+Ph1Miujbudm8NavramFluaxtMEeGhXhRLaHlcyfHKkwv4SYsJJtI
+         rF460YQL76wItNdfmvRSQRNdaFQNlOfea0HS3OvY3SWyDSM9R6pfZk1JRGFn3CODDelv
+         D4t/Zm3j77R/3T9x9aQyBrH4ojRtrEHYGknz4xxPBmwlRBXIR3q+MdokSnhqmJ7DetOX
+         ytHJAav4qxCbQaOQynFcx0BHD/7Jhl+U1XAhKuKt9olpFKCGkFf23Y//hSJGI1LciqB5
+         Dpkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mSBxrt8q9DwvAyZBfywSCWXzmfoomEQKl5omuxCNzII=;
+        b=c8lR1o1MZ2j2GOeXbNeIsOJ5kmX3sv7z6WnhppGCJ7sxXdDWhH7Z8AblobbZ7A6ax7
+         YfpmT3JHi3remCiVBaWZllKowmPq2hYXMd752E37gkyMPSvWMECGLDo+sx3WprK0URyn
+         Z17QS5SYw5Za2tuKJJJPDlwIPpujAbCYYAb4QfB0gk5r/nChS+MSihcQy00dohWzwRfA
+         ojba+/KOPlVZ8VTDFkxf2uA2W1S/9PV6aPeAu87cRWeUl7FpMlg5euZTjlPbnjDJiPx1
+         Rv5BCwIEoRoEAmYTvmc+Wil4OMj3ncPKj4XhB6Fe8SW8vAZpQvs5cNUQVdOmvRRm0wuR
+         hPJg==
+X-Gm-Message-State: AOAM530VuKFLkoNJMkmGMdVFWFHQMUbA7Qm/wPBBaZltsNcQGwaV2mXX
+        YbkuWpzkK2mLhcweUB8zRiI=
+X-Google-Smtp-Source: ABdhPJyFL0v6HaUzAfe1jE2ZqT9UQc02bio2NiVOkXwzCpQ/IQUCZdf2mELXuzdVML9HSEFCkVdvJg==
+X-Received: by 2002:a2e:557:: with SMTP id 84mr3075252ljf.480.1616003056785;
+        Wed, 17 Mar 2021 10:44:16 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id f25sm3448156lfh.226.2021.03.17.10.44.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 10:44:16 -0700 (PDT)
+Subject: Re: [PATCH v15 2/2] drm/tegra: dc: Extend debug stats with total
+ number of events
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20210311172255.25213-1-digetx@gmail.com>
+ <20210311172255.25213-3-digetx@gmail.com>
+ <20210314221130.GB2733@qmqm.qmqm.pl>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <c68ea34c-6b9f-61ce-a58a-8def27a1127a@gmail.com>
+Date:   Wed, 17 Mar 2021 20:44:15 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210223192743.0198d4a9@sf>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20210314221130.GB2733@qmqm.qmqm.pl>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.169.102
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-On 2/23/21 8:27 PM, Sergei Trofimovich wrote:
->>> Just gave it a try and it still doesn't work.  
->>
->> Maybe your other two patches to fix the strace issues are required as well?
+15.03.2021 01:11, Michał Mirosław пишет:
+> On Thu, Mar 11, 2021 at 08:22:55PM +0300, Dmitry Osipenko wrote:
+>> It's useful to know the total number of underflow events and currently
+>> the debug stats are getting reset each time CRTC is being disabled. Let's
+>> account the overall number of events that doesn't get a reset.
+> [...]
 > 
-> I'd say it's very unlikely they have any effect here. AFAIU they only amend
-> ptrace() behaviour called from userspace. Failure to boot so early is probably
-> way before any userspace.
+> Looks good. It seems independent from the other patch.
 > 
->> Or do you happen to have more patches in the Gentoo kernel?
+> Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 > 
-> Nope. It was a vanilla 5.11 release with 3 patches: 1 signal fix and
-> 2 ptrace() patches.
-> 
-> Here are dmesg and config from my machine with successfull boot:
->     https://dev.gentoo.org/~slyfox/configs/guppy-dmesg-5.11
->     https://dev.gentoo.org/~slyfox/configs/guppy-config-5.11
 
-Just gave it a try using this kernel configuration. It's never loading the hpsa
-module for me which I find really strange. The module isn't even showing up in
-the kernel message buffer.
-
->> [    0.036000] ERROR: Invalid distance value range                                                            
->> [    0.036000]                                                                                                
->> [    0.036000]   00 00 00 00 00 00
-> 
-> I don't see this string in the 5.11 kernel source. But
->    https://lore.kernel.org/lkml/161356785681.20312.13022545187499987936.tip-bot2@tip-bot2/T/
-> hints it's might be something very new and you are in the
-> middle of 5.12-rc1?
-
-I'm seeing this using your exact kernel configuration.
-
-Adrian
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
+This patch was created in order to help with debugging of the bandwidth
+management, but technically it's independent. Thank you for the review.
