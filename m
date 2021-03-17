@@ -2,46 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C29533F299
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E83F33F2A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbhCQO33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:29:29 -0400
-Received: from muru.com ([72.249.23.125]:44138 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231313AbhCQO3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:29:24 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 54A0B80BA;
-        Wed, 17 Mar 2021 14:30:13 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 16:29:19 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, linux-omap@vger.kernel.org
-Subject: Re: [PATCHv2 01/38] ARM: dts: motorola-cpcap-mapphone: Prepare for
- dtbs_check parsing
-Message-ID: <YFISPyIMCbp6WcAr@atomide.com>
-References: <20210317134904.80737-1-sebastian.reichel@collabora.com>
- <20210317134904.80737-2-sebastian.reichel@collabora.com>
+        id S231878AbhCQOaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231881AbhCQOa3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 10:30:29 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D577C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 07:30:27 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1lMXBg-0006lj-Uf; Wed, 17 Mar 2021 15:30:16 +0100
+Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1lMXBf-0007Ir-3V; Wed, 17 Mar 2021 15:30:15 +0100
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     Sumit Garg <sumit.garg@linaro.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>
+Cc:     kernel@pengutronix.de, Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] KEYS: trusted: tee: fix build error due to missing include
+Date:   Wed, 17 Mar 2021 15:29:05 +0100
+Message-Id: <20210317142904.27855-1-a.fatoum@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210317134904.80737-2-sebastian.reichel@collabora.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: afa@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Sebastian Reichel <sebastian.reichel@collabora.com> [210317 13:50]:
-> '<&gpio1 parameters &gpio2 parameters>' and '<&gpio1 parameters>,
-> <&gpio2 parameters>' result in the same DTB, but second format has
-> better source code readability. Also 'dtbs_check' currently uses
-> this format to determine the amount of items specified, so using
-> this syntax is needed to successfully verify the devicetree source
-> against a DT schema format.
+MODULE_DEVICE_TABLE is defined in <linux/module.h>, which is not
+included. Add the include to fix the build error its lack caused.
 
-Looks good to me:
+Cc: Sumit Garg <sumit.garg@linaro.org>
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+---
+ security/keys/trusted-keys/trusted_tee.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Acked-by: Tony Lindgren <tony@atomide.com>
+diff --git a/security/keys/trusted-keys/trusted_tee.c b/security/keys/trusted-keys/trusted_tee.c
+index 62983d98a252..2ce66c199e1d 100644
+--- a/security/keys/trusted-keys/trusted_tee.c
++++ b/security/keys/trusted-keys/trusted_tee.c
+@@ -8,6 +8,7 @@
+ 
+ #include <linux/err.h>
+ #include <linux/key-type.h>
++#include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/string.h>
+ #include <linux/tee_drv.h>
+-- 
+2.29.2
+
