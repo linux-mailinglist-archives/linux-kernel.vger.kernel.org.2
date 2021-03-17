@@ -2,79 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8676333E88D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:47:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB4733E88F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229540AbhCQErW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 00:47:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34482 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229492AbhCQErF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 00:47:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 61688AC17;
-        Wed, 17 Mar 2021 04:47:04 +0000 (UTC)
-Subject: Re: [PATCH] md: bcache: Trivial typo fixes in the file journal.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     rdunlap@infradead.org, kent.overstreet@gmail.com,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210317043018.4097983-1-unixbhaskar@gmail.com>
-From:   Coly Li <colyli@suse.de>
-Message-ID: <f191b8a5-e168-a415-1e07-b49d229d7b64@suse.de>
-Date:   Wed, 17 Mar 2021 12:47:00 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+        id S229712AbhCQEs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 00:48:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhCQEsB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 00:48:01 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB3DC06175F;
+        Tue, 16 Mar 2021 21:48:01 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id n79so37713928qke.3;
+        Tue, 16 Mar 2021 21:48:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AvKUgJkyyQ65jXujXRSi4LBYBTUmkT7KkIKMeZrVAdo=;
+        b=KE41bJLJ+162X8e94I0UFNQwCXc+qss+/i9doFeW3HqoqfEkCx5tzGx2JY4vz9vMR1
+         SiEo5JgPk0r8J5Wgx8eZSxw/Yh42zgWo5vExKf/QUXc9GHoRlIYwszaMBcPqmEBrBd7h
+         NSnMaq0iwheHoOoAooSn04VnlbUJQimysg/pH+woEcW8tu5kWkhqLZWngVozARysddan
+         FjYXaFd3zBs9einx3QGeXH/aJAf5vt04wAGT5Z7CoQFcdQFy7sHywoHW35E8QRxhrLFt
+         atIV5yC9K/1yAruECKW3sXqeDUbuBpHlYftG7mcPkBjGl9PqdnMgiZ9cIUkM+waf7HKW
+         6/3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AvKUgJkyyQ65jXujXRSi4LBYBTUmkT7KkIKMeZrVAdo=;
+        b=Xa9Up5yNY7V4ckOupAnwagp7BYQ7P9dskYchIEKvkvC9fUgx6LXvffecFUy67hdRt5
+         CFZ6gCsLXZJ5D9PBawKFUA6jNbkG0MFodELJqLp9+0KAc1KkCfvjWzNsGXaz3hZAor6t
+         OFkgb5Pwhv9d9ibmDhY9DX6CieAMx5bo7O+iwEmZWRDOXpnWDc0M/JE9h4yWDWPFrkEf
+         Uul6mctQ6/OgYCREhIUo3QU6t2GuOa0QDJoWQh20Mr9IvgEq9MGr39+fp6bwzDvezYjK
+         1xI59hNQkg39ZIxIV/rfNYYYEEj4sMWeXRL0/G5MluZfFxcLFV8s/3JDnWFTNyvdgQp2
+         Iv2w==
+X-Gm-Message-State: AOAM5301h3bfLcZjp6NwgwqTxelNSWMK8NeDnIJLg+p7KD6SStw286tS
+        ufIjUD2VYv+/3FS0wRykpik=
+X-Google-Smtp-Source: ABdhPJxZ8lYjXxA3pAiLAVDoONL/005dYCt+qsk2muXPO7guFffCDiHagN6VTwwETZa+yLt1kobxpg==
+X-Received: by 2002:a37:e315:: with SMTP id y21mr2760659qki.418.1615956480256;
+        Tue, 16 Mar 2021 21:48:00 -0700 (PDT)
+Received: from localhost ([76.73.146.210])
+        by smtp.gmail.com with ESMTPSA id e14sm16348614qka.56.2021.03.16.21.47.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 21:47:59 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 21:47:59 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: Re: [PATCH 13/13] MAINTAINERS: Add entry for the bitmap API
+Message-ID: <20210317044759.GA2114775@yury-ThinkPad>
+References: <20210316015424.1999082-1-yury.norov@gmail.com>
+ <20210316015424.1999082-14-yury.norov@gmail.com>
+ <YFCabyt9pfPtoQiZ@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210317043018.4097983-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFCabyt9pfPtoQiZ@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 12:30 PM, Bhaskar Chowdhury wrote:
+[CC Andy Whitcroft, Joe Perches, Dwaipayan Ray, Lukas Bulwahn]
+
+On Tue, Mar 16, 2021 at 01:45:51PM +0200, Andy Shevchenko wrote:
+> On Mon, Mar 15, 2021 at 06:54:24PM -0700, Yury Norov wrote:
+> > Add myself as maintainer for bitmap API and Andy and Rasmus as reviewers.
+> > 
+> > I'm an author of current implementation of lib/find_bit and an active
+> > contributor to lib/bitmap. It was spotted that there's no maintainer for
+> > bitmap API. I'm willing to maintain it.
+> > 
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> > ---
+> >  MAINTAINERS | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 3dd20015696e..44f94cdd5a20 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -3151,6 +3151,22 @@ F:	Documentation/filesystems/bfs.rst
+> >  F:	fs/bfs/
+> >  F:	include/uapi/linux/bfs_fs.h
+> >  
+> > +BITMAP API
+> > +M:	Yury Norov <yury.norov@gmail.com>
+> > +R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > +R:	Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> > +S:	Maintained
+> > +F:	include/asm-generic/bitops/find.h
+> > +F:	include/linux/bitmap.h
+> > +F:	lib/bitmap.c
+> > +F:	lib/find_bit.c
 > 
-> s/condidate/candidate/
-> s/folowing/following/
+> > +F:	lib/find_find_bit_benchmark.c
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> Does this file exist?
+> I guess checkpatch.pl nowadays has a MAINTAINER data base validation.
 
-I will add it in my for-next queue.
+No lib/find_find_bit_benchmark.c doesn't exist. It's a typo, it should
+be lib/find_bit_benchmark.c. Checkpatch doesn't warn:
 
-Thanks.
+yury:linux$ scripts/checkpatch.pl 0013-MAINTAINERS-Add-entry-for-the-bitmap-API.patch
+total: 0 errors, 0 warnings, 22 lines checked
 
-Coly Li
-
-
-> ---
->  drivers/md/bcache/journal.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> > +F:	lib/test_bitmap.c
+> > +F:	tools/include/asm-generic/bitops/find.h
+> > +F:	tools/include/linux/bitmap.h
+> > +F:	tools/lib/bitmap.c
+> > +F:	tools/lib/find_bit.c
+> > +
+> >  BLINKM RGB LED DRIVER
+> >  M:	Jan-Simon Moeller <jansimon.moeller@gmx.de>
+> >  S:	Maintained
+> > -- 
+> > 2.25.1
+> > 
 > 
-> diff --git a/drivers/md/bcache/journal.c b/drivers/md/bcache/journal.c
-> index c6613e817333..9f2eb8dec803 100644
-> --- a/drivers/md/bcache/journal.c
-> +++ b/drivers/md/bcache/journal.c
-> @@ -111,7 +111,7 @@ reread:		left = ca->sb.bucket_size - offset;
->  			 * Check from the oldest jset for last_seq. If
->  			 * i->j.seq < j->last_seq, it means the oldest jset
->  			 * in list is expired and useless, remove it from
-> -			 * this list. Otherwise, j is a condidate jset for
-> +			 * this list. Otherwise, j is a candidate jset for
->  			 * further following checks.
->  			 */
->  			while (!list_empty(list)) {
-> @@ -498,7 +498,7 @@ static void btree_flush_write(struct cache_set *c)
->  		 * - If there are matched nodes recorded in btree_nodes[],
->  		 *   they are clean now (this is why and how the oldest
->  		 *   journal entry can be reclaimed). These selected nodes
-> -		 *   will be ignored and skipped in the folowing for-loop.
-> +		 *   will be ignored and skipped in the following for-loop.
->  		 */
->  		if (((btree_current_write(b)->journal - fifo_front_p) &
->  		     mask) != 0) {
-> --
-> 2.30.2
+> -- 
+> With Best Regards,
+> Andy Shevchenko
 > 
-
