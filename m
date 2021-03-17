@@ -2,83 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5629D33F79A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:55:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBEEE33F79C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:56:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232883AbhCQRzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:55:14 -0400
-Received: from mga01.intel.com ([192.55.52.88]:34125 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232847AbhCQRyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:54:43 -0400
-IronPort-SDR: Z4Vc0M65Ff4yXBNKwp7xBTq0bzN/rD/Zpgu+i196+KAuC930VaCB/pyyGtH0kUYKMKy9d2ETkR
- LJSBPO9cq9Zw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="209487447"
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="209487447"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 10:54:42 -0700
-IronPort-SDR: R/gavvYAnNIyWCXbDt1vV2YSEXMSHgGHpFVsMx+Mc/3C5bl92CGgom/DgTQUrjFLs02TUWf58r
- olXG8MV4/CVQ==
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="388925626"
-Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.176.237]) ([10.212.176.237])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 10:54:41 -0700
-Subject: Re: [PATCH] kernel: cpu: resctrl: Minor typo fix in the file
- pseudo_lock.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, fenghua.yu@intel.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-References: <20210317084016.3787380-1-unixbhaskar@gmail.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <b29afbff-67f4-397b-e289-c3e21755fec0@intel.com>
-Date:   Wed, 17 Mar 2021 10:54:40 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232879AbhCQRzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232537AbhCQRzi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 13:55:38 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3864C06174A;
+        Wed, 17 Mar 2021 10:55:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=Ypyz0j2PEw9gdVaX4v7qk0sBF+uiHCxzyBA37J2T/TI=; b=nIhYv0xmoq9cVrT9MAFkrRcLNm
+        HgCxgvRSlG9n79iDIeboxo0ib06fkhlfn3XF3CTyaplKSwajDFRreE7I5d8SQC+98zl7Et24q1lWq
+        uRDIYBrXLLPC5hi5Dl//k5tdr1A8yF093CzbMB9ey+534uLsN26+9GUiA6hxU2Ayv1KrXqPMrm4K4
+        1rT9FiVqyUPhILGpTjuKvL81r0+ir0VAAV2q2Srupvxm7wieVBixMB7Fk7rUh5Z+RUlowWYpFm8Js
+        Q+7gySCF4Kh3OaF7jiXepeIs4hMwCW5GHvdbsvv31p9PCtDhusHs/iY/EZVPpu64AemceGWpsfISU
+        9b+ra0AA==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMaOM-001ffw-Av; Wed, 17 Mar 2021 17:55:34 +0000
+Subject: Re: [PATCH] scsi: fnic: Rudimentary spelling fixes throughout the
+ file fnic_trace.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, satishkh@cisco.com,
+        sebaddel@cisco.com, kartilak@cisco.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210317092240.927822-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <22e3b136-60a9-6678-411a-c4e9d16bf8e9@infradead.org>
+Date:   Wed, 17 Mar 2021 10:55:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210317084016.3787380-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210317092240.927822-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhaskar,
-
-Thank you very much for catching this typo.
-
-My feedback [1] to a previous patch from you applies here also. The 
-prefix should be "x86/resctrl:" for contributions to this area.
-
-[1] 
-https://lore.kernel.org/lkml/7e3a5c13-db5c-7399-2b80-f1284786ea77@intel.com/
-
-On 3/17/2021 1:40 AM, Bhaskar Chowdhury wrote:
+On 3/17/21 2:22 AM, Bhaskar Chowdhury wrote:
 > 
-> s/derefence/dereference/
+> Rudimentary typo fixes throughout the file.
 > 
+
+wow!
+
 > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->   arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-> index e916646adc69..43990a882b36 100644
-> --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-> +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-> @@ -1307,7 +1307,7 @@ int rdtgroup_pseudo_lock_create(struct rdtgroup *rdtgrp)
->   		 * If the thread does not get on the CPU for whatever
->   		 * reason and the process which sets up the region is
->   		 * interrupted then this will leave the thread in runnable
-> -		 * state and once it gets on the CPU it will derefence
-> +		 * state and once it gets on the CPU it will dereference
->   		 * the cleared, but not freed, plr struct resulting in an
->   		 * empty pseudo-locking loop.
->   		 */
-> --
-> 2.30.2
-> 
 
-Reinette
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+
+> ---
+>  drivers/scsi/fnic/fnic_trace.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/scsi/fnic/fnic_trace.c b/drivers/scsi/fnic/fnic_trace.c
+> index 9d52d83161ed..4a7536bb0ab3 100644
+> --- a/drivers/scsi/fnic/fnic_trace.c
+> +++ b/drivers/scsi/fnic/fnic_trace.c
+> @@ -153,7 +153,7 @@ int fnic_get_trace_data(fnic_dbgfs_t *fnic_dbgfs_prt)
+>  			if (rd_idx > (fnic_max_trace_entries-1))
+>  				rd_idx = 0;
+>  			/*
+> -			 * Continure dumpping trace buffer entries into
+> +			 * Continue dumping trace buffer entries into
+>  			 * memory file till rd_idx reaches write index
+>  			 */
+>  			if (rd_idx == wr_idx)
+> @@ -189,7 +189,7 @@ int fnic_get_trace_data(fnic_dbgfs_t *fnic_dbgfs_prt)
+>  				  tbp->data[3], tbp->data[4]);
+>  			rd_idx++;
+>  			/*
+> -			 * Continue dumpping trace buffer entries into
+> +			 * Continue dumping trace buffer entries into
+>  			 * memory file till rd_idx reaches write index
+>  			 */
+>  			if (rd_idx == wr_idx)
+> @@ -632,7 +632,7 @@ void fnic_fc_trace_free(void)
+>   * fnic_fc_ctlr_set_trace_data:
+>   *       Maintain rd & wr idx accordingly and set data
+>   * Passed parameters:
+> - *       host_no: host number accociated with fnic
+> + *       host_no: host number associated with fnic
+>   *       frame_type: send_frame, rece_frame or link event
+>   *       fc_frame: pointer to fc_frame
+>   *       frame_len: Length of the fc_frame
+> @@ -715,13 +715,13 @@ int fnic_fc_trace_set_data(u32 host_no, u8 frame_type,
+>   * fnic_fc_ctlr_get_trace_data: Copy trace buffer to a memory file
+>   * Passed parameter:
+>   *       @fnic_dbgfs_t: pointer to debugfs trace buffer
+> - *       rdata_flag: 1 => Unformated file
+> - *                   0 => formated file
+> + *       rdata_flag: 1 => Unformatted file
+> + *                   0 => formatted file
+>   * Description:
+>   *       This routine will copy the trace data to memory file with
+>   *       proper formatting and also copy to another memory
+> - *       file without formatting for further procesing.
+> - * Retrun Value:
+> + *       file without formatting for further processing.
+> + * Return Value:
+>   *       Number of bytes that were dumped into fnic_dbgfs_t
+>   */
+> 
+> @@ -785,10 +785,10 @@ int fnic_fc_trace_get_data(fnic_dbgfs_t *fnic_dbgfs_prt, u8 rdata_flag)
+>   *      @fc_trace_hdr_t: pointer to trace data
+>   *      @fnic_dbgfs_t: pointer to debugfs trace buffer
+>   *      @orig_len: pointer to len
+> - *      rdata_flag: 0 => Formated file, 1 => Unformated file
+> + *      rdata_flag: 0 => Formatted file, 1 => Unformatted file
+>   * Description:
+>   *      This routine will format and copy the passed trace data
+> - *      for formated file or unformated file accordingly.
+> + *      for formatted file or unformatted file accordingly.
+>   */
+> 
+>  void copy_and_format_trace_data(struct fc_trace_hdr *tdata,
+> --
+
+
+-- 
+~Randy
+
