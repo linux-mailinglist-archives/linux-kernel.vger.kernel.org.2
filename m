@@ -2,151 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A5733F7E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57BB233F7F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:13:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232993AbhCQSN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232939AbhCQSMx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:12:53 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A262C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:12:53 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id k68so29902143qke.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:12:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=VJxxc1aWYvyrrwlQVS/dPT/va70MajmNF5/Ovh5tHqY=;
-        b=kyQ8Hiv4GYcoi4+iUdOGxaPKf5RLY4MOrgjWePaGv9iAOuYjxdMqJFk1uR/pqtJtHk
-         XeYUeXcy79FaEhJ4181E7nrIVXSXkQLf3Ffm9UDzQuIYyIh1S/fSP0Qi2cAxuzjmDs2T
-         AwHsNTd/tZDGjVvy1EPWNxnGm4xRYf8dXcXlHX1hGYa13+6oItJxzotqfQBwyJnvVtUk
-         onK7S7VXY1ktUjilkSDedQsLEpxW36TPwbdbGDdkbn0iqTx37ESwwlvewXZfttSE2Jeb
-         EmRgHWR8B7h81/49d32oY5XGve3qANSXjiroAjT6pq5nSZ+8x+MiU8DTf+hZ3Pf5sBOF
-         tP3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=VJxxc1aWYvyrrwlQVS/dPT/va70MajmNF5/Ovh5tHqY=;
-        b=p3hd2GmWevmEA+m36yvntcvGLlxvlLYd8JyELzDa/ONgCIBlWmG1nHXr+isqgy8tcq
-         /4oXQxEBFOW3IYo1XsgmMBNcnxq64ymsPb+2tHlE1HiO80WM3YHvbRd+rAzoFP/gKwvq
-         3ViUXBjUOZxxvJhgJntKXfoOsthAiTIOq2f77cHsejUndE5avqLeq3e1I+AJZ9kc7vva
-         MokLdDgdPVLfavRpvhXIBLU6mwGgp9zxBmpgsvBNDHmYkXm6qfKoZUn1YfVKV71b0Mc7
-         w/IGhpFKdhi9MJaQCy6XVWdu1yyco8jQfiSew2bnU3UHbDZsNsGHmbsZa8oGHKctUYqW
-         bQZg==
-X-Gm-Message-State: AOAM531MSzheWqrfHBr/XN4pNlzFV9W3rHDm6wEef1bAsU8DNGeBrTVb
-        nVN4SN1lxsgLfYpCl2No0Mlypnax2o0=
-X-Google-Smtp-Source: ABdhPJw/Wivaj/kWp56aU+QGo3lEFgihQqOAAkIvy99F0Ym1kOta9QfL7jBHsbZ39lHIXecHsM2e9+KlTfU=
-X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:dc6b:2250:2aa4:b316])
- (user=badhri job=sendgmr) by 2002:a05:6214:16c1:: with SMTP id
- d1mr370034qvz.29.1616004772217; Wed, 17 Mar 2021 11:12:52 -0700 (PDT)
+        id S233061AbhCQSNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:13:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232954AbhCQSM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 14:12:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFA3864F3A;
+        Wed, 17 Mar 2021 18:12:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616004777;
+        bh=kjEnaGXPr/9yCzRZa7xlf8s9Ha6UQ+18w1ocjK4R01U=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=sTmVpMHaNJJoPvJeQriBydfeyE7/p17sf+j8mDaGUW+rY6KrHEzYB79uvyOWIzcZm
+         pp9n4GCHmzjZAfkYfkU2XMjlcnjDwjir7I3/lZ5m62pe32D+94Pzzojjj6NURhW5OR
+         0g1MO39AcTLMLDsLw03yVG4yPVL7FgDJ1d7RrWeOHCoZ+T73Z0Ojy9Vw1ViggS00mi
+         ycQ5VEKzZ+wHD+L6CsYSZ12DmqYGnBWS9rAQynWLhhOH7xbAg3unBZ+NoAYsn6vCO/
+         T2An9YSzxbsfxpJ24Mjemp0oCbE0XtC/yyLph7SG+xSzwrzFpP8Qz1VVtIORwtlty5
+         aNJP90OerHiRg==
+From:   Andy Lutomirski <luto@kernel.org>
+To:     x86@kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH v4 9/9] kentry: Verify kentry state in instrumentation_begin/end()
 Date:   Wed, 17 Mar 2021 11:12:48 -0700
-Message-Id: <20210317181249.1062995-1-badhri@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v2] usb: typec: tcpm: Invoke power_supply_changed for tcpm-source-psy-
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        stable@vger.kernel.org, Badhri Jagan Sridharan <badhri@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <49a9ea6891df598838c50a53058a0606baa239c3.1616004689.git.luto@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <cover.1616004689.git.luto@kernel.org>
+References: <cover.1616004689.git.luto@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tcpm-source-psy- does not invoke power_supply_changed API when
-one of the published power supply properties is changed.
-power_supply_changed needs to be called to notify
-userspace clients(uevents) and kernel clients.
+Calling instrumentation_begin() and instrumentation_end() when kentry
+thinks the CPU is in user mode is an error.  Verify the kentry state when
+instrumentation_begin/end() are called.
 
-Fixes: f2a8aa053c176("typec: tcpm: Represent source supply through power_supply")
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
-Changes since V1:
-- Fixed commit message as per Guenter's suggestion
-- Added Reviewed-by tags
-- cc'ed stable
----
- drivers/usb/typec/tcpm/tcpm.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+Add _nocheck() variants to skip verification to avoid WARN() generating
+extra kentry warnings.
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 11d0c40bc47d..e8936ea17f80 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -945,6 +945,7 @@ static int tcpm_set_current_limit(struct tcpm_port *port, u32 max_ma, u32 mv)
- 
- 	port->supply_voltage = mv;
- 	port->current_limit = max_ma;
-+	power_supply_changed(port->psy);
- 
- 	if (port->tcpc->set_current_limit)
- 		ret = port->tcpc->set_current_limit(port->tcpc, max_ma, mv);
-@@ -2931,6 +2932,7 @@ static int tcpm_pd_select_pdo(struct tcpm_port *port, int *sink_pdo,
- 
- 	port->pps_data.supported = false;
- 	port->usb_type = POWER_SUPPLY_USB_TYPE_PD;
-+	power_supply_changed(port->psy);
- 
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+---
+ arch/x86/kernel/traps.c         |  4 ++--
+ include/asm-generic/bug.h       |  8 ++++----
+ include/linux/instrumentation.h | 25 ++++++++++++++++++++-----
+ kernel/entry/common.c           |  7 +++++++
+ 4 files changed, 33 insertions(+), 11 deletions(-)
+
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index be924180005a..983e4be5fdcb 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -229,7 +229,7 @@ static noinstr bool handle_bug(struct pt_regs *regs)
  	/*
- 	 * Select the source PDO providing the most power which has a
-@@ -2955,6 +2957,7 @@ static int tcpm_pd_select_pdo(struct tcpm_port *port, int *sink_pdo,
- 				port->pps_data.supported = true;
- 				port->usb_type =
- 					POWER_SUPPLY_USB_TYPE_PD_PPS;
-+				power_supply_changed(port->psy);
- 			}
- 			continue;
- 		default:
-@@ -3112,6 +3115,7 @@ static unsigned int tcpm_pd_select_pps_apdo(struct tcpm_port *port)
- 						  port->pps_data.out_volt));
- 		port->pps_data.op_curr = min(port->pps_data.max_curr,
- 					     port->pps_data.op_curr);
-+		power_supply_changed(port->psy);
+ 	 * All lies, just get the WARN/BUG out.
+ 	 */
+-	instrumentation_begin();
++	instrumentation_begin_nocheck();
+ 	/*
+ 	 * Since we're emulating a CALL with exceptions, restore the interrupt
+ 	 * state to what it was at the exception site.
+@@ -242,7 +242,7 @@ static noinstr bool handle_bug(struct pt_regs *regs)
  	}
+ 	if (regs->flags & X86_EFLAGS_IF)
+ 		raw_local_irq_disable();
+-	instrumentation_end();
++	instrumentation_end_nocheck();
  
- 	return src_pdo;
-@@ -3347,6 +3351,7 @@ static int tcpm_set_charge(struct tcpm_port *port, bool charge)
- 			return ret;
- 	}
- 	port->vbus_charge = charge;
-+	power_supply_changed(port->psy);
- 	return 0;
+ 	return handled;
  }
+diff --git a/include/asm-generic/bug.h b/include/asm-generic/bug.h
+index 76a10e0dca9f..fc360c463a99 100644
+--- a/include/asm-generic/bug.h
++++ b/include/asm-generic/bug.h
+@@ -85,18 +85,18 @@ void warn_slowpath_fmt(const char *file, const int line, unsigned taint,
+ 		       const char *fmt, ...);
+ #define __WARN()		__WARN_printf(TAINT_WARN, NULL)
+ #define __WARN_printf(taint, arg...) do {				\
+-		instrumentation_begin();				\
++		instrumentation_begin_nocheck();			\
+ 		warn_slowpath_fmt(__FILE__, __LINE__, taint, arg);	\
+-		instrumentation_end();					\
++		instrumentation_end_nocheck();				\
+ 	} while (0)
+ #else
+ extern __printf(1, 2) void __warn_printk(const char *fmt, ...);
+ #define __WARN()		__WARN_FLAGS(BUGFLAG_TAINT(TAINT_WARN))
+ #define __WARN_printf(taint, arg...) do {				\
+-		instrumentation_begin();				\
++		instrumentation_begin_nocheck();			\
+ 		__warn_printk(arg);					\
+ 		__WARN_FLAGS(BUGFLAG_NO_CUT_HERE | BUGFLAG_TAINT(taint));\
+-		instrumentation_end();					\
++		instrumentation_end_nocheck();				\
+ 	} while (0)
+ #define WARN_ON_ONCE(condition) ({				\
+ 	int __ret_warn_on = !!(condition);			\
+diff --git a/include/linux/instrumentation.h b/include/linux/instrumentation.h
+index 93e2ad67fc10..cdf80454f92a 100644
+--- a/include/linux/instrumentation.h
++++ b/include/linux/instrumentation.h
+@@ -4,14 +4,21 @@
  
-@@ -3530,6 +3535,7 @@ static void tcpm_reset_port(struct tcpm_port *port)
- 	port->try_src_count = 0;
- 	port->try_snk_count = 0;
- 	port->usb_type = POWER_SUPPLY_USB_TYPE_C;
-+	power_supply_changed(port->psy);
- 	port->nr_sink_caps = 0;
- 	port->sink_cap_done = false;
- 	if (port->tcpc->enable_frs)
-@@ -5957,7 +5963,7 @@ static int tcpm_psy_set_prop(struct power_supply *psy,
- 		ret = -EINVAL;
- 		break;
- 	}
--
-+	power_supply_changed(port->psy);
- 	return ret;
+ #if defined(CONFIG_DEBUG_ENTRY) && defined(CONFIG_STACK_VALIDATION)
+ 
++extern void kentry_assert_may_instrument(void);
++
+ /* Begin/end of an instrumentation safe region */
+-#define instrumentation_begin() ({					\
+-	asm volatile("%c0: nop\n\t"						\
++#define instrumentation_begin_nocheck() ({				\
++	asm volatile("%c0: nop\n\t"					\
+ 		     ".pushsection .discard.instr_begin\n\t"		\
+ 		     ".long %c0b - .\n\t"				\
+ 		     ".popsection\n\t" : : "i" (__COUNTER__));		\
+ })
+ 
++#define instrumentation_begin() ({					\
++	instrumentation_begin_nocheck();				\
++	kentry_assert_may_instrument();					\
++})
++
+ /*
+  * Because instrumentation_{begin,end}() can nest, objtool validation considers
+  * _begin() a +1 and _end() a -1 and computes a sum over the instructions.
+@@ -43,15 +50,23 @@
+  * To avoid this, have _end() be a NOP instruction, this ensures it will be
+  * part of the condition block and does not escape.
+  */
+-#define instrumentation_end() ({					\
++#define instrumentation_end_nocheck() ({				\
+ 	asm volatile("%c0: nop\n\t"					\
+ 		     ".pushsection .discard.instr_end\n\t"		\
+ 		     ".long %c0b - .\n\t"				\
+ 		     ".popsection\n\t" : : "i" (__COUNTER__));		\
+ })
++
++#define instrumentation_end() ({					\
++	kentry_assert_may_instrument();					\
++	instrumentation_end_nocheck();					\
++})
++
+ #else
+-# define instrumentation_begin()	do { } while(0)
+-# define instrumentation_end()		do { } while(0)
++# define instrumentation_begin_nocheck()	do { } while(0)
++# define instrumentation_begin()		do { } while(0)
++# define instrumentation_end_nocheck()		do { } while(0)
++# define instrumentation_end()			do { } while(0)
+ #endif
+ 
+ #endif /* __LINUX_INSTRUMENTATION_H */
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index 152e7546be16..57036a887790 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -56,6 +56,13 @@ static __always_inline void kentry_cpu_depth_sub(unsigned int n)
+ {
+ 	this_cpu_sub(kentry_cpu_depth, n);
  }
++
++void kentry_assert_may_instrument(void)
++{
++	DEBUG_ENTRY_WARN_ONCE(this_cpu_read(kentry_cpu_depth) == 0, "instrumentable code is running in the wrong kentry state");
++}
++EXPORT_SYMBOL_GPL(kentry_assert_may_instrument);
++
+ #else
  
-@@ -6110,6 +6116,7 @@ struct tcpm_port *tcpm_register_port(struct device *dev, struct tcpc_dev *tcpc)
- 	err = devm_tcpm_psy_register(port);
- 	if (err)
- 		goto out_role_sw_put;
-+	power_supply_changed(port->psy);
- 
- 	port->typec_port = typec_register_port(port->dev, &port->typec_caps);
- 	if (IS_ERR(port->typec_port)) {
+ #define DEBUG_ENTRY_WARN_ONCE(condition, format...) do {} while (0)
 -- 
-2.31.0.rc2.261.g7f71774620-goog
+2.30.2
 
