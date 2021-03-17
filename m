@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD81C33EAC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAAEA33EAC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:48:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhCQHrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 03:47:17 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:52091 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230289AbhCQHq5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 03:46:57 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F0j0c024Pz9sRR;
-        Wed, 17 Mar 2021 18:46:55 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1615967216;
-        bh=QPhanD1cLucA9zYW648gcWSyz6HZcM18ECwnbzg3RTI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kN/wOh+jgCvNUHzqniyKL44daYQ/jFWVhxLzMEKDiilIwusKzfCYJTx2gFnCzWTRG
-         AhGOW7Ck3mThZ0Dhpp3hsaaoJ8GtLUkhX+r6Au5XIp6TNxgW3C8pDkdgSNOmDMrvTc
-         GU0iDq7SX0AOSvyKLHMYKj+WfJKFlUibM4K6NRM4B9IWscERo9E6nYBPMJJ6QgtoK5
-         v2IS+Qds9+MDqJ2G4jrGgszqd6/4a950OXvzWZ0reszZmh7vNCsJFEO4HZDU3iE8jM
-         z8LiI0o/dNVmfZ2TN9Y0HELfELO6rmmXY/YXgtAoF3lTAEsOvdyC8hSPyxwOsgXe3G
-         EBOQqo2DCVNmw==
-Date:   Wed, 17 Mar 2021 18:46:55 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steve French <smfrench@gmail.com>
-Cc:     Namjae Jeon <namjae.jeon@samsung.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the cifsd tree
-Message-ID: <20210317184655.4d369e9e@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6O6RX+RCS4iSnTW3vazTQXH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S230287AbhCQHry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 03:47:54 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:36109 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230250AbhCQHrb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 03:47:31 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R251e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0USESriJ_1615967247;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0USESriJ_1615967247)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 17 Mar 2021 15:47:27 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     tony.luck@intel.com
+Cc:     qiuxu.zhuo@intel.com, bp@alien8.de, mchehab@kernel.org,
+        james.morse@arm.com, rric@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] EDAC: use NULL instead of using plain integer as pointer
+Date:   Wed, 17 Mar 2021 15:47:25 +0800
+Message-Id: <1615967245-35819-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/6O6RX+RCS4iSnTW3vazTQXH
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This fixes the following sparse warnings:
+drivers/edac/sb_edac.c:433:10: warning: Using plain integer as NULL
+pointer
+drivers/edac/sb_edac.c:499:10: warning: Using plain integer as NULL
+pointer
+drivers/edac/sb_edac.c:570:10: warning: Using plain integer as NULL
+pointer
+drivers/edac/sb_edac.c:614:10: warning: Using plain integer as NULL
+pointer
+drivers/edac/sb_edac.c:680:10: warning: Using plain integer as NULL
+pointer
 
-Hi all,
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/edac/sb_edac.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-After merging the cifsd tree, today's linux-next build (htmldocs)
-produced this warning:
+diff --git a/drivers/edac/sb_edac.c b/drivers/edac/sb_edac.c
+index 93daa42..a99df55 100644
+--- a/drivers/edac/sb_edac.c
++++ b/drivers/edac/sb_edac.c
+@@ -433,7 +433,7 @@ struct sbridge_pvt {
+ 
+ static const struct pci_id_table pci_dev_descr_sbridge_table[] = {
+ 	PCI_ID_TABLE_ENTRY(pci_dev_descr_sbridge, ARRAY_SIZE(pci_dev_descr_sbridge), 1, SANDY_BRIDGE),
+-	{0,}			/* 0 terminated list. */
++	{NULL,}			/* 0 terminated list. */
+ };
+ 
+ /* This changes depending if 1HA or 2HA:
+@@ -499,7 +499,7 @@ struct sbridge_pvt {
+ 
+ static const struct pci_id_table pci_dev_descr_ibridge_table[] = {
+ 	PCI_ID_TABLE_ENTRY(pci_dev_descr_ibridge, 12, 2, IVY_BRIDGE),
+-	{0,}			/* 0 terminated list. */
++	{NULL,}			/* 0 terminated list. */
+ };
+ 
+ /* Haswell support */
+@@ -570,7 +570,7 @@ struct sbridge_pvt {
+ 
+ static const struct pci_id_table pci_dev_descr_haswell_table[] = {
+ 	PCI_ID_TABLE_ENTRY(pci_dev_descr_haswell, 13, 2, HASWELL),
+-	{0,}			/* 0 terminated list. */
++	{NULL,}			/* 0 terminated list. */
+ };
+ 
+ /* Knight's Landing Support */
+@@ -614,7 +614,7 @@ struct sbridge_pvt {
+ 
+ static const struct pci_id_table pci_dev_descr_knl_table[] = {
+ 	PCI_ID_TABLE_ENTRY(pci_dev_descr_knl, ARRAY_SIZE(pci_dev_descr_knl), 1, KNIGHTS_LANDING),
+-	{0,}
++	{NULL,}
+ };
+ 
+ /*
+@@ -680,7 +680,7 @@ struct sbridge_pvt {
+ 
+ static const struct pci_id_table pci_dev_descr_broadwell_table[] = {
+ 	PCI_ID_TABLE_ENTRY(pci_dev_descr_broadwell, 10, 2, BROADWELL),
+-	{0,}			/* 0 terminated list. */
++	{NULL,}			/* 0 terminated list. */
+ };
+ 
+ 
+-- 
+1.8.3.1
 
-Documentation/filesystems/cifs/cifsd.rst:3: WARNING: Title overline too sho=
-rt.
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-CIFSD - SMB3 Kernel Server
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Documentation/filesystems/cifs/cifsd.rst: WARNING: document isn't included =
-in any toctree
-
-Introduced by commit
-
-  597357deeecf ("cifsd: update cifsd.rst file")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/6O6RX+RCS4iSnTW3vazTQXH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBRs+8ACgkQAVBC80lX
-0GwtyQgAoHfvjBWueGT67+3s1qcWhuzvjq69VdY91Hq6p9M9TB+oBYWC1FsONZV7
-wpNusRuwUs3cqP/eytJ4yYGht8oQyjQyaMt5RskBGDAwF41qZEGaZi5Knz7bxdgc
-jtyojUYdMTldflN2ZB7Fp4dxxHC/+VaeIbJwaafAX0jlCwRq1ZyataLKpqsODCBw
-uIQR+sDX3YraL0kB6mIMzDHb24eni47CLQJ/MgPwMyvrJnjk/GwWKEN+D8oKZwVv
-F2DQJndV4ZSsmPekfdgkFhlGa1R5tf6xzcBXLlaeqO8IxDjohN84j7G3/nEvRY96
-Df2rxmy3vzBS6emba6aeIa25H23mbQ==
-=Horb
------END PGP SIGNATURE-----
-
---Sig_/6O6RX+RCS4iSnTW3vazTQXH--
