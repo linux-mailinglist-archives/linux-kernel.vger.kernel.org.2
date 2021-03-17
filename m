@@ -2,256 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A39433EEA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:47:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C64B033EEAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbhCQKrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:47:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhCQKqy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:46:54 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBA9C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 03:46:54 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id n14so40446237iog.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 03:46:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EcLzHfwNPr9gGEtA+CwtCHVdRs0StUxL7B8m523U/P4=;
-        b=spjqwtfz/oJIKZs9makfe2go6mKd9bV4cTuNl5By1eJkDKwc655dP9Y+0jspa8V4y+
-         uZAIzNzl1d4sFEj7Dm47s9D5D8RnnPDPrEeHysDYdIosJtEMfLXkVa3LxaeH+KnB4/4H
-         dzIEcscnC+jfcDW46MrbOVXX+ll6tXAbXLAr/61NHcCACbTL8A3eilSjP1w9TCVOrCOJ
-         8LenI+M0sVQP3ae5HEdbER0F4/ej+ZHejRbZNro43Kn2im1Jk1X6hATVDZKFwaLhhXik
-         vc43/ASeaOtEKsiQMqN4Kuw0Ht0aR3NcqMLrIzW9AJhmHdkIopdoKor370KjV6orwA9r
-         4hPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EcLzHfwNPr9gGEtA+CwtCHVdRs0StUxL7B8m523U/P4=;
-        b=Jk4+AB20b8FN/RwYnd1MyO25eBTMX8QjX3WWAmtByGHIGXw/bEkI0mhQspSpb3o3u7
-         /znD4BSfdDzzfcVIhFWa4ew5iShpv10pC6ioK3gmZ+9y0tXdL54/yjUdjDLS25sExR4R
-         s6o1QT0s2q4q8KXz/5X4fEMr8LoEe6NEqU182CZAONhie1Hkpfx/hNuyUDrMXoyRDwPA
-         /+DZpcOMUZPYAj4BRSY/OCTK29hIRCTS96kjF1rXbFYFW0jvC3KFOqv6i8q6IPslHSQJ
-         /3vnqGTcegZKPDJd+cj4rES7DufJtTjUo6bGVjGhayd2nzb7HeaQn7T+e8cbpn97KHeT
-         6qlg==
-X-Gm-Message-State: AOAM532sPl29pBi6G4mDPTHsI6r5e9RGbxaUkv+Y9GwNT1sTVgJlSXjO
-        DZNcE0cAPpBMsA6m9IrbwICv/Q==
-X-Google-Smtp-Source: ABdhPJzORvg+qeqzSdKR1+f1IMU+oK5a8htF4//PRyfmZLe8tfdiLYz1254gp1+CaXupcgk6mPgxIg==
-X-Received: by 2002:a6b:d80d:: with SMTP id y13mr6400739iob.75.1615978013518;
-        Wed, 17 Mar 2021 03:46:53 -0700 (PDT)
-Received: from google.com ([2620:15c:183:200:85db:6a0d:7a4d:5606])
-        by smtp.gmail.com with ESMTPSA id i4sm10636156ila.70.2021.03.17.03.46.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 03:46:52 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 04:46:46 -0600
-From:   Yu Zhao <yuzhao@google.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Yang Shi <shy828301@gmail.com>, linux-kernel@vger.kernel.org,
-        page-reclaim@google.com
-Subject: Re: [PATCH v1 09/14] mm: multigenerational lru: mm_struct list
-Message-ID: <YFHeFslZ85/h3o/q@google.com>
-References: <20210313075747.3781593-1-yuzhao@google.com>
- <20210313075747.3781593-10-yuzhao@google.com>
- <048e5e1e977e720c3f9fc536ac54beebcc8319f5.camel@surriel.com>
- <87pmzzsvfb.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <YFAsjP7NIZM5Ld+m@google.com>
- <871rcfzjg0.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <YFBktbCH9JFcT0rL@google.com>
- <87o8fixxfh.fsf@yhuang6-desk1.ccr.corp.intel.com>
-MIME-Version: 1.0
+        id S230243AbhCQKsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:48:17 -0400
+Received: from mail-mw2nam10on2085.outbound.protection.outlook.com ([40.107.94.85]:32320
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230346AbhCQKsC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 06:48:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A+jT3bj9REKrlJrdSYOWlS3q3tdVHTHwdDFJJlYBEhqCBshGXjDFY53cn2+35Y/pNCUp6k129E+DFGta+D7pMi1Dw+eWLCMbp9pbYc6n8EsLTedv3baTTeaUeDBpo5N95fx8ug0fYfszRwRrzlD2rANMaRK7AeK+HCWVcumLXj40E5obEdXe0QKLpQdNTTUWfHUg8CwI/tuqTdEWHRKsul9xAcUZzFFacrXMXjyv6ls6fxrA+jvfPbHhfQnWBb/bprKNdUub/VAW+AhpHmw5AGMXDKoxw3ljTbzGHRdZwRw3Mx0pqEXTzx/OEQnKHPnkMTjH80Ll83bu90yF8Dtawg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lkaBXnLcL6uwF4bis8UzVH0TXclV33vNF9rElS27uX8=;
+ b=H+P2kO3ZTw/FwL9y536D0AsL7RPfvol6CApxWbnPLchnZatvoMpvoVJj+15YAsHPyCLB/gQ4mt96a0p+4Y1mLwtlWY5iXPBcEcZHsY8MMkh0z+a27UFuoI3P4HnwhV87Hrn772Ev8jG17UuR52/KVe8AtXxxIOgpHOunoPJKb1BBM+7OjyOkvM5IBNgZkZiOxnu25hpOcDWplsCe7qgmOT7Ny4Y4IKgcVuKmHkmcy7FYZmRhXhdVR0Wamsm1sU0aP6sUMxtQRsPy+6xg6NPDP5AU8mA5VTwlh9jMvFsXEgwQj5MuHcbk0H2FDu/F2ho9BoIl/MAkIbJEW4vYqebOWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lkaBXnLcL6uwF4bis8UzVH0TXclV33vNF9rElS27uX8=;
+ b=wB0UEbT79ELX3Wbfnl+/fkGkJpu5kd7MhRhL3sgtnLhKUU9bQQwIlryXln4kcXAlJ2Kpb6xcN4CIrGpv/k4W77I71+OBNlcX6wqaU9KaswXL5ZuUACKaWND+9aVnDbMfoLFdrCILRJURXTPP3vSTVaglVR36pe82K+3K1iDWSn0=
+Authentication-Results: suse.de; dkim=none (message not signed)
+ header.d=none;suse.de; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR12MB1248.namprd12.prod.outlook.com (2603:10b6:300:12::21)
+ by MWHPR12MB1790.namprd12.prod.outlook.com (2603:10b6:300:109::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Wed, 17 Mar
+ 2021 10:47:59 +0000
+Received: from MWHPR12MB1248.namprd12.prod.outlook.com
+ ([fe80::5094:3a69:806f:8a28]) by MWHPR12MB1248.namprd12.prod.outlook.com
+ ([fe80::5094:3a69:806f:8a28%5]) with mapi id 15.20.3955.018; Wed, 17 Mar 2021
+ 10:47:59 +0000
+Date:   Wed, 17 Mar 2021 18:46:56 +0800
+From:   Huang Rui <ray.huang@amd.com>
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Suthikulpanit, Suravee" <Suravee.Suthikulpanit@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] iommu/amd: Fix iommu remap panic while amd_iommu is set
+ to disable
+Message-ID: <20210317104656.GA2508995@hr-amd>
+References: <20210311142807.705080-1-ray.huang@amd.com>
+ <YFCvsort3oZGfDBy@suse.de>
+ <20210316133602.GB2497230@hr-amd>
+ <YFDICtszzhFzX8cH@suse.de>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87o8fixxfh.fsf@yhuang6-desk1.ccr.corp.intel.com>
+In-Reply-To: <YFDICtszzhFzX8cH@suse.de>
+X-Originating-IP: [58.247.170.245]
+X-ClientProxiedBy: HK0PR03CA0119.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::35) To MWHPR12MB1248.namprd12.prod.outlook.com
+ (2603:10b6:300:12::21)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from hr-amd (58.247.170.245) by HK0PR03CA0119.apcprd03.prod.outlook.com (2603:1096:203:b0::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Wed, 17 Mar 2021 10:47:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: ca33137b-cea6-487a-a6bd-08d8e9322108
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1790:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR12MB1790A718EDED6D72574726C1EC6A9@MWHPR12MB1790.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: d8iJGyBavNDd7TO9YUvoiy2pTElrRRNMsQVyDAPyu6o8hRZ1UXe6qAzWEIsbt0PCwXLvUCMUqE4SPX5qYIcx6jdIgsELywAZh0mfQSn/oXKMdbp/gbLkvWiVLWarzwARyeesmNs/3YjracmXRs5SYXC4EUsNzyiUCOb1NzFb6UWGKrXaLjaild5iWER98u1jn71is7uN6c60ctK+LrtjckoyBTGsp6J9ooh4iwPBlQS1Iid6FmWZSsmF9WaYSMvE+SL+thYHEruyJPM9lJdoOCmTX+zWQzPV7k2yYM7FkWW+NV4cc/aO1AsIPkSr2UZz3JoXwn6TpQCMRftKTCshnhNY/D37YCsBOt3CVutHpgOrTEc5l4b4ReyDMVQu19q4hdAV/aU59eV4NQh4OgfGCZWC2xcaZtlWE7IHnbMENax4GkVOuKJeZDMKqzumpATR4tKySScvg9hTKRx4FldjLs5SgEXMGRdHnJuuBalEDcaas3EaVVcPyhj9/glqYZbgvMZ5tYaNQPMFKTRTErcdqF+J701vtX0+RrgzXxGJThretNX+3kys/rfEgBWJIhCP
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1248.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(366004)(396003)(39860400002)(316002)(66476007)(6496006)(26005)(66946007)(956004)(33716001)(55016002)(33656002)(8676002)(83380400001)(8936002)(186003)(16526019)(66556008)(52116002)(478600001)(6916009)(4326008)(1076003)(5660300002)(2906002)(86362001)(54906003)(9686003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?l6Y2H2CJ7KpKdZbRYjevIBUSO97dnPSmgDFpBrx9ohr0zyGiHObl7Q1rFwdc?=
+ =?us-ascii?Q?KgHdgCthjMHyKdo9Jqbw2GIcUxiH4CIC/Gy8aMHV863RggDvxW7lL7kEHZd7?=
+ =?us-ascii?Q?J/+fLPTzRevckx2dgCWIPTyY5leKeXF1J9UXpv+ooCNQPezrSStL+JJ6cNC1?=
+ =?us-ascii?Q?LpHgqoH1vhxhyAmVQSvI745oMdbeKwh790H/CLGWzXYW6IsqE02AE1ToyGng?=
+ =?us-ascii?Q?9/HU4kZSUTolDb76SRhi96srHIBwRrYceR9A/rymS5dTdY4pislHfWxmSOUY?=
+ =?us-ascii?Q?tLNENP6OuwFxYqhLreJ5aoNrZyx+HBypczE69lNjAlNlrwf3GObz08fR1tUb?=
+ =?us-ascii?Q?kUunLORJktF6bmFIxgyjCKqkthurR/E2Y0ty2OGI7edWtWI/zZ0fxukDmVNo?=
+ =?us-ascii?Q?s2z7aqcresti38oZqxgoAusG+TxVglsZ+byrtBnIGOU0xWhWbYn0otdvqbRb?=
+ =?us-ascii?Q?AE5s1SYYuwkiV+nlX8Fu0rwDQnr7vr97ZLIf94uJdv4upj5TCwYAlotBPEdU?=
+ =?us-ascii?Q?UosJGJtfX7O449Sxvxm4NOl7kIfNxSlN/lXek7Xnfy3W8AYC6NCGYOkuYJjE?=
+ =?us-ascii?Q?0fS8Cj0DZ3nceaKgdjjfq3o00BY27Af3Rg/m5nldXe6vueB6jhpiaazdopEe?=
+ =?us-ascii?Q?OcQpaq/DpncE4iEj5rq3OOQ6o3sjXn4ZjW0TXdvW8oKT6BIx5Ep4t/IKlZcm?=
+ =?us-ascii?Q?/ztWXAxKwr6p25dRHhTPN/QfM8yGdQwvE6+4UL0b/GAq8ivRyFuygGlMRxoS?=
+ =?us-ascii?Q?XBQzxePttulFccwQITV6SHmEbiGZo5mZjgAasJgyGiBS+XrGns9KYGZ2OrOV?=
+ =?us-ascii?Q?pL7YhSg9upHJFtP14xeGe2fSTF5XfQ490KTnWWwZepDXNDs31mHqBVyMxLoy?=
+ =?us-ascii?Q?dkE1hCkNW8eFkqQ8hnBWlgq1tNkG1LZsyA82gSQIuyoI8kVBdFWPlBVxZAJ2?=
+ =?us-ascii?Q?zWOwi7eUDLK1wIhHQRz9No+Okq69Ofda7tK+L3s8nvXJ6gO5RhJYUDREzKla?=
+ =?us-ascii?Q?DWek5LISbOj7jCxtNIeDjg59ehPhnK2IJrD7Pokfx2+Z9dirnxvT6QTTPFM4?=
+ =?us-ascii?Q?qlilyV8u2JFvwzsc9cVLb2fsPAGabH4wRIws9jpNnv9J1js0jvx66wRYPSXF?=
+ =?us-ascii?Q?5ZAsrgMlSXm7EjoVC7UaeYeG3msFarj2M7dQ1jhlH6bgc2h4UUqLjNkQ79WA?=
+ =?us-ascii?Q?0BH3cFhWz5ADDTE1mIBO5BF3O+63dkShTL/vWPjxw+Wbu04UHw2pr1HZSo1q?=
+ =?us-ascii?Q?9RxJOR7z7w03tAeHf/jgj3PzbFlAS91O81+mskbrpU874D60i0BEieyP46OW?=
+ =?us-ascii?Q?WjIq7Tz0OVF3ew7dITCQPDuR?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca33137b-cea6-487a-a6bd-08d8e9322108
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR12MB1248.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 10:47:58.8365
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VjsXGL6xxw8RGroOTBI4u+r42T0m7iM2TM5GbQ9i3XANRp4STKaIU9WGtVuO8fvk7yRo6BP6Mvz0zC7ei/42Bw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1790
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 11:37:38AM +0800, Huang, Ying wrote:
-> Yu Zhao <yuzhao@google.com> writes:
+On Tue, Mar 16, 2021 at 11:00:26PM +0800, Joerg Roedel wrote:
+> On Tue, Mar 16, 2021 at 09:36:02PM +0800, Huang Rui wrote:
+> > Thanks for the comments. Could you please elaborate this?
+> > 
+> > Do you mean while amd_iommu=off, we won't prepare the IVRS, and even
+> > needn't get all ACPI talbes. Because they are never be used and the next
+> > state will always goes into IOMMU_CMDLINE_DISABLED, am I right?
 > 
-> > On Tue, Mar 16, 2021 at 02:44:31PM +0800, Huang, Ying wrote:
-> >> Yu Zhao <yuzhao@google.com> writes:
-> >> 
-> >> > On Tue, Mar 16, 2021 at 10:07:36AM +0800, Huang, Ying wrote:
-> >> >> Rik van Riel <riel@surriel.com> writes:
-> >> >> 
-> >> >> > On Sat, 2021-03-13 at 00:57 -0700, Yu Zhao wrote:
-> >> >> >
-> >> >> >> +/*
-> >> >> >> + * After pages are faulted in, they become the youngest generation.
-> >> >> >> They must
-> >> >> >> + * go through aging process twice before they can be evicted. After
-> >> >> >> first scan,
-> >> >> >> + * their accessed bit set during initial faults are cleared and they
-> >> >> >> become the
-> >> >> >> + * second youngest generation. And second scan makes sure they
-> >> >> >> haven't been used
-> >> >> >> + * since the first.
-> >> >> >> + */
-> >> >> >
-> >> >> > I have to wonder if the reductions in OOM kills and 
-> >> >> > low-memory tab discards is due to this aging policy
-> >> >> > change, rather than from the switch to virtual scanning.
-> >> >
-> >> > There are no policy changes per se. The current page reclaim also
-> >> > scans a faulted-in page at least twice before it can reclaim it.
-> >> > That said, the new aging yields a better overall result because it
-> >> > discovers every page that has been referenced since the last scan,
-> >> > in addition to what Ying has mentioned. The current page scan stops
-> >> > stops once it finds enough candidates, which may seem more
-> >> > efficiently, but actually pays the price for not finding the best.
-> >> >
-> >> >> If my understanding were correct, the temperature of the processes is
-> >> >> considered in addition to that of the individual pages.  That is, the
-> >> >> pages of the processes that haven't been scheduled after the previous
-> >> >> scanning will not be scanned.  I guess that this helps OOM kills?
-> >> >
-> >> > Yes, that's correct.
-> >> >
-> >> >> If so, how about just take advantage of that information for OOM killing
-> >> >> and page reclaiming?  For example, if a process hasn't been scheduled
-> >> >> for long time, just reclaim its private pages.
-> >> >
-> >> > This is how it works. Pages that haven't been scanned grow older
-> >> > automatically because those that have been scanned will be tagged with
-> >> > younger generation numbers. Eviction does bucket sort based on
-> >> > generation numbers and attacks the oldest.
-> >> 
-> >> Sorry, my original words are misleading.  What I wanted to say was that
-> >> is it good enough that
-> >> 
-> >> - Do not change the core algorithm of current page reclaiming.
-> >> 
-> >> - Add some new logic to reclaim the process private pages regardless of
-> >>   the Accessed bits if the processes are not scheduled for some long
-> >>   enough time.  This can be done before the normal page reclaiming.
-> >
-> > This is a good idea, which being used on Android and Chrome OS. We
-> > call it per-process reclaim, and I've mentioned here:
-> > https://lore.kernel.org/linux-mm/YBkT6175GmMWBvw3@google.com/
-> >   On Android, our most advanced simulation that generates memory
-> >   pressure from realistic user behavior shows 18% fewer low-memory
-> >   kills, which in turn reduces cold starts by 16%. This is on top of
-> >   per-process reclaim, a predecessor of ``MADV_COLD`` and
-> >   ``MADV_PAGEOUT``, against background apps.
+> The first problem was that amd_iommu_irq_remap is never set back to
+> false when irq-remapping initialization fails in amd_iommu_prepare().
 > 
-> Thanks, now I see your improvement compared with the per-process
-> reclaim.  How about the per-process reclaim compared with the normal
-> page reclaiming for the similar test cases?
+> But there are other problems, like that even when the IOMMU is set to
+> disabled on the command line with amd_iommu=off, the code still sets up
+> all IOMMUs and registers IRQ domains for them.
 > 
-> My intention behind this is that your solution includes several
-> improvements,
+
+Yes, that was the problem I found in my side. No very clear about the
+orignal intention. But if you said this is a problem, that makes sense...
+
+> Later the code checks wheter the IOMMU should stay disabled and tears
+> everything down, except for the IRQ domains, which stay in the global
+> list.
 > 
-> a) take advantage of scheduler information
-> b) more fine-grained active/inactive dividing
-> c) page table scanning instead of rmap
+> The APIs do not really support tearing down IRQ domains well, so its not
+> so easy to add this to the tear-down path. Now that the IRQ domains stay
+> in the list, the ACPI code will come along later and calls the
+> ->select() call-back for every IRQ domain, which gets execution to
+> irq_remapping_select(), depite IOMMU being disabled and
+> amd_iommu_rlookup_table already de-allocated. But since
+> amd_iommu_irq_remap is still true the NULL pointer is dereferenced,
+> causing the crash.
+
+OK. We found some memleaks here before as well. It looks cause by iommu data
+buffer initialization and not be cleared. And yes, if setup iommu here, it
+actually causes many issues.
+
+unreferenced object 0xffff888332047500 (size 224):
+  comm "swapper/0", pid 0, jiffies 4294892296 (age 362.192s)
+  hex dump (first 32 bytes):
+    b0 22 03 00 00 00 00 00 00 00 00 40 00 00 00 00  .".........@....
+    06 00 00 00 00 00 00 00 00 20 00 00 00 20 00 00  ......... ... ..
+  backtrace:
+    [<000000008f162024>] kmem_cache_alloc+0x145/0x440
+    [<00000000420093ba>] kmem_cache_create_usercopy+0x127/0x2c0
+    [<00000000f5ed7ff0>] kmem_cache_create+0x16/0x20
+    [<000000004c1e4f47>] iommu_go_to_state+0x8e4/0x165d
+    [<00000000a191b705>] amd_iommu_prepare+0x1a/0x2f
+    [<00000000afe5b97e>] irq_remapping_prepare+0x35/0x6d
+    [<00000000209f36b5>] enable_IR_x2apic+0x2b/0x1ae
+    [<00000000b64491b5>] default_setup_apic_routing+0x16/0x65
+    [<00000000e89c64a1>] apic_intr_mode_init+0x81/0x10a
+    [<00000000eaa14bf6>] x86_late_time_init+0x24/0x35
+    [<00000000e291fc71>] start_kernel+0x509/0x5c7
+    [<0000000099930dfe>] x86_64_start_reservations+0x24/0x26
+    [<00000000b369765d>] x86_64_start_kernel+0x75/0x79
+    [<000000004f411919>] secondary_startup_64_no_verify+0xb0/0xbb
+
 > 
-> Is it possible to evaluate the benefit of the each step?  And is there
-> still some potential to optimize the current LRU based algorithm before
-> adopting a totally new algorithm?
-
-Well, there isn't really any new algorithm -- it's still the LRU
-(algorithm). But I do see your point. In another survey we posted
-here:
-https://lore.kernel.org/linux-mm/YBkT6175GmMWBvw3@google.com/
-we stated:
-  Why not try to improve the existing code?
-  -----------------------------------------
-  We have tried but concluded the two limiting factors [note]_ in the
-  existing code are fundamental, and therefore changes made atop them
-  will not result in substantial gains on any of the aspects above.
-
-We learned this the hard way.
-
-> > The patches landed not long a ago :) See mm/madvise.c
+> When the IRQ domains would not be around, this would also not happen. So
+> my patches also change the initializtion to not do all the setup work
+> when amd_iommu=off was passed on the command line.
 > 
-> :) I'm too out-dated.
-> 
-> >> So this is an one small step improvement to the current page reclaiming
-> >> algorithm via taking advantage of the scheduler information.  It's
-> >> clearly not sophisticated as your new algorithm, for example, the cold
-> >> pages in the hot processes will not be reclaimed in this stage.  But it
-> >> can reduce the overhead of scanning too.
-> >
-> > The general problems with the direction of per-process reclaim:
-> >   1) we can't find the coldest pages, as you have mentioned.
-> >   2) we can't reach file pages accessed via file descriptors only,
-> >   especially those caching config files that were read only once.
-> 
-> In theory, this is possible, we can build a inode list based on the
-> accessing time too.  Although this may not be necessary.  We can reclaim
-> the read-once file cache before the per-process reclaim in theory.
 
-You have to search for unmapped clean pages in page cache. Generally
-searching page cache is a lot more expensive than walking lru lists
-because page cache can be sparse but lru lists can't.
+Thanks for the fix and explaination. :-)
 
-> >   3) we can't reclaim lru pages and slab objects proportionally and
-> >   therefore we leave many stale slab objects behind.
-> >   4) we have to be proactive, as you suggested (once again, you were
-> >   right), and this has a serious problem: client's battery life can
-> >   be affected.
-> 
-> Why can this not be done reactively? We can start per-process reclaim
-> under memory pressure.
-
-Under memory pressure, we could scan a lot of idle processes and find
-nothing to reclaim, e.g., mlockall(). In addition, address spaces can
-be sparse too.
-
-You are now looking at the direction of cold memory tracking using
-page tables, which is not practical. Apparent this series has given
-you a bad idea... Page tables are only good at discovering hot memory.
-Take my word for it :)
-
-> This has been used in phone and laptop now, so
-> there's a solution for this issue?
-
-madvise() is called based on user behavior, which we don't have in
-kernel space.
-
-> > The scanning overhead is only one of the two major problems of the
-> > current page reclaim. The other problem is the granularity of the
-> > active/inactive (sizes). We stopped using them in making job
-> > scheduling decision a long time ago. I know another large internet
-> > company adopted a similar approach as ours, and I'm wondering how
-> > everybody else is coping with the discrepancy from those counters.
-> 
-> From intuition, the scanning overhead of the full page table scanning
-> appears higher than that of the rmap scanning for a small portion of
-> system memory.  But form your words, you think the reality is the
-> reverse?  If others concern about the overhead too, finally, I think you
-> need to prove the overhead of the page table scanning isn't too higher,
-> or even lower with more data and theory.
-
-There is a misunderstanding here. I never said anything about full
-page table scanning. And this is not how it's done in this series
-either. I guess the misunderstanding has something to do with the cold
-memory tracking you are thinking about?
-
-This series uses page tables to discover page accesses when a system
-has run out of inactive pages. Under such a situation, the system is
-very likely to have a lot of page accesses, and using the rmap is
-likely to cost a lot more because its poor memory locality compared
-with page tables.
-
-But, page tables can be sparse too, in terms of hot memory tracking.
-Dave has asked me to test the worst case scenario, which I'll do.
-And I'd be happy to share more data. Any specific workload you are
-interested in?
+Best Regards,
+Ray
