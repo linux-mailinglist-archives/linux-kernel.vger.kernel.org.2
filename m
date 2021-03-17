@@ -2,75 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D721033F857
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:47:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF0833F866
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:49:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233069AbhCQSrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:47:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34248 "EHLO mail.kernel.org"
+        id S233095AbhCQSsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:48:54 -0400
+Received: from mga12.intel.com ([192.55.52.136]:6341 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233095AbhCQSrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:47:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AF6964F04;
-        Wed, 17 Mar 2021 18:47:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616006822;
-        bh=kTKKadJol3g+5hcymRsUO5tuOsB1qq0XcTxzdfmjjnM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KWMBQkKHrc/rTYQZIT4lSGcEgUE/TihaneLbTvLOi1lzOGNkchUDaQK7GwaYCCUYd
-         j1WAm1m3YW+sW2VS3fGv8kNw7p4NSp8YEptlICMnnAsBNW1C82Oon2Ee7G4AdpF5i7
-         5eSV5VrAr1opg/EkSYFefQlI5NMfARS4FFisIG9bDM3Iu8cZkhqQBfBQyhY6XkNQDI
-         G8PX5RWU8YZVWAKtdLpV69I1uzROra/a+BpRk5gQdcFY2H0A5qSpedtkhPzCt/bjhJ
-         Erw+f9qtU5TacLvX5uPt08Qmc1mpLgAeVxDVe4Lbl/+Fo3rRDSM7RKZqwYETxdaafS
-         t9qzkD2dy5zJw==
-Date:   Wed, 17 Mar 2021 11:47:01 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     sundeep subbaraya <sundeep.lkml@gmail.com>
-Cc:     Hariprasad Kelam <hkelam@marvell.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        lcherian@marvell.com, Geetha sowjanya <gakula@marvell.com>,
-        jerinj@marvell.com, Subbaraya Sundeep <sbhatta@marvell.com>
-Subject: Re: [net PATCH 4/9] octeontx2-af: Remove TOS field from MKEX TX
-Message-ID: <20210317114701.4c0a1263@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CALHRZuq272aJR8Jh5rS7y-b28t6eHhthPB_6aUoZExv0dCsorQ@mail.gmail.com>
-References: <1615886833-71688-1-git-send-email-hkelam@marvell.com>
-        <1615886833-71688-5-git-send-email-hkelam@marvell.com>
-        <20210316100616.333704ad@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CALHRZuq272aJR8Jh5rS7y-b28t6eHhthPB_6aUoZExv0dCsorQ@mail.gmail.com>
+        id S232763AbhCQSsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 14:48:52 -0400
+IronPort-SDR: xNKo2kc4IFy7g2qRdxvHUTmS+4btssPCRPgshMRusElLB+SVSZ+BCkd3bbRRcpsxTx3WxzfY2q
+ qx8AchzaHdkw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="168803219"
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="168803219"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 11:48:51 -0700
+IronPort-SDR: p/cSR5ulZFFd9H+i41M6HIHkogJZKBFJt/D8W5rmiysz+I/eOXhnwpKvJG3+3BPjs//QdUlzyH
+ OHhL8ciCbw6g==
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="605831558"
+Received: from mtpearso-mobl4.amr.corp.intel.com (HELO [10.213.190.14]) ([10.213.190.14])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 11:48:50 -0700
+Subject: Re: [PATCH v2] mm: Move mem_init_print_info() into mm_init()
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Guo Ren <guoren@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, linux-mm@kvack.org
+References: <4d488195-7281-9238-b30d-9f89a6100fb9@csgroup.eu>
+ <20210317015210.33641-1-wangkefeng.wang@huawei.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <2a7d6e39-b293-7422-87b0-741f1ab0c22c@intel.com>
+Date:   Wed, 17 Mar 2021 11:48:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210317015210.33641-1-wangkefeng.wang@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Mar 2021 12:07:12 +0530 sundeep subbaraya wrote:
-> On Tue, Mar 16, 2021 at 10:53 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >
-> > On Tue, 16 Mar 2021 14:57:08 +0530 Hariprasad Kelam wrote:  
-> > > From: Subbaraya Sundeep <sbhatta@marvell.com>
-> > >
-> > > TOS overlaps with DMAC field in mcam search key and hence installing
-> > > rules for TX side are failing. Hence remove TOS field from TX profile.  
-> >
-> > Could you clarify what "installing rules is failing" means?
-> > Return error or does not behave correctly?  
+On 3/16/21 6:52 PM, Kefeng Wang wrote:
+> mem_init_print_info() is called in mem_init() on each architecture,
+> and pass NULL argument, so using void argument and move it into mm_init().
 > 
-> Returns error. The MKEX profile can be in a way where higher layer packet fields
-> can overwrite lower layer packet fields in output MCAM Key. The commit
-> 42006910 ("octeontx2-af: cleanup KPU config data") introduced TX TOS field and
-> it overwrites DMAC. AF driver return error when TX rule is installed
-> with DMAC as
-> match criteria since DMAC gets overwritten and cannot be supported. Layers from
-> lower to higher in our case:
-> LA - Ethernet
-> LB - VLAN
-> LC - IP
-> LD - TCP/UDP
-> and so on.
-> 
-> We make sure there are no overlaps between layers but TOS got added by mistake.
-> We will elaborate the commit description and send the next version.
+> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
 
-Thank you! The longer explanation makes the error clear.
+It's not a big deal but you might want to say something like:
+
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com> # x86 bits
+
+Just to make it clear that I didn't look at the alpha bits at all. :)
