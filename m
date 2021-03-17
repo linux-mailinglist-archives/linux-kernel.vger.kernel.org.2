@@ -2,88 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AFBB33F9E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A368533F9E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233416AbhCQUST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 16:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233395AbhCQURx (ORCPT
+        id S233285AbhCQUV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 16:21:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45838 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233271AbhCQUVG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 16:17:53 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B02C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:17:52 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id q29so870665lfb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:17:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kCK1uQIcxm8OXGgRHg7NKZ1L0n8wQ50xR39kklU4ehs=;
-        b=OdDYRPjwG/KffT3RPD1JqVqMXP9pAdHXLW3oaFjZzW8LxdCpwoYwGrfUD/JWgdqwfN
-         inXEKwU2jOjNhWzYbJRuzNNT6NIc6Hh9gKSpG4ROQH/xpU5sNfXypE7m+LZRIbCHoMHE
-         9EXVAVOaYqK1B0gheLVcUjP7mdS6AoWAXHeBo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kCK1uQIcxm8OXGgRHg7NKZ1L0n8wQ50xR39kklU4ehs=;
-        b=b0XVuCDkqmcDwJ0u9YYlSSXU504hmR6zSb0i3RTtGltRTW8zcdt+PC9U3xVhSRcLXG
-         uMOXvQA7dhIRtbWZBqw3Y4WXDYRHLcXzmIyDapcqtiFKhlrgWciWl2FzI/4jeD0QkGtY
-         LAZtKM/peKLNTmLxBlCAvo7geJWAiCK32HBY7oIgg0RGsD1pjheafCNJ+n7L1RdsNfMZ
-         /07eMVdvNgoV+LoZzT03i9EWN+11PyG3R7QT2SNKNqPP44OYK4YmX8lfPutspN6S+yqY
-         nN15HrEEFoyXYxSXzKGapwTmf8GdQ0cTIafTILj/zegXAqXPFhrKVS6TpOIS845kWSee
-         QuxA==
-X-Gm-Message-State: AOAM532fZXMZML/KIsBW7pe8whzNJ/PMIxKhTseqrI12v9aMNXuHFz6R
-        YN4Hoq6WsCJ0TL/vhCdfTGj3k0j1bxHtTw==
-X-Google-Smtp-Source: ABdhPJzOBjgTYBvmzCzgtrjtqcrxkmNH6yXWluAHWR+QNVUJR2V/XmY3bb/gxBR9D7NqTkhgqqQVZw==
-X-Received: by 2002:a05:6512:1284:: with SMTP id u4mr3441913lfs.175.1616012270725;
-        Wed, 17 Mar 2021 13:17:50 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id b3sm310lji.36.2021.03.17.13.17.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 13:17:49 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id w37so882162lfu.13
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:17:49 -0700 (PDT)
-X-Received: by 2002:a05:6512:a8c:: with SMTP id m12mr3271119lfu.253.1616012268802;
- Wed, 17 Mar 2021 13:17:48 -0700 (PDT)
+        Wed, 17 Mar 2021 16:21:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616012463;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AlpPY6ekxOjyJjbkL7CucsibdK3fSyFUbHC5754coLk=;
+        b=fr5z1g8kcIXZi8jQtg0UhVgyruC7v3tLUvpRM3NpRZYZMnRmIwCqpEGUIaL6ZSHh1a7ntt
+        940GjXeVPfRiMfYaanxN3ypiWbYPY7K5BBYQNKXMdlLG5oe+SaqpOnhd63z8LTZDYT0JAI
+        /1aJorTAqWkZDet9FUu6Z1NiPjQ0pjw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-335-aFeaLzXvMFC2jr6ROMV3iQ-1; Wed, 17 Mar 2021 16:21:01 -0400
+X-MC-Unique: aFeaLzXvMFC2jr6ROMV3iQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACDE71043360;
+        Wed, 17 Mar 2021 20:20:59 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-117-171.rdu2.redhat.com [10.10.117.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 231F960C13;
+        Wed, 17 Mar 2021 20:20:59 +0000 (UTC)
+Subject: Re: [tip: locking/urgent] locking/ww_mutex: Treat ww_mutex_lock()
+ like a trylock
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org
+References: <20210316153119.13802-4-longman@redhat.com>
+ <161598470197.398.8903908266426306140.tip-bot2@tip-bot2>
+ <YFIASRkXowQWgj2s@hirez.programming.kicks-ass.net>
+ <YFIEo8IVQ/Mm9jUE@hirez.programming.kicks-ass.net>
+ <e1bcd7fb-3a40-f207-ee19-d276c8b8bb75@redhat.com>
+ <e39f4e37-e3c0-e62a-7062-fdd2c8b3d3b9@redhat.com>
+ <YFIy8Bzj7WAHFmlG@hirez.programming.kicks-ass.net>
+ <YFI/C4VZuWjyHLNK@hirez.programming.kicks-ass.net>
+ <YFJAP8x917Ef0Khj@hirez.programming.kicks-ass.net>
+ <36d26109-f08a-6254-2fd3-ad1a28fcc260@redhat.com>
+ <20210317195834.GV4746@worktop.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <5533bdea-4250-759d-1a5d-007914aad2ff@redhat.com>
+Date:   Wed, 17 Mar 2021 16:20:58 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210317104547.442203-1-leon@kernel.org>
-In-Reply-To: <20210317104547.442203-1-leon@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 17 Mar 2021 13:17:32 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj+Bsc1T41qziHxf9DvrBrYSBWKj27hEL0EbysCGRPzTA@mail.gmail.com>
-Message-ID: <CAHk-=wj+Bsc1T41qziHxf9DvrBrYSBWKj27hEL0EbysCGRPzTA@mail.gmail.com>
-Subject: Re: [PATCH master] module: remove never implemented MODULE_SUPPORTED_DEVICE
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210317195834.GV4746@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 3:46 AM Leon Romanovsky <leon@kernel.org> wrote:
+On 3/17/21 3:58 PM, Peter Zijlstra wrote:
+> On Wed, Mar 17, 2021 at 02:32:27PM -0400, Waiman Long wrote:
+>> On 3/17/21 1:45 PM, Peter Zijlstra wrote:
+>>>> +# define __DEP_MAP_WW_MUTEX_INITIALIZER(lockname, class) \
+>>>> +		, .dep_map = { \
+>>>> +			.key = &(class).mutex_key, \
+>>>> +			.name = (class).mutex_name, \
+>>> 			,name = #class "_mutex", \
+>>>
+>>> and it 'works', but shees!
+>> The name string itself may be duplicated for multiple instances of
+>> DEFINE_WW_MUTEX(). Do you want to keep DEFINE_WW_MUTEX() or just use
+>> ww_mutex_init() for all?
+> So linkers can merge literals, but no guarantee. But yeah, lets just
+> kill the thing, less tricky macro crud to worry about.
 >
-> I'm sending this patch to you directly because it is much saner to
-> apply it in one place instead of multiple patches saga that will
-> span for at least two cycles if per-maintainer path will be taken.
->
-> It applies cleanly on v5.12-rc2 and completely unharmful.
+Good, just to confirm the right way to move forward.
 
-You have an odd whitespace-only part in the patch inside the comment
-underneath the "remove RME,Hammerfall" case.
+Cheers,
+Longman
 
-Also, your email seems to have swallowed spaces at the ends of lines.
-
-I can (and did) apply the patch with "--whitespace=fix", but that then
-causes git to fix some _other_ whitespace too, so the end result isn't
-quite the same. Oh well.
-
-Please check what's up with your email sending client that it seems to
-remove space at end of lines in patches.
-
-            Linus
