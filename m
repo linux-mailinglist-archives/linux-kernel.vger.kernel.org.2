@@ -2,147 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DCDB33F9D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D31DC33F9E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:18:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233414AbhCQURL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 16:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45532 "EHLO
+        id S233373AbhCQUSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 16:18:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232499AbhCQUQj (ORCPT
+        with ESMTP id S233443AbhCQURr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 16:16:39 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E279C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:16:39 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id va9so358425ejb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:16:39 -0700 (PDT)
+        Wed, 17 Mar 2021 16:17:47 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2EEC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:17:46 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 16so4750288ljc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:17:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QEOloMvNgoHGwfPYaOtLBZt1tGk9z+wArHjNJYI6x+w=;
-        b=UlaIdchIMdvi/d1HMbomidYmolKkRGGG72Ut18zENfsjoTbv1aDeRsouser7JUEzqI
-         9lCfZ7qjup3e1vRK9Xu4o1tkavKruWXdMzBIVvgZal+Sm/7RZ+YYYUzbnmauXGdHEywk
-         I19g8U3fx1gLO92it6EU+oyJESyO6EXh+KbyjkioJePZ9Kqq/wWEi8iEyX6Igae83hqB
-         HZtVJ4mDbZNtS8YUXFkoIdVC8+WhOuUJ6SBduQUGWkIOoA49zXdj4peBD3woqzUj/UbP
-         Mspw7LEf+mD+R+O1Nox5CYoU5VBRR5beWYwRY4Mbzdpf8B7qKfNpkuVfYZlEL43hYOrp
-         u6gA==
+        bh=J6gJzCwpLyG7+14+e+3YoRVEedOSyoYsJ1d1aSm3u8s=;
+        b=Ot1J2LG0SujcfumGfz731vdJqKOxO4S52bTDK4ESl++y2B/qGrQJ3ZdY9Sabt4+qqD
+         CzWxpMj1luRIBQBFf/hyxd2opLMAqV+cwP7dETj1336+AfgOqmHKYaS1AhWtahJVwqlU
+         gN553b7yWZyHe+SWBQ9bi314J/UcXDnhrU4nma/KHf7eOaDPE89DCmyfYyjlFc58rtjR
+         whkrzXuDb3CPlElVyu7jaeUhUnKX65xuboxd3rKb2tS8bX9WpDZFAgettshbfdbaKNHH
+         u9gNjJ1sQ7q4evUHcE8LsEtu7/1CyNif50ADrZcWccijWbfuWsO0kK7olDowKVJPpK8j
+         RYmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QEOloMvNgoHGwfPYaOtLBZt1tGk9z+wArHjNJYI6x+w=;
-        b=Z0yaIFkAANA8u7GwvR2m+WTJvZfmKcfaQaDv0gQbqpAsMe4izvzghv+jvOYnIQtkR3
-         tysEQ/hLKA8Lb1hvetueY3Hs9zNtsqZK38eX01G5g4wZ+teNixNpTELqAktmk3+7BPoe
-         nFY3m80zT32RycCTvnfQm9mGzZ7MkbHYpIfLXwpnvX1UQL6o4l7Cjpxs/yg+fbdfOyMu
-         0lPSYp+/NMEVyor3DuZ0yIcxjy/S1ZgaVbs0gX7nt5pC8xqm88GWKzzucBAGk/RkyMNA
-         pi/gtjuBqBoGMJK27U6vCSDTmmc0s71ECc9bPqjLWtATlwVj/Bw028H/tPaWdkwIQAA2
-         PBDA==
-X-Gm-Message-State: AOAM532qz73KLjkpXflxIGLJC2o5sDj3VjjApXKxrFoPEoEnbSPKKx3u
-        jbOTZZ9SXKQkYTNqrZykoqcKYkVOJc5WDxoY4yUt
-X-Google-Smtp-Source: ABdhPJwZ5eSoUqpbSZ2mwR7prPozBZU8LbvUD8YDCFfZ7b2tNkNEe3pbPcW7reGnL8Oxx4SZD9jMOJn1Hk6ZwhQ9R2s=
-X-Received: by 2002:a17:906:3ac3:: with SMTP id z3mr37990797ejd.106.1616012197980;
- Wed, 17 Mar 2021 13:16:37 -0700 (PDT)
+        bh=J6gJzCwpLyG7+14+e+3YoRVEedOSyoYsJ1d1aSm3u8s=;
+        b=E8bconJw7AjQtQiymYcR+tkaRDoxOnHlyHZR+dfSR6R8raczgXcPf7lpyw7JGwxkRK
+         u+8ZZIWh9ewPfxCjzgf2ei2XJQlGn+APafDK1U+OPKThy/T5jcI8zulBBO/EQbGxexBj
+         87aGk3qqGbbReYlPRD5Dqpnbfb+kkzrxfqiViF+p0+h2x1ovw3J0lMbKgyDciwnpylYe
+         1hMEzVC8E5ueU3XTEZNy8i9Guw9y0jfARSAFn9b967r1e/RBYOGYpMaieYamGMQrpFtC
+         UYuIW4BPs3JsWbNblaPoctaN5i1s8i5JVnydUBiM0JErvyJNPWzdnmJr2fda+XNVp8t3
+         2Ygw==
+X-Gm-Message-State: AOAM531cgDuY0necgg5qOu2MHuOpYPkbGuwp5rDg3fJ9ZdkbXuF4voJo
+        Fx8bfNUzkeLAuIVHdxZigQKsfWs9GMYfiiGvhrK2JQ==
+X-Google-Smtp-Source: ABdhPJxm6guJ8ZzFVRuVVjxk9Ag12khXWuNxP2NxaZfEBJIJzMCqUEtP+HDMBvXMUishhGlf43z6gBFdhYMFqXivsG0=
+X-Received: by 2002:a2e:b6d4:: with SMTP id m20mr3432836ljo.448.1616012265057;
+ Wed, 17 Mar 2021 13:17:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210317154448.1034471-1-dbrazdil@google.com>
-In-Reply-To: <20210317154448.1034471-1-dbrazdil@google.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 17 Mar 2021 16:16:27 -0400
-Message-ID: <CAHC9VhT_+i9V9N7NAdCCUgO5xBZpffvVPeh=jK8weZr3WzZ4Bw@mail.gmail.com>
-Subject: Re: [PATCH] selinux: vsock: Set SID for socket returned by accept()
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-security-module@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jeff Vander Stoep <jeffv@google.com>,
-        Alistair Delva <adelva@google.com>
+References: <20210316011630.1121213-1-dualli@chromium.org> <20210317180048.inzdursqmnvxkgwp@wittgenstein>
+In-Reply-To: <20210317180048.inzdursqmnvxkgwp@wittgenstein>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 17 Mar 2021 21:17:18 +0100
+Message-ID: <CAG48ez2ATadfuBjZDqjLa-Mzh669F-yDuBzV62aH=OHRt5g4Pg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] Binder: Enable App Freezing Capability
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Li Li <dualli@chromium.org>, dualli@google.com,
+        Todd Kjos <tkjos@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christian Brauner <christian@brauner.io>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Martijn Coenen <maco@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 11:44 AM David Brazdil <dbrazdil@google.com> wrote:
->
-> For AF_VSOCK, accept() currently returns sockets that are unlabelled.
-> Other socket families derive the child's SID from the SID of the parent
-> and the SID of the incoming packet. This is typically done as the
-> connected socket is placed in the queue that accept() removes from.
->
-> Implement an LSM hook 'vsock_sk_clone' that takes the parent (server)
-> and child (connection) struct socks, and assigns the parent SID to the
-> child. There is no packet SID in this case.
->
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
-> ---
-> This is my first patch in this part of the kernel so please comment if I
-> missed anything, specifically whether there is a packet SID that should
-> be mixed into the child SID.
->
-> Tested on Android.
->
->  include/linux/lsm_hook_defs.h |  1 +
->  include/linux/lsm_hooks.h     |  7 +++++++
->  include/linux/security.h      |  5 +++++
->  net/vmw_vsock/af_vsock.c      |  1 +
->  security/security.c           |  5 +++++
->  security/selinux/hooks.c      | 10 ++++++++++
->  6 files changed, 29 insertions(+)
+On Wed, Mar 17, 2021 at 7:00 PM Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
+> On Mon, Mar 15, 2021 at 06:16:27PM -0700, Li Li wrote:
+> > To improve the user experience when switching between recently used
+> > applications, the background applications which are not currently needed
+> > are cached in the memory. Normally, a well designed application will not
+> > consume valuable CPU resources in the background. However, it's possible
+> > some applications are not able or willing to behave as expected, wasting
+> > energy even after being cached.
+> >
+> > It is a good idea to freeze those applications when they're only being
+> > kept alive for the sake of faster startup and energy saving. These kernel
+> > patches will provide the necessary infrastructure for user space framework
+> > to freeze and thaw a cached process, check the current freezing status and
+> > correctly deal with outstanding binder transactions to frozen processes.
 
-Additional comments below, but I think it would be a good idea for you
-to test your patches on a more traditional Linux distribution as well
-as Android.
+I just have some comments on the overall design:
 
-> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-> index 5546710d8ac1..a9bf3b90cb2f 100644
-> --- a/net/vmw_vsock/af_vsock.c
-> +++ b/net/vmw_vsock/af_vsock.c
-> @@ -755,6 +755,7 @@ static struct sock *__vsock_create(struct net *net,
->                 vsk->buffer_size = psk->buffer_size;
->                 vsk->buffer_min_size = psk->buffer_min_size;
->                 vsk->buffer_max_size = psk->buffer_max_size;
-> +               security_vsock_sk_clone(parent, sk);
+This seems a bit convoluted to me; and I'm not sure whether this is
+really something the kernel should get involved in, or whether this
+patchset is operating at the right layer.
 
-Did you try calling the existing security_sk_clone() hook here?  I
-would be curious to hear why it doesn't work in this case.
+If there are non-binder threads that are misbehaving, could you
+instead stop all those threads in pure userspace code (e.g. by sending
+a thread-directed signal to all of them and letting the signal handler
+sleep on a futex); and if the binder thread receives a transaction
+that should be handled, wake up those threads again?
 
-Feel free to educate me on AF_VSOCK, it's entirely possible I'm
-misunderstanding something here :)
+Or alternatively you could detect that the application is being woken
+up frequently even though it's supposed to be idle (e.g. using
+information from procfs), and kill it since you consider it to be
+misbehaving?
 
-> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> index ddd097790d47..7b92d6f2e0fd 100644
-> --- a/security/selinux/hooks.c
-> +++ b/security/selinux/hooks.c
-> @@ -5616,6 +5616,15 @@ static int selinux_tun_dev_open(void *security)
->         return 0;
->  }
->
-> +static void selinux_socket_vsock_sk_clone(struct sock *sock, struct sock *newsk)
-> +{
-> +       struct sk_security_struct *sksec_sock = sock->sk_security;
-> +       struct sk_security_struct *sksec_new = newsk->sk_security;
-> +
-> +       /* Always returns 0 when packet SID is SECSID_NULL. */
-> +       WARN_ON_ONCE(selinux_conn_sid(sksec_sock->sid, SECSID_NULL, &sksec_new->sid));
-> +}
+Or if there are specific usage patterns you see frequently that you
+consider to be wasting CPU resources (e.g. setting an interval timer
+that fires in short intervals), you could try to delay such timers.
 
-If you are using selinux_conn_sid() with the second argument always
-SECSID_NULL it probably isn't the best choice; it ends up doing a
-simple "sksec_new->sid = sksec_sock->sid" ... which gets us back to
-this function looking like a reimplementation of
-selinux_sk_clone_security(), minus the peer_sid and sclass
-initializations (which should be important things to have).
 
-I strongly suggest you try making use of the existing
-security_sk_clone() hook in the vsock code, it seems like a better way
-to solve this problem.
-
--- 
-paul moore
-www.paul-moore.com
+With your current approach, you're baking the assumption that all IPC
+goes through binder into the kernel API; things like passing a file
+descriptor to a pipe through binder or using shared futexes are no
+longer usable for cross-process communication without making more
+kernel changes. I'm not sure whether that's a good idea. On top of
+that, if you freeze a process while it is in the middle of some
+operation, resources associated with the operation will probably stay
+in use for quite some time; for example, if an app is in the middle of
+downloading some data over HTTP, and you freeze it, this may cause the
+TCP connection to remain active and consume resources for send/receive
+buffers on both the device and the server.
