@@ -2,83 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5791333F888
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D0F33F8A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:00:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233077AbhCQSyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56152 "EHLO
+        id S232981AbhCQTAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233039AbhCQSyg (ORCPT
+        with ESMTP id S231594AbhCQS7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:54:36 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2953C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:54:36 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id g15so1776908pfq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:54:36 -0700 (PDT)
+        Wed, 17 Mar 2021 14:59:51 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AB2C06174A;
+        Wed, 17 Mar 2021 11:59:50 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 16so4489911ljc.11;
+        Wed, 17 Mar 2021 11:59:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=yv6zPM7pUlq8ZRYfu9+Rm67Low/6QrEMjW8OfG4+8cQ=;
-        b=YFzn3VVUJSbVDNgya8SNZeD4soOBKyMydCL4WfX9JLgKAGcfPgt/aIcDTUWB/DMmc6
-         hindDnCjjTtYgkCfZ+KXo5diSGJxleE1YtRJK+/7Q23nr0XIbd9Ni1v0vgcZNTyrQU3y
-         Enay3gzr5WWE51j1Nrs205Yv4P7XzGjaZICkqoRnu/iw/hceqlXYlj5K23nBd/U3slHf
-         vy7zlUno14BwZIxHXhAiknnJlSOc1pdsdXh2y+glgXN+xx5yqKF0hUPqVwp+o05jGcig
-         DCWgUYoH/778U6gfZE03F9doo8KuTyeJc3W5sRSaITbezPXILJilLk1A8PfLLY0xwQ53
-         JohQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aD+bgjnKcQpwKrmLfaSDWL9bnCurIUYHlVG+1S8dJKA=;
+        b=GLqxKP2AkQDjOLk5j9uCP5FFyjIyG4W97tRtbx10R4PH/u3Ln9VZxZLz1DAC8C4dNr
+         qo4LLTOSN5RtI6AYFPfDD/m9l6QHva4BWF6FfQW4AnMKR3pG6mw9UzWGWGDxdzgeYa83
+         uUZOa9VQOs9fZ1fSsZzdJWkMOwDKAawrjvqwzInnBqocIhPbVSCvLUD/nKbc0JzaLlPR
+         gbNZr8Poe5rQylaLaAymiEwLalXQXU8dVmRfWQR18Il1u5F5vA7kPtd0ot2S1/5jT9+p
+         QWmgn4re6E6L+AnG1lRJUdyVwaGPQ1yjx2mjUdcyV9W9vG1i1N5zFb79k+OBOfsoch0M
+         hJnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=yv6zPM7pUlq8ZRYfu9+Rm67Low/6QrEMjW8OfG4+8cQ=;
-        b=nWaShjQV0DaXL2O+kVJ3cPstm1XbpGXb5cXyU3yCu08iwKBdlmXiBwiZIjq0mZmoHG
-         UvQuFR9DQtrkCVb6TinXpfCPHfODcbk2276Leym1J4inSThOOhxIu/Au36NCHGUnL1rO
-         eRX8k+crRZTs8J+0EJ6m8dCW3wItYlsiD1AH+A5HuLFwBiAbWkkHee7YKrL7JqgcIU3y
-         OqXhAjqu9SRypdg/qyyGWkk9pBKY5xwHOdtFeRHoclDmkcnNd+Akytt9BierTA5pl3+l
-         0ZffQp4/9ar7YpXP41LFgfqc23tZJn00rtoouLMkILL0NxkpPT06cbS9Tmueb/bLMt0H
-         oO9A==
-X-Gm-Message-State: AOAM530t5eIRL3ExLDU2oqYC7ekD9hEc9e7vRXyDKYzo62XEpdKUc2z5
-        37cXnrpNeG/HxJnphsEWLWjeMw==
-X-Google-Smtp-Source: ABdhPJwtjoKr8p+TtaWdwcd66x+jRrRVFgK2czmTEOtkzs9BcIrzlnTGp10l6glE3lYClcQfSDKoNw==
-X-Received: by 2002:a62:1c8f:0:b029:209:7eb2:748f with SMTP id c137-20020a621c8f0000b02902097eb2748fmr477175pfc.79.1616007276167;
-        Wed, 17 Mar 2021 11:54:36 -0700 (PDT)
-Received: from [2620:15c:17:3:b56a:51db:a0a1:259f] ([2620:15c:17:3:b56a:51db:a0a1:259f])
-        by smtp.gmail.com with ESMTPSA id t80sm2834084pgb.78.2021.03.17.11.54.35
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aD+bgjnKcQpwKrmLfaSDWL9bnCurIUYHlVG+1S8dJKA=;
+        b=WzvCYzrGDjq6fMmhwUdqhQNNQpnIhdbuNmGUK9gzXUvPh+2Ph7DWaJkUDL6CwFE0AB
+         RNnTN61MjC46S0/Yj9iGhDi1o9VC9EYInYqaeZz4D2nCOsECgDnFVGJGZSxoEGkDxLwA
+         V2PMUaOGhSROQ/7W3jXPZlSRaUdf+9rTo7qApu/QZ4qHZ6Www6niPWlCxgwOBd/SBTfk
+         fmvKbXKAl3xLX2dP9bsWhpW30BNJ9XsX/znruVQQkbcr1wOjdJPLhKDq1fHuynHkO4DW
+         eodu8w5MquUunkeBO2wGM5qOdHwF0u77oRBvIM1G1tqQi1zw0wf/tFPLXzAjuaChzxA4
+         QzIA==
+X-Gm-Message-State: AOAM530GexeEvecsIvAssL6nVqrX77R5u586ETwUBixKsk7UeMqpzE6A
+        mwvl9xGXtZtvwSz/mf9OpSU=
+X-Google-Smtp-Source: ABdhPJw7gmOvSc1phTvkBLht6+c1l9w9p/jqGkafXriP21VPiDj23QRwlBPp4ZpspzWV79C6lnb4QA==
+X-Received: by 2002:a2e:8909:: with SMTP id d9mr3181547lji.442.1616007589343;
+        Wed, 17 Mar 2021 11:59:49 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id b28sm3442482lfo.219.2021.03.17.11.59.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 11:54:35 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 11:54:34 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-To:     Oliver Glitta <glittao@gmail.com>
-cc:     cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, vbabka@suse.cz, shuah@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/2] slub: remove resiliency_test() function
-In-Reply-To: <20210316124118.6874-2-glittao@gmail.com>
-Message-ID: <398a728-dc1c-5089-5578-7af596d616ac@google.com>
-References: <20210316124118.6874-1-glittao@gmail.com> <20210316124118.6874-2-glittao@gmail.com>
+        Wed, 17 Mar 2021 11:59:48 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH v16 0/2] Add memory bandwidth management to NVIDIA Tegra DRM driver
+Date:   Wed, 17 Mar 2021 21:57:32 +0300
+Message-Id: <20210317185734.14661-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021, glittao@gmail.com wrote:
+This series adds memory bandwidth management to the NVIDIA Tegra DRM driver,
+which is done using interconnect framework. It fixes display corruption that
+happens due to insufficient memory bandwidth.
 
-> From: Oliver Glitta <glittao@gmail.com>
-> 
-> Function resiliency_test() is hidden behind #ifdef
-> SLUB_RESILIENCY_TEST that is not part of Kconfig, so nobody
-> runs it.
-> 
-> This function is replaced with kselftest for SLUB added
-> by the previous patch "selftests: add a kselftest for SLUB
-> debugging functionality".
-> 
-> Signed-off-by: Oliver Glitta <glittao@gmail.com>
+Changelog:
 
-Very nice!
+v16: - Implemented suggestions that were given by Michał Mirosław to v15.
 
-Acked-by: David Rientjes <rientjes@google.com>
+     - Added r-b from Michał Mirosław to the debug-stats patch.
+
+     - Rebased on top of a recent linux-next.
+
+     - Removed bandwidth scaling based on width difference of src/dst
+       windows since it's not actual anymore. Apparently the recent memory
+       driver changes fixed problems that I witnessed before.
+
+     - Average bandwidth calculation now won't overflow for 4k resolutions.
+
+     - Average bandwidth calculation now uses the size of the visible
+       area instead of the src area since debug stats of the memory
+       controller clearly show that downscaled window takes less bandwidth,
+       proportionally to the scaled size.
+
+     - Bandwidth calculation now uses "adjusted mode" of the CRTC, which
+       is what used for h/w programming, instead of the mode that was
+       requested by userspace, although the two usually match in practice.
+
+v15: - Corrected tegra_plane_icc_names[] NULL-check that was partially lost
+       by accident in v14 after unsuccessful rebase.
+
+v14: - Made improvements that were suggested by Michał Mirosław to v13:
+
+       - Changed 'unsigned int' to 'bool'.
+       - Renamed functions which calculate bandwidth state.
+       - Reworked comment in the code that explains why downscaled plane
+         require higher bandwidth.
+       - Added round-up to bandwidth calculation.
+       - Added sanity checks of the plane index and fixed out-of-bounds
+         access which happened on T124 due to the cursor plane index.
+
+v13: - No code changes. Patches missed v5.12, re-sending them for v5.13.
+
+Dmitry Osipenko (2):
+  drm/tegra: dc: Support memory bandwidth management
+  drm/tegra: dc: Extend debug stats with total number of events
+
+ drivers/gpu/drm/tegra/Kconfig |   1 +
+ drivers/gpu/drm/tegra/dc.c    | 362 ++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/tegra/dc.h    |  19 ++
+ drivers/gpu/drm/tegra/drm.c   |  14 ++
+ drivers/gpu/drm/tegra/hub.c   |   3 +
+ drivers/gpu/drm/tegra/plane.c | 116 +++++++++++
+ drivers/gpu/drm/tegra/plane.h |  15 ++
+ 7 files changed, 530 insertions(+)
+
+-- 
+2.30.2
+
