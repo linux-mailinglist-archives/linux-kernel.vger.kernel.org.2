@@ -2,523 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE02E33EF46
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 063AF33EF47
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhCQLIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 07:08:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60899 "EHLO
+        id S231355AbhCQLII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 07:08:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22326 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231183AbhCQLHz (ORCPT
+        by vger.kernel.org with ESMTP id S230048AbhCQLHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 07:07:55 -0400
+        Wed, 17 Mar 2021 07:07:44 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615979275;
+        s=mimecast20190719; t=1615979263;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=JUrAWjnaXtOl0vBkf8wm9P65zktxxDiHBQk5OwJyeRk=;
-        b=Fs+U0yvT/r+V0NpigPYh4fnTirW9rxxops9/m8rM4HpGx0ewmoxiDGNiJcup19omzTJdCK
-        v0e4EnCF6yqJbexYERA5t6/qyNJC7JOxOU05rDorbFkaQRf4mI9NcIe0V57g7IPSYS2N/L
-        uYYIVzNT7hJZhIv6XKVMDQnq76wQD/g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-256-2lOAHLkyNmCfIwwlE3vclQ-1; Wed, 17 Mar 2021 07:07:53 -0400
-X-MC-Unique: 2lOAHLkyNmCfIwwlE3vclQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43C771009456;
-        Wed, 17 Mar 2021 11:07:49 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-112-124.ams2.redhat.com [10.36.112.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 361316C333;
-        Wed, 17 Mar 2021 11:07:35 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Xu <peterx@redhat.com>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        Shuah Khan <shuah@kernel.org>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>
-Subject: [PATCH v1 5/5] selftests/vm: add test for MADV_POPULATE_(READ|WRITE)
-Date:   Wed, 17 Mar 2021 12:06:44 +0100
-Message-Id: <20210317110644.25343-6-david@redhat.com>
-In-Reply-To: <20210317110644.25343-1-david@redhat.com>
-References: <20210317110644.25343-1-david@redhat.com>
+        bh=sFmaH41LDlPjG9Ynwp45uLWY+uwr7N1DcuUG5izOuw8=;
+        b=OLgkObXWJ7fGt+ohsMwHrhWMqQFtagOkSVoDENf8RAVzuSr7W/8iO3zEjISyAsH3i/tyc8
+        fTUUiu4wWr+fWatg57+1V9Gm1/mmL0MwaTHH6X9uHr3vickMxUn0htqZPP5mDpeMZZKYR3
+        qTOecSjjHqgVinlYbZGWZU8sE5vEW2g=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-389-HoriL-B2NOOzhtcMMVINAA-1; Wed, 17 Mar 2021 07:07:42 -0400
+X-MC-Unique: HoriL-B2NOOzhtcMMVINAA-1
+Received: by mail-ed1-f71.google.com with SMTP id q25so4422973eds.16
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 04:07:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=sFmaH41LDlPjG9Ynwp45uLWY+uwr7N1DcuUG5izOuw8=;
+        b=ekq/+ec+EvHmUAS7jIV/TRWQYZKspLuqlQlrq4QqZSvIbfoj9BfXfiXeXVXrhcFWbT
+         hQ6puRGBo4Gd82ZJrd7dEGVB1q9gwU+u0WONeNzS/FYldgA41mI8kfFMxv+b2O84854u
+         hQ2QBzTBhjJIcTWVQXFozi1flo0wySvn94qGBd5ww6cmEUSbFOQw0gRsjPaCGrFhnvcU
+         Z/TC+6XEuME+S3BmRkPdgkbBCsJNjTGpGCYBoPI/InHtj6kJH2uazHxPmk7NklO8fDoz
+         +zoZCNnL1i6LVoEgjqF7cqrglJWUmZXSSeMm/dzlfErAJqIWUOpdB8jI7jzVQNVfD5Cb
+         pikw==
+X-Gm-Message-State: AOAM531SctwBvAg3QokSFgaUnNJu9u1eu3lAELgYFQHZbeBtNXamsWIr
+        F/An9gpePspz/2oKvjwrsEKfbYNJt234P+gSTAnkFxKyGSwlSfiQr8tXR1hmPXzHIxDMql2pIt5
+        UMXhriYm9iQ3/s+KVXZeJaTJq
+X-Received: by 2002:a17:906:2314:: with SMTP id l20mr35375422eja.178.1615979260625;
+        Wed, 17 Mar 2021 04:07:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJylmtlvBiYwpe22USdjn0rPdjb/Edoq2N3MMGbDCmY44u09j1aukE8925/xi14GcDNAZySNvg==
+X-Received: by 2002:a17:906:2314:: with SMTP id l20mr35375374eja.178.1615979260206;
+        Wed, 17 Mar 2021 04:07:40 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id a22sm11341585ejr.89.2021.03.17.04.07.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 04:07:39 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 36DC8181F55; Wed, 17 Mar 2021 12:07:39 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] libbpf: use SOCK_CLOEXEC when opening the netlink socket
+In-Reply-To: <20210317104512.4705-1-memxor@gmail.com>
+References: <20210317104512.4705-1-memxor@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 17 Mar 2021 12:07:39 +0100
+Message-ID: <87y2emca2s.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's add a simple test for MADV_POPULATE_READ and MADV_POPULATE_WRITE,
-verifying some error handling, that population works, and that softdirty
-tracking works as expected. For now, limit the test to private anonymous
-memory.
+Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Jann Horn <jannh@google.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: Michael S. Tsirkin <mst@redhat.com>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Peter Xu <peterx@redhat.com>
-Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: linux-arch@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
-Cc: Linux API <linux-api@vger.kernel.org>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- tools/testing/selftests/vm/.gitignore      |   1 +
- tools/testing/selftests/vm/Makefile        |   1 +
- tools/testing/selftests/vm/madv_populate.c | 342 +++++++++++++++++++++
- tools/testing/selftests/vm/run_vmtests.sh  |  16 +
- 4 files changed, 360 insertions(+)
- create mode 100644 tools/testing/selftests/vm/madv_populate.c
+> Otherwise, there exists a small window between the opening and closing
+> of the socket fd where it may leak into processes launched by some other
+> thread.
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-diff --git a/tools/testing/selftests/vm/.gitignore b/tools/testing/selftests/vm/.gitignore
-index b4fc0148360e..c9a5dd1adf7d 100644
---- a/tools/testing/selftests/vm/.gitignore
-+++ b/tools/testing/selftests/vm/.gitignore
-@@ -24,3 +24,4 @@ hmm-tests
- local_config.*
- protection_keys_32
- protection_keys_64
-+madv_populate
-diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
-index d42115e4284d..4851f3f84575 100644
---- a/tools/testing/selftests/vm/Makefile
-+++ b/tools/testing/selftests/vm/Makefile
-@@ -42,6 +42,7 @@ TEST_GEN_FILES += on-fault-limit
- TEST_GEN_FILES += thuge-gen
- TEST_GEN_FILES += transhuge-stress
- TEST_GEN_FILES += userfaultfd
-+TEST_GEN_FILES += madv_populate
- 
- ifeq ($(MACHINE),x86_64)
- CAN_BUILD_I386 := $(shell ./../x86/check_cc.sh $(CC) ../x86/trivial_32bit_program.c -m32)
-diff --git a/tools/testing/selftests/vm/madv_populate.c b/tools/testing/selftests/vm/madv_populate.c
-new file mode 100644
-index 000000000000..b959e4ebdad4
---- /dev/null
-+++ b/tools/testing/selftests/vm/madv_populate.c
-@@ -0,0 +1,342 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * MADV_POPULATE_READ and MADV_POPULATE_WRITE tests
-+ *
-+ * Copyright 2021, Red Hat, Inc.
-+ *
-+ * Author(s): David Hildenbrand <david@redhat.com>
-+ */
-+#define _GNU_SOURCE
-+#include <stdlib.h>
-+#include <string.h>
-+#include <stdbool.h>
-+#include <stdint.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <sys/mman.h>
-+
-+#include "../kselftest.h"
-+
-+#if defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE)
-+
-+/*
-+ * For now, we're using 2 MiB of private anonymous memory for all tests.
-+ */
-+#define SIZE (2 * 1024 * 1024)
-+
-+static size_t pagesize;
-+
-+static uint64_t pagemap_get_entry(int fd, char *start)
-+{
-+	const unsigned long pfn = (unsigned long)start / pagesize;
-+	uint64_t entry;
-+	int ret;
-+
-+	ret = pread(fd, &entry, sizeof(entry), pfn * sizeof(entry));
-+	if (ret != sizeof(entry))
-+		ksft_exit_fail_msg("reading pagemap failed\n");
-+	return entry;
-+}
-+
-+static bool pagemap_is_populated(int fd, char *start)
-+{
-+	uint64_t entry = pagemap_get_entry(fd, start);
-+
-+	/* Present or swapped. */
-+	return entry & 0xc000000000000000ull;
-+}
-+
-+static bool pagemap_is_softdirty(int fd, char *start)
-+{
-+	uint64_t entry = pagemap_get_entry(fd, start);
-+
-+	return entry & 0x0080000000000000ull;
-+}
-+
-+static void sense_support(void)
-+{
-+	char *addr;
-+	int ret;
-+
-+	addr = mmap(0, pagesize, PROT_READ | PROT_WRITE,
-+		    MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-+	if (!addr)
-+		ksft_exit_fail_msg("mmap failed\n");
-+
-+	ret = madvise(addr, pagesize, MADV_POPULATE_READ);
-+	if (ret)
-+		ksft_exit_skip("MADV_POPULATE_READ is not available\n");
-+
-+	ret = madvise(addr, pagesize, MADV_POPULATE_WRITE);
-+	if (ret)
-+		ksft_exit_skip("MADV_POPULATE_WRITE is not available\n");
-+
-+	munmap(addr, pagesize);
-+}
-+
-+static void test_prot_read(void)
-+{
-+	char *addr;
-+	int ret;
-+
-+	ksft_print_msg("[RUN] %s\n", __func__);
-+
-+	addr = mmap(0, SIZE, PROT_READ, MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-+	if (addr == MAP_FAILED)
-+		ksft_exit_fail_msg("mmap failed\n");
-+
-+	ret = madvise(addr, SIZE, MADV_POPULATE_READ);
-+	ksft_test_result(!ret, "MADV_POPULATE_READ with PROT_READ\n");
-+
-+	ret = madvise(addr, SIZE, MADV_POPULATE_WRITE);
-+	ksft_test_result(ret == -1 && errno == EINVAL,
-+			 "MADV_POPULATE_WRITE with PROT_READ\n");
-+
-+	munmap(addr, SIZE);
-+}
-+
-+static void test_prot_write(void)
-+{
-+	char *addr;
-+	int ret;
-+
-+	ksft_print_msg("[RUN] %s\n", __func__);
-+
-+	addr = mmap(0, SIZE, PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-+	if (addr == MAP_FAILED)
-+		ksft_exit_fail_msg("mmap failed\n");
-+
-+	ret = madvise(addr, SIZE, MADV_POPULATE_READ);
-+	ksft_test_result(ret == -1 && errno == EINVAL,
-+			 "MADV_POPULATE_READ with PROT_WRITE\n");
-+
-+	ret = madvise(addr, SIZE, MADV_POPULATE_WRITE);
-+	ksft_test_result(!ret, "MADV_POPULATE_WRITE with PROT_WRITE\n");
-+
-+	munmap(addr, SIZE);
-+}
-+
-+static void test_holes(void)
-+{
-+	char *addr;
-+	int ret;
-+
-+	ksft_print_msg("[RUN] %s\n", __func__);
-+
-+	addr = mmap(0, SIZE, PROT_READ | PROT_WRITE,
-+		    MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-+	if (addr == MAP_FAILED)
-+		ksft_exit_fail_msg("mmap failed\n");
-+	ret = munmap(addr + pagesize, pagesize);
-+	if (ret)
-+		ksft_exit_fail_msg("munmap failed\n");
-+
-+	/* Hole in the middle */
-+	ret = madvise(addr, SIZE, MADV_POPULATE_READ);
-+	ksft_test_result(ret == -1 && errno == ENOMEM,
-+			 "MADV_POPULATE_READ with holes in the middle\n");
-+	ret = madvise(addr, SIZE, MADV_POPULATE_WRITE);
-+	ksft_test_result(ret == -1 && errno == ENOMEM,
-+			 "MADV_POPULATE_WRITE with holes in the middle\n");
-+
-+	/* Hole at end */
-+	ret = madvise(addr, 2 * pagesize, MADV_POPULATE_READ);
-+	ksft_test_result(ret == -1 && errno == ENOMEM,
-+			 "MADV_POPULATE_READ with holes at the end\n");
-+	ret = madvise(addr, 2 * pagesize, MADV_POPULATE_WRITE);
-+	ksft_test_result(ret == -1 && errno == ENOMEM,
-+			 "MADV_POPULATE_WRITE with holes at the end\n");
-+
-+	/* Hole at beginning */
-+	ret = madvise(addr + pagesize, pagesize, MADV_POPULATE_READ);
-+	ksft_test_result(ret == -1 && errno == ENOMEM,
-+			 "MADV_POPULATE_READ with holes at the beginning\n");
-+	ret = madvise(addr + pagesize, pagesize, MADV_POPULATE_WRITE);
-+	ksft_test_result(ret == -1 && errno == ENOMEM,
-+			 "MADV_POPULATE_WRITE with holes at the beginning\n");
-+
-+	munmap(addr, SIZE);
-+}
-+
-+static bool range_is_populated(char *start, ssize_t size)
-+{
-+	int fd = open("/proc/self/pagemap", O_RDONLY);
-+	bool ret = true;
-+
-+	if (fd < 0)
-+		ksft_exit_fail_msg("opening pagemap failed\n");
-+	for (; size > 0 && ret; size -= pagesize, start += pagesize)
-+		if (!pagemap_is_populated(fd, start))
-+			ret = false;
-+	close(fd);
-+	return ret;
-+}
-+
-+static bool range_is_not_populated(char *start, ssize_t size)
-+{
-+	int fd = open("/proc/self/pagemap", O_RDONLY);
-+	bool ret = true;
-+
-+	if (fd < 0)
-+		ksft_exit_fail_msg("opening pagemap failed\n");
-+	for (; size > 0 && ret; size -= pagesize, start += pagesize)
-+		if (pagemap_is_populated(fd, start))
-+			ret = false;
-+	close(fd);
-+	return ret;
-+}
-+
-+static void test_populate_read(void)
-+{
-+	char *addr;
-+	int ret;
-+
-+	ksft_print_msg("[RUN] %s\n", __func__);
-+
-+	addr = mmap(0, SIZE, PROT_READ | PROT_WRITE,
-+		    MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-+	if (addr == MAP_FAILED)
-+		ksft_exit_fail_msg("mmap failed\n");
-+	ksft_test_result(range_is_not_populated(addr, SIZE),
-+			 "range initially not populated\n");
-+
-+	ret = madvise(addr, SIZE, MADV_POPULATE_READ);
-+	ksft_test_result(!ret, "MADV_POPULATE_READ\n");
-+	ksft_test_result(range_is_populated(addr, SIZE),
-+			 "range is populated\n");
-+
-+	munmap(addr, SIZE);
-+}
-+
-+static void test_populate_write(void)
-+{
-+	char *addr;
-+	int ret;
-+
-+	ksft_print_msg("[RUN] %s\n", __func__);
-+
-+	addr = mmap(0, SIZE, PROT_READ | PROT_WRITE,
-+		    MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-+	if (addr == MAP_FAILED)
-+		ksft_exit_fail_msg("mmap failed\n");
-+	ksft_test_result(range_is_not_populated(addr, SIZE),
-+			 "range initially not populated\n");
-+
-+	ret = madvise(addr, SIZE, MADV_POPULATE_WRITE);
-+	ksft_test_result(!ret, "MADV_POPULATE_WRITE\n");
-+	ksft_test_result(range_is_populated(addr, SIZE),
-+			 "range is populated\n");
-+
-+	munmap(addr, SIZE);
-+}
-+
-+static bool range_is_softdirty(char *start, ssize_t size)
-+{
-+	int fd = open("/proc/self/pagemap", O_RDONLY);
-+	bool ret = true;
-+
-+	if (fd < 0)
-+		ksft_exit_fail_msg("opening pagemap failed\n");
-+	for (; size > 0 && ret; size -= pagesize, start += pagesize)
-+		if (!pagemap_is_softdirty(fd, start))
-+			ret = false;
-+	close(fd);
-+	return ret;
-+}
-+
-+static bool range_is_not_softdirty(char *start, ssize_t size)
-+{
-+	int fd = open("/proc/self/pagemap", O_RDONLY);
-+	bool ret = true;
-+
-+	if (fd < 0)
-+		ksft_exit_fail_msg("opening pagemap failed\n");
-+	for (; size > 0 && ret; size -= pagesize, start += pagesize)
-+		if (pagemap_is_softdirty(fd, start))
-+			ret = false;
-+	close(fd);
-+	return ret;
-+}
-+
-+static void clear_softdirty(void)
-+{
-+	int fd = open("/proc/self/clear_refs", O_WRONLY);
-+	const char *ctrl = "4";
-+	int ret;
-+
-+	if (fd < 0)
-+		ksft_exit_fail_msg("opening clear_refs failed\n");
-+	ret = write(fd, ctrl, strlen(ctrl));
-+	if (ret != strlen(ctrl))
-+		ksft_exit_fail_msg("writing clear_refs failed\n");
-+	close(fd);
-+}
-+
-+static void test_softdirty(void)
-+{
-+	char *addr;
-+	int ret;
-+
-+	ksft_print_msg("[RUN] %s\n", __func__);
-+
-+	addr = mmap(0, SIZE, PROT_READ | PROT_WRITE,
-+		    MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-+	if (addr == MAP_FAILED)
-+		ksft_exit_fail_msg("mmap failed\n");
-+
-+	/* Clear any softdirty bits. */
-+	clear_softdirty();
-+	ksft_test_result(range_is_not_softdirty(addr, SIZE),
-+			 "range is not softdirty\n");
-+
-+	/* Populating READ should set softdirty. */
-+	ret = madvise(addr, SIZE, MADV_POPULATE_READ);
-+	ksft_test_result(!ret, "MADV_POPULATE_READ\n");
-+	ksft_test_result(range_is_not_softdirty(addr, SIZE),
-+			 "range is not softdirty\n");
-+
-+	/* Populating WRITE should set softdirty. */
-+	ret = madvise(addr, SIZE, MADV_POPULATE_WRITE);
-+	ksft_test_result(!ret, "MADV_POPULATE_WRITE\n");
-+	ksft_test_result(range_is_softdirty(addr, SIZE),
-+			 "range is softdirty\n");
-+
-+	munmap(addr, SIZE);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	int err;
-+
-+	pagesize = getpagesize();
-+
-+	ksft_print_header();
-+	ksft_set_plan(21);
-+
-+	sense_support();
-+	test_prot_read();
-+	test_prot_write();
-+	test_holes();
-+	test_populate_read();
-+	test_populate_write();
-+	test_softdirty();
-+
-+	err = ksft_get_fail_cnt();
-+	if (err)
-+		ksft_exit_fail_msg("%d out of %d tests failed\n",
-+				   err, ksft_test_num());
-+	return ksft_exit_pass();
-+}
-+
-+#else /* defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE) */
-+
-+#warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition"
-+
-+int main(int argc, char **argv)
-+{
-+	ksft_print_header();
-+	ksft_exit_skip("MADV_POPULATE_READ or MADV_POPULATE_WRITE not defined\n");
-+}
-+
-+#endif /* defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE) */
-diff --git a/tools/testing/selftests/vm/run_vmtests.sh b/tools/testing/selftests/vm/run_vmtests.sh
-index e953f3cd9664..955782d138ab 100755
---- a/tools/testing/selftests/vm/run_vmtests.sh
-+++ b/tools/testing/selftests/vm/run_vmtests.sh
-@@ -346,4 +346,20 @@ else
- 	exitcode=1
- fi
- 
-+echo "--------------------------------------------------------"
-+echo "running MADV_POPULATE_READ and MADV_POPULATE_WRITE tests"
-+echo "--------------------------------------------------------"
-+./madv_populate
-+ret_val=$?
-+
-+if [ $ret_val -eq 0 ]; then
-+	echo "[PASS]"
-+elif [ $ret_val -eq $ksft_skip ]; then
-+	echo "[SKIP]"
-+	exitcode=$ksft_skip
-+else
-+	echo "[FAIL]"
-+	exitcode=1
-+fi
-+
- exit $exitcode
--- 
-2.29.2
+FYI, you should be tagging patches with the tree they are targeting. In
+this case probably the 'bpf' tree (so [PATCH bpf] in the subject).
+
+Also, a Fixes: tag would be nice here?
+
+-Toke
 
