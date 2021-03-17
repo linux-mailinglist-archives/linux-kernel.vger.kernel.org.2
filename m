@@ -2,190 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058E733EA37
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C554033EA30
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:55:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbhCQGy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 02:54:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhCQGyW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 02:54:22 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40047C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 23:54:22 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id g27so39900167iox.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 23:54:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SlYC70Tmixg0bkawcmpqrM0Twaey/BX+R82iQOZSGdk=;
-        b=Qoh+X3845ZucsGg9cbiSywQJizgtyrSxDQ8gr3zcEPDPnHcwXqUwnO6FPn5QusV7RY
-         UWnnEttJYYRai6xRX/c9C32yvyk2x44Y3JaQF0u6yhrh3AOjumURKMc1oe3ezCqF/7qa
-         qOEWyyKUzeZpyVr1oJIosk/JO5JO91zMcDJOLwz7A0AygspNbdkBMJFlPHOTvDSqa9fH
-         MFkX2sQLORgMN5MT9Ct3nlUqw1vorHUCxanqV6Q1lT2l0ZU1tu7HUNPkNJX5H7sMIDbE
-         9JSRFiWac2x00r5IzLM5+rjeEcFj1kWr+ize2qqmA3Q4Smph9MfdzsGx8eYVP7SqAJ5K
-         CrUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SlYC70Tmixg0bkawcmpqrM0Twaey/BX+R82iQOZSGdk=;
-        b=pwt5DJ+q2rPYpv1+esZRee6MPvU9UpjAWBgglUmHs2n346EdJ5EzJc2BR2i2exzcqC
-         6b2zbAnL/k9I62qZGZfgeg4CbgUoHQHU5R3xDQPU4W7mjOgww8L/Duy79yhfJn4Z2cjV
-         7UuLSOWy75arvQ79x6my0MYVwnHubypFjBsT//CViCXAd6ScgQeGuOzBN8jZB1tIWo7V
-         h4qFgPoub21nDna4HidH4KWPRY1bD6zuYUPojBrSZ7gC146kkpYDSAnlj3IKGnrsGsje
-         x8G9U9bx2UPCH/6iuXh2r2UYWAVZ4sKzgQPMArt3E5ufpLerbdbv0LRAy1tQK3R1XAEJ
-         /A9w==
-X-Gm-Message-State: AOAM533itziue954mnhRyHI4fWoJq4LpzIqK2kB0gp4BbsQY6NZ3H/mA
-        brIJer1upsxaWyYKWa3nxRI=
-X-Google-Smtp-Source: ABdhPJy+4qkeJaSy1Eb1RlWjQEsPf0PsKtX4ASEgbMIvVbEz9ATqhI16TZ41VxjQ7ZRGf7ygmRlKbg==
-X-Received: by 2002:a05:6638:2711:: with SMTP id m17mr1727138jav.115.1615964061410;
-        Tue, 16 Mar 2021 23:54:21 -0700 (PDT)
-Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id w13sm10583057ilg.48.2021.03.16.23.54.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 23:54:20 -0700 (PDT)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
+        id S230509AbhCQGyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 02:54:31 -0400
+Received: from mail-eopbgr80047.outbound.protection.outlook.com ([40.107.8.47]:57027
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230241AbhCQGyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 02:54:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bmC6X4EC1lx/7aHzFr1KJpEqbhbqNRNi3UgZFKlUJPg8VjOR71yzR35TFgOMpysJZdG5G+k1ztvOX9S24RC1in/0kpS65AfdaFbLM94iEaGIhojUvEF+bcOLaM+VxJ7LryNooemo/rA4rk4KzuumWcUwylZfaUp01+NxQnHbh0ozBLcUMBOC09AqKQJmR9IJFUnximcpJz23VrDMui+iGO+N2FmEeTGMHc7vGTXa8W5dYgH9u7Cyo/z5F7JEeP54B6zO8hsKEaRjLSIZuCdLEvhgObR6gZp8igdnT0+gT0/B1zKpXiJSzc9HJVEJfUwur6rVwpDEV+frIZiJkkLppQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KzRv8MUSSO9tJB1wBGVQAJWYkqphr96Kj5zqbos6gsE=;
+ b=JPBlJvpYzHtcfSjeN6d29hoiRb14JnZMYuRoVG1HgztD7HKM+VNS4+5/RNCP/cN15BFbPwX8En06Pdl18Xe37LyHwhXzLQfUh4CzDRhRnxJsEJv5hOp2S3B6z85nQGAqYoAjf7RGtsxFX5duY+UeJl60qSJvaZjx950irzK4kcGdngVrX/BwZqn7IbyhjSGAVyAQw5juNabL2HedEslOcmKboIzpilabSXThfP8d47hR2Hf8K7s3ocaPgmF9c9MSZ54Ngfn9RJJiPQvfQHaqj+A8XBHJUbmX4JtfNiqO0N6ecmos8zuJSHrAWZlZOZmOnCZ2p6wVG7FIG88I+sbAKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KzRv8MUSSO9tJB1wBGVQAJWYkqphr96Kj5zqbos6gsE=;
+ b=azDGliFpiw+Iooaigw41+9umP8oJTxBWIjHYEsrDM4fV2jlofGjihPg8SWhqGlG9jdDKSlKmjacMoRSocywIOyNevdJ7vz3+Zfi6cBBHDtvi/+X49GelNGHw8fasQYqsUldcEyp8h7Rslhj23EKF11RXSywOpEUIozxvmnx1kZI=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+Received: from AM0PR04MB5618.eurprd04.prod.outlook.com (2603:10a6:208:123::11)
+ by AM0PR04MB7091.eurprd04.prod.outlook.com (2603:10a6:208:197::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Wed, 17 Mar
+ 2021 06:54:10 +0000
+Received: from AM0PR04MB5618.eurprd04.prod.outlook.com
+ ([fe80::69a8:a768:8fa1:7236]) by AM0PR04MB5618.eurprd04.prod.outlook.com
+ ([fe80::69a8:a768:8fa1:7236%7]) with mapi id 15.20.3933.032; Wed, 17 Mar 2021
+ 06:54:10 +0000
+From:   Clark Wang <xiaoning.wang@nxp.com>
+To:     aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Cc:     Jim Cromie <jim.cromie@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [RFC PATCH v4 00/19] dynamic debug diet plan
-Date:   Wed, 17 Mar 2021 00:53:53 -0600
-Message-Id: <20210317065412.2890414-1-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
+Subject: [PATCH 06/11] i2c: imx-lpi2c: improve i2c driver probe priority
+Date:   Wed, 17 Mar 2021 14:53:54 +0800
+Message-Id: <20210317065359.3109394-7-xiaoning.wang@nxp.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210317065359.3109394-1-xiaoning.wang@nxp.com>
+References: <20210317065359.3109394-1-xiaoning.wang@nxp.com>
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: HK2PR02CA0215.apcprd02.prod.outlook.com
+ (2603:1096:201:20::27) To AM0PR04MB5618.eurprd04.prod.outlook.com
+ (2603:10a6:208:123::11)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by HK2PR02CA0215.apcprd02.prod.outlook.com (2603:1096:201:20::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Wed, 17 Mar 2021 06:54:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e4fc1dc5-99c4-4696-a1e3-08d8e911775b
+X-MS-TrafficTypeDiagnostic: AM0PR04MB7091:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR04MB7091D8ECA745182247E78155F36A9@AM0PR04MB7091.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dN8DtHG5adnYlIWOKZuc+DXYUFdw6dP6Zs37hMezQ1R0aXBE2GNAPeZLDLxDEL1hQkpO60pUjUv+PwM8EJfMk0YygPUM6eTzRFBmkA539MjvCI3rwAgHD9gr/LSsGbmXjy6tpDt0+eWPXf8iZWAvMKNxLtljAO4wRXCa137/gyz4OuRjTYspErw2Y8M1MkMWW9Utmt2VRMnzoxJpjsZ1GP1ZCOw0KyNVsKnt0rfyxIuFbmA/k/PZ4HWRkyE4T9JIH6YPidMx4dlG4AbewvWUYH4ZvthXmSQkjoD+o3s7DzzseL8huxmGsMjwBz+gM/FjXw07rcwbtg9AxtEWUW/LYXLNYgzbZID3NjElG6VvLQZxPrAqeVmCq51KgjIkgPqUrlJGU1Y5IW1HyAN7zc3+dsUJ1njpk/yJfEnedM5CDaSKK7uSEG9OIkWfbot+9SzX7knw4bFR+sQ/++m1Bl4iJ+RszRJ+HM116S82ow4kNoSqSFW4JXAKiIvdlo6/wuaFeT1w2wUbefK2DlFpY8j6AKTzlofnby6n3cFNEKEF6U85xfED6V228T41vsjit6MKFzN5mkM7cdtQltj6dXM/2sbHEx/Scpkej0IaQ+FHsMsUTjmmrf2QkYW5NYgF/gPi
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5618.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(346002)(39860400002)(136003)(478600001)(4744005)(66556008)(66476007)(69590400012)(6506007)(66946007)(83380400001)(36756003)(16526019)(5660300002)(2616005)(316002)(2906002)(1076003)(8936002)(26005)(52116002)(186003)(956004)(4326008)(6512007)(6486002)(8676002)(6666004)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?LbWkd/LXYTxbazK0ZezkOmZfldghVxtiYhk24kouA+OgW1mj7U3vFXe4rdxO?=
+ =?us-ascii?Q?IBUQJunMp75TIpEkuizy7tXku+cJlhQwsuCeHdVDirpsgkA5dwOFEIa/lrJi?=
+ =?us-ascii?Q?y+2g5zonIti37DwAnf7c3DeFPX9bMLi9BUHdlje12mf/wMnIsenspLb8HDLM?=
+ =?us-ascii?Q?OQZQWHGrm1gw9WXM62hrMntlEaqiSWqqwqj/shK6aaqJfmNCdkPhmnyCv+bk?=
+ =?us-ascii?Q?NUXJpl8pe6hlZfWypxenDK1fNeJvfvu2g4f0Z6TZTRx2CPIrcqXU02l0Sb/A?=
+ =?us-ascii?Q?TB1NagRnXl+5UCKs5CUOmU0fxJkupEL98tCF+qzYbV45w5vfuj4NZdq+abpB?=
+ =?us-ascii?Q?PqFKI9n+tE787IyNH+YCHkKci+EwQJH5ObYbIhNMMu4Cg2hwnbwLTaFvnong?=
+ =?us-ascii?Q?NbwLvHkYPtWOwB+Pi7wVTvuts3uy5QUnYV1/C5YeT9DKIsUcUM2h9ZSP7UHt?=
+ =?us-ascii?Q?PYYtk7qui6kDKDcVxS7KbGam8n8rAn03B+VE8xpu/YLDGGwBc/pOg3eKdmWf?=
+ =?us-ascii?Q?SB97IMme+6v1Bo5AN02LGt0XIfdPCCF7ByhmktATcRPiNCchzJt3KYx11JTI?=
+ =?us-ascii?Q?lXYx7P9JggK9h6tIZG9V+lDAGCQK0e0OZTxdywwvcZbZtvwfIJolkv5bOcER?=
+ =?us-ascii?Q?+qBE6ymH1lMZFQUk6C/qBU0BUFsdEOLGWNMJIKmrScpI/x25YJOAeR2t3AIj?=
+ =?us-ascii?Q?DiFZV2O55gr7ous91NSqJ+TwSrbT/TfEd5z1rrr13g/MHkhaocuFNSuuuoKM?=
+ =?us-ascii?Q?opxmVRdWvVS/UCXl0nd0rw6NR5FSkeHoVnAX8njijuasvRrXUOJT2rhG55da?=
+ =?us-ascii?Q?eO/KcIWa2czztZ6npKocCAPw1eAJ3hU+MFNlVeQ9BBawypgUGknFnWnfYyre?=
+ =?us-ascii?Q?eLF4jwGJ4ylMzKCIfnUNeap0/gfb3tc27SSuhBWSV0Kq0cWputEA+pvn6tNp?=
+ =?us-ascii?Q?o3iMnnA3gjIXrAnU87tKVfeu2qtqdBuk5WPRyDRzilNau/mOzuwYf/DVV6qc?=
+ =?us-ascii?Q?J868stsUbyMVDV02OgkzcMEyQlnf4b+ZWl47qWLBZrSu+fKnU97HfsfCBgGl?=
+ =?us-ascii?Q?EP7iknaEHIObrZOwUQVbsq90VSvlBnf7wOqVJnAa4Z1YV65NJp6lsVvVMJgT?=
+ =?us-ascii?Q?KZcf5r3Z0QknNc0DwMBDPm4vaRVwGyeMlpUr1luo4J0uxiDLhTjnqssWRHiU?=
+ =?us-ascii?Q?DnVoJTbU6t1RWH3UnLSefn8+9s9WEiIX22xheK9G1QdvOMHybNpft24bF1JT?=
+ =?us-ascii?Q?nPGzKQKw30u9Qgyq7F16CaGI0i/dFxa+zDVSUvcfaHsjoQtbWVWfX0/drH+z?=
+ =?us-ascii?Q?Jf/mbIuD/57PUQMpqoUNzmrV?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e4fc1dc5-99c4-4696-a1e3-08d8e911775b
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5618.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 06:54:10.2612
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Pgq86uDsZB3a9lpqJ1LN1x0n70/Ww7fu68PtZ8gYiGQUIuV5N8kPqRFWWnxjztuuOIliMPudnGT+5WozPhc/mA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v4 fixes 'series grooming errors',
-Reported-by: kernel test robot <lkp@intel.com>
+From: Gao Pan <pandy.gao@nxp.com>
 
-CONFIG_DYNAMIC_DEBUG creates a struct _ddebug (56 bytes) for each
-callsite, which includes 3 pointers to: module, filename, function.
-These are repetetive, and compressible, this patch series goes about
-doing that, it:
+use subsys_initcall for i2c driver to improve i2c driver probe priority
 
-- splits struct _ddebug and __dyndbg[] section/array into 2
-  creating struct _ddebug_site and __dyndbg_sites[]
-  temporary _ddebug.site connects them.
-  
-- makes _ddebug_site data optional
-- minor optimizations
-- makes _ddebug_site data deleteable
-  not necessary, proof of optionality
+Signed-off-by: Gao Pan <pandy.gao@nxp.com>
+---
+ drivers/i2c/busses/i2c-imx-lpi2c.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-The RFC stuff comes at the end:
-
-- attach __dyndbg_sites[] to module-info, like __dyndbg[]
-- add index to struct _ddebug, use it for builtins
-- add ddebug_site(_get|_put) abstraction to hide _ddebug.site
-
-At this point, its practical to: compress __dyndbg_sites[] & replace
-the section, then expand it on-demand to serve ddebug_site_get()
-calls.  For enabled callsites (with decorations flags), the retrieved
-records can be cached in a hash after theyre 1st needed/used (when
-callsite is actually executed).
-
-Whats my (ideal?) decompressing interface ?
-And whats the name of the api call ? I couldnt suss it out yet.
-
-For any control read, a simple block decompress and cache is close to
-ideal; all site data is then available to iterate over, and each
-ddebug_site_get() just indexes into it.  A stream of decompressed site
-records would also work well, with less lumpy memory allocs and frees.
-
-Actually dropping _ddebug.site is not yet possible.  While we could
-drop it for builtin modules, thats cuz we know __start___dyndbg_sites.
-For loaded modules, I need the elf section: __dyndbg_sites.  This is
-in load-info, but I dont have a path to it.  In:
-
-- add _ddebug_header/table
-
-That adds a single header entry pair (structs _ddebug*s with special
-initialization) into the arrays, and it links to the front of the
-array, where its useful.  But creating this header entry only works
-for vmlinux itself (because of vmlinux.ld.h patch), not for loadable
-modules.
-
-- add linker rules to module.lds.h
-
-I tried to re-use the DYMAMIC_DEBUG_DATA macro added above for
-modules, this failed, commit msg guesses the cause.  This breaks with
-a linker script syntax error
-
-TODO
-
-Presuming the fixed header can be linked reliably in front doing
-something like I tried, it can be recast as a ddebug_header and
-unionized with struct _ddebug, and the _ddebugs[] will fit nicely as a
-flex-array:
-
-struct ddebug_table2 {
-       struct ddebug_header foo;
-       struct _ddebug ddebugs[];
-}
-
-A header would have 40 bytes, room to contain most/all of struct
-ddebug_table's fields, a pointer to the __dyndbg_sites[] table, and a
-list-head too, meaning it supports essential and nice-to-have
-properties:
-
-- the mapping: __dyndbg[N] --> __dyndbg_sites[N]	 # NEEDed to drop .site
-  using container_of_flex() for flex-arrays
-
-- we can add them directly to ddebug_tables list	 # freebie
-  ie avoid the kzalloc in ddebug_add_module()  
-
-If not all fields fit in the space available in __dyndbg[0], there is
-space available in __dyndbg_sites[0].
-
-Additionally, at the end of __init, ddebug_tables list is composed of
-memory entirely in __dyndbg[], which could then be make readonly (by
-means I dont know).  If this breaks insertions of loadable modules, we
-can easily a 2nd list for that.
-
-
-Jim Cromie (19):
-  dyndbg: split struct _ddebug, move display fields to new _ddebug_site
-  dyndbg: __init iterate over __dyndbg & __dyndbg_site in parallel
-  dyndbg: refactor part of ddebug_change to ddebug_match_site
-  dyndbg: accept null site in ddebug_match_site
-  dyndbg: hoist ->site out of ddebug_match_site
-  dyndbg: accept null site in ddebug_change
-  dyndbg: accept null site in dynamic_emit_prefix
-  dyndbg: accept null site in ddebug_proc_show
-  dyndbg: optimize ddebug_emit_prefix
-  dyndbg: avoid calling dyndbg_emit_prefix when it has no work
-  dyndbg: refactor ddebug_alter_site out of ddebug_change
-  dyndbg: allow deleting site info via control interface
-  dyndbg+module: expose ddebug_sites to modules
-  dyndbg: add ddebug_site(_get|_put) abstraction
-  dyndbg: add _index to struct _ddebug
-  dyndbg: prevent build bugs via -DNO_DYNAMIC_DEBUG_TABLE
-  dyndbg: RFC - DECLARE/DEFINE_DYNAMIC_DEBUG_TABLE
-  dyndbg: shuffle ddebug_table fields
-  dyndbg: RFC add linker rules to module.lds.h
-
- arch/x86/boot/compressed/Makefile     |   1 +
- arch/x86/entry/vdso/Makefile          |   3 +
- arch/x86/purgatory/Makefile           |   1 +
- drivers/firmware/efi/libstub/Makefile |   3 +-
- drivers/gpu/drm/i915/i915_drv.c       |   2 +
- include/asm-generic/module.lds.h      |  21 ++
- include/asm-generic/vmlinux.lds.h     |  24 +-
- include/linux/dynamic_debug.h         | 180 +++++++++++++--
- kernel/module-internal.h              |   1 +
- kernel/module.c                       |   9 +-
- lib/dynamic_debug.c                   | 313 +++++++++++++++++++-------
- scripts/Makefile.lib                  |   2 +
- 12 files changed, 449 insertions(+), 111 deletions(-)
-
+diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
+index 8f9dd3dd2951..86b69852f7be 100644
+--- a/drivers/i2c/busses/i2c-imx-lpi2c.c
++++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
+@@ -710,7 +710,17 @@ static struct platform_driver lpi2c_imx_driver = {
+ 	},
+ };
+ 
+-module_platform_driver(lpi2c_imx_driver);
++static int __init lpi2c_imx_init(void)
++{
++	return platform_driver_register(&lpi2c_imx_driver);
++}
++subsys_initcall(lpi2c_imx_init);
++
++static void __exit lpi2c_imx_exit(void)
++{
++	platform_driver_unregister(&lpi2c_imx_driver);
++}
++module_exit(lpi2c_imx_exit);
+ 
+ MODULE_AUTHOR("Gao Pan <pandy.gao@nxp.com>");
+ MODULE_DESCRIPTION("I2C adapter driver for LPI2C bus");
 -- 
-2.29.2
+2.25.1
 
