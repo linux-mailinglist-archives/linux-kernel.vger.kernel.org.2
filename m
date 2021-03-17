@@ -2,109 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A8833F838
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB3033F841
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:39:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232716AbhCQShM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:37:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229601AbhCQSgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:36:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6611664E61;
-        Wed, 17 Mar 2021 18:36:39 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 18:36:36 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Chen Jun <chenjun102@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        akpm@linux-foundation.org, will@kernel.org, rui.xiang@huawei.com,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] arm64: stacktrace: Add skip when task == current
-Message-ID: <20210317183636.GG12269@arm.com>
-References: <20210317142050.57712-1-chenjun102@huawei.com>
- <20210317142050.57712-3-chenjun102@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210317142050.57712-3-chenjun102@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S233005AbhCQSj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232735AbhCQSiy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 14:38:54 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBDEC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:38:53 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id y200so1742968pfb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:38:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=UAxYgTJ8xiP4XZVnDR92h/oyODoJt823YPaFX/5CcQk=;
+        b=ioW0Mn1xhNkhgHjp4pzr50k54/EF8Enwpqtp1cEWvgnrcC+lNBwFe7qVqcWSFL4P2X
+         0hSHDw2yhwOMJfPjbnV9lit2wJ7ErPE/NVEfJz4g48Nt6dlm3ysihHbMgb511ntN6IG6
+         kaThXQ6XinIP4vjMjzxJ2U4zZRpVTJeJQXYcnFS44VbaLMZjNrp3ohehc4fzCYe0wYX/
+         Q1xKoCqU3dFz1ackTjkeeDuaOOzQj4CjKffRJ7BLNmNfwG+y+dL8Lkc2f/c+aaqpyaS3
+         xtiinmJUURQBQw2b3vN3UKEM26sXml87ar+bpiZw3+/GtG7zE4b3BkPl6MNwk6Eev3P6
+         RNhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=UAxYgTJ8xiP4XZVnDR92h/oyODoJt823YPaFX/5CcQk=;
+        b=Tb6a3jIKZ8Dtpg1/v9I8xXFUJvwlu7ntMg+r6RjYtaCFXrkvkk76mmX85CiHX40+mf
+         QxheEEFjSbgiieOg46LzP4sXBEuS0menpEGKrKAGtx6Y/2OXM3wp4uStJxNvsspSAE2q
+         ygsvSCcVEGlF4+wDFbEzzCnYIli6sYaOZk4wxvpmhCcbGMWlbRcNxI2xEeorlb7sPNJB
+         bPkwVvewUmIXd4a3DF/scwnK0z0C7rEdS6+3vntoLCj015H7qegcwnD8gXNPa2MYj5v5
+         9LkgvY4d4350vkJwmMvZJpvcjBOf6oVcjCFP/zXqvnpdlM0IqYsG8cvC9n3BS0xJmZgJ
+         WmLg==
+X-Gm-Message-State: AOAM532f7L/RYZSv5dQfLuAgxKD6o9oscl0KEfhFYmVaAymkOyA8Hxp2
+        9r7QM1upqmpGBhQzrcSHKRNMNSIZo5KeiQ==
+X-Google-Smtp-Source: ABdhPJzoGLR/WnU8lAmQ5r8+4xzJPxLgSGecJIUOMByK2tLMna5pTLk9ejyjl55HqpKPqiFJo8G1iw==
+X-Received: by 2002:a63:e42:: with SMTP id 2mr3782293pgo.100.1616006333176;
+        Wed, 17 Mar 2021 11:38:53 -0700 (PDT)
+Received: from mahak-Inspiron-7570 ([103.37.201.168])
+        by smtp.gmail.com with ESMTPSA id z8sm3369883pjr.57.2021.03.17.11.38.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 11:38:52 -0700 (PDT)
+From:   Mahak Gupta <gmahak1@gmail.com>
+To:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Cc:     Mahak Gupta <gmahak1@gmail.com>
+Subject: [PATCH] staging: octeon-usb: Match alignment with open parenthesis
+Date:   Thu, 18 Mar 2021 00:08:46 +0530
+Message-Id: <20210317183846.4867-1-gmahak1@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 02:20:50PM +0000, Chen Jun wrote:
-> On ARM64, cat /sys/kernel/debug/page_owner, all pages return the same
-> stack:
->  stack_trace_save+0x4c/0x78
->  register_early_stack+0x34/0x70
->  init_page_owner+0x34/0x230
->  page_ext_init+0x1bc/0x1dc
-> 
-> The reason is that:
-> check_recursive_alloc always return 1 because that
-> entries[0] is always equal to ip (__set_page_owner+0x3c/0x60).
-> 
-> The root cause is that:
-> commit 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
-> make the save_trace save 2 more entries.
-> 
-> Add skip in arch_stack_walk when task == current.
-> 
-> Fixes: 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
-> Signed-off-by: Chen Jun <chenjun102@huawei.com>
-> ---
->  arch/arm64/kernel/stacktrace.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-> index ad20981..c26b0ac 100644
-> --- a/arch/arm64/kernel/stacktrace.c
-> +++ b/arch/arm64/kernel/stacktrace.c
-> @@ -201,11 +201,12 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
->  
->  	if (regs)
->  		start_backtrace(&frame, regs->regs[29], regs->pc);
-> -	else if (task == current)
-> +	else if (task == current) {
-> +		((struct stacktrace_cookie *)cookie)->skip += 2;
->  		start_backtrace(&frame,
->  				(unsigned long)__builtin_frame_address(0),
->  				(unsigned long)arch_stack_walk);
-> -	else
-> +	} else
->  		start_backtrace(&frame, thread_saved_fp(task),
->  				thread_saved_pc(task));
+This patches fixes the checks- 'Alignment should match open parenthesis'
+of 'checkpatch.pl'.
 
-I don't like abusing the cookie here. It's void * as it's meant to be an
-opaque type. I'd rather skip the first two frames in walk_stackframe()
-instead before invoking fn().
+Signed-off-by: Mahak Gupta <gmahak1@gmail.com>
+---
+ drivers/staging/octeon-usb/octeon-hcd.c | 32 +++++++++++++------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
-Prior to the conversion to ARCH_STACKWALK, we were indeed skipping two
-more entries in __save_stack_trace() if tsk == current. Something like
-below, completely untested:
-
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index ad20981dfda4..2a9f759aa41a 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -115,10 +115,15 @@ NOKPROBE_SYMBOL(unwind_frame);
- void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
- 			     bool (*fn)(void *, unsigned long), void *data)
- {
-+	/* for the current task, we don't want this function nor its caller */
-+	int skip = tsk == current ? 2 : 0;
-+
- 	while (1) {
- 		int ret;
+diff --git a/drivers/staging/octeon-usb/octeon-hcd.c b/drivers/staging/octeon-usb/octeon-hcd.c
+index e2f8b6b67f75..f27f20a4aa2d 100644
+--- a/drivers/staging/octeon-usb/octeon-hcd.c
++++ b/drivers/staging/octeon-usb/octeon-hcd.c
+@@ -1258,7 +1258,7 @@ static void cvmx_usb_poll_tx_fifo(struct octeon_hcd *usb)
+ 		union cvmx_usbcx_hptxsts tx_status;
  
--		if (!fn(data, frame->pc))
-+		if (skip)
-+			skip--;
-+		else if (!fn(data, frame->pc))
- 			break;
- 		ret = unwind_frame(tsk, frame);
- 		if (ret < 0)
-
-
+ 		tx_status.u32 = cvmx_usb_read_csr32(usb,
+-					CVMX_USBCX_HPTXSTS(usb->index));
++						    CVMX_USBCX_HPTXSTS(usb->index));
+ 		if (cvmx_usb_fill_tx_hw(usb, &usb->periodic,
+ 					tx_status.s.ptxfspcavail))
+ 			USB_SET_FIELD32(CVMX_USBCX_GINTMSK(usb->index),
+@@ -1272,7 +1272,7 @@ static void cvmx_usb_poll_tx_fifo(struct octeon_hcd *usb)
+ 		union cvmx_usbcx_gnptxsts tx_status;
+ 
+ 		tx_status.u32 = cvmx_usb_read_csr32(usb,
+-					CVMX_USBCX_GNPTXSTS(usb->index));
++						    CVMX_USBCX_GNPTXSTS(usb->index));
+ 		if (cvmx_usb_fill_tx_hw(usb, &usb->nonperiodic,
+ 					tx_status.s.nptxfspcavail))
+ 			USB_SET_FIELD32(CVMX_USBCX_GINTMSK(usb->index),
+@@ -1298,13 +1298,13 @@ static void cvmx_usb_fill_tx_fifo(struct octeon_hcd *usb, int channel)
+ 
+ 	/* We only need to fill data on outbound channels */
+ 	hcchar.u32 = cvmx_usb_read_csr32(usb,
+-			CVMX_USBCX_HCCHARX(channel, usb->index));
++					 CVMX_USBCX_HCCHARX(channel, usb->index));
+ 	if (hcchar.s.epdir != CVMX_USB_DIRECTION_OUT)
+ 		return;
+ 
+ 	/* OUT Splits only have data on the start and not the complete */
+ 	usbc_hcsplt.u32 = cvmx_usb_read_csr32(usb,
+-				CVMX_USBCX_HCSPLTX(channel, usb->index));
++					      CVMX_USBCX_HCSPLTX(channel, usb->index));
+ 	if (usbc_hcsplt.s.spltena && usbc_hcsplt.s.compsplt)
+ 		return;
+ 
+@@ -1313,7 +1313,7 @@ static void cvmx_usb_fill_tx_fifo(struct octeon_hcd *usb, int channel)
+ 	 * words.
+ 	 */
+ 	usbc_hctsiz.u32 = cvmx_usb_read_csr32(usb,
+-				CVMX_USBCX_HCTSIZX(channel, usb->index));
++					      CVMX_USBCX_HCTSIZX(channel, usb->index));
+ 	if (!usbc_hctsiz.s.xfersize)
+ 		return;
+ 
+@@ -1360,7 +1360,7 @@ static void cvmx_usb_start_channel_control(struct octeon_hcd *usb,
+ 	union cvmx_usbcx_hctsizx usbc_hctsiz;
+ 
+ 	usbc_hctsiz.u32 = cvmx_usb_read_csr32(usb,
+-				CVMX_USBCX_HCTSIZX(channel, usb->index));
++					      CVMX_USBCX_HCTSIZX(channel, usb->index));
+ 
+ 	switch (transaction->stage) {
+ 	case CVMX_USB_STAGE_NON_CONTROL:
+@@ -1517,7 +1517,7 @@ static void cvmx_usb_start_channel(struct octeon_hcd *usb, int channel,
+ 
+ 		/* Clear all channel status bits */
+ 		usbc_hcint.u32 = cvmx_usb_read_csr32(usb,
+-					CVMX_USBCX_HCINTX(channel, usb->index));
++						     CVMX_USBCX_HCINTX(channel, usb->index));
+ 
+ 		cvmx_usb_write_csr32(usb,
+ 				     CVMX_USBCX_HCINTX(channel, usb->index),
+@@ -1552,7 +1552,7 @@ static void cvmx_usb_start_channel(struct octeon_hcd *usb, int channel,
+ 
+ 		/* Enable the channel interrupt to propagate */
+ 		usbc_haintmsk.u32 = cvmx_usb_read_csr32(usb,
+-					CVMX_USBCX_HAINTMSK(usb->index));
++							CVMX_USBCX_HAINTMSK(usb->index));
+ 		usbc_haintmsk.s.haintmsk |= 1 << channel;
+ 		cvmx_usb_write_csr32(usb, CVMX_USBCX_HAINTMSK(usb->index),
+ 				     usbc_haintmsk.u32);
+@@ -1836,7 +1836,7 @@ static void cvmx_usb_start_channel(struct octeon_hcd *usb, int channel,
+  * Returns: Pipe or NULL if none are ready
+  */
+ static struct cvmx_usb_pipe *cvmx_usb_find_ready_pipe(struct octeon_hcd *usb,
+-		enum cvmx_usb_transfer xfer_type)
++						      enum cvmx_usb_transfer xfer_type)
+ {
+ 	struct list_head *list = usb->active_pipes + xfer_type;
+ 	u64 current_frame = usb->frame_number;
+@@ -2309,7 +2309,8 @@ static int cvmx_usb_cancel(struct octeon_hcd *usb,
+ 		CVMX_SYNCW;
+ 
+ 		usbc_hcchar.u32 = cvmx_usb_read_csr32(usb,
+-				CVMX_USBCX_HCCHARX(pipe->channel, usb->index));
++						      CVMX_USBCX_HCCHARX(pipe->channel,
++									 usb->index));
+ 		/*
+ 		 * If the channel isn't enabled then the transaction already
+ 		 * completed.
+@@ -2605,11 +2606,12 @@ static int cvmx_usb_poll_channel(struct octeon_hcd *usb, int channel)
+ 
+ 	/* Read the interrupt status bits for the channel */
+ 	usbc_hcint.u32 = cvmx_usb_read_csr32(usb,
+-				CVMX_USBCX_HCINTX(channel, usb->index));
++					     CVMX_USBCX_HCINTX(channel, usb->index));
+ 
+ 	if (usb->init_flags & CVMX_USB_INITIALIZE_FLAGS_NO_DMA) {
+ 		usbc_hcchar.u32 = cvmx_usb_read_csr32(usb,
+-				CVMX_USBCX_HCCHARX(channel, usb->index));
++						      CVMX_USBCX_HCCHARX(channel,
++									 usb->index));
+ 
+ 		if (usbc_hcchar.s.chena && usbc_hcchar.s.chdis) {
+ 			/*
+@@ -2688,9 +2690,9 @@ static int cvmx_usb_poll_channel(struct octeon_hcd *usb, int channel)
+ 	 * transferred
+ 	 */
+ 	usbc_hcchar.u32 = cvmx_usb_read_csr32(usb,
+-			CVMX_USBCX_HCCHARX(channel, usb->index));
++					      CVMX_USBCX_HCCHARX(channel, usb->index));
+ 	usbc_hctsiz.u32 = cvmx_usb_read_csr32(usb,
+-			CVMX_USBCX_HCTSIZX(channel, usb->index));
++					      CVMX_USBCX_HCTSIZX(channel, usb->index));
+ 
+ 	/*
+ 	 * Calculating the number of bytes successfully transferred is dependent
+@@ -3010,7 +3012,7 @@ static int cvmx_usb_poll(struct octeon_hcd *usb)
+ 		union cvmx_usbcx_haint usbc_haint;
+ 
+ 		usbc_haint.u32 = cvmx_usb_read_csr32(usb,
+-					CVMX_USBCX_HAINT(usb->index));
++						     CVMX_USBCX_HAINT(usb->index));
+ 		while (usbc_haint.u32) {
+ 			int channel;
+ 
 -- 
-Catalin
+2.17.1
+
