@@ -2,312 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4E5133F052
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F11EB33F057
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhCQM0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 08:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
+        id S229745AbhCQM2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 08:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbhCQMZn (ORCPT
+        with ESMTP id S229578AbhCQM2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 08:25:43 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305CDC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 05:25:43 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so5210085pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 05:25:43 -0700 (PDT)
+        Wed, 17 Mar 2021 08:28:18 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84356C06174A;
+        Wed, 17 Mar 2021 05:28:18 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id z5so711680plg.3;
+        Wed, 17 Mar 2021 05:28:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Z9Fk1ZVyrYehdc+R8QhCU6Tgcb/96NRNVoZXBJNxJZ8=;
-        b=pcy3PYxfgPaq0YtZWW2OkwIzM8SuhFe9vOBN5vfVaDRUp0VgoDES+8wSprKDSPzux9
-         qNov6w++VBsZxEAU0ZzHqqQnKye9l1D1PMWR9MYBcjr7j10pjK2EGOnlrlCr3qVwFc4x
-         W5c5uWhODUIQ2jGxyppxZgYhw3sGXbmJhhEXb0JkEGiLY8TelZeSq42NdBQhQlIX4wI6
-         +aEOh3ccQEqek4KpkY8/DpFI+wi24QPqQRX6otiryKQ5hzUycfr0skxOSP0vGAVAO+DV
-         k5rStb/r2UDetDcm8VO5dTNCcGmRvBKkplmQlki69cwY3PQFRvkv940t3exHyutxvdv7
-         9cIw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bvI9v1pKTWSB+Q5D+4FcitJi47hzIZ/zGTWvTz5RA5o=;
+        b=NmLe9K+UAmrek3W+rU4Nzr/U4SN72r5In4gcb7wYCfg/Efxv2L4AvWqlxRBvIRlCZn
+         g1soPaqS2Ow/tT+7FLaPtqhp39LUOI77S8ZB6+3KdSL1Dlk2JIHkTJ5A830D1GngTwgo
+         VqkVlcqyHITcA7wI0VvDMY0jux8p32/sQg6Yl59n86w+StOHcsX7DSVhEUPDIkXkKaCW
+         yEf+mzbfxq9G9HCZ3ayMoEPqyzLcmFzhRyNSnuP9NS1m9tpRkrdC5zXwNt7UOFoTAZYn
+         y/LNU+DFB+mBfrgXDo5nn8680IaEtbuBNzsr4dmAmNvXf6NVGzFQ1rFPPhNqFfLayra/
+         Pu7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Z9Fk1ZVyrYehdc+R8QhCU6Tgcb/96NRNVoZXBJNxJZ8=;
-        b=S+Jrfmu+TtyDb9sLfZKT7kgFUuZEdUX6qmnAFLZocXGYAriAAJaN4CfUYB/6GBUfZ8
-         skfJqsZU66jmpgMVxMyJUU/RI6HsrncAkrKIvEVb+nkeuk9JfA3DkEVTscTE/w7bQJz/
-         P8Lt/tKCMYjqQ9lXxZ036TgiOAq+AGYH1UOd+VJrsHEDuQNxdSmckSPhM1UctBeisYEc
-         aiGMJXWIsH4Cn1zoVZrLpdZDSQMBgyVqbmJMpV3WvzVglWMybdjaOQL1EWrrzHRo+7Nt
-         fzXn/5VJsadgbl8lXLYBCDST7br4zWdLPnmr3f8T8GPa69V8RzbYXpZ8Q8bwZY7YxmFW
-         53DQ==
-X-Gm-Message-State: AOAM533NqaIe9VC595SqO3wulsj9+9FkwFflkaIvjPaaJJHDvRBS0DdE
-        tkTvLI1lqUS3Wk4EPgrf8jGm
-X-Google-Smtp-Source: ABdhPJzlFdp2J54cSveK57XVm7JnmcuKR1Km9zMVFnyzTP7SNgoNE20RVy00UUAojZimSTzwdc7xRQ==
-X-Received: by 2002:a17:90a:550f:: with SMTP id b15mr4490615pji.102.1615983942618;
-        Wed, 17 Mar 2021 05:25:42 -0700 (PDT)
-Received: from localhost.localdomain ([103.66.79.72])
-        by smtp.gmail.com with ESMTPSA id y23sm19285730pfo.50.2021.03.17.05.25.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 05:25:42 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
-        bjorn.andersson@linaro.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v5 3/3] mtd: rawnand: Add support for secure regions in NAND memory
-Date:   Wed, 17 Mar 2021 17:55:13 +0530
-Message-Id: <20210317122513.42369-4-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210317122513.42369-1-manivannan.sadhasivam@linaro.org>
-References: <20210317122513.42369-1-manivannan.sadhasivam@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bvI9v1pKTWSB+Q5D+4FcitJi47hzIZ/zGTWvTz5RA5o=;
+        b=Rkm5QLlLGLWtFI1iaaFDyNe0pKx3pJIjJGwbqKqMcZuBeIzkZ0UKeuBZtSkLD1rGsc
+         UeI3t+HIin5jme2zi8NvDcD18Csk5rVKWZ6ci2K1TJIN/iE00Coamrs8YUDQPV54Yv+Z
+         IeBFigv1yPr3hGCVqpZcwbRUzj6ErAQPZc2hKeaMGkfUIp8rxJURfuBqefFrlhTdwod7
+         bok58fBGv5+qrHijvlfl+lLNt/dJoAISLQ6BIGSDeZPN+BrgJMVcN8iOi1hcsx3clUh4
+         uWZjA8rbhnvp1zX0XTzo0qKUlYT5//rKoDmdB51F4ywjRGX4F7ZXhSvFT06u3baEFHi/
+         dotg==
+X-Gm-Message-State: AOAM530z/ZQSqpHaJPDTLC5I+UE4lmQzZfi9rMidkkIgSel2Ax2H8BDn
+        XqCOocorqvvb55ujXrVyzAAv4+e1yysulSp3XRSNtTldVoSorg==
+X-Google-Smtp-Source: ABdhPJytMHuglf4+K2gGDKo1Eqmm/u9dzCbrGssky5mSD+PT9vdbsLusidWo2LllMrSBdmIzl8K0EfqmNtXvE292eXw=
+X-Received: by 2002:a17:90a:e454:: with SMTP id jp20mr4644470pjb.129.1615984097947;
+ Wed, 17 Mar 2021 05:28:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210316202434.27555-1-hhhawa@amazon.com> <20210316202434.27555-4-hhhawa@amazon.com>
+In-Reply-To: <20210316202434.27555-4-hhhawa@amazon.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 17 Mar 2021 14:27:53 +0200
+Message-ID: <CAHp75VdVnFn+DuO54PsUVGk4ZWWCJpYKsSQVsaUkiDzZki2QRQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] pinctrl: pinctrl-single: fix pcs_pin_dbg_show()
+ when bits_per_mux != 0
+To:     Hanna Hawa <hhhawa@amazon.com>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        David Woodhouse <dwmw@amazon.co.uk>, benh@amazon.com,
+        ronenk@amazon.com, talel@amazon.com, jonnyc@amazon.com,
+        hanochu@amazon.com, tgershi@amazon.com,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On a typical end product, a vendor may choose to secure some regions in
-the NAND memory which are supposed to stay intact between FW upgrades.
-The access to those regions will be blocked by a secure element like
-Trustzone. So the normal world software like Linux kernel should not
-touch these regions (including reading).
+On Tue, Mar 16, 2021 at 11:24 PM Hanna Hawa <hhhawa@amazon.com> wrote:
+>
+> An SError was detected when trying to print the supported pins in a
 
-The regions are declared using a NAND chip DT property,
-"secure-regions". So let's make use of this property in the nand core
-and skip access to the secure regions present in a system.
+What SError is?
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/mtd/nand/raw/nand_base.c | 105 +++++++++++++++++++++++++++++++
- include/linux/mtd/rawnand.h      |   4 ++
- 2 files changed, 109 insertions(+)
+> pinctrl device which supports multiple pins per register. This change
+> fixes the pcs_pin_dbg_show() in pinctrl-single driver when
+> bits_per_mux != 0. In addition move offset calculation and pin offset in
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index c33fa1b1847f..c85cbd491f05 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -278,11 +278,41 @@ static int nand_block_bad(struct nand_chip *chip, loff_t ofs)
- 	return 0;
- }
- 
-+/**
-+ * nand_check_sec_region() - Check if the region is secured
-+ * @chip: NAND chip object
-+ * @offset: Offset of the region to check
-+ *
-+ * Checks if the region is secured by comparing the offset with the list of
-+ * secure regions obtained from DT. Returns -EIO if the region is secured
-+ * else 0.
-+ */
-+static int nand_check_sec_region(struct nand_chip *chip, loff_t offset)
-+{
-+	int i, j;
-+
-+	/* Skip touching the secure regions if present */
-+	for (i = 0, j = 0; i < chip->nr_sec_regions; i++, j += 2) {
-+		if (offset >= chip->sec_regions[j] &&
-+		    (offset <= chip->sec_regions[j] + chip->sec_regions[j + 1]))
-+			return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
- static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
- {
-+	int ret;
-+
- 	if (chip->options & NAND_NO_BBM_QUIRK)
- 		return 0;
- 
-+	/* Check if the region is secured */
-+	ret = nand_check_sec_region(chip, ofs);
-+	if (ret)
-+		return ret;
-+
- 	if (chip->legacy.block_bad)
- 		return chip->legacy.block_bad(chip, ofs);
- 
-@@ -397,6 +427,11 @@ static int nand_do_write_oob(struct nand_chip *chip, loff_t to,
- 		return -EINVAL;
- 	}
- 
-+	/* Check if the region is secured */
-+	ret = nand_check_sec_region(chip, to);
-+	if (ret)
-+		return ret;
-+
- 	chipnr = (int)(to >> chip->chip_shift);
- 
- 	/*
-@@ -565,6 +600,11 @@ static int nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
- 
- 	if (!chip->bbt)
- 		return 0;
-+
-+	/* Check if the region is secured */
-+	if (nand_check_sec_region(chip, ofs))
-+		return -EIO;
-+
- 	/* Return info from the table */
- 	return nand_isreserved_bbt(chip, ofs);
- }
-@@ -2737,6 +2777,11 @@ static int nand_read_page_swecc(struct nand_chip *chip, uint8_t *buf,
- 	uint8_t *ecc_code = chip->ecc.code_buf;
- 	unsigned int max_bitflips = 0;
- 
-+	/* Check if the region is secured */
-+	ret = nand_check_sec_region(chip, ((loff_t)page << chip->page_shift));
-+	if (ret)
-+		return ret;
-+
- 	chip->ecc.read_page_raw(chip, buf, 1, page);
- 
- 	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize)
-@@ -3127,6 +3172,11 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
- 	int retry_mode = 0;
- 	bool ecc_fail = false;
- 
-+	/* Check if the region is secured */
-+	ret = nand_check_sec_region(chip, from);
-+	if (ret)
-+		return ret;
-+
- 	chipnr = (int)(from >> chip->chip_shift);
- 	nand_select_target(chip, chipnr);
- 
-@@ -3458,6 +3508,11 @@ static int nand_do_read_oob(struct nand_chip *chip, loff_t from,
- 	pr_debug("%s: from = 0x%08Lx, len = %i\n",
- 			__func__, (unsigned long long)from, readlen);
- 
-+	/* Check if the region is secured */
-+	ret = nand_check_sec_region(chip, from);
-+	if (ret)
-+		return ret;
-+
- 	stats = mtd->ecc_stats;
- 
- 	len = mtd_oobavail(mtd, ops);
-@@ -3709,6 +3764,11 @@ static int nand_write_page_swecc(struct nand_chip *chip, const uint8_t *buf,
- 	uint8_t *ecc_calc = chip->ecc.calc_buf;
- 	const uint8_t *p = buf;
- 
-+	/* Check if the region is secured */
-+	ret = nand_check_sec_region(chip, ((loff_t)page << chip->page_shift));
-+	if (ret)
-+		return ret;
-+
- 	/* Software ECC calculation */
- 	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize)
- 		chip->ecc.calculate(chip, p, &ecc_calc[i]);
-@@ -3979,6 +4039,11 @@ static int nand_do_write_ops(struct nand_chip *chip, loff_t to,
- 		return -EINVAL;
- 	}
- 
-+	/* Check if the region is secured */
-+	ret = nand_check_sec_region(chip, to);
-+	if (ret)
-+		return ret;
-+
- 	column = to & (mtd->writesize - 1);
- 
- 	chipnr = (int)(to >> chip->chip_shift);
-@@ -4180,6 +4245,11 @@ int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
- 	if (check_offs_len(chip, instr->addr, instr->len))
- 		return -EINVAL;
- 
-+	/* Check if the region is secured */
-+	ret = nand_check_sec_region(chip, instr->addr);
-+	if (ret)
-+		return ret;
-+
- 	/* Grab the lock and see if the device is available */
- 	ret = nand_get_device(chip);
- 	if (ret)
-@@ -4995,10 +5065,32 @@ static bool of_get_nand_on_flash_bbt(struct device_node *np)
- 	return of_property_read_bool(np, "nand-on-flash-bbt");
- }
- 
-+static int of_get_nand_secure_regions(struct nand_chip *chip)
-+{
-+	struct device_node *dn = nand_get_flash_node(chip);
-+	struct property *prop;
-+	int length, nr_elem;
-+
-+	prop = of_find_property(dn, "secure-regions", &length);
-+	if (prop) {
-+		nr_elem = length / sizeof(u64);
-+		chip->nr_sec_regions = nr_elem / 2;
-+
-+		chip->sec_regions = kcalloc(nr_elem, sizeof(u32), GFP_KERNEL);
-+		if (!chip->sec_regions)
-+			return -ENOMEM;
-+
-+		of_property_read_u64_array(dn, "secure-regions", chip->sec_regions, nr_elem);
-+	}
-+
-+	return 0;
-+}
-+
- static int rawnand_dt_init(struct nand_chip *chip)
- {
- 	struct nand_device *nand = mtd_to_nanddev(nand_to_mtd(chip));
- 	struct device_node *dn = nand_get_flash_node(chip);
-+	int ret;
- 
- 	if (!dn)
- 		return 0;
-@@ -5015,6 +5107,16 @@ static int rawnand_dt_init(struct nand_chip *chip)
- 	of_get_nand_ecc_user_config(nand);
- 	of_get_nand_ecc_legacy_user_config(chip);
- 
-+	/*
-+	 * Look for secure regions in the NAND chip. These regions are supposed
-+	 * to be protected by a secure element like Trustzone. So the read/write
-+	 * accesses to these regions will be blocked in the runtime by this
-+	 * driver.
-+	 */
-+	ret = of_get_nand_secure_regions(chip);
-+	if (!ret)
-+		return ret;
-+
- 	/*
- 	 * If neither the user nor the NAND controller have requested a specific
- 	 * ECC engine type, we will default to NAND_ECC_ENGINE_TYPE_ON_HOST.
-@@ -6068,6 +6170,9 @@ void nand_cleanup(struct nand_chip *chip)
- 	/* Free manufacturer priv data. */
- 	nand_manufacturer_cleanup(chip);
- 
-+	/* Free secure regions data */
-+	kfree(chip->sec_regions);
-+
- 	/* Free controller specific allocations after chip identification */
- 	nand_detach(chip);
- 
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 6b3240e44310..5ae77ecf41f3 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1086,6 +1086,8 @@ struct nand_manufacturer {
-  *          NAND Controller drivers should not modify this value, but they're
-  *          allowed to read it.
-  * @read_retries: The number of read retry modes supported
-+ * @sec_regions: Array representing the secure regions
-+ * @nr_sec_regions: Number of secure regions
-  * @controller: The hardware controller	structure which is shared among multiple
-  *              independent devices
-  * @ecc: The ECC controller structure
-@@ -1135,6 +1137,8 @@ struct nand_chip {
- 	unsigned int suspended : 1;
- 	int cur_cs;
- 	int read_retries;
-+	u64 *sec_regions;
-+	u8 nr_sec_regions;
- 
- 	/* Externals */
- 	struct nand_controller *controller;
+'!= 0' -> 'is not zero'
+
+> register to common function.
+
+Fixes tag?
+
+> Signed-off-by: Hanna Hawa <hhhawa@amazon.com>
+> ---
+>  drivers/pinctrl/pinctrl-single.c | 66 ++++++++++++++++++++++----------
+>  1 file changed, 45 insertions(+), 21 deletions(-)
+>
+> diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
+> index f3394517cb2e..434f90c8b1b3 100644
+> --- a/drivers/pinctrl/pinctrl-single.c
+> +++ b/drivers/pinctrl/pinctrl-single.c
+> @@ -270,20 +270,53 @@ static void __maybe_unused pcs_writel(unsigned val, void __iomem *reg)
+>         writel(val, reg);
+>  }
+>
+> +static unsigned int pcs_pin_reg_offset_get(struct pcs_device *pcs,
+> +                                          unsigned int pin)
+> +{
+> +       unsigned int offset, mux_bytes;
+
+Offset can be replaced by direct return statements.
+
+> +       mux_bytes = pcs->width / BITS_PER_BYTE;
+> +
+> +       if (pcs->bits_per_mux) {
+> +               unsigned int pin_offset_bytes;
+> +
+> +               pin_offset_bytes = (pcs->bits_per_pin * pin) / BITS_PER_BYTE;
+> +               offset = (pin_offset_bytes / mux_bytes) * mux_bytes;
+> +       } else {
+> +               offset = pin * mux_bytes;
+> +       }
+> +
+> +       return offset;
+> +}
+> +
+> +static unsigned int pcs_pin_shift_reg_get(struct pcs_device *pcs,
+> +                                         unsigned int pin)
+> +{
+> +       return ((pin % (pcs->width / pcs->bits_per_pin)) * pcs->bits_per_pin);
+
+Too many parentheses.
+
+> +}
+> +
+>  static void pcs_pin_dbg_show(struct pinctrl_dev *pctldev,
+>                                         struct seq_file *s,
+>                                         unsigned pin)
+>  {
+>         struct pcs_device *pcs;
+> -       unsigned val, mux_bytes;
+> +       unsigned int val;
+>         unsigned long offset;
+>         size_t pa;
+>
+>         pcs = pinctrl_dev_get_drvdata(pctldev);
+>
+> -       mux_bytes = pcs->width / BITS_PER_BYTE;
+> -       offset = pin * mux_bytes;
+> -       val = pcs->read(pcs->base + offset);
+> +       offset = pcs_pin_reg_offset_get(pcs, pin);
+> +
+> +       if (pcs->bits_per_mux) {
+> +               unsigned int pin_shift_in_reg = pcs_pin_shift_reg_get(pcs, pin);
+
+> +               val = pcs->read(pcs->base + offset)
+> +                       & (pcs->fmask << pin_shift_in_reg);
+
+One line?
+At least move & to the upper line.
+
+> +       } else {
+> +               val = pcs->read(pcs->base + offset);
+
+It's the same as in above branch, why not
+
+val = read();
+if ()
+ val &= fmask << _reg_get(...);
+
+?
+
+> +       }
+> +
+>         pa = pcs->res->start + offset;
+>
+>         seq_printf(s, "%zx %08x %s ", pa, val, DRIVER_NAME);
+> @@ -384,7 +417,6 @@ static int pcs_request_gpio(struct pinctrl_dev *pctldev,
+>         struct pcs_device *pcs = pinctrl_dev_get_drvdata(pctldev);
+>         struct pcs_gpiofunc_range *frange = NULL;
+>         struct list_head *pos, *tmp;
+> -       int mux_bytes = 0;
+>         unsigned data;
+>
+>         /* If function mask is null, return directly. */
+> @@ -392,29 +424,27 @@ static int pcs_request_gpio(struct pinctrl_dev *pctldev,
+>                 return -ENOTSUPP;
+>
+>         list_for_each_safe(pos, tmp, &pcs->gpiofuncs) {
+> +               u32 offset;
+> +
+>                 frange = list_entry(pos, struct pcs_gpiofunc_range, node);
+>                 if (pin >= frange->offset + frange->npins
+>                         || pin < frange->offset)
+>                         continue;
+> -               mux_bytes = pcs->width / BITS_PER_BYTE;
+>
+> -               if (pcs->bits_per_mux) {
+> -                       int byte_num, offset, pin_shift;
+> +               offset = pcs_pin_reg_offset_get(pcs, pin);
+>
+> -                       byte_num = (pcs->bits_per_pin * pin) / BITS_PER_BYTE;
+> -                       offset = (byte_num / mux_bytes) * mux_bytes;
+> -                       pin_shift = pin % (pcs->width / pcs->bits_per_pin) *
+> -                                   pcs->bits_per_pin;
+> +               if (pcs->bits_per_mux) {
+> +                       int pin_shift = pcs_pin_shift_reg_get(pcs, pin);
+>
+>                         data = pcs->read(pcs->base + offset);
+>                         data &= ~(pcs->fmask << pin_shift);
+>                         data |= frange->gpiofunc << pin_shift;
+>                         pcs->write(data, pcs->base + offset);
+>                 } else {
+> -                       data = pcs->read(pcs->base + pin * mux_bytes);
+> +                       data = pcs->read(pcs->base + offset);
+>                         data &= ~pcs->fmask;
+>                         data |= frange->gpiofunc;
+> -                       pcs->write(data, pcs->base + pin * mux_bytes);
+> +                       pcs->write(data, pcs->base + offset);
+>                 }
+>                 break;
+>         }
+> @@ -724,14 +754,8 @@ static int pcs_allocate_pin_table(struct pcs_device *pcs)
+>         for (i = 0; i < pcs->desc.npins; i++) {
+>                 unsigned offset;
+>                 int res;
+> -               int byte_num;
+>
+> -               if (pcs->bits_per_mux) {
+> -                       byte_num = (pcs->bits_per_pin * i) / BITS_PER_BYTE;
+> -                       offset = (byte_num / mux_bytes) * mux_bytes;
+> -               } else {
+> -                       offset = i * mux_bytes;
+> -               }
+> +               offset = pcs_pin_reg_offset_get(pcs, i);
+>                 res = pcs_add_pin(pcs, offset);
+>                 if (res < 0) {
+>                         dev_err(pcs->dev, "error adding pins: %i\n", res);
+> --
+> 2.17.1
+>
+
+
 -- 
-2.25.1
-
+With Best Regards,
+Andy Shevchenko
