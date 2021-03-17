@@ -2,125 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC2733EE64
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2334F33EE87
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbhCQKhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:37:00 -0400
-Received: from lb3-smtp-cloud9.xs4all.net ([194.109.24.30]:54739 "EHLO
-        lb3-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229897AbhCQKgh (ORCPT
+        id S230104AbhCQKhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230026AbhCQKgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:36:37 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id MTXTlA9fKGEYcMTXXlN8Xa; Wed, 17 Mar 2021 11:36:35 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1615977395; bh=VZVA94vcZQUs1b/HuXvvarXkTuyIvnAiDo9ccC8Gd5k=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=gurBdK5D9nc6kyHcfcLa6CgHJQaMOxWoNBRHVxUpatdSk0LiDo+Rrz7R98owJPb53
-         GsddQbOHdGgcPClJdcoN/xVwS1GejgdLA4U6Jipn/tjkaflozy+k6RfF/iiwHjlqHv
-         a1apqp31AYJGjSeySCvl/DTKj53TynAm00fd1hv+6yzSAEA4tKSWdryn8LsQdgEyoF
-         /W91JgqzQge4rzktUpnv6uGhw+2C4B0p4fgxd0qUzFygwHrABGDh8f2XC05oYL7M+P
-         M50qlYAcF/LIsuSbPmDdqAI1Lk2JPYreQYyfy6e5XTsoBFY+P2zdIur4BTK1Z6laPB
-         ewt6p3SIKut/g==
-Subject: Re: [PATCH v5 01/13] media: v4l2-ioctl: Fix check_ext_ctrls
-To:     Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org
-Cc:     stable@vger.kernel.org
-References: <20210316180004.1605727-1-ribalda@chromium.org>
- <20210316180004.1605727-2-ribalda@chromium.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <176411ad-97de-ab83-d5f3-1977cadcbcfa@xs4all.nl>
-Date:   Wed, 17 Mar 2021 11:36:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        Wed, 17 Mar 2021 06:36:53 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386DDC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 03:36:42 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id mm21so1722649ejb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 03:36:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DaFywpidnCeh4zxx7OmWpLHe6NVtXGuPwtwc5Xq6dkI=;
+        b=St/h20aal60N0VZslFwCKJLMFrjF7wFDi3hxNyw+iIAbqz3oJNNOgH73zIOo+4oxE0
+         EvGiBP0BYh+O+1qZ4ZF+gn062fhHPTtU0cKqxkDPKjAxyCpyar/77hO03QqdQOsgg/fd
+         3d87b6xINHBwtaMSGl4KQzpPX3QnDzCf2V/1UhYRj/ZGtsVLHT8chU54aJZAO3JOQSds
+         HlcUCxIMdUktyTvQuotR1Y4Y5xew3CbTSzELl0Rg9nyl7K90UqYmYG0hjtEGnnQaiipZ
+         HtBXdWcxRqDjsPPV7ShN3udFdENa3D3kexeAtIs9v9FzrbRS2uIlx/m8l8WJTeB+s4Gs
+         kbHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DaFywpidnCeh4zxx7OmWpLHe6NVtXGuPwtwc5Xq6dkI=;
+        b=bRh+zEc9MBTAE7sV2/oyYBY4tcbQHpkIrWwnydbMuCoHbnGDXaP1VpOpaohxB97Ttk
+         bbsYc7ea8GvUvLJHmWCXAvbVmLC5joaHxmfv96+NfL0H85OcK2gk5viTiT8GDJBm6VL/
+         haJIWjgs1pK5WSw1LzsIH4f4rTnzlCVyeLvgEY4iNHxMUQ/FdxXbvod/5fdQQagVf6wt
+         Z+zLZDWFhyHY2tHK9Qfs+PrVDXqnZF3hUW4u9t7xbWf+yIHtao7/2wFVJBZiwQzIpDXk
+         fn6OTUXPfC+vPktczMLQ4pQXe25xUOa5hMCJ2+4smM1IfeSPpywOO8Iub2fzLHgo2JTN
+         jYRw==
+X-Gm-Message-State: AOAM5339n5HOF14/N46OCnfVlN5UsNk9fPHTQk0B0Arb8JmNrp/4sKdT
+        0QkLiAgxdyeUQxLMUCd7nbxY3g==
+X-Google-Smtp-Source: ABdhPJzNiUEFO/BpO//rhasAV4B2Hv3Idb2Z3PDPhSRZ3vHuspefsfqRaBmVQREczHqSl4XDALHJeg==
+X-Received: by 2002:a17:906:12db:: with SMTP id l27mr34065389ejb.500.1615977400829;
+        Wed, 17 Mar 2021 03:36:40 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id f19sm12262260edu.12.2021.03.17.03.36.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 03:36:40 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 10:36:38 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     jason.wessel@windriver.com, dianders@chromium.org,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+Subject: Re: [PATCH] kernel: debug: Ordinary typo fixes in the file gdbstub.c
+Message-ID: <20210317103638.sw4wqq4p4hg7dhco@maple.lan>
+References: <20210317091022.347258-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210316180004.1605727-2-ribalda@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfK76AdYDNN2b+tZ16LYeoFrztOE8V/7HovzaQZN6RGV8i33rmJ3aKorCgC5A4D75f7CfQo2dZqy9dC1Q7ZEpqkuthtVQVErxf9iW5cDuty8AKrP7czVy
- XyXIWs10qD/s2qQH6V9jHC78oqEWxCSOO8cBmO1KE/xfSQcaXFE4jgzH3g7Rg1itcdPXHDCXfXg1Xt/X7zcWGQT8FD4sU9e9YoY+Zbisydj7uVYLHZCn7jdx
- geY4ZqLQQa0kP4Clvn2nWpt+kgLBZE5Zat+D2K02y7HuWmfLWAxToLGSZB78AmzaMXbsvWWPHsNy/iu+z+p3C+yqB1+o55baNzROqrEl733H8haFwvUyqh/i
- glbp1BVtcIO7PC9D6tEUyL57qmtxbh2Nd5TCDBcvVg8K0qAoB+D3c8LJ3v4edcnZM59c3fi1SpHMfUQ0Nl9crh0BBkwckgvHMzMuhj50F4FEOU/Z78c=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210317091022.347258-1-unixbhaskar@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/03/2021 18:59, Ricardo Ribalda wrote:
-> Drivers that do not use the ctrl-framework use this function instead.
+On Wed, Mar 17, 2021 at 02:40:22PM +0530, Bhaskar Chowdhury wrote:
 > 
-> - Return error when handling of REQUEST_VAL.
-> - Do not check for multiple classes when getting the DEF_VAL.
+> s/'O'utput/'Output/
+> s/overwitten/overwritten/
+> s/procesing/processing/
 > 
-> Fixes v4l2-compliance:
-> Control ioctls (Input 0):
-> 		fail: v4l2-test-controls.cpp(813): doioctl(node, VIDIOC_G_EXT_CTRLS, &ctrls)
-> 	test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 6fa6f831f095 ("media: v4l2-ctrls: add core request support")
-> Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 > ---
->  drivers/media/v4l2-core/v4l2-ioctl.c | 25 +++++++++++++++++--------
->  1 file changed, 17 insertions(+), 8 deletions(-)
+>  kernel/debug/gdbstub.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-> index 31d1342e61e8..9406e90ff805 100644
-> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
-> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-> @@ -917,15 +917,24 @@ static int check_ext_ctrls(struct v4l2_ext_controls *c, int allow_priv)
-
-allow_priv really should be a bool.
-
->  	for (i = 0; i < c->count; i++)
->  		c->controls[i].reserved2[0] = 0;
->  
-> -	/* V4L2_CID_PRIVATE_BASE cannot be used as control class
-> -	   when using extended controls.
-> -	   Only when passed in through VIDIOC_G_CTRL and VIDIOC_S_CTRL
-> -	   is it allowed for backwards compatibility.
-> -	 */
-> -	if (!allow_priv && c->which == V4L2_CID_PRIVATE_BASE)
-> -		return 0;
-> -	if (!c->which)
-> +	switch (c->which) {
-> +	case V4L2_CID_PRIVATE_BASE:
-> +		/*
-> +		 * V4L2_CID_PRIVATE_BASE cannot be used as control class
-> +		 * when using extended controls.
-> +		 * Only when passed in through VIDIOC_G_CTRL and VIDIOC_S_CTRL
-> +		 * is it allowed for backwards compatibility.
-> +		*/
-> +		if (!allow_priv)
-> +			return 0;
-> +		break;
-> +	case V4L2_CTRL_WHICH_DEF_VAL:
-
-I think it would be better if a second bool 'is_get' argument is added that is true
-for g_ctrl and g_ext_ctrls: then you can do a 'return is_get;' here. That way drivers
-do not need to take care of V4L2_CTRL_WHICH_DEF_VAL for set/try.
-
-Regards,
-
-	Hans
-
-> +	case V4L2_CTRL_WHICH_CUR_VAL:
->  		return 1;
-> +	case V4L2_CTRL_WHICH_REQUEST_VAL:
-> +		return 0;
-> +	}
-> +
->  	/* Check that all controls are from the same control class. */
->  	for (i = 0; i < c->count; i++) {
->  		if (V4L2_CTRL_ID2WHICH(c->controls[i].id) != c->which) {
+> diff --git a/kernel/debug/gdbstub.c b/kernel/debug/gdbstub.c
+> index e149a0ac9e9e..5c96590725f1 100644
+> --- a/kernel/debug/gdbstub.c
+> +++ b/kernel/debug/gdbstub.c
+> @@ -204,7 +204,7 @@ void gdbstub_msg_write(const char *s, int len)
+>  	if (len == 0)
+>  		len = strlen(s);
 > 
+> -	/* 'O'utput */
+> +	/* 'Output */
 
+This is not a typo.
+
+It is showing that the 'O' being writing into the message buffer is a
+mnemonic and describing what it expands to.
+
+Other changes look good, please can you resend with this one removed?
+
+
+Daniel.
+
+
+>  	gdbmsgbuf[0] = 'O';
+> 
+>  	/* Fill and send buffers... */
+> @@ -321,7 +321,7 @@ int kgdb_hex2long(char **ptr, unsigned long *long_val)
+>  /*
+>   * Copy the binary array pointed to by buf into mem.  Fix $, #, and
+>   * 0x7d escaped with 0x7d. Return -EFAULT on failure or 0 on success.
+> - * The input buf is overwitten with the result to write to mem.
+> + * The input buf is overwritten with the result to write to mem.
+>   */
+>  static int kgdb_ebin2mem(char *buf, char *mem, int count)
+>  {
+> @@ -952,7 +952,7 @@ static int gdb_cmd_exception_pass(struct kgdb_state *ks)
+>  }
+> 
+>  /*
+> - * This function performs all gdbserial command procesing
+> + * This function performs all gdbserial command processing
+>   */
+>  int gdb_serial_stub(struct kgdb_state *ks)
+>  {
+> --
+> 2.30.2
+> 
