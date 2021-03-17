@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54AED33EE1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0064033EE24
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbhCQKJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:09:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
+        id S229681AbhCQKNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhCQKJB (ORCPT
+        with ESMTP id S229508AbhCQKM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:09:01 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA11C06174A;
-        Wed, 17 Mar 2021 03:09:01 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id q9so1076457qvm.6;
-        Wed, 17 Mar 2021 03:09:01 -0700 (PDT)
+        Wed, 17 Mar 2021 06:12:58 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE98FC06174A;
+        Wed, 17 Mar 2021 03:12:57 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id 73so919833qtg.13;
+        Wed, 17 Mar 2021 03:12:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1VDJYRlDO5LH/DCrDo0YeGF2d0vdBASCM6MaReKqK50=;
-        b=g3hb7f5l45vzqS56JuVCvtBcF0rvd+njYw17q+WQYjk1h7iLv6FEXzhzdAIS37wJbb
-         RgfjIRNWGWl8i9ipZgiJpsiuAedCU48323IHK09ZCD2/Kenhn7cmoFrZU2sO7dI+CLrM
-         mA3kBSPLKGYl63UOd+oJYJAIQcEhPIPHyk+CyzJjITEGU+zR0AQAoaFom/tJmP324HGo
-         2MTlQxz/985R9rg/RksRu8YEZ9nG1WND4AscQj0B4nilDiJJLtSt+DTz/fYDFTTAsasr
-         00bSU2ct0E5PdZeWSg5fHyD7X/yH7+xKRqAEXorjJD+fud4ILpNjp4tixPRZc5Jz4/t7
-         Vs9g==
+        bh=qq+6rnjwZUXy0xdppfbPndd57JZCgaq/YgQkJLINgHE=;
+        b=SMyHqGTntvVj5VKZDTgIz1os+brbsz83qBFt1WcKY5bTmCQE5jG+8Mrs+m2jpVGXw/
+         7mAPxEUMN/wIij8N/z/pOYkHUCAPZnsFp/GK1CtWBfr8+tuJCNQoHeN0OeC9PnYuPaXy
+         18hhN/xf1WiyUhB7igEmukBaewXBsx85EL3gltLHf6n8NI9N7r9wX8J+hm2i/msnLhkd
+         AL+o9Pcho2ah7uHkGZ1kcm0jA0Ts2dnFqaA1edB0SukKpTn1V+msBRDlgy7P625674LN
+         uFwSV+RAQ79Dmo4wN0m+y2ATuPibX92vGe7IhZcv5GCF0fucSKCed0RXc7ydrl2fdTey
+         d+Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1VDJYRlDO5LH/DCrDo0YeGF2d0vdBASCM6MaReKqK50=;
-        b=nAQ2/YNg58/09x49xtdbbJjuBwrrrjXv8idaVCPpRR5GbCnKOuCzf2xmFg70ckBv06
-         3ELc7gQgcfF5Naeen+BZ41LUrSVfn55Nxzcl6Vqchv2qnDDyTsWRWuY8+MEtvYSxKtDq
-         SR1Y83Ul69lEfSpEHKNY6CYsU3zaSKJ6m1UBLupekNAnzdWyqBos+0PUW9hhgPig0ryg
-         4eEboliO2qHJVrf2fGrrT802wD+AyNypYKoH27JTDaX8vXyGia8eCqB4IMdwSGsFf12r
-         hAUxh+eAqLPDCBPiMnOce1TT13HwnyzB00yvgcIlk9WFKmnJGeIqUdFAlFmedghw33IW
-         w+7Q==
-X-Gm-Message-State: AOAM532LClQoq5aGOTBR4FrGdZsov7+ChjfmwcZd7MU7y28epYY2RryW
-        OdB1kQRS7GEkULog9sZLBz4=
-X-Google-Smtp-Source: ABdhPJyWeb9GtWjaFYS7TNqDVph5ukB9x61rk98v6qnntbKqtnQ9oG9MWKOkn2ZUimgyYKb79bzfrg==
-X-Received: by 2002:a0c:f946:: with SMTP id i6mr4565757qvo.40.1615975740168;
-        Wed, 17 Mar 2021 03:09:00 -0700 (PDT)
+        bh=qq+6rnjwZUXy0xdppfbPndd57JZCgaq/YgQkJLINgHE=;
+        b=K5qhe7DPhXcxcB+b96tOKLftdorPXWa5yd2k4ToSogezo/dJmxKQHqsZ0ICbqnFa3i
+         sM1rQINoBgGB1ijgqZnXe5feyTXmsPnBV5I6ycAs7IXu8RiIObLaJRHICfqtJl3bXUC9
+         sVLsJ0Dn65NKCEPwxXsWewJOVqwbDA33M9xCwzq7BsanWwQsySG8Axl2Nc+LJyXSk5ht
+         OWbEXY/j0Q7A8AjXcoqXOVos1z2lwBAQbKK+9flrc5qFIp4n28/GTvzDy62IM2r2I3g6
+         KsMYgD2NgkTuFhBJa+t1G0DdG8wrcukBkJWjSHNjrElK/6wL1/uDqgp47ucuj9TqnYFR
+         2C3w==
+X-Gm-Message-State: AOAM532nSR/3YcLpD6u2U/Uq4Y5yQssY6MqmZ5Wkmoi8Y4M3isOpmRi7
+        KjLYETqwYui2UON851d9UyU=
+X-Google-Smtp-Source: ABdhPJzbEuLCgLKH92IsbHHtuY9C5ljyRO7REUBh+cjhdsDoJJpvaGIsGT0582g7xK0Q4nkHvC6L1w==
+X-Received: by 2002:ac8:5448:: with SMTP id d8mr3112813qtq.392.1615975977108;
+        Wed, 17 Mar 2021 03:12:57 -0700 (PDT)
 Received: from localhost.localdomain ([37.19.198.48])
-        by smtp.gmail.com with ESMTPSA id i9sm17702054qko.69.2021.03.17.03.08.56
+        by smtp.gmail.com with ESMTPSA id i89sm13802871qtb.95.2021.03.17.03.12.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 03:08:59 -0700 (PDT)
+        Wed, 17 Mar 2021 03:12:56 -0700 (PDT)
 From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     mturquette@baylibre.com, sboyd@kernel.org, dt@kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+To:     sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] devicetree: bindings: clock: Minor typo fix in the file armada3700-tbg-clock.txt
-Date:   Wed, 17 Mar 2021 15:38:40 +0530
-Message-Id: <20210317100840.2449462-1-unixbhaskar@gmail.com>
+Subject: [PATCH] message: fusion: Fix a typo in the file mptbase.h
+Date:   Wed, 17 Mar 2021 15:42:38 +0530
+Message-Id: <20210317101238.2627574-1-unixbhaskar@gmail.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -64,25 +65,26 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-s/provde/provide/
+s/contets/contents/
 
 Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- .../devicetree/bindings/clock/armada3700-tbg-clock.txt          | 2 +-
+ drivers/message/fusion/mptbase.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/armada3700-tbg-clock.txt b/Documentation/devicetree/bindings/clock/armada3700-tbg-clock.txt
-index 0ba1d83ff363..ed1df32c577a 100644
---- a/Documentation/devicetree/bindings/clock/armada3700-tbg-clock.txt
-+++ b/Documentation/devicetree/bindings/clock/armada3700-tbg-clock.txt
-@@ -1,6 +1,6 @@
- * Time Base Generator Clock bindings for Marvell Armada 37xx SoCs
-
--Marvell Armada 37xx SoCs provde Time Base Generator clocks which are
-+Marvell Armada 37xx SoCs provide Time Base Generator clocks which are
- used as parent clocks for the peripheral clocks.
-
- The TBG clock consumer should specify the desired clock by having the
+diff --git a/drivers/message/fusion/mptbase.h b/drivers/message/fusion/mptbase.h
+index 813d46311f6a..b9e0376be723 100644
+--- a/drivers/message/fusion/mptbase.h
++++ b/drivers/message/fusion/mptbase.h
+@@ -274,7 +274,7 @@ typedef union _MPT_FRAME_TRACKER {
+ 	} linkage;
+ 	/*
+ 	 * NOTE: When request frames are free, on the linkage structure
+-	 * contets are valid.  All other values are invalid.
++	 * contents are valid.  All other values are invalid.
+ 	 * In particular, do NOT reply on offset [2]
+ 	 * (in words) being the * message context.
+ 	 * The message context must be reset (computed via base address
 --
 2.30.2
 
