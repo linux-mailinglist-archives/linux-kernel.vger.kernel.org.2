@@ -2,101 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F91233E310
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:55:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4104633E3B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:58:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhCQAz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhCQAzT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:55:19 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E431C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:55:19 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id p133so4402867qka.17
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:55:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=QQhSd5q0jCv0bGK9WK8MiwR/o4DaFUkS5Nq3ARQeY/8=;
-        b=Z1MCQGzkE/4N/qs+W9t1/ZMjHEafjrXaRHY15YDGy+lF0H+saR1hsbspIJ6rma1W3k
-         CCRYEy1fur7xy+DYo8vV+76tGaSuLE/Ks0FiqkwHQ5Iwo7A05sI8nnZ+pzvBsrmXOyhg
-         UsQzN5fSzKrjsQ/Cwd5XcT5TMuru4RyekGogQSpqerzXVGwHD1MsWIVLiEDW0DTETsfJ
-         Q4DAy3TGyrgEOwP3tuo4e11SfjTGAeY0Bdnrtq1OuifJf5dyPIiB5vd438EhdZVPja17
-         fD7HN5Mpdh1dQtpD+GWbuuF2N+CNuhQRj3Y01QEyJoYj6eM1Hn6Pp3SNUZHGvAhFssIc
-         dfcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=QQhSd5q0jCv0bGK9WK8MiwR/o4DaFUkS5Nq3ARQeY/8=;
-        b=smx8hblaChhn4xRln+Df/UVTvR/mjOHn3x8ElgjKLm2xHmGLkeVpB/It8yFvDpaujL
-         8O4UWxZsDjPvvjQ76kGc2X6oHlUSYX9kzAjBP5KG3hz+AIwcreIPEnUcOdehzPRvDiSg
-         kJ8X4O5VNa0omVYRxbu1BqOHjO8JGXRTCRV5/xozegst9QEeX/uWwHr4sbWZPLU02aLA
-         5l5Y1kBs76KQmReqKqe4BPfq9CuUBfi5ViB40R6nuE7xVNx8GBZxN0aLGckkRb4g1eqB
-         C+yU4TlJrwDQeliuKwgD4ImIR++WVYLLRo16hqkMSq8VcCktTOOBYaKY3jqW3FaLFjgz
-         ve0A==
-X-Gm-Message-State: AOAM533VoOJN/t8KK//9BqQ74vwGtx3JNOwo8eRSMwjtZIohfRM19UgR
-        V53e149rVvJvd2xqNl4rlfEPi1YKDxTY
-X-Google-Smtp-Source: ABdhPJzPrxZnrUDoc4VR3LivjF33TPxUrUi5gVJO3/c1Gh3PZCPW3L8uLhxjmqsT7jHjok+gx53URHIfAwua
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:dd81:7319:7b35:a87a])
- (user=irogers job=sendgmr) by 2002:ad4:510d:: with SMTP id
- g13mr2827650qvp.3.1615942518456; Tue, 16 Mar 2021 17:55:18 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 17:55:05 -0700
-In-Reply-To: <20210317005505.2794804-1-irogers@google.com>
-Message-Id: <20210317005505.2794804-3-irogers@google.com>
-Mime-Version: 1.0
-References: <20210317005505.2794804-1-irogers@google.com>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v2 3/3] perf test: Add 30s timeout for wait for daemon start.
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S231579AbhCQA5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:57:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33268 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230386AbhCQA4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 20:56:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2890964FA5;
+        Wed, 17 Mar 2021 00:56:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615942574;
+        bh=AenPixLi3LmTLnH+rm9+o4/1K1iikmmlr7EnwM8NEZg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Ks2kkLqeN432BKUmZaDpgiL5E4OAja+j103hX86viayV5Gj7DfqxAXaArxeMGq7W2
+         LxxRP9GGXTVDyCt7vmDH7EbMmwSCKsNjWqX7qkrNCWYMM0l3qI+7IW6JBi/0UHr6T0
+         Roq1Hy3ACqG3lRWiTDYlJm3gsvy6jg6/2r0XsjHucughN5xEYfdV6pbs0urQMBO9Zt
+         0KEQE2ZTXT6FOSp/DB4A7845132PsuQ7xqAnU6Cmv/u7BxTVBP5kl6XStBpWdGYhcd
+         2Sxpkx7WYvQim4iUdCcAe/t28usvyGzTFlHsdMRgTHCQqqS6NBMnD5zG6xL/640Odt
+         SxxbKOfzPGhHA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-kbuild@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 31/61] kbuild: add image_name to no-sync-config-targets
+Date:   Tue, 16 Mar 2021 20:55:05 -0400
+Message-Id: <20210317005536.724046-31-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210317005536.724046-1-sashal@kernel.org>
+References: <20210317005536.724046-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Retry the ping loop upto 600 times, or approximately 30 seconds, to make
-sure the test does hang at start up.
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+[ Upstream commit 993bdde94547887faaad4a97f0b0480a6da271c3 ]
+
+'make image_name' needs include/config/auto.conf to show the correct
+output because KBUILD_IMAGE depends on CONFIG options, but should not
+attempt to resync the configuration.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/tests/shell/daemon.sh | 7 +++++++
- 1 file changed, 7 insertions(+)
+ Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/tests/shell/daemon.sh b/tools/perf/tests/shell/daemon.sh
-index 61d13c4c64b8..ee4a30ca3f57 100755
---- a/tools/perf/tests/shell/daemon.sh
-+++ b/tools/perf/tests/shell/daemon.sh
-@@ -127,9 +127,16 @@ daemon_start()
+diff --git a/Makefile b/Makefile
+index 472136a7881e..c67cc0d46833 100644
+--- a/Makefile
++++ b/Makefile
+@@ -265,7 +265,8 @@ no-dot-config-targets := $(clean-targets) \
+ 			 $(version_h) headers headers_% archheaders archscripts \
+ 			 %asm-generic kernelversion %src-pkg dt_binding_check \
+ 			 outputmakefile
+-no-sync-config-targets := $(no-dot-config-targets) %install kernelrelease
++no-sync-config-targets := $(no-dot-config-targets) %install kernelrelease \
++			  image_name
+ single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtypes %/
  
- 	# wait for the session to ping
- 	local state="FAIL"
-+	local retries=0
- 	while [ "${state}" != "OK" ]; do
- 		state=`perf daemon ping --config ${config} --session ${session} | awk '{ print $1 }'`
- 		sleep 0.05
-+		retries=$((${retries} +1))
-+		if [ ${retries} -ge 600 ]; then
-+			echo "FAILED: Timeout waiting for daemon to ping"
-+			daemon_exit ${config}
-+			exit 1
-+		fi
- 	done
- }
- 
+ config-build	:=
 -- 
-2.31.0.rc2.261.g7f71774620-goog
+2.30.1
 
