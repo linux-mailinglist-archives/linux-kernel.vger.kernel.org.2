@@ -2,106 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A89633FA71
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 22:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B793333FA76
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 22:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbhCQV0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 17:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230171AbhCQVZt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 17:25:49 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF0BC06174A;
-        Wed, 17 Mar 2021 14:25:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=fK5+i0hUGolj7mGml8H6sgNsoTx8ktey7VXlunodqoc=; b=gyveDLk2NfrD+0kIRX7/a/8CmJ
-        5B+MQc2Gh+CU2p4pb0ZXka3536nmzos8MxHntbrgopxz2A+bUVQJA6PDdAcMBm7+q4dE0smSRq3Yt
-        1drP/x50jfEDRlVhK0NRiPqYNtkx/DhJaBg/R6U19zoN21PEjMH3de5sJH9fFkiP/GDXoDh/Fmc1c
-        g9SUPWESptQdvmlPJdyd6XOw+H+V38lZUi+EI1siB9q/6Hfl0dADdC4CfOQkzqqGPEUEqdi2crd+6
-        kOhbEITb1nAj2tG8M9uy08tyK/l/46Hq6hsJ+zTPpgGfTs/HkoBtXpbDzBJDHifzwYaC84qmwyf12
-        oxh9gMAw==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMdfW-001gnN-AK; Wed, 17 Mar 2021 21:25:36 +0000
-Subject: Re: [PATCH] block: fix comment syntax in file headers
-To:     Aditya Srivastava <yashsri421@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org, ldm@flatcap.org,
-        axboe@kernel.dk, linux-ntfs-dev@lists.sourceforge.net,
-        linux-block@vger.kernel.org
-References: <20210317205245.24857-1-yashsri421@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <087c2cf0-2085-be13-f6db-8ebacb22b252@infradead.org>
-Date:   Wed, 17 Mar 2021 14:25:26 -0700
+        id S232415AbhCQV0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 17:26:44 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:37331 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231161AbhCQV0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 17:26:36 -0400
+Received: from [192.168.0.3] (ip5f5aeabc.dynamic.kabel-deutschland.de [95.90.234.188])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id D5C4020647911;
+        Wed, 17 Mar 2021 22:26:33 +0100 (CET)
+Subject: Re: [PATCH] ACPI: scan: Turn off unused power resources during
+ initialization
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-pm@vger.kernel.org,
+        David Box <david.e.box@linux.intel.com>,
+        linux-acpi@vger.kernel.org
+References: <2527835.vZkJICojNU@kreacher>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <8b35de7b-072f-128c-6a3f-c7da5a1b91b8@molgen.mpg.de>
+Date:   Wed, 17 Mar 2021 22:26:33 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210317205245.24857-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <2527835.vZkJICojNU@kreacher>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 1:52 PM, Aditya Srivastava wrote:
-> The opening comment mark '/**' is used for highlighting the beginning of
-> kernel-doc comments.
-> There are files in block/partitions/ which follow this syntax in their file
-> headers, i.e. start with '/**' like comments, which causes unexpected
-> warnings from kernel-doc.
-> 
-> E.g., running scripts/kernel-doc -none on block/partitions/ldm.h
-> causes this warning:
-> "warning: expecting prototype for ldm(). Prototype was for _FS_PT_LDM_H_() instead"
-> 
-> Provide a simple fix by replacing such occurrences with general comment
-> format, i.e., "/*", to prevent kernel-doc from parsing it.
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+Dear Rafael,
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Thanks.
+Am 17.03.21 um 17:49 schrieb Rafael J. Wysocki:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> It is reported that on certain platforms unused ACPI power resources
+> that have not been explicitly turned off prevent the platform from
+> reaching the lowest power state in suspend-to-idle which leads to
+> excessive power draw.
+> 
+> For this reason, turn all of the unused ACPI power resources off
+> at the end of the initial namespace scan for devices in analogy with
+> resume from suspend-to-RAM.
+> 
+> Reported-by: David Box <david.e.box@linux.intel.com>
 
+Thank you for the patch. Could you please add more details to the commit 
+message, saying what device this was on, and if there were some 
+error/warning messages pointing to the problem?
+
+
+Kind regards,
+
+Paul
+
+
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > ---
-> * Applies perfectly on next-20210312
+>   drivers/acpi/internal.h |    1 +
+>   drivers/acpi/scan.c     |    2 ++
+>   drivers/acpi/sleep.h    |    1 -
+>   3 files changed, 3 insertions(+), 1 deletion(-)
 > 
->  block/partitions/ldm.c | 2 +-
->  block/partitions/ldm.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/block/partitions/ldm.c b/block/partitions/ldm.c
-> index d333786b5c7e..14b124cdacfc 100644
-> --- a/block/partitions/ldm.c
-> +++ b/block/partitions/ldm.c
-> @@ -1,5 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later
-> -/**
-> +/*
->   * ldm - Support for Windows Logical Disk Manager (Dynamic Disks)
->   *
->   * Copyright (C) 2001,2002 Richard Russon <ldm@flatcap.org>
-> diff --git a/block/partitions/ldm.h b/block/partitions/ldm.h
-> index d8d6beaa72c4..ffdecf1c6bb3 100644
-> --- a/block/partitions/ldm.h
-> +++ b/block/partitions/ldm.h
-> @@ -1,5 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later
-> -/**
-> +/*
->   * ldm - Part of the Linux-NTFS project.
->   *
->   * Copyright (C) 2001,2002 Richard Russon <ldm@flatcap.org>
-> 
-
-
--- 
-~Randy
-
+> Index: linux-pm/drivers/acpi/internal.h
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/internal.h
+> +++ linux-pm/drivers/acpi/internal.h
+> @@ -139,6 +139,7 @@ int acpi_device_sleep_wake(struct acpi_d
+>   int acpi_power_get_inferred_state(struct acpi_device *device, int *state);
+>   int acpi_power_on_resources(struct acpi_device *device, int state);
+>   int acpi_power_transition(struct acpi_device *device, int state);
+> +void acpi_turn_off_unused_power_resources(void);
+>   
+>   /* --------------------------------------------------------------------------
+>                                 Device Power Management
+> Index: linux-pm/drivers/acpi/scan.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/scan.c
+> +++ linux-pm/drivers/acpi/scan.c
+> @@ -2360,6 +2360,8 @@ int __init acpi_scan_init(void)
+>   		}
+>   	}
+>   
+> +	acpi_turn_off_unused_power_resources();
+> +
+>   	acpi_scan_initialized = true;
+>   
+>    out:
+> Index: linux-pm/drivers/acpi/sleep.h
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/sleep.h
+> +++ linux-pm/drivers/acpi/sleep.h
+> @@ -8,7 +8,6 @@ extern struct list_head acpi_wakeup_devi
+>   extern struct mutex acpi_device_lock;
+>   
+>   extern void acpi_resume_power_resources(void);
+> -extern void acpi_turn_off_unused_power_resources(void);
+>   
+>   static inline acpi_status acpi_set_waking_vector(u32 wakeup_address)
+>   {
