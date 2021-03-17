@@ -2,62 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA73F33F24B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:09:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A1133F24D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:09:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbhCQOIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:08:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhCQOIi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:08:38 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26233C06174A;
-        Wed, 17 Mar 2021 07:08:38 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615990116;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ltvbdEYCicy5LXKX9c2Kk4mupJOajlC2tJ0Ya55K9SA=;
-        b=LJCTYha1FsipHOuMHuAXt81cWkcg/tQega7VZhIT98tBIFdYPHgFKmndnV/dHUtb5Clb44
-        0bmtRt9doLkY3PurgKeqyBlGwDSRmxcmi5KFo7lM4n1P0a+z8ZVJ2udEEULMgFfPt0YFhD
-        5AW+RHZrP8QM7UaRH2I/vI6qwxP8yrFlhYUSOZN6bMNq7xQZANvmSjs/WTSYoXUXfYGVkG
-        vsRMI9pJl8jdCedsSuNvj8zkZ4Oo4JZHw6pmiX1SyiNhl0fAPSWRlUWm+pZMr71a6IGemk
-        /NOtYCCMNoLYcSXvrwbV7XpsyBGwFnTxzSfU9yBm+1S/jQFb5sMalZ8cmij3EA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615990116;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ltvbdEYCicy5LXKX9c2Kk4mupJOajlC2tJ0Ya55K9SA=;
-        b=wxmKTTJUwJ3onzKhFMGgYY065CfHtW+kRmyqMqCRNXzQ369m4h1enQJAj7MdbB0/F/Xa6h
-        3VkyFpqY7PrZ3OBQ==
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: threadirqs deadlocks
-In-Reply-To: <YFILfPT1SFypmOAj@hovoldconsulting.com>
-References: <YFCO+FEjWPGytb2W@hovoldconsulting.com> <87eegdzzez.fsf@nanos.tec.linutronix.de> <YFILfPT1SFypmOAj@hovoldconsulting.com>
-Date:   Wed, 17 Mar 2021 15:08:36 +0100
-Message-ID: <8735wtzxcr.fsf@nanos.tec.linutronix.de>
+        id S230516AbhCQOJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:09:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45054 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231168AbhCQOIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 10:08:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 51B69ACA8;
+        Wed, 17 Mar 2021 14:08:54 +0000 (UTC)
+Date:   Wed, 17 Mar 2021 15:08:51 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <20210317140847.GA20407@linux>
+References: <20210309175546.5877-1-osalvador@suse.de>
+ <20210309175546.5877-2-osalvador@suse.de>
+ <f600451e-48aa-184f-ae71-94e0abe9d6b1@redhat.com>
+ <20210315102224.GA24699@linux>
+ <a2bf7b25-1e7a-bb6b-2fcd-08a4f4636ed5@redhat.com>
+ <a03fcbb3-5b77-8671-6376-13c360f5ae25@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a03fcbb3-5b77-8671-6376-13c360f5ae25@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17 2021 at 15:00, Johan Hovold wrote:
-> On Wed, Mar 17, 2021 at 02:24:04PM +0100, Thomas Gleixner wrote:
->> Something like the below.
->
-> Looks good to me. Do you want to spin that into a patch or shall I do
-> it after some testing?
+On Tue, Mar 16, 2021 at 06:45:17PM +0100, David Hildenbrand wrote:
+> > I find that cross reference to vmemmap code a little hard to digest.
+> > I would have assume that we don't have to care about PMDs in this
+> > code here at all. The vmemmap population code should handle that.
+> > 
+> > I think I already mentioned that somewhere, I think it should be like this:
+> > 
+> > a) vmemmap code should *never* populate more memory than requested for
+> > a single memory section when we are populating from the altmap.
+> > If that cannot be guaranteed for PMDs, then we have to fallback
+> > to populating base pages. Populating PMDs from an altmap with
+> > sizeof(struct page) == 64 is highly dangerous.
 
-I'll send one in a few
+I guess you meant sizeof(struct page) != 64
+
+But other usecases of using altmap (ZONE_DEVICE stuff) might not care whether
+they have sub-populated PMDs when populating sections from altmap?
+
+Current vmemmap code populates PMD with PMD_SIZE if empty, and with basepages
+if there are still holes.
+
+> > Assume we have sizeof(struct page) == 56. A 128 MiB section
+> > spans 32768 pages -  we need 32768 * sizeof(struct page)
+> > space for the vmemmap.
+> > With 64k pages we *can* use exactly one PMD. With 56k pages
+> > we need 448 individual (full!) pages for the vmemmap.
+> > 
+> > IOW, we don't care how vmemmap code will do the mapping.
+> > vmemmap code has to get it right. IMHO, asserting it in
+> > this code is wrong.
+> > 
+> > 
+> > b) In this code, we really should only care about what
+> > memory onlining/offlining code can or can't do.
+> > We really only care that
+> > 
+> > 1) size == memory_block_size_bytes()
+> > 2) remaining_size
+> > 3) IS_ALIGNED(remaining_size, pageblock_size);
+
+I agree with the above, but see below:
+
+> > Okay, please document the statement about single sections, that's
+> > important to understand what's happening.
+> > 
+> > My take would be
+> > 
+> > bool mhp_supports_memmap_on_memory(unsigned long size)
+> > {
+> > 	/*
+> > 	 * Note: We calculate for a single memory section. The calculation
+> > 	 */
+> > 	unsigned long nr_vmemmap_pages = SECTION_SIZE / PAGE_SIZE;
+> > 	unsigned long vmemmap_size = nr_vmemmap_pages * sizeof(struct page);
+> > 	unsigned long remaining_size = size - vmemmap_size;
+
+While it might be true that we need to back off from populating with altmap in
+case PMDs are not going to be fully populated because of the size of the struct
+page (I am not still not sure though as I said above, other usecases might not
+care at all), I would go __for now__ with placing vmemmap_size == PMD_SIZE in
+the check below as well.
+
+If the check comes true, we know that we fully populate PMDs when populating
+sections, so the feature can be used.
+
+Then I commit to have a look whether we need to back off in vmemmap-populating
+code in case altmap && !NOT_FULLY_POPULATED_PMDS. 
+
+What do you think?
+
+-- 
+Oscar Salvador
+SUSE L3
