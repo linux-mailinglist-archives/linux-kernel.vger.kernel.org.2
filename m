@@ -2,69 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92A133FC00
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 00:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D3F33FC03
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 00:54:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhCQXuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 19:50:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34996 "EHLO mail.kernel.org"
+        id S229918AbhCQXyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 19:54:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229558AbhCQXuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 19:50:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5B24764F20;
-        Wed, 17 Mar 2021 23:50:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616025008;
-        bh=KDbsb5dEQechYp6a/3jCaUcxfT+403Pqo00Fe1sb4o0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Jz9M10WtFAyOxxGqhkDCnZEYVSW23oNSkHy+7xtIGkHHK27PajAFJvRIfElWju5rR
-         AXDx2LXL3jTGBcOgw6te6pUIKkJWJEM8v5DLPD9PJwcRFePo9lCZez2irJNeRhg9zg
-         YHw81nJRhJHGkECsM8iebonXYoHYbTkVrVytfbTBI66sIx8MUP0wN/WGW3Lv0zqAUQ
-         0E9TnqMM91EZjRvPt5cwWoc9a3nzCv4HP9rf0mRt2WUTZ4BuPi12COaXDy8gL6Kubg
-         mxlUhFnT4puG6cNna3hye9XdnoGr3iOhT6UJHbWGytjynr95aefeolYq9Tf8sxXGw6
-         0B7wSluL6j1Rw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4ECF360A45;
-        Wed, 17 Mar 2021 23:50:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229558AbhCQXyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 19:54:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B38B64F01;
+        Wed, 17 Mar 2021 23:54:00 +0000 (UTC)
+From:   Jarkko Sakkinen <jarkko.sakkinen@intel.com>
+To:     linux-sgx@vger.kernel.org
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] x86/sgx: Replace section->init_laundry_list with sgx_dirty_page_list
+Date:   Thu, 18 Mar 2021 01:53:30 +0200
+Message-Id: <20210317235332.362001-1-jarkko.sakkinen@intel.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] libbpf: Fix error path in bpf_object__elf_init()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161602500831.24175.3204440838433756707.git-patchwork-notify@kernel.org>
-Date:   Wed, 17 Mar 2021 23:50:08 +0000
-References: <20210317145414.884817-1-namhyung@kernel.org>
-In-Reply-To: <20210317145414.884817-1-namhyung@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+From: Jarkko Sakkinen <jarkko@kernel.org>
 
-This patch was applied to bpf/bpf.git (refs/heads/master):
+During normal runtime, the "ksgxd" daemon behaves like a  version of
+kswapd just for SGX.  But, before it starts acting like kswapd, its
+first job is to initialize enclave memory.
 
-On Wed, 17 Mar 2021 23:54:14 +0900 you wrote:
-> When it failed to get section names, it should call
-> bpf_object__elf_finish() like others.
-> 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/lib/bpf/libbpf.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+Currently, the SGX boot code places each enclave page on a
+epc_section->init_laundry_list.  Once it starts up, the ksgxd code walks
+over that list and populates the actual SGX page allocator.
 
-Here is the summary with links:
-  - libbpf: Fix error path in bpf_object__elf_init()
-    https://git.kernel.org/bpf/bpf/c/8f3f5792f294
+However, the per-section structures are going away to make way for the SGX
+NUMA allocator.  There's also little need to have a per-section structure;
+the enclave pages are all treated identically, and they can be placed on
+the correct allocator list from metadata stored in the enclave page
+(struct sgx_epc_page) itself.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Modify sgx_sanitize_section() to take a single page list instead of taking
+a section and deriving the list from there.
 
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+---
+
+v5
+* Refine the commit message.
+* Refine inline comments.
+* Encapsulate a sanitization pass into __sgx_sanitize_pages().
+
+v4:
+* Open coded sgx_santize_section() to ksgxd().
+* Rewrote the commit message.
+
+ arch/x86/kernel/cpu/sgx/main.c | 54 ++++++++++++++++------------------
+ arch/x86/kernel/cpu/sgx/sgx.h  |  7 -----
+ 2 files changed, 25 insertions(+), 36 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 8df81a3ed945..f3a5cd2d27ef 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -26,39 +26,43 @@ static LIST_HEAD(sgx_active_page_list);
+ 
+ static DEFINE_SPINLOCK(sgx_reclaimer_lock);
+ 
++static LIST_HEAD(sgx_dirty_page_list);
++
+ /*
+- * Reset dirty EPC pages to uninitialized state. Laundry can be left with SECS
+- * pages whose child pages blocked EREMOVE.
++ * Reset post-kexec EPC pages to the uninitialized state. The pages are removed
++ * from the input list, and made available for the page allocator. SECS pages
++ * prepending their children in the input list are left intact.
+  */
+-static void sgx_sanitize_section(struct sgx_epc_section *section)
++static void __sgx_sanitize_pages(struct list_head *dirty_page_list)
+ {
+ 	struct sgx_epc_page *page;
+ 	LIST_HEAD(dirty);
+ 	int ret;
+ 
+-	/* init_laundry_list is thread-local, no need for a lock: */
+-	while (!list_empty(&section->init_laundry_list)) {
++	/* dirty_page_list is thread-local, no need for a lock: */
++	while (!list_empty(dirty_page_list)) {
+ 		if (kthread_should_stop())
+ 			return;
+ 
+-		/* needed for access to ->page_list: */
+-		spin_lock(&section->lock);
+-
+-		page = list_first_entry(&section->init_laundry_list,
+-					struct sgx_epc_page, list);
++		page = list_first_entry(dirty_page_list, struct sgx_epc_page, list);
+ 
+ 		ret = __eremove(sgx_get_epc_virt_addr(page));
+-		if (!ret)
+-			list_move(&page->list, &section->page_list);
+-		else
++		if (!ret) {
++			/*
++			 * page is now sanitized.  Make it available via the SGX
++			 * page allocator:
++			 */
++			list_del(&page->list);
++			sgx_free_epc_page(page);
++		} else {
++			/* The page is not yet clean - move to the dirty list. */
+ 			list_move_tail(&page->list, &dirty);
+-
+-		spin_unlock(&section->lock);
++		}
+ 
+ 		cond_resched();
+ 	}
+ 
+-	list_splice(&dirty, &section->init_laundry_list);
++	list_splice(&dirty, dirty_page_list);
+ }
+ 
+ static bool sgx_reclaimer_age(struct sgx_epc_page *epc_page)
+@@ -405,24 +409,17 @@ static bool sgx_should_reclaim(unsigned long watermark)
+ 
+ static int ksgxd(void *p)
+ {
+-	int i;
+-
+ 	set_freezable();
+ 
+ 	/*
+ 	 * Sanitize pages in order to recover from kexec(). The 2nd pass is
+ 	 * required for SECS pages, whose child pages blocked EREMOVE.
+ 	 */
+-	for (i = 0; i < sgx_nr_epc_sections; i++)
+-		sgx_sanitize_section(&sgx_epc_sections[i]);
+-
+-	for (i = 0; i < sgx_nr_epc_sections; i++) {
+-		sgx_sanitize_section(&sgx_epc_sections[i]);
++	__sgx_sanitize_pages(&sgx_dirty_page_list);
++	__sgx_sanitize_pages(&sgx_dirty_page_list);
+ 
+-		/* Should never happen. */
+-		if (!list_empty(&sgx_epc_sections[i].init_laundry_list))
+-			WARN(1, "EPC section %d has unsanitized pages.\n", i);
+-	}
++	/* sanity check: */
++	WARN_ON(!list_empty(&sgx_dirty_page_list));
+ 
+ 	while (!kthread_should_stop()) {
+ 		if (try_to_freeze())
+@@ -637,13 +634,12 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+ 	section->phys_addr = phys_addr;
+ 	spin_lock_init(&section->lock);
+ 	INIT_LIST_HEAD(&section->page_list);
+-	INIT_LIST_HEAD(&section->init_laundry_list);
+ 
+ 	for (i = 0; i < nr_pages; i++) {
+ 		section->pages[i].section = index;
+ 		section->pages[i].flags = 0;
+ 		section->pages[i].owner = NULL;
+-		list_add_tail(&section->pages[i].list, &section->init_laundry_list);
++		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
+ 	}
+ 
+ 	section->free_cnt = nr_pages;
+diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
+index 5fa42d143feb..bc8af0428640 100644
+--- a/arch/x86/kernel/cpu/sgx/sgx.h
++++ b/arch/x86/kernel/cpu/sgx/sgx.h
+@@ -45,13 +45,6 @@ struct sgx_epc_section {
+ 	spinlock_t lock;
+ 	struct list_head page_list;
+ 	unsigned long free_cnt;
+-
+-	/*
+-	 * Pages which need EREMOVE run on them before they can be
+-	 * used.  Only safe to be accessed in ksgxd and init code.
+-	 * Not protected by locks.
+-	 */
+-	struct list_head init_laundry_list;
+ };
+ 
+ extern struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
+-- 
+2.31.0
 
