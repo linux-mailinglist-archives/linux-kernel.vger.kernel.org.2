@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9F933EC96
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:15:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B157D33EC99
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:15:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhCQJNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42690 "EHLO
+        id S231202AbhCQJNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbhCQJNB (ORCPT
+        with ESMTP id S230124AbhCQJNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Mar 2021 05:13:01 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9430C0613DE
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:59 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id r15-20020a05600c35cfb029010e639ca09eso2951478wmq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:59 -0700 (PDT)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 155EDC0613DF
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:13:01 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id e9so996655wrw.10
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:13:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1cUaH1b/K2O6ERJ+bzFiuL6brJDSqamBpVZhrZptGlg=;
-        b=Im7bMn59N95huVs4Cu4fmRc+YGmxvRCVAMpXXHJhZWc1pJOWrIaZSXIMXl5w8V/lSr
-         YJvntp3NAD6/3rrIW26RPA/WItV8qBpPgULuGC28khbozZ3k0Wat4XlD95GvkSkAcv/C
-         m9I9ObxabwTJhuGmzCzb+q2778Y7BK4eg8xjD2eNFMcmovc078KN0GGDrR5MuMfEm50a
-         tymDrTgN/8qneiFeUnZPu26PhGPvhZWbj9LIZIRCHW7UoMBpiwULAAe899JKIAj5ns7y
-         GBvbRmTzzUbXt2Pm5fvtFywSkRAIhrl/c7jj55xm2xPaZIDxCWy/vgce1cC3REk9Wmc5
-         fvnw==
+        bh=X2jzyWxb6hZ16y5SB+2tveo3Hvk9XXLg4i7IoitMdEQ=;
+        b=Sz9BPNST98yr2QElSdpJAAY98v7AGIVUMHdqfE6cjKNe9TWa0JzeSbG0yXFBZPShMH
+         m/9tK7TMTeul+K8w8OuGH8yBx85GmpognI5LZrubw7BgMLhdqnb2U2q0pg67TKV7+oI7
+         w3Xy+d/EhvwYX4EAKgUVr8wyabh9cHsAMXQdUiY7YihMP2XInKa6hS6le6bP2ek5arCj
+         7lEmjvi3kVmFHoEgZl3t+qkbgV+QZRLPeXM6lCEI31xVu7ilVDt/ep1SB/xsDYuRU2jQ
+         rO+yf1zRtLBnWz9oqKSLeS7R0pvHQzBQIk8rho0zbZw2Y1ST/nbRdAOStpC2/LyYFFGb
+         jJvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1cUaH1b/K2O6ERJ+bzFiuL6brJDSqamBpVZhrZptGlg=;
-        b=AFGU0HSf6zsQvdGiFKIqm8LkH60azPeF0zHeg400ol2CQw8t0L8Q0uBL4BbFNifMHS
-         Mr2p3y43i5HSB2p8XkVCvgAQmb5SH3R7GnotFmxbMY888Ii1VBeQfggOjjV6d7G8H668
-         vkyeCvP+VGKBMPrcB65u/MZW3zpruCvPUWmdO7KrzHA/BBkYfdEBjnpnkLlmUqFF99sR
-         gtADSCe7u+Xm834fiFDAtRabeo57VG4jCKhAEW/lzM1G8ASvZNGbnW2sOFRVZr+1GBox
-         iT6ozhgpCTFFAqihFs1WzAAv92QXTjXwq9IjssWb0vPEByQUhSl+zl9NiHL/SlcV+BNZ
-         XNdw==
-X-Gm-Message-State: AOAM531GciIZfpIqMQ1RF06PRcO9RBjoXxr1OT+WyCzHma2PGINHbgQM
-        tZNaSJl+9UySmC0mqZNiUlBZIA==
-X-Google-Smtp-Source: ABdhPJwIk5rpoN3LmJQkdEKCG9jZDzdAiOO4zRK9qdElTovUN0ILJhHR+J3PBnW2y3jZYlqEt4zoMg==
-X-Received: by 2002:a1c:f404:: with SMTP id z4mr2748623wma.39.1615972378673;
-        Wed, 17 Mar 2021 02:12:58 -0700 (PDT)
+        bh=X2jzyWxb6hZ16y5SB+2tveo3Hvk9XXLg4i7IoitMdEQ=;
+        b=MraMTtkebsi57qDjGhutAi0BfiCY8qhYiyAv3P1Rm1KJwuZ6fEQRyAFpyYxwxbTGK/
+         sTzVxtJq2N89IIUfcnoOZ4FUiodA5Ok9ojwpN51jh31EYACfCFN574iracOJU4ZRH3Mb
+         shzNtWcEFP8/C/9azzf/MJpM40VYGzXUm1lZyJs2oUsJ8m2eHw+aD2xYapMoUOJqw8ok
+         b+wbmEMri8eU1wbAMLR/BwYAgIo282kdqxyCOLEcSmftliQMpZ0BqWs2PwGWpEed63aM
+         eSZ1dA2HNVkDTaPZmKlQD6QAB5aFWuiamIWyyWSb4ZBviQkw1fwOu3IiT0W5Ms8YAklN
+         8+0g==
+X-Gm-Message-State: AOAM532mWTCp2PPyPDdrsu2/joMxCk3t7In6LP7MrGA2Rf9AVcnsBSyB
+        g8tD+RpOrmis9QI55zgTY3oQiA==
+X-Google-Smtp-Source: ABdhPJx2rix7+pmCqOFflU2oWruALF8QN+IseT4hMQzD0HjG7GBBmKA7EPT+zTWFdoDTFUq+zdpU2g==
+X-Received: by 2002:adf:8341:: with SMTP id 59mr3205254wrd.130.1615972379865;
+        Wed, 17 Mar 2021 02:12:59 -0700 (PDT)
 Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id e18sm12695886wru.73.2021.03.17.02.12.57
+        by smtp.gmail.com with ESMTPSA id e18sm12695886wru.73.2021.03.17.02.12.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 02:12:58 -0700 (PDT)
+        Wed, 17 Mar 2021 02:12:59 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Satish Kharat <satishkh@cisco.com>,
-        Sesidhar Baddela <sebaddel@cisco.com>,
-        Karan Tilak Kumar <kartilak@cisco.com>,
+Cc:     linux-kernel@vger.kernel.org,
+        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         linux-scsi@vger.kernel.org
-Subject: [PATCH 18/36] scsi: fnic: fnic_fcs: Kernel-doc headers must contain the function name
-Date:   Wed, 17 Mar 2021 09:12:12 +0000
-Message-Id: <20210317091230.2912389-19-lee.jones@linaro.org>
+Subject: [PATCH 19/36] scsi: isci: phy: Provide function name and demote non-conforming header
+Date:   Wed, 17 Mar 2021 09:12:13 +0000
+Message-Id: <20210317091230.2912389-20-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210317091230.2912389-1-lee.jones@linaro.org>
 References: <20210317091230.2912389-1-lee.jones@linaro.org>
@@ -70,32 +69,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/fnic/fnic_fcs.c:308: warning: expecting prototype for Check if the Received FIP FLOGI frame is rejected(). Prototype was for is_fnic_fip_flogi_reject() instead
+ drivers/scsi/isci/phy.c:354: warning: Function parameter or member 'iphy' not described in 'phy_get_non_dummy_port'
+ drivers/scsi/isci/phy.c:354: warning: expecting prototype for If the phy is(). Prototype was for phy_get_non_dummy_port() instead
+ drivers/scsi/isci/phy.c:371: warning: Function parameter or member 'iphy' not described in 'sci_phy_set_port'
+ drivers/scsi/isci/phy.c:371: warning: Function parameter or member 'iport' not described in 'sci_phy_set_port'
 
-Cc: Satish Kharat <satishkh@cisco.com>
-Cc: Sesidhar Baddela <sebaddel@cisco.com>
-Cc: Karan Tilak Kumar <kartilak@cisco.com>
+Cc: Artur Paszkiewicz <artur.paszkiewicz@intel.com>
 Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
 Cc: linux-scsi@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/fnic/fnic_fcs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/isci/phy.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/scsi/fnic/fnic_fcs.c b/drivers/scsi/fnic/fnic_fcs.c
-index e0cee4dcb4391..881c4823d7e24 100644
---- a/drivers/scsi/fnic/fnic_fcs.c
-+++ b/drivers/scsi/fnic/fnic_fcs.c
-@@ -296,7 +296,7 @@ void fnic_handle_event(struct work_struct *work)
+diff --git a/drivers/scsi/isci/phy.c b/drivers/scsi/isci/phy.c
+index 7ca7621f77479..aa8787343e831 100644
+--- a/drivers/scsi/isci/phy.c
++++ b/drivers/scsi/isci/phy.c
+@@ -339,10 +339,11 @@ static void phy_sata_timeout(struct timer_list *t)
  }
  
  /**
-- * Check if the Received FIP FLOGI frame is rejected
-+ * is_fnic_fip_flogi_reject() - Check if the Received FIP FLOGI frame is rejected
-  * @fip: The FCoE controller that received the frame
-  * @skb: The received FIP frame
+- * This method returns the port currently containing this phy. If the phy is
+- *    currently contained by the dummy port, then the phy is considered to not
+- *    be part of a port.
+- * @sci_phy: This parameter specifies the phy for which to retrieve the
++ * phy_get_non_dummy_port() - This method returns the port currently containing
++ * this phy. If the phy is currently contained by the dummy port, then the phy
++ * is considered to not be part of a port.
++ *
++ * @iphy: This parameter specifies the phy for which to retrieve the
+  *    containing port.
   *
+  * This method returns a handle to a port that contains the supplied phy.
+@@ -360,10 +361,8 @@ struct isci_port *phy_get_non_dummy_port(struct isci_phy *iphy)
+ 	return iphy->owning_port;
+ }
+ 
+-/**
++/*
+  * sci_phy_set_port() - This method will assign a port to the phy object.
+- * @out]: iphy This parameter specifies the phy for which to assign a port
+- *    object.
+  */
+ void sci_phy_set_port(
+ 	struct isci_phy *iphy,
 -- 
 2.27.0
 
