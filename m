@@ -2,62 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389BB33F6BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 648EB33F6C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:27:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhCQR0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37004 "EHLO
+        id S231280AbhCQR1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbhCQR01 (ORCPT
+        with ESMTP id S231398AbhCQR0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:26:27 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 559F3C06174A;
-        Wed, 17 Mar 2021 10:26:26 -0700 (PDT)
+        Wed, 17 Mar 2021 13:26:54 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF6EC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:26:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NkSmKyFybGGzBQdftefvTyk7NOmR2MT0T3BIdH4UDpI=; b=eBVh1/xeK05SwdJk3+2gDrxqy8
-        XSOIv2sdLpv+73MDj4McoTRij3ie+opRU/PmaYdY1xhICqTjEcxFOD+M5BWIh4I9ja1M+HOatORJx
-        uXBuhgp8pSXEJ66Ajq8nBcvZIiA92XLion+5AIdVVO3KA7iO6pm3FltJQzPu1Ew/aj8Dg6RvbMD2y
-        2YHxOIsCzcg5nJ0Di0t9g/J51pJSL0ZJUtVW50RIdYzSNWKDW20KKXGq7i6D8ZwLCKzyGNKRxqqEB
-        8qbhUNHIqUN4ynv+DusmpwZPdhU6PupJPSLh23GCp9lp4zOWHXMFIgc+eC3mRiSAlaBSiDfwwe1Ch
-        kK4CMZPQ==;
-Received: from [2001:4bb8:18c:bb3:e3eb:4a4b:ba2f:224b] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMZvr-001uZ9-TX; Wed, 17 Mar 2021 17:26:10 +0000
-Date:   Wed, 17 Mar 2021 18:26:07 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 10/25] mm/util: Add folio_mapping and
- folio_file_mapping
-Message-ID: <YFI7r+YdgdALlewB@infradead.org>
-References: <20210305041901.2396498-1-willy@infradead.org>
- <20210305041901.2396498-11-willy@infradead.org>
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=vDj5QLKIY3+m6sVOEX2/jPJ7XcnGNcq6gqehl799e4E=; b=G6KhVHbQM3vbUK+ZBzGCp55hmc
+        BnZihHW468IxB3IqHulkTPnoU6ZSbePHcPe4BovE3fcWm1oDTvJWXw6jkr4VS6FGuNZxcbGMjvWxV
+        5qC+BUNHXHOGHyPbjrSTiLdb4ic4r44T9fYeWXjRQfmzinkOzFKRsywbWfSXPkthXlztNYyg4I9ku
+        Is/Efy12OaPvKk66k6L/xsUpFTP+c5T2eC8wivoHonuxl1f64Fof4DUoOb4EDfjNjB6l1H9c1eCe8
+        Va9j+dS1Zr7q2LkitVoLhUKn6c04UI4NNc283SEU8ISGYi4/aHb67pcpeJxFDx1G+DITWz9/KnMuo
+        JElq35MQ==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMZwY-001fQE-Is; Wed, 17 Mar 2021 17:26:50 +0000
+Subject: Re: [PATCH V2] kernel: debug: Ordinary typo fixes in the file
+ gdbstub.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        jason.wessel@windriver.com, daniel.thompson@linaro.org,
+        dianders@chromium.org, kgdb-bugreport@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <20210317104658.4053473-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <f7f9fc7f-3e6d-b9a8-b854-620d928b1f24@infradead.org>
+Date:   Wed, 17 Mar 2021 10:26:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305041901.2396498-11-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210317104658.4053473-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +struct address_space *page_mapping(struct page *);
-> +struct address_space *folio_mapping(struct folio *);
-> +struct address_space *__folio_file_mapping(struct folio *);
-> +
-> +static inline struct address_space *folio_file_mapping(struct folio *folio)
-> +{
-> +	if (unlikely(FolioSwapCache(folio)))
-> +		return __folio_file_mapping(folio);
+On 3/17/21 3:46 AM, Bhaskar Chowdhury wrote:
+> s/overwitten/overwritten/
+> s/procesing/processing/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-I think __folio_file_mapping is badly misnamed as it only deals with
-swapcache folios.  Maybe that should be reflected in the name?
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Also for all these funtions documentation would be very helpful, even if
-the existing struct page based helpers don't have that either.
+> ---
+> Changes from V1:
+>  As Daniel pointed out, I was misdoing a check,so corrected
+> 
+>  kernel/debug/gdbstub.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/debug/gdbstub.c b/kernel/debug/gdbstub.c
+> index e149a0ac9e9e..8372897402f4 100644
+> --- a/kernel/debug/gdbstub.c
+> +++ b/kernel/debug/gdbstub.c
+> @@ -321,7 +321,7 @@ int kgdb_hex2long(char **ptr, unsigned long *long_val)
+>  /*
+>   * Copy the binary array pointed to by buf into mem.  Fix $, #, and
+>   * 0x7d escaped with 0x7d. Return -EFAULT on failure or 0 on success.
+> - * The input buf is overwitten with the result to write to mem.
+> + * The input buf is overwritten with the result to write to mem.
+>   */
+>  static int kgdb_ebin2mem(char *buf, char *mem, int count)
+>  {
+> @@ -952,7 +952,7 @@ static int gdb_cmd_exception_pass(struct kgdb_state *ks)
+>  }
+> 
+>  /*
+> - * This function performs all gdbserial command procesing
+> + * This function performs all gdbserial command processing
+>   */
+>  int gdb_serial_stub(struct kgdb_state *ks)
+>  {
+> --
+
+
+-- 
+~Randy
+
