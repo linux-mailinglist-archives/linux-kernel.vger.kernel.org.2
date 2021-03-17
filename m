@@ -2,317 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBD333EF81
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F7633EF4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbhCQL0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 07:26:24 -0400
-Received: from mga17.intel.com ([192.55.52.151]:53516 "EHLO mga17.intel.com"
+        id S231202AbhCQLNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 07:13:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53724 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231404AbhCQL0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 07:26:01 -0400
-IronPort-SDR: uafwvxIB/lWfiv/WkaLABIk2GN0JWfHeKsoLuGIae1FGzIYn+X6kTDRL6nEfRN9BpPrUwXZXzG
- dH9Mophyf7aw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="169359401"
-X-IronPort-AV: E=Sophos;i="5.81,256,1610438400"; 
-   d="scan'208";a="169359401"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 04:26:00 -0700
-IronPort-SDR: 5amaejvwP30nMCGeOa0rj2XeXzOQXnopcaIPsC/GocP71x3P0GtCO4zulJTcZffA5mJWurZrYj
- GJdZ+nksM2YQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,256,1610438400"; 
-   d="scan'208";a="433367932"
-Received: from brentlu-desk0.itwn.intel.com ([10.5.253.9])
-  by fmsmga004.fm.intel.com with ESMTP; 17 Mar 2021 04:25:57 -0700
-From:   Brent Lu <brent.lu@intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Oder Chiou <oder_chiou@realtek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Rander Wang <rander.wang@linux.intel.com>,
-        Brent Lu <brent.lu@intel.com>, Yong Zhi <yong.zhi@intel.com>,
-        Libin Yang <libin.yang@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
-        Dharageswari R <dharageswari.r@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] ASoC: Intel: sof_rt5682: Add ALC1015Q-VB speaker amp support
-Date:   Wed, 17 Mar 2021 19:08:24 +0800
-Message-Id: <20210317110824.20814-1-brent.lu@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S230521AbhCQLNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 07:13:04 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5EFBBAC1F;
+        Wed, 17 Mar 2021 11:13:03 +0000 (UTC)
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH v5 0/5] Make alloc_contig_range handle Hugetlb pages
+Date:   Wed, 17 Mar 2021 12:12:46 +0100
+Message-Id: <20210317111251.17808-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.13.7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds jsl_rt5682_rt1015p which supports the RT5682 headset
-codec and ALC1015Q-VB speaker amplifier combination on JasperLake
-platform.
+v4->v5:
+ - Collect Acked-by and Reviewed-by from David and Vlastimil
+ - Drop racy checks in pfn_range_valid_contig (David)
+ - Rebased on top of 5.12-rc3
 
-This driver also supports ALC1015Q-CG if running in auto-mode.
-Following table shows the audio interface support of the two
-amplifiers.
+v3 -> v4:
+ - Addressed some feedback from David and Michal
+ - Make more clear what hugetlb_lock protects in isolate_or_dissolve_huge_page
+ - Start reporting proper error codes from isolate_migratepages_{range,block}
+ - Bail out earlier in __alloc_contig_migrate_range on -ENOMEM
+ - Addressed internal feedback from Vastlimil wrt. compaction code changes
 
-          | ALC1015Q-CG | ALC1015Q-VB
-=====================================
-I2C       | Yes         | No
-Auto-mode | 48K, 64fs   | 16k, 32fs
-                        | 48k, 32fs
-                        | 48k, 64fs
+v2 -> v3:
+ - Drop usage of high-level generic helpers in favour of
+   low-level approach (per Michal)
+ - Check for the page to be marked as PageHugeFreed
+ - Add a one-time retry in case someone grabbed the free huge page
+   from under us
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
----
- sound/soc/intel/boards/Kconfig                |   1 +
- sound/soc/intel/boards/sof_realtek_common.c   | 105 ++++++++++++++++++
- sound/soc/intel/boards/sof_realtek_common.h   |   7 ++
- sound/soc/intel/boards/sof_rt5682.c           |  19 +++-
- .../intel/common/soc-acpi-intel-jsl-match.c   |  13 +++
- 5 files changed, 143 insertions(+), 2 deletions(-)
+v1 -> v2:
+ - Adressed feedback by Michal
+ - Restrict the allocation to a node with __GFP_THISNODE
+ - Drop PageHuge check in alloc_and_dissolve_huge_page
+ - Re-order comments in isolate_or_dissolve_huge_page
+ - Extend comment in isolate_migratepages_block
+ - Place put_page right after we got the page, otherwise
+   dissolve_free_huge_page will fail
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index d1d28129a32b..58379393b8e4 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -457,6 +457,7 @@ config SND_SOC_INTEL_SOF_RT5682_MACH
- 	select SND_SOC_MAX98373_I2C
- 	select SND_SOC_RT1011
- 	select SND_SOC_RT1015
-+	select SND_SOC_RT1015P
- 	select SND_SOC_RT5682_I2C
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
-diff --git a/sound/soc/intel/boards/sof_realtek_common.c b/sound/soc/intel/boards/sof_realtek_common.c
-index f3cf73c620ba..2ec34f8df9e1 100644
---- a/sound/soc/intel/boards/sof_realtek_common.c
-+++ b/sound/soc/intel/boards/sof_realtek_common.c
-@@ -7,6 +7,7 @@
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-+#include <sound/soc-acpi.h>
- #include <sound/soc-dai.h>
- #include <sound/soc-dapm.h>
- #include <uapi/sound/asound.h>
-@@ -136,3 +137,107 @@ void sof_rt1011_codec_conf(struct snd_soc_card *card)
- 	card->codec_conf = rt1011_codec_confs;
- 	card->num_configs = ARRAY_SIZE(rt1011_codec_confs);
- }
-+
-+/*
-+ * rt1015:  i2c mode driver for ALC1015 and ALC1015Q
-+ * rt1015p: auto-mode driver for ALC1015, ALC1015Q, and ALC1015Q-VB
-+ *
-+ * For stereo output, there are always two amplifiers on the board.
-+ * However, the ACPI implements only one device instance (UID=0) if they
-+ * are sharing the same enable pin. The code will detect the number of
-+ * device instance and use corresponding DAPM structures for
-+ * initialization.
-+ */
-+static const struct snd_soc_dapm_route rt1015p_1dev_dapm_routes[] = {
-+	/* speaker */
-+	{ "Left Spk", NULL, "Speaker" },
-+	{ "Right Spk", NULL, "Speaker" },
-+};
-+
-+static const struct snd_soc_dapm_route rt1015p_2dev_dapm_routes[] = {
-+	/* speaker */
-+	{ "Left Spk", NULL, "Left Speaker" },
-+	{ "Right Spk", NULL, "Right Speaker" },
-+};
-+
-+static struct snd_soc_codec_conf rt1015p_codec_confs[] = {
-+	{
-+		.dlc = COMP_CODEC_CONF(RT1015P_DEV0_NAME),
-+		.name_prefix = "Left",
-+	},
-+	{
-+		.dlc = COMP_CODEC_CONF(RT1015P_DEV1_NAME),
-+		.name_prefix = "Right",
-+	},
-+};
-+
-+static struct snd_soc_dai_link_component rt1015p_dai_link_components[] = {
-+	{
-+		.name = RT1015P_DEV0_NAME,
-+		.dai_name = RT1015P_CODEC_DAI,
-+	},
-+	{
-+		.name = RT1015P_DEV1_NAME,
-+		.dai_name = RT1015P_CODEC_DAI,
-+	},
-+};
-+
-+static int rt1015p_get_num_codecs(void)
-+{
-+	static int dev_num;
-+
-+	if (dev_num)
-+		return dev_num;
-+
-+	if (!acpi_dev_present("RTL1015", "1", -1))
-+		dev_num = 1;
-+	else
-+		dev_num = 2;
-+
-+	return dev_num;
-+}
-+
-+static int rt1015p_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params)
-+{
-+	/* reserved for debugging purpose */
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_ops rt1015p_ops = {
-+	.hw_params = rt1015p_hw_params,
-+};
-+
-+static int rt1015p_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_card *card = rtd->card;
-+	int ret;
-+
-+	if (rt1015p_get_num_codecs() == 1)
-+		ret = snd_soc_dapm_add_routes(&card->dapm, rt1015p_1dev_dapm_routes,
-+					      ARRAY_SIZE(rt1015p_1dev_dapm_routes));
-+	else
-+		ret = snd_soc_dapm_add_routes(&card->dapm, rt1015p_2dev_dapm_routes,
-+					      ARRAY_SIZE(rt1015p_2dev_dapm_routes));
-+	if (ret)
-+		dev_err(rtd->dev, "Speaker map addition failed: %d\n", ret);
-+	return ret;
-+}
-+
-+void sof_rt1015p_dai_link(struct snd_soc_dai_link *link)
-+{
-+	link->codecs = rt1015p_dai_link_components;
-+	link->num_codecs = rt1015p_get_num_codecs();
-+	link->init = rt1015p_init;
-+	link->ops = &rt1015p_ops;
-+}
-+
-+void sof_rt1015p_codec_conf(struct snd_soc_card *card)
-+{
-+	if (rt1015p_get_num_codecs() == 1)
-+		return;
-+
-+	card->codec_conf = rt1015p_codec_confs;
-+	card->num_configs = ARRAY_SIZE(rt1015p_codec_confs);
-+}
-diff --git a/sound/soc/intel/boards/sof_realtek_common.h b/sound/soc/intel/boards/sof_realtek_common.h
-index 87cb3812b926..cb0b49b2855c 100644
---- a/sound/soc/intel/boards/sof_realtek_common.h
-+++ b/sound/soc/intel/boards/sof_realtek_common.h
-@@ -21,4 +21,11 @@
- void sof_rt1011_dai_link(struct snd_soc_dai_link *link);
- void sof_rt1011_codec_conf(struct snd_soc_card *card);
- 
-+#define RT1015P_CODEC_DAI	"HiFi"
-+#define RT1015P_DEV0_NAME	"RTL1015:00"
-+#define RT1015P_DEV1_NAME	"RTL1015:01"
-+
-+void sof_rt1015p_dai_link(struct snd_soc_dai_link *link);
-+void sof_rt1015p_codec_conf(struct snd_soc_card *card);
-+
- #endif /* __SOF_REALTEK_COMMON_H */
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 55505e207bc0..f4b898c1719f 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -45,8 +45,9 @@
- #define SOF_RT1011_SPEAKER_AMP_PRESENT		BIT(13)
- #define SOF_RT1015_SPEAKER_AMP_PRESENT		BIT(14)
- #define SOF_RT1015_SPEAKER_AMP_100FS		BIT(15)
--#define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(16)
--#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(17)
-+#define SOF_RT1015P_SPEAKER_AMP_PRESENT		BIT(16)
-+#define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(17)
-+#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(18)
- 
- /* Default: MCLK on, MCLK 19.2M, SSP0  */
- static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
-@@ -723,6 +724,8 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 			links[id].num_codecs = ARRAY_SIZE(rt1015_components);
- 			links[id].init = speaker_codec_init_lr;
- 			links[id].ops = &sof_rt1015_ops;
-+		} else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT) {
-+			sof_rt1015p_dai_link(&links[id]);
- 		} else if (sof_rt5682_quirk &
- 				SOF_MAX98373_SPEAKER_AMP_PRESENT) {
- 			links[id].codecs = max_98373_components;
-@@ -851,6 +854,8 @@ static int sof_audio_probe(struct platform_device *pdev)
- 		sof_max98373_codec_conf(&sof_audio_card_rt5682);
- 	else if (sof_rt5682_quirk & SOF_RT1011_SPEAKER_AMP_PRESENT)
- 		sof_rt1011_codec_conf(&sof_audio_card_rt5682);
-+	else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT)
-+		sof_rt1015p_codec_conf(&sof_audio_card_rt5682);
- 
- 	dai_links = sof_card_dai_links_create(&pdev->dev, ssp_codec, ssp_amp,
- 					      dmic_be_num, hdmi_num);
-@@ -940,6 +945,15 @@ static const struct platform_device_id board_ids[] = {
- 					SOF_RT5682_SSP_AMP(1) |
- 					SOF_RT5682_NUM_HDMIDEV(4)),
- 	},
-+	{
-+		.name = "jsl_rt5682_rt1015p",
-+		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-+					SOF_RT5682_MCLK_24MHZ |
-+					SOF_RT5682_SSP_CODEC(0) |
-+					SOF_SPEAKER_AMP_PRESENT |
-+					SOF_RT1015P_SPEAKER_AMP_PRESENT |
-+					SOF_RT5682_SSP_AMP(1)),
-+	},
- 	{ }
- };
- 
-@@ -966,3 +980,4 @@ MODULE_ALIAS("platform:tgl_max98373_rt5682");
- MODULE_ALIAS("platform:jsl_rt5682_max98360a");
- MODULE_ALIAS("platform:cml_rt1015_rt5682");
- MODULE_ALIAS("platform:tgl_rt1011_rt5682");
-+MODULE_ALIAS("platform:jsl_rt5682_rt1015p");
-diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-index 52238db0bcb5..73fe4f89a82d 100644
---- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-@@ -19,6 +19,11 @@ static struct snd_soc_acpi_codecs rt1015_spk = {
- 	.codecs = {"10EC1015"}
- };
- 
-+static struct snd_soc_acpi_codecs rt1015p_spk = {
-+	.num_codecs = 1,
-+	.codecs = {"RTL1015"}
-+};
-+
- static struct snd_soc_acpi_codecs mx98360a_spk = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98360A"}
-@@ -52,6 +57,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
- 		.quirk_data = &rt1015_spk,
- 		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
- 	},
-+	{
-+		.id = "10EC5682",
-+		.drv_name = "jsl_rt5682_rt1015p",
-+		.sof_fw_filename = "sof-jsl.ri",
-+		.machine_quirk = snd_soc_acpi_codec_list,
-+		.quirk_data = &rt1015p_spk,
-+		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
-+	},
- 	{
- 		.id = "10EC5682",
- 		.drv_name = "jsl_rt5682_max98360a",
+ RFC -> v1:
+ - Drop RFC
+ - Addressed feedback from David and Mike
+ - Fence off gigantic pages as there is a cyclic dependency between
+   them and alloc_contig_range
+ - Re-organize the code to make race-window smaller and to put
+   all details in hugetlb code
+ - Drop nodemask initialization. First a node will be tried and then we
+   will back to other nodes containing memory (N_MEMORY). Details in
+   patch#1's changelog
+ - Count new page as surplus in case we failed to dissolve the old page
+   and the new one. Details in patch#1.
+
+Cover letter:
+
+ alloc_contig_range lacks the hability for handling HugeTLB pages.
+ This can be problematic for some users, e.g: CMA and virtio-mem, where those
+ users will fail the call if alloc_contig_range ever sees a HugeTLB page, even
+ when those pages lay in ZONE_MOVABLE and are free.
+ That problem can be easily solved by replacing the page in the free hugepage
+ pool.
+
+ In-use HugeTLB are no exception though, as those can be isolated and migrated
+ as any other LRU or Movable page.
+
+ This patchset aims for improving alloc_contig_range->isolate_migratepages_block,
+ so HugeTLB pages can be recognized and handled.
+
+ Since we also need to start reporting errors down the chain (e.g: -ENOMEM due to
+ not be able to allocate a new hugetlb page), isolate_migratepages_{range,block}
+ interfaces  need to change to start reporting error codes instead of the pfn == 0
+ vs pfn != 0 scheme it is using right now.
+ From now on, isolate_migratepages_block will not return the next pfn to be scanned
+ anymore, but -EINTR, -ENOMEM or 0, so we the next pfn to be scanned will be recorded
+ in cc->migrate_pfn field (as it is already done in isolate_migratepages_range()).
+
+ Below is an insight from David (thanks), where the problem can clearly be seen:
+
+ "Start a VM with 4G. Hotplug 1G via virtio-mem and online it to
+  ZONE_MOVABLE. Allocate 512 huge pages.
+
+  [root@localhost ~]# cat /proc/meminfo
+  MemTotal:        5061512 kB
+  MemFree:         3319396 kB
+  MemAvailable:    3457144 kB
+  ...
+  HugePages_Total:     512
+  HugePages_Free:      512
+  HugePages_Rsvd:        0
+  HugePages_Surp:        0
+  Hugepagesize:       2048 kB
+
+  The huge pages get partially allocate from ZONE_MOVABLE. Try unplugging
+  1G via virtio-mem (remember, all ZONE_MOVABLE). Inside the guest:
+
+  [  180.058992] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+  [  180.060531] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+  [  180.061972] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+  [  180.063413] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+  [  180.064838] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+  [  180.065848] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+  [  180.066794] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+  [  180.067738] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+  [  180.068669] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+  [  180.069598] alloc_contig_range: [1bfc00, 1c0000) PFNs busy"
+
+ And then with this patchset running:
+
+ "Same experiment with ZONE_MOVABLE:
+
+  a) Free huge pages: all memory can get unplugged again.
+
+  b) Allocated/populated but idle huge pages: all memory can get unplugged
+     again.
+
+  c) Allocated/populated but all 512 huge pages are read/written in a
+     loop: all memory can get unplugged again, but I get a single
+
+  [  121.192345] alloc_contig_range: [180000, 188000) PFNs busy
+
+  Most probably because it happened to try migrating a huge page while it
+  was busy. As virtio-mem retries on ZONE_MOVABLE a couple of times, it
+  can deal with this temporary failure.
+
+  Last but not least, I did something extreme:
+
+  # cat /proc/meminfo
+  MemTotal:        5061568 kB
+  MemFree:          186560 kB
+  MemAvailable:     354524 kB
+  ...
+  HugePages_Total:    2048
+  HugePages_Free:     2048
+  HugePages_Rsvd:        0
+  HugePages_Surp:        0
+
+  Triggering unplug would require to dissolve+alloc - which now fails when
+  trying to allocate an additional ~512 huge pages (1G).
+
+  As expected, I can properly see memory unplug not fully succeeding. + I
+  get a fairly continuous stream of
+
+  [  226.611584] alloc_contig_range: [19f400, 19f800) PFNs busy
+  ...
+
+  But more importantly, the hugepage count remains stable, as configured
+  by the admin (me):
+
+  HugePages_Total:    2048
+  HugePages_Free:     2048
+  HugePages_Rsvd:        0
+  HugePages_Surp:        0"
+
+Oscar Salvador (5):
+  mm,page_alloc: Bail out earlier on -ENOMEM in
+    alloc_contig_migrate_range
+  mm,compaction: Let isolate_migratepages_{range,block} return error
+    codes
+  mm: Make alloc_contig_range handle free hugetlb pages
+  mm: Make alloc_contig_range handle in-use hugetlb pages
+  mm,page_alloc: Drop unnecessary checks from pfn_range_valid_contig
+
+ include/linux/hugetlb.h |   7 +++
+ mm/compaction.c         |  89 ++++++++++++++++++++++++----------
+ mm/hugetlb.c            | 125 +++++++++++++++++++++++++++++++++++++++++++++++-
+ mm/internal.h           |   2 +-
+ mm/page_alloc.c         |  21 ++++----
+ mm/vmscan.c             |   5 +-
+ 6 files changed, 209 insertions(+), 40 deletions(-)
+
 -- 
-2.17.1
+2.16.3
 
