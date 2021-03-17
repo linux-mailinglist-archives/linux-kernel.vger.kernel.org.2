@@ -2,67 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9468D33EA5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC0433EA5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbhCQHGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 03:06:15 -0400
-Received: from m12-13.163.com ([220.181.12.13]:53371 "EHLO m12-13.163.com"
+        id S229505AbhCQHI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 03:08:26 -0400
+Received: from lizzard.sbs.de ([194.138.37.39]:52630 "EHLO lizzard.sbs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229541AbhCQHGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 03:06:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=BsnDQRQbFMwwF7cEx0
-        327jzQBYlVPRRMuaFhV+cYzQo=; b=ANyX8wIN+TQSFKTP47QI1vlXxVXECEs76o
-        +5RYrKIrjyDwmX0s5/o3Af99DFDefohg0tCYbpG7CeevNnUAFfdzoq6Hesk+eNtq
-        S7/Hidzw4k+diFszU0tAwWC1asH468F09ZmeZjao28+UJC6H09F24Z2Cy5MoosOk
-        SoU5gUGmk=
-Received: from COOL-20200923LL.ccdomain.com (unknown [218.94.48.178])
-        by smtp9 (Coremail) with SMTP id DcCowAAnBI15n1FgM8udBg--.13183S2;
-        Wed, 17 Mar 2021 14:19:42 +0800 (CST)
-From:   Guoqing chi <chi962464zy@163.com>
-To:     jic23@kernel.org
-Cc:     linux-kernel@vger.kernel.org, chiguoqing@yulong.com
-Subject: [PATCH V2] iio:imu:mpu6050: Modify matricies to matrices
-Date:   Wed, 17 Mar 2021 14:19:30 +0800
-Message-Id: <20210317061930.478-1-chi962464zy@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: DcCowAAnBI15n1FgM8udBg--.13183S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWruFy7tw4ruw4fXrWDKF4UArb_yoWkXrg_A3
-        W09r4vkr40yw1vqa92ya17J3yDKas5JFn2v3WUGa1Iv343Aan8C3Wqyr4DZF4UWr1YkF13
-        W3Z5GrWSyw13ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8NAw7UUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: pfklmlasuwk6r16rljoofrz/xtbBiB5YRFaD+Q5JuAAAsZ
+        id S229472AbhCQHH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 03:07:59 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 12H77lLO019222
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Mar 2021 08:07:47 +0100
+Received: from [167.87.41.130] ([167.87.41.130])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12H6vja0026646;
+        Wed, 17 Mar 2021 07:57:46 +0100
+Subject: Re: [PATCH v4 2/2] gpio: sch: Hook into ACPI SCI handler to catch
+ GPIO edge events
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20210316162613.87710-1-andriy.shevchenko@linux.intel.com>
+ <20210316162613.87710-3-andriy.shevchenko@linux.intel.com>
+ <YFEZ6GYuXGaX/LP2@smile.fi.intel.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <a3a6c80a-724c-e2fb-9597-b14a302c5ff4@siemens.com>
+Date:   Wed, 17 Mar 2021 07:57:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <YFEZ6GYuXGaX/LP2@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guoqing Chi <chiguoqing@yulong.com>
+On 16.03.21 21:49, Andy Shevchenko wrote:
+> On Tue, Mar 16, 2021 at 06:26:13PM +0200, Andy Shevchenko wrote:
+>> From: Jan Kiszka <jan.kiszka@siemens.com>
+>>
+>> Neither the ACPI description on the Quark platform provides the required
+>> information is to do establish generic handling nor hardware capable of
+>> doing it. According to the datasheet the hardware can generate SCI events.
+>> Therefore, we need to hook from the driver directly into SCI handler of
+>> the ACPI subsystem in order to catch and report GPIO-related events.
+>>
+>> Validated on the Quark-based IOT2000 platform.
+> 
+> This patch must be dropped completely. SCI handler is not correct way to do
+> this. The proper way (and we have already few examples in the kernel) is to
+> register GPE event.
 
-The plural of "matrix" is "matrices".
+As explained above, this is not supported by the preexisting firmware,
+and there won't be any updates to it anymore.
 
-Signed-off-by: Guoqing Chi <chiguoqing@yulong.com>
----
-V2:fix "complex number of" to "plural of".
+This platform is history, the SoC was discontinued by Intel long ago,
+and our devices reaching their support end as well. The race to upstream
+was lost in this case - backlog too long, we being too slow.
 
- include/linux/platform_data/invensense_mpu6050.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Jan
 
-diff --git a/include/linux/platform_data/invensense_mpu6050.h b/include/linux/platform_data/invensense_mpu6050.h
-index 93974f4cfba1..f05b37521f67 100644
---- a/include/linux/platform_data/invensense_mpu6050.h
-+++ b/include/linux/platform_data/invensense_mpu6050.h
-@@ -12,7 +12,7 @@
-  *			mounting matrix retrieved from device-tree)
-  *
-  * Contains platform specific information on how to configure the MPU6050 to
-- * work on this platform.  The orientation matricies are 3x3 rotation matricies
-+ * work on this platform.  The orientation matrices are 3x3 rotation matrices
-  * that are applied to the data to rotate from the mounting orientation to the
-  * platform orientation.  The values must be one of 0, 1, or -1 and each row and
-  * column should have exactly 1 non-zero value.
+> 
+> It took me a while to gather all bits of this puzzle.
+> 
+> At least now I get an event, but kernel oopses, I'll continue debugging
+> tomorrow.
+> 
+
 -- 
-2.17.1
-
-
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
