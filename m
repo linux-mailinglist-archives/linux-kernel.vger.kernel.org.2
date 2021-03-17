@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB0133EB0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 767A333EB0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbhCQIF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55640 "EHLO
+        id S230433AbhCQIGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:06:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhCQIFD (ORCPT
+        with ESMTP id S230221AbhCQIGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:05:03 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE47C06174A;
-        Wed, 17 Mar 2021 01:05:03 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id w1-20020a4adec10000b02901bc77feac3eso351022oou.3;
-        Wed, 17 Mar 2021 01:05:03 -0700 (PDT)
+        Wed, 17 Mar 2021 04:06:12 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D192C06174A;
+        Wed, 17 Mar 2021 01:05:58 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so4908337pjb.0;
+        Wed, 17 Mar 2021 01:05:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p5NGxaWCaBJWoG0b5sm40J/0n4KRIeeKYnwNe0wAf5w=;
-        b=jKAcf2c0cIfKN1ASZn8CJwucx5JT5I0l8hVHnUYSDKeIqnpsCnqWvXmWIqE8PVV3Li
-         NC28oTmZTqWZQR72SbvCA8n9HSD/bha3E3J3s6PhfZyYI66cno0L65eK0OUqY7CMfAqC
-         6U1FfW7THkyudQk++ZWoWYw4ol4mquRT1z7wKPf+thRJsOnFJbMj50mvpi3+EtOItTOn
-         90xCV5EZPLohhOBA4nJTHzY+AwiJQbo2HDAhNCo59JridDMzrU4LUtdkWO7fpK8GqkTy
-         vWt4jXXQIT6JpXdk9m3Rv5OxtlwUDEk5jKIUiq4wFIOh+i3x547Qct4W1vAzQGszfAWb
-         wQlQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ss75TIumqDPMeNHZ5WT61drGkRFSqdjxFvxpRIvRpAw=;
+        b=sriJy73Mhxxe8AcU7mojGw36Y2KgO/wmFaVqjVphOyZnyS4fUl/IbwEaOKFmz4bVPH
+         zdnazhoR1N+B2fSM6/SvbDn8EY7EuR7nM0iFNv9RJ/Dw/XShGQE+Nbz1H6dH8o74OhSP
+         1R/V6aPAJHG2jmFjQjX4zn4m8INowjRfCFC/EtyAcwPDlOQSOh9CaSra8i0etXPnxy9b
+         zUVJgvfLQMu0g2M6eOxLFjJVZkQALje51PsM84wHeAg2780mUZjJwuFoC2jtWM/00jnr
+         wUu7uP4JFho8VEan84rFAF7Sfqow50Hi0d8KhOV+PLzLW7l0DeuRiqgctlyquVcto4qB
+         CxuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p5NGxaWCaBJWoG0b5sm40J/0n4KRIeeKYnwNe0wAf5w=;
-        b=B7dRTIDSHjdMTk5DAw6RRtjK/PInvYuhH1IGniwcDP6siUmCDZxtBHb6/p4PUWFh7h
-         VD4I06kgIjkzgubi7kcvE1JdusO2jpuJedfeTE1fEBcHIvh+q3G7R6e3lnhut3nUQJHa
-         siqq5OrLR2w9LHFgOYYqif5HKA1yXS2sye1GSmFTi6SvfhBMuiwHuXU3QAgtaKZTecrC
-         znoFCQwx2OS2ug8X3nLjK2Be+mGmE++kHdr7E9K23QzmnOXnxAMOUXiLpJTpK0CJUIvy
-         64VaLix2Zi/23k7gJcxOn/V7YoJS0w7FtG1vWCvAV7H/qceGA9TAwBFzvq1FfwqNepkF
-         YWcg==
-X-Gm-Message-State: AOAM531rk1w1S6yE6ZbsuWTtPk5o8bQkU+fX9IrrVTMzKq2S8/dZDQ92
-        szDzwu08AA5IH296Ialf4jJbH1zosmfgwPGQsJ5rRiImgpU=
-X-Google-Smtp-Source: ABdhPJzhQlfli9hHPmtTaNTOLZGOiH0Lka2doKQtyNoyAVXCZ8OlNEc70wNMLO83OA5qjPKnvJgPO5ykFd4OLoQrzpg=
-X-Received: by 2002:a4a:8ed2:: with SMTP id c18mr2375227ool.66.1615968302508;
- Wed, 17 Mar 2021 01:05:02 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ss75TIumqDPMeNHZ5WT61drGkRFSqdjxFvxpRIvRpAw=;
+        b=Iob2puVwQOxmhACWAPZNoPRbpB18ldZfWM47Z+Vo+30jR8QULNfI5gjek0SrJJhyKR
+         kUMW8KKhn+hUtzupgaNR3FAkmTJ01F5EeUF6FzVw7vCAoqy4PZXOKfecPnmawaDuMKJ0
+         0cl4zT+cSE7+Glz8mhkAv/c1/aIACxL7AEJoQmvvzIQAGKbUg6t3gVE1vtZ3VGwdPFSH
+         AwtYPyEhszKFePDwSLkh6oGfWLJ1qVmw57P8XUAwMOnrBe8xrDspBk801ZHtesd6nfCa
+         qMwilqQnkqQE/el1satTtHpybgl8NXIH4PM/eis2SbcMVGf/U5XvjmTfbx8/YX/QYfwA
+         wClA==
+X-Gm-Message-State: AOAM530d1IyBWhoPys+bUON3RrIe+iNPNbNQU8hRN429fEX5h84WR006
+        8PfZQYh0jvN+0UbrugWR2Ac=
+X-Google-Smtp-Source: ABdhPJwlBmAW+1xdFK0gLkeJA5pr9AyDal62ZflETkJmd2W5IXa/zYn4aj4PFFC3gn599f9m9a448g==
+X-Received: by 2002:a17:90b:1490:: with SMTP id js16mr3173605pjb.131.1615968357965;
+        Wed, 17 Mar 2021 01:05:57 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:b48f:f050:bdc5:eb89])
+        by smtp.gmail.com with ESMTPSA id c25sm17729698pfo.101.2021.03.17.01.05.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 01:05:57 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 17:05:52 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Steve French <smfrench@gmail.com>,
+        Steve French <stfrench@microsoft.com>,
+        Hyunchul Lee <hyc.lee@gmail.com>,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the cifsd tree
+Message-ID: <YFG4YHFmBfFzu+MR@google.com>
+References: <20210317185304.6b92290c@canb.auug.org.au>
 MIME-Version: 1.0
-References: <1615959984-7122-1-git-send-email-wanpengli@tencent.com>
- <YFG2Z1q9MJGr8Zek@dhcp22.suse.cz> <CANRm+Cxi4qupXkYyZpPbvHcLkuWGxin4+w7EC+z0+Aidi5+B5A@mail.gmail.com>
-In-Reply-To: <CANRm+Cxi4qupXkYyZpPbvHcLkuWGxin4+w7EC+z0+Aidi5+B5A@mail.gmail.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Wed, 17 Mar 2021 16:04:51 +0800
-Message-ID: <CANRm+CwLBAPwwZzHB8U2SDMHKer_NtOKfAk52=EHUpG-SqxJWg@mail.gmail.com>
-Subject: Re: [PATCH] KVM: arm: memcg awareness
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210317185304.6b92290c@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Mar 2021 at 16:04, Wanpeng Li <kernellwp@gmail.com> wrote:
->
-> On Wed, 17 Mar 2021 at 15:57, Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Wed 17-03-21 13:46:24, Wanpeng Li wrote:
-> > > From: Wanpeng Li <wanpengli@tencent.com>
-> > >
-> > > KVM allocations in the arm kvm code which are tied to the life
-> > > of the VM process should be charged to the VM process's cgroup.
-> >
-> > How much memory are we talking about?
-> >
-> > > This will help the memcg controler to do the right decisions.
-> >
-> > This is a bit vague. What is the right decision? AFAICS none of that
-> > memory is considered during oom victim selection. The only thing memcg
-> > controler can help with is to contain and account this additional
-> > memory. This might help to better isolate multiple workloads on the same
-> > system. Maybe this is what you wanted to say? Or maybe this is a way to
-> > prevent untrusted users from consuming a lot of memory?
->
+On (21/03/17 18:53), Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the cifsd tree, today's linux-next build (powerpc
+> allyesconfig) failed like this:
+> 
+> ld: fs/cifsd/misc.o:(.opd+0xc0): multiple definition of `extract_sharename'; fs/cifs/unc.o:(.opd+0x18): first defined here
+> ld: fs/cifsd/misc.o: in function `.extract_sharename':
+> misc.c:(.text.extract_sharename+0x0): multiple definition of `.extract_sharename'; fs/cifs/unc.o:unc.c:(.text.extract_sharename+0x0): first defined here
+> 
+> Caused by commit
+> 
+>   cabcebc31de4 ("cifsd: introduce SMB3 kernel server")
+> 
+> I applied the following patch for today:
+> 
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Wed, 17 Mar 2021 18:35:55 +1100
+> Subject: [PATCH] cifsd: uniquify extract_sharename()
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 
-https://patchwork.kernel.org/project/kvm/patch/20190211190252.198101-1-bgardon@google.com/
-
-> It is explained in this patchset for x86 kvm which is upstream, I
-> think I don't need to copy and paste. :)
->
->     Wanpeng
+Thanks!
