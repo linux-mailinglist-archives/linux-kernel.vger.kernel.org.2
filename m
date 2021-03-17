@@ -2,237 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEFAA33EADD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D24233EAE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbhCQHy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 03:54:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230389AbhCQHyr (ORCPT
+        id S230473AbhCQHzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 03:55:35 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:47337 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230112AbhCQHzB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 03:54:47 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8066BC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 00:54:36 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id w34so23242476pga.8
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 00:54:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VEdnb+OWQcwQMcrxWHWutKj4nLUntKHn3JOwrdxbgug=;
-        b=ZhG789uVdwceX1cI4Oizx9Tyz0so076kCp/iJoVssOv1HSEkPwJOp9aFtYZiEaoP+J
-         y5QUrEDZM7vOOaY+vCgpwMhiqv2AXUrBZnR2vxbwn8OhUj06UvwjL4PCnnagkiemzZhA
-         vuZuLc4oWz0AEKELxTYE5o7XvNWDvycBLq6X1tFyMNcT76/Y3SidNizJPLrNeegRynl5
-         rbs4C9krtvddEMAdnfDBpohiTZ8LbMorpsqiDz0ODNDz7sMkRQhaLXfAtFvj1c2IX+pk
-         b1HzOpMGPHHzvcv1TF6L0EcesxZ2Kt5X7kGBV9ptxXPyDyFg0DGSzcOxbNdzhBT6G8th
-         PRwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VEdnb+OWQcwQMcrxWHWutKj4nLUntKHn3JOwrdxbgug=;
-        b=aE0RrzCEZh98baSRRm+kChhEUIS4gaOyFCxMHU+H+h0FAQ9awflLm9cq+yjOlHRuGp
-         pDVn8wftDT8/PDi78e5ry7N99AGigNYHJuQX9K/IA1GnoQ3zNG+GlLtwW+bYohJQ1PbZ
-         NFBvLT34GWB048SB4B7TUlsdFt88wO68gWa949hjFGjo1rFkLTremWM/upvM04eG3Mlb
-         I0m8AdOIPETDOGn2QLKLdK99kfj06BPc3gHpzj+bFE66gkiGYII+WlBqUemNW1TfnPNd
-         jIAVOlCsvEf1qqLPdZNpRCfjvtyb8tS1o7YxtMw19aH8n2uxIf1rAyp/UfC9Po2GOHmM
-         mYSA==
-X-Gm-Message-State: AOAM533kMiUKKDVLXn4N9ew8ktcy64Km2a5pE9lrkCyWLsJq3+2Lb+f2
-        FjmOwmJm1jfoeji/KKvpjjeBASeqaBg=
-X-Google-Smtp-Source: ABdhPJxod2E/PdH3pKA68HxlbApCQrL/MmUZMQTff39IUhR74cZzBqnDfdtOQNTWlst8qwLmQvsUiA==
-X-Received: by 2002:a63:e715:: with SMTP id b21mr1579595pgi.300.1615967675586;
-        Wed, 17 Mar 2021 00:54:35 -0700 (PDT)
-Received: from bobo.ozlabs.ibm.com (58-6-239-121.tpgi.com.au. [58.6.239.121])
-        by smtp.gmail.com with ESMTPSA id z8sm1588187pjr.57.2021.03.17.00.54.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 00:54:34 -0700 (PDT)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, Anton Blanchard <anton@ozlabs.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH v2] Increase page and bit waitqueue hash size
-Date:   Wed, 17 Mar 2021 17:54:27 +1000
-Message-Id: <20210317075427.587806-1-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
+        Wed, 17 Mar 2021 03:55:01 -0400
+Received: from mail-oo1-f42.google.com ([209.85.161.42]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MEmMt-1lTGeG2Qn5-00GEn4 for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021
+ 08:54:59 +0100
+Received: by mail-oo1-f42.google.com with SMTP id n12-20020a4ad12c0000b02901b63e7bc1b4so342161oor.5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 00:54:59 -0700 (PDT)
+X-Gm-Message-State: AOAM532+DucYiBdWiglc/4NY4Mve3PFJemp4LJ+SB5zV0kcJBzszkfAL
+        beITd6GlTKpdF7YODNueX/dOKdzClxmSXfJ3dFw=
+X-Google-Smtp-Source: ABdhPJzZdnCKyGkix2AX1KZ8MvuG4J0YDH/ajg643LqQK/un1mnEh1NJMcHZybuhM8IY5iaf1gLAfwPJHLlkz96pFRA=
+X-Received: by 2002:a4a:e9a2:: with SMTP id t2mr2259266ood.15.1615967698408;
+ Wed, 17 Mar 2021 00:54:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1615966419-20549-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1615966419-20549-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 17 Mar 2021 08:54:42 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3V=nhE9o6qvmjAHzakQesT9SWniRHW3mCe6Q+kd9J2PQ@mail.gmail.com>
+Message-ID: <CAK8P3a3V=nhE9o6qvmjAHzakQesT9SWniRHW3mCe6Q+kd9J2PQ@mail.gmail.com>
+Subject: Re: [PATCH v2] sched: replace if (cond) BUG() with WARN_ON()
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     Jeremy Kerr <jk@ozlabs.org>, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:WbvoJvkq4gTEpqyzcJuch8EuoqB5Oa5f/Lh805kHeZ0T+D9x1Mk
+ raoJxf8GgG7f0doND+RomVG1hdqkWahpQUF4BCfsyE7i35Fp8+Qkz3vPugyxOS41Jq+2U8E
+ R7M2S+q1rlpv2SusOacJs64oS+VoZYTT9WmucUxcxPdZYR/BADBR2byIxAQrsRltIvw5NTH
+ VzVy+4mz5yZ0EwiomRsgA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:4rQ/fZbXcnI=:+VnbZpoX532ymUdm5WBHvK
+ J08VEsQeXrOj1WFadhi62I+8xizG3EznDYtrlfl6HzM4mSfhSzyngUqXzKWJBsc5oSMobQhp1
+ s7oOHH1dYQUsfEJ9M6jMD9+/FdW/gFlxYFC8SmQk1KFIwJzpTV8Hvk5dCyVGPH2kdqr4qpeHH
+ bjNeA1WLcYiu3jkV0+lAlr+pwN4VlTmZBiZMTgrWHlhXlbq6+B2olUR8AQIiDJ4ZRx4z9dI8S
+ vPi+Jqp+nyzymY27eS7YUDdbczxYeI3BQF/P75TU3HyBTJ3OYRUN29syaIAUn08534hJTQFlj
+ zJsqgFgAacZNV06nSOYnDEsWOpSQ5iMZSMvKxtcbq9g+o0ZXFifZVkEwkYF2NTga4ApT6H9qz
+ 3YV6UU21O00yx2/M1hJzvTVOY49KYXkaZkQ5+TEJ9rY+nvKUdVPmcK3960TaL
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The page waitqueue hash is a bit small (256 entries) on very big systems. A
-16 socket 1536 thread POWER9 system was found to encounter hash collisions
-and excessive time in waitqueue locking at times. This was intermittent and
-hard to reproduce easily with the setup we had (very little real IO
-capacity). The theory is that sometimes (depending on allocation luck)
-important pages would happen to collide a lot in the hash, slowing down page
-locking, causing the problem to snowball.
+On Wed, Mar 17, 2021 at 8:35 AM Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
+>
+> Fix the following coccicheck warnings:
+>
+> ./arch/powerpc/platforms/cell/spufs/sched.c:908:2-5: WARNING: Use BUG_ON
+> instead of if condition followed by BUG.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-An small test case was made where threads would write and fsync different
-pages, generating just a small amount of contention across many pages.
+If you change it from BUG() to WARN_ON(), you should explain why it's safe to
+do that in this case. Here it is not, since the following spu_release() will
+end up making things worse if the acquire failed. Also if there was a signal
+pending, then spusched_tick() will just get called again and constantly
+print these warnings.
 
-Increasing page waitqueue hash size to 262144 entries increased throughput
-by 182% while also reducing standard deviation 3x. perf before the increase:
+There is probably a way to use WARN_ON_ONCE() here, in combination
+with a way to terminate the thread safely, but this has to be done carefully.
 
-  36.23%  [k] _raw_spin_lock_irqsave                -      -
-              |
-              |--34.60%--wake_up_page_bit
-              |          0
-              |          iomap_write_end.isra.38
-              |          iomap_write_actor
-              |          iomap_apply
-              |          iomap_file_buffered_write
-              |          xfs_file_buffered_aio_write
-              |          new_sync_write
-
-  17.93%  [k] native_queued_spin_lock_slowpath      -      -
-              |
-              |--16.74%--_raw_spin_lock_irqsave
-              |          |
-              |           --16.44%--wake_up_page_bit
-              |                     iomap_write_end.isra.38
-              |                     iomap_write_actor
-              |                     iomap_apply
-              |                     iomap_file_buffered_write
-              |                     xfs_file_buffered_aio_write
-
-This patch uses alloc_large_system_hash to allocate a bigger system hash
-that scales somewhat with memory size. The bit/var wait-queue is also
-changed to keep code matching, albiet with a smaller scale factor.
-
-A very small CONFIG_BASE_SMALL option is also added because these are two
-of the biggest static objects in the image on very small systems.
-
-This hash could be made per-node, which may help reduce remote accesses
-on well localised workloads, but that adds some complexity with indexing
-and hotplug, so until we get a less artificial workload to test with,
-keep it simple.
-
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
- kernel/sched/wait_bit.c | 30 +++++++++++++++++++++++-------
- mm/filemap.c            | 24 +++++++++++++++++++++---
- 2 files changed, 44 insertions(+), 10 deletions(-)
-
-diff --git a/kernel/sched/wait_bit.c b/kernel/sched/wait_bit.c
-index 02ce292b9bc0..dba73dec17c4 100644
---- a/kernel/sched/wait_bit.c
-+++ b/kernel/sched/wait_bit.c
-@@ -2,19 +2,24 @@
- /*
-  * The implementation of the wait_bit*() and related waiting APIs:
-  */
-+#include <linux/memblock.h>
- #include "sched.h"
- 
--#define WAIT_TABLE_BITS 8
--#define WAIT_TABLE_SIZE (1 << WAIT_TABLE_BITS)
--
--static wait_queue_head_t bit_wait_table[WAIT_TABLE_SIZE] __cacheline_aligned;
-+#define BIT_WAIT_TABLE_SIZE (1 << bit_wait_table_bits)
-+#if CONFIG_BASE_SMALL
-+static const unsigned int bit_wait_table_bits = 3;
-+static wait_queue_head_t bit_wait_table[BIT_WAIT_TABLE_SIZE] __cacheline_aligned;
-+#else
-+static unsigned int bit_wait_table_bits __ro_after_init;
-+static wait_queue_head_t *bit_wait_table __ro_after_init;
-+#endif
- 
- wait_queue_head_t *bit_waitqueue(void *word, int bit)
- {
- 	const int shift = BITS_PER_LONG == 32 ? 5 : 6;
- 	unsigned long val = (unsigned long)word << shift | bit;
- 
--	return bit_wait_table + hash_long(val, WAIT_TABLE_BITS);
-+	return bit_wait_table + hash_long(val, bit_wait_table_bits);
- }
- EXPORT_SYMBOL(bit_waitqueue);
- 
-@@ -152,7 +157,7 @@ EXPORT_SYMBOL(wake_up_bit);
- 
- wait_queue_head_t *__var_waitqueue(void *p)
- {
--	return bit_wait_table + hash_ptr(p, WAIT_TABLE_BITS);
-+	return bit_wait_table + hash_ptr(p, bit_wait_table_bits);
- }
- EXPORT_SYMBOL(__var_waitqueue);
- 
-@@ -246,6 +251,17 @@ void __init wait_bit_init(void)
- {
- 	int i;
- 
--	for (i = 0; i < WAIT_TABLE_SIZE; i++)
-+	if (!CONFIG_BASE_SMALL) {
-+		bit_wait_table = alloc_large_system_hash("bit waitqueue hash",
-+							sizeof(wait_queue_head_t),
-+							0,
-+							22,
-+							0,
-+							&bit_wait_table_bits,
-+							NULL,
-+							0,
-+							0);
-+	}
-+	for (i = 0; i < BIT_WAIT_TABLE_SIZE; i++)
- 		init_waitqueue_head(bit_wait_table + i);
- }
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 43700480d897..dbbb5b9d951d 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -34,6 +34,7 @@
- #include <linux/security.h>
- #include <linux/cpuset.h>
- #include <linux/hugetlb.h>
-+#include <linux/memblock.h>
- #include <linux/memcontrol.h>
- #include <linux/cleancache.h>
- #include <linux/shmem_fs.h>
-@@ -990,19 +991,36 @@ EXPORT_SYMBOL(__page_cache_alloc);
-  * at a cost of "thundering herd" phenomena during rare hash
-  * collisions.
-  */
--#define PAGE_WAIT_TABLE_BITS 8
--#define PAGE_WAIT_TABLE_SIZE (1 << PAGE_WAIT_TABLE_BITS)
-+#define PAGE_WAIT_TABLE_SIZE (1 << page_wait_table_bits)
-+#if CONFIG_BASE_SMALL
-+static const unsigned int page_wait_table_bits = 4;
- static wait_queue_head_t page_wait_table[PAGE_WAIT_TABLE_SIZE] __cacheline_aligned;
-+#else
-+static unsigned int page_wait_table_bits __ro_after_init;
-+static wait_queue_head_t *page_wait_table __ro_after_init;
-+#endif
- 
- static wait_queue_head_t *page_waitqueue(struct page *page)
- {
--	return &page_wait_table[hash_ptr(page, PAGE_WAIT_TABLE_BITS)];
-+	return &page_wait_table[hash_ptr(page, page_wait_table_bits)];
- }
- 
- void __init pagecache_init(void)
- {
- 	int i;
- 
-+	if (!CONFIG_BASE_SMALL) {
-+		page_wait_table = alloc_large_system_hash("page waitqueue hash",
-+							sizeof(wait_queue_head_t),
-+							0,
-+							21,
-+							0,
-+							&page_wait_table_bits,
-+							NULL,
-+							0,
-+							0);
-+	}
-+
- 	for (i = 0; i < PAGE_WAIT_TABLE_SIZE; i++)
- 		init_waitqueue_head(&page_wait_table[i]);
- 
--- 
-2.23.0
-
+       Arnd
