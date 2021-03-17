@@ -2,140 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F4233EA2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 058E733EA37
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbhCQGya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 02:54:30 -0400
-Received: from mail-vi1eur05on2075.outbound.protection.outlook.com ([40.107.21.75]:1377
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229904AbhCQGyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 02:54:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SPeY8SBnuER2qLiDzt0ixN18MkoIwx5gE/OoE3i+CxtPMl44STFNppqGnZlUEWUggsMMIaAqwxiY9MXdpanTXAapFETAeHkOotWBkh0+UdxTv9J1KQ2PbpWbA7J2qAGFcyCPZJAzvnH7RH5sFhVbxtO1P2ZMzZdJKCLqIp6gexE0UjCVlDfcPNIlTvYB6gw2vVxEgzJiNoZ1DgPg4DGvRzvYo9KGi5onaKumlKKwCj+Na4UbGsRQQdHavUXzJBaI+NE1Bl0If5gk2fWcAclC279eneJbZxMfKGIyBYZUaCidIryWniM/kwXWvwLMtUmEfhFTjraNzZRk5G2+9ate4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xDxjwFrFhj+Xb4ZbEYW9R0HtG+uvExh/1+L0PbKZQgo=;
- b=XDybOakP7/w69NR4gu/3FJVNnJoq8Z/xukF/t3a6FmjohWkYgToUQ+x6Jsb01lsqiCtZIzfdXIzRTNxpcXlD3K+uEJZYpC8KGHKInfSRLtpAQqAcH3Lwds6079xLFApCHgUN7u2oP9voH+2BPbFuQm/QUdSPdbKFClpIzW/ALNw9F+lFVStp0jDhBm6rxWMHt1kO/Aq1Cew+pgEzuFnJrGOE6QQbwx1h+LFY8Vl6i1wOQZTmwGDS1IVRn28ivL3y71EhZ8HLljkVb3h/kFNX/4MxzngltgES6P79DBcDDARF2siYR69s7vUYD6ldXNoQH0A19SDij39HqWV3tF64VA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xDxjwFrFhj+Xb4ZbEYW9R0HtG+uvExh/1+L0PbKZQgo=;
- b=keyfHUMtzu6bJSBFR7kC26uJrvtp24tFjezzioe4xMh8asLqYqp/jH3PkVFCrV7O2rHbrLJ5JukJsBEr6e5FAn3HRPYSz9hHxiABSASEnhEfcRK7+Uf6otoXYi9q9Ju/jGuCO9i2j94m7JBMFVdAOE9S+YCepiMZdlIjOK5diU0=
-Authentication-Results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB5618.eurprd04.prod.outlook.com (2603:10a6:208:123::11)
- by AM0PR04MB7091.eurprd04.prod.outlook.com (2603:10a6:208:197::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Wed, 17 Mar
- 2021 06:54:06 +0000
-Received: from AM0PR04MB5618.eurprd04.prod.outlook.com
- ([fe80::69a8:a768:8fa1:7236]) by AM0PR04MB5618.eurprd04.prod.outlook.com
- ([fe80::69a8:a768:8fa1:7236%7]) with mapi id 15.20.3933.032; Wed, 17 Mar 2021
- 06:54:06 +0000
-From:   Clark Wang <xiaoning.wang@nxp.com>
-To:     aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S230369AbhCQGy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 02:54:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhCQGyW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 02:54:22 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40047C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 23:54:22 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id g27so39900167iox.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 23:54:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SlYC70Tmixg0bkawcmpqrM0Twaey/BX+R82iQOZSGdk=;
+        b=Qoh+X3845ZucsGg9cbiSywQJizgtyrSxDQ8gr3zcEPDPnHcwXqUwnO6FPn5QusV7RY
+         UWnnEttJYYRai6xRX/c9C32yvyk2x44Y3JaQF0u6yhrh3AOjumURKMc1oe3ezCqF/7qa
+         qOEWyyKUzeZpyVr1oJIosk/JO5JO91zMcDJOLwz7A0AygspNbdkBMJFlPHOTvDSqa9fH
+         MFkX2sQLORgMN5MT9Ct3nlUqw1vorHUCxanqV6Q1lT2l0ZU1tu7HUNPkNJX5H7sMIDbE
+         9JSRFiWac2x00r5IzLM5+rjeEcFj1kWr+ize2qqmA3Q4Smph9MfdzsGx8eYVP7SqAJ5K
+         CrUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SlYC70Tmixg0bkawcmpqrM0Twaey/BX+R82iQOZSGdk=;
+        b=pwt5DJ+q2rPYpv1+esZRee6MPvU9UpjAWBgglUmHs2n346EdJ5EzJc2BR2i2exzcqC
+         6b2zbAnL/k9I62qZGZfgeg4CbgUoHQHU5R3xDQPU4W7mjOgww8L/Duy79yhfJn4Z2cjV
+         7UuLSOWy75arvQ79x6my0MYVwnHubypFjBsT//CViCXAd6ScgQeGuOzBN8jZB1tIWo7V
+         h4qFgPoub21nDna4HidH4KWPRY1bD6zuYUPojBrSZ7gC146kkpYDSAnlj3IKGnrsGsje
+         x8G9U9bx2UPCH/6iuXh2r2UYWAVZ4sKzgQPMArt3E5ufpLerbdbv0LRAy1tQK3R1XAEJ
+         /A9w==
+X-Gm-Message-State: AOAM533itziue954mnhRyHI4fWoJq4LpzIqK2kB0gp4BbsQY6NZ3H/mA
+        brIJer1upsxaWyYKWa3nxRI=
+X-Google-Smtp-Source: ABdhPJy+4qkeJaSy1Eb1RlWjQEsPf0PsKtX4ASEgbMIvVbEz9ATqhI16TZ41VxjQ7ZRGf7ygmRlKbg==
+X-Received: by 2002:a05:6638:2711:: with SMTP id m17mr1727138jav.115.1615964061410;
+        Tue, 16 Mar 2021 23:54:21 -0700 (PDT)
+Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
+        by smtp.googlemail.com with ESMTPSA id w13sm10583057ilg.48.2021.03.16.23.54.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 23:54:20 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 05/11] i2c: imx-lpi2c: add debug message when i2c peripheral clk doesn't work
-Date:   Wed, 17 Mar 2021 14:53:53 +0800
-Message-Id: <20210317065359.3109394-6-xiaoning.wang@nxp.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210317065359.3109394-1-xiaoning.wang@nxp.com>
-References: <20210317065359.3109394-1-xiaoning.wang@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: HK2PR02CA0215.apcprd02.prod.outlook.com
- (2603:1096:201:20::27) To AM0PR04MB5618.eurprd04.prod.outlook.com
- (2603:10a6:208:123::11)
+Cc:     Jim Cromie <jim.cromie@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [RFC PATCH v4 00/19] dynamic debug diet plan
+Date:   Wed, 17 Mar 2021 00:53:53 -0600
+Message-Id: <20210317065412.2890414-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by HK2PR02CA0215.apcprd02.prod.outlook.com (2603:1096:201:20::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Wed, 17 Mar 2021 06:54:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 27f2fe57-cc8d-4472-b736-08d8e911752c
-X-MS-TrafficTypeDiagnostic: AM0PR04MB7091:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB70912B0C294B0C77C2854EE7F36A9@AM0PR04MB7091.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:346;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XJoAXeGe0TSpeF7+iLiUNJRMnS2nU+Nw+kYl5OVyzz8JymT9s201gSNlLdIzPoPTsTRxewW7F+k6VqRyOMODmZGP3OKxg7VmGk1TKHjAdcgDOlXpJqkqVeNiZygka6p6uxSc+o+eqxJxk3JIReCIroQ0JQKrEO3kOXLhBTTgURpNPYN4UelRxj0ZUI6HAww+xY/D1v3VPXpK9m3e4kI0PJRJUIefkh/S+RLg12NI7BuKKVmuh78iC3KFv3+m9Pyy4FgnUM65cwEAOOhZPMoaaCz2SxkuATHTUzdv8tWCkNYLqSBsXKKYHkp+GcxrM/GQ9l6qlk4gx4yYMY4ogE56yTKSHunrru9PblXhIbBKDT1GhW7cMYpa8s3jXgYhv1KDL1AVUC6n8W3nE/TjVI8Rtn1N0HN3VR7Zg0lBgmxbxKMOtjLvlDNV/uNS9v9WkqSpfp4Nl/1oPQgI7FGMyyVBBQZ2AAhKetsjuoBGzk1iQ01IxU1N6hn3aO60GDlHJmF7nguV5zaBc/3VcHimun1iRypZbk55o0m8rzEKIZ5N4Ma0FgY7kdtIhL4f8aZ15Q+T0qJM1GxenxR0nCOGSU/hXBRkQrOfKFg6A0/k59FlWsqQxsogyWacXVYFRyWDfKHU
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5618.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(346002)(39860400002)(136003)(478600001)(4744005)(66556008)(66476007)(69590400012)(6506007)(66946007)(83380400001)(36756003)(16526019)(5660300002)(2616005)(316002)(15650500001)(2906002)(1076003)(8936002)(26005)(52116002)(186003)(956004)(4326008)(6512007)(6486002)(8676002)(6666004)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?dWa8ln4BD12slHdt5kN9keTtpTN5ciuqxuQqgvmKe7qWC82RdBzaH6rGheum?=
- =?us-ascii?Q?2CXzhZa9gWtOaFmyoSknVHQh0WuFWChzOOyWyZtmSEpcR7C1N72u0YTwe9kU?=
- =?us-ascii?Q?h7pGcDcN+v1VflJyb1W2k5yODtm3j1Jm2Auf/IAU8XmkbqKqIqB23vU1MrFr?=
- =?us-ascii?Q?8wLgGQI/xvMJsD+SlmNniksR8xwpIfE2JBuYA8vwoKL0FzI1XXfViG00hBJS?=
- =?us-ascii?Q?1yt6V8aJi9Qc/8s7FJ+HnmZncQ0DbENaOWJtQig0lZCWNlhYTf3Vk6yb+6SB?=
- =?us-ascii?Q?+UpBWJdZQj3/sNhRRAbqXjLrjiloXLrUsNPOU/JORElpxaHl1OQAmvURIq0v?=
- =?us-ascii?Q?60qHndX9q1A9oShGm7kUjC6XBM6X1JcwMwKrzbLwlnqPlEC9q1jesGgJdaN5?=
- =?us-ascii?Q?RRch/G9fz6zJbZsA3VBpldb36mKb5+yecIFi1XQ49wQRN7hYa6vzvxMvsaCg?=
- =?us-ascii?Q?PWlRtYOdQ5soahTq894KZK55mN9m1uJLP2pen9dV4JaG3FWg5lJbLRwHLew+?=
- =?us-ascii?Q?6KQ6njZuf35cZHRLDTgnB0wPBdbG+4mVlVd4+EW/dB2jHttz/iGE4QlkJTxu?=
- =?us-ascii?Q?p4bt1nO5oKyVXLoxe4psSJMN4sWiN6P6qvwZPnpCNVflMbEBhkFbzJTpxf+w?=
- =?us-ascii?Q?Z2vICG7tZAvr1cl3Iy0163cwzv4JHnJrGfaAzIUNkq4mQCKORts9SmcqlwW1?=
- =?us-ascii?Q?hFhaAhHTdq1KAKA1cQmmU0saPj/t73E6W1E6lCKHkU/3inTXdDVWGPl97Jae?=
- =?us-ascii?Q?KM+54td4ImFi58iTYpBPkiRMvS9HAUgeKTupfp4ZPX6qWXWyU6xU1Q810ctU?=
- =?us-ascii?Q?Blt13tvmjabRJLn5K+dL6rwRT4WKxzzGnfuJve0w1fcLq6Di3t2UYSPWGr8w?=
- =?us-ascii?Q?DfhcKNYQ1wApv5ioa6D6RO+55tmGyQNYTP9t+/g9JhGwm7hXq1uSWW6rO+5r?=
- =?us-ascii?Q?dNMnDhyRo3J5Flk78yb3tf2yz3MxOZaUFtvFzUMdoJh7NU81n+rf44H5z4d5?=
- =?us-ascii?Q?nV6bFSolH+mk2KPIEIRx0ia9qoo72m2QKvsFriqL12kTJc6nX0Zw29dhhUic?=
- =?us-ascii?Q?YHOgenFpTIz5DWc11hFy7xPv0jwwHJPkN2OcJq6Sz/6E7XK5ZTl2hNs9YPVj?=
- =?us-ascii?Q?rjOSr7hn4IMXOl3ooAjbNjb4bIHwUOkXgxNY/e49rnMf05C2OIwZqTO/mnQp?=
- =?us-ascii?Q?efc783PQrqrFSaLK6kDqDNqxDvEvhVX8+8uGtXF4O2y/UfjOzFaOfmn9TV14?=
- =?us-ascii?Q?suCuZW2Gu5BlWL6tLVzi9gxQWuOhhbRgoCmHMYAS77uRffCSecZvdB3cEUv6?=
- =?us-ascii?Q?vjAbyBUoyQ20eLRgybjLAGXf?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 27f2fe57-cc8d-4472-b736-08d8e911752c
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5618.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 06:54:06.5524
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MrXj7joMJFP7k5cxp6/4Yf6JLv+pYG9owXdqJjj/3iWmXu4MyaWh0iFLcQrycf1BFyX8d6oBdqDhJLbrmWV9kQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7091
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Pan <pandy.gao@nxp.com>
+v4 fixes 'series grooming errors',
+Reported-by: kernel test robot <lkp@intel.com>
 
-add debug message when i2c peripheral clk rate is 0, then
-directly return -EINVAL.
+CONFIG_DYNAMIC_DEBUG creates a struct _ddebug (56 bytes) for each
+callsite, which includes 3 pointers to: module, filename, function.
+These are repetetive, and compressible, this patch series goes about
+doing that, it:
 
-Signed-off-by: Gao Pan <pandy.gao@nxp.com>
-Reviewed-by: Andy Duan <fugang.duan@nxp.com>
----
- drivers/i2c/busses/i2c-imx-lpi2c.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+- splits struct _ddebug and __dyndbg[] section/array into 2
+  creating struct _ddebug_site and __dyndbg_sites[]
+  temporary _ddebug.site connects them.
+  
+- makes _ddebug_site data optional
+- minor optimizations
+- makes _ddebug_site data deleteable
+  not necessary, proof of optionality
 
-diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
-index e718bb6b2387..8f9dd3dd2951 100644
---- a/drivers/i2c/busses/i2c-imx-lpi2c.c
-+++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
-@@ -209,7 +209,12 @@ static int lpi2c_imx_config(struct lpi2c_imx_struct *lpi2c_imx)
- 
- 	lpi2c_imx_set_mode(lpi2c_imx);
- 
--	clk_rate = clk_get_rate(lpi2c_imx->clk);
-+	clk_rate = clk_get_rate(lpi2c_imx->clk_per);
-+	if (!clk_rate) {
-+		dev_dbg(&lpi2c_imx->adapter.dev, "clk_per rate is 0\n");
-+		return -EINVAL;
-+	}
-+
- 	if (lpi2c_imx->mode == HS || lpi2c_imx->mode == ULTRA_FAST)
- 		filt = 0;
- 	else
+The RFC stuff comes at the end:
+
+- attach __dyndbg_sites[] to module-info, like __dyndbg[]
+- add index to struct _ddebug, use it for builtins
+- add ddebug_site(_get|_put) abstraction to hide _ddebug.site
+
+At this point, its practical to: compress __dyndbg_sites[] & replace
+the section, then expand it on-demand to serve ddebug_site_get()
+calls.  For enabled callsites (with decorations flags), the retrieved
+records can be cached in a hash after theyre 1st needed/used (when
+callsite is actually executed).
+
+Whats my (ideal?) decompressing interface ?
+And whats the name of the api call ? I couldnt suss it out yet.
+
+For any control read, a simple block decompress and cache is close to
+ideal; all site data is then available to iterate over, and each
+ddebug_site_get() just indexes into it.  A stream of decompressed site
+records would also work well, with less lumpy memory allocs and frees.
+
+Actually dropping _ddebug.site is not yet possible.  While we could
+drop it for builtin modules, thats cuz we know __start___dyndbg_sites.
+For loaded modules, I need the elf section: __dyndbg_sites.  This is
+in load-info, but I dont have a path to it.  In:
+
+- add _ddebug_header/table
+
+That adds a single header entry pair (structs _ddebug*s with special
+initialization) into the arrays, and it links to the front of the
+array, where its useful.  But creating this header entry only works
+for vmlinux itself (because of vmlinux.ld.h patch), not for loadable
+modules.
+
+- add linker rules to module.lds.h
+
+I tried to re-use the DYMAMIC_DEBUG_DATA macro added above for
+modules, this failed, commit msg guesses the cause.  This breaks with
+a linker script syntax error
+
+TODO
+
+Presuming the fixed header can be linked reliably in front doing
+something like I tried, it can be recast as a ddebug_header and
+unionized with struct _ddebug, and the _ddebugs[] will fit nicely as a
+flex-array:
+
+struct ddebug_table2 {
+       struct ddebug_header foo;
+       struct _ddebug ddebugs[];
+}
+
+A header would have 40 bytes, room to contain most/all of struct
+ddebug_table's fields, a pointer to the __dyndbg_sites[] table, and a
+list-head too, meaning it supports essential and nice-to-have
+properties:
+
+- the mapping: __dyndbg[N] --> __dyndbg_sites[N]	 # NEEDed to drop .site
+  using container_of_flex() for flex-arrays
+
+- we can add them directly to ddebug_tables list	 # freebie
+  ie avoid the kzalloc in ddebug_add_module()  
+
+If not all fields fit in the space available in __dyndbg[0], there is
+space available in __dyndbg_sites[0].
+
+Additionally, at the end of __init, ddebug_tables list is composed of
+memory entirely in __dyndbg[], which could then be make readonly (by
+means I dont know).  If this breaks insertions of loadable modules, we
+can easily a 2nd list for that.
+
+
+Jim Cromie (19):
+  dyndbg: split struct _ddebug, move display fields to new _ddebug_site
+  dyndbg: __init iterate over __dyndbg & __dyndbg_site in parallel
+  dyndbg: refactor part of ddebug_change to ddebug_match_site
+  dyndbg: accept null site in ddebug_match_site
+  dyndbg: hoist ->site out of ddebug_match_site
+  dyndbg: accept null site in ddebug_change
+  dyndbg: accept null site in dynamic_emit_prefix
+  dyndbg: accept null site in ddebug_proc_show
+  dyndbg: optimize ddebug_emit_prefix
+  dyndbg: avoid calling dyndbg_emit_prefix when it has no work
+  dyndbg: refactor ddebug_alter_site out of ddebug_change
+  dyndbg: allow deleting site info via control interface
+  dyndbg+module: expose ddebug_sites to modules
+  dyndbg: add ddebug_site(_get|_put) abstraction
+  dyndbg: add _index to struct _ddebug
+  dyndbg: prevent build bugs via -DNO_DYNAMIC_DEBUG_TABLE
+  dyndbg: RFC - DECLARE/DEFINE_DYNAMIC_DEBUG_TABLE
+  dyndbg: shuffle ddebug_table fields
+  dyndbg: RFC add linker rules to module.lds.h
+
+ arch/x86/boot/compressed/Makefile     |   1 +
+ arch/x86/entry/vdso/Makefile          |   3 +
+ arch/x86/purgatory/Makefile           |   1 +
+ drivers/firmware/efi/libstub/Makefile |   3 +-
+ drivers/gpu/drm/i915/i915_drv.c       |   2 +
+ include/asm-generic/module.lds.h      |  21 ++
+ include/asm-generic/vmlinux.lds.h     |  24 +-
+ include/linux/dynamic_debug.h         | 180 +++++++++++++--
+ kernel/module-internal.h              |   1 +
+ kernel/module.c                       |   9 +-
+ lib/dynamic_debug.c                   | 313 +++++++++++++++++++-------
+ scripts/Makefile.lib                  |   2 +
+ 12 files changed, 449 insertions(+), 111 deletions(-)
+
 -- 
-2.25.1
+2.29.2
 
