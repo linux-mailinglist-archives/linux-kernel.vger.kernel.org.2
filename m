@@ -2,201 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6871033E626
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F74A33E62C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbhCQB3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 21:29:23 -0400
-Received: from m42-10.mailgun.net ([69.72.42.10]:63551 "EHLO
-        m42-10.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhCQB2v (ORCPT
+        id S231354AbhCQB36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 21:29:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229876AbhCQB3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 21:28:51 -0400
-X-Greylist: delayed 301 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Mar 2021 21:27:59 EDT
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615944531; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=eF9sPEKZDUELt1SpragpaMWGnIWq5a/YV3iveF1ulNg=;
- b=lsNCO5M78DEe3Txl3VlqmKbD2VpgUJspqMwupqw76DKNnsB1IGUItNyuziH9UWmayTk/If/d
- UNlEa4H1LchZRfAoBCt9lAptP7zJ1e1L8l/xRG16hrEzJ1P48Q670BJw0Y66CfxpDhNEKy4l
- qRldrRf8rtHujJeSlnonCgRstaY=
-X-Mailgun-Sending-Ip: 69.72.42.10
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60515a25e3fca7d0a6411d7b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Mar 2021 01:23:49
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 99E1AC43464; Wed, 17 Mar 2021 01:23:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6CD2BC43461;
-        Wed, 17 Mar 2021 01:23:47 +0000 (UTC)
+        Tue, 16 Mar 2021 21:29:38 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C30C06174A;
+        Tue, 16 Mar 2021 18:29:38 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id 130so37349454qkh.11;
+        Tue, 16 Mar 2021 18:29:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vK6w6Y188j7PtwuhViCoYrourMldbwVA3dovNdE8N40=;
+        b=r10+Yb4pgBdcizibkIfKkaywAgl4ptZYGzbsmWCYgZopaDI7qjsAVVvP4vPC+CMl7X
+         +Ml3rl0RpPX4M8MmOKdCviswzQLGk7JUpCmA93wVksPMsHW/R3zfCeOHaibsMc1cOxe6
+         8u4ICBe6ro5iQMLbwzTqNu+BDihXRjsyomAp22PwxiMKzqU+l83eFQmaeN6wPid96uPq
+         fecXS1Wg7qvy8k9PWKf/sx/OU1GL6JJLXNc94+WeBHgpPmqktH1qN4w1HnwWwwjycckb
+         csLB2j/fwjj+bwS31A/yUXzgMBadu7+49BdZSAOvtGm/OOXqOMRvvoEXqeYbyWZcchUY
+         +F5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vK6w6Y188j7PtwuhViCoYrourMldbwVA3dovNdE8N40=;
+        b=Ygued1el9VCKarJoUk7aIXVP1NJPiZQ4L5taC1zZqeTlIaLcbJJycWJ6MPJjqmusGp
+         9pX1iZMX6pI0A/KhAv4GDC1Kh37gwWAbHkf6TKenSmgmSgagi6NqHlftSN6g6am/i3oE
+         kDOb8hBMEgH3S8fLCkSatZT4sTlw0+akgNVAubr/9wY8fou/FAohnjWuqzZhZ4/Glif4
+         bHlijGaCMGRNmi2Ba73VBKXvwCEkU5hBht19kEWr2J1MgkXknugq1JDuPxAnhpTF5oto
+         ExKg9bWBc7hPho3otkvzQV8dLj9kmWrSYtelH2SGesyDMgFI91kXR6NDXtvzYitdUpfb
+         jQKQ==
+X-Gm-Message-State: AOAM5329yxQ4amprn4lwL/q/d7nYHOtcX+9mEsmXehgjozJZ5zod/pk7
+        DTVF0gjsNu4oDUqyz6YdhKLLNUrdYhoObnN41bSafPA39a6aE/Up
+X-Google-Smtp-Source: ABdhPJwsh5qFe3qDfSfYLvRP8kZmnSEjEkbALPF8K1fgbPSXSy29I6k0woyl/tgcGXGLEP7qD3zagx7nVir9edbYRTg=
+X-Received: by 2002:a37:596:: with SMTP id 144mr2169848qkf.387.1615944577156;
+ Tue, 16 Mar 2021 18:29:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 17 Mar 2021 09:23:47 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
-Subject: Re: [PATCH v5 05/10] scsi: ufshpb: Region inactivation in host mode
-In-Reply-To: <DM6PR04MB65751EE32D25C7E57A6BABE8FC6B9@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20210302132503.224670-1-avri.altman@wdc.com>
- <20210302132503.224670-6-avri.altman@wdc.com>
- <25da7378d5bf4c52443ae9b47f3fd778@codeaurora.org>
- <57afb2b5d7edda61a40493d8545785b1@codeaurora.org>
- <DM6PR04MB65751EE32D25C7E57A6BABE8FC6B9@DM6PR04MB6575.namprd04.prod.outlook.com>
-Message-ID: <ab285cd60b64baa4f41c34f584751e5f@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210317012054.238334-1-davispuh@gmail.com>
+In-Reply-To: <20210317012054.238334-1-davispuh@gmail.com>
+From:   =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
+Date:   Wed, 17 Mar 2021 03:29:24 +0200
+Message-ID: <CAOE4rSwj9_DMWLszPE5adiTsQeK+G_Hqya_HkDR=uEC7L4Fj3A@mail.gmail.com>
+Subject: Re: [RFC] btrfs: Allow read-only mount with corrupted extent tree
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-16 16:30, Avri Altman wrote:
->> >> ---
->> >>  drivers/scsi/ufs/ufshpb.c | 14 ++++++++++++++
->> >>  drivers/scsi/ufs/ufshpb.h |  1 +
->> >>  2 files changed, 15 insertions(+)
->> >>
->> >> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
->> >> index 6f4fd22eaf2f..0744feb4d484 100644
->> >> --- a/drivers/scsi/ufs/ufshpb.c
->> >> +++ b/drivers/scsi/ufs/ufshpb.c
->> >> @@ -907,6 +907,7 @@ static int ufshpb_execute_umap_req(struct
->> >> ufshpb_lu *hpb,
->> >>
->> >>      blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_umap_req_compl_fn);
->> >>
->> >> +    hpb->stats.umap_req_cnt++;
->> >>      return 0;
->> >>  }
->> >>
->> >> @@ -1103,6 +1104,12 @@ static int ufshpb_issue_umap_req(struct
->> >> ufshpb_lu *hpb,
->> >>      return -EAGAIN;
->> >>  }
->> >>
->> >> +static int ufshpb_issue_umap_single_req(struct ufshpb_lu *hpb,
->> >> +                                    struct ufshpb_region *rgn)
->> >> +{
->> >> +    return ufshpb_issue_umap_req(hpb, rgn);
->> >> +}
->> >> +
->> >>  static int ufshpb_issue_umap_all_req(struct ufshpb_lu *hpb)
->> >>  {
->> >>      return ufshpb_issue_umap_req(hpb, NULL);
->> >> @@ -1115,6 +1122,10 @@ static void __ufshpb_evict_region(struct
->> >> ufshpb_lu *hpb,
->> >>      struct ufshpb_subregion *srgn;
->> >>      int srgn_idx;
->> >>
->> >> +
->> >> +    if (hpb->is_hcm && ufshpb_issue_umap_single_req(hpb, rgn))
->> >
->> > __ufshpb_evict_region() is called with rgn_state_lock held and IRQ
->> > disabled,
->> > when ufshpb_issue_umap_single_req() invokes blk_execute_rq_nowait(),
->> > below
->> > warning shall pop up every time, fix it?
->> >
->> > void blk_execute_rq_nowait(struct request_queue *q, struct gendisk
->> > *bd_disk,
->> >                  struct request *rq, int at_head,
->> >                          rq_end_io_fn *done)
->> > {
->> >       WARN_ON(irqs_disabled());
->> > ...
->> >
->> 
->> Moreover, since we are here with rgn_state_lock held and IRQ disabled,
->> in ufshpb_get_req(), rq = kmem_cache_alloc(hpb->map_req_cache,
->> GFP_KERNEL)
->> has the GFP_KERNEL flag, scheduling while atomic???
-> I think your comment applies to  ufshpb_issue_umap_all_req as well,
-> Which is called from slave_configure/scsi_add_lun.
+tre=C5=A1d., 2021. g. 17. marts, plkst. 03:18 =E2=80=94 lietot=C4=81js D=C4=
+=81vis Mos=C4=81ns
+(<davispuh@gmail.com>) rakst=C4=ABja:
+>
+> Currently if there's any corruption at all in extent tree
+> (eg. even single bit) then mounting will fail with:
+> "failed to read block groups: -5" (-EIO)
+> It happens because we immediately abort on first error when
+> searching in extent tree for block groups.
+>
+> Now with this patch if `ignorebadroots` option is specified
+> then we handle such case and continue by removing already
+> created block groups and creating dummy block groups.
+>
+> Signed-off-by: D=C4=81vis Mos=C4=81ns <davispuh@gmail.com>
+> ---
+>  fs/btrfs/block-group.c | 14 ++++++++++++++
+>  fs/btrfs/disk-io.c     |  4 ++--
+>  fs/btrfs/disk-io.h     |  2 ++
+>  3 files changed, 18 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 48ebc106a606..827a977614b3 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -2048,6 +2048,20 @@ int btrfs_read_block_groups(struct btrfs_fs_info *=
+info)
+>         ret =3D check_chunk_block_group_mappings(info);
+>  error:
+>         btrfs_free_path(path);
+> +
+> +       if (ret =3D=3D -EIO && btrfs_test_opt(info, IGNOREBADROOTS)) {
+> +               btrfs_put_block_group_cache(info);
+> +               btrfs_stop_all_workers(info);
+> +               btrfs_free_block_groups(info);
+> +               ret =3D btrfs_init_workqueues(info, NULL);
+> +               if (ret)
+> +                       return ret;
+> +               ret =3D btrfs_init_space_info(info);
+> +               if (ret)
+> +                       return ret;
+> +               return fill_dummy_bgs(info);
 
-ufshpb_issue_umap_all_req() is not called from atomic contexts,
-so ufshpb_issue_umap_all_req() is fine.
+This isn't that nice, but I don't really know how to properly clean up
+everything related to already created block groups so this was easiest
+way. It seems to work fine.
+But looks like need to do something about replay log aswell because if
+it's not disabled then it fails with:
 
-Thanks,
-Can Guo.
+[ 1397.246869] BTRFS info (device sde): start tree-log replay
+[ 1398.218685] BTRFS warning (device sde): sde checksum verify failed
+on 21057127661568 wanted 0xd1506ed9 found 0x22ab750a level 0
+[ 1398.218803] BTRFS warning (device sde): sde checksum verify failed
+on 21057127661568 wanted 0xd1506ed9 found 0x7dd54bb9 level 0
+[ 1398.218813] BTRFS: error (device sde) in __btrfs_free_extent:3054:
+errno=3D-5 IO failure
+[ 1398.218828] BTRFS: error (device sde) in
+btrfs_run_delayed_refs:2124: errno=3D-5 IO failure
+[ 1398.219002] BTRFS: error (device sde) in btrfs_replay_log:2254:
+errno=3D-5 IO failure (Failed to recover log tree)
+[ 1398.229048] BTRFS error (device sde): open_ctree failed
 
-> 
-> Since the host-mode series is utilizing the framework laid by the 
-> device-mode,
-> Maybe you can add this comment to  Daejun's last version?
-> 
-> Thanks,
-> Avri
-> 
->> 
->> Can Guo.
->> 
->> > Thanks.
->> > Can Guo.
->> >
->> >> +            return;
->> >> +
->> >>      lru_info = &hpb->lru_info;
->> >>
->> >>      dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n",
->> >> rgn->rgn_idx);
->> >> @@ -1855,6 +1866,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
->> >>  ufshpb_sysfs_attr_show_func(rb_active_cnt);
->> >>  ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
->> >>  ufshpb_sysfs_attr_show_func(map_req_cnt);
->> >> +ufshpb_sysfs_attr_show_func(umap_req_cnt);
->> >>
->> >>  static struct attribute *hpb_dev_stat_attrs[] = {
->> >>      &dev_attr_hit_cnt.attr,
->> >> @@ -1863,6 +1875,7 @@ static struct attribute *hpb_dev_stat_attrs[] =
->> >> {
->> >>      &dev_attr_rb_active_cnt.attr,
->> >>      &dev_attr_rb_inactive_cnt.attr,
->> >>      &dev_attr_map_req_cnt.attr,
->> >> +    &dev_attr_umap_req_cnt.attr,
->> >>      NULL,
->> >>  };
->> >>
->> >> @@ -1978,6 +1991,7 @@ static void ufshpb_stat_init(struct ufshpb_lu
->> >> *hpb)
->> >>      hpb->stats.rb_active_cnt = 0;
->> >>      hpb->stats.rb_inactive_cnt = 0;
->> >>      hpb->stats.map_req_cnt = 0;
->> >> +    hpb->stats.umap_req_cnt = 0;
->> >>  }
->> >>
->> >>  static void ufshpb_param_init(struct ufshpb_lu *hpb)
->> >> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
->> >> index bd4308010466..84598a317897 100644
->> >> --- a/drivers/scsi/ufs/ufshpb.h
->> >> +++ b/drivers/scsi/ufs/ufshpb.h
->> >> @@ -186,6 +186,7 @@ struct ufshpb_stats {
->> >>      u64 rb_inactive_cnt;
->> >>      u64 map_req_cnt;
->> >>      u64 pre_req_cnt;
->> >> +    u64 umap_req_cnt;
->> >>  };
->> >>
->> >>  struct ufshpb_lu {
+Ideally it should replay everything except extent refs.
+
+
+I also noticed that after unmount there is:
+
+[11000.562504] BTRFS warning (device sde): page private not zero on
+page 21057098481664
+[11000.562510] BTRFS warning (device sde): page private not zero on
+page 21057098485760
+
+not sure what it means.
+
+
+Best regards,
+D=C4=81vis
