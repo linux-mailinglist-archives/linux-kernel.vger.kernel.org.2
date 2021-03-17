@@ -2,238 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D0033E29C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:28:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766CF33E29E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:28:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbhCQA1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:27:07 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:39840 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229460AbhCQA0b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:26:31 -0400
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Bxw+SvTFFgvB0BAA--.4349S3;
-        Wed, 17 Mar 2021 08:26:23 +0800 (CST)
-Subject: Re: [PATCH v2] MIPS: Check __clang__ to avoid performance influence
- with GCC in csum_tcpudp_nofold()
-To:     David Laight <David.Laight@ACULAB.COM>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>
-References: <1615263493-10609-1-git-send-email-yangtiezhu@loongson.cn>
- <alpine.DEB.2.21.2103142140000.33195@angie.orcam.me.uk>
- <bdfe753d-0ef2-8f66-7716-acadfc3917a5@loongson.cn>
- <913665e71fd44c5d810d006cd179725c@AcuMS.aculab.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <5ee86b3b-81d2-790c-f67b-e250f60272fd@loongson.cn>
-Date:   Wed, 17 Mar 2021 08:26:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <913665e71fd44c5d810d006cd179725c@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S229632AbhCQA2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:28:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229517AbhCQA17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 20:27:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4197764F51;
+        Wed, 17 Mar 2021 00:27:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615940877;
+        bh=0zM86IeZ16gQbh2WjS9qneWbXsvsXsFQFH+1uBs/HsU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fioM8UYQY3gJjibcr6fntv31+P0JQUSmSn0WcM7OY0rZcFvO5WVK6HRNaFDFrSYlc
+         XW7A/CktPRELD3jtBKHBPIXuE5RDvvxETeiT1gVyH+J9A1BH+y31oRM5lp7qmgtj+P
+         /i6Pga7qpU5G4GtyHf4g/d1/K14XkJ35LmmGQq3Mj1D0W4tq1JNM1zPYJnNfhqXDqI
+         qCgTLivkMpBfELjzAsrb7reuLGBIrmKVI4WYx3UlXgfPj1vnyJNy9y1FXrTCGbfqNt
+         P6hh1JamWsR7er6oX4EFIkARRBZrPdgRG+ec8lF/7TnQslsL6wc/jOfm4VLFPiQ28j
+         j7jvdJTzyXnGg==
+Date:   Wed, 17 Mar 2021 09:27:51 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH -tip v2 04/10] kprobes: stacktrace: Recover the address
+ changed by kretprobe
+Message-Id: <20210317092751.f29dd7dbcfb504efede83b43@kernel.org>
+In-Reply-To: <161553134798.1038734.10913826398325010608.stgit@devnote2>
+References: <161553130371.1038734.7661319550287837734.stgit@devnote2>
+        <161553134798.1038734.10913826398325010608.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Bxw+SvTFFgvB0BAA--.4349S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxKFWxJr4rXw48GFW7Zw47Arb_yoWxAFy3pr
-        W8JFWjyF4YqryxWry5Gry5XrW5trn8A3WUAFs3Jw15uFyDWF1xJrW5Gan7CrnrJr1rAF1I
-        qFyDKr48Jw45KaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
-        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CE
-        bIxvr21lc2xSY4AK67AK6w1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
-        UI43ZEXa7VUjg18DUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/15/2021 08:42 PM, David Laight wrote:
-> From: Tiezhu Yang <yangtiezhu@loongson.cn>
->> Sent: 15 March 2021 12:26
->> On 03/15/2021 04:49 AM, Maciej W. Rozycki wrote:
->>> On Tue, 9 Mar 2021, Tiezhu Yang wrote:
->>>
->>>> diff --git a/arch/mips/include/asm/checksum.h b/arch/mips/include/asm/checksum.h
->>>> index 1e6c135..80eddd4 100644
->>>> --- a/arch/mips/include/asm/checksum.h
->>>> +++ b/arch/mips/include/asm/checksum.h
->>>> @@ -128,9 +128,13 @@ static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
->>>>
->>>>    static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
->>>>    					__u32 len, __u8 proto,
->>>> -					__wsum sum)
->>>> +					__wsum sum_in)
->>>>    {
->>>> -	unsigned long tmp = (__force unsigned long)sum;
->>>> +#ifdef __clang__
->>>> +	unsigned long sum = (__force unsigned long)sum_in;
->>>> +#else
->>>> +	__wsum sum = sum_in;
->>>> +#endif
->>>    This looks much better to me, but I'd keep the variable names unchanged
->>> as `sum_in' isn't used beyond the initial assignment anyway (you'll have
->>> to update the references with asm operands accordingly of course).
->>>
->>>    Have you verified that code produced by GCC remains the same with your
->>> change in place as it used to be up to commit 198688edbf77?  I can see no
->>> such information in the commit description whether here or in the said
->>> commit.
->>>
->>>     Maciej
->> Hi Maciej,
->>
->> Thanks for your reply.
->>
->> gcc --version
->> gcc (Debian 10.2.1-6) 10.2.1 20210110
->>
->> net/ipv4/tcp_ipv4.c
->> tcp_v4_send_reset()
->>     csum_tcpudp_nofold()
->>
->> objdump -d vmlinux > vmlinux.dump
->>
->> (1) Before commit 198688edbf77
->> ("MIPS: Fix inline asm input/output type mismatch in checksum.h used
->> with Clang"):
->>
->> ffffffff80aa835c:       00004025        move    a4,zero
->> ffffffff80aa8360:       92020012        lbu     v0,18(s0)
->> ffffffff80aa8364:       de140030        ld      s4,48(s0)
->> ffffffff80aa8368:       0064182d        daddu   v1,v1,a0
->> ffffffff80aa836c:       304200ff        andi    v0,v0,0xff
->> ffffffff80aa8370:       9c64000c        lwu     a0,12(v1)
->> ffffffff80aa8374:       9c660010        lwu     a2,16(v1)
->> ffffffff80aa8378:       afa70038        sw      a3,56(sp)
->> ffffffff80aa837c:       24071a00        li      a3,6656
->> ffffffff80aa8380:       0086202d        daddu   a0,a0,a2
->> ffffffff80aa8384:       0087202d        daddu   a0,a0,a3
->> ffffffff80aa8388:       0088202d        daddu   a0,a0,a4
->> ffffffff80aa838c:       0004083c        dsll32  at,a0,0x0
->> ffffffff80aa8390:       0081202d        daddu   a0,a0,at
->> ffffffff80aa8394:       0081082b        sltu    at,a0,at
->> ffffffff80aa8398:       0004203f        dsra32  a0,a0,0x0
->> ffffffff80aa839c:       00812021        addu    a0,a0,at
->>
->> (2) After commit 198688edbf77
->> ("MIPS: Fix inline asm input/output type mismatch in checksum.h used
->> with Clang"):
->>
->> ffffffff80aa836c:       00004025        move    a4,zero
->> ffffffff80aa8370:       92040012        lbu     a0,18(s0)
->> ffffffff80aa8374:       de140030        ld      s4,48(s0)
->> ffffffff80aa8378:       0062182d        daddu   v1,v1,v0
->> ffffffff80aa837c:       308400ff        andi    a0,a0,0xff
->> ffffffff80aa8380:       9c62000c        lwu     v0,12(v1)
->> ffffffff80aa8384:       9c660010        lwu     a2,16(v1)
->> ffffffff80aa8388:       afa70038        sw      a3,56(sp)
->> ffffffff80aa838c:       24071a00        li      a3,6656
->> ffffffff80aa8390:       0046102d        daddu   v0,v0,a2
->> ffffffff80aa8394:       0047102d        daddu   v0,v0,a3
->> ffffffff80aa8398:       0048102d        daddu   v0,v0,a4
->> ffffffff80aa839c:       0002083c        dsll32  at,v0,0x0
->> ffffffff80aa83a0:       0041102d        daddu   v0,v0,at
->> ffffffff80aa83a4:       0041082b        sltu    at,v0,at
->> ffffffff80aa83a8:       0002103f        dsra32  v0,v0,0x0
->> ffffffff80aa83ac:       00411021        addu    v0,v0,at
->>
->> (3) With this patch:
->>
->> ffffffff80aa835c:       00004025        move    a4,zero
->> ffffffff80aa8360:       92020012        lbu     v0,18(s0)
->> ffffffff80aa8364:       de140030        ld      s4,48(s0)
->> ffffffff80aa8368:       0064182d        daddu   v1,v1,a0
->> ffffffff80aa836c:       304200ff        andi    v0,v0,0xff
->> ffffffff80aa8370:       9c64000c        lwu     a0,12(v1)
->> ffffffff80aa8374:       9c660010        lwu     a2,16(v1)
->> ffffffff80aa8378:       afa70038        sw      a3,56(sp)
->> ffffffff80aa837c:       24071a00        li      a3,6656
->> ffffffff80aa8380:       0086202d        daddu   a0,a0,a2
->> ffffffff80aa8384:       0087202d        daddu   a0,a0,a3
->> ffffffff80aa8388:       0088202d        daddu   a0,a0,a4
->> ffffffff80aa838c:       0004083c        dsll32  at,a0,0x0
->> ffffffff80aa8390:       0081202d        daddu   a0,a0,at
->> ffffffff80aa8394:       0081082b        sltu    at,a0,at
->> ffffffff80aa8398:       0004203f        dsra32  a0,a0,0x0
->> ffffffff80aa839c:       00812021        addu    a0,a0,at
->>
->> (4) With the following changes based on commit 198688edbf77
->> ("MIPS: Fix inline asm input/output type mismatch in checksum.h used
->> with Clang"):
->>
->> diff --git a/arch/mips/include/asm/checksum.h
->> b/arch/mips/include/asm/checksum.h
->> index 1e6c135..e1f80407 100644
->> --- a/arch/mips/include/asm/checksum.h
->> +++ b/arch/mips/include/asm/checksum.h
->> @@ -130,7 +130,11 @@ static inline __wsum csum_tcpudp_nofold(__be32
->> saddr, __be32 daddr,
->>                        __u32 len, __u8 proto,
->>                        __wsum sum)
->>    {
->> +#ifdef __clang__
->>        unsigned long tmp = (__force unsigned long)sum;
->> +#else
->> +    __wsum tmp = sum;
->> +#endif
->>
->>        __asm__(
->>        "    .set    push        # csum_tcpudp_nofold\n"
->>
->> ffffffff80aa835c:       00004025        move    a4,zero
->> ffffffff80aa8360:       92020012        lbu     v0,18(s0)
->> ffffffff80aa8364:       de140030        ld      s4,48(s0)
->> ffffffff80aa8368:       0064182d        daddu   v1,v1,a0
->> ffffffff80aa836c:       304200ff        andi    v0,v0,0xff
->> ffffffff80aa8370:       9c64000c        lwu     a0,12(v1)
->> ffffffff80aa8374:       9c660010        lwu     a2,16(v1)
->> ffffffff80aa8378:       afa70038        sw      a3,56(sp)
->> ffffffff80aa837c:       24071a00        li      a3,6656
->> ffffffff80aa8380:       0086202d        daddu   a0,a0,a2
->> ffffffff80aa8384:       0087202d        daddu   a0,a0,a3
->> ffffffff80aa8388:       0088202d        daddu   a0,a0,a4
->> ffffffff80aa838c:       0004083c        dsll32  at,a0,0x0
->> ffffffff80aa8390:       0081202d        daddu   a0,a0,at
->> ffffffff80aa8394:       0081082b        sltu    at,a0,at
->> ffffffff80aa8398:       0004203f        dsra32  a0,a0,0x0
->> ffffffff80aa839c:       00812021        addu    a0,a0,at
->>
->> The code produced by GCC remains the same between (1), (3) and (4),
->> the last changes looks like better (with less changes based on commit
->> 198688edbf77), so I will send v3 later.
-> Aren't those all the same - apart from register selection.
-> Not that I grok the mips opcodes.
-> But that code has horridness on its side.
->
-> The only obvious difference is that something else changes the
-> code offset from xxxx5c to xxxx6c.
->
-> 	David
->
+On Fri, 12 Mar 2021 15:42:28 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> Recover the return address on the stack which changed by the
+> kretprobe. Note that this does not recover the address on the
+> !current stack trace if CONFIG_ARCH_STACKWALK=n because old
+> stack trace interface doesn't lock the stack in the generic
+> stack_trace_save*() functions.
+
+I found that v2 didn't work correctly with FP unwinder,
+because this changes the unlink timing.
+
+With frame pointer, the unwinder skips the first (on-going)
+kretprobe_trampoline because kretprobe_trampoline doesn't
+setup the frame pointer (push bp; mov sp, bp).
+If there are 2 or more kretprobes on the stack, when the last
+kretprobe_trampoline is running, the unwinder finds the 2nd
+kretprobe_trampoline on the unwinding call stack at first.
+However, while the user kretprobe handler is running, the last
+real return address is still linked to the current->kretprobe_instances.
+
+Thus, this will decode the 2nd kretprobe_trampoline with the
+last real return address.
+
+If the kretprobe_trampoline sets up the frame pointer at the entry
+this can be avoided. However, that helps only x86.
+Refering kretprobe_instance.fp (which should point the address of
+replaced stack entry) to find correct return address seems better
+solution, but this is implemented on the arch on which "call"
+instruction stores the return address on the stack. E.g. arm and
+some other RISCs stores the return address to the link register,
+which has no "address".
+
+So I would like to drop this arch-independent recovery routine.
+Instead, it should be fixed per-arch basis.
+
+Thank you,
+
+> 
+> So with this patch, ftrace correctly shows the stacktrace
+> as below;
+> 
+>  # echo r vfs_read > kprobe_events
+>  # echo stacktrace > events/kprobes/r_vfs_read_0/trigger
+>  # echo 1 > events/kprobes/r_vfs_read_0/enable
+>  # echo 1 > options/sym-offset
+>  # less trace
+> ...
+> 
+>               sh-132     [007] ...1    22.524917: <stack trace>
+>  => kretprobe_dispatcher+0x7d/0xc0
+>  => __kretprobe_trampoline_handler+0xdb/0x1b0
+>  => trampoline_handler+0x48/0x60
+>  => kretprobe_trampoline+0x2a/0x50
+>  => ksys_read+0x70/0xf0
+>  => __x64_sys_read+0x1a/0x20
+>  => do_syscall_64+0x38/0x50
+>  => entry_SYSCALL_64_after_hwframe+0x44/0xae
+>  => 0
+> 
+> The trampoline_handler+0x48 is actual call site address,
+> not modified by kretprobe.
+> 
+> Reported-by: Daniel Xu <dxu@dxuuu.xyz>
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  Changes in v2:
+>   - Add is_kretprobe_trampoline() for checking address outside of
+>     kretprobe_find_ret_addr()
+>   - Remove unneeded addr from kretprobe_find_ret_addr()
+>   - Rename fixup_kretprobe_tramp_addr() to fixup_kretprobe_trampoline()
+> ---
+>  include/linux/kprobes.h |   22 ++++++++++++++
+>  kernel/kprobes.c        |   73 ++++++++++++++++++++++++++++++-----------------
+>  kernel/stacktrace.c     |   22 ++++++++++++++
+>  3 files changed, 91 insertions(+), 26 deletions(-)
+> 
+> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+> index 65dadd4238a2..674b5adad281 100644
+> --- a/include/linux/kprobes.h
+> +++ b/include/linux/kprobes.h
+> @@ -215,6 +215,14 @@ static nokprobe_inline void *kretprobe_trampoline_addr(void)
+>  	return dereference_function_descriptor(kretprobe_trampoline);
+>  }
+>  
+> +static nokprobe_inline bool is_kretprobe_trampoline(unsigned long addr)
+> +{
+> +	return (void *)addr == kretprobe_trampoline_addr();
+> +}
+> +
+> +unsigned long kretprobe_find_ret_addr(struct task_struct *tsk,
+> +				      struct llist_node **cur);
+> +
+>  /* If the trampoline handler called from a kprobe, use this version */
+>  unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+>  					     void *frame_pointer);
+> @@ -514,6 +522,20 @@ static inline bool is_kprobe_optinsn_slot(unsigned long addr)
+>  }
+>  #endif
+>  
+> +#if !defined(CONFIG_KRETPROBES)
+> +static nokprobe_inline bool is_kretprobe_trampoline(unsigned long addr)
+> +{
+> +	return false;
+> +}
+> +
+> +static nokprobe_inline
+> +unsigned long kretprobe_find_ret_addr(struct task_struct *tsk,
+> +				      struct llist_node **cur)
+> +{
+> +	return 0;
+> +}
+> +#endif
+> +
+>  /* Returns true if kprobes handled the fault */
+>  static nokprobe_inline bool kprobe_page_fault(struct pt_regs *regs,
+>  					      unsigned int trap)
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index 75c0a58c19c2..2550521ff64d 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -1858,45 +1858,51 @@ static struct notifier_block kprobe_exceptions_nb = {
+>  
+>  #ifdef CONFIG_KRETPROBES
+>  
+> -unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+> -					     void *frame_pointer)
+> +/* This assumes the tsk is current or the task which is not running. */
+> +unsigned long kretprobe_find_ret_addr(struct task_struct *tsk,
+> +				      struct llist_node **cur)
+>  {
+> -	kprobe_opcode_t *correct_ret_addr = NULL;
+>  	struct kretprobe_instance *ri = NULL;
+> -	struct llist_node *first, *node;
+> -	struct kretprobe *rp;
+> +	struct llist_node *node = *cur;
+> +
+> +	if (!node)
+> +		node = tsk->kretprobe_instances.first;
+> +	else
+> +		node = node->next;
+>  
+> -	/* Find all nodes for this frame. */
+> -	first = node = current->kretprobe_instances.first;
+>  	while (node) {
+>  		ri = container_of(node, struct kretprobe_instance, llist);
 > -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
+> -		BUG_ON(ri->fp != frame_pointer);
+> -
+>  		if (ri->ret_addr != kretprobe_trampoline_addr()) {
+> -			correct_ret_addr = ri->ret_addr;
+> -			/*
+> -			 * This is the real return address. Any other
+> -			 * instances associated with this task are for
+> -			 * other calls deeper on the call stack
+> -			 */
+> -			goto found;
+> +			*cur = node;
+> +			return (unsigned long)ri->ret_addr;
+>  		}
+> -
+>  		node = node->next;
+>  	}
+> -	pr_err("Oops! Kretprobe fails to find correct return address.\n");
+> -	BUG_ON(1);
+> +	return 0;
+> +}
+> +NOKPROBE_SYMBOL(kretprobe_find_ret_addr);
+>  
+> -found:
+> -	/* Unlink all nodes for this frame. */
+> -	current->kretprobe_instances.first = node->next;
+> -	node->next = NULL;
+> +unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+> +					     void *frame_pointer)
+> +{
+> +	kprobe_opcode_t *correct_ret_addr = NULL;
+> +	struct kretprobe_instance *ri = NULL;
+> +	struct llist_node *first, *node = NULL;
+> +	struct kretprobe *rp;
+> +
+> +	/* Find correct address and all nodes for this frame. */
+> +	correct_ret_addr = (void *)kretprobe_find_ret_addr(current, &node);
+> +	if (!correct_ret_addr) {
+> +		pr_err("Oops! Kretprobe fails to find correct return address.\n");
+> +		BUG_ON(1);
+> +	}
+>  
+> -	/* Run them..  */
+> +	/* Run them. */
+> +	first = current->kretprobe_instances.first;
+>  	while (first) {
+>  		ri = container_of(first, struct kretprobe_instance, llist);
+> -		first = first->next;
+> +
+> +		BUG_ON(ri->fp != frame_pointer);
+>  
+>  		rp = get_kretprobe(ri);
+>  		if (rp && rp->handler) {
+> @@ -1907,6 +1913,21 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+>  			rp->handler(ri, regs);
+>  			__this_cpu_write(current_kprobe, prev);
+>  		}
+> +		if (first == node)
+> +			break;
+> +
+> +		first = first->next;
+> +	}
+> +
+> +	/* Unlink all nodes for this frame. */
+> +	first = current->kretprobe_instances.first;
+> +	current->kretprobe_instances.first = node->next;
+> +	node->next = NULL;
+> +
+> +	/* Recycle them.  */
+> +	while (first) {
+> +		ri = container_of(first, struct kretprobe_instance, llist);
+> +		first = first->next;
+>  
+>  		recycle_rp_inst(ri);
+>  	}
+> diff --git a/kernel/stacktrace.c b/kernel/stacktrace.c
+> index 9f8117c7cfdd..511287069473 100644
+> --- a/kernel/stacktrace.c
+> +++ b/kernel/stacktrace.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/export.h>
+>  #include <linux/kallsyms.h>
+>  #include <linux/stacktrace.h>
+> +#include <linux/kprobes.h>
+>  
+>  /**
+>   * stack_trace_print - Print the entries in the stack trace
+> @@ -69,6 +70,18 @@ int stack_trace_snprint(char *buf, size_t size, const unsigned long *entries,
+>  }
+>  EXPORT_SYMBOL_GPL(stack_trace_snprint);
+>  
+> +static void fixup_kretprobe_trampoline(unsigned long *store, unsigned int len,
+> +				       struct task_struct *tsk)
+> +{
+> +	struct llist_node *cur = NULL;
+> +
+> +	while (len--) {
+> +		if (is_kretprobe_trampoline(*store))
+> +			*store = kretprobe_find_ret_addr(tsk, &cur);
+> +		store++;
+> +	}
+> +}
+> +
+>  #ifdef CONFIG_ARCH_STACKWALK
+>  
+>  struct stacktrace_cookie {
+> @@ -119,6 +132,7 @@ unsigned int stack_trace_save(unsigned long *store, unsigned int size,
+>  	};
+>  
+>  	arch_stack_walk(consume_entry, &c, current, NULL);
+> +	fixup_kretprobe_trampoline(store, c.len, current);
+>  	return c.len;
+>  }
+>  EXPORT_SYMBOL_GPL(stack_trace_save);
+> @@ -147,6 +161,7 @@ unsigned int stack_trace_save_tsk(struct task_struct *tsk, unsigned long *store,
+>  		return 0;
+>  
+>  	arch_stack_walk(consume_entry, &c, tsk, NULL);
+> +	fixup_kretprobe_trampoline(store, c.len, tsk);
+>  	put_task_stack(tsk);
+>  	return c.len;
+>  }
+> @@ -171,6 +186,7 @@ unsigned int stack_trace_save_regs(struct pt_regs *regs, unsigned long *store,
+>  	};
+>  
+>  	arch_stack_walk(consume_entry, &c, current, regs);
+> +	fixup_kretprobe_trampoline(store, c.len, current);
+>  	return c.len;
+>  }
+>  
+> @@ -205,6 +221,8 @@ int stack_trace_save_tsk_reliable(struct task_struct *tsk, unsigned long *store,
+>  		return 0;
+>  
+>  	ret = arch_stack_walk_reliable(consume_entry, &c, tsk);
+> +	if (!ret)
+> +		fixup_kretprobe_trampoline(store, c.len, tsk);
+>  	put_task_stack(tsk);
+>  	return ret ? ret : c.len;
+>  }
+> @@ -276,6 +294,8 @@ unsigned int stack_trace_save(unsigned long *store, unsigned int size,
+>  	};
+>  
+>  	save_stack_trace(&trace);
+> +	fixup_kretprobe_trampoline(store, trace.nr_entries, current);
+> +
+>  	return trace.nr_entries;
+>  }
+>  EXPORT_SYMBOL_GPL(stack_trace_save);
+> @@ -323,6 +343,8 @@ unsigned int stack_trace_save_regs(struct pt_regs *regs, unsigned long *store,
+>  	};
+>  
+>  	save_stack_trace_regs(regs, &trace);
+> +	fixup_kretprobe_trampoline(store, trace.nr_entries, current);
+> +
+>  	return trace.nr_entries;
+>  }
+>  
+> 
 
-Hi David,
 
-Yes, it seems no much obvious differences.
-Let me wait for other feedback.
-
-Hi Thomas and Maciej,
-
-Is this patch necessary? If no, we can ignore it.
-If yes, I will send v3 with the above (4) changes.
-
-Thanks,
-Tiezhu
-
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
