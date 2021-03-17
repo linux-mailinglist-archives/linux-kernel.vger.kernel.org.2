@@ -2,108 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B33733F8D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:12:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2FA33F8D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233126AbhCQTL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:11:28 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:38290 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbhCQTKz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:10:55 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12HJAjaV005132;
-        Wed, 17 Mar 2021 14:10:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1616008245;
-        bh=Tr1lXzHpbqJJQa5y6bYpsIDAlJx1boXQSoQ2aG86+I4=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=HFy/MoyRluFqNqLcQLCeEfVE7pQjZsu4PbG5RISYUNuaCfr3MzuE99lbKnbPpkGlz
-         T7UHQ7QRZcAn/dAAHw3mF9Np0KFhfcGVnlyexgPWV37EXofr1kRiANzZ8aVc4Mx74d
-         nC+vXz/M+ba2d555MTrRjiSoE3snm//HKi27jPCI=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12HJAj6F080447
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 17 Mar 2021 14:10:45 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 17
- Mar 2021 14:10:45 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 17 Mar 2021 14:10:45 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12HJAjE5031520;
-        Wed, 17 Mar 2021 14:10:45 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Tero Kristo <kristo@kernel.org>, <devicetree@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v3 0/2] AM64: Add USB support
-Date:   Wed, 17 Mar 2021 14:10:39 -0500
-Message-ID: <161600762739.1043.8722896780317279431.b4-ty@ti.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210317043007.18272-1-a-govindraju@ti.com>
-References: <20210317043007.18272-1-a-govindraju@ti.com>
+        id S233137AbhCQTMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:12:01 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:39286 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233128AbhCQTLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 15:11:35 -0400
+Received: from zn.tnic (p200300ec2f094a00b347ff8542af806f.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:4a00:b347:ff85:42af:806f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 98A221EC0595;
+        Wed, 17 Mar 2021 20:11:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1616008294;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=IT+sbYUhPj57E3jyY3OyM34CWzd4arptbC0XaW/cWmw=;
+        b=GEtmvyXPMkvnX4TkiBU+igaONJvSvyheptTH1PBaDK8ddLHMtnsSGb8tntO1HL8RYk8s0x
+        XBO7g/lGyH1oYqNDnb66zFbqovpYoW4TEkXccRNWKJ+LqC7mKvH9Q1btdLweTd6uZYebVu
+        TRYkb+rj79J9ZY4PVzNpDMzbguOzCtY=
+Date:   Wed, 17 Mar 2021 20:11:32 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Joerg Roedel <joro@8bytes.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Peter Gonda <pgonda@google.com>
+Subject: Re: [PATCH] x86/cpu/AMD: Adjust x86_phys_bits to account for reduced
+ PA in SEV-* guests
+Message-ID: <20210317191132.GD25069@zn.tnic>
+References: <20210317183243.2904919-1-seanjc@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210317183243.2904919-1-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Mar 2021 10:00:04 +0530, Aswath Govindraju wrote:
-> The following series of patches, add USB support for AM642 evm.
+On Wed, Mar 17, 2021 at 11:32:43AM -0700, Sean Christopherson wrote:
+> Always reduce x86_phys_bits per CPUID.0x8000001f[11:6] for SEV-* guests;
+> the existing flow that queries X86_FEATURE_SEV may or may not trigger
+> depending on what the VMM emulates, e.g. the VMM likely does not emulate
+> MSR_K8_SYSCFG.
 > 
-> USB test logs,
-> https://pastebin.ubuntu.com/p/YSQRBWGmzd/
+> Print a somewhat scary message and override x86_phys_bits if the VMM
+> doesn't omit the C-bit from MAXPHYADDR, which can be done either by
+> enumerating a lower MAXPHYADDR or by enumerating a non-zero
+> PhysAddrReduction.
 > 
-> Changes since v2:
-> - dropped compatible string "ti,j721e-usb" leading to DT schema errors
-> - Reran test logs
-> - Couldn't pick up reviewed-by from kishon as a change was made in the
->   patch
+> Failure to adjust x86_phys_bits results in a false positive for
+> phys_addr_valid() if the address sets the C-bit, and may also result in
+> false positives for virt_addr_valid().  This is likely benign for a well-
+> functioning kernel+drivers, but it's nearly impossible to confidently
+> audit all users of the *_addr_valid() helpers, so who knows.
 > 
-> [...]
+> Opportunistically force clearing of SME, SEV, and SEV_ES in this case,
+> as the kernel and KVM treat those feature flags as host capabilities, not
+> guest capabilities.  This is likely a nop for most deployments, e.g. KVM
+> doesn't emulate MSR_K8_SYSCFG.
+> 
+> Note, early kernel boot code for SEV-*, e.g. get_sev_encryption_bit(),
+> _requires_ the SEV feature flag to be set in CPUID in order to identify
+> SEV (this requirement comes from the SEV-ES GHCB standard).  But, that
+> requirement does not mean the kernel must also "advertise" SEV in its own
+> CPU features array.
 
-Hi Aswath Govindraju,
+Sure it does - /proc/cpuinfo contains feature bits of stuff which has
+been enabled in the kernel. And when it comes to SEV, yeah, that was a
+lot of enablement. :-)
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+> 
+> Fixes: d8aa7eea78a1 ("x86/mm: Add Secure Encrypted Virtualization (SEV) support")
+> Cc: stable@vger.kernel.org
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Peter Gonda <pgonda@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+> 
+> Regarding clearing SME, SEV, SEV_ES, etc..., it's obviously not required,
+> but to avoid false postives, identifying "SEV guest" within the kernel
+> must be done with sev_active().  And if we want to display support in
+> /proc/cpuinfo, IMO it should be a separate synthetic feature so that
+> userspace sees "sev_guest" instead of "sev".
 
-[1/2] arm64: dts: ti: k3-am64-main: Add DT node for USB subsystem
-      commit: d06a661309d30b654b74a4633dd78804ef16369f
-[2/2] arm64: dts: ti: k3-am642-evm: Add USB support
-      commit: 04a80a75baa1c80f7e5096147b6173c13ca3d3e0
+I'm on the fence here, frankly. We issue capabilities in the guest dmesg
+in print_mem_encrypt_feature_info(). However, if someone wants to query
+SEV* status in the guest, then I don't have a good suggestion where to
+put it. cpuinfo is probably ok-ish, a new /sys/devices/system/cpu/caps/
+or so, should work too, considering the vuln stuff we stuck there so we
+can extend that. We'll see.
 
+> 
+>  arch/x86/kernel/cpu/amd.c | 32 ++++++++++++++++++++++++++++----
+>  1 file changed, 28 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+> index 2d11384dc9ab..0f7f8c905226 100644
+> --- a/arch/x86/kernel/cpu/amd.c
+> +++ b/arch/x86/kernel/cpu/amd.c
+> @@ -15,6 +15,7 @@
+>  #include <asm/cpu.h>
+>  #include <asm/spec-ctrl.h>
+>  #include <asm/smp.h>
+> +#include <asm/mem_encrypt.h>
+>  #include <asm/numa.h>
+>  #include <asm/pci-direct.h>
+>  #include <asm/delay.h>
+> @@ -575,10 +576,33 @@ static void bsp_init_amd(struct cpuinfo_x86 *c)
+>  	resctrl_cpu_detect(c);
+>  }
+>  
+> +#define SEV_CBIT_MSG "SEV: C-bit (bit %d), overlaps MAXPHYADDR (%d bits).  VMM is buggy or malicious, overriding MAXPHYADDR to %d.\n"
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Not sure about that. This will make a lot of users run scared, not
+knowing what's going on and open bugzillas.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +
+>  static void early_detect_mem_encrypt(struct cpuinfo_x86 *c)
+>  {
+>  	u64 msr;
+>  
+> +	/*
+> +	 * When running as an SEV guest of any flavor, update the physical
+> +	 * address width to account for the C-bit and clear all of the SME/SVE
+> +	 * feature flags.  As far as the kernel is concerned, the SEV flags
+> +	 * enumerate what features can be used by the kernel/KVM, not what
+> +	 * features have been activated by the VMM.
+> +	 */
+> +	if (sev_active()) {
+> +		int c_bit = ilog2(sme_me_mask);
+> +
+> +		BUG_ON(!sme_me_mask);
+> +
+> +		c->x86_phys_bits -= (cpuid_ebx(0x8000001f) >> 6) & 0x3f;
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Well, if that leaf is intercepted, how do you wanna trust this at all?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+IOW, you have c_bit so your valid address space is [0 .. c_bit-1] no?
 
-[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
+Thx.
+
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
