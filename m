@@ -2,155 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28FE333E92D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:41:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB4833E937
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbhCQFlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 01:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhCQFlA (ORCPT
+        id S229909AbhCQFsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 01:48:15 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:16782 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229956AbhCQFsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 01:41:00 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6FDC06175F;
-        Tue, 16 Mar 2021 22:40:59 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id s7so37771127qkg.4;
-        Tue, 16 Mar 2021 22:40:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CPSm56QZARIcAtzs4AWdlVXD+HaI2HudQhNYE/bwf0c=;
-        b=eNX3/KkKYyE3gNciNxHG2jxNlfRRTV+efiSSrXTJLEM9BLy+T+ER7gUr4lbPR8OQ0R
-         kz1iTGN6ch8aqMmCfJKh14wJlkFwDUIynaDTDRD6k1Nj/RQJh5kcusufWUXLk5zVnAwv
-         8ua6/rTO3DrDQz7lwNDLuD/e93zzpogPQE+qRZHL471WVAsthqat3wUYnrJyGHHCkLjM
-         jungnJ5I9JqlfAb00NcmdfSXlJVR/yRSh3MOrw4WSfPlS+QU+pwVI/N/sUggJAk4xFkD
-         xKCt2Di1rIp3seeJrwyS3fF7cOVBKASIm4rQW50jfxw0+qVnUNRn6dDN2w9kwqE1M6Rc
-         r3uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CPSm56QZARIcAtzs4AWdlVXD+HaI2HudQhNYE/bwf0c=;
-        b=gINIYZK2RYg15aCb2ZZFv8wy/GNHe1WI8MBt9imONGJvM0uH1ZlB92eZXNyr8+r/W8
-         3FS5SbqQyf3T8MC5O3NrClOZs6ZmCqQYRZsVSZXS5qe+gVKt7iNZOj9DeZFgv9oTYq5H
-         DysviNHjkLhY4u6OftgIpQxZwP04kRAMvk2+OjGfPDCGaUO4sphTXp3hs0AQdjPtjuo8
-         MP18T0MzmsdPXHURLJNNcx2INxOVWlFlMehIQXuFcc2vd3XAAYPXHK3HoqkgoLBh/Sz3
-         BWNfOYMhtUE7cFDi58GawlcB1hH84DByUdw07FIIop2nji/1NdapXXclacomsNURiBtr
-         +kLA==
-X-Gm-Message-State: AOAM532CIx6+9m2bFW2V0cndigkkk+V9VXLk1hcXv3DVQ/6iC6lFijuA
-        3BRQtyq2o8KcOyFilKbBJKQ=
-X-Google-Smtp-Source: ABdhPJx92GrckxUs3tyhYdiw3DknldvYvJ6QoejNd2Zc615/JMAkBxamhbbk2bzbYKYBbc0fPf+VLg==
-X-Received: by 2002:a37:274f:: with SMTP id n76mr2939792qkn.15.1615959658716;
-        Tue, 16 Mar 2021 22:40:58 -0700 (PDT)
-Received: from localhost ([76.73.146.210])
-        by smtp.gmail.com with ESMTPSA id z2sm17499506qkg.22.2021.03.16.22.40.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 22:40:58 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 22:40:57 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 04/13] lib: introduce BITS_{FIRST,LAST} macro
-Message-ID: <20210317054057.GC2114775@yury-ThinkPad>
-References: <20210316015424.1999082-1-yury.norov@gmail.com>
- <20210316015424.1999082-5-yury.norov@gmail.com>
- <8021faab-e592-9587-329b-817ae007b89a@rasmusvillemoes.dk>
- <YFCZtUuMYVNeNlUO@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFCZtUuMYVNeNlUO@smile.fi.intel.com>
+        Wed, 17 Mar 2021 01:48:04 -0400
+Received: from epcas3p2.samsung.com (unknown [182.195.41.20])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210317054802epoutp03286687431752d1b55e86509d918d0fdd~tCyImgDtE2367423674epoutp034
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 05:48:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210317054802epoutp03286687431752d1b55e86509d918d0fdd~tCyImgDtE2367423674epoutp034
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1615960082;
+        bh=DAufh9kyi6EFk8KZ91XXVnd5iZ7oRqbdIpDV4FDL/Ew=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=LJpvwyX9hJFAjFr8reoO7nvEhkIt1wieRelpVgyAuBjkjUJ2AnecLJ/XmTCTspVSR
+         d0+ldxKvNfvFzKXVoDblTMy1hqvmEaTtcXy21tc4MBAy+u9tzh/DxSdaFNPyCvBDoL
+         WAG2yYMma30Uq6uQYHyvKK+vm1EuD6Ki+QMt16DQ=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas3p4.samsung.com (KnoxPortal) with ESMTP id
+        20210317054801epcas3p4c602d67aea37dd24ad734ecbb1ff396e~tCyH8t6Y51304013040epcas3p4T;
+        Wed, 17 Mar 2021 05:48:01 +0000 (GMT)
+Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp1.localdomain
+        (Postfix) with ESMTP id 4F0fMP673gz4x9QQ; Wed, 17 Mar 2021 05:48:01 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH v5 05/10] scsi: ufshpb: Region inactivation in host
+ mode
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Can Guo <cang@codeaurora.org>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     Avri Altman <Avri.Altman@wdc.com>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <a5958ce2eca11b6ddcf75fa3aeeaaa4f@codeaurora.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <2038148563.21615960081843.JavaMail.epsvc@epcpadp4>
+Date:   Wed, 17 Mar 2021 14:42:37 +0900
+X-CMS-MailID: 20210317054237epcms2p64f0a74b8862788b06dcd84b2a2775c5d
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210316083014epcas2p32d6b84e689cdbe06ee065c870b236d65
+References: <a5958ce2eca11b6ddcf75fa3aeeaaa4f@codeaurora.org>
+        <064483451ff0d9ef8703871332ea5c3b@codeaurora.org>
+        <DM6PR04MB65751EE32D25C7E57A6BABE8FC6B9@DM6PR04MB6575.namprd04.prod.outlook.com>
+        <20210302132503.224670-1-avri.altman@wdc.com>
+        <20210302132503.224670-6-avri.altman@wdc.com>
+        <25da7378d5bf4c52443ae9b47f3fd778@codeaurora.org>
+        <57afb2b5d7edda61a40493d8545785b1@codeaurora.org>
+        <2038148563.21615949282962.JavaMail.epsvc@epcpadp4>
+        <1796371666.41615958582147.JavaMail.epsvc@epcpadp4>
+        <CGME20210316083014epcas2p32d6b84e689cdbe06ee065c870b236d65@epcms2p6>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 01:42:45PM +0200, Andy Shevchenko wrote:
-> On Tue, Mar 16, 2021 at 09:35:35AM +0100, Rasmus Villemoes wrote:
-> > On 16/03/2021 02.54, Yury Norov wrote:
-> > > BITMAP_{LAST,FIRST}_WORD_MASK() in linux/bitmap.h duplicates the
-> > > functionality of GENMASK(). The scope of BITMAP* macros is wider
-> > > than just bitmaps. This patch defines 4 new macros: BITS_FIRST(),
-> > > BITS_LAST(), BITS_FIRST_MASK() and BITS_LAST_MASK() in linux/bits.h
-> > > on top of GENMASK() and replaces BITMAP_{LAST,FIRST}_WORD_MASK()
-> > > to avoid duplication and increase the scope of the macros.
-> > > 
-> > > This change doesn't affect code generation. On ARM64:
-> > > scripts/bloat-o-meter vmlinux.before vmlinux
-> > > add/remove: 1/2 grow/shrink: 2/0 up/down: 17/-16 (1)
-> > > Function                                     old     new   delta
-> > > ethtool_get_drvinfo                          900     908      +8
-> > > e843419@0cf2_0001309d_7f0                      -       8      +8
-> > > vermagic                                      48      49      +1
-> > > e843419@0d45_000138bb_f68                      8       -      -8
-> > > e843419@0cc9_00012bce_198c                     8       -      -8
-> > 
-> > [what on earth are those weird symbols?]
-> > 
-> > 
-> > > diff --git a/include/linux/bits.h b/include/linux/bits.h
-> > > index 7f475d59a097..8c191c29506e 100644
-> > > --- a/include/linux/bits.h
-> > > +++ b/include/linux/bits.h
-> > > @@ -37,6 +37,12 @@
-> > >  #define GENMASK(h, l) \
-> > >  	(GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> > >  
-> > > +#define BITS_FIRST(nr)		GENMASK((nr), 0)
-> > > +#define BITS_LAST(nr)		GENMASK(BITS_PER_LONG - 1, (nr))
-> > > +
-> > > +#define BITS_FIRST_MASK(nr)	BITS_FIRST((nr) % BITS_PER_LONG)
-> > > +#define BITS_LAST_MASK(nr)	BITS_LAST((nr) % BITS_PER_LONG)
-> > 
-> > I don't think it's a good idea to propagate the unusual closed-range
-> > semantics of GENMASK to those wrappers. Almost all C and kernel code
-> > uses the 'inclusive lower bound, exclusive upper bound', and I'd expect
-> > BITS_FIRST(5) to result in a word with five bits set, not six. So I
-> > think these changes as-is make the code much harder to read and understand.
-> > 
-> > Regardless, please add some comments on the valid input ranges to the
-> > macros, whether that ends up being 0 <= nr < BITS_PER_LONG or 0 < nr <=
-> > BITS_PER_LONG or whatnot.
-> > 
-> > It would also be much easier to review if you just redefined the
-> > BITMAP_LAST_WORD_MASK macros etc. in terms of these new things, so you
-> > wouldn't have to do a lot of mechanical changes at the same time as
-> > introducing the new ones - especially when those mechanical changes
-> > involve adding a "minus 1" everywhere.
+>>>>>> >> ---
+>>>>>> >>  drivers/scsi/ufs/ufshpb.c | 14 ++++++++++++++
+>>>>>> >>  drivers/scsi/ufs/ufshpb.h |  1 +
+>>>>>> >>  2 files changed, 15 insertions(+)
+>>>>>> >>
+>>>>>> >> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+>>>>>> >> index 6f4fd22eaf2f..0744feb4d484 100644
+>>>>>> >> --- a/drivers/scsi/ufs/ufshpb.c
+>>>>>> >> +++ b/drivers/scsi/ufs/ufshpb.c
+>>>>>> >> @@ -907,6 +907,7 @@ static int ufshpb_execute_umap_req(struct
+>>>>>> >> ufshpb_lu *hpb,
+>>>>>> >>
+>>>>>> >>      blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_umap_req_compl_fn);
+>>>>>> >>
+>>>>>> >> +    hpb->stats.umap_req_cnt++;
+>>>>>> >>      return 0;
+>>>>>> >>  }
+>>>>>> >>
+>>>>>> >> @@ -1103,6 +1104,12 @@ static int ufshpb_issue_umap_req(struct
+>>>>>> >> ufshpb_lu *hpb,
+>>>>>> >>      return -EAGAIN;
+>>>>>> >>  }
+>>>>>> >>
+>>>>>> >> +static int ufshpb_issue_umap_single_req(struct ufshpb_lu *hpb,
+>>>>>> >> +                                    struct ufshpb_region *rgn)
+>>>>>> >> +{
+>>>>>> >> +    return ufshpb_issue_umap_req(hpb, rgn);
+>>>>>> >> +}
+>>>>>> >> +
+>>>>>> >>  static int ufshpb_issue_umap_all_req(struct ufshpb_lu *hpb)
+>>>>>> >>  {
+>>>>>> >>      return ufshpb_issue_umap_req(hpb, NULL);
+>>>>>> >> @@ -1115,6 +1122,10 @@ static void __ufshpb_evict_region(struct
+>>>>>> >> ufshpb_lu *hpb,
+>>>>>> >>      struct ufshpb_subregion *srgn;
+>>>>>> >>      int srgn_idx;
+>>>>>> >>
+>>>>>> >> +
+>>>>>> >> +    if (hpb->is_hcm && ufshpb_issue_umap_single_req(hpb, rgn))
+>>>>>> >
+>>>>>> > __ufshpb_evict_region() is called with rgn_state_lock held and IRQ
+>>>>>> > disabled,
+>>>>>> > when ufshpb_issue_umap_single_req() invokes blk_execute_rq_nowait(),
+>>>>>> > below
+>>>>>> > warning shall pop up every time, fix it?
+>>>>>> >
+>>>>>> > void blk_execute_rq_nowait(struct request_queue *q, struct gendisk
+>>>>>> > *bd_disk,
+>>>>>> >                  struct request *rq, int at_head,
+>>>>>> >                          rq_end_io_fn *done)
+>>>>>> > {
+>>>>>> >       WARN_ON(irqs_disabled());
+>>>>>> > ...
+>>>>>> >
+>>>>>> 
+>>>>>> Moreover, since we are here with rgn_state_lock held and IRQ
+>>>>>> disabled,
+>>>>>> in ufshpb_get_req(), rq = kmem_cache_alloc(hpb->map_req_cache,
+>>>>>> GFP_KERNEL)
+>>>>>> has the GFP_KERNEL flag, scheduling while atomic???
+>>>>> I think your comment applies to  ufshpb_issue_umap_all_req as well,
+>>>>> Which is called from slave_configure/scsi_add_lun.
+>>>>> 
+>>>>> Since the host-mode series is utilizing the framework laid by the
+>>>>> device-mode,
+>>>>> Maybe you can add this comment to  Daejun's last version?
+>>>> 
+>>>> Hi Avri, Can Guo
+>>>> 
+>>>> I think ufshpb_issue_umap_single_req() can be moved to end of
+>>>> ufshpb_evict_region().
+>>>> Then we can avoid rgn_state_lock when it sends unmap command.
+>>> 
+>>> I am not the expert here, please you two fix it. I am just reporting
+>>> what can be wrong. Anyways, ufshpb_issue_umap_single_req() should not
+>>> be called with rgn_state_lock held - think about below (another 
+>>> deadly)
+>>> scenario.
+>>> 
+>>> lock(rgn_state_lock)
+>>>   ufshpb_issue_umap_single_req()
+>>>     ufshpb_prep()
+>>>        lock(rgn_state_lock)   <---------- recursive spin_lock
+>>> 
+>>> BTW, @Daejun shouldn't we stop passthrough cmds from stepping
+>>> into ufshpb_prep()? In current code, you are trying to use below
+>>> check to block cmds other than write/discard/read, but a passthrough
+>>> cmd can not be blocked by the check.
+>>> 
+>>>          if (!ufshpb_is_write_or_discard_cmd(cmd) &&
+>>>              !ufshpb_is_read_cmd(cmd) )
+>>>                  return 0;
+>> 
+>> I found this problem too. I fixed it and submit next patch.
 > 
-> I tend to agree with Rasmus here.
+>You mean in V30, which has not been uploaded yet, right?
 
-OK. All this plus terrible GENMASK(high, low) design, when high goes
-first, makes me feel like we need to deprecate GENMASK and propose a
-new interface.
+Yes, it is about v30.
 
-What do you think about this:
-BITS_FIRST(bitnum)      -> [0, bitnum)
-BITS_LAST(bitnum)       -> [bitnum, BITS_PER_LONG)
-BITS_RANGE(begin, end)  -> [begin, end)
+Thanks,
+Daejun
 
-We can pick BITS_{LAST,FIRST} implementation from existing BITMAP_*_WORD_MASK
-analogues, and make the BITS_RANGE like:
-        #define BITS_RANGE(begin, end) BITS_FIRST(end) & BITS_LAST(begin)
-
-Regarding BITMAP_*_WORD_MASK, I can save them in bitmap.h as aliases
-to BITS_{LAST,FIRST} to avoid massive renaming. (Should I?)
-
-Would this all work for you?
+>Thanks,
+>Can Guo.
+> 
+>> 
+>> if (blk_rq_is_scsi(cmd->request) ||
+>>             (!ufshpb_is_write_or_discard_cmd(cmd) &&
+>>             !ufshpb_is_read_cmd(cmd)))
+>>                 return 0;
+>> 
+>> 
+>> Thanks,
+>> Daejun
+>> 
+>>> Thanks,
+>>> Can Guo.
+>>> 
+>>>> 
+>>>> Thanks,
+>>>> Daejun
+>>>> 
+>>>> 
+>>>>> Thanks,
+>>>>> Avri
+>>>>> 
+>>>>>> 
+>>>>>> Can Guo.
+>>>>>> 
+>>>>>> > Thanks.
+>>>>>> > Can Guo.
+>>>>>> >
+>>>>>> >> +            return;
+>>>>>> >> +
+>>>>>> >>      lru_info = &hpb->lru_info;
+>>>>>> >>
+>>>>>> >>      dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n",
+>>>>>> >> rgn->rgn_idx);
+>>>>>> >> @@ -1855,6 +1866,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
+>>>>>> >>  ufshpb_sysfs_attr_show_func(rb_active_cnt);
+>>>>>> >>  ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
+>>>>>> >>  ufshpb_sysfs_attr_show_func(map_req_cnt);
+>>>>>> >> +ufshpb_sysfs_attr_show_func(umap_req_cnt);
+>>>>>> >>
+>>>>>> >>  static struct attribute *hpb_dev_stat_attrs[] = {
+>>>>>> >>      &dev_attr_hit_cnt.attr,
+>>>>>> >> @@ -1863,6 +1875,7 @@ static struct attribute *hpb_dev_stat_attrs[] =
+>>>>>> >> {
+>>>>>> >>      &dev_attr_rb_active_cnt.attr,
+>>>>>> >>      &dev_attr_rb_inactive_cnt.attr,
+>>>>>> >>      &dev_attr_map_req_cnt.attr,
+>>>>>> >> +    &dev_attr_umap_req_cnt.attr,
+>>>>>> >>      NULL,
+>>>>>> >>  };
+>>>>>> >>
+>>>>>> >> @@ -1978,6 +1991,7 @@ static void ufshpb_stat_init(struct ufshpb_lu
+>>>>>> >> *hpb)
+>>>>>> >>      hpb->stats.rb_active_cnt = 0;
+>>>>>> >>      hpb->stats.rb_inactive_cnt = 0;
+>>>>>> >>      hpb->stats.map_req_cnt = 0;
+>>>>>> >> +    hpb->stats.umap_req_cnt = 0;
+>>>>>> >>  }
+>>>>>> >>
+>>>>>> >>  static void ufshpb_param_init(struct ufshpb_lu *hpb)
+>>>>>> >> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+>>>>>> >> index bd4308010466..84598a317897 100644
+>>>>>> >> --- a/drivers/scsi/ufs/ufshpb.h
+>>>>>> >> +++ b/drivers/scsi/ufs/ufshpb.h
+>>>>>> >> @@ -186,6 +186,7 @@ struct ufshpb_stats {
+>>>>>> >>      u64 rb_inactive_cnt;
+>>>>>> >>      u64 map_req_cnt;
+>>>>>> >>      u64 pre_req_cnt;
+>>>>>> >> +    u64 umap_req_cnt;
+>>>>>> >>  };
+>>>>>> >>
+>>>>>> >>  struct ufshpb_lu {
+>>>>> 
+>>>>> 
+>>>>> 
+>>> 
+>>> 
+>>> 
+> 
+> 
+>  
