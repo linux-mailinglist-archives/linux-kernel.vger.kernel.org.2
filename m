@@ -2,85 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0280133E5A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 751DC33E59E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232196AbhCQBGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 21:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232460AbhCQBAS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 21:00:18 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D70C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 18:00:06 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id 30so13230040ple.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 18:00:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=JBEnLG6p6/B5IxR4abKEg2z7MsyL/dH1QIZvxapo1/g=;
-        b=WwpTaQKV5j1nA95NgWspMB4tSDYauve7lK5W8occUsJekfPrnEB6MVtIT+a2GVH8pn
-         ndXmX05Xf11J+plNntxVxXH3jlqdNo4ZQJQHQwhs5ghYUm5LEejn2tK7K4Bx0HiBag8+
-         YkooMTUzBgnSmiBv2yMGCGu8X2xQ7CI+01LZY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=JBEnLG6p6/B5IxR4abKEg2z7MsyL/dH1QIZvxapo1/g=;
-        b=R08GMyjTsYxf/AFDGs1yCQTENSKXNIre4wIGk2jh10JwbHn5djwRo4m/riaU/Hw2B6
-         twrP70CDSKCjz9cCpwlgcho2YyYeC5x0JRnEc2eXzgrmZJZHe3TUjgcDIgm2fQmyGox+
-         qVi7HrI+HSMeQWc95eaG8vvSgTgJzaKgxBYRmHeBNV1fRPcjk1uRL1pfY+Q92PEQ+iG5
-         zeNpTOe4PObW8x/5nPZAx2iDKwdXhdUI/SVCf6eZ06txA0lMLVEMMZfX86SBr4EdLKQz
-         hffG5yWLW/xgmrFiL3CX+JdeDQjhWogBp6K3Vblp8u0H9Kq/lHvjXG7b8s2PaUFEcfwc
-         4GOQ==
-X-Gm-Message-State: AOAM531Re9GNwmGMgnjWW9JuY6czKfYG1kJ7yywLHc0vagMjq2ITR7IG
-        88slIaT1SGJU24d2HwwlHhmlMA==
-X-Google-Smtp-Source: ABdhPJyWohFwruH6CMfmHeOWwb1l14aXHW2lxKJVTvrPsE4wVlYOllNx4Nxj04F4pqJfLgzdgirllg==
-X-Received: by 2002:a17:902:7592:b029:e2:e80f:6893 with SMTP id j18-20020a1709027592b02900e2e80f6893mr1975766pll.61.1615942806582;
-        Tue, 16 Mar 2021 18:00:06 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:e1e0:9aee:aecc:ef78])
-        by smtp.gmail.com with ESMTPSA id j27sm17217024pgn.61.2021.03.16.18.00.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 18:00:06 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S231937AbhCQBGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 21:06:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232502AbhCQBAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 21:00:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B0D964EBD;
+        Wed, 17 Mar 2021 01:00:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615942822;
+        bh=ELKO9Cy2wCXnBkRN3a+2su6DS9jpGee7xyY3YKS/PnQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=abEKccB0zzU622YJ+7tfr9N1i2/9RQbyt2md0hxRxAytphMNxJ5pFARw937Lu7lsT
+         ysFV43Fcd6/COad6ukDFt9iPRGIXQpwBSQiTxobbyQL82AQfSJImXpvPQv4tvAb8Gw
+         mvEiX0IKchRGNK5WlFe28cZLDbLsCIow6GONgpdCwuMok9U8QqyNDrLmTKDaMjdGDZ
+         V4DqS+LF4W4mDlYVrlgXMwpwcPjrukveW+zuAALfX0L5QwWFwNx44lXCO1af2VCI7+
+         w1ReVcaucrVBl2zowPDUAo5qfLiDRfS+xVC4zk/RdPJO2FgHFmzvoUcwpRudBzpHFY
+         1R80yu8ziWUhg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "Erhard F." <erhard_f@mailbox.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 11/14] u64_stats,lockdep: Fix u64_stats_init() vs lockdep
+Date:   Tue, 16 Mar 2021 21:00:05 -0400
+Message-Id: <20210317010008.727496-11-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210317010008.727496-1-sashal@kernel.org>
+References: <20210317010008.727496-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210315133924.v2.2.If218189eff613a6c48ba12d75fad992377d8f181@changeid>
-References: <20210315133924.v2.1.I601a051cad7cfd0923e55b69ef7e5748910a6096@changeid> <20210315133924.v2.2.If218189eff613a6c48ba12d75fad992377d8f181@changeid>
-Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: Add "dmic_clk_en" + sound model for sc7180-trogdor-pompom
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Ajit Pandey <ajitp@codeaurora.org>,
-        Judy Hsiao <judyhsiao@chromium.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>
-Date:   Tue, 16 Mar 2021 18:00:04 -0700
-Message-ID: <161594280472.1478170.100740500706598633@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2021-03-15 13:39:31)
-> Match what's downstream for this board.
->=20
-> Cc: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> Cc: Ajit Pandey <ajitp@codeaurora.org>
-> Cc: Judy Hsiao <judyhsiao@chromium.org>
-> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
-> Cc: Stephen Boyd <swboyd@chromium.org>
-> Cc: Matthias Kaehlcke <mka@chromium.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
+From: Peter Zijlstra <peterz@infradead.org>
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+[ Upstream commit d5b0e0677bfd5efd17c5bbb00156931f0d41cb85 ]
+
+Jakub reported that:
+
+    static struct net_device *rtl8139_init_board(struct pci_dev *pdev)
+    {
+	    ...
+	    u64_stats_init(&tp->rx_stats.syncp);
+	    u64_stats_init(&tp->tx_stats.syncp);
+	    ...
+    }
+
+results in lockdep getting confused between the RX and TX stats lock.
+This is because u64_stats_init() is an inline calling seqcount_init(),
+which is a macro using a static variable to generate a lockdep class.
+
+By wrapping that in an inline, we negate the effect of the macro and
+fold the static key variable, hence the confusion.
+
+Fix by also making u64_stats_init() a macro for the case where it
+matters, leaving the other case an inline for argument validation
+etc.
+
+Reported-by: Jakub Kicinski <kuba@kernel.org>
+Debugged-by: "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: "Erhard F." <erhard_f@mailbox.org>
+Link: https://lkml.kernel.org/r/YEXicy6+9MksdLZh@hirez.programming.kicks-ass.net
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ include/linux/u64_stats_sync.h | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/u64_stats_sync.h b/include/linux/u64_stats_sync.h
+index df89c9bcba7d..7b38288dc239 100644
+--- a/include/linux/u64_stats_sync.h
++++ b/include/linux/u64_stats_sync.h
+@@ -68,12 +68,13 @@ struct u64_stats_sync {
+ };
+ 
+ 
++#if BITS_PER_LONG == 32 && defined(CONFIG_SMP)
++#define u64_stats_init(syncp)	seqcount_init(&(syncp)->seq)
++#else
+ static inline void u64_stats_init(struct u64_stats_sync *syncp)
+ {
+-#if BITS_PER_LONG == 32 && defined(CONFIG_SMP)
+-	seqcount_init(&syncp->seq);
+-#endif
+ }
++#endif
+ 
+ static inline void u64_stats_update_begin(struct u64_stats_sync *syncp)
+ {
+-- 
+2.30.1
+
