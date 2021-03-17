@@ -2,103 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C429033E84B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5170D33E837
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhCQEGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 00:06:21 -0400
-Received: from gateway30.websitewelcome.com ([192.185.193.11]:14345 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229953AbhCQEGR (ORCPT
+        id S229690AbhCQEA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 00:00:59 -0400
+Received: from m42-10.mailgun.net ([69.72.42.10]:34583 "EHLO
+        m42-10.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhCQEAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 00:06:17 -0400
-X-Greylist: delayed 1493 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Mar 2021 00:06:17 EDT
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id 9335CF27
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 22:41:23 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id MN3jlejJgMGeEMN3jlUdNz; Tue, 16 Mar 2021 22:41:23 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=/sZG3o7bmfQMeV8ZtSlTyo3QgbzHhviO3Gw8P9Lg0T0=; b=L6WeIS/ZZGmAWcRpydJ4g0+0eX
-        1O8GR11G+9gyFvVN66KjWDWCxBfctGT1RdJMupOs1AIYstL3gcgOzvxXkyyq3cKhifIlFlBVgJBQ+
-        JHHrwEe4EvQJXusSGZ2cqBYLq9tM7KpwjCYx80BXEoVvkVzEwOAa4TSHDFSrjFQh2RQOQDQyum/RN
-        tl73Ku7l4RFkiZhqyz2LPFnfIBQCdcHPQjz6QGGEU3RKwRX++ytDi+h2posIFQB9vh8PzqFI+lWoN
-        8I44w3WyVIakJ5XbtagHV6Fri7/xh0iOGsEbRZiI6sLi+BOZH0MloDrxB51LSHTf222/mi8MeH2Dr
-        sv4zJmCw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:46638 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lMN3j-000pjB-5C; Tue, 16 Mar 2021 22:41:23 -0500
-Subject: Re: [PATCH][next] scsi: mpt3sas: Replace unnecessary dynamic
- allocation with a static one
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210310235951.GA108661@embeddedor>
- <yq1eege1mlt.fsf@ca-mkp.ca.oracle.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <62fa8461-23d3-5602-2897-f2b28344bedf@embeddedor.com>
-Date:   Tue, 16 Mar 2021 21:41:08 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 17 Mar 2021 00:00:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615953649; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=JzDLSu+qwz6G/WNOU91LdfXeIczEE/TTUZtA6eKrw7E=;
+ b=n6wS7dGvRQHa8jEGeieFbJbjbkBBnnag0zBwTQHsPYWDkv6Q5cy8ut+KZBqGTb3iIK5gfvJX
+ VWZQ8F3y/zMt3FyGL022AFU2xw5D+iyN1q+aCmZxB2tIl2ziFxG8kiWXQx7XfkFHPmGYYrWW
+ /bFHXJ8fUxJaSH7UIRIvR2qPHc8=
+X-Mailgun-Sending-Ip: 69.72.42.10
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60517eddc32ceb3a917d03be (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Mar 2021 04:00:29
+ GMT
+Sender: kgunda=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 95D4DC43465; Wed, 17 Mar 2021 04:00:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kgunda)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 77AE5C433CA;
+        Wed, 17 Mar 2021 04:00:28 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <yq1eege1mlt.fsf@ca-mkp.ca.oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lMN3j-000pjB-5C
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:46638
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 9
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Date:   Wed, 17 Mar 2021 09:30:28 +0530
+From:   kgunda@codeaurora.org
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Obeida Shamoun <oshmoun100@googlemail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] backlight: qcom-wled: Use sink_addr for sync toggle
+In-Reply-To: <20210315122158.ptqi6xvngf6ihjum@maple.lan>
+References: <20210314101110.48024-1-marijn.suijten@somainline.org>
+ <20210315122158.ptqi6xvngf6ihjum@maple.lan>
+Message-ID: <347b2f4efa08e051ed764b22e5dc98a2@codeaurora.org>
+X-Sender: kgunda@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
-
-On 3/16/21 22:32, Martin K. Petersen wrote:
+On 2021-03-15 17:51, Daniel Thompson wrote:
+> On Sun, Mar 14, 2021 at 11:11:10AM +0100, Marijn Suijten wrote:
+>> From: Obeida Shamoun <oshmoun100@googlemail.com>
+>> 
+>> WLED3_SINK_REG_SYNC is, as the name implies, a sink register offset.
+>> Therefore, use the sink address as base instead of the ctrl address.
+>> 
+>> This fixes the sync toggle on wled4, which can be observed by the fact
+>> that adjusting brightness now works.
+>> 
+>> It has no effect on wled3 because sink and ctrl base addresses are the
+>> same.  This allows adjusting the brightness without having to disable
+>> then reenable the module.
+>> 
+>> Signed-off-by: Obeida Shamoun <oshmoun100@googlemail.com>
+>> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+>> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
 > 
-> Gustavo,
+> LGTM, although an acked-by from Kiran would be nice to have:
+> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 > 
->> Dynamic memory allocation isn't actually needed and it can be replaced
->> by statically allocating memory for struct object io_unit_pg3 with 36
->> hardcoded entries for its GPIOVal array.
 > 
-> Applied to 5.13/scsi-staging, thanks!
+> Daniel.
+> 
+> 
+Acked-by: Kiran Gunda <kgunda@codeaurora.org>
 
-Awesome. :)
-
-I wonder if you can take a look at this one, too, please:
-
-https://lore.kernel.org/lkml/20210304203822.GA102218@embeddedor/
-
-Thanks!
---
-Gustavo
+>> ---
+>>  drivers/video/backlight/qcom-wled.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/video/backlight/qcom-wled.c 
+>> b/drivers/video/backlight/qcom-wled.c
+>> index 091f07e7c145..fc8b443d10fd 100644
+>> --- a/drivers/video/backlight/qcom-wled.c
+>> +++ b/drivers/video/backlight/qcom-wled.c
+>> @@ -336,13 +336,13 @@ static int wled3_sync_toggle(struct wled *wled)
+>>  	unsigned int mask = GENMASK(wled->max_string_count - 1, 0);
+>> 
+>>  	rc = regmap_update_bits(wled->regmap,
+>> -				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
+>> +				wled->sink_addr + WLED3_SINK_REG_SYNC,
+>>  				mask, mask);
+>>  	if (rc < 0)
+>>  		return rc;
+>> 
+>>  	rc = regmap_update_bits(wled->regmap,
+>> -				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
+>> +				wled->sink_addr + WLED3_SINK_REG_SYNC,
+>>  				mask, WLED3_SINK_REG_SYNC_CLEAR);
+>> 
+>>  	return rc;
+>> --
+>> 2.30.2
+>> 
