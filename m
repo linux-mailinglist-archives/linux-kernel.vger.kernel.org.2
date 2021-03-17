@@ -2,163 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAA733F539
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7663B33F53B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:15:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbhCQQO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 12:14:29 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35131 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232101AbhCQQOV (ORCPT
+        id S232262AbhCQQPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 12:15:02 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:56182 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232029AbhCQQOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 12:14:21 -0400
-Received: from mail-lj1-f198.google.com ([209.85.208.198])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lMYoO-0004pp-C5
-        for linux-kernel@vger.kernel.org; Wed, 17 Mar 2021 16:14:20 +0000
-Received: by mail-lj1-f198.google.com with SMTP id 74so15167778ljj.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:14:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0jDtMXm/8T16SOq+1HnXbEs1YaZqdkGTSbVIUmw5XVM=;
-        b=NpiGDI+j81ml7uWdxJocREBeE2jRuhlHClA8xBdIfRGrtawI2FPRmfi3sO4jyWXtmO
-         BXR/be+IstKsFTamwEZXvVl3kMCawhIqrqcriYcMthC9P7XWKk2FmQdohqUn++ZevB01
-         0O6KfkotAwPrRASJw8bx598lVvfG6opEl/5nLEG2Kz7w3aZQCWRk/x6E2DbZfxxKDcbG
-         wx9k1BaPkVOyxW3yjl4BBvwdHeOp7NxzdLz1flCD++KMfJy3vz7faPSDT9TVbDOhZwTq
-         S/3IjXBoap+3f+l5las7HAFcMq+bNJUbKAVQwakCAACLBC2AjvgEgm/Opx+hXhe4riVH
-         jUag==
-X-Gm-Message-State: AOAM532g+lyeiSw8av6Fzk2ldyDu4d1QHEIKNQMHCX/BXbtCU7LESSUW
-        ZxJthcGPE/wGm9ZCMX6+bPAZqPb7WC6QSb1imn6oG7rCOp9+Ngc5zneAS5q8G0YblxsMJxK1d+y
-        s4+aVLjfawS7NOCJBBpl7YolpzBle1X5KrBibmfqW8GaIkQHC834QLwYQCA==
-X-Received: by 2002:a2e:921a:: with SMTP id k26mr2402759ljg.149.1615997659806;
-        Wed, 17 Mar 2021 09:14:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzoMNl4JfI1ze5jYbs/OcJMfKRIn3ZVTEPTj9gqmO3kk2zU7SPPj4sIufUPyeKy1wCqgL8r0d/8E+xSRnKpIXY=
-X-Received: by 2002:a2e:921a:: with SMTP id k26mr2402749ljg.149.1615997659528;
- Wed, 17 Mar 2021 09:14:19 -0700 (PDT)
+        Wed, 17 Mar 2021 12:14:54 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12HGEWKE125773;
+        Wed, 17 Mar 2021 11:14:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615997672;
+        bh=meEMMQGzpHgES9UZrjykVhesIW4rSxb1evBkwPhp5OI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=O89t/LkZDmcjen+fsJTNlb/V0ocvKnhqkHcLBtMrP4t+kuuV7lvHkV1wiA4XFb4D1
+         YDz82AYGJ6TyrU4k2OcD/i+CdNVIiE169hgH2ueVgGTbik6D1gwq1kISFm+fm0M5qF
+         3ZmKlC1zeexjDS6ySdpl0Y+acMJMd/UruYr2nqbk=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12HGEWPG004242
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 17 Mar 2021 11:14:32 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 17
+ Mar 2021 11:14:31 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 17 Mar 2021 11:14:31 -0500
+Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12HGERHp013957;
+        Wed, 17 Mar 2021 11:14:29 -0500
+Subject: Re: [PATCH v2 4/5] mtd: spi-nor: Move Software Write Protection logic
+ out of the core
+To:     Pratyush Yadav <p.yadav@ti.com>, <Tudor.Ambarus@microchip.com>
+CC:     <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <linux-kernel@vger.kernel.org>
+References: <20210306095002.22983-1-tudor.ambarus@microchip.com>
+ <20210306095002.22983-5-tudor.ambarus@microchip.com>
+ <963232a4-9100-ebca-927c-7f5a1e947fbe@ti.com>
+ <9889bae0-8eba-7cbc-d9bb-04e038bd28c8@microchip.com>
+ <6016b725-a779-1d2c-9884-099c58f53557@ti.com>
+ <45d00a12-cb79-774e-f8e8-d65602629a90@microchip.com>
+ <20210317090504.ra3vm76xexhaqg2l@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <9fd4957d-778c-966e-2756-13418d199bf6@ti.com>
+Date:   Wed, 17 Mar 2021 21:44:25 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <b8db79e6857c41dab4ef08bdf826ea7c47e3bafc.1615947283.git.josef@toxicpanda.com>
- <CAAd53p5Vh_+tUeEQx3xf_aLiCiKP1u5Y3VgYCUzZ82Kgtr-iYw@mail.gmail.com> <bebcaffc-d485-912d-0c42-c0781f9c7603@toxicpanda.com>
-In-Reply-To: <bebcaffc-d485-912d-0c42-c0781f9c7603@toxicpanda.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 18 Mar 2021 00:14:07 +0800
-Message-ID: <CAAd53p7eJk9EtMTLjB5i7RdoKA3WS1W4TRjQs08adi7iAux_jQ@mail.gmail.com>
-Subject: Re: [PATCH][RESEND] Revert "PM: ACPI: reboot: Use S5 for reboot"
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210317090504.ra3vm76xexhaqg2l@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 11:19 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> On 3/16/21 10:50 PM, Kai-Heng Feng wrote:
-> > Hi,
-> >
-> > On Wed, Mar 17, 2021 at 10:17 AM Josef Bacik <josef@toxicpanda.com> wrote:
-> >>
-> >> This reverts commit d60cd06331a3566d3305b3c7b566e79edf4e2095.
-> >>
-> >> This patch causes a panic when rebooting my Dell Poweredge r440.  I do
-> >> not have the full panic log as it's lost at that stage of the reboot and
-> >> I do not have a serial console.  Reverting this patch makes my system
-> >> able to reboot again.
-> >
-> > But this patch also helps many HP laptops, so maybe we should figure
-> > out what's going on on Poweredge r440.
-> > Does it also panic on shutdown?
-> >
->
-> Sure I'll test whatever to get it fixed, but I just wasted 3 days bisecting and
-> lost a weekend of performance testing on btrfs because of this regression, so
-> until you figure out how it broke it needs to be reverted so people don't have
-> to figure out why reboot suddenly isn't working.
 
-That's unfortunate to hear. However, I've been spending tons of time
-on bisecting kernels. To me it's just a normal part of kernel
-development so I won't call it "wasted".
 
-Feel free to revert the patch though.
+On 3/17/21 2:35 PM, Pratyush Yadav wrote:
+> On 17/03/21 06:09AM, Tudor.Ambarus@microchip.com wrote:
+>> On 3/15/21 8:23 AM, Vignesh Raghavendra wrote:
+>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>>>
+>>> On 3/9/21 12:58 PM, Tudor.Ambarus@microchip.com wrote:
+>>>> On 3/8/21 7:28 PM, Vignesh Raghavendra wrote:
+>>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>>>>>
+>>>>> On 3/6/21 3:20 PM, Tudor Ambarus wrote:
+>>>>>> It makes the core file a bit smaller and provides better separation
+>>>>>> between the Software Write Protection features and the core logic.
+>>>>>> All the next generic software write protection features (e.g. Individual
+>>>>>> Block Protection) will reside in swp.c.
+>>>>>>
+>>>>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+>>>>>> ---
+>>>>>>  drivers/mtd/spi-nor/Makefile |   2 +-
+>>>>>>  drivers/mtd/spi-nor/core.c   | 407 +---------------------------------
+>>>>>>  drivers/mtd/spi-nor/core.h   |   4 +
+>>>>>>  drivers/mtd/spi-nor/swp.c    | 419 +++++++++++++++++++++++++++++++++++
+>>>>>
+>>>>> Hmmm, name swp.c does not seem intuitive to me. How about expanding it a
+>>>>> bit:
+>>>>>
+>>>>> soft-wr-protect.c or software-write-protect.c ?
+>>
+>> Having in mind that we have the SWP configs, I think I prefer swp.c.
+>> But let's see what majority thinks, we'll do as majority prefers.
+>> Michael, Pratyush?
+> 
+> I don't have much of an opinion on this tbh. But I usually prefer short 
+> names so I'd go with swp.c here. Maybe also add a comment at the top of 
+> the file mentioning the full name "Software Write Protection logic" or 
+> something similar for clarification.
+> 
 
->
-> Running "halt" has the same effect with and without your patch, it gets to
-> "system halted" and just sits there without powering off.  Not entirely sure why
-> that is, but there's no panic.
-
-What about shutdown? pm_power_off_prepare() is used by shutdown but
-it's not used by halt.
-
-Kai-Heng
-
->
-> The panic itself is lost, but I see there's an NMI and I have the RIP
->
-> (gdb) list *('mwait_idle_with_hints.constprop.0'+0x4b)
-> 0xffffffff816dabdb is in mwait_idle_with_hints
-> (./arch/x86/include/asm/current.h:15).
-> 10
-> 11      DECLARE_PER_CPU(struct task_struct *, current_task);
-> 12
-> 13      static __always_inline struct task_struct *get_current(void)
-> 14      {
-> 15              return this_cpu_read_stable(current_task);
-> 16      }
-> 17
-> 18      #define current get_current()
-> 19
->
-> <mwait_idle_with_hints.constprop.0>:    jmp    0xffffffff936dac02
-> <mwait_idle_with_hints.constprop.0+0x72>
-> <mwait_idle_with_hints.constprop.0+0x2>:        nopl   (%rax)
-> <mwait_idle_with_hints.constprop.0+0x5>:        jmp    0xffffffff936dabac
-> <mwait_idle_with_hints.constprop.0+0x1c>
-> <mwait_idle_with_hints.constprop.0+0x7>:        nopl   (%rax)
-> <mwait_idle_with_hints.constprop.0+0xa>:        mfence
-> <mwait_idle_with_hints.constprop.0+0xd>:        mov    %gs:0x17bc0,%rax
-> <mwait_idle_with_hints.constprop.0+0x16>:       clflush (%rax)
-> <mwait_idle_with_hints.constprop.0+0x19>:       mfence
-> <mwait_idle_with_hints.constprop.0+0x1c>:       xor    %edx,%edx
-> <mwait_idle_with_hints.constprop.0+0x1e>:       mov    %rdx,%rcx
-> <mwait_idle_with_hints.constprop.0+0x21>:       mov    %gs:0x17bc0,%rax
-> <mwait_idle_with_hints.constprop.0+0x2a>:       monitor %rax,%rcx,%rdx
-> <mwait_idle_with_hints.constprop.0+0x2d>:       mov    (%rax),%rax
-> <mwait_idle_with_hints.constprop.0+0x30>:       test   $0x8,%al
-> <mwait_idle_with_hints.constprop.0+0x32>:       jne    0xffffffff936dabdb
-> <mwait_idle_with_hints.constprop.0+0x4b>
-> <mwait_idle_with_hints.constprop.0+0x34>:       jmpq   0xffffffff936dabd0
-> <mwait_idle_with_hints.constprop.0+0x40>
-> <mwait_idle_with_hints.constprop.0+0x39>:       verw   0x9f9fec(%rip)        #
-> 0xffffffff940d4bbc
-> <mwait_idle_with_hints.constprop.0+0x40>:       mov    $0x1,%ecx
-> <mwait_idle_with_hints.constprop.0+0x45>:       mov    %rdi,%rax
-> <mwait_idle_with_hints.constprop.0+0x48>:       mwait  %rax,%rcx
-> <mwait_idle_with_hints.constprop.0+0x4b>:       mov    %gs:0x17bc0,%rax
-> <mwait_idle_with_hints.constprop.0+0x54>:       lock andb $0xdf,0x2(%rax)
-> <mwait_idle_with_hints.constprop.0+0x59>:       lock addl $0x0,-0x4(%rsp)
-> <mwait_idle_with_hints.constprop.0+0x5f>:       mov    (%rax),%rax
-> <mwait_idle_with_hints.constprop.0+0x62>:       test   $0x8,%al
-> <mwait_idle_with_hints.constprop.0+0x64>:       je     0xffffffff936dac01
-> <mwait_idle_with_hints.constprop.0+0x71>
-> <mwait_idle_with_hints.constprop.0+0x66>:       andl
-> $0x7fffffff,%gs:0x6c93cf7f(%rip)        # 0x17b80
-> <mwait_idle_with_hints.constprop.0+0x71>:       retq
-> <mwait_idle_with_hints.constprop.0+0x72>:       mov    %gs:0x17bc0,%rax
-> <mwait_idle_with_hints.constprop.0+0x7b>:       lock orb $0x20,0x2(%rax)
-> <mwait_idle_with_hints.constprop.0+0x80>:       mov    (%rax),%rax
-> <mwait_idle_with_hints.constprop.0+0x83>:       test   $0x8,%al
-> <mwait_idle_with_hints.constprop.0+0x85>:       jne    0xffffffff936dabdb
-> <mwait_idle_with_hints.constprop.0+0x4b>
-> <mwait_idle_with_hints.constprop.0+0x87>:       jmpq   0xffffffff936dab95
-> <mwait_idle_with_hints.constprop.0+0x5>
-> <mwait_idle_with_hints.constprop.0+0x8c>:       nopl   0x0(%rax)
->
-> 0x4b is after the mwait, which means we're panicing in the
-> current_clr_polling(), where we do clear_thread_flag(TIF_POLLING_NRFLAG).  Thanks,
->
-> Josef
+I don't have hard objection to swp.c. As Pratyush suggested, a comment
+at top of the file indicating the purpose would be good to have.
