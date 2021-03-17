@@ -2,120 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D8D33E918
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:30:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C823533E91C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:31:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229469AbhCQF3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 01:29:48 -0400
-Received: from mail-qv1-f47.google.com ([209.85.219.47]:47057 "EHLO
-        mail-qv1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhCQF3k (ORCPT
+        id S229900AbhCQFb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 01:31:26 -0400
+Received: from m42-10.mailgun.net ([69.72.42.10]:37569 "EHLO
+        m42-10.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229675AbhCQFbG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 01:29:40 -0400
-Received: by mail-qv1-f47.google.com with SMTP id j17so825183qvo.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 22:29:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ctdN4TeyqzaNOqRMHx1C8Oo16k++Z/liv1N61G/8B50=;
-        b=KAmZRZbIKTixs0AIyVHRMhLySJoZ9atuq3Fz5B6irtXTaxMSUINVKZR+B00bG+5L1s
-         yRCAmxxKhIcR6v/SJ7JggI8ouw6DlZnDuLUbcHx9Yy3C0uuR2tGSCg3YalMmeWxCWp2O
-         64i7w+ocAt/nR1FHKOSz8keTY2lZNNM5Ctnuz2M4+WoaID+fWzgAIc9dbAxpnjXG+/9E
-         ZDR4BsYJ3+iNJ+9pFNIua5Eqn+rw+z/xDA1aiqd9dbLoE7sf5YBJRNDubBOGZY727KQ6
-         ozQViWWs7PJ4NIJnWCNZhen8FRe4AbzicDcyAyom4dtFVOUT3UYQwcp8PTN1UtWfczXM
-         69lw==
-X-Gm-Message-State: AOAM530qLdRARNxs2e7tyghdggMvDpf0vyet4Cyv+c6r/aZbD/GyPof7
-        BFUPGBbkpb6tUNneKF/nMlfCE5dJ/KaFMbjxwRc=
-X-Google-Smtp-Source: ABdhPJzXAGQOSo5N3DOZ4NdadMB5BI6FoKfQ3i12S680rlmk9smquIRxGV7w+qQsIR0mg5E1LAGIDeHHm0VSY41mPUk=
-X-Received: by 2002:ad4:4bc7:: with SMTP id l7mr3718683qvw.36.1615958979966;
- Tue, 16 Mar 2021 22:29:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210316211837.910506-1-songliubraving@fb.com>
-In-Reply-To: <20210316211837.910506-1-songliubraving@fb.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 17 Mar 2021 14:29:28 +0900
-Message-ID: <CAM9d7ci=hfFjq3+XuBcCZ0TUJxv6AmdFk0dkHFQD3wx27aJMjA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] perf-stat: share hardware PMCs with BPF
-To:     Song Liu <songliubraving@fb.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 17 Mar 2021 01:31:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615959066; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=U2gYr/w0zECr4jw+Y1nBV1YmV1pORFMxEPhN3UG0IIE=; b=EQWIUQHpI8Mk//I+KHLwBY2/ckPXPaKq4K52FayghDbTyZi/FkZ7nR6kHO6xXuJ4SOOhvtDE
+ TwlIbpvPo/o+WbHfNGucOO0aovVvVPkNN0lA23yflyrlj4Zm9okIxh/388fXkZpcqpDozA7+
+ 4FQ01MfYEBshHHc5UjsrSrWjuUU=
+X-Mailgun-Sending-Ip: 69.72.42.10
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 605194176dc1045b7d00c86d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Mar 2021 05:31:03
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1118FC433ED; Wed, 17 Mar 2021 05:31:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5275CC433CA;
+        Wed, 17 Mar 2021 05:30:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5275CC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
+From:   Maulik Shah <mkshah@codeaurora.org>
+To:     swboyd@chromium.org, bjorn.andersson@linaro.org, maz@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, dianders@chromium.org, rnayak@codeaurora.org,
+        lsrao@codeaurora.org, Maulik Shah <mkshah@codeaurora.org>,
+        devicetree@vger.kernel.org
+Subject: [PATCH 1/3] arm64: dts: qcom: sm8350: Remove second reg from pdc
+Date:   Wed, 17 Mar 2021 10:59:54 +0530
+Message-Id: <1615958996-31807-1-git-send-email-mkshah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Song,
+PDC interrupt controller driver do not use second reg. Remove it.
+This is in preparation to convert PDC bindings to yaml where
+dtbs_check reports it as additional reg.
 
-On Wed, Mar 17, 2021 at 6:18 AM Song Liu <songliubraving@fb.com> wrote:
->
-> perf uses performance monitoring counters (PMCs) to monitor system
-> performance. The PMCs are limited hardware resources. For example,
-> Intel CPUs have 3x fixed PMCs and 4x programmable PMCs per cpu.
->
-> Modern data center systems use these PMCs in many different ways:
-> system level monitoring, (maybe nested) container level monitoring, per
-> process monitoring, profiling (in sample mode), etc. In some cases,
-> there are more active perf_events than available hardware PMCs. To allow
-> all perf_events to have a chance to run, it is necessary to do expensive
-> time multiplexing of events.
->
-> On the other hand, many monitoring tools count the common metrics (cycles,
-> instructions). It is a waste to have multiple tools create multiple
-> perf_events of "cycles" and occupy multiple PMCs.
+Cc: devicetree@vger.kernel.org
+Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+---
+ arch/arm64/boot/dts/qcom/sm8350.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Right, it'd be really helpful when the PMCs are frequently or mostly shared.
-But it'd also increase the overhead for uncontended cases as BPF programs
-need to run on every context switch.  Depending on the workload, it may
-cause a non-negligible performance impact.  So users should be aware of it.
+diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+index ea28514..b48bc1b 100644
+--- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+@@ -612,7 +612,7 @@
+ 
+ 		pdc: interrupt-controller@b220000 {
+ 			compatible = "qcom,sm8350-pdc", "qcom,pdc";
+-			reg = <0 0x0b220000 0 0x30000>, <0 0x17c000f0 0 0x60>;
++			reg = <0 0x0b220000 0 0x30000>;
+ 			qcom,pdc-ranges = <0 480 40>, <40 140 14>, <54 263 1>,   <55 306 4>,
+ 					  <59 312 3>, <62 374 2>,  <64 434 2>,   <66 438 3>,
+ 					  <69 86 1>,  <70 520 54>, <124 609 31>, <155 63 1>,
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
-Thanks,
-Namhyung
-
->
-> bperf tries to reduce such wastes by allowing multiple perf_events of
-> "cycles" or "instructions" (at different scopes) to share PMUs. Instead
-> of having each perf-stat session to read its own perf_events, bperf uses
-> BPF programs to read the perf_events and aggregate readings to BPF maps.
-> Then, the perf-stat session(s) reads the values from these BPF maps.
->
-> Changes v1 => v2:
->   1. Add documentation.
->   2. Add a shell test.
->   3. Rename options, default path of the atto-map, and some variables.
->   4. Add a separate patch that moves clock_gettime() in __run_perf_stat()
->      to after enable_counters().
->   5. Make perf_cpu_map for all cpus a global variable.
->   6. Use sysfs__mountpoint() for default attr-map path.
->   7. Use cpu__max_cpu() instead of libbpf_num_possible_cpus().
->   8. Add flag "enabled" to the follower program. Then move follower attach
->      to bperf__load() and simplify bperf__enable().
->
-> Song Liu (3):
->   perf-stat: introduce bperf, share hardware PMCs with BPF
->   perf-stat: measure t0 and ref_time after enable_counters()
->   perf-test: add a test for perf-stat --bpf-counters option
->
->  tools/perf/Documentation/perf-stat.txt        |  11 +
->  tools/perf/Makefile.perf                      |   1 +
->  tools/perf/builtin-stat.c                     |  20 +-
->  tools/perf/tests/shell/stat_bpf_counters.sh   |  34 ++
->  tools/perf/util/bpf_counter.c                 | 519 +++++++++++++++++-
->  tools/perf/util/bpf_skel/bperf.h              |  14 +
->  tools/perf/util/bpf_skel/bperf_follower.bpf.c |  69 +++
->  tools/perf/util/bpf_skel/bperf_leader.bpf.c   |  46 ++
->  tools/perf/util/bpf_skel/bperf_u.h            |  14 +
->  tools/perf/util/evsel.h                       |  20 +-
->  tools/perf/util/target.h                      |   4 +-
->  11 files changed, 742 insertions(+), 10 deletions(-)
->  create mode 100755 tools/perf/tests/shell/stat_bpf_counters.sh
->  create mode 100644 tools/perf/util/bpf_skel/bperf.h
->  create mode 100644 tools/perf/util/bpf_skel/bperf_follower.bpf.c
->  create mode 100644 tools/perf/util/bpf_skel/bperf_leader.bpf.c
->  create mode 100644 tools/perf/util/bpf_skel/bperf_u.h
->
-> --
-> 2.30.2
