@@ -2,175 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B5333FB2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 23:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B54933FB17
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 23:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhCQW3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 18:29:09 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:54346 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhCQW2s (ORCPT
+        id S231206AbhCQWZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 18:25:51 -0400
+Received: from mail2.protonmail.ch ([185.70.40.22]:17987 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230518AbhCQWZa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 18:28:48 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12HMO9q9192389;
-        Wed, 17 Mar 2021 22:25:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : content-type :
- mime-version; s=corp-2020-01-29;
- bh=TH6wlzcCPWtIAtCjIQQeR6qoAZ/h/vMMRA5cV1RoqlM=;
- b=Co5tePda7Zj+SjqRUU0jFLHZavEIWbBdmriYVwSAUbDZbpREbP0nV7gPhr5DmQjef+/+
- ZDAbKBp2ufM5/mwGYZPSn33VGDiJT+RKaqsGxGTGFiSgPwAATQAA8frT7tZFsCmbg46h
- esq4LaGXTlV3J7iCcUxeGObWQt2Cf+lEDHNRQE4tlMlZ4Rwq4KqU8cjRB4/ogb6RvGtr
- i1WEl6whNToq+1n3PbhbkqUMvqluawsPX6h0H6agHeiZ9tJBI6pEoYLajqMhwKZlOinP
- Kg+OIldQmGOfV4J9NiqP59CaNRafQQVLnDyiEg2ZwHo0iITeteJCgGFTGUKmosmhkW/b 8A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 378jwbnsjf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Mar 2021 22:25:20 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12HMFqMX026239;
-        Wed, 17 Mar 2021 22:25:19 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
-        by aserp3020.oracle.com with ESMTP id 3797a358cy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Mar 2021 22:25:19 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JyeCEus8f+YvnvOA7GOH0wxJvEJBtdZnOJIuF7PeNDRTvGHa4cQk3OUDEiOosO8IZLfx7GMxWPPqxguFuCU9bzbY77OsTXqpqDkBvJIsYbRhVVBlCjq4V/w+TulByZI4AMz0lj49d9itW+z3XSJ/saZYEaY8t9tj9tW7w+MysRWhKN98G/2zxxYOWEzs5EecpqZxu4H++cLB18BNCOqIPhSfg3UGewSCwY9qTTNf1dGKNNJ0SxtOxRDTt0efKT8bP/rkKpBgvppGSzJmvmSEpXTyYKHWuPr7Q0GH3tErPeA4hjIJwtRHGErafW5NM8RRkFKD3ofgoEHeJnR0lE6NtA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TH6wlzcCPWtIAtCjIQQeR6qoAZ/h/vMMRA5cV1RoqlM=;
- b=PxKhO46+3MpdCwCCkh64f7r4kEzuyZELlc+b1UNUd4orR1Q88/Ue3EaIcU5qUqN72nWE3EqnM/TpuxYfkZl7kBrgeNZFtXpP6ermb6Lb8izD6vrNSZ2iw8DSId7W71livFb/BKhGDc2Iz1urOYw+wFPKaZcIrjZ/jmgJZX2LX//6/90mYrKTMEOKgBHFXLOofICFKoGhWq8a2fLc9szwFliPIh1rgXJ1QvBq+fv1jHV+sSJjITgrqy5JCwEB5XAUBOv8HlCWzLtz/U7IxNhqAWWHC9Ow0EVsGTMqb3kwgf8YbIqMKvlS/FYFgdtPXiPVEBsn/t9qdd9UrsphnukMEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TH6wlzcCPWtIAtCjIQQeR6qoAZ/h/vMMRA5cV1RoqlM=;
- b=tedqUrgaGs92xvt+gNwN941uXVHhL5htHWTHStTsXmvIsM/tof9mSIrnZvi+cR6IlD+KCRzQLyIyjlfCPx7vaOZLOw0bGotO9yA6NWju4k2hSX9FQZw44MmeUgLTc2mx73ACjT+shqmkABS5c1MeMfXwyfbLV/Te3ZBLRRcabJ4=
-Authentication-Results: yandex-team.com; dkim=none (message not signed)
- header.d=none;yandex-team.com; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR10MB1774.namprd10.prod.outlook.com (2603:10b6:301:9::13)
- by MWHPR10MB1728.namprd10.prod.outlook.com (2603:10b6:301:9::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Wed, 17 Mar
- 2021 22:25:17 +0000
-Received: from MWHPR10MB1774.namprd10.prod.outlook.com
- ([fe80::24eb:1300:dd70:4183]) by MWHPR10MB1774.namprd10.prod.outlook.com
- ([fe80::24eb:1300:dd70:4183%3]) with mapi id 15.20.3933.032; Wed, 17 Mar 2021
- 22:25:17 +0000
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Andrey Ryabinin <arbn@yandex-team.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     Boris Burkov <boris@bur.io>,
-        Bharata B Rao <bharata@linux.vnet.ibm.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrey Ryabinin <arbn@yandex-team.com>
-Subject: Re: [PATCH 4/4] sched/cpuacct: Make user/system times in
- cpuacct.stat more precise
-In-Reply-To: <20210217120004.7984-4-arbn@yandex-team.com>
-References: <20210217120004.7984-1-arbn@yandex-team.com>
- <20210217120004.7984-4-arbn@yandex-team.com>
-Date:   Wed, 17 Mar 2021 18:25:13 -0400
-Message-ID: <87o8fhl8om.fsf@oracle.com>
-Content-Type: text/plain
-X-Originating-IP: [98.229.125.203]
-X-ClientProxiedBy: MN2PR07CA0029.namprd07.prod.outlook.com
- (2603:10b6:208:1a0::39) To MWHPR10MB1774.namprd10.prod.outlook.com
- (2603:10b6:301:9::13)
+        Wed, 17 Mar 2021 18:25:30 -0400
+Date:   Wed, 17 Mar 2021 22:25:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1616019928; bh=5n1xnqSMFADL1/lMD7qStSm5B6KLSEf5T3JUcTW1bsY=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=biwV2HLcM/lhcnM9SIzEGveA/OmmawFLe2izpoqh/Gf6KgxJXs4y6+W3ds+y0G6Q2
+         TCyzuC+8sxYNqryLGBGD8uGKOyPB3jx02wpAyCTIX5oxHy2XhIdXIAgqobUi4Jrj55
+         tfE0cMC8e1YjDOUEnPnCQOpHpvrRJiM77azXOp03/boZXTWrrByZp0RLP4iRzQwZAw
+         cLyFPKvk+OzXAy51wytOZN2R5AhfdIQBCk4J27iX15Uzoy/0ZfJn8RTav1ajA0PbVe
+         59PLXrSpjoxeIVtn0WHzB7tRvQ9zbF18GHSGCqylh5ADZ5eqhMENY+WzsXwz2LtoON
+         NbS+Orj8kTxAg==
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH 0/7 v4] Introduce a bulk order-0 page allocator with two in-tree users
+Message-ID: <20210317222506.1266004-1-alobakin@pm.me>
+In-Reply-To: <20210317181943.1a339b1e@carbon>
+References: <20210312154331.32229-1-mgorman@techsingularity.net> <20210317163055.800210-1-alobakin@pm.me> <20210317173844.6b10f879@carbon> <20210317165220.808975-1-alobakin@pm.me> <20210317181943.1a339b1e@carbon>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from parnassus (98.229.125.203) by MN2PR07CA0029.namprd07.prod.outlook.com (2603:10b6:208:1a0::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Wed, 17 Mar 2021 22:25:15 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6e15f62e-3c9b-40f2-3170-08d8e9938ac2
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1728:
-X-Microsoft-Antispam-PRVS: <MWHPR10MB17282A094CA3EC154F332958D96A9@MWHPR10MB1728.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8r1iemy4ZzX44SxLIcdxcqBL+2LQipBPVXbnEGcby3MpXM4ESi7ZPADeR4cA5QAeZD6Ouq/H/TvayFu8HD1rsahtJmvXOXZ4Kt4Vej+ZyBf0n/FzvnnegzBn3jACrN6o4gVg/NKwB6CZMPKGp+pyPlfdq3yYr1hkTTuBZP1YbmoWd/yUmrtIGrLfUfPDB87wdbQrLNeK2/SxLvpN4bs8fIbwTqhQBEqPOckBtmrA70xnzafRlBRFL5VxOY/EyB2vd1jFy+Dk7O0EAK6NKWq9Xq1f1O2euwoaIojzYqpkMNqumyMZzsrKXyvIrHbWxDD4aW90aCIFaDkNsMYPnfOhc79sLqKqk3fTT37g5UmzrV6q6HlGiHeKoNDUL+7h8obkosoF5mWBkOElZdtnFYZ/nn6i03L/yoIitfoxYBWyuHrQWs05TZNteL8B3jz/eouhrpFjrKXc6exaBKAcKJzGY9lYkX7SttBvr+w3gzzqm5b8xGt0vfZ9OLEx98aaASbFXXB2WiYJkudaCUil1k9Sq84X2PbTSgX4IHcrISbNjK7zZvSAGoVsxsXnSMZXhbPF2jsUSeiD9j3cz/7RAsAh9/nsIDcnu+7fU77/Bzc3kpM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1774.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(136003)(39860400002)(366004)(396003)(5660300002)(54906003)(110136005)(8936002)(66476007)(6486002)(66946007)(4326008)(6496006)(2906002)(921005)(66556008)(316002)(86362001)(36756003)(186003)(26005)(16526019)(52116002)(8676002)(478600001)(4744005)(956004)(2616005)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?nhdGYSA/S6KNH5WXW/F6+05SGGRzrylOqRmpKwKwMMoTxOxzeTRjiTr9lPuR?=
- =?us-ascii?Q?ovwd36MvEqq4MYBS2xRxT/eDP3NNAvys12LMloUfaoJAXZLfwPep1ulOiAu4?=
- =?us-ascii?Q?yVKCCm6lDib2GJX2LUGR2xPjWl3qOzzv9isI5sHz6lJdiy/VwvSrW3ZajqfR?=
- =?us-ascii?Q?tCnYI6ia6/iD3XhvkwkQzdSZGFuWMFLUUamlVjmHDzR3ICw+/x4FXp/GGGt1?=
- =?us-ascii?Q?lQxL5lahfROHRKzdlosbntyiLL8uKsR2BNoo9LK0AgldNqyYoT8Ck2FSI1sr?=
- =?us-ascii?Q?uAeCF1Gq9Lb2LGUKt/d5q8pd9lHEZ/rvmC+M6Sr/2rNm1jz7HpYpuf7Gl7Bo?=
- =?us-ascii?Q?+PaoVdj1IuDUUK2cWriMdODAs872O2V81goWqhvLg7Af3K3t6esxT+RhjKA4?=
- =?us-ascii?Q?nCPeVKau7QMHq3iLUpK4OHOV5bp+i9FBWQWtwZ62Uqe0L0XIgvqDA7zYtWnG?=
- =?us-ascii?Q?OwOLecDhCxkxnRW+VI9kZvR5e/klvDO5SQczYU2bZPPWqLWEYXnB5KL+6uIk?=
- =?us-ascii?Q?vEyuN9l8/I5oLObB3VzCA+8eMUpjlFMKwaZHH8HeFMo6N9R1LCGC4WWQREjo?=
- =?us-ascii?Q?Aho4uZ29fnIoxh7SfwoTx0W1bhmQZ4v/AQtXY0bTBNAtKlLPwBro6vOb/Ouk?=
- =?us-ascii?Q?2MFQIxUOvVhXazVFVvaHRfEmkTQR0msNYlB3MFYp/xY1iuci767xPngu0AT9?=
- =?us-ascii?Q?sZT3aQ7DItwA8Zhkgog6Dyo/5rConmmQlWc3xH4sjvmkvhEYpTpncVDHS72A?=
- =?us-ascii?Q?Nk+MYQW3yJZb3212LKWOnUgXINiGpVwbHgFpDzghHTR9csdI/g+wMWPEtu2F?=
- =?us-ascii?Q?h7L/uEz1KDSz6/MKuowJi8/rj6JTjV/vWEc+A6PFl2+ghf4n2X/hw7+HAJWD?=
- =?us-ascii?Q?T7ciHdssmsOcFgl6FWKIU/1lFQjiXQXATiuwrBUbOJgeZJeJFMSsofpgs515?=
- =?us-ascii?Q?VVycq+Oja6WwzhtQm/J73etz0rdRyeIRp9hPa9rfPkFZ3ocUocfVmLH9Q98r?=
- =?us-ascii?Q?jJkxq1OL6+IJ6Ju3jlWI8icuSOjEk9AxIJP7/vF4aQtVefPIFsZ5H/F412Ib?=
- =?us-ascii?Q?XM7iVjUq9booDJp2cR0CYRHC7XzlXuGyAaL4TRuq/oqLTZvLd5ovCcCXuvhl?=
- =?us-ascii?Q?4ftPPx4i0AWwAy+zTjWYA/INNkYFqdcHl8zKsImIKgR3AIDbC2vE6jk5IyFD?=
- =?us-ascii?Q?uO93gZ3Cokqv0xjE8A6hO7SWg93ezGPztXLX3I1R7RJQxx8cLcT9J0DtWi3n?=
- =?us-ascii?Q?lmqRizVW+hcfMpoV68AuzcvNfCRX7sJaJlusGoDdStNNakgocUUISMSd5WeS?=
- =?us-ascii?Q?JFOIUkNc/qkoT6X1zR6GTXq+?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e15f62e-3c9b-40f2-3170-08d8e9938ac2
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1774.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 22:25:17.2930
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: b8IoUBZ0bMXO1bpKPw+W23gKQkg3XV/7ib/M9Ij+O+f5s1jPyTiV2wUk48p7V86JyRjeD0aXXlphVFUF/Ei+iQm0P3wTlvYubm6nZ1ZDztk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1728
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 spamscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103170156
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- spamscore=0 mlxscore=0 bulkscore=0 suspectscore=0 priorityscore=1501
- lowpriorityscore=0 clxscore=1015 adultscore=0 phishscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103170157
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrey Ryabinin <arbn@yandex-team.com> writes:
->  static int cpuacct_stats_show(struct seq_file *sf, void *v)
->  {
-        ...
->  	for_each_possible_cpu(cpu) {
->  		u64 *cpustat = per_cpu_ptr(ca->cpustat, cpu)->cpustat;
->  
-> -		val[CPUACCT_STAT_USER] += cpustat[CPUTIME_USER];
-> -		val[CPUACCT_STAT_USER] += cpustat[CPUTIME_NICE];
-> -		val[CPUACCT_STAT_SYSTEM] += cpustat[CPUTIME_SYSTEM];
-> -		val[CPUACCT_STAT_SYSTEM] += cpustat[CPUTIME_IRQ];
-> -		val[CPUACCT_STAT_SYSTEM] += cpustat[CPUTIME_SOFTIRQ];
-> +		cputime.utime += cpustat[CPUTIME_USER];
-> +		cputime.utime += cpustat[CPUTIME_NICE];
-> +		cputime.stime += cpustat[CPUTIME_SYSTEM];
-> +		cputime.stime += cpustat[CPUTIME_IRQ];
-> +		cputime.stime += cpustat[CPUTIME_SOFTIRQ];
-> +
-> +		cputime.sum_exec_runtime += this_cpu_read(*ca->cpuusage);
->  	}
+From: Jesper Dangaard Brouer <brouer@redhat.com>
+Date: Wed, 17 Mar 2021 18:19:43 +0100
 
-                cputime.sum_exec_runtime += *per_cpu_ptr(ca->cpuusage, cpu);
+> On Wed, 17 Mar 2021 16:52:32 +0000
+> Alexander Lobakin <alobakin@pm.me> wrote:
+>
+> > From: Jesper Dangaard Brouer <brouer@redhat.com>
+> > Date: Wed, 17 Mar 2021 17:38:44 +0100
+> >
+> > > On Wed, 17 Mar 2021 16:31:07 +0000
+> > > Alexander Lobakin <alobakin@pm.me> wrote:
+> > >
+> > > > From: Mel Gorman <mgorman@techsingularity.net>
+> > > > Date: Fri, 12 Mar 2021 15:43:24 +0000
+> > > >
+> > > > Hi there,
+> > > >
+> > > > > This series is based on top of Matthew Wilcox's series "Rationali=
+se
+> > > > > __alloc_pages wrapper" and does not apply to 5.12-rc2. If you wan=
+t to
+> > > > > test and are not using Andrew's tree as a baseline, I suggest usi=
+ng the
+> > > > > following git tree
+> > > > >
+> > > > > git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bu=
+lk-rebase-v4r2
+> > > >
+> > > > I gave this series a go on my setup, it showed a bump of 10 Mbps on
+> > > > UDP forwarding, but dropped TCP forwarding by almost 50 Mbps.
+> > > >
+> > > > (4 core 1.2GHz MIPS32 R2, page size of 16 Kb, Page Pool order-0
+> > > > allocations with MTU of 1508 bytes, linear frames via build_skb(),
+> > > > GRO + TSO/USO)
+> > >
+> > > What NIC driver is this?
+> >
+> > Ah, forgot to mention. It's a WIP driver, not yet mainlined.
+> > The NIC itself is basically on-SoC 1G chip.
+>
+> Hmm, then it is really hard to check if your driver is doing something
+> else that could cause this.
+>
+> Well, can you try to lower the page_pool bulking size, to test the
+> theory from Wilcox that we should do smaller bulking to avoid pushing
+> cachelines into L2 when walking the LRU list.  You might have to go as
+> low as bulk=3D8 (for N-way associative level of L1 cache).
 
-Or the stats can all be 0...
+Turned out it suffered from GCC's decisions.
+All of the following was taken on GCC 10.2.0 with -O2 in dotconfig.
+
+vmlinux differences between baseline and this series:
+
+(I used your followup instead of the last patch from the tree)
+
+Function                                     old     new   delta
+__rmqueue_pcplist                              -    2024   +2024
+__alloc_pages_bulk                             -    1456   +1456
+__page_pool_alloc_pages_slow                 284     600    +316
+page_pool_dma_map                              -     164    +164
+get_page_from_freelist                      5676    3760   -1916
+
+The uninlining of __rmqueue_pcplist() hurts a lot. It slightly slows
+down the "regular" page allocator, but makes __alloc_pages_bulk()
+much slower than the per-page (in my case at least) due to calling
+this function out from the loop.
+
+One possible solution is to mark __rmqueue_pcplist() and
+rmqueue_bulk() as __always_inline. Only both and only with
+__always_inline, or GCC will emit rmqueue_bulk.constprop and
+make the numbers even poorer.
+This nearly doubles the size of bulk allocator, but eliminates
+all performance hits.
+
+Function                                     old     new   delta
+__alloc_pages_bulk                          1456    3512   +2056
+get_page_from_freelist                      3760    5744   +1984
+find_suitable_fallback.part                    -     160    +160
+min_free_kbytes_sysctl_handler                96     128     +32
+find_suitable_fallback                       164      28    -136
+__rmqueue_pcplist                           2024       -   -2024
+
+Between baseline and this series with __always_inline hints:
+
+Function                                     old     new   delta
+__alloc_pages_bulk                             -    3512   +3512
+find_suitable_fallback.part                    -     160    +160
+get_page_from_freelist                      5676    5744     +68
+min_free_kbytes_sysctl_handler                96     128     +32
+find_suitable_fallback                       164      28    -136
+
+Another suboptimal place I've found is two functions in Page Pool
+code which are marked as 'noinline'.
+Maybe there's a reason behind this, but removing the annotations
+and additionally marking page_pool_dma_map() as inline simplifies
+the object code and in fact improves the performance (+15 Mbps on
+my setup):
+
+add/remove: 0/3 grow/shrink: 1/0 up/down: 1024/-1096 (-72)
+Function                                     old     new   delta
+page_pool_alloc_pages                        100    1124   +1024
+page_pool_dma_map                            164       -    -164
+page_pool_refill_alloc_cache                 332       -    -332
+__page_pool_alloc_pages_slow                 600       -    -600
+
+1124 is a normal size for a hotpath function.
+These fragmentation and jumps between page_pool_alloc_pages(),
+__page_pool_alloc_pages_slow() and page_pool_refill_alloc_cache()
+are really excessive and unhealthy for performance, as well as
+page_pool_dma_map() uninlined by GCC.
+
+So the best results I got so far were with these additional changes:
+ - mark __rmqueue_pcplist() as __always_inline;
+ - mark rmqueue_bulk() as __always_inline;
+ - drop 'noinline' from page_pool_refill_alloc_cache();
+ - drop 'noinline' from __page_pool_alloc_pages_slow();
+ - mark page_pool_dma_map() as inline.
+
+(inlines in C files aren't generally recommended, but well, GCC
+ is far from perfect)
+
+> In function: __page_pool_alloc_pages_slow() adjust variable:
+>   const int bulk =3D PP_ALLOC_CACHE_REFILL;
+
+Regarding bulk size, it makes no sense on my machine. I tried
+{ 8, 16, 32, 64 } and they differed by 1-2 Mbps max / standard
+deviation.
+Most of the bulk operations I've seen usually take the value of
+16 as a "golden ratio" though.
+
+>
+> --
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+
+Thanks,
+Al
+
