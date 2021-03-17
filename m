@@ -2,64 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1310D33F5BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CFA33F5BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:40:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232636AbhCQQkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 12:40:06 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:58440 "EHLO
-        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232008AbhCQQjb (ORCPT
+        id S232624AbhCQQje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 12:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232257AbhCQQjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 12:39:31 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id 695684FC83BE2;
-        Wed, 17 Mar 2021 09:39:30 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 09:39:26 -0700 (PDT)
-Message-Id: <20210317.093926.47944613217780721.davem@davemloft.net>
-To:     menglong8.dong@gmail.com
-Cc:     linux@roeck-us.net, andy.shevchenko@gmail.com, kuba@kernel.org,
-        axboe@kernel.dk, viro@zeniv.linux.org.uk,
-        herbert@gondor.apana.org.au, dong.menglong@zte.com.cn,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v4 RESEND net-next] net: socket: use BIT() for MSG_*
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <CADxym3bu0Ds6dD6OhyvdzbWDW-KqXsqGGxt3HKj-dsedFn9GXg@mail.gmail.com>
-References: <CAHp75VdE3fkCjb53vBso5uJX9aEFtAOAdh5NVOSbK0YR64+jOg@mail.gmail.com>
-        <20210317013758.GA134033@roeck-us.net>
-        <CADxym3bu0Ds6dD6OhyvdzbWDW-KqXsqGGxt3HKj-dsedFn9GXg@mail.gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Wed, 17 Mar 2021 09:39:30 -0700 (PDT)
+        Wed, 17 Mar 2021 12:39:24 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D357C06174A;
+        Wed, 17 Mar 2021 09:39:24 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 205so8120546pgh.9;
+        Wed, 17 Mar 2021 09:39:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VJKz2h+X44Nyjc70D1nl6aYjywkrSYx9D4C8krqE5s4=;
+        b=gd+e3pDXZbLRr7OHs+dQNTQNYZjTE9SpwbtkhLTG6XdDc7DyYOSisEkNNqZU6WqmDr
+         SCANy+scFCynXXAgg5ILVsnWZCFS+TzUGbVrzDFuocEIGPojXLI/+AJbZDfbA/es7RnX
+         MT4ina1sLUOIX5Dr+/TS0OgO/vG5131jIPjclMFjTkeuVNcOaRKJ0TUsGWow47WLAkP6
+         Nh42/l2OIO0xjCZfZA40hUJ8uit9u+Kw39vxa1av8U4PvgmUULXF/p8CJEie9aPujZPD
+         5pK+P2kIymqyVSOnP+Qk1Xd+TMP2aDoFPFIUpztfiSbBHevuxPHZGKNLhbYehyF+cU83
+         6mcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VJKz2h+X44Nyjc70D1nl6aYjywkrSYx9D4C8krqE5s4=;
+        b=Eo8OGfdMNejThjDOgj6NqPQcTqFU/QQhFaDF741DZS5ASJnm5vbXgamPKguSnHZrSG
+         jijysnDexyDLARKcGTE4JpMDqnLRcI6CIb3cRjMAxY2K3+G4poLnoBjcBbh7KSyRTGbE
+         F9RKSjLYZqM64cnXMqavUuQ8slRErUA38jHmvvD3sE6O/6nAGiSCnvQpNkvgL5VtRoI5
+         6reDtAvwiGF2Rrttv8zTxUc530aiK7Wz8+XOPMQae1MoOMFWFf+uQPcmi4ki2OEDg7MF
+         ZZ+fJM5Cv+pN8cH7bQCAyvsQilWzVLuCne7U4zJkdXlGNayZCVLRi6vZ8OL2Aer73qoD
+         g/6A==
+X-Gm-Message-State: AOAM533hJwElqbzRytXXkVDyJ+iWxG0z+pX9UI3vQmieMc0LE8YSD0vs
+        vegSJ7BMXQ3/kOX537eKQMiiszmqhrc=
+X-Google-Smtp-Source: ABdhPJwwOq0vwgcZGgWOETf0gCZOIdapKzgtw7LIGnEIxTYxUm7egBbqaGJZOUQ1e4gvOxBkLPpErw==
+X-Received: by 2002:a63:2345:: with SMTP id u5mr3462213pgm.326.1615999163670;
+        Wed, 17 Mar 2021 09:39:23 -0700 (PDT)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id i17sm22008783pfq.135.2021.03.17.09.39.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 09:39:22 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/msm: Ratelimit invalid-fence message
+Date:   Wed, 17 Mar 2021 09:42:39 -0700
+Message-Id: <20210317164239.1007776-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Wed, 17 Mar 2021 16:21:14 +0800
+From: Rob Clark <robdclark@chromium.org>
 
-> Hello,
-> 
-> On Wed, Mar 17, 2021 at 9:38 AM Guenter Roeck <linux@roeck-us.net> wrote:
->>
->> On Wed, Mar 17, 2021 at 01:02:51AM +0200, Andy Shevchenko wrote:
->> > On Wednesday, March 17, 2021, Guenter Roeck <linux@roeck-us.net> wrote:
->> >
-> ...
->>
->> The problem is in net/packet/af_packet.c:packet_recvmsg(). This function,
->> as well as all other rcvmsg functions, is declared as
->>
->> static int packet_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
->>                           int flags)
->>
->> MSG_CMSG_COMPAT (0x80000000) is set in flags, meaning its value is negative.
->> This is then evaluated in
->>
->>        if (flags & ~(MSG_PEEK|MSG_DONTWAIT|MSG_TRUNC|MSG_CMSG_COMPAT|MSG_ERRQUEUE))
->>                 goto out;
-> So what should I do? Revert this patch? Or fix the usages of 'flags'?
+We have seen a couple cases where low memory situations cause something
+bad to happen, followed by a flood of these messages obscuring the root
+cause.  Lets ratelimit the dmesg spam so that next time it happens we
+don't loose the kernel traces leading up to this.
 
-I already reverted this patch from net-next to fix the regression.
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_fence.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/msm_fence.c
+index ad2703698b05..cd59a5918038 100644
+--- a/drivers/gpu/drm/msm/msm_fence.c
++++ b/drivers/gpu/drm/msm/msm_fence.c
+@@ -45,7 +45,7 @@ int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+ 	int ret;
+ 
+ 	if (fence > fctx->last_fence) {
+-		DRM_ERROR("%s: waiting on invalid fence: %u (of %u)\n",
++		DRM_ERROR_RATELIMITED("%s: waiting on invalid fence: %u (of %u)\n",
+ 				fctx->name, fence, fctx->last_fence);
+ 		return -EINVAL;
+ 	}
+-- 
+2.29.2
+
