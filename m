@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9304933FB39
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 23:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 352E633FB3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 23:30:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbhCQWaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 18:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46118 "EHLO
+        id S231607AbhCQWaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 18:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231346AbhCQW3x (ORCPT
+        with ESMTP id S231375AbhCQW3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 18:29:53 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05D8C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:29:53 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id k8so236094iop.12
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:29:53 -0700 (PDT)
+        Wed, 17 Mar 2021 18:29:54 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930F1C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:29:54 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id z3so237947ioc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:29:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mJHY8qu/zb8ROas4WV0ki8PTfXxIvdJCtkC7EQYxU/c=;
-        b=uXrdEig5Q8aCl1RmZxxC9heobx+8PUPj8zBCf68sGS3hl/B21E3YDLBvV60dnyzv/a
-         b51ixW1V2GvEMmyfRXpf7wx2nkZMeMEcA9zgVdNHajKV6tdVTlM1xZqctm6kdr1YQEqR
-         iyTUFD+jkrXmvLoEWPNvK+VSG4AQWP1cbOm4AKCOJxuQm9KZZTOnS4fCzO13zHBM053d
-         DoRc/gAuYEltZVjBA3VXsQKMuFk6fqASc+AJnP0N1cPnBirs+minRT/G/BXYTkT0BEvC
-         wUNog2ve70IdlV2bvX/tBr0MDbdjxJ4ZJbVEEOJwWoY7Vx+Yc15EXzaB7yVEoLjHNhKx
-         2OSQ==
+        bh=N1vkQNGymFwLks9UB15v9pfiGh7bDRvcY3otglQibLg=;
+        b=vpbFLeMRuTRlxQmt7mwB1X/oaGFaWym8vUPh8Nt5PAmxVH+3wxIqjd5ADo0z/cwnyw
+         XOWGsvl2iYrFkuSi6VKM2oVkWwasB1q4xJwv0obRePsrEMZwy/a3VLOZNx/3hawk53Dn
+         jLHvSp0aApANuCb5vyRY/UL3ZrR9xZ1X2A9srf7XGj+8hqJGGVylxahyeVRJu8lc6Xib
+         8pERSjbLNcJuD/aqYOhoaCLaVDV2DRscTTB9wUU3dErruFni8EEXJYggpcsxLEvINwys
+         S43AvfRUeSzwJuwwGB2rGiNxOBRIH92mOOmsvoOO1KTkZFLxMFZecNutlM46KybSlEj8
+         Ri3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mJHY8qu/zb8ROas4WV0ki8PTfXxIvdJCtkC7EQYxU/c=;
-        b=FHmKXXbJgDBfN9e0sMdwGpMAbfJwLTauKi0tz/PVNbjzCqdLhiz0IHWL51Khrmcdll
-         xjU70EqebRzVHicQvz82/+43yMAGpzcXjymRmFGaNvVSsa7wVg1UFEuin0QnRUY14oGD
-         UWlTLhCZ9L2lFRJ6FjwHWjmtBorW++k+iV1UKkwoJTkPyy0dn/QF6Zhk6LLoW9Wx7r7m
-         ABd6ni8zZZ0KsCQmQAKJz396Q2Xc9FdNPkJb3AfZ6FpwxNCcTwsDFqHXZFDUuHet6ttQ
-         VKbbwh5K235DYyr9lW/59YG+PobiiBgcviW78k9rAKV+M83PtoCM34gkJIqJ87vdKhU2
-         iDiw==
-X-Gm-Message-State: AOAM530YsczcRGg9xXLn02nA4S3gDEOdoVey1knX2vWDvgT656hWU2/t
-        thmR6WPFuV/jrKL9X5ZRH2X6qA==
-X-Google-Smtp-Source: ABdhPJw6YnjvWAUfRm9waslOSl/uRPGYD7PG21A0gPfUrkpwUIetoveKR7JKJzqsngPOskX6vQcdPw==
-X-Received: by 2002:a02:c8d4:: with SMTP id q20mr4593415jao.90.1616020193197;
-        Wed, 17 Mar 2021 15:29:53 -0700 (PDT)
+        bh=N1vkQNGymFwLks9UB15v9pfiGh7bDRvcY3otglQibLg=;
+        b=ZyCvw89ga+4vOvonAAI29wWEr9CZJTRdHpElsoqKIt/yVSfCA2qGPtHAiJsaQMalGN
+         lXf032SKe6behhJZAsxlYd7t+IL+/BymSF9zdp3Mnx2KT6WxUXirhXDVRt+Em+CJTtvT
+         RGnkbvWEDtVi0v7mZuNJxc4eVJYOL1XUkr9TNxuGj126xdDWRxG+GADC1Oo7sjQ9x4uh
+         6f6HI6Hu8JnCkjZEPGBRjZJhAj2F5IcqGz5LIjapkpuXSV9c9QMU+8aSNeOqd6s2yaY5
+         JSzs6StTgbrElSMHti4K6WOXjVEUqAAVBaHl50HRltYtAt+LUVTgEkjXctDpqHh13o6h
+         9GBQ==
+X-Gm-Message-State: AOAM530sKZIReonLIlPHuHcGX7zSqwUYD5jBul/33ZllXI+za3DbP0eB
+        PQ471TSET1Y05LO5LNy/1/lsDA==
+X-Google-Smtp-Source: ABdhPJynFxdQpp2CnjvCau6E19WPbDsDxzdxayK/IbIcdfWTj+vlDOCceh5FX5AxCP6eeBulddKLlA==
+X-Received: by 2002:a05:6638:e93:: with SMTP id p19mr4610398jas.10.1616020194041;
+        Wed, 17 Mar 2021 15:29:54 -0700 (PDT)
 Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id f3sm176405ilk.74.2021.03.17.15.29.52
+        by smtp.gmail.com with ESMTPSA id f3sm176405ilk.74.2021.03.17.15.29.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 15:29:52 -0700 (PDT)
+        Wed, 17 Mar 2021 15:29:53 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 3/4] net: ipa: fix table alignment requirement
-Date:   Wed, 17 Mar 2021 17:29:45 -0500
-Message-Id: <20210317222946.118125-4-elder@linaro.org>
+Subject: [PATCH net-next 4/4] net: ipa: relax 64-bit build requirement
+Date:   Wed, 17 Mar 2021 17:29:46 -0500
+Message-Id: <20210317222946.118125-5-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210317222946.118125-1-elder@linaro.org>
 References: <20210317222946.118125-1-elder@linaro.org>
@@ -65,60 +65,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We currently have a build-time check to ensure that the minimum DMA
-allocation alignment satisfies the constraint that IPA filter and
-route tables must point to rules that are 128-byte aligned.
+We currently assume the IPA driver is built only for a 64 bit kernel.
 
-But what's really important is that the actual allocated DMA memory
-has that alignment, even if the minimum is smaller than that.
+When this constraint was put in place it eliminated some do_div()
+calls, replacing them with the "/" and "%" operators.  We now only
+use these operations on u32 and size_t objects.  In a 32-bit kernel
+build, size_t will be 32 bits wide, so there remains no reason to
+use do_div() for divide and modulo.
 
-Remove the BUILD_BUG_ON() call checking against minimim DMA alignment
-and instead verify at rutime that the allocated memory is properly
-aligned.
+A few recent commits also fix some code that assumes that DMA
+addresses are 64 bits wide.
+
+With that, we can get rid of the 64-bit build requirement.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_table.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ drivers/net/ipa/Kconfig    |  2 +-
+ drivers/net/ipa/ipa_main.c | 10 ++++++++--
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ipa/ipa_table.c b/drivers/net/ipa/ipa_table.c
-index dd07fe9dd87a3..988f2c2886b95 100644
---- a/drivers/net/ipa/ipa_table.c
-+++ b/drivers/net/ipa/ipa_table.c
-@@ -118,14 +118,6 @@
- /* Check things that can be validated at build time. */
- static void ipa_table_validate_build(void)
+diff --git a/drivers/net/ipa/Kconfig b/drivers/net/ipa/Kconfig
+index b68f1289b89ef..90a90262e0d07 100644
+--- a/drivers/net/ipa/Kconfig
++++ b/drivers/net/ipa/Kconfig
+@@ -1,6 +1,6 @@
+ config QCOM_IPA
+ 	tristate "Qualcomm IPA support"
+-	depends on 64BIT && NET && QCOM_SMEM
++	depends on NET && QCOM_SMEM
+ 	depends on ARCH_QCOM || COMPILE_TEST
+ 	depends on QCOM_RPROC_COMMON || (QCOM_RPROC_COMMON=n && COMPILE_TEST)
+ 	select QCOM_MDT_LOADER if ARCH_QCOM
+diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+index 97c1b55405cbf..d354e3e65ec50 100644
+--- a/drivers/net/ipa/ipa_main.c
++++ b/drivers/net/ipa/ipa_main.c
+@@ -735,8 +735,14 @@ MODULE_DEVICE_TABLE(of, ipa_match);
+ static void ipa_validate_build(void)
  {
--	/* IPA hardware accesses memory 128 bytes at a time.  Addresses
--	 * referred to by entries in filter and route tables must be
--	 * aligned on 128-byte byte boundaries.  The only rule address
--	 * ever use is the "zero rule", and it's aligned at the base
--	 * of a coherent DMA allocation.
--	 */
--	BUILD_BUG_ON(ARCH_DMA_MINALIGN % IPA_TABLE_ALIGN);
--
- 	/* Filter and route tables contain DMA addresses that refer
- 	 * to filter or route rules.  But the size of a table entry
- 	 * is 64 bits regardless of what the size of an AP DMA address
-@@ -665,6 +657,18 @@ int ipa_table_init(struct ipa *ipa)
- 	if (!virt)
- 		return -ENOMEM;
- 
-+	/* We put the "zero rule" at the base of our table area.  The IPA
-+	 * hardware requires rules to be aligned on a 128-byte boundary.
-+	 * Make sure the allocation satisfies this constraint.
+ #ifdef IPA_VALIDATE
+-	/* We assume we're working on 64-bit hardware */
+-	BUILD_BUG_ON(!IS_ENABLED(CONFIG_64BIT));
++	/* At one time we assumed a 64-bit build, allowing some do_div()
++	 * calls to be replaced by simple division or modulo operations.
++	 * We currently only perform divide and modulo operations on u32,
++	 * u16, or size_t objects, and of those only size_t has any chance
++	 * of being a 64-bit value.  (It should be guaranteed 32 bits wide
++	 * on a 32-bit build, but there is no harm in verifying that.)
 +	 */
-+	if (addr % IPA_TABLE_ALIGN) {
-+		dev_err(dev, "table address %pad not %u-byte aligned\n",
-+			&addr, IPA_TABLE_ALIGN);
-+		dma_free_coherent(dev, size, virt, addr);
-+
-+		return -ERANGE;
-+	}
-+
- 	ipa->table_virt = virt;
- 	ipa->table_addr = addr;
++	BUILD_BUG_ON(!IS_ENABLED(CONFIG_64BIT) && sizeof(size_t) != 4);
  
+ 	/* Code assumes the EE ID for the AP is 0 (zeroed structure field) */
+ 	BUILD_BUG_ON(GSI_EE_AP != 0);
 -- 
 2.27.0
 
