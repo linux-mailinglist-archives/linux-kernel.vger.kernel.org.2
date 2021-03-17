@@ -2,64 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B0033EA64
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:15:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4ED33EA67
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:16:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230199AbhCQHPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S229550AbhCQHPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 03:15:44 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:36734 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230154AbhCQHPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Mar 2021 03:15:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbhCQHO4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 03:14:56 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03456C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 00:14:55 -0700 (PDT)
-Received: from [2a02:fe0:c700:2:559d:4a7b:2050:4789] (port=64214)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <Ywe_C@lam.works>)
-        id 1lMQOL-0005Jn-PR
-        for linux-kernel@vger.kernel.org; Wed, 17 Mar 2021 08:14:53 +0100
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C@lam.works>
-Subject: For those who did not get this yet, Fair Pay discussion is over, and
- concluded with LCPU.
-Message-ID: <15b1b173-accb-6746-630b-a0945a49bb9d@lam.works>
-Date:   Wed, 17 Mar 2021 08:14:48 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Bxs+R7rFFggT8BAA--.4262S2;
+        Wed, 17 Mar 2021 15:15:08 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
+Date:   Wed, 17 Mar 2021 15:15:07 +0800
+Message-Id: <1615965307-6926-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Bxs+R7rFFggT8BAA--.4262S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw4rAF43Kr1xKFW8ur18uFg_yoW8XF1fpa
+        nYyasxKrW7Wr45GF40y3yxuryrJrZ7CrW3WF4rtFWrZa98urWDXr4Sqa1ayryjvr4DX3W3
+        u34xua47KaykCrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkm14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4x
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU8J5oDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got some mails on some old posts here, please update: Fair Pay 
-discussion is over, and concluded with LCPU.
+After commit 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to
+archs where they work"), bpf_probe_read{, str}() functions were not longer
+available on MIPS, so there exists some errors when running bpf program:
 
-My media chan is here: 
-https://www.youtube.com/channel/UC3BcyFY1Bphc7smGH-IGLVw Bit Qabbi, 
-which always has been about the monotheistic angle, now also with the 
-term Qabbi, taking inspiration from the muslim shaped Qaba, for design.
+root@linux:/home/loongson/bcc# python examples/tracing/task_switch.py
+bpf: Failed to load program: Invalid argument
+[...]
+11: (85) call bpf_probe_read#4
+unknown func bpf_probe_read#4
+[...]
+Exception: Failed to load BPF program count_sched: Invalid argument
 
-Knowing the muslim debate follows, we have made a joke reply to this, 
-seeing that it is mostly based in a deviant Eid, which I am not 
-interested in. https://www.youtube.com/channel/UCDDmHQv0dTHPjdwJwKrjLqQ
+So select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE in arch/mips/Kconfig,
+otherwise the bpf old helper bpf_probe_read() will not be available.
 
-A discussion on reality goes to the standard expression of Alla, and 
-this should then be the goal, and is already on my projects.
+This is similar with the commit d195b1d1d1196 ("powerpc/bpf: Enable
+bpf_probe_read{, str}() on powerpc again").
 
-Trance actually was this in the 90s, but when it reached that stage, 
-many became confused, and it mostly failed. (While it did actually 
-represent reality in media a few times). I was ready for this and DID
-become a muslim.
+Fixes: 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to archs where they work")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-LCPU representing natural progression in computing space.
-
-Serenity,
-Ywe Cærlyn
-(Best read in Cursive).
-
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 160b3a8..4b94ec7 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -6,6 +6,7 @@ config MIPS
+ 	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
+ 	select ARCH_HAS_FORTIFY_SOURCE
+ 	select ARCH_HAS_KCOV
++	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+ 	select ARCH_HAS_PTE_SPECIAL if !(32BIT && CPU_HAS_RIXI)
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+-- 
+2.1.0
 
