@@ -2,139 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A4D33F964
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA16433F967
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:35:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233255AbhCQTex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233280AbhCQTex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 17 Mar 2021 15:34:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:44706 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233233AbhCQTeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:34:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57D03ED1;
-        Wed, 17 Mar 2021 12:34:21 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5D0853F70D;
-        Wed, 17 Mar 2021 12:34:19 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 19:34:16 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Chen Jun <chenjun102@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, akpm@linux-foundation.org,
-        will@kernel.org, rui.xiang@huawei.com,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] arm64: stacktrace: Add skip when task == current
-Message-ID: <20210317193416.GB9786@C02TD0UTHF1T.local>
-References: <20210317142050.57712-1-chenjun102@huawei.com>
- <20210317142050.57712-3-chenjun102@huawei.com>
- <20210317183636.GG12269@arm.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233242AbhCQTek (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 15:34:40 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6CBC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:34:40 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so3777672pjq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:34:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aC9XfsPEhWKeOkyFve3gS/y0ZK6Rzz537p4VTrc/pes=;
+        b=J7R0WNva4AWUE8efmdEYqtl6XZlVUBn+CBlU6HWx77oRXvMjetKAsiD/YUYQchl7iR
+         2dUWIMmTGRS552IhNuMHn1MRe2X8gDQzUE6Lt7q3D1P1kUmDH9CicIblf5m/yUbpIH7+
+         9RvzBuZs+pQx9RJHQGgaGMxoUQJYjDIi9qVR4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aC9XfsPEhWKeOkyFve3gS/y0ZK6Rzz537p4VTrc/pes=;
+        b=cyZfaN/ZIMNDJ5dfCj080cCdN0y0VfBERJJ2WX3SQjFHHXo/Dzo7te+1wbAyjG9loD
+         Jv/1LsXT3haCMX69dcTvAtIcmZxt3O+H88kk5fjcJLQM/1TWlzRcHI2TyaT2d2XN9N4X
+         TswADVff2Z/K9pzswMb3/Fto5R9BBOQHlmY11t9c+/6sp0jQ+X2wvTdJ1iwpPdn7pAF9
+         iL5v4/La7K50UwpskRELM2qzbceIRJmRTwvm62QQq41wk2K4oSE7ilI6maAFZbxG4tr9
+         UIKcUluBlpc80D5lXvLqRqFol5Rk288YoyG1af8S/GremrRgttoQumUxFVJshwsSOVWm
+         g61g==
+X-Gm-Message-State: AOAM533C3ob4wPqvu/x3qwoW/3iNBvgc55nm6aI29ZmOpAu+9DQ0NpFp
+        xKvQ2l5dtUmfjtS/tuNPGNdGYg==
+X-Google-Smtp-Source: ABdhPJzvuzh0GDbQL02R1z72e58lYtYzY2DOXtCGDAWJ1P7tMT0SK4OSOelL6P3kE8/PqHxea2fa1w==
+X-Received: by 2002:a17:902:ee06:b029:e4:ba18:3726 with SMTP id z6-20020a170902ee06b02900e4ba183726mr5991813plb.17.1616009679874;
+        Wed, 17 Mar 2021 12:34:39 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:3cf8:6a09:780b:f65d])
+        by smtp.gmail.com with UTF8SMTPSA id v134sm20517485pfc.182.2021.03.17.12.34.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 12:34:39 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 12:34:36 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wesley Cheng <wcheng@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-usb@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
+Subject: Re: [PATCH 1/3] dt-bindings: usb: qcom,dwc3: Add bindings for SC7280
+Message-ID: <YFJZzAPo4Rh8I5lX@google.com>
+References: <1615978901-4202-1-git-send-email-sanm@codeaurora.org>
+ <1615978901-4202-2-git-send-email-sanm@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210317183636.GG12269@arm.com>
+In-Reply-To: <1615978901-4202-2-git-send-email-sanm@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 06:36:36PM +0000, Catalin Marinas wrote:
-> On Wed, Mar 17, 2021 at 02:20:50PM +0000, Chen Jun wrote:
-> > On ARM64, cat /sys/kernel/debug/page_owner, all pages return the same
-> > stack:
-> >  stack_trace_save+0x4c/0x78
-> >  register_early_stack+0x34/0x70
-> >  init_page_owner+0x34/0x230
-> >  page_ext_init+0x1bc/0x1dc
-> > 
-> > The reason is that:
-> > check_recursive_alloc always return 1 because that
-> > entries[0] is always equal to ip (__set_page_owner+0x3c/0x60).
-> > 
-> > The root cause is that:
-> > commit 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
-> > make the save_trace save 2 more entries.
-> > 
-> > Add skip in arch_stack_walk when task == current.
-> > 
-> > Fixes: 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
-> > Signed-off-by: Chen Jun <chenjun102@huawei.com>
-> > ---
-> >  arch/arm64/kernel/stacktrace.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-> > index ad20981..c26b0ac 100644
-> > --- a/arch/arm64/kernel/stacktrace.c
-> > +++ b/arch/arm64/kernel/stacktrace.c
-> > @@ -201,11 +201,12 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
-> >  
-> >  	if (regs)
-> >  		start_backtrace(&frame, regs->regs[29], regs->pc);
-> > -	else if (task == current)
-> > +	else if (task == current) {
-> > +		((struct stacktrace_cookie *)cookie)->skip += 2;
-> >  		start_backtrace(&frame,
-> >  				(unsigned long)__builtin_frame_address(0),
-> >  				(unsigned long)arch_stack_walk);
-> > -	else
-> > +	} else
-> >  		start_backtrace(&frame, thread_saved_fp(task),
-> >  				thread_saved_pc(task));
+On Wed, Mar 17, 2021 at 04:31:39PM +0530, Sandeep Maheswaram wrote:
+> Add the compatible string for sc7280 SoC from Qualcomm.
 > 
-> I don't like abusing the cookie here. It's void * as it's meant to be an
-> opaque type. I'd rather skip the first two frames in walk_stackframe()
-> instead before invoking fn().
-
-I agree that we shouldn't touch cookie here.
-
-I don't think that it's right to bodge this inside walk_stackframe(),
-since that'll add bogus skipping for the case starting with regs in the
-current task. If we need a bodge, it has to live in arch_stack_walk()
-where we set up the initial unwinding state.
-
-In another thread, we came to the conclusion that arch_stack_walk()
-should start at its parent, and its parent should add any skipping it
-requires.
-
-Currently, arch_stack_walk() is off-by-one, and we can bodge that by
-using __builtin_frame_address(1), though I'm waiting for some compiler
-folk to confirm that's sound. Otherwise we need to add an assembly
-trampoline to snapshot the FP, which is unfortunastely convoluted.
-
-This report suggests that a caller of arch_stack_walk() is off-by-one
-too, which suggests a larger cross-architecture semantic issue. I'll try
-to take a look tomorrow.
-
-Thanks,
-Mark.
-
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Prior to the conversion to ARCH_STACKWALK, we were indeed skipping two
-> more entries in __save_stack_trace() if tsk == current. Something like
-> below, completely untested:
-> 
-> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-> index ad20981dfda4..2a9f759aa41a 100644
-> --- a/arch/arm64/kernel/stacktrace.c
-> +++ b/arch/arm64/kernel/stacktrace.c
-> @@ -115,10 +115,15 @@ NOKPROBE_SYMBOL(unwind_frame);
->  void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
->  			     bool (*fn)(void *, unsigned long), void *data)
->  {
-> +	/* for the current task, we don't want this function nor its caller */
-> +	int skip = tsk == current ? 2 : 0;
-> +
->  	while (1) {
->  		int ret;
->  
-> -		if (!fn(data, frame->pc))
-> +		if (skip)
-> +			skip--;
-> +		else if (!fn(data, frame->pc))
->  			break;
->  		ret = unwind_frame(tsk, frame);
->  		if (ret < 0)
-> 
-> 
-> -- 
-> Catalin
+> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> index c3cbd1f..413299b 100644
+> --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> @@ -16,6 +16,7 @@ properties:
+>            - qcom,msm8996-dwc3
+>            - qcom,msm8998-dwc3
+>            - qcom,sc7180-dwc3
+> +          - qcom,sc7280-dwc3
+>            - qcom,sdm845-dwc3
+>            - qcom,sdx55-dwc3
+>            - qcom,sm8150-dwc3
+
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
