@@ -2,91 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478FF33EB37
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6B633EB65
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:26:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbhCQIQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:16:46 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46915 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhCQIQN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:16:13 -0400
-Received: from mail-ej1-f71.google.com ([209.85.218.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lMRLg-0000CA-4W
-        for linux-kernel@vger.kernel.org; Wed, 17 Mar 2021 08:16:12 +0000
-Received: by mail-ej1-f71.google.com with SMTP id 11so14809282ejz.20
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:16:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=h7RuThKGVeD8HpXasnQO91ZFAcbdaCJWKNu1ufXCr2w=;
-        b=T7KOvpOA0ajTX58oYLo7qiT3lP8W4SF48hbGF8c1Q56pkUi648gXctLNSWabtm1fSd
-         ejbVdE4hWjqqDAzOoyHQwUzLwCJEIS+LGLNTV5Sx28Fe8q0qzCKq9eqb6tICoOlRp0lC
-         J36q5gpVRknunp3IJ6EcElrKK3IlbT48bAnf7ZfGI44YUOKTiSxCUlu6Vm9AyXvwG7w3
-         DYYkVH63eZBCOg38Jlup8XQgEJZkiBiHLnDjWLJ9Owj+sVRkPX90LVOaua2SuWEaPnZf
-         8Ed2O3qIJfAfrstUkpkKjraxBcGCZve1ENqh+k0eTNXMcgM32GiLdLHHjagc56f9K9kS
-         +vXQ==
-X-Gm-Message-State: AOAM532DK5p5cKidvKIdpujKs1t4zEJSDEWYYu1y/UH0Y2d0ZS87GUfE
-        69qFqnyfzA/cobd9RZuG2Y1uE6NLl0ZNcRNjKRntB2LJAN42W7FmiY0K+LCN9RJwjn7Kv9FWrOy
-        R1TqkgBHizf8rl5lP8N5IPcFv26IhAhcVZEwQzh0nUg==
-X-Received: by 2002:a17:906:75a:: with SMTP id z26mr33965990ejb.22.1615968971921;
-        Wed, 17 Mar 2021 01:16:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwPcCO5sSi1eo5a3askTdA/AAtRTlKM87h4YwdmFP5QiRbC3VpupLgHfc3JdAdM/y1VwLMscA==
-X-Received: by 2002:a17:906:75a:: with SMTP id z26mr33965971ejb.22.1615968971762;
-        Wed, 17 Mar 2021 01:16:11 -0700 (PDT)
-Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id jv19sm10845827ejc.74.2021.03.17.01.16.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 01:16:11 -0700 (PDT)
-Subject: Re: [PATCH] MIPS: ralink: define stubs for clk_set_parent to fix
- compile testing
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
-        linux-tegra@vger.kernel.org, balbi@kernel.org,
-        linux-usb@vger.kernel.org, digetx@gmail.com,
-        kernel test robot <lkp@intel.com>
-References: <20210316175725.79981-1-krzysztof.kozlowski@canonical.com>
- <20210316215820.GA18064@alpha.franken.de>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <804bb73f-7de0-e91b-ed57-a3b26de78fce@canonical.com>
-Date:   Wed, 17 Mar 2021 09:16:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229705AbhCQIZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:25:59 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:56396 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229607AbhCQIZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 04:25:50 -0400
+X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Mar 2021 04:25:49 EDT
+Received: from localhost.localdomain (unknown [116.6.100.50])
+        by APP-03 (Coremail) with SMTP id rQCowADH6A0pu1Fgwa5oAA--.10281S4;
+        Wed, 17 Mar 2021 16:18:05 +0800 (CST)
+From:   Zihao Yu <yuzihao@ict.ac.cn>
+To:     paul.walmsley@sifive.com
+Cc:     palmer@dabbelt.com, aou@eecs.berkeley.edu, yuzihao@ict.ac.cn,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv,entry: fix misaligned base for excp_vect_table
+Date:   Wed, 17 Mar 2021 16:17:25 +0800
+Message-Id: <20210317081725.28412-1-yuzihao@ict.ac.cn>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210316215820.GA18064@alpha.franken.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: rQCowADH6A0pu1Fgwa5oAA--.10281S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrZrWkXFyfZF1Utw13GrWDtwb_yoW3Wwb_uw
+        1xXan7urW3JF9aqFnFqwsagrsI9ayrtF95Gr1xWr1ak3WUZr1Sk3sxWwn8Zrs5Gw48trZ7
+        AF93JFsxtr429jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbzxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxG
+        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
+        vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IY
+        x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
+        xKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+        67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbd-PUUUUUU==
+X-Originating-IP: [116.6.100.50]
+X-CM-SenderInfo: p1x2xx1dr6xunwoduhdfq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/03/2021 22:58, Thomas Bogendoerfer wrote:
-> On Tue, Mar 16, 2021 at 06:57:25PM +0100, Krzysztof Kozlowski wrote:
->> The Ralink MIPS platform does not use Common Clock Framework and does
->> not define certain clock operations leading to compile test failures:
->>
->>     /usr/bin/mips-linux-gnu-ld: drivers/usb/phy/phy-tegra-usb.o: in function `tegra_usb_phy_init':
->>     phy-tegra-usb.c:(.text+0x1dd4): undefined reference to `clk_get_parent'
-> 
-> hmm, why not make it use common clock framework ? And shouldn't 
-> include/linux/clk.h provide what you need, if CONFIG_HAVE_CLK is not set ?
+* In RV64, the size of each entry in excp_vect_table is 8 bytes. If the
+  base of the table is not 8-byte aligned, loading an entry in the table
+  will raise a misaligned exception. Although such exception will be
+  handled by opensbi/bbl, this still causes performance degradation.
 
-Converting entire Ralink machine to the CCF is quite a task requiring
-testing and basic knowledge about this platform. I am just trying to
-plug the build failure reported some months ago [1][2]. The CCF does not
-provide stubs if platform provides its own clocks.
+Signed-off-by: Zihao Yu <yuzihao@ict.ac.cn>
+---
+ arch/riscv/kernel/entry.S | 1 +
+ 1 file changed, 1 insertion(+)
 
-[1] https://lore.kernel.org/lkml/202102170017.MgPVy7aZ-lkp@intel.com/
-[2]
-https://lore.kernel.org/lkml/20210316075551.10259-1-krzysztof.kozlowski@canonical.com/
+diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+index 744f3209c..76274a4a1 100644
+--- a/arch/riscv/kernel/entry.S
++++ b/arch/riscv/kernel/entry.S
+@@ -447,6 +447,7 @@ ENDPROC(__switch_to)
+ #endif
+ 
+ 	.section ".rodata"
++	.align LGREG
+ 	/* Exception vector table */
+ ENTRY(excp_vect_table)
+ 	RISCV_PTR do_trap_insn_misaligned
+-- 
+2.20.1
 
-Best regards,
-Krzysztof
