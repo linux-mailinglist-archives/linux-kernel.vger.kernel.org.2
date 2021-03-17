@@ -2,143 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34FC333F744
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6B533F74B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231604AbhCQRlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:41:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbhCQRkn (ORCPT
+        id S231948AbhCQRmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:42:19 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:59831 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232386AbhCQRmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:40:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69FCC06174A;
-        Wed, 17 Mar 2021 10:40:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vg/NxtC+FUWyuBFjfo8bGAaIZSPPvuY3LqUFygsfcDE=; b=A0j/Kt3/HS2x+KWi+tgYY6jnch
-        +WDTvjgl453QexQhUj+zzxY8jQhBsFkJSf5Odo/lPac85gj5psiHbhEdu3gzWIIg5BDel+/0zVtSe
-        YxInHQX5cJBo27QmABY5DE2IwUQeGdeN6jEvzD7abwpkJeGNrr1DUYuUUk+pezquYMOR8aXWw7dRG
-        pXyJV0mRQkEZjAyWWbdwDB+jzC+7dB6UzV1iiic/FEVw62iS0gN/UIpfmxq1iOoPqnng/2R2gmNmU
-        e6FA4SKVUKXukgD4LrmS4TDrm78yf0gGTCMBwomUlzRgD2CdkSPbfES5wjrSCkaS/pzT+2GlpHhxC
-        e8vbjvog==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMa9j-001vaQ-RG; Wed, 17 Mar 2021 17:40:33 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 82A1E305C10;
-        Wed, 17 Mar 2021 18:40:27 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7160F2C051CD8; Wed, 17 Mar 2021 18:40:27 +0100 (CET)
-Date:   Wed, 17 Mar 2021 18:40:27 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org
-Subject: Re: [tip: locking/urgent] locking/ww_mutex: Treat ww_mutex_lock()
- like a trylock
-Message-ID: <YFI/C4VZuWjyHLNK@hirez.programming.kicks-ass.net>
-References: <20210316153119.13802-4-longman@redhat.com>
- <161598470197.398.8903908266426306140.tip-bot2@tip-bot2>
- <YFIASRkXowQWgj2s@hirez.programming.kicks-ass.net>
- <YFIEo8IVQ/Mm9jUE@hirez.programming.kicks-ass.net>
- <e1bcd7fb-3a40-f207-ee19-d276c8b8bb75@redhat.com>
- <e39f4e37-e3c0-e62a-7062-fdd2c8b3d3b9@redhat.com>
- <YFIy8Bzj7WAHFmlG@hirez.programming.kicks-ass.net>
+        Wed, 17 Mar 2021 13:42:08 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1lMaBK-002oQy-Po; Wed, 17 Mar 2021 18:42:06 +0100
+Received: from p5b13a966.dip0.t-ipconnect.de ([91.19.169.102] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lMaBK-003xU6-J8; Wed, 17 Mar 2021 18:42:06 +0100
+Subject: Re: 5.11 regression: "ia64: add support for TIF_NOTIFY_SIGNAL" breaks
+ ia64 boot
+To:     Sergei Trofimovich <slyich@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210222230519.73f3e239@sf>
+ <cc658b61-530e-90bf-3858-36cc60468a24@kernel.dk>
+ <8decdd2e-a380-9951-3ebb-2bc3e48aa1c3@physik.fu-berlin.de>
+ <20210223083507.43b5a6dd@sf>
+ <51cbf584-07ef-1e62-7a3b-81494a04faa6@physik.fu-berlin.de>
+ <9441757f-d4bc-a5b5-5fb0-967c9aaca693@physik.fu-berlin.de>
+ <20210223192743.0198d4a9@sf>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <8d54dd1d-a035-8dff-64dc-7175aba6033f@physik.fu-berlin.de>
+Date:   Wed, 17 Mar 2021 18:42:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFIy8Bzj7WAHFmlG@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210223192743.0198d4a9@sf>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.169.102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 05:48:48PM +0100, Peter Zijlstra wrote:
+Hi!
 
-> I think you'll find that if you use ww_mutex_init() it'll all work. Let
-> me go and zap this patch, and then I'll try and figure out why
-> DEFINE_WW_MUTEX() is buggered.
+On 2/23/21 8:27 PM, Sergei Trofimovich wrote:
+>>> Just gave it a try and it still doesn't work.  
+>>
+>> Maybe your other two patches to fix the strace issues are required as well?
+> 
+> I'd say it's very unlikely they have any effect here. AFAIU they only amend
+> ptrace() behaviour called from userspace. Failure to boot so early is probably
+> way before any userspace.
+> 
+>> Or do you happen to have more patches in the Gentoo kernel?
+> 
+> Nope. It was a vanilla 5.11 release with 3 patches: 1 signal fix and
+> 2 ptrace() patches.
+> 
+> Here are dmesg and config from my machine with successfull boot:
+>     https://dev.gentoo.org/~slyfox/configs/guppy-dmesg-5.11
+>     https://dev.gentoo.org/~slyfox/configs/guppy-config-5.11
 
-Moo, I can't get the compiler to do as I want :/
+Just gave it a try using this kernel configuration. It's never loading the hpsa
+module for me which I find really strange. The module isn't even showing up in
+the kernel message buffer.
 
-The below is so close but doesn't actually compile.. Maybe we should
-just give up on DEFINE_WW_MUTEX and simply remove it.
+>> [    0.036000] ERROR: Invalid distance value range                                                            
+>> [    0.036000]                                                                                                
+>> [    0.036000]   00 00 00 00 00 00
+> 
+> I don't see this string in the 5.11 kernel source. But
+>    https://lore.kernel.org/lkml/161356785681.20312.13022545187499987936.tip-bot2@tip-bot2/T/
+> hints it's might be something very new and you are in the
+> middle of 5.12-rc1?
 
----
-diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-index 0cd631a19727..85f50538f26a 100644
---- a/include/linux/mutex.h
-+++ b/include/linux/mutex.h
-@@ -129,12 +129,15 @@ do {									\
- # define __DEP_MAP_MUTEX_INITIALIZER(lockname)
- #endif
- 
--#define __MUTEX_INITIALIZER(lockname) \
-+#define ___MUTEX_INITIALIZER(lockname, depmap) \
- 		{ .owner = ATOMIC_LONG_INIT(0) \
- 		, .wait_lock = __SPIN_LOCK_UNLOCKED(lockname.wait_lock) \
- 		, .wait_list = LIST_HEAD_INIT(lockname.wait_list) \
- 		__DEBUG_MUTEX_INITIALIZER(lockname) \
--		__DEP_MAP_MUTEX_INITIALIZER(lockname) }
-+		depmap }
-+
-+#define __MUTEX_INITIALIZER(lockname) \
-+		___MUTEX_INITIALIZER(lockname, __DEP_MAP_MUTEX_INITIALIZER(lockname))
- 
- #define DEFINE_MUTEX(mutexname) \
- 	struct mutex mutexname = __MUTEX_INITIALIZER(mutexname)
-diff --git a/include/linux/ww_mutex.h b/include/linux/ww_mutex.h
-index 6ecf2a0220db..c62a030652b4 100644
---- a/include/linux/ww_mutex.h
-+++ b/include/linux/ww_mutex.h
-@@ -50,9 +50,17 @@ struct ww_acquire_ctx {
- 
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- # define __WW_CLASS_MUTEX_INITIALIZER(lockname, class) \
--		, .ww_class = class
-+		, .ww_class = &(class)
-+
-+# define __DEP_MAP_WW_MUTEX_INITIALIZER(lockname, class) \
-+		, .dep_map = { \
-+			.key = &(class).mutex_key, \
-+			.name = (class).mutex_name, \
-+			.wait_type_inner = LD_WAIT_SLEEP, \
-+		}
- #else
- # define __WW_CLASS_MUTEX_INITIALIZER(lockname, class)
-+# define __DEP_MAP_WW_MUTEX_INITIALIZER(lockname, class)
- #endif
- 
- #define __WW_CLASS_INITIALIZER(ww_class, _is_wait_die)	    \
-@@ -62,7 +70,8 @@ struct ww_acquire_ctx {
- 		, .is_wait_die = _is_wait_die }
- 
- #define __WW_MUTEX_INITIALIZER(lockname, class) \
--		{ .base =  __MUTEX_INITIALIZER(lockname.base) \
-+		{ .base =  ___MUTEX_INITIALIZER(lockname.base, \
-+			__DEP_MAP_WW_MUTEX_INITIALIZER(lockname.base, class)) \
- 		__WW_CLASS_MUTEX_INITIALIZER(lockname, class) }
- 
- #define DEFINE_WD_CLASS(classname) \
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 0ab94e1f1276..e8305233eb0b 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -358,9 +358,9 @@ static struct lock_torture_ops mutex_lock_ops = {
- 
- #include <linux/ww_mutex.h>
- static DEFINE_WD_CLASS(torture_ww_class);
--static DEFINE_WW_MUTEX(torture_ww_mutex_0, &torture_ww_class);
--static DEFINE_WW_MUTEX(torture_ww_mutex_1, &torture_ww_class);
--static DEFINE_WW_MUTEX(torture_ww_mutex_2, &torture_ww_class);
-+static DEFINE_WW_MUTEX(torture_ww_mutex_0, torture_ww_class);
-+static DEFINE_WW_MUTEX(torture_ww_mutex_1, torture_ww_class);
-+static DEFINE_WW_MUTEX(torture_ww_mutex_2, torture_ww_class);
- 
- static int torture_ww_mutex_lock(void)
- __acquires(torture_ww_mutex_0)
+I'm seeing this using your exact kernel configuration.
+
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
