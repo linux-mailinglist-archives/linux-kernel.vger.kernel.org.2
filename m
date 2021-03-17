@@ -2,139 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E848C33E30F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:55:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 220CB33E3A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:58:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhCQAz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhCQAzR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:55:17 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F09CC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:55:17 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id da16so26600739qvb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:55:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=sEoOOfzl8seVEQxt7AKb/MB7g4+cwCvdVL+g/G4yCaI=;
-        b=O1ePT2YK+FfWGO1llf1NXHAFoDzaZoFYL1Ioxj3DP2XqGsit36lSXWxtK+fzF7iprB
-         k+b2aFvi0yZoNp8liIzPHJ1ZR6I49vLQrMXjl0I8YdcOTvUafAlJLCllupM5LAwAzS7+
-         u6Yc3SAiUsqbVFJNT9RT4xZGyQ3a+l65j7Q3jFfFRMmpQ92L9vkI7mHhgruwr/unZvVf
-         S4YKsp9zjQSjYmK9Cefir+l1kci3lIIMwQHkviBEs4nAgb5iUnMxOmAJQg8a7aNirAa8
-         PYveWTpSgI66xh58cgTSPSy3l8CmWhhMEs0h8zvqU+oMVedTxlJjF2CTBJ6krw+sO972
-         L1rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=sEoOOfzl8seVEQxt7AKb/MB7g4+cwCvdVL+g/G4yCaI=;
-        b=scnvoCnHSZ+A/XCnf5KI4uOYYioqmoGKGMPhMFz1tOrGH+uTHdTe3TzyF098wj0ux4
-         EKPUED7mbyx57SAqw2wKvllIQCZisHx38wadl41KKx+eou9mibYoQQ/aM9dj7mS5cxvX
-         aiHSRNWt/B8CKt3zHxqnoZBAXRh4De705nAzivopV/1QJ09QgkwQ6jWEZSebVA3Ru/GI
-         igrbJ3s1y7PG8gZ4H1PQ5OKTBxHYVPqyfj4vKPIfmQ3ztEd2eO+QZL+JxAZtaJvX5N2z
-         7F5kcxrRI3DHSwSsp6aXfTtbchWj1A2NGUrR5ptNXvA9Vl4s067hLzI9enMiqPQliBCZ
-         keuw==
-X-Gm-Message-State: AOAM532SkPUlWetF8ovbnxhuLqTAOZimLpoS8j1R6cU/CqCTcvaZYOKt
-        7KGwZqEDN/a/2yn73io9TtlCjQcuPh2l
-X-Google-Smtp-Source: ABdhPJwXb6EtPFEN5njHDlY6/phMEUdaEMQVqp5dfCh/cDeww+5c5qi6gp76B14eaoGON7/ucon24AlpFCes
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:dd81:7319:7b35:a87a])
- (user=irogers job=sendgmr) by 2002:a0c:aa45:: with SMTP id
- e5mr2412051qvb.44.1615942516532; Tue, 16 Mar 2021 17:55:16 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 17:55:04 -0700
-In-Reply-To: <20210317005505.2794804-1-irogers@google.com>
-Message-Id: <20210317005505.2794804-2-irogers@google.com>
-Mime-Version: 1.0
-References: <20210317005505.2794804-1-irogers@google.com>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v2 2/3] perf test: Cleanup daemon if test is interrupted.
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S231520AbhCQA5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:57:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230365AbhCQA4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 20:56:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D32E64F8F;
+        Wed, 17 Mar 2021 00:56:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615942573;
+        bh=06AdV+JkCI79bqE8VrXjJjhz6t24lXG9Wq7P9wAxE/M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=PCv43EQmKr1jhTeTNFcS23zvmdyUFpUlBi+Va2x097SZYsh2SGWWe66j8gA28lWUt
+         2QrzwlNm1aPrHos20+uBR9g8zPtVZVPGaX5n8EB0TXv4IG9UsxK+FV/mNUWfDBhORD
+         n3VILbSRgtqH56xabMqltlBPwA7jwMYAPi7q6dYH8Ka+tQOVTk4+eWkTW7vgqb4HGG
+         NbGIqT3Gm6YqmFzm0yazdlVqS6J0pdUdNGfzz+x4ZvdyCbw35M3eu+wZOmKRHDszwO
+         mdKlxWAJNIUpS9V5TB01esWTRHlHTtWkaaynp9sfNfifYB+mf2CTiaj2kghzb7a7DN
+         0xOCbMJRbovgQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 30/61] irqchip/ingenic: Add support for the JZ4760
+Date:   Tue, 16 Mar 2021 20:55:04 -0400
+Message-Id: <20210317005536.724046-30-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210317005536.724046-1-sashal@kernel.org>
+References: <20210317005536.724046-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reorder daemon_start and daemon_exit as the trap handler is added in
-daemon_start referencing daemon_exit.
+From: Paul Cercueil <paul@crapouillou.net>
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+[ Upstream commit 5fbecd2389f48e1415799c63130d0cdce1cf3f60 ]
+
+Add support for the interrupt controller found in the JZ4760 SoC, which
+works exactly like the one in the JZ4770.
+
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210307172014.73481-2-paul@crapouillou.net
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/tests/shell/daemon.sh | 34 +++++++++++++++++++-------------
- 1 file changed, 20 insertions(+), 14 deletions(-)
+ drivers/irqchip/irq-ingenic-tcu.c | 1 +
+ drivers/irqchip/irq-ingenic.c     | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/tools/perf/tests/shell/daemon.sh b/tools/perf/tests/shell/daemon.sh
-index 66ad56b4e0a5..61d13c4c64b8 100755
---- a/tools/perf/tests/shell/daemon.sh
-+++ b/tools/perf/tests/shell/daemon.sh
-@@ -98,6 +98,23 @@ check_line_other()
- 	fi
+diff --git a/drivers/irqchip/irq-ingenic-tcu.c b/drivers/irqchip/irq-ingenic-tcu.c
+index 7a7222d4c19c..b938d1d04d96 100644
+--- a/drivers/irqchip/irq-ingenic-tcu.c
++++ b/drivers/irqchip/irq-ingenic-tcu.c
+@@ -179,5 +179,6 @@ static int __init ingenic_tcu_irq_init(struct device_node *np,
  }
- 
-+daemon_exit()
-+{
-+	local config=$1
-+
-+	local line=`perf daemon --config ${config} -x: | head -1`
-+	local pid=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $1 }'`
-+
-+	# Reset trap handler.
-+	trap - SIGINT SIGTERM
-+
-+	# stop daemon
-+	perf daemon stop --config ${config}
-+
-+	# ... and wait for the pid to go away
-+	tail --pid=${pid} -f /dev/null
-+}
-+
- daemon_start()
+ IRQCHIP_DECLARE(jz4740_tcu_irq, "ingenic,jz4740-tcu", ingenic_tcu_irq_init);
+ IRQCHIP_DECLARE(jz4725b_tcu_irq, "ingenic,jz4725b-tcu", ingenic_tcu_irq_init);
++IRQCHIP_DECLARE(jz4760_tcu_irq, "ingenic,jz4760-tcu", ingenic_tcu_irq_init);
+ IRQCHIP_DECLARE(jz4770_tcu_irq, "ingenic,jz4770-tcu", ingenic_tcu_irq_init);
+ IRQCHIP_DECLARE(x1000_tcu_irq, "ingenic,x1000-tcu", ingenic_tcu_irq_init);
+diff --git a/drivers/irqchip/irq-ingenic.c b/drivers/irqchip/irq-ingenic.c
+index b61a8901ef72..ea36bb00be80 100644
+--- a/drivers/irqchip/irq-ingenic.c
++++ b/drivers/irqchip/irq-ingenic.c
+@@ -155,6 +155,7 @@ static int __init intc_2chip_of_init(struct device_node *node,
  {
- 	local config=$1
-@@ -105,6 +122,9 @@ daemon_start()
- 
- 	perf daemon start --config ${config}
- 
-+	# Clean up daemon if interrupted.
-+	trap "echo 'FAILED: Signal caught'; daemon_exit ${config}; exit 1" SIGINT SIGTERM
-+
- 	# wait for the session to ping
- 	local state="FAIL"
- 	while [ "${state}" != "OK" ]; do
-@@ -113,20 +133,6 @@ daemon_start()
- 	done
+ 	return ingenic_intc_of_init(node, 2);
  }
- 
--daemon_exit()
--{
--	local config=$1
--
--	local line=`perf daemon --config ${config} -x: | head -1`
--	local pid=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $1 }'`
--
--	# stop daemon
--	perf daemon stop --config ${config}
--
--	# ... and wait for the pid to go away
--	tail --pid=${pid} -f /dev/null
--}
--
- test_list()
- {
- 	echo "test daemon list"
++IRQCHIP_DECLARE(jz4760_intc, "ingenic,jz4760-intc", intc_2chip_of_init);
+ IRQCHIP_DECLARE(jz4770_intc, "ingenic,jz4770-intc", intc_2chip_of_init);
+ IRQCHIP_DECLARE(jz4775_intc, "ingenic,jz4775-intc", intc_2chip_of_init);
+ IRQCHIP_DECLARE(jz4780_intc, "ingenic,jz4780-intc", intc_2chip_of_init);
 -- 
-2.31.0.rc2.261.g7f71774620-goog
+2.30.1
 
