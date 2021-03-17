@@ -2,182 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A69333EBF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E4E33EBE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbhCQI5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:57:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
+        id S229608AbhCQI5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhCQI5P (ORCPT
+        with ESMTP id S229636AbhCQI5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:57:15 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D51C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:57:07 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so811022wmi.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:57:07 -0700 (PDT)
+        Wed, 17 Mar 2021 04:57:08 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E626C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:57:08 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id o16so969792wrn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:57:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8wVUxohbsfODPlJl3e1edTwvvrJeFWzCJfamwkCreXQ=;
-        b=IYgLtZTY7WoXHTe6XoxbNP9IG4gzinQ889fwNtBUHEwHJHDn6k7qtirS8GXP3SKz7I
-         w3HBQ6W9vCxmK7fVqv3FBzzGZHOX3SVfoJWzx3Gv1u8L3g/DpAqI3xIyOtAvtoiBPU70
-         ps1ABIYnj6hrxqYGR2AGbyF7EH+klmkDnKa+aEcZrnbakW+kUy7lvKGksZQvN1yr1MHj
-         RFO597U0OwGxuVBE0o3W60iIGe2Dd5VFEBYnRKtOK61GqUr6WZC8ixFskprN8M9T7fA5
-         73MGEIEijX6EJuk408gV+6NULmlapZcAU5huUAKTcdYATmJiEjCoSBJdTaQMjLS9fuJb
-         7cHw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bCbfbKrHtTJDrvzcr+wliVfv0YCW7v3SbQO0PUWBLF8=;
+        b=wss+x1ep2vqjhxs3d2Ga+RWpFoLc/bjyYAu+FA6AznshqZuy/nPTiYdkZu4QgIKOC5
+         vBkAm8rposwYziRqN/fv62OqZ2nl9w0Pg0GasebAmJPIJhvHO9UXBsdoA/rEoDqVDmMi
+         d/VsS1EibPkSYO6jKJoL0S4x5YHXx1hwbQJl5MjfiW8tKB85C9+DsOEXKsGoI8vyecNU
+         hdv9qJIbWWH4l9HIno1dJa82tLeBqTE/L5LEM1zVp+jg+HXj03rDh21cuyap+jTHkyPX
+         cqCqnjTHVF5AaaXZbA7sbwYg5LdltTFODr/xn5LtRDuJEGb4irDpbb0XQzYNw5Io9h9H
+         XcLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8wVUxohbsfODPlJl3e1edTwvvrJeFWzCJfamwkCreXQ=;
-        b=Gl+BA1mmxgkIZmLxSF4rzhIcgGX78j9qdFIl5QsdKdejePk2Ec0IF42h78s+rPty05
-         TbolUIB2tXezjnELIcDaNC2k+kLHVOQTeyXW7hrEB7U0sTh+DOoBRPecjJETETIUwwy/
-         4YdDWXz6OV0Rg4sMVBvwOqqYnhsJWCAkD8Kd5/4Yg6QOHU1kzvarAXDpfvMD1YeSNhSq
-         hc9aE5uMX4qgTZTGFOijwtBp5FA8LurZR7+pMYD334BAT9/KAYEImK4K+DrEdRMudkfd
-         04sBBFftB0cBbR6lJX/NiNQbBIp0jp/vCk8mtHtc8U9b+FvVHeUNP1rPj5nuTcxo/jje
-         HqBg==
-X-Gm-Message-State: AOAM533EluzSF0FUtxjOUJocZpbfxyt5Xd/WhcDLaCYFHA32k9P3Rsxf
-        jBHcrEBirVgAuUxSoVg2x3QQLg==
-X-Google-Smtp-Source: ABdhPJy1WxEldnSEoa91DUSjnpGbdUAkrmiOqKjHsdynmfFCTAvvvqZPHQkJcQwmBl7uSWswCqHJrg==
-X-Received: by 2002:a7b:c151:: with SMTP id z17mr2653536wmi.189.1615971426070;
-        Wed, 17 Mar 2021 01:57:06 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bCbfbKrHtTJDrvzcr+wliVfv0YCW7v3SbQO0PUWBLF8=;
+        b=Bj6DDT2E3Qd7r+jAs3EHOmGhMsXyT1aHImix7VRAFpo2eV1r//IxRYuxzWaQR9EbrM
+         Uoc+MfK5M+QeNjKHuYeQYS6oFlhcS+zhg6QUlKYakLy33AGaaGFyZF5+kE/szCWXG8Us
+         U+axVqzPw8yJmOFWkFNW36FyMZbbNyM9bDnfsnvpLu5xKyL5ipET9qfisxlIhEdtkjpN
+         cA6ym0pjQXrBjmZNoQ9+h9WsMl/F6Aqk7YSb8SSncf/4/U5GXCFQ6aRTPBzJbhsYJpsb
+         /KnKRCdvlkenuRFDP6xHcePGQVTOeNKF/roIDi2Vc8iIFznv0L5J1+Fd8xxhAc7rCA+h
+         z/tw==
+X-Gm-Message-State: AOAM533lJw29epWF59XoQ2fqknidVtwO9VdkbjPWnhCZZ591/NEvlUSC
+        wRMiV7Ch/A0RPMWt8CskuJNh2w==
+X-Google-Smtp-Source: ABdhPJyi8UI083o4YsH06N81QSUcZ93H3JvbS5lUgVLXwbWn1KIagf2Lg5Jzry/TpeMdFFQumC7ERA==
+X-Received: by 2002:adf:f908:: with SMTP id b8mr3170845wrr.184.1615971427027;
+        Wed, 17 Mar 2021 01:57:07 -0700 (PDT)
 Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id j123sm1807243wmb.1.2021.03.17.01.57.04
+        by smtp.gmail.com with ESMTPSA id j123sm1807243wmb.1.2021.03.17.01.57.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 01:57:05 -0700 (PDT)
+        Wed, 17 Mar 2021 01:57:06 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Adam Radford <aradford@gmail.com>,
-        Alan Cox <alan@lxorguk.ukuu.org.uk>,
-        Andre Hedrick <andre@suse.com>,
-        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Bas Vermeulen <bvermeul@blackstar.xs4all.nl>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        Brian Macy <bmacy@sunshinecomputing.com>,
-        c by <James.Bottomley@SteelEye.com>,
-        Christoph Hellwig <hch@lst.de>,
-        David Chaw <david_chaw@adaptec.com>,
-        de Melo <acme@conectiva.com.br>,
-        Doug Ledford <dledford@redhat.com>,
-        GOTO Masanori <gotom@debian.or.jp>, gotom@debian.org,
-        Hannes Reinecke <hare@kernel.org>,
+Cc:     linux-kernel@vger.kernel.org,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Joel Jacobson <linux@3ware.com>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        "Leonard N. Zubkoff" <lnz@dandelion.com>,
-        Linux GmbH <hare@suse.com>, linux-scsi@vger.kernel.org,
-        Luben Tuikov <luben_tuikov@adaptec.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
-        MPT-FusionLinux.pdl@avagotech.com,
-        MPT-FusionLinux.pdl@broadcom.com,
-        Richard Hirst <richard@sleepie.demon.co.uk>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        YOKOTA Hiroshi <yokota@netlab.is.tsukuba.ac.jp>
-Subject: [PATCH 00/18] [Set 3] Rid W=1 warnings in SCSI
-Date:   Wed, 17 Mar 2021 08:56:43 +0000
-Message-Id: <20210317085701.2891231-1-lee.jones@linaro.org>
+        David Chaw <david_chaw@adaptec.com>,
+        Luben Tuikov <luben_tuikov@adaptec.com>,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH 01/18] scsi: aic94xx: aic94xx_dump: Remove code that has been unused for at least 13 years
+Date:   Wed, 17 Mar 2021 08:56:44 +0000
+Message-Id: <20210317085701.2891231-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210317085701.2891231-1-lee.jones@linaro.org>
+References: <20210317085701.2891231-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Fixes the following W=1 kernel build warning(s):
 
-This set contains functional changes.
+ drivers/scsi/aic94xx/aic94xx_dump.c:731: warning: expecting prototype for asd_dump_ddb_site(). Prototype was for asd_dump_target_ddb() instead
+ drivers/scsi/aic94xx/aic94xx_dump.c:875: warning: expecting prototype for ads_dump_seq_state(). Prototype was for asd_dump_seq_state() instead
 
-This set is part of a larger effort attempting to clean-up W=1
-kernel builds, which are currently overwhelmingly riddled with
-niggly little warnings.
-
-Lee Jones (18):
-  scsi: aic94xx: aic94xx_dump: Remove code that has been unused for at
-    least 13 years
-  scsi: mpt3sas: mpt3sas_scs: Move a little data from the stack onto the
-    heap
-  scsi: bfa: bfa_fcs_lport: Move a large struct from the stack onto the
-    heap
-  scsi: esas2r: esas2r_log: Supply __printf(x, y) formatting for
-    esas2r_log_master()
-  scsi: BusLogic: Supply __printf(x, y) formatting for blogic_msg()
-  scsi: nsp32: Supply __printf(x, y) formatting for nsp32_message()
-  scsi: initio: Remove unused variable 'prev'
-  scsi: a100u2w: Remove unused variable 'bios_phys'
-  scsi: myrs: Remove a couple of unused 'status' variables
-  scsi: 3w-xxxx: Remove 2 unused variables 'response_que_value' and
-    'tw_dev'
-  scsi: 3w-9xxx: Remove a few set but unused variables
-  scsi: 3w-sas: Remove unused variables 'sglist' and 'tw_dev'
-  scsi: nsp32: Remove or exclude unused variables
-  scsi: FlashPoint: Remove unused variable 'TID' from
-    'FlashPoint_AbortCCB()'
-  scsi: sim710: Remove unused variable 'err' from sim710_init()
-  scsi: isci: port: Make local function 'port_state_name()' static
-  scsi: isci: remote_device: Make local function
-    isci_remote_device_wait_for_resume_from_abort() static
-  scsi: nsp32: Correct expected types in debug print formatting
-
- drivers/scsi/3w-9xxx.c               |  14 +-
- drivers/scsi/3w-sas.c                |  10 +-
- drivers/scsi/3w-xxxx.c               |   6 +-
- drivers/scsi/BusLogic.c              |   2 +-
- drivers/scsi/FlashPoint.c            |   4 -
- drivers/scsi/a100u2w.c               |   2 -
- drivers/scsi/aic94xx/aic94xx_dump.c  | 184 ---------------------------
- drivers/scsi/bfa/bfa_fcs_lport.c     |  20 ++-
- drivers/scsi/esas2r/esas2r_log.c     |   7 +
- drivers/scsi/initio.c                |   5 +-
- drivers/scsi/isci/port.c             |   2 +-
- drivers/scsi/isci/remote_device.c    |   2 +-
- drivers/scsi/mpt3sas/mpt3sas_scsih.c |  38 ++++--
- drivers/scsi/myrs.c                  |   6 +-
- drivers/scsi/nsp32.c                 |  31 ++---
- drivers/scsi/sim710.c                |  14 +-
- 16 files changed, 77 insertions(+), 270 deletions(-)
-
-Cc: Adam Radford <aradford@gmail.com>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Andre Hedrick <andre@suse.com>
-Cc: Anil Gurumurthy <anil.gurumurthy@qlogic.com>
-Cc: Artur Paszkiewicz <artur.paszkiewicz@intel.com>
-Cc: Bas Vermeulen <bvermeul@blackstar.xs4all.nl>
-Cc: Bradley Grove <linuxdrivers@attotech.com>
-Cc: Brian Macy <bmacy@sunshinecomputing.com>
-Cc: c by <James.Bottomley@SteelEye.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: David Chaw <david_chaw@adaptec.com>
-Cc: de Melo <acme@conectiva.com.br>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: GOTO Masanori <gotom@debian.or.jp>
-Cc: gotom@debian.org
-Cc: Hannes Reinecke <hare@kernel.org>
 Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-Cc: Joel Jacobson <linux@3ware.com>
-Cc: Khalid Aziz <khalid@gonehiking.org>
-Cc: "Leonard N. Zubkoff" <lnz@dandelion.com>
-Cc: Linux GmbH <hare@suse.com>
-Cc: linux-scsi@vger.kernel.org
-Cc: Luben Tuikov <luben_tuikov@adaptec.com>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: MPT-FusionLinux.pdl@avagotech.com
-Cc: MPT-FusionLinux.pdl@broadcom.com
-Cc: Richard Hirst <richard@sleepie.demon.co.uk>
-Cc: Sathya Prakash <sathya.prakash@broadcom.com>
-Cc: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
-Cc: Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>
-Cc: Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>
-Cc: YOKOTA Hiroshi <yokota@netlab.is.tsukuba.ac.jp>
+Cc: David Chaw <david_chaw@adaptec.com>
+Cc: Luben Tuikov <luben_tuikov@adaptec.com>
+Cc: linux-scsi@vger.kernel.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/scsi/aic94xx/aic94xx_dump.c | 184 ----------------------------
+ 1 file changed, 184 deletions(-)
+
+diff --git a/drivers/scsi/aic94xx/aic94xx_dump.c b/drivers/scsi/aic94xx/aic94xx_dump.c
+index 7c4c53a54b782..47a663a39dcce 100644
+--- a/drivers/scsi/aic94xx/aic94xx_dump.c
++++ b/drivers/scsi/aic94xx/aic94xx_dump.c
+@@ -720,152 +720,6 @@ static void asd_dump_lseq_state(struct asd_ha_struct *asd_ha, int lseq)
+ 	PRINT_LMIP_dword(asd_ha, lseq, DEV_PRES_TIMER_TERM_TS);
+ }
+ 
+-#if 0
+-
+-/**
+- * asd_dump_ddb_site -- dump a CSEQ DDB site
+- * @asd_ha: pointer to host adapter structure
+- * @site_no: site number of interest
+- */
+-void asd_dump_target_ddb(struct asd_ha_struct *asd_ha, u16 site_no)
+-{
+-	if (site_no >= asd_ha->hw_prof.max_ddbs)
+-		return;
+-
+-#define DDB_FIELDB(__name)                                        \
+-	asd_ddbsite_read_byte(asd_ha, site_no,                    \
+-			      offsetof(struct asd_ddb_ssp_smp_target_port, __name))
+-#define DDB2_FIELDB(__name)                                       \
+-	asd_ddbsite_read_byte(asd_ha, site_no,                    \
+-			      offsetof(struct asd_ddb_stp_sata_target_port, __name))
+-#define DDB_FIELDW(__name)                                        \
+-	asd_ddbsite_read_word(asd_ha, site_no,                    \
+-			      offsetof(struct asd_ddb_ssp_smp_target_port, __name))
+-
+-#define DDB_FIELDD(__name)                                         \
+-	asd_ddbsite_read_dword(asd_ha, site_no,                    \
+-			       offsetof(struct asd_ddb_ssp_smp_target_port, __name))
+-
+-	asd_printk("DDB: 0x%02x\n", site_no);
+-	asd_printk("conn_type: 0x%02x\n", DDB_FIELDB(conn_type));
+-	asd_printk("conn_rate: 0x%02x\n", DDB_FIELDB(conn_rate));
+-	asd_printk("init_conn_tag: 0x%04x\n", be16_to_cpu(DDB_FIELDW(init_conn_tag)));
+-	asd_printk("send_queue_head: 0x%04x\n", be16_to_cpu(DDB_FIELDW(send_queue_head)));
+-	asd_printk("sq_suspended: 0x%02x\n", DDB_FIELDB(sq_suspended));
+-	asd_printk("DDB Type: 0x%02x\n", DDB_FIELDB(ddb_type));
+-	asd_printk("AWT Default: 0x%04x\n", DDB_FIELDW(awt_def));
+-	asd_printk("compat_features: 0x%02x\n", DDB_FIELDB(compat_features));
+-	asd_printk("Pathway Blocked Count: 0x%02x\n",
+-		   DDB_FIELDB(pathway_blocked_count));
+-	asd_printk("arb_wait_time: 0x%04x\n", DDB_FIELDW(arb_wait_time));
+-	asd_printk("more_compat_features: 0x%08x\n",
+-		   DDB_FIELDD(more_compat_features));
+-	asd_printk("Conn Mask: 0x%02x\n", DDB_FIELDB(conn_mask));
+-	asd_printk("flags: 0x%02x\n", DDB_FIELDB(flags));
+-	asd_printk("flags2: 0x%02x\n", DDB2_FIELDB(flags2));
+-	asd_printk("ExecQ Tail: 0x%04x\n",DDB_FIELDW(exec_queue_tail));
+-	asd_printk("SendQ Tail: 0x%04x\n",DDB_FIELDW(send_queue_tail));
+-	asd_printk("Active Task Count: 0x%04x\n",
+-		   DDB_FIELDW(active_task_count));
+-	asd_printk("ITNL Reason: 0x%02x\n", DDB_FIELDB(itnl_reason));
+-	asd_printk("ITNL Timeout Const: 0x%04x\n", DDB_FIELDW(itnl_timeout));
+-	asd_printk("ITNL timestamp: 0x%08x\n", DDB_FIELDD(itnl_timestamp));
+-}
+-
+-void asd_dump_ddb_0(struct asd_ha_struct *asd_ha)
+-{
+-#define DDB0_FIELDB(__name)                                  \
+-	asd_ddbsite_read_byte(asd_ha, 0,                     \
+-			      offsetof(struct asd_ddb_seq_shared, __name))
+-#define DDB0_FIELDW(__name)                                  \
+-	asd_ddbsite_read_word(asd_ha, 0,                     \
+-			      offsetof(struct asd_ddb_seq_shared, __name))
+-
+-#define DDB0_FIELDD(__name)                                  \
+-	asd_ddbsite_read_dword(asd_ha,0 ,                    \
+-			       offsetof(struct asd_ddb_seq_shared, __name))
+-
+-#define DDB0_FIELDA(__name, _o)                              \
+-	asd_ddbsite_read_byte(asd_ha, 0,                     \
+-			      offsetof(struct asd_ddb_seq_shared, __name)+_o)
+-
+-
+-	asd_printk("DDB: 0\n");
+-	asd_printk("q_free_ddb_head:%04x\n", DDB0_FIELDW(q_free_ddb_head));
+-	asd_printk("q_free_ddb_tail:%04x\n", DDB0_FIELDW(q_free_ddb_tail));
+-	asd_printk("q_free_ddb_cnt:%04x\n",  DDB0_FIELDW(q_free_ddb_cnt));
+-	asd_printk("q_used_ddb_head:%04x\n", DDB0_FIELDW(q_used_ddb_head));
+-	asd_printk("q_used_ddb_tail:%04x\n", DDB0_FIELDW(q_used_ddb_tail));
+-	asd_printk("shared_mem_lock:%04x\n", DDB0_FIELDW(shared_mem_lock));
+-	asd_printk("smp_conn_tag:%04x\n",    DDB0_FIELDW(smp_conn_tag));
+-	asd_printk("est_nexus_buf_cnt:%04x\n", DDB0_FIELDW(est_nexus_buf_cnt));
+-	asd_printk("est_nexus_buf_thresh:%04x\n",
+-		   DDB0_FIELDW(est_nexus_buf_thresh));
+-	asd_printk("conn_not_active:%02x\n", DDB0_FIELDB(conn_not_active));
+-	asd_printk("phy_is_up:%02x\n",       DDB0_FIELDB(phy_is_up));
+-	asd_printk("port_map_by_links:%02x %02x %02x %02x "
+-		   "%02x %02x %02x %02x\n",
+-		   DDB0_FIELDA(port_map_by_links, 0),
+-		   DDB0_FIELDA(port_map_by_links, 1),
+-		   DDB0_FIELDA(port_map_by_links, 2),
+-		   DDB0_FIELDA(port_map_by_links, 3),
+-		   DDB0_FIELDA(port_map_by_links, 4),
+-		   DDB0_FIELDA(port_map_by_links, 5),
+-		   DDB0_FIELDA(port_map_by_links, 6),
+-		   DDB0_FIELDA(port_map_by_links, 7));
+-}
+-
+-static void asd_dump_scb_site(struct asd_ha_struct *asd_ha, u16 site_no)
+-{
+-
+-#define SCB_FIELDB(__name)                                                 \
+-	asd_scbsite_read_byte(asd_ha, site_no, sizeof(struct scb_header)   \
+-			      + offsetof(struct initiate_ssp_task, __name))
+-#define SCB_FIELDW(__name)                                                 \
+-	asd_scbsite_read_word(asd_ha, site_no, sizeof(struct scb_header)   \
+-			      + offsetof(struct initiate_ssp_task, __name))
+-#define SCB_FIELDD(__name)                                                 \
+-	asd_scbsite_read_dword(asd_ha, site_no, sizeof(struct scb_header)  \
+-			       + offsetof(struct initiate_ssp_task, __name))
+-
+-	asd_printk("Total Xfer Len: 0x%08x.\n", SCB_FIELDD(total_xfer_len));
+-	asd_printk("Frame Type: 0x%02x.\n", SCB_FIELDB(ssp_frame.frame_type));
+-	asd_printk("Tag: 0x%04x.\n", SCB_FIELDW(ssp_frame.tag));
+-	asd_printk("Target Port Xfer Tag: 0x%04x.\n",
+-		   SCB_FIELDW(ssp_frame.tptt));
+-	asd_printk("Data Offset: 0x%08x.\n", SCB_FIELDW(ssp_frame.data_offs));
+-	asd_printk("Retry Count: 0x%02x.\n", SCB_FIELDB(retry_count));
+-}
+-
+-/**
+- * asd_dump_scb_sites -- dump currently used CSEQ SCB sites
+- * @asd_ha: pointer to host adapter struct
+- */
+-void asd_dump_scb_sites(struct asd_ha_struct *asd_ha)
+-{
+-	u16	site_no;
+-
+-	for (site_no = 0; site_no < asd_ha->hw_prof.max_scbs; site_no++) {
+-		u8 opcode;
+-
+-		if (!SCB_SITE_VALID(site_no))
+-			continue;
+-
+-		/* We are only interested in SCB sites currently used.
+-		 */
+-		opcode = asd_scbsite_read_byte(asd_ha, site_no,
+-					       offsetof(struct scb_header,
+-							opcode));
+-		if (opcode == 0xFF)
+-			continue;
+-
+-		asd_printk("\nSCB: 0x%x\n", site_no);
+-		asd_dump_scb_site(asd_ha, site_no);
+-	}
+-}
+-
+-#endif  /*  0  */
+-
+ /**
+  * ads_dump_seq_state -- dump CSEQ and LSEQ states
+  * @asd_ha: pointer to host adapter structure
+@@ -908,42 +762,4 @@ void asd_dump_frame_rcvd(struct asd_phy *phy,
+ 	spin_unlock_irqrestore(&phy->sas_phy.frame_rcvd_lock, flags);
+ }
+ 
+-#if 0
+-
+-static void asd_dump_scb(struct asd_ascb *ascb, int ind)
+-{
+-	asd_printk("scb%d: vaddr: 0x%p, dma_handle: 0x%llx, next: 0x%llx, "
+-		   "index:%d, opcode:0x%02x\n",
+-		   ind, ascb->dma_scb.vaddr,
+-		   (unsigned long long)ascb->dma_scb.dma_handle,
+-		   (unsigned long long)
+-		   le64_to_cpu(ascb->scb->header.next_scb),
+-		   le16_to_cpu(ascb->scb->header.index),
+-		   ascb->scb->header.opcode);
+-}
+-
+-void asd_dump_scb_list(struct asd_ascb *ascb, int num)
+-{
+-	int i = 0;
+-
+-	asd_printk("dumping %d scbs:\n", num);
+-
+-	asd_dump_scb(ascb, i++);
+-	--num;
+-
+-	if (num > 0 && !list_empty(&ascb->list)) {
+-		struct list_head *el;
+-
+-		list_for_each(el, &ascb->list) {
+-			struct asd_ascb *s = list_entry(el, struct asd_ascb,
+-							list);
+-			asd_dump_scb(s, i++);
+-			if (--num <= 0)
+-				break;
+-		}
+-	}
+-}
+-
+-#endif  /*  0  */
+-
+ #endif /* ASD_DEBUG */
 -- 
 2.27.0
 
