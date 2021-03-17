@@ -2,129 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9377333E833
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C429033E84B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:06:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbhCQD7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 23:59:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57328 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231151AbhCQD7I (ORCPT
+        id S229871AbhCQEGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 00:06:21 -0400
+Received: from gateway30.websitewelcome.com ([192.185.193.11]:14345 "EHLO
+        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229953AbhCQEGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 23:59:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615953547;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7ndZ/EPGx75V6OcMRIv9fS1gIYZrKaTsBexZg2LyBVk=;
-        b=T51uTlvEkD3nNPDWaApXyskyH1dkRosd32/pNBt46VQVwVggG/eQ8MaX2SrcQNLp13ufMJ
-        jFkUJC99Ce7QzJlBZ3/O1RrWiZ1qUOQ7LuORru8BDDIV4SR3ez0F+vhb75MkH9+v7lq09w
-        xvwfx6GLJvvpW8yHNOhT5OsLTjUJKmQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-56-clyX9_PcOj2OvZ5sHHJCgg-1; Tue, 16 Mar 2021 23:59:05 -0400
-X-MC-Unique: clyX9_PcOj2OvZ5sHHJCgg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D9B2F363A1;
-        Wed, 17 Mar 2021 03:59:03 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-12-188.pek2.redhat.com [10.72.12.188])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E32CC19706;
-        Wed, 17 Mar 2021 03:58:57 +0000 (UTC)
-Subject: Re: [PATCH V4 6/7] vDPA/ifcvf: verify mandatory feature bits for vDPA
-To:     Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
-        lulu@redhat.com, leonro@nvidia.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210315074501.15868-1-lingshan.zhu@intel.com>
- <20210315074501.15868-7-lingshan.zhu@intel.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <3188205d-250f-8dfe-c271-50be5c1e2e58@redhat.com>
-Date:   Wed, 17 Mar 2021 11:58:56 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+        Wed, 17 Mar 2021 00:06:17 -0400
+X-Greylist: delayed 1493 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Mar 2021 00:06:17 EDT
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway30.websitewelcome.com (Postfix) with ESMTP id 9335CF27
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 22:41:23 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id MN3jlejJgMGeEMN3jlUdNz; Tue, 16 Mar 2021 22:41:23 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=/sZG3o7bmfQMeV8ZtSlTyo3QgbzHhviO3Gw8P9Lg0T0=; b=L6WeIS/ZZGmAWcRpydJ4g0+0eX
+        1O8GR11G+9gyFvVN66KjWDWCxBfctGT1RdJMupOs1AIYstL3gcgOzvxXkyyq3cKhifIlFlBVgJBQ+
+        JHHrwEe4EvQJXusSGZ2cqBYLq9tM7KpwjCYx80BXEoVvkVzEwOAa4TSHDFSrjFQh2RQOQDQyum/RN
+        tl73Ku7l4RFkiZhqyz2LPFnfIBQCdcHPQjz6QGGEU3RKwRX++ytDi+h2posIFQB9vh8PzqFI+lWoN
+        8I44w3WyVIakJ5XbtagHV6Fri7/xh0iOGsEbRZiI6sLi+BOZH0MloDrxB51LSHTf222/mi8MeH2Dr
+        sv4zJmCw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:46638 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lMN3j-000pjB-5C; Tue, 16 Mar 2021 22:41:23 -0500
+Subject: Re: [PATCH][next] scsi: mpt3sas: Replace unnecessary dynamic
+ allocation with a static one
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210310235951.GA108661@embeddedor>
+ <yq1eege1mlt.fsf@ca-mkp.ca.oracle.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <62fa8461-23d3-5602-2897-f2b28344bedf@embeddedor.com>
+Date:   Tue, 16 Mar 2021 21:41:08 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210315074501.15868-7-lingshan.zhu@intel.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <yq1eege1mlt.fsf@ca-mkp.ca.oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lMN3j-000pjB-5C
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:46638
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 9
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Martin,
 
-ÔÚ 2021/3/15 ÏÂÎç3:45, Zhu Lingshan Ð´µÀ:
-> vDPA requres VIRTIO_F_ACCESS_PLATFORM as a must, this commit
-> examines this when set features.
->
-> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
-> ---
->   drivers/vdpa/ifcvf/ifcvf_base.c | 12 ++++++++++++
->   drivers/vdpa/ifcvf/ifcvf_base.h |  1 +
->   drivers/vdpa/ifcvf/ifcvf_main.c |  5 +++++
->   3 files changed, 18 insertions(+)
->
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.c b/drivers/vdpa/ifcvf/ifcvf_base.c
-> index ea6a78791c9b..4f257c4b2f76 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_base.c
-> +++ b/drivers/vdpa/ifcvf/ifcvf_base.c
-> @@ -224,6 +224,18 @@ u64 ifcvf_get_features(struct ifcvf_hw *hw)
->   	return hw->hw_features;
->   }
->   
-> +int ifcvf_verify_min_features(struct ifcvf_hw *hw, u64 features)
-> +{
-> +	struct ifcvf_adapter *ifcvf = vf_to_adapter(hw);
-> +
-> +	if (!(features & BIT_ULL(VIRTIO_F_ACCESS_PLATFORM)) && features) {
-> +		IFCVF_ERR(ifcvf->pdev, "VIRTIO_F_ACCESS_PLATFORM not negotiated\n");
+On 3/16/21 22:32, Martin K. Petersen wrote:
+> 
+> Gustavo,
+> 
+>> Dynamic memory allocation isn't actually needed and it can be replaced
+>> by statically allocating memory for struct object io_unit_pg3 with 36
+>> hardcoded entries for its GPIOVal array.
+> 
+> Applied to 5.13/scsi-staging, thanks!
 
+Awesome. :)
 
-Should be "is not negotiated".
+I wonder if you can take a look at this one, too, please:
 
-Otherwise:
+https://lore.kernel.org/lkml/20210304203822.GA102218@embeddedor/
 
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->   void ifcvf_read_net_config(struct ifcvf_hw *hw, u64 offset,
->   			   void *dst, int length)
->   {
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h b/drivers/vdpa/ifcvf/ifcvf_base.h
-> index dbb8c10aa3b1..f77239fc1644 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
-> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
-> @@ -123,6 +123,7 @@ void io_write64_twopart(u64 val, u32 *lo, u32 *hi);
->   void ifcvf_reset(struct ifcvf_hw *hw);
->   u64 ifcvf_get_features(struct ifcvf_hw *hw);
->   u64 ifcvf_get_hw_features(struct ifcvf_hw *hw);
-> +int ifcvf_verify_min_features(struct ifcvf_hw *hw, u64 features);
->   u16 ifcvf_get_vq_state(struct ifcvf_hw *hw, u16 qid);
->   int ifcvf_set_vq_state(struct ifcvf_hw *hw, u16 qid, u16 num);
->   struct ifcvf_adapter *vf_to_adapter(struct ifcvf_hw *hw);
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-> index 25fb9dfe23f0..ea93ea7fd5df 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
-> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-> @@ -179,6 +179,11 @@ static u64 ifcvf_vdpa_get_features(struct vdpa_device *vdpa_dev)
->   static int ifcvf_vdpa_set_features(struct vdpa_device *vdpa_dev, u64 features)
->   {
->   	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
-> +	int ret;
-> +
-> +	ret = ifcvf_verify_min_features(vf, features);
-> +	if (ret)
-> +		return ret;
->   
->   	vf->req_features = features;
->   
-
+Thanks!
+--
+Gustavo
