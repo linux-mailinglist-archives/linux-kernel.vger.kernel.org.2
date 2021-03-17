@@ -2,79 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0B133F26A
+	by mail.lfdr.de (Postfix) with ESMTP id D3B3533F26B
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbhCQORZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:17:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52440 "EHLO
+        id S231779AbhCQOR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231822AbhCQORM (ORCPT
+        with ESMTP id S231826AbhCQORT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:17:12 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE34C06174A;
-        Wed, 17 Mar 2021 07:17:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ySJwnXmmut2FRkHGqONP6uMpr1gdDk9gWPXbqHdMFeU=; b=D1eg6Xkib9+0luGkFQ1ugveZHi
-        V2Qf5V4mqRzFbPfGpGS3ZidSxjMdx8OjvGUydu5qiQO8fnkd1HqGHvRrdspQn1Dh4DbWmdw6cqvP2
-        O9mp4l5rASAfA8WUrxNgmPt6pnELvPvSN7iSRDJntAmDAUcPXzFPC4jf3y1Nonw7FKJx7kkpTubDg
-        4qpu5vEKZ17hidVmN1eeZeUQ84FtPd9kCPVK0v3EBJDcdluqekdXAZv/bQOPeVsrZbIwsTg+5QJns
-        ZSYZJzg/FSA9LZGH0v2q7kWA4MC7W5zL7cJ36NYia+3j8Et2SkYj2OPmkUU94V6LtjtCDKetCJLo1
-        cRiOJzDw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMWyx-003EiT-Pz; Wed, 17 Mar 2021 14:17:08 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E87103050F0;
-        Wed, 17 Mar 2021 15:17:06 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D05B42078107C; Wed, 17 Mar 2021 15:17:06 +0100 (CET)
-Date:   Wed, 17 Mar 2021 15:17:06 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Davidlohr Bueso <dbueso@suse.de>, x86@kernel.org
-Subject: Re: [tip: locking/urgent] locking/ww_mutex: Simplify use_ww_ctx &
- ww_ctx handling
-Message-ID: <YFIPYmFE7ChGrpf2@hirez.programming.kicks-ass.net>
-References: <20210316153119.13802-2-longman@redhat.com>
- <161598470257.398.5006518584847290113.tip-bot2@tip-bot2>
- <YFH9Pw3kwCZC1UTB@hirez.programming.kicks-ass.net>
- <85fbce04-c544-6041-6e7d-76f47b90e263@redhat.com>
- <YFIKWCUAZabBsji0@hirez.programming.kicks-ass.net>
- <bbfca577-b680-4c73-3f35-22179bd1a498@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bbfca577-b680-4c73-3f35-22179bd1a498@redhat.com>
+        Wed, 17 Mar 2021 10:17:19 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D79F1C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 07:17:18 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id v18so4041607qtx.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 07:17:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=KrfxD88Ict/v6ngLTLvsT+oMLpFGTSrf7Eslq0SGM14=;
+        b=a+nv8X7pyir1+SV83VwUJ4vj+AHhzDv9PQ9WnWuQqlWQwiB8a746kscytqy4ej1iuw
+         eyas/id66NAzXCPbs1TSyWUPg0J1tAfqygJ563ZEyLL86DAMxCXR1eoiH5rVUm6wwKsN
+         crGLP6vZayX2cQNy4hcQz8SC03UJwBdpmg407s9BSCKHMY6GoXRntodV5QOCc7JdoIdV
+         zhW+OWR5QMi/4VcTh3g3DTA6Q8Q2/Z/aXggxBg1pEDZVGOiCxDLIZZoC5Se7sXzaEtjn
+         pr0I3chBsy50GvwK9oKIj76iUUqJwg6uv+nTrysi6egixhFVdjdZQzkMPVQ/2bWl5qLl
+         Dfqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=KrfxD88Ict/v6ngLTLvsT+oMLpFGTSrf7Eslq0SGM14=;
+        b=XpUCxlj4Fyx1RdRsj7AphWjjfNvQWSEc8UqC6BqoJnpljY702wvQNxRPk8PweNpnTp
+         8WgAmiEIo4gy49LQ9Ho7F/Jb5BlPKDyR3sKU66SL2LQA8g9bdF9NfHTQ+rNDdl5WeX89
+         XXrCV4U1SdiI5URsDqbKmbk+UddmtafnWkDa8b4Cm7pPqNDw1eFmaA0fKRBt+CJhGnPW
+         tXD9w76fifcKM9/t2Uc04JcbX+ZXsn5cEdx3bu99XZ/Iwz6637wYEXYsTHRgA0zYI3RV
+         0Ra7utFPLMsW7tVSDjIL3UCWCbzrK+qi7TrmIHu+pVJjGR/Njc+MIyd0lJZK/PnjKsGK
+         CDDA==
+X-Gm-Message-State: AOAM530Ki7PrhqQnxDek6Xv7uUjeF6KsK1Y6FqdkvK9HTfW549OS1O25
+        a4bAQGEnHEnJfeMRcHbH+rOOucyTznKY
+X-Google-Smtp-Source: ABdhPJzkVS1O87T4WUzd78oVRcatodCw8tdcjCnylMKpUhZ05gMFuwQ7e3RhsN9PT90TU72c/bE143W9PeYp
+X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
+ (user=qperret job=sendgmr) by 2002:ad4:472d:: with SMTP id
+ l13mr5273536qvz.17.1615990637862; Wed, 17 Mar 2021 07:17:17 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 14:17:12 +0000
+In-Reply-To: <20210315143536.214621-34-qperret@google.com>
+Message-Id: <20210317141714.383046-1-qperret@google.com>
+Mime-Version: 1.0
+References: <20210315143536.214621-34-qperret@google.com>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH 0/2] Fixes for FWB
+From:   Quentin Perret <qperret@google.com>
+To:     qperret@google.com
+Cc:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
+        james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com, android-kvm@google.com, seanjc@google.com,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org,
+        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 10:10:16AM -0400, Waiman Long wrote:
-> On 3/17/21 9:55 AM, Peter Zijlstra wrote:
-> > On Wed, Mar 17, 2021 at 09:43:20AM -0400, Waiman Long wrote:
-> > 
-> > > Using gcc 8.4.1, the generated __mutex_lock function has the same size (with
-> > > last instruction at offset +5179) with or without this patch. Well, you can
-> > > say that this patch is an no-op wrt generated code.
-> > OK, then GCC has gotten better. Because back then I tried really hard
-> > but it wouldn't remove the if (ww_ctx) branches unless I had that extra
-> > const bool argument.
-> > 
-> I think ww_mutex was merged in 2013. That is almost 8 years ago. It could
-> still be the case that older gcc compilers may not generate the right code.
-> I will try the RHEL7 gcc compiler (4.8.5) to see how it fares.
+Hi folks,
 
-I really don't care about code generation qualitee of anything before
-8-ish at this point. That's already an old compiler.
+This is an alternative solution to the KVM_PGTABLE_PROT_S2_NOFWB patch I
+shared earlier (and which is a bit of a hack).
 
-If you run on ancient compilers, you simply don't care about code
-quality.
+With this series we basically force FWB off for the host stage-2, even
+when the CPUs support it. This is done by passing flags to the pgtable
+init function, and propagating it down where needed. It's a bit more
+intrusive, but cleaner conceptually.
+
+Thoughts?
+
+Thanks,
+Quentin
+
+Quentin Perret (2):
+  KVM: arm64: Introduce KVM_PGTABLE_S2_NOFWB Stage-2 flag
+  KVM: arm64: Disable FWB in host stage-2
+
+ arch/arm64/include/asm/kvm_pgtable.h  | 19 +++++++++--
+ arch/arm64/include/asm/pgtable-prot.h |  4 +--
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c |  6 ++--
+ arch/arm64/kvm/hyp/pgtable.c          | 49 +++++++++++++++++----------
+ 4 files changed, 52 insertions(+), 26 deletions(-)
+
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
