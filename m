@@ -2,85 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CCD33EE26
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B2B33EE28
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbhCQKNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:13:40 -0400
-Received: from casper.infradead.org ([90.155.50.34]:57108 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbhCQKNi (ORCPT
+        id S229732AbhCQKOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:14:11 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:52705 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229747AbhCQKNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:13:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ldg8P+ntHqhW13UFSCgwfQWUuj8y81ZkwHhfEwqZwlg=; b=KoqbwD6jrkk+2HGJvS+4wSDpbv
-        974mecgUwOBbcvj0ogNZ0lXo6sRy0WTSl7wIMMo2/1q0mnDsjG7hT4vl9S6U7/yBfolgRTVU/BC/v
-        Le1BIEjmOcDIikwNREiHbnlv6lNXkNZwrMfCMu9cLcgaM2f2iDKdHyvrTUGxndB2+A9R/yAg3nMQC
-        0lqCSjICMctUioZxKQ0lvFOtlTLYP2/tcXE/zfNzYZS+P/0w1SCPDhQn6PxMNLvchgeQPAIiaeGyJ
-        XpRqyD9wzyO3zFip+smRmOzVM2Gh4xOxlG1JOiGHkYUIv5pbTp3EknPIPegtfuO3ZgVAuXJROp9Mn
-        VKrzn1hA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMTAs-001MYH-9x; Wed, 17 Mar 2021 10:13:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3AE4E3006E0;
-        Wed, 17 Mar 2021 11:13:09 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 23AE82C3C233E; Wed, 17 Mar 2021 11:13:09 +0100 (CET)
-Date:   Wed, 17 Mar 2021 11:13:09 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Kim Phillips <kim.phillips@amd.com>, Jiri Olsa <jolsa@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Stanislav Kozina <skozina@redhat.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Pierre Amadio <pamadio@redhat.com>, onatalen@redhat.com,
-        darcari@redhat.com, "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: unknown NMI on AMD Rome
-Message-ID: <YFHWNWBAQ4rsyAMG@hirez.programming.kicks-ass.net>
-References: <YFDSSxftYw9tCGC6@krava>
- <YFEMpo6GxxJS9Wvl@hirez.programming.kicks-ass.net>
- <36397980-f897-147f-df55-f37805d869c9@amd.com>
- <20210317084829.GA474581@gmail.com>
+        Wed, 17 Mar 2021 06:13:45 -0400
+X-Originating-IP: 79.22.58.175
+Received: from uno.localdomain (host-79-22-58-175.retail.telecomitalia.it [79.22.58.175])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 54E8BC0006;
+        Wed, 17 Mar 2021 10:13:41 +0000 (UTC)
+Date:   Wed, 17 Mar 2021 11:14:12 +0100
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] dt-bindings: media: max9286: Describe gpio-hog
+Message-ID: <20210317101412.srdzao52nxsvtq3r@uno.localdomain>
+References: <20210315163028.173148-1-jacopo+renesas@jmondi.org>
+ <20210315163028.173148-2-jacopo+renesas@jmondi.org>
+ <YE/cdBtSx3cDIqCY@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210317084829.GA474581@gmail.com>
+In-Reply-To: <YE/cdBtSx3cDIqCY@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 09:48:29AM +0100, Ingo Molnar wrote:
-> > https://developer.amd.com/wp-content/resources/56323-PUB_0.78.pdf
-> 
-> So:
-> 
-> 
->   1215 IBS (Instruction Based Sampling) Counter Valid Value
->   May be Incorrect After Exit From Core C6 (CC6) State
-> 
->   Description
-> 
->   If a core's IBS feature is enabled and configured to generate an interrupt, including NMI (Non-Maskable
->   Interrupt), and the IBS counter overflows during the entry into the Core C6 (CC6) state, the interrupt may be
->   issued, but an invalid value of the valid bit may be restored when the core exits CC6.
->   Potential Effect on System
-> 
->   The operating system may receive interrupts due to an IBS counter event, including NMI, and not observe an
->   valid IBS register. Console messages indicating "NMI received for unknown reason" have been observed on
->   Linux systems.
-> 
->   Suggested Workaround: None
->   Fix Planned: No fix planned
+Hi Laurent,
 
-Should be simple enough to disable CC6 while IBS is in use. Kim, can you
-please make that happen?
+On Tue, Mar 16, 2021 at 12:15:16AM +0200, Laurent Pinchart wrote:
+> Hi Jacopo,
+>
+> Thank you for the patch.
+>
+> On Mon, Mar 15, 2021 at 05:30:25PM +0100, Jacopo Mondi wrote:
+> > The MAX9286 GMSL deserializer features gpio controller capabilities,
+> > as it provides 2 GPIO lines.
+> >
+> > As establishing a regulator that uses one of the GPIO lines and
+> > enabling/disabling it at run-time in the max9286 won't work due to
+> > a circular dependency on the gpio-controller/regulator creation, allow
+> > the usage of a gpio-hog for that purpose.
+> >
+> > The usage of the gpio-hog is required in designs where the MAX9286
+> > GPIO lines control the remote cameras power.
+> >
+> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+>
+> That's really a workaround until we can find a good solution, do we have
+> to officially support it in the DT bindings ?
+>
+
+That's an interesting question. The 'good' solution implies resolving
+the circular dependency on the regulator/gpio-controller creation and
+I feel like it might take a while to find a proper solution.
+
+In the meantime, all designs like Eagle that control the camera power
+through a MAX9286 gpio have to rely on this. I'll go with the majority
+here: either we add this and upstream the gmsl .dtsi for eagle, or we
+keep out-of-tree patches :/
+
+> > ---
+> >  .../bindings/media/i2c/maxim,max9286.yaml        | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> > index ee16102fdfe7..9038300e373c 100644
+> > --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> > +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> > @@ -177,6 +177,22 @@ properties:
+> >
+> >      additionalProperties: false
+> >
+> > +patternProperties:
+> > +  "^(hog-[0-9]+|.+-hog(-[0-9]+)?)$":
+> > +    type: object
+> > +    properties:
+> > +      gpio-hog: true
+> > +      gpios: true
+> > +      output-low: true
+> > +      line-name: true
+> > +
+> > +    required:
+> > +      - gpio-hog
+> > +      - gpios
+> > +      - output-low
+> > +
+> > +    additionalProperties: false
+> > +
+> >  required:
+> >    - compatible
+> >    - reg
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
