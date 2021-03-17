@@ -2,186 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4684033F4BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:55:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7C833F44C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232283AbhCQPzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 11:55:16 -0400
-Received: from mga17.intel.com ([192.55.52.151]:55905 "EHLO mga17.intel.com"
+        id S232288AbhCQPsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 11:48:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58602 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231961AbhCQPzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 11:55:04 -0400
-IronPort-SDR: aSo9lqesUJdDRtfJR241JwXhuzSFxxULWr6uV3/Ta4Pgm7d2SFQYsHuCJWQEUPkowBL9ky3z/H
- /6wJC+2kRBLg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="169399688"
-X-IronPort-AV: E=Sophos;i="5.81,256,1610438400"; 
-   d="scan'208";a="169399688"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 08:19:39 -0700
-IronPort-SDR: Pbekg6sELx4Dy01OalG5iTq5LAhILCOexCcQvG0S9v4UAhMWHWqwR1j+7oUm3lo3/857WhPfd9
- m0KFUCAG6JAQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,256,1610438400"; 
-   d="scan'208";a="591100697"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga005.jf.intel.com with ESMTP; 17 Mar 2021 08:19:37 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id B017318E; Wed, 17 Mar 2021 17:19:50 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v5 2/2] gpio: sch: Hook into ACPI GPE handler to catch GPIO edge events
-Date:   Wed, 17 Mar 2021 17:19:28 +0200
-Message-Id: <20210317151928.41544-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210317151928.41544-1-andriy.shevchenko@linux.intel.com>
-References: <20210317151928.41544-1-andriy.shevchenko@linux.intel.com>
+        id S232464AbhCQPsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 11:48:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615994453; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=btiCGAjBA+oTgNvFWaiwkJdxvkvB5M3EHBf3slgWcEs=;
+        b=XSVK/Iiy0jAUmkNHsP4RIvYQjP02KLonGBsFLEgOhG6aqrR2X8maT/j4ZoVaVjnqQ2gXvH
+        wopF8k8fk3AEZrCO4QDIBw+anURxIWREEWxeCY+ig+7rnE65ksqmeQAAP/IyUxFbkaeUZu
+        PeuLwFlpOvU8jyORIiEgk9ADrbDJSN0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 39B7FAD74;
+        Wed, 17 Mar 2021 15:20:53 +0000 (UTC)
+Date:   Wed, 17 Mar 2021 16:20:52 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [PATCH v2] seq_file: Unconditionally use vmalloc for buffer
+Message-ID: <YFIeVLDsfBMa7fHW@dhcp22.suse.cz>
+References: <20210315174851.622228-1-keescook@chromium.org>
+ <YFBs202BqG9uqify@dhcp22.suse.cz>
+ <202103161205.B2181BDE38@keescook>
+ <YFHxNT1Pwoslmhxq@dhcp22.suse.cz>
+ <YFIFY7mj65sStba1@kroah.com>
+ <YFIVwPWTo48ITkHs@dhcp22.suse.cz>
+ <YFIYrMVTC42boZ/Z@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFIYrMVTC42boZ/Z@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Neither the ACPI description on Intel Minnowboard (v1) platform provides
-the required information to establish a generic handling nor the hardware
-capable of doing it. According to the data sheet the hardware can generate
-SCI events. Therefore, we need to hook from the driver into GPE handler of
-the ACPI subsystem in order to catch and report GPIO-related events.
+On Wed 17-03-21 15:56:44, Greg KH wrote:
+> On Wed, Mar 17, 2021 at 03:44:16PM +0100, Michal Hocko wrote:
+> > On Wed 17-03-21 14:34:27, Greg KH wrote:
+> > > On Wed, Mar 17, 2021 at 01:08:21PM +0100, Michal Hocko wrote:
+> > > > Btw. I still have problems with the approach. seq_file is intended to
+> > > > provide safe way to dump values to the userspace. Sacrificing
+> > > > performance just because of some abuser seems like a wrong way to go as
+> > > > Al pointed out earlier. Can we simply stop the abuse and disallow to
+> > > > manipulate the buffer directly? I do realize this might be more tricky
+> > > > for reasons mentioned in other emails but this is definitely worth
+> > > > doing.
+> > > 
+> > > We have to provide a buffer to "write into" somehow, so what is the best
+> > > way to stop "abuse" like this?
+> > 
+> > What is wrong about using seq_* interface directly?
+> 
+> Right now every show() callback of sysfs would have to be changed :(
 
-Validated on the Inlel Minnowboard (v1) platform.
-
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/gpio/gpio-sch.c | 82 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 82 insertions(+)
-
-diff --git a/drivers/gpio/gpio-sch.c b/drivers/gpio/gpio-sch.c
-index 5e08e26d0b86..f043ae9982bd 100644
---- a/drivers/gpio/gpio-sch.c
-+++ b/drivers/gpio/gpio-sch.c
-@@ -7,6 +7,7 @@
-  */
- 
- #include <linux/acpi.h>
-+#include <linux/bitops.h>
- #include <linux/errno.h>
- #include <linux/gpio/driver.h>
- #include <linux/io.h>
-@@ -29,12 +30,22 @@
- #define CORE_BANK_OFFSET	0x00
- #define RESUME_BANK_OFFSET	0x20
- 
-+/*
-+ * iLB datasheet describes GPE0BLK registers, in particular GPE0E.GPIO bit.
-+ * Document Number: 328195-001
-+ */
-+#define GPE0E_GPIO	14
-+
- struct sch_gpio {
- 	struct gpio_chip chip;
- 	struct irq_chip irqchip;
- 	spinlock_t lock;
- 	unsigned short iobase;
- 	unsigned short resume_base;
-+
-+	/* GPE handling */
-+	u32 gpe;
-+	acpi_gpe_handler gpe_handler;
- };
- 
- static unsigned int sch_gpio_offset(struct sch_gpio *sch, unsigned int gpio,
-@@ -229,10 +240,73 @@ static void sch_irq_unmask(struct irq_data *d)
- 	sch_irq_mask_unmask(d, 1);
- }
- 
-+static u32 sch_gpio_gpe_handler(acpi_handle gpe_device, u32 gpe, void *context)
-+{
-+	struct sch_gpio *sch = context;
-+	struct gpio_chip *gc = &sch->chip;
-+	unsigned long core_status, resume_status;
-+	unsigned long pending;
-+	unsigned long flags;
-+	int offset;
-+	u32 ret;
-+
-+	spin_lock_irqsave(&sch->lock, flags);
-+
-+	core_status = inl(sch->iobase + CORE_BANK_OFFSET + GTS);
-+	resume_status = inl(sch->iobase + RESUME_BANK_OFFSET + GTS);
-+
-+	spin_unlock_irqrestore(&sch->lock, flags);
-+
-+	pending = (resume_status << sch->resume_base) | core_status;
-+	for_each_set_bit(offset, &pending, sch->chip.ngpio)
-+		generic_handle_irq(irq_find_mapping(gc->irq.domain, offset));
-+
-+	/* Set returning value depending on whether we handled an interrupt */
-+	ret = pending ? ACPI_INTERRUPT_HANDLED : ACPI_INTERRUPT_NOT_HANDLED;
-+
-+	/* Acknowledge GPE to ACPICA */
-+	ret |= ACPI_REENABLE_GPE;
-+
-+	return ret;
-+}
-+
-+static void sch_gpio_remove_gpe_handler(void *data)
-+{
-+	struct sch_gpio *sch = data;
-+
-+	acpi_disable_gpe(NULL, sch->gpe);
-+	acpi_remove_gpe_handler(NULL, sch->gpe, sch->gpe_handler);
-+}
-+
-+static int sch_gpio_install_gpe_handler(struct sch_gpio *sch)
-+{
-+	struct device *dev = sch->chip.parent;
-+	acpi_status status;
-+
-+	status = acpi_install_gpe_handler(NULL, sch->gpe, ACPI_GPE_EDGE_TRIGGERED,
-+					  sch->gpe_handler, sch);
-+	if (ACPI_FAILURE(status)) {
-+		dev_err(dev, "Failed to install GPE handler for %u: %s\n",
-+			sch->gpe, acpi_format_exception(status));
-+		return -ENODEV;
-+	}
-+
-+	status = acpi_enable_gpe(NULL, sch->gpe);
-+	if (ACPI_FAILURE(status)) {
-+		dev_err(dev, "Failed to enable GPE handler for %u: %s\n",
-+			sch->gpe, acpi_format_exception(status));
-+		acpi_remove_gpe_handler(NULL, sch->gpe, sch->gpe_handler);
-+		return -ENODEV;
-+	}
-+
-+	return devm_add_action_or_reset(dev, sch_gpio_remove_gpe_handler, sch);
-+}
-+
- static int sch_gpio_probe(struct platform_device *pdev)
- {
- 	struct sch_gpio *sch;
- 	struct resource *res;
-+	int ret;
- 
- 	sch = devm_kzalloc(&pdev->dev, sizeof(*sch), GFP_KERNEL);
- 	if (!sch)
-@@ -305,6 +379,14 @@ static int sch_gpio_probe(struct platform_device *pdev)
- 	sch->chip.irq.default_type = IRQ_TYPE_NONE;
- 	sch->chip.irq.handler = handle_bad_irq;
- 
-+	/* GPE setup is optional */
-+	sch->gpe = GPE0E_GPIO;
-+	sch->gpe_handler = sch_gpio_gpe_handler;
-+
-+	ret = sch_gpio_install_gpe_handler(sch);
-+	if (ret)
-+		dev_warn(&pdev->dev, "Can't setup GPE, no IRQ support\n");
-+
- 	return devm_gpiochip_add_data(&pdev->dev, &sch->chip, sch);
- }
- 
+Is this really the case? Would it be too ugly to have an intermediate
+buffer and then seq_puts it into the seq file inside sysfs_kf_seq_show.
+Sure one copy more than necessary but it this shouldn't be a hot path or
+even visible on small strings. So that might be worth destroying an
+inherently dangerous seq API (seq_get_buf).
 -- 
-2.30.2
-
+Michal Hocko
+SUSE Labs
