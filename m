@@ -2,156 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90AFC33F762
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A034833F775
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232777AbhCQRqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
+        id S232695AbhCQRsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:48:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232476AbhCQRpa (ORCPT
+        with ESMTP id S232806AbhCQRrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:45:30 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A82C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:45:29 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id e7so3315515edu.10
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:45:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3+jbSQhgO2M50c8RnLTshbFAggGniObF7WgVOvlDyi8=;
-        b=Kr80ORLaQlf8ECE5poODA5M3XneyW20JkaUrpc7uM49MpJEcAPLIiXzYfNAUPPSvyv
-         j4Or20lvvxAaBhsMYMiC2/PBJdtLZ4n/s1e3y+R8P7zTW7cXp/HaBaImVzzbUcNbQIvL
-         x7YB96PA6F4n5d9Tkv/Hgy2cOYPQDMcOxTgf5bofTpy55H/3+ZyuMC2rNWNv87kSDMk4
-         fejnQl7FTuajrheyDfBDf60TLP0zZRV1MZ+Qr7UrkZRVtkVPDZD8y0udeqzkMs6Sl7aa
-         ncJu4+vKFUlZtRf1Grh2qM273Eh3/0PgZjfuA3hzNle4lgqvfcJ/EW8KT1fkPuRnQjgG
-         TG6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3+jbSQhgO2M50c8RnLTshbFAggGniObF7WgVOvlDyi8=;
-        b=kQieb1yUuoOS24oOwOBmCEvpGHTt+fXqAaXsseHXX+eHtJJVFJgFY0W/LAW8WG/j9u
-         V7NesvnO6Osa/GTF7SVXfAdGllJMpfcysDzX+5/hBNZojcE4c2TfbMKJgQSbJGWOfUjh
-         Mw1aLOBg3WuMW413rvosTYqG/BFTz0vgIkXD7TDiRR3+/UO0iDS9jZ+uuxPu1pKVX7th
-         U2XuKt7ETxlb6eq3F+njPdklRar9ZeUqtyfOrfeyHY8r5lu67FO1/Oxs2eP9RaohpJ3t
-         dz4zG/I63Ge4T4aP05F4ovrCr8ugdw+YEhPs7FgoqSut45ZdCRLIQNOU6RrgGHgG65g9
-         Y4BQ==
-X-Gm-Message-State: AOAM533qwp5ecNy+W5v5+43MdgAz3oi7K63vHyl1g0z5wCD25fP5LAm+
-        0Dktn2ild32Sw/96JCrS1Xsm4R3i5nCoSUikXPSuNA==
-X-Google-Smtp-Source: ABdhPJxMxEVP4aY4veYMYEEfXD0t7oWWDbbk445JLMXjFqTiyBHrmN/5jWRXlu7v0klMLOtdzLfNdpW9ihs3ePig8eU=
-X-Received: by 2002:a05:6402:11c9:: with SMTP id j9mr43442207edw.348.1616003128580;
- Wed, 17 Mar 2021 10:45:28 -0700 (PDT)
+        Wed, 17 Mar 2021 13:47:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6486C06174A;
+        Wed, 17 Mar 2021 10:47:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rL7SFawsS6liUNgGQ9iTAJB8GXMy0bvzGxWlxqtV9bA=; b=kwWUW/scijZUk2gBe0/qYqS9Bp
+        rhiaJ++M1Et/DCmh8LuhVHjj1Kb8Thfb83lSQ+LOLYlCsraR973yvNx445uTwKH4cU7CWo9Mcj5Qo
+        ZCaQGP87mYLksgp6fNCN85TBefGtsgA99HN1NfB1X8H8S5CIaBeE3s+xgZveNbihitX640i5qQAyU
+        JnOAgWjrmqpdDZiPDC0/HANRwWtSPix/Bavwm09jsXR0P1PTAhBk9yoPa/pzvEnHQGxiZCYUuuQ2+
+        vAfgp6tu+lhYACW+SaN5d14LfY/CLj/3rdiXLVOxDQsLwY6h4BsHghato2XPqr7/UitnBB9YHgKa1
+        CEVrLLkw==;
+Received: from 089144199244.atnat0008.highway.a1.net ([89.144.199.244] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMaGc-001w1O-12; Wed, 17 Mar 2021 17:47:37 +0000
+Date:   Wed, 17 Mar 2021 18:45:22 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v4 25/25] cachefiles: Switch to wait_page_key
+Message-ID: <YFJAMvsjkWKto0B+@infradead.org>
+References: <20210305041901.2396498-1-willy@infradead.org>
+ <20210305041901.2396498-26-willy@infradead.org>
 MIME-Version: 1.0
-References: <59cb30f5e5ac6d65427ceaadf1012b2ba8dbf66c.1615606143.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210317041342.GA19198@wunner.de> <CAPcyv4jxTcUEgcfPRckHqrUPy8gR7ZJsxDaeU__pSq6PqJERAQ@mail.gmail.com>
- <20210317053114.GA32370@wunner.de> <CAPcyv4j8t4Y=kpRSvOjOfVHd107YemiRcW0BNQRwp-d9oCddUw@mail.gmail.com>
- <CAC41dw8sX4T-FrwBju2H3TbjDhJMLGw_KHqs+20qzvKU1b5QTA@mail.gmail.com>
-In-Reply-To: <CAC41dw8sX4T-FrwBju2H3TbjDhJMLGw_KHqs+20qzvKU1b5QTA@mail.gmail.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 17 Mar 2021 10:45:21 -0700
-Message-ID: <CAPcyv4gfBTuEj494aeg0opeL=PSbk_Cs16fX7A-cLvSV6EZg-Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] PCI: pciehp: Skip DLLSC handling if DPC is triggered
-To:     Sathyanarayanan Kuppuswamy Natarajan 
-        <sathyanarayanan.nkuppuswamy@gmail.com>
-Cc:     Lukas Wunner <lukas@wunner.de>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Keith Busch <kbusch@kernel.org>, knsathya@kernel.org,
-        Sinan Kaya <okaya@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305041901.2396498-26-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 10:20 AM Sathyanarayanan Kuppuswamy Natarajan
-<sathyanarayanan.nkuppuswamy@gmail.com> wrote:
->
-> Hi,
->
-> On Wed, Mar 17, 2021 at 9:31 AM Dan Williams <dan.j.williams@intel.com> wrote:
-> >
-> > On Tue, Mar 16, 2021 at 10:31 PM Lukas Wunner <lukas@wunner.de> wrote:
-> > >
-> > > On Tue, Mar 16, 2021 at 10:08:31PM -0700, Dan Williams wrote:
-> > > > On Tue, Mar 16, 2021 at 9:14 PM Lukas Wunner <lukas@wunner.de> wrote:
-> > > > >
-> > > > > On Fri, Mar 12, 2021 at 07:32:08PM -0800, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
-> > > > > > +     if ((events == PCI_EXP_SLTSTA_DLLSC) && is_dpc_reset_active(pdev)) {
-> > > > > > +             ctrl_info(ctrl, "Slot(%s): DLLSC event(DPC), skipped\n",
-> > > > > > +                       slot_name(ctrl));
-> > > > > > +             ret = IRQ_HANDLED;
-> > > > > > +             goto out;
-> > > > > > +     }
-> > > > >
-> > > > > Two problems here:
-> > > > >
-> > > > > (1) If recovery fails, the link will *remain* down, so there'll be
-> > > > >     no Link Up event.  You've filtered the Link Down event, thus the
-> > > > >     slot will remain in ON_STATE even though the device in the slot is
-> > > > >     no longer accessible.  That's not good, the slot should be brought
-> > > > >     down in this case.
-> > > >
-> > > > Can you elaborate on why that is "not good" from the end user
-> > > > perspective? From a driver perspective the device driver context is
-> > > > lost and the card needs servicing. The service event starts a new
-> > > > cycle of slot-attention being triggered and that syncs the slot-down
-> > > > state at that time.
-> > >
-> > > All of pciehp's code assumes that if the link is down, the slot must be
-> > > off.  A slot which is in ON_STATE for a prolonged period of time even
-> > > though the link is down is an oddity the code doesn't account for.
-> > >
-> > > If the link goes down, the slot should be brought into OFF_STATE.
-> > > (It's okay though to delay bringdown until DPC recovery has completed
-> > > unsuccessfully, which is what the patch I'm proposing does.)
-> > >
-> > > I don't understand what you mean by "service event".  Someone unplugging
-> > > and replugging the NVMe drive?
-> >
-> > Yes, service meaning a technician physically removes the card.
-> >
-> > >
-> > >
-> > > > > (2) If recovery succeeds, there's a race where pciehp may call
-> > > > >     is_dpc_reset_active() *after* dpc_reset_link() has finished.
-> > > > >     So both the DPC Trigger Status bit as well as pdev->dpc_reset_active
-> > > > >     will be cleared.  Thus, the Link Up event is not filtered by pciehp
-> > > > >     and the slot is brought down and back up even though DPC recovery
-> > > > >     was succesful, which seems undesirable.
-> > > >
-> > > > The hotplug driver never saw the Link Down, so what does it do when
-> > > > the slot transitions from Link Up to Link Up? Do you mean the Link
-> > > > Down might fire after the dpc recovery has completed if the hotplug
-> > > > notification was delayed?
-> > >
-> > > If the Link Down is filtered and the Link Up is not, pciehp will
-> > > bring down the slot and then bring it back up.  That's because pciehp
-> > > can't really tell whether a DLLSC event is Link Up or Link Down.
-> > >
-> > > It just knows that the link was previously up, is now up again,
-> > > but must have been down intermittently, so transactions to the
-> > > device in the slot may have been lost and the slot is therefore
-> > > brought down for safety.  Because the link is up, it is then
-> > > brought back up.
-> >
-> > I wonder why we're not seeing that effect in testing?
->
-> In our test case, there is a good chance that the LINK UP event is also
-> filtered. We change the dpc_reset_active status only after we verify
-> the link is up. So if hotplug handler handles the LINK UP event before
-> we change the status of dpc_reset_active, then it will not lead to the
-> issue mentioned by Lukas.
->
+On Fri, Mar 05, 2021 at 04:19:01AM +0000, Matthew Wilcox (Oracle) wrote:
+> Cachefiles was relying on wait_page_key and wait_bit_key being the
+> same layout, which is fragile.  Now that wait_page_key is exposed in
+> the pagemap.h header, we can remove that fragility.  Also switch it
+> to use the folio directly instead of the page.
 
-Ah, ok, we're missing a flush of the hotplug event handler after the
-link is up to make sure the hotplug handler does not see the Link Up.
-I'm not immediately seeing how the new proposal ensures that there is
-no Link Up event still in flight after DPC completes its work.
-Wouldn't it be required to throw away Link Up to Link Up transitions?
+Yikes.  That fix itself is something that should go into mainline ASAP as
+it fixes a massive landmine instead of mixing it up with the folio
+conversion.
