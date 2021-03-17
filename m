@@ -2,356 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9529233F8DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:14:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2B733F8E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233146AbhCQTNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:13:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24395 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233077AbhCQTNc (ORCPT
+        id S233170AbhCQTOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232963AbhCQTNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:13:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616008411;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AY++CPbrnpNGT6ojKxSeyv89tPlCa2W+td1oinEyr1A=;
-        b=G6zm3sPy2DLs8/+YijZFy+UyQBkHFSJJlT//i2MfB5qRlNd8EaXnAmhIpaVqa8HovLXlM4
-        iJhxSi/gLrviN3VpF+bi4QS7Bdawq+rruSwWHXwpTG4j5B1owm37CcWe+ioNFnZ2d2bKt/
-        /NGi6Ct4I1Ks3d3kQA8QcLVuM7Wf4s4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-f_6uI9oHP5WU1GXkUw-NPw-1; Wed, 17 Mar 2021 15:13:28 -0400
-X-MC-Unique: f_6uI9oHP5WU1GXkUw-NPw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 148A9180FCA2;
-        Wed, 17 Mar 2021 19:13:27 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 796A71007625;
-        Wed, 17 Mar 2021 19:13:20 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 15:13:19 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Sergei Shtepa <sergei.shtepa@veeam.com>
-Cc:     Ming Lei <ming.lei@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alasdair Kergon <agk@redhat.com>,
-        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Pavel Tide <Pavel.TIde@veeam.com>,
-        Mikulas Patocka <mpatocka@redhat.com>
-Subject: Re: [PATCH v7 2/3] block: add bdev_interposer
-Message-ID: <20210317191319.GA30376@redhat.com>
-References: <1615563895-28565-1-git-send-email-sergei.shtepa@veeam.com>
- <1615563895-28565-3-git-send-email-sergei.shtepa@veeam.com>
- <YFBnypYemiR08A/c@T590>
- <20210316163544.GA31272@veeam.com>
- <YFFxdz84esfiTvNk@T590>
- <20210317122217.GA31781@veeam.com>
- <20210317150441.GB29481@redhat.com>
- <20210317181413.GB31781@veeam.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210317181413.GB31781@veeam.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Wed, 17 Mar 2021 15:13:39 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBFFC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:13:38 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id j19so39530ybg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:13:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=PMNTWEhfV6poxu3dvNBZ0UMNzT+uf6rEFOoHyvBSs4w=;
+        b=NBYx9GkOp4RmsEoqQW1OUbK6Af2HZ+LSsowzg92soxTJILyt1ru0deBVCL4L1rv72R
+         wNa5pP6KVc+qd2CwbKXOZPKQEI5zMGrWD+mA1YusfzJytS77RqUnsDx9WMaXglXnSDsx
+         xcd2uhqLhA6g2U3Be8s572z9gjYEj4t6QyB64QOJBwwaAxcaOlwmWCgcmFXeyWI7RdPI
+         Q+No5H0JfUdzubH73uOJNzHeifUE3NpHJ30yDQGj5uju9XNlysiYgOqPdje5/Cm3hLdd
+         rEpgaya2cvWiZjPyi8MhqBCZ/UYMItUgSfbsDoIIhwe8WCOjDXAiGWa76x4x5bG8dZCo
+         vLLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=PMNTWEhfV6poxu3dvNBZ0UMNzT+uf6rEFOoHyvBSs4w=;
+        b=k3qca8Hw9+YCDB3It7I7XGPU2WJW/6cDRgtDYRmTHuWzlIcSyN9X2pYxcWbb3yQE9y
+         Av5jcuxGGCEZPSgRqUR7gRvbd+nffz/rjII4x8RXM1xAuS0Az0VcB1Q/QzRarfq8MF7M
+         vtpgCoEFQsmQ6fvWoAFHwIOYjn9qLup2IEHZPRNDC9dPPgCbtwzqYD/tUetbwgX4Wy1q
+         rtfEykBUIL6APdEeWtGr7/ZUGGCdyeKfNzp9QL1bVmpHRbqkjvUdoOuv7H18tL5nyioa
+         Ofs0CsZ1f8bq/T6FXXy9H/LvooTalm8rsOBwJF9afjUyHGHQs+a0Sj1E3ymK2rJl7jON
+         2Wiw==
+X-Gm-Message-State: AOAM532zJE5Dd6pXkqBW+xqEPl6gsYiHCA79dgJyoi5zcyZUyY4AfcUJ
+        c3HQk1iAhMOM4XbX2zDZkzn8w+yBFadR
+X-Google-Smtp-Source: ABdhPJxEU/NDufnze3h7G0LVZg2aYOx4qJg+j9BSn1s+iC2EzMHJDDyEnwUZx76eo1cN/PimKfC47lJ2IHEe
+X-Received: from bg.sfo.corp.google.com ([2620:15c:8:10:8c6a:2e6f:ed81:d930])
+ (user=bgeffon job=sendgmr) by 2002:a25:d155:: with SMTP id
+ i82mr6299882ybg.404.1616008417952; Wed, 17 Mar 2021 12:13:37 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 12:13:33 -0700
+In-Reply-To: <20210303175235.3308220-1-bgeffon@google.com>
+Message-Id: <20210317191334.564944-1-bgeffon@google.com>
+Mime-Version: 1.0
+References: <20210303175235.3308220-1-bgeffon@google.com>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH v2 1/2] mm: Allow non-VM_DONTEXPAND and VM_PFNMAP mappings
+ with MREMAP_DONTUNMAP
+From:   Brian Geffon <bgeffon@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Brian Geffon <bgeffon@google.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Dmitry Safonov <dima@arista.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17 2021 at  2:14pm -0400,
-Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
+Currently MREMAP_DONTUNMAP only accepts private anonymous mappings. This
+change will widen the support to include any mappings which are not
+VM_DONTEXPAND or VM_PFNMAP. The primary use case is to support
+MREMAP_DONTUNMAP on mappings which may have been created from a memfd.
 
-> The 03/17/2021 18:04, Mike Snitzer wrote:
-> > On Wed, Mar 17 2021 at  8:22am -0400,
-> > Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
-> > 
-> > > The 03/17/2021 06:03, Ming Lei wrote:
-> > > > On Tue, Mar 16, 2021 at 07:35:44PM +0300, Sergei Shtepa wrote:
-> > > > > The 03/16/2021 11:09, Ming Lei wrote:
-> > > > > > On Fri, Mar 12, 2021 at 06:44:54PM +0300, Sergei Shtepa wrote:
-> > > > > > > bdev_interposer allows to redirect bio requests to another devices.
-> > > > > > > 
-> > > > > > > Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
-> > > > > > > ---
-> > > > > > >  block/bio.c               |  2 ++
-> > > > > > >  block/blk-core.c          | 57 +++++++++++++++++++++++++++++++++++++++
-> > > > > > >  block/genhd.c             | 54 +++++++++++++++++++++++++++++++++++++
-> > > > > > >  include/linux/blk_types.h |  3 +++
-> > > > > > >  include/linux/blkdev.h    |  9 +++++++
-> > > > > > >  5 files changed, 125 insertions(+)
-> > > > > > > 
-> > > > > > > diff --git a/block/bio.c b/block/bio.c
-> > > > > > > index a1c4d2900c7a..0bfbf06475ee 100644
-> > > > > > > --- a/block/bio.c
-> > > > > > > +++ b/block/bio.c
-> > > > > > > @@ -640,6 +640,8 @@ void __bio_clone_fast(struct bio *bio, struct bio *bio_src)
-> > > > > > >  		bio_set_flag(bio, BIO_THROTTLED);
-> > > > > > >  	if (bio_flagged(bio_src, BIO_REMAPPED))
-> > > > > > >  		bio_set_flag(bio, BIO_REMAPPED);
-> > > > > > > +	if (bio_flagged(bio_src, BIO_INTERPOSED))
-> > > > > > > +		bio_set_flag(bio, BIO_INTERPOSED);
-> > > > > > >  	bio->bi_opf = bio_src->bi_opf;
-> > > > > > >  	bio->bi_ioprio = bio_src->bi_ioprio;
-> > > > > > >  	bio->bi_write_hint = bio_src->bi_write_hint;
-> > > > > > > diff --git a/block/blk-core.c b/block/blk-core.c
-> > > > > > > index fc60ff208497..da1abc4c27a9 100644
-> > > > > > > --- a/block/blk-core.c
-> > > > > > > +++ b/block/blk-core.c
-> > > > > > > @@ -1018,6 +1018,55 @@ static blk_qc_t __submit_bio_noacct_mq(struct bio *bio)
-> > > > > > >  	return ret;
-> > > > > > >  }
-> > > > > > >  
-> > > > > > > +static noinline blk_qc_t submit_bio_interposed(struct bio *bio)
-> > > > > > > +{
-> > > > > > > +	blk_qc_t ret = BLK_QC_T_NONE;
-> > > > > > > +	struct bio_list bio_list[2] = { };
-> > > > > > > +	struct gendisk *orig_disk;
-> > > > > > > +
-> > > > > > > +	if (current->bio_list) {
-> > > > > > > +		bio_list_add(&current->bio_list[0], bio);
-> > > > > > > +		return BLK_QC_T_NONE;
-> > > > > > > +	}
-> > > > > > > +
-> > > > > > > +	orig_disk = bio->bi_bdev->bd_disk;
-> > > > > > > +	if (unlikely(bio_queue_enter(bio)))
-> > > > > > > +		return BLK_QC_T_NONE;
-> > > > > > > +
-> > > > > > > +	current->bio_list = bio_list;
-> > > > > > > +
-> > > > > > > +	do {
-> > > > > > > +		struct block_device *interposer = bio->bi_bdev->bd_interposer;
-> > > > > > > +
-> > > > > > > +		if (unlikely(!interposer)) {
-> > > > > > > +			/* interposer was removed */
-> > > > > > > +			bio_list_add(&current->bio_list[0], bio);
-> > > > > > > +			break;
-> > > > > > > +		}
-> > > > > > > +		/* assign bio to interposer device */
-> > > > > > > +		bio_set_dev(bio, interposer);
-> > > > > > > +		bio_set_flag(bio, BIO_INTERPOSED);
-> > > > > > > +
-> > > > > > > +		if (!submit_bio_checks(bio))
-> > > > > > > +			break;
-> > > > > > > +		/*
-> > > > > > > +		 * Because the current->bio_list is initialized,
-> > > > > > > +		 * the submit_bio callback will always return BLK_QC_T_NONE.
-> > > > > > > +		 */
-> > > > > > > +		interposer->bd_disk->fops->submit_bio(bio);
-> > > > > > 
-> > > > > > Given original request queue may become live when calling attach() and
-> > > > > > detach(), see below comment. bdev_interposer_detach() may be run
-> > > > > > when running ->submit_bio(), meantime the interposer device is
-> > > > > > gone during the period, then kernel oops.
-> > > > > 
-> > > > > I think that since the bio_queue_enter() function was called,
-> > > > > q->q_usage_counter will not allow the critical code in the attach/detach
-> > > > > functions to be executed, which is located between the blk_freeze_queue
-> > > > > and blk_unfreeze_queue calls.
-> > > > > Please correct me if I'm wrong.
-> > > > > 
-> > > > > > 
-> > > > > > > +	} while (false);
-> > > > > > > +
-> > > > > > > +	current->bio_list = NULL;
-> > > > > > > +
-> > > > > > > +	blk_queue_exit(orig_disk->queue);
-> > > > > > > +
-> > > > > > > +	/* Resubmit remaining bios */
-> > > > > > > +	while ((bio = bio_list_pop(&bio_list[0])))
-> > > > > > > +		ret = submit_bio_noacct(bio);
-> > > > > > > +
-> > > > > > > +	return ret;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > >  /**
-> > > > > > >   * submit_bio_noacct - re-submit a bio to the block device layer for I/O
-> > > > > > >   * @bio:  The bio describing the location in memory and on the device.
-> > > > > > > @@ -1029,6 +1078,14 @@ static blk_qc_t __submit_bio_noacct_mq(struct bio *bio)
-> > > > > > >   */
-> > > > > > >  blk_qc_t submit_bio_noacct(struct bio *bio)
-> > > > > > >  {
-> > > > > > > +	/*
-> > > > > > > +	 * Checking the BIO_INTERPOSED flag is necessary so that the bio
-> > > > > > > +	 * created by the bdev_interposer do not get to it for processing.
-> > > > > > > +	 */
-> > > > > > > +	if (bdev_has_interposer(bio->bi_bdev) &&
-> > > > > > > +	    !bio_flagged(bio, BIO_INTERPOSED))
-> > > > > > > +		return submit_bio_interposed(bio);
-> > > > > > > +
-> > > > > > >  	if (!submit_bio_checks(bio))
-> > > > > > >  		return BLK_QC_T_NONE;
-> > > > > > >  
-> > > > > > > diff --git a/block/genhd.c b/block/genhd.c
-> > > > > > > index c55e8f0fced1..c840ecffea68 100644
-> > > > > > > --- a/block/genhd.c
-> > > > > > > +++ b/block/genhd.c
-> > > > > > > @@ -30,6 +30,11 @@
-> > > > > > >  static struct kobject *block_depr;
-> > > > > > >  
-> > > > > > >  DECLARE_RWSEM(bdev_lookup_sem);
-> > > > > > > +/*
-> > > > > > > + * Prevents different block-layer interposers from attaching or detaching
-> > > > > > > + * to the block device at the same time.
-> > > > > > > + */
-> > > > > > > +static DEFINE_MUTEX(bdev_interposer_attach_lock);
-> > > > > > >  
-> > > > > > >  /* for extended dynamic devt allocation, currently only one major is used */
-> > > > > > >  #define NR_EXT_DEVT		(1 << MINORBITS)
-> > > > > > > @@ -1940,3 +1945,52 @@ static void disk_release_events(struct gendisk *disk)
-> > > > > > >  	WARN_ON_ONCE(disk->ev && disk->ev->block != 1);
-> > > > > > >  	kfree(disk->ev);
-> > > > > > >  }
-> > > > > > > +
-> > > > > > > +int bdev_interposer_attach(struct block_device *original,
-> > > > > > > +			   struct block_device *interposer)
-> > > > > > > +{
-> > > > > > > +	int ret = 0;
-> > > > > > > +
-> > > > > > > +	if (WARN_ON(((!original) || (!interposer))))
-> > > > > > > +		return -EINVAL;
-> > > > > > > +	/*
-> > > > > > > +	 * interposer should be simple, no a multi-queue device
-> > > > > > > +	 */
-> > > > > > > +	if (!interposer->bd_disk->fops->submit_bio)
-> > > > > > > +		return -EINVAL;
-> > > > > > > +
-> > > > > > > +	if (WARN_ON(!blk_mq_is_queue_frozen(original->bd_disk->queue)))
-> > > > > > > +		return -EPERM;
-> > > > > > 
-> > > > > > The original request queue may become live now...
-> > > > > 
-> > > > > Yes.
-> > > > > I will remove the blk_mq_is_queue_frozen() function and use a different
-> > > > > approach.
-> > > > 
-> > > > Looks what attach and detach needs is that queue is kept as frozen state
-> > > > instead of being froze simply at the beginning of the two functions, so
-> > > > you can simply call freeze/unfreeze inside the two functions.
-> > > > 
-> > > > But what if 'original' isn't a MQ queue?  queue usage counter is just
-> > > > grabed when calling ->submit_bio(), and queue freeze doesn't guarantee there
-> > > > isn't any io activity, is that a problem for bdev_interposer use case?
-> > > > 
-> > > > -- 
-> > > > Ming
-> > > > 
-> > > 
-> > > It makes sense to add freeze_bdev/thaw_bdev. This will be useful.
-> > > For the main file systems, the freeze functions are defined 
-> > > sb->s_op->freeze_super() or sb - >s_op->freeze_fs()
-> > > (btrfs, ext2, ext4, f2fs, jfs, nilfs2, reiserfs, xfs).
-> > > If the file system is frozen, then no new requests should be received.
-> > > 
-> > > But if the file system does not support freeze or the disk is used without
-> > > a file system, as for some databases, freeze_bdev seems useless to me.
-> > > In this case, we will need to stop working with the disk from user-space,
-> > > for example, to freeze the database itself.
-> > > 
-> > > I can add dm_suspend() before bdev_interposer_detach(). This will ensure that
-> > > all intercepted requests have been processed. Applying dm_suspend() before
-> > > bdev_interposer_attach() is pointless. The attachment is made when the target
-> > > is created, and at this time the target is not ready to work yet.
-> > > There shouldn't be any bio requests, I suppose. In addition,
-> > > sb->s_op->freeze_fs() for the interposer will not be called, because the file
-> > > system is not mounted for the interposer device. It should not be able to
-> > > be mounted. To do this, I will add an exclusive opening of the interposer
-> > > device.
-> > > 
-> > > I'll add freeze_bdev() for the original device and dm_suspend() for the
-> > > interposer to the DM code. For normal operation of bdev_interposer,
-> > > it is enough to transfer blk_mq_freeze_queue and blk_mq_quiesce_queue to
-> > > bdev_interposer_attach/bdev_interposer_detach.
-> > > The lock on the counter q->q_usage_counter is enough to not catch NULL in
-> > > bd_interposer.
-> > > 
-> > > Do you think this is enough?
-> > > I think there are no other ways to stop the block device queue.
-> > 
-> > Either you're pretty confused, or I am... regardless.. I think we need
-> > to cover the basics of how interposer is expected to be paired with
-> > an "original" device.
-> 
-> Thank you Mike for your patience. I really appreciate it.
-> I really may not understand something. Let me get this straight.
-> 
-> > 
-> > Those "original" device are already active and potentially in use
-> > right?  They may be either request-based blk-mq _or_ bio-based.
-> 
-> Yes. Exactly.
-> 
-> > 
-> > So what confuses me is that you're making assertions about how actively
-> > used bio-based DM devices aren't in use until the interposed device
-> > create happens... this is all getting very muddled.
-> 
-> The original device is indeed already actively used and already mounted.
-> This is most likely not a DM device.
-> If it is a request-based blk-mq, then it is enough to stop its queue by
-> blk_mq_freeze_queue(). 
-> If it is a bio-based device, then we can try to stop it by freeze_bdev.
-> But in both cases, if the blk_mq_freeze_bdev() function was called, bio cannot
-> get into the critical section between bio_queue_enter() and blk_queue_exit().
-> This allows to safely change the value of original->bd_interposer.
+This change which takes advantage of the existing check in vma_to_resize
+for non-VM_DONTEXPAND and non-VM_PFNMAP mappings will cause
+MREMAP_DONTUNMAP to return -EFAULT if such mappings are remapped. This
+behavior is consistent with existing behavior when using mremap with
+such mappings.
 
-Even though bios cannot get into underlying blk-mq they are already
-inflight on behalf of the upper-layer bio-based device. I'll look closer
-at the code but it seems like there is potential for the original
-device's bios to still be queued to original, past the ->submit_bio
-entry, and waiting for blk-mq to unfreeze.  Meaning upon return from
-what I _think_ you're saying will be sufficient: DM bio-based device
-will carry on submitting IO to the blk-mq device that has since been
-interposed.. that IO will _not_ complete in terms of the interposed
-device.. so you'll have a split-brain dual completion of IO from the
-original bio-based DM device _and_ the interposed device (for any new io
-that hits ->submit_bio after the interposed device is in place).
+Lokesh Gidra who works on the Android JVM, provided an explanation of how
+such a feature will improve Android JVM garbage collection:
+"Android is developing a new garbage collector (GC), based on userfaultfd.
+The garbage collector will use userfaultfd (uffd) on the java heap during
+compaction. On accessing any uncompacted page, the application threads will
+find it missing, at which point the thread will create the compacted page
+and then use UFFDIO_COPY ioctl to get it mapped and then resume execution.
+Before starting this compaction, in a stop-the-world pause the heap will be
+mremap(MREMAP_DONTUNMAP) so that the java heap is ready to receive
+UFFD_EVENT_PAGEFAULT events after resuming execution.
 
-I think you need to have original bio-based DM suspend, interpose
-device, and then resume the original.  Anything entering original's
-->submit_bio from that point will all get sent to interposed
-device. Right?
+To speedup mremap operations, pagetable movement was optimized by moving
+PUD entries instead of PTE entries [1]. It was necessary as mremap of even
+modest sized memory ranges also took several milliseconds, and stopping the
+application for that long isn't acceptable in response-time sensitive
+cases.
 
-> To intercept requests to the original device, we create a new md with
-> the DM_INTERPOSE_FLAG flag. It is this interposer device that has not
-> yet been initialized by this time. It just runs DM_TABLE_LOAD_CMD.
-> That is why I think that the queue of this device should not be stopped,
-> since this device has not yet been initialized.
-> 
-> > 
-> > And your lack of understanding of these various IO flushing methods
-> > (freeze/thaw, suspend/resume, etc) is showing.  Please slow down and
-> > approach this more systematically.
-> 
-> For any block device, we can call the freeze_bdev() function. It will 
-> allow to wait until the processing of previously sent requests is 
-> completed and block the sending of new ones. blk_mq_freeze_queue() 
-> allows to change the bd_interposer variable. This allow to attach/detach 
-> the interposer to original device.
+With UFFDIO_CONTINUE feature [2], it will be even more efficient to
+implement this GC, particularly the 'non-moveable' portions of the heap.
+It will also help in reducing the need to copy (UFFDIO_COPY) the pages.
+However, for this to work, the java heap has to be on a 'shared' vma.
+Currently MREMAP_DONTUNMAP only supports private anonymous mappings, this
+patch will enable using UFFDIO_CONTINUE for the new userfaultfd-based heap
+compaction."
 
-freeze_bdev/thaw_bdev are only relevant if a filesystem is layered
-ontop.  A bio-based DM device can be used directly (by a database or
-whatever).
+[1] https://lore.kernel.org/linux-mm/20201215030730.NC3CU98e4%25akpm@linux-foundation.org/
+[2] https://lore.kernel.org/linux-mm/20210302000133.272579-1-axelrasmussen@google.com/
 
-> dm_suspend() is used to stop mapped device. This is what I plan to use
-> before detaching the interposer. It will allow to wait for the
-> completion of all the bios that were sent for the interposer.
+Signed-off-by: Brian Geffon <bgeffon@google.com>
+---
+ mm/mremap.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Yes, but you need to suspend before attaching the interposer too, to
-flush any in-flight bios that might be in-flight within the various DM
-target code.
-
-DM should be able to internalize all this when handling the
-DM_INTERPOSE_FLAG during the new table load.  It'd call into
-dm_internal_suspend_fast and then dm_internal_resume_fast for the
-original md device.
-
-Mike
+diff --git a/mm/mremap.c b/mm/mremap.c
+index ec8f840399ed..2c57dc4bc8b6 100644
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -653,10 +653,6 @@ static struct vm_area_struct *vma_to_resize(unsigned long addr,
+ 		return ERR_PTR(-EINVAL);
+ 	}
+ 
+-	if (flags & MREMAP_DONTUNMAP && (!vma_is_anonymous(vma) ||
+-			vma->vm_flags & VM_SHARED))
+-		return ERR_PTR(-EINVAL);
+-
+ 	if (is_vm_hugetlb_page(vma))
+ 		return ERR_PTR(-EINVAL);
+ 
+-- 
+2.31.0.rc2.261.g7f71774620-goog
 
