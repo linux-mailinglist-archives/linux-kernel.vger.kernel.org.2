@@ -2,87 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B5333E3AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E848C33E30F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:55:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231480AbhCQA5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:57:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229904AbhCQA4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:56:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACF8864F92;
-        Wed, 17 Mar 2021 00:56:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615942572;
-        bh=4DNjOmlZ7d4KBzzPxWE3LCyL6Js+P2t+Kvd2p4coykw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BZNASM6cr5b3KmXDmazr8uu1JiKibo7kaoa05jo01Fx6c62ffCOZk36VvtFVzqZjH
-         dEYpqdO3T7RmHgleoUbWKGhTnOUi1H0GtPmKoSe3SceLVNU3bt/SEdBEuH3YvuQD0A
-         kgvS1CNfH4oh2OS9HOf5TI27XIhM5bEDeL1jslhFdHm3MC6NYEsmxwtdhcg8gktbkn
-         IFvScV67mK5BjdHH3y6f3LUZ3ChydLg46vpgAG3S9Nkz/OD3+etX1QLPxSBYt4qCC4
-         6vRUMSeimi+EdXMGalhrknfCJ6Rq4Yau1PkSCY+WheuQAuhiMb3TZmLa8h5zv7gojB
-         nup3w1lO9AbXw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Paulo Alcantara <pc@cjr.nz>, Aurelien Aptel <aaptel@suse.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Steve French <stfrench@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org
-Subject: [PATCH AUTOSEL 5.11 29/61] cifs: change noisy error message to FYI
-Date:   Tue, 16 Mar 2021 20:55:03 -0400
-Message-Id: <20210317005536.724046-29-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210317005536.724046-1-sashal@kernel.org>
-References: <20210317005536.724046-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S229712AbhCQAz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhCQAzR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 20:55:17 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F09CC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:55:17 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id da16so26600739qvb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:55:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=sEoOOfzl8seVEQxt7AKb/MB7g4+cwCvdVL+g/G4yCaI=;
+        b=O1ePT2YK+FfWGO1llf1NXHAFoDzaZoFYL1Ioxj3DP2XqGsit36lSXWxtK+fzF7iprB
+         k+b2aFvi0yZoNp8liIzPHJ1ZR6I49vLQrMXjl0I8YdcOTvUafAlJLCllupM5LAwAzS7+
+         u6Yc3SAiUsqbVFJNT9RT4xZGyQ3a+l65j7Q3jFfFRMmpQ92L9vkI7mHhgruwr/unZvVf
+         S4YKsp9zjQSjYmK9Cefir+l1kci3lIIMwQHkviBEs4nAgb5iUnMxOmAJQg8a7aNirAa8
+         PYveWTpSgI66xh58cgTSPSy3l8CmWhhMEs0h8zvqU+oMVedTxlJjF2CTBJ6krw+sO972
+         L1rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=sEoOOfzl8seVEQxt7AKb/MB7g4+cwCvdVL+g/G4yCaI=;
+        b=scnvoCnHSZ+A/XCnf5KI4uOYYioqmoGKGMPhMFz1tOrGH+uTHdTe3TzyF098wj0ux4
+         EKPUED7mbyx57SAqw2wKvllIQCZisHx38wadl41KKx+eou9mibYoQQ/aM9dj7mS5cxvX
+         aiHSRNWt/B8CKt3zHxqnoZBAXRh4De705nAzivopV/1QJ09QgkwQ6jWEZSebVA3Ru/GI
+         igrbJ3s1y7PG8gZ4H1PQ5OKTBxHYVPqyfj4vKPIfmQ3ztEd2eO+QZL+JxAZtaJvX5N2z
+         7F5kcxrRI3DHSwSsp6aXfTtbchWj1A2NGUrR5ptNXvA9Vl4s067hLzI9enMiqPQliBCZ
+         keuw==
+X-Gm-Message-State: AOAM532SkPUlWetF8ovbnxhuLqTAOZimLpoS8j1R6cU/CqCTcvaZYOKt
+        7KGwZqEDN/a/2yn73io9TtlCjQcuPh2l
+X-Google-Smtp-Source: ABdhPJwXb6EtPFEN5njHDlY6/phMEUdaEMQVqp5dfCh/cDeww+5c5qi6gp76B14eaoGON7/ucon24AlpFCes
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:dd81:7319:7b35:a87a])
+ (user=irogers job=sendgmr) by 2002:a0c:aa45:: with SMTP id
+ e5mr2412051qvb.44.1615942516532; Tue, 16 Mar 2021 17:55:16 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 17:55:04 -0700
+In-Reply-To: <20210317005505.2794804-1-irogers@google.com>
+Message-Id: <20210317005505.2794804-2-irogers@google.com>
+Mime-Version: 1.0
+References: <20210317005505.2794804-1-irogers@google.com>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH v2 2/3] perf test: Cleanup daemon if test is interrupted.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paulo Alcantara <pc@cjr.nz>
+Reorder daemon_start and daemon_exit as the trap handler is added in
+daemon_start referencing daemon_exit.
 
-[ Upstream commit e3d100eae44b42f309c1366efb8397368f1cf8ed ]
-
-A customer has reported that their dmesg were being flooded by
-
-  CIFS: VFS: \\server Cancelling wait for mid xxx cmd: a
-  CIFS: VFS: \\server Cancelling wait for mid yyy cmd: b
-  CIFS: VFS: \\server Cancelling wait for mid zzz cmd: c
-
-because some processes that were performing statfs(2) on the share had
-been interrupted due to their automount setup when certain users
-logged in and out.
-
-Change it to FYI as they should be mostly informative rather than
-error messages.
-
-Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
-Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- fs/cifs/transport.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/tests/shell/daemon.sh | 34 +++++++++++++++++++-------------
+ 1 file changed, 20 insertions(+), 14 deletions(-)
 
-diff --git a/fs/cifs/transport.c b/fs/cifs/transport.c
-index 4a2b836eb017..39a8610c5de6 100644
---- a/fs/cifs/transport.c
-+++ b/fs/cifs/transport.c
-@@ -1182,7 +1182,7 @@ compound_send_recv(const unsigned int xid, struct cifs_ses *ses,
- 	}
- 	if (rc != 0) {
- 		for (; i < num_rqst; i++) {
--			cifs_server_dbg(VFS, "Cancelling wait for mid %llu cmd: %d\n",
-+			cifs_server_dbg(FYI, "Cancelling wait for mid %llu cmd: %d\n",
- 				 midQ[i]->mid, le16_to_cpu(midQ[i]->command));
- 			send_cancel(server, &rqst[i], midQ[i]);
- 			spin_lock(&GlobalMid_Lock);
+diff --git a/tools/perf/tests/shell/daemon.sh b/tools/perf/tests/shell/daemon.sh
+index 66ad56b4e0a5..61d13c4c64b8 100755
+--- a/tools/perf/tests/shell/daemon.sh
++++ b/tools/perf/tests/shell/daemon.sh
+@@ -98,6 +98,23 @@ check_line_other()
+ 	fi
+ }
+ 
++daemon_exit()
++{
++	local config=$1
++
++	local line=`perf daemon --config ${config} -x: | head -1`
++	local pid=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $1 }'`
++
++	# Reset trap handler.
++	trap - SIGINT SIGTERM
++
++	# stop daemon
++	perf daemon stop --config ${config}
++
++	# ... and wait for the pid to go away
++	tail --pid=${pid} -f /dev/null
++}
++
+ daemon_start()
+ {
+ 	local config=$1
+@@ -105,6 +122,9 @@ daemon_start()
+ 
+ 	perf daemon start --config ${config}
+ 
++	# Clean up daemon if interrupted.
++	trap "echo 'FAILED: Signal caught'; daemon_exit ${config}; exit 1" SIGINT SIGTERM
++
+ 	# wait for the session to ping
+ 	local state="FAIL"
+ 	while [ "${state}" != "OK" ]; do
+@@ -113,20 +133,6 @@ daemon_start()
+ 	done
+ }
+ 
+-daemon_exit()
+-{
+-	local config=$1
+-
+-	local line=`perf daemon --config ${config} -x: | head -1`
+-	local pid=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $1 }'`
+-
+-	# stop daemon
+-	perf daemon stop --config ${config}
+-
+-	# ... and wait for the pid to go away
+-	tail --pid=${pid} -f /dev/null
+-}
+-
+ test_list()
+ {
+ 	echo "test daemon list"
 -- 
-2.30.1
+2.31.0.rc2.261.g7f71774620-goog
 
