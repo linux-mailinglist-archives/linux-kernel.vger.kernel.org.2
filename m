@@ -2,126 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B5833E2FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:46:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F3433E304
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbhCQAqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhCQAqI (ORCPT
+        id S229831AbhCQAue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:50:34 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3040 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229800AbhCQAuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:46:08 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F40C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:46:08 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id o9so39251318iow.6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:46:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g+COD45asCD6AViOAc7MrxWQy6+3ypSO2/Rgi0R4u9w=;
-        b=nCAmIz5z0Rtq4Zy6d4iypjH+JgXX77D0C1BrmyEH6Mdl+rccaEDL2wis0CQPEUaVQj
-         JKiK+ZeDiVtU7Axq1ODLN5mpSjErYkB4gbVMt2r3EDWPZ/RAzphW83Jbf2+8TzpikncG
-         4WPZ023Wm1DrVdechGNdeQDLZaOGY9BNN3osI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g+COD45asCD6AViOAc7MrxWQy6+3ypSO2/Rgi0R4u9w=;
-        b=amhU9IbCxs9P4ePN8riA+PyeikqV6OiadwODoDowJ9moerwyJ79YqQaIXkIOLwg1kq
-         iQMA/8huHCmHxfAzKotpHByo9a0k1m5eJGpkgk2Qg+T8Hyw+42D1ZHM7rt2RggzKU1o0
-         lcEwhd3KRdMwwVGfKp67zm5X/O7G9zt4M+UMINL7G0NwCrVqMe5vHB475jHDaLZTp/0b
-         NmORG4pUIylItDy2LsTfd8xco9it4PMO+iVTnePvKQzontIe8xXUpz+gpkXLXCzWItr5
-         zOZqtBBriBDiA6J63h1XQrnPT0s3ZC55UVB3tby5XdQ6S9/d3kY5Egyh/qTQAulx28JC
-         bODg==
-X-Gm-Message-State: AOAM531a1RYzmWTqu4WcH92ua+mXIqoDHq3Yk/WdxbQGCZy9belbin1W
-        c2MNTxnxHg6A5em8Ofl6sdz/35of2FmAifZeltVnJg==
-X-Google-Smtp-Source: ABdhPJwB3XvpqehjtxC0Gn0gio1Yg8n6+Cqib9VxyLHpyQSa1ebiGIZB+cDDuNsZ1p92Y9L6rQsylO53XZJfkIqulrM=
-X-Received: by 2002:a05:6602:2102:: with SMTP id x2mr5498716iox.83.1615941967649;
- Tue, 16 Mar 2021 17:46:07 -0700 (PDT)
+        Tue, 16 Mar 2021 20:50:21 -0400
+Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F0WhP0dtgzWGD4;
+        Wed, 17 Mar 2021 08:47:17 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Wed, 17 Mar 2021 08:50:18 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Wed, 17 Mar
+ 2021 08:50:18 +0800
+Subject: Re: [PATCH net-next] net: sched: remove unnecessay lock protection
+ for skb_bad_txq/gso_skb
+To:     Cong Wang <xiyou.wangcong@gmail.com>,
+        David Miller <davem@redhat.com>
+CC:     Jakub Kicinski <kuba@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
+References: <1615800610-34700-1-git-send-email-linyunsheng@huawei.com>
+ <20210315.164151.1093629330365238718.davem@redhat.com>
+ <CAM_iQpWPSouO-JP4xHFqOLM8H4Rn5ucF68sa_EK5hUWSYw8feA@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <a8874cd1-b7c4-5307-db46-8906c0949e12@huawei.com>
+Date:   Wed, 17 Mar 2021 08:50:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-References: <20210310220211.1454516-1-revest@chromium.org> <20210310220211.1454516-2-revest@chromium.org>
- <CAEf4BzZ6Lfmn9pEJSLVhROjkPGJO_mT4nHot8AOjZ_9HTC1rEQ@mail.gmail.com>
- <CABRcYmJ3W88bTKwuO9Aav8A+TXmSE=SpxX++6OR77n=ya9hfgw@mail.gmail.com> <CAEf4BzZD52S8rjvgKAxssfD8c2Ke-_89nUjxOt2E_pgDt5AaNg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZD52S8rjvgKAxssfD8c2Ke-_89nUjxOt2E_pgDt5AaNg@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Wed, 17 Mar 2021 01:45:57 +0100
-Message-ID: <CABRcYm+6By6_j+BaRMkw2-fnrJHKQYsoBMGkUKDXxYnm_AH88Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] bpf: Add a ARG_PTR_TO_CONST_STR argument type
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAM_iQpWPSouO-JP4xHFqOLM8H4Rn5ucF68sa_EK5hUWSYw8feA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme720-chm.china.huawei.com (10.1.199.116) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 1:35 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> On Tue, Mar 16, 2021 at 4:58 PM Florent Revest <revest@chromium.org> wrote:
-> > On Tue, Mar 16, 2021 at 2:03 AM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > > On Wed, Mar 10, 2021 at 2:02 PM Florent Revest <revest@chromium.org> wrote:
-> > > > +       } else if (arg_type == ARG_PTR_TO_CONST_STR) {
-> > > > +               struct bpf_map *map = reg->map_ptr;
-> > > > +               int map_off, i;
-> > > > +               u64 map_addr;
-> > > > +               char *map_ptr;
-> > > > +
-> > > > +               if (!map || !bpf_map_is_rdonly(map)) {
-> > > > +                       verbose(env, "R%d does not point to a readonly map'\n", regno);
-> > > > +                       return -EACCES;
-> > > > +               }
-> > > > +
-> > > > +               if (!tnum_is_const(reg->var_off)) {
-> > > > +                       verbose(env, "R%d is not a constant address'\n", regno);
-> > > > +                       return -EACCES;
-> > > > +               }
-> > > > +
-> > > > +               if (!map->ops->map_direct_value_addr) {
-> > > > +                       verbose(env, "no direct value access support for this map type\n");
-> > > > +                       return -EACCES;
-> > > > +               }
-> > > > +
-> > > > +               err = check_helper_mem_access(env, regno,
-> > > > +                                             map->value_size - reg->off,
-> > > > +                                             false, meta);
-> > >
-> > > you expect reg to be PTR_TO_MAP_VALUE, so probably better to directly
-> > > use check_map_access(). And double-check that register is of expected
-> > > type. just the presence of ref->map_ptr might not be sufficient?
-> >
-> > Sorry, just making sure I understand your comment correctly, are you
-> > suggesting that we:
-> > 1- skip the check_map_access_type() currently done by
-> > check_helper_mem_access()? or did you implicitly mean that we should
-> > call it as well next to check_map_access() ?
->
-> check_helper_mem_access() will call check_map_access() for
-> PTR_TO_MAP_VALUE and we expect only PTR_TO_MAP_VALUE, right? So why go
-> through check_helper_mem_access() if we know we need
-> check_map_access()? Less indirection, more explicit. So I meant
-> "replace check_helper_mem_access() with check_map_access()".
+On 2021/3/17 2:43, Cong Wang wrote:
+> On Mon, Mar 15, 2021 at 4:42 PM David Miller <davem@redhat.com> wrote:
+>>
+>> From: Yunsheng Lin <linyunsheng@huawei.com>
+>> Date: Mon, 15 Mar 2021 17:30:10 +0800
+>>
+>>> Currently qdisc_lock(q) is taken before enqueuing and dequeuing
+>>> for lockless qdisc's skb_bad_txq/gso_skb queue, qdisc->seqlock is
+>>> also taken, which can provide the same protection as qdisc_lock(q).
+>>>
+>>> This patch removes the unnecessay qdisc_lock(q) protection for
+>>> lockless qdisc' skb_bad_txq/gso_skb queue.
+>>>
+>>> And dev_reset_queue() takes the qdisc->seqlock for lockless qdisc
+>>> besides taking the qdisc_lock(q) when doing the qdisc reset,
+>>> some_qdisc_is_busy() takes both qdisc->seqlock and qdisc_lock(q)
+>>> when checking qdisc status. It is unnecessary to take both lock
+>>> while the fast path only take one lock, so this patch also changes
+>>> it to only take qdisc_lock(q) for locked qdisc, and only take
+>>> qdisc->seqlock for lockless qdisc.
+>>>
+>>> Since qdisc->seqlock is taken for lockless qdisc when calling
+>>> qdisc_is_running() in some_qdisc_is_busy(), use qdisc->running
+>>> to decide if the lockless qdisc is running.
+>>>
+>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>>
+>> What about other things protected by this lock, such as statistics and qlen?
+>>
+>> This change looks too risky to me.
+> 
+> They are per-cpu for pfifo_fast which sets TCQ_F_CPUSTATS too.
 
-Mhh I suspect there's still a misunderstanding, these function names
-are really confusing ahah.
-What about check_map_access*_type*. which is also called by
-check_helper_mem_access (before check_map_access):
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/bpf/verifier.c#n4329
+Did you mean qdisc_lock(q) are protecting per-cpu stats for
+pfifo_fast too?
 
-Your message sounds like we should skip it so I was asking if that's
-what you also implicitly meant or if you missed it?
+> 
+> Thanks.
+> 
+> .
+> 
 
-> > 2- enforce (reg->type == PTR_TO_MAP_VALUE) even if currently
-> > guaranteed by compatible_reg_types, just to stay on the safe side ?
->
-> I can't follow compatible_reg_types :( If it does, then I guess it's
-> fine without this check.
-
-It's alright, I can keep an extra check just for safety. :)
