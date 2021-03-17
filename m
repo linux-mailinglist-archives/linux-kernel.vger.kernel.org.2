@@ -2,219 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 736B033ED63
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E09933ED66
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhCQJs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:48:56 -0400
-Received: from mga09.intel.com ([134.134.136.24]:64344 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229896AbhCQJsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:48:37 -0400
-IronPort-SDR: mtBlkPEhpu9Iw4sQQYI03EJowa3cEZCjSDvzagunI8vogZmI2qyT7zWaNIjhrEdY3NaQbUdzLU
- j9Q9k+YVSdJQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="189520501"
-X-IronPort-AV: E=Sophos;i="5.81,255,1610438400"; 
-   d="scan'208";a="189520501"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 02:48:36 -0700
-IronPort-SDR: 29iKjIxU9ZZUE+Ye8ZBElBvWCtvxHO4s7RBot2TCPd/EmTBO7fvptW4QMym/V6rxn3ZzAH/DS8
- bDQXtejGlR/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,255,1610438400"; 
-   d="scan'208";a="605637540"
-Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 17 Mar 2021 02:48:35 -0700
-Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lMSn4-0000cH-M5; Wed, 17 Mar 2021 09:48:34 +0000
-Date:   Wed, 17 Mar 2021 17:47:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:auto-latest] BUILD SUCCESS
- de66c932c41f308495ad62bbd8dd6accd05bbb9e
-Message-ID: <6051d040.QXxqSWKQesfc6O+B%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229930AbhCQJs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:48:58 -0400
+Received: from m42-10.mailgun.net ([69.72.42.10]:24088 "EHLO
+        m42-10.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229535AbhCQJsj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 05:48:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615974518; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=+0ByTtPZRneuh4QoUZHb/mtwfYGZc1tw0nEg0UI2GpI=; b=oVwblq+UFx9dJ7Ys1qnDlP0fq0Wfv26AP6XCEdXYOMBoBxorVED0KLVNfRXWvhqVS/9N8U4G
+ KcwlUTLxdugsvMhfqaycQNLQx3tCf1Q2WU8ppumUNoan8+dojL+3csYY0hEfs32Pw3OeqEGM
+ VGQ26orwJe8YUemGaR9rjkkSqJU=
+X-Mailgun-Sending-Ip: 69.72.42.10
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 6051d0605d70193f88876df1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Mar 2021 09:48:16
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 114CFC433C6; Wed, 17 Mar 2021 09:48:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.29.129] (unknown [49.36.69.12])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 310BFC433C6;
+        Wed, 17 Mar 2021 09:48:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 310BFC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
+Subject: Re: [PATCH 1/3] arm64: dts: qcom: sm8350: Remove second reg from pdc
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     swboyd@chromium.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, dianders@chromium.org, rnayak@codeaurora.org,
+        lsrao@codeaurora.org, devicetree@vger.kernel.org
+References: <1615958996-31807-1-git-send-email-mkshah@codeaurora.org>
+ <87k0q6i1g5.wl-maz@kernel.org>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <bce03166-e65b-198c-8b93-39e0c218aaed@codeaurora.org>
+Date:   Wed, 17 Mar 2021 15:18:09 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <87k0q6i1g5.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git auto-latest
-branch HEAD: de66c932c41f308495ad62bbd8dd6accd05bbb9e  Merge branch 'irq/core'
+Hi Marc,
 
-elapsed time: 1413m
+On 3/17/2021 2:47 PM, Marc Zyngier wrote:
+> On Wed, 17 Mar 2021 05:29:54 +0000,
+> Maulik Shah <mkshah@codeaurora.org> wrote:
+>> PDC interrupt controller driver do not use second reg. Remove it.
+> This is a DT file, not a driver. What the driver does is irrelevant.
+>
+> The real question is: what does this range do?
+>
+> Thanks,
+>
+> 	M.
 
-configs tested: 157
-configs skipped: 3
+This is to set interrupt type in SPI config for which there was a change 
+[1] but has not gone in for upstream PDC driver.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The second reg is not used in upstream PDC driver, probably when posting 
+downstream DT changes for sm8350/sm8250 it was carried in device node as is.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-alpha                            alldefconfig
-sh                   secureedge5410_defconfig
-arm                        magician_defconfig
-xtensa                       common_defconfig
-powerpc                        icon_defconfig
-powerpc                 mpc837x_rdb_defconfig
-s390                       zfcpdump_defconfig
-sh                           se7722_defconfig
-arm                           h3600_defconfig
-mips                          rm200_defconfig
-arm                           stm32_defconfig
-m68k                       bvme6000_defconfig
-arm                         shannon_defconfig
-m68k                            q40_defconfig
-powerpc                  storcenter_defconfig
-powerpc                 mpc837x_mds_defconfig
-powerpc                     akebono_defconfig
-mips                     loongson1b_defconfig
-arc                         haps_hs_defconfig
-arm                           u8500_defconfig
-xtensa                generic_kc705_defconfig
-powerpc                      pasemi_defconfig
-arm                            pleb_defconfig
-um                             i386_defconfig
-mips                       capcella_defconfig
-alpha                            allyesconfig
-arm                          moxart_defconfig
-powerpc                        fsp2_defconfig
-mips                        nlm_xlr_defconfig
-ia64                             alldefconfig
-arm                          imote2_defconfig
-arc                          axs103_defconfig
-arm                          gemini_defconfig
-csky                             alldefconfig
-powerpc                       ppc64_defconfig
-mips                           ip27_defconfig
-sh                          r7785rp_defconfig
-arm                         lubbock_defconfig
-mips                    maltaup_xpa_defconfig
-arm                       spear13xx_defconfig
-sh                        edosk7760_defconfig
-openrisc                            defconfig
-powerpc                      bamboo_defconfig
-powerpc                 mpc85xx_cds_defconfig
-powerpc                   bluestone_defconfig
-mips                         tb0219_defconfig
-powerpc                      ppc6xx_defconfig
-arm                         assabet_defconfig
-mips                  decstation_64_defconfig
-mips                      pistachio_defconfig
-powerpc                    sam440ep_defconfig
-powerpc                      walnut_defconfig
-arm                        vexpress_defconfig
-mips                       bmips_be_defconfig
-powerpc                 mpc836x_rdk_defconfig
-powerpc                     powernv_defconfig
-m68k                       m5208evb_defconfig
-sh                  sh7785lcr_32bit_defconfig
-mips                         tb0287_defconfig
-arm                        clps711x_defconfig
-powerpc                 mpc8313_rdb_defconfig
-arm                          ep93xx_defconfig
-powerpc                     mpc512x_defconfig
-arm                         orion5x_defconfig
-sh                          sdk7780_defconfig
-mips                            ar7_defconfig
-sh                           se7712_defconfig
-powerpc                    amigaone_defconfig
-m68k                        m5307c3_defconfig
-xtensa                  audio_kc705_defconfig
-mips                          rb532_defconfig
-arm                       aspeed_g4_defconfig
-i386                             alldefconfig
-powerpc                 mpc8540_ads_defconfig
-powerpc                     pseries_defconfig
-arm                        neponset_defconfig
-arm                        trizeps4_defconfig
-sh                        edosk7705_defconfig
-arm                       aspeed_g5_defconfig
-arm                            dove_defconfig
-arm                  colibri_pxa270_defconfig
-arm                       multi_v4t_defconfig
-powerpc                    adder875_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210316
-i386                 randconfig-a005-20210316
-i386                 randconfig-a002-20210316
-i386                 randconfig-a003-20210316
-i386                 randconfig-a004-20210316
-i386                 randconfig-a006-20210316
-x86_64               randconfig-a011-20210316
-x86_64               randconfig-a016-20210316
-x86_64               randconfig-a013-20210316
-x86_64               randconfig-a014-20210316
-x86_64               randconfig-a015-20210316
-x86_64               randconfig-a012-20210316
-i386                 randconfig-a013-20210316
-i386                 randconfig-a016-20210316
-i386                 randconfig-a011-20210316
-i386                 randconfig-a012-20210316
-i386                 randconfig-a015-20210316
-i386                 randconfig-a014-20210316
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+As its not mentioned in bindigs as well, dtbs_check reports it as 
+additional reg when converted to yaml.
 
-clang tested configs:
-x86_64               randconfig-a006-20210316
-x86_64               randconfig-a001-20210316
-x86_64               randconfig-a005-20210316
-x86_64               randconfig-a004-20210316
-x86_64               randconfig-a003-20210316
-x86_64               randconfig-a002-20210316
+[1] 
+https://patchwork.kernel.org/project/linux-arm-msm/patch/1568411962-1022-8-git-send-email-ilina@codeaurora.org/
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks,
+Maulik
+>
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+
