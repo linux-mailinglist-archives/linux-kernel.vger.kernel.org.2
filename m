@@ -2,92 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE5833F238
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:06:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 026BD33F23B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:06:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbhCQOFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:05:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231390AbhCQOFN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:05:13 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C494C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 07:05:12 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id dc12so495038qvb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 07:05:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=digitalocean.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=PWoltp9WmwyO3d7XhliVywf9i2GXKDnsLpbRrO2NbGI=;
-        b=WsRpNG8sX0PGjK+pfA+SQ3Bb3jhflsFaBhjj63LbczCkJ+7RcnSs60BJC1XVRTzffh
-         ROYiVgrbr2NmfFs/FGJdGvIW460RaXjSJ7qb5vOugINIc9EiS1DXbtJFe0WYDSAPHGlA
-         HQ4SiZdhN07sZRsTsJtQi+VtW6bA1Cr6v/QjY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=PWoltp9WmwyO3d7XhliVywf9i2GXKDnsLpbRrO2NbGI=;
-        b=ijOwIDMVDPlFAv21u7IxmoHsByym9P5TFBTo4PSQb6ax6WXonr2M3lYIizdNTLMcyp
-         r5cEmJqsZTGrW6f0rzzMNnoKQvMTE4EZv/B7GcDJBz8XLMfzF7r/zo24VOaNalmUvo+v
-         SjRPGVbnsL2gei0tC36h5RCYiPF7K+SzSTldFktTrsIfZkmphZ5Y/0PTEl54t3o8kJE5
-         5/ArBU8u9u6NRPT2p3fu03+FJCZHTadNZiqOfyNNNqr+5/u53QcP/tHd1XcKb8EGDQo8
-         KxaBJd5X745DT4oxP3MJu/ItiTC2nUm43IZMutg6kL7whf4lESZjleJ8ImcR+gWyw7lU
-         WC3A==
-X-Gm-Message-State: AOAM532/6JE20t9ys2q/L3CaaEioqw+kJkzYJElouRrKgsbwClYhJLAJ
-        jXtL12jo2ugOxXFth/r8dNE+fg==
-X-Google-Smtp-Source: ABdhPJyuvoed78WS6+HdEBNB7QZ/3oGdsTqI0V2wAYQM4QWLyFqID+v4ui/DHHggT9LydDHCzeR7Ng==
-X-Received: by 2002:a0c:a909:: with SMTP id y9mr5600566qva.20.1615989911862;
-        Wed, 17 Mar 2021 07:05:11 -0700 (PDT)
-Received: from tuna.fritz.box ([2a02:8070:87b9:f700:d43d:6bf:d9e5:58a3])
-        by smtp.gmail.com with ESMTPSA id e3sm17864791qkn.39.2021.03.17.07.05.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 07:05:11 -0700 (PDT)
-From:   Jan Glauber <jglauber@digitalocean.com>
-To:     linux-raid@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Song Liu <song@kernel.org>,
-        Jan Glauber <jglauber@digitalocean.com>
-Subject: [PATCH] md: Fix missing unused status line of /proc/mdstat
-Date:   Wed, 17 Mar 2021 15:04:39 +0100
-Message-Id: <20210317140439.9499-1-jglauber@digitalocean.com>
-X-Mailer: git-send-email 2.17.1
+        id S231767AbhCQOGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:06:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41784 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231770AbhCQOF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 10:05:57 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615989956; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cIltC9g3eI67AJ6l+RPM3xTSrdo/DzkDrTkj42+kPZI=;
+        b=IwirpRnNtZ039Az7dJVxJaJ53Qk+nMsIIr+VfDUJxpVTVbOmuhulHKuLZOBXPZjwuf+fIC
+        yeS0SNi/OxxZof6fMbDpxLHIj45y0xC/PMPGgcuXTOn+/r2qMKh2oLtCRsmXdiSBnqNEWp
+        yDLyZ6nM2ufCYPk4G7Xdlb33V2MuiIw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A21ABAC47;
+        Wed, 17 Mar 2021 14:05:56 +0000 (UTC)
+Date:   Wed, 17 Mar 2021 15:05:40 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/5] mm,page_alloc: Bail out earlier on -ENOMEM in
+ alloc_contig_migrate_range
+Message-ID: <YFIMtFu/g3jtGqA8@dhcp22.suse.cz>
+References: <20210317111251.17808-1-osalvador@suse.de>
+ <20210317111251.17808-2-osalvador@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210317111251.17808-2-osalvador@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reading /proc/mdstat with a read buffer size that would not
-fit the unused status line in the first read will skip this
-line from the output.
+On Wed 17-03-21 12:12:47, Oscar Salvador wrote:
+> Currently, __alloc_contig_migrate_range can generate -EINTR, -ENOMEM or -EBUSY,
+> and report them down the chain.
+> The problem is that when migrate_pages() reports -ENOMEM, we keep going till we
+> exhaust all the try-attempts (5 at the moment) instead of bailing out.
+> 
+> migrate_pages() bails out right away on -ENOMEM because it is considered a fatal
+> error. Do the same here instead of keep going and retrying.
 
-So 'dd if=/proc/mdstat bs=64 2>/dev/null' will not print something
-like: unused devices: <none>
+I suspect this is not really a real life problem, right? The allocation
+would be more costly in the end but this is to be expected under a heavy
+memory pressure.
 
-Don't return NULL immediately in start() for v=2 but call
-show() once to print the status line also for multiple reads.
+That being said, bailing out early makes sense to me. But now that
+you've made me look into the migrate_pages excellent error state reporting
+I suspect we have a bug here. Note the 
+"Returns the number of pages that were not migrated, or an error code."
 
-Fixes: 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code and interface")
-Signed-off-by: Jan Glauber <jglauber@digitalocean.com>
----
- drivers/md/md.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+but I do not see putback_movable_pages for ret > 0 so it seems we might
+leak some pages.
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 21da0c48f6c2..cb19d50fa672 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -8153,7 +8153,11 @@ static void *md_seq_start(struct seq_file *seq, loff_t *pos)
- 	loff_t l = *pos;
- 	struct mddev *mddev;
+That aside. Now looking at other callers of migrate_pages most of them
+do not care about the number of failed pages. The only one which cares
+is migrate_pages syscall (do_migrate_pages). I think it would be much
+more reasonable to have migrate_pages (kernel function) return error or
+0 and make the only caller which cares to count number of failed pages
+(e.g. by returning the number of pages from putback_movable_pages).
  
--	if (l >= 0x10000)
-+	if (l == 0x10000) {
-+		++*pos;
-+		return (void *)2;
-+	}
-+	if (l > 0x10000)
- 		return NULL;
- 	if (!l--)
- 		/* header */
--- 
-2.17.1
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
 
+The patch itself looks reasonable but make sure to mention this is mere
+cosmetic change unless there is a real problem fixed by this.
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+> ---
+>  mm/page_alloc.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index cfc72873961d..a4f67063b85f 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -8481,7 +8481,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+>  			}
+>  			tries = 0;
+>  		} else if (++tries == 5) {
+> -			ret = ret < 0 ? ret : -EBUSY;
+> +			ret = -EBUSY;
+>  			break;
+>  		}
+>  
+> @@ -8491,6 +8491,12 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+>  
+>  		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
+>  				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
+> +		/*
+> +		 * On -ENOMEM, migrate_pages() bails out right away. It is pointless
+> +		 * to retry again over this error, so do the same here.
+> +		 */
+> +		if (ret == -ENOMEM)
+> +			break;
+>  	}
+>  	if (ret < 0) {
+>  		putback_movable_pages(&cc->migratepages);
+> -- 
+> 2.16.3
+
+-- 
+Michal Hocko
+SUSE Labs
