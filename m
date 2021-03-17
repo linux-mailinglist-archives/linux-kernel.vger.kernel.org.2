@@ -2,323 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4F333FA20
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:51:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E07533FA25
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233406AbhCQUvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 16:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53000 "EHLO
+        id S233460AbhCQUxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 16:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231920AbhCQUvM (ORCPT
+        with ESMTP id S233416AbhCQUwz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 16:51:12 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AC4AC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:51:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=D5D89/TKIGeXZgkbBE6j29aBo7eeo92Jhg5zvf77KOQ=; b=xfJW51k+Ypgc4yunBzBb3XyJ/d
-        NpavTMH96gs/TV/mpS3LNicoztscHjRempy6YpFsxMK6VyFyJBePLAUxF0Dn/Lsy1IbgKhozj65u2
-        BXBYp4I8GB/KHL+/2vIEigEvoRbXE6cYN0x9iBufHpXvoBf6jYw97s6mIhGzr5UIJF3n4Iq+J9lUx
-        ROh2AlBIfu+3MT9Q3AQ5o8BpVnaQi9TSokRSTT5HpwUrWYfG59gcwGfM+jaeZaRogecAAUkWXiZXy
-        dWIipXCO/IrDuzXUUkDBApIGC7u4QlScA1GdFtmsiP1P7Ktk0IgPEu5TK1FPSyFXFWceEVpb4c/sB
-        zvFGYqaA==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMd8C-001ggk-41; Wed, 17 Mar 2021 20:51:09 +0000
-Subject: Re: [PATCH] ALSA: ctxfi: fix comment syntax in file headers
-To:     Aditya Srivastava <yashsri421@gmail.com>,
-        alsa-devel@alsa-project.org
-Cc:     lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org, perex@perex.cz,
-        tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
-        linux-kernel@vger.kernel.org
-References: <20210317203932.23993-1-yashsri421@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <68e0dfd9-ed58-dec3-31b7-c5384d8640f8@infradead.org>
-Date:   Wed, 17 Mar 2021 13:50:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <20210317203932.23993-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 17 Mar 2021 16:52:55 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C13EC06174A;
+        Wed, 17 Mar 2021 13:52:55 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id v2so19916pgk.11;
+        Wed, 17 Mar 2021 13:52:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=AKYuNNautpL9GsX/k1t8k+V+WDGi+hWf1VRFyREZzWA=;
+        b=fUA+sXj1+G1P5qNMQ3kV1By1YcbAhSpxmiKaAIT23Y1EzpBNXfRcRBmgdK17ce3hub
+         0keIoX//U2oSDv731hzNmxXSUCF82cav2yP2CKAdC2kNZUIRnStPyLaZU84yARuYvxNb
+         bJn+0Cn3o4OMuHE7fMdvQL3q1o5I+AT0651yDaEsO+g/Y0mm/NZrRD5PoRYVYf6CBmCy
+         YQ0A7+Jb2NACN97GCRD8jy744trAaVTwv5VuelkHknxUzvpRTBo4PYjJ8iLATc1u1t90
+         CrMD4Mcjg5nS/JL9eO0AMwOSMyNllGprQPsULRWUYN1RTPc6uP+LKFam7LhJOGap1LJ4
+         RO7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=AKYuNNautpL9GsX/k1t8k+V+WDGi+hWf1VRFyREZzWA=;
+        b=SeiXMAJK7rPmuLkXmsAFKPvJiwTLNBCwpwZcs5HPpp3g/KyGj+7Sbd2LfPEz3MSgG4
+         B0fVu+mM25KxmpQESiFBkRUe7U08ZMw8j/7Fd2sH/JoHf7NeKEBAA0WJmT8AGBlqIXgg
+         X9Qa0OAk+4P7XdQY1hJ57Tpm8Hr/5kmzdnFeUtAawUua35LeyF6T1fx6OOG8UH1FxzaX
+         Vq1zYdEpUtfWhgEqEGkq4tSjzGAkKGuDWK2FA3XnFBxhZir8ZxM0CMQYB/KJZN8JmDfK
+         widbJaS2UVJxoIUuSJmPdJX1NjSprNt9GN4llzUUioEqg5M/v+kk/4PpsWySfEOaj4S0
+         N5tg==
+X-Gm-Message-State: AOAM530VQ9wRLfi+C0LOYhgnE06J2drInaed8a5FvW7XYja3IH9gzFx5
+        FhjU4y6QSUuT1moPsTBHN3xDR8mz/+o+Pg==
+X-Google-Smtp-Source: ABdhPJy8/iAz5N4nZP350sq8I/6aYbGirU4K/scVbtxPllJU5LobeunkJS+SKR9TRE0ZhRvTrrMjIA==
+X-Received: by 2002:aa7:9841:0:b029:1f8:f326:a3b3 with SMTP id n1-20020aa798410000b02901f8f326a3b3mr785222pfq.7.1616014374477;
+        Wed, 17 Mar 2021 13:52:54 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:600d:a089:85d1:b0af:d6ff:42d8])
+        by smtp.googlemail.com with ESMTPSA id d24sm30137pjw.37.2021.03.17.13.52.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 13:52:54 -0700 (PDT)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org, ldm@flatcap.org,
+        axboe@kernel.dk, linux-ntfs-dev@lists.sourceforge.net,
+        linux-block@vger.kernel.org
+Subject: [PATCH] block: fix comment syntax in file headers
+Date:   Thu, 18 Mar 2021 02:22:45 +0530
+Message-Id: <20210317205245.24857-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 1:39 PM, Aditya Srivastava wrote:
-> The opening comment mark '/**' is used for highlighting the beginning of
-> kernel-doc comments.
-> There are files in sound/pci/ctxfi which follow this syntax in their file
-> headers, i.e. start with '/**' like comments, which causes unexpected
-> warnings from kernel-doc.
-> 
-> E.g., running scripts/kernel-doc -none on sound/pci/ctxfi/ctresource.c
-> causes this warning:
-> "warning: wrong kernel-doc identifier on line:
->  * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved."
-> 
-> Similarly for other files too.
-> 
-> Provide a simple fix by replacing the kernel-doc like comment syntax with
-> general format, i.e. "/*", to prevent kernel-doc from parsing it.
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+The opening comment mark '/**' is used for highlighting the beginning of
+kernel-doc comments.
+There are files in block/partitions/ which follow this syntax in their file
+headers, i.e. start with '/**' like comments, which causes unexpected
+warnings from kernel-doc.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+E.g., running scripts/kernel-doc -none on block/partitions/ldm.h
+causes this warning:
+"warning: expecting prototype for ldm(). Prototype was for _FS_PT_LDM_H_() instead"
 
-Thanks.
+Provide a simple fix by replacing such occurrences with general comment
+format, i.e., "/*", to prevent kernel-doc from parsing it.
 
-> ---
->  sound/pci/ctxfi/ct20k1reg.h  | 2 +-
->  sound/pci/ctxfi/ct20k2reg.h  | 2 +-
->  sound/pci/ctxfi/ctamixer.c   | 2 +-
->  sound/pci/ctxfi/ctamixer.h   | 2 +-
->  sound/pci/ctxfi/ctatc.c      | 2 +-
->  sound/pci/ctxfi/ctatc.h      | 2 +-
->  sound/pci/ctxfi/ctdaio.c     | 2 +-
->  sound/pci/ctxfi/ctdaio.h     | 2 +-
->  sound/pci/ctxfi/cthardware.h | 2 +-
->  sound/pci/ctxfi/cthw20k1.h   | 2 +-
->  sound/pci/ctxfi/cthw20k2.h   | 2 +-
->  sound/pci/ctxfi/ctimap.h     | 2 +-
->  sound/pci/ctxfi/ctmixer.h    | 2 +-
->  sound/pci/ctxfi/ctpcm.h      | 2 +-
->  sound/pci/ctxfi/ctresource.c | 2 +-
->  sound/pci/ctxfi/ctresource.h | 2 +-
->  sound/pci/ctxfi/ctsrc.c      | 2 +-
->  sound/pci/ctxfi/ctsrc.h      | 2 +-
->  sound/pci/ctxfi/ctvmem.c     | 2 +-
->  sound/pci/ctxfi/ctvmem.h     | 2 +-
->  20 files changed, 20 insertions(+), 20 deletions(-)
-> 
-> diff --git a/sound/pci/ctxfi/ct20k1reg.h b/sound/pci/ctxfi/ct20k1reg.h
-> index d4bfee499fb1..05bb006c0f4c 100644
-> --- a/sound/pci/ctxfi/ct20k1reg.h
-> +++ b/sound/pci/ctxfi/ct20k1reg.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   */
->  
-> diff --git a/sound/pci/ctxfi/ct20k2reg.h b/sound/pci/ctxfi/ct20k2reg.h
-> index af94ea66fdda..02f67828eabe 100644
-> --- a/sound/pci/ctxfi/ct20k2reg.h
-> +++ b/sound/pci/ctxfi/ct20k2reg.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   */
->  
-> diff --git a/sound/pci/ctxfi/ctamixer.c b/sound/pci/ctxfi/ctamixer.c
-> index d4ff377eb3a3..da6e6350ceaf 100644
-> --- a/sound/pci/ctxfi/ctamixer.c
-> +++ b/sound/pci/ctxfi/ctamixer.c
-> @@ -1,5 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0-only
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File	ctamixer.c
-> diff --git a/sound/pci/ctxfi/ctamixer.h b/sound/pci/ctxfi/ctamixer.h
-> index 4fafb397abed..4498e6139d0e 100644
-> --- a/sound/pci/ctxfi/ctamixer.h
-> +++ b/sound/pci/ctxfi/ctamixer.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File	ctamixer.h
-> diff --git a/sound/pci/ctxfi/ctatc.c b/sound/pci/ctxfi/ctatc.c
-> index f8ac96cf38a4..78f35e88aed6 100644
-> --- a/sound/pci/ctxfi/ctatc.c
-> +++ b/sound/pci/ctxfi/ctatc.c
-> @@ -1,5 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0-only
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File    ctatc.c
-> diff --git a/sound/pci/ctxfi/ctatc.h b/sound/pci/ctxfi/ctatc.h
-> index ac31b32b277b..0bc7b71d910b 100644
-> --- a/sound/pci/ctxfi/ctatc.h
-> +++ b/sound/pci/ctxfi/ctatc.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File	ctatc.h
-> diff --git a/sound/pci/ctxfi/ctdaio.c b/sound/pci/ctxfi/ctdaio.c
-> index 4cb47b5a792c..f589da045342 100644
-> --- a/sound/pci/ctxfi/ctdaio.c
-> +++ b/sound/pci/ctxfi/ctdaio.c
-> @@ -1,5 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0-only
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File	ctdaio.c
-> diff --git a/sound/pci/ctxfi/ctdaio.h b/sound/pci/ctxfi/ctdaio.h
-> index 431583bb0a3e..bd6310f48013 100644
-> --- a/sound/pci/ctxfi/ctdaio.h
-> +++ b/sound/pci/ctxfi/ctdaio.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File	ctdaio.h
-> diff --git a/sound/pci/ctxfi/cthardware.h b/sound/pci/ctxfi/cthardware.h
-> index 9e6b83bd432d..f406b626a28c 100644
-> --- a/sound/pci/ctxfi/cthardware.h
-> +++ b/sound/pci/ctxfi/cthardware.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File	cthardware.h
-> diff --git a/sound/pci/ctxfi/cthw20k1.h b/sound/pci/ctxfi/cthw20k1.h
-> index b7cbe82d71bd..ffb019abf651 100644
-> --- a/sound/pci/ctxfi/cthw20k1.h
-> +++ b/sound/pci/ctxfi/cthw20k1.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File	cthw20k1.h
-> diff --git a/sound/pci/ctxfi/cthw20k2.h b/sound/pci/ctxfi/cthw20k2.h
-> index 797b13dcd84c..6993a3d5277a 100644
-> --- a/sound/pci/ctxfi/cthw20k2.h
-> +++ b/sound/pci/ctxfi/cthw20k2.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File	cthw20k2.h
-> diff --git a/sound/pci/ctxfi/ctimap.h b/sound/pci/ctxfi/ctimap.h
-> index 79bc94bce4d5..49b1bb831410 100644
-> --- a/sound/pci/ctxfi/ctimap.h
-> +++ b/sound/pci/ctxfi/ctimap.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File	ctimap.h
-> diff --git a/sound/pci/ctxfi/ctmixer.h b/sound/pci/ctxfi/ctmixer.h
-> index 770dc18a85e8..e812f6c93b41 100644
-> --- a/sound/pci/ctxfi/ctmixer.h
-> +++ b/sound/pci/ctxfi/ctmixer.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File	ctmixer.h
-> diff --git a/sound/pci/ctxfi/ctpcm.h b/sound/pci/ctxfi/ctpcm.h
-> index dfa1c62f7d1e..8b39bdd262b4 100644
-> --- a/sound/pci/ctxfi/ctpcm.h
-> +++ b/sound/pci/ctxfi/ctpcm.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File	ctpcm.h
-> diff --git a/sound/pci/ctxfi/ctresource.c b/sound/pci/ctxfi/ctresource.c
-> index 6d0a01b189e1..81ad26934518 100644
-> --- a/sound/pci/ctxfi/ctresource.c
-> +++ b/sound/pci/ctxfi/ctresource.c
-> @@ -1,5 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0-only
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File	ctresource.c
-> diff --git a/sound/pci/ctxfi/ctresource.h b/sound/pci/ctxfi/ctresource.h
-> index 93e47488a1c1..fdbfd808816d 100644
-> --- a/sound/pci/ctxfi/ctresource.h
-> +++ b/sound/pci/ctxfi/ctresource.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File	ctresource.h
-> diff --git a/sound/pci/ctxfi/ctsrc.c b/sound/pci/ctxfi/ctsrc.c
-> index 37c18ce84974..bd4697b44233 100644
-> --- a/sound/pci/ctxfi/ctsrc.c
-> +++ b/sound/pci/ctxfi/ctsrc.c
-> @@ -1,5 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0-only
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File	ctsrc.c
-> diff --git a/sound/pci/ctxfi/ctsrc.h b/sound/pci/ctxfi/ctsrc.h
-> index 1204962280c8..1124daf50c9b 100644
-> --- a/sound/pci/ctxfi/ctsrc.h
-> +++ b/sound/pci/ctxfi/ctsrc.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File	ctsrc.h
-> diff --git a/sound/pci/ctxfi/ctvmem.c b/sound/pci/ctxfi/ctvmem.c
-> index bde28aa9e139..7a805c4a58e1 100644
-> --- a/sound/pci/ctxfi/ctvmem.c
-> +++ b/sound/pci/ctxfi/ctvmem.c
-> @@ -1,5 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0-only
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File    ctvmem.c
-> diff --git a/sound/pci/ctxfi/ctvmem.h b/sound/pci/ctxfi/ctvmem.h
-> index 54818a3c245d..da54cbcdb0be 100644
-> --- a/sound/pci/ctxfi/ctvmem.h
-> +++ b/sound/pci/ctxfi/ctvmem.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
-> -/**
-> +/*
->   * Copyright (C) 2008, Creative Technology Ltd. All Rights Reserved.
->   *
->   * @File    ctvmem.h
-> 
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+* Applies perfectly on next-20210312
 
+ block/partitions/ldm.c | 2 +-
+ block/partitions/ldm.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/block/partitions/ldm.c b/block/partitions/ldm.c
+index d333786b5c7e..14b124cdacfc 100644
+--- a/block/partitions/ldm.c
++++ b/block/partitions/ldm.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+-/**
++/*
+  * ldm - Support for Windows Logical Disk Manager (Dynamic Disks)
+  *
+  * Copyright (C) 2001,2002 Richard Russon <ldm@flatcap.org>
+diff --git a/block/partitions/ldm.h b/block/partitions/ldm.h
+index d8d6beaa72c4..ffdecf1c6bb3 100644
+--- a/block/partitions/ldm.h
++++ b/block/partitions/ldm.h
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+-/**
++/*
+  * ldm - Part of the Linux-NTFS project.
+  *
+  * Copyright (C) 2001,2002 Richard Russon <ldm@flatcap.org>
 -- 
-~Randy
+2.17.1
 
