@@ -2,109 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E244F33F491
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 599D633F4C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232137AbhCQPvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 11:51:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232499AbhCQPu6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 11:50:58 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12309C061763;
-        Wed, 17 Mar 2021 08:50:58 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso2232723otq.3;
-        Wed, 17 Mar 2021 08:50:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=19vFCxyc/d/BylNt+OTc+iBLZijRIvHRbJoemdahdg4=;
-        b=S8DN3uJ6pmkH0i5ozpjnJ+QTjbdOrmWUwvE7aKg2LQPqyO53I6+LGAlPpc/kHC1IAH
-         TVinDGGj3kQGAkL51yk6MWLyFbZIijocroZSAHrAe8vrxU3Urf7OngHT6XnbDsVKI5rb
-         rfDsJLrYpu9+tBROF7WvELu4BC4xejZ3aQNq44RMUJ2uZTCBQbYnwJecd7fZqJu0hsbX
-         H+pUu7bbv5jgI3NmD3yAyfncZhd0VcS2zrfXEru2+d9ppNXKs4mqy54xlnjPKgyekIZ0
-         O1nsACck0qBLrZALFrfpHAFUAKaHjv4Xal+bdWGlaCRhZVbpsySygnFnn4HVqtrPvQxC
-         Z+/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=19vFCxyc/d/BylNt+OTc+iBLZijRIvHRbJoemdahdg4=;
-        b=uUlBtZIMBl64Fu2a9ZUn6a92vmWNz3iHr892blzitlmEqlgjt1GrPelKtqpEv8gVGD
-         wKA/c9ev68kSjld0znpvBPYiVlMTq4g9i5ceTzfoG5IHRZGpfq+ZMAH/HfqMKDHsLFuw
-         hdO9WzlFXDrxPg5BScXxHZoapI2CTFz0pye+82kl6rLQIF0uYRgL+M8JMRq3aoOGpUXn
-         15YlGXnvwE+uzF2DZwnLHvXt2EEUJ27OqPpSnTIB2W8tumNPm07RGNeZPmgZPNErOUnj
-         v9fU59tz/IMsEvMriPkFKzXgEu6V7NxEvFRpCuLel6iPpV+CffDVa08DfqYziF7P/aBo
-         v7Tw==
-X-Gm-Message-State: AOAM531Jc8FzmnaDngxQBFm1iBGuo6mTxETcdZV81yehoCPrH4ZFzy+Q
-        0SkgVZD2BN9Hm0e2EbW5+7tWS8s/X80=
-X-Google-Smtp-Source: ABdhPJwqC3u1xdxDQE1twSj2SMvvQWTkxjpoX9eOQGEefgoyewW5Z3C2iU/DmmwgCAghIeehrP9NUQ==
-X-Received: by 2002:a9d:19e8:: with SMTP id k95mr3962633otk.37.1615996257286;
-        Wed, 17 Mar 2021 08:50:57 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.56])
-        by smtp.googlemail.com with ESMTPSA id y143sm7881623oie.50.2021.03.17.08.50.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 08:50:56 -0700 (PDT)
-Subject: Re: [PATCH] net: ipv4: Fixed some styling issues.
-To:     Anish Udupa <udupa.anish@gmail.com>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <CAPDGunOVtW5mZWXwEjtT3qWXNG4WgkdEa3jV79QKVHOmjHU-9Q@mail.gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <824c82b7-ea4d-9b64-9f5a-61577c1d7584@gmail.com>
-Date:   Wed, 17 Mar 2021 09:50:55 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+        id S232008AbhCQP4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 11:56:46 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:37704 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231878AbhCQP4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 11:56:16 -0400
+Received: from zn.tnic (p200300ec2f094a000fa04028afd60743.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:4a00:fa0:4028:afd6:743])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9165B1EC056D;
+        Wed, 17 Mar 2021 16:56:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1615996571;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=jKbFwAc3tzTE1JguNnjYbxfLAPfDUjYL9hlZmr/NLIY=;
+        b=LzKzQSFwh9U2Yq/59xL+M9GfQEid0oY5SAwuAjSVqtWer0V2MII7mfaPgF0EsI2g0sJ6gv
+        +Z97J++b/vmGzsGs5pL0DpeCT9X4bAPjmwFtbMdlOn/MKdXhTpwHa8GX1OsVrVesgCzXHG
+        gkz0Ae20Iigp/0Szx2YiOTY+d2tPgvI=
+Date:   Wed, 17 Mar 2021 16:56:08 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v23 15/28] x86/mm: Update maybe_mkwrite() for shadow stack
+Message-ID: <20210317155608.GB25069@zn.tnic>
+References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
+ <20210316151054.5405-16-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPDGunOVtW5mZWXwEjtT3qWXNG4WgkdEa3jV79QKVHOmjHU-9Q@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210316151054.5405-16-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 9:07 AM, Anish Udupa wrote:
-> Ran checkpatch and found these warnings. Fixed some of them in this patch.
-> a) Added a space before '='.
-> b) Removed the space before the tab.
+On Tue, Mar 16, 2021 at 08:10:41AM -0700, Yu-cheng Yu wrote:
+> When serving a page fault, maybe_mkwrite() makes a PTE writable if its vma
+> has VM_WRITE.
 > 
-> Signed-off-by: Anish Udupa H <udupa.anish@gmail.com>
-> ---
->  net/ipv4/route.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-> index 02d81d79deeb..0b9024584fde 100644
-> --- a/net/ipv4/route.c
-> +++ b/net/ipv4/route.c
-> @@ -2236,7 +2236,7 @@ out: return err;
->   if (!rth)
->   goto e_nobufs;
-> 
-> - rth->dst.output= ip_rt_bug;
-> + rth->dst.output = ip_rt_bug;
->  #ifdef CONFIG_IP_ROUTE_CLASSID
->   rth->dst.tclassid = itag;
->  #endif
-> @@ -2244,9 +2244,9 @@ out: return err;
-> 
->   RT_CACHE_STAT_INC(in_slow_tot);
->   if (res->type == RTN_UNREACHABLE) {
-> - rth->dst.input= ip_error;
-> - rth->dst.error= -err;
-> - rth->rt_flags &= ~RTCF_LOCAL;
-> + rth->dst.input = ip_error;
-> + rth->dst.error = -err;
-> + rth->rt_flags &= ~RTCF_LOCAL;
->   }
-> 
->   if (do_cache) {
-> 
+> A shadow stack vma has VM_SHSTK.  Its PTEs have _PAGE_DIRTY, but not
+> _PAGE_WRITE.  In fork(), _PAGE_DIRTY is cleared to effect copy-on-write,
 
-your patch seems to have lost one or more tabs at the beginning of each
-line.
+						  to cause
+
+> and in page fault, _PAGE_DIRTY is restored and the shadow stack page is
+
+      in the page fault handler...
+
+> writable again.
+> 
+> Update maybe_mkwrite() by introducing arch_maybe_mkwrite(), which sets
+> _PAGE_DIRTY for a shadow stack PTE.
+> 
+> Apply the same changes to maybe_pmd_mkwrite().
+> 
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> ---
+>  arch/x86/Kconfig        |  4 ++++
+>  arch/x86/mm/pgtable.c   | 18 ++++++++++++++++++
+>  include/linux/mm.h      |  2 ++
+>  include/linux/pgtable.h | 24 ++++++++++++++++++++++++
+>  mm/huge_memory.c        |  2 ++
+>  5 files changed, 50 insertions(+)
+
+Looks straightforward to me but I guess it needs a mm person's ack.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
