@@ -2,137 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C8F33ECE7
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5FD33ECE8
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:24:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbhCQJXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:23:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44908 "EHLO
+        id S229735AbhCQJXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:23:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhCQJXC (ORCPT
+        with ESMTP id S229519AbhCQJX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:23:02 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F292C06174A;
-        Wed, 17 Mar 2021 02:23:02 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id m186so21527876qke.12;
-        Wed, 17 Mar 2021 02:23:02 -0700 (PDT)
+        Wed, 17 Mar 2021 05:23:28 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41BAC06174A;
+        Wed, 17 Mar 2021 02:23:19 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id 61so1022510wrm.12;
+        Wed, 17 Mar 2021 02:23:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=T1GtPUBuZOnjHCoV7VnCDLRvu8oNFBYaa7m3OGdlXM4=;
-        b=R3VkjbpSXw8SDj0VbR+QLejzXFrZjibSDxyNYVnd/wSzqlA6uh9dQLBgu+TFq6ddQu
-         BfNxOFhU2h9iIG9Uc9TfSnpIVWk0chHlDq2JhYdISat7f8T9y6TLrF+ipcViGkMO+C1d
-         QLU2bH+dlBDadXS65JgahHISCJU0D6IjF2mAS+Y5nkxAErbzmJP0eriA7+uVWtYH8Qht
-         gSrk2QAu7oLyOAMecDyAlnghM7cEMmJ7lWLqNSG1DEN8lpoNEQPAr3r2IPRc0vLQFgWi
-         jzTKoaUUjvOryZopVqy8ICBA+A+JPQnXxiu5hWSAcyt/mxDJNbo9mJ6IsRiJBxwxhU3W
-         ZQ+A==
+        bh=vsnRXrdfNNV8r6+zoFy3IPxAWVXVzygUhvBzm3feAYQ=;
+        b=FkYPLnLJz9Hw+zcXvNhdMZzcoX185NSwE7qWJKn7y+2P+W1srRRsTnfj0eMltHjWLl
+         ZVRgzwzll+g3T/KUVHMSmgkay6kkl0kuTmX8LzYdn9HmytkiFPeCtjWMj41F6EH0FhxU
+         zF6VHJdfQ7HkcpuSStbjCaQZRVtLPB7tjzSc6RU4fUF6nRNidbpvlNqGZi4SrnYWBgL1
+         XXGbcMaFSsbgRpjXtCQZia+VoezZzS6pKIKRSB1rShncAyfV26hSzcbvc2SCxhYxvux3
+         W0CCGjHLGdrGQcYZuJEm0VGiCF+9SjayTVW+wni/IGWUnFZBXU/Y1/UDg2wrghHnWpe2
+         6S7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=T1GtPUBuZOnjHCoV7VnCDLRvu8oNFBYaa7m3OGdlXM4=;
-        b=lgLAfHkl2i21LrKYHCsIXOLF/zt9zLScz259zFIvxN2DlWCbHD3VquxqHUOrtTo4/T
-         NyNaJkbx3b1rL5FIWRS/RCh5UMXeUsxXZC8JkCg7DEugd9eMptp9vu81kZQ3Cw2N/Lnl
-         BfgVCHJrmeX1i/Y+/ADdUOsCySYxnbIwbuISU70oXHIhZuToNXA6kmmCPtH1XzO+LZEg
-         jqDBho/LjKI0qrOTQvZgVnTFIPUfDPazbQySiUWgacsxjAnDYsV2ny7kVu4CT57VCb8u
-         0GpIOsnyq28M84MvqRVa1vlSTj6h5prO0ROMzEpPEDi0RQ2EejMjNtC1jx9dsQtqUZoP
-         H4nQ==
-X-Gm-Message-State: AOAM53299FdtyLOTAqONg9qOrjpkagGQvLNYz856btQuOtnt8ecqfoSw
-        /Q9fVgQcgjO7XiJfeCDZSsQ=
-X-Google-Smtp-Source: ABdhPJxlRq9BQwbDy+PNehFWbmAuadPYti1qZC23Bjc/Bjx3+EQkxi1O2EWv6lE2lu15UN71XwVA2g==
-X-Received: by 2002:a37:a404:: with SMTP id n4mr3623992qke.439.1615972981545;
-        Wed, 17 Mar 2021 02:23:01 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.48])
-        by smtp.gmail.com with ESMTPSA id z5sm15248539qtc.42.2021.03.17.02.22.56
+        bh=vsnRXrdfNNV8r6+zoFy3IPxAWVXVzygUhvBzm3feAYQ=;
+        b=XDEXDHMmyLfvGF4uYmtW4slctjRSVDwbBQKL8nxivURvsLHaBuveFvX+Tc7Dipkigs
+         4UIVCrHBW87YIzWyz4/QqhB7n4V5Ur3S/IrYHYWO/AucEIguctyfqO1iyzMlMPWXL1pV
+         9GYpRux+3jXhwV7xoUewKVdSH4bxvPoDCL5FrgNRpSczagUQp+KEQcXxOAk0n6iaaUrH
+         NgXpDkcZjK/VhgAAz1l8BcbhbumkWk11347IRKmp89IVtV5C0kkRCuDh6HawX4mo/oNY
+         8AUNJLlOoVIN+iohaSnCjkvmHcYT5nz+EIe/t4sW+8BmFt8m3+l4gta6KAcyPkB8aMi8
+         AJBw==
+X-Gm-Message-State: AOAM530XGvo3D9//6DAvKQAHQk/EJOC9ZntlIBkwPrvcCz1+djkIpziQ
+        iwbr6y5yV+BVo7UXlsJsc5w=
+X-Google-Smtp-Source: ABdhPJwk59Mj9lXDDZH5B2Te2QsGXs3dDelPaoKkCfD/f+JSryKckcsZF34ZaRpMIyObQ11LYPAO+A==
+X-Received: by 2002:adf:d0c9:: with SMTP id z9mr3426268wrh.396.1615972998696;
+        Wed, 17 Mar 2021 02:23:18 -0700 (PDT)
+Received: from skynet.lan ([80.31.204.166])
+        by smtp.gmail.com with ESMTPSA id k4sm32764582wrd.9.2021.03.17.02.23.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 02:23:00 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     satishkh@cisco.com, sebaddel@cisco.com, kartilak@cisco.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] scsi: fnic:  Rudimentary spelling fixes throughout the file fnic_trace.c
-Date:   Wed, 17 Mar 2021 14:52:40 +0530
-Message-Id: <20210317092240.927822-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 17 Mar 2021 02:23:18 -0700 (PDT)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     jonas.gorski@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH v3 net-next] net: dsa: b53: mmap: Add device tree support
+Date:   Wed, 17 Mar 2021 10:23:17 +0100
+Message-Id: <20210317092317.3922-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add device tree support to b53_mmap.c while keeping platform devices support.
 
-Rudimentary typo fixes throughout the file.
-
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
 ---
- drivers/scsi/fnic/fnic_trace.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/net/dsa/b53/b53_mmap.c | 55 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 55 insertions(+)
 
-diff --git a/drivers/scsi/fnic/fnic_trace.c b/drivers/scsi/fnic/fnic_trace.c
-index 9d52d83161ed..4a7536bb0ab3 100644
---- a/drivers/scsi/fnic/fnic_trace.c
-+++ b/drivers/scsi/fnic/fnic_trace.c
-@@ -153,7 +153,7 @@ int fnic_get_trace_data(fnic_dbgfs_t *fnic_dbgfs_prt)
- 			if (rd_idx > (fnic_max_trace_entries-1))
- 				rd_idx = 0;
- 			/*
--			 * Continure dumpping trace buffer entries into
-+			 * Continue dumping trace buffer entries into
- 			 * memory file till rd_idx reaches write index
- 			 */
- 			if (rd_idx == wr_idx)
-@@ -189,7 +189,7 @@ int fnic_get_trace_data(fnic_dbgfs_t *fnic_dbgfs_prt)
- 				  tbp->data[3], tbp->data[4]);
- 			rd_idx++;
- 			/*
--			 * Continue dumpping trace buffer entries into
-+			 * Continue dumping trace buffer entries into
- 			 * memory file till rd_idx reaches write index
- 			 */
- 			if (rd_idx == wr_idx)
-@@ -632,7 +632,7 @@ void fnic_fc_trace_free(void)
-  * fnic_fc_ctlr_set_trace_data:
-  *       Maintain rd & wr idx accordingly and set data
-  * Passed parameters:
-- *       host_no: host number accociated with fnic
-+ *       host_no: host number associated with fnic
-  *       frame_type: send_frame, rece_frame or link event
-  *       fc_frame: pointer to fc_frame
-  *       frame_len: Length of the fc_frame
-@@ -715,13 +715,13 @@ int fnic_fc_trace_set_data(u32 host_no, u8 frame_type,
-  * fnic_fc_ctlr_get_trace_data: Copy trace buffer to a memory file
-  * Passed parameter:
-  *       @fnic_dbgfs_t: pointer to debugfs trace buffer
-- *       rdata_flag: 1 => Unformated file
-- *                   0 => formated file
-+ *       rdata_flag: 1 => Unformatted file
-+ *                   0 => formatted file
-  * Description:
-  *       This routine will copy the trace data to memory file with
-  *       proper formatting and also copy to another memory
-- *       file without formatting for further procesing.
-- * Retrun Value:
-+ *       file without formatting for further processing.
-+ * Return Value:
-  *       Number of bytes that were dumped into fnic_dbgfs_t
+diff --git a/drivers/net/dsa/b53/b53_mmap.c b/drivers/net/dsa/b53/b53_mmap.c
+index c628d0980c0b..82680e083cc2 100644
+--- a/drivers/net/dsa/b53/b53_mmap.c
++++ b/drivers/net/dsa/b53/b53_mmap.c
+@@ -16,6 +16,7 @@
+  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
   */
-
-@@ -785,10 +785,10 @@ int fnic_fc_trace_get_data(fnic_dbgfs_t *fnic_dbgfs_prt, u8 rdata_flag)
-  *      @fc_trace_hdr_t: pointer to trace data
-  *      @fnic_dbgfs_t: pointer to debugfs trace buffer
-  *      @orig_len: pointer to len
-- *      rdata_flag: 0 => Formated file, 1 => Unformated file
-+ *      rdata_flag: 0 => Formatted file, 1 => Unformatted file
-  * Description:
-  *      This routine will format and copy the passed trace data
-- *      for formated file or unformated file accordingly.
-+ *      for formatted file or unformatted file accordingly.
-  */
-
- void copy_and_format_trace_data(struct fc_trace_hdr *tdata,
---
-2.30.2
+ 
++#include <linux/bits.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/io.h>
+@@ -228,11 +229,65 @@ static const struct b53_io_ops b53_mmap_ops = {
+ 	.write64 = b53_mmap_write64,
+ };
+ 
++static int b53_mmap_probe_of(struct platform_device *pdev,
++			     struct b53_platform_data **ppdata)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct device_node *of_ports, *of_port;
++	struct device *dev = &pdev->dev;
++	struct b53_platform_data *pdata;
++	void __iomem *mem;
++
++	mem = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(mem))
++		return PTR_ERR(mem);
++
++	pdata = devm_kzalloc(dev, sizeof(struct b53_platform_data),
++			     GFP_KERNEL);
++	if (!pdata)
++		return -ENOMEM;
++
++	pdata->regs = mem;
++	pdata->chip_id = BCM63XX_DEVICE_ID;
++	pdata->big_endian = of_property_read_bool(np, "big-endian");
++
++	of_ports = of_get_child_by_name(np, "ports");
++	if (!of_ports) {
++		dev_err(dev, "no ports child node found\n");
++		return -EINVAL;
++	}
++
++	for_each_available_child_of_node(of_ports, of_port) {
++		u32 reg;
++
++		if (of_property_read_u32(of_port, "reg", &reg))
++			continue;
++
++		if (reg < B53_CPU_PORT)
++			pdata->enabled_ports |= BIT(reg);
++	}
++
++	of_node_put(of_ports);
++	*ppdata = pdata;
++
++	return 0;
++}
++
+ static int b53_mmap_probe(struct platform_device *pdev)
+ {
++	struct device_node *np = pdev->dev.of_node;
+ 	struct b53_platform_data *pdata = pdev->dev.platform_data;
+ 	struct b53_mmap_priv *priv;
+ 	struct b53_device *dev;
++	int ret;
++
++	if (!pdata && np) {
++		ret = b53_mmap_probe_of(pdev, &pdata);
++		if (ret) {
++			dev_err(&pdev->dev, "OF probe error\n");
++			return ret;
++		}
++	}
+ 
+ 	if (!pdata)
+ 		return -EINVAL;
+-- 
+2.20.1
 
