@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCBD833EC8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:15:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9F933EC96
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:15:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbhCQJNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
+        id S231186AbhCQJNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbhCQJNB (ORCPT
+        with ESMTP id S230119AbhCQJNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Mar 2021 05:13:01 -0400
 Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078D4C0613DC
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9430C0613DE
         for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:59 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id y124-20020a1c32820000b029010c93864955so2934486wmy.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:58 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id r15-20020a05600c35cfb029010e639ca09eso2951478wmq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2WzJnbFL63fAV5MF42unVnj6zPztfqCHzahd4B5nEa4=;
-        b=jZUCRs8H69Csf5GhLrFIyA4rweatwr5fIlLJsoTfOZCevrPenu0dFtLGuORdXc2276
-         2Jkd2Ts0hUStkN6TbwYXKHElcc00A3iOyZ68bsVRYT9ohIaBIYri9u/kClPJPP9LXDsE
-         R7riR2wJUO1CGCWXqFtnMzjImY/oPqxtL406B6FX7pHyM8UnhI3vjV931tGiXRh1FKRM
-         ZH+0/sNADp74b6brzumnXVo+PMTF2snqJqE9qmHykwBnTPIv6bTrC3Fc2brOZMBuj4RK
-         2EJK9JccG0CyvMBYRmw1yei1MUr6x5WPwzlfPuo4K+gea1JdHh81fDketrOqFQ0Sum5U
-         IXvg==
+        bh=1cUaH1b/K2O6ERJ+bzFiuL6brJDSqamBpVZhrZptGlg=;
+        b=Im7bMn59N95huVs4Cu4fmRc+YGmxvRCVAMpXXHJhZWc1pJOWrIaZSXIMXl5w8V/lSr
+         YJvntp3NAD6/3rrIW26RPA/WItV8qBpPgULuGC28khbozZ3k0Wat4XlD95GvkSkAcv/C
+         m9I9ObxabwTJhuGmzCzb+q2778Y7BK4eg8xjD2eNFMcmovc078KN0GGDrR5MuMfEm50a
+         tymDrTgN/8qneiFeUnZPu26PhGPvhZWbj9LIZIRCHW7UoMBpiwULAAe899JKIAj5ns7y
+         GBvbRmTzzUbXt2Pm5fvtFywSkRAIhrl/c7jj55xm2xPaZIDxCWy/vgce1cC3REk9Wmc5
+         fvnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2WzJnbFL63fAV5MF42unVnj6zPztfqCHzahd4B5nEa4=;
-        b=CbTitUCAkVJDcviO9AdFWHKa+PxFAYSfXh1O+mY90L4P3vgAYmUeHAYAnkIi35NRcP
-         zeiWe4LEN12/Wq7fRxaVarVxxwgnnTl6Jpgql05InCCWHSZdYt92b55gRrV+2as7RnNN
-         QyCTvGYP/D7TrXleiLZnrOPxkELYSJJVNf5GGgI2hl2PJMhQn092G7/cgpwJInRajDJJ
-         Kb0Kj6rUmhG4Kdd0ImIYVC+IW7hhvJ4iFlcqWmYoESYPOt/Tt5tf8ellucJ9BrHWaGnR
-         Oq7bA6faVh4uH31DOwaQb0J8n1O3fHflOk3eyw0jCkCTic1iwKkdBpkeFmxnx/C2C2Eb
-         G4OA==
-X-Gm-Message-State: AOAM533EyrdbIP97EZR8Pd+NiJlT4aMbNZxyhX9iQhuMpux7u13vVP2D
-        xr1d8hH2OyjFZPhcZ/8Os+FOyK3g9cCxIw==
-X-Google-Smtp-Source: ABdhPJy4Rc8DlJvoxcqDMdMNTBb6d2JmTTrCLlkVJiCcC6wkRqqi0PABaVpBSQLbvZO8sgkBKM/WUg==
-X-Received: by 2002:a05:600c:198c:: with SMTP id t12mr2650590wmq.183.1615972377801;
-        Wed, 17 Mar 2021 02:12:57 -0700 (PDT)
+        bh=1cUaH1b/K2O6ERJ+bzFiuL6brJDSqamBpVZhrZptGlg=;
+        b=AFGU0HSf6zsQvdGiFKIqm8LkH60azPeF0zHeg400ol2CQw8t0L8Q0uBL4BbFNifMHS
+         Mr2p3y43i5HSB2p8XkVCvgAQmb5SH3R7GnotFmxbMY888Ii1VBeQfggOjjV6d7G8H668
+         vkyeCvP+VGKBMPrcB65u/MZW3zpruCvPUWmdO7KrzHA/BBkYfdEBjnpnkLlmUqFF99sR
+         gtADSCe7u+Xm834fiFDAtRabeo57VG4jCKhAEW/lzM1G8ASvZNGbnW2sOFRVZr+1GBox
+         iT6ozhgpCTFFAqihFs1WzAAv92QXTjXwq9IjssWb0vPEByQUhSl+zl9NiHL/SlcV+BNZ
+         XNdw==
+X-Gm-Message-State: AOAM531GciIZfpIqMQ1RF06PRcO9RBjoXxr1OT+WyCzHma2PGINHbgQM
+        tZNaSJl+9UySmC0mqZNiUlBZIA==
+X-Google-Smtp-Source: ABdhPJwIk5rpoN3LmJQkdEKCG9jZDzdAiOO4zRK9qdElTovUN0ILJhHR+J3PBnW2y3jZYlqEt4zoMg==
+X-Received: by 2002:a1c:f404:: with SMTP id z4mr2748623wma.39.1615972378673;
+        Wed, 17 Mar 2021 02:12:58 -0700 (PDT)
 Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id e18sm12695886wru.73.2021.03.17.02.12.56
+        by smtp.gmail.com with ESMTPSA id e18sm12695886wru.73.2021.03.17.02.12.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 02:12:57 -0700 (PDT)
+        Wed, 17 Mar 2021 02:12:58 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Satish Kharat <satishkh@cisco.com>,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org, Satish Kharat <satishkh@cisco.com>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         linux-scsi@vger.kernel.org
-Subject: [PATCH 17/36] scsi: fnic: fnic_scsi: Demote non-conformant kernel-doc headers
-Date:   Wed, 17 Mar 2021 09:12:11 +0000
-Message-Id: <20210317091230.2912389-18-lee.jones@linaro.org>
+Subject: [PATCH 18/36] scsi: fnic: fnic_fcs: Kernel-doc headers must contain the function name
+Date:   Wed, 17 Mar 2021 09:12:12 +0000
+Message-Id: <20210317091230.2912389-19-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210317091230.2912389-1-lee.jones@linaro.org>
 References: <20210317091230.2912389-1-lee.jones@linaro.org>
@@ -70,13 +70,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/fnic/fnic_scsi.c:183: warning: Function parameter or member 'fnic' not described in '__fnic_set_state_flags'
- drivers/scsi/fnic/fnic_scsi.c:183: warning: Function parameter or member 'st_flags' not described in '__fnic_set_state_flags'
- drivers/scsi/fnic/fnic_scsi.c:183: warning: Function parameter or member 'clearbits' not described in '__fnic_set_state_flags'
- drivers/scsi/fnic/fnic_scsi.c:2296: warning: Function parameter or member 'fnic' not described in 'fnic_scsi_host_start_tag'
- drivers/scsi/fnic/fnic_scsi.c:2296: warning: Function parameter or member 'sc' not described in 'fnic_scsi_host_start_tag'
- drivers/scsi/fnic/fnic_scsi.c:2316: warning: Function parameter or member 'fnic' not described in 'fnic_scsi_host_end_tag'
- drivers/scsi/fnic/fnic_scsi.c:2316: warning: Function parameter or member 'sc' not described in 'fnic_scsi_host_end_tag'
+ drivers/scsi/fnic/fnic_fcs.c:308: warning: expecting prototype for Check if the Received FIP FLOGI frame is rejected(). Prototype was for is_fnic_fip_flogi_reject() instead
 
 Cc: Satish Kharat <satishkh@cisco.com>
 Cc: Sesidhar Baddela <sebaddel@cisco.com>
@@ -86,40 +80,22 @@ Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
 Cc: linux-scsi@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/fnic/fnic_scsi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/scsi/fnic/fnic_fcs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/fnic/fnic_scsi.c b/drivers/scsi/fnic/fnic_scsi.c
-index 36744968378ff..e619a82f921b1 100644
---- a/drivers/scsi/fnic/fnic_scsi.c
-+++ b/drivers/scsi/fnic/fnic_scsi.c
-@@ -173,7 +173,7 @@ static int free_wq_copy_descs(struct fnic *fnic, struct vnic_wq_copy *wq)
+diff --git a/drivers/scsi/fnic/fnic_fcs.c b/drivers/scsi/fnic/fnic_fcs.c
+index e0cee4dcb4391..881c4823d7e24 100644
+--- a/drivers/scsi/fnic/fnic_fcs.c
++++ b/drivers/scsi/fnic/fnic_fcs.c
+@@ -296,7 +296,7 @@ void fnic_handle_event(struct work_struct *work)
  }
  
- 
--/**
-+/*
-  * __fnic_set_state_flags
-  * Sets/Clears bits in fnic's state_flags
-  **/
-@@ -2287,7 +2287,7 @@ static int fnic_clean_pending_aborts(struct fnic *fnic,
- 	return ret;
- }
- 
--/**
-+/*
-  * fnic_scsi_host_start_tag
-  * Allocates tagid from host's tag list
-  **/
-@@ -2307,7 +2307,7 @@ fnic_scsi_host_start_tag(struct fnic *fnic, struct scsi_cmnd *sc)
- 	return dummy->tag;
- }
- 
--/**
-+/*
-  * fnic_scsi_host_end_tag
-  * frees tag allocated by fnic_scsi_host_start_tag.
-  **/
+ /**
+- * Check if the Received FIP FLOGI frame is rejected
++ * is_fnic_fip_flogi_reject() - Check if the Received FIP FLOGI frame is rejected
+  * @fip: The FCoE controller that received the frame
+  * @skb: The received FIP frame
+  *
 -- 
 2.27.0
 
