@@ -2,100 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A006633E306
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:52:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D3733E38E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhCQAwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:52:10 -0400
-Received: from mga18.intel.com ([134.134.136.126]:14776 "EHLO mga18.intel.com"
+        id S229954AbhCQAz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:55:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229829AbhCQAvr (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:51:47 -0400
-IronPort-SDR: r4Y3nN72wtkhgoiUUWjPups8eZ7Z2dx/shjuAhB0aoLd5aKAr6zQyvk0n66iU6uQCSu+4EBLHc
- 8oqY78wifESA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="176958912"
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="176958912"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 17:51:46 -0700
-IronPort-SDR: tlsFoyTrBXJMUG5IsO9ar4eS81uF2tNkp1yStbkVP0RkoWLxlZQTBy84X1d0FPTS5hBMPRBvfQ
- yW/I5IPKwatw==
-X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
-   d="scan'208";a="412439728"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 17:51:43 -0700
-Subject: Re: [PATCH] perf stat: Align CSV output for summary mode
-To:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>, jolsa@kernel.org,
-        peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210316072900.1739-1-yao.jin@linux.intel.com>
- <YFCtfXlaKbIeEMwk@krava> <20210316163421.GQ203350@tassilo.jf.intel.com>
- <YFEBaVNDokSVW/34@kernel.org> <20210316200220.GS203350@tassilo.jf.intel.com>
- <YFEpQs4TnnxPPznF@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <ea1afc3b-0617-5b21-d0b1-9fd77bbcf0d1@linux.intel.com>
-Date:   Wed, 17 Mar 2021 08:51:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229756AbhCQAzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 20:55:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4308764F8C;
+        Wed, 17 Mar 2021 00:55:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615942538;
+        bh=ogm/cRjZMwqqmZU1ZzdX0tSSKIkx2756zP3cr0KdFQo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EuUbbAwe7YpXyoeHfP9zIdXQLLJ8og2djlKhhc18kLNNNdA1Kh03Y3GRkdY25j0Eq
+         fTp8KnwPKD0INuvJpVIG+yvvK8SOFzRyL5yEOOAd1OfZnPdizB6XaCsbH7V+xo5CFE
+         5d3/S5HAznpqjl9BxTucU735FrM1MTzsLOZ2Ujy+g0lNqQvW3habrRaeH1kFH5cScJ
+         VlqGU8icXuLyoIA8DmwqV99Va3va6g9/NEezl3RjhyvAB427jXPbcVRbRokXHOGT3S
+         K+8XDXKg+j9WPqrS01a38mFmUtINj2HPEoLK4wJjCqLu+ag2orpO1TdZHGWXs8Qt6l
+         +c73yMk0S9FGg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Felix Fietkau <nbd@nbd.name>, Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.11 01/61] mt76: fix tx skb error handling in mt76_dma_tx_queue_skb
+Date:   Tue, 16 Mar 2021 20:54:35 -0400
+Message-Id: <20210317005536.724046-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <YFEpQs4TnnxPPznF@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Felix Fietkau <nbd@nbd.name>
 
-On 3/17/2021 5:55 AM, Jiri Olsa wrote:
-> On Tue, Mar 16, 2021 at 01:02:20PM -0700, Andi Kleen wrote:
->> On Tue, Mar 16, 2021 at 04:05:13PM -0300, Arnaldo Carvalho de Melo wrote:
->>> Em Tue, Mar 16, 2021 at 09:34:21AM -0700, Andi Kleen escreveu:
->>>>> looks ok, but maybe make the option more related to CVS, like:
->>>>>
->>>>>    --x-summary, --cvs-summary  ...?
->>>>
->>>> Actually I don't think it should be a new option. I doubt
->>>> anyone could parse the previous mess. So just make it default
->>>> with -x
->>>
->>> In these cases I always fear that people are already parsing that mess
->>> by considering the summary lines to be the ones not starting with
->>> spaces, and now we go on and change it to be "better" by prefixing it
->>> with "summary" and... break existing scripts.
->>
->> I think it was just one version or so?
->>
->> FWIW perf has broken CSV output several times, I added workarounds
->> to toplev every time. Having a broken version for a short time
->> shouldn't be too bad.
->>
->> I actually had a workaround for this one, but it can parse either way.
->>
->>>
->>> Can we do this with a new option?
->>>
->>> I.e. like --cvs-summary?
->>
->> If you do it I would add an option for the old broken format
->> --i-want-broken-csv. But not  require the option forever
->> just to get sane output.
-> 
-> I like that.. also we'll find out how many people are actually parsing that ;-)
-> 
-> jirka
-> 
+[ Upstream commit ae064fc0e32a4d28389086d9f4b260a0c157cfee ]
 
-Is it serious or just a joke? :)
+When running out of room in the tx queue after calling drv->tx_prepare_skb,
+the buffer list will already have been modified on MT7615 and newer drivers.
+This can leak a DMA mapping and will show up as swiotlb allocation failures
+on x86.
 
-Thanks
-Jin Yao
+Fix this by moving the queue length check further up. This is less accurate,
+since it can overestimate the needed room in the queue on MT7615 and newer,
+but the difference is small enough to not matter in practice.
 
->>
->> Or maybe only a perf config option.
->>
->> -Andi
->>
-> 
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210216135119.23809-1-nbd@nbd.name
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/mediatek/mt76/dma.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/wireless/mediatek/mt76/dma.c b/drivers/net/wireless/mediatek/mt76/dma.c
+index e81dfaf99bcb..372f27687f2d 100644
+--- a/drivers/net/wireless/mediatek/mt76/dma.c
++++ b/drivers/net/wireless/mediatek/mt76/dma.c
+@@ -345,7 +345,6 @@ mt76_dma_tx_queue_skb(struct mt76_dev *dev, struct mt76_queue *q,
+ 	};
+ 	struct ieee80211_hw *hw;
+ 	int len, n = 0, ret = -ENOMEM;
+-	struct mt76_queue_entry e;
+ 	struct mt76_txwi_cache *t;
+ 	struct sk_buff *iter;
+ 	dma_addr_t addr;
+@@ -387,6 +386,11 @@ mt76_dma_tx_queue_skb(struct mt76_dev *dev, struct mt76_queue *q,
+ 	}
+ 	tx_info.nbuf = n;
+ 
++	if (q->queued + (tx_info.nbuf + 1) / 2 >= q->ndesc - 1) {
++		ret = -ENOMEM;
++		goto unmap;
++	}
++
+ 	dma_sync_single_for_cpu(dev->dev, t->dma_addr, dev->drv->txwi_size,
+ 				DMA_TO_DEVICE);
+ 	ret = dev->drv->tx_prepare_skb(dev, txwi, q->qid, wcid, sta, &tx_info);
+@@ -395,11 +399,6 @@ mt76_dma_tx_queue_skb(struct mt76_dev *dev, struct mt76_queue *q,
+ 	if (ret < 0)
+ 		goto unmap;
+ 
+-	if (q->queued + (tx_info.nbuf + 1) / 2 >= q->ndesc - 1) {
+-		ret = -ENOMEM;
+-		goto unmap;
+-	}
+-
+ 	return mt76_dma_add_buf(dev, q, tx_info.buf, tx_info.nbuf,
+ 				tx_info.info, tx_info.skb, t);
+ 
+@@ -415,9 +414,7 @@ mt76_dma_tx_queue_skb(struct mt76_dev *dev, struct mt76_queue *q,
+ 		dev->test.tx_done--;
+ #endif
+ 
+-	e.skb = tx_info.skb;
+-	e.txwi = t;
+-	dev->drv->tx_complete_skb(dev, &e);
++	dev_kfree_skb(tx_info.skb);
+ 	mt76_put_txwi(dev, t);
+ 	return ret;
+ }
+-- 
+2.30.1
+
