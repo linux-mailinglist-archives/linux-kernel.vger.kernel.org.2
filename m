@@ -2,209 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF89C33EECE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CEFD33EECF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:51:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbhCQKu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:50:58 -0400
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:41149 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230398AbhCQKuX (ORCPT
+        id S231156AbhCQKvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231181AbhCQKug (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:50:23 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id MTkolAEONGEYcMTkrlNBQS; Wed, 17 Mar 2021 11:50:21 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1615978221; bh=HDLBDtP1kmCoC2/kdEylUtm0VS0JBOE6TjJ6fxXIcCc=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=uGccAMKFMD4OmYbAnG4RajJ+QReIGsI+1WPMdtBxg6Qz/p7DuZoxg1yzDZ0QMtSgV
-         dLgQbHl8mD8uDP2PD6DDhfvIxHibAnT7SdxeYCvHz9IMcYnxT8i2yZCRwRjXJBJi38
-         o5UScuYoncmGiSXP/3+mEnbCwDs0SSZ+LS8bHrFk5DXAA9dvBfJ6rYW7ZJJLQ9iQGu
-         xtfAdJsGdFUYlGCpDzWltWHQoq0fDKI+mubsyw6e+QLkZfK1el4PxtxbQOdiMHSb6A
-         Mxm+ukIttBjQtYuwIMzHgx4LOr32YzA0bioxUXpkOvjjTKG7Vo0AdZKLSzJUrUna5p
-         0HOxaYGJIQ2Aw==
-Subject: Re: [PATCH v5 04/13] media: uvcvideo: Check controls flags before
- accessing them
-To:     Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org
-References: <20210316180004.1605727-1-ribalda@chromium.org>
- <20210316180004.1605727-5-ribalda@chromium.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <f6f6c59b-f55f-4415-13ee-dca777ed44ab@xs4all.nl>
-Date:   Wed, 17 Mar 2021 11:50:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        Wed, 17 Mar 2021 06:50:36 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF29C06174A;
+        Wed, 17 Mar 2021 03:50:36 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id x16so1136981qvk.3;
+        Wed, 17 Mar 2021 03:50:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gG7QPejNR60jx5sjfgi487H6qTjwVUl8kxmz90W0B1o=;
+        b=G90dIH6y3T2sKTOADCltJmnjP50n0VaBhmskm8UQsQ/4XAqoqvP4vUXRYRAfdGH5Vt
+         U3ob9eHClEFDxG0yx6rdHiAyp/kUSyKqydLVbHArInlSvrxAaK4oc/ZIDjqxeqaWP7/K
+         GaQdJtEqg/bHyu02KAWSGPwi1BsmmCdErfS/gxYza4bXKnJwRCMWFsVcHtwbvJCRzZ+c
+         elwTM5lU/OxVwti0Scq9yx4i25Mqc9wZ04aRGsILcf5AUbLT1wTqAyQ5+hH8vT2L8iWX
+         yo5JHWZY0XxleeK1ENnuFEwneGsGH89Zw/lPRfclRT1faBJCPgGcd9SwEmSukx39iYgT
+         z+cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=gG7QPejNR60jx5sjfgi487H6qTjwVUl8kxmz90W0B1o=;
+        b=SQe4goEI93aQPd/+XhGZmFG/eUWyHgSYPIaeh+boDAYjKyfAzx30FIANRAMqxB80rL
+         ScRQjKT5tYWHPDl2BJ6Q+lVDYzCl9Kjf4827aqxJBgbswgN8eR/Mv1rEkUIwsA4AOA3k
+         hchyMTm4aDPsNKV9j9jybrDh+r0fkyAfA7bydaaQnFpUP519b+bnMgEc1q6MmP+p9ghr
+         Bh6ud20SHxWe8Y+SKLADTFGq+G1P1yIBOCQ/yty/zlBi5ydlV8eeEPOMyc5++3nB4y3+
+         VetK+9F+WKRBEUhYzJLyDj0ejulnEMXxrbZhfc60mFI9oVku1ubFddASMBMtbqZ8Bdpm
+         V99w==
+X-Gm-Message-State: AOAM533Iyys3IprNsms7eKVwgo57ogALNmXUfW1QmRudDBQOsR8+tqZM
+        Oi3R4Ut1RDsG5ksQ07ryTns=
+X-Google-Smtp-Source: ABdhPJyJ8T2NLOsONSMzRgJMbaDTNc5Q+MVijzx6+YTzaIEIaDnPIkAuYVsWMDXNlfNLSDR6yuEe0A==
+X-Received: by 2002:ad4:4dc6:: with SMTP id cw6mr4767509qvb.31.1615978235616;
+        Wed, 17 Mar 2021 03:50:35 -0700 (PDT)
+Received: from ArchLinux ([37.19.198.48])
+        by smtp.gmail.com with ESMTPSA id c5sm17603184qkg.105.2021.03.17.03.50.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 03:50:34 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 16:20:18 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Jeroen Roovers <jer@xs4all.nl>
+Cc:     James.Bottomley@hansenpartnership.com, deller@gmx.de,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+Subject: Re: [PATCH] parisc: math-emu: Few spelling fixes in the file fpu.h
+Message-ID: <YFHe6lv09xKD6IzQ@ArchLinux>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Jeroen Roovers <jer@xs4all.nl>,
+        James.Bottomley@hansenpartnership.com, deller@gmx.de,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+References: <20210317103251.3526940-1-unixbhaskar@gmail.com>
+ <20210317114235.033dc0ef@del.jer>
 MIME-Version: 1.0
-In-Reply-To: <20210316180004.1605727-5-ribalda@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfAgxyYhgbHhiy0bhr3ZuBsTp8VZlyfdcvhwJedolFkzyPBZ7o+9RiNIrZaWVDsC0Wxb+7Kr0pKyq9No3UgvU32FVdhbgaKIp3UzFi0aRIeBla7WxOckd
- Et1RvD6ATGhCknG4oTcjcZsgik3BIh2xB1uQY28tunoxwszRsusTP+ZMb08c1pllOooQaExEcCMbjnAxWsYt6gAVHrGsQ7aCvw0gbfWpRm8kDZ0NhHpSOSaf
- TWzcvgJmtjPZsaSyJ8oi6cPX1SnLPLC5V6xI+T9HRoiyrUB5+CV+gLi+sPcl+2Vyr6hhhbkq1RouGdDZZWfLBo03Qeycnl9EkyMTDrnRrclY5Oblx1oBhwlq
- 5k3cVZfhb0Jstr9XvB3XlhbMi7tgdOSlLsnZ19erK+9YoF7hTkGd2RcUOSefYbbGO7T1MA75
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Xd6p6z+C7AI6lGga"
+Content-Disposition: inline
+In-Reply-To: <20210317114235.033dc0ef@del.jer>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/03/2021 18:59, Ricardo Ribalda wrote:
-> We can figure out if reading/writing a set of controls can fail without
-> accessing them by checking their flags.
-> 
-> This way we can honor the API closer:
-> 
-> If an error is found when validating the list of controls passed with
-> VIDIOC_G_EXT_CTRLS, then error_idx shall be set to ctrls->count to
-> indicate to userspace that no actual hardware was touched.
-> 
-> Fixes v4l2-compliance:
-> Control ioctls (Input 0):
-> 		warn: v4l2-test-controls.cpp(765): g_ext_ctrls(0) invalid error_idx 0
->                 fail: v4l2-test-controls.cpp(645): invalid error index write only control
->         test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_v4l2.c | 69 +++++++++++++++++++++++---------
->  1 file changed, 51 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-> index 157310c0ca87..e956d833ed84 100644
-> --- a/drivers/media/usb/uvc/uvc_v4l2.c
-> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
-> @@ -1040,31 +1040,54 @@ static int uvc_ioctl_s_ctrl(struct file *file, void *fh,
->  	return 0;
->  }
->  
-> -static int uvc_ioctl_g_ext_ctrls(struct file *file, void *fh,
-> -				 struct v4l2_ext_controls *ctrls)
-> +static int uvc_ctrl_check_access(struct uvc_video_chain *chain,
-> +				 struct v4l2_ext_controls *ctrls, bool read)
->  {
-> -	struct uvc_fh *handle = fh;
-> -	struct uvc_video_chain *chain = handle->chain;
->  	struct v4l2_ext_control *ctrl = ctrls->controls;
->  	unsigned int i;
-> -	int ret;
-> +	int ret = 0;
->  
-> -	if (ctrls->which == V4L2_CTRL_WHICH_DEF_VAL) {
-> -		for (i = 0; i < ctrls->count; ++ctrl, ++i) {
-> -			struct v4l2_queryctrl qc = { .id = ctrl->id };
-> +	for (i = 0; i < ctrls->count; ++ctrl, ++i) {
-> +		struct v4l2_queryctrl qc = { .id = ctrl->id };
->  
-> -			ret = uvc_query_v4l2_ctrl(chain, &qc);
-> -			if (ret < 0) {
-> -				ctrls->error_idx = i;
-> -				return ret;
-> -			}
-> +		ret = uvc_query_v4l2_ctrl(chain, &qc);
 
-You can't call this. If I am not mistaken, this call can actually call
-the hardware.
+--Xd6p6z+C7AI6lGga
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-Instead you need to call the lower level function uvc_find_control() and
-use ctrl->info to check for read/write only.
+On 11:42 Wed 17 Mar 2021, Jeroen Roovers wrote:
+>On Wed, 17 Mar 2021 16:02:51 +0530
+>Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
+>
+>> s/synopis/synopsis/
+>> s/differeniate/differentiate/
+>> s/differeniation/differentiation/
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
+>>  arch/parisc/math-emu/fpu.h | 6 +++---
+>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/parisc/math-emu/fpu.h b/arch/parisc/math-emu/fpu.h
+>> index 853c19c03828..1f313bc38beb 100644
+>> --- a/arch/parisc/math-emu/fpu.h
+>> +++ b/arch/parisc/math-emu/fpu.h
+>> @@ -12,7 +12,7 @@
+>>   *      @(#)	pa/fp/fpu.h		$Revision: 1.1 $
+>>   *
+>>   *  Purpose:
+>> - *      <<please update with a synopis of the functionality provided
+>> by this file>>
+>> + *      <<please update with a synopsis of the functionality
+>> provided by this file>> *
+>>   *
+>>   * END_DESC
+>> @@ -50,9 +50,9 @@
+>>  #define EMULATION_VERSION 4
+>>
+>>  /*
+>> - * The only was to differeniate between TIMEX and ROLEX (or PCX-S
+>> and PCX-T)
+>> + * The only was to differentiate between TIMEX and ROLEX (or PCX-S
+>> and PCX-T)
+>
+>Might as well fix "only [change] was to" here.
+>
+Certain. Thanks for the heads up! ....V2 on the way...
 
-> +		if (ret < 0)
-> +			break;
->  
-> +		if (ctrls->which == V4L2_CTRL_WHICH_DEF_VAL) {
->  			ctrl->value = qc.default_value;
+>>   * is thorough the potential type field from the PDC_MODEL call.  The
+>> - * following flags are used at assist this differeniation.
+>> + * following flags are used at assist this differentiation.
+>>   */
+>>
+>>  #define ROLEX_POTENTIAL_KEY_FLAGS	PDC_MODEL_CPU_KEY_WORD_TO_IO
+>> --
+>> 2.30.2
+>>
+>
+>
+>Kind regards,
+>     jer
 
-This needs to use the old code in uvc_ioctl_g_ext_ctrls() since it depends
-on uvc_query_v4l2_ctrl() which accesses the hardware.
+--Xd6p6z+C7AI6lGga
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +			continue;
->  		}
->  
-> -		return 0;
-> +		if (qc.flags & V4L2_CTRL_FLAG_WRITE_ONLY && read) {
-> +			ret = -EACCES;
-> +			break;
-> +		}
-> +
-> +		if (qc.flags & V4L2_CTRL_FLAG_READ_ONLY && !read) {
-> +			ret = -EACCES;
-> +			break;
-> +		}
->  	}
->  
-> +	ctrls->error_idx = ctrls->count;
-> +
-> +	return ret;
-> +}
+-----BEGIN PGP SIGNATURE-----
 
-So uvc_ctrl_check_access() is a good idea, but it does a bit too much.
-It should just check if all controls in the list are known and check for
-write/read only.
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBR3uYACgkQsjqdtxFL
+KRUKOggAjhjIWEg1/IrkEdT0+9TxQ85oGcpwQfLJd2mrEL5ehR8PPNaR+TQ4g/ZZ
+eYktVHq3kdhTUCagZ3gBSLlCPKAkG4V1pVT9jzkMPo8KlLQFRcQcmFxWvFOKM63w
+whQ2cNbcYGDirMKGntZCh79hbecx0Egw/2kAfv9i61/0gHN0qPPp+QkM/66Q1sz4
+sQkkDADuUNfXUAXh9OBFq2AIFg/oYfuqA/BbVmLKvL/wN1vGt3hGwSTNV86jPDuu
+umJ6wLcfftv1stLMMvAE0qfKn6VLVY2D5EShqfj+Q0iD8JcldFSUf2lkgP6JwFl+
+KQ1PTqMLuekZKBn7qnjHbGwEvJ6kIQ==
+=OqRj
+-----END PGP SIGNATURE-----
 
-Regards,
-
-	Hans
-
-> +
-> +static int uvc_ioctl_g_ext_ctrls(struct file *file, void *fh,
-> +				 struct v4l2_ext_controls *ctrls)
-> +{
-> +	struct uvc_fh *handle = fh;
-> +	struct uvc_video_chain *chain = handle->chain;
-> +	struct v4l2_ext_control *ctrl = ctrls->controls;
-> +	unsigned int i;
-> +	int ret;
-> +
-> +	ret = uvc_ctrl_check_access(chain, ctrls, true);
-> +	if (ret < 0 || ctrls->which == V4L2_CTRL_WHICH_DEF_VAL)
-> +		return ret;
-> +
->  	ret = uvc_ctrl_begin(chain);
->  	if (ret < 0)
->  		return ret;
-> @@ -1092,10 +1115,6 @@ static int uvc_ioctl_s_try_ext_ctrls(struct uvc_fh *handle,
->  	unsigned int i;
->  	int ret;
->  
-> -	/* Default value cannot be changed */
-> -	if (ctrls->which == V4L2_CTRL_WHICH_DEF_VAL)
-> -		return -EINVAL;
-> -
->  	ret = uvc_ctrl_begin(chain);
->  	if (ret < 0)
->  		return ret;
-> @@ -1121,6 +1140,16 @@ static int uvc_ioctl_s_ext_ctrls(struct file *file, void *fh,
->  				 struct v4l2_ext_controls *ctrls)
->  {
->  	struct uvc_fh *handle = fh;
-> +	struct uvc_video_chain *chain = handle->chain;
-> +	int ret;
-> +
-> +	/* Default value cannot be changed */
-> +	if (ctrls->which == V4L2_CTRL_WHICH_DEF_VAL)
-> +		return -EINVAL;
-> +
-> +	ret = uvc_ctrl_check_access(chain, ctrls, false);
-> +	if (ret < 0)
-> +		return ret;
->  
->  	return uvc_ioctl_s_try_ext_ctrls(handle, ctrls, true);
->  }
-> @@ -1130,6 +1159,10 @@ static int uvc_ioctl_try_ext_ctrls(struct file *file, void *fh,
->  {
->  	struct uvc_fh *handle = fh;
->  
-> +	/* Default value cannot be changed */
-> +	if (ctrls->which == V4L2_CTRL_WHICH_DEF_VAL)
-> +		return -EINVAL;
-> +
->  	return uvc_ioctl_s_try_ext_ctrls(handle, ctrls, false);
->  }
->  
-> 
-
+--Xd6p6z+C7AI6lGga--
