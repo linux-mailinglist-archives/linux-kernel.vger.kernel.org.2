@@ -2,68 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8B133EA5E
+	by mail.lfdr.de (Postfix) with ESMTP id EB9AB33EA5F
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229909AbhCQHLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 03:11:44 -0400
-Received: from m12-16.163.com ([220.181.12.16]:41237 "EHLO m12-16.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229472AbhCQHLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 03:11:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=pH7nh
-        paleJ/7ukwCP8E2DXBfIB5ssIKEREx9oLsDBpo=; b=QuvsY0XtbcbcZmmMU8kny
-        x4hbCtMqedR6nlLBCT6Cco9QFozJi5C+xJBkH0GznwEyYMfcDYDp4B6D2Lq2bl1K
-        54tuhCGxqU8tz59nAnhLYu3gF+NExi4hlFkB0MXmK72WMO98HpSJB7vrFWxlNF3T
-        LNRKvSHEcYAcYsGVdlEgAc=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp12 (Coremail) with SMTP id EMCowAAXHSFxq1FgnVAehA--.23334S2;
-        Wed, 17 Mar 2021 15:10:45 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     shaggy@kernel.org
-Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] fs: Fix typo issue
-Date:   Wed, 17 Mar 2021 15:10:52 +0800
-Message-Id: <20210317071052.1101-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EMCowAAXHSFxq1FgnVAehA--.23334S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWruFy8Jr45Zr13WrW7XFy3twb_yoWxtwc_Ca
-        n7Ar48WayrXayUur1fXrs5Kryq9rW8urn8urWDJFZIkryqyrnxJrs7Cr47XryDKrZ0kryk
-        Zw18KryrurykWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0j2NtUUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/xtbBRQ1YiVPAKjBU8QADs2
+        id S230031AbhCQHLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 03:11:45 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:40045 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229508AbhCQHLj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 03:11:39 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0USEIX7F_1615965097;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0USEIX7F_1615965097)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 17 Mar 2021 15:11:37 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     jdike@addtoit.com
+Cc:     richard@nod.at, anton.ivanov@cambridgegreys.com,
+        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] um: replace if (cond) BUG() with BUG_ON()
+Date:   Wed, 17 Mar 2021 15:11:36 +0800
+Message-Id: <1615965096-122733-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
+Fix the following coccinelle reports:
+./arch/um/kernel/mem.c:77:3-6: WARNING: Use BUG_ON instead of if
+condition followed by BUG.
 
-Change 'inacitve' to 'inactive'.
-
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
- fs/jfs/jfs_dmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/kernel/mem.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
-index 7aee156..91f4ec93 100644
---- a/fs/jfs/jfs_dmap.c
-+++ b/fs/jfs/jfs_dmap.c
-@@ -3660,7 +3660,7 @@ void dbFinalizeBmap(struct inode *ipbmap)
- 	 * (the leftmost ag with average free space in it);
- 	 */
- //agpref:
--	/* get the number of active ags and inacitve ags */
-+	/* get the number of active ags and inactive ags */
- 	actags = bmp->db_maxag + 1;
- 	inactags = bmp->db_numag - actags;
- 	ag_rem = bmp->db_mapsize & (bmp->db_agsize - 1);	/* ??? */
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index 9242dc9..22e28bf 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -73,8 +73,7 @@ static void __init one_page_table_init(pmd_t *pmd)
+ 
+ 		set_pmd(pmd, __pmd(_KERNPG_TABLE +
+ 					   (unsigned long) __pa(pte)));
+-		if (pte != pte_offset_kernel(pmd, 0))
+-			BUG();
++		BUG_ON(pte != pte_offset_kernel(pmd, 0));
+ 	}
+ }
+ 
 -- 
-1.9.1
-
+1.8.3.1
 
