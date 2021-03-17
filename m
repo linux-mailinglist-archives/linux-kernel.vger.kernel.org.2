@@ -2,68 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F74933F63A
+	by mail.lfdr.de (Postfix) with ESMTP id EBF5133F63B
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232709AbhCQRC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:02:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232670AbhCQRB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:01:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EC1261580;
-        Wed, 17 Mar 2021 17:01:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616000516;
-        bh=D5aIjqmiOUYZl13Ajhpo46UMf5Qv0uThh2gxXrypg4Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P/lDAbTusNU8/I+ESum6PU/pLylMXRA05sso9tvoSpj1oxQJoR/zW6Z7R9EY6LtZM
-         Uvs7O3FjhBy7+kZlykyWDkSjt9lhcIJG7FB7uPyOyrR+8pnMLifCANcdqFYxvAQUkj
-         +Md3iz/vtf0Br6kdNrHT4wgX5R1YODHy9VFpeFcozXQBGLje1b1L/rWFrDnMyRYM1T
-         eyJ6h945OWso43VtenJ6HM+SAiWSPHzCjwbfvsckHXvDqxfwL+4UkeU9zQ6hqCN4lM
-         a2cELM02A/BBXBWOea+SHy1ZFOq720LpJHIilBACsEc44YUQDoxrxbwuEFPT+BOPGf
-         HynHOUtcm93bQ==
-Received: by pali.im (Postfix)
-        id 900E18A9; Wed, 17 Mar 2021 18:01:52 +0100 (CET)
-Date:   Wed, 17 Mar 2021 18:01:52 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCHv2 18/38] dt-bindings: power: supply: n900-battery:
- Convert to DT schema format
-Message-ID: <20210317170152.dsg7s6kik5gyqd64@pali>
-References: <20210317134904.80737-1-sebastian.reichel@collabora.com>
- <20210317134904.80737-19-sebastian.reichel@collabora.com>
+        id S232730AbhCQRC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:02:29 -0400
+Received: from mailout.easymail.ca ([64.68.200.34]:39304 "EHLO
+        mailout.easymail.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232707AbhCQRCR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 13:02:17 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mailout.easymail.ca (Postfix) with ESMTP id B0937A1291;
+        Wed, 17 Mar 2021 17:02:16 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at emo05-pco.easydns.vpn
+Received: from mailout.easymail.ca ([127.0.0.1])
+        by localhost (emo05-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id pxXI2zaqfTcq; Wed, 17 Mar 2021 17:02:16 +0000 (UTC)
+Received: from mail.gonehiking.org (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        by mailout.easymail.ca (Postfix) with ESMTPA id 18ACE9FEF3;
+        Wed, 17 Mar 2021 17:02:10 +0000 (UTC)
+Received: from [192.168.1.4] (rhapsody.internal [192.168.1.4])
+        by mail.gonehiking.org (Postfix) with ESMTP id 47E643EF3B;
+        Wed, 17 Mar 2021 11:02:10 -0600 (MDT)
+Subject: Re: [PATCH 4/8] scsi: FlashPoint: Remove unused variable 'TID' from
+ 'FlashPoint_AbortCCB()'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+References: <20210317091125.2910058-1-lee.jones@linaro.org>
+ <20210317091125.2910058-5-lee.jones@linaro.org>
+From:   Khalid Aziz <khalid@gonehiking.org>
+Message-ID: <e597f426-bcc0-35d5-220c-104d39c08706@gonehiking.org>
+Date:   Wed, 17 Mar 2021 11:02:10 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <20210317091125.2910058-5-lee.jones@linaro.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210317134904.80737-19-sebastian.reichel@collabora.com>
-User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 17 March 2021 14:48:44 Sebastian Reichel wrote:
-> Convert the binding to DT schema format.
+On 3/17/21 3:11 AM, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
-> Cc: Pali Rohár <pali@kernel.org>
-
-Rejected-by: Pali Rohár <pali@kernel.org>
-
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-
-Hello Sebastian! I'm really really sorry, I have nothing against you,
-but personally I cannot ack change signed by company where some people
-are supporting censorship, GPL violations and other similar immoral
-activities against other individual developers.
-
+>  drivers/scsi/FlashPoint.c: In function ‘FlashPoint_AbortCCB’:
+>  drivers/scsi/FlashPoint.c:1618:16: warning: variable ‘TID’ set but not used [-Wunused-but-set-variable]
+> 
+> Cc: Khalid Aziz <khalid@gonehiking.org>
+> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+> Cc: linux-scsi@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  .../power/supply/nokia,n900-battery.yaml      | 49 +++++++++++++++++++
->  .../bindings/power/supply/rx51-battery.txt    | 25 ----------
->  2 files changed, 49 insertions(+), 25 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/power/supply/nokia,n900-battery.yaml
->  delete mode 100644 Documentation/devicetree/bindings/power/supply/rx51-battery.txt
+>  drivers/scsi/FlashPoint.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/drivers/scsi/FlashPoint.c b/drivers/scsi/FlashPoint.c
+> index f479c542e787c..0464e37c806a4 100644
+> --- a/drivers/scsi/FlashPoint.c
+> +++ b/drivers/scsi/FlashPoint.c
+> @@ -1615,7 +1615,6 @@ static int FlashPoint_AbortCCB(void *pCurrCard, struct sccb *p_Sccb)
+>  
+>  	unsigned char thisCard;
+>  	CALL_BK_FN callback;
+> -	unsigned char TID;
+>  	struct sccb *pSaveSCCB;
+>  	struct sccb_mgr_tar_info *currTar_Info;
+>  
+> @@ -1652,9 +1651,6 @@ static int FlashPoint_AbortCCB(void *pCurrCard, struct sccb *p_Sccb)
+>  			}
+>  
+>  			else {
+> -
+> -				TID = p_Sccb->TargID;
+> -
+>  				if (p_Sccb->Sccb_tag) {
+>  					MDISABLE_INT(ioport);
+>  					if (((struct sccb_card *)pCurrCard)->
+> 
+
+Acked-by: Khalid Aziz <khalid@gonehiking.org>
