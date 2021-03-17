@@ -2,67 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3222F33FB6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 23:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF02F33FB72
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 23:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhCQWn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 18:43:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49088 "EHLO
+        id S229796AbhCQWpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 18:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhCQWnn (ORCPT
+        with ESMTP id S229658AbhCQWpW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 18:43:43 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7256C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:43:42 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id v3so265923ioq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:43:42 -0700 (PDT)
+        Wed, 17 Mar 2021 18:45:22 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E37C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:45:22 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id o19so2308953qvu.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:45:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T0M/PAXOO+j50lu6FBt2S8BVrDklBt3ZPhpsA7h6VIU=;
-        b=FKbO9bkDIfk4bo8Mwm9dhYNZnlXFhXCK21RKldVdDI4L+kMlRS5xPSKmuNHAUax8Db
-         PRd1eAjboV2nsqiFgeSCE0XPufR1igedDokyoi6kHnVwWk6doVXi0A43+MJlIl1S6VV0
-         snon6E85q8Y8w5NfXGHghllT0MOiUgb2eliWMB00L+1cUiT+kU1SoJBeCxI2hVzXHWAz
-         j4JMDFoVEcU3awEb51IVZqkNfKxFtbgGQJA76mPlLpO5/jqb3bj0cA4goDGG/i4yDYqZ
-         +T+/FzQRwZQZHsFlhEKbkTSHOnA6xXgSxNBgadC40sG8ydSHuIKeVPobF/5PJkvlRWRp
-         mZDw==
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uJa/6pXTw6/CAv4WIT8j9OKwQQwr0MLgOLjANEhGySs=;
+        b=aN9WByi2PNfl8mRCm2Io96kKO978y75Pm9z6VOoKa1DdUNGFTVhgF25Dn31vTbx6nL
+         Mg2NH6xAvao7Zo9+fO8kWcK9TWVdMqRm9rofzWAkp2Nk2QUw7th9dl7P+aJsUVJfZkw/
+         3t0v2eicFACnlFPgZYEMuGjyLwsO3JEMTuSWhNSU5Ik6gVJ0kmi29BVOTj6PQxpwZnz1
+         fT3ozKIxc1ubITNOJOxYsSl4nJ6JcRXpxGu+Rk/vbrHXkJpNrlUq4u/9bDfHCRCr2gkz
+         n4FKgasdfIMbgjyMjC9zicpg3bzwzGkaFwKYJq7zoW1JLZnDtsetd4YwMCT5y5tchlwb
+         fllw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T0M/PAXOO+j50lu6FBt2S8BVrDklBt3ZPhpsA7h6VIU=;
-        b=LuULtOauRjTZ0zugNLMMzUJK0GZ2q6/TMdrQSAo12frBqgnO1vnZvVXhNrW5fJENrd
-         QeB+TKSbz72zL1/lLQlYNWiPKC8nzkfZ6tRkbt7fxzAQB67vVLmZtXerXGC/hrS00TeX
-         I4jq8eGdUl8iiueMfznYHq8Bf7M2MCDUh67bGtRuW+Z8wjlQTOG1LFK9srUkmDyr8OhL
-         7gC+yDu7pPYtSjYYQhbpxKYvHS5s1Nz5N1VqshT+I6bvFa9Kpe3ehtbO38N9P+bYJQlI
-         AlqKuKYTrNCQgW3w/RgxTrckambKT845fbcnkShGVAOiJbBjauwChwjZBp1p0W0AGSLl
-         vO6A==
-X-Gm-Message-State: AOAM532DyhMuWq/enR8OxttifpQrFctq9lOa7XE5oZpwSOZxP16ZBNoh
-        7t92Ku7g+wXPD+uVSX+D80XJTzpIkt7KlLtIF8LL4eZ8DJc=
-X-Google-Smtp-Source: ABdhPJz38+d4Us1reJyPt6zL7aG4QPIRGUPfM29fcCQMyQAZUympsEEUx7yKTm6LbfHap1SnllbQM0pahRbQdCZkx4o=
-X-Received: by 2002:a5d:9e09:: with SMTP id h9mr8686152ioh.178.1616021022347;
- Wed, 17 Mar 2021 15:43:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=uJa/6pXTw6/CAv4WIT8j9OKwQQwr0MLgOLjANEhGySs=;
+        b=AEdu9AXP3ZqAidKjYj4JZxQtYK3iemYg0iZhmg+Xw3DbSZAeFMfIT6cr8HK6BbZbOw
+         P4QdGCHeU1ErCdM/KQsZ/Imlfqng0mHnNKd/JZS5yqoB3iRXK3jlcGmmX1f+pRn+O5vR
+         LF25vx3aVyS8rfEukI1tFtmk95U848zcDJ4Xrsm9Aw7o0JQb/Z761KWCq3SmUTfNdmdQ
+         tAhgQr0c0vGjEYeLIu8/UOJGiTLhvAAJ8W0l0WlEbN2lXldEYdF9KkwB/aKPL0bwd9lb
+         MyLpm/vfS9aHyFRerFHrPYGmD6YYDk76K5eJRqWd6denPsrZqsTdsNAeZSMUqzP13ucX
+         DSkw==
+X-Gm-Message-State: AOAM531mGwMXQ08Pgdfkj6Tu3wP+A1p+qY9Zqwgf6BHHLEp/SC46BIF/
+        JJ6J+GaQgQxzP8VAeu9s4vho11Z71MWLAlBs
+X-Google-Smtp-Source: ABdhPJzVyhikKY+XTeIEja8THQ7KGJDY9cXrd0SVm2F9lMJFu3zoS/mayvvtNDPRzl3Wu7dGtZAeOA==
+X-Received: by 2002:a0c:bec3:: with SMTP id f3mr1489545qvj.49.1616021121946;
+        Wed, 17 Mar 2021 15:45:21 -0700 (PDT)
+Received: from ArchLinux ([156.146.37.138])
+        by smtp.gmail.com with ESMTPSA id l8sm156448qtr.19.2021.03.17.15.45.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 15:45:21 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 04:15:04 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] mm: Typo fix in the file util.c
+Message-ID: <YFKGcL5n6fd0HuXZ@ArchLinux>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+References: <20210317033439.3429411-1-unixbhaskar@gmail.com>
+ <20210317114810.GF3420@casper.infradead.org>
 MIME-Version: 1.0
-References: <92b7c57b-b645-9965-8157-4ca76a803cba@mev.co.uk>
- <20210316224227.348310-1-ztong0001@gmail.com> <20210317051426.GX2087@kadam>
- <CAA5qM4BcQ6+aa1C3_28zLVojwLduK-WZwsEftuasJgo8z0t0ew@mail.gmail.com> <20210317065248.GW21246@kadam>
-In-Reply-To: <20210317065248.GW21246@kadam>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Wed, 17 Mar 2021 18:43:31 -0400
-Message-ID: <CAA5qM4Bc5tW9QmeC7MKCO7yivxQrSfgVBwgyFLhipK9w=q7Scg@mail.gmail.com>
-Subject: Re: [PATCH] staging: comedi: das800: fix request_irq() warn
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Ian Abbott <abbotti@mev.co.uk>, devel@driverdev.osuosl.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="4ihC1VnjC4Wioed8"
+Content-Disposition: inline
+In-Reply-To: <20210317114810.GF3420@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for sharing those best practices, Dan.
-I was wondering if there is a spelling checker for git.
+
+--4ihC1VnjC4Wioed8
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+
+On 11:48 Wed 17 Mar 2021, Matthew Wilcox wrote:
+>On Wed, Mar 17, 2021 at 09:04:39AM +0530, Bhaskar Chowdhury wrote:
+>>
+>>
+>> s/condtion/condition/
+>
+>The usual subject line for this would be:
+>
+>mm/util: Fix typo
+>
+I am keeping this in mind. Thanks for the heads up!
+
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
+>>  mm/util.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/mm/util.c b/mm/util.c
+>> index 54870226cea6..f85da35b50eb 100644
+>> --- a/mm/util.c
+>> +++ b/mm/util.c
+>> @@ -775,7 +775,7 @@ int overcommit_policy_handler(struct ctl_table *table, int write, void *buffer,
+>>  	 * The deviation of sync_overcommit_as could be big with loose policy
+>>  	 * like OVERCOMMIT_ALWAYS/OVERCOMMIT_GUESS. When changing policy to
+>>  	 * strict OVERCOMMIT_NEVER, we need to reduce the deviation to comply
+>> -	 * with the strict "NEVER", and to avoid possible race condtion (even
+>> +	 * with the strict "NEVER", and to avoid possible race condition (even
+>>  	 * though user usually won't too frequently do the switching to policy
+>>  	 * OVERCOMMIT_NEVER), the switch is done in the following order:
+>>  	 *	1. changing the batch
+>> --
+>> 2.30.2
+>>
+>>
+
+--4ihC1VnjC4Wioed8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBShmwACgkQsjqdtxFL
+KRWYKwgAziEPleBaruW5akyyZYz7UgkGFJCjITUSuHFf8EPJB3/5U9AzINJy/kNU
+v48bvf8JVGsHuiAQwqgaiHxxa4XqerZ0pnCQADZkCZmmBhS0DPB21sZV3PUa+zSw
+ia2wRlqhZ9SJMkOvQKXOyKPTv9ShYVQNbfAqdn/mXkS6Z8lqtPkhNWrxgWZKkCUr
+NKG9nDkCqMi7aa+c3f7+00G80ifreoPl/BNBhlW+3tk/dbz7fsnzX0+FXYEsGA5I
+UoRMk0ilZ7m72WJlXljfvPGXqnG2JLMzT3RxsKFJ/mHdkoN71XOGJm9GDR7euVJy
+/3eEzxCy9J90tJi9dtqQkQUVW9bhCg==
+=z1GT
+-----END PGP SIGNATURE-----
+
+--4ihC1VnjC4Wioed8--
