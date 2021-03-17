@@ -2,155 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E722033F8A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59FB433F893
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:59:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233095AbhCQTA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
+        id S231394AbhCQS6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232207AbhCQS7w (ORCPT
+        with ESMTP id S229796AbhCQS6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:59:52 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C838C06175F;
-        Wed, 17 Mar 2021 11:59:52 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id j11so538429lfg.12;
-        Wed, 17 Mar 2021 11:59:52 -0700 (PDT)
+        Wed, 17 Mar 2021 14:58:13 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B56C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:58:12 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id y1so4497367ljm.10
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:58:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ipiAo/zFdoxmHMg8AWua2BzcAdGe0Ogzj6yRlLPPOUs=;
-        b=MBV2/gBuCp22XDC4MSSlbszycii4D8No5J2A00NeO5JKUedUUhV4zpkLgBdEdas1a2
-         YkdIFxAmIDKNTahutCnF5VTg5BImlyHK0pdqQ4Q0GXMOwGZpTr1UXcXrnHPf5DUs7AZX
-         waXojytC63LEku8cZI6y27ZJocD21wl7xOHhB3YFmyvIutTw87datXAsn7TjQuIQzntv
-         qqTbqLo2LIN8ouoyGwi2e8/+gyxSIIlFfJLJjqEiQPg7vSl6PaqM/xUbXm5GmRVrTQ2G
-         eWBbVvaL2ndcmyvP+0u3T/psk25gughRt0zoW6qtCd5xjT8AStjrc5nIpEQDmkYInfuB
-         1Kyg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4tkhXz7ciBpwwPumsE8QZTmyp8AevItredkFY7TSORQ=;
+        b=E5uNQ5HR2vm/LcV09nz3Jy9xCy4NevVtgcwEskfoCxV0rh3LoaOeF1rVJdHkhThgla
+         OTgXFFEnsj1kovBCJU2GLDgdQPDGlAFX5lP/lTIl3+y5CThXEWZO8+DoGHBwpH00/9eR
+         gee/VOKAIre91MnnvaNmSjynUKSJUVpFdRqzj1jVDxoQPbJH2CLaKvBERLTn+qjksv82
+         9jzbKUHOdrHW7hsA9xmNS2XQhTyGspCBiyA4QnJTkmiry8dZdtrNVWlKY0tBGh+BuG2A
+         ZHWj6NitZnMqBsRbgiCxqhMHWCEAfk6VgDLMPkvqgHE3r+ZcUw7i6YxPt8qPvjO8sRjb
+         /CJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ipiAo/zFdoxmHMg8AWua2BzcAdGe0Ogzj6yRlLPPOUs=;
-        b=PXfckNZD4r3duVVzs0jUD+rkiQekVpBaqFg1vKbIJqnCJfzJmPG+qU91J+3NdwIj7W
-         LYfKKinvdCcOU6e9MnyeLioR02zSPReZT5K0KmBCX+D5JT/ySbXy9lfWLNhBs1Kkp54w
-         Ku5TRdqFHqa8j4x7imM524ygyLicyIYP26frv4gp1AckzJ5GzRQ6DAUdqC2E94zo/8Ww
-         Du/Fdl12bUp/pNw+J56/xKEkmkEPKIi3mSH8Fk/X1QNsbXhjDgCc3AcJI1djPPMCXo4F
-         Q4eRrQRtqlRQ7lhMF61m+tUGji3TUzFoBeb3xgY3adfsuqTfqKXbW8akNQauZsk0+Ej/
-         Tfig==
-X-Gm-Message-State: AOAM530wycLKgWyaFtZefIHtWWEUJI8QCJvKAyeNiiS2M3YsLQ3qmm24
-        3DIWKnMGySiw729WOuWfzwo=
-X-Google-Smtp-Source: ABdhPJxXALK2JGzXVYySDferkWlXhCtMFtiONzK9B5d8m/64YAwpuNTpNgtzX+4FRNigIGo7/QEhQA==
-X-Received: by 2002:ac2:465c:: with SMTP id s28mr3108039lfo.135.1616007591063;
-        Wed, 17 Mar 2021 11:59:51 -0700 (PDT)
-Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id b28sm3442482lfo.219.2021.03.17.11.59.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 11:59:50 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH v16 2/2] drm/tegra: dc: Extend debug stats with total number of events
-Date:   Wed, 17 Mar 2021 21:57:34 +0300
-Message-Id: <20210317185734.14661-3-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210317185734.14661-1-digetx@gmail.com>
-References: <20210317185734.14661-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4tkhXz7ciBpwwPumsE8QZTmyp8AevItredkFY7TSORQ=;
+        b=oQglWqtnxaExfnbqqIuC44AW+iibSzURcdzhO4Gsd/d5IffrKNmcVvOuDF+BCRmWqD
+         vdZHupxM0jTU+bNpzm3gNHOFt88NCtkTWnzwMJQWm6ZS5HHSzKG94a8iTRzYGxJ7U17V
+         RgbAYSrlqXoHjLhp/o3jATB7FwbIllRxz9AZP4QAHvnOcmkylTlAzEa8OY+GoGT/nXG1
+         g8FAk8dBPmwJFguhCeqTtCLk4qLh/p12TB/xViVi9Hx1kZ+ywdcp8w7fKvCuDPcVkkpM
+         9vyAXiAYMow1CnuKTYwZjoixffYzWi0gKs9SOIFrinayhQZ2T1FP9Cg6a46LFaRxLXOx
+         HCuw==
+X-Gm-Message-State: AOAM5336LCjSCFfWkBVElrBIgxv/iXUlHf7zTCDtM5JL/lfFBTt/3ipC
+        8ee9BFP5Q1XOP77qIhG1DSOOiRNnS8Qi/ARLFft6Jw==
+X-Google-Smtp-Source: ABdhPJwaPhnsiLqqCDjn4YrthpikIfaOtSJjzyFR2YNIAhcPW965YmQXEKwVehsmEmAxjilmIDVwpz9hTiGhU6JLzsQ=
+X-Received: by 2002:a05:651c:1134:: with SMTP id e20mr3228605ljo.385.1616007490899;
+ Wed, 17 Mar 2021 11:58:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210317064148.GA55123@embeddedor> <CAG48ez2RDqKwx=umOHjo_1mYyNQgzvcP=KOw1HgSo4Prs_VQDw@mail.gmail.com>
+ <3bd8d009-2ad2-c24d-5c34-5970c52502de@embeddedor.com>
+In-Reply-To: <3bd8d009-2ad2-c24d-5c34-5970c52502de@embeddedor.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 17 Mar 2021 19:57:44 +0100
+Message-ID: <CAG48ez2jr_8MbY_sNXfwvs7WsF-5f9j=U4-66dTcgXd2msr39A@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] [PATCH][next] ixgbe: Fix out-of-bounds warning
+ in ixgbe_host_interface_command()
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        intel-wired-lan@lists.osuosl.org, linux-hardening@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's useful to know the total number of underflow events and currently
-the debug stats are getting reset each time CRTC is being disabled. Let's
-account the overall number of events that doesn't get a reset.
+On Wed, Mar 17, 2021 at 7:27 PM Gustavo A. R. Silva
+<gustavo@embeddedor.com> wrote:
+> On 3/17/21 12:11, Jann Horn wrote:
+> > On Wed, Mar 17, 2021 at 8:43 AM Gustavo A. R. Silva
+> > <gustavoars@kernel.org> wrote:
+> >> Fix the following out-of-bounds warning by replacing the one-element
+> >> array in an anonymous union with a pointer:
+> >>
+> >>   CC [M]  drivers/net/ethernet/intel/ixgbe/ixgbe_common.o
+> >> drivers/net/ethernet/intel/ixgbe/ixgbe_common.c: In function =E2=80=98=
+ixgbe_host_interface_command=E2=80=99:
+> >> drivers/net/ethernet/intel/ixgbe/ixgbe_common.c:3729:13: warning: arra=
+y subscript 1 is above array bounds of =E2=80=98u32[1]=E2=80=99 {aka =E2=80=
+=98unsigned int[1]=E2=80=99} [-Warray-bounds]
+> >>  3729 |   bp->u32arr[bi] =3D IXGBE_READ_REG_ARRAY(hw, IXGBE_FLEX_MNG, =
+bi);
+> >>       |   ~~~~~~~~~~^~~~
+> >> drivers/net/ethernet/intel/ixgbe/ixgbe_common.c:3682:7: note: while re=
+ferencing =E2=80=98u32arr=E2=80=99
+> >>  3682 |   u32 u32arr[1];
+> >>       |       ^~~~~~
+> >>
+> >> This helps with the ongoing efforts to globally enable -Warray-bounds.
+> >>
+> >> Notice that, the usual approach to fix these sorts of issues is to
+> >> replace the one-element array with a flexible-array member. However,
+> >> flexible arrays should not be used in unions. That, together with the
+> >> fact that the array notation is not being affected in any ways, is why
+> >> the pointer approach was chosen in this case.
+> >>
+> >> Link: https://github.com/KSPP/linux/issues/109
+> >> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> >> ---
+> >>  drivers/net/ethernet/intel/ixgbe/ixgbe_common.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c b/drivers=
+/net/ethernet/intel/ixgbe/ixgbe_common.c
+> >> index 62ddb452f862..bff3dc1af702 100644
+> >> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
+> >> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
+> >> @@ -3679,7 +3679,7 @@ s32 ixgbe_host_interface_command(struct ixgbe_hw=
+ *hw, void *buffer,
+> >>         u32 hdr_size =3D sizeof(struct ixgbe_hic_hdr);
+> >>         union {
+> >>                 struct ixgbe_hic_hdr hdr;
+> >> -               u32 u32arr[1];
+> >> +               u32 *u32arr;
+> >>         } *bp =3D buffer;
+> >>         u16 buf_len, dword_len;
+> >>         s32 status;
+> >
+> > This looks bogus. An array is inline, a pointer points elsewhere -
+> > they're not interchangeable.
+>
+> Yep; but in this case these are the only places in the code where _u32arr=
+_ is
+> being used:
+>
+> 3707         /* first pull in the header so we know the buffer length */
+> 3708         for (bi =3D 0; bi < dword_len; bi++) {
+> 3709                 bp->u32arr[bi] =3D IXGBE_READ_REG_ARRAY(hw, IXGBE_FL=
+EX_MNG, bi);
+> 3710                 le32_to_cpus(&bp->u32arr[bi]);
+> 3711         }
 
-Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/gpu/drm/tegra/dc.c | 10 ++++++++++
- drivers/gpu/drm/tegra/dc.h |  5 +++++
- 2 files changed, 15 insertions(+)
-
-diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
-index 96e3a27dc98d..0ecf7027085d 100644
---- a/drivers/gpu/drm/tegra/dc.c
-+++ b/drivers/gpu/drm/tegra/dc.c
-@@ -1551,6 +1551,11 @@ static int tegra_dc_show_stats(struct seq_file *s, void *data)
- 	seq_printf(s, "underflow: %lu\n", dc->stats.underflow);
- 	seq_printf(s, "overflow: %lu\n", dc->stats.overflow);
- 
-+	seq_printf(s, "frames total: %lu\n", dc->stats.frames_total);
-+	seq_printf(s, "vblank total: %lu\n", dc->stats.vblank_total);
-+	seq_printf(s, "underflow total: %lu\n", dc->stats.underflow_total);
-+	seq_printf(s, "overflow total: %lu\n", dc->stats.overflow_total);
-+
- 	return 0;
- }
- 
-@@ -2325,6 +2330,7 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
- 		/*
- 		dev_dbg(dc->dev, "%s(): frame end\n", __func__);
- 		*/
-+		dc->stats.frames_total++;
- 		dc->stats.frames++;
- 	}
- 
-@@ -2333,6 +2339,7 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
- 		dev_dbg(dc->dev, "%s(): vertical blank\n", __func__);
- 		*/
- 		drm_crtc_handle_vblank(&dc->base);
-+		dc->stats.vblank_total++;
- 		dc->stats.vblank++;
- 	}
- 
-@@ -2340,6 +2347,7 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
- 		/*
- 		dev_dbg(dc->dev, "%s(): underflow\n", __func__);
- 		*/
-+		dc->stats.underflow_total++;
- 		dc->stats.underflow++;
- 	}
- 
-@@ -2347,11 +2355,13 @@ static irqreturn_t tegra_dc_irq(int irq, void *data)
- 		/*
- 		dev_dbg(dc->dev, "%s(): overflow\n", __func__);
- 		*/
-+		dc->stats.overflow_total++;
- 		dc->stats.overflow++;
- 	}
- 
- 	if (status & HEAD_UF_INT) {
- 		dev_dbg_ratelimited(dc->dev, "%s(): head underflow\n", __func__);
-+		dc->stats.underflow_total++;
- 		dc->stats.underflow++;
- 	}
- 
-diff --git a/drivers/gpu/drm/tegra/dc.h b/drivers/gpu/drm/tegra/dc.h
-index 69d4cca2e58c..ad8d51a55a00 100644
---- a/drivers/gpu/drm/tegra/dc.h
-+++ b/drivers/gpu/drm/tegra/dc.h
-@@ -48,6 +48,11 @@ struct tegra_dc_stats {
- 	unsigned long vblank;
- 	unsigned long underflow;
- 	unsigned long overflow;
-+
-+	unsigned long frames_total;
-+	unsigned long vblank_total;
-+	unsigned long underflow_total;
-+	unsigned long overflow_total;
- };
- 
- struct tegra_windowgroup_soc {
--- 
-2.30.2
-
+So now line 3709 means: Read a pointer from bp->u32arr (the value
+being read from there is not actually a valid pointer), and write to
+that pointer at offset `bi`. I don't see how that line could execute
+without crashing.
