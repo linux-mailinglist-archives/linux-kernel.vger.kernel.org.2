@@ -2,100 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B2D33E92F
+	by mail.lfdr.de (Postfix) with ESMTP id 28FE333E92D
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhCQFlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 01:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52668 "EHLO
+        id S229875AbhCQFlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 01:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhCQFlH (ORCPT
+        with ESMTP id S229472AbhCQFlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 01:41:07 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71FFC06174A;
-        Tue, 16 Mar 2021 22:41:06 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id t18so383492iln.3;
-        Tue, 16 Mar 2021 22:41:06 -0700 (PDT)
+        Wed, 17 Mar 2021 01:41:00 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6FDC06175F;
+        Tue, 16 Mar 2021 22:40:59 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id s7so37771127qkg.4;
+        Tue, 16 Mar 2021 22:40:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SGZHipF/MPCKbdoq7rybqIUBE3aLJ87KG0g3vPENnro=;
-        b=q0NIRSrqBejVA6Xz4de/uFq+wjipdioEl0vwjHgU5ZRt1WJqLhaLpjMJ7hWhdFB7OT
-         pi9TMN5/lHAeVGg8mgQgmBrnaoC/oCicjxnD9ckkCYYnG3LfM2cU1+D6PRXzhReXIKuL
-         3j/F2P8PzStz/hMxzSOHjgfYM07HWxtOjxvU9sjBwLJhKfct6QQPUvjdlQxEmYwMabWX
-         8D+xD+Uu7uudcEcgxg5541CHykcTFDmc5C15R9lmEl1PvKNJ6yEA+gkIJa/xXTGdT/aN
-         f/gA+MC4DG3d9Y3g4ZsIiXKHg9s5iuRdU8f2U+U31eYhkzs00f/yRA5nRq8qkZrAcGt6
-         DGBQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CPSm56QZARIcAtzs4AWdlVXD+HaI2HudQhNYE/bwf0c=;
+        b=eNX3/KkKYyE3gNciNxHG2jxNlfRRTV+efiSSrXTJLEM9BLy+T+ER7gUr4lbPR8OQ0R
+         kz1iTGN6ch8aqMmCfJKh14wJlkFwDUIynaDTDRD6k1Nj/RQJh5kcusufWUXLk5zVnAwv
+         8ua6/rTO3DrDQz7lwNDLuD/e93zzpogPQE+qRZHL471WVAsthqat3wUYnrJyGHHCkLjM
+         jungnJ5I9JqlfAb00NcmdfSXlJVR/yRSh3MOrw4WSfPlS+QU+pwVI/N/sUggJAk4xFkD
+         xKCt2Di1rIp3seeJrwyS3fF7cOVBKASIm4rQW50jfxw0+qVnUNRn6dDN2w9kwqE1M6Rc
+         r3uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SGZHipF/MPCKbdoq7rybqIUBE3aLJ87KG0g3vPENnro=;
-        b=bqoKdtPTCN/lPLlYELLBytaKd9OoLCtZ8WDBbwYGg9xgzl4lJMpPR8fl1KV/2OZxpL
-         +ij125ZN4gpL8k3kt9CtSgIs/8WYV+6gu+BnsEP8yXRONaaRM8uQiknkW3r+RLHllMCD
-         vSOT/2fXLsmmScJ8CUzKfJyGjFVNGcYufpObBnYnoDGaSpTMhISezIjowcHSFaHGuT8e
-         tlSl/w/O9k37J6st7b2NDwWlfbUeTq4bCpf2T345v7l8Ki+xk141PpkI34oICm2ofA/Z
-         1GVX+3j3xVKcLskGDIdOV1SnBNubS8X4d7K/Nkq4QD2fWofUlPmDTb0oyg1P8RBWLRx/
-         cB5Q==
-X-Gm-Message-State: AOAM5335sbJPsFtWwZon6w/q/ya+RwNR67NR5jvw7VHxAIyDqOWGxPz+
-        5YvSyoS8pXizeZ5xdUjj7mvmMEGTW2OXFoXutWA=
-X-Google-Smtp-Source: ABdhPJwNbCO7ZAlDw9N/1tUJp9JEaj3Qoal3p3tafLHUEoAEjO+AqUMJeGkcrxbqOio8DSiPp/hnMknMbL8S/IW8gzM=
-X-Received: by 2002:a92:d7c7:: with SMTP id g7mr6068711ilq.305.1615959666331;
- Tue, 16 Mar 2021 22:41:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CPSm56QZARIcAtzs4AWdlVXD+HaI2HudQhNYE/bwf0c=;
+        b=gINIYZK2RYg15aCb2ZZFv8wy/GNHe1WI8MBt9imONGJvM0uH1ZlB92eZXNyr8+r/W8
+         3FS5SbqQyf3T8MC5O3NrClOZs6ZmCqQYRZsVSZXS5qe+gVKt7iNZOj9DeZFgv9oTYq5H
+         DysviNHjkLhY4u6OftgIpQxZwP04kRAMvk2+OjGfPDCGaUO4sphTXp3hs0AQdjPtjuo8
+         MP18T0MzmsdPXHURLJNNcx2INxOVWlFlMehIQXuFcc2vd3XAAYPXHK3HoqkgoLBh/Sz3
+         BWNfOYMhtUE7cFDi58GawlcB1hH84DByUdw07FIIop2nji/1NdapXXclacomsNURiBtr
+         +kLA==
+X-Gm-Message-State: AOAM532CIx6+9m2bFW2V0cndigkkk+V9VXLk1hcXv3DVQ/6iC6lFijuA
+        3BRQtyq2o8KcOyFilKbBJKQ=
+X-Google-Smtp-Source: ABdhPJx92GrckxUs3tyhYdiw3DknldvYvJ6QoejNd2Zc615/JMAkBxamhbbk2bzbYKYBbc0fPf+VLg==
+X-Received: by 2002:a37:274f:: with SMTP id n76mr2939792qkn.15.1615959658716;
+        Tue, 16 Mar 2021 22:40:58 -0700 (PDT)
+Received: from localhost ([76.73.146.210])
+        by smtp.gmail.com with ESMTPSA id z2sm17499506qkg.22.2021.03.16.22.40.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 22:40:58 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 22:40:57 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH 04/13] lib: introduce BITS_{FIRST,LAST} macro
+Message-ID: <20210317054057.GC2114775@yury-ThinkPad>
+References: <20210316015424.1999082-1-yury.norov@gmail.com>
+ <20210316015424.1999082-5-yury.norov@gmail.com>
+ <8021faab-e592-9587-329b-817ae007b89a@rasmusvillemoes.dk>
+ <YFCZtUuMYVNeNlUO@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <1615886833-71688-1-git-send-email-hkelam@marvell.com>
- <1615886833-71688-4-git-send-email-hkelam@marvell.com> <20210316100432.666d9bd5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CALHRZupARnUK5PgRjv9-TmFd9mNUg0Ms55zZEC2VuDcaEBZYLQ@mail.gmail.com> <20210316132709.6b55bcf4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210316132709.6b55bcf4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   sundeep subbaraya <sundeep.lkml@gmail.com>
-Date:   Wed, 17 Mar 2021 11:10:55 +0530
-Message-ID: <CALHRZup50=0yEhEmn8dOPuyNbrimocd6L5b_hkZTB-fRDM5+UA@mail.gmail.com>
-Subject: Re: [net PATCH 3/9] octeontx2-af: Do not allocate memory for devlink private
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Hariprasad Kelam <hkelam@marvell.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        lcherian@marvell.com, Geetha sowjanya <gakula@marvell.com>,
-        jerinj@marvell.com, Subbaraya Sundeep <sbhatta@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFCZtUuMYVNeNlUO@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 1:57 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Tue, 16 Mar 2021 23:33:40 +0530 sundeep subbaraya wrote:
-> > On Tue, Mar 16, 2021 at 10:53 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> > >
-> > > On Tue, 16 Mar 2021 14:57:07 +0530 Hariprasad Kelam wrote:
-> > > > From: Subbaraya Sundeep <sbhatta@marvell.com>
-> > > >
-> > > > Memory for driver private structure rvu_devlink is
-> > > > also allocated during devlink_alloc. Hence use
-> > > > the allocated memory by devlink_alloc and access it
-> > > > by devlink_priv call.
-> > > >
-> > > > Fixes: fae06da4("octeontx2-af: Add devlink suppoort to af driver")
-> > > > Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
-> > > > Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-> > > > Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
-> > >
-> > > Does it fix any bug? Looks like a coding improvement.
-> >
-> > Without this we cannot fetch our private struct 'rvu_devlink'  from any
-> > of the functions in devlink_ops which may get added in future.
->
-> "which may get added in future" does not sound like it's fixing
-> an existing problem to me :(
->
-> If you have particular case where the existing setup is problematic
-> please describe it in more detail, or mention what other fix depends
-> on this patch. Otherwise sending this one patch for net-next would
-> be better IMHO.
+On Tue, Mar 16, 2021 at 01:42:45PM +0200, Andy Shevchenko wrote:
+> On Tue, Mar 16, 2021 at 09:35:35AM +0100, Rasmus Villemoes wrote:
+> > On 16/03/2021 02.54, Yury Norov wrote:
+> > > BITMAP_{LAST,FIRST}_WORD_MASK() in linux/bitmap.h duplicates the
+> > > functionality of GENMASK(). The scope of BITMAP* macros is wider
+> > > than just bitmaps. This patch defines 4 new macros: BITS_FIRST(),
+> > > BITS_LAST(), BITS_FIRST_MASK() and BITS_LAST_MASK() in linux/bits.h
+> > > on top of GENMASK() and replaces BITMAP_{LAST,FIRST}_WORD_MASK()
+> > > to avoid duplication and increase the scope of the macros.
+> > > 
+> > > This change doesn't affect code generation. On ARM64:
+> > > scripts/bloat-o-meter vmlinux.before vmlinux
+> > > add/remove: 1/2 grow/shrink: 2/0 up/down: 17/-16 (1)
+> > > Function                                     old     new   delta
+> > > ethtool_get_drvinfo                          900     908      +8
+> > > e843419@0cf2_0001309d_7f0                      -       8      +8
+> > > vermagic                                      48      49      +1
+> > > e843419@0d45_000138bb_f68                      8       -      -8
+> > > e843419@0cc9_00012bce_198c                     8       -      -8
+> > 
+> > [what on earth are those weird symbols?]
+> > 
+> > 
+> > > diff --git a/include/linux/bits.h b/include/linux/bits.h
+> > > index 7f475d59a097..8c191c29506e 100644
+> > > --- a/include/linux/bits.h
+> > > +++ b/include/linux/bits.h
+> > > @@ -37,6 +37,12 @@
+> > >  #define GENMASK(h, l) \
+> > >  	(GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+> > >  
+> > > +#define BITS_FIRST(nr)		GENMASK((nr), 0)
+> > > +#define BITS_LAST(nr)		GENMASK(BITS_PER_LONG - 1, (nr))
+> > > +
+> > > +#define BITS_FIRST_MASK(nr)	BITS_FIRST((nr) % BITS_PER_LONG)
+> > > +#define BITS_LAST_MASK(nr)	BITS_LAST((nr) % BITS_PER_LONG)
+> > 
+> > I don't think it's a good idea to propagate the unusual closed-range
+> > semantics of GENMASK to those wrappers. Almost all C and kernel code
+> > uses the 'inclusive lower bound, exclusive upper bound', and I'd expect
+> > BITS_FIRST(5) to result in a word with five bits set, not six. So I
+> > think these changes as-is make the code much harder to read and understand.
+> > 
+> > Regardless, please add some comments on the valid input ranges to the
+> > macros, whether that ends up being 0 <= nr < BITS_PER_LONG or 0 < nr <=
+> > BITS_PER_LONG or whatnot.
+> > 
+> > It would also be much easier to review if you just redefined the
+> > BITMAP_LAST_WORD_MASK macros etc. in terms of these new things, so you
+> > wouldn't have to do a lot of mechanical changes at the same time as
+> > introducing the new ones - especially when those mechanical changes
+> > involve adding a "minus 1" everywhere.
+> 
+> I tend to agree with Rasmus here.
 
-Sure will send this one patch to net-next.
+OK. All this plus terrible GENMASK(high, low) design, when high goes
+first, makes me feel like we need to deprecate GENMASK and propose a
+new interface.
 
-Thanks,
-Sundeep
+What do you think about this:
+BITS_FIRST(bitnum)      -> [0, bitnum)
+BITS_LAST(bitnum)       -> [bitnum, BITS_PER_LONG)
+BITS_RANGE(begin, end)  -> [begin, end)
+
+We can pick BITS_{LAST,FIRST} implementation from existing BITMAP_*_WORD_MASK
+analogues, and make the BITS_RANGE like:
+        #define BITS_RANGE(begin, end) BITS_FIRST(end) & BITS_LAST(begin)
+
+Regarding BITMAP_*_WORD_MASK, I can save them in bitmap.h as aliases
+to BITS_{LAST,FIRST} to avoid massive renaming. (Should I?)
+
+Would this all work for you?
