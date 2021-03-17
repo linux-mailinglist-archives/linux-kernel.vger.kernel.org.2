@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD8533F488
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E244F33F491
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:51:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232676AbhCQPu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 11:50:27 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51116 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232438AbhCQPtB (ORCPT
+        id S232137AbhCQPvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 11:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232499AbhCQPu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 11:49:01 -0400
-Date:   Wed, 17 Mar 2021 15:49:00 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615996140;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T1s4ENeHjnbdqX43k5NMmOi0g3JLcaBfYzezHDfXW/I=;
-        b=x3E2gxEyRiUIolLOOxLIrK8LNhrE2Df3fr75oxWd+pRTUGYEfR7nU72ZIxFaFxBoLey6iX
-        u+2Ib2+7yxLfRt66pzRm5/gZOZHnaQ9KpqST160XK1pq51UaNkYyzzpE0BEN37kp7Ck6Je
-        oibdhhqXNhF22Caj/cQRDQn4o8VxPVpZPGQf0VaTWhnClB4MZENrJr/9zl8tJ47rdos+Za
-        mv+UNljD5WtnEKWN4snoXHVlYGUi4uPcWBqMiMz9g98yHG/Jxlak9c++/Zr08K80ebmeHR
-        Aif9NZg2z2O+y63Aeezb6OjwjZ4LcsRdYxfYETe0FtSYMKaNl+sk6Z2w0qJ0xg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615996140;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T1s4ENeHjnbdqX43k5NMmOi0g3JLcaBfYzezHDfXW/I=;
-        b=08WBkS6vAsB4JTZNL7bPA1OxHy7diM3ss6PXput7+t0nAnSDw6LA+77v/GGRP6bKV9EAeS
-        wqU8KuuzCqX3vxBg==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] tasklets: Replace barrier() with cpu_relax() in
- tasklet_unlock_wait()
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20210309084241.249343366@linutronix.de>
-References: <20210309084241.249343366@linutronix.de>
+        Wed, 17 Mar 2021 11:50:58 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12309C061763;
+        Wed, 17 Mar 2021 08:50:58 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso2232723otq.3;
+        Wed, 17 Mar 2021 08:50:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=19vFCxyc/d/BylNt+OTc+iBLZijRIvHRbJoemdahdg4=;
+        b=S8DN3uJ6pmkH0i5ozpjnJ+QTjbdOrmWUwvE7aKg2LQPqyO53I6+LGAlPpc/kHC1IAH
+         TVinDGGj3kQGAkL51yk6MWLyFbZIijocroZSAHrAe8vrxU3Urf7OngHT6XnbDsVKI5rb
+         rfDsJLrYpu9+tBROF7WvELu4BC4xejZ3aQNq44RMUJ2uZTCBQbYnwJecd7fZqJu0hsbX
+         H+pUu7bbv5jgI3NmD3yAyfncZhd0VcS2zrfXEru2+d9ppNXKs4mqy54xlnjPKgyekIZ0
+         O1nsACck0qBLrZALFrfpHAFUAKaHjv4Xal+bdWGlaCRhZVbpsySygnFnn4HVqtrPvQxC
+         Z+/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=19vFCxyc/d/BylNt+OTc+iBLZijRIvHRbJoemdahdg4=;
+        b=uUlBtZIMBl64Fu2a9ZUn6a92vmWNz3iHr892blzitlmEqlgjt1GrPelKtqpEv8gVGD
+         wKA/c9ev68kSjld0znpvBPYiVlMTq4g9i5ceTzfoG5IHRZGpfq+ZMAH/HfqMKDHsLFuw
+         hdO9WzlFXDrxPg5BScXxHZoapI2CTFz0pye+82kl6rLQIF0uYRgL+M8JMRq3aoOGpUXn
+         15YlGXnvwE+uzF2DZwnLHvXt2EEUJ27OqPpSnTIB2W8tumNPm07RGNeZPmgZPNErOUnj
+         v9fU59tz/IMsEvMriPkFKzXgEu6V7NxEvFRpCuLel6iPpV+CffDVa08DfqYziF7P/aBo
+         v7Tw==
+X-Gm-Message-State: AOAM531Jc8FzmnaDngxQBFm1iBGuo6mTxETcdZV81yehoCPrH4ZFzy+Q
+        0SkgVZD2BN9Hm0e2EbW5+7tWS8s/X80=
+X-Google-Smtp-Source: ABdhPJwqC3u1xdxDQE1twSj2SMvvQWTkxjpoX9eOQGEefgoyewW5Z3C2iU/DmmwgCAghIeehrP9NUQ==
+X-Received: by 2002:a9d:19e8:: with SMTP id k95mr3962633otk.37.1615996257286;
+        Wed, 17 Mar 2021 08:50:57 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.56])
+        by smtp.googlemail.com with ESMTPSA id y143sm7881623oie.50.2021.03.17.08.50.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 08:50:56 -0700 (PDT)
+Subject: Re: [PATCH] net: ipv4: Fixed some styling issues.
+To:     Anish Udupa <udupa.anish@gmail.com>, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CAPDGunOVtW5mZWXwEjtT3qWXNG4WgkdEa3jV79QKVHOmjHU-9Q@mail.gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <824c82b7-ea4d-9b64-9f5a-61577c1d7584@gmail.com>
+Date:   Wed, 17 Mar 2021 09:50:55 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-Message-ID: <161599614013.398.5397350064896985635.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CAPDGunOVtW5mZWXwEjtT3qWXNG4WgkdEa3jV79QKVHOmjHU-9Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+On 3/17/21 9:07 AM, Anish Udupa wrote:
+> Ran checkpatch and found these warnings. Fixed some of them in this patch.
+> a) Added a space before '='.
+> b) Removed the space before the tab.
+> 
+> Signed-off-by: Anish Udupa H <udupa.anish@gmail.com>
+> ---
+>  net/ipv4/route.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+> index 02d81d79deeb..0b9024584fde 100644
+> --- a/net/ipv4/route.c
+> +++ b/net/ipv4/route.c
+> @@ -2236,7 +2236,7 @@ out: return err;
+>   if (!rth)
+>   goto e_nobufs;
+> 
+> - rth->dst.output= ip_rt_bug;
+> + rth->dst.output = ip_rt_bug;
+>  #ifdef CONFIG_IP_ROUTE_CLASSID
+>   rth->dst.tclassid = itag;
+>  #endif
+> @@ -2244,9 +2244,9 @@ out: return err;
+> 
+>   RT_CACHE_STAT_INC(in_slow_tot);
+>   if (res->type == RTN_UNREACHABLE) {
+> - rth->dst.input= ip_error;
+> - rth->dst.error= -err;
+> - rth->rt_flags &= ~RTCF_LOCAL;
+> + rth->dst.input = ip_error;
+> + rth->dst.error = -err;
+> + rth->rt_flags &= ~RTCF_LOCAL;
+>   }
+> 
+>   if (do_cache) {
+> 
 
-Commit-ID:     d2da74d1278a1b51ef18beafa9da770f0db1c617
-Gitweb:        https://git.kernel.org/tip/d2da74d1278a1b51ef18beafa9da770f0db1c617
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 09 Mar 2021 09:42:04 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 17 Mar 2021 16:33:51 +01:00
-
-tasklets: Replace barrier() with cpu_relax() in tasklet_unlock_wait()
-
-A barrier() in a tight loop which waits for something to happen on a remote
-CPU is a pointless exercise. Replace it with cpu_relax() which allows HT
-siblings to make progress.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210309084241.249343366@linutronix.de
-
----
- include/linux/interrupt.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index 2b98156..d689fd7 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -672,7 +672,8 @@ static inline void tasklet_unlock(struct tasklet_struct *t)
- 
- static inline void tasklet_unlock_wait(struct tasklet_struct *t)
- {
--	while (test_bit(TASKLET_STATE_RUN, &(t)->state)) { barrier(); }
-+	while (test_bit(TASKLET_STATE_RUN, &t->state))
-+		cpu_relax();
- }
- #else
- #define tasklet_trylock(t) 1
+your patch seems to have lost one or more tabs at the beginning of each
+line.
