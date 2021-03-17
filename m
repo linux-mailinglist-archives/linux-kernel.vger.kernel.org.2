@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491A033F5E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:46:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC79F33F5EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:46:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232725AbhCQQph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 12:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56280 "EHLO
+        id S232674AbhCQQpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 12:45:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232630AbhCQQpS (ORCPT
+        with ESMTP id S232642AbhCQQpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Mar 2021 12:45:18 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00C2C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:45:17 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id dx17so3701975ejb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:45:17 -0700 (PDT)
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76288C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:45:18 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id h10so3060324edt.13
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:45:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2RKdLF2sp2nWSuacDzuOWi0sXk9JfjBGvDHGz4cIafk=;
-        b=k+ThYHIuc2NjaaoljJGSTYAoaeumkGrLMqub4uoq2IJOu9R6RS6ItFvAfsa9qHTzaM
-         dmoQUa8W2Vi/BVV1WnZ8tfQGvaDN4N8dfCmVz4sPRHMiafkcczuI3fHJmMu5rNFqo5qD
-         r/lPPo2VOIKgTc/4+CPvXYKkjYrcA/dpIP6+U=
+        bh=fA/68we/kMTkpnR4AV+szAmiaqsAOldil+kVUGgOjPk=;
+        b=ACrBLyE45qWrT36JGCDQtAW5B4J7WvzPgUK05OiqZsFebHLAGq1PYx9yRpSJ+a5is8
+         U6Y0bnResftXQNuiKoga6lM35wXJdOnXOhoMxzieghxNB5/DypnXWlekR2Y9dVt0lXsZ
+         bfQh7LbxGT76zH8kM5o3/QjK9M20vBGhdWnkk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2RKdLF2sp2nWSuacDzuOWi0sXk9JfjBGvDHGz4cIafk=;
-        b=EPF5bOr9fKFl5/sgNS2GC9BvrCzVnJ8SMe7UOq1P9xGyYzc3bZnxgjfIArjULiwni1
-         p4J3VmCXRFGUF+1uTNNLEWeNVQUbHEAt0FxfAF6xBDQzXAPYqNELlNQsSvWp9y7+Ly+0
-         ig6XGJ8loLybj0NmrpiZe/XqWlLHTAf909TwHdkdVWKh51SDS056brLNmMOWMy5W9tbC
-         X3C8PHKxgQDF2Cq8mdY38f91b1QWmLie5dbkEojr8Mn/g9WddjN/BdiAAFh2IvkGDXy6
-         fh7xtpVdphsslXiOXMNjPFKvZhOM/+k0vSxgDxXR+L0ZRuWgA35BbqC7U41BZsNy+DOt
-         OE6A==
-X-Gm-Message-State: AOAM532Uhn6CUZ6d/7DlxgDOvfcD6xDPa25Faweo3A7Pghrr6jcrrzDC
-        vftaGdDYXRzytopvKCKXrCN+Wg==
-X-Google-Smtp-Source: ABdhPJxuo4TqX+Yg1mQ91PFK4dVRStVJ2t6QskXUJYwNt3RwiDJfOQRgc2hpwcP2MOVLPJoil6lMIw==
-X-Received: by 2002:a17:906:22d2:: with SMTP id q18mr36389148eja.437.1615999516492;
-        Wed, 17 Mar 2021 09:45:16 -0700 (PDT)
+        bh=fA/68we/kMTkpnR4AV+szAmiaqsAOldil+kVUGgOjPk=;
+        b=TNz0l4i7/CxIM2+/dNtFuZn0ZfTyoFAe6k8QxmZI4cWPVGKVoc7WlH2rsXdOk2rc7D
+         knYFP3dIOhho5VNYbHGhlzOHZtcMZ6DDbFcTDoXplXqErhl6y4hNztOu4ilDynF4sqdl
+         iWTh5fQGUChEKVJDgMKHNM8mDRM4C+Hn6JjAoODITHaT75WuC4vSIn3x4giY10IlR2Rl
+         pZdavg2h/4Y1WKF3PiK7c+pM+Efmd03qSol0KBf9zVZ6SrBW99DHYu1oJ7nMT+YE7M4O
+         TQtsemlYhNUCs+ldmPp4dz/UcLSOsX/8PlgZUJTyed2RerjqKNTBNb8LImxq2NY5ql8J
+         J3TA==
+X-Gm-Message-State: AOAM530XSGIUEoHyObGqPkMxUvs2OY/W+nFGBgS4ErjPOtU43M1F7SlT
+        o2wnz2jJ/g9kpMfYgvBwv19EIA==
+X-Google-Smtp-Source: ABdhPJzzRFU4N/D1uk69rbftkzPmtne0jexST67hsnCQIyylvEhXLIX8IpVRkn+ieBP8eKcrnphySA==
+X-Received: by 2002:aa7:cf17:: with SMTP id a23mr44276595edy.30.1615999517240;
+        Wed, 17 Mar 2021 09:45:17 -0700 (PDT)
 Received: from alco.lan ([80.71.134.83])
         by smtp.gmail.com with ESMTPSA id hy25sm12088128ejc.119.2021.03.17.09.45.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
@@ -52,10 +52,11 @@ To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         tfiga@chromium.org
-Cc:     Ricardo Ribalda <ribalda@chromium.org>, stable@vger.kernel.org
-Subject: [PATCH v6 04/17] media: v4l2-ioctl: check_ext_ctrls: Fix V4L2_CTRL_WHICH_DEF_VAL
-Date:   Wed, 17 Mar 2021 17:44:58 +0100
-Message-Id: <20210317164511.39967-5-ribalda@chromium.org>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Mike Isely <isely@pobox.com>
+Subject: [PATCH v6 05/17] media: pvrusb2: Do not check for V4L2_CTRL_WHICH_DEF_VAL
+Date:   Wed, 17 Mar 2021 17:44:59 +0100
+Message-Id: <20210317164511.39967-6-ribalda@chromium.org>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 In-Reply-To: <20210317164511.39967-1-ribalda@chromium.org>
 References: <20210317164511.39967-1-ribalda@chromium.org>
@@ -65,35 +66,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers that do not use the ctrl-framework use this function instead.
+The framework already checks for us if V4L2_CTRL_WHICH_DEF_VAL is
+written.
 
-Default value cannot be changed, return EINVAL as soon as possible.
-
-Cc: stable@vger.kernel.org
-Fixes: 6fa6f831f095 ("media: v4l2-ctrls: add core request support")
+Cc: Mike Isely <isely@pobox.com>
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/v4l2-core/v4l2-ioctl.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/media/usb/pvrusb2/pvrusb2-v4l2.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 528eb5f420f6..ccd21b4d9c72 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -929,6 +929,13 @@ static bool check_ext_ctrls(struct v4l2_ext_controls *c, unsigned long ioctl)
- 			return false;
- 		break;
- 	case V4L2_CTRL_WHICH_DEF_VAL:
-+		/* Default value cannot be changed */
-+		if (ioctl == VIDIOC_S_EXT_CTRLS ||
-+		    ioctl == VIDIOC_TRY_EXT_CTRLS) {
-+			c->error_idx = c->count;
-+			return false;
-+		}
-+		return true;
- 	case V4L2_CTRL_WHICH_CUR_VAL:
- 		return true;
- 	case V4L2_CTRL_WHICH_REQUEST_VAL:
+diff --git a/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c b/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
+index 9657c1883311..c04ab7258d64 100644
+--- a/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
++++ b/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
+@@ -640,10 +640,6 @@ static int pvr2_s_ext_ctrls(struct file *file, void *priv,
+ 	unsigned int idx;
+ 	int ret;
+ 
+-	/* Default value cannot be changed */
+-	if (ctls->which == V4L2_CTRL_WHICH_DEF_VAL)
+-		return -EINVAL;
+-
+ 	ret = 0;
+ 	for (idx = 0; idx < ctls->count; idx++) {
+ 		ctrl = ctls->controls + idx;
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
