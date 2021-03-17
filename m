@@ -2,109 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8063733F60E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD5A33F615
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232658AbhCQQvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 12:51:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232614AbhCQQvD (ORCPT
+        id S232558AbhCQQxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 12:53:03 -0400
+Received: from mail-40133.protonmail.ch ([185.70.40.133]:29539 "EHLO
+        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232468AbhCQQwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 12:51:03 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C5CCC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:51:03 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id s7so1069424plg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:51:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=f5B8RIbfm5J4UJRtgY7+A871o4pdaxUTzMiKm7U0AjE=;
-        b=oFEUYdn0KTCCVCg+/s7305+A+2Q2gNLYfCq3g/fr8SsAJVDKnzA57x0RLPqFVBxwyR
-         hKQ0TSaIbgzJ/3805DpmUyQoIS/MTJTclHQSKLp4QRFLbpoHpafiXJh6ggfQUbZHoH3x
-         yfmVlrnSqS8db4n7/+LfwH+yKnI4THv/j7ZXbTkeWzNQCJkTwXb7VPOgLMUbtP3SQ/ab
-         59aWoCdWtQ53azSWCXdlBudAbV0nMZMYtEo8996jP/D5aKvsBsmX1r+LCUFueWyeImVn
-         RmlOKSnyp88A3b9z9SyT+c49HtNIJvSURpspy514vYpPYtTEI4vWmG83Q7d7NhBXFTAh
-         tsTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f5B8RIbfm5J4UJRtgY7+A871o4pdaxUTzMiKm7U0AjE=;
-        b=ctnKM98x68pjzQTj4Jbeks7H0NrkcMubjLYXYpFVqXUGgxPaCYQVLztQ62+I8dOTbj
-         W5NFE2Seiaro32vl8uu1o5lB0kOG8HYispRCDh4K4zKKoen7YIVeM8Woc3MHA5ltXgNA
-         mZSbOBWVQKXL1eorsxqUmm4dygYjLlpOt26RQfeaWjgOiKmJXl3cB7A76Gx9UJq9QgHl
-         ssHM8H7RJaxo/DbdK7NxRTVrCoLdyEzdVSEaeipHi9XTpQB+dEzPSeDmQGHvJLvck/wn
-         IMFpxAKe22Fbc0lx5CLrfl8uyuMofYgkcYw0STYhVm5hE00BgSP/AX2//Eqq5u6WwJxW
-         NeIg==
-X-Gm-Message-State: AOAM5304S7HfR2ZLDsJXL4o4dgxosuzOG6Sig0F+IDATR7CO+MTBQHdK
-        226/scfM+UK+LjjDbIXkNoQpFw==
-X-Google-Smtp-Source: ABdhPJwiAOSb88M3YGUbaEutvTwmBeiEwT6tDQYJ21cceXll22Jz5fIzzKNhUo9i4XRuBKiYmOYkIg==
-X-Received: by 2002:a17:902:7203:b029:e6:a8b1:8d37 with SMTP id ba3-20020a1709027203b02900e6a8b18d37mr5367131plb.44.1615999862582;
-        Wed, 17 Mar 2021 09:51:02 -0700 (PDT)
-Received: from google.com ([2620:15c:f:10:e113:95c2:2d1:e304])
-        by smtp.gmail.com with ESMTPSA id y2sm18524970pgf.7.2021.03.17.09.51.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 09:51:02 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 09:50:55 -0700
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>,
-        Yuan Yao <yaoyuan0329os@gmail.com>
-Subject: Re: [PATCH 2/4] KVM: nVMX: Handle dynamic MSR intercept toggling
-Message-ID: <YFIzbz6S5/vyvBJz@google.com>
-References: <20210316184436.2544875-1-seanjc@google.com>
- <20210316184436.2544875-3-seanjc@google.com>
- <66bc75f6-58c5-c67f-f268-220d371022a2@redhat.com>
+        Wed, 17 Mar 2021 12:52:35 -0400
+Date:   Wed, 17 Mar 2021 16:52:32 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1615999953; bh=oM4XbW1q5zcLndEfkaigVcrh9QJicN69T4/u/Yrv6U8=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=iteX186mLmhS6elYvml44AmeEWYOGvi5Jt8tM+3z7X2+504fS+dlDW4xiCA7pzve7
+         Bcn8gJ/jImG0946q5irYxwYXsSR7r3fbV0Oi/r1KC/hsOpqKXxMJiH9NZZHjBe1y4s
+         n7ALz8cN/JOftpv3ZA4kwm6N2C0gtxwqor1UC6tlrs/cV6oH4ltkClE0TgTFfW3JSA
+         inBauo0r8vPB010z8K1rMhl9JTwg8riSkFHpg7zoD+EqTFOafEGNImufGdqEdNq8Qq
+         OMCw1NM3dRhDJq1ZeYYlsO/8QJ3BNbPwo8Y3EjID6uLABrh7/B0fdb9Oywfa7C+gtQ
+         EBJiaSTzP+MoA==
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH 0/7 v4] Introduce a bulk order-0 page allocator with two in-tree users
+Message-ID: <20210317165220.808975-1-alobakin@pm.me>
+In-Reply-To: <20210317173844.6b10f879@carbon>
+References: <20210312154331.32229-1-mgorman@techsingularity.net> <20210317163055.800210-1-alobakin@pm.me> <20210317173844.6b10f879@carbon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <66bc75f6-58c5-c67f-f268-220d371022a2@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021, Paolo Bonzini wrote:
-> On 16/03/21 19:44, Sean Christopherson wrote:
-> > Always check vmcs01's MSR bitmap when merging L0 and L1 bitmaps for L2,
-> > and always update the relevant bits in vmcs02.  This fixes two distinct,
-> > but intertwined bugs related to dynamic MSR bitmap modifications.
-> > 
-> > The first issue is that KVM fails to enable MSR interception in vmcs02
-> > for the FS/GS base MSRs if L1 first runs L2 with interception disabled,
-> > and later enables interception.
-> > 
-> > The second issue is that KVM fails to honor userspace MSR filtering when
-> > preparing vmcs02.
-> > 
-> > Fix both issues simultaneous as fixing only one of the issues (doesn't
-> > matter which) would create a mess that no one should have to bisect.
-> > Fixing only the first bug would exacerbate the MSR filtering issue as
-> > userspace would see inconsistent behavior depending on the whims of L1.
-> > Fixing only the second bug (MSR filtering) effectively requires fixing
-> > the first, as the nVMX code only knows how to transition vmcs02's
-> > bitmap from 1->0.
-> > 
-> > Move the various accessor/mutators buried in vmx.c into vmx.h so that
-> > they can be shared by the nested code.
-> > 
-> > Fixes: 1a155254ff93 ("KVM: x86: Introduce MSR filtering")
-> > Fixes: d69129b4e46a ("KVM: nVMX: Disable intercept for FS/GS base MSRs in vmcs02 when possible")
-> > Cc: stable@vger.kernel.org
-> > Cc: Alexander Graf <graf@amazon.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
+From: Jesper Dangaard Brouer <brouer@redhat.com>
+Date: Wed, 17 Mar 2021 17:38:44 +0100
 
-...
+> On Wed, 17 Mar 2021 16:31:07 +0000
+> Alexander Lobakin <alobakin@pm.me> wrote:
+>
+> > From: Mel Gorman <mgorman@techsingularity.net>
+> > Date: Fri, 12 Mar 2021 15:43:24 +0000
+> >
+> > Hi there,
+> >
+> > > This series is based on top of Matthew Wilcox's series "Rationalise
+> > > __alloc_pages wrapper" and does not apply to 5.12-rc2. If you want to
+> > > test and are not using Andrew's tree as a baseline, I suggest using t=
+he
+> > > following git tree
+> > >
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-r=
+ebase-v4r2
+> >
+> > I gave this series a go on my setup, it showed a bump of 10 Mbps on
+> > UDP forwarding, but dropped TCP forwarding by almost 50 Mbps.
+> >
+> > (4 core 1.2GHz MIPS32 R2, page size of 16 Kb, Page Pool order-0
+> > allocations with MTU of 1508 bytes, linear frames via build_skb(),
+> > GRO + TSO/USO)
+>
+> What NIC driver is this?
 
-> Feel free to squash patch 3 in this one or reorder it before; it makes sense
-> to make them macros when you go from 4 to 6 functions.
+Ah, forgot to mention. It's a WIP driver, not yet mainlined.
+The NIC itself is basically on-SoC 1G chip.
 
-I put them in a separate patch so that backporting the fix for the older FS/GS
-nVMX bug was at least feasible.  Not worth it?
+> > I didn't have time to drill into the code, so for now can't provide
+> > any additional details. You can request anything you need though and
+> > I'll try to find a window to collect it.
+> >
+> > > Note to Chuck and Jesper -- as this is a cross-subsystem series, you =
+may
+> > > want to send the sunrpc and page_pool pre-requisites (patches 4 and 6=
+)
+> > > directly to the subsystem maintainers. While sunrpc is low-risk, I'm
+> > > vaguely aware that there are other prototype series on netdev that af=
+fect
+> > > page_pool. The conflict should be obvious in linux-next.
+>
+> --
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+
+Al
+
