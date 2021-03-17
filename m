@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A422E33F954
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DA433F955
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:32:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233386AbhCQTbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:31:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35872 "EHLO
+        id S233395AbhCQTby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233329AbhCQTb2 (ORCPT
+        with ESMTP id S233286AbhCQTb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:31:28 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4771BC06174A;
-        Wed, 17 Mar 2021 12:31:28 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id j11so680668lfg.12;
-        Wed, 17 Mar 2021 12:31:28 -0700 (PDT)
+        Wed, 17 Mar 2021 15:31:29 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D661C06174A;
+        Wed, 17 Mar 2021 12:31:29 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id q29so676391lfb.4;
+        Wed, 17 Mar 2021 12:31:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GF3DcHHUOLlttQcVoG9eeaZ3qz6fRbPGS3Wp+pKETEc=;
-        b=ZxX5+fvdVHMpjRfj4sIcBAa5A8fhI4Ibv/wFHs5CQ3T/MJmidP6ZBVKbVCYXmha4f/
-         rnKNPeo0ot7BxnWJsGe/CHz+cdUKQjLr8CogAUHE4AC+6dSWQlX+u9BR8Sww+B6Y/ypf
-         SjDBO+81/KxLIr7CpU6mwxe9D+jAYBrX/WjHYNAh8mLwvonS8T0HTGCOhZhpJShD42B0
-         hOVL/o8jjvODY+Sf7a0vQUI25ykC2LLzOxie6JwRM6eB7Suu12HwUdPATVW3mPpWG8L/
-         IOfzpABIubTH/1pIBfYXSqwP1aRX84SaWYPMmKbZ230CnIl6lVmgnwFOrOqNWi1VC9Zv
-         bATA==
+        bh=YVatthKifS/0drZo94nSguqAF/BwAr5rR9av6MBvQSU=;
+        b=Rjchj7GVMMSagk8sI1MJ4u2Ij0YECxZ1g3pcfjNfzMb17nxeSxXXCJrO4C4Y6Cis2D
+         467MLRU/9Jlvag8JpMG8QsV7zDqAJh9yBmpW5pR6iV+vUi9iiusS5ye5f0bifI7DMX9Z
+         K4dxZf10QJtEGEi060Ug8y4DBX5EZttOp0sRGOGbtYWPzgWF4qnU3CEfpBgne1gRctut
+         sdASwY+jNPPUjWrm+l1jSc+HpjkdNxTxbOIM5QMXnw6Txzeu3+95u+yZohq7tIsDiB+W
+         wWtVWl+MWCrH7JJ8f7Iw7OmZOtAd7RhzpS27MIoxYqCe33EjTUxVL+CfZ52c5CuGNfW7
+         1mJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GF3DcHHUOLlttQcVoG9eeaZ3qz6fRbPGS3Wp+pKETEc=;
-        b=RPO/fdTPq60WAgG4To5Jov9OCIGlpcxAU6tPMmz9wEYy/NxP9GlSjHjV46geTMHAJS
-         bc/mRIEi56QETU7eU5dZ95F705NKoYkVr4hSVLr7zj9NLii7KBrNBf2WlwSUdUhqj75f
-         9sPKvuQ0SqSxU5zWuSK1pY0jIXyvM++EUL+h18bb61FrvWy50mVNOXnjWrxsBFAHQjLC
-         HxAnZnsuZKxEwnTM6eVo1eyEi+GVAQ0kBXZWoY9UTdf/dHBeZVHuhYlhgr9ik5tr6+Rs
-         cfMK9759FgBkVS6XAHWcosAVHG6zr63G3sRHDFHmDQXFv09cQcxSXfedDs9SJYLIl4hX
-         yxxw==
-X-Gm-Message-State: AOAM5330qwOf00ftzbxSBrpbrYP6l79kl7RLyaqohSyBz+upOBtM0NdX
-        nd2CjO2ppluK5sfG63B/Ydg=
-X-Google-Smtp-Source: ABdhPJwj9OkxvY7Blrzy/r097Y6aXaAtpJhwXmyMYPiEHgK5I15UXIxfvynAYpa9zbNmxJhURxTTow==
-X-Received: by 2002:a05:6512:6c4:: with SMTP id u4mr3043158lff.289.1616009486853;
-        Wed, 17 Mar 2021 12:31:26 -0700 (PDT)
+        bh=YVatthKifS/0drZo94nSguqAF/BwAr5rR9av6MBvQSU=;
+        b=BfF4fhIojbZJIRd2WfY9287tscSEVHsOcwgDAy9Y1F92C02D3bkjMb6lvKjLgXeUQG
+         ROuaJyy0PMSPtgt3CPrbgYo7kmOQlMbXjq6AxZO4jRs3M6IORIwY2eROveBCT5hqix7u
+         ZWtaDaJchPZ4V9CIMg1wdkbaypwO/J7MFBc837jJR8aQWkD8G2hZ22GxdraAxkDT/CPq
+         curlBqLbEayCx7ttsymup6vX2bQ5pmcjceUQXx7UgkZuVu3jWfostOSxp5pdKGMt5h8k
+         4wrRBaFAPmXWf4QL+Rgi/sCZdFBfoAvY783GxQHbKNfvUbm8F9nhyjOIrcEy3Ri/g87W
+         uL0Q==
+X-Gm-Message-State: AOAM5300mJt2ftT9GlTkTnv68SiTzvHCiEWofIsusT2F0X5AqR7zCOcw
+        CD4U4Xd4F3t258+4vRsGd5MCrMR8i1E=
+X-Google-Smtp-Source: ABdhPJx+C05SM67TYpVY4e0UqGt/lLIQ1Z5cKGl9XprQi66ba8huZcoEExGiAb2aac97+FMOwuBsWA==
+X-Received: by 2002:a19:7002:: with SMTP id h2mr3212278lfc.427.1616009487744;
+        Wed, 17 Mar 2021 12:31:27 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id q24sm3623098lji.40.2021.03.17.12.31.25
+        by smtp.gmail.com with ESMTPSA id q24sm3623098lji.40.2021.03.17.12.31.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 12:31:26 -0700 (PDT)
+        Wed, 17 Mar 2021 12:31:27 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -58,9 +58,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Rob Herring <robh+dt@kernel.org>
 Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v5 5/7] MAINTAINERS: Hand Tegra clk driver to Jon and Thierry
-Date:   Wed, 17 Mar 2021 22:30:04 +0300
-Message-Id: <20210317193006.29633-6-digetx@gmail.com>
+Subject: [PATCH v5 6/7] clk: tegra: Don't allow zero clock rate for PLLs
+Date:   Wed, 17 Mar 2021 22:30:05 +0300
+Message-Id: <20210317193006.29633-7-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210317193006.29633-1-digetx@gmail.com>
 References: <20210317193006.29633-1-digetx@gmail.com>
@@ -70,56 +70,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter and Prashant aren't actively maintaining Tegra clock driver anymore.
-Jonathan and Thierry will pick up maintaining of the driver from now on.
+Zero clock rate doesn't make sense for PLLs and tegra-clk driver enters
+into infinite loop on trying to calculate PLL parameters for zero rate.
+Make code to error out if requested rate is zero.
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+Originally this trouble was found by Robert Yang while he was trying to
+bring up upstream kernel on Samsung Galaxy Tab, which happened due to a
+bug in Tegra DRM driver that erroneously sets PLL rate to zero. This
+issues came over again recently during of kernel bring up on ASUS TF700T.
+
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- CREDITS     | 6 ++++++
- MAINTAINERS | 4 ++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ drivers/clk/tegra/clk-pll.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/CREDITS b/CREDITS
-index cf8e23498a34..5577a2bdd93a 100644
---- a/CREDITS
-+++ b/CREDITS
-@@ -1250,6 +1250,10 @@ S: 29 Duchifat St.
- S: Ra'anana 4372029
- S: Israel
+diff --git a/drivers/clk/tegra/clk-pll.c b/drivers/clk/tegra/clk-pll.c
+index d709ecb7d8d7..af7d4941042e 100644
+--- a/drivers/clk/tegra/clk-pll.c
++++ b/drivers/clk/tegra/clk-pll.c
+@@ -558,6 +558,9 @@ static int _calc_rate(struct clk_hw *hw, struct tegra_clk_pll_freq_table *cfg,
+ 	u32 p_div = 0;
+ 	int ret;
  
-+N: Prashant Gaikwad
-+E: pgaikwad@nvidia.com
-+D: Maintained NVIDIA Tegra clock driver
++	if (!rate)
++		return -EINVAL;
 +
- N: Kumar Gala
- E: galak@kernel.crashing.org
- D: Embedded PowerPC 6xx/7xx/74xx/82xx/83xx/85xx support
-@@ -3387,7 +3391,9 @@ E:
- D: Macintosh IDE Driver
- 
- N: Peter De Schrijver
-+E: pdeschrijver@nvidia.com
- E: stud11@cc4.kuleuven.ac.be
-+D: Maintained NVIDIA Tegra clock driver
- D: Mitsumi CD-ROM driver patches March version
- S: Molenbaan 29
- S: B2240 Zandhoven
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b2baeb5e4a68..bee0e25510a6 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17634,8 +17634,8 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git
- N:	[^a-z]tegra
- 
- TEGRA CLOCK DRIVER
--M:	Peter De Schrijver <pdeschrijver@nvidia.com>
--M:	Prashant Gaikwad <pgaikwad@nvidia.com>
-+M:	Jonathan Hunter <jonathanh@nvidia.com>
-+M:	Thierry Reding <thierry.reding@gmail.com>
- S:	Supported
- F:	drivers/clk/tegra/
- 
+ 	switch (parent_rate) {
+ 	case 12000000:
+ 	case 26000000:
 -- 
 2.30.2
 
