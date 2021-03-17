@@ -2,79 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB3833F904
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D24D33F908
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233188AbhCQTTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:19:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42174 "EHLO mx2.suse.de"
+        id S233143AbhCQTUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:20:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233125AbhCQTTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:19:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616008746; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1FI9JToETJTTOhL/4esql57OHpQfJ+0yOZIN6axrdf8=;
-        b=VmvFxUqjvDYU/DSPODFi5Pwon5T2ZwXu+y//crLatDklQiIb2cbXVepLfJjFJI6M1RbWl+
-        mhgMgVPGK+wCEsC3xSyussqphCLsT/QW6p5Qi7GHNWhrb7c3SFuULllbRmIh0Mr0HMThaN
-        oVuYiFg8GejQAYE56RItxDMuua2BUso=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B3746ACA8;
-        Wed, 17 Mar 2021 19:19:06 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 20:19:04 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: switch to rstat fix
-Message-ID: <YFJWKIOHsCZhCt8H@blackbook>
-References: <20210315234100.64307-1-hannes@cmpxchg.org>
+        id S233131AbhCQTUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 15:20:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 106B261584;
+        Wed, 17 Mar 2021 19:19:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616008799;
+        bh=XiQPm/e8mVsPSTt9gN6hVu81RNW9JrYXw0LrOzZ7DoE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DwBucPQ+7adfplBUCb0/84DFy/xK/123m4J2fEqkyIk8Tl2fNSQ5e6reJMUhBPL/Z
+         2xs3mG6tm3USNA+2QLyN0+RpUHfoyZk0ScOVS/0MvLIHvfJI1V1Immuns/Fc8LPmjZ
+         zeDBOdWXWUKZFM3O+hZjNjOs/avDj18FEPxQv4bk=
+Date:   Wed, 17 Mar 2021 20:19:54 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     min.li.xe@renesas.com
+Cc:     derek.kiernan@xilinx.com, dragan.cvetic@xilinx.com, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+Subject: Re: [PATCH net-next v1] misc: Add Renesas Synchronization Management
+ Unit (SMU) support
+Message-ID: <YFJWWrX+UgXyD9NS@kroah.com>
+References: <1616007596-2402-1-git-send-email-min.li.xe@renesas.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="1EAEwdJwMJVALUFz"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210315234100.64307-1-hannes@cmpxchg.org>
+In-Reply-To: <1616007596-2402-1-git-send-email-min.li.xe@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 17, 2021 at 02:59:56PM -0400, min.li.xe@renesas.com wrote:
+> From: Min Li <min.li.xe@renesas.com>
+> 
+> This driver is developed for the IDT ClockMatrix(TM) and 82P33xxx families
+> of timing and synchronization devices.It will be used by Renesas PTP Clock
+> Manager for Linux (pcm4l) software to provide support to GNSS assisted
+> partial timing support (APTS) and other networking timing functions.
+> 
+> Current version provides kernel API's to support the following functions
+> -set combomode to enable SYNCE clock support
+> -read dpll's state to determine if the dpll is locked to the GNSS channel
+> -read dpll's ffo (fractional frequency offset)
+> 
+> Signed-off-by: Min Li <min.li.xe@renesas.com>
 
---1EAEwdJwMJVALUFz
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Why the "net-next" in the subject line?
 
-On Mon, Mar 15, 2021 at 07:41:00PM -0400, Johannes Weiner <hannes@cmpxchg.o=
-rg> wrote:
-> Switch to the atomic variant, cgroup_rstat_irqsafe().
-Congratulations(?), the first use of cgroup_rstat_irqsafe().
+This is not for the network tree (given that you didn't even cc:
+netdev...) or am I confused?
 
-Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
+thanks,
 
---1EAEwdJwMJVALUFz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmBSViUACgkQia1+riC5
-qSgA8Q/+PPCIbVzSqgX5QVoHH253Rzg+fzFNgVR6ET0KwU838hhP2b/hLQSSIBqd
-2gJFvlRd2I8j9N7OH1DjOUAmZp6t+Tklmtb0LWfXobisOKeM9mONHFAm7cgdJDyV
-O76eq9TjFIeN2XZNRRj+n5vYIMCe+6SrtfqTxdFsieNt7Us+pASkO7j0Iw6Qral3
-mG5CaVV++/jQbrRLA9Qmrx3aa7O3kGZyMCrHE77NvSUuBbfP6pSYMtTQ6ijnh7dL
-kEY6OeXKOkzCUwtmrqrtFRMwRhUgSWpGmdIoR+UXO0ReuWJF+bu1EkpJZwMBgSlz
-m4QixHSiTFvdvu6shg3LL//QDMAdct/Vv1osei5J0RWUGI7W7Ybf/KjYKuGKWJHX
-Mvvk0k4WIhDio8GyhatwbykLzxpFDCceWj8bLe/PJUUIWG9FkeNvH3Ny5/RPVpSS
-o3QGBmUjJKpbtalwVfTi0bXi5aKNzJslJD0FMj/tkzQJxPGVMSobGBGtVXLlcge9
-iM/yEZ1KTTH7qveBl/AgcqR1vHnRWALELiqfEKTZJXWtLnitku+HD626kK7NNEHD
-uLzs8ntdLUXW1DkJ0Kr2Zj6yXr44uScg3olpYYOwpDbrA3j7uEfzsqeyJckBJVf6
-54EqfDxy/yvOg/yFGQ4L5ayoKdo+LMuz3tRUs8alsEU93K/Q4mA=
-=Z6x9
------END PGP SIGNATURE-----
-
---1EAEwdJwMJVALUFz--
+gre gk-h
