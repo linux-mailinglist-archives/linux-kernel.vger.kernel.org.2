@@ -2,109 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C052933F116
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:22:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F62133F11A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:23:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbhCQNWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 09:22:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51414 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230493AbhCQNWJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 09:22:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615987328;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c7PX0Ouqc0wpf5nfLiEOChbTdIbo+J19ZguBEuOi78Q=;
-        b=CgjFQH1CA+tU+RBqM7TnwxsVT5KHsTHW3uMaS9fVKJyL3Tme1hqpGFbZHIPM1ZctgB5+n1
-        MJCVMcyGNR5HObYAAYkjxjJJtJJzuUetYgDbGlOuPMPV6CKiB+TFpiyjteZbENOkFiD12Q
-        HyhKrU4O2RBBFJlt3U94GbFrKp0hYyc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-418-p0MDTkMaNn6ID8k-MxtV2w-1; Wed, 17 Mar 2021 09:22:03 -0400
-X-MC-Unique: p0MDTkMaNn6ID8k-MxtV2w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F15D0E845A;
-        Wed, 17 Mar 2021 13:21:51 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-117-171.rdu2.redhat.com [10.10.117.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1C4175C1CF;
-        Wed, 17 Mar 2021 13:21:51 +0000 (UTC)
-Subject: Re: [PATCH 4/4] locking/locktorture: Fix incorrect use of
- ww_acquire_ctx in ww_mutex test
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>
-References: <20210316153119.13802-1-longman@redhat.com>
- <20210316153119.13802-5-longman@redhat.com>
- <20210317051605.popetodgwbr47ha2@offworld>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <ae20c4a1-1591-4b09-6de2-e55c30297d24@redhat.com>
-Date:   Wed, 17 Mar 2021 09:21:50 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230516AbhCQNXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 09:23:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229967AbhCQNWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 09:22:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6FE564F45;
+        Wed, 17 Mar 2021 13:22:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615987363;
+        bh=Bk8W3Dy0SgZuo9CL2GY88XLxE+aAdJLE3pkoawwo61k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Z9SZnXRnpsWB8PrGCnFjQESEShpJHn8pWL9RpOYpEYgXMmaZ29cgmj8B+3pxsgKBG
+         S0GDypZhz5whohc8gnoDzUNWHSASdXBVNemeQzO5SBRMMzUi8nXQps14chywxogjv5
+         As+ZDk0BE8Uf1vWh3R5qkuLWohQWW2KU+DwTK5byY3B5HDBb7u7Lvp5BTl1lu5QBbV
+         NBpinK+HFNE8KZAkY3MUtMutTVMiHhVccv/lsivXDZfCCdy1vRAMuLwLnhlh6YSoKv
+         /eBFgX7BRhZ3utGrBKbaeXF1+CeEsoC14bFEpv6TcwI0CX11PhY4GKP461CkOIn3VI
+         W/W/SmWa4YKkg==
+Date:   Wed, 17 Mar 2021 14:22:38 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the akpm-current tree
+Message-ID: <20210317142238.228fb1e8@coco.lan>
+In-Reply-To: <875z1qy9un.fsf@meer.lwn.net>
+References: <20210315163522.589bc67a@canb.auug.org.au>
+        <YFD2Y++LQHmWMx68@google.com>
+        <20210317084924.2ba4c3ea@canb.auug.org.au>
+        <875z1qy9un.fsf@meer.lwn.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210317051605.popetodgwbr47ha2@offworld>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 1:16 AM, Davidlohr Bueso wrote:
-> On Tue, 16 Mar 2021, Waiman Long wrote:
->
->> The ww_acquire_ctx structure for ww_mutex needs to persist for a 
->> complete
->> lock/unlock cycle. In the ww_mutex test in locktorture, however, both
->> ww_acquire_init() and ww_acquire_fini() are called within the lock
->> function only. This causes a lockdep splat of "WARNING: Nested lock
->> was not taken" when lockdep is enabled in the kernel.
->>
->> To fix this problem, we need to move the ww_acquire_fini() after the
->> ww_mutex_unlock() in torture_ww_mutex_unlock(). In other word, we need
->> to pass state information from the lock function to the unlock function.
->
-> Right, and afaict this _is_ the way ww_acquire_fini() should be called:
->
->  * Releases a w/w acquire context. This must be called _after_ all 
-> acquired w/w
->  * mutexes have been released with ww_mutex_unlock.
->
->> Change the writelock and writeunlock function prototypes to allow that
->> and change the torture_ww_mutex_lock() and torture_ww_mutex_unlock()
->> accordingly.
->
-> But wouldn't just making ctx a global variable be enough instead? That 
-> way
-> we don't deal with memory allocation for every lock/unlock operation 
-> (yuck).
-> Plus the ENOMEM would need to be handled/propagated accordingly - the 
-> code
-> really doesn't expect any failure from ->writelock().
+Em Tue, 16 Mar 2021 17:09:20 -0600
+Jonathan Corbet <corbet@lwn.net> escreveu:
 
-The ctx should be per-thread to track potential locking conflict. Since 
-there are as many locking threads as the number of cpus, we can't use 
-one global variable to do that. I was thinking about using per-cpu 
-variable but locktorture kthreads are cpu-bound. That led me to use the 
-current scheme of allocation at lock and free at unlock.
+> Stephen Rothwell <sfr@canb.auug.org.au> writes:
+> 
+> [Adding Mauro]
+> 
+> > On Tue, 16 Mar 2021 11:18:11 -0700 Minchan Kim <minchan@kernel.org> wrote:
+> >>
+> >> On Mon, Mar 15, 2021 at 04:35:22PM +1100, Stephen Rothwell wrote:
+> >> > Hi all,
+> >> > 
+> >> > After merging the akpm-current tree, today's linux-next build (htmldocs)
+> >> > produced this warning:
+> >> > 
+> >> > Documentation/ABI/testing/sysfs-kernel-mm-cma:2: WARNING: Inline interpreted text or phrase reference start-string without end-string.
+> >> > 
+> >> > Introduced by commit
+> >> > 
+> >> >   	 ("mm: cma: support sysfs")
+> >> >   
+> >> 
+> >> Hmm, I don't get it what happened here. Was it false-positive?
+> >
+> > I get the above from a "make htmldocs" run ... I don't know what causes
+> > it, sorry.  [cc'ing Jon]
+> 
+> OK, this took a while to figure out.  The problem is this text in
+> sysfs-kernel-mm-cma:
+> 
+> > 		Each CMA heap subdirectory (that is, each
+> > 		/sys/kernel/mm/cma/<cma-heap-name> directory) contains the
+> > 		following items:
+> 
+> When scripts/get_abi.pl sees the /sys/kernel/mm/... string it wants to
+> turn it into a link to the matching ABI entry; at that point, the
+> <text in angle brackets> collides with the Sphinx directive and you get
+> that totally useless warning.
+> 
+> I think this is a bug in get_abi.pl. Honestly I wonder if all these
+> cross-links are needed at all; if they truly are, then we shouldn't be
+> making bogus ones.  Mauro, how hard would it be to make this do the
+> right thing?
 
-Another alternative is to add a per-thread init/fini methods to allow 
-setting up per-thread context that is passed to the locking functions. 
-By doing that, we only need one kmalloc/kfree pair per running 
-locktorture kthread.
+Actually, we need the "<>" syntax a the output document.
 
-Cheers,
-Longman
+Basically, the script assumes that everything inside the ABI description
+is ReST. So, it preserves the text untouched, except when creating
+cross-references, which is the case here. The script expects an entry
+for every cross-referenced symbol. In other words, something like:
+
+	/sys/kernel/mm/cma/ 
+
+should be converted into:
+
+	:ref:`/sys/kernel/mm/cma/ <abi_sys_kernel_mm_cma>`
+
+The actual output is more complex than that, as there are some special
+chars that need to be escaped at the naming part.
+
+You can check the full output of this single file with:
+
+	$ mkdir Documentation/ABI/aa && cp Documentation/ABI/testing/sysfs-kernel-mm-cma
+	$ ./scripts/get_abi.pl --dir=Documentation/ABI/aa rest
+
+	Symbols under /sys/kernel
+	-------------------------
+	
+	.. _abi_sys_kernel_mm_cma:
+	
+	+-------------------------+
+	| **/sys/kernel/mm/cma/** |
+	+-------------------------+
+	
+	Defined on file :ref:`sysfs-kernel-mm-cma <abi_file_aa_sysfs_kernel_mm_cma>`
+	
+	:ref:`\/sys\/kernel\/mm\/cma\/ <abi_sys_kernel_mm_cma>` contains a subdirectory for each CMA
+	heap name (also sometimes called CMA areas).
+	
+	Each CMA heap subdirectory (that is, each
+	:ref:`\/sys\/kernel\/mm\/cma\/ <abi_sys_kernel_mm_cma>`<cma-heap-name> directory) contains the
+	following items:
+	
+	        alloc_pages_success
+	        alloc_pages_fail
+	
+	
+	.. _abi_sys_kernel_mm_cma_cma_heap_name_alloc_pages_fail:
+	
+	+-------------------------------------------------------------+
+	| **/sys/kernel/mm/cma/<cma\-heap\-name>/alloc\_pages\_fail** |
+	+-------------------------------------------------------------+
+	
+	Defined on file :ref:`sysfs-kernel-mm-cma <abi_file_aa_sysfs_kernel_mm_cma>`
+	
+	the number of pages CMA API failed to allocate
+	
+	
+	.. _abi_sys_kernel_mm_cma_cma_heap_name_alloc_pages_success:
+	
+	+----------------------------------------------------------------+
+	| **/sys/kernel/mm/cma/<cma\-heap\-name>/alloc\_pages\_success** |
+	+----------------------------------------------------------------+
+	
+	Defined on file :ref:`sysfs-kernel-mm-cma <abi_file_aa_sysfs_kernel_mm_cma>`
+	
+	the number of pages CMA API succeeded to allocate
+	
+	
+	.. _abi_file_aa_sysfs_kernel_mm_cma:
+	
+	File aa/sysfs\-kernel\-mm\-cma
+	------------------------------
+	
+	Has the following ABI:
+	
+	- :ref:`\/sys\/kernel\/mm\/cma\/ <abi_sys_kernel_mm_cma>`
+	
+	- :ref:`\/sys\/kernel\/mm\/cma\/\<cma\-heap\-name\>\/alloc_pages_success <abi_sys_kernel_mm_cma_cma_heap_name_alloc_pages_success>`
+	
+	- :ref:`\/sys\/kernel\/mm\/cma\/\<cma\-heap\-name\>\/alloc_pages_fail <abi_sys_kernel_mm_cma_cma_heap_name_alloc_pages_fail>`
+	
+There are two separated issues here:
+
+1) the cross-reference for "/sys/kernel/mm/cma/<cma-heap-name>"
+   doesn't exist. The fix would be to do something like:
+
+	What:           /sys/kernel/mm/cma/
+	Date:           Feb 2021
+	Contact:        Minchan Kim <minchan@kernel.org>
+	Description:
+	                /sys/kernel/mm/cma/ contains a subdirectory for each CMA
+        	        heap name (also sometimes called CMA areas).
+
+                	Each CMA heap subdirectory contains the following items:
+
+                        	/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_success
+	                        /sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_fail
+
+  This way, the /sys/kernel/mm/cma/<cma-heap-name>/* will produce the
+  right cross-references;
+
+2) The get_abi.pl doesn't escape "<" and ">" chars.
+
+  The enclosed patch should do the trick. Please notice that I didn't
+  check if this won't cause side effects - I'm in vacations until next
+  week... too lazy to do a full test those days ;-) 
+
+Thanks,
+Mauro
+
+[PATCH] script: get_abi.pl: escape "<" and ">" characters
+
+Those characters should be escaped on cross-references.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+diff --git a/scripts/get_abi.pl b/scripts/get_abi.pl
+index 92d9aa6cc4f5..79d195b48652 100755
+--- a/scripts/get_abi.pl
++++ b/scripts/get_abi.pl
+@@ -305,7 +305,7 @@ sub output_rest {
+ 		}
+ 
+ 		my $w = $what;
+-		$w =~ s/([\(\)\_\-\*\=\^\~\\])/\\$1/g;
++		$w =~ s/([\(\)\_\-\*\=\^\~\\\<\>])/\\$1/g;
+ 
+ 		if ($type ne "File") {
+ 			my $cur_part = $what;
 
 
