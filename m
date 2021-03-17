@@ -2,77 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8931633E9CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE5833E9CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:36:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbhCQGeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 02:34:14 -0400
-Received: from m12-11.163.com ([220.181.12.11]:55874 "EHLO m12-11.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230020AbhCQGeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 02:34:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=8Y3HR
-        MDBaV95f2J1fKzScv+yjUogarkNBO6uLyNIbM0=; b=ExQmo9CIqHMlqsCjg9ZyI
-        RxPadlPtSLmHClojmPjZABzAj8/XxRodsjaNqrIcETqXCeUDxkkwD1WhsfyhsArv
-        3vFcrH+FlRqgCpMiEhE9JbVEpGB7UkRtuUgnrggh7tfNyDob4thEmBEkyJDXW5I7
-        bPk60DP+2yO5y2k+kw45Hs=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp7 (Coremail) with SMTP id C8CowADHz0fGolFgBC7NSg--.5880S2;
-        Wed, 17 Mar 2021 14:33:45 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     amitkarwar@gmail.com, ganapathi017@gmail.com,
-        sharvari.harisangam@nxp.com, huxinming820@gmail.com,
-        kvalo@codeaurora.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] mwifiex: Remove unneeded variable: "ret"
-Date:   Wed, 17 Mar 2021 14:33:53 +0800
-Message-Id: <20210317063353.1055-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: C8CowADHz0fGolFgBC7NSg--.5880S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKw1rGF43KryDKrWDWFy5twb_yoWDXwb_K3
-        4I9w4fKrZrJ3s7Kr4UCFsrX3sakr4rXFn7ua12qFWfGaykta98C3WkCrs7JrZakwsIqr9r
-        uwn8GFyxJa18WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU05l1DUUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/xtbBRQ1YiVPAKjBU8QACs3
+        id S230081AbhCQGfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 02:35:16 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:51377 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230123AbhCQGfG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 02:35:06 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R541e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0USEL4Xl_1615962899;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0USEL4Xl_1615962899)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 17 Mar 2021 14:35:04 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] attr: replace if (cond) BUG() with BUG_ON()
+Date:   Wed, 17 Mar 2021 14:34:59 +0800
+Message-Id: <1615962899-77049-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
+Fix the following coccicheck warnings:
 
-Remove unneeded variable: "ret"
+./fs/attr.c:349:2-5: WARNING: Use BUG_ON instead of if condition
+followed by BUG.
 
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/net/wireless/marvell/mwifiex/scan.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/attr.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/scan.c b/drivers/net/wireless/marvell/mwifiex/scan.c
-index c2a685f..0b877f3 100644
---- a/drivers/net/wireless/marvell/mwifiex/scan.c
-+++ b/drivers/net/wireless/marvell/mwifiex/scan.c
-@@ -1211,7 +1211,6 @@ enum cipher_suite {
- int mwifiex_update_bss_desc_with_ie(struct mwifiex_adapter *adapter,
- 				    struct mwifiex_bssdescriptor *bss_entry)
- {
--	int ret = 0;
- 	u8 element_id;
- 	struct ieee_types_fh_param_set *fh_param_set;
- 	struct ieee_types_ds_param_set *ds_param_set;
-@@ -1464,7 +1463,7 @@ int mwifiex_update_bss_desc_with_ie(struct mwifiex_adapter *adapter,
- 		bytes_left -= total_ie_len;
+diff --git a/fs/attr.c b/fs/attr.c
+index 87ef39d..43f369e 100644
+--- a/fs/attr.c
++++ b/fs/attr.c
+@@ -344,9 +344,7 @@ int notify_change(struct user_namespace *mnt_userns, struct dentry *dentry,
+ 	 * no function will ever call notify_change with both ATTR_MODE and
+ 	 * ATTR_KILL_S*ID set.
+ 	 */
+-	if ((ia_valid & (ATTR_KILL_SUID|ATTR_KILL_SGID)) &&
+-	    (ia_valid & ATTR_MODE))
+-		BUG();
++	BUG_ON((ia_valid & (ATTR_KILL_SUID|ATTR_KILL_SGID)) && (ia_valid & ATTR_MODE));
  
- 	}	/* while (bytes_left > 2) */
--	return ret;
-+	return 0;
- }
- 
- /*
+ 	if (ia_valid & ATTR_KILL_SUID) {
+ 		if (mode & S_ISUID) {
 -- 
-1.9.1
+1.8.3.1
 
