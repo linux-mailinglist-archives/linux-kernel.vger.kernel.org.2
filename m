@@ -2,90 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063AF33EF47
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBD333EF81
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbhCQLII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 07:08:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22326 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230048AbhCQLHo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 07:07:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615979263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sFmaH41LDlPjG9Ynwp45uLWY+uwr7N1DcuUG5izOuw8=;
-        b=OLgkObXWJ7fGt+ohsMwHrhWMqQFtagOkSVoDENf8RAVzuSr7W/8iO3zEjISyAsH3i/tyc8
-        fTUUiu4wWr+fWatg57+1V9Gm1/mmL0MwaTHH6X9uHr3vickMxUn0htqZPP5mDpeMZZKYR3
-        qTOecSjjHqgVinlYbZGWZU8sE5vEW2g=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-389-HoriL-B2NOOzhtcMMVINAA-1; Wed, 17 Mar 2021 07:07:42 -0400
-X-MC-Unique: HoriL-B2NOOzhtcMMVINAA-1
-Received: by mail-ed1-f71.google.com with SMTP id q25so4422973eds.16
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 04:07:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=sFmaH41LDlPjG9Ynwp45uLWY+uwr7N1DcuUG5izOuw8=;
-        b=ekq/+ec+EvHmUAS7jIV/TRWQYZKspLuqlQlrq4QqZSvIbfoj9BfXfiXeXVXrhcFWbT
-         hQ6puRGBo4Gd82ZJrd7dEGVB1q9gwU+u0WONeNzS/FYldgA41mI8kfFMxv+b2O84854u
-         hQ2QBzTBhjJIcTWVQXFozi1flo0wySvn94qGBd5ww6cmEUSbFOQw0gRsjPaCGrFhnvcU
-         Z/TC+6XEuME+S3BmRkPdgkbBCsJNjTGpGCYBoPI/InHtj6kJH2uazHxPmk7NklO8fDoz
-         +zoZCNnL1i6LVoEgjqF7cqrglJWUmZXSSeMm/dzlfErAJqIWUOpdB8jI7jzVQNVfD5Cb
-         pikw==
-X-Gm-Message-State: AOAM531SctwBvAg3QokSFgaUnNJu9u1eu3lAELgYFQHZbeBtNXamsWIr
-        F/An9gpePspz/2oKvjwrsEKfbYNJt234P+gSTAnkFxKyGSwlSfiQr8tXR1hmPXzHIxDMql2pIt5
-        UMXhriYm9iQ3/s+KVXZeJaTJq
-X-Received: by 2002:a17:906:2314:: with SMTP id l20mr35375422eja.178.1615979260625;
-        Wed, 17 Mar 2021 04:07:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJylmtlvBiYwpe22USdjn0rPdjb/Edoq2N3MMGbDCmY44u09j1aukE8925/xi14GcDNAZySNvg==
-X-Received: by 2002:a17:906:2314:: with SMTP id l20mr35375374eja.178.1615979260206;
-        Wed, 17 Mar 2021 04:07:40 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id a22sm11341585ejr.89.2021.03.17.04.07.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 04:07:39 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 36DC8181F55; Wed, 17 Mar 2021 12:07:39 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] libbpf: use SOCK_CLOEXEC when opening the netlink socket
-In-Reply-To: <20210317104512.4705-1-memxor@gmail.com>
-References: <20210317104512.4705-1-memxor@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 17 Mar 2021 12:07:39 +0100
-Message-ID: <87y2emca2s.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S231422AbhCQL0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 07:26:24 -0400
+Received: from mga17.intel.com ([192.55.52.151]:53516 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231404AbhCQL0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 07:26:01 -0400
+IronPort-SDR: uafwvxIB/lWfiv/WkaLABIk2GN0JWfHeKsoLuGIae1FGzIYn+X6kTDRL6nEfRN9BpPrUwXZXzG
+ dH9Mophyf7aw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="169359401"
+X-IronPort-AV: E=Sophos;i="5.81,256,1610438400"; 
+   d="scan'208";a="169359401"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 04:26:00 -0700
+IronPort-SDR: 5amaejvwP30nMCGeOa0rj2XeXzOQXnopcaIPsC/GocP71x3P0GtCO4zulJTcZffA5mJWurZrYj
+ GJdZ+nksM2YQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,256,1610438400"; 
+   d="scan'208";a="433367932"
+Received: from brentlu-desk0.itwn.intel.com ([10.5.253.9])
+  by fmsmga004.fm.intel.com with ESMTP; 17 Mar 2021 04:25:57 -0700
+From:   Brent Lu <brent.lu@intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Oder Chiou <oder_chiou@realtek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        Brent Lu <brent.lu@intel.com>, Yong Zhi <yong.zhi@intel.com>,
+        Libin Yang <libin.yang@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+        Dharageswari R <dharageswari.r@intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] ASoC: Intel: sof_rt5682: Add ALC1015Q-VB speaker amp support
+Date:   Wed, 17 Mar 2021 19:08:24 +0800
+Message-Id: <20210317110824.20814-1-brent.lu@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+This patch adds jsl_rt5682_rt1015p which supports the RT5682 headset
+codec and ALC1015Q-VB speaker amplifier combination on JasperLake
+platform.
 
-> Otherwise, there exists a small window between the opening and closing
-> of the socket fd where it may leak into processes launched by some other
-> thread.
->
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+This driver also supports ALC1015Q-CG if running in auto-mode.
+Following table shows the audio interface support of the two
+amplifiers.
 
-FYI, you should be tagging patches with the tree they are targeting. In
-this case probably the 'bpf' tree (so [PATCH bpf] in the subject).
+          | ALC1015Q-CG | ALC1015Q-VB
+=====================================
+I2C       | Yes         | No
+Auto-mode | 48K, 64fs   | 16k, 32fs
+                        | 48k, 32fs
+                        | 48k, 64fs
 
-Also, a Fixes: tag would be nice here?
+Signed-off-by: Brent Lu <brent.lu@intel.com>
+---
+ sound/soc/intel/boards/Kconfig                |   1 +
+ sound/soc/intel/boards/sof_realtek_common.c   | 105 ++++++++++++++++++
+ sound/soc/intel/boards/sof_realtek_common.h   |   7 ++
+ sound/soc/intel/boards/sof_rt5682.c           |  19 +++-
+ .../intel/common/soc-acpi-intel-jsl-match.c   |  13 +++
+ 5 files changed, 143 insertions(+), 2 deletions(-)
 
--Toke
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index d1d28129a32b..58379393b8e4 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -457,6 +457,7 @@ config SND_SOC_INTEL_SOF_RT5682_MACH
+ 	select SND_SOC_MAX98373_I2C
+ 	select SND_SOC_RT1011
+ 	select SND_SOC_RT1015
++	select SND_SOC_RT1015P
+ 	select SND_SOC_RT5682_I2C
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_HDAC_HDMI
+diff --git a/sound/soc/intel/boards/sof_realtek_common.c b/sound/soc/intel/boards/sof_realtek_common.c
+index f3cf73c620ba..2ec34f8df9e1 100644
+--- a/sound/soc/intel/boards/sof_realtek_common.c
++++ b/sound/soc/intel/boards/sof_realtek_common.c
+@@ -7,6 +7,7 @@
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
++#include <sound/soc-acpi.h>
+ #include <sound/soc-dai.h>
+ #include <sound/soc-dapm.h>
+ #include <uapi/sound/asound.h>
+@@ -136,3 +137,107 @@ void sof_rt1011_codec_conf(struct snd_soc_card *card)
+ 	card->codec_conf = rt1011_codec_confs;
+ 	card->num_configs = ARRAY_SIZE(rt1011_codec_confs);
+ }
++
++/*
++ * rt1015:  i2c mode driver for ALC1015 and ALC1015Q
++ * rt1015p: auto-mode driver for ALC1015, ALC1015Q, and ALC1015Q-VB
++ *
++ * For stereo output, there are always two amplifiers on the board.
++ * However, the ACPI implements only one device instance (UID=0) if they
++ * are sharing the same enable pin. The code will detect the number of
++ * device instance and use corresponding DAPM structures for
++ * initialization.
++ */
++static const struct snd_soc_dapm_route rt1015p_1dev_dapm_routes[] = {
++	/* speaker */
++	{ "Left Spk", NULL, "Speaker" },
++	{ "Right Spk", NULL, "Speaker" },
++};
++
++static const struct snd_soc_dapm_route rt1015p_2dev_dapm_routes[] = {
++	/* speaker */
++	{ "Left Spk", NULL, "Left Speaker" },
++	{ "Right Spk", NULL, "Right Speaker" },
++};
++
++static struct snd_soc_codec_conf rt1015p_codec_confs[] = {
++	{
++		.dlc = COMP_CODEC_CONF(RT1015P_DEV0_NAME),
++		.name_prefix = "Left",
++	},
++	{
++		.dlc = COMP_CODEC_CONF(RT1015P_DEV1_NAME),
++		.name_prefix = "Right",
++	},
++};
++
++static struct snd_soc_dai_link_component rt1015p_dai_link_components[] = {
++	{
++		.name = RT1015P_DEV0_NAME,
++		.dai_name = RT1015P_CODEC_DAI,
++	},
++	{
++		.name = RT1015P_DEV1_NAME,
++		.dai_name = RT1015P_CODEC_DAI,
++	},
++};
++
++static int rt1015p_get_num_codecs(void)
++{
++	static int dev_num;
++
++	if (dev_num)
++		return dev_num;
++
++	if (!acpi_dev_present("RTL1015", "1", -1))
++		dev_num = 1;
++	else
++		dev_num = 2;
++
++	return dev_num;
++}
++
++static int rt1015p_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params)
++{
++	/* reserved for debugging purpose */
++
++	return 0;
++}
++
++static const struct snd_soc_ops rt1015p_ops = {
++	.hw_params = rt1015p_hw_params,
++};
++
++static int rt1015p_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_card *card = rtd->card;
++	int ret;
++
++	if (rt1015p_get_num_codecs() == 1)
++		ret = snd_soc_dapm_add_routes(&card->dapm, rt1015p_1dev_dapm_routes,
++					      ARRAY_SIZE(rt1015p_1dev_dapm_routes));
++	else
++		ret = snd_soc_dapm_add_routes(&card->dapm, rt1015p_2dev_dapm_routes,
++					      ARRAY_SIZE(rt1015p_2dev_dapm_routes));
++	if (ret)
++		dev_err(rtd->dev, "Speaker map addition failed: %d\n", ret);
++	return ret;
++}
++
++void sof_rt1015p_dai_link(struct snd_soc_dai_link *link)
++{
++	link->codecs = rt1015p_dai_link_components;
++	link->num_codecs = rt1015p_get_num_codecs();
++	link->init = rt1015p_init;
++	link->ops = &rt1015p_ops;
++}
++
++void sof_rt1015p_codec_conf(struct snd_soc_card *card)
++{
++	if (rt1015p_get_num_codecs() == 1)
++		return;
++
++	card->codec_conf = rt1015p_codec_confs;
++	card->num_configs = ARRAY_SIZE(rt1015p_codec_confs);
++}
+diff --git a/sound/soc/intel/boards/sof_realtek_common.h b/sound/soc/intel/boards/sof_realtek_common.h
+index 87cb3812b926..cb0b49b2855c 100644
+--- a/sound/soc/intel/boards/sof_realtek_common.h
++++ b/sound/soc/intel/boards/sof_realtek_common.h
+@@ -21,4 +21,11 @@
+ void sof_rt1011_dai_link(struct snd_soc_dai_link *link);
+ void sof_rt1011_codec_conf(struct snd_soc_card *card);
+ 
++#define RT1015P_CODEC_DAI	"HiFi"
++#define RT1015P_DEV0_NAME	"RTL1015:00"
++#define RT1015P_DEV1_NAME	"RTL1015:01"
++
++void sof_rt1015p_dai_link(struct snd_soc_dai_link *link);
++void sof_rt1015p_codec_conf(struct snd_soc_card *card);
++
+ #endif /* __SOF_REALTEK_COMMON_H */
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 55505e207bc0..f4b898c1719f 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -45,8 +45,9 @@
+ #define SOF_RT1011_SPEAKER_AMP_PRESENT		BIT(13)
+ #define SOF_RT1015_SPEAKER_AMP_PRESENT		BIT(14)
+ #define SOF_RT1015_SPEAKER_AMP_100FS		BIT(15)
+-#define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(16)
+-#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(17)
++#define SOF_RT1015P_SPEAKER_AMP_PRESENT		BIT(16)
++#define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(17)
++#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(18)
+ 
+ /* Default: MCLK on, MCLK 19.2M, SSP0  */
+ static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
+@@ -723,6 +724,8 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 			links[id].num_codecs = ARRAY_SIZE(rt1015_components);
+ 			links[id].init = speaker_codec_init_lr;
+ 			links[id].ops = &sof_rt1015_ops;
++		} else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT) {
++			sof_rt1015p_dai_link(&links[id]);
+ 		} else if (sof_rt5682_quirk &
+ 				SOF_MAX98373_SPEAKER_AMP_PRESENT) {
+ 			links[id].codecs = max_98373_components;
+@@ -851,6 +854,8 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 		sof_max98373_codec_conf(&sof_audio_card_rt5682);
+ 	else if (sof_rt5682_quirk & SOF_RT1011_SPEAKER_AMP_PRESENT)
+ 		sof_rt1011_codec_conf(&sof_audio_card_rt5682);
++	else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT)
++		sof_rt1015p_codec_conf(&sof_audio_card_rt5682);
+ 
+ 	dai_links = sof_card_dai_links_create(&pdev->dev, ssp_codec, ssp_amp,
+ 					      dmic_be_num, hdmi_num);
+@@ -940,6 +945,15 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_RT5682_SSP_AMP(1) |
+ 					SOF_RT5682_NUM_HDMIDEV(4)),
+ 	},
++	{
++		.name = "jsl_rt5682_rt1015p",
++		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
++					SOF_RT5682_MCLK_24MHZ |
++					SOF_RT5682_SSP_CODEC(0) |
++					SOF_SPEAKER_AMP_PRESENT |
++					SOF_RT1015P_SPEAKER_AMP_PRESENT |
++					SOF_RT5682_SSP_AMP(1)),
++	},
+ 	{ }
+ };
+ 
+@@ -966,3 +980,4 @@ MODULE_ALIAS("platform:tgl_max98373_rt5682");
+ MODULE_ALIAS("platform:jsl_rt5682_max98360a");
+ MODULE_ALIAS("platform:cml_rt1015_rt5682");
+ MODULE_ALIAS("platform:tgl_rt1011_rt5682");
++MODULE_ALIAS("platform:jsl_rt5682_rt1015p");
+diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+index 52238db0bcb5..73fe4f89a82d 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+@@ -19,6 +19,11 @@ static struct snd_soc_acpi_codecs rt1015_spk = {
+ 	.codecs = {"10EC1015"}
+ };
+ 
++static struct snd_soc_acpi_codecs rt1015p_spk = {
++	.num_codecs = 1,
++	.codecs = {"RTL1015"}
++};
++
+ static struct snd_soc_acpi_codecs mx98360a_spk = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98360A"}
+@@ -52,6 +57,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 		.quirk_data = &rt1015_spk,
+ 		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
+ 	},
++	{
++		.id = "10EC5682",
++		.drv_name = "jsl_rt5682_rt1015p",
++		.sof_fw_filename = "sof-jsl.ri",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &rt1015p_spk,
++		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
++	},
+ 	{
+ 		.id = "10EC5682",
+ 		.drv_name = "jsl_rt5682_max98360a",
+-- 
+2.17.1
 
