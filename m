@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B8233F463
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE69033F479
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232516AbhCQPtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 11:49:24 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51072 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232265AbhCQPsz (ORCPT
+        id S232683AbhCQPtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 11:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232338AbhCQPs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 11:48:55 -0400
-Date:   Wed, 17 Mar 2021 15:48:53 -0000
+        Wed, 17 Mar 2021 11:48:57 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0697C061763;
+        Wed, 17 Mar 2021 08:48:56 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 15:48:54 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615996133;
+        s=2020; t=1615996135;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=cQDSZLWqWdUFj+WdpKioQTWdZyy8R5Kg6Q9wp1gj5Qc=;
-        b=cb6DsWaYCn/VKWIYS+Rd4cVJalKD8vj6ITFkF0eLStVKrvcASTO4R8ZCtwkg3bYToshFrS
-        oIyI5l3J6vxX9b4yJLfPkwujI6vLBYb8STInmek7MHYIdy8dAQXCwy65UPPH0+gTZGQQss
-        tHrVwfBKc8yUC3RlkCOAbwN3XzjLZfyi+ZOC7xNhbaRbSDULJZm3bqLyaKPbb1qzp6umJC
-        HVo707gcBjJp/uDpD2cK/6/xCT/uKY41Va0Gv10eTWSw9Hr1dAuqcGvdFF4gvMhI878Rgh
-        Gdj04ZkMhPLMWewRIW/OOvN8Nzbg3fenr+VtI/yEkfOqORXerlQ9aH9ai7KDYA==
+        bh=Vpt01t3oc+vTzeIdu/PctHew1yl2vjBmHmGlSEKzJlE=;
+        b=OQ6F8cIGOJcEcoYALnorS1UeCspbv7VW/tw1NOfzpojBmoM9qNSzRJnx68J8lcmpa4jy/z
+        htL7iitnueVlHsjCfTKUZcK3ghXfa7nNGf1IGcMJEJFSFg6y++MGBuUWn1+8+DUECkzVDO
+        Lds/0L4s3HyVFpgciaBT/m5Pcbr5rOMc4tp5RS8U1Ci+iyjHSpJcicy6ipf/dNuZlwTazP
+        D+hLXcZe6p1Gsv1HdgICNTowzBqTQMCRAUTIG8HvxXJDIotl9Cd/UXHZyQ+puR0BcHbyGv
+        6wcyVMgR6MGRZ5SAWfGvz4dOqTuR07nCBSY2BJ8CmZRtpjlSDd6loIA0M6wYhg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615996133;
+        s=2020e; t=1615996135;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=cQDSZLWqWdUFj+WdpKioQTWdZyy8R5Kg6Q9wp1gj5Qc=;
-        b=SgMyFK2qCi68NNxrvuJxFlJe6GDsrdj6xXpbOoTCRd4N3waeYeOrb7cHfx4t08NHd0mxTH
-        1jNf39vQnk7w3qCQ==
+        bh=Vpt01t3oc+vTzeIdu/PctHew1yl2vjBmHmGlSEKzJlE=;
+        b=3qGafSLVSquE4mITVgrF7mewnznTIyLhI+B2KHY9PwaxJaPBTk80Iluamz/m7XdoppO8Ns
+        mm4nA+VS9w6zS4Bw==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] tick/sched: Prevent false positive softirq pending
- warnings on RT
+Subject: [tip: irq/core] softirq: Add RT specific softirq accounting
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20210309085727.527563866@linutronix.de>
-References: <20210309085727.527563866@linutronix.de>
+In-Reply-To: <20210309085726.983627589@linutronix.de>
+References: <20210309085726.983627589@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <161599613319.398.6653530091182078355.tip-bot2@tip-bot2>
+Message-ID: <161599613469.398.10281190899958570583.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,89 +64,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     47c218dcae6587fb5bce30f1656b13e22391c8e3
-Gitweb:        https://git.kernel.org/tip/47c218dcae6587fb5bce30f1656b13e22391c8e3
+Commit-ID:     728b478d2d358480b333b42d0e10e0fecb20114c
+Gitweb:        https://git.kernel.org/tip/728b478d2d358480b333b42d0e10e0fecb20114c
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 09 Mar 2021 09:55:57 +01:00
+AuthorDate:    Tue, 09 Mar 2021 09:55:53 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 17 Mar 2021 16:34:11 +01:00
+CommitterDate: Wed, 17 Mar 2021 16:34:08 +01:00
 
-tick/sched: Prevent false positive softirq pending warnings on RT
+softirq: Add RT specific softirq accounting
 
-On RT a task which has soft interrupts disabled can block on a lock and
-schedule out to idle while soft interrupts are pending. This triggers the
-warning in the NOHZ idle code which complains about going idle with pending
-soft interrupts. But as the task is blocked soft interrupt processing is
-temporarily blocked as well which means that such a warning is a false
-positive.
+RT requires the softirq processing and local bottomhalf disabled regions to
+be preemptible. Using the normal preempt count based serialization is
+therefore not possible because this implicitely disables preemption.
 
-To prevent that check the per CPU state which indicates that a scheduled
-out task has soft interrupts disabled.
+RT kernels use a per CPU local lock to serialize bottomhalfs. As
+local_bh_disable() can nest the lock can only be acquired on the outermost
+invocation of local_bh_disable() and released when the nest count becomes
+zero. Tasks which hold the local lock can be preempted so its required to
+keep track of the nest count per task.
+
+Add a RT only counter to task struct and adjust the relevant macros in
+preempt.h.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Tested-by: Paul E. McKenney <paulmck@kernel.org>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210309085727.527563866@linutronix.de
+Link: https://lore.kernel.org/r/20210309085726.983627589@linutronix.de
 
 ---
- include/linux/bottom_half.h |  6 ++++++
- kernel/softirq.c            | 15 +++++++++++++++
- kernel/time/tick-sched.c    |  2 +-
- 3 files changed, 22 insertions(+), 1 deletion(-)
+ include/linux/hardirq.h | 1 +
+ include/linux/preempt.h | 6 +++++-
+ include/linux/sched.h   | 3 +++
+ 3 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/bottom_half.h b/include/linux/bottom_half.h
-index e4dd613..eed86eb 100644
---- a/include/linux/bottom_half.h
-+++ b/include/linux/bottom_half.h
-@@ -32,4 +32,10 @@ static inline void local_bh_enable(void)
- 	__local_bh_enable_ip(_THIS_IP_, SOFTIRQ_DISABLE_OFFSET);
- }
+diff --git a/include/linux/hardirq.h b/include/linux/hardirq.h
+index 7c9d6a2..69bc86e 100644
+--- a/include/linux/hardirq.h
++++ b/include/linux/hardirq.h
+@@ -6,6 +6,7 @@
+ #include <linux/preempt.h>
+ #include <linux/lockdep.h>
+ #include <linux/ftrace_irq.h>
++#include <linux/sched.h>
+ #include <linux/vtime.h>
+ #include <asm/hardirq.h>
  
+diff --git a/include/linux/preempt.h b/include/linux/preempt.h
+index 69cc8b6..9881eac 100644
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -79,7 +79,11 @@
+ 
+ #define nmi_count()	(preempt_count() & NMI_MASK)
+ #define hardirq_count()	(preempt_count() & HARDIRQ_MASK)
+-#define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
 +#ifdef CONFIG_PREEMPT_RT
-+extern bool local_bh_blocked(void);
++# define softirq_count()	(current->softirq_disable_cnt & SOFTIRQ_MASK)
 +#else
-+static inline bool local_bh_blocked(void) { return false; }
++# define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
 +#endif
-+
- #endif /* _LINUX_BH_H */
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index 1ed1c55..5a99696 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -141,6 +141,21 @@ static DEFINE_PER_CPU(struct softirq_ctrl, softirq_ctrl) = {
- 	.lock	= INIT_LOCAL_LOCK(softirq_ctrl.lock),
- };
+ #define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
  
-+/**
-+ * local_bh_blocked() - Check for idle whether BH processing is blocked
-+ *
-+ * Returns false if the per CPU softirq::cnt is 0 otherwise true.
-+ *
-+ * This is invoked from the idle task to guard against false positive
-+ * softirq pending warnings, which would happen when the task which holds
-+ * softirq_ctrl::lock was the only running task on the CPU and blocks on
-+ * some other lock.
-+ */
-+bool local_bh_blocked(void)
-+{
-+	return __this_cpu_read(softirq_ctrl.cnt) != 0;
-+}
-+
- void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
- {
- 	unsigned long flags;
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index e10a4af..0cc5579 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -973,7 +973,7 @@ static bool can_stop_idle_tick(int cpu, struct tick_sched *ts)
- 	if (unlikely(local_softirq_pending())) {
- 		static int ratelimit;
+ /*
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index ef00bb2..743a613 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1044,6 +1044,9 @@ struct task_struct {
+ 	int				softirq_context;
+ 	int				irq_config;
+ #endif
++#ifdef CONFIG_PREEMPT_RT
++	int				softirq_disable_cnt;
++#endif
  
--		if (ratelimit < 10 &&
-+		if (ratelimit < 10 && !local_bh_blocked() &&
- 		    (local_softirq_pending() & SOFTIRQ_STOP_IDLE_MASK)) {
- 			pr_warn("NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #%02x!!!\n",
- 				(unsigned int) local_softirq_pending());
+ #ifdef CONFIG_LOCKDEP
+ # define MAX_LOCK_DEPTH			48UL
