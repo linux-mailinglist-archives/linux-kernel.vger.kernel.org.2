@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D39E33F154
+	by mail.lfdr.de (Postfix) with ESMTP id 74DC533F155
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:42:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbhCQNmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 09:42:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40456 "EHLO mail.kernel.org"
+        id S231261AbhCQNmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 09:42:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230330AbhCQNlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 09:41:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8340464DFF;
-        Wed, 17 Mar 2021 13:41:41 +0000 (UTC)
+        id S230434AbhCQNlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 09:41:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08AC364F50;
+        Wed, 17 Mar 2021 13:41:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615988502;
-        bh=YbODQsKROeQrRlteUONt+KwDn47LMp1qB7GsHBk2lgo=;
+        s=k20201202; t=1615988508;
+        bh=XgvDN9+ZI5AiUc+xPeXnYranTBmsXCf/a6s6tclb1O4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mOu55MoQzWIg3Nu0N4Wv+q/7hPk73dAZqw9OhLzaG27UHmxhyNi5Jztozo3TL/oUH
-         njmmHxt/tu3RVSIIhpyvE1UPtkkySVTpdmhQixxhjoXWlyUcD3gQpuKK0C/MFYuqyu
-         qqQcl8zv9vNTkRuTKp14WMx9OUVG2wJE83H2rwwdsMYYgIQocGjbyShDh98p1Uj9+k
-         w/OvOVM9kxayUxU1SRj48TPU1eyffCIhrQeXLH5knm04pfLl82lmK22kwD6XG2t++o
-         9Uf0r4ANB2YDa490REENGT29keNzpxVd/BjwGzwC3liczLBwjUbHKxibiA2iuyXXfF
-         X8fMmlgshITgw==
+        b=ry/J/KELDZqxjjGdXfoG66TK374xNVt0uqjTCVcsRBI+G/RGWlxaMMmDiAcM/YlgP
+         4DSYTP0oWfVNcAFChbYikuLsRfJ6naMVaxDm6naCaHuBIg1Zei+62uvq0cvOZ9pGdL
+         PoypXouEOUX7vQ0zZCulTmi5C4jqsTnoJS++kXGzWBpKE0PmVMJWOKaQOk53hF5OGS
+         qucohmKbvnj2q6+y2QwQmFWmZ5dF3DRUFGsiqCoqYU5M501yw5J+8qVvi8xN4swkB8
+         MV4i0DaAEHnBa3SmuuumI+gv9vxRdvNSAFgtV9UfGerKdalb4BcFxUddirI+hhXAVk
+         jdnL16wVulrDw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Colin King <colin.king@canonical.com>, linux-spi@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH][next] spi: Fix spelling mistake "softwade" -> "software"
-Date:   Wed, 17 Mar 2021 13:41:36 +0000
-Message-Id: <161598843909.8643.16208027141094463560.b4-ty@kernel.org>
+To:     alsa-devel@alsa-project.org, tiwai@suse.com,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        peter.ujfalusi@gmail.com, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com, perex@perex.cz
+Cc:     Mark Brown <broonie@kernel.org>, rdunlap@infradead.org
+Subject: Re: [PATCH] sound: soc: ti: Fix a typo in the file ams-delta.c
+Date:   Wed, 17 Mar 2021 13:41:38 +0000
+Message-Id: <161598838274.8460.1631004595185849740.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210317093936.5572-1-colin.king@canonical.com>
-References: <20210317093936.5572-1-colin.king@canonical.com>
+In-Reply-To: <20210317082042.3670745-1-unixbhaskar@gmail.com>
+References: <20210317082042.3670745-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,17 +42,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Mar 2021 09:39:36 +0000, Colin King wrote:
-> There is a spelling mistake in a dev_err message. Fix it.
+On Wed, 17 Mar 2021 13:50:42 +0530, Bhaskar Chowdhury wrote:
+> s/functonality/functionality/
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] spi: Fix spelling mistake "softwade" -> "software"
-      commit: 9d902c2a9a258e1e17cfcce7ea558b1c427b2757
+[1/1] sound: soc: ti: Fix a typo in the file ams-delta.c
+      commit: c00f4f2598d334470b49385f811ca8f5c966a63e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
