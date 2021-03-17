@@ -2,78 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12ADE33E9F9
+	by mail.lfdr.de (Postfix) with ESMTP id CCFBF33E9FB
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229472AbhCQGki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 02:40:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229904AbhCQGkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 02:40:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CCF364F4F;
-        Wed, 17 Mar 2021 06:40:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615963205;
-        bh=DKkSbpTtYNi1ZVDKfEu/pISf3KKivN5OtDm3wdZBSMk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MCL6GBsTblKeyK6Xlm4N9pcyXR/52vV0wfElZZo6h3qXk0qFwaGDjTmju2Jxvm23r
-         1fJF/nJ6AAjg7wFRajkNsIY/gqyYiesHF0A5O3zZk/en5bTBYKqWjfFTmUrQN69Kye
-         TfSf8TAA9Ea3XUCs1b1OAgM5lURWcIZn7l/ojFJP5UnHvqylKxpc8wluDnINwemtpW
-         HbOqMfg6TzzgWwRTmnsR3oEXTZyKdaiWeAWJOjXO6gSzcl/PoYy/Vd6nY5bqPf0GYn
-         1VVM4ZROPY/vjpG4O6xzvHtpe3auTvH31ZnAuin/NBKrAqjLPzPdg+G5NSk3kG2mXQ
-         qEcKepk6ROisQ==
-Date:   Wed, 17 Mar 2021 12:10:02 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Seiya Wang <seiya.wang@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Zhiyong Tao <zhiyong.tao@mediatek.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bayi Cheng <bayi.cheng@mediatek.com>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        srv_heupstream@mediatek.com
-Subject: Re: [PATCH 08/10] dt-bindings: phy: Add compatible for Mediatek
- MT8195
-Message-ID: <YFGkQq1J0g4AKTNZ@vkoul-mobl.Dlink>
-References: <20210316111443.3332-1-seiya.wang@mediatek.com>
- <20210316111443.3332-9-seiya.wang@mediatek.com>
+        id S230033AbhCQGkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 02:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230469AbhCQGkP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 02:40:15 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B04C06174A;
+        Tue, 16 Mar 2021 23:40:15 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id y20so21516372iot.4;
+        Tue, 16 Mar 2021 23:40:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BbxV8FFQ5+F/TxA4Io3PIpeBpLDxtoC/hF5K9QMF6D8=;
+        b=dBwe7vj/pgCDOU7q9uxw1w+siPNNDQQsm4MyExCl/kteM++nkzsTx2wozYZ/Q0EWyA
+         XMN1jCSEU405emTKJrJnDONCHpGjWC/jqS0JV+Jq0/CFyIqQ88bwF2EmqppVFFI0599Z
+         pYjNmC3YLG7G22QTontqrzwzb9QKXzH57W9DOHXP0TMoaXamCtuNSam/mHQrcHnhJ5zp
+         Rtx/3ZRbeFDfMNYjCN2CJAX8ysvwRFhYRCd0Y3EPJ4d951qeMSxZ7dfFRxQb2qR76YCr
+         ostjb3petHIqVMjgqRa3yZB2cpHFZIJvTFfy0Hrv2ipMRb3Y/wm1OMb77T0LtthsLdTx
+         chyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BbxV8FFQ5+F/TxA4Io3PIpeBpLDxtoC/hF5K9QMF6D8=;
+        b=gn9Yvhde4cxF/FYJRKxeRIoeZ/EyCYhMNqZgSu+io5QO4du1QgAo4v6eU7Mgtlrplr
+         7+4M8TILg/LbTWPPWyuXHdbMEi/X+S66vRS8L8frMSrqxFXMdI7F18YeP0RpbJzrH79e
+         gDhRpjTWf8djNvPEhs7vrFfemeWD6A1iP4RHmT4mf6f/92YfnxurFqBHrewxN+FhZedY
+         mWaonpAOwRyoXeKyngJqkmXAC5rkX+wrNT4DYRT9wA+fqc7oZxjxWmCsvV06A2z/Blcc
+         qgXdrSyi2RdlVfjUo+QUTDqlUBHGuTcD5YkpzN05TzPzjrYuTh64TraZ0lESfnFytfzg
+         lEnQ==
+X-Gm-Message-State: AOAM533jQQTQJ7MNF0XY2lG8ClQfpwsPtdnWFVT3bDgj2S3pk1g5Jpz9
+        HNFwFIaECqkdoSdjkla8XxIUHbbv+HcqfRcIHxk=
+X-Google-Smtp-Source: ABdhPJzUIIrtKmaGZhfubqNTun6mLmQTTiaCQn1hOdTlRDX13D1LRT2tUa9aLsENTsdq0kdQm1GNr4/QneFvG5WX3sY=
+X-Received: by 2002:a05:6638:2bb:: with SMTP id d27mr1681142jaq.98.1615963214856;
+ Tue, 16 Mar 2021 23:40:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316111443.3332-9-seiya.wang@mediatek.com>
+References: <20210316015424.1999082-1-yury.norov@gmail.com>
+ <20210316015424.1999082-14-yury.norov@gmail.com> <YFCabyt9pfPtoQiZ@smile.fi.intel.com>
+ <20210317044759.GA2114775@yury-ThinkPad> <eff989d0ceaede15216f1046c24829f1113c035f.camel@perches.com>
+In-Reply-To: <eff989d0ceaede15216f1046c24829f1113c035f.camel@perches.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Wed, 17 Mar 2021 07:40:04 +0100
+Message-ID: <CAKXUXMx9SFAxT_GoRw+Un7XyAuXh4LY0+RFwcKVOCG0vr2XUxw@mail.gmail.com>
+Subject: Re: [PATCH 13/13] MAINTAINERS: Add entry for the bitmap API
+To:     Joe Perches <joe@perches.com>
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
+        linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-03-21, 19:14, Seiya Wang wrote:
-> This commit adds dt-binding documentation of UFS M-Phy for Mediatek MT8195 SoC
-> Platform.
+On Wed, Mar 17, 2021 at 5:57 AM Joe Perches <joe@perches.com> wrote:
+>
+> On Tue, 2021-03-16 at 21:47 -0700, Yury Norov wrote:
+> > [CC Andy Whitcroft, Joe Perches, Dwaipayan Ray, Lukas Bulwahn]
+> >
+> > On Tue, Mar 16, 2021 at 01:45:51PM +0200, Andy Shevchenko wrote:
+> > > On Mon, Mar 15, 2021 at 06:54:24PM -0700, Yury Norov wrote:
+> > > > Add myself as maintainer for bitmap API and Andy and Rasmus as reviewers.
+> > > >
+> > > > I'm an author of current implementation of lib/find_bit and an active
+> > > > contributor to lib/bitmap. It was spotted that there's no maintainer for
+> > > > bitmap API. I'm willing to maintain it.
+> > > >
+> > > > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > > > Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > > Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> > > > ---
+> > > >  MAINTAINERS | 16 ++++++++++++++++
+> > > >  1 file changed, 16 insertions(+)
+> > > >
+> > > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > > index 3dd20015696e..44f94cdd5a20 100644
+> > > > --- a/MAINTAINERS
+> > > > +++ b/MAINTAINERS
+> > > > @@ -3151,6 +3151,22 @@ F: Documentation/filesystems/bfs.rst
+> > > >  F:       fs/bfs/
+> > > >  F:       include/uapi/linux/bfs_fs.h
+> > > >
+> > > >
+> > > > +BITMAP API
+> > > > +M:       Yury Norov <yury.norov@gmail.com>
+> > > > +R:       Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > > +R:       Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> > > > +S:       Maintained
+> > > > +F:       include/asm-generic/bitops/find.h
+> > > > +F:       include/linux/bitmap.h
+> > > > +F:       lib/bitmap.c
+> > > > +F:       lib/find_bit.c
+> > >
+> > > > +F:       lib/find_find_bit_benchmark.c
+> > >
+> > > Does this file exist?
+> > > I guess checkpatch.pl nowadays has a MAINTAINER data base validation.
+> >
+> > No lib/find_find_bit_benchmark.c doesn't exist. It's a typo, it should
+> > be lib/find_bit_benchmark.c. Checkpatch doesn't warn:
+> >
+> > yury:linux$ scripts/checkpatch.pl 0013-MAINTAINERS-Add-entry-for-the-bitmap-API.patch
+> > total: 0 errors, 0 warnings, 22 lines checked
+>
+> checkpatch does not validate filenames for each patch.
+>
+> checkpatch does have a --self-test=patterns capability that does
+> validate file accessibility.
 
-Applied, thanks
+Joe meant: get_maintainers does have a --self-test=patterns capability
+that does validate file accessibility.
 
--- 
-~Vinod
+You can run that before patch submission; otherwise, I run that script
+on linux-next once a week and send out correction patches as far as my
+"spare" time allows to do so.
+
+Lukas
