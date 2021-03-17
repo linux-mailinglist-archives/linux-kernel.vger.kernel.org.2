@@ -2,183 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E583033F540
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD65E33F526
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbhCQQQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 12:16:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49834 "EHLO
+        id S232403AbhCQQKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 12:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232392AbhCQQPj (ORCPT
+        with ESMTP id S232224AbhCQQKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 12:15:39 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4332C06175F;
-        Wed, 17 Mar 2021 09:15:38 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 15:19:45 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615994386;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mgV51ibPcfISQ+sGgS3nDU4tWskT7lkLqjb/sl1ES4A=;
-        b=G4wI4MlO+npTQQtQ8Y7Q1ggXBrLXqhcqMDIn4qsIWKQmmkDpsGY2M5FdUcizGKgAhBsn+x
-        3CeKL6Y5f/7Y+Kj4xfM2AKBB32fHAVrhs9hTIPAS/w3RADU0nLVyL6nEIAwfyBH7kBwUZJ
-        HNaF4XMf2cZkMiLJcBfjivORNiDvXrW5uySvHuPAmrAszu8I65SJRvropAcxVJLxxnevN0
-        jrBd5xPLludk86UsK1/V0JV7mscIpVDYECvfW4JYvxCnQ1x/EsNGwJbn8ipZhJ/168XCtx
-        3BHjWzWxki96txOVAs4SEqULje+ot7HHd5wEusLxp53oVmfOPGHYln36d2Fucg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615994386;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mgV51ibPcfISQ+sGgS3nDU4tWskT7lkLqjb/sl1ES4A=;
-        b=F6bVIt9n8RRhLoTuA1xSzXQibL4p/HFgmxVnR4BeLWzMU/Tw5gIw3kfVl7ec44WuitNU7O
-        ogk4Pr5aIniY7QAw==
-From:   "tip-bot2 for Piotr Figiel" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] rseq, ptrace: Add PTRACE_GET_RSEQ_CONFIGURATION request
-Cc:     Piotr Figiel <figiel@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michal Miroslaw <emmir@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Oleg Nesterov <oleg@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210226135156.1081606-1-figiel@google.com>
-References: <20210226135156.1081606-1-figiel@google.com>
+        Wed, 17 Mar 2021 12:10:10 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC27C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:10:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=OegbBuCs7g0rrwuCi6jze6s2GTCQRVv+NrnCbww/Xa4=; b=fQ1kHxZtT+zE1J9uwzareUsWZI
+        Vwd13/JnWWJcpr0N/2i6QvBr4/YGljPxDUFAYPf7ulHLtxZH0YZNy0jouF51iVwjZ7UkMmyogBlR6
+        i6KOXTLuo3FYDFIkLlWxedUbiR4Pi9SXPERFRt4Dx0eXcpVXflvq+SmKa3DaSqBcjfhTG2YE8k867
+        m9J7pt3Pgz4Eo9rnH9wBYTQ6Tk2B6ZwqZtl8wDlIQeHh54MN/7udzGLU3PVYmtFUINqkGpyqHQQ9Y
+        Gur35J250iPqUYoF/txFGdLo4ktqc/WmanqvZqPiQwOK8kHuR131BGgYwtqUr1AsjIwhj1qLq3Qo1
+        BE1ajXKA==;
+Received: from merlin.infradead.org ([2001:8b0:10b:1234::107])
+        by desiato.infradead.org with esmtps (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMY91-003ROr-S9
+        for linux-kernel@vger.kernel.org; Wed, 17 Mar 2021 15:31:35 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=OegbBuCs7g0rrwuCi6jze6s2GTCQRVv+NrnCbww/Xa4=; b=SCN5+73p4vcA2lgsp1XzufTOqJ
+        QwokuDhlITbVIeMhpYaainFhG9aTbFTiWx7ItqNV6GgWxsNcJni9h+EWOafqTy+/Ns5GVn44UhNNc
+        hheYDYiyEIK3BqFcy94YKyGM/4RN32WNJyrIKYJEQP/02XC/5dcn6+OZUk4sarrnNOgEXhNL4YJ8I
+        4TwsCbOleiRKSEwBR5q4O/Oeam+t+3l3U/cxQgMrX+2N+aN7E2KYpqURzxU+Fcp9KeqoRtb+XPaX8
+        Y0XV4FGDugHMvCG3G9GJMKXIse8xt/bGHaXQFtulNvEB/RnIU+Mi29mRzUSVEKtPRIS3dS10pbmQP
+        xBonlXyA==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMY2H-001ehA-Ha; Wed, 17 Mar 2021 15:24:38 +0000
+Subject: Re: [PATCH V2] iio:imu:mpu6050: Modify matricies to matrices
+To:     Guoqing chi <chi962464zy@163.com>, jic23@kernel.org
+Cc:     linux-kernel@vger.kernel.org, chiguoqing@yulong.com
+References: <20210317061930.478-1-chi962464zy@163.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ccaa6038-0b52-9b3b-f50c-f63ddf3a8747@infradead.org>
+Date:   Wed, 17 Mar 2021 08:24:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Message-ID: <161599438512.398.10240803553618340072.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210317061930.478-1-chi962464zy@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On 3/16/21 11:19 PM, Guoqing chi wrote:
+> From: Guoqing Chi <chiguoqing@yulong.com>
+> 
+> The plural of "matrix" is "matrices".
+> 
+> Signed-off-by: Guoqing Chi <chiguoqing@yulong.com>
 
-Commit-ID:     90f093fa8ea48e5d991332cee160b761423d55c1
-Gitweb:        https://git.kernel.org/tip/90f093fa8ea48e5d991332cee160b761423d55c1
-Author:        Piotr Figiel <figiel@google.com>
-AuthorDate:    Fri, 26 Feb 2021 14:51:56 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 17 Mar 2021 16:15:39 +01:00
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-rseq, ptrace: Add PTRACE_GET_RSEQ_CONFIGURATION request
+Thanks.
 
-For userspace checkpoint and restore (C/R) a way of getting process state
-containing RSEQ configuration is needed.
+> ---
+> V2:fix "complex number of" to "plural of".
+> 
+>  include/linux/platform_data/invensense_mpu6050.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/platform_data/invensense_mpu6050.h b/include/linux/platform_data/invensense_mpu6050.h
+> index 93974f4cfba1..f05b37521f67 100644
+> --- a/include/linux/platform_data/invensense_mpu6050.h
+> +++ b/include/linux/platform_data/invensense_mpu6050.h
+> @@ -12,7 +12,7 @@
+>   *			mounting matrix retrieved from device-tree)
+>   *
+>   * Contains platform specific information on how to configure the MPU6050 to
+> - * work on this platform.  The orientation matricies are 3x3 rotation matricies
+> + * work on this platform.  The orientation matrices are 3x3 rotation matrices
+>   * that are applied to the data to rotate from the mounting orientation to the
+>   * platform orientation.  The values must be one of 0, 1, or -1 and each row and
+>   * column should have exactly 1 non-zero value.
+> 
 
-There are two ways this information is going to be used:
- - to re-enable RSEQ for threads which had it enabled before C/R
- - to detect if a thread was in a critical section during C/R
 
-Since C/R preserves TLS memory and addresses RSEQ ABI will be restored
-using the address registered before C/R.
+-- 
+~Randy
 
-Detection whether the thread is in a critical section during C/R is needed
-to enforce behavior of RSEQ abort during C/R. Attaching with ptrace()
-before registers are dumped itself doesn't cause RSEQ abort.
-Restoring the instruction pointer within the critical section is
-problematic because rseq_cs may get cleared before the control is passed
-to the migrated application code leading to RSEQ invariants not being
-preserved. C/R code will use RSEQ ABI address to find the abort handler
-to which the instruction pointer needs to be set.
-
-To achieve above goals expose the RSEQ ABI address and the signature value
-with the new ptrace request PTRACE_GET_RSEQ_CONFIGURATION.
-
-This new ptrace request can also be used by debuggers so they are aware
-of stops within restartable sequences in progress.
-
-Signed-off-by: Piotr Figiel <figiel@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Michal Miroslaw <emmir@google.com>
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Acked-by: Oleg Nesterov <oleg@redhat.com>
-Link: https://lkml.kernel.org/r/20210226135156.1081606-1-figiel@google.com
----
- include/uapi/linux/ptrace.h | 10 ++++++++++
- kernel/ptrace.c             | 25 +++++++++++++++++++++++++
- 2 files changed, 35 insertions(+)
-
-diff --git a/include/uapi/linux/ptrace.h b/include/uapi/linux/ptrace.h
-index 83ee45f..3747bf8 100644
---- a/include/uapi/linux/ptrace.h
-+++ b/include/uapi/linux/ptrace.h
-@@ -102,6 +102,16 @@ struct ptrace_syscall_info {
- 	};
- };
- 
-+#define PTRACE_GET_RSEQ_CONFIGURATION	0x420f
-+
-+struct ptrace_rseq_configuration {
-+	__u64 rseq_abi_pointer;
-+	__u32 rseq_abi_size;
-+	__u32 signature;
-+	__u32 flags;
-+	__u32 pad;
-+};
-+
- /*
-  * These values are stored in task->ptrace_message
-  * by tracehook_report_syscall_* to describe the current syscall-stop.
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index 821cf17..c71270a 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -31,6 +31,7 @@
- #include <linux/cn_proc.h>
- #include <linux/compat.h>
- #include <linux/sched/signal.h>
-+#include <linux/minmax.h>
- 
- #include <asm/syscall.h>	/* for syscall_get_* */
- 
-@@ -779,6 +780,24 @@ static int ptrace_peek_siginfo(struct task_struct *child,
- 	return ret;
- }
- 
-+#ifdef CONFIG_RSEQ
-+static long ptrace_get_rseq_configuration(struct task_struct *task,
-+					  unsigned long size, void __user *data)
-+{
-+	struct ptrace_rseq_configuration conf = {
-+		.rseq_abi_pointer = (u64)(uintptr_t)task->rseq,
-+		.rseq_abi_size = sizeof(*task->rseq),
-+		.signature = task->rseq_sig,
-+		.flags = 0,
-+	};
-+
-+	size = min_t(unsigned long, size, sizeof(conf));
-+	if (copy_to_user(data, &conf, size))
-+		return -EFAULT;
-+	return sizeof(conf);
-+}
-+#endif
-+
- #ifdef PTRACE_SINGLESTEP
- #define is_singlestep(request)		((request) == PTRACE_SINGLESTEP)
- #else
-@@ -1222,6 +1241,12 @@ int ptrace_request(struct task_struct *child, long request,
- 		ret = seccomp_get_metadata(child, addr, datavp);
- 		break;
- 
-+#ifdef CONFIG_RSEQ
-+	case PTRACE_GET_RSEQ_CONFIGURATION:
-+		ret = ptrace_get_rseq_configuration(child, addr, datavp);
-+		break;
-+#endif
-+
- 	default:
- 		break;
- 	}
