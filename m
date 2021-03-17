@@ -2,140 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844D033E942
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:49:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E53633E944
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:50:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbhCQFst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 01:48:49 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:28234 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229953AbhCQFsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 01:48:35 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F0fMz3RQ5z9vBLs;
-        Wed, 17 Mar 2021 06:48:31 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 5HAfcpzaS9zh; Wed, 17 Mar 2021 06:48:31 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F0fMz2JZBz9vBLr;
-        Wed, 17 Mar 2021 06:48:31 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 434728B7F7;
-        Wed, 17 Mar 2021 06:48:31 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id G8uQhGY3jGja; Wed, 17 Mar 2021 06:48:30 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 82F468B768;
-        Wed, 17 Mar 2021 06:48:18 +0100 (CET)
-Subject: Re: [PATCH v2] mm: Move mem_init_print_info() into mm_init()
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org,
-        Guo Ren <guoren@kernel.org>, sparclinux@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Jonas Bonn <jonas@southpole.se>,
-        linux-s390@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-hexagon@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-csky@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org,
-        openrisc@lists.librecores.org,
-        linux-arm-kernel@lists.infradead.org,
-        Richard Henderson <rth@twiddle.net>,
-        linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        "David S. Miller" <davem@davemloft.net>
-References: <4d488195-7281-9238-b30d-9f89a6100fb9@csgroup.eu>
- <20210317015210.33641-1-wangkefeng.wang@huawei.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <3f6959d6-1f37-8baf-a12e-3fbda6a17c7d@csgroup.eu>
-Date:   Wed, 17 Mar 2021 06:48:15 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230027AbhCQFtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 01:49:52 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:38860 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhCQFtT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 01:49:19 -0400
+Received: by mail-io1-f71.google.com with SMTP id x9so22525376iob.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 22:49:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=9YdkGevB3HdkHkmfKATNeADUt1YQP8td1/6C+RHiBp0=;
+        b=Lhi6ENADcy1yzoAWNltJsEzltuI8beb+IgolBzuIeobjAE1Uwl0cc4VRWYSIDr4EW8
+         uZjEmBd3tCSc98ZrqjpG/lxqI2SnR5GmT26NDnDMOMiDeaDZnHaZibfB4jhBWx2Aa031
+         y/fo7szJOzqZxrQlzJTh/RO53jFey/GBXJaUlCu1LCm6TFL4AwZNEtYTKITs0jnQTvw2
+         OG44i3k3ds7Zdv481VJruut7+1A4rT6USaLoGv3CJD8SbwZsLK5EIkIBJX6quyrN0zF4
+         C1BVRzjS0NP3ZSSNZh1g43oWviMTZPrq2I9cvT7ZPGLN4DoecSRxaxAHDBuIkzCwRPSr
+         0BHg==
+X-Gm-Message-State: AOAM533FoG4l8k+OcuYwVG2Sg0OI5KwhEFWe+bZT8MlWSZSCVTrcAfZK
+        IDSB7Ub1ISgzHmrquyLQ0kHp2ndcaBI2v1K1hdxAIHiBjd5x
+X-Google-Smtp-Source: ABdhPJxqyX+rD7OPc3p2Jp4qhw5m25auzEBBH7JhRWIrnJZ0rgiAfFWEhl4RrGdOA6ClkbKDy5zqFcvLTJ0dAjFT9i4FmZSkeSg9
 MIME-Version: 1.0
-In-Reply-To: <20210317015210.33641-1-wangkefeng.wang@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a02:604b:: with SMTP id d11mr1592853jaf.128.1615960158449;
+ Tue, 16 Mar 2021 22:49:18 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 22:49:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003736df05bdb50bf3@google.com>
+Subject: [syzbot] KMSAN: uninit-value in iptable_mangle_hook (5)
+From:   syzbot <syzbot+9b5e12c49c015d4c1aeb@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, dsahern@kernel.org,
+        fw@strlen.de, glider@google.com, kadlec@netfilter.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    29ad81a1 arch/x86: add missing include to sparsemem.h
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=179b38f6d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8b976581f6bd1e7d
+dashboard link: https://syzkaller.appspot.com/bug?extid=9b5e12c49c015d4c1aeb
+compiler:       Debian clang version 11.0.1-2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9b5e12c49c015d4c1aeb@syzkaller.appspotmail.com
+
+netlink: 24 bytes leftover after parsing attributes in process `syz-executor.4'.
+=====================================================
+BUG: KMSAN: uninit-value in ipt_mangle_out net/ipv4/netfilter/iptable_mangle.c:61 [inline]
+BUG: KMSAN: uninit-value in iptable_mangle_hook+0x75a/0x8c0 net/ipv4/netfilter/iptable_mangle.c:81
+CPU: 1 PID: 25792 Comm: syz-executor.4 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ ipt_mangle_out net/ipv4/netfilter/iptable_mangle.c:61 [inline]
+ iptable_mangle_hook+0x75a/0x8c0 net/ipv4/netfilter/iptable_mangle.c:81
+ nf_hook_entry_hookfn include/linux/netfilter.h:136 [inline]
+ nf_hook_slow+0x17b/0x460 net/netfilter/core.c:589
+ nf_hook include/linux/netfilter.h:256 [inline]
+ __ip_local_out+0x78c/0x840 net/ipv4/ip_output.c:115
+ ip_local_out+0xa1/0x1e0 net/ipv4/ip_output.c:124
+ iptunnel_xmit+0x931/0xf20 net/ipv4/ip_tunnel_core.c:82
+ udp_tunnel_xmit_skb+0x526/0x640 net/ipv4/udp_tunnel_core.c:190
+ geneve_xmit_skb drivers/net/geneve.c:959 [inline]
+ geneve_xmit+0x209e/0x3c20 drivers/net/geneve.c:1059
+ __netdev_start_xmit include/linux/netdevice.h:4778 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4792 [inline]
+ xmit_one+0x2b6/0x760 net/core/dev.c:3574
+ dev_hard_start_xmit net/core/dev.c:3590 [inline]
+ __dev_queue_xmit+0x3426/0x45c0 net/core/dev.c:4151
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4184
+ packet_snd net/packet/af_packet.c:3006 [inline]
+ packet_sendmsg+0x8778/0x9a60 net/packet/af_packet.c:3031
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2345
+ ___sys_sendmsg net/socket.c:2399 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2432
+ __do_sys_sendmsg net/socket.c:2441 [inline]
+ __se_sys_sendmsg+0x97/0xb0 net/socket.c:2439
+ __x64_sys_sendmsg+0x4a/0x70 net/socket.c:2439
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x465f69
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fae1692d188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465f69
+RDX: 0000000000008844 RSI: 00000000200005c0 RDI: 0000000000000003
+RBP: 00000000004bfa8f R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 0000000000a9fb1f R14: 00007fae1692d300 R15: 0000000000022000
+
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
+ __msan_chain_origin+0x57/0xa0 mm/kmsan/kmsan_instr.c:147
+ iptunnel_xmit+0xbd6/0xf20 net/ipv4/ip_tunnel_core.c:76
+ udp_tunnel_xmit_skb+0x526/0x640 net/ipv4/udp_tunnel_core.c:190
+ geneve_xmit_skb drivers/net/geneve.c:959 [inline]
+ geneve_xmit+0x209e/0x3c20 drivers/net/geneve.c:1059
+ __netdev_start_xmit include/linux/netdevice.h:4778 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4792 [inline]
+ xmit_one+0x2b6/0x760 net/core/dev.c:3574
+ dev_hard_start_xmit net/core/dev.c:3590 [inline]
+ __dev_queue_xmit+0x3426/0x45c0 net/core/dev.c:4151
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4184
+ packet_snd net/packet/af_packet.c:3006 [inline]
+ packet_sendmsg+0x8778/0x9a60 net/packet/af_packet.c:3031
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2345
+ ___sys_sendmsg net/socket.c:2399 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2432
+ __do_sys_sendmsg net/socket.c:2441 [inline]
+ __se_sys_sendmsg+0x97/0xb0 net/socket.c:2439
+ __x64_sys_sendmsg+0x4a/0x70 net/socket.c:2439
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8d/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2907 [inline]
+ __kmalloc_node_track_caller+0xa37/0x1430 mm/slub.c:4527
+ __kmalloc_reserve net/core/skbuff.c:142 [inline]
+ __alloc_skb+0x2f8/0xb30 net/core/skbuff.c:210
+ alloc_skb include/linux/skbuff.h:1099 [inline]
+ alloc_skb_with_frags+0x1f3/0xc10 net/core/skbuff.c:5894
+ sock_alloc_send_pskb+0xdc1/0xf90 net/core/sock.c:2348
+ packet_alloc_skb net/packet/af_packet.c:2854 [inline]
+ packet_snd net/packet/af_packet.c:2949 [inline]
+ packet_sendmsg+0x6aab/0x9a60 net/packet/af_packet.c:3031
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2345
+ ___sys_sendmsg net/socket.c:2399 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2432
+ __do_sys_sendmsg net/socket.c:2441 [inline]
+ __se_sys_sendmsg+0x97/0xb0 net/socket.c:2439
+ __x64_sys_sendmsg+0x4a/0x70 net/socket.c:2439
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+=====================================================
 
 
-Le 17/03/2021 à 02:52, Kefeng Wang a écrit :
-> mem_init_print_info() is called in mem_init() on each architecture,
-> and pass NULL argument, so using void argument and move it into mm_init().
-> 
-> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
-> v2:
-> - Cleanup 'str' line suggested by Christophe and ACK
-> 
->   arch/alpha/mm/init.c             |  1 -
->   arch/arc/mm/init.c               |  1 -
->   arch/arm/mm/init.c               |  2 --
->   arch/arm64/mm/init.c             |  2 --
->   arch/csky/mm/init.c              |  1 -
->   arch/h8300/mm/init.c             |  2 --
->   arch/hexagon/mm/init.c           |  1 -
->   arch/ia64/mm/init.c              |  1 -
->   arch/m68k/mm/init.c              |  1 -
->   arch/microblaze/mm/init.c        |  1 -
->   arch/mips/loongson64/numa.c      |  1 -
->   arch/mips/mm/init.c              |  1 -
->   arch/mips/sgi-ip27/ip27-memory.c |  1 -
->   arch/nds32/mm/init.c             |  1 -
->   arch/nios2/mm/init.c             |  1 -
->   arch/openrisc/mm/init.c          |  2 --
->   arch/parisc/mm/init.c            |  2 --
->   arch/powerpc/mm/mem.c            |  1 -
->   arch/riscv/mm/init.c             |  1 -
->   arch/s390/mm/init.c              |  2 --
->   arch/sh/mm/init.c                |  1 -
->   arch/sparc/mm/init_32.c          |  2 --
->   arch/sparc/mm/init_64.c          |  1 -
->   arch/um/kernel/mem.c             |  1 -
->   arch/x86/mm/init_32.c            |  2 --
->   arch/x86/mm/init_64.c            |  2 --
->   arch/xtensa/mm/init.c            |  1 -
->   include/linux/mm.h               |  2 +-
->   init/main.c                      |  1 +
->   mm/page_alloc.c                  | 10 +++++-----
->   30 files changed, 7 insertions(+), 42 deletions(-)
-> 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 89314651dd62..c2e0b3495c5a 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2373,7 +2373,7 @@ extern unsigned long free_reserved_area(void *start, void *end,
->   					int poison, const char *s);
->   
->   extern void adjust_managed_page_count(struct page *page, long count);
-> -extern void mem_init_print_info(const char *str);
-> +extern void mem_init_print_info(void);
-
-Sorry I didn't see that in previous patch.
-
-'extern' keyword is pointless for function prototypes and is deprecated, you should remove it.
-
-That said,
-
-Reviewed-by: Christophe Leroy <christophe.leroy@c-s.fr> # focussed on powerpc
-
->   
->   extern void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
->   
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
