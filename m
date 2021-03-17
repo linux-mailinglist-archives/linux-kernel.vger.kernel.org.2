@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0133333F477
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B68D033F47D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232625AbhCQPtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 11:49:41 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51106 "EHLO
+        id S232574AbhCQPtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 11:49:53 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51114 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232328AbhCQPs5 (ORCPT
+        with ESMTP id S232342AbhCQPs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 11:48:57 -0400
-Date:   Wed, 17 Mar 2021 15:48:55 -0000
+        Wed, 17 Mar 2021 11:48:58 -0400
+Date:   Wed, 17 Mar 2021 15:48:56 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1615996136;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -20,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yprOe3MUS8I0UsAojgvhLPkYT/3Ku7djqa4YIoXdrmk=;
-        b=dbQacbgjZTusx2iaLGxkv9/oC/BElgEIWBSbAZcQQI6buwbFUAw5+86BIPkWX4/fDhnug9
-        RvSbtp2/4tYftiNqoyH7T6y4ZpOzMhaZYFr6Nh4cMd3pLcw751FL8hOzW4x3mn8XuM5hOv
-        q4tYU4MlsxqBblvdC/ddMH57khh8W6x6+dhpWIZaEgfuhkiSBCUc1NpRsmPaA4V98Z2Pvm
-        1qN4mxZlmr6uJyIVW2qMxHVtxuKcMWXx/ZYDf6OTPLqpkR/zQjDyPJgqfZRD5AZ0gsd5U/
-        sesO/q9S3CHbcZDbOxAD3QSaBl0PSbo/T2WemMD89f8STHPpCLJ3QjDz4Qk9lQ==
+        bh=uChDpxew2+79uMtMLPxMuDbUdvkettPqFvkGVNo2R+E=;
+        b=UXu8LHqI2c23594lL0DjE7EXk6gZB7SOLS2BOqw0TN5RagSm/w3SKbEY4NAPt29dku3F7N
+        lCLkrY5TskSeVhVnkFEa49bdFmBGS1BSLWbadD5MRnVoqvAaGyGpz6de6QEt9+Vw4n7VcK
+        zfCdDRV2CyuMBv86xvl0Ja06aB4b29zFvWvA/KFyaAzsLB3D95dYkvPoCLH+/8ic7lahcy
+        KNIyASJzKOylqpA736CU25T5O+lLtFFk8hf/zMviobdlv2DlcbZ2O6G160p2W9Vb9EQZAh
+        fn9HKtStOd/X6QdWFN8B6ymgyLU9YmQqNWt+G5sdw9OIr1RC6BoPNJpBxqJGpw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1615996136;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,23 +33,24 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yprOe3MUS8I0UsAojgvhLPkYT/3Ku7djqa4YIoXdrmk=;
-        b=FLVBcIvfxj5dkVRnODcBvjBdQrsd2UTTTpKlTJDP98anP9QrCKs21MoRHhwTLh3/vf4nYP
-        4cfJP+i0uFocZ8Bg==
+        bh=uChDpxew2+79uMtMLPxMuDbUdvkettPqFvkGVNo2R+E=;
+        b=xKQ1tCUvXTLrBAvEXsAKW2VI6U2PXVghqk9t0ox7h7LMImrV7fN3AgtINp3jD7AhQu+7ho
+        lvyc5/kcvwCX/QDg==
 From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] firewire: ohci: Use tasklet_disable_in_atomic() where
- required
+Subject: [tip: irq/core] PCI: hv: Use tasklet_disable_in_atomic()
 Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Thomas Gleixner <tglx@linutronix.de>,
+        Wei Liu <wei.liu@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20210309084242.616379058@linutronix.de>
-References: <20210309084242.616379058@linutronix.de>
+In-Reply-To: <20210309084242.516519290@linutronix.de>
+References: <20210309084242.516519290@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <161599613554.398.14947260695479924195.tip-bot2@tip-bot2>
+Message-ID: <161599613604.398.12732595162252073123.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,63 +61,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     f339fc16fba0167d67c4026678ef4c405bca3085
-Gitweb:        https://git.kernel.org/tip/f339fc16fba0167d67c4026678ef4c405bca3085
+Commit-ID:     be4017cea0aec6369275df7eafbb09682f810e7e
+Gitweb:        https://git.kernel.org/tip/be4017cea0aec6369275df7eafbb09682f810e7e
 Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-AuthorDate:    Tue, 09 Mar 2021 09:42:16 +01:00
+AuthorDate:    Tue, 09 Mar 2021 09:42:15 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 17 Mar 2021 16:34:05 +01:00
+CommitterDate: Wed, 17 Mar 2021 16:34:03 +01:00
 
-firewire: ohci: Use tasklet_disable_in_atomic() where required
+PCI: hv: Use tasklet_disable_in_atomic()
 
-tasklet_disable() is invoked in several places. Some of them are in atomic
-context which prevents a conversion of tasklet_disable() to a sleepable
-function.
+The hv_compose_msi_msg() callback in irq_chip::irq_compose_msi_msg is
+invoked via irq_chip_compose_msi_msg(), which itself is always invoked from
+atomic contexts from the guts of the interrupt core code.
 
-The atomic callchains are:
-
- ar_context_tasklet()
-   ohci_cancel_packet()
-     tasklet_disable()
-
- ...
-   ohci_flush_iso_completions()
-     tasklet_disable()
-
-The invocation of tasklet_disable() from at_context_flush() is always in
-preemptible context.
-
-Use tasklet_disable_in_atomic() for the two invocations in
-ohci_cancel_packet() and ohci_flush_iso_completions().
+There is no way to change this w/o rewriting the whole driver, so use
+tasklet_disable_in_atomic() which allows to make tasklet_disable()
+sleepable once the remaining atomic users are addressed.
 
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Wei Liu <wei.liu@kernel.org>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210309084242.616379058@linutronix.de
+Link: https://lore.kernel.org/r/20210309084242.516519290@linutronix.de
 
 ---
- drivers/firewire/ohci.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/pci/controller/pci-hyperv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/firewire/ohci.c b/drivers/firewire/ohci.c
-index 9811c40..17c9d82 100644
---- a/drivers/firewire/ohci.c
-+++ b/drivers/firewire/ohci.c
-@@ -2545,7 +2545,7 @@ static int ohci_cancel_packet(struct fw_card *card, struct fw_packet *packet)
- 	struct driver_data *driver_data = packet->driver_data;
- 	int ret = -ENOENT;
+diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+index 27a17a1..a313708 100644
+--- a/drivers/pci/controller/pci-hyperv.c
++++ b/drivers/pci/controller/pci-hyperv.c
+@@ -1458,7 +1458,7 @@ static void hv_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
+ 	 * Prevents hv_pci_onchannelcallback() from running concurrently
+ 	 * in the tasklet.
+ 	 */
+-	tasklet_disable(&channel->callback_event);
++	tasklet_disable_in_atomic(&channel->callback_event);
  
--	tasklet_disable(&ctx->tasklet);
-+	tasklet_disable_in_atomic(&ctx->tasklet);
- 
- 	if (packet->ack != 0)
- 		goto out;
-@@ -3465,7 +3465,7 @@ static int ohci_flush_iso_completions(struct fw_iso_context *base)
- 	struct iso_context *ctx = container_of(base, struct iso_context, base);
- 	int ret = 0;
- 
--	tasklet_disable(&ctx->context.tasklet);
-+	tasklet_disable_in_atomic(&ctx->context.tasklet);
- 
- 	if (!test_and_set_bit_lock(0, &ctx->flushing_completions)) {
- 		context_tasklet((unsigned long)&ctx->context);
+ 	/*
+ 	 * Since this function is called with IRQ locks held, can't
