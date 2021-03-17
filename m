@@ -2,83 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46FC833E435
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0123633E3C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:58:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232062AbhCQA6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:58:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229874AbhCQA5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:57:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C07D464F9E;
-        Wed, 17 Mar 2021 00:57:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615942626;
-        bh=Qf6WRzLXOfkPVr6+tyAWYIuSf30ymOOqJmelHgbPUp0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nZE+Lv36PxSsqNYFxoL0wuNhxBGB4hUe5xz/nL6DxlJE4+WMSe9v9aiL6oQ8wr6lf
-         mKrDTq61F7CuLh2l2r93BbB22zGG2RVkj/2fdggCY9+KivdJ2ZURdzDvpUyF0SlVH/
-         ACvVx7uu1x3JJK3PmLxwc8XfoUwZfKD42OUtvmm1VD0oWf4ePFNXecNd99QxtAvAK3
-         QhOBuh7/9Ba8d1w40HZaT1v5y5i7rA/u9WkQ5hjiln7udqv6iuQKA2Wd5TKgtbkdL9
-         bPg+REA4F78JrPMyIgTOtx/En4u19+ApQ6QOn7ff9qi3yt2R4GvAvZxMyhXhMi73gT
-         yp5SgA0O7WjSg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 09/54] ixgbe: Fix memleak in ixgbe_configure_clsu32
-Date:   Tue, 16 Mar 2021 20:56:08 -0400
-Message-Id: <20210317005654.724862-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210317005654.724862-1-sashal@kernel.org>
-References: <20210317005654.724862-1-sashal@kernel.org>
+        id S231373AbhCQA5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:57:38 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13635 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230405AbhCQA4X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 20:56:23 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F0Wrd6B3Kz19G9M;
+        Wed, 17 Mar 2021 08:54:25 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 17 Mar
+ 2021 08:56:15 +0800
+Subject: Re: [PATCH] zonefs: fix to update .i_wr_refcnt correctly in
+ zonefs_open_zone()
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "jth@kernel.org" <jth@kernel.org>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "chao@kernel.org" <chao@kernel.org>
+References: <20210316123026.115473-1-yuchao0@huawei.com>
+ <BL0PR04MB65145B310933D52C432DA7BAE76B9@BL0PR04MB6514.namprd04.prod.outlook.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <64952e0e-0bd8-cbb2-9400-b4c16a886eee@huawei.com>
+Date:   Wed, 17 Mar 2021 08:56:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <BL0PR04MB65145B310933D52C432DA7BAE76B9@BL0PR04MB6514.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+On 2021/3/17 7:30, Damien Le Moal wrote:
+> On 2021/03/16 21:30, Chao Yu wrote:
+>> In zonefs_open_zone(), if opened zone count is larger than
+>> .s_max_open_zones threshold, we missed to recover .i_wr_refcnt,
+>> fix this.
+>>
+>> Fixes: b5c00e975779 ("zonefs: open/close zone on file open/close")
+>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>> ---
+>>   fs/zonefs/super.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
+>> index 0fe76f376dee..be6b99f7de74 100644
+>> --- a/fs/zonefs/super.c
+>> +++ b/fs/zonefs/super.c
+>> @@ -966,8 +966,7 @@ static int zonefs_open_zone(struct inode *inode)
+>>   
+>>   	mutex_lock(&zi->i_truncate_mutex);
+>>   
+>> -	zi->i_wr_refcnt++;
+>> -	if (zi->i_wr_refcnt == 1) {
+>> +	if (zi->i_wr_refcnt == 0) {
+> 
+> Nit: if (!zi->i_wr_refcnt) ? I can change that when applying.
 
-[ Upstream commit 7a766381634da19fc837619b0a34590498d9d29a ]
+More clean, thanks. :)
 
-When ixgbe_fdir_write_perfect_filter_82599() fails,
-input allocated by kzalloc() has not been freed,
-which leads to memleak.
+Thanks,
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index f3f449f53920..278fc866fad4 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -9582,8 +9582,10 @@ static int ixgbe_configure_clsu32(struct ixgbe_adapter *adapter,
- 	ixgbe_atr_compute_perfect_hash_82599(&input->filter, mask);
- 	err = ixgbe_fdir_write_perfect_filter_82599(hw, &input->filter,
- 						    input->sw_idx, queue);
--	if (!err)
--		ixgbe_update_ethtool_fdir_entry(adapter, input, input->sw_idx);
-+	if (err)
-+		goto err_out_w_lock;
-+
-+	ixgbe_update_ethtool_fdir_entry(adapter, input, input->sw_idx);
- 	spin_unlock(&adapter->fdir_perfect_lock);
- 
- 	if ((uhtid != 0x800) && (adapter->jump_tables[uhtid]))
--- 
-2.30.1
-
+> 
+>>   
+>>   		if (atomic_inc_return(&sbi->s_open_zones) > sbi->s_max_open_zones) {
+>>   			atomic_dec(&sbi->s_open_zones);
+>> @@ -978,7 +977,6 @@ static int zonefs_open_zone(struct inode *inode)
+>>   		if (i_size_read(inode) < zi->i_max_size) {
+>>   			ret = zonefs_zone_mgmt(inode, REQ_OP_ZONE_OPEN);
+>>   			if (ret) {
+>> -				zi->i_wr_refcnt--;
+>>   				atomic_dec(&sbi->s_open_zones);
+>>   				goto unlock;
+>>   			}
+>> @@ -986,6 +984,8 @@ static int zonefs_open_zone(struct inode *inode)
+>>   		}
+>>   	}
+>>   
+>> +	zi->i_wr_refcnt++;
+>> +
+>>   unlock:
+>>   	mutex_unlock(&zi->i_truncate_mutex);
+>>   
+>>
+> 
+> Good catch ! Will apply this and check zonefs test suite as this bug went
+> undetected.
+> 
+> Thanks.
+> 
