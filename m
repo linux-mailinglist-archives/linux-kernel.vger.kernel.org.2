@@ -2,67 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198AD33E948
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CF0133E949
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhCQFv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 01:51:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229550AbhCQFvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 01:51:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA52E64F8B;
-        Wed, 17 Mar 2021 05:51:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615960263;
-        bh=SxkdZQbf6PDqPYgJuJicDAlqFwp2dLeBYfuLtzbhiow=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VeeEct6WHo5Oc4F5vUhicYUcRzEFF/DOaYL8XEzluCoB7qRtPi2pimY+AsKT35CJp
-         2nZe3bzOa2A1Oen6Q0/KjCJWJwLqv9xi+Spbuqifr9ddZQu8TBFASVv2nfT48/kXih
-         TZtYnunA7EvOuxvIMu2NXxSctoFKOa+xuyownIWfbKveFUaUoF0zZ2bisieOH4FMzm
-         w2cHplk63Tz1H5UQZuvb2zyWkOK3bji49KQJ/cxDsb3lT4v109JbBZ7DfgRLA7S78w
-         bO5E71+yZTboxRDngjM9RHpABuS1qjYvOSfbJ/otEprq1ZRPeOsR55hpuKj/j67m0V
-         IBO6kvXoiwgEg==
-Date:   Wed, 17 Mar 2021 11:20:59 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] scsi: dt-bindings: ufs: Add sm8250, sm8350 compatible
- strings
-Message-ID: <YFGYw7FjvZZpuznA@vkoul-mobl.Dlink>
-References: <20210204165234.61939-1-vkoul@kernel.org>
- <YEr3kg6vPu6Htnpw@vkoul-mobl>
- <yq1mtv237a1.fsf@ca-mkp.ca.oracle.com>
+        id S229978AbhCQFwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 01:52:32 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:7155 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229972AbhCQFwK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 01:52:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1615960330; x=1647496330;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=m2eD7CRdke6u8hS/2ch3I0JuW3C0eH1p9KrKUbzM70E=;
+  b=gljwdyflhW/0N5g2WqbuB+Eu/uBOhkvqlEjohQ/EXmWCB0nnd8JsZccL
+   RhUciGu8lwbioHRvZZVAFf/wfNISxLzs6kBMW8k6rYFPNjSJTGK/HUjeK
+   g/JBAUQg4XbQSfB54ymzAcdOhbKZjMoI3Ipk8ZvjflrQyHVwy2lAgluw2
+   8dMOCxiepn9izMdm9BqsJcnGualJCo0elnoU+r6iFJueKbmFxWdkz7uo+
+   UtCOSd2U7DvvUqyYg/zyeGVW18ww9I14iU23W3mHNWHpoVkSg9txfrtpM
+   tNi6dbM3PElazOqIGFVZfzd2AkUTIUcttfwCFsawk77gI10Lzgg8BwZrr
+   g==;
+IronPort-SDR: G31ZsEulACHCLC2CehSTUlpNAQZ4uni1Osv2SGopHm5S2wD3AwSQduggQ5hd0I+0dkBW9epeoT
+ Aq1kShzOYC1F6c8n6BU/XQxulsd/dJLBSKP0FPXoGwh3Xfrhh4cdgYpKO1ZiN3zjLuB+bpBO2N
+ 3/FPyscmFO+vclCSD+zJu8IHVjb31TsWQsxim+Ros9Copewr94R+PF8P4C++HNAKd4hUbIRP7y
+ 3neP7a8iMhp/ex68fq47GhfG+qRvbHpH0Thd9p1M2ZdWqsXoRYHN3d5GcMFhw5oLZ3XLg/cc6O
+ 9TI=
+X-IronPort-AV: E=Sophos;i="5.81,254,1610434800"; 
+   d="scan'208";a="47820219"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Mar 2021 22:52:07 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 16 Mar 2021 22:52:07 -0700
+Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Tue, 16 Mar 2021 22:52:05 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <michael@walle.cc>, <p.yadav@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>, <vigneshr@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] mtd: spi-nor: Update comment about the default flash parameters
+Date:   Wed, 17 Mar 2021 07:52:03 +0200
+Message-ID: <161596027983.9417.17580791148510891300.b4-ty@microchip.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210315055634.17332-1-tudor.ambarus@microchip.com>
+References: <20210315055634.17332-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <yq1mtv237a1.fsf@ca-mkp.ca.oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Martin,
+On Mon, 15 Mar 2021 07:56:34 +0200, Tudor Ambarus wrote:
+> s/legacy/default. spi_nor_info_init_params initializes some default
+> flash parameters and settings that can be overwritten when parsing
+> SFDP, or by fixup hooks. There's nothing legacy about them, they are
+> just some default settings, if not otherwise discovered or specified.
 
-On 16-03-21, 21:21, Martin K. Petersen wrote:
-> 
-> Vinod,
-> 
-> >> Document "qcom,sm8250-ufshc" and "qcom,sm8350-ufshc" compatible string.
-> >> Use of "qcom,sm8250-ufshc" is already present upstream, so add misiing
-> >> documentation. "qcom,sm8350-ufshc" is for UFS HC found in SM8350 SoC.
-> >
-> > Gentle reminder for this patch, Rob has acked this
-> 
-> Was not really expecting a DT patch to be routed through SCSI. But no
-> worries. I've queued it up.
+Applied to spi-nor/next, thanks!
 
-Thank you. You can blame MAINTAINERS for pointing it to you :)
-Typically DT binding go thru subsystem and dts thru soc trees
+[1/1] mtd: spi-nor: Update comment about the default flash parameters
+      https://git.kernel.org/mtd/c/79321e752aff
 
+Best regards,
 -- 
-~Vinod
+Tudor Ambarus <tudor.ambarus@microchip.com>
