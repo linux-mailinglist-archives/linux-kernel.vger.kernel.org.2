@@ -2,89 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE64F33F0F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B74533F0F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:16:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhCQNPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 09:15:46 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39210 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbhCQNPm (ORCPT
+        id S230458AbhCQNQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 09:16:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27813 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230044AbhCQNPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 09:15:42 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12HDFVBU053849;
-        Wed, 17 Mar 2021 08:15:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615986931;
-        bh=z/0RVjPVB6nhY++viO0cqAxcncQ8evyw2P8L1LGfuMM=;
-        h=From:To:CC:Subject:Date;
-        b=GnN6XnFA5VAlNAURY/XnkRI/eTJhT7DP6fS4DLdJVaIu2DbU0RvbjCrTtszSXOgZ6
-         O4M4tI0JToTHy65MJ7Fo6GqKyIY0Zq+g5YctlUx/B3s2XkBnaHoSCTN9ebm+9IiCuN
-         u6g2Ritvl639rJqJKzfPCo6OOIaKJeyw4KcBCXU0=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12HDFVb4001100
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 17 Mar 2021 08:15:31 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 17
- Mar 2021 08:15:31 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 17 Mar 2021 08:15:31 -0500
-Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12HDFQLo024146;
-        Wed, 17 Mar 2021 08:15:27 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Kishon Vijay Abraham I <kishon@ti.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>, <stable@vger.kernel.org>
-Subject: [PATCH] PCI: keystone: Let AM65 use the pci_ops defined in pcie-designware-host.c
-Date:   Wed, 17 Mar 2021 18:45:18 +0530
-Message-ID: <20210317131518.11040-1-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 17 Mar 2021 09:15:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615986946;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aQpAGIOZCMr6zrvsbjgOgyUw3PapdDNaxrsZT0anQzg=;
+        b=SbpJxSP9LJ84o6tsk4Vt9yu4HNF4sVOsvAJw5rc5h31zhtvN6RPTBssmdedjyQZRVKDEb2
+        98TLJucYh/36CBXTBoXZL1/UITKtLsOJ6pGAQjbXIXhPfDfZKYa/muKzXLHIpLCMqUNunI
+        UXwnAcUIWt2FIupD6245VkxG+J7bgQ8=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-znHyg0sUODq8tSjccGsCnA-1; Wed, 17 Mar 2021 09:15:42 -0400
+X-MC-Unique: znHyg0sUODq8tSjccGsCnA-1
+Received: by mail-wr1-f71.google.com with SMTP id f3so18382782wrt.14
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 06:15:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aQpAGIOZCMr6zrvsbjgOgyUw3PapdDNaxrsZT0anQzg=;
+        b=NgkjuX4UJd2R8uVzJpu0gbTfYbppTwn58BFeKOFD5JB3FF8vneH0UC09e8JGNFCcvG
+         k57z3FmrioGJR1IwBGWq9vzLltCw7TmmdoAZpF+LgmfZFmjhjzAcSrhxOiudoSecmt1o
+         n2zr7lcb2TVPnviO8TkXBEtb/kXTmqnWYnfFnXjau7G3/KytISR4DkK7RrJOhNKqKd+P
+         rdBZTYIY5g7yUQBUWkBOfdAa0PDfzcTtlc4fp1Mt5areCh6lPkKc9L2lb2k7tQQAVrlG
+         dUNvUyDb0zg/oF1pNzwFT/djWzAKiPc7wU4pIluv6eZ7hmf8MG1v0H5l4QBIAr+sJhch
+         kKGA==
+X-Gm-Message-State: AOAM5307CIMLg00/nxdldBFk8EpT9ygXqSvUjD0uyEAHXrXG0tyiipUh
+        wNz2+Ie2FMhHj46RoMflSFDZUXWGxhBkiQEzXUnMN3uRzL+AZymc4IkiBcy4C3/DjPbe+I8dGqr
+        Y18CrjptIrizjXwgMq4iCJim1
+X-Received: by 2002:adf:f303:: with SMTP id i3mr4306594wro.67.1615986940756;
+        Wed, 17 Mar 2021 06:15:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx9PHSdun3TFAYRY50AzF6uibM0PIjRHbT2qtWhgFAEDlR+SZ9X0pUPC7H1ESHRU38j6UbWwg==
+X-Received: by 2002:adf:f303:: with SMTP id i3mr4306563wro.67.1615986940484;
+        Wed, 17 Mar 2021 06:15:40 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id e1sm26781395wrd.44.2021.03.17.06.15.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 06:15:39 -0700 (PDT)
+Subject: Re: [PATCH 1/4] KVM: x86: Protect userspace MSR filter with SRCU, and
+ set atomically-ish
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>,
+        Yuan Yao <yaoyuan0329os@gmail.com>
+References: <20210316184436.2544875-1-seanjc@google.com>
+ <20210316184436.2544875-2-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <cdf00201-b24c-0337-a49f-01df61a45fd1@redhat.com>
+Date:   Wed, 17 Mar 2021 14:15:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210316184436.2544875-2-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both TI's AM65x (K3) and TI's K2 PCIe driver are implemented in
-pci-keystone. However Only K2 PCIe driver should use it's own pci_ops
-for configuration space accesses. But commit 10a797c6e54a
-("PCI: dwc: keystone: Use pci_ops for config space accessors") used
-custom pci_ops for both AM65x and K2. This breaks configuration space
-access for AM65x platform. Fix it here.
+On 16/03/21 19:44, Sean Christopherson wrote:
+> Fix a plethora of issues with MSR filtering by installing the resulting
+> filter as an atomic bundle instead of updating the live filter one range
+> at a time.  The KVM_X86_SET_MSR_FILTER ioctl() isn't truly atomic, as
+> the hardware MSR bitmaps won't be updated until the next VM-Enter, but
+> the relevant software struct is atomically updated, which is what KVM
+> really needs.
+> 
+> Similar to the approach used for modifying memslots, make arch.msr_filter
+> a SRCU-protected pointer, do all the work configuring the new filter
+> outside of kvm->lock, and then acquire kvm->lock only when the new filter
+> has been vetted and created.  That way vCPU readers either see the old
+> filter or the new filter in their entirety, not some half-baked state.
+> 
+> Yuan Yao pointed out a use-after-free in ksm_msr_allowed() due to a
+> TOCTOU bug, but that's just the tip of the iceberg...
+> 
+>    - Nothing is __rcu annotated, making it nigh impossible to audit the
+>      code for correctness.
+>    - kvm_add_msr_filter() has an unpaired smp_wmb().  Violation of kernel
+>      coding style aside, the lack of a smb_rmb() anywhere casts all code
+>      into doubt.
+>    - kvm_clear_msr_filter() has a double free TOCTOU bug, as it grabs
+>      count before taking the lock.
+>    - kvm_clear_msr_filter() also has memory leak due to the same TOCTOU bug.
+> 
+> The entire approach of updating the live filter is also flawed.  While
+> installing a new filter is inherently racy if vCPUs are running, fixing
+> the above issues also makes it trivial to ensure certain behavior is
+> deterministic, e.g. KVM can provide deterministic behavior for MSRs with
+> identical settings in the old and new filters.  An atomic update of the
+> filter also prevents KVM from getting into a half-baked state, e.g. if
+> installing a filter fails, the existing approach would leave the filter
+> in a half-baked state, having already committed whatever bits of the
+> filter were already processed.
+> 
+> [*] https://lkml.kernel.org/r/20210312083157.25403-1-yaoyuan0329os@gmail.com
+> 
+> Fixes: 1a155254ff93 ("KVM: x86: Introduce MSR filtering")
+> Cc: stable@vger.kernel.org
+> Cc: Alexander Graf <graf@amazon.com>
+> Reported-by: Yuan Yao <yaoyuan0329os@gmail.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   Documentation/virt/kvm/api.rst  |   6 +-
+>   arch/x86/include/asm/kvm_host.h |  17 ++---
+>   arch/x86/kvm/x86.c              | 109 +++++++++++++++++++-------------
+>   3 files changed, 78 insertions(+), 54 deletions(-)
+> 
+> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> index 38e327d4b479..2898d3e86b08 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -4806,8 +4806,10 @@ If an MSR access is not permitted through the filtering, it generates a
+>   allows user space to deflect and potentially handle various MSR accesses
+>   into user space.
+>   
+> -If a vCPU is in running state while this ioctl is invoked, the vCPU may
+> -experience inconsistent filtering behavior on MSR accesses.
+> +Note, invoking this ioctl with a vCPU is running is inherently racy.  However,
+> +KVM does guarantee that vCPUs will see either the previous filter or the new
+> +filter, e.g. MSRs with identical settings in both the old and new filter will
+> +have deterministic behavior.
+>   
+>   4.127 KVM_XEN_HVM_SET_ATTR
+>   --------------------------
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index a52f973bdff6..84198c403a48 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -931,6 +931,12 @@ enum kvm_irqchip_mode {
+>   	KVM_IRQCHIP_SPLIT,        /* created with KVM_CAP_SPLIT_IRQCHIP */
+>   };
+>   
+> +struct kvm_x86_msr_filter {
+> +	u8 count;
+> +	bool default_allow:1;
+> +	struct msr_bitmap_range ranges[16];
+> +};
+> +
+>   #define APICV_INHIBIT_REASON_DISABLE    0
+>   #define APICV_INHIBIT_REASON_HYPERV     1
+>   #define APICV_INHIBIT_REASON_NESTED     2
+> @@ -1025,16 +1031,11 @@ struct kvm_arch {
+>   	bool guest_can_read_msr_platform_info;
+>   	bool exception_payload_enabled;
+>   
+> +	bool bus_lock_detection_enabled;
+> +
+>   	/* Deflect RDMSR and WRMSR to user space when they trigger a #GP */
+>   	u32 user_space_msr_mask;
+> -
+> -	struct {
+> -		u8 count;
+> -		bool default_allow:1;
+> -		struct msr_bitmap_range ranges[16];
+> -	} msr_filter;
+> -
+> -	bool bus_lock_detection_enabled;
+> +	struct kvm_x86_msr_filter __rcu *msr_filter;
+>   
+>   	struct kvm_pmu_event_filter __rcu *pmu_event_filter;
+>   	struct task_struct *nx_lpage_recovery_thread;
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index a9d95f90a048..c55769620b9a 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -1529,35 +1529,44 @@ EXPORT_SYMBOL_GPL(kvm_enable_efer_bits);
+>   
+>   bool kvm_msr_allowed(struct kvm_vcpu *vcpu, u32 index, u32 type)
+>   {
+> +	struct kvm_x86_msr_filter *msr_filter;
+> +	struct msr_bitmap_range *ranges;
+>   	struct kvm *kvm = vcpu->kvm;
+> -	struct msr_bitmap_range *ranges = kvm->arch.msr_filter.ranges;
+> -	u32 count = kvm->arch.msr_filter.count;
+> -	u32 i;
+> -	bool r = kvm->arch.msr_filter.default_allow;
+> +	bool allowed;
+>   	int idx;
+> +	u32 i;
+>   
+> -	/* MSR filtering not set up or x2APIC enabled, allow everything */
+> -	if (!count || (index >= 0x800 && index <= 0x8ff))
+> +	/* x2APIC MSRs do not support filtering. */
+> +	if (index >= 0x800 && index <= 0x8ff)
+>   		return true;
+>   
+> -	/* Prevent collision with set_msr_filter */
+>   	idx = srcu_read_lock(&kvm->srcu);
+>   
+> -	for (i = 0; i < count; i++) {
+> +	msr_filter = srcu_dereference(kvm->arch.msr_filter, &kvm->srcu);
+> +	if (!msr_filter) {
+> +		allowed = true;
+> +		goto out;
+> +	}
+> +
+> +	allowed = msr_filter->default_allow;
+> +	ranges = msr_filter->ranges;
+> +
+> +	for (i = 0; i < msr_filter->count; i++) {
+>   		u32 start = ranges[i].base;
+>   		u32 end = start + ranges[i].nmsrs;
+>   		u32 flags = ranges[i].flags;
+>   		unsigned long *bitmap = ranges[i].bitmap;
+>   
+>   		if ((index >= start) && (index < end) && (flags & type)) {
+> -			r = !!test_bit(index - start, bitmap);
+> +			allowed = !!test_bit(index - start, bitmap);
+>   			break;
+>   		}
+>   	}
+>   
+> +out:
+>   	srcu_read_unlock(&kvm->srcu, idx);
+>   
+> -	return r;
+> +	return allowed;
+>   }
+>   EXPORT_SYMBOL_GPL(kvm_msr_allowed);
+>   
+> @@ -5389,25 +5398,34 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+>   	return r;
+>   }
+>   
+> -static void kvm_clear_msr_filter(struct kvm *kvm)
+> +static struct kvm_x86_msr_filter *kvm_alloc_msr_filter(bool default_allow)
+> +{
+> +	struct kvm_x86_msr_filter *msr_filter;
+> +
+> +	msr_filter = kzalloc(sizeof(*msr_filter), GFP_KERNEL_ACCOUNT);
+> +	if (!msr_filter)
+> +		return NULL;
+> +
+> +	msr_filter->default_allow = default_allow;
+> +	return msr_filter;
+> +}
+> +
+> +static void kvm_free_msr_filter(struct kvm_x86_msr_filter *msr_filter)
+>   {
+>   	u32 i;
+> -	u32 count = kvm->arch.msr_filter.count;
+> -	struct msr_bitmap_range ranges[16];
+>   
+> -	mutex_lock(&kvm->lock);
+> -	kvm->arch.msr_filter.count = 0;
+> -	memcpy(ranges, kvm->arch.msr_filter.ranges, count * sizeof(ranges[0]));
+> -	mutex_unlock(&kvm->lock);
+> -	synchronize_srcu(&kvm->srcu);
+> +	if (!msr_filter)
+> +		return;
+>   
+> -	for (i = 0; i < count; i++)
+> -		kfree(ranges[i].bitmap);
+> +	for (i = 0; i < msr_filter->count; i++)
+> +		kfree(msr_filter->ranges[i].bitmap);
+> +
+> +	kfree(msr_filter);
+>   }
+>   
+> -static int kvm_add_msr_filter(struct kvm *kvm, struct kvm_msr_filter_range *user_range)
+> +static int kvm_add_msr_filter(struct kvm_x86_msr_filter *msr_filter,
+> +			      struct kvm_msr_filter_range *user_range)
+>   {
+> -	struct msr_bitmap_range *ranges = kvm->arch.msr_filter.ranges;
+>   	struct msr_bitmap_range range;
+>   	unsigned long *bitmap = NULL;
+>   	size_t bitmap_size;
+> @@ -5441,11 +5459,9 @@ static int kvm_add_msr_filter(struct kvm *kvm, struct kvm_msr_filter_range *user
+>   		goto err;
+>   	}
+>   
+> -	/* Everything ok, add this range identifier to our global pool */
+> -	ranges[kvm->arch.msr_filter.count] = range;
+> -	/* Make sure we filled the array before we tell anyone to walk it */
+> -	smp_wmb();
+> -	kvm->arch.msr_filter.count++;
+> +	/* Everything ok, add this range identifier. */
+> +	msr_filter->ranges[msr_filter->count] = range;
+> +	msr_filter->count++;
+>   
+>   	return 0;
+>   err:
+> @@ -5456,10 +5472,11 @@ static int kvm_add_msr_filter(struct kvm *kvm, struct kvm_msr_filter_range *user
+>   static int kvm_vm_ioctl_set_msr_filter(struct kvm *kvm, void __user *argp)
+>   {
+>   	struct kvm_msr_filter __user *user_msr_filter = argp;
+> +	struct kvm_x86_msr_filter *new_filter, *old_filter;
+>   	struct kvm_msr_filter filter;
+>   	bool default_allow;
+> -	int r = 0;
+>   	bool empty = true;
+> +	int r = 0;
+>   	u32 i;
+>   
+>   	if (copy_from_user(&filter, user_msr_filter, sizeof(filter)))
+> @@ -5472,25 +5489,32 @@ static int kvm_vm_ioctl_set_msr_filter(struct kvm *kvm, void __user *argp)
+>   	if (empty && !default_allow)
+>   		return -EINVAL;
+>   
+> -	kvm_clear_msr_filter(kvm);
+> +	new_filter = kvm_alloc_msr_filter(default_allow);
+> +	if (!new_filter)
+> +		return -ENOMEM;
+>   
+> -	kvm->arch.msr_filter.default_allow = default_allow;
+> -
+> -	/*
+> -	 * Protect from concurrent calls to this function that could trigger
+> -	 * a TOCTOU violation on kvm->arch.msr_filter.count.
+> -	 */
+> -	mutex_lock(&kvm->lock);
+>   	for (i = 0; i < ARRAY_SIZE(filter.ranges); i++) {
+> -		r = kvm_add_msr_filter(kvm, &filter.ranges[i]);
+> -		if (r)
+> -			break;
+> +		r = kvm_add_msr_filter(new_filter, &filter.ranges[i]);
+> +		if (r) {
+> +			kvm_free_msr_filter(new_filter);
+> +			return r;
+> +		}
+>   	}
+>   
+> +	mutex_lock(&kvm->lock);
+> +
+> +	/* The per-VM filter is protected by kvm->lock... */
+> +	old_filter = srcu_dereference_check(kvm->arch.msr_filter, &kvm->srcu, 1);
+> +
+> +	rcu_assign_pointer(kvm->arch.msr_filter, new_filter);
+> +	synchronize_srcu(&kvm->srcu);
+> +
+> +	kvm_free_msr_filter(old_filter);
+> +
+>   	kvm_make_all_cpus_request(kvm, KVM_REQ_MSR_FILTER_CHANGED);
+>   	mutex_unlock(&kvm->lock);
+>   
+> -	return r;
+> +	return 0;
+>   }
+>   
+>   long kvm_arch_vm_ioctl(struct file *filp,
+> @@ -10693,8 +10717,6 @@ void kvm_arch_pre_destroy_vm(struct kvm *kvm)
+>   
+>   void kvm_arch_destroy_vm(struct kvm *kvm)
+>   {
+> -	u32 i;
+> -
+>   	if (current->mm == kvm->mm) {
+>   		/*
+>   		 * Free memory regions allocated on behalf of userspace,
+> @@ -10710,8 +10732,7 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
+>   		mutex_unlock(&kvm->slots_lock);
+>   	}
+>   	static_call_cond(kvm_x86_vm_destroy)(kvm);
+> -	for (i = 0; i < kvm->arch.msr_filter.count; i++)
+> -		kfree(kvm->arch.msr_filter.ranges[i].bitmap);
+> +	kvm_free_msr_filter(srcu_dereference_check(kvm->arch.msr_filter, &kvm->srcu, 1));
+>   	kvm_pic_destroy(kvm);
+>   	kvm_ioapic_destroy(kvm);
+>   	kvm_free_vcpus(kvm);
+> 
 
-Fixes: 10a797c6e54a ("PCI: dwc: keystone: Use pci_ops for config space accessors")
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Cc: <stable@vger.kernel.org> # v5.10
----
- drivers/pci/controller/dwc/pci-keystone.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-index 53aa35cb3a49..a59ecbec601f 100644
---- a/drivers/pci/controller/dwc/pci-keystone.c
-+++ b/drivers/pci/controller/dwc/pci-keystone.c
-@@ -798,7 +798,8 @@ static int __init ks_pcie_host_init(struct pcie_port *pp)
- 	int ret;
- 
- 	pp->bridge->ops = &ks_pcie_ops;
--	pp->bridge->child_ops = &ks_child_pcie_ops;
-+	if (!ks_pcie->is_am6)
-+		pp->bridge->child_ops = &ks_child_pcie_ops;
- 
- 	ret = ks_pcie_config_legacy_irq(ks_pcie);
- 	if (ret)
--- 
-2.17.1
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
