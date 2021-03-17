@@ -2,321 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213D133EB5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:23:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFE533EB66
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbhCQIXN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Mar 2021 04:23:13 -0400
-Received: from mail.kingsoft.com ([114.255.44.145]:15487 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhCQIXI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:23:08 -0400
-X-AuditID: 0a580155-20dff7000005482e-0d-6051b4b3c64c
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id 57.C4.18478.3B4B1506; Wed, 17 Mar 2021 15:50:11 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 17 Mar
- 2021 16:23:05 +0800
-Date:   Wed, 17 Mar 2021 16:23:04 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     "HORIGUCHI =?UTF-8?B?TkFPWUE=?=(=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
-        <naoya.horiguchi@nec.com>
-CC:     "Luck, Tony" <tony.luck@intel.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "david@redhat.com" <david@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
-        <sunhao2@kingsoft.com>, <yaoaili@kingsoft.com>
-Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Message-ID: <20210317162304.58ff188c@alex-virtual-machine>
-In-Reply-To: <20210317154812.4173f423@alex-virtual-machine>
-References: <20210303115710.2e9f8e23@alex-virtual-machine>
-        <20210303163912.3d508e0f@alex-virtual-machine>
-        <1a78e9abdc134e35a5efcbf6b2fd2263@intel.com>
-        <20210304101653.546a9da1@alex-virtual-machine>
-        <20210304121941.667047c3@alex-virtual-machine>
-        <20210304144524.795872d7@alex-virtual-machine>
-        <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
-        <20210305093016.40c87375@alex-virtual-machine>
-        <aee5176eafb54c88b19a5b2671d0a1fc@intel.com>
-        <20210310141042.4db9ea29@alex-virtual-machine>
-        <20210311085529.GA22268@hori.linux.bs1.fc.nec.co.jp>
-        <20210317154812.4173f423@alex-virtual-machine>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S229686AbhCQIZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:25:58 -0400
+Received: from mail-mw2nam10on2051.outbound.protection.outlook.com ([40.107.94.51]:4929
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229602AbhCQIZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 04:25:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fXO+zQ4YZNGK/EpyXGOHjtyVxfRGV46T9QONS0S3qPOi9XDc5MfuUgfrmkX3SQ9sMeNYaj2GB1OXWtWsXEVZbDzae7BX9rozwmIr/q+hQP4nnaSxg6nyaPYHEyHLjon4MOnO40zblTlCHXzA1FQT4zCLgSIc9ntGLo6R0BFcEdYSkCstafRVaXGVvHUUPAeitGjQd82pLPdkUJSj0aPug07UAnICMMzdBY4+oOmUQk+tLjZr+s0eEUoRAF5VfUefbzNBlWJQb4HprC51DT0kXz0TlH/f03us5Wxyk+AxMtF1CWyDf2RR1c4Mp8RzcNwyVG3pjqKKX788gYdMOcDerg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0uC5FQA1HrZxPbiJ9jx4uIGmMpLSK0JquihA654HSEc=;
+ b=JB34IrmLWb00i5gZ/2RPEx5bY6dga3kuY6C6m2aKlQIMvDf+5xuly5IH3EF5diuO3EK3ozEafaFiOzhiDgNsAnHTxp1hZm9XO9cRfNhsGTVUzGzg5Ggo2ecyA6k9yLUOiUh0t/Dv20PV+D/qg8AljO7BUL+9InoeJ8lNwSLLI/tzQG6yMZ17VumL2NStCdpn18tp0+3xn01jB7y2OlcG5pYaP0VuXreylPcf463MVWsf8IndyYvxRBXHVwxfN6DneYf80Ayzwsriur8q+8aLeoB1S4Y3XXOJ6O29CIJtWapqIcvVPz9IK8WucIFfjZOx3BtBfEws50gAvkBjhuRC0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=gmail.com smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0uC5FQA1HrZxPbiJ9jx4uIGmMpLSK0JquihA654HSEc=;
+ b=TVbQtpy5ZC6g47f9z2AjT2im1IudxdsOjJf4iA/HxpcCZiXpyDC091FYW8mVyxxynxtF3HL7Y/Lk+Bl4h1Lrj0TuPtozVfQNU+uxjXOkNFDJvtDS48qTNRTHV1X6wqyLXnbsEW/MuPW6tFIperV0VCC++ppsr5kqXukEwiTPLGU=
+Received: from CY4PR04CA0038.namprd04.prod.outlook.com (2603:10b6:903:c6::24)
+ by BYAPR02MB5078.namprd02.prod.outlook.com (2603:10b6:a03:6e::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Wed, 17 Mar
+ 2021 08:25:29 +0000
+Received: from CY1NAM02FT036.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:903:c6:cafe::62) by CY4PR04CA0038.outlook.office365.com
+ (2603:10b6:903:c6::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend
+ Transport; Wed, 17 Mar 2021 08:25:29 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ CY1NAM02FT036.mail.protection.outlook.com (10.152.75.124) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3933.32 via Frontend Transport; Wed, 17 Mar 2021 08:25:29 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 17 Mar 2021 01:25:27 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2106.2 via Frontend Transport; Wed, 17 Mar 2021 01:25:27 -0700
+Envelope-to: git@xilinx.com,
+ saikrishna12468@gmail.com,
+ robh+dt@kernel.org,
+ linus.walleij@linaro.org,
+ gregkh@linuxfoundation.org,
+ linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org,
+ linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Received: from [172.23.64.106] (port=50123 helo=xhdvnc125.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <lakshmi.sai.krishna.potthuri@xilinx.com>)
+        id 1lMRUb-0002Vn-Hd; Wed, 17 Mar 2021 01:25:25 -0700
+Received: by xhdvnc125.xilinx.com (Postfix, from userid 14964)
+        id B953F1211FE; Wed, 17 Mar 2021 13:55:24 +0530 (IST)
+From:   Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <git@xilinx.com>,
+        <saikrishna12468@gmail.com>,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+Subject: [PATCH v4 0/3] Add ZynqMP pinctrl driver
+Date:   Wed, 17 Mar 2021 13:55:13 +0530
+Message-ID: <1615969516-87663-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+X-Mailer: git-send-email 2.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNIsWRmVeSWpSXmKPExsXCFcGooLt5S2CCwflHQhZz1q9hs/i84R+b
-        xdf1v5gtpm0Ut7hwqoHJ4vKuOWwW99b8Z7W4dGABk8XFxgOMFmemFVls3jSV2eLNhXssFj82
-        PGZ14PX43trH4rF4z0smj02rOtk8Nn2axO7x7tw5do8TM36zeLy4upHF4/2+q2wem09Xe3ze
-        JOdxouULawB3FJdNSmpOZllqkb5dAlfGx2aZgllWFfcOJDUwtup3MXJySAiYSGz4upSli5GL
-        Q0hgOpPE8pkTGCGcV4wSC7atZQapYhFQlfi1ezcTiM0GZO+6N4sVxBYRSJJYPPsrE0gDs8B3
-        FoknV7eAFQkLeEl8ub+WEcTmFbCSmDG3nR3E5hSwltj87j8rxIZHLBIHZu1lA0nwC4hJ9F75
-        zwRxk71E25ZFUM2CEidnPmEBsZkFdCROrDrGDGFrSyxb+BrMFhJQlDi85Bc7RK+SxJHuGWwQ
-        dqzEsnmvWCcwCs9CMmoWklGzkIxawMi8ipGlODfdaBMjJP5CdzDOaPqod4iRiYPxEKMEB7OS
-        CK9pXkCCEG9KYmVValF+fFFpTmrxIUZpDhYlcV7HSKCUQHpiSWp2ampBahFMlomDU6qB6bbk
-        erbwsktHc/6ET/DufuCcJRb66P7OLVd7mNh7tASOH3E6mnZfjKVz6wXhB1OFHBueP5Xx2GHv
-        Ep779+LKvyFzwxK4i5s2ahWVMNgyCF7Pqw+4Y7+8pdA7UEpU54sd39mN5Z+V0w2sFa3/BXPt
-        FFr3zHCu5NTosmVv+/c83tRSE7Xw3CweXaHTf0wOr9k9S2LtVAGzOW9Vd9zWeLo5I7RW8plB
-        dcdKI6FuqT0yLxS37ExbwcT5l60pZc2Z2y0Lr5jYaWUJXtVz3fBg7sLVCZsNOr1dS8KiHvEK
-        nDU9EanydOm1yTuvqJ59tm83Z7QKQ4btt0mzD6xhev8zIiu6TO/xQus/b8895PYTrvPMUmIp
-        zkg01GIuKk4EAMr+zukuAwAA
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e3596221-884d-4b9a-9b1b-08d8e91e3956
+X-MS-TrafficTypeDiagnostic: BYAPR02MB5078:
+X-Microsoft-Antispam-PRVS: <BYAPR02MB507862D543F20F7C03697F43BD6A9@BYAPR02MB5078.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:469;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: leeWYN+zG+TMMFK7vgc+AuQbX8jhavPn9VLPHs8jbR+wviScmbaQNf1P9/0dk6E0e8G8bUXRuArZaTwGf+SKuQ2tHNb9S1QWFoTTMVTMktaVPPMmDEetsujkzbn45rytrqVL1EVB1Ywwukx6xlRflNmSegrKxL1cMa7Hpyrxn4KXAaH29SSUdl5dFrhN808OyBi6RMEAOD0ZvCN4JnSRyO1IICBvxNZyAin4S9Ka+3XaSpNG5LPDaYMhJmXoi0Rcgs7nED014hYoUDIbhzmPlJHuwUZRfbU4WdXj2BvKWRMDa1FbdCrYTyNn1N6aJBF2vEx0jQOQZ6CSeAjchFZxcBdK/aV6DfLSGInEZL41/xQYR18v7ikZMNzxUprhN0SOvVDWPQNxxDL7OInJyKLl5OMfbxj5nSczppHCjAJtATs7ibDxLcy6h7bh3Q0EEO5ACRO45KX/2d3/LfzYIi4MvAFTGV+pKmcP6vVwEtV//88bZPMzQ8WCcpvp+pp7q3E8fY+Kp00ikVXcjf3Hl7H8oCjtbTAV5LMIen4dRRTQWkdJHOdE9ofd/Xc9hk5xRxSblf6MY56YgS3ZEkOQbiBe1fHxFBoPiUQ0izlWQF49QDfKSkqdSp+rzqApCn/2mU1uG956LOuPGl/LvPfkDfDXRh0g3VdilMUNmHumns5c1oUyyt5LanromFmnJVR2kOWq
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(136003)(376002)(36840700001)(46966006)(356005)(54906003)(82310400003)(110136005)(6666004)(107886003)(26005)(82740400003)(2616005)(70206006)(7636003)(8676002)(8936002)(36906005)(5660300002)(70586007)(316002)(47076005)(36756003)(336012)(426003)(6266002)(478600001)(83380400001)(36860700001)(4326008)(186003)(42186006)(2906002)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 08:25:29.2563
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e3596221-884d-4b9a-9b1b-08d8e91e3956
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT036.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB5078
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add support for Xilinx ZynqMP pinctrl driver and also update the Xilinx
+firmware driver to support pinctrl functionality.
+This driver queries the pin information from the firmware and allow
+configuring the pins as per the request.
 
-> > 
-> > Returning true means you stop walking when you find the first entry pointing
-> > to a given pfn. But there could be multiple such entries, so if MCE SRAR is
-> > triggered by memory access to the larger address in hwpoisoned entries, the
-> > returned virtual address might be wrong.
-> >   
-> 
-> I can't find the way to fix this, maybe the virtual address is contained in
-> related register, but this is really beyong my knowledge.
-> 
-> This is a v2 RFC patch, add support for thp and 1G huge page errors.
-> 
+changes in v4:
+- Added comment for ignoring the return value for GET_FUNCTION_NAME qid.
+- Updated the zynqmp_pinctrl_get_function_name() API prototype to void
+as it always returns zero.
 
-Sorry for the debug info and other unclean modifications.
+changes in v3:
+- Fixed binding doc comments from Rob.
+- Used 'maxItems' for groups and pins properties.
+- Updated commit subject and description to have present tense statements.
 
-Post a clean one.
+changes in v2:
+- Use pattern for pin names in yaml file.
+- Updated to support multiple groups and pins.
+- Added type ref for the vendor specific properties.
+- Removed 'schmitt-cmos', instead used common properties.
+- Removed macros for drive-strength property.
 
-Thanks
-Aili Yao
+Sai Krishna Potthuri (3):
+  firmware: xilinx: Add pinctrl support
+  dt-bindings: pinctrl: Add binding for ZynqMP pinctrl driver
+  pinctrl: Add Xilinx ZynqMP pinctrl driver support
 
-From 2289276ba943cdcddbf3b5b2cdbcaff78690e2e8 Mon Sep 17 00:00:00 2001
-From: Aili Yao <yaoaili@kingsoft.com>
-Date: Wed, 17 Mar 2021 16:12:41 +0800
-Subject: [PATCH] fix invalid SIGBUS address for recovery fail
+ .../bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml |  339 ++++++
+ drivers/firmware/xilinx/zynqmp.c              |  114 ++
+ drivers/pinctrl/Kconfig                       |   13 +
+ drivers/pinctrl/Makefile                      |    1 +
+ drivers/pinctrl/pinctrl-zynqmp.c              | 1030 +++++++++++++++++
+ include/dt-bindings/pinctrl/pinctrl-zynqmp.h  |   19 +
+ include/linux/firmware/xlnx-zynqmp.h          |   90 ++
+ 7 files changed, 1606 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/pinctrl-zynqmp.c
+ create mode 100644 include/dt-bindings/pinctrl/pinctrl-zynqmp.h
 
-Walk the current process pages and compare with the pfn, then get the
-user address and related page_shift.
-
-For thp pages, we can only split anonoums thp page, so I think there may
-be no race condition for walking and searching the thp error page for such
-case; For non anonymous thp, the page flag and pte will not be change. so
-when code goes into this place, it may be race condition for non-anonoums
-thp page or from a recovery fail for anonoums thp, the page status will
-not change, i am not so sure about this;
-
-For the case we don't find the related virtual address, Maybe sending one
-BUS_MCEERR_AR signal with invalid address NULL is a better option, but i am
-not sure.
-
-And this may get the wrong virtual address if process have multiple entry
-for a same page, I don't find a way to get it correct.
-
-Maybe other issues is not recognized.
----
- arch/x86/kernel/cpu/mce/core.c |  12 +---
- include/linux/mm.h             |   1 +
- mm/memory-failure.c            | 127 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 131 insertions(+), 9 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index db4afc5..4cb873c 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1246,7 +1246,7 @@ static void kill_me_maybe(struct callback_head *cb)
- 	struct task_struct *p = container_of(cb, struct task_struct, mce_kill_me);
- 	int flags = MF_ACTION_REQUIRED;
- 
--	pr_err("Uncorrected hardware memory error in user-access at %llx", p->mce_addr);
-+	pr_err("Uncorrected hardware memory error in user-access at %llx\n", p->mce_addr);
- 
- 	if (!p->mce_ripv)
- 		flags |= MF_MUST_KILL;
-@@ -1258,14 +1258,8 @@ static void kill_me_maybe(struct callback_head *cb)
- 		return;
- 	}
- 
--	if (p->mce_vaddr != (void __user *)-1l) {
--		pr_err("Memory error may not recovered: %#lx: Sending SIGBUS to %s:%d due to hardware memory corruption\n",
--			p->mce_addr >> PAGE_SHIFT, p->comm, p->pid);
--		force_sig_mceerr(BUS_MCEERR_AR, p->mce_vaddr, PAGE_SHIFT);
--	} else {
--		pr_err("Memory error not recovered");
--		kill_me_now(cb);
--	}
-+	memory_failure_error(current, p->mce_addr >> PAGE_SHIFT);
-+
- }
- 
- static void queue_task_work(struct mce *m, int kill_current_task)
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index ecdf8a8..cff2f02 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3046,6 +3046,7 @@ enum mf_flags {
- 	MF_SOFT_OFFLINE = 1 << 3,
- };
- extern int memory_failure(unsigned long pfn, int flags);
-+extern void memory_failure_error(struct task_struct *p, unsigned long pfn);
- extern void memory_failure_queue(unsigned long pfn, int flags);
- extern void memory_failure_queue_kick(int cpu);
- extern int unpoison_memory(unsigned long pfn);
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 06f0061..359b42f 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -56,6 +56,7 @@
- #include <linux/kfifo.h>
- #include <linux/ratelimit.h>
- #include <linux/page-isolation.h>
-+#include <linux/pagewalk.h>
- #include "internal.h"
- #include "ras/ras_event.h"
- 
-@@ -1553,6 +1554,132 @@ int memory_failure(unsigned long pfn, int flags)
- }
- EXPORT_SYMBOL_GPL(memory_failure);
- 
-+static int pte_range(pte_t *ptep, unsigned long addr, unsigned long next, struct mm_walk *walk)
-+{
-+	u64 *buff = (u64 *)walk->private;
-+	u64 pfn = buff[0];
-+	pte_t pte = *ptep;
-+
-+	if (!pte_none(pte) && !pte_present(pte)) {
-+		swp_entry_t swp_temp = pte_to_swp_entry(pte);
-+
-+		if (is_hwpoison_entry(swp_temp) && swp_offset(swp_temp) == pfn)
-+			goto find;
-+	} else if (pte_pfn(pte) == pfn) {
-+		goto find;
-+	}
-+
-+	return 0;
-+
-+find:
-+	buff[0] = addr;
-+	buff[1] = PAGE_SHIFT;
-+	return true;
-+}
-+
-+static int pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
-+			     struct mm_walk *walk)
-+{
-+	u64 *buff = (u64 *)walk->private;
-+	struct page *page = (struct page *)buff[0];
-+	u64 pfn = buff[1];
-+	pmd_t pmd = *pmdp;
-+
-+	if (likely(!pmd_trans_huge(pmd)))
-+		return 0;
-+
-+	if (pmd_none(pmd) || !pmd_present(pmd))
-+		return 0;
-+
-+	if (pmd_page(pmd) != page)
-+		return 0;
-+
-+	for (; addr != end; page++, addr += PAGE_SIZE) {
-+		if (page_to_pfn(page) == pfn) {
-+			buff[0] = addr;
-+			buff[1] = PAGE_SHIFT;
-+			return true;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int hugetlb_range(pte_t *ptep, unsigned long hmask,
-+				 unsigned long addr, unsigned long end,
-+				 struct mm_walk *walk)
-+{
-+	u64 *buff = (u64 *)walk->private;
-+	u64 pfn = buff[0];
-+	pte_t pte =  huge_ptep_get(ptep);
-+	struct page *page = pfn_to_page(pfn);
-+
-+	if (!huge_pte_none(pte) && !pte_present(pte)) {
-+		swp_entry_t swp_temp = pte_to_swp_entry(pte);
-+
-+		if (is_hwpoison_entry(swp_temp) && swp_offset(swp_temp) == pfn)
-+			goto find;
-+	}
-+	if (pte_pfn(pte) == pfn)
-+		goto find;
-+
-+	return 0;
-+
-+find:
-+	buff[0] = addr;
-+	buff[1] = (huge_page_size(page_hstate(page)) > PMD_SIZE) ? PUD_SHIFT : PMD_SHIFT;
-+	return true;
-+}
-+
-+void memory_failure_error(struct task_struct *p, unsigned long pfn)
-+{
-+	u64 buff[2] = {0};
-+	struct page *page;
-+	int ret = -1;
-+	struct mm_walk_ops walk = {0};
-+
-+	if (p->mce_vaddr != (void __user *)-1l && p->mce_vaddr != (void __user *)0) {
-+		force_sig_mceerr(BUS_MCEERR_AR, p->mce_vaddr, PAGE_SHIFT);
-+		return;
-+	}
-+
-+	page = pfn_to_page(pfn);
-+	if (!page)
-+		goto force_sigbus;
-+
-+	if (is_zone_device_page(page))
-+		goto force_sigbus;
-+
-+	page = compound_head(page);
-+
-+	if (PageHuge(page)) {
-+		walk.hugetlb_entry = hugetlb_range;
-+		buff[0] = page_to_pfn(page);
-+	} else if (PageTransHuge(page)) {
-+		walk.pmd_entry = pmd_range;
-+		buff[0] = (u64)page;
-+		buff[1] = pfn;
-+	} else {
-+		walk.pte_entry = pte_range;
-+		buff[0] = pfn;
-+	}
-+
-+	mmap_read_lock(p->mm);
-+	ret = walk_page_range(p->mm, 0, TASK_SIZE_MAX, &walk, (void *)buff);
-+	mmap_read_unlock(p->mm);
-+
-+	pr_err("Memory error may not recovered: %#lx: Sending SIGBUS to %s:%d due to hardware memory corruption\n",
-+	pfn, p->comm, p->pid);
-+
-+	if (ret) {
-+		force_sig_mceerr(BUS_MCEERR_AR, (void __user *)buff[0], buff[1]);
-+	} else {
-+force_sigbus:
-+		force_sig_mceerr(BUS_MCEERR_AR, (void __user *)0, PAGE_SHIFT);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(memory_failure_error);
-+
- #define MEMORY_FAILURE_FIFO_ORDER	4
- #define MEMORY_FAILURE_FIFO_SIZE	(1 << MEMORY_FAILURE_FIFO_ORDER)
- 
 -- 
-1.8.3.1
+2.17.1
 
