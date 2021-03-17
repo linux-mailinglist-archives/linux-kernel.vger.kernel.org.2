@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 987D133E5DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:20:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B360733E455
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhCQBUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 21:20:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33518 "EHLO mail.kernel.org"
+        id S230242AbhCQA7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:59:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230416AbhCQA4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:56:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8DB164FB1;
-        Wed, 17 Mar 2021 00:56:24 +0000 (UTC)
+        id S231414AbhCQA5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 20:57:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9502A64FB9;
+        Wed, 17 Mar 2021 00:57:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615942585;
-        bh=s9tbicg6FU+e3+qxYO7NkpENUvhge4Rp1iWy9LE5DuE=;
+        s=k20201202; t=1615942621;
+        bh=aZFwvCcMVDAlQR0XiyWFdTzwIfbn7vpwJQyJy17W43s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pVTckC2ZxCo3poAtT/vUxVgYVTbwKKEJOl5PmtPkzjp/aD+kuPloK3PMdtvaXROSq
-         mDBcKrZjRv3Mgd9w4+VMGvYlkcIp10ov6AeteuhzzommMBjHW43Mj2Y9D51YyI0C0W
-         PPeISqahdPtkuQ0lQWK4/UNKi2yP3jMC+8Jl8ZOMeR8ee0VYBS6UUkzjAvY1TSUujS
-         y2ZasCWUHZa4r4U+KbKfV+VgURZ9FqXMgWKE0BhUFt/Fx9F1S9LFCkJBZFJcBZvhzF
-         FOAGSV5hHePpSu1hdQ5WVwdRMJlts3VWROXV6/9ErxxHwkexBimmoVJjEraLKmNJ6m
-         wqp7B0W1pAqXg==
+        b=QKDEdVwfNhQhafmjsWOw5RWRnLypoiPcb3axwwWGNvVy1GPn0otLTAs+A0CwMOHLF
+         wWiuC0Sjt+djtnrInFSjHV/CGv64yaOzMla2CMjB+lMySqTr0REi2GNuldeoUgCAMU
+         z/csm7VvDHaEzeYJg5pkCX2U/T9A+pJpOVRMfMctm3yYn3VbrdPMmyfPHpv2mJe/Tn
+         N4X7Riaj1HZmt14TJ6Ijq/hwffmfqEIeNz0vSA39NzQDDQOgWoJr1U6nBEydwNW1N5
+         aNs0wP1uo2TZFD4zrT3om+bL5AHKgPvdtgSQHE3taUPT3/QBOlfVNDa9tDi8S3o57T
+         NE40s6roOVZ2Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     satya priya <skakit@codeaurora.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-arm-msm@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 41/61] regulator: qcom-rpmh: Use correct buck for S1C regulator
-Date:   Tue, 16 Mar 2021 20:55:15 -0400
-Message-Id: <20210317005536.724046-41-sashal@kernel.org>
+Cc:     Tong Zhang <ztong0001@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 05/54] atm: eni: dont release is never initialized
+Date:   Tue, 16 Mar 2021 20:56:04 -0400
+Message-Id: <20210317005654.724862-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210317005536.724046-1-sashal@kernel.org>
-References: <20210317005536.724046-1-sashal@kernel.org>
+In-Reply-To: <20210317005654.724862-1-sashal@kernel.org>
+References: <20210317005654.724862-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -42,34 +43,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: satya priya <skakit@codeaurora.org>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit dfe03bca8db4957d4b60614ff7df4d136ba90f37 ]
+[ Upstream commit 4deb550bc3b698a1f03d0332cde3df154d1b6c1e ]
 
-Use correct buck, that is, pmic5_hfsmps515 for S1C regulator
-of PM8350C PMIC.
+label err_eni_release is reachable when eni_start() fail.
+In eni_start() it calls dev->phy->start() in the last step, if start()
+fail we don't need to call phy->stop(), if start() is never called, we
+neither need to call phy->stop(), otherwise null-ptr-deref will happen.
 
-Signed-off-by: satya priya <skakit@codeaurora.org>
-Link: https://lore.kernel.org/r/1614155592-14060-7-git-send-email-skakit@codeaurora.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+In order to fix this issue, don't call phy->stop() in label err_eni_release
+
+[    4.875714] ==================================================================
+[    4.876091] BUG: KASAN: null-ptr-deref in suni_stop+0x47/0x100 [suni]
+[    4.876433] Read of size 8 at addr 0000000000000030 by task modprobe/95
+[    4.876778]
+[    4.876862] CPU: 0 PID: 95 Comm: modprobe Not tainted 5.11.0-rc7-00090-gdcc0b49040c7 #2
+[    4.877290] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-48-gd94
+[    4.877876] Call Trace:
+[    4.878009]  dump_stack+0x7d/0xa3
+[    4.878191]  kasan_report.cold+0x10c/0x10e
+[    4.878410]  ? __slab_free+0x2f0/0x340
+[    4.878612]  ? suni_stop+0x47/0x100 [suni]
+[    4.878832]  suni_stop+0x47/0x100 [suni]
+[    4.879043]  eni_do_release+0x3b/0x70 [eni]
+[    4.879269]  eni_init_one.cold+0x1152/0x1747 [eni]
+[    4.879528]  ? _raw_spin_lock_irqsave+0x7b/0xd0
+[    4.879768]  ? eni_ioctl+0x270/0x270 [eni]
+[    4.879990]  ? __mutex_lock_slowpath+0x10/0x10
+[    4.880226]  ? eni_ioctl+0x270/0x270 [eni]
+[    4.880448]  local_pci_probe+0x6f/0xb0
+[    4.880650]  pci_device_probe+0x171/0x240
+[    4.880864]  ? pci_device_remove+0xe0/0xe0
+[    4.881086]  ? kernfs_create_link+0xb6/0x110
+[    4.881315]  ? sysfs_do_create_link_sd.isra.0+0x76/0xe0
+[    4.881594]  really_probe+0x161/0x420
+[    4.881791]  driver_probe_device+0x6d/0xd0
+[    4.882010]  device_driver_attach+0x82/0x90
+[    4.882233]  ? device_driver_attach+0x90/0x90
+[    4.882465]  __driver_attach+0x60/0x100
+[    4.882671]  ? device_driver_attach+0x90/0x90
+[    4.882903]  bus_for_each_dev+0xe1/0x140
+[    4.883114]  ? subsys_dev_iter_exit+0x10/0x10
+[    4.883346]  ? klist_node_init+0x61/0x80
+[    4.883557]  bus_add_driver+0x254/0x2a0
+[    4.883764]  driver_register+0xd3/0x150
+[    4.883971]  ? 0xffffffffc0038000
+[    4.884149]  do_one_initcall+0x84/0x250
+[    4.884355]  ? trace_event_raw_event_initcall_finish+0x150/0x150
+[    4.884674]  ? unpoison_range+0xf/0x30
+[    4.884875]  ? ____kasan_kmalloc.constprop.0+0x84/0xa0
+[    4.885150]  ? unpoison_range+0xf/0x30
+[    4.885352]  ? unpoison_range+0xf/0x30
+[    4.885557]  do_init_module+0xf8/0x350
+[    4.885760]  load_module+0x3fe6/0x4340
+[    4.885960]  ? vm_unmap_ram+0x1d0/0x1d0
+[    4.886166]  ? ____kasan_kmalloc.constprop.0+0x84/0xa0
+[    4.886441]  ? module_frob_arch_sections+0x20/0x20
+[    4.886697]  ? __do_sys_finit_module+0x108/0x170
+[    4.886941]  __do_sys_finit_module+0x108/0x170
+[    4.887178]  ? __ia32_sys_init_module+0x40/0x40
+[    4.887419]  ? file_open_root+0x200/0x200
+[    4.887634]  ? do_sys_open+0x85/0xe0
+[    4.887826]  ? filp_open+0x50/0x50
+[    4.888009]  ? fpregs_assert_state_consistent+0x4d/0x60
+[    4.888287]  ? exit_to_user_mode_prepare+0x2f/0x130
+[    4.888547]  do_syscall_64+0x33/0x40
+[    4.888739]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[    4.889010] RIP: 0033:0x7ff62fcf1cf7
+[    4.889202] Code: 48 89 57 30 48 8b 04 24 48 89 47 38 e9 1d a0 02 00 48 89 f8 48 89 f71
+[    4.890172] RSP: 002b:00007ffe6644ade8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+[    4.890570] RAX: ffffffffffffffda RBX: 0000000000f2ca70 RCX: 00007ff62fcf1cf7
+[    4.890944] RDX: 0000000000000000 RSI: 0000000000f2b9e0 RDI: 0000000000000003
+[    4.891318] RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000001
+[    4.891691] R10: 00007ff62fd55300 R11: 0000000000000246 R12: 0000000000f2b9e0
+[    4.892064] R13: 0000000000000000 R14: 0000000000f2bdd0 R15: 0000000000000001
+[    4.892439] ==================================================================
+
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/qcom-rpmh-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/atm/eni.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
-index 2351a232d90e..0fd3da36f62e 100644
---- a/drivers/regulator/qcom-rpmh-regulator.c
-+++ b/drivers/regulator/qcom-rpmh-regulator.c
-@@ -901,7 +901,7 @@ static const struct rpmh_vreg_init_data pm8350_vreg_data[] = {
- };
+diff --git a/drivers/atm/eni.c b/drivers/atm/eni.c
+index 316a9947541f..b574cce98dc3 100644
+--- a/drivers/atm/eni.c
++++ b/drivers/atm/eni.c
+@@ -2260,7 +2260,8 @@ static int eni_init_one(struct pci_dev *pci_dev,
+ 	return rc;
  
- static const struct rpmh_vreg_init_data pm8350c_vreg_data[] = {
--	RPMH_VREG("smps1",  "smp%s1",  &pmic5_hfsmps510, "vdd-s1"),
-+	RPMH_VREG("smps1",  "smp%s1",  &pmic5_hfsmps515, "vdd-s1"),
- 	RPMH_VREG("smps2",  "smp%s2",  &pmic5_ftsmps510, "vdd-s2"),
- 	RPMH_VREG("smps3",  "smp%s3",  &pmic5_ftsmps510, "vdd-s3"),
- 	RPMH_VREG("smps4",  "smp%s4",  &pmic5_ftsmps510, "vdd-s4"),
+ err_eni_release:
+-	eni_do_release(dev);
++	dev->phy = NULL;
++	iounmap(ENI_DEV(dev)->ioaddr);
+ err_unregister:
+ 	atm_dev_deregister(dev);
+ err_free_consistent:
 -- 
 2.30.1
 
