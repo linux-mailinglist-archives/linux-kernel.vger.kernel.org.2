@@ -2,224 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F1A33E71B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 03:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 197E933E722
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 03:51:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhCQCqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 22:46:04 -0400
-Received: from m42-10.mailgun.net ([69.72.42.10]:45535 "EHLO
-        m42-10.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbhCQCp6 (ORCPT
+        id S229591AbhCQCuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 22:50:52 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:38375 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229487AbhCQCuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 22:45:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615949158; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=PFjLmq26/670K5Odqek2/4v6djpOGMkv0m21GFquOK4=;
- b=gUjH2s58VNR7Y9QHZS3ocjfKhC13NxLImpJUqARi5IocUnjs8pbIZHfnCJxwhQ5fEhmcNosm
- zXVInDEWqNGy+mVdQHR3IEaVgEXXANhoShbzEylt0xyL1IdYBBE5kgxCl06kNHq0yM/LFUQD
- 1eTv5RDQZ2XlOa62swhC6XgWS0Y=
-X-Mailgun-Sending-Ip: 69.72.42.10
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60516d586dc1045b7dcdf91a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Mar 2021 02:45:44
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4F6C9C433C6; Wed, 17 Mar 2021 02:45:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 888FFC433CA;
-        Wed, 17 Mar 2021 02:45:40 +0000 (UTC)
+        Tue, 16 Mar 2021 22:50:40 -0400
+Received: from mail-lf1-f72.google.com ([209.85.167.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1lMMGd-0000Se-CZ
+        for linux-kernel@vger.kernel.org; Wed, 17 Mar 2021 02:50:39 +0000
+Received: by mail-lf1-f72.google.com with SMTP id x10so12158474lfu.22
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 19:50:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0qNw+09sx4P5n2rDayk0okTg2tM+VITy3e6500kIc/0=;
+        b=KwmslHMuxL0YK5DqHOYB+muHaeat++UhQkRmdYYXuNBIT9swuEuHVEZ2EPblb7va0O
+         NAiP0/eZ4k+tXCu30xtCSu9BS82d9ai01oJO36S0eQ3KNM7GM1wl7AbZpeSPmUkZeV4w
+         tQDGOZVdKsaLFSsNbmFwsRqShNzSvURVJzvdchu71cx0clS9x+fCEUV52D+PnhAZZ2yu
+         c8qjQDWM5pIjX/bH9fZ4r2keZ1W3zBIbDjvgrJp4/6VmQ99bntMdE+lPb0sWCn1JyaRZ
+         YkUnpTMLR/eT/4nv6fN/6+cAVCpuEfuaofAf/YdOn8KHBTxJrkatjLEkdMeekfw2fPKf
+         fMkA==
+X-Gm-Message-State: AOAM5339BBiEzMkOy3AdXnLxzP0KFGgfNp2luEFc7AbfPmb1C9uYp3Ao
+        V7fi1bTaXi3ZH36FJyj3OG6zF+mxaA/Q8LUWojLl6Hz7uxea9FQEfCNt8NfaFNShSXtyP5jlATI
+        MUIC9fTmnO+/gOBwE86zIfPboU+WWBVii9U8HiJuzV5o2eCaDcEPzg7bXLg==
+X-Received: by 2002:a05:651c:50b:: with SMTP id o11mr1062591ljp.97.1615949438856;
+        Tue, 16 Mar 2021 19:50:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxFmsBahF05pTMsFRAQBKaYjmqQ/jHu71L6DnaaG4ZSK01RxtWX8W1zFCsUVHsbmEU6Qu3fgzHyvp+yrTH5ZvQ=
+X-Received: by 2002:a05:651c:50b:: with SMTP id o11mr1062583ljp.97.1615949438603;
+ Tue, 16 Mar 2021 19:50:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 17 Mar 2021 10:45:40 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     daejun7.park@samsung.com
-Cc:     Greg KH <gregkh@linuxfoundation.org>, avri.altman@wdc.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        asutoshd@codeaurora.org, stanley.chu@mediatek.com,
-        bvanassche@acm.org, huobean@gmail.com,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Subject: Re: [PATCH v29 4/4] scsi: ufs: Add HPB 2.0 support
-In-Reply-To: <20210317014253epcms2p1f45db6a281645282e1540e0070999d73@epcms2p1>
-References: <a18909e8f4db023455b7513bf6c60312@codeaurora.org>
- <2da1c963bd3ff5f682d18a251ed08989@codeaurora.org>
- <20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p3>
- <20210315013137epcms2p861f06e66be9faff32b6648401778434a@epcms2p8>
- <20210315070728epcms2p87136c86803afa85a441ead524130245c@epcms2p8>
- <d6a4511fd85e6e47c5aef22e335bb253@codeaurora.org>
- <CGME20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p1>
- <20210317014253epcms2p1f45db6a281645282e1540e0070999d73@epcms2p1>
-Message-ID: <79aea8a80c1be2ff7f05683c2f4918ce@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <b8db79e6857c41dab4ef08bdf826ea7c47e3bafc.1615947283.git.josef@toxicpanda.com>
+In-Reply-To: <b8db79e6857c41dab4ef08bdf826ea7c47e3bafc.1615947283.git.josef@toxicpanda.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Wed, 17 Mar 2021 10:50:27 +0800
+Message-ID: <CAAd53p5Vh_+tUeEQx3xf_aLiCiKP1u5Y3VgYCUzZ82Kgtr-iYw@mail.gmail.com>
+Subject: Re: [PATCH][RESEND] Revert "PM: ACPI: reboot: Use S5 for reboot"
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-17 09:42, Daejun Park wrote:
->> On 2021-03-15 15:23, Can Guo wrote:
->>> On 2021-03-15 15:07, Daejun Park wrote:
->>>>>> This patch supports the HPB 2.0.
->>>>>> 
->>>>>> The HPB 2.0 supports read of varying sizes from 4KB to 512KB.
->>>>>> In the case of Read (<= 32KB) is supported as single HPB read.
->>>>>> In the case of Read (36KB ~ 512KB) is supported by as a 
->>>>>> combination
->>>>>> of
->>>>>> write buffer command and HPB read command to deliver more PPN.
->>>>>> The write buffer commands may not be issued immediately due to 
->>>>>> busy
->>>>>> tags.
->>>>>> To use HPB read more aggressively, the driver can requeue the 
->>>>>> write
->>>>>> buffer
->>>>>> command. The requeue threshold is implemented as timeout and can 
->>>>>> be
->>>>>> modified with requeue_timeout_ms entry in sysfs.
->>>>>> 
->>>>>> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
->>>>>> ---
->>>>>> +static struct attribute *hpb_dev_param_attrs[] = {
->>>>>> +        &dev_attr_requeue_timeout_ms.attr,
->>>>>> +        NULL,
->>>>>> +};
->>>>>> +
->>>>>> +struct attribute_group ufs_sysfs_hpb_param_group = {
->>>>>> +        .name = "hpb_param_sysfs",
->>>>>> +        .attrs = hpb_dev_param_attrs,
->>>>>> +};
->>>>>> +
->>>>>> +static int ufshpb_pre_req_mempool_init(struct ufshpb_lu *hpb)
->>>>>> +{
->>>>>> +        struct ufshpb_req *pre_req = NULL;
->>>>>> +        int qd = hpb->sdev_ufs_lu->queue_depth / 2;
->>>>>> +        int i, j;
->>>>>> +
->>>>>> +        INIT_LIST_HEAD(&hpb->lh_pre_req_free);
->>>>>> +
->>>>>> +        hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req),
->>>>>> GFP_KERNEL);
->>>>>> +        hpb->throttle_pre_req = qd;
->>>>>> +        hpb->num_inflight_pre_req = 0;
->>>>>> +
->>>>>> +        if (!hpb->pre_req)
->>>>>> +                goto release_mem;
->>>>>> +
->>>>>> +        for (i = 0; i < qd; i++) {
->>>>>> +                pre_req = hpb->pre_req + i;
->>>>>> +                INIT_LIST_HEAD(&pre_req->list_req);
->>>>>> +                pre_req->req = NULL;
->>>>>> +                pre_req->bio = NULL;
->>>>> 
->>>>> Why don't prepare bio as same as wb.m_page? Won't that save more 
->>>>> time
->>>>> for ufshpb_issue_pre_req()?
->>>> 
->>>> It is pre_req pool. So although we prepare bio at this time, it just
->>>> only for first pre_req.
->>> 
->>> I meant removing the bio_alloc() in ufshpb_issue_pre_req() and
->>> bio_put()
->>> in ufshpb_pre_req_compl_fn(). bios, in pre_req's case, just hold a
->>> page.
->>> So, prepare 16 (if queue depth is 32) bios here, just use them along
->>> with
->>> wb.m_page and call bio_reset() in ufshpb_pre_req_compl_fn(). Shall it
->>> work?
->>> 
->> 
->> If it works, you can even have the bio_add_pc_page() called here. 
->> Later
->> in
->> ufshpb_execute_pre_req(), you don't need to call
->> ufshpb_pre_req_add_bio_page(),
->> just call ufshpb_prep_entry() once instead - it save many repeated 
->> steps
->> for a
->> pre_req, and you don't even need to call bio_reset() in this case, 
->> since
->> for a
->> bio, nothing changes after it is binded with a specific page...
-> 
-> Hi, Can Guo
-> 
-> I tried the idea that you suggested, but it doesn't work properly.
-> This optimization should be done next time for enhancement.
+Hi,
 
-Can you elaborate please? Any error seen?
+On Wed, Mar 17, 2021 at 10:17 AM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> This reverts commit d60cd06331a3566d3305b3c7b566e79edf4e2095.
+>
+> This patch causes a panic when rebooting my Dell Poweredge r440.  I do
+> not have the full panic log as it's lost at that stage of the reboot and
+> I do not have a serial console.  Reverting this patch makes my system
+> able to reboot again.
 
-Per my understanding, in the case for pre_reqs, a bio is no different
-from a page. Here it can reserve 16 pages for later use, which can be
-done the same for bios.
+But this patch also helps many HP laptops, so maybe we should figure
+out what's going on on Poweredge r440.
+Does it also panic on shutdown?
 
-This is not an enhancement, but a doubt - why not? Unless it is not 
-doable.
+Kai-Heng
 
-Thanks,
-Can Guo.
-
-> 
-> Thanks
-> Daejun
-> 
->> Can Guo.
->> 
->>> Thanks,
->>> Can Guo.
->>> 
->>>> After use it, it should be prepared bio at issue phase.
->>>> 
->>>> Thanks,
->>>> Daejun
->>>> 
->>>>> 
->>>>> Thanks,
->>>>> Can Guo.
->>>>> 
->>>>>> +
->>>>>> +                pre_req->wb.m_page = alloc_page(GFP_KERNEL |
->>>>>> __GFP_ZERO);
->>>>>> +                if (!pre_req->wb.m_page) {
->>>>>> +                        for (j = 0; j < i; j++)
->>>>>> +
->>>>>> __free_page(hpb->pre_req[j].wb.m_page);
->>>>>> +
->>>>>> +                        goto release_mem;
->>>>>> +                }
->>>>>> +                list_add_tail(&pre_req->list_req,
->>>>>> &hpb->lh_pre_req_free);
->>>>>> +        }
->>>>>> +
->>>>>> +        return 0;
->>>>>> +release_mem:
->>>>>> +        kfree(hpb->pre_req);
->>>>>> +        return -ENOMEM;
->>>>>> +}
->>>>>> +
->>>>> 
->>>>> 
->>>>> 
->> 
->> 
->> 
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+> - apologies, I mistyped the lkml list email.
+>
+>  kernel/reboot.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/kernel/reboot.c b/kernel/reboot.c
+> index eb1b15850761..a6ad5eb2fa73 100644
+> --- a/kernel/reboot.c
+> +++ b/kernel/reboot.c
+> @@ -244,8 +244,6 @@ void migrate_to_reboot_cpu(void)
+>  void kernel_restart(char *cmd)
+>  {
+>         kernel_restart_prepare(cmd);
+> -       if (pm_power_off_prepare)
+> -               pm_power_off_prepare();
+>         migrate_to_reboot_cpu();
+>         syscore_shutdown();
+>         if (!cmd)
+> --
+> 2.26.2
+>
