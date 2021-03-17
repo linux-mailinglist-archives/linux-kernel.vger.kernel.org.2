@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8DD33F223
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CBF833F230
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbhCQODf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:03:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58797 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231690AbhCQODO (ORCPT
+        id S231790AbhCQOEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231750AbhCQODe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:03:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615989794;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VF+i/IaqQthDr1vis77vksrogzlo56uC4vmzTlpomlo=;
-        b=DcyLCbdu87KwN2DR0rtvt8V7NrVm4VGr+XRfK2m/cwK+jcbK8OOPsXEN2o5+bj4qPA2rDi
-        Vp9vTpFOn3wSYODhGhdjpwXK5lzGk1Uz4vMeb+NVRhnCCUKUYgGcWUff4d17pSPhgFNnf7
-        wtgALsDZsC5md0ttutXAvahYNCqHOzM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-421-z8lXiLtTNtu6mdsHtj4IIg-1; Wed, 17 Mar 2021 10:03:09 -0400
-X-MC-Unique: z8lXiLtTNtu6mdsHtj4IIg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22617180FCAE;
-        Wed, 17 Mar 2021 14:03:08 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-117-171.rdu2.redhat.com [10.10.117.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 88B4E5D752;
-        Wed, 17 Mar 2021 14:03:07 +0000 (UTC)
-Subject: Re: [tip: locking/urgent] locking/ww_mutex: Treat ww_mutex_lock()
- like a trylock
-To:     Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     linux-tip-commits@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org
-References: <20210316153119.13802-4-longman@redhat.com>
- <161598470197.398.8903908266426306140.tip-bot2@tip-bot2>
- <YFIASRkXowQWgj2s@hirez.programming.kicks-ass.net>
- <YFIEo8IVQ/Mm9jUE@hirez.programming.kicks-ass.net>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <e1bcd7fb-3a40-f207-ee19-d276c8b8bb75@redhat.com>
-Date:   Wed, 17 Mar 2021 10:03:07 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 17 Mar 2021 10:03:34 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5743BC06174A;
+        Wed, 17 Mar 2021 07:03:34 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id h82so40555446ybc.13;
+        Wed, 17 Mar 2021 07:03:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6OaFjyFWgg4m3b9LuLpqb/rP6tn5J4G93CnXJEjgfLQ=;
+        b=i2DpCpQM7JeSSiS/pjMxgtMmRWaqyEUnqOkpir3k6hjfU9Oor7nDorySG4w47CoCGd
+         HaiLgTyqU0kC8zA/M2kZQM1sH1E1LbWud/WbA8om7HWvSV+BUakqiOwPUeTLcoqCLPGf
+         JedwFXQpUMM2xc1N014Ahaw2YTMoAf2cj3FsgDsCKv3ZOzvpAcW8c+eMj3EENF375f8x
+         11rayPkdrSyY5YcS7+D3f2mNmy0iI8qzZ8PRIa+NRFehp669D1SyF0qYVVKeD+gzVYK8
+         LIsktzMZcnA20N+P0QIhTw/wSHTpN81axxWdN3YKq6VrI5qwWqPf0cj92aOsspj4iCYa
+         aQLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6OaFjyFWgg4m3b9LuLpqb/rP6tn5J4G93CnXJEjgfLQ=;
+        b=bEUxvKmIPKCyxJ/STwqn0nT8JeKSy63asIyOyju2QZvTR+yvanfV/cFC9wNYb3hz0V
+         t/b+nT7Ag8aJ/pAjonS87XhLsRUaeihZt+QkC9CSQ0f+vg8oLMEF0ZkOtGqRgov63kqr
+         2OamdQbpY0cB+Fyux7SIb8iJg1AKVHfz6UVz0dB0iqLBpVL+eRP00fgHZEycmW1Pf4/z
+         3+Y16vvjfux3pRzjxFHlBsphjI3k572SXs52haRBXruQ1T/FbMtGYgDXXr/Io5hWifOo
+         Uk6wZYkPiDJnssYbxrGThiHGIksmZwDpMIVplGAZVCTTmGYZsojlkNlTio8NVCUd/RFf
+         MY3g==
+X-Gm-Message-State: AOAM531HNTbVWb29pXxB62HSRRm7MvH3l56ACL8LHNBOrIAFh963uPdb
+        soVcscHLQEjJqILnH9lyHOFq6c/gT9HjilUki5i/1OJ6iZHnmg==
+X-Google-Smtp-Source: ABdhPJxYwg2QBX1owqFPtrq2F/9pLRU/hzhKTzIOR3dpydN55snYMjquLkj00WQN+8aJP9sdN02xLmqhMTlZQxWC8Dc=
+X-Received: by 2002:a25:dad4:: with SMTP id n203mr4746316ybf.233.1615989813490;
+ Wed, 17 Mar 2021 07:03:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YFIEo8IVQ/Mm9jUE@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <4d488195-7281-9238-b30d-9f89a6100fb9@csgroup.eu> <20210317015210.33641-1-wangkefeng.wang@huawei.com>
+In-Reply-To: <20210317015210.33641-1-wangkefeng.wang@huawei.com>
+From:   Anatoly Pugachev <matorola@gmail.com>
+Date:   Wed, 17 Mar 2021 17:03:22 +0300
+Message-ID: <CADxRZqwFokuZrhA6GFr=whM3s7BqZpzo8yq=TW6YEr=eeEUH0A@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: Move mem_init_print_info() into mm_init()
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Guo Ren <guoren@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 9:31 AM, Peter Zijlstra wrote:
-> On Wed, Mar 17, 2021 at 02:12:41PM +0100, Peter Zijlstra wrote:
->> On Wed, Mar 17, 2021 at 12:38:21PM -0000, tip-bot2 for Waiman Long wrote:
->>> +	/*
->>> +	 * Treat as trylock for ww_mutex.
->>> +	 */
->>> +	mutex_acquire_nest(&lock->dep_map, subclass, !!ww_ctx, nest_lock, ip);
->> I'm confused... why isn't nest_lock working here?
->>
->> For ww_mutex, we're supposed to have ctx->dep_map as a nest_lock, and
->> all lock acquisitions under a nest lock should be fine. Afaict the above
->> is just plain wrong.
-> To clarify:
+On Wed, Mar 17, 2021 at 4:51 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
 >
-> 	mutex_lock(&A);			ww_mutex_lock(&B, ctx);
-> 	ww_mutex_lock(&B, ctx);		mutex_lock(&A);
+> mem_init_print_info() is called in mem_init() on each architecture,
+> and pass NULL argument, so using void argument and move it into mm_init().
 >
-> should still very much be a deadlock, but your 'fix' makes it not report
-> that.
->
-> Only order within the ww_ctx can be ignored, and that's exactly what
-> nest_lock should be doing.
->
-I will take a deeper look into why that is the case.
+> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+> v2:
+> - Cleanup 'str' line suggested by Christophe and ACK
 
-Cheers,
-Longman
-
+applied patch (5.12.0-rc3-00020-g1df27313f50a-dirty) over linus.git
+and tested boot on a sparc64 virtual machine (ldom) - boots.
