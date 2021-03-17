@@ -2,99 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7477333EEC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:50:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 502DF33EE8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:45:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhCQKu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:50:26 -0400
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:43761 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230433AbhCQKtz (ORCPT
+        id S230087AbhCQKod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229644AbhCQKoT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:49:55 -0400
-X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Mar 2021 06:49:55 EDT
-Received: from cust-3a8def63 ([IPv6:fc0c:c1c9:903d:e9b4:326e:d2bd:718e:17cc])
-        by smtp-cloud9.xs4all.net with ESMTPSA
-        id MTdQlABuVGEYcMTdRlNA8I; Wed, 17 Mar 2021 11:42:47 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1615977767; bh=wRN/sAzpgNLiAXrQ4jtqD6y/vMrDu8E+D0w/yGNeGt8=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From:
-         Subject;
-        b=j8/Do3ggVxTyvLGjFXZmhNn7SxZj4dtr5KI6gg7UtAI5UWHFY5Yni8tQ/EY1dcP2e
-         ts6Sw2OD6aKnYu7Pdrs1+pg9WSbYrF6bbbMIbBO5C2E3YnlVoLb3DQPrWa9aXS7wjv
-         wLL5l/9Rh8CyQmLX2XYtQh8/mC3E4LgTEBSr+1P3QRYtgMSQtdw2V5KvevAJ/ROo3J
-         mxm2MU/FfMri+2UtF6xlWP3xU2n9CrhDPo7Mk1fE9gAOY/i8JdnsFabV9iSQak26/s
-         8nm81V8Beo36YfUnBgrnSV4Raw/V3u8Sy3x7hoToxg6EenPB0Nqt9Rle4LGxO2qp2U
-         C9qF/9PBDZJBg==
-Date:   Wed, 17 Mar 2021 11:42:35 +0100
-From:   Jeroen Roovers <jer@xs4all.nl>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     James.Bottomley@HansenPartnership.com, deller@gmx.de,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] parisc: math-emu: Few spelling fixes in the file fpu.h
-Message-ID: <20210317114235.033dc0ef@del.jer>
-In-Reply-To: <20210317103251.3526940-1-unixbhaskar@gmail.com>
-References: <20210317103251.3526940-1-unixbhaskar@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 17 Mar 2021 06:44:19 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB91BC06174A;
+        Wed, 17 Mar 2021 03:44:18 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id v11so1290699wro.7;
+        Wed, 17 Mar 2021 03:44:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Bn90u44fy8L7FazXOSgNFKkR48EmU94fLQ8Y07NnDbg=;
+        b=RookSN63CvIIb59cAjK0gkYTO2VoPpDwYkO5C4Mf4smeR2XbSEdgmY6GSS7qSum7QG
+         bQZ2/C/LB2OAkIMlIt11q5glM6MddtfYSvxiZbQ4ioHduesNUy3EWcdCOpuScZvjQ4IH
+         1Jba/B62kF3Byf57FIL/HB//GH6Gntzo3cLY0wbxK1zQkiGcJpyH8w/P3oiQre7oyQD+
+         nqvSajOLwrOJka2syyzG6h0nLbTWdvsm9U3+gwdRYi4gejCzn3DdZihhhGUO7xpRkJjM
+         OqVRxt+jVXVJ0ojSwRbiyIUTKr4/zrEMSWFrYP+DAdqqmuk1UzONGgyldg22kDEvEUvQ
+         x5jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Bn90u44fy8L7FazXOSgNFKkR48EmU94fLQ8Y07NnDbg=;
+        b=Y+SGaMEt0JRAunhiDSBgDSt+Hh+MaABdWi2ZDaM1Rpryt3A858QK8yY1uzEBWpG+Xr
+         DLKnMpg9nMho0aQha3IsKnZadvMtsnLOzKZmAaPPoacBDTgxiVIhRHr97bg/mqzMaKSx
+         XPsNI6PWrT6L72K6OwRic6LdfA6fVGVlBHbwMD4BVxi0DX3/cA0OLlN1BFSJilx0ZRaK
+         hswoDiUrD6luvtoQW4FGhhO+h7CJkVflQvEZthstfK+mV4YCCDpGpKSLpV9nX6ykA9UP
+         xiHHM3ftnO/FFBdWtZijCd2nPg9pVAbBLERjmfps66cGVyZprjRcjxo2Ou0ud1/BA93Y
+         KFzA==
+X-Gm-Message-State: AOAM53162zy6JJaOxoAtiV+tycTIKRNpHQXy5PKrcm7X4HxW/RKdilo+
+        NAkEEDJyUuHAZOlCYSYOicE=
+X-Google-Smtp-Source: ABdhPJzMIr4AJ4UN6QhUkf9RjJgTZhqswu3fbGhNtj+qV4sOmO3SCxJg6IEQ/jBzMi23oJWP+3NezQ==
+X-Received: by 2002:a05:6000:1acd:: with SMTP id i13mr1921557wry.48.1615977857523;
+        Wed, 17 Mar 2021 03:44:17 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id h13sm2026914wmq.29.2021.03.17.03.44.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 03:44:17 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 17 Mar 2021 11:44:15 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     bp@suse.de, tglx@linutronix.de, luto@kernel.org, x86@kernel.org,
+        len.brown@intel.com, dave.hansen@intel.com, hjl.tools@gmail.com,
+        Dave.Martin@arm.com, jannh@google.com, mpe@ellerman.id.au,
+        carlos@redhat.com, tony.luck@intel.com, ravi.v.shankar@intel.com,
+        libc-alpha@sourceware.org, linux-arch@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 0/6] x86: Improve Minimum Alternate Stack Size
+Message-ID: <20210317104415.GA692070@gmail.com>
+References: <20210316065215.23768-1-chang.seok.bae@intel.com>
+ <20210317100640.GC1724119@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfN0yrNPvjFE3tBN6Tm5UhhDrjwOGiWf8N3qfO7gdo6ftzNoN56hjcqdrPKl71MXdxW7QC2A9q6RHNXpSVpvJOVgZmv3q4oviMhLBQmztl9oCXiXomoK7
- QUCB68u90DmJfFBn0mTN7Ayms9m1JmINzCvZInencJ4qjAxk39CVxXVJJiQkm3TUDVXEHmev1WTMZxageaEB0pTO4MPGR7LwlIcRH8GlInrWU+uybgCLYgAJ
- EPsUSMEDKOyQydd64ojTti2CvIH0/K1+xj4Mnu7yyJSm4DzW3uPrR4mwgNFTRoSvHw68rrJeaemYDDvc//AaHqJARjx2cHqnG1UBKicZoZVuYdm4LaxB9a7D
- zyfcbTTZDI2DlYjfYDctdoDLLqxpMw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210317100640.GC1724119@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Mar 2021 16:02:51 +0530
-Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
 
-> s/synopis/synopsis/
-> s/differeniate/differentiate/
-> s/differeniation/differentiation/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  arch/parisc/math-emu/fpu.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/parisc/math-emu/fpu.h b/arch/parisc/math-emu/fpu.h
-> index 853c19c03828..1f313bc38beb 100644
-> --- a/arch/parisc/math-emu/fpu.h
-> +++ b/arch/parisc/math-emu/fpu.h
-> @@ -12,7 +12,7 @@
->   *      @(#)	pa/fp/fpu.h		$Revision: 1.1 $
->   *
->   *  Purpose:
-> - *      <<please update with a synopis of the functionality provided
-> by this file>>
-> + *      <<please update with a synopsis of the functionality
-> provided by this file>> *
->   *
->   * END_DESC
-> @@ -50,9 +50,9 @@
->  #define EMULATION_VERSION 4
-> 
->  /*
-> - * The only was to differeniate between TIMEX and ROLEX (or PCX-S
-> and PCX-T)
-> + * The only was to differentiate between TIMEX and ROLEX (or PCX-S
-> and PCX-T)
+* Ingo Molnar <mingo@kernel.org> wrote:
 
-Might as well fix "only [change] was to" here.
-
->   * is thorough the potential type field from the PDC_MODEL call.  The
-> - * following flags are used at assist this differeniation.
-> + * following flags are used at assist this differentiation.
->   */
 > 
->  #define ROLEX_POTENTIAL_KEY_FLAGS	PDC_MODEL_CPU_KEY_WORD_TO_IO
-> --
-> 2.30.2
+> * Chang S. Bae <chang.seok.bae@intel.com> wrote:
 > 
+> > During signal entry, the kernel pushes data onto the normal userspace
+> > stack. On x86, the data pushed onto the user stack includes XSAVE state,
+> > which has grown over time as new features and larger registers have been
+> > added to the architecture.
+> > 
+> > MINSIGSTKSZ is a constant provided in the kernel signal.h headers and
+> > typically distributed in lib-dev(el) packages, e.g. [1]. Its value is
+> > compiled into programs and is part of the user/kernel ABI. The MINSIGSTKSZ
+> > constant indicates to userspace how much data the kernel expects to push on
+> > the user stack, [2][3].
+> > 
+> > However, this constant is much too small and does not reflect recent
+> > additions to the architecture. For instance, when AVX-512 states are in
+> > use, the signal frame size can be 3.5KB while MINSIGSTKSZ remains 2KB.
+> > 
+> > The bug report [4] explains this as an ABI issue. The small MINSIGSTKSZ can
+> > cause user stack overflow when delivering a signal.
+> 
+> >   uapi: Define the aux vector AT_MINSIGSTKSZ
+> >   x86/signal: Introduce helpers to get the maximum signal frame size
+> >   x86/elf: Support a new ELF aux vector AT_MINSIGSTKSZ
+> >   selftest/sigaltstack: Use the AT_MINSIGSTKSZ aux vector if available
+> >   x86/signal: Detect and prevent an alternate signal stack overflow
+> >   selftest/x86/signal: Include test cases for validating sigaltstack
+> 
+> So this looks really complicated, is this justified?
+> 
+> Why not just internally round up sigaltstack size if it's too small? 
+> This would be more robust, as it would fix applications that use 
+> MINSIGSTKSZ but don't use the new AT_MINSIGSTKSZ facility.
+> 
+> I.e. does AT_MINSIGSTKSZ have any other uses than avoiding the 
+> segfault if MINSIGSTKSZ is used to create a small signal stack?
 
+I.e. if the kernel sees a too small ->ss_size in sigaltstack() it 
+would ignore ->ss_sp and mmap() a new sigaltstack instead and use that 
+for the signal handler stack.
 
-Kind regards,
-     jer
+This would automatically make MINSIGSTKSZ - and other too small sizes 
+work today, and in the future.
+
+But the question is, is there user-space usage of sigaltstacks that 
+relies on controlling or reading the contents of the stack?
+
+longjmp using programs perhaps?
+
+Thanks,
+
+	Ingo
