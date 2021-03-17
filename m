@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567EE33F080
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:39:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0237333F088
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhCQMii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 08:38:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
+        id S230146AbhCQMin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 08:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhCQMiY (ORCPT
+        with ESMTP id S229766AbhCQMi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 08:38:24 -0400
+        Wed, 17 Mar 2021 08:38:26 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5F3C06175F;
-        Wed, 17 Mar 2021 05:38:24 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 12:38:22 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A05C06174A;
+        Wed, 17 Mar 2021 05:38:26 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 12:38:24 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615984702;
+        s=2020; t=1615984704;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qhlB1kzRQfS7bJ7PfJvr05B9fynDVipph7TA9K1l1Ck=;
-        b=cAFHxn0SUtnE98GxNKCdd8I1l1trRRZSwplwTNe8btz5hAP6E7IKjaH3fH8KifIDdK4b7g
-        sf4ip2gEJBYhcLGwHndl3EACYqU3lFDHFBbGin9OLIGsGBOakiKUid+zbwco41k6pBnnSB
-        gn/ptMJKehgaoRGG/2k0EyfpqcXsMMh3+E3FYu8X6oIgezKdRfZT8vJUk7n3dVpA2r7OCE
-        m2zWEsaFj8bcJZHiWHTYG/USTi0nJJMZABoSBevcTJwYG3Jb5L5ueo0Z8lQ0JGMO05MRzV
-        e4fuwTvb2q5h2Wl/UoQYspofzXIO0iGmblZv8H71Uij3h7iqh4ZOmiMKb3pMpQ==
+        bh=PvzSCD844kW1TR0bgZFjibM8oBd8rgGTmd9/5/ual1k=;
+        b=cpzu/huDzcCtfpRv3wRXauh0diR8L/jXd350Ov+iJRhsCoHepS06XE3gpB/l2vSS8evhMV
+        E7oQAe+bC8Lr1z8gWTRqBPd/wLtBGIam/4KUcl6z76qpJthRAAmQA+YjFQy27SChoR35Zo
+        DL4lGdOHracnPPkErN26iQT/oSaRMUEa/hw4sLhXJFBniuaKjc5LQPCPRqfRvvCzSAjeHp
+        ZjTe1E2vzm6Cl7O5Zcehr+uUROvDNnxmD4AwxI7C4G2ohihXuD5vtnyK8vrfL2R9MXoeZc
+        QbkfMwSApAag4XgFyeTF7BIMTjVMNqSmGOMbFEF5PUJ8ql9UeqmfW5A2q7N9vQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615984702;
+        s=2020e; t=1615984704;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qhlB1kzRQfS7bJ7PfJvr05B9fynDVipph7TA9K1l1Ck=;
-        b=GhtxHj/del+wYA0dKl4rQFnIfBmZqG6awiQqAhKf9gE9tPYLcnwEUQUL0V8xTKO6bE5ruc
-        O71VTWe0lPLeiADQ==
-From:   "tip-bot2 for Waiman Long" <tip-bot2@linutronix.de>
+        bh=PvzSCD844kW1TR0bgZFjibM8oBd8rgGTmd9/5/ual1k=;
+        b=ClPavbhHRgOKSKBo5zqDdW5yWDZi/UJzwoqhOl6cevrN3uYevBOIatxg87Dxqs08H8Ap9c
+        HVBZp8LUwaE5wlDQ==
+From:   "tip-bot2 for Ondrej Mosnacek" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] locking/ww_mutex: Fix acquire/release imbalance
- in ww_acquire_init()/ww_acquire_fini()
-Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210316153119.13802-3-longman@redhat.com>
-References: <20210316153119.13802-3-longman@redhat.com>
+Subject: [tip: perf/core] perf/core: Fix unconditional security_locked_down() call
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Paul Moore <paul@paul-moore.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210224215628.192519-1-omosnace@redhat.com>
+References: <20210224215628.192519-1-omosnace@redhat.com>
 MIME-Version: 1.0
-Message-ID: <161598470224.398.10597010936099036923.tip-bot2@tip-bot2>
+Message-ID: <161598470430.398.3377989807660510985.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,47 +60,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     bee645788e07eea63055d261d2884ea45c2ba857
-Gitweb:        https://git.kernel.org/tip/bee645788e07eea63055d261d2884ea45c2ba857
-Author:        Waiman Long <longman@redhat.com>
-AuthorDate:    Tue, 16 Mar 2021 11:31:17 -04:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 17 Mar 2021 09:56:45 +01:00
+Commit-ID:     08ef1af4de5fe7de9c6d69f1e22e51b66e385d9b
+Gitweb:        https://git.kernel.org/tip/08ef1af4de5fe7de9c6d69f1e22e51b66e385d9b
+Author:        Ondrej Mosnacek <omosnace@redhat.com>
+AuthorDate:    Wed, 24 Feb 2021 22:56:28 +01:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Tue, 16 Mar 2021 21:44:43 +01:00
 
-locking/ww_mutex: Fix acquire/release imbalance in ww_acquire_init()/ww_acquire_fini()
+perf/core: Fix unconditional security_locked_down() call
 
-In ww_acquire_init(), mutex_acquire() is gated by CONFIG_DEBUG_LOCK_ALLOC.
-The dep_map in the ww_acquire_ctx structure is also gated by the
-same config. However mutex_release() in ww_acquire_fini() is gated by
-CONFIG_DEBUG_MUTEXES. It is possible to set CONFIG_DEBUG_MUTEXES without
-setting CONFIG_DEBUG_LOCK_ALLOC though it is an unlikely configuration.
-That may cause a compilation error as dep_map isn't defined in this
-case. Fix this potential problem by enclosing mutex_release() inside
-CONFIG_DEBUG_LOCK_ALLOC.
+Currently, the lockdown state is queried unconditionally, even though
+its result is used only if the PERF_SAMPLE_REGS_INTR bit is set in
+attr.sample_type. While that doesn't matter in case of the Lockdown LSM,
+it causes trouble with the SELinux's lockdown hook implementation.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210316153119.13802-3-longman@redhat.com
+SELinux implements the locked_down hook with a check whether the current
+task's type has the corresponding "lockdown" class permission
+("integrity" or "confidentiality") allowed in the policy. This means
+that calling the hook when the access control decision would be ignored
+generates a bogus permission check and audit record.
+
+Fix this by checking sample_type first and only calling the hook when
+its result would be honored.
+
+Fixes: b0c8fdc7fdb7 ("lockdown: Lock down perf when in confidentiality mode")
+Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Paul Moore <paul@paul-moore.com>
+Link: https://lkml.kernel.org/r/20210224215628.192519-1-omosnace@redhat.com
 ---
- include/linux/ww_mutex.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ kernel/events/core.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/ww_mutex.h b/include/linux/ww_mutex.h
-index 850424e..6ecf2a0 100644
---- a/include/linux/ww_mutex.h
-+++ b/include/linux/ww_mutex.h
-@@ -173,9 +173,10 @@ static inline void ww_acquire_done(struct ww_acquire_ctx *ctx)
-  */
- static inline void ww_acquire_fini(struct ww_acquire_ctx *ctx)
- {
--#ifdef CONFIG_DEBUG_MUTEXES
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
- 	mutex_release(&ctx->dep_map, _THIS_IP_);
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 6182cb1..f079431 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -11833,12 +11833,12 @@ SYSCALL_DEFINE5(perf_event_open,
+ 			return err;
+ 	}
+ 
+-	err = security_locked_down(LOCKDOWN_PERF);
+-	if (err && (attr.sample_type & PERF_SAMPLE_REGS_INTR))
+-		/* REGS_INTR can leak data, lockdown must prevent this */
+-		return err;
 -
-+#endif
-+#ifdef CONFIG_DEBUG_MUTEXES
- 	DEBUG_LOCKS_WARN_ON(ctx->acquired);
- 	if (!IS_ENABLED(CONFIG_PROVE_LOCKING))
- 		/*
+-	err = 0;
++	/* REGS_INTR can leak data, lockdown must prevent this */
++	if (attr.sample_type & PERF_SAMPLE_REGS_INTR) {
++		err = security_locked_down(LOCKDOWN_PERF);
++		if (err)
++			return err;
++	}
+ 
+ 	/*
+ 	 * In cgroup mode, the pid argument is used to pass the fd
