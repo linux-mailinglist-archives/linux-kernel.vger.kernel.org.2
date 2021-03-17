@@ -2,150 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27EC33E898
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF17D33E89B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:56:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhCQExz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 00:53:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42062 "EHLO
+        id S229571AbhCQE4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 00:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhCQExb (ORCPT
+        with ESMTP id S229487AbhCQEzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 00:53:31 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E98FC06175F;
-        Tue, 16 Mar 2021 21:53:20 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id r14so546707qtt.7;
-        Tue, 16 Mar 2021 21:53:20 -0700 (PDT)
+        Wed, 17 Mar 2021 00:55:35 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB578C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 21:55:34 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id r17so442498ejy.13
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 21:55:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8uPciXrxKYp/GK5rUz7+ZeunCu/N9gdPWdYS1DNkkl8=;
-        b=i0ulZGykEfEvFpAjVk/Bm5gF9ypuFa3LFbIOw16pnebTgMxEwqJZ+11U6AQ4f+vVQ+
-         qJEp3bYDgZlFg0HUB+us4m1xwBpLpYeqcLqP0T33pUS6D2qvHqQQQrFBbTf2t8/m6nFN
-         /+6UGsqBqgZD3dhkiWUP/iLRbFJB7zFqiOANjoXqDqrz5NzuHGRfujyFL731+OUjjCFc
-         p4YcWpqE+Nj/ZeyZiSkEYa0KyXOkCT68VMcbhV/RjOLfnLyVua34xLdAGUXgzIyEGGCC
-         gql7S2iYJauQkPRN6OT1HjjOJUhnda3ZAz5vE1Bwt3IRucRN90TXBybo6crj86zDcp+n
-         Y9ug==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=R9Su8BT2yWWWTsxwDOrtHcEfB6yWhXQeHaQOaR7lJs0=;
+        b=O6sx9FFHvjxesWJe/kyNeeBwWtW52JhZ86uNybfLp1n5nVpFA0IdiS1FOjx1HpoaD3
+         v98nvCJdMQQRsZF4Ahu2nvix+wWfSe6qAHxAlqqAICsBrPdWX3GX5tW9Jy52xYO03bG2
+         tq7uMOyEKMG4n2m4kmyRyxz9EpkWw4r97rCHXVZFOL8YDM+2i24h4NIe9+6TTy1Ry1tu
+         QiRCdpVKVXGNYNe/nBpvBvBRoBPu2da836m6NDtDeN4NNFm6Y84CYIBl6C6eVwoPXJ5A
+         9d8jt1DnkFlIM91CFSuKs6O1m+RJp0IKPkWx3F1g46JqMwRFiBaSlwlFy8gmhIBpdAUc
+         4ybg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8uPciXrxKYp/GK5rUz7+ZeunCu/N9gdPWdYS1DNkkl8=;
-        b=L19ndGzZg3YEWhcC3NG4aCJVMOjg8F+TLnYWoTJvYEArtZSrHCFkUT5Vm5iUUhmMqg
-         +V+VfHiZM3ifIH3MOw3lGLt7aadTHUEWyIISr80BM2LbbB6sFv3YrDogf881GxJeSbG3
-         mJ9+g/G8D8Ja/Pq6YEyhA+FaL4YfPftSv/ES441USh3yBZK6YeFqBdA8X4oed1dGG1Ya
-         TlweFdK+IMopIqoRUGT5BMyQc/qOoToaJJf2fu0x8nDUIsoCNmtJy4GAftiof37hzZFc
-         G23HihBXSN0nMuqmbtR9xG6KTr6BoN9osu7Tb7Zt0kmfCwvpwKrBTczdkkKp1LiPF8DQ
-         W5gw==
-X-Gm-Message-State: AOAM530iez6ife9k3e2X+zfX28BHZz70k8hczTnG/YhlDp+vRwlClNCk
-        BpoYKdtyyvoHwn2+PBsz6MI5L6jLwWtw4w==
-X-Google-Smtp-Source: ABdhPJyGbcIW9+KXy5fCL3XEgc7BPX2VUFzLWG98e4l58+squ7rlmLLF8Rd8dbeFfoRu4xfMn/l+Kg==
-X-Received: by 2002:ac8:53c2:: with SMTP id c2mr2138933qtq.166.1615956799404;
-        Tue, 16 Mar 2021 21:53:19 -0700 (PDT)
-Received: from localhost ([76.73.146.210])
-        by smtp.gmail.com with ESMTPSA id k7sm14200771qtm.10.2021.03.16.21.53.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 21:53:19 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 21:53:18 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 06/13] lib: extend the scope of small_const_nbits() macro
-Message-ID: <20210317045318.GB2114775@yury-ThinkPad>
-References: <20210316015424.1999082-1-yury.norov@gmail.com>
- <20210316015424.1999082-7-yury.norov@gmail.com>
- <e89b04d4-c2d5-1999-ed72-45bdc03a7bab@rasmusvillemoes.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=R9Su8BT2yWWWTsxwDOrtHcEfB6yWhXQeHaQOaR7lJs0=;
+        b=p6cwtcAp0R7Pr9eeEGKNYXhcicNZRcC9JPZw4+5Gal6qoYfDClKIOSFMwH2NUkE5Su
+         WW3NoFpXsgB1mOUUDEnjv9GxWgf+DBzTHkOrPq+C+Hr6sfjfqDGee7cTTgXdAZ3brUdW
+         8lPSt0ey2Jjtb7EipiUXhPX9CR+swE8VUyp3gEjxPLwEdp8LIXpNa1QDnA0HP1udHS+J
+         e8wuzJYHiRvtQkN0ps4tHy6N0OEBQsZ9CXeVN4L9EdQRKsdaWNI2otXRhJi+PJlx+uY8
+         LeMBrjdtWZsxu7iErP1sGDPKuPJjFumK5S5IWwrS5SFp5V06XdIwLtcPX7zItw+I2iHn
+         EsbA==
+X-Gm-Message-State: AOAM530uVWNd+Ct0ZbY0SxMGPope+XhWC5vrL0KphRVZuPl6VxFcxJF3
+        5CQJqYRTOZkiOI+Kwk4cdJpi4bsghk6CskZMerQxKykaL6daFg==
+X-Google-Smtp-Source: ABdhPJwIO/ogRUlUiVl0dBLKIRZNfZtAdaRzwMYSyKIDI5BrQSkoOFC21rPTMy4VEFzJeUUvJsOKadQ+mLG8+8a/sbQ=
+X-Received: by 2002:a17:906:1386:: with SMTP id f6mr32943546ejc.45.1615956933554;
+ Tue, 16 Mar 2021 21:55:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e89b04d4-c2d5-1999-ed72-45bdc03a7bab@rasmusvillemoes.dk>
+References: <CE1E7D7EFA066443B6454A6A5063B50220D0B849@dggeml509-mbs.china.huawei.com>
+ <20210311121923.GU3479805@casper.infradead.org> <CAPcyv4jz7-uq+T-sd_U3O_C7SB9nYWVJDnhVsaM0VNR207m8xA@mail.gmail.com>
+ <CE1E7D7EFA066443B6454A6A5063B50220D12A8A@dggeml509-mbs.china.huawei.com>
+In-Reply-To: <CE1E7D7EFA066443B6454A6A5063B50220D12A8A@dggeml509-mbs.china.huawei.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 16 Mar 2021 21:55:27 -0700
+Message-ID: <CAPcyv4i2evDrYVgh4ir_ddRfO7tOgmWPSZf893JTO=+mcG7-XQ@mail.gmail.com>
+Subject: Re: [question] Panic in dax_writeback_one
+To:     "chenjun (AM)" <chenjun102@huawei.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>,
+        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
+        "lizhe (Y)" <lizhe67@huawei.com>, yangerkun <yangerkun@huawei.com>,
+        "zhangyi (F)" <yi.zhang@huawei.com>,
+        Joao Martins <joao.m.martins@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 09:56:49AM +0100, Rasmus Villemoes wrote:
-> On 16/03/2021 02.54, Yury Norov wrote:
-> > find_bit would also benefit from small_const_nbits() optimizations.
-> > 
-> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> > ---
-> >  include/asm-generic/bitsperlong.h | 9 +++++++++
-> >  include/linux/bitmap.h            | 3 ---
-> >  2 files changed, 9 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/include/asm-generic/bitsperlong.h b/include/asm-generic/bitsperlong.h
-> > index 3905c1c93dc2..96032f4f908f 100644
-> > --- a/include/asm-generic/bitsperlong.h
-> > +++ b/include/asm-generic/bitsperlong.h
-> > @@ -23,4 +23,13 @@
-> >  #define BITS_PER_LONG_LONG 64
-> >  #endif
-> >  
-> > +#define SMALL_CONST(n) (__builtin_constant_p(n) && (unsigned long)(n) < BITS_PER_LONG)
-> > +
-> > +/*
-> > + * The valid number of bits for a bitmap to be small enough, or in other words,
-> > + * fit into a single machine word is 1 to BITS_PER_LONG inclusively. 0 is not a
-> > + * valid number for size, and most probably a sing of error.
-> > + */
-> > +#define small_const_nbits(n) SMALL_CONST((n) - 1)
-> > +
-> 
-> I still don't see the point of introducing SMALL_CONST and still don't
-> like the much-too-generic-name - especially since AFAICT you don't
-> actually use it anywhere outside the definition of small_const_nbits()?
-> 
-> >  #endif /* __ASM_GENERIC_BITS_PER_LONG */
-> > diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> > index adf7bd9f0467..bc13a890ecc1 100644
-> > --- a/include/linux/bitmap.h
-> > +++ b/include/linux/bitmap.h
-> > @@ -224,9 +224,6 @@ extern int bitmap_print_to_pagebuf(bool list, char *buf,
-> >   * so make such users (should any ever turn up) call the out-of-line
-> >   * versions.
-> >   */
-> 
-> You added another comment near its new definition, but the left-behind
-> comment in bitmap.h is now somewhat confusing, no? I suggest expanding
-> your new comment a bit so it's clear why we're interested in whether a
-> bitmap is known at compile-time to consist of exactly one word:
-> 
-> /*
-> small_const_nbits(n) is true precisely when it is known at compile-time
-> that BITMAP_SIZE(n) is 1, i.e. 1 <= n <= BITS_PER_LONG. This allows
-> various bit/bitmap APIs to provide a fast inline implementation. Bitmaps
-> of size 0 are very rare, and a compile-time-known-size 0 is most likely
-> a sign of error. They will be handled correctly by the bit/bitmap APIs,
-> but using the out-of-line functions, so that the inline implementations
-> can unconditionally dereference the pointer(s).
-> */
+On Tue, Mar 16, 2021 at 8:00 PM chenjun (AM) <chenjun102@huawei.com> wrote:
+>
+> =E5=9C=A8 2021/3/12 1:25, Dan Williams =E5=86=99=E9=81=93:
+> > On Thu, Mar 11, 2021 at 4:20 AM Matthew Wilcox <willy@infradead.org> wr=
+ote:
+> >>
+> >> On Thu, Mar 11, 2021 at 07:48:25AM +0000, chenjun (AM) wrote:
+> >>> static int dax_writeback_one(struct xa_state *xas, struct dax_device
+> >>> *dax_dev, struct address_space *mapping, void *entry)
+> >>> ----dax_flush(dax_dev, page_address(pfn_to_page(pfn)), count * PAGE_S=
+IZE);
+> >>> The pfn is returned by the driver. In my case, the pfn does not have
+> >>> struct page. so pfn_to_page(pfn) return a wrong address.
+> >>
+> >> I wasn't involved, but I think the right solution here is simply to
+> >> replace page_address(pfn_to_page(pfn)) with pfn_to_virt(pfn).  I don't
+> >> know why Dan decided to do this in the more complicated way.
+> >
+> > pfn_to_virt() only works for the direct-map. If pages are not mapped I
+> > don't see how pfn_to_virt() is expected to work.
+> >
+> > The real question Chenjun is why are you writing a new simulator of
+> > memory as a block-device vs reusing the pmem driver or brd?
+> >
+>
+> Hi Dan
+>
+> In my case, I do not want to take memory to create the struct page of
+> the memory my driver used.
 
-Ok, make sense
+There are efforts happening to drastically reduce that overhead. You
+might want to check out Joao's work [1]. I think that direction holds
+more promise than trying to extend FS_DAX_LIMITED.
 
-> > -#define small_const_nbits(nbits) \
-> > -	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG && (nbits) > 0)
-> > -
-> >  static inline void bitmap_zero(unsigned long *dst, unsigned int nbits)
-> >  {
-> >  	unsigned int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
-> > 
-> 
-> Rasmus
+[1]: http://lore.kernel.org/r/20201208172901.17384-1-joao.m.martins@oracle.=
+com
+
+> And, I think this is also a problem for DCSSBLK.
+
+If I understand correctly DAX replaced XIP for S390. There have not
+been reports about this problem, and I can only guess because XIP
+(eXecute-In-Place) is a read-only use case where dax_writeback_one()
+is never triggered, or S390 just isn't using DCSSBLK anymore. The last
+time I touched FS_DAX_LIMITED the DCSSBLK maintainers offered to just
+delete this driver to get it out of the way.
+
+>
+> So I want to go back the older way if CONFIG_FS_DAX_LIMITED
+>
+> diff --git a/fs/dax.c b/fs/dax.c
+> index b3d27fd..6395e84 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -867,6 +867,9 @@ static int dax_writeback_one(struct xa_state *xas,
+> struct dax_device *dax_dev,
+>   {
+>         unsigned long pfn, index, count;
+>         long ret =3D 0;
+> +       void *kaddr;
+> +       pfn_t new_pfn_t;
+> +       pgoff_t pgoff;
+>
+>         /*
+>          * A page got tagged dirty in DAX mapping? Something is seriously
+> @@ -926,7 +929,25 @@ static int dax_writeback_one(struct xa_state *xas,
+> struct dax_device *dax_dev,
+>         index =3D xas->xa_index & ~(count - 1);
+>
+>         dax_entry_mkclean(mapping, index, pfn);
+> -       dax_flush(dax_dev, page_address(pfn_to_page(pfn)), count * PAGE_S=
+IZE);
+> +
+> +       if (!IS_ENABLED(CONFIG_FS_DAX_LIMITED) || pfn_valid(pfn))
+> +               kaddr =3D page_address(pfn_to_page(pfn));
+> +       else {
+> +               ret =3D bdev_dax_pgoff(mapping->host->i_sb->s_bdev, pfn <=
+<
+> PFN_SECTION_SHIFT, count << PAGE_SHIFT, &pgoff);
+
+This is broken:
+
+    mapping->host->i_sb->s_bdev
+
+...there is no guarantee that the superblock associated with the
+mapping is hosted on the same block device associated with the passed
+in dax_device. See dax_rtdev in xfs_open_devices().
