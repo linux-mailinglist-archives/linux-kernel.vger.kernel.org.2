@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A508133FBAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 00:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DFB733FBB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 00:11:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbhCQXJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 19:09:01 -0400
-Received: from elvis.franken.de ([193.175.24.41]:38983 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229472AbhCQXI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 19:08:29 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lMfHA-0002xB-00; Thu, 18 Mar 2021 00:08:28 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 491F7C0CF7; Thu, 18 Mar 2021 00:08:08 +0100 (CET)
-Date:   Thu, 18 Mar 2021 00:08:08 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>, linux-mips@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
-Message-ID: <20210317230808.GA22680@alpha.franken.de>
-References: <1615965307-6926-1-git-send-email-yangtiezhu@loongson.cn>
- <6b239565-8fbb-d183-6a4d-13fc90af3e27@iogearbox.net>
+        id S229613AbhCQXKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 19:10:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229658AbhCQXKS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 19:10:18 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084DAC06174A;
+        Wed, 17 Mar 2021 16:10:18 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id b10so329646iot.4;
+        Wed, 17 Mar 2021 16:10:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LP5IWSMRP8RZgtYzJ/AWviI0W1pO/EoAwNzy2cazgHo=;
+        b=b048VUHARtXjGvQZgKMCLn9MNWtaGzfmG0RTBNDev4DFRX8hKCoUYAA8p/xRWgAYx3
+         LmdIgaS2dUeyFDqqmjSHKqZmCRXYparo6lai9bmonjiJx9zCCktypKELvN5gksMmEMD+
+         K8ybtIGWbyNCFawqz+4s4pLj+87+jtDZqTIGqUJqm5GXmXPituD5cmPJJS5Lm+n9ROYX
+         ACGZPdaLe9bCcudg/Chi1ocdXNYx070/7wRhGofWj8ahacpYT7dNBtO5PhuTkpxmU81L
+         xDhTAPKgrmrMJINUE9JKCSLsc9ylPFI/nbbsy4Vh9zWRGg2uGmyQRWcXHXzLkfHPtF1M
+         eonA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LP5IWSMRP8RZgtYzJ/AWviI0W1pO/EoAwNzy2cazgHo=;
+        b=OpXZ1kHUN63CGqYTAs4Hn9+E8YTx+d70yEGJtcdVUj8JtPjm0CarlNA9E0XvgcMTam
+         nEuY7BPBAkt4Et8t8gpsHDQqNTWyUg5Kaw6saxa0jmEvctzXd+04wT6imuBFVxEAXyjp
+         5W1P7ONWAZYLjJDOMg5esNSendXj1TnzC5ayvOEpq590U/jfzZDswFvc4X6jZt9DKkrZ
+         jNq04S7KW3yb7vyBTSKZfKGZ9LJXqlLzwxJWOeoxt+cT1V5Xk8/D7DAD08GC9fhOooEO
+         ssxYh+/9IhfH9yWvP3qIGtuBgzcJOOv8n+CUkb8HpKOLRPeIDzU+XmjqcJoAc/Lp3GwT
+         xZiQ==
+X-Gm-Message-State: AOAM533X+xt4D96X2BeeEePdQb47kat7eWa99CbO3yVDzHPwATj83H5Y
+        XX70Op4fbFP1eeTKMHdpFwu46JKwfx9GjMdb0K1YF5umZRoyOw==
+X-Google-Smtp-Source: ABdhPJxwnPpwFM6till0nCzyyWds9TCykW07ptWvBOVrZExXHqb5U9gkWUESyORm3SAiluxesOy+SEnsZXyFPjO2STg=
+X-Received: by 2002:a5d:9e03:: with SMTP id h3mr8415319ioh.94.1616022617429;
+ Wed, 17 Mar 2021 16:10:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6b239565-8fbb-d183-6a4d-13fc90af3e27@iogearbox.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210313192033.2611349-1-ztong0001@gmail.com> <YFJp+It0/f7O9YId@kroah.com>
+In-Reply-To: <YFJp+It0/f7O9YId@kroah.com>
+From:   Tong Zhang <ztong0001@gmail.com>
+Date:   Wed, 17 Mar 2021 19:10:06 -0400
+Message-ID: <CAA5qM4DHbMv8LAN0EucFHokk5jjW2m6eKACTGTFbSMJ7zZ020A@mail.gmail.com>
+Subject: Re: [PATCH] usb: gadget: udc: amd5536udc_pci fix crash if dma is used
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Felipe Balbi <balbi@kernel.org>, Lee Jones <lee.jones@linaro.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        linux-usb@vger.kernel.org, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 11:18:48PM +0100, Daniel Borkmann wrote:
-> On 3/17/21 8:15 AM, Tiezhu Yang wrote:
-> > After commit 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to
-> > archs where they work"), bpf_probe_read{, str}() functions were not longer
-> > available on MIPS, so there exists some errors when running bpf program:
-> > 
-> > root@linux:/home/loongson/bcc# python examples/tracing/task_switch.py
-> > bpf: Failed to load program: Invalid argument
-> > [...]
-> > 11: (85) call bpf_probe_read#4
-> > unknown func bpf_probe_read#4
-> > [...]
-> > Exception: Failed to load BPF program count_sched: Invalid argument
-> > 
-> > So select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE in arch/mips/Kconfig,
-> > otherwise the bpf old helper bpf_probe_read() will not be available.
-> > 
-> > This is similar with the commit d195b1d1d1196 ("powerpc/bpf: Enable
-> > bpf_probe_read{, str}() on powerpc again").
-> > 
-> > Fixes: 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to archs where they work")
-> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> 
-> Thomas, I presume you pick this up via mips tree (with typos fixed)? Or do you
-> want us to route the fix via bpf with your ACK? (I'm fine either way.)
-
-I'll take it via mips tree.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Hi Greg,
+Thanks for the comments.
+I tried to find the commit that introduced the use of dev->dev in
+init_dma_pools()
+and added that commit to the Fixes tag in v2 patch.
+Please see if this one works.
+Thanks,
+- Tong
