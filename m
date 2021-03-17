@@ -2,17 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7388433F089
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6424033F08B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbhCQMio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 08:38:44 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49722 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhCQMi0 (ORCPT
+        id S230221AbhCQMiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 08:38:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229796AbhCQMi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 08:38:26 -0400
-Date:   Wed, 17 Mar 2021 12:38:24 -0000
+        Wed, 17 Mar 2021 08:38:27 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 350F8C06174A;
+        Wed, 17 Mar 2021 05:38:27 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 12:38:25 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1615984705;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -20,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Oo3oLl3D3bCZ7C7ENIbBzljLTNO/XAjw/77NsIFNlU8=;
-        b=tK0JNqTYRiVp0FLKrMv0b3iKuU6ney3sh6cZMRVaOc2Vsy8AW1XXX9SRnBkGAOb2szkJNW
-        SerJj0xYxmXmNOsOywobpU8WdmwkrwAUDNTTGwLObVTKCpxzptn0ZQb40gSWgVUXA7ME2+
-        IbF63FQDRIERnAURxmgLeTyLSTdDdKzuYAaLWoODkznBjET1Wx08RjleTZw7c+mgUImCcH
-        lN9YjJre8S8mckxkaBu8mYyGbgrpKadTPRajQofyYKS1g26uX7tL+wJqp65UXKu/OacJQi
-        jlxjPQ1g6UFapngLEYL/KoBKUcHl/zU5K1YAbJHRbwMgzDQ8gAWZnwULAuc9HA==
+        bh=bSltvtaYx8C1Wn8fbfUtSG9Vg3+XsiDW4bhaxhvv/Yo=;
+        b=ZnAba2Q6xW88dv5y7qyK/l2gDqpAT5EBcDt8OEeuUSsTnnlqeuAq2PwYfxV8EqvkN3GGvs
+        v3wV7lTOdfcat90moRfG0bS49SxQjl+YrlteTB4QcfFBEHyi7ZitFFuuX+ugSjZY5WsCnx
+        a2Cn5sqx/+9b0GSNJg+1gYySc81WAs/xfw/v6CXx0/2PTo6Rm46r/ViAEw5E0aNwk5SLmE
+        ij0LxcxlaVAp04CIUrALjjzJwG+HBzlrRbtw/RrM34wB3a3hqTS14rT8OhIWR7w+YlMc4R
+        gyTj9aIjR9T5f8xJjM2lBcVtJgzwCx5MD8TGYIPe/CU4SlFI8nJXw+vznuILEg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1615984705;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,21 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Oo3oLl3D3bCZ7C7ENIbBzljLTNO/XAjw/77NsIFNlU8=;
-        b=cYBFrArA7jJAGmiiGN88QfqcoOd4WGYPDX07itlSTaqyIl0hicBnQMo73HI5WbD0H5zd78
-        9NSwZQuRpp3cpZCA==
+        bh=bSltvtaYx8C1Wn8fbfUtSG9Vg3+XsiDW4bhaxhvv/Yo=;
+        b=EJ7asX4RMAcMUqgBMw8ER22RQ3D3J/8jFkw8Cgr5/P31zxr4gH+EfS3qQeZ6ONaMBunIfE
+        5UcPWt0bZgGPABDA==
 From:   "tip-bot2 for Namhyung Kim" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf core: Allocate perf_event in the target node memory
+Subject: [tip: perf/core] perf core: Allocate perf_buffer in the target node memory
 Cc:     Namhyung Kim <namhyung@kernel.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210311115413.444407-2-namhyung@kernel.org>
-References: <20210311115413.444407-2-namhyung@kernel.org>
+In-Reply-To: <20210315033436.682438-1-namhyung@kernel.org>
+References: <20210315033436.682438-1-namhyung@kernel.org>
 MIME-Version: 1.0
-Message-ID: <161598470458.398.13204797977122218988.tip-bot2@tip-bot2>
+Message-ID: <161598470527.398.15328587861840487615.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,47 +61,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     ff65338e78418e5970a7aabbabb94c46f2bb821d
-Gitweb:        https://git.kernel.org/tip/ff65338e78418e5970a7aabbabb94c46f2bb821d
+Commit-ID:     9483409ab5067941860754e78a4a44a60311d276
+Gitweb:        https://git.kernel.org/tip/9483409ab5067941860754e78a4a44a60311d276
 Author:        Namhyung Kim <namhyung@kernel.org>
-AuthorDate:    Thu, 11 Mar 2021 20:54:13 +09:00
+AuthorDate:    Mon, 15 Mar 2021 12:34:36 +09:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 16 Mar 2021 21:44:43 +01:00
+CommitterDate: Tue, 16 Mar 2021 21:44:42 +01:00
 
-perf core: Allocate perf_event in the target node memory
+perf core: Allocate perf_buffer in the target node memory
 
-For cpu events, it'd better allocating them in the corresponding node
-memory as they would be mostly accessed by the target cpu.  Although
-perf tools sets the cpu affinity before calling perf_event_open, there
-are places it doesn't (notably perf record) and we should consider
-other external users too.
+I found the ring buffer pages are allocated in the node but the ring
+buffer itself is not.  Let's convert it to use kzalloc_node() too.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210311115413.444407-2-namhyung@kernel.org
+Link: https://lkml.kernel.org/r/20210315033436.682438-1-namhyung@kernel.org
 ---
- kernel/events/core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ kernel/events/ring_buffer.c |  9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index f526ddb..6182cb1 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -11288,13 +11288,16 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
- 	struct perf_event *event;
- 	struct hw_perf_event *hwc;
- 	long err = -EINVAL;
+diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
+index ef91ae7..bd55ccc 100644
+--- a/kernel/events/ring_buffer.c
++++ b/kernel/events/ring_buffer.c
+@@ -804,7 +804,7 @@ struct perf_buffer *rb_alloc(int nr_pages, long watermark, int cpu, int flags)
+ {
+ 	struct perf_buffer *rb;
+ 	unsigned long size;
+-	int i;
++	int i, node;
+ 
+ 	size = sizeof(struct perf_buffer);
+ 	size += nr_pages * sizeof(void *);
+@@ -812,7 +812,8 @@ struct perf_buffer *rb_alloc(int nr_pages, long watermark, int cpu, int flags)
+ 	if (order_base_2(size) >= PAGE_SHIFT+MAX_ORDER)
+ 		goto fail;
+ 
+-	rb = kzalloc(size, GFP_KERNEL);
++	node = (cpu == -1) ? cpu : cpu_to_node(cpu);
++	rb = kzalloc_node(size, GFP_KERNEL, node);
+ 	if (!rb)
+ 		goto fail;
+ 
+@@ -906,11 +907,13 @@ struct perf_buffer *rb_alloc(int nr_pages, long watermark, int cpu, int flags)
+ 	struct perf_buffer *rb;
+ 	unsigned long size;
+ 	void *all_buf;
 +	int node;
  
- 	if ((unsigned)cpu >= nr_cpu_ids) {
- 		if (!task || cpu != -1)
- 			return ERR_PTR(-EINVAL);
- 	}
+ 	size = sizeof(struct perf_buffer);
+ 	size += sizeof(void *);
  
--	event = kmem_cache_zalloc(perf_event_cache, GFP_KERNEL);
-+	node = (cpu >= 0) ? cpu_to_node(cpu) : -1;
-+	event = kmem_cache_alloc_node(perf_event_cache, GFP_KERNEL | __GFP_ZERO,
-+				      node);
- 	if (!event)
- 		return ERR_PTR(-ENOMEM);
+-	rb = kzalloc(size, GFP_KERNEL);
++	node = (cpu == -1) ? cpu : cpu_to_node(cpu);
++	rb = kzalloc_node(size, GFP_KERNEL, node);
+ 	if (!rb)
+ 		goto fail;
  
