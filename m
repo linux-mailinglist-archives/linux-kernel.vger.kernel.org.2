@@ -2,114 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B82B33EB2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:16:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4EB33EB31
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbhCQIPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:15:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58060 "EHLO
+        id S229643AbhCQIQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:16:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhCQIPS (ORCPT
+        with ESMTP id S229613AbhCQIQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:15:18 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACDC1C06174A;
-        Wed, 17 Mar 2021 01:15:17 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 12so917050wmf.5;
-        Wed, 17 Mar 2021 01:15:17 -0700 (PDT)
+        Wed, 17 Mar 2021 04:16:13 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2BB1C06174A;
+        Wed, 17 Mar 2021 01:16:13 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id n132so40055736iod.0;
+        Wed, 17 Mar 2021 01:16:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2C2nS2FuL5jIhqAY/uOCR718M7JpaJd6K5UxD7QBZ0c=;
-        b=gKEcCTAzqvl6UcV0JWtxYfgS4mkNy0j7CKcuoZN0yc1FuCnS7UWDHaH9tUkIbPWw8S
-         PpWTOg/bdzs8nexa2qdaE4CwxflXq8MOZ0fUIqJRjktExHNx5L+73lmykE64Bx2iU1pw
-         jqSR6Hzcmd95d8FUroe/k5CvPz5IdtNDSgA/qi0Nqa+2AFSoE2eCC++keWgca+yhdKZF
-         KD8KLfVtPkPGKPmqo+n7ksyh9WFH5pqf+nGP5mUzc3gymPo3yUvOQo/MFVrfCvBUgx3A
-         GmH7VSxJx0RNhcec/1D8osxwGFnCzouAYDOTwKzmLvzTTbvX/7tuwGUFntIhTgZfj9NY
-         2fuw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AiXh5OFsnN34IitZz1rkVk6moqaTbWiaMgRZ+6LYhf8=;
+        b=gAPnk0yECXq3HyzTLDsOs+NhCxSyJmPDWkC64+ApYo1YnCgqDmc83K+vgu7pHY3qza
+         zwv9V3CO62rt/vydmtLxHcnMvllRWgSPWNNb8W/vopxVHx1giz7MroScEX+NVf52UA3w
+         DwA98pQuO7pUYMJkj5uc5VXCau/Vm8tE1IgznDB+hqEjUEVbLoJrPjt84z1l328YXyjY
+         TWBu96tcOE+w4Gjh7ft6UaYocNI5kFp0ZvKkedAoudwqbZ9V154YFd8WJQTQAECL3iHj
+         DY7niU9Cqwm1J4U7tlqTXjfh4xGov3tgOcj2rVKXiQNIL2zf9FzgYMwcfpwPbIXrKNle
+         1X6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2C2nS2FuL5jIhqAY/uOCR718M7JpaJd6K5UxD7QBZ0c=;
-        b=IEApST4Z2fEgoSRxE0VBp236IUuOlqEG2qrCnq9Vlt+48O/nCWfP0g+u3//B2wNDRp
-         1nQnxA5ow/q3odR0flVbtK6oT5LiF3EM8ns1+BxXXk4OJpK5h7CsA/ojMTHC8hU0Oafo
-         wX9GIhAOaOZYpXLXfova3sUfPuSYo5prTFUaTYZYl+MZ12TNp4c2YWbKuQ2/SCULC/sk
-         fe5XbUyBi1OsMcoqXcU+RdWIujS7Toi90Y/XUPDLQYuHfcNSXo/k5PfjDrOYS1ir4Q5W
-         9Ri/7VWqFPmBxmgeTyDwFNdJOON5s6aBGEK7RpImF06aEAQdu0bNYcUr5X4D488r1p8o
-         /J1g==
-X-Gm-Message-State: AOAM532p85Oq9/yTSnRV8Zptpy+wV8OoTgu7sp2xHPdA8kl/ZyplFxWO
-        t3XZjP3OAi6xyXqdXxGYNiQ=
-X-Google-Smtp-Source: ABdhPJzX4WCDwk6IxuS01Nm/yXC+ACwGHPPl9kypRe2EEfWymsCJ9UtVYQFLKhDE/japhuJA+VrwPw==
-X-Received: by 2002:a1c:a916:: with SMTP id s22mr2568037wme.82.1615968914088;
-        Wed, 17 Mar 2021 01:15:14 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f1f:bb00:c04c:c4a7:d0c5:8ae7? (p200300ea8f1fbb00c04cc4a7d0c58ae7.dip0.t-ipconnect.de. [2003:ea:8f1f:bb00:c04c:c4a7:d0c5:8ae7])
-        by smtp.googlemail.com with ESMTPSA id s84sm1694787wme.11.2021.03.17.01.15.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 01:15:13 -0700 (PDT)
-Subject: Re: [PATCH net-next 1/1] net: phy: fix invalid phy id when probe
- using C22
-To:     Wong Vee Khee <vee.khee.wong@intel.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Voon Weifeng <voon.weifeng@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-References: <20210316085748.3017-1-vee.khee.wong@intel.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <eba4f81c-adc0-61d1-8cb9-4c0c5995bc49@gmail.com>
-Date:   Wed, 17 Mar 2021 09:15:03 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AiXh5OFsnN34IitZz1rkVk6moqaTbWiaMgRZ+6LYhf8=;
+        b=R2B4FSClhEaSCip9xgPd23mqFGZoag64eMgXbY7PANw0YTvoR6VI4jp0OsdmHZtPTC
+         VSCYrEBx9P2vrZh5AwFPMcjYh/6rsb7L+tASWBLxZuLsI3CYs6hHo6uR+hxEE8P7/9Qg
+         7cBtrKTLi/6NpYkdnOBw0eBlR5uZVFBK3A9sQrEqfUCiD+z29QwurAzsieSc8e7hiESw
+         rO5ifMH6N/5JP2J5afTRJbiqo9hZkmnQ3/REgDuvZQaR5vsFsxWW+FgxWMfk6cYQSGYg
+         5YJb7IFEJegk+5Jf8HYMkQSzC0GEYYaWVSFIGRNG2ysBoGEcCNC33wJzlWtRDfJ4YhUH
+         vlcA==
+X-Gm-Message-State: AOAM531271Z83FpVlNc7Ndc69lj7ZRCyXVUsZxjIAmLOkD+0nsaCaTJa
+        cUpr2qNAslX3wije1/0UFvbXUYxN7hX++RXITB4=
+X-Google-Smtp-Source: ABdhPJxdslQWxWHgCfvHpEkB6dz2eb3BbcFgd8hsk2MYpirqFTEXFB8/VV6tyn8gX5McHuvBjPaLLyZSzVtBP8xwcPw=
+X-Received: by 2002:a05:6602:2e82:: with SMTP id m2mr5967050iow.70.1615968973050;
+ Wed, 17 Mar 2021 01:16:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210316085748.3017-1-vee.khee.wong@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210316155001.699efbb4@canb.auug.org.au> <d3c9bca8-3709-3613-c4cd-6da2aa96c2b9@infradead.org>
+In-Reply-To: <d3c9bca8-3709-3613-c4cd-6da2aa96c2b9@infradead.org>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Wed, 17 Mar 2021 10:16:01 +0200
+Message-ID: <CA+U=DspHhL=Of2axKW6FiF3oG8S7FEP4QBLEZHc5VQ4LzmvqNQ@mail.gmail.com>
+Subject: Re: linux-next: Tree for Mar 16 (AD9467 & ADI_AXI_ADC)
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.03.2021 09:57, Wong Vee Khee wrote:
-> When using Clause-22 to probe for PHY devices such as the Marvell
-> 88E2110, PHY ID with value 0 is read from the MII PHYID registers
-> which caused the PHY framework failed to attach the Marvell PHY
-> driver.
-> 
+On Tue, Mar 16, 2021 at 11:20 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 3/15/21 9:50 PM, Stephen Rothwell wrote:
+> > Hi all,
+> >
+> > News: there will be no linux-next release on Friday this week.
+> >
+> > Warning: Some of the branches in linux-next are still based on v5.12-rc1,
+> > so please be careful if you are trying to bisect a bug.
+> >
+> > News: if your -next included tree is based on Linus' tree tag
+> > v5.12-rc1{,-dontuse} (or somewhere between v5.11 and that tag), please
+> > consider rebasing it onto v5.12-rc2. Also, please check any branches
+> > merged into your branch.
+> >
+> > Changes since 20210315:
+>
+>
+> on i386 or x86_64:
+>
+> WARNING: unmet direct dependencies detected for ADI_AXI_ADC
+>   Depends on [n]: IIO [=y] && HAS_IOMEM [=y] && OF [=n]
+>   Selected by [y]:
+>   - AD9467 [=y] && IIO [=y] && SPI [=y]
+>
+>
+> AD9467 should not select ADI_AXI_ADC when OF is not enabled,
+> so possibly AD9467 should depend on OF.
 
-The issue occurs with a MAC driver that sets MDIO bus capability
-flag MDIOBUS_C22_C45, like stmmac? Or what is the affected MAC
-driver?
+Hmm, this becomes a bit complicated.
+We got here because we needed to add a depends on HAS_IOMEM for the
+ADI_AXI_ADC (due to the s390 arch).
+Maybe a better fix would be for AD9467 to depend on ADI_AXI_ADC.
+The AD9467 driver can't function without the ADI_AXI_ADC driver.
 
-And if you state it's a fix, a Fixes tag would be needed.
+It is a little early to move this to a "high-speed ADC" subgroup.
 
-> Fixed this by adding a check of PHY ID equals to all zeroes.
-> 
-> Cc: stable@vger.kernel.org
-> Reviewed-by: Voon Weifeng <voon.weifeng@intel.com>
-> Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
-> ---
->  drivers/net/phy/phy_device.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> index a009d1769b08..f1afc00fcba2 100644
-> --- a/drivers/net/phy/phy_device.c
-> +++ b/drivers/net/phy/phy_device.c
-> @@ -820,8 +820,8 @@ static int get_phy_c22_id(struct mii_bus *bus, int addr, u32 *phy_id)
->  
->  	*phy_id |= phy_reg;
->  
-> -	/* If the phy_id is mostly Fs, there is no device there */
-> -	if ((*phy_id & 0x1fffffff) == 0x1fffffff)
-> +	/* If the phy_id is mostly Fs or all zeroes, there is no device there */
-> +	if (((*phy_id & 0x1fffffff) == 0x1fffffff) || (*phy_id == 0))
->  		return -ENODEV;
->  
->  	return 0;
-> 
-
+>
+>
+> Full randconfig file is attached.
+>
+>
+> --
+> ~Randy
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
