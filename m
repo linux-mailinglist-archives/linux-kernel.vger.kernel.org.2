@@ -2,96 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD0C333F9B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:04:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB3A33F9B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:05:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233391AbhCQUEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 16:04:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233355AbhCQUDq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 16:03:46 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE875C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:03:45 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id q5so273386pgk.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:03:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PMZcSuGazFdtOb5qvPexbIVWGQzVKNMJ7ZZH0Yf8cCs=;
-        b=Da5G1yif8DdX+8w8KJ4dBsTTgesPOgdGFV0u/nK8pyzOMYg0odPKBeOlgKoMOsygW7
-         qVSetOn7sBkEyflrN/a9gL/N0QuUrqlTUCAp8EdYTeab0g8HXgQcb/S59tsABZn3zSkD
-         W9LwL8oqfKGiHN+4ts8NEL9k/OwvdJPSWioqA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PMZcSuGazFdtOb5qvPexbIVWGQzVKNMJ7ZZH0Yf8cCs=;
-        b=XvgvgdwRRtbXaKKuPNPHtmdeUuj83U12NAy46cKGhOddbLyGyUDHQZrPvN+7iHS9NA
-         0aW2VC3IhXKwv1QOjlTlpPX0e424ROc4KCyenFfd0eD9cOgOlMbHhVfKHy/gnTqsDeBq
-         Mqz8eF+IL64enCOVllYtAijGCetqCriuGl5RDsY05k5NyGZnyPVRNowCyKBHhNNxIinl
-         n3QJdYCdRynK8zEDyUQ8qVXkKypuRo91iDkID8h68BdQYjbT1p1jtPnL2ksYQdz3oiW4
-         Z3+yD2wmQFbFvbpgmoh/zSfxbnGgFGPC063HgGJw8AasA30gFlYwgf+7XGSMc8ZwXq8F
-         j3TQ==
-X-Gm-Message-State: AOAM530zvPIjEFy3XrQLwcKp9qJp13YWytcNjVY79j5SSiwZkxaDJWhK
-        g8NTqMfcR0vMwwEEyipqBbu8ng==
-X-Google-Smtp-Source: ABdhPJxhKXf2juJqtE1bn8z/X2ECPS65c7/sTPzGQLSiMoHGnctCifHOfFffOrE0CYg/TSWJVVotJA==
-X-Received: by 2002:a63:4c4e:: with SMTP id m14mr4065710pgl.35.1616011424752;
-        Wed, 17 Mar 2021 13:03:44 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:3cf8:6a09:780b:f65d])
-        by smtp.gmail.com with UTF8SMTPSA id q15sm3870178pje.28.2021.03.17.13.03.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 13:03:44 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 13:03:42 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wesley Cheng <wcheng@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-usb@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
-Subject: Re: [PATCH 2/3] dt-bindings: phy: qcom,usb-snps-femto-v2: Add
- bindings for SC7280
-Message-ID: <YFJgnnoOxI7n0HPL@google.com>
-References: <1615978901-4202-1-git-send-email-sanm@codeaurora.org>
- <1615978901-4202-3-git-send-email-sanm@codeaurora.org>
+        id S233403AbhCQUEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 16:04:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:45690 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232499AbhCQUEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 16:04:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9ECD51FB;
+        Wed, 17 Mar 2021 13:04:10 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B6D223F70D;
+        Wed, 17 Mar 2021 13:04:09 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-ia64\@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        debian-ia64 <debian-ia64@lists.debian.org>
+Subject: Re: [PATCH 0/1] sched/topology: NUMA distance deduplication
+In-Reply-To: <cf4d7277-54a0-8bc7-60fb-9b2f6befb511@physik.fu-berlin.de>
+References: <255d6b5d-194e-eb0e-ecdd-97477a534441@physik.fu-berlin.de> <8735wtr2ro.mognet@arm.com> <cf4d7277-54a0-8bc7-60fb-9b2f6befb511@physik.fu-berlin.de>
+Date:   Wed, 17 Mar 2021 20:04:07 +0000
+Message-ID: <87zgz1pmx4.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1615978901-4202-3-git-send-email-sanm@codeaurora.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 04:31:40PM +0530, Sandeep Maheswaram wrote:
-> Add the compatible string for sc7280 SoC from Qualcomm
-> 
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml b/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml
-> index ee77c64..20203a8 100644
-> --- a/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml
-> +++ b/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml
-> @@ -16,6 +16,7 @@ properties:
->    compatible:
->      enum:
->        - qcom,usb-snps-hs-7nm-phy
-> +      - qcom,sc7280-usb-hs-phy
->        - qcom,sm8150-usb-hs-phy
->        - qcom,sm8250-usb-hs-phy
->        - qcom,sm8350-usb-hs-phy
+On 17/03/21 20:47, John Paul Adrian Glaubitz wrote:
+> Helo Valentin!
+>
+> On 3/17/21 8:36 PM, Valentin Schneider wrote:
+>> I see ACPI in your boot logs, so I'm guessing you have a bogus SLIT table
+>> (the ACPI table with node distances). You should be able to double check
+>> this with something like:
+>>
+>> $ acpidump > acpi.dump
+>> $ acpixtract -a acpi.dump
+>> $ iasl -d *.dat
+>> $ cat slit.dsl
+>
+> There does not seem to be a SLIT table in my firmware:
+>
+> root@glendronach:~# acpidump > acpi.dump
+> root@glendronach:~# acpixtract -a acpi.dump
+>
+> Intel ACPI Component Architecture
+> ACPI Binary Table Extraction Utility version 20200925
+> Copyright (c) 2000 - 2020 Intel Corporation
+>
+> acpixtract(31194): unaligned access to 0x60000fffff9b3925, ip=0x4000000000003e91
+>   SSDT -    3768 bytes written (0x00000EB8) - ssdt1.dat
+> acpixtract(31194): unaligned access to 0x60000fffff9b3925, ip=0x4000000000003e00
+> acpixtract(31194): unaligned access to 0x60000fffff9b3925, ip=0x4000000000003e91
+>   SPCR -      80 bytes written (0x00000050) - spcr.dat
+> acpixtract(31194): unaligned access to 0x60000fffff9b3925, ip=0x4000000000003e00
+> acpixtract(31194): unaligned access to 0x60000fffff9b3925, ip=0x4000000000003e91
+>   APIC -     200 bytes written (0x000000C8) - apic.dat
+>   SSDT -    1110 bytes written (0x00000456) - ssdt2.dat
+>   SSDT -     316 bytes written (0x0000013C) - ssdt3.dat
+>   SPMI -      80 bytes written (0x00000050) - spmi.dat
+>   DSDT -   58726 bytes written (0x0000E566) - dsdt.dat
+>   SSDT -     312 bytes written (0x00000138) - ssdt4.dat
+>   SSDT -    2150 bytes written (0x00000866) - ssdt5.dat
+>   SSDT -     316 bytes written (0x0000013C) - ssdt6.dat
+>   SSDT -    3768 bytes written (0x00000EB8) - ssdt7.dat
+>   FACP -     244 bytes written (0x000000F4) - facp.dat
+>   SSDT -    1203 bytes written (0x000004B3) - ssdt8.dat
+>   CPEP -      52 bytes written (0x00000034) - cpep.dat
+>   SSDT -     316 bytes written (0x0000013C) - ssdt9.dat
+>   DBGP -      52 bytes written (0x00000034) - dbgp.dat
+>   SSDT -    3768 bytes written (0x00000EB8) - ssdt10.dat
+>   FACS -      64 bytes written (0x00000040) - facs.dat
+> root@glendronach:~#
+>
+> root@glendronach:~# ls *.dsl *.dat
+> apic.dat  cpep.dsl  dsdt.dat  facp.dsl  spcr.dat  spmi.dsl    ssdt1.dat  ssdt2.dsl  ssdt4.dat  ssdt5.dsl  ssdt7.dat  ssdt8.dsl
+> apic.dsl  dbgp.dat  dsdt.dsl  facs.dat  spcr.dsl  ssdt10.dat  ssdt1.dsl  ssdt3.dat  ssdt4.dsl  ssdt6.dat  ssdt7.dsl  ssdt9.dat
+> cpep.dat  dbgp.dsl  facp.dat  facs.dsl  spmi.dat  ssdt10.dsl  ssdt2.dat  ssdt3.dsl  ssdt5.dat  ssdt6.dsl  ssdt8.dat  ssdt9.dsl
+> root@glendronach:~#
+>
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Huh, then this might be some initialization fail that leaves nr_node_ids to
+MAX_NUMNODES, which must be 256 in your case (NODES_SHIFT==8). Devicetree
+can provide node distances, but something tells me you're not using that :-)
+
+>> a) Complain to your hardware vendor to have them fix the table and ship a
+>>    firmware fix
+>
+> The hardware is probably too old for the vendor to care about fixing it.
+>
+
+Indeed, I only realized that after googling your machine
+
+>> b) Fix the ACPI table yourself - I've been told it's doable for *some* of
+>>    them, but I've never done that myself
+>> c) Compile your kernel with CONFIG_NUMA=n, as AFAICT you only actually have
+>>    a single node
+>> d) Ignore the warning
+>>
+>>
+>> c) is clearly not ideal if you want to use a somewhat generic kernel image
+>> on a wide host of machines; d) is also a bit yucky...
+>
+> Shouldn't the kernel be able to cope with quirky hardware? From what I remember in the past,
+> ACPI tables used to be broken quite a lot and the kernel contained workarounds for such cases,
+> didn't it?
+>
+
+Technically it *is* coping with it, it's just dumping the entire NUMA
+distance matrix in the process... Let me see if I can't figure out why your
+system doesn't end up with nr_node_ids=1.
+
+> Adrian
+>
+> --
+>  .''`.  John Paul Adrian Glaubitz
+> : :' :  Debian Developer - glaubitz@debian.org
+> `. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+>   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
