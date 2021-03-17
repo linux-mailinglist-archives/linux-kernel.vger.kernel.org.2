@@ -2,109 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF1C33EEE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:55:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E48233EEE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbhCQKyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:54:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36966 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230473AbhCQKyh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:54:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2AB8CAC75;
-        Wed, 17 Mar 2021 10:54:36 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 11:54:32 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Ian Rogers <irogers@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the tip tree
-Message-ID: <20210317105432.GA32135@zn.tnic>
-References: <20210317150858.02b1bbc8@canb.auug.org.au>
+        id S230526AbhCQKzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:55:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53196 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230080AbhCQKzF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 06:55:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615978504;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I0iQk6VEOom/eWob3kLIdsJKi0P3emqz/ktzR7mzDu0=;
+        b=QNsShnfiYMwyrVWapsPlbmR/XZPodsmkHHV0oI4bu2iFAvjniTjhv7D06KcGrn3SJWgtll
+        B7+d92aDuyJpV3UzIIh8u2uGhq81QEe9bbcnDPKLBHpjTAgYRQh6pKEitjFAHch1gqd9st
+        HAoWnLn3zdKaEK1MPON+DtD5Xpve2ng=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-360-a0IkQlxzMJCuPfms5gV5Ww-1; Wed, 17 Mar 2021 06:55:03 -0400
+X-MC-Unique: a0IkQlxzMJCuPfms5gV5Ww-1
+Received: by mail-ed1-f71.google.com with SMTP id h5so19175047edf.17
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 03:55:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=I0iQk6VEOom/eWob3kLIdsJKi0P3emqz/ktzR7mzDu0=;
+        b=g3XX8fEgt7OjtBijDi2q9giDytpMisabXuDU8P0s76nRklfxH+Mhh2v9UWChtj8XES
+         ZgRA/OACnAPMTlyvcoNEolIrzdzQjBkHTXADvs5wkg1szyZd3kREgueGUn8789kACXZ/
+         7YEhEdnbSKjvzFtn5tsecLE6OeeZl4ARTI6AbrQ2JWbHznJeV2t36XVSRDfwEgTQgGgn
+         txl8bAdJL2l+8wlhiUmR1ZteVmJQWM0M1rYq5wQrarT3hmALzLK0UvO3rx4BjQSo9UAt
+         OJpbOe1OFtAdyBRmR552mvuBbzEHzpb+ypRSL4885JKgecl8CfkV/CLnYSm2UcSyUjvn
+         LDyQ==
+X-Gm-Message-State: AOAM533Qle6uSPA2ay4LIfjcjwlK6aUvih6+vChNaal/Swo6K/1e/Zjk
+        IrdUr/qXN96rgMj6nA+flrQ6JQ6zkPI5FHOC1JWs3hTMxGAC0NugmrvhnzDake1PejZt5YGlpUX
+        1Xl4fyjb2Rq03iqFgVYz0n9KG
+X-Received: by 2002:a17:906:a0d4:: with SMTP id bh20mr2929707ejb.348.1615978502069;
+        Wed, 17 Mar 2021 03:55:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz+kyFZnmJb0l4PG4SXpwlc3jFPbkz+a4nfWrVz111dda3+5+tVo3sQJRINh98la4e0BrJK0Q==
+X-Received: by 2002:a17:906:a0d4:: with SMTP id bh20mr2929698ejb.348.1615978501946;
+        Wed, 17 Mar 2021 03:55:01 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id ho11sm10682614ejc.112.2021.03.17.03.55.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 03:55:01 -0700 (PDT)
+Subject: Re: [PATCH] KVM: arm: memcg awareness
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Shakeel Butt <shakeelb@google.com>
+References: <1615959984-7122-1-git-send-email-wanpengli@tencent.com>
+ <87mtv2i1s3.wl-maz@kernel.org>
+ <e5fce698-9e21-5c71-c99b-a9af3f213e8f@redhat.com>
+ <87im5qhwzx.wl-maz@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <21d1f531-fe95-224d-0dac-6917d473063d@redhat.com>
+Date:   Wed, 17 Mar 2021 11:55:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210317150858.02b1bbc8@canb.auug.org.au>
+In-Reply-To: <87im5qhwzx.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Ian.
-
-On Wed, Mar 17, 2021 at 03:08:58PM +1100, Stephen Rothwell wrote:
-> Hi all,
+On 17/03/21 11:53, Marc Zyngier wrote:
+> On Wed, 17 Mar 2021 10:40:23 +0000,
+> Paolo Bonzini <pbonzini@redhat.com> wrote:
+>>
+>> On 17/03/21 10:10, Marc Zyngier wrote:
+>>>> @@ -366,7 +366,7 @@ static int hyp_map_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+>>>>    	if (WARN_ON(level == KVM_PGTABLE_MAX_LEVELS - 1))
+>>>>    		return -EINVAL;
+>>>>    -	childp = (kvm_pte_t *)get_zeroed_page(GFP_KERNEL);
+>>>> +	childp = (kvm_pte_t *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
+>>> No, this is wrong.
+>>>
+>>> You cannot account the hypervisor page tables to the guest because we
+>>> don't ever unmap them, and that we can't distinguish two data
+>>> structures from two different VMs occupying the same page.
+>>
+>> If you never unmap them, there should at least be a shrinker to get
+>> rid of unused pages in the event of memory pressure.
 > 
-> After merging the tip tree, today's linux-next build (native perf)
-> failed like this:
+> We don't track where these pages are coming from or whether they can
+> safely be unmapped. Until we can track such ownership and deal with
+> page sharing, these mappings have to stay,
 > 
-> In file included from util/intel-pt-decoder/intel-pt-insn-decoder.c:15:
-> util/intel-pt-decoder/../../../arch/x86/lib/insn.c:14:10: fatal error: asm/inat.h: No such file or directory
->    14 | #include <asm/inat.h> /*__ignore_sync_check__ */
->       |          ^~~~~~~~~~~~
-> 
-> This is a powerpc build of perf.  I can't see what caused this failure,
-> so I have used the version of the tip tree from next-20210316 for today.
+> At most, this represent the amount of memory required to map the whole
+> of the linear mapping.
 
-Yah, this has come up in the past during review but the wrong version
-somehow snuck in, sorry. ;-\
+Ah, these are the EL2 pages, not the stage2 page tables, right?  If so, 
+sorry for the noise.
 
-Can you guys verify this fixes the build issue? I don't have a ppc build
-setup.
+Paolo
 
-Thx.
-
----
-From 50d91054fc421e2a90923706d5ca79e941e28300 Mon Sep 17 00:00:00 2001
-From: Borislav Petkov <bp@suse.de>
-Date: Wed, 17 Mar 2021 11:33:04 +0100
-Subject: [PATCH] tools/insn: Restore the relative include paths for cross
- building
-
-Building perf on ppc causes:
-
-  In file included from util/intel-pt-decoder/intel-pt-insn-decoder.c:15:
-  util/intel-pt-decoder/../../../arch/x86/lib/insn.c:14:10: fatal error: asm/inat.h: No such file or directory
-     14 | #include <asm/inat.h> /*__ignore_sync_check__ */
-        |          ^~~~~~~~~~~~
-
-Restore the relative include paths so that the compiler can find the
-headers.
-
-Fixes: 93281c4a9657 ("x86/insn: Add an insn_decode() API")
-Reported-by: Ian Rogers <irogers@google.com>
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-NOT-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- tools/arch/x86/lib/insn.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-index cd4dedde3265..999fbd4c9bea 100644
---- a/tools/arch/x86/lib/insn.c
-+++ b/tools/arch/x86/lib/insn.c
-@@ -11,8 +11,8 @@
- #else
- #include <string.h>
- #endif
--#include <asm/inat.h> /*__ignore_sync_check__ */
--#include <asm/insn.h> /* __ignore_sync_check__ */
-+#include "../include/asm/inat.h" /* __ignore_sync_check__ */
-+#include "../include/asm/insn.h" /* __ignore_sync_check__ */
- 
- #include <linux/errno.h>
- #include <linux/kconfig.h>
--- 
-2.29.2
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
