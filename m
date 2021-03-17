@@ -2,115 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D165B33F95D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:33:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3281933F95F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233253AbhCQTdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
+        id S233271AbhCQTdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233112AbhCQTc4 (ORCPT
+        with ESMTP id S233249AbhCQTdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:32:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3785C06174A;
-        Wed, 17 Mar 2021 12:32:56 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 19:32:52 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616009573;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=413vhgPwGyEe8XqBYLwSj3f1JMgtKyL76g5ZfCUfAEE=;
-        b=jIMHdEw3btbkTZ4n7zSyc2RlFmXm+rQsVuGHcvBIGkI+EWPI1pKCEWHQV+/ctYTMCCjeSX
-        zEdxNqO3VHX+bDpNBuYEPE15OvAG6ALCUd6ufHQCoSGEScare4dbXNQd8Jmt7IOGItb960
-        k6xaUHa8/rdl9JNbX9qQEENCPnHL9lllU1dQIOkF+udGDZ5bK3djpO4co9mrzfx8fVQ+of
-        8thlIfo+jqrCua5FCDScGaqXDeNtMHzcNlPEFvN8l7V8eiAaMq7hGnB3mug+IGVsSNii+w
-        ENzsh5BDlxT803amJfgu59BNBasDKjPxonm3Kdbzp7BvTa0j6/4E9sL89/aCoA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616009573;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=413vhgPwGyEe8XqBYLwSj3f1JMgtKyL76g5ZfCUfAEE=;
-        b=bXkkad0CV4TXUzqy73OaslAE6Uv0x3iTWVv/NraxTZORJ/c40pT+J5KjxXViw03PRdyuIu
-        M97PkyauAtHoC/AQ==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] tools/insn: Restore the relative include paths for
- cross building
-Cc:     Ian Rogers <irogers@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210317150858.02b1bbc8@canb.auug.org.au>
-References: <20210317150858.02b1bbc8@canb.auug.org.au>
+        Wed, 17 Mar 2021 15:33:39 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FA5C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:33:38 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id l132so40144892qke.7
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:33:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=70OVYrliPV0Gq5DcBmTEGM1/ezPnxqjpYxy0H6q3oXU=;
+        b=iSRMqNjafmayI4oRkKhyRMWMLPYcbwGBmfAaVgMWD3TgFfCWeUYellbdTpJkB8Pb7G
+         KABacBwbMYOGb6CBEy8HsgRmghhRpi4++EaeP/CXjsafGdBWZwa81HRrR2lc53tLnDcq
+         vbcvPvo4zyTJ+NXP0EGz0KG0RkM7eVmCYlsXzzBkUoUNtBVg+KipZ95+JCMNVzh0CfyI
+         vafiu1COkYwHfnCtgTG2KMO3AQ7t3lWIPT8j+CaaDZA4ophrDFUQscDiRAkQVGyIQq7p
+         MV7amBg43HiwRsLCdqHUJF/+9ZPUhindpyKGmfJxR7iZWBDgs1sWJhQo1BQJZCSdpgxI
+         T35Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=70OVYrliPV0Gq5DcBmTEGM1/ezPnxqjpYxy0H6q3oXU=;
+        b=NJtHF3H1AZldV3g92jtrpysKunKMnBvNztZG3ZWRLf9+J2xYSTjDbTzq2OITy6rtY4
+         1/6JxWdQAIXDQlEBEfAMTes9X7QdSPhiMET+YII9X5+6O+5x23MgWSbKHHzdm3hY09QJ
+         9/w2kM5qwzFwWyNL59G+PDPUddRSf9gb2cRkRLBfwlYvkQhetp2pmhUu8m9Kc3L3Oe7K
+         CeQBHlUD/KSCA+EjOMutOIzfk9aqCPlReW4VXsb4IUIztYBvKrCvQCSd0/bYTJnIIjtO
+         +Kielk2TsXsGV4p292fPVnWgQT5czCv2Cig+TelK9N/TgacVxES/QeTRDiDtDL6RZg9c
+         f4dQ==
+X-Gm-Message-State: AOAM532n6WqpIz7XBi9Vx9oDA0XU/lqieHd8VXoQ2T4vo03z9kkf4KG0
+        k5HbLIixllMCKPmg2N5LyuXOJUpwNXFuJ5b2
+X-Google-Smtp-Source: ABdhPJyLxSujTcxARdPv5gd29LU24QqYPYY4KJgMb7f/UUUIVHUcUu3Uxb5LsuAXYWFb76PDGdqW6w==
+X-Received: by 2002:a05:620a:1442:: with SMTP id i2mr821522qkl.469.1616009618204;
+        Wed, 17 Mar 2021 12:33:38 -0700 (PDT)
+Received: from ArchLinux ([156.146.37.138])
+        by smtp.gmail.com with ESMTPSA id l5sm15562669qtj.21.2021.03.17.12.33.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 12:33:37 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 01:03:19 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] kernel: cpu: resctrl: Minor typo fix in the file
+ pseudo_lock.c
+Message-ID: <YFJZf0VvNf6Ndp+w@ArchLinux>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Reinette Chatre <reinette.chatre@intel.com>, fenghua.yu@intel.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, rdunlap@infradead.org
+References: <20210317084016.3787380-1-unixbhaskar@gmail.com>
+ <b29afbff-67f4-397b-e289-c3e21755fec0@intel.com>
 MIME-Version: 1.0
-Message-ID: <161600957270.398.1883140806620586941.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fFJf89DNL19XkO1c"
+Content-Disposition: inline
+In-Reply-To: <b29afbff-67f4-397b-e289-c3e21755fec0@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/core branch of tip:
 
-Commit-ID:     0705ef64d1ff52b817e278ca6e28095585ff31e1
-Gitweb:        https://git.kernel.org/tip/0705ef64d1ff52b817e278ca6e28095585ff31e1
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Wed, 17 Mar 2021 11:33:04 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 17 Mar 2021 20:17:05 +01:00
+--fFJf89DNL19XkO1c
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-tools/insn: Restore the relative include paths for cross building
+On 10:54 Wed 17 Mar 2021, Reinette Chatre wrote:
+>Hi Bhaskar,
+>
+>Thank you very much for catching this typo.
+>
+>My feedback [1] to a previous patch from you applies here also. The
+>prefix should be "x86/resctrl:" for contributions to this area.
+>
+Thanks for the heads up! Do you want another revision of it, or will you
+take it as it is??? I am noting down your point ,so ,I might pull out next
+time I intend to sent out something to this specific area.
+>[1]
+>https://lore.kernel.org/lkml/7e3a5c13-db5c-7399-2b80-f1284786ea77@intel.com/
+>
+>On 3/17/2021 1:40 AM, Bhaskar Chowdhury wrote:
+>>
+>> s/derefence/dereference/
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
+>>   arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+>> index e916646adc69..43990a882b36 100644
+>> --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+>> +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+>> @@ -1307,7 +1307,7 @@ int rdtgroup_pseudo_lock_create(struct rdtgroup *rdtgrp)
+>>   		 * If the thread does not get on the CPU for whatever
+>>   		 * reason and the process which sets up the region is
+>>   		 * interrupted then this will leave the thread in runnable
+>> -		 * state and once it gets on the CPU it will derefence
+>> +		 * state and once it gets on the CPU it will dereference
+>>   		 * the cleared, but not freed, plr struct resulting in an
+>>   		 * empty pseudo-locking loop.
+>>   		 */
+>> --
+>> 2.30.2
+>>
+>
+>Reinette
 
-Building perf on ppc causes:
+--fFJf89DNL19XkO1c
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  In file included from util/intel-pt-decoder/intel-pt-insn-decoder.c:15:
-  util/intel-pt-decoder/../../../arch/x86/lib/insn.c:14:10: fatal error: asm/inat.h: No such file or directory
-     14 | #include <asm/inat.h> /*__ignore_sync_check__ */
-        |          ^~~~~~~~~~~~
+-----BEGIN PGP SIGNATURE-----
 
-Restore the relative include paths so that the compiler can find the
-headers.
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBSWX8ACgkQsjqdtxFL
+KRWGbQf/T4ghF7FUR7dxPsg8sBiO4mwK8Pf0wGB1nBLh/wgkhIwlJFZ/AjdLPvFd
+2wy56eV28fWuajBhTGfw1wEtKjPeRO8lbb7CIzNIViYct2Z++DvRp3AOywjalQKR
+Qy9QSLxXNxXd5Ep+CNnicuTyel4r9wjcR3lWHM6dvdGvh2p8DJMDXfpAoQQPLePB
+WnxnLqZ7ZpoG/QpL/NenGIwo/X2gaum77f98fqDld5FRdE/wJmduxErvQQvzTv1B
+wWb2FpwmX6UdHT2iXodMJQB1Gq3gfZumUWcCdqG8Oply06ljtQgOtxS7dvjVx2ZM
+9SLJWGhMeeCjpaaJH2sMKWEWlDJHPA==
+=PPK6
+-----END PGP SIGNATURE-----
 
-Fixes: 93281c4a9657 ("x86/insn: Add an insn_decode() API")
-Reported-by: Ian Rogers <irogers@google.com>
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Tested-by: Ian Rogers <irogers@google.com>
-Tested-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Link: https://lkml.kernel.org/r/20210317150858.02b1bbc8@canb.auug.org.au
----
- tools/arch/x86/lib/insn.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-index cd4dedd..c41f958 100644
---- a/tools/arch/x86/lib/insn.c
-+++ b/tools/arch/x86/lib/insn.c
-@@ -11,13 +11,13 @@
- #else
- #include <string.h>
- #endif
--#include <asm/inat.h> /*__ignore_sync_check__ */
--#include <asm/insn.h> /* __ignore_sync_check__ */
-+#include "../include/asm/inat.h" /* __ignore_sync_check__ */
-+#include "../include/asm/insn.h" /* __ignore_sync_check__ */
- 
- #include <linux/errno.h>
- #include <linux/kconfig.h>
- 
--#include <asm/emulate_prefix.h> /* __ignore_sync_check__ */
-+#include "../include/asm/emulate_prefix.h" /* __ignore_sync_check__ */
- 
- #define leXX_to_cpu(t, r)						\
- ({									\
+--fFJf89DNL19XkO1c--
