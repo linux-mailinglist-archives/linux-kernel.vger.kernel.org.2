@@ -2,132 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A843B33F01C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2649233F01D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbhCQMS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 08:18:27 -0400
-Received: from mga03.intel.com ([134.134.136.65]:1072 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229559AbhCQMSA (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 08:18:00 -0400
-IronPort-SDR: rUVGrSQZO6QXxYRv6aIkikaY+jIYBpQvB56JEb+SUKMBPzVgppOep4Lu6aqkzlwCQzY0YeV+PP
- DYOePFCExCLg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="189494464"
-X-IronPort-AV: E=Sophos;i="5.81,256,1610438400"; 
-   d="scan'208";a="189494464"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 05:17:59 -0700
-IronPort-SDR: rRmXTtjZ/vG9m7jUqesoFYr5iCAvDS0bRSv/mlWRj5pLHS1OXPWEEVh1/aqBwd/kFExD1aox8k
- Sqc0LvzGqtWw==
-X-IronPort-AV: E=Sophos;i="5.81,256,1610438400"; 
-   d="scan'208";a="412623637"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.255.28.23]) ([10.255.28.23])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 05:17:56 -0700
-Subject: Re: [PATCH v2 11/27] perf parse-events: Support hardware events
- inside PMU
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210311070742.9318-1-yao.jin@linux.intel.com>
- <20210311070742.9318-12-yao.jin@linux.intel.com> <YEu9usdFl6VSnOQ7@krava>
- <c40d6187-9391-40de-aea8-7389bb369555@linux.intel.com>
- <YE+balbLkG5RL7Lu@krava>
- <fd88f214-f0a4-87bc-ef52-ee750ca13a8d@linux.intel.com>
- <YFC615nTdUR/aLw5@krava>
- <65624432-2752-8381-d299-9b48ec508406@linux.intel.com>
- <YFHUo1I8cYf502qJ@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <b0ec8d05-acbc-3021-2e74-684d119de2db@linux.intel.com>
-Date:   Wed, 17 Mar 2021 20:17:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229766AbhCQMSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 08:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229643AbhCQMSS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 08:18:18 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B163C06174A;
+        Wed, 17 Mar 2021 05:18:18 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id lr13so2223429ejb.8;
+        Wed, 17 Mar 2021 05:18:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v5N6Wrb+7I1coNpm4gtBKvbrfokvWhrg9piV4XwzHCg=;
+        b=LkTAvUIv2c08lGXVubN0boeSaP5tZsOQHfrjsgC12FrfOgqWaii/qNa7/6gDZlTnES
+         9K8ob5YKPVdoamI5qk02W+zJ//DwOnr9v5yKwDIJcVtz88qwnOUhpy+wkHQzN+m0Uag0
+         7UIJVXM4QMYt5tBCmYcFVkEJQuT/MkwwTFcwGn8D1E+GT5XEWW2oABuCV9Lh2p0FQp+U
+         vU521/k5V3knepvZJ/Xj9fNITXqXeJrOfb2K8ZWx//mMl5OzvX/Fec8QgRIsiNPQbjw3
+         eOyHERfgd28/PJbMICNlDn539dKJLwTh3FJ7qE71QjsZbpKBAuf/aZhdfeWTOW599TN7
+         upyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v5N6Wrb+7I1coNpm4gtBKvbrfokvWhrg9piV4XwzHCg=;
+        b=F/p/L39LDE1IBC5Fe1lXzZXjP/ICeCWwvBLca/6y9fpFqmf5DuvA1OXUwCHskpSyDk
+         IqRv1c9PS8GiIPfYA+NsOcNBnXHVQcsWwfvJTYGxmu72SD9wp8wMYqttc+MIMGJFVeyk
+         srIqgj4HOM+OqVt1EYddwA9G4DXRgDpvPqSLkAl3DsNbI0xSv06+A+RWkVAQ+e8M8VM9
+         PFno/qh8vrV7Nth6ZaTgIK6LyN1p12qBZPwV6LQmNOP7hAO09Qjz93yn3XQPfNGP0HLi
+         TY4aV0jd9fkXp2B1aCRwpypGoc3J04zOkC7kz7IrZBiuApgsCa8Ekh5NEgkX9cMGaUoj
+         eRzg==
+X-Gm-Message-State: AOAM530XFpQqKtpI2vbZwvH3/ZNy2wXNyjuEucrWUdD/mFKcNnFYpjiw
+        IXHgEZJLlIKx1o7h96b2scOBXvKSeNNpY8ai
+X-Google-Smtp-Source: ABdhPJybO/Q00n5VVmOuBQJHeMQ+9ors8Bof6REOLhaDmiddfN+vsPFOTVHyNiSo68oDee+A8TZAJw==
+X-Received: by 2002:a17:906:151a:: with SMTP id b26mr15364067ejd.492.1615983497009;
+        Wed, 17 Mar 2021 05:18:17 -0700 (PDT)
+Received: from ubuntudesktop.lan (205.158.32.217.dyn.plus.net. [217.32.158.205])
+        by smtp.gmail.com with ESMTPSA id b22sm12239375edv.96.2021.03.17.05.18.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 05:18:16 -0700 (PDT)
+From:   Lee Gibson <leegib@gmail.com>
+To:     kvalo@codeaurora.org
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lee Gibson <leegib@gmail.com>
+Subject: [PATCH] wl1251: Fix possible buffer overflow in wl1251_cmd_scan
+Date:   Wed, 17 Mar 2021 12:18:07 +0000
+Message-Id: <20210317121807.389169-1-leegib@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YFHUo1I8cYf502qJ@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+Function wl1251_cmd_scan calls memcpy without checking the length.
+A user could control that length and trigger a buffer overflow.
+Fix by checking the length is within the maximum allowed size.
 
-On 3/17/2021 6:06 PM, Jiri Olsa wrote:
-> On Wed, Mar 17, 2021 at 10:12:03AM +0800, Jin, Yao wrote:
->>
->>
->> On 3/16/2021 10:04 PM, Jiri Olsa wrote:
->>> On Tue, Mar 16, 2021 at 09:49:42AM +0800, Jin, Yao wrote:
->>>
->>> SNIP
->>>
->>>>
->>>>    Performance counter stats for 'system wide':
->>>>
->>>>          136,655,302      cpu_core/branch-instructions/
->>>>
->>>>          1.003171561 seconds time elapsed
->>>>
->>>> So we need special rules for both cycles and branches.
->>>>
->>>> The worse thing is, we also need to process the hardware cache events.
->>>>
->>>> # ./perf stat -e cpu_core/LLC-loads/
->>>> event syntax error: 'cpu_core/LLC-loads/'
->>>>                                 \___ unknown term 'LLC-loads' for pmu 'cpu_core'
->>>>
->>>> valid terms: event,pc,edge,offcore_rsp,ldlat,inv,umask,frontend,cmask,config,config1,config2,name,period,percore
->>>>
->>>> Initial error:
->>>> event syntax error: 'cpu_core/LLC-loads/'
->>>>                                 \___ unknown term 'LLC-loads' for pmu 'cpu_core'
->>>>
->>>> If we use special rules for establishing all event mapping, that looks too much. :(
->>>
->>> hmmm but wait, currently we do not support events like this:
->>>
->>>     'cpu/cycles/'
->>>     'cpu/branches/'
->>>
->>> the pmu style accepts only 'events' or 'format' terms within //
->>>
->>> we made hw events like 'cycles','instructions','branches' special
->>> to be used without the pmu
->>>
->>> so why do we need to support cpu_code/cycles/ ?
->>>
->>> jirka
->>>
->>
->> Actually we have to support pmu style event for hybrid platform.
->>
->> User may want to enable the events from specified pmus and also with flexible grouping.
->>
->> For example,
->>
->> perf stat -e '{cpu_core/cycles/,cpu_core/instructions/}' -e '{cpu_atom/cycles/,cpu_atom/instructions/}'
->>
->> This usage is common and reasonable. So I think we may need to support pmu style events.
-> 
-> sure, but we don't support 'cpu/cycles/' but we support 'cpu/cpu-cycles/'
-> why do you insist on supporting cpu_core/cycles/ ?
-> 
-> jirka
-> 
+Signed-off-by: Lee Gibson <leegib@gmail.com>
+---
+ drivers/net/wireless/ti/wl1251/cmd.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-I'm OK to only support 'cpu_core/cpu-cycles/' or 'cpu_atom/cpu-cycles/'. But what would we do for 
-cache event?
+diff --git a/drivers/net/wireless/ti/wl1251/cmd.c b/drivers/net/wireless/ti/wl1251/cmd.c
+index 498c8db2eb48..e4d028a53d91 100644
+--- a/drivers/net/wireless/ti/wl1251/cmd.c
++++ b/drivers/net/wireless/ti/wl1251/cmd.c
+@@ -455,8 +455,11 @@ int wl1251_cmd_scan(struct wl1251 *wl, u8 *ssid, size_t ssid_len,
+ 	}
+ 
+ 	cmd->params.ssid_len = ssid_len;
+-	if (ssid)
+-		memcpy(cmd->params.ssid, ssid, ssid_len);
++	if (ssid) {
++		int len = min_t(int, ssid_len, IEEE80211_MAX_SSID_LEN);
++
++		memcpy(cmd->params.ssid, ssid, len);
++	}
+ 
+ 	ret = wl1251_cmd_send(wl, CMD_SCAN, cmd, sizeof(*cmd));
+ 	if (ret < 0) {
+-- 
+2.25.1
 
-'perf stat -e LLC-loads' is OK, but 'perf stat -e cpu/LLC-loads/' is not supported currently.
-
-For hybrid platform, user may only want to enable the LLC-loads on core CPUs or on atom CPUs. That's 
-reasonable. While if we don't support the pmu style event, how to satisfy this requirement?
-
-If we can support the pmu style event, we can also use the same way for cpu_core/cycles/. At least 
-it's not a bad thing, right? :)
-
-Thanks
-Jin Yao
