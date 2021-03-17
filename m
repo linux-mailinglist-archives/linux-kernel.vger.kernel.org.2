@@ -2,100 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B348F33F160
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD5333F161
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbhCQNni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 09:43:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26075 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231340AbhCQNn2 (ORCPT
+        id S231375AbhCQNnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 09:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231343AbhCQNna (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 09:43:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615988608;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J6W2NAAyf0FpcLn99G024NFc9PBWLRHCwNHkA7HcE9I=;
-        b=fIvYRH8zZswK5Q4HWLQcbGi+2+k3jZxoHdSkth+b0Nc/qQi6NNSdF7djXaH9Hxdaf6QMR6
-        QVjtfdiM2g1W2LAr019AQQEYTfLn/B79FoECU77C8RZkCx+4YqRfO8Ck8YiX/R6opdi9TE
-        EgV81bzqr7LRlJtqQJCKky2dIm4ucKU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-12-ceukJS8bOdiaPWc7vaRhjg-1; Wed, 17 Mar 2021 09:43:23 -0400
-X-MC-Unique: ceukJS8bOdiaPWc7vaRhjg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6CF27108BD08;
-        Wed, 17 Mar 2021 13:43:21 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-117-171.rdu2.redhat.com [10.10.117.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C2319610F1;
-        Wed, 17 Mar 2021 13:43:20 +0000 (UTC)
-Subject: Re: [tip: locking/urgent] locking/ww_mutex: Simplify use_ww_ctx &
- ww_ctx handling
-To:     Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     linux-tip-commits@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Davidlohr Bueso <dbueso@suse.de>, x86@kernel.org
-References: <20210316153119.13802-2-longman@redhat.com>
- <161598470257.398.5006518584847290113.tip-bot2@tip-bot2>
- <YFH9Pw3kwCZC1UTB@hirez.programming.kicks-ass.net>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <85fbce04-c544-6041-6e7d-76f47b90e263@redhat.com>
-Date:   Wed, 17 Mar 2021 09:43:20 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 17 Mar 2021 09:43:30 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D09C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 06:43:29 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id mj10so2691593ejb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 06:43:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ThARaZxD/3OUnNU9/bYmje+4H9d2E7bxAU0v//8RdlA=;
+        b=VHo15d9gUnmvgPpklPTuqS4GOQ+mxM3D2rkQF784vK8jMzoXBvZut2ktwlPQqOgdaW
+         uYWs5OKunxNbAS3YHQvwe0/8a7ffcs2nmHt6wtQr9QR6Z4LBT4YIE7mOBy6wLm2vfMCH
+         +jD0E9qZiSvHZGRS1nojdtf71WEKJQ3+c2FYdGCX1++PzFujPlHcghtKQdCsBzM2FNbf
+         KMRTOjldsuFOQ8I6loQEUbNHinC1+UOKjZheQS2Ej5VgqezUgcwiVksxB4tn3fh6mOBU
+         lTUoVxrr8BdRCvNOi1DE52exCzDvKGu5Skqd6DGw3ebVZrtZylmL7kywCoirFMzKeNP6
+         c2+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ThARaZxD/3OUnNU9/bYmje+4H9d2E7bxAU0v//8RdlA=;
+        b=BzT/Vp1dDIIfGKPhvxdcV5kqKKhajd+aeCXtKm+ft7T8qK/F12ktPNkDKK+CMjynCG
+         c6Z9kMsgQZuYXv0ealL4G7f0GEZ+GV+DUe5yZ9angSduu7Ai9VN5ani9xphMc3U613Md
+         3OG40dXnfi1FTeGoqLNoj4gASZgkG+WhVRAdqUXkg5y8jHGtB7bHxvyA0HWe+iN5AAek
+         n9TZX+4EJJLQlJtASudaRaxTAv6s/O5gRV6llQH4qI1qHh/4LI8rfgeZFX+YSmuJJBcw
+         8RDmr9Bh0NX43XbMJL6llZfVRVAcDAa8dYqzV0JucpuSekdghYXkyL/et+BYXDNglaZy
+         o5fw==
+X-Gm-Message-State: AOAM532D9+2KdpljFi6dKRt89tn1UPSISbVRDVyGzum26ZydND1slk+m
+        bgZadsF42Dlx7HoimdkjZfQHIg==
+X-Google-Smtp-Source: ABdhPJxCg6LIcSNSdFOee/L8SI6E4O/pBQ2ZwalwVYKeJlARiDNXt03k6rZqzch07xsVps0s0PKOpQ==
+X-Received: by 2002:a17:907:76ed:: with SMTP id kg13mr33664258ejc.99.1615988608375;
+        Wed, 17 Mar 2021 06:43:28 -0700 (PDT)
+Received: from dell ([91.110.221.194])
+        by smtp.gmail.com with ESMTPSA id u15sm13011965eds.6.2021.03.17.06.43.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 06:43:27 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 13:43:26 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "Jonas Mark (BT-FIR/ENG1-Grb)" <Mark.Jonas@de.bosch.com>
+Cc:     "Adam.Thomson.Opensource@diasemi.com" 
+        <Adam.Thomson.Opensource@diasemi.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Support Opensource <support.opensource@diasemi.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "stwiss.opensource@diasemi.com" <stwiss.opensource@diasemi.com>,
+        "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+        "RUAN Tingquan (BT-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>,
+        "Streidl Hubert (BT-FIR/ENG1-Grb)" <Hubert.Streidl@de.bosch.com>
+Subject: Re: [PATCH v6 1/1] mfd: da9063: Support SMBus and I2C mode
+Message-ID: <20210317134326.GA2916463@dell>
+References: <20210316162237.877436-1-mark.jonas@de.bosch.com>
+ <20210316170722.GF701493@dell>
+ <9d64829d35474258a53b6785c0265e1c@de.bosch.com>
 MIME-Version: 1.0
-In-Reply-To: <YFH9Pw3kwCZC1UTB@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9d64829d35474258a53b6785c0265e1c@de.bosch.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 8:59 AM, Peter Zijlstra wrote:
-> On Wed, Mar 17, 2021 at 12:38:22PM -0000, tip-bot2 for Waiman Long wrote:
->> The following commit has been merged into the locking/urgent branch of tip:
->>
->> Commit-ID:     5de2055d31ea88fd9ae9709ac95c372a505a60fa
->> Gitweb:        https://git.kernel.org/tip/5de2055d31ea88fd9ae9709ac95c372a505a60fa
->> Author:        Waiman Long <longman@redhat.com>
->> AuthorDate:    Tue, 16 Mar 2021 11:31:16 -04:00
->> Committer:     Ingo Molnar <mingo@kernel.org>
->> CommitterDate: Wed, 17 Mar 2021 09:56:44 +01:00
->>
->> locking/ww_mutex: Simplify use_ww_ctx & ww_ctx handling
->>
->> The use_ww_ctx flag is passed to mutex_optimistic_spin(), but the
->> function doesn't use it. The frequent use of the (use_ww_ctx && ww_ctx)
->> combination is repetitive.
->>
->> In fact, ww_ctx should not be used at all if !use_ww_ctx.  Simplify
->> ww_mutex code by dropping use_ww_ctx from mutex_optimistic_spin() an
->> clear ww_ctx if !use_ww_ctx. In this way, we can replace (use_ww_ctx &&
->> ww_ctx) by just (ww_ctx).
-> The reason this code was like this is because GCC could constant
-> propagage use_ww_ctx but could not do the same for ww_ctx (since that's
-> external).
->
-> Please double check generated code to make sure you've not introduced a
-> bunch of extra branches.
->
-I see, but this patch just replaces (use_ww_ctx && ww_ctx) by (ww_ctx). 
-Even if constant propagation isn't happening for ww_ctx, gcc shouldn't 
-generate any worse code wrt ww_ctx. It could be that the generated 
-machine code are more or less the same, but the source code will look 
-cleaner with just one variable in the conditional clauses.
+On Wed, 17 Mar 2021, Jonas Mark (BT-FIR/ENG1-Grb) wrote:
 
-Using gcc 8.4.1, the generated __mutex_lock function has the same size 
-(with last instruction at offset +5179) with or without this patch. 
-Well, you can say that this patch is an no-op wrt generated code.
+> Hi,
+> 
+> > > From: Hubert Streidl <hubert.streidl@de.bosch.com>
+> > >
+> > > By default the PMIC DA9063 2-wire interface is SMBus compliant. This
+> > > means the PMIC will automatically reset the interface when the clock
+> > > signal ceases for more than the SMBus timeout of 35 ms.
+> > >
+> > > If the I2C driver / device is not capable of creating atomic I2C
+> > > transactions, a context change can cause a ceasing of the clock signal.
+> > > This can happen if for example a real-time thread is scheduled. Then
+> > > the DA9063 in SMBus mode will reset the 2-wire interface. Subsequently
+> > > a write message could end up in the wrong register. This could cause
+> > > unpredictable system behavior.
+> > >
+> > > The DA9063 PMIC also supports an I2C compliant mode for the 2-wire
+> > > interface. This mode does not reset the interface when the clock
+> > > signal ceases. Thus the problem depicted above does not occur.
+> > >
+> > > This patch tests for the bus functionality "I2C_FUNC_I2C". It can
+> > > reasonably be assumed that the bus cannot obey SMBus timings if this
+> > > functionality is set. SMBus commands most probably are emulated in
+> > > this case which is prone to the latency issue described above.
+> > >
+> > > This patch enables the I2C bus mode if I2C_FUNC_I2C is set or
+> > > otherwise keeps the default SMBus mode.
+> > >
+> > > Signed-off-by: Hubert Streidl <hubert.streidl@de.bosch.com>
+> > > Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
+> > 
+> > Applied with Wolfram's RB, thanks.
+> 
+> Thank you very much for your support to all reviewers.
 
-Cheers,
-Longman
+Any time.
 
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
