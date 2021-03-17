@@ -2,161 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819FC33ED50
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC7A33ED5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:47:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhCQJpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:45:05 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:38661 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229707AbhCQJoa (ORCPT
+        id S229506AbhCQJqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:46:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229884AbhCQJqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:44:30 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 42DB95804A4;
-        Wed, 17 Mar 2021 05:44:28 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 17 Mar 2021 05:44:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=0BP8cAWztylqalmk4/OoD2Cy3lw
-        qhFZyUP90THNtZ1g=; b=cAeuP0qbO4eJljrqIMiebUowfsB/GxgB0fgTHUeF5Yo
-        +dFTnomigRMKK9PRko4dMH1zdWY+F8CZlLyyxbotj7dX6MhNo0ZdCfBIYlKvh+/Q
-        d3gw0kvUlYz+vN963+21XhyNQAmvwJjVEJA+avi6mYRcwb/KVLdURvi1B7dODlEU
-        qwo0pQOkSpU56PPi4NYkSD3fDTg0e80FKnqzVVH4HrLSduY507MOGgRp94x8tow8
-        C9HfLeh5qs5U1GUDOdKhbybH8VweO9ZHI/Nfv3WQtBMysN51MQalqCy7G6KdFGe4
-        mf58Y/uLDUegOKYAI0UMYq6LPHm6VBPkmbHqO3+RurQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=0BP8cA
-        Wztylqalmk4/OoD2Cy3lwqhFZyUP90THNtZ1g=; b=srtYkEJcS4huqv80LlbbSG
-        Fi8pxOzOhws71OZtEdfvdz4enBpQRhE0iI6Werq9aNVPnUT1M8U+utcOXh5XVeKQ
-        FokaGwGP35MMAOOqtri0m/vNjHo7TKirpcMZ/5W9e2L9Q2AF3sm0/WG+GT0NJggk
-        x83KKGNn2DhU8Bd9sU4Sgt1j3dm5XQtFyacw9sqD5kjEFms6c7sxEkUtKUvv63MW
-        qCQbrdMZ3s7LT10cwkeBrK/9NP5d5HvxG2zKV+2c3gCChb+8ufEt4coS7G9P7gdm
-        afb8Huog5c6refVYER6q+O7lbAN3g/n8yJC7Tc4bejsE73cF9Z1jUXn4fpW2Lq4Q
-        ==
-X-ME-Sender: <xms:ec9RYK39Y_a4zSfTwUaRQx1LJtTowhZfqZ55tBkolaY3hmRBQTPI7Q>
-    <xme:ec9RYNGM7ueV86Apfa1zFhVwr_eYaKeWpNprnytd5VORSYUGMtqFf5JVwUDGqEq2i
-    aqHVVd170LHaeJKjA4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudefgedgtdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:ec9RYC4TIhkXMH2jEndCl15t4aT4tnjEM-i5V5FzoBn8t6HtdaEwrw>
-    <xmx:ec9RYL3qCCj83UuidkPt_WjshQ4_zjIBrTcOs3V7XXAW0QPplWZljQ>
-    <xmx:ec9RYNGEMZcMZqGZqtAf8jav8BKADI6fd14OggVtOw4i_pnVvBSC-w>
-    <xmx:fM9RYDRuhS2ysirc2Y7YeQnTiJcpzjxydTqzDoyqpnbGWb-Av1ZQ0w>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 21F05108005C;
-        Wed, 17 Mar 2021 05:44:25 -0400 (EDT)
-Date:   Wed, 17 Mar 2021 10:44:22 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mark Brown <broonie@kernel.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Odelu Kukatla <okukatla@codeaurora.org>,
-        Alex Elder <elder@kernel.org>, Suman Anna <s-anna@ti.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Drop type references on common properties
-Message-ID: <20210317094422.tlzbuvfanfwxenps@gilmour>
-References: <20210316194858.3527845-1-robh@kernel.org>
+        Wed, 17 Mar 2021 05:46:22 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCD9C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:46:21 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so893001wmi.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:46:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/dqJHapOI3bjlCJlze7gTCCUkWNP2k4Q72mCnMzvwE8=;
+        b=UJ/7N6+jJNol2V0H/4pa7zu7d1qi+iE+s3nQTaVzHGJ6y3aBPk1Bd9Id7JKkAZRXS/
+         zUMtByAj6EV0qT+2hseUCOeCSx7HrsTWbINtcUQuJoB0sHHnJyL19n2HqCNqeYNiMGSC
+         zcxlpUzEHQ/kvBoGC69xWkSwdW7eYkEyV+JiKRb2Zpfbbv38WBp+9dm3JBqeaEYgVzpQ
+         B56tHw8jhUrByUeU/XyM2Agth6ZEGNGeTUBwUFs5CdZqRjJyjNj1X/TmhKBbw+zckMEp
+         ocfxzKyrF4QPk50EGj8h2W/nGLQ9X+o4kFthDL0SAoWHFINBoKLvNmmZNm5C/P61G6Z1
+         YWsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=/dqJHapOI3bjlCJlze7gTCCUkWNP2k4Q72mCnMzvwE8=;
+        b=sH6+VSf65JDHb8afYTJWfinOV3YX3X4j7Wd9ygD2Zg1Zp7z91E1MnJ+RiSB47oGX93
+         +r3UkhHZ4jNZlHuCkTYTpU3Za+5w0lGeZlASOzUIJZjf8xABNJCMPc+EchnIFal8AJ3p
+         cwGRPUvCYVNP2rNEG7PMTp8oLxtgsH0N5Py59eQZs+QGQAso1lWzRIGO/90JxIB2ukf9
+         0rXfOOROhCDN6lknRHWA5FYScgGuJjMlcMp4AHlJQ5i7xzscuC1S1YH+tRFqBaMJ1HEd
+         P2og4ChvEohVSXOyn0+TNxkgCecn+qeYQXWZw106O+43MQtYBBNSltdp7d4EeYlQWSFd
+         OFKg==
+X-Gm-Message-State: AOAM532uK3zZIEsxSZ06YA3anw9paB/6g22UfxeUFDtWCsxI/2kVSZE1
+        NcLByxBHwJ+2OZsz1kFlZaM=
+X-Google-Smtp-Source: ABdhPJxJKhNHbQUSc5H4PrI5HhjjA1x7tOt3Isfqemcsun8y7Vud90W3Baqh5dkM9tVGyCJ0Q6PtAw==
+X-Received: by 2002:a7b:cc84:: with SMTP id p4mr2901117wma.10.1615974380596;
+        Wed, 17 Mar 2021 02:46:20 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id e1sm26215961wrd.44.2021.03.17.02.46.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 02:46:20 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 17 Mar 2021 10:46:18 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     Wang Qing <wangqing@vivo.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched: swait: use wake_up_process() instead of
+ wake_up_state()
+Message-ID: <20210317094618.GA1724119@gmail.com>
+References: <1615893602-22260-1-git-send-email-wangqing@vivo.com>
+ <4cb1a9ae15c414435020630cf6362163ddda1550.camel@gmx.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lj6yx5qimtjaxe7l"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210316194858.3527845-1-robh@kernel.org>
+In-Reply-To: <4cb1a9ae15c414435020630cf6362163ddda1550.camel@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---lj6yx5qimtjaxe7l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+* Mike Galbraith <efault@gmx.de> wrote:
 
-On Tue, Mar 16, 2021 at 01:48:58PM -0600, Rob Herring wrote:
-> Users of common properties shouldn't have a type definition as the
-> common schemas already have one. Drop all the unnecessary type
-> references in the tree.
->=20
-> A meta-schema update to catch these is pending.
->=20
-> Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Krzysztof Kozlowski <krzk@kernel.org>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Cc: Ohad Ben-Cohen <ohad@wizery.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
-> Cc: Benson Leung <bleung@chromium.org>
-> Cc: Zhang Rui <rui.zhang@intel.com>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Stefan Wahren <wahrenst@gmx.net>
-> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Cc: Odelu Kukatla <okukatla@codeaurora.org>
-> Cc: Alex Elder <elder@kernel.org>
-> Cc: Suman Anna <s-anna@ti.com>
-> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Cc: linux-gpio@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: linux-can@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-remoteproc@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-usb@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> On Tue, 2021-03-16 at 19:20 +0800, Wang Qing wrote:
+> > Why not just use wake_up_process().
+> 
+> IMO this is not an improvement.  There are other places where explicit
+> TASK_NORMAL is used as well, and they're all perfectly clear as is.
 
-Acked-by: Maxime Ripard <maxime@cerno.tech>
+Arguably those could all be converted to wake_up_process() as well. 
+It's a very small kernel code size optimization. There's about 3 such 
+places, could be converted in a single patch.
 
-Thanks!
-Maxiem
+Thanks,
 
---lj6yx5qimtjaxe7l
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYFHPdgAKCRDj7w1vZxhR
-xQMxAQCrXmT5FCI3eJYBXW/EUFlqbCTwnoDOAEjWcGLbj2XTCgEAxkEyHVxsELxK
-YT52x5rpTHartnwQ86HMToeCxMjKlAc=
-=93nZ
------END PGP SIGNATURE-----
-
---lj6yx5qimtjaxe7l--
+	Ingo
