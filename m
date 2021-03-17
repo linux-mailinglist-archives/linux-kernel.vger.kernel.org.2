@@ -2,96 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6159433F394
+	by mail.lfdr.de (Postfix) with ESMTP id AE20333F395
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231881AbhCQOnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:43:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40860 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230397AbhCQOmv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:42:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615992170;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NkQsXi27NHSKlgwq+pAmF9EiJKw1cWeTWn81mhln8o4=;
-        b=HJZuM6TEYPQ3TOxgxK+LbEAwzx23NG/8+hkrV38JvHLrVblhrbVX4d+HH475Hc5FO23wI9
-        g8p64tZZ6CmUWiAANPVJW6Mxp/z/5lnWUKsWanjdy8BqTrroiwOYDcaPKj2K35y7IIjCac
-        eCtWfy7L9FdP8D0Xds+VynfAeY5wGK0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-414-w2KzdczhNtK16qHwlZsF-g-1; Wed, 17 Mar 2021 10:42:48 -0400
-X-MC-Unique: w2KzdczhNtK16qHwlZsF-g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F12A51927800;
-        Wed, 17 Mar 2021 14:42:46 +0000 (UTC)
-Received: from [10.36.112.124] (ovpn-112-124.ams2.redhat.com [10.36.112.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 032255D6AC;
-        Wed, 17 Mar 2021 14:42:44 +0000 (UTC)
-Subject: Re: [PATCH v5 1/5] mm,page_alloc: Bail out earlier on -ENOMEM in
- alloc_contig_migrate_range
-To:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210317111251.17808-1-osalvador@suse.de>
- <20210317111251.17808-2-osalvador@suse.de> <YFIMtFu/g3jtGqA8@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <89830f41-b3f2-a158-a173-8c14101edcaa@redhat.com>
-Date:   Wed, 17 Mar 2021 15:42:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231938AbhCQOnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:43:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231877AbhCQOmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 10:42:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B973564F69;
+        Wed, 17 Mar 2021 14:42:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615992173;
+        bh=zYeJEe+1T7U7FbkjlOOSfPVIwk/cDkVQk58lJ9Xg7wI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MYjxLi1MA2lcM3Z1mTuAs/Q/gY5RJnCGdsb4y1jndOdKfT00MFr2Z2oJxe1G7GKpI
+         UaGC3RrUohWq62gZotVwrCFTAwNZ3wiRX6udcTSMsbgkHMpd3vv5xDMIwf4WdTMaTh
+         uYWRDTNyahxFmxihcGt+axuLrRcn5exdIab09vzv7Q0b49axWZx6MNwUF8o+6F4FEn
+         6CFM24Lssc+cBvrj9cXd10xscbTRBOTgPcWuoURSp0tAXl/sY/HP1tqx5eOb9e2WHZ
+         aU7ZgKcSqsPvpv/ub50dTPXkyorxUF1Rf+tc2vlr2Lk1EAsbbsAVNvSbW/k3TWP+yC
+         qYph4wtzdsAog==
+Date:   Wed, 17 Mar 2021 14:42:46 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, seanjc@google.com,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org,
+        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com
+Subject: Re: [PATCH 1/2] KVM: arm64: Introduce KVM_PGTABLE_S2_NOFWB Stage-2
+ flag
+Message-ID: <20210317144246.GE5393@willie-the-truck>
+References: <20210315143536.214621-34-qperret@google.com>
+ <20210317141714.383046-1-qperret@google.com>
+ <20210317141714.383046-2-qperret@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YFIMtFu/g3jtGqA8@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210317141714.383046-2-qperret@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.03.21 15:05, Michal Hocko wrote:
-> On Wed 17-03-21 12:12:47, Oscar Salvador wrote:
->> Currently, __alloc_contig_migrate_range can generate -EINTR, -ENOMEM or -EBUSY,
->> and report them down the chain.
->> The problem is that when migrate_pages() reports -ENOMEM, we keep going till we
->> exhaust all the try-attempts (5 at the moment) instead of bailing out.
->>
->> migrate_pages() bails out right away on -ENOMEM because it is considered a fatal
->> error. Do the same here instead of keep going and retrying.
+On Wed, Mar 17, 2021 at 02:17:13PM +0000, Quentin Perret wrote:
+> In order to further configure stage-2 page-tables, pass flags to the
+> init function using a new enum.
 > 
-> I suspect this is not really a real life problem, right? The allocation
-> would be more costly in the end but this is to be expected under a heavy
-> memory pressure.
+> The first of these flags allows to disable FWB even if the hardware
+> supports it as we will need to do so for the host stage-2.
 > 
-> That being said, bailing out early makes sense to me. But now that
-> you've made me look into the migrate_pages excellent error state reporting
-> I suspect we have a bug here. Note the
-> "Returns the number of pages that were not migrated, or an error code."
+> Signed-off-by: Quentin Perret <qperret@google.com>
 > 
-> but I do not see putback_movable_pages for ret > 0 so it seems we might
-> leak some pages.
+> ---
+> 
+> One question is, do we want to use stage2_has_fwb() everywhere, including
+> guest-specific paths (e.g. kvm_arch_prepare_memory_region(), ...) ?
+> 
+> That'd make this patch more intrusive, but would make the whole codebase
+> work with FWB enabled on a guest by guest basis. I don't see us use that
+> anytime soon (other than maybe debug of some sort?) but it'd be good to
+> have an agreement.
 
-At least in __alloc_contig_migrate_range() we seem to always leave the 
-loop with ret <= 0 and do a putback_movable_pages() with ret < 0.
+I don't see the value in spreading this everywhere for now.
 
-Which code are you referring to?
+>  arch/arm64/include/asm/kvm_pgtable.h  | 19 +++++++++--
+>  arch/arm64/include/asm/pgtable-prot.h |  4 +--
+>  arch/arm64/kvm/hyp/pgtable.c          | 49 +++++++++++++++++----------
+>  3 files changed, 50 insertions(+), 22 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> index b93a2a3526ab..7382bdfb6284 100644
+> --- a/arch/arm64/include/asm/kvm_pgtable.h
+> +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> @@ -56,6 +56,15 @@ struct kvm_pgtable_mm_ops {
+>  	phys_addr_t	(*virt_to_phys)(void *addr);
+>  };
+>  
+> +/**
+> + * enum kvm_pgtable_stage2_flags - Stage-2 page-table flags.
+> + * @KVM_PGTABLE_S2_NOFWB:	Don't enforce Normal-WB even if the CPUs have
+> + *				ARM64_HAS_STAGE2_FWB.
+> + */
+> +enum kvm_pgtable_stage2_flags {
+> +	KVM_PGTABLE_S2_NOFWB			= BIT(0),
+> +};
+> +
+>  /**
+>   * struct kvm_pgtable - KVM page-table.
+>   * @ia_bits:		Maximum input address size, in bits.
+> @@ -72,6 +81,7 @@ struct kvm_pgtable {
+>  
+>  	/* Stage-2 only */
+>  	struct kvm_s2_mmu			*mmu;
+> +	enum kvm_pgtable_stage2_flags		flags;
+>  };
+>  
+>  /**
+> @@ -201,11 +211,16 @@ u64 kvm_get_vtcr(u64 mmfr0, u64 mmfr1, u32 phys_shift);
+>   * @arch:	Arch-specific KVM structure representing the guest virtual
+>   *		machine.
+>   * @mm_ops:	Memory management callbacks.
+> + * @flags:	Stage-2 configuration flags.
+>   *
+>   * Return: 0 on success, negative error code on failure.
+>   */
+> -int kvm_pgtable_stage2_init(struct kvm_pgtable *pgt, struct kvm_arch *arch,
+> -			    struct kvm_pgtable_mm_ops *mm_ops);
+> +int kvm_pgtable_stage2_init_flags(struct kvm_pgtable *pgt, struct kvm_arch *arch,
+> +				  struct kvm_pgtable_mm_ops *mm_ops,
+> +				  enum kvm_pgtable_stage2_flags flags);
+> +
+> +#define kvm_pgtable_stage2_init(pgt, arch, mm_ops) \
+> +	kvm_pgtable_stage2_init_flags(pgt, arch, mm_ops, 0)
 
-(I think the logic flow inside __alloc_contig_migrate_range() might be 
-improved ...)
+nit: I think some of the kerneldoc refers to "kvm_pgtable_stage_init()"
+so that needs a trivial update to e.g. "kvm_pgtable_stage_init*()".
 
--- 
-Thanks,
+> diff --git a/arch/arm64/include/asm/pgtable-prot.h b/arch/arm64/include/asm/pgtable-prot.h
+> index 046be789fbb4..beeb722a82d3 100644
+> --- a/arch/arm64/include/asm/pgtable-prot.h
+> +++ b/arch/arm64/include/asm/pgtable-prot.h
+> @@ -72,10 +72,10 @@ extern bool arm64_use_ng_mappings;
+>  #define PAGE_KERNEL_EXEC	__pgprot(PROT_NORMAL & ~PTE_PXN)
+>  #define PAGE_KERNEL_EXEC_CONT	__pgprot((PROT_NORMAL & ~PTE_PXN) | PTE_CONT)
+>  
+> -#define PAGE_S2_MEMATTR(attr)						\
+> +#define PAGE_S2_MEMATTR(attr, has_fwb)					\
+>  	({								\
+>  		u64 __val;						\
+> -		if (cpus_have_const_cap(ARM64_HAS_STAGE2_FWB))		\
+> +		if (has_fwb)						\
+>  			__val = PTE_S2_MEMATTR(MT_S2_FWB_ ## attr);	\
+>  		else							\
+>  			__val = PTE_S2_MEMATTR(MT_S2_ ## attr);		\
 
-David / dhildenb
+Can you take the pgt structure instead of a bool here, or does it end up
+being really ugly?
 
+Will
