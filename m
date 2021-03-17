@@ -2,171 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50FBB33F55F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 108EC33F563
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:23:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232342AbhCQQWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 12:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
+        id S232392AbhCQQXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 12:23:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231378AbhCQQW2 (ORCPT
+        with ESMTP id S232367AbhCQQW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 12:22:28 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE1CC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:22:28 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id y133so2651324ybe.12
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:22:28 -0700 (PDT)
+        Wed, 17 Mar 2021 12:22:56 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E5EC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:22:56 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id n10so25074588pgl.10
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:22:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gSloqn/zPcb4my2AQhUlcF6toHtAZsAY6i+CcPAxeT0=;
-        b=iId9NZeiIVnUAr1BvdTvUnpyUEVZfJ/+4+x+3ugboCmh7R6o/KzWC2YlYXMhIZWKx/
-         qhepSJ9VyzQBQ2WrwLPSsdlYPHlpN5OFCK7/OKPLKmoC9BJC+9id1IDrBOS7i3f+Wu7G
-         Fkfyk4TeDuVUPmxcPz0d2TovbVyIUO71WC8UXItQnzIVn+qYg8f9xNyLNkCGgC3yniDA
-         DF7js65BSPGbi3DVFeJTHiZWzGUO8JEWXvS8J3VS+mdo6EB1Hzyya6UWmkpsrDXTP+xG
-         umysdZWdfQiwxBiXgfXolNYMba0uIVB3mdxe8cE5lno/Jyizy9d+1pzveNguohhAeIOT
-         ROmw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=F/NINQB6sPLYh+yrEh/k+DH7DYJo1ZCA8NxADWNTIuc=;
+        b=lwy1ZiWIAtcKPMq2R26yQtWGUBjV2/aZx0LQ5/d5QuNihi8Wtz5itX/qLsFLULsdJm
+         7h05IW0RREuLx9FjL+YHBC95rXkwbpjzIhuHNIZtFaMA7EuOA+eScoYXw2MGSaFRKVAX
+         2P/x3fmsNZ2EPyAEGghzUlj4dmRdMu9OYP8eVLPXGM5xFJ4l161c5YBcpnYSb0si1ad/
+         zTwmcmY/rSF9fYLI30rNoc1hu5Dqyjrq1344Tyw4f181YmPSmMJt17lKgUziZxarFICt
+         d1uhVm1jNw51JcIejSnN+UQERVi46InH2Km0pKVXytIkQcMw3l9goxuyK196nkww2Hyj
+         G+Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gSloqn/zPcb4my2AQhUlcF6toHtAZsAY6i+CcPAxeT0=;
-        b=UjMZVOi0NJ09DjC18uoqHimVfhC5w38IKl6YTuJm4XqPePaK+rYErxXtK6+ty0GLlV
-         IZ4Rk74SVccA1RtkN3GljfsyMo5rrHQ/yiscm56vHfTSybFcKG3ZBjSQkeIu7ZV79ZJQ
-         ga1oRdb+YH6RKz0EAk2plhzjF6DIzbD8gWLHvC4hR6Oe0jvlBAFy/WoV6kJUahAyVmy8
-         GzHVH+KtdJ+Cz5Ek88P25hXr+8n7eqyJzZN+x+eiwPzj2fYEpdXxgbcltry0gD8k9U/+
-         BtARUPfX5QpU8vVd68REDiXnSI6XdtAOsX1PlHAaZlAWw/iPwX7HZovo5gY2y0RVKJIy
-         rcpw==
-X-Gm-Message-State: AOAM532IW35Wi6lt7Bd7hMMCDmoztdM/Uf99Ak9euPl3a4gfTKTBJ8V8
-        +MxLm7kiLFrpQl6y+E6vB7UPHYtNa6cIotTrBiVkRQ==
-X-Google-Smtp-Source: ABdhPJzDQj5X0SZV8FtniC1hloxIGOILZiomd+l8X35wDmhMiWn7/XZRb4y4M4Rkk85lSEz2XtjBgPUjDd9UWdEWjds=
-X-Received: by 2002:a25:e4c4:: with SMTP id b187mr5508166ybh.92.1615998147092;
- Wed, 17 Mar 2021 09:22:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F/NINQB6sPLYh+yrEh/k+DH7DYJo1ZCA8NxADWNTIuc=;
+        b=UkRrorNO+wcBFTVfiQwICEKErEFIq3Mb0/lv1szGw+k1aEW2EAIa904h9yuv4gDODf
+         Oc0qSTFPca1MQYpJXAvwccX0931zQgPrx0thHeFySdqcv3RceimZZ8XgNtYJa9Yt33jm
+         cg2ahNwAbw6DnvCGrEjEL47Mc8+gjpJZTJa3LgDjASpUg4lCaFc6vGX2HqfmDR8Yy7pK
+         qHGxA6CWMzlJz2wJeoi4WVPAosOsLtWZZFLhJRrbrKpsnE0eMF6Nmn0K223E11CE+Itl
+         RwTJM1JRLUJ/1Y+Dfxj+P6Byy6E01zei9HdC7LBsqo+P3C8KJON849PM31aFG4J5B5BC
+         bU+g==
+X-Gm-Message-State: AOAM532+YGv9Dy9wnDCTDEXbsbrJ9lua2nMatEM2qJ6i+f7MNkVjCX54
+        NG82hxmvEms552HTKaFDkM7aBA==
+X-Google-Smtp-Source: ABdhPJydMrFwkMHsrjjZHTQdQe8G/EncvIH1JMyUfSF3ZGFQ+NkG6boP3+9sjSylWtMrgquoYZZWbQ==
+X-Received: by 2002:aa7:9910:0:b029:1f1:b41b:f95c with SMTP id z16-20020aa799100000b02901f1b41bf95cmr4989428pff.5.1615998175710;
+        Wed, 17 Mar 2021 09:22:55 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id 14sm20277815pfo.141.2021.03.17.09.22.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 09:22:51 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 10:22:49 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Ben Levinsky <BLEVINSK@xilinx.com>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Michal Simek <michals@xilinx.com>,
+        "Ed T. Mooring" <emooring@xilinx.com>
+Subject: Re: [PATCH v26 5/5] remoteproc: Add initial zynqmp R5 remoteproc
+ driver
+Message-ID: <20210317162249.GA1494354@xps15>
+References: <20210223154447.13247-1-ben.levinsky@xilinx.com>
+ <20210223154447.13247-6-ben.levinsky@xilinx.com>
+ <20210308190046.GA3983426@xps15>
+ <FF6E631A-87E0-4194-844A-E6B58E5B2928@xilinx.com>
+ <20210315172558.GA1342614@xps15>
+ <1AD6632B-A69E-406B-A644-440B9C8B929F@xilinx.com>
 MIME-Version: 1.0
-References: <20210317150858.02b1bbc8@canb.auug.org.au> <20210317105432.GA32135@zn.tnic>
-In-Reply-To: <20210317105432.GA32135@zn.tnic>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 17 Mar 2021 09:22:15 -0700
-Message-ID: <CAP-5=fWKCtJq-9zd5A-XALJWNf8tsds44m-G07sc+kCUoXB8zg@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the tip tree
-To:     Borislav Petkov <bp@suse.de>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1AD6632B-A69E-406B-A644-440B9C8B929F@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 3:54 AM Borislav Petkov <bp@suse.de> wrote:
->
-> + Ian.
->
-> On Wed, Mar 17, 2021 at 03:08:58PM +1100, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > After merging the tip tree, today's linux-next build (native perf)
-> > failed like this:
-> >
-> > In file included from util/intel-pt-decoder/intel-pt-insn-decoder.c:15:
-> > util/intel-pt-decoder/../../../arch/x86/lib/insn.c:14:10: fatal error: =
-asm/inat.h: No such file or directory
-> >    14 | #include <asm/inat.h> /*__ignore_sync_check__ */
-> >       |          ^~~~~~~~~~~~
-> >
-> > This is a powerpc build of perf.  I can't see what caused this failure,
-> > so I have used the version of the tip tree from next-20210316 for today=
-.
->
-> Yah, this has come up in the past during review but the wrong version
-> somehow snuck in, sorry. ;-\
->
-> Can you guys verify this fixes the build issue? I don't have a ppc build
-> setup.
->
-> Thx.
+[...]
 
-The <asm/emulate_prefix.h> path also needs fixing. With the following
-I was able to build for arm64 and powerpc.
+>     >     > +/*
+>     >     > + * zynqmp_r5_remoteproc_probe
+>     >     > + *
+>     >     > + * @pdev: domain platform device for R5 cluster
+>     >     > + *
+>     >     > + * called when driver is probed, for each R5 core specified in DT,
+>     >     > + * setup as needed to do remoteproc-related operations
+>     >     > + *
+>     >     > + * Return: 0 for success, negative value for failure.
+>     >     > + */
+>     >     > +static int zynqmp_r5_remoteproc_probe(struct platform_device *pdev)
+>     >     > +{
+>     >     > +	int ret, core_count;
+>     >     > +	struct device *dev = &pdev->dev;
+>     >     > +	struct device_node *nc;
+>     >     > +	enum rpu_oper_mode rpu_mode = PM_RPU_MODE_LOCKSTEP;
+>     >     > +	struct list_head *cluster; /* list to track each core's rproc */
+>     >     > +	struct zynqmp_r5_rproc *z_rproc;
+>     >     > +	struct platform_device *child_pdev;
+>     >     > +	struct list_head *pos;
+>     >     > +
+>     >     > +	ret = of_property_read_u32(dev->of_node, "xlnx,cluster-mode", &rpu_mode);
+>     >     > +	if (ret < 0 || (rpu_mode != PM_RPU_MODE_LOCKSTEP &&
+>     >     > +			rpu_mode != PM_RPU_MODE_SPLIT)) {
+>     >     > +		dev_err(dev, "invalid cluster mode: ret %d mode %x\n",
+>     >     > +			ret, rpu_mode);
+>     >     > +		return ret;
+>     >     > +	}
+>     >     > +
+>     >     > +	dev_dbg(dev, "RPU configuration: %s\n",
+>     >     > +		rpu_mode == PM_RPU_MODE_LOCKSTEP ? "lockstep" : "split");
+>     >     > +
+>     >     > +	/*
+>     >     > +	 * if 2 RPUs provided but one is lockstep, then we have an
+>     >     > +	 * invalid configuration.
+>     >     > +	 */
+>     >     > +
+>     >     > +	core_count = of_get_available_child_count(dev->of_node);
+>     >     > +	if ((rpu_mode == PM_RPU_MODE_LOCKSTEP && core_count != 1) ||
+>     >     > +	    core_count > MAX_RPROCS)
+>     >     > +		return -EINVAL;
+>     >     > +
+>     >     > +	cluster = devm_kzalloc(dev, sizeof(*cluster), GFP_KERNEL);
+>     >     > +	if (!cluster)
+>     >     > +		return -ENOMEM;
+>     >     > +	INIT_LIST_HEAD(cluster);
+>     >     > +
+>     >     > +	ret = devm_of_platform_populate(dev);
+>     >     > +	if (ret) {
+>     >     > +		dev_err(dev, "devm_of_platform_populate failed, ret = %d\n", ret);
+>     >     > +		return ret;
+>     >     > +	}
+>     >     > +
+>     >     > +	/* probe each individual r5 core's remoteproc-related info */
+>     >     > +	for_each_available_child_of_node(dev->of_node, nc) {
+>     >     > +		child_pdev = of_find_device_by_node(nc);
+>     > 
+>     >     The device reference needs to be dropped after use, as described in the function
+>     >     documentation.
+>     > 
+>     >     I'm out of time - I will continue tomorrow.
+>     > 
+>     >     Mathieu
+>     > 
+>     > 
+>     > [Ben] By this do you mean that for each platform_device should have a call like
+>     > 	platform_set_drvdata(child_pdev, NULL); if it fails? or something else?
+> 
+>     Have another read at the documentation and look at how other people have used
+>     it.  You may already be aware but Bootlin's kernel cross-reference tool is
+>     really good for that.
+> 
+>     https://elixir.bootlin.com/linux/v5.12-rc3/source
+> 
+> If I understand what you are saying I will add calls for put_device(child_pdev) in error handling and at end of the loop.
 
-Thanks,
-Ian
+That's one part of it.  But what will happen if there is no errors to deal with?
+Where will the reference to child_pdev->dev be dropped?
 
-diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-index cd4dedde3265..968360bf2150 100644
---- a/tools/arch/x86/lib/insn.c
-+++ b/tools/arch/x86/lib/insn.c
-@@ -11,13 +11,13 @@
- #else
- #include <string.h>
- #endif
--#include <asm/inat.h> /*__ignore_sync_check__ */
--#include <asm/insn.h> /* __ignore_sync_check__ */
-+#include "../include/asm/inat.h" /*__ignore_sync_check__ */
-+#include "../include/asm/insn.h" /* __ignore_sync_check__ */
-
- #include <linux/errno.h>
- #include <linux/kconfig.h>
-
--#include <asm/emulate_prefix.h> /* __ignore_sync_check__ */
-+#include "../include/asm/emulate_prefix.h" /* __ignore_sync_check__ */
-
- #define leXX_to_cpu(t, r)                                              \
- ({                                                                     \
-
-> ---
-> From 50d91054fc421e2a90923706d5ca79e941e28300 Mon Sep 17 00:00:00 2001
-> From: Borislav Petkov <bp@suse.de>
-> Date: Wed, 17 Mar 2021 11:33:04 +0100
-> Subject: [PATCH] tools/insn: Restore the relative include paths for cross
->  building
->
-> Building perf on ppc causes:
->
->   In file included from util/intel-pt-decoder/intel-pt-insn-decoder.c:15:
->   util/intel-pt-decoder/../../../arch/x86/lib/insn.c:14:10: fatal error: =
-asm/inat.h: No such file or directory
->      14 | #include <asm/inat.h> /*__ignore_sync_check__ */
->         |          ^~~~~~~~~~~~
->
-> Restore the relative include paths so that the compiler can find the
-> headers.
->
-> Fixes: 93281c4a9657 ("x86/insn: Add an insn_decode() API")
-> Reported-by: Ian Rogers <irogers@google.com>
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> NOT-Signed-off-by: Borislav Petkov <bp@suse.de>
-> ---
->  tools/arch/x86/lib/insn.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-> index cd4dedde3265..999fbd4c9bea 100644
-> --- a/tools/arch/x86/lib/insn.c
-> +++ b/tools/arch/x86/lib/insn.c
-> @@ -11,8 +11,8 @@
->  #else
->  #include <string.h>
->  #endif
-> -#include <asm/inat.h> /*__ignore_sync_check__ */
-> -#include <asm/insn.h> /* __ignore_sync_check__ */
-> +#include "../include/asm/inat.h" /* __ignore_sync_check__ */
-> +#include "../include/asm/insn.h" /* __ignore_sync_check__ */
->
->  #include <linux/errno.h>
->  #include <linux/kconfig.h>
-> --
-> 2.29.2
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> SUSE Software Solutions Germany GmbH, GF: Felix Imend=C3=B6rffer, HRB 368=
-09, AG N=C3=BCrnberg
+> 
+> 
