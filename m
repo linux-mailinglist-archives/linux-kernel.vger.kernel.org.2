@@ -2,135 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7B733EB41
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:18:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4292F33EB45
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhCQIRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhCQIRi (ORCPT
+        id S229618AbhCQISx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:18:53 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:38462 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229623AbhCQISs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:17:38 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59710C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:17:38 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id t9so835418wrn.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:17:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=aQQTr9x52WQZKbGN+UXyTfuQuaro1IAnE7CQNIF7EbQ=;
-        b=rRsEAx6F2ouRMDv3fBBX9mDEf8icI52AiOIMJydya6x9UZqnppIvI6XSwDSxnntRMV
-         wujEyUkyZkaHaSdl7lbvibzroxqY2gth5BM5cUpakazc2JHIEYFfEaRrPtI2awbMRA4U
-         u/tVzLXMMw7jI+1rQhsMyvbcaG0usBhJM1xkGPlhYsrnhHZNYsO4UVGDWykv9Z5svoO4
-         SWjItz8pw2cklFtc1Phz1+whnj4HEFPJGgOqEuf183+3ad6AML7i9L0JE1uvBNum0Wnw
-         /Y8VQhLtB/JbXzwTIBYOobcwMIAHsfoBUsVi3emW9HPR/r/vWxFyWR18uEnT3CbTOnKo
-         66bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=aQQTr9x52WQZKbGN+UXyTfuQuaro1IAnE7CQNIF7EbQ=;
-        b=MJgThJhV/W+WnBihA21HefX6ilDQMnzsp2FVCz0YAQQ53AOBrFEvKYA/0z+sNJfoMA
-         746PJ+cXnf12GKnrPJcpviIcBwShyVZGYZqRkH6r4k2HJTILuxcBdYLnBC436BoBZaLE
-         F5mYid7mGVPT9bQ8e3rl4XGOWziFrZ9WbjpGLe7VQgUPynwFnzX+2BrY84LYFGKE3oZR
-         UvziawVZzZd1UaO56p0NZHVmrs41crjwJ/FGWUfj4YEEyablWVfGz8nMxLARNVzSmyU9
-         dng53YYUcBzohsduMtu0zKBLeODkssavodxe4XyOqYeUaNN2Szh2OdhQ9y1gHrBsQYia
-         i49A==
-X-Gm-Message-State: AOAM532oMHABD2BcqsFrYA3POlFvKGxR733w9GVbojKs6T823NFeoJpA
-        SAoE93YFx8WhuWk4cdHQ+hEjug==
-X-Google-Smtp-Source: ABdhPJy+NLJm3S/51dMjrLtGpbwVG+P/h3mK0TfjCNGg++tWCJlVzWFiOG8og26jGqtuchvHPsPpNg==
-X-Received: by 2002:a5d:6a81:: with SMTP id s1mr3056746wru.401.1615969057113;
-        Wed, 17 Mar 2021 01:17:37 -0700 (PDT)
-Received: from dell ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id v9sm25014417wrn.86.2021.03.17.01.17.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 01:17:36 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 08:17:29 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Roland Scheidegger <sroland@vmware.com>,
-        linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx@lists.freedesktop.org, Anthony Koo <Anthony.Koo@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Harry Wentland <harry.wentland@amd.com>,
-        Jeremy Kolb <jkolb@brandeis.edu>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Leo Li <sunpeng.li@amd.com>, linaro-mm-sig@lists.linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        Lyude Paul <lyude@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        nouveau@lists.freedesktop.org,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Rob Clark <rob.clark@linaro.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Zack Rusin <zackr@vmware.com>
-Subject: Re: [RESEND 00/53] Rid GPU from W=1 warnings
-Message-ID: <20210317081729.GH701493@dell>
-References: <20210303134319.3160762-1-lee.jones@linaro.org>
- <16d4300e-bf29-1e85-317b-53d257890cb9@vmware.com>
- <20210308091932.GB4931@dell>
- <YEobySvG0zPs9xhc@phenom.ffwll.local>
- <20210311135152.GT701493@dell>
+        Wed, 17 Mar 2021 04:18:48 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210317081846epoutp01c3bb1d65eac1d31359405ae21768eb32~tE1vJP7_Z0113301133epoutp01m
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 08:18:46 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210317081846epoutp01c3bb1d65eac1d31359405ae21768eb32~tE1vJP7_Z0113301133epoutp01m
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1615969126;
+        bh=PHNEyIXmBWyKEQx9IvXm0SCLGTdQ5DkDqePnERzAv34=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=eJeOZxpI5up5BQXRg3lxQCDk1YiH9PykX+l2e4oyREBRtWC7MFGhaqcU/055BLhlM
+         LwNQ6N4dp3vE4epVBbIxSGC9V3MqvHN4RJp9ZIji/aWsvEua/mxQ/U/jKtOm3q5fGj
+         vVVCu8IlwzblNLgvs+OMI2wLQuqGEduART+5YurU=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210317081846epcas1p3f61820b940b33c913897cc4412ed30ac~tE1u81Of80299702997epcas1p3E;
+        Wed, 17 Mar 2021 08:18:46 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.161]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4F0jjJ4hcJz4x9Q1; Wed, 17 Mar
+        2021 08:18:44 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7E.4E.02418.26BB1506; Wed, 17 Mar 2021 17:18:42 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210317081841epcas1p14f10de56101c3850675d5bc2e6eebab0~tE1rGIQSE0757107571epcas1p1r;
+        Wed, 17 Mar 2021 08:18:41 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210317081841epsmtrp23d178101c7b26a73c0d67ca5f7275df5~tE1rFXnxy2674426744epsmtrp2X;
+        Wed, 17 Mar 2021 08:18:41 +0000 (GMT)
+X-AuditID: b6c32a35-c23ff70000010972-97-6051bb629197
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        FA.67.13470.16BB1506; Wed, 17 Mar 2021 17:18:41 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210317081841epsmtip159ab0b2f35f6157163a9e2c286ebba37~tE1q3FCKG1683616836epsmtip1g;
+        Wed, 17 Mar 2021 08:18:41 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Stephen Rothwell'" <sfr@canb.auug.org.au>,
+        "'Steve French'" <smfrench@gmail.com>
+Cc:     "'Linux Kernel Mailing List'" <linux-kernel@vger.kernel.org>,
+        "'Linux Next Mailing List'" <linux-next@vger.kernel.org>
+In-Reply-To: <20210317184655.4d369e9e@canb.auug.org.au>
+Subject: RE: linux-next: build warning after merge of the cifsd tree
+Date:   Wed, 17 Mar 2021 17:18:41 +0900
+Message-ID: <012501d71b06$23f65960$6be30c20$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210311135152.GT701493@dell>
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQD0cfsrGuLMy31vK4WpkBQ0SCD1eQHz/oTkrD2IBMA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrDKsWRmVeSWpSXmKPExsWy7bCmvm7S7sAEg0ctAhaXd81hszi4sI3R
+        Yuveq+wWb14cZnNg8Wi8cYPNY+esu+wenzfJBTBH5dhkpCampBYppOYl56dk5qXbKnkHxzvH
+        m5oZGOoaWlqYKynkJeam2iq5+AToumXmAG1TUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gq
+        pRak5BQYGhToFSfmFpfmpesl5+daGRoYGJkCVSbkZFx81MFYcJ2l4vn86gbGR8xdjJwcEgIm
+        EscWvWfvYuTiEBLYwSixa+U8ZgjnE6PEvFNbWEGqhAS+MUosuV8M0/H5xls2iKK9jBIbthxg
+        gnBeMkpcOLqSDaSKTUBX4t+f/WC2iECExPmGvSwgNrNAjcT9hbvZQWxOAXOJyWuegt0hLOAi
+        cbVvHdg2FgFViWMXNjOB2LwClhIfnu9hhrAFJU7OfAI1R15i+9s5UD8oSPx8uowVYpeVxJyf
+        L5ggakQkZne2gb0jIfCRXWL9svtAzRxAjovEwvZIiF5hiVfHt7BD2FISn9/tZYMoqZb4uB9q
+        fAejxIvvthC2scTN9RtYQUqYBTQl1u/ShwgrSuz8PZcRYiufxLuvPawQU3glOtqEIEpUJfou
+        HWaCsKUluto/sE9gVJqF5K9ZSP6aheT+WQjLFjCyrGIUSy0ozk1PLTYsMESO6U2M4GSoZbqD
+        ceLbD3qHGJk4GA8xSnAwK4nwmuYFJAjxpiRWVqUW5ccXleakFh9iNAWG9ERmKdHkfGA6ziuJ
+        NzQ1MjY2tjAxMzczNVYS500yeBAvJJCeWJKanZpakFoE08fEwSnVwKSdNStjZuZju5R7O/5W
+        3Ax/0ubA+X/Gp0vv5X7+3mnM7KMfsyCzzZ77mwdvT25kbMbsFYLfP059Om1n5Rll2cJXOvzL
+        9cvTi1h2uBwtn8P7W/p4x7mqxGdsXAcYZOuuMkwJuLTQZEpFSvzd9aH7eyO457LH8itnzjnx
+        w3FdpvDc1Hcf/v76sZznWMbkGxtS7Se/NwxaUuf1/uvcuZlyl1Oa861jclRtFq5Qv9IQHpF1
+        WEPD9IXj6h5Jrnuemo3yFyfnyqRdM311Q2qpov+mgvtch66qrlTxLYuvfnOzukr3i4+s7THz
+        Z/1vBTxjXp/0+Rnu9ULwXHZcWHTJhJmblZ+90aoSfG0rmfDzju6vFiWW4oxEQy3mouJEADUK
+        +n4PBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOLMWRmVeSWpSXmKPExsWy7bCSnG7i7sAEg6OH9Swu75rDZnFwYRuj
+        xda9V9kt3rw4zObA4tF44wabx85Zd9k9Pm+SC2CO4rJJSc3JLEst0rdL4Mq4+KiDseA6S8Xz
+        +dUNjI+Yuxg5OSQETCQ+33jL1sXIxSEksJtR4tWV/SwQCWmJYyfOABVxANnCEocPF0PUPGeU
+        WL10ORNIDZuArsS/P/vZQGwRgQiJtX0PWUFsZoEaicv7DzBDNHQwSrxZsIQRJMEpYC4xec1T
+        sM3CAi4SV/vWgTWwCKhKHLuwGWwor4ClxIfne5ghbEGJkzOfsIAcwSygJ9G2kRFivrzE9rdz
+        oB5QkPj5dBkrxA1WEnN+vmCCqBGRmN3ZxjyBUXgWkkmzECbNQjJpFpKOBYwsqxglUwuKc9Nz
+        iw0LDPNSy/WKE3OLS/PS9ZLzczcxguNCS3MH4/ZVH/QOMTJxMB5ilOBgVhLhNc0LSBDiTUms
+        rEotyo8vKs1JLT7EKM3BoiTOe6HrZLyQQHpiSWp2ampBahFMlomDU6qBaZ5yh+BH5Zz1q78q
+        va46lGx+uls/5uU3xtotrM+fuxnIiV37y7tcwtR3gnXD51mnW/J//LyzxzCY/8n1WysmcJrr
+        vLLmaj0+9dIR3jfrbrdrG9nHOX3I3SrKV86eJ75Hq9ulY9HuqikLC8skrmrkKe57wXA1yFjj
+        sLax+tL4wr/Gs7Mq2lYwzV6ZU3Lh0ueSq5dMyh6sbCv8/XPTlcOp6+4pcuoffR4TZ53PWGnY
+        r7lAdjvPpK8K8nOWf+l882hzVcf+336Ln1ap696+y1SwLHlvzfZ3vCs7Tv/o2vfC6PYV6aZ1
+        p22/Hgp69DZ5hpd00FddDm3brJ5z5vtYVDU7+hqPfTxbEhWzL2x5pD/vLyWW4oxEQy3mouJE
+        AEtBmqT6AgAA
+X-CMS-MailID: 20210317081841epcas1p14f10de56101c3850675d5bc2e6eebab0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210317074706epcas1p2c0898e1b2bf0e875dc6056c360a3236b
+References: <CGME20210317074706epcas1p2c0898e1b2bf0e875dc6056c360a3236b@epcas1p2.samsung.com>
+        <20210317184655.4d369e9e@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021, Lee Jones wrote:
+Hi Stephen,
 
-> On Thu, 11 Mar 2021, Daniel Vetter wrote:
+> Hi all,
 > 
-> > On Mon, Mar 08, 2021 at 09:19:32AM +0000, Lee Jones wrote:
-> > > On Fri, 05 Mar 2021, Roland Scheidegger wrote:
-> > > 
-> > > > The vmwgfx ones look all good to me, so for
-> > > > 23-53: Reviewed-by: Roland Scheidegger <sroland@vmware.com>
-> > > > That said, they were already signed off by Zack, so not sure what
-> > > > happened here.
-> > > 
-> > > Yes, they were accepted at one point, then dropped without a reason.
-> > > 
-> > > Since I rebased onto the latest -next, I had to pluck them back out of
-> > > a previous one.
-> > 
-> > They should show up in linux-next again. We merge patches for next merge
-> > window even during the current merge window, but need to make sure they
-> > don't pollute linux-next. Occasionally the cut off is wrong so patches
-> > show up, and then get pulled again.
-> > 
-> > Unfortunately especially the 5.12 merge cycle was very wobbly due to some
-> > confusion here. But your patches should all be in linux-next again (they
-> > are queued up for 5.13 in drm-misc-next, I checked that).
-> > 
-> > Sorry for the confusion here.
+> After merging the cifsd tree, today's linux-next build (htmldocs) produced this warning:
 > 
-> Oh, I see.  Well so long as they don't get dropped, I'll be happy.
+> Documentation/filesystems/cifs/cifsd.rst:3: WARNING: Title overline too short.
 > 
-> Thanks for the explanation Daniel
+> =========================
+> CIFSD - SMB3 Kernel Server
+> =========================
+> Documentation/filesystems/cifs/cifsd.rst: WARNING: document isn't included in any toctree
+> 
+> Introduced by commit
+> 
+>   597357deeecf ("cifsd: update cifsd.rst file")
+I sent a pull request to Steve to fix this failure.
 
-After rebasing today, all of my GPU patches have remained.  Would
-someone be kind enough to check that everything is still in order
-please?
+Thanks for your report!
+> 
+> --
+> Cheers,
+> Stephen Rothwell
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
