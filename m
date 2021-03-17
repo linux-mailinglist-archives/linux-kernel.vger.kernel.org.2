@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2397033F813
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3B333F816
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbhCQSZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49742 "EHLO
+        id S232963AbhCQS0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232994AbhCQSYt (ORCPT
+        with ESMTP id S232984AbhCQSZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:24:49 -0400
+        Wed, 17 Mar 2021 14:25:52 -0400
 Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EC2C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:24:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CB6C06174A;
+        Wed, 17 Mar 2021 11:25:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
         Reply-To:Cc:Content-ID:Content-Description;
-        bh=OFyI6+d5Ptggwy4AtXfCcuKvXAU8TbqKYJaYL9keQ40=; b=UEQc5ZFnqxr0zSaGf6UIoKzVPg
-        BdbA3TlQifcaAq9b5g/F3ef4HNHFjAzFEE/yl9O62kGDBb6wA1f7GjhbdSZFmMCyqJm3fq+WP21nO
-        Gze0BgN5+lWY5J5WpxwQbCp6vWVRaVaH1fnkNIHOVzPbCdQM/AY37yxM3/Ub343AtElafGI1cgj6V
-        CMXcbm2pfQKjgMWarIm2O9hTT6BWVaqCSKFQ3kuGv79BMTIGtyvRt81gLaWiRBO/1VSfsbwKHgkZK
-        jtb03C/X21KBlxX8Dg8pJjNtt5EMer9jaUjzCpiXcEKaFbfL693wMNfRL6aoGStOvAUlwnfInh3S4
-        1wvnFkTQ==;
+        bh=aDZn5rNh0GqHfB1yuCs8X0m+j7nLaKVvb0epvExRz+M=; b=jU9EYb+1cbwMocgwOiYLNL+IDA
+        psyboQayQ78lm3V5Aro8zP9P5Xbn4DWjPs0AmumNw3cSYTRKAg61myGXtZCDL8bqIHaBjpgc2Q4jg
+        EZrKWGuexiz5ta14bFzIzR7+PD9sUnsv4SsixX08XEJH6yrSIEQ30SXbT+xUatYQ7ho04kajWRC9/
+        IDtqPARui1hQ/XRUZZ5yhc6QxQSFldYJ2bNq5Hcn9JiC/6lYqejwZt20/3NM9WRT7JhFjUM2YMKY4
+        xkgXf0XjD0SQxQUmbwpM1NXXLzEnXxkpgmI3WXKlbAeNi8RIVr/rDNgCb5BWEGqr7WNQKekUNg7xU
+        DBvlfGKg==;
 Received: from [2601:1c0:6280:3f0::9757]
         by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMaqa-001frd-8W; Wed, 17 Mar 2021 18:24:45 +0000
-Subject: Re: [PATCH] kernel: trace: Mundane typo fixes in the file
- trace_events_filter.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, rostedt@goodmis.org,
-        mingo@redhat.com, linux-kernel@vger.kernel.org
-References: <20210317095401.1854544-1-unixbhaskar@gmail.com>
+        id 1lMard-001fsD-Vt; Wed, 17 Mar 2021 18:25:50 +0000
+Subject: Re: [PATCH] docs: sphinx: Trivial fix of a typo in the file
+ rstFlatTable.py
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, corbet@lwn.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210317102056.3003768-1-unixbhaskar@gmail.com>
 From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <30884024-ea9f-f602-d86a-c2f9139b27c4@infradead.org>
-Date:   Wed, 17 Mar 2021 11:24:38 -0700
+Message-ID: <442664ee-7cae-9b26-ca66-31827c448fcc@infradead.org>
+Date:   Wed, 17 Mar 2021 11:25:47 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210317095401.1854544-1-unixbhaskar@gmail.com>
+In-Reply-To: <20210317102056.3003768-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -47,51 +47,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 2:54 AM, Bhaskar Chowdhury wrote:
+On 3/17/21 3:20 AM, Bhaskar Chowdhury wrote:
 > 
-> s/callin/calling/
-> s/progam/program/
-> s/interperate/interpret/
+> s/buidler/builder/
 > 
 > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
 Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
 > ---
->  kernel/trace/trace_events_filter.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  Documentation/sphinx/rstFlatTable.py | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
-> index e91259f6a722..49de3e21e9bc 100644
-> --- a/kernel/trace/trace_events_filter.c
-> +++ b/kernel/trace/trace_events_filter.c
-> @@ -256,7 +256,7 @@ enum {
->   * is "&&" we don't call update_preds(). Instead continue to "c". As the
->   * next token after "c" is not "&&" but the end of input, we first process the
->   * "&&" by calling update_preds() for the "&&" then we process the "||" by
-> - * callin updates_preds() with the values for processing "||".
-> + * calling updates_preds() with the values for processing "||".
->   *
->   * What does that mean? What update_preds() does is to first save the "target"
->   * of the program entry indexed by the current program entry's "target"
-> @@ -296,7 +296,7 @@ enum {
->   * and "FALSE" the program entry after that, we are now done with the first
->   * pass.
->   *
-> - * Making the above "a || b && c" have a progam of:
-> + * Making the above "a || b && c" have a program of:
->   *  prog[0] = { "a", 1, 2 }
->   *  prog[1] = { "b", 0, 2 }
->   *  prog[2] = { "c", 0, 3 }
-> @@ -390,7 +390,7 @@ enum {
->   * F: return FALSE
->   *
->   * As "r = a; if (!r) goto n5;" is obviously the same as
-> - * "if (!a) goto n5;" without doing anything we can interperate the
-> + * "if (!a) goto n5;" without doing anything we can interpret the
->   * program as:
->   * n1: if (!a) goto n5;
->   * n2: if (!b) goto n5;
+> diff --git a/Documentation/sphinx/rstFlatTable.py b/Documentation/sphinx/rstFlatTable.py
+> index a3eea0bbe6ba..1d2b9be6b6c5 100755
+> --- a/Documentation/sphinx/rstFlatTable.py
+> +++ b/Documentation/sphinx/rstFlatTable.py
+> @@ -161,7 +161,7 @@ class ListTableBuilder(object):
+>          for colwidth in colwidths:
+>              colspec = nodes.colspec(colwidth=colwidth)
+>              # FIXME: It seems, that the stub method only works well in the
+> -            # absence of rowspan (observed by the html buidler, the docutils-xml
+> +            # absence of rowspan (observed by the html builder, the docutils-xml
+>              # build seems OK).  This is not extraordinary, because there exists
+>              # no table directive (except *this* flat-table) which allows to
+>              # define coexistent of rowspan and stubs (there was no use-case
 > --
 
 
