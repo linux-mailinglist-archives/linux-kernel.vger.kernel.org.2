@@ -2,119 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31DC33F9E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:18:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFBB33F9E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:18:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233373AbhCQUSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 16:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45778 "EHLO
+        id S233416AbhCQUST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 16:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233443AbhCQURr (ORCPT
+        with ESMTP id S233395AbhCQURx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 16:17:47 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2EEC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:17:46 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 16so4750288ljc.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:17:46 -0700 (PDT)
+        Wed, 17 Mar 2021 16:17:53 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B02C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:17:52 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id q29so870665lfb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:17:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=J6gJzCwpLyG7+14+e+3YoRVEedOSyoYsJ1d1aSm3u8s=;
-        b=Ot1J2LG0SujcfumGfz731vdJqKOxO4S52bTDK4ESl++y2B/qGrQJ3ZdY9Sabt4+qqD
-         CzWxpMj1luRIBQBFf/hyxd2opLMAqV+cwP7dETj1336+AfgOqmHKYaS1AhWtahJVwqlU
-         gN553b7yWZyHe+SWBQ9bi314J/UcXDnhrU4nma/KHf7eOaDPE89DCmyfYyjlFc58rtjR
-         whkrzXuDb3CPlElVyu7jaeUhUnKX65xuboxd3rKb2tS8bX9WpDZFAgettshbfdbaKNHH
-         u9gNjJ1sQ7q4evUHcE8LsEtu7/1CyNif50ADrZcWccijWbfuWsO0kK7olDowKVJPpK8j
-         RYmg==
+        bh=kCK1uQIcxm8OXGgRHg7NKZ1L0n8wQ50xR39kklU4ehs=;
+        b=OdDYRPjwG/KffT3RPD1JqVqMXP9pAdHXLW3oaFjZzW8LxdCpwoYwGrfUD/JWgdqwfN
+         inXEKwU2jOjNhWzYbJRuzNNT6NIc6Hh9gKSpG4ROQH/xpU5sNfXypE7m+LZRIbCHoMHE
+         9EXVAVOaYqK1B0gheLVcUjP7mdS6AoWAXHeBo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=J6gJzCwpLyG7+14+e+3YoRVEedOSyoYsJ1d1aSm3u8s=;
-        b=E8bconJw7AjQtQiymYcR+tkaRDoxOnHlyHZR+dfSR6R8raczgXcPf7lpyw7JGwxkRK
-         u+8ZZIWh9ewPfxCjzgf2ei2XJQlGn+APafDK1U+OPKThy/T5jcI8zulBBO/EQbGxexBj
-         87aGk3qqGbbReYlPRD5Dqpnbfb+kkzrxfqiViF+p0+h2x1ovw3J0lMbKgyDciwnpylYe
-         1hMEzVC8E5ueU3XTEZNy8i9Guw9y0jfARSAFn9b967r1e/RBYOGYpMaieYamGMQrpFtC
-         UYuIW4BPs3JsWbNblaPoctaN5i1s8i5JVnydUBiM0JErvyJNPWzdnmJr2fda+XNVp8t3
-         2Ygw==
-X-Gm-Message-State: AOAM531cgDuY0necgg5qOu2MHuOpYPkbGuwp5rDg3fJ9ZdkbXuF4voJo
-        Fx8bfNUzkeLAuIVHdxZigQKsfWs9GMYfiiGvhrK2JQ==
-X-Google-Smtp-Source: ABdhPJxm6guJ8ZzFVRuVVjxk9Ag12khXWuNxP2NxaZfEBJIJzMCqUEtP+HDMBvXMUishhGlf43z6gBFdhYMFqXivsG0=
-X-Received: by 2002:a2e:b6d4:: with SMTP id m20mr3432836ljo.448.1616012265057;
- Wed, 17 Mar 2021 13:17:45 -0700 (PDT)
+        bh=kCK1uQIcxm8OXGgRHg7NKZ1L0n8wQ50xR39kklU4ehs=;
+        b=b0XVuCDkqmcDwJ0u9YYlSSXU504hmR6zSb0i3RTtGltRTW8zcdt+PC9U3xVhSRcLXG
+         uMOXvQA7dhIRtbWZBqw3Y4WXDYRHLcXzmIyDapcqtiFKhlrgWciWl2FzI/4jeD0QkGtY
+         LAZtKM/peKLNTmLxBlCAvo7geJWAiCK32HBY7oIgg0RGsD1pjheafCNJ+n7L1RdsNfMZ
+         /07eMVdvNgoV+LoZzT03i9EWN+11PyG3R7QT2SNKNqPP44OYK4YmX8lfPutspN6S+yqY
+         nN15HrEEFoyXYxSXzKGapwTmf8GdQ0cTIafTILj/zegXAqXPFhrKVS6TpOIS845kWSee
+         QuxA==
+X-Gm-Message-State: AOAM532fZXMZML/KIsBW7pe8whzNJ/PMIxKhTseqrI12v9aMNXuHFz6R
+        YN4Hoq6WsCJ0TL/vhCdfTGj3k0j1bxHtTw==
+X-Google-Smtp-Source: ABdhPJzOBjgTYBvmzCzgtrjtqcrxkmNH6yXWluAHWR+QNVUJR2V/XmY3bb/gxBR9D7NqTkhgqqQVZw==
+X-Received: by 2002:a05:6512:1284:: with SMTP id u4mr3441913lfs.175.1616012270725;
+        Wed, 17 Mar 2021 13:17:50 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id b3sm310lji.36.2021.03.17.13.17.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 13:17:49 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id w37so882162lfu.13
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:17:49 -0700 (PDT)
+X-Received: by 2002:a05:6512:a8c:: with SMTP id m12mr3271119lfu.253.1616012268802;
+ Wed, 17 Mar 2021 13:17:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210316011630.1121213-1-dualli@chromium.org> <20210317180048.inzdursqmnvxkgwp@wittgenstein>
-In-Reply-To: <20210317180048.inzdursqmnvxkgwp@wittgenstein>
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 17 Mar 2021 21:17:18 +0100
-Message-ID: <CAG48ez2ATadfuBjZDqjLa-Mzh669F-yDuBzV62aH=OHRt5g4Pg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] Binder: Enable App Freezing Capability
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Li Li <dualli@chromium.org>, dualli@google.com,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian Brauner <christian@brauner.io>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Martijn Coenen <maco@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        kernel-team <kernel-team@android.com>
+References: <20210317104547.442203-1-leon@kernel.org>
+In-Reply-To: <20210317104547.442203-1-leon@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 17 Mar 2021 13:17:32 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj+Bsc1T41qziHxf9DvrBrYSBWKj27hEL0EbysCGRPzTA@mail.gmail.com>
+Message-ID: <CAHk-=wj+Bsc1T41qziHxf9DvrBrYSBWKj27hEL0EbysCGRPzTA@mail.gmail.com>
+Subject: Re: [PATCH master] module: remove never implemented MODULE_SUPPORTED_DEVICE
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 7:00 PM Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
-> On Mon, Mar 15, 2021 at 06:16:27PM -0700, Li Li wrote:
-> > To improve the user experience when switching between recently used
-> > applications, the background applications which are not currently needed
-> > are cached in the memory. Normally, a well designed application will not
-> > consume valuable CPU resources in the background. However, it's possible
-> > some applications are not able or willing to behave as expected, wasting
-> > energy even after being cached.
-> >
-> > It is a good idea to freeze those applications when they're only being
-> > kept alive for the sake of faster startup and energy saving. These kernel
-> > patches will provide the necessary infrastructure for user space framework
-> > to freeze and thaw a cached process, check the current freezing status and
-> > correctly deal with outstanding binder transactions to frozen processes.
+On Wed, Mar 17, 2021 at 3:46 AM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> I'm sending this patch to you directly because it is much saner to
+> apply it in one place instead of multiple patches saga that will
+> span for at least two cycles if per-maintainer path will be taken.
+>
+> It applies cleanly on v5.12-rc2 and completely unharmful.
 
-I just have some comments on the overall design:
+You have an odd whitespace-only part in the patch inside the comment
+underneath the "remove RME,Hammerfall" case.
 
-This seems a bit convoluted to me; and I'm not sure whether this is
-really something the kernel should get involved in, or whether this
-patchset is operating at the right layer.
+Also, your email seems to have swallowed spaces at the ends of lines.
 
-If there are non-binder threads that are misbehaving, could you
-instead stop all those threads in pure userspace code (e.g. by sending
-a thread-directed signal to all of them and letting the signal handler
-sleep on a futex); and if the binder thread receives a transaction
-that should be handled, wake up those threads again?
+I can (and did) apply the patch with "--whitespace=fix", but that then
+causes git to fix some _other_ whitespace too, so the end result isn't
+quite the same. Oh well.
 
-Or alternatively you could detect that the application is being woken
-up frequently even though it's supposed to be idle (e.g. using
-information from procfs), and kill it since you consider it to be
-misbehaving?
+Please check what's up with your email sending client that it seems to
+remove space at end of lines in patches.
 
-Or if there are specific usage patterns you see frequently that you
-consider to be wasting CPU resources (e.g. setting an interval timer
-that fires in short intervals), you could try to delay such timers.
-
-
-With your current approach, you're baking the assumption that all IPC
-goes through binder into the kernel API; things like passing a file
-descriptor to a pipe through binder or using shared futexes are no
-longer usable for cross-process communication without making more
-kernel changes. I'm not sure whether that's a good idea. On top of
-that, if you freeze a process while it is in the middle of some
-operation, resources associated with the operation will probably stay
-in use for quite some time; for example, if an app is in the middle of
-downloading some data over HTTP, and you freeze it, this may cause the
-TCP connection to remain active and consume resources for send/receive
-buffers on both the device and the server.
+            Linus
