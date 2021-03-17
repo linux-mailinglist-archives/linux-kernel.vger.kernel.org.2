@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7621D33F250
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:10:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 341D033F255
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:12:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhCQOKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:10:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37411 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231211AbhCQOKV (ORCPT
+        id S230037AbhCQOLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:11:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231348AbhCQOLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:10:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615990220;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=65P6PL5OL/2717NBzXNqPQ+q5PP+bR0voBu5yKlNlo8=;
-        b=K1qmvEhBz7rIT+4lQYGPYQxAzPDu8T1vBEYhZ6CG6k9/MxajeuH6upiBOBPTBcPpLehCII
-        GrWJkk9r43QVQab7fR1KkEISGQlrVihyDxRJyfMBXSQUKGgeCLUmE6h/9G7/1Btb+0y6yx
-        VQOhUoU/y87N6sGb+8WhqjMBeFyzcuE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-148-BWa9y-b_NPC7rsWPf4OW1Q-1; Wed, 17 Mar 2021 10:10:18 -0400
-X-MC-Unique: BWa9y-b_NPC7rsWPf4OW1Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9016AEC1A1;
-        Wed, 17 Mar 2021 14:10:17 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-117-171.rdu2.redhat.com [10.10.117.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D5DE650DDB;
-        Wed, 17 Mar 2021 14:10:16 +0000 (UTC)
-Subject: Re: [tip: locking/urgent] locking/ww_mutex: Simplify use_ww_ctx &
- ww_ctx handling
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Davidlohr Bueso <dbueso@suse.de>, x86@kernel.org
-References: <20210316153119.13802-2-longman@redhat.com>
- <161598470257.398.5006518584847290113.tip-bot2@tip-bot2>
- <YFH9Pw3kwCZC1UTB@hirez.programming.kicks-ass.net>
- <85fbce04-c544-6041-6e7d-76f47b90e263@redhat.com>
- <YFIKWCUAZabBsji0@hirez.programming.kicks-ass.net>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <bbfca577-b680-4c73-3f35-22179bd1a498@redhat.com>
-Date:   Wed, 17 Mar 2021 10:10:16 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 17 Mar 2021 10:11:04 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E3DC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 07:11:04 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1lMWsv-0004Qw-QZ; Wed, 17 Mar 2021 15:10:53 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1lMWsu-00032p-MK; Wed, 17 Mar 2021 15:10:52 +0100
+Date:   Wed, 17 Mar 2021 15:10:52 +0100
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     dillon min <dillon.minfei@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, shawnguo@kernel.org,
+        parthiban@linumiz.com, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ARM: dts: imx6ull: fix ubi mount failed on MYS-6ULX-IOT
+ board
+Message-ID: <20210317141052.GW4207@pengutronix.de>
+References: <1615270520-16951-1-git-send-email-dillon.minfei@gmail.com>
+ <20210309121836.GU4207@pengutronix.de>
+ <CAL9mu0JOyM8n9LABwrOYgV4Qxj27XKTchWiGKsE3dMU0W5RNbw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YFIKWCUAZabBsji0@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL9mu0JOyM8n9LABwrOYgV4Qxj27XKTchWiGKsE3dMU0W5RNbw@mail.gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 15:07:52 up 27 days, 17:31, 85 users,  load average: 0.07, 0.24,
+ 0.23
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 9:55 AM, Peter Zijlstra wrote:
-> On Wed, Mar 17, 2021 at 09:43:20AM -0400, Waiman Long wrote:
->
->> Using gcc 8.4.1, the generated __mutex_lock function has the same size (with
->> last instruction at offset +5179) with or without this patch. Well, you can
->> say that this patch is an no-op wrt generated code.
-> OK, then GCC has gotten better. Because back then I tried really hard
-> but it wouldn't remove the if (ww_ctx) branches unless I had that extra
-> const bool argument.
->
-I think ww_mutex was merged in 2013. That is almost 8 years ago. It 
-could still be the case that older gcc compilers may not generate the 
-right code. I will try the RHEL7 gcc compiler (4.8.5) to see how it fares.
+On Wed, Mar 10, 2021 at 10:54:05AM +0800, dillon min wrote:
+> Hi Sascha,
+> 
+> Thanks for reviewing.
+> 
+> On Tue, Mar 9, 2021 at 8:18 PM Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> >
+> > On Tue, Mar 09, 2021 at 02:15:19PM +0800, dillon.minfei@gmail.com wrote:
+> > > From: dillon min <dillon.minfei@gmail.com>
+> > >
+> > > This patch intend to fix ubi filesystem mount failed on MYS-6ULX-IOT board,
+> > > from Micron MT29F2G08ABAEAWP's datasheets, we need to choose 4-bit ECC.
+> > >
+> > > Table 18: Error Management Details
+> > >
+> > > Description                                   Requirement
+> > >
+> > > Minimum number of valid blocks (NVB) per LUN  2008
+> > > Total available blocks per LUN                        2048
+> > > First spare area location                     x8: byte 2048 x16: word 1024
+> > > Bad-block mark                                        x8: 00h x16: 0000h
+> > > Minimum required ECC                          4-bit ECC per 528 bytes
+> > > Minimum ECC with internal ECC enabled         4-bit ECC per 516 bytes (user data) + 8
+> > >                                               bytes (parity data)
+> > > Minimum required ECC for block 0 if PROGRAM/
+> > > ERASE cycles are less than 1000                       1-bit ECC per 528 bytes
+> >
+> > 4-bit ECC is the minimum this chip requires. There's nothing wrong with
+> > choosing a better ECC like the GPMI driver does by default.
+> >
+> Yes, indeed, the mt29f2g08's minimum ecc is 4-bit, you can use 8-bits ecc.
+> but there is a dependency between new kernel gpmi-nand with the old
+> mfg-kernel's , which means
+> if the old nand ecc layout is 4-bits, you should use ecc 4-bit in the
+> new kernel (by fsl,use-minimum-ecc),
+> else use 8-bits.
+> 
+> For my case, the ubifs filesystem was created by ecc 4-bits, without
+> reflash filesystem or change
 
-Cheers,
-Longman
+Then this is the justification for this patch, not anything from the
+datasheet like you've written in your commit message.
 
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
