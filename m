@@ -2,155 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF17D33E89B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:56:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C2433E89D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbhCQE4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 00:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42538 "EHLO
+        id S229587AbhCQE5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 00:57:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhCQEzf (ORCPT
+        with ESMTP id S229791AbhCQE4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 00:55:35 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB578C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 21:55:34 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id r17so442498ejy.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 21:55:34 -0700 (PDT)
+        Wed, 17 Mar 2021 00:56:54 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6855FC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 21:56:54 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so2556985pjh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 21:56:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=R9Su8BT2yWWWTsxwDOrtHcEfB6yWhXQeHaQOaR7lJs0=;
-        b=O6sx9FFHvjxesWJe/kyNeeBwWtW52JhZ86uNybfLp1n5nVpFA0IdiS1FOjx1HpoaD3
-         v98nvCJdMQQRsZF4Ahu2nvix+wWfSe6qAHxAlqqAICsBrPdWX3GX5tW9Jy52xYO03bG2
-         tq7uMOyEKMG4n2m4kmyRyxz9EpkWw4r97rCHXVZFOL8YDM+2i24h4NIe9+6TTy1Ry1tu
-         QiRCdpVKVXGNYNe/nBpvBvBRoBPu2da836m6NDtDeN4NNFm6Y84CYIBl6C6eVwoPXJ5A
-         9d8jt1DnkFlIM91CFSuKs6O1m+RJp0IKPkWx3F1g46JqMwRFiBaSlwlFy8gmhIBpdAUc
-         4ybg==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kNYiVBd1cBCop/nrtBQYXoofnHMlkqLGb5kuKDRfR4g=;
+        b=rkmJjRKSwf7e15UE78TMTFXqP3y7u7jqpwes0ZtS4DmiApHjc62VD1ZLB6eoXSQRhH
+         rOmJsEfJB807H+Vpvd8LEyvTkqPwNH9hLvv+NoPaWvsAdMbPksBlR5kx+21obllqi9vj
+         7m8FusXNXESFNQwPDLtz5pX4JLZdChnlhmbIxKxV/4EjqYIlzx6r/2miWVNoDJ2v2vQS
+         9B9ncsjzUP3I63X0fJ1mXwm83lpnQv90yCng7V9LdL2FDA4qmXFcokbOyfPPjTWtego0
+         RTQIM7RkyT37GLguI6QJg6w/ndsvPK++vy5h/BqmcYOIgCN4pVX5Xz/P9DSQI93Hn13m
+         tSkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=R9Su8BT2yWWWTsxwDOrtHcEfB6yWhXQeHaQOaR7lJs0=;
-        b=p6cwtcAp0R7Pr9eeEGKNYXhcicNZRcC9JPZw4+5Gal6qoYfDClKIOSFMwH2NUkE5Su
-         WW3NoFpXsgB1mOUUDEnjv9GxWgf+DBzTHkOrPq+C+Hr6sfjfqDGee7cTTgXdAZ3brUdW
-         8lPSt0ey2Jjtb7EipiUXhPX9CR+swE8VUyp3gEjxPLwEdp8LIXpNa1QDnA0HP1udHS+J
-         e8wuzJYHiRvtQkN0ps4tHy6N0OEBQsZ9CXeVN4L9EdQRKsdaWNI2otXRhJi+PJlx+uY8
-         LeMBrjdtWZsxu7iErP1sGDPKuPJjFumK5S5IWwrS5SFp5V06XdIwLtcPX7zItw+I2iHn
-         EsbA==
-X-Gm-Message-State: AOAM530uVWNd+Ct0ZbY0SxMGPope+XhWC5vrL0KphRVZuPl6VxFcxJF3
-        5CQJqYRTOZkiOI+Kwk4cdJpi4bsghk6CskZMerQxKykaL6daFg==
-X-Google-Smtp-Source: ABdhPJwIO/ogRUlUiVl0dBLKIRZNfZtAdaRzwMYSyKIDI5BrQSkoOFC21rPTMy4VEFzJeUUvJsOKadQ+mLG8+8a/sbQ=
-X-Received: by 2002:a17:906:1386:: with SMTP id f6mr32943546ejc.45.1615956933554;
- Tue, 16 Mar 2021 21:55:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <CE1E7D7EFA066443B6454A6A5063B50220D0B849@dggeml509-mbs.china.huawei.com>
- <20210311121923.GU3479805@casper.infradead.org> <CAPcyv4jz7-uq+T-sd_U3O_C7SB9nYWVJDnhVsaM0VNR207m8xA@mail.gmail.com>
- <CE1E7D7EFA066443B6454A6A5063B50220D12A8A@dggeml509-mbs.china.huawei.com>
-In-Reply-To: <CE1E7D7EFA066443B6454A6A5063B50220D12A8A@dggeml509-mbs.china.huawei.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 16 Mar 2021 21:55:27 -0700
-Message-ID: <CAPcyv4i2evDrYVgh4ir_ddRfO7tOgmWPSZf893JTO=+mcG7-XQ@mail.gmail.com>
-Subject: Re: [question] Panic in dax_writeback_one
-To:     "chenjun (AM)" <chenjun102@huawei.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>,
-        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
-        "lizhe (Y)" <lizhe67@huawei.com>, yangerkun <yangerkun@huawei.com>,
-        "zhangyi (F)" <yi.zhang@huawei.com>,
-        Joao Martins <joao.m.martins@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=kNYiVBd1cBCop/nrtBQYXoofnHMlkqLGb5kuKDRfR4g=;
+        b=Cyn32Q9M1hufWzWykAlTES2iGJGwAqKgxLKtI/9CclnBxozVJgB8G1+CohiM0J03dv
+         f3aeWTAVV0sRn6T0iyny27/TSdNIjWQrhqvAD/L3P6BrOENxFQIt2n2ak7c1w2w3cC2a
+         +Y+ZimKLDymFWYmGiG+bTW1LBH0qqRqfUd/SOovnqSgOa6AgLAnHDiFzjRsROffCjICW
+         S11SO2qkZBTa90S8uUJhUXz7nGBbfMkbzBtt7Oea5vHZFg9lUBjZgzXMMOEwmWQCnKKk
+         UvpUC49/iStMo6wtEm7wIlJJTRUCzZvf1z4e+nRIP/7MecGxiZK8N70pBv6TW9i1IqH+
+         /VUg==
+X-Gm-Message-State: AOAM533tl/LG1SAmeA4lRY/zgfU7iI6FsE18xwNvSCXzG46fu+3MveoN
+        9Fcx2i+XDnEnw7I1yFQsNLWGnsFrdw+fuw==
+X-Google-Smtp-Source: ABdhPJyjXaM0gupVP9yZBysQyI/n0XlvnGgv9z+RdE3OBzlRIvtK6srLkWHzbGDQFe8EjRvgLIeGcw==
+X-Received: by 2002:a17:90a:5d10:: with SMTP id s16mr2589245pji.126.1615957013965;
+        Tue, 16 Mar 2021 21:56:53 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id k63sm19238522pfd.48.2021.03.16.21.56.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 21:56:53 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 21:56:53 -0700 (PDT)
+X-Google-Original-Date: Tue, 16 Mar 2021 21:56:38 PDT (-0700)
+Subject:     Re: [PATCH v3 1/2] riscv: Ensure page table writes are flushed when initializing KASAN vmalloc
+In-Reply-To: <20210313084505.16132-2-alex@ghiti.fr>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        nylon7@andestech.com, nickhu@andestech.com,
+        aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, alex@ghiti.fr
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     alex@ghiti.fr
+Message-ID: <mhng-8c8d3e1d-7d6a-4e28-8c18-901af08a29d3@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 8:00 PM chenjun (AM) <chenjun102@huawei.com> wrote:
+On Sat, 13 Mar 2021 00:45:04 PST (-0800), alex@ghiti.fr wrote:
+> Make sure that writes to kernel page table during KASAN vmalloc
+> initialization are made visible by adding a sfence.vma.
 >
-> =E5=9C=A8 2021/3/12 1:25, Dan Williams =E5=86=99=E9=81=93:
-> > On Thu, Mar 11, 2021 at 4:20 AM Matthew Wilcox <willy@infradead.org> wr=
-ote:
-> >>
-> >> On Thu, Mar 11, 2021 at 07:48:25AM +0000, chenjun (AM) wrote:
-> >>> static int dax_writeback_one(struct xa_state *xas, struct dax_device
-> >>> *dax_dev, struct address_space *mapping, void *entry)
-> >>> ----dax_flush(dax_dev, page_address(pfn_to_page(pfn)), count * PAGE_S=
-IZE);
-> >>> The pfn is returned by the driver. In my case, the pfn does not have
-> >>> struct page. so pfn_to_page(pfn) return a wrong address.
-> >>
-> >> I wasn't involved, but I think the right solution here is simply to
-> >> replace page_address(pfn_to_page(pfn)) with pfn_to_virt(pfn).  I don't
-> >> know why Dan decided to do this in the more complicated way.
-> >
-> > pfn_to_virt() only works for the direct-map. If pages are not mapped I
-> > don't see how pfn_to_virt() is expected to work.
-> >
-> > The real question Chenjun is why are you writing a new simulator of
-> > memory as a block-device vs reusing the pmem driver or brd?
-> >
+> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> ---
+>  arch/riscv/mm/kasan_init.c | 2 ++
+>  1 file changed, 2 insertions(+)
 >
-> Hi Dan
->
-> In my case, I do not want to take memory to create the struct page of
-> the memory my driver used.
-
-There are efforts happening to drastically reduce that overhead. You
-might want to check out Joao's work [1]. I think that direction holds
-more promise than trying to extend FS_DAX_LIMITED.
-
-[1]: http://lore.kernel.org/r/20201208172901.17384-1-joao.m.martins@oracle.=
-com
-
-> And, I think this is also a problem for DCSSBLK.
-
-If I understand correctly DAX replaced XIP for S390. There have not
-been reports about this problem, and I can only guess because XIP
-(eXecute-In-Place) is a read-only use case where dax_writeback_one()
-is never triggered, or S390 just isn't using DCSSBLK anymore. The last
-time I touched FS_DAX_LIMITED the DCSSBLK maintainers offered to just
-delete this driver to get it out of the way.
-
->
-> So I want to go back the older way if CONFIG_FS_DAX_LIMITED
->
-> diff --git a/fs/dax.c b/fs/dax.c
-> index b3d27fd..6395e84 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -867,6 +867,9 @@ static int dax_writeback_one(struct xa_state *xas,
-> struct dax_device *dax_dev,
->   {
->         unsigned long pfn, index, count;
->         long ret =3D 0;
-> +       void *kaddr;
-> +       pfn_t new_pfn_t;
-> +       pgoff_t pgoff;
->
->         /*
->          * A page got tagged dirty in DAX mapping? Something is seriously
-> @@ -926,7 +929,25 @@ static int dax_writeback_one(struct xa_state *xas,
-> struct dax_device *dax_dev,
->         index =3D xas->xa_index & ~(count - 1);
->
->         dax_entry_mkclean(mapping, index, pfn);
-> -       dax_flush(dax_dev, page_address(pfn_to_page(pfn)), count * PAGE_S=
-IZE);
+> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+> index 1b968855d389..57bf4ae09361 100644
+> --- a/arch/riscv/mm/kasan_init.c
+> +++ b/arch/riscv/mm/kasan_init.c
+> @@ -187,6 +187,8 @@ void __init kasan_shallow_populate(void *start, void *end)
+>  		}
+>  		vaddr += PAGE_SIZE;
+>  	}
 > +
-> +       if (!IS_ENABLED(CONFIG_FS_DAX_LIMITED) || pfn_valid(pfn))
-> +               kaddr =3D page_address(pfn_to_page(pfn));
-> +       else {
-> +               ret =3D bdev_dax_pgoff(mapping->host->i_sb->s_bdev, pfn <=
-<
-> PFN_SECTION_SHIFT, count << PAGE_SHIFT, &pgoff);
+> +	local_flush_tlb_all();
+>  }
+>
+>  void __init kasan_init(void)
 
-This is broken:
-
-    mapping->host->i_sb->s_bdev
-
-...there is no guarantee that the superblock associated with the
-mapping is hosted on the same block device associated with the passed
-in dax_device. See dax_rtdev in xfs_open_devices().
+Thanks, this is on fixes.
