@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572C933F482
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:51:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0041333F481
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232701AbhCQPuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 11:50:11 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51128 "EHLO
+        id S232649AbhCQPuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 11:50:05 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51116 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232391AbhCQPs6 (ORCPT
+        with ESMTP id S232360AbhCQPs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Mar 2021 11:48:58 -0400
 Date:   Wed, 17 Mar 2021 15:48:56 -0000
@@ -20,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=J9x+FyJLzjd3GfH1PbsDf89B6OuvZz4A+c4a4E5E9ew=;
-        b=dWTcd7oajPlYeHr0GHgcd5IJ2BiibiaCqyt37qTw3+6WZwUA9TDn//51VGC7P6h06PVYbl
-        /D9aycE/FrURkIObOJjVIWRJmGYNlfmyyDee4FeLCeuQvWNRiATdRS0epiKA+N72Ft/w6C
-        dGToOIkqNH5gK27K30929LQZskKH2AyoyC9aTszQ/kIflBJgboGVYjfhYTyQ80+nzbwnoW
-        JhIEKN1lLYBierJwFdChVEM3eRGhmut9xQWoQ45OfDAY3bmSAVDF7KItsc67+Aa0N6pOpV
-        og70KRJNFgV6mtodde1KKgnpHYzUi4t4DDgxNIJOC1XRmoa3snzk9I0Jd630KA==
+        bh=ezUOcliBgcCKQfXmP7J+sP+I/c2KEqUZC9iM9kvVxho=;
+        b=jeYKdslmCP+9EB9tTM2AdvDQQmwTNmnCZu47k54zfzlMSdr1oC9HUZVY8hZPgetyDZKhz9
+        JZWFGeqNQMYvc6OHv4VFpBwAgcXnhG3xpsD6528b2gQZQFJz9ShxAilGJyEnQ4EGrJcDLX
+        9mG7lbSXl6l0Q5Z5OP0mjTeobkXHeX5fu19G95BSRze68fvYf/183ag2f2jrOgVtal9ydf
+        tLhmnq06j/Cm4W0TyE+tudOT6LG2zXPO4Tq7V/sQPVv3VNAmTRbhXZN9f1XSHYKZYAI1kh
+        V2KdMtg8MrhDTfK/426vlzurWP+AAaSLqSaQyzPh6+eUkd45kfRcTETEgZGyTw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1615996137;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,23 +33,23 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=J9x+FyJLzjd3GfH1PbsDf89B6OuvZz4A+c4a4E5E9ew=;
-        b=fiIv8g7m7qXMpeoIciFmuSjKj926vaTUBIwwvsRKY1S/3x8xrHsSb2gpsxMlnRK4DLGrXB
-        4QYzkm1rhOY+BKCg==
+        bh=ezUOcliBgcCKQfXmP7J+sP+I/c2KEqUZC9iM9kvVxho=;
+        b=fB3E5uFLnubIEuMVJ6fGo+eW3YHbCRQo9VCrJg84oEaES064MnFdMj+APnMGOqWKNKppmm
+        ahV0eKnBxD1JpJAQ==
 From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] ath9k: Use tasklet_disable_in_atomic()
+Subject: [tip: irq/core] atm: eni: Use tasklet_disable_in_atomic() in the
+ send() callback
 Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Kalle Valo <kvalo@codeaurora.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20210309084242.313899703@linutronix.de>
-References: <20210309084242.313899703@linutronix.de>
+In-Reply-To: <20210309084242.415583839@linutronix.de>
+References: <20210309084242.415583839@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <161599613681.398.13526096212765880377.tip-bot2@tip-bot2>
+Message-ID: <161599613646.398.4302510633173370000.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,47 +60,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     3250aa8a293b1859d76577714a3e1fe95732c721
-Gitweb:        https://git.kernel.org/tip/3250aa8a293b1859d76577714a3e1fe95732c721
+Commit-ID:     405698ca359a23b1ef1a502ef2bdc4597dc6da36
+Gitweb:        https://git.kernel.org/tip/405698ca359a23b1ef1a502ef2bdc4597dc6da36
 Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-AuthorDate:    Tue, 09 Mar 2021 09:42:13 +01:00
+AuthorDate:    Tue, 09 Mar 2021 09:42:14 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Wed, 17 Mar 2021 16:34:02 +01:00
 
-ath9k: Use tasklet_disable_in_atomic()
+atm: eni: Use tasklet_disable_in_atomic() in the send() callback
 
-All callers of ath9k_beacon_ensure_primary_slot() are preemptible /
-acquire a mutex except for this callchain:
+The atmdev_ops::send callback which calls tasklet_disable() is invoked with
+bottom halfs disabled from net_device_ops::ndo_start_xmit(). All other
+invocations of tasklet_disable() in this driver happen in preemptible
+context.
 
-  spin_lock_bh(&sc->sc_pcu_lock);
-  ath_complete_reset()
-  -> ath9k_calculate_summary_state()
-     -> ath9k_beacon_ensure_primary_slot()
-
-It's unclear how that can be distangled, so use tasklet_disable_in_atomic()
-for now. This allows tasklet_disable() to become sleepable once the
-remaining atomic users are cleaned up.
+Change the send() call to use tasklet_disable_in_atomic() which allows
+tasklet_disable() to be made sleepable once the remaining atomic context
+usage sites are cleaned up.
 
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210309084242.313899703@linutronix.de
+Link: https://lore.kernel.org/r/20210309084242.415583839@linutronix.de
 
 ---
- drivers/net/wireless/ath/ath9k/beacon.c | 2 +-
+ drivers/atm/eni.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/beacon.c b/drivers/net/wireless/ath/ath9k/beacon.c
-index 71e2ada..72e2e71 100644
---- a/drivers/net/wireless/ath/ath9k/beacon.c
-+++ b/drivers/net/wireless/ath/ath9k/beacon.c
-@@ -251,7 +251,7 @@ void ath9k_beacon_ensure_primary_slot(struct ath_softc *sc)
- 	int first_slot = ATH_BCBUF;
- 	int slot;
- 
--	tasklet_disable(&sc->bcon_tasklet);
-+	tasklet_disable_in_atomic(&sc->bcon_tasklet);
- 
- 	/* Find first taken slot. */
- 	for (slot = 0; slot < ATH_BCBUF; slot++) {
+diff --git a/drivers/atm/eni.c b/drivers/atm/eni.c
+index 316a994..e96a4e8 100644
+--- a/drivers/atm/eni.c
++++ b/drivers/atm/eni.c
+@@ -2054,7 +2054,7 @@ static int eni_send(struct atm_vcc *vcc,struct sk_buff *skb)
+ 	}
+ 	submitted++;
+ 	ATM_SKB(skb)->vcc = vcc;
+-	tasklet_disable(&ENI_DEV(vcc->dev)->task);
++	tasklet_disable_in_atomic(&ENI_DEV(vcc->dev)->task);
+ 	res = do_tx(skb);
+ 	tasklet_enable(&ENI_DEV(vcc->dev)->task);
+ 	if (res == enq_ok) return 0;
