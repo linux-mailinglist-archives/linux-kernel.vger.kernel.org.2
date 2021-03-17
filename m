@@ -2,158 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB2433EB8C
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9CD33EB8B
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbhCQIbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33504 "EHLO
+        id S229632AbhCQIbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:31:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbhCQIbC (ORCPT
+        with ESMTP id S229506AbhCQIaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:31:02 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6304C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:31:02 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lMRZV-00016k-TZ; Wed, 17 Mar 2021 09:30:29 +0100
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:31e3:6e40:b1cd:40a8])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 582725F73BA;
-        Wed, 17 Mar 2021 08:30:22 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 09:30:21 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mark Brown <broonie@kernel.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Odelu Kukatla <okukatla@codeaurora.org>,
-        Alex Elder <elder@kernel.org>, Suman Anna <s-anna@ti.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Drop type references on common properties
-Message-ID: <20210317082003.rhm6sdrwxmt4elu2@pengutronix.de>
-References: <20210316194858.3527845-1-robh@kernel.org>
+        Wed, 17 Mar 2021 04:30:52 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64934C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:30:52 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id z2so878731wrl.5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:30:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mTo2lq3PDu4WGFFq1mhOr8xSWejm9N9TQezVn74QV2U=;
+        b=vAaAUsa/COHtV4cLxsSywSoISFUKa72oGocoAShP8GzMsu4VnLzLxHplR51NIem1Dt
+         4SH5wo7AnV2GMfGbaQHCR2wSdM0Fz+xdBq1qkM/6JKPYo6O61hhdSsOpkxWPtfN46xIH
+         JatlJMAtbZ5GARS64wj29j/RuMdVqxtZlAcMfOoJ+PVSj5i5OGcXtcKqkLJzme85c399
+         RDCpdMuwOvVgxxRvYvfzFyalKDTdHZvzLD5oK5xoSmTf/YvwYTT0HXjbt1q9HoyKCxix
+         r5PvnQh5x4N9X30IEXWEKMsJUHmDIXe67vjRRzz4LjrXgsgHt2NcoL2O1dq9r0W2kH2Q
+         rTLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mTo2lq3PDu4WGFFq1mhOr8xSWejm9N9TQezVn74QV2U=;
+        b=NXyDKfvfuUvnFctIdW0NdNIBLJ+JkAAsyon8f+CQGGKQjzkoT75JoVtbtawpSd6ugP
+         At/WAieBrnlJyqJ/uUexfpQKGhSh2MMLlnMDa02Z7xcPVZz3SOJMTjhjPtL0EnAOCMLo
+         ni26wXTDDCrwzOuVyTSnV0ZnU3PTgrjiuwknaBSv1xUJLBC4izH4cB2H+dSvPwT/fBuL
+         OMqZYkDV28Zi+ZwvUlYOGl75tCi1cXbMao0L5YqcvYTGZ+cR1479FHhwrCZpKTHKjVd6
+         EBUL9A5OsKMdZF4nN3tcYw36fkiyDZzeJehgcWMoCqb6x2BFpEvVDI6abXJc01dDGtO4
+         KtHA==
+X-Gm-Message-State: AOAM532ivZhwX6cG9nF26YAsQ5FpWTHh3y+ZTVdMox41ZPCYeIC93WFl
+        le/58jlqYUgUPxiIJom77r9G9MUJ96JpfMxw44Yu92WcjAI=
+X-Google-Smtp-Source: ABdhPJwzU0AYHnivEEGyJoYiVkM/szQNyY6KsnMWtQVOlqjVMqGpb+Z0NPlyFcZ/+koyMxsQoDwxstEXCVKvXrPtIAg=
+X-Received: by 2002:adf:9544:: with SMTP id 62mr3114501wrs.128.1615969851060;
+ Wed, 17 Mar 2021 01:30:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rrfkyphxuuq3viq3"
-Content-Disposition: inline
-In-Reply-To: <20210316194858.3527845-1-robh@kernel.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210317081725.28412-1-yuzihao@ict.ac.cn>
+In-Reply-To: <20210317081725.28412-1-yuzihao@ict.ac.cn>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Wed, 17 Mar 2021 14:00:35 +0530
+Message-ID: <CAAhSdy1wzH4N-4kFS63sOWSNdX7w9i8ZS9od6hfruMTMEOY=_g@mail.gmail.com>
+Subject: Re: [PATCH] riscv,entry: fix misaligned base for excp_vect_table
+To:     Zihao Yu <yuzihao@ict.ac.cn>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 17, 2021 at 1:48 PM Zihao Yu <yuzihao@ict.ac.cn> wrote:
+>
+> * In RV64, the size of each entry in excp_vect_table is 8 bytes. If the
+>   base of the table is not 8-byte aligned, loading an entry in the table
+>   will raise a misaligned exception. Although such exception will be
+>   handled by opensbi/bbl, this still causes performance degradation.
+>
+> Signed-off-by: Zihao Yu <yuzihao@ict.ac.cn>
 
---rrfkyphxuuq3viq3
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Looks good to me.
 
-On 16.03.2021 13:48:58, Rob Herring wrote:
-> Users of common properties shouldn't have a type definition as the
-> common schemas already have one. Drop all the unnecessary type
-> references in the tree.
->=20
-> A meta-schema update to catch these is pending.
->=20
-> Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Krzysztof Kozlowski <krzk@kernel.org>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Cc: Ohad Ben-Cohen <ohad@wizery.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
-> Cc: Benson Leung <bleung@chromium.org>
-> Cc: Zhang Rui <rui.zhang@intel.com>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Stefan Wahren <wahrenst@gmx.net>
-> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Cc: Odelu Kukatla <okukatla@codeaurora.org>
-> Cc: Alex Elder <elder@kernel.org>
-> Cc: Suman Anna <s-anna@ti.com>
-> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Cc: linux-gpio@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: linux-can@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-remoteproc@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-usb@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Anup Patel <anup@brainfault.org>
+
+Regards,
+Anup
+
 > ---
->  .../bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml       | 5 +----
->  Documentation/devicetree/bindings/arm/cpus.yaml              | 2 --
->  .../bindings/display/allwinner,sun4i-a10-tcon.yaml           | 1 -
->  .../devicetree/bindings/gpio/socionext,uniphier-gpio.yaml    | 3 +--
->  .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml      | 1 -
->  .../devicetree/bindings/interconnect/qcom,rpmh.yaml          | 1 -
->  .../bindings/memory-controllers/nvidia,tegra210-emc.yaml     | 2 +-
->  Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml   | 1 -
-
-For the flexcan:
-
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---rrfkyphxuuq3viq3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBRvhoACgkQqclaivrt
-76mnKAf+PxQ/8rd3QepXVtp0iP7BwfTPO2Vw0b0/dXzEt5pT/cygYEDP2YE6dumw
-9LbLd9JPDJJFhwXpMje5DOZW+Nfa93SRBq/MC1/XynoG8UAa7r2VuO7ZJscUNuI7
-nL04VVsP17gLMoR9ZGSvd+Vbau0uCw3APVawqN2d2nsi9eCCTykaIpQBrXGL+VHo
-h225JlHCOUVizUbAE8BFWxDXXff1mMEKHU46APvK+RXz1nExI23zmwJeIGA11RwP
-bjFMRZehLZesl/p6uDndUYNL4wTK7LXOf+u/A/wGDdQSuLOwoVbX9ACOLHsB0qfP
-+1kjTYyaduEG1rpaYQ966dHZqjQEuQ==
-=4979
------END PGP SIGNATURE-----
-
---rrfkyphxuuq3viq3--
+>  arch/riscv/kernel/entry.S | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+> index 744f3209c..76274a4a1 100644
+> --- a/arch/riscv/kernel/entry.S
+> +++ b/arch/riscv/kernel/entry.S
+> @@ -447,6 +447,7 @@ ENDPROC(__switch_to)
+>  #endif
+>
+>         .section ".rodata"
+> +       .align LGREG
+>         /* Exception vector table */
+>  ENTRY(excp_vect_table)
+>         RISCV_PTR do_trap_insn_misaligned
+> --
+> 2.20.1
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
