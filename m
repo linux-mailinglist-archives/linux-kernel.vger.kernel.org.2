@@ -2,135 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 177DE33EA3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:55:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F2633EA48
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhCQGzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 02:55:07 -0400
-Received: from mail-vi1eur05on2070.outbound.protection.outlook.com ([40.107.21.70]:53088
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230433AbhCQGy2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 02:54:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hLD72RxoK4tXryKMHmk6gt6Ji3hsuRhoQ9uEHVsQVgguwUZWHo9gHC2gBxhv9Vj0eVDa58CLuDNUqwkoDxjnO6+xBEtfzmybzRlge46i3IfTyp8d5R5LQMs1j+ooo3MwewY2wD0377kc3vfPdm3FFRPrho649z3YO3bDd5g1IgVCGFIUNfEXhSO5HyDHTh8QFXIQZ+wTyPci1lfdZB3FBd3k1h38viXCT/5dnG+Hw64C1yxupHdT1CNzVqzMvLcFWhFpbfT33p9hJ0q8+UKGCg14HBpesOWuCT2pbyZQ2te2KmPQsrO43eegthhwUEbyNKMiO4pRtqdFlEswhFaPcg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BagA/Axfg8Zv4aALC4CkXudKzO2dNPuET78QEzdF6Ho=;
- b=WvcEsM0C1xorAgMRT1apKKqjGnlnUEpbTq8CqpRz970lXmanwS4+dDTTZyuS7BOyx+zT0T58gCqBBM5ctQB3lK7XjT/c0cLFBSQr2ganNpWmIui0X8YC8IIaGerH+pPLuU/5XfihQgxKMTlMQ3bDjwjZBUjsZSYixNoVIz81ghXIXtzUZWJi8idBGxALwuDNZotMmYYC9/4S9zQk6xUc8ET8O+E+HzDBYXqiCiz1zmAllganV6fV4BmdXuNhBE/4xkHkvhtxQRM++vVS3icB2hwVPalFjv3Q/IYxrQ7nNpQ0IwNTl1cL3xukpOxmAGCh+molA0btEIGWCLXyPaw6GQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BagA/Axfg8Zv4aALC4CkXudKzO2dNPuET78QEzdF6Ho=;
- b=ELUQf81zZvfuP/deXF8udVPMlBo17mkQbg8op5KUxl6J/5xF1oRrqpxRPxMkSpXd2hXbROI3QWeAPrgRkGF8dL4WzO8E5lvl5n2CMisuXqm2CyE7VL1yWP6aDemaYbpSH97VDgJSSoRVVQplx6vUabj19p74uIyheAKZs2bDCIY=
-Authentication-Results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB5618.eurprd04.prod.outlook.com (2603:10a6:208:123::11)
- by AM0PR04MB4196.eurprd04.prod.outlook.com (2603:10a6:208:56::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Wed, 17 Mar
- 2021 06:54:24 +0000
-Received: from AM0PR04MB5618.eurprd04.prod.outlook.com
- ([fe80::69a8:a768:8fa1:7236]) by AM0PR04MB5618.eurprd04.prod.outlook.com
- ([fe80::69a8:a768:8fa1:7236%7]) with mapi id 15.20.3933.032; Wed, 17 Mar 2021
- 06:54:24 +0000
-From:   Clark Wang <xiaoning.wang@nxp.com>
-To:     aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S231160AbhCQGz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 02:55:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231146AbhCQGyh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 02:54:37 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55382C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 23:54:26 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id t6so508405ilp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 23:54:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=E7gJDm//nE7YrQlUfHhXLgYQ+mx5uNNItz6wizp7fm0=;
+        b=N55gUv76O5RQxEozVTxyq5hEc/HRFAsGgSGVHzSLTb2LujMhSM9iUlK1lox9HmJ0o/
+         7xN3palcU7WVPS+RraXO8Mu+C74PxnG487KJUdiONq4BmAomDEIrpUdCARLNYIOHDdmT
+         yhYPFbHCqkful6TEPhmr6+pNeQCRB/VGYaZXqkF3tM0agexPJwoYIAkdl9Zu/PMaFfan
+         cQsP4Ma3uXAKCCw8eTqXAfJkXkfeUOlcu49rxSRsQdMR3JnWCuj8Sp2C9C3NyrIN9LnT
+         cIihiuU14TSlOjETlvkVJFXfVkPTqzTk2U3aaYE39D8tjEt2XjnkAMW3vjJEmIfgmM8a
+         xc5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=E7gJDm//nE7YrQlUfHhXLgYQ+mx5uNNItz6wizp7fm0=;
+        b=rkxNoVhKTSeR8v2OOvNPyhKn5NwcvR/QKuNoG4mlhbeHh5CxNeUh/dq8Vxx2CyneMX
+         ZgwuJhE3hGgUspVsWinsEcu5jnN+oSFoyUEpzmuT4/W4z+zHa03OsaiKNKvmnNxGYZzn
+         OsbJE9eheNkm4DUVCwvxy9Riqy1dO2eumMOp2qc7KGwSUpvuL+ladJwRqPlaBlyQLigX
+         8nkxrfn6NWaXWB9Mo+M47E5BNukvLfjMF+3zsKU0+TJuX1cihAML59+ybHZuVkuWvFza
+         bjsUev3dPcE7iEaxjC1n3/5Jhr6khm9tDgN3v9IQQ4zpvoFlyVgb1W7kLFjBwD12mdnB
+         Zmpg==
+X-Gm-Message-State: AOAM533GU2vOT/FZiJ5pmBmZIZwo85+bS9vbetzqca76REMdxnF1Z718
+        xEM4qGUvxBdEmy4Yp0JoifA=
+X-Google-Smtp-Source: ABdhPJwF43ZuZyFtBgz3Co3S2u+Zh+LW20ybLXT4H3OgFs8IbYARZMT8rWLfS+A2BOJ4t5bEUGqHyg==
+X-Received: by 2002:a92:d4c9:: with SMTP id o9mr6536456ilm.165.1615964065840;
+        Tue, 16 Mar 2021 23:54:25 -0700 (PDT)
+Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
+        by smtp.googlemail.com with ESMTPSA id w13sm10583057ilg.48.2021.03.16.23.54.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 23:54:25 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 10/11] i2c: imx-lpi2c: fix type char overflow issue when calculating the clock cycle
-Date:   Wed, 17 Mar 2021 14:53:58 +0800
-Message-Id: <20210317065359.3109394-11-xiaoning.wang@nxp.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210317065359.3109394-1-xiaoning.wang@nxp.com>
-References: <20210317065359.3109394-1-xiaoning.wang@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: HK2PR02CA0215.apcprd02.prod.outlook.com
- (2603:1096:201:20::27) To AM0PR04MB5618.eurprd04.prod.outlook.com
- (2603:10a6:208:123::11)
+Cc:     Jim Cromie <jim.cromie@gmail.com>
+Subject: [RFC PATCH v4 05/19] dyndbg: hoist ->site out of ddebug_match_site
+Date:   Wed, 17 Mar 2021 00:53:58 -0600
+Message-Id: <20210317065412.2890414-6-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210317065412.2890414-1-jim.cromie@gmail.com>
+References: <20210317065412.2890414-1-jim.cromie@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by HK2PR02CA0215.apcprd02.prod.outlook.com (2603:1096:201:20::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Wed, 17 Mar 2021 06:54:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e668afdf-2df3-4371-9b24-08d8e911800e
-X-MS-TrafficTypeDiagnostic: AM0PR04MB4196:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB41965BAC41FFE75636AD6E0EF36A9@AM0PR04MB4196.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:331;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NRev2lVsWHr1HrhbLXLdpJWFu3fSOKjyxBfZnkir2RtH7ZsRoF3DibxOOyr0z12JP5ACI+F4E7TYuZa62CkudjfWKnH5inOn2EPuPyISRGD1YHl90ZYxbS+nGZDU7RiEvWijIkY9PrZBuayDa5rrNBhDATZW34MUEYmhlKfL620JPI06HAI4PNk+DCWl11mp6V5YnbLtOHZRImgU+Fvbw+xjseQmWtRCgiZOu7REL0ffJ9R/ieFvSn51/9mJm1huEaMCsPFdPOMwmn6L8pNnmIkeAa2A8irWlXY+i71peFcEHZH9+jAvWKAJMALVru4u6sBSqEkhkY5dod1AFKdz7JYWbIxXh5RKd3NQbKAmxvqHUgEL9sTFo1619hM/i7G/QOrySTwnjI+JUeZ6f2OMRwc0V7ZkGLqCcLjCltri7UZw+IzSMSjs0H8ct0fmGY6CTsbDY8RVFE2Pa7tp0+39lsOJPkR7F2slarTiZwJsFbDKlc3DpE8MWUD1e+e+huaZb8yodAvbnq7F6NSKh/yq7fp/wSWDTeEAqQfZ/tcAE5DXFneKfH8PXb+CijA0Hzzq/BeJb2E18CAXdFrvYNoJHYLpAOxF4xZduXEGNOHvJhNMEj3Mv/jf6AIB2GXgZ2ae
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5618.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(39860400002)(366004)(136003)(66946007)(6512007)(69590400012)(52116002)(26005)(6506007)(2906002)(36756003)(2616005)(8936002)(956004)(86362001)(4326008)(5660300002)(8676002)(66476007)(66556008)(478600001)(1076003)(6486002)(83380400001)(6666004)(316002)(16526019)(186003)(4744005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?+MJpi/7tp5sUcZ86NHY+BvEe+PqHFaCTZ0Vf3lDcQjCL/6J96KrxZ4iZpjzW?=
- =?us-ascii?Q?PJaVWkbPLyb5xnfsmYe6gcsD18Mr6x5cTbMLB6Cv6tFXG0BefE0kpWeJVBnA?=
- =?us-ascii?Q?EC+1m39B0geNy5Zn8KIEaJAnHWGTij6FfpC8eiCNN7t57v9ab6bHeTsRrODO?=
- =?us-ascii?Q?VnbeIda1eAiGRQcyYIGJZJnkDTG/U8lHqKkVWaw2VMwrz3f2JoourIz1HxCM?=
- =?us-ascii?Q?uKNL0KLSd9MoWksi+pA0nJl+rJ/YOV07EkkJ7uKRNo+r2+3k1/+wkXroWxnO?=
- =?us-ascii?Q?/meFaVTeVvqgtFfi04Fk3aNst+wA0a6CVXQ5std8Xx8bPbLxITZOtuO2bLST?=
- =?us-ascii?Q?T3BDHPC8TYY6z36jDeUTbbV9zG4mK+yFM70CnJ5bGgE3lvWtrdgHSJpnMUio?=
- =?us-ascii?Q?SPTQfDatZFWb9PCuHJ5V/qaz+FH867FYrpF9xcdCGQAmwRW4KZurwpQYLZA7?=
- =?us-ascii?Q?gE4YgENBnKR2c2Y6YhtYwQbQIPxjG9oiLsLDw69QlLKiY/K58nI8dF3gVBaV?=
- =?us-ascii?Q?PRrcfWOoKfY0+KG9KjPXvoMykPuV/aqs/I5J6l4sWO+OMhAIoQ6NsVWqVmR6?=
- =?us-ascii?Q?GyVattogxMdZbo61laKHZnVkRuei3CY1hK7l0MtdKU7oWjWP+FJFlOLERKUc?=
- =?us-ascii?Q?Jt9ntLlGW5bLkuQJ1FxKX0H0wiEkls9D4O49zxlNRkx9mkhsAhV6H+aM35cC?=
- =?us-ascii?Q?H2Ho8PER3z/vihv1FYOc/i4sWOYv42LU9gu9nhMA4FKo++xhBEZL3VxsCxL5?=
- =?us-ascii?Q?3G12pGQpgcypF/B8bKFvrkO+e1+2n7D/XM7A+SDZWN1TTiwHbhwJNEvTBkeL?=
- =?us-ascii?Q?y+KG9AN2kI8wTgmhX5umjH6SVYzR+rj9ZHCNIWawT6qNqTtLo8GnRoQ7u4/f?=
- =?us-ascii?Q?r5BVmDjU+TGencJcbdCkgB/ntRx/Hd6B9oKI9L4fmNKSuteClrrVKG8+P4Eg?=
- =?us-ascii?Q?hViySKiOKm6Y72xAu8E1Q3azhLQ7MOobRSvnEH5DeflBvSEOeYDN6qHlJQOU?=
- =?us-ascii?Q?7sBVA4DtXxjwhz83DjGQfw0B7ZgX5MExjw/iVN9zFhXzQka2EGYdBlDn6yPF?=
- =?us-ascii?Q?aNYCvvulphRJNoEv0fFmsCelSw0WNkPKwOdeWr5wVs4COcXkBOzgeVSyC/8W?=
- =?us-ascii?Q?D7DqUj3zziUBeYrYTmNWjm47km/PYIog9DPL7svtC42KZx7+YdzAfi7noO8E?=
- =?us-ascii?Q?FoG7nvgyXbMTRDGErCGmTtEqpLCM9sUap2QlxWbLuo8kJUxrz1Im5393L4eS?=
- =?us-ascii?Q?zWeaxlrwwQ0jzOL82pHhNyVuMAyiNWxllXiplc3x7z+Je1YabOACKmvNnTbI?=
- =?us-ascii?Q?Xdsm0LfhT1fWuiwUFYPwALJp?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e668afdf-2df3-4371-9b24-08d8e911800e
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5618.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 06:54:24.8200
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UGJf1H4JNg/EbA4wZPqhAd/bVWNee2oLoenTFnjZcMQRLKeHCzbk/W54gOMYze5RqzYPHOsxWhDDSMudYszlxg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB4196
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Claim clkhi and clklo as integer type to avoid possible calculation
-errors caused by data overflow.
+A coming change adds _get/_put abstraction on the site pointer, to
+allow managing site info more flexibly.  The get/put pattern is best
+done at a single lexical scope, where its more obviously correct, so
+hoist the ->site ref out of ddebug_match_site, and pass it in instead.
 
-Reviewed-by: Fugang Duan <fugang.duan@nxp.com>
-Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
+no functional changes
+
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- drivers/i2c/busses/i2c-imx-lpi2c.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ lib/dynamic_debug.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
-index 5dbe85126f24..1e26672d47bf 100644
---- a/drivers/i2c/busses/i2c-imx-lpi2c.c
-+++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
-@@ -213,8 +213,8 @@ static void lpi2c_imx_stop(struct lpi2c_imx_struct *lpi2c_imx)
-    CLKHI = I2C_CLK_RATIO * clk_cycle */
- static int lpi2c_imx_config(struct lpi2c_imx_struct *lpi2c_imx)
- {
--	u8 prescale, filt, sethold, clkhi, clklo, datavd;
--	unsigned int clk_rate, clk_cycle;
-+	u8 prescale, filt, sethold, datavd;
-+	unsigned int clk_rate, clk_cycle, clkhi, clklo;
- 	enum lpi2c_imx_pincfg pincfg;
- 	unsigned int temp;
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index da732e0c56e3..abe3382aabd5 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -143,10 +143,9 @@ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
+ }
  
+ static int ddebug_match_site(const struct ddebug_query *query,
+-			     const struct _ddebug *dp)
++			     const struct _ddebug *dp,
++			     const struct _ddebug_site *dc)
+ {
+-	struct _ddebug_site *dc;
+-
+ 	/* match against the format */
+ 	if (query->format) {
+ 		if (*query->format == '^') {
+@@ -167,7 +166,6 @@ static int ddebug_match_site(const struct ddebug_query *query,
+ 	    dp->lineno > query->last_lineno)
+ 		return false;
+ 
+-	dc = dp->site;
+ 	if (!dc) {
+ 		/* site info has been dropped, so query cannot test these fields */
+ 		if (query->filename || query->function)
+@@ -219,9 +217,9 @@ static int ddebug_change(const struct ddebug_query *query,
+ 
+ 		for (i = 0; i < dt->num_ddebugs; i++) {
+ 			struct _ddebug *dp = &dt->ddebugs[i];
+-			struct _ddebug_site *dc;
++			struct _ddebug_site *dc = dp->site;
+ 
+-			if (!ddebug_match_site(query, dp))
++			if (!ddebug_match_site(query, dp, dc))
+ 				continue;
+ 
+ 			nfound++;
 -- 
-2.25.1
+2.29.2
 
