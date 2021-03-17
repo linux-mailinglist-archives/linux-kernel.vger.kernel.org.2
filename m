@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA7133FBD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 00:30:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D18C33FBD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 00:32:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbhCQX3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 19:29:53 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:44163 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229472AbhCQX3b (ORCPT
+        id S229846AbhCQXcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 19:32:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41154 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229472AbhCQXbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 19:29:31 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1lMfbW-000Hdc-FQ; Thu, 18 Mar 2021 00:29:30 +0100
-Received: from p5b13a966.dip0.t-ipconnect.de ([91.19.169.102] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lMfbW-000URv-8v; Thu, 18 Mar 2021 00:29:30 +0100
-Subject: Re: [PATCH 0/1] sched/topology: NUMA distance deduplication
-To:     Sergei Trofimovich <slyfox@gentoo.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        debian-ia64 <debian-ia64@lists.debian.org>
-References: <255d6b5d-194e-eb0e-ecdd-97477a534441@physik.fu-berlin.de>
- <8735wtr2ro.mognet@arm.com>
- <cf4d7277-54a0-8bc7-60fb-9b2f6befb511@physik.fu-berlin.de>
- <87zgz1pmx4.mognet@arm.com> <20210317211424.33090a37@sf>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <f06aa8f4-9dba-109e-2033-020b3de60490@physik.fu-berlin.de>
-Date:   Thu, 18 Mar 2021 00:29:29 +0100
+        Wed, 17 Mar 2021 19:31:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616023905;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xdcDu4uEmb1eSK2V7bwyocTRQ2MzFIdiB9GCAFGjzXY=;
+        b=GFqEVycq97/TC37T0slLAq1picJL063hLWrjwAJoXkagfTrlu1euuXY8lscxrtKCNRBprw
+        wICE43KA5DGZnENQLX5OUza98JlExZcbBPg1+7IVexGXWRbje2kiPs6NUO2ZfBb9Kb8eb1
+        LmxbgS8MbcSz9ZouIYtDVQP6JKE2Z4Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-601-kG8db3gKNZmR9BlA4P7Wlg-1; Wed, 17 Mar 2021 19:31:41 -0400
+X-MC-Unique: kG8db3gKNZmR9BlA4P7Wlg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F184081431C;
+        Wed, 17 Mar 2021 23:31:39 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-117-171.rdu2.redhat.com [10.10.117.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 14948648A1;
+        Wed, 17 Mar 2021 23:31:38 +0000 (UTC)
+Subject: Re: [PATCH] kernel: locking: Mundane typo fix in the file rwsem.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+References: <20210317041806.4096156-1-unixbhaskar@gmail.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <590c6465-b825-5b8c-5457-24f334e8423e@redhat.com>
+Date:   Wed, 17 Mar 2021 19:31:38 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210317211424.33090a37@sf>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210317041806.4096156-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.169.102
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergei!
-
-On 3/17/21 10:14 PM, Sergei Trofimovich wrote:
-> Or is it just an early bootstrap message assuming more are to come?
-> 
-> Could it be that we initialize too little of generic acpi boilerplace
-> when there is no SRAT? Somewhere around:
-> 
->     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/ia64/kernel/acpi.c#n446
-> 
-> arm64 and riscv calls `arch_numa_init()` and initializes numa node
-> data in numa_init().
-> While ia64 only calls acpi_numa_init() but not arch_acpi_numa_init()
-> (which would do numa_init() for us).
-> 
-> x86 seems to vaguely resemble generic code by duplicating numa_init().
-> 
-> (UNTESTED) Could it be that we need something like:
-> 
-> --- a/arch/ia64/kernel/setup.c
-> +++ b/arch/ia64/kernel/setup.c
-> @@ -571,7 +571,7 @@ setup_arch (char **cmdline_p)
->         acpi_table_init();
->         early_acpi_boot_init();
->  #ifdef CONFIG_ACPI_NUMA
-> -       acpi_numa_init();
-> +       arch_numa_init();
->         acpi_numa_fixup();
->  #ifdef CONFIG_ACPI_HOTPLUG_CPU
->         prefill_possible_map();
-
-That doesn't build:
-
-  CALL    scripts/atomic/check-atomics.sh
-  CALL    scripts/checksyscalls.sh
-<stdin>:1511:2: warning: #warning syscall clone3 not implemented [-Wcpp]
-  CHK     include/generated/compile.h
-  CC      arch/ia64/kernel/setup.o
-  CC      arch/ia64/kernel/acpi.o
-arch/ia64/kernel/setup.c: In function 'setup_arch':
-arch/ia64/kernel/setup.c:574:2: error: implicit declaration of function 'arch_numa_init'; did you mean 'acpi_numa_init'? [-Werror=implicit-function-declaration]
-  574 |  arch_numa_init();
-      |  ^~~~~~~~~~~~~~
-      |  acpi_numa_init
-cc1: some warnings being treated as errors
-make[1]: *** [scripts/Makefile.build:271: arch/ia64/kernel/setup.o] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1851: arch/ia64/kernel] Error 2
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+On 3/17/21 12:18 AM, Bhaskar Chowdhury wrote:
+> s/folowing/following/
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>   kernel/locking/rwsem.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
+> index abba5df50006..fe9cc65cd522 100644
+> --- a/kernel/locking/rwsem.c
+> +++ b/kernel/locking/rwsem.c
+> @@ -632,7 +632,7 @@ static inline bool rwsem_can_spin_on_owner(struct rw_semaphore *sem)
+>   }
+>
+>   /*
+> - * The rwsem_spin_on_owner() function returns the folowing 4 values
+> + * The rwsem_spin_on_owner() function returns the following 4 values
+>    * depending on the lock owner state.
+>    *   OWNER_NULL  : owner is currently NULL
+>    *   OWNER_WRITER: when owner changes and is a writer
+> --
+> 2.30.2
+>
+Acked-by: Waiman Long <longman@redhat.com>
 
