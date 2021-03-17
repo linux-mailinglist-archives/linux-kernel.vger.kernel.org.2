@@ -2,85 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60EEB33E748
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 03:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D7333E74A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 04:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbhCQC61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 22:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhCQC54 (ORCPT
+        id S229637AbhCQDAG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Mar 2021 23:00:06 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3041 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229487AbhCQC77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 22:57:56 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616D5C06174A;
-        Tue, 16 Mar 2021 19:57:56 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id c17so129121ilj.7;
-        Tue, 16 Mar 2021 19:57:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ogRJm9kxdsheL6fGYzsvzfyxMIsZO8zplKaSSV2V4bM=;
-        b=bhU/2ydrm31TuVH9dd62TY9ABePIgeC7r0SG0SO+Gd/oq8SPE5Eqqrp6jOHolqv3fJ
-         7tki3mOyrx/VFV6ji6cQ0BeNIX4MPsyZfRCXNrbgSyQ1TMAqZpfRaYP9DA4heqY6Tp6W
-         /pHzDOcq3OGRhVjXhMfBy3ZDD4LQEIQi70W9DypMkRgT6/sWExgrs2Csj5kx3gE/yg8h
-         OmHdlV2vsjUKddhn2i6S4lR9pik68YcdUdmzFDoPwontu4UWxl/7wOkV6vfgL5RHhgFV
-         9M2XF590Kjp0NlF7g47OBvRkMQ3jib2ZtyQ6Ml2WjKOLdBvMiC9tHEqteqTGyeoxeUxQ
-         +pGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ogRJm9kxdsheL6fGYzsvzfyxMIsZO8zplKaSSV2V4bM=;
-        b=XIPQJ6B1BRmEkLNa0WOSgBhAa9ZuDgmKCA7gcBDkariJb+V82Fy8p38ZdABZvO/TmP
-         fu1N4fjUID59FHGlFqi4roO4AmbCi6UMDc4kbnrTW5fGepkR95SxZ5MVuidi7sWj2bQy
-         0AlbIzUmFV2HzHhgb9qRKON8W0lW5SKEyBZAAV6yBndJjxqMnOsPqAJBgmx1YfScn00Z
-         /icODP0r2R7ITYCux+QdU4TjaVUNCOCSosfPb9V/Pdk6SIS8KEFvnm6WSb2DdI+64e8G
-         hZJQnFQ8Nf+BnnSZVMj9hpHzOSqfnsa09cD7RPmja+9aXZFoO/aEpOTukt5Kpj4545q3
-         pRjA==
-X-Gm-Message-State: AOAM531jgLYOuu/xj9t/UNA3yZsymxsFSdR8LnWCwwvZh76LKV3upQxL
-        qTL5v5J2qtWQ2SftYiC6B57/ccWFTrZtQA==
-X-Google-Smtp-Source: ABdhPJwdebIAiPziAUriYBxL35GdPOOm03EhfnQymz5MQ1Ja2R7DOznDBLqMIgpHx/VbppBksvq+Lg==
-X-Received: by 2002:a92:ce4e:: with SMTP id a14mr6184021ilr.219.1615949875832;
-        Tue, 16 Mar 2021 19:57:55 -0700 (PDT)
-Received: from book ([2601:445:8200:6c90::4210])
-        by smtp.gmail.com with ESMTPSA id h128sm9605414ioa.32.2021.03.16.19.57.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 19:57:55 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 21:57:53 -0500
-From:   Ross Schmidt <ross.schm.dev@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 000/120] 4.19.181-rc1 review
-Message-ID: <20210317025753.GA6466@book>
-References: <20210315135720.002213995@linuxfoundation.org>
+        Tue, 16 Mar 2021 22:59:59 -0400
+Received: from DGGEML404-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F0ZYw6BYpzWMHZ;
+        Wed, 17 Mar 2021 10:56:52 +0800 (CST)
+Received: from DGGEML509-MBS.china.huawei.com ([169.254.4.125]) by
+ DGGEML404-HUB.china.huawei.com ([fe80::b177:a243:7a69:5ab8%31]) with mapi id
+ 14.03.0513.000; Wed, 17 Mar 2021 10:59:44 +0800
+From:   "chenjun (AM)" <chenjun102@huawei.com>
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>,
+        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
+        "lizhe (Y)" <lizhe67@huawei.com>, yangerkun <yangerkun@huawei.com>,
+        "zhangyi (F)" <yi.zhang@huawei.com>
+Subject: Re: [question] Panic in dax_writeback_one
+Thread-Topic: [question] Panic in dax_writeback_one
+Thread-Index: AdcWSusQwspXlegvQqCtsylm2CuWCw==
+Date:   Wed, 17 Mar 2021 02:59:43 +0000
+Message-ID: <CE1E7D7EFA066443B6454A6A5063B50220D12A8A@dggeml509-mbs.china.huawei.com>
+References: <CE1E7D7EFA066443B6454A6A5063B50220D0B849@dggeml509-mbs.china.huawei.com>
+ <20210311121923.GU3479805@casper.infradead.org>
+ <CAPcyv4jz7-uq+T-sd_U3O_C7SB9nYWVJDnhVsaM0VNR207m8xA@mail.gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.178.53]
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 02:55:51PM +0100, gregkh@linuxfoundation.org wrote:
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+在 2021/3/12 1:25, Dan Williams 写道:
+> On Thu, Mar 11, 2021 at 4:20 AM Matthew Wilcox <willy@infradead.org> wrote:
+>>
+>> On Thu, Mar 11, 2021 at 07:48:25AM +0000, chenjun (AM) wrote:
+>>> static int dax_writeback_one(struct xa_state *xas, struct dax_device
+>>> *dax_dev, struct address_space *mapping, void *entry)
+>>> ----dax_flush(dax_dev, page_address(pfn_to_page(pfn)), count * PAGE_SIZE);
+>>> The pfn is returned by the driver. In my case, the pfn does not have
+>>> struct page. so pfn_to_page(pfn) return a wrong address.
+>>
+>> I wasn't involved, but I think the right solution here is simply to
+>> replace page_address(pfn_to_page(pfn)) with pfn_to_virt(pfn).  I don't
+>> know why Dan decided to do this in the more complicated way.
 > 
-> This is the start of the stable review cycle for the 4.19.181 release.
-> There are 120 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
+> pfn_to_virt() only works for the direct-map. If pages are not mapped I
+> don't see how pfn_to_virt() is expected to work.
+> 
+> The real question Chenjun is why are you writing a new simulator of
+> memory as a block-device vs reusing the pmem driver or brd?
+> 
 
-Compiled and booted with no regressions on x86_64.
+Hi Dan
 
-Tested-by: Ross Schmidt <ross.schm.dev@gmail.com>
+In my case, I do not want to take memory to create the struct page of 
+the memory my driver used.
 
+And, I think this is also a problem for DCSSBLK.
 
-thanks,
+So I want to go back the older way if CONFIG_FS_DAX_LIMITED
 
-Ross
+diff --git a/fs/dax.c b/fs/dax.c
+index b3d27fd..6395e84 100644
+--- a/fs/dax.c
++++ b/fs/dax.c
+@@ -867,6 +867,9 @@ static int dax_writeback_one(struct xa_state *xas, 
+struct dax_device *dax_dev,
+  {
+  	unsigned long pfn, index, count;
+  	long ret = 0;
++	void *kaddr;
++	pfn_t new_pfn_t;
++	pgoff_t pgoff;
+
+  	/*
+  	 * A page got tagged dirty in DAX mapping? Something is seriously
+@@ -926,7 +929,25 @@ static int dax_writeback_one(struct xa_state *xas, 
+struct dax_device *dax_dev,
+  	index = xas->xa_index & ~(count - 1);
+
+  	dax_entry_mkclean(mapping, index, pfn);
+-	dax_flush(dax_dev, page_address(pfn_to_page(pfn)), count * PAGE_SIZE);
++
++	if (!IS_ENABLED(CONFIG_FS_DAX_LIMITED) || pfn_valid(pfn))
++		kaddr = page_address(pfn_to_page(pfn));
++	else {
++		ret = bdev_dax_pgoff(mapping->host->i_sb->s_bdev, pfn << 
+PFN_SECTION_SHIFT, count << PAGE_SHIFT, &pgoff);
++		if (ret)
++			goto put_unlocked;
++
++		ret = dax_direct_access(dax_dev, pgoff, count, &kaddr, &new_pfn_t);
++		if (ret < 0)
++			goto put_unlocked;
++
++		if (WARN_ON_ONCE(ret < count) || WARN_ON_ONCE(pfn_t_to_pfn(new_pfn_t) 
+!= pfn)) {
++			ret = -EIO;
++		        goto put_unlocked;
++		}
++	}
++
++	dax_flush(dax_dev, kaddr, count * PAGE_SIZE);
+  	/*
+  	 * After we have flushed the cache, we can clear the dirty tag. There
+  	 * cannot be new dirty data in the pfn after the flush has completed as
+-- 
+
+-- 
+Regards
+Chen Jun
