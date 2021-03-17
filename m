@@ -2,113 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F043033E757
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 04:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE3433E758
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 04:03:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhCQDCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 23:02:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57056 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229803AbhCQDBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 23:01:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A0CB2AC17;
-        Wed, 17 Mar 2021 03:01:49 +0000 (UTC)
-Date:   Tue, 16 Mar 2021 20:01:41 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH 3/4] locking/ww_mutex: Treat ww_mutex_lock() like a
- trylock
-Message-ID: <20210317030141.hsfeodb7toihrvrq@offworld>
-References: <20210316153119.13802-1-longman@redhat.com>
- <20210316153119.13802-4-longman@redhat.com>
+        id S229727AbhCQDDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 23:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229904AbhCQDDL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 23:03:11 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D01C06174A;
+        Tue, 16 Mar 2021 20:03:11 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id r8so136897ilo.8;
+        Tue, 16 Mar 2021 20:03:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=NTfw5SCxLygEoa6GNConM/IkSokNjS6CipSRiBQTe+c=;
+        b=RK76gHFue0appQRcff+TLL9rWLs+8veSe+2aRzDVX+19ZaX+7AHqKPTVmLWPTK6Bnx
+         bVog1cYmV0xLRN+rxTdbbYJ4yReCsff4+xCpYoUPE5pRdNVa9j45yzs5Jo+P66BDbRXb
+         L3JHJhh36hdEhZlx7LM3XmS8c5nUDC7x1DLhfGoUuaR7j+U7e9khVd5F9jEbfIbEdszx
+         EGDr4Hwj2iRniI1NFm1rtqQgZ0rYUGfFW1xD06WZDR3KKwAju2TBXNurRZIxPnlFmSnV
+         Plqni1uvLcDKSH1DXkQ9US26XYXClOXav9X1dyW2TXPVL5I/jjiekmE0vL1ihie03iqZ
+         AxfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=NTfw5SCxLygEoa6GNConM/IkSokNjS6CipSRiBQTe+c=;
+        b=bCSAeptEBcuyVFi133duo/d/N3N4iVz/K4285eKYLEyNzRFY3rJ8pnk9vb7cWPquld
+         /eTOH9pFKDuKdS4a9Ltv64BkORflUsDYLoCeECgpm5EXZsyIjPL14zYG5xo5i35pMBMB
+         MHrT8jm+egr6n00IA8USGJS8DbMRtqtWVfRidDxHlEpXnitnbI+AaIlBiWZLdeW33A6U
+         TL+5D8ToaH2fLak+80gNSyBxW3Mao9221bvNoSYSWjDde4nXL3LqklB8uIkPSDWVDKxV
+         xYUyTULSbDlV1UaeSpJy7uP1xJ+/AfE5OEP3w0ZIts/7z0tjiq1ly81srbjcAiujO8+Q
+         MNKw==
+X-Gm-Message-State: AOAM5333tJX0jKk8QF4CtslOBRX+1PBVoEMTQ4RBn72aWsPIebvM1IUb
+        TAWKs0gdTzdh/JjF82Yf7xas0O6zWomnlw==
+X-Google-Smtp-Source: ABdhPJyc45szgDOzKTPq+kYdy9XMGrNXS5DEPY75CPh8dlc+kIMnIE3/7O0QB6JMFO74YWz+RjdpOA==
+X-Received: by 2002:a92:ce4c:: with SMTP id a12mr6006763ilr.258.1615950190498;
+        Tue, 16 Mar 2021 20:03:10 -0700 (PDT)
+Received: from book ([2601:445:8200:6c90::4210])
+        by smtp.gmail.com with ESMTPSA id a2sm10670262ila.81.2021.03.16.20.03.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 20:03:10 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 22:03:08 -0500
+From:   Ross Schmidt <ross.schm.dev@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.11 000/306] 5.11.7-rc1 review
+Message-ID: <20210317030308.GD6466@book>
+References: <20210315135507.611436477@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210316153119.13802-4-longman@redhat.com>
-User-Agent: NeoMutt/20201120
+In-Reply-To: <20210315135507.611436477@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021, Waiman Long wrote:
+On Mon, Mar 15, 2021 at 02:51:03PM +0100, gregkh@linuxfoundation.org wrote:
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> This is the start of the stable review cycle for the 5.11.7 release.
+> There are 306 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
 
->It was found that running the ww_mutex_lock-torture test produced the
->following lockdep splat almost immediately:
->
->[  103.892638] ======================================================
->[  103.892639] WARNING: possible circular locking dependency detected
->[  103.892641] 5.12.0-rc3-debug+ #2 Tainted: G S      W
->[  103.892643] ------------------------------------------------------
->[  103.892643] lock_torture_wr/3234 is trying to acquire lock:
->[  103.892646] ffffffffc0b35b10 (torture_ww_mutex_2.base){+.+.}-{3:3}, at: torture_ww_mutex_lock+0x316/0x720 [locktorture]
->[  103.892660]
->[  103.892660] but task is already holding lock:
->[  103.892661] ffffffffc0b35cd0 (torture_ww_mutex_0.base){+.+.}-{3:3}, at: torture_ww_mutex_lock+0x3e2/0x720 [locktorture]
->[  103.892669]
->[  103.892669] which lock already depends on the new lock.
->[  103.892669]
->[  103.892670]
->[  103.892670] the existing dependency chain (in reverse order) is:
->[  103.892671]
->[  103.892671] -> #2 (torture_ww_mutex_0.base){+.+.}-{3:3}:
->[  103.892675]        lock_acquire+0x1c5/0x830
->[  103.892682]        __ww_mutex_lock.constprop.15+0x1d1/0x2e50
->[  103.892687]        ww_mutex_lock+0x4b/0x180
->[  103.892690]        torture_ww_mutex_lock+0x316/0x720 [locktorture]
->[  103.892694]        lock_torture_writer+0x142/0x3a0 [locktorture]
->[  103.892698]        kthread+0x35f/0x430
->[  103.892701]        ret_from_fork+0x1f/0x30
->[  103.892706]
->[  103.892706] -> #1 (torture_ww_mutex_1.base){+.+.}-{3:3}:
->[  103.892709]        lock_acquire+0x1c5/0x830
->[  103.892712]        __ww_mutex_lock.constprop.15+0x1d1/0x2e50
->[  103.892715]        ww_mutex_lock+0x4b/0x180
->[  103.892717]        torture_ww_mutex_lock+0x316/0x720 [locktorture]
->[  103.892721]        lock_torture_writer+0x142/0x3a0 [locktorture]
->[  103.892725]        kthread+0x35f/0x430
->[  103.892727]        ret_from_fork+0x1f/0x30
->[  103.892730]
->[  103.892730] -> #0 (torture_ww_mutex_2.base){+.+.}-{3:3}:
->[  103.892733]        check_prevs_add+0x3fd/0x2470
->[  103.892736]        __lock_acquire+0x2602/0x3100
->[  103.892738]        lock_acquire+0x1c5/0x830
->[  103.892740]        __ww_mutex_lock.constprop.15+0x1d1/0x2e50
->[  103.892743]        ww_mutex_lock+0x4b/0x180
->[  103.892746]        torture_ww_mutex_lock+0x316/0x720 [locktorture]
->[  103.892749]        lock_torture_writer+0x142/0x3a0 [locktorture]
->[  103.892753]        kthread+0x35f/0x430
->[  103.892755]        ret_from_fork+0x1f/0x30
->[  103.892757]
->[  103.892757] other info that might help us debug this:
->[  103.892757]
->[  103.892758] Chain exists of:
->[  103.892758]   torture_ww_mutex_2.base --> torture_ww_mutex_1.base --> torture_ww_mutex_0.base
->[  103.892758]
->[  103.892763]  Possible unsafe locking scenario:
->[  103.892763]
->[  103.892764]        CPU0                    CPU1
->[  103.892765]        ----                    ----
->[  103.892765]   lock(torture_ww_mutex_0.base);
->[  103.892767] 				      lock(torture_ww_mutex_1.base);
->[  103.892770] 				      lock(torture_ww_mutex_0.base);
->[  103.892772]   lock(torture_ww_mutex_2.base);
->[  103.892774]
->[  103.892774]  *** DEADLOCK ***
->
->Since ww_mutex is supposed to be deadlock-proof if used properly, such
->deadlock scenario should not happen. To avoid this false positive splat,
->treat ww_mutex_lock() like a trylock().
->
->After applying this patch, the locktorture test can run for a long time
->without triggering the circular locking dependency splat.
->
->Signed-off-by: Waiman Long <longman@redhat.com>
+Compiled and booted with no regressions on x86_64.
 
-Acked-by Davidlohr Bueso <dbueso@suse.de>
+Tested-by: Ross Schmidt <ross.schm.dev@gmail.com>
+
+
+thanks,
+
+Ross
