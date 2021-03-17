@@ -2,101 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03CB33F733
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5F033F72D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:36:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231661AbhCQRgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:36:51 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:37721 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231408AbhCQRgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:36:47 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F0y583vFpzB09Zd;
-        Wed, 17 Mar 2021 18:36:44 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id v-2_sLTpHPTF; Wed, 17 Mar 2021 18:36:44 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F0y582RpmzB09Zb;
-        Wed, 17 Mar 2021 18:36:44 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 213F28B866;
-        Wed, 17 Mar 2021 18:36:46 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id ARYtUs8FK9Ly; Wed, 17 Mar 2021 18:36:46 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5F7D28B865;
-        Wed, 17 Mar 2021 18:36:45 +0100 (CET)
-Subject: Re: [PATCH mm] kfence: fix printk format for ptrdiff_t
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Jann Horn <jannh@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <20210303121157.3430807-1-elver@google.com>
- <CAG_fn=W-jmnMWO24ZKdkR13K0h_0vfR=ceCVSrYOCCmDsHUxkQ@mail.gmail.com>
- <c1fea2e6-4acf-1fff-07ff-1b430169f22f@csgroup.eu>
- <20210316153320.GF16691@gate.crashing.org>
- <3f624e5b-567d-70f9-322f-e721b2df508b@csgroup.eu>
- <6d4b370dc76543f2ba8ad7c6dcdfc7af@AcuMS.aculab.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <001a139e-d4fa-2fd7-348f-173392210dfd@csgroup.eu>
-Date:   Wed, 17 Mar 2021 18:35:18 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231152AbhCQRfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:35:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231309AbhCQRfi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 13:35:38 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C79C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:35:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=e1aFEf0jTKxTqtUnzApuTgt89lxp2sYlb3+/AG+krOQ=; b=AIwl+zpdAmRyINLbrAL3NLiZh6
+        NBSupKWdmRTFqGybhiA5sUdSBiumWZeXoXF//bG4ccvUifZOH1a9V5/KBuWSCXblr7ebAjz9eMHs0
+        1yEX4EtGzlnmI04TfXe+oTHnmRyOHdOjq/dgXXDhcn+c3AbAIVPbW980UCdjsdy0hhJ+TxS8qRA6c
+        OR0Kf0ybnN/5SCnl5xRvddPGbRtZWTVTaveIFK8Ww2yzPQ7Xm0H8nx/GZVF3JuDdbDmVkZOcrUL3I
+        agFU3kgmbnPxnBJGAnw5q6r5pLsA9wuVx6iGHJj4eD9LvNf9Sxrg5FJnTSBCLfCKXXoDLFPEgBziF
+        KgMJ9+yw==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMa50-001fWf-4I; Wed, 17 Mar 2021 17:35:35 +0000
+Subject: Re: [PATCH] staging: wimax: i2400m: Mundane typo fix in the file
+ driver.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        gregkh@linuxfoundation.org, colin.king@canonical.com,
+        davem@davemloft.net, johannes@sipsolutions.net, arnd@arndb.de,
+        lee.jones@linaro.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+References: <20210317092624.1138207-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <971c14bd-e755-d1cf-b518-c889e5348f11@infradead.org>
+Date:   Wed, 17 Mar 2021 10:35:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <6d4b370dc76543f2ba8ad7c6dcdfc7af@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210317092624.1138207-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 17/03/2021 à 13:51, David Laight a écrit :
-> From: Christophe Leroy
->> Sent: 16 March 2021 15:41
-> ...
->>>> include/linux/types.h:typedef __kernel_ptrdiff_t	ptrdiff_t;
->>>>
->>>> And get:
->>>>
->>>>     CC      mm/kfence/report.o
->>>> In file included from ./include/linux/printk.h:7,
->>>>                    from ./include/linux/kernel.h:16,
->>>>                    from mm/kfence/report.c:10:
->>>> mm/kfence/report.c: In function 'kfence_report_error':
->>>> ./include/linux/kern_levels.h:5:18: warning: format '%td' expects argument
->>>> of type 'ptrdiff_t', but argument 6 has type 'long int' [-Wformat=]
->>>
->>> This is declared as
->>>           const ptrdiff_t object_index = meta ? meta - kfence_metadata : -1;
->>> so maybe something with that goes wrong?  What happens if you delete the
->>> (useless) "const" here?
+On 3/17/21 2:26 AM, Bhaskar Chowdhury wrote:
 > 
-> The obvious thing to try is changing it to 'int'.
-> That will break 64bit builds, but if it fixes the 32bit one
-> it will tell you what type gcc is expecting.
+> s/procesing/processing/
 > 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Yes, if defining 'object_index' as int, gcc is happy.
-If removing the powerpc re-definition of ptrdiff_t typedef in 
-https://elixir.bootlin.com/linux/v5.12-rc3/source/arch/powerpc/include/uapi/asm/posix_types.h , it 
-works great as well.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-So seems like gcc doesn't take into account the typedef behind ptrdiff_t, it just expects it to be 
-int on 32 bits ?
+> ---
+>  drivers/staging/wimax/i2400m/driver.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/wimax/i2400m/driver.c b/drivers/staging/wimax/i2400m/driver.c
+> index f5186458bb3d..8091106212f9 100644
+> --- a/drivers/staging/wimax/i2400m/driver.c
+> +++ b/drivers/staging/wimax/i2400m/driver.c
+> @@ -96,7 +96,7 @@ MODULE_PARM_DESC(barkers,
+>   *
+>   * This function just verifies that the header declaration and the
+>   * payload are consistent and then deals with it, either forwarding it
+> - * to the device or procesing it locally.
+> + * to the device or processing it locally.
+>   *
+>   * In the i2400m, messages are basically commands that will carry an
+>   * ack, so we use i2400m_msg_to_dev() and then deliver the ack back to
+> --
 
-Christophe
+
+-- 
+~Randy
+
