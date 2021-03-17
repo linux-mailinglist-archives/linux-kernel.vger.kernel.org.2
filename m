@@ -2,114 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F5233ED4F
+	by mail.lfdr.de (Postfix) with ESMTP id 819FC33ED50
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbhCQJpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:45:04 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13183 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbhCQJo3 (ORCPT
+        id S229994AbhCQJpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:45:05 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:38661 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229707AbhCQJoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:44:29 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F0lYR1tcqzmYhp;
-        Wed, 17 Mar 2021 17:42:03 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.61) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 17 Mar 2021 17:44:19 +0800
-From:   Yang Jihong <yangjihong1@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>,
-        <yao.jin@linux.intel.com>, <gustavoars@kernel.org>,
-        <mliska@suse.cz>, <linux-kernel@vger.kernel.org>
-CC:     <yangjihong1@huawei.com>
-Subject: [PATCH v6] perf annotate: Fix sample events lost in stdio mode
-Date:   Wed, 17 Mar 2021 17:44:09 +0800
-Message-ID: <20210317094409.94293-1-yangjihong1@huawei.com>
-X-Mailer: git-send-email 2.30.GIT
+        Wed, 17 Mar 2021 05:44:30 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 42DB95804A4;
+        Wed, 17 Mar 2021 05:44:28 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 17 Mar 2021 05:44:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=0BP8cAWztylqalmk4/OoD2Cy3lw
+        qhFZyUP90THNtZ1g=; b=cAeuP0qbO4eJljrqIMiebUowfsB/GxgB0fgTHUeF5Yo
+        +dFTnomigRMKK9PRko4dMH1zdWY+F8CZlLyyxbotj7dX6MhNo0ZdCfBIYlKvh+/Q
+        d3gw0kvUlYz+vN963+21XhyNQAmvwJjVEJA+avi6mYRcwb/KVLdURvi1B7dODlEU
+        qwo0pQOkSpU56PPi4NYkSD3fDTg0e80FKnqzVVH4HrLSduY507MOGgRp94x8tow8
+        C9HfLeh5qs5U1GUDOdKhbybH8VweO9ZHI/Nfv3WQtBMysN51MQalqCy7G6KdFGe4
+        mf58Y/uLDUegOKYAI0UMYq6LPHm6VBPkmbHqO3+RurQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=0BP8cA
+        Wztylqalmk4/OoD2Cy3lwqhFZyUP90THNtZ1g=; b=srtYkEJcS4huqv80LlbbSG
+        Fi8pxOzOhws71OZtEdfvdz4enBpQRhE0iI6Werq9aNVPnUT1M8U+utcOXh5XVeKQ
+        FokaGwGP35MMAOOqtri0m/vNjHo7TKirpcMZ/5W9e2L9Q2AF3sm0/WG+GT0NJggk
+        x83KKGNn2DhU8Bd9sU4Sgt1j3dm5XQtFyacw9sqD5kjEFms6c7sxEkUtKUvv63MW
+        qCQbrdMZ3s7LT10cwkeBrK/9NP5d5HvxG2zKV+2c3gCChb+8ufEt4coS7G9P7gdm
+        afb8Huog5c6refVYER6q+O7lbAN3g/n8yJC7Tc4bejsE73cF9Z1jUXn4fpW2Lq4Q
+        ==
+X-ME-Sender: <xms:ec9RYK39Y_a4zSfTwUaRQx1LJtTowhZfqZ55tBkolaY3hmRBQTPI7Q>
+    <xme:ec9RYNGM7ueV86Apfa1zFhVwr_eYaKeWpNprnytd5VORSYUGMtqFf5JVwUDGqEq2i
+    aqHVVd170LHaeJKjA4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudefgedgtdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:ec9RYC4TIhkXMH2jEndCl15t4aT4tnjEM-i5V5FzoBn8t6HtdaEwrw>
+    <xmx:ec9RYL3qCCj83UuidkPt_WjshQ4_zjIBrTcOs3V7XXAW0QPplWZljQ>
+    <xmx:ec9RYNGEMZcMZqGZqtAf8jav8BKADI6fd14OggVtOw4i_pnVvBSC-w>
+    <xmx:fM9RYDRuhS2ysirc2Y7YeQnTiJcpzjxydTqzDoyqpnbGWb-Av1ZQ0w>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 21F05108005C;
+        Wed, 17 Mar 2021 05:44:25 -0400 (EDT)
+Date:   Wed, 17 Mar 2021 10:44:22 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mark Brown <broonie@kernel.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stefan Wahren <wahrenst@gmx.net>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Odelu Kukatla <okukatla@codeaurora.org>,
+        Alex Elder <elder@kernel.org>, Suman Anna <s-anna@ti.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Drop type references on common properties
+Message-ID: <20210317094422.tlzbuvfanfwxenps@gilmour>
+References: <20210316194858.3527845-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.61]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="lj6yx5qimtjaxe7l"
+Content-Disposition: inline
+In-Reply-To: <20210316194858.3527845-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In hist__find_annotations function, since different hist_entry may point to same
-symbol, we free notes->src to signal already processed this symbol in stdio mode;
-when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
 
-However, there is a problem, for example, run the following command:
+--lj6yx5qimtjaxe7l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- # perf record -e branch-misses -e branch-instructions -a sleep 1
+On Tue, Mar 16, 2021 at 01:48:58PM -0600, Rob Herring wrote:
+> Users of common properties shouldn't have a type definition as the
+> common schemas already have one. Drop all the unnecessary type
+> references in the tree.
+>=20
+> A meta-schema update to catch these is pending.
+>=20
+> Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Krzysztof Kozlowski <krzk@kernel.org>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Cc: Ohad Ben-Cohen <ohad@wizery.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
+> Cc: Benson Leung <bleung@chromium.org>
+> Cc: Zhang Rui <rui.zhang@intel.com>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Stefan Wahren <wahrenst@gmx.net>
+> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Cc: Odelu Kukatla <okukatla@codeaurora.org>
+> Cc: Alex Elder <elder@kernel.org>
+> Cc: Suman Anna <s-anna@ti.com>
+> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Cc: linux-gpio@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> Cc: linux-can@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: linux-remoteproc@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-usb@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-perf.data file contains different types of sample event.
+Acked-by: Maxime Ripard <maxime@cerno.tech>
 
-If the same IP sample event exists in branch-misses and branch-instructions,
-this event uses the same symbol. When annotate branch-misses events, notes->src
-corresponding to this event is set to null, as a result, when annotate
-branch-instructions events, this event is skipped and no annotate is output.
+Thanks!
+Maxiem
 
-Solution of this patch is to remove zfree in hists__find_annotations and
-change sort order to "dso,symbol" to avoid duplicate output when different
-processes correspond to the same symbol.
+--lj6yx5qimtjaxe7l
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
----
+-----BEGIN PGP SIGNATURE-----
 
-Changes since v5:
-  - Add Signed-off-by tag.
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYFHPdgAKCRDj7w1vZxhR
+xQMxAQCrXmT5FCI3eJYBXW/EUFlqbCTwnoDOAEjWcGLbj2XTCgEAxkEyHVxsELxK
+YT52x5rpTHartnwQ86HMToeCxMjKlAc=
+=93nZ
+-----END PGP SIGNATURE-----
 
-Changes since v4:
-  - Use the same sort key "dso,symbol" in branch stack mode.
-
-Changes since v3:
-  - Modify the first line of comments.
-
-Changes since v2:
-  - Remove zfree in hists__find_annotations.
-  - Change sort order to avoid duplicate output.
-
-Changes since v1:
-  - Change processed flag variable from u8 to bool.
-
- tools/perf/builtin-annotate.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
-
-diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-index a23ba6bb99b6..92c55f292c11 100644
---- a/tools/perf/builtin-annotate.c
-+++ b/tools/perf/builtin-annotate.c
-@@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists *hists,
- 		} else {
- 			hist_entry__tty_annotate(he, evsel, ann);
- 			nd = rb_next(nd);
--			/*
--			 * Since we have a hist_entry per IP for the same
--			 * symbol, free he->ms.sym->src to signal we already
--			 * processed this symbol.
--			 */
--			zfree(&notes->src->cycles_hist);
--			zfree(&notes->src);
- 		}
- 	}
- }
-@@ -619,6 +612,12 @@ int cmd_annotate(int argc, const char **argv)
- 
- 	setup_browser(true);
- 
-+	/*
-+	 * Events of different processes may correspond to the same
-+	 * symbol, we do not care about the processes in annotate,
-+	 * set sort order to avoid repeated output.
-+	 */
-+	sort_order = "dso,symbol";
- 	if ((use_browser == 1 || annotate.use_stdio2) && annotate.has_br_stack) {
- 		sort__mode = SORT_MODE__BRANCH;
- 		if (setup_sorting(annotate.session->evlist) < 0)
--- 
-2.30.GIT
-
+--lj6yx5qimtjaxe7l--
