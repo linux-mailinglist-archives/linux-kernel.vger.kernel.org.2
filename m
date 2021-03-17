@@ -2,87 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78D333EDA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:58:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB29833EDB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:59:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbhCQJ5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:57:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229846AbhCQJ5Y (ORCPT
+        id S230124AbhCQJ6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:58:41 -0400
+Received: from out28-148.mail.aliyun.com ([115.124.28.148]:35256 "EHLO
+        out28-148.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230006AbhCQJ6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:57:24 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA75C06174A;
-        Wed, 17 Mar 2021 02:57:10 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id c6so936011qtc.1;
-        Wed, 17 Mar 2021 02:57:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5DT/Tb82dfOUQn3pF6Xxk/zZfoQwDhnzs09a7hrsaJQ=;
-        b=FJjZyLuy4Eo+5onI9+vOke1d2I6gth6cngQxmg42w8P4sE+UpfImquEqZjRXWmXHUi
-         OijwX/Kis+r4z4yO4At9NKUslP94wJgfmZR4sNqna+b9rO2h29G8dWpourejztLkf9M8
-         TQZOqiJUYBaeqPu8bg4wzk44nUrZYgSAH9vNNCXEtqsPlSel7ye3d2w/VMTK81SCmeXS
-         ijZ4bSnXK9D/GF+0GTUZ7NpzH6MCJ5tDbBGJZHI9E1khyKfDGlSnoc9qLN0kkFNKEh4k
-         ufU4QzgG/EF0gZsmKgmWygtSREzYnm1VUa901MXrB+VRUb0TzUNCusD1bZy4pRMcIydE
-         pEKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5DT/Tb82dfOUQn3pF6Xxk/zZfoQwDhnzs09a7hrsaJQ=;
-        b=MAJL58JOlas7v+cLqg70/ceWQIsqQR55jvvvfRnO69XrB8qQboe386mCbvwmKRXdi5
-         SIGOXr7hi8g+9AVVsTuVPPkitS4evoYMaIiw2jsdmL+rL7dlT+c7JG2DEOP7XP2O2nqt
-         9kcAoM3lnpwf+KAY46jpCT8tPvXTAKa7DodOPVSGE0SkushQ2Tx0klodlYvTDDPqbfTb
-         QruibkK9SBhviBcfkm0Ud7p3gpHwjuSQzyAwb/CV4p+CVyzRyelTpcgqyN7cECsmTRvF
-         R0+/Liz4NIXrQ2XnImxjWFKy8LLkxkAPVG8jqD1SLzq2+9NO1J7auXXziO32hDRxaaeY
-         jI7Q==
-X-Gm-Message-State: AOAM5308dKsOGb872NifiV8QcRXy7gyGFLzDKBGxKdsq17+BNRTMzRkr
-        3mBb6Y4PoXlV/aPE4EQXkR4ekM1lzkcd7IeW
-X-Google-Smtp-Source: ABdhPJyazJ+xhIZNmt+SRzMgC0RrSxlOcg8eL06vVrvK6jyA6eAGX++nM+qFYIBsVNKxqqlKFf3kTw==
-X-Received: by 2002:a05:622a:11cd:: with SMTP id n13mr3175704qtk.52.1615975029425;
-        Wed, 17 Mar 2021 02:57:09 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.48])
-        by smtp.gmail.com with ESMTPSA id f136sm17494286qke.24.2021.03.17.02.57.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 02:57:08 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     andy@infradead.org, dvhart@infradead.org, vadimp@nvidia.com,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] platform: mellanox: Typo fix in the file mlxbf-bootctl.c
-Date:   Wed, 17 Mar 2021 15:26:50 +0530
-Message-Id: <20210317095650.2036419-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 17 Mar 2021 05:58:19 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1697783|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00566828-2.56148e-05-0.994306;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.JmJVfKa_1615975087;
+Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.JmJVfKa_1615975087)
+          by smtp.aliyun-inc.com(10.147.40.200);
+          Wed, 17 Mar 2021 17:58:16 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     linus.walleij@linaro.org, robh+dt@kernel.org, paul@crapouillou.net
+Cc:     linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        hns@goldelico.com, paul@boddie.org.uk, andy.shevchenko@gmail.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        sernia.zhou@foxmail.com
+Subject: [PATCH v3 00/10] Fix bugs and add support for new Ingenic SoCs.
+Date:   Wed, 17 Mar 2021 17:57:54 +0800
+Message-Id: <1615975084-68203-1-git-send-email-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+v1->v2:
+1.Split [1/3] in v1 to [1/6] [2/6] [3/6] [4/6] in v2.
+2.Fix the uninitialized warning.
 
-s/progamming/programming/
+v2->v3:
+Split [6/6] in v2 to [6/10] [7/10] [8/10] [9/10] [10/10] in v3.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/platform/mellanox/mlxbf-bootctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+周琰杰 (Zhou Yanjie) (10):
+  pinctrl: Ingenic: Add missing pins to the JZ4770 MAC MII group.
+  pinctrl: Ingenic: Add support for read the pin configuration of X1830.
+  pinctrl: Ingenic: Adjust the sequence of X1830 SSI pin groups.
+  pinctrl: Ingenic: Reformat the code.
+  dt-bindings: pinctrl: Add bindings for new Ingenic SoCs.
+  pinctrl: Ingenic: Add pinctrl driver for JZ4730.
+  pinctrl: Ingenic: Add pinctrl driver for JZ4750.
+  pinctrl: Ingenic: Add pinctrl driver for JZ4755.
+  pinctrl: Ingenic: Add pinctrl driver for JZ4775.
+  pinctrl: Ingenic: Add pinctrl driver for X2000.
 
-diff --git a/drivers/platform/mellanox/mlxbf-bootctl.c b/drivers/platform/mellanox/mlxbf-bootctl.c
-index 5d21c6adf1ab..1c7a288b59a5 100644
---- a/drivers/platform/mellanox/mlxbf-bootctl.c
-+++ b/drivers/platform/mellanox/mlxbf-bootctl.c
-@@ -208,7 +208,7 @@ static ssize_t secure_boot_fuse_state_show(struct device *dev,
- 	 * 0011 = version 1, 0111 = version 2, 1111 = version 3). Upper 4 bits
- 	 * are a thermometer code indicating key programming has completed for
- 	 * key n (same encodings as the start bits). This allows for detection
--	 * of an interruption in the progamming process which has left the key
-+	 * of an interruption in the programming process which has left the key
- 	 * partially programmed (and thus invalid). The process is to burn the
- 	 * eFuse for the new key start bit, burn the key eFuses, then burn the
- 	 * eFuse for the new key complete bit.
---
-2.30.2
+ .../bindings/pinctrl/ingenic,pinctrl.yaml          |   23 +-
+ drivers/pinctrl/pinctrl-ingenic.c                  | 1381 ++++++++++++++++++--
+ 2 files changed, 1322 insertions(+), 82 deletions(-)
+
+-- 
+2.7.4
 
