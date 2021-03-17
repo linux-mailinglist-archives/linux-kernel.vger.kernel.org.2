@@ -2,144 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CFF33ED3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:41:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4847B33ED4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:45:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbhCQJku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:40:50 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3308 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhCQJko (ORCPT
+        id S229949AbhCQJpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:45:00 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13556 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhCQJoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:40:44 -0400
-Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4F0lSJ2nc2z141y3;
-        Wed, 17 Mar 2021 17:37:36 +0800 (CST)
-Received: from dggpemm100011.china.huawei.com (7.185.36.112) by
- DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Wed, 17 Mar 2021 17:40:37 +0800
-Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
- dggpemm100011.china.huawei.com (7.185.36.112) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 17 Mar 2021 17:40:37 +0800
-Received: from dggpeml500016.china.huawei.com ([7.185.36.70]) by
- dggpeml500016.china.huawei.com ([7.185.36.70]) with mapi id 15.01.2106.013;
- Wed, 17 Mar 2021 17:40:37 +0800
-From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>
-CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
-        chenjiashang <chenjiashang@huawei.com>
-Subject: =?gb2312?B?UkU6IEEgcHJvYmxlbSBvZiBJbnRlbCBJT01NVSBoYXJkd2FyZSCjvw==?=
-Thread-Topic: =?gb2312?B?QSBwcm9ibGVtIG9mIEludGVsIElPTU1VIGhhcmR3YXJlIKO/?=
-Thread-Index: AQHXGtwEduPlUZeCNUCbiy3s/+KwAaqHHa0AgADFS4A=
-Date:   Wed, 17 Mar 2021 09:40:37 +0000
-Message-ID: <a6315a46fadd4171bc69b5e53e3ad67b@huawei.com>
-References: <670baaf8-4ff8-4e84-4be3-030b95ab5a5e@huawei.com>
- <692186fd-42b8-4054-ead2-f6c6b1bf5b2d@linux.intel.com>
-In-Reply-To: <692186fd-42b8-4054-ead2-f6c6b1bf5b2d@linux.intel.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.151.207]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Wed, 17 Mar 2021 05:44:21 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F0lYH3HzczNp6n;
+        Wed, 17 Mar 2021 17:41:55 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 17 Mar 2021 17:44:12 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <john.garry@huawei.com>, <zhangshaokun@hisilicon.com>,
+        <will@kernel.org>, <mark.rutland@arm.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
+Subject: [PATCH 0/3] drivers/perf: convert sysfs sprintf/snprintf/scnprintf to sysfs_emit
+Date:   Wed, 17 Mar 2021 17:41:48 +0800
+Message-ID: <1615974111-45601-1-git-send-email-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQmFvbHUsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTHUgQmFv
-bHUgW21haWx0bzpiYW9sdS5sdUBsaW51eC5pbnRlbC5jb21dDQo+IFNlbnQ6IFdlZG5lc2RheSwg
-TWFyY2ggMTcsIDIwMjEgMToxNyBQTQ0KPiBUbzogTG9uZ3BlbmcgKE1pa2UsIENsb3VkIEluZnJh
-c3RydWN0dXJlIFNlcnZpY2UgUHJvZHVjdCBEZXB0LikNCj4gPGxvbmdwZW5nMkBodWF3ZWkuY29t
-PjsgZHdtdzJAaW5mcmFkZWFkLm9yZzsgam9yb0A4Ynl0ZXMub3JnOw0KPiB3aWxsQGtlcm5lbC5v
-cmc7IGFsZXgud2lsbGlhbXNvbkByZWRoYXQuY29tDQo+IENjOiBiYW9sdS5sdUBsaW51eC5pbnRl
-bC5jb207IGlvbW11QGxpc3RzLmxpbnV4LWZvdW5kYXRpb24ub3JnOyBMS01MDQo+IDxsaW51eC1r
-ZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgR29uZ2xlaSAoQXJlaSkgPGFyZWkuZ29uZ2xlaUBodWF3
-ZWkuY29tPjsNCj4gY2hlbmppYXNoYW5nIDxjaGVuamlhc2hhbmdAaHVhd2VpLmNvbT4NCj4gU3Vi
-amVjdDogUmU6IEEgcHJvYmxlbSBvZiBJbnRlbCBJT01NVSBoYXJkd2FyZSCjvw0KPiANCj4gSGkg
-TG9uZ3BlbmcsDQo+IA0KPiBPbiAzLzE3LzIxIDExOjE2IEFNLCBMb25ncGVuZyAoTWlrZSwgQ2xv
-dWQgSW5mcmFzdHJ1Y3R1cmUgU2VydmljZSBQcm9kdWN0IERlcHQuKQ0KPiB3cm90ZToNCj4gPiBI
-aSBndXlzLA0KPiA+DQo+ID4gV2UgZmluZCB0aGUgSW50ZWwgaW9tbXUgY2FjaGUgKGkuZS4gaW90
-bGIpIG1heWJlIHdvcmtzIHdyb25nIGluIGENCj4gPiBzcGVjaWFsIHNpdHVhdGlvbiwgaXQgd291
-bGQgY2F1c2UgRE1BIGZhaWxzIG9yIGdldCB3cm9uZyBkYXRhLg0KPiA+DQo+ID4gVGhlIHJlcHJv
-ZHVjZXIgKGJhc2VkIG9uIEFsZXgncyB2ZmlvIHRlc3RzdWl0ZVsxXSkgaXMgaW4gYXR0YWNobWVu
-dCwNCj4gPiBpdCBjYW4gcmVwcm9kdWNlIHRoZSBwcm9ibGVtIHdpdGggaGlnaCBwcm9iYWJpbGl0
-eSAofjUwJSkuDQo+ID4NCj4gPiBUaGUgbWFjaGluZSB3ZSB1c2VkIGlzOg0KPiA+IHByb2Nlc3Nv
-cgk6IDQ3DQo+ID4gdmVuZG9yX2lkCTogR2VudWluZUludGVsDQo+ID4gY3B1IGZhbWlseQk6IDYN
-Cj4gPiBtb2RlbAkJOiA4NQ0KPiA+IG1vZGVsIG5hbWUJOiBJbnRlbChSKSBYZW9uKFIpIEdvbGQg
-NjE0NiBDUFUgQCAzLjIwR0h6DQo+ID4gc3RlcHBpbmcJOiA0DQo+ID4gbWljcm9jb2RlCTogMHgy
-MDAwMDY5DQo+ID4NCj4gPiBBbmQgdGhlIGlvbW11IGNhcGFiaWxpdHkgcmVwb3J0ZWQgaXM6DQo+
-ID4gdmVyIDE6MCBjYXAgOGQyMDc4YzEwNmYwNDY2IGVjYXAgZjAyMGRmIChjYWNoaW5nIG1vZGUg
-PSAwICwNCj4gPiBwYWdlLXNlbGVjdGl2ZSBpbnZhbGlkYXRpb24gPSAxKQ0KPiA+DQo+ID4gKFRo
-ZSBwcm9ibGVtIGlzIGFsc28gb24gJ0ludGVsKFIpIFhlb24oUikgU2lsdmVyIDQxMTQgQ1BVIEAg
-Mi4yMEdIeicNCj4gPiBhbmQNCj4gPiAnSW50ZWwoUikgWGVvbihSKSBQbGF0aW51bSA4Mzc4QSBD
-UFUgQCAzLjAwR0h6JykNCj4gPg0KPiA+IFdlIHJ1biB0aGUgcmVwcm9kdWNlciBvbiBMaW51eCA0
-LjE4IGFuZCBpdCB3b3JrcyBhcyBmb2xsb3c6DQo+ID4NCj4gPiBTdGVwIDEuIGFsbG9jIDRHICoy
-TS1odWdldGxiKiBtZW1vcnkgKE4uQi4gbm8gcHJvYmxlbSB3aXRoIDRLLXBhZ2UNCj4gPiBtYXBw
-aW5nKQ0KPiANCj4gSSBkb24ndCB1bmRlcnN0YW5kIDJNLWh1Z2V0bGIgaGVyZSBtZWFucyBleGFj
-dGx5LiBUaGUgSU9NTVUgaGFyZHdhcmUNCj4gc3VwcG9ydHMgYm90aCAyTSBhbmQgMUcgc3VwZXIg
-cGFnZS4gVGhlIG1hcHBpbmcgcGh5c2ljYWwgbWVtb3J5IGlzIDRHLg0KPiBXaHkgY291bGRuJ3Qg
-aXQgdXNlIDFHIHN1cGVyIHBhZ2U/DQo+IA0KDQpXZSB1c2UgaHVnZXRsYmZzKHN1cHBvcnQgMUcg
-YW5kIDJNLCBidXQgd2UgY2hvb3NlIDJNIGluIG91ciBjYXNlKSB0byByZXF1ZXN0DQp0aGUgbWVt
-b3J5IGluIHVzZXJzcGFjZTogDQp2YWRkciA9ICh1bnNpZ25lZCBsb25nKW1tYXAoMCwgTUFQX1NJ
-WkUsIFBST1RfUkVBRCB8IFBST1RfV1JJVEUsDQoJCQkJICAgIE1BUF9QUklWQVRFIHwgTUFQX0FO
-T05ZTU9VUyB8ICpNQVBfSFVHRVRMQiosIDAsIDApOw0KDQpZZXAsIElPTU1VIHN1cHBvcnQgYm90
-aCAyTSBhbmQgMUcgc3VwZXJwYWdlLCB3ZSBqdXN0IGhhdmVuJ3QgdG8gdGVzdCB0aGUgMUcgY2Fz
-ZQ0KeWV0LCBiZWNhdXNlIG91ciBwcm9kdWN0aW9ucyB1c2UgMk0gaHVnZXRsYmZzIHBhZ2UuDQoN
-Cj4gPiBTdGVwIDIuIERNQSBNYXAgNEcgbWVtb3J5DQo+ID4gU3RlcCAzLg0KPiA+ICAgICAgd2hp
-bGUgKDEpIHsNCj4gPiAgICAgICAgICB7VU5NQVAsIDB4MCwgMHhhMDAwMH0sIC0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAoYSkNCj4gPiAgICAgICAgICB7VU5NQVAsIDB4YzAw
-MDAsIDB4YmZmNDAwMDB9LA0KPiANCj4gSGF2ZSB0aGVzZSB0d28gcmFuZ2VzIGJlZW4gbWFwcGVk
-IGJlZm9yZT8gRG9lcyB0aGUgSU9NTVUgZHJpdmVyIGNvbXBsYWlucw0KPiB3aGVuIHlvdSB0cnlp
-bmcgdG8gdW5tYXAgYSByYW5nZSB3aGljaCBoYXMgbmV2ZXIgYmVlbiBtYXBwZWQ/IFRoZSBJT01N
-VQ0KPiBkcml2ZXIgaW1wbGljaXRseSBhc3N1bWVzIHRoYXQgbWFwcGluZyBhbmQgdW5tYXBwaW5n
-IGFyZSBwYWlyZWQuDQo+IA0KDQpPZiBjb3Vyc2UgeWVzLCBwbGVhc2UgU3RlcC0yLCB3ZSBETUEg
-bWFwcGVkIGFsbCB0aGUgbWVtb3J5KDRHKSBiZWZvcmUgdGhlIHdoaWxlIGxvb3AuDQpUaGUgZHJp
-dmVyIG5ldmVyIGNvbXBsYWluZWQgZHVyaW5nIE1BUCBhbmQgVU5NQVAgb3BlcmF0aW9ucy4NCg0K
-PiA+ICAgICAgICAgIHtNQVAsICAgMHgwLCAweGMwMDAwMDAwfSwgLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tIChiKQ0KPiA+ICAgICAgICAgICAgICAgICAgdXNlIEdEQiB0byBwYXVz
-ZSBhdCBoZXJlLCBhbmQgdGhlbiBETUEgcmVhZCBJT1ZBPTAsDQo+IA0KPiBJT1ZBIDAgc2VlbXMg
-dG8gYmUgYSBzcGVjaWFsIG9uZS4gSGF2ZSB5b3UgdmVyaWZpZWQgd2l0aCBvdGhlciBhZGRyZXNz
-ZXMgdGhhbg0KPiBJT1ZBIDA/DQo+IA0KDQpZZXMsIHdlIGFsc28gdGVzdCBJT1ZBPTB4MTAwMCwg
-aXQgaGFzIHByb2JsZW0gdG9vLg0KDQpCdXQgb25lIG9mIHRoZSBkaWZmZXJlY2VzIGJldHdlZW4g
-KDB4MCwgMHhhMDAwMCkgYW5kICgweDAsIDB4YzAwMDAwMDApIGlzIHRoZSBmb3JtZXINCmNhbiBv
-bmx5IHVzZSA0SyBtYXBwaW5nIGluIERNQSBwYWdldGFibGUgYnV0IHRoZSBsYXR0ZXIgdXNlcyAy
-TSBtYXBwaW5nLiBJcyBpdCBwb3NzaWJsZQ0KdGhlIGhhcmR3YXJlIGNhY2hlIG1hbmFnZW1lbnQg
-d29ya3Mgc29tZXRoaW5nIHdyb25nIGluIHRoaXMgY2FzZT8NCg0KPiA+ICAgICAgICAgICAgICAg
-ICAgc29tZXRpbWVzIERNQSBzdWNjZXNzIChhcyBleHBlY3RlZCksDQo+ID4gICAgICAgICAgICAg
-ICAgICBidXQgc29tZXRpbWVzIERNQSBlcnJvciAocmVwb3J0IG5vdC1wcmVzZW50KS4NCj4gPiAg
-ICAgICAgICB7VU5NQVAsIDB4MCwgMHhjMDAwMDAwMH0sIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLSAoYykNCj4gPiAgICAgICAgICB7TUFQLCAgIDB4MCwgMHhhMDAwMH0sDQo+ID4g
-ICAgICAgICAge01BUCwgICAweGMwMDAwLCAweGJmZjQwMDAwfSwNCj4gPiAgICAgIH0NCj4gPg0K
-PiA+IFRoZSBETUEgcmVhZCBvcGVyYXRpb25zIHNob2x1ZCBzdWNjZXNzIGJldHdlZW4gKGIpIGFu
-ZCAoYyksIGl0IHNob3VsZA0KPiA+IE5PVCByZXBvcnQgbm90LXByZXNlbnQgYXQgbGVhc3QhDQo+
-ID4NCj4gPiBBZnRlciBhbmFseXNpcyB0aGUgcHJvYmxlbSwgd2UgdGhpbmsgbWF5YmUgaXQncyBj
-YXVzZWQgYnkgdGhlIEludGVsIGlvbW11IGlvdGxiLg0KPiA+IEl0IHNlZW1zIHRoZSBETUEgUmVt
-YXBwaW5nIGhhcmR3YXJlIHN0aWxsIHVzZXMgdGhlIElPVExCIG9yIG90aGVyIGNhY2hlcyBvZg0K
-PiAoYSkuDQo+ID4NCj4gPiBXaGVuIGRvIERNQSB1bm1hcCBhdCAoYSksIHRoZSBpb3RsYiB3aWxs
-IGJlIGZsdXNoOg0KPiA+ICAgICAgaW50ZWxfaW9tbXVfdW5tYXANCj4gPiAgICAgICAgICBkb21h
-aW5fdW5tYXANCj4gPiAgICAgICAgICAgICAgaW9tbXVfZmx1c2hfaW90bGJfcHNpDQo+ID4NCj4g
-PiBXaGVuIGRvIERNQSBtYXAgYXQgKGIpLCBubyBuZWVkIHRvIGZsdXNoIHRoZSBpb3RsYiBhY2Nv
-cmRpbmcgdG8gdGhlDQo+ID4gY2FwYWJpbGl0eSBvZiB0aGlzIGlvbW11Og0KPiA+ICAgICAgaW50
-ZWxfaW9tbXVfbWFwDQo+ID4gICAgICAgICAgZG9tYWluX3Bmbl9tYXBwaW5nDQo+ID4gICAgICAg
-ICAgICAgIGRvbWFpbl9tYXBwaW5nDQo+ID4gICAgICAgICAgICAgICAgICBfX21hcHBpbmdfbm90
-aWZ5X29uZQ0KPiA+ICAgICAgICAgICAgICAgICAgICAgIGlmIChjYXBfY2FjaGluZ19tb2RlKGlv
-bW11LT5jYXApKSAvLyBGQUxTRQ0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICBpb21tdV9m
-bHVzaF9pb3RsYl9wc2kNCj4gDQo+IFRoYXQncyB0cnVlLiBUaGUgaW90bGIgZmx1c2hpbmcgaXMg
-bm90IG5lZWRlZCBpbiBjYXNlIG9mIFBURSBiZWVuIGNoYW5nZWQgZnJvbQ0KPiBub24tcHJlc2Vu
-dCB0byBwcmVzZW50IHVubGVzcyBjYWNoaW5nIG1vZGUuDQo+IA0KDQpZZXMsIEkgYWxzbyB0aGlu
-ayB0aGUgZHJpdmVyIGNvZGUgaXMgY29ycmVjdC4gQnV0IGl0J3Mgc28gY29uZnVzZWQgdGhhdCB0
-aGUgcHJvYmxlbQ0KaXMgZGlzYXBwZWFyIGlmIHdlIGZvcmNlIGl0IHRvIGZsdXNoIGhlcmUuDQoN
-Cj4gPiBCdXQgdGhlIHByb2JsZW0gd2lsbCBkaXNhcHBlYXIgaWYgd2UgRk9SQ0UgZmx1c2ggaGVy
-ZS4gU28gd2Ugc3VzcGVjdA0KPiA+IHRoZSBpb21tdSBoYXJkd2FyZS4NCj4gPg0KPiA+IERvIHlv
-dSBoYXZlIGFueSBzdWdnZXN0aW9uID8NCj4gDQo+IEJlc3QgcmVnYXJkcywNCj4gYmFvbHUNCg==
+Use the generic sysfs_emit() and sysfs_emit_at() function to take
+place of sprintf/snprintf/scnprintf, to avoid buffer overrun.
+
+Zihao Tang (1)
+  drivers/perf: convert sysfs snprintf family to sysfs_emit
+
+Qi Liu (2):
+  drivers/perf: convert sysfs scnprintf family to sysfs_emit_at
+  drivers/perf: convert sysfs sprintf family to sysfs_emit
+
+ drivers/perf/arm-cci.c                   | 12 ++++++------
+ drivers/perf/arm-ccn.c                   | 28 ++++++++++++----------------
+ drivers/perf/arm-cmn.c                   | 22 +++++++++++-----------
+ drivers/perf/arm_dmc620_pmu.c            |  2 +-
+ drivers/perf/arm_dsu_pmu.c               |  5 ++---
+ drivers/perf/arm_smmuv3_pmu.c            |  4 ++--
+ drivers/perf/arm_spe_pmu.c               |  3 +--
+ drivers/perf/fsl_imx8_ddr_perf.c         |  7 +++----
+ drivers/perf/hisilicon/hisi_uncore_pmu.c |  8 ++++----
+ drivers/perf/qcom_l2_pmu.c               |  2 +-
+ drivers/perf/qcom_l3_pmu.c               |  4 ++--
+ drivers/perf/thunderx2_pmu.c             |  4 ++--
+ drivers/perf/xgene_pmu.c                 |  4 ++--
+ 13 files changed, 49 insertions(+), 56 deletions(-)
+
+-- 
+2.8.1
+
