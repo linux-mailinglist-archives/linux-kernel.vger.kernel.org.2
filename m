@@ -2,129 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D7333E74A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 04:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D7833E750
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 04:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhCQDAG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Mar 2021 23:00:06 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3041 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhCQC77 (ORCPT
+        id S229761AbhCQDAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 23:00:40 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:38540 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229487AbhCQDAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 22:59:59 -0400
-Received: from DGGEML404-HUB.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F0ZYw6BYpzWMHZ;
-        Wed, 17 Mar 2021 10:56:52 +0800 (CST)
-Received: from DGGEML509-MBS.china.huawei.com ([169.254.4.125]) by
- DGGEML404-HUB.china.huawei.com ([fe80::b177:a243:7a69:5ab8%31]) with mapi id
- 14.03.0513.000; Wed, 17 Mar 2021 10:59:44 +0800
-From:   "chenjun (AM)" <chenjun102@huawei.com>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>,
-        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
-        "lizhe (Y)" <lizhe67@huawei.com>, yangerkun <yangerkun@huawei.com>,
-        "zhangyi (F)" <yi.zhang@huawei.com>
-Subject: Re: [question] Panic in dax_writeback_one
-Thread-Topic: [question] Panic in dax_writeback_one
-Thread-Index: AdcWSusQwspXlegvQqCtsylm2CuWCw==
-Date:   Wed, 17 Mar 2021 02:59:43 +0000
-Message-ID: <CE1E7D7EFA066443B6454A6A5063B50220D12A8A@dggeml509-mbs.china.huawei.com>
-References: <CE1E7D7EFA066443B6454A6A5063B50220D0B849@dggeml509-mbs.china.huawei.com>
- <20210311121923.GU3479805@casper.infradead.org>
- <CAPcyv4jz7-uq+T-sd_U3O_C7SB9nYWVJDnhVsaM0VNR207m8xA@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.178.53]
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 8BIT
+        Tue, 16 Mar 2021 23:00:09 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12H2x2QL138876;
+        Wed, 17 Mar 2021 03:00:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=XNLZyUARPxlqbcS53x+uYonQ+616tjWpLZym/g34MSY=;
+ b=IgZtxuJziDyTuWYUD23Kq982lK4sbzgb5Z1uZASMG9dpi4brGYxgnLgS7bc/MqGjQev9
+ ZO9jzVyf1QlJotvxSb/AeHv77mVCY5r3vNvWHCu9EQ9QM3t4LTtO/QqTbrUI8LqITsIm
+ V0V9g8E85NCvRU3jeJxoupO/vQ9VTrrySvLlheheJhpWy+l5sZduNsH4jrF7mwJWfS2h
+ ALPX5COUE2ora8g4x4/FWw6Zvvq9tx+gmkDH8vj2XBPwA3xouFNXTKhjMWhFHv9kg7zU
+ qm4ILg7LNZN6WqSq/+skGH+IG0ovCI8doqp4dJzfI3b27bpS4BSZN+upXYBsA2wI3hZH mQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 378nbmamnu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Mar 2021 03:00:02 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12H2tLaP113252;
+        Wed, 17 Mar 2021 03:00:01 GMT
+Received: from nam04-sn1-obe.outbound.protection.outlook.com (mail-sn1nam04lp2051.outbound.protection.outlook.com [104.47.44.51])
+        by userp3020.oracle.com with ESMTP id 37a4etsmnu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Mar 2021 03:00:01 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TQ3gUAHA/FQg7wgFSylVEcwI9M1sVeRlVu1SIvFMEh/KDUq67pWTRu7J7qRpn7Dw6nH5b3T/eufQkbIHyQDpAfml6n7n21qhM+6pyE080dQ56q69V1ktmriVcKtr/IIKUx5UzZtNbu7GLDkjAS+2XUC4UIv7CxMG8hee0vXOhErgPz9GNk2o0eW+9tlQjwiCPmaIGC6niXbQVgXGP+35UDpLjfhMU0uKRkv0oZFke8Bdj+XiDVMlhY9o6OfrpHXePtG1vQt9n0o+pcLtrFEU2vseaSm6sXJuPxcJLWc89KnLJ6S1KIDwgmCvYZ4uoFhEKJ7a/pHK+sn8wEpryB4F2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XNLZyUARPxlqbcS53x+uYonQ+616tjWpLZym/g34MSY=;
+ b=X6oymCoM3L0tgHBftvSsjizXe7fI2muI+cUi1pszcK6mRSecZ2OL85geK9oCfc5EL7VT1KGOGV5rVNgLXTKsxMZvb6xSqv0vHzmq4JqCjdBsAKcQfsSsKHH3plJYOF8eFdPEgz9hw6VwwsWGy4X+PO0F8ZEhGw+hMTieZ6QZaDTsrNEFl9KzE6ixt+RzqHTLWvnlHpdy1hyoAKlzpO8c0vDNZm3wA7exeUo1sguho7+jG/x6RGipEo21NaonEXeaSZrQJsYulOlB2g0Ds4HUIprmGpltMsX3G2Jnbmewe9iIfIvU6ysCA4fk/mu+CHCYH+0BpEWk3cbgm9BAtoDOrQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XNLZyUARPxlqbcS53x+uYonQ+616tjWpLZym/g34MSY=;
+ b=PCVRweYghCnMn7cYiUtXZBkfVRbPGXPdNBpZA3rf0og5I0zMCh4dfdyedDGWn/2bv5nph4XQF3qChf9WM8WqJu/wr1BSQKTBGByNkq0JJiK/y6cjIegS0uX7tdvH59OvbU+pjyCQLc1yCajNmsthFccUl3aqTnX8iTAywAp/b2w=
+Authentication-Results: wdc.com; dkim=none (message not signed)
+ header.d=none;wdc.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4677.namprd10.prod.outlook.com (2603:10b6:510:3d::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Wed, 17 Mar
+ 2021 02:59:59 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::dc39:c9fa:7365:8c8e]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::dc39:c9fa:7365:8c8e%5]) with mapi id 15.20.3933.032; Wed, 17 Mar 2021
+ 02:59:59 +0000
+To:     Arthur Simchaev <Arthur.Simchaev@wdc.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        Bean Huo <beanhuo@micron.com>
+Subject: Re: [PATCH v2] scsi: ufs: sysfs: Print string descriptors as raw data
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1pmzy1o5v.fsf@ca-mkp.ca.oracle.com>
+References: <1613410846-16883-1-git-send-email-Arthur.Simchaev@wdc.com>
+        <BY5PR04MB6327DEDB1CB9EEBC8365E848ED6B9@BY5PR04MB6327.namprd04.prod.outlook.com>
+Date:   Tue, 16 Mar 2021 22:59:54 -0400
+In-Reply-To: <BY5PR04MB6327DEDB1CB9EEBC8365E848ED6B9@BY5PR04MB6327.namprd04.prod.outlook.com>
+        (Arthur Simchaev's message of "Tue, 16 Mar 2021 11:27:16 +0000")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: CH2PR08CA0013.namprd08.prod.outlook.com
+ (2603:10b6:610:5a::23) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by CH2PR08CA0013.namprd08.prod.outlook.com (2603:10b6:610:5a::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Wed, 17 Mar 2021 02:59:58 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8e515b61-6c8d-4718-656a-08d8e8f0c0ac
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4677:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB4677262085CC4F38DAC61D978E6A9@PH0PR10MB4677.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /p+rzViCp5/J/MWOk5s2xYAlX4wh31MYXJblsQm6+kkA0stisRU60JH9n1TAHOJZuF+b9YapGdYs9egc5Pc+1hSOR5tZ3To4FITxnBlRpq8dWu5Gaq2uAMt+Ffn49h2FZqWyvHXWtbr0XIisLC8tDHnBZFcOIq3xHJM8su5ThG9T7mhOFkDU9ZWDtrY9c/UiobI0Sze8DMTIRHWsBtw9A7dFmkBIDkPQpomngnnGkhwSjaV+fRPeZGuV7rYmFzqng0kvers13rVXmn7pK5s7Rm+FDKywos8FoK+n32qn8QxXlxL6E5o/TxJerMPv+28Gt2yb5gPDPlZuGjrRekULK6YLDETDs7c5ahOBZ34lNqRzKuf8vGRpiNmpN7yUnOK+dKBeu3+ZqRn8OFXYY5zPyCX3jJIwQvR2rFErSBEfVWWbe9V7GjYjd04gef0lBFJGRcElxM+oyl4iCf0mhigb6RPUfOFp7NsvEJHiZvSL3UYDYAk1ZGPEsXQ3HDhcgHfxd1NUaHf7wsSvvTX0raS1+SPsLu+X5yZZylqxGpADA4UIRLdcrEzSYlfMDIY/cYlj
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(346002)(366004)(376002)(396003)(316002)(478600001)(6916009)(5660300002)(54906003)(2906002)(26005)(8936002)(8676002)(4326008)(66476007)(186003)(55016002)(66556008)(16526019)(558084003)(66946007)(6666004)(7696005)(36916002)(956004)(52116002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?VNHfRhaas+GNKKI8NXkoqs6sKzS73J7bnOvG7Jb0WE3g5azyma2tBRDI+zKv?=
+ =?us-ascii?Q?EpyJoPSEmm851HmxeSMiO2FaT/ogsaAXZoiaVS8DOxMYjO57N4Oop7Ou7S01?=
+ =?us-ascii?Q?jADe3jeKCruxX7wTqGbC3K2VJNjsTjXBZyJCfm2tLwFN2ZJB+LRNj9ejC+wH?=
+ =?us-ascii?Q?qn8JZMQLXeGwZ+zaDWXauEDlKfcc8Dz2lWVPl12BbCyd9sXmCpRLVqW6P0u/?=
+ =?us-ascii?Q?V5Y8Iw9yi1+drKhciMy017XOw+bIWXfmHeYMkQ+GNqA9z4PSlz/W2jo96XsC?=
+ =?us-ascii?Q?8VmG34hssjiaZTgYQ7Vh03boD2eS6HnAKDjKOaghbmWB5wsCcJIrWLcu/hoS?=
+ =?us-ascii?Q?Vqd1VU49mgzE+0l3n50i8hVIIbMD5nK7DDjieZvkoVk8j+SYkVqVnVcL41+J?=
+ =?us-ascii?Q?th2ktRDI/MDmufrnZ8HGo05N6SusOS8RElZXjP0mJVjSxkXbiqxwhMms9tZw?=
+ =?us-ascii?Q?EIvNN+IgQfvYo5/5LGl9mS2quEz6NX59wvxoY/Kd5F/JIoxRCPSJZazSTx1b?=
+ =?us-ascii?Q?DC+SRme/RPTfwqnKLBYtp46YImUetwr5KSW0PYFCPP5qDCWyj1K5Oez/bN6q?=
+ =?us-ascii?Q?HM9FNcO6PtbTx9CnOzqDglJmqRCMVukmVyFp/9WZeWhScsO07CfJn2EuOdcH?=
+ =?us-ascii?Q?q2hd64rwBEEScrcOtkS/odEAbdyEDEiSrY2A1Pj1fiBvi3YggXalL7NUKhyv?=
+ =?us-ascii?Q?vheRItSKwUGWnDCQzYr32wzH7d0CxAJrHTeolf0H5iHNfSrYaasbQ/OyAtxU?=
+ =?us-ascii?Q?tlZ+xL8wovFlfvWqj+9wkKHdHJN6ig/JxlfkNMVIg0Sh5sNaAxVu4C+MNQ4E?=
+ =?us-ascii?Q?hF1TioAPepGIyECYbh9wGvriPHtXsavcuLOWEdMQvJzaeFq/l3I4kdaj1YdS?=
+ =?us-ascii?Q?pe4lMsRStMZXHRJnJ2k5uzuOQOqRcg2sSOe/8ejkokSaCuBU23MjhDnGSIvt?=
+ =?us-ascii?Q?mRK7dsLdsfPfUvuOwdpHqg22TpPdYSUDAcdKur+JMmauyTngbWTboWg/oOgo?=
+ =?us-ascii?Q?YbIC+73yCuLHIkeldjq4uhYhEqvPO/3UeLqeaCx7WPQ0QqRiMhCGOMoR7Lk1?=
+ =?us-ascii?Q?1jp71cu3blUGMCfWc48q8ynm/gD+j4DkfvrnIqr9c08zHdlP6V1ZT7Ek4Yh2?=
+ =?us-ascii?Q?p4oKo87tHkWDyGtlAtME+slfYYnaWAoebXhq3lE75STv5BEGRH0VelaeCDTJ?=
+ =?us-ascii?Q?+8yPXk/VIkeHVWfsS3HRmz10mhPFtf7GzbEPWVZF4j9Yp/S42FczSU4jZaJT?=
+ =?us-ascii?Q?fCkTMlrCIhFjwZBwoYqZb1Akw+pGoTwbyJcYVBgLacto/DIe3OHCFjrWxGVV?=
+ =?us-ascii?Q?IqVDqkXiioVtb227Z5quAuc4?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8e515b61-6c8d-4718-656a-08d8e8f0c0ac
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 02:59:59.6169
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cso2xk/Mk+2pSoabCIbGe9NPs34X9CUFiI4j5ye2LwO02S3ZcwPXaYGxM79FUE4pCijcArxzAVHgaVd9iefkMnDx//M6u4SOmHlgo1BkJCY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4677
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9925 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
+ malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103170022
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9925 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 impostorscore=0
+ malwarescore=0 adultscore=0 mlxscore=0 clxscore=1011 mlxlogscore=999
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 spamscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103170023
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021/3/12 1:25, Dan Williams 写道:
-> On Thu, Mar 11, 2021 at 4:20 AM Matthew Wilcox <willy@infradead.org> wrote:
->>
->> On Thu, Mar 11, 2021 at 07:48:25AM +0000, chenjun (AM) wrote:
->>> static int dax_writeback_one(struct xa_state *xas, struct dax_device
->>> *dax_dev, struct address_space *mapping, void *entry)
->>> ----dax_flush(dax_dev, page_address(pfn_to_page(pfn)), count * PAGE_SIZE);
->>> The pfn is returned by the driver. In my case, the pfn does not have
->>> struct page. so pfn_to_page(pfn) return a wrong address.
->>
->> I wasn't involved, but I think the right solution here is simply to
->> replace page_address(pfn_to_page(pfn)) with pfn_to_virt(pfn).  I don't
->> know why Dan decided to do this in the more complicated way.
-> 
-> pfn_to_virt() only works for the direct-map. If pages are not mapped I
-> don't see how pfn_to_virt() is expected to work.
-> 
-> The real question Chenjun is why are you writing a new simulator of
-> memory as a block-device vs reusing the pmem driver or brd?
-> 
 
-Hi Dan
+Hi Arthur!
 
-In my case, I do not want to take memory to create the struct page of 
-the memory my driver used.
+> Could you please consider to take this patch?
 
-And, I think this is also a problem for DCSSBLK.
-
-So I want to go back the older way if CONFIG_FS_DAX_LIMITED
-
-diff --git a/fs/dax.c b/fs/dax.c
-index b3d27fd..6395e84 100644
---- a/fs/dax.c
-+++ b/fs/dax.c
-@@ -867,6 +867,9 @@ static int dax_writeback_one(struct xa_state *xas, 
-struct dax_device *dax_dev,
-  {
-  	unsigned long pfn, index, count;
-  	long ret = 0;
-+	void *kaddr;
-+	pfn_t new_pfn_t;
-+	pgoff_t pgoff;
-
-  	/*
-  	 * A page got tagged dirty in DAX mapping? Something is seriously
-@@ -926,7 +929,25 @@ static int dax_writeback_one(struct xa_state *xas, 
-struct dax_device *dax_dev,
-  	index = xas->xa_index & ~(count - 1);
-
-  	dax_entry_mkclean(mapping, index, pfn);
--	dax_flush(dax_dev, page_address(pfn_to_page(pfn)), count * PAGE_SIZE);
-+
-+	if (!IS_ENABLED(CONFIG_FS_DAX_LIMITED) || pfn_valid(pfn))
-+		kaddr = page_address(pfn_to_page(pfn));
-+	else {
-+		ret = bdev_dax_pgoff(mapping->host->i_sb->s_bdev, pfn << 
-PFN_SECTION_SHIFT, count << PAGE_SHIFT, &pgoff);
-+		if (ret)
-+			goto put_unlocked;
-+
-+		ret = dax_direct_access(dax_dev, pgoff, count, &kaddr, &new_pfn_t);
-+		if (ret < 0)
-+			goto put_unlocked;
-+
-+		if (WARN_ON_ONCE(ret < count) || WARN_ON_ONCE(pfn_t_to_pfn(new_pfn_t) 
-!= pfn)) {
-+			ret = -EIO;
-+		        goto put_unlocked;
-+		}
-+	}
-+
-+	dax_flush(dax_dev, kaddr, count * PAGE_SIZE);
-  	/*
-  	 * After we have flushed the cache, we can clear the dirty tag. There
-  	 * cannot be new dirty data in the pfn after the flush has completed as
--- 
+The patch needs some reviews. I suggest you repost.
 
 -- 
-Regards
-Chen Jun
+Martin K. Petersen	Oracle Linux Engineering
