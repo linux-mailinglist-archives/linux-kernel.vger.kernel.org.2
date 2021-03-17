@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D3833E6AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 03:18:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D6433E6B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 03:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhCQCR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 22:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhCQCRu (ORCPT
+        id S229879AbhCQCTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 22:19:03 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13972 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229756AbhCQCSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 22:17:50 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3DCC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 19:17:50 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id a11so387985qto.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 19:17:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9lMncJGKZCfxnFvPgs+zTweoHwj9SGiXOdzwGN+/zuk=;
-        b=pQKfhGKw+4yFsh3+hu+FgiQuoqWhLgRG9zTo+pVzNJ1zhByBAAD751i3EDDSOZi3uP
-         kEnYkGdjRNy2v5wKQpR3LOjL1lzdKzQxpW3tkcGiDPH8CKQzqEP/XxTLbdy0ikR5Ef49
-         9jU+kThv+NaHp7bzz1NnzcT4dZ4ljGvghlMaeiEink+UcBRiQBkQLUSbS2Zg/gf9S8iv
-         ZhBKBm1hhASWfbpEIWrcJ54IImjiJOemCOCQiZ9/FxxGmKSd/MRVEj7cHvk3myWMpfK4
-         nvbPZdpZeUjd4aUyd3T3uiD/FROxDGDp4g0hqzUXYSJRtXidzQrl13QEGegjTcfnGhMR
-         Yqig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9lMncJGKZCfxnFvPgs+zTweoHwj9SGiXOdzwGN+/zuk=;
-        b=cxRCS8gRCEycjs+4raP94ZGIttPm0HqkSSieQkztsQDkTQX3kkd6JUlCWEqNj33+tk
-         WdrKNcaj3i3oRuYj5psXuCjM29r4D3Awyuwa888wB7HwhgY31K9QfikgrRaq33mwCR9r
-         Hnvr1+uK7ogYXgoALNwobddqAbbUpNLXyx3d3ywB60hNK17E/Kl/HkwQmW25RSPpEapv
-         IUxtP1NE/g+ANpjOlwIlluzLoT/uy7nmuP5iv5w/5dXOglaYI+Ct6dtCHVzlECZLBhib
-         K4E74GMkUXeFL2E5GaY+MWBZAV4GbkxqXomlQRNBpeMkoATZcYCbB1uwvInjjUeBannb
-         QdUA==
-X-Gm-Message-State: AOAM531lu8yu2Ov3jvE9sNgF93CuaZ3tdHRT/GMXdlCzflD1stb6OqXC
-        lUtSSiHjYODahKN5T5PmjaC1yv9DrygKUsF8
-X-Google-Smtp-Source: ABdhPJym66IIJzJE8Ms9AskB+Mu0+cnzeT5V0I477tmy3FgjkxC9y+ks/zkD1rPksBFhTryOrevzTA==
-X-Received: by 2002:ac8:4718:: with SMTP id f24mr1858412qtp.270.1615947469414;
-        Tue, 16 Mar 2021 19:17:49 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id h16sm14406221qto.45.2021.03.16.19.17.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 19:17:49 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-kernel@vger.kernel.org, rafael.j.wysocki@intel.com,
-        kai.heng.feng@canonical.com
-Subject: [PATCH][RESEND] Revert "PM: ACPI: reboot: Use S5 for reboot"
-Date:   Tue, 16 Mar 2021 22:17:48 -0400
-Message-Id: <b8db79e6857c41dab4ef08bdf826ea7c47e3bafc.1615947283.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 16 Mar 2021 22:18:48 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F0Ygn1xNBzrXbV;
+        Wed, 17 Mar 2021 10:16:53 +0800 (CST)
+Received: from [10.174.177.131] (10.174.177.131) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 17 Mar 2021 10:18:41 +0800
+Subject: Re: [PATCH v2 1/6] mm/huge_memory.c: rework the function
+ vma_adjust_trans_huge()
+To:     Peter Xu <peterx@redhat.com>
+CC:     <akpm@linux-foundation.org>, <ziy@nvidia.com>,
+        <willy@infradead.org>, <william.kucharski@oracle.com>,
+        <vbabka@suse.cz>, <yulei.kernel@gmail.com>, <walken@google.com>,
+        <aneesh.kumar@linux.ibm.com>, <rcampbell@nvidia.com>,
+        <thomas_os@shipmail.org>, <yang.shi@linux.alibaba.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210316124007.20474-1-linmiaohe@huawei.com>
+ <20210316124007.20474-2-linmiaohe@huawei.com> <20210316204034.GE395976@xz-x1>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <f4bc08ee-36a0-0018-251b-16399a3182ad@huawei.com>
+Date:   Wed, 17 Mar 2021 10:18:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210316204034.GE395976@xz-x1>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.131]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit d60cd06331a3566d3305b3c7b566e79edf4e2095.
+Hi:
+On 2021/3/17 4:40, Peter Xu wrote:
+> On Tue, Mar 16, 2021 at 08:40:02AM -0400, Miaohe Lin wrote:
+>> +static inline void split_huge_pmd_if_needed(struct vm_area_struct *vma, unsigned long address)
+>> +{
+>> +	/*
+>> +	 * If the new address isn't hpage aligned and it could previously
+>> +	 * contain an hugepage: check if we need to split an huge pmd.
+>> +	 */
+>> +	if (address & ~HPAGE_PMD_MASK &&
+>> +	    range_in_vma(vma, address & HPAGE_PMD_MASK,
+>> +			 (address & HPAGE_PMD_MASK) + HPAGE_PMD_SIZE))
+> 
+> Since you're at it, maybe use ALIGN/ALIGN_DOWN too against HPAGE_PMD_SIZE?
+> 
 
-This patch causes a panic when rebooting my Dell Poweredge r440.  I do
-not have the full panic log as it's lost at that stage of the reboot and
-I do not have a serial console.  Reverting this patch makes my system
-able to reboot again.
+Many thanks for reply. Sounds good. :) Do you mean this?
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
-- apologies, I mistyped the lkml list email.
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index bff92dea5ab3..ae16a82da823 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2301,44 +2301,38 @@ void split_huge_pmd_address(struct vm_area_struct *vma, unsigned long address,
+        __split_huge_pmd(vma, pmd, address, freeze, page);
+ }
 
- kernel/reboot.c | 2 --
- 1 file changed, 2 deletions(-)
++static inline void split_huge_pmd_if_needed(struct vm_area_struct *vma, unsigned long address)
++{
++       /*
++        * If the new address isn't hpage aligned and it could previously
++        * contain an hugepage: check if we need to split an huge pmd.
++        */
++       if (!IS_ALIGNED(address, HPAGE_PMD_SIZE) &&
++           range_in_vma(vma, ALIGN_DOWN(address, HPAGE_PMD_SIZE),
++                        ALIGN(address, HPAGE_PMD_SIZE)))
++               split_huge_pmd_address(vma, address, false, NULL);
++}
++
 
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index eb1b15850761..a6ad5eb2fa73 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -244,8 +244,6 @@ void migrate_to_reboot_cpu(void)
- void kernel_restart(char *cmd)
- {
- 	kernel_restart_prepare(cmd);
--	if (pm_power_off_prepare)
--		pm_power_off_prepare();
- 	migrate_to_reboot_cpu();
- 	syscore_shutdown();
- 	if (!cmd)
--- 
-2.26.2
-
+>> +		split_huge_pmd_address(vma, address, false, NULL);
+>> +}
+>
