@@ -2,114 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D57A33E5A9
+	by mail.lfdr.de (Postfix) with ESMTP id 4F75D33E5A8
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbhCQBGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 21:06:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41900 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232097AbhCQBAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233294AbhCQBGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 21:06:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231618AbhCQBAJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 16 Mar 2021 21:00:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 279A764FB6;
-        Wed, 17 Mar 2021 01:00:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615942808;
-        bh=6doY695fcNFJgCQPeD37/bzJKzw8f4iXkCzcMtRpyCU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ftpOQBjK+dbfDqNGB7npsF5kdBDS8G+5YEGy4A5pZCy9nkYmtwWk0PkrJM2uaMzB6
-         NPfiYcBg9kIo1RBzFf6ya/GZ6ev/Kj0Sse37aEqRx05MFl2tH0whaBrDEeqfCQ9tnT
-         aR4O4stVHYDQRZEDfL4B9BNi42ZO0iLF8Uw7PTD3qH2Ta39fEBe0qhaj5vzEdonoCT
-         JU1WYcXu9/+pUHGb/dDA3UGq+TnCq2jq4xGzm99wxAe650JeUG+s/JxmgzZTWdYyq8
-         /IRj/0tVg0HT7U3PPqlX4UdsQCXhWULjOuh0CQZc2TLBrOuYet6GACsYd2IZW8V6cn
-         a0POPAhHHjITw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sergei Trofimovich <slyfox@gentoo.org>,
-        "Dmitry V . Levin" <ldv@altlinux.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-ia64@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 16/16] ia64: fix ptrace(PTRACE_SYSCALL_INFO_EXIT) sign
-Date:   Tue, 16 Mar 2021 20:59:47 -0400
-Message-Id: <20210317005948.727250-16-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210317005948.727250-1-sashal@kernel.org>
-References: <20210317005948.727250-1-sashal@kernel.org>
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48806C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:59:57 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso406819pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:59:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=A2bEAqIF45uVIy1NyhLffdc3Vl3zlbiHGv1l9FcXM1U=;
+        b=hXr7Dv22ffhDrMpBEx2FnaUv5d4cLxWaJzE15/1oSyFNPaaBA06p+hW1FUU3YDX5kv
+         pcsPNuhGhO7X/hhryV8BpOc667fHSwFWujz3V84WXZdapkqsWhTwU375xx9K3lBFU7nj
+         LGV3iTXnb9GHeqHdEZKZz432kt8RdWNHPbWwA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=A2bEAqIF45uVIy1NyhLffdc3Vl3zlbiHGv1l9FcXM1U=;
+        b=YoaTHHymFGsle9odDHecscrm1qfuXBI/W0YSmgvx8OtyZboRWK6LL0Ub036NtBvEqD
+         bvvQc8EUodfcEDTbtcKlxgBGCNgFON7JFVmSvWH7eJB7kC4E8Ff009jAarhAaZBPGYdv
+         qkkL18spEa2MrvKBbWv0JIMGSfjWj2aGZ6wBXu77VM7r6/s1w92p2Dkhy+D7ofQkIv4A
+         kARSSl2F40F6/+IKQzXyyrQj/Nwp4NHe6/0N3b2x2rA0y+RY26bHwG+jitlNWfoSdvMs
+         ygcGN0U8mWpRbpSsGJ72KpDfnr68LWgZPbsn/c6pUn7C/Lz1U/Jo6Sq/Xe8M/34nRDKs
+         et8w==
+X-Gm-Message-State: AOAM533SMkK6jtCGmLh8+KZqQ9qpgN05xRf1MxCxfBhdCnKZG4h95KeT
+        adJyrTLil437nmfbqnZiugXqTw==
+X-Google-Smtp-Source: ABdhPJxfV0VD4LpWQQN9RPf1oD4VSYvZciDFI0ECk+IGfhlQmTgha1/hmVw+zMhQJpGrP33Kfs2hOg==
+X-Received: by 2002:a17:90a:b10a:: with SMTP id z10mr1741356pjq.125.1615942796783;
+        Tue, 16 Mar 2021 17:59:56 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:e1e0:9aee:aecc:ef78])
+        by smtp.gmail.com with ESMTPSA id 205sm13008405pfc.201.2021.03.16.17.59.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 17:59:56 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210315133924.v2.1.I601a051cad7cfd0923e55b69ef7e5748910a6096@changeid>
+References: <20210315133924.v2.1.I601a051cad7cfd0923e55b69ef7e5748910a6096@changeid>
+Subject: Re: [PATCH v2 1/2] arm64: dts: qcom: Add "dmic_clk_en" for sc7180-trogdor-coachz
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Ajit Pandey <ajitp@codeaurora.org>,
+        Judy Hsiao <judyhsiao@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>
+Date:   Tue, 16 Mar 2021 17:59:54 -0700
+Message-ID: <161594279473.1478170.12227892343505111031@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergei Trofimovich <slyfox@gentoo.org>
+Quoting Douglas Anderson (2021-03-15 13:39:30)
+> This was present downstream. Add upstream too. NOTE: upstream I
+> managed to get some sort of halfway state and got one pinctrl entry in
+> the coachz-r1 device tree. Remove that as part of this since it's now
+> in the dtsi.
+>=20
+> Cc: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> Cc: Ajit Pandey <ajitp@codeaurora.org>
+> Cc: Judy Hsiao <judyhsiao@chromium.org>
+> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
+> Cc: Stephen Boyd <swboyd@chromium.org>
+> Cc: Matthias Kaehlcke <mka@chromium.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
 
-[ Upstream commit 61bf318eac2c13356f7bd1c6a05421ef504ccc8a ]
-
-In https://bugs.gentoo.org/769614 Dmitry noticed that
-`ptrace(PTRACE_GET_SYSCALL_INFO)` does not return error sign properly.
-
-The bug is in mismatch between get/set errors:
-
-static inline long syscall_get_error(struct task_struct *task,
-                                     struct pt_regs *regs)
-{
-        return regs->r10 == -1 ? regs->r8:0;
-}
-
-static inline long syscall_get_return_value(struct task_struct *task,
-                                            struct pt_regs *regs)
-{
-        return regs->r8;
-}
-
-static inline void syscall_set_return_value(struct task_struct *task,
-                                            struct pt_regs *regs,
-                                            int error, long val)
-{
-        if (error) {
-                /* error < 0, but ia64 uses > 0 return value */
-                regs->r8 = -error;
-                regs->r10 = -1;
-        } else {
-                regs->r8 = val;
-                regs->r10 = 0;
-        }
-}
-
-Tested on v5.10 on rx3600 machine (ia64 9040 CPU).
-
-Link: https://lkml.kernel.org/r/20210221002554.333076-2-slyfox@gentoo.org
-Link: https://bugs.gentoo.org/769614
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-Reported-by: Dmitry V. Levin <ldv@altlinux.org>
-Reviewed-by: Dmitry V. Levin <ldv@altlinux.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/ia64/include/asm/syscall.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/ia64/include/asm/syscall.h b/arch/ia64/include/asm/syscall.h
-index 1d0b875fec44..ec909eec0b4c 100644
---- a/arch/ia64/include/asm/syscall.h
-+++ b/arch/ia64/include/asm/syscall.h
-@@ -35,7 +35,7 @@ static inline void syscall_rollback(struct task_struct *task,
- static inline long syscall_get_error(struct task_struct *task,
- 				     struct pt_regs *regs)
- {
--	return regs->r10 == -1 ? regs->r8:0;
-+	return regs->r10 == -1 ? -regs->r8:0;
- }
- 
- static inline long syscall_get_return_value(struct task_struct *task,
--- 
-2.30.1
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
