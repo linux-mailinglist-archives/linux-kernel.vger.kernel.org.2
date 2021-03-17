@@ -2,190 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0737933FA57
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 22:14:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6108933FA40
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 22:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbhCQVOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 17:14:16 -0400
-Received: from gateway23.websitewelcome.com ([192.185.48.71]:46058 "EHLO
-        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229809AbhCQVOI (ORCPT
+        id S233509AbhCQVB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 17:01:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231920AbhCQVBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 17:14:08 -0400
-X-Greylist: delayed 1406 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Mar 2021 17:14:07 EDT
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway23.websitewelcome.com (Postfix) with ESMTP id C1A3D524C
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:50:37 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id Md7ll16dlmJLsMd7lloaY4; Wed, 17 Mar 2021 15:50:37 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=DnIZtQW0bcbbdaS/T+teivlKQ5XVsr7Zh+LxMgxl77A=; b=PWVvR0sU3N0KIRxK9Uzfz04Xsx
-        x5ifWNrxZ5YeNj5aKhcigVBl1Af3heKDijEko6iutE3pt2q+TMGFpi4UFna7mkCbThJeU+XTRUplv
-        GTvLmLiYT/K6OZ8/zwGQuy2KK+gk4HwjUah7q6aUay3sA0BkB0e6cXx1UhYCueWls+PcAgf65E62R
-        lQKt1ZOVST5kOiEwNYGN05wrqrYnq9kFPOTvSNQ5DS83Ymw6UQcw+q28c0iMmLyF74C1fSvsHumeY
-        94U2ZGoJwNL6lXxqx7XS09tdYwbW6wL8nsAhQQrmV0eOU8YlDsTKjO6wfjBU2KTDz+CZkobnfRhZG
-        G471hFwQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:33348 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lMd7l-003qlO-9q; Wed, 17 Mar 2021 15:50:37 -0500
-Subject: Re: [Intel-wired-lan] [PATCH][next] ixgbe: Fix out-of-bounds warning
- in ixgbe_host_interface_command()
-To:     Jann Horn <jannh@google.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        intel-wired-lan@lists.osuosl.org, linux-hardening@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20210317064148.GA55123@embeddedor>
- <CAG48ez2RDqKwx=umOHjo_1mYyNQgzvcP=KOw1HgSo4Prs_VQDw@mail.gmail.com>
- <3bd8d009-2ad2-c24d-5c34-5970c52502de@embeddedor.com>
- <CAG48ez2jr_8MbY_sNXfwvs7WsF-5f9j=U4-66dTcgXd2msr39A@mail.gmail.com>
- <03c013b8-4ddb-8e9f-af86-3c43cd746dbb@embeddedor.com>
- <CAG48ez1heVw2WRUMrGskUyJV0wH4YfgbF=raFKWXXM7oY1zKDA@mail.gmail.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <944f3971-544f-49b4-1351-2eb3ee20588b@embeddedor.com>
-Date:   Wed, 17 Mar 2021 14:50:27 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 17 Mar 2021 17:01:10 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B03C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 14:01:10 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id r193so39093ior.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 14:01:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=telus.net; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XIuPYjA6l+N0tkJmYvNT6UOMEbB5ifXWgNDr0ucCHII=;
+        b=ImORc1nRT/HRASaMXqkXN8BsCBCKfXQItBBAcRUwhtwhwx7T3t4HpX0kKhNIhdJcVD
+         hr12+6tl6yzFb6eiNmPL5l7on75J0NnMH9UgvxtxPvdR/1HmYLuG85PHPQlPLPLM8M3S
+         9F0JmEediC2gHcPB0KjzghL5IwOT55EEN3eQqrTdP3aNEnbUm9eIQ+9gCSCJnWyiS5M6
+         VUfy9DBpyzzy70cB4Yt8O7Fx7Akz/0mCIjK9DMJ06y3t0I6Vaud0shtNs9g4hKa2deX2
+         jxCQmQTCUk+Os0qfffc4SFDyIdGj0LHqSbXtc9OTH1jbv64gbrQQWHb8Pd5bzU7p3wAk
+         oqYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XIuPYjA6l+N0tkJmYvNT6UOMEbB5ifXWgNDr0ucCHII=;
+        b=njnWo0GqCSFfluSbz7043j3Ch8lDnMJYh87lioHtMzWe0aF2Qw6TwW4SvoaXgmSEpd
+         tXWEy0AZVKfj1fF3hr3jyZny10zvBRw1i/DsREib6TPI2FkvW2ejyoyH1ufdppNwK7It
+         XYdVbstbpYRAzsB178trp2I5/YTTT0eFPN/Pf37Yd4oGDh5iwXlQvvItImgoOU2LjmEn
+         nuaAGNRDemIYfjEPjaEzIIBpcGydbee/pK/UXlxx0fK0RB7QZ4dzhEN4fULlzAqDqX+E
+         5/SFFzg5W39lQPlmShxgC4POhAK0gerppNTK6x4AZeVhbzBRmft/0iGsW4Scvq7Dtt6v
+         +PFg==
+X-Gm-Message-State: AOAM533HN6hJFVpQdoYvWUZVtT0MfX+5X/53mf1IeC3Y43r86+6MjH5z
+        QHkCYAVPM7zLCa0kniNGE2/1tXdu9T9idpVjKPnr9J2xGyyRCw==
+X-Google-Smtp-Source: ABdhPJwDP2lj/gbUKX+TfHoZVhc7uAFCyPe2vkNo1ZpAiZISMMaL+B8kp8uDxM+MMbmRLZGBK3p1cC3U27SktHyGObw=
+X-Received: by 2002:a02:9048:: with SMTP id y8mr4339484jaf.66.1616014869772;
+ Wed, 17 Mar 2021 14:01:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAG48ez1heVw2WRUMrGskUyJV0wH4YfgbF=raFKWXXM7oY1zKDA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lMd7l-003qlO-9q
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:33348
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 12
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+References: <20210315114827.46036-1-psampat@linux.ibm.com> <20210315114827.46036-3-psampat@linux.ibm.com>
+In-Reply-To: <20210315114827.46036-3-psampat@linux.ibm.com>
+From:   Doug Smythies <dsmythies@telus.net>
+Date:   Wed, 17 Mar 2021 14:00:57 -0700
+Message-ID: <CAAYoRsW-E_Rek-c=e3xr8dTNUWud1AkndNaNySCZpt=h1qSf7g@mail.gmail.com>
+Subject: Re: [RFC 2/2] selftest/cpuidle: Add support for cpuidle latency measurement
+To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
+Cc:     rjw@rjwysocki.net, Daniel Lezcano <daniel.lezcano@linaro.org>,
+        shuah@kernel.org, ego@linux.vnet.ibm.com, svaidy@linux.ibm.com,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, pratik.r.sampat@gmail.com,
+        dsmythies <dsmythies@telus.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Pratik,
 
+It just so happens that I have been trying Artem's version this last
+week, so I tried yours.
 
-On 3/17/21 15:10, Jann Horn wrote:
-> On Wed, Mar 17, 2021 at 9:04 PM Gustavo A. R. Silva
-> <gustavo@embeddedor.com> wrote:
->> On 3/17/21 13:57, Jann Horn wrote:
->>>>>> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
->>>>>> index 62ddb452f862..bff3dc1af702 100644
->>>>>> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
->>>>>> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
->>>>>> @@ -3679,7 +3679,7 @@ s32 ixgbe_host_interface_command(struct ixgbe_hw *hw, void *buffer,
->>>>>>         u32 hdr_size = sizeof(struct ixgbe_hic_hdr);
->>>>>>         union {
->>>>>>                 struct ixgbe_hic_hdr hdr;
->>>>>> -               u32 u32arr[1];
->>>>>> +               u32 *u32arr;
->>>>>>         } *bp = buffer;
->>>>>>         u16 buf_len, dword_len;
->>>>>>         s32 status;
->>>>>
->>>>> This looks bogus. An array is inline, a pointer points elsewhere -
->>>>> they're not interchangeable.
->>>>
->>>> Yep; but in this case these are the only places in the code where _u32arr_ is
->>>> being used:
->>>>
->>>> 3707         /* first pull in the header so we know the buffer length */
->>>> 3708         for (bi = 0; bi < dword_len; bi++) {
->>>> 3709                 bp->u32arr[bi] = IXGBE_READ_REG_ARRAY(hw, IXGBE_FLEX_MNG, bi);
->>>> 3710                 le32_to_cpus(&bp->u32arr[bi]);
->>>> 3711         }
->>>
->>> So now line 3709 means: Read a pointer from bp->u32arr (the value
->>> being read from there is not actually a valid pointer), and write to
->>> that pointer at offset `bi`. I don't see how that line could execute
->>> without crashing.
->>
->> Yeah; you're right. I see my confusion now. Apparently, there is no escape
->> from allocating heap memory to fix this issue, as I was proposing in my
->> last email.
-> 
-> Why? Can't you do something like this?
+On Mon, Mar 15, 2021 at 4:49 AM Pratik Rajesh Sampat
+<psampat@linux.ibm.com> wrote:
+>
+...
+> To run this test specifically:
+> $ make -C tools/testing/selftests TARGETS="cpuidle" run_tests
 
-Yep; it seems you're right. I was thinking in terms of a flexible array. Also,
-I think I needed more coffee in my system this morning and I need to stop
-working after midnight. :)
+While I suppose it should have been obvious, I interpreted
+the "$" sign to mean I could run as a regular user, which I can not.
 
-I'll send a proper patch for this, shortly. I'll add your Proposed-by
-and Co-developed-by tags to the changelog text.
+> There are a few optinal arguments too that the script can take
+>         [-h <help>]
+>         [-m <location of the module>]
+>         [-o <location of the output>]
+>         [-v <verbose> (run on all cpus)]
+> Default Output location in: tools/testing/cpuidle/cpuidle.log
 
-Thanks a lot for the feedback. I really appreciate it. :)
---
-Gustavo
+Isn't it:
 
+tools/testing/selftests/cpuidle/cpuidle.log
 
-> 
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
-> b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
-> index 62ddb452f862..768fa124105b 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
-> @@ -3677,10 +3677,8 @@ s32 ixgbe_host_interface_command(struct
-> ixgbe_hw *hw, void *buffer,
->                                  bool return_data)
->  {
->         u32 hdr_size = sizeof(struct ixgbe_hic_hdr);
-> -       union {
-> -               struct ixgbe_hic_hdr hdr;
-> -               u32 u32arr[1];
-> -       } *bp = buffer;
-> +       u32 *bp = buffer;
-> +       struct ixgbe_hic_hdr hdr;
->         u16 buf_len, dword_len;
->         s32 status;
->         u32 bi;
-> @@ -3706,12 +3704,13 @@ s32 ixgbe_host_interface_command(struct
-> ixgbe_hw *hw, void *buffer,
-> 
->         /* first pull in the header so we know the buffer length */
->         for (bi = 0; bi < dword_len; bi++) {
-> -               bp->u32arr[bi] = IXGBE_READ_REG_ARRAY(hw, IXGBE_FLEX_MNG, bi);
-> -               le32_to_cpus(&bp->u32arr[bi]);
-> +               bp[bi] = IXGBE_READ_REG_ARRAY(hw, IXGBE_FLEX_MNG, bi);
-> +               le32_to_cpus(&bp[bi]);
->         }
-> 
->         /* If there is any thing in data position pull it in */
-> -       buf_len = bp->hdr.buf_len;
-> +       memcpy(&hdr, bp, sizeof(hdr));
-> +       buf_len = hdr.buf_len;
->         if (!buf_len)
->                 goto rel_out;
-> 
-> @@ -3726,8 +3725,8 @@ s32 ixgbe_host_interface_command(struct ixgbe_hw
-> *hw, void *buffer,
-> 
->         /* Pull in the rest of the buffer (bi is where we left off) */
->         for (; bi <= dword_len; bi++) {
-> -               bp->u32arr[bi] = IXGBE_READ_REG_ARRAY(hw, IXGBE_FLEX_MNG, bi);
-> -               le32_to_cpus(&bp->u32arr[bi]);
-> +               bp[bi] = IXGBE_READ_REG_ARRAY(hw, IXGBE_FLEX_MNG, bi);
-> +               le32_to_cpus(&bp[bi]);
->         }
-> 
->  rel_out:
-> 
+? At least, that is where my file was.
+
+Other notes:
+
+No idle state for CPU 0 ever gets disabled.
+I assume this is because CPU 0 can never be offline,
+so that bit of code (Disable all stop states) doesn't find its state.
+By the way, processor = Intel i5-9600K
+
+The system is left with all idle states disabled, well not for CPU 0
+as per the above comment. The suggestion is to restore them,
+otherwise my processor hogs 42 watts instead of 2.
+
+My results are highly variable per test.
+My system is very idle:
+Example (from turbostat at 6 seconds sample rate):
+Busy%   Bzy_MHz IRQ     PkgTmp  PkgWatt RAMWatt
+0.03    4600    153     28      2.03    1.89
+0.01    4600    103     29      2.03    1.89
+0.05    4600    115     29      2.08    1.89
+0.01    4600    95      28      2.09    1.89
+0.03    4600    114     28      2.11    1.89
+0.01    4600    107     29      2.07    1.89
+0.02    4600    102     29      2.11    1.89
+
+...
+
+... Doug
