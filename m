@@ -2,71 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB66C33FA2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:56:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5080133FA2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:57:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbhCQU4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 16:56:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46490 "EHLO mail.kernel.org"
+        id S233498AbhCQU4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 16:56:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:47512 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233443AbhCQUzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 16:55:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3309264E90;
-        Wed, 17 Mar 2021 20:55:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616014546;
-        bh=8YHIy2QJi0Zbnx676evVVkiFT4TAs3P+dNjW2VdjjY4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=j/NREaNObGhuCT7gWW8ChdtLt63hXPXIvf2zC/G9cSWGW/JgIAzi6lYKt3hLJfpEG
-         hQrw8seR3wePUKUt4+1rOVdW16PMnPzALHoEdTR0wV6zfFQvfDKumpDO8c4Q1gT8KP
-         6DSMJ85gp6wDzmLWGXcm2sy+r9aUJGVVThh7kFgQQnbB5l1P0gcuKUCBrXjIKbdEog
-         5vMjmUIBGo0SCzLXQZxz4jz+Y8qG+6mM5025rEsV4fu/XPfclMUxNVSRy4AaNBFkOC
-         r11ZVNpLFMdV/HiLv0C4cnR0+K6BzyOMQDhd5xrtNIO7EdlV0ghztnfmHld4wGsBL9
-         TpXUHdUm686Vw==
-Date:   Wed, 17 Mar 2021 13:55:44 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ong Boon Leong <boon.leong.ong@intel.com>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 1/1] net: stmmac: add per-queue TX & RX
- coalesce ethtool support
-Message-ID: <20210317135544.3da32504@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210317010123.6304-2-boon.leong.ong@intel.com>
-References: <20210317010123.6304-1-boon.leong.ong@intel.com>
-        <20210317010123.6304-2-boon.leong.ong@intel.com>
+        id S233391AbhCQU4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 16:56:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C512B1FB;
+        Wed, 17 Mar 2021 13:56:15 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB28F3F70D;
+        Wed, 17 Mar 2021 13:56:14 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-ia64\@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        debian-ia64 <debian-ia64@lists.debian.org>
+Subject: Re: [PATCH 0/1] sched/topology: NUMA distance deduplication
+In-Reply-To: <87zgz1pmx4.mognet@arm.com>
+References: <255d6b5d-194e-eb0e-ecdd-97477a534441@physik.fu-berlin.de> <8735wtr2ro.mognet@arm.com> <cf4d7277-54a0-8bc7-60fb-9b2f6befb511@physik.fu-berlin.de> <87zgz1pmx4.mognet@arm.com>
+Date:   Wed, 17 Mar 2021 20:56:12 +0000
+Message-ID: <87wnu5pkib.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Mar 2021 09:01:23 +0800 Ong Boon Leong wrote:
-> Extending the driver to support per-queue RX and TX coalesce settings in
-> order to support below commands:
-> 
-> To show per-queue coalesce setting:-
->  $ ethtool --per-queue <DEVNAME> queue_mask <MASK> --show-coalesce
-> 
-> To set per-queue coalesce setting:-
->  $ ethtool --per-queue <DEVNAME> queue_mask <MASK> --coalesce \
->      [rx-usecs N] [rx-frames M] [tx-usecs P] [tx-frames Q]
-> 
-> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+On 17/03/21 20:04, Valentin Schneider wrote:
+> Technically it *is* coping with it, it's just dumping the entire NUMA
+> distance matrix in the process... Let me see if I can't figure out why your
+> system doesn't end up with nr_node_ids=1.
+>
 
-Acked-by: Jakub Kicinski <kuba@kernel.org>
+Does the below
+a) compile
+b) do anything?
 
-> +	if (queue < tx_cnt) {
-> +		ec->tx_coalesce_usecs = priv->tx_coal_timer[queue];
-> +		ec->tx_max_coalesced_frames = priv->tx_coal_frames[queue];
-> +	} else {
-> +		ec->tx_coalesce_usecs = 0;
-> +		ec->tx_max_coalesced_frames = 0;
+From what I could gather, nothing actually tickles the possible map for
+ia64. The standard pattern seems to be
 
-nit: I think the struct is initialized to 0 so there is no need to set
-it explicitly.
+        node_possible_map = numa_nodes_parsed;
+
+but here at a quick glance it seems it's online or nothing, so that's what
+I went for.
+
+HTH.
+
+---
+diff --git a/arch/ia64/kernel/acpi.c b/arch/ia64/kernel/acpi.c
+index a5636524af76..e2af6b172200 100644
+--- a/arch/ia64/kernel/acpi.c
++++ b/arch/ia64/kernel/acpi.c
+@@ -446,7 +446,8 @@ void __init acpi_numa_fixup(void)
+ 	if (srat_num_cpus == 0) {
+ 		node_set_online(0);
+ 		node_cpuid[0].phys_id = hard_smp_processor_id();
+-		return;
++		slit_distance(0, 0) = LOCAL_DISTANCE;
++		goto out;
+ 	}
+ 
+ 	/*
+@@ -489,7 +490,7 @@ void __init acpi_numa_fixup(void)
+ 			for (j = 0; j < MAX_NUMNODES; j++)
+ 				slit_distance(i, j) = i == j ?
+ 					LOCAL_DISTANCE : REMOTE_DISTANCE;
+-		return;
++		goto out;
+ 	}
+ 
+ 	memset(numa_slit, -1, sizeof(numa_slit));
+@@ -514,6 +515,8 @@ void __init acpi_numa_fixup(void)
+ 		printk("\n");
+ 	}
+ #endif
++out:
++	node_possible_map = node_online_map;
+ }
+ #endif				/* CONFIG_ACPI_NUMA */
+ 
