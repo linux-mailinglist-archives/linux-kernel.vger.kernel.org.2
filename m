@@ -2,144 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10C733EAF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:59:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C455933EAF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbhCQH6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 03:58:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53998 "EHLO
+        id S230221AbhCQH7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 03:59:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbhCQH6S (ORCPT
+        with ESMTP id S230041AbhCQH6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 03:58:18 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20DDC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 00:58:18 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id t18so652933pjs.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 00:58:18 -0700 (PDT)
+        Wed, 17 Mar 2021 03:58:52 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493F0C06174A;
+        Wed, 17 Mar 2021 00:58:52 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 20so1533782lfj.13;
+        Wed, 17 Mar 2021 00:58:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=I20ao//jp0K+ljf1zyYRmUDybDGX4o2ZQ8hxDCPtACs=;
-        b=grlmjP9cLtgbJiOVVtTbtM9/sum9yzN6kUjg+qj2AT2HHoCwMg/hZ+ajTEmXhLd4Go
-         8IUt/u2OhcF0Lg0BI2M4P2BRFgLjpNL/Uf1kuek5vH0u5J1q6gEKYQWGCymwOT/Mg3W4
-         AXckl48lO3Q2vWc0mSuVaGOKfDPvABPsJIDaU=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2LgKjTDGsyu/sA3V9tv6SweCwbT0eEY8NFDEvhoTJIw=;
+        b=bbq8FSR1oR15UcJu3OGSlMQzNZQ5xiZUcjDe9Ue3QbuznpKpzvSEF7hhqCxTzlb2lI
+         3mY1YDUC06S687d/m+DSdmcNnfyTeEQoiBBaBb5asRW8lvhgm8ne6fdmP1ig8vcZetSO
+         eurwyglORglnHAvfDGsjfG1e/PWE3LZ7EssFbgzO/BszWj8ZQlkTjuf1G7ChZPFJlC8e
+         e9TmzRF8KkW3o2ZdaH+V+5GQwRhtjXQ7KnTteoLH0iPdgQvCvtsUwUlmMFWUCOf35ESr
+         ZSb4N20Z+N52wFObW7hV3qdN4zAmlYaE1e0Ci4b4rN0KTsfKKSMAAR1VX5PN7z0vcTDn
+         oihg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=I20ao//jp0K+ljf1zyYRmUDybDGX4o2ZQ8hxDCPtACs=;
-        b=KNcuxgm/OrEiywOkp/PdGoVNT7/GJVs3gq3b3Ta+1HCSgRGKiyVRAbbD47pNul9G26
-         yzE/zD9Gzb/FNbkAEHSXwe95MHz1Ig9BMrU3cfwXR4YQ+whbqiR8pTlWpMrkM3bcZZBS
-         TKUFa7AS8+L5Qz+wa9E4TYq4dKce8Jehs/6MVost+ajo4fbFzCINmH0QzWDoeDdombm2
-         uBXKMaPYD3+NJQt+NrwL1hoqV6mbwrxDcgBa3kKte6JmLH9a7XKVxfgY+diDj9p1UTyB
-         0zon9XgIrK7e1A5r2s86p5jgoZVpk+oLp+UpB7kXqj2MUB2N/W9XPuArjSgx7g4PT/d9
-         G9sw==
-X-Gm-Message-State: AOAM531DbGek/YdlhjuIIHYrry9fCwkg44IZtxlek8gf8PgEzFsoiYRs
-        r7V9s/uVpKhnAGg4Td+h246DtA==
-X-Google-Smtp-Source: ABdhPJxYxOzfNLuJLRkClYD1JdcEoh936YPYAebHe0scmNtkzZ7wQeI3uoofXXe493EipbmEgLeTBQ==
-X-Received: by 2002:a17:90a:ce0d:: with SMTP id f13mr3249699pju.85.1615967898257;
-        Wed, 17 Mar 2021 00:58:18 -0700 (PDT)
-Received: from localhost (2001-44b8-1113-6700-13b2-19b2-2ae0-4d54.static.ipv6.internode.on.net. [2001:44b8:1113:6700:13b2:19b2:2ae0:4d54])
-        by smtp.gmail.com with ESMTPSA id nk3sm1717212pjb.17.2021.03.17.00.58.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 00:58:17 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     "heying \(H\)" <heying24@huawei.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, npiggin@gmail.com,
-        akpm@linux-foundation.org, aneesh.kumar@linux.ibm.com,
-        rppt@kernel.org, ardb@kernel.org, clg@kaod.org,
-        christophe.leroy@csgroup.eu
-Cc:     johnny.chenyi@huawei.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc: arch/powerpc/kernel/setup_64.c - cleanup warnings
-In-Reply-To: <f0130916-a8f3-75ba-b5da-7d37d9139ff3@huawei.com>
-References: <20210316041148.29694-1-heying24@huawei.com> <87wnu6bhvi.fsf@dja-thinkpad.axtens.net> <f0130916-a8f3-75ba-b5da-7d37d9139ff3@huawei.com>
-Date:   Wed, 17 Mar 2021 18:58:14 +1100
-Message-ID: <87tupab4a1.fsf@dja-thinkpad.axtens.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2LgKjTDGsyu/sA3V9tv6SweCwbT0eEY8NFDEvhoTJIw=;
+        b=A1aEu/pPXBtpMozpPzn1H2iePcJgjUDrQCa7aSYnydb/IwVEdNMSLybO7g06/G6Y1j
+         iCHfN7vszlPa5aMUqhnNcJzlm2XrG3UXvoR/3sWPiqXTAqfsLYUoK4L7RFs1kf1vSrdO
+         Vg80KhEpsX6zticfGPn86HKjd/Au0NcVeSB8vOUW7xDAKWq177I7vG3lzUfYfDxDu5nM
+         Qhhpk+elvaHJjD7rdbBSs0b740V/dNOkcLs6wrbPerfiSi7l2XnMoZR+2msi56PM89R0
+         Vq72hTLl4Biq0jvfJNepORTWWgfrfwV9OV132Mbw9OV4tn6gUImWKmPvquuU99IxcLi2
+         XMHw==
+X-Gm-Message-State: AOAM531OGuBkWu+UIRIW+B7O6ecCy+dKmdgTvDVLYmAJDfq1tRp7fFI4
+        eHzEXQyPuU4vQsHIeqnp6WMuZu19SULj84yK1DdnG1aLWYQ=
+X-Google-Smtp-Source: ABdhPJwxtUCPA0FJFug59UGVl4/99ti5a0oEAcrWjcnf82tw3sL4FMyMotz1gydIQqdQrYBYsbrIDZaYweGCXNjorZY=
+X-Received: by 2002:a05:6512:131c:: with SMTP id x28mr1607871lfu.387.1615967930786;
+ Wed, 17 Mar 2021 00:58:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210208051749.1785246-1-sergey.senozhatsky@gmail.com>
+ <20210208051749.1785246-4-sergey.senozhatsky@gmail.com> <CAPybu_10Uz0Eb2U5ZohNV1t0gf98ZBZOa3KFCzdi1RJ0k3c1yQ@mail.gmail.com>
+ <YFFiizDjNBMG3uI+@google.com>
+In-Reply-To: <YFFiizDjNBMG3uI+@google.com>
+From:   Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date:   Wed, 17 Mar 2021 08:58:34 +0100
+Message-ID: <CAPybu_0ruoc-w3402j-vVNs2-xq8=-_XzVKSxiG+iuyB=eNimA@mail.gmail.com>
+Subject: Re: [PATCHv2 3/3] media: uvcvideo: add UVC 1.5 ROI control
+To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Ricardo Ribalda <ribalda@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"heying (H)" <heying24@huawei.com> writes:
+Hi
 
-> Thank you for your reply.
+On Wed, Mar 17, 2021 at 2:59 AM Sergey Senozhatsky
+<sergey.senozhatsky.work@gmail.com> wrote:
 >
+> On (21/03/16 19:46), Ricardo Ribalda Delgado wrote:
+> > > -static int uvc_ioctl_g_selection(struct file *file, void *fh,
+> > > -                                struct v4l2_selection *sel)
+> > > +/* UVC 1.5 ROI rectangle is half the size of v4l2_rect */
+> > > +struct uvc_roi_rect {
+> > > +       __u16                   top;
+> > > +       __u16                   left;
+> > > +       __u16                   bottom;
+> > > +       __u16                   right;
+> > > +};
+> >
+> > Perhaps __packed; ?
 >
-> =E5=9C=A8 2021/3/17 11:04, Daniel Axtens =E5=86=99=E9=81=93:
->> Hi He Ying,
->>
->> Thank you for this patch.
->>
->> I'm not sure what the precise rules for Fixes are, but I wonder if this
->> should have:
->>
->> Fixes: 9a32a7e78bd0 ("powerpc/64s: flush L1D after user accesses")
->> Fixes: f79643787e0a ("powerpc/64s: flush L1D on kernel entry")
+> Perhaps.
 >
-> Is that necessary for warning cleanups? I thought 'Fixes' tags are=20
-> needed only for
+> > > +static int uvc_ioctl_g_selection(struct file *file, void *fh,
+> > > +                                struct v4l2_selection *sel)
+> > > +{
+> > > +       struct uvc_fh *handle = fh;
+> > > +       struct uvc_streaming *stream = handle->stream;
+> > > +
+> > > +       if (sel->type != stream->type)
+> > > +               return -EINVAL;
+> > > +
+> > > +       switch (sel->target) {
+> > > +       case V4L2_SEL_TGT_CROP_DEFAULT:
+> > > +       case V4L2_SEL_TGT_CROP_BOUNDS:
+> > > +       case V4L2_SEL_TGT_COMPOSE_DEFAULT:
+> > > +       case V4L2_SEL_TGT_COMPOSE_BOUNDS:
+> > > +               return uvc_ioctl_g_sel_target(file, fh, sel);
+> > > +       case V4L2_SEL_TGT_ROI_CURRENT:
+> > > +       case V4L2_SEL_TGT_ROI_DEFAULT:
+> > > +       case V4L2_SEL_TGT_ROI_BOUNDS:
+> > > +               return uvc_ioctl_g_roi_target(file, fh, sel);
+> > > +       }
+> > > +
+> > > +       return -EINVAL;
+> > > +}
+> >
+> > Are you sure that there is no lock needed between the control and the
+> > selection API?
 >
-> bugfix patches. Can someone tell me whether I am right?
+> Between V4L2_CID_REGION_OF_INTEREST_AUTO and this path?
+> Hmm. They write to different offsets and don't seem to be overlapping.
+>
+> > > +static bool validate_roi_bounds(struct uvc_streaming *stream,
+> > > +                               struct v4l2_selection *sel)
+> > > +{
+> > > +       bool ok = true;
+> > > +
+> > > +       if (sel->r.left > USHRT_MAX || sel->r.top > USHRT_MAX ||
+> > > +           sel->r.width > USHRT_MAX || sel->r.height > USHRT_MAX)
+> > > +               return false;
+> > > +
+> > > +       /* perhaps also can test against ROI GET_MAX */
+> > > +
+> > > +       mutex_lock(&stream->mutex);
+> [...]
+> > > +       if ((u16)sel->r.width > stream->cur_frame->wWidth)
+> > > +               ok = false;
+> > > +       if ((u16)sel->r.height > stream->cur_frame->wHeight)
+> > > +               ok = false;
+>
+> > Maybe you should not release this mutex until query_ctrl is done?
+>
+> Maybe... These two tests are somewhat made up. Not sure if we need them.
+> On one hand it's reasonable to keep ROI within the frames. On the other
+> hand - such relation is not spelled out in the spec. If the stream change
+> its frame dimensions ROI is not getting invalidated or re-calculated by
+> the firmware. UVC spec says that ROI should be bounded only by the
+> CT_DIGITAL_WINDOW_CONTROL (GET_MIN / GET_MAX), ut we don't implement
+> WINDOW_CONTROL.
 
-Yeah, I'm not sure either. Hopefully mpe will let us know.
-
-Kind regards,
-Daniel
+I would remove this check completely then, and rely on set_cur,
+get_cur. Leave only the < 0x10000 check
 
 >
->>
->> Those are the commits that added the entry_flush and uaccess_flush
->> symbols. Perhaps one for rfi_flush too but I'm not sure what commit
->> introduced that.
->>
->> Kind regards,
->> Daniel
->>
->>> warning: symbol 'rfi_flush' was not declared.
->>> warning: symbol 'entry_flush' was not declared.
->>> warning: symbol 'uaccess_flush' was not declared.
->>> We found warnings above in arch/powerpc/kernel/setup_64.c by using
->>> sparse tool.
->>>
->>> Define 'entry_flush' and 'uaccess_flush' as static because they are not
->>> referenced outside the file. Include asm/security_features.h in which
->>> 'rfi_flush' is declared.
->>>
->>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>> Signed-off-by: He Ying <heying24@huawei.com>
->>> ---
->>>   arch/powerpc/kernel/setup_64.c | 5 +++--
->>>   1 file changed, 3 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/arch/powerpc/kernel/setup_64.c b/arch/powerpc/kernel/setup=
-_64.c
->>> index 560ed8b975e7..f92d72a7e7ce 100644
->>> --- a/arch/powerpc/kernel/setup_64.c
->>> +++ b/arch/powerpc/kernel/setup_64.c
->>> @@ -68,6 +68,7 @@
->>>   #include <asm/early_ioremap.h>
->>>   #include <asm/pgalloc.h>
->>>   #include <asm/asm-prototypes.h>
->>> +#include <asm/security_features.h>
->>>=20=20=20
->>>   #include "setup.h"
->>>=20=20=20
->>> @@ -949,8 +950,8 @@ static bool no_rfi_flush;
->>>   static bool no_entry_flush;
->>>   static bool no_uaccess_flush;
->>>   bool rfi_flush;
->>> -bool entry_flush;
->>> -bool uaccess_flush;
->>> +static bool entry_flush;
->>> +static bool uaccess_flush;
->>>   DEFINE_STATIC_KEY_FALSE(uaccess_flush_key);
->>>   EXPORT_SYMBOL(uaccess_flush_key);
->>>=20=20=20
->>> --=20
->>> 2.17.1
->> .
+> So maybe I can remove stream->cuf_frame boundaries check instead.
+>
+> > > +       mutex_unlock(&stream->mutex);
+> > > +
+> > > +       return ok;
+> > > +}
+> > > +
+> > > +static int uvc_ioctl_s_roi(struct file *file, void *fh,
+> > > +                          struct v4l2_selection *sel)
+> > > +{
+> > > +       struct uvc_fh *handle = fh;
+> > > +       struct uvc_streaming *stream = handle->stream;
+> > > +       struct uvc_roi_rect *roi;
+> > > +       int ret;
+> > > +
+> > > +       if (!validate_roi_bounds(stream, sel))
+> > > +               return -E2BIG;
+> > > +
+> > > +       roi = kzalloc(sizeof(struct uvc_roi_rect), GFP_KERNEL);
+> > > +       if (!roi)
+> > > +               return -ENOMEM;
+> > > +
+> > > +       roi->left       = sel->r.left;
+> > > +       roi->top        = sel->r.top;
+> > > +       roi->right      = sel->r.width;
+> > > +       roi->bottom     = sel->r.height;
+> > > +
+> > > +       ret = uvc_query_ctrl(stream->dev, UVC_SET_CUR, 1, stream->dev->intfnum,
+> > > +                            UVC_CT_REGION_OF_INTEREST_CONTROL, roi,
+> > > +                            sizeof(struct uvc_roi_rect));
+> >
+> > I think you need to read back from the device the actual value
+>
+> GET_CUR?
+yep
+
+>
+> > https://www.kernel.org/doc/html/v4.13/media/uapi/v4l/vidioc-g-selection.html?highlight=vidioc_s_selection
+> > On success the struct v4l2_rect r field contains the adjusted
+> > rectangle.
+>
+> What is the adjusted rectangle here? Does this mean that firmware can
+> successfully apply SET_CUR and return 0, but in reality it was not happy
+> with the rectangle dimensions so it modified it behind the scenes?
+
+I can imagine that some hw might have spooky requirements for the roi
+rectangle (multiple of 4, not crossing the bayer filter, odd/even
+line...) so they might be able to go the closest valid config.
+
+
+>
+> I can add GET_CUR I guess, but do we want to double the traffic, given
+> that ROI SET_CUR can be executed relatively often?
+
+
+
+--
+Ricardo Ribalda
