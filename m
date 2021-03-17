@@ -2,88 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A368533F9E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B32533F9E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:22:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbhCQUV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 16:21:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45838 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233271AbhCQUVG (ORCPT
+        id S233437AbhCQUWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 16:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233255AbhCQUVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 16:21:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616012463;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AlpPY6ekxOjyJjbkL7CucsibdK3fSyFUbHC5754coLk=;
-        b=fr5z1g8kcIXZi8jQtg0UhVgyruC7v3tLUvpRM3NpRZYZMnRmIwCqpEGUIaL6ZSHh1a7ntt
-        940GjXeVPfRiMfYaanxN3ypiWbYPY7K5BBYQNKXMdlLG5oe+SaqpOnhd63z8LTZDYT0JAI
-        /1aJorTAqWkZDet9FUu6Z1NiPjQ0pjw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-335-aFeaLzXvMFC2jr6ROMV3iQ-1; Wed, 17 Mar 2021 16:21:01 -0400
-X-MC-Unique: aFeaLzXvMFC2jr6ROMV3iQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACDE71043360;
-        Wed, 17 Mar 2021 20:20:59 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-117-171.rdu2.redhat.com [10.10.117.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 231F960C13;
-        Wed, 17 Mar 2021 20:20:59 +0000 (UTC)
-Subject: Re: [tip: locking/urgent] locking/ww_mutex: Treat ww_mutex_lock()
- like a trylock
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org
-References: <20210316153119.13802-4-longman@redhat.com>
- <161598470197.398.8903908266426306140.tip-bot2@tip-bot2>
- <YFIASRkXowQWgj2s@hirez.programming.kicks-ass.net>
- <YFIEo8IVQ/Mm9jUE@hirez.programming.kicks-ass.net>
- <e1bcd7fb-3a40-f207-ee19-d276c8b8bb75@redhat.com>
- <e39f4e37-e3c0-e62a-7062-fdd2c8b3d3b9@redhat.com>
- <YFIy8Bzj7WAHFmlG@hirez.programming.kicks-ass.net>
- <YFI/C4VZuWjyHLNK@hirez.programming.kicks-ass.net>
- <YFJAP8x917Ef0Khj@hirez.programming.kicks-ass.net>
- <36d26109-f08a-6254-2fd3-ad1a28fcc260@redhat.com>
- <20210317195834.GV4746@worktop.programming.kicks-ass.net>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <5533bdea-4250-759d-1a5d-007914aad2ff@redhat.com>
-Date:   Wed, 17 Mar 2021 16:20:58 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <20210317195834.GV4746@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Wed, 17 Mar 2021 16:21:54 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB93C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:21:54 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id x184so1924786pfd.6
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:21:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=gDAq4DE4PBvBHlZJ3CaMSbFvBl5PB60V3/mTqquUBA0=;
+        b=nqNnsd9QjmZAEesBQrZiDjMyz3oLxxXJxKtkKMe8GT3X2N6dFYpbXOzZSISq+SZbFu
+         tSC9Z6PDiZMWE/xGc/MwC8vtjq+rRJm8icXpKQHAnrxx7MO1URm+sTtT/fv/wuirgPG4
+         GV6TlokkfSmrLjle/XO9RMiamLMB8xLeizvigigoN/TwoKTpTDwobhY9luHgQko3A3Ve
+         tK6u3Shsmz9IzoedC5GoT3gz4mrhoeeBJuQkGnv3fJsFqIsgXxjMspnhULe29+lIOI0E
+         kfAW6p39MN1Q4MTYcF1hNL/JC8f0tfGrPYjEMzwZu+xmKmGXDpwXe5zwIQsIjGTZMzTS
+         f7ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=gDAq4DE4PBvBHlZJ3CaMSbFvBl5PB60V3/mTqquUBA0=;
+        b=BUYpR1DcrqGjafxSFGtmOMH3whGWDqfdV+++oisvH1x+vHWGx09Zc161OdSlmikRMi
+         iOdc1suHP9U6Qgc23B211KbnnA6y37nNJ7QhrIM1YpiytXYZPQuJm8KytxI/UwfQOlHV
+         sKM4sWeWKYTSHhr4MRpNT62+NXqLk1wKGlbs57123LVfqZQ7MswQiKMmRlrl/Gb/w/as
+         b3uF6GRvwN1BjPBYkN4tynRNO22ab+LtrusfkLoFnDUV5YCFtOQNDqxGf2wH4GcJazzy
+         f78qLpUqYchWtyn+IiiRtoy107TMuiK5WKe3M9aeMlxbi5nzKX8Tpt/gdx1BhMeb8LJH
+         txyA==
+X-Gm-Message-State: AOAM532RUsgWjyVqazJE2gOQ4R2BEB4d+2JT2vuMb9ZKTDSSCJUqVkdg
+        pIygIRkcL+xp564khGHoAvo=
+X-Google-Smtp-Source: ABdhPJw//WXqfEPZhDC07hr0kMIG47o3Qo6OU6JBopYEdvbfgnNCCWuUDtw9QnzuRULP02XBC5CIKQ==
+X-Received: by 2002:aa7:9605:0:b029:20e:b183:fc89 with SMTP id q5-20020aa796050000b029020eb183fc89mr695965pfg.70.1616012514025;
+        Wed, 17 Mar 2021 13:21:54 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:600d:a089:85d1:b0af:d6ff:42d8])
+        by smtp.googlemail.com with ESMTPSA id e1sm8555pjt.10.2021.03.17.13.21.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 13:21:53 -0700 (PDT)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     alsa-devel@alsa-project.org
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org, perex@perex.cz,
+        tiwai@suse.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: asihpi: fix comment syntax in file headers
+Date:   Thu, 18 Mar 2021 01:51:44 +0530
+Message-Id: <20210317202144.20290-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 3:58 PM, Peter Zijlstra wrote:
-> On Wed, Mar 17, 2021 at 02:32:27PM -0400, Waiman Long wrote:
->> On 3/17/21 1:45 PM, Peter Zijlstra wrote:
->>>> +# define __DEP_MAP_WW_MUTEX_INITIALIZER(lockname, class) \
->>>> +		, .dep_map = { \
->>>> +			.key = &(class).mutex_key, \
->>>> +			.name = (class).mutex_name, \
->>> 			,name = #class "_mutex", \
->>>
->>> and it 'works', but shees!
->> The name string itself may be duplicated for multiple instances of
->> DEFINE_WW_MUTEX(). Do you want to keep DEFINE_WW_MUTEX() or just use
->> ww_mutex_init() for all?
-> So linkers can merge literals, but no guarantee. But yeah, lets just
-> kill the thing, less tricky macro crud to worry about.
->
-Good, just to confirm the right way to move forward.
+The opening comment mark '/**' is used for highlighting the beginning of
+kernel-doc comments.
+There are files in sound/pci/asihpi which follow this syntax in their file
+headers, i.e. start with '/**' like comments, which causes unexpected
+warnings from kernel-doc.
 
-Cheers,
-Longman
+E.g., running scripts/kernel-doc -none on sound/pci/asihpi/hpidspcd.h
+causes this warning:
+"warning: Cannot understand
+ on line 4 - I thought it was a doc line"
+
+Provide a simple fix by replacing the kernel-doc like comment syntax with
+general format, i.e. "/*", to prevent kernel-doc from parsing it.
+
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+* Applies perfectly on next-20210312
+
+ sound/pci/asihpi/hpicmn.h   | 2 +-
+ sound/pci/asihpi/hpidspcd.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/asihpi/hpicmn.h b/sound/pci/asihpi/hpicmn.h
+index de3bedd29d94..8ec656cf8848 100644
+--- a/sound/pci/asihpi/hpicmn.h
++++ b/sound/pci/asihpi/hpicmn.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+-/**
++/*
+ 
+     AudioScience HPI driver
+     Copyright (C) 1997-2014  AudioScience Inc. <support@audioscience.com>
+diff --git a/sound/pci/asihpi/hpidspcd.h b/sound/pci/asihpi/hpidspcd.h
+index a01e8c6092bd..9f1468ed7096 100644
+--- a/sound/pci/asihpi/hpidspcd.h
++++ b/sound/pci/asihpi/hpidspcd.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /***********************************************************************/
+-/**
++/*
+ 
+     AudioScience HPI driver
+     Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+-- 
+2.17.1
 
