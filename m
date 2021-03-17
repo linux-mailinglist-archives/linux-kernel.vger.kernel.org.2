@@ -2,140 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728F933F98B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:48:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B12C33F98D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:48:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233255AbhCQTr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232861AbhCQTqu (ORCPT
+        id S233213AbhCQTsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:48:00 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:51229 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233191AbhCQTrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:46:50 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C44C06174A;
-        Wed, 17 Mar 2021 12:46:50 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id f124so40189941qkj.5;
-        Wed, 17 Mar 2021 12:46:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=38QftDwGYTFsF09wdjbjQ7byRgm+bvbg9dFB30l6dug=;
-        b=uWalbaNxjLCppgPJ94UGPOrX1aJSHK5Hzd+Dlgrg4b9hd51W7wZdDApkxzZwgmZVOr
-         gw7qRH1/rwiyiVXKNUUlyxMAzsn19vShpZejSW5ZbVly+p6fYdGY77nJ0NJtvXWTtDK2
-         NfP5rBFD3YeD1SuMK6OHHujQr0qJZX7Czc/0RAxcsVZhYr8te2+QdNrnln9FjCOneg2X
-         zYMOM4pPAcOLz9327xW5lCNSqRLYPYV/1aRQeE+LWOPuJWqNQTVGZ/W13rPOc2ixLMQK
-         dImMB897UKTu2CL95hqz6h3H+7icxY+EqAhsiXhopAiXNE9Qbyh06S69dGS0NGnytdpi
-         f9hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=38QftDwGYTFsF09wdjbjQ7byRgm+bvbg9dFB30l6dug=;
-        b=cI4JLC8x6lMAuhR3KRfnA5P0MSlWRFuLuu3nSGbfW5tBRfa4xK+WUbSlWWFsvavFcA
-         mmZflv1A6MRDrhW807UllkKrtbTbGgSUVc5V4gfXpFO35YJkrQaWiEpmgIz2YB0EIWbH
-         Gch66NPPQaGiXLv6anmMLudu9MrvaVD6KAMBsJgCgcgk0e6BZMHkFwfHgqLZoBhkpUz4
-         v7krGe3n9G1qfm3zG59S9OZpdfwabs+KzFj/q7xrnroneMybxj0mhgBcMS6cDQN5ykHS
-         Th3ZC0aO4+EaMfihHycQXd6L5+97jBel7bm1DJ8JeDL8mQ1EpgX4MxGlSe+ba7C97PQj
-         C8fw==
-X-Gm-Message-State: AOAM532vTMYaMVMhqCppLb8aZ0MPk51Z1wimEY4jml8wdbg524b114rg
-        idKx9+ry8HIyHpYKDcSvwu4=
-X-Google-Smtp-Source: ABdhPJw9tRTcpQEibvaEVYUIv0PMURtsr3GgPkltKsE8vsap1jDVKEb/IoubKoRXNIx8i80ljBoW1w==
-X-Received: by 2002:a05:620a:a8b:: with SMTP id v11mr868485qkg.414.1616010409321;
-        Wed, 17 Mar 2021 12:46:49 -0700 (PDT)
-Received: from ArchLinux ([156.146.37.138])
-        by smtp.gmail.com with ESMTPSA id j6sm18570289qkm.81.2021.03.17.12.46.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 12:46:48 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 01:16:31 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH] devicetree: bindings: clock: Minor typo fix in the file
- armada3700-tbg-clock.txt
-Message-ID: <YFJcl6i95cRM22MI@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>, mturquette@baylibre.com,
-        sboyd@kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-References: <20210317100840.2449462-1-unixbhaskar@gmail.com>
- <546989ea-c6b2-42e4-46b2-d7de5d208728@infradead.org>
+        Wed, 17 Mar 2021 15:47:41 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1lMc8n-003Wpj-P2; Wed, 17 Mar 2021 20:47:37 +0100
+Received: from p5b13a966.dip0.t-ipconnect.de ([91.19.169.102] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lMc8n-00022l-IY; Wed, 17 Mar 2021 20:47:37 +0100
+Subject: Re: [PATCH 0/1] sched/topology: NUMA distance deduplication
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        debian-ia64 <debian-ia64@lists.debian.org>
+References: <255d6b5d-194e-eb0e-ecdd-97477a534441@physik.fu-berlin.de>
+ <8735wtr2ro.mognet@arm.com>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <cf4d7277-54a0-8bc7-60fb-9b2f6befb511@physik.fu-berlin.de>
+Date:   Wed, 17 Mar 2021 20:47:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="9hpVVWNMD0hP0C8Q"
-Content-Disposition: inline
-In-Reply-To: <546989ea-c6b2-42e4-46b2-d7de5d208728@infradead.org>
+In-Reply-To: <8735wtr2ro.mognet@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.169.102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Helo Valentin!
 
---9hpVVWNMD0hP0C8Q
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+On 3/17/21 8:36 PM, Valentin Schneider wrote:
+> I see ACPI in your boot logs, so I'm guessing you have a bogus SLIT table
+> (the ACPI table with node distances). You should be able to double check
+> this with something like:
+> 
+> $ acpidump > acpi.dump
+> $ acpixtract -a acpi.dump
+> $ iasl -d *.dat
+> $ cat slit.dsl
 
-On 10:32 Wed 17 Mar 2021, Randy Dunlap wrote:
->On 3/17/21 3:08 AM, Bhaskar Chowdhury wrote:
->>
->> s/provde/provide/
->>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->
->Bhaskar,
->
->Did you send this one to "robh+dt@kernel.org"?
->AFAICT, it was sent to "dt@kernel.org", which bounces.
->
->If you used "robh+dt@kernel.org", it appears that 'get send-email' has a problem with that.
->
-I sent out a mail to David and Rob, including you for the same problem . Hope
-David will do something to change that address or Rob might do something . So
-that it will not bounce in future.
+There does not seem to be a SLIT table in my firmware:
 
-Lets see.
->thanks.
->
->> ---
->>  .../devicetree/bindings/clock/armada3700-tbg-clock.txt          | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/Documentation/devicetree/bindings/clock/armada3700-tbg-clock.txt b/Documentation/devicetree/bindings/clock/armada3700-tbg-clock.txt
->> index 0ba1d83ff363..ed1df32c577a 100644
->> --- a/Documentation/devicetree/bindings/clock/armada3700-tbg-clock.txt
->> +++ b/Documentation/devicetree/bindings/clock/armada3700-tbg-clock.txt
->> @@ -1,6 +1,6 @@
->>  * Time Base Generator Clock bindings for Marvell Armada 37xx SoCs
->>
->> -Marvell Armada 37xx SoCs provde Time Base Generator clocks which are
->> +Marvell Armada 37xx SoCs provide Time Base Generator clocks which are
->>  used as parent clocks for the peripheral clocks.
->>
->>  The TBG clock consumer should specify the desired clock by having the
->> --
->
->
->--
->~Randy
->
+root@glendronach:~# acpidump > acpi.dump
+root@glendronach:~# acpixtract -a acpi.dump
 
---9hpVVWNMD0hP0C8Q
-Content-Type: application/pgp-signature; name="signature.asc"
+Intel ACPI Component Architecture
+ACPI Binary Table Extraction Utility version 20200925
+Copyright (c) 2000 - 2020 Intel Corporation
 
------BEGIN PGP SIGNATURE-----
+acpixtract(31194): unaligned access to 0x60000fffff9b3925, ip=0x4000000000003e91
+  SSDT -    3768 bytes written (0x00000EB8) - ssdt1.dat
+acpixtract(31194): unaligned access to 0x60000fffff9b3925, ip=0x4000000000003e00
+acpixtract(31194): unaligned access to 0x60000fffff9b3925, ip=0x4000000000003e91
+  SPCR -      80 bytes written (0x00000050) - spcr.dat
+acpixtract(31194): unaligned access to 0x60000fffff9b3925, ip=0x4000000000003e00
+acpixtract(31194): unaligned access to 0x60000fffff9b3925, ip=0x4000000000003e91
+  APIC -     200 bytes written (0x000000C8) - apic.dat
+  SSDT -    1110 bytes written (0x00000456) - ssdt2.dat
+  SSDT -     316 bytes written (0x0000013C) - ssdt3.dat
+  SPMI -      80 bytes written (0x00000050) - spmi.dat
+  DSDT -   58726 bytes written (0x0000E566) - dsdt.dat
+  SSDT -     312 bytes written (0x00000138) - ssdt4.dat
+  SSDT -    2150 bytes written (0x00000866) - ssdt5.dat
+  SSDT -     316 bytes written (0x0000013C) - ssdt6.dat
+  SSDT -    3768 bytes written (0x00000EB8) - ssdt7.dat
+  FACP -     244 bytes written (0x000000F4) - facp.dat
+  SSDT -    1203 bytes written (0x000004B3) - ssdt8.dat
+  CPEP -      52 bytes written (0x00000034) - cpep.dat
+  SSDT -     316 bytes written (0x0000013C) - ssdt9.dat
+  DBGP -      52 bytes written (0x00000034) - dbgp.dat
+  SSDT -    3768 bytes written (0x00000EB8) - ssdt10.dat
+  FACS -      64 bytes written (0x00000040) - facs.dat
+root@glendronach:~#
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBSXJMACgkQsjqdtxFL
-KRWS3wgA2UZIYYaZVB6OMPavg2ALfytPLf3VNPNXZ85rvFOOE51TzBcdut85UVTu
-GF3NnjDsf5r2jiojVrLg2kjG8PGDG+uMmoif3o/oKbyhCullJjjiWFJcuZiV++Oc
-j5l6G5R1o4KuZzlMK6Ihf1zvznd4GANVGs+4eee2Xq5nunBwVLmdxbfCeUaqF9Fn
-X9Rl1EL2ER6phR7tqV7cITb22dmVXhs36hJ2LEIphrYgSG7AJbi3gZ7EM7H+pW2l
-raMAFJdNGwLfRM1i/98X86oy68Qb5i/jgscpGf3lsf9JJw3ZXty8Qzw6vq3mvFwm
-OeGcAEuGfyfHwCDqHeZVQ2O6ulMX9Q==
-=dR1+
------END PGP SIGNATURE-----
+root@glendronach:~# ls *.dsl *.dat
+apic.dat  cpep.dsl  dsdt.dat  facp.dsl  spcr.dat  spmi.dsl    ssdt1.dat  ssdt2.dsl  ssdt4.dat  ssdt5.dsl  ssdt7.dat  ssdt8.dsl
+apic.dsl  dbgp.dat  dsdt.dsl  facs.dat  spcr.dsl  ssdt10.dat  ssdt1.dsl  ssdt3.dat  ssdt4.dsl  ssdt6.dat  ssdt7.dsl  ssdt9.dat
+cpep.dat  dbgp.dsl  facp.dat  facs.dsl  spmi.dat  ssdt10.dsl  ssdt2.dat  ssdt3.dsl  ssdt5.dat  ssdt6.dsl  ssdt8.dat  ssdt9.dsl
+root@glendronach:~#
 
---9hpVVWNMD0hP0C8Q--
+> a) Complain to your hardware vendor to have them fix the table and ship a
+>    firmware fix
+
+The hardware is probably too old for the vendor to care about fixing it.
+
+> b) Fix the ACPI table yourself - I've been told it's doable for *some* of
+>    them, but I've never done that myself
+> c) Compile your kernel with CONFIG_NUMA=n, as AFAICT you only actually have
+>    a single node
+> d) Ignore the warning
+> 
+> 
+> c) is clearly not ideal if you want to use a somewhat generic kernel image
+> on a wide host of machines; d) is also a bit yucky...
+
+Shouldn't the kernel be able to cope with quirky hardware? From what I remember in the past,
+ACPI tables used to be broken quite a lot and the kernel contained workarounds for such cases,
+didn't it?
+
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
