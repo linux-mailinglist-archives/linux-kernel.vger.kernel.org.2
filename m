@@ -2,135 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBC833EB18
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2B833EB1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229559AbhCQIJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:09:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56570 "EHLO
+        id S229506AbhCQIMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:12:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhCQII5 (ORCPT
+        with ESMTP id S229508AbhCQIMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:08:57 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8035C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:08:57 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id x26so568307pfn.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:08:57 -0700 (PDT)
+        Wed, 17 Mar 2021 04:12:20 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD710C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:12:19 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id j6so392626plx.6
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:12:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=aCfSB5C9ykLdXLAp7ZVnblWxeq2vcWW6t+WdAO0dmzU=;
-        b=FNiJ1e89JqQ5a4mLi2mnsooQBUWrvZr/BYgfZQ59qpA+tLIAGK22H69NLhGv9Y31ix
-         KydT1oM6mZjUr7IRn32FnrufWu0pn52WwXCSdFRUEj+pLuAn2Xa9a0vohTaL9VrUyT/I
-         +FTJceCml/q0dUZIUmN+LYuWrhCG52BECYX+I=
+        bh=zLY15HRdmjN+WzEM6Wb9ghJnMYS5GHNsHkgt7obEDCM=;
+        b=c6ZgUWtqaq8Pu7xQlqPoKl8CX3atGgQHi577Sj+2KOyhTPAQQYvstQUKN397PFTwaN
+         R7vZvQHgY9B8R3b2YC9EH5WCADvgr4+5uNFTG6+VzTZcFMFi6fdLxDbFUhtwpCoQ3FqD
+         NOU+b161/ArEZtIWOvjgdosNKT3CIc7+n/fdE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=aCfSB5C9ykLdXLAp7ZVnblWxeq2vcWW6t+WdAO0dmzU=;
-        b=Jrj5RViZ5xIJ6jiPfP993YC6X5tKoRiTwJJQyvJAqsCiF4CsCbkDNjJori/7zpGifZ
-         NZ4jjhJ3vAyGeUBIpzJ05/LIQkmOut0Rifo6jIRuuWaBp0epIYNcefpf9jKjItPjN959
-         m+n21Q8V6m60V9FWAoukQR3rX+hEOl7g39viOiDqJZydrWyzRHIvMm6X3x5u+SxQ+w+e
-         by6D15UsDcBfd6FLjlSTr7rC6QJ8rGj4cLZ6hqfnZFHHiaGureEP0HoPibkkiGwq89Xo
-         0EfO0BABO9ZbowqdhKZ/DFycf0kc2r4kVjnRYLyfBOzzEOeESSJV3wBDiWw9E3NttmZ2
-         fk8g==
-X-Gm-Message-State: AOAM532tHQPzstppDeqeRJjwf40O4V5wkK+VvRIKrWsBuvMRQd3M2aC1
-        pN1e0KqtKjsu9TspgSlKO0+3LA==
-X-Google-Smtp-Source: ABdhPJwrvdFOCq7VKRASJ+InsNz6citM6tF95Wjs7Ed8zR2seTeb2ooJ2Zx7SJY3iHRhtEh6nlRyqg==
-X-Received: by 2002:a63:cd08:: with SMTP id i8mr1637851pgg.49.1615968537259;
-        Wed, 17 Mar 2021 01:08:57 -0700 (PDT)
+        bh=zLY15HRdmjN+WzEM6Wb9ghJnMYS5GHNsHkgt7obEDCM=;
+        b=ZmGvY2cxo/EHu5kmcda+LSU5qqTkneCt9+Ac/mRqUUARZOamnhnU7PeGg9wzfC/6ZA
+         okEo1wK+xlwP3Z8T7n9RxMAOs1sx8DziHzZ1Ld89hJj7QeqPnI45sesUtAEjY+49X7nE
+         8j2YVXaj7dlZjgtGRhHPzWrJtxVIDQNGuWVdw8ZAXpCeCa/VzZZw2zk23VFVQZVmJxoW
+         xexq8x3ZYcEcdFIEU8MfhLpMzvnnEIzpRliTNeOZroBg4WtxFOU9r2uGWvIl9CaoDjib
+         mCW/i1MjBeBj5dbLA4aDZAiOxrPHIWCZDdUY6V05rJi84AvlMiASD1zlTcs4RbzdqmJ/
+         twew==
+X-Gm-Message-State: AOAM533uNeLMWp6Fwo2n0eUJz89ZoXsNAZxcnaVpTUTPxvjQHel0VDUd
+        qFhz8/wZj5FYKTddCGB0AthY8A==
+X-Google-Smtp-Source: ABdhPJwnW6oAfoxq5uuWhck8IodvFib2eXowUm6fAuUHOK6MrqUJp3RkyoYyCTxx5YIXYOtnpc3hIw==
+X-Received: by 2002:a17:902:8c92:b029:e6:60ad:6924 with SMTP id t18-20020a1709028c92b02900e660ad6924mr3319720plo.16.1615968739531;
+        Wed, 17 Mar 2021 01:12:19 -0700 (PDT)
 Received: from google.com ([2409:10:2e40:5100:b48f:f050:bdc5:eb89])
-        by smtp.gmail.com with ESMTPSA id p7sm7591308pgj.2.2021.03.17.01.08.54
+        by smtp.gmail.com with ESMTPSA id 138sm18608063pfv.192.2021.03.17.01.12.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 01:08:56 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 17:08:52 +0900
+        Wed, 17 Mar 2021 01:12:19 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 17:12:14 +0900
 From:   Sergey Senozhatsky <senozhatsky@chromium.org>
 To:     Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
+        Tomasz Figa <tfiga@chromium.org>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-media <linux-media@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
         Ricardo Ribalda <ribalda@chromium.org>
-Subject: Re: [PATCHv2 1/3] media: v4l UAPI docs: document ROI selection
- targets
-Message-ID: <YFG5FA/9QEGKq+V9@google.com>
+Subject: Re: [PATCHv2 2/3] media: uvcvideo: add ROI auto controls
+Message-ID: <YFG53qBdM0HWV2qL@google.com>
 References: <20210208051749.1785246-1-sergey.senozhatsky@gmail.com>
- <20210208051749.1785246-2-sergey.senozhatsky@gmail.com>
- <CAPybu_19hztQQEi0H40sWZQMb-X7g7dDuW4Mz8_gRv-nG2tghw@mail.gmail.com>
- <YFFb2ePwiW+8ti4D@google.com>
- <CAPybu_1ng4GBVx64FQRR+rm2FcqLHkpW9c78AXg_P_6aR=2BKg@mail.gmail.com>
+ <20210208051749.1785246-3-sergey.senozhatsky@gmail.com>
+ <CAPybu_2ZRNUiZbFHfuW6i119xhs21-zTigoaO8sZc-Ye3D18xA@mail.gmail.com>
+ <YFFcvbXRlCCB+pv/@google.com>
+ <CAPybu_3cu7_vca0gi_A2QRA0TYozqE2Ef_q5QQgQW9LzGFbUKQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPybu_1ng4GBVx64FQRR+rm2FcqLHkpW9c78AXg_P_6aR=2BKg@mail.gmail.com>
+In-Reply-To: <CAPybu_3cu7_vca0gi_A2QRA0TYozqE2Ef_q5QQgQW9LzGFbUKQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/03/17 09:04), Ricardo Ribalda Delgado wrote:
-> On Wed, Mar 17, 2021 at 2:31 AM Sergey Senozhatsky
-> <sergey.senozhatsky.work@gmail.com> wrote:
-> >
-> > On (21/03/16 19:19), Ricardo Ribalda Delgado wrote:
-> > > > +Configuration of Region of Interest (ROI)
-> > > > +=========================================
-> > > > +
-> > > > +The range of coordinates of the top left corner, width and height of
-> > > > +areas that can be ROI is given by the ``V4L2_SEL_TGT_ROI_BOUNDS`` target.
-> > > > +It is recommended for the driver developers to put the top/left corner
-> > > > +at position ``(0,0)``. The rectangle's coordinates are in global sensor
-> > > > +coordinates. The units are in pixels and independent of the field of view.
-> > > > +They are not impacted by any cropping or scaling that is currently being
-> > > > +used.
-> > >
-> > > Can we also mention binning here?
-> >
-> > What's binning? Is it in the UVC spec?
-> 
-> Binning is when you reduce an image by adding up surrounding pixels.
-> 
-> So you have a 100x100 image that you convert to a 50x50 but showing
-> the same area of interest.
+Fixed Tomasz's email
 
-I see. Hmm, not sure if I can comment on this. It's not in the spec,
-so it might be up to the firmware, maybe. What do you think?
-
-> > > > diff --git a/include/uapi/linux/v4l2-common.h b/include/uapi/linux/v4l2-common.h
-> > > > index 7d21c1634b4d..d0c108fba638 100644
-> > > > --- a/include/uapi/linux/v4l2-common.h
-> > > > +++ b/include/uapi/linux/v4l2-common.h
-> > > > @@ -78,6 +78,14 @@
-> > > >  #define V4L2_SEL_TGT_COMPOSE_BOUNDS    0x0102
-> > > >  /* Current composing area plus all padding pixels */
-> > > >  #define V4L2_SEL_TGT_COMPOSE_PADDED    0x0103
-> > > > +/* Current Region of Interest area */
-> > > > +#define V4L2_SEL_TGT_ROI_CURRENT       0x0200
-> > > > +/* Default Region of Interest area */
-> > > > +#define V4L2_SEL_TGT_ROI_DEFAULT       0x0201
-> > > > +/* Region of Interest bounds */
-> > > > +#define V4L2_SEL_TGT_ROI_BOUNDS        0x0202
-> > > > +/* Set Region of Interest area */
-> > > > +#define V4L2_SEL_TGT_ROI               0x0203
-> > >
-> > > Nit: Maybe it could be a good idea to split doc and code. This way the
-> > > backports/fixes are easier.
+On (21/03/17 09:08), Ricardo Ribalda Delgado wrote:
+[..]
+> > > > +               .id             = V4L2_CID_REGION_OF_INTEREST_AUTO,
+> > > > +               .name           = "Region of Interest (auto)",
+> > > > +               .entity         = UVC_GUID_UVC_CAMERA,
+> > > > +               .selector       = UVC_CT_REGION_OF_INTEREST_CONTROL,
+> > > > +               .size           = 16,
+> > > > +               .offset         = 64,
+> > > > +               .v4l2_type      = V4L2_CTRL_TYPE_BITMASK,
+> > > Are
 > >
-> > I'm quite sure this is the first time I'm being asked to split code
-> > and documentation :) I'm usually asked to do the opposite - merge code
-> > and documentation.
+> > Are?
 > 
-> I got answered in both directions.  I prefer to split it because the
-> doc can go to different audience than the code, and then it makes my
-> life easier when backporting.
-> 
-> But if you or Laurent prefer  otherwise I am of course happy with any option ;)
+> Aye!
+> You are not a good kernel reviewer if you do not talk pirate :P.
 
-Either way works for me. Laurent, any preferences?
+Arr, Matey!
 
 	-ss
