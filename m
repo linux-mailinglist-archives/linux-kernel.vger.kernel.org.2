@@ -2,72 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBC433F8D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:10:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B33733F8D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233119AbhCQTKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:10:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229796AbhCQTKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:10:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 333A864EC4;
-        Wed, 17 Mar 2021 19:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616008209;
-        bh=GVu/ESRM2qGynOK7RfgL/yy6B12R+6ZanQ9WH7/Wf9A=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=MXaxK5J8cShy4IqDXXjjKAwKPuFemzWY9azouoDzumjohoBSmn3UVxTzOYmu1r+iC
-         d9Ce1px8crmPZiUeYtRojD7X6+ZqnZp7dsPhqWEgSjfg/VhCuoO2o2zvI0+VozX7Ob
-         sbBDxsIOlURERvt6z/gTEX3Vmadif5AjOn+qacNDIA5t7sotXYnXSXp8x8Xpi+9Vtq
-         3k3pzvxJ7aTLHVfVNAr3tfHhKxlebV4PX0oMpSzTylwET0ArezNdoO2d89nAGaLEI5
-         +X6mm9xbHbOj2/UlOFzuq2r4vujVoE3JZfimoBReQFpZjDfNPfWY1tHCQIuZIckh7O
-         qehe0ogCznM8A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 29C9360A3D;
-        Wed, 17 Mar 2021 19:10:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233126AbhCQTL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:11:28 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:38290 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229796AbhCQTKz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 15:10:55 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12HJAjaV005132;
+        Wed, 17 Mar 2021 14:10:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1616008245;
+        bh=Tr1lXzHpbqJJQa5y6bYpsIDAlJx1boXQSoQ2aG86+I4=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=HFy/MoyRluFqNqLcQLCeEfVE7pQjZsu4PbG5RISYUNuaCfr3MzuE99lbKnbPpkGlz
+         T7UHQ7QRZcAn/dAAHw3mF9Np0KFhfcGVnlyexgPWV37EXofr1kRiANzZ8aVc4Mx74d
+         nC+vXz/M+ba2d555MTrRjiSoE3snm//HKi27jPCI=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12HJAj6F080447
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 17 Mar 2021 14:10:45 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 17
+ Mar 2021 14:10:45 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 17 Mar 2021 14:10:45 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12HJAjE5031520;
+        Wed, 17 Mar 2021 14:10:45 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Tero Kristo <kristo@kernel.org>, <devicetree@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v3 0/2] AM64: Add USB support
+Date:   Wed, 17 Mar 2021 14:10:39 -0500
+Message-ID: <161600762739.1043.8722896780317279431.b4-ty@ti.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210317043007.18272-1-a-govindraju@ti.com>
+References: <20210317043007.18272-1-a-govindraju@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 1/1] net: stmmac: add timestamp correction to rid CDC
- sync error
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161600820916.10311.6670976012285886015.git-patchwork-notify@kernel.org>
-Date:   Wed, 17 Mar 2021 19:10:09 +0000
-References: <20210317040904.816-1-vee.khee.wong@intel.com>
-In-Reply-To: <20210317040904.816-1-vee.khee.wong@intel.com>
-To:     Wong Vee Khee <vee.khee.wong@intel.com>
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        boon.leong.ong@intel.com, weifeng.voon@intel.com
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Wed, 17 Mar 2021 12:09:04 +0800 you wrote:
-> From: Voon Weifeng <weifeng.voon@intel.com>
+On Wed, 17 Mar 2021 10:00:04 +0530, Aswath Govindraju wrote:
+> The following series of patches, add USB support for AM642 evm.
 > 
-> According to Synopsis DesignWare EQoS Databook, the Clock Domain Cross
-> synchronization error is introduced tue to the clock(GMII Tx/Rx clock)
-> being different at the capture as compared to the PTP
-> clock(clk_ptp_ref_i) that is used to generate the time.
+> USB test logs,
+> https://pastebin.ubuntu.com/p/YSQRBWGmzd/
+> 
+> Changes since v2:
+> - dropped compatible string "ti,j721e-usb" leading to DT schema errors
+> - Reran test logs
+> - Couldn't pick up reviewed-by from kishon as a change was made in the
+>   patch
 > 
 > [...]
 
-Here is the summary with links:
-  - [net-next,1/1] net: stmmac: add timestamp correction to rid CDC sync error
-    https://git.kernel.org/netdev/net-next/c/3600be5f58c1
+Hi Aswath Govindraju,
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
+[1/2] arm64: dts: ti: k3-am64-main: Add DT node for USB subsystem
+      commit: d06a661309d30b654b74a4633dd78804ef16369f
+[2/2] arm64: dts: ti: k3-am642-evm: Add USB support
+      commit: 04a80a75baa1c80f7e5096147b6173c13ca3d3e0
+
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
