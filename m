@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C633033EDF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFF033EDF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:05:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhCQKEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:04:32 -0400
-Received: from mga04.intel.com ([192.55.52.120]:60414 "EHLO mga04.intel.com"
+        id S230343AbhCQKEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:04:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230044AbhCQKEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:04:00 -0400
-IronPort-SDR: 1JeqLWGYcCQ7TMKrLdGe5UVOwVJP3G9qeDPv8pdvqU9EHM/XFbTUKGNHK60//4oiHcK1AnM0ud
- ihgP+9mLXdxw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="187059856"
-X-IronPort-AV: E=Sophos;i="5.81,255,1610438400"; 
-   d="scan'208";a="187059856"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 03:03:58 -0700
-IronPort-SDR: wdF42FOBhSLVxPRUlRvbNDBu9g64InEd/ShhtrjDurfGnQB/eGpImS4hQLaT7UIGbJFFPukVQb
- FazB16q3R5HA==
-X-IronPort-AV: E=Sophos;i="5.81,255,1610438400"; 
-   d="scan'208";a="440402824"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 03:03:54 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lMT1r-00DE4M-W2; Wed, 17 Mar 2021 12:03:51 +0200
-Date:   Wed, 17 Mar 2021 12:03:51 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the gpio-brgl-fixes tree
-Message-ID: <YFHUB731xqyJhE3e@smile.fi.intel.com>
-References: <20210317090200.2fe81618@canb.auug.org.au>
+        id S230255AbhCQKEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 06:04:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1EF864E27;
+        Wed, 17 Mar 2021 10:04:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615975445;
+        bh=QDZydGcTtHUis2/3WI6dsm0emvhCUjMzugPN7PcCtDs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bYjK9BFrFu5veHYn+z3996REW08FGcefktVWTLQ0WVQUUrfXMTLwcQRUs/m6a0DDB
+         hso+VFUpSJg/0lfbrggyogvyszOPF9moCtRRTZudOFOkzbsTg36KlZu/c7ASIFlpPi
+         Vkv+k1SJa77oudShQm9Mbvr5QKhtEPaJOYe8eUDeRbsGzCc2chANbvEM5hMd4EPWcZ
+         8YQcU7G8prgVocfLMlzqOMs0E5+EY9U956S2qq/WOuunVV16bbj58o0E6qjkG0HqGz
+         sixx+pKf3WXbwLrl6CGLVhtRSdtVt/r9qdHMb1T74TrrDSzaZy6fbTPEzj1ho7JTQ6
+         rs5Xy7ynHuoVg==
+Date:   Wed, 17 Mar 2021 15:34:01 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-clk@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-i3c@lists.infradead.org, linux-iio@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Clean-up undocumented compatible strings
+Message-ID: <YFHUEVk/F0zoTe7c@vkoul-mobl.Dlink>
+References: <20210316194918.3528417-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210317090200.2fe81618@canb.auug.org.au>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210316194918.3528417-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 09:02:00AM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> In commit
-> 
->   6cb59afe9e5b ("gpiolib: Assign fwnode to parent's if no primary one provided")
-> 
-> Fixes tag
-> 
->   Fixes: 2afa97e9868f ("gpiolib: Read "gpio-line-names" from a firmware node")
-> 
-> has these problem(s):
-> 
->   - Target SHA1 does not exist
-> 
-> Maybe you meant
-> 
-> Fixes: b41ba2ec54a7 ("gpiolib: Read "gpio-line-names" from a firmware node")
+On 16-03-21, 13:49, Rob Herring wrote:
 
-Right. I have two hashes in my tree for the same commit :-(
-In any case it has older commit in another Fixes tag which is okay.
+> ---
+>  .../clock/allwinner,sun4i-a10-pll1-clk.yaml   |  2 +-
+>  .../bindings/clock/milbeaut-clock.yaml        | 12 +++++----
+>  .../bindings/display/brcm,bcm2835-dsi0.yaml   |  6 -----
+>  .../bindings/display/panel/panel-dpi.yaml     |  2 +-
+>  .../devicetree/bindings/dma/qcom,gpi.yaml     |  2 +-
+
+...
+
+>  .../bindings/phy/ti,phy-j721e-wiz.yaml        |  2 +-
+
+Acked-By: Vinod Koul <vkoul@kernel.org>
+
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+~Vinod
