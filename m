@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81CF833EC09
+	by mail.lfdr.de (Postfix) with ESMTP id 00F2F33EC08
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbhCQI6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
+        id S229989AbhCQI6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:58:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhCQI5Y (ORCPT
+        with ESMTP id S229775AbhCQI5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Mar 2021 04:57:24 -0400
 Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B640C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:57:23 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id f22-20020a7bc8d60000b029010c024a1407so2929084wml.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:57:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4B4C061762
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:57:24 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo804967wmq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:57:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=omHoCGEAHHfzGsCXWaSPZZFL53Kydw/eMLAhlkpH1KI=;
-        b=G22gc9eNVnSkGmoUYNFy4wacYM1Maa4UM98OSYfR32gD/HkmzQQWbgY4P4UFvjX9q5
-         1/K4tKYkgq+Tyz3T4Y8Mgze3tuG2JcwIvk9CWMjQuhvsY23GVjfNmJ0aem8lw+qe5UN7
-         FPVmfjzgOicF0uFBQf6QL3Vj1K77BtaL/xksuNliBeu5VB6q6r30sr+Bkh6BrsKtV71N
-         UnXMXD6kbvh09KJOuR8zcUy4hvQu11++xqFYTYuhf4q1E4zbXFNqkxjwgVsmqzqHBz4Y
-         BDz3TZqJ4293Xc0y6RflScVaLt9bBm9iP0S+qSk34h7Cz46M4A8WS6I3GSOT+Wlls5BQ
-         vKXQ==
+        bh=PdNAYGEf3HErZd1qMy9Fio2Q6mTHXUXt55dWtvm2uqs=;
+        b=WEpXnUaFpXspOAzsNexbf8blhw8/xw01ijWzUfXpFPr7UPTnwZ6OxFfKC04ZgjXK0/
+         MUaN2LCKoMFfpwP4Pfbx4wfJ5GMJ/hMWrLGt58SC6PwP7AdaCAvSjTZ3uSSw/3vn62AH
+         VkewkDjIA6IDYcpbqPVvwXCx8X7UNNA0176HAELpDaVeqQ5ShWuTlCvYrhtiqUpmpzPX
+         G+VLGzB6+0rTEKKoNbzUJcdtTsQRjpHbDVceFc4foOfgV8ndulOn0n+ICOjSW/Y31a9K
+         9nMWfaa42Ckz4URi2hFdwcxK4k/bEo+vNfM20iwQpGiNxfD3UWFZRjZt+5uIUOObWjgZ
+         tYHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=omHoCGEAHHfzGsCXWaSPZZFL53Kydw/eMLAhlkpH1KI=;
-        b=O/KTGuEAXofGEtTIHsN8Je7a9HTvDM8Hyb7wOGE+ogjL30toFncNVSCBjiiIu1QvQd
-         7rtomAMHtz1Z/eOEpchw4K7XJbjpjSFcdJaPWim1BjuDFZUACm2Rp750+V2ReY1VYbKQ
-         d45pkzmaGTjQuYoNBJbZE+wfc2QDfqlIFT0S0GMqdwV2jm4W8laO9BwLs2xfzVWxk3Sr
-         TaI7Bv470Oz6gHFC/LXTcZbF2ANVhoayISvfTKiNV0S3YwuDnp0hd8Cfsh5nlzqAsFd9
-         0kfI66v56uU+vK54S/KqnfQycFIsPNDD8J9PsVelYJXUI5jFN3UeTgZvcwR2/5ug3VWW
-         O2kQ==
-X-Gm-Message-State: AOAM530qvBfRw6aoExQ/7xYPlXS4NUN9M40wrWTaVBLlmpWvpPKCseoD
-        ikpeHLqd8bL2e99/kvPbJ6Qy3A==
-X-Google-Smtp-Source: ABdhPJw8Ddp7YdzjeheW5smSSk4SsocDHz5sUQEXKz8atEvBpoI8V+wWuKLJ2mg9P8iILIz+DV1vuA==
-X-Received: by 2002:a1c:3c8a:: with SMTP id j132mr683090wma.127.1615971442290;
-        Wed, 17 Mar 2021 01:57:22 -0700 (PDT)
+        bh=PdNAYGEf3HErZd1qMy9Fio2Q6mTHXUXt55dWtvm2uqs=;
+        b=SwwG7Aqg0M45ow8A5Ta1loKX71QEyFBPfp0Iv5zaCxvxIsGq2HsE/hgPpmIWAHJSIx
+         GT4HicJfAZ5j6NmMEjVdUvE8SorZoZAaIT10AgD26ulLuH9c39KW4v8LZ+wUKuqewpwu
+         R2QNqdBxVUtnuvFYNJjUzySBTRCEFMDgZkLT7CkSBWUogl8TCPJvtCfblSR6L5jcyNgR
+         sgUXmUlSrCabzsZivZeCYyg1N4O6rQia3wrSlQORY9nR35mv32c5rErKVzp9sCYqFdJm
+         Msy0OwkFnrdNmNX++c9nTlWmzIsVEsnP6Xj5S7AHPCVe8Tz+umS8k5QzFIxk5VSFaZ0q
+         DvUA==
+X-Gm-Message-State: AOAM532CGVg0DkkDTvmIHdotgcO5au5x4nhOc62K3M8SKc2lQtyZHw9J
+        IRyXcKjx3jy3jUXMoNdC1+uBag==
+X-Google-Smtp-Source: ABdhPJxllcQNzhNpec6x4Nun9qbZbU27gKPs+/PsHAY9MXuJFcbPBC54Y73ZQVMASMTBdoT731fy4g==
+X-Received: by 2002:a1c:7406:: with SMTP id p6mr2600517wmc.103.1615971443185;
+        Wed, 17 Mar 2021 01:57:23 -0700 (PDT)
 Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id j123sm1807243wmb.1.2021.03.17.01.57.21
+        by smtp.gmail.com with ESMTPSA id j123sm1807243wmb.1.2021.03.17.01.57.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 01:57:21 -0700 (PDT)
+        Wed, 17 Mar 2021 01:57:22 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+Cc:     linux-kernel@vger.kernel.org, GOTO Masanori <gotom@debian.or.jp>,
+        YOKOTA Hiroshi <yokota@netlab.is.tsukuba.ac.jp>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Subject: [PATCH 17/18] scsi: isci: remote_device: Make local function isci_remote_device_wait_for_resume_from_abort() static
-Date:   Wed, 17 Mar 2021 08:57:00 +0000
-Message-Id: <20210317085701.2891231-18-lee.jones@linaro.org>
+        gotom@debian.org, linux-scsi@vger.kernel.org
+Subject: [PATCH 18/18] scsi: nsp32: Correct expected types in debug print formatting
+Date:   Wed, 17 Mar 2021 08:57:01 +0000
+Message-Id: <20210317085701.2891231-19-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210317085701.2891231-1-lee.jones@linaro.org>
 References: <20210317085701.2891231-1-lee.jones@linaro.org>
@@ -70,30 +70,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/isci/remote_device.c:1387:6: warning: no previous prototype for ‘isci_remote_device_wait_for_resume_from_abort’ [-Wmissing-prototypes]
+ drivers/scsi/nsp32.c: In function ‘nsp32_setup_sg_table’:
+ drivers/scsi/nsp32.c:879:6: warning: format ‘%lx’ expects argument of type ‘long unsigned int’, but argument 5 has type ‘unsigned int’ [-Wformat=]
+ drivers/scsi/nsp32.c:280:69: note: in definition of macro ‘nsp32_msg’
+ drivers/scsi/nsp32.c:879:52: note: format string is defined here
+ drivers/scsi/nsp32.c: In function ‘nsp32_detect’:
+ drivers/scsi/nsp32.c:2719:6: warning: format ‘%lx’ expects argument of type ‘long unsigned int’, but argument 5 has type ‘int’ [-Wformat=]
+ drivers/scsi/nsp32.c:280:69: note: in definition of macro ‘nsp32_msg’
+ drivers/scsi/nsp32.c:2719:22: note: format string is defined here
+ drivers/scsi/nsp32.c:2719:6: warning: format ‘%lx’ expects argument of type ‘long unsigned int’, but argument 6 has type ‘int’ [-Wformat=]
+ drivers/scsi/nsp32.c:280:69: note: in definition of macro ‘nsp32_msg’
+ drivers/scsi/nsp32.c:2719:28: note: format string is defined here
+ drivers/scsi/nsp32.c: In function ‘nsp32_suspend’:
+ drivers/scsi/nsp32.c:3267:23: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 6 has type ‘pm_message_t’ {aka ‘struct pm_message’} [-Wformat=]
+ drivers/scsi/nsp32.c:280:69: note: in definition of macro ‘nsp32_msg’
+ drivers/scsi/nsp32.c:3267:56: note: format string is defined here
 
-Cc: Artur Paszkiewicz <artur.paszkiewicz@intel.com>
+Cc: GOTO Masanori <gotom@debian.or.jp>
+Cc: YOKOTA Hiroshi <yokota@netlab.is.tsukuba.ac.jp>
 Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: gotom@debian.org
 Cc: linux-scsi@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/isci/remote_device.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/nsp32.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/isci/remote_device.c b/drivers/scsi/isci/remote_device.c
-index c3f540b556895..b1276f7e49c89 100644
---- a/drivers/scsi/isci/remote_device.c
-+++ b/drivers/scsi/isci/remote_device.c
-@@ -1384,7 +1384,7 @@ static bool isci_remote_device_test_resume_done(
- 	return done;
- }
+diff --git a/drivers/scsi/nsp32.c b/drivers/scsi/nsp32.c
+index 54abda4d07c64..134bbd2d8b667 100644
+--- a/drivers/scsi/nsp32.c
++++ b/drivers/scsi/nsp32.c
+@@ -876,7 +876,7 @@ static int nsp32_setup_sg_table(struct scsi_cmnd *SCpnt)
  
--void isci_remote_device_wait_for_resume_from_abort(
-+static void isci_remote_device_wait_for_resume_from_abort(
- 	struct isci_host *ihost,
- 	struct isci_remote_device *idev)
+ 			if (le32_to_cpu(sgt[i].len) > 0x10000) {
+ 				nsp32_msg(KERN_ERR,
+-					"can't transfer over 64KB at a time, size=0x%lx", le32_to_cpu(sgt[i].len));
++					"can't transfer over 64KB at a time, size=0x%x", le32_to_cpu(sgt[i].len));
+ 				return FALSE;
+ 			}
+ 			nsp32_dbg(NSP32_DEBUG_SGLIST,
+@@ -2716,7 +2716,7 @@ static int nsp32_detect(struct pci_dev *pdev)
+ 	res = request_region(host->io_port, host->n_io_port, "nsp32");
+ 	if (res == NULL) {
+ 		nsp32_msg(KERN_ERR, 
+-			  "I/O region 0x%lx+0x%lx is already used",
++			  "I/O region 0x%x+0x%x is already used",
+ 			  data->BaseAddress, data->NumAddress);
+ 		goto free_irq;
+         }
+@@ -3264,7 +3264,8 @@ static int nsp32_suspend(struct pci_dev *pdev, pm_message_t state)
  {
+ 	struct Scsi_Host *host = pci_get_drvdata(pdev);
+ 
+-	nsp32_msg(KERN_INFO, "pci-suspend: pdev=0x%p, state=%ld, slot=%s, host=0x%p", pdev, state, pci_name(pdev), host);
++	nsp32_msg(KERN_INFO, "pci-suspend: pdev=0x%p, state.event=%x, slot=%s, host=0x%p",
++		  pdev, state.event, pci_name(pdev), host);
+ 
+ 	pci_save_state     (pdev);
+ 	pci_disable_device (pdev);
 -- 
 2.27.0
 
