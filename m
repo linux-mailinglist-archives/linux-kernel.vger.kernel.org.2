@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B39733F5F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C78FC33F5EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:46:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232782AbhCQQpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 12:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56300 "EHLO
+        id S232774AbhCQQpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 12:45:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232650AbhCQQpT (ORCPT
+        with ESMTP id S232653AbhCQQpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 12:45:19 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A01B0C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:45:19 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id b16so3090430eds.7
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:45:19 -0700 (PDT)
+        Wed, 17 Mar 2021 12:45:20 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C984C061762
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:45:20 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id dx17so3702138ejb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:45:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FSJfEMpG3gmvu/1zHkC5YrHmNIBqGbW9b1IfyrEOzZs=;
-        b=Ppr6uEH3M4iQ4x7EubfspiKI+zLTbyizYo+Epvky40rVJrS4Szp/1hNl4CfDrg+jCq
-         sAxLqZKllXqphItrwf8+QyMUDuFtD3ZYHxzGs53mDs+2FArS1ReQ+Jjg49v9ScDpbYJ5
-         bcPdvAHtD6W8hkzEvOF08TBShmmIHAiqooENM=
+        bh=x7BfbRkZgKvyDVm8Db9Jrgj8gcrrUGA9hBYKQf9MVsw=;
+        b=AX65wNOoec086wfSe4poCGNVBOMmtrxUvp4lnsBJtWvPfIBdxMs8nmdWM8TZFMTJ+Y
+         xEFco9JGe4jam6eQIdqCKyorT/8kOjyjvD0lyes7Jo23y10W6jF4N70bxCKNLY1WE0Mr
+         j7taWweCbRqpmBUzjY7kIa8kMLZL90d8APBCc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FSJfEMpG3gmvu/1zHkC5YrHmNIBqGbW9b1IfyrEOzZs=;
-        b=kcV2207NL+SaFyazwW6+3XRWBGctq+b5sOwh/kyWJmgMIzh/Fq56pbMZffFLh5Hrgb
-         laSWxbZG1R5m+0rWvc8m36sdOFp1xZM5FkpP5lVIYINI+NUOggeM1q0K9v/hcG4U1KW0
-         wi/zsOtqfVh5lGZbPTM7xdNrfdHTL0DbPw4BQjJxpHoEUev3SEiXLf3Jj7dqY1eaFsx3
-         FaJov7B2A8qBSHEq4GJTJS+Yhg2j1lPn4+frCfvUMFsfdpazA0D0jkSQT30PSMLxe28z
-         PZ0l8G6v9i4POGueghEbIzageDlL83PNYmfx+hnZrcxMtP5bzn3uF26kHQ/XGnyvVTFH
-         a6fQ==
-X-Gm-Message-State: AOAM531YIdtDZ0ffvq84+pYnx+z6Rj9XnrrvNqnABhXUXbmZO19+a9qQ
-        rPabY8VepYf88VvnR3xFmzp2CQ==
-X-Google-Smtp-Source: ABdhPJx8K40+dd/2Szp+kWXiObOZ/fNH8X8zj6Z3cgVhmkw2M7JuMlASxf5QLiSiMRUZ15adjgUdpA==
-X-Received: by 2002:a05:6402:4241:: with SMTP id g1mr33792443edb.331.1615999518419;
+        bh=x7BfbRkZgKvyDVm8Db9Jrgj8gcrrUGA9hBYKQf9MVsw=;
+        b=e2/Nr4ajSvle118COlA3BqN/hwdWsNJ71IynNPM4puyYuQjReTez9sVFyyM24iRNEL
+         UaJ1eVKsvSWvdYUoEXK9pxSdQwM0xM/ORLYDy+Br628IJ04UnVtyc1eL88pZH5aDuB3R
+         7L4mVpYS0dhX3p9JBXCbUAzhdQDR11zsoayIUUK/JMJEkfCgYkx5Z15X+AUfpAcDrax3
+         dRuBlXqlcXefMRayEfopyYhUsc25Nd2sLVXQ+6/DoVnt2t4OerRWDEBR35Tsc6pSbv6K
+         6lv9DHeUf0YVAvbFwPuxZhz7R3uP+SM7lDa/KKYfduK47GsgiSCKCWULCW5EkRln24vs
+         k5Fg==
+X-Gm-Message-State: AOAM531UnKJPpIcILw3Zj1dT6Q+Rb4iukeBI3KINe1cnMA0bnNpBZZK1
+        Q1Ng2RfcYWZiobXpPLTzjvsbKQ==
+X-Google-Smtp-Source: ABdhPJxesE2LHKVrupx9CIvpViyNOdb0zgvX8mHwILjtMovcaKqgx3KxlomYYP4sLsLddb/F1CFe9Q==
+X-Received: by 2002:a17:906:75a:: with SMTP id z26mr36257622ejb.22.1615999518922;
         Wed, 17 Mar 2021 09:45:18 -0700 (PDT)
 Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id hy25sm12088128ejc.119.2021.03.17.09.45.17
+        by smtp.gmail.com with ESMTPSA id hy25sm12088128ejc.119.2021.03.17.09.45.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 17 Mar 2021 09:45:18 -0700 (PDT)
 From:   Ricardo Ribalda <ribalda@chromium.org>
@@ -53,9 +53,9 @@ To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         tfiga@chromium.org
 Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v6 07/17] media: uvcvideo: Set capability in s_param
-Date:   Wed, 17 Mar 2021 17:45:01 +0100
-Message-Id: <20210317164511.39967-8-ribalda@chromium.org>
+Subject: [PATCH v6 08/17] media: uvcvideo: Return -EIO for control errors
+Date:   Wed, 17 Mar 2021 17:45:02 +0100
+Message-Id: <20210317164511.39967-9-ribalda@chromium.org>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 In-Reply-To: <20210317164511.39967-1-ribalda@chromium.org>
 References: <20210317164511.39967-1-ribalda@chromium.org>
@@ -65,39 +65,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The device is doing something unspected with the control. Either because
+the protocol is not properly implemented or there has been a HW error.
+
 Fixes v4l2-compliance:
 
-Format ioctls (Input 0):
-                warn: v4l2-test-formats.cpp(1339): S_PARM is supported but doesn't report V4L2_CAP_TIMEPERFRAME
-                fail: v4l2-test-formats.cpp(1241): node->has_frmintervals && !cap->capability
+Control ioctls (Input 0):
+                fail: v4l2-test-controls.cpp(448): s_ctrl returned an error (22)
+        test VIDIOC_G/S_CTRL: FAIL
+                fail: v4l2-test-controls.cpp(698): s_ext_ctrls returned an error (22)
+        test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
 
 Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/usb/uvc/uvc_v4l2.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/media/usb/uvc/uvc_video.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-index 47b0e3224205..397217171bbb 100644
---- a/drivers/media/usb/uvc/uvc_v4l2.c
-+++ b/drivers/media/usb/uvc/uvc_v4l2.c
-@@ -472,10 +472,13 @@ static int uvc_v4l2_set_streamparm(struct uvc_streaming *stream,
- 	uvc_simplify_fraction(&timeperframe.numerator,
- 		&timeperframe.denominator, 8, 333);
- 
--	if (parm->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
-+	if (parm->type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
- 		parm->parm.capture.timeperframe = timeperframe;
--	else
-+		parm->parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
-+	} else {
- 		parm->parm.output.timeperframe = timeperframe;
-+		parm->parm.output.capability = V4L2_CAP_TIMEPERFRAME;
-+	}
- 
- 	return 0;
- }
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index f2f565281e63..25fd8aa23529 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -112,6 +112,11 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
+ 	case 5: /* Invalid unit */
+ 	case 6: /* Invalid control */
+ 	case 7: /* Invalid Request */
++		/*
++		 * The firmware has not properly implemented
++		 * the control or there has been a HW error.
++		 */
++		return -EIO;
+ 	case 8: /* Invalid value within range */
+ 		return -EINVAL;
+ 	default: /* reserved or unknown */
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
