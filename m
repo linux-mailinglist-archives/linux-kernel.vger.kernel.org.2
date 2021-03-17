@@ -2,151 +2,728 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36C433FA44
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 22:04:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2941C33FA4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 22:09:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbhCQVEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 17:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233416AbhCQVDm (ORCPT
+        id S233494AbhCQVJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 17:09:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50718 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233285AbhCQVIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 17:03:42 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5217FC06174A;
-        Wed, 17 Mar 2021 14:03:42 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id a11so2532694qto.2;
-        Wed, 17 Mar 2021 14:03:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tTumWXKPeirhih82vHznyEMQk5Ce5y7T8VwAjdW2rck=;
-        b=ULJSbzvSp3lAK8KFEC2FYoyxm69IHXmIJw7sepUgvC9EJcKa08CasMwgmLxHTtRpe8
-         9dgklWrWwxQHY/bhVE3zMDHxls23888cxRZtsgn785MKaS3Jude6twOPs0cxvqo6MKsh
-         IWiUa9DLfc0zv22dBhexoNvpquxvtoXM7GSdDMdPqZbxbAdBoyjlid+aZC9S7bwOFSrW
-         sdaIaQdxBH+mH3KTqReqbPkqOlBdVi2Fo9oxnNoXK90wwKV/RJbzZKX/tuWBDpYLAKxJ
-         2AEeB/LoamYa9KCb8+r1twE1DaAkGicMds+d25eixoRM6DwoB4nMiuLwOH7sShpxiyJT
-         wj2w==
+        Wed, 17 Mar 2021 17:08:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616015331;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W+ie0mfuHtDGnGbwRPRx0/osGlVDdJcFs9I/qi19is8=;
+        b=Q6bnuIeUJ0Lm6AtMkgbCWe+tAjkUxxijh6O3kpkRMUdw5Aih++d9KwstvpOBqlpUm99qOH
+        pDJSZlIxHQ/qVor3zJgyBn+9+dFLKOzhtKg8IoVQaOSIeERd+nUMy7ZYvjeBGnV+JRbBsu
+        3KEX5jtHXNXD7CWbuQHD/0KkZVcXYSY=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-481-qkNZZj_QPkaoX1BjLLrivA-1; Wed, 17 Mar 2021 17:08:49 -0400
+X-MC-Unique: qkNZZj_QPkaoX1BjLLrivA-1
+Received: by mail-qt1-f200.google.com with SMTP id m8so23973945qtp.14
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 14:08:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tTumWXKPeirhih82vHznyEMQk5Ce5y7T8VwAjdW2rck=;
-        b=ptAjExRH6wmCVRMaDBFUZtvol3Nxv+FgsA1mQbK2DUS5GFVua4Qctt9g+e2DmgcR6H
-         pp4Fq4hDsWkbav/2tEk4dcGFuwZNCgRfv+EbHFgmoYoD0qyIDJ8SGornODGKggEqLXhM
-         KcEg7W9wwQ6ifcLQVIt1jeSDsCtCAV/9pTa5+L3GFGIXxrKWlIzufQnnhlpvvN/KXKpV
-         8Y/mCbx60UO2qpl+7dofH0VQn9prpUR4KzrZOrHNCtC8sR3atz9qYxXU8JlNZjN/nN/p
-         ZphjRPu/GwBR38mZqkKmtARE3BxU9uhoj4XAc5mqUAOpE4sYrpoDxq1bS6DR8tKvOHDQ
-         gohw==
-X-Gm-Message-State: AOAM533Cvoud3Vb9QaqkUwuQahdI6pG7u3lLV8qo9CwcUCy0AIevUxBs
-        v9dqmHkMXXnx4wds0K/P/5I6kKTZSh5/7bLAwwg=
-X-Google-Smtp-Source: ABdhPJwm4YvE1JcC4KfXSPzAnKJUBMfzQq22eckkZK6VJ1P9qKUWPqTKUDP/DQPj9k0Z66fn2QxQbFjcAfG5alIeZL0=
-X-Received: by 2002:ac8:66d6:: with SMTP id m22mr926873qtp.56.1616015021448;
- Wed, 17 Mar 2021 14:03:41 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=W+ie0mfuHtDGnGbwRPRx0/osGlVDdJcFs9I/qi19is8=;
+        b=o7vJf1ggpKCOJsOo7ahPEYJ6HvCSQRBA32KQsumBJzb1JdWNnferAcPCekz5+Rbx7+
+         x3RaHbZVC9Crxm6ZfIp8F8BqcrbHjYz2CFsUsulWu3fjj/yIz0Rr5d3Uty/ARcgMRv84
+         fIw9gieXNMuR3pY0xs+l06CgvL/LZebcUOG2wsw+JIjX0oJMLECVP+ZX0g3KXvg4OmtV
+         NrQ5yZX8YnBnAVxeR90LDASaTry0bgBW3ahTJ22IgIH/3b3IU5TTz3zV8CWbuaZ7V8KK
+         KeYMecqu0WVye0ejWmspvbIOaUOmUbgUzFntUeezq4BzuJbcZtQWbQhBChyi0ghgHu6l
+         gx7w==
+X-Gm-Message-State: AOAM532e2mkfqsqhaudK8/DkbGr/as1WcwtGcxN5jzU3IvEo81LV9siV
+        HVP0by3q5qaADvbQ1vxngTM90FpgRnHm/57LarsLgokNzl/vqiI/lJ1r1qLqm14+SDVgVDJEVdz
+        tJ1twWneG8aBbWV69RUaIZfRe
+X-Received: by 2002:a05:6214:d84:: with SMTP id e4mr1041195qve.26.1616015329156;
+        Wed, 17 Mar 2021 14:08:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzwYUAxCcimit28adGtWyW4nP6zxJerDfKmYtiEXpaumVqnKjPWcYbLUL3+01vt2FTF+pCllw==
+X-Received: by 2002:a05:6214:d84:: with SMTP id e4mr1041151qve.26.1616015328675;
+        Wed, 17 Mar 2021 14:08:48 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id f136sm180496qke.24.2021.03.17.14.08.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 14:08:48 -0700 (PDT)
+Subject: Re: [PATCH V3 XRT Alveo 07/18] fpga: xrt: management physical
+ function driver (root)
+To:     Max Zhen <max.zhen@xilinx.com>, Lizhi Hou <lizhi.hou@xilinx.com>,
+        linux-kernel@vger.kernel.org, "mdf@kernel.org" <mdf@kernel.org>
+Cc:     Lizhi Hou <lizhih@xilinx.com>, linux-fpga@vger.kernel.org,
+        sonal.santan@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, robh@kernel.org
+References: <20210218064019.29189-1-lizhih@xilinx.com>
+ <20210218064019.29189-8-lizhih@xilinx.com>
+ <d0057bee-2cf1-b560-c160-636d8e76cbda@redhat.com>
+ <dd75e8fa-26ed-11a6-a048-7236918fe25b@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <7f2219e6-461f-1126-a48a-c15da974317b@redhat.com>
+Date:   Wed, 17 Mar 2021 14:08:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210317012054.238334-1-davispuh@gmail.com> <CAOE4rSwj9_DMWLszPE5adiTsQeK+G_Hqya_HkDR=uEC7L4Fj3A@mail.gmail.com>
- <20a5d997-740a-ca57-8cbc-b88c1e34c8fc@gmx.com>
-In-Reply-To: <20a5d997-740a-ca57-8cbc-b88c1e34c8fc@gmx.com>
-From:   =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
-Date:   Wed, 17 Mar 2021 23:03:30 +0200
-Message-ID: <CAOE4rSyX-qTWKS_MTS5dLpfuVnqS=LwfqThyCTP=iBEH5x2bOQ@mail.gmail.com>
-Subject: Re: [RFC] btrfs: Allow read-only mount with corrupted extent tree
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>, clm@fb.com,
-        Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <dd75e8fa-26ed-11a6-a048-7236918fe25b@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tre=C5=A1d., 2021. g. 17. marts, plkst. 12:28 =E2=80=94 lietot=C4=81js Qu W=
-enruo
-(<quwenruo.btrfs@gmx.com>) rakst=C4=ABja:
+
+On 3/16/21 1:29 PM, Max Zhen wrote:
+> Hi Tom,
 >
 >
+> On 2/26/21 7:01 AM, Tom Rix wrote:
+>> CAUTION: This message has originated from an External Source. Please use proper judgment and caution when opening attachments, clicking links, or responding to this email.
+>>
+>>
+>> A question i do not know the answer to.
+>>
+>> Seems like 'golden' is linked to a manufacturing (diagnostics?) image.
+>>
+>> If the public will never see it, should handling it here be done ?
+>>
+>> Moritz, do you know ?
 >
-> On 2021/3/17 =E4=B8=8A=E5=8D=889:29, D=C4=81vis Mos=C4=81ns wrote:
-> > tre=C5=A1d., 2021. g. 17. marts, plkst. 03:18 =E2=80=94 lietot=C4=81js =
-D=C4=81vis Mos=C4=81ns
-> > (<davispuh@gmail.com>) rakst=C4=ABja:
-> >>
-> >> Currently if there's any corruption at all in extent tree
-> >> (eg. even single bit) then mounting will fail with:
-> >> "failed to read block groups: -5" (-EIO)
-> >> It happens because we immediately abort on first error when
-> >> searching in extent tree for block groups.
-> >>
-> >> Now with this patch if `ignorebadroots` option is specified
-> >> then we handle such case and continue by removing already
-> >> created block groups and creating dummy block groups.
-> >>
-> >> Signed-off-by: D=C4=81vis Mos=C4=81ns <davispuh@gmail.com>
-> >> ---
-> >>   fs/btrfs/block-group.c | 14 ++++++++++++++
-> >>   fs/btrfs/disk-io.c     |  4 ++--
-> >>   fs/btrfs/disk-io.h     |  2 ++
-> >>   3 files changed, 18 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> >> index 48ebc106a606..827a977614b3 100644
-> >> --- a/fs/btrfs/block-group.c
-> >> +++ b/fs/btrfs/block-group.c
-> >> @@ -2048,6 +2048,20 @@ int btrfs_read_block_groups(struct btrfs_fs_inf=
-o *info)
-> >>          ret =3D check_chunk_block_group_mappings(info);
-> >>   error:
-> >>          btrfs_free_path(path);
-> >> +
-> >> +       if (ret =3D=3D -EIO && btrfs_test_opt(info, IGNOREBADROOTS)) {
-> >> +               btrfs_put_block_group_cache(info);
-> >> +               btrfs_stop_all_workers(info);
-> >> +               btrfs_free_block_groups(info);
-> >> +               ret =3D btrfs_init_workqueues(info, NULL);
-> >> +               if (ret)
-> >> +                       return ret;
-> >> +               ret =3D btrfs_init_space_info(info);
-> >> +               if (ret)
-> >> +                       return ret;
-> >> +               return fill_dummy_bgs(info);
 >
-> When we hit bad things in extent tree, we should ensure we're mounting
-> the fs RO, or we can't continue.
+> Golden image is preloaded on the device when it is shipped to customer. Then, customer can load other shells (from Xilinx or some other vendor). If something goes wrong with the shell, customer can always go back to golden and start over again. So, golden image is going to be used in public, not just internally by Xilinx.
 >
-> And we should also refuse to mount back to RW if we hit such case, so
-> that we don't need anything complex, just ignore the whole extent tree
-> and create the dummy block groups.
+>
+Thanks for the explanation.
+
+
+>>
+>>
+>> On 2/17/21 10:40 PM, Lizhi Hou wrote:
+>>> The PCIE device driver which attaches to management function on Alveo
+>> to the management
+>
+>
+> Sure.
+>
+>
+>>> devices. It instantiates one or more partition drivers which in turn
+>> more fpga partition / group ?
+>
+>
+> Group driver.
+>
+>
+>>> instantiate platform drivers. The instantiation of partition and platform
+>>> drivers is completely data driven.
+>> data driven ? everything is data driven.  do you mean dtb driven ?
+>
+>
+> Data driven means not hard-coded. Here data means meta data which is presented in device tree format, dtb.
+>
+>
+>>> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
+>>> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
+>>> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
+>>> ---
+>>>   drivers/fpga/xrt/include/xroot.h | 114 +++++++++++
+>>>   drivers/fpga/xrt/mgmt/root.c     | 342 +++++++++++++++++++++++++++++++
+>>>   2 files changed, 456 insertions(+)
+>>>   create mode 100644 drivers/fpga/xrt/include/xroot.h
+>>>   create mode 100644 drivers/fpga/xrt/mgmt/root.c
+>>>
+>>> diff --git a/drivers/fpga/xrt/include/xroot.h b/drivers/fpga/xrt/include/xroot.h
+>>> new file mode 100644
+>>> index 000000000000..752e10daa85e
+>>> --- /dev/null
+>>> +++ b/drivers/fpga/xrt/include/xroot.h
+>>> @@ -0,0 +1,114 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>> +/*
+>>> + * Header file for Xilinx Runtime (XRT) driver
+>>> + *
+>>> + * Copyright (C) 2020-2021 Xilinx, Inc.
+>>> + *
+>>> + * Authors:
+>>> + *   Cheng Zhen <maxz@xilinx.com>
+>>> + */
+>>> +
+>>> +#ifndef _XRT_ROOT_H_
+>>> +#define _XRT_ROOT_H_
+>>> +
+>>> +#include <linux/pci.h>
+>>> +#include "subdev_id.h"
+>>> +#include "events.h"
+>>> +
+>>> +typedef bool (*xrt_subdev_match_t)(enum xrt_subdev_id,
+>>> +     struct platform_device *, void *);
+>>> +#define XRT_SUBDEV_MATCH_PREV        ((xrt_subdev_match_t)-1)
+>>> +#define XRT_SUBDEV_MATCH_NEXT        ((xrt_subdev_match_t)-2)
+>>> +
+>>> +/*
+>>> + * Root IOCTL calls.
+>>> + */
+>>> +enum xrt_root_ioctl_cmd {
+>>> +     /* Leaf actions. */
+>>> +     XRT_ROOT_GET_LEAF = 0,
+>>> +     XRT_ROOT_PUT_LEAF,
+>>> +     XRT_ROOT_GET_LEAF_HOLDERS,
+>>> +
+>>> +     /* Group actions. */
+>>> +     XRT_ROOT_CREATE_GROUP,
+>>> +     XRT_ROOT_REMOVE_GROUP,
+>>> +     XRT_ROOT_LOOKUP_GROUP,
+>>> +     XRT_ROOT_WAIT_GROUP_BRINGUP,
+>>> +
+>>> +     /* Event actions. */
+>>> +     XRT_ROOT_EVENT,
+>> should this be XRT_ROOT_EVENT_SYNC ?
+>
+>
+> Sure.
+>
+>
+>>> +     XRT_ROOT_EVENT_ASYNC,
+>>> +
+>>> +     /* Device info. */
+>>> +     XRT_ROOT_GET_RESOURCE,
+>>> +     XRT_ROOT_GET_ID,
+>>> +
+>>> +     /* Misc. */
+>>> +     XRT_ROOT_HOT_RESET,
+>>> +     XRT_ROOT_HWMON,
+>>> +};
+>>> +
+>>> +struct xrt_root_ioctl_get_leaf {
+>>> +     struct platform_device *xpigl_pdev; /* caller's pdev */
+>> xpigl_ ? unneeded suffix in element names
+>
+>
+> It's needed since the it might be included and used in > 1 .c files. I'd like to keep it's name unique.
+
+This is an element name, the variable name sound be unique enough to make it clear.
+
+This is not a critical issue, ok as-is.
+
+>
+>
+>>> +     xrt_subdev_match_t xpigl_match_cb;
+>>> +     void *xpigl_match_arg;
+>>> +     struct platform_device *xpigl_leaf; /* target leaf pdev */
+>>> +};
+>>> +
+>>> +struct xrt_root_ioctl_put_leaf {
+>>> +     struct platform_device *xpipl_pdev; /* caller's pdev */
+>>> +     struct platform_device *xpipl_leaf; /* target's pdev */
+>> caller_pdev;
+>>
+>> target_pdev;
+>
+>
+> Sure.
+>
+>
+>>
+>>> +};
+>>> +
+>>> +struct xrt_root_ioctl_lookup_group {
+>>> +     struct platform_device *xpilp_pdev; /* caller's pdev */
+>>> +     xrt_subdev_match_t xpilp_match_cb;
+>>> +     void *xpilp_match_arg;
+>>> +     int xpilp_grp_inst;
+>>> +};
+>>> +
+>>> +struct xrt_root_ioctl_get_holders {
+>>> +     struct platform_device *xpigh_pdev; /* caller's pdev */
+>>> +     char *xpigh_holder_buf;
+>>> +     size_t xpigh_holder_buf_len;
+>>> +};
+>>> +
+>>> +struct xrt_root_ioctl_get_res {
+>>> +     struct resource *xpigr_res;
+>>> +};
+>>> +
+>>> +struct xrt_root_ioctl_get_id {
+>>> +     unsigned short  xpigi_vendor_id;
+>>> +     unsigned short  xpigi_device_id;
+>>> +     unsigned short  xpigi_sub_vendor_id;
+>>> +     unsigned short  xpigi_sub_device_id;
+>>> +};
+>>> +
+>>> +struct xrt_root_ioctl_hwmon {
+>>> +     bool xpih_register;
+>>> +     const char *xpih_name;
+>>> +     void *xpih_drvdata;
+>>> +     const struct attribute_group **xpih_groups;
+>>> +     struct device *xpih_hwmon_dev;
+>>> +};
+>>> +
+>>> +typedef int (*xrt_subdev_root_cb_t)(struct device *, void *, u32, void *);
+>> This function pointer type is important, please add a comment about its use and expected parameters
+>
+>
+> Added.
+>
+>
+>>> +int xrt_subdev_root_request(struct platform_device *self, u32 cmd, void *arg);
+>>> +
+>>> +/*
+>>> + * Defines physical function (MPF / UPF) specific operations
+>>> + * needed in common root driver.
+>>> + */
+>>> +struct xroot_pf_cb {
+>>> +     void (*xpc_hot_reset)(struct pci_dev *pdev);
+>> This is only ever set to xmgmt_root_hot_reset, why is this abstraction needed ?
+>
+>
+> As comment says, hot reset is implemented differently in MPF and UPF driver. So, we need this callback in this common code. Note that we have not added UPF code in our initial patch yet. It will be added in the future.
+>
+>
+>>> +};
+>>> +
+>>> +int xroot_probe(struct pci_dev *pdev, struct xroot_pf_cb *cb, void **root);
+>>> +void xroot_remove(void *root);
+>>> +bool xroot_wait_for_bringup(void *root);
+>>> +int xroot_add_vsec_node(void *root, char *dtb);
+>>> +int xroot_create_group(void *xr, char *dtb);
+>>> +int xroot_add_simple_node(void *root, char *dtb, const char *endpoint);
+>>> +void xroot_broadcast(void *root, enum xrt_events evt);
+>>> +
+>>> +#endif       /* _XRT_ROOT_H_ */
+>>> diff --git a/drivers/fpga/xrt/mgmt/root.c b/drivers/fpga/xrt/mgmt/root.c
+>>> new file mode 100644
+>>> index 000000000000..583a37c9d30c
+>>> --- /dev/null
+>>> +++ b/drivers/fpga/xrt/mgmt/root.c
+>>> @@ -0,0 +1,342 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +/*
+>>> + * Xilinx Alveo Management Function Driver
+>>> + *
+>>> + * Copyright (C) 2020-2021 Xilinx, Inc.
+>>> + *
+>>> + * Authors:
+>>> + *   Cheng Zhen <maxz@xilinx.com>
+>>> + */
+>>> +
+>>> +#include <linux/module.h>
+>>> +#include <linux/pci.h>
+>>> +#include <linux/aer.h>
+>>> +#include <linux/vmalloc.h>
+>>> +#include <linux/delay.h>
+>>> +
+>>> +#include "xroot.h"
+>>> +#include "main-impl.h"
+>>> +#include "metadata.h"
+>>> +
+>>> +#define XMGMT_MODULE_NAME    "xmgmt"
+>> The xrt modules would be more easily identified with a 'xrt' prefix instead of 'x'
+>
+>
+> We will change the module name to xrt-mgmt.
+>
+>
+>>> +#define XMGMT_DRIVER_VERSION "4.0.0"
+>>> +
+>>> +#define XMGMT_PDEV(xm)               ((xm)->pdev)
+>>> +#define XMGMT_DEV(xm)                (&(XMGMT_PDEV(xm)->dev))
+>>> +#define xmgmt_err(xm, fmt, args...)  \
+>>> +     dev_err(XMGMT_DEV(xm), "%s: " fmt, __func__, ##args)
+>>> +#define xmgmt_warn(xm, fmt, args...) \
+>>> +     dev_warn(XMGMT_DEV(xm), "%s: " fmt, __func__, ##args)
+>>> +#define xmgmt_info(xm, fmt, args...) \
+>>> +     dev_info(XMGMT_DEV(xm), "%s: " fmt, __func__, ##args)
+>>> +#define xmgmt_dbg(xm, fmt, args...)  \
+>>> +     dev_dbg(XMGMT_DEV(xm), "%s: " fmt, __func__, ##args)
+>>> +#define XMGMT_DEV_ID(_pcidev)                        \
+>>> +     ({ typeof(_pcidev) (pcidev) = (_pcidev);        \
+>>> +     ((pci_domain_nr((pcidev)->bus) << 16) | \
+>>> +     PCI_DEVID((pcidev)->bus->number, 0)); })
+>>> +
+>>> +static struct class *xmgmt_class;
+>>> +static const struct pci_device_id xmgmt_pci_ids[] = {
+>>> +     { PCI_DEVICE(0x10EE, 0xd020), }, /* Alveo U50 (golden image) */
+>>> +     { PCI_DEVICE(0x10EE, 0x5020), }, /* Alveo U50 */
+>> demagic this table, look at dfl-pci for how to use existing #define for the vendor and create a new on for the device.  If there are vf's add them at the same time.
+>>
+>> What is a golden image ?
+>
+>
+> Fixed. Please see my comments above for golden image.
+>
+>
+>>
+>>> +     { 0, }
+>>> +};
+>>> +
+>>> +struct xmgmt {
+>>> +     struct pci_dev *pdev;
+>>> +     void *root;
+>>> +
+>>> +     bool ready;
+>>> +};
+>>> +
+>>> +static int xmgmt_config_pci(struct xmgmt *xm)
+>>> +{
+>>> +     struct pci_dev *pdev = XMGMT_PDEV(xm);
+>>> +     int rc;
+>>> +
+>>> +     rc = pcim_enable_device(pdev);
+>>> +     if (rc < 0) {
+>>> +             xmgmt_err(xm, "failed to enable device: %d", rc);
+>>> +             return rc;
+>>> +     }
+>>> +
+>>> +     rc = pci_enable_pcie_error_reporting(pdev);
+>>> +     if (rc)
+>>> +             xmgmt_warn(xm, "failed to enable AER: %d", rc);
+>>> +
+>>> +     pci_set_master(pdev);
+>>> +
+>>> +     rc = pcie_get_readrq(pdev);
+>> Review this call, it does not go negative
+>
+>
+> I'll remove the check against negative value.
+>
+>
+>>> +     if (rc < 0) {
+>>> +             xmgmt_err(xm, "failed to read mrrs %d", rc);
+>>> +             return rc;
+>>> +     }
+>> this is a quirk, add a comment.
+>
+>
+> Will remove.
+>
+>
+>>> +     if (rc > 512) {
+>>> +             rc = pcie_set_readrq(pdev, 512);
+>>> +             if (rc) {
+>>> +                     xmgmt_err(xm, "failed to force mrrs %d", rc);
+>> similar calls do not fail here.
+>
+>
+> Will remove.
+>
+>
+>>> +                     return rc;
+>>> +             }
+>>> +     }
+>>> +
+>>> +     return 0;
+>>> +}
+>>> +
+>>> +static int xmgmt_match_slot_and_save(struct device *dev, void *data)
+>>> +{
+>>> +     struct xmgmt *xm = data;
+>>> +     struct pci_dev *pdev = to_pci_dev(dev);
+>>> +
+>>> +     if (XMGMT_DEV_ID(pdev) == XMGMT_DEV_ID(xm->pdev)) {
+>>> +             pci_cfg_access_lock(pdev);
+>>> +             pci_save_state(pdev);
+>>> +     }
+>>> +
+>>> +     return 0;
+>>> +}
+>>> +
+>>> +static void xmgmt_pci_save_config_all(struct xmgmt *xm)
+>>> +{
+>>> +     bus_for_each_dev(&pci_bus_type, NULL, xm, xmgmt_match_slot_and_save);
+>> This is a bus call, not a device call.
+>>
+>> Can this be changed into something like what hot reset does ?
+>
+>
+> We are working on both mgmt pf and user pf here, so sort of like a bus. But, it might be better to refactor this when we have our own bus type implementation. We do not need to make PCIE bus call. We will fix this in V5 patch set where we'll implement our own bus type.
+>
+>
+ok
+>>
+>>> +}
+>>> +
+>>> +static int xmgmt_match_slot_and_restore(struct device *dev, void *data)
+>>> +{
+>>> +     struct xmgmt *xm = data;
+>>> +     struct pci_dev *pdev = to_pci_dev(dev);
+>>> +
+>>> +     if (XMGMT_DEV_ID(pdev) == XMGMT_DEV_ID(xm->pdev)) {
+>>> +             pci_restore_state(pdev);
+>>> +             pci_cfg_access_unlock(pdev);
+>>> +     }
+>>> +
+>>> +     return 0;
+>>> +}
+>>> +
+>>> +static void xmgmt_pci_restore_config_all(struct xmgmt *xm)
+>>> +{
+>>> +     bus_for_each_dev(&pci_bus_type, NULL, xm, xmgmt_match_slot_and_restore);
+>>> +}
+>>> +
+>>> +static void xmgmt_root_hot_reset(struct pci_dev *pdev)
+>>> +{
+>>> +     struct xmgmt *xm = pci_get_drvdata(pdev);
+>>> +     struct pci_bus *bus;
+>>> +     u8 pci_bctl;
+>>> +     u16 pci_cmd, devctl;
+>>> +     int i, ret;
+>>> +
+>>> +     xmgmt_info(xm, "hot reset start");
+>>> +
+>>> +     xmgmt_pci_save_config_all(xm);
+>>> +
+>>> +     pci_disable_device(pdev);
+>>> +
+>>> +     bus = pdev->bus;
+>>> +
+>>> +     /*
+>>> +      * When flipping the SBR bit, device can fall off the bus. This is
+>>> +      * usually no problem at all so long as drivers are working properly
+>>> +      * after SBR. However, some systems complain bitterly when the device
+>>> +      * falls off the bus.
+>>> +      * The quick solution is to temporarily disable the SERR reporting of
+>>> +      * switch port during SBR.
+>>> +      */
+>>> +
+>>> +     pci_read_config_word(bus->self, PCI_COMMAND, &pci_cmd);
+>>> +     pci_write_config_word(bus->self, PCI_COMMAND,
+>>> +                           (pci_cmd & ~PCI_COMMAND_SERR));
+>>> +     pcie_capability_read_word(bus->self, PCI_EXP_DEVCTL, &devctl);
+>>> +     pcie_capability_write_word(bus->self, PCI_EXP_DEVCTL,
+>>> +                                (devctl & ~PCI_EXP_DEVCTL_FERE));
+>>> +     pci_read_config_byte(bus->self, PCI_BRIDGE_CONTROL, &pci_bctl);
+>>> +     pci_bctl |= PCI_BRIDGE_CTL_BUS_RESET;
+>>> +     pci_write_config_byte(bus->self, PCI_BRIDGE_CONTROL, pci_bctl);
+>> how the pci config values are set and cleared should be consistent.
+>>
+>> this call should be
+>>
+>> pci_write_config_byte (... pci_bctl | PCI_BRIDGE_CTL_BUF_RESET )
+>>
+>> and the next &= avoided
+>
+>
+> Sure.
+>
+>
+>>
+>>> +
+>>> +     msleep(100);
+>>> +     pci_bctl &= ~PCI_BRIDGE_CTL_BUS_RESET;
+>>> +     pci_write_config_byte(bus->self, PCI_BRIDGE_CONTROL, pci_bctl);
+>>> +     ssleep(1);
+>>> +
+>>> +     pcie_capability_write_word(bus->self, PCI_EXP_DEVCTL, devctl);
+>>> +     pci_write_config_word(bus->self, PCI_COMMAND, pci_cmd);
+>>> +
+>>> +     ret = pci_enable_device(pdev);
+>>> +     if (ret)
+>>> +             xmgmt_err(xm, "failed to enable device, ret %d", ret);
+>>> +
+>>> +     for (i = 0; i < 300; i++) {
+>>> +             pci_read_config_word(pdev, PCI_COMMAND, &pci_cmd);
+>>> +             if (pci_cmd != 0xffff)
+>> what happens with i == 300 and pci_cmd is still 0xffff ?
+>
+>
+> Something wrong happens to the device since it's not coming back after the reset. In this case, the device cannot be used and the only way to recover is to power cycle the system so that the shell can be reloaded from the flash on the device.
+>
+>
+so check and add a dev_crit() to let the user know.
+>>> +                     break;
+>>> +             msleep(20);
+>>> +     }
+>>> +
+>>> +     xmgmt_info(xm, "waiting for %d ms", i * 20);
+>>> +     xmgmt_pci_restore_config_all(xm);
+>>> +     xmgmt_config_pci(xm);
+>>> +}
+>>> +
+>>> +static int xmgmt_create_root_metadata(struct xmgmt *xm, char **root_dtb)
+>>> +{
+>>> +     char *dtb = NULL;
+>>> +     int ret;
+>>> +
+>>> +     ret = xrt_md_create(XMGMT_DEV(xm), &dtb);
+>>> +     if (ret) {
+>>> +             xmgmt_err(xm, "create metadata failed, ret %d", ret);
+>>> +             goto failed;
+>>> +     }
+>>> +
+>>> +     ret = xroot_add_vsec_node(xm->root, dtb);
+>>> +     if (ret == -ENOENT) {
+>>> +             /*
+>>> +              * We may be dealing with a MFG board.
+>>> +              * Try vsec-golden which will bring up all hard-coded leaves
+>>> +              * at hard-coded offsets.
+>>> +              */
+>>> +             ret = xroot_add_simple_node(xm->root, dtb, XRT_MD_NODE_VSEC_GOLDEN);
+>> Manufacturing diagnostics ?
+>
+>
+> This is for golden image support. Please see my comments above.
+
+Ok, i got it :)
+
+Thanks, looking forward next rev
+
+Tom
+
+>
+>
+> Thanks,
+>
+> Max
+>
+>>
+>> Tom
+>>
+>>> +     } else if (ret == 0) {
+>>> +             ret = xroot_add_simple_node(xm->root, dtb, XRT_MD_NODE_MGMT_MAIN);
+>>> +     }
+>>> +     if (ret)
+>>> +             goto failed;
+>>> +
+>>> +     *root_dtb = dtb;
+>>> +     return 0;
+>>> +
+>>> +failed:
+>>> +     vfree(dtb);
+>>> +     return ret;
+>>> +}
+>>> +
+>>> +static ssize_t ready_show(struct device *dev,
+>>> +                       struct device_attribute *da,
+>>> +                       char *buf)
+>>> +{
+>>> +     struct pci_dev *pdev = to_pci_dev(dev);
+>>> +     struct xmgmt *xm = pci_get_drvdata(pdev);
+>>> +
+>>> +     return sprintf(buf, "%d\n", xm->ready);
+>>> +}
+>>> +static DEVICE_ATTR_RO(ready);
+>>> +
+>>> +static struct attribute *xmgmt_root_attrs[] = {
+>>> +     &dev_attr_ready.attr,
+>>> +     NULL
+>>> +};
+>>> +
+>>> +static struct attribute_group xmgmt_root_attr_group = {
+>>> +     .attrs = xmgmt_root_attrs,
+>>> +};
+>>> +
+>>> +static struct xroot_pf_cb xmgmt_xroot_pf_cb = {
+>>> +     .xpc_hot_reset = xmgmt_root_hot_reset,
+>>> +};
+>>> +
+>>> +static int xmgmt_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>>> +{
+>>> +     int ret;
+>>> +     struct device *dev = &pdev->dev;
+>>> +     struct xmgmt *xm = devm_kzalloc(dev, sizeof(*xm), GFP_KERNEL);
+>>> +     char *dtb = NULL;
+>>> +
+>>> +     if (!xm)
+>>> +             return -ENOMEM;
+>>> +     xm->pdev = pdev;
+>>> +     pci_set_drvdata(pdev, xm);
+>>> +
+>>> +     ret = xmgmt_config_pci(xm);
+>>> +     if (ret)
+>>> +             goto failed;
+>>> +
+>>> +     ret = xroot_probe(pdev, &xmgmt_xroot_pf_cb, &xm->root);
+>>> +     if (ret)
+>>> +             goto failed;
+>>> +
+>>> +     ret = xmgmt_create_root_metadata(xm, &dtb);
+>>> +     if (ret)
+>>> +             goto failed_metadata;
+>>> +
+>>> +     ret = xroot_create_group(xm->root, dtb);
+>>> +     vfree(dtb);
+>>> +     if (ret)
+>>> +             xmgmt_err(xm, "failed to create root group: %d", ret);
+>>> +
+>>> +     if (!xroot_wait_for_bringup(xm->root))
+>>> +             xmgmt_err(xm, "failed to bringup all groups");
+>>> +     else
+>>> +             xm->ready = true;
+>>> +
+>>> +     ret = sysfs_create_group(&pdev->dev.kobj, &xmgmt_root_attr_group);
+>>> +     if (ret) {
+>>> +             /* Warning instead of failing the probe. */
+>>> +             xmgmt_warn(xm, "create xmgmt root attrs failed: %d", ret);
+>>> +     }
+>>> +
+>>> +     xroot_broadcast(xm->root, XRT_EVENT_POST_CREATION);
+>>> +     xmgmt_info(xm, "%s started successfully", XMGMT_MODULE_NAME);
+>>> +     return 0;
+>>> +
+>>> +failed_metadata:
+>>> +     (void)xroot_remove(xm->root);
+>>> +failed:
+>>> +     pci_set_drvdata(pdev, NULL);
+>>> +     return ret;
+>>> +}
+>>> +
+>>> +static void xmgmt_remove(struct pci_dev *pdev)
+>>> +{
+>>> +     struct xmgmt *xm = pci_get_drvdata(pdev);
+>>> +
+>>> +     xroot_broadcast(xm->root, XRT_EVENT_PRE_REMOVAL);
+>>> +     sysfs_remove_group(&pdev->dev.kobj, &xmgmt_root_attr_group);
+>>> +     (void)xroot_remove(xm->root);
+>>> +     pci_disable_pcie_error_reporting(xm->pdev);
+>>> +     xmgmt_info(xm, "%s cleaned up successfully", XMGMT_MODULE_NAME);
+>>> +}
+>>> +
+>>> +static struct pci_driver xmgmt_driver = {
+>>> +     .name = XMGMT_MODULE_NAME,
+>>> +     .id_table = xmgmt_pci_ids,
+>>> +     .probe = xmgmt_probe,
+>>> +     .remove = xmgmt_remove,
+>>> +};
+>>> +
+>>> +static int __init xmgmt_init(void)
+>>> +{
+>>> +     int res = 0;
+>>> +
+>>> +     res = xmgmt_main_register_leaf();
+>>> +     if (res)
+>>> +             return res;
+>>> +
+>>> +     xmgmt_class = class_create(THIS_MODULE, XMGMT_MODULE_NAME);
+>>> +     if (IS_ERR(xmgmt_class))
+>>> +             return PTR_ERR(xmgmt_class);
+>>> +
+>>> +     res = pci_register_driver(&xmgmt_driver);
+>>> +     if (res) {
+>>> +             class_destroy(xmgmt_class);
+>>> +             return res;
+>>> +     }
+>>> +
+>>> +     return 0;
+>>> +}
+>>> +
+>>> +static __exit void xmgmt_exit(void)
+>>> +{
+>>> +     pci_unregister_driver(&xmgmt_driver);
+>>> +     class_destroy(xmgmt_class);
+>>> +     xmgmt_main_unregister_leaf();
+>>> +}
+>>> +
+>>> +module_init(xmgmt_init);
+>>> +module_exit(xmgmt_exit);
+>>> +
+>>> +MODULE_DEVICE_TABLE(pci, xmgmt_pci_ids);
+>>> +MODULE_VERSION(XMGMT_DRIVER_VERSION);
+>>> +MODULE_AUTHOR("XRT Team <runtime@xilinx.com>");
+>>> +MODULE_DESCRIPTION("Xilinx Alveo management function driver");
+>>> +MODULE_LICENSE("GPL v2");
 >
 
-That's what we're doing here, `ignorebadroots` implies RO mount and
-without specifying it doesn't mount at all.
-
-> >
-> > This isn't that nice, but I don't really know how to properly clean up
-> > everything related to already created block groups so this was easiest
-> > way. It seems to work fine.
-> > But looks like need to do something about replay log aswell because if
-> > it's not disabled then it fails with:
-> >
-> > [ 1397.246869] BTRFS info (device sde): start tree-log replay
-> > [ 1398.218685] BTRFS warning (device sde): sde checksum verify failed
-> > on 21057127661568 wanted 0xd1506ed9 found 0x22ab750a level 0
-> > [ 1398.218803] BTRFS warning (device sde): sde checksum verify failed
-> > on 21057127661568 wanted 0xd1506ed9 found 0x7dd54bb9 level 0
-> > [ 1398.218813] BTRFS: error (device sde) in __btrfs_free_extent:3054:
-> > errno=3D-5 IO failure
-> > [ 1398.218828] BTRFS: error (device sde) in
-> > btrfs_run_delayed_refs:2124: errno=3D-5 IO failure
-> > [ 1398.219002] BTRFS: error (device sde) in btrfs_replay_log:2254:
-> > errno=3D-5 IO failure (Failed to recover log tree)
-> > [ 1398.229048] BTRFS error (device sde): open_ctree failed
->
-> This is because we shouldn't allow to do anything write to the fs if we
-> have anything wrong in extent tree.
->
-
-This is happening when mounting read-only. My assumption is that it
-only tries to replay in memory without writing anything to disk.
