@@ -2,592 +2,575 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF7533F510
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C9033F555
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232330AbhCQQHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 12:07:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbhCQQHN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 12:07:13 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BF5C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:07:11 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id t4so39416427qkp.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 09:07:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=9RSxZpsH6lQLcIpQ9ddNIGfKKb30HXYzlyAO6/TNyTs=;
-        b=eEZ3TPr1YtU6rvZB47FsSypIJ/S9TNw41zkbW90H9TiwAVKof2N9YEwTWVPMSv/F4x
-         iOpAfLZ2+4d+ktCc/has2vZGGLNTHGkeAvAofmjmlCG/gUTwJ0oIZiSU4nNh6fEXLjhI
-         PdBfu1P5Mslrt5ebzlT/FhJsWk0CHA20okcPsG2AazztCT5surv8rVkqIV3TuCop/8qt
-         yN0ji59VIbAJ3ho1ZDp9oWA2hApiUpR/xxTmgT3VfyP+vA0fdHJVmPyO6EYkD0bk1OCb
-         coTSDtbFksoIhBfuVPv5eej5s4KLQnWIsQoIwKCSClPzPoQV1gMj8aYylZcbdYsk4Tmt
-         n7vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=9RSxZpsH6lQLcIpQ9ddNIGfKKb30HXYzlyAO6/TNyTs=;
-        b=MfWkS+hlISJ5Iu+NIYrMS8HI1gtgAU/PnujOMgFQNcwwk14GFDlnlfviDTKD1St0rP
-         +AFVbio43fk/JY3sI3JC9Vfv73e5ljc0JwOMmenB/1BXb/ctfUICZ25pibRhnBFQg93B
-         EMlBhr06dqhT7xi7xEbn/EuOCT/lmYckAPlg5s+wbs7Zn5LSmNAJdDgtwjh5GEWC0bKC
-         KSGfca/6hc3/dAeRhefi56VcvK2AK0vd3IDubbReqBOwH4SfAgJRytVzxvPYjQ93PfLT
-         obTLf0zOTOWH583gpP4WAyWOWGSc1xQ5BTnP5Uw6cHR2OxAbqydIIaWyYsMdMP1UEKhR
-         NE6g==
-X-Gm-Message-State: AOAM5300wxlDhMRoXRVmU7XXkg2OfgIDPbSp5JT8xG99cmU18SruyXly
-        eqXQ49v5jRWvI2OfNkOdKEsoq6mjJwgjs9V24Fo=
-X-Google-Smtp-Source: ABdhPJyUtqTouTFBX8TunPEV5gZl4E6xheV0Gc+94CHG8Yl6laDWLhg9rmi/1FG4WH3UJcHsqDA75Q==
-X-Received: by 2002:ac8:7d48:: with SMTP id h8mr4439649qtb.179.1615993778757;
-        Wed, 17 Mar 2021 08:09:38 -0700 (PDT)
-Received: from nicolas-tpx395.lan (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id s6sm6681585qke.44.2021.03.17.08.09.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 08:09:38 -0700 (PDT)
-Message-ID: <bd06f9b177d8caa7cd2748eb879f3f49c016fcce.camel@ndufresne.ca>
-Subject: Re: [PATCH v3 05/15] media: mtk-vcodec: vdec: support stateless API
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Alexandre Courbot <acourbot@chromium.org>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Date:   Wed, 17 Mar 2021 11:09:36 -0400
-In-Reply-To: <CAPBb6MUuefRgRfFFzHpJheo7mC034mXihwm5+++Dmkg=4Zgn_Q@mail.gmail.com>
-References: <20210226100148.1663389-1-acourbot@chromium.org>
-         <20210226100148.1663389-6-acourbot@chromium.org>
-         <CAAEAJfDyHYGf+J6WDHchVATOvj5AJpO8dkAStiNGNobJ9Uz8Yw@mail.gmail.com>
-         <CAPBb6MWtPuBNLpMK6U1-rfvTcPRnOEjJ06zTawxyD+pMSJ=uGQ@mail.gmail.com>
-         <CAAEAJfDkS3E0YeXniBB9MuQJUnEruxGJGsLN3toVVd=7wLXGmQ@mail.gmail.com>
-         <CAPBb6MUuefRgRfFFzHpJheo7mC034mXihwm5+++Dmkg=4Zgn_Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S232263AbhCQQUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 12:20:00 -0400
+Received: from mout02.posteo.de ([185.67.36.66]:47345 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232224AbhCQQTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 12:19:54 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 8A2682400FD
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 16:13:47 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1615994027; bh=HgkHOVfXeTRnY59meofvcGqmv8jx4KV1Ld9Ea8+W/zY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Mheg+0vcTJ6fKVfajmMenyL5IdVThb7t8GmtujfVFnL6ZWJiyX6BWVSL40d3BAV42
+         mHFQY3PIXir0EVZ6hUNzVgayv7ceen7LfskvcqcxT4qFjp0dAyCs3/spgTQPjg2oyT
+         kqtejVoijpb/4njKLwc3Ioxfza91T0T+G0KbkkyfeqFvbJ/zaKqHF/ZMgcKybJQ9ri
+         d1bxPrCYB76C3MDw9H2LmVrlZbA1/pHbQBm89EOeJNdyswMTx4MA6GDjebCiqHcwUy
+         J9TFZ0bjP0ulIXQU7W0jj/2zWpm9Sn16KZtTkJBXoVODGJ4eSlBKBuhVPHcF4nIb8K
+         xmPfx/7j/DqOQ==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4F0twB3yFsz9ry4;
+        Wed, 17 Mar 2021 16:13:46 +0100 (CET)
+Date:   Wed, 17 Mar 2021 16:13:45 +0100
+From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org
+Subject: [PATCH v3] hwmon: corsair-psu: add support for critical values
+Message-ID: <YFIcqVsnD/yOH1w0@monster.powergraphx.local>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mercredi 17 mars 2021 à 12:13 +0900, Alexandre Courbot a écrit :
-> On Tue, Mar 16, 2021 at 6:45 AM Ezequiel Garcia
-> <ezequiel@vanguardiasur.com.ar> wrote:
-> > 
-> > Hi Alexandre,
-> > 
-> > On Mon, 15 Mar 2021 at 08:28, Alexandre Courbot <acourbot@chromium.org>
-> > wrote:
-> > > 
-> > > Hi Ezequiel, thanks for the feedback!
-> > > 
-> > > On Thu, Mar 4, 2021 at 6:30 AM Ezequiel Garcia
-> > > <ezequiel@vanguardiasur.com.ar> wrote:
-> > > > 
-> > > > Hello Alex,
-> > > > 
-> > > > Thanks for the patch.
-> > > > 
-> > > > On Fri, 26 Feb 2021 at 07:06, Alexandre Courbot <acourbot@chromium.org>
-> > > > wrote:
-> > > > > 
-> > > > > From: Yunfei Dong <yunfei.dong@mediatek.com>
-> > > > > 
-> > > > > Support the stateless codec API that will be used by MT8183.
-> > > > > 
-> > > > > Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> > > > > [acourbot: refactor, cleanup and split]
-> > > > > Co-developed-by: Alexandre Courbot <acourbot@chromium.org>
-> > > > > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> > > > > ---
-> > > > >  drivers/media/platform/mtk-vcodec/Makefile    |   1 +
-> > > > >  .../platform/mtk-vcodec/mtk_vcodec_dec.c      |  66 ++-
-> > > > >  .../platform/mtk-vcodec/mtk_vcodec_dec.h      |   9 +-
-> > > > >  .../mtk-vcodec/mtk_vcodec_dec_stateless.c     | 427
-> > > > > ++++++++++++++++++
-> > > > >  .../platform/mtk-vcodec/mtk_vcodec_drv.h      |   3 +
-> > > > >  5 files changed, 503 insertions(+), 3 deletions(-)
-> > > > >  create mode 100644 drivers/media/platform/mtk-
-> > > > > vcodec/mtk_vcodec_dec_stateless.c
-> > > > > 
-> > > > [..]
-> > > > 
-> > > > > +
-> > > > > +static const struct mtk_stateless_control mtk_stateless_controls[] =
-> > > > > {
-> > > > > +       {
-> > > > > +               .cfg = {
-> > > > > +                       .id = V4L2_CID_STATELESS_H264_SPS,
-> > > > > +               },
-> > > > > +               .codec_type = V4L2_PIX_FMT_H264_SLICE,
-> > > > > +               .needed_in_request = true,
-> > > > 
-> > > > This "needed_in_request" is not really required, as controls
-> > > > are not volatile, and their value is stored per-context (per-fd).
-> > > > 
-> > > > It's perfectly valid for an application to pass the SPS control
-> > > > at the beginning of the sequence, and then omit it
-> > > > in further requests.
-> > > 
-> > > If I understand how v4l2_ctrl_request_hdl_ctrl_find() works with
-> > > requests, this boolean only checks that the control has been provided
-> > > at least once, and not that it is provided with every request. Without
-> > > it we could send a frame to the firmware without e.g. setting an SPS,
-> > > which would be a problem.
-> > > 
-> > 
-> > As Nicolas points out, in V4L2 controls have an initial value,
-> > so no control can be unset.
-> 
-> I see. So I guess the expectation is that failure will occur later as
-> the firmware reports it cannot decode properly (or returns a corrupted
-> frame). Thanks for the precision.
+Adds support for reading the critical values of the temperature sensors
+and the rail sensors (voltage and current) once and caches them. Updates
+the naming of the constants following a more clear scheme. Also updates
+the documentation and fixes some typos. Updates is_visible and ops_read
+functions to be more readable.
 
-That is identical to userspace passing bad values. We just don't want to force
-userspace to pass controls that haven't changed. The control framework isn't
-exactly free in CPU time.
+The new sensors output of a Corsair HX850i will look like this:
+corsairpsu-hid-3-1
+Adapter: HID adapter
+v_in:        230.00 V
+v_out +12v:   12.14 V  (crit min =  +8.41 V, crit max = +15.59 V)
+v_out +5v:     5.03 V  (crit min =  +3.50 V, crit max =  +6.50 V)
+v_out +3.3v:   3.30 V  (crit min =  +2.31 V, crit max =  +4.30 V)
+psu fan:        0 RPM
+vrm temp:     +46.2�C  (crit = +70.0�C)
+case temp:    +39.8�C  (crit = +70.0�C)
+power total: 152.00 W
+power +12v:  108.00 W
+power +5v:    41.00 W
+power +3.3v:   5.00 W
+curr +12v:     9.00 A  (crit max = +85.00 A)
+curr +5v:      8.31 A  (crit max = +40.00 A)
+curr +3.3v:    1.62 A  (crit max = +40.00 A)
 
-> 
-> > 
-> > > > 
-> > > > > +       },
-> > > > > +       {
-> > > > > +               .cfg = {
-> > > > > +                       .id = V4L2_CID_STATELESS_H264_PPS,
-> > > > > +               },
-> > > > > +               .codec_type = V4L2_PIX_FMT_H264_SLICE,
-> > > > > +               .needed_in_request = true,
-> > > > > +       },
-> > > > > +       {
-> > > > > +               .cfg = {
-> > > > > +                       .id = V4L2_CID_STATELESS_H264_SCALING_MATRIX,
-> > > > > +               },
-> > > > > +               .codec_type = V4L2_PIX_FMT_H264_SLICE,
-> > > > > +               .needed_in_request = true,
-> > > > > +       },
-> > > > > +       {
-> > > > > +               .cfg = {
-> > > > > +                       .id = V4L2_CID_STATELESS_H264_DECODE_PARAMS,
-> > > > > +               },
-> > > > > +               .codec_type = V4L2_PIX_FMT_H264_SLICE,
-> > > > > +               .needed_in_request = true,
-> > > > > +       },
-> > > > > +       {
-> > > > > +               .cfg = {
-> > > > > +                       .id = V4L2_CID_MPEG_VIDEO_H264_PROFILE,
-> > > > > +                       .def = V4L2_MPEG_VIDEO_H264_PROFILE_MAIN,
-> > > > > +                       .max = V4L2_MPEG_VIDEO_H264_PROFILE_HIGH,
-> > > > > +                       .menu_skip_mask =
-> > > > > +                              
-> > > > > BIT(V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE) |
-> > > > > +                              
-> > > > > BIT(V4L2_MPEG_VIDEO_H264_PROFILE_EXTENDED),
-> > > > > +               },
-> > > > > +               .codec_type = V4L2_PIX_FMT_H264_SLICE,
-> > > > > +       },
-> > > > > +       {
-> > > > > +               .cfg = {
-> > > > > +                       .id = V4L2_CID_STATELESS_H264_DECODE_MODE,
-> > > > > +                       .min =
-> > > > > V4L2_STATELESS_H264_DECODE_MODE_FRAME_BASED,
-> > > > > +                       .def =
-> > > > > V4L2_STATELESS_H264_DECODE_MODE_FRAME_BASED,
-> > > > > +                       .max =
-> > > > > V4L2_STATELESS_H264_DECODE_MODE_FRAME_BASED,
-> > > > > +               },
-> > > > > +               .codec_type = V4L2_PIX_FMT_H264_SLICE,
-> > > > > +       },
-> > > > > +};
-> > > > 
-> > > > Applications also need to know which V4L2_CID_STATELESS_H264_START_CODE
-> > > > the driver supports. From a next patch, this case seems to be
-> > > > V4L2_STATELESS_H264_START_CODE_ANNEX_B.
-> > > 
-> > > Indeed - I've added the control, thanks for catching this!
-> > > 
-> > > > 
-> > > > > +#define NUM_CTRLS ARRAY_SIZE(mtk_stateless_controls)
-> > > > > +
-> > > > > +static const struct mtk_video_fmt mtk_video_formats[] = {
-> > > > > +       {
-> > > > > +               .fourcc = V4L2_PIX_FMT_H264_SLICE,
-> > > > > +               .type = MTK_FMT_DEC,
-> > > > > +               .num_planes = 1,
-> > > > > +       },
-> > > > > +       {
-> > > > > +               .fourcc = V4L2_PIX_FMT_MM21,
-> > > > > +               .type = MTK_FMT_FRAME,
-> > > > > +               .num_planes = 2,
-> > > > > +       },
-> > > > > +};
-> > > > > +#define NUM_FORMATS ARRAY_SIZE(mtk_video_formats)
-> > > > > +#define DEFAULT_OUT_FMT_IDX    0
-> > > > > +#define DEFAULT_CAP_FMT_IDX    1
-> > > > > +
-> > > > > +static const struct mtk_codec_framesizes mtk_vdec_framesizes[] = {
-> > > > > +       {
-> > > > > +               .fourcc = V4L2_PIX_FMT_H264_SLICE,
-> > > > > +               .stepwise = {
-> > > > > +                       MTK_VDEC_MIN_W, MTK_VDEC_MAX_W, 16,
-> > > > > +                       MTK_VDEC_MIN_H, MTK_VDEC_MAX_H, 16,
-> > > > > +               },
-> > > > > +       },
-> > > > > +};
-> > > > > +
-> > > > > +#define NUM_SUPPORTED_FRAMESIZE ARRAY_SIZE(mtk_vdec_framesizes)
-> > > > > +
-> > > > > +static void mtk_vdec_stateless_set_dst_payload(struct mtk_vcodec_ctx
-> > > > > *ctx,
-> > > > > +                                              struct vdec_fb *fb)
-> > > > > +{
-> > > > > +       struct mtk_video_dec_buf *vdec_frame_buf =
-> > > > > +               container_of(fb, struct mtk_video_dec_buf,
-> > > > > frame_buffer);
-> > > > > +       struct vb2_v4l2_buffer *vb = &vdec_frame_buf->m2m_buf.vb;
-> > > > > +       unsigned int cap_y_size = ctx-
-> > > > > >q_data[MTK_Q_DATA_DST].sizeimage[0];
-> > > > > +
-> > > > > +       vb2_set_plane_payload(&vb->vb2_buf, 0, cap_y_size);
-> > > > > +       if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes == 2) {
-> > > > > +               unsigned int cap_c_size =
-> > > > > +                       ctx->q_data[MTK_Q_DATA_DST].sizeimage[1];
-> > > > > +
-> > > > > +               vb2_set_plane_payload(&vb->vb2_buf, 1, cap_c_size);
-> > > > > +       }
-> > > > > +}
-> > > > > +
-> > > > > +static struct vdec_fb *vdec_get_cap_buffer(struct mtk_vcodec_ctx
-> > > > > *ctx,
-> > > > > +                                          struct vb2_v4l2_buffer
-> > > > > *vb2_v4l2)
-> > > > > +{
-> > > > > +       struct mtk_video_dec_buf *framebuf =
-> > > > > +               container_of(vb2_v4l2, struct mtk_video_dec_buf,
-> > > > > m2m_buf.vb);
-> > > > > +       struct vdec_fb *pfb = &framebuf->frame_buffer;
-> > > > > +       struct vb2_buffer *dst_buf = &vb2_v4l2->vb2_buf;
-> > > > > +
-> > > > > +       pfb = &framebuf->frame_buffer;
-> > > > > +       pfb->base_y.va = vb2_plane_vaddr(dst_buf, 0);
-> > > > 
-> > > > Are you sure you need a CPU mapping? It seems strange.
-> > > > I'll comment some more on the next patch(es).
-> > > 
-> > > I'll answer on the next patch since this is where that mapping is being
-> > > used.
-> > > 
-> > > > 
-> > > > > +       pfb->base_y.dma_addr = vb2_dma_contig_plane_dma_addr(dst_buf,
-> > > > > 0);
-> > > > > +       pfb->base_y.size = ctx->q_data[MTK_Q_DATA_DST].sizeimage[0];
-> > > > > +
-> > > > > +       if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes == 2) {
-> > > > > +               pfb->base_c.va = vb2_plane_vaddr(dst_buf, 1);
-> > > > > +               pfb->base_c.dma_addr =
-> > > > > +                       vb2_dma_contig_plane_dma_addr(dst_buf, 1);
-> > > > > +               pfb->base_c.size = ctx-
-> > > > > >q_data[MTK_Q_DATA_DST].sizeimage[1];
-> > > > > +       }
-> > > > > +       mtk_v4l2_debug(1,
-> > > > > +               "id=%d Framebuf  pfb=%p VA=%p Y_DMA=%pad C_DMA=%pad
-> > > > > Size=%zx frame_count = %d",
-> > > > > +               dst_buf->index, pfb,
-> > > > > +               pfb->base_y.va, &pfb->base_y.dma_addr,
-> > > > > +               &pfb->base_c.dma_addr, pfb->base_y.size,
-> > > > > +               ctx->decoded_frame_cnt);
-> > > > > +
-> > > > > +       return pfb;
-> > > > > +}
-> > > > > +
-> > > > > +static void vb2ops_vdec_buf_request_complete(struct vb2_buffer *vb)
-> > > > > +{
-> > > > > +       struct mtk_vcodec_ctx *ctx = vb2_get_drv_priv(vb->vb2_queue);
-> > > > > +
-> > > > > +       v4l2_ctrl_request_complete(vb->req_obj.req, &ctx->ctrl_hdl);
-> > > > > +}
-> > > > > +
-> > > > > +static int fops_media_request_validate(struct media_request *mreq)
-> > > > > +{
-> > > > > +       const unsigned int buffer_cnt = vb2_request_buffer_cnt(mreq);
-> > > > > +       struct mtk_vcodec_ctx *ctx = NULL;
-> > > > > +       struct media_request_object *req_obj;
-> > > > > +       struct v4l2_ctrl_handler *parent_hdl, *hdl;
-> > > > > +       struct v4l2_ctrl *ctrl;
-> > > > > +       unsigned int i;
-> > > > > +
-> > > > > +       switch (buffer_cnt) {
-> > > > > +       case 1:
-> > > > > +               /* We expect exactly one buffer with the request */
-> > > > > +               break;
-> > > > > +       case 0:
-> > > > > +               mtk_v4l2_err("No buffer provided with the request");
-> > > > > +               return -ENOENT;
-> > > > > +       default:
-> > > > > +               mtk_v4l2_err("Too many buffers (%d) provided with the
-> > > > > request",
-> > > > > +                            buffer_cnt);
-> > > > > +               return -EINVAL;
-> > > > > +       }
-> > > > > +
-> > > > > +       list_for_each_entry(req_obj, &mreq->objects, list) {
-> > > > > +               struct vb2_buffer *vb;
-> > > > > +
-> > > > > +               if (vb2_request_object_is_buffer(req_obj)) {
-> > > > > +                       vb = container_of(req_obj, struct vb2_buffer,
-> > > > > req_obj);
-> > > > > +                       ctx = vb2_get_drv_priv(vb->vb2_queue);
-> > > > > +                       break;
-> > > > > +               }
-> > > > > +       }
-> > > > > +
-> > > > > +       if (!ctx) {
-> > > > > +               mtk_v4l2_err("Cannot find buffer for request");
-> > > > > +               return -ENOENT;
-> > > > > +       }
-> > > > > +
-> > > > > +       parent_hdl = &ctx->ctrl_hdl;
-> > > > > +
-> > > > > +       hdl = v4l2_ctrl_request_hdl_find(mreq, parent_hdl);
-> > > > > +       if (!hdl) {
-> > > > > +               mtk_v4l2_err("Cannot find control handler for
-> > > > > request\n");
-> > > > > +               return -ENOENT;
-> > > > > +       }
-> > > > > +
-> > > > > +       for (i = 0; i < NUM_CTRLS; i++) {
-> > > > > +               if (mtk_stateless_controls[i].codec_type != ctx-
-> > > > > >current_codec)
-> > > > > +                       continue;
-> > > > > +               if (!mtk_stateless_controls[i].needed_in_request)
-> > > > > +                       continue;
-> > > > > +
-> > > > > +               ctrl = v4l2_ctrl_request_hdl_ctrl_find(hdl,
-> > > > > +                                        
-> > > > > mtk_stateless_controls[i].cfg.id);
-> > > > > +               if (!ctrl) {
-> > > > > +                       mtk_v4l2_err("Missing required codec
-> > > > > control\n");
-> > > > > +                       return -ENOENT;
-> > > > > +               }
-> > > > > +       }
-> > > > > +
-> > > > > +       v4l2_ctrl_request_hdl_put(hdl);
-> > > > > +
-> > > > > +       return vb2_request_validate(mreq);
-> > > > > +}
-> > > > > +
-> > > > > +static void mtk_vdec_worker(struct work_struct *work)
-> > > > > +{
-> > > > > +       struct mtk_vcodec_ctx *ctx =
-> > > > > +               container_of(work, struct mtk_vcodec_ctx,
-> > > > > decode_work);
-> > > > > +       struct mtk_vcodec_dev *dev = ctx->dev;
-> > > > > +       struct vb2_v4l2_buffer *vb2_v4l2_src, *vb2_v4l2_dst;
-> > > > > +       struct vb2_buffer *vb2_src;
-> > > > > +       struct mtk_vcodec_mem *bs_src;
-> > > > > +       struct mtk_video_dec_buf *dec_buf_src;
-> > > > > +       struct media_request *src_buf_req;
-> > > > > +       struct vdec_fb *dst_buf;
-> > > > > +       bool res_chg = false;
-> > > > > +       int ret;
-> > > > > +
-> > > > > +       vb2_v4l2_src = v4l2_m2m_next_src_buf(ctx->m2m_ctx);
-> > > > > +       if (vb2_v4l2_src == NULL) {
-> > > > > +               v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
-> > > > > +               mtk_v4l2_debug(1, "[%d] no available source buffer",
-> > > > > ctx->id);
-> > > > > +               return;
-> > > > > +       }
-> > > > > +
-> > > > > +       vb2_v4l2_dst = v4l2_m2m_next_dst_buf(ctx->m2m_ctx);
-> > > > > +       if (vb2_v4l2_dst == NULL) {
-> > > > > +               v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
-> > > > > +               mtk_v4l2_debug(1, "[%d] no available destination
-> > > > > buffer", ctx->id);
-> > > > > +               return;
-> > > > > +       }
-> > > > > +
-> > > > > +       vb2_src = &vb2_v4l2_src->vb2_buf;
-> > > > > +       dec_buf_src = container_of(vb2_v4l2_src, struct
-> > > > > mtk_video_dec_buf,
-> > > > > +                                  m2m_buf.vb);
-> > > > > +       bs_src = &dec_buf_src->bs_buffer;
-> > > > > +
-> > > > > +       mtk_v4l2_debug(3, "[%d] (%d) id=%d, vb=%p buf_info = %p",
-> > > > > +                       ctx->id, src_buf->vb2_queue->type,
-> > > > > +                       src_buf->index, src_buf, src_buf_info);
-> > > > > +
-> > > > > +       bs_src->va = vb2_plane_vaddr(vb2_src, 0);
-> > > > > +       bs_src->dma_addr = vb2_dma_contig_plane_dma_addr(vb2_src, 0);
-> > > > > +       bs_src->size = (size_t)vb2_src->planes[0].bytesused;
-> > > > > +       if (!bs_src->va) {
-> > > > > +               v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
-> > > > > +               mtk_v4l2_err("[%d] id=%d source buffer is NULL", ctx-
-> > > > > >id,
-> > > > > +                            vb2_src->index);
-> > > > > +               return;
-> > > > > +       }
-> > > > > +
-> > > > > +       mtk_v4l2_debug(3, "[%d] Bitstream VA=%p DMA=%pad Size=%zx
-> > > > > vb=%p",
-> > > > > +                       ctx->id, buf->va, &buf->dma_addr, buf->size,
-> > > > > src_buf);
-> > > > > +       /* Apply request controls. */
-> > > > > +       src_buf_req = vb2_src->req_obj.req;
-> > > > > +       if (src_buf_req)
-> > > > > +               v4l2_ctrl_request_setup(src_buf_req, &ctx->ctrl_hdl);
-> > > > > +       else
-> > > > > +               mtk_v4l2_err("vb2 buffer media request is NULL");
-> > > > > +
-> > > > > +       dst_buf = vdec_get_cap_buffer(ctx, vb2_v4l2_dst);
-> > > > > +       v4l2_m2m_buf_copy_metadata(vb2_v4l2_src, vb2_v4l2_dst, true);
-> > > > > +       ret = vdec_if_decode(ctx, bs_src, dst_buf, &res_chg);
-> > > > > +       if (ret) {
-> > > > > +               mtk_v4l2_err(
-> > > > > +                       " <===[%d], src_buf[%d] sz=0x%zx pts=%llu
-> > > > > vdec_if_decode() ret=%d res_chg=%d===>",
-> > > > > +                       ctx->id, vb2_src->index, bs_src->size,
-> > > > > +                       vb2_src->timestamp, ret, res_chg);
-> > > > > +               if (ret == -EIO) {
-> > > > > +                       mutex_lock(&ctx->lock);
-> > > > > +                       dec_buf_src->error = true;
-> > > > > +                       mutex_unlock(&ctx->lock);
-> > > > > +               }
-> > > > > +       }
-> > > > > +
-> > > > > +       mtk_vdec_stateless_set_dst_payload(ctx, dst_buf);
-> > > > > +
-> > > > > +       v4l2_m2m_buf_done_and_job_finish(dev->m2m_dev_dec, ctx-
-> > > > > >m2m_ctx,
-> > > > > +               ret ? VB2_BUF_STATE_ERROR : VB2_BUF_STATE_DONE);
-> > > > > +
-> > > > > +       v4l2_ctrl_request_complete(src_buf_req, &ctx->ctrl_hdl);
-> > > > > +}
-> > > > > +
-> > > > > +static void vb2ops_vdec_stateless_buf_queue(struct vb2_buffer *vb)
-> > > > > +{
-> > > > > +       struct mtk_vcodec_ctx *ctx = vb2_get_drv_priv(vb->vb2_queue);
-> > > > > +       struct vb2_v4l2_buffer *vb2_v4l2 = to_vb2_v4l2_buffer(vb);
-> > > > > +
-> > > > > +       mtk_v4l2_debug(3, "[%d] (%d) id=%d, vb=%p",
-> > > > > +                       ctx->id, vb->vb2_queue->type,
-> > > > > +                       vb->index, vb);
-> > > > > +
-> > > > > +       mutex_lock(&ctx->lock);
-> > > > > +       v4l2_m2m_buf_queue(ctx->m2m_ctx, vb2_v4l2);
-> > > > > +       mutex_unlock(&ctx->lock);
-> > > > > +       if (vb->vb2_queue->type != V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-> > > > > +               return;
-> > > > > +
-> > > > > +       mtk_v4l2_debug(3, "(%d) id=%d, bs=%p",
-> > > > > +               vb->vb2_queue->type, vb->index, src_buf);
-> > > > > +
-> > > > > +       /* If an OUTPUT buffer, we may need to update the state */
-> > > > > +       if (ctx->state == MTK_STATE_INIT) {
-> > > > > +               ctx->state = MTK_STATE_HEADER;
-> > > > > +               mtk_v4l2_debug(1, "Init driver from init to header.");
-> > > > 
-> > > > This state thing seems just something to make the rest
-> > > > of the stateful-based driver happy, right?
-> > > 
-> > > Correct - if anything we should either use more of the state here
-> > > (i.e. set the error state when relevant) or move the state entirely in
-> > > the stateful part of the driver.
-> > > 
-> > > > 
-> > > > Makes me wonder a bit if just splitting the stateless part to its
-> > > > own driver, wouldn't make your maintenance easier.
-> > > > 
-> > > > What's the motivation for sharing the driver?
-> > > 
-> > > Technically you could do it both ways. Separating the driver would
-> > > result in some boilerplate code and buffer-management structs
-> > > duplication (unless we keep the shared part under another module - but
-> > > in this case we are basically in the same situation as now). Also
-> > > despite using different userspace-facing ABIs, MT8173 and MT8183
-> > > follow a similar architecture and a similar firmware interface.
-> > > Considering these similarities it seems simpler from an architectural
-> > > point of view to have all the Mediatek codec support under the same
-> > > driver. It also probably results in less code.
-> > > 
-> > > That being said, the split can probably be improved as you pointed out
-> > > with this state variable. But the current split is not too bad IMHO,
-> > > at least not worse than how the code was originally.
-> > > 
-> > > > 
-> > > > > +       } else {
-> > > > > +               mtk_v4l2_debug(3, "[%d] already init driver %d",
-> > > > > +                               ctx->id, ctx->state);
-> > > > > +       }
-> > > > > +}
-> > > > > +
-> > > > > +static int mtk_vdec_flush_decoder(struct mtk_vcodec_ctx *ctx)
-> > > > > +{
-> > > > > +       bool res_chg;
-> > > > > +
-> > > > > +       return vdec_if_decode(ctx, NULL, NULL, &res_chg);
-> > > > > +}
-> > > > > +
-> > > > > +static const struct v4l2_ctrl_ops mtk_vcodec_dec_ctrl_ops = {
-> > > > > +       .g_volatile_ctrl = mtk_vdec_g_v_ctrl,
-> > > > > +};
-> > > > > +
-> > > > > +static int mtk_vcodec_dec_ctrls_setup(struct mtk_vcodec_ctx *ctx)
-> > > > > +{
-> > > > > +       struct v4l2_ctrl *ctrl;
-> > > > > +       unsigned int i;
-> > > > > +
-> > > > > +       v4l2_ctrl_handler_init(&ctx->ctrl_hdl, NUM_CTRLS);
-> > > > > +       if (ctx->ctrl_hdl.error) {
-> > > > > +               mtk_v4l2_err("v4l2_ctrl_handler_init failed\n");
-> > > > > +               return ctx->ctrl_hdl.error;
-> > > > > +       }
-> > > > > +
-> > > > > +       ctrl = v4l2_ctrl_new_std(&ctx->ctrl_hdl,
-> > > > > +                               &mtk_vcodec_dec_ctrl_ops,
-> > > > > +                               V4L2_CID_MIN_BUFFERS_FOR_CAPTURE,
-> > > > > +                               0, 32, 1, 1);
-> > > > > +       ctrl->flags |= V4L2_CTRL_FLAG_VOLATILE;
-> > > > 
-> > > > Hm, this volatile control for MIN_BUFFERS_FOR_CAPTURE seems
-> > > > to return the DPB size. However, isn't this something userspace already
-> > > > knows?
-> > > 
-> > > True, but that's also a control the driver is supposed to provide per
-> > > the spec IIUC.
-> > > 
-> > 
-> > I don't see the specification requiring this control. TBH, I'd just drop it
-> > and if needed fix the application to support this as an optional
-> > control.
-> > 
-> > In any case, stateless devices should just need 1 output and 1 capture
-> > buffer.
-> 
-> Mmm, you're correct indeed, and checking with our user-space it does
-> not rely on this control for stateless codecs. Moving this control to
-> the stateful part of the driver.
-> 
-> 
-> > 
-> > You might dislike this redundancy, note that you can also get the minimum
-> > required buffers through VIDIOC_REQBUFS, where the count
-> > v4l2_requestbuffers.field is returned back to userspace with the
-> > number of allocated buffers.
-> > 
-> > If you request just 1 buffer, and your driver needed 3, you should
-> > get a 3 there (vb2_ops.queue_setup takes care of that).
-> > 
-> > Thanks,
-> > Ezequiel
+Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+---
+Changes in v3:
+  - introduced a quirk check function to catch non-working commands
+  - split is_visible function into subfunctions
+  - moved the "is value valid" checks into the is_visibility subfunction
+  - simplified hwmon_ops_read function
+  - rearranged sysfs entries in the documentation like suggested
 
+Changes in v2:
+  - simplified reading/caching of critical values and hwmon_ops_read function
+  - removed unnecessary debug output and comments
+---
+ Documentation/hwmon/corsair-psu.rst |  13 +-
+ drivers/hwmon/corsair-psu.c         | 352 +++++++++++++++++++++++-----
+ 2 files changed, 309 insertions(+), 56 deletions(-)
+
+diff --git a/Documentation/hwmon/corsair-psu.rst b/Documentation/hwmon/corsair-psu.rst
+index 396b95c9a76a..e8378e7a1d8c 100644
+--- a/Documentation/hwmon/corsair-psu.rst
++++ b/Documentation/hwmon/corsair-psu.rst
+@@ -47,19 +47,30 @@ Sysfs entries
+ =======================	========================================================
+ curr1_input		Total current usage
+ curr2_input		Current on the 12v psu rail
++curr2_crit		Current max critical value on the 12v psu rail
+ curr3_input		Current on the 5v psu rail
++curr3_crit		Current max critical value on the 5v psu rail
+ curr4_input		Current on the 3.3v psu rail
++curr4_crit		Current max critical value on the 3.3v psu rail
+ fan1_input		RPM of psu fan
+ in0_input		Voltage of the psu ac input
+ in1_input		Voltage of the 12v psu rail
++in1_crit		Voltage max critical value on the 12v psu rail
++in1_lcrit		Voltage min critical value on the 12v psu rail
+ in2_input		Voltage of the 5v psu rail
+-in3_input		Voltage of the 3.3 psu rail
++in2_crit		Voltage max critical value on the 5v psu rail
++in2_lcrit		Voltage min critical value on the 5v psu rail
++in3_input		Voltage of the 3.3v psu rail
++in3_crit		Voltage max critical value on the 3.3v psu rail
++in3_lcrit		Voltage min critical value on the 3.3v psu rail
+ power1_input		Total power usage
+ power2_input		Power usage of the 12v psu rail
+ power3_input		Power usage of the 5v psu rail
+ power4_input		Power usage of the 3.3v psu rail
+ temp1_input		Temperature of the psu vrm component
++temp1_crit		Temperature max cirtical value of the psu vrm component
+ temp2_input		Temperature of the psu case
++temp2_crit		Temperature max critical value of psu case
+ =======================	========================================================
+ 
+ Usage Notes
+diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
+index b0953eeeb2d3..83a6a141677c 100644
+--- a/drivers/hwmon/corsair-psu.c
++++ b/drivers/hwmon/corsair-psu.c
+@@ -53,11 +53,17 @@
+ #define CMD_TIMEOUT_MS		250
+ #define SECONDS_PER_HOUR	(60 * 60)
+ #define SECONDS_PER_DAY		(SECONDS_PER_HOUR * 24)
++#define RAIL_COUNT		3 /* 3v3 + 5v + 12v */
++#define TEMP_COUNT		2
+ 
+ #define PSU_CMD_SELECT_RAIL	0x00 /* expects length 2 */
+-#define PSU_CMD_IN_VOLTS	0x88 /* the rest of the commands expect length 3 */
++#define PSU_CMD_RAIL_VOLTS_HCRIT 0x40 /* the rest of the commands expect length 3 */
++#define PSU_CMD_RAIL_VOLTS_LCRIT 0x44
++#define PSU_CMD_RAIL_AMPS_HCRIT	0x46
++#define PSU_CMD_TEMP_HCRIT	0x4F
++#define PSU_CMD_IN_VOLTS	0x88
+ #define PSU_CMD_IN_AMPS		0x89
+-#define PSU_CMD_RAIL_OUT_VOLTS	0x8B
++#define PSU_CMD_RAIL_VOLTS	0x8B
+ #define PSU_CMD_RAIL_AMPS	0x8C
+ #define PSU_CMD_TEMP0		0x8D
+ #define PSU_CMD_TEMP1		0x8E
+@@ -107,6 +113,21 @@ static const char *const label_amps[] = {
+ 	L_AMPS_3_3V
+ };
+ 
++struct corsairpsu_crit_values {
++	long temp_crit[TEMP_COUNT];
++	long in_crit[RAIL_COUNT];
++	long in_lcrit[RAIL_COUNT];
++	long curr_crit[RAIL_COUNT];
++	u8 temp_crit_support;
++	u8 in_crit_support;
++	u8 in_lcrit_support;
++	u8 curr_crit_support;
++};
++
++struct corsairpsu_quirk_commands {
++	u8 in_curr_support;
++};
++
+ struct corsairpsu_data {
+ 	struct hid_device *hdev;
+ 	struct device *hwmon_dev;
+@@ -116,6 +137,8 @@ struct corsairpsu_data {
+ 	u8 *cmd_buffer;
+ 	char vendor[REPLY_SIZE];
+ 	char product[REPLY_SIZE];
++	struct corsairpsu_crit_values crit_values;
++	struct corsairpsu_quirk_commands quirks;
+ };
+ 
+ /* some values are SMBus LINEAR11 data which need a conversion */
+@@ -193,7 +216,10 @@ static int corsairpsu_request(struct corsairpsu_data *priv, u8 cmd, u8 rail, voi
+ 
+ 	mutex_lock(&priv->lock);
+ 	switch (cmd) {
+-	case PSU_CMD_RAIL_OUT_VOLTS:
++	case PSU_CMD_RAIL_VOLTS_HCRIT:
++	case PSU_CMD_RAIL_VOLTS_LCRIT:
++	case PSU_CMD_RAIL_AMPS_HCRIT:
++	case PSU_CMD_RAIL_VOLTS:
+ 	case PSU_CMD_RAIL_AMPS:
+ 	case PSU_CMD_RAIL_WATTS:
+ 		ret = corsairpsu_usb_cmd(priv, 2, PSU_CMD_SELECT_RAIL, rail, NULL);
+@@ -229,9 +255,13 @@ static int corsairpsu_get_value(struct corsairpsu_data *priv, u8 cmd, u8 rail, l
+ 	 */
+ 	tmp = ((long)data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0];
+ 	switch (cmd) {
++	case PSU_CMD_RAIL_VOLTS_HCRIT:
++	case PSU_CMD_RAIL_VOLTS_LCRIT:
++	case PSU_CMD_RAIL_AMPS_HCRIT:
++	case PSU_CMD_TEMP_HCRIT:
+ 	case PSU_CMD_IN_VOLTS:
+ 	case PSU_CMD_IN_AMPS:
+-	case PSU_CMD_RAIL_OUT_VOLTS:
++	case PSU_CMD_RAIL_VOLTS:
+ 	case PSU_CMD_RAIL_AMPS:
+ 	case PSU_CMD_TEMP0:
+ 	case PSU_CMD_TEMP1:
+@@ -256,75 +286,284 @@ static int corsairpsu_get_value(struct corsairpsu_data *priv, u8 cmd, u8 rail, l
+ 	return ret;
+ }
+ 
+-static umode_t corsairpsu_hwmon_ops_is_visible(const void *data, enum hwmon_sensor_types type,
+-					       u32 attr, int channel)
++static void corsairpsu_get_criticals(struct corsairpsu_data *priv)
+ {
+-	if (type == hwmon_temp && (attr == hwmon_temp_input || attr == hwmon_temp_label))
+-		return 0444;
+-	else if (type == hwmon_fan && (attr == hwmon_fan_input || attr == hwmon_fan_label))
+-		return 0444;
+-	else if (type == hwmon_power && (attr == hwmon_power_input || attr == hwmon_power_label))
+-		return 0444;
+-	else if (type == hwmon_in && (attr == hwmon_in_input || attr == hwmon_in_label))
++	struct corsairpsu_crit_values *crits = &priv->crit_values;
++	long tmp;
++	int rail;
++
++	crits->temp_crit_support = 0;
++	crits->in_crit_support = 0;
++	crits->in_lcrit_support = 0;
++	crits->curr_crit_support = 0;
++
++	for (rail = 0; rail < TEMP_COUNT; ++rail) {
++		if (!corsairpsu_get_value(priv, PSU_CMD_TEMP_HCRIT, rail, &tmp)) {
++			crits->temp_crit_support |= BIT(rail);
++			crits->temp_crit[rail] = tmp;
++		}
++	}
++
++	for (rail = 0; rail < RAIL_COUNT; ++rail) {
++		if (!corsairpsu_get_value(priv, PSU_CMD_RAIL_VOLTS_HCRIT, rail, &tmp)) {
++			crits->in_crit_support |= BIT(rail);
++			crits->in_crit[rail] = tmp;
++		}
++
++		if (!corsairpsu_get_value(priv, PSU_CMD_RAIL_VOLTS_LCRIT, rail, &tmp)) {
++			crits->in_lcrit_support |= BIT(rail);
++			crits->in_lcrit[rail] = tmp;
++		}
++
++		if (!corsairpsu_get_value(priv, PSU_CMD_RAIL_AMPS_HCRIT, rail, &tmp)) {
++			crits->curr_crit_support |= BIT(rail);
++			crits->curr_crit[rail] = tmp;
++		}
++	}
++}
++
++static void corsairpsu_check_quirks(struct corsairpsu_data *priv)
++{
++	struct corsairpsu_quirk_commands *quirks = &priv->quirks;
++	long tmp;
++
++	quirks->in_curr_support = 0;
++
++	if (!corsairpsu_get_value(priv, PSU_CMD_IN_AMPS, 0, &tmp))
++		quirks->in_curr_support = 1;
++}
++
++static umode_t corsairpsu_hwmon_temp_is_visible(const struct corsairpsu_data *priv, u32 attr,
++						int channel)
++{
++	const struct corsairpsu_crit_values *crits = &priv->crit_values;
++	umode_t res = 0444;
++
++	switch (attr) {
++	case hwmon_temp_input:
++	case hwmon_temp_label:
++	case hwmon_temp_crit:
++		if (channel > 0 && !(crits->temp_crit_support & BIT(channel - 1)))
++			res = 0;
++		break;
++	default:
++		break;
++	}
++
++	return res;
++}
++
++static umode_t corsairpsu_hwmon_fan_is_visible(const struct corsairpsu_data *priv, u32 attr,
++					       int channel)
++{
++	switch (attr) {
++	case hwmon_fan_input:
++	case hwmon_fan_label:
+ 		return 0444;
+-	else if (type == hwmon_curr && (attr == hwmon_curr_input || attr == hwmon_curr_label))
++	default:
++		return 0;
++	}
++}
++
++static umode_t corsairpsu_hwmon_power_is_visible(const struct corsairpsu_data *priv, u32 attr,
++						 int channel)
++{
++	switch (attr) {
++	case hwmon_power_input:
++	case hwmon_power_label:
+ 		return 0444;
++	default:
++		return 0;
++	};
++}
+ 
+-	return 0;
++static umode_t corsairpsu_hwmon_in_is_visible(const struct corsairpsu_data *priv, u32 attr,
++					      int channel)
++{
++	const struct corsairpsu_crit_values *crits = &priv->crit_values;
++	umode_t res = 0444;
++
++	switch (attr) {
++	case hwmon_in_input:
++	case hwmon_in_label:
++	case hwmon_in_crit:
++		if (channel > 0 && !(crits->in_crit_support & BIT(channel - 1)))
++			res = 0;
++		break;
++	case hwmon_in_lcrit:
++		if (channel > 0 && !(crits->in_lcrit_support & BIT(channel - 1)))
++			res = 0;
++		break;
++	default:
++		break;
++	};
++
++	return res;
+ }
+ 
+-static int corsairpsu_hwmon_ops_read(struct device *dev, enum hwmon_sensor_types type, u32 attr,
+-				     int channel, long *val)
++static umode_t corsairpsu_hwmon_curr_is_visible(const struct corsairpsu_data *priv, u32 attr,
++						int channel)
+ {
+-	struct corsairpsu_data *priv = dev_get_drvdata(dev);
+-	int ret;
++	const struct corsairpsu_crit_values *crits = &priv->crit_values;
++	const struct corsairpsu_quirk_commands *quirks = &priv->quirks;
++	umode_t res = 0444;
++
++	switch (attr) {
++	case hwmon_curr_input:
++		if (channel == 0 && !quirks->in_curr_support)
++			res = 0;
++		break;
++	case hwmon_curr_label:
++	case hwmon_curr_crit:
++		if (channel > 0 && !(crits->curr_crit_support & BIT(channel - 1)))
++			res = 0;
++		break;
++	default:
++		break;
++	}
++
++	return res;
++}
+ 
+-	if (type == hwmon_temp && attr == hwmon_temp_input && channel < 2) {
+-		ret = corsairpsu_get_value(priv, channel ? PSU_CMD_TEMP1 : PSU_CMD_TEMP0, channel,
+-					   val);
+-	} else if (type == hwmon_fan && attr == hwmon_fan_input) {
+-		ret = corsairpsu_get_value(priv, PSU_CMD_FAN, 0, val);
+-	} else if (type == hwmon_power && attr == hwmon_power_input) {
++static umode_t corsairpsu_hwmon_ops_is_visible(const void *data, enum hwmon_sensor_types type,
++					       u32 attr, int channel)
++{
++	const struct corsairpsu_data *priv = data;
++
++	switch (type) {
++	case hwmon_temp:
++		return corsairpsu_hwmon_temp_is_visible(priv, attr, channel);
++	case hwmon_fan:
++		return corsairpsu_hwmon_fan_is_visible(priv, attr, channel);
++	case hwmon_power:
++		return corsairpsu_hwmon_power_is_visible(priv, attr, channel);
++	case hwmon_in:
++		return corsairpsu_hwmon_in_is_visible(priv, attr, channel);
++	case hwmon_curr:
++		return corsairpsu_hwmon_curr_is_visible(priv, attr, channel);
++	default:
++		return 0;
++	}
++}
++
++static int corsairpsu_hwmon_temp_read(struct corsairpsu_data *priv, u32 attr, int channel,
++				      long *val)
++{
++	struct corsairpsu_crit_values *crits = &priv->crit_values;
++	int err = -EOPNOTSUPP;
++
++	if (channel < 2) {
++		switch (attr) {
++		case hwmon_temp_input:
++			return corsairpsu_get_value(priv, channel ? PSU_CMD_TEMP1 : PSU_CMD_TEMP0,
++						    channel, val);
++		case hwmon_temp_crit:
++			*val = crits->temp_crit[channel];
++			err = 0;
++			break;
++		default:
++			break;
++		}
++	}
++
++	return err;
++}
++
++static int corsairpsu_hwmon_power_read(struct corsairpsu_data *priv, u32 attr, int channel,
++				       long *val)
++{
++	if (attr == hwmon_power_input) {
+ 		switch (channel) {
+ 		case 0:
+-			ret = corsairpsu_get_value(priv, PSU_CMD_TOTAL_WATTS, 0, val);
+-			break;
++			return corsairpsu_get_value(priv, PSU_CMD_TOTAL_WATTS, 0, val);
+ 		case 1 ... 3:
+-			ret = corsairpsu_get_value(priv, PSU_CMD_RAIL_WATTS, channel - 1, val);
+-			break;
++			return corsairpsu_get_value(priv, PSU_CMD_RAIL_WATTS, channel - 1, val);
+ 		default:
+-			return -EOPNOTSUPP;
++			break;
+ 		}
+-	} else if (type == hwmon_in && attr == hwmon_in_input) {
++	}
++
++	return -EOPNOTSUPP;
++}
++
++static int corsairpsu_hwmon_in_read(struct corsairpsu_data *priv, u32 attr, int channel, long *val)
++{
++	struct corsairpsu_crit_values *crits = &priv->crit_values;
++	int err = -EOPNOTSUPP;
++
++	switch (attr) {
++	case hwmon_in_input:
+ 		switch (channel) {
+ 		case 0:
+-			ret = corsairpsu_get_value(priv, PSU_CMD_IN_VOLTS, 0, val);
+-			break;
++			return corsairpsu_get_value(priv, PSU_CMD_IN_VOLTS, 0, val);
+ 		case 1 ... 3:
+-			ret = corsairpsu_get_value(priv, PSU_CMD_RAIL_OUT_VOLTS, channel - 1, val);
+-			break;
++			return corsairpsu_get_value(priv, PSU_CMD_RAIL_VOLTS, channel - 1, val);
+ 		default:
+-			return -EOPNOTSUPP;
++			break;
+ 		}
+-	} else if (type == hwmon_curr && attr == hwmon_curr_input) {
++		break;
++	case hwmon_in_crit:
++		*val = crits->in_crit[channel - 1];
++		err = 0;
++		break;
++	case hwmon_in_lcrit:
++		*val = crits->in_lcrit[channel - 1];
++		err = 0;
++		break;
++	}
++
++	return err;
++}
++
++static int corsairpsu_hwmon_curr_read(struct corsairpsu_data *priv, u32 attr, int channel,
++				      long *val)
++{
++	struct corsairpsu_crit_values *crits = &priv->crit_values;
++	int err = -EOPNOTSUPP;
++
++	switch (attr) {
++	case hwmon_curr_input:
+ 		switch (channel) {
+ 		case 0:
+-			ret = corsairpsu_get_value(priv, PSU_CMD_IN_AMPS, 0, val);
+-			break;
++			return corsairpsu_get_value(priv, PSU_CMD_IN_AMPS, 0, val);
+ 		case 1 ... 3:
+-			ret = corsairpsu_get_value(priv, PSU_CMD_RAIL_AMPS, channel - 1, val);
+-			break;
++			return corsairpsu_get_value(priv, PSU_CMD_RAIL_AMPS, channel - 1, val);
+ 		default:
+-			return -EOPNOTSUPP;
++			break;
+ 		}
+-	} else {
+-		return -EOPNOTSUPP;
++		break;
++	case hwmon_curr_crit:
++		*val = crits->curr_crit[channel - 1];
++		err = 0;
++		break;
++	default:
++		break;
+ 	}
+ 
+-	if (ret < 0)
+-		return ret;
++	return err;
++}
+ 
+-	return 0;
++static int corsairpsu_hwmon_ops_read(struct device *dev, enum hwmon_sensor_types type, u32 attr,
++				     int channel, long *val)
++{
++	struct corsairpsu_data *priv = dev_get_drvdata(dev);
++
++	switch (type) {
++	case hwmon_temp:
++		return corsairpsu_hwmon_temp_read(priv, attr, channel, val);
++	case hwmon_fan:
++		if (attr == hwmon_fan_input)
++			return corsairpsu_get_value(priv, PSU_CMD_FAN, 0, val);
++		return -EOPNOTSUPP;
++	case hwmon_power:
++		return corsairpsu_hwmon_power_read(priv, attr, channel, val);
++	case hwmon_in:
++		return corsairpsu_hwmon_in_read(priv, attr, channel, val);
++	case hwmon_curr:
++		return corsairpsu_hwmon_curr_read(priv, attr, channel, val);
++	default:
++		return -EOPNOTSUPP;
++	}
+ }
+ 
+ static int corsairpsu_hwmon_ops_read_string(struct device *dev, enum hwmon_sensor_types type,
+@@ -360,8 +599,8 @@ static const struct hwmon_channel_info *corsairpsu_info[] = {
+ 	HWMON_CHANNEL_INFO(chip,
+ 			   HWMON_C_REGISTER_TZ),
+ 	HWMON_CHANNEL_INFO(temp,
+-			   HWMON_T_INPUT | HWMON_T_LABEL,
+-			   HWMON_T_INPUT | HWMON_T_LABEL),
++			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
++			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT),
+ 	HWMON_CHANNEL_INFO(fan,
+ 			   HWMON_F_INPUT | HWMON_F_LABEL),
+ 	HWMON_CHANNEL_INFO(power,
+@@ -371,14 +610,14 @@ static const struct hwmon_channel_info *corsairpsu_info[] = {
+ 			   HWMON_P_INPUT | HWMON_P_LABEL),
+ 	HWMON_CHANNEL_INFO(in,
+ 			   HWMON_I_INPUT | HWMON_I_LABEL,
+-			   HWMON_I_INPUT | HWMON_I_LABEL,
+-			   HWMON_I_INPUT | HWMON_I_LABEL,
+-			   HWMON_I_INPUT | HWMON_I_LABEL),
++			   HWMON_I_INPUT | HWMON_I_LABEL | HWMON_I_LCRIT | HWMON_I_CRIT,
++			   HWMON_I_INPUT | HWMON_I_LABEL | HWMON_I_LCRIT | HWMON_I_CRIT,
++			   HWMON_I_INPUT | HWMON_I_LABEL | HWMON_I_LCRIT | HWMON_I_CRIT),
+ 	HWMON_CHANNEL_INFO(curr,
+ 			   HWMON_C_INPUT | HWMON_C_LABEL,
+-			   HWMON_C_INPUT | HWMON_C_LABEL,
+-			   HWMON_C_INPUT | HWMON_C_LABEL,
+-			   HWMON_C_INPUT | HWMON_C_LABEL),
++			   HWMON_C_INPUT | HWMON_C_LABEL | HWMON_C_CRIT,
++			   HWMON_C_INPUT | HWMON_C_LABEL | HWMON_C_CRIT,
++			   HWMON_C_INPUT | HWMON_C_LABEL | HWMON_C_CRIT),
+ 	NULL
+ };
+ 
+@@ -513,6 +752,9 @@ static int corsairpsu_probe(struct hid_device *hdev, const struct hid_device_id
+ 		goto fail_and_stop;
+ 	}
+ 
++	corsairpsu_get_criticals(priv);
++	corsairpsu_check_quirks(priv);
++
+ 	priv->hwmon_dev = hwmon_device_register_with_info(&hdev->dev, "corsairpsu", priv,
+ 							  &corsairpsu_chip_info, 0);
+ 
+-- 
+2.30.2
 
