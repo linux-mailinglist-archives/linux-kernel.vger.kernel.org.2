@@ -2,106 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD5A33F615
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:53:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C0633F6A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232558AbhCQQxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 12:53:03 -0400
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:29539 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232468AbhCQQwf (ORCPT
+        id S232582AbhCQRWA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Mar 2021 13:22:00 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:33553 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232412AbhCQRUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 12:52:35 -0400
-Date:   Wed, 17 Mar 2021 16:52:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1615999953; bh=oM4XbW1q5zcLndEfkaigVcrh9QJicN69T4/u/Yrv6U8=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=iteX186mLmhS6elYvml44AmeEWYOGvi5Jt8tM+3z7X2+504fS+dlDW4xiCA7pzve7
-         Bcn8gJ/jImG0946q5irYxwYXsSR7r3fbV0Oi/r1KC/hsOpqKXxMJiH9NZZHjBe1y4s
-         n7ALz8cN/JOftpv3ZA4kwm6N2C0gtxwqor1UC6tlrs/cV6oH4ltkClE0TgTFfW3JSA
-         inBauo0r8vPB010z8K1rMhl9JTwg8riSkFHpg7zoD+EqTFOafEGNImufGdqEdNq8Qq
-         OMCw1NM3dRhDJq1ZeYYlsO/8QJ3BNbPwo8Y3EjID6uLABrh7/B0fdb9Oywfa7C+gtQ
-         EBJiaSTzP+MoA==
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH 0/7 v4] Introduce a bulk order-0 page allocator with two in-tree users
-Message-ID: <20210317165220.808975-1-alobakin@pm.me>
-In-Reply-To: <20210317173844.6b10f879@carbon>
-References: <20210312154331.32229-1-mgorman@techsingularity.net> <20210317163055.800210-1-alobakin@pm.me> <20210317173844.6b10f879@carbon>
+        Wed, 17 Mar 2021 13:20:38 -0400
+Received: from relay4-d.mail.gandi.net (unknown [217.70.183.196])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 766F13A79FA;
+        Wed, 17 Mar 2021 14:54:45 +0000 (UTC)
+X-Originating-IP: 90.89.138.59
+Received: from xps13 (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id C6743E0007;
+        Wed, 17 Mar 2021 14:51:22 +0000 (UTC)
+Date:   Wed, 17 Mar 2021 15:51:21 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
+        bjorn.andersson@linaro.org
+Subject: Re: [PATCH v5 0/3] Add support for secure regions in NAND
+Message-ID: <20210317155121.19cbb50c@xps13>
+In-Reply-To: <20210317122513.42369-1-manivannan.sadhasivam@linaro.org>
+References: <20210317122513.42369-1-manivannan.sadhasivam@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Date: Wed, 17 Mar 2021 17:38:44 +0100
+Hi Manivannan,
 
-> On Wed, 17 Mar 2021 16:31:07 +0000
-> Alexander Lobakin <alobakin@pm.me> wrote:
->
-> > From: Mel Gorman <mgorman@techsingularity.net>
-> > Date: Fri, 12 Mar 2021 15:43:24 +0000
-> >
-> > Hi there,
-> >
-> > > This series is based on top of Matthew Wilcox's series "Rationalise
-> > > __alloc_pages wrapper" and does not apply to 5.12-rc2. If you want to
-> > > test and are not using Andrew's tree as a baseline, I suggest using t=
-he
-> > > following git tree
-> > >
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-r=
-ebase-v4r2
-> >
-> > I gave this series a go on my setup, it showed a bump of 10 Mbps on
-> > UDP forwarding, but dropped TCP forwarding by almost 50 Mbps.
-> >
-> > (4 core 1.2GHz MIPS32 R2, page size of 16 Kb, Page Pool order-0
-> > allocations with MTU of 1508 bytes, linear frames via build_skb(),
-> > GRO + TSO/USO)
->
-> What NIC driver is this?
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Wed,
+17 Mar 2021 17:55:10 +0530:
 
-Ah, forgot to mention. It's a WIP driver, not yet mainlined.
-The NIC itself is basically on-SoC 1G chip.
+> On a typical end product, a vendor may choose to secure some regions in
+> the NAND memory which are supposed to stay intact between FW upgrades.
+> The access to those regions will be blocked by a secure element like
+> Trustzone. So the normal world software like Linux kernel should not
+> touch these regions (including reading).
+> 
+> So this series adds a property for declaring such secure regions in DT
+> so that the driver can skip touching them. While at it, the Qcom NANDc
+> DT binding is also converted to YAML format.
+> 
+> Thanks,
+> Mani
+> 
+> Changes in v5:
+> 
+> * Switched to "uint64-matrix" as suggested by Rob
+> * Moved the whole logic from qcom driver to nand core as suggested by Boris
 
-> > I didn't have time to drill into the code, so for now can't provide
-> > any additional details. You can request anything you need though and
-> > I'll try to find a window to collect it.
-> >
-> > > Note to Chuck and Jesper -- as this is a cross-subsystem series, you =
-may
-> > > want to send the sunrpc and page_pool pre-requisites (patches 4 and 6=
-)
-> > > directly to the subsystem maintainers. While sunrpc is low-risk, I'm
-> > > vaguely aware that there are other prototype series on netdev that af=
-fect
-> > > page_pool. The conflict should be obvious in linux-next.
->
-> --
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
+I'm really thinking about a nand-wide property now. Do you think it
+makes sense to move the helper to the NAND core (instead of the raw
+NAND core)? I'm fine only using it in the raw NAND core though.
 
-Al
+Also, can I request a global s/sec/secure/ update? I find the "sec"
+abbreviation unclear and I think we have more than enough cryptic
+names :-)
 
+Thanks,
+Miquèl
