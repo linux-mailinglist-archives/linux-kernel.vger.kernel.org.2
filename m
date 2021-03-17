@@ -2,98 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 266F833F7E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 624F433F7E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232926AbhCQSMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:12:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232836AbhCQSML (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:12:11 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26ACC06174A;
-        Wed, 17 Mar 2021 11:12:10 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id q29so321375lfb.4;
-        Wed, 17 Mar 2021 11:12:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Rm3F1cA66zuHgAWNRDnehpSfjsTieaJWbbEO5oa1uuM=;
-        b=vVgz3AQi0vg3TM/jatpKxgQ/QE6HJO9dEZ8vJzAgmdLbuBOYqnMujyiVKvIXyRJRSa
-         YGC/22kFevbVibqEWnnSMAyi9C3rZ0htJNht6qXp2OVG8ejP9jpNrpbzJwyieTVJszN4
-         TR5/D+X5IyXZ3Xw3FdiF4poNMFIx9a4YY0d8z1SWMq29wqKgAc+aSBbtawJgrEE6rRqa
-         RDo53bXS8jQXfhAknx2wvK5nFRfPgltQOoFFrYmyslbqLh/IybV6dZgqfYNVeJy6rbEQ
-         pnkywobegW+vx3vCNNF785P/5naKfz5uPwzbmqqH+KjEzBlY7ei+qW4pkRiIl+j3r/jn
-         ghhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Rm3F1cA66zuHgAWNRDnehpSfjsTieaJWbbEO5oa1uuM=;
-        b=fPleuLEGB4n1M5E2vjjsECmvtu42YCf3fwTfOQjMWn4r5VbpLvXRnsA/2s7t0S5U3g
-         EiYcA/lZzcktlgXKTTckGHuLiiWvvnPHim39dT9fjJeTdhH+kdEyV5Pq46hXyubd9KxU
-         JqUWn9+4NJvAYB1QQd09el8gnOkY3NxEH4H8T1yd7GOocSagKq7OBu09s2018eo9Lut8
-         F+LxakZ7LUORqqrknTPVc8qiqZweBZXP4TKx6elvUjyaGEbtiNKDgo6VDK1xE1KE2B7n
-         9rKHHV3QyDZNmdrVSVNH4BH7z5HksHeuk+CAvskdDK7YtYyvL50g+DgoyJOGEl9x2fvi
-         H1aw==
-X-Gm-Message-State: AOAM530VFRcZ2M2Kl9O50YXGfTR+BNf55DrLJeRRCaW+O0HGCEAa7Pvq
-        UU2gs5aBZXqaN0MXRrqHweSVwYK74ds=
-X-Google-Smtp-Source: ABdhPJy8C3qkLS4DHxFIw+3kI4BF3VFOS96SBfc4NPrMSaw9BPWwByRgdUj6C7Q4vrBF00Nhg7jtCg==
-X-Received: by 2002:a19:c0f:: with SMTP id 15mr3068331lfm.580.1616004729249;
-        Wed, 17 Mar 2021 11:12:09 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id u2sm3421397lfi.187.2021.03.17.11.12.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 11:12:08 -0700 (PDT)
-Subject: Re: [PATCH v5 00/17] Fix reset controls and RPM of NVIDIA Tegra ASoC
- drivers
-To:     Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Paul Fertser <fercerpav@gmail.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210314154459.15375-1-digetx@gmail.com>
- <be93d088-fefe-77f0-9b8e-9c815cc0d0f0@gmail.com>
- <20210317175434.GD5559@sirena.org.uk>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <81ddddba-a179-9389-2458-de6741428822@gmail.com>
-Date:   Wed, 17 Mar 2021 21:12:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232263AbhCQSNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:13:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232836AbhCQSMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 14:12:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C05BE64F3A;
+        Wed, 17 Mar 2021 18:12:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616004770;
+        bh=ii6DJh0iWgadMqKp28TfT7dEM/zMPaqma8oVTHy1Xkg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oOojIaKnnyL20NFl0Ht/vlhSoRdmlQLdTjk3gM+mdDtfS26rrBicNTsSKp1FuVScY
+         gQjPmItLSwOPZDZxGG9B9BHXKghBYJblk4wzRBtVW5fB7QpSFKV7l7URoPoTEMA6L8
+         WCtdfyR01YrOIYKU06NSHw0fEauDDun+EL0slR8YBV+HvGFBM62a7vlfCeYRLJ627a
+         dF2E7yo/mVw9VNjmnkGA0fGc4BAvdov9SV5oZDh7GQbEhO4NhB4mPgzKPURYozpmnz
+         sKDI3j7Vtot4Cvpqcz3YZlWM6sNduSu5OKRp6FV9fMYtEIzl9wcRd+XtyFbCwEPfhR
+         xidBkW5JK3qQA==
+From:   Andy Lutomirski <luto@kernel.org>
+To:     x86@kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH v4 0/9] kentry: A stable bugfix and a bunch of improvements
+Date:   Wed, 17 Mar 2021 11:12:39 -0700
+Message-Id: <cover.1616004689.git.luto@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210317175434.GD5559@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.03.2021 20:54, Mark Brown пишет:
-> On Wed, Mar 17, 2021 at 08:20:10PM +0300, Dmitry Osipenko wrote:
-> 
->> Mark / Takashi, I may try to split up this series into two or three
->> smaller patchsets and then the reset/ patch from Philipp Zabel could be
->> merged by Philipp himself. I primarily want to have the audio resets
->> fixed and the reset API extended with reset_control_bulk in 5.13 because
->> this will unblock other patches. Please let me know what you prefer more.
-> 
-> I've actually already got this queued for application next time I apply
-> things, I'm guessing Phillip was intending that the reset patch go via
-> ASoC?
-> 
+I noticed a little bug in fast compat syscalls.  I got a bit carried away
+fixing it.  This renames the irqentry stuff to kentry, improves (IMNSHO)
+the API, and adds lots of debugging.
 
-I assume that Phillip is okay with applying the reset patch via ASoC
-since he didn't say anything specifically about it. Thank you for taking
-care of the patches!
+It also tweaks the unwinder wrt ret_from_fork and rewrites ret_from_fork
+in C.  I did this because the kentry work involved a small change to
+ret_from_fork, and adjusting the asm is a mess.  So C it is.
 
-Phillip, please let us know if you have objections in regards to
-applying the reset_control_bulk via ASoC.
+Changes from v3: Get rid of arm64 special cases
+
+Changes from v1 and v2: Complete rewrite
+
+Andy Lutomirski (9):
+  x86/dumpstack: Remove unnecessary range check fetching opcode bytes
+  x86/kthread,dumpstack: Set task_pt_regs->cs.RPL=3 for kernel threads
+  x86/entry: Convert ret_from_fork to C
+  kentry: Simplify the common syscall API
+  kentry: Remove enter_from/exit_to_user_mode()
+  entry: Make CONFIG_DEBUG_ENTRY available outside x86
+  kentry: Add debugging checks for proper kentry API usage
+  kentry: Check that syscall entries and syscall exits match
+  kentry: Verify kentry state in instrumentation_begin/end()
+
+ arch/x86/Kconfig.debug           |  10 --
+ arch/x86/entry/common.c          |  78 ++++++++++----
+ arch/x86/entry/entry_32.S        |  51 ++-------
+ arch/x86/entry/entry_64.S        |  33 ++----
+ arch/x86/include/asm/switch_to.h |   2 +-
+ arch/x86/kernel/dumpstack.c      |  10 +-
+ arch/x86/kernel/process.c        |  15 ++-
+ arch/x86/kernel/process_32.c     |   2 +-
+ arch/x86/kernel/traps.c          |   4 +-
+ arch/x86/kernel/unwind_orc.c     |   2 +-
+ include/asm-generic/bug.h        |   8 +-
+ include/linux/entry-common.h     | 127 +++--------------------
+ include/linux/instrumentation.h  |  25 ++++-
+ include/linux/sched.h            |   4 +
+ init/init_task.c                 |   8 ++
+ kernel/entry/common.c            | 173 ++++++++++++++++++++-----------
+ lib/Kconfig.debug                |  11 ++
+ 17 files changed, 267 insertions(+), 296 deletions(-)
+
+-- 
+2.30.2
+
