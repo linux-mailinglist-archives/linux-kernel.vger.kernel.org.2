@@ -2,121 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A75133E864
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B67C33E865
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:23:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhCQEVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 00:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbhCQEVJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 00:21:09 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4139DC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 21:21:09 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id c204so227618pfc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 21:21:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tqygHtIF9C1t29D6guUTjM28SV0efTFg8Sgvi9tq11E=;
-        b=J0Ymz3qqRL/XDEColeHiskhkUudo7yCDzTrMfSli/8EJ0MyWbKw0dmPrQV15VgoqrN
-         z6cmsFBhCAZ1vpXc4gbFeIRLPpmOPNtDesOJwKVKM3JJrPseT+t7CX1mhofT01A/pSW5
-         reO1Wd4CHcxUuPrs+fKjk2FvCWrA/Z3oFSdiIkbjAs9QbQ+AXppXNIFTibNw/oWe4ZVo
-         7p/l/nfJEvu4yslpm6sj6CRpHfKaLkIZFQBqxcUzsKfOnw7X4gd/vJtaBHuyyvsfBiOB
-         0VNSZuQtmJl+RMoQ49XacSpRl46sV46eGn4NFy37zXgBTLTR+q6oI9lOIR96CY734DRK
-         Mi/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=tqygHtIF9C1t29D6guUTjM28SV0efTFg8Sgvi9tq11E=;
-        b=q+Vkdp0G0nvVDUbXZU3Tsf65IxDMyiS9PaQ8mvsySJQZy7ks129HX7kFyMkNReZXZ3
-         JoQQfij1yQiomi03LQ7eBY89vmkPqBAG0SUht/h78e7eU/B0hjmjeA7jtR331+H4qC7l
-         Qw/WkGh7H8iL4TXRFep/2na9dKsAvA3f/3yHiOU8gU2rGxDKqgOIScUHU1NyRvfeSosR
-         kmzgp19znbbKIrhHX+fJdvxcJ4WlqXxDwtYxbJKEOW27DAzXvIxHF3qRIxUOgFeyoYaS
-         JaD3Al8vPL+QnRTfpJELh7TN8V/xD+tN2GE4nYzxhlcfvwZP3tZaxtyU8FE/xOB02ZWa
-         SD3A==
-X-Gm-Message-State: AOAM532vX6+OIt+UYCeXOkmi0voyxSlGGxCJRs90x9EPHPC3u5+7Qlj6
-        9jyo13hxL8UzFBqLlzZS8ftH3g==
-X-Google-Smtp-Source: ABdhPJyesXfARSvCLvmz8y7QSMQQJ0byeO/pyhC6hJcjwk2HlOZbgELJgKE99SMicIv/QiBfvRGBuA==
-X-Received: by 2002:aa7:9ecf:0:b029:1f4:f737:12d6 with SMTP id r15-20020aa79ecf0000b02901f4f73712d6mr2614833pfq.8.1615954868646;
-        Tue, 16 Mar 2021 21:21:08 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id s22sm835188pjs.42.2021.03.16.21.21.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 21:21:08 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 21:21:08 -0700 (PDT)
-X-Google-Original-Date: Tue, 16 Mar 2021 21:19:54 PDT (-0700)
-Subject:     Re: [PATCH] ftrace: Fix spelling mistake "disabed" -> "disabled"
-In-Reply-To: <20210311094022.5978-1-colin.king@canonical.com>
-CC:     guoren@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, rostedt@goodmis.org,
-        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     colin.king@canonical.com
-Message-ID: <mhng-9cd288c7-8f95-4e86-9b2b-bb405e3f74fe@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S229506AbhCQEWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 00:22:40 -0400
+Received: from mga17.intel.com ([192.55.52.151]:61189 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229482AbhCQEW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 00:22:26 -0400
+IronPort-SDR: Fvoj6WKO/WchPb8tCTH4AdVBCqSfgn1G7TD+omiVEfZgyPrAr2EhCziW7sGF7jCepLZGqMd451
+ zUUED/awkgEw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="169301293"
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="169301293"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 21:22:25 -0700
+IronPort-SDR: DmEAt5YEQBwTM1iSg40g8F3UN4w0/jBv7GnEyC6OXbYrYoFJuI3nlKB6AKxXHB26sy28LFuce3
+ BCzQfiXvxYNQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="602084555"
+Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 16 Mar 2021 21:22:24 -0700
+Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lMNhQ-0000VB-1A; Wed, 17 Mar 2021 04:22:24 +0000
+Date:   Wed, 17 Mar 2021 12:22:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/urgent] BUILD SUCCESS
+ ef4cb70a4c22bf301cd757dcc838dc8ca9526477
+Message-ID: <605183fa.+nf7LZm/gQxwcycj%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021 01:40:22 PST (-0800), colin.king@canonical.com wrote:
-> From: Colin Ian King <colin.king@canonical.com>
->
-> There is a spelling mistake in a comment, fix it.
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  arch/csky/kernel/probes/ftrace.c  | 2 +-
->  arch/riscv/kernel/probes/ftrace.c | 2 +-
->  arch/x86/kernel/kprobes/ftrace.c  | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
-> index ae2b1c7b3b5c..ef2bb9bd9605 100644
-> --- a/arch/csky/kernel/probes/ftrace.c
-> +++ b/arch/csky/kernel/probes/ftrace.c
-> @@ -9,7 +9,7 @@ int arch_check_ftrace_location(struct kprobe *p)
->  	return 0;
->  }
->
-> -/* Ftrace callback handler for kprobes -- called under preepmt disabed */
-> +/* Ftrace callback handler for kprobes -- called under preepmt disabled */
->  void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  			   struct ftrace_ops *ops, struct ftrace_regs *fregs)
->  {
-> diff --git a/arch/riscv/kernel/probes/ftrace.c b/arch/riscv/kernel/probes/ftrace.c
-> index 2dfb33fdac74..17ca5e923bb0 100644
-> --- a/arch/riscv/kernel/probes/ftrace.c
-> +++ b/arch/riscv/kernel/probes/ftrace.c
-> @@ -2,7 +2,7 @@
->
->  #include <linux/kprobes.h>
->
-> -/* Ftrace callback handler for kprobes -- called under preepmt disabed */
-> +/* Ftrace callback handler for kprobes -- called under preepmt disabled */
->  void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  			   struct ftrace_ops *ops, struct ftrace_regs *fregs)
->  {
-> diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
-> index 373e5fa3ce1f..51c7f5271aee 100644
-> --- a/arch/x86/kernel/kprobes/ftrace.c
-> +++ b/arch/x86/kernel/kprobes/ftrace.c
-> @@ -12,7 +12,7 @@
->
->  #include "common.h"
->
-> -/* Ftrace callback handler for kprobes -- called under preepmt disabed */
-> +/* Ftrace callback handler for kprobes -- called under preepmt disabled */
->  void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  			   struct ftrace_ops *ops, struct ftrace_regs *fregs)
->  {
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/urgent
+branch HEAD: ef4cb70a4c22bf301cd757dcc838dc8ca9526477  genirq/irq_sim: Fix typos in kernel doc (fnode -> fwnode)
 
-Thanks, this is on fixes.
+elapsed time: 722m
+
+configs tested: 155
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+arm                         bcm2835_defconfig
+m68k                       m5475evb_defconfig
+sh                          kfr2r09_defconfig
+powerpc                      ppc64e_defconfig
+arm                       netwinder_defconfig
+mips                      maltaaprp_defconfig
+powerpc                     akebono_defconfig
+mips                     loongson1b_defconfig
+arc                         haps_hs_defconfig
+arm                           u8500_defconfig
+sh                           se7705_defconfig
+sh                         apsh4a3a_defconfig
+powerpc                    klondike_defconfig
+powerpc                       ppc64_defconfig
+arm                        cerfcube_defconfig
+nios2                         10m50_defconfig
+xtensa                generic_kc705_defconfig
+powerpc                      pasemi_defconfig
+arm                            pleb_defconfig
+um                             i386_defconfig
+mips                       capcella_defconfig
+alpha                            allyesconfig
+nios2                         3c120_defconfig
+parisc                generic-32bit_defconfig
+powerpc                      ppc6xx_defconfig
+microblaze                      mmu_defconfig
+arm                          gemini_defconfig
+csky                             alldefconfig
+powerpc                  storcenter_defconfig
+mips                           ip27_defconfig
+sh                          r7785rp_defconfig
+arm                         lubbock_defconfig
+mips                    maltaup_xpa_defconfig
+arm                       spear13xx_defconfig
+mips                     loongson1c_defconfig
+powerpc                     tqm8555_defconfig
+powerpc                      ppc40x_defconfig
+mips                           ip32_defconfig
+sh                            hp6xx_defconfig
+sh                        edosk7760_defconfig
+openrisc                            defconfig
+powerpc                      bamboo_defconfig
+powerpc                 mpc85xx_cds_defconfig
+powerpc                   bluestone_defconfig
+mips                         tb0219_defconfig
+arm                         assabet_defconfig
+mips                      pistachio_defconfig
+mips                  decstation_64_defconfig
+powerpc                    sam440ep_defconfig
+powerpc                      walnut_defconfig
+arm                        vexpress_defconfig
+mips                       bmips_be_defconfig
+arm                          imote2_defconfig
+mips                         tb0287_defconfig
+arm                        clps711x_defconfig
+powerpc                 mpc8313_rdb_defconfig
+arm                          ep93xx_defconfig
+powerpc                     mpc512x_defconfig
+arm                         orion5x_defconfig
+powerpc                    amigaone_defconfig
+m68k                        m5307c3_defconfig
+xtensa                  audio_kc705_defconfig
+mips                          rb532_defconfig
+mips                         bigsur_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                      cm5200_defconfig
+sparc64                             defconfig
+arm                            mps2_defconfig
+mips                        workpad_defconfig
+powerpc                     tqm8541_defconfig
+arm                           h3600_defconfig
+arm64                            alldefconfig
+powerpc                      makalu_defconfig
+powerpc                 mpc8540_ads_defconfig
+powerpc                     pseries_defconfig
+arm                        neponset_defconfig
+arm                        trizeps4_defconfig
+sh                        edosk7705_defconfig
+powerpc               mpc834x_itxgp_defconfig
+um                            kunit_defconfig
+powerpc                 mpc837x_rdb_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210316
+i386                 randconfig-a005-20210316
+i386                 randconfig-a002-20210316
+i386                 randconfig-a003-20210316
+i386                 randconfig-a004-20210316
+i386                 randconfig-a006-20210316
+x86_64               randconfig-a011-20210316
+x86_64               randconfig-a016-20210316
+x86_64               randconfig-a013-20210316
+x86_64               randconfig-a014-20210316
+x86_64               randconfig-a015-20210316
+x86_64               randconfig-a012-20210316
+i386                 randconfig-a013-20210316
+i386                 randconfig-a016-20210316
+i386                 randconfig-a011-20210316
+i386                 randconfig-a012-20210316
+i386                 randconfig-a015-20210316
+i386                 randconfig-a014-20210316
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20210316
+x86_64               randconfig-a001-20210316
+x86_64               randconfig-a005-20210316
+x86_64               randconfig-a004-20210316
+x86_64               randconfig-a003-20210316
+x86_64               randconfig-a002-20210316
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
