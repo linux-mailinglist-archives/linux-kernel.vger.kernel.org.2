@@ -2,204 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27AC33F511
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E887433F517
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbhCQQHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 12:07:35 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:46558 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232031AbhCQQH2 (ORCPT
+        id S232335AbhCQQIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 12:08:38 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:50972 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232323AbhCQQIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 12:07:28 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210317160726epoutp024d87a7841f87205bc7a07f19001f5abc~tLO8JcigC1862218622epoutp02h
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 16:07:26 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210317160726epoutp024d87a7841f87205bc7a07f19001f5abc~tLO8JcigC1862218622epoutp02h
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1615997246;
-        bh=n0zZRnd8T3hVPp1YnknG772g+7440/OcsOH+e0Yx5wA=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=j+GCg7sqdKZlQpXqUVyvtBFuzdj5gfGnde1c8IBHnSHHl6kMYomr5JpJ6GPpV4q4J
-         8ANgS+6RzwGX9uS2nNjnXZNsPwrxihFG3ih3EOaSR2cvLS8twan/6NcavGWXQNHDU9
-         1FyS90j9wLznJQfGNjEljuk4Rwymd3RY31rIoCH8=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210317160725epcas1p2c7d4d0353af586049e4cc26237190738~tLO7fv7B22508125081epcas1p2f;
-        Wed, 17 Mar 2021 16:07:25 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.163]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4F0w623TzFz4x9Pt; Wed, 17 Mar
-        2021 16:07:22 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        7D.E3.02418.A3922506; Thu, 18 Mar 2021 01:07:22 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210317160721epcas1p4f5e3f89765a74d6d52ea925e51546b9b~tLO3eqeks1413614136epcas1p45;
-        Wed, 17 Mar 2021 16:07:21 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210317160721epsmtrp1432314af89509bf0c9ca2c68118fc625~tLO3eAw-K2051720517epsmtrp1B;
-        Wed, 17 Mar 2021 16:07:21 +0000 (GMT)
-X-AuditID: b6c32a35-c23ff70000010972-30-6052293a3f1d
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        00.96.13470.93922506; Thu, 18 Mar 2021 01:07:21 +0900 (KST)
-Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210317160721epsmtip17c229866a97efb3e78b50eef1aa609e4~tLO3OvlB90869308693epsmtip1O;
-        Wed, 17 Mar 2021 16:07:21 +0000 (GMT)
-From:   "Sungjong Seo" <sj1557.seo@samsung.com>
-To:     "'Hyeongseok Kim'" <hyeongseok@gmail.com>,
-        <namjae.jeon@samsung.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <sj1557.seo@samsung.com>
-In-Reply-To: <20210315043316.54508-1-hyeongseok@gmail.com>
-Subject: RE: [PATCH] exfat: speed up iterate/lookup by fixing start point of
- traversing fat chain
-Date:   Thu, 18 Mar 2021 01:07:21 +0900
-Message-ID: <a64901d71b47$9cacb070$d6061150$@samsung.com>
+        Wed, 17 Mar 2021 12:08:21 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12HG8FbO066072;
+        Wed, 17 Mar 2021 11:08:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615997295;
+        bh=MXA3mwzYXUdtkyTPzmKYdoJSlYboxEQDB3qFHto5cjA=;
+        h=Subject:From:To:CC:References:Date:In-Reply-To;
+        b=lMUJuOUIowxb4r+6hjRQtufnoPKsarpdeOixK9cCusPszZwN0x6g2JMyiB1UmS4Ax
+         sctfcJRz7zkvtdz2F3X8I7zYg0veUi6KoiymvVmu0l5Q2vMkqQ1B0X5d2jD8F9D0bf
+         sLxUthy1W5nMJ9gktbqAieWEHinmXL1thZUT1sGY=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12HG8FHV123935
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 17 Mar 2021 11:08:15 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 17
+ Mar 2021 11:08:15 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 17 Mar 2021 11:08:15 -0500
+Received: from [10.250.235.239] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12HG8A4K001718;
+        Wed, 17 Mar 2021 11:08:11 -0500
+Subject: Re: [PATCH v3 0/2] AM64: Add USB support
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>, Nishanth Menon <nm@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210317043007.18272-1-a-govindraju@ti.com>
+ <33c7b945-5a3b-649b-ebaf-26465e480edc@ti.com>
+Message-ID: <ea7d50d2-1a54-7730-c40b-d66efeadcc30@ti.com>
+Date:   Wed, 17 Mar 2021 21:38:09 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQMRXeWm1FdVqcQKkWlBKzzAsqBg6wFwmgHlqAg8K+A=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphk+LIzCtJLcpLzFFi42LZdlhTX9dKMyjBoHu1pMXfiZ+YLPbsPcli
-        cXnXHDaLH9PrLbb8O8LqwOqxc9Zddo++LasYPT5vkgtgjsqxyUhNTEktUkjNS85PycxLt1Xy
-        Do53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXLzAHaqKRQlphTChQKSCwuVtK3synKLy1JVcjI
-        Ly6xVUotSMkpMDQo0CtOzC0uzUvXS87PtTI0MDAyBapMyMlY9+I+Y8E5yYoZ894zNjDeFe5i
-        5OSQEDCReN2yhKmLkYtDSGAHo8SDb1PYIZxPjBLX3i5jhnC+MUo8OjOTEaZle8c2qKq9jBKL
-        +u6xQTgvGSU23b7DDlLFJqAr8eTGT2YQW0TAQ+Jx0zEmEJtZIF5i97Q+sEmcAlYSJ1YsYgOx
-        hQWSJXp2r2AFsVkEVCWWd08Eq+EVsJR4seMHlC0ocXLmExaIOfIS29/OYYa4SEFi96ejrBC7
-        rCR+Lm1mhKgRkZjd2Qb2goTAV3aJje/us0I0uEhsmvqFCcIWlnh1fAs7hC0l8bK/Dcqul/g/
-        fy07RHMLo8TDT9uAGjiAHHuJ95csQExmAU2J9bv0IcoVJXb+ngu1l0/i3dceVohqXomONiGI
-        EhWJ7x92ssBsuvLjKtMERqVZSD6bheSzWUg+mIWwbAEjyypGsdSC4tz01GLDAkPk2N7ECE6O
-        WqY7GCe+/aB3iJGJg/EQowQHs5IIr2leQIIQb0piZVVqUX58UWlOavEhRlNgWE9klhJNzgem
-        57ySeENTI2NjYwsTM3MzU2Mlcd4kgwfxQgLpiSWp2ampBalFMH1MHJxSDUzy1w/fSLiWXbk0
-        oz361N5PZUHc/7rYmTI4ksqebAq88urmxcAtMXwyr/3ntYZOb3gSwb6bs1E+Tuw3m2qtj8zV
-        swt5K7puslw/K3qFx9yn9znzXk/JmwwJHOxNS0r4jPr31HdbiS7VWlnSLjKJY4rztXXSgZVm
-        tbynja765e68UOYpcPtHp/uUk1xykZFnrjgoLyqInb//cI/NX1dz71BZiV2Xru9ifOG1avWl
-        P2rbwu88OyCb/54n8oDj2j9XGU59mHglnalHde07rS9/r84/XFL5s9wnc+H/VU/158ecLz0g
-        cvNrQJQ+myXn1jXbE+1OZwrIWDM+z5osIGnarHFqtjZff7jhi2mzzziLVCqxFGckGmoxFxUn
-        AgDdf6iuFwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrJLMWRmVeSWpSXmKPExsWy7bCSnK6lZlCCwZfPAhZ/J35istiz9ySL
-        xeVdc9gsfkyvt9jy7wirA6vHzll32T36tqxi9Pi8SS6AOYrLJiU1J7MstUjfLoErY92L+4wF
-        5yQrZsx7z9jAeFe4i5GTQ0LARGJ7xzb2LkYuDiGB3YwSM5ZuBnI4gBJSEgf3aUKYwhKHDxeD
-        lAsJPGeUWHPJFsRmE9CVeHLjJzOILSLgJbG/6TU7iM0skCjR/OUSE0R9N6PE27emIDangJXE
-        iRWL2EBsYaCaA/dbwWpYBFQllndPZASxeQUsJV7s+AFlC0qcnPmEBeQEZgE9ibaNjBDj5SW2
-        v53DDHG9gsTuT0dZIU6wkvi5tBmqRkRidmcb8wRG4VlIJs1CmDQLyaRZSDoWMLKsYpRMLSjO
-        Tc8tNiwwzEst1ytOzC0uzUvXS87P3cQIjg0tzR2M21d90DvEyMTBeIhRgoNZSYTXNC8gQYg3
-        JbGyKrUoP76oNCe1+BCjNAeLkjjvha6T8UIC6YklqdmpqQWpRTBZJg5OqQamNY7/vN/NEnj6
-        6vdkZyGGTNfrjqLyk/p4lRocj1+w/sea/CG4Mu9Zwd1nj02LrP5WLl21Qai6U+TDk0zNQ3xu
-        oRxsWrdzpWcIf56l4niWd6rhnadmYbdWVAgXWX9bIcindvGvoMwFeztbNsHnjXvWmJ47KnS7
-        Xf7al3mfBWrcvrUsbTk1SdG6evk10bPmEVnsu72DGs8YL1pknbo5njFcLz+t+P/FxUtVatd9
-        VOCY3fFgtmvkc8boiw/Ec5Ye22L8Zs0ZWxuzqlIv98JFXNlaXcy92vMWWV9lXnzawuaTh4us
-        xYr0Y+kLPpbNYD41mdF18oZUhS05L5p1HvFUXTvw0mVDdrxORNGdo77v2C8psRRnJBpqMRcV
-        JwIAHlxmLvwCAAA=
-X-CMS-MailID: 20210317160721epcas1p4f5e3f89765a74d6d52ea925e51546b9b
-X-Msg-Generator: CA
+In-Reply-To: <33c7b945-5a3b-649b-ebaf-26465e480edc@ti.com>
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210315043335epcas1p2bf257806e9ba1c2a492739a6424a2b44
-References: <CGME20210315043335epcas1p2bf257806e9ba1c2a492739a6424a2b44@epcas1p2.samsung.com>
-        <20210315043316.54508-1-hyeongseok@gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> When directory iterate and lookup is called, there is a buggy rewinding of
-> start point for traversing fat chain to the directory entry's first
-> cluster. This caused repeated fat chain traversing from the first entry of
-> the directory that would show worse performance if huge amounts of files
-> exist under single directory.
-> Fix not to rewind, make continue from currently referenced cluster and dir
-> entry.
-> 
-> Tested with 50,000 files under single directory / 256GB sdcard, with
-> command "time ls -l > /dev/null",
-> Before :     0m08.69s real     0m00.27s user     0m05.91s system
-> After  :     0m07.01s real     0m00.25s user     0m04.34s system
-> 
-> Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
-> ---
->  fs/exfat/dir.c | 42 +++++++++++++++++++++++++++++++++---------
->  1 file changed, 33 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c index
-> e1d5536de948..59d12eaa0649 100644
-> --- a/fs/exfat/dir.c
-> +++ b/fs/exfat/dir.c
-> @@ -147,7 +147,7 @@ static int exfat_readdir(struct inode *inode, loff_t
-> *cpos, struct exfat_dir_ent
->  					0);
-> 
->  			*uni_name.name = 0x0;
-> -			exfat_get_uniname_from_ext_entry(sb, &dir, dentry,
-> +			exfat_get_uniname_from_ext_entry(sb, &clu, i,
->  				uni_name.name);
+Hi,
 
-Looks good. Old code looks like a bug as you said.
-
->  			exfat_utf16_to_nls(sb, &uni_name,
->  				dir_entry->namebuf.lfn,
-> @@ -911,10 +911,15 @@ enum {
->  };
+On 17/03/21 8:22 pm, Kishon Vijay Abraham I wrote:
+> Aswath and Nishanth,
 > 
->  /*
-> - * return values:
-> - *   >= 0	: return dir entiry position with the name in dir
-> - *   -ENOENT	: entry with the name does not exist
-> - *   -EIO	: I/O error
-> + * @ei:         inode info of directory
-> + * @p_dir:      input as directory structure in which we search name
-> + *              if found, output as a cluster dir where the name exists
-> + *              if not found, not changed from input
-> + * @num_entries entry size of p_uniname
-> + * @return:
-> + *   >= 0:      dir entry position from output p_dir.dir
-> + *   -ENOENT:   entry with the name does not exist
-> + *   -EIO:      I/O error
->   */
->  int exfat_find_dir_entry(struct super_block *sb, struct exfat_inode_info
-> *ei,
->  		struct exfat_chain *p_dir, struct exfat_uni_name *p_uniname,
-> @@ -925,14 +930,16 @@ int exfat_find_dir_entry(struct super_block *sb,
-> struct exfat_inode_info *ei,
-[snip]
-  			hint_stat->clu = p_dir->dir;
->  			hint_stat->eidx = 0;
-> -			return (dentry - num_ext);
-> +
-> +			exfat_chain_dup(p_dir, &tmp_clu);
-> +			return dentry_in_cluster;
->  		}
->  	}
+> On 17/03/21 10:00 am, Aswath Govindraju wrote:
+>> The following series of patches, add USB support for AM642 evm.
+>>
+>> USB test logs,
+>> https://pastebin.ubuntu.com/p/YSQRBWGmzd/
 > 
->  	hint_stat->clu = clu.dir;
->  	hint_stat->eidx = dentry + 1;
-> -	return dentry - num_ext;
-> +
-> +	exfat_chain_dup(p_dir, &tmp_clu);
-> +	return dentry_in_cluster;
->  }
+> Vinod has provided stable tag [1]
+> git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git
+> tags/ti-serdes-for-5.13
+> 
+> This should unblock us from up-streaming SK along with this.
 
-Changing the functionality of exfat find_dir_entry() will affect
-exfat_find() and exfat_lookup(), breaking the concept of ei->dir.dir
-which should have the starting cluster of its parent directory.
+In case you prefer to send SK support as follow up patches
 
-Well, is there any missing patch related to exfat_find()?
-It would be nice to modify the caller of this function, exfat_find(),
-so that this change in functionality doesn't affect other functions.
+Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
 
-Thanks.
+Thanks
+Kishon
 
 > 
->  int exfat_count_ext_entries(struct super_block *sb, struct exfat_chain
-> *p_dir,
-> --
-> 2.27.0.83.g0313f36
-
-
+> Thanks
+> Kishon
+> 
+> [1] -> http://lore.kernel.org/r/YFGjPNonIlA4Anar@vkoul-mobl.Dlink
+>>
+>> Changes since v2:
+>> - dropped compatible string "ti,j721e-usb" leading to DT schema errors
+>> - Reran test logs
+>> - Couldn't pick up reviewed-by from kishon as a change was made in the
+>>   patch
+>>
+>> Changes since v1:
+>> - Rebased the patches on top of ti-k3-dts-next
+>> - Added test logs
+>>
+>> Aswath Govindraju (2):
+>>   arm64: dts: ti: k3-am64-main: Add DT node for USB subsystem
+>>   arm64: dts: ti: k3-am642-evm: Add USB support
+>>
+>>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 30 ++++++++++++++++++++++++
+>>  arch/arm64/boot/dts/ti/k3-am642-evm.dts  | 18 ++++++++++++++
+>>  2 files changed, 48 insertions(+)
+>>
