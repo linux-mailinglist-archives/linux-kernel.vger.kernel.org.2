@@ -2,191 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571DC33EADB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA3633EAD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhCQHxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 03:53:52 -0400
-Received: from mga04.intel.com ([192.55.52.120]:4577 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230185AbhCQHxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 03:53:33 -0400
-IronPort-SDR: tXcMbu7nbsjHtooh29rEpudR2ICsjmvA5+xA32yt8/leEGN3nQLwsTXcuJHljdxptheUS7eXTe
- 7yTtwCQv661A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="187040757"
-X-IronPort-AV: E=Sophos;i="5.81,255,1610438400"; 
-   d="scan'208";a="187040757"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 00:53:33 -0700
-IronPort-SDR: TRIQLlk2lCbAVYlrDJYDHNbPi1pzfiZArh16cNV+5Ph0RYQqvr9MaqawvEhi+cxuiHsAoBqB4u
- +8yiR9BlQwVQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,255,1610438400"; 
-   d="scan'208";a="602136140"
-Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 17 Mar 2021 00:53:32 -0700
-Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lMQzj-0000Yl-GY; Wed, 17 Mar 2021 07:53:31 +0000
-Date:   Wed, 17 Mar 2021 15:52:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- c1d72652bf64d0332425c0e692a46833003d096e
-Message-ID: <6051b557.+IE64d43aMDlhq1L%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230215AbhCQHxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 03:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230259AbhCQHxK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 03:53:10 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA105C06174A;
+        Wed, 17 Mar 2021 00:53:09 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F0j7j38pGz9sRR;
+        Wed, 17 Mar 2021 18:53:05 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1615967586;
+        bh=wJm+RJKjfzcYlWP9VSCWfeMNmJeeJ50VeASNhonQuVs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Tn2P4NLdB7Kfsa9C5DNHIkcf9IE4//oj4Mq0ng8WXH+Szmw9nldejBX8CIsRnKV71
+         6VOeBRgBzQJ2NWRsJ4qXK5jhAu3fzVSCVaDxwtV3IXLGuASZl59x05LJKntJYU8HwE
+         PaIrpvaOOqynITZOEsoiN9XiGCLS9sEjhuCoB2lA4DJFAAArIIw2Dp5OdkRiFtADh4
+         Z4B86I0X1gdbPxMy3tYMF2IqrD3roddUoBc8sztUYrcXwHS/c+xaANQKHrnzeDm3lL
+         Xr8BjHzwJdAf+cyELJmfxNi0hUvysb90forlhbXH92OSjYJqlSbkR0w/8An2s5/e0U
+         Y5mMMP4Nte7Eg==
+Date:   Wed, 17 Mar 2021 18:53:04 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steve French <smfrench@gmail.com>
+Cc:     Steve French <stfrench@microsoft.com>,
+        Hyunchul Lee <hyc.lee@gmail.com>,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the cifsd tree
+Message-ID: <20210317185304.6b92290c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/0oxxw=il_.479O=HYzwkp.r";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: c1d72652bf64d0332425c0e692a46833003d096e  Merge branch 'irq/core'
+--Sig_/0oxxw=il_.479O=HYzwkp.r
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-elapsed time: 721m
+Hi all,
 
-configs tested: 129
-configs skipped: 2
+After merging the cifsd tree, today's linux-next build (powerpc
+allyesconfig) failed like this:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+ld: fs/cifsd/misc.o:(.opd+0xc0): multiple definition of `extract_sharename'=
+; fs/cifs/unc.o:(.opd+0x18): first defined here
+ld: fs/cifsd/misc.o: in function `.extract_sharename':
+misc.c:(.text.extract_sharename+0x0): multiple definition of `.extract_shar=
+ename'; fs/cifs/unc.o:unc.c:(.text.extract_sharename+0x0): first defined he=
+re
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-arm                         hackkit_defconfig
-sh                               j2_defconfig
-arm                         vf610m4_defconfig
-powerpc                      pmac32_defconfig
-arm                          gemini_defconfig
-arc                              allyesconfig
-nios2                         3c120_defconfig
-parisc                generic-32bit_defconfig
-powerpc                      ppc6xx_defconfig
-microblaze                      mmu_defconfig
-csky                             alldefconfig
-powerpc                  storcenter_defconfig
-powerpc                       ppc64_defconfig
-powerpc                         ps3_defconfig
-sh                           se7206_defconfig
-arm                       netwinder_defconfig
-arm                           spitz_defconfig
-mips                        nlm_xlp_defconfig
-mips                     loongson1b_defconfig
-mips                     loongson1c_defconfig
-powerpc                     tqm8555_defconfig
-powerpc                      ppc40x_defconfig
-mips                           ip32_defconfig
-sh                            hp6xx_defconfig
-xtensa                generic_kc705_defconfig
-sh                        edosk7760_defconfig
-openrisc                            defconfig
-powerpc                      bamboo_defconfig
-powerpc                 mpc85xx_cds_defconfig
-powerpc                   bluestone_defconfig
-mips                         tb0219_defconfig
-arm                         assabet_defconfig
-mips                      pistachio_defconfig
-mips                  decstation_64_defconfig
-mips                         tb0287_defconfig
-arm                        clps711x_defconfig
-powerpc                 mpc8313_rdb_defconfig
-arm                          ep93xx_defconfig
-powerpc                     mpc512x_defconfig
-arm                         orion5x_defconfig
-sh                          sdk7780_defconfig
-mips                            ar7_defconfig
-sh                           se7712_defconfig
-parisc                           allyesconfig
-s390                                defconfig
-mips                         bigsur_defconfig
-powerpc                     ep8248e_defconfig
-powerpc                      cm5200_defconfig
-sparc64                             defconfig
-arm                            mps2_defconfig
-mips                     cu1000-neo_defconfig
-xtensa                  cadence_csp_defconfig
-powerpc                 mpc8540_ads_defconfig
-powerpc                     pseries_defconfig
-arm                        neponset_defconfig
-arm                        trizeps4_defconfig
-sh                        edosk7705_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210316
-i386                 randconfig-a005-20210316
-i386                 randconfig-a002-20210316
-i386                 randconfig-a003-20210316
-i386                 randconfig-a004-20210316
-i386                 randconfig-a006-20210316
-x86_64               randconfig-a011-20210316
-x86_64               randconfig-a016-20210316
-x86_64               randconfig-a013-20210316
-x86_64               randconfig-a014-20210316
-x86_64               randconfig-a015-20210316
-x86_64               randconfig-a012-20210316
-i386                 randconfig-a013-20210316
-i386                 randconfig-a016-20210316
-i386                 randconfig-a011-20210316
-i386                 randconfig-a012-20210316
-i386                 randconfig-a015-20210316
-i386                 randconfig-a014-20210316
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Caused by commit
 
-clang tested configs:
-x86_64               randconfig-a006-20210316
-x86_64               randconfig-a001-20210316
-x86_64               randconfig-a005-20210316
-x86_64               randconfig-a004-20210316
-x86_64               randconfig-a003-20210316
-x86_64               randconfig-a002-20210316
+  cabcebc31de4 ("cifsd: introduce SMB3 kernel server")
 
+I applied the following patch for today:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Wed, 17 Mar 2021 18:35:55 +1100
+Subject: [PATCH] cifsd: uniquify extract_sharename()
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ fs/cifsd/misc.c    | 4 ++--
+ fs/cifsd/misc.h    | 2 +-
+ fs/cifsd/smb2pdu.c | 2 +-
+ fs/cifsd/unicode.h | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/fs/cifsd/misc.c b/fs/cifsd/misc.c
+index 9e689c33f7bb..2e83cfc43be9 100644
+--- a/fs/cifsd/misc.c
++++ b/fs/cifsd/misc.c
+@@ -210,12 +210,12 @@ void ksmbd_conv_path_to_windows(char *path)
+ }
+=20
+ /**
+- * extract_sharename() - get share name from tree connect request
++ * cifsd_extract_sharename() - get share name from tree connect request
+  * @treename:	buffer containing tree name and share name
+  *
+  * Return:      share name on success, otherwise error
+  */
+-char *extract_sharename(char *treename)
++char *cifsd_extract_sharename(char *treename)
+ {
+ 	char *name =3D treename;
+ 	char *dst;
+diff --git a/fs/cifsd/misc.h b/fs/cifsd/misc.h
+index d67843aad509..4cb0d4bebb21 100644
+--- a/fs/cifsd/misc.h
++++ b/fs/cifsd/misc.h
+@@ -25,7 +25,7 @@ void ksmbd_conv_path_to_unix(char *path);
+ void ksmbd_strip_last_slash(char *path);
+ void ksmbd_conv_path_to_windows(char *path);
+=20
+-char *extract_sharename(char *treename);
++char *cifsd_extract_sharename(char *treename);
+=20
+ char *convert_to_unix_name(struct ksmbd_share_config *share, char *name);
+=20
+diff --git a/fs/cifsd/smb2pdu.c b/fs/cifsd/smb2pdu.c
+index b20cc07ee809..3da96ebeae8b 100644
+--- a/fs/cifsd/smb2pdu.c
++++ b/fs/cifsd/smb2pdu.c
+@@ -1709,7 +1709,7 @@ int smb2_tree_connect(struct ksmbd_work *work)
+ 		goto out_err1;
+ 	}
+=20
+-	name =3D extract_sharename(treename);
++	name =3D cifsd_extract_sharename(treename);
+ 	if (IS_ERR(name)) {
+ 		status.ret =3D KSMBD_TREE_CONN_STATUS_ERROR;
+ 		goto out_err1;
+diff --git a/fs/cifsd/unicode.h b/fs/cifsd/unicode.h
+index 228a02c9b95d..16269c098f86 100644
+--- a/fs/cifsd/unicode.h
++++ b/fs/cifsd/unicode.h
+@@ -69,7 +69,7 @@ char *smb_strndup_from_utf16(const char *src, const int m=
+axlen,
+ 		const struct nls_table *codepage);
+ extern int smbConvertToUTF16(__le16 *target, const char *source, int srcle=
+n,
+ 		const struct nls_table *cp, int mapchars);
+-extern char *extract_sharename(char *treename);
++extern char *cifsd_extract_sharename(char *treename);
+ #endif
+=20
+ wchar_t cifs_toupper(wchar_t in);
+--=20
+2.30.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/0oxxw=il_.479O=HYzwkp.r
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBRtWAACgkQAVBC80lX
+0GzRWggAgiPsn9hdVrE2WD+qNgxwEOIlAvSkGHm8XnTMa6RJ3vh5PzPttL4rIb7M
+Ko6AjrhRHU8L/I1JoZ6rNtoIeVFnYGYLq0RHEKXsdPq4fUe0jb6eiWw0s9DBvwEE
+cGiIIKb4ulUK8v8O6FirLq+Syv5nrrIHR0MtdCR3deBGpf7eTy2LErThwQkOTJG3
+5ieo/90c8mFT667p5XyMLz7MO3lmM2YQ9L5b+/hPQXSWbYDbbJl2FZRyjGtdki2/
+Xqa4UtSSm59JfBpH8crz6vKAJmXJTHHM4PCtfBXieEtRLEh4Azt5iUWW3uAMrB3x
+6LlVna9dhdCs4vE/VzTK85hqYK4b7Q==
+=RB5s
+-----END PGP SIGNATURE-----
+
+--Sig_/0oxxw=il_.479O=HYzwkp.r--
