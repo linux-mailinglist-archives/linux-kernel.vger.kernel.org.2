@@ -2,138 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF02933F922
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:27:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B547733F92B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233223AbhCQT1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233231AbhCQT1L (ORCPT
+        id S233137AbhCQTaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:30:04 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:56020 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231378AbhCQT36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:27:11 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D143AC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:27:10 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id s17so4626110ljc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:27:10 -0700 (PDT)
+        Wed, 17 Mar 2021 15:29:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g7PfSQ478H4gL+ePUwNmtoQqfcCoytqCVvRBHHB4kK4=;
-        b=HysRjg5Vm8PBkWcawhMQ9e8rTUA0qSCOQ5N7lqw7nKYmH4Jh2LscIStkT50FshfSWy
-         S+lRXzzxscxhDGbI5SfGjeRh+XLEC5PZHDk6kM9yLX+sRcXCX1J5yrzAm6KGX0JWnuFJ
-         VrHwd5Si03mYfj8Fd7mivuEsEwmiRHXQAZ9g0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g7PfSQ478H4gL+ePUwNmtoQqfcCoytqCVvRBHHB4kK4=;
-        b=HrhutP0viD0052JuLyXPWp1e/GO+1igwV+4ybClvEkNCWzYb5teR8mUyURwMLL1gxM
-         C7tUn6VbHrFFkPiKtliPrl5+AHnaOclwJZTbDe9GMx5HKDYIeHQ9wx+JCmqXjKRbIBzr
-         RYetuLctlh7MgRXEo5DusooxjW7qbKiK5sjRc6HRIGiF7jyd34uWlNmdnUH0t4VpijDU
-         a9AN6K88ZMuQSh7/OfeKcQilv5WYOQoOd3u0UboE1X+rAe2Hgq7qy8Y7xqW5Yh28/Wgi
-         WuJvBsDqQN6GnQWrbrLMHiwDa4mZU4wloPN6WHq6WwXuVXJsVaW9uhkXt8Fib9jqYfv2
-         J+yw==
-X-Gm-Message-State: AOAM533gorZfDbh7JZDvqG99m81mgSmMK3Aca0D1Ygwls2NwwnhWXT2Y
-        4k44BJw6vqKkXfCbtzJRZtxozqVe+TVznQ==
-X-Google-Smtp-Source: ABdhPJylTwyoXjEpybMXb6zxoi3JSqDbgcJnBOc6KzGYsNiJmtECR6i49akBcXnW8JFFqgiXyJ2MfA==
-X-Received: by 2002:a2e:8159:: with SMTP id t25mr3355290ljg.437.1616009228980;
-        Wed, 17 Mar 2021 12:27:08 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id x36sm3451405lfu.129.2021.03.17.12.27.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 12:27:07 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id s17so4625982ljc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:27:07 -0700 (PDT)
-X-Received: by 2002:a2e:864d:: with SMTP id i13mr3180718ljj.48.1616009226982;
- Wed, 17 Mar 2021 12:27:06 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1616009399; x=1647545399;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=zWFFxO49wOr1BOYJ6yLvDqa+VJlcJIeydWFFzWXQEkE=;
+  b=YEwUfZmXMUuE5n+5wKhit0ECvkI0O/CrZ3vnxh6FoBoR3jboMd7NQAqS
+   YF3Vq/2k9jKBJTpA2BFeJL8FhOc6AKmJKSO1lRFZUXgsds1ggYSlU6/JR
+   dVRHwAdLZMSmANmLhSm/E1eWR/ot+xltrEqNuXQS7EX3Ua/K8zjpx2RHo
+   U=;
+X-IronPort-AV: E=Sophos;i="5.81,257,1610409600"; 
+   d="scan'208";a="98296044"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 17 Mar 2021 19:29:50 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com (Postfix) with ESMTPS id AF232A2146;
+        Wed, 17 Mar 2021 19:29:49 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 17 Mar 2021 19:29:49 +0000
+Received: from Alexanders-MacBook-Air.local (10.43.160.67) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 17 Mar 2021 19:29:47 +0000
+Subject: Re: [PATCH 1/4] KVM: x86: Protect userspace MSR filter with SRCU, and
+ set atomically-ish
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+CC:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Yuan Yao <yaoyuan0329os@gmail.com>
+References: <20210316184436.2544875-1-seanjc@google.com>
+ <20210316184436.2544875-2-seanjc@google.com>
+From:   Alexander Graf <graf@amazon.com>
+Message-ID: <08ac1383-27d0-e5f9-a618-b9e43dc5dc12@amazon.com>
+Date:   Wed, 17 Mar 2021 20:29:44 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210317075427.587806-1-npiggin@gmail.com> <89cb49c0-2736-dd4c-f401-4b88c22cc11f@rasmusvillemoes.dk>
- <1615977781.fijkhk7ep5.astroid@bobo.none>
-In-Reply-To: <1615977781.fijkhk7ep5.astroid@bobo.none>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 17 Mar 2021 12:26:51 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whKnamUnZaJQ+fcqYoLJfc8QB8dv6=2P7o-XPBDOtbF3w@mail.gmail.com>
-Message-ID: <CAHk-=whKnamUnZaJQ+fcqYoLJfc8QB8dv6=2P7o-XPBDOtbF3w@mail.gmail.com>
-Subject: Re: [PATCH v2] Increase page and bit waitqueue hash size
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210316184436.2544875-2-seanjc@google.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.160.67]
+X-ClientProxiedBy: EX13D31UWA004.ant.amazon.com (10.43.160.217) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 3:44 AM Nicholas Piggin <npiggin@gmail.com> wrote:
->
-> Argh, because I didn't test small. Sorry I had the BASE_SMALL setting in
-> another patch and thought it would be a good idea to mash them together.
-> In hindsight probably not even if it did build.
+CgpPbiAxNi4wMy4yMSAxOTo0NCwgU2VhbiBDaHJpc3RvcGhlcnNvbiB3cm90ZToKPiAKPiBGaXgg
+YSBwbGV0aG9yYSBvZiBpc3N1ZXMgd2l0aCBNU1IgZmlsdGVyaW5nIGJ5IGluc3RhbGxpbmcgdGhl
+IHJlc3VsdGluZwo+IGZpbHRlciBhcyBhbiBhdG9taWMgYnVuZGxlIGluc3RlYWQgb2YgdXBkYXRp
+bmcgdGhlIGxpdmUgZmlsdGVyIG9uZSByYW5nZQo+IGF0IGEgdGltZS4gIFRoZSBLVk1fWDg2X1NF
+VF9NU1JfRklMVEVSIGlvY3RsKCkgaXNuJ3QgdHJ1bHkgYXRvbWljLCBhcwo+IHRoZSBoYXJkd2Fy
+ZSBNU1IgYml0bWFwcyB3b24ndCBiZSB1cGRhdGVkIHVudGlsIHRoZSBuZXh0IFZNLUVudGVyLCBi
+dXQKPiB0aGUgcmVsZXZhbnQgc29mdHdhcmUgc3RydWN0IGlzIGF0b21pY2FsbHkgdXBkYXRlZCwg
+d2hpY2ggaXMgd2hhdCBLVk0KPiByZWFsbHkgbmVlZHMuCj4gCj4gU2ltaWxhciB0byB0aGUgYXBw
+cm9hY2ggdXNlZCBmb3IgbW9kaWZ5aW5nIG1lbXNsb3RzLCBtYWtlIGFyY2gubXNyX2ZpbHRlcgo+
+IGEgU1JDVS1wcm90ZWN0ZWQgcG9pbnRlciwgZG8gYWxsIHRoZSB3b3JrIGNvbmZpZ3VyaW5nIHRo
+ZSBuZXcgZmlsdGVyCj4gb3V0c2lkZSBvZiBrdm0tPmxvY2ssIGFuZCB0aGVuIGFjcXVpcmUga3Zt
+LT5sb2NrIG9ubHkgd2hlbiB0aGUgbmV3IGZpbHRlcgo+IGhhcyBiZWVuIHZldHRlZCBhbmQgY3Jl
+YXRlZC4gIFRoYXQgd2F5IHZDUFUgcmVhZGVycyBlaXRoZXIgc2VlIHRoZSBvbGQKPiBmaWx0ZXIg
+b3IgdGhlIG5ldyBmaWx0ZXIgaW4gdGhlaXIgZW50aXJldHksIG5vdCBzb21lIGhhbGYtYmFrZWQg
+c3RhdGUuCj4gCj4gWXVhbiBZYW8gcG9pbnRlZCBvdXQgYSB1c2UtYWZ0ZXItZnJlZSBpbiBrc21f
+bXNyX2FsbG93ZWQoKSBkdWUgdG8gYQo+IFRPQ1RPVSBidWcsIGJ1dCB0aGF0J3MganVzdCB0aGUg
+dGlwIG9mIHRoZSBpY2ViZXJnLi4uCj4gCj4gICAgLSBOb3RoaW5nIGlzIF9fcmN1IGFubm90YXRl
+ZCwgbWFraW5nIGl0IG5pZ2ggaW1wb3NzaWJsZSB0byBhdWRpdCB0aGUKPiAgICAgIGNvZGUgZm9y
+IGNvcnJlY3RuZXNzLgo+ICAgIC0ga3ZtX2FkZF9tc3JfZmlsdGVyKCkgaGFzIGFuIHVucGFpcmVk
+IHNtcF93bWIoKS4gIFZpb2xhdGlvbiBvZiBrZXJuZWwKPiAgICAgIGNvZGluZyBzdHlsZSBhc2lk
+ZSwgdGhlIGxhY2sgb2YgYSBzbWJfcm1iKCkgYW55d2hlcmUgY2FzdHMgYWxsIGNvZGUKPiAgICAg
+IGludG8gZG91YnQuCj4gICAgLSBrdm1fY2xlYXJfbXNyX2ZpbHRlcigpIGhhcyBhIGRvdWJsZSBm
+cmVlIFRPQ1RPVSBidWcsIGFzIGl0IGdyYWJzCj4gICAgICBjb3VudCBiZWZvcmUgdGFraW5nIHRo
+ZSBsb2NrLgo+ICAgIC0ga3ZtX2NsZWFyX21zcl9maWx0ZXIoKSBhbHNvIGhhcyBtZW1vcnkgbGVh
+ayBkdWUgdG8gdGhlIHNhbWUgVE9DVE9VIGJ1Zy4KPiAKPiBUaGUgZW50aXJlIGFwcHJvYWNoIG9m
+IHVwZGF0aW5nIHRoZSBsaXZlIGZpbHRlciBpcyBhbHNvIGZsYXdlZC4gIFdoaWxlCj4gaW5zdGFs
+bGluZyBhIG5ldyBmaWx0ZXIgaXMgaW5oZXJlbnRseSByYWN5IGlmIHZDUFVzIGFyZSBydW5uaW5n
+LCBmaXhpbmcKPiB0aGUgYWJvdmUgaXNzdWVzIGFsc28gbWFrZXMgaXQgdHJpdmlhbCB0byBlbnN1
+cmUgY2VydGFpbiBiZWhhdmlvciBpcwo+IGRldGVybWluaXN0aWMsIGUuZy4gS1ZNIGNhbiBwcm92
+aWRlIGRldGVybWluaXN0aWMgYmVoYXZpb3IgZm9yIE1TUnMgd2l0aAo+IGlkZW50aWNhbCBzZXR0
+aW5ncyBpbiB0aGUgb2xkIGFuZCBuZXcgZmlsdGVycy4gIEFuIGF0b21pYyB1cGRhdGUgb2YgdGhl
+Cj4gZmlsdGVyIGFsc28gcHJldmVudHMgS1ZNIGZyb20gZ2V0dGluZyBpbnRvIGEgaGFsZi1iYWtl
+ZCBzdGF0ZSwgZS5nLiBpZgo+IGluc3RhbGxpbmcgYSBmaWx0ZXIgZmFpbHMsIHRoZSBleGlzdGlu
+ZyBhcHByb2FjaCB3b3VsZCBsZWF2ZSB0aGUgZmlsdGVyCj4gaW4gYSBoYWxmLWJha2VkIHN0YXRl
+LCBoYXZpbmcgYWxyZWFkeSBjb21taXR0ZWQgd2hhdGV2ZXIgYml0cyBvZiB0aGUKPiBmaWx0ZXIg
+d2VyZSBhbHJlYWR5IHByb2Nlc3NlZC4KPiAKPiBbKl0gaHR0cHM6Ly9sa21sLmtlcm5lbC5vcmcv
+ci8yMDIxMDMxMjA4MzE1Ny4yNTQwMy0xLXlhb3l1YW4wMzI5b3NAZ21haWwuY29tCj4gCj4gRml4
+ZXM6IDFhMTU1MjU0ZmY5MyAoIktWTTogeDg2OiBJbnRyb2R1Y2UgTVNSIGZpbHRlcmluZyIpCj4g
+Q2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcKPiBDYzogQWxleGFuZGVyIEdyYWYgPGdyYWZAYW1h
+em9uLmNvbT4KPiBSZXBvcnRlZC1ieTogWXVhbiBZYW8gPHlhb3l1YW4wMzI5b3NAZ21haWwuY29t
+Pgo+IFNpZ25lZC1vZmYtYnk6IFNlYW4gQ2hyaXN0b3BoZXJzb24gPHNlYW5qY0Bnb29nbGUuY29t
+PgoKVGhhbmtzIGEgbG90IFNlYW4gZm9yIGNsZWFuaW5nIHVwIGFmdGVyIG1lISBJIHdhcyB0cnlp
+bmcgdG8gYmUgYSBiaXQgdG9vIApzbWFydCB3aXRoIHRoZSBpbmJhbmQgY291bnQgYXMgdG9rZW4g
+dW5mb3J0dW5hdGVseSA6KQoKUmV2aWV3ZWQtYnk6IEFsZXhhbmRlciBHcmFmIDxncmFmQGFtYXpv
+bi5jb20+CgoKQWxleAoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIEdlcm1hbnkgR21iSApL
+cmF1c2Vuc3RyLiAzOAoxMDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1ZWhydW5nOiBDaHJpc3RpYW4g
+U2NobGFlZ2VyLCBKb25hdGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBhbSBBbXRzZ2VyaWNodCBDaGFy
+bG90dGVuYnVyZyB1bnRlciBIUkIgMTQ5MTczIEIKU2l0ejogQmVybGluClVzdC1JRDogREUgMjg5
+IDIzNyA4NzkKCgo=
 
-I was going to complain about that code in general.
-
-First complaining about the hash being small, and then adding a config
-option to make it ridiculously much *smaller* seemed wrong to begin
-with, and didn't make any sense.
-
-So no, please don't smash together.
-
-In fact, I'd like to see this split up, and with more numbers:
-
- - separate out the bit_waitqueue thing that is almost certainly not
-remotely as critical (and maybe not needed at all)
-
- - show the profile number _after_ the patch(es)
-
- - explain why you picked the random scaling numbers (21 and 22 for
-the two different cases)?
-
- - give an estimate of how big the array now ends up being for
-different configurations.
-
-I think it ends up using that "scale" factor of 21, and basically
-being "memory size >> 21" and then rounding up to a power of two.
-
-And honestly, I'm not sure that makes much sense. So for a 1GB machine
-we get the same as we used to for the bit waitqueue (twice as many for
-the page waitqueue) , but if you run on some smaller setup, you
-apparently can end up with just a couple of buckets.
-
-So I'd feel a lot better about this if I saw the numbers, and got the
-feeling that the patch actually tries to take legacy machines into
-account.
-
-And even on a big machine, what's the advantage of scaling perfectly
-with memory. If you have a terabyte of RAM, why would you need half a
-million hash entries (if I did the math right), and use 4GB of memory
-on it? The contention doesn't go up by amount of memory, it goes up
-roughly by number of threads, and the two are very seldom really all
-that linearly connected.
-
-So honestly, I'd like to see more reasonable numbers. I'd like to see
-what the impact of just raising the hash bit size from 8 to 16 is on
-that big machine. Maybe still using alloc_large_system_hash(), but
-using a low-imit of 8 (our traditional very old number that hasn't
-been a problem even on small machines), and a high-limit of 16 or
-something.
-
-And if you want even more, I really really want that justified by the
-performance / profile numbers.
-
-And does does that "bit_waitqueue" really merit updating AT ALL? It's
-almost entirely unused these days. I think maybe the page lock code
-used to use that, but then realized it had more specialized needs, so
-now it's separate.
-
-So can we split that bit-waitqueue thing up from the page waitqueue
-changes? They have basically nothing in common except for a history,
-and I think they should be treated separately (including the
-explanation for what actually hits the bottleneck).
-
-          Linus
