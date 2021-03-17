@@ -2,76 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8499633F263
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:16:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F23AC33F211
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbhCQOPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:15:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231705AbhCQOPi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:15:38 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2231C06174A;
-        Wed, 17 Mar 2021 07:15:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Message-ID:From:CC:To:Subject:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:
-        Date:Sender:Reply-To:Content-ID:Content-Description;
-        bh=CMMz5R1TICGoardcIZbuQbx/IbDn7R6aDFEFgKeLLJw=; b=SgzSOzls4iI1qxq/PGJWPYRBFb
-        rFE1EcVrfc1TpoiIoUGVJ204bhFGtx3WBPohUhVUEX/eHBcWyi1U9NZ5PyuZPqJyKJdeemTaCbIgX
-        sLrB7QPQgpGFD8jrUDTf6MZLOmuL3W6CcGgOS2l3P5DZ28JBNSl126SXOVxMNQg2KqWl7crfFKOq7
-        GNCBy1CGrI8zlYJ7YiIEKduV42jmovU4yYCRaV+YIDfVN1sD3kSROw5Mtt3x68MKLmep4V7k6uqpV
-        8GE5wDZdNvKLCYvLbHgbT+o7KsYnkK4hxlvVx7Kq6Z8ZTOyeAra+yeim4JhwslpeXEdIir8gkNZPy
-        EdNrJt6A==;
-Received: from [2001:8b0:10b:1:6dbf:8591:24f9:c1c2]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMWxR-003EYd-9t; Wed, 17 Mar 2021 14:15:33 +0000
-Date:   Wed, 17 Mar 2021 13:37:16 +0000
-User-Agent: K-9 Mail for Android
-In-Reply-To: <YFIE8xnr/HWqxm4p@8bytes.org>
-References: <20210317091037.31374-1-joro@8bytes.org> <20210317091037.31374-3-joro@8bytes.org> <449d4a2d192d23eb504e43b13c35c326f2d0309a.camel@infradead.org> <YFIE8xnr/HWqxm4p@8bytes.org>
+        id S231719AbhCQOAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:00:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231477AbhCQOAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 10:00:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 925C564F5E;
+        Wed, 17 Mar 2021 14:00:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615989614;
+        bh=OyS3oC04KBkh4JqkYzeeIdskNg7vnpTYMPs3/WweXD8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k3ibAKFDdkLJdciif5Qo6Ci0ePTyCmsgQD2Hb/gRIIcUAsy4qMK1LQQCwfBLWElQh
+         rwFaHowNVQng/hAqvILNfRC38OJJwkSggGuR7m12nXy+67jR1ItyMtxuZttAbAcDJc
+         ceRusiHWs5H8YiDQKjxRmP1ZwNapJeEHdx34+45mGZs+I5jOUCRfFKWupVy8IbZbXz
+         xmmLzdWP3gci8iwm4JxsIu9iDDMyb4oOvOM5a+ueOiVYZlU117bF/2gzokjgx1UhEn
+         hyQ+6BlYnil7GaUD3ZYuF0PVLp8WD6HMk/Dd5ptYw+aBMCKCuEOFOn/TQbMW31uwNS
+         gxdil78fAY6AA==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lMWiq-0001JR-PN; Wed, 17 Mar 2021 15:00:29 +0100
+Date:   Wed, 17 Mar 2021 15:00:28 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: threadirqs deadlocks
+Message-ID: <YFILfPT1SFypmOAj@hovoldconsulting.com>
+References: <YFCO+FEjWPGytb2W@hovoldconsulting.com>
+ <87eegdzzez.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 2/3] iommu/amd: Don't call early_amd_iommu_init() when AMD IOMMU is disabled
-To:     Joerg Roedel <joro@8bytes.org>
-CC:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Huang Rui <ray.huang@amd.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Xiaojian Du <xiaojian.du@amd.com>,
-        Joerg Roedel <jroedel@suse.de>, stable@vger.kernel.org
-From:   David Woodhouse <dwmw2@infradead.org>
-Message-ID: <3014DA56-84D8-474B-94FE-6FDBB6241F9F@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87eegdzzez.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 17, 2021 at 02:24:04PM +0100, Thomas Gleixner wrote:
 
+> On Tue, Mar 16 2021 at 11:56, Johan Hovold wrote:
 
-On 17 March 2021 13:32:35 GMT, Joerg Roedel <joro@8bytes=2Eorg> wrote:
->On Wed, Mar 17, 2021 at 11:47:11AM +0000, David Woodhouse wrote:
->> If you've already moved the Stoney Ridge check out of the way,
->there's
->> no real reason why you can't just set
->init_state=3DIOMMU_CMDLINE_DISABLED
->> directly from parse_amd_iommu_options(), is there? Then you don't
->need
->> the condition here at all?
->
->True, there is even more room for optimization=2E The amd_iommu_disabled
->variable can go away entirely, including its checks in
->early_amd_iommu_init()=2E I will do a patch-set on-top of this for v5=2E1=
-3
->which does more cleanups=2E
+> > It seems to me that forced interrupt threading cannot generally work
+> > without updating drivers that expose locks that can be taken by other
+> > interrupt handlers, for example, by using spin_lock_irqsave() in their
+> > interrupt handlers or marking their interrupts as IRQF_NO_THREAD.
+> 
+> The latter is the worst option because that will break PREEMPT_RT.
+> 
+> > What are your thoughts on this given that forced threading isn't that
+> > widely used and was said to be "mostly a debug option". Do we need to
+> > vet all current and future drivers and adapt them for "threadirqs"?
+> >
+> > Note that we now have people sending cleanup patches for interrupt
+> > handlers by search-and-replacing spin_lock_irqsave() with spin_lock()
+> > which can end up exposing this more.
+> 
+> It's true that for !RT it's primarily a debug option, but occasionaly a
+> very valuable one because it does not take the whole machine down when
+> something explodes in an interrupt handler. Used it just a couple of
+> weeks ago successfully :)
+> 
+> So we have several ways out of that:
+> 
+>   1) Do the lock() -> lock_irqsave() dance
+> 
+>   2) Delay printing from hard interrupt context (which is what RT does)
 
-If we can get to the point where we don't even need to check amd_iommu_irq=
-_remap in the =2E=2E=2Eselect() function because the IRQ domain is never ev=
-en registered in the case where the flag ends up false, all the better :)
+While this is probably mostly an issue for console drivers, the problem
+is more general and we'd need to identify and add workarounds for any
+lock that could be taken by a second interrupt handler.
 
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+>   3) Actually disable interrupts before calling the force threaded
+>      handler.
+> 
+> I'd say #3 is the right fix here. It's preserving the !RT semantics
+> and the usefulness of threadirqs for debugging and spare us dealing with
+> the script kiddies.
+
+I was hoping you'd say that. :) Just wasn't sure whether it would
+cripple threadirqs too much.
+
+> Something like the below.
+
+Looks good to me. Do you want to spin that into a patch or shall I do
+it after some testing?
+
+Johan
