@@ -2,73 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6B633EB65
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7B733EB41
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:18:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbhCQIZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:25:59 -0400
-Received: from smtp23.cstnet.cn ([159.226.251.23]:56396 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229607AbhCQIZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:25:50 -0400
-X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Mar 2021 04:25:49 EDT
-Received: from localhost.localdomain (unknown [116.6.100.50])
-        by APP-03 (Coremail) with SMTP id rQCowADH6A0pu1Fgwa5oAA--.10281S4;
-        Wed, 17 Mar 2021 16:18:05 +0800 (CST)
-From:   Zihao Yu <yuzihao@ict.ac.cn>
-To:     paul.walmsley@sifive.com
-Cc:     palmer@dabbelt.com, aou@eecs.berkeley.edu, yuzihao@ict.ac.cn,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv,entry: fix misaligned base for excp_vect_table
-Date:   Wed, 17 Mar 2021 16:17:25 +0800
-Message-Id: <20210317081725.28412-1-yuzihao@ict.ac.cn>
-X-Mailer: git-send-email 2.20.1
+        id S229707AbhCQIRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:17:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229717AbhCQIRi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 04:17:38 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59710C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:17:38 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id t9so835418wrn.11
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:17:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=aQQTr9x52WQZKbGN+UXyTfuQuaro1IAnE7CQNIF7EbQ=;
+        b=rRsEAx6F2ouRMDv3fBBX9mDEf8icI52AiOIMJydya6x9UZqnppIvI6XSwDSxnntRMV
+         wujEyUkyZkaHaSdl7lbvibzroxqY2gth5BM5cUpakazc2JHIEYFfEaRrPtI2awbMRA4U
+         u/tVzLXMMw7jI+1rQhsMyvbcaG0usBhJM1xkGPlhYsrnhHZNYsO4UVGDWykv9Z5svoO4
+         SWjItz8pw2cklFtc1Phz1+whnj4HEFPJGgOqEuf183+3ad6AML7i9L0JE1uvBNum0Wnw
+         /Y8VQhLtB/JbXzwTIBYOobcwMIAHsfoBUsVi3emW9HPR/r/vWxFyWR18uEnT3CbTOnKo
+         66bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=aQQTr9x52WQZKbGN+UXyTfuQuaro1IAnE7CQNIF7EbQ=;
+        b=MJgThJhV/W+WnBihA21HefX6ilDQMnzsp2FVCz0YAQQ53AOBrFEvKYA/0z+sNJfoMA
+         746PJ+cXnf12GKnrPJcpviIcBwShyVZGYZqRkH6r4k2HJTILuxcBdYLnBC436BoBZaLE
+         F5mYid7mGVPT9bQ8e3rl4XGOWziFrZ9WbjpGLe7VQgUPynwFnzX+2BrY84LYFGKE3oZR
+         UvziawVZzZd1UaO56p0NZHVmrs41crjwJ/FGWUfj4YEEyablWVfGz8nMxLARNVzSmyU9
+         dng53YYUcBzohsduMtu0zKBLeODkssavodxe4XyOqYeUaNN2Szh2OdhQ9y1gHrBsQYia
+         i49A==
+X-Gm-Message-State: AOAM532oMHABD2BcqsFrYA3POlFvKGxR733w9GVbojKs6T823NFeoJpA
+        SAoE93YFx8WhuWk4cdHQ+hEjug==
+X-Google-Smtp-Source: ABdhPJy+NLJm3S/51dMjrLtGpbwVG+P/h3mK0TfjCNGg++tWCJlVzWFiOG8og26jGqtuchvHPsPpNg==
+X-Received: by 2002:a5d:6a81:: with SMTP id s1mr3056746wru.401.1615969057113;
+        Wed, 17 Mar 2021 01:17:37 -0700 (PDT)
+Received: from dell ([91.110.221.194])
+        by smtp.gmail.com with ESMTPSA id v9sm25014417wrn.86.2021.03.17.01.17.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 01:17:36 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 08:17:29 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Roland Scheidegger <sroland@vmware.com>,
+        linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org, Anthony Koo <Anthony.Koo@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Jeremy Kolb <jkolb@brandeis.edu>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Leo Li <sunpeng.li@amd.com>, linaro-mm-sig@lists.linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        Lyude Paul <lyude@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        nouveau@lists.freedesktop.org,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Rob Clark <rob.clark@linaro.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Zack Rusin <zackr@vmware.com>
+Subject: Re: [RESEND 00/53] Rid GPU from W=1 warnings
+Message-ID: <20210317081729.GH701493@dell>
+References: <20210303134319.3160762-1-lee.jones@linaro.org>
+ <16d4300e-bf29-1e85-317b-53d257890cb9@vmware.com>
+ <20210308091932.GB4931@dell>
+ <YEobySvG0zPs9xhc@phenom.ffwll.local>
+ <20210311135152.GT701493@dell>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: rQCowADH6A0pu1Fgwa5oAA--.10281S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrZrWkXFyfZF1Utw13GrWDtwb_yoW3Wwb_uw
-        1xXan7urW3JF9aqFnFqwsagrsI9ayrtF95Gr1xWr1ak3WUZr1Sk3sxWwn8Zrs5Gw48trZ7
-        AF93JFsxtr429jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbzxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxG
-        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
-        vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IY
-        x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
-        xKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-        67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbd-PUUUUUU==
-X-Originating-IP: [116.6.100.50]
-X-CM-SenderInfo: p1x2xx1dr6xunwoduhdfq/
+In-Reply-To: <20210311135152.GT701493@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* In RV64, the size of each entry in excp_vect_table is 8 bytes. If the
-  base of the table is not 8-byte aligned, loading an entry in the table
-  will raise a misaligned exception. Although such exception will be
-  handled by opensbi/bbl, this still causes performance degradation.
+On Thu, 11 Mar 2021, Lee Jones wrote:
 
-Signed-off-by: Zihao Yu <yuzihao@ict.ac.cn>
----
- arch/riscv/kernel/entry.S | 1 +
- 1 file changed, 1 insertion(+)
+> On Thu, 11 Mar 2021, Daniel Vetter wrote:
+> 
+> > On Mon, Mar 08, 2021 at 09:19:32AM +0000, Lee Jones wrote:
+> > > On Fri, 05 Mar 2021, Roland Scheidegger wrote:
+> > > 
+> > > > The vmwgfx ones look all good to me, so for
+> > > > 23-53: Reviewed-by: Roland Scheidegger <sroland@vmware.com>
+> > > > That said, they were already signed off by Zack, so not sure what
+> > > > happened here.
+> > > 
+> > > Yes, they were accepted at one point, then dropped without a reason.
+> > > 
+> > > Since I rebased onto the latest -next, I had to pluck them back out of
+> > > a previous one.
+> > 
+> > They should show up in linux-next again. We merge patches for next merge
+> > window even during the current merge window, but need to make sure they
+> > don't pollute linux-next. Occasionally the cut off is wrong so patches
+> > show up, and then get pulled again.
+> > 
+> > Unfortunately especially the 5.12 merge cycle was very wobbly due to some
+> > confusion here. But your patches should all be in linux-next again (they
+> > are queued up for 5.13 in drm-misc-next, I checked that).
+> > 
+> > Sorry for the confusion here.
+> 
+> Oh, I see.  Well so long as they don't get dropped, I'll be happy.
+> 
+> Thanks for the explanation Daniel
 
-diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
-index 744f3209c..76274a4a1 100644
---- a/arch/riscv/kernel/entry.S
-+++ b/arch/riscv/kernel/entry.S
-@@ -447,6 +447,7 @@ ENDPROC(__switch_to)
- #endif
- 
- 	.section ".rodata"
-+	.align LGREG
- 	/* Exception vector table */
- ENTRY(excp_vect_table)
- 	RISCV_PTR do_trap_insn_misaligned
+After rebasing today, all of my GPU patches have remained.  Would
+someone be kind enough to check that everything is still in order
+please?
+
 -- 
-2.20.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
