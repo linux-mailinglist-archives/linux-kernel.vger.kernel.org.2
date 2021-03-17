@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D137D33F27E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:24:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9E533F280
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbhCQOXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:23:32 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:14365 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhCQOXL (ORCPT
+        id S231815AbhCQOXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:23:40 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14078 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231139AbhCQOXR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:23:11 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F0slb3gWnz904G;
-        Wed, 17 Mar 2021 22:21:15 +0800 (CST)
+        Wed, 17 Mar 2021 10:23:17 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F0slh052dz17LBs;
+        Wed, 17 Mar 2021 22:21:20 +0800 (CST)
 Received: from mdc.huawei.com (10.175.112.208) by
  DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 17 Mar 2021 22:23:02 +0800
+ 14.3.498.0; Wed, 17 Mar 2021 22:23:03 +0800
 From:   Chen Jun <chenjun102@huawei.com>
 To:     <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
 CC:     <akpm@linux-foundation.org>, <catalin.marinas@arm.com>,
         <will@kernel.org>, <rui.xiang@huawei.com>
-Subject: [PATCH 1/2] stacktrace: Move struct stacktrace_cookie to stacktrace.h
-Date:   Wed, 17 Mar 2021 14:20:49 +0000
-Message-ID: <20210317142050.57712-2-chenjun102@huawei.com>
+Subject: [PATCH 2/2] arm64: stacktrace: Add skip when task == current
+Date:   Wed, 17 Mar 2021 14:20:50 +0000
+Message-ID: <20210317142050.57712-3-chenjun102@huawei.com>
 X-Mailer: git-send-email 2.9.4
 In-Reply-To: <20210317142050.57712-1-chenjun102@huawei.com>
 References: <20210317142050.57712-1-chenjun102@huawei.com>
@@ -37,50 +37,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ARM64 need to modify the stacktrace_cookie->skip.
+On ARM64, cat /sys/kernel/debug/page_owner, all pages return the same
+stack:
+ stack_trace_save+0x4c/0x78
+ register_early_stack+0x34/0x70
+ init_page_owner+0x34/0x230
+ page_ext_init+0x1bc/0x1dc
 
+The reason is that:
+check_recursive_alloc always return 1 because that
+entries[0] is always equal to ip (__set_page_owner+0x3c/0x60).
+
+The root cause is that:
+commit 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
+make the save_trace save 2 more entries.
+
+Add skip in arch_stack_walk when task == current.
+
+Fixes: 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
 Signed-off-by: Chen Jun <chenjun102@huawei.com>
 ---
- include/linux/stacktrace.h | 7 +++++++
- kernel/stacktrace.c        | 7 -------
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ arch/arm64/kernel/stacktrace.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/stacktrace.h b/include/linux/stacktrace.h
-index 50e2df3..238b276 100644
---- a/include/linux/stacktrace.h
-+++ b/include/linux/stacktrace.h
-@@ -25,6 +25,13 @@ unsigned int stack_trace_save_user(unsigned long *store, unsigned int size);
- /* Internal interfaces. Do not use in generic code */
- #ifdef CONFIG_ARCH_STACKWALK
+diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+index ad20981..c26b0ac 100644
+--- a/arch/arm64/kernel/stacktrace.c
++++ b/arch/arm64/kernel/stacktrace.c
+@@ -201,11 +201,12 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
  
-+struct stacktrace_cookie {
-+	unsigned long	*store;
-+	unsigned int	size;
-+	unsigned int	skip;
-+	unsigned int	len;
-+};
-+
- /**
-  * stack_trace_consume_fn - Callback for arch_stack_walk()
-  * @cookie:	Caller supplied pointer handed back by arch_stack_walk()
-diff --git a/kernel/stacktrace.c b/kernel/stacktrace.c
-index 9f8117c..b072e8f 100644
---- a/kernel/stacktrace.c
-+++ b/kernel/stacktrace.c
-@@ -71,13 +71,6 @@ EXPORT_SYMBOL_GPL(stack_trace_snprint);
+ 	if (regs)
+ 		start_backtrace(&frame, regs->regs[29], regs->pc);
+-	else if (task == current)
++	else if (task == current) {
++		((struct stacktrace_cookie *)cookie)->skip += 2;
+ 		start_backtrace(&frame,
+ 				(unsigned long)__builtin_frame_address(0),
+ 				(unsigned long)arch_stack_walk);
+-	else
++	} else
+ 		start_backtrace(&frame, thread_saved_fp(task),
+ 				thread_saved_pc(task));
  
- #ifdef CONFIG_ARCH_STACKWALK
- 
--struct stacktrace_cookie {
--	unsigned long	*store;
--	unsigned int	size;
--	unsigned int	skip;
--	unsigned int	len;
--};
--
- static bool stack_trace_consume_entry(void *cookie, unsigned long addr)
- {
- 	struct stacktrace_cookie *c = cookie;
 -- 
 2.9.4
 
