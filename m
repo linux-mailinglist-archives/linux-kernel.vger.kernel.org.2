@@ -2,164 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FE433EB01
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B90933EB06
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbhCQIEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55448 "EHLO
+        id S230196AbhCQIFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbhCQIEV (ORCPT
+        with ESMTP id S230041AbhCQIEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:04:21 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E2CC06174A;
-        Wed, 17 Mar 2021 01:04:20 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id m22so1598576lfg.5;
-        Wed, 17 Mar 2021 01:04:20 -0700 (PDT)
+        Wed, 17 Mar 2021 04:04:43 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42EC3C06175F;
+        Wed, 17 Mar 2021 01:04:32 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id m21-20020a9d7ad50000b02901b83efc84a0so955349otn.10;
+        Wed, 17 Mar 2021 01:04:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FUPm4RpaV2flCAb6DF7pMgUp28+UBn+ziuYgSdeJeKc=;
-        b=JgRgaDeGZutK+gtH0KLs+dAZbzISYUAYeTzXYmvUVbal4N2i/pGGZfWXYtoDY5HSt+
-         gq0WTX98Nq9OgK+4yAY64ZhyHWz9ZzLjOVevI2QofS41rKMtuxqhWzzwjAoOpbkvFpU6
-         oKNKaUPY+EvY6YQRXZxzwXl1rRKPQBnjrQlHx0LGNTVeo7KYpi811ANdO7ax5z+R1LWC
-         57SYFh+88wEYoP0fh5TwXaCwg1dA+d/MUlM3BjeDHykjpX7SN0I062Fqa8CLlYsqJr5f
-         azLs9xB20dgt16V3F4qpU1/sLfzt4TixkbJdOrePCdORsJ8+Mck+hJodt6cq6EIBPu4L
-         w+ZA==
+        bh=Q6d4hql6beHlJvtGdXFqP32SA7zCDyKRSTthLnZwVdw=;
+        b=BjkOPx3gzuXisgtXasdvVao9c+d8xN2Pni7eCpDXO9OaznRZOoefKM+lc+9aGh9uGE
+         2k4gyDTIiSgPaWbdj9D/EpgURv8377i5cHHjdLqWGwxJQoybpT7HQyYDC9iIfokvIKyk
+         HHrh/lgeV4AgsTuQ0Eh49e/sCthkceaO9HyOiWgpSEWonGnR/hDXdblE3vQcTsoJ4VGD
+         t60XJ2ULfkI8/mdHARKhIJ5SnjKjPaBKPsTmEpwzM7X/tj4Nrj6/otkOlZ0vDVyFmBtX
+         V3REF5P/HElAkZTrzBdT8eKPiAqGzP1VmWkwgoMxGQCJzszm7gZSpa6F3OImfTcXzuW7
+         1l1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FUPm4RpaV2flCAb6DF7pMgUp28+UBn+ziuYgSdeJeKc=;
-        b=RUBDCWzOV/0WDuInCIV1dhMqwsv+Mv5IHtWY2SA2zgDsCnV6K7qAb6yqUsEah5rSG4
-         QrouxnBGf1ckB/iY1ZmxZnpXzgHy7YPdnZD/Bslhj9YoMUyhErGtJQGftgjDsl9Tkdim
-         qfWz8PEeb3FKRz4rinyBCuqITSPhX97V6VWHBKu4Q3QcpxdQ+KgbEtNswqR3S3+jL4Vn
-         zDPNjgIyUtvI9P8ok3Z9bANSlJfx63JK/H+tSD4MQIZxNMuKoOxBZi+NDKkLgD4p+3Zw
-         +YYycxVz7zJOMUXYVZ7qCBDIujgMzn+39v6j6rCUl30ykZpNgYs9xMmbaxSckBEo/Ec3
-         Iyxg==
-X-Gm-Message-State: AOAM532IHXeRdH1VbPg2vyOO/qsvCXkeJvtYcBb3Cy5cjhv2U9YiIkob
-        Y8R82vdz0ncQUubyweTvAldEbmw7+xay3a1Mzjg=
-X-Google-Smtp-Source: ABdhPJwDn2GpqOrAKw0t8ZpmxbO4FyHNbGWf3qibDeKA/BSD2J0/eJfrDcUoPhDKX+B99CcMR7BMa0oSGRF/oQwncp4=
-X-Received: by 2002:a05:6512:131c:: with SMTP id x28mr1621459lfu.387.1615968259071;
- Wed, 17 Mar 2021 01:04:19 -0700 (PDT)
+        bh=Q6d4hql6beHlJvtGdXFqP32SA7zCDyKRSTthLnZwVdw=;
+        b=Azc+MaoUohu3WkqIAB52oetKenIJemHxJ4qxPT0ZvCar7Ftk557E+d8Z29TFYQ+tKo
+         BAjCxuJ3G/caReF5iPgdzSfPcby3uCkZepQwBCqnxKNuw2xpc9R8ZFKOFOD/T2iRKn23
+         2U1DtIjdHdl2fQIr/I6HeJLF1YzKUdKgp2IlkOzI6vc+JuYs2zb4281DzxFqXbnqgmxu
+         9MQ318yzoVgcCjMs2Q263qqce+TU2VcNmvf4mXx2pQzhB7kgXsazleOHQuGPQIQzLZll
+         BGiH9GzQp09wujQpvTp4i3oxFpwYb1Ekjd4hE0NN04NxIJU1+YNMvUiYkhc/MzQ/NseS
+         wm1g==
+X-Gm-Message-State: AOAM5307sm7U1lgAuCZR6P8aXNA/iGO60tHsMddRbmg+jYOzlhllNFGe
+        WOQQB87MgSzrs0XUZfgnbHQR6dAU3BeZ3R8vv0o=
+X-Google-Smtp-Source: ABdhPJy3n/4zKDqhiXVmtvJII3U5OXj6gaaXPuZhLyohpd4m1n1A4B4yW5TKpMggH/7tLgc669TtltOiprfCIE1JB64=
+X-Received: by 2002:a9d:470b:: with SMTP id a11mr2291931otf.254.1615968271723;
+ Wed, 17 Mar 2021 01:04:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210208051749.1785246-1-sergey.senozhatsky@gmail.com>
- <20210208051749.1785246-2-sergey.senozhatsky@gmail.com> <CAPybu_19hztQQEi0H40sWZQMb-X7g7dDuW4Mz8_gRv-nG2tghw@mail.gmail.com>
- <YFFb2ePwiW+8ti4D@google.com>
-In-Reply-To: <YFFb2ePwiW+8ti4D@google.com>
-From:   Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Date:   Wed, 17 Mar 2021 09:04:02 +0100
-Message-ID: <CAPybu_1ng4GBVx64FQRR+rm2FcqLHkpW9c78AXg_P_6aR=2BKg@mail.gmail.com>
-Subject: Re: [PATCHv2 1/3] media: v4l UAPI docs: document ROI selection targets
-To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Ricardo Ribalda <ribalda@chromium.org>
+References: <1615959984-7122-1-git-send-email-wanpengli@tencent.com> <YFG2Z1q9MJGr8Zek@dhcp22.suse.cz>
+In-Reply-To: <YFG2Z1q9MJGr8Zek@dhcp22.suse.cz>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Wed, 17 Mar 2021 16:04:20 +0800
+Message-ID: <CANRm+Cxi4qupXkYyZpPbvHcLkuWGxin4+w7EC+z0+Aidi5+B5A@mail.gmail.com>
+Subject: Re: [PATCH] KVM: arm: memcg awareness
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-On Wed, Mar 17, 2021 at 2:31 AM Sergey Senozhatsky
-<sergey.senozhatsky.work@gmail.com> wrote:
+On Wed, 17 Mar 2021 at 15:57, Michal Hocko <mhocko@suse.com> wrote:
 >
-> On (21/03/16 19:19), Ricardo Ribalda Delgado wrote:
-> > > +Configuration of Region of Interest (ROI)
-> > > +=========================================
-> > > +
-> > > +The range of coordinates of the top left corner, width and height of
-> > > +areas that can be ROI is given by the ``V4L2_SEL_TGT_ROI_BOUNDS`` target.
-> > > +It is recommended for the driver developers to put the top/left corner
-> > > +at position ``(0,0)``. The rectangle's coordinates are in global sensor
-> > > +coordinates. The units are in pixels and independent of the field of view.
-> > > +They are not impacted by any cropping or scaling that is currently being
-> > > +used.
+> On Wed 17-03-21 13:46:24, Wanpeng Li wrote:
+> > From: Wanpeng Li <wanpengli@tencent.com>
 > >
-> > Can we also mention binning here?
+> > KVM allocations in the arm kvm code which are tied to the life
+> > of the VM process should be charged to the VM process's cgroup.
 >
-> What's binning? Is it in the UVC spec?
-
-Binning is when you reduce an image by adding up surrounding pixels.
-
-So you have a 100x100 image that you convert to a 50x50 but showing
-the same area of interest.
-
-
+> How much memory are we talking about?
 >
-> > > +The top left corner, width and height of the Region of Interest area
-> > > +currently being employed by the device is given by the
-> > > +``V4L2_SEL_TGT_ROI_CURRENT`` target. It uses the same coordinate system
-> > > +as ``V4L2_SEL_TGT_ROI_BOUNDS``.
-> >
-> > Why do we need current? Cant we just read back V4L2_SEL_TGT_ROI ?
+> > This will help the memcg controler to do the right decisions.
 >
-> We don't. Will remove it.
->
-> > > +    * - ``V4L2_SEL_TGT_ROI_CURRENT``
-> > > +      - 0x0200
-> > > +      - Current Region of Interest rectangle.
-> > > +      - Yes
-> > > +      - No
-> > > +    * - ``V4L2_SEL_TGT_ROI_DEFAULT``
-> > > +      - 0x0201
-> > > +      - Suggested Region of Interest rectangle.
-> > > +      - Yes
-> > > +      - No
-> > > +    * - ``V4L2_SEL_TGT_ROI_BOUNDS``
-> > > +      - 0x0202
-> > > +      - Bounds of the Region of Interest rectangle. All valid ROI rectangles fit
-> > > +       inside the ROI bounds rectangle.
-> > > +      - Yes
-> > > +      - No
-> > > +    * - ``V4L2_SEL_TGT_ROI``
-> > > +      - 0x0203
-> > > +      - Sets the new Region of Interest rectangle.
-> > > +      - Yes
-> > > +      - No
-> > As mentioned before I think we should not have TGT_ROI_CURRENT and TGT_ROI
->
-> Agreed.
->
-> > > diff --git a/include/uapi/linux/v4l2-common.h b/include/uapi/linux/v4l2-common.h
-> > > index 7d21c1634b4d..d0c108fba638 100644
-> > > --- a/include/uapi/linux/v4l2-common.h
-> > > +++ b/include/uapi/linux/v4l2-common.h
-> > > @@ -78,6 +78,14 @@
-> > >  #define V4L2_SEL_TGT_COMPOSE_BOUNDS    0x0102
-> > >  /* Current composing area plus all padding pixels */
-> > >  #define V4L2_SEL_TGT_COMPOSE_PADDED    0x0103
-> > > +/* Current Region of Interest area */
-> > > +#define V4L2_SEL_TGT_ROI_CURRENT       0x0200
-> > > +/* Default Region of Interest area */
-> > > +#define V4L2_SEL_TGT_ROI_DEFAULT       0x0201
-> > > +/* Region of Interest bounds */
-> > > +#define V4L2_SEL_TGT_ROI_BOUNDS        0x0202
-> > > +/* Set Region of Interest area */
-> > > +#define V4L2_SEL_TGT_ROI               0x0203
-> >
-> > Nit: Maybe it could be a good idea to split doc and code. This way the
-> > backports/fixes are easier.
->
-> I'm quite sure this is the first time I'm being asked to split code
-> and documentation :) I'm usually asked to do the opposite - merge code
-> and documentation.
+> This is a bit vague. What is the right decision? AFAICS none of that
+> memory is considered during oom victim selection. The only thing memcg
+> controler can help with is to contain and account this additional
+> memory. This might help to better isolate multiple workloads on the same
+> system. Maybe this is what you wanted to say? Or maybe this is a way to
+> prevent untrusted users from consuming a lot of memory?
 
-I got answered in both directions.  I prefer to split it because the
-doc can go to different audience than the code, and then it makes my
-life easier when backporting.
+It is explained in this patchset for x86 kvm which is upstream, I
+think I don't need to copy and paste. :)
 
-But if you or Laurent prefer  otherwise I am of course happy with any option ;)
-
-
-
--- 
-Ricardo Ribalda
+    Wanpeng
