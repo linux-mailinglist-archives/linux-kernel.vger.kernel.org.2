@@ -2,66 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2106133EC72
+	by mail.lfdr.de (Postfix) with ESMTP id C242233EC74
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbhCQJNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:13:13 -0400
+        id S230394AbhCQJNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:13:16 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230199AbhCQJMu (ORCPT
+        with ESMTP id S229878AbhCQJMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:12:50 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09006C061762
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:50 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so4984534wmq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:49 -0700 (PDT)
+        Wed, 17 Mar 2021 05:12:51 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A39FC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:51 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id g8so1013173wmd.4
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+cTXQTsH/Sbo5QzGWeCU2MjhmNBDgdRBi7pc9b8SsmM=;
-        b=VYhSNkK+JDvxaEmc3cWAiu0oGoUR+6g+rSTKcBpFdz8wa43BR/IgIZj5E8XtoWoQpW
-         SquXLOqc70jaB0HmeT4WGikLKxwDP4k8D4xwliE/brjI+/xnZ9hIM/juN/LNu3xw+Xnf
-         A1Ok6qqfvoV7mRusCOcAGvafZNT3c1mIRTMmvew9G+LEtUisK+e+SfPTBDJJBCv8ZQ2e
-         ssINX80lsZIijxEIMMtgvf9lTfLJO2j8ZVYWvHZOuLw404fiTjkOgePdQRnVsJrBHm5N
-         TbPMQZrw798p5fPCCJkf4I4Z+oSumTsauziu0BvMYuSHs66hyMpTmkp7aKTAdEAN+nP8
-         OERw==
+        bh=mmVm22Z3SbJdFCwvYkYccZgvkOVfVFM6WIi4/sN6y+8=;
+        b=a8vNEuCVQ+NCgglSdOUubA+3RisCfA1ki5nIjhK0BEddlRmSgWfN4sHriI2fdIdBuf
+         8Pth22d+tt8RMPzpAZgGELwc2SBNboK2J+nKe9KsqiWyQ4cA7PskHQm7w7o/JsxyWwVT
+         29vbkqQ8w1yQfAI6qmM5cbLoZvHf4PL21ialqbZEr4YwjN2AtvXQqShzQFugx7uhQqUM
+         hJaaLDDaQ4Sx3IdKTqHHtOUwWq7Kx3oKDrmROilDu+Cf3gYXsjbJJ1/rxe5YPLvQS8Od
+         +4CXHI4DRZ9GOdwFBK0H8+bw6MMhPyqS3DuHLRxlc5xfC6hxEzEt5AcLoqkg68mr3nq1
+         EyfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+cTXQTsH/Sbo5QzGWeCU2MjhmNBDgdRBi7pc9b8SsmM=;
-        b=oq0COZJmlcCARnWJbwX8ATSya18ctDmiXjWakeF+kWYNJfCuFhno6a1qxdFERaVNfJ
-         3UCY2IlbFcmTcsRF7CDT+xCmJQjwssvYKvJJCEeYPNbhlDUBzVQEFeLvdQOd5Eu/G6KE
-         nCgUbMCGcErVoVIs/ktgQVkVdcHPcfBdsFUCVEq+qRmLKrNT4dpyKqWSkTMV2iMoKUvV
-         qhSYQewR8ct5aC4jWs2fzPK+k3q/1HjUzrflPMRE184/YdfOTQGIANWWkFPp3RCGLMiC
-         kJ0tkOI1mjpFibeKsBPuZqV6uew9EGwIDoYvBRfcjOeXo0doR2gZ2LkqX0rAN6+YkT6L
-         q62g==
-X-Gm-Message-State: AOAM533ushJJKZLRgWusBlzMOSLlffDkxqePC+aG4ioHwu7TQnRLITdm
-        nlzCBkzEwg6X4Kisx/WX3cADJg==
-X-Google-Smtp-Source: ABdhPJwZCa2AE19dHCjnrYQNeHohRMm19sA+K9A0b+yfc3ONTDGtCEo2MmZswFOSIbAQMugGGvWgOw==
-X-Received: by 2002:a1c:7519:: with SMTP id o25mr2646901wmc.35.1615972368750;
-        Wed, 17 Mar 2021 02:12:48 -0700 (PDT)
+        bh=mmVm22Z3SbJdFCwvYkYccZgvkOVfVFM6WIi4/sN6y+8=;
+        b=gJnya6PSLvGDESj9nBR71kXhElCOHGG9rdsffx8WzPyVos2NmffbiAhp/ouA3nYRo1
+         pqlf7dEIXHnp9I+8bnWA4R0dooMsTOXOmyLlTgEr0B+A7rkTtg6XXL/mQkQf4O1DP6/0
+         hKlDMYuyTYWQ6Nr0l0dS/+b22r25Gh4SJ5SvajZFw/HiJwJzDXBhfWfRyfNAr0/18Ejs
+         swzwHTq7/nC3ohy+vEQYKrzg7hMJfCv7UXpzlSMBpkZmkAU6Ub1Pg6Ihn3qb69f2Aqtj
+         s7nHtlXBQg/9O5q0MoHEZCUy74eVvGvzlzay7tilldTCv6h9/fwWAnyan3d5+uXbpOAZ
+         TMgg==
+X-Gm-Message-State: AOAM533ZdHeT98eLuHAXjwFLCRTr369xINhEzmmq+jfVYWYql4/S40FM
+        a6t/JNikQZItkkX7dXAzwMlIqA==
+X-Google-Smtp-Source: ABdhPJw7EMIb9bS68YOooMq3rBQZZw2tnoOqcsXNbSihzHDgIh/vF+rIIHU7lbgm9dZu7dWn8cGMxg==
+X-Received: by 2002:a7b:cc85:: with SMTP id p5mr2759000wma.148.1615972369955;
+        Wed, 17 Mar 2021 02:12:49 -0700 (PDT)
 Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id e18sm12695886wru.73.2021.03.17.02.12.47
+        by smtp.gmail.com with ESMTPSA id e18sm12695886wru.73.2021.03.17.02.12.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 02:12:48 -0700 (PDT)
+        Wed, 17 Mar 2021 02:12:49 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Oliver Neukum <oliver@neukum.org>,
-        Ali Akcaagac <aliakc@web.de>,
-        Jamie Lenehan <lenehan@twibble.org>,
+Cc:     linux-kernel@vger.kernel.org,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "C.L. Huang" <ching@tekram.com.tw>,
-        Erich Chen <erich@tekram.com.tw>,
-        Kurt Garloff <garloff@suse.de>, dc395x@twibble.org,
+        Bas Vermeulen <bvermeul@blackstar.xs4all.nl>,
+        Christoph Hellwig <hch@lst.de>,
+        Brian Macy <bmacy@sunshinecomputing.com>,
         linux-scsi@vger.kernel.org
-Subject: [PATCH 09/36] scsi: dc395x: Fix some function param descriptions
-Date:   Wed, 17 Mar 2021 09:12:03 +0000
-Message-Id: <20210317091230.2912389-10-lee.jones@linaro.org>
+Subject: [PATCH 10/36] scsi: initio: Fix a few kernel-doc misdemeanours
+Date:   Wed, 17 Mar 2021 09:12:04 +0000
+Message-Id: <20210317091230.2912389-11-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210317091230.2912389-1-lee.jones@linaro.org>
 References: <20210317091230.2912389-1-lee.jones@linaro.org>
@@ -73,40 +71,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/dc395x.c:4353: warning: Function parameter or member 'acb' not described in 'adapter_init'
- drivers/scsi/dc395x.c:4353: warning: Function parameter or member 'io_port_len' not described in 'adapter_init'
- drivers/scsi/dc395x.c:4353: warning: Excess function parameter 'host' description in 'adapter_init'
+ drivers/scsi/initio.c:560: warning: Excess function parameter 'num_scbs' description in 'initio_init'
+ drivers/scsi/initio.c:1899: warning: expecting prototype for int_initio_scsi_resel(). Prototype was for int_initio_resel() instead
+ drivers/scsi/initio.c:2615: warning: expecting prototype for i91u_queuecommand(). Prototype was for i91u_queuecommand_lck() instead
+ drivers/scsi/initio.c:2667: warning: Function parameter or member 'dev' not described in 'i91u_biosparam'
+ drivers/scsi/initio.c:2667: warning: expecting prototype for i91u_biospararm(). Prototype was for i91u_biosparam() instead
+ drivers/scsi/initio.c:2740: warning: Function parameter or member 'host_mem' not described in 'i91uSCBPost'
+ drivers/scsi/initio.c:2740: warning: Function parameter or member 'cblk_mem' not described in 'i91uSCBPost'
+ drivers/scsi/initio.c:2740: warning: Excess function parameter 'host' description in 'i91uSCBPost'
+ drivers/scsi/initio.c:2740: warning: Excess function parameter 'cmnd' description in 'i91uSCBPost'
 
-Cc: Oliver Neukum <oliver@neukum.org>
-Cc: Ali Akcaagac <aliakc@web.de>
-Cc: Jamie Lenehan <lenehan@twibble.org>
 Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: "C.L. Huang" <ching@tekram.com.tw>
-Cc: Erich Chen <erich@tekram.com.tw>
-Cc: Kurt Garloff <garloff@suse.de>
-Cc: dc395x@twibble.org
+Cc: Bas Vermeulen <bvermeul@blackstar.xs4all.nl>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Brian Macy <bmacy@sunshinecomputing.com>
 Cc: linux-scsi@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/dc395x.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/scsi/initio.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/scsi/dc395x.c b/drivers/scsi/dc395x.c
-index e28f8931e23f8..5503230006f87 100644
---- a/drivers/scsi/dc395x.c
-+++ b/drivers/scsi/dc395x.c
-@@ -4341,8 +4341,9 @@ static void adapter_init_chip(struct AdapterCtlBlk *acb)
-  * tables etc etc. This basically gets all adapter information all up
-  * to date, initialised and gets the chip in sync with it.
+diff --git a/drivers/scsi/initio.c b/drivers/scsi/initio.c
+index 926a7045c2e5c..9b75e19a9bab1 100644
+--- a/drivers/scsi/initio.c
++++ b/drivers/scsi/initio.c
+@@ -546,7 +546,6 @@ static int initio_reset_scsi(struct initio_host * host, int seconds)
+ /**
+  *	initio_init		-	set up an InitIO host adapter
+  *	@host: InitIO host adapter
+- *	@num_scbs: Number of SCBS
+  *	@bios_addr: BIOS address
   *
-- * @host:	This hosts adapter structure
-+ * @acb:	The adapter which we are to init.
-  * @io_port:	The base I/O port
-+ * @io_port_len: The I/O port size
-  * @irq:	IRQ
+  *	Set up the host adapter and devices according to the configuration
+@@ -1887,7 +1886,7 @@ static int int_initio_scsi_rst(struct initio_host * host)
+ }
+ 
+ /**
+- *	int_initio_scsi_resel	-	Reselection occurred
++ *	int_initio_resel	-	Reselection occurred
+  *	@host: InitIO host adapter
   *
-  * Returns 0 if the initialization succeeds, any other value on
+  *	A SCSI reselection event has been signalled and the interrupt
+@@ -2601,7 +2600,7 @@ static void initio_build_scb(struct initio_host * host, struct scsi_ctrl_blk * c
+ }
+ 
+ /**
+- *	i91u_queuecommand	-	Queue a new command if possible
++ *	i91u_queuecommand_lck	-	Queue a new command if possible
+  *	@cmd: SCSI command block from the mid layer
+  *	@done: Completion handler
+  *
+@@ -2650,9 +2649,9 @@ static int i91u_bus_reset(struct scsi_cmnd * cmnd)
+ }
+ 
+ /**
+- *	i91u_biospararm			-	return the "logical geometry
++ *	i91u_biosparam			-	return the "logical geometry
+  *	@sdev: SCSI device
+- *	@dev; Matching block device
++ *	@dev: Matching block device
+  *	@capacity: Sector size of drive
+  *	@info_array: Return space for BIOS geometry
+  *
+@@ -2727,10 +2726,8 @@ static void i91u_unmap_scb(struct pci_dev *pci_dev, struct scsi_cmnd *cmnd)
+ 	}
+ }
+ 
+-/**
++/*
+  *	i91uSCBPost		-	SCSI callback
+- *	@host: Pointer to host adapter control block.
+- *	@cmnd: Pointer to SCSI control block.
+  *
+  *	This is callback routine be called when tulip finish one
+  *	SCSI command.
 -- 
 2.27.0
 
