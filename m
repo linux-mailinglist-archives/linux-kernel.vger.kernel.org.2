@@ -2,88 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF0F33E7AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 04:35:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C58D433E7B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 04:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhCQDfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 23:35:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53602 "EHLO
+        id S229933AbhCQDgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 23:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhCQDfJ (ORCPT
+        with ESMTP id S229927AbhCQDgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 23:35:09 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE6BC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 20:35:09 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id 94so506279qtc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 20:35:09 -0700 (PDT)
+        Tue, 16 Mar 2021 23:36:05 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44122C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 20:36:05 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so2445317pjq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 20:36:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=google.com; s=20161025;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=ySn92rVacxqUFtPdXq4yc7pn2gVheVfVYIffMPNFbV0=;
-        b=bLOaJ1F8+YjvDMpiOtNTgWbeQ40c10FnBpZ1g2zm9MmcskW3FCo31JrZszWHUO8bsQ
-         1AaeRq8rAoo3u1Uj90hdbs2LnKkHXIkUU+zPOEcdN5aTZRCtowtDaD03z1kEGxmbiERT
-         vvznVi06JA+Xj4kXRbBPFX4WUrDtaOh2Ok8s+8Op0I8DpP9n3yYySj7ci5ruBmE1tCb3
-         jjMFYh8hcAchcwaeng58YrgUVWyM4udy8D0iuYx18K7XzPgRYKxwMSAraeBxYYPtWDJt
-         lsy2keCmO9gGZKTKcESt/3jS/YQfZcX5U/oDFawJQYxgwZaYm02Qn1jc+jf9bJU8hjkL
-         mMew==
+        bh=Nav6mcWfw/USeXNpusZjhfVUHBOlNE7i+AI86mi5prE=;
+        b=tUkwp+07TZCjIQIyTSq0vz15bgDf1PW1A8evGPCNPejxw+fBCgMR0/oY3Cjyf/tjtY
+         tBoDctkxWqrJ4SmLvoL+hHe1oy7wDBJpazoNB9msNjZ/m9lZL69h/ijuo7ua2PDN06Vz
+         Ar0S7rIk6xu08pebcyjeu5Npj4X9HDaQOwwB/J367phYwvcs7O5msQwAkp2gdRyDYX4N
+         7Uyhd1+pzsey3KvKerMt6UKiKh6O+oUBKaQs3JAz/11hyc3uPBbOYBq+JN3ZE1jVf/Zo
+         L44Ez3rpH7fAZwrYvUrFbc5s47pgZOANdrRtqquS/Q8/qQH4lnK2YmGHFMTAdkOeYSGd
+         AjOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ySn92rVacxqUFtPdXq4yc7pn2gVheVfVYIffMPNFbV0=;
-        b=jmvi2ookOnVoAmHwfhIuwTrkWMGelKkaoteAn6yKKUkSAPTqcR/Z7QGGb62KfRYWox
-         ck1q+v967FmED7mhQFMlGTKR7I7tz/jZhk+oByXO9t/xOEJxehcX3z/nNc3l7QJvc/VG
-         nU27JSopT7r91XjiJ+JDhtOmMpXn1aaLjpNw3UT6EaZI9jB+3GAgvzZ9cX3N2+hf49pQ
-         4jouQhQH4o/wb2z/WhFlTQGPBxVjInyTMhvO/c+ze33hn5SdUs+ypDnuJ9ywPcORONVv
-         R/Vb0Ohpm8QzHeiEiIVbUbQ4nUVzuPzM128T6c/6M/q431sA0CwVR5slmv8TDTR6xVLc
-         M2qw==
-X-Gm-Message-State: AOAM531NvQxnMV9GJWOM3tH6J1VX8BmRar/6seLrfY1Gm6DbaD/vlSN3
-        SuRLL8ZKQHADiApGKgsWFNc=
-X-Google-Smtp-Source: ABdhPJzdmYgEXGeEX/iVafSpMnlgCZjlXu64G1PS3cE1NK1piWkHyob8OBAPOSNYZ1TyrwnMCzaZiQ==
-X-Received: by 2002:ac8:688c:: with SMTP id m12mr2086271qtq.74.1615952108296;
-        Tue, 16 Mar 2021 20:35:08 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.5])
-        by smtp.gmail.com with ESMTPSA id e190sm16555597qkd.122.2021.03.16.20.35.05
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=Nav6mcWfw/USeXNpusZjhfVUHBOlNE7i+AI86mi5prE=;
+        b=KOpFap2vibWkf2krlGoum2mdM4OgkyF1pGsFwaqZZ2XLNayMvGgANFVITpKDLkxrQb
+         5pvDEVa3tg9ZXw9Ylpbp4IhI/016PYw3kuestiRCTrVx+AyI4CSwC6MjBlPkuFLVPQCZ
+         o8gFbY8IFF4DcTbxSvrWolC6MYehVrGJVvmSdlXhowUS1MEn/q9jSLBw3e+kvq3lQLPY
+         gig0A4K00t6dktv16j/g2i84H7OfCym4YeIyKX8/afVnckGIW6Ukjei8Th0InXEFeboa
+         AZCEArIo0NefHy9gcYBwFlXddq51Q50E+oBANDlqbSMTFVLtsGuOEQJuJuVp+fVtje6H
+         FJIA==
+X-Gm-Message-State: AOAM531PVv5/O5E3blt47xpxWurk11kS0pmZZjL3Fpd+jPRtUWjjXTdA
+        SLwVIYufm3kbZ67qZto2JhPjoA==
+X-Google-Smtp-Source: ABdhPJwrpqK9m9xXSzmlkZzk6wyRJdBar8WqT87OfUdubmm6aY1IK5BLMn4W9+NDf1gvOD00CKrdkA==
+X-Received: by 2002:a17:902:441:b029:e6:364a:5f55 with SMTP id 59-20020a1709020441b02900e6364a5f55mr2550843ple.7.1615952164671;
+        Tue, 16 Mar 2021 20:36:04 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id v3sm17340635pff.217.2021.03.16.20.36.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 20:35:07 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] mm: Typo fix in the file util.c
-Date:   Wed, 17 Mar 2021 09:04:39 +0530
-Message-Id: <20210317033439.3429411-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
+        Tue, 16 Mar 2021 20:36:04 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 20:36:04 -0700 (PDT)
+X-Google-Original-Date: Tue, 16 Mar 2021 20:31:14 PDT (-0700)
+Subject:     Re: [PATCH] riscv: fix bugon.cocci warnings
+In-Reply-To: <alpine.DEB.2.22.394.2102281209040.2892@hadrien>
+CC:     guoren@linux.alibaba.com, me@packi.ch, penberg@kernel.org,
+        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     julia.lawall@inria.fr
+Message-ID: <mhng-7289c316-8cd4-4088-b899-f6d7347c7408@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 28 Feb 2021 03:10:22 PST (-0800), julia.lawall@inria.fr wrote:
+> From: kernel test robot <lkp@intel.com>
+>
+> Use BUG_ON instead of a if condition followed by BUG.
+>
+> Generated by: scripts/coccinelle/misc/bugon.cocci
+>
+> Fixes: c22b0bcb1dd0 ("riscv: Add kprobes supported")
+> CC: Guo Ren <guoren@linux.alibaba.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+> ---
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   5695e51619745d4fe3ec2506a2f0cd982c5e27a4
+> commit: c22b0bcb1dd024cb9caad9230e3a387d8b061df5 riscv: Add kprobes supported
+> :::::: branch date: 3 hours ago
+> :::::: commit date: 6 weeks ago
+>
+>  kprobes.c |    3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> --- a/arch/riscv/kernel/probes/kprobes.c
+> +++ b/arch/riscv/kernel/probes/kprobes.c
+> @@ -256,8 +256,7 @@ int __kprobes kprobe_fault_handler(struc
+>  		 * normal page fault.
+>  		 */
+>  		regs->epc = (unsigned long) cur->addr;
+> -		if (!instruction_pointer(regs))
+> -			BUG();
+> +		BUG_ON(!instruction_pointer(regs));
+>
+>  		if (kcb->kprobe_status == KPROBE_REENTER)
+>  			restore_previous_kprobe(kcb);
 
-
-s/condtion/condition/
-
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- mm/util.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/util.c b/mm/util.c
-index 54870226cea6..f85da35b50eb 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -775,7 +775,7 @@ int overcommit_policy_handler(struct ctl_table *table, int write, void *buffer,
- 	 * The deviation of sync_overcommit_as could be big with loose policy
- 	 * like OVERCOMMIT_ALWAYS/OVERCOMMIT_GUESS. When changing policy to
- 	 * strict OVERCOMMIT_NEVER, we need to reduce the deviation to comply
--	 * with the strict "NEVER", and to avoid possible race condtion (even
-+	 * with the strict "NEVER", and to avoid possible race condition (even
- 	 * though user usually won't too frequently do the switching to policy
- 	 * OVERCOMMIT_NEVER), the switch is done in the following order:
- 	 *	1. changing the batch
---
-2.30.2
-
+Thanks, this is on fixes.
