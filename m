@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115A233F96B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:37:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECEAE33F972
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233247AbhCQThB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:37:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:44762 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233236AbhCQTgf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:36:35 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 432F5ED1;
-        Wed, 17 Mar 2021 12:36:35 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B11C3F70D;
-        Wed, 17 Mar 2021 12:36:34 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-ia64\@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        debian-ia64 <debian-ia64@lists.debian.org>
-Subject: Re: [PATCH 0/1] sched/topology: NUMA distance deduplication
-In-Reply-To: <255d6b5d-194e-eb0e-ecdd-97477a534441@physik.fu-berlin.de>
-References: <255d6b5d-194e-eb0e-ecdd-97477a534441@physik.fu-berlin.de>
-Date:   Wed, 17 Mar 2021 19:36:27 +0000
-Message-ID: <8735wtr2ro.mognet@arm.com>
+        id S233301AbhCQTiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:38:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229608AbhCQThy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 15:37:54 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E778C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:37:54 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id d20so40167968qkc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:37:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/MeUJsXI3vY0jmVkL6zr3AlJZBeB/3Uhk6J2sHKHMnM=;
+        b=cxUtmVjiMGWSWEl9OQIaV4+m0QANUEt/HgIwSPfINPod5lcP20pI5jXuVDzAC7zsSE
+         mFLBbMiAKOYTdL/b4OJLxKLcUCQQxHWOVVOUyo1Vus3mgRoiXiC49Ezzv0VZPQOScUP/
+         gqU33xHYK7Rhe+JGgJB0JwsyOC9wklOlpvX/tWvNvx41vWti+ZogG80RMzVo8iFLTE8G
+         cWPIu5+8q1zQRgriiZCwip0R9/5lKrtM958X0iI5O+4bnAoMYoCtr+CCIbwzLNGnLgR7
+         FZsMfW/vqiqt4+nxtG5MxqU+W0WTTWvPK2ncU6eVawLF1NEvMFG76xjGlgosDzyCblQ+
+         h+Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=/MeUJsXI3vY0jmVkL6zr3AlJZBeB/3Uhk6J2sHKHMnM=;
+        b=Z9sM3wTCAxb0Ee1pdsmaYEzvONYKGLjxdQN8mqdAIpBAOTRtdKZ60gY9PZTUic4FSs
+         RO6tRBVNnFqb/aA0xOyBmWGtRsHOfwatKRy/uglQXLOxou1Bmt35ejtE/TGTaR83WRPM
+         NcEldWUKHpmPqEqlvR3QB6efHh3HYWpEDIP1E4kng8FP+x/SG4lPbT/aBHhJa6WoLdHY
+         8YuFkLPSS0wKYh5c9/ZLkBM8IxVoLzczfvFhQRoF2lCuqSSMxqZWcT/EA7fWKatNihHv
+         XjKpfXmKmLQsdB+WpWCu7JOYCC6u9jmVmidoaaiJWzhN2SlWzQEfccgct2KR9xlWipnq
+         fUUQ==
+X-Gm-Message-State: AOAM531IHVBGmsJ0/TLQOfOx3NLiF2mRAycZURuROGVzPQiiplPl4jVu
+        7oyPJzl5T9iQ41O1GOG+NLM=
+X-Google-Smtp-Source: ABdhPJwAhAV0sOEnWkPloIiGnv1JuMXHHMQujxONTz4xfa9vJ9JBExvkKj2rAE3Ace3der2Bn+3EGA==
+X-Received: by 2002:a37:8584:: with SMTP id h126mr831792qkd.41.1616009873965;
+        Wed, 17 Mar 2021 12:37:53 -0700 (PDT)
+Received: from ArchLinux ([156.146.37.138])
+        by smtp.gmail.com with ESMTPSA id a19sm18520611qkl.126.2021.03.17.12.37.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 12:37:53 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 01:07:35 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     peter.ujfalusi@gmail.com, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] sound: soc: ti: Fix a typo in the file ams-delta.c
+Message-ID: <YFJaf+Q1P1nnvJm/@ArchLinux>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Mark Brown <broonie@kernel.org>, peter.ujfalusi@gmail.com,
+        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+References: <20210317082042.3670745-1-unixbhaskar@gmail.com>
+ <20210317123411.GA5559@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jZ3NNrf+z32CQz8F"
+Content-Disposition: inline
+In-Reply-To: <20210317123411.GA5559@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Hi,
+--jZ3NNrf+z32CQz8F
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-On 17/03/21 20:04, John Paul Adrian Glaubitz wrote:
-> Hi Valentin!
->
->> As pointed out by Barry in [1], there are topologies out there that struggle to
->> go through the NUMA distance deduplicating sort. Included patch is something
->> I wrote back when I started untangling this distance > 2 mess.
+On 12:34 Wed 17 Mar 2021, Mark Brown wrote:
+>On Wed, Mar 17, 2021 at 01:50:42PM +0530, Bhaskar Chowdhury wrote:
 >>
->> It's only been lightly tested on some array of QEMU-powered topologies I keep
->> around for this sort of things. I *think* this works out fine with the NODE
->> topology level, but I wouldn't be surprised if I (re)introduced an off-by-one
->> error in there.
+>> s/functonality/functionality/
 >
-> This patch causes a regression on my ia64 RX2660 server:
->
-> [    0.040000] smp: Brought up 1 node, 4 CPUs
-> [    0.040000] Total of 4 processors activated (12713.98 BogoMIPS).
-> [    0.044000] ERROR: Invalid distance value range
-> [    0.044000]
->
-> The machine still seems to boot normally besides the huge amount of spam. Full message
-> log below.
->
-> Any idea?
->
+>Please submit patches using subject lines reflecting the style for the
+>subsystem, this makes it easier for people to identify relevant patches.
+>Look at what existing commits in the area you're changing are doing and
+>make sure your subject lines visually resemble what they're doing.
+>There's no need to resubmit to fix this alone.
 
-Harumph!
+Thanks, will remind myself next time I will try to do the same. But, I was
+trying to be "As explicit as possible" , so the person in charge can struggle less and hover less to understand what it is for. Anyway, will follow.
 
-The expected / valid distance value range (as per ACPI spec) is
-[10, 255] (actually double-checking the spec, 255 is supposed to mean
-"unreachable", but whatever)
+--jZ3NNrf+z32CQz8F
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Now, something in your system is exposing 256 nodes, all of them distance 0
-from one another - the spam you're seeing is a printout of
+-----BEGIN PGP SIGNATURE-----
 
-  node_distance(i,j) for all nodes i, j
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBSWn8ACgkQsjqdtxFL
+KRVhngf/Rn/HLqNf0yP0B0rKM2zCM+2si8XQXQyEo0b3gGDfWMMFzSijJkzoBQd8
+yFG+7GqW6m4l0tzyrCrmgR1k9A4KpH2p8G/QSF9pN9zRcE7rQKf2YXhWj0ihmNEw
++F3XnFmznP/CiAUMkJbwunVqG3Q0ftBown+naXK7HN73rSfMOcG1SOV8w1pikfMw
+XOJqoUl5fSCT2ZDR5l/ZYA5SjFxygKl/M4ufLwdXSqtFNjaGRfXmYS+s5JKpWTZo
+0jlm90IWfBocRCTiFX+e4rvaJzvuhoYQiFWq9tPMZK2YborZHxJAGHEf7E+5TeqB
+2QWShsiDR7JzR9X7Qk6FkTP88lngPQ==
+=IxBi
+-----END PGP SIGNATURE-----
 
-I see ACPI in your boot logs, so I'm guessing you have a bogus SLIT table
-(the ACPI table with node distances). You should be able to double check
-this with something like:
-
-$ acpidump > acpi.dump
-$ acpixtract -a acpi.dump
-$ iasl -d *.dat
-$ cat slit.dsl
-
-As for fixing it, I think you have the following options:
-
-a) Complain to your hardware vendor to have them fix the table and ship a
-   firmware fix
-b) Fix the ACPI table yourself - I've been told it's doable for *some* of
-   them, but I've never done that myself
-c) Compile your kernel with CONFIG_NUMA=n, as AFAICT you only actually have
-   a single node
-d) Ignore the warning
-
-
-c) is clearly not ideal if you want to use a somewhat generic kernel image
-on a wide host of machines; d) is also a bit yucky...
+--jZ3NNrf+z32CQz8F--
