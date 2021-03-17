@@ -2,89 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0064033EE24
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D4133EE21
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhCQKNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55658 "EHLO
+        id S229460AbhCQKNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhCQKM6 (ORCPT
+        with ESMTP id S229505AbhCQKMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:12:58 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE98FC06174A;
-        Wed, 17 Mar 2021 03:12:57 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id 73so919833qtg.13;
-        Wed, 17 Mar 2021 03:12:57 -0700 (PDT)
+        Wed, 17 Mar 2021 06:12:47 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8CD2C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 03:12:46 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id u4so1502770edv.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 03:12:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qq+6rnjwZUXy0xdppfbPndd57JZCgaq/YgQkJLINgHE=;
-        b=SMyHqGTntvVj5VKZDTgIz1os+brbsz83qBFt1WcKY5bTmCQE5jG+8Mrs+m2jpVGXw/
-         7mAPxEUMN/wIij8N/z/pOYkHUCAPZnsFp/GK1CtWBfr8+tuJCNQoHeN0OeC9PnYuPaXy
-         18hhN/xf1WiyUhB7igEmukBaewXBsx85EL3gltLHf6n8NI9N7r9wX8J+hm2i/msnLhkd
-         AL+o9Pcho2ah7uHkGZ1kcm0jA0Ts2dnFqaA1edB0SukKpTn1V+msBRDlgy7P625674LN
-         uFwSV+RAQ79Dmo4wN0m+y2ATuPibX92vGe7IhZcv5GCF0fucSKCed0RXc7ydrl2fdTey
-         d+Ag==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=g6jWkldAHO5fX2fG11foqEywJJvIYAjFVfktp5dG8UE=;
+        b=dmWU5CkJN4qow5UZOOVDkEx2U/1U2Td7MwDJq8e/465o/XY1/bklUN4eFHZyMj9Em4
+         y+MjuRKKxuVY++jC+LMab0eIS7ngeRN2FEMbMzpwNGG26bGp8ieVxWYFqceptZ1KWUjz
+         g5utfiSnjU5NJO5sNoXcXxlPTavsPz7n98QRE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=qq+6rnjwZUXy0xdppfbPndd57JZCgaq/YgQkJLINgHE=;
-        b=K5qhe7DPhXcxcB+b96tOKLftdorPXWa5yd2k4ToSogezo/dJmxKQHqsZ0ICbqnFa3i
-         sM1rQINoBgGB1ijgqZnXe5feyTXmsPnBV5I6ycAs7IXu8RiIObLaJRHICfqtJl3bXUC9
-         sVLsJ0Dn65NKCEPwxXsWewJOVqwbDA33M9xCwzq7BsanWwQsySG8Axl2Nc+LJyXSk5ht
-         OWbEXY/j0Q7A8AjXcoqXOVos1z2lwBAQbKK+9flrc5qFIp4n28/GTvzDy62IM2r2I3g6
-         KsMYgD2NgkTuFhBJa+t1G0DdG8wrcukBkJWjSHNjrElK/6wL1/uDqgp47ucuj9TqnYFR
-         2C3w==
-X-Gm-Message-State: AOAM532nSR/3YcLpD6u2U/Uq4Y5yQssY6MqmZ5Wkmoi8Y4M3isOpmRi7
-        KjLYETqwYui2UON851d9UyU=
-X-Google-Smtp-Source: ABdhPJzbEuLCgLKH92IsbHHtuY9C5ljyRO7REUBh+cjhdsDoJJpvaGIsGT0582g7xK0Q4nkHvC6L1w==
-X-Received: by 2002:ac8:5448:: with SMTP id d8mr3112813qtq.392.1615975977108;
-        Wed, 17 Mar 2021 03:12:57 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.48])
-        by smtp.gmail.com with ESMTPSA id i89sm13802871qtb.95.2021.03.17.03.12.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 03:12:56 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] message: fusion: Fix a typo in the file mptbase.h
-Date:   Wed, 17 Mar 2021 15:42:38 +0530
-Message-Id: <20210317101238.2627574-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        bh=g6jWkldAHO5fX2fG11foqEywJJvIYAjFVfktp5dG8UE=;
+        b=VNvH51ue2naFk99VeG+jJyoE85HWj1aTQloiPsysG7UNi9W4+iGipv73wHpEulOJA3
+         NIE4CZMesKnk2wc7cp6tre2lV1iO1xriBOJ6EXtdJQsQTzX3JOwIIo9UvrpzfqDhagEE
+         tQBRXnOc5udFaNzmmLDlZYPIOFy0jQta9NrSO9I6pCp8VBVE2pqi0SXXVwCK0OGMJ95g
+         fpvVoE7UkwrO8Dg2lUNGYDMyDskKf75tlRf/Opc3Lg0Q/cqQQNkJO3Dy+xxZlCTnYcil
+         /wQeiq65xpuUpE1aBqjgaiPSNIIUqiSxoZi5Jztn49eq9pochyUbjAvpRTkj6XbkWUU8
+         FBEA==
+X-Gm-Message-State: AOAM532QBQOPqCLukRBgV1bLQbewlKKxidxId7ezY7M641+YXgUAYxwe
+        3t6MG0noi6xOtqWSgzM4h8Pe2Q==
+X-Google-Smtp-Source: ABdhPJwU+dmqZqqJcrlBnwk2GG7j9R7yBflLt8u0uwaTSwxwQTw1HuU1HGn4BQglcxrKOhmq/1fALQ==
+X-Received: by 2002:a05:6402:17d6:: with SMTP id s22mr40687326edy.232.1615975965680;
+        Wed, 17 Mar 2021 03:12:45 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id si7sm11098174ejb.84.2021.03.17.03.12.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 03:12:45 -0700 (PDT)
+Subject: Re: [PATCH v2] Increase page and bit waitqueue hash size
+To:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, Anton Blanchard <anton@ozlabs.org>,
+        Ingo Molnar <mingo@kernel.org>
+References: <20210317075427.587806-1-npiggin@gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <89cb49c0-2736-dd4c-f401-4b88c22cc11f@rasmusvillemoes.dk>
+Date:   Wed, 17 Mar 2021 11:12:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210317075427.587806-1-npiggin@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 17/03/2021 08.54, Nicholas Piggin wrote:
 
-s/contets/contents/
+> +#if CONFIG_BASE_SMALL
+> +static const unsigned int page_wait_table_bits = 4;
+>  static wait_queue_head_t page_wait_table[PAGE_WAIT_TABLE_SIZE] __cacheline_aligned;
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/message/fusion/mptbase.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>  
+> +	if (!CONFIG_BASE_SMALL) {
+> +		page_wait_table = alloc_large_system_hash("page waitqueue hash",
+> +							sizeof(wait_queue_head_t),
+> +							0,
 
-diff --git a/drivers/message/fusion/mptbase.h b/drivers/message/fusion/mptbase.h
-index 813d46311f6a..b9e0376be723 100644
---- a/drivers/message/fusion/mptbase.h
-+++ b/drivers/message/fusion/mptbase.h
-@@ -274,7 +274,7 @@ typedef union _MPT_FRAME_TRACKER {
- 	} linkage;
- 	/*
- 	 * NOTE: When request frames are free, on the linkage structure
--	 * contets are valid.  All other values are invalid.
-+	 * contents are valid.  All other values are invalid.
- 	 * In particular, do NOT reply on offset [2]
- 	 * (in words) being the * message context.
- 	 * The message context must be reset (computed via base address
---
-2.30.2
+So, how does the compiler not scream at you for assigning to an array,
+even if it's inside an if (0)?
 
+Rasmus
