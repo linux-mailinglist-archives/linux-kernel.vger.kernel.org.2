@@ -2,195 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1027D33F907
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B9B33F90D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbhCQTUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:20:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233199AbhCQTUW (ORCPT
+        id S233214AbhCQTWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:22:15 -0400
+Received: from a0.mail.mailgun.net ([198.61.254.59]:17199 "EHLO
+        a0.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233196AbhCQTWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:20:22 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD1BC06174A;
-        Wed, 17 Mar 2021 12:20:22 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id u198so98126oia.4;
-        Wed, 17 Mar 2021 12:20:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6e6zQc/19HQ6BdWcR/vmHGAZli2nNFcvrmaXF8jJF10=;
-        b=cwfVirQEr9MRL+WyBIWLYoxUiRVJjIVIZDWMCYtfg9Gol0AH5HY3DtC2gUCaBN9vmO
-         yRVlXzxS/Q24aBKCMFCvI3tKhkdcanXvnDeuqtvmjvDwY4A0dVNHKUw1vcYy4vnK+CuV
-         zfz01dRY+0kW2EDYLYBn3vc3+pFUhy0Ns4SxQM4Z3rLcsPk5nc4FavnZEP+RsGgYSmn8
-         gqZoxqj4Fe+XuMEKK3sGEeKQQEWMt5A9er0HDkQlb5NWL8i1RJA7qgPKbvY/LtlVouBq
-         DOIWVKmb/RtCvNPtcdeeHpfptm6t49rq6ILghBm37ZpGb9GHG8lvTdjely3DY3UikWo4
-         6MtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=6e6zQc/19HQ6BdWcR/vmHGAZli2nNFcvrmaXF8jJF10=;
-        b=fMMN643du4gWUu6FX6pFXQlflsh4o7OH842Q8Lj2ot+9r91S2frLBlpkoWCnp2Mola
-         OymZPrLJtTPr4V+K5GtrAQdNLpb5Hi8uEVZhtd4fgCVC7I3ixLCff4+YLsP/OTeeDoJh
-         +cJyCsD6AhNe4hxaVL8Cy5z4HuDfqQ7cLnuKRuYRhn2FSvlG+z8Gp86hzPmQqTPi1EkZ
-         XsyZlxhT/oDVGyuFpILD50W7Dd/sZZPPJiL2TZ7JZn61j0F+DR+qOHQ0HLllH161814F
-         Lj2noXeJzn7yuUcxyj1niX5nqf0YoIbXT1ocbqNnQ15mHrIgay//2tG0PTzpo6Vscrna
-         0yBg==
-X-Gm-Message-State: AOAM533rqEIxy6wF4QEm+8oX/IFzKsLWmiCjoHzOvqvuZ81eFxI/VoZI
-        JRMfJnL38HHuMw2giW5CEQ8YatE30wY=
-X-Google-Smtp-Source: ABdhPJyzsIsAvuoUqiNYz4lEipMnUwycQhUu5z3yYyrX1My67JwGmEBwnxiLFYs6pLd+4q16MCp5ig==
-X-Received: by 2002:a05:6808:907:: with SMTP id w7mr265501oih.94.1616008821352;
-        Wed, 17 Mar 2021 12:20:21 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 64sm8869760otu.80.2021.03.17.12.20.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 12:20:20 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v1] usb: typec: tcpci: Added few missing TCPCI register
- definitions
-To:     Badhri Jagan Sridharan <badhri@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210316221304.391206-1-badhri@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <584010c9-dcb0-853a-8f17-72b3ba3264a1@roeck-us.net>
-Date:   Wed, 17 Mar 2021 12:20:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 17 Mar 2021 15:22:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616008924; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
+ Subject: Sender; bh=lzO0Sbr3Bw7YvCxh1lHUhpDOhszbrq8pXojuS23S8xg=; b=rO44hcJbngWrKdJLVqo9KLzyX79ziZJfe20q1rPwVEZ0PorCPf689flvIDm0OW3omH+EBAml
+ CjPML6j7nZXVEvyF3+5EOe//8c+r0e74kvZ9rpqhBvE7+ZyaCs9WlDVc6XTzl6ckFksgNsi2
+ EhEs1SUlOBwGgdTQvMl9NP/CZR4=
+X-Mailgun-Sending-Ip: 198.61.254.59
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 605256da1de5dd7b9943bd12 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Mar 2021 19:22:02
+ GMT
+Sender: mojha=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 80986C433CA; Wed, 17 Mar 2021 19:22:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.29.2] (unknown [49.37.81.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mojha)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1378EC433C6;
+        Wed, 17 Mar 2021 19:21:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1378EC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mojha@codeaurora.org
+Subject: Re: [RESEND PATCH v2 1/2] pstore: Add mem_type property DT parsing
+ support
+From:   Mukesh Ojha <mojha@codeaurora.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     keescook@chromium.org, anton@enomsg.org, ccross@android.com,
+        tony.luck@intel.com
+References: <1614268817-7596-1-git-send-email-mojha@codeaurora.org>
+ <db8e0187-49a2-141d-3ac1-07e929f528c0@codeaurora.org>
+Message-ID: <615a95c6-cae0-2976-44ed-193415ff6d1a@codeaurora.org>
+Date:   Thu, 18 Mar 2021 00:51:54 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210316221304.391206-1-badhri@google.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <db8e0187-49a2-141d-3ac1-07e929f528c0@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/21 3:13 PM, Badhri Jagan Sridharan wrote:
-> This change adds some of the register bit definitions from the TCPCI spec:
-> https://www.usb.org/sites/default/files/documents/
-> usb-port_controller_specification_rev2.0_v1.0_0.pdf
-> 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+Hi All,
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+can you please review this ?
 
-> ---
->  drivers/usb/typec/tcpm/tcpci.h | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpci.h b/drivers/usb/typec/tcpm/tcpci.h
-> index 57b6e24e0a0c..2be7a77d400e 100644
-> --- a/drivers/usb/typec/tcpm/tcpci.h
-> +++ b/drivers/usb/typec/tcpm/tcpci.h
-> @@ -47,7 +47,10 @@
->  
->  #define TCPC_TCPC_CTRL			0x19
->  #define TCPC_TCPC_CTRL_ORIENTATION	BIT(0)
-> +#define PLUG_ORNT_CC1			0
-> +#define PLUG_ORNT_CC2			1
->  #define TCPC_TCPC_CTRL_BIST_TM		BIT(1)
-> +#define TCPC_TCPC_CTRL_EN_LK4CONN_ALRT	BIT(6)
->  
->  #define TCPC_EXTENDED_STATUS		0x20
->  #define TCPC_EXTENDED_STATUS_VSAFE0V	BIT(0)
-> @@ -74,21 +77,28 @@
->  #define TCPC_POWER_CTRL_VCONN_ENABLE	BIT(0)
->  #define TCPC_POWER_CTRL_BLEED_DISCHARGE	BIT(3)
->  #define TCPC_POWER_CTRL_AUTO_DISCHARGE	BIT(4)
-> +#define TCPC_DIS_VOLT_ALRM		BIT(5)
-> +#define TCPC_POWER_CTRL_VBUS_VOLT_MON	BIT(6)
->  #define TCPC_FAST_ROLE_SWAP_EN		BIT(7)
->  
->  #define TCPC_CC_STATUS			0x1d
->  #define TCPC_CC_STATUS_TOGGLING		BIT(5)
->  #define TCPC_CC_STATUS_TERM		BIT(4)
-> +#define TCPC_CC_STATUS_TERM_RP		0
-> +#define TCPC_CC_STATUS_TERM_RD		1
-> +#define TCPC_CC_STATE_SRC_OPEN		0
->  #define TCPC_CC_STATUS_CC2_SHIFT	2
->  #define TCPC_CC_STATUS_CC2_MASK		0x3
->  #define TCPC_CC_STATUS_CC1_SHIFT	0
->  #define TCPC_CC_STATUS_CC1_MASK		0x3
->  
->  #define TCPC_POWER_STATUS		0x1e
-> +#define TCPC_POWER_STATUS_DBG_ACC_CON	BIT(7)
->  #define TCPC_POWER_STATUS_UNINIT	BIT(6)
->  #define TCPC_POWER_STATUS_SOURCING_VBUS	BIT(4)
->  #define TCPC_POWER_STATUS_VBUS_DET	BIT(3)
->  #define TCPC_POWER_STATUS_VBUS_PRES	BIT(2)
-> +#define TCPC_POWER_STATUS_SINKING_VBUS	BIT(0)
->  
->  #define TCPC_FAULT_STATUS		0x1f
->  
-> @@ -121,6 +131,10 @@
->  #define TCPC_RX_DETECT			0x2f
->  #define TCPC_RX_DETECT_HARD_RESET	BIT(5)
->  #define TCPC_RX_DETECT_SOP		BIT(0)
-> +#define TCPC_RX_DETECT_SOP1		BIT(1)
-> +#define TCPC_RX_DETECT_SOP2		BIT(2)
-> +#define TCPC_RX_DETECT_DBG1		BIT(3)
-> +#define TCPC_RX_DETECT_DBG2		BIT(4)
->  
->  #define TCPC_RX_BYTE_CNT		0x30
->  #define TCPC_RX_BUF_FRAME_TYPE		0x31
-> @@ -139,6 +153,8 @@
->  #define TCPC_TX_DATA			0x54 /* through 0x6f */
->  
->  #define TCPC_VBUS_VOLTAGE			0x70
-> +#define TCPC_VBUS_VOLTAGE_MASK			0x3ff
-> +#define TCPC_VBUS_VOLTAGE_LSB_MV		25
->  #define TCPC_VBUS_SINK_DISCONNECT_THRESH	0x72
->  #define TCPC_VBUS_SINK_DISCONNECT_THRESH_LSB_MV	25
->  #define TCPC_VBUS_SINK_DISCONNECT_THRESH_MAX	0x3ff
-> 
+Thanks,
 
+Mukesh
+
+On 3/2/2021 1:59 PM, Mukesh Ojha wrote:
+> Hi Kees,
+>
+> i have updated the patch based on your last comments.
+> please review.
+>
+> Thanks,
+> Mukesh
+>
+> On 2/25/2021 9:30 PM, Mukesh Ojha wrote:
+>> There could be a sceanario where we define some region
+>> in normal memory and use them store to logs which is later
+>> retrieved by bootloader during warm reset.
+>>
+>> In this scenario, we wanted to treat this memory as normal
+>> cacheable memory instead of default behaviour which
+>> is an overhead. Making it cacheable could improve
+>> performance.
+>>
+>> This commit gives control to change mem_type from Device
+>> tree, and also documents the value for normal memory.
+>>
+>> Signed-off-by: Mukesh Ojha <mojha@codeaurora.org>
+>> ---
+>> Changes in v2:
+>>   - if-else converted to switch case
+>>   - updated MODULE_PARM_DESC with new memory type.
+>>   - default setting is still intact.
+>>
+>>   Documentation/admin-guide/ramoops.rst |  4 +++-
+>>   fs/pstore/ram.c                       |  3 ++-
+>>   fs/pstore/ram_core.c                  | 18 ++++++++++++++++--
+>>   3 files changed, 21 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/Documentation/admin-guide/ramoops.rst 
+>> b/Documentation/admin-guide/ramoops.rst
+>> index b0a1ae7..8f107d8 100644
+>> --- a/Documentation/admin-guide/ramoops.rst
+>> +++ b/Documentation/admin-guide/ramoops.rst
+>> @@ -3,7 +3,7 @@ Ramoops oops/panic logger
+>>     Sergiu Iordache <sergiu@chromium.org>
+>>   -Updated: 17 November 2011
+>> +Updated: 10 Feb 2021
+>>     Introduction
+>>   ------------
+>> @@ -30,6 +30,8 @@ mapping to pgprot_writecombine. Setting 
+>> ``mem_type=1`` attempts to use
+>>   depends on atomic operations. At least on ARM, pgprot_noncached 
+>> causes the
+>>   memory to be mapped strongly ordered, and atomic operations on 
+>> strongly ordered
+>>   memory are implementation defined, and won't work on many ARMs such 
+>> as omaps.
+>> +Setting ``mem_type=2`` attempts to treat the memory region as normal 
+>> memory,
+>> +which enables full cache on it. This can improve the performance.
+>>     The memory area is divided into ``record_size`` chunks (also 
+>> rounded down to
+>>   power of two) and each kmesg dump writes a ``record_size`` chunk of
+>> diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
+>> index ca6d8a8..af4ca6a4 100644
+>> --- a/fs/pstore/ram.c
+>> +++ b/fs/pstore/ram.c
+>> @@ -56,7 +56,7 @@ MODULE_PARM_DESC(mem_size,
+>>   static unsigned int mem_type;
+>>   module_param(mem_type, uint, 0400);
+>>   MODULE_PARM_DESC(mem_type,
+>> -        "set to 1 to try to use unbuffered memory (default 0)");
+>> +        "set to 1 to use unbuffered memory, 2 for cached memory 
+>> (default 0)");
+>>     static int ramoops_max_reason = -1;
+>>   module_param_named(max_reason, ramoops_max_reason, int, 0400);
+>> @@ -666,6 +666,7 @@ static int ramoops_parse_dt(struct 
+>> platform_device *pdev,
+>>           field = value;                        \
+>>       }
+>>   +    parse_u32("mem-type", pdata->record_size, pdata->mem_type);
+>>       parse_u32("record-size", pdata->record_size, 0);
+>>       parse_u32("console-size", pdata->console_size, 0);
+>>       parse_u32("ftrace-size", pdata->ftrace_size, 0);
+>> diff --git a/fs/pstore/ram_core.c b/fs/pstore/ram_core.c
+>> index aa8e0b6..0da012f 100644
+>> --- a/fs/pstore/ram_core.c
+>> +++ b/fs/pstore/ram_core.c
+>> @@ -396,6 +396,10 @@ void persistent_ram_zap(struct 
+>> persistent_ram_zone *prz)
+>>       persistent_ram_update_header_ecc(prz);
+>>   }
+>>   +#define MEM_TYPE_WCOMBINE    0
+>> +#define MEM_TYPE_NONCACHED    1
+>> +#define MEM_TYPE_NORMAL        2
+>> +
+>>   static void *persistent_ram_vmap(phys_addr_t start, size_t size,
+>>           unsigned int memtype)
+>>   {
+>> @@ -409,10 +413,20 @@ static void *persistent_ram_vmap(phys_addr_t 
+>> start, size_t size,
+>>       page_start = start - offset_in_page(start);
+>>       page_count = DIV_ROUND_UP(size + offset_in_page(start), 
+>> PAGE_SIZE);
+>>   -    if (memtype)
+>> +    switch (memtype) {
+>> +    case MEM_TYPE_NORMAL:
+>> +        prot = PAGE_KERNEL;
+>> +        break;
+>> +    case MEM_TYPE_NONCACHED:
+>>           prot = pgprot_noncached(PAGE_KERNEL);
+>> -    else
+>> +        break;
+>> +    case MEM_TYPE_WCOMBINE:
+>>           prot = pgprot_writecombine(PAGE_KERNEL);
+>> +        break;
+>> +    default:
+>> +        pr_err("invalid memory type\n");
+>> +        return NULL;
+>> +    }
+>>         pages = kmalloc_array(page_count, sizeof(struct page *), 
+>> GFP_KERNEL);
+>>       if (!pages) {
