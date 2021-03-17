@@ -2,112 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A228033F0F4
+	by mail.lfdr.de (Postfix) with ESMTP id EE64F33F0F5
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:16:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbhCQNPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 09:15:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55017 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230196AbhCQNPN (ORCPT
+        id S230438AbhCQNPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 09:15:46 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39210 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230044AbhCQNPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 09:15:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615986913;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XZJdEeunzwNk70+oFRPGk8WEPnwuyPe914Z6NlRRz+8=;
-        b=StAz4J2yULTMyaIAY5Wex22ZucLBmA/GthuW6PJqjGE1tfaIyADS3MN2B1WEqRnPg6lQV7
-        FqJtmdBOIven453idk/oRdARZkYsQGaqNN7MzpRoOOTjTlPWnRKCZoixg4iRhQULZQkKrf
-        J3lESdgQnsfMvI8pUoaZXH6fpSuHXAg=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-204-SrsQ7Ue4PtKdEuaAd6jjww-1; Wed, 17 Mar 2021 09:15:10 -0400
-X-MC-Unique: SrsQ7Ue4PtKdEuaAd6jjww-1
-Received: by mail-wm1-f70.google.com with SMTP id l16so6214625wmc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 06:15:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XZJdEeunzwNk70+oFRPGk8WEPnwuyPe914Z6NlRRz+8=;
-        b=H7vLUvoWo/pIcac/gBxTD8I8OBECKKGEM0t7bihdzdRZdOtsXX/2e82lLEEToXv06D
-         KGJuu2pnL7NYfe07b5z24iNhfd6iOwzt+jmhm5TWpekX5L/8xjbjNirYr6TArf2WI6lX
-         3o6r/PHfZd1Gw/9bjYZIRnrVtByWJ9yKkkuS5hGOmrTnXXHSVPhm4jqFSJF6PTReLCad
-         Ts14d2Ncymonw5ZsvTa26M2j1WvlKyuQXfaiTgQLovTf5C3hJCsNLn16MAUAqQrcRVY7
-         yQ4EhR5tcpGFG0/1kEW3+aMllL6+mlyayU7pBkZhCN5ZWgkpHcsW+kGeN8pqgohHp18A
-         /SWg==
-X-Gm-Message-State: AOAM530e9GLzPevwmgUcjTmjSYw7lWexptdIruLZPOK1FA3TWJHMRmkP
-        kBDj7IMkRapLXb2jtB87JGcnZS1Ape4z1RWEa+qTwmVUuOtA2/ABdshVpdg3CUXSoEHejxeCnPn
-        lxin/0vOGAhbbXlPnskZaagX9
-X-Received: by 2002:adf:fac1:: with SMTP id a1mr4576709wrs.98.1615986909596;
-        Wed, 17 Mar 2021 06:15:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyZ2dfEsieu9J241DYA3s8c2or2c3fDFAPaeacFxyxanimtAaKIxHG7SAHnH2UL0oytvdAGIA==
-X-Received: by 2002:adf:fac1:: with SMTP id a1mr4576689wrs.98.1615986909373;
-        Wed, 17 Mar 2021 06:15:09 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id x8sm25487700wru.46.2021.03.17.06.15.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 06:15:08 -0700 (PDT)
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>,
-        Yuan Yao <yaoyuan0329os@gmail.com>
-References: <20210316184436.2544875-1-seanjc@google.com>
- <20210316184436.2544875-4-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 3/4] KVM: VMX: Macrofy the MSR bitmap getters and setters
-Message-ID: <f4934b3e-4d5f-a242-e14f-ad5841079349@redhat.com>
-Date:   Wed, 17 Mar 2021 14:15:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 17 Mar 2021 09:15:42 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12HDFVBU053849;
+        Wed, 17 Mar 2021 08:15:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615986931;
+        bh=z/0RVjPVB6nhY++viO0cqAxcncQ8evyw2P8L1LGfuMM=;
+        h=From:To:CC:Subject:Date;
+        b=GnN6XnFA5VAlNAURY/XnkRI/eTJhT7DP6fS4DLdJVaIu2DbU0RvbjCrTtszSXOgZ6
+         O4M4tI0JToTHy65MJ7Fo6GqKyIY0Zq+g5YctlUx/B3s2XkBnaHoSCTN9ebm+9IiCuN
+         u6g2Ritvl639rJqJKzfPCo6OOIaKJeyw4KcBCXU0=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12HDFVb4001100
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 17 Mar 2021 08:15:31 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 17
+ Mar 2021 08:15:31 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 17 Mar 2021 08:15:31 -0500
+Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12HDFQLo024146;
+        Wed, 17 Mar 2021 08:15:27 -0500
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>, <stable@vger.kernel.org>
+Subject: [PATCH] PCI: keystone: Let AM65 use the pci_ops defined in pcie-designware-host.c
+Date:   Wed, 17 Mar 2021 18:45:18 +0530
+Message-ID: <20210317131518.11040-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210316184436.2544875-4-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/03/21 19:44, Sean Christopherson wrote:
-> +	return (ret)true;						      \
+Both TI's AM65x (K3) and TI's K2 PCIe driver are implemented in
+pci-keystone. However Only K2 PCIe driver should use it's own pci_ops
+for configuration space accesses. But commit 10a797c6e54a
+("PCI: dwc: keystone: Use pci_ops for config space accessors") used
+custom pci_ops for both AM65x and K2. This breaks configuration space
+access for AM65x platform. Fix it here.
 
-I'm not sure if (void)true is amazing or disgusting, but anyway...
+Fixes: 10a797c6e54a ("PCI: dwc: keystone: Use pci_ops for config space accessors")
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Cc: <stable@vger.kernel.org> # v5.10
+---
+ drivers/pci/controller/dwc/pci-keystone.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> +BUILD_VMX_MSR_BITMAP_HELPER(bool, test, read)
-> +BUILD_VMX_MSR_BITMAP_HELPER(bool, test, write)
-> +BUILD_VMX_MSR_BITMAP_HELPER(void, clear, read, __)
-> +BUILD_VMX_MSR_BITMAP_HELPER(void, clear, write, __)
-> +BUILD_VMX_MSR_BITMAP_HELPER(void, set, read, __)
-> +BUILD_VMX_MSR_BITMAP_HELPER(void, set, write, __)
-
-... I guess we have an armed truce where you let me do my bit 
-manipulation magic and I let you do your macro magic.
-
-Still, I think gluing the variadic arguments with ## is a bit too much. 
-  This would be slightly less mysterious:
-
-+BUILD_VMX_MSR_BITMAP_HELPER(bool, vmx_test_msr_bitmap_, read, test_bit)
-+BUILD_VMX_MSR_BITMAP_HELPER(bool, vmx_test_msr_bitmap_, write, test_bit)
-+BUILD_VMX_MSR_BITMAP_HELPER(void, vmx_clear_msr_bitmap_, read, __clear_bit)
-+BUILD_VMX_MSR_BITMAP_HELPER(void, vmx_clear_msr_bitmap_, write, 
-__clear_bit)
-+BUILD_VMX_MSR_BITMAP_HELPER(void, vmx_set_msr_bitmap_, read, __set_bit)
-+BUILD_VMX_MSR_BITMAP_HELPER(void, vmx_set_msr_bitmap_, write, __set_bit)
-
-And I also wonder if we really need to expand all six functions one at a 
-time.  You could remove the third argument and VMX_MSR_BITMAP_BASE_*, at 
-the cost of expanding the inline functions' body twice in 
-BUILD_VMX_MSR_BITMAP_HELPER.
-
-Thanks,
-
-Paolo
+diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
+index 53aa35cb3a49..a59ecbec601f 100644
+--- a/drivers/pci/controller/dwc/pci-keystone.c
++++ b/drivers/pci/controller/dwc/pci-keystone.c
+@@ -798,7 +798,8 @@ static int __init ks_pcie_host_init(struct pcie_port *pp)
+ 	int ret;
+ 
+ 	pp->bridge->ops = &ks_pcie_ops;
+-	pp->bridge->child_ops = &ks_child_pcie_ops;
++	if (!ks_pcie->is_am6)
++		pp->bridge->child_ops = &ks_child_pcie_ops;
+ 
+ 	ret = ks_pcie_config_legacy_irq(ks_pcie);
+ 	if (ret)
+-- 
+2.17.1
 
