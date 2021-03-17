@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A57433F797
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2374433F799
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:55:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbhCQRym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:54:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38986 "EHLO mail.kernel.org"
+        id S232875AbhCQRyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:54:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232841AbhCQRyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:54:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14B1A64F0C;
-        Wed, 17 Mar 2021 17:54:21 +0000 (UTC)
+        id S232852AbhCQRyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 13:54:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B063864F0F;
+        Wed, 17 Mar 2021 17:54:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616003661;
-        bh=41QZwWW5tYAibto8TpolceGNj3ZYs0gZ5zu3UKONesU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Pr/58qmDEfhS/GI1yME6E8DwLRv0enGz3hFwUa2xD4GjqprN5+CY7zWm4YKIl0m7n
-         u76sZ+IxqilHevHjVNHWSn2FjzLh12GPQltAJn6hVDXnq6gd8YSHtkCP9kSz9elpJG
-         MHDUpIISUe7W+KWGE8XPtnAgNgsIA5OTDjoNk11pMthvicjpucti09RYnPBgStE53P
-         ZRM7QNX/No30YiwO8FpAufuA2iUOZXnHjv2zTf/mOmc/Oo+Mje++dk1NBiNc5zuSiV
-         i5ojC3F7kxqc+KAnLdwTiZ9sUTe4kCj3Jpb3qqqVHeIn0LCF4noHnsXShxNIr1/N9O
-         iwrhuwh1m8Fkw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 9674635237A3; Wed, 17 Mar 2021 10:54:20 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 10:54:20 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Rolf Eike Beer <eb@emlix.com>
-Cc:     linux-kernel@vger.kernel.org, trivial@kernel.org,
-        rcu@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] typo: kthead -> kthread
-Message-ID: <20210317175420.GD2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <2268277.hsbtYad1Uq@devpool47>
+        s=k20201202; t=1616003678;
+        bh=XxJeuZ+cw4amQUvKU8GjVxoePa5w1uzwY9Tpr8JD79o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YL0xzOV44xFC6fmX7FY7A0vi5+ciK4IFMJeLPQmdiSHP4/xEGcIdycnzKKRpGVVy7
+         Pp0ei3Mr4NETkYL1YooSg2Wt+hKumQDzPCZOxUJkoQvUpi91yGJu56p0+HT5uQXyWw
+         E/c1RP+K6LXUiLPYFqVRmHOQYRB7YdXt0UkgCEXbm4JIfSqjY5ibFk5ZBU2DzgofyX
+         uixko/CYHJC6cw0ADdrBlwYDY0gC3iT1svl4MhTUxbJlxWQ+FZ5ODXM01vE+/hxJbJ
+         4T1kLzBGu07iIoezzhgUoNH5LDtPPskj3wdnn6E6jmx46ahbWnIjFL4zo7kcgkiIXX
+         25P3a3M4mwjFA==
+Date:   Wed, 17 Mar 2021 17:54:34 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Paul Fertser <fercerpav@gmail.com>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 00/17] Fix reset controls and RPM of NVIDIA Tegra ASoC
+ drivers
+Message-ID: <20210317175434.GD5559@sirena.org.uk>
+References: <20210314154459.15375-1-digetx@gmail.com>
+ <be93d088-fefe-77f0-9b8e-9c815cc0d0f0@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tNQTSEo8WG/FKZ8E"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2268277.hsbtYad1Uq@devpool47>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <be93d088-fefe-77f0-9b8e-9c815cc0d0f0@gmail.com>
+X-Cookie: Please ignore previous fortune.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 10:24:51AM +0100, Rolf Eike Beer wrote:
-> Signed-off-by: Rolf Eike Beer <eb@emlix.com>
-> ---
->  kernel/rcu/tree_plugin.h | 2 +-
->  mm/oom_kill.c            | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
 
-Good eyes, queued, thank you!
+--tNQTSEo8WG/FKZ8E
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-							Thanx, Paul
+On Wed, Mar 17, 2021 at 08:20:10PM +0300, Dmitry Osipenko wrote:
 
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index 2d603771c7dc..5f22869d7c66 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -1861,7 +1861,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
->  }
->  
->  /*
-> - * Awaken the no-CBs grace-period kthead if needed, either due to it
-> + * Awaken the no-CBs grace-period kthread if needed, either due to it
->   * legitimately being asleep or due to overload conditions.
->   *
->   * If warranted, also wake up the kthread servicing this CPUs queues.
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index 9efaf430cfd3..cd7f9ac48746 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -922,7 +922,7 @@ static void __oom_kill_process(struct task_struct *victim, const char *message)
->  			continue;
->  		}
->  		/*
-> -		 * No kthead_use_mm() user needs to read from the userspace so
-> +		 * No kthread_use_mm() user needs to read from the userspace so
->  		 * we are ok to reap it.
->  		 */
->  		if (unlikely(p->flags & PF_KTHREAD))
-> -- 
-> 2.30.2
-> 
-> -- 
-> Rolf Eike Beer, emlix GmbH, http://www.emlix.com
-> Fon +49 551 30664-0, Fax +49 551 30664-11
-> Gothaer Platz 3, 37083 Göttingen, Germany
-> Sitz der Gesellschaft: Göttingen, Amtsgericht Göttingen HR B 3160
-> Geschäftsführung: Heike Jordan, Dr. Uwe Kracke – Ust-IdNr.: DE 205 198 055
-> 
-> emlix - smart embedded open source
-> 
-> 
-> 
+> Mark / Takashi, I may try to split up this series into two or three
+> smaller patchsets and then the reset/ patch from Philipp Zabel could be
+> merged by Philipp himself. I primarily want to have the audio resets
+> fixed and the reset API extended with reset_control_bulk in 5.13 because
+> this will unblock other patches. Please let me know what you prefer more.
+
+I've actually already got this queued for application next time I apply
+things, I'm guessing Phillip was intending that the reset patch go via
+ASoC?
+
+--tNQTSEo8WG/FKZ8E
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBSQloACgkQJNaLcl1U
+h9AAsgf/egRRBL2B24oNKvQ4OlsR6yr1Z1xvvwq1T2lCBKJV6kddrTOwC2ycOGJd
+hupHoKwAfdG+eMlbOIyCh2/NyRK+gPuJjqhVRi0iT6ypmWFaxFVXF+2ziLaLVwmx
+LV0G0ktWt/hw4o7Sai982eQJQCMkdLAMZ1/WsGup1lkyM0Gp1s8aPk+gB9WfC+18
+oVMmyQAEXBK9t4xnhT2YJOiWD3QID1O79yGfio2VMSg5UydVZcYGz5Obum0DtlUU
+K4tXp0NE5dmIuUzYbKTQuz6wkPDDpv7IaygJaFw0aYImj62cmWaPcE4Jeyu5+5Jv
+4PglDPb4IaWxuU6VqJbxgmXV3wUkkQ==
+=74VK
+-----END PGP SIGNATURE-----
+
+--tNQTSEo8WG/FKZ8E--
