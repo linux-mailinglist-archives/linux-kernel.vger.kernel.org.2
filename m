@@ -2,85 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 220CB33E3A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F91233E310
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:55:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbhCQA5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:57:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230365AbhCQA4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:56:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D32E64F8F;
-        Wed, 17 Mar 2021 00:56:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615942573;
-        bh=06AdV+JkCI79bqE8VrXjJjhz6t24lXG9Wq7P9wAxE/M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PCv43EQmKr1jhTeTNFcS23zvmdyUFpUlBi+Va2x097SZYsh2SGWWe66j8gA28lWUt
-         2QrzwlNm1aPrHos20+uBR9g8zPtVZVPGaX5n8EB0TXv4IG9UsxK+FV/mNUWfDBhORD
-         n3VILbSRgtqH56xabMqltlBPwA7jwMYAPi7q6dYH8Ka+tQOVTk4+eWkTW7vgqb4HGG
-         NbGIqT3Gm6YqmFzm0yazdlVqS6J0pdUdNGfzz+x4ZvdyCbw35M3eu+wZOmKRHDszwO
-         mdKlxWAJNIUpS9V5TB01esWTRHlHTtWkaaynp9sfNfifYB+mf2CTiaj2kghzb7a7DN
-         0xOCbMJRbovgQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 30/61] irqchip/ingenic: Add support for the JZ4760
-Date:   Tue, 16 Mar 2021 20:55:04 -0400
-Message-Id: <20210317005536.724046-30-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210317005536.724046-1-sashal@kernel.org>
-References: <20210317005536.724046-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S229761AbhCQAz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhCQAzT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 20:55:19 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E431C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:55:19 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id p133so4402867qka.17
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:55:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=QQhSd5q0jCv0bGK9WK8MiwR/o4DaFUkS5Nq3ARQeY/8=;
+        b=Z1MCQGzkE/4N/qs+W9t1/ZMjHEafjrXaRHY15YDGy+lF0H+saR1hsbspIJ6rma1W3k
+         CCRYEy1fur7xy+DYo8vV+76tGaSuLE/Ks0FiqkwHQ5Iwo7A05sI8nnZ+pzvBsrmXOyhg
+         UsQzN5fSzKrjsQ/Cwd5XcT5TMuru4RyekGogQSpqerzXVGwHD1MsWIVLiEDW0DTETsfJ
+         Q4DAy3TGyrgEOwP3tuo4e11SfjTGAeY0Bdnrtq1OuifJf5dyPIiB5vd438EhdZVPja17
+         fD7HN5Mpdh1dQtpD+GWbuuF2N+CNuhQRj3Y01QEyJoYj6eM1Hn6Pp3SNUZHGvAhFssIc
+         dfcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=QQhSd5q0jCv0bGK9WK8MiwR/o4DaFUkS5Nq3ARQeY/8=;
+        b=smx8hblaChhn4xRln+Df/UVTvR/mjOHn3x8ElgjKLm2xHmGLkeVpB/It8yFvDpaujL
+         8O4UWxZsDjPvvjQ76kGc2X6oHlUSYX9kzAjBP5KG3hz+AIwcreIPEnUcOdehzPRvDiSg
+         kJ8X4O5VNa0omVYRxbu1BqOHjO8JGXRTCRV5/xozegst9QEeX/uWwHr4sbWZPLU02aLA
+         5l5Y1kBs76KQmReqKqe4BPfq9CuUBfi5ViB40R6nuE7xVNx8GBZxN0aLGckkRb4g1eqB
+         C+yU4TlJrwDQeliuKwgD4ImIR++WVYLLRo16hqkMSq8VcCktTOOBYaKY3jqW3FaLFjgz
+         ve0A==
+X-Gm-Message-State: AOAM533VoOJN/t8KK//9BqQ74vwGtx3JNOwo8eRSMwjtZIohfRM19UgR
+        V53e149rVvJvd2xqNl4rlfEPi1YKDxTY
+X-Google-Smtp-Source: ABdhPJzPrxZnrUDoc4VR3LivjF33TPxUrUi5gVJO3/c1Gh3PZCPW3L8uLhxjmqsT7jHjok+gx53URHIfAwua
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:dd81:7319:7b35:a87a])
+ (user=irogers job=sendgmr) by 2002:ad4:510d:: with SMTP id
+ g13mr2827650qvp.3.1615942518456; Tue, 16 Mar 2021 17:55:18 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 17:55:05 -0700
+In-Reply-To: <20210317005505.2794804-1-irogers@google.com>
+Message-Id: <20210317005505.2794804-3-irogers@google.com>
+Mime-Version: 1.0
+References: <20210317005505.2794804-1-irogers@google.com>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH v2 3/3] perf test: Add 30s timeout for wait for daemon start.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+Retry the ping loop upto 600 times, or approximately 30 seconds, to make
+sure the test does hang at start up.
 
-[ Upstream commit 5fbecd2389f48e1415799c63130d0cdce1cf3f60 ]
-
-Add support for the interrupt controller found in the JZ4760 SoC, which
-works exactly like the one in the JZ4770.
-
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210307172014.73481-2-paul@crapouillou.net
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- drivers/irqchip/irq-ingenic-tcu.c | 1 +
- drivers/irqchip/irq-ingenic.c     | 1 +
- 2 files changed, 2 insertions(+)
+ tools/perf/tests/shell/daemon.sh | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/irqchip/irq-ingenic-tcu.c b/drivers/irqchip/irq-ingenic-tcu.c
-index 7a7222d4c19c..b938d1d04d96 100644
---- a/drivers/irqchip/irq-ingenic-tcu.c
-+++ b/drivers/irqchip/irq-ingenic-tcu.c
-@@ -179,5 +179,6 @@ static int __init ingenic_tcu_irq_init(struct device_node *np,
+diff --git a/tools/perf/tests/shell/daemon.sh b/tools/perf/tests/shell/daemon.sh
+index 61d13c4c64b8..ee4a30ca3f57 100755
+--- a/tools/perf/tests/shell/daemon.sh
++++ b/tools/perf/tests/shell/daemon.sh
+@@ -127,9 +127,16 @@ daemon_start()
+ 
+ 	# wait for the session to ping
+ 	local state="FAIL"
++	local retries=0
+ 	while [ "${state}" != "OK" ]; do
+ 		state=`perf daemon ping --config ${config} --session ${session} | awk '{ print $1 }'`
+ 		sleep 0.05
++		retries=$((${retries} +1))
++		if [ ${retries} -ge 600 ]; then
++			echo "FAILED: Timeout waiting for daemon to ping"
++			daemon_exit ${config}
++			exit 1
++		fi
+ 	done
  }
- IRQCHIP_DECLARE(jz4740_tcu_irq, "ingenic,jz4740-tcu", ingenic_tcu_irq_init);
- IRQCHIP_DECLARE(jz4725b_tcu_irq, "ingenic,jz4725b-tcu", ingenic_tcu_irq_init);
-+IRQCHIP_DECLARE(jz4760_tcu_irq, "ingenic,jz4760-tcu", ingenic_tcu_irq_init);
- IRQCHIP_DECLARE(jz4770_tcu_irq, "ingenic,jz4770-tcu", ingenic_tcu_irq_init);
- IRQCHIP_DECLARE(x1000_tcu_irq, "ingenic,x1000-tcu", ingenic_tcu_irq_init);
-diff --git a/drivers/irqchip/irq-ingenic.c b/drivers/irqchip/irq-ingenic.c
-index b61a8901ef72..ea36bb00be80 100644
---- a/drivers/irqchip/irq-ingenic.c
-+++ b/drivers/irqchip/irq-ingenic.c
-@@ -155,6 +155,7 @@ static int __init intc_2chip_of_init(struct device_node *node,
- {
- 	return ingenic_intc_of_init(node, 2);
- }
-+IRQCHIP_DECLARE(jz4760_intc, "ingenic,jz4760-intc", intc_2chip_of_init);
- IRQCHIP_DECLARE(jz4770_intc, "ingenic,jz4770-intc", intc_2chip_of_init);
- IRQCHIP_DECLARE(jz4775_intc, "ingenic,jz4775-intc", intc_2chip_of_init);
- IRQCHIP_DECLARE(jz4780_intc, "ingenic,jz4780-intc", intc_2chip_of_init);
+ 
 -- 
-2.30.1
+2.31.0.rc2.261.g7f71774620-goog
 
