@@ -2,178 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA27E33F0EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:14:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB47A33F0F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbhCQNOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 09:14:05 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50158 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhCQNNf (ORCPT
+        id S229803AbhCQNPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 09:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230196AbhCQNOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 09:13:35 -0400
-Date:   Wed, 17 Mar 2021 13:13:32 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615986813;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1YApcwjDihhlakWewylW9wFlszybKBfhMe+HG10/Bbs=;
-        b=J4qRMBDPpcIL0nGjtO/zSF1shHNpCGKc8Z9ly2vRGVjElc5r/YNbrcFvPajzLF8GvhEIsB
-        XXVdja54QhTo0cUKQwTitWTi4Gw4VHJSaOUzv1MIkra7LAbyfx1Q1B2dKUONg1fuv8yymX
-        a6lpGx5RjrK+reOznvznEX0EI7bSSZEsJ7KsVoV3wxEeAgP4GaEW69kj3TKG4mpPsbh3d8
-        VfdfNhLB2DBHxOP7yu6/io3T3spXqm3ZjwF8g5pmNDqct2aFgHYZ5yiOl8ShYvt9gAbPuI
-        yuLKebx7ALdc+CoNXEwzIkO1HYO71jyC2UEcpHbHah0qRAtfoJ95BiXWOfK1QQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615986813;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1YApcwjDihhlakWewylW9wFlszybKBfhMe+HG10/Bbs=;
-        b=bCJdHS+IAqCowhPNJ3hvo3sfKFRKosIWl+l/ZKdoGlpQOWnfJJqsIWgQPJcrNvn23mXbXb
-        F/Pv7V0z/gREESAQ==
-From:   "tip-bot2 for Piotr Figiel" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] rseq, ptrace: Add PTRACE_GET_RSEQ_CONFIGURATION request
-Cc:     Piotr Figiel <figiel@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Michal Miroslaw <emmir@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Oleg Nesterov <oleg@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210226135156.1081606-1-figiel@google.com>
-References: <20210226135156.1081606-1-figiel@google.com>
+        Wed, 17 Mar 2021 09:14:55 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42154C06174A;
+        Wed, 17 Mar 2021 06:14:55 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 035C01F45217;
+        Wed, 17 Mar 2021 13:14:52 +0000 (GMT)
+Date:   Wed, 17 Mar 2021 14:14:49 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Daniele.Palmas@telit.com,
+        bjorn.andersson@linaro.org
+Subject: Re: [PATCH v5 3/3] mtd: rawnand: Add support for secure regions in
+ NAND memory
+Message-ID: <20210317141449.7a4b5294@collabora.com>
+In-Reply-To: <20210317122513.42369-4-manivannan.sadhasivam@linaro.org>
+References: <20210317122513.42369-1-manivannan.sadhasivam@linaro.org>
+        <20210317122513.42369-4-manivannan.sadhasivam@linaro.org>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Message-ID: <161598681294.398.14135404653803937904.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On Wed, 17 Mar 2021 17:55:13 +0530
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
 
-Commit-ID:     2c406d3f436db1deea55ec44cc4c3c0861c3c185
-Gitweb:        https://git.kernel.org/tip/2c406d3f436db1deea55ec44cc4c3c0861c3c185
-Author:        Piotr Figiel <figiel@google.com>
-AuthorDate:    Fri, 26 Feb 2021 14:51:56 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 17 Mar 2021 14:05:40 +01:00
+> On a typical end product, a vendor may choose to secure some regions in
+> the NAND memory which are supposed to stay intact between FW upgrades.
+> The access to those regions will be blocked by a secure element like
+> Trustzone. So the normal world software like Linux kernel should not
+> touch these regions (including reading).
+> 
+> The regions are declared using a NAND chip DT property,
+> "secure-regions". So let's make use of this property in the nand core
+> and skip access to the secure regions present in a system.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/mtd/nand/raw/nand_base.c | 105 +++++++++++++++++++++++++++++++
+>  include/linux/mtd/rawnand.h      |   4 ++
+>  2 files changed, 109 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index c33fa1b1847f..c85cbd491f05 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -278,11 +278,41 @@ static int nand_block_bad(struct nand_chip *chip, loff_t ofs)
+>  	return 0;
+>  }
+>  
+> +/**
+> + * nand_check_sec_region() - Check if the region is secured
+> + * @chip: NAND chip object
+> + * @offset: Offset of the region to check
+> + *
+> + * Checks if the region is secured by comparing the offset with the list of
+> + * secure regions obtained from DT. Returns -EIO if the region is secured
+> + * else 0.
+> + */
+> +static int nand_check_sec_region(struct nand_chip *chip, loff_t offset)
 
-rseq, ptrace: Add PTRACE_GET_RSEQ_CONFIGURATION request
+You're only passing an offset, looks like the size is missing, which
+will be problematic for nand_do_{read,write}_ops() which might
+read/write more than one page.
 
-For userspace checkpoint and restore (C/R) a way of getting process state
-containing RSEQ configuration is needed.
+> +{
+> +	int i, j;
+> +
+> +	/* Skip touching the secure regions if present */
+> +	for (i = 0, j = 0; i < chip->nr_sec_regions; i++, j += 2) {
+> +		if (offset >= chip->sec_regions[j] &&
+> +		    (offset <= chip->sec_regions[j] + chip->sec_regions[j + 1]))
+> +			return -EIO;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
+>  {
+> +	int ret;
+> +
+>  	if (chip->options & NAND_NO_BBM_QUIRK)
+>  		return 0;
+>  
+> +	/* Check if the region is secured */
+> +	ret = nand_check_sec_region(chip, ofs);
+> +	if (ret)
+> +		return ret;
+> +
+>  	if (chip->legacy.block_bad)
+>  		return chip->legacy.block_bad(chip, ofs);
+>  
+> @@ -397,6 +427,11 @@ static int nand_do_write_oob(struct nand_chip *chip, loff_t to,
+>  		return -EINVAL;
+>  	}
+>  
+> +	/* Check if the region is secured */
+> +	ret = nand_check_sec_region(chip, to);
+> +	if (ret)
+> +		return ret;
+> +
+>  	chipnr = (int)(to >> chip->chip_shift);
+>  
+>  	/*
+> @@ -565,6 +600,11 @@ static int nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
+>  
+>  	if (!chip->bbt)
+>  		return 0;
+> +
+> +	/* Check if the region is secured */
+> +	if (nand_check_sec_region(chip, ofs))
+> +		return -EIO;
+> +
+>  	/* Return info from the table */
+>  	return nand_isreserved_bbt(chip, ofs);
+>  }
+> @@ -2737,6 +2777,11 @@ static int nand_read_page_swecc(struct nand_chip *chip, uint8_t *buf,
+>  	uint8_t *ecc_code = chip->ecc.code_buf;
+>  	unsigned int max_bitflips = 0;
+>  
+> +	/* Check if the region is secured */
+> +	ret = nand_check_sec_region(chip, ((loff_t)page << chip->page_shift));
+> +	if (ret)
+> +		return ret;
+> +
+>  	chip->ecc.read_page_raw(chip, buf, 1, page);
+>  
+>  	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize)
+> @@ -3127,6 +3172,11 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
+>  	int retry_mode = 0;
+>  	bool ecc_fail = false;
+>  
+> +	/* Check if the region is secured */
+> +	ret = nand_check_sec_region(chip, from);
+> +	if (ret)
+> +		return ret;
+> +
+>  	chipnr = (int)(from >> chip->chip_shift);
+>  	nand_select_target(chip, chipnr);
+>  
+> @@ -3458,6 +3508,11 @@ static int nand_do_read_oob(struct nand_chip *chip, loff_t from,
+>  	pr_debug("%s: from = 0x%08Lx, len = %i\n",
+>  			__func__, (unsigned long long)from, readlen);
+>  
+> +	/* Check if the region is secured */
+> +	ret = nand_check_sec_region(chip, from);
+> +	if (ret)
+> +		return ret;
+> +
+>  	stats = mtd->ecc_stats;
+>  
+>  	len = mtd_oobavail(mtd, ops);
+> @@ -3709,6 +3764,11 @@ static int nand_write_page_swecc(struct nand_chip *chip, const uint8_t *buf,
+>  	uint8_t *ecc_calc = chip->ecc.calc_buf;
+>  	const uint8_t *p = buf;
+>  
+> +	/* Check if the region is secured */
+> +	ret = nand_check_sec_region(chip, ((loff_t)page << chip->page_shift));
+> +	if (ret)
+> +		return ret;
+> +
+>  	/* Software ECC calculation */
+>  	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize)
+>  		chip->ecc.calculate(chip, p, &ecc_calc[i]);
+> @@ -3979,6 +4039,11 @@ static int nand_do_write_ops(struct nand_chip *chip, loff_t to,
+>  		return -EINVAL;
+>  	}
+>  
+> +	/* Check if the region is secured */
+> +	ret = nand_check_sec_region(chip, to);
+> +	if (ret)
+> +		return ret;
+> +
+>  	column = to & (mtd->writesize - 1);
+>  
+>  	chipnr = (int)(to >> chip->chip_shift);
+> @@ -4180,6 +4245,11 @@ int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
+>  	if (check_offs_len(chip, instr->addr, instr->len))
+>  		return -EINVAL;
+>  
+> +	/* Check if the region is secured */
+> +	ret = nand_check_sec_region(chip, instr->addr);
+> +	if (ret)
+> +		return ret;
+> +
+>  	/* Grab the lock and see if the device is available */
+>  	ret = nand_get_device(chip);
+>  	if (ret)
+> @@ -4995,10 +5065,32 @@ static bool of_get_nand_on_flash_bbt(struct device_node *np)
+>  	return of_property_read_bool(np, "nand-on-flash-bbt");
+>  }
+>  
+> +static int of_get_nand_secure_regions(struct nand_chip *chip)
+> +{
+> +	struct device_node *dn = nand_get_flash_node(chip);
+> +	struct property *prop;
+> +	int length, nr_elem;
+> +
+> +	prop = of_find_property(dn, "secure-regions", &length);
+> +	if (prop) {
+> +		nr_elem = length / sizeof(u64);
+> +		chip->nr_sec_regions = nr_elem / 2;
+> +
+> +		chip->sec_regions = kcalloc(nr_elem, sizeof(u32), GFP_KERNEL);
 
-There are two ways this information is going to be used:
- - to re-enable RSEQ for threads which had it enabled before C/R
- - to detect if a thread was in a critical section during C/R
+s/sizeof(u32)/sizeof(*chip->sec_regions)/
 
-Since C/R preserves TLS memory and addresses RSEQ ABI will be restored
-using the address registered before C/R.
+> +		if (!chip->sec_regions)
+> +			return -ENOMEM;
+> +
+> +		of_property_read_u64_array(dn, "secure-regions", chip->sec_regions, nr_elem);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int rawnand_dt_init(struct nand_chip *chip)
+>  {
+>  	struct nand_device *nand = mtd_to_nanddev(nand_to_mtd(chip));
+>  	struct device_node *dn = nand_get_flash_node(chip);
+> +	int ret;
+>  
+>  	if (!dn)
+>  		return 0;
+> @@ -5015,6 +5107,16 @@ static int rawnand_dt_init(struct nand_chip *chip)
+>  	of_get_nand_ecc_user_config(nand);
+>  	of_get_nand_ecc_legacy_user_config(chip);
+>  
+> +	/*
+> +	 * Look for secure regions in the NAND chip. These regions are supposed
+> +	 * to be protected by a secure element like Trustzone. So the read/write
+> +	 * accesses to these regions will be blocked in the runtime by this
+> +	 * driver.
+> +	 */
+> +	ret = of_get_nand_secure_regions(chip);
+> +	if (!ret)
+> +		return ret;
+> +
+>  	/*
+>  	 * If neither the user nor the NAND controller have requested a specific
+>  	 * ECC engine type, we will default to NAND_ECC_ENGINE_TYPE_ON_HOST.
+> @@ -6068,6 +6170,9 @@ void nand_cleanup(struct nand_chip *chip)
+>  	/* Free manufacturer priv data. */
+>  	nand_manufacturer_cleanup(chip);
+>  
+> +	/* Free secure regions data */
+> +	kfree(chip->sec_regions);
+> +
+>  	/* Free controller specific allocations after chip identification */
+>  	nand_detach(chip);
+>  
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index 6b3240e44310..5ae77ecf41f3 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -1086,6 +1086,8 @@ struct nand_manufacturer {
+>   *          NAND Controller drivers should not modify this value, but they're
+>   *          allowed to read it.
+>   * @read_retries: The number of read retry modes supported
+> + * @sec_regions: Array representing the secure regions
+> + * @nr_sec_regions: Number of secure regions
+>   * @controller: The hardware controller	structure which is shared among multiple
+>   *              independent devices
+>   * @ecc: The ECC controller structure
+> @@ -1135,6 +1137,8 @@ struct nand_chip {
+>  	unsigned int suspended : 1;
+>  	int cur_cs;
+>  	int read_retries;
+> +	u64 *sec_regions;
 
-Detection whether the thread is in a critical section during C/R is needed
-to enforce behavior of RSEQ abort during C/R. Attaching with ptrace()
-before registers are dumped itself doesn't cause RSEQ abort.
-Restoring the instruction pointer within the critical section is
-problematic because rseq_cs may get cleared before the control is passed
-to the migrated application code leading to RSEQ invariants not being
-preserved. C/R code will use RSEQ ABI address to find the abort handler
-to which the instruction pointer needs to be set.
+	struct {
+		u64 start;
+		u64 size;
+	} *sec_regions;
 
-To achieve above goals expose the RSEQ ABI address and the signature value
-with the new ptrace request PTRACE_GET_RSEQ_CONFIGURATION.
+> +	u8 nr_sec_regions;
+>  
+>  	/* Externals */
+>  	struct nand_controller *controller;
 
-This new ptrace request can also be used by debuggers so they are aware
-of stops within restartable sequences in progress.
-
-Signed-off-by: Piotr Figiel <figiel@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Michal Miroslaw <emmir@google.com>
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Acked-by: Oleg Nesterov <oleg@redhat.com>
-Link: https://lkml.kernel.org/r/20210226135156.1081606-1-figiel@google.com
----
- include/uapi/linux/ptrace.h | 10 ++++++++++
- kernel/ptrace.c             | 25 +++++++++++++++++++++++++
- 2 files changed, 35 insertions(+)
-
-diff --git a/include/uapi/linux/ptrace.h b/include/uapi/linux/ptrace.h
-index 83ee45f..3747bf8 100644
---- a/include/uapi/linux/ptrace.h
-+++ b/include/uapi/linux/ptrace.h
-@@ -102,6 +102,16 @@ struct ptrace_syscall_info {
- 	};
- };
- 
-+#define PTRACE_GET_RSEQ_CONFIGURATION	0x420f
-+
-+struct ptrace_rseq_configuration {
-+	__u64 rseq_abi_pointer;
-+	__u32 rseq_abi_size;
-+	__u32 signature;
-+	__u32 flags;
-+	__u32 pad;
-+};
-+
- /*
-  * These values are stored in task->ptrace_message
-  * by tracehook_report_syscall_* to describe the current syscall-stop.
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index 821cf17..c71270a 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -31,6 +31,7 @@
- #include <linux/cn_proc.h>
- #include <linux/compat.h>
- #include <linux/sched/signal.h>
-+#include <linux/minmax.h>
- 
- #include <asm/syscall.h>	/* for syscall_get_* */
- 
-@@ -779,6 +780,24 @@ static int ptrace_peek_siginfo(struct task_struct *child,
- 	return ret;
- }
- 
-+#ifdef CONFIG_RSEQ
-+static long ptrace_get_rseq_configuration(struct task_struct *task,
-+					  unsigned long size, void __user *data)
-+{
-+	struct ptrace_rseq_configuration conf = {
-+		.rseq_abi_pointer = (u64)(uintptr_t)task->rseq,
-+		.rseq_abi_size = sizeof(*task->rseq),
-+		.signature = task->rseq_sig,
-+		.flags = 0,
-+	};
-+
-+	size = min_t(unsigned long, size, sizeof(conf));
-+	if (copy_to_user(data, &conf, size))
-+		return -EFAULT;
-+	return sizeof(conf);
-+}
-+#endif
-+
- #ifdef PTRACE_SINGLESTEP
- #define is_singlestep(request)		((request) == PTRACE_SINGLESTEP)
- #else
-@@ -1222,6 +1241,12 @@ int ptrace_request(struct task_struct *child, long request,
- 		ret = seccomp_get_metadata(child, addr, datavp);
- 		break;
- 
-+#ifdef CONFIG_RSEQ
-+	case PTRACE_GET_RSEQ_CONFIGURATION:
-+		ret = ptrace_get_rseq_configuration(child, addr, datavp);
-+		break;
-+#endif
-+
- 	default:
- 		break;
- 	}
