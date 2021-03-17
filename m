@@ -2,119 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CAC33F27D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:24:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD8333F283
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231643AbhCQOXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:23:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41398 "EHLO mx2.suse.de"
+        id S231840AbhCQOYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:24:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231562AbhCQOXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:23:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615990979; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hJZJQ8McgcLqhmV4lTLgUeWAHRAD2n58aQMbQhzih7I=;
-        b=vZMNbbh1KOl1d2kF5e6qI+Hpi0dlwt6xMCTnXY3I3O4t8Un8MgyRX4x04t6oHG5M5gnO0d
-        diSWHvsShphqGmaqKQLqcq2zmRc/lI0/rIbiTd6EWhoERtjkeXJn7xFE5PI6cOpTVjUenP
-        yTBMtRJFhHYUHrT2s8qxcQgyGL4e9HU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 22BC0AD72;
-        Wed, 17 Mar 2021 14:22:59 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 15:22:58 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 3/5] mm: Make alloc_contig_range handle free hugetlb
- pages
-Message-ID: <YFIQwlt0ndU0R05z@dhcp22.suse.cz>
-References: <20210317111251.17808-1-osalvador@suse.de>
- <20210317111251.17808-4-osalvador@suse.de>
+        id S231139AbhCQOXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 10:23:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5F7D64F26;
+        Wed, 17 Mar 2021 14:23:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615991030;
+        bh=JYn4ilW4yR/GNK9YFAJ+3j22BGLGZ6dc4O+X0LJU1T4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=HLIavrV6qYHdxZsWCsw7EiumTCCuqFt+lda3GxQndKs5YZOX93WACe3rK0EZAvsMA
+         XVkUkekkBPMtDwP3wDajy68q68KGhxX2JaLXiOeeaF7TI2LYJICb2/goK8S4I7A6c9
+         WWw/hIeFkPXv03ZUNroYQwwpMEgko7gCUNldRm3Ej9XO1ryjUK2EqCq1e7cnIzirTY
+         bgDzqMZK/at9ROPYn2AQy3K3ynh22pnSzPqx6zXXMXxhJEWrKyebXEOf/yMnSiYoJS
+         YLH9FBmhWpySB37XVW5vw57W/mwEIgxvZF1iu1dn4AIiUUjWK/4XIWq4L5j2UxyW/N
+         qz/oc8Is3Bf8Q==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 2A2E735226FD; Wed, 17 Mar 2021 07:23:50 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 07:23:50 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the rcu tree
+Message-ID: <20210317142350.GC2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210317163613.02cd2246@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210317111251.17808-4-osalvador@suse.de>
+In-Reply-To: <20210317163613.02cd2246@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 17-03-21 12:12:49, Oscar Salvador wrote:
-> alloc_contig_range will fail if it ever sees a HugeTLB page within the
-> range we are trying to allocate, even when that page is free and can be
-> easily reallocated.
-> This has proved to be problematic for some users of alloc_contic_range,
-> e.g: CMA and virtio-mem, where those would fail the call even when those
-> pages lay in ZONE_MOVABLE and are free.
+On Wed, Mar 17, 2021 at 04:36:13PM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> We can do better by trying to replace such page.
+> After merging the rcu tree, today's linux-next build (x86_64 allmodconfig)
+> failed like this:
 > 
-> Free hugepages are tricky to handle so as to no userspace application
-> notices disruption, we need to replace the current free hugepage with
-> a new one.
+> ERROR: modpost: "rcu_read_lock_longwait_held" [kernel/rcu/rcutorture.ko] undefined!
+> ERROR: modpost: "rcu_read_unlock_longwait" [kernel/rcu/rcutorture.ko] undefined!
+> ERROR: modpost: "rcu_read_lock_longwait" [kernel/rcu/rcutorture.ko] undefined!
 > 
-> In order to do that, a new function called alloc_and_dissolve_huge_page
-> is introduced.
-> This function will first try to get a new fresh hugepage, and if it
-> succeeds, it will replace the old one in the free hugepage pool.
+> Caused by commit
 > 
-> All operations are being handled under hugetlb_lock, so no races are
+>   bd6ae31d1b1f ("rcutorture: Add the ability to torture RCU longsleep")
+> 
+> CONFIG_LONGWAIT_RCU=y
+> CONFIG_RCU_TORTURE_TEST=m
+> 
+> I have used the rcu tree from next-20210316 for today.
 
-Slightly confusing because allocation which is a part of the process is
-certainly not done under the lock.
-"The free page replacement is done under hugetlb_lock, so no external
-user of hugetlb will notice the change. There is one tricky case when
-page's refcount is 0 because it is in the process of being released.
-A mising PageHugeFreed bit will tell us that freeing is in flight so we
-retry after dropping the hugetlb_lock. The race window should be small
-and the next retry should make a forward progress.
+Gah!  Rebase first, then retest, -then- adjust rcu/next...
 
-> possible. The only exception is when page's refcount is 0, but it still
-> has not been flagged as PageHugeFreed.
-> E.g, below scenario:
-> 
-> CPU0				CPU1
-> __free_huge_page()		isolate_or_dissolve_huge_page
-> 				  PageHuge() == T
-> 				  alloc_and_dissolve_huge_page
-> 				    alloc_fresh_huge_page()
-> 				    spin_lock(hugetlb_lock)
-> 				    // PageHuge() && !PageHugeFreed &&
-> 				    // !PageCount()
-> 				    spin_unlock(hugetlb_lock)
->   spin_lock(hugetlb_lock)
->   1) update_and_free_page
->        PageHuge() == F
->        __free_pages()
->   2) enqueue_huge_page
->        SetPageHugeFreed()
->   spin_unlock(&hugetlb_lock)
-> 				  spin_lock(hugetlb_lock)
->                                    1) PageHuge() == F (freed by case#1 from CPU0)
-> 				   2) PageHuge() == T
->                                        PageHugeFreed() == T
->                                        - proceed with replacing the page
-> 
-> In the case above we retry as the window race is quite small and we have high
-> chances to succeed next time.
-> 
-> With regard to the allocation, we restrict it to the node the page belongs
-> to with __GFP_THISNODE, meaning we do not fallback on other node's zones.
-> 
-> Note that gigantic hugetlb pages are fenced off since there is a cyclic
-> dependency between them and alloc_contig_range.
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> Acked-by: Michal Hocko <mhocko@suse.com>
+Will fix, apologies for the hassle!
 
-my ack still applies.
--- 
-Michal Hocko
-SUSE Labs
+							Thanx, Paul
