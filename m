@@ -2,125 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1ED33EB54
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4927A33EB58
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:23:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbhCQIWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbhCQIVh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:21:37 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25739C06174A;
-        Wed, 17 Mar 2021 01:21:28 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id si25so1173125ejb.1;
-        Wed, 17 Mar 2021 01:21:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5TUXB0SjDDMLLiaDUwy96EVYsflhGnsLiJ2CfUbnN4U=;
-        b=sNYvp/CJVFmdyfeyM1yCZa3fY7VK6UYfm7nFFbFBhANpuUvq75GWcqPIh9EgLjWyvs
-         KQNcQ2hem9oq9aBdoNY7jgx4aFf40mV0XQ0Wph/a5cvfrKXRl6hwsrsjc1PV/dswHVlR
-         UJbVdToLwxGtrKatkeEplo0r77qzxAGv8OP3PN7AhbeC1qBX7kQ8q24PDfNiCFSwxGAY
-         R6QBSbaRC8oBhF3kVot5BNMCOBokaC2BUyW/DgwFmQAahTJbMHa/9EB6evPGImQUm3IY
-         0a5XNBnWZm5LgDY26dDu2Wmo6qCG7PH3TNyYiXj3UvFrYRQmuBc+NIkgu46leLUtRhEx
-         eqMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5TUXB0SjDDMLLiaDUwy96EVYsflhGnsLiJ2CfUbnN4U=;
-        b=osk8HOTzhVqTdqSAyiyUzfjt88SoXqosEIpOd2UT+uIPrn1zLoQOqJxKfDPSeNfofe
-         ZgM8WAxSwSv4oj0qvYv3IFbYRFxCwX0H/IUd//Ncz2rg26q6LJ8eil2rCV1FBjz7LXK/
-         Talvd0WAH/WX/A+IoAmFV7jsnfE0ulDeKBblAcZlmix632zESCnfXak3pVxKU6xEExrU
-         uAPALgWHf7VCwlmQKoG72aMk3EB7yzgshdqUeRWcB/4PVU97dDV0v2Ot5aTBJaqKJgWk
-         lnv7JYrxA99hNd1wCsNfqsMXPQ90L8lGJlTmJx7dNguKpsmewDJhztxTCJPhFqr9YX5G
-         6YUw==
-X-Gm-Message-State: AOAM532bBLzk2nICUL1VvT0heuhHM1wYSk4hcwmwKef/yE9SLLxmaOga
-        BF9K6pM2izpNQFLQuG2+ynJZ7zf7kIj9SNwRcRk=
-X-Google-Smtp-Source: ABdhPJyI/rvF9EWYrEvJdt3XJpPME5ivMWQi/KgfDRKxG8mtlORq7Po6+GftCqS8ndIyVEN6hcLsAAgx7zOu4mjyoYc=
-X-Received: by 2002:a17:907:20f5:: with SMTP id rh21mr33990690ejb.27.1615969286949;
- Wed, 17 Mar 2021 01:21:26 -0700 (PDT)
+        id S229554AbhCQIWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:22:41 -0400
+Received: from m12-16.163.com ([220.181.12.16]:54444 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229460AbhCQIW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 04:22:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=eK5zF
+        7NTvK+Ftb2YqiJ3PTwgKdQ0IC75uTirVy/TqT8=; b=b4Af10IASKThc3UMWsQBb
+        lJeevCcKjUvKDBfY5Ot2E+PA0wbE0xVQEIm35OCMETUg5qHxw8+WaVlXT9EWq5sr
+        7YASRgLFPkI0e9lJ4oR6TAmRlTk6YsPxDLKt2bFMsO1Pi2e2GwV2/C+Y0KSJdWCp
+        pRfi4YIONqrYKGhiEXm/6g=
+Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
+        by smtp12 (Coremail) with SMTP id EMCowADHzsb+u1FgUConhA--.24732S2;
+        Wed, 17 Mar 2021 16:21:22 +0800 (CST)
+From:   zuoqilin1@163.com
+To:     josef@toxicpanda.com, axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org, zuoqilin <zuoqilin@yulong.com>
+Subject: [PATCH] drivers/block: Fix typo and remove duplicate word
+Date:   Wed, 17 Mar 2021 16:21:28 +0800
+Message-Id: <20210317082128.1193-1-zuoqilin1@163.com>
+X-Mailer: git-send-email 2.28.0.windows.1
 MIME-Version: 1.0
-References: <20210310015135.293794-1-dong.menglong@zte.com.cn>
- <20210316224820.GA225411@roeck-us.net> <CAHp75VdE3fkCjb53vBso5uJX9aEFtAOAdh5NVOSbK0YR64+jOg@mail.gmail.com>
- <20210317013758.GA134033@roeck-us.net>
-In-Reply-To: <20210317013758.GA134033@roeck-us.net>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Wed, 17 Mar 2021 16:21:14 +0800
-Message-ID: <CADxym3bu0Ds6dD6OhyvdzbWDW-KqXsqGGxt3HKj-dsedFn9GXg@mail.gmail.com>
-Subject: Re: [PATCH v4 RESEND net-next] net: socket: use BIT() for MSG_*
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     "davem@davemloft.net" <davem@davemloft.net>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "dong.menglong@zte.com.cn" <dong.menglong@zte.com.cn>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EMCowADHzsb+u1FgUConhA--.24732S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWruFy5AF18ZFWxCr1fZw43ZFb_yoW3Gwb_Ar
+        1j9w48XrWrC3s7Cr1IgrsxXr9Y9r4UZFnYyFyIgFZrXrW7WF9xAw1Dur4Ikw1qg3WUWF9r
+        u34UKrWUAr18JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnY-e5UUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/xtbBRQJYiVPAKjWEIAAAs+
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: zuoqilin <zuoqilin@yulong.com>
 
-On Wed, Mar 17, 2021 at 9:38 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Wed, Mar 17, 2021 at 01:02:51AM +0200, Andy Shevchenko wrote:
-> > On Wednesday, March 17, 2021, Guenter Roeck <linux@roeck-us.net> wrote:
-> >
-...
->
-> The problem is in net/packet/af_packet.c:packet_recvmsg(). This function,
-> as well as all other rcvmsg functions, is declared as
->
-> static int packet_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
->                           int flags)
->
-> MSG_CMSG_COMPAT (0x80000000) is set in flags, meaning its value is negative.
-> This is then evaluated in
->
->        if (flags & ~(MSG_PEEK|MSG_DONTWAIT|MSG_TRUNC|MSG_CMSG_COMPAT|MSG_ERRQUEUE))
->                 goto out;
->
-> If any of those flags is declared as BIT() and thus long, flags is
-> sign-extended to long. Since it is negative, its upper 32 bits will be set,
-> the if statement evaluates as true, and the function bails out.
->
-> This is relatively easy to fix here with, for example,
->
->         if ((unsigned int)flags & ~(MSG_PEEK|MSG_DONTWAIT|MSG_TRUNC|MSG_CMSG_COMPAT|MSG_ERRQUEUE))
->                 goto out;
->
-> but that is just a hack, and it doesn't solve the real problem:
-> Each function in struct proto_ops which passes flags passes it as int
-> (see include/linux/net.h:struct proto_ops). Each such function, if
-> called with MSG_CMSG_COMPAT set, will fail a match against
-> ~(MSG_anything) if MSG_anything is declared as BIT() or long.
->
-> As it turns out, I was kind of lucky to catch the problem: So far I have
-> seen it only on mips64 kernels with N32 userspace.
->
-> Guenter
+Change 'untill' to 'until'.
 
- Wow, now the usages of 'msg_flag' really puzzle me. Seems that
-it is used as 'unsigned int' somewhere, but 'int' somewhere
-else.
+remove duplicate word 'the'.
 
-As I found, It is used as 'int' in 'netlink_recvmsg()',
-'io_sr_msg->msg_flags', 'atalk_sendmsg()',
-'dn_recvmsg()',  'proto_ops->recvmsg()', etc.
+Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+---
+ drivers/block/nbd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-So what should I do? Revert this patch? Or fix the usages of 'flags'?
-Or change the type of MSG_* to 'unsigned int'? I prefer the last
-one(the usages of 'flags' can be fixed too, maybe later).
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 4ff71b5..8e63efc 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -1846,7 +1846,7 @@ static int nbd_genl_connect(struct sk_buff *skb, struct genl_info *info)
+ 		nbd->destroy_complete = &destroy_complete;
+ 		mutex_unlock(&nbd_index_mutex);
+ 
+-		/* Wait untill the the nbd stuff is totally destroyed */
++		/* Wait until the nbd stuff is totally destroyed */
+ 		wait_for_completion(&destroy_complete);
+ 		goto again;
+ 	}
+-- 
+1.9.1
 
 
-Thanks!
-Menglong Dong
