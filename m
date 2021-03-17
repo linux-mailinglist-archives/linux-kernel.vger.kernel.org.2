@@ -2,148 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA61F33F7EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A5733F7E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233053AbhCQSNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:13:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232951AbhCQSM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:12:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA0AC64F51;
-        Wed, 17 Mar 2021 18:12:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616004777;
-        bh=YNYfkgvTFAj03+n7BwXKskQ9kiTkKnyGG+hw6GogYSM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UCN51gHzfJJCl6MlZL8qhrf8OO3AibT5jEE4Dc1ubp7X7oknrp5Nj7XVHWNmHG6Sj
-         r1BbliCI2JKHtd8KPwg8uXb7qptmxDvoP588HfSX1roaI4t1H6A2/T8g4zmk8AkTGi
-         CSl/BoouW8nLXK4Wz6rW7SWgtzBGPBxLDDGFkQ9nSyk0GlA+Pg8/FlWJyNQq+VTYLn
-         AbLzlgcoWI/jEoxD6IHd/Y46QfT+ZerBt+T/OcOTyD82Epxdbk60weHYepTHCncEAH
-         NB4L/aA7F5gqAP0b/8kBV8wOGZdqi0uklgUpd2p/cTwe6DQePKeUJ0jyXj9S6apKxT
-         wVX3R0BNx4JYQ==
-From:   Andy Lutomirski <luto@kernel.org>
-To:     x86@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v4 8/9] kentry: Check that syscall entries and syscall exits match
-Date:   Wed, 17 Mar 2021 11:12:47 -0700
-Message-Id: <4198487ed07d3e21da48d1884e7cddadf6efa928.1616004689.git.luto@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1616004689.git.luto@kernel.org>
-References: <cover.1616004689.git.luto@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S232993AbhCQSN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232939AbhCQSMx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 14:12:53 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A262C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:12:53 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id k68so29902143qke.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:12:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=VJxxc1aWYvyrrwlQVS/dPT/va70MajmNF5/Ovh5tHqY=;
+        b=kyQ8Hiv4GYcoi4+iUdOGxaPKf5RLY4MOrgjWePaGv9iAOuYjxdMqJFk1uR/pqtJtHk
+         XeYUeXcy79FaEhJ4181E7nrIVXSXkQLf3Ffm9UDzQuIYyIh1S/fSP0Qi2cAxuzjmDs2T
+         AwHsNTd/tZDGjVvy1EPWNxnGm4xRYf8dXcXlHX1hGYa13+6oItJxzotqfQBwyJnvVtUk
+         onK7S7VXY1ktUjilkSDedQsLEpxW36TPwbdbGDdkbn0iqTx37ESwwlvewXZfttSE2Jeb
+         EmRgHWR8B7h81/49d32oY5XGve3qANSXjiroAjT6pq5nSZ+8x+MiU8DTf+hZ3Pf5sBOF
+         tP3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=VJxxc1aWYvyrrwlQVS/dPT/va70MajmNF5/Ovh5tHqY=;
+        b=p3hd2GmWevmEA+m36yvntcvGLlxvlLYd8JyELzDa/ONgCIBlWmG1nHXr+isqgy8tcq
+         /4oXQxEBFOW3IYo1XsgmMBNcnxq64ymsPb+2tHlE1HiO80WM3YHvbRd+rAzoFP/gKwvq
+         3ViUXBjUOZxxvJhgJntKXfoOsthAiTIOq2f77cHsejUndE5avqLeq3e1I+AJZ9kc7vva
+         MokLdDgdPVLfavRpvhXIBLU6mwGgp9zxBmpgsvBNDHmYkXm6qfKoZUn1YfVKV71b0Mc7
+         w/IGhpFKdhi9MJaQCy6XVWdu1yyco8jQfiSew2bnU3UHbDZsNsGHmbsZa8oGHKctUYqW
+         bQZg==
+X-Gm-Message-State: AOAM531MSzheWqrfHBr/XN4pNlzFV9W3rHDm6wEef1bAsU8DNGeBrTVb
+        nVN4SN1lxsgLfYpCl2No0Mlypnax2o0=
+X-Google-Smtp-Source: ABdhPJw/Wivaj/kWp56aU+QGo3lEFgihQqOAAkIvy99F0Ym1kOta9QfL7jBHsbZ39lHIXecHsM2e9+KlTfU=
+X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:dc6b:2250:2aa4:b316])
+ (user=badhri job=sendgmr) by 2002:a05:6214:16c1:: with SMTP id
+ d1mr370034qvz.29.1616004772217; Wed, 17 Mar 2021 11:12:52 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 11:12:48 -0700
+Message-Id: <20210317181249.1062995-1-badhri@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH v2] usb: typec: tcpm: Invoke power_supply_changed for tcpm-source-psy-
+From:   Badhri Jagan Sridharan <badhri@google.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+        stable@vger.kernel.org, Badhri Jagan Sridharan <badhri@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If arch code calls the wrong kernel entry helpers, syscall entries and
-exits can get out of sync.  Add a new field to task_struct to track the
-syscall state and validate that it transitions correctly.
+tcpm-source-psy- does not invoke power_supply_changed API when
+one of the published power supply properties is changed.
+power_supply_changed needs to be called to notify
+userspace clients(uevents) and kernel clients.
 
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Fixes: f2a8aa053c176("typec: tcpm: Represent source supply through power_supply")
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 ---
- include/linux/sched.h |  4 ++++
- init/init_task.c      |  8 ++++++++
- kernel/entry/common.c | 24 +++++++++++++++++++++++-
- 3 files changed, 35 insertions(+), 1 deletion(-)
+Changes since V1:
+- Fixed commit message as per Guenter's suggestion
+- Added Reviewed-by tags
+- cc'ed stable
+---
+ drivers/usb/typec/tcpm/tcpm.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 6e3a5eeec509..95d6d8686d98 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1368,6 +1368,10 @@ struct task_struct {
- 	struct llist_head               kretprobe_instances;
- #endif
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index 11d0c40bc47d..e8936ea17f80 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -945,6 +945,7 @@ static int tcpm_set_current_limit(struct tcpm_port *port, u32 max_ma, u32 mv)
  
-+#ifdef CONFIG_DEBUG_ENTRY
-+	bool kentry_in_syscall;
-+#endif
-+
+ 	port->supply_voltage = mv;
+ 	port->current_limit = max_ma;
++	power_supply_changed(port->psy);
+ 
+ 	if (port->tcpc->set_current_limit)
+ 		ret = port->tcpc->set_current_limit(port->tcpc, max_ma, mv);
+@@ -2931,6 +2932,7 @@ static int tcpm_pd_select_pdo(struct tcpm_port *port, int *sink_pdo,
+ 
+ 	port->pps_data.supported = false;
+ 	port->usb_type = POWER_SUPPLY_USB_TYPE_PD;
++	power_supply_changed(port->psy);
+ 
  	/*
- 	 * New fields for task_struct should be added above here, so that
- 	 * they are included in the randomized portion of task_struct.
-diff --git a/init/init_task.c b/init/init_task.c
-index 8a992d73e6fb..de4fdaac4e8b 100644
---- a/init/init_task.c
-+++ b/init/init_task.c
-@@ -212,6 +212,14 @@ struct task_struct init_task
- #ifdef CONFIG_SECCOMP
- 	.seccomp	= { .filter_count = ATOMIC_INIT(0) },
- #endif
-+#ifdef CONFIG_DEBUG_ENTRY
-+	/*
-+	 * The init task, and kernel threads in general, are considered
-+	 * to be "in a syscall".  This way they can execve() and then exit
-+	 * the supposed syscall that they were in to go to user mode.
-+	 */
-+	.kentry_in_syscall = true,
-+#endif
- };
- EXPORT_SYMBOL(init_task);
+ 	 * Select the source PDO providing the most power which has a
+@@ -2955,6 +2957,7 @@ static int tcpm_pd_select_pdo(struct tcpm_port *port, int *sink_pdo,
+ 				port->pps_data.supported = true;
+ 				port->usb_type =
+ 					POWER_SUPPLY_USB_TYPE_PD_PPS;
++				power_supply_changed(port->psy);
+ 			}
+ 			continue;
+ 		default:
+@@ -3112,6 +3115,7 @@ static unsigned int tcpm_pd_select_pps_apdo(struct tcpm_port *port)
+ 						  port->pps_data.out_volt));
+ 		port->pps_data.op_curr = min(port->pps_data.max_curr,
+ 					     port->pps_data.op_curr);
++		power_supply_changed(port->psy);
+ 	}
  
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index 8ba774184e00..152e7546be16 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -141,11 +141,21 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
- 
- long kentry_syscall_begin(struct pt_regs *regs, long syscall)
- {
--	unsigned long work = READ_ONCE(current_thread_info()->syscall_work);
-+	unsigned long work;
-+
-+	if (IS_ENABLED(CONFIG_DEBUG_ENTRY)) {
-+		DEBUG_ENTRY_WARN_ONCE(
-+			current->kentry_in_syscall,
-+			"entering syscall %ld while already in a syscall",
-+			syscall);
-+		current->kentry_in_syscall = true;
-+	}
- 
- 	CT_WARN_ON(ct_state() != CONTEXT_KERNEL);
- 	lockdep_assert_irqs_enabled();
- 
-+	work = READ_ONCE(current_thread_info()->syscall_work);
-+
- 	if (work & SYSCALL_WORK_ENTER)
- 		syscall = syscall_trace_enter(regs, syscall, work);
- 
-@@ -156,11 +166,16 @@ long kentry_syscall_begin(struct pt_regs *regs, long syscall)
- static __always_inline void __exit_to_user_mode(void)
- {
- 	instrumentation_begin();
-+
- #ifdef CONFIG_DEBUG_ENTRY
- 	DEBUG_ENTRY_WARN_ONCE(this_cpu_read(kentry_cpu_depth) != 1,
- 			      "__exit_to_user_mode called at wrong kentry cpu depth (%u)",
- 			      this_cpu_read(kentry_cpu_depth));
-+
-+	DEBUG_ENTRY_WARN_ONCE(current->kentry_in_syscall,
-+			      "exiting to user mode while in syscall context");
- #endif
-+
- 	trace_hardirqs_on_prepare();
- 	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
- 	instrumentation_end();
-@@ -317,6 +332,13 @@ void kentry_syscall_end(struct pt_regs *regs)
- 	 */
- 	if (unlikely(work & SYSCALL_WORK_EXIT))
- 		syscall_exit_work(regs, work);
-+
-+#ifdef CONFIG_DEBUG_ENTRY
-+	DEBUG_ENTRY_WARN_ONCE(!current->kentry_in_syscall,
-+			      "exiting syscall %lu without entering first", nr);
-+
-+	current->kentry_in_syscall = 0;
-+#endif
+ 	return src_pdo;
+@@ -3347,6 +3351,7 @@ static int tcpm_set_charge(struct tcpm_port *port, bool charge)
+ 			return ret;
+ 	}
+ 	port->vbus_charge = charge;
++	power_supply_changed(port->psy);
+ 	return 0;
  }
  
- noinstr void kentry_enter_from_user_mode(struct pt_regs *regs)
+@@ -3530,6 +3535,7 @@ static void tcpm_reset_port(struct tcpm_port *port)
+ 	port->try_src_count = 0;
+ 	port->try_snk_count = 0;
+ 	port->usb_type = POWER_SUPPLY_USB_TYPE_C;
++	power_supply_changed(port->psy);
+ 	port->nr_sink_caps = 0;
+ 	port->sink_cap_done = false;
+ 	if (port->tcpc->enable_frs)
+@@ -5957,7 +5963,7 @@ static int tcpm_psy_set_prop(struct power_supply *psy,
+ 		ret = -EINVAL;
+ 		break;
+ 	}
+-
++	power_supply_changed(port->psy);
+ 	return ret;
+ }
+ 
+@@ -6110,6 +6116,7 @@ struct tcpm_port *tcpm_register_port(struct device *dev, struct tcpc_dev *tcpc)
+ 	err = devm_tcpm_psy_register(port);
+ 	if (err)
+ 		goto out_role_sw_put;
++	power_supply_changed(port->psy);
+ 
+ 	port->typec_port = typec_register_port(port->dev, &port->typec_caps);
+ 	if (IS_ERR(port->typec_port)) {
 -- 
-2.30.2
+2.31.0.rc2.261.g7f71774620-goog
 
