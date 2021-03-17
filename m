@@ -2,233 +2,428 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4C333F100
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 646DA33F0FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbhCQNSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 09:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230434AbhCQNSN (ORCPT
+        id S230468AbhCQNRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 09:17:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35098 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230343AbhCQNRk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 09:18:13 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E02C06174A;
-        Wed, 17 Mar 2021 06:18:02 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id j25so1083723pfe.2;
-        Wed, 17 Mar 2021 06:18:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=5vT/eDDB8bb1mbvIFsQc8hatBbQbyytVF3slTgeiXPg=;
-        b=n1UfrUrvTupANEHpSD12z4KQlD91GER/yykTc/0i0gP1Fp1j/qEaJKREGpZHQ93aw0
-         rzjCTFe7HgbgVkZM4TJ7j7q/XS7bhjAcnD2AQPjrcY4Unw7YG7MsIuypYA/j1Q3yVit4
-         /cef5pb3YSaIOPJTJyY6kf8Qn5OWBOLZYm82/7gCBUUHoTFbHoYtlpYv+AoZy6NRGwnL
-         RR3thPYg7MdsnoTCqiI0DOXuOWeEY+veah5PJbHpbhw9OKGkW3t9W1mpoPPPsVBcnOjg
-         2HfxD3H4lDtEhQRdB+R3SUcJX/3ppMJCWkDTsgafJovh8sIyzNM79PgzRLdeHzgpqIsm
-         ytYQ==
+        Wed, 17 Mar 2021 09:17:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615987059;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Re55l15tAzqIwgbcPGT5mg08j9IQc5Vt795kkC6STmU=;
+        b=VY0jmqM+v0RQPrrijgsHz0WSxmc/ljDWlRTUonS93TPz771TIYGMXbB/HwZxygS6ABOlZF
+        a6Y5OB04rZ2av+fe8RLKS74t349wOfMNDAw0arvuNGrMq8mV0qKAuq1H/bFgIOwgqfglm1
+        ZashLht2vikOkGNm/CXmkiyQeQ0h32A=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-g3fxlEofPc20Jm1kd2m2dQ-1; Wed, 17 Mar 2021 09:17:37 -0400
+X-MC-Unique: g3fxlEofPc20Jm1kd2m2dQ-1
+Received: by mail-wr1-f71.google.com with SMTP id x9so18244840wro.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 06:17:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=5vT/eDDB8bb1mbvIFsQc8hatBbQbyytVF3slTgeiXPg=;
-        b=MdikU7NtWokzN/rZ5hdzjXp1L1jLVydaxn5MTO2CC5XMTHMyo7nAdzRixt2Y7EEOPU
-         Tb76eHL73HctgHPGF0/ztEHsoivgNGwYnERv0TDzG5+MWF9bUJ0rbWD0KL41cAera5qG
-         y7YdbxR2LrK3UrnwcqySCIxHp3emHwh9ejDLmdYdBJel+Y+b485Isifx4Pbv5A+c1DH0
-         3+lZV6wo+PDJ7BMcUpA4XCqA3dcGl+vpgZ3EoozThPMvMNNk4XjCoNorfEiD++n/Awbm
-         KMp1BAQvlNdWy/hJ147P3AVcopJZjwxNzQP4MS8rg9WlmrPgW3dfpSIi+6kU63cNR1Zp
-         Db5w==
-X-Gm-Message-State: AOAM533X7lM4AYHoUzzYNXypLV/h7AuOTLVAY7fCqhtpI0D7CkPLtk37
-        z6AjkXmtto7ZQn5YqM8c+d4=
-X-Google-Smtp-Source: ABdhPJz+s0gm0d2B/TE+YSJcLnevBLwGJQz0kw2vEwQf8hum46D1ml5DnAMkzD4xXWvQxBeHcdaQ/A==
-X-Received: by 2002:a63:410:: with SMTP id 16mr2640193pge.220.1615987081582;
-        Wed, 17 Mar 2021 06:18:01 -0700 (PDT)
-Received: from localhost ([103.248.31.158])
-        by smtp.gmail.com with ESMTPSA id w191sm7321229pfd.25.2021.03.17.06.18.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 06:18:01 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 18:47:18 +0530
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     alex.williamson@redhat.com, raphael.norwitz@nutanix.com,
-        linux-pci@vger.kernel.org, bhelgaas@google.com,
-        linux-kernel@vger.kernel.org, alay.shah@nutanix.com,
-        suresh.gumpula@nutanix.com, shyam.rajendran@nutanix.com,
-        felipe@nutanix.com
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <20210317131718.3uz7zxnvoofpunng@archlinux>
-References: <20210315083409.08b1359b@x1.home.shazbot.org>
- <YE94InPHLWmOaH/b@unreal>
- <20210315153341.miip637z35mwv7fv@archlinux>
- <20210315102950.230de1d6@x1.home.shazbot.org>
- <20210315183226.GA14801@raphael-debian-dev>
- <YFGDgqdTLBhQL8mN@unreal>
- <20210317102447.73no7mhox75xetlf@archlinux>
- <YFHh3bopQo/CRepV@unreal>
- <20210317112309.nborigwfd26px2mj@archlinux>
- <YFHsW/1MF6ZSm8I2@unreal>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Re55l15tAzqIwgbcPGT5mg08j9IQc5Vt795kkC6STmU=;
+        b=ACAY3Ti2Apgq95HMrf09p3Sr4CV80QyefBmmoE/W9QheT4MM5dg9oGLDr3fim31FHH
+         T/jRKXalZ3j4W/zgB6Zel0gNmHC4HyURN5+ulYBfwNG5d+/2yh79Tem03IEWHLmkcZmK
+         K5sl9nYz0w84e1fTZP5dkC8wlXJocBtrkgpuhvx+koG+k2ughfJSB75Ko2FcQYWNh57p
+         H1DkRmzkVpKdttjWc1v629lnOlnN8DzELiY/hSrOFaPkZvKUiDOfsrbe7GbumRiG/Axu
+         yCel1Blb51H8XR9l4lG2WGmGSSnt8AgD8iddALJvF4Q+nWORHMU8OHjPteNQRN0lv/uq
+         lLEw==
+X-Gm-Message-State: AOAM531IgCIc674MRiFSC2XT4aqeU8C94UVfjUgtw5ThPfNIzwxRmsIi
+        lwEpIb7vMWXb2cqBVaiAh4UzdjF0Jd1yK9EN3Vz3DJ0K/FGOl+F7Wsce2UeUoCdWk3+9IUilaxU
+        COEu//Nt8HfBJkeQ9K7EQsgDD
+X-Received: by 2002:a1c:4c10:: with SMTP id z16mr3674545wmf.136.1615987056689;
+        Wed, 17 Mar 2021 06:17:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxnMgtlXJkpLBs3ujd4ADqeIXJIIf4RKhRMtfQQ6mbPNllFwEs4kSZuQmcCVjXNxMWuy2nb6w==
+X-Received: by 2002:a1c:4c10:: with SMTP id z16mr3674514wmf.136.1615987056410;
+        Wed, 17 Mar 2021 06:17:36 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id n6sm29845402wrw.63.2021.03.17.06.17.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 06:17:35 -0700 (PDT)
+Subject: Re: [PATCH 2/4] KVM: nVMX: Handle dynamic MSR intercept toggling
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>,
+        Yuan Yao <yaoyuan0329os@gmail.com>
+References: <20210316184436.2544875-1-seanjc@google.com>
+ <20210316184436.2544875-3-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <66bc75f6-58c5-c67f-f268-220d371022a2@redhat.com>
+Date:   Wed, 17 Mar 2021 14:17:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YFHsW/1MF6ZSm8I2@unreal>
+In-Reply-To: <20210316184436.2544875-3-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/03/17 01:47PM, Leon Romanovsky wrote:
-> On Wed, Mar 17, 2021 at 04:53:09PM +0530, Amey Narkhede wrote:
-> > On 21/03/17 01:02PM, Leon Romanovsky wrote:
-> > > On Wed, Mar 17, 2021 at 03:54:47PM +0530, Amey Narkhede wrote:
-> > > > On 21/03/17 06:20AM, Leon Romanovsky wrote:
-> > > > > On Mon, Mar 15, 2021 at 06:32:32PM +0000, Raphael Norwitz wrote:
-> > > > > > On Mon, Mar 15, 2021 at 10:29:50AM -0600, Alex Williamson wrote:
-> > > > > > > On Mon, 15 Mar 2021 21:03:41 +0530
-> > > > > > > Amey Narkhede <ameynarkhede03@gmail.com> wrote:
-> > > > > > >
-> > > > > > > > On 21/03/15 05:07PM, Leon Romanovsky wrote:
-> > > > > > > > > On Mon, Mar 15, 2021 at 08:34:09AM -0600, Alex Williamson wrote:
-> > > > > > > > > > On Mon, 15 Mar 2021 14:52:26 +0100
-> > > > > > > > > > Pali Rohár <pali@kernel.org> wrote:
-> > > > > > > > > >
-> > > > > > > > > > > On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:
-> > > > > > > > > > > > slot reset (pci_dev_reset_slot_function) and secondary bus
-> > > > > > > > > > > > reset(pci_parent_bus_reset) which I think are hot reset and
-> > > > > > > > > > > > warm reset respectively.
-> > > > > > > > > > >
-> > > > > > > > > > > No. PCI secondary bus reset = PCIe Hot Reset. Slot reset is just another
-> > > > > > > > > > > type of reset, which is currently implemented only for PCIe hot plug
-> > > > > > > > > > > bridges and for PowerPC PowerNV platform and it just call PCI secondary
-> > > > > > > > > > > bus reset with some other hook. PCIe Warm Reset does not have API in
-> > > > > > > > > > > kernel and therefore drivers do not export this type of reset via any
-> > > > > > > > > > > kernel function (yet).
-> > > > > > > > > >
-> > > > > > > > > > Warm reset is beyond the scope of this series, but could be implemented
-> > > > > > > > > > in a compatible way to fit within the pci_reset_fn_methods[] array
-> > > > > > > > > > defined here.  Note that with this series the resets available through
-> > > > > > > > > > pci_reset_function() and the per device reset attribute is sysfs remain
-> > > > > > > > > > exactly the same as they are currently.  The bus and slot reset
-> > > > > > > > > > methods used here are limited to devices where only a single function is
-> > > > > > > > > > affected by the reset, therefore it is not like the patch you proposed
-> > > > > > > > > > which performed a reset irrespective of the downstream devices.  This
-> > > > > > > > > > series only enables selection of the existing methods.  Thanks,
-> > > > > > > > >
-> > > > > > > > > Alex,
-> > > > > > > > >
-> > > > > > > > > I asked the patch author here [1], but didn't get any response, maybe
-> > > > > > > > > you can answer me. What is the use case scenario for this functionality?
-> > > > > > > > >
-> > > > > > > > > Thanks
-> > > > > > > > >
-> > > > > > > > > [1] https://lore.kernel.org/lkml/YE389lAqjJSeTolM@unreal/
-> > > > > > > > >
-> > > > > > > > Sorry for not responding immediately. There were some buggy wifi cards
-> > > > > > > > which needed FLR explicitly not sure if that behavior is fixed in
-> > > > > > > > drivers. Also there is use a case at Nutanix but the engineer who
-> > > > > > > > is involved is on PTO that is why I did not respond immediately as
-> > > > > > > > I don't know the details yet.
-> > > > > > >
-> > > > > > > And more generally, devices continue to have reset issues and we
-> > > > > > > impose a fixed priority in our ordering.  We can and probably should
-> > > > > > > continue to quirk devices when we find broken resets so that we have
-> > > > > > > the best default behavior, but it's currently not easy for an end user
-> > > > > > > to experiment, ie. this reset works, that one doesn't.  We might also
-> > > > > > > have platform issues where a given reset works better on a certain
-> > > > > > > platform.  Exposing a way to test these things might lead to better
-> > > > > > > quirks.  In the case I think Pali was looking for, they wanted a
-> > > > > > > mechanism to force a bus reset, if this was in reference to a single
-> > > > > > > function device, this could be accomplished by setting a priority for
-> > > > > > > that mechanism, which would translate to not only the sysfs reset
-> > > > > > > attribute, but also the reset mechanism used by vfio-pci.  Thanks,
-> > > > > > >
-> > > > > > > Alex
-> > > > > > >
-> > > > > >
-> > > > > > To confirm from our end - we have seen many such instances where default
-> > > > > > reset methods have not worked well on our platform. Debugging these
-> > > > > > issues is painful in practice, and this interface would make it far
-> > > > > > easier.
-> > > > > >
-> > > > > > Having an interface like this would also help us better communicate the
-> > > > > > issues we find with upstream. Allowing others to more easily test our
-> > > > > > (or other entities') findings should give better visibility into
-> > > > > > which issues apply to the device in general and which are platform
-> > > > > > specific. In disambiguating the former from the latter, we should be
-> > > > > > able to better quirk devices for everyone, and in the latter cases, this
-> > > > > > interface allows for a safer and more elegant solution than any of the
-> > > > > > current alternatives.
-> > > > >
-> > > > > So to summarize, we are talking about test and debug interface to
-> > > > > overcome HW bugs, am I right?
-> > > > >
-> > > > > My personal experience shows that once the easy workaround exists
-> > > > > (and write to generally available sysfs is very simple), the vendors
-> > > > > and users desire for proper fix decreases drastically. IMHO, we will
-> > > > > see increase of copy/paste in SO and blog posts, but reduce in quirks.
-> > > > >
-> > > > > My 2-cents.
-> > > > >
-> > > > I agree with your point but at least it gives the userspace ability
-> > > > to use broken device until bug is fixed in upstream.
-> > >
-> > > As I said, I don't expect many fixes once "userspace" will be able to
-> > > use cheap workaround. There is no incentive to fix it.
-> > >
-> > > > This is also applicable for obscure devices without upstream
-> > > > drivers for example custom FPGA based devices.
-> > >
-> > > This is not relevant to upstream kernel. Those vendors ship everything
-> > > custom, they don't need upstream, we don't need them :)
-> > >
-> > By custom I meant hobbyists who could tinker with their custom FPGA.
->
-> I invite such hobbyists to send patches and include their FPGA in
-> upstream kernel.
->
-> >
-> > > > Another main application which I forgot to mention is virtualization
-> > > > where vmm wants to reset the device when the guest is reset,
-> > > > to emulate machine reboot as closely as possible.
-> > >
-> > > It can work in very narrow case, because reset will cause to device
-> > > reprobe and most likely the driver will be different from the one that
-> > > started reset. I can imagine that net devices will lose their state and
-> > > config after such reset too.
-> > >
-> > Not sure if I got that 100% right. The pci_reset_function() function
-> > saves and restores device state over the reset.
->
-> I'm talking about netdev state, but whatever given the existence of
-> sysfs reset knob.
->
-> >
-> > > IMHO, it will be saner for everyone if virtualization don't try such resets.
-> > >
-> > > Thanks
-> > >
-> > The exists reset sysfs attribute was added for exactly this case
-> > though.
->
-> I didn't know the rationale behind that file till you said and I
-> googled libvirt discussion, so ok. Do you propose that libvirt
-> will manage database of devices and their working reset types?
->
-I don't have much idea about internals of libvirt but why would
-it need to manage database of working reset types? It could just
-read new reset_methods attribute to get the list of supported reset
-methods.
-> I'm not against this patch, just want to raise an attention that the
-> outcome of this patch will be decrease in fixes of broken devices.
->
-> Thanks
->
-That makes sense but that isn't any different from existing reset
-attribute. This patch inhances it and allows selecting a device supported
-reset method instead of using first available reset method according to
-existing hardcoded policy.
+On 16/03/21 19:44, Sean Christopherson wrote:
+> Always check vmcs01's MSR bitmap when merging L0 and L1 bitmaps for L2,
+> and always update the relevant bits in vmcs02.  This fixes two distinct,
+> but intertwined bugs related to dynamic MSR bitmap modifications.
+> 
+> The first issue is that KVM fails to enable MSR interception in vmcs02
+> for the FS/GS base MSRs if L1 first runs L2 with interception disabled,
+> and later enables interception.
+> 
+> The second issue is that KVM fails to honor userspace MSR filtering when
+> preparing vmcs02.
+> 
+> Fix both issues simultaneous as fixing only one of the issues (doesn't
+> matter which) would create a mess that no one should have to bisect.
+> Fixing only the first bug would exacerbate the MSR filtering issue as
+> userspace would see inconsistent behavior depending on the whims of L1.
+> Fixing only the second bug (MSR filtering) effectively requires fixing
+> the first, as the nVMX code only knows how to transition vmcs02's
+> bitmap from 1->0.
+> 
+> Move the various accessor/mutators buried in vmx.c into vmx.h so that
+> they can be shared by the nested code.
+> 
+> Fixes: 1a155254ff93 ("KVM: x86: Introduce MSR filtering")
+> Fixes: d69129b4e46a ("KVM: nVMX: Disable intercept for FS/GS base MSRs in vmcs02 when possible")
+> Cc: stable@vger.kernel.org
+> Cc: Alexander Graf <graf@amazon.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/vmx/nested.c | 108 +++++++++++++++++---------------------
+>   arch/x86/kvm/vmx/vmx.c    |  67 ++---------------------
+>   arch/x86/kvm/vmx/vmx.h    |  63 ++++++++++++++++++++++
+>   3 files changed, 115 insertions(+), 123 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index fd334e4aa6db..aff41a432a56 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -475,29 +475,6 @@ static int nested_vmx_check_tpr_shadow_controls(struct kvm_vcpu *vcpu,
+>   	return 0;
+>   }
+>   
+> -/*
+> - * Check if MSR is intercepted for L01 MSR bitmap.
+> - */
+> -static bool msr_write_intercepted_l01(struct kvm_vcpu *vcpu, u32 msr)
+> -{
+> -	unsigned long *msr_bitmap;
+> -	int f = sizeof(unsigned long);
+> -
+> -	if (!cpu_has_vmx_msr_bitmap())
+> -		return true;
+> -
+> -	msr_bitmap = to_vmx(vcpu)->vmcs01.msr_bitmap;
+> -
+> -	if (msr <= 0x1fff) {
+> -		return !!test_bit(msr, msr_bitmap + 0x800 / f);
+> -	} else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff)) {
+> -		msr &= 0x1fff;
+> -		return !!test_bit(msr, msr_bitmap + 0xc00 / f);
+> -	}
+> -
+> -	return true;
+> -}
+> -
+>   /*
+>    * If a msr is allowed by L0, we should check whether it is allowed by L1.
+>    * The corresponding bit will be cleared unless both of L0 and L1 allow it.
+> @@ -551,6 +528,34 @@ static inline void enable_x2apic_msr_intercepts(unsigned long *msr_bitmap)
+>   	}
+>   }
+>   
+> +#define BUILD_NVMX_MSR_INTERCEPT_HELPER(rw)					\
+> +static inline									\
+> +void nested_vmx_set_msr_##rw##_intercept(struct vcpu_vmx *vmx,			\
+> +					 unsigned long *msr_bitmap_l1,		\
+> +					 unsigned long *msr_bitmap_l0, u32 msr)	\
+> +{										\
+> +	if (vmx_test_msr_bitmap_##rw(vmx->vmcs01.msr_bitmap, msr) ||		\
+> +	    vmx_test_msr_bitmap_##rw(msr_bitmap_l1, msr))			\
+> +		vmx_set_msr_bitmap_##rw(msr_bitmap_l0, msr);			\
+> +	else									\
+> +		vmx_clear_msr_bitmap_##rw(msr_bitmap_l0, msr);			\
+> +}
+> +BUILD_NVMX_MSR_INTERCEPT_HELPER(read)
+> +BUILD_NVMX_MSR_INTERCEPT_HELPER(write)
+> +
+> +static inline void nested_vmx_set_intercept_for_msr(struct vcpu_vmx *vmx,
+> +						    unsigned long *msr_bitmap_l1,
+> +						    unsigned long *msr_bitmap_l0,
+> +						    u32 msr, int types)
+> +{
+> +	if (types & MSR_TYPE_R)
+> +		nested_vmx_set_msr_read_intercept(vmx, msr_bitmap_l1,
+> +						  msr_bitmap_l0, msr);
+> +	if (types & MSR_TYPE_W)
+> +		nested_vmx_set_msr_write_intercept(vmx, msr_bitmap_l1,
+> +						   msr_bitmap_l0, msr);
+> +}
+> +
+>   /*
+>    * Merge L0's and L1's MSR bitmap, return false to indicate that
+>    * we do not use the hardware.
+> @@ -558,10 +563,11 @@ static inline void enable_x2apic_msr_intercepts(unsigned long *msr_bitmap)
+>   static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
+>   						 struct vmcs12 *vmcs12)
+>   {
+> +	struct vcpu_vmx *vmx = to_vmx(vcpu);
+>   	int msr;
+>   	unsigned long *msr_bitmap_l1;
+> -	unsigned long *msr_bitmap_l0 = to_vmx(vcpu)->nested.vmcs02.msr_bitmap;
+> -	struct kvm_host_map *map = &to_vmx(vcpu)->nested.msr_bitmap_map;
+> +	unsigned long *msr_bitmap_l0 = vmx->nested.vmcs02.msr_bitmap;
+> +	struct kvm_host_map *map = &vmx->nested.msr_bitmap_map;
+>   
+>   	/* Nothing to do if the MSR bitmap is not in use.  */
+>   	if (!cpu_has_vmx_msr_bitmap() ||
+> @@ -612,42 +618,26 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
+>   		}
+>   	}
+>   
+> -	/* KVM unconditionally exposes the FS/GS base MSRs to L1. */
+> -	nested_vmx_disable_intercept_for_msr(msr_bitmap_l1, msr_bitmap_l0,
+> -					     MSR_FS_BASE, MSR_TYPE_RW);
+> -
+> -	nested_vmx_disable_intercept_for_msr(msr_bitmap_l1, msr_bitmap_l0,
+> -					     MSR_GS_BASE, MSR_TYPE_RW);
+> -
+> -	nested_vmx_disable_intercept_for_msr(msr_bitmap_l1, msr_bitmap_l0,
+> -					     MSR_KERNEL_GS_BASE, MSR_TYPE_RW);
+> -
+>   	/*
+> -	 * Checking the L0->L1 bitmap is trying to verify two things:
+> -	 *
+> -	 * 1. L0 gave a permission to L1 to actually passthrough the MSR. This
+> -	 *    ensures that we do not accidentally generate an L02 MSR bitmap
+> -	 *    from the L12 MSR bitmap that is too permissive.
+> -	 * 2. That L1 or L2s have actually used the MSR. This avoids
+> -	 *    unnecessarily merging of the bitmap if the MSR is unused. This
+> -	 *    works properly because we only update the L01 MSR bitmap lazily.
+> -	 *    So even if L0 should pass L1 these MSRs, the L01 bitmap is only
+> -	 *    updated to reflect this when L1 (or its L2s) actually write to
+> -	 *    the MSR.
+> +	 * Always check vmcs01's bitmap to honor userspace MSR filters and any
+> +	 * other runtime changes to vmcs01's bitmap, e.g. dynamic pass-through.
+>   	 */
+> -	if (!msr_write_intercepted_l01(vcpu, MSR_IA32_SPEC_CTRL))
+> -		nested_vmx_disable_intercept_for_msr(
+> -					msr_bitmap_l1, msr_bitmap_l0,
+> -					MSR_IA32_SPEC_CTRL,
+> -					MSR_TYPE_R | MSR_TYPE_W);
+> -
+> -	if (!msr_write_intercepted_l01(vcpu, MSR_IA32_PRED_CMD))
+> -		nested_vmx_disable_intercept_for_msr(
+> -					msr_bitmap_l1, msr_bitmap_l0,
+> -					MSR_IA32_PRED_CMD,
+> -					MSR_TYPE_W);
+> -
+> -	kvm_vcpu_unmap(vcpu, &to_vmx(vcpu)->nested.msr_bitmap_map, false);
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_FS_BASE, MSR_TYPE_RW);
+> +
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_GS_BASE, MSR_TYPE_RW);
+> +
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_KERNEL_GS_BASE, MSR_TYPE_RW);
+> +
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_IA32_SPEC_CTRL, MSR_TYPE_RW);
+> +
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_IA32_PRED_CMD, MSR_TYPE_W);
+> +
+> +	kvm_vcpu_unmap(vcpu, &vmx->nested.msr_bitmap_map, false);
+>   
+>   	return true;
+>   }
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index c8a4a548e96b..9972e5d1c44e 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -879,29 +879,6 @@ void vmx_update_exception_bitmap(struct kvm_vcpu *vcpu)
+>   	vmcs_write32(EXCEPTION_BITMAP, eb);
+>   }
+>   
+> -/*
+> - * Check if MSR is intercepted for currently loaded MSR bitmap.
+> - */
+> -static bool msr_write_intercepted(struct kvm_vcpu *vcpu, u32 msr)
+> -{
+> -	unsigned long *msr_bitmap;
+> -	int f = sizeof(unsigned long);
+> -
+> -	if (!cpu_has_vmx_msr_bitmap())
+> -		return true;
+> -
+> -	msr_bitmap = to_vmx(vcpu)->loaded_vmcs->msr_bitmap;
+> -
+> -	if (msr <= 0x1fff) {
+> -		return !!test_bit(msr, msr_bitmap + 0x800 / f);
+> -	} else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff)) {
+> -		msr &= 0x1fff;
+> -		return !!test_bit(msr, msr_bitmap + 0xc00 / f);
+> -	}
+> -
+> -	return true;
+> -}
+> -
+>   static void clear_atomic_switch_msr_special(struct vcpu_vmx *vmx,
+>   		unsigned long entry, unsigned long exit)
+>   {
+> @@ -3709,46 +3686,6 @@ void free_vpid(int vpid)
+>   	spin_unlock(&vmx_vpid_lock);
+>   }
+>   
+> -static void vmx_clear_msr_bitmap_read(ulong *msr_bitmap, u32 msr)
+> -{
+> -	int f = sizeof(unsigned long);
+> -
+> -	if (msr <= 0x1fff)
+> -		__clear_bit(msr, msr_bitmap + 0x000 / f);
+> -	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
+> -		__clear_bit(msr & 0x1fff, msr_bitmap + 0x400 / f);
+> -}
+> -
+> -static void vmx_clear_msr_bitmap_write(ulong *msr_bitmap, u32 msr)
+> -{
+> -	int f = sizeof(unsigned long);
+> -
+> -	if (msr <= 0x1fff)
+> -		__clear_bit(msr, msr_bitmap + 0x800 / f);
+> -	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
+> -		__clear_bit(msr & 0x1fff, msr_bitmap + 0xc00 / f);
+> -}
+> -
+> -static void vmx_set_msr_bitmap_read(ulong *msr_bitmap, u32 msr)
+> -{
+> -	int f = sizeof(unsigned long);
+> -
+> -	if (msr <= 0x1fff)
+> -		__set_bit(msr, msr_bitmap + 0x000 / f);
+> -	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
+> -		__set_bit(msr & 0x1fff, msr_bitmap + 0x400 / f);
+> -}
+> -
+> -static void vmx_set_msr_bitmap_write(ulong *msr_bitmap, u32 msr)
+> -{
+> -	int f = sizeof(unsigned long);
+> -
+> -	if (msr <= 0x1fff)
+> -		__set_bit(msr, msr_bitmap + 0x800 / f);
+> -	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
+> -		__set_bit(msr & 0x1fff, msr_bitmap + 0xc00 / f);
+> -}
+> -
+>   static __always_inline void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu,
+>   							  u32 msr, int type)
+>   {
+> @@ -6722,7 +6659,9 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+>   	 * If the L02 MSR bitmap does not intercept the MSR, then we need to
+>   	 * save it.
+>   	 */
+> -	if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
+> +	if (unlikely(cpu_has_vmx_msr_bitmap() &&
+> +		     vmx_test_msr_bitmap_write(vmx->loaded_vmcs->msr_bitmap,
+> +					       MSR_IA32_SPEC_CTRL)))
+>   		vmx->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
+>   
+>   	x86_spec_ctrl_restore_host(vmx->spec_ctrl, 0);
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index 0fb3236b0283..a6000c91b897 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -393,6 +393,69 @@ void vmx_set_intercept_for_msr(struct kvm_vcpu *vcpu,
+>   	u32 msr, int type, bool value);
+>   void vmx_update_cpu_dirty_logging(struct kvm_vcpu *vcpu);
+>   
+> +static inline bool vmx_test_msr_bitmap_read(ulong *msr_bitmap, u32 msr)
+> +{
+> +	int f = sizeof(unsigned long);
+> +
+> +	if (msr <= 0x1fff)
+> +		return test_bit(msr, msr_bitmap + 0x000 / f);
+> +	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
+> +		return test_bit(msr & 0x1fff, msr_bitmap + 0x400 / f);
+> +	return true;
+> +}
+> +
+> +static inline bool vmx_test_msr_bitmap_write(ulong *msr_bitmap, u32 msr)
+> +{
+> +	int f = sizeof(unsigned long);
+> +
+> +	if (msr <= 0x1fff)
+> +		return test_bit(msr, msr_bitmap + 0x800 / f);
+> +	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
+> +		return test_bit(msr & 0x1fff, msr_bitmap + 0xc00 / f);
+> +	return true;
+> +}
+> +
+> +static inline void vmx_clear_msr_bitmap_read(ulong *msr_bitmap, u32 msr)
+> +{
+> +	int f = sizeof(unsigned long);
+> +
+> +	if (msr <= 0x1fff)
+> +		__clear_bit(msr, msr_bitmap + 0x000 / f);
+> +	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
+> +		__clear_bit(msr & 0x1fff, msr_bitmap + 0x400 / f);
+> +}
+> +
+> +static inline void vmx_clear_msr_bitmap_write(ulong *msr_bitmap, u32 msr)
+> +{
+> +	int f = sizeof(unsigned long);
+> +
+> +	if (msr <= 0x1fff)
+> +		__clear_bit(msr, msr_bitmap + 0x800 / f);
+> +	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
+> +		__clear_bit(msr & 0x1fff, msr_bitmap + 0xc00 / f);
+> +}
+> +
+> +static inline void vmx_set_msr_bitmap_read(ulong *msr_bitmap, u32 msr)
+> +{
+> +	int f = sizeof(unsigned long);
+> +
+> +	if (msr <= 0x1fff)
+> +		__set_bit(msr, msr_bitmap + 0x000 / f);
+> +	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
+> +		__set_bit(msr & 0x1fff, msr_bitmap + 0x400 / f);
+> +}
+> +
+> +static inline void vmx_set_msr_bitmap_write(ulong *msr_bitmap, u32 msr)
+> +{
+> +	int f = sizeof(unsigned long);
+> +
+> +	if (msr <= 0x1fff)
+> +		__set_bit(msr, msr_bitmap + 0x800 / f);
+> +	else if ((msr >= 0xc0000000) && (msr <= 0xc0001fff))
+> +		__set_bit(msr & 0x1fff, msr_bitmap + 0xc00 / f);
+> +}
+> +
+> +
+>   static inline u8 vmx_get_rvi(void)
+>   {
+>   	return vmcs_read16(GUEST_INTR_STATUS) & 0xff;
+> 
 
-Thanks,
-Amey
+Feel free to squash patch 3 in this one or reorder it before; it makes 
+sense to make them macros when you go from 4 to 6 functions.
+
+Paolo
+
