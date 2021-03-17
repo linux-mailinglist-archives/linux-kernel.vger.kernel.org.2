@@ -2,156 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA4633E9BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 178D933E9C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbhCQG0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 02:26:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230430AbhCQGZ4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 02:25:56 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FC3C06174A;
-        Tue, 16 Mar 2021 23:25:56 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so2660250pjh.1;
-        Tue, 16 Mar 2021 23:25:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WZnEda0T3pGShx0QqEfgouMD/KA4MVCDJ6OoGinC0gE=;
-        b=fLYlcSfNjjYf4im0CmwXX9uFu0R6/2elBdnUDdyYVOlkYQAe04v1WgcG7ZIGlpljT9
-         SLjBuUq0fzfMpOxz7InlDaQ4plALW4GVs7HLjWHat3QIhZxnYNHZKbTvtG9NtKWzC/5E
-         /MHpVEnov74/4Jb2KNQKv3r6lRMpiz4IbCFj6ozscN3pw0QWY/OlApapX32lg8ev/Geb
-         idkPjx22igBJf+xnGC6bLxyblUbSdNaRC7JGRPDPnfOVbd0+5lLwOns57KjSaIMeIuI7
-         UL6xeHwUjI8k8Z0g/0VRjA1ERirFFmiNfgZyWk+OUGKwFDiOhV1yCAI+/3GySAB0aDgU
-         Xo8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WZnEda0T3pGShx0QqEfgouMD/KA4MVCDJ6OoGinC0gE=;
-        b=OY3wOTPj+Q2Mp3sSZK94peHdF5dHv1oSYpv33qE8qN3nBXG7mRIkNcybg/Ab8ycfqN
-         7Tkh0Rw9MbOp3CLO4SKYUBx8h8WOtIW0BKEKb0YgNk7yfq4PVLRywxqZSMJgzjpNt4rx
-         8eAsCdByP8f8FckdELAyhMCLOspY8bCg4gWaJLozVsOs2y8lUaYPLo2IEAo7Lv2y3g+1
-         mUFEwhLxs8l3Qrt/DXJu6a7qHsYzwtrzuF51Xk4uUlCWOXxKxkbJUFAsO+3NJcu7GR0S
-         rtiBqeAxaKx3WOeJv4znPbGas2UNX/e6MaP+RRptZRQQRrqP2WcuupPA7VG9513Wq/co
-         S0PA==
-X-Gm-Message-State: AOAM532ckFNy/co6vMEA92wLRD3Aghbu+hYQmlYk4mzDZ8m96rvlYnHB
-        h7sSvsP39xGuodXXtpfuwIE=
-X-Google-Smtp-Source: ABdhPJyRI+bGimVthTrlN06P4ADDSwiZIZdfQrOqluFmWVNVhhZm6lHvDqdPI9QCbgNXHKtlH+H10g==
-X-Received: by 2002:a17:902:b60d:b029:e6:7a9:7f4 with SMTP id b13-20020a170902b60db02900e607a907f4mr2850305pls.3.1615962355626;
-        Tue, 16 Mar 2021 23:25:55 -0700 (PDT)
-Received: from bobo.ozlabs.ibm.com (58-6-239-121.tpgi.com.au. [58.6.239.121])
-        by smtp.gmail.com with ESMTPSA id s19sm17959620pfh.168.2021.03.16.23.25.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 23:25:55 -0700 (PDT)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Ding Tianhong <dingtianhong@huawei.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH v13 14/14] powerpc/64s/radix: Enable huge vmalloc mappings
-Date:   Wed, 17 Mar 2021 16:24:02 +1000
-Message-Id: <20210317062402.533919-15-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20210317062402.533919-1-npiggin@gmail.com>
-References: <20210317062402.533919-1-npiggin@gmail.com>
+        id S229978AbhCQGdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 02:33:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51698 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229492AbhCQGdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 02:33:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63A3364F8F;
+        Wed, 17 Mar 2021 06:33:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615962799;
+        bh=Z8KXPQq77SzPlEdNFIzyWTeYlgt7pgmbHOi0pXY5px0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lXJurWpsVncdIR+/DUZcK4BImoapn2F3pf8BTX6UkC6HFWbsB/YZh2CHB0N5d5czo
+         JVEX9edy1NEYkySoL6rn5s4ytaIFBci5Iu15QZFVrVIA0e2yYspGy0d/fCccB+CXTp
+         C6eAEpWHPgpe67zDFJPJ/Satnt+w3tYWqgun2bskZCKgHg5Jq4djSn0/XbRi+uZ2z5
+         D8eFn67wvoTZMAgTkWHtOGF/ojTvu30S3SjRarrKDygR9uUG7svgez37ocU1HxyBfL
+         cl47c5KZEYFgaq02EDg+Luz7VI1BVSUIcVhsHeM8f0lb157M530MJ0w9UKB4pNfZoy
+         VJZ7n7tLXyerQ==
+Date:   Wed, 17 Mar 2021 08:33:11 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Jinyang He <hejinyang@loongson.cn>,
+        Youling Tang <tangyouling@loongson.cn>,
+        Tobias Wolf <dev-NTEO@vplace.de>,
+        Marcin Nowakowski <marcin.nowakowski@mips.com>,
+        linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] MIPS: fix memory reservation for non-usermem setups
+Message-ID: <YFGip16ObFp/vOZS@kernel.org>
+References: <20210307194030.8007-1-ilya.lipnitskiy@gmail.com>
+ <20210312151934.GA4209@alpha.franken.de>
+ <CALCv0x1AEZanNsVcNuUrbHuLyWYNegEVuye9Gso-Ou9xX8JEAg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCv0x1AEZanNsVcNuUrbHuLyWYNegEVuye9Gso-Ou9xX8JEAg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reduces TLB misses by nearly 30x on a `git diff` workload on a
-2-node POWER9 (59,800 -> 2,100) and reduces CPU cycles by 0.54%, due
-to vfs hashes being allocated with 2MB pages.
+Hi Ilya,
 
-Cc: linuxppc-dev@lists.ozlabs.org
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
- .../admin-guide/kernel-parameters.txt         |  2 ++
- arch/powerpc/Kconfig                          |  1 +
- arch/powerpc/kernel/module.c                  | 22 +++++++++++++++----
- 3 files changed, 21 insertions(+), 4 deletions(-)
+On Tue, Mar 16, 2021 at 10:10:09PM -0700, Ilya Lipnitskiy wrote:
+> Hi Thomas,
+> 
+> On Fri, Mar 12, 2021 at 7:19 AM Thomas Bogendoerfer
+> <tsbogend@alpha.franken.de> wrote:
+> >
+> > On Sun, Mar 07, 2021 at 11:40:30AM -0800, Ilya Lipnitskiy wrote:
+> > > From: Tobias Wolf <dev-NTEO@vplace.de>
+> > >
+> > > Commit 67a3ba25aa95 ("MIPS: Fix incorrect mem=X@Y handling") introduced a new
+> > > issue for rt288x where "PHYS_OFFSET" is 0x0 but the calculated "ramstart" is
+> > > not. As the prerequisite of custom memory map has been removed, this results
+> > > in the full memory range of 0x0 - 0x8000000 to be marked as reserved for this
+> > > platform.
+> >
+> > and where is the problem here ?
+> Turns out this was already attempted to be upstreamed - not clear why
+> it wasn't merged. Context:
+> https://lore.kernel.org/linux-mips/6504517.U6H5IhoIOn@loki/
+> 
+> I hope the thread above helps you understand the problem.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 04545725f187..1f481f904895 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3243,6 +3243,8 @@
- 
- 	nohugeiomap	[KNL,X86,PPC,ARM64] Disable kernel huge I/O mappings.
- 
-+	nohugevmalloc	[PPC] Disable kernel huge vmalloc mappings.
-+
- 	nosmt		[KNL,S390] Disable symmetric multithreading (SMT).
- 			Equivalent to smt=1.
- 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 386ae12d8523..b7cade9566da 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -181,6 +181,7 @@ config PPC
- 	select GENERIC_GETTIMEOFDAY
- 	select HAVE_ARCH_AUDITSYSCALL
- 	select HAVE_ARCH_HUGE_VMAP		if PPC_BOOK3S_64 && PPC_RADIX_MMU
-+	select HAVE_ARCH_HUGE_VMALLOC		if HAVE_ARCH_HUGE_VMAP
- 	select HAVE_ARCH_JUMP_LABEL
- 	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
- 	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
-diff --git a/arch/powerpc/kernel/module.c b/arch/powerpc/kernel/module.c
-index a211b0253cdb..cdb2d88c54e7 100644
---- a/arch/powerpc/kernel/module.c
-+++ b/arch/powerpc/kernel/module.c
-@@ -8,6 +8,7 @@
- #include <linux/moduleloader.h>
- #include <linux/err.h>
- #include <linux/vmalloc.h>
-+#include <linux/mm.h>
- #include <linux/bug.h>
- #include <asm/module.h>
- #include <linux/uaccess.h>
-@@ -87,13 +88,26 @@ int module_finalize(const Elf_Ehdr *hdr,
- 	return 0;
- }
- 
--#ifdef MODULES_VADDR
- void *module_alloc(unsigned long size)
- {
-+	unsigned long start = VMALLOC_START;
-+	unsigned long end = VMALLOC_END;
-+
-+#ifdef MODULES_VADDR
- 	BUILD_BUG_ON(TASK_SIZE > MODULES_VADDR);
-+	start = MODULES_VADDR;
-+	end = MODULES_END;
-+#endif
-+
-+	/*
-+	 * Don't do huge page allocations for modules yet until more testing
-+	 * is done. STRICT_MODULE_RWX may require extra work to support this
-+	 * too.
-+	 */
- 
--	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END, GFP_KERNEL,
--				    PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
-+	return __vmalloc_node_range(size, 1, start, end, GFP_KERNEL,
-+				    PAGE_KERNEL_EXEC,
-+				    VM_NO_HUGE_VMAP | VM_FLUSH_RESET_PERMS,
-+				    NUMA_NO_NODE,
- 				    __builtin_return_address(0));
- }
--#endif
+The memory initialization was a bit different then. Do you still see the
+same problem? 
+
 -- 
-2.23.0
-
+Sincerely yours,
+Mike.
