@@ -2,166 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3280933F935
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2E833F946
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233317AbhCQTap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35592 "EHLO
+        id S233300AbhCQTbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233222AbhCQTaP (ORCPT
+        with ESMTP id S233112AbhCQTbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:30:15 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78AE0C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:30:14 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id n24so9964190qkh.9
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:30:14 -0700 (PDT)
+        Wed, 17 Mar 2021 15:31:24 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E18AC06174A;
+        Wed, 17 Mar 2021 12:31:23 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id m12so683381lfq.10;
+        Wed, 17 Mar 2021 12:31:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0JxX/EeC1UVKwHOsPcIWefrhVnYu1SGK3e1Us0djvdI=;
-        b=jMqzxnkBzKmqp8/t0dQ8FWoAMljO+yxZWRK7+UZ6vZtMQDj7i8jT1jzzhs6/3GOKy8
-         jKCnrTz3lgcA4MWCUBetkOmg9NKH3+zj95qod6QGSUBnTuxVF8ZIXhu6J92NLWlYKomw
-         BZ0D2PRZXoP9kCE9lYiyIQ+hfxaJw64P4y3t++b9KmDpNOxcGIUmXV9y9sbtt83hMh9e
-         Pfz6sfYOiD7vslRPViNBn6uutiRa4RUnFfHX/XLj/4lKjqcwNz2bGX64euEUeDVsmcs9
-         6LQlNk1EylWVKkom/2gZtyVPGdryXOjiDouICTsQQ/Vgyc6FLhDSN6YBteC//8INiunb
-         XVXg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=73TjCXjVrkI58MW+Nim3q1ayD1X0BXNWSG6Q1INh2NQ=;
+        b=e/lOgyIE+jGT4cotYrNiAE+c+4C5ZYHt4ordarHogFxS99/5oUnB5b+XfsWV8VOqYn
+         FGlbzgIwQzzjKCh+tI8FEEBeRUAuibv7OQGwBxUo6aYA9CEKROF75qKqIXqOVzQJ6tST
+         LslAhdhuc1Rx71KCa1Fp6mEi6z/r72alvwzNd+EnKJTcR0w6QTKjveelq5j/ydwryZZI
+         7kznsPz6GXVXIWpF/0ao4nl4wAwQaiPy5L6LT0EtqdEAfU8TTD3KONmpozF8UhnAD1Uw
+         Ly45v+dsIxB8at6hf5TBcR+gEG5Df50ObdCYKkG2mQE+w1hVv8tO1xmSzio+tUtivB0W
+         b++Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=0JxX/EeC1UVKwHOsPcIWefrhVnYu1SGK3e1Us0djvdI=;
-        b=pnz1DQcN4w+oFEe8h8F8kmvJ2A7fdG6TLp32Zrpfp7MBS8qdkMuvArJSViQO/72mkr
-         4yZOjhUXgIMQgE8HqNtbKhWcNU43q4B6uH6p1so2NgQTq0iBVw5ycz7LesxVjAvTA5sd
-         astk+yD4h3a/AJuU1YmBwEZJbBH3qguLaJnxcijD5t0K0NAdopeevpq1IHhYwepn3bKi
-         3lZ8B3roo1SmXRIANLWUwBBIHtvwhdwUqObs2SqB8GK4ZvxKDUETIgPNknYkx0roxt68
-         1aJeDmYsQ8mSMjSTHS7pgPutn8lb6jLy3z/5Mu/OnghvXd/m5x5CiVhXUUZgmfVTCDWh
-         oYjQ==
-X-Gm-Message-State: AOAM530aOXJBYAhVYWWs8s6wSgNLtuYqzBcDyzOLttwbYWFYP8uuP4mr
-        Y2EkyWAt057asGoMlLswarU=
-X-Google-Smtp-Source: ABdhPJwPSM87tx00ljWLHFkpcmORvfzihpIgFT74wXLKK+hITK4Ma+fQoiVCAa+vUsUxpV04fTwGrQ==
-X-Received: by 2002:a05:620a:15b7:: with SMTP id f23mr872320qkk.58.1616009413783;
-        Wed, 17 Mar 2021 12:30:13 -0700 (PDT)
-Received: from ArchLinux ([156.146.37.138])
-        by smtp.gmail.com with ESMTPSA id f9sm18170545qkk.115.2021.03.17.12.30.08
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=73TjCXjVrkI58MW+Nim3q1ayD1X0BXNWSG6Q1INh2NQ=;
+        b=GeZiO+zCz/4uuT00aX5G8P6jL62zgLfqwkJKpRjWu9W1B+QCv0Sm76MAeqc1HDJhQp
+         lNmVfS+Z9LfpKhpOpy/IUa2zhcBEv5XZGbQ1MdNu6hj61ANCOJftNPrqDj9n37sEh3sn
+         yq6CeqxMqQu0qLy7wpGqktRe4ExXcBhpMfJNkiUeKbI83BckEUu1cfu2j8DtfErmDPuB
+         1wni9eQ2vFKHk9ibcYWAhnuuGkC5pBf3Hi1j5Hb+qthNIl6g04baE/pwJWpBqYu3YAsr
+         YkUmrjUfMkBtsiFrQqYNKcJYWowbw1AVqBZnXsq5RKCteJXzBa3u+ylSOrPf4WREEYaU
+         a38Q==
+X-Gm-Message-State: AOAM532kV70/wHnu7a+NkWM8EW2t/iK6MRmdnLzzQ6gFtrLgutWTQTos
+        uedK/F4V+OXE3/khX8UHzt0=
+X-Google-Smtp-Source: ABdhPJw570vvk63jmImjLYg9KSlx1saOpjJ0148MYcR6pgOd66+xlrMJNj57vGDtjOEU62JLasEjIA==
+X-Received: by 2002:ac2:5c0a:: with SMTP id r10mr3013997lfp.47.1616009482197;
+        Wed, 17 Mar 2021 12:31:22 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id q24sm3623098lji.40.2021.03.17.12.31.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 12:30:12 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 00:59:54 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Reinette Chatre <reinette.chatre@intel.com>, fenghua.yu@intel.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kernel: cpu: resctrl: Minor typo fix in the file
- pseudo_lock.c
-Message-ID: <YFJYshIZjo+Xcgo5@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Reinette Chatre <reinette.chatre@intel.com>, fenghua.yu@intel.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org
-References: <20210317084016.3787380-1-unixbhaskar@gmail.com>
- <b29afbff-67f4-397b-e289-c3e21755fec0@intel.com>
- <99a7e1fc-0a05-9222-f913-b2d85141a08a@infradead.org>
+        Wed, 17 Mar 2021 12:31:21 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v5 0/7] Couple improvements for Tegra clk driver
+Date:   Wed, 17 Mar 2021 22:29:59 +0300
+Message-Id: <20210317193006.29633-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="VJPfBsDAO9Dvj47m"
-Content-Disposition: inline
-In-Reply-To: <99a7e1fc-0a05-9222-f913-b2d85141a08a@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series fixes couple minor standalone problems of the Tegra clk
+driver.
 
---VJPfBsDAO9Dvj47m
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changelog:
 
-On 11:01 Wed 17 Mar 2021, Randy Dunlap wrote:
->On 3/17/21 10:54 AM, Reinette Chatre wrote:
->> Hi Bhaskar,
->>
->> Thank you very much for catching this typo.
->>
->> My feedback [1] to a previous patch from you applies here also. The pref=
-ix should be "x86/resctrl:" for contributions to this area.
->
+v5: - Corrected example in the schema binding to silence dt_binding_check
+      warning.
 
->Bhaskar,
->Pretty much all of your patches need to have improved Subject: lines.
->The file name that is being modified should not be at the end of the Subje=
-ct.
->
+    - The Tegra124 binding is factored out into standalone binding since
+      Tegra124 has properties that aren't used by other SoCs and I couldn't
+      figure out how to make them conditional in schema.
 
-Noted, ...I was trying to feed the owner of the file as much as possible , =
-so
-the person can struggle less to understand and hover,considering the load t=
-hey
-might have on their shoulder.
+v4: - Added new patch that converts DT bindings to schema.
 
->>
->> [1] https://lore.kernel.org/lkml/7e3a5c13-db5c-7399-2b80-f1284786ea77@in=
-tel.com/
->>
->> On 3/17/2021 1:40 AM, Bhaskar Chowdhury wrote:
->>>
->>> s/derefence/dereference/
->>>
->>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->>> ---
->>> =C2=A0 arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 2 +-
->>> =C2=A0 1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kerne=
-l/cpu/resctrl/pseudo_lock.c
->>> index e916646adc69..43990a882b36 100644
->>> --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
->>> +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
->>> @@ -1307,7 +1307,7 @@ int rdtgroup_pseudo_lock_create(struct rdtgroup *=
-rdtgrp)
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * If the t=
-hread does not get on the CPU for whatever
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * reason a=
-nd the process which sets up the region is
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * interrup=
-ted then this will leave the thread in runnable
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * state and once it g=
-ets on the CPU it will derefence
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * state and once it g=
-ets on the CPU it will dereference
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * the clea=
-red, but not freed, plr struct resulting in an
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * empty ps=
-eudo-locking loop.
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->>> --
->>> 2.30.2
->>>
->>
->> Reinette
->
->
->--
->~Randy
->
+v3: - Added acks from Thierry Reding that he gave to v2.
 
---VJPfBsDAO9Dvj47m
-Content-Type: application/pgp-signature; name="signature.asc"
+    - Added new patch "clk: tegra: Don't allow zero clock rate for PLLs".
 
------BEGIN PGP SIGNATURE-----
+v2: - Added these new patches:
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBSWLIACgkQsjqdtxFL
-KRW4Owf/YDWTYixmniAOtKYDy+yb05EtMir9acO49uZ3XldNCR/TC9fr4/vCApGw
-li0rXlDsUX7Y0qwqxc9MK3mnkfRguiJWmoNPCGedilgypsZDQdGK8TFSr9iZuA12
-f7xfSDAyfTuFaXGNJ6NUpTKo87RBUNN2QJsP296NC5U71bFyedOK1hk3HuuOoTiE
-GMdBuqm8qGwEo9qnyPEhSkQAFFUgi6f2iaDpIrD3TmjqgAvql5nEG6vwj4RXd+sm
-5LR22DDl0WibPvH41vLubPkqGjKqQWqDnVfcmvyI4CA4H0WS48tE0Xdw1VfVwI5R
-Rq6tc7WEVH1IFPeUVAqSbCNQWRi0xQ==
-=8bXv
------END PGP SIGNATURE-----
+      clk: tegra: Halve SCLK rate on Tegra20
+      MAINTAINERS: Hand Tegra clk driver to Jon and Thierry
 
---VJPfBsDAO9Dvj47m--
+v1: - Collected clk patches into a single series.
+
+Dmitry Osipenko (7):
+  clk: tegra30: Use 300MHz for video decoder by default
+  clk: tegra: Fix refcounting of gate clocks
+  clk: tegra: Ensure that PLLU configuration is applied properly
+  clk: tegra: Halve SCLK rate on Tegra20
+  MAINTAINERS: Hand Tegra clk driver to Jon and Thierry
+  clk: tegra: Don't allow zero clock rate for PLLs
+  dt-bindings: clock: tegra: Convert to schema
+
+ CREDITS                                       |   6 +
+ .../bindings/clock/nvidia,tegra114-car.txt    |  63 ----------
+ .../bindings/clock/nvidia,tegra124-car.txt    | 107 ----------------
+ .../bindings/clock/nvidia,tegra124-car.yaml   | 115 ++++++++++++++++++
+ .../bindings/clock/nvidia,tegra20-car.txt     |  63 ----------
+ .../bindings/clock/nvidia,tegra20-car.yaml    |  69 +++++++++++
+ .../bindings/clock/nvidia,tegra210-car.txt    |  56 ---------
+ .../bindings/clock/nvidia,tegra30-car.txt     |  63 ----------
+ MAINTAINERS                                   |   4 +-
+ drivers/clk/tegra/clk-periph-gate.c           |  72 +++++++----
+ drivers/clk/tegra/clk-periph.c                |  11 ++
+ drivers/clk/tegra/clk-pll.c                   |  12 +-
+ drivers/clk/tegra/clk-tegra20.c               |   6 +-
+ drivers/clk/tegra/clk-tegra30.c               |   2 +-
+ 14 files changed, 261 insertions(+), 388 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra114-car.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra124-car.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra124-car.yaml
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra20-car.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra210-car.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra30-car.txt
+
+-- 
+2.30.2
+
