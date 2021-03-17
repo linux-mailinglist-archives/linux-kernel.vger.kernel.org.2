@@ -2,34 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188B933F7AE
+	by mail.lfdr.de (Postfix) with ESMTP id DEFA633F7B0
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232870AbhCQR60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:58:26 -0400
-Received: from mx1.riseup.net ([198.252.153.129]:49838 "EHLO mx1.riseup.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231156AbhCQR6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:58:03 -0400
-Received: from fews1.riseup.net (fews1-pn.riseup.net [10.0.1.83])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
-        by mx1.riseup.net (Postfix) with ESMTPS id 4F0yYg62S8zDq5t;
-        Wed, 17 Mar 2021 10:57:59 -0700 (PDT)
-X-Riseup-User-ID: 487B31A3D438057A218EAC41BBF3B94F15A17880E66A950D5E7ED1686F2F24E3
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by fews1.riseup.net (Postfix) with ESMTPSA id 4F0yYg28mzz5wGw;
-        Wed, 17 Mar 2021 10:57:59 -0700 (PDT)
-To:     Peter Oskolkov <posk@google.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Rob Jansen <rob.g.jansen@nrl.navy.mil>,
-        Ryan Wails <ryan.wails@nrl.navy.mil>
-From:   Jim Newsome <jnewsome@torproject.org>
-Subject: Re: [RFC PATCH 0/3 v3] futex/sched: introduce FUTEX_SWAP operation
-Organization: The Tor Project
-Message-ID: <c85541c4-6ae5-8898-8044-99e403335f48@torproject.org>
-Date:   Wed, 17 Mar 2021 12:57:58 -0500
+        id S232896AbhCQR62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231280AbhCQR6M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 13:58:12 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 053B7C06174A;
+        Wed, 17 Mar 2021 10:58:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=z6A1ZJh8eazfi5O/RUdqqjH347bkBHlxjeYy1k26C4o=; b=o7xShSLk/0r+zh7bI1COwvIJBW
+        Ku2uZCv8/LM/xqXTOhPOC8VDPoS/xewlJ5ENtZlQSwKWdf5CMJhidq5rCQK2hvkjJjJfA7UVy3TXN
+        ry1uxl73ANV5aBdAujknMWFFPhulvZkFcI1jDj1GdSZsWxuUbRE+pS4DaKkw8qSeND0KgdrnIZZAw
+        B/m96dVda8gfgUadV/Eif+KpThCsX5IRQcFp1Kv+Api18Y5t499TYx76kzhJlgP/0xegqoW105ra0
+        oQfW2IO0l89pGw4IPkwnqBypcWrEt4n3QWgK69AGUa6FGFVSxeRhZElxs7AQXh7G34hFQZWBcbPIo
+        GGE9fLrQ==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMaQr-001fhO-0d; Wed, 17 Mar 2021 17:58:09 +0000
+Subject: Re: [PATCH] net: ppp: Mundane typo fixes in the file pppoe.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, mostrows@earthlink.net,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210317090059.4145144-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <0222b3fa-6f43-1d7c-5180-65489994f69b@infradead.org>
+Date:   Wed, 17 Mar 2021 10:58:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <20210317090059.4145144-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -37,44 +47,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm not well versed in this part of the kernel (ok, any part, really),
-but I wanted to chime in from a user perspective that I'm very
-interested in this functionality.
+On 3/17/21 2:00 AM, Bhaskar Chowdhury wrote:
+> 
+> s/procesing/processing/
+> s/comparations/comparisons/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-We (Rob + Ryan + I, cc'd) are currently developing the second generation
-of the Shadow simulator <https://shadow.github.io/>, which is used by
-various researchers and the Tor Project. In this new architecture,
-simulated network-application processes (such as tor, browsers, and web
-servers) are each run as a native OS process, started by forking and
-exec'ing its unmodified binary. We are interested in supporting large
-simulations (e.g. 50k+ processes), and expect them to take on the order
-of hours or even days to execute, so scalability and performance matters.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-We've prototyped two mechanisms for controlling these simulated
-processes, and a third hybrid mechanism that combines the two. I've
-mentioned one of these (ptrace) in another thread ("do_wait: make
-PIDTYPE_PID case O(1) instead of O(n)"). The other mechanism is to use
-an LD_PRELOAD'd shim that implements the libc interface, and
-communicates with Shadow via a syscall-like API over IPC.
+> ---
+>  drivers/net/ppp/pppoe.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ppp/pppoe.c b/drivers/net/ppp/pppoe.c
+> index d7f50b835050..9dc7f4b93d51 100644
+> --- a/drivers/net/ppp/pppoe.c
+> +++ b/drivers/net/ppp/pppoe.c
+> @@ -25,7 +25,7 @@
+>   *		in pppoe_release.
+>   * 051000 :	Initialization cleanup.
+>   * 111100 :	Fix recvmsg.
+> - * 050101 :	Fix PADT procesing.
+> + * 050101 :	Fix PADT processing.
+>   * 140501 :	Use pppoe_rcv_core to handle all backlog. (Alexey)
+>   * 170701 :	Do not lock_sock with rwlock held. (DaveM)
+>   *		Ignore discovery frames if user has socket
+> @@ -96,7 +96,7 @@ struct pppoe_net {
+>  	 * we could use _single_ hash table for all
+>  	 * nets by injecting net id into the hash but
+>  	 * it would increase hash chains and add
+> -	 * a few additional math comparations messy
+> +	 * a few additional math comparisons messy
+>  	 * as well, moreover in case of SMP less locking
+>  	 * controversy here
+>  	 */
+> --
 
-So far the most performant version we've tried of this IPC is with a bit
-of shared memory and a pair of semaphores. It looks much like the
-example in Peter's proposal:
 
-> a. T1: futex-wake T2, futex-wait
-> b. T2: wakes, does what it has been woken to do
-> c. T2: futex-wake T1, futex-wait
+-- 
+~Randy
 
-We've been able to get the switching costs down using CPU pinning and
-SCHED_FIFO. Each physical CPU spends most of its time swapping back and
-forth between a Shadow worker thread and an emulated process. Even so,
-the new architecture is so far slower than the first generation of
-Shadow, which multiplexes the simulated processes into its own handful
-of OS processes (but is complex and fragile).
-
-> With FUTEX_SWAP, steps a and c above can be reduced to one futex
-> operation that runs 5-10 times faster.
-
-IIUC the proposed primitives could let us further improve performance,
-and perhaps drop some of the complexity of attempting to control the
-scheduler via pinning and SCHED_FIFO.
