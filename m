@@ -2,144 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B325C33EC2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC5533EC34
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbhCQJFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhCQJFR (ORCPT
+        id S229622AbhCQJIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:08:02 -0400
+Received: from mail.kingsoft.com ([114.255.44.145]:15495 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhCQJHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:05:17 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0862C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:05:16 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id k8so981564wrc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:05:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=OcOkwCkyvLuke/iNw2LLAogSWUiyJtcxO/hC/X9eTec=;
-        b=YYc0KLEbBxgH+ZUG7LiDYEtZcpBX4RqAPYmaegxRr+9NyuAkGQTaj9vShjjBp1kz4G
-         xRjTbxsmGrK2E+8mvtXdJ/1lYYdR/lE/s5YzOBGfvtH/p2nb3GgXN9avsy/spkxpqP8l
-         q1K4fnyloW5Al7EXVqZXBQKueUdoEM1Wl+9IUQMyiCCozmQjeXudZHHFEJZ1/3dVvyXi
-         ZBSGjq8Wwq2ZoRTgheOFZV8Hjw9BT7LMD4gr6AlaCmCCqxHkHgWBKmnee6Wr0dHG31wD
-         NYvtj0e9xx5DXQt+3YuFkZlKKNHMvZZSECEc+Ng5H8w55K2qTxzKie+GWL63tSdTMVfN
-         mnhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=OcOkwCkyvLuke/iNw2LLAogSWUiyJtcxO/hC/X9eTec=;
-        b=H/vgB6MSHSIwfIAC5BXz1F54mAQTTf0DZenIcuXJIlK87h7SrVVafEMk+0T7vOfkud
-         FKTvekZGioUndjCYoUVQNVrLstHHqp9CHEgiGclIltpNBOsw8BVIyDCfoArM4FH5ZFm4
-         RcQV6elhwUGV2mzjZSM9EQMjW9dw/yCfyHcRyx5zKDLiK+4Y7U7zNQ/q1cDEY0/MgIPg
-         cAaC4OuXab+DHtmQ5C5schOa4cTc70NBc4BFDAYPK2HFMYTJoJvcHIQcvhkIrao7q9ku
-         buT2x2cgbUstxa2pAk+JDbiL6DFoPEnTP6b7PDb+YSNTaolkUew5wa5iQODnGmlZ+xNc
-         iS0A==
-X-Gm-Message-State: AOAM533VwVGoimj29hrCB4+9E00iv7NkGr6ad5pQEEtc42Q7NJYdf2P1
-        8P8p36wvj2H/uSnK0y2EQB2Jpp6+TxiLCQ==
-X-Google-Smtp-Source: ABdhPJxlU7tk/HVjonZcyAbzBtH+m2MESpX+2byaucGFATA64RJfU7n4jVMSy1FWKxWcitvmtWV8KA==
-X-Received: by 2002:adf:f3c2:: with SMTP id g2mr3331553wrp.300.1615971915310;
-        Wed, 17 Mar 2021 02:05:15 -0700 (PDT)
-Received: from dell ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id o7sm24710724wrs.16.2021.03.17.02.05.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 02:05:14 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 09:05:12 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     linux-kernel@vger.kernel.org, Adam Radford <aradford@gmail.com>,
-        Alan Cox <alan@lxorguk.ukuu.org.uk>,
-        Andre Hedrick <andre@suse.com>,
-        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Bas Vermeulen <bvermeul@blackstar.xs4all.nl>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        Brian Macy <bmacy@sunshinecomputing.com>,
-        c by <James.Bottomley@steeleye.com>,
-        Christoph Hellwig <hch@lst.de>,
-        David Chaw <david_chaw@adaptec.com>,
-        de Melo <acme@conectiva.com.br>,
-        Doug Ledford <dledford@redhat.com>,
-        GOTO Masanori <gotom@debian.or.jp>, gotom@debian.org,
-        Hannes Reinecke <hare@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Joel Jacobson <linux@3ware.com>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        "Leonard N. Zubkoff" <lnz@dandelion.com>,
-        Linux GmbH <hare@suse.com>, linux-scsi@vger.kernel.org,
-        Luben Tuikov <luben_tuikov@adaptec.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        MPT-FusionLinux.pdl@avagotech.com,
-        MPT-FusionLinux.pdl@broadcom.com,
-        Richard Hirst <richard@sleepie.demon.co.uk>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        YOKOTA Hiroshi <yokota@netlab.is.tsukuba.ac.jp>
-Subject: Re: [PATCH 00/18] [Set 3] Rid W=1 warnings in SCSI
-Message-ID: <20210317090512.GI701493@dell>
-References: <20210317085701.2891231-1-lee.jones@linaro.org>
+        Wed, 17 Mar 2021 05:07:48 -0400
+X-AuditID: 0a580157-463ff70000021a79-40-6051c00aa68a
+Received: from mail.kingsoft.com (localhost [10.88.1.32])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id A3.43.06777.A00C1506; Wed, 17 Mar 2021 16:38:34 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
+ (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 17 Mar
+ 2021 17:07:45 +0800
+Date:   Wed, 17 Mar 2021 17:07:44 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+CC:     Andy Lutomirski <luto@kernel.org>,
+        "HORIGUCHI =?UTF-8?B?TkFPWUE=?=( =?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
+        <naoya.horiguchi@nec.com>, "Oscar Salvador" <osalvador@suse.de>,
+        "david@redhat.com" <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
+        "sunhao2@kingsoft.com" <sunhao2@kingsoft.com>,
+        <yaoaili@kingsoft.com>
+Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
+Message-ID: <20210317170744.01413dcd@alex-virtual-machine>
+In-Reply-To: <20210317002939.GA276305@agluck-desk2.amr.corp.intel.com>
+References: <20210304144524.795872d7@alex-virtual-machine>
+        <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
+        <20210305093016.40c87375@alex-virtual-machine>
+        <aee5176eafb54c88b19a5b2671d0a1fc@intel.com>
+        <20210310141042.4db9ea29@alex-virtual-machine>
+        <20210311085529.GA22268@hori.linux.bs1.fc.nec.co.jp>
+        <db80e98d2b264e988596d0d7d7c8a776@intel.com>
+        <20210312135531.72e33b35@alex-virtual-machine>
+        <3900f518d1324c388be52cf81f5220e4@intel.com>
+        <af80221baed940d8bcc643e3e7d40036@intel.com>
+        <20210317002939.GA276305@agluck-desk2.amr.corp.intel.com>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210317085701.2891231-1-lee.jones@linaro.org>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
+ (10.88.1.32)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprPIsWRmVeSWpSXmKPExsXCFcGooMt1IDDBYPtVQYs569ewWXze8I/N
+        4uv6X8wW0zaKW1w41cBkcXnXHDaLe2v+s1qc37WW1eLSgQVMFhcbDzBanJlWZLF501RmizcX
+        7rFY/NjwmNWBz+N7ax+Lx+I9L5k8Nq3qZPPY9GkSu8e7c+fYPU7M+M3i8eLqRhaP9/uusnls
+        Pl3t8XmTnMeJli+sAdxRXDYpqTmZZalF+nYJXBnPrh5kK7gWUvFi9wGWBsYPzl2MnBwSAiYS
+        DdNesnYxcnEICUxnkvj6Zh8LSEJI4BWjxNJeARCbRUBV4tPlFjYQmw3I3nVvFiuILSKgJnFp
+        8QNmEJtZ4BOrxP7X6SC2sICXxJf7axlBbF4BK4m/lzrYuxg5ODgF3CQ+7xGE2LWDReLNvlNg
+        c/gFxCR6r/xngjjIXqJtyyKoXkGJkzOfsEDM15E4seoY1C55ie1v5zBD3KkocXjJL3aIXiWJ
+        I90z2CDsWIll816xTmAUnoVk1Cwko2YhGbWAkXkVI0txbrrhJkZIHIbvYJzX9FHvECMTB+Mh
+        RgkOZiURXtO8gAQh3pTEyqrUovz4otKc1OJDjNIcLErivCJRQCmB9MSS1OzU1ILUIpgsEwen
+        VANTyLn+iG9vmj/YKK1N2dH6P+6K3izj+hXbi946evS88LZoDBMwFRdaWWx4Kq+LqUuSI3TD
+        y9Pqpf4eieKl3G+8OpakRcwzvvrmnjpv3dnFK1mdlXwiQr9pB9r+3rRJtPqVg0Dhn0pWp4s5
+        BYJSq7+Um9YI76kxv3k0ZKVw2tYNog80Tu19V216ylX1+sTtOZMVkp/IfZ7jZb16ZqzpIbeH
+        uqat6bPDMx5FnWqLLe+orA7KqDq9gbckKSu8em2hn/rJXq0pVrzrdq2OSzjN4vNp6uLsveVr
+        8+N84n+/WH/21LYE+apVybZGcQb/7Pe99i35LqN0eWdJ8s9JjMHPnSf5dZ393elZp1/349Hs
+        BCWW4oxEQy3mouJEAKnidwkyAwAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Mar 2021, Lee Jones wrote:
+On Tue, 16 Mar 2021 17:29:39 -0700
+"Luck, Tony" <tony.luck@intel.com> wrote:
 
-> MIME-Version: 1.0
-> Content-Type: text/plain; charset=UTF-8
-> Content-Transfer-Encoding: 8bit
+> On Fri, Mar 12, 2021 at 11:48:31PM +0000, Luck, Tony wrote:
+> > Thanks to the decode of the instruction we do have the virtual address. So we just need
+> > a safe walk of pgd->p4d->pud->pmd->pte (truncated if we hit a huge page) with a write
+> > of a "not-present" value. Maybe a different poison type from the one we get from
+> > memory_failure() so that the #PF code can recognize this as a special case and do any
+> > other work that we avoided because we were in #MC context.  
 > 
-> This set contains functional changes.
+> There is no such thing as the safe walk I describe above. In a multi
+> threaded application other threads might munmap(2) bits of the address
+> space which could free some of the p4d->pud->pmd->pte tables.
 > 
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
+> But the pgd table is guaranteed to exist as long as any of the threads
+> in the process exist. Which gave rise to a new approach (partial credit
+> to Dave Hansen who helped me understand why a more extreme patch that
+> I wanted to use wasn't working ... and he pointed out the pgd persistence).
 > 
-> Lee Jones (18):
->   scsi: aic94xx: aic94xx_dump: Remove code that has been unused for at
->     least 13 years
->   scsi: mpt3sas: mpt3sas_scs: Move a little data from the stack onto the
->     heap
->   scsi: bfa: bfa_fcs_lport: Move a large struct from the stack onto the
->     heap
->   scsi: esas2r: esas2r_log: Supply __printf(x, y) formatting for
->     esas2r_log_master()
->   scsi: BusLogic: Supply __printf(x, y) formatting for blogic_msg()
->   scsi: nsp32: Supply __printf(x, y) formatting for nsp32_message()
->   scsi: initio: Remove unused variable 'prev'
->   scsi: a100u2w: Remove unused variable 'bios_phys'
->   scsi: myrs: Remove a couple of unused 'status' variables
->   scsi: 3w-xxxx: Remove 2 unused variables 'response_que_value' and
->     'tw_dev'
->   scsi: 3w-9xxx: Remove a few set but unused variables
->   scsi: 3w-sas: Remove unused variables 'sglist' and 'tw_dev'
->   scsi: nsp32: Remove or exclude unused variables
->   scsi: FlashPoint: Remove unused variable 'TID' from
->     'FlashPoint_AbortCCB()'
->   scsi: sim710: Remove unused variable 'err' from sim710_init()
->   scsi: isci: port: Make local function 'port_state_name()' static
->   scsi: isci: remote_device: Make local function
->     isci_remote_device_wait_for_resume_from_abort() static
->   scsi: nsp32: Correct expected types in debug print formatting
+> N.B. The code below DOES NOT WORK. My test application tried to do a write(2)
+> syscall with some poison in the buffer. Goal is that write should return a
+> short count (with only the bytes from the buffer leading up to the poison
+> written to the file). Currently the process gets a suprise SIGSEGV in
+> some glibc code :-(
+> 
+> The code would also need a bunch more work to handle the fact that
+> in a multi-threaded application multiple threads might consume the
+> poison, and some innocent threads not consuming the poison may also end
+> up drawn into the melee in the page fault handler.
+> 
+> 
+> The big picture.
+> ---------------
+> 
+> This approach passes the buck for the recovery from the #MC handler
+> (which has very limited options to do anything useful) to the #PF
+> handler (which is a much friendlier environment where locks and mutexes
+> can be obtained as needed).
+> 
+> The mechanism for this buck passing is for the #MC handler to set a
+> reserved bit in the PGD entry for the user address where the machine
+> check happened, flush the TLB for that address, and then return from
+> the #MC handler to the kernel get_user()/copy_from_user() code which
+> will re-execute the instruction to access the poison address, but this
+> time take a #PF because of the reserved bit in the PGD.
+> 
+> There's a couple of changes bundled in here to help my debugging:
+> 1) Turn off UCNA calls to memory_failure() ... just avoids races
+>    and make tests more determinstic for now
+> 2) Disable "fast string" support ... avoid "REP MOVS" copy routines
+>    since I'm testing on an old system that treats poison consumed
+>    by REP MOVS as fatal.
+> 
+> Posted here for general comments on the approach.  On the plus
+> side it avoids taking multiple machine checks in the kernel when
+> it is accessing user data. I think it can also meet the goal set
+> by Andy Lutomirski of avoiding SIGBUS from syscalls that happen
+> to touch user poison. They should see either short counts for
+> calls like write(2) that may partially succeed or -EFAULT if
+> the system call totally failed.
+> 
 
-Oh dear! Looks like I also took functional patches from sets that
-have already been sent out.
+I have another view here, but maybe wrong, post here for discussion:
+When the process is signaled SIGBUS with BUS_MCEERR_AR, i think it should be from
+a read, with the data read, the process can proceed, like process the data, or make decision.
+When for poison, the data can't be returned, the process don't know what to do, and kill
+is the first option.
 
-Please silently disregard this set. Sorry for the noise.
+while for a copyin case, the read is excuted by kernel, and for poison kernel will refuse to
+excute current read and further operation. For the process, it seems it have a change to proceed.
+
+if just error code is returned, the process may care or not, it may not correctly process the error.
+It seems the worst case here is the process will touch the poison page again, trigger another MCE and
+accordingly be killed.
+
+It's not that bad?
+
+Thanks
+Aili Yao
+
+> 
+> diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+> index f24d7ef8fffa..e533eaf20834 100644
+> --- a/arch/x86/include/asm/pgtable_types.h
+> +++ b/arch/x86/include/asm/pgtable_types.h
+> @@ -23,6 +23,7 @@
+>  #define _PAGE_BIT_SOFTW2	10	/* " */
+>  #define _PAGE_BIT_SOFTW3	11	/* " */
+>  #define _PAGE_BIT_PAT_LARGE	12	/* On 2MB or 1GB pages */
+> +#define _PAGE_BIT_RESERVED1	51	/* Reserved bit */
+>  #define _PAGE_BIT_SOFTW4	58	/* available for programmer */
+>  #define _PAGE_BIT_PKEY_BIT0	59	/* Protection Keys, bit 1/4 */
+>  #define _PAGE_BIT_PKEY_BIT1	60	/* Protection Keys, bit 2/4 */
+> @@ -56,6 +57,7 @@
+>  #define _PAGE_PAT_LARGE (_AT(pteval_t, 1) << _PAGE_BIT_PAT_LARGE)
+>  #define _PAGE_SPECIAL	(_AT(pteval_t, 1) << _PAGE_BIT_SPECIAL)
+>  #define _PAGE_CPA_TEST	(_AT(pteval_t, 1) << _PAGE_BIT_CPA_TEST)
+> +#define _PAGE_RESERVED1	(_AT(pteval_t, 1) << _PAGE_BIT_RESERVED1)
+>  #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
+>  #define _PAGE_PKEY_BIT0	(_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT0)
+>  #define _PAGE_PKEY_BIT1	(_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT1)
+> diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
+> index 7f7200021bd1..269e8ee04c11 100644
+> --- a/arch/x86/include/asm/traps.h
+> +++ b/arch/x86/include/asm/traps.h
+> @@ -45,4 +45,24 @@ void __noreturn handle_stack_overflow(const char *message,
+>  				      unsigned long fault_address);
+>  #endif
+>  
+> +static inline void pgd_set_reserved(pgd_t *pgdp, unsigned long addr)
+> +{
+> +	pgd_t	pgd;
+> +
+> +	pgdp += pgd_index(addr);
+> +	pgd = *pgdp;
+> +	pgd.pgd |= _PAGE_RESERVED1;
+> +	WRITE_ONCE(*pgdp, pgd);
+> +}
+> +
+> +static inline void pgd_clr_reserved(pgd_t *pgdp, unsigned long addr)
+> +{
+> +	pgd_t	pgd;
+> +
+> +	pgdp += pgd_index(addr);
+> +	pgd = *pgdp;
+> +	pgd.pgd &= ~_PAGE_RESERVED1;
+> +	WRITE_ONCE(*pgdp, pgd);
+> +}
+> +
+>  #endif /* _ASM_X86_TRAPS_H */
+> diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+> index 0e422a544835..974e1eb5d1aa 100644
+> --- a/arch/x86/kernel/cpu/intel.c
+> +++ b/arch/x86/kernel/cpu/intel.c
+> @@ -287,6 +287,7 @@ static void early_init_intel(struct cpuinfo_x86 *c)
+>  	 */
+>  	if (c->x86 > 6 || (c->x86 == 6 && c->x86_model >= 0xd)) {
+>  		rdmsrl(MSR_IA32_MISC_ENABLE, misc_enable);
+> +misc_enable = 0;
+>  		if (!(misc_enable & MSR_IA32_MISC_ENABLE_FAST_STRING)) {
+>  			pr_info("Disabled fast string operations\n");
+>  			setup_clear_cpu_cap(X86_FEATURE_REP_GOOD);
+> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+> index 7962355436da..41bedc961928 100644
+> --- a/arch/x86/kernel/cpu/mce/core.c
+> +++ b/arch/x86/kernel/cpu/mce/core.c
+> @@ -635,6 +635,7 @@ static struct notifier_block early_nb = {
+>  static int uc_decode_notifier(struct notifier_block *nb, unsigned long val,
+>  			      void *data)
+>  {
+> +#if 0
+>  	struct mce *mce = (struct mce *)data;
+>  	unsigned long pfn;
+>  
+> @@ -650,7 +651,7 @@ static int uc_decode_notifier(struct notifier_block *nb, unsigned long val,
+>  		set_mce_nospec(pfn, whole_page(mce));
+>  		mce->kflags |= MCE_HANDLED_UC;
+>  	}
+> -
+> +#endif
+>  	return NOTIFY_OK;
+>  }
+>  
+> @@ -1443,8 +1444,18 @@ noinstr void do_machine_check(struct pt_regs *regs)
+>  				mce_panic("Failed kernel mode recovery", &m, msg);
+>  		}
+>  
+> -		if (m.kflags & MCE_IN_KERNEL_COPYIN)
+> -			queue_task_work(&m, kill_current_task);
+> +		/*
+> +		 * Machine check while copying from user space. Note that we
+> +		 * do not call fixup_exception(). Instead we ensure a page fault
+> +		 * when we return to the faulting instruction.
+> +		 * Let the page fault handler do the rest of the
+> +		 * recovery.
+> +		 */
+> +		if (m.kflags & MCE_IN_KERNEL_COPYIN) {
+> +			flush_tlb_one_user((unsigned long)current->mce_vaddr);
+> +			pgd_set_reserved(current->mm->pgd, (unsigned long)current->mce_vaddr);
+> +			current->mce_addr = m.addr;
+> +		}
+>  	}
+>  out:
+>  	mce_wrmsrl(MSR_IA32_MCG_STATUS, 0);
+> diff --git a/arch/x86/kernel/cpu/mce/severity.c b/arch/x86/kernel/cpu/mce/severity.c
+> index 83df991314c5..da917945150d 100644
+> --- a/arch/x86/kernel/cpu/mce/severity.c
+> +++ b/arch/x86/kernel/cpu/mce/severity.c
+> @@ -282,7 +282,6 @@ static int error_context(struct mce *m, struct pt_regs *regs)
+>  		return IN_KERNEL_RECOV;
+>  	}
+>  	if (t == EX_HANDLER_UACCESS && regs && is_copy_from_user(regs)) {
+> -		m->kflags |= MCE_IN_KERNEL_RECOV;
+>  		m->kflags |= MCE_IN_KERNEL_COPYIN;
+>  		return IN_KERNEL_RECOV;
+>  	}
+> diff --git a/arch/x86/lib/copy_user_64.S b/arch/x86/lib/copy_user_64.S
+> index 77b9b2a3b5c8..e0e71ca023ce 100644
+> --- a/arch/x86/lib/copy_user_64.S
+> +++ b/arch/x86/lib/copy_user_64.S
+> @@ -234,24 +234,11 @@ EXPORT_SYMBOL(copy_user_enhanced_fast_string)
+>   */
+>  SYM_CODE_START_LOCAL(.Lcopy_user_handle_tail)
+>  	movl %edx,%ecx
+> -	cmp $X86_TRAP_MC,%eax		/* check if X86_TRAP_MC */
+> -	je 3f
+>  1:	rep movsb
+>  2:	mov %ecx,%eax
+>  	ASM_CLAC
+>  	ret
+>  
+> -	/*
+> -	 * Return zero to pretend that this copy succeeded. This
+> -	 * is counter-intuitive, but needed to prevent the code
+> -	 * in lib/iov_iter.c from retrying and running back into
+> -	 * the poison cache line again. The machine check handler
+> -	 * will ensure that a SIGBUS is sent to the task.
+> -	 */
+> -3:	xorl %eax,%eax
+> -	ASM_CLAC
+> -	ret
+> -
+>  	_ASM_EXTABLE_CPY(1b, 2b)
+>  SYM_CODE_END(.Lcopy_user_handle_tail)
+>  
+> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> index a73347e2cdfc..49232264e893 100644
+> --- a/arch/x86/mm/fault.c
+> +++ b/arch/x86/mm/fault.c
+> @@ -1245,9 +1245,13 @@ void do_user_addr_fault(struct pt_regs *regs,
+>  	/*
+>  	 * Reserved bits are never expected to be set on
+>  	 * entries in the user portion of the page tables.
+> +	 * Except when machine check handling of a copy from
+> +	 * user passed the buck to #PF.
+>  	 */
+> -	if (unlikely(error_code & X86_PF_RSVD))
+> -		pgtable_bad(regs, error_code, address);
+> +	if (unlikely(error_code & X86_PF_RSVD)) {
+> +		if (!current->mce_vaddr)
+> +			pgtable_bad(regs, error_code, address);
+> +	}
+>  
+>  	/*
+>  	 * If SMAP is on, check for invalid kernel (supervisor) access to user
+> @@ -1291,6 +1295,15 @@ void do_user_addr_fault(struct pt_regs *regs,
+>  			local_irq_enable();
+>  	}
+>  
+> +	if (current->mce_vaddr) {
+> +		pgd_clr_reserved(current->mm->pgd,
+> +				 (unsigned long)current->mce_vaddr);
+> +		memory_failure(current->mce_addr >> PAGE_SHIFT, 0);
+> +		current->mce_vaddr = 0;
+> +		error_code &= ~X86_PF_RSVD;
+> +		pr_info("#PF: maybe fixed? Try to continue\n");
+> +	}
+> +
+>  	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+>  
+>  	if (error_code & X86_PF_WRITE)
+
+
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks!
+Aili Yao
