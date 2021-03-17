@@ -2,113 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86D333EC49
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E400D33EC4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbhCQJLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42348 "EHLO
+        id S229893AbhCQJLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:11:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhCQJLa (ORCPT
+        with ESMTP id S229818AbhCQJLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:11:30 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D87C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:11:29 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id j7so1008287wrd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:11:29 -0700 (PDT)
+        Wed, 17 Mar 2021 05:11:31 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 939D5C061762
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:11:30 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id j18so1004657wra.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:11:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I82Btd+WVHIiPCtw03KBCwnnKsQgGGYmx7xND9MdwYA=;
-        b=E9L3JiUARuk60dnHpdoLup8xflMxXQLLQdzgkIFwAmFHyHDWahFyYI4qSAhLEH/KYR
-         haUWnCDT5Y4vnZCGMsbBGveaakPnwqS3uVB9yDMe4Kb5o5Km4+RWTzKaniq0WwfTa2P8
-         fZ51IJjnUQVA/GLsIElaoTQauOBK6X1eAVivrvAbZNXOW6kSRbM0DdHNPzUKLt2JF2El
-         FXcVoGEETVmIaBi1jccm4zGy3HPIPYSNLbQWVX1DPChjKg9xVO/trDOXB+Y9vbe49Pta
-         IcqSMNktuQmijCgsjOgq1hTQXULQgXd1i1IhmjzFwYMFww5ErCb6z51nQAMV431Virg+
-         lRxg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bN4fpSzo8exezj3x7f+Hv5XSvvEKZvIRblLuzQg15wk=;
+        b=VkIJrz36/HXe6e+FwdGdkS73nKnV9YjVMOH/+Im9wrZJGKMfaBStj8UO2zNOyszrOp
+         Ed2mZ2zpbuY9dhE691tTGxUlMhqhqIT7skBo/1fYeJMmJW2DK3sEAELLkp/LYusolm3f
+         qmZfeXwtXHlClMgZj0QD9srG9K1zDtA0c4OpcnrMWuCaABq1Qe3zprGSzyW3T9HfqgD6
+         44cy8CqbD9mS+An7QASyBFPFeIjJP43lZxtQ7/HuaaNM32FNB3qvIZiFbpxsZf3+amiX
+         ncJ7V/aBdKh6lDFrfxoYDitOTcj1HNcfYzrYqjLmEVIbkKmmgN40lGxV7OKQkupECLlJ
+         8EIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I82Btd+WVHIiPCtw03KBCwnnKsQgGGYmx7xND9MdwYA=;
-        b=kjgiMMW5+hpV7UOJIvNStgBEzspdwWe6r0UAhjHqyvXATkxpdQGlq8rKLwiTXmo/Gr
-         SKPPfGKo7qY42R/e+8D/SK2Op8uuXn+1ZdNWZ/JRg9WZn+bZ1DVfUHAG7hS3PklTOkoH
-         VlMVIsHcxhiKhm4g9Op0fDwLHC6RM3Kt4/P/b5thAmBuCtntb2RklLtO6ukv8Ui0/8sQ
-         xJvZ198MeS+9HVK4IJQDfXZfGP0OHyXa4ZNFykel6SpdsnUUGIRw7x930OGqvT5TovwY
-         CaL2zpoIhsOeGo3bsw67MmbMepI+N8QVGP6BZxXfUJizbS+p/CDod1qP3vwdBKVjFv7C
-         pxeg==
-X-Gm-Message-State: AOAM532OpzP81UAoGwsc6lppYWiAfSkKVdzROxhoMduYE8NBTz9ClWJ8
-        +aYnqiGzGsI29f1ON1ISdMnd+Q==
-X-Google-Smtp-Source: ABdhPJy7uZ6IRh01G4V7CU7eVy6v4zESEGtViXUZMTass0PqzEtjjb9v+wpS+58fer4PEC+gBMu5oA==
-X-Received: by 2002:a5d:5105:: with SMTP id s5mr3472218wrt.140.1615972288457;
-        Wed, 17 Mar 2021 02:11:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bN4fpSzo8exezj3x7f+Hv5XSvvEKZvIRblLuzQg15wk=;
+        b=QzBE4jg7K/6Uhh+zVvD49Dmb8WZ9QkoxbNjT5tlHAf0q25rUn17bnx93xeM4ohzcu1
+         DI34jrq1e7wMuDrwp9QYggQgNKvqbnViOpRkleEsqNtJBhh82qMhHnGHrbuvC1Asi/k4
+         T7dUc7cCf+Glz3qGLHozAKTO3xqYwFCgtC7pRWPKyxHE9CyOBHoTFO6Jy+G2r4m+d0sX
+         eEyxoVq/1oE5WnJ7DjcXQSvLizV62b29FYChWgzERyfkVfVasJqSNGi9tLlWbxPuEF0w
+         L9XFMCoIG7FaODEudejRK83/rJV6uChtr6Or1vWRPzbfPqV/cL7QH4207uzOjFYaYyQO
+         yq2Q==
+X-Gm-Message-State: AOAM532bE7pEXUyhRADbjbZmtxj0M7ozJm/9eSyj2GfISfAS3NlvlArt
+        gItov+yU/lzV8YTtF1YUSsmtqw==
+X-Google-Smtp-Source: ABdhPJzdUfSyxp16Fxr4les5oIJRzRmIzCuQsiDIzk7b0x1kydxLSr8PnX+L9g67uz/0ILyGmTdSGQ==
+X-Received: by 2002:a5d:5906:: with SMTP id v6mr3335177wrd.137.1615972289312;
+        Wed, 17 Mar 2021 02:11:29 -0700 (PDT)
 Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id s83sm1709279wms.16.2021.03.17.02.11.27
+        by smtp.gmail.com with ESMTPSA id s83sm1709279wms.16.2021.03.17.02.11.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 17 Mar 2021 02:11:28 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        c by <James.Bottomley@SteelEye.com>,
-        GOTO Masanori <gotom@debian.or.jp>, gotom@debian.org,
+Cc:     linux-kernel@vger.kernel.org, Khalid Aziz <khalid@gonehiking.org>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        "Leonard N. Zubkoff" <lnz@dandelion.com>,
-        linux-scsi@vger.kernel.org,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Richard Hirst <richard@sleepie.demon.co.uk>,
-        YOKOTA Hiroshi <yokota@netlab.is.tsukuba.ac.jp>
-Subject: [PATCH 0/8] [Set 3 v2] Rid W=1 warnings in SCSI
-Date:   Wed, 17 Mar 2021 09:11:17 +0000
-Message-Id: <20210317091125.2910058-1-lee.jones@linaro.org>
+        "Leonard N. Zubkoff" <lnz@dandelion.com>,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH 1/8] scsi: BusLogic: Supply __printf(x, y) formatting for blogic_msg()
+Date:   Wed, 17 Mar 2021 09:11:18 +0000
+Message-Id: <20210317091125.2910058-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210317091125.2910058-1-lee.jones@linaro.org>
+References: <20210317091125.2910058-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This set contains functional changes.
+Fixes the following W=1 kernel build warning(s):
 
-This set is part of a larger effort attempting to clean-up W=1
-kernel builds, which are currently overwhelmingly riddled with
-niggly little warnings.
+ In file included from drivers/scsi/BusLogic.c:51:
+ drivers/scsi/BusLogic.c: In function ‘blogic_msg’:
+ drivers/scsi/BusLogic.c:3591:2: warning: function ‘blogic_msg’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
 
-Lee Jones (8):
-  scsi: BusLogic: Supply __printf(x, y) formatting for blogic_msg()
-  scsi: nsp32: Supply __printf(x, y) formatting for nsp32_message()
-  scsi: nsp32: Remove or exclude unused variables
-  scsi: FlashPoint: Remove unused variable 'TID' from
-    'FlashPoint_AbortCCB()'
-  scsi: sim710: Remove unused variable 'err' from sim710_init()
-  scsi: isci: remote_device: Make local function
-    isci_remote_device_wait_for_resume_from_abort() static
-  scsi: isci: port: Make local function 'port_state_name()' static
-  scsi: nsp32: Correct expected types in debug print formatting
-
- drivers/scsi/BusLogic.c           |  2 +-
- drivers/scsi/FlashPoint.c         |  4 ----
- drivers/scsi/isci/port.c          |  2 +-
- drivers/scsi/isci/remote_device.c |  2 +-
- drivers/scsi/nsp32.c              | 31 +++++++++----------------------
- drivers/scsi/sim710.c             | 14 ++++++--------
- 6 files changed, 18 insertions(+), 37 deletions(-)
-
-Cc: Artur Paszkiewicz <artur.paszkiewicz@intel.com>
-Cc: c by <James.Bottomley@SteelEye.com>
-Cc: GOTO Masanori <gotom@debian.or.jp>
-Cc: gotom@debian.org
-Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
 Cc: Khalid Aziz <khalid@gonehiking.org>
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
 Cc: "Leonard N. Zubkoff" <lnz@dandelion.com>
 Cc: linux-scsi@vger.kernel.org
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Richard Hirst <richard@sleepie.demon.co.uk>
-Cc: YOKOTA Hiroshi <yokota@netlab.is.tsukuba.ac.jp>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/scsi/BusLogic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/BusLogic.c b/drivers/scsi/BusLogic.c
+index ccb061ab0a0ad..0ac3f713fc212 100644
+--- a/drivers/scsi/BusLogic.c
++++ b/drivers/scsi/BusLogic.c
+@@ -3578,7 +3578,7 @@ Target	Requested Completed  Requested Completed  Requested Completed\n\
+ /*
+   blogic_msg prints Driver Messages.
+ */
+-
++__printf(2, 4)
+ static void blogic_msg(enum blogic_msglevel msglevel, char *fmt,
+ 			struct blogic_adapter *adapter, ...)
+ {
 -- 
 2.27.0
 
