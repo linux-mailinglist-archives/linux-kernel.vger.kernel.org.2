@@ -2,489 +2,434 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EAE33E671
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:51:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 600A433E67D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:59:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhCQBut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 21:50:49 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:14355 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhCQBuQ (ORCPT
+        id S229643AbhCQB67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 21:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhCQB6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 21:50:16 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F0Y2q0RTVz8yR6;
-        Wed, 17 Mar 2021 09:48:19 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 17 Mar 2021 09:50:03 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Guo Ren <guoren@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, <linux-alpha@vger.kernel.org>,
-        <linux-snps-arc@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-csky@vger.kernel.org>, <linux-hexagon@vger.kernel.org>,
-        <linux-ia64@vger.kernel.org>, <linux-m68k@lists.linux-m68k.org>,
-        <linux-mips@vger.kernel.org>, <openrisc@lists.librecores.org>,
-        <linux-parisc@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-riscv@lists.infradead.org>, <linux-s390@vger.kernel.org>,
-        <linux-sh@vger.kernel.org>, <sparclinux@vger.kernel.org>,
-        <linux-um@lists.infradead.org>, <linux-xtensa@linux-xtensa.org>,
-        <linux-mm@kvack.org>, Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v2] mm: Move mem_init_print_info() into mm_init()
-Date:   Wed, 17 Mar 2021 09:52:10 +0800
-Message-ID: <20210317015210.33641-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <4d488195-7281-9238-b30d-9f89a6100fb9@csgroup.eu>
-References: <4d488195-7281-9238-b30d-9f89a6100fb9@csgroup.eu>
+        Tue, 16 Mar 2021 21:58:24 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E936DC06174A;
+        Tue, 16 Mar 2021 18:58:12 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id j20-20020a4ad6d40000b02901b66fe8acd6so185252oot.7;
+        Tue, 16 Mar 2021 18:58:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QexooDNTvorrGc/CXURATAyzMmjsR35GYeoj+xZO6gw=;
+        b=gnKNiLQXzXxH5ojnQahBXLM8vIC5rFrD5U12JfFH0CfAwrcPJdxrHU78/GIJvEKvrp
+         BHK214wMGPd73xjMrYISgIyV9BKuhPfAh0sDkTlCVRLdCAQr1WyYhVltAhYg/Hj+RMXm
+         CMEgw3FYXMjXMCknoEREsGoypKtqLXGLzYJYF58OHZE58JCg0Y1VimNCX9T9Gy0JW5Wi
+         BkKa+Fm9vBi078nYFjzjLEDubMzHheYWubEoPG7+pUvVj320ToHkxQC48uRbYRmlYwST
+         fdeAt0y0KPMRO7wjVE7p/NSO9ovtiyZJnUeyFKLXh3xBY3MSuBuwewa35FIQOzP9nlz4
+         Fhhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=QexooDNTvorrGc/CXURATAyzMmjsR35GYeoj+xZO6gw=;
+        b=aYF+CJsgodXyAX7fHBgo1ZO9TYcrrIMiHIRQbm9/4AtbTvcUJ7wFogpmDA6MkN+/ru
+         RDnH2WUMo6EzWjDo0FqXcnumQKGZqEGF1Avvi6P+UBKzfA+VPQpM1iHN2MDucO4FVnEV
+         wNUKpzFMgef1L6unMu9E8NFr22GKAlfgzCj+lzp71JuwTzRBAz+UPUS+EJuohKXgqHpR
+         M77+g7cbYn7y2SeoqRFuYDCjPVDb7Yunj7XPB3ScS7ApLDKRylQe6oSfkfCzSSJQvf3R
+         JkLUXvZ7qYDwiCGAd415LXX19N04nsx72PoTxsiG7pyvTpMnc0fgepprpDw4J14/HTMo
+         JrFg==
+X-Gm-Message-State: AOAM533cwqS7EVgITn//aLXMipNr/nfms0BWrS6+tNK0pa5ciYG9PITC
+        2RQN0Aff2FYywVA9lp1uZlvG7/kyQBg=
+X-Google-Smtp-Source: ABdhPJyc8Sa7qo3XmeV0jjs5P/jP7X2WDpe4HYAhtT6ZWuNiJY708ZpMiHureo/6KXYpRtME5YpkUg==
+X-Received: by 2002:a4a:dc51:: with SMTP id q17mr1375625oov.76.1615946291899;
+        Tue, 16 Mar 2021 18:58:11 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i3sm8025224oov.2.2021.03.16.18.58.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 18:58:11 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v2 3/3] hwmon: (pmbus): Add driver for BluTek BPA-RS600
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        robh+dt@kernel.org, jdelvare@suse.com
+Cc:     devicetree@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210316203036.17674-1-chris.packham@alliedtelesis.co.nz>
+ <20210316203036.17674-3-chris.packham@alliedtelesis.co.nz>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
+ RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
+ nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
+ 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
+ gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
+ IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
+ kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
+ VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
+ jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
+ BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
+ ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
+ CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
+ nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
+ hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
+ c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
+ 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
+ GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
+ sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
+ Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
+ HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
+ BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
+ l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
+ 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
+ pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
+ J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
+ pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
+ 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
+ ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
+ I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
+ nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
+ HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
+ JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
+ J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
+ cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
+ wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
+ hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
+ nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
+ QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
+ trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
+ WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
+ HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <4e3b2108-ac1e-5b15-5539-18c1bff1de19@roeck-us.net>
+Date:   Tue, 16 Mar 2021 18:58:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210316203036.17674-3-chris.packham@alliedtelesis.co.nz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mem_init_print_info() is called in mem_init() on each architecture,
-and pass NULL argument, so using void argument and move it into mm_init().
+On 3/16/21 1:30 PM, Chris Packham wrote:
+> The BPA-RS600 is a compact 600W AC to DC removable power supply module.
+> 
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+> 
+> Notes:
+>     Changes in v2:
+>     - Whitespace and line length cleanup
+>     - Add comments about commands that return data but shouldn't be used
+> 
+>  Documentation/hwmon/bpa-rs600.rst |  74 +++++++++++++
+>  drivers/hwmon/pmbus/Kconfig       |   9 ++
+>  drivers/hwmon/pmbus/Makefile      |   1 +
+>  drivers/hwmon/pmbus/bpa-rs600.c   | 172 ++++++++++++++++++++++++++++++
+>  4 files changed, 256 insertions(+)
+>  create mode 100644 Documentation/hwmon/bpa-rs600.rst
+>  create mode 100644 drivers/hwmon/pmbus/bpa-rs600.c
+> 
+> diff --git a/Documentation/hwmon/bpa-rs600.rst b/Documentation/hwmon/bpa-rs600.rst
+> new file mode 100644
+> index 000000000000..28313995d4ae
+> --- /dev/null
+> +++ b/Documentation/hwmon/bpa-rs600.rst
+> @@ -0,0 +1,74 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +Kernel driver bpa-rs600
+> +=======================
+> +
+> +Supported chips:
+> +
+> +  * BPA-RS600-120
+> +
+> +    Datasheet: Publicly available at the BluTek website
+> +       http://blutekpower.com/wp-content/uploads/2019/01/BPA-RS600-120-07-19-2018.pdf
+> +
+> +Authors:
+> +      - Chris Packham <chris.packham@alliedtelesis.co.nz>
+> +
+> +Description
+> +-----------
+> +
+> +The BPA-RS600 is a compact 600W removable power supply module.
+> +
+> +Usage Notes
+> +-----------
+> +
+> +This driver does not probe for PMBus devices. You will have to instantiate
+> +devices explicitly.
+> +
+> +Sysfs attributes
+> +----------------
+> +
+> +======================= ============================================
+> +curr1_label             "iin"
+> +curr1_input		Measured input current
+> +curr1_max		Maximum input current
+> +curr1_max_alarm		Input current high alarm
+> +
+> +curr2_label		"iout1"
+> +curr2_input		Measured output current
+> +curr2_max		Maximum output current
+> +curr2_max_alarm		Output current high alarm
+> +
+> +fan1_input		Measured fan speed
+> +fan1_alarm		Fan warning
+> +fan1_fault		Fan fault
+> +
+> +in1_label		"vin"
+> +in1_input		Measured input voltage
+> +in1_max			Maximum input voltage
+> +in1_max_alarm		Input voltage high alarm
+> +in1_min			Minimum input voltage
+> +in1_min_alarm		Input voltage low alarm
+> +
+> +in2_label		"vout1"
+> +in2_input		Measured output voltage
+> +in2_max			Maximum output voltage
+> +in2_max_alarm		Output voltage high alarm
+> +in2_min			Maximum output voltage
+> +in2_min_alarm		Output voltage low alarm
+> +
+> +power1_label		"pin"
+> +power1_input		Measured input power
+> +power1_alarm		Input power alarm
+> +power1_max		Maximum input power
+> +
+> +power2_label		"pout1"
+> +power2_input		Measured output power
+> +power2_max		Maximum output power
+> +power2_max_alarm	Output power high alarm
+> +
+> +temp1_input		Measured temperature around input connector
+> +temp1_alarm		Temperature alarm
+> +
+> +temp2_input		Measured temperature around output connector
+> +temp2_alarm		Temperature alarm
+> +======================= ============================================
+> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+> index 32d2fc850621..c9f08725d201 100644
+> --- a/drivers/hwmon/pmbus/Kconfig
+> +++ b/drivers/hwmon/pmbus/Kconfig
+> @@ -56,6 +56,15 @@ config SENSORS_BEL_PFE
+>  	  This driver can also be built as a module. If so, the module will
+>  	  be called bel-pfe.
+>  
+> +config SENSORS_BPA_RS600
+> +	tristate "BluTek BPD-RS600 Power Supplies"
+> +	help
+> +	  If you say yes here you get hardware monitoring support for BluTek
+> +	  BPD-RS600 Power Supplies.
+> +
+> +	  This driver can also be built as a module. If so, the module will
+> +	  be called bpd-rs600.
+> +
+>  config SENSORS_IBM_CFFPS
+>  	tristate "IBM Common Form Factor Power Supply"
+>  	depends on LEDS_CLASS
+> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
+> index 6a4ba0fdc1db..80a437060dc4 100644
+> --- a/drivers/hwmon/pmbus/Makefile
+> +++ b/drivers/hwmon/pmbus/Makefile
+> @@ -8,6 +8,7 @@ obj-$(CONFIG_SENSORS_PMBUS)	+= pmbus.o
+>  obj-$(CONFIG_SENSORS_ADM1266)	+= adm1266.o
+>  obj-$(CONFIG_SENSORS_ADM1275)	+= adm1275.o
+>  obj-$(CONFIG_SENSORS_BEL_PFE)	+= bel-pfe.o
+> +obj-$(CONFIG_SENSORS_BPA_RS600)	+= bpa-rs600.o
+>  obj-$(CONFIG_SENSORS_IBM_CFFPS)	+= ibm-cffps.o
+>  obj-$(CONFIG_SENSORS_INSPUR_IPSPS) += inspur-ipsps.o
+>  obj-$(CONFIG_SENSORS_IR35221)	+= ir35221.o
+> diff --git a/drivers/hwmon/pmbus/bpa-rs600.c b/drivers/hwmon/pmbus/bpa-rs600.c
+> new file mode 100644
+> index 000000000000..bdfdef86bf1e
+> --- /dev/null
+> +++ b/drivers/hwmon/pmbus/bpa-rs600.c
+> @@ -0,0 +1,172 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Hardware monitoring driver for BluTek BPA-RS600 Power Supplies
+> + *
+> + * Copyright 2021 Allied Telesis Labs
+> + */
+> +
+> +#include <linux/i2c.h>
+> +#include <linux/init.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/pmbus.h>
+> +#include "pmbus.h"
+> +
+> +#define BPARS600_MFR_VIN_MIN	0xa0
+> +#define BPARS600_MFR_VIN_MAX	0xa1
+> +#define BPARS600_MFR_IIN_MAX	0xa2
+> +#define BPARS600_MFR_PIN_MAX	0xa3
+> +#define BPARS600_MFR_VOUT_MIN	0xa4
+> +#define BPARS600_MFR_VOUT_MAX	0xa5
+> +#define BPARS600_MFR_IOUT_MAX	0xa6
+> +#define BPARS600_MFR_POUT_MAX	0xa7
+> +
+> +static int bpa_rs600_read_byte_data(struct i2c_client *client, int page, int reg)
+> +{
+> +	int ret;
+> +
+> +	if (page > 0)
+> +		return -ENXIO;
+> +
+> +	switch (reg) {
+> +	case PMBUS_FAN_CONFIG_12:
+> +		/*
+> +		 * Two fans are reported in PMBUS_FAN_CONFIG_12 but there is
+> +		 * only one fan in the module. Mask out the FAN2 bits.
+> +		 */
+> +		ret = pmbus_read_byte_data(client, 0, PMBUS_FAN_CONFIG_12);
+> +		if (ret >= 0)
+> +			ret &= ~(PB_FAN_2_INSTALLED | PB_FAN_2_PULSE_MASK);
+> +		break;
+> +	default:
+> +		ret = -ENODATA;
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int bpa_rs600_read_word_data(struct i2c_client *client, int page, int phase, int reg)
+> +{
+> +	int ret;
+> +
+> +	if (page > 0)
+> +		return -ENXIO;
+> +
+> +	switch (reg) {
+> +	case PMBUS_VIN_UV_WARN_LIMIT:
+> +		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_VIN_MIN);
+> +		break;
+> +	case PMBUS_VIN_OV_WARN_LIMIT:
+> +		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_VIN_MAX);
+> +		break;
+> +	case PMBUS_VOUT_UV_WARN_LIMIT:
+> +		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_VOUT_MIN);
+> +		break;
+> +	case PMBUS_VOUT_OV_WARN_LIMIT:
+> +		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_VOUT_MAX);
+> +		break;
+> +	case PMBUS_IIN_OC_WARN_LIMIT:
+> +		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_IIN_MAX);
+> +		break;
+> +	case PMBUS_IOUT_OC_WARN_LIMIT:
+> +		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_IOUT_MAX);
+> +		break;
+> +	case PMBUS_PIN_OP_WARN_LIMIT:
+> +		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_PIN_MAX);
+> +		break;
+> +	case PMBUS_POUT_OP_WARN_LIMIT:
+> +		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_POUT_MAX);
+> +		break;
+> +	case PMBUS_VIN_UV_FAULT_LIMIT:
+> +	case PMBUS_VIN_OV_FAULT_LIMIT:
+> +	case PMBUS_VOUT_UV_FAULT_LIMIT:
+> +	case PMBUS_VOUT_OV_FAULT_LIMIT:
+> +		/* These commands return data but it is invalid/un-documented */
+> +		ret = -ENXIO;
+> +		break;
+> +	default:
+> +		if (reg >= PMBUS_VIRT_BASE)
+> +			ret = -ENXIO;
+> +		else
+> +			ret = -ENODATA;
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static struct pmbus_driver_info bpa_rs600_info = {
+> +	.pages = 1,
+> +	.format[PSC_VOLTAGE_IN] = linear,
+> +	.format[PSC_VOLTAGE_OUT] = linear,
+> +	.format[PSC_CURRENT_IN] = linear,
+> +	.format[PSC_CURRENT_OUT] = linear,
+> +	.format[PSC_POWER] = linear,
+> +	.format[PSC_TEMPERATURE] = linear,
+> +	.format[PSC_FAN] = linear,
+> +	.func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_VOUT |
+> +		PMBUS_HAVE_IIN | PMBUS_HAVE_IOUT |
+> +		PMBUS_HAVE_PIN | PMBUS_HAVE_POUT |
+> +		PMBUS_HAVE_TEMP | PMBUS_HAVE_TEMP2 |
+> +		PMBUS_HAVE_FAN12 |
+> +		PMBUS_HAVE_STATUS_VOUT | PMBUS_HAVE_STATUS_IOUT |
+> +		PMBUS_HAVE_STATUS_INPUT | PMBUS_HAVE_STATUS_TEMP |
+> +		PMBUS_HAVE_STATUS_FAN12,
+> +	.read_byte_data = bpa_rs600_read_byte_data,
+> +	.read_word_data = bpa_rs600_read_word_data,
+> +};
+> +
+> +static int bpa_rs600_probe(struct i2c_client *client)
+> +{
+> +	struct device *dev = &client->dev;
+> +	u8 buf[I2C_SMBUS_BLOCK_MAX];
 
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
-v2:
-- Cleanup 'str' line suggested by Christophe and ACK
+I think that needs to be I2C_SMBUS_BLOCK_MAX + 1 to have space for the terminating '\0'.
 
- arch/alpha/mm/init.c             |  1 -
- arch/arc/mm/init.c               |  1 -
- arch/arm/mm/init.c               |  2 --
- arch/arm64/mm/init.c             |  2 --
- arch/csky/mm/init.c              |  1 -
- arch/h8300/mm/init.c             |  2 --
- arch/hexagon/mm/init.c           |  1 -
- arch/ia64/mm/init.c              |  1 -
- arch/m68k/mm/init.c              |  1 -
- arch/microblaze/mm/init.c        |  1 -
- arch/mips/loongson64/numa.c      |  1 -
- arch/mips/mm/init.c              |  1 -
- arch/mips/sgi-ip27/ip27-memory.c |  1 -
- arch/nds32/mm/init.c             |  1 -
- arch/nios2/mm/init.c             |  1 -
- arch/openrisc/mm/init.c          |  2 --
- arch/parisc/mm/init.c            |  2 --
- arch/powerpc/mm/mem.c            |  1 -
- arch/riscv/mm/init.c             |  1 -
- arch/s390/mm/init.c              |  2 --
- arch/sh/mm/init.c                |  1 -
- arch/sparc/mm/init_32.c          |  2 --
- arch/sparc/mm/init_64.c          |  1 -
- arch/um/kernel/mem.c             |  1 -
- arch/x86/mm/init_32.c            |  2 --
- arch/x86/mm/init_64.c            |  2 --
- arch/xtensa/mm/init.c            |  1 -
- include/linux/mm.h               |  2 +-
- init/main.c                      |  1 +
- mm/page_alloc.c                  | 10 +++++-----
- 30 files changed, 7 insertions(+), 42 deletions(-)
+Otherwise looks good.
 
-diff --git a/arch/alpha/mm/init.c b/arch/alpha/mm/init.c
-index 3c42b3147fd6..a97650a618f1 100644
---- a/arch/alpha/mm/init.c
-+++ b/arch/alpha/mm/init.c
-@@ -282,5 +282,4 @@ mem_init(void)
- 	set_max_mapnr(max_low_pfn);
- 	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE);
- 	memblock_free_all();
--	mem_init_print_info(NULL);
- }
-diff --git a/arch/arc/mm/init.c b/arch/arc/mm/init.c
-index ce07e697916c..33832e36bdb7 100644
---- a/arch/arc/mm/init.c
-+++ b/arch/arc/mm/init.c
-@@ -194,7 +194,6 @@ void __init mem_init(void)
- {
- 	memblock_free_all();
- 	highmem_init();
--	mem_init_print_info(NULL);
- }
- 
- #ifdef CONFIG_HIGHMEM
-diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-index 828a2561b229..7022b7b5c400 100644
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -316,8 +316,6 @@ void __init mem_init(void)
- 
- 	free_highpages();
- 
--	mem_init_print_info(NULL);
--
- 	/*
- 	 * Check boundaries twice: Some fundamental inconsistencies can
- 	 * be detected at build time already.
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 3685e12aba9b..e8f29a0bb2f1 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -491,8 +491,6 @@ void __init mem_init(void)
- 	/* this will put all unused low memory onto the freelists */
- 	memblock_free_all();
- 
--	mem_init_print_info(NULL);
--
- 	/*
- 	 * Check boundaries twice: Some fundamental inconsistencies can be
- 	 * detected at build time already.
-diff --git a/arch/csky/mm/init.c b/arch/csky/mm/init.c
-index 894050a8ce09..bf2004aa811a 100644
---- a/arch/csky/mm/init.c
-+++ b/arch/csky/mm/init.c
-@@ -107,7 +107,6 @@ void __init mem_init(void)
- 			free_highmem_page(page);
- 	}
- #endif
--	mem_init_print_info(NULL);
- }
- 
- void free_initmem(void)
-diff --git a/arch/h8300/mm/init.c b/arch/h8300/mm/init.c
-index 1f3b345d68b9..f7bf4693e3b2 100644
---- a/arch/h8300/mm/init.c
-+++ b/arch/h8300/mm/init.c
-@@ -98,6 +98,4 @@ void __init mem_init(void)
- 
- 	/* this will put all low memory onto the freelists */
- 	memblock_free_all();
--
--	mem_init_print_info(NULL);
- }
-diff --git a/arch/hexagon/mm/init.c b/arch/hexagon/mm/init.c
-index f2e6c868e477..f01e91e10d95 100644
---- a/arch/hexagon/mm/init.c
-+++ b/arch/hexagon/mm/init.c
-@@ -55,7 +55,6 @@ void __init mem_init(void)
- {
- 	/*  No idea where this is actually declared.  Seems to evade LXR.  */
- 	memblock_free_all();
--	mem_init_print_info(NULL);
- 
- 	/*
- 	 *  To-Do:  someone somewhere should wipe out the bootmem map
-diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-index 16d0d7d22657..83280e2df807 100644
---- a/arch/ia64/mm/init.c
-+++ b/arch/ia64/mm/init.c
-@@ -659,7 +659,6 @@ mem_init (void)
- 	set_max_mapnr(max_low_pfn);
- 	high_memory = __va(max_low_pfn * PAGE_SIZE);
- 	memblock_free_all();
--	mem_init_print_info(NULL);
- 
- 	/*
- 	 * For fsyscall entrpoints with no light-weight handler, use the ordinary
-diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-index 14c1e541451c..1759ab875d47 100644
---- a/arch/m68k/mm/init.c
-+++ b/arch/m68k/mm/init.c
-@@ -153,5 +153,4 @@ void __init mem_init(void)
- 	/* this will put all memory onto the freelists */
- 	memblock_free_all();
- 	init_pointer_tables();
--	mem_init_print_info(NULL);
- }
-diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
-index 05cf1fb3f5ff..ab55c70380a5 100644
---- a/arch/microblaze/mm/init.c
-+++ b/arch/microblaze/mm/init.c
-@@ -131,7 +131,6 @@ void __init mem_init(void)
- 	highmem_setup();
- #endif
- 
--	mem_init_print_info(NULL);
- 	mem_init_done = 1;
- }
- 
-diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
-index 8315c871c435..fa9b4a487a47 100644
---- a/arch/mips/loongson64/numa.c
-+++ b/arch/mips/loongson64/numa.c
-@@ -178,7 +178,6 @@ void __init mem_init(void)
- 	high_memory = (void *) __va(get_num_physpages() << PAGE_SHIFT);
- 	memblock_free_all();
- 	setup_zero_pages();	/* This comes from node 0 */
--	mem_init_print_info(NULL);
- }
- 
- /* All PCI device belongs to logical Node-0 */
-diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index 5cb73bf74a8b..c36358758969 100644
---- a/arch/mips/mm/init.c
-+++ b/arch/mips/mm/init.c
-@@ -467,7 +467,6 @@ void __init mem_init(void)
- 	memblock_free_all();
- 	setup_zero_pages();	/* Setup zeroed pages.  */
- 	mem_init_free_highmem();
--	mem_init_print_info(NULL);
- 
- #ifdef CONFIG_64BIT
- 	if ((unsigned long) &_text > (unsigned long) CKSEG0)
-diff --git a/arch/mips/sgi-ip27/ip27-memory.c b/arch/mips/sgi-ip27/ip27-memory.c
-index 87bb6945ec25..6173684b5aaa 100644
---- a/arch/mips/sgi-ip27/ip27-memory.c
-+++ b/arch/mips/sgi-ip27/ip27-memory.c
-@@ -420,5 +420,4 @@ void __init mem_init(void)
- 	high_memory = (void *) __va(get_num_physpages() << PAGE_SHIFT);
- 	memblock_free_all();
- 	setup_zero_pages();	/* This comes from node 0 */
--	mem_init_print_info(NULL);
- }
-diff --git a/arch/nds32/mm/init.c b/arch/nds32/mm/init.c
-index fa86f7b2f416..f63f839738c4 100644
---- a/arch/nds32/mm/init.c
-+++ b/arch/nds32/mm/init.c
-@@ -191,7 +191,6 @@ void __init mem_init(void)
- 
- 	/* this will put all low memory onto the freelists */
- 	memblock_free_all();
--	mem_init_print_info(NULL);
- 
- 	pr_info("virtual kernel memory layout:\n"
- 		"    fixmap  : 0x%08lx - 0x%08lx   (%4ld kB)\n"
-diff --git a/arch/nios2/mm/init.c b/arch/nios2/mm/init.c
-index 61862dbb0e32..613fcaa5988a 100644
---- a/arch/nios2/mm/init.c
-+++ b/arch/nios2/mm/init.c
-@@ -71,7 +71,6 @@ void __init mem_init(void)
- 
- 	/* this will put all memory onto the freelists */
- 	memblock_free_all();
--	mem_init_print_info(NULL);
- }
- 
- void __init mmu_init(void)
-diff --git a/arch/openrisc/mm/init.c b/arch/openrisc/mm/init.c
-index bf9b2310fc93..d5641198b90c 100644
---- a/arch/openrisc/mm/init.c
-+++ b/arch/openrisc/mm/init.c
-@@ -211,8 +211,6 @@ void __init mem_init(void)
- 	/* this will put all low memory onto the freelists */
- 	memblock_free_all();
- 
--	mem_init_print_info(NULL);
--
- 	printk("mem_init_done ...........................................\n");
- 	mem_init_done = 1;
- 	return;
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index 9ca4e4ff6895..591a4e939415 100644
---- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -573,8 +573,6 @@ void __init mem_init(void)
- #endif
- 		parisc_vmalloc_start = SET_MAP_OFFSET(MAP_START);
- 
--	mem_init_print_info(NULL);
--
- #if 0
- 	/*
- 	 * Do not expose the virtual kernel memory layout to userspace.
-diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index 4e8ce6d85232..7e11c4cb08b8 100644
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -312,7 +312,6 @@ void __init mem_init(void)
- 		(mfspr(SPRN_TLB1CFG) & TLBnCFG_N_ENTRY) - 1;
- #endif
- 
--	mem_init_print_info(NULL);
- #ifdef CONFIG_PPC32
- 	pr_info("Kernel virtual memory layout:\n");
- #ifdef CONFIG_KASAN
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 7f5036fbee8c..3c5ee3b7d811 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -102,7 +102,6 @@ void __init mem_init(void)
- 	high_memory = (void *)(__va(PFN_PHYS(max_low_pfn)));
- 	memblock_free_all();
- 
--	mem_init_print_info(NULL);
- 	print_vm_layout();
- }
- 
-diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-index 0e76b2127dc6..8ac710de1ab1 100644
---- a/arch/s390/mm/init.c
-+++ b/arch/s390/mm/init.c
-@@ -209,8 +209,6 @@ void __init mem_init(void)
- 	setup_zero_pages();	/* Setup zeroed pages. */
- 
- 	cmma_init_nodat();
--
--	mem_init_print_info(NULL);
- }
- 
- void free_initmem(void)
-diff --git a/arch/sh/mm/init.c b/arch/sh/mm/init.c
-index 0db6919af8d3..168d7d4dd735 100644
---- a/arch/sh/mm/init.c
-+++ b/arch/sh/mm/init.c
-@@ -359,7 +359,6 @@ void __init mem_init(void)
- 
- 	vsyscall_init();
- 
--	mem_init_print_info(NULL);
- 	pr_info("virtual kernel memory layout:\n"
- 		"    fixmap  : 0x%08lx - 0x%08lx   (%4ld kB)\n"
- 		"    vmalloc : 0x%08lx - 0x%08lx   (%4ld MB)\n"
-diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
-index 6139c5700ccc..1e9f577f084d 100644
---- a/arch/sparc/mm/init_32.c
-+++ b/arch/sparc/mm/init_32.c
-@@ -292,8 +292,6 @@ void __init mem_init(void)
- 
- 		map_high_region(start_pfn, end_pfn);
- 	}
--
--	mem_init_print_info(NULL);
- }
- 
- void sparc_flush_page_to_ram(struct page *page)
-diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
-index 182bb7bdaa0a..e454f179cf5d 100644
---- a/arch/sparc/mm/init_64.c
-+++ b/arch/sparc/mm/init_64.c
-@@ -2520,7 +2520,6 @@ void __init mem_init(void)
- 	}
- 	mark_page_reserved(mem_map_zero);
- 
--	mem_init_print_info(NULL);
- 
- 	if (tlb_type == cheetah || tlb_type == cheetah_plus)
- 		cheetah_ecache_flush_init();
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 9242dc91d751..9019ff5905b1 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -54,7 +54,6 @@ void __init mem_init(void)
- 	memblock_free_all();
- 	max_low_pfn = totalram_pages();
- 	max_pfn = max_low_pfn;
--	mem_init_print_info(NULL);
- 	kmalloc_ok = 1;
- }
- 
-diff --git a/arch/x86/mm/init_32.c b/arch/x86/mm/init_32.c
-index da31c2635ee4..21ffb03f6c72 100644
---- a/arch/x86/mm/init_32.c
-+++ b/arch/x86/mm/init_32.c
-@@ -755,8 +755,6 @@ void __init mem_init(void)
- 	after_bootmem = 1;
- 	x86_init.hyper.init_after_bootmem();
- 
--	mem_init_print_info(NULL);
--
- 	/*
- 	 * Check boundaries twice: Some fundamental inconsistencies can
- 	 * be detected at build time already.
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index 5430c81eefc9..aa8387aab9c1 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -1350,8 +1350,6 @@ void __init mem_init(void)
- 		kclist_add(&kcore_vsyscall, (void *)VSYSCALL_ADDR, PAGE_SIZE, KCORE_USER);
- 
- 	preallocate_vmalloc_pages();
--
--	mem_init_print_info(NULL);
- }
- 
- #ifdef CONFIG_DEFERRED_STRUCT_PAGE_INIT
-diff --git a/arch/xtensa/mm/init.c b/arch/xtensa/mm/init.c
-index 2daeba9e454e..6a32b2cf2718 100644
---- a/arch/xtensa/mm/init.c
-+++ b/arch/xtensa/mm/init.c
-@@ -119,7 +119,6 @@ void __init mem_init(void)
- 
- 	memblock_free_all();
- 
--	mem_init_print_info(NULL);
- 	pr_info("virtual kernel memory layout:\n"
- #ifdef CONFIG_KASAN
- 		"    kasan   : 0x%08lx - 0x%08lx  (%5lu MB)\n"
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 89314651dd62..c2e0b3495c5a 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2373,7 +2373,7 @@ extern unsigned long free_reserved_area(void *start, void *end,
- 					int poison, const char *s);
- 
- extern void adjust_managed_page_count(struct page *page, long count);
--extern void mem_init_print_info(const char *str);
-+extern void mem_init_print_info(void);
- 
- extern void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
- 
-diff --git a/init/main.c b/init/main.c
-index 53b278845b88..5581af5b4cb7 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -830,6 +830,7 @@ static void __init mm_init(void)
- 	report_meminit();
- 	stack_depot_init();
- 	mem_init();
-+	mem_init_print_info();
- 	/* page_owner must be initialized after buddy is ready */
- 	page_ext_init_flatmem_late();
- 	kmem_cache_init();
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 55d938297ce6..b5fe5962837c 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -7728,7 +7728,7 @@ unsigned long free_reserved_area(void *start, void *end, int poison, const char
- 	return pages;
- }
- 
--void __init mem_init_print_info(const char *str)
-+void __init mem_init_print_info(void)
- {
- 	unsigned long physpages, codesize, datasize, rosize, bss_size;
- 	unsigned long init_code_size, init_data_size;
-@@ -7767,17 +7767,17 @@ void __init mem_init_print_info(const char *str)
- #ifdef	CONFIG_HIGHMEM
- 		", %luK highmem"
- #endif
--		"%s%s)\n",
-+		")\n",
- 		nr_free_pages() << (PAGE_SHIFT - 10),
- 		physpages << (PAGE_SHIFT - 10),
- 		codesize >> 10, datasize >> 10, rosize >> 10,
- 		(init_data_size + init_code_size) >> 10, bss_size >> 10,
- 		(physpages - totalram_pages() - totalcma_pages) << (PAGE_SHIFT - 10),
--		totalcma_pages << (PAGE_SHIFT - 10),
-+		totalcma_pages << (PAGE_SHIFT - 10)
- #ifdef	CONFIG_HIGHMEM
--		totalhigh_pages() << (PAGE_SHIFT - 10),
-+		, totalhigh_pages() << (PAGE_SHIFT - 10)
- #endif
--		str ? ", " : "", str ? str : "");
-+		);
- }
- 
- /**
--- 
-2.26.2
+Guenter
+
+> +	int ret;
+> +
+> +	if (!i2c_check_functionality(client->adapter,
+> +				     I2C_FUNC_SMBUS_READ_BYTE_DATA
+> +				     | I2C_FUNC_SMBUS_READ_WORD_DATA
+> +				     | I2C_FUNC_SMBUS_READ_BLOCK_DATA))
+> +		return -ENODEV;
+> +
+> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, buf);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to read Manufacturer Model\n");
+> +		return ret;
+> +	}
+> +
+> +	if (strncmp(buf, "BPA-RS600", 8)) {
+> +		buf[ret] = '\0';
+> +		dev_err(dev, "Unsupported Manufacturer Model '%s'\n", buf);
+> +		return -ENODEV;
+> +	}
+> +
+> +	return pmbus_do_probe(client, &bpa_rs600_info);
+> +}
+> +
+> +static const struct i2c_device_id bpa_rs600_id[] = {
+> +	{ "bpars600", 0 },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(i2c, bpa_rs600_id);
+> +
+> +static const struct of_device_id __maybe_unused bpa_rs600_of_match[] = {
+> +	{ .compatible = "blutek,bpa-rs600" },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, bpa_rs600_of_match);
+> +
+> +static struct i2c_driver bpa_rs600_driver = {
+> +	.driver = {
+> +		.name = "bpa-rs600",
+> +		.of_match_table = of_match_ptr(bpa_rs600_of_match),
+> +	},
+> +	.probe_new = bpa_rs600_probe,
+> +	.id_table = bpa_rs600_id,
+> +};
+> +
+> +module_i2c_driver(bpa_rs600_driver);
+> +
+> +MODULE_AUTHOR("Chris Packham");
+> +MODULE_DESCRIPTION("PMBus driver for BluTek BPA-RS600");
+> +MODULE_LICENSE("GPL");
+> 
 
