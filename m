@@ -2,91 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC7A33ED5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5524433ED5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:47:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229506AbhCQJqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:46:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbhCQJqW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:46:22 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCD9C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:46:21 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so893001wmi.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:46:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/dqJHapOI3bjlCJlze7gTCCUkWNP2k4Q72mCnMzvwE8=;
-        b=UJ/7N6+jJNol2V0H/4pa7zu7d1qi+iE+s3nQTaVzHGJ6y3aBPk1Bd9Id7JKkAZRXS/
-         zUMtByAj6EV0qT+2hseUCOeCSx7HrsTWbINtcUQuJoB0sHHnJyL19n2HqCNqeYNiMGSC
-         zcxlpUzEHQ/kvBoGC69xWkSwdW7eYkEyV+JiKRb2Zpfbbv38WBp+9dm3JBqeaEYgVzpQ
-         B56tHw8jhUrByUeU/XyM2Agth6ZEGNGeTUBwUFs5CdZqRjJyjNj1X/TmhKBbw+zckMEp
-         ocfxzKyrF4QPk50EGj8h2W/nGLQ9X+o4kFthDL0SAoWHFINBoKLvNmmZNm5C/P61G6Z1
-         YWsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=/dqJHapOI3bjlCJlze7gTCCUkWNP2k4Q72mCnMzvwE8=;
-        b=sH6+VSf65JDHb8afYTJWfinOV3YX3X4j7Wd9ygD2Zg1Zp7z91E1MnJ+RiSB47oGX93
-         +r3UkhHZ4jNZlHuCkTYTpU3Za+5w0lGeZlASOzUIJZjf8xABNJCMPc+EchnIFal8AJ3p
-         cwGRPUvCYVNP2rNEG7PMTp8oLxtgsH0N5Py59eQZs+QGQAso1lWzRIGO/90JxIB2ukf9
-         0rXfOOROhCDN6lknRHWA5FYScgGuJjMlcMp4AHlJQ5i7xzscuC1S1YH+tRFqBaMJ1HEd
-         P2og4ChvEohVSXOyn0+TNxkgCecn+qeYQXWZw106O+43MQtYBBNSltdp7d4EeYlQWSFd
-         OFKg==
-X-Gm-Message-State: AOAM532uK3zZIEsxSZ06YA3anw9paB/6g22UfxeUFDtWCsxI/2kVSZE1
-        NcLByxBHwJ+2OZsz1kFlZaM=
-X-Google-Smtp-Source: ABdhPJxJKhNHbQUSc5H4PrI5HhjjA1x7tOt3Isfqemcsun8y7Vud90W3Baqh5dkM9tVGyCJ0Q6PtAw==
-X-Received: by 2002:a7b:cc84:: with SMTP id p4mr2901117wma.10.1615974380596;
-        Wed, 17 Mar 2021 02:46:20 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id e1sm26215961wrd.44.2021.03.17.02.46.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 02:46:20 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 17 Mar 2021 10:46:18 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     Wang Qing <wangqing@vivo.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched: swait: use wake_up_process() instead of
- wake_up_state()
-Message-ID: <20210317094618.GA1724119@gmail.com>
-References: <1615893602-22260-1-git-send-email-wangqing@vivo.com>
- <4cb1a9ae15c414435020630cf6362163ddda1550.camel@gmx.de>
+        id S230038AbhCQJqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:46:50 -0400
+Received: from mga06.intel.com ([134.134.136.31]:40720 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229918AbhCQJqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 05:46:36 -0400
+IronPort-SDR: KPPTzRns1q2iEimbKbXlzWYM9UeNGAxMVdliBYdnV60MuiY0itxKIYy5cO9DCsvuDNPv6sOeCr
+ R6ZFKiFK+N3Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="250789216"
+X-IronPort-AV: E=Sophos;i="5.81,255,1610438400"; 
+   d="scan'208";a="250789216"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 02:46:36 -0700
+IronPort-SDR: /OtUAdACrdhhoQT5iDGvvJa6n1r6m0R2mlGPwkfqtZPdzmoCT7XAPBoVlcfobcfK5jg07O+t2J
+ 4yPbf0IGzFkw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,255,1610438400"; 
+   d="scan'208";a="602169664"
+Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 17 Mar 2021 02:46:34 -0700
+Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lMSl7-0000bH-NA; Wed, 17 Mar 2021 09:46:33 +0000
+Date:   Wed, 17 Mar 2021 17:46:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ b2e9df850c58c2b36e915e7d3bed3f6107cccba6
+Message-ID: <6051cff2.K1HnpYt66EQFTeA2%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4cb1a9ae15c414435020630cf6362163ddda1550.camel@gmx.de>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: b2e9df850c58c2b36e915e7d3bed3f6107cccba6  x86: Introduce restart_block->arch_data to remove TS_COMPAT_RESTART
 
-* Mike Galbraith <efault@gmx.de> wrote:
+elapsed time: 722m
 
-> On Tue, 2021-03-16 at 19:20 +0800, Wang Qing wrote:
-> > Why not just use wake_up_process().
-> 
-> IMO this is not an improvement.  There are other places where explicit
-> TASK_NORMAL is used as well, and they're all perfectly clear as is.
+configs tested: 138
+configs skipped: 2
 
-Arguably those could all be converted to wake_up_process() as well. 
-It's a very small kernel code size optimization. There's about 3 such 
-places, could be converted in a single patch.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks,
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+powerpc                     akebono_defconfig
+mips                     loongson1b_defconfig
+arc                         haps_hs_defconfig
+arm                           u8500_defconfig
+sh                           se7705_defconfig
+nios2                         10m50_defconfig
+sh                         apsh4a3a_defconfig
+powerpc                    klondike_defconfig
+powerpc                       ppc64_defconfig
+arm                        cerfcube_defconfig
+xtensa                generic_kc705_defconfig
+powerpc                      pasemi_defconfig
+arm                            pleb_defconfig
+um                             i386_defconfig
+mips                       capcella_defconfig
+alpha                            allyesconfig
+arm                          gemini_defconfig
+csky                             alldefconfig
+powerpc                  storcenter_defconfig
+mips                           ip27_defconfig
+sh                          r7785rp_defconfig
+arm                         lubbock_defconfig
+mips                    maltaup_xpa_defconfig
+arm                       spear13xx_defconfig
+mips                     loongson1c_defconfig
+powerpc                     tqm8555_defconfig
+powerpc                      ppc40x_defconfig
+mips                           ip32_defconfig
+sh                            hp6xx_defconfig
+sh                        edosk7760_defconfig
+openrisc                            defconfig
+powerpc                      bamboo_defconfig
+powerpc                 mpc85xx_cds_defconfig
+powerpc                   bluestone_defconfig
+mips                         tb0219_defconfig
+powerpc                      ppc6xx_defconfig
+arm                         assabet_defconfig
+mips                      pistachio_defconfig
+mips                  decstation_64_defconfig
+powerpc                    sam440ep_defconfig
+powerpc                      walnut_defconfig
+arm                        vexpress_defconfig
+mips                       bmips_be_defconfig
+arm                          imote2_defconfig
+mips                         tb0287_defconfig
+arm                        clps711x_defconfig
+powerpc                 mpc8313_rdb_defconfig
+arm                          ep93xx_defconfig
+powerpc                     mpc512x_defconfig
+arm                         orion5x_defconfig
+powerpc                    amigaone_defconfig
+m68k                        m5307c3_defconfig
+xtensa                  audio_kc705_defconfig
+mips                          rb532_defconfig
+mips                        workpad_defconfig
+powerpc                     tqm8541_defconfig
+arm                           h3600_defconfig
+arm64                            alldefconfig
+powerpc                      makalu_defconfig
+powerpc                 mpc8540_ads_defconfig
+powerpc                     pseries_defconfig
+arm                        neponset_defconfig
+arm                        trizeps4_defconfig
+sh                        edosk7705_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210316
+i386                 randconfig-a005-20210316
+i386                 randconfig-a002-20210316
+i386                 randconfig-a003-20210316
+i386                 randconfig-a004-20210316
+i386                 randconfig-a006-20210316
+x86_64               randconfig-a011-20210316
+x86_64               randconfig-a016-20210316
+x86_64               randconfig-a013-20210316
+x86_64               randconfig-a014-20210316
+x86_64               randconfig-a015-20210316
+x86_64               randconfig-a012-20210316
+i386                 randconfig-a013-20210316
+i386                 randconfig-a016-20210316
+i386                 randconfig-a011-20210316
+i386                 randconfig-a012-20210316
+i386                 randconfig-a015-20210316
+i386                 randconfig-a014-20210316
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-	Ingo
+clang tested configs:
+x86_64               randconfig-a006-20210316
+x86_64               randconfig-a001-20210316
+x86_64               randconfig-a005-20210316
+x86_64               randconfig-a004-20210316
+x86_64               randconfig-a003-20210316
+x86_64               randconfig-a002-20210316
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
