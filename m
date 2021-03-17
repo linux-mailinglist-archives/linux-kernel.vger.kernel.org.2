@@ -2,76 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0065933F05F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E03133F069
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:32:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhCQMa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 08:30:59 -0400
-Received: from m12-18.163.com ([220.181.12.18]:40102 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhCQMaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 08:30:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=S9Xzg
-        t86NTlEV3A1RGJJ5Cmf6VJv4IO/WfjOmNy3Gbw=; b=okK8FaUt1wV5FxDnaXF1D
-        6D7VwSox3g/LYf0qWcPiC8Ul9DWie2cRafu8akhXLwYWAtgo3ClM4DYZyvP4HSdT
-        ecSc0o9z7DZ+wetQmg5OMWx7gf707zB1gdxxidq244xHlhTOAA5mw7woo/25RHDP
-        nHrs3/BFJiftl1Tsmhl5jY=
-Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
-        by smtp14 (Coremail) with SMTP id EsCowADX4hle9lFgU7grZQ--.46217S2;
-        Wed, 17 Mar 2021 20:30:23 +0800 (CST)
-From:   dingsenjie@163.com
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dingsenjie <dingsenjie@yulong.com>
-Subject: [PATCH v2] ethernet/microchip:remove unneeded variable: "ret"
-Date:   Wed, 17 Mar 2021 20:30:30 +0800
-Message-Id: <20210317123030.70808-1-dingsenjie@163.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S229698AbhCQMcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 08:32:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58062 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230002AbhCQMbu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 08:31:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615984309;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=opf2IYPL2Wwj1A/EGzJ6ciC0XM7X9zmQqBqco2eLuXw=;
+        b=GdQvPPLLMypc1QiRuziW8mvSkta3ahi1WdQoU+506cFlCIBJgD+gR5A1xVvrzJWNjL76Rb
+        +yHuLrtrgfJlool5xVTScjiaGFkpSWrhgKeo0MaH/eS9FbXH/b3mrfgxl6phE/0l30e7d6
+        jzIiCmZXuAKXquCBl5G3bInjT6tbqG8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-57-3e1aosdpNcuB4oXFchzEZA-1; Wed, 17 Mar 2021 08:31:47 -0400
+X-MC-Unique: 3e1aosdpNcuB4oXFchzEZA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3CA0F593A1;
+        Wed, 17 Mar 2021 12:31:45 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-116-32.rdu2.redhat.com [10.10.116.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 559BC60C13;
+        Wed, 17 Mar 2021 12:31:38 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id E454D220BCF; Wed, 17 Mar 2021 08:31:37 -0400 (EDT)
+Date:   Wed, 17 Mar 2021 08:31:37 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2] virtiofs: fix memory leak in virtio_fs_probe()
+Message-ID: <20210317123137.GA324911@redhat.com>
+References: <20210317084443.22657-1-lhenriques@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowADX4hle9lFgU7grZQ--.46217S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrur43XF4xKw1rur4xJw4xJFb_yoWDAFcEkr
-        4vqwn8Kw40yryUZr4UKw4UZ3sYgF4DZFn5Zan2k3y5Z3s3uw4rAr1Dury8XrykWrZ8CF9r
-        Cr1akF1fCw13KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8EzuJUUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbiTh9YyFUDIPkqtQAAsR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210317084443.22657-1-lhenriques@suse.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dingsenjie <dingsenjie@yulong.com>
+On Wed, Mar 17, 2021 at 08:44:43AM +0000, Luis Henriques wrote:
+> When accidentally passing twice the same tag to qemu, kmemleak ended up
+> reporting a memory leak in virtiofs.  Also, looking at the log I saw the
+> following error (that's when I realised the duplicated tag):
+> 
+>   virtiofs: probe of virtio5 failed with error -17
+> 
+> Here's the kmemleak log for reference:
+> 
+> unreferenced object 0xffff888103d47800 (size 1024):
+>   comm "systemd-udevd", pid 118, jiffies 4294893780 (age 18.340s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 ad 4e ad de ff ff ff ff 00 00 00 00  .....N..........
+>     ff ff ff ff ff ff ff ff 80 90 02 a0 ff ff ff ff  ................
+>   backtrace:
+>     [<000000000ebb87c1>] virtio_fs_probe+0x171/0x7ae [virtiofs]
+>     [<00000000f8aca419>] virtio_dev_probe+0x15f/0x210
+>     [<000000004d6baf3c>] really_probe+0xea/0x430
+>     [<00000000a6ceeac8>] device_driver_attach+0xa8/0xb0
+>     [<00000000196f47a7>] __driver_attach+0x98/0x140
+>     [<000000000b20601d>] bus_for_each_dev+0x7b/0xc0
+>     [<00000000399c7b7f>] bus_add_driver+0x11b/0x1f0
+>     [<0000000032b09ba7>] driver_register+0x8f/0xe0
+>     [<00000000cdd55998>] 0xffffffffa002c013
+>     [<000000000ea196a2>] do_one_initcall+0x64/0x2e0
+>     [<0000000008f727ce>] do_init_module+0x5c/0x260
+>     [<000000003cdedab6>] __do_sys_finit_module+0xb5/0x120
+>     [<00000000ad2f48c6>] do_syscall_64+0x33/0x40
+>     [<00000000809526b5>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Luis Henriques <lhenriques@suse.de>
 
-remove unneeded variable: "ret".
+Reviewed-by: Vivek Goyal <vgoyal@redhat.com>
 
-Signed-off-by: dingsenjie <dingsenjie@yulong.com>
----
- drivers/net/ethernet/microchip/encx24j600.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Thanks
+Vivek
 
-diff --git a/drivers/net/ethernet/microchip/encx24j600.c b/drivers/net/ethernet/microchip/encx24j600.c
-index 2c0dcd7..a66a179 100644
---- a/drivers/net/ethernet/microchip/encx24j600.c
-+++ b/drivers/net/ethernet/microchip/encx24j600.c
-@@ -222,7 +222,6 @@ static int encx24j600_wait_for_autoneg(struct encx24j600_priv *priv)
- 	unsigned long timeout = jiffies + msecs_to_jiffies(2000);
- 	u16 phstat1;
- 	u16 estat;
--	int ret = 0;
- 
- 	phstat1 = encx24j600_read_phy(priv, PHSTAT1);
- 	while ((phstat1 & ANDONE) == 0) {
-@@ -258,7 +257,7 @@ static int encx24j600_wait_for_autoneg(struct encx24j600_priv *priv)
- 		encx24j600_write_reg(priv, MACLCON, 0x370f);
- 	}
- 
--	return ret;
-+	return 0;
- }
- 
- /* Access the PHY to determine link status */
--- 
-1.9.1
-
+> ---
+> Changes since v1:
+> - Use kfree() to free fs->vqs instead of calling virtio_fs_put()
+> 
+>  fs/fuse/virtio_fs.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+> index 8868ac31a3c0..989ef4f88636 100644
+> --- a/fs/fuse/virtio_fs.c
+> +++ b/fs/fuse/virtio_fs.c
+> @@ -896,6 +896,7 @@ static int virtio_fs_probe(struct virtio_device *vdev)
+>  out_vqs:
+>  	vdev->config->reset(vdev);
+>  	virtio_fs_cleanup_vqs(vdev, fs);
+> +	kfree(fs->vqs);
+>  
+>  out:
+>  	vdev->priv = NULL;
+> 
 
