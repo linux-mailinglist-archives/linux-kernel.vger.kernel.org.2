@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F3433E304
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A006633E306
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:52:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhCQAue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:50:34 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3040 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbhCQAuV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:50:21 -0400
-Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F0WhP0dtgzWGD4;
-        Wed, 17 Mar 2021 08:47:17 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Wed, 17 Mar 2021 08:50:18 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Wed, 17 Mar
- 2021 08:50:18 +0800
-Subject: Re: [PATCH net-next] net: sched: remove unnecessay lock protection
- for skb_bad_txq/gso_skb
-To:     Cong Wang <xiyou.wangcong@gmail.com>,
-        David Miller <davem@redhat.com>
-CC:     Jakub Kicinski <kuba@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
-References: <1615800610-34700-1-git-send-email-linyunsheng@huawei.com>
- <20210315.164151.1093629330365238718.davem@redhat.com>
- <CAM_iQpWPSouO-JP4xHFqOLM8H4Rn5ucF68sa_EK5hUWSYw8feA@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <a8874cd1-b7c4-5307-db46-8906c0949e12@huawei.com>
-Date:   Wed, 17 Mar 2021 08:50:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S229919AbhCQAwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:52:10 -0400
+Received: from mga18.intel.com ([134.134.136.126]:14776 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229829AbhCQAvr (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 20:51:47 -0400
+IronPort-SDR: r4Y3nN72wtkhgoiUUWjPups8eZ7Z2dx/shjuAhB0aoLd5aKAr6zQyvk0n66iU6uQCSu+4EBLHc
+ 8oqY78wifESA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="176958912"
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="176958912"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 17:51:46 -0700
+IronPort-SDR: tlsFoyTrBXJMUG5IsO9ar4eS81uF2tNkp1yStbkVP0RkoWLxlZQTBy84X1d0FPTS5hBMPRBvfQ
+ yW/I5IPKwatw==
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="412439728"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 17:51:43 -0700
+Subject: Re: [PATCH] perf stat: Align CSV output for summary mode
+To:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>, jolsa@kernel.org,
+        peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210316072900.1739-1-yao.jin@linux.intel.com>
+ <YFCtfXlaKbIeEMwk@krava> <20210316163421.GQ203350@tassilo.jf.intel.com>
+ <YFEBaVNDokSVW/34@kernel.org> <20210316200220.GS203350@tassilo.jf.intel.com>
+ <YFEpQs4TnnxPPznF@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <ea1afc3b-0617-5b21-d0b1-9fd77bbcf0d1@linux.intel.com>
+Date:   Wed, 17 Mar 2021 08:51:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <CAM_iQpWPSouO-JP4xHFqOLM8H4Rn5ucF68sa_EK5hUWSYw8feA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YFEpQs4TnnxPPznF@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme720-chm.china.huawei.com (10.1.199.116) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/17 2:43, Cong Wang wrote:
-> On Mon, Mar 15, 2021 at 4:42 PM David Miller <davem@redhat.com> wrote:
->>
->> From: Yunsheng Lin <linyunsheng@huawei.com>
->> Date: Mon, 15 Mar 2021 17:30:10 +0800
->>
->>> Currently qdisc_lock(q) is taken before enqueuing and dequeuing
->>> for lockless qdisc's skb_bad_txq/gso_skb queue, qdisc->seqlock is
->>> also taken, which can provide the same protection as qdisc_lock(q).
->>>
->>> This patch removes the unnecessay qdisc_lock(q) protection for
->>> lockless qdisc' skb_bad_txq/gso_skb queue.
->>>
->>> And dev_reset_queue() takes the qdisc->seqlock for lockless qdisc
->>> besides taking the qdisc_lock(q) when doing the qdisc reset,
->>> some_qdisc_is_busy() takes both qdisc->seqlock and qdisc_lock(q)
->>> when checking qdisc status. It is unnecessary to take both lock
->>> while the fast path only take one lock, so this patch also changes
->>> it to only take qdisc_lock(q) for locked qdisc, and only take
->>> qdisc->seqlock for lockless qdisc.
->>>
->>> Since qdisc->seqlock is taken for lockless qdisc when calling
->>> qdisc_is_running() in some_qdisc_is_busy(), use qdisc->running
->>> to decide if the lockless qdisc is running.
->>>
->>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->>
->> What about other things protected by this lock, such as statistics and qlen?
->>
->> This change looks too risky to me.
-> 
-> They are per-cpu for pfifo_fast which sets TCQ_F_CPUSTATS too.
 
-Did you mean qdisc_lock(q) are protecting per-cpu stats for
-pfifo_fast too?
-
+On 3/17/2021 5:55 AM, Jiri Olsa wrote:
+> On Tue, Mar 16, 2021 at 01:02:20PM -0700, Andi Kleen wrote:
+>> On Tue, Mar 16, 2021 at 04:05:13PM -0300, Arnaldo Carvalho de Melo wrote:
+>>> Em Tue, Mar 16, 2021 at 09:34:21AM -0700, Andi Kleen escreveu:
+>>>>> looks ok, but maybe make the option more related to CVS, like:
+>>>>>
+>>>>>    --x-summary, --cvs-summary  ...?
+>>>>
+>>>> Actually I don't think it should be a new option. I doubt
+>>>> anyone could parse the previous mess. So just make it default
+>>>> with -x
+>>>
+>>> In these cases I always fear that people are already parsing that mess
+>>> by considering the summary lines to be the ones not starting with
+>>> spaces, and now we go on and change it to be "better" by prefixing it
+>>> with "summary" and... break existing scripts.
+>>
+>> I think it was just one version or so?
+>>
+>> FWIW perf has broken CSV output several times, I added workarounds
+>> to toplev every time. Having a broken version for a short time
+>> shouldn't be too bad.
+>>
+>> I actually had a workaround for this one, but it can parse either way.
+>>
+>>>
+>>> Can we do this with a new option?
+>>>
+>>> I.e. like --cvs-summary?
+>>
+>> If you do it I would add an option for the old broken format
+>> --i-want-broken-csv. But not  require the option forever
+>> just to get sane output.
 > 
-> Thanks.
+> I like that.. also we'll find out how many people are actually parsing that ;-)
 > 
-> .
+> jirka
 > 
 
+Is it serious or just a joke? :)
+
+Thanks
+Jin Yao
+
+>>
+>> Or maybe only a perf config option.
+>>
+>> -Andi
+>>
+> 
