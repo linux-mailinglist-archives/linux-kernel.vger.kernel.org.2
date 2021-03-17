@@ -2,182 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57BB233F7F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DFC33F7F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233061AbhCQSNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:13:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232954AbhCQSM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:12:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFA3864F3A;
-        Wed, 17 Mar 2021 18:12:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616004777;
-        bh=kjEnaGXPr/9yCzRZa7xlf8s9Ha6UQ+18w1ocjK4R01U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sTmVpMHaNJJoPvJeQriBydfeyE7/p17sf+j8mDaGUW+rY6KrHEzYB79uvyOWIzcZm
-         pp9n4GCHmzjZAfkYfkU2XMjlcnjDwjir7I3/lZ5m62pe32D+94Pzzojjj6NURhW5OR
-         0g1MO39AcTLMLDsLw03yVG4yPVL7FgDJ1d7RrWeOHCoZ+T73Z0Ojy9Vw1ViggS00mi
-         ycQ5VEKzZ+wHD+L6CsYSZ12DmqYGnBWS9rAQynWLhhOH7xbAg3unBZ+NoAYsn6vCO/
-         T2An9YSzxbsfxpJ24Mjemp0oCbE0XtC/yyLph7SG+xSzwrzFpP8Qz1VVtIORwtlty5
-         aNJP90OerHiRg==
-From:   Andy Lutomirski <luto@kernel.org>
-To:     x86@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v4 9/9] kentry: Verify kentry state in instrumentation_begin/end()
-Date:   Wed, 17 Mar 2021 11:12:48 -0700
-Message-Id: <49a9ea6891df598838c50a53058a0606baa239c3.1616004689.git.luto@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1616004689.git.luto@kernel.org>
-References: <cover.1616004689.git.luto@kernel.org>
+        id S232964AbhCQSOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:14:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58309 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233130AbhCQSOO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 14:14:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616004853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TjL9ORXdm0TKnA6dZBBuuwKj71RaW+wVzj3gKVLZYnc=;
+        b=PQAYIS7vHJfhcHEY6WggL7UcFhC4s1ZEHdwqjVFjS5pu+dvoMh9/hr43b5TKhb1Kf6If7j
+        gOF9ae6imYm92SNZiwiS/Px6QU+qYYNXZQQgRaq6F/go+vsh7TjbQzWQhSTSLSQhXK8sMA
+        TPYeHKIgfBX82ruRWLLmGr0oDNHI32g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-208-5kda_5u2N2aYTYSJGdJcYA-1; Wed, 17 Mar 2021 14:14:11 -0400
+X-MC-Unique: 5kda_5u2N2aYTYSJGdJcYA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5218C84B9A0;
+        Wed, 17 Mar 2021 18:14:10 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-117-171.rdu2.redhat.com [10.10.117.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B8E4919C66;
+        Wed, 17 Mar 2021 18:14:09 +0000 (UTC)
+Subject: Re: [tip: locking/urgent] locking/ww_mutex: Treat ww_mutex_lock()
+ like a trylock
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org
+References: <20210316153119.13802-4-longman@redhat.com>
+ <161598470197.398.8903908266426306140.tip-bot2@tip-bot2>
+ <YFIASRkXowQWgj2s@hirez.programming.kicks-ass.net>
+ <YFIEo8IVQ/Mm9jUE@hirez.programming.kicks-ass.net>
+ <e1bcd7fb-3a40-f207-ee19-d276c8b8bb75@redhat.com>
+ <e39f4e37-e3c0-e62a-7062-fdd2c8b3d3b9@redhat.com>
+ <YFIy8Bzj7WAHFmlG@hirez.programming.kicks-ass.net>
+ <YFI/C4VZuWjyHLNK@hirez.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <3a869b98-ca55-9291-e530-5a289082e6d5@redhat.com>
+Date:   Wed, 17 Mar 2021 14:14:09 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YFI/C4VZuWjyHLNK@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calling instrumentation_begin() and instrumentation_end() when kentry
-thinks the CPU is in user mode is an error.  Verify the kentry state when
-instrumentation_begin/end() are called.
+On 3/17/21 1:40 PM, Peter Zijlstra wrote:
+> On Wed, Mar 17, 2021 at 05:48:48PM +0100, Peter Zijlstra wrote:
+>
+>> I think you'll find that if you use ww_mutex_init() it'll all work. Let
+>> me go and zap this patch, and then I'll try and figure out why
+>> DEFINE_WW_MUTEX() is buggered.
+> Moo, I can't get the compiler to do as I want :/
+>
+> The below is so close but doesn't actually compile.. Maybe we should
+> just give up on DEFINE_WW_MUTEX and simply remove it.
+>
+> ---
+> diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+> index 0cd631a19727..85f50538f26a 100644
+> --- a/include/linux/mutex.h
+> +++ b/include/linux/mutex.h
+> @@ -129,12 +129,15 @@ do {									\
+>   # define __DEP_MAP_MUTEX_INITIALIZER(lockname)
+>   #endif
+>   
+> -#define __MUTEX_INITIALIZER(lockname) \
+> +#define ___MUTEX_INITIALIZER(lockname, depmap) \
+>   		{ .owner = ATOMIC_LONG_INIT(0) \
+>   		, .wait_lock = __SPIN_LOCK_UNLOCKED(lockname.wait_lock) \
+>   		, .wait_list = LIST_HEAD_INIT(lockname.wait_list) \
+>   		__DEBUG_MUTEX_INITIALIZER(lockname) \
+> -		__DEP_MAP_MUTEX_INITIALIZER(lockname) }
+> +		depmap }
+> +
+> +#define __MUTEX_INITIALIZER(lockname) \
+> +		___MUTEX_INITIALIZER(lockname, __DEP_MAP_MUTEX_INITIALIZER(lockname))
+>   
+>   #define DEFINE_MUTEX(mutexname) \
+>   	struct mutex mutexname = __MUTEX_INITIALIZER(mutexname)
+> diff --git a/include/linux/ww_mutex.h b/include/linux/ww_mutex.h
+> index 6ecf2a0220db..c62a030652b4 100644
+> --- a/include/linux/ww_mutex.h
+> +++ b/include/linux/ww_mutex.h
+> @@ -50,9 +50,17 @@ struct ww_acquire_ctx {
+>   
+>   #ifdef CONFIG_DEBUG_LOCK_ALLOC
+>   # define __WW_CLASS_MUTEX_INITIALIZER(lockname, class) \
+> -		, .ww_class = class
+> +		, .ww_class = &(class)
+> +
+> +# define __DEP_MAP_WW_MUTEX_INITIALIZER(lockname, class) \
+> +		, .dep_map = { \
+> +			.key = &(class).mutex_key, \
+> +			.name = (class).mutex_name, \
+> +			.wait_type_inner = LD_WAIT_SLEEP, \
+> +		}
+>   #else
+>   # define __WW_CLASS_MUTEX_INITIALIZER(lockname, class)
+> +# define __DEP_MAP_WW_MUTEX_INITIALIZER(lockname, class)
+>   #endif
+>   
+>   #define __WW_CLASS_INITIALIZER(ww_class, _is_wait_die)	    \
+> @@ -62,7 +70,8 @@ struct ww_acquire_ctx {
+>   		, .is_wait_die = _is_wait_die }
+>   
+>   #define __WW_MUTEX_INITIALIZER(lockname, class) \
+> -		{ .base =  __MUTEX_INITIALIZER(lockname.base) \
+> +		{ .base =  ___MUTEX_INITIALIZER(lockname.base, \
+> +			__DEP_MAP_WW_MUTEX_INITIALIZER(lockname.base, class)) \
+>   		__WW_CLASS_MUTEX_INITIALIZER(lockname, class) }
+>   
+>   #define DEFINE_WD_CLASS(classname) \
+> diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+> index 0ab94e1f1276..e8305233eb0b 100644
+> --- a/kernel/locking/locktorture.c
+> +++ b/kernel/locking/locktorture.c
+> @@ -358,9 +358,9 @@ static struct lock_torture_ops mutex_lock_ops = {
+>   
+>   #include <linux/ww_mutex.h>
+>   static DEFINE_WD_CLASS(torture_ww_class);
+> -static DEFINE_WW_MUTEX(torture_ww_mutex_0, &torture_ww_class);
+> -static DEFINE_WW_MUTEX(torture_ww_mutex_1, &torture_ww_class);
+> -static DEFINE_WW_MUTEX(torture_ww_mutex_2, &torture_ww_class);
+> +static DEFINE_WW_MUTEX(torture_ww_mutex_0, torture_ww_class);
+> +static DEFINE_WW_MUTEX(torture_ww_mutex_1, torture_ww_class);
+> +static DEFINE_WW_MUTEX(torture_ww_mutex_2, torture_ww_class);
+>   
+>   static int torture_ww_mutex_lock(void)
+>   __acquires(torture_ww_mutex_0)
+>
+I changed locktorture to use ww_mutex_init() and the lockdep splat was 
+indeed gone. So zapping WW_MUTEX_INIT() and use ww_mutex_init() is a 
+possible solution. I will send out a patch to do that.
 
-Add _nocheck() variants to skip verification to avoid WARN() generating
-extra kentry warnings.
-
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
----
- arch/x86/kernel/traps.c         |  4 ++--
- include/asm-generic/bug.h       |  8 ++++----
- include/linux/instrumentation.h | 25 ++++++++++++++++++++-----
- kernel/entry/common.c           |  7 +++++++
- 4 files changed, 33 insertions(+), 11 deletions(-)
-
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index be924180005a..983e4be5fdcb 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -229,7 +229,7 @@ static noinstr bool handle_bug(struct pt_regs *regs)
- 	/*
- 	 * All lies, just get the WARN/BUG out.
- 	 */
--	instrumentation_begin();
-+	instrumentation_begin_nocheck();
- 	/*
- 	 * Since we're emulating a CALL with exceptions, restore the interrupt
- 	 * state to what it was at the exception site.
-@@ -242,7 +242,7 @@ static noinstr bool handle_bug(struct pt_regs *regs)
- 	}
- 	if (regs->flags & X86_EFLAGS_IF)
- 		raw_local_irq_disable();
--	instrumentation_end();
-+	instrumentation_end_nocheck();
- 
- 	return handled;
- }
-diff --git a/include/asm-generic/bug.h b/include/asm-generic/bug.h
-index 76a10e0dca9f..fc360c463a99 100644
---- a/include/asm-generic/bug.h
-+++ b/include/asm-generic/bug.h
-@@ -85,18 +85,18 @@ void warn_slowpath_fmt(const char *file, const int line, unsigned taint,
- 		       const char *fmt, ...);
- #define __WARN()		__WARN_printf(TAINT_WARN, NULL)
- #define __WARN_printf(taint, arg...) do {				\
--		instrumentation_begin();				\
-+		instrumentation_begin_nocheck();			\
- 		warn_slowpath_fmt(__FILE__, __LINE__, taint, arg);	\
--		instrumentation_end();					\
-+		instrumentation_end_nocheck();				\
- 	} while (0)
- #else
- extern __printf(1, 2) void __warn_printk(const char *fmt, ...);
- #define __WARN()		__WARN_FLAGS(BUGFLAG_TAINT(TAINT_WARN))
- #define __WARN_printf(taint, arg...) do {				\
--		instrumentation_begin();				\
-+		instrumentation_begin_nocheck();			\
- 		__warn_printk(arg);					\
- 		__WARN_FLAGS(BUGFLAG_NO_CUT_HERE | BUGFLAG_TAINT(taint));\
--		instrumentation_end();					\
-+		instrumentation_end_nocheck();				\
- 	} while (0)
- #define WARN_ON_ONCE(condition) ({				\
- 	int __ret_warn_on = !!(condition);			\
-diff --git a/include/linux/instrumentation.h b/include/linux/instrumentation.h
-index 93e2ad67fc10..cdf80454f92a 100644
---- a/include/linux/instrumentation.h
-+++ b/include/linux/instrumentation.h
-@@ -4,14 +4,21 @@
- 
- #if defined(CONFIG_DEBUG_ENTRY) && defined(CONFIG_STACK_VALIDATION)
- 
-+extern void kentry_assert_may_instrument(void);
-+
- /* Begin/end of an instrumentation safe region */
--#define instrumentation_begin() ({					\
--	asm volatile("%c0: nop\n\t"						\
-+#define instrumentation_begin_nocheck() ({				\
-+	asm volatile("%c0: nop\n\t"					\
- 		     ".pushsection .discard.instr_begin\n\t"		\
- 		     ".long %c0b - .\n\t"				\
- 		     ".popsection\n\t" : : "i" (__COUNTER__));		\
- })
- 
-+#define instrumentation_begin() ({					\
-+	instrumentation_begin_nocheck();				\
-+	kentry_assert_may_instrument();					\
-+})
-+
- /*
-  * Because instrumentation_{begin,end}() can nest, objtool validation considers
-  * _begin() a +1 and _end() a -1 and computes a sum over the instructions.
-@@ -43,15 +50,23 @@
-  * To avoid this, have _end() be a NOP instruction, this ensures it will be
-  * part of the condition block and does not escape.
-  */
--#define instrumentation_end() ({					\
-+#define instrumentation_end_nocheck() ({				\
- 	asm volatile("%c0: nop\n\t"					\
- 		     ".pushsection .discard.instr_end\n\t"		\
- 		     ".long %c0b - .\n\t"				\
- 		     ".popsection\n\t" : : "i" (__COUNTER__));		\
- })
-+
-+#define instrumentation_end() ({					\
-+	kentry_assert_may_instrument();					\
-+	instrumentation_end_nocheck();					\
-+})
-+
- #else
--# define instrumentation_begin()	do { } while(0)
--# define instrumentation_end()		do { } while(0)
-+# define instrumentation_begin_nocheck()	do { } while(0)
-+# define instrumentation_begin()		do { } while(0)
-+# define instrumentation_end_nocheck()		do { } while(0)
-+# define instrumentation_end()			do { } while(0)
- #endif
- 
- #endif /* __LINUX_INSTRUMENTATION_H */
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index 152e7546be16..57036a887790 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -56,6 +56,13 @@ static __always_inline void kentry_cpu_depth_sub(unsigned int n)
- {
- 	this_cpu_sub(kentry_cpu_depth, n);
- }
-+
-+void kentry_assert_may_instrument(void)
-+{
-+	DEBUG_ENTRY_WARN_ONCE(this_cpu_read(kentry_cpu_depth) == 0, "instrumentable code is running in the wrong kentry state");
-+}
-+EXPORT_SYMBOL_GPL(kentry_assert_may_instrument);
-+
- #else
- 
- #define DEBUG_ENTRY_WARN_ONCE(condition, format...) do {} while (0)
--- 
-2.30.2
+Thanks,
+Longman
 
