@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E998433E664
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C9133E674
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:51:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbhCQBp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 21:45:27 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:13946 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhCQBo5 (ORCPT
+        id S229928AbhCQBuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 21:50:50 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13178 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhCQBuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 21:44:57 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F0Xx62L7SzkbBs;
-        Wed, 17 Mar 2021 09:43:22 +0800 (CST)
-Received: from [10.174.177.131] (10.174.177.131) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 17 Mar 2021 09:44:50 +0800
-Subject: Re: [PATCH v2 5/5] mm/hugetlb: avoid calculating fault_mutex_hash in
- truncate_op case
-To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20210316022758.52993-1-linmiaohe@huawei.com>
- <d87264fb-0005-4f8b-7551-a5439108e9e1@oracle.com>
- <4b3e9ea6-69e3-493c-342e-92117f274e06@huawei.com>
- <952e9130-a084-20a7-aa7c-486fe9ccc8c6@oracle.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <fb988ad4-8a1b-14ef-ed94-7658b2af8ab2@huawei.com>
-Date:   Wed, 17 Mar 2021 09:44:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 16 Mar 2021 21:50:17 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F0Y2G6g6bzmYR1;
+        Wed, 17 Mar 2021 09:47:50 +0800 (CST)
+Received: from [10.174.179.92] (10.174.179.92) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 17 Mar 2021 09:50:04 +0800
+Subject: Re: [PATCH] scsi: libsas: Reset num_scatter if libata mark qc as
+ NODATA
+To:     Jolly Shah <jollys@google.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <john.garry@huawei.com>,
+        <a.darwish@linutronix.de>, <luojiaxing@huawei.com>,
+        <dan.carpenter@oracle.com>, <b.zolnierkie@samsung.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210316193905.1673600-1-jollys@google.com>
+From:   Jason Yan <yanaijie@huawei.com>
+Message-ID: <3a0626ae-327b-146f-5b2d-c58074c421a5@huawei.com>
+Date:   Wed, 17 Mar 2021 09:50:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <952e9130-a084-20a7-aa7c-486fe9ccc8c6@oracle.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.131]
+In-Reply-To: <20210316193905.1673600-1-jollys@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.92]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/17 8:27, Mike Kravetz wrote:
-> On 3/15/21 11:49 PM, Miaohe Lin wrote:
->> On 2021/3/16 11:07, Mike Kravetz wrote:
->>> On 3/15/21 7:27 PM, Miaohe Lin wrote:
->>>> The fault_mutex hashing overhead can be avoided in truncate_op case
->>>> because page faults can not race with truncation in this routine.  So
->>>> calculate hash for fault_mutex only in !truncate_op case to save some cpu
->>>> cycles.
->>>>
->>>> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
->>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>> Cc: Mike Kravetz <mike.kravetz@oracle.com>
->>>> ---
->>>> v1->v2:
->>>> remove unnecessary initialization for variable hash
->>>> collect Reviewed-by tag from Mike Kravetz
->>>
->>> My apologies for not replying sooner and any misunderstanding from my
->>> previous comments.
->>>
->>
->> That's all right.
->>
->>> If the compiler is going to produce a warning because the variable is
->>> not initialized, then we will need to keep the initialization.
->>> Otherwise, this will show up as a build regression.  Ideally, there
->>> would be a modifier which could be used to tell the compiler the
->>> variable will used.  I do not know if such a modifier exists.
->>>
->>
->> I do not know if such a modifier exists too. But maybe not all compilers are intelligent
->> enough to not produce a warning. It would be safe to keep the initialization...
->>
->>> The patch can not produce a new warning.  So, if you need to initialize
->>
->> So just drop this version of the patch? Or should I send a new version with your Reviewed-by tag and
->> keep the initialization?
->>
+
+在 2021/3/17 3:39, Jolly Shah 写道:
+> When the cache_type for the scsi device is changed, the scsi layer
+> issues a MODE_SELECT command. The caching mode details are communicated
+> via a request buffer associated with the scsi command with data
+> direction set as DMA_TO_DEVICE (scsi_mode_select). When this command
+> reaches the libata layer, as a part of generic initial setup, libata
+> layer sets up the scatterlist for the command using the scsi command
+> (ata_scsi_qc_new). This command is then translated by the libata layer
+> into ATA_CMD_SET_FEATURES (ata_scsi_mode_select_xlat). The libata layer
+> treats this as a non data command (ata_mselect_caching), since it only
+> needs an ata taskfile to pass the caching on/off information to the
+> device. It does not need the scatterlist that has been setup, so it does
+> not perform dma_map_sg on the scatterlist (ata_qc_issue). Unfortunately,
+> when this command reaches the libsas layer(sas_ata_qc_issue), libsas
+> layer sees it as a non data command with a scatterlist. It cannot
+> extract the correct dma length, since the scatterlist has not been
+> mapped with dma_map_sg for a DMA operation. When this partially
+> constructed SAS task reaches pm80xx LLDD, it results in below warning.
 > 
-> Yes, drop this version of the patch.  You can add my Reviewed-by to the
-> previous version that included the initialization and resend.
+> "pm80xx_chip_sata_req 6058: The sg list address
+> start_addr=0x0000000000000000 data_len=0x0end_addr_high=0xffffffff
+> end_addr_low=0xffffffff has crossed 4G boundary"
+> 
+> This patch assigns appropriate value to  num_sectors for ata non data
+> commands.
+> 
+> Signed-off-by: Jolly Shah <jollys@google.com>
+> ---
+>   drivers/scsi/libsas/sas_ata.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
+> index 024e5a550759..94ec08cebbaa 100644
+> --- a/drivers/scsi/libsas/sas_ata.c
+> +++ b/drivers/scsi/libsas/sas_ata.c
+> @@ -209,10 +209,12 @@ static unsigned int sas_ata_qc_issue(struct ata_queued_cmd *qc)
+>   		task->num_scatter = si;
+>   	}
+>   
+> -	if (qc->tf.protocol == ATA_PROT_NODATA)
+> +	if (qc->tf.protocol == ATA_PROT_NODATA) {
+>   		task->data_dir = DMA_NONE;
+> -	else
+> +		task->num_scatter = 0;
+> +	} else {
+>   		task->data_dir = qc->dma_dir;
+> +	}
+>   	task->scatter = qc->sg;
+>   	task->ata_task.retry_count = 1;
+>   	task->task_state_flags = SAS_TASK_STATE_PENDING;
 > 
 
-Will do. Many thanks. :)
+Thanks for the patch. Except the warning, any functional errors?
 
-> All the cleanup patches in this series should be good to go.
-> 
+The code looks good to me,
 
+Reviewed-by: Jason Yan <yanaijie@huawei.com>
