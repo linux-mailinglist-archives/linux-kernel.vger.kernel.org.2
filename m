@@ -2,83 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11EAC33F0B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:52:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55B433F0B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhCQMwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 08:52:17 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:20381 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229884AbhCQMwC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 08:52:02 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-178-ED19Hj86PCuP2PKcO90fAQ-1; Wed, 17 Mar 2021 12:51:59 +0000
-X-MC-Unique: ED19Hj86PCuP2PKcO90fAQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 17 Mar 2021 12:51:58 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Wed, 17 Mar 2021 12:51:58 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Christophe Leroy' <christophe.leroy@csgroup.eu>,
-        Segher Boessenkool <segher@kernel.crashing.org>
-CC:     Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Jann Horn <jannh@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Linux Memory Management List" <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: RE: [PATCH mm] kfence: fix printk format for ptrdiff_t
-Thread-Topic: [PATCH mm] kfence: fix printk format for ptrdiff_t
-Thread-Index: AQHXGnrjHw0GM4Y/B0GSBDFCMZ5+u6qIIzEw
-Date:   Wed, 17 Mar 2021 12:51:58 +0000
-Message-ID: <6d4b370dc76543f2ba8ad7c6dcdfc7af@AcuMS.aculab.com>
-References: <20210303121157.3430807-1-elver@google.com>
- <CAG_fn=W-jmnMWO24ZKdkR13K0h_0vfR=ceCVSrYOCCmDsHUxkQ@mail.gmail.com>
- <c1fea2e6-4acf-1fff-07ff-1b430169f22f@csgroup.eu>
- <20210316153320.GF16691@gate.crashing.org>
- <3f624e5b-567d-70f9-322f-e721b2df508b@csgroup.eu>
-In-Reply-To: <3f624e5b-567d-70f9-322f-e721b2df508b@csgroup.eu>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S230114AbhCQMyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 08:54:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229809AbhCQMyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 08:54:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D29764F18;
+        Wed, 17 Mar 2021 12:53:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615985636;
+        bh=CVep1gbTRjB+20m1ldxk7nAxwnahqYPj6MrXsgFKflU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c+Ia7ho3BJjFBeMI2Egh7Zx9fvN/L8WcXrUhW9ph740iN/61320WJXT/EFP7xg6Ng
+         j7QOl03dNCiTNjbmjzB3vmb8jrrNF4j4saNJkAsNz1i4r5GSZvBp78L4kNzDqudBdL
+         py49RkV9imRMSnaQtABut0pOlV2T60UlOf7BLyb4=
+Date:   Wed, 17 Mar 2021 13:53:53 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-usb@vger.kernel.org, lkft-triage@lists.linaro.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jason Yan <yanaijie@huawei.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Oliver Neukum <oneukum@suse.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: BUG: KFENCE: memory corruption in usb_get_device_descriptor
+Message-ID: <YFH74Y6QfofcMOkv@kroah.com>
+References: <CA+G9fYsKBLOvvxOfB6AAzjarsABQiEUhGd4JB3FDq3q1OrFmOw@mail.gmail.com>
+ <YFHUGG6AWGt/C8C+@kroah.com>
+ <CA+G9fYv9kwQDYzzA1e=c8kg1wWQ1MwKtintBvyqMiKG5S+ggqA@mail.gmail.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYv9kwQDYzzA1e=c8kg1wWQ1MwKtintBvyqMiKG5S+ggqA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQ2hyaXN0b3BoZSBMZXJveQ0KPiBTZW50OiAxNiBNYXJjaCAyMDIxIDE1OjQxDQouLi4N
-Cj4gPj4gaW5jbHVkZS9saW51eC90eXBlcy5oOnR5cGVkZWYgX19rZXJuZWxfcHRyZGlmZl90CXB0
-cmRpZmZfdDsNCj4gPj4NCj4gPj4gQW5kIGdldDoNCj4gPj4NCj4gPj4gICAgQ0MgICAgICBtbS9r
-ZmVuY2UvcmVwb3J0Lm8NCj4gPj4gSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC4vaW5jbHVkZS9saW51
-eC9wcmludGsuaDo3LA0KPiA+PiAgICAgICAgICAgICAgICAgICBmcm9tIC4vaW5jbHVkZS9saW51
-eC9rZXJuZWwuaDoxNiwNCj4gPj4gICAgICAgICAgICAgICAgICAgZnJvbSBtbS9rZmVuY2UvcmVw
-b3J0LmM6MTA6DQo+ID4+IG1tL2tmZW5jZS9yZXBvcnQuYzogSW4gZnVuY3Rpb24gJ2tmZW5jZV9y
-ZXBvcnRfZXJyb3InOg0KPiA+PiAuL2luY2x1ZGUvbGludXgva2Vybl9sZXZlbHMuaDo1OjE4OiB3
-YXJuaW5nOiBmb3JtYXQgJyV0ZCcgZXhwZWN0cyBhcmd1bWVudA0KPiA+PiBvZiB0eXBlICdwdHJk
-aWZmX3QnLCBidXQgYXJndW1lbnQgNiBoYXMgdHlwZSAnbG9uZyBpbnQnIFstV2Zvcm1hdD1dDQo+
-ID4NCj4gPiBUaGlzIGlzIGRlY2xhcmVkIGFzDQo+ID4gICAgICAgICAgY29uc3QgcHRyZGlmZl90
-IG9iamVjdF9pbmRleCA9IG1ldGEgPyBtZXRhIC0ga2ZlbmNlX21ldGFkYXRhIDogLTE7DQo+ID4g
-c28gbWF5YmUgc29tZXRoaW5nIHdpdGggdGhhdCBnb2VzIHdyb25nPyAgV2hhdCBoYXBwZW5zIGlm
-IHlvdSBkZWxldGUgdGhlDQo+ID4gKHVzZWxlc3MpICJjb25zdCIgaGVyZT8NCg0KVGhlIG9idmlv
-dXMgdGhpbmcgdG8gdHJ5IGlzIGNoYW5naW5nIGl0IHRvICdpbnQnLg0KVGhhdCB3aWxsIGJyZWFr
-IDY0Yml0IGJ1aWxkcywgYnV0IGlmIGl0IGZpeGVzIHRoZSAzMmJpdCBvbmUNCml0IHdpbGwgdGVs
-bCB5b3Ugd2hhdCB0eXBlIGdjYyBpcyBleHBlY3RpbmcuDQoNCglEYXZpZA0KDQotDQpSZWdpc3Rl
-cmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtl
-eW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On Wed, Mar 17, 2021 at 04:56:15PM +0530, Naresh Kamboju wrote:
+> On Wed, 17 Mar 2021 at 15:34, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Wed, Mar 17, 2021 at 02:28:40PM +0530, Naresh Kamboju wrote:
+> > > While booting Linux mainline master 5.12.0-rc2 and 5.12.0-rc3 on arm64
+> > > Hikey device the following KFENCE bug was found.
+> > >
+> > > Recently, we have enabled CONFIG_KFENCE=y and started seeing this crash.
+> > > kernel BUG log:
+> >
+> > What USB traffic are you having here?
+> 
+> This is  getting triggered while booting the device.
+> We are not running any traffic.
 
+Ah, so this is device probe time.
+
+> > And has this ever not triggered?
+> 
+> No.
+> It was not triggered before.
+> Since CONFIG_KFENCE=y is added to our builds recently we are able to
+> reproduce always on recent builds.
+> 
+> Steps to reproduce:
+> 1) Build arm64 kernel Image with this given config.
+>       - tuxmake --runtime podman --target-arch arm64 --toolchain gcc-9
+> --kconfig defconfig --kconfig-add
+> https://builds.tuxbuild.com/1pfztfszUNcDwOAyMrw2wPMKNfc/config
+> 2) Boot arm64 hikey hi6220 device
+> 3) While booting the device you will get to see this kernel BUG:
+> 
+> [   18.243075] BUG: KFENCE: memory corruption in
+> usb_get_device_descriptor+0x80/0xb0
+> [   18.813861] BUG: KFENCE: memory corruption in
+> __usbnet_read_cmd.isra.0+0xd0/0x1a0
+
+There was a warning before this, from the hub code, when reading from
+this device as well.  Perhaps this is just a side affect of the real
+memory corruption issue somewhere else?
+
+Bisection would be nice, but I'm placing odds on this always being an
+issue here in this driver code...
+
+thanks for the report.
+
+greg k-h
