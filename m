@@ -2,107 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E48233EEE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:55:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E4433EEEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhCQKzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:55:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53196 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230080AbhCQKzF (ORCPT
+        id S230241AbhCQK4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:56:51 -0400
+Received: from m42-10.mailgun.net ([69.72.42.10]:50234 "EHLO
+        m42-10.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230064AbhCQK4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:55:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615978504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I0iQk6VEOom/eWob3kLIdsJKi0P3emqz/ktzR7mzDu0=;
-        b=QNsShnfiYMwyrVWapsPlbmR/XZPodsmkHHV0oI4bu2iFAvjniTjhv7D06KcGrn3SJWgtll
-        B7+d92aDuyJpV3UzIIh8u2uGhq81QEe9bbcnDPKLBHpjTAgYRQh6pKEitjFAHch1gqd9st
-        HAoWnLn3zdKaEK1MPON+DtD5Xpve2ng=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-360-a0IkQlxzMJCuPfms5gV5Ww-1; Wed, 17 Mar 2021 06:55:03 -0400
-X-MC-Unique: a0IkQlxzMJCuPfms5gV5Ww-1
-Received: by mail-ed1-f71.google.com with SMTP id h5so19175047edf.17
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 03:55:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I0iQk6VEOom/eWob3kLIdsJKi0P3emqz/ktzR7mzDu0=;
-        b=g3XX8fEgt7OjtBijDi2q9giDytpMisabXuDU8P0s76nRklfxH+Mhh2v9UWChtj8XES
-         ZgRA/OACnAPMTlyvcoNEolIrzdzQjBkHTXADvs5wkg1szyZd3kREgueGUn8789kACXZ/
-         7YEhEdnbSKjvzFtn5tsecLE6OeeZl4ARTI6AbrQ2JWbHznJeV2t36XVSRDfwEgTQgGgn
-         txl8bAdJL2l+8wlhiUmR1ZteVmJQWM0M1rYq5wQrarT3hmALzLK0UvO3rx4BjQSo9UAt
-         OJpbOe1OFtAdyBRmR552mvuBbzEHzpb+ypRSL4885JKgecl8CfkV/CLnYSm2UcSyUjvn
-         LDyQ==
-X-Gm-Message-State: AOAM533Qle6uSPA2ay4LIfjcjwlK6aUvih6+vChNaal/Swo6K/1e/Zjk
-        IrdUr/qXN96rgMj6nA+flrQ6JQ6zkPI5FHOC1JWs3hTMxGAC0NugmrvhnzDake1PejZt5YGlpUX
-        1Xl4fyjb2Rq03iqFgVYz0n9KG
-X-Received: by 2002:a17:906:a0d4:: with SMTP id bh20mr2929707ejb.348.1615978502069;
-        Wed, 17 Mar 2021 03:55:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz+kyFZnmJb0l4PG4SXpwlc3jFPbkz+a4nfWrVz111dda3+5+tVo3sQJRINh98la4e0BrJK0Q==
-X-Received: by 2002:a17:906:a0d4:: with SMTP id bh20mr2929698ejb.348.1615978501946;
-        Wed, 17 Mar 2021 03:55:01 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id ho11sm10682614ejc.112.2021.03.17.03.55.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 03:55:01 -0700 (PDT)
-Subject: Re: [PATCH] KVM: arm: memcg awareness
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Shakeel Butt <shakeelb@google.com>
-References: <1615959984-7122-1-git-send-email-wanpengli@tencent.com>
- <87mtv2i1s3.wl-maz@kernel.org>
- <e5fce698-9e21-5c71-c99b-a9af3f213e8f@redhat.com>
- <87im5qhwzx.wl-maz@kernel.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <21d1f531-fe95-224d-0dac-6917d473063d@redhat.com>
-Date:   Wed, 17 Mar 2021 11:55:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 17 Mar 2021 06:56:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615978606; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=xqrEpj+GxQFamIOk15vw7o3CRjsA4XBBGboqmOcEKCM=;
+ b=CACRbbpGFFFiAEwvkFN3jiWRQjfgvojJI2bIpJsAvtE6FU467wjCmsu8mctYT4IuvRknIthE
+ n4YkPJ9mi6p4HhAqpWivTHAVl7TgKmLA4kJYBvcLfyfqz06qFXdM9uNqDre2mA2+aJ7rDqX6
+ 2E5UvLUdPH68h/ujBev6SQwczYU=
+X-Mailgun-Sending-Ip: 69.72.42.10
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6051e05e6dc1045b7d901cbd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Mar 2021 10:56:30
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9DD02C43461; Wed, 17 Mar 2021 10:56:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 73F6FC433C6;
+        Wed, 17 Mar 2021 10:56:28 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <87im5qhwzx.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 17 Mar 2021 18:56:28 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Avri Altman <avri.altman@wdc.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
+Subject: Re: [PATCH v5 06/10] scsi: ufshpb: Add hpb dev reset response
+In-Reply-To: <20210302132503.224670-7-avri.altman@wdc.com>
+References: <20210302132503.224670-1-avri.altman@wdc.com>
+ <20210302132503.224670-7-avri.altman@wdc.com>
+Message-ID: <59a62fc17ec9229a8498e696eb0474be@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/03/21 11:53, Marc Zyngier wrote:
-> On Wed, 17 Mar 2021 10:40:23 +0000,
-> Paolo Bonzini <pbonzini@redhat.com> wrote:
->>
->> On 17/03/21 10:10, Marc Zyngier wrote:
->>>> @@ -366,7 +366,7 @@ static int hyp_map_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
->>>>    	if (WARN_ON(level == KVM_PGTABLE_MAX_LEVELS - 1))
->>>>    		return -EINVAL;
->>>>    -	childp = (kvm_pte_t *)get_zeroed_page(GFP_KERNEL);
->>>> +	childp = (kvm_pte_t *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
->>> No, this is wrong.
->>>
->>> You cannot account the hypervisor page tables to the guest because we
->>> don't ever unmap them, and that we can't distinguish two data
->>> structures from two different VMs occupying the same page.
->>
->> If you never unmap them, there should at least be a shrinker to get
->> rid of unused pages in the event of memory pressure.
+On 2021-03-02 21:24, Avri Altman wrote:
+> The spec does not define what is the host's recommended response when
+> the device send hpb dev reset response (oper 0x2).
 > 
-> We don't track where these pages are coming from or whether they can
-> safely be unmapped. Until we can track such ownership and deal with
-> page sharing, these mappings have to stay,
+> We will update all active hpb regions: mark them and do that on the 
+> next
+> read.
 > 
-> At most, this represent the amount of memory required to map the whole
-> of the linear mapping.
+> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+> ---
+>  drivers/scsi/ufs/ufshpb.c | 47 ++++++++++++++++++++++++++++++++++++---
+>  drivers/scsi/ufs/ufshpb.h |  2 ++
+>  2 files changed, 46 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> index 0744feb4d484..0034fa03fdc6 100644
+> --- a/drivers/scsi/ufs/ufshpb.c
+> +++ b/drivers/scsi/ufs/ufshpb.c
+> @@ -642,7 +642,8 @@ int ufshpb_prep(struct ufs_hba *hba, struct
+> ufshcd_lrb *lrbp)
+>  		if (rgn->reads == ACTIVATION_THRESHOLD)
+>  			activate = true;
+>  		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
+> -		if (activate) {
+> +		if (activate ||
+> +		    test_and_clear_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags)) {
+>  			spin_lock_irqsave(&hpb->rsp_list_lock, flags);
+>  			ufshpb_update_active_info(hpb, rgn_idx, srgn_idx);
+>  			hpb->stats.rb_active_cnt++;
+> @@ -1480,6 +1481,20 @@ void ufshpb_rsp_upiu(struct ufs_hba *hba,
+> struct ufshcd_lrb *lrbp)
+>  	case HPB_RSP_DEV_RESET:
+>  		dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
+>  			 "UFS device lost HPB information during PM.\n");
+> +
+> +		if (hpb->is_hcm) {
+> +			struct scsi_device *sdev;
+> +
+> +			__shost_for_each_device(sdev, hba->host) {
+> +				struct ufshpb_lu *h = sdev->hostdata;
+> +
+> +				if (!h)
+> +					continue;
+> +
+> +				schedule_work(&hpb->ufshpb_lun_reset_work);
+> +			}
+> +		}
+> +
+>  		break;
+>  	default:
+>  		dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
+> @@ -1594,6 +1609,25 @@ static void
+> ufshpb_run_inactive_region_list(struct ufshpb_lu *hpb)
+>  	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
+>  }
+> 
+> +static void ufshpb_reset_work_handler(struct work_struct *work)
 
-Ah, these are the EL2 pages, not the stage2 page tables, right?  If so, 
-sorry for the noise.
+Just curious, directly doing below things inside ufshpb_rsp_upiu() does 
+not
+seem a problem to me, does this really deserve a separate work?
 
-Paolo
+Thanks,
+Can Guo.
 
+> +{
+> +	struct ufshpb_lu *hpb;
+> +	struct victim_select_info *lru_info;
+> +	struct ufshpb_region *rgn;
+> +	unsigned long flags;
+> +
+> +	hpb = container_of(work, struct ufshpb_lu, ufshpb_lun_reset_work);
+> +
+> +	lru_info = &hpb->lru_info;
+> +
+> +	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+> +
+> +	list_for_each_entry(rgn, &lru_info->lh_lru_rgn, list_lru_rgn)
+> +		set_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags);
+> +
+> +	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+> +}
+> +
+>  static void ufshpb_normalization_work_handler(struct work_struct 
+> *work)
+>  {
+>  	struct ufshpb_lu *hpb;
+> @@ -1798,6 +1832,8 @@ static int ufshpb_alloc_region_tbl(struct
+> ufs_hba *hba, struct ufshpb_lu *hpb)
+>  		} else {
+>  			rgn->rgn_state = HPB_RGN_INACTIVE;
+>  		}
+> +
+> +		rgn->rgn_flags = 0;
+>  	}
+> 
+>  	return 0;
+> @@ -2012,9 +2048,12 @@ static int ufshpb_lu_hpb_init(struct ufs_hba
+> *hba, struct ufshpb_lu *hpb)
+>  	INIT_LIST_HEAD(&hpb->list_hpb_lu);
+> 
+>  	INIT_WORK(&hpb->map_work, ufshpb_map_work_handler);
+> -	if (hpb->is_hcm)
+> +	if (hpb->is_hcm) {
+>  		INIT_WORK(&hpb->ufshpb_normalization_work,
+>  			  ufshpb_normalization_work_handler);
+> +		INIT_WORK(&hpb->ufshpb_lun_reset_work,
+> +			  ufshpb_reset_work_handler);
+> +	}
+> 
+>  	hpb->map_req_cache = kmem_cache_create("ufshpb_req_cache",
+>  			  sizeof(struct ufshpb_req), 0, 0, NULL);
+> @@ -2114,8 +2153,10 @@ static void ufshpb_discard_rsp_lists(struct
+> ufshpb_lu *hpb)
+> 
+>  static void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
+>  {
+> -	if (hpb->is_hcm)
+> +	if (hpb->is_hcm) {
+> +		cancel_work_sync(&hpb->ufshpb_lun_reset_work);
+>  		cancel_work_sync(&hpb->ufshpb_normalization_work);
+> +	}
+>  	cancel_work_sync(&hpb->map_work);
+>  }
+> 
+> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+> index 84598a317897..37c1b0ea0c0a 100644
+> --- a/drivers/scsi/ufs/ufshpb.h
+> +++ b/drivers/scsi/ufs/ufshpb.h
+> @@ -121,6 +121,7 @@ struct ufshpb_region {
+>  	struct list_head list_lru_rgn;
+>  	unsigned long rgn_flags;
+>  #define RGN_FLAG_DIRTY 0
+> +#define RGN_FLAG_UPDATE 1
+> 
+>  	/* region reads - for host mode */
+>  	spinlock_t rgn_lock;
+> @@ -217,6 +218,7 @@ struct ufshpb_lu {
+>  	/* for selecting victim */
+>  	struct victim_select_info lru_info;
+>  	struct work_struct ufshpb_normalization_work;
+> +	struct work_struct ufshpb_lun_reset_work;
+> 
+>  	/* pinned region information */
+>  	u32 lu_pinned_start;
