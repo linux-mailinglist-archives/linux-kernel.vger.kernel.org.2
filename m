@@ -2,104 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 599D633F4C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 16:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD41333F4D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:00:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232008AbhCQP4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 11:56:46 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:37704 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231878AbhCQP4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 11:56:16 -0400
-Received: from zn.tnic (p200300ec2f094a000fa04028afd60743.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:4a00:fa0:4028:afd6:743])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9165B1EC056D;
-        Wed, 17 Mar 2021 16:56:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1615996571;
+        id S232000AbhCQP7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 11:59:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22084 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232045AbhCQP6w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 11:58:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615996731;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=jKbFwAc3tzTE1JguNnjYbxfLAPfDUjYL9hlZmr/NLIY=;
-        b=LzKzQSFwh9U2Yq/59xL+M9GfQEid0oY5SAwuAjSVqtWer0V2MII7mfaPgF0EsI2g0sJ6gv
-        +Z97J++b/vmGzsGs5pL0DpeCT9X4bAPjmwFtbMdlOn/MKdXhTpwHa8GX1OsVrVesgCzXHG
-        gkz0Ae20Iigp/0Szx2YiOTY+d2tPgvI=
-Date:   Wed, 17 Mar 2021 16:56:08 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: [PATCH v23 15/28] x86/mm: Update maybe_mkwrite() for shadow stack
-Message-ID: <20210317155608.GB25069@zn.tnic>
-References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
- <20210316151054.5405-16-yu-cheng.yu@intel.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=5yOSfsW07vqRDTUyWiwltNsLbSctUow3AY/lS8mayaU=;
+        b=eySEqpnxIZ4iVT888VV1NCw0XnHnjLgTZibP2suIsQsn4mzlgwZD1NYsGIBJKUmuS/VF9m
+        KnnJ22rbWznnZBATPDQlIorOFrIWtDAuFwZNGyCIzRwEoJJ8uBwPm+1Gwzhu1mKy3bQ9Fp
+        DYw2X9ubrrxhtaVXj0Aj1ZyrmzXcBCQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-559-uE3gcsSAPJmOrmJR1qXuyg-1; Wed, 17 Mar 2021 11:58:49 -0400
+X-MC-Unique: uE3gcsSAPJmOrmJR1qXuyg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02BA08B0AD3;
+        Wed, 17 Mar 2021 15:58:32 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A53EA5D9C0;
+        Wed, 17 Mar 2021 15:58:30 +0000 (UTC)
+Date:   Wed, 17 Mar 2021 11:58:28 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Eric Paris <eparis@parisplace.org>
+Subject: Re: [PATCH 1/2] audit: document /proc/PID/loginuid
+Message-ID: <20210317155828.GI3141668@madcap2.tricolour.ca>
+References: <cover.1615414262.git.rgb@redhat.com>
+ <df2ca2e9817140dd5c4ff97297b60700b96cb898.1615414262.git.rgb@redhat.com>
+ <CAHC9VhQHsYJnEh_J8ovFGQ9JyNew6C-HCSuFcQamOK3MuAHgQA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210316151054.5405-16-yu-cheng.yu@intel.com>
+In-Reply-To: <CAHC9VhQHsYJnEh_J8ovFGQ9JyNew6C-HCSuFcQamOK3MuAHgQA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 08:10:41AM -0700, Yu-cheng Yu wrote:
-> When serving a page fault, maybe_mkwrite() makes a PTE writable if its vma
-> has VM_WRITE.
+On 2021-03-12 14:15, Paul Moore wrote:
+> On Thu, Mar 11, 2021 at 11:41 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > Describe the /proc/PID/loginuid interface in Documentation/ABI/stable that
+> > was added 2005-02-01 by commit 1e2d1492e178 ("[PATCH] audit: handle
+> > loginuid through proc")
+> >
+> > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> > ---
+> >  Documentation/ABI/stable/procfs-audit_loginuid | 15 +++++++++++++++
+> >  1 file changed, 15 insertions(+)
+> >  create mode 100644 Documentation/ABI/stable/procfs-audit_loginuid
 > 
-> A shadow stack vma has VM_SHSTK.  Its PTEs have _PAGE_DIRTY, but not
-> _PAGE_WRITE.  In fork(), _PAGE_DIRTY is cleared to effect copy-on-write,
-
-						  to cause
-
-> and in page fault, _PAGE_DIRTY is restored and the shadow stack page is
-
-      in the page fault handler...
-
-> writable again.
+> After ~15 years, it might be time ;)
 > 
-> Update maybe_mkwrite() by introducing arch_maybe_mkwrite(), which sets
-> _PAGE_DIRTY for a shadow stack PTE.
+> > diff --git a/Documentation/ABI/stable/procfs-audit_loginuid b/Documentation/ABI/stable/procfs-audit_loginuid
+> > new file mode 100664
+> > index 000000000000..fae63bef2970
+> > --- /dev/null
+> > +++ b/Documentation/ABI/stable/procfs-audit_loginuid
+> > @@ -0,0 +1,15 @@
+> > +What:          Audit Login UID
+> > +Date:          2005-02-01
+> > +KernelVersion: 2.6.11-rc2 1e2d1492e178 ("[PATCH] audit: handle loginuid through proc")
+> > +Contact:       linux-audit@redhat.com
+> > +Format:                u32
 > 
-> Apply the same changes to maybe_pmd_mkwrite().
+> I haven't applied the patch, but I'm going to assume that the "u32"
+> lines up correctly with the rest of the entries, right?
+
+Yes, they do.  I'm wondering if they should read instead "%u" since the
+internal kernel representation isn't as important as what format (number
+base) is expected and presented.
+
+> > +Users:         auditd, libaudit, audit-testsuite, login
 > 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> ---
->  arch/x86/Kconfig        |  4 ++++
->  arch/x86/mm/pgtable.c   | 18 ++++++++++++++++++
->  include/linux/mm.h      |  2 ++
->  include/linux/pgtable.h | 24 ++++++++++++++++++++++++
->  mm/huge_memory.c        |  2 ++
->  5 files changed, 50 insertions(+)
+> I think these entries are a bit too specific as I expect the kernel to
+> outlive most userspace libraries and applications.  I would suggest
+> "audit and login applications" or something similar.
 
-Looks straightforward to me but I guess it needs a mm person's ack.
+In other examples, users range from a description to an email address,
+to a URI, to a repository name or address, to a package name, to
+specific files.  I'd prefer to be as specific as reasonably possible
+without going into gory detail.
 
--- 
-Regards/Gruss,
-    Boris.
+> > +Description:
+> > +               The /proc/$pid/loginuid pseudofile is written to set and
+> 
+> I'm really in no position to critique someone's English grammar, but
+> if we're talking about changes I might add a comma after "set", "...
+> is written to set, and read to get ...".
 
-https://people.kernel.org/tglx/notes-about-netiquette
+This would be the Oxford comma debate, and has a sronger preference by
+USA-ians that Brits.  It can help disambiguate meaning in a list of
+three or more items.
+
+> > +               read to get the audit login UID of process $pid.  If it is
+> > +               unset, permissions are not needed to set it.  The accessor must
+> > +               have CAP_AUDIT_CONTROL in the initial user namespace to write
+> > +               it if it has been set.  It cannot be written again if
+> > +               AUDIT_FEATURE_LOGINUID_IMMUTABLE is enabled.  It cannot be
+> > +               unset if AUDIT_FEATURE_ONLY_UNSET_LOGINUID is enabled.
+> 
+> paul moore
+
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
+
