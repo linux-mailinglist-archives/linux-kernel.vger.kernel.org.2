@@ -2,172 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C330D33EA39
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F58D33EA31
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhCQGzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 02:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbhCQGyY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 02:54:24 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203C2C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 23:54:24 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id t7so508346ilq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 23:54:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jQIH9wKql140vH9H12VPFHXEPXeFOPyWx7Jj4ptj1nQ=;
-        b=kJiaI17VDEKf1CutdLuQYsPpw0CgO9o2hCGmEAInROOZM+OhNZSAt6oexcrJuffomH
-         xhVVXiJ0seweBwXcc/aPih/0gppelJdbZc2Q4mkxzVsJM4lmG5S4L0prbq36etI3UrX0
-         HdSThRnjA4aSZtO6pqRJE9mUDwynYnQFjJrk4Yy6Oh6+gCpz7BBvUH9UXmWQUF4TPB1W
-         qSeL2+G0K0hYPwrs3gAeir55nf5cHl9gE3GpOWanAlcboFBJY5YOjjvreA/gHKNXuz/A
-         UvhOYSF7B6BDAYZSin16LNCZoskZmax86KMtbudySiNywFLuYGAf5Pm+2oQbTpF54TKR
-         EmAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jQIH9wKql140vH9H12VPFHXEPXeFOPyWx7Jj4ptj1nQ=;
-        b=h3K3zRDKoisik9GTpiWgm+zjkCzAgP3Yv1TAx1bWbgJLDHveblZjOCJu3Xe8DSeAM4
-         T7sU6es/2sDGEiUiTNuKgMS9UC9luGUghOBHeFUsUfDYS6Ok9hc6DjMN+qnw9AOYhoWK
-         TTi5N4ak031hJq+n/pI/nTb6qj07oXpJaRScfLsmGfh1iONINVle86oyZy9hwlCX08AS
-         U/auVExUXFsIDC0T/GiXPoH9ut0sr618pSwmUFEEHoEJPmGEcZAwPXJk5vPlB+KXOc/C
-         pZVr9229B7k+wv2Hu+F1g1TL4q5w7N7nkJWRJ+kgWOOvxl3cHsea2x0WFE+pCnGFgsU4
-         I6EA==
-X-Gm-Message-State: AOAM531rMqu0iJw1dpbysjWFGGevKARE6likkbzDoe2jlH9c1juWKV28
-        qKKDmNmSdDdcPHhDAvl1nYM=
-X-Google-Smtp-Source: ABdhPJx8vjRv0fvoDozho4nssgeIkFO+Hr9NPk6pYHLtRsgJnvv3+GC/JC7TD3MOp0gWLoHsccKxtg==
-X-Received: by 2002:a05:6e02:198a:: with SMTP id g10mr5962872ilf.139.1615964063543;
-        Tue, 16 Mar 2021 23:54:23 -0700 (PDT)
-Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id w13sm10583057ilg.48.2021.03.16.23.54.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 23:54:23 -0700 (PDT)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
+        id S230527AbhCQGyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 02:54:32 -0400
+Received: from mail-eopbgr80049.outbound.protection.outlook.com ([40.107.8.49]:29255
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229613AbhCQGyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 02:54:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HG3GE7YuDacdYmzfLwIhwEvVcW6SgLrwk8GJHPG4bxjeeO9FdPILcJt7kFC2cIS2RlKif05FfOadycWx9/Fjx6UUPTMe3M1dUywQrW3cYZpKAzbDegbMXQRnbVpPBODEBAF44tPcNFMgWUDwo0xNSwroEz9grBaU+VqN6JnXwEPll8Qef5NCIKLdlilcTCbGcss4Zqh+FY1QKYANHm7f67X/2xR4mzWfLkp+jsixSMYWky3GpRNYm2hhDRuU9K/wDUGzXsdsTEiKEA0FAn0yu8Is9yvObCVR067XbHFyHHlOb5xzlNh3qUys22kJgKns0iS40G13FLlLl2At1WnBdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J9i3nQH7+71iMs/WFQuZ/Ffy/uBGsJ8hTRVVtVVxavU=;
+ b=CcCTooiill7ZuhB7SHrFjcqTNx0MtsSde+cTq+S0bciifk4RNimg7RjmpXd0DKzxcqMY9ZiMr5wjTUSg4i1ODudVdDi9qkkDzbvNNEq4Xj9skjryBAQvF4kvlINt01wGchaux+MGaVrZZLw23DT/xGjE0mh0yXnB2d3VZLY0IgCMLeVhEhZGSGojfxc4Mlo+2Yszl/RDxklRblzvPOZZS2NowZQdXJA+i9IZ2LX3Zhao/UYwGj8Rm8vs2b8PWdgsRsr0IkxVse6/wB9hT/90OEIyIVbcIJ4Kt7j1kHkJXTegHwmPUv8HbdJBOXaQU+H+q+mgdpNs6B95iUVlO29NKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J9i3nQH7+71iMs/WFQuZ/Ffy/uBGsJ8hTRVVtVVxavU=;
+ b=dPJo+vZVd+c5GPDs9LiLG80RswFkOpnaTyYcayiHEcFFyAowSc8FJLirsMFTzr8Poaa5Qxr+w89z4Q45s1a9BEz3rqKw4imsEpBfnz9fMkbVMvS6IzuykiDSeGXQlrrf+TOfvldbpTW7cA66Yl4eUmsqAX9hLqF4UMfE0DeCDyM=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+Received: from AM0PR04MB5618.eurprd04.prod.outlook.com (2603:10a6:208:123::11)
+ by AM0PR04MB7091.eurprd04.prod.outlook.com (2603:10a6:208:197::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Wed, 17 Mar
+ 2021 06:54:14 +0000
+Received: from AM0PR04MB5618.eurprd04.prod.outlook.com
+ ([fe80::69a8:a768:8fa1:7236]) by AM0PR04MB5618.eurprd04.prod.outlook.com
+ ([fe80::69a8:a768:8fa1:7236%7]) with mapi id 15.20.3933.032; Wed, 17 Mar 2021
+ 06:54:14 +0000
+From:   Clark Wang <xiaoning.wang@nxp.com>
+To:     aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Cc:     Jim Cromie <jim.cromie@gmail.com>
-Subject: [RFC PATCH v4 02/19] dyndbg: __init iterate over __dyndbg & __dyndbg_site in parallel
-Date:   Wed, 17 Mar 2021 00:53:55 -0600
-Message-Id: <20210317065412.2890414-3-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210317065412.2890414-1-jim.cromie@gmail.com>
-References: <20210317065412.2890414-1-jim.cromie@gmail.com>
-MIME-Version: 1.0
+Subject: [PATCH 07/11] i2c: imx-lpi2c: increase PM timeout to avoid operate clk frequently
+Date:   Wed, 17 Mar 2021 14:53:55 +0800
+Message-Id: <20210317065359.3109394-8-xiaoning.wang@nxp.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210317065359.3109394-1-xiaoning.wang@nxp.com>
+References: <20210317065359.3109394-1-xiaoning.wang@nxp.com>
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: HK2PR02CA0215.apcprd02.prod.outlook.com
+ (2603:1096:201:20::27) To AM0PR04MB5618.eurprd04.prod.outlook.com
+ (2603:10a6:208:123::11)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by HK2PR02CA0215.apcprd02.prod.outlook.com (2603:1096:201:20::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Wed, 17 Mar 2021 06:54:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: fad57526-5e49-40e2-82f4-08d8e9117997
+X-MS-TrafficTypeDiagnostic: AM0PR04MB7091:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR04MB709100D2D7A3B5A8846D43AAF36A9@AM0PR04MB7091.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RJAb/TiLPhiBKsatbnzMcpb8CJg5F1QvmB2VVlNZ28iYqfbF/mgFVRUB4vh4z4vMfZ7e3saGfm/Oh0H9v7VtSwtq5DSdUuXaJx2Fj3RpnGWIO4FuJnW7O0+A8Yis1HttkxdSq8K8tEREiAG+s1s/Y/kZracmzqNsTkDmvw1sLspxLzT9cDGLJ7CRF9JId7ts9suLnsUZVS9PKNFvzoMlhxBXX/u24fd/s9QguDUvfZyWFmEw79WCl/uFikNI4wK/csC9U1cSkq8MKIW8cMTZADrL7CJEkxHqWL3OjMkJqywLFpsAhbhAfBBJEtiabVFwM66bik+DNyaNcHfoA61v5HfKxFYbkWQFHqRa4nktIkHncVxmi0vAsGM5mnz7iEyAQ5ih83s8HG3/lyD+2vPqkgN66OtbQtrlEEmHSTdUMxqohY8vTcbsD3nc/yCm32JKarSm5m21u8VHIzjmhylm0mH6IxN+iVGsMNkhqkLaVVmnmB9BagjXQqG7tpolsQBHpBLFoKEd2IIgaw0YhFsvmRllFeFNvmIDV01NYzUl7aH+L0VCRpGJiIuwfE26KMfUjab3yeQ69PLwxf0oYqCh63l2Tw49YaD5kMU+vUsXxLmgimzQPasUwS/2w9n5hoql
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5618.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(346002)(39860400002)(136003)(478600001)(4744005)(66556008)(66476007)(69590400012)(6506007)(66946007)(83380400001)(36756003)(16526019)(5660300002)(2616005)(316002)(2906002)(1076003)(8936002)(26005)(52116002)(186003)(956004)(4326008)(6512007)(6486002)(8676002)(6666004)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?SIrTMaCTH7QpPtotguuUmr7ov89r9GFBWxEVZmmRokZiDoZKwJ+JdTBffTFr?=
+ =?us-ascii?Q?eeU0whW4RThmD0WYNK6Wwn2UfoBYcBE2MWr9vsY9J7qQMhwMV1zl+VIaWPvF?=
+ =?us-ascii?Q?GuaM5angxekBcobQz+7M8A0ufbXhp+uYOizdf7V9z0stQE6cGcMv8M92Edvr?=
+ =?us-ascii?Q?PvklvJMmsbH5si5nZ8biEQynFAUCMebuamtx9HFCVj649l4Jwwmy3YJSGYp8?=
+ =?us-ascii?Q?7J+70VEEVSqsGqySqfzXizLATN7Wirl5UcqBeqAVyERZNeMRO+Aki5Cszkkl?=
+ =?us-ascii?Q?2EUFEuoKDmil9k+6XKVlZlBpZpGg38iuEh4tVl4uDelS6jOQDkZFRkQ76GdA?=
+ =?us-ascii?Q?jQ4O6RTzPE+gfL4xFlykRziIcKT+S4pNFm7JjyQ0XKuLGjQ/tjXcZYmNszxo?=
+ =?us-ascii?Q?dwiOUGZPhA0Q8hHeHB/Ad9lr5WSkupi/WcFwvvrbAn+1N/2Uht9j6GNLES5c?=
+ =?us-ascii?Q?f0Pfp/yI3CeJMxnwqviZY7DAnaAyCLVSpgJwstORclLQvvpX3bqf4Yez0Qsg?=
+ =?us-ascii?Q?snrSpRRmlq9/jsG/UfHgRtvWB68cRq2hEjXGG1A3r8L1L5jWhcjVQsKHD2X3?=
+ =?us-ascii?Q?hJ2ToqnjCSkZTaV2Rcw4k8183H0rRAc+I4sjoPYTUMoUyzSmILvEpehiAy44?=
+ =?us-ascii?Q?LqIn9GnyULbc0WvseZu3QGDJbkhfrz2wHVkywfCOmbVwnG5At9rVpcg3+oGe?=
+ =?us-ascii?Q?yrEfQ+qlGKDp/SJlIBYsmdm+S3v2KltFJedqwd5MJ2oSDt6jlxmEahTMvOzI?=
+ =?us-ascii?Q?ZWYlJAjF7Vcg8jJ39t4sKgHfcFkjDAaN+qRqzjRw3JZLe+lX4DsDKs5dYgsv?=
+ =?us-ascii?Q?XCgxpQBfLPl8YHejY/pRHUlYIpwcnmXxhGWJaAbThd+R+g0oKh9scf9fcWEg?=
+ =?us-ascii?Q?aQ62HkCuo0j7/ZZo9pyKrKSwOYTLzoHwiKGj79+Z2Ox7FWQ9k0/tUSxP/Mgj?=
+ =?us-ascii?Q?xoPE2CLyqRxlVOpbDgHs9CqhxVkYdYupYA2aJls0JBm6FelFqVqxlS34NLw0?=
+ =?us-ascii?Q?B184tq792J1zplANHTufc53odzWix3BIxvw274pNLzzMZuwo0feYCjKkbnbw?=
+ =?us-ascii?Q?cX8aDqN2bOk7n+g/SxMqHy+BowT9wa7pi5rELCg5UrW6GqfQ3UEP+pFDO7gW?=
+ =?us-ascii?Q?n1FvkRD21xjpuO4VbuKEyGQynQx9VZemnwRJJEYrF+HlV5gki7dDdR/rCHVQ?=
+ =?us-ascii?Q?sz3PNhw1y804AhkFDoImTkqzsYtgDhsH1vlOeTQHYy5R41cSxo485l1OavBa?=
+ =?us-ascii?Q?oTk6dYdt/HbDyXL0QIKBAV4Rio2o+uwm+hKft8Uq6rTj6oQ8LZEMNOyTa98/?=
+ =?us-ascii?Q?GNiHNbxC6eSeSjEpOwojHCUq?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fad57526-5e49-40e2-82f4-08d8e9117997
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5618.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 06:54:14.0021
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wXrXRuV+5qPR/4WFqG42AqYrAFUG0maeIiHfCeM52yKIlhTc5KewikV2eCg53wMoNiZEOoq7om7zfp3Q1yIQig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In dynamic_debug_init(), rework for-loop; add 2nd 'site' var, and
-iterate over both __dyndbg* sections in parallel.  Replace uses of
-iter->site with the new 'site' iter, add a BUG_ON to enforce the
-invariant given by HEAD~1's DECLARE_DYNAMIC_DEBUG_METADATA base->site
-initialization.
+Switching the clock frequently will affect the data transmission
+efficiency, and prolong the timeout to reduce autosuspend times for
+lpi2c.
 
-0- declare the new elf section start/stop, named in vmlinux.lds.h
-   I disregarded a checkpatch warning about externs in c-files, stuck
-   with current practice.
-
-1- clean up use of 4 iterators for clarity:
-   (iter, site), and ((iter, site)_mod_start) block markers.
-
-2- iterate over __dyndbg_sites in parallel with __dyndbg
-   s/iter->site/site/g;
-
-3- add BUG_ON(iter->site != site)
-   DECLARE_DYNAMIC_DEBUG_METADATA + linker insure this now.
-   Maybe we can drop pointer, still get order.
-
-4- var rename n to site_ct
-
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+Acked-by: Fugang Duan <fugang.duan@nxp.com>
+Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
 ---
- lib/dynamic_debug.c | 36 +++++++++++++++++++++++-------------
- 1 file changed, 23 insertions(+), 13 deletions(-)
+ drivers/i2c/busses/i2c-imx-lpi2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 738c4ce28046..c3c35dcc6a59 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -41,6 +41,8 @@
+diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
+index 86b69852f7be..c0cb77c66090 100644
+--- a/drivers/i2c/busses/i2c-imx-lpi2c.c
++++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
+@@ -75,7 +75,7 @@
+ #define I2C_CLK_RATIO	2
+ #define CHUNK_DATA	256
  
- extern struct _ddebug __start___dyndbg[];
- extern struct _ddebug __stop___dyndbg[];
-+extern struct _ddebug_site __start___dyndbg_sites[];
-+extern struct _ddebug_site __stop___dyndbg_sites[];
+-#define I2C_PM_TIMEOUT		10 /* ms */
++#define I2C_PM_TIMEOUT		1000 /* ms */
  
- struct ddebug_table {
- 	struct list_head link;
-@@ -118,6 +120,7 @@ do {								\
- 
- #define vpr_info(fmt, ...)	vnpr_info(1, fmt, ##__VA_ARGS__)
- #define v2pr_info(fmt, ...)	vnpr_info(2, fmt, ##__VA_ARGS__)
-+#define v3pr_info(fmt, ...)	vnpr_info(3, fmt, ##__VA_ARGS__)
- 
- static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
- {
-@@ -1082,11 +1085,12 @@ static int __init dynamic_debug_init_control(void)
- 
- static int __init dynamic_debug_init(void)
- {
--	struct _ddebug *iter, *iter_start;
-+	struct _ddebug *iter, *iter_mod_start;
-+	struct _ddebug_site *site, *site_mod_start;
- 	const char *modname = NULL;
- 	char *cmdline;
- 	int ret = 0;
--	int n = 0, entries = 0, modct = 0;
-+	int site_ct = 0, entries = 0, modct = 0;
- 
- 	if (&__start___dyndbg == &__stop___dyndbg) {
- 		if (IS_ENABLED(CONFIG_DYNAMIC_DEBUG)) {
-@@ -1097,23 +1101,29 @@ static int __init dynamic_debug_init(void)
- 		ddebug_init_success = 1;
- 		return 0;
- 	}
--	iter = __start___dyndbg;
--	modname = iter->site->modname;
--	iter_start = iter;
--	for (; iter < __stop___dyndbg; iter++) {
-+
-+	iter = iter_mod_start = __start___dyndbg;
-+	site = site_mod_start = __start___dyndbg_sites;
-+	modname = site->modname;
-+
-+	for (; iter < __stop___dyndbg; iter++, site++) {
-+
-+		BUG_ON(site != iter->site);
- 		entries++;
--		if (strcmp(modname, iter->site->modname)) {
-+
-+		if (strcmp(modname, site->modname)) {
- 			modct++;
--			ret = ddebug_add_module(iter_start, n, modname);
-+			ret = ddebug_add_module(iter_mod_start, site_ct, modname);
- 			if (ret)
- 				goto out_err;
--			n = 0;
--			modname = iter->site->modname;
--			iter_start = iter;
-+			site_ct = 0;
-+			modname = site->modname;
-+			iter_mod_start = iter;
-+			site_mod_start = site;
- 		}
--		n++;
-+		site_ct++;
- 	}
--	ret = ddebug_add_module(iter_start, n, modname);
-+	ret = ddebug_add_module(iter_mod_start, site_ct, modname);
- 	if (ret)
- 		goto out_err;
- 
+ enum lpi2c_imx_mode {
+ 	STANDARD,	/* 100+Kbps */
 -- 
-2.29.2
+2.25.1
 
