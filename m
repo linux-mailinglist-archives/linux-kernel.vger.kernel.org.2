@@ -2,107 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7663B33F53B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:15:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B67733F552
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 17:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232262AbhCQQPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 12:15:02 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:56182 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232029AbhCQQOy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 12:14:54 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12HGEWKE125773;
-        Wed, 17 Mar 2021 11:14:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615997672;
-        bh=meEMMQGzpHgES9UZrjykVhesIW4rSxb1evBkwPhp5OI=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=O89t/LkZDmcjen+fsJTNlb/V0ocvKnhqkHcLBtMrP4t+kuuV7lvHkV1wiA4XFb4D1
-         YDz82AYGJ6TyrU4k2OcD/i+CdNVIiE169hgH2ueVgGTbik6D1gwq1kISFm+fm0M5qF
-         3ZmKlC1zeexjDS6ySdpl0Y+acMJMd/UruYr2nqbk=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12HGEWPG004242
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 17 Mar 2021 11:14:32 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 17
- Mar 2021 11:14:31 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 17 Mar 2021 11:14:31 -0500
-Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12HGERHp013957;
-        Wed, 17 Mar 2021 11:14:29 -0500
-Subject: Re: [PATCH v2 4/5] mtd: spi-nor: Move Software Write Protection logic
- out of the core
-To:     Pratyush Yadav <p.yadav@ti.com>, <Tudor.Ambarus@microchip.com>
-CC:     <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <linux-kernel@vger.kernel.org>
-References: <20210306095002.22983-1-tudor.ambarus@microchip.com>
- <20210306095002.22983-5-tudor.ambarus@microchip.com>
- <963232a4-9100-ebca-927c-7f5a1e947fbe@ti.com>
- <9889bae0-8eba-7cbc-d9bb-04e038bd28c8@microchip.com>
- <6016b725-a779-1d2c-9884-099c58f53557@ti.com>
- <45d00a12-cb79-774e-f8e8-d65602629a90@microchip.com>
- <20210317090504.ra3vm76xexhaqg2l@ti.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <9fd4957d-778c-966e-2756-13418d199bf6@ti.com>
-Date:   Wed, 17 Mar 2021 21:44:25 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232167AbhCQQSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 12:18:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232268AbhCQQSq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 12:18:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DB3A60C41;
+        Wed, 17 Mar 2021 16:18:42 +0000 (UTC)
+Date:   Wed, 17 Mar 2021 16:18:39 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Scull <ascull@google.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] [RFC] arm64: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+Message-ID: <20210317161838.GF12269@arm.com>
+References: <20210225112122.2198845-1-arnd@kernel.org>
+ <20210317143757.GD12269@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210317090504.ra3vm76xexhaqg2l@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210317143757.GD12269@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/17/21 2:35 PM, Pratyush Yadav wrote:
-> On 17/03/21 06:09AM, Tudor.Ambarus@microchip.com wrote:
->> On 3/15/21 8:23 AM, Vignesh Raghavendra wrote:
->>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>>
->>> On 3/9/21 12:58 PM, Tudor.Ambarus@microchip.com wrote:
->>>> On 3/8/21 7:28 PM, Vignesh Raghavendra wrote:
->>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>>>>
->>>>> On 3/6/21 3:20 PM, Tudor Ambarus wrote:
->>>>>> It makes the core file a bit smaller and provides better separation
->>>>>> between the Software Write Protection features and the core logic.
->>>>>> All the next generic software write protection features (e.g. Individual
->>>>>> Block Protection) will reside in swp.c.
->>>>>>
->>>>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
->>>>>> ---
->>>>>>  drivers/mtd/spi-nor/Makefile |   2 +-
->>>>>>  drivers/mtd/spi-nor/core.c   | 407 +---------------------------------
->>>>>>  drivers/mtd/spi-nor/core.h   |   4 +
->>>>>>  drivers/mtd/spi-nor/swp.c    | 419 +++++++++++++++++++++++++++++++++++
->>>>>
->>>>> Hmmm, name swp.c does not seem intuitive to me. How about expanding it a
->>>>> bit:
->>>>>
->>>>> soft-wr-protect.c or software-write-protect.c ?
->>
->> Having in mind that we have the SWP configs, I think I prefer swp.c.
->> But let's see what majority thinks, we'll do as majority prefers.
->> Michael, Pratyush?
+On Wed, Mar 17, 2021 at 02:37:57PM +0000, Catalin Marinas wrote:
+> On Thu, Feb 25, 2021 at 12:20:56PM +0100, Arnd Bergmann wrote:
+> > diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+> > index bad2b9eaab22..926cdb597a45 100644
+> > --- a/arch/arm64/kernel/vmlinux.lds.S
+> > +++ b/arch/arm64/kernel/vmlinux.lds.S
+> > @@ -217,7 +217,7 @@ SECTIONS
+> >  		INIT_CALLS
+> >  		CON_INITCALL
+> >  		INIT_RAM_FS
+> > -		*(.init.altinstructions .init.bss .init.bss.*)	/* from the EFI stub */
+> > +		*(.init.altinstructions .init.data.* .init.bss .init.bss.*)	/* from the EFI stub */
 > 
-> I don't have much of an opinion on this tbh. But I usually prefer short 
-> names so I'd go with swp.c here. Maybe also add a comment at the top of 
-> the file mentioning the full name "Software Write Protection logic" or 
-> something similar for clarification.
-> 
+> INIT_DATA already covers .init.data and .init.data.*, so I don't think
+> we need this change.
 
-I don't have hard objection to swp.c. As Pratyush suggested, a comment
-at top of the file indicating the purpose would be good to have.
+Ah, INIT_DATA only covers init.data.* (so no dot in front). The above
+is needed for the EFI stub.
+
+However, I gave this a quick try and under Qemu with -cpu max and -smp 2
+(or more) it fails as below. I haven't debugged but the lr points to
+just after the switch_to() call. Maybe some section got discarded and we
+patched in the wrong instructions. It is fine with -cpu host or -smp 1.
+
+-------------------8<------------------------
+smp: Bringing up secondary CPUs ...
+Detected PIPT I-cache on CPU1
+CPU1: Booted secondary processor 0x0000000001 [0x000f0510]
+Unable to handle kernel paging request at virtual address eb91d81ad2971160
+Mem abort info:
+  ESR = 0x86000004
+  EC = 0x21: IABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+[eb91d81ad2971160] address between user and kernel address ranges
+Internal error: Oops: 86000004 [#1] PREEMPT SMP
+Modules linked in:
+CPU: 1 PID: 16 Comm: migration/1 Not tainted 5.12.0-rc3-00002-g128e977c1322 #1
+Stopper: 0x0 <- 0x0
+pstate: 60000085 (nZCv daIf -PAN -UAO -TCO BTYPE=--)
+pc : 0xeb91d81ad2971160
+lr : __schedule+0x230/0x6b8
+sp : ffff80001009bd60
+x29: ffff80001009bd60 x28: 0000000000000000 
+x27: ffff0000000a6760 x26: ffff0000000b7540 
+x25: 0080000000000000 x24: ffffd81ad3969000 
+x23: ffff0000000a6200 x22: 6ee0d81ad2971658 
+x21: ffff0000000a6200 x20: ffff000000080000 
+x19: ffff00007fbc6bc0 x18: 0000000000000030 
+x17: 0000000000000000 x16: 0000000000000000 
+x15: 00008952b30a9a9e x14: 0000000000000366 
+x13: 0000000000000192 x12: 0000000000000000 
+x11: 0000000000000003 x10: 00000000000009b0 
+x9 : ffff80001009bd30 x8 : ffff0000000a6c10 
+x7 : ffff00007fbc6cc0 x6 : 00000000fffedb30 
+x5 : 00000000ffffffff x4 : 0000000000000000 
+x3 : 0000000000000008 x2 : 0000000000000000 
+x1 : ffff0000000a6200 x0 : ffff0000000a3800 
+Call trace:
+ 0xeb91d81ad2971160
+ schedule+0x70/0x108
+ schedule_preempt_disabled+0x24/0x40
+ __kthread_parkme+0x68/0xd0
+ kthread+0x138/0x170
+ ret_from_fork+0x10/0x30
+Code: bad PC value
+---[ end trace af3481062ecef3e7 ]---
+
+-- 
+Catalin
