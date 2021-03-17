@@ -2,118 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A06633F653
+	by mail.lfdr.de (Postfix) with ESMTP id B51F233F654
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbhCQRMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33864 "EHLO
+        id S230456AbhCQRMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbhCQRL6 (ORCPT
+        with ESMTP id S230414AbhCQRMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:11:58 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A15C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:11:57 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id x4so4067763lfu.7
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:11:57 -0700 (PDT)
+        Wed, 17 Mar 2021 13:12:09 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A97DC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:12:09 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id l23-20020a05683004b7b02901b529d1a2fdso2484041otd.8
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:12:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=Jzrcb4snjLsfCfgL7oJZ6fFGa4UZcs/jVCaFF495Y9I=;
-        b=jhsTx4u3bX6dnuVOods1QVHxDvDRiLqaGF+PGS54cjNTi9eg9MypoGpTSGldjNDPn4
-         WpwX3M8TKZuSW/TAGQkVP9BS/k6wwj2WpG5ssv7ZXigAiiLALXIWU/T8oLqh32ji2/ph
-         8/G/6m3jCydCfwIjD8/cBRg+tvtl67RTRYxHJcP6LqnTbVgq/JeFyGr0I4Oam0Mf24fB
-         d8JRTAbUa0HJOsPpSaomCtqmexfQZUBd30in19OoWMB44of9N6YcEIZ/Iz6CrDL4Q7ba
-         kPCaUhZ69478SbyyCqVG5sRGOWAzYWe3ayXkl0fe5uDUJngVJmExKdU3bcAzmOM75kIs
-         xR+A==
+        bh=HchjgJn3AgnpDc5+oGAmJzvgBR7qMdT7ZxA9Rjp655E=;
+        b=f56nEazfE3s/D1h9atyavfjqZb/lAtSQgpQ7AZ65oHJJjDdmycjgaAOLupbKLr5N+a
+         RKOI2al//Yv4/SV6kU/wHdwOW6fy5g9l6FjEC9b6oZve3BXgfocq+DpJw90HRaevzaqV
+         DXUTYY2L882l9a58bhfMUjoKzLJa7to5bY5hADt5J3zBf7m7G54EtA0KJsSiRb+H1n2/
+         lS+i2prvUmBRY/7aOOEVDlq6K1/4fvMR1vu5k+I/JywooIZ+O4z2JVhbnRhSwg+2JaGy
+         9tJq9mM6V9BjVWFZhyWOfGByOmWj/+qVuiOJqpfQp8a6wZF7qh0ht5TcZFc7BOurK/WG
+         QxQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Jzrcb4snjLsfCfgL7oJZ6fFGa4UZcs/jVCaFF495Y9I=;
-        b=KJGOxFdWMerw/C75LQrwwjHQFXOx/DY7QzK/RYd8ydAWIqzocRC8rIcJHIYkbB6dLX
-         rOa/7CM5jVWJaM5bGnaJjDrDgSTw2XTkG/BErmXj/ylBWTZdasbQpnsGvkjeVvna29WE
-         C33u3NDrTitSYnxD887xvdr3f93b60wlNjV11I7Py5OfPT9U5nhB9A8/HMTBnKqQUpgH
-         AvWhgDC37j36Wil6jpxRexkqeT82Oz4emp9Te55zYJvdvcCDsMyFzkLY3lzomOLC2iOv
-         hC7KuXFjo0NIbQeQg9HR4PxLwh5sXPAfDPaq7B5lOvu77lynjEFtoB0Zweuj6eRzdMLn
-         S+GA==
-X-Gm-Message-State: AOAM533XwpWWpiFGIgxDRGe2QqUdcwzd1RMAEnFYJ8vxYi6dbvZfxAxb
-        VyiVs2Yb4g0vJQMB9pP8Blk8EHQ6v9wCVzBnH1oh4w==
-X-Google-Smtp-Source: ABdhPJwy1vfNQZQDVVE72SA1/HppIJ+ANP8e2YQaMqPQRoEHa1oHuTdWoG9xh3SZl2KCgAetkOywA6CCUAUxOlAF/5U=
-X-Received: by 2002:a05:6512:3481:: with SMTP id v1mr2853789lfr.193.1616001116260;
- Wed, 17 Mar 2021 10:11:56 -0700 (PDT)
+        bh=HchjgJn3AgnpDc5+oGAmJzvgBR7qMdT7ZxA9Rjp655E=;
+        b=iJpDmqZNamQxyQhEakowA1p6V0YPsrs2j2iycGGJv0+TJSWMLp2cpA2fj1nCjFhwLR
+         Wr6ZtgYlGDaz5McZ/on2/B2pHCPCtWChjX4S6aXeeOKcOZd+5vW2g+Do6PiZ/NzqmyaW
+         U6dSTvLNwMVVU3qCNrAitunBesR7vaQzjnOlfz0GSY16ZJmjem8bAFPIjPEdQSmXSjy2
+         I2jAcqtCowq0Mkb3aU1bbua9f23unoqRh8mwzy2JlIttEtVrTtFmsjssVW6ksxUeudq8
+         dbaI85m/PruFAQOj8YUf84S1ow8LXKrBeWODcamzQLcdn2wVrrCWxUrZISCSAkCY55r4
+         5TUw==
+X-Gm-Message-State: AOAM532bhXPA8s3Pg0bNHk76aordohPvG0by6UKae5Cdh4G7PUBZT1sq
+        AlU1dYDzTja/Ox+gknQsBn9cUvK7JVETh5H7Md/kQw==
+X-Google-Smtp-Source: ABdhPJyLz4VMRJSTVjkIeIBOFPx1Ljq9ZBonqjSzDy1a5uZk19/2BxAbGu3+DDtbay8uqoQjvM4gfBPfT6976Ry4C6M=
+X-Received: by 2002:a05:6830:1644:: with SMTP id h4mr4171335otr.349.1616001128576;
+ Wed, 17 Mar 2021 10:12:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210317064148.GA55123@embeddedor>
-In-Reply-To: <20210317064148.GA55123@embeddedor>
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 17 Mar 2021 18:11:29 +0100
-Message-ID: <CAG48ez2RDqKwx=umOHjo_1mYyNQgzvcP=KOw1HgSo4Prs_VQDw@mail.gmail.com>
-Subject: Re: [PATCH][next] ixgbe: Fix out-of-bounds warning in ixgbe_host_interface_command()
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        intel-wired-lan@lists.osuosl.org,
-        Network Development <netdev@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
+References: <20210316193905.1673600-1-jollys@google.com> <3a0626ae-327b-146f-5b2d-c58074c421a5@huawei.com>
+In-Reply-To: <3a0626ae-327b-146f-5b2d-c58074c421a5@huawei.com>
+From:   Jolly Shah <jollys@google.com>
+Date:   Wed, 17 Mar 2021 10:11:57 -0700
+Message-ID: <CABGCNpB-X6uXpi+ZECb7xpLxPw04GybMuMVFG-GojpwkC52hmQ@mail.gmail.com>
+Subject: Re: [PATCH] scsi: libsas: Reset num_scatter if libata mark qc as NODATA
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        john.garry@huawei.com, a.darwish@linutronix.de,
+        luojiaxing@huawei.com, dan.carpenter@oracle.com,
+        b.zolnierkie@samsung.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 8:43 AM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
-> Fix the following out-of-bounds warning by replacing the one-element
-> array in an anonymous union with a pointer:
->
->   CC [M]  drivers/net/ethernet/intel/ixgbe/ixgbe_common.o
-> drivers/net/ethernet/intel/ixgbe/ixgbe_common.c: In function =E2=80=98ixg=
-be_host_interface_command=E2=80=99:
-> drivers/net/ethernet/intel/ixgbe/ixgbe_common.c:3729:13: warning: array s=
-ubscript 1 is above array bounds of =E2=80=98u32[1]=E2=80=99 {aka =E2=80=98=
-unsigned int[1]=E2=80=99} [-Warray-bounds]
->  3729 |   bp->u32arr[bi] =3D IXGBE_READ_REG_ARRAY(hw, IXGBE_FLEX_MNG, bi)=
-;
->       |   ~~~~~~~~~~^~~~
-> drivers/net/ethernet/intel/ixgbe/ixgbe_common.c:3682:7: note: while refer=
-encing =E2=80=98u32arr=E2=80=99
->  3682 |   u32 u32arr[1];
->       |       ^~~~~~
->
-> This helps with the ongoing efforts to globally enable -Warray-bounds.
->
-> Notice that, the usual approach to fix these sorts of issues is to
-> replace the one-element array with a flexible-array member. However,
-> flexible arrays should not be used in unions. That, together with the
-> fact that the array notation is not being affected in any ways, is why
-> the pointer approach was chosen in this case.
->
-> Link: https://github.com/KSPP/linux/issues/109
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/net/ethernet/intel/ixgbe/ixgbe_common.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c b/drivers/ne=
-t/ethernet/intel/ixgbe/ixgbe_common.c
-> index 62ddb452f862..bff3dc1af702 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
-> @@ -3679,7 +3679,7 @@ s32 ixgbe_host_interface_command(struct ixgbe_hw *h=
-w, void *buffer,
->         u32 hdr_size =3D sizeof(struct ixgbe_hic_hdr);
->         union {
->                 struct ixgbe_hic_hdr hdr;
-> -               u32 u32arr[1];
-> +               u32 *u32arr;
->         } *bp =3D buffer;
->         u16 buf_len, dword_len;
->         s32 status;
+Hi Jason,
 
-This looks bogus. An array is inline, a pointer points elsewhere -
-they're not interchangeable.
+Thanks for the review.
+
+
+On Tue, Mar 16, 2021 at 6:50 PM Jason Yan <yanaijie@huawei.com> wrote:
+>
+>
+> =E5=9C=A8 2021/3/17 3:39, Jolly Shah =E5=86=99=E9=81=93:
+> > When the cache_type for the scsi device is changed, the scsi layer
+> > issues a MODE_SELECT command. The caching mode details are communicated
+> > via a request buffer associated with the scsi command with data
+> > direction set as DMA_TO_DEVICE (scsi_mode_select). When this command
+> > reaches the libata layer, as a part of generic initial setup, libata
+> > layer sets up the scatterlist for the command using the scsi command
+> > (ata_scsi_qc_new). This command is then translated by the libata layer
+> > into ATA_CMD_SET_FEATURES (ata_scsi_mode_select_xlat). The libata layer
+> > treats this as a non data command (ata_mselect_caching), since it only
+> > needs an ata taskfile to pass the caching on/off information to the
+> > device. It does not need the scatterlist that has been setup, so it doe=
+s
+> > not perform dma_map_sg on the scatterlist (ata_qc_issue). Unfortunately=
+,
+> > when this command reaches the libsas layer(sas_ata_qc_issue), libsas
+> > layer sees it as a non data command with a scatterlist. It cannot
+> > extract the correct dma length, since the scatterlist has not been
+> > mapped with dma_map_sg for a DMA operation. When this partially
+> > constructed SAS task reaches pm80xx LLDD, it results in below warning.
+> >
+> > "pm80xx_chip_sata_req 6058: The sg list address
+> > start_addr=3D0x0000000000000000 data_len=3D0x0end_addr_high=3D0xfffffff=
+f
+> > end_addr_low=3D0xffffffff has crossed 4G boundary"
+> >
+> > This patch assigns appropriate value to  num_sectors for ata non data
+> > commands.
+> >
+> > Signed-off-by: Jolly Shah <jollys@google.com>
+> > ---
+> >   drivers/scsi/libsas/sas_ata.c | 6 ++++--
+> >   1 file changed, 4 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_at=
+a.c
+> > index 024e5a550759..94ec08cebbaa 100644
+> > --- a/drivers/scsi/libsas/sas_ata.c
+> > +++ b/drivers/scsi/libsas/sas_ata.c
+> > @@ -209,10 +209,12 @@ static unsigned int sas_ata_qc_issue(struct ata_q=
+ueued_cmd *qc)
+> >               task->num_scatter =3D si;
+> >       }
+> >
+> > -     if (qc->tf.protocol =3D=3D ATA_PROT_NODATA)
+> > +     if (qc->tf.protocol =3D=3D ATA_PROT_NODATA) {
+> >               task->data_dir =3D DMA_NONE;
+> > -     else
+> > +             task->num_scatter =3D 0;
+> > +     } else {
+> >               task->data_dir =3D qc->dma_dir;
+> > +     }
+> >       task->scatter =3D qc->sg;
+> >       task->ata_task.retry_count =3D 1;
+> >       task->task_state_flags =3D SAS_TASK_STATE_PENDING;
+> >
+>
+> Thanks for the patch. Except the warning, any functional errors?
+>
+
+No functional errors observed.
+
+Thanks,
+Jolly Shah
+
+> The code looks good to me,
+>
+> Reviewed-by: Jason Yan <yanaijie@huawei.com>
