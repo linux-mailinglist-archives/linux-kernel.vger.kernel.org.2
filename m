@@ -2,90 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9FC33F9C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 297E333F9C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233298AbhCQUJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 16:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
+        id S232499AbhCQULh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 16:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232499AbhCQUJ0 (ORCPT
+        with ESMTP id S233312AbhCQULB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 16:09:26 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52404C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:09:26 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 12so2202913wmf.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:09:26 -0700 (PDT)
+        Wed, 17 Mar 2021 16:11:01 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54210C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:11:00 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id m12so851249lfq.10
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 13:11:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=B1X6ipcuUsdf82cZtHT305TsFbY9DYduqDXWEcArvjs=;
-        b=I/SAZZEPuUymklCLKMXfsZdV5shnTpG2UWuFRn7J27do+1FBlLNLSg65pzDpoxo6In
-         3b9a9ikKnXilSDrrLZ1++it5B405eKC7+YYI932QuvNUSV0kDtAyblQAFAJScQCc40pE
-         90arlEZ28O2nljrlVFzoQ2QsfGwIGeWRk0CyOIstNTNAjLR2TEsi21Ytf7rYdvGw4tmN
-         PdPks3LugmKWGN8NuyJss76/W1wpOdQRnFfZRs78n0Ihlj0c9YIkeLwfaEcDD7SVMny/
-         PthHwceCdnD4dvte9lzO54ylRKbDnZ8iK8Eu11s51YYHyyWgDnn0jFfV5hmW2wDYQ+K1
-         6UuQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GwuY5Os0hwvThFgmnaX2i5CEbiXkSD9Cnc88LImmE8U=;
+        b=ib1EAXSgC5DszNXgQNlOZkDzUJYDzPguRpAnO/17t6JQnu6ySfklBaHe4k3kC4o2wC
+         abjdNCs4RlVlutyv//RC2MQnHb/R4HezC58AX5kccJuMWt838/NcbpD8jMkrAGdqLX8W
+         gyXj0kr6aduMQ7VGrCSYSuPzcuX579VCpDVJoKH2dXUuqc53wE1TBTsZnaL7871AZA1f
+         srbM3/iDMdblSN784lxsSDQ7FS0iT9WF3/gtOoFzL+MdgmJ0ygdlnIXrwv5YivVyhpia
+         9rTGJ8kyAMcbVqEHmbgOjtzOMIIQIY7Vnb7hyD9HtppttVSk2W1tbUfsk6sOkbrSooDk
+         rajw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=B1X6ipcuUsdf82cZtHT305TsFbY9DYduqDXWEcArvjs=;
-        b=iO+GNFZPIh8W/r/2BnA/x/JGzaVcU8TL4ebSkV2ykZ3B24dV4pUKVOhtqGNdAUD8ID
-         kn2B3hUSJOGmFFBi12jVjIhevBQFlVQTnZee4W0i141TmLJXoWZJU6rRC9yAgW5FFu+M
-         qQolGC3IbhcfgwmRc8V7yYcedgYCABGhgYj0MYNVEZu3eMexIaoidVBtXsJtB3lUOz2s
-         7Q81guPPOJc94RGGaiQRrGXyyISDuaILgYwx39KHtO9aKa3txg4S0Bq/fWXujyK3CDdV
-         HPqjZWi54vmDYTwcC4pIu5Ha8rBWBWsMK+ZiHGi16praquFAuzhEWa33T8v3RtwzNB10
-         O5WQ==
-X-Gm-Message-State: AOAM533UwxPjSGJaQqXbRcHS8j/5IPvP1RBFWlk5BXotANiqZWq1PP3m
-        hEwtP4jsvKWQduanUbJSBvw=
-X-Google-Smtp-Source: ABdhPJzzKjZlsHcZFVHlcOjW+/RSBZx7qSrnqG0TTk4kohjxzbVsB9ubi+G+q8DQpxGptyHRVUoj8A==
-X-Received: by 2002:a05:600c:2053:: with SMTP id p19mr436599wmg.87.1616011765037;
-        Wed, 17 Mar 2021 13:09:25 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id p6sm55567wru.2.2021.03.17.13.09.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 13:09:24 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 17 Mar 2021 21:09:22 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        He Ying <heying24@huawei.com>, frederic@kernel.org,
-        paulmck@kernel.org, clg@kaod.org, qais.yousef@arm.com,
-        johnny.chenyi@huawei.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] smp: kernel/panic.c - silence warnings
-Message-ID: <20210317200922.GC3830960@gmail.com>
-References: <20210316084150.75201-1-heying24@huawei.com>
- <20210317094908.GB1724119@gmail.com>
- <9691919b-d014-7433-3345-812c9b19a677@csgroup.eu>
- <YFH0sDpUIUmdpNkQ@hirez.programming.kicks-ass.net>
- <fa3f9880-eb05-f18e-ae7f-4735209f4c94@csgroup.eu>
- <YFI+YMo7zml+spKc@hirez.programming.kicks-ass.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GwuY5Os0hwvThFgmnaX2i5CEbiXkSD9Cnc88LImmE8U=;
+        b=PLMAZbRUsBTURllxz1llkeyNKbSjdQpLqwxSh6zgANGWhVR3+Uf3OvgYBrpR3i+gOJ
+         2Z3xDazpG6xh0dywBDPrBwXrI3euRAVUs4oOqZLwrcM8aFdz2y9p8TSl0z8Tgmnqeudn
+         yekkqKCbiqJlNthf6QfLZ1DJf5wLb7cL0atwC0s/hHrF6ThPy5mkzX8aGVs1/Baf4jWd
+         a+rliISUt7qUtrT8TnO0WNny9z1jIRzN+gTDxqN6iTgdMv+Ce5k32wW92X/ZFpY0cdxL
+         DBovfpJRnbH8bqy0GX8ffWN93CvkjeTAMj2JSujkKfEL2CP5FIH21FHZBcmUnrf1KFGf
+         A0Zg==
+X-Gm-Message-State: AOAM531jRSguxZlSAo/NREg0csPYOM6VCRrHxH19nkkjykFLYk5biCOK
+        zhz/VCITHpGMxOEUwQEpzgkiuLzGwHgT+n7DrXTElA==
+X-Google-Smtp-Source: ABdhPJxtz8HJwcpeOoU4ahq/ATlTmzoMARdNU3cB5yASnd15aVUPUDj4HFPTDwaJ5GULoNKuubrclkfJtO9h0qZywz8=
+X-Received: by 2002:a05:6512:39c2:: with SMTP id k2mr3043146lfu.69.1616011858514;
+ Wed, 17 Mar 2021 13:10:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFI+YMo7zml+spKc@hirez.programming.kicks-ass.net>
+References: <20210317064148.GA55123@embeddedor> <CAG48ez2RDqKwx=umOHjo_1mYyNQgzvcP=KOw1HgSo4Prs_VQDw@mail.gmail.com>
+ <3bd8d009-2ad2-c24d-5c34-5970c52502de@embeddedor.com> <CAG48ez2jr_8MbY_sNXfwvs7WsF-5f9j=U4-66dTcgXd2msr39A@mail.gmail.com>
+ <03c013b8-4ddb-8e9f-af86-3c43cd746dbb@embeddedor.com>
+In-Reply-To: <03c013b8-4ddb-8e9f-af86-3c43cd746dbb@embeddedor.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 17 Mar 2021 21:10:32 +0100
+Message-ID: <CAG48ez1heVw2WRUMrGskUyJV0wH4YfgbF=raFKWXXM7oY1zKDA@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] [PATCH][next] ixgbe: Fix out-of-bounds warning
+ in ixgbe_host_interface_command()
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        intel-wired-lan@lists.osuosl.org, linux-hardening@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 17, 2021 at 9:04 PM Gustavo A. R. Silva
+<gustavo@embeddedor.com> wrote:
+> On 3/17/21 13:57, Jann Horn wrote:
+> >>>> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
+> >>>> index 62ddb452f862..bff3dc1af702 100644
+> >>>> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
+> >>>> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
+> >>>> @@ -3679,7 +3679,7 @@ s32 ixgbe_host_interface_command(struct ixgbe_hw *hw, void *buffer,
+> >>>>         u32 hdr_size = sizeof(struct ixgbe_hic_hdr);
+> >>>>         union {
+> >>>>                 struct ixgbe_hic_hdr hdr;
+> >>>> -               u32 u32arr[1];
+> >>>> +               u32 *u32arr;
+> >>>>         } *bp = buffer;
+> >>>>         u16 buf_len, dword_len;
+> >>>>         s32 status;
+> >>>
+> >>> This looks bogus. An array is inline, a pointer points elsewhere -
+> >>> they're not interchangeable.
+> >>
+> >> Yep; but in this case these are the only places in the code where _u32arr_ is
+> >> being used:
+> >>
+> >> 3707         /* first pull in the header so we know the buffer length */
+> >> 3708         for (bi = 0; bi < dword_len; bi++) {
+> >> 3709                 bp->u32arr[bi] = IXGBE_READ_REG_ARRAY(hw, IXGBE_FLEX_MNG, bi);
+> >> 3710                 le32_to_cpus(&bp->u32arr[bi]);
+> >> 3711         }
+> >
+> > So now line 3709 means: Read a pointer from bp->u32arr (the value
+> > being read from there is not actually a valid pointer), and write to
+> > that pointer at offset `bi`. I don't see how that line could execute
+> > without crashing.
+>
+> Yeah; you're right. I see my confusion now. Apparently, there is no escape
+> from allocating heap memory to fix this issue, as I was proposing in my
+> last email.
 
-* Peter Zijlstra <peterz@infradead.org> wrote:
+Why? Can't you do something like this?
 
-> Now, the C people figured that distinction was useless and allowed 
-> sloppiness. But I still think there's merrit to that. And as 
-> mentioned earlier, it is consistent with variable declarations.
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
+b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
+index 62ddb452f862..768fa124105b 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_common.c
+@@ -3677,10 +3677,8 @@ s32 ixgbe_host_interface_command(struct
+ixgbe_hw *hw, void *buffer,
+                                 bool return_data)
+ {
+        u32 hdr_size = sizeof(struct ixgbe_hic_hdr);
+-       union {
+-               struct ixgbe_hic_hdr hdr;
+-               u32 u32arr[1];
+-       } *bp = buffer;
++       u32 *bp = buffer;
++       struct ixgbe_hic_hdr hdr;
+        u16 buf_len, dword_len;
+        s32 status;
+        u32 bi;
+@@ -3706,12 +3704,13 @@ s32 ixgbe_host_interface_command(struct
+ixgbe_hw *hw, void *buffer,
 
-Fully agreed, and my other point was that it's also consistent with 
-the other existing externs were used *in the same header file* 
-already.
+        /* first pull in the header so we know the buffer length */
+        for (bi = 0; bi < dword_len; bi++) {
+-               bp->u32arr[bi] = IXGBE_READ_REG_ARRAY(hw, IXGBE_FLEX_MNG, bi);
+-               le32_to_cpus(&bp->u32arr[bi]);
++               bp[bi] = IXGBE_READ_REG_ARRAY(hw, IXGBE_FLEX_MNG, bi);
++               le32_to_cpus(&bp[bi]);
+        }
 
-I.e. there's nothing more sloppy than mixing different styles within 
-the same header. Checkpatch needs to be fixed or ignored here.
+        /* If there is any thing in data position pull it in */
+-       buf_len = bp->hdr.buf_len;
++       memcpy(&hdr, bp, sizeof(hdr));
++       buf_len = hdr.buf_len;
+        if (!buf_len)
+                goto rel_out;
 
-Thanks,
+@@ -3726,8 +3725,8 @@ s32 ixgbe_host_interface_command(struct ixgbe_hw
+*hw, void *buffer,
 
-	Ingo
+        /* Pull in the rest of the buffer (bi is where we left off) */
+        for (; bi <= dword_len; bi++) {
+-               bp->u32arr[bi] = IXGBE_READ_REG_ARRAY(hw, IXGBE_FLEX_MNG, bi);
+-               le32_to_cpus(&bp->u32arr[bi]);
++               bp[bi] = IXGBE_READ_REG_ARRAY(hw, IXGBE_FLEX_MNG, bi);
++               le32_to_cpus(&bp[bi]);
+        }
+
+ rel_out:
