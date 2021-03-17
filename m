@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51A633ECA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:15:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCBD833EC8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231238AbhCQJN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42668 "EHLO
+        id S230219AbhCQJNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhCQJM6 (ORCPT
+        with ESMTP id S230081AbhCQJNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:12:58 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40F9C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:57 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id e9so996482wrw.10
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:57 -0700 (PDT)
+        Wed, 17 Mar 2021 05:13:01 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078D4C0613DC
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:59 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id y124-20020a1c32820000b029010c93864955so2934486wmy.5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kAs8M6LvCni1AxZtMiy/7Jhupvn0PeB9iWWImdUoyng=;
-        b=dOuwjexZ6wC8sNSwRHSAJd1yffddWk6tT8J1eOur7C8+ACY+A5MFIVQVuJXLmhjO6z
-         gz/R9JxHMYZe2O3cac18XIhV8puI8vVnAa0BZL9XpUzPmBhAxE2Fg4zTRsmU0gaQbvG5
-         O3sNTwgd425gBcT/ykPCHfWIeKT8mfZpWEdgQSVAmrmO0xb0h7KnpmaVTn/1vnM7Y/Tz
-         MhFmn2Yg8fUiIGDnG+Yne1uqE+3v37KRRFZFBPOW46pkkAqCa02WkA3MnaZpLw6NkTLM
-         83C5cxThHKyzD8DRA5QaL5D8gz/oEkE2h0UJKjiTYYtoIZu/clC/+qBTdseSaTmRXC1t
-         Yx/w==
+        bh=2WzJnbFL63fAV5MF42unVnj6zPztfqCHzahd4B5nEa4=;
+        b=jZUCRs8H69Csf5GhLrFIyA4rweatwr5fIlLJsoTfOZCevrPenu0dFtLGuORdXc2276
+         2Jkd2Ts0hUStkN6TbwYXKHElcc00A3iOyZ68bsVRYT9ohIaBIYri9u/kClPJPP9LXDsE
+         R7riR2wJUO1CGCWXqFtnMzjImY/oPqxtL406B6FX7pHyM8UnhI3vjV931tGiXRh1FKRM
+         ZH+0/sNADp74b6brzumnXVo+PMTF2snqJqE9qmHykwBnTPIv6bTrC3Fc2brOZMBuj4RK
+         2EJK9JccG0CyvMBYRmw1yei1MUr6x5WPwzlfPuo4K+gea1JdHh81fDketrOqFQ0Sum5U
+         IXvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kAs8M6LvCni1AxZtMiy/7Jhupvn0PeB9iWWImdUoyng=;
-        b=fY91pE5lnixrI+kTGfeOO4Gqmi2EiJyNDghjXtM53slkEQsDw8KH7SqwZmAAcOp4wi
-         uuvo8CA7DQmjP1YHS6HZkxZbcQ2kD1hUIHGd6F/lSFLYbEAEfOlgmp1gZueKAv7yZ4Qn
-         d6C8mUjhtyhrFwciFDPRfQcD7NmU7C60VMjExPv5aoJpK2mINWNjRwsON613vZwPnYkw
-         f7bVoJiuFDoVOeOqrtYJQ8kIE1cwJLdJmKm5KiXgZkt/2ObWyEaL8Jribcsi8Khwaj/A
-         ynm9IWQ6s4fXn2J+4fij1PcscpVeSvaODr6cvvXZc4ZssG+dzGfyn/ER/5sDS6LUJiPq
-         Dg5Q==
-X-Gm-Message-State: AOAM531RI1eiGENAbFNuGJKo2pIruWGrazYxfcOmSQKImIA/V3gbWyNH
-        ufnFx+f+iE9IIgzsznhyHVbHCiEnUfjI0g==
-X-Google-Smtp-Source: ABdhPJz87LgDJk6bdnRGOz/oyloTXfjhfKQExDuJHNaGjhZQYurzHSIPsqlaMz2jgwU93Ei/Hf+Q8A==
-X-Received: by 2002:a5d:4e85:: with SMTP id e5mr3415639wru.218.1615972376578;
-        Wed, 17 Mar 2021 02:12:56 -0700 (PDT)
+        bh=2WzJnbFL63fAV5MF42unVnj6zPztfqCHzahd4B5nEa4=;
+        b=CbTitUCAkVJDcviO9AdFWHKa+PxFAYSfXh1O+mY90L4P3vgAYmUeHAYAnkIi35NRcP
+         zeiWe4LEN12/Wq7fRxaVarVxxwgnnTl6Jpgql05InCCWHSZdYt92b55gRrV+2as7RnNN
+         QyCTvGYP/D7TrXleiLZnrOPxkELYSJJVNf5GGgI2hl2PJMhQn092G7/cgpwJInRajDJJ
+         Kb0Kj6rUmhG4Kdd0ImIYVC+IW7hhvJ4iFlcqWmYoESYPOt/Tt5tf8ellucJ9BrHWaGnR
+         Oq7bA6faVh4uH31DOwaQb0J8n1O3fHflOk3eyw0jCkCTic1iwKkdBpkeFmxnx/C2C2Eb
+         G4OA==
+X-Gm-Message-State: AOAM533EyrdbIP97EZR8Pd+NiJlT4aMbNZxyhX9iQhuMpux7u13vVP2D
+        xr1d8hH2OyjFZPhcZ/8Os+FOyK3g9cCxIw==
+X-Google-Smtp-Source: ABdhPJy4Rc8DlJvoxcqDMdMNTBb6d2JmTTrCLlkVJiCcC6wkRqqi0PABaVpBSQLbvZO8sgkBKM/WUg==
+X-Received: by 2002:a05:600c:198c:: with SMTP id t12mr2650590wmq.183.1615972377801;
+        Wed, 17 Mar 2021 02:12:57 -0700 (PDT)
 Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id e18sm12695886wru.73.2021.03.17.02.12.55
+        by smtp.gmail.com with ESMTPSA id e18sm12695886wru.73.2021.03.17.02.12.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 02:12:56 -0700 (PDT)
+        Wed, 17 Mar 2021 02:12:57 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+Cc:     linux-kernel@vger.kernel.org, Satish Kharat <satishkh@cisco.com>,
+        Sesidhar Baddela <sebaddel@cisco.com>,
+        Karan Tilak Kumar <kartilak@cisco.com>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         linux-scsi@vger.kernel.org
-Subject: [PATCH 16/36] scsi: isci: phy: Fix a few different kernel-doc related issues
-Date:   Wed, 17 Mar 2021 09:12:10 +0000
-Message-Id: <20210317091230.2912389-17-lee.jones@linaro.org>
+Subject: [PATCH 17/36] scsi: fnic: fnic_scsi: Demote non-conformant kernel-doc headers
+Date:   Wed, 17 Mar 2021 09:12:11 +0000
+Message-Id: <20210317091230.2912389-18-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210317091230.2912389-1-lee.jones@linaro.org>
 References: <20210317091230.2912389-1-lee.jones@linaro.org>
@@ -69,97 +70,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/isci/phy.c:354: warning: Function parameter or member 'iphy' not described in 'phy_get_non_dummy_port'
- drivers/scsi/isci/phy.c:354: warning: expecting prototype for If the phy is(). Prototype was for phy_get_non_dummy_port() instead
- drivers/scsi/isci/phy.c:364: warning: wrong kernel-doc identifier on line:
- drivers/scsi/isci/phy.c:401: warning: wrong kernel-doc identifier on line:
- drivers/scsi/isci/phy.c:611: warning: Function parameter or member 'iphy' not described in 'sci_phy_complete_link_training'
- drivers/scsi/isci/phy.c:611: warning: Excess function parameter 'sci_phy' description in 'sci_phy_complete_link_training'
- drivers/scsi/isci/phy.c:1170: warning: Cannot understand  *
- drivers/scsi/isci/phy.c:1222: warning: Cannot understand  *
- drivers/scsi/isci/phy.c:1432: warning: Function parameter or member 'sas_phy' not described in 'isci_phy_control'
- drivers/scsi/isci/phy.c:1432: warning: Excess function parameter 'phy' description in 'isci_phy_control'
+ drivers/scsi/fnic/fnic_scsi.c:183: warning: Function parameter or member 'fnic' not described in '__fnic_set_state_flags'
+ drivers/scsi/fnic/fnic_scsi.c:183: warning: Function parameter or member 'st_flags' not described in '__fnic_set_state_flags'
+ drivers/scsi/fnic/fnic_scsi.c:183: warning: Function parameter or member 'clearbits' not described in '__fnic_set_state_flags'
+ drivers/scsi/fnic/fnic_scsi.c:2296: warning: Function parameter or member 'fnic' not described in 'fnic_scsi_host_start_tag'
+ drivers/scsi/fnic/fnic_scsi.c:2296: warning: Function parameter or member 'sc' not described in 'fnic_scsi_host_start_tag'
+ drivers/scsi/fnic/fnic_scsi.c:2316: warning: Function parameter or member 'fnic' not described in 'fnic_scsi_host_end_tag'
+ drivers/scsi/fnic/fnic_scsi.c:2316: warning: Function parameter or member 'sc' not described in 'fnic_scsi_host_end_tag'
 
-Cc: Artur Paszkiewicz <artur.paszkiewicz@intel.com>
+Cc: Satish Kharat <satishkh@cisco.com>
+Cc: Sesidhar Baddela <sebaddel@cisco.com>
+Cc: Karan Tilak Kumar <kartilak@cisco.com>
 Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
 Cc: linux-scsi@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/isci/phy.c | 21 ++++++++++-----------
- 1 file changed, 10 insertions(+), 11 deletions(-)
+ drivers/scsi/fnic/fnic_scsi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/isci/phy.c b/drivers/scsi/isci/phy.c
-index 1b87d9080ebeb..7ca7621f77479 100644
---- a/drivers/scsi/isci/phy.c
-+++ b/drivers/scsi/isci/phy.c
-@@ -361,11 +361,9 @@ struct isci_port *phy_get_non_dummy_port(struct isci_phy *iphy)
+diff --git a/drivers/scsi/fnic/fnic_scsi.c b/drivers/scsi/fnic/fnic_scsi.c
+index 36744968378ff..e619a82f921b1 100644
+--- a/drivers/scsi/fnic/fnic_scsi.c
++++ b/drivers/scsi/fnic/fnic_scsi.c
+@@ -173,7 +173,7 @@ static int free_wq_copy_descs(struct fnic *fnic, struct vnic_wq_copy *wq)
  }
  
- /**
-- * This method will assign a port to the phy object.
-+ * sci_phy_set_port() - This method will assign a port to the phy object.
-  * @out]: iphy This parameter specifies the phy for which to assign a port
-  *    object.
-- *
-- *
-  */
- void sci_phy_set_port(
- 	struct isci_phy *iphy,
-@@ -398,11 +396,11 @@ enum sci_status sci_phy_initialize(struct isci_phy *iphy,
+ 
+-/**
++/*
+  * __fnic_set_state_flags
+  * Sets/Clears bits in fnic's state_flags
+  **/
+@@ -2287,7 +2287,7 @@ static int fnic_clean_pending_aborts(struct fnic *fnic,
+ 	return ret;
  }
  
- /**
-- * This method assigns the direct attached device ID for this phy.
-+ * sci_phy_setup_transport() - This method assigns the direct attached device ID for this phy.
-  *
-- * @iphy The phy for which the direct attached device id is to
-+ * @iphy: The phy for which the direct attached device id is to
-  *       be assigned.
-- * @device_id The direct attached device ID to assign to the phy.
-+ * @device_id: The direct attached device ID to assign to the phy.
-  *       This will either be the RNi for the device or an invalid RNi if there
-  *       is no current device assigned to the phy.
-  */
-@@ -597,7 +595,7 @@ static void sci_phy_start_sata_link_training(struct isci_phy *iphy)
- /**
-  * sci_phy_complete_link_training - perform processing common to
-  *    all protocols upon completion of link training.
-- * @sci_phy: This parameter specifies the phy object for which link training
-+ * @iphy: This parameter specifies the phy object for which link training
-  *    has completed.
-  * @max_link_rate: This parameter specifies the maximum link rate to be
-  *    associated with this phy.
-@@ -1167,8 +1165,8 @@ static void sci_phy_starting_final_substate_enter(struct sci_base_state_machine
+-/**
++/*
+  * fnic_scsi_host_start_tag
+  * Allocates tagid from host's tag list
+  **/
+@@ -2307,7 +2307,7 @@ fnic_scsi_host_start_tag(struct fnic *fnic, struct scsi_cmnd *sc)
+ 	return dummy->tag;
  }
  
- /**
-- *
-- * @sci_phy: This is the struct isci_phy object to stop.
-+ * scu_link_layer_stop_protocol_engine()
-+ * @iphy: This is the struct isci_phy object to stop.
-  *
-  * This method will stop the struct isci_phy object. This does not reset the
-  * protocol engine it just suspends it and places it in a state where it will
-@@ -1219,7 +1217,8 @@ static void scu_link_layer_start_oob(struct isci_phy *iphy)
- }
- 
- /**
-- *
-+ * scu_link_layer_tx_hard_reset()
-+ * @iphy: This is the struct isci_phy object to stop.
-  *
-  * This method will transmit a hard reset request on the specified phy. The SCU
-  * hardware requires that we reset the OOB state machine and set the hard reset
-@@ -1420,7 +1419,7 @@ void isci_phy_init(struct isci_phy *iphy, struct isci_host *ihost, int index)
- /**
-  * isci_phy_control() - This function is one of the SAS Domain Template
-  *    functions. This is a phy management function.
-- * @phy: This parameter specifies the sphy being controlled.
-+ * @sas_phy: This parameter specifies the sphy being controlled.
-  * @func: This parameter specifies the phy control function being invoked.
-  * @buf: This parameter is specific to the phy function being invoked.
-  *
+-/**
++/*
+  * fnic_scsi_host_end_tag
+  * frees tag allocated by fnic_scsi_host_start_tag.
+  **/
 -- 
 2.27.0
 
