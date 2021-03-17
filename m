@@ -2,79 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3B333F816
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C8333F823
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232963AbhCQS0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:26:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49972 "EHLO
+        id S232907AbhCQSag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:30:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232984AbhCQSZw (ORCPT
+        with ESMTP id S232860AbhCQSaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:25:52 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CB6C06174A;
-        Wed, 17 Mar 2021 11:25:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=aDZn5rNh0GqHfB1yuCs8X0m+j7nLaKVvb0epvExRz+M=; b=jU9EYb+1cbwMocgwOiYLNL+IDA
-        psyboQayQ78lm3V5Aro8zP9P5Xbn4DWjPs0AmumNw3cSYTRKAg61myGXtZCDL8bqIHaBjpgc2Q4jg
-        EZrKWGuexiz5ta14bFzIzR7+PD9sUnsv4SsixX08XEJH6yrSIEQ30SXbT+xUatYQ7ho04kajWRC9/
-        IDtqPARui1hQ/XRUZZ5yhc6QxQSFldYJ2bNq5Hcn9JiC/6lYqejwZt20/3NM9WRT7JhFjUM2YMKY4
-        xkgXf0XjD0SQxQUmbwpM1NXXLzEnXxkpgmI3WXKlbAeNi8RIVr/rDNgCb5BWEGqr7WNQKekUNg7xU
-        DBvlfGKg==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMard-001fsD-Vt; Wed, 17 Mar 2021 18:25:50 +0000
-Subject: Re: [PATCH] docs: sphinx: Trivial fix of a typo in the file
- rstFlatTable.py
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, corbet@lwn.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210317102056.3003768-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <442664ee-7cae-9b26-ca66-31827c448fcc@infradead.org>
-Date:   Wed, 17 Mar 2021 11:25:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <20210317102056.3003768-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 17 Mar 2021 14:30:06 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0DE3C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:30:06 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so5675249pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 11:30:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=UAxYgTJ8xiP4XZVnDR92h/oyODoJt823YPaFX/5CcQk=;
+        b=O7R9c2WVL3DtF3LatZ0VWcRSvZ+xM1Rz3Dg7NnRZYkAn5yXENuAgwo/e78WXjJXpnd
+         boo7rzIZNH/Fw5uc5hmEX9ZiXXufDm/o/B9wna3Hed952P21HPXdWWPrAGIh/ZGtLRrM
+         t39nfxeMwTg0r1DxDgUQX9yFgZ5vEsQj2eGUEkyN4oP3a1uKMhdljlyiQ8hI8azsm+Bi
+         B6QOQE4x8/xrB0mxwUpq1FV6VybbvHy7Vqz9iLCwLwli1upK6YasSDdRgqqBQJTQQ2r2
+         K0wJyod0B1aG3ImtCzz3I+v9iKWY2QhyZwvAB8EV71UPBq48llT2zOwEU/wrwuJFL1Ji
+         QfGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=UAxYgTJ8xiP4XZVnDR92h/oyODoJt823YPaFX/5CcQk=;
+        b=HQcJkSYLpBfuWZRIqsRA5zl7jVjtJ/OFQwG0FNMI3PF7EiPtgHasP9Ah7SMWSZCvqn
+         6B7+jRbD4gk0HMj902ikpOYP4lkrF19/Gs3oqvDPjjJlkvfuMFF/WyspqN2gHVhCNvYA
+         Kg8PjHzFRqaKKziXf62oalDgD3O2/HoBGeFtjOy9WGcFl+fG1hb3/tiKgxa9+jzVDLzm
+         H+hk4ntS9iJ30UvkuqrVZeKQd85WRtPRH2vpzy+ldEMufCrqNiVSjaRIgoEMsojs8FV9
+         7i9jsORBuzF1AHiNNZ0sA+No2lD6oyPppXIWH6IikCA2vOCcM1G+oSd4YHYmtJnmEEMi
+         YVuA==
+X-Gm-Message-State: AOAM533Hw3ALYFcYUmQda2d5s8DmkBcQl216Dsbe7Q13GbGDbWfzHZBY
+        ZRpkQ6HrJhgBUM9UHt4Lm2c=
+X-Google-Smtp-Source: ABdhPJwHjwyxoeJUs9eLxkM9BwJnJs7cNI7fX+NEBcl44ZW+0XKKWRWkwqLi+BOGCAmF4vdXaYuIkg==
+X-Received: by 2002:a17:90b:e95:: with SMTP id fv21mr130236pjb.217.1616005806178;
+        Wed, 17 Mar 2021 11:30:06 -0700 (PDT)
+Received: from mahak-Inspiron-7570 ([103.37.201.168])
+        by smtp.gmail.com with ESMTPSA id w22sm19741366pfi.133.2021.03.17.11.30.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 11:30:05 -0700 (PDT)
+From:   Mahak Gupta <gmahak1@gmail.com>
+To:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        Richard Yeh <rcy@google.com>, benchan@chromium.org,
+        toddpoynor@google.com, Rob Springer <rspringer@google.com>
+Cc:     Mahak Gupta <gmahak1@gmail.com>
+Subject: [PATCH] staging: octeon-usb: Match alignment with open parenthesis
+Date:   Wed, 17 Mar 2021 23:59:53 +0530
+Message-Id: <20210317182953.3826-1-gmahak1@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 3:20 AM, Bhaskar Chowdhury wrote:
-> 
-> s/buidler/builder/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+This patches fixes the checks- 'Alignment should match open parenthesis'
+of 'checkpatch.pl'.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Mahak Gupta <gmahak1@gmail.com>
+---
+ drivers/staging/octeon-usb/octeon-hcd.c | 32 +++++++++++++------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
-> ---
->  Documentation/sphinx/rstFlatTable.py | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/sphinx/rstFlatTable.py b/Documentation/sphinx/rstFlatTable.py
-> index a3eea0bbe6ba..1d2b9be6b6c5 100755
-> --- a/Documentation/sphinx/rstFlatTable.py
-> +++ b/Documentation/sphinx/rstFlatTable.py
-> @@ -161,7 +161,7 @@ class ListTableBuilder(object):
->          for colwidth in colwidths:
->              colspec = nodes.colspec(colwidth=colwidth)
->              # FIXME: It seems, that the stub method only works well in the
-> -            # absence of rowspan (observed by the html buidler, the docutils-xml
-> +            # absence of rowspan (observed by the html builder, the docutils-xml
->              # build seems OK).  This is not extraordinary, because there exists
->              # no table directive (except *this* flat-table) which allows to
->              # define coexistent of rowspan and stubs (there was no use-case
-> --
-
-
+diff --git a/drivers/staging/octeon-usb/octeon-hcd.c b/drivers/staging/octeon-usb/octeon-hcd.c
+index e2f8b6b67f75..f27f20a4aa2d 100644
+--- a/drivers/staging/octeon-usb/octeon-hcd.c
++++ b/drivers/staging/octeon-usb/octeon-hcd.c
+@@ -1258,7 +1258,7 @@ static void cvmx_usb_poll_tx_fifo(struct octeon_hcd *usb)
+ 		union cvmx_usbcx_hptxsts tx_status;
+ 
+ 		tx_status.u32 = cvmx_usb_read_csr32(usb,
+-					CVMX_USBCX_HPTXSTS(usb->index));
++						    CVMX_USBCX_HPTXSTS(usb->index));
+ 		if (cvmx_usb_fill_tx_hw(usb, &usb->periodic,
+ 					tx_status.s.ptxfspcavail))
+ 			USB_SET_FIELD32(CVMX_USBCX_GINTMSK(usb->index),
+@@ -1272,7 +1272,7 @@ static void cvmx_usb_poll_tx_fifo(struct octeon_hcd *usb)
+ 		union cvmx_usbcx_gnptxsts tx_status;
+ 
+ 		tx_status.u32 = cvmx_usb_read_csr32(usb,
+-					CVMX_USBCX_GNPTXSTS(usb->index));
++						    CVMX_USBCX_GNPTXSTS(usb->index));
+ 		if (cvmx_usb_fill_tx_hw(usb, &usb->nonperiodic,
+ 					tx_status.s.nptxfspcavail))
+ 			USB_SET_FIELD32(CVMX_USBCX_GINTMSK(usb->index),
+@@ -1298,13 +1298,13 @@ static void cvmx_usb_fill_tx_fifo(struct octeon_hcd *usb, int channel)
+ 
+ 	/* We only need to fill data on outbound channels */
+ 	hcchar.u32 = cvmx_usb_read_csr32(usb,
+-			CVMX_USBCX_HCCHARX(channel, usb->index));
++					 CVMX_USBCX_HCCHARX(channel, usb->index));
+ 	if (hcchar.s.epdir != CVMX_USB_DIRECTION_OUT)
+ 		return;
+ 
+ 	/* OUT Splits only have data on the start and not the complete */
+ 	usbc_hcsplt.u32 = cvmx_usb_read_csr32(usb,
+-				CVMX_USBCX_HCSPLTX(channel, usb->index));
++					      CVMX_USBCX_HCSPLTX(channel, usb->index));
+ 	if (usbc_hcsplt.s.spltena && usbc_hcsplt.s.compsplt)
+ 		return;
+ 
+@@ -1313,7 +1313,7 @@ static void cvmx_usb_fill_tx_fifo(struct octeon_hcd *usb, int channel)
+ 	 * words.
+ 	 */
+ 	usbc_hctsiz.u32 = cvmx_usb_read_csr32(usb,
+-				CVMX_USBCX_HCTSIZX(channel, usb->index));
++					      CVMX_USBCX_HCTSIZX(channel, usb->index));
+ 	if (!usbc_hctsiz.s.xfersize)
+ 		return;
+ 
+@@ -1360,7 +1360,7 @@ static void cvmx_usb_start_channel_control(struct octeon_hcd *usb,
+ 	union cvmx_usbcx_hctsizx usbc_hctsiz;
+ 
+ 	usbc_hctsiz.u32 = cvmx_usb_read_csr32(usb,
+-				CVMX_USBCX_HCTSIZX(channel, usb->index));
++					      CVMX_USBCX_HCTSIZX(channel, usb->index));
+ 
+ 	switch (transaction->stage) {
+ 	case CVMX_USB_STAGE_NON_CONTROL:
+@@ -1517,7 +1517,7 @@ static void cvmx_usb_start_channel(struct octeon_hcd *usb, int channel,
+ 
+ 		/* Clear all channel status bits */
+ 		usbc_hcint.u32 = cvmx_usb_read_csr32(usb,
+-					CVMX_USBCX_HCINTX(channel, usb->index));
++						     CVMX_USBCX_HCINTX(channel, usb->index));
+ 
+ 		cvmx_usb_write_csr32(usb,
+ 				     CVMX_USBCX_HCINTX(channel, usb->index),
+@@ -1552,7 +1552,7 @@ static void cvmx_usb_start_channel(struct octeon_hcd *usb, int channel,
+ 
+ 		/* Enable the channel interrupt to propagate */
+ 		usbc_haintmsk.u32 = cvmx_usb_read_csr32(usb,
+-					CVMX_USBCX_HAINTMSK(usb->index));
++							CVMX_USBCX_HAINTMSK(usb->index));
+ 		usbc_haintmsk.s.haintmsk |= 1 << channel;
+ 		cvmx_usb_write_csr32(usb, CVMX_USBCX_HAINTMSK(usb->index),
+ 				     usbc_haintmsk.u32);
+@@ -1836,7 +1836,7 @@ static void cvmx_usb_start_channel(struct octeon_hcd *usb, int channel,
+  * Returns: Pipe or NULL if none are ready
+  */
+ static struct cvmx_usb_pipe *cvmx_usb_find_ready_pipe(struct octeon_hcd *usb,
+-		enum cvmx_usb_transfer xfer_type)
++						      enum cvmx_usb_transfer xfer_type)
+ {
+ 	struct list_head *list = usb->active_pipes + xfer_type;
+ 	u64 current_frame = usb->frame_number;
+@@ -2309,7 +2309,8 @@ static int cvmx_usb_cancel(struct octeon_hcd *usb,
+ 		CVMX_SYNCW;
+ 
+ 		usbc_hcchar.u32 = cvmx_usb_read_csr32(usb,
+-				CVMX_USBCX_HCCHARX(pipe->channel, usb->index));
++						      CVMX_USBCX_HCCHARX(pipe->channel,
++									 usb->index));
+ 		/*
+ 		 * If the channel isn't enabled then the transaction already
+ 		 * completed.
+@@ -2605,11 +2606,12 @@ static int cvmx_usb_poll_channel(struct octeon_hcd *usb, int channel)
+ 
+ 	/* Read the interrupt status bits for the channel */
+ 	usbc_hcint.u32 = cvmx_usb_read_csr32(usb,
+-				CVMX_USBCX_HCINTX(channel, usb->index));
++					     CVMX_USBCX_HCINTX(channel, usb->index));
+ 
+ 	if (usb->init_flags & CVMX_USB_INITIALIZE_FLAGS_NO_DMA) {
+ 		usbc_hcchar.u32 = cvmx_usb_read_csr32(usb,
+-				CVMX_USBCX_HCCHARX(channel, usb->index));
++						      CVMX_USBCX_HCCHARX(channel,
++									 usb->index));
+ 
+ 		if (usbc_hcchar.s.chena && usbc_hcchar.s.chdis) {
+ 			/*
+@@ -2688,9 +2690,9 @@ static int cvmx_usb_poll_channel(struct octeon_hcd *usb, int channel)
+ 	 * transferred
+ 	 */
+ 	usbc_hcchar.u32 = cvmx_usb_read_csr32(usb,
+-			CVMX_USBCX_HCCHARX(channel, usb->index));
++					      CVMX_USBCX_HCCHARX(channel, usb->index));
+ 	usbc_hctsiz.u32 = cvmx_usb_read_csr32(usb,
+-			CVMX_USBCX_HCTSIZX(channel, usb->index));
++					      CVMX_USBCX_HCTSIZX(channel, usb->index));
+ 
+ 	/*
+ 	 * Calculating the number of bytes successfully transferred is dependent
+@@ -3010,7 +3012,7 @@ static int cvmx_usb_poll(struct octeon_hcd *usb)
+ 		union cvmx_usbcx_haint usbc_haint;
+ 
+ 		usbc_haint.u32 = cvmx_usb_read_csr32(usb,
+-					CVMX_USBCX_HAINT(usb->index));
++						     CVMX_USBCX_HAINT(usb->index));
+ 		while (usbc_haint.u32) {
+ 			int channel;
+ 
 -- 
-~Randy
+2.17.1
 
