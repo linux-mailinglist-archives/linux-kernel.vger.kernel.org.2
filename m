@@ -2,89 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF5133F63B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B1233F63F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbhCQRC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:02:29 -0400
-Received: from mailout.easymail.ca ([64.68.200.34]:39304 "EHLO
-        mailout.easymail.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232707AbhCQRCR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:02:17 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mailout.easymail.ca (Postfix) with ESMTP id B0937A1291;
-        Wed, 17 Mar 2021 17:02:16 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at emo05-pco.easydns.vpn
-Received: from mailout.easymail.ca ([127.0.0.1])
-        by localhost (emo05-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id pxXI2zaqfTcq; Wed, 17 Mar 2021 17:02:16 +0000 (UTC)
-Received: from mail.gonehiking.org (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
-        by mailout.easymail.ca (Postfix) with ESMTPA id 18ACE9FEF3;
-        Wed, 17 Mar 2021 17:02:10 +0000 (UTC)
-Received: from [192.168.1.4] (rhapsody.internal [192.168.1.4])
-        by mail.gonehiking.org (Postfix) with ESMTP id 47E643EF3B;
-        Wed, 17 Mar 2021 11:02:10 -0600 (MDT)
-Subject: Re: [PATCH 4/8] scsi: FlashPoint: Remove unused variable 'TID' from
- 'FlashPoint_AbortCCB()'
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-References: <20210317091125.2910058-1-lee.jones@linaro.org>
- <20210317091125.2910058-5-lee.jones@linaro.org>
-From:   Khalid Aziz <khalid@gonehiking.org>
-Message-ID: <e597f426-bcc0-35d5-220c-104d39c08706@gonehiking.org>
-Date:   Wed, 17 Mar 2021 11:02:10 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232213AbhCQREe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:04:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229545AbhCQRET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 13:04:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C73BA64E90;
+        Wed, 17 Mar 2021 17:04:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616000658;
+        bh=YecZ1+74PL0EiJdVgEbcbAb4OOfTrH7w3uHot9RGdq4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lu//GtLnTgjXYhm9esClHt8hR8sh/TVP6pNKtWo+MI7yVxrTMiA0sNuR7XVlOgdJc
+         tz6Sd/GmVSnhirzXjrKY40U5Y2Z8zE/homaXsGzUDnRZlbZK3Ui0I9r6VxXlFL6fFC
+         cgK3YsNXD+C5lw9byeBxwJBSG79kJQ4txCw34WEHi5q3eQK8571ufwpH61HNVpz4L7
+         n9gj1PaVUuebEKDk0JV5MisibcOpL+dDmgsjhlfu2Tw8uUr4hDmFNy+2v9Nh7JC25y
+         /cr3F1ah42VAX7J1ZOb5cfbT6eJqLDUsUpnf59PzVxL649yi1MaJKFIkcqC0p+3jbZ
+         V1fkgNvRm/v2A==
+Date:   Wed, 17 Mar 2021 19:04:14 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] RDMA/mlx5: Fix missing assignment of rc when
+ calling mlx5_ib_dereg_mr
+Message-ID: <YFI2jt/nTpn//Zc0@unreal>
+References: <20210316095117.17089-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20210317091125.2910058-5-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316095117.17089-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 3:11 AM, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/scsi/FlashPoint.c: In function ‘FlashPoint_AbortCCB’:
->  drivers/scsi/FlashPoint.c:1618:16: warning: variable ‘TID’ set but not used [-Wunused-but-set-variable]
-> 
-> Cc: Khalid Aziz <khalid@gonehiking.org>
-> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-> Cc: linux-scsi@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Tue, Mar 16, 2021 at 09:51:17AM +0000, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The assignment of the return code to rc when calling mlx5_ib_dereg_mr is
+> missing and there is an error check on an uninitialized rc. Fix this by
+> adding in the assignment.
+>
+> Addresses-Coverity: ("Uninitialized scalar variable")
+> Fixes: e6fb246ccafb ("RDMA/mlx5: Consolidate MR destruction to mlx5_ib_dereg_mr()")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->  drivers/scsi/FlashPoint.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/drivers/scsi/FlashPoint.c b/drivers/scsi/FlashPoint.c
-> index f479c542e787c..0464e37c806a4 100644
-> --- a/drivers/scsi/FlashPoint.c
-> +++ b/drivers/scsi/FlashPoint.c
-> @@ -1615,7 +1615,6 @@ static int FlashPoint_AbortCCB(void *pCurrCard, struct sccb *p_Sccb)
->  
->  	unsigned char thisCard;
->  	CALL_BK_FN callback;
-> -	unsigned char TID;
->  	struct sccb *pSaveSCCB;
->  	struct sccb_mgr_tar_info *currTar_Info;
->  
-> @@ -1652,9 +1651,6 @@ static int FlashPoint_AbortCCB(void *pCurrCard, struct sccb *p_Sccb)
->  			}
->  
->  			else {
-> -
-> -				TID = p_Sccb->TargID;
-> -
->  				if (p_Sccb->Sccb_tag) {
->  					MDISABLE_INT(ioport);
->  					if (((struct sccb_card *)pCurrCard)->
-> 
+>  drivers/infiniband/hw/mlx5/mr.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Khalid Aziz <khalid@gonehiking.org>
+It was already sent, thanks.
+https://lore.kernel.org/linux-rdma/20210314082250.10143-1-leon@kernel.org/
+
+>
+> diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+> index 86ffc7e5ef96..9dcb9fb4eeaa 100644
+> --- a/drivers/infiniband/hw/mlx5/mr.c
+> +++ b/drivers/infiniband/hw/mlx5/mr.c
+> @@ -1946,7 +1946,7 @@ int mlx5_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+>  			mr->mtt_mr = NULL;
+>  		}
+>  		if (mr->klm_mr) {
+> -			mlx5_ib_dereg_mr(&mr->klm_mr->ibmr, NULL);
+> +			rc = mlx5_ib_dereg_mr(&mr->klm_mr->ibmr, NULL);
+>  			if (rc)
+>  				return rc;
+>  			mr->klm_mr = NULL;
+> --
+> 2.30.2
+>
