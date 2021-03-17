@@ -2,100 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D66533EEAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:48:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EAFB33EEAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:48:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbhCQKrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:47:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhCQKrV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:47:21 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE80DC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 03:47:20 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id m186so21701979qke.12
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 03:47:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bs1Q5g0mJLEbGGh58yL+AT4vNC2vLfU22G2nRXL8Mfg=;
-        b=rjpkreI3fz3jPXKCqFOFthJa4IWtHhHNUIE960EZGm0wz6/iEBpf9Kti6vth6U0fYH
-         QkajKm+29I/CLF44XMSwWg0vvzsPF2Of+pjxGICTd0/ahuv5jaEFYx3DbqQxSkCpJsC2
-         V1MGfL/fsUjIgRBSRw/RnRR2jyhftR594DOH6ElKqMNvQG+tzJ8M9Ve9WxWsxY3e5jSA
-         adj+hMLgLnEmirW+FSPAV/lWxDVijWfAmwYXzchkMjzWdV0e7NPZHotWE/Anlag64Qet
-         Dup7FcnX+BD/Sd2TCYfp3FCFDycr5p3FrLpDfUZSZ09Uhqtw3/CmNVgQm4SzXB2tBtvd
-         s1Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bs1Q5g0mJLEbGGh58yL+AT4vNC2vLfU22G2nRXL8Mfg=;
-        b=WWUPOpSbiSF2eKZoXvzd262RXTi0rtXzNUc9Mv9eSe1EDS1+/82s0I5Sh60w+uiFX7
-         DXfU4xMxLguw1TZUgvNZqcaqevYvcV0we+2RA0bddJWxyZFmTLdN267wRR93zY7oAfid
-         1RSi0++yer9RVMPs+Q1tmWlQ1co/aSeYR+U6y5qN7X0gSF0JgF8w88kL72nq3qVOeYG3
-         MfRXuIiFUhChVR2yuBauf7H1eNoGdzMok5D9X3gOoeyhO1Hkqp/dbn/Bpcp3UReq8ttt
-         /sDiJqqXbp0v1fGFypIDZ+qcG8+WqsIobde1XOy0yZ7lS+WlyF9yz6N1W8j5CkQxcy0G
-         IoHQ==
-X-Gm-Message-State: AOAM532wyyl/EFFsQ6SWsZ3eb5o/IFS4QR1zpZ+HhUoT3niP7BvwjTu5
-        daswicS42dq5DYAx8j3mnVk=
-X-Google-Smtp-Source: ABdhPJyjQzim5Yrx4E0q3U49DYJHiESpkdVA5RAIGQslWZMeD+9GAtYJ6WUjoK4QiojCq0eoCrvgnA==
-X-Received: by 2002:a05:620a:102f:: with SMTP id a15mr4183666qkk.87.1615978040214;
-        Wed, 17 Mar 2021 03:47:20 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.48])
-        by smtp.gmail.com with ESMTPSA id b10sm8881359qkg.50.2021.03.17.03.47.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 03:47:19 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
-        dianders@chromium.org, kgdb-bugreport@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH V2] kernel: debug: Ordinary typo fixes in the file gdbstub.c
-Date:   Wed, 17 Mar 2021 16:16:58 +0530
-Message-Id: <20210317104658.4053473-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S230346AbhCQKsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:48:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:56822 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230056AbhCQKsE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 06:48:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91D83D6E;
+        Wed, 17 Mar 2021 03:48:03 -0700 (PDT)
+Received: from [10.57.17.188] (unknown [10.57.17.188])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0F4AC3F70D;
+        Wed, 17 Mar 2021 03:48:01 -0700 (PDT)
+Subject: Re: [PATCH v4 10/19] coresight: etm-perf: Allow an event to use
+ different sinks
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mike.leach@linaro.org, anshuman.khandual@arm.com,
+        leo.yan@linaro.org, Linu Cherian <lcherian@marvell.com>
+References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
+ <20210225193543.2920532-11-suzuki.poulose@arm.com>
+ <20210316202345.GE1387186@xps15>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <9f13fcc6-ae8f-9a29-8cf3-993d200b5535@arm.com>
+Date:   Wed, 17 Mar 2021 10:47:56 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210316202345.GE1387186@xps15>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/overwitten/overwritten/
-s/procesing/processing/
+On 3/16/21 8:23 PM, Mathieu Poirier wrote:
+> On Thu, Feb 25, 2021 at 07:35:34PM +0000, Suzuki K Poulose wrote:
+>> When a sink is not specified by the user, the etm perf driver
+>> finds a suitable sink automatically, based on the first ETM
+>> where this event could be scheduled. Then we allocate the
+>> sink buffer based on the selected sink. This is fine for a
+>> CPU bound event as the "sink" is always guaranteed to be
+>> reachable from the ETM (as this is the only ETM where the
+>> event is going to be scheduled). However, if we have a thread
+>> bound event, the event could be scheduled on any of the ETMs
+>> on the system. In this case, currently we automatically select
+>> a sink and exclude any ETMs that cannot reach the selected
+>> sink. This is problematic especially for 1x1 configurations.
+>> We end up in tracing the event only on the "first" ETM,
+>> as the default sink is local to the first ETM and unreachable
+>> from the rest. However, we could allow the other ETMs to
+>> trace if they all have a sink that is compatible with the
+>> "selected" sink and can use the sink buffer. This can be
+>> easily done by verifying that they are all driven by the
+>> same driver and matches the same subtype. Please note
+>> that at anytime there can be only one ETM tracing the event.
+>>
+>> Adding support for different types of sinks for a single
+>> event is complex and is not something that we expect
+>> on a sane configuration.
+>>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Tested-by: Linu Cherian <lcherian@marvell.com>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>> Changes:
+>> - Rename sinks_match => sinks_compatible
+>> - Tighten the check by matching the sink subtype
+>> - Use user_sink instead of "sink_forced" and clean up the code (Mathieu)
+>> - More comments, better commit description
+>> ---
+>>   .../hwtracing/coresight/coresight-etm-perf.c  | 60 ++++++++++++++++---
+>>   1 file changed, 52 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> index 0f603b4094f2..aa0974bd265b 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> @@ -232,6 +232,25 @@ static void etm_free_aux(void *data)
+>>   	schedule_work(&event_data->work);
+>>   }
+>>   
+>> +/*
+>> + * Check if two given sinks are compatible with each other,
+>> + * so that they can use the same sink buffers, when an event
+>> + * moves around.
+>> + */
+>> +static bool sinks_compatible(struct coresight_device *a,
+>> +			     struct coresight_device *b)
+>> +{
+>> +	if (!a || !b)
+>> +		return false;
+>> +	/*
+>> +	 * If the sinks are of the same subtype and driven
+>> +	 * by the same driver, we can use the same buffer
+>> +	 * on these sinks.
+>> +	 */
+>> +	return (a->subtype.sink_subtype == b->subtype.sink_subtype) &&
+>> +	       (sink_ops(a) == sink_ops(b));
+> 
+> Ok
+> 
+>> +}
+>> +
+>>   static void *etm_setup_aux(struct perf_event *event, void **pages,
+>>   			   int nr_pages, bool overwrite)
+>>   {
+>> @@ -239,6 +258,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+>>   	int cpu = event->cpu;
+>>   	cpumask_t *mask;
+>>   	struct coresight_device *sink = NULL;
+>> +	struct coresight_device *user_sink = NULL, *last_sink = NULL;
+>>   	struct etm_event_data *event_data = NULL;
+>>   
+>>   	event_data = alloc_event_data(cpu);
+>> @@ -249,7 +269,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+>>   	/* First get the selected sink from user space. */
+>>   	if (event->attr.config2) {
+>>   		id = (u32)event->attr.config2;
+>> -		sink = coresight_get_sink_by_id(id);
+>> +		sink = user_sink = coresight_get_sink_by_id(id);
+>>   	}
+>>   
+>>   	mask = &event_data->mask;
+>> @@ -277,14 +297,33 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+>>   		}
+>>   
+>>   		/*
+>> -		 * No sink provided - look for a default sink for one of the
+>> -		 * devices. At present we only support topology where all CPUs
+>> -		 * use the same sink [N:1], so only need to find one sink. The
+>> -		 * coresight_build_path later will remove any CPU that does not
+>> -		 * attach to the sink, or if we have not found a sink.
+>> +		 * No sink provided - look for a default sink for all the ETMs,
+>> +		 * where this event can be scheduled.
+>> +		 * We allocate the sink specific buffers only once for this
+>> +		 * event. If the ETMs have different default sink devices, we
+>> +		 * can only use a single "type" of sink as the event can carry
+>> +		 * only one sink specific buffer. Thus we have to make sure
+>> +		 * that the sinks are of the same type and driven by the same
+>> +		 * driver, as the one we allocate the buffer for. As such
+>> +		 * we choose the first sink and check if the remaining ETMs
+>> +		 * have a compatible default sink. We don't trace on a CPU
+>> +		 * if the sink is not compatible.
+>>   		 */
+>> -		if (!sink)
+>> +		if (!user_sink) {
+>> +			/* Find the default sink for this ETM */
+>>   			sink = coresight_find_default_sink(csdev);
+>> +			if (!sink) {
+>> +				cpumask_clear_cpu(cpu, mask);
+>> +				continue;
+>> +			}
+>> +
+>> +			/* Check if this sink compatible with the last sink */
+>> +			if (last_sink && !sinks_compatible(last_sink, sink)) {
+>> +				cpumask_clear_cpu(cpu, mask);
+>> +				continue;
+>> +			}
+>> +			last_sink = sink;
+> 
+> This is much better.
+> 
+> I thought about something when I first looked a this patch in the previous
+> revision...  With the above we are changing the behavior of the CS framework for
+> systems that have one sink per CPU _clusters_, but for once it is for the better.
+> 
+> With this patch coresight_find_default_sink() is called for every CPU,
+> allowing CPUs in the second cluster to find a valid path and be included in the
+> trace session.  Before this patch CPUs in the second cluster couldn't
+> establish a valid path to the sink since it was only reachable from the first
+> cluster.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
-Changes from V1:
- As Daniel pointed out, I was misdoing a check,so corrected
+Exactly. That is the whole purpose of this patch. i.e, to allow tracing on all
+CPUs with a per-cpu sink configuration.
 
- kernel/debug/gdbstub.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-diff --git a/kernel/debug/gdbstub.c b/kernel/debug/gdbstub.c
-index e149a0ac9e9e..8372897402f4 100644
---- a/kernel/debug/gdbstub.c
-+++ b/kernel/debug/gdbstub.c
-@@ -321,7 +321,7 @@ int kgdb_hex2long(char **ptr, unsigned long *long_val)
- /*
-  * Copy the binary array pointed to by buf into mem.  Fix $, #, and
-  * 0x7d escaped with 0x7d. Return -EFAULT on failure or 0 on success.
-- * The input buf is overwitten with the result to write to mem.
-+ * The input buf is overwritten with the result to write to mem.
-  */
- static int kgdb_ebin2mem(char *buf, char *mem, int count)
- {
-@@ -952,7 +952,7 @@ static int gdb_cmd_exception_pass(struct kgdb_state *ks)
- }
+Thanks
 
- /*
-- * This function performs all gdbserial command procesing
-+ * This function performs all gdbserial command processing
-  */
- int gdb_serial_stub(struct kgdb_state *ks)
- {
---
-2.30.2
-
+Suzuki
