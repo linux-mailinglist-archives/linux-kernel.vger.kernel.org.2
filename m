@@ -2,218 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7508733F7D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6117033F7BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232894AbhCQSGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:06:07 -0400
-Received: from mga01.intel.com ([192.55.52.88]:35063 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232607AbhCQSFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:05:38 -0400
-IronPort-SDR: WKIgTErYJ8KOaqpgAvVki6h8zKgauvvwxWCoPZU4YHSjNip4bPEzdcRqbBYd6l8iTZOTlw7OUN
- QmRdx4VZ5uEg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="209489904"
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="209489904"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 11:05:38 -0700
-IronPort-SDR: xKenm9XHk5BCG+JMzhQU21Qs0HOf94L0EWHzEKeCxfhF9nbJaqjhXYeQJorQqEyT4pZF8ywIpx
- 7ZgC/6+6lWww==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="522957292"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga004.jf.intel.com with ESMTP; 17 Mar 2021 11:05:37 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@kernel.org, acme@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        eranian@google.com, namhyung@kernel.org, ak@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V2 5/5] perf/x86/intel/uncore: Generic support for the MMIO type of uncore blocks
-Date:   Wed, 17 Mar 2021 10:59:37 -0700
-Message-Id: <1616003977-90612-6-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616003977-90612-1-git-send-email-kan.liang@linux.intel.com>
-References: <1616003977-90612-1-git-send-email-kan.liang@linux.intel.com>
+        id S232878AbhCQSBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:01:09 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:37741 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231152AbhCQSAy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 14:00:54 -0400
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1lMaTS-0001oJ-Bj; Wed, 17 Mar 2021 18:00:50 +0000
+Date:   Wed, 17 Mar 2021 19:00:48 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Li Li <dualli@chromium.org>
+Cc:     dualli@google.com, tkjos@google.com, gregkh@linuxfoundation.org,
+        christian@brauner.io, arve@android.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, maco@google.com, hridya@google.com,
+        surenb@google.com, joel@joelfernandes.org, kernel-team@android.com,
+        jannh@google.com
+Subject: Re: [PATCH v3 0/3] Binder: Enable App Freezing Capability
+Message-ID: <20210317180048.inzdursqmnvxkgwp@wittgenstein>
+References: <20210316011630.1121213-1-dualli@chromium.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210316011630.1121213-1-dualli@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+On Mon, Mar 15, 2021 at 06:16:27PM -0700, Li Li wrote:
+> From: Li Li <dualli@google.com>
+> 
+> To improve the user experience when switching between recently used
+> applications, the background applications which are not currently needed
+> are cached in the memory. Normally, a well designed application will not
+> consume valuable CPU resources in the background. However, it's possible
+> some applications are not able or willing to behave as expected, wasting
+> energy even after being cached.
+> 
+> It is a good idea to freeze those applications when they're only being
+> kept alive for the sake of faster startup and energy saving. These kernel
+> patches will provide the necessary infrastructure for user space framework
+> to freeze and thaw a cached process, check the current freezing status and
+> correctly deal with outstanding binder transactions to frozen processes.
+> 
+> Changes in v2: avoid panic by using pr_warn for unexpected cases.
+> Changes in v3: improved errcode logic in binder_proc_transaction().
+> 
+> Marco Ballesio (3):
+>   binder: BINDER_FREEZE ioctl
+>   binder: use EINTR for interrupted wait for work
+>   binder: BINDER_GET_FROZEN_INFO ioctl
+> 
+>  drivers/android/binder.c            | 198 ++++++++++++++++++++++++++--
+>  drivers/android/binder_internal.h   |  18 +++
+>  include/uapi/linux/android/binder.h |  20 +++
+>  3 files changed, 224 insertions(+), 12 deletions(-)
 
-The discovery table provides the generic uncore block information
-for the MMIO type of uncore blocks, which is good enough to provide
-basic uncore support.
+[+Cc Jann]
 
-The box control field is composed of the BAR address and box control
-offset. When initializing the uncore blocks, perf should ioremap the
-address from the box control field.
-
-Implement the generic support for the MMIO type of uncore block.
-
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- arch/x86/events/intel/uncore.c           |  1 +
- arch/x86/events/intel/uncore.h           |  1 +
- arch/x86/events/intel/uncore_discovery.c | 98 ++++++++++++++++++++++++++++++++
- arch/x86/events/intel/uncore_discovery.h |  1 +
- 4 files changed, 101 insertions(+)
-
-diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
-index 3109082..35b3470 100644
---- a/arch/x86/events/intel/uncore.c
-+++ b/arch/x86/events/intel/uncore.c
-@@ -1755,6 +1755,7 @@ static const struct intel_uncore_init_fun snr_uncore_init __initconst = {
- static const struct intel_uncore_init_fun generic_uncore_init __initconst = {
- 	.cpu_init = intel_uncore_generic_uncore_cpu_init,
- 	.pci_init = intel_uncore_generic_uncore_pci_init,
-+	.mmio_init = intel_uncore_generic_uncore_mmio_init,
- };
- 
- static const struct x86_cpu_id intel_uncore_match[] __initconst = {
-diff --git a/arch/x86/events/intel/uncore.h b/arch/x86/events/intel/uncore.h
-index 76fc898..549cfb2 100644
---- a/arch/x86/events/intel/uncore.h
-+++ b/arch/x86/events/intel/uncore.h
-@@ -70,6 +70,7 @@ struct intel_uncore_type {
- 	union {
- 		unsigned *msr_offsets;
- 		unsigned *pci_offsets;
-+		unsigned *mmio_offsets;
- 	};
- 	unsigned *box_ids;
- 	struct event_constraint unconstrainted;
-diff --git a/arch/x86/events/intel/uncore_discovery.c b/arch/x86/events/intel/uncore_discovery.c
-index 01aa2c0..7a2329a 100644
---- a/arch/x86/events/intel/uncore_discovery.c
-+++ b/arch/x86/events/intel/uncore_discovery.c
-@@ -442,6 +442,90 @@ static struct intel_uncore_ops generic_uncore_pci_ops = {
- 	.read_counter	= intel_generic_uncore_pci_read_counter,
- };
- 
-+#define UNCORE_GENERIC_MMIO_SIZE		0x4000
-+
-+static unsigned int generic_uncore_mmio_box_ctl(struct intel_uncore_box *box)
-+{
-+	struct intel_uncore_type *type = box->pmu->type;
-+
-+	if (!type->box_ctls || !type->box_ctls[box->dieid] || !type->mmio_offsets)
-+		return 0;
-+
-+	return type->box_ctls[box->dieid] + type->mmio_offsets[box->pmu->pmu_idx];
-+}
-+
-+static void intel_generic_uncore_mmio_init_box(struct intel_uncore_box *box)
-+{
-+	unsigned int box_ctl = generic_uncore_mmio_box_ctl(box);
-+	struct intel_uncore_type *type = box->pmu->type;
-+	resource_size_t addr;
-+
-+	if (!box_ctl) {
-+		pr_warn("Uncore type %d box %d: Invalid box control address.\n",
-+			type->type_id, type->box_ids[box->pmu->pmu_idx]);
-+		return;
-+	}
-+
-+	addr = box_ctl;
-+	box->io_addr = ioremap(addr, UNCORE_GENERIC_MMIO_SIZE);
-+	if (!box->io_addr) {
-+		pr_warn("Uncore type %d box %d: ioremap error for 0x%llx.\n",
-+			type->type_id, type->box_ids[box->pmu->pmu_idx],
-+			(unsigned long long)addr);
-+		return;
-+	}
-+
-+	writel(GENERIC_PMON_BOX_CTL_INT, box->io_addr);
-+}
-+
-+static void intel_generic_uncore_mmio_disable_box(struct intel_uncore_box *box)
-+{
-+	if (!box->io_addr)
-+		return;
-+
-+	writel(GENERIC_PMON_BOX_CTL_FRZ, box->io_addr);
-+}
-+
-+static void intel_generic_uncore_mmio_enable_box(struct intel_uncore_box *box)
-+{
-+	if (!box->io_addr)
-+		return;
-+
-+	writel(0, box->io_addr);
-+}
-+
-+static void intel_generic_uncore_mmio_enable_event(struct intel_uncore_box *box,
-+					     struct perf_event *event)
-+{
-+	struct hw_perf_event *hwc = &event->hw;
-+
-+	if (!box->io_addr)
-+		return;
-+
-+	writel(hwc->config, box->io_addr + hwc->config_base);
-+}
-+
-+static void intel_generic_uncore_mmio_disable_event(struct intel_uncore_box *box,
-+					      struct perf_event *event)
-+{
-+	struct hw_perf_event *hwc = &event->hw;
-+
-+	if (!box->io_addr)
-+		return;
-+
-+	writel(0, box->io_addr + hwc->config_base);
-+}
-+
-+static struct intel_uncore_ops generic_uncore_mmio_ops = {
-+	.init_box	= intel_generic_uncore_mmio_init_box,
-+	.exit_box	= uncore_mmio_exit_box,
-+	.disable_box	= intel_generic_uncore_mmio_disable_box,
-+	.enable_box	= intel_generic_uncore_mmio_enable_box,
-+	.disable_event	= intel_generic_uncore_mmio_disable_event,
-+	.enable_event	= intel_generic_uncore_mmio_enable_event,
-+	.read_counter	= uncore_mmio_read_counter,
-+};
-+
- static bool uncore_update_uncore_type(enum uncore_access_type type_id,
- 				      struct intel_uncore_type *uncore,
- 				      struct intel_uncore_discovery_type *type)
-@@ -468,6 +552,15 @@ static bool uncore_update_uncore_type(enum uncore_access_type type_id,
- 		uncore->box_ctls = type->box_ctrl_die;
- 		uncore->pci_offsets = type->box_offset;
- 		break;
-+	case UNCORE_ACCESS_MMIO:
-+		uncore->ops = &generic_uncore_mmio_ops;
-+		uncore->perf_ctr = (unsigned int)type->ctr_offset;
-+		uncore->event_ctl = (unsigned int)type->ctl_offset;
-+		uncore->box_ctl = (unsigned int)type->box_ctrl;
-+		uncore->box_ctls = type->box_ctrl_die;
-+		uncore->mmio_offsets = type->box_offset;
-+		uncore->mmio_map_size = UNCORE_GENERIC_MMIO_SIZE;
-+		break;
- 	default:
- 		return false;
- 	}
-@@ -522,3 +615,8 @@ int intel_uncore_generic_uncore_pci_init(void)
- 
- 	return 0;
- }
-+
-+void intel_uncore_generic_uncore_mmio_init(void)
-+{
-+	uncore_mmio_uncores = intel_uncore_generic_init_uncores(UNCORE_ACCESS_MMIO);
-+}
-diff --git a/arch/x86/events/intel/uncore_discovery.h b/arch/x86/events/intel/uncore_discovery.h
-index 1639ff7..1d65293 100644
---- a/arch/x86/events/intel/uncore_discovery.h
-+++ b/arch/x86/events/intel/uncore_discovery.h
-@@ -128,3 +128,4 @@ bool intel_uncore_has_discovery_tables(void);
- void intel_uncore_clear_discovery_tables(void);
- void intel_uncore_generic_uncore_cpu_init(void);
- int intel_uncore_generic_uncore_pci_init(void);
-+void intel_uncore_generic_uncore_mmio_init(void);
--- 
-2.7.4
-
+Christian
