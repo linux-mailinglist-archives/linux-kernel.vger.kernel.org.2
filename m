@@ -2,121 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF0833F866
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BB033F871
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:50:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233095AbhCQSsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:48:54 -0400
-Received: from mga12.intel.com ([192.55.52.136]:6341 "EHLO mga12.intel.com"
+        id S233003AbhCQSt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:49:58 -0400
+Received: from ozlabs.org ([203.11.71.1]:56865 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232763AbhCQSsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:48:52 -0400
-IronPort-SDR: xNKo2kc4IFy7g2qRdxvHUTmS+4btssPCRPgshMRusElLB+SVSZ+BCkd3bbRRcpsxTx3WxzfY2q
- qx8AchzaHdkw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="168803219"
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="168803219"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 11:48:51 -0700
-IronPort-SDR: p/cSR5ulZFFd9H+i41M6HIHkogJZKBFJt/D8W5rmiysz+I/eOXhnwpKvJG3+3BPjs//QdUlzyH
- OHhL8ciCbw6g==
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="605831558"
-Received: from mtpearso-mobl4.amr.corp.intel.com (HELO [10.213.190.14]) ([10.213.190.14])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 11:48:50 -0700
-Subject: Re: [PATCH v2] mm: Move mem_init_print_info() into mm_init()
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Guo Ren <guoren@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
+        id S233096AbhCQSt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 14:49:28 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F0zj06YFLz9sRf;
+        Thu, 18 Mar 2021 05:49:24 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616006966;
+        bh=3YibqA1xHA2sAmwBFSwc9tUZwMPpXSdzHgLDK8LQuSw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mRCT+oxdp8PWEA1gdjx30QDjS1gYfqEbJ7vvUiqGKBYX+V4MzCvRWtwpPuWVh4BpO
+         VEk9M1ZLWv0HeEa5GzOoCYU0Zg02f7i61KOCHVtW0EBElLsoW9T0RGd5b8ZHDKvuIN
+         qZRh3/kGhMqciGNjoDbI/JlfxLkNO3H/1EaT7sLPWUSrtXT2EDCsurDwp6t6IkEZMA
+         MdpWz3S6U0hxMwsyQcg07znuX2C3hXSmGsgSlwS0v3YD+8pND9q5Oem5TqnevkzBXt
+         8wECxvQVT0aQ6KZtMd4eUxZSL4WcFgHiTWoY33JlThLXHPyzbcfVPWQKrb3TtQEznp
+         rbf99LKXwGXYw==
+Date:   Thu, 18 Mar 2021 05:49:21 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Borislav Petkov <bp@suse.de>
+Cc:     Ian Rogers <irogers@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, linux-mm@kvack.org
-References: <4d488195-7281-9238-b30d-9f89a6100fb9@csgroup.eu>
- <20210317015210.33641-1-wangkefeng.wang@huawei.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <2a7d6e39-b293-7422-87b0-741f1ab0c22c@intel.com>
-Date:   Wed, 17 Mar 2021 11:48:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the tip tree
+Message-ID: <20210318054921.64c0fc75@canb.auug.org.au>
+In-Reply-To: <20210317180236.GF32135@zn.tnic>
+References: <20210317150858.02b1bbc8@canb.auug.org.au>
+        <20210317105432.GA32135@zn.tnic>
+        <CAP-5=fWKCtJq-9zd5A-XALJWNf8tsds44m-G07sc+kCUoXB8zg@mail.gmail.com>
+        <20210317180236.GF32135@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <20210317015210.33641-1-wangkefeng.wang@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/3aMHn__en4JByNqMqxiBDpy";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/21 6:52 PM, Kefeng Wang wrote:
-> mem_init_print_info() is called in mem_init() on each architecture,
-> and pass NULL argument, so using void argument and move it into mm_init().
-> 
-> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+--Sig_/3aMHn__en4JByNqMqxiBDpy
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-It's not a big deal but you might want to say something like:
+Hi Borislav,
 
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com> # x86 bits
+On Wed, 17 Mar 2021 19:02:36 +0100 Borislav Petkov <bp@suse.de> wrote:
+>
+> On Wed, Mar 17, 2021 at 09:22:15AM -0700, Ian Rogers wrote:
+> > The <asm/emulate_prefix.h> path also needs fixing. With the following
+> > I was able to build for arm64 and powerpc. =20
+>=20
+> Thanks, I've updated and added your Tested-by. I'll give sfr a chance to
+> test and queue it tomorrow.
+>=20
+> ---
+> From d242b2639a23ed03d9aed94cf05b99af5343d4e9 Mon Sep 17 00:00:00 2001
+> From: Borislav Petkov <bp@suse.de>
+> Date: Wed, 17 Mar 2021 11:33:04 +0100
+> Subject: [PATCH] tools/insn: Restore the relative include paths for cross=
+ building
+>=20
+> Building perf on ppc causes:
+>=20
+>   In file included from util/intel-pt-decoder/intel-pt-insn-decoder.c:15:
+>   util/intel-pt-decoder/../../../arch/x86/lib/insn.c:14:10: fatal error: =
+asm/inat.h: No such file or directory
+>      14 | #include <asm/inat.h> /*__ignore_sync_check__ */
+>         |          ^~~~~~~~~~~~
+>=20
+> Restore the relative include paths so that the compiler can find the
+> headers.
+>=20
+> Fixes: 93281c4a9657 ("x86/insn: Add an insn_decode() API")
+> Reported-by: Ian Rogers <irogers@google.com>
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> Tested-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/arch/x86/lib/insn.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
+> index cd4dedde3265..c41f95815480 100644
+> --- a/tools/arch/x86/lib/insn.c
+> +++ b/tools/arch/x86/lib/insn.c
+> @@ -11,13 +11,13 @@
+>  #else
+>  #include <string.h>
+>  #endif
+> -#include <asm/inat.h> /*__ignore_sync_check__ */
+> -#include <asm/insn.h> /* __ignore_sync_check__ */
+> +#include "../include/asm/inat.h" /* __ignore_sync_check__ */
+> +#include "../include/asm/insn.h" /* __ignore_sync_check__ */
+> =20
+>  #include <linux/errno.h>
+>  #include <linux/kconfig.h>
+> =20
+> -#include <asm/emulate_prefix.h> /* __ignore_sync_check__ */
+> +#include "../include/asm/emulate_prefix.h" /* __ignore_sync_check__ */
+> =20
+>  #define leXX_to_cpu(t, r)						\
+>  ({									\
+> --=20
+> 2.29.2
 
-Just to make it clear that I didn't look at the alpha bits at all. :)
+That fixes the powerpc build for me, thanks.
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/3aMHn__en4JByNqMqxiBDpy
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBSTzEACgkQAVBC80lX
+0GwbAwf7Bn3trYmkByVdzXCaOnhnSuTLVcZYkG6hDoZkxn5/sJy9EOh2vmCGmFVe
+cDz9O+Gteo7686EOOpQQjT+k1urcjy5i5Md1hcJ9dXQqOeZYEDSfbMvT9mj22N5/
+Ge2BXzca4NecZjD82rO2gktclTQxxwmcs9Uxlg5Ugdy95I6WliJgN8OFC62Qvo0w
+5lFvBEDUgNiE+YLSJ+/b30JzOv7g28ju4qIvtiE7JQ7dokLW6uLVudR9UUcvqm7g
+N8EQE7Ky/rF74k0ojHhl1j3RomTnnEkQhqif5+teLx80azXOdprGk01E3o+15iT4
+8t/No8031egvnh/dRsNVnpZ6DC2C4g==
+=mJHr
+-----END PGP SIGNATURE-----
+
+--Sig_/3aMHn__en4JByNqMqxiBDpy--
