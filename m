@@ -2,117 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E54E033FA84
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 22:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE6733FA85
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 22:39:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhCQVge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 17:36:34 -0400
-Received: from angie.orcam.me.uk ([157.25.102.26]:37764 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhCQVgW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 17:36:22 -0400
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id F1D3192009C; Wed, 17 Mar 2021 22:36:20 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id E84EA92009B;
-        Wed, 17 Mar 2021 22:36:20 +0100 (CET)
-Date:   Wed, 17 Mar 2021 22:36:20 +0100 (CET)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     David Laight <David.Laight@ACULAB.COM>
-cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: RE: [PATCH v2] MIPS: Check __clang__ to avoid performance influence
- with GCC in csum_tcpudp_nofold()
-In-Reply-To: <6e7bc85a3f92419f89117fc1381511be@AcuMS.aculab.com>
-Message-ID: <alpine.DEB.2.21.2103172009070.21463@angie.orcam.me.uk>
-References: <1615263493-10609-1-git-send-email-yangtiezhu@loongson.cn> <alpine.DEB.2.21.2103142140000.33195@angie.orcam.me.uk> <bdfe753d-0ef2-8f66-7716-acadfc3917a5@loongson.cn> <913665e71fd44c5d810d006cd179725c@AcuMS.aculab.com> <5ee86b3b-81d2-790c-f67b-e250f60272fd@loongson.cn>
- <alpine.DEB.2.21.2103171541590.21463@angie.orcam.me.uk> <6e7bc85a3f92419f89117fc1381511be@AcuMS.aculab.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S230286AbhCQVjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 17:39:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229545AbhCQVjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 17:39:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1175E64F17
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 21:39:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616017153;
+        bh=VIMNcF6dOmgW2zs3po0Jqy5OCE8TvozkFRpvez7f7cg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LE0sFBzm2pFGpEeYIHfkNKt6447R41ZcaGkrtkTm6zspzHk0CZhNcI0F7rzhndFhZ
+         cnjYbh9tU8nXfC3h41LJjVZGoISEX232YYOHaZMIAFJZ0+DRnHugDDhURqE2NRxWMT
+         Y/EI0Kg6G3/iscelMhsEAMLJSLJhfh5n4yrBRKYh+BYHFlwkT3g8GBGxtYoyJp4EMb
+         npZ5Fn7OhB0XFHL4HeLMdeVeThkq9HY8RtJUiRQW5MK89X4X65hCJXtv+IGSj84JP6
+         GZ8zVeE8IT9PnACzGub7HUk09ozheJW0SGceLChIHBRywh4Wjq9o8a8aCmVE5oG9T3
+         6+z6cdOn4ol/w==
+Received: by mail-ot1-f47.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so3245772otn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 14:39:13 -0700 (PDT)
+X-Gm-Message-State: AOAM533IRI73Y8yKM2EGBEe8enowcOZyPqUNSKhdWeN1t09h7SaOrNPf
+        uRQVnlFDOgFEVFPUeFs0mTC42uOrqbz0EutAfKk=
+X-Google-Smtp-Source: ABdhPJytKoAhVAf7r4/6bYFXWR4ZQlWy/GBZaNRrasWFCYNNRqqIb9qcJQS3QriuHrJZ5a3Bk/HXs/edlbT+5OhxXZA=
+X-Received: by 2002:a05:6830:14c1:: with SMTP id t1mr5015779otq.305.1616017152243;
+ Wed, 17 Mar 2021 14:39:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <1615949121-70877-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+ <20210317083947.GD3881262@gmail.com> <20210317084132.GA378908@gmail.com>
+ <CAK8P3a2qqWV3RGvb4ooiz4LS5GAKL0OHEiVtdgnHAgtmiRDSNA@mail.gmail.com> <20210317200529.GB3830960@gmail.com>
+In-Reply-To: <20210317200529.GB3830960@gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 17 Mar 2021 22:38:55 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2MQiqEkrfd+_gE_dbYHgGBb9JjuAW7RX=ySWUc084KGg@mail.gmail.com>
+Message-ID: <CAK8P3a2MQiqEkrfd+_gE_dbYHgGBb9JjuAW7RX=ySWUc084KGg@mail.gmail.com>
+Subject: Re: [PATCH] sched: replace if (cond) BUG() with BUG_ON()
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Mar 2021, David Laight wrote:
+On Wed, Mar 17, 2021 at 9:05 PM Ingo Molnar <mingo@kernel.org> wrote:
+> * Arnd Bergmann <arnd@kernel.org> wrote:
+> > On Wed, Mar 17, 2021 at 9:45 AM Ingo Molnar <mingo@kernel.org> wrote:
+> > >
+> > > More importantly, we use this pattern when we don't want !CONFIG_BUG
+> > > to remove the 'condition'.
+> > >
+> > > I.e. the "side effect" here is important scheduler logic. It must
+> > > never be optimized out.
+> >
+> > This behavior for !CONFIG_BUG has changed a while ago, it is now safe
+> > to rely on the side-effect of the BUG_ON() condition regardless of
+> > CONFIG_BUG. When that option is disabled, running into the condition
+> > just ends up in a "do {} while (1)" loop.
+>
+> Dunno, I still think it's not a particularly clean pattern to 'hide'
+> significant side effects within a BUG_ON().
 
-> > > > Not that I grok the mips opcodes.
-> > > > But that code has horridness on its side.
-> > 
-> >  It's a 32-bit one's-complement addition.  The use of 64-bit operations
-> > reduces the number of calculations as any 32-bit carries accumulate in the
-> > high 32-bit word allowing one instruction to be saved total compared to
-> > the 32-bit variant.  Nothing particularly unusual for me here; I've seen
-> > worse stuff with x86.
-> 
-> The 'problem' is that mips doesn't have a carry flag.
-> So the 64-bit maths is 'tricky'.
-> It may well be that a loop based on:
-> 	do {
-> 		val = *ptr++;
-> 		sum += val;
-> 		carry += sum < val;
-> 	} while (ptr != limit)
-> will generate much better code.
+Fair enough. Readability really is the key here, and I agree the current
+version is easier to understand. The only architectures that even define
+an optimized BUG_ON() are mips and powerpc, and saving a few cycles
+is barely worth it in a fast path, which this is clearly not.
 
- This piece of assembly appears to me as good as you can get, but it is 
-somewhat dated, going back to 1999 and LMO commit 0458ce25ec4e ("Fix 
-MIPS64 IP checksums.") as far as the 64-bit variant is concerned, with a 
-much later bug fix applied for a corner case with commit 66fd848cadaa 
-("MIPS: Fix special case in 64 bit IP checksumming.") back in 2017 (!), 
-which added two instructions.  It may well be that GCC has since improved 
-and would produce code of similar or better quality.  Anyone is welcome to 
-try it of course and submit a patch if it turns out beneficial.
-
- NB I note there's an earlyclobber specifier missing on the output 
-operand, lost with the merge of the separate mips and mips64 ports with 
-LMO commit a69fb3990ea9 ("Goodbye mips64.  31704 lines of code bite the 
-dust."), back in 2003, which I previously added myself, back in 2002 with 
-LMO commit acc75ed18471 ("Bug fixes for constraints and type casts.").  
-Sigh.  I think the overlap with operand #1 has prevented damage from 
-happening as a result of the missing specifier, but IMO it would best be 
-reinstated just in case.
-
-> I think there is a 'setlt' instruction for the compare.
-
- Yes and it's used in the piece of code quoted (SLT).
-
-> It certainly would on the nios (which is mips-like).
-> That is (probably) 6 instructions for 4 bytes.
-> I suspect there may be a data stall after the memory read.
-> So an interleaved unroll would remove that stall.
-> That would be 10 clocks for 8 bytes.
-
- There's no memory read involved in this code; of course there could be in 
-the paster of the inline function as shown in the piece shown by Tiezhu.  
-There are a couple of instructions in between though, which should keep 
-the pipeline occupied as long as data retrieved is hot in the cache 
-(prefetch instructions could be used to assist with that).
-
- OTOH if data were to come from the main memory, I doubt anything could 
-help here.
-
-> The x86-64 code is 'interesting'.
-> It has repeated 'add carry' instructions.
-> On Intel cpus prior to (at least) Haswell they take two clocks each.
-> So the code is no faster than adding 32bit values to a 64bit sum.
-
- GCC has DFA pipeline descriptions for various MIPS processors, so the 
-details may vary, but it is assumed overall that plain ALU operations 
-cause no pipeline stalls or slips, so nominally they take 1 pipeline clock 
-each for scalar implementations.  This includes all the instructions in 
-the piece of code discussed here.
-
- (Actual clock counts will of course depend on the number of pipeline 
-stages a given microarchitecture implements and are not a concern here. 
-The earliest MIPS chips had as few as four stages only and the inclusion 
-of branch and load delay slots prevented pipeline slips from occuring or 
-even actually being implemented, as in what MIPS used to stand for, that 
-is Microprocessor without Interlocked Pipeline Stages.  Stalls could still 
-happen of course in the case of cache misses.)
-
-  Maciej
+       Arnd
