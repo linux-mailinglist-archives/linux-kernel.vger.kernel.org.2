@@ -2,110 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4EB33EB31
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:17:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 478FF33EB37
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229643AbhCQIQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:16:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhCQIQN (ORCPT
+        id S229698AbhCQIQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:16:46 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:46915 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhCQIQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Mar 2021 04:16:13 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2BB1C06174A;
-        Wed, 17 Mar 2021 01:16:13 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id n132so40055736iod.0;
-        Wed, 17 Mar 2021 01:16:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AiXh5OFsnN34IitZz1rkVk6moqaTbWiaMgRZ+6LYhf8=;
-        b=gAPnk0yECXq3HyzTLDsOs+NhCxSyJmPDWkC64+ApYo1YnCgqDmc83K+vgu7pHY3qza
-         zwv9V3CO62rt/vydmtLxHcnMvllRWgSPWNNb8W/vopxVHx1giz7MroScEX+NVf52UA3w
-         DwA98pQuO7pUYMJkj5uc5VXCau/Vm8tE1IgznDB+hqEjUEVbLoJrPjt84z1l328YXyjY
-         TWBu96tcOE+w4Gjh7ft6UaYocNI5kFp0ZvKkedAoudwqbZ9V154YFd8WJQTQAECL3iHj
-         DY7niU9Cqwm1J4U7tlqTXjfh4xGov3tgOcj2rVKXiQNIL2zf9FzgYMwcfpwPbIXrKNle
-         1X6g==
+Received: from mail-ej1-f71.google.com ([209.85.218.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lMRLg-0000CA-4W
+        for linux-kernel@vger.kernel.org; Wed, 17 Mar 2021 08:16:12 +0000
+Received: by mail-ej1-f71.google.com with SMTP id 11so14809282ejz.20
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:16:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AiXh5OFsnN34IitZz1rkVk6moqaTbWiaMgRZ+6LYhf8=;
-        b=R2B4FSClhEaSCip9xgPd23mqFGZoag64eMgXbY7PANw0YTvoR6VI4jp0OsdmHZtPTC
-         VSCYrEBx9P2vrZh5AwFPMcjYh/6rsb7L+tASWBLxZuLsI3CYs6hHo6uR+hxEE8P7/9Qg
-         7cBtrKTLi/6NpYkdnOBw0eBlR5uZVFBK3A9sQrEqfUCiD+z29QwurAzsieSc8e7hiESw
-         rO5ifMH6N/5JP2J5afTRJbiqo9hZkmnQ3/REgDuvZQaR5vsFsxWW+FgxWMfk6cYQSGYg
-         5YJb7IFEJegk+5Jf8HYMkQSzC0GEYYaWVSFIGRNG2ysBoGEcCNC33wJzlWtRDfJ4YhUH
-         vlcA==
-X-Gm-Message-State: AOAM531271Z83FpVlNc7Ndc69lj7ZRCyXVUsZxjIAmLOkD+0nsaCaTJa
-        cUpr2qNAslX3wije1/0UFvbXUYxN7hX++RXITB4=
-X-Google-Smtp-Source: ABdhPJxdslQWxWHgCfvHpEkB6dz2eb3BbcFgd8hsk2MYpirqFTEXFB8/VV6tyn8gX5McHuvBjPaLLyZSzVtBP8xwcPw=
-X-Received: by 2002:a05:6602:2e82:: with SMTP id m2mr5967050iow.70.1615968973050;
- Wed, 17 Mar 2021 01:16:13 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=h7RuThKGVeD8HpXasnQO91ZFAcbdaCJWKNu1ufXCr2w=;
+        b=T7KOvpOA0ajTX58oYLo7qiT3lP8W4SF48hbGF8c1Q56pkUi648gXctLNSWabtm1fSd
+         ejbVdE4hWjqqDAzOoyHQwUzLwCJEIS+LGLNTV5Sx28Fe8q0qzCKq9eqb6tICoOlRp0lC
+         J36q5gpVRknunp3IJ6EcElrKK3IlbT48bAnf7ZfGI44YUOKTiSxCUlu6Vm9AyXvwG7w3
+         DYYkVH63eZBCOg38Jlup8XQgEJZkiBiHLnDjWLJ9Owj+sVRkPX90LVOaua2SuWEaPnZf
+         8Ed2O3qIJfAfrstUkpkKjraxBcGCZve1ENqh+k0eTNXMcgM32GiLdLHHjagc56f9K9kS
+         +vXQ==
+X-Gm-Message-State: AOAM532DK5p5cKidvKIdpujKs1t4zEJSDEWYYu1y/UH0Y2d0ZS87GUfE
+        69qFqnyfzA/cobd9RZuG2Y1uE6NLl0ZNcRNjKRntB2LJAN42W7FmiY0K+LCN9RJwjn7Kv9FWrOy
+        R1TqkgBHizf8rl5lP8N5IPcFv26IhAhcVZEwQzh0nUg==
+X-Received: by 2002:a17:906:75a:: with SMTP id z26mr33965990ejb.22.1615968971921;
+        Wed, 17 Mar 2021 01:16:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwPcCO5sSi1eo5a3askTdA/AAtRTlKM87h4YwdmFP5QiRbC3VpupLgHfc3JdAdM/y1VwLMscA==
+X-Received: by 2002:a17:906:75a:: with SMTP id z26mr33965971ejb.22.1615968971762;
+        Wed, 17 Mar 2021 01:16:11 -0700 (PDT)
+Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.gmail.com with ESMTPSA id jv19sm10845827ejc.74.2021.03.17.01.16.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 01:16:11 -0700 (PDT)
+Subject: Re: [PATCH] MIPS: ralink: define stubs for clk_set_parent to fix
+ compile testing
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
+        linux-tegra@vger.kernel.org, balbi@kernel.org,
+        linux-usb@vger.kernel.org, digetx@gmail.com,
+        kernel test robot <lkp@intel.com>
+References: <20210316175725.79981-1-krzysztof.kozlowski@canonical.com>
+ <20210316215820.GA18064@alpha.franken.de>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <804bb73f-7de0-e91b-ed57-a3b26de78fce@canonical.com>
+Date:   Wed, 17 Mar 2021 09:16:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210316155001.699efbb4@canb.auug.org.au> <d3c9bca8-3709-3613-c4cd-6da2aa96c2b9@infradead.org>
-In-Reply-To: <d3c9bca8-3709-3613-c4cd-6da2aa96c2b9@infradead.org>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Wed, 17 Mar 2021 10:16:01 +0200
-Message-ID: <CA+U=DspHhL=Of2axKW6FiF3oG8S7FEP4QBLEZHc5VQ4LzmvqNQ@mail.gmail.com>
-Subject: Re: linux-next: Tree for Mar 16 (AD9467 & ADI_AXI_ADC)
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210316215820.GA18064@alpha.franken.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 11:20 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 3/15/21 9:50 PM, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > News: there will be no linux-next release on Friday this week.
-> >
-> > Warning: Some of the branches in linux-next are still based on v5.12-rc1,
-> > so please be careful if you are trying to bisect a bug.
-> >
-> > News: if your -next included tree is based on Linus' tree tag
-> > v5.12-rc1{,-dontuse} (or somewhere between v5.11 and that tag), please
-> > consider rebasing it onto v5.12-rc2. Also, please check any branches
-> > merged into your branch.
-> >
-> > Changes since 20210315:
->
->
-> on i386 or x86_64:
->
-> WARNING: unmet direct dependencies detected for ADI_AXI_ADC
->   Depends on [n]: IIO [=y] && HAS_IOMEM [=y] && OF [=n]
->   Selected by [y]:
->   - AD9467 [=y] && IIO [=y] && SPI [=y]
->
->
-> AD9467 should not select ADI_AXI_ADC when OF is not enabled,
-> so possibly AD9467 should depend on OF.
+On 16/03/2021 22:58, Thomas Bogendoerfer wrote:
+> On Tue, Mar 16, 2021 at 06:57:25PM +0100, Krzysztof Kozlowski wrote:
+>> The Ralink MIPS platform does not use Common Clock Framework and does
+>> not define certain clock operations leading to compile test failures:
+>>
+>>     /usr/bin/mips-linux-gnu-ld: drivers/usb/phy/phy-tegra-usb.o: in function `tegra_usb_phy_init':
+>>     phy-tegra-usb.c:(.text+0x1dd4): undefined reference to `clk_get_parent'
+> 
+> hmm, why not make it use common clock framework ? And shouldn't 
+> include/linux/clk.h provide what you need, if CONFIG_HAVE_CLK is not set ?
 
-Hmm, this becomes a bit complicated.
-We got here because we needed to add a depends on HAS_IOMEM for the
-ADI_AXI_ADC (due to the s390 arch).
-Maybe a better fix would be for AD9467 to depend on ADI_AXI_ADC.
-The AD9467 driver can't function without the ADI_AXI_ADC driver.
+Converting entire Ralink machine to the CCF is quite a task requiring
+testing and basic knowledge about this platform. I am just trying to
+plug the build failure reported some months ago [1][2]. The CCF does not
+provide stubs if platform provides its own clocks.
 
-It is a little early to move this to a "high-speed ADC" subgroup.
+[1] https://lore.kernel.org/lkml/202102170017.MgPVy7aZ-lkp@intel.com/
+[2]
+https://lore.kernel.org/lkml/20210316075551.10259-1-krzysztof.kozlowski@canonical.com/
 
->
->
-> Full randconfig file is attached.
->
->
-> --
-> ~Randy
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Best regards,
+Krzysztof
