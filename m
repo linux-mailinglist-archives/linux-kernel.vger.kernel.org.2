@@ -2,85 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191A033EE41
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:26:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8BD33EE45
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbhCQKZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:25:45 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:41439 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhCQKZQ (ORCPT
+        id S229893AbhCQK0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:26:21 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:14361 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229863AbhCQKZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:25:16 -0400
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id DC92F40015;
-        Wed, 17 Mar 2021 10:25:11 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 11:25:11 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Vinod Koul <vkoul@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-clk@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-i3c@lists.infradead.org, linux-iio@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Clean-up undocumented compatible strings
-Message-ID: <YFHZBwG9JBFPzJhS@piout.net>
-References: <20210316194918.3528417-1-robh@kernel.org>
+        Wed, 17 Mar 2021 06:25:57 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F0mTp1w7lz9s00;
+        Wed, 17 Mar 2021 18:23:58 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.174) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 17 Mar 2021 18:25:40 +0800
+From:   Li Huafei <lihuafei1@huawei.com>
+To:     <rostedt@goodmis.org>, <mingo@redhat.com>, <jolsa@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, <yangjihong1@huawei.com>,
+        <xukuohai@huawei.com>, <zhangjinhao2@huawei.com>,
+        <lihuafei1@huawei.com>
+Subject: [PATCH 0/2] Fix the race on &event->ftrace_ops between perf and ftrace
+Date:   Wed, 17 Mar 2021 18:25:27 +0800
+Message-ID: <20210317102529.226734-1-lihuafei1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316194918.3528417-1-robh@kernel.org>
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/03/2021 13:49:18-0600, Rob Herring wrote:
-> Adding checks for undocumented compatible strings reveals a bunch of
-> warnings in the DT binding examples. Fix the cases which are typos, just
-> a mismatch between the schema and the example, or aren't documented at all.
-> In a couple of cases, fixing the compatible revealed some schema errors
-> which are fixed.
-> 
-> There's a bunch of others remaining after this which have bindings, but
-> those aren't converted to schema yet.
-> 
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-clk@vger.kernel.org
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-i3c@lists.infradead.org
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-leds@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: linux-serial@vger.kernel.org
-> Cc: linux-spi@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+There is a race on &event->ftrace_ops between perf_alloc_event() and
+__ftrace_ops_list_func(). When adding a perf event, if the event needs
+to use the ftrace framework, it needs to register ftrace_ops with
+ftrace, which is a structural member of perf event. If perf_alloc_event()
+fails, it will free the allocated event directly, but if ftrace_ops has
+been successfully registered, and the probe point is triggered, then
+__ftrace_ops_list_func() may still reference the ftrace_ops that perf
+just registered, but it has been freed with the event is freed,
+so use-after-free happens.
 
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+This race condition was triggered when we did the fuzz test, see the commit
+message of PATCH 2 for detailed logs. This patch set fixes this race.
+
+Li Huafei (2):
+  ftrace: Update ftrace_ops->next pointer with rcu_assign_pointer()
+  perf, ftrace: Fix use-after-free in __ftrace_ops_list_func()
+
+ include/linux/ftrace.h          | 15 +++++++++++++++
+ kernel/trace/ftrace.c           |  4 ++--
+ kernel/trace/trace_event_perf.c |  7 +++++++
+ 3 files changed, 24 insertions(+), 2 deletions(-)
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.17.1
+
