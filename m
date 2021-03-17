@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA16433F967
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:35:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A10433F969
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233280AbhCQTex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:34:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36562 "EHLO
+        id S233312AbhCQTfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:35:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233242AbhCQTek (ORCPT
+        with ESMTP id S233258AbhCQTez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:34:40 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6CBC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:34:40 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so3777672pjq.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:34:40 -0700 (PDT)
+        Wed, 17 Mar 2021 15:34:55 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836FEC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:34:55 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id 31-20020a9d00220000b02901b64b9b50b1so2914736ota.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:34:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aC9XfsPEhWKeOkyFve3gS/y0ZK6Rzz537p4VTrc/pes=;
-        b=J7R0WNva4AWUE8efmdEYqtl6XZlVUBn+CBlU6HWx77oRXvMjetKAsiD/YUYQchl7iR
-         2dUWIMmTGRS552IhNuMHn1MRe2X8gDQzUE6Lt7q3D1P1kUmDH9CicIblf5m/yUbpIH7+
-         9RvzBuZs+pQx9RJHQGgaGMxoUQJYjDIi9qVR4=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LLJFoBGKOe7vF7102iLQqdVbnd2dgxb55puMEOQ7yo4=;
+        b=lANykiriyprqUG6IZx/sz5t20mOCslyWOj5S/1sID7upZZPneaoSKmEL8irKQ8cZxr
+         Nk2WSyi8idpXM6HeUF6zAw6Kv93y92cwHdMS+He1qA/kW0yPBsPV6ZzSfham7TCyYqZn
+         vo5HBtIb7JGm2TB2yDnT65rBM/bNnbpaPhKepfaLksUyBW7thXxqzvR368+L05FdcGz6
+         ArveoJpYIAO3LzR2OjXaropjKUEsx1nk+de9w/oW2pEzaF6Tx1J/OVThf0a50MAWWNBu
+         pQmZKyZREScDPgkzzpUZgdZnTmWz6nWkS3JP8s8l+tI1Bt5hDfmZ3zKI3/lUFvLk9Ik/
+         RRsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aC9XfsPEhWKeOkyFve3gS/y0ZK6Rzz537p4VTrc/pes=;
-        b=cyZfaN/ZIMNDJ5dfCj080cCdN0y0VfBERJJ2WX3SQjFHHXo/Dzo7te+1wbAyjG9loD
-         Jv/1LsXT3haCMX69dcTvAtIcmZxt3O+H88kk5fjcJLQM/1TWlzRcHI2TyaT2d2XN9N4X
-         TswADVff2Z/K9pzswMb3/Fto5R9BBOQHlmY11t9c+/6sp0jQ+X2wvTdJ1iwpPdn7pAF9
-         iL5v4/La7K50UwpskRELM2qzbceIRJmRTwvm62QQq41wk2K4oSE7ilI6maAFZbxG4tr9
-         UIKcUluBlpc80D5lXvLqRqFol5Rk288YoyG1af8S/GremrRgttoQumUxFVJshwsSOVWm
-         g61g==
-X-Gm-Message-State: AOAM533C3ob4wPqvu/x3qwoW/3iNBvgc55nm6aI29ZmOpAu+9DQ0NpFp
-        xKvQ2l5dtUmfjtS/tuNPGNdGYg==
-X-Google-Smtp-Source: ABdhPJzvuzh0GDbQL02R1z72e58lYtYzY2DOXtCGDAWJ1P7tMT0SK4OSOelL6P3kE8/PqHxea2fa1w==
-X-Received: by 2002:a17:902:ee06:b029:e4:ba18:3726 with SMTP id z6-20020a170902ee06b02900e4ba183726mr5991813plb.17.1616009679874;
-        Wed, 17 Mar 2021 12:34:39 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:3cf8:6a09:780b:f65d])
-        by smtp.gmail.com with UTF8SMTPSA id v134sm20517485pfc.182.2021.03.17.12.34.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 12:34:39 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 12:34:36 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wesley Cheng <wcheng@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-usb@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
-Subject: Re: [PATCH 1/3] dt-bindings: usb: qcom,dwc3: Add bindings for SC7280
-Message-ID: <YFJZzAPo4Rh8I5lX@google.com>
-References: <1615978901-4202-1-git-send-email-sanm@codeaurora.org>
- <1615978901-4202-2-git-send-email-sanm@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LLJFoBGKOe7vF7102iLQqdVbnd2dgxb55puMEOQ7yo4=;
+        b=p5EyjjGnk/sdPmHhAoKms+iqanp6JRQVdB44CVsO9pi7viATbXlvEcbx+ARbmOSt1l
+         +elF48+/0mG14mTxteE2HpHwFOqjykaOtO4PIfyMMiufCWGOhO6FbCN887Vn4YBoZqbi
+         673i/AuBzNpYqXd9g6jnp+O2PVBVGD0RB/o7TaU6+aXDXA9WiXe6Ub06eKjGZLCXUQfH
+         mdTFsLWDQnGcO3hVH9xBMr4LO0cGBKf90nBkd/kRasKFEccM0BtuA/K6pesDBz3pofDr
+         C4zVnYH+jBHvN/+gZBlmzPasnWR1DNanR5XOLKKNUrzffXB6jbgIOdZzTNWD/KeQdgMx
+         0qAQ==
+X-Gm-Message-State: AOAM532iy/mYjIAN7yzOgVVYVC0IrKhsu4qbzdUlBgwlg/8I5l1uuAlM
+        exIoMLIVPqDM70P/1RWzsvSOnJxFOl9VjTqoTxjB5vhDhIc=
+X-Google-Smtp-Source: ABdhPJyI0XyJZmtVpY5eij5WlOzOAtHIHgbIGlY+kHddGp6JzIyebN73C7MeABwLMQLu3jaXbGS287ES8SH5qGSIJZM=
+X-Received: by 2002:a05:6830:1c6e:: with SMTP id s14mr4614891otg.17.1616009694737;
+ Wed, 17 Mar 2021 12:34:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1615978901-4202-2-git-send-email-sanm@codeaurora.org>
+References: <20210305194206.3165917-1-elver@google.com> <YEX15gn0lfDpc1dw@alley>
+In-Reply-To: <YEX15gn0lfDpc1dw@alley>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 17 Mar 2021 20:34:43 +0100
+Message-ID: <CANpmjNMYoQ-xE9HY+DH+wO3BSGsuOjCxffchzUhuxWk4zhf3Yw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] lib/vsprintf: do not show no_hash_pointers message
+ multiple times
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Timur Tabi <timur@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 04:31:39PM +0530, Sandeep Maheswaram wrote:
-> Add the compatible string for sc7280 SoC from Qualcomm.
-> 
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> index c3cbd1f..413299b 100644
-> --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> @@ -16,6 +16,7 @@ properties:
->            - qcom,msm8996-dwc3
->            - qcom,msm8998-dwc3
->            - qcom,sc7180-dwc3
-> +          - qcom,sc7280-dwc3
->            - qcom,sdm845-dwc3
->            - qcom,sdx55-dwc3
->            - qcom,sm8150-dwc3
+On Mon, 8 Mar 2021 at 11:01, Petr Mladek <pmladek@suse.com> wrote:
+> On Fri 2021-03-05 20:42:05, Marco Elver wrote:
+> > Do not show no_hash_pointers message multiple times if the option was
+> > passed more than once (e.g. via generated command line).
+> >
+> > Signed-off-by: Marco Elver <elver@google.com>
+>
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Could you pick up this patch only?
+I think there's still controversy around how to best proceed with
+reducing space and we should drop patch 2/2 for now.
+
+If you'd like me to re-send this standalone I can do so as well.
+
+Thanks,
+-- Marco
