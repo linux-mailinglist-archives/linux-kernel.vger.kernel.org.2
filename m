@@ -2,60 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E945F33E719
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 03:46:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F1A33E71B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 03:46:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhCQCqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 22:46:02 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:56565 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229566AbhCQCpa (ORCPT
+        id S229876AbhCQCqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 22:46:04 -0400
+Received: from m42-10.mailgun.net ([69.72.42.10]:45535 "EHLO
+        m42-10.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229664AbhCQCp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 22:45:30 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R931e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0USD1E.T_1615949122;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0USD1E.T_1615949122)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 17 Mar 2021 10:45:27 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     mingo@redhat.com
-Cc:     peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] sched: replace if (cond) BUG() with BUG_ON()
-Date:   Wed, 17 Mar 2021 10:45:21 +0800
-Message-Id: <1615949121-70877-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 16 Mar 2021 22:45:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615949158; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=PFjLmq26/670K5Odqek2/4v6djpOGMkv0m21GFquOK4=;
+ b=gUjH2s58VNR7Y9QHZS3ocjfKhC13NxLImpJUqARi5IocUnjs8pbIZHfnCJxwhQ5fEhmcNosm
+ zXVInDEWqNGy+mVdQHR3IEaVgEXXANhoShbzEylt0xyL1IdYBBE5kgxCl06kNHq0yM/LFUQD
+ 1eTv5RDQZ2XlOa62swhC6XgWS0Y=
+X-Mailgun-Sending-Ip: 69.72.42.10
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60516d586dc1045b7dcdf91a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Mar 2021 02:45:44
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4F6C9C433C6; Wed, 17 Mar 2021 02:45:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 888FFC433CA;
+        Wed, 17 Mar 2021 02:45:40 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 17 Mar 2021 10:45:40 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     daejun7.park@samsung.com
+Cc:     Greg KH <gregkh@linuxfoundation.org>, avri.altman@wdc.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        asutoshd@codeaurora.org, stanley.chu@mediatek.com,
+        bvanassche@acm.org, huobean@gmail.com,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Subject: Re: [PATCH v29 4/4] scsi: ufs: Add HPB 2.0 support
+In-Reply-To: <20210317014253epcms2p1f45db6a281645282e1540e0070999d73@epcms2p1>
+References: <a18909e8f4db023455b7513bf6c60312@codeaurora.org>
+ <2da1c963bd3ff5f682d18a251ed08989@codeaurora.org>
+ <20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p3>
+ <20210315013137epcms2p861f06e66be9faff32b6648401778434a@epcms2p8>
+ <20210315070728epcms2p87136c86803afa85a441ead524130245c@epcms2p8>
+ <d6a4511fd85e6e47c5aef22e335bb253@codeaurora.org>
+ <CGME20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p1>
+ <20210317014253epcms2p1f45db6a281645282e1540e0070999d73@epcms2p1>
+Message-ID: <79aea8a80c1be2ff7f05683c2f4918ce@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+On 2021-03-17 09:42, Daejun Park wrote:
+>> On 2021-03-15 15:23, Can Guo wrote:
+>>> On 2021-03-15 15:07, Daejun Park wrote:
+>>>>>> This patch supports the HPB 2.0.
+>>>>>> 
+>>>>>> The HPB 2.0 supports read of varying sizes from 4KB to 512KB.
+>>>>>> In the case of Read (<= 32KB) is supported as single HPB read.
+>>>>>> In the case of Read (36KB ~ 512KB) is supported by as a 
+>>>>>> combination
+>>>>>> of
+>>>>>> write buffer command and HPB read command to deliver more PPN.
+>>>>>> The write buffer commands may not be issued immediately due to 
+>>>>>> busy
+>>>>>> tags.
+>>>>>> To use HPB read more aggressively, the driver can requeue the 
+>>>>>> write
+>>>>>> buffer
+>>>>>> command. The requeue threshold is implemented as timeout and can 
+>>>>>> be
+>>>>>> modified with requeue_timeout_ms entry in sysfs.
+>>>>>> 
+>>>>>> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+>>>>>> ---
+>>>>>> +static struct attribute *hpb_dev_param_attrs[] = {
+>>>>>> +        &dev_attr_requeue_timeout_ms.attr,
+>>>>>> +        NULL,
+>>>>>> +};
+>>>>>> +
+>>>>>> +struct attribute_group ufs_sysfs_hpb_param_group = {
+>>>>>> +        .name = "hpb_param_sysfs",
+>>>>>> +        .attrs = hpb_dev_param_attrs,
+>>>>>> +};
+>>>>>> +
+>>>>>> +static int ufshpb_pre_req_mempool_init(struct ufshpb_lu *hpb)
+>>>>>> +{
+>>>>>> +        struct ufshpb_req *pre_req = NULL;
+>>>>>> +        int qd = hpb->sdev_ufs_lu->queue_depth / 2;
+>>>>>> +        int i, j;
+>>>>>> +
+>>>>>> +        INIT_LIST_HEAD(&hpb->lh_pre_req_free);
+>>>>>> +
+>>>>>> +        hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req),
+>>>>>> GFP_KERNEL);
+>>>>>> +        hpb->throttle_pre_req = qd;
+>>>>>> +        hpb->num_inflight_pre_req = 0;
+>>>>>> +
+>>>>>> +        if (!hpb->pre_req)
+>>>>>> +                goto release_mem;
+>>>>>> +
+>>>>>> +        for (i = 0; i < qd; i++) {
+>>>>>> +                pre_req = hpb->pre_req + i;
+>>>>>> +                INIT_LIST_HEAD(&pre_req->list_req);
+>>>>>> +                pre_req->req = NULL;
+>>>>>> +                pre_req->bio = NULL;
+>>>>> 
+>>>>> Why don't prepare bio as same as wb.m_page? Won't that save more 
+>>>>> time
+>>>>> for ufshpb_issue_pre_req()?
+>>>> 
+>>>> It is pre_req pool. So although we prepare bio at this time, it just
+>>>> only for first pre_req.
+>>> 
+>>> I meant removing the bio_alloc() in ufshpb_issue_pre_req() and
+>>> bio_put()
+>>> in ufshpb_pre_req_compl_fn(). bios, in pre_req's case, just hold a
+>>> page.
+>>> So, prepare 16 (if queue depth is 32) bios here, just use them along
+>>> with
+>>> wb.m_page and call bio_reset() in ufshpb_pre_req_compl_fn(). Shall it
+>>> work?
+>>> 
+>> 
+>> If it works, you can even have the bio_add_pc_page() called here. 
+>> Later
+>> in
+>> ufshpb_execute_pre_req(), you don't need to call
+>> ufshpb_pre_req_add_bio_page(),
+>> just call ufshpb_prep_entry() once instead - it save many repeated 
+>> steps
+>> for a
+>> pre_req, and you don't even need to call bio_reset() in this case, 
+>> since
+>> for a
+>> bio, nothing changes after it is binded with a specific page...
+> 
+> Hi, Can Guo
+> 
+> I tried the idea that you suggested, but it doesn't work properly.
+> This optimization should be done next time for enhancement.
 
-./kernel/sched/core.c:8039:2-5: WARNING: Use BUG_ON instead of if
-condition followed by BUG.
+Can you elaborate please? Any error seen?
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- kernel/sched/core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Per my understanding, in the case for pre_reqs, a bio is no different
+from a page. Here it can reserve 16 pages for later use, which can be
+done the same for bios.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 9819121..7392bc0 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8035,8 +8035,7 @@ void __init sched_init_smp(void)
- 	mutex_unlock(&sched_domains_mutex);
- 
- 	/* Move init over to a non-isolated CPU */
--	if (set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_FLAG_DOMAIN)) < 0)
--		BUG();
-+	BUG(set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_FLAG_DOMAIN)) < 0);
- 	sched_init_granularity();
- 
- 	init_sched_rt_class();
--- 
-1.8.3.1
+This is not an enhancement, but a doubt - why not? Unless it is not 
+doable.
 
+Thanks,
+Can Guo.
+
+> 
+> Thanks
+> Daejun
+> 
+>> Can Guo.
+>> 
+>>> Thanks,
+>>> Can Guo.
+>>> 
+>>>> After use it, it should be prepared bio at issue phase.
+>>>> 
+>>>> Thanks,
+>>>> Daejun
+>>>> 
+>>>>> 
+>>>>> Thanks,
+>>>>> Can Guo.
+>>>>> 
+>>>>>> +
+>>>>>> +                pre_req->wb.m_page = alloc_page(GFP_KERNEL |
+>>>>>> __GFP_ZERO);
+>>>>>> +                if (!pre_req->wb.m_page) {
+>>>>>> +                        for (j = 0; j < i; j++)
+>>>>>> +
+>>>>>> __free_page(hpb->pre_req[j].wb.m_page);
+>>>>>> +
+>>>>>> +                        goto release_mem;
+>>>>>> +                }
+>>>>>> +                list_add_tail(&pre_req->list_req,
+>>>>>> &hpb->lh_pre_req_free);
+>>>>>> +        }
+>>>>>> +
+>>>>>> +        return 0;
+>>>>>> +release_mem:
+>>>>>> +        kfree(hpb->pre_req);
+>>>>>> +        return -ENOMEM;
+>>>>>> +}
+>>>>>> +
+>>>>> 
+>>>>> 
+>>>>> 
+>> 
+>> 
+>> 
