@@ -2,58 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E673233F08A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CAD33F08D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:39:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbhCQMip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 08:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbhCQMi1 (ORCPT
+        id S230256AbhCQMis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 08:38:48 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49764 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229863AbhCQMi3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 08:38:27 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A07C06174A;
-        Wed, 17 Mar 2021 05:38:27 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 12:38:25 -0000
+        Wed, 17 Mar 2021 08:38:29 -0400
+Date:   Wed, 17 Mar 2021 12:38:27 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615984706;
+        s=2020; t=1615984708;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NMK9mwYemz31+TAh2smZqXf6rAO8D93gOnHoa7VYhuU=;
-        b=0pr6LBYQpF0sIMjckGbctFZxBGrDcLEKBPnVjDuEb102m6wWPyGlLgGauiVibneNFsphTU
-        k/WmV2SS1N2CQHx9Zvf3J9hQsdSKuKaQBZRJfKaBFe2PmtmghoV3iMPApoeZmP7JKDgAkq
-        tINXQsAwEk/+1kTxlv6xwQzy7Of9VBlwBONTL1NodwHZwE55uxfYwS4Z4ldYA7T1A7IVul
-        szGJ98MRGJMVhlKqftbKndxzVJrsv0X8lUzZ3gHTERJ0ltELYQl4W5a3rBnaarqQ0bZDef
-        UdE3eY9t53LmIHKCeoUAp2e/yTBNB0iq8/J72j4tYSwTAdkp5NPp0gV6WwS4Sw==
+        bh=M0lUdGEkmJVWbjEAsxHbVVCn26APtUZuSk7lTZDFCs4=;
+        b=XkqXQjDJOT6WhXBzogJ64CabbLqy6mAHbmaCAczraXkpyrPhZsUkXGY26mnYsFUgdfGbZH
+        HDj9r+SwR7D7YYlZFEXpZz+ICG0a8AaACvz7q1LKSGtxvHhzHqWMhtDUt+rQXoC0a4iHr/
+        wa892jkohfaqVkvA7DOKPvCUsBnr778xWcVOgXg5ro73DSH9lrnw9Z1GFFq7RYm9py2wvx
+        hMVb5B5PUFjtyEdg6KbZQSGrbhDpQAp4pFLbLv2OnyfypkFOTcFNyuuZ6rF1of1mUEH+1P
+        zhYG+XGB69ghcR6Ms5cV8XLGw0p1qbUTzDjonCZGSVdig35UOAQhW8mbUjbNzA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615984706;
+        s=2020e; t=1615984708;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NMK9mwYemz31+TAh2smZqXf6rAO8D93gOnHoa7VYhuU=;
-        b=aQq0sLazXcCQOFp1kTk3JTaynKivOp92FBar5NbZ5YWE+7J5hGSazQBd+cAoCcppLsCaBA
-        dRr47z0olh6Tp+Bg==
-From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
+        bh=M0lUdGEkmJVWbjEAsxHbVVCn26APtUZuSk7lTZDFCs4=;
+        b=MLwcXdlOKHUGJdqB4hc/SJCK+satPfd/hAXuAqFrRrbvgt6KTfbQJVqgZkfbxmDv1lu9N/
+        vE9LVNGi/EagcuDQ==
+From:   "tip-bot2 for Nicholas Piggin" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf/x86/intel: Fix unchecked MSR access error
- caused by VLBR_EVENT
-Cc:     Vince Weaver <vincent.weaver@maine.edu>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        stable@vger.kernel.org, x86@kernel.org,
+Subject: [tip: sched/core] sched/wait_bit, mm/filemap: Increase page and bit
+ waitqueue hash size
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <1615555298-140216-2-git-send-email-kan.liang@linux.intel.com>
-References: <1615555298-140216-2-git-send-email-kan.liang@linux.intel.com>
+In-Reply-To: <20210317075427.587806-1-npiggin@gmail.com>
+References: <20210317075427.587806-1-npiggin@gmail.com>
 MIME-Version: 1.0
-Message-ID: <161598470558.398.3008177602318423260.tip-bot2@tip-bot2>
+Message-ID: <161598470782.398.7078277215554525953.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,57 +58,185 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/urgent branch of tip:
+The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     2dc0572f2cef87425147658698dce2600b799bd3
-Gitweb:        https://git.kernel.org/tip/2dc0572f2cef87425147658698dce2600b799bd3
-Author:        Kan Liang <kan.liang@linux.intel.com>
-AuthorDate:    Fri, 12 Mar 2021 05:21:38 -08:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 16 Mar 2021 21:44:39 +01:00
+Commit-ID:     873d7c4c6a920d43ff82e44121e54053d4edba93
+Gitweb:        https://git.kernel.org/tip/873d7c4c6a920d43ff82e44121e54053d4edba93
+Author:        Nicholas Piggin <npiggin@gmail.com>
+AuthorDate:    Wed, 17 Mar 2021 17:54:27 +10:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 17 Mar 2021 09:32:30 +01:00
 
-perf/x86/intel: Fix unchecked MSR access error caused by VLBR_EVENT
+sched/wait_bit, mm/filemap: Increase page and bit waitqueue hash size
 
-On a Haswell machine, the perf_fuzzer managed to trigger this message:
+The page waitqueue hash is a bit small (256 entries) on very big systems. A
+16 socket 1536 thread POWER9 system was found to encounter hash collisions
+and excessive time in waitqueue locking at times. This was intermittent and
+hard to reproduce easily with the setup we had (very little real IO
+capacity). The theory is that sometimes (depending on allocation luck)
+important pages would happen to collide a lot in the hash, slowing down page
+locking, causing the problem to snowball.
 
-[117248.075892] unchecked MSR access error: WRMSR to 0x3f1 (tried to
-write 0x0400000000000000) at rIP: 0xffffffff8106e4f4
-(native_write_msr+0x4/0x20)
-[117248.089957] Call Trace:
-[117248.092685]  intel_pmu_pebs_enable_all+0x31/0x40
-[117248.097737]  intel_pmu_enable_all+0xa/0x10
-[117248.102210]  __perf_event_task_sched_in+0x2df/0x2f0
-[117248.107511]  finish_task_switch.isra.0+0x15f/0x280
-[117248.112765]  schedule_tail+0xc/0x40
-[117248.116562]  ret_from_fork+0x8/0x30
+An small test case was made where threads would write and fsync different
+pages, generating just a small amount of contention across many pages.
 
-A fake event called VLBR_EVENT may use the bit 58 of the PEBS_ENABLE, if
-the precise_ip is set. The bit 58 is reserved by the HW. Accessing the
-bit causes the unchecked MSR access error.
+Increasing page waitqueue hash size to 262144 entries increased throughput
+by 182% while also reducing standard deviation 3x. perf before the increase:
 
-The fake event doesn't support PEBS. The case should be rejected.
+  36.23%  [k] _raw_spin_lock_irqsave                -      -
+              |
+              |--34.60%--wake_up_page_bit
+              |          0
+              |          iomap_write_end.isra.38
+              |          iomap_write_actor
+              |          iomap_apply
+              |          iomap_file_buffered_write
+              |          xfs_file_buffered_aio_write
+              |          new_sync_write
 
-Fixes: 097e4311cda9 ("perf/x86: Add constraint to create guest LBR event without hw counter")
-Reported-by: Vince Weaver <vincent.weaver@maine.edu>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/1615555298-140216-2-git-send-email-kan.liang@linux.intel.com
+  17.93%  [k] native_queued_spin_lock_slowpath      -      -
+              |
+              |--16.74%--_raw_spin_lock_irqsave
+              |          |
+              |           --16.44%--wake_up_page_bit
+              |                     iomap_write_end.isra.38
+              |                     iomap_write_actor
+              |                     iomap_apply
+              |                     iomap_file_buffered_write
+              |                     xfs_file_buffered_aio_write
+
+This patch uses alloc_large_system_hash to allocate a bigger system hash
+that scales somewhat with memory size. The bit/var wait-queue is also
+changed to keep code matching, albiet with a smaller scale factor.
+
+A very small CONFIG_BASE_SMALL option is also added because these are two
+of the biggest static objects in the image on very small systems.
+
+This hash could be made per-node, which may help reduce remote accesses
+on well localised workloads, but that adds some complexity with indexing
+and hotplug, so until we get a less artificial workload to test with,
+keep it simple.
+
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
+Link: https://lore.kernel.org/r/20210317075427.587806-1-npiggin@gmail.com
 ---
- arch/x86/events/intel/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+ kernel/sched/wait_bit.c | 30 +++++++++++++++++++++++-------
+ mm/filemap.c            | 24 +++++++++++++++++++++---
+ 2 files changed, 44 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 7bbb5bb..37ce384 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -3659,6 +3659,9 @@ static int intel_pmu_hw_config(struct perf_event *event)
- 		return ret;
+diff --git a/kernel/sched/wait_bit.c b/kernel/sched/wait_bit.c
+index 02ce292..dba73de 100644
+--- a/kernel/sched/wait_bit.c
++++ b/kernel/sched/wait_bit.c
+@@ -2,19 +2,24 @@
+ /*
+  * The implementation of the wait_bit*() and related waiting APIs:
+  */
++#include <linux/memblock.h>
+ #include "sched.h"
  
- 	if (event->attr.precise_ip) {
-+		if ((event->attr.config & INTEL_ARCH_EVENT_MASK) == INTEL_FIXED_VLBR_EVENT)
-+			return -EINVAL;
+-#define WAIT_TABLE_BITS 8
+-#define WAIT_TABLE_SIZE (1 << WAIT_TABLE_BITS)
+-
+-static wait_queue_head_t bit_wait_table[WAIT_TABLE_SIZE] __cacheline_aligned;
++#define BIT_WAIT_TABLE_SIZE (1 << bit_wait_table_bits)
++#if CONFIG_BASE_SMALL
++static const unsigned int bit_wait_table_bits = 3;
++static wait_queue_head_t bit_wait_table[BIT_WAIT_TABLE_SIZE] __cacheline_aligned;
++#else
++static unsigned int bit_wait_table_bits __ro_after_init;
++static wait_queue_head_t *bit_wait_table __ro_after_init;
++#endif
+ 
+ wait_queue_head_t *bit_waitqueue(void *word, int bit)
+ {
+ 	const int shift = BITS_PER_LONG == 32 ? 5 : 6;
+ 	unsigned long val = (unsigned long)word << shift | bit;
+ 
+-	return bit_wait_table + hash_long(val, WAIT_TABLE_BITS);
++	return bit_wait_table + hash_long(val, bit_wait_table_bits);
+ }
+ EXPORT_SYMBOL(bit_waitqueue);
+ 
+@@ -152,7 +157,7 @@ EXPORT_SYMBOL(wake_up_bit);
+ 
+ wait_queue_head_t *__var_waitqueue(void *p)
+ {
+-	return bit_wait_table + hash_ptr(p, WAIT_TABLE_BITS);
++	return bit_wait_table + hash_ptr(p, bit_wait_table_bits);
+ }
+ EXPORT_SYMBOL(__var_waitqueue);
+ 
+@@ -246,6 +251,17 @@ void __init wait_bit_init(void)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < WAIT_TABLE_SIZE; i++)
++	if (!CONFIG_BASE_SMALL) {
++		bit_wait_table = alloc_large_system_hash("bit waitqueue hash",
++							sizeof(wait_queue_head_t),
++							0,
++							22,
++							0,
++							&bit_wait_table_bits,
++							NULL,
++							0,
++							0);
++	}
++	for (i = 0; i < BIT_WAIT_TABLE_SIZE; i++)
+ 		init_waitqueue_head(bit_wait_table + i);
+ }
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 4370048..dbbb5b9 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -34,6 +34,7 @@
+ #include <linux/security.h>
+ #include <linux/cpuset.h>
+ #include <linux/hugetlb.h>
++#include <linux/memblock.h>
+ #include <linux/memcontrol.h>
+ #include <linux/cleancache.h>
+ #include <linux/shmem_fs.h>
+@@ -990,19 +991,36 @@ EXPORT_SYMBOL(__page_cache_alloc);
+  * at a cost of "thundering herd" phenomena during rare hash
+  * collisions.
+  */
+-#define PAGE_WAIT_TABLE_BITS 8
+-#define PAGE_WAIT_TABLE_SIZE (1 << PAGE_WAIT_TABLE_BITS)
++#define PAGE_WAIT_TABLE_SIZE (1 << page_wait_table_bits)
++#if CONFIG_BASE_SMALL
++static const unsigned int page_wait_table_bits = 4;
+ static wait_queue_head_t page_wait_table[PAGE_WAIT_TABLE_SIZE] __cacheline_aligned;
++#else
++static unsigned int page_wait_table_bits __ro_after_init;
++static wait_queue_head_t *page_wait_table __ro_after_init;
++#endif
+ 
+ static wait_queue_head_t *page_waitqueue(struct page *page)
+ {
+-	return &page_wait_table[hash_ptr(page, PAGE_WAIT_TABLE_BITS)];
++	return &page_wait_table[hash_ptr(page, page_wait_table_bits)];
+ }
+ 
+ void __init pagecache_init(void)
+ {
+ 	int i;
+ 
++	if (!CONFIG_BASE_SMALL) {
++		page_wait_table = alloc_large_system_hash("page waitqueue hash",
++							sizeof(wait_queue_head_t),
++							0,
++							21,
++							0,
++							&page_wait_table_bits,
++							NULL,
++							0,
++							0);
++	}
 +
- 		if (!(event->attr.freq || (event->attr.wakeup_events && !event->attr.watermark))) {
- 			event->hw.flags |= PERF_X86_EVENT_AUTO_RELOAD;
- 			if (!(event->attr.sample_type &
+ 	for (i = 0; i < PAGE_WAIT_TABLE_SIZE; i++)
+ 		init_waitqueue_head(&page_wait_table[i]);
+ 
