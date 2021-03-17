@@ -2,94 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2B833EB1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2433333EB20
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229506AbhCQIMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhCQIMU (ORCPT
+        id S229634AbhCQIMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:12:55 -0400
+Received: from casper.infradead.org ([90.155.50.34]:50526 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhCQIMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:12:20 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD710C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:12:19 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id j6so392626plx.6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:12:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zLY15HRdmjN+WzEM6Wb9ghJnMYS5GHNsHkgt7obEDCM=;
-        b=c6ZgUWtqaq8Pu7xQlqPoKl8CX3atGgQHi577Sj+2KOyhTPAQQYvstQUKN397PFTwaN
-         R7vZvQHgY9B8R3b2YC9EH5WCADvgr4+5uNFTG6+VzTZcFMFi6fdLxDbFUhtwpCoQ3FqD
-         NOU+b161/ArEZtIWOvjgdosNKT3CIc7+n/fdE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zLY15HRdmjN+WzEM6Wb9ghJnMYS5GHNsHkgt7obEDCM=;
-        b=ZmGvY2cxo/EHu5kmcda+LSU5qqTkneCt9+Ac/mRqUUARZOamnhnU7PeGg9wzfC/6ZA
-         okEo1wK+xlwP3Z8T7n9RxMAOs1sx8DziHzZ1Ld89hJj7QeqPnI45sesUtAEjY+49X7nE
-         8j2YVXaj7dlZjgtGRhHPzWrJtxVIDQNGuWVdw8ZAXpCeCa/VzZZw2zk23VFVQZVmJxoW
-         xexq8x3ZYcEcdFIEU8MfhLpMzvnnEIzpRliTNeOZroBg4WtxFOU9r2uGWvIl9CaoDjib
-         mCW/i1MjBeBj5dbLA4aDZAiOxrPHIWCZDdUY6V05rJi84AvlMiASD1zlTcs4RbzdqmJ/
-         twew==
-X-Gm-Message-State: AOAM533uNeLMWp6Fwo2n0eUJz89ZoXsNAZxcnaVpTUTPxvjQHel0VDUd
-        qFhz8/wZj5FYKTddCGB0AthY8A==
-X-Google-Smtp-Source: ABdhPJwnW6oAfoxq5uuWhck8IodvFib2eXowUm6fAuUHOK6MrqUJp3RkyoYyCTxx5YIXYOtnpc3hIw==
-X-Received: by 2002:a17:902:8c92:b029:e6:60ad:6924 with SMTP id t18-20020a1709028c92b02900e660ad6924mr3319720plo.16.1615968739531;
-        Wed, 17 Mar 2021 01:12:19 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:b48f:f050:bdc5:eb89])
-        by smtp.gmail.com with ESMTPSA id 138sm18608063pfv.192.2021.03.17.01.12.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 01:12:19 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 17:12:14 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Ricardo Ribalda <ribalda@chromium.org>
-Subject: Re: [PATCHv2 2/3] media: uvcvideo: add ROI auto controls
-Message-ID: <YFG53qBdM0HWV2qL@google.com>
-References: <20210208051749.1785246-1-sergey.senozhatsky@gmail.com>
- <20210208051749.1785246-3-sergey.senozhatsky@gmail.com>
- <CAPybu_2ZRNUiZbFHfuW6i119xhs21-zTigoaO8sZc-Ye3D18xA@mail.gmail.com>
- <YFFcvbXRlCCB+pv/@google.com>
- <CAPybu_3cu7_vca0gi_A2QRA0TYozqE2Ef_q5QQgQW9LzGFbUKQ@mail.gmail.com>
+        Wed, 17 Mar 2021 04:12:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=IehPtnr2c07Eo8n4Xevc6LWmWOtEfSwpKWxcioQnaYs=; b=YKuydSMcvq7+32CZHk4OQAyrEY
+        wzEw7pN1EgujwvuZSREK+iGF2hvzySihXft+Sk/r1lBwalnR92Ooy3jXFbzVH/u+4Mk1rzKPzGnh6
+        i3bBb+KgGuTC+vpvyFwXicZL+GV956Pl8mnKKRRbvOZPenqJBDiS9+akeUbS5/Q76eQ8/0UxmdkEN
+        1aEynOopC0fvD+BnBN0nEokGn7YOnm39NVd1f8gAVe4tBBvkV30o06eutAjaqfPVdOqNa+oiMKww3
+        JXPf7TQlmZZwfGO8vsjLLnZBYKwpcAcLr27TVsDOGOV5hYBcJVRw9/qCzodl7CMy3CFSVeGWn1IOR
+        th/yS3xQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMRHs-001Fki-8s; Wed, 17 Mar 2021 08:12:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7774A3006E0;
+        Wed, 17 Mar 2021 09:12:15 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 659A62C0B11A5; Wed, 17 Mar 2021 09:12:15 +0100 (CET)
+Date:   Wed, 17 Mar 2021 09:12:15 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, jgross@suse.com, mbenes@suze.cz,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/9] objtool: Rework rebuild_reloc logic
+Message-ID: <YFG53wkgw6nDBgIl@hirez.programming.kicks-ass.net>
+References: <20210312171613.533405394@infradead.org>
+ <20210312171653.649709484@infradead.org>
+ <20210317033417.lbwemc2j2cpsdlzd@treble>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPybu_3cu7_vca0gi_A2QRA0TYozqE2Ef_q5QQgQW9LzGFbUKQ@mail.gmail.com>
+In-Reply-To: <20210317033417.lbwemc2j2cpsdlzd@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed Tomasz's email
-
-On (21/03/17 09:08), Ricardo Ribalda Delgado wrote:
-[..]
-> > > > +               .id             = V4L2_CID_REGION_OF_INTEREST_AUTO,
-> > > > +               .name           = "Region of Interest (auto)",
-> > > > +               .entity         = UVC_GUID_UVC_CAMERA,
-> > > > +               .selector       = UVC_CT_REGION_OF_INTEREST_CONTROL,
-> > > > +               .size           = 16,
-> > > > +               .offset         = 64,
-> > > > +               .v4l2_type      = V4L2_CTRL_TYPE_BITMASK,
-> > > Are
-> >
-> > Are?
+On Tue, Mar 16, 2021 at 10:34:17PM -0500, Josh Poimboeuf wrote:
+> On Fri, Mar 12, 2021 at 06:16:18PM +0100, Peter Zijlstra wrote:
+> > --- a/tools/objtool/elf.c
+> > +++ b/tools/objtool/elf.c
+> > @@ -479,6 +479,8 @@ void elf_add_reloc(struct elf *elf, stru
+> >  
+> >  	list_add_tail(&reloc->list, &sec->reloc_list);
+> >  	elf_hash_add(elf->reloc_hash, &reloc->hash, reloc_hash(reloc));
+> > +
+> > +	sec->rereloc = true;
+> >  }
 > 
-> Aye!
-> You are not a good kernel reviewer if you do not talk pirate :P.
+> Can we just reuse sec->changed for this?  Something like this on top
+> (untested of course):
 
-Arr, Matey!
+I think my worry was that we'd dirty too much and slow down the write,
+but I haven't done any actual performance measurements on this.
 
-	-ss
+Let me do a few runs and see if it matters at all.
