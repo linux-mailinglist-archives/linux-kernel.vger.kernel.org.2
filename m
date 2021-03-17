@@ -2,144 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A7833E2F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 620F933E2FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbhCQAok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:44:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45418 "EHLO
+        id S229745AbhCQApq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:45:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhCQAoa (ORCPT
+        with ESMTP id S229687AbhCQApU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:44:30 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E11AC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:44:19 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id p8so75141067ejb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:44:19 -0700 (PDT)
+        Tue, 16 Mar 2021 20:45:20 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EEAC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:45:20 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id t16so602686qvr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:45:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Hdc3Z4qXX9l8XXJJcPsajObPuLYLca+A1Hq/au570EA=;
-        b=YqsIQMoBpBXzCzWbXra19j5jdGRkI2qmReN0oKioV0Shal06ZaKrGs1JdX7FzgzYcr
-         nVdCUGWHZEm/QGFrHGtKf2wWR/L5xQyhWnIB3r3hvDiwBN64JQlL/ROMD8G8P5PUnBxO
-         I6l7MXffemgprdgtj4mLDpX7ZtfZ2Y1ecu3YE=
+        bh=aO/OZ4zO5c+UReCZXfD9/ue3OlGDOu+K9xY/v16MWOM=;
+        b=Yjxx9s2kQ4DOhIjHj6+/pNSGqV161HlvXedt3ioyBFMJpaown9V/+E6jKZL9S8hlvD
+         /g20NMV4xosL3HCIgWPtGpkvEXYezGYew1XCpu4lMFetz9DROLcwY0BqVdgEc/puWbj2
+         CSWigEl1OnH/gTE+ZVG39hnrhmWVqAbwq5ils=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Hdc3Z4qXX9l8XXJJcPsajObPuLYLca+A1Hq/au570EA=;
-        b=S27Xv8WOu/cT1gx6jfWlXDvECnNG0QN1jrzRPdJ3c8H5cEH/IuSxvnTzchL7Apldhv
-         yhl8pNxefIkWT1YqAl6TuOJnpm2l8am/tYz4/kvtZG9UZmlpvE2S/KqC0q2Xghb8iMy3
-         XvYzBbtMr2+BNOGfKxIkpAZGjB5OsGJMI45o30TChg35BvT5rHYB5SUWLVqkXKbTsF6z
-         L5QuogjzJmg3eZGJInz32BS0GsWnKXPWGh3H0lD2nFnQlNNjuyVK/KGh0CGI31zUv3ML
-         Pj7K6LtXdcdK7lHF9ZPrlWV/xXBy7TGf+OUrjjBZKHGTn6lh65Z21GRVhfUL346YOfbV
-         uLqg==
-X-Gm-Message-State: AOAM533ApIe4rasxLrMy1xooWg67WfO4umta6E8tEOzr6JtF+i9IMDXf
-        aWjWfzhUxlN6EOcT1SBBV9TJNK6eNJP/Eg==
-X-Google-Smtp-Source: ABdhPJyQrhT9N90H03nIxQESChTKD4J4wrHIGCkGxI4LadWkYRP/jWp7jfN8k+mXQyDQ2BAizHQC5g==
-X-Received: by 2002:a17:907:e8f:: with SMTP id ho15mr33500658ejc.541.1615941858017;
-        Tue, 16 Mar 2021 17:44:18 -0700 (PDT)
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
-        by smtp.gmail.com with ESMTPSA id m9sm2190431ejo.65.2021.03.16.17.44.17
+        bh=aO/OZ4zO5c+UReCZXfD9/ue3OlGDOu+K9xY/v16MWOM=;
+        b=tFkqu2ktiLd/QhZRy+UEFEtE4heasyerepZDtMuuhmCm7pus1RPsvbM9x17+712bTX
+         7NIC36/d/OTSy7VUJyubQdmqj1Ddw8K7HrLdStntYO2ydXcX6BYZqyljcerQw5d9s3R9
+         u/kPzfay7g/bBRp+syNQGSjKEZoBReKqVfpOYMRkisZQ/vAwO6fvBi/9x8aBfSdsnTrC
+         l31GNl5oNy8xzsDaM5HWpmpiGVAftu3JJq7AqrkNtLcL+x48nWlyPfjgsQ5/ofARVJfE
+         2VY9WuW8vO1P67VHmT87EX/MFsdwKIz3AEE+wTb/MyhYLnFNS1luY/VpOx2dNolqHtte
+         ZFFQ==
+X-Gm-Message-State: AOAM533dFISOiiDMFIIksP1qJwTdS38MZIehMcameBsxWwVnZAaYC9yT
+        Jq0CnRDZFwFgVfo9zQbtAh+9BAgjMuSG2w==
+X-Google-Smtp-Source: ABdhPJxoJKfe0rTFoNUqkxiLYBCHFFe/lCoiaWj08dkC6jp4G2/DG/NFv+IQ5eIFHklhzN3XAIVjqw==
+X-Received: by 2002:a05:6214:10c7:: with SMTP id r7mr2785614qvs.3.1615941914596;
+        Tue, 16 Mar 2021 17:45:14 -0700 (PDT)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
+        by smtp.gmail.com with ESMTPSA id m25sm14320080qtq.59.2021.03.16.17.45.12
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 17:44:17 -0700 (PDT)
-Received: by mail-ej1-f48.google.com with SMTP id ox4so59528104ejb.11
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:44:17 -0700 (PDT)
-X-Received: by 2002:ac2:4250:: with SMTP id m16mr745431lfl.40.1615941846610;
- Tue, 16 Mar 2021 17:44:06 -0700 (PDT)
+        Tue, 16 Mar 2021 17:45:12 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id p186so38813706ybg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:45:12 -0700 (PDT)
+X-Received: by 2002:a25:1883:: with SMTP id 125mr1752626yby.465.1615941912101;
+ Tue, 16 Mar 2021 17:45:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk>
- <161539528910.286939.1252328699383291173.stgit@warthog.procyon.org.uk> <20210316190707.GD3420@casper.infradead.org>
-In-Reply-To: <20210316190707.GD3420@casper.infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 16 Mar 2021 17:43:50 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjSGsRj7xwhSMQ6dAQiz53xA39pOG+XA_WeTgwBBu4uqg@mail.gmail.com>
-Message-ID: <CAHk-=wjSGsRj7xwhSMQ6dAQiz53xA39pOG+XA_WeTgwBBu4uqg@mail.gmail.com>
-Subject: Re: [PATCH v4 02/28] mm: Add an unlock function for PG_private_2/PG_fscache
-To:     Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linux-MM <linux-mm@kvack.org>, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org,
-        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210304155144.1.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
+ <20210304155144.3.I60a7fb23ce4589006bc95c64ab8d15c74b876e68@changeid>
+ <YE0ru4JpXfX/4Awe@pendragon.ideasonboard.com> <CAD=FV=UY_S8jPkXwK6AGs99XrE=pno2sCgLE7qcPWfmoyYVXiw@mail.gmail.com>
+ <YFEnKgwEOWdeQBK6@pendragon.ideasonboard.com>
+In-Reply-To: <YFEnKgwEOWdeQBK6@pendragon.ideasonboard.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 16 Mar 2021 17:44:59 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=W5fpyEf4AqJ+dZ7i_rD_PE40MyNsYNydhPi4BHkEfQcQ@mail.gmail.com>
+Message-ID: <CAD=FV=W5fpyEf4AqJ+dZ7i_rD_PE40MyNsYNydhPi4BHkEfQcQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] drm/bridge: ti-sn65dsi86: Properly get the EDID, but
+ only if refclk
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Adding btrfs people explicitly, maybe they see this on the fs-devel
-list, but maybe they don't react .. ]
+Hi,
 
-On Tue, Mar 16, 2021 at 12:07 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Tue, Mar 16, 2021 at 2:46 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
 >
-> This isn't a problem with this patch per se, but I'm concerned about
-> private2 and expected page refcounts.
-
-Ugh. You are very right.
-
-It would be good to just change the rules - I get the feeling nobody
-actually depended on them anyway because they were _so_ esoteric.
-
-> static inline int is_page_cache_freeable(struct page *page)
-> {
->         /*
->          * A freeable page cache page is referenced only by the caller
->          * that isolated the page, the page cache and optional buffer
->          * heads at page->private.
->          */
->         int page_cache_pins = thp_nr_pages(page);
->         return page_count(page) - page_has_private(page) == 1 + page_cache_pins;
-
-You're right, that "page_has_private()" is really really nasty.
-
-The comment is, I think, the traditional usage case, which used to be
-about page->buffers. Obviously these days it is now about
-page->private with PG_private set, pointing to buffers
-(attach_page_private() and detach_page_private()).
-
-But as you point out:
-
-> #define PAGE_FLAGS_PRIVATE                              \
->         (1UL << PG_private | 1UL << PG_private_2)
+> Hi Doug,
 >
-> So ... a page with both flags cleared should have a refcount of N.
-> A page with one or both flags set should have a refcount of N+1.
+> On Mon, Mar 15, 2021 at 09:25:37AM -0700, Doug Anderson wrote:
+> > On Sat, Mar 13, 2021 at 1:17 PM Laurent Pinchart wrote:
+> > > On Thu, Mar 04, 2021 at 03:52:01PM -0800, Douglas Anderson wrote:
+> > > > In commit 58074b08c04a ("drm/bridge: ti-sn65dsi86: Read EDID blob over
+> > > > DDC") we attempted to make the ti-sn65dsi86 bridge properly read the
+> > > > EDID from the panel. That commit kinda worked but it had some serious
+> > > > problems.
+> > > >
+> > > > The problems all stem from the fact that userspace wants to be able to
+> > > > read the EDID before it explicitly enables the panel. For eDP panels,
+> > > > though, we don't actually power the panel up until the pre-enable
+> > > > stage and the pre-enable call happens right before the enable call
+> > > > with no way to interject in-between. For eDP panels, you can't read
+> > > > the EDID until you power the panel. The result was that
+> > > > ti_sn_bridge_connector_get_modes() was always failing to read the EDID
+> > > > (falling back to what drm_panel_get_modes() returned) until _after_
+> > > > the EDID was needed.
+> > > >
+> > > > To make it concrete, on my system I saw this happen:
+> > > > 1. We'd attach the bridge.
+> > > > 2. Userspace would ask for the EDID (several times). We'd try but fail
+> > > >    to read the EDID over and over again and fall back to the hardcoded
+> > > >    modes.
+> > > > 3. Userspace would decide on a mode based only on the hardcoded modes.
+> > > > 4. Userspace would ask to turn the panel on.
+> > > > 5. Userspace would (eventually) check the modes again (in Chrome OS
+> > > >    this happens on the handoff from the boot splash screen to the
+> > > >    browser). Now we'd read them properly and, if they were different,
+> > > >    userspace would request to change the mode.
+> > > >
+> > > > The fact that userspace would always end up using the hardcoded modes
+> > > > at first significantly decreases the benefit of the EDID
+> > > > reading. Also: if the modes were even a tiny bit different we'd end up
+> > > > doing a wasteful modeset and at boot.
+> > >
+> > > s/and at/at/ ?
+> >
+> > Sure, I can correct if/when I respin or it can be corrected when landed.
+> >
+> > > > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > > > index 491c9c4f32d1..af3fb4657af6 100644
+> > > > --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > > > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > > > @@ -16,6 +16,7 @@
+> > > >  #include <linux/pm_runtime.h>
+> > > >  #include <linux/regmap.h>
+> > > >  #include <linux/regulator/consumer.h>
+> > > > +#include <linux/workqueue.h>
+> > > >
+> > > >  #include <asm/unaligned.h>
+> > > >
+> > > > @@ -130,6 +131,12 @@
+> > > >   * @ln_assign:    Value to program to the LN_ASSIGN register.
+> > > >   * @ln_polrs:     Value for the 4-bit LN_POLRS field of SN_ENH_FRAME_REG.
+> > > >   *
+> > > > + * @pre_enabled_early: If true we did an early pre_enable at attach.
+> > > > + * @pre_enable_timeout_work: Delayed work to undo the pre_enable from attach
+> > > > + *                           if a normal pre_enable never came.
+> > >
+> > > Could we simplify this by using the runtime PM autosuspend feature ? The
+> > > configuration of the bridge would be moved from pre_enable to the PM
+> > > runtime resume handler, the clk_disable_unprepare() call moved from
+> > > post_disable to the runtime suspend handler, and the work queue replaced
+> > > by usage of pm_runtime_put_autosuspend().
+> >
+> > It's an interesting idea but I don't think I can make it work, at
+> > least not in a generic enough way. Specifically we can also use this
+> > bridge chip as a generic GPIO provider in Linux. When someone asks us
+> > to read a GPIO then we have to power the bridge on
+> > (pm_runtime_get_sync()) and when someone asks us to configure a GPIO
+> > as an output then we actually leave the bridge powered until they stop
+> > requesting it as an output. At the moment the only user of this
+> > functionality (that I know of) is for the HPD pin on trogdor boards
+> > (long story about why we don't use the dedicated HPD) but the API
+> > supports using these GPIOs for anything and I've tested that it works.
+> > It wouldn't be great to have to keep the panel on in order to access
+> > the GPIOs.
+>
+> The issue you're trying to fix doesn't seem specific to this bridge, so
+> handling it in the bridge driver bothers me :-S Is there any way we
+> could handle this in the DRM core ? I don't want to see similar
+> implementations duplicated in all HDMI/DP bridges.
 
-Could we just remove the PG_private_2 thing in this context entirely,
-and make the rule be that
+Yes, it is true that this problem could affect other drivers.  ...and
+in full disclosure I think there are other similar workarounds already
+present. I haven't personally worked on those chips, but in
+ps8640_bridge_get_edid() there is a somewhat similar workaround to
+chain a pre-enable (though maybe it's not quite as optimized?). I'm
+told that maybe something had to be handled for anx7625 (in
+anx7625_get_edid()?) but that definitely doesn't look at all like it's
+doing a pre-enable, so maybe things for that bridge just work
+differently.
 
- (a) PG_private means that you have some local private data in
-page->private, and that's all that matters for the "freeable" thing.
+One thing that makes me hesitant about trying to moving this to the
+core is that even in sn65dsi86 there is a case where it won't work. As
+I mentioned in the patch I'm not aware of anyone using it in
+production, but if someone was using the MIPI clock as input to the
+bridge chip instead of a fixed "refclk" then trying to get the EDID
+after just "pre-enable" falls over.  Said another way: I can say that
+with this particular bridge chip, if you're using a fixed refclk, you
+can read the EDID after the pre-enable. I don't know if that's always
+true with all other bridge chips.
 
- (b) PG_private_2 does *not* have the same meaning, and has no bearing
-on freeability (and only the refcount matters)
+So I guess in summary: I think I could put my code in the core, but I
+don't _think_ I can just make it automatically enabled.
 
-I _)think_ the btrfs behavior is to only use PagePrivate2() when it
-has a reference to the page, so btrfs doesn't care?
+* In sn65dsi I'd have to only enable it if we have a fixed refclk.
 
-I think fscache is already happy to take the page count when using
-PG_private_2 for locking, exactly because I didn't want to have any
-confusion about lifetimes. But this "page_has_private()" math ends up
-meaning it's confusing anyway.
+* Maybe in ps8640 I could just always enable it and replace the
+existing code? I'd have to find someone to test.
 
-btrfs people? What are the semantics for PG_private_2? Is it just a
-flag, and you really don't want it to have anything to do with any
-page lifetime decisions? Or?
+* In anx7625 things look totally different.
 
-        Linus
+Can you give me any advice on how you'd like me to proceed?
+
+-Doug
