@@ -2,62 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8051C33FABD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 23:02:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB5D33FAC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 23:04:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbhCQWBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 18:01:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47876 "EHLO mail.kernel.org"
+        id S231206AbhCQWDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 18:03:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229720AbhCQWBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 18:01:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id ADDAA64F17;
-        Wed, 17 Mar 2021 22:01:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616018471;
-        bh=KF1sgC+8zwymmGXKWZ/hLFtpL5NKhWBV4XXrxRghpaM=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=TQS9jrY9KpXR1QlaXtqcEPKs1Pz7fkdKvVG2ugB8JEP9yOskNadRYd+KUfbw3Plut
-         NrjZS9eqsKHMNLs0VnnplQN6UsGPVB0aKnBV4FD8TcLH4HpWqr/kCkHwTEtQFIMThV
-         s4y1gsSqPVSWkHDePXbmQYL16e4HuBxPwII2YqCz20CUrBTL7uj1RIn0bOJ3Pagkyx
-         LaRPrdoZjqG+xu6KT7bhTACTuYXGwH413OQxV/uxGYZ2bw/gVNUV9fvHjhVWoFBm0m
-         iqPdwwcGWoToUdm205H5IrgVsliuZp2QJMxwR2IqCtvjlY7YugEmaKarAX8Rrg7slI
-         5vuojaCzhFaCg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AA45260A45;
-        Wed, 17 Mar 2021 22:01:11 +0000 (UTC)
-Subject: Re: [GIT PULL] thermal fixes for v5.12
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <64ffeeef-45de-6e0d-0ce9-767024d8dd22@linaro.org>
-References: <64ffeeef-45de-6e0d-0ce9-767024d8dd22@linaro.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <64ffeeef-45de-6e0d-0ce9-767024d8dd22@linaro.org>
-X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git tags/thermal-v5.12-rc4
-X-PR-Tracked-Commit-Id: 2046a24ae121cd107929655a6aaf3b8c5beea01f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 35d8c39d0e52f5230716f61910881b309e4b1a04
-Message-Id: <161601847169.14556.1392745064561858202.pr-tracker-bot@kernel.org>
-Date:   Wed, 17 Mar 2021 22:01:11 +0000
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM mailing list <linux-pm@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+        id S230456AbhCQWD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 18:03:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5E8964E64;
+        Wed, 17 Mar 2021 22:03:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1616018607;
+        bh=2n3w4P1GjtrMSjz71K7aiv75/K5sfCyZPkowkP1cYgw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iaFfwnSURRnk54S5AH9kvixkRYpTs+YJRldfCuZJxU3huVrub+mzI/3nVUcjLo4qo
+         gU+ehD7xEhReYq25nR1NSMwXpPULiyvuiVjAj1If5IbD2so0OCCsSnBno3xuBzu3xf
+         AfHCykW9IBfvHf2NSD61slyrE6+OaZTfwLj5G64A=
+Date:   Wed, 17 Mar 2021 15:03:25 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Brian Geffon <bgeffon@google.com>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Dmitry Safonov <dima@arista.com>
+Subject: Re: [PATCH v3 1/2] mm: Allow non-VM_DONTEXPAND and VM_PFNMAP
+ mappings with MREMAP_DONTUNMAP
+Message-Id: <20210317150325.84f6b3fb01402b6bd6dd5ca3@linux-foundation.org>
+In-Reply-To: <20210317214147.682687-1-bgeffon@google.com>
+References: <20210303175235.3308220-1-bgeffon@google.com>
+        <20210317214147.682687-1-bgeffon@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 17 Mar 2021 10:02:51 +0100:
+On Wed, 17 Mar 2021 14:41:46 -0700 Brian Geffon <bgeffon@google.com> wrote:
 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git tags/thermal-v5.12-rc4
+> Currently MREMAP_DONTUNMAP only accepts private anonymous mappings. This
+> change will widen the support to include any mappings which are not
+> VM_DONTEXPAND or VM_PFNMAP.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/35d8c39d0e52f5230716f61910881b309e4b1a04
+Please update changelog to explain why these two were omitted?
 
-Thank you!
+> The primary use case is to support
+> MREMAP_DONTUNMAP on mappings which may have been created from a memfd.
+> 
+> This change will result in mremap(MREMAP_DONTUNMAP) returning -EINVAL
+> if VM_DONTEXPAND or VM_PFNMAP mappings are specified.
+> 
+> Lokesh Gidra who works on the Android JVM, provided an explanation of how
+> such a feature will improve Android JVM garbage collection:
+> "Android is developing a new garbage collector (GC), based on userfaultfd.
+> The garbage collector will use userfaultfd (uffd) on the java heap during
+> compaction. On accessing any uncompacted page, the application threads will
+> find it missing, at which point the thread will create the compacted page
+> and then use UFFDIO_COPY ioctl to get it mapped and then resume execution.
+> Before starting this compaction, in a stop-the-world pause the heap will be
+> mremap(MREMAP_DONTUNMAP) so that the java heap is ready to receive
+> UFFD_EVENT_PAGEFAULT events after resuming execution.
+> 
+> To speedup mremap operations, pagetable movement was optimized by moving
+> PUD entries instead of PTE entries [1]. It was necessary as mremap of even
+> modest sized memory ranges also took several milliseconds, and stopping the
+> application for that long isn't acceptable in response-time sensitive
+> cases.
+> 
+> With UFFDIO_CONTINUE feature [2], it will be even more efficient to
+> implement this GC, particularly the 'non-moveable' portions of the heap.
+> It will also help in reducing the need to copy (UFFDIO_COPY) the pages.
+> However, for this to work, the java heap has to be on a 'shared' vma.
+> Currently MREMAP_DONTUNMAP only supports private anonymous mappings, this
+> patch will enable using UFFDIO_CONTINUE for the new userfaultfd-based heap
+> compaction."
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Is a manpage update planned?  It's appropriate to add this to the
+series so folks can check it over.
+
+Can we please get the appropriate updates into
+tools/testing/selftests/vm/mremap_test.c for this?
+
+> Signed-off-by: Brian Geffon <bgeffon@google.com>
+
+v3 is getting up there.  Has there been much review activity?
+
