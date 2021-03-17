@@ -2,168 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A7233FB01
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 23:24:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2E133FB0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 23:25:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbhCQWXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 18:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhCQWXE (ORCPT
+        id S230378AbhCQWYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 18:24:45 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:41876 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230045AbhCQWYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 18:23:04 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6204C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:23:04 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id b184so2092605pfa.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:23:04 -0700 (PDT)
+        Wed, 17 Mar 2021 18:24:32 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12HMKgI5106921;
+        Wed, 17 Mar 2021 22:23:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : in-reply-to : references : date : message-id : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=LA5ZAQhYLUaED6CdchMqR50MvS+2+CLaZ4yN89QwO5Y=;
+ b=PItloUqEikd9la4gfSg3nDRFUk2fvjs9jt29zNUbROCUHmJ2VtPygsEYO3Xv9Gba4yb0
+ 2gyGdBLE0wwWY3Su9/jqPGWjr2QB8mF3uhuiQgNp3218bHAiaHaHn2v6Ol+y1BnLAb4q
+ 2xIgWJtoD5PJ8IwIJWZ/OuZdoC7OgKPhX2aRPoj/dngy6ZejUUy0+dKaDZ/ZYEfeVp+6
+ uj9uvttAOgAQ7Dnt26TUVM5NcTV5+kkpeDyZudemZgC+bAU+3q6Vlw8qco5VbGsD6/Uq
+ MytuI/QT3r621nE6Lrmu0wy4lQkeaxTo0GZzQP7/fvFyHX2GJrEcHoOjIbM57pXbIUA3 ng== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 378p1nwny3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Mar 2021 22:23:04 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12HMFTkR171083;
+        Wed, 17 Mar 2021 22:23:04 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2173.outbound.protection.outlook.com [104.47.58.173])
+        by userp3020.oracle.com with ESMTP id 37a4euyapw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Mar 2021 22:23:04 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CubsyRVnG4ziny2+xdD6HJHSZQAWqLrqPlz6uDjbbqyT2CFHjZje7QS4Mh1rfprVcLAG0MM5UZcP4QG8Ipx39LiwhYPoH1mGwqn/kgAfENnguKpbR86tRu8J31o0peKLMZ1ymRYzznVx/b3eUB4TUE5tvaPzBlCn7TV8CVs3BnKKgddpwiVSzfomA0ZY7sKRA/QxNFFurTaQilIswUd59lxR8mHZlGQ1C2LCW+4/2nwLbBAM/YU3cqaanUj2hMi/2TJlm8TO0eMZKOsobB9UDAG2RbaeYj2/15xN5MkJ0NKHQymjc+zDO8EnaGDmqiR6VxJDa7mfWKs7uegsTkHhlQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LA5ZAQhYLUaED6CdchMqR50MvS+2+CLaZ4yN89QwO5Y=;
+ b=V6g2q4YClS7qrFo1z304uWKQ+G8O9n5XxWo+TiuDCUoarL6RbHO5jCzBbhMuulhOGM2wYqahMnZbDFGp9PEC+OtxaYVtaiIJgqq4p0T95Rzgt7uhqaueXGE/UXJ5ncT8e0NAM4dzbVKsQtgiFaPowRA6Ef/HybeIVZu6tj5CDNl4SP/dsfnLrbU78Zt0K6NL5M/7zOnIcR0w803cVk4uofTOlnIbfNVD4KvSeuwX7vAUvErnfNRAq/lmSH9+Y2aC6smbiPa1dgnI/ZjnXaj69gW6fz8w3cPhaB8SlWgkEp12t+yPFC0qi8C0+FwePY3E2TW0GfEjYaIlTcwjejAOFw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=RZEKJdaq0V9wtqqXxPUbM9eFMZIGKO+oIBHl3RZ/clg=;
-        b=RZnFlLbj+h0fD+khd1c1DwBlD8SwMkyXlQ48JxicRxVZphgGnat81u/asaG7NN10dD
-         VONZG+h2F/5BK5McnwfWB39N8MXytyVl9Swt8PMDzHfvzbrPzTeq6NrqdZWAbjIKvake
-         v60ZCp21j4SiTwATeUwn5URW/O9XLOlJ2AzmkBAk5XKirHGDimxQXhgRlwqcI1jtaFzI
-         14wrwBqlZUApyZ0armmOReq/luJaxx5hnM+yIMms3TCTJh/REW0lVZds/Zksg0+sytXX
-         IJriOR+QnUOeRH0GWdxvIwSvho0fAfOKjEkn90nof8exkhNKvpZmt+I2vY7+xu2sqnTM
-         z5eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=RZEKJdaq0V9wtqqXxPUbM9eFMZIGKO+oIBHl3RZ/clg=;
-        b=uGADmSwpmn37AbG17CsHIx5wUdDTG3owvA+XSDvIJqyNLTUnZn7JUzUT6kLJYA6504
-         c8aA46OzcxNEmjqaVojxEGWaoTBwhaIUlYIg3QrHnOuMDmZsPVpvG2vIDtyccSpWxal1
-         LMK9zSuT76yREfNDf2SKpCF2PCxoRn/E0nFV6ZZeXQFPoL2Mg8yVqIdQwm4fO4sc37dA
-         0OYAm0i82jmy3a0Q5SM44Y14KCSxYndAdTfoujWugTISNDyo8EWQlXDqIAoY9ghU3/uo
-         KX23M7Wubmh1JmlZ+kuUblMuSXtY2WoqNf+PEhU4zernawAUnX72w4K6DHwcIH0NmEbR
-         nYIg==
-X-Gm-Message-State: AOAM533WEhUpIbxmdi3gj5xDLts8INlsA9gvrJsbEs8CXHc/5Hio0RMU
-        ixvYQLVKPWzYqxa5ZI60ZT8=
-X-Google-Smtp-Source: ABdhPJxpz/ExboVKk5U/bOB6GZxeEG5n2ISzVKfpLZD5yaSSNW6X+02HyAOnx2dxAtETBVgc7RcQag==
-X-Received: by 2002:a63:4761:: with SMTP id w33mr4395880pgk.118.1616019784274;
-        Wed, 17 Mar 2021 15:23:04 -0700 (PDT)
-Received: from localhost ([58.84.78.96])
-        by smtp.gmail.com with ESMTPSA id v7sm105585pfv.93.2021.03.17.15.23.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 15:23:03 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 08:22:57 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v2] Increase page and bit waitqueue hash size
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ingo Molnar <mingo@kernel.org>
-References: <20210317075427.587806-1-npiggin@gmail.com>
-        <89cb49c0-2736-dd4c-f401-4b88c22cc11f@rasmusvillemoes.dk>
-        <1615977781.fijkhk7ep5.astroid@bobo.none>
-        <CAHk-=whKnamUnZaJQ+fcqYoLJfc8QB8dv6=2P7o-XPBDOtbF3w@mail.gmail.com>
-In-Reply-To: <CAHk-=whKnamUnZaJQ+fcqYoLJfc8QB8dv6=2P7o-XPBDOtbF3w@mail.gmail.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LA5ZAQhYLUaED6CdchMqR50MvS+2+CLaZ4yN89QwO5Y=;
+ b=NWofWmnJCIIU36S436WsIIdhhvj2UjxVqR2C8v8DXYmZ4/uEvyRJvY6S44xE5sKOo3ggPvxNGf+Tj7mgfeFuq0pNtiIFsT6RaxNasTrFoYh6PW44N+515x/o1nIjnATHXwiLobxkQ7lDqN2BfeTN4SNDEjlxYF+Ek4lrrwu2dLU=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR10MB1774.namprd10.prod.outlook.com (2603:10b6:301:9::13)
+ by MWHPR1001MB2158.namprd10.prod.outlook.com (2603:10b6:301:2d::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Wed, 17 Mar
+ 2021 22:23:01 +0000
+Received: from MWHPR10MB1774.namprd10.prod.outlook.com
+ ([fe80::24eb:1300:dd70:4183]) by MWHPR10MB1774.namprd10.prod.outlook.com
+ ([fe80::24eb:1300:dd70:4183%3]) with mapi id 15.20.3933.032; Wed, 17 Mar 2021
+ 22:23:01 +0000
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Andrey Ryabinin <arbn@yandex-team.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Boris Burkov <boris@bur.io>,
+        Bharata B Rao <bharata@linux.vnet.ibm.com>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrey Ryabinin <arbn@yandex-team.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 3/4] sched/cpuacct: fix user/system in shown cpuacct.usage*
+In-Reply-To: <20210217120004.7984-3-arbn@yandex-team.com>
+References: <20210217120004.7984-1-arbn@yandex-team.com>
+ <20210217120004.7984-3-arbn@yandex-team.com>
+Date:   Wed, 17 Mar 2021 18:22:57 -0400
+Message-ID: <87r1kdl8se.fsf@oracle.com>
+Content-Type: text/plain
+X-Originating-IP: [98.229.125.203]
+X-ClientProxiedBy: MN2PR14CA0025.namprd14.prod.outlook.com
+ (2603:10b6:208:23e::30) To MWHPR10MB1774.namprd10.prod.outlook.com
+ (2603:10b6:301:9::13)
 MIME-Version: 1.0
-Message-Id: <1616017462.cmzed2nj60.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from parnassus (98.229.125.203) by MN2PR14CA0025.namprd14.prod.outlook.com (2603:10b6:208:23e::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Wed, 17 Mar 2021 22:22:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3d5a702c-f9e7-4bed-f585-08d8e99339a3
+X-MS-TrafficTypeDiagnostic: MWHPR1001MB2158:
+X-Microsoft-Antispam-PRVS: <MWHPR1001MB215841F95DEAF3DABF087AD6D96A9@MWHPR1001MB2158.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xNqbbNtn4RyD6S5MmkHk7hon8DBIErvoI9oLwB3Nmb6HIuvDDaqiicVRorEtVcCi+VV09cb+NPNW5arDQiPNwj2lnABO4ueeAMoq7k2R5RCto5Kk8+ul1R8tLqBokgi8rBD8+cPcia54bi1miSOCb5espTxEuPiYIGkLPPAMRoLdRot1HJfN9DcKASaTbzv7f02f7V/yAgAsg5zzwoLdXojaW4c6y/eaSlwxmrsPyln0YBC9wqFK81f8WgW10V/H6M9o++Sgx9du0y8AlPjgReG732obvmWY6rr3W/oHgQFYr/bVXf/NVy2bJGjO+h8Jnlf2zEdBMZT2ji99fMGi190LXdTKb6l2lUCs/RxU2USjF99Po0vqh32IU2Aw1yYj+hJwqwdKVk9A4zer/53Ci1ju/JptH+dFV5WPpf6XbvIYT0WsQgWRIDgXu3ff0hMYwdwdG2f2tRPazEYT1oCB1XR19b/H5y4z9LH3hZW+iyofgf/d5DcE/owzPk+vt6p6ucUUKwTB1LxA19PhaFEbO1igayVZDzqKge7CDY3w2LuQeIGfJ+0DTR3asvCNvi8kHDAibyddpSRrlRoOJknCuPzm34F+0ZR+zJE0q2SLNCI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1774.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(346002)(39860400002)(376002)(396003)(54906003)(8936002)(8676002)(83380400001)(16526019)(186003)(110136005)(921005)(2616005)(956004)(86362001)(26005)(6486002)(52116002)(66946007)(66476007)(478600001)(36756003)(6496006)(2906002)(4326008)(316002)(7416002)(5660300002)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?JBfFGn0NBaokKMlG1afG7raG0fdfZIyU5ssXCgn2Iu6U7wUHq0KwuTaz+ufm?=
+ =?us-ascii?Q?yZ/+tD9kaFfxkRHBOpEtG5qVsqb191ecs8gVqVaroGiQ0+247MPJSOSurJSI?=
+ =?us-ascii?Q?7UchwiSaAocuGmPqxlIbdu/20nfjBoRUJBkNT/FGhpepU/DP2jALOH05d7ce?=
+ =?us-ascii?Q?fTK+4z1gRjepaR6YLs03jY6kHIiMZAgbfXEPFARNnMMMZacVfGw/HCs/Gwyw?=
+ =?us-ascii?Q?ScWurHHYpsNJ16IuKm/8dmQdebCAezSuR3yMrxfglFeMqq8MfayYJrAumUw8?=
+ =?us-ascii?Q?Ul+yI6J8ZMOh+9kBiQsWsbFsGZsasiK/AauZzFMqj8oI684JRoZ3jgstG4QZ?=
+ =?us-ascii?Q?Y6LimAmzCL3kJFvWSwDYSQSOHl7Xi3wgGsuM3ILSaEHDV3qOZaLpjPehvH79?=
+ =?us-ascii?Q?iSaHzWodXVVGSrxxXJIz5hrl5gnHkJPQSrePpArCfNx6Sx9N7erTBaEm9OiL?=
+ =?us-ascii?Q?HKbCNaeSlC3w8JFguOyW6yXUPXBVtot5x6dF0ytPT3HR7feIpYD+jVo3qTub?=
+ =?us-ascii?Q?Sw3WAGVvUOycUYMBqd99JRaqC3FKQ/vuF3BQjGNsQDnNc8d1z2f4nLopEpRX?=
+ =?us-ascii?Q?QrgmGEUBnlqrOyYr3qO5Ly4UMtXPTmpWbGwarDnhS1PD5R84ph2wm0iJ8aZP?=
+ =?us-ascii?Q?I2Ig3fLugry36n2muvDdFMtTNYV9amkxczbCrIeI59ETmqommC+FQ9XlS/Rj?=
+ =?us-ascii?Q?1A8nKyHxHLek2F3ix3THindEIpwX1GnjpJnXEcLLT0SyoOI2RxpZ976CH3d2?=
+ =?us-ascii?Q?AyPg6tFFLJFPIiVwegNrp9HzJgAs1Fxr18zlDhfXpu7aZ7mcQ6bkiWyAU2+6?=
+ =?us-ascii?Q?CuhPgg3ileveb5Mz/g7T8W3HlgRc6yCs3YicHnfV/GdN8uQxxbIuH96pDQv9?=
+ =?us-ascii?Q?vs5T0yZr6G1XVBFXzKc5TCKvkA4+qlc3Zjz4nmDqvXABgxNUxlXUmhuWzy4T?=
+ =?us-ascii?Q?4bH+htBjQT194FwNT4O/1LvTUTxQVb8hA1KXQowlXeS1NNNzOW75jzHj1E7n?=
+ =?us-ascii?Q?bM1FLtNqb8fdEr4im3aBKiVxnsOZzNWU3T9OmsjtWLCyKA4Bep/wRPO/d5t7?=
+ =?us-ascii?Q?2/yOO6tMrjFEQSs3dL2Z2s8H3o9r6Sz5i1GYYp9d1RPb20W6BzXX/6G2pEJJ?=
+ =?us-ascii?Q?BOyIxCuwqcmuh4Zu8HUO8VQyqkp70UajK1MUlRylZiNNvCqQasI2fK4f4IIn?=
+ =?us-ascii?Q?Harq9IlEq2xISFrSMog7o5IqJYMiXoM4ki2T9frNQdpDoOz2MVugFDpiSSiP?=
+ =?us-ascii?Q?4syA60hGMIG5Nne1DUmBqnBDrJRzkZqtU3kdaTXPOOyLKnC3CNkbu6r+XRl7?=
+ =?us-ascii?Q?ms/buTL1ES9ysoxq+KJkqogb?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d5a702c-f9e7-4bed-f585-08d8e99339a3
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1774.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 22:23:01.2764
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dRVkHb9+6CF992agMIlYbPTqTSb10EJahNNghTYSKvfgawWEZP7qyioWW3Ml0w1LOyO4fD4pkCYG+ctX9mM1m7PXZwroa6PAbKKbaTkxIes=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2158
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
+ malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103170156
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0 adultscore=0
+ spamscore=0 clxscore=1015 phishscore=0 malwarescore=0 priorityscore=1501
+ bulkscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103170156
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Linus Torvalds's message of March 18, 2021 5:26 am:
-> On Wed, Mar 17, 2021 at 3:44 AM Nicholas Piggin <npiggin@gmail.com> wrote=
-:
->>
->> Argh, because I didn't test small. Sorry I had the BASE_SMALL setting in
->> another patch and thought it would be a good idea to mash them together.
->> In hindsight probably not even if it did build.
->=20
-> I was going to complain about that code in general.
->=20
-> First complaining about the hash being small, and then adding a config
-> option to make it ridiculously much *smaller* seemed wrong to begin
-> with, and didn't make any sense.
->=20
-> So no, please don't smash together.
+Andrey Ryabinin <arbn@yandex-team.com> writes:
 
-Fair point, fixed.
-
->=20
-> In fact, I'd like to see this split up, and with more numbers:
->=20
->  - separate out the bit_waitqueue thing that is almost certainly not
-> remotely as critical (and maybe not needed at all)
->=20
->  - show the profile number _after_ the patch(es)
-
-Might take some time to get a system and run tests. We actually had=20
-difficulty recreating it before this patch too, so it's kind of
-hard to say _that_ was the exact case that previously ran badly and
-is now fixed. We thought just the statistical nature of collisions
-and page / lock contention made things occasionally line up and
-tank.
-
->  - explain why you picked the random scaling numbers (21 and 22 for
-> the two different cases)?
->=20
->  - give an estimate of how big the array now ends up being for
-> different configurations.
->=20
-> I think it ends up using that "scale" factor of 21, and basically
-> being "memory size >> 21" and then rounding up to a power of two.
->=20
-> And honestly, I'm not sure that makes much sense. So for a 1GB machine
-> we get the same as we used to for the bit waitqueue (twice as many for
-> the page waitqueue) , but if you run on some smaller setup, you
-> apparently can end up with just a couple of buckets.
->=20
-> So I'd feel a lot better about this if I saw the numbers, and got the
-> feeling that the patch actually tries to take legacy machines into
-> account.
+> cpuacct has 2 different ways of accounting and showing user
+> and system times.
 >
-> And even on a big machine, what's the advantage of scaling perfectly
-> with memory. If you have a terabyte of RAM, why would you need half a
-> million hash entries (if I did the math right), and use 4GB of memory
-> on it? The contention doesn't go up by amount of memory, it goes up
-> roughly by number of threads, and the two are very seldom really all
-> that linearly connected.
->=20
-> So honestly, I'd like to see more reasonable numbers. I'd like to see
-> what the impact of just raising the hash bit size from 8 to 16 is on
-> that big machine. Maybe still using alloc_large_system_hash(), but
-> using a low-imit of 8 (our traditional very old number that hasn't
-> been a problem even on small machines), and a high-limit of 16 or
-> something.
->=20
-> And if you want even more, I really really want that justified by the
-> performance / profile numbers.
+> The first one uses cpuacct_account_field() to account times
+> and cpuacct.stat file to expose them. And this one seems to work ok.
+>
+> The second one is uses cpuacct_charge() function for accounting and
+> set of cpuacct.usage* files to show times. Despite some attempts to
+> fix it in the past it still doesn't work. E.g. while running KVM
+> guest the cpuacct_charge() accounts most of the guest time as
+> system time. This doesn't match with user&system times shown in
+> cpuacct.stat or proc/<pid>/stat.
 
-Yes all good points I'll add those numbers. It may need a floor and
-ceiling or something like that. We may not need quite so many entries.
+I couldn't reproduce this running a cpu bound load in a kvm guest on a
+nohz_full cpu on 5.11.  The time is almost entirely in cpuacct.usage and
+_user, while _sys stays low.
 
->=20
-> And does does that "bit_waitqueue" really merit updating AT ALL? It's
-> almost entirely unused these days.
+Could you say more about how you're seeing this?  Don't really doubt
+there's a problem, just wondering what you're doing.
 
-I updated it mainly because keeping the code more similar ends up being=20
-easier than unnecessary diverging. The memory cost is no big deal (once=20
-limits are fixed) so I prefer not to encounter some case where it falls=20
-over.
+> diff --git a/kernel/sched/cpuacct.c b/kernel/sched/cpuacct.c
+> index 941c28cf9738..7eff79faab0d 100644
+> --- a/kernel/sched/cpuacct.c
+> +++ b/kernel/sched/cpuacct.c
+> @@ -29,7 +29,7 @@ struct cpuacct_usage {
+>  struct cpuacct {
+>  	struct cgroup_subsys_state	css;
+>  	/* cpuusage holds pointer to a u64-type object on every CPU */
+> -	struct cpuacct_usage __percpu	*cpuusage;
 
-> I think maybe the page lock code
-> used to use that, but then realized it had more specialized needs, so
-> now it's separate.
->=20
-> So can we split that bit-waitqueue thing up from the page waitqueue
-> changes? They have basically nothing in common except for a history,
-> and I think they should be treated separately (including the
-> explanation for what actually hits the bottleneck).
+Definition of struct cpuacct_usage can go away now.
 
-It's still used. Buffer heads being an obvious and widely used one that
-follows similar usage pattern as page lock / writeback in some cases.
-Several other filesystems seem to use it for similar block / IO
-tracking structures by the looks (md, btrfs, nfs).
+> @@ -99,7 +99,8 @@ static void cpuacct_css_free(struct cgroup_subsys_state *css)
+>  static u64 cpuacct_cpuusage_read(struct cpuacct *ca, int cpu,
+>  				 enum cpuacct_stat_index index)
+>  {
+> -	struct cpuacct_usage *cpuusage = per_cpu_ptr(ca->cpuusage, cpu);
+> +	u64 *cpuusage = per_cpu_ptr(ca->cpuusage, cpu);
+> +	u64 *cpustat = per_cpu_ptr(ca->cpustat, cpu)->cpustat;
+>  	u64 data;
 
-Thanks,
-Nick
+There's a BUG_ON below this that could probably be WARN_ON_ONCE while
+you're here
+
+> @@ -278,8 +274,8 @@ static int cpuacct_stats_show(struct seq_file *sf, void *v)
+>  	for_each_possible_cpu(cpu) {
+>  		u64 *cpustat = per_cpu_ptr(ca->cpustat, cpu)->cpustat;
+>  
+> -		val[CPUACCT_STAT_USER]   += cpustat[CPUTIME_USER];
+> -		val[CPUACCT_STAT_USER]   += cpustat[CPUTIME_NICE];
+> +		val[CPUACCT_STAT_USER] += cpustat[CPUTIME_USER];
+> +		val[CPUACCT_STAT_USER] += cpustat[CPUTIME_NICE];
+
+unnecessary whitespace change?
