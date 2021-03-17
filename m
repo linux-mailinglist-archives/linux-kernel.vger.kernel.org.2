@@ -2,143 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C554033EA30
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E427033EA34
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhCQGyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 02:54:31 -0400
-Received: from mail-eopbgr80047.outbound.protection.outlook.com ([40.107.8.47]:57027
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230241AbhCQGyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 02:54:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bmC6X4EC1lx/7aHzFr1KJpEqbhbqNRNi3UgZFKlUJPg8VjOR71yzR35TFgOMpysJZdG5G+k1ztvOX9S24RC1in/0kpS65AfdaFbLM94iEaGIhojUvEF+bcOLaM+VxJ7LryNooemo/rA4rk4KzuumWcUwylZfaUp01+NxQnHbh0ozBLcUMBOC09AqKQJmR9IJFUnximcpJz23VrDMui+iGO+N2FmEeTGMHc7vGTXa8W5dYgH9u7Cyo/z5F7JEeP54B6zO8hsKEaRjLSIZuCdLEvhgObR6gZp8igdnT0+gT0/B1zKpXiJSzc9HJVEJfUwur6rVwpDEV+frIZiJkkLppQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KzRv8MUSSO9tJB1wBGVQAJWYkqphr96Kj5zqbos6gsE=;
- b=JPBlJvpYzHtcfSjeN6d29hoiRb14JnZMYuRoVG1HgztD7HKM+VNS4+5/RNCP/cN15BFbPwX8En06Pdl18Xe37LyHwhXzLQfUh4CzDRhRnxJsEJv5hOp2S3B6z85nQGAqYoAjf7RGtsxFX5duY+UeJl60qSJvaZjx950irzK4kcGdngVrX/BwZqn7IbyhjSGAVyAQw5juNabL2HedEslOcmKboIzpilabSXThfP8d47hR2Hf8K7s3ocaPgmF9c9MSZ54Ngfn9RJJiPQvfQHaqj+A8XBHJUbmX4JtfNiqO0N6ecmos8zuJSHrAWZlZOZmOnCZ2p6wVG7FIG88I+sbAKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KzRv8MUSSO9tJB1wBGVQAJWYkqphr96Kj5zqbos6gsE=;
- b=azDGliFpiw+Iooaigw41+9umP8oJTxBWIjHYEsrDM4fV2jlofGjihPg8SWhqGlG9jdDKSlKmjacMoRSocywIOyNevdJ7vz3+Zfi6cBBHDtvi/+X49GelNGHw8fasQYqsUldcEyp8h7Rslhj23EKF11RXSywOpEUIozxvmnx1kZI=
-Authentication-Results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB5618.eurprd04.prod.outlook.com (2603:10a6:208:123::11)
- by AM0PR04MB7091.eurprd04.prod.outlook.com (2603:10a6:208:197::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Wed, 17 Mar
- 2021 06:54:10 +0000
-Received: from AM0PR04MB5618.eurprd04.prod.outlook.com
- ([fe80::69a8:a768:8fa1:7236]) by AM0PR04MB5618.eurprd04.prod.outlook.com
- ([fe80::69a8:a768:8fa1:7236%7]) with mapi id 15.20.3933.032; Wed, 17 Mar 2021
- 06:54:10 +0000
-From:   Clark Wang <xiaoning.wang@nxp.com>
-To:     aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S231182AbhCQGyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 02:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230250AbhCQGyX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 02:54:23 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F508C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 23:54:23 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id n132so39887231iod.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 23:54:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=hXHCVis3Qaq4r8T5a1j1xyX2piqlLa2Fox5BS+PXNyk=;
+        b=ji0XIzvH5m4F9RWLxj4UFrnrOOVscI9lQ2vYbn+84yGJwFLrKew4SHADnzQs4I6Vke
+         odCcrPRO0r9K3W0/Yjf7Or/iVnPYMst/EOSu3fztMZBg9OvM8JFmA2Vl791R/2awIXTb
+         3VDlUiuCjaRXVugNn9Guduqu1Gz1G4Uvq/Cp8S4+wJ9lSrgy0xdkXdjidq9zlNwTAUOH
+         Te7qkGMgmrO4OHzjSrEyLCZtwifnitTKfa/uCOCafeqkq5cfWr1MxbOCogtHbEOIzxgl
+         aXxU7gTRpm2qEIqEEFsLqnRZqjRXr8U4GPCWi5CkUYDsInVaMTfjjquVDEbB8mSvX8S/
+         v72w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=hXHCVis3Qaq4r8T5a1j1xyX2piqlLa2Fox5BS+PXNyk=;
+        b=ojreqQF2XUiAsc9M54uqGuawAtg1HTOW63X4I9NtKwI+ADazCmk9/KCk/nj20+WTJS
+         7JpWch7+VE3Gb7yUP1zLttc+OnKwz2mbMuk82d8fNABFP1VhfpUcULuHAj7e51pN+ket
+         wVHsv9OoB+xPTriGmlvcxwP72b2ciy6wbQAr7GnvMwL++pqrL5WyUJYCWbR4fRYg+dIc
+         025yh7Ovr1J6lffj0C5/bPmM6B37/0pFx/bgXo1kxxtIR4CF9yOQMH9xItwfJxjnZ7mQ
+         Z8AKBSDJp8Rr77SciODWCUEqkvnPpw7RF/MvjcRrSHPXZbNcYLxZnt/sfuTWyurx4xxz
+         6V8Q==
+X-Gm-Message-State: AOAM531cI3XlKR5mkfigXlDJhqkcDuuQ8hkcrEOgaKQiNL4vsHX8G0me
+        jkjzbYlbAZkVN+ZYC3fmdVQ=
+X-Google-Smtp-Source: ABdhPJwPRPctHRnU+XFROACkYteIOp0u3kUtOGfBrNPfxAffSPIPAUmPbfO7zpo+ArS4lL4iuN9E8A==
+X-Received: by 2002:a6b:d80d:: with SMTP id y13mr5968915iob.75.1615964062887;
+        Tue, 16 Mar 2021 23:54:22 -0700 (PDT)
+Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
+        by smtp.googlemail.com with ESMTPSA id w13sm10583057ilg.48.2021.03.16.23.54.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 23:54:21 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 06/11] i2c: imx-lpi2c: improve i2c driver probe priority
-Date:   Wed, 17 Mar 2021 14:53:54 +0800
-Message-Id: <20210317065359.3109394-7-xiaoning.wang@nxp.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210317065359.3109394-1-xiaoning.wang@nxp.com>
-References: <20210317065359.3109394-1-xiaoning.wang@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: HK2PR02CA0215.apcprd02.prod.outlook.com
- (2603:1096:201:20::27) To AM0PR04MB5618.eurprd04.prod.outlook.com
- (2603:10a6:208:123::11)
+Cc:     Jim Cromie <jim.cromie@gmail.com>
+Subject: [RFC PATCH v4 01/19] dyndbg: split struct _ddebug, move display fields to new _ddebug_site
+Date:   Wed, 17 Mar 2021 00:53:54 -0600
+Message-Id: <20210317065412.2890414-2-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210317065412.2890414-1-jim.cromie@gmail.com>
+References: <20210317065412.2890414-1-jim.cromie@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by HK2PR02CA0215.apcprd02.prod.outlook.com (2603:1096:201:20::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Wed, 17 Mar 2021 06:54:06 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e4fc1dc5-99c4-4696-a1e3-08d8e911775b
-X-MS-TrafficTypeDiagnostic: AM0PR04MB7091:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB7091D8ECA745182247E78155F36A9@AM0PR04MB7091.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dN8DtHG5adnYlIWOKZuc+DXYUFdw6dP6Zs37hMezQ1R0aXBE2GNAPeZLDLxDEL1hQkpO60pUjUv+PwM8EJfMk0YygPUM6eTzRFBmkA539MjvCI3rwAgHD9gr/LSsGbmXjy6tpDt0+eWPXf8iZWAvMKNxLtljAO4wRXCa137/gyz4OuRjTYspErw2Y8M1MkMWW9Utmt2VRMnzoxJpjsZ1GP1ZCOw0KyNVsKnt0rfyxIuFbmA/k/PZ4HWRkyE4T9JIH6YPidMx4dlG4AbewvWUYH4ZvthXmSQkjoD+o3s7DzzseL8huxmGsMjwBz+gM/FjXw07rcwbtg9AxtEWUW/LYXLNYgzbZID3NjElG6VvLQZxPrAqeVmCq51KgjIkgPqUrlJGU1Y5IW1HyAN7zc3+dsUJ1njpk/yJfEnedM5CDaSKK7uSEG9OIkWfbot+9SzX7knw4bFR+sQ/++m1Bl4iJ+RszRJ+HM116S82ow4kNoSqSFW4JXAKiIvdlo6/wuaFeT1w2wUbefK2DlFpY8j6AKTzlofnby6n3cFNEKEF6U85xfED6V228T41vsjit6MKFzN5mkM7cdtQltj6dXM/2sbHEx/Scpkej0IaQ+FHsMsUTjmmrf2QkYW5NYgF/gPi
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5618.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(346002)(39860400002)(136003)(478600001)(4744005)(66556008)(66476007)(69590400012)(6506007)(66946007)(83380400001)(36756003)(16526019)(5660300002)(2616005)(316002)(2906002)(1076003)(8936002)(26005)(52116002)(186003)(956004)(4326008)(6512007)(6486002)(8676002)(6666004)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?LbWkd/LXYTxbazK0ZezkOmZfldghVxtiYhk24kouA+OgW1mj7U3vFXe4rdxO?=
- =?us-ascii?Q?IBUQJunMp75TIpEkuizy7tXku+cJlhQwsuCeHdVDirpsgkA5dwOFEIa/lrJi?=
- =?us-ascii?Q?y+2g5zonIti37DwAnf7c3DeFPX9bMLi9BUHdlje12mf/wMnIsenspLb8HDLM?=
- =?us-ascii?Q?OQZQWHGrm1gw9WXM62hrMntlEaqiSWqqwqj/shK6aaqJfmNCdkPhmnyCv+bk?=
- =?us-ascii?Q?NUXJpl8pe6hlZfWypxenDK1fNeJvfvu2g4f0Z6TZTRx2CPIrcqXU02l0Sb/A?=
- =?us-ascii?Q?TB1NagRnXl+5UCKs5CUOmU0fxJkupEL98tCF+qzYbV45w5vfuj4NZdq+abpB?=
- =?us-ascii?Q?PqFKI9n+tE787IyNH+YCHkKci+EwQJH5ObYbIhNMMu4Cg2hwnbwLTaFvnong?=
- =?us-ascii?Q?NbwLvHkYPtWOwB+Pi7wVTvuts3uy5QUnYV1/C5YeT9DKIsUcUM2h9ZSP7UHt?=
- =?us-ascii?Q?PYYtk7qui6kDKDcVxS7KbGam8n8rAn03B+VE8xpu/YLDGGwBc/pOg3eKdmWf?=
- =?us-ascii?Q?SB97IMme+6v1Bo5AN02LGt0XIfdPCCF7ByhmktATcRPiNCchzJt3KYx11JTI?=
- =?us-ascii?Q?lXYx7P9JggK9h6tIZG9V+lDAGCQK0e0OZTxdywwvcZbZtvwfIJolkv5bOcER?=
- =?us-ascii?Q?+qBE6ymH1lMZFQUk6C/qBU0BUFsdEOLGWNMJIKmrScpI/x25YJOAeR2t3AIj?=
- =?us-ascii?Q?DiFZV2O55gr7ous91NSqJ+TwSrbT/TfEd5z1rrr13g/MHkhaocuFNSuuuoKM?=
- =?us-ascii?Q?opxmVRdWvVS/UCXl0nd0rw6NR5FSkeHoVnAX8njijuasvRrXUOJT2rhG55da?=
- =?us-ascii?Q?eO/KcIWa2czztZ6npKocCAPw1eAJ3hU+MFNlVeQ9BBawypgUGknFnWnfYyre?=
- =?us-ascii?Q?eLF4jwGJ4ylMzKCIfnUNeap0/gfb3tc27SSuhBWSV0Kq0cWputEA+pvn6tNp?=
- =?us-ascii?Q?o3iMnnA3gjIXrAnU87tKVfeu2qtqdBuk5WPRyDRzilNau/mOzuwYf/DVV6qc?=
- =?us-ascii?Q?J868stsUbyMVDV02OgkzcMEyQlnf4b+ZWl47qWLBZrSu+fKnU97HfsfCBgGl?=
- =?us-ascii?Q?EP7iknaEHIObrZOwUQVbsq90VSvlBnf7wOqVJnAa4Z1YV65NJp6lsVvVMJgT?=
- =?us-ascii?Q?KZcf5r3Z0QknNc0DwMBDPm4vaRVwGyeMlpUr1luo4J0uxiDLhTjnqssWRHiU?=
- =?us-ascii?Q?DnVoJTbU6t1RWH3UnLSefn8+9s9WEiIX22xheK9G1QdvOMHybNpft24bF1JT?=
- =?us-ascii?Q?nPGzKQKw30u9Qgyq7F16CaGI0i/dFxa+zDVSUvcfaHsjoQtbWVWfX0/drH+z?=
- =?us-ascii?Q?Jf/mbIuD/57PUQMpqoUNzmrV?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e4fc1dc5-99c4-4696-a1e3-08d8e911775b
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5618.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 06:54:10.2612
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Pgq86uDsZB3a9lpqJ1LN1x0n70/Ww7fu68PtZ8gYiGQUIuV5N8kPqRFWWnxjztuuOIliMPudnGT+5WozPhc/mA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7091
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Pan <pandy.gao@nxp.com>
+struct _ddebug has 2 flavors of fields: essential and optional.  Split
+the 3 optional fields: module, function, file into a new struct
+_ddebug_site, and add pointer to it from _ddebug.
 
-use subsys_initcall for i2c driver to improve i2c driver probe priority
+These fields are optional in that they are primarily used to generate
+the optional "module:func:line" log prefix.  They're also used to
+select callsites to >control.  lineno is arguably optional too, but
+leaving it uses spare bytes in struct _ddebug.
 
-Signed-off-by: Gao Pan <pandy.gao@nxp.com>
+The new ptr increases memory footprint by 1 ptr per pr_debug, but I
+think its temporary, and the indirection gives several advantages:
+
+- we can drop sites and their storage opportunistically.
+  this reduces per-site mem by 24/64.
+
+  Subsystems may not need/want "module:func:line:" in their logs.
+  If they already use format-prefixes such as "drm:kms:",
+  they can select on those, and don't need the site info for that.
+  forex:
+  #> echo module drm format "^drm:kms: " +p >control
+  ie: dynamic_debug_exec_queries("format '^drm:kms: '", "drm");
+
+- the moved display fields are inherently hierarchical, and the linker
+  section is ordered; so (module, file, function) have repeating
+  values (90%, 85%, 45%).  This is readily compressible, even with a
+  simple field-wise run length encoding.  Since I'm splitting the struct,
+  I also reordered the fields to match the hierarchy.
+
+- the separate linker section sets up naturally for block compression.
+
+IFF we can on-demand map:  ddebugs[N] -> ddebug_sites[N]
+
+- we can compress __dyndbg_sites during __init, and mark section __initdata
+
+- can decompress on-demand, say for `cat control`
+- can save chunks of decompressed buffer for enabled callsites
+- free chunks on site disable, or on memory pressure.
+
+Whats actually done here is rather mechanical, and preparatory.
+
+dynamic_debug.h:
+
+I cut struct _ddebug in half, renamed optional top-half to
+_ddebug_site, kept __align(8) for both halves.  I added a forward decl
+for a unified comment for both head & body, and added head.site to
+point at body.
+
+DECLARE_DYNAMIC_DEBUG_METADATA does the core of the work; it declares
+and initializes both static struct variables together, and refs one to
+the other.
+
+dynamic_debug.c:
+
+dynamic_debug_init() mem-usage now also counts sites.
+
+dynamic_emit_prefix() & ddebug_change() use those moved fields; they
+get a new initialized auto-var, and the field refs get adjusted as
+needed to follow the move from one struct to the other.
+
+   struct _ddebug_site *dc = dp->site;
+
+ddebug_proc_show() differs slightly; it assigns to (not initializes)
+the autovar, to avoid a panic when p == SEQ_START_TOKEN.
+
+vmlinux.lds.h:
+
+add __dyndbg_sites section, with the same align(8) and KEEP as
+used in the __dyndbg section.
+
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- drivers/i2c/busses/i2c-imx-lpi2c.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ include/asm-generic/vmlinux.lds.h |  3 ++
+ include/linux/dynamic_debug.h     | 37 ++++++++++++++++---------
+ lib/dynamic_debug.c               | 46 +++++++++++++++++--------------
+ 3 files changed, 53 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
-index 8f9dd3dd2951..86b69852f7be 100644
---- a/drivers/i2c/busses/i2c-imx-lpi2c.c
-+++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
-@@ -710,7 +710,17 @@ static struct platform_driver lpi2c_imx_driver = {
- 	},
- };
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index 0331d5d49551..4f2af9de2f03 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -353,6 +353,9 @@
+ 	*(__tracepoints)						\
+ 	/* implement dynamic printk debug */				\
+ 	. = ALIGN(8);							\
++	__start___dyndbg_sites = .;					\
++	KEEP(*(__dyndbg_sites))					\
++	__stop___dyndbg_sites = .;					\
+ 	__start___dyndbg = .;						\
+ 	KEEP(*(__dyndbg))						\
+ 	__stop___dyndbg = .;						\
+diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
+index a57ee75342cf..bc8027292c02 100644
+--- a/include/linux/dynamic_debug.h
++++ b/include/linux/dynamic_debug.h
+@@ -7,20 +7,28 @@
+ #endif
  
--module_platform_driver(lpi2c_imx_driver);
-+static int __init lpi2c_imx_init(void)
-+{
-+	return platform_driver_register(&lpi2c_imx_driver);
-+}
-+subsys_initcall(lpi2c_imx_init);
+ /*
+- * An instance of this structure is created in a special
+- * ELF section at every dynamic debug callsite.  At runtime,
+- * the special section is treated as an array of these.
++ * A pair of these structs are created in 2 special ELF sections
++ * (__dyndbg, __dyndbg_sites) for every dynamic debug callsite.
++ * At runtime, the sections are treated as arrays.
+  */
+-struct _ddebug {
++struct _ddebug;
++struct _ddebug_site {
+ 	/*
+-	 * These fields are used to drive the user interface
+-	 * for selecting and displaying debug callsites.
++	 * These fields (and lineno) are used to:
++	 * - decorate log messages per site flags
++	 * - select callsites for modification via >control
++	 * - display callsites & settings in `cat control`
+ 	 */
+ 	const char *modname;
+-	const char *function;
+ 	const char *filename;
++	const char *function;
++} __aligned(8);
 +
-+static void __exit lpi2c_imx_exit(void)
-+{
-+	platform_driver_unregister(&lpi2c_imx_driver);
-+}
-+module_exit(lpi2c_imx_exit);
++struct _ddebug {
++	struct _ddebug_site *site;
++	/* format is always needed, lineno shares word with flags */
+ 	const char *format;
+-	unsigned int lineno:18;
++	const unsigned lineno:18;
+ 	/*
+ 	 * The flags field controls the behaviour at the callsite.
+ 	 * The bits here are changed dynamically when the user
+@@ -44,8 +52,7 @@ struct _ddebug {
+ 		struct static_key_false dd_key_false;
+ 	} key;
+ #endif
+-} __attribute__((aligned(8)));
+-
++} __aligned(8);
  
- MODULE_AUTHOR("Gao Pan <pandy.gao@nxp.com>");
- MODULE_DESCRIPTION("I2C adapter driver for LPI2C bus");
+ 
+ #if defined(CONFIG_DYNAMIC_DEBUG_CORE)
+@@ -83,11 +90,15 @@ void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
+ 			 const char *fmt, ...);
+ 
+ #define DEFINE_DYNAMIC_DEBUG_METADATA(name, fmt)		\
+-	static struct _ddebug  __aligned(8)			\
+-	__section("__dyndbg") name = {				\
++	static struct _ddebug_site  __aligned(8)		\
++	__section("__dyndbg_sites") name##_site = {		\
+ 		.modname = KBUILD_MODNAME,			\
+-		.function = __func__,				\
+ 		.filename = __FILE__,				\
++		.function = __func__,				\
++	};							\
++	static struct _ddebug  __aligned(8)			\
++	__section("__dyndbg") name = {				\
++		.site = &name##_site,				\
+ 		.format = (fmt),				\
+ 		.lineno = __LINE__,				\
+ 		.flags = _DPRINTK_FLAGS_DEFAULT,		\
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index c70d6347afa2..738c4ce28046 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -142,7 +142,7 @@ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
+ /*
+  * Search the tables for _ddebug's which match the given `query' and
+  * apply the `flags' and `mask' to them.  Returns number of matching
+- * callsites, normally the same as number of changes.  If verbose,
++ * sites, normally the same as number of changes.  If verbose,
+  * logs the changes.  Takes ddebug_lock.
+  */
+ static int ddebug_change(const struct ddebug_query *query,
+@@ -165,19 +165,20 @@ static int ddebug_change(const struct ddebug_query *query,
+ 
+ 		for (i = 0; i < dt->num_ddebugs; i++) {
+ 			struct _ddebug *dp = &dt->ddebugs[i];
++			struct _ddebug_site *dc = dp->site;
+ 
+ 			/* match against the source filename */
+ 			if (query->filename &&
+-			    !match_wildcard(query->filename, dp->filename) &&
++			    !match_wildcard(query->filename, dc->filename) &&
+ 			    !match_wildcard(query->filename,
+-					   kbasename(dp->filename)) &&
++					   kbasename(dc->filename)) &&
+ 			    !match_wildcard(query->filename,
+-					   trim_prefix(dp->filename)))
++					   trim_prefix(dc->filename)))
+ 				continue;
+ 
+ 			/* match against the function */
+ 			if (query->function &&
+-			    !match_wildcard(query->function, dp->function))
++			    !match_wildcard(query->function, dc->function))
+ 				continue;
+ 
+ 			/* match against the format */
+@@ -214,8 +215,8 @@ static int ddebug_change(const struct ddebug_query *query,
+ #endif
+ 			dp->flags = newflags;
+ 			v2pr_info("changed %s:%d [%s]%s =%s\n",
+-				 trim_prefix(dp->filename), dp->lineno,
+-				 dt->mod_name, dp->function,
++				 trim_prefix(dc->filename), dp->lineno,
++				 dt->mod_name, dc->function,
+ 				 ddebug_describe_flags(dp->flags, &fbuf));
+ 		}
+ 	}
+@@ -586,14 +587,15 @@ static int remaining(int wrote)
+ 	return 0;
+ }
+ 
+-static char *dynamic_emit_prefix(const struct _ddebug *desc, char *buf)
++static char *dynamic_emit_prefix(const struct _ddebug *dp, char *buf)
+ {
+ 	int pos_after_tid;
+ 	int pos = 0;
++	const struct _ddebug_site *desc = dp->site;
+ 
+ 	*buf = '\0';
+ 
+-	if (desc->flags & _DPRINTK_FLAGS_INCL_TID) {
++	if (dp->flags & _DPRINTK_FLAGS_INCL_TID) {
+ 		if (in_interrupt())
+ 			pos += snprintf(buf + pos, remaining(pos), "<intr> ");
+ 		else
+@@ -601,15 +603,15 @@ static char *dynamic_emit_prefix(const struct _ddebug *desc, char *buf)
+ 					task_pid_vnr(current));
+ 	}
+ 	pos_after_tid = pos;
+-	if (desc->flags & _DPRINTK_FLAGS_INCL_MODNAME)
++	if (dp->flags & _DPRINTK_FLAGS_INCL_MODNAME)
+ 		pos += snprintf(buf + pos, remaining(pos), "%s:",
+ 				desc->modname);
+-	if (desc->flags & _DPRINTK_FLAGS_INCL_FUNCNAME)
++	if (dp->flags & _DPRINTK_FLAGS_INCL_FUNCNAME)
+ 		pos += snprintf(buf + pos, remaining(pos), "%s:",
+ 				desc->function);
+-	if (desc->flags & _DPRINTK_FLAGS_INCL_LINENO)
++	if (dp->flags & _DPRINTK_FLAGS_INCL_LINENO)
+ 		pos += snprintf(buf + pos, remaining(pos), "%d:",
+-				desc->lineno);
++				dp->lineno);
+ 	if (pos - pos_after_tid)
+ 		pos += snprintf(buf + pos, remaining(pos), " ");
+ 	if (pos >= PREFIX_SIZE)
+@@ -879,6 +881,7 @@ static int ddebug_proc_show(struct seq_file *m, void *p)
+ {
+ 	struct ddebug_iter *iter = m->private;
+ 	struct _ddebug *dp = p;
++	struct _ddebug_site *dc;
+ 	struct flagsbuf flags;
+ 
+ 	if (p == SEQ_START_TOKEN) {
+@@ -887,9 +890,11 @@ static int ddebug_proc_show(struct seq_file *m, void *p)
+ 		return 0;
+ 	}
+ 
++	dc = dp->site;
++
+ 	seq_printf(m, "%s:%u [%s]%s =%s \"",
+-		   trim_prefix(dp->filename), dp->lineno,
+-		   iter->table->mod_name, dp->function,
++		   trim_prefix(dc->filename), dp->lineno,
++		   iter->table->mod_name, dc->function,
+ 		   ddebug_describe_flags(dp->flags, &flags));
+ 	seq_escape(m, dp->format, "\t\r\n\"");
+ 	seq_puts(m, "\"\n");
+@@ -1093,17 +1098,17 @@ static int __init dynamic_debug_init(void)
+ 		return 0;
+ 	}
+ 	iter = __start___dyndbg;
+-	modname = iter->modname;
++	modname = iter->site->modname;
+ 	iter_start = iter;
+ 	for (; iter < __stop___dyndbg; iter++) {
+ 		entries++;
+-		if (strcmp(modname, iter->modname)) {
++		if (strcmp(modname, iter->site->modname)) {
+ 			modct++;
+ 			ret = ddebug_add_module(iter_start, n, modname);
+ 			if (ret)
+ 				goto out_err;
+ 			n = 0;
+-			modname = iter->modname;
++			modname = iter->site->modname;
+ 			iter_start = iter;
+ 		}
+ 		n++;
+@@ -1113,9 +1118,10 @@ static int __init dynamic_debug_init(void)
+ 		goto out_err;
+ 
+ 	ddebug_init_success = 1;
+-	vpr_info("%d modules, %d entries and %d bytes in ddebug tables, %d bytes in __dyndbg section\n",
++	vpr_info("%d modules, %d entries and %d bytes in ddebug tables, %d bytes in __dyndbg section, %d bytes in __dyndbg_sites section\n",
+ 		 modct, entries, (int)(modct * sizeof(struct ddebug_table)),
+-		 (int)(entries * sizeof(struct _ddebug)));
++		 (int)(entries * sizeof(struct _ddebug)),
++		 (int)(entries * sizeof(struct _ddebug_site)));
+ 
+ 	/* apply ddebug_query boot param, dont unload tables on err */
+ 	if (ddebug_setup_string[0] != '\0') {
 -- 
-2.25.1
+2.29.2
 
