@@ -2,140 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3949233F113
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C052933F116
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbhCQNVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 09:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbhCQNUu (ORCPT
+        id S230369AbhCQNWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 09:22:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51414 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230493AbhCQNWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 09:20:50 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CE2C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 06:20:50 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id t83so31735731oih.12
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 06:20:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ajom+qoaBVWvI/o5yJYUTXtAcdgS/F3iXCD59b+2ARE=;
-        b=U936Qixe60vWzMVURSAw8RqVD016hKL3IrWdWxt3ZMSodiR8i6SGPvoyRwGTgCQATk
-         dTnNZdDc4s1hcBop0WYFE+4NAq2vKaCWEXt09j1di5EnLljLaddsK5kqgbyVtwfStBd8
-         7+8TEGurjTFRvfWGm2mV6CNDH9LKZVGuW1Lxq8LboLX+c2qLybWxXbG18L1WdRnvlhfQ
-         hG8K0WgV2pRnrUvFXcCojo8G1Wu6r7aYmessvdlxqMAtyIMQSFPIJWyN3SEg/FclMPBS
-         oENrbv62mwPOvNvSxOgIwBIBrkLT5/mZc/MWVpGVrvuDg6TGW94F/tFBhxjlnmCp9RHH
-         2OzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ajom+qoaBVWvI/o5yJYUTXtAcdgS/F3iXCD59b+2ARE=;
-        b=pe64IXUVOLh1mzBjeOzoYvoW+DJDGx6RF4TLpuaBJXPf/SdCicno3M5y3/GPHJpodM
-         lrtsqBVu59IOLnnNj58Ia3An0KofMhRd54nWZBvviJJXMAftdO/H5JCbECoBYw0j2MbQ
-         zjP1Y/USWxn3zH6Un6vzOMNDxTmZcH4YdI8m/5FUc4RAI/ylhcl3H+s48hb92Cd2CijA
-         vlz4MYwIh1Z5P0EdBs9BYZlgV/L0tlsQqqSeEDBG2YueBNqJGVr6JSj/17QxC481RXIt
-         MlB+gvDTgKnrEPVMe9tLc+zaLqS6gdUlhWBjMRFIEi9z5Pzr4QAqZMySgsxyKSvENhXC
-         JHSA==
-X-Gm-Message-State: AOAM531y2HRkoExHaoqNC+N3O358WWjrq0Q9XGmDVanD3q1b5bBFpoMt
-        alpXSxOh2bI1Mgv4YscE//bkxqV5Ibh3g+hBlU8zwQ==
-X-Google-Smtp-Source: ABdhPJyXMS61jORQoueJSGAiIEgP7/O76pOuZO2+PRMPv2KLW56V6uSfLC1n+2k7X3AfIlpXZQbL+bB6VONbxFccCLo=
-X-Received: by 2002:a54:4590:: with SMTP id z16mr2825628oib.40.1615987249445;
- Wed, 17 Mar 2021 06:20:49 -0700 (PDT)
+        Wed, 17 Mar 2021 09:22:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615987328;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=c7PX0Ouqc0wpf5nfLiEOChbTdIbo+J19ZguBEuOi78Q=;
+        b=CgjFQH1CA+tU+RBqM7TnwxsVT5KHsTHW3uMaS9fVKJyL3Tme1hqpGFbZHIPM1ZctgB5+n1
+        MJCVMcyGNR5HObYAAYkjxjJJtJJzuUetYgDbGlOuPMPV6CKiB+TFpiyjteZbENOkFiD12Q
+        HyhKrU4O2RBBFJlt3U94GbFrKp0hYyc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-418-p0MDTkMaNn6ID8k-MxtV2w-1; Wed, 17 Mar 2021 09:22:03 -0400
+X-MC-Unique: p0MDTkMaNn6ID8k-MxtV2w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F15D0E845A;
+        Wed, 17 Mar 2021 13:21:51 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-117-171.rdu2.redhat.com [10.10.117.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1C4175C1CF;
+        Wed, 17 Mar 2021 13:21:51 +0000 (UTC)
+Subject: Re: [PATCH 4/4] locking/locktorture: Fix incorrect use of
+ ww_acquire_ctx in ww_mutex test
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>
+References: <20210316153119.13802-1-longman@redhat.com>
+ <20210316153119.13802-5-longman@redhat.com>
+ <20210317051605.popetodgwbr47ha2@offworld>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <ae20c4a1-1591-4b09-6de2-e55c30297d24@redhat.com>
+Date:   Wed, 17 Mar 2021 09:21:50 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210310052503.3618486-1-bhupesh.sharma@linaro.org>
- <20210310052503.3618486-3-bhupesh.sharma@linaro.org> <20210316222825.GA3792517@robh.at.kernel.org>
-In-Reply-To: <20210316222825.GA3792517@robh.at.kernel.org>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Wed, 17 Mar 2021 18:50:38 +0530
-Message-ID: <CAH=2Ntw2dMaSYsx-Q=mXx_mMBr5PcmwhhBvTcmPYYKmy=rcCqw@mail.gmail.com>
-Subject: Re: [PATCH 2/8] dt-bindings: crypto : Add new compatible strings for qcom-qce
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhupesh.linux@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210317051605.popetodgwbr47ha2@offworld>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-Thanks for your review.
-
-On Wed, 17 Mar 2021 at 03:58, Rob Herring <robh@kernel.org> wrote:
+On 3/17/21 1:16 AM, Davidlohr Bueso wrote:
+> On Tue, 16 Mar 2021, Waiman Long wrote:
 >
-> On Wed, Mar 10, 2021 at 10:54:57AM +0530, Bhupesh Sharma wrote:
-> > Newer qcom chips support newer versions of the qce IP, so add
-> > new compatible strings for qcom-qce (in addition to the existing
-> > "qcom,crypto-v5.1").
-> >
-> > With [1], Thara tried to add the support for new compatible strings,
-> > but we couldn't conclude on the approach to be used. Since we have
-> > a number of new qcom arm64 SoCs available now, several of which
-> > support the same crypto IP version, so it makes more sense to use
-> > the IP version for the compatible string, rather than using the soc
-> > name as the compatible string.
-> >
-> > [1]. https://lore.kernel.org/linux-arm-msm/20201119155233.3974286-7-thara.gopinath@linaro.org/
-> >
-> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Andy Gross <agross@kernel.org>
-> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> > Cc: David S. Miller <davem@davemloft.net>
-> > Cc: Stephen Boyd <sboyd@kernel.org>
-> > Cc: Michael Turquette <mturquette@baylibre.com>
-> > Cc: linux-clk@vger.kernel.org
-> > Cc: linux-crypto@vger.kernel.org
-> > Cc: devicetree@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: bhupesh.linux@gmail.com
-> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > ---
-> >  Documentation/devicetree/bindings/crypto/qcom-qce.txt | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.txt b/Documentation/devicetree/bindings/crypto/qcom-qce.txt
-> > index 07ee1b12000b..217b37dbd58a 100644
-> > --- a/Documentation/devicetree/bindings/crypto/qcom-qce.txt
-> > +++ b/Documentation/devicetree/bindings/crypto/qcom-qce.txt
-> > @@ -2,7 +2,11 @@ Qualcomm crypto engine driver
-> >
-> >  Required properties:
-> >
-> > -- compatible  : should be "qcom,crypto-v5.1"
-> > +- compatible  : Supported versions are:
-> > +             - "qcom,crypto-v5.1", for ipq6018
-> > +             - "qcom,crypto-v5.4", for sdm845, sm8150
+>> The ww_acquire_ctx structure for ww_mutex needs to persist for a 
+>> complete
+>> lock/unlock cycle. In the ww_mutex test in locktorture, however, both
+>> ww_acquire_init() and ww_acquire_fini() are called within the lock
+>> function only. This causes a lockdep splat of "WARNING: Nested lock
+>> was not taken" when lockdep is enabled in the kernel.
+>>
+>> To fix this problem, we need to move the ww_acquire_fini() after the
+>> ww_mutex_unlock() in torture_ww_mutex_unlock(). In other word, we need
+>> to pass state information from the lock function to the unlock function.
 >
-> 2 SoCs sharing 1 version doesn't convince me on using version numbers.
-> Having 4 versions for 5 SoCs further convinces me you should stick with
-> SoC specific compatibles as *everyone* else does (including most QCom
-> bindings).
+> Right, and afaict this _is_ the way ww_acquire_fini() should be called:
+>
+>  * Releases a w/w acquire context. This must be called _after_ all 
+> acquired w/w
+>  * mutexes have been released with ww_mutex_unlock.
+>
+>> Change the writelock and writeunlock function prototypes to allow that
+>> and change the torture_ww_mutex_lock() and torture_ww_mutex_unlock()
+>> accordingly.
+>
+> But wouldn't just making ctx a global variable be enough instead? That 
+> way
+> we don't deal with memory allocation for every lock/unlock operation 
+> (yuck).
+> Plus the ENOMEM would need to be handled/propagated accordingly - the 
+> code
+> really doesn't expect any failure from ->writelock().
 
-Fair enough. I will add SoC specific compatibles in v2, which should
-be out shortly.
+The ctx should be per-thread to track potential locking conflict. Since 
+there are as many locking threads as the number of cpus, we can't use 
+one global variable to do that. I was thinking about using per-cpu 
+variable but locktorture kthreads are cpu-bound. That led me to use the 
+current scheme of allocation at lock and free at unlock.
 
-Regards,
-Bhupesh
+Another alternative is to add a per-thread init/fini methods to allow 
+setting up per-thread context that is passed to the locking functions. 
+By doing that, we only need one kmalloc/kfree pair per running 
+locktorture kthread.
 
-> > +             - "qcom,crypto-v5.5", for sm8250
-> > +             - "qcom,crypto-v5.6", for sm8350
-> >  - reg         : specifies base physical address and size of the registers map
-> >  - clocks      : phandle to clock-controller plus clock-specifier pair
-> >  - clock-names : "iface" clocks register interface
-> > --
-> > 2.29.2
-> >
+Cheers,
+Longman
+
+
