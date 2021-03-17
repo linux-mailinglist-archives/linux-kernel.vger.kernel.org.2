@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EEA533EC4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:12:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D7633EC57
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhCQJL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:11:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
+        id S230117AbhCQJML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:12:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbhCQJLb (ORCPT
+        with ESMTP id S229862AbhCQJLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:11:31 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77111C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:11:31 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id w203-20020a1c49d40000b029010c706d0642so4986207wma.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:11:31 -0700 (PDT)
+        Wed, 17 Mar 2021 05:11:43 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61343C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:11:32 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id v4so987021wrp.13
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:11:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QUcUbYzVq4WAbYCHC6A4U/IWUbOjJbgRMpmZlOoFPaU=;
-        b=qSOrLft8oGs6hVSsCNmwZZTMED/qFbTW9EEw6QlFA09kUTI6BcJSa3donspZaTB2pI
-         amz9oxFTpQ422j9x6M6PFn1eJDxKD29Y6EJd9jOuVD3T9vhuu9nn28QJJtJQK/5AZ6AH
-         OG4LR0YoM4fpF6IzoyCmXsBHLOhf1RQgaeTD6cibhWx+XomtwVuDJ9S/ZNwRK1b93eq9
-         m7QyE7x+orCiUZQXGRX/xULU9vT0jCmB2iOM3oSVWA3AtaWwpSyGt5E1t2eD30eM9h0w
-         0UY1CVO8Rwf5QZn6LjG9C4ySTXoasW47tR4zp2iHUTQjMzFWzXMffLZ+c14xmz9YHTac
-         UjrQ==
+        bh=Yq9LdtQSeW2MqRbyRwlDutR9JIDqTpE5NVbsv5LbNbg=;
+        b=tpXmr/3C3OcqQCVeq61T0tdQB5GGsCi1oEXXqsBAHnj1+8fWfYQ3PnETf0ZT0/Wwc3
+         FYgaiWmZdQW7HwXia9kpjpa3xGpM4zOxqAH5iraA9ZzjIfnS+mBosrDEfQTlonv83DoM
+         jcFR93qm3o4tD7sWSCWizMLul9CH0tkp3hSUO822Q+Rn2YsAsWF7pdHyOz/RIutRMkSu
+         hbam9GlxyOV34SBHXze1iGCQcyn1z2eAEtPANih19rc7lKHWmCpy9IqSjpZB0/btrrCL
+         RfdydvVYMCG2CCl4clrCbv7c6haoLrVpQsFrTU7bpptlqKCz2SBvOF/m11j86/Iysviu
+         wf1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QUcUbYzVq4WAbYCHC6A4U/IWUbOjJbgRMpmZlOoFPaU=;
-        b=tJuGt02eKuECwlKXgrThedowg1eH0UqgJ9P53CIFEll5s2yOfXosTdzk0o6gMwWiDG
-         tgDYKgevZNSboqSKkeEm4xNLTtQC7RnlyxCYXF8vkxX+AkhlEHb1Y1UZvDlRXqhvigGA
-         VoxZ1LXdxPnYNWttWZldosbFbjSFjYYK4Y+r8t0ptR73IIbOXk+aqqMyRL1cAYja6VlB
-         PpZclhP8mpATbL9Y9gkeg7SOWGo09E/qaPsthlcNry7IgKrXrUwBf00dVxIRjhGCWBYl
-         ys9Pl3LTCHZ6Cge+6dck2DMZpUY6ElgMYhk9SDgIio1nLojwSdbR/OZnAi95SscJlQsR
-         TxlA==
-X-Gm-Message-State: AOAM5328duotU8UYQPCa+LpyhJloi0szIbKPxMIfHrTL/n8yqOQL1Aw8
-        u3PC5UnuX6qCCBO1pAozvw4Hzw==
-X-Google-Smtp-Source: ABdhPJxTLCXw7Of2OV/8m9UKxF4p99Sy2ikd/ONYtccHhh1kz7XgJ8hxg7z/qgCghEcNy2cIEKGu4w==
-X-Received: by 2002:a1c:3954:: with SMTP id g81mr2766758wma.170.1615972290211;
-        Wed, 17 Mar 2021 02:11:30 -0700 (PDT)
+        bh=Yq9LdtQSeW2MqRbyRwlDutR9JIDqTpE5NVbsv5LbNbg=;
+        b=AT08ivH2coDn5Cqf5gvGZHVsB0y0Lv2CeRN7QqJ3WNWCAGr1BNN7gUYFgVWLLSa4rH
+         qiUHUTGO6+kzZC9y4pNLmLh8kIA7PW273PXKVbYxNnBa0a9i9L8olIUK2Wr/4fuyyhcN
+         5Ur8KMlo05Eu56oylIA+BrchY5ak6imUvVcUe7TztiqK9UYQDM44FVbOwIHWROx5v40C
+         H8rSro4s/wCmECA/0m/+d2/0uG1Nxy9+Gq6MPHQq5hW63HhrBbG/FrR8NlSUSIRjwlb+
+         E26rr00zn+z+ITOF/buKTkQKO8xKXZOZb/3zC1Sgch8BqshqF2QySCBvr7YwldPhn7/s
+         YfAw==
+X-Gm-Message-State: AOAM533i/+nVmwUCPkm6k6FZvl2X+DqH0ZTjT8hrr6qL5MhhMXumoFGv
+        jYpO8Nt3EjDGi1xozNwmhufm4Q==
+X-Google-Smtp-Source: ABdhPJyME/VIATukQgzalo6A4MWfZ4MkMVX/KZMJJ8cyrNXbbBEYgNE9Qz1bcMh+mR9Dbxdnl2wh2A==
+X-Received: by 2002:a5d:5250:: with SMTP id k16mr3311603wrc.309.1615972291167;
+        Wed, 17 Mar 2021 02:11:31 -0700 (PDT)
 Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id s83sm1709279wms.16.2021.03.17.02.11.29
+        by smtp.gmail.com with ESMTPSA id s83sm1709279wms.16.2021.03.17.02.11.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 02:11:29 -0700 (PDT)
+        Wed, 17 Mar 2021 02:11:30 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, GOTO Masanori <gotom@debian.or.jp>,
@@ -55,9 +55,9 @@ Cc:     linux-kernel@vger.kernel.org, GOTO Masanori <gotom@debian.or.jp>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         gotom@debian.org, linux-scsi@vger.kernel.org
-Subject: [PATCH 2/8] scsi: nsp32: Supply __printf(x, y) formatting for nsp32_message()
-Date:   Wed, 17 Mar 2021 09:11:19 +0000
-Message-Id: <20210317091125.2910058-3-lee.jones@linaro.org>
+Subject: [PATCH 3/8] scsi: nsp32: Remove or exclude unused variables
+Date:   Wed, 17 Mar 2021 09:11:20 +0000
+Message-Id: <20210317091125.2910058-4-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210317091125.2910058-1-lee.jones@linaro.org>
 References: <20210317091125.2910058-1-lee.jones@linaro.org>
@@ -70,8 +70,17 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/nsp32.c: In function ‘nsp32_message’:
- drivers/scsi/nsp32.c:318:2: warning: function ‘nsp32_message’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
+ drivers/scsi/nsp32.c: In function ‘nsp32_selection_autoscsi’:
+ drivers/scsi/nsp32.c:584:17: warning: variable ‘execph’ set but not used [-Wunused-but-set-variable]
+ drivers/scsi/nsp32.c: In function ‘nsp32_msgout_occur’:
+ drivers/scsi/nsp32.c:1785:7: warning: variable ‘new_sgtp’ set but not used [-Wunused-but-set-variable]
+ drivers/scsi/nsp32.c: In function ‘nsp32_analyze_sdtr’:
+ drivers/scsi/nsp32.c:2227:20: warning: variable ‘syncnum’ set but not used [-Wunused-but-set-variable]
+ drivers/scsi/nsp32.c:2223:20: warning: variable ‘synct’ set but not used [-Wunused-but-set-variable]
+ drivers/scsi/nsp32.c: In function ‘nsp32_do_bus_reset’:
+ drivers/scsi/nsp32.c:2841:17: warning: variable ‘intrdat’ set but not used [-Wunused-but-set-variable]
+ drivers/scsi/nsp32.c: In function ‘nsp32_getprom_param’:
+ drivers/scsi/nsp32.c:2912:11: warning: variable ‘val’ set but not used [-Wunused-but-set-variable]
 
 Cc: GOTO Masanori <gotom@debian.or.jp>
 Cc: YOKOTA Hiroshi <yokota@netlab.is.tsukuba.ac.jp>
@@ -81,21 +90,92 @@ Cc: gotom@debian.org
 Cc: linux-scsi@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/nsp32.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/nsp32.c | 23 ++++-------------------
+ 1 file changed, 4 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/scsi/nsp32.c b/drivers/scsi/nsp32.c
-index e44b1a0f67099..d5aa96f05bce4 100644
+index d5aa96f05bce4..54abda4d07c64 100644
 --- a/drivers/scsi/nsp32.c
 +++ b/drivers/scsi/nsp32.c
-@@ -309,6 +309,7 @@ static struct scsi_host_template nsp32_template = {
+@@ -581,7 +581,6 @@ static int nsp32_selection_autoscsi(struct scsi_cmnd *SCpnt)
+ 	int		status;
+ 	unsigned short	command	= 0;
+ 	unsigned int	msgout  = 0;
+-	unsigned short	execph;
+ 	int		i;
  
- #define NSP32_DEBUG_BUF_LEN		100
+ 	nsp32_dbg(NSP32_DEBUG_AUTOSCSI, "in");
+@@ -605,7 +604,7 @@ static int nsp32_selection_autoscsi(struct scsi_cmnd *SCpnt)
+ 	/*
+ 	 * clear execph
+ 	 */
+-	execph = nsp32_read2(base, SCSI_EXECUTE_PHASE);
++	nsp32_read2(base, SCSI_EXECUTE_PHASE);
  
-+__printf(4, 5)
- static void nsp32_message(const char *func, int line, char *type, char *fmt, ...)
+ 	/*
+ 	 * clear FIFO counter to set CDBs
+@@ -1781,8 +1780,6 @@ static void nsp32_msgout_occur(struct scsi_cmnd *SCpnt)
  {
- 	va_list args;
+ 	nsp32_hw_data *data = (nsp32_hw_data *)SCpnt->device->host->hostdata;
+ 	unsigned int base   = SCpnt->device->host->io_port;
+-	//unsigned short command;
+-	long new_sgtp;
+ 	int i;
+ 	
+ 	nsp32_dbg(NSP32_DEBUG_MSGOUTOCCUR,
+@@ -1796,14 +1793,6 @@ static void nsp32_msgout_occur(struct scsi_cmnd *SCpnt)
+ 		nsp32_build_nop(SCpnt);
+ 	}
+ 
+-	/*
+-	 * Set SGTP ADDR current entry for restarting AUTOSCSI, 
+-	 * because SGTP is incremented next point.
+-	 * There is few statement in the specification...
+-	 */
+- 	new_sgtp = data->cur_lunt->sglun_paddr + 
+-		   (data->cur_lunt->cur_entry * sizeof(nsp32_sgtable));
+-
+ 	/*
+ 	 * send messages
+ 	 */
+@@ -2220,17 +2209,12 @@ static void nsp32_analyze_sdtr(struct scsi_cmnd *SCpnt)
+ {
+ 	nsp32_hw_data   *data = (nsp32_hw_data *)SCpnt->device->host->hostdata;
+ 	nsp32_target     *target     = data->cur_target;
+-	nsp32_sync_table *synct;
+ 	unsigned char     get_period = data->msginbuf[3];
+ 	unsigned char     get_offset = data->msginbuf[4];
+ 	int               entry;
+-	int               syncnum;
+ 
+ 	nsp32_dbg(NSP32_DEBUG_MSGINOCCUR, "enter");
+ 
+-	synct   = data->synct;
+-	syncnum = data->syncnum;
+-
+ 	/*
+ 	 * If this inititor sent the SDTR message, then target responds SDTR,
+ 	 * initiator SYNCREG, ACKWIDTH from SDTR parameter.
+@@ -2838,8 +2822,8 @@ static int nsp32_eh_abort(struct scsi_cmnd *SCpnt)
+ static void nsp32_do_bus_reset(nsp32_hw_data *data)
+ {
+ 	unsigned int   base = data->BaseAddress;
+-	unsigned short intrdat;
+ 	int i;
++	unsigned short __maybe_unused intrdat;
+ 
+ 	nsp32_dbg(NSP32_DEBUG_BUSRESET, "in");
+ 
+@@ -2909,7 +2893,8 @@ static int nsp32_getprom_param(nsp32_hw_data *data)
+ {
+ 	int vendor = data->pci_devid->vendor;
+ 	int device = data->pci_devid->device;
+-	int ret, val, i;
++	int ret, i;
++	int __maybe_unused val;
+ 
+ 	/*
+ 	 * EEPROM checking.
 -- 
 2.27.0
 
