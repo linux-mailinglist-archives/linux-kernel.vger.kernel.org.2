@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98EFA33EC76
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CB733EC7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbhCQJNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:13:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42668 "EHLO
+        id S230455AbhCQJN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:13:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230201AbhCQJMw (ORCPT
+        with ESMTP id S230204AbhCQJMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:12:52 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770BDC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:52 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id g8so1013219wmd.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:52 -0700 (PDT)
+        Wed, 17 Mar 2021 05:12:54 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBF3C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:53 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id t9so996179wrn.11
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:12:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Kpxpj9RY3Tz1buvtlliu/SfUSZOzhZdJwGgmrjmjL4c=;
-        b=ENZefxfvp2SbLaisye3tgbpbWWpQrCXHaTbdFnQ7jF7oVLFWuLPED510b4pzbTPx6T
-         qJ5UbDkPqrEpjwDmL0+UAsVELrgLAvENpJPTWWlfYh2eQlxjTRuPukX5GWJKNpEghVUT
-         W4Q1LEGGpAYTMeQkwi1t1LW6I/GWJB5BSOfowD1op7cj4/CdhHZTn1iAR+CMfkBYyT6s
-         GbNmu/FnHvKkj+bOPh3PZKlJ2/C7BtTB5lvFL0si86sLj3r33gFpxhMQAAL+DuV/6OsL
-         6EYXH8JojSR2IBU8VJro4y67zxHzg5ab2q9OSE56Z8HtpjPSKA4x/mhmRZ8zpOeY7Ly1
-         befw==
+        bh=+TrWWm0u4bkRuEOT45xP86ethIB2XLy+WRaBoR2YJ+Y=;
+        b=VIU7VFuz5FaJXnrl9FYPf3rxVYPBQWgLnoJoYBjIu9hzCiLb2B7JVy56eYs6thk9pp
+         nh8uALrJCoQWEGtoLIqMttVd2Gsig45UXefS1V8Dz6B4oPieaTqX8td379g90niYUFbJ
+         goG0QarAtS3jmh6e5kQmM+C6LHSBySWO7ovtr3QSVC21mDhxEIgSFY7Uzb0GMeb5Vt51
+         K1zcE86PVNtkzSMJjp0c1Ba/1iClc4t/qBAVz5PPxLKbMZPJp0Elc2TonTJREObJc3Hi
+         JFngZUqZhXxF8RS+wR8kjCNsZi7mfDYTaQDlgCnkV6bAsIsEvcMnSRdzBJdcjFI7Pbb8
+         As0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Kpxpj9RY3Tz1buvtlliu/SfUSZOzhZdJwGgmrjmjL4c=;
-        b=cQsZuDnqSMfgYY50965DmLEiG2nc+uXwKF2REzYUQ6RhevQspNXfAjYWzqJqflX37J
-         sP3nzGctQ5pTWFF0Idtdbm7FbbUfG5VyE9z83+oXky0DeE7hURyhaqrN/er7cV/ET7il
-         9RLb9ZC+L4g8LuPuwgBJChQ2WYe2BS+kqLZpMdgVn4ZZSosDAVoPB2H+goepGIurf9XS
-         XFF22ZStpqpq7fEvAhxTGWOYl1/+J1Vn5RfeDKwYs/TyG0qkoN5UsS888l0vYbRUKxnP
-         oCYLRRvXJ8uUt8ytjDotAsoolo3nERyB9zHcYlCnRn7cMjMKkfBqbyMavJyXMgqxAc9O
-         /cRw==
-X-Gm-Message-State: AOAM531gPfDVm1mZRR7J2pfrIgeQXDwHUlETevdb61c1I8j4GCt0UiOa
-        WF+G3HFLdrcQqWwBdsHb3thoeg==
-X-Google-Smtp-Source: ABdhPJzZkiEitRE+GZC9nr/Ly46A/COTSQRSLSiOZArjHnJgIdgU28VIcHakoCp3CXIHDbEsxPBJCg==
-X-Received: by 2002:a7b:c3cd:: with SMTP id t13mr2675160wmj.109.1615972371169;
-        Wed, 17 Mar 2021 02:12:51 -0700 (PDT)
+        bh=+TrWWm0u4bkRuEOT45xP86ethIB2XLy+WRaBoR2YJ+Y=;
+        b=HyiMj/0u2Gvbih/MFQMji3bJxG8gcemu/1NchbG6+8bqKD2C0uHUupKFlGZ8xf5IIw
+         hgnDdQKQQFT5Oz1V8zzjW+6cqIDpaNo86cg+WSQB2pahofQqIfemoKbSt4uDr6vUHE18
+         0cwxQqDauzAGK70oMI8O/xCmgF53ML1w0iDrRLB57EIE66lkKeHsEhsvmp0SFoYuG1nP
+         lJ0L2YQDecRus24BYJCaoiik4/bZeL0pY/isnZoq8MB1wJpbrAwHQZWu0Q0Y+X+A7LZ7
+         O0i+zUAHqbW2uMpwCtkmxCLAQyV255GGiZsVgvNifW4KUZvzmbad/SEVH03hgUZf25Jt
+         wZtQ==
+X-Gm-Message-State: AOAM532PZFRc2mKkHgyAlz/sxK5QKUNuozhMH7X1ysfnE+kkodTWS3aB
+        d9Yk+7M9K9+wyiEuyed7C9htGg==
+X-Google-Smtp-Source: ABdhPJwBBf2pDosK0iW19obpUhKOTMSrb6xpMCOntwaCTpUr7GR90px+cj4jvKue9GwRILV9AXevtQ==
+X-Received: by 2002:adf:e7cf:: with SMTP id e15mr3375157wrn.346.1615972372441;
+        Wed, 17 Mar 2021 02:12:52 -0700 (PDT)
 Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id e18sm12695886wru.73.2021.03.17.02.12.50
+        by smtp.gmail.com with ESMTPSA id e18sm12695886wru.73.2021.03.17.02.12.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 02:12:50 -0700 (PDT)
+        Wed, 17 Mar 2021 02:12:52 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
+Cc:     linux-kernel@vger.kernel.org, Hannes Reinecke <hare@kernel.org>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Alan Cox <alan@lxorguk.ukuu.org.uk>, linux-scsi@vger.kernel.org
-Subject: [PATCH 11/36] scsi: a100u2w: Fix some misnaming and formatting issues
-Date:   Wed, 17 Mar 2021 09:12:05 +0000
-Message-Id: <20210317091230.2912389-12-lee.jones@linaro.org>
+        Linux GmbH <hare@suse.com>,
+        "Leonard N. Zubkoff" <lnz@dandelion.com>,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH 12/36] scsi: myrs: Add missing ':' to make the kernel-doc checker happy
+Date:   Wed, 17 Mar 2021 09:12:06 +0000
+Message-Id: <20210317091230.2912389-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210317091230.2912389-1-lee.jones@linaro.org>
 References: <20210317091230.2912389-1-lee.jones@linaro.org>
@@ -70,63 +70,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/a100u2w.c:278: warning: expecting prototype for orc_exec_sb(). Prototype was for orc_exec_scb() instead
- drivers/scsi/a100u2w.c:596: warning: Function parameter or member 'target' not described in 'orc_device_reset'
- drivers/scsi/a100u2w.c:739: warning: Function parameter or member 'host' not described in 'orchid_abort_scb'
- drivers/scsi/a100u2w.c:739: warning: Function parameter or member 'scb' not described in 'orchid_abort_scb'
- drivers/scsi/a100u2w.c:915: warning: expecting prototype for inia100_queue(). Prototype was for inia100_queue_lck() instead
+ drivers/scsi/myrs.c:1965: warning: Function parameter or member 'dev' not described in 'myrs_is_raid'
+ drivers/scsi/myrs.c:1978: warning: Function parameter or member 'dev' not described in 'myrs_get_resync'
+ drivers/scsi/myrs.c:2002: warning: Function parameter or member 'dev' not described in 'myrs_get_state'
 
+Cc: Hannes Reinecke <hare@kernel.org>
 Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: Linux GmbH <hare@suse.com>
+Cc: "Leonard N. Zubkoff" <lnz@dandelion.com>
 Cc: linux-scsi@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/a100u2w.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/scsi/myrs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/a100u2w.c b/drivers/scsi/a100u2w.c
-index c99224a128f82..c9ed210d77b39 100644
---- a/drivers/scsi/a100u2w.c
-+++ b/drivers/scsi/a100u2w.c
-@@ -269,7 +269,7 @@ static u8 orc_nv_read(struct orc_host * host, u8 address, u8 *ptr)
- }
+diff --git a/drivers/scsi/myrs.c b/drivers/scsi/myrs.c
+index 48e399f057d5c..588c0de006b02 100644
+--- a/drivers/scsi/myrs.c
++++ b/drivers/scsi/myrs.c
+@@ -1958,7 +1958,7 @@ static struct myrs_hba *myrs_alloc_host(struct pci_dev *pdev,
  
  /**
-- *	orc_exec_sb		-	Queue an SCB with the HA
-+ *	orc_exec_scb		-	Queue an SCB with the HA
-  *	@host: host adapter the SCB belongs to
-  *	@scb: SCB to queue for execution
+  * myrs_is_raid - return boolean indicating device is raid volume
+- * @dev the device struct object
++ * @dev: the device struct object
   */
-@@ -586,7 +586,7 @@ static int orc_reset_scsi_bus(struct orc_host * host)
-  *	orc_device_reset	-	device reset handler
-  *	@host: host to reset
-  *	@cmd: command causing the reset
-- *	@target; target device
-+ *	@target: target device
-  *
-  *	Reset registers, reset a hanging bus and kill active and disconnected
-  *	commands for target w/o soft reset
-@@ -727,7 +727,7 @@ static void orc_release_scb(struct orc_host *host, struct orc_scb *scb)
- 	spin_unlock_irqrestore(&(host->allocation_lock), flags);
- }
- 
--/**
-+/*
-  *	orchid_abort_scb	-	abort a command
-  *
-  *	Abort a queued command that has been passed to the firmware layer
-@@ -902,7 +902,7 @@ static int inia100_build_scb(struct orc_host * host, struct orc_scb * scb, struc
- }
+ static int
+ myrs_is_raid(struct device *dev)
+@@ -1971,7 +1971,7 @@ myrs_is_raid(struct device *dev)
  
  /**
-- *	inia100_queue		-	queue command with host
-+ *	inia100_queue_lck		-	queue command with host
-  *	@cmd: Command block
-  *	@done: Completion function
-  *
+  * myrs_get_resync - get raid volume resync percent complete
+- * @dev the device struct object
++ * @dev: the device struct object
+  */
+ static void
+ myrs_get_resync(struct device *dev)
+@@ -1995,7 +1995,7 @@ myrs_get_resync(struct device *dev)
+ 
+ /**
+  * myrs_get_state - get raid volume status
+- * @dev the device struct object
++ * @dev: the device struct object
+  */
+ static void
+ myrs_get_state(struct device *dev)
 -- 
 2.27.0
 
