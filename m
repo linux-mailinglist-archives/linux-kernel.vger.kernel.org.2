@@ -2,152 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8142933F92D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:30:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3280933F935
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:31:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233236AbhCQTaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:30:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35548 "EHLO
+        id S233317AbhCQTap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:30:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232932AbhCQTaB (ORCPT
+        with ESMTP id S233222AbhCQTaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:30:01 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A5AC06175F;
-        Wed, 17 Mar 2021 12:30:00 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 30so1948388qva.9;
-        Wed, 17 Mar 2021 12:30:00 -0700 (PDT)
+        Wed, 17 Mar 2021 15:30:15 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78AE0C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:30:14 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id n24so9964190qkh.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 12:30:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RI9Yge4VCvfLN/+w+NDMbTqUaUdyNl42E2BlDToEhF4=;
-        b=rjA9EYKkzULtcYtNckNpuEN+hT13LkqbBV4DSfp/tFIIy2T10YnrKip48+6Liod0iu
-         RTXyG3s6zqNh+ZjbrPvzmgQEOWWz6vEqqgkq9zCCSaUbfp+YDCT4j1/wHWez7nyapo0p
-         uLiOU7D6v+XNlyXRb+o7sm+016LwZgsA77AB3otFaEvZuPPAJCTowcR+z9qyGBTnbIS0
-         bdgCpT/oqV/jIUbyNYVNJAelCr0nS28ojdPeznmXkMKzVWtu3bCN9tnMcJKGfLGmqduX
-         9yzOMBvMUVES0djVHtryodewWh7zLHOBHgocZ3zFuXSpF4TR4Cos2kRUM2Zgfat5j6VC
-         SeyA==
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0JxX/EeC1UVKwHOsPcIWefrhVnYu1SGK3e1Us0djvdI=;
+        b=jMqzxnkBzKmqp8/t0dQ8FWoAMljO+yxZWRK7+UZ6vZtMQDj7i8jT1jzzhs6/3GOKy8
+         jKCnrTz3lgcA4MWCUBetkOmg9NKH3+zj95qod6QGSUBnTuxVF8ZIXhu6J92NLWlYKomw
+         BZ0D2PRZXoP9kCE9lYiyIQ+hfxaJw64P4y3t++b9KmDpNOxcGIUmXV9y9sbtt83hMh9e
+         Pfz6sfYOiD7vslRPViNBn6uutiRa4RUnFfHX/XLj/4lKjqcwNz2bGX64euEUeDVsmcs9
+         6LQlNk1EylWVKkom/2gZtyVPGdryXOjiDouICTsQQ/Vgyc6FLhDSN6YBteC//8INiunb
+         XVXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RI9Yge4VCvfLN/+w+NDMbTqUaUdyNl42E2BlDToEhF4=;
-        b=tjnrS0Ji1boployygr7afoe7jkD6b0RXMH5C2bpam6dXSmtxRu/GnUzNtNqgyjrKqy
-         NPYbhq7tYHDG8GN1WefPL8H1RuC5sb+ZibXBK5yUSl3Ob4PHLsdvxCvqpFbQW/7gOdtT
-         QefIOPoekl+iaiiC34GTbkt/2TxV2ZtSpuTR0hJHXf+SWjALsCZUTrKKNRcsILxQpmiS
-         rFSjUR/oh4t5Q8MSVJHY33UY2m270zX8RzsM9mzqL1LZwHbGmbaeAZ+rX1vfjB+7a/ra
-         AKo/G/LmWapf8LNuF6oKvX78BKTQm9uSpnSyH/d0txJri9UYAIt2LEgZinR2Bcm1BKOH
-         jUog==
-X-Gm-Message-State: AOAM5312iNpJlW2n404jUAJ39Jym9i5uTQVzija8/2KalI5kYZQ99kY/
-        RlFLHjDoj1N5ww+2klgBl9s=
-X-Google-Smtp-Source: ABdhPJyzlT768NJl7SxXB+bC5RpnzqTi1q66iaAstHbq/NLE4Jb2Bao2QLGgRkGOat34uKo0uCdUUw==
-X-Received: by 2002:a05:6214:aae:: with SMTP id ew14mr779116qvb.24.1616009399965;
-        Wed, 17 Mar 2021 12:29:59 -0700 (PDT)
-Received: from localhost ([76.73.146.210])
-        by smtp.gmail.com with ESMTPSA id a19sm18503446qkl.126.2021.03.17.12.29.58
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=0JxX/EeC1UVKwHOsPcIWefrhVnYu1SGK3e1Us0djvdI=;
+        b=pnz1DQcN4w+oFEe8h8F8kmvJ2A7fdG6TLp32Zrpfp7MBS8qdkMuvArJSViQO/72mkr
+         4yZOjhUXgIMQgE8HqNtbKhWcNU43q4B6uH6p1so2NgQTq0iBVw5ycz7LesxVjAvTA5sd
+         astk+yD4h3a/AJuU1YmBwEZJbBH3qguLaJnxcijD5t0K0NAdopeevpq1IHhYwepn3bKi
+         3lZ8B3roo1SmXRIANLWUwBBIHtvwhdwUqObs2SqB8GK4ZvxKDUETIgPNknYkx0roxt68
+         1aJeDmYsQ8mSMjSTHS7pgPutn8lb6jLy3z/5Mu/OnghvXd/m5x5CiVhXUUZgmfVTCDWh
+         oYjQ==
+X-Gm-Message-State: AOAM530aOXJBYAhVYWWs8s6wSgNLtuYqzBcDyzOLttwbYWFYP8uuP4mr
+        Y2EkyWAt057asGoMlLswarU=
+X-Google-Smtp-Source: ABdhPJwPSM87tx00ljWLHFkpcmORvfzihpIgFT74wXLKK+hITK4Ma+fQoiVCAa+vUsUxpV04fTwGrQ==
+X-Received: by 2002:a05:620a:15b7:: with SMTP id f23mr872320qkk.58.1616009413783;
+        Wed, 17 Mar 2021 12:30:13 -0700 (PDT)
+Received: from ArchLinux ([156.146.37.138])
+        by smtp.gmail.com with ESMTPSA id f9sm18170545qkk.115.2021.03.17.12.30.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 12:29:59 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 12:29:58 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Joe Perches <joe@perches.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
-        linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>
-Subject: Re: [PATCH 13/13] MAINTAINERS: Add entry for the bitmap API
-Message-ID: <20210317192958.GA2139254@yury-ThinkPad>
-References: <20210316015424.1999082-1-yury.norov@gmail.com>
- <20210316015424.1999082-14-yury.norov@gmail.com>
- <YFCabyt9pfPtoQiZ@smile.fi.intel.com>
- <20210317044759.GA2114775@yury-ThinkPad>
- <eff989d0ceaede15216f1046c24829f1113c035f.camel@perches.com>
- <CAKXUXMx9SFAxT_GoRw+Un7XyAuXh4LY0+RFwcKVOCG0vr2XUxw@mail.gmail.com>
+        Wed, 17 Mar 2021 12:30:12 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 00:59:54 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Reinette Chatre <reinette.chatre@intel.com>, fenghua.yu@intel.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kernel: cpu: resctrl: Minor typo fix in the file
+ pseudo_lock.c
+Message-ID: <YFJYshIZjo+Xcgo5@ArchLinux>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Reinette Chatre <reinette.chatre@intel.com>, fenghua.yu@intel.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-kernel@vger.kernel.org
+References: <20210317084016.3787380-1-unixbhaskar@gmail.com>
+ <b29afbff-67f4-397b-e289-c3e21755fec0@intel.com>
+ <99a7e1fc-0a05-9222-f913-b2d85141a08a@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="VJPfBsDAO9Dvj47m"
 Content-Disposition: inline
-In-Reply-To: <CAKXUXMx9SFAxT_GoRw+Un7XyAuXh4LY0+RFwcKVOCG0vr2XUxw@mail.gmail.com>
+In-Reply-To: <99a7e1fc-0a05-9222-f913-b2d85141a08a@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 07:40:04AM +0100, Lukas Bulwahn wrote:
-> On Wed, Mar 17, 2021 at 5:57 AM Joe Perches <joe@perches.com> wrote:
-> >
-> > On Tue, 2021-03-16 at 21:47 -0700, Yury Norov wrote:
-> > > [CC Andy Whitcroft, Joe Perches, Dwaipayan Ray, Lukas Bulwahn]
-> > >
-> > > On Tue, Mar 16, 2021 at 01:45:51PM +0200, Andy Shevchenko wrote:
-> > > > On Mon, Mar 15, 2021 at 06:54:24PM -0700, Yury Norov wrote:
-> > > > > Add myself as maintainer for bitmap API and Andy and Rasmus as reviewers.
-> > > > >
-> > > > > I'm an author of current implementation of lib/find_bit and an active
-> > > > > contributor to lib/bitmap. It was spotted that there's no maintainer for
-> > > > > bitmap API. I'm willing to maintain it.
-> > > > >
-> > > > > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> > > > > Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > > > Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> > > > > ---
-> > > > >  MAINTAINERS | 16 ++++++++++++++++
-> > > > >  1 file changed, 16 insertions(+)
-> > > > >
-> > > > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > > > index 3dd20015696e..44f94cdd5a20 100644
-> > > > > --- a/MAINTAINERS
-> > > > > +++ b/MAINTAINERS
-> > > > > @@ -3151,6 +3151,22 @@ F: Documentation/filesystems/bfs.rst
-> > > > >  F:       fs/bfs/
-> > > > >  F:       include/uapi/linux/bfs_fs.h
-> > > > >
-> > > > >
-> > > > > +BITMAP API
-> > > > > +M:       Yury Norov <yury.norov@gmail.com>
-> > > > > +R:       Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > > > +R:       Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> > > > > +S:       Maintained
-> > > > > +F:       include/asm-generic/bitops/find.h
-> > > > > +F:       include/linux/bitmap.h
-> > > > > +F:       lib/bitmap.c
-> > > > > +F:       lib/find_bit.c
-> > > >
-> > > > > +F:       lib/find_find_bit_benchmark.c
-> > > >
-> > > > Does this file exist?
-> > > > I guess checkpatch.pl nowadays has a MAINTAINER data base validation.
-> > >
-> > > No lib/find_find_bit_benchmark.c doesn't exist. It's a typo, it should
-> > > be lib/find_bit_benchmark.c. Checkpatch doesn't warn:
-> > >
-> > > yury:linux$ scripts/checkpatch.pl 0013-MAINTAINERS-Add-entry-for-the-bitmap-API.patch
-> > > total: 0 errors, 0 warnings, 22 lines checked
-> >
-> > checkpatch does not validate filenames for each patch.
-> >
-> > checkpatch does have a --self-test=patterns capability that does
-> > validate file accessibility.
-> 
-> Joe meant: get_maintainers does have a --self-test=patterns capability
-> that does validate file accessibility.
-> 
-> You can run that before patch submission; otherwise, I run that script
-> on linux-next once a week and send out correction patches as far as my
-> "spare" time allows to do so.
 
-Thanks for the hint. I see it's able to detect the issue.
+--VJPfBsDAO9Dvj47m
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On 11:01 Wed 17 Mar 2021, Randy Dunlap wrote:
+>On 3/17/21 10:54 AM, Reinette Chatre wrote:
+>> Hi Bhaskar,
+>>
+>> Thank you very much for catching this typo.
+>>
+>> My feedback [1] to a previous patch from you applies here also. The pref=
+ix should be "x86/resctrl:" for contributions to this area.
+>
+
+>Bhaskar,
+>Pretty much all of your patches need to have improved Subject: lines.
+>The file name that is being modified should not be at the end of the Subje=
+ct.
+>
+
+Noted, ...I was trying to feed the owner of the file as much as possible , =
+so
+the person can struggle less to understand and hover,considering the load t=
+hey
+might have on their shoulder.
+
+>>
+>> [1] https://lore.kernel.org/lkml/7e3a5c13-db5c-7399-2b80-f1284786ea77@in=
+tel.com/
+>>
+>> On 3/17/2021 1:40 AM, Bhaskar Chowdhury wrote:
+>>>
+>>> s/derefence/dereference/
+>>>
+>>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>>> ---
+>>> =C2=A0 arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 2 +-
+>>> =C2=A0 1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kerne=
+l/cpu/resctrl/pseudo_lock.c
+>>> index e916646adc69..43990a882b36 100644
+>>> --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+>>> +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+>>> @@ -1307,7 +1307,7 @@ int rdtgroup_pseudo_lock_create(struct rdtgroup *=
+rdtgrp)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * If the t=
+hread does not get on the CPU for whatever
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * reason a=
+nd the process which sets up the region is
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * interrup=
+ted then this will leave the thread in runnable
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * state and once it g=
+ets on the CPU it will derefence
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * state and once it g=
+ets on the CPU it will dereference
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * the clea=
+red, but not freed, plr struct resulting in an
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * empty ps=
+eudo-locking loop.
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>> --
+>>> 2.30.2
+>>>
+>>
+>> Reinette
+>
+>
+>--
+>~Randy
+>
+
+--VJPfBsDAO9Dvj47m
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBSWLIACgkQsjqdtxFL
+KRW4Owf/YDWTYixmniAOtKYDy+yb05EtMir9acO49uZ3XldNCR/TC9fr4/vCApGw
+li0rXlDsUX7Y0qwqxc9MK3mnkfRguiJWmoNPCGedilgypsZDQdGK8TFSr9iZuA12
+f7xfSDAyfTuFaXGNJ6NUpTKo87RBUNN2QJsP296NC5U71bFyedOK1hk3HuuOoTiE
+GMdBuqm8qGwEo9qnyPEhSkQAFFUgi6f2iaDpIrD3TmjqgAvql5nEG6vwj4RXd+sm
+5LR22DDl0WibPvH41vLubPkqGjKqQWqDnVfcmvyI4CA4H0WS48tE0Xdw1VfVwI5R
+Rq6tc7WEVH1IFPeUVAqSbCNQWRi0xQ==
+=8bXv
+-----END PGP SIGNATURE-----
+
+--VJPfBsDAO9Dvj47m--
