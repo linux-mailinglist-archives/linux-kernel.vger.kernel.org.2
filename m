@@ -2,100 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7AB033F7C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:03:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0BC33F7C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 19:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232865AbhCQSCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 14:02:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36932 "EHLO mx2.suse.de"
+        id S231458AbhCQSDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 14:03:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232852AbhCQSCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:02:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 51798AC1E;
-        Wed, 17 Mar 2021 18:02:39 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 19:02:36 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the tip tree
-Message-ID: <20210317180236.GF32135@zn.tnic>
-References: <20210317150858.02b1bbc8@canb.auug.org.au>
- <20210317105432.GA32135@zn.tnic>
- <CAP-5=fWKCtJq-9zd5A-XALJWNf8tsds44m-G07sc+kCUoXB8zg@mail.gmail.com>
+        id S232912AbhCQSDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 14:03:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A1B364F20;
+        Wed, 17 Mar 2021 18:03:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616004185;
+        bh=XuRIVNL9+2MBbMZJe/8H2fvfyJAhzhCls7VjVDwKWf4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EqM+Hp2RsgellPxUqzYkk4f62fmn1oxuNKe6LC1lGDDVtdScLIOA3jYjWQeAX3qLO
+         gMOb4mgH1bEUPAtFd/EG9TpI1ZeY5VLybvR5E8SENCOc9UVwsUZDA4CFTSNt2tZnMe
+         JEMz185kRJQZbImOU8DNHkaPgWtu8t+OL+Uf5q4U=
+Date:   Wed, 17 Mar 2021 19:03:02 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Badhri Jagan Sridharan <badhri@google.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] usb: typec: tcpci: Added few missing TCPCI register
+ definitions
+Message-ID: <YFJEVjRCLsnJ3/hg@kroah.com>
+References: <20210316221304.391206-1-badhri@google.com>
+ <4f077e6c-4e95-ab54-c549-e953bf3c00f3@roeck-us.net>
+ <YFIxkh8XLDiszci7@kroah.com>
+ <9d8747e0-c23a-6dd2-8cd8-fbbc0501d673@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fWKCtJq-9zd5A-XALJWNf8tsds44m-G07sc+kCUoXB8zg@mail.gmail.com>
+In-Reply-To: <9d8747e0-c23a-6dd2-8cd8-fbbc0501d673@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 09:22:15AM -0700, Ian Rogers wrote:
-> The <asm/emulate_prefix.h> path also needs fixing. With the following
-> I was able to build for arm64 and powerpc.
+On Wed, Mar 17, 2021 at 10:58:24AM -0700, Guenter Roeck wrote:
+> On 3/17/21 9:42 AM, Greg Kroah-Hartman wrote:
+> > On Tue, Mar 16, 2021 at 03:52:58PM -0700, Guenter Roeck wrote:
+> >> On 3/16/21 3:13 PM, Badhri Jagan Sridharan wrote:
+> >>> This change adds some of the register bit definitions from the TCPCI spec:
+> >>> https://www.usb.org/sites/default/files/documents/
+> >>> usb-port_controller_specification_rev2.0_v1.0_0.pdf
+> >>>
+> >>> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> >>
+> >> Are those going to be used ?
+> > 
+> > For values and #defines that are in public specs, does it matter?  It's
+> > good to have full definitions in the .h files for whenever possible for
+> > stuff like this to make it easy for people to write code to use them :)
+> > 
+> 
+> Good to know your position on this. It is one of the per-maintainer
+> thingies: Some maintainers don't accept defines if they are not used.
+> Usually I stay away from defining them to avoid the resulting arguments/
+> discussions. If you are ok with it, so am I.
 
-Thanks, I've updated and added your Tested-by. I'll give sfr a chance to
-test and queue it tomorrow.
+#defines are trivial, and are good for documenting things.  We have loads
+of drivers that do this to make it a good way to document the full
+hardware or specification despite not using all of the defines.  They
+also are not a maintenance burden.
 
----
-From d242b2639a23ed03d9aed94cf05b99af5343d4e9 Mon Sep 17 00:00:00 2001
-From: Borislav Petkov <bp@suse.de>
-Date: Wed, 17 Mar 2021 11:33:04 +0100
-Subject: [PATCH] tools/insn: Restore the relative include paths for cross building
+I don't take new apis that no one uses in-kernel as that's just ripe for
+deletion and is a maintenance burden.  It makes no sense to add and then
+remove something right away :)
 
-Building perf on ppc causes:
+thanks,
 
-  In file included from util/intel-pt-decoder/intel-pt-insn-decoder.c:15:
-  util/intel-pt-decoder/../../../arch/x86/lib/insn.c:14:10: fatal error: asm/inat.h: No such file or directory
-     14 | #include <asm/inat.h> /*__ignore_sync_check__ */
-        |          ^~~~~~~~~~~~
-
-Restore the relative include paths so that the compiler can find the
-headers.
-
-Fixes: 93281c4a9657 ("x86/insn: Add an insn_decode() API")
-Reported-by: Ian Rogers <irogers@google.com>
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Tested-by: Ian Rogers <irogers@google.com>
----
- tools/arch/x86/lib/insn.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-index cd4dedde3265..c41f95815480 100644
---- a/tools/arch/x86/lib/insn.c
-+++ b/tools/arch/x86/lib/insn.c
-@@ -11,13 +11,13 @@
- #else
- #include <string.h>
- #endif
--#include <asm/inat.h> /*__ignore_sync_check__ */
--#include <asm/insn.h> /* __ignore_sync_check__ */
-+#include "../include/asm/inat.h" /* __ignore_sync_check__ */
-+#include "../include/asm/insn.h" /* __ignore_sync_check__ */
- 
- #include <linux/errno.h>
- #include <linux/kconfig.h>
- 
--#include <asm/emulate_prefix.h> /* __ignore_sync_check__ */
-+#include "../include/asm/emulate_prefix.h" /* __ignore_sync_check__ */
- 
- #define leXX_to_cpu(t, r)						\
- ({									\
--- 
-2.29.2
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+greg k-h
