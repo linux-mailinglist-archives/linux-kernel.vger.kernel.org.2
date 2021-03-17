@@ -2,148 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D1333EB0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:07:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 741D833EB11
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 09:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhCQIG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 04:06:56 -0400
-Received: from mga18.intel.com ([134.134.136.126]:6247 "EHLO mga18.intel.com"
+        id S229687AbhCQIH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 04:07:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230484AbhCQIGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:06:39 -0400
-IronPort-SDR: QAaGQt/bEyk9zKGoHlwOMVJKJF+nyAzKLaUSbeFhLMktT1LG82Q/fJEZV4EnhBoK0ryk84ecQ1
- I1kfLLAjZOnA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="177011795"
-X-IronPort-AV: E=Sophos;i="5.81,255,1610438400"; 
-   d="scan'208";a="177011795"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 01:06:38 -0700
-IronPort-SDR: AFfPD6e/qJw85vHEsNRJ78zYJsTaOt+Z9hM4Rf3KL45vIq4fGU7sbZGZIFvrZAHQVNrQgo3oN0
- WgyGwZF5VBmw==
-X-IronPort-AV: E=Sophos;i="5.81,255,1610438400"; 
-   d="scan'208";a="405841553"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 01:06:38 -0700
-Date:   Wed, 17 Mar 2021 01:06:38 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] x86: Remove unnecessary kmap() from
- sgx_ioc_enclave_init()
-Message-ID: <20210317080638.GU3014244@iweiny-DESK2.sc.intel.com>
-References: <20210306002058.303796-1-ira.weiny@intel.com>
+        id S229524AbhCQIHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 04:07:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C50F64F7F;
+        Wed, 17 Mar 2021 08:07:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615968438;
+        bh=JjS5m2yPDHpWdfC2ifQGepgziRsPL5CojQq5WXxi9Ow=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WXByjGhGztc/4fmMD4fV5d6jRzqTT3QDvfY8ulWhEa+lQLGTw/qYc70d35tQYUc5G
+         4OdJ24aptdNgwu7sEEMpKrdRhJA/D5CVARcJHa9sX6A3aKaBEfz+Rz9ibB9PbURGK1
+         UFROHPl5rjZGMrVBl1uAT8O/IW8Jp6HVz2i0bAmpfe6fNyA4xnhqVgmbLzX3jVhIhM
+         o6qNEIO75bUxPgk/gxh2LkeFe2vWCh31EcoyPPSXz60Mt/0yle+v9jGRLebi0PoNuj
+         M+l1SxUUY2nF7olTPOBB8u7RYmYFYXCE6DEJRYFrXpBNRKLWtiAMMRHB+iNqbPglUQ
+         sAHJzTjtfndMg==
+Date:   Wed, 17 Mar 2021 16:07:12 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Heiko Schocher <hs@denx.de>
+Cc:     linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Ashish Kumar <ashish.kumar@nxp.com>,
+        Kuldeep Singh <kuldeep.singh@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yogesh Gaur <yogeshgaur.83@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] enable flexspi support on imx8mp
+Message-ID: <20210317080712.GU11246@dragon>
+References: <20210316075928.1763460-1-hs@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210306002058.303796-1-ira.weiny@intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20210316075928.1763460-1-hs@denx.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 04:20:58PM -0800, 'Ira Weiny' wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+On Tue, Mar 16, 2021 at 08:59:26AM +0100, Heiko Schocher wrote:
+> add compatible entry in nxp_fspi driver for imx8mp
 > 
-> kmap is inefficient and we are trying to reduce the usage in the kernel.
-> There is no readily apparent reason why initp_page needs to be allocated
-> and kmap'ed() but sigstruct needs to be page aligned and token
-> 512 byte aligned.
+> @Shawn: If this series is accepted, can you apply the DTS patches from
+> series v2?
+> http://lists.infradead.org/pipermail/linux-arm-kernel/2021-March/643292.html
+> http://lists.infradead.org/pipermail/linux-arm-kernel/2021-March/643293.html
 
-Friendly ping, maybe I missed a response?
-Ira
+Sure.  I will pick them up after this series gets accepted.
 
-> 
-> kmalloc() can give us this alignment but we need to allocate PAGE_SIZE
-> bytes to do so.  Rather than change this kmap() to kmap_local_page() use
-> kmalloc() instead.
-> 
-> Remove the alloc_page()/kmap() and replace with kmalloc(PAGE_SIZE, ...)
-> to get a page aligned kernel address to use.
-> 
-> In addition add a comment to document the alignment requirements so that
-> others like myself don't attempt to 'fix' this again.
-> 
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: Jethro Beekman <jethro@fortanix.com>
-> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Acked-by: Dave Hansen <dave.hansen@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> ---
-> Changes from v4[4]:
-> 	Add Ack and Reviews
-> 	Send to the correct maintainers
-> 
-> Changes from v3[3]:
-> 	Remove BUILD_BUG_ONs
-> 
-> Changes from v2[2]:
->         When allocating a power of 2 size kmalloc() now guarantees the
->         alignment of the respective size.  So go back to using kmalloc() but
->         with a PAGE_SIZE allocation to get the alignment.  This also follows
->         the pattern in sgx_ioc_enclave_create()
-> 
-> Changes from v1[1]:
-> 	Use page_address() instead of kcmalloc() to ensure sigstruct is
-> 	page aligned
-> 	Use BUILD_BUG_ON to ensure token and sigstruct don't collide.
-> 
-> [1] https://lore.kernel.org/lkml/20210129001459.1538805-1-ira.weiny@intel.com/
-> [2] https://lore.kernel.org/lkml/20210202013725.3514671-1-ira.weiny@intel.com/
-> [3] https://lore.kernel.org/lkml/20210205050850.GC5033@iweiny-DESK2.sc.intel.com/#t
-> [4] https://lore.kernel.org/lkml/YCBY02iEKLVyj7Ix@kernel.org/
-> 
-> ---
->  arch/x86/kernel/cpu/sgx/ioctl.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-> index 90a5caf76939..38e540de5e2a 100644
-> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
-> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-> @@ -604,7 +604,6 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
->  {
->  	struct sgx_sigstruct *sigstruct;
->  	struct sgx_enclave_init init_arg;
-> -	struct page *initp_page;
->  	void *token;
->  	int ret;
->  
-> @@ -615,11 +614,14 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
->  	if (copy_from_user(&init_arg, arg, sizeof(init_arg)))
->  		return -EFAULT;
->  
-> -	initp_page = alloc_page(GFP_KERNEL);
-> -	if (!initp_page)
-> +	/*
-> +	 * sigstruct must be on a page boundry and token on a 512 byte boundry
-> +	 * kmalloc() gives us this alignment when allocating PAGE_SIZE bytes
-> +	 */
-> +	sigstruct = kmalloc(PAGE_SIZE, GFP_KERNEL);
-> +	if (!sigstruct)
->  		return -ENOMEM;
->  
-> -	sigstruct = kmap(initp_page);
->  	token = (void *)((unsigned long)sigstruct + PAGE_SIZE / 2);
->  	memset(token, 0, SGX_LAUNCH_TOKEN_SIZE);
->  
-> @@ -645,8 +647,7 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
->  	ret = sgx_encl_init(encl, sigstruct, token);
->  
->  out:
-> -	kunmap(initp_page);
-> -	__free_page(initp_page);
-> +	kfree(sigstruct);
->  	return ret;
->  }
->  
-> -- 
-> 2.28.0.rc0.12.gb6a658bd00c9
-> 
+Shawn
