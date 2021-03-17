@@ -2,118 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F48933F0CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FDF33F0CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbhCQM7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 08:59:50 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:14363 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbhCQM7r (ORCPT
+        id S230290AbhCQNAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 09:00:24 -0400
+Received: from casper.infradead.org ([90.155.50.34]:34866 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229964AbhCQNAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 08:59:47 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F0qvN2WStz90W0;
-        Wed, 17 Mar 2021 20:57:52 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 17 Mar 2021 20:59:38 +0800
-Subject: Re: [PATCH v2 06/11] iommu/arm-smmu-v3: Scan leaf TTD to sync
- hardware dirty log
-To:     Yi Sun <yi.y.sun@linux.intel.com>
-References: <20210310090614.26668-1-zhukeqian1@huawei.com>
- <20210310090614.26668-7-zhukeqian1@huawei.com>
- <20210317104429.GT28580@yi.y.sun>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Will Deacon" <will@kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "Cornelia Huck" <cohuck@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
-        <yuzenghui@huawei.com>, <lushenming@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <82fd0514-dc2e-c908-56d1-73143762540b@huawei.com>
-Date:   Wed, 17 Mar 2021 20:59:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Wed, 17 Mar 2021 09:00:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OsgWaEcn4B2Y823RuGirB7smdrHD9ktZSszdfbNXaUg=; b=XA+1uUVnlgXcQjbmDjnaBuuEGR
+        flhEq42UNEW4sYM0rYOZ7WUmbAL6XtRJyKNJ4Ucn/xgXOkZbK/Ik8+TnijKolPD6cX3QmHCiEViIC
+        /s0XB2mCOKTk4twi9ZRWJ4wIDSPWkLjabmSpZsRrt/QP6Kwhspea/Z/Getkon820mAhQ4iBRmHnoA
+        TgPzTzT39v/5TbC/63CYBmxDppHGJOOBvFwa2QRxdW4CkQRRUu0AZaatHVtc/HpXx8oN66setnybA
+        cGoE5ZNf8vXBtevL9FDPulEq48QiBhvdOkmqpW9s5WDZT3DYgqSRNZUTAgKZcVoLf25YhkWjsUCn/
+        txYZFmuw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMVm5-001UL8-1g; Wed, 17 Mar 2021 12:59:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 10F833050F0;
+        Wed, 17 Mar 2021 13:59:44 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EF79A2B4F1EB8; Wed, 17 Mar 2021 13:59:43 +0100 (CET)
+Date:   Wed, 17 Mar 2021 13:59:43 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Davidlohr Bueso <dbueso@suse.de>, x86@kernel.org
+Subject: Re: [tip: locking/urgent] locking/ww_mutex: Simplify use_ww_ctx &
+ ww_ctx handling
+Message-ID: <YFH9Pw3kwCZC1UTB@hirez.programming.kicks-ass.net>
+References: <20210316153119.13802-2-longman@redhat.com>
+ <161598470257.398.5006518584847290113.tip-bot2@tip-bot2>
 MIME-Version: 1.0
-In-Reply-To: <20210317104429.GT28580@yi.y.sun>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161598470257.398.5006518584847290113.tip-bot2@tip-bot2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/17 18:44, Yi Sun wrote:
-> On 21-03-10 17:06:09, Keqian Zhu wrote:
->> From: jiangkunkun <jiangkunkun@huawei.com>
->>
->> During dirty log tracking, user will try to retrieve dirty log from
->> iommu if it supports hardware dirty log.
->>
->> This adds a new interface named sync_dirty_log in iommu layer and
->> arm smmuv3 implements it, which scans leaf TTD and treats it's dirty
->> if it's writable (As we just enable HTTU for stage1, so check whether
->> AP[2] is not set).
->>
->> Co-developed-by: Keqian Zhu <zhukeqian1@huawei.com>
->> Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
->> ---
->>
->> changelog:
->>
->> v2:
->>  - Add new sanity check in arm_smmu_sync_dirty_log(). (smmu_domain->stage != ARM_SMMU_DOMAIN_S1)
->>  - Document the purpose of flush_iotlb in arm_smmu_sync_dirty_log(). (Robin)
->>  
->> ---
->>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 30 +++++++
->>  drivers/iommu/io-pgtable-arm.c              | 90 +++++++++++++++++++++
->>  drivers/iommu/iommu.c                       | 38 +++++++++
->>  include/linux/io-pgtable.h                  |  4 +
->>  include/linux/iommu.h                       | 18 +++++
->>  5 files changed, 180 insertions(+)
->>
-> Please split iommu common interface out. Thanks!
-Yes, I will do it in v3.
+On Wed, Mar 17, 2021 at 12:38:22PM -0000, tip-bot2 for Waiman Long wrote:
+> The following commit has been merged into the locking/urgent branch of tip:
+> 
+> Commit-ID:     5de2055d31ea88fd9ae9709ac95c372a505a60fa
+> Gitweb:        https://git.kernel.org/tip/5de2055d31ea88fd9ae9709ac95c372a505a60fa
+> Author:        Waiman Long <longman@redhat.com>
+> AuthorDate:    Tue, 16 Mar 2021 11:31:16 -04:00
+> Committer:     Ingo Molnar <mingo@kernel.org>
+> CommitterDate: Wed, 17 Mar 2021 09:56:44 +01:00
+> 
+> locking/ww_mutex: Simplify use_ww_ctx & ww_ctx handling
+> 
+> The use_ww_ctx flag is passed to mutex_optimistic_spin(), but the
+> function doesn't use it. The frequent use of the (use_ww_ctx && ww_ctx)
+> combination is repetitive.
+> 
+> In fact, ww_ctx should not be used at all if !use_ww_ctx.  Simplify
+> ww_mutex code by dropping use_ww_ctx from mutex_optimistic_spin() an
+> clear ww_ctx if !use_ww_ctx. In this way, we can replace (use_ww_ctx &&
+> ww_ctx) by just (ww_ctx).
 
-> 
-> [...]
-> 
->> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->> index 2a10294b62a3..44dfb78f9050 100644
->> --- a/drivers/iommu/iommu.c
->> +++ b/drivers/iommu/iommu.c
->> @@ -2850,6 +2850,44 @@ int iommu_stop_dirty_log(struct iommu_domain *domain, unsigned long iova,
->>  }
->>  EXPORT_SYMBOL_GPL(iommu_stop_dirty_log);
->>  
->> +int iommu_sync_dirty_log(struct iommu_domain *domain, unsigned long iova,
->> +			 size_t size, unsigned long *bitmap,
->> +			 unsigned long base_iova, unsigned long bitmap_pgshift)
-> 
-> One open question: shall we add PASID as one parameter to make iommu
-> know which address space to visit?
-> 
-> For live migration, the pasid should not be necessary. But considering
-Sure, for live migration we just need to care about level/stage 2 mapping under nested mode.
+The reason this code was like this is because GCC could constant
+propagage use_ww_ctx but could not do the same for ww_ctx (since that's
+external).
 
-> future extension, it may be required.
-It sounds a good idea. I will consider this, thanks!
-
-> 
-> BRs,
-> Yi Sun
-> .
-> 
-Thanks,
-Keqian
+Please double check generated code to make sure you've not introduced a
+bunch of extra branches.
