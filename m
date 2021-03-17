@@ -2,204 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 494EE33E978
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70CFF33E97B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhCQF7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 01:59:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhCQF7Q (ORCPT
+        id S229508AbhCQGBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 02:01:42 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:48648 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229739AbhCQGBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 01:59:16 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02F1C06174A;
-        Tue, 16 Mar 2021 22:59:08 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id o10so237622plg.11;
-        Tue, 16 Mar 2021 22:59:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7kgTgl5Lk4YBTT/f5PQYaTPsw7lPuwKB6cHK7aX5OYo=;
-        b=WFndP0xEksylxRu1x0rkdukJzOsVr49B7UZMVr6XrSDxUqwOuRZuhwphw8hFGE+RwZ
-         U4O4ftdbJUeu8SCo3ZO/LWuWLosJgUOsLKUwlwUxjzsQVeTsvylN+yG0Xs8x89VFxFcA
-         NG6u05wG1Spi0NJWQ3Ap3wg1UPM5bc5WvYd1eazQVu0ihm+NA2GOLqy9mKR2q5im4hsX
-         jaiIvTTkkK848Wsh5qd7zeqKBiy1xRYxW+WUo8c+qVylmVJwKw0duZTGtx8l2egQkyUS
-         bZFva9DBc+k186UcYy8kcv9iNy3W5HMN1SObCdKA1xSuLwsm5mmTG8TLuc2OckyN78+t
-         sIDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7kgTgl5Lk4YBTT/f5PQYaTPsw7lPuwKB6cHK7aX5OYo=;
-        b=dp3Yc5qDmCYM5m/T+WuwYC1M/udIbCf8GeYH04YQ4NFjQqTdo03tpjc92Vhzigq75s
-         vhbrL8unOdt3fLfKs0kMB3RxuR5O6goaQ1q5yzNMaPm3t6vno0LKJNpNva84zQBq2tdj
-         rQnKg9jHDiqX95Ig1/b72zsUPadEV57UkefwEvYEFE/OZs0HEClyol6v+pSI6wGP21SG
-         gBkslz/BrDKC9t+db5qvv8gN2P7WlFsNg4rihxRTyLBzTIxsYeqOCkJWRXMVugWC5BFe
-         7Pt3yAAQm/riWhf1p+VSsPMp7UZtd2djR/Sk48sj6Ht2swP51IlYKOMlK/Jz383W/9dN
-         PW3A==
-X-Gm-Message-State: AOAM533gP/6y82JxyW//XDpzdNQm6E0q47bYtQVg+T/8cArjJOtrMIQK
-        BuCqS5Y3oRXu6t3DddZAZgjrHxR4CWPNb24U
-X-Google-Smtp-Source: ABdhPJwsKJU5jbmr5boZZ/qRk4PJh6dB6ozpqqeDldjX/NvpRpi8QwtkjDK9KiW7OyQEhWcyWKRrWw==
-X-Received: by 2002:a17:90a:4b8c:: with SMTP id i12mr2810810pjh.76.1615960748099;
-        Tue, 16 Mar 2021 22:59:08 -0700 (PDT)
-Received: from z640-arch.lan ([2602:61:738f:1000::678])
-        by smtp.gmail.com with ESMTPSA id i2sm16952169pgs.82.2021.03.16.22.59.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 22:59:07 -0700 (PDT)
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Wed, 17 Mar 2021 02:01:10 -0400
+X-UUID: 3bd86e3980894a73b38af9e980095994-20210317
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=flS4aAUkiDCFSAojI4O/EVU54VJW8Vir9tiLnZM7n50=;
+        b=dGIBrrkGP8cbwFtpRFZMlbn5Eaz2KX1DtHXJFMrOo/WRLowFNmwFCUiYXA5UUXSJrnrRItB2Tqaeq6hjfNTv4fpa9T94P/HeBAttfUFV7TqtfQ2ioxTHzHN2wuAKdOmN1UQZj8+Ha5h9UAT/xCrTFMP2HzUI4jheGYOOgrKgce8=;
+X-UUID: 3bd86e3980894a73b38af9e980095994-20210317
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <hsin-hsiung.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 904840216; Wed, 17 Mar 2021 14:01:07 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 17 Mar 2021 14:01:05 +0800
+Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 17 Mar 2021 14:01:05 +0800
+Message-ID: <1615960865.28391.0.camel@mtksdaap41>
+Subject: Re: [PATCH v6 4/8] dt-bindings: regulator: Add document for MT6359
+ regulator
+From:   Hsin-hsiung Wang <hsin-hsiung.wang@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Lee Jones <lee.jones@linaro.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Subject: [PATCH] MIPS: ralink: mt7621: add memory detection support
-Date:   Tue, 16 Mar 2021 22:59:02 -0700
-Message-Id: <20210317055902.506773-1-ilya.lipnitskiy@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        "Fei Shao" <fshao@chromium.org>, Ran Bi <ran.bi@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
+        <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Date:   Wed, 17 Mar 2021 14:01:05 +0800
+In-Reply-To: <20210316212802.GA3670080@robh.at.kernel.org>
+References: <1615829757-3223-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+         <1615829757-3223-5-git-send-email-hsin-hsiung.wang@mediatek.com>
+         <20210316212802.GA3670080@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuanhong Guo <gch981213@gmail.com>
-
-mt7621 has the following memory map:
-0x0-0x1c000000: lower 448m memory
-0x1c000000-0x2000000: peripheral registers
-0x20000000-0x2400000: higher 64m memory
-
-detect_memory_region in arch/mips/kernel/setup.c only adds the first
-memory region and isn't suitable for 512m memory detection because
-it may accidentally read the memory area for peripheral registers.
-
-This commit adds memory detection capability for mt7621:
-  1. Add the highmem area when 512m is detected.
-  2. Guard memcmp from accessing peripheral registers:
-     This only happens when a user decided to change kernel load address
-     to 256m or higher address. Since this is a quite unusual case, we
-     just skip 512m testing and return 256m as memory size.
-
-Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
-[Minor commit message reword, make mt7621_memory_detect static]
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
----
- arch/mips/include/asm/mach-ralink/mt7621.h |  7 +++---
- arch/mips/ralink/common.h                  |  1 +
- arch/mips/ralink/mt7621.c                  | 29 +++++++++++++++++++---
- arch/mips/ralink/of.c                      |  2 ++
- 4 files changed, 32 insertions(+), 7 deletions(-)
-
-diff --git a/arch/mips/include/asm/mach-ralink/mt7621.h b/arch/mips/include/asm/mach-ralink/mt7621.h
-index e1af1ba50bd8..6bbf082dd149 100644
---- a/arch/mips/include/asm/mach-ralink/mt7621.h
-+++ b/arch/mips/include/asm/mach-ralink/mt7621.h
-@@ -24,9 +24,10 @@
- #define CHIP_REV_VER_SHIFT		8
- #define CHIP_REV_ECO_MASK		0xf
- 
--#define MT7621_DRAM_BASE                0x0
--#define MT7621_DDR2_SIZE_MIN		32
--#define MT7621_DDR2_SIZE_MAX		256
-+#define MT7621_LOWMEM_BASE		0x0
-+#define MT7621_LOWMEM_MAX_SIZE		0x1C000000
-+#define MT7621_HIGHMEM_BASE		0x20000000
-+#define MT7621_HIGHMEM_SIZE		0x4000000
- 
- #define MT7621_CHIP_NAME0		0x3637544D
- #define MT7621_CHIP_NAME1		0x20203132
-diff --git a/arch/mips/ralink/common.h b/arch/mips/ralink/common.h
-index 4bc65b7a3241..113dca5ac129 100644
---- a/arch/mips/ralink/common.h
-+++ b/arch/mips/ralink/common.h
-@@ -17,6 +17,7 @@ struct ralink_soc_info {
- 	unsigned long mem_size;
- 	unsigned long mem_size_min;
- 	unsigned long mem_size_max;
-+	void (*mem_detect)(void);
- };
- extern struct ralink_soc_info soc_info;
- 
-diff --git a/arch/mips/ralink/mt7621.c b/arch/mips/ralink/mt7621.c
-index ca0ac607b0f3..d6616b0ad610 100644
---- a/arch/mips/ralink/mt7621.c
-+++ b/arch/mips/ralink/mt7621.c
-@@ -9,7 +9,9 @@
- #include <linux/init.h>
- #include <linux/slab.h>
- #include <linux/sys_soc.h>
-+#include <linux/memblock.h>
- 
-+#include <asm/bootinfo.h>
- #include <asm/mipsregs.h>
- #include <asm/smp-ops.h>
- #include <asm/mips-cps.h>
-@@ -49,6 +51,8 @@
- #define MT7621_GPIO_MODE_SDHCI_SHIFT	18
- #define MT7621_GPIO_MODE_SDHCI_GPIO	1
- 
-+static void *detect_magic __initdata = detect_memory_region;
-+
- static struct rt2880_pmx_func uart1_grp[] =  { FUNC("uart1", 0, 1, 2) };
- static struct rt2880_pmx_func i2c_grp[] =  { FUNC("i2c", 0, 3, 2) };
- static struct rt2880_pmx_func uart3_grp[] = {
-@@ -110,6 +114,26 @@ phys_addr_t mips_cpc_default_phys_base(void)
- 	panic("Cannot detect cpc address");
- }
- 
-+static void __init mt7621_memory_detect(void)
-+{
-+	void *dm = &detect_magic;
-+	phys_addr_t size;
-+
-+	for (size = 32 * SZ_1M; size < 256 * SZ_1M; size <<= 1) {
-+		if (!__builtin_memcmp(dm, dm + size, sizeof(detect_magic)))
-+			break;
-+	}
-+
-+	if ((size == 256 * SZ_1M) &&
-+	    (CPHYSADDR(dm + size) < MT7621_LOWMEM_MAX_SIZE) &&
-+	    __builtin_memcmp(dm, dm + size, sizeof(detect_magic))) {
-+		memblock_add(MT7621_LOWMEM_BASE, MT7621_LOWMEM_MAX_SIZE);
-+		memblock_add(MT7621_HIGHMEM_BASE, MT7621_HIGHMEM_SIZE);
-+	} else {
-+		memblock_add(MT7621_LOWMEM_BASE, size);
-+	}
-+}
-+
- void __init ralink_of_remap(void)
- {
- 	rt_sysc_membase = plat_of_remap_node("mtk,mt7621-sysc");
-@@ -194,10 +218,7 @@ void prom_soc_init(struct ralink_soc_info *soc_info)
- 		(rev >> CHIP_REV_VER_SHIFT) & CHIP_REV_VER_MASK,
- 		(rev & CHIP_REV_ECO_MASK));
- 
--	soc_info->mem_size_min = MT7621_DDR2_SIZE_MIN;
--	soc_info->mem_size_max = MT7621_DDR2_SIZE_MAX;
--	soc_info->mem_base = MT7621_DRAM_BASE;
--
-+	soc_info->mem_detect = mt7621_memory_detect;
- 	rt2880_pinmux_data = mt7621_pinmux_data;
- 
- 	soc_dev_init(soc_info, rev);
-diff --git a/arch/mips/ralink/of.c b/arch/mips/ralink/of.c
-index 8286c3521476..0c5de07da097 100644
---- a/arch/mips/ralink/of.c
-+++ b/arch/mips/ralink/of.c
-@@ -78,6 +78,8 @@ void __init plat_mem_setup(void)
- 	of_scan_flat_dt(early_init_dt_find_memory, NULL);
- 	if (memory_dtb)
- 		of_scan_flat_dt(early_init_dt_scan_memory, NULL);
-+	else if (soc_info.mem_detect)
-+		soc_info.mem_detect();
- 	else if (soc_info.mem_size)
- 		memblock_add(soc_info.mem_base, soc_info.mem_size * SZ_1M);
- 	else
--- 
-2.31.0
+SGksIFJvYg0KSSBhbSB2ZXJ5IGdyYXRlZnVsIGZvciB0aGUgcmV2aWV3aW5nIHdoaWNoIGFkZHJl
+c3NlZCBteSB5YW1sIGVycm9ycy4NCkkgd2lsbCBjaGVjayBteSBjb2RlYmFzZSBmaXJzdCBhbmQg
+Zml4IHRoZSBlcnJvciBpbiB0aGUgbmV4dCBwYXRjaC4NCg0KVGhhbmtzLg0KDQpPbiBUdWUsIDIw
+MjEtMDMtMTYgYXQgMTU6MjggLTA2MDAsIFJvYiBIZXJyaW5nIHdyb3RlOg0KPiBPbiBUdWUsIE1h
+ciAxNiwgMjAyMSBhdCAwMTozNTo1M0FNICswODAwLCBIc2luLUhzaXVuZyBXYW5nIHdyb3RlOg0K
+PiA+IGFkZCBkdC1iaW5kaW5nIGRvY3VtZW50IGZvciBNZWRpYVRlayBNVDYzNTkgUE1JQw0KPiA+
+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IEhzaW4tSHNpdW5nIFdhbmcgPGhzaW4taHNpdW5nLndhbmdA
+bWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+IGNoYW5nZXMgc2luY2UgdjU6DQo+ID4gLSBubyBj
+aGFuZ2UuDQo+ID4gLS0tDQo+ID4gIC4uLi9iaW5kaW5ncy9yZWd1bGF0b3IvbXQ2MzU5LXJlZ3Vs
+YXRvci55YW1sICB8IDE2OSArKysrKysrKysrKysrKysrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQs
+IDE2OSBpbnNlcnRpb25zKCspDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9u
+L2RldmljZXRyZWUvYmluZGluZ3MvcmVndWxhdG9yL210NjM1OS1yZWd1bGF0b3IueWFtbA0KPiA+
+IA0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVn
+dWxhdG9yL210NjM1OS1yZWd1bGF0b3IueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
+aW5kaW5ncy9yZWd1bGF0b3IvbXQ2MzU5LXJlZ3VsYXRvci55YW1sDQo+ID4gbmV3IGZpbGUgbW9k
+ZSAxMDA2NDQNCj4gPiBpbmRleCAwMDAwMDAwMDAwMDAuLjYyZmY5M2VlZmQzOQ0KPiA+IC0tLSAv
+ZGV2L251bGwNCj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVn
+dWxhdG9yL210NjM1OS1yZWd1bGF0b3IueWFtbA0KPiA+IEBAIC0wLDAgKzEsMTY5IEBADQo+ID4g
+KyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4wIE9SIEJTRC0yLUNsYXVzZSkNCj4g
+PiArJVlBTUwgMS4yDQo+ID4gKy0tLQ0KPiA+ICskaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9z
+Y2hlbWFzL3JlZ3VsYXRvci9tdDYzNTktcmVndWxhdG9yLnlhbWwjDQo+ID4gKyRzY2hlbWE6IGh0
+dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIw0KPiA+ICsNCj4gPiAr
+dGl0bGU6IE1UNjM1OSBSZWd1bGF0b3IgZnJvbSBNZWRpYVRlayBJbnRlZ3JhdGVkDQo+ID4gKw0K
+PiA+ICttYWludGFpbmVyczoNCj4gPiArICAtIEhzaW4tSHNpdW5nIFdhbmcgPGhzaW4taHNpdW5n
+LndhbmdAbWVkaWF0ZWsuY29tPg0KPiA+ICsNCj4gPiArZGVzY3JpcHRpb246IHwNCj4gPiArICBM
+aXN0IG9mIHJlZ3VsYXRvcnMgcHJvdmlkZWQgYnkgdGhpcyBjb250cm9sbGVyLiBJdCBpcyBuYW1l
+ZA0KPiA+ICsgIGFjY29yZGluZyB0byBpdHMgcmVndWxhdG9yIHR5cGUsIGJ1Y2tfPG5hbWU+IGFu
+ZCBsZG9fPG5hbWU+Lg0KPiA+ICsgIE1UNjM1OSByZWd1bGF0b3JzIG5vZGUgc2hvdWxkIGJlIHN1
+YiBub2RlIG9mIHRoZSBNVDYzOTcgTUZEIG5vZGUuDQo+ID4gKw0KPiA+ICtwcm9wZXJ0aWVzOg0K
+PiA+ICsgICRub2RlbmFtZToNCj4gPiArICAgIHBhdHRlcm46ICJecG1pYyQiDQo+IA0KPiBUaGUg
+ZXJyb3JzIGFyZSBiZWNhdXNlIHRoaXMgc2NoZW1hIHdpbGwgYmUgYXBwbGllZCB0byBldmVyeSAn
+cG1pYycgbm9kZS4NCj4gDQo+ID4gKw0KPiA+ICsgIG10NjM1OXJlZ3VsYXRvcjoNCj4gDQo+IFRo
+ZSBub2RlIG5hbWUgaGVyZSBzaG91bGQgYmUganVzdCAncmVndWxhdG9ycycsIGJ1dCB0aGF0IHNo
+b3VsZCBiZSBpbiANCj4gdGhlIE1GRCBzY2hlbWEgYW5kIHlvdSBzaG91bGQgcmVtb3ZlIHRoaXMg
+bGV2ZWwgaGVyZS4gU28gdGhlIE1GRCB3b3VsZCANCj4gaGF2ZToNCj4gDQo+IHByb3BlcnRpZXM6
+DQo+ICAgcmVndWxhdG9yczoNCj4gICAgIHR5cGU6IG9iamVjdA0KPiAgICAgJHJlZjogc2NoZW1h
+cy9yZWd1bGF0b3IvbXQ2MzU5LXJlZ3VsYXRvci55YW1sIw0KPiANCj4gPiArICAgIHR5cGU6IG9i
+amVjdA0KPiA+ICsgICAgZGVzY3JpcHRpb246DQo+ID4gKyAgICAgIGxpc3Qgb2YgcmVndWxhdG9y
+cyBwcm92aWRlZCBieSB0aGlzIGNvbnRyb2xsZXIuDQo+ID4gKw0KPiA+ICsgICAgcGF0dGVyblBy
+b3BlcnRpZXM6DQo+IA0KPiBBbmQgdGhpcyBzaG91bGQgYmUgYXQgdGhlIHRvcCBsZXZlbCBvZiB0
+aGlzIGRvYy4NCj4gDQo+ID4gKyAgICAgICJeYnVja192KHMxfGdwdTExfG1vZGVtfHB1fGNvcmV8
+czJ8cGF8cHJvYzJ8cHJvYzF8Y29yZV9zc2h1YikkIjoNCj4gPiArICAgICAgICB0eXBlOiBvYmpl
+Y3QNCj4gPiArICAgICAgICAkcmVmOiAicmVndWxhdG9yLnlhbWwjIg0KPiA+ICsNCj4gPiArICAg
+ICAgICBwcm9wZXJ0aWVzOg0KPiA+ICsgICAgICAgICAgcmVndWxhdG9yLW5hbWU6DQo+ID4gKyAg
+ICAgICAgICAgIHBhdHRlcm46ICJedihzMXxncHUxMXxtb2RlbXxwdXxjb3JlfHMyfHBhfHByb2My
+fHByb2MxfGNvcmVfc3NodWIpJCINCj4gPiArDQo+ID4gKyAgICAgICAgdW5ldmFsdWF0ZWRQcm9w
+ZXJ0aWVzOiBmYWxzZQ0KPiA+ICsNCj4gPiArICAgICAgIl5sZG9fdihpYnJ8cmYxMnx1c2J8Y2Ft
+aW98ZWZ1c2V8eG8yMikkIjoNCj4gPiArICAgICAgICB0eXBlOiBvYmplY3QNCj4gPiArICAgICAg
+ICAkcmVmOiAicmVndWxhdG9yLnlhbWwjIg0KPiA+ICsNCj4gPiArICAgICAgICBwcm9wZXJ0aWVz
+Og0KPiA+ICsgICAgICAgICAgcmVndWxhdG9yLW5hbWU6DQo+ID4gKyAgICAgICAgICAgIHBhdHRl
+cm46ICJedihpYnJ8cmYxMnx1c2J8Y2FtaW98ZWZ1c2V8eG8yMikkIg0KPiA+ICsNCj4gPiArICAg
+ICAgICB1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNlDQo+ID4gKw0KPiA+ICsgICAgICAiXmxk
+b192KHJmY2t8ZW1jfGExMnxhMDl8dWZzfGJiY2spJCI6DQo+ID4gKyAgICAgICAgdHlwZTogb2Jq
+ZWN0DQo+ID4gKyAgICAgICAgJHJlZjogInJlZ3VsYXRvci55YW1sIyINCj4gPiArDQo+ID4gKyAg
+ICAgICAgcHJvcGVydGllczoNCj4gPiArICAgICAgICAgIHJlZ3VsYXRvci1uYW1lOg0KPiA+ICsg
+ICAgICAgICAgICBwYXR0ZXJuOiAiXnYocmZja3xlbWN8YTEyfGEwOXx1ZnN8YmJjaykkIg0KPiA+
+ICsNCj4gPiArICAgICAgICB1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNlDQo+ID4gKw0KPiA+
+ICsgICAgICAiXmxkb192Y24oMTh8MTN8MzNfMV9idHwxM18xX3dpZml8MzNfMl9idHwzM18yX3dp
+ZmkpJCI6DQo+ID4gKyAgICAgICAgdHlwZTogb2JqZWN0DQo+ID4gKyAgICAgICAgJHJlZjogInJl
+Z3VsYXRvci55YW1sIyINCj4gPiArDQo+ID4gKyAgICAgICAgcHJvcGVydGllczoNCj4gPiArICAg
+ICAgICAgIHJlZ3VsYXRvci1uYW1lOg0KPiA+ICsgICAgICAgICAgICBwYXR0ZXJuOiAiXnZjbigx
+OHwxM3wzM18xX2J0fDEzXzFfd2lmaXwzM18yX2J0fDMzXzJfd2lmaSkkIg0KPiA+ICsNCj4gPiAr
+ICAgICAgICB1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNlDQo+ID4gKw0KPiA+ICsgICAgICAi
+Xmxkb192c3JhbV8ocHJvYzJ8b3RoZXJzfG1kfHByb2MxfG90aGVyc19zc2h1YikkIjoNCj4gPiAr
+ICAgICAgICB0eXBlOiBvYmplY3QNCj4gPiArICAgICAgICAkcmVmOiAicmVndWxhdG9yLnlhbWwj
+Ig0KPiA+ICsNCj4gPiArICAgICAgICBwcm9wZXJ0aWVzOg0KPiA+ICsgICAgICAgICAgcmVndWxh
+dG9yLW5hbWU6DQo+ID4gKyAgICAgICAgICAgIHBhdHRlcm46ICJednNyYW1fKHByb2MyfG90aGVy
+c3xtZHxwcm9jMXxvdGhlcnNfc3NodWIpJCINCj4gPiArDQo+ID4gKyAgICAgICAgdW5ldmFsdWF0
+ZWRQcm9wZXJ0aWVzOiBmYWxzZQ0KPiA+ICsNCj4gPiArICAgICAgIl5sZG9fdihmZXxiaWZ8aW8p
+MjgkIjoNCj4gPiArICAgICAgICB0eXBlOiBvYmplY3QNCj4gPiArICAgICAgICAkcmVmOiAicmVn
+dWxhdG9yLnlhbWwjIg0KPiA+ICsNCj4gPiArICAgICAgICBwcm9wZXJ0aWVzOg0KPiA+ICsgICAg
+ICAgICAgcmVndWxhdG9yLW5hbWU6DQo+ID4gKyAgICAgICAgICAgIHBhdHRlcm46ICJedihmZXxi
+aWZ8aW8pMjgkIg0KPiA+ICsNCj4gPiArICAgICAgICB1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZh
+bHNlDQo+ID4gKw0KPiA+ICsgICAgICAiXmxkb192KGF1ZHxpb3xhdXh8cmZ8bSkxOCQiOg0KPiA+
+ICsgICAgICAgIHR5cGU6IG9iamVjdA0KPiA+ICsgICAgICAgICRyZWY6ICJyZWd1bGF0b3IueWFt
+bCMiDQo+ID4gKw0KPiA+ICsgICAgICAgIHByb3BlcnRpZXM6DQo+ID4gKyAgICAgICAgICByZWd1
+bGF0b3ItbmFtZToNCj4gPiArICAgICAgICAgICAgcGF0dGVybjogIl52KGF1ZHxpb3xhdXh8cmZ8
+bSkxOCQiDQo+ID4gKw0KPiA+ICsgICAgICAgIHVuZXZhbHVhdGVkUHJvcGVydGllczogZmFsc2UN
+Cj4gPiArDQo+ID4gKyAgICAgICJebGRvX3ZzaW1bMTJdJCI6DQo+ID4gKyAgICAgICAgdHlwZTog
+b2JqZWN0DQo+ID4gKyAgICAgICAgJHJlZjogInJlZ3VsYXRvci55YW1sIyINCj4gPiArDQo+ID4g
+KyAgICAgICAgcHJvcGVydGllczoNCj4gPiArICAgICAgICAgIHJlZ3VsYXRvci1uYW1lOg0KPiA+
+ICsgICAgICAgICAgICBwYXR0ZXJuOiAiXnZzaW1bMTJdJCINCj4gPiArDQo+ID4gKyAgICAgICAg
+cmVxdWlyZWQ6DQo+ID4gKyAgICAgICAgICAtIHJlZ3VsYXRvci1uYW1lDQo+ID4gKw0KPiA+ICsg
+ICAgICAgIHVuZXZhbHVhdGVkUHJvcGVydGllczogZmFsc2UNCj4gPiArDQo+ID4gK2FkZGl0aW9u
+YWxQcm9wZXJ0aWVzOiBmYWxzZQ0KPiA+ICsNCj4gPiArZXhhbXBsZXM6DQo+ID4gKyAgLSB8DQo+
+ID4gKyAgICBwbWljIHsNCj4gPiArICAgICAgbXQ2MzU5cmVndWxhdG9yIHsNCj4gDQo+IEkgcHJl
+ZmVyIHRvIHNlZSBhIHNpbmdsZSBjb21wbGV0ZSBleGFtcGxlIGluIHRoZSBNRkQgc2NoZW1hIHJh
+dGhlciB0aGFuIA0KPiBwaWVjZW1lYWwgc2NoZW1hcyBpbiBlYWNoIHN1YiBzY2hlbWEuDQo+IA0K
+PiA+ICsgICAgICAgIG10NjM1OV92Z3B1MTFfYnVja19yZWc6IGJ1Y2tfdmdwdTExIHsNCj4gPiAr
+ICAgICAgICAgIHJlZ3VsYXRvci1uYW1lID0gInZncHUxMSI7DQo+ID4gKyAgICAgICAgICByZWd1
+bGF0b3ItbWluLW1pY3Jvdm9sdCA9IDw0MDAwMDA+Ow0KPiA+ICsgICAgICAgICAgcmVndWxhdG9y
+LW1heC1taWNyb3ZvbHQgPSA8MTE5Mzc1MD47DQo+ID4gKyAgICAgICAgICByZWd1bGF0b3ItZW5h
+YmxlLXJhbXAtZGVsYXkgPSA8MjAwPjsNCj4gPiArICAgICAgICAgIHJlZ3VsYXRvci1hbHdheXMt
+b247DQo+ID4gKyAgICAgICAgICByZWd1bGF0b3ItYWxsb3dlZC1tb2RlcyA9IDwwIDEgMj47DQo+
+ID4gKyAgICAgICAgfTsNCj4gPiArDQo+ID4gKyAgICAgICAgbXQ2MzU5X3ZjYW1pb19sZG9fcmVn
+OiBsZG9fdmNhbWlvIHsNCj4gPiArICAgICAgICAgIHJlZ3VsYXRvci1uYW1lID0gInZjYW1pbyI7
+DQo+ID4gKyAgICAgICAgICByZWd1bGF0b3ItbWluLW1pY3Jvdm9sdCA9IDwxNzAwMDAwPjsNCj4g
+PiArICAgICAgICAgIHJlZ3VsYXRvci1tYXgtbWljcm92b2x0ID0gPDE5MDAwMDA+Ow0KPiA+ICsg
+ICAgICAgIH07DQo+ID4gKw0KPiA+ICsgICAgICAgIG10NjM1OV92Y24xOF9sZG9fcmVnOiBsZG9f
+dmNuMTggew0KPiA+ICsgICAgICAgICAgcmVndWxhdG9yLW5hbWUgPSAidmNuMTgiOw0KPiA+ICsg
+ICAgICAgICAgcmVndWxhdG9yLW1pbi1taWNyb3ZvbHQgPSA8MTgwMDAwMD47DQo+ID4gKyAgICAg
+ICAgICByZWd1bGF0b3ItbWF4LW1pY3Jvdm9sdCA9IDwxODAwMDAwPjsNCj4gPiArICAgICAgICAg
+IHJlZ3VsYXRvci1lbmFibGUtcmFtcC1kZWxheSA9IDwyNDA+Ow0KPiA+ICsgICAgICAgIH07DQo+
+ID4gKw0KPiA+ICsgICAgICAgIG10NjM1OV92c3JhbV9wcm9jMl9sZG9fcmVnOiBsZG9fdnNyYW1f
+cHJvYzIgew0KPiA+ICsgICAgICAgICAgcmVndWxhdG9yLW5hbWUgPSAidnNyYW1fcHJvYzIiOw0K
+PiA+ICsgICAgICAgICAgcmVndWxhdG9yLW1pbi1taWNyb3ZvbHQgPSA8NTAwMDAwPjsNCj4gPiAr
+ICAgICAgICAgIHJlZ3VsYXRvci1tYXgtbWljcm92b2x0ID0gPDEyOTM3NTA+Ow0KPiA+ICsgICAg
+ICAgICAgcmVndWxhdG9yLXJhbXAtZGVsYXkgPSA8NzUwMD47DQo+ID4gKyAgICAgICAgICByZWd1
+bGF0b3ItZW5hYmxlLXJhbXAtZGVsYXkgPSA8MjQwPjsNCj4gPiArICAgICAgICAgIHJlZ3VsYXRv
+ci1hbHdheXMtb247DQo+ID4gKyAgICAgICAgfTsNCj4gPiArDQo+ID4gKyAgICAgICAgbXQ2MzU5
+X3ZmZTI4X2xkb19yZWc6IGxkb192ZmUyOCB7DQo+ID4gKyAgICAgICAgICByZWd1bGF0b3ItbmFt
+ZSA9ICJ2ZmUyOCI7DQo+ID4gKyAgICAgICAgICByZWd1bGF0b3ItbWluLW1pY3Jvdm9sdCA9IDwy
+ODAwMDAwPjsNCj4gPiArICAgICAgICAgIHJlZ3VsYXRvci1tYXgtbWljcm92b2x0ID0gPDI4MDAw
+MDA+Ow0KPiA+ICsgICAgICAgICAgcmVndWxhdG9yLWVuYWJsZS1yYW1wLWRlbGF5ID0gPDEyMD47
+DQo+ID4gKyAgICAgICAgfTsNCj4gPiArDQo+ID4gKyAgICAgICAgbXQ2MzU5X3ZhdWQxOF9sZG9f
+cmVnOiBsZG9fdmF1ZDE4IHsNCj4gPiArICAgICAgICAgIHJlZ3VsYXRvci1uYW1lID0gInZhdWQx
+OCI7DQo+ID4gKyAgICAgICAgICByZWd1bGF0b3ItbWluLW1pY3Jvdm9sdCA9IDwxODAwMDAwPjsN
+Cj4gPiArICAgICAgICAgIHJlZ3VsYXRvci1tYXgtbWljcm92b2x0ID0gPDE4MDAwMDA+Ow0KPiA+
+ICsgICAgICAgICAgcmVndWxhdG9yLWVuYWJsZS1yYW1wLWRlbGF5ID0gPDI0MD47DQo+ID4gKyAg
+ICAgICAgfTsNCj4gPiArDQo+ID4gKyAgICAgICAgbXQ2MzU5X3ZzaW0xX2xkb19yZWc6IGxkb192
+c2ltMSB7DQo+ID4gKyAgICAgICAgICByZWd1bGF0b3ItbmFtZSA9ICJ2c2ltMSI7DQo+ID4gKyAg
+ICAgICAgICByZWd1bGF0b3ItbWluLW1pY3Jvdm9sdCA9IDwxNzAwMDAwPjsNCj4gPiArICAgICAg
+ICAgIHJlZ3VsYXRvci1tYXgtbWljcm92b2x0ID0gPDMxMDAwMDA+Ow0KPiA+ICsgICAgICAgICAg
+cmVndWxhdG9yLWVuYWJsZS1yYW1wLWRlbGF5ID0gPDQ4MD47DQo+ID4gKyAgICAgICAgfTsNCj4g
+PiArICAgICAgfTsNCj4gPiArICAgIH07DQo+ID4gKy4uLg0KPiA+IC0tIA0KPiA+IDIuMTguMA0K
+PiA+IA0KDQo=
 
