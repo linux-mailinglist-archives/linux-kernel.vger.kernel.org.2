@@ -2,83 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4ED33EA67
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 738F633EA63
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229550AbhCQHPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 03:15:44 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:36734 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230154AbhCQHPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 03:15:11 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Bxs+R7rFFggT8BAA--.4262S2;
-        Wed, 17 Mar 2021 15:15:08 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
-Date:   Wed, 17 Mar 2021 15:15:07 +0800
-Message-Id: <1615965307-6926-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Bxs+R7rFFggT8BAA--.4262S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw4rAF43Kr1xKFW8ur18uFg_yoW8XF1fpa
-        nYyasxKrW7Wr45GF40y3yxuryrJrZ7CrW3WF4rtFWrZa98urWDXr4Sqa1ayryjvr4DX3W3
-        u34xua47KaykCrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkm14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4x
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU8J5oDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S230096AbhCQHOi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Mar 2021 03:14:38 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:55896 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229550AbhCQHO0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 03:14:26 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0USESlcv_1615965261;
+Received: from 30.240.101.46(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0USESlcv_1615965261)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 17 Mar 2021 15:14:22 +0800
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v4 1/4] sched/fair: Introduce primitives for CFS bandwidth
+ burst
+From:   changhuaixin <changhuaixin@linux.alibaba.com>
+In-Reply-To: <YFCAXeZj6sXBI5Ls@hirez.programming.kicks-ass.net>
+Date:   Wed, 17 Mar 2021 15:16:18 +0800
+Cc:     changhuaixin <changhuaixin@linux.alibaba.com>,
+        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
+        open list <linux-kernel@vger.kernel.org>, mgorman@suse.de,
+        mingo@redhat.com, Odin Ugedal <odin@uged.al>,
+        Odin Ugedal <odin@ugedal.com>, pauld@redhead.com,
+        Paul Turner <pjt@google.com>, rostedt@goodmis.org,
+        Shanpei Chen <shanpeic@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        xiyou.wangcong@gmail.com
+Content-Transfer-Encoding: 8BIT
+Message-Id: <B75EDF95-96B3-44E4-8169-3C1FCBC30A7B@linux.alibaba.com>
+References: <20210316044931.39733-1-changhuaixin@linux.alibaba.com>
+ <20210316044931.39733-2-changhuaixin@linux.alibaba.com>
+ <YFCAXeZj6sXBI5Ls@hirez.programming.kicks-ass.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to
-archs where they work"), bpf_probe_read{, str}() functions were not longer
-available on MIPS, so there exists some errors when running bpf program:
 
-root@linux:/home/loongson/bcc# python examples/tracing/task_switch.py
-bpf: Failed to load program: Invalid argument
-[...]
-11: (85) call bpf_probe_read#4
-unknown func bpf_probe_read#4
-[...]
-Exception: Failed to load BPF program count_sched: Invalid argument
 
-So select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE in arch/mips/Kconfig,
-otherwise the bpf old helper bpf_probe_read() will not be available.
+> On Mar 16, 2021, at 5:54 PM, Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> On Tue, Mar 16, 2021 at 12:49:28PM +0800, Huaixin Chang wrote:
+>> @@ -8982,6 +8983,12 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
+>> 	if (quota != RUNTIME_INF && quota > max_cfs_runtime)
+>> 		return -EINVAL;
+>> 
+>> +	/*
+>> +	 * Bound burst to defend burst against overflow during bandwidth shift.
+>> +	 */
+>> +	if (burst > max_cfs_runtime)
+>> +		return -EINVAL;
+> 
+> Why do you allow such a large burst? I would expect something like:
+> 
+> 	if (burst > quote)
+> 		return -EINVAL;
+> 
+> That limits the variance in the system. Allowing super long bursts seems
+> to defeat the entire purpose of bandwidth control.
 
-This is similar with the commit d195b1d1d1196 ("powerpc/bpf: Enable
-bpf_probe_read{, str}() on powerpc again").
+I understand your concern. Surely large burst value might allow super long bursts
+thus preventing bandwidth control entirely for a long time.
 
-Fixes: 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to archs where they work")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+However, I am afraid it is hard to decide what the maximum burst should be from
+the bandwidth control mechanism itself. Allowing some burst to the maximum of
+quota is helpful, but not enough. There are cases where workloads are bursty
+that they need many times more than quota in a single period. In such cases, limiting
+burst to the maximum of quota fails to meet the needs.
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 160b3a8..4b94ec7 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -6,6 +6,7 @@ config MIPS
- 	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
- 	select ARCH_HAS_FORTIFY_SOURCE
- 	select ARCH_HAS_KCOV
-+	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
- 	select ARCH_HAS_PTE_SPECIAL if !(32BIT && CPU_HAS_RIXI)
- 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
--- 
-2.1.0
+Thus, I wonder whether is it acceptable to leave the maximum burst to users. If the desired
+behavior is to allow some burst, configure burst accordingly. If that is causing variance, use share
+or other fairness mechanism. And if fairness mechanism still fails to coordinate, do not use
+burst maybe.
 
+In this way, cfs_b->buffer can be removed while cfs_b->max_overrun is still needed maybe.
