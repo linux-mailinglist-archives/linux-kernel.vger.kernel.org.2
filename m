@@ -2,194 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B7233F95C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D165B33F95D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233218AbhCQTdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:33:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23449 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233191AbhCQTcv (ORCPT
+        id S233253AbhCQTdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:33:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233112AbhCQTc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:32:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616009569;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Wed, 17 Mar 2021 15:32:56 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3785C06174A;
+        Wed, 17 Mar 2021 12:32:56 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 19:32:52 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616009573;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PdAQqv2znUyJGHKP0rUSqIjMCYDHVuDQjM9e5TLBxfo=;
-        b=S3b9Ut/XVQnrukoyLkPyu5cyyMait4O7MGdoiXWeHFYCkzlEnBABvfZdmlQQuWjZDE/WS/
-        6JaXDamjyutUfm2YOA3letc7gfg7wlBZtUntq9F4WMjltwHdCpI4arEL8M9mLsmBoVr9JQ
-        AcYOiCcOnUt6Be+twThxlgCHeFAe8CQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-402-Q51B6FILMMSWnsfeKv5N0A-1; Wed, 17 Mar 2021 15:32:47 -0400
-X-MC-Unique: Q51B6FILMMSWnsfeKv5N0A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B02481425A;
-        Wed, 17 Mar 2021 19:32:46 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1EC1A5D9C0;
-        Wed, 17 Mar 2021 19:32:46 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 13:32:45 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     Amey Narkhede <ameynarkhede03@gmail.com>, bhelgaas@google.com,
-        raphael.norwitz@nutanix.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <20210317133245.7d95909c@omen.home.shazbot.org>
-In-Reply-To: <20210317192424.kpfybcrsen3ivr4f@pali>
-References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
-        <20210312173452.3855-5-ameynarkhede03@gmail.com>
-        <20210314235545.girtrazsdxtrqo2q@pali>
-        <20210315134323.llz2o7yhezwgealp@archlinux>
-        <20210315135226.avwmnhkfsgof6ihw@pali>
-        <20210315083409.08b1359b@x1.home.shazbot.org>
-        <20210315145238.6sg5deblr2z2pupu@pali>
-        <20210315090339.54546e91@x1.home.shazbot.org>
-        <20210317190206.zrtzwgskxdogl7dz@pali>
-        <20210317131536.38f398b0@omen.home.shazbot.org>
-        <20210317192424.kpfybcrsen3ivr4f@pali>
+        bh=413vhgPwGyEe8XqBYLwSj3f1JMgtKyL76g5ZfCUfAEE=;
+        b=jIMHdEw3btbkTZ4n7zSyc2RlFmXm+rQsVuGHcvBIGkI+EWPI1pKCEWHQV+/ctYTMCCjeSX
+        zEdxNqO3VHX+bDpNBuYEPE15OvAG6ALCUd6ufHQCoSGEScare4dbXNQd8Jmt7IOGItb960
+        k6xaUHa8/rdl9JNbX9qQEENCPnHL9lllU1dQIOkF+udGDZ5bK3djpO4co9mrzfx8fVQ+of
+        8thlIfo+jqrCua5FCDScGaqXDeNtMHzcNlPEFvN8l7V8eiAaMq7hGnB3mug+IGVsSNii+w
+        ENzsh5BDlxT803amJfgu59BNBasDKjPxonm3Kdbzp7BvTa0j6/4E9sL89/aCoA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616009573;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=413vhgPwGyEe8XqBYLwSj3f1JMgtKyL76g5ZfCUfAEE=;
+        b=bXkkad0CV4TXUzqy73OaslAE6Uv0x3iTWVv/NraxTZORJ/c40pT+J5KjxXViw03PRdyuIu
+        M97PkyauAtHoC/AQ==
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/core] tools/insn: Restore the relative include paths for
+ cross building
+Cc:     Ian Rogers <irogers@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210317150858.02b1bbc8@canb.auug.org.au>
+References: <20210317150858.02b1bbc8@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Message-ID: <161600957270.398.1883140806620586941.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Mar 2021 20:24:24 +0100
-Pali Roh=C3=A1r <pali@kernel.org> wrote:
+The following commit has been merged into the x86/core branch of tip:
 
-> On Wednesday 17 March 2021 13:15:36 Alex Williamson wrote:
-> > On Wed, 17 Mar 2021 20:02:06 +0100
-> > Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> >  =20
-> > > On Monday 15 March 2021 09:03:39 Alex Williamson wrote: =20
-> > > > On Mon, 15 Mar 2021 15:52:38 +0100
-> > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> > > >    =20
-> > > > > On Monday 15 March 2021 08:34:09 Alex Williamson wrote:   =20
-> > > > > > On Mon, 15 Mar 2021 14:52:26 +0100
-> > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> > > > > >      =20
-> > > > > > > On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:     =20
-> > > > > > > > slot reset (pci_dev_reset_slot_function) and secondary bus
-> > > > > > > > reset(pci_parent_bus_reset) which I think are hot reset and
-> > > > > > > > warm reset respectively.       =20
-> > > > > > >=20
-> > > > > > > No. PCI secondary bus reset =3D PCIe Hot Reset. Slot reset is=
- just another
-> > > > > > > type of reset, which is currently implemented only for PCIe h=
-ot plug
-> > > > > > > bridges and for PowerPC PowerNV platform and it just call PCI=
- secondary
-> > > > > > > bus reset with some other hook. PCIe Warm Reset does not have=
- API in
-> > > > > > > kernel and therefore drivers do not export this type of reset=
- via any
-> > > > > > > kernel function (yet).     =20
-> > > > > >=20
-> > > > > > Warm reset is beyond the scope of this series, but could be imp=
-lemented
-> > > > > > in a compatible way to fit within the pci_reset_fn_methods[] ar=
-ray
-> > > > > > defined here.     =20
-> > > > >=20
-> > > > > Ok!
-> > > > >    =20
-> > > > > > Note that with this series the resets available through
-> > > > > > pci_reset_function() and the per device reset attribute is sysf=
-s remain
-> > > > > > exactly the same as they are currently.  The bus and slot reset
-> > > > > > methods used here are limited to devices where only a single fu=
-nction is
-> > > > > > affected by the reset, therefore it is not like the patch you p=
-roposed
-> > > > > > which performed a reset irrespective of the downstream devices.=
-  This
-> > > > > > series only enables selection of the existing methods.  Thanks,
-> > > > > >=20
-> > > > > > Alex
-> > > > > >      =20
-> > > > >=20
-> > > > > But with this patch series, there is still an issue with PCI seco=
-ndary
-> > > > > bus reset mechanism as exported sysfs attribute does not do that
-> > > > > remove-reset-rescan procedure. As discussed in other thread, this=
- reset
-> > > > > let device in unconfigured / broken state.   =20
-> > > >=20
-> > > > No, there's not:
-> > > >=20
-> > > > int pci_reset_function(struct pci_dev *dev)
-> > > > {
-> > > >         int rc;
-> > > >=20
-> > > >         if (!dev->reset_fn)
-> > > >                 return -ENOTTY;
-> > > >=20
-> > > >         pci_dev_lock(dev);   =20
-> > > > >>>     pci_dev_save_and_disable(dev);   =20
-> > > >=20
-> > > >         rc =3D __pci_reset_function_locked(dev);
-> > > >    =20
-> > > > >>>     pci_dev_restore(dev);   =20
-> > > >         pci_dev_unlock(dev);
-> > > >=20
-> > > >         return rc;
-> > > > }
-> > > >=20
-> > > > The remove/re-scan was discussed primarily because your patch perfo=
-rmed
-> > > > a bus reset regardless of what devices were affected by that reset =
-and
-> > > > it's difficult to manage the scope where multiple devices are affec=
-ted.
-> > > > Here, the bus and slot reset functions will fail unless the scope is
-> > > > limited to the single device triggering this reset.  Thanks,
-> > > >=20
-> > > > Alex
-> > > >    =20
-> > >=20
-> > > I was thinking a bit more about it and I'm really sure how it would
-> > > behave with hotplugging PCIe bridge.
-> > >=20
-> > > On aardvark PCIe controller I have already tested that secondary bus
-> > > reset bit is triggering Hot Reset event and then also Link Down event.
-> > > These events are not handled by aardvark driver yet (needs to
-> > > implemented into kernel's emulated root bridge code).
-> > >=20
-> > > But I'm not sure how it would behave on real HW PCIe hotplugging brid=
-ge.
-> > > Kernel has already code which removes PCIe device if it changes prese=
-nce
-> > > bit (and inform via interrupt). And Link Down event triggers this
-> > > change. =20
-> >=20
-> > This is the difference between slot and bus resets, the slot reset is
-> > implemented by the hotplug controller and disables presence detection
-> > around the bus reset.  Thanks, =20
->=20
-> Yes, but I'm talking about bus reset, not about slot reset.
->=20
-> I mean: to use bus reset via sysfs on hardware which supports slots and
-> hotplugging.
->=20
-> And if I'm reading code correctly, this combination is allowed, right?
-> Via these new patches it is possible to disable slot reset and enable
-> bus reset.
+Commit-ID:     0705ef64d1ff52b817e278ca6e28095585ff31e1
+Gitweb:        https://git.kernel.org/tip/0705ef64d1ff52b817e278ca6e28095585ff31e1
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Wed, 17 Mar 2021 11:33:04 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 17 Mar 2021 20:17:05 +01:00
 
-That's true, a slot reset is simply a bus reset wrapped around code
-that prevents the device from getting ejected.  Maybe it would make
-sense to combine the two as far as this interface is concerned, ie. a
-single "bus" reset method that will always use slot reset when
-available.  Thanks,
+tools/insn: Restore the relative include paths for cross building
 
-Alex
+Building perf on ppc causes:
 
+  In file included from util/intel-pt-decoder/intel-pt-insn-decoder.c:15:
+  util/intel-pt-decoder/../../../arch/x86/lib/insn.c:14:10: fatal error: asm/inat.h: No such file or directory
+     14 | #include <asm/inat.h> /*__ignore_sync_check__ */
+        |          ^~~~~~~~~~~~
+
+Restore the relative include paths so that the compiler can find the
+headers.
+
+Fixes: 93281c4a9657 ("x86/insn: Add an insn_decode() API")
+Reported-by: Ian Rogers <irogers@google.com>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Tested-by: Ian Rogers <irogers@google.com>
+Tested-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Link: https://lkml.kernel.org/r/20210317150858.02b1bbc8@canb.auug.org.au
+---
+ tools/arch/x86/lib/insn.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
+index cd4dedd..c41f958 100644
+--- a/tools/arch/x86/lib/insn.c
++++ b/tools/arch/x86/lib/insn.c
+@@ -11,13 +11,13 @@
+ #else
+ #include <string.h>
+ #endif
+-#include <asm/inat.h> /*__ignore_sync_check__ */
+-#include <asm/insn.h> /* __ignore_sync_check__ */
++#include "../include/asm/inat.h" /* __ignore_sync_check__ */
++#include "../include/asm/insn.h" /* __ignore_sync_check__ */
+ 
+ #include <linux/errno.h>
+ #include <linux/kconfig.h>
+ 
+-#include <asm/emulate_prefix.h> /* __ignore_sync_check__ */
++#include "../include/asm/emulate_prefix.h" /* __ignore_sync_check__ */
+ 
+ #define leXX_to_cpu(t, r)						\
+ ({									\
