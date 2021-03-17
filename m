@@ -2,102 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91DD733EDDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB6333EDEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhCQKAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbhCQJ7p (ORCPT
+        id S230107AbhCQKEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:04:00 -0400
+Received: from mail-m963.mail.126.com ([123.126.96.3]:43828 "EHLO
+        mail-m963.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229919AbhCQKDi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:59:45 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B029C06174A;
-        Wed, 17 Mar 2021 02:59:45 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id l1so1449567lfk.10;
-        Wed, 17 Mar 2021 02:59:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rZK0dXYfoMYNDjd/41SCLvGPVE+8I38D7HzSVC6cTLM=;
-        b=QYVSALsh00hkRSyvxsjbDM1i8MQGFVnPhEFggreS4IYaFAXmDnZjMBD3Pkh4ZAG7WO
-         H8ebsaiQO7GaasX4xTUU0LQlmDXUGy7FLKJYlOEWmcaZbACtTNMPN81geZWjEkdBhiH4
-         VBU5vmK0eS9G+RAe/V/dOWZsgII7rfnYjk6xnqKR+N7907riryVuEDbLirX6vRuIVvYy
-         xBcwhY2YlrCzanRs4ThXgvYBMB2PxZws+3RLwxLXlG7AT/fOLU3ppkLBoZuJcgnxDKmU
-         PeaU7OtoNs5cV0G4nxIKmjr4ucvEsNqzU+N/QuFUdbxTmx6tZbBIDrk/S8wMd1Qc8AS4
-         j91g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=rZK0dXYfoMYNDjd/41SCLvGPVE+8I38D7HzSVC6cTLM=;
-        b=evz2wCn6MN4JCxNhdymKiYw5x8NxoWsiLOjKk7NTWpWEzKjX0ujAd2Oj3/lSs44vOZ
-         SYdo0HZTEzmnF2zBND0RVkl9PRWYeJu767DgANuoavcCHOoihTMxhMa0QSyZUgngUiDo
-         yYXVpywSKm+Ht3vXNyrw1yv+7Aaf4WlnxddTelFCkZkGzMe3HKRVHFPHvq70FYkQRYEm
-         xDcJhiigCFCtMavafG4ynmUNXpMhUKNmGs4vdXWSiRrZpxzs72SHJI+fS3HZXAb4kMwJ
-         eeIvzPIlw04JHgMq5wPmdAZVa70AM/CHAtzipuKMcgvTde+uZHSI2+qn863y4IpB7Yvq
-         v50w==
-X-Gm-Message-State: AOAM530oIR028Acgq48EEwhkMaAMhjqt/u5GR1ec4VRMTD3GEBJPhfz8
-        91ezBA1cJuRwpLdQo5y04nMpN7dm4B8=
-X-Google-Smtp-Source: ABdhPJx7Ea5AuUcM5hFjpJHkKsufHlUd0yIDy/hPh8/HLWBqwPSdY1J5ZrMRTv25O8j4D2dKzAKvfQ==
-X-Received: by 2002:ac2:5382:: with SMTP id g2mr1894717lfh.60.1615975183939;
-        Wed, 17 Mar 2021 02:59:43 -0700 (PDT)
-Received: from [192.168.1.100] ([178.176.79.25])
-        by smtp.gmail.com with ESMTPSA id m1sm3461555ljg.111.2021.03.17.02.59.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 02:59:43 -0700 (PDT)
-Subject: Re: [PATCH] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-References: <1615965307-6926-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <af0fec67-d858-f555-7728-7a083127b57b@gmail.com>
-Date:   Wed, 17 Mar 2021 12:59:38 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 17 Mar 2021 06:03:38 -0400
+X-Greylist: delayed 1823 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Mar 2021 06:03:37 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=7fLA8
+        kcYxRJcVDBSuxgpwdomNhiK47IKlY7AxaYmZnw=; b=boyhAiveS/FGR1K4DYCET
+        OJy/+vSPS9aTFQIruOFGuy85qOvceWj/MnmADCMNdwwcSe5s8waO7/Q6QXhuG6go
+        ALWXN5q5KLhEQlnkXHNqXsjq3dk8756U/1f6NQisKgO7XeO+rD3pezwt02wX6pvU
+        c3IZqmvMEx8hGF1t3NZAVA=
+Received: from localhost.localdomain (unknown [116.162.2.6])
+        by smtp8 (Coremail) with SMTP id NORpCgBHSz_LzFFgkSgYFw--.18768S2;
+        Wed, 17 Mar 2021 17:32:59 +0800 (CST)
+From:   wangyingjie55@126.com
+To:     dan.j.williams@intel.com, vishal.l.verma@intel.com,
+        dave.jiang@intel.com, ira.weiny@intel.com
+Cc:     wangyingjie55@126.com, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] libnvdimm, dax: Fix a missing check in nd_dax_probe()
+Date:   Wed, 17 Mar 2021 02:32:37 -0700
+Message-Id: <1615973557-15889-1-git-send-email-wangyingjie55@126.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <1615965307-6926-1-git-send-email-yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: NORpCgBHSz_LzFFgkSgYFw--.18768S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxU49YFUUUUU
+X-Originating-IP: [116.162.2.6]
+X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbiHQxYp1pEC+cFvAAAsl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.03.2021 10:15, Tiezhu Yang wrote:
+From: Yingjie Wang <wangyingjie55@126.com>
 
-> After commit 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to
-> archs where they work"), bpf_probe_read{, str}() functions were not longer
+In nd_dax_probe()， 'nd_dax' is allocated by nd_dax_alloc().
+nd_dax_alloc() may fail and return NULL, so we should better check
+it's return value to avoid a NULL pointer dereference
+a bit later in the code.
 
-    No longer.
+Fixes: c5ed9268643c ("libnvdimm, dax: autodetect support")
+Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
+---
+ drivers/nvdimm/dax_devs.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> available on MIPS, so there exists some errors when running bpf program:
+diff --git a/drivers/nvdimm/dax_devs.c b/drivers/nvdimm/dax_devs.c
+index 99965077bac4..b1426ac03f01 100644
+--- a/drivers/nvdimm/dax_devs.c
++++ b/drivers/nvdimm/dax_devs.c
+@@ -106,6 +106,8 @@ int nd_dax_probe(struct device *dev, struct nd_namespace_common *ndns)
+ 
+ 	nvdimm_bus_lock(&ndns->dev);
+ 	nd_dax = nd_dax_alloc(nd_region);
++	if (!nd_dax)
++		return -ENOMEM;
+ 	nd_pfn = &nd_dax->nd_pfn;
+ 	dax_dev = nd_pfn_devinit(nd_pfn, ndns);
+ 	nvdimm_bus_unlock(&ndns->dev);
+-- 
+2.7.4
 
-     Exist.
-
-> root@linux:/home/loongson/bcc# python examples/tracing/task_switch.py
-> bpf: Failed to load program: Invalid argument
-> [...]
-> 11: (85) call bpf_probe_read#4
-> unknown func bpf_probe_read#4
-> [...]
-> Exception: Failed to load BPF program count_sched: Invalid argument
-> 
-> So select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE in arch/mips/Kconfig,
-> otherwise the bpf old helper bpf_probe_read() will not be available.
-> 
-> This is similar with the commit d195b1d1d1196 ("powerpc/bpf: Enable
-> bpf_probe_read{, str}() on powerpc again").
-> 
-> Fixes: 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to archs where they work")
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-[...]
-
-MBR, Sergei
