@@ -2,109 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAAB733EC1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:03:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3D533EC21
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:03:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhCQJCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40372 "EHLO
+        id S229803AbhCQJDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:03:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbhCQJCO (ORCPT
+        with ESMTP id S229775AbhCQJCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:02:14 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CEADC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:02:14 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id a132-20020a1c668a0000b029010f141fe7c2so699388wmc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:02:13 -0700 (PDT)
+        Wed, 17 Mar 2021 05:02:54 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A3AC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:02:53 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so4971135wmq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:02:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QwuxtgiCCCuVkfcX8LM9ZlMzlOT2xbL3vCInW5yBpfg=;
-        b=HsNDgrTfHb6lenOiS0yb3OIwab0Slx0F9OO942wg+fn+VlF4z18b5ZjUwJ5ayQLqBw
-         1cz9cCd1Nv+02O1Rqqjepf1YSKlqAh0hYm9nIVh7SbxX4Wg/JU0BYAkuNWhzdrhQeATV
-         XibT9bPRb/CpKBHxXIPKH+whD+T+vjYz0aBBC0pzwSPl4RX5m+qV+z9OkK8tjsNVZEKY
-         +pXJcZCtdNMJpuEDhLRYniinjapSEsGfkadsD11XQg7ZFr9csC42N6vMQTY0etWdwe3v
-         5vk0Ig3JaHNCU4LAjWpkrkmh4iDxgHMukVezMg07LTrKr3QdI9t+lDSOKJdxppyMxUyH
-         buMw==
+        d=linaro.org; s=google;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=ApKtBPoSIWQUrCpVqiKRCFyvDrL2J8ftPogTa611uXo=;
+        b=Pofurp6lLuNNVnbzZViJEc4FphgHvqaEx+4UUzNw9uzdRPg4FL79SjMJDjlhNXhtNF
+         MZeWgvBeeSfIU7CEQqBfacL+MldhAZoA1uObz4sIoOHVEp8q0/TeuqLhZAqp3H+JL76Q
+         uYFUr7N5UMQC0sSopMaAT5IUD7Tojz6eR+duvDcFLUX2C+ozPmBiiNAW82mn1KQR1/gP
+         rulgwUfXpM4BIVafGDAMbqNFSs95abHf4eBa85Nhx1KdioBuP3IC+Vmy6zSw9zOTOv+V
+         kwIroFvMRdKbvskJhDsHKUzXVrxvKbhKKqoGKQ3gTrCBP228p/bAmVC39vF4lfthHVVz
+         7iWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QwuxtgiCCCuVkfcX8LM9ZlMzlOT2xbL3vCInW5yBpfg=;
-        b=HbXLV0T+kQ/0whhV04HLpxMbkz2+7o7DevAkyJQgVQQCdkRxOkBEZaKtx0WvFPa1PD
-         zDkgJEjOQBQJniABzrE4rWiRSJLqF5bHB5VxP5i49TqGvQmhHq2XrCc5+dQpmalhMUan
-         y12tMXgLI6rKVEsfuWob+CVfW6Ai5QyGGGeyXOaOg4S9zIKi+yzXq6YKFDLEcesQG6vJ
-         lo1tbDwF6+tGWURW74t74goZCN7lBBmjrCsGefzTng0Ca1CNoKT4U9OA4nK58sL5Sfq/
-         9nWuki+CPaaU5EuzQs1x5YuXd0KuhcIWTMQ44lAW2C6dL/D+rRRVFEkjQMgL+dj7civk
-         EDYg==
-X-Gm-Message-State: AOAM531W+x2zZJPs34Y+H+6fmKGS5mzHqgoXARWLq1zFhZyAVD+IzLCn
-        d7UP+ZZRgU4K5iY448EPVEuKJA==
-X-Google-Smtp-Source: ABdhPJzFjLJUUKNKs+1TXyYF2RPilOCv4q5TrU8XPy3DPss8s4W20rOFuDvU8NaXimf62US3JuyGtw==
-X-Received: by 2002:a05:600c:4112:: with SMTP id j18mr2656665wmi.143.1615971732589;
-        Wed, 17 Mar 2021 02:02:12 -0700 (PDT)
-Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
-        by smtp.gmail.com with ESMTPSA id u2sm2315302wmm.5.2021.03.17.02.02.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 02:02:12 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 09:02:09 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Mate Toth-Pal <mate.toth-pal@arm.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
-        james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com, android-kvm@google.com, seanjc@google.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org,
-        mark.rutland@arm.com, dbrazdil@google.com, nd@arm.com
-Subject: Re: [PATCH v5 33/36] KVM: arm64: Wrap the host with a stage 2
-Message-ID: <YFHFkaKZyAEheWZV@google.com>
-References: <20210315143536.214621-1-qperret@google.com>
- <20210315143536.214621-34-qperret@google.com>
- <ec9df9a4-a419-089c-469f-1a1509597dd9@arm.com>
- <YFCqYT3Ib8kAN7/c@google.com>
- <YFDAyhjPEsnZ4N3P@google.com>
- <eb70a071-4d4a-885f-36a7-3b20358e5513@arm.com>
- <YFDvAqgimPvpgiwQ@google.com>
- <da9e7839-6d12-c69d-9f23-a091219e1da8@arm.com>
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=ApKtBPoSIWQUrCpVqiKRCFyvDrL2J8ftPogTa611uXo=;
+        b=cmacVSaR+h6tSNb8LDcO31LPWxnghX1P0p0LW1hjcYql47mFw0uVe/ZCMHRKu1TyJ/
+         W6OGMVIYvYWWWb4n8urOl0+D5bGcQZVch1d2K1t8ZkCte6dZXgqpQZyDqTorJfj0yBgP
+         Sv5S8HHW91Vf23V02vw445S0ZvunITi/Zfq+QgH68JgLghv3eUcr9lOQa0xYVJ2c2h/B
+         xODjrHOc8XxABR8DSvYyd6aULtP1bFkQ7w2JeJnJ3pk8gELB2tDIX0l3JfQSKKV+A5Ty
+         qN9vUEX7rTf58B2pQBUnetRPuC7Z36ITAt8iMwP4+TLQzVXBLGTiDvKAw5c1jEGf8KSN
+         NOsA==
+X-Gm-Message-State: AOAM531RTG/+uzBURA5SqN++sDKweLksFZtQT5jMGJaiQlQlnIIo5j/p
+        EUivQxypolBuyJ5CpfoohBNc9g==
+X-Google-Smtp-Source: ABdhPJztarvfabT2tgmwWehxbS8/7jiw8NqwxYGzn/kk4ZlADIA4gwU2EPIGOp2vpsgDeYHqlzOegQ==
+X-Received: by 2002:a05:600c:4146:: with SMTP id h6mr2733051wmm.32.1615971772433;
+        Wed, 17 Mar 2021 02:02:52 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:94c7:f1f0:53fd:90e4? ([2a01:e34:ed2f:f020:94c7:f1f0:53fd:90e4])
+        by smtp.googlemail.com with ESMTPSA id u2sm2317811wmm.5.2021.03.17.02.02.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 02:02:52 -0700 (PDT)
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM mailing list <linux-pm@vger.kernel.org>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [GIT PULL] thermal fixes for v5.12
+Message-ID: <64ffeeef-45de-6e0d-0ce9-767024d8dd22@linaro.org>
+Date:   Wed, 17 Mar 2021 10:02:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <da9e7839-6d12-c69d-9f23-a091219e1da8@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 17 Mar 2021 at 09:41:09 (+0100), Mate Toth-Pal wrote:
-> On 2021-03-16 18:46, Quentin Perret wrote:
-> > On Tuesday 16 Mar 2021 at 16:16:18 (+0100), Mate Toth-Pal wrote:
-> > > On 2021-03-16 15:29, Quentin Perret wrote:
-> > > > On Tuesday 16 Mar 2021 at 12:53:53 (+0000), Quentin Perret wrote:
-> > > > > On Tuesday 16 Mar 2021 at 13:28:42 (+0100), Mate Toth-Pal wrote:
-> > > > > > Changing the value of MT_S2_FWB_NORMAL to 7 would change this behavior, and
-> > > > > > the resulting memory type would be device.
-> > > > > 
-> > > > > Sounds like the correct fix here -- see below.
-> > > > 
-> > > > Just to clarify this, I meant this should be the configuration for the
-> > > > host stage-2. We'll want to keep the existing behaviour for guests I
-> > > > believe.
-> > > 
-> > > I Agree.
-> > 
-> > OK, so the below seems to boot on my non-FWB-capable hardware and should
-> > fix the issue. Could you by any chance give it a spin?
-> > 
-> 
-> Sure, I can give it a go. I was trying to apply the patch on top of https://android-kvm.googlesource.com/linux/+/refs/heads/qperret/host-stage2-v5
-> but it seems that your base is significantly different. Can you give some
-> hints what should I use as base?
 
-Oh interesting, it _should_ apply on v5. I just pushed a branch with
-everything applied if that helps:
+Hi Linus,
 
-  https://android-kvm.googlesource.com/linux qperret/wip/fix-fwb-host-stage2
+please consider pulling this single fix for the thermal framework.
 
-Thanks again!
-Quentin
+Thanks
+
+  -- Daniel
+
+
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+
+are available in the Git repository at:
+
+
+ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
+tags/thermal-v5.12-rc4
+
+for you to fetch changes up to 2046a24ae121cd107929655a6aaf3b8c5beea01f:
+
+  thermal/core: Add NULL pointer check before using cooling device stats
+(2021-03-17 09:55:58 +0100)
+
+----------------------------------------------------------------
+- Fix NULL pointer access when the cooling device transition stats
+  table failed to allocate due to a big number of states (Manaf
+  Meethalavalappu Pallikunhi).
+
+----------------------------------------------------------------
+Manaf Meethalavalappu Pallikunhi (1):
+      thermal/core: Add NULL pointer check before using cooling device stats
+
+ drivers/thermal/thermal_sysfs.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
