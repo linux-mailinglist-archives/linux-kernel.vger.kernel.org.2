@@ -2,196 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F4833F12A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 647B133F12D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 14:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbhCQNbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 09:31:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49847 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230044AbhCQNau (ORCPT
+        id S231224AbhCQNbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 09:31:37 -0400
+Received: from casper.infradead.org ([90.155.50.34]:35820 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230423AbhCQNba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 09:30:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615987850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tPNFSfNB6p+yJ3oKcYm7yhqfHOqwB/rvOL94ppns3z4=;
-        b=WCHMf786us41PCRAhR8paiK0Czqw0HcWy2l7PK1vUkyfzLDt1MLjkvVKXls5APNTK+a+Bl
-        bhrFGQlRFyYYKquz0HnXNAbk2YqjQCXXeOMNVr4hklknHHbFYwVx9As6qSj0qOKTYdo4R+
-        FXLQrIxKdraaY80Y/bzw15ouKCPh60Y=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-84-Bxsj_JEQN6WstqN4BrvSGw-1; Wed, 17 Mar 2021 09:30:48 -0400
-X-MC-Unique: Bxsj_JEQN6WstqN4BrvSGw-1
-Received: by mail-ed1-f70.google.com with SMTP id h5so19396317edf.17
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 06:30:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=tPNFSfNB6p+yJ3oKcYm7yhqfHOqwB/rvOL94ppns3z4=;
-        b=V5A4sDYFNaQVNsWet7MitdjlnQMp8pdYkRfr+Ut+JOluvGhnMUbjilPeq0EmG78sZr
-         bgAXuCIcmnKAODfh05/10a2I3Ub2ERE/9YqpKKTOpx8fD6pp8CyxEbcwTdiHIFSi5jaI
-         WJHrngjuzSieswTESJ2FqqnIeNA9D5yscJEOxfft0mU81SD9XwNuCAKsC+8sMncDGGhO
-         vxlBCw+ZFuzWmVnosTeGagxIx3CUYthWITisMz+bZdNRQFa6OtiIbXj+mxazHxzfhvej
-         xJFWyh+A1CIZwTJlZ/isU+0/Fh9i45XNfEK04yq1jU60tEpgYi4Jdd+Co9HldsUOQ5MZ
-         4xKA==
-X-Gm-Message-State: AOAM5330m1997RGA5ymysi98TdYFHRG+XoZe3CxBGFBKz+84iwUDYmI+
-        PcHtrkJB3FWRTWDX1bK4fR3gl4FfUyjQxfTEzJIoABWeItV3//CMbLoTv01qlNtiquErg1+WwHI
-        WJ39FRseyUnX95/Fb5PLF+NbrxALROwmCl1rMYyxZcMRdYYg3PNm9Az7MQ7gwMNX2viuHivKJ8k
-        8e
-X-Received: by 2002:a05:6402:888:: with SMTP id e8mr41146996edy.51.1615987847579;
-        Wed, 17 Mar 2021 06:30:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwtfPFBtob+QS+AgsVD1O9FUMF3KpeNixXiQo7UStUuzmD2EXfxhFGoVaizdbjA5R21sBc89A==
-X-Received: by 2002:a05:6402:888:: with SMTP id e8mr41146943edy.51.1615987847291;
-        Wed, 17 Mar 2021 06:30:47 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id v8sm12698750edx.38.2021.03.17.06.30.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 06:30:46 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Lenny Szubowicz <lszubowi@redhat.com>, pbonzini@redhat.com,
-        seanjc@google.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/kvmclock: Stop kvmclocks for hibernate restore
-In-Reply-To: <20210311132847.224406-1-lszubowi@redhat.com>
-References: <20210311132847.224406-1-lszubowi@redhat.com>
-Date:   Wed, 17 Mar 2021 14:30:45 +0100
-Message-ID: <87sg4t7vqy.fsf@vitty.brq.redhat.com>
+        Wed, 17 Mar 2021 09:31:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uImN96cD96HNFO+cpTeC0zwwZGQg9N3yINjimoektS8=; b=dt5HAHqKbsNe5ezsxTkGbNVzVE
+        tJYD3r9S/8N7WllV23lN85u8Qc+x8fJQ2a14c1XNUBxZRNAMlLFv2SC8qRO2x37cgZSBav9mE8pUT
+        uKkz80agVQ6Cq9B6S6//OnqgYXEEZn2y/zcTLUKhYX94y/Iin65/DcgqMOOD6Tp0k4P5N6nq7bV+n
+        yux9PJdAOvQ7ME4GCjK/h/bjDtiVU/0wCZ9uQ+LaQpezeP7/bfib4CgCtlZjht1GSR+c2l1iehkcs
+        mdeNnLPYAQFLE3HkoWxOCNWQp5AQSWh992l2bakdo52dqJolZtyxoP906vN/jd9Lkiir5lkUmj1/0
+        e5cgBoGA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMWGa-001VuP-7X; Wed, 17 Mar 2021 13:31:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BC336301324;
+        Wed, 17 Mar 2021 14:31:15 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AADCB20781083; Wed, 17 Mar 2021 14:31:15 +0100 (CET)
+Date:   Wed, 17 Mar 2021 14:31:15 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org
+Subject: Re: [tip: locking/urgent] locking/ww_mutex: Treat ww_mutex_lock()
+ like a trylock
+Message-ID: <YFIEo8IVQ/Mm9jUE@hirez.programming.kicks-ass.net>
+References: <20210316153119.13802-4-longman@redhat.com>
+ <161598470197.398.8903908266426306140.tip-bot2@tip-bot2>
+ <YFIASRkXowQWgj2s@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFIASRkXowQWgj2s@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lenny Szubowicz <lszubowi@redhat.com> writes:
+On Wed, Mar 17, 2021 at 02:12:41PM +0100, Peter Zijlstra wrote:
+> On Wed, Mar 17, 2021 at 12:38:21PM -0000, tip-bot2 for Waiman Long wrote:
+> > +	/*
+> > +	 * Treat as trylock for ww_mutex.
+> > +	 */
+> > +	mutex_acquire_nest(&lock->dep_map, subclass, !!ww_ctx, nest_lock, ip);
+> 
+> I'm confused... why isn't nest_lock working here?
+> 
+> For ww_mutex, we're supposed to have ctx->dep_map as a nest_lock, and
+> all lock acquisitions under a nest lock should be fine. Afaict the above
+> is just plain wrong.
 
-> Turn off host updates to the registered kvmclock memory
-> locations when transitioning to a hibernated kernel in
-> resume_target_kernel().
->
-> This is accomplished for secondary vcpus by disabling host
-> clock updates for that vcpu when it is put offline. For the
-> primary vcpu, it's accomplished by using the existing call back
-> from save_processor_state() to kvm_save_sched_clock_state().
->
-> The registered kvmclock memory locations may differ between
-> the currently running kernel and the hibernated kernel, which
-> is being restored and resumed. Kernel memory corruption is thus
-> possible if the host clock updates are allowed to run while the
-> hibernated kernel is relocated to its original physical memory
-> locations.
->
-> This is similar to the problem solved for kexec by
-> commit 1e977aa12dd4 ("x86: KVM guest: disable clock before rebooting.")
->
-> Commit 95a3d4454bb1 ("x86/kvmclock: Switch kvmclock data to a
-> PER_CPU variable") innocently increased the exposure for this
-> problem by dynamically allocating the physical pages that are
-> used for host clock updates when the vcpu count exceeds 64.
-> This increases the likelihood that the registered kvmclock
-> locations will differ for vcpus above 64.
->
-> Reported-by: Xiaoyi Chen <cxiaoyi@amazon.com>
-> Tested-by: Mohamed Aboubakr <mabouba@amazon.com>
-> Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
-> ---
->  arch/x86/kernel/kvmclock.c | 34 ++++++++++++++++++++++++++++++++--
->  1 file changed, 32 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-> index aa593743acf6..291ffca41afb 100644
-> --- a/arch/x86/kernel/kvmclock.c
-> +++ b/arch/x86/kernel/kvmclock.c
-> @@ -187,8 +187,18 @@ static void kvm_register_clock(char *txt)
->  	pr_info("kvm-clock: cpu %d, msr %llx, %s", smp_processor_id(), pa, txt);
->  }
->  
-> +/*
-> + * Turn off host clock updates to the registered memory location when the
-> + * cpu clock context is saved via save_processor_state(). Enables correct
-> + * handling of the primary cpu clock when transitioning to a hibernated
-> + * kernel in resume_target_kernel(), where the old and new registered
-> + * memory locations may differ.
-> + */
->  static void kvm_save_sched_clock_state(void)
->  {
-> +	native_write_msr(msr_kvm_system_time, 0, 0);
-> +	kvm_disable_steal_time();
-> +	pr_info("kvm-clock: cpu %d, clock stopped", smp_processor_id());
->  }
+To clarify:
 
-Nitpick: should we rename kvm_save_sched_clock_state() to something more
-generic, like kvm_disable_host_clock_updates() to indicate, that what it
-does is not only sched clock related?
+	mutex_lock(&A);			ww_mutex_lock(&B, ctx);
+	ww_mutex_lock(&B, ctx);		mutex_lock(&A);
 
->  
->  static void kvm_restore_sched_clock_state(void)
-> @@ -311,9 +321,23 @@ static int kvmclock_setup_percpu(unsigned int cpu)
->  	return p ? 0 : -ENOMEM;
->  }
->  
-> +/*
-> + * Turn off host clock updates to the registered memory location when a
-> + * cpu is placed offline. Enables correct handling of secondary cpu clocks
-> + * when transitioning to a hibernated kernel in resume_target_kernel(),
-> + * where the old and new registered memory locations may differ.
-> + */
-> +static int kvmclock_cpu_offline(unsigned int cpu)
-> +{
-> +	native_write_msr(msr_kvm_system_time, 0, 0);
-> +	pr_info("kvm-clock: cpu %d, clock stopped", cpu);
+should still very much be a deadlock, but your 'fix' makes it not report
+that.
 
-I'd say this pr_info() is superfluous: on a system with hundereds of
-vCPUs users will get flooded with 'clock stopped' messages which don't
-actually mean much: in case native_write_msr() fails the error gets
-reported in dmesg anyway. I'd suggest we drop this and pr_info() in
-kvm_save_sched_clock_state().
-
-> +	return 0;
-
-Why don't we disable steal time accounting here? MSR_KVM_STEAL_TIME is
-also per-cpu. Can we merge kvm_save_sched_clock_state() with
-kvmclock_cpu_offline() maybe?
-
-> +}
-> +
->  void __init kvmclock_init(void)
->  {
->  	u8 flags;
-> +	int cpuhp_prepare;
->  
->  	if (!kvm_para_available() || !kvmclock)
->  		return;
-> @@ -325,8 +349,14 @@ void __init kvmclock_init(void)
->  		return;
->  	}
->  
-> -	if (cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "kvmclock:setup_percpu",
-> -			      kvmclock_setup_percpu, NULL) < 0) {
-> +	cpuhp_prepare = cpuhp_setup_state(CPUHP_BP_PREPARE_DYN,
-> +					  "kvmclock:setup_percpu",
-> +					  kvmclock_setup_percpu, NULL);
-> +	if (cpuhp_prepare < 0)
-> +		return;
-> +	if (cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "kvmclock:cpu_offline",
-> +			      NULL, kvmclock_cpu_offline) < 0) {
-> +		cpuhp_remove_state(cpuhp_prepare);
-
-In case we fail to set up kvmclock_cpu_offline() callback we get broken
-hybernation but without kvmclock_setup_percpu() call we get a broken
-guest (as kvmclock() may be the only reliable clocksource) so I'm not
-exactly sure we're active in a best way with cpuhp_remove_state()
-here. I don't feel strong though, I think it can stay but in that case
-I'd add a pr_warn() at least.
-
->  		return;
->  	}
-
--- 
-Vitaly
-
+Only order within the ww_ctx can be ignored, and that's exactly what
+nest_lock should be doing.
