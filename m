@@ -2,89 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C68433F781
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:51:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 699F433F785
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232607AbhCQRu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:50:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhCQRuv (ORCPT
+        id S232788AbhCQRv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:51:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30362 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232746AbhCQRvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:50:51 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 130A2C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:50:51 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id AB4A522238;
-        Wed, 17 Mar 2021 18:50:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1616003449;
+        Wed, 17 Mar 2021 13:51:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616003482;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0uX4a5pODJdDNUMqLG8CU+20HuPGvlsPYfESg66SL6o=;
-        b=boqbQMVM7v9iaMAXLSnDxGpy19fhxBAn5JkBmLbxXeoSZY6iNJWg3Sc55OzTlyRlw09QeO
-        kU2JSOGCzR+4+Qzxt3GKg2mcZmlm/IWWCsbnkjjkJ7qfWotAWK3EwhZ6uSn+v4kaGmMS6j
-        y7tzS+epo3eZW0qFmPqJkRPxn1DgMIg=
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 17 Mar 2021 18:50:48 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Tudor.Ambarus@microchip.com
-Cc:     vigneshr@ti.com, p.yadav@ti.com, linux-mtd@lists.infradead.org,
-        miquel.raynal@bootlin.com, richard@nod.at,
+        bh=dEGLhiDnwMkfXyobnjzNNfxRt05nqIQ9oCfTjdxDrNk=;
+        b=DxwRem2pzbzdi9rLMztyZ/00abOg8jjfFul2/XIpPfEXMfhipGeU/rfTAZycIcyncrD8AO
+        2iKZwSbwLel+awqT9IC4n+lU5pod7YkNCfNUsNcN1du1MD3RjQI3WRXLF6pw3yU0LPpzQO
+        ZpGDzovYofukCwDpC4dlo+Ywnu6P/wI=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-471-f71jvOXpOYq8UuPRJIZbUg-1; Wed, 17 Mar 2021 13:51:20 -0400
+X-MC-Unique: f71jvOXpOYq8UuPRJIZbUg-1
+Received: by mail-ej1-f70.google.com with SMTP id t21so7576992ejf.14
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:51:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dEGLhiDnwMkfXyobnjzNNfxRt05nqIQ9oCfTjdxDrNk=;
+        b=rIPie/EXVYaJ9a5v0Wi8huL+QAo8SSeFqluefX74ZANMxSwNr+vZS2lxhqsMf3Wr8I
+         ZjLij4bpDAYRFcj6VvM5NgX9G8HFmA7DC3G3xHknusQ1SDKKP/PBkWhX2hIC18991f9H
+         wV1OCnt6h5dbjNQ7WljV6RoTc4OUBYeUFc/FkVGFsgDDecfPFjBSeHAsXqra9S3JILlQ
+         Yc8RsQDazdffzyMOxsRk55vPg0p2vlqksn6OFZbtL1i4ZAAT4n1KtjE2ekWqQCqHr77D
+         o2GJOn9OXhHddyYRSvhp3nfHGlURBnaXCnmH/xmfhc7HxluMdM3cgUBX5+B99z4WC8iQ
+         CweQ==
+X-Gm-Message-State: AOAM531CjQI3CG05g2sGUD1I6/XXMhvgXtZC50rIwSKk0KTrxHt5cAgI
+        7pbA1vzoLINvq56UIqAXh4/HUSmQfXANR0RDl6TDd5SNVgdDb/HD62MovEGijfSSDA3glt0/Ad2
+        Um6Lx0PjLqta+dryONrkIp+JWDRyD2Iqtv+rRT8xavuzSW2oQqrUSJPM86qD3N/ZqcnsaIj0RPJ
+        1O
+X-Received: by 2002:a17:906:2692:: with SMTP id t18mr35995242ejc.16.1616003479262;
+        Wed, 17 Mar 2021 10:51:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy8IIqqzKi80zAS/wBgk3gjwN2BKvmk4SZApacfhOF8Scf6r4WnqZCq5KX58hhLWGPN0XiQBA==
+X-Received: by 2002:a17:906:2692:: with SMTP id t18mr35995219ejc.16.1616003478982;
+        Wed, 17 Mar 2021 10:51:18 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id t12sm14026179edy.56.2021.03.17.10.51.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 10:51:18 -0700 (PDT)
+Subject: Re: [PATCH 0/2] HID: Add support for Surface Aggregator Module HID
+ transport
+To:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
+        linux-input@vger.kernel.org, platform-driver-x86@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] mtd: spi-nor: Move Software Write Protection logic
- out of the core
-In-Reply-To: <fe28e8f9-a3a5-b445-e7fc-01c8743bacbe@microchip.com>
-References: <20210306095002.22983-1-tudor.ambarus@microchip.com>
- <20210306095002.22983-5-tudor.ambarus@microchip.com>
- <963232a4-9100-ebca-927c-7f5a1e947fbe@ti.com>
- <9889bae0-8eba-7cbc-d9bb-04e038bd28c8@microchip.com>
- <6016b725-a779-1d2c-9884-099c58f53557@ti.com>
- <45d00a12-cb79-774e-f8e8-d65602629a90@microchip.com>
- <a9e1e18c034dfa185eeb5492acf2dff7@walle.cc>
- <fe28e8f9-a3a5-b445-e7fc-01c8743bacbe@microchip.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <c02857fe33611ba5794f233ef117c687@walle.cc>
-X-Sender: michael@walle.cc
+References: <20210310225329.2393372-1-luzmaximilian@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <a1e56ef2-e040-46b1-198e-4784765fc766@redhat.com>
+Date:   Wed, 17 Mar 2021 18:51:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210310225329.2393372-1-luzmaximilian@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-17 10:30, schrieb Tudor.Ambarus@microchip.com:
->>>>>> soft-wr-protect.c or software-write-protect.c ?
->>> 
->>> Having in mind that we have the SWP configs, I think I prefer swp.c.
->>> But let's see what majority thinks, we'll do as majority prefers.
->>> Michael, Pratyush?
->> 
->> It's just an internal name, thus as long as it remotely makes sense,
->> I'm fine. It's just a matter of taste, isn't it?
+Hi,
+
+On 3/10/21 11:53 PM, Maximilian Luz wrote:
+> This series adds support for the Surface System Aggregator Module (SSAM)
+> HID transport subsystem.
 > 
-> Sure, it's a matter of preference. What's yours?
-
-if i have to choose, swp.c
-
->> But here's one technical reason that would bother me more: name
->> clashes between the core modules: core, sfdp, otp, swp and the
->> vendor names. It is very unlikely, but there is a non-zero chance ;)
->> 
+> The SSAM is an embedded controller, found on 5th- and later generation
+> Microsoft Surface devices. On some of these devices (specifically
+> Surface Laptops 1, 2, and 3, as well as Surface Book 3), built-in input
+> devices are connected via the SSAM. These devices communicate (mostly)
+> via normal HID reports, so adding support for them is (mostly) just a
+> matter of implementing an HID transport driver.
 > 
-> We can move all manufacturers to a manufacturers/ folder. Each 
-> manufacturer
-> driver will have to #include "../core.h", about what I have some mixed
-> feelings.
+> SSAM actually has two different HID interfaces: One (legacy) interface
+> used on Surface Laptops 1 and 2, and a newer interface for the rest. The
+> newer interface allows for multiple HID devices to be addressed and is
+> implemented in the first patch. The older interface only allows a single
+> HID device to be connected and, furthermore, only allows a single output
+> report, specifically one for the caps lock LED. This is implemented in
+> the second patch.
+> 
+> See the commit messages of the respective patches for more details.
+> 
+> Regards,
+> Max
+> 
+> Note: This patch depends on the
+> 
+>     platform/surface: Add Surface Aggregator device registry
+> 
+> series. More specifically patch
+> 
+>     platform/surface: Set up Surface Aggregator device registry
+> 
+> The full series has been merged into the for-next branch of the
+> platform-drivers-x86 tree [1]. The commit in question can be found at
+> [2].
+> 
+> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=for-next
+> [2]: https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/commit/?h=for-next&id=fc622b3d36e6d91330fb21506b9ad1e3206a4dde
 
-I don't think it makes sense as long as there is no clash; or until 
-there
-are many more core modules, so you can't keep them apart anymore.
-It will just make it harder to follow the git history.
+Jiri, I'll prepare an immutable branch with the necessary pdx86 pre-reqs for this
+and I'll send you a pull-req for that IM branch, then you can merge these
+through the HID tree after merging that pull-req.
 
--michael
+Regards,
+
+Hans
+
+
+
+> 
+> Maximilian Luz (2):
+>   HID: Add support for Surface Aggregator Module HID transport
+>   HID: surface-hid: Add support for legacy keyboard interface
+> 
+>  MAINTAINERS                                |   7 +
+>  drivers/hid/Kconfig                        |   2 +
+>  drivers/hid/Makefile                       |   2 +
+>  drivers/hid/surface-hid/Kconfig            |  42 +++
+>  drivers/hid/surface-hid/Makefile           |   7 +
+>  drivers/hid/surface-hid/surface_hid.c      | 253 +++++++++++++++++
+>  drivers/hid/surface-hid/surface_hid_core.c | 272 +++++++++++++++++++
+>  drivers/hid/surface-hid/surface_hid_core.h |  77 ++++++
+>  drivers/hid/surface-hid/surface_kbd.c      | 300 +++++++++++++++++++++
+>  9 files changed, 962 insertions(+)
+>  create mode 100644 drivers/hid/surface-hid/Kconfig
+>  create mode 100644 drivers/hid/surface-hid/Makefile
+>  create mode 100644 drivers/hid/surface-hid/surface_hid.c
+>  create mode 100644 drivers/hid/surface-hid/surface_hid_core.c
+>  create mode 100644 drivers/hid/surface-hid/surface_hid_core.h
+>  create mode 100644 drivers/hid/surface-hid/surface_kbd.c
+> 
+
