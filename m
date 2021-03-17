@@ -2,79 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F87A33FABE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 23:03:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 026DF33FABC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 23:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhCQWDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 18:03:19 -0400
-Received: from gimli.rothwell.id.au ([103.230.158.156]:52925 "EHLO
-        gimli.rothwell.id.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhCQWDH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 18:03:07 -0400
-X-Greylist: delayed 504 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Mar 2021 18:03:06 EDT
-Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.rothwell.id.au (Postfix) with ESMTPSA id 4F13pK75h5zybF;
-        Thu, 18 Mar 2021 08:54:17 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rothwell.id.au;
-        s=201702; t=1616018061;
-        bh=N1kdYdxPZ3Ng+LZZ5Yo8hKl36tCtypl02m9heHMxtY0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NmWD36wcZ0F9H93FcR4yGrT1bsoNab1CbwPbtOoURYtOLFLazhFzDmFhUxZbGVCbL
-         xVZNZRhCbCx2shQ6KbXzz/5UTPJUu/giRHChJirnP+18+S9csHybjt0eOEiFxpickK
-         +Mh3t7rtBEcVKKP4zR6LFFo6eveRCCTwnYVoA/cE4Hlb9tklF+a/ZSqAQDQx1Y9l0O
-         SkRw6LPHKs6PddXAQBXkWOddrcVJ2jukO1OYwkl38IUA6rqd8QQwxSo5ZPWd5hLdKh
-         vjJ1xtK17p3wPcz/ofXtYHPvJCoHLHNECjOF0ozl+/kmI0zUAkugT0YBjeACCxMXju
-         0CVSG6NrvUr7w==
-Date:   Thu, 18 Mar 2021 08:54:16 +1100
-From:   Stephen Rothwell <sfr@rothwell.id.au>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Borislav Petkov <bp@suse.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Ian Rogers <irogers@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the tip tree
-Message-ID: <20210318085416.1a868758@elm.ozlabs.ibm.com>
-In-Reply-To: <20210317200408.GA3830960@gmail.com>
-References: <20210317150858.02b1bbc8@canb.auug.org.au>
-        <20210317105432.GA32135@zn.tnic>
-        <CAP-5=fWKCtJq-9zd5A-XALJWNf8tsds44m-G07sc+kCUoXB8zg@mail.gmail.com>
-        <20210317180236.GF32135@zn.tnic>
-        <20210318054921.64c0fc75@canb.auug.org.au>
-        <20210317191847.GG32135@zn.tnic>
-        <20210317200408.GA3830960@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229622AbhCQWBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 18:01:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229608AbhCQWBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 18:01:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id F175F64E64;
+        Wed, 17 Mar 2021 22:01:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616018470;
+        bh=Afs1IGV3pzy9/PyNrTKdFoc2ZctEoYoXHYBfBgaKHAs=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=uNeCgCBM+iBu1gnx0zodW4+a/570btq5OPItMHkx1ZWzzS4Sc/pcAzQ/mVt8Jndpr
+         0YvedBj+HnTSfLIDea7Em9BBXPIeCtpuE0jOK5ht+6AkHHLdz6v9348SNod6OydoEd
+         0c3XXEVI9GNJxlbKFyUik/u5I8xnaM4Y6zDlmhz2+PWazjBTtK1IFauhAAqUq6iXep
+         PcrnElZfqwq+6a29ZulpJp5AKxNIIj5NDxVsoPlMzXnckwQ8qnn8RFFSnDNU6eYkQI
+         cXviVyWBuYZYJMrBZYdQ90ualJ6FjNi2/Lm/zL/siqHldbRTxsRc2iU2XMAJdYwPHA
+         EF+5li/s7hzxg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D5E5760997;
+        Wed, 17 Mar 2021 22:01:09 +0000 (UTC)
+Subject: Re: [GIT PULL] MIPS fixes for v5.12
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210317123434.GA14230@alpha.franken.de>
+References: <20210317123434.GA14230@alpha.franken.de>
+X-PR-Tracked-List-Id: <linux-mips.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210317123434.GA14230@alpha.franken.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_5.12_2
+X-PR-Tracked-Commit-Id: 3f6c515d723480bc8afd456b0a52438fe79128a8
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e69beeabac6dae8d4318f46c7aa0c70b9599afb1
+Message-Id: <161601846980.14556.7335252246546800844.pr-tracker-bot@kernel.org>
+Date:   Wed, 17 Mar 2021 22:01:09 +0000
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ingo,
+The pull request you sent on Wed, 17 Mar 2021 13:34:34 +0100:
 
-On Wed, 17 Mar 2021 21:04:08 +0100 Ingo Molnar <mingo@kernel.org> wrote:
->
-> * Borislav Petkov <bp@suse.de> wrote:
-> 
-> > On Thu, Mar 18, 2021 at 05:49:21AM +1100, Stephen Rothwell wrote:  
-> > > That fixes the powerpc build for me, thanks.  
-> > 
-> > Thx, adding your Tested-by and pushing out.  
-> 
-> I've pushed this out into tip:auto-latest as well, so that tomorrow's 
-> -next should pick this up automatically. (Assuming everything else is 
-> fine.)
+> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_5.12_2
 
-Excellent, thanks.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e69beeabac6dae8d4318f46c7aa0c70b9599afb1
+
+Thank you!
 
 -- 
-Cheers,
-Stephen Rothwell
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
