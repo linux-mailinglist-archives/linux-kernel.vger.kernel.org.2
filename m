@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B4233ECAB
+	by mail.lfdr.de (Postfix) with ESMTP id 824E433ECAC
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:15:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhCQJOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 05:14:20 -0400
+        id S231157AbhCQJOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 05:14:23 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhCQJNM (ORCPT
+        with ESMTP id S230338AbhCQJNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:13:12 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D455C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:13:11 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id b9so1000158wrt.8
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:13:11 -0700 (PDT)
+        Wed, 17 Mar 2021 05:13:13 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95056C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:13:12 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so4985012wmq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:13:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=INYaEaBKekTmocE41+zT9bavsNeUW3SsypgM5hto0Go=;
-        b=LU0MfM5VANlz8Slj6C6ags2MZIeEQa5EYWniMaJEraXg9Zygc+80pbha8ds8vB2gO5
-         Gr46OwwH2LPxxqqTWkZ0gwNP/GKglfNqGEJ2S62m4GFVwEVEucMri5byPMwyaSUC2v0Q
-         i/2WUUqltY9W9s92n7HZv28+8vt+I/YTFDFLi5/jzNj9UeKKyzOxSqT1FSTkZdybwjKm
-         N1X91jPLwH7sWFacydU7Dwcv0jn9bQiFJa/69stdk3crrCfVbavNOloWACIYctqiVhaf
-         jloCALTCkZF5KuMNBgJRwFJtrSrTzgy/6HcNuX4feeovknp6fh3YEsXFm4zTQTsxc4dc
-         nekQ==
+        bh=0pHIZHhKpBhGoLa2stZTqH6Rz5RjIRSokSD2h9KbvHc=;
+        b=zl+IsVUzggf7c6oUTebPYwinoPM3gAUpTCrNQIXx7CEpVCer3iLd98t6cddrT37fmq
+         jksJSH2d30WdxQs/vyqpxmUMgjkQfz7uSLj43mckJ8QUHs8teBBmZGItrc9KDL4y7pt3
+         tOFsIihDrg4v4a5Cr/i6mCH5XtisB1kjRlkUjcSGf5lCa7Y2FLETtMxKUUQSlxaMiqiv
+         fFPQfsiDq3E3m4CEN9syAkcN2OBQoQSDu56fybhjF7eRyN7pwglpm4p8PE0QYuKX6TWV
+         4r+ilX3dA6qcVefi8gp4ToF8aOoYoSNUVqa4t9iNwmvoBhsSI7gVGcJnMh0lzY/pqoX3
+         qikw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=INYaEaBKekTmocE41+zT9bavsNeUW3SsypgM5hto0Go=;
-        b=W3dDX0ZAQueww6IsnFFYPLJLZR3P9B2qZN5uJQ8tLTzQbh52jeZrnSWr9SoXt/4+S3
-         RGP24hBLXhgB3UpF+27XWk6/zGolHxCuxr6YAi81PFNGkOE86+vE26KOOUDAliNrrm4M
-         rxcjz52VOMTSUdyt04z+rrH4uZDu/8wM1zIuy/gVh6Fsla8wPXUfrNZAhjRZAF2Kdvcb
-         L9UrR/1x2RF+Jlmpbqg2ge9Q/4iw5/0gRB2UDt81Eu+cEAq3lcEwAlmwyt8iC4wPBQ6E
-         Ik2UdHkvoi77x32+p5TBszmKNi9CJbEk002AmgQsuE649cA5817mZ0x0+p2vwShCjnOb
-         CTbw==
-X-Gm-Message-State: AOAM530IxYA0Yzuuui6gZxtQU15EH7wazJP/6aWULNY9NT74sumsG0bH
-        KmXe/xqEeKcdi5i42eBzOq0jUA==
-X-Google-Smtp-Source: ABdhPJzoU2irxWjqTIRpGWlYPDPXkS9wIYcZMq3Rz/xuBQlkWluHwYVbpFEDm9ZakMHSHGopBeFqDA==
-X-Received: by 2002:adf:b30f:: with SMTP id j15mr3361475wrd.132.1615972390441;
-        Wed, 17 Mar 2021 02:13:10 -0700 (PDT)
+        bh=0pHIZHhKpBhGoLa2stZTqH6Rz5RjIRSokSD2h9KbvHc=;
+        b=P7eq9cKV7Syr1tJ63+Psm0alpa6cv1Rm95CdP+zL5KJXjWp5EGoX/JQxFH+lSMEjMe
+         AbQqaIbxodOQbn5iAUe4jweX4idnuPMvrE9TDv0Q2Gkq8rwOUW14WnfEHaKW8t1trZIl
+         CJGvKMO8JnrZxls+IBtbBQkRsecX7w12LgQ4REt7urvKApmkj9djT11YIWaRLc5Mj9vl
+         /tsngS07iH6M0kxz8NEqq6FxXp86chEytLm31V33/weQLl5iDU+xP1QyKcITvLeTtXDm
+         DDEizhNOPmt7CymcYWtkALDgSVrFvGYDIgmCnLDIJ1UiN3W+KE3jnzrS4qfUDVELqxwS
+         ATPQ==
+X-Gm-Message-State: AOAM530UzKoDbnvtQtxHqS4dCMCpMkL70ADiCvEQPi4JU1lvzshApD2n
+        cpbQ4rsAP4UgvxhE0VkxE5dVo9agUCLe+Q==
+X-Google-Smtp-Source: ABdhPJzQ5xBud4Eh400byYzDFHJYsOFWPS4jWuaPzcNcq3BgxqDs47Uqg1vJeNLu88Rpk/O/l3EAyQ==
+X-Received: by 2002:a1c:b48a:: with SMTP id d132mr2637817wmf.108.1615972391306;
+        Wed, 17 Mar 2021 02:13:11 -0700 (PDT)
 Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id e18sm12695886wru.73.2021.03.17.02.13.09
+        by smtp.gmail.com with ESMTPSA id e18sm12695886wru.73.2021.03.17.02.13.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 17 Mar 2021 02:13:10 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+        "Manoj N. Kumar" <manoj@linux.ibm.com>,
+        "Matthew R. Ochs" <mrochs@linux.ibm.com>,
+        Uma Krishnan <ukrishn@linux.ibm.com>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         linux-scsi@vger.kernel.org
-Subject: [PATCH 30/36] scsi: isci: remote_node_table: Provide some missing params and remove others
-Date:   Wed, 17 Mar 2021 09:12:24 +0000
-Message-Id: <20210317091230.2912389-31-lee.jones@linaro.org>
+Subject: [PATCH 31/36] scsi: cxlflash: main: Fix a little do-rot
+Date:   Wed, 17 Mar 2021 09:12:25 +0000
+Message-Id: <20210317091230.2912389-32-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210317091230.2912389-1-lee.jones@linaro.org>
 References: <20210317091230.2912389-1-lee.jones@linaro.org>
@@ -69,91 +71,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/isci/remote_node_table.c:113: warning: Function parameter or member 'group_table_index' not described in 'sci_remote_node_table_clear_group_index'
- drivers/scsi/isci/remote_node_table.c:113: warning: Excess function parameter 'set_index' description in 'sci_remote_node_table_clear_group_index'
- drivers/scsi/isci/remote_node_table.c:262: warning: Function parameter or member 'group_index' not described in 'sci_remote_node_table_set_group'
- drivers/scsi/isci/remote_node_table.c:383: warning: Function parameter or member 'group_table_index' not described in 'sci_remote_node_table_allocate_single_remote_node'
- drivers/scsi/isci/remote_node_table.c:383: warning: Excess function parameter 'table_index' description in 'sci_remote_node_table_allocate_single_remote_node'
- drivers/scsi/isci/remote_node_table.c:516: warning: Function parameter or member 'remote_node_index' not described in 'sci_remote_node_table_release_single_remote_node'
- drivers/scsi/isci/remote_node_table.c:562: warning: Function parameter or member 'remote_node_index' not described in 'sci_remote_node_table_release_triple_remote_node'
- drivers/scsi/isci/remote_node_table.c:588: warning: Function parameter or member 'remote_node_index' not described in 'sci_remote_node_table_release_remote_node_index'
+ drivers/scsi/cxlflash/main.c:1369: warning: Function parameter or member 'hwq' not described in 'process_hrrq'
+ drivers/scsi/cxlflash/main.c:1369: warning: Excess function parameter 'afu' description in 'process_hrrq'
+ drivers/scsi/cxlflash/main.c:2005: warning: Function parameter or member 'index' not described in 'init_mc'
+ drivers/scsi/cxlflash/main.c:3303: warning: Function parameter or member 'lunprov' not described in 'cxlflash_lun_provision'
+ drivers/scsi/cxlflash/main.c:3303: warning: Excess function parameter 'arg' description in 'cxlflash_lun_provision'
+ drivers/scsi/cxlflash/main.c:3397: warning: Function parameter or member 'afu_dbg' not described in 'cxlflash_afu_debug'
+ drivers/scsi/cxlflash/main.c:3397: warning: Excess function parameter 'arg' description in 'cxlflash_afu_debug'
 
-Cc: Artur Paszkiewicz <artur.paszkiewicz@intel.com>
+Cc: "Manoj N. Kumar" <manoj@linux.ibm.com>
+Cc: "Matthew R. Ochs" <mrochs@linux.ibm.com>
+Cc: Uma Krishnan <ukrishn@linux.ibm.com>
 Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
 Cc: linux-scsi@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/isci/remote_node_table.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/scsi/cxlflash/main.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/scsi/isci/remote_node_table.c b/drivers/scsi/isci/remote_node_table.c
-index 1036ab936626e..1bcaf528c1c99 100644
---- a/drivers/scsi/isci/remote_node_table.c
-+++ b/drivers/scsi/isci/remote_node_table.c
-@@ -99,7 +99,7 @@ static u32 sci_remote_node_table_get_group_index(
-  * sci_remote_node_table_clear_group_index()
-  * @remote_node_table: This the remote node table in which to clear the
-  *    selector.
-- * @set_index: This is the remote node selector in which the change will be
-+ * @group_table_index: This is the remote node selector in which the change will be
-  *    made.
-  * @group_index: This is the bit index in the table to be modified.
-  *
-@@ -250,9 +250,8 @@ static void sci_remote_node_table_clear_group(
- 	remote_node_table->available_remote_nodes[dword_location] = dword_value;
- }
+diff --git a/drivers/scsi/cxlflash/main.c b/drivers/scsi/cxlflash/main.c
+index e72440d919d2a..dc36531d589e2 100644
+--- a/drivers/scsi/cxlflash/main.c
++++ b/drivers/scsi/cxlflash/main.c
+@@ -1357,7 +1357,7 @@ static irqreturn_t cxlflash_sync_err_irq(int irq, void *data)
  
--/**
-+/*
-  * sci_remote_node_table_set_group()
-- * @remote_node_table:
+ /**
+  * process_hrrq() - process the read-response queue
+- * @afu:	AFU associated with the host.
++ * @hwq:	HWQ associated with the host.
+  * @doneq:	Queue of commands harvested from the RRQ.
+  * @budget:	Threshold of RRQ entries to process.
   *
-  * THis method sets an entire remote node group in the remote node table.
+@@ -1997,7 +1997,7 @@ static enum undo_level init_intr(struct cxlflash_cfg *cfg,
+ /**
+  * init_mc() - create and register as the master context
+  * @cfg:	Internal structure associated with the host.
+- * index:	HWQ Index of the master context.
++ * @index:	HWQ Index of the master context.
+  *
+  * Return: 0 on success, -errno on failure
   */
-@@ -366,7 +365,7 @@ void sci_remote_node_table_initialize(
-  * sci_remote_node_table_allocate_single_remote_node()
-  * @remote_node_table: The remote node table from which to allocate a
-  *    remote node.
-- * @table_index: The group index that is to be used for the search.
-+ * @group_table_index: The group index that is to be used for the search.
+@@ -3294,7 +3294,7 @@ static char *decode_hioctl(unsigned int cmd)
+ /**
+  * cxlflash_lun_provision() - host LUN provisioning handler
+  * @cfg:	Internal structure associated with the host.
+- * @arg:	Kernel copy of userspace ioctl data structure.
++ * @lunprov:	Kernel copy of userspace ioctl data structure.
   *
-  * This method will allocate a single RNi from the remote node table.  The
-  * table index will determine from which remote node group table to search.
-@@ -426,7 +425,7 @@ static u16 sci_remote_node_table_allocate_single_remote_node(
-  * sci_remote_node_table_allocate_triple_remote_node()
-  * @remote_node_table: This is the remote node table from which to allocate the
-  *    remote node entries.
-- * @group_table_index: THis is the group table index which must equal two (2)
-+ * @group_table_index: This is the group table index which must equal two (2)
-  *    for this operation.
-  *
-  * This method will allocate three consecutive remote node context entries. If
-@@ -506,7 +505,7 @@ u16 sci_remote_node_table_allocate_remote_node(
-  * sci_remote_node_table_release_single_remote_node()
-  * @remote_node_table: This is the remote node table from which the remote node
-  *    release is to take place.
-- *
-+ * @remote_node_index: This is the remote node index that is being released.
-  * This method will free a single remote node index back to the remote node
-  * table.  This routine will update the remote node groups
+  * Return: 0 on success, -errno on failure
   */
-@@ -552,6 +551,7 @@ static void sci_remote_node_table_release_single_remote_node(
-  * sci_remote_node_table_release_triple_remote_node()
-  * @remote_node_table: This is the remote node table to which the remote node
-  *    index is to be freed.
-+ * @remote_node_index: This is the remote node index that is being released.
+@@ -3385,7 +3385,7 @@ static int cxlflash_lun_provision(struct cxlflash_cfg *cfg,
+ /**
+  * cxlflash_afu_debug() - host AFU debug handler
+  * @cfg:	Internal structure associated with the host.
+- * @arg:	Kernel copy of userspace ioctl data structure.
++ * @afu_dbg:	Kernel copy of userspace ioctl data structure.
   *
-  * This method will release a group of three consecutive remote nodes back to
-  * the free remote nodes.
-@@ -577,6 +577,7 @@ static void sci_remote_node_table_release_triple_remote_node(
-  *    to be freed.
-  * @remote_node_count: This is the count of consecutive remote nodes that are
-  *    to be freed.
-+ * @remote_node_index: This is the remote node index that is being released.
-  *
-  * This method will release the remote node index back into the remote node
-  * table free pool.
+  * For debug requests requiring a data buffer, always provide an aligned
+  * (cache line) buffer to the AFU to appease any alignment requirements.
 -- 
 2.27.0
 
