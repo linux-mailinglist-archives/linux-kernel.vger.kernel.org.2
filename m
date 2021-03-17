@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD4D33F21B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:03:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5929A33F222
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231675AbhCQODE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:03:04 -0400
-Received: from mga04.intel.com ([192.55.52.120]:12268 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231582AbhCQOCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:02:48 -0400
-IronPort-SDR: cgRl2aDde4l/YrCh/UsJbHhtpNq6DwKuyAh96RV1vmLF5lu/E3e68WA8x3uvlrvgXuCoGvLp0N
- h1pNFLUNP4Zw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="187096014"
-X-IronPort-AV: E=Sophos;i="5.81,256,1610438400"; 
-   d="scan'208";a="187096014"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 07:02:48 -0700
-IronPort-SDR: N26sReSqZARVAAYucfXKIl+FzwROYWD5HOSN4dBKbUvNS7aoqPXtAGsWFOK8O+f/H1fC3k/Ph6
- lzWlaho3z2rA==
-X-IronPort-AV: E=Sophos;i="5.81,256,1610438400"; 
-   d="scan'208";a="379296513"
-Received: from trentod-mobl.amr.corp.intel.com (HELO [10.212.29.205]) ([10.212.29.205])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 07:02:44 -0700
-Subject: Re: [PATCH v3] ASoC: Intel: sof_rt5682: Add ALC1015Q-VB speaker amp
- support
-To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org,
-        Jack Yu <jack.yu@realtek.com>
-Cc:     Oder Chiou <oder_chiou@realtek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Rander Wang <rander.wang@linux.intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Libin Yang <libin.yang@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
-        Dharageswari R <dharageswari.r@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        linux-kernel@vger.kernel.org
-References: <20210317110824.20814-1-brent.lu@intel.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <af990f6f-3a8b-3a1e-a02a-3bfe96e4d80a@linux.intel.com>
-Date:   Wed, 17 Mar 2021 09:02:42 -0500
+        id S231726AbhCQODd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231651AbhCQODC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 10:03:02 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 350D8C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 07:03:02 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1lMWlI-0003Jo-MJ; Wed, 17 Mar 2021 15:03:00 +0100
+Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     Richard Weinberger <richard.weinberger@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>, kernel@pengutronix.de,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>, keyrings@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+ <319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de>
+ <CAFLxGvxmRcvkweGSRSLGEm5MJDM4M7nzkp9FwOwmhZ+h2RE0vA@mail.gmail.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <91b01387-1814-0719-8a21-2beb150dfcd6@pengutronix.de>
+Date:   Wed, 17 Mar 2021 15:02:59 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210317110824.20814-1-brent.lu@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAFLxGvxmRcvkweGSRSLGEm5MJDM4M7nzkp9FwOwmhZ+h2RE0vA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Richard,
 
-
-On 3/17/21 6:08 AM, Brent Lu wrote:
-> This patch adds jsl_rt5682_rt1015p which supports the RT5682 headset
-> codec and ALC1015Q-VB speaker amplifier combination on JasperLake
-> platform.
+On 17.03.21 00:14, Richard Weinberger wrote:
+> Ahmad,
 > 
-> This driver also supports ALC1015Q-CG if running in auto-mode.
-> Following table shows the audio interface support of the two
-> amplifiers.
+> On Tue, Mar 16, 2021 at 6:24 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>> +#include <keys/trusted_caam.h>
+>> +#include <keys/trusted-type.h>
+>> +#include <linux/build_bug.h>
+>> +#include <linux/key-type.h>
+>> +#include <soc/fsl/caam-blob.h>
+>> +
+>> +struct caam_blob_priv *blobifier;
 > 
->            | ALC1015Q-CG | ALC1015Q-VB
-> =====================================
-> I2C       | Yes         | No
-> Auto-mode | 48K, 64fs   | 16k, 32fs
->                          | 48k, 32fs
->                          | 48k, 64fs
+> Who is using this pointer too?
+> Otherwise I'd suggest marking it static.
+
+You're right. Will do in v2.
+
+>>  module_param_named(source, trusted_key_source, charp, 0);
+>> -MODULE_PARM_DESC(source, "Select trusted keys source (tpm or tee)");
+>> +MODULE_PARM_DESC(source, "Select trusted keys source (tpm, tee or caam)");
 > 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
+> I didn't closely follow the previous discussions, but is a module
+> parameter really the right approach?
+> Is there also a way to set it via something like device tree?
 
-The code is looks fine, but Jack Yu added a separate patch that makes 
-RTL1019 equivalent to RTL1015, so should this patch also handle the 
-RTL1019 case?
+Compiled-on sources are considered in the order: tpm, tee then caam.
+Module parameters are the only override currently available.
 
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
