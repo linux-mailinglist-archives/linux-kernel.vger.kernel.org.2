@@ -2,80 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E9433E8DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7D433E8DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 06:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhCQFPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 01:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbhCQFPk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 01:15:40 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4123DC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 22:15:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=no2cjjiGTSqw+GfdD5S3LIUDOLpLpclElmBCYQUTnBo=; b=ZwDCDVDeTIcqLOEH/1wO0k6Z9o
-        1+rtcqdJEGHEIe7iaSGbG25pBWQeHDHiPwCDc6aMpGiA3HhY6k12Qc0Ux8S+aWNIrO9sZvLIsPD7Y
-        LmsWf7YJAgRoxEPtiGtCt0cYnkO+D5fOucUibrlCQxYe+Tki2mKV/hTMC8pFE813JTEqFmgM2uc+6
-        VM0iC/HXpa30ayo0OQHFOk/LY0xuwhiSffQMrAzj7LBYyIj4DwWV3LKS1pDqpZkwpk1ZdmOh6tziS
-        pelVgkm9+1VXXvvbPz+DY6o9Y+kMkkgPKwNhyqlVH4QGrDmtCXKw5m8goZ8PSwfynx1tyr+2JdxwT
-        OGmKnQpA==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMOWw-001bUt-4K; Wed, 17 Mar 2021 05:15:38 +0000
-Subject: Re: [PATCH] mm: Typo fix in the file util.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210317033439.3429411-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <fc9294dc-a68f-363f-03ec-b5626275a3e9@infradead.org>
-Date:   Tue, 16 Mar 2021 22:15:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229707AbhCQFQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 01:16:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43638 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229831AbhCQFQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 01:16:20 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ED00EAC17;
+        Wed, 17 Mar 2021 05:16:13 +0000 (UTC)
+Date:   Tue, 16 Mar 2021 22:16:05 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: [PATCH 4/4] locking/locktorture: Fix incorrect use of
+ ww_acquire_ctx in ww_mutex test
+Message-ID: <20210317051605.popetodgwbr47ha2@offworld>
+References: <20210316153119.13802-1-longman@redhat.com>
+ <20210316153119.13802-5-longman@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210317033439.3429411-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210316153119.13802-5-longman@redhat.com>
+User-Agent: NeoMutt/20201120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/21 8:34 PM, Bhaskar Chowdhury wrote:
-> 
-> 
-> s/condtion/condition/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+On Tue, 16 Mar 2021, Waiman Long wrote:
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+>The ww_acquire_ctx structure for ww_mutex needs to persist for a complete
+>lock/unlock cycle. In the ww_mutex test in locktorture, however, both
+>ww_acquire_init() and ww_acquire_fini() are called within the lock
+>function only. This causes a lockdep splat of "WARNING: Nested lock
+>was not taken" when lockdep is enabled in the kernel.
+>
+>To fix this problem, we need to move the ww_acquire_fini() after the
+>ww_mutex_unlock() in torture_ww_mutex_unlock(). In other word, we need
+>to pass state information from the lock function to the unlock function.
 
-> ---
->  mm/util.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/util.c b/mm/util.c
-> index 54870226cea6..f85da35b50eb 100644
-> --- a/mm/util.c
-> +++ b/mm/util.c
-> @@ -775,7 +775,7 @@ int overcommit_policy_handler(struct ctl_table *table, int write, void *buffer,
->  	 * The deviation of sync_overcommit_as could be big with loose policy
->  	 * like OVERCOMMIT_ALWAYS/OVERCOMMIT_GUESS. When changing policy to
->  	 * strict OVERCOMMIT_NEVER, we need to reduce the deviation to comply
-> -	 * with the strict "NEVER", and to avoid possible race condtion (even
-> +	 * with the strict "NEVER", and to avoid possible race condition (even
->  	 * though user usually won't too frequently do the switching to policy
->  	 * OVERCOMMIT_NEVER), the switch is done in the following order:
->  	 *	1. changing the batch
-> --
+Right, and afaict this _is_ the way ww_acquire_fini() should be called:
 
+  * Releases a w/w acquire context. This must be called _after_ all acquired w/w
+  * mutexes have been released with ww_mutex_unlock.
 
--- 
-~Randy
+>Change the writelock and writeunlock function prototypes to allow that
+>and change the torture_ww_mutex_lock() and torture_ww_mutex_unlock()
+>accordingly.
 
+But wouldn't just making ctx a global variable be enough instead? That way
+we don't deal with memory allocation for every lock/unlock operation (yuck).
+Plus the ENOMEM would need to be handled/propagated accordingly - the code
+really doesn't expect any failure from ->writelock().
+
+diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+index 0ab94e1f1276..606c0f6c1657 100644
+--- a/kernel/locking/locktorture.c
++++ b/kernel/locking/locktorture.c
+@@ -362,6 +362,8 @@ static DEFINE_WW_MUTEX(torture_ww_mutex_0, &torture_ww_class);
+  static DEFINE_WW_MUTEX(torture_ww_mutex_1, &torture_ww_class);
+  static DEFINE_WW_MUTEX(torture_ww_mutex_2, &torture_ww_class);
+
++static struct ww_acquire_ctx ctx;
++
+  static int torture_ww_mutex_lock(void)
+  __acquires(torture_ww_mutex_0)
+  __acquires(torture_ww_mutex_1)
+@@ -372,7 +374,6 @@ __acquires(torture_ww_mutex_2)
+		struct list_head link;
+		struct ww_mutex *lock;
+	} locks[3], *ll, *ln;
+-	struct ww_acquire_ctx ctx;
+
+	locks[0].lock = &torture_ww_mutex_0;
+	list_add(&locks[0].link, &list);
+@@ -403,7 +404,6 @@ __acquires(torture_ww_mutex_2)
+		list_move(&ll->link, &list);
+	}
+
+-	ww_acquire_fini(&ctx);
+	return 0;
+  }
+
+@@ -415,6 +415,8 @@ __releases(torture_ww_mutex_2)
+	ww_mutex_unlock(&torture_ww_mutex_0);
+	ww_mutex_unlock(&torture_ww_mutex_1);
+	ww_mutex_unlock(&torture_ww_mutex_2);
++
++	ww_acquire_fini(&ctx);
+  }
+
+  static struct lock_torture_ops ww_mutex_lock_ops = {
