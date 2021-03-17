@@ -2,252 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B23033EA59
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:03:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8B133EA5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 08:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhCQHC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 03:02:57 -0400
-Received: from mga03.intel.com ([134.134.136.65]:20971 "EHLO mga03.intel.com"
+        id S229909AbhCQHLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 03:11:44 -0400
+Received: from m12-16.163.com ([220.181.12.16]:41237 "EHLO m12-16.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229469AbhCQHCf (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 03:02:35 -0400
-IronPort-SDR: RSE0CF/uAPlKY53JL2g50kZkwxcx8Lsbhx3ty3jaQTadRl4/0NLRJF9O2OPtC9LriNW7WGo0fw
- WqA6s71FzCcA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="189452201"
-X-IronPort-AV: E=Sophos;i="5.81,255,1610438400"; 
-   d="scan'208";a="189452201"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 00:02:34 -0700
-IronPort-SDR: Bou1i2vTPvnNMd586EhAFKFaQQrY4V8NK4WywqGRYiNcVHxqXoslgWFAc7Ql66Bq6+SSBAWP/U
- v49xowic+PTw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,255,1610438400"; 
-   d="scan'208";a="439351587"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga002.fm.intel.com with ESMTP; 17 Mar 2021 00:02:32 -0700
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v2] perf stat: Align CSV output for summary mode
-Date:   Wed, 17 Mar 2021 15:02:05 +0800
-Message-Id: <20210317070205.10315-1-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S229472AbhCQHLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 03:11:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=pH7nh
+        paleJ/7ukwCP8E2DXBfIB5ssIKEREx9oLsDBpo=; b=QuvsY0XtbcbcZmmMU8kny
+        x4hbCtMqedR6nlLBCT6Cco9QFozJi5C+xJBkH0GznwEyYMfcDYDp4B6D2Lq2bl1K
+        54tuhCGxqU8tz59nAnhLYu3gF+NExi4hlFkB0MXmK72WMO98HpSJB7vrFWxlNF3T
+        LNRKvSHEcYAcYsGVdlEgAc=
+Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
+        by smtp12 (Coremail) with SMTP id EMCowAAXHSFxq1FgnVAehA--.23334S2;
+        Wed, 17 Mar 2021 15:10:45 +0800 (CST)
+From:   zuoqilin1@163.com
+To:     shaggy@kernel.org
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        zuoqilin <zuoqilin@yulong.com>
+Subject: [PATCH] fs: Fix typo issue
+Date:   Wed, 17 Mar 2021 15:10:52 +0800
+Message-Id: <20210317071052.1101-1-zuoqilin1@163.com>
+X-Mailer: git-send-email 2.28.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EMCowAAXHSFxq1FgnVAehA--.23334S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWruFy8Jr45Zr13WrW7XFy3twb_yoWxtwc_Ca
+        n7Ar48WayrXayUur1fXrs5Kryq9rW8urn8urWDJFZIkryqyrnxJrs7Cr47XryDKrZ0kryk
+        Zw18KryrurykWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0j2NtUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/xtbBRQ1YiVPAKjBU8QADs2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-perf-stat has supported the summary mode. But the summary
-lines break the CSV output so it's hard for scripts to parse
-the result.
+From: zuoqilin <zuoqilin@yulong.com>
 
-Before:
+Change 'inacitve' to 'inactive'.
 
-  # perf stat -x, -I1000 --interval-count 1 --summary
-       1.001323097,8013.48,msec,cpu-clock,8013483384,100.00,8.013,CPUs utilized
-       1.001323097,270,,context-switches,8013513297,100.00,0.034,K/sec
-       1.001323097,13,,cpu-migrations,8013530032,100.00,0.002,K/sec
-       1.001323097,184,,page-faults,8013546992,100.00,0.023,K/sec
-       1.001323097,20574191,,cycles,8013551506,100.00,0.003,GHz
-       1.001323097,10562267,,instructions,8013564958,100.00,0.51,insn per cycle
-       1.001323097,2019244,,branches,8013575673,100.00,0.252,M/sec
-       1.001323097,106152,,branch-misses,8013585776,100.00,5.26,of all branches
-  8013.48,msec,cpu-clock,8013483384,100.00,7.984,CPUs utilized
-  270,,context-switches,8013513297,100.00,0.034,K/sec
-  13,,cpu-migrations,8013530032,100.00,0.002,K/sec
-  184,,page-faults,8013546992,100.00,0.023,K/sec
-  20574191,,cycles,8013551506,100.00,0.003,GHz
-  10562267,,instructions,8013564958,100.00,0.51,insn per cycle
-  2019244,,branches,8013575673,100.00,0.252,M/sec
-  106152,,branch-misses,8013585776,100.00,5.26,of all branches
-
-The summary line loses the timestamp column, which breaks the
-CVS output.
-
-We add a column at the original 'timestamp' position and it just says
-'summary' for the summary line.
-
-After:
-
-  # perf stat -x, -I1000 --interval-count 1 --summary
-       1.001196053,8012.72,msec,cpu-clock,8012722903,100.00,8.013,CPUs utilized
-       1.001196053,218,,context-switches,8012753271,100.00,0.027,K/sec
-       1.001196053,9,,cpu-migrations,8012769767,100.00,0.001,K/sec
-       1.001196053,0,,page-faults,8012786257,100.00,0.000,K/sec
-       1.001196053,15004518,,cycles,8012790637,100.00,0.002,GHz
-       1.001196053,7954691,,instructions,8012804027,100.00,0.53,insn per cycle
-       1.001196053,1590259,,branches,8012814766,100.00,0.198,M/sec
-       1.001196053,82601,,branch-misses,8012824365,100.00,5.19,of all branches
-           summary,8012.72,msec,cpu-clock,8012722903,100.00,7.986,CPUs utilized
-           summary,218,,context-switches,8012753271,100.00,0.027,K/sec
-           summary,9,,cpu-migrations,8012769767,100.00,0.001,K/sec
-           summary,0,,page-faults,8012786257,100.00,0.000,K/sec
-           summary,15004518,,cycles,8012790637,100.00,0.002,GHz
-           summary,7954691,,instructions,8012804027,100.00,0.53,insn per cycle
-           summary,1590259,,branches,8012814766,100.00,0.198,M/sec
-           summary,82601,,branch-misses,8012824365,100.00,5.19,of all branches
-
-Now it's easy for script to analyse the summary lines.
-
-Of course, we also consider not to break possible existing scripts which
-have fixed the broken CVS format, we provide a optiton '--no-cvs-summary'
-to keep original output.
-
-  # perf stat -x, -I1000 --interval-count 1 --summary --no-cvs-summary
-       1.001213261,8012.67,msec,cpu-clock,8012672327,100.00,8.013,CPUs utilized
-       1.001213261,197,,context-switches,8012703742,100.00,24.586,/sec
-       1.001213261,9,,cpu-migrations,8012720902,100.00,1.123,/sec
-       1.001213261,644,,page-faults,8012738266,100.00,80.373,/sec
-       1.001213261,18350698,,cycles,8012744109,100.00,0.002,GHz
-       1.001213261,12745021,,instructions,8012759001,100.00,0.69,insn per cycle
-       1.001213261,2458033,,branches,8012770864,100.00,306.768,K/sec
-       1.001213261,102107,,branch-misses,8012781751,100.00,4.15,of all branches
-  8012.67,msec,cpu-clock,8012672327,100.00,7.985,CPUs utilized
-  197,,context-switches,8012703742,100.00,24.586,/sec
-  9,,cpu-migrations,8012720902,100.00,1.123,/sec
-  644,,page-faults,8012738266,100.00,80.373,/sec
-  18350698,,cycles,8012744109,100.00,0.002,GHz
-  12745021,,instructions,8012759001,100.00,0.69,insn per cycle
-  2458033,,branches,8012770864,100.00,306.768,K/sec
-  102107,,branch-misses,8012781751,100.00,4.15,of all branches
-
-This option can be enabled in perf config by setting the variable
-'stat.no-cvs-summary'.
-
-  # perf config stat.no-cvs-summary=true
-
-  # perf config -l
-  stat.no-cvs-summary=true
-
-  # perf stat -x, -I1000 --interval-count 1 --summary
-       1.001330198,8013.28,msec,cpu-clock,8013279201,100.00,8.013,CPUs utilized
-       1.001330198,205,,context-switches,8013308394,100.00,25.583,/sec
-       1.001330198,10,,cpu-migrations,8013324681,100.00,1.248,/sec
-       1.001330198,0,,page-faults,8013340926,100.00,0.000,/sec
-       1.001330198,8027742,,cycles,8013344503,100.00,0.001,GHz
-       1.001330198,2871717,,instructions,8013356501,100.00,0.36,insn per cycle
-       1.001330198,553564,,branches,8013366204,100.00,69.081,K/sec
-       1.001330198,54021,,branch-misses,8013375952,100.00,9.76,of all branches
-  8013.28,msec,cpu-clock,8013279201,100.00,7.985,CPUs utilized
-  205,,context-switches,8013308394,100.00,25.583,/sec
-  10,,cpu-migrations,8013324681,100.00,1.248,/sec
-  0,,page-faults,8013340926,100.00,0.000,/sec
-  8027742,,cycles,8013344503,100.00,0.001,GHz
-  2871717,,instructions,8013356501,100.00,0.36,insn per cycle
-  553564,,branches,8013366204,100.00,69.081,K/sec
-  54021,,branch-misses,8013375952,100.00,9.76,of all branches
-
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+Signed-off-by: zuoqilin <zuoqilin@yulong.com>
 ---
- v2:
-   - Add new option '--no-cvs-summary'.
-   - Add perf config variable 'stat.no-cvs-summary'.
+ fs/jfs/jfs_dmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- tools/perf/Documentation/perf-stat.txt | 9 +++++++++
- tools/perf/builtin-stat.c              | 7 +++++++
- tools/perf/util/config.c               | 3 +++
- tools/perf/util/stat-display.c         | 6 ++++++
- tools/perf/util/stat.h                 | 2 ++
- 5 files changed, 27 insertions(+)
-
-diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-index 3055aad38d46..854597e70406 100644
---- a/tools/perf/Documentation/perf-stat.txt
-+++ b/tools/perf/Documentation/perf-stat.txt
-@@ -471,6 +471,15 @@ convenient for post processing.
- --summary::
- Print summary for interval mode (-I).
- 
-+--no-cvs-summary::
-+Don't print 'summary' at the first column for CVS summary output.
-+This option must be used with -x and --summary.
-+
-+This option can be enabled in perf config by setting the variable
-+'stat.no-cvs-summary'.
-+
-+$ perf config stat.no-cvs-summary=true
-+
- EXAMPLES
- --------
- 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 2e2e4a8345ea..3823dd5fd6e8 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -1083,6 +1083,11 @@ void perf_stat__set_big_num(int set)
- 	stat_config.big_num = (set != 0);
- }
- 
-+void perf_stat__set_no_cvs_summary(int set)
-+{
-+	stat_config.no_cvs_summary = (set != 0);
-+}
-+
- static int stat__set_big_num(const struct option *opt __maybe_unused,
- 			     const char *s __maybe_unused, int unset)
- {
-@@ -1235,6 +1240,8 @@ static struct option stat_options[] = {
- 		    "threads of same physical core"),
- 	OPT_BOOLEAN(0, "summary", &stat_config.summary,
- 		       "print summary for interval mode"),
-+	OPT_BOOLEAN(0, "no-cvs-summary", &stat_config.no_cvs_summary,
-+		       "don't print 'summary' for CVS summary output"),
- 	OPT_BOOLEAN(0, "quiet", &stat_config.quiet,
- 			"don't print output (useful with record)"),
- #ifdef HAVE_LIBPFM
-diff --git a/tools/perf/util/config.c b/tools/perf/util/config.c
-index 6984c77068a3..dbf585460791 100644
---- a/tools/perf/util/config.c
-+++ b/tools/perf/util/config.c
-@@ -457,6 +457,9 @@ static int perf_stat_config(const char *var, const char *value)
- 	if (!strcmp(var, "stat.big-num"))
- 		perf_stat__set_big_num(perf_config_bool(var, value));
- 
-+	if (!strcmp(var, "stat.no-cvs-summary"))
-+		perf_stat__set_no_cvs_summary(perf_config_bool(var, value));
-+
- 	/* Add other config variables here. */
- 	return 0;
- }
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index 7f09cdaf5b60..2e7fec0bd8f3 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -439,6 +439,12 @@ static void printout(struct perf_stat_config *config, struct aggr_cpu_id id, int
- 		if (counter->cgrp)
- 			os.nfields++;
- 	}
-+
-+	if (!config->no_cvs_summary && config->csv_output &&
-+	    config->summary && !config->interval) {
-+		fprintf(config->output, "%16s%s", "summary", config->csv_sep);
-+	}
-+
- 	if (run == 0 || ena == 0 || counter->counts->scaled == -1) {
- 		if (config->metric_only) {
- 			pm(config, &os, NULL, "", "", 0);
-diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
-index 41107b8deac5..def0cdc84133 100644
---- a/tools/perf/util/stat.h
-+++ b/tools/perf/util/stat.h
-@@ -128,6 +128,7 @@ struct perf_stat_config {
- 	bool			 all_user;
- 	bool			 percore_show_thread;
- 	bool			 summary;
-+	bool			 no_cvs_summary;
- 	bool			 metric_no_group;
- 	bool			 metric_no_merge;
- 	bool			 stop_read_counter;
-@@ -160,6 +161,7 @@ struct perf_stat_config {
- };
- 
- void perf_stat__set_big_num(int set);
-+void perf_stat__set_no_cvs_summary(int set);
- 
- void update_stats(struct stats *stats, u64 val);
- double avg_stats(struct stats *stats);
+diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+index 7aee156..91f4ec93 100644
+--- a/fs/jfs/jfs_dmap.c
++++ b/fs/jfs/jfs_dmap.c
+@@ -3660,7 +3660,7 @@ void dbFinalizeBmap(struct inode *ipbmap)
+ 	 * (the leftmost ag with average free space in it);
+ 	 */
+ //agpref:
+-	/* get the number of active ags and inacitve ags */
++	/* get the number of active ags and inactive ags */
+ 	actags = bmp->db_maxag + 1;
+ 	inactags = bmp->db_numag - actags;
+ 	ag_rem = bmp->db_mapsize & (bmp->db_agsize - 1);	/* ??? */
 -- 
-2.17.1
+1.9.1
+
 
