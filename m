@@ -2,205 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2067233EF74
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C758233EF73
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbhCQLYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 07:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230171AbhCQLYD (ORCPT
+        id S231237AbhCQLYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 07:24:07 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:15674 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230048AbhCQLXs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 07:24:03 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7B5C06174A;
-        Wed, 17 Mar 2021 04:23:52 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id q5so883738pfh.10;
-        Wed, 17 Mar 2021 04:23:52 -0700 (PDT)
+        Wed, 17 Mar 2021 07:23:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1615980229; x=1647516229;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Bva1pwvv8uAZi9uv8RUoKtLooIEHg4ZTk3whUrb6id4=;
+  b=chZLNq87Uwm/MZoigiki0UMkc1zE6Il8M/w0YadDRVQA1oiJ8gvVpnxG
+   grS994ZNB2QEt44gUEJjmVw7I4P5aY/CDNBR9BovKUXKdP5sH8cZUp9zP
+   W7wHkma/gBJfldlIC0zFdSyUX2N0kbN9I7xO7Ux2JmRPZ387/4c3wNt97
+   R1riRRoHXWeDNgwi+oWi04AFA7YfTeyraXqbF9d+6EuixYOmOiyN6cSc3
+   ghn1L4W5fdb1RdheS2qfTq482xCaoYdedJAyhaXG96kgxlGX9CYBf2KZ8
+   opEXnAT3dhVyGolluJ2YrhM5C4gk3bzQ10liZw86ESRkVTNISr3wuBQY3
+   A==;
+IronPort-SDR: BwmScEfUeODQVDw9SypV87+mBILhpZ4yfpPVxwey+suKidWwOcu9wTOSn3Ji06EmwTvjulNj51
+ nCu3xGqw9yzAPjQsx6W1c/LCkPCngaF5CRYx2z/1je2F2ys/IrvBXsw1QIRLB13Eu1ObM7GGyw
+ Uj++QMCmcrSs5LLC653t1efQPKizEtvQ8IPgom7f2l2GRJBpzgYh5QZqcCnA7KptSt12bIDMn6
+ U91Bcn//AwWwtLiyMeHIUXYcrcVEamUcL78g7PgXAkBrj27LSEOwPXVBfx21E+oAnrSGzmBxMs
+ XpY=
+X-IronPort-AV: E=Sophos;i="5.81,256,1610380800"; 
+   d="scan'208";a="163499055"
+Received: from mail-dm6nam12lp2169.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.169])
+  by ob1.hgst.iphmx.com with ESMTP; 17 Mar 2021 19:23:47 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hIcCBId+ywkE4lrUDlI/RL//bmz/4zLrDUNA7xh1xZRwzpmck89ktaHYtnxQfKEgumNUYBCSB4IsV5mVinetUUEWZbqsBLjYmfeJJJaE6X94AN/lURhw0YS2OARSHSJvEpxIOkkPCQNkLFV4wAXxNUqjJ08sQu02k6VI+2dYfG1E+7sTC3vvbULfz/gTn2WdJrUCfjTDaUR76Kt6i4D69QSxoNaf2MHfBd/AeH4yqZ1/RNjZvdD1ISxLaZCecZ/NbRmlk9PTZ+8nx4yE4tvcpww4hYiKKs4co6Wl1W1Ur/t2KAXxyVeZvUAVgJ1LLtZ4sbzWSHv6b03zUXR40vkJbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BnikXbHxoS7K1RYqDyQ88el4h/JO9X9ew3+bPATTBIU=;
+ b=oaIZwSRoPLSnV8hxB+7+QVC3MzVBCq5aW6u3xNVlXRSk2Jt3jD+j2K4uMhLdVx5/vv3sGBKHybzRAUVt/uPx+VdZFel01ObKOUDoL/EINDW3oEkkqRsfCkrXTASo1SxMoYdrv5R9gkKAqBqBbw4qP77rG6qvWwO49iG4FxmVKi7VoOYwQraELZagrKmF1nYFNpl1qu1unlIGc6jOh+MkMEPuW/fzAmeaxqdWHfqNp2fIc0AH9v9RqJ2BmKCmdpOH2e0wlG5KrNIgf+YCUQcmnVPkidQv7Ie2j8mGmY5DxDoXWLhFCzLJqRYshRIVO4hGYiZ2+3ckW0diXiNxH+qnoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=yuYMamyLlkfeJo7AYiuzHkHjqAKzjEJXvLHS65JAKG4=;
-        b=PISAlKPs5eJf3xPfNBvEoM5HPOFAxcvj7RITsYjZ2llpeOY5u1kgpaNm+9hfnPiwa3
-         fH2GQ+z+Rp7UT3r89amdgPZ4bV8noqhAYVnwDMxS0lkzoR4vcoarpkaxVrVdnK7jJfPs
-         2zfRPNOvAWH05T7tKksu+SIMwK3IsRiqvvJWC/k2NCAIZhy8UNvo+LqemYYTU8TtnuDk
-         Viq7VAxSnzF7b6nIGtlZpJq3Zn7gA7bspMC9phvs2dh7tmTKQL2YUQLbdX2TDq3q9APc
-         ryKQkg1gwn8jfS4NPzBuzjlpzhum2cGRpSybwEmHxALHGQ6YXaZKtspsIbUPsAL0dz8l
-         jlfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=yuYMamyLlkfeJo7AYiuzHkHjqAKzjEJXvLHS65JAKG4=;
-        b=WAwM730H6C07eMy7LSI7bFzLETOAkG5JgG+pzj3O1P7eNk7ny1QKSgKsHJQYztPqQo
-         U6n9xsugpCXplolRGWru7QXOiM3m5M/wgfdF7SF/09uK+tyO9MWHNL/oAHCBjPGYTqOl
-         N/kHi6lS3psHqh3Nt17O47GjZ7H96N34zlw1qEAokEod6NTv2RmBVjlZJwbsWjI7wOoQ
-         iSzkcYbJihHGY2VEo8rN99ftiqlgRlfk5SeCNkqUSg902E7MWi3QD9+PCiLkNIoBMwl3
-         SgBYEULBRzrwJcDJQ+HcnS21M0MmDCKQNAdrnKbIGl28XjT8hvweM/woejFH70priT8u
-         NbyA==
-X-Gm-Message-State: AOAM5319LFClXVgvHkEuMTVkjJMkT0lpljAxazdNH2pz3UqMzSjmbiNH
-        CEJuSYk0o6MFYweWlttpPQ0=
-X-Google-Smtp-Source: ABdhPJwDiQOhEZQ9hcHzozMSWWTf/Eusj1xHRULD1BbZRirYUA+e78YsSK75q3JlCf+A+OLra4/D6w==
-X-Received: by 2002:aa7:980a:0:b029:20c:5402:5de9 with SMTP id e10-20020aa7980a0000b029020c54025de9mr3792986pfl.18.1615980231948;
-        Wed, 17 Mar 2021 04:23:51 -0700 (PDT)
-Received: from localhost ([103.248.31.158])
-        by smtp.gmail.com with ESMTPSA id u9sm19270567pgc.59.2021.03.17.04.23.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 04:23:51 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 16:53:09 +0530
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     alex.williamson@redhat.com, raphael.norwitz@nutanix.com,
-        linux-pci@vger.kernel.org, bhelgaas@google.com,
-        linux-kernel@vger.kernel.org, alay.shah@nutanix.com,
-        suresh.gumpula@nutanix.com, shyam.rajendran@nutanix.com,
-        felipe@nutanix.com
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <20210317112309.nborigwfd26px2mj@archlinux>
-References: <20210315134323.llz2o7yhezwgealp@archlinux>
- <20210315135226.avwmnhkfsgof6ihw@pali>
- <20210315083409.08b1359b@x1.home.shazbot.org>
- <YE94InPHLWmOaH/b@unreal>
- <20210315153341.miip637z35mwv7fv@archlinux>
- <20210315102950.230de1d6@x1.home.shazbot.org>
- <20210315183226.GA14801@raphael-debian-dev>
- <YFGDgqdTLBhQL8mN@unreal>
- <20210317102447.73no7mhox75xetlf@archlinux>
- <YFHh3bopQo/CRepV@unreal>
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BnikXbHxoS7K1RYqDyQ88el4h/JO9X9ew3+bPATTBIU=;
+ b=ldGjq0/Wi3PFG3+TkpqsslREXH47Z+BnexRrj6zrSplrO7yrdAg5W8IpTtGEG+6JxjaAcjajqgjXB3dmi87/SnOwdTwcnDh7nkejQqJzuu640C/HYPEFsXAzL7D8DpXyp4J/+FeEbk+cS/xO/B2/k124YIUyfxSRPQpW+tGJ0ZA=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM5PR04MB0267.namprd04.prod.outlook.com (2603:10b6:3:6f::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3955.18; Wed, 17 Mar 2021 11:23:45 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::e824:f31b:38cf:ef66]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::e824:f31b:38cf:ef66%3]) with mapi id 15.20.3933.032; Wed, 17 Mar 2021
+ 11:23:45 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
+Subject: RE: [PATCH v5 06/10] scsi: ufshpb: Add hpb dev reset response
+Thread-Topic: [PATCH v5 06/10] scsi: ufshpb: Add hpb dev reset response
+Thread-Index: AQHXD2ex1y1f5g2rP02e5lIjKmzR26qIGY0AgAAGPJA=
+Date:   Wed, 17 Mar 2021 11:23:45 +0000
+Message-ID: <DM6PR04MB6575006E0682C3D11F54965DFC6A9@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210302132503.224670-1-avri.altman@wdc.com>
+ <20210302132503.224670-7-avri.altman@wdc.com>
+ <59a62fc17ec9229a8498e696eb0474be@codeaurora.org>
+In-Reply-To: <59a62fc17ec9229a8498e696eb0474be@codeaurora.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: codeaurora.org; dkim=none (message not signed)
+ header.d=none;codeaurora.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 82c1f526-f7d7-4719-4e23-08d8e937209b
+x-ms-traffictypediagnostic: DM5PR04MB0267:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR04MB02670C45E0C6A42DDD16F2F7FC6A9@DM5PR04MB0267.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: iZKEgJEa/c87M4+3tnZAcpAKYwEJbpgEzc8wZigUqWYC7AT/Cj/MB5EcHUnmE6jB6UhBYvyr357pCPM4aAlsemVB6eYE2kTESRPLcUMmW/q5qfOQMlflB4BSPCZLfxbVFeKoXHPmai2tkWeoKq6Pap/dghBfK6osLyuDXR+iXxYseibUtQVr16J1Fo+rSU0sUJqTLnpNqCgan2QopsLlXSSGlWO8zJEps7QkEEisTr1788pSvr7Q2SxC+lUNyCzoIUTQdhvGIIut9nEZtjJZ2TBT+yDQpsJgXWeNwLE8Ns3Mj2aKZxY1lGSUML/JHllIT68vPz2DHBVfMppVy1EdMH4y5Z3xSxZmAOZfupVmZ1EOo3mqOWLnJoEUQNKLvN/wCvYNouFGSskUjH54CvLFKm35hwQpuI0+hcuFPz+7Y7nCSZgzlskYSNzWoiYwEJkMllV3fFSP/d30c6CRicpxXAZEvJ6HP3zd1ALBoHhXnNKLwC95CfB3BFpnlE6DKwb1Wc3H3FgzN/5NazYfxBGYKYJr768mgmMymVxi4Wp2Ij/wI4RqoWE9/Pha+IFGOu2l
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(376002)(346002)(39860400002)(53546011)(76116006)(66446008)(54906003)(5660300002)(6506007)(64756008)(66556008)(66946007)(66476007)(316002)(52536014)(55016002)(9686003)(33656002)(83380400001)(2906002)(7696005)(8936002)(8676002)(26005)(6916009)(186003)(7416002)(86362001)(4326008)(478600001)(71200400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?o7BsH2NkbahM/E/q/7faks6TV4h2Ob5u0W5kLmKKBlk1c636tP0vNpSypLYO?=
+ =?us-ascii?Q?Jmr5fx/Qi/rOOhTkZCpGGks0p31LFJEuJ/4MftjD4vJh0pFug8o9vbu0Rkw1?=
+ =?us-ascii?Q?Brg1jlzKodhMTc//VP2jUEvj3/c6gfeq6J2TcDQe0Q1XWSo+s9GJRoSywwjM?=
+ =?us-ascii?Q?mybpvPvmAV7XtgjjvcvzT/qgTYJp7yKkgu/GDori7KB0A2wPV7zFRvx1NC+F?=
+ =?us-ascii?Q?qZ681vYZeb76oXoezf54Jq8N5N0FkEbRf8dFHaGK2EKdUxXpWUn38mCQ1k4k?=
+ =?us-ascii?Q?Mi6S00r/xlfdUIRQCTW+GID/UHv7AOajr7F25vUhfEgYn2Bp0g2Ye78nyfEb?=
+ =?us-ascii?Q?4Bx5ANNlOTV4HgtnOEDYIlaTIi7hhSqor2tgHJYO2MQeCy/7eEAGM7KhhN+v?=
+ =?us-ascii?Q?VeHwrmQ1ijEM4vaxsYDFr/lBgC5VuKzpi9Nf+AUQqxhbZXEZ9gmhLbD+VEiR?=
+ =?us-ascii?Q?ULyGlcLJZbQh+1R+md4nY54NR5CI8AiXEvz+8ref/8ShBHSxwDAXHvzQFY9/?=
+ =?us-ascii?Q?Nwr1DlwElpDdik1SyeLaj1csYKF5kxOZLutyZhmYQu5j9UmjEXCt1Gkfx/6k?=
+ =?us-ascii?Q?6zPoc+6SrfQMixTbU42p6Cej2N52uX0LrdIv5mVNc4DxQZgM+wTpRaMEW5xk?=
+ =?us-ascii?Q?lPnkiUeM3jSuT0ql0IpwdGWDyWXgQD91oZ2aP0MRIhkDywh3djaYG8LyxJFu?=
+ =?us-ascii?Q?s0FQZ5ql5wLdpFI2fn+IYMox9DtjTlATCYFJcTS02lFNqG4ygvbMNgcmNLGV?=
+ =?us-ascii?Q?gqZbM3AKe2ncD0XKcN6ekIEglBEWpu0XoeqpBaTssm7tWe00rC2k2lwDyqPH?=
+ =?us-ascii?Q?4pjtKPNDe5HVLBdoXLW69OG7wSElZXUwTU2umeRFFGJmAAstOZEbsxQHG5T/?=
+ =?us-ascii?Q?GxjD8WH4DGdJDKL79VHQlznQrJKBZKJg8dxfPIdZ7/a/j1i7ipkbiaGUrQ0V?=
+ =?us-ascii?Q?LbO4mrk28dpLBKRfzjkQ0dJcXBOxbGK7OYapt6kK2zcXcjZNE0L2iH/OD9Az?=
+ =?us-ascii?Q?3cpNFAoH9pQ/bf8VKk2dIOR/Wa4IwXq4/fyUiUz2IomeKEkTBDXPqpIdwSEI?=
+ =?us-ascii?Q?HKzcdW4bau2QOuAbnwmLzU6iQNJI7P0nTYTChJzPpOOc/F1PYAmlEwRkrCkS?=
+ =?us-ascii?Q?/7rt/XYTrnytn7nh2y9kFm/DMy7Q38WOcBCq7JRC3flS/PMQmNXvy4HxL2k7?=
+ =?us-ascii?Q?DowMzdIihP+FgFP/P5hfDmBehbFBwywte9upQwI1hHV0K9hK+W7td2KW1PaJ?=
+ =?us-ascii?Q?wUvq1AXLPLtTKqbQC2MSCFQYbpLqe7IwNxe5jrFSWyLAD1qdEuqT3CLTOizX?=
+ =?us-ascii?Q?FFDzf/MbT9VGiTMiWS7J7v5j?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YFHh3bopQo/CRepV@unreal>
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82c1f526-f7d7-4719-4e23-08d8e937209b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Mar 2021 11:23:45.1113
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /5b7ihoEqvUegMaGVFkhvsVcc7KGV2Tkg7eodCfhPNdFWTAXdJnrBva9GAOvIxPgpXuStb6Zf1PwdhPY5sO+DA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB0267
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/03/17 01:02PM, Leon Romanovsky wrote:
-> On Wed, Mar 17, 2021 at 03:54:47PM +0530, Amey Narkhede wrote:
-> > On 21/03/17 06:20AM, Leon Romanovsky wrote:
-> > > On Mon, Mar 15, 2021 at 06:32:32PM +0000, Raphael Norwitz wrote:
-> > > > On Mon, Mar 15, 2021 at 10:29:50AM -0600, Alex Williamson wrote:
-> > > > > On Mon, 15 Mar 2021 21:03:41 +0530
-> > > > > Amey Narkhede <ameynarkhede03@gmail.com> wrote:
-> > > > >
-> > > > > > On 21/03/15 05:07PM, Leon Romanovsky wrote:
-> > > > > > > On Mon, Mar 15, 2021 at 08:34:09AM -0600, Alex Williamson wrote:
-> > > > > > > > On Mon, 15 Mar 2021 14:52:26 +0100
-> > > > > > > > Pali Rohár <pali@kernel.org> wrote:
-> > > > > > > >
-> > > > > > > > > On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:
-> > > > > > > > > > slot reset (pci_dev_reset_slot_function) and secondary bus
-> > > > > > > > > > reset(pci_parent_bus_reset) which I think are hot reset and
-> > > > > > > > > > warm reset respectively.
-> > > > > > > > >
-> > > > > > > > > No. PCI secondary bus reset = PCIe Hot Reset. Slot reset is just another
-> > > > > > > > > type of reset, which is currently implemented only for PCIe hot plug
-> > > > > > > > > bridges and for PowerPC PowerNV platform and it just call PCI secondary
-> > > > > > > > > bus reset with some other hook. PCIe Warm Reset does not have API in
-> > > > > > > > > kernel and therefore drivers do not export this type of reset via any
-> > > > > > > > > kernel function (yet).
-> > > > > > > >
-> > > > > > > > Warm reset is beyond the scope of this series, but could be implemented
-> > > > > > > > in a compatible way to fit within the pci_reset_fn_methods[] array
-> > > > > > > > defined here.  Note that with this series the resets available through
-> > > > > > > > pci_reset_function() and the per device reset attribute is sysfs remain
-> > > > > > > > exactly the same as they are currently.  The bus and slot reset
-> > > > > > > > methods used here are limited to devices where only a single function is
-> > > > > > > > affected by the reset, therefore it is not like the patch you proposed
-> > > > > > > > which performed a reset irrespective of the downstream devices.  This
-> > > > > > > > series only enables selection of the existing methods.  Thanks,
-> > > > > > >
-> > > > > > > Alex,
-> > > > > > >
-> > > > > > > I asked the patch author here [1], but didn't get any response, maybe
-> > > > > > > you can answer me. What is the use case scenario for this functionality?
-> > > > > > >
-> > > > > > > Thanks
-> > > > > > >
-> > > > > > > [1] https://lore.kernel.org/lkml/YE389lAqjJSeTolM@unreal/
-> > > > > > >
-> > > > > > Sorry for not responding immediately. There were some buggy wifi cards
-> > > > > > which needed FLR explicitly not sure if that behavior is fixed in
-> > > > > > drivers. Also there is use a case at Nutanix but the engineer who
-> > > > > > is involved is on PTO that is why I did not respond immediately as
-> > > > > > I don't know the details yet.
-> > > > >
-> > > > > And more generally, devices continue to have reset issues and we
-> > > > > impose a fixed priority in our ordering.  We can and probably should
-> > > > > continue to quirk devices when we find broken resets so that we have
-> > > > > the best default behavior, but it's currently not easy for an end user
-> > > > > to experiment, ie. this reset works, that one doesn't.  We might also
-> > > > > have platform issues where a given reset works better on a certain
-> > > > > platform.  Exposing a way to test these things might lead to better
-> > > > > quirks.  In the case I think Pali was looking for, they wanted a
-> > > > > mechanism to force a bus reset, if this was in reference to a single
-> > > > > function device, this could be accomplished by setting a priority for
-> > > > > that mechanism, which would translate to not only the sysfs reset
-> > > > > attribute, but also the reset mechanism used by vfio-pci.  Thanks,
-> > > > >
-> > > > > Alex
-> > > > >
-> > > >
-> > > > To confirm from our end - we have seen many such instances where default
-> > > > reset methods have not worked well on our platform. Debugging these
-> > > > issues is painful in practice, and this interface would make it far
-> > > > easier.
-> > > >
-> > > > Having an interface like this would also help us better communicate the
-> > > > issues we find with upstream. Allowing others to more easily test our
-> > > > (or other entities') findings should give better visibility into
-> > > > which issues apply to the device in general and which are platform
-> > > > specific. In disambiguating the former from the latter, we should be
-> > > > able to better quirk devices for everyone, and in the latter cases, this
-> > > > interface allows for a safer and more elegant solution than any of the
-> > > > current alternatives.
-> > >
-> > > So to summarize, we are talking about test and debug interface to
-> > > overcome HW bugs, am I right?
-> > >
-> > > My personal experience shows that once the easy workaround exists
-> > > (and write to generally available sysfs is very simple), the vendors
-> > > and users desire for proper fix decreases drastically. IMHO, we will
-> > > see increase of copy/paste in SO and blog posts, but reduce in quirks.
-> > >
-> > > My 2-cents.
-> > >
-> > I agree with your point but at least it gives the userspace ability
-> > to use broken device until bug is fixed in upstream.
->
-> As I said, I don't expect many fixes once "userspace" will be able to
-> use cheap workaround. There is no incentive to fix it.
->
-> > This is also applicable for obscure devices without upstream
-> > drivers for example custom FPGA based devices.
->
-> This is not relevant to upstream kernel. Those vendors ship everything
-> custom, they don't need upstream, we don't need them :)
->
-By custom I meant hobbyists who could tinker with their custom FPGA.
+>=20
+> On 2021-03-02 21:24, Avri Altman wrote:
+> > The spec does not define what is the host's recommended response when
+> > the device send hpb dev reset response (oper 0x2).
+> >
+> > We will update all active hpb regions: mark them and do that on the
+> > next
+> > read.
+> >
+> > Signed-off-by: Avri Altman <avri.altman@wdc.com>
+> > ---
+> >  drivers/scsi/ufs/ufshpb.c | 47
+> ++++++++++++++++++++++++++++++++++++---
+> >  drivers/scsi/ufs/ufshpb.h |  2 ++
+> >  2 files changed, 46 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> > index 0744feb4d484..0034fa03fdc6 100644
+> > --- a/drivers/scsi/ufs/ufshpb.c
+> > +++ b/drivers/scsi/ufs/ufshpb.c
+> > @@ -642,7 +642,8 @@ int ufshpb_prep(struct ufs_hba *hba, struct
+> > ufshcd_lrb *lrbp)
+> >               if (rgn->reads =3D=3D ACTIVATION_THRESHOLD)
+> >                       activate =3D true;
+> >               spin_unlock_irqrestore(&rgn->rgn_lock, flags);
+> > -             if (activate) {
+> > +             if (activate ||
+> > +                 test_and_clear_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags))=
+ {
+> >                       spin_lock_irqsave(&hpb->rsp_list_lock, flags);
+> >                       ufshpb_update_active_info(hpb, rgn_idx, srgn_idx)=
+;
+> >                       hpb->stats.rb_active_cnt++;
+> > @@ -1480,6 +1481,20 @@ void ufshpb_rsp_upiu(struct ufs_hba *hba,
+> > struct ufshcd_lrb *lrbp)
+> >       case HPB_RSP_DEV_RESET:
+> >               dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
+> >                        "UFS device lost HPB information during PM.\n");
+> > +
+> > +             if (hpb->is_hcm) {
+> > +                     struct scsi_device *sdev;
+> > +
+> > +                     __shost_for_each_device(sdev, hba->host) {
+> > +                             struct ufshpb_lu *h =3D sdev->hostdata;
+> > +
+> > +                             if (!h)
+> > +                                     continue;
+> > +
+> > +                             schedule_work(&hpb->ufshpb_lun_reset_work=
+);
+> > +                     }
+> > +             }
+> > +
+> >               break;
+> >       default:
+> >               dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
+> > @@ -1594,6 +1609,25 @@ static void
+> > ufshpb_run_inactive_region_list(struct ufshpb_lu *hpb)
+> >       spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
+> >  }
+> >
+> > +static void ufshpb_reset_work_handler(struct work_struct *work)
+>=20
+> Just curious, directly doing below things inside ufshpb_rsp_upiu() does
+> not
+> seem a problem to me, does this really deserve a separate work?
+I don't know, I never even consider of doing this.
+The active region list may contain up to few thousands of regions -=20
+It is not rare to see configurations that covers the entire device.
 
-> > Another main application which I forgot to mention is virtualization
-> > where vmm wants to reset the device when the guest is reset,
-> > to emulate machine reboot as closely as possible.
->
-> It can work in very narrow case, because reset will cause to device
-> reprobe and most likely the driver will be different from the one that
-> started reset. I can imagine that net devices will lose their state and
-> config after such reset too.
->
-Not sure if I got that 100% right. The pci_reset_function() function
-saves and restores device state over the reset.
-
-> IMHO, it will be saner for everyone if virtualization don't try such resets.
->
-> Thanks
->
-The exists reset sysfs attribute was added for exactly this case
-though.
+But yes, I can do that.
+Better to get ack from Daejun first.
 
 Thanks,
-Amey
+Avri
+
+>=20
+> Thanks,
+> Can Guo.
+>=20
+> > +{
+> > +     struct ufshpb_lu *hpb;
+> > +     struct victim_select_info *lru_info;
+> > +     struct ufshpb_region *rgn;
+> > +     unsigned long flags;
+> > +
+> > +     hpb =3D container_of(work, struct ufshpb_lu, ufshpb_lun_reset_wor=
+k);
+> > +
+> > +     lru_info =3D &hpb->lru_info;
+> > +
+> > +     spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+> > +
+> > +     list_for_each_entry(rgn, &lru_info->lh_lru_rgn, list_lru_rgn)
+> > +             set_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags);
+> > +
+> > +     spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+> > +}
+> > +
+> >  static void ufshpb_normalization_work_handler(struct work_struct
+> > *work)
+> >  {
+> >       struct ufshpb_lu *hpb;
+> > @@ -1798,6 +1832,8 @@ static int ufshpb_alloc_region_tbl(struct
+> > ufs_hba *hba, struct ufshpb_lu *hpb)
+> >               } else {
+> >                       rgn->rgn_state =3D HPB_RGN_INACTIVE;
+> >               }
+> > +
+> > +             rgn->rgn_flags =3D 0;
+> >       }
+> >
+> >       return 0;
+> > @@ -2012,9 +2048,12 @@ static int ufshpb_lu_hpb_init(struct ufs_hba
+> > *hba, struct ufshpb_lu *hpb)
+> >       INIT_LIST_HEAD(&hpb->list_hpb_lu);
+> >
+> >       INIT_WORK(&hpb->map_work, ufshpb_map_work_handler);
+> > -     if (hpb->is_hcm)
+> > +     if (hpb->is_hcm) {
+> >               INIT_WORK(&hpb->ufshpb_normalization_work,
+> >                         ufshpb_normalization_work_handler);
+> > +             INIT_WORK(&hpb->ufshpb_lun_reset_work,
+> > +                       ufshpb_reset_work_handler);
+> > +     }
+> >
+> >       hpb->map_req_cache =3D kmem_cache_create("ufshpb_req_cache",
+> >                         sizeof(struct ufshpb_req), 0, 0, NULL);
+> > @@ -2114,8 +2153,10 @@ static void ufshpb_discard_rsp_lists(struct
+> > ufshpb_lu *hpb)
+> >
+> >  static void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
+> >  {
+> > -     if (hpb->is_hcm)
+> > +     if (hpb->is_hcm) {
+> > +             cancel_work_sync(&hpb->ufshpb_lun_reset_work);
+> >               cancel_work_sync(&hpb->ufshpb_normalization_work);
+> > +     }
+> >       cancel_work_sync(&hpb->map_work);
+> >  }
+> >
+> > diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+> > index 84598a317897..37c1b0ea0c0a 100644
+> > --- a/drivers/scsi/ufs/ufshpb.h
+> > +++ b/drivers/scsi/ufs/ufshpb.h
+> > @@ -121,6 +121,7 @@ struct ufshpb_region {
+> >       struct list_head list_lru_rgn;
+> >       unsigned long rgn_flags;
+> >  #define RGN_FLAG_DIRTY 0
+> > +#define RGN_FLAG_UPDATE 1
+> >
+> >       /* region reads - for host mode */
+> >       spinlock_t rgn_lock;
+> > @@ -217,6 +218,7 @@ struct ufshpb_lu {
+> >       /* for selecting victim */
+> >       struct victim_select_info lru_info;
+> >       struct work_struct ufshpb_normalization_work;
+> > +     struct work_struct ufshpb_lun_reset_work;
+> >
+> >       /* pinned region information */
+> >       u32 lu_pinned_start;
