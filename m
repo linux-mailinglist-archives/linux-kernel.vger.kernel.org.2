@@ -2,83 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD3033F2C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65ED733F2D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 15:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231903AbhCQOhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 10:37:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49113 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231853AbhCQOgm (ORCPT
+        id S232011AbhCQOi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 10:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231465AbhCQOiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 10:36:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615991802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p1YSVXIuTP5IDLrl9kvhzbh3ZoDOoFqS9Tf6asQUzWE=;
-        b=M50NY5QGXFUOm0bPhLygkmUV26DXcKz3wubMphIx0n9dT1JSDz/tfsY/A8VvpBse9shKJR
-        fz8uS2AEN9TBbyYx1lTdCYWw2OUCAI9CPXCC2M66mcOX5Yeu+kpkRQ1uhrCDs7Fuq64Cxa
-        w2aBYFwprHQc9fhxqFO2eaNOKdcXWPk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-600-Qjvio2wlPbWv5ytRuI7ptg-1; Wed, 17 Mar 2021 10:36:40 -0400
-X-MC-Unique: Qjvio2wlPbWv5ytRuI7ptg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9EB8F107B7C5;
-        Wed, 17 Mar 2021 14:36:38 +0000 (UTC)
-Received: from [10.36.112.124] (ovpn-112-124.ams2.redhat.com [10.36.112.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C06415C1CF;
-        Wed, 17 Mar 2021 14:36:36 +0000 (UTC)
-Subject: Re: [PATCH v5 5/5] mm,page_alloc: Drop unnecessary checks from
- pfn_range_valid_contig
-To:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210317111251.17808-1-osalvador@suse.de>
- <20210317111251.17808-6-osalvador@suse.de> <YFISpUUxusP4T1xw@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <ef5560a4-8633-39bd-e433-6aa8f6ea4bfc@redhat.com>
-Date:   Wed, 17 Mar 2021 15:36:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 17 Mar 2021 10:38:07 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC70C06174A;
+        Wed, 17 Mar 2021 07:38:06 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 12so1600326wmf.5;
+        Wed, 17 Mar 2021 07:38:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2s5YbuhuWTd3ttLYVEHI3IRKeL8Zb/h8ik0U5PGagpM=;
+        b=BtmQ8+nn2p4UpZo1NuZ9J5LoYrh0cUtNOWlV0ecqfesjM6Z1fRAyPzDLcoDdZy7H22
+         WghRx0g3K2YvJk8f7Oy/m+fu9FrHc9P26XlCtCEyykFx2fViu+HaxBRJ/Ep9TL5dIxfG
+         NNLfxFZzzNnGd2sVtldNOmFK5HlC7K+W184sxETQklxkdkiwj1zrS/62mM1jsNa+UnI8
+         FFC1rh/6EyccAVUntNymj29YNJKKiDVwKoONofyNNSgLB8Xdh6z+y2SJ2ENYMsO3/R7P
+         MdMGXc5cKj6zVGB2MYyRD0VyC5R8OHdLwlJejDQpCng7DfAFg19J0tlAcZ8O4WxfaCDg
+         Wl6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2s5YbuhuWTd3ttLYVEHI3IRKeL8Zb/h8ik0U5PGagpM=;
+        b=ALNALMqInxjPPPnQqh1ACf7Mi2oNlHkBCZWafR1rIXZINRz45B+6n6r4Jq/SfALWw2
+         88nt85/Hh0M6bFGj3oyR2bMjHSYeaODLfgua0Xn7BFM9nwXCiuUtIA1IptRCXyFuTEMB
+         UilKuCcmnj6nUz7ew4YrSnG4Jdz4HRkj2g8hG4Q6cRMO79j6kflfSvVDhMNYQt+JxrXD
+         caIavGEFhfrtWXGdeBMbVVsCnALKMaDzCmO8oup90WvXb2W/3qoQG4bYBBVFtYXUn7bB
+         3nhmFFht7A4+p6F7gpbl0Lia/Ot+pyFSLdEB6qn/m24loTpM2gcdDaM7wRL+vXoT8jPh
+         bAZQ==
+X-Gm-Message-State: AOAM532//AjDOBKLzi0ct4Jd60Ek0XQfO0j5EZ9xa6Ks/ndCpkrGHoN4
+        Wag7xWLcugaONr412P2RX48=
+X-Google-Smtp-Source: ABdhPJyZ2ub5Tvxww9TKqSmYfzFSl5/KmZ+goALIY+lUfCr+y62XoN3Zmwm94kvsNFJUTB5KKifgsw==
+X-Received: by 2002:a1c:2587:: with SMTP id l129mr3955173wml.135.1615991885587;
+        Wed, 17 Mar 2021 07:38:05 -0700 (PDT)
+Received: from skynet.lan ([80.31.204.166])
+        by smtp.gmail.com with ESMTPSA id a75sm2518948wme.10.2021.03.17.07.38.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 07:38:05 -0700 (PDT)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Michael Walle <michael@walle.cc>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v8 00/22] pinctrl: add BCM63XX pincontrol support
+Date:   Wed, 17 Mar 2021 15:37:41 +0100
+Message-Id: <20210317143803.26127-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <YFISpUUxusP4T1xw@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.03.21 15:31, Michal Hocko wrote:
-> On Wed 17-03-21 12:12:51, Oscar Salvador wrote:
->> pfn_range_valid_contig() bails out when it finds an in-use page or a
->> hugetlb page, among other things.
->> We can drop the in-use page check since __alloc_contig_pages can migrate
->> away those pages, and the hugetlb page check can go too since
->> isolate_migratepages_range is now capable of dealing with hugetlb pages.
->> Either way, those checks are racy so let the end function handle it
->> when the time comes.
-> 
-> I haven't realized PageHuge check is done this early. This means that
-> previous patches are not actually active until now which is not really
-> greate for bisectability. Can we remove the HugePage check earlier?
 
-alloc_contig_pages() vs. alloc_contig_range(). The patches are active 
-for virtio-mem and CMA AFAIKS.
+Álvaro Fernández Rojas <noltari@gmail.com>
+lun, 15 mar 12:42 (hace 2 días)
+para Linus, Bartosz, Rob, Florian, bcm-kernel-feedback-list, Lee, Michael, mí, Jonas, Necip, Andy, linux-gpio, devicetree, linux-arm-kernel, linux-kernel
+
+First of all, I've based this on the patches sent by Jonas Gorski back in
+2016:
+https://www.spinics.net/lists/linux-gpio/msg15983.html
+http://patchwork.ozlabs.org/project/linux-gpio/patch/1471604025-21575-2-git-send-email-jonas.gorski@gmail.com/
+
+I've tried to address all coments from Linus Walleij, but I know that
+this may still need some other modifications
+
+This patchset adds appropriate binding documentation and drivers for
+pin controller cores found in the BCM63XX MIPS SoCs currently supported.
+
+While the GPIO part is always the same, the pinmux part varies quite a
+lot between different SoCs. Sometimes they have defined groups which
+can be muxed into different functions, sometimes each function has a
+different group. Sometimes you can mux individual pins. Often it is a
+combination of single pins and groups.
+
+Some core versions require the GPIO direction to be set according to the
+function, most do not. Sometimes the mux register(s) contain bits for
+unrelated other functions.
+
+v8: introduce changes suggested by Rob Herring.
+v7: introduce changes suggested by Rob Herring.
+v6: introduce changes suggested by Rob Herring and Andy Shevchenko.
+v5: introduce changes suggested by Andy Shevchenko.
+v4: fix gpiochip_irqchip_add_domain(), remove IRQ Kconfig selections and add
+ missing of_node_put().
+v3: introduce new files for shared code and add more changes suggested by
+ Linus Walleij. Also add a new patch needed for properly parsing gpio-ranges.
+v2: introduce changes suggested by Linus Walleij and remove interrupts
+ - In order to use GPIO_REGMAP, the need to get gpio_chip from gpio_regmap
+ and use it for pinctrl_add_gpio_range() and gpio_chip.direction_input()
+ and gpio_chip.direction_output().
+
+Álvaro Fernández Rojas (22):
+  gpio: guard gpiochip_irqchip_add_domain() with GPIOLIB_IRQCHIP
+  gpio: regmap: set gpio_chip of_node
+  dt-bindings: improve BCM6345 GPIO binding documentation
+  pinctrl: bcm: add bcm63xx base code
+  dt-bindings: add BCM6328 pincontroller binding documentation
+  dt-bindings: add BCM6328 GPIO sysctl binding documentation
+  pinctrl: add a pincontrol driver for BCM6328
+  dt-bindings: add BCM6358 pincontroller binding documentation
+  dt-bindings: add BCM6358 GPIO sysctl binding documentation
+  pinctrl: add a pincontrol driver for BCM6358
+  dt-bindings: add BCM6362 pincontroller binding documentation
+  dt-bindings: add BCM6362 GPIO sysctl binding documentation
+  pinctrl: add a pincontrol driver for BCM6362
+  dt-bindings: add BCM6368 pincontroller binding documentation
+  dt-bindings: add BCM6368 GPIO sysctl binding documentation
+  pinctrl: add a pincontrol driver for BCM6368
+  dt-bindings: add BCM63268 pincontroller binding documentation
+  dt-bindings: add BCM63268 GPIO sysctl binding documentation
+  pinctrl: add a pincontrol driver for BCM63268
+  dt-bindings: add BCM6318 pincontroller binding documentation
+  dt-bindings: add BCM6318 GPIO sysctl binding documentation
+  pinctrl: add a pincontrol driver for BCM6318
+
+ .../bindings/gpio/brcm,bcm6345-gpio.txt       |  46 --
+ .../bindings/gpio/brcm,bcm6345-gpio.yaml      |  78 +++
+ .../mfd/brcm,bcm6318-gpio-sysctl.yaml         | 177 +++++
+ .../mfd/brcm,bcm63268-gpio-sysctl.yaml        | 194 ++++++
+ .../mfd/brcm,bcm6328-gpio-sysctl.yaml         | 162 +++++
+ .../mfd/brcm,bcm6358-gpio-sysctl.yaml         | 130 ++++
+ .../mfd/brcm,bcm6362-gpio-sysctl.yaml         | 236 +++++++
+ .../mfd/brcm,bcm6368-gpio-sysctl.yaml         | 246 +++++++
+ .../pinctrl/brcm,bcm6318-pinctrl.yaml         | 145 ++++
+ .../pinctrl/brcm,bcm63268-pinctrl.yaml        | 166 +++++
+ .../pinctrl/brcm,bcm6328-pinctrl.yaml         | 127 ++++
+ .../pinctrl/brcm,bcm6358-pinctrl.yaml         |  93 +++
+ .../pinctrl/brcm,bcm6362-pinctrl.yaml         | 206 ++++++
+ .../pinctrl/brcm,bcm6368-pinctrl.yaml         | 219 ++++++
+ drivers/gpio/gpio-regmap.c                    |   2 +
+ drivers/pinctrl/bcm/Kconfig                   |  55 ++
+ drivers/pinctrl/bcm/Makefile                  |   7 +
+ drivers/pinctrl/bcm/pinctrl-bcm6318.c         | 498 ++++++++++++++
+ drivers/pinctrl/bcm/pinctrl-bcm63268.c        | 643 ++++++++++++++++++
+ drivers/pinctrl/bcm/pinctrl-bcm6328.c         | 404 +++++++++++
+ drivers/pinctrl/bcm/pinctrl-bcm6358.c         | 369 ++++++++++
+ drivers/pinctrl/bcm/pinctrl-bcm6362.c         | 617 +++++++++++++++++
+ drivers/pinctrl/bcm/pinctrl-bcm6368.c         | 523 ++++++++++++++
+ drivers/pinctrl/bcm/pinctrl-bcm63xx.c         | 109 +++
+ drivers/pinctrl/bcm/pinctrl-bcm63xx.h         |  43 ++
+ include/linux/gpio/driver.h                   |   9 +
+ include/linux/gpio/regmap.h                   |   4 +
+ 27 files changed, 5462 insertions(+), 46 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/gpio/brcm,bcm6345-gpio.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/brcm,bcm6345-gpio.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/brcm,bcm6318-gpio-sysctl.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/brcm,bcm63268-gpio-sysctl.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/brcm,bcm6328-gpio-sysctl.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/brcm,bcm6358-gpio-sysctl.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/brcm,bcm6362-gpio-sysctl.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/brcm,bcm6368-gpio-sysctl.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm6318-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm63268-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm6328-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm6358-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm6362-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm6368-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm6318.c
+ create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm63268.c
+ create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm6328.c
+ create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm6358.c
+ create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm6362.c
+ create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm6368.c
+ create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm63xx.c
+ create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm63xx.h
 
 -- 
-Thanks,
-
-David / dhildenb
+2.20.1
 
