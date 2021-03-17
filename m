@@ -2,167 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5418C33E85E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:21:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC24233E859
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 05:18:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhCQEUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 00:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34944 "EHLO
+        id S229564AbhCQERh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 00:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhCQET7 (ORCPT
+        with ESMTP id S229505AbhCQERa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 00:19:59 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6CFC06174A;
-        Tue, 16 Mar 2021 21:19:59 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id e2so143655pld.9;
-        Tue, 16 Mar 2021 21:19:59 -0700 (PDT)
+        Wed, 17 Mar 2021 00:17:30 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C193CC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 21:17:29 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 16so17606424pgo.13
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 21:17:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=noDJG0O0IWEUpmFsatAS1NpPqP7TLehQO6ORX+ZK5tM=;
-        b=oBwzozzmcjkKAvkdms978WNvR1tQsctTxIP7gml9zFve7PpQjIAb1sRL8CAn8CWRzV
-         St98yTgzgcST5WgxdZSRgvmjCXnFZsjrYRkGoPCRHN6vAAFKuTbiaOCT20rYmstMCK86
-         xZ3ZfBJA7m2a3pOsiFmFgpeGWcmY2geOD9u/V6Ulvl8iNQRCETP7kotgSww2nouvuNC8
-         IQwRyRfAtnhHTB6+PTmPazcPkxEoM8IsXEXQM8+td2u1TptFNUK20mcKJDnAI+ruWubg
-         rbKcJjoLFs68Vrp743SuF253exwbAuIh5raIAC1pZZ3SzEoqo1wQrx2Rh+J0eKmXSyXF
-         bVEg==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mBi1vr1EBCIfBIYiqhthLzLXu/cz4f2HWo3O6rM8TpQ=;
+        b=SQWeDYYWjxpwsPtJKs41W8Za5PxW8JF3E/k0FAMCUg/3DA8DX0UZgNz+4VLqQWUMGQ
+         oUfBPe4w/yL4cVSrMM/rHqcGG+O4RhH40unsusPfVKN78N6B11yFuQ2J27sip22EAeFk
+         w23ha8MsHDQt7XJsvrptipooOO+A2sHtbFZ0ieJ1buq9XF4ax5urr4EB4ylBGRp7OuYy
+         QCq6uIQwokhAAutZWgNcDql6EUB6PTZ0n2TdTqaT3H2f6Mk4srNmkQLO1v/aIAG7B7AN
+         J1eMqPXzcC1yYiUhIrBuLawdpHXfMIXisChOTnUxmMy7GZjqGijgGT7oWCQKZMf/qAUT
+         obTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=noDJG0O0IWEUpmFsatAS1NpPqP7TLehQO6ORX+ZK5tM=;
-        b=nKKUtkL1xkaXcjsfYmZHO8Ym5UgY/SSuGlq1SZ9jWu5l/w/3YyBR79ltA1FTNi6nry
-         rToN2+MazbrGFKq0HRsuwFuXULAO/+9yuCPBG/wSKUU2+GSLasfy78Dy4S4HUEFfwSl/
-         btetPT2nbJ60P0ZZXdP2HCJTB6f68RQwoM+isIFBjQAD8zT+Tde+to32m0DKzUg9GquA
-         W+uzqGZXTbYRVlQBvmau5lSd74cH010peWAE1faEHKPywZFdFRN9eAcLuJjuhHAK+o3+
-         iGLdIbgYUmPX2CYPEr0hPbSXEdU503sUxK+DksTG87ho5FdfMz5DrWsSK8tCYYSWymHv
-         nm+Q==
-X-Gm-Message-State: AOAM531jZ929xUw9VFCQCGsSEJXj0bj/pPjaiD5JglSW0hu1tV3QOIg+
-        iv0nlG8hqYHn2twYFJV2o/k=
-X-Google-Smtp-Source: ABdhPJwa3SHLOa4Wkp8GeGZGva9TAEJOLKujkktaI8Jk+f83RKA50I65StFDtJsgveRzR7Y3NVSe3Q==
-X-Received: by 2002:a17:902:a406:b029:e6:78c4:71c8 with SMTP id p6-20020a170902a406b02900e678c471c8mr2637410plq.17.1615954799008;
-        Tue, 16 Mar 2021 21:19:59 -0700 (PDT)
-Received: from gmail.com ([223.179.156.119])
-        by smtp.gmail.com with ESMTPSA id o18sm844046pji.10.2021.03.16.21.19.54
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=mBi1vr1EBCIfBIYiqhthLzLXu/cz4f2HWo3O6rM8TpQ=;
+        b=H7/GtDd4iZudqaQm8rMUK92i5TA8WgFcx4dJNYVnBqIU1xzdTAmVyCRPL0a5Z6ApDA
+         4Up6l4XT0N5Ld+8bK/+F5X7FuApiMWzxZnqq2YYdB9TOlRSIMF++EmBNUNZz/bbR1TKR
+         QFqo/Egsxa/ixUwCRvt7FZBv49q5rvWiQR91y1BcntvSczdR2/eBbDBKQQ3X2wCakX03
+         xeTD6FB/B4JHUraKhGHpX+/kr5KGpu9KPYdivmscDAtmeLPdfSk+rUsHJcLGakhAI2KQ
+         LA+3CvSKdYUJlU0D7plxwlz+te4lCP0s4ooadROyGPtCYyZcZEonfI48ssTM25CHnfhA
+         YUOA==
+X-Gm-Message-State: AOAM531jXCT/1jNZuCAZVi94Osw9vqYNFJZNkW++FaGFit+tIM2jUTAW
+        zmzObXVYDlaXu+b/So0T904QAQ==
+X-Google-Smtp-Source: ABdhPJxj8obCDelxJOmnY4EgTEt6uvOFjBGq+dd/ysZB8WNS7PW+umevbjKLPNZ4YaUeVcZbw0Z+iQ==
+X-Received: by 2002:a65:428b:: with SMTP id j11mr969021pgp.47.1615954649202;
+        Tue, 16 Mar 2021 21:17:29 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id a24sm18405944pff.18.2021.03.16.21.17.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 21:19:58 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 09:46:32 +0530
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kishon Vijay Abraham <kishon@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Praneeth Bajjuri <praneeth@ti.com>,
-        Gowtham Tammana <g-tammana@ti.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Vaibhav Gupta <v_gupta@ti.com>
-Subject: Re: [PATCH v1 1/3] dt-bindings: crypto: ti,sa2ul: Add new compatible
- for AM64
-Message-ID: <YFGCoMk7Kemrwizc@gmail.com>
-References: <20210308202005.243228-1-vaibhavgupta40@gmail.com>
- <20210308202005.243228-2-vaibhavgupta40@gmail.com>
- <20210316220558.GA3754419@robh.at.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210316220558.GA3754419@robh.at.kernel.org>
+        Tue, 16 Mar 2021 21:17:27 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 21:17:27 -0700 (PDT)
+X-Google-Original-Date: Tue, 16 Mar 2021 21:17:23 PDT (-0700)
+Subject:     Re: [PATCH] Insert SFENCE.VMA in function set_pte_at for RISCV
+In-Reply-To: <20210310062250.74583-1-liu@jiuyang.me>
+CC:     waterman@eecs.berkeley.edu, liu@jiuyang.me,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, Atish Patra <Atish.Patra@wdc.com>,
+        Anup Patel <Anup.Patel@wdc.com>, akpm@linux-foundation.org,
+        rppt@kernel.org, wangkefeng.wang@huawei.com,
+        greentime.hu@sifive.com, zong.li@sifive.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     liu@jiuyang.me
+Message-ID: <mhng-875f43ab-ca1e-4b18-a12d-1a0dc8519b53@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 04:05:58PM -0600, Rob Herring wrote:
-> On Tue, Mar 09, 2021 at 01:50:03AM +0530, Vaibhav Gupta wrote:
-> > From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> > 
-> > Add the AM64 version of sa2ul to the compatible list.
-> > 
-> > [v_gupta@ti.com: Conditional dma-coherent requirement, clocks]
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> > Signed-off-by: Vaibhav Gupta <v_gupta@ti.com>
-> > ---
-> >  .../devicetree/bindings/crypto/ti,sa2ul.yaml  | 40 +++++++++++++++----
-> >  1 file changed, 33 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml b/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
-> > index 1d48ac712b23..6eb9acd564c2 100644
-> > --- a/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
-> > +++ b/Documentation/devicetree/bindings/crypto/ti,sa2ul.yaml
-> > @@ -14,6 +14,7 @@ properties:
-> >      enum:
-> >        - ti,j721e-sa2ul
-> >        - ti,am654-sa2ul
-> > +      - ti,am64-sa2ul
-> >  
-> >    reg:
-> >      maxItems: 1
-> > @@ -45,19 +46,44 @@ properties:
-> >      description:
-> >        Address translation for the possible RNG child node for SA2UL
-> >  
-> > +  clocks:
-> > +    items:
-> > +      - description: Clock used by PKA
-> > +      - description: Main Input Clock
-> > +      - description: Clock used by rng
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: pka_in_clk
-> > +      - const: x1_clk
-> > +      - const: x2_clk
-> > +
-> >  patternProperties:
-> >    "^rng@[a-f0-9]+$":
-> >      type: object
-> >      description:
-> >        Child RNG node for SA2UL
-> >  
-> > -required:
-> > -  - compatible
-> > -  - reg
-> > -  - power-domains
-> > -  - dmas
-> > -  - dma-names
-> > -  - dma-coherent
-> > +if:
-> > +  properties:
-> > +    compatible:
-> > +      const: ti,am64-sa2ul
-> > +then:
-> > +  required:
-> > +    - compatible
-> > +    - reg
-> > +    - power-domains
-> > +    - dmas
-> > +    - dma-names
-> > +
-> > +else:
-> > +  required:
-> > +    - compatible
-> > +    - reg
-> > +    - power-domains
-> > +    - dmas
-> > +    - dma-names
-> > +    - dma-coherent
-> 
-> The only difference is 'dma-coherent'. You can simplify the if/then to 
-> just that.
-Hello Rob,
+On Tue, 09 Mar 2021 22:22:46 PST (-0800), liu@jiuyang.me wrote:
+> From: Jiuyang Liu <liu@jiuyang.me>
+>
+> This patch inserts SFENCE.VMA after modifying PTE based on RISC-V
+> specification.
+>
+> arch/riscv/include/asm/pgtable.h:
+> 1. implement pte_user, pte_global and pte_leaf to check correspond
+> attribute of a pte_t.
+>
+> 2. insert SFENCE.VMA in set_pte_at based on RISC-V Volume 2, Privileged
+> Spec v. 20190608 page 66 and 67:
+> If software modifies a non-leaf PTE, it should execute SFENCE.VMA with
+> rs1=x0. If any PTE along the traversal path had its G bit set, rs2 must
+> be x0; otherwise, rs2 should be set to the ASID for which the
+> translation is being modified.
+> If software modifies a leaf PTE, it should execute SFENCE.VMA with rs1
+> set to a virtual address within the page. If any PTE along the traversal
+> path had its G bit set, rs2 must be x0; otherwise, rs2 should be set to
+> the ASID for which the translation is being modified.
+>
+> arch/riscv/include/asm/tlbflush.h:
+> 1. implement local_flush_tlb_asid to flush tlb with asid.
+>
+> Signed-off-by: Jiuyang Liu <liu@jiuyang.me>
+> ---
+>  arch/riscv/include/asm/pgtable.h  | 28 ++++++++++++++++++++++++++++
+>  arch/riscv/include/asm/tlbflush.h |  8 ++++++++
+>  2 files changed, 36 insertions(+)
+>
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index ebf817c1bdf4..95f6546ddb5b 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -222,6 +222,16 @@ static inline int pte_write(pte_t pte)
+>  	return pte_val(pte) & _PAGE_WRITE;
+>  }
+>
+> +static inline int pte_user(pte_t pte)
+> +{
+> +	return pte_val(pte) & _PAGE_USER;
+> +}
+> +
+> +static inline int pte_global(pte_t pte)
+> +{
+> +	return pte_val(pte) & _PAGE_GLOBAL;
+> +}
+> +
+>  static inline int pte_exec(pte_t pte)
+>  {
+>  	return pte_val(pte) & _PAGE_EXEC;
+> @@ -248,6 +258,11 @@ static inline int pte_special(pte_t pte)
+>  	return pte_val(pte) & _PAGE_SPECIAL;
+>  }
+>
+> +static inline int pte_leaf(pte_t pte)
+> +{
+> +	return pte_val(pte) & (_PAGE_READ | _PAGE_WRITE | _PAGE_EXEC);
+> +}
+> +
+>  /* static inline pte_t pte_rdprotect(pte_t pte) */
+>
+>  static inline pte_t pte_wrprotect(pte_t pte)
+> @@ -358,6 +370,18 @@ static inline void set_pte_at(struct mm_struct *mm,
+>  		flush_icache_pte(pteval);
+>
+>  	set_pte(ptep, pteval);
+> +
+> +	if (pte_present(pteval)) {
+> +		if (pte_leaf(pteval)) {
+> +			local_flush_tlb_page(addr);
+> +		} else {
+> +			if (pte_global(pteval))
+> +				local_flush_tlb_all();
+> +			else
+> +				local_flush_tlb_asid();
+> +
+> +		}
+> +	}
+>  }
+>
+>  static inline void pte_clear(struct mm_struct *mm,
+> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
+> index 394cfbccdcd9..4b25f51f163d 100644
+> --- a/arch/riscv/include/asm/tlbflush.h
+> +++ b/arch/riscv/include/asm/tlbflush.h
+> @@ -21,6 +21,14 @@ static inline void local_flush_tlb_page(unsigned long addr)
+>  {
+>  	__asm__ __volatile__ ("sfence.vma %0" : : "r" (addr) : "memory");
+>  }
+> +
+> +static unsigned long asid;
+> +static inline void local_flush_tlb_asid(void)
+> +{
+> +	asid = csr_read(CSR_SATP) | (SATP_ASID_MASK << SATP_ASID_SHIFT);
+> +	__asm__ __volatile__ ("sfence.vma x0, %0" : : "r" (asid) : "memory");
+> +}
+> +
+>  #else /* CONFIG_MMU */
+>  #define local_flush_tlb_all()			do { } while (0)
+>  #define local_flush_tlb_page(addr)		do { } while (0)
 
-I agree with your point. But with that case we will have to modify/append the
-'required' list. Something like:
-
-	if !(properties.compatible == 'ti,am64-sa2ul')
-		required += dma-coherent
-
-I even tried to use anchors but that didn't help. I didn't find it even in
-examples. Any hint how to achieve that?
-
-Thanks,
-Vaibhav
+We're trying to avoid this sort of thing, instead relying on the generic kernel
+functionality to batch up page table modifications before we issue the fences.
+If you're seeing some specific issue then I'd be happy to try and sort out a
+fix for it, but this is a bit heavy-handed to use as anything but a last
+resort.
