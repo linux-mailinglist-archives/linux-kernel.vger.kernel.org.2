@@ -2,58 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE5833E9CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:36:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8960F33E9D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 07:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhCQGfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 02:35:16 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:51377 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230123AbhCQGfG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 02:35:06 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R541e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0USEL4Xl_1615962899;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0USEL4Xl_1615962899)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 17 Mar 2021 14:35:04 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] attr: replace if (cond) BUG() with BUG_ON()
-Date:   Wed, 17 Mar 2021 14:34:59 +0800
-Message-Id: <1615962899-77049-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S230147AbhCQGft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 02:35:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230134AbhCQGfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 02:35:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC54F64E86;
+        Wed, 17 Mar 2021 06:35:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615962944;
+        bh=WWS7JuEMTXd+AgVVzjeTizcx9NVGA6mCY1kYylcjsHI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ahXjqrs5fuztQc5g3SxOMdPIXr+j4p8Mu9hk2JbAUVgcAJHKx/nThGMCFaZ/+ABr5
+         nDPPgbrCNRp3m4iBw9QED30vdREtlzwe8ekoKppq5nbuO3pHsFDfwHBjUskwdEOZYM
+         ctJWcRNemsT4Rdaj/0WnLZnW6/vJR+H6MxfRj8tJZauVhFEHU4Bp7hX7T9UPL4Gghs
+         4F6Y4YFKV46URVtxKpxvXufq868MCoZIwUlklydy/pyHcSUYIsGYlhocZkuDInj3Bj
+         4ZyKkC1z2hb9XK7/mIgQheUaKdbijduuZHUUxLM76AvQIRtgxVoWbuXpee49278wNz
+         6jZgs39kPysCw==
+Date:   Wed, 17 Mar 2021 12:05:40 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Peter Rosin <peda@axentia.se>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [PATCH 0/3] AM64: Add SERDES DT bindings
+Message-ID: <YFGjPNonIlA4Anar@vkoul-mobl.Dlink>
+References: <20210310112745.3445-1-kishon@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310112745.3445-1-kishon@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+On 10-03-21, 16:57, Kishon Vijay Abraham I wrote:
+> Patch series adds device tree bindings to support SERDES in AM64
+> platform.
+> 
+> This is split from [1] since this binding is also required for AM64
+> USB DT patches to be merged.
+> 
+> Vinod,
+> 
+> Once the 1st patch of the series is reviewed by Rob, can you merge and
+> prepare a immutable tag to be used by Nishant Menon so that he can merge
+> USB3 DT patches.
 
-./fs/attr.c:349:2-5: WARNING: Use BUG_ON instead of if condition
-followed by BUG.
+Applied and tag:
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- fs/attr.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+  git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/ti-serdes-for-5.13
 
-diff --git a/fs/attr.c b/fs/attr.c
-index 87ef39d..43f369e 100644
---- a/fs/attr.c
-+++ b/fs/attr.c
-@@ -344,9 +344,7 @@ int notify_change(struct user_namespace *mnt_userns, struct dentry *dentry,
- 	 * no function will ever call notify_change with both ATTR_MODE and
- 	 * ATTR_KILL_S*ID set.
- 	 */
--	if ((ia_valid & (ATTR_KILL_SUID|ATTR_KILL_SGID)) &&
--	    (ia_valid & ATTR_MODE))
--		BUG();
-+	BUG_ON((ia_valid & (ATTR_KILL_SUID|ATTR_KILL_SGID)) && (ia_valid & ATTR_MODE));
- 
- 	if (ia_valid & ATTR_KILL_SUID) {
- 		if (mode & S_ISUID) {
+
 -- 
-1.8.3.1
-
+~Vinod
