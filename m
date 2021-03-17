@@ -2,107 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E07533FA25
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB66C33FA2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 21:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233460AbhCQUxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 16:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233416AbhCQUwz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 16:52:55 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C13EC06174A;
-        Wed, 17 Mar 2021 13:52:55 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id v2so19916pgk.11;
-        Wed, 17 Mar 2021 13:52:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=AKYuNNautpL9GsX/k1t8k+V+WDGi+hWf1VRFyREZzWA=;
-        b=fUA+sXj1+G1P5qNMQ3kV1By1YcbAhSpxmiKaAIT23Y1EzpBNXfRcRBmgdK17ce3hub
-         0keIoX//U2oSDv731hzNmxXSUCF82cav2yP2CKAdC2kNZUIRnStPyLaZU84yARuYvxNb
-         bJn+0Cn3o4OMuHE7fMdvQL3q1o5I+AT0651yDaEsO+g/Y0mm/NZrRD5PoRYVYf6CBmCy
-         YQ0A7+Jb2NACN97GCRD8jy744trAaVTwv5VuelkHknxUzvpRTBo4PYjJ8iLATc1u1t90
-         CrMD4Mcjg5nS/JL9eO0AMwOSMyNllGprQPsULRWUYN1RTPc6uP+LKFam7LhJOGap1LJ4
-         RO7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=AKYuNNautpL9GsX/k1t8k+V+WDGi+hWf1VRFyREZzWA=;
-        b=SeiXMAJK7rPmuLkXmsAFKPvJiwTLNBCwpwZcs5HPpp3g/KyGj+7Sbd2LfPEz3MSgG4
-         B0fVu+mM25KxmpQESiFBkRUe7U08ZMw8j/7Fd2sH/JoHf7NeKEBAA0WJmT8AGBlqIXgg
-         X9Qa0OAk+4P7XdQY1hJ57Tpm8Hr/5kmzdnFeUtAawUua35LeyF6T1fx6OOG8UH1FxzaX
-         Vq1zYdEpUtfWhgEqEGkq4tSjzGAkKGuDWK2FA3XnFBxhZir8ZxM0CMQYB/KJZN8JmDfK
-         widbJaS2UVJxoIUuSJmPdJX1NjSprNt9GN4llzUUioEqg5M/v+kk/4PpsWySfEOaj4S0
-         N5tg==
-X-Gm-Message-State: AOAM530VQ9wRLfi+C0LOYhgnE06J2drInaed8a5FvW7XYja3IH9gzFx5
-        FhjU4y6QSUuT1moPsTBHN3xDR8mz/+o+Pg==
-X-Google-Smtp-Source: ABdhPJy8/iAz5N4nZP350sq8I/6aYbGirU4K/scVbtxPllJU5LobeunkJS+SKR9TRE0ZhRvTrrMjIA==
-X-Received: by 2002:aa7:9841:0:b029:1f8:f326:a3b3 with SMTP id n1-20020aa798410000b02901f8f326a3b3mr785222pfq.7.1616014374477;
-        Wed, 17 Mar 2021 13:52:54 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:600d:a089:85d1:b0af:d6ff:42d8])
-        by smtp.googlemail.com with ESMTPSA id d24sm30137pjw.37.2021.03.17.13.52.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 13:52:54 -0700 (PDT)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org, ldm@flatcap.org,
-        axboe@kernel.dk, linux-ntfs-dev@lists.sourceforge.net,
-        linux-block@vger.kernel.org
-Subject: [PATCH] block: fix comment syntax in file headers
-Date:   Thu, 18 Mar 2021 02:22:45 +0530
-Message-Id: <20210317205245.24857-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S233488AbhCQU4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 16:56:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233443AbhCQUzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 16:55:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3309264E90;
+        Wed, 17 Mar 2021 20:55:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616014546;
+        bh=8YHIy2QJi0Zbnx676evVVkiFT4TAs3P+dNjW2VdjjY4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=j/NREaNObGhuCT7gWW8ChdtLt63hXPXIvf2zC/G9cSWGW/JgIAzi6lYKt3hLJfpEG
+         hQrw8seR3wePUKUt4+1rOVdW16PMnPzALHoEdTR0wV6zfFQvfDKumpDO8c4Q1gT8KP
+         6DSMJ85gp6wDzmLWGXcm2sy+r9aUJGVVThh7kFgQQnbB5l1P0gcuKUCBrXjIKbdEog
+         5vMjmUIBGo0SCzLXQZxz4jz+Y8qG+6mM5025rEsV4fu/XPfclMUxNVSRy4AaNBFkOC
+         r11ZVNpLFMdV/HiLv0C4cnR0+K6BzyOMQDhd5xrtNIO7EdlV0ghztnfmHld4wGsBL9
+         TpXUHdUm686Vw==
+Date:   Wed, 17 Mar 2021 13:55:44 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Ong Boon Leong <boon.leong.ong@intel.com>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 1/1] net: stmmac: add per-queue TX & RX
+ coalesce ethtool support
+Message-ID: <20210317135544.3da32504@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210317010123.6304-2-boon.leong.ong@intel.com>
+References: <20210317010123.6304-1-boon.leong.ong@intel.com>
+        <20210317010123.6304-2-boon.leong.ong@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The opening comment mark '/**' is used for highlighting the beginning of
-kernel-doc comments.
-There are files in block/partitions/ which follow this syntax in their file
-headers, i.e. start with '/**' like comments, which causes unexpected
-warnings from kernel-doc.
+On Wed, 17 Mar 2021 09:01:23 +0800 Ong Boon Leong wrote:
+> Extending the driver to support per-queue RX and TX coalesce settings in
+> order to support below commands:
+> 
+> To show per-queue coalesce setting:-
+>  $ ethtool --per-queue <DEVNAME> queue_mask <MASK> --show-coalesce
+> 
+> To set per-queue coalesce setting:-
+>  $ ethtool --per-queue <DEVNAME> queue_mask <MASK> --coalesce \
+>      [rx-usecs N] [rx-frames M] [tx-usecs P] [tx-frames Q]
+> 
+> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
 
-E.g., running scripts/kernel-doc -none on block/partitions/ldm.h
-causes this warning:
-"warning: expecting prototype for ldm(). Prototype was for _FS_PT_LDM_H_() instead"
+Acked-by: Jakub Kicinski <kuba@kernel.org>
 
-Provide a simple fix by replacing such occurrences with general comment
-format, i.e., "/*", to prevent kernel-doc from parsing it.
+> +	if (queue < tx_cnt) {
+> +		ec->tx_coalesce_usecs = priv->tx_coal_timer[queue];
+> +		ec->tx_max_coalesced_frames = priv->tx_coal_frames[queue];
+> +	} else {
+> +		ec->tx_coalesce_usecs = 0;
+> +		ec->tx_max_coalesced_frames = 0;
 
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
-* Applies perfectly on next-20210312
-
- block/partitions/ldm.c | 2 +-
- block/partitions/ldm.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/block/partitions/ldm.c b/block/partitions/ldm.c
-index d333786b5c7e..14b124cdacfc 100644
---- a/block/partitions/ldm.c
-+++ b/block/partitions/ldm.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * ldm - Support for Windows Logical Disk Manager (Dynamic Disks)
-  *
-  * Copyright (C) 2001,2002 Richard Russon <ldm@flatcap.org>
-diff --git a/block/partitions/ldm.h b/block/partitions/ldm.h
-index d8d6beaa72c4..ffdecf1c6bb3 100644
---- a/block/partitions/ldm.h
-+++ b/block/partitions/ldm.h
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * ldm - Part of the Linux-NTFS project.
-  *
-  * Copyright (C) 2001,2002 Richard Russon <ldm@flatcap.org>
--- 
-2.17.1
-
+nit: I think the struct is initialized to 0 so there is no need to set
+it explicitly.
