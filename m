@@ -2,126 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502DF33EE8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:45:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A0133EEC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 11:50:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhCQKod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 06:44:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbhCQKoT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 06:44:19 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB91BC06174A;
-        Wed, 17 Mar 2021 03:44:18 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id v11so1290699wro.7;
-        Wed, 17 Mar 2021 03:44:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Bn90u44fy8L7FazXOSgNFKkR48EmU94fLQ8Y07NnDbg=;
-        b=RookSN63CvIIb59cAjK0gkYTO2VoPpDwYkO5C4Mf4smeR2XbSEdgmY6GSS7qSum7QG
-         bQZ2/C/LB2OAkIMlIt11q5glM6MddtfYSvxiZbQ4ioHduesNUy3EWcdCOpuScZvjQ4IH
-         1Jba/B62kF3Byf57FIL/HB//GH6Gntzo3cLY0wbxK1zQkiGcJpyH8w/P3oiQre7oyQD+
-         nqvSajOLwrOJka2syyzG6h0nLbTWdvsm9U3+gwdRYi4gejCzn3DdZihhhGUO7xpRkJjM
-         OqVRxt+jVXVJ0ojSwRbiyIUTKr4/zrEMSWFrYP+DAdqqmuk1UzONGgyldg22kDEvEUvQ
-         x5jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Bn90u44fy8L7FazXOSgNFKkR48EmU94fLQ8Y07NnDbg=;
-        b=Y+SGaMEt0JRAunhiDSBgDSt+Hh+MaABdWi2ZDaM1Rpryt3A858QK8yY1uzEBWpG+Xr
-         DLKnMpg9nMho0aQha3IsKnZadvMtsnLOzKZmAaPPoacBDTgxiVIhRHr97bg/mqzMaKSx
-         XPsNI6PWrT6L72K6OwRic6LdfA6fVGVlBHbwMD4BVxi0DX3/cA0OLlN1BFSJilx0ZRaK
-         hswoDiUrD6luvtoQW4FGhhO+h7CJkVflQvEZthstfK+mV4YCCDpGpKSLpV9nX6ykA9UP
-         xiHHM3ftnO/FFBdWtZijCd2nPg9pVAbBLERjmfps66cGVyZprjRcjxo2Ou0ud1/BA93Y
-         KFzA==
-X-Gm-Message-State: AOAM53162zy6JJaOxoAtiV+tycTIKRNpHQXy5PKrcm7X4HxW/RKdilo+
-        NAkEEDJyUuHAZOlCYSYOicE=
-X-Google-Smtp-Source: ABdhPJzMIr4AJ4UN6QhUkf9RjJgTZhqswu3fbGhNtj+qV4sOmO3SCxJg6IEQ/jBzMi23oJWP+3NezQ==
-X-Received: by 2002:a05:6000:1acd:: with SMTP id i13mr1921557wry.48.1615977857523;
-        Wed, 17 Mar 2021 03:44:17 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id h13sm2026914wmq.29.2021.03.17.03.44.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 03:44:17 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 17 Mar 2021 11:44:15 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>
-Cc:     bp@suse.de, tglx@linutronix.de, luto@kernel.org, x86@kernel.org,
-        len.brown@intel.com, dave.hansen@intel.com, hjl.tools@gmail.com,
-        Dave.Martin@arm.com, jannh@google.com, mpe@ellerman.id.au,
-        carlos@redhat.com, tony.luck@intel.com, ravi.v.shankar@intel.com,
-        libc-alpha@sourceware.org, linux-arch@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 0/6] x86: Improve Minimum Alternate Stack Size
-Message-ID: <20210317104415.GA692070@gmail.com>
-References: <20210316065215.23768-1-chang.seok.bae@intel.com>
- <20210317100640.GC1724119@gmail.com>
+        id S231126AbhCQKu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 06:50:29 -0400
+Received: from mga18.intel.com ([134.134.136.126]:37624 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230369AbhCQKuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 06:50:18 -0400
+IronPort-SDR: aFoGlUtMTvtMlFlArnDdHWUW7Tt8fKRS6YNpqQ/WnXl6lMZNI5kiebMD9T8cvk9R63sK/CoCLx
+ lk4ARnUnrt/A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="177033674"
+X-IronPort-AV: E=Sophos;i="5.81,256,1610438400"; 
+   d="scan'208";a="177033674"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 03:50:18 -0700
+IronPort-SDR: lJxrk1Ea9liNowOIg/IECe5NzhRnlPf/GU0qkUHRTPgkZ86cvdIn+uvfscfjOVDHmBBAmxJfDq
+ eQR5XqUOBWZw==
+X-IronPort-AV: E=Sophos;i="5.81,256,1610438400"; 
+   d="scan'208";a="412599152"
+Received: from yisun1-ubuntu.bj.intel.com (HELO yi.y.sun) ([10.238.156.116])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA256; 17 Mar 2021 03:50:13 -0700
+Date:   Wed, 17 Mar 2021 18:44:29 +0800
+From:   Yi Sun <yi.y.sun@linux.intel.com>
+To:     Keqian Zhu <zhukeqian1@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com,
+        yuzenghui@huawei.com, lushenming@huawei.com
+Subject: Re: [PATCH v2 06/11] iommu/arm-smmu-v3: Scan leaf TTD to sync
+ hardware dirty log
+Message-ID: <20210317104429.GT28580@yi.y.sun>
+References: <20210310090614.26668-1-zhukeqian1@huawei.com>
+ <20210310090614.26668-7-zhukeqian1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210317100640.GC1724119@gmail.com>
+In-Reply-To: <20210310090614.26668-7-zhukeqian1@huawei.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Ingo Molnar <mingo@kernel.org> wrote:
-
+On 21-03-10 17:06:09, Keqian Zhu wrote:
+> From: jiangkunkun <jiangkunkun@huawei.com>
 > 
-> * Chang S. Bae <chang.seok.bae@intel.com> wrote:
+> During dirty log tracking, user will try to retrieve dirty log from
+> iommu if it supports hardware dirty log.
 > 
-> > During signal entry, the kernel pushes data onto the normal userspace
-> > stack. On x86, the data pushed onto the user stack includes XSAVE state,
-> > which has grown over time as new features and larger registers have been
-> > added to the architecture.
-> > 
-> > MINSIGSTKSZ is a constant provided in the kernel signal.h headers and
-> > typically distributed in lib-dev(el) packages, e.g. [1]. Its value is
-> > compiled into programs and is part of the user/kernel ABI. The MINSIGSTKSZ
-> > constant indicates to userspace how much data the kernel expects to push on
-> > the user stack, [2][3].
-> > 
-> > However, this constant is much too small and does not reflect recent
-> > additions to the architecture. For instance, when AVX-512 states are in
-> > use, the signal frame size can be 3.5KB while MINSIGSTKSZ remains 2KB.
-> > 
-> > The bug report [4] explains this as an ABI issue. The small MINSIGSTKSZ can
-> > cause user stack overflow when delivering a signal.
+> This adds a new interface named sync_dirty_log in iommu layer and
+> arm smmuv3 implements it, which scans leaf TTD and treats it's dirty
+> if it's writable (As we just enable HTTU for stage1, so check whether
+> AP[2] is not set).
 > 
-> >   uapi: Define the aux vector AT_MINSIGSTKSZ
-> >   x86/signal: Introduce helpers to get the maximum signal frame size
-> >   x86/elf: Support a new ELF aux vector AT_MINSIGSTKSZ
-> >   selftest/sigaltstack: Use the AT_MINSIGSTKSZ aux vector if available
-> >   x86/signal: Detect and prevent an alternate signal stack overflow
-> >   selftest/x86/signal: Include test cases for validating sigaltstack
+> Co-developed-by: Keqian Zhu <zhukeqian1@huawei.com>
+> Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
+> ---
 > 
-> So this looks really complicated, is this justified?
+> changelog:
 > 
-> Why not just internally round up sigaltstack size if it's too small? 
-> This would be more robust, as it would fix applications that use 
-> MINSIGSTKSZ but don't use the new AT_MINSIGSTKSZ facility.
+> v2:
+>  - Add new sanity check in arm_smmu_sync_dirty_log(). (smmu_domain->stage != ARM_SMMU_DOMAIN_S1)
+>  - Document the purpose of flush_iotlb in arm_smmu_sync_dirty_log(). (Robin)
+>  
+> ---
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 30 +++++++
+>  drivers/iommu/io-pgtable-arm.c              | 90 +++++++++++++++++++++
+>  drivers/iommu/iommu.c                       | 38 +++++++++
+>  include/linux/io-pgtable.h                  |  4 +
+>  include/linux/iommu.h                       | 18 +++++
+>  5 files changed, 180 insertions(+)
 > 
-> I.e. does AT_MINSIGSTKSZ have any other uses than avoiding the 
-> segfault if MINSIGSTKSZ is used to create a small signal stack?
+Please split iommu common interface out. Thanks!
 
-I.e. if the kernel sees a too small ->ss_size in sigaltstack() it 
-would ignore ->ss_sp and mmap() a new sigaltstack instead and use that 
-for the signal handler stack.
+[...]
 
-This would automatically make MINSIGSTKSZ - and other too small sizes 
-work today, and in the future.
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 2a10294b62a3..44dfb78f9050 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -2850,6 +2850,44 @@ int iommu_stop_dirty_log(struct iommu_domain *domain, unsigned long iova,
+>  }
+>  EXPORT_SYMBOL_GPL(iommu_stop_dirty_log);
+>  
+> +int iommu_sync_dirty_log(struct iommu_domain *domain, unsigned long iova,
+> +			 size_t size, unsigned long *bitmap,
+> +			 unsigned long base_iova, unsigned long bitmap_pgshift)
 
-But the question is, is there user-space usage of sigaltstacks that 
-relies on controlling or reading the contents of the stack?
+One open question: shall we add PASID as one parameter to make iommu
+know which address space to visit?
 
-longjmp using programs perhaps?
+For live migration, the pasid should not be necessary. But considering
+future extension, it may be required.
 
-Thanks,
-
-	Ingo
+BRs,
+Yi Sun
