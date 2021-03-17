@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA7C33E327
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:56:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3BD33E30A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbhCQA4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:56:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229813AbhCQAzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:55:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B47364F9B;
-        Wed, 17 Mar 2021 00:55:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615942542;
-        bh=GT+lisKyj04s1FvVx444rz72yjzpOZdk93r+kgqXFr0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eMdu606wAzlfg8Lsp26MX3JCc1ADPCzD57qQjgxholRTsppP+Y5tBKLaule2/BrRZ
-         uGU5toVUMZejaIRYSk4/vJsqKUAcAZ64G0A846Xry8ypgIzgIvxGQb4hlDbWnNgxk6
-         LLNQeqpG5RFiQZgmh/jJh1H/kVgrAPwkXKklkN90baVSv/YRWzRN0XHsIWCV5YjD91
-         KI4Om4c/mU7XFda//7JvHbdkqynkEpo6OF9nyXuHGXQytEuBNqiKT0goZMBqVRQ6G2
-         TKWWlj37Q9SEr+r31kpFdag3D6ko/OyTRtQfvz23tWsJGdOvd8YW8/DaR6fafoFyw8
-         DFg0GWGseGIgw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Heiko Thiery <heiko.thiery@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 04/61] net: fec: ptp: avoid register access when ipg clock is disabled
-Date:   Tue, 16 Mar 2021 20:54:38 -0400
-Message-Id: <20210317005536.724046-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210317005536.724046-1-sashal@kernel.org>
-References: <20210317005536.724046-1-sashal@kernel.org>
+        id S229588AbhCQAyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:54:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhCQAym (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 20:54:42 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDF8C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:54:41 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so4440473pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 17:54:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=cuIoZ4QXp8Z0h3RIlytaSjoGTGhigBw+9A7ospwe3Vg=;
+        b=gfOJV1hiO3jT50yDma6Xk9HrilYAvCM+NI8Y+H/Q+S98Upn8J96yIm1c4xAlpKWOZM
+         3RemXLeNvTLzPS/097OkzBjE7bes7SBi88eJMB9P0eoNRWxxTMgo7089G+PjTji2qQPd
+         gAoD+z7rpnTkZ5AShq7Nv7N96qb43DZcwFogA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=cuIoZ4QXp8Z0h3RIlytaSjoGTGhigBw+9A7ospwe3Vg=;
+        b=Q4LUT8W0zftqeVbhCy42W1SwDroNKy4e1AiWDK+jy0TIWgpIICFilEPqxm/hYrpxrx
+         eRZ3zNs4hvHziUj0GbOr6g3vg3sa83JXjm3j5P4Di7eyAKh7ruWgosAaWSJxw5s7TiVQ
+         c/REZOSZs//V5xcJfcyZPoI9lDJNx+s453clrmlBc92Suh3mGlvVf9YDKjecREaT1xI3
+         BvVAgH8eUF0reZ6zWVOMsARtH1Hhh6pytZ35AJ6jn2NFg937ffniM7l/Ok5kScKoFX2d
+         O+LlQ29xDAZk2MgslGtRKqHTEyrC4s6kgp361p/ijrenXGIF5iSVj767DjyJVBfK8SJS
+         N+xw==
+X-Gm-Message-State: AOAM530AXjkIJTEqSLrIHsSfQzAydA9bYmdonKofNaXqKRfO/+jzgh4O
+        3JeKmAPXNuZch0JDfkli5Kyn2H6pGWTn+w==
+X-Google-Smtp-Source: ABdhPJzbcwVEljwSW5+/Wv1c6VeaGzC2QmTlaukqgzUT25tDbFpNnpSQ/SejRptjh+IUx4kDBv5LXA==
+X-Received: by 2002:a17:902:fe07:b029:e6:6cba:d95a with SMTP id g7-20020a170902fe07b02900e66cbad95amr2039608plj.70.1615942481221;
+        Tue, 16 Mar 2021 17:54:41 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:e1e0:9aee:aecc:ef78])
+        by smtp.gmail.com with ESMTPSA id t6sm503062pjs.26.2021.03.16.17.54.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 17:54:40 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1615914761-12300-1-git-send-email-khsieh@codeaurora.org>
+References: <1615914761-12300-1-git-send-email-khsieh@codeaurora.org>
+Subject: Re: [PATCH v3] phy: qcom-qmp: add hbr3_hbr2 voltage and premphasis swing table
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
+        vkoul@kernel.org
+Date:   Tue, 16 Mar 2021 17:54:39 -0700
+Message-ID: <161594247923.1478170.8971059871794226072@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Thiery <heiko.thiery@gmail.com>
+Quoting Kuogee Hsieh (2021-03-16 10:12:41)
+> Add hbr3_hbr2 voltage and premphasis swing table to support
+> HBR3 link rate.
+>=20
+> Changes in V2:
+> -- replaced upper case with lower case at hbr3_hbr2 table
+>=20
+> Changes in v3:
+> -- replace space with tab at hbr3_hbr2 table
+>=20
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>=20
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-[ Upstream commit 6a4d7234ae9a3bb31181f348ade9bbdb55aeb5c5 ]
-
-When accessing the timecounter register on an i.MX8MQ the kernel hangs.
-This is only the case when the interface is down. This can be reproduced
-by reading with 'phc_ctrl eth0 get'.
-
-Like described in the change in 91c0d987a9788dcc5fe26baafd73bf9242b68900
-the igp clock is disabled when the interface is down and leads to a
-system hang.
-
-So we check if the ptp clock status before reading the timecounter
-register.
-
-Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
-Acked-by: Richard Cochran <richardcochran@gmail.com>
-Link: https://lore.kernel.org/r/20210225211514.9115-1-heiko.thiery@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/freescale/fec_ptp.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/net/ethernet/freescale/fec_ptp.c b/drivers/net/ethernet/freescale/fec_ptp.c
-index 2e344aada4c6..1753807cbf97 100644
---- a/drivers/net/ethernet/freescale/fec_ptp.c
-+++ b/drivers/net/ethernet/freescale/fec_ptp.c
-@@ -377,9 +377,16 @@ static int fec_ptp_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
- 	u64 ns;
- 	unsigned long flags;
- 
-+	mutex_lock(&adapter->ptp_clk_mutex);
-+	/* Check the ptp clock */
-+	if (!adapter->ptp_clk_on) {
-+		mutex_unlock(&adapter->ptp_clk_mutex);
-+		return -EINVAL;
-+	}
- 	spin_lock_irqsave(&adapter->tmreg_lock, flags);
- 	ns = timecounter_read(&adapter->tc);
- 	spin_unlock_irqrestore(&adapter->tmreg_lock, flags);
-+	mutex_unlock(&adapter->ptp_clk_mutex);
- 
- 	*ts = ns_to_timespec64(ns);
- 
--- 
-2.30.1
-
+Fixes: 52e013d0bffa ("phy: qcom-qmp: Add support for DP in USB3+DP combo ph=
+y")
