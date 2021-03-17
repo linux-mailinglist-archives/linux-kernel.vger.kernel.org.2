@@ -2,234 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B9833E660
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E998433E664
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbhCQBnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 21:43:21 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:27168 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhCQBnB (ORCPT
+        id S229883AbhCQBp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 21:45:27 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:13946 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhCQBo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 21:43:01 -0400
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210317014259epoutp043f2d3d61679536b407606c74713a3edc~s-cLa2kaX2942829428epoutp04T
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 01:42:59 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210317014259epoutp043f2d3d61679536b407606c74713a3edc~s-cLa2kaX2942829428epoutp04T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1615945379;
-        bh=aLfJAbuiDPAlx+RD/6lBLEj/FwjdZZ+/0ra3YnK5HRI=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=mO4bHvbPAd/M1VchScw0ufMWyLDMZgq1p9d3SbrmvO1ssNfmeLQosBn2uVUWNgKYq
-         rpoGLcP6hOfsLz/HU6SHxooUEma0nfdx96Lzi56a+cFe665O7t1sqZCiTXvFzrNkdA
-         xE5NwehACKf3STT9ytF9j5AK4GxdPbrS8gpHB39Q=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210317014256epcas2p1737b43acf8e410690333fd1adf9531a2~s-cIhx0GI3228832288epcas2p1r;
-        Wed, 17 Mar 2021 01:42:56 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.187]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4F0Xwb1rpSz4x9QC; Wed, 17 Mar
-        2021 01:42:55 +0000 (GMT)
-X-AuditID: b6c32a45-34dff7000001297d-fa-60515e9f24fe
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4E.D7.10621.F9E51506; Wed, 17 Mar 2021 10:42:55 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v29 4/4] scsi: ufs: Add HPB 2.0 support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Can Guo <cang@codeaurora.org>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <a18909e8f4db023455b7513bf6c60312@codeaurora.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210317014253epcms2p1f45db6a281645282e1540e0070999d73@epcms2p1>
-Date:   Wed, 17 Mar 2021 10:42:53 +0900
-X-CMS-MailID: 20210317014253epcms2p1f45db6a281645282e1540e0070999d73
-Content-Transfer-Encoding: 7bit
+        Tue, 16 Mar 2021 21:44:57 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F0Xx62L7SzkbBs;
+        Wed, 17 Mar 2021 09:43:22 +0800 (CST)
+Received: from [10.174.177.131] (10.174.177.131) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 17 Mar 2021 09:44:50 +0800
+Subject: Re: [PATCH v2 5/5] mm/hugetlb: avoid calculating fault_mutex_hash in
+ truncate_op case
+To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210316022758.52993-1-linmiaohe@huawei.com>
+ <d87264fb-0005-4f8b-7551-a5439108e9e1@oracle.com>
+ <4b3e9ea6-69e3-493c-342e-92117f274e06@huawei.com>
+ <952e9130-a084-20a7-aa7c-486fe9ccc8c6@oracle.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <fb988ad4-8a1b-14ef-ed94-7658b2af8ab2@huawei.com>
+Date:   Wed, 17 Mar 2021 09:44:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <952e9130-a084-20a7-aa7c-486fe9ccc8c6@oracle.com>
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDJsWRmVeSWpSXmKPExsWy7bCmue78uMAEgy/H2S0ezNvGZrG37QS7
-        xcufV9ksDt9+x24x7cNPZotP65exWrw8pGmx6kG4RfPi9WwWc842MFn09m9ls3h85zO7xaIb
-        25gs+v+1s1hc3jWHzaL7+g42i+XH/zFZ3N7CZbF0601Gi87pa1gcRDwuX/H2uNzXy+Sxc9Zd
-        do8Jiw4weuyfu4bdo+XkfhaPj09vsXj0bVnF6PF5k5xH+4FupgCuqBybjNTElNQihdS85PyU
-        zLx0WyXv4HjneFMzA0NdQ0sLcyWFvMTcVFslF58AXbfMHKDnlBTKEnNKgUIBicXFSvp2NkX5
-        pSWpChn5xSW2SqkFKTkFhoYFesWJucWleel6yfm5VoYGBkamQJUJORkzD01iKrgvV7Ht2X+m
-        BsYzYl2MHBwSAiYS0z9wdTFycQgJ7GCUeP3iMjtInFdAUOLvDuEuRk4OYQF7ia8btrGC2EIC
-        ShLrL85ih4jrSdx6uIYRxGYT0JGYfuI+WFxEwFPi6+TVrCAzmQWWs0k0LtsP1iwhwCsxo/0p
-        C4QtLbF9+VawZk4BO4nzK1rYIOIaEj+W9TJD2KISN1e/ZYex3x+bzwhhi0i03jsLVSMo8eDn
-        bqi4pMSx3R+YIOx6ia13fjGCHCEh0MMocXjnLagj9CWudWwEO4JXwFdi6sMfTCAPswioSrw4
-        nw5R4iKx9twXsHJmAXmJ7W/nMIOUMAtoSqzfpQ8JNmWJI7dYYL5q2PibHZ3NLMAn0XH4L1x8
-        x7wnUJepSaz7uZ5pAqPyLERAz0KyaxbCrgWMzKsYxVILinPTU4uNCgyRo3YTIziZa7nuYJz8
-        9oPeIUYmDsZDjBIczEoivKZ5AQlCvCmJlVWpRfnxRaU5qcWHGE2BnpzILCWanA/MJ3kl8Yam
-        RmZmBpamFqZmRhZK4rzFBg/ihQTSE0tSs1NTC1KLYPqYODilGphOZvhbhvbPeHPgFPcjP++6
-        +vD/c673Ty+vErG3LF9ZOkPI8mel462o1wbMx27dWnC9M7+zeq5F9eyClvY7F29o3zcxyYzZ
-        aJ2Yu0yluf5Ei1SHUYZWvmPodS4+zYqwvPfs/37vjYs9FT7hpv3yWY3xWQsC5/E02RsZOP88
-        56j1nfOuvFH0otv+ltduG2yJ7dBi6Xy0U02zJKD9oStzv9ELdv7bLEtEIry0FLfrP9C/lyxg
-        us83vlHnfs6bif4Tln00WV+0/s//VW/4euv3m8RMKpo742CN9qWPHslfCjQWOrVyr3mvcs3b
-        4dxD0z32Fo0/G9+35nVM2PD85Gvhn5Jm8/wl5JcXT9r9bGe8vBJLcUaioRZzUXEiAP/vW/lv
-        BAAA
-DLP-Filter: Pass
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.131]
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210315012850epcms2p361447b689e925561c48aa9ca54434eb5
-References: <a18909e8f4db023455b7513bf6c60312@codeaurora.org>
-        <2da1c963bd3ff5f682d18a251ed08989@codeaurora.org>
-        <20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p3>
-        <20210315013137epcms2p861f06e66be9faff32b6648401778434a@epcms2p8>
-        <20210315070728epcms2p87136c86803afa85a441ead524130245c@epcms2p8>
-        <d6a4511fd85e6e47c5aef22e335bb253@codeaurora.org>
-        <CGME20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On 2021-03-15 15:23, Can Guo wrote:
->> On 2021-03-15 15:07, Daejun Park wrote:
->>>>> This patch supports the HPB 2.0.
->>>>> 
->>>>> The HPB 2.0 supports read of varying sizes from 4KB to 512KB.
->>>>> In the case of Read (<= 32KB) is supported as single HPB read.
->>>>> In the case of Read (36KB ~ 512KB) is supported by as a combination 
->>>>> of
->>>>> write buffer command and HPB read command to deliver more PPN.
->>>>> The write buffer commands may not be issued immediately due to busy
->>>>> tags.
->>>>> To use HPB read more aggressively, the driver can requeue the write
->>>>> buffer
->>>>> command. The requeue threshold is implemented as timeout and can be
->>>>> modified with requeue_timeout_ms entry in sysfs.
->>>>> 
->>>>> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
->>>>> ---
->>>>> +static struct attribute *hpb_dev_param_attrs[] = {
->>>>> +        &dev_attr_requeue_timeout_ms.attr,
->>>>> +        NULL,
->>>>> +};
->>>>> +
->>>>> +struct attribute_group ufs_sysfs_hpb_param_group = {
->>>>> +        .name = "hpb_param_sysfs",
->>>>> +        .attrs = hpb_dev_param_attrs,
->>>>> +};
->>>>> +
->>>>> +static int ufshpb_pre_req_mempool_init(struct ufshpb_lu *hpb)
->>>>> +{
->>>>> +        struct ufshpb_req *pre_req = NULL;
->>>>> +        int qd = hpb->sdev_ufs_lu->queue_depth / 2;
->>>>> +        int i, j;
->>>>> +
->>>>> +        INIT_LIST_HEAD(&hpb->lh_pre_req_free);
->>>>> +
->>>>> +        hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req), 
->>>>> GFP_KERNEL);
->>>>> +        hpb->throttle_pre_req = qd;
->>>>> +        hpb->num_inflight_pre_req = 0;
->>>>> +
->>>>> +        if (!hpb->pre_req)
->>>>> +                goto release_mem;
->>>>> +
->>>>> +        for (i = 0; i < qd; i++) {
->>>>> +                pre_req = hpb->pre_req + i;
->>>>> +                INIT_LIST_HEAD(&pre_req->list_req);
->>>>> +                pre_req->req = NULL;
->>>>> +                pre_req->bio = NULL;
->>>> 
->>>> Why don't prepare bio as same as wb.m_page? Won't that save more time
->>>> for ufshpb_issue_pre_req()?
->>> 
->>> It is pre_req pool. So although we prepare bio at this time, it just
->>> only for first pre_req.
->> 
->> I meant removing the bio_alloc() in ufshpb_issue_pre_req() and 
->> bio_put()
->> in ufshpb_pre_req_compl_fn(). bios, in pre_req's case, just hold a 
->> page.
->> So, prepare 16 (if queue depth is 32) bios here, just use them along 
->> with
->> wb.m_page and call bio_reset() in ufshpb_pre_req_compl_fn(). Shall it 
->> work?
->> 
+On 2021/3/17 8:27, Mike Kravetz wrote:
+> On 3/15/21 11:49 PM, Miaohe Lin wrote:
+>> On 2021/3/16 11:07, Mike Kravetz wrote:
+>>> On 3/15/21 7:27 PM, Miaohe Lin wrote:
+>>>> The fault_mutex hashing overhead can be avoided in truncate_op case
+>>>> because page faults can not race with truncation in this routine.  So
+>>>> calculate hash for fault_mutex only in !truncate_op case to save some cpu
+>>>> cycles.
+>>>>
+>>>> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>> Cc: Mike Kravetz <mike.kravetz@oracle.com>
+>>>> ---
+>>>> v1->v2:
+>>>> remove unnecessary initialization for variable hash
+>>>> collect Reviewed-by tag from Mike Kravetz
+>>>
+>>> My apologies for not replying sooner and any misunderstanding from my
+>>> previous comments.
+>>>
+>>
+>> That's all right.
+>>
+>>> If the compiler is going to produce a warning because the variable is
+>>> not initialized, then we will need to keep the initialization.
+>>> Otherwise, this will show up as a build regression.  Ideally, there
+>>> would be a modifier which could be used to tell the compiler the
+>>> variable will used.  I do not know if such a modifier exists.
+>>>
+>>
+>> I do not know if such a modifier exists too. But maybe not all compilers are intelligent
+>> enough to not produce a warning. It would be safe to keep the initialization...
+>>
+>>> The patch can not produce a new warning.  So, if you need to initialize
+>>
+>> So just drop this version of the patch? Or should I send a new version with your Reviewed-by tag and
+>> keep the initialization?
+>>
 > 
->If it works, you can even have the bio_add_pc_page() called here. Later 
->in
->ufshpb_execute_pre_req(), you don't need to call 
->ufshpb_pre_req_add_bio_page(),
->just call ufshpb_prep_entry() once instead - it save many repeated steps 
->for a
->pre_req, and you don't even need to call bio_reset() in this case, since 
->for a
->bio, nothing changes after it is binded with a specific page...
-
-Hi, Can Guo
-
-I tried the idea that you suggested, but it doesn't work properly.
-This optimization should be done next time for enhancement.
-
-Thanks
-Daejun
-
->Can Guo.
+> Yes, drop this version of the patch.  You can add my Reviewed-by to the
+> previous version that included the initialization and resend.
 > 
->> Thanks,
->> Can Guo.
->> 
->>> After use it, it should be prepared bio at issue phase.
->>> 
->>> Thanks,
->>> Daejun
->>> 
->>>> 
->>>> Thanks,
->>>> Can Guo.
->>>> 
->>>>> +
->>>>> +                pre_req->wb.m_page = alloc_page(GFP_KERNEL | 
->>>>> __GFP_ZERO);
->>>>> +                if (!pre_req->wb.m_page) {
->>>>> +                        for (j = 0; j < i; j++)
->>>>> +                                
->>>>> __free_page(hpb->pre_req[j].wb.m_page);
->>>>> +
->>>>> +                        goto release_mem;
->>>>> +                }
->>>>> +                list_add_tail(&pre_req->list_req, 
->>>>> &hpb->lh_pre_req_free);
->>>>> +        }
->>>>> +
->>>>> +        return 0;
->>>>> +release_mem:
->>>>> +        kfree(hpb->pre_req);
->>>>> +        return -ENOMEM;
->>>>> +}
->>>>> +
->>>> 
->>>> 
->>>> 
+
+Will do. Many thanks. :)
+
+> All the cleanup patches in this series should be good to go.
 > 
-> 
->  
+
