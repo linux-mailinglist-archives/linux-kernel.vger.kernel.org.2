@@ -2,184 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1731133FB45
+	by mail.lfdr.de (Postfix) with ESMTP id 6562B33FB46
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 23:32:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhCQWbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 18:31:53 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:51410 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbhCQWbi (ORCPT
+        id S231654AbhCQWby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 18:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231390AbhCQWbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 18:31:38 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12HMT7ds107855;
-        Wed, 17 Mar 2021 22:31:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=1xsl4Sp7vVhV1/McVvgxVvbShTrrJX7i6O0SN0cZZ7E=;
- b=0hRkaezyia1UoQ/QW1pOvSskhSGV+m19U2ItG5XRupsdzIUNvpvDdmfJhEP/u9V3PTxB
- LjHIUroZ5Fklk//SwdxtV7Opw6Qjy4/VNFbqt57NhxEh7SFNBDKK8CuiRGxnH80bloqS
- zoZzOWcsCz1AMVM+ltNMMRDcVSRZpvyvXNo0WWqNUun7Yoi21+zbbDlXK0a4dxxxxgoT
- 1+P46sAbe2I7KFOj/rh2QB6NaFqIbZgaaG5aMs7WZH9SqmJ69Dj5A12ZX0w9Uhq6R1OB
- G4ik+oZo+w6uIryE4deDpCxwVkJAHLH5Zq70X48VTRAX0J1SZbX8WGMpEqnnjfg55dOo OA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 378nbmdqgg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Mar 2021 22:31:28 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12HMUmdt040661;
-        Wed, 17 Mar 2021 22:31:27 GMT
-Received: from nam02-bl2-obe.outbound.protection.outlook.com (mail-bl2nam02lp2054.outbound.protection.outlook.com [104.47.38.54])
-        by aserp3030.oracle.com with ESMTP id 3796yvdcyv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Mar 2021 22:31:27 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ExRP+n2fqvow2rJeu6AJRmetjqioreXASrySF4zEFyfIZye8LhlFMNRuDBx++uPb3mfnWU2bOieP3tgCUa0R87QJ7LRVW1/i0EeQREkYcSKlTr50WVEA6P+PxTKKfGEafxgAxuo+OcFgnEBN0Fafl1zgnRVRF1zxUzA90knIICgC61HtyvimTYEkXcLBDv6C9nOh2D9iHZUUDjE98wl9gXZn/L7tpVh1BTYRws7oD/HFAue0wLx88cfPjeTG9jByd7tZtyBO+STZofxC2fygqjmQU55+deaW0mHY4yRRspmRRjCMqOR8L9RirrhCg1LsNX3LAxCsQNIdHnvLbNqEXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1xsl4Sp7vVhV1/McVvgxVvbShTrrJX7i6O0SN0cZZ7E=;
- b=bAzBYJuc123nRAjXW2cywWYE3+pAbw4FOWNFmkwkaXTB0N0yDHDwdG2527Mr7f5UdtlDSwgOmkaE5YMAdpbWSVte7fNFYz6YR7tnyMc/+Es688is1KrvGCYmISfMvs/UMidXqHX6WtWoC0WwKU9qOCGfgIAsqN4y0Bcn/S6i+iuQVzgF7wEzXQUrwTX0q30il3PORHmVFIYa2Sg58bqUz3c/JDBOYJNcCv8F3sFP6YuVjDgOrbil8xBcNUFKXIm2svYhJEst2srFV4c+utwEg2hwr8AcN4x4/Es43+EaLB/cojHFJ2brl9Z43JeYcUiSWAbRZtl1I5kvPRy+ol8iuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 17 Mar 2021 18:31:40 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E400C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:31:40 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id x126so2105384pfc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 15:31:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1xsl4Sp7vVhV1/McVvgxVvbShTrrJX7i6O0SN0cZZ7E=;
- b=tg83fvC7O9Lnkoy/R9tYbpYmMO3IgBIGbm+UCzgBNaZO0zje+pdjsp9oebnUs9iqWW1s8o+XqKvDfTh9lzl1I1jug8KKehsG9mClGQc0cL/bZVkav6n9kdnk8ENxIyMnO4AzlSY3ISxJKz1KeXLUZmLG11KCWvkygDVtDENA4ek=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB3288.namprd10.prod.outlook.com (2603:10b6:a03:156::21)
- by SJ0PR10MB4448.namprd10.prod.outlook.com (2603:10b6:a03:2ad::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Wed, 17 Mar
- 2021 22:31:25 +0000
-Received: from BYAPR10MB3288.namprd10.prod.outlook.com
- ([fe80::f489:4e25:63e0:c721]) by BYAPR10MB3288.namprd10.prod.outlook.com
- ([fe80::f489:4e25:63e0:c721%7]) with mapi id 15.20.3933.032; Wed, 17 Mar 2021
- 22:31:25 +0000
-Subject: Re: [PATCH] xen/evtchn: replace if (cond) BUG() with BUG_ON()
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     jgross@suse.com, sstabellini@kernel.org,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-References: <1615950299-96787-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Message-ID: <5ae410c5-6b7a-70d4-128a-255f80cddda3@oracle.com>
-Date:   Wed, 17 Mar 2021 18:31:20 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
-In-Reply-To: <1615950299-96787-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [138.3.200.52]
-X-ClientProxiedBy: CH2PR15CA0021.namprd15.prod.outlook.com
- (2603:10b6:610:51::31) To BYAPR10MB3288.namprd10.prod.outlook.com
- (2603:10b6:a03:156::21)
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gTd9j8vUp4fOZtUdu4mKTnOETgew12vbkuoEscI8yoA=;
+        b=aMf8mWmVPH3gl73lKNX3yTweFWBU1K4kdhXetrKQomBXOp/hM21ByLmwUmZH/AgPcT
+         iYw72K2dsO5TUFdV54TXfhEtXIEZbOhqryLv1AyxpuVCIfzkkD81GgELUBQyNe8BFYwZ
+         IGvIy2AQt25Bi9B+FdyQnBxdbdA+2tS9vztz4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gTd9j8vUp4fOZtUdu4mKTnOETgew12vbkuoEscI8yoA=;
+        b=B/IT06A76CJg0kzC4btqHiLKNmmD0qXkJ682GfEKZ8mrxAPcg3aJwFtP973UhUIQbN
+         xJ2wM2bkLPta2yonr+wMZF9btUIwBjxjeAFFigkCprfsI4kMxp6FpbnYV8vCwLof3wdK
+         xzo1ML9ILvN/h3chDqbmVcfLukGEyoGiPxoXvVIQZKXYxRzYMZ/UzgNiItSmYssDojbd
+         WQdC/ktb+7zT5bu9HdGejwkUvOaJpst/22WWhvhtRnykEnu/B1K0sKHoHSv7zBjh8sv0
+         1I/194yqV4vdpX4BDRDlqjY7+Qb0eQXNzFKnoenpt3R1eddkl3XLQItCNfAtKVBRXPKX
+         QFPw==
+X-Gm-Message-State: AOAM530vIXEWGjipbc5G6vD859/vKOLP9G0hfHSBfoBP5Jf78gxwEy//
+        UU6ZyRUCtHTRC8fvv5WTRYM6FA==
+X-Google-Smtp-Source: ABdhPJzsiqjJ1HzXQzfWqk+eUj3iVbHRNPRlW0WyMWs2qatShJmQunWe3wfF4wx1n7/xkm3VTRyAGA==
+X-Received: by 2002:a62:5e02:0:b029:1ed:8bee:6132 with SMTP id s2-20020a625e020000b02901ed8bee6132mr1135915pfb.48.1616020300109;
+        Wed, 17 Mar 2021 15:31:40 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x1sm121803pje.40.2021.03.17.15.31.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 15:31:39 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 15:31:38 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Mukesh Ojha <mojha@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, anton@enomsg.org, ccross@android.com,
+        tony.luck@intel.com
+Subject: Re: [RESEND PATCH v2 1/2] pstore: Add mem_type property DT parsing
+ support
+Message-ID: <202103171523.23CAFD0E@keescook>
+References: <1614268817-7596-1-git-send-email-mojha@codeaurora.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.74.97.52] (138.3.200.52) by CH2PR15CA0021.namprd15.prod.outlook.com (2603:10b6:610:51::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Wed, 17 Mar 2021 22:31:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a6591767-3888-47f1-78a6-08d8e9946681
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB4448:
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB4448A874F2DEDEFBC5BE86838A6A9@SJ0PR10MB4448.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1417;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Gphi1ozmTqTPQ9VMT9WRdKfbs3kN3tgKUtUUBnqq30GJk9H//AsrCbAbzie+rcwJJdPmQvXqVCGhZYUHlDehfxpg9LZFMmVHNGyeYjKWkz/Hus+Xz6ttNQcff03K22i/d4XgpX0QHja8mB/DOXV02WtgpHn0SjzqFuG78H8hjgIQ4iuMPwF3XgcQ6kvZZZGSyDhX71DWhISppXmh+YG/NIVdyk1yxnHY6epEApZs7PaNYzXPiM120VkLIDpZJhJD9nXkJ8KO9r2G6HvC1M6bYgmb2o93sDX5PFNF6oWfcKaxobb4Pk/oRhzyRQVHymAeoET0cW+U+h+Jc5AeHVSUm0DpMJpF7iKBm/Z2Vt+X3N5dGKVr3p8KjD5FIx9UnisolqGanINfcJahIKv4Sl9riwVsqRiTj3/zAav7KRjkRJTgo/Qpt5amnilmGZX7jYtmN+t+cQOWh3iuZdu0NlSoWmOtzpY183WuXo6Jb7xzofxFq3SOVs6rFn+tUaAv9oNE5L2U19v64tmEGShrtSlVDklNyLi489YFqe4OaVy1Qx2D75CUxlAMaAM7H1xIXgH3qq/DyqhV8SjdQhio4K5vfjKLKNUNIhXLxkWxslU4DIQsm61daGILX6YzELHMEQrDH/A/cm/ALhWnr0A0dkhH+A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3288.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(39860400002)(396003)(346002)(6666004)(478600001)(6486002)(86362001)(31696002)(66556008)(53546011)(66476007)(26005)(66946007)(16576012)(316002)(31686004)(36756003)(8936002)(2906002)(8676002)(5660300002)(956004)(2616005)(44832011)(6916009)(4326008)(83380400001)(186003)(16526019)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?N2VEUkdrNms2d2RxaVR4bFdaSlpHdFlBcW4xaTRTYW54WnpHbFQ3OVBaaDZ2?=
- =?utf-8?B?VFUvb1ZMcDZFd1JmaVVLcmN1dnZFVHFXZWRMMFVDamIzT0dqbnN6QWdjTVRZ?=
- =?utf-8?B?Z2IySG9RcUJrOFMzMHVzYTVvai83OFFTQTAxcC8zRzloUUpneWNkQ1N0eTJE?=
- =?utf-8?B?bG9vekNzaGN6M2NSUE12MTZsQUlodm1UcTRkOVRnQ3VldmJLcTNIaTEvczBX?=
- =?utf-8?B?SXFnTFBQandyS2VUWDhGZEk0c1M2TW52cWhQNUhva2cyRExqNW4wMWE2TGlD?=
- =?utf-8?B?cUxndHRudUsyYVM3WVNIRU9kZUxxZ2hwMjB0NGoya0Z2K2c4VXJlZUs2SmdJ?=
- =?utf-8?B?VFRWa1JUTUd3dHBIbEpOaXorakZObk5YajV1d0pxTmRMaWttV3puMmlRYjBU?=
- =?utf-8?B?ZnorM0R3NGErZ0Mxd2pIQlFXUlorY0Y5MFBOSXIrbFd2bXFJQW9TNXBiSmRl?=
- =?utf-8?B?ZmJDNjlmaTcwNElFYlluWW5WRkxaZTI0TzRjcnh0VGs1aW9FSnU1Mk5mMWo2?=
- =?utf-8?B?dDRNenFCbHovMVJuRmVjNmlxQzNDMmV1WW5OaDR0VkpGN3REWXYyWTIzQ3dK?=
- =?utf-8?B?RjJBNkZ2L3JrNkxRajdvR0UxU3lPWlRMZUp2V0p2Q2ZDZWF0TFVTcEtrODFo?=
- =?utf-8?B?UC9zK2VPSXpXOGNLSTVMcllNT3JmTUdMdXNoakJsYzhIbFJOVCszbWFhNXNw?=
- =?utf-8?B?Nk5Id0Z2ZEFoVEhFRDkzMk1CN1hwcGNZMGViU2hLSW1VajBzcmRzem4wcmhl?=
- =?utf-8?B?YW5WcXdVMmRkcHNTUGY2NmRjRHRxczk1MWQrTVcxT3ExWXJROEJRRDVOMWpz?=
- =?utf-8?B?by9rRVVsSnIvQ1lFM2xWTG9sRW1mbXZwWUlLMUJvK0toY21jQWhNRTU2OXVY?=
- =?utf-8?B?aXlaUWRjVnZHTm1IWW5yTDh6K2Jva0x6QlhJQTFvN1hoSllJZTdscTZjSmFn?=
- =?utf-8?B?V01GcUxxNjRSUXQzRFNINGZ4MC9TS09pWENlUjhWQ3c3K1NaRVY0SjN6YWty?=
- =?utf-8?B?WEVvN0NHVC9CRERqaVlnOGdtL29FVmpWLzBYUlpXOGlyWkRxRDNTdGMwTlFh?=
- =?utf-8?B?NDVaWDlzYVlVdjlKK1IrZnJ1UnMyVVR6cE52MVIzN2pkdnIvZHhrVU4xNHRx?=
- =?utf-8?B?dHF5ZEJmK29RNEtxc1cxcWNVWmlzK2N2Zjh0WVlBOURNSnB3bUYyNUU1V01J?=
- =?utf-8?B?bmRwSFNQbEdGYnU0ZzJhUWJ5Q2x3UWQzTUxzVXUzOFpTb1hLcEE3Q25CSFZB?=
- =?utf-8?B?anFXVm5uQ3ZMSVVsOHpGMW9QL2hYMCswUDFOcWZkY2M0d0Y1Tm44VVJjNHE3?=
- =?utf-8?B?eEoyMVN4ckpoNXNyREVTMEZmN09RY3AvaUNoUU9vTmVUY1o5RGhsUitHUU5z?=
- =?utf-8?B?QU53TnBuRFdUdGVqYktmbnZ5ajRMQ1ZGclh3VTJ0WnlHWkgwNzBHcWlJVENp?=
- =?utf-8?B?aTcvZTExOG9nZjN5SWpzU2h3WWttMTVVSWpLQWxoT012dWMxSW1LTnBDMklW?=
- =?utf-8?B?bmZSRGVNYzM4cExYQkhkVWJpY2JKekl1eWdybnFEdHdUdEV5VnhrZTBUUjRW?=
- =?utf-8?B?RGY4UmxCQTFrZ1JQNlRTMjRvT1JnVHBuZEtzc01pWTgyd3N6Yi9KSW5teDMx?=
- =?utf-8?B?T2NSVHNnZGhIQmptbG5sUVpqMWgvR3ZlZEpCa2xJSXhUb1hPdExYK0s1eW9S?=
- =?utf-8?B?S1V3dnZpSmUzekd2WmN3OG1JTHdDUWkzeGxEOThwVHZEUlhXRHRjVEJMVjBs?=
- =?utf-8?Q?gFj5CEuwJtFmhEJJnvSbe7QuKa3UkwmNklq1cRY?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a6591767-3888-47f1-78a6-08d8e9946681
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3288.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 22:31:25.8547
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TbArWLtj+KBeJ83inU+rxCAa0rfjbFUjXkdrr2BdVgtvqTem0zbWFhH1gYIRPyDpfqHGulJC404hu9BOppJldZW8zJtyT++L4KpHb3/iUbM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4448
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0 spamscore=0
- bulkscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103170158
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 impostorscore=0
- malwarescore=0 adultscore=0 mlxscore=0 clxscore=1011 mlxlogscore=999
- lowpriorityscore=0 phishscore=0 priorityscore=1501 spamscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103170158
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614268817-7596-1-git-send-email-mojha@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 3/16/21 11:04 PM, Jiapeng Chong wrote:
-> Fix the following coccicheck warnings:
->
-> ./drivers/xen/evtchn.c:412:2-5: WARNING: Use BUG_ON instead of if
-> condition followed by BUG.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+On Thu, Feb 25, 2021 at 09:30:16PM +0530, Mukesh Ojha wrote:
+> There could be a sceanario where we define some region
+> in normal memory and use them store to logs which is later
+> retrieved by bootloader during warm reset.
+> 
+> In this scenario, we wanted to treat this memory as normal
+> cacheable memory instead of default behaviour which
+> is an overhead. Making it cacheable could improve
+> performance.
+> 
+> This commit gives control to change mem_type from Device
+> tree, and also documents the value for normal memory.
+> 
+> Signed-off-by: Mukesh Ojha <mojha@codeaurora.org>
 > ---
->  drivers/xen/evtchn.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
-> index c99415a..b1c59bc 100644
-> --- a/drivers/xen/evtchn.c
-> +++ b/drivers/xen/evtchn.c
-> @@ -408,8 +408,7 @@ static int evtchn_bind_to_user(struct per_user_data *u, evtchn_port_t port)
->  err:
->  	/* bind failed, should close the port now */
->  	close.port = port;
-> -	if (HYPERVISOR_event_channel_op(EVTCHNOP_close, &close) != 0)
-> -		BUG();
-> +	BUG_ON(HYPERVISOR_event_channel_op(EVTCHNOP_close, &close) != 0);
+> Changes in v2:
+>  - if-else converted to switch case
+>  - updated MODULE_PARM_DESC with new memory type.
+>  - default setting is still intact.
+> 
+>  Documentation/admin-guide/ramoops.rst |  4 +++-
+>  fs/pstore/ram.c                       |  3 ++-
+>  fs/pstore/ram_core.c                  | 18 ++++++++++++++++--
+>  3 files changed, 21 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/ramoops.rst b/Documentation/admin-guide/ramoops.rst
+> index b0a1ae7..8f107d8 100644
+> --- a/Documentation/admin-guide/ramoops.rst
+> +++ b/Documentation/admin-guide/ramoops.rst
+> @@ -3,7 +3,7 @@ Ramoops oops/panic logger
+>  
+>  Sergiu Iordache <sergiu@chromium.org>
+>  
+> -Updated: 17 November 2011
+> +Updated: 10 Feb 2021
+>  
+>  Introduction
+>  ------------
+> @@ -30,6 +30,8 @@ mapping to pgprot_writecombine. Setting ``mem_type=1`` attempts to use
+>  depends on atomic operations. At least on ARM, pgprot_noncached causes the
+>  memory to be mapped strongly ordered, and atomic operations on strongly ordered
+>  memory are implementation defined, and won't work on many ARMs such as omaps.
+> +Setting ``mem_type=2`` attempts to treat the memory region as normal memory,
+> +which enables full cache on it. This can improve the performance.
+>  
+>  The memory area is divided into ``record_size`` chunks (also rounded down to
+>  power of two) and each kmesg dump writes a ``record_size`` chunk of
+> diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
+> index ca6d8a8..af4ca6a4 100644
+> --- a/fs/pstore/ram.c
+> +++ b/fs/pstore/ram.c
+> @@ -56,7 +56,7 @@ MODULE_PARM_DESC(mem_size,
+>  static unsigned int mem_type;
+>  module_param(mem_type, uint, 0400);
+>  MODULE_PARM_DESC(mem_type,
+> -		"set to 1 to try to use unbuffered memory (default 0)");
+> +		"set to 1 to use unbuffered memory, 2 for cached memory (default 0)");
 
+I'd like to be as explicit as possible (0 wasn't listed), so about this:
 
+"memory type: 0=write-combined (default), 1=unbuffered, 2=cached"
 
-Is it actually worth doing a BUG() here at all? Seems to me WARN_ON_ONCE() should be sufficient.
+>  static int ramoops_max_reason = -1;
+>  module_param_named(max_reason, ramoops_max_reason, int, 0400);
+> @@ -666,6 +666,7 @@ static int ramoops_parse_dt(struct platform_device *pdev,
+>  		field = value;						\
+>  	}
+>  
+> +	parse_u32("mem-type", pdata->record_size, pdata->mem_type);
 
+Please update the documentation at:
+Documentation/devicetree/bindings/reserved-memory/ramoops.txt
+(and please move and update the language about "unbuffered" being
+deprecated like "no-dump-oops", so that it's clear what happens when
+both are specified -- "mem-type" overrides "unbuffered".)
 
--boris
-
-
->  	del_evtchn(u, evtchn);
->  	return rc;
+>  	parse_u32("record-size", pdata->record_size, 0);
+>  	parse_u32("console-size", pdata->console_size, 0);
+>  	parse_u32("ftrace-size", pdata->ftrace_size, 0);
+> diff --git a/fs/pstore/ram_core.c b/fs/pstore/ram_core.c
+> index aa8e0b6..0da012f 100644
+> --- a/fs/pstore/ram_core.c
+> +++ b/fs/pstore/ram_core.c
+> @@ -396,6 +396,10 @@ void persistent_ram_zap(struct persistent_ram_zone *prz)
+>  	persistent_ram_update_header_ecc(prz);
 >  }
+>  
+> +#define MEM_TYPE_WCOMBINE	0
+> +#define MEM_TYPE_NONCACHED	1
+> +#define MEM_TYPE_NORMAL		2
+> +
+>  static void *persistent_ram_vmap(phys_addr_t start, size_t size,
+>  		unsigned int memtype)
+>  {
+> @@ -409,10 +413,20 @@ static void *persistent_ram_vmap(phys_addr_t start, size_t size,
+>  	page_start = start - offset_in_page(start);
+>  	page_count = DIV_ROUND_UP(size + offset_in_page(start), PAGE_SIZE);
+>  
+> -	if (memtype)
+> +	switch (memtype) {
+> +	case MEM_TYPE_NORMAL:
+> +		prot = PAGE_KERNEL;
+> +		break;
+> +	case MEM_TYPE_NONCACHED:
+>  		prot = pgprot_noncached(PAGE_KERNEL);
+> -	else
+> +		break;
+> +	case MEM_TYPE_WCOMBINE:
+>  		prot = pgprot_writecombine(PAGE_KERNEL);
+> +		break;
+> +	default:
+> +		pr_err("invalid memory type\n");
+
+This should be more verbose:
+
+		pr_err("invalid mem_type=%d\n", memtype);
+
+> +		return NULL;
+> +	}
+>  
+>  	pages = kmalloc_array(page_count, sizeof(struct page *), GFP_KERNEL);
+>  	if (!pages) {
+
+With those changes, it looks good to me. Thanks!
+
+-- 
+Kees Cook
