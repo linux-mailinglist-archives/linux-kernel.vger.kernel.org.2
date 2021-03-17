@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E09933ED66
+	by mail.lfdr.de (Postfix) with ESMTP id E972933ED67
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 10:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhCQJs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S229955AbhCQJs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 17 Mar 2021 05:48:58 -0400
-Received: from m42-10.mailgun.net ([69.72.42.10]:24088 "EHLO
-        m42-10.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhCQJsj (ORCPT
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229732AbhCQJsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:48:39 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615974518; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=+0ByTtPZRneuh4QoUZHb/mtwfYGZc1tw0nEg0UI2GpI=; b=oVwblq+UFx9dJ7Ys1qnDlP0fq0Wfv26AP6XCEdXYOMBoBxorVED0KLVNfRXWvhqVS/9N8U4G
- KcwlUTLxdugsvMhfqaycQNLQx3tCf1Q2WU8ppumUNoan8+dojL+3csYY0hEfs32Pw3OeqEGM
- VGQ26orwJe8YUemGaR9rjkkSqJU=
-X-Mailgun-Sending-Ip: 69.72.42.10
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6051d0605d70193f88876df1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Mar 2021 09:48:16
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 114CFC433C6; Wed, 17 Mar 2021 09:48:16 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.69.12])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 310BFC433C6;
-        Wed, 17 Mar 2021 09:48:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 310BFC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
-Subject: Re: [PATCH 1/3] arm64: dts: qcom: sm8350: Remove second reg from pdc
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     swboyd@chromium.org, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, dianders@chromium.org, rnayak@codeaurora.org,
-        lsrao@codeaurora.org, devicetree@vger.kernel.org
-References: <1615958996-31807-1-git-send-email-mkshah@codeaurora.org>
- <87k0q6i1g5.wl-maz@kernel.org>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <bce03166-e65b-198c-8b93-39e0c218aaed@codeaurora.org>
-Date:   Wed, 17 Mar 2021 15:18:09 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 17 Mar 2021 05:48:52 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98A7C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:48:40 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id t5so1064639qvs.5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 02:48:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LXFx5mVxBa1Pa0shsdjl9mOOnBsXD49A5V8O38pzRhE=;
+        b=e0az2cDlbWxEb19vuubACALjyPkGPpdIEWAVYgBE9WVOeo7U0KMNink2j2z/6KVZnO
+         oTq9AZn8SbJSN3Qi7OmuM0y2YLnU4d1ML8rNdRFnEm+oEYg3fGzPGCahPl0KaCwl2I2B
+         h+fDeA6QuueTTUEcL4Xe31M8yyFktLQNVJEVBJfcXXF1tLJcrDqUUL3tm8+T10O/KhX/
+         pVF9siI5ycxB1iLiaIqTF/hhiFddMCjYTjUWziO8VRVFig6B4eooQ3GB5zxSCNQa9Hb5
+         X5Wzaqz9HX3gJCLTt6kMM1g9/ph/3jUZTf6gSYSS0n0lWjE6DdT1jg0CkQBCVdZme63A
+         RxFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LXFx5mVxBa1Pa0shsdjl9mOOnBsXD49A5V8O38pzRhE=;
+        b=SDCsWvdqVzq4vsJEEHfzZyEr+8PMkxecDrUyAMxns6LW/9cYpT+VWH0pQyzaQc2xax
+         O5w/amDnuzWPo/8eDhcpfMArlKn+bNuDnZ/e3uYcKGN1Irjq7m5GX9DieNVDpyqBlObJ
+         2dlV23Wb9Hyc8HMfJGp1HKN27HVmcuvdk9jQJkJNM6TGA9baDvrlnuw20rFsw7OM2Laq
+         DSg7sLS/ioAX6xo+l3B6NmclwdgezsHAzbogpGMmbprKShe/OkvghKsfhlYMNGtNYMv+
+         lDpaT5PyRtGisJXMKtHcmERe3EUacK74Bm90iYmQlIunPoVrwvKQ+Il+T0TA7Zx8qU+L
+         9zAg==
+X-Gm-Message-State: AOAM533BLuKodwa0ROmdKgWKKZh5mkwlYhs6yPzIJ26n0pgJudmXGtWb
+        MvbRT3I3JBfowPjWQ+c4jiAl+0e3kPaDq3tn
+X-Google-Smtp-Source: ABdhPJzTLnT3O4s+JR2v44hyKay3WgkWSYt20Io1o+Jqc7ZLbvZxqZcYqmrQTuYnoPTw8IaKmLA/nw==
+X-Received: by 2002:ad4:4c83:: with SMTP id bs3mr4458147qvb.41.1615974520100;
+        Wed, 17 Mar 2021 02:48:40 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.48])
+        by smtp.gmail.com with ESMTPSA id k28sm17537187qki.101.2021.03.17.02.48.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 02:48:39 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     tytso@mit.edu, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] char: Fix a typo in the file random.c
+Date:   Wed, 17 Mar 2021 15:18:22 +0530
+Message-Id: <20210317094822.1630276-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <87k0q6i1g5.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
 
-On 3/17/2021 2:47 PM, Marc Zyngier wrote:
-> On Wed, 17 Mar 2021 05:29:54 +0000,
-> Maulik Shah <mkshah@codeaurora.org> wrote:
->> PDC interrupt controller driver do not use second reg. Remove it.
-> This is a DT file, not a driver. What the driver does is irrelevant.
->
-> The real question is: what does this range do?
->
-> Thanks,
->
-> 	M.
+s/progams/programs/
 
-This is to set interrupt type in SPI config for which there was a change 
-[1] but has not gone in for upstream PDC driver.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/char/random.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The second reg is not used in upstream PDC driver, probably when posting 
-downstream DT changes for sm8350/sm8250 it was carried in device node as is.
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index 0fe9e200e4c8..afb0195e06f3 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -763,7 +763,7 @@ static DECLARE_WAIT_QUEUE_HEAD(crng_init_wait);
 
-As its not mentioned in bindigs as well, dtbs_check reports it as 
-additional reg when converted to yaml.
-
-[1] 
-https://patchwork.kernel.org/project/linux-arm-msm/patch/1568411962-1022-8-git-send-email-ilina@codeaurora.org/
-
-Thanks,
-Maulik
->
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+ #ifdef CONFIG_NUMA
+ /*
+- * Hack to deal with crazy userspace progams when they are all trying
++ * Hack to deal with crazy userspace programs when they are all trying
+  * to access /dev/urandom in parallel.  The programs are almost
+  * certainly doing something terribly wrong, but we'll work around
+  * their brain damage.
+--
+2.30.2
 
