@@ -2,139 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F01E33F000
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8224E33F003
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231534AbhCQMH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 08:07:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57115 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231579AbhCQMHX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 08:07:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615982842;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S231571AbhCQMIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 08:08:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35618 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231590AbhCQMIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 08:08:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615982903; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=4EfKj4t4CxcLLmQbY2ACIUaycCSNWq4cMHjJwz2bFoo=;
-        b=fLokAn8ebg5A6hRRUpv4RtdFCy0Jk76wEKD8oWTd3Rl21Nq4/PsjofFRspbPjK+xyt9HE8
-        Alvv51a6n7jLW4oRb8Ex3nPR2e1MI9C8cC3Ogtza+oBFu49oHcrGUM6jphU9WXKwqjGSsG
-        Ff0rDBCIU9TezwZpgMfq4zspJb+hkcY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-566-_M2o4w8GNZyvILNwnqQA5w-1; Wed, 17 Mar 2021 08:07:20 -0400
-X-MC-Unique: _M2o4w8GNZyvILNwnqQA5w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4E3E1009461;
-        Wed, 17 Mar 2021 12:07:19 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.196.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C947E1017CF5;
-        Wed, 17 Mar 2021 12:07:17 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 13:07:14 +0100
-From:   Andrew Jones <drjones@redhat.com>
-To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH] selftests/kvm: add test for
- KVM_GET_MSR_FEATURE_INDEX_LIST
-Message-ID: <20210317120714.6xuqujpvdn2tzddj@kamzik.brq.redhat.com>
-References: <20210317074552.8550-1-eesposit@redhat.com>
- <ac3ba1c0-450e-4e24-c2a2-39d037358758@redhat.com>
- <61d11f32-a2da-b593-1c62-bbadc6408215@redhat.com>
+        bh=EzSShNBc+a8YeE9Atm1rFDpCfXSt5KJELlWzCgJ3hd8=;
+        b=GAAR2fNv7ycSCNW1tT0QHZbrZLE2FXxmr44WsCufiP+c3d5rB0ODeb0DBCIgJ3m8GNK7Vo
+        bKs4zX6qm8UjHUASqpC1g1dULhYe1dRCoLhu96z1xXCESHBTCN1QzaJ2sso2O+1xsqB63k
+        ymNyrupM0xSCu+tnr2lhk9xuqvB1MAU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 62407AC24;
+        Wed, 17 Mar 2021 12:08:23 +0000 (UTC)
+Date:   Wed, 17 Mar 2021 13:08:21 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [PATCH v2] seq_file: Unconditionally use vmalloc for buffer
+Message-ID: <YFHxNT1Pwoslmhxq@dhcp22.suse.cz>
+References: <20210315174851.622228-1-keescook@chromium.org>
+ <YFBs202BqG9uqify@dhcp22.suse.cz>
+ <202103161205.B2181BDE38@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <61d11f32-a2da-b593-1c62-bbadc6408215@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <202103161205.B2181BDE38@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 12:25:52PM +0100, Emanuele Giuseppe Esposito wrote:
-> 
-> 
-> On 17/03/2021 11:49, Paolo Bonzini wrote:
-> > On 17/03/21 08:45, Emanuele Giuseppe Esposito wrote:
-> > > +    struct kvm_msr_list features_list;
-> > >       buffer.header.nmsrs = 1;
-> > >       buffer.entry.index = msr_index;
-> > > +    features_list.nmsrs = 1;
-> > > +
-> > >       kvm_fd = open(KVM_DEV_PATH, O_RDONLY);
-> > >       if (kvm_fd < 0)
-> > >           exit(KSFT_SKIP);
-> > > +    r = ioctl(kvm_fd, KVM_GET_MSR_FEATURE_INDEX_LIST, &features_list);
-> > > +    TEST_ASSERT(r < 0 && r != -E2BIG,
-> > > "KVM_GET_MSR_FEATURE_INDEX_LIST IOCTL failed,\n"
-> > > +        "  rc: %i errno: %i", r, errno);
-> > 
-> > Careful: because this has nsmrs == 1, you are overwriting an u32 of the
-> > stack after struct kvm_msr_list.  You need to use your own struct
-> > similar to what is done with "buffer.header" and "buffer.entry".
-> > 
-> > >       r = ioctl(kvm_fd, KVM_GET_MSRS, &buffer.header);
-> > >       TEST_ASSERT(r == 1, "KVM_GET_MSRS IOCTL failed,\n"
-> > >           "  rc: %i errno: %i", r, errno);
-> > > 
-> > 
-> > More in general, this is not a test, but rather a library function used
-> > to read a single MSR.
-> > 
-> > If you would like to add a test for KVM_GET_MSR_FEATURE_INDEX_LIST that
-> > would be very welcome.  That would be a new executable.  Looking at the
-> > logic for the ioctl, the main purpose of the test should be:
-> > 
-> > - check that if features_list.nmsrs is too small it will set the nmsrs
-> > field and return -E2BIG.
-> > 
-> > - check that all MSRs returned by KVM_GET_MSR_FEATURE_INDEX_LIST can be
-> > accessed with KVM_GET_MSRS
-> > 
-> > So something like this:
-> > 
-> >    set nmsrs to 0 and try the ioctl
-> >    check that it returns -E2BIG and has changed nmsrs
-> >    if nmsrs != 1 {
-> >      set nmsrs to 1 and try the ioctl again
-> >      check that it returns -E2BIG
-> >    }
-> >    malloc a buffer with room for struct kvm_msr_list and nmsrs indices
-> >    set nmsrs in the malloc-ed buffer and try the ioctl again
-> >    for each index
-> >      invoke kvm_get_feature_msr to read it
-> > 
-> > (The test should also be skipped if KVM does not expose the
-> > KVM_CAP_GET_MSR_FEATURES capability).
-> 
-> Thank you for the feedback, the title is indeed a little bit misleading. My
-> idea in this patch was to just add an additional check to all usages of
-> KVM_GET_MSRS, since KVM_GET_MSR_FEATURE_INDEX_LIST is used only to probe
-> host capabilities and processor features.
-> But you are right, a separate test would be better.
+On Tue 16-03-21 12:08:02, Kees Cook wrote:
+> On Tue, Mar 16, 2021 at 09:31:23AM +0100, Michal Hocko wrote:
+[...]
+> > Also this cannot really be done for configurations with a very limited
+> > vmalloc space (32b for example). Those systems are more and more rare
+> > but you shouldn't really allow userspace to deplete the vmalloc space.
 >
+> This sounds like two objections:
+> - 32b has a small vmalloc space
+> - userspace shouldn't allow depletion of vmalloc space
+>
+> I'd be happy to make this 64b only. For the latter, I would imagine
+> there are other vmalloc-exposed-to-userspace cases, but yes, this would
+> be much more direct. Is that a problem in practice?
 
-Hi Emanuele,
+vmalloc space shouldn't be a problem for 64b systems but I am not sure
+how does vmalloc scale with many small allocations. There were some
+changes by Uladzislau who might give us more insight (CCed).
 
-You might be able to get some inspiration from the aarch64/get-reg-list.c
-test. The list of MSRs varies with KVM version and host processor, but
-there may be a set of MSRs that does not vary with host processor and
-should not be removed in later KVM versions. If that's the case, then
-the !missing_regs assert concept of aarch64/get-reg-list.c may also
-apply to this new test. Based on Paolo's comment, I presume at least the
-!failed_get should apply. Finally, the test should do the E2BIG checks,
-as Paolo states, but you may also want to create a lib function for
-KVM_GET_MSR_FEATURE_INDEX_LIST, similar to vcpu_get_reg_list(), if you
-think it may be of use to other tests.
+> > I would be also curious to see how vmalloc scales with huge number of
+> > single page allocations which would be easy to trigger with this patch.
+>
+> Right -- what the best way to measure this (and what would be "too
+> much")?
 
-Thanks,
-drew
+Proc is used quite heavily for all sorts of monitoring so I would be
+worried about a noticeable slow down.
 
+Btw. I still have problems with the approach. seq_file is intended to
+provide safe way to dump values to the userspace. Sacrificing
+performance just because of some abuser seems like a wrong way to go as
+Al pointed out earlier. Can we simply stop the abuse and disallow to
+manipulate the buffer directly? I do realize this might be more tricky
+for reasons mentioned in other emails but this is definitely worth
+doing.
 
-
+-- 
+Michal Hocko
+SUSE Labs
