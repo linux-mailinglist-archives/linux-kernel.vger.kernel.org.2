@@ -2,134 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE7533E744
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 03:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60EEB33E748
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 03:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhCQC4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 22:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
+        id S229571AbhCQC61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 22:58:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhCQCzs (ORCPT
+        with ESMTP id S229469AbhCQC54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 22:55:48 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB52C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 19:55:37 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id t83so30355060oih.12
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Mar 2021 19:55:37 -0700 (PDT)
+        Tue, 16 Mar 2021 22:57:56 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616D5C06174A;
+        Tue, 16 Mar 2021 19:57:56 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id c17so129121ilj.7;
+        Tue, 16 Mar 2021 19:57:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BCzU6F4uZhx7sJJrGnHwNOzG8RXcM1PdQDQ68KOnb4g=;
-        b=jvSPqvR7vVYrXbfTCmHC4c+lnilvsDwSUEmRijXAEuU0IrZwpiVgus15lDOP56XG0M
-         OeBdYDxDW1oBk0WdZJRlK1+xg9h4JPznsTR6yb+uMSyRfcmQ5VPp5rFYjSHBEbjZp9i5
-         vlJzl3at/HDjPAXW37FOnqrAve6FRQKIELgTk2Vf/ArXUgY8c+2/XrBmxu7FMnukBElS
-         fipyQFx6Z/U08vkzOHj01+PmrteDauTNjjreibEf2IUYbahbhBQVEmkD8AQTjatoeFBr
-         7NNZn5B2qCane9+9SzW6B0Pyivu+ubPQYGXk3q0t3YMKYbottqQ+6bzChFDNHxyQx599
-         ZLSg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ogRJm9kxdsheL6fGYzsvzfyxMIsZO8zplKaSSV2V4bM=;
+        b=bhU/2ydrm31TuVH9dd62TY9ABePIgeC7r0SG0SO+Gd/oq8SPE5Eqqrp6jOHolqv3fJ
+         7tki3mOyrx/VFV6ji6cQ0BeNIX4MPsyZfRCXNrbgSyQ1TMAqZpfRaYP9DA4heqY6Tp6W
+         /pHzDOcq3OGRhVjXhMfBy3ZDD4LQEIQi70W9DypMkRgT6/sWExgrs2Csj5kx3gE/yg8h
+         OmHdlV2vsjUKddhn2i6S4lR9pik68YcdUdmzFDoPwontu4UWxl/7wOkV6vfgL5RHhgFV
+         9M2XF590Kjp0NlF7g47OBvRkMQ3jib2ZtyQ6Ml2WjKOLdBvMiC9tHEqteqTGyeoxeUxQ
+         +pGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BCzU6F4uZhx7sJJrGnHwNOzG8RXcM1PdQDQ68KOnb4g=;
-        b=tKV41JTCH4mjF1ko7lsqIsQ7q6WkuPVO91COOUeMKo3bBD57nuFKO6aKVOXxCq9yaO
-         8vpQ7Fo4uAxjfOpaCJlOOlpNMdu2tBhFJKC/R6c3+nBzi3uxP/kTsCq9TBASU+j22AXg
-         K7Fq+gg2etoV6i255MonsCEoFUyBhDDO42qTPcsEKo5JdKJ307eqmuSReE9QxelpZD2t
-         IOvs/EKVEiQv8if59nI0+1C1nPKGFgCw9GIXX6fzjBvP2X5iJqER8EhK5w1zzCZ23a7I
-         +ABnmhKMUv5zmhYCC19HJT8yu7DAzJrBNMYFoGIgBsdrRtEkKnuQphTyjaS4L28R4TJk
-         /3EQ==
-X-Gm-Message-State: AOAM53330QGcT6VeFxROoagquhgFdxMh4nvvgmtE3Rv1SfR9Q59ne0Ep
-        q+0LXqRvecGdgw5j8vvFZCpccw==
-X-Google-Smtp-Source: ABdhPJxcT/ALDQlslS78U2rYeCHeJSpWiS0nMXTTBB/sVYN+M3YH+go1KWig/JZ2/p4827s3eS76nw==
-X-Received: by 2002:aca:ab44:: with SMTP id u65mr1244373oie.122.1615949736872;
-        Tue, 16 Mar 2021 19:55:36 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id a6sm8559963otq.79.2021.03.16.19.55.36
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ogRJm9kxdsheL6fGYzsvzfyxMIsZO8zplKaSSV2V4bM=;
+        b=XIPQJ6B1BRmEkLNa0WOSgBhAa9ZuDgmKCA7gcBDkariJb+V82Fy8p38ZdABZvO/TmP
+         fu1N4fjUID59FHGlFqi4roO4AmbCi6UMDc4kbnrTW5fGepkR95SxZ5MVuidi7sWj2bQy
+         0AlbIzUmFV2HzHhgb9qRKON8W0lW5SKEyBZAAV6yBndJjxqMnOsPqAJBgmx1YfScn00Z
+         /icODP0r2R7ITYCux+QdU4TjaVUNCOCSosfPb9V/Pdk6SIS8KEFvnm6WSb2DdI+64e8G
+         hZJQnFQ8Nf+BnnSZVMj9hpHzOSqfnsa09cD7RPmja+9aXZFoO/aEpOTukt5Kpj4545q3
+         pRjA==
+X-Gm-Message-State: AOAM531jgLYOuu/xj9t/UNA3yZsymxsFSdR8LnWCwwvZh76LKV3upQxL
+        qTL5v5J2qtWQ2SftYiC6B57/ccWFTrZtQA==
+X-Google-Smtp-Source: ABdhPJwdebIAiPziAUriYBxL35GdPOOm03EhfnQymz5MQ1Ja2R7DOznDBLqMIgpHx/VbppBksvq+Lg==
+X-Received: by 2002:a92:ce4e:: with SMTP id a14mr6184021ilr.219.1615949875832;
+        Tue, 16 Mar 2021 19:57:55 -0700 (PDT)
+Received: from book ([2601:445:8200:6c90::4210])
+        by smtp.gmail.com with ESMTPSA id h128sm9605414ioa.32.2021.03.16.19.57.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 19:55:36 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm: Remove need for reiterating the compatibles
-Date:   Tue, 16 Mar 2021 19:56:34 -0700
-Message-Id: <20210317025634.3987908-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        Tue, 16 Mar 2021 19:57:55 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 21:57:53 -0500
+From:   Ross Schmidt <ross.schm.dev@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 000/120] 4.19.181-rc1 review
+Message-ID: <20210317025753.GA6466@book>
+References: <20210315135720.002213995@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315135720.002213995@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After spending a non-negligible time trying to figure out why
-dpu_kms_init() would dereference a NULL dpu_kms->pdev, it turns out that
-in addition to adding the new compatible to the msm_drv of_match_table
-one also need to teach add_display_components() to register the child
-nodes - which includes the DPU platform_device.
+On Mon, Mar 15, 2021 at 02:55:51PM +0100, gregkh@linuxfoundation.org wrote:
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> This is the start of the stable review cycle for the 4.19.181 release.
+> There are 120 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
 
-Replace the open coded test for compatibles with a check against the
-match data of the mdss device to save others this trouble in the future.
+Compiled and booted with no regressions on x86_64.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- drivers/gpu/drm/msm/msm_drv.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+Tested-by: Ross Schmidt <ross.schm.dev@gmail.com>
 
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 94525ac76d4e..0f6e186a609d 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -1173,10 +1173,11 @@ static int compare_name_mdp(struct device *dev, void *data)
- 	return (strstr(dev_name(dev), "mdp") != NULL);
- }
- 
--static int add_display_components(struct device *dev,
-+static int add_display_components(struct platform_device *pdev,
- 				  struct component_match **matchptr)
- {
- 	struct device *mdp_dev;
-+	struct device *dev = &pdev->dev;
- 	int ret;
- 
- 	/*
-@@ -1185,9 +1186,9 @@ static int add_display_components(struct device *dev,
- 	 * Populate the children devices, find the MDP5/DPU node, and then add
- 	 * the interfaces to our components list.
- 	 */
--	if (of_device_is_compatible(dev->of_node, "qcom,mdss") ||
--	    of_device_is_compatible(dev->of_node, "qcom,sdm845-mdss") ||
--	    of_device_is_compatible(dev->of_node, "qcom,sc7180-mdss")) {
-+	switch (get_mdp_ver(pdev)) {
-+	case KMS_MDP5:
-+	case KMS_DPU:
- 		ret = of_platform_populate(dev->of_node, NULL, NULL, dev);
- 		if (ret) {
- 			DRM_DEV_ERROR(dev, "failed to populate children devices\n");
-@@ -1206,9 +1207,11 @@ static int add_display_components(struct device *dev,
- 		/* add the MDP component itself */
- 		drm_of_component_match_add(dev, matchptr, compare_of,
- 					   mdp_dev->of_node);
--	} else {
-+		break;
-+	case KMS_MDP4:
- 		/* MDP4 */
- 		mdp_dev = dev;
-+		break;
- 	}
- 
- 	ret = add_components_mdp(mdp_dev, matchptr);
-@@ -1273,7 +1276,7 @@ static int msm_pdev_probe(struct platform_device *pdev)
- 	int ret;
- 
- 	if (get_mdp_ver(pdev)) {
--		ret = add_display_components(&pdev->dev, &match);
-+		ret = add_display_components(pdev, &match);
- 		if (ret)
- 			return ret;
- 	}
--- 
-2.29.2
 
+thanks,
+
+Ross
