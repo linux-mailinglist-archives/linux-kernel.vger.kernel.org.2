@@ -2,145 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856B033E5CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:19:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E4433E5F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 02:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhCQBSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 21:18:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhCQBS0 (ORCPT
+        id S229904AbhCQBW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 21:22:28 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:50478 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231209AbhCQBWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 21:18:26 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF4A2C06174A;
-        Tue, 16 Mar 2021 18:18:25 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id t5so663092qvs.5;
-        Tue, 16 Mar 2021 18:18:25 -0700 (PDT)
+        Tue, 16 Mar 2021 21:22:11 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12H1F1Qb001143;
+        Wed, 17 Mar 2021 01:22:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=E6/9Z664YoFekYwswQCP3lmERumeysmpPMrZ39UTVYI=;
+ b=Eu0IpJMnl++fsD2P6Jl3MbF5sP2DZk/CisG4YzeuWoWaXlWo/qDZHb2HP/xf8GzzTsqm
+ l1aEDVfcoDCo+MkCcnE4N+ILU2wUcyFTLppmtj0NZrUq36iIw1af69Fuc/EmFVVi2xRe
+ rswAyc17ey4Scvl8No4RRUaUikxPKbaLrlpxQwMLjtIMI8vLo8Q8d/nJpx2CSDQIqgKD
+ YKadMBTU18I2NpCkfFgm7PWWZGVI6HruJdWYAuLwNk3UG7/D2tkm5OaR52QowAsl1+Pj
+ sNkI4yS9fnBK40V7+maI0JcR81UsPd/AEKUXhq0dp5+lawIyhfcjLRTos5WiZxhClulQ pg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 378nbmafnt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Mar 2021 01:22:01 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12H1Jk14093207;
+        Wed, 17 Mar 2021 01:22:01 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2044.outbound.protection.outlook.com [104.47.66.44])
+        by aserp3020.oracle.com with ESMTP id 3797a1xwx2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Mar 2021 01:22:01 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KxsT3E8+IEOp4iaK9pmEdlRukfnnraiIBiRgWNNw2xuGIm6446gc5sPfB0WU9WOdNeZQ/fKvASBUou7TpSbmZFps1UPkfmr/wknlcwssKVPIha85SCMZcp9vXyU20Ov5UXBKEttM/wRwnUKDQOr/9cbRqL0+r/JiiaVZwBVn3CqG7E69JWWdaD7MNzelmfng0qZGvHTVP5e0t2v7L+OkcvSk2sLxrX9yzbwWONoH4hRME/inNiirU46Jc+fgdfMKZvIAwvadnXtbIAYZbQT3jhwJOJCyWtrNxnU94jZapgfzhCKeRgKvimjmpcnKKxZN2VNSFGeKlrMrwbHAb0RK3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E6/9Z664YoFekYwswQCP3lmERumeysmpPMrZ39UTVYI=;
+ b=aXXqeI0lpjjxDwEvzLpHR7Eov59oo+YyPSw/ppnrOKjwk0CBnDceo7I+vZ6UL7lI0Q2UjZAwK06fvIPobd5z8R9MwkVBFAnb+dLyfUZozyAKHf9jiTc4po+hYjdUPb0J5SEb2T04bOK5mFreLZirRrSYYyfXPdztGMOuBfaZ/jFhuncnHuOoW2P1coQMjL+Dz2x6DMSSFjczANVYtdQnVpKBwT3ggd8uAoQnAWSnVNEs8mQkGy7YHDFXCSSt+U9HoStDcGZ2svySCvRivRTsWiyZ/MbWFNiXwulBpeCgAIOKE9tufqgDJn+omdIJY1rwhLNCvyeNsE0BE8bd4Q49tw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CeOykkNMQbbpBA1PJcQ5FeH6saPBzbh4QkGHZqnk0Ro=;
-        b=A5vgn0XfdQWMBrZ+VPQzMLIwVToSpQml7c3VSZmGwmJQLT+kinyhb8zgzDkSuyOh6i
-         geME8qVdxDB5h5TPWgouA3IvTLxOkeXhMK5UG+OamFD/g1NreNEnG7jNzpZMBSFm1/hi
-         5VJUPgfEyeRkQKgNGNJqIeWQhgNs5nKNaoDMFdcGPH5W18pX5TrCAdF3Sa9YhWUnHHgV
-         zfC+z1DUzQZbC9nmx10mniREBby3J2F0l72iKIp7Xj5dl5HvMjgCjsCuoJKcg3kg8j2m
-         WKUXhk5xcyTwngwQNQZ/UWP/hVeSqI7wpWxGB8lXDPyTFV6usINQ55D9Y7I9zMz0hELF
-         8FPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CeOykkNMQbbpBA1PJcQ5FeH6saPBzbh4QkGHZqnk0Ro=;
-        b=ldb689sjkoBdWrBUe2qZnmz0x1zBlZmu3eqqvZA682fZbLsgPoc+/7eJE8noEeT6ov
-         qHmrqBStu9HAJv+rRzus+A9uLRhQb3na43YlqcqT6LjEphnPgx1Ju06RXCVdH9PYfF8v
-         C2NYASOcSqNHNaj6FZsu9yTtZ09tUXwMBhJC1Y7tG3K2Qa2WWGEvgXjr0n3WLzhJBH8b
-         ALr0XHIQAov5JwQ48iK9Sm8LarNq3mcEsTRSr/O1uYu6yAAZrPIcQHTC7im1G400EPBY
-         ZevE8cr8KsLKrU8iv27PcVjDGgTpMfKr+QRyxC3DhhBlNM6vLTlzW6ntU3smFSuOtKZb
-         Mxmw==
-X-Gm-Message-State: AOAM532gKJRAo60FzbGd+y1rLrdncTWSTYh3i1FmNy6c4NdR98jntBM+
-        pONAmowT4Qv8H1El8OMvMiHXOQTtEy3A5JKZ
-X-Google-Smtp-Source: ABdhPJxTgchsNsgHQVgO5cunG8vrSgO+PI/WYRYmRNSBvTBlM9N9cjvoIsyMPnHhi4M8iP7fE8fQ7Q==
-X-Received: by 2002:a0c:f053:: with SMTP id b19mr2886205qvl.7.1615943904975;
-        Tue, 16 Mar 2021 18:18:24 -0700 (PDT)
-Received: from localhost.localdomain ([81.198.225.48])
-        by smtp.gmail.com with ESMTPSA id o1sm14749908qtq.81.2021.03.16.18.18.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 18:18:24 -0700 (PDT)
-From:   =?UTF-8?q?D=C4=81vis=20Mos=C4=81ns?= <davispuh@gmail.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-kernel@vger.kernel.org, ce3g8jdj@umail.furryterror.org,
-        =?UTF-8?q?D=C4=81vis=20Mos=C4=81ns?= <davispuh@gmail.com>
-Subject: [RFC] btrfs: Allow read-only mount with corrupted extent tree
-Date:   Wed, 17 Mar 2021 03:20:55 +0200
-Message-Id: <20210317012054.238334-1-davispuh@gmail.com>
-X-Mailer: git-send-email 2.30.2
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E6/9Z664YoFekYwswQCP3lmERumeysmpPMrZ39UTVYI=;
+ b=pfqALFz33hoWUYwHYiO/7FknVVUhbNMJ/BSeCjwxIAllFCwR5Z0/zDQhwKrVD50t3qc3QrnwNgmH32yxSXg7Rw5lTPLZs5ifSjpTyv3ErYClg+cXyTlA+lPdhruNCS2U0xZ2G200C5vMIK6TeIbUd1eVB+FBp/FByZjx/82H4H4=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4534.namprd10.prod.outlook.com (2603:10b6:510:30::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Wed, 17 Mar
+ 2021 01:21:58 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::dc39:c9fa:7365:8c8e]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::dc39:c9fa:7365:8c8e%5]) with mapi id 15.20.3933.032; Wed, 17 Mar 2021
+ 01:21:58 +0000
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] scsi: dt-bindings: ufs: Add sm8250, sm8350
+ compatible strings
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1mtv237a1.fsf@ca-mkp.ca.oracle.com>
+References: <20210204165234.61939-1-vkoul@kernel.org>
+        <YEr3kg6vPu6Htnpw@vkoul-mobl>
+Date:   Tue, 16 Mar 2021 21:21:55 -0400
+In-Reply-To: <YEr3kg6vPu6Htnpw@vkoul-mobl> (Vinod Koul's message of "Fri, 12
+        Mar 2021 10:39:38 +0530")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: SJ0PR03CA0233.namprd03.prod.outlook.com
+ (2603:10b6:a03:39f::28) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SJ0PR03CA0233.namprd03.prod.outlook.com (2603:10b6:a03:39f::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32 via Frontend Transport; Wed, 17 Mar 2021 01:21:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 87943598-0538-41f9-0670-08d8e8e30ee4
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4534:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB4534BD7C845821D3A3F83E078E6A9@PH0PR10MB4534.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rkV4SADDrMtgDhGgYmFi5r+UnFkABCAw2dK1QueK7MQsPbkxcJaqrzHnp+ODd3lLh5euucH5MeHQWPzVskzLV7KIaPrmYiqMiFzCjIZTGzygtxQI5VYzCcOwALaSxs9gZH4ROd9sA/tbWO8XEDxvnjjIyy3o4SNdrm6GhEPbOLPKGM46uE3iWOB/FveyJt1xiGqU4nFgCss6V2Gnh1Cv5yanl5iEigeObskbGB8OcHV+zltXFHVzy/cbibgD3eWWCFma3bfFk7xtFp4O/Ar4LZDw84LgJcXwtvcvVCeCxol5OHtUxDBI4rx/NFWIE1hWuethuMiTJ0ZqEF1Be0C8HRjBe5fC+KH0SB16lFuP7SiP65R8VIQ2t38CedolsoExZDYngjG1ImN3VbMDMGiEmZ1MElM9FlYvdldfesYTpKQ4k0ovi8f0GlB84x2bJAXPHSch74KhoSxpfrhACZkDtEP8Eyd2RBZBz9W4y2IF9Pdqo/HB0Z+uHg1/KPTpZBQ3rq7ilbxisgFq9YjACDQyZMFBwEeemc4qUwVtkqlF9bZxuSeGYbFQZ41Y2xjeUpol
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(136003)(396003)(376002)(346002)(2906002)(86362001)(956004)(186003)(66476007)(83380400001)(16526019)(8936002)(8676002)(66556008)(4326008)(478600001)(6916009)(55016002)(7696005)(54906003)(26005)(4744005)(36916002)(316002)(5660300002)(52116002)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?aBBTSgr48OcqB98+D/XLXrHLZje60OWiWzuU2obw3gmlPH3oc1xt4i5Oo9yA?=
+ =?us-ascii?Q?egxqL6r0zQ/BtRsc8oej84GYHnunUKD/gk0o8YaYoaIQt03dyc6U3pvSijI7?=
+ =?us-ascii?Q?5jw7QY5dpxSyjihWwaKlUrfoZqZZ5jd/w5fGtV+qej+ZqhkZnvR5txjVIqJC?=
+ =?us-ascii?Q?IK5kOm5new/lNFtTSnV9uPfNXxiHtLwbyU5fMNfi6M4xvSTbKanrOzuQMnbF?=
+ =?us-ascii?Q?zVzNM9PvuDJRtQBZi/n90KY2yJKCQwy9DyXAAGJbFpqDdKXes33BnZkIYV4s?=
+ =?us-ascii?Q?ASMfqrAP0ysTy73rmLbWk74XahPBOYyNyu8tSA61WgzjwmbT5pHVUk4E2WGo?=
+ =?us-ascii?Q?AyKBKONcjOuXCBsbhlyRm1FZRbv8euaSir3xDzYlpRcgbDLbeeVQiDfcMHod?=
+ =?us-ascii?Q?mwk+zmuk0M0T7NQwSeUChbGt+hokyIO/zywHjHI7UtGx1jhaaVV3dNZYbDpF?=
+ =?us-ascii?Q?zhiPXPX7/MImeCo5H2UElRPZ2cppzwj9xrSjCh1oCZvbXqgSWSU3FUgEJyqL?=
+ =?us-ascii?Q?9WAwqoNh9spHwlnVNyZ7kRlluW4ZFwslRa/BJx7vjbI79TEa/C/+n9S9u2nu?=
+ =?us-ascii?Q?8w2jP6sCmxIybymHApPN2slXM8WO0e53RXm1ngQQvFoPhDOCaWH14DuqTaAb?=
+ =?us-ascii?Q?P1eppnE/iMdwKkEwasE+sgS8It+JaMLpau6raAgkessRprmU45e92BYgqtgo?=
+ =?us-ascii?Q?05SbKAAxV+J9Q/TWJNRMYVthSQ42FQwjHxiTBFAQdswr6FrPMMzpvhjCByPO?=
+ =?us-ascii?Q?1TdmPKoSkFLIjOahXUxBcnGS97mFDser+2r6cJV5NzG5AbC0lVt5iFfqBlkM?=
+ =?us-ascii?Q?NFvt6iBzCYHHQV3u8/0LX0r9J60glRRgoRRNb9DcJStnsahYhMHGrIdvWnJt?=
+ =?us-ascii?Q?2KRTV285zsqIzaMdq225lsLOr8uWAPkU3r/tw/vUsDNmBVQcAFNW2WAcFO9u?=
+ =?us-ascii?Q?F2DmGLd/HltVWYDWbooyKNkAqmr51HUV14N4BpaoY2v3VIw6rfNOCS65ZC+9?=
+ =?us-ascii?Q?ISO5iXkd4LOxd4l+fKFT4z/nsHVu1QExFi2be57rtKEWCI357m2RYqtwgGJP?=
+ =?us-ascii?Q?SZL6cD+Ad8iExXRfDwSEvkr+myVKPN1V1oFjsoDq7Ix5vQcWq+SN0OvqBLKg?=
+ =?us-ascii?Q?ZD/oZvCeYPGsPm+YYQe4ohIgTKBpp5T3HBR00W5PFjeNJZn9RRkRxryizzGh?=
+ =?us-ascii?Q?Q31hBOk4AjlfnHFDx7SueOTKGc4eFgZoUSsOBqOr1//YgDEVPf1qvMsBYLCy?=
+ =?us-ascii?Q?hW2Z5L1h+/hf0zbP6hAEVi6ZQavXW0DzQRkEWGjmXFiyWzKgd7kfDLbGRkJj?=
+ =?us-ascii?Q?aY9KSXcTxpJ2L2jnudstmvCq?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 87943598-0538-41f9-0670-08d8e8e30ee4
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 01:21:57.9224
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DDjePVPTmNMRn4dpa6hAYR52cXyXFH3VjTzQRl7Ig/hdjF62XOpZ2cbvfnSZwZB9Lo1nWFPN2OpJVja3ym7749qIgonWHkGLUZZWgCylS+4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4534
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9925 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 spamscore=0
+ mlxlogscore=891 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103170007
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9925 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 impostorscore=0
+ malwarescore=0 adultscore=0 mlxscore=0 clxscore=1011 mlxlogscore=999
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 spamscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103170006
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently if there's any corruption at all in extent tree
-(eg. even single bit) then mounting will fail with:
-"failed to read block groups: -5" (-EIO)
-It happens because we immediately abort on first error when
-searching in extent tree for block groups.
 
-Now with this patch if `ignorebadroots` option is specified
-then we handle such case and continue by removing already
-created block groups and creating dummy block groups.
+Vinod,
 
-Signed-off-by: Dāvis Mosāns <davispuh@gmail.com>
----
- fs/btrfs/block-group.c | 14 ++++++++++++++
- fs/btrfs/disk-io.c     |  4 ++--
- fs/btrfs/disk-io.h     |  2 ++
- 3 files changed, 18 insertions(+), 2 deletions(-)
+>> Document "qcom,sm8250-ufshc" and "qcom,sm8350-ufshc" compatible string.
+>> Use of "qcom,sm8250-ufshc" is already present upstream, so add misiing
+>> documentation. "qcom,sm8350-ufshc" is for UFS HC found in SM8350 SoC.
+>
+> Gentle reminder for this patch, Rob has acked this
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 48ebc106a606..827a977614b3 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -2048,6 +2048,20 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
- 	ret = check_chunk_block_group_mappings(info);
- error:
- 	btrfs_free_path(path);
-+
-+	if (ret == -EIO && btrfs_test_opt(info, IGNOREBADROOTS)) {
-+		btrfs_put_block_group_cache(info);
-+		btrfs_stop_all_workers(info);
-+		btrfs_free_block_groups(info);
-+		ret = btrfs_init_workqueues(info, NULL);
-+		if (ret)
-+			return ret;
-+		ret = btrfs_init_space_info(info);
-+		if (ret)
-+			return ret;
-+		return fill_dummy_bgs(info);
-+	}
-+
- 	return ret;
- }
- 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 07a2b4f69b10..dc744f76d075 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1955,7 +1955,7 @@ static int read_backup_root(struct btrfs_fs_info *fs_info, u8 priority)
- }
- 
- /* helper to cleanup workers */
--static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
-+void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
- {
- 	btrfs_destroy_workqueue(fs_info->fixup_workers);
- 	btrfs_destroy_workqueue(fs_info->delalloc_workers);
-@@ -2122,7 +2122,7 @@ static void btrfs_init_qgroup(struct btrfs_fs_info *fs_info)
- 	mutex_init(&fs_info->qgroup_rescan_lock);
- }
- 
--static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
-+int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
- 		struct btrfs_fs_devices *fs_devices)
- {
- 	u32 max_active = fs_info->thread_pool_size;
-diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index e45057c0c016..f9bfcba86a04 100644
---- a/fs/btrfs/disk-io.h
-+++ b/fs/btrfs/disk-io.h
-@@ -137,6 +137,8 @@ int btrfs_find_free_objectid(struct btrfs_root *root, u64 *objectid);
- int btrfs_find_highest_objectid(struct btrfs_root *root, u64 *objectid);
- int __init btrfs_end_io_wq_init(void);
- void __cold btrfs_end_io_wq_exit(void);
-+void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info);
-+int btrfs_init_workqueues(struct btrfs_fs_info *fs_info, struct btrfs_fs_devices *fs_devices);
- 
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- void btrfs_set_buffer_lockdep_class(u64 objectid,
+Was not really expecting a DT patch to be routed through SCSI. But no
+worries. I've queued it up.
+
 -- 
-2.30.2
-
+Martin K. Petersen	Oracle Linux Engineering
