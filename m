@@ -2,361 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7D533FB9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 00:03:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DCD633FBA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 00:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhCQXCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 19:02:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26463 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229658AbhCQXCN (ORCPT
+        id S229967AbhCQXEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 19:04:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhCQXEU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 19:02:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616022133;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y1zBaXw6v3nxp+tbBk95VCpO5EeU4VjR0+nYag5nMgA=;
-        b=aKlmJ4B2V1eq8NFAI8WaUmEY8tVM6pGu0xAE9gZFKA5rnZWHmrlzzGOU83/bErvKxBwjWD
-        U1s/RMm5KQ5j4lG2o4cDdATDP+1b67/2RC+2oB+jogjK/1Wg6IYywiyO//HSYH11zKifRO
-        mW85VkG2zJsOoeuQ6MuCDU2cHC4INcE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-344-73XNEzRCOgec-Wtk9J0Yig-1; Wed, 17 Mar 2021 19:02:11 -0400
-X-MC-Unique: 73XNEzRCOgec-Wtk9J0Yig-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 33FB388EF03;
-        Wed, 17 Mar 2021 23:02:09 +0000 (UTC)
-Received: from Whitewolf.lyude.net (ovpn-119-60.rdu2.redhat.com [10.10.119.60])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DDB02610F0;
-        Wed, 17 Mar 2021 23:02:07 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     nouveau@lists.freedesktop.org
-Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        James Jones <jajones@nvidia.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
-        GEFORCE/QUADRO GPUS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] drm/nouveau/kms/nv50-: Always validate LUTs in nv50_head_atomic_check_lut()
-Date:   Wed, 17 Mar 2021 19:01:46 -0400
-Message-Id: <20210317230146.504182-3-lyude@redhat.com>
-In-Reply-To: <20210317230146.504182-1-lyude@redhat.com>
-References: <20210317230146.504182-1-lyude@redhat.com>
+        Wed, 17 Mar 2021 19:04:20 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829AEC06174A;
+        Wed, 17 Mar 2021 16:04:20 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id l13so2724251qtu.9;
+        Wed, 17 Mar 2021 16:04:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=k8yY4wMfz/LENmaebo7PkCgeIKOG+ARQM/9FSWSmfA4=;
+        b=lCW5nw1cmMmIh6FfwdC5xqsBppuivRiC14wNdawTFLZceT6j6sAGmhk5HkHgTyPY1g
+         QQZbj3Dg/V/9Pmxxw+JywsRRhpXBEfNabAufcfP57K6qOsljHD4vQaFkyjpyFCPRjb7l
+         snGtIn8Sm4MNFAmNY03esOJZkgdGG2QUKH3tuhQbLCF9pSEZdkQ4WusPaVYZmzy+FAwK
+         XjMWUTlNSAeTDEs2Yn6eL67xIq9noyW9HGHjsT+aBhOdzA+O9WNMb7mLv7R/UXrYblRM
+         llzQgboWvT+yXIVeio86kMI6xhhwOHp26yp44GB5HrQTs5lKyZY6P8vv7sUI6tDWD3xE
+         8ikw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=k8yY4wMfz/LENmaebo7PkCgeIKOG+ARQM/9FSWSmfA4=;
+        b=Q0q6FSxKp13LGozab2FSPIL8dAEdzWuEV+rSHLoWxYuKeF81VRcqg93hfweYwef4PI
+         iSNA85n0as+xVLtj1iZrLhyjMYb7oiJ/bH9jVq+ihC/OxmDlC+2WYYw7nPqQ1wjGppd6
+         VpX3fQ6U3YmqEU7UyV9HrFId53Xgr2n+KbAd2RsWTkf4+0QVixNubJ0ABGR1EHLmOG2x
+         /9WzNyi3Edrbj5xUBHIQzKLgHd9b8cixQYigvza/sFMMVMK6SlcpwQMV4b3AmVxng+gv
+         +F0vI2p0jGPtM20Yb136Xw3xDMuZ5Ep0Ps5fWrK70FHUgv/hyBLhNaflXrK/p/fv88hH
+         sQyQ==
+X-Gm-Message-State: AOAM532wOIeI2xj5WQK1te4k0Nk9BEHHITlf6NHEbMfbQ2ZUEFd23czw
+        bxd5jNl8jla5Rka9kkQ2LvIEvVGDYnK4Sg==
+X-Google-Smtp-Source: ABdhPJwx+VpvXLgI7DOPECdygfB4vpMmus7519EOexFij5AvrJTWd5oTUKGfxGL85jol6pvaFkgZFw==
+X-Received: by 2002:ac8:550b:: with SMTP id j11mr1264432qtq.360.1616022257781;
+        Wed, 17 Mar 2021 16:04:17 -0700 (PDT)
+Received: from tong-desktop.local ([2601:5c0:c200:27c6:d4e9:423a:4aca:b208])
+        by smtp.googlemail.com with ESMTPSA id t24sm190192qto.23.2021.03.17.16.04.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 16:04:17 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Tong Zhang <ztong0001@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Raviteja Garimella <raviteja.garimella@broadcom.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] usb: gadget: udc: amd5536udc_pci fix null-ptr-dereference
+Date:   Wed, 17 Mar 2021 19:04:00 -0400
+Message-Id: <20210317230400.357756-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <YFJp+It0/f7O9YId@kroah.com>
+References: <YFJp+It0/f7O9YId@kroah.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When it comes to gamma or degamma luts, nouveau will actually skip the
-calculation of certain LUTs depending on the head and plane states. For
-instance, when the head is disabled we don't perform any error checking on
-the gamma LUT, and likewise if no planes are present and enabled in our
-atomic state we will skip error checking the degamma LUT. This is a bit of
-a problem though, since the per-head gamma and degamma props in DRM can be
-changed even while a head is disabled - a situation which can be triggered
-by the igt testcase mentioned down below.
+init_dma_pools() calls dma_pool_create(...dev->dev) to create dma pool.
+however, dev->dev is actually set after calling init_dma_pools(), which
+effectively makes dma_pool_create(..NULL) and cause crash.
+To fix this issue, init dma only after dev->dev is set.
 
-Originally I thought this was a bit silly and was tempted to just fix the
-igt test to only set gamma/degamma with the head enabled. After a bit of
-thinking though I realized we should fix this in nouveau. This is because
-if a program decides to set an invalid LUT for a head before enabling the
-head, such a property change would succeed while also making it impossible
-to turn the head back on until the LUT is removed or corrected - something
-that could be painful for a user to figure out.
+[    1.317993] RIP: 0010:dma_pool_create+0x83/0x290
+[    1.323257] Call Trace:
+[    1.323390]  ? pci_write_config_word+0x27/0x30
+[    1.323626]  init_dma_pools+0x41/0x1a0 [snps_udc_core]
+[    1.323899]  udc_pci_probe+0x202/0x2b1 [amd5536udc_pci]
 
-So, fix this checking both degamma and gamma LUTs unconditionally during
-atomic checks. We start by calling nv50_head_atomic_check_lut() regardless
-of whether the head is active or not in nv50_head_atomic_check(). Then we
-move the ilut error checking into nv50_head_atomic_check_lut() and add a
-per-head hook for it, primarily because as a per-CRTC property DRM we want
-the LUT to be error checked by the head any time it's included in an atomic
-state. Of course though, actual programming of the degamma lut to hardware
-is still handled in each plane's atomic check and commit.
-
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Testcase: igt/kms_color/pipe-invalid-*-lut-sizes
+Fixes: 7c51247a1f62 (usb: gadget: udc: Provide correct arguments for 'dma_pool_create')
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
 ---
- drivers/gpu/drm/nouveau/dispnv50/base907c.c |  6 +----
- drivers/gpu/drm/nouveau/dispnv50/head.c     | 30 +++++++++++++++------
- drivers/gpu/drm/nouveau/dispnv50/head.h     |  2 ++
- drivers/gpu/drm/nouveau/dispnv50/head907d.c |  6 +++++
- drivers/gpu/drm/nouveau/dispnv50/head917d.c |  1 +
- drivers/gpu/drm/nouveau/dispnv50/headc37d.c |  1 +
- drivers/gpu/drm/nouveau/dispnv50/headc57d.c |  1 +
- drivers/gpu/drm/nouveau/dispnv50/wndw.c     |  5 +---
- drivers/gpu/drm/nouveau/dispnv50/wndw.h     |  4 +--
- drivers/gpu/drm/nouveau/dispnv50/wndwc37e.c |  6 +----
- drivers/gpu/drm/nouveau/dispnv50/wndwc57e.c |  7 +++--
- 11 files changed, 41 insertions(+), 28 deletions(-)
+v2: add Fixes tag and revise subject
 
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/base907c.c b/drivers/gpu/drm/nouveau/dispnv50/base907c.c
-index 5396e3707cc4..e6b0417c325b 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/base907c.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/base907c.c
-@@ -103,12 +103,9 @@ base907c_xlut_set(struct nv50_wndw *wndw, struct nv50_wndw_atom *asyw)
- 	return 0;
- }
+ drivers/usb/gadget/udc/amd5536udc_pci.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/usb/gadget/udc/amd5536udc_pci.c b/drivers/usb/gadget/udc/amd5536udc_pci.c
+index 8d387e0e4d91..c80f9bd51b75 100644
+--- a/drivers/usb/gadget/udc/amd5536udc_pci.c
++++ b/drivers/usb/gadget/udc/amd5536udc_pci.c
+@@ -153,6 +153,11 @@ static int udc_pci_probe(
+ 	pci_set_master(pdev);
+ 	pci_try_set_mwi(pdev);
  
--static bool
-+static void
- base907c_ilut(struct nv50_wndw *wndw, struct nv50_wndw_atom *asyw, int size)
- {
--	if (size != 256 && size != 1024)
--		return false;
++	dev->phys_addr = resource;
++	dev->irq = pdev->irq;
++	dev->pdev = pdev;
++	dev->dev = &pdev->dev;
++
+ 	/* init dma pools */
+ 	if (use_dma) {
+ 		retval = init_dma_pools(dev);
+@@ -160,11 +165,6 @@ static int udc_pci_probe(
+ 			goto err_dma;
+ 	}
+ 
+-	dev->phys_addr = resource;
+-	dev->irq = pdev->irq;
+-	dev->pdev = pdev;
+-	dev->dev = &pdev->dev;
 -
- 	if (size == 1024)
- 		asyw->xlut.i.mode = NV907C_SET_BASE_LUT_LO_MODE_INTERPOLATE_1025_UNITY_RANGE;
- 	else
-@@ -116,7 +113,6 @@ base907c_ilut(struct nv50_wndw *wndw, struct nv50_wndw_atom *asyw, int size)
- 
- 	asyw->xlut.i.enable = NV907C_SET_BASE_LUT_LO_ENABLE_ENABLE;
- 	asyw->xlut.i.load = head907d_olut_load;
--	return true;
- }
- 
- static inline u32
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/head.c b/drivers/gpu/drm/nouveau/dispnv50/head.c
-index fb821dcf6bd2..3b96eafb7bdd 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/head.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/head.c
-@@ -225,9 +225,20 @@ nv50_head_atomic_check_lut(struct nv50_head *head,
- 	struct drm_crtc *crtc = &head->base.base;
- 	struct nv50_disp *disp = nv50_disp(dev);
- 	struct nouveau_drm *drm = nouveau_drm(dev);
--	struct drm_property_blob *olut = asyh->state.gamma_lut;
-+	struct drm_property_blob *olut = asyh->state.gamma_lut,
-+				 *ilut = asyh->state.degamma_lut;
- 	int size;
- 
-+	/* Ensure that the ilut is valid */
-+	if (ilut) {
-+		size = drm_color_lut_size(ilut);
-+		if (!head->func->ilut_check(size)) {
-+			NV_ATOMIC(drm, "Invalid size %d for degamma on [CRTC:%d:%s]\n",
-+				  size, crtc->base.id, crtc->name);
-+			return -EINVAL;
-+		}
-+	}
-+
- 	/* Determine whether core output LUT should be enabled. */
- 	if (olut) {
- 		/* Check if any window(s) have stolen the core output LUT
-@@ -329,8 +340,17 @@ nv50_head_atomic_check(struct drm_crtc *crtc, struct drm_atomic_state *state)
- 	struct drm_connector_state *conns;
- 	struct drm_connector *conn;
- 	int i, ret;
-+	bool check_lut = asyh->state.color_mgmt_changed ||
-+			 memcmp(&armh->wndw, &asyh->wndw, sizeof(asyh->wndw));
- 
- 	NV_ATOMIC(drm, "%s atomic_check %d\n", crtc->name, asyh->state.active);
-+
-+	if (check_lut) {
-+		ret = nv50_head_atomic_check_lut(head, asyh);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	if (asyh->state.active) {
- 		for_each_new_connector_in_state(asyh->state.state, conn, conns, i) {
- 			if (conns->crtc == crtc) {
-@@ -356,14 +376,8 @@ nv50_head_atomic_check(struct drm_crtc *crtc, struct drm_atomic_state *state)
- 		if (asyh->state.mode_changed || asyh->state.connectors_changed)
- 			nv50_head_atomic_check_mode(head, asyh);
- 
--		if (asyh->state.color_mgmt_changed ||
--		    memcmp(&armh->wndw, &asyh->wndw, sizeof(asyh->wndw))) {
--			int ret = nv50_head_atomic_check_lut(head, asyh);
--			if (ret)
--				return ret;
--
-+		if (check_lut)
- 			asyh->olut.visible = asyh->olut.handle != 0;
--		}
- 
- 		if (asyc) {
- 			if (asyc->set.scaler)
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/head.h b/drivers/gpu/drm/nouveau/dispnv50/head.h
-index dae841dc05fd..77407f43f873 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/head.h
-+++ b/drivers/gpu/drm/nouveau/dispnv50/head.h
-@@ -28,6 +28,7 @@ struct nv50_head_func {
- 	int (*view)(struct nv50_head *, struct nv50_head_atom *);
- 	int (*mode)(struct nv50_head *, struct nv50_head_atom *);
- 	bool (*olut)(struct nv50_head *, struct nv50_head_atom *, int);
-+	bool (*ilut_check)(int size);
- 	bool olut_identity;
- 	int  olut_size;
- 	int (*olut_set)(struct nv50_head *, struct nv50_head_atom *);
-@@ -70,6 +71,7 @@ extern const struct nv50_head_func head907d;
- int head907d_view(struct nv50_head *, struct nv50_head_atom *);
- int head907d_mode(struct nv50_head *, struct nv50_head_atom *);
- bool head907d_olut(struct nv50_head *, struct nv50_head_atom *, int);
-+bool head907d_ilut_check(int size);
- int head907d_olut_set(struct nv50_head *, struct nv50_head_atom *);
- int head907d_olut_clr(struct nv50_head *);
- int head907d_core_set(struct nv50_head *, struct nv50_head_atom *);
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/head907d.c b/drivers/gpu/drm/nouveau/dispnv50/head907d.c
-index 85648d790743..18fe4c1e2d6a 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/head907d.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/head907d.c
-@@ -314,6 +314,11 @@ head907d_olut(struct nv50_head *head, struct nv50_head_atom *asyh, int size)
- 	return true;
- }
- 
-+bool head907d_ilut_check(int size)
-+{
-+	return size == 256 || size == 1024;
-+}
-+
- int
- head907d_mode(struct nv50_head *head, struct nv50_head_atom *asyh)
- {
-@@ -409,6 +414,7 @@ head907d = {
- 	.view = head907d_view,
- 	.mode = head907d_mode,
- 	.olut = head907d_olut,
-+	.ilut_check = head907d_ilut_check,
- 	.olut_size = 1024,
- 	.olut_set = head907d_olut_set,
- 	.olut_clr = head907d_olut_clr,
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/head917d.c b/drivers/gpu/drm/nouveau/dispnv50/head917d.c
-index ea9f8667305e..4ce47b55f72c 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/head917d.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/head917d.c
-@@ -119,6 +119,7 @@ head917d = {
- 	.view = head907d_view,
- 	.mode = head907d_mode,
- 	.olut = head907d_olut,
-+	.ilut_check = head907d_ilut_check,
- 	.olut_size = 1024,
- 	.olut_set = head907d_olut_set,
- 	.olut_clr = head907d_olut_clr,
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/headc37d.c b/drivers/gpu/drm/nouveau/dispnv50/headc37d.c
-index 63adfeba50e5..a4a3b78ea42c 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/headc37d.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/headc37d.c
-@@ -285,6 +285,7 @@ headc37d = {
- 	.view = headc37d_view,
- 	.mode = headc37d_mode,
- 	.olut = headc37d_olut,
-+	.ilut_check = head907d_ilut_check,
- 	.olut_size = 1024,
- 	.olut_set = headc37d_olut_set,
- 	.olut_clr = headc37d_olut_clr,
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/headc57d.c b/drivers/gpu/drm/nouveau/dispnv50/headc57d.c
-index fd51527b56b8..fd624eb8a0bb 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/headc57d.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/headc57d.c
-@@ -236,6 +236,7 @@ headc57d = {
- 	.view = headc37d_view,
- 	.mode = headc57d_mode,
- 	.olut = headc57d_olut,
-+	.ilut_check = head907d_ilut_check,
- 	.olut_identity = true,
- 	.olut_size = 1024,
- 	.olut_set = headc57d_olut_set,
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/wndw.c b/drivers/gpu/drm/nouveau/dispnv50/wndw.c
-index 0cb1f9d848d3..3aecd46edd53 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/wndw.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/wndw.c
-@@ -403,10 +403,7 @@ nv50_wndw_atomic_check_lut(struct nv50_wndw *wndw,
- 	/* Recalculate LUT state. */
- 	memset(&asyw->xlut, 0x00, sizeof(asyw->xlut));
- 	if ((asyw->ilut = wndw->func->ilut ? ilut : NULL)) {
--		if (!wndw->func->ilut(wndw, asyw, drm_color_lut_size(ilut))) {
--			DRM_DEBUG_KMS("Invalid ilut\n");
--			return -EINVAL;
--		}
-+		wndw->func->ilut(wndw, asyw, drm_color_lut_size(ilut));
- 		asyw->xlut.handle = wndw->wndw.vram.handle;
- 		asyw->xlut.i.buffer = !asyw->xlut.i.buffer;
- 		asyw->set.xlut = true;
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/wndw.h b/drivers/gpu/drm/nouveau/dispnv50/wndw.h
-index f4e0c5080034..9c9f2c2a71a5 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/wndw.h
-+++ b/drivers/gpu/drm/nouveau/dispnv50/wndw.h
-@@ -64,7 +64,7 @@ struct nv50_wndw_func {
- 	int (*ntfy_clr)(struct nv50_wndw *);
- 	int (*ntfy_wait_begun)(struct nouveau_bo *, u32 offset,
- 			       struct nvif_device *);
--	bool (*ilut)(struct nv50_wndw *, struct nv50_wndw_atom *, int);
-+	void (*ilut)(struct nv50_wndw *wndw, struct nv50_wndw_atom *asyh, int size);
- 	void (*csc)(struct nv50_wndw *, struct nv50_wndw_atom *,
- 		    const struct drm_color_ctm *);
- 	int (*csc_set)(struct nv50_wndw *, struct nv50_wndw_atom *);
-@@ -129,7 +129,7 @@ int wndwc37e_update(struct nv50_wndw *, u32 *);
- 
- int wndwc57e_new(struct nouveau_drm *, enum drm_plane_type, int, s32,
- 		 struct nv50_wndw **);
--bool wndwc57e_ilut(struct nv50_wndw *, struct nv50_wndw_atom *, int);
-+void wndwc57e_ilut(struct nv50_wndw *, struct nv50_wndw_atom *, int);
- int wndwc57e_ilut_set(struct nv50_wndw *, struct nv50_wndw_atom *);
- int wndwc57e_ilut_clr(struct nv50_wndw *);
- int wndwc57e_csc_set(struct nv50_wndw *, struct nv50_wndw_atom *);
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/wndwc37e.c b/drivers/gpu/drm/nouveau/dispnv50/wndwc37e.c
-index 57df997c5ff3..183d2c0e65b6 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/wndwc37e.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/wndwc37e.c
-@@ -82,18 +82,14 @@ wndwc37e_ilut_set(struct nv50_wndw *wndw, struct nv50_wndw_atom *asyw)
- 	return 0;
- }
- 
--static bool
-+static void
- wndwc37e_ilut(struct nv50_wndw *wndw, struct nv50_wndw_atom *asyw, int size)
- {
--	if (size != 256 && size != 1024)
--		return false;
--
- 	asyw->xlut.i.size = size == 1024 ? NVC37E_SET_CONTROL_INPUT_LUT_SIZE_SIZE_1025 :
- 					   NVC37E_SET_CONTROL_INPUT_LUT_SIZE_SIZE_257;
- 	asyw->xlut.i.range = NVC37E_SET_CONTROL_INPUT_LUT_RANGE_UNITY;
- 	asyw->xlut.i.output_mode = NVC37E_SET_CONTROL_INPUT_LUT_OUTPUT_MODE_INTERPOLATE;
- 	asyw->xlut.i.load = head907d_olut_load;
--	return true;
- }
- 
- int
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/wndwc57e.c b/drivers/gpu/drm/nouveau/dispnv50/wndwc57e.c
-index abdd3bb658b3..37f6da8b3f2a 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/wndwc57e.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/wndwc57e.c
-@@ -179,11 +179,11 @@ wndwc57e_ilut_load(struct drm_color_lut *in, int size, void __iomem *mem)
- 	writew(readw(mem - 4), mem + 4);
- }
- 
--bool
-+void
- wndwc57e_ilut(struct nv50_wndw *wndw, struct nv50_wndw_atom *asyw, int size)
- {
--	if (size = size ? size : 1024, size != 256 && size != 1024)
--		return false;
-+	if (!size)
-+		size = 1024;
- 
- 	if (size == 256)
- 		asyw->xlut.i.mode = NVC57E_SET_ILUT_CONTROL_MODE_DIRECT8;
-@@ -193,7 +193,6 @@ wndwc57e_ilut(struct nv50_wndw *wndw, struct nv50_wndw_atom *asyw, int size)
- 	asyw->xlut.i.size = 4 /* VSS header. */ + size + 1 /* Entries. */;
- 	asyw->xlut.i.output_mode = NVC57E_SET_ILUT_CONTROL_INTERPOLATE_DISABLE;
- 	asyw->xlut.i.load = wndwc57e_ilut_load;
--	return true;
- }
- 
- /****************************************************************
+ 	/* general probing */
+ 	if (udc_probe(dev)) {
+ 		retval = -ENODEV;
 -- 
-2.29.2
+2.25.1
 
