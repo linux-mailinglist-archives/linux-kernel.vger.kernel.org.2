@@ -2,99 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397A033EF04
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 198CE33EF18
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 12:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbhCQLBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 07:01:08 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:11144 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229904AbhCQLAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 07:00:53 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F0nJL0lMJzB09ZQ;
-        Wed, 17 Mar 2021 12:00:50 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id fIYz-sycb4US; Wed, 17 Mar 2021 12:00:49 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F0nJK50DvzB09ZN;
-        Wed, 17 Mar 2021 12:00:49 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DBA2A8B83B;
-        Wed, 17 Mar 2021 12:00:50 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id lsc9qA8DkVwB; Wed, 17 Mar 2021 12:00:50 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id EA7458B82F;
-        Wed, 17 Mar 2021 12:00:48 +0100 (CET)
-Subject: Re: [PATCH v2] smp: kernel/panic.c - silence warnings
-To:     Ingo Molnar <mingo@kernel.org>, He Ying <heying24@huawei.com>
-Cc:     peterz@infradead.org, frederic@kernel.org, paulmck@kernel.org,
-        clg@kaod.org, qais.yousef@arm.com, johnny.chenyi@huawei.com,
-        linux-kernel@vger.kernel.org
-References: <20210316084150.75201-1-heying24@huawei.com>
- <20210317094908.GB1724119@gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <9691919b-d014-7433-3345-812c9b19a677@csgroup.eu>
-Date:   Wed, 17 Mar 2021 12:00:29 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210317094908.GB1724119@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+        id S231231AbhCQLCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 07:02:45 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:62475 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231184AbhCQLCb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 07:02:31 -0400
+Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 17 Mar 2021 04:02:31 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 17 Mar 2021 04:02:29 -0700
+X-QCInternal: smtphost
+Received: from c-sanm-linux.qualcomm.com ([10.206.25.31])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 17 Mar 2021 16:31:48 +0530
+Received: by c-sanm-linux.qualcomm.com (Postfix, from userid 2343233)
+        id CA5D037DF; Wed, 17 Mar 2021 16:31:46 +0530 (IST)
+From:   Sandeep Maheswaram <sanm@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wesley Cheng <wcheng@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-usb@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Subject: [PATCH 0/3] Add DT bindings and DT nodes for USB in SC7280
+Date:   Wed, 17 Mar 2021 16:31:38 +0530
+Message-Id: <1615978901-4202-1-git-send-email-sanm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series includes usb controller and phy binding updates
+for SC7280 SoC and DT chnages for SC7280 SoC and SC7280 IDP board.
 
+The IDP board change dependency on the below patch series
+https://patchwork.kernel.org/project/linux-arm-msm/list/?series=448321
 
-Le 17/03/2021 à 10:49, Ingo Molnar a écrit :
-> 
-> * He Ying <heying24@huawei.com> wrote:
-> 
->> We found these warnings in kernel/panic.c by using sparse tool:
->> warning: symbol 'panic_smp_self_stop' was not declared.
->> warning: symbol 'nmi_panic_self_stop' was not declared.
->> warning: symbol 'crash_smp_send_stop' was not declared.
->>
->> To avoid them, add declarations for these three functions in
->> include/linux/smp.h.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: He Ying <heying24@huawei.com>
->> ---
->> V1->V2:
->> - fix some misspellings
->>
->>   include/linux/smp.h | 8 ++++++++
->>   1 file changed, 8 insertions(+)
->>
->> diff --git a/include/linux/smp.h b/include/linux/smp.h
->> index 70c6f6284dcf..27008a1c8111 100644
->> --- a/include/linux/smp.h
->> +++ b/include/linux/smp.h
->> @@ -50,6 +50,14 @@ extern unsigned int total_cpus;
->>   int smp_call_function_single(int cpuid, smp_call_func_t func, void *info,
->>   			     int wait);
->>   
->> +/*
->> + * Cpus stopping functions in panic. All have default weak definitions.
->> + * Architecture-dependent code may override them.
->> + */
->> +void panic_smp_self_stop(void);
->> +void nmi_panic_self_stop(struct pt_regs *regs);
->> +void crash_smp_send_stop(void);
-> 
+Sandeep Maheswaram (3):
+  dt-bindings: usb: qcom,dwc3: Add bindings for SC7280
+  dt-bindings: phy: qcom,usb-snps-femto-v2: Add bindings for SC7280
+  arm64: dts: qcom: sc7280: Add USB related nodes
 
-What do you mean ? 'extern' prototype is pointless for function prototypes and deprecated, no new 
-function prototypes should be added with the 'extern' keyword.
+ .../bindings/phy/qcom,usb-snps-femto-v2.yaml       |   1 +
+ .../devicetree/bindings/usb/qcom,dwc3.yaml         |   1 +
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts            |  39 ++++++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 149 +++++++++++++++++++++
+ 4 files changed, 190 insertions(+)
 
-checkpatch.pl tells you: "extern prototypes should be avoided in .h files"
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
-Christophe
