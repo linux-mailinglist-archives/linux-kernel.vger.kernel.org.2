@@ -2,44 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A630433F739
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E494433F73D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 18:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232135AbhCQRi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 13:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbhCQRiI (ORCPT
+        id S231232AbhCQRjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 13:39:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27493 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231741AbhCQRjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:38:08 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE5AC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:38:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=8BWN60n1BMZenVNSXOAhYopOXZLzcn6RzVKWX/dELqA=; b=CNIsvx9FxAVz++2JiA94yDZCkC
-        20MDGYa8kUmRvAymYfeIv8OvzWNYxG3LqaXIHKYKcU8No7B/8c7ThO0U4RLWIqVsM7lFW5zvjuENC
-        8N3VAVmyjOhAscI/SQMV80fRwEjDpWtGIp6T1Yf/goI4xOZn8ENZ3sWbH/z/zuIk4vMM8ulQR4lwD
-        rODkZfH/12c9I6pYR1bOGl5nvN8Ze+ABUBVVvdgNWiWw3AY1lGwFvzWpJdGQmmStwS+NqQmG0w2Kh
-        8DvtCRTfX1RD0l4AoHer8Vk9rDNwL+rpbay7b1sUJ2WZFmcFB81dE6D3PZ4e9Tar3mlAG7xzg3BtD
-        3EZxHwlA==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMa7Q-001fY3-8z; Wed, 17 Mar 2021 17:38:04 +0000
-Subject: Re: [PATCH] xtensa: kernel: Fix typo in the file vectors.S
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, chris@zankel.net,
-        jcmvbkbc@gmail.com, akpm@linux-foundation.org, rppt@kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-kernel@vger.kernel.org
-References: <20210317082758.3785266-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ad1a8d60-3583-a003-9aee-ed21294855e7@infradead.org>
-Date:   Wed, 17 Mar 2021 10:37:58 -0700
+        Wed, 17 Mar 2021 13:39:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616002748;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cmp3AOe6/8OTUuf+//7xGx20rFpuBW0gLXu6HX63aaI=;
+        b=HTUri1WpkCizMiyIDH46qc2Or9bkJ3VrjYGs9VqQ/adnUqEs3nZtDZ2hj08F+fKTZkTkHz
+        5tGGnjzEIA7kCRHi8Pm4SXbiEE5zTOT2nvxzLcdqUkJ699ljGsCcqeUcc58Dx7ywmPJ08r
+        qjL7QfHITOORv9YDHTamqkNRsP4p44E=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-302-eWEAQDMwNTe5maaWUj3hkg-1; Wed, 17 Mar 2021 13:39:06 -0400
+X-MC-Unique: eWEAQDMwNTe5maaWUj3hkg-1
+Received: by mail-ej1-f72.google.com with SMTP id v27so10737163ejq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 10:39:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Cmp3AOe6/8OTUuf+//7xGx20rFpuBW0gLXu6HX63aaI=;
+        b=Ma1SF/SS8/7OSDWr/0yOI6wvVLPRiRPeU7ai8YW9pls58Udv/XYJGOrnc+I1wXGdda
+         vPqLI23fmimanz3hbQEUFALNizsrtL8//IIUXn65eF2evkHJZQHZ1ArzDWXnO3B9ZpdR
+         qGk98Z8RyyFE9gA4kYrgYPsk7EpW3rUk81uYVehfvR1TmV7nPPCSbiOB04iRg5pqGLWS
+         dOzebQ+C+H3DyPGj2LfOdOCaRmfAFPYQ41xIlLoCZXyMmIg0EM38U31xRc/VT2N2kNqC
+         FQrzCjc9KPPadb+T0rfcZH10sUkmixSVelLxRaz/mGi4r7LiM67afzc2L4zxlIYNCd7G
+         TRiA==
+X-Gm-Message-State: AOAM530cduKTv8uDeBZZQMV44jfUu9NIDMSqWi3iPtPO+kyZnFdMDwiC
+        3kdqsuweJcT1DBDKWL/+6bqil+Tij1TJbk8bJdPJHeGfbL8vTovY/TZHgP6WfjxQaxDVRqCXxZR
+        785Odm06xIvVjRj7paasNvJ3c4uis2zlRjnx+GEFHfyJHuuEshm92/VYQtELXijQQXzbhyOeXIy
+        Ar
+X-Received: by 2002:aa7:d954:: with SMTP id l20mr43572190eds.1.1616002745442;
+        Wed, 17 Mar 2021 10:39:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwWI+Nz3oJ3aTMnmdebMc2YpP79z+h1kTt/FVhtFdhiJfuJf8XpXTs93ZM6FYn4/LO5RVWggg==
+X-Received: by 2002:aa7:d954:: with SMTP id l20mr43572165eds.1.1616002745191;
+        Wed, 17 Mar 2021 10:39:05 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id gx2sm6670203ejc.82.2021.03.17.10.39.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 10:39:04 -0700 (PDT)
+Subject: Re: [PATCH 0/2] power: supply: Add battery and AC drivers for Surface
+ devices
+To:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210309000530.2165752-1-luzmaximilian@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <edcbe108-8cd7-4034-222f-c8ce56918dee@redhat.com>
+Date:   Wed, 17 Mar 2021 18:39:04 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210317082758.3785266-1-unixbhaskar@gmail.com>
+In-Reply-To: <20210309000530.2165752-1-luzmaximilian@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -47,35 +74,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 1:27 AM, Bhaskar Chowdhury wrote:
+Hi,
+
+On 3/9/21 1:05 AM, Maximilian Luz wrote:
+> This series provides battery and AC drivers for Microsoft Surface
+> devices, where this information is provided via an embedded controller
+> (the Surface System Aggregator Module, SSAM) instead of the usual ACPI
+> interface.
 > 
-> s/markt/mark/
+> Specifically, 7th generation Surface devices, i.e. Surface Pro 7,
+> Surface Book 3, Surface Laptop 3, as well as the Surface Laptop Go use
+> this new interface.
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  arch/xtensa/kernel/vectors.S | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Note: This series depends on the
 > 
-> diff --git a/arch/xtensa/kernel/vectors.S b/arch/xtensa/kernel/vectors.S
-> index 1a7538ccfc5a..bb4243de8ba3 100644
-> --- a/arch/xtensa/kernel/vectors.S
-> +++ b/arch/xtensa/kernel/vectors.S
-> @@ -202,7 +202,7 @@ ENDPROC(_KernelExceptionVector)
->   * See the handle_alloca_user and spill_registers routines for example clients.
->   *
->   * FIXME: Note: we currently don't allow signal handling coming from a double
-> - *        exception, so the item markt with (*) is not required.
-
-                                    marked
-
-
-> + *        exception, so the item mark with (*) is not required.
->   */
+>     platform/surface: Add Surface Aggregator device registry
 > 
->  	.section .DoubleExceptionVector.text, "ax"
-> --
+> series. More specifically patch
+> 
+>     platform/surface: Set up Surface Aggregator device registry
+> 
+> The full series has been merged into the for-next branch of the
+> platform-drivers-x86 tree [1]. The commit in question can be found at
+> [2].
+> 
+> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=for-next
+> [2]: https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/commit/?h=for-next&id=fc622b3d36e6d91330fb21506b9ad1e3206a4dde
+
+Sebastian, I guess you want a pull-req from an immutable branch from me for
+that dependend commit and then you will merge these 2 patches ?
+
+Maximillian, this only needs that commit right, or would it be better if
+I send Sebastian a pull-req for a branch with the entire series?
+
+Regards,
+
+Hans
 
 
--- 
-~Randy
+
+
+
+> 
+> Maximilian Luz (2):
+>   power: supply: Add battery driver for Surface Aggregator Module
+>   power: supply: Add AC driver for Surface Aggregator Module
+> 
+>  MAINTAINERS                            |   8 +
+>  drivers/power/supply/Kconfig           |  32 +
+>  drivers/power/supply/Makefile          |   2 +
+>  drivers/power/supply/surface_battery.c | 901 +++++++++++++++++++++++++
+>  drivers/power/supply/surface_charger.c | 296 ++++++++
+>  5 files changed, 1239 insertions(+)
+>  create mode 100644 drivers/power/supply/surface_battery.c
+>  create mode 100644 drivers/power/supply/surface_charger.c
+> 
 
