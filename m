@@ -2,241 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0006733F00D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C70E33F012
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 13:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbhCQMMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 08:12:18 -0400
-Received: from a0.mail.mailgun.net ([198.61.254.59]:13486 "EHLO
-        a0.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhCQMML (ORCPT
+        id S229549AbhCQMQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 08:16:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48858 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229472AbhCQMQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 08:12:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615983130; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=LTIBg0w55xOXk1pOPZGrIdiuibgse0XRpR2wxcb2toQ=;
- b=TdTLEmVwpMRoWQ1bd/XjxOKB9v5kLKsmXiZMW3kz7pc5tgqCt3gIQTnRb3Q9GTUWHNM+rbPp
- ihWcqqlUU/DFm5afgRbGd+oiqx4kwlRiQGdtoppG7Wtd36t38TE7ZnL2CFWXJZCGfTwI93Du
- 5GGpkluL1BG7k59CHJ1LycDG234=
-X-Mailgun-Sending-Ip: 198.61.254.59
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 6051f2144db3bb68017be315 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Mar 2021 12:12:04
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E241BC433C6; Wed, 17 Mar 2021 12:12:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        Wed, 17 Mar 2021 08:16:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615983373;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FszNgVMbQS63a+s1/yYr/sdKQFD0RdKs3g1thIm7GaM=;
+        b=dWJJNccO87A7CYK8hcU0BJQfvWsNrFanJ7whEd4b7F73v6LLylsB/QJxeLev9cR/enesx4
+        BhEno/xKNaAQ7UC5W3o0Ko5GzQ+lXNmzNIyopH1jbibqJC46q7ljF6MxYTmsJHmQPN1BV8
+        W1ijEZshOal9ldG1OpiWMBvZkpNuZOQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-103-aznJxc56OhGAFbe8fIvmWQ-1; Wed, 17 Mar 2021 08:16:09 -0400
+X-MC-Unique: aznJxc56OhGAFbe8fIvmWQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8DB64C433CA;
-        Wed, 17 Mar 2021 12:12:02 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CAFA98189D3;
+        Wed, 17 Mar 2021 12:16:07 +0000 (UTC)
+Received: from krava (unknown [10.40.194.149])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4778C5D9D3;
+        Wed, 17 Mar 2021 12:16:02 +0000 (UTC)
+Date:   Wed, 17 Mar 2021 13:16:01 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Cc:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kajol Jain <kjain@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        acme@kernel.org, linux-perf-users@vger.kernel.org,
+        jolsa@kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kan.liang@linux.intel.com
+Subject: Re: [PATCH 4/4] tools/perf: Support pipeline stage cycles for powerpc
+Message-ID: <YFHzAZjE1f8nq0l8@krava>
+References: <1615298640-1529-1-git-send-email-atrajeev@linux.vnet.ibm.com>
+ <1615298640-1529-5-git-send-email-atrajeev@linux.vnet.ibm.com>
+ <YEtlEyb2z33qHhvO@krava>
+ <FD9505E3-8CDE-4073-88A0-BCA4B92F276E@linux.vnet.ibm.com>
+ <YE/rS5jZLA0RHYZG@krava>
+ <CA827A39-FA2A-4B0C-BF8F-9DB428CD58B8@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 17 Mar 2021 20:12:02 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
-Subject: Re: [PATCH v5 06/10] scsi: ufshpb: Add hpb dev reset response
-In-Reply-To: <DM6PR04MB6575006E0682C3D11F54965DFC6A9@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20210302132503.224670-1-avri.altman@wdc.com>
- <20210302132503.224670-7-avri.altman@wdc.com>
- <59a62fc17ec9229a8498e696eb0474be@codeaurora.org>
- <DM6PR04MB6575006E0682C3D11F54965DFC6A9@DM6PR04MB6575.namprd04.prod.outlook.com>
-Message-ID: <1d0e3c5441ecf14b6614ec0af0d30af6@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CA827A39-FA2A-4B0C-BF8F-9DB428CD58B8@linux.vnet.ibm.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-17 19:23, Avri Altman wrote:
->> 
->> On 2021-03-02 21:24, Avri Altman wrote:
->> > The spec does not define what is the host's recommended response when
->> > the device send hpb dev reset response (oper 0x2).
->> >
->> > We will update all active hpb regions: mark them and do that on the
->> > next
->> > read.
->> >
->> > Signed-off-by: Avri Altman <avri.altman@wdc.com>
->> > ---
->> >  drivers/scsi/ufs/ufshpb.c | 47
->> ++++++++++++++++++++++++++++++++++++---
->> >  drivers/scsi/ufs/ufshpb.h |  2 ++
->> >  2 files changed, 46 insertions(+), 3 deletions(-)
->> >
->> > diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
->> > index 0744feb4d484..0034fa03fdc6 100644
->> > --- a/drivers/scsi/ufs/ufshpb.c
->> > +++ b/drivers/scsi/ufs/ufshpb.c
->> > @@ -642,7 +642,8 @@ int ufshpb_prep(struct ufs_hba *hba, struct
->> > ufshcd_lrb *lrbp)
->> >               if (rgn->reads == ACTIVATION_THRESHOLD)
->> >                       activate = true;
->> >               spin_unlock_irqrestore(&rgn->rgn_lock, flags);
->> > -             if (activate) {
->> > +             if (activate ||
->> > +                 test_and_clear_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags)) {
->> >                       spin_lock_irqsave(&hpb->rsp_list_lock, flags);
->> >                       ufshpb_update_active_info(hpb, rgn_idx, srgn_idx);
->> >                       hpb->stats.rb_active_cnt++;
->> > @@ -1480,6 +1481,20 @@ void ufshpb_rsp_upiu(struct ufs_hba *hba,
->> > struct ufshcd_lrb *lrbp)
->> >       case HPB_RSP_DEV_RESET:
->> >               dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
->> >                        "UFS device lost HPB information during PM.\n");
->> > +
->> > +             if (hpb->is_hcm) {
->> > +                     struct scsi_device *sdev;
->> > +
->> > +                     __shost_for_each_device(sdev, hba->host) {
->> > +                             struct ufshpb_lu *h = sdev->hostdata;
->> > +
->> > +                             if (!h)
->> > +                                     continue;
->> > +
->> > +                             schedule_work(&hpb->ufshpb_lun_reset_work);
->> > +                     }
->> > +             }
->> > +
->> >               break;
->> >       default:
->> >               dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
->> > @@ -1594,6 +1609,25 @@ static void
->> > ufshpb_run_inactive_region_list(struct ufshpb_lu *hpb)
->> >       spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
->> >  }
->> >
->> > +static void ufshpb_reset_work_handler(struct work_struct *work)
->> 
->> Just curious, directly doing below things inside ufshpb_rsp_upiu() 
->> does
->> not
->> seem a problem to me, does this really deserve a separate work?
-> I don't know, I never even consider of doing this.
-> The active region list may contain up to few thousands of regions -
-> It is not rare to see configurations that covers the entire device.
-> 
+On Wed, Mar 17, 2021 at 05:01:27PM +0530, Athira Rajeev wrote:
+> <html><head></head><body dir=3D"auto" style=3D"word-wrap: break-word; -we=
+bkit-nbsp-mode: space; line-break: after-white-space;" class=3D"ApplePlainT=
+extBody"><div class=3D"ApplePlainTextBody"><br><br><blockquote type=3D"cite=
+">On 16-Mar-2021, at 4:48 AM, Jiri Olsa &lt;jolsa@redhat.com&gt; wrote:<br>=
+<br>On Mon, Mar 15, 2021 at 01:22:09PM +0530, Athira Rajeev wrote:<br><br>S=
+NIP<br><br><blockquote type=3D"cite">+<br>+static char *setup_dynamic_sort_=
+keys(char *str)<br>+{<br>+<span class=3D"Apple-tab-span" style=3D"white-spa=
+ce:pre">	</span>unsigned int j;<br>+<br>+<span class=3D"Apple-tab-span" sty=
+le=3D"white-space:pre">	</span>if (sort__mode =3D=3D SORT_MODE__MEMORY)<br>=
++<span class=3D"Apple-tab-span" style=3D"white-space:pre">	</span><span cla=
+ss=3D"Apple-tab-span" style=3D"white-space:pre">	</span>for (j =3D 0; j &lt=
+; ARRAY_SIZE(dynamic_sort_keys_mem); j++)<br>+<span class=3D"Apple-tab-span=
+" style=3D"white-space:pre">	</span><span class=3D"Apple-tab-span" style=3D=
+"white-space:pre">	</span><span class=3D"Apple-tab-span" style=3D"white-spa=
+ce:pre">	</span>if (arch_support_dynamic_key(dynamic_sort_keys_mem[j])) {<b=
+r>+<span class=3D"Apple-tab-span" style=3D"white-space:pre">	</span><span c=
+lass=3D"Apple-tab-span" style=3D"white-space:pre">	</span><span class=3D"Ap=
+ple-tab-span" style=3D"white-space:pre">	</span><span class=3D"Apple-tab-sp=
+an" style=3D"white-space:pre">	</span>str =3D suffix_if_not_in(dynamic_sort=
+_keys_mem[j], str);<br>+<span class=3D"Apple-tab-span" style=3D"white-space=
+:pre">	</span><span class=3D"Apple-tab-span" style=3D"white-space:pre">	</s=
+pan><span class=3D"Apple-tab-span" style=3D"white-space:pre">	</span><span =
+class=3D"Apple-tab-span" style=3D"white-space:pre">	</span>if (str =3D=3D N=
+ULL)<br>+<span class=3D"Apple-tab-span" style=3D"white-space:pre">	</span><=
+span class=3D"Apple-tab-span" style=3D"white-space:pre">	</span><span class=
+=3D"Apple-tab-span" style=3D"white-space:pre">	</span><span class=3D"Apple-=
+tab-span" style=3D"white-space:pre">	</span><span class=3D"Apple-tab-span" =
+style=3D"white-space:pre">	</span>return str;<br>+<span class=3D"Apple-tab-=
+span" style=3D"white-space:pre">	</span><span class=3D"Apple-tab-span" styl=
+e=3D"white-space:pre">	</span><span class=3D"Apple-tab-span" style=3D"white=
+-space:pre">	</span>}<br>+<br>+<span class=3D"Apple-tab-span" style=3D"whit=
+e-space:pre">	</span>return str;<br>+}<br>+<br>static int __setup_sorting(s=
+truct evlist *evlist)<br>{<br><span class=3D"Apple-tab-span" style=3D"white=
+-space:pre">	</span>char *str;<br>@@ -3050,6 +3085,12 @@ static int __setup=
+_sorting(struct evlist *evlist)<br><span class=3D"Apple-tab-span" style=3D"=
+white-space:pre">	</span><span class=3D"Apple-tab-span" style=3D"white-spac=
+e:pre">	</span>}<br><span class=3D"Apple-tab-span" style=3D"white-space:pre=
+">	</span>}<br><br>+<span class=3D"Apple-tab-span" style=3D"white-space:pre=
+">	</span>str =3D setup_dynamic_sort_keys(str);<br>+<span class=3D"Apple-ta=
+b-span" style=3D"white-space:pre">	</span>if (str =3D=3D NULL) {<br>+<span =
+class=3D"Apple-tab-span" style=3D"white-space:pre">	</span><span class=3D"A=
+pple-tab-span" style=3D"white-space:pre">	</span>pr_err("Not enough memory =
+to setup dynamic sort keys");<br>+<span class=3D"Apple-tab-span" style=3D"w=
+hite-space:pre">	</span><span class=3D"Apple-tab-span" style=3D"white-space=
+:pre">	</span>return -ENOMEM;<br>+<span class=3D"Apple-tab-span" style=3D"w=
+hite-space:pre">	</span>}<br></blockquote><br>hum, so this is basicaly over=
+loading the default_mem_sort_order for<br>architecture, right?<br><br>then =
+I think it'd be easier just overload default_mem_sort_order directly<br><br=
+>I was thinking more about adding extra (arch specific) loop to<br>sort_dim=
+ension__add or somehow add arch's specific stuff to<br>memory_sort_dimensio=
+ns<br></blockquote><br>Hi Jiri,<br><br>Above patch was to append additional=
+ sort keys to sort order based on<br>sort mode and architecture support. I =
+had initially thought of defining two<br>orders ( say default_mem_sort_orde=
+r plus mem_sort_order_pstage ). But if<br>new sort keys gets added for mem =
+mode in future, we will need to keep<br>updating both orders. So preferred =
+the approach of "appending" supported sort<br>keys to default order.<br><br=
+>Following your thought on using "sort_dimension__add", I tried below appro=
+ach<br>which is easier. The new sort dimension "p_stage_cyc" is presently o=
+nly supported<br>on powerpc. For unsupported platforms, we don't want to di=
+splay it<br>in the perf report output columns. Hence added check in sort_di=
+mension__add()<br>and skip the sort key incase its not applicable for parti=
+cular arch.<br><br>Please help to check if below approach looks fine.<br><b=
+r><br>diff --git a/tools/perf/arch/powerpc/util/event.c b/tools/perf/arch/p=
+owerpc/util/event.c<br>index b80fbee83b6e..7205767d75eb 100644<br>--- a/too=
+ls/perf/arch/powerpc/util/event.c<br>+++ b/tools/perf/arch/powerpc/util/eve=
+nt.c<br>@@ -44,3 +44,10 @@ const char *arch_perf_header_entry__add(const ch=
+ar *se_header)<br> <span class=3D"Apple-tab-span" style=3D"white-space:pre"=
+>	</span><span class=3D"Apple-tab-span" style=3D"white-space:pre">	</span>r=
+eturn "Dispatch Cyc";<br> <span class=3D"Apple-tab-span" style=3D"white-spa=
+ce:pre">	</span>return se_header;<br> }<br>+<br>+int arch_support_sort_key(=
+const char *sort_key)<br>+{<br>+<span class=3D"Apple-tab-span" style=3D"whi=
+te-space:pre">	</span>if (!strcmp(sort_key, "p_stage_cyc"))<br>+<span class=
+=3D"Apple-tab-span" style=3D"white-space:pre">	</span><span class=3D"Apple-=
+tab-span" style=3D"white-space:pre">	</span>return 1;<br>+<span class=3D"Ap=
+ple-tab-span" style=3D"white-space:pre">	</span>return 0;<br>+}<br>diff --g=
+it a/tools/perf/util/event.h b/tools/perf/util/event.h<br>index 65f89e80916=
+f..612a92aaaefb 100644<br>--- a/tools/perf/util/event.h<br>+++ b/tools/perf=
+/util/event.h<br>@@ -429,5 +429,6 @@ char *get_page_size_name(u64 size, cha=
+r *str);<br> void arch_perf_parse_sample_weight(struct perf_sample *data, c=
+onst __u64 *array, u64 type);<br> void arch_perf_synthesize_sample_weight(c=
+onst struct perf_sample *data, __u64 *array, u64 type);<br> const char *arc=
+h_perf_header_entry__add(const char *se_header);<br>+int arch_support_sort_=
+key(const char *sort_key);<br><br> #endif /* __PERF_RECORD_H */<br>diff --g=
+it a/tools/perf/util/sort.c b/tools/perf/util/sort.c<br>index cbb3899e7eca.=
+=2Ed8b0b0b43a81 100644<br>--- a/tools/perf/util/sort.c<br>+++ b/tools/perf/=
+util/sort.c<br>@@ -47,6 +47,7 @@ regex_t<span class=3D"Apple-tab-span" styl=
+e=3D"white-space:pre">	</span><span class=3D"Apple-tab-span" style=3D"white=
+-space:pre">	</span>ignore_callees_regex;<br> int<span class=3D"Apple-tab-s=
+pan" style=3D"white-space:pre">	</span><span class=3D"Apple-tab-span" style=
+=3D"white-space:pre">	</span>have_ignore_callees =3D 0;<br> enum sort_mode<=
+span class=3D"Apple-tab-span" style=3D"white-space:pre">	</span>sort__mode =
+=3D SORT_MODE__NORMAL;<br> const char<span class=3D"Apple-tab-span" style=
+=3D"white-space:pre">	</span>*dynamic_headers[] =3D {"local_ins_lat", "p_st=
+age_cyc"};<br>+const char<span class=3D"Apple-tab-span" style=3D"white-spac=
+e:pre">	</span>*arch_specific_sort_keys[] =3D {"p_stage_cyc"};<br><br> /*<b=
+r> &nbsp;* Replaces all occurrences of a char used with the:<br>@@ -1837,6 =
++1838,11 @@ struct sort_dimension {<br> <span class=3D"Apple-tab-span" styl=
+e=3D"white-space:pre">	</span>int<span class=3D"Apple-tab-span" style=3D"wh=
+ite-space:pre">	</span><span class=3D"Apple-tab-span" style=3D"white-space:=
+pre">	</span><span class=3D"Apple-tab-span" style=3D"white-space:pre">	</sp=
+an>taken;<br> };<br><br>+int __weak arch_support_sort_key(const char *sort_=
+key __maybe_unused)<br>+{<br>+<span class=3D"Apple-tab-span" style=3D"white=
+-space:pre">	</span>return 0;<br>+}<br>+<br> const char * __weak arch_perf_=
+header_entry__add(const char *se_header)<br> {<br> <span class=3D"Apple-tab=
+-span" style=3D"white-space:pre">	</span>return se_header;<br>@@ -2773,6 +2=
+779,18 @@ int sort_dimension__add(struct perf_hpp_list *list, const char *t=
+ok,<br> {<br> <span class=3D"Apple-tab-span" style=3D"white-space:pre">	</s=
+pan>unsigned int i, j;<br><br>+<span class=3D"Apple-tab-span" style=3D"whit=
+e-space:pre">	</span>/* Check to see if there are any arch specific<br>+<sp=
+an class=3D"Apple-tab-span" style=3D"white-space:pre">	</span> * sort dimen=
+sions not applicable for the current<br>+<span class=3D"Apple-tab-span" sty=
+le=3D"white-space:pre">	</span> * architecture. If so, Skip that sort key s=
+ince<br>+<span class=3D"Apple-tab-span" style=3D"white-space:pre">	</span> =
+* we don't want to display it in the output fields.<br>+<span class=3D"Appl=
+e-tab-span" style=3D"white-space:pre">	</span> */<br>+<span class=3D"Apple-=
+tab-span" style=3D"white-space:pre">	</span>for (j =3D 0; j &lt; ARRAY_SIZE=
+(arch_specific_sort_keys); j++) {<br>+<span class=3D"Apple-tab-span" style=
+=3D"white-space:pre">	</span><span class=3D"Apple-tab-span" style=3D"white-=
+space:pre">	</span>if (!strcmp(arch_specific_sort_keys[j], tok) &amp;&amp;<=
+br>+<span class=3D"Apple-tab-span" style=3D"white-space:pre">	</span><span =
+class=3D"Apple-tab-span" style=3D"white-space:pre">	</span><span class=3D"A=
+pple-tab-span" style=3D"white-space:pre">	</span><span class=3D"Apple-tab-s=
+pan" style=3D"white-space:pre">	</span>!arch_support_sort_key(tok)) {<br>+<=
+span class=3D"Apple-tab-span" style=3D"white-space:pre">	</span><span class=
+=3D"Apple-tab-span" style=3D"white-space:pre">	</span><span class=3D"Apple-=
+tab-span" style=3D"white-space:pre">	</span>return 0;<br>+<span class=3D"Ap=
+ple-tab-span" style=3D"white-space:pre">	</span><span class=3D"Apple-tab-sp=
+an" style=3D"white-space:pre">	</span>}<br>+<span class=3D"Apple-tab-span" =
+style=3D"white-space:pre">	</span>}<br>+<br> <span class=3D"Apple-tab-span"=
+ style=3D"white-space:pre">	</span>for (i =3D 0; i &lt; ARRAY_SIZE(common_s=
+ort_dimensions); i++) {<br> <span class=3D"Apple-tab-span" style=3D"white-s=
+pace:pre">	</span><span class=3D"Apple-tab-span" style=3D"white-space:pre">=
+	</span>struct sort_dimension *sd =3D &amp;common_sort_dimensions[i];<br><b=
+r>=E2=80=94 <br>2.26.2<br><br>Thanks<br>Athira<br><br><blockquote type=3D"c=
+ite"><br>jirka<br><br></blockquote><br></div></body></html>
+>=20
 
-Yes, true, it can be a huge list. But what does the ops 
-"HPB_RSP_DEV_RESET"
-really mean? The specs says "Device reset HPB Regions information", but 
-I
-don't know what is really happening. Could you please elaborate?
+apart from the html content, looks ok ;-)
 
-Thanks,
-Can Guo.
+jirka
 
-> But yes, I can do that.
-> Better to get ack from Daejun first.
-> 
-> Thanks,
-> Avri
-> 
->> 
->> Thanks,
->> Can Guo.
->> 
->> > +{
->> > +     struct ufshpb_lu *hpb;
->> > +     struct victim_select_info *lru_info;
->> > +     struct ufshpb_region *rgn;
->> > +     unsigned long flags;
->> > +
->> > +     hpb = container_of(work, struct ufshpb_lu, ufshpb_lun_reset_work);
->> > +
->> > +     lru_info = &hpb->lru_info;
->> > +
->> > +     spin_lock_irqsave(&hpb->rgn_state_lock, flags);
->> > +
->> > +     list_for_each_entry(rgn, &lru_info->lh_lru_rgn, list_lru_rgn)
->> > +             set_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags);
->> > +
->> > +     spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
->> > +}
->> > +
->> >  static void ufshpb_normalization_work_handler(struct work_struct
->> > *work)
->> >  {
->> >       struct ufshpb_lu *hpb;
->> > @@ -1798,6 +1832,8 @@ static int ufshpb_alloc_region_tbl(struct
->> > ufs_hba *hba, struct ufshpb_lu *hpb)
->> >               } else {
->> >                       rgn->rgn_state = HPB_RGN_INACTIVE;
->> >               }
->> > +
->> > +             rgn->rgn_flags = 0;
->> >       }
->> >
->> >       return 0;
->> > @@ -2012,9 +2048,12 @@ static int ufshpb_lu_hpb_init(struct ufs_hba
->> > *hba, struct ufshpb_lu *hpb)
->> >       INIT_LIST_HEAD(&hpb->list_hpb_lu);
->> >
->> >       INIT_WORK(&hpb->map_work, ufshpb_map_work_handler);
->> > -     if (hpb->is_hcm)
->> > +     if (hpb->is_hcm) {
->> >               INIT_WORK(&hpb->ufshpb_normalization_work,
->> >                         ufshpb_normalization_work_handler);
->> > +             INIT_WORK(&hpb->ufshpb_lun_reset_work,
->> > +                       ufshpb_reset_work_handler);
->> > +     }
->> >
->> >       hpb->map_req_cache = kmem_cache_create("ufshpb_req_cache",
->> >                         sizeof(struct ufshpb_req), 0, 0, NULL);
->> > @@ -2114,8 +2153,10 @@ static void ufshpb_discard_rsp_lists(struct
->> > ufshpb_lu *hpb)
->> >
->> >  static void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
->> >  {
->> > -     if (hpb->is_hcm)
->> > +     if (hpb->is_hcm) {
->> > +             cancel_work_sync(&hpb->ufshpb_lun_reset_work);
->> >               cancel_work_sync(&hpb->ufshpb_normalization_work);
->> > +     }
->> >       cancel_work_sync(&hpb->map_work);
->> >  }
->> >
->> > diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
->> > index 84598a317897..37c1b0ea0c0a 100644
->> > --- a/drivers/scsi/ufs/ufshpb.h
->> > +++ b/drivers/scsi/ufs/ufshpb.h
->> > @@ -121,6 +121,7 @@ struct ufshpb_region {
->> >       struct list_head list_lru_rgn;
->> >       unsigned long rgn_flags;
->> >  #define RGN_FLAG_DIRTY 0
->> > +#define RGN_FLAG_UPDATE 1
->> >
->> >       /* region reads - for host mode */
->> >       spinlock_t rgn_lock;
->> > @@ -217,6 +218,7 @@ struct ufshpb_lu {
->> >       /* for selecting victim */
->> >       struct victim_select_info lru_info;
->> >       struct work_struct ufshpb_normalization_work;
->> > +     struct work_struct ufshpb_lun_reset_work;
->> >
->> >       /* pinned region information */
->> >       u32 lu_pinned_start;
