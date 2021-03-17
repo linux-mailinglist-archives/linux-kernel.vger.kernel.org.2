@@ -2,194 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09A633E2AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:31:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC85933E2AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 01:31:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbhCQA24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Mar 2021 20:28:56 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:57266 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbhCQA2g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Mar 2021 20:28:36 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12H0DvPQ020518;
-        Wed, 17 Mar 2021 00:28:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=rrMNDZRHw3/5tvJ/f0NFSDfikPvbKq3hmNNorlrRR2A=;
- b=BotGGNAaKObMl3sMWg29bBOzhvk98KwJnFV98nD4uaByf8M1dyNnX2Mn26HXFJnfSom+
- 0ArL8dZNks3vqNf7fLlLKg0awVypdXaO3c6DN8vf9AjDZJJRmWMB4fSv1VEan3iozJmu
- M0Nv5hu/bR3PipXNp75dx8STp3hHuWJGUMt0VuA6NNZalWSRcjLLwyEzdcP7SM44KuEo
- qQND9BT0+Swf9FcKZKVx5bZNEFt2zoYKYWcy6YZl+xppKPXsOor5M62/dvY5o+5lxW6A
- atAKIAnQNX6m/9C8au6PZXtuxLJlBqY+7twEnXuKh91nzajBYf+u/Ygh0+QUSZokDYGK Rg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 378jwbjfs0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Mar 2021 00:28:25 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12H0Fuuv030412;
-        Wed, 17 Mar 2021 00:28:24 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
-        by userp3030.oracle.com with ESMTP id 3797b0t5hc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Mar 2021 00:28:24 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i0fGQjEtNt/Z80/nJhN8CrWr/pCjg1/Su7ITzLeYdA5Q0LJ2XHz/Wp5se3UsQyoDpGIUUetlXgjKsL4bcevisfJFRws19QLxW0nCZKhIIjxG1f2GIJYF6ttJ3PuvzYmQhPmOwwDVLwScXJl0T8PPe6mqs2BSLPzgKWQtso07rEGijWDdk83FCH+DzouSBb735dspZC8wa6PebbJcdfUGTrXSu1dSb+FKXLO5Rfx2P8czs8wg7ZF68yCUECLxBty5oqUNdvt4F1NZdqguCmPnwMQmRuD6n4a7DoMvlYBdglJynBO5Fwr6af47fl/v6lxg/OJS3DDztlF18KflmShN9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rrMNDZRHw3/5tvJ/f0NFSDfikPvbKq3hmNNorlrRR2A=;
- b=is8fwilzAdMq1zk5eTq18PhXmJ70WvopqBIb+pXx/vdYkdVbl2bF/uMADCPbMXN0qgQkIbjVIz0lOXzo5Tqkpkn77iqMQMpXFy//zEUKZwlG5DjIw1EF02CZKhkVSRi5Pmdlsa5dsyA0pIiWv1CfeRHvhm9z5GrqE6qAY8ajoYMho0B1BpVRyi7ZD1LN7GgE4XUpZkP7Fc4oC4pxWnkAuGKXyzeXwsy7NIjbUyWe9gfVf5EQovfcnaJJ2Iwk7j98fkfpLdA/ffHjvuvpsBnW9FiF+NwWns2FOSZPpzn94PK8922zOeezh8BtADaE3ApaYqz4LelH8dXsk4MrWSy6ig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rrMNDZRHw3/5tvJ/f0NFSDfikPvbKq3hmNNorlrRR2A=;
- b=Zubxfj2WpBfOA9uynEF6w+s5zlQQ90qU2S7k6IgP2F0zff3iW2VCkNG7OQ5xHwcyVZEbov2o8xvUF+HDXYX4c6uSaE8ITZDV4F4axq0MvYYAN8B3OGmZCQKL1pe55LQrRTBvzjn+KVtI25WwUHb9mamlpbLIu7dp3PL24gKBD74=
-Authentication-Results: kvack.org; dkim=none (message not signed)
- header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by BYAPR10MB3542.namprd10.prod.outlook.com (2603:10b6:a03:11a::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Wed, 17 Mar
- 2021 00:28:22 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::980e:61ba:57d2:47ee%8]) with mapi id 15.20.3933.032; Wed, 17 Mar 2021
- 00:28:22 +0000
-Subject: Re: [PATCH v2 5/5] mm/hugetlb: avoid calculating fault_mutex_hash in
- truncate_op case
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20210316022758.52993-1-linmiaohe@huawei.com>
- <d87264fb-0005-4f8b-7551-a5439108e9e1@oracle.com>
- <4b3e9ea6-69e3-493c-342e-92117f274e06@huawei.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <952e9130-a084-20a7-aa7c-486fe9ccc8c6@oracle.com>
-Date:   Tue, 16 Mar 2021 17:27:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <4b3e9ea6-69e3-493c-342e-92117f274e06@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [50.38.35.18]
-X-ClientProxiedBy: MW4PR04CA0012.namprd04.prod.outlook.com
- (2603:10b6:303:69::17) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
+        id S229660AbhCQA37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Mar 2021 20:29:59 -0400
+Received: from mga06.intel.com ([134.134.136.31]:7010 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229564AbhCQA3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Mar 2021 20:29:42 -0400
+IronPort-SDR: WPfJs/q/9O4jLG05R6AuI9ltrv1Nsa6rYx3iOfLiRlDXx+1xzRdndg4HScU8i3yyrBzmbs+6/b
+ ZM5Kn8VgVLYg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="250719960"
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="250719960"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 17:29:41 -0700
+IronPort-SDR: 8/naJhP/XArpCeNVyMh1M+goB/9rxHj6N5kSc2TLdIcG9UNhk+FX3QjckiP7c/VfTKkK5EUXql
+ 73xj/LmbskuA==
+X-IronPort-AV: E=Sophos;i="5.81,254,1610438400"; 
+   d="scan'208";a="412431921"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 17:29:41 -0700
+Date:   Tue, 16 Mar 2021 17:29:39 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Aili Yao <yaoaili@kingsoft.com>, Andy Lutomirski <luto@kernel.org>
+Cc:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
+        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
+        "david@redhat.com" <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
+        "sunhao2@kingsoft.com" <sunhao2@kingsoft.com>
+Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
+Message-ID: <20210317002939.GA276305@agluck-desk2.amr.corp.intel.com>
+References: <20210304144524.795872d7@alex-virtual-machine>
+ <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
+ <20210305093016.40c87375@alex-virtual-machine>
+ <aee5176eafb54c88b19a5b2671d0a1fc@intel.com>
+ <20210310141042.4db9ea29@alex-virtual-machine>
+ <20210311085529.GA22268@hori.linux.bs1.fc.nec.co.jp>
+ <db80e98d2b264e988596d0d7d7c8a776@intel.com>
+ <20210312135531.72e33b35@alex-virtual-machine>
+ <3900f518d1324c388be52cf81f5220e4@intel.com>
+ <af80221baed940d8bcc643e3e7d40036@intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.112] (50.38.35.18) by MW4PR04CA0012.namprd04.prod.outlook.com (2603:10b6:303:69::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Wed, 17 Mar 2021 00:28:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 43caa8f7-c145-4a64-a93c-08d8e8db920c
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3542:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB354258E730B19E6D392DA2BBE26A9@BYAPR10MB3542.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:612;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DgGcW9VnYYMOETKSJl3iksu951+AGTeGDtzm8mvE49i3hLIMQwttvi+WbTMnU5GGhwZTloD0GNMwS/SVqQ72f3Pe8lGdDdo9SFOg5Pc9F78tQ+waxG4ROMKEBiN7FG3sLEmStCcRub7aVdquP989hWe5MNBpzxcFj24Am7AIxZFaLpbf0Kv3mFuH9t1r0ydNT1fgJvUa+mhEtML45iASOPRWoyQ57d6D/dF9myfp/O3jbPGQertZsasV0TdU40Vm5Z378c9xIGvJ9WKPLK7Q4dnzuc+vTI9KhVxFJjmHWXpww2ol9/EOHd1137EjXjhtAu0RYHV8DGcPOGupJshA6kvcqjMUlMhzT6MwQTyKTDvBUunVycBpR5CxvhZR4dhSwouBYKjQKrGEW4yN8sbLr2DKFgfJVBJpvSIa2ocOTzzXULIl9+YEJ7KQhZMl32d2qDJO1oT0Tz87Zi4fRNVxqZ6i917JAkRHGfPez3nk0u0Eh1f47ydgyo+S3ZiMEQwy54UuBND3VlNbrQBO0E/DPCvjuryUAa34z22GK8sF4gKjztSwq5E5xsw7r3ylO5OSsAQrTcIAr7fBFECKKvDFEO8QZHsSeJL4Cd3qNk+6YPuPX/NhI7RMII4vAG/SPz5MQOG+xRDJ+uJSt0YZjK7HuA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(39860400002)(136003)(346002)(396003)(83380400001)(316002)(31686004)(478600001)(8676002)(186003)(16576012)(6486002)(8936002)(2906002)(52116002)(6666004)(44832011)(16526019)(4326008)(66946007)(31696002)(26005)(66476007)(66556008)(53546011)(956004)(36756003)(2616005)(86362001)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WEhtRXZQVDZ2alkxMUJkZUJta09qejNiU3BLclVTek5May9HZkcvcmZza1F0?=
- =?utf-8?B?U1V5OXVsbzRIaUdIK0d5NlVoaVRxM3p6bzZnV0JnalcwbGErYUROWmd3ZUVn?=
- =?utf-8?B?dUx3Qms4L2k1TXBmdXU5SlRVclo0Z0NPZGg4eDcxZ1lXa0V3THJod3VEMGUy?=
- =?utf-8?B?SGRURzdTWTRPSEhVZXdvb1VqajU4eVFHSERBVTdBeU95K1pZT05aZlpLT0t0?=
- =?utf-8?B?WUFlTlRwV2VkRW0vMjdhamJOMExEZDNiZDhyc3ZWYU5kNmFyYWNWMit1azR0?=
- =?utf-8?B?VnZYZ3VhSVVLa2pnc0xvY1Urbm5WL2ZwV1ExVm11RjNZeHVweE1IejVpb1lQ?=
- =?utf-8?B?KzJNa1F1RkozRHhtNnpCOHI4bjR2NEZMZ21peDlSWGIrUTM5NVp6ampCN0Jx?=
- =?utf-8?B?UXBzRjk4VHJtZFppQVNUcVZCZ1hJTUI5WVZFSnk0Q1lVZlNXc0FSZU9LZXEw?=
- =?utf-8?B?UTVaZ0JVa0RVTlZ2L2dTZVNGRWI5SDdrZWRGNUI3WklkNHBuMW54ZHIyNlZY?=
- =?utf-8?B?ZGNxMk5zKzZUaDFiUDMzTk5DNG01a3FxcTUySjhtSFRzcEpQVTZpQzdkNFM3?=
- =?utf-8?B?UmxsbmI3NXJRNnlqSGlDSk1lcm1XUTB0SE9aNC9ST0pFcjBZTi9IQlF2YWFr?=
- =?utf-8?B?RVhndm5Tem9IVHdaMlJhSWQwZXNlTUYvRkRNd1h2Y2g4eHhVTlFvdytyKzdV?=
- =?utf-8?B?aFlsTWw0alJGWmJWaFhvWlUrZlc3TkU1Y1VWUmd2Wmo2RlhEWFhTd2RLRTI2?=
- =?utf-8?B?SFdSQ3g3dDN6YU9PNnVkRzFaVEdPMW9XblFkQlpLZGNBT255VGtwNmZpQWlk?=
- =?utf-8?B?ZEhPZkdaelZVSk5Vc2p5M3NwN3lacUVaVUlLWmtqMlVFU2N5WXpyV3ZKbU9j?=
- =?utf-8?B?WDBxcDZLdXFUL3VTS05yNUcwRlpGdkdETnlSQWF3K01NTnJsbEd3VTJHZ0pq?=
- =?utf-8?B?UWVGT3B2RE1qWU9WQ0REcFd3ZkJvYmpIYUVNS3o0dlBDZjk1d2JhNzk4WjFM?=
- =?utf-8?B?dERnQXpia00xMmtmQjNMNmF5dUNuN2NicjJNbUkvRWI0a2M3SlNWUEdubjhP?=
- =?utf-8?B?N1NIRU1VNXBRdEtsck95aEdmVi9VVkV5RU40QjFQLzh4dVBNM25BUFZnUXBq?=
- =?utf-8?B?K1ZaSUZpZ0hOVXIrYVkveUpFQnZyeCszQjVXN3B2eHAwaEhtMGZmTGE5Zmlh?=
- =?utf-8?B?QjFNZlkyeXRMYWw4UTlhVlJCaEdJZXZwVXZpZ3J5ZW5ONk1xVWpzUWg5WmR2?=
- =?utf-8?B?bG9mdkM4alBiOFFFOUtnK0JoWld2SlgvUi9ZK0E3TEJqbWpBbkVldW0xdUlX?=
- =?utf-8?B?czFZUHZsc1RnS21jQ3RCV1d6Snh0UlJaYmRCRlZPM2RrWlRNYzNEWHlVTFpO?=
- =?utf-8?B?R1hETllmTzFESU1NNTRPaUhhbVpORHViOW9KNGYrY2NNTUhSb2Q5UmIzUnJy?=
- =?utf-8?B?V29QYVFiM0RlRE9DSVhwMm13Q2NYMk54OXBUZlcxRmZjTmhCM015RlhzaDZU?=
- =?utf-8?B?N25yUGk4WUFWZ00vYWl1YXU4NGxEMmMrTEkyTXlOWmJFMFBKbUdhMkZHWmxX?=
- =?utf-8?B?YXpteTRlN2g4QXJZWFRsbzlFNTNWbmRhMU1xUm5Tb0ZVTzRoWFlZMTEvc1JC?=
- =?utf-8?B?YjNuQmNnRk55dXhvSjNBcERDbmswckxNQUI3bENZWGJzWFJMSE5ORVlDZllr?=
- =?utf-8?B?cUdFY2dOK3JyRE1QT3VZdU40OFNDL1NrSFhJbGluVjNscmdsVXllOVJVNG0w?=
- =?utf-8?Q?Zt2p+cHDdSfQPPoQnV4hDuHctpbZwkxZyYdN1P3?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43caa8f7-c145-4a64-a93c-08d8e8db920c
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 00:28:22.2872
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4zLYzRO5VpCSaXxOn1DKTGLfUky/0q2ezBAvTrv8iwNShbXS33cAeM9fmU6uUdUyNgB9+e1Z5blk8YvbkSaMPQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3542
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9925 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 bulkscore=0
- malwarescore=0 adultscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103170000
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9925 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- spamscore=0 mlxscore=0 bulkscore=0 suspectscore=0 priorityscore=1501
- lowpriorityscore=0 clxscore=1015 adultscore=0 phishscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103170000
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <af80221baed940d8bcc643e3e7d40036@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/15/21 11:49 PM, Miaohe Lin wrote:
-> On 2021/3/16 11:07, Mike Kravetz wrote:
->> On 3/15/21 7:27 PM, Miaohe Lin wrote:
->>> The fault_mutex hashing overhead can be avoided in truncate_op case
->>> because page faults can not race with truncation in this routine.  So
->>> calculate hash for fault_mutex only in !truncate_op case to save some cpu
->>> cycles.
->>>
->>> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
->>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>> Cc: Mike Kravetz <mike.kravetz@oracle.com>
->>> ---
->>> v1->v2:
->>> remove unnecessary initialization for variable hash
->>> collect Reviewed-by tag from Mike Kravetz
->>
->> My apologies for not replying sooner and any misunderstanding from my
->> previous comments.
->>
-> 
-> That's all right.
-> 
->> If the compiler is going to produce a warning because the variable is
->> not initialized, then we will need to keep the initialization.
->> Otherwise, this will show up as a build regression.  Ideally, there
->> would be a modifier which could be used to tell the compiler the
->> variable will used.  I do not know if such a modifier exists.
->>
-> 
-> I do not know if such a modifier exists too. But maybe not all compilers are intelligent
-> enough to not produce a warning. It would be safe to keep the initialization...
-> 
->> The patch can not produce a new warning.  So, if you need to initialize
-> 
-> So just drop this version of the patch? Or should I send a new version with your Reviewed-by tag and
-> keep the initialization?
-> 
+On Fri, Mar 12, 2021 at 11:48:31PM +0000, Luck, Tony wrote:
+> Thanks to the decode of the instruction we do have the virtual address. So we just need
+> a safe walk of pgd->p4d->pud->pmd->pte (truncated if we hit a huge page) with a write
+> of a "not-present" value. Maybe a different poison type from the one we get from
+> memory_failure() so that the #PF code can recognize this as a special case and do any
+> other work that we avoided because we were in #MC context.
 
-Yes, drop this version of the patch.  You can add my Reviewed-by to the
-previous version that included the initialization and resend.
+There is no such thing as the safe walk I describe above. In a multi
+threaded application other threads might munmap(2) bits of the address
+space which could free some of the p4d->pud->pmd->pte tables.
 
-All the cleanup patches in this series should be good to go.
--- 
-Mike Kravetz
+But the pgd table is guaranteed to exist as long as any of the threads
+in the process exist. Which gave rise to a new approach (partial credit
+to Dave Hansen who helped me understand why a more extreme patch that
+I wanted to use wasn't working ... and he pointed out the pgd persistence).
+
+N.B. The code below DOES NOT WORK. My test application tried to do a write(2)
+syscall with some poison in the buffer. Goal is that write should return a
+short count (with only the bytes from the buffer leading up to the poison
+written to the file). Currently the process gets a suprise SIGSEGV in
+some glibc code :-(
+
+The code would also need a bunch more work to handle the fact that
+in a multi-threaded application multiple threads might consume the
+poison, and some innocent threads not consuming the poison may also end
+up drawn into the melee in the page fault handler.
+
+
+The big picture.
+---------------
+
+This approach passes the buck for the recovery from the #MC handler
+(which has very limited options to do anything useful) to the #PF
+handler (which is a much friendlier environment where locks and mutexes
+can be obtained as needed).
+
+The mechanism for this buck passing is for the #MC handler to set a
+reserved bit in the PGD entry for the user address where the machine
+check happened, flush the TLB for that address, and then return from
+the #MC handler to the kernel get_user()/copy_from_user() code which
+will re-execute the instruction to access the poison address, but this
+time take a #PF because of the reserved bit in the PGD.
+
+There's a couple of changes bundled in here to help my debugging:
+1) Turn off UCNA calls to memory_failure() ... just avoids races
+   and make tests more determinstic for now
+2) Disable "fast string" support ... avoid "REP MOVS" copy routines
+   since I'm testing on an old system that treats poison consumed
+   by REP MOVS as fatal.
+
+Posted here for general comments on the approach.  On the plus
+side it avoids taking multiple machine checks in the kernel when
+it is accessing user data. I think it can also meet the goal set
+by Andy Lutomirski of avoiding SIGBUS from syscalls that happen
+to touch user poison. They should see either short counts for
+calls like write(2) that may partially succeed or -EFAULT if
+the system call totally failed.
+
+-Tony
+
+---
+
+diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+index f24d7ef8fffa..e533eaf20834 100644
+--- a/arch/x86/include/asm/pgtable_types.h
++++ b/arch/x86/include/asm/pgtable_types.h
+@@ -23,6 +23,7 @@
+ #define _PAGE_BIT_SOFTW2	10	/* " */
+ #define _PAGE_BIT_SOFTW3	11	/* " */
+ #define _PAGE_BIT_PAT_LARGE	12	/* On 2MB or 1GB pages */
++#define _PAGE_BIT_RESERVED1	51	/* Reserved bit */
+ #define _PAGE_BIT_SOFTW4	58	/* available for programmer */
+ #define _PAGE_BIT_PKEY_BIT0	59	/* Protection Keys, bit 1/4 */
+ #define _PAGE_BIT_PKEY_BIT1	60	/* Protection Keys, bit 2/4 */
+@@ -56,6 +57,7 @@
+ #define _PAGE_PAT_LARGE (_AT(pteval_t, 1) << _PAGE_BIT_PAT_LARGE)
+ #define _PAGE_SPECIAL	(_AT(pteval_t, 1) << _PAGE_BIT_SPECIAL)
+ #define _PAGE_CPA_TEST	(_AT(pteval_t, 1) << _PAGE_BIT_CPA_TEST)
++#define _PAGE_RESERVED1	(_AT(pteval_t, 1) << _PAGE_BIT_RESERVED1)
+ #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
+ #define _PAGE_PKEY_BIT0	(_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT0)
+ #define _PAGE_PKEY_BIT1	(_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT1)
+diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
+index 7f7200021bd1..269e8ee04c11 100644
+--- a/arch/x86/include/asm/traps.h
++++ b/arch/x86/include/asm/traps.h
+@@ -45,4 +45,24 @@ void __noreturn handle_stack_overflow(const char *message,
+ 				      unsigned long fault_address);
+ #endif
+ 
++static inline void pgd_set_reserved(pgd_t *pgdp, unsigned long addr)
++{
++	pgd_t	pgd;
++
++	pgdp += pgd_index(addr);
++	pgd = *pgdp;
++	pgd.pgd |= _PAGE_RESERVED1;
++	WRITE_ONCE(*pgdp, pgd);
++}
++
++static inline void pgd_clr_reserved(pgd_t *pgdp, unsigned long addr)
++{
++	pgd_t	pgd;
++
++	pgdp += pgd_index(addr);
++	pgd = *pgdp;
++	pgd.pgd &= ~_PAGE_RESERVED1;
++	WRITE_ONCE(*pgdp, pgd);
++}
++
+ #endif /* _ASM_X86_TRAPS_H */
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 0e422a544835..974e1eb5d1aa 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -287,6 +287,7 @@ static void early_init_intel(struct cpuinfo_x86 *c)
+ 	 */
+ 	if (c->x86 > 6 || (c->x86 == 6 && c->x86_model >= 0xd)) {
+ 		rdmsrl(MSR_IA32_MISC_ENABLE, misc_enable);
++misc_enable = 0;
+ 		if (!(misc_enable & MSR_IA32_MISC_ENABLE_FAST_STRING)) {
+ 			pr_info("Disabled fast string operations\n");
+ 			setup_clear_cpu_cap(X86_FEATURE_REP_GOOD);
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 7962355436da..41bedc961928 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -635,6 +635,7 @@ static struct notifier_block early_nb = {
+ static int uc_decode_notifier(struct notifier_block *nb, unsigned long val,
+ 			      void *data)
+ {
++#if 0
+ 	struct mce *mce = (struct mce *)data;
+ 	unsigned long pfn;
+ 
+@@ -650,7 +651,7 @@ static int uc_decode_notifier(struct notifier_block *nb, unsigned long val,
+ 		set_mce_nospec(pfn, whole_page(mce));
+ 		mce->kflags |= MCE_HANDLED_UC;
+ 	}
+-
++#endif
+ 	return NOTIFY_OK;
+ }
+ 
+@@ -1443,8 +1444,18 @@ noinstr void do_machine_check(struct pt_regs *regs)
+ 				mce_panic("Failed kernel mode recovery", &m, msg);
+ 		}
+ 
+-		if (m.kflags & MCE_IN_KERNEL_COPYIN)
+-			queue_task_work(&m, kill_current_task);
++		/*
++		 * Machine check while copying from user space. Note that we
++		 * do not call fixup_exception(). Instead we ensure a page fault
++		 * when we return to the faulting instruction.
++		 * Let the page fault handler do the rest of the
++		 * recovery.
++		 */
++		if (m.kflags & MCE_IN_KERNEL_COPYIN) {
++			flush_tlb_one_user((unsigned long)current->mce_vaddr);
++			pgd_set_reserved(current->mm->pgd, (unsigned long)current->mce_vaddr);
++			current->mce_addr = m.addr;
++		}
+ 	}
+ out:
+ 	mce_wrmsrl(MSR_IA32_MCG_STATUS, 0);
+diff --git a/arch/x86/kernel/cpu/mce/severity.c b/arch/x86/kernel/cpu/mce/severity.c
+index 83df991314c5..da917945150d 100644
+--- a/arch/x86/kernel/cpu/mce/severity.c
++++ b/arch/x86/kernel/cpu/mce/severity.c
+@@ -282,7 +282,6 @@ static int error_context(struct mce *m, struct pt_regs *regs)
+ 		return IN_KERNEL_RECOV;
+ 	}
+ 	if (t == EX_HANDLER_UACCESS && regs && is_copy_from_user(regs)) {
+-		m->kflags |= MCE_IN_KERNEL_RECOV;
+ 		m->kflags |= MCE_IN_KERNEL_COPYIN;
+ 		return IN_KERNEL_RECOV;
+ 	}
+diff --git a/arch/x86/lib/copy_user_64.S b/arch/x86/lib/copy_user_64.S
+index 77b9b2a3b5c8..e0e71ca023ce 100644
+--- a/arch/x86/lib/copy_user_64.S
++++ b/arch/x86/lib/copy_user_64.S
+@@ -234,24 +234,11 @@ EXPORT_SYMBOL(copy_user_enhanced_fast_string)
+  */
+ SYM_CODE_START_LOCAL(.Lcopy_user_handle_tail)
+ 	movl %edx,%ecx
+-	cmp $X86_TRAP_MC,%eax		/* check if X86_TRAP_MC */
+-	je 3f
+ 1:	rep movsb
+ 2:	mov %ecx,%eax
+ 	ASM_CLAC
+ 	ret
+ 
+-	/*
+-	 * Return zero to pretend that this copy succeeded. This
+-	 * is counter-intuitive, but needed to prevent the code
+-	 * in lib/iov_iter.c from retrying and running back into
+-	 * the poison cache line again. The machine check handler
+-	 * will ensure that a SIGBUS is sent to the task.
+-	 */
+-3:	xorl %eax,%eax
+-	ASM_CLAC
+-	ret
+-
+ 	_ASM_EXTABLE_CPY(1b, 2b)
+ SYM_CODE_END(.Lcopy_user_handle_tail)
+ 
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index a73347e2cdfc..49232264e893 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -1245,9 +1245,13 @@ void do_user_addr_fault(struct pt_regs *regs,
+ 	/*
+ 	 * Reserved bits are never expected to be set on
+ 	 * entries in the user portion of the page tables.
++	 * Except when machine check handling of a copy from
++	 * user passed the buck to #PF.
+ 	 */
+-	if (unlikely(error_code & X86_PF_RSVD))
+-		pgtable_bad(regs, error_code, address);
++	if (unlikely(error_code & X86_PF_RSVD)) {
++		if (!current->mce_vaddr)
++			pgtable_bad(regs, error_code, address);
++	}
+ 
+ 	/*
+ 	 * If SMAP is on, check for invalid kernel (supervisor) access to user
+@@ -1291,6 +1295,15 @@ void do_user_addr_fault(struct pt_regs *regs,
+ 			local_irq_enable();
+ 	}
+ 
++	if (current->mce_vaddr) {
++		pgd_clr_reserved(current->mm->pgd,
++				 (unsigned long)current->mce_vaddr);
++		memory_failure(current->mce_addr >> PAGE_SHIFT, 0);
++		current->mce_vaddr = 0;
++		error_code &= ~X86_PF_RSVD;
++		pr_info("#PF: maybe fixed? Try to continue\n");
++	}
++
+ 	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+ 
+ 	if (error_code & X86_PF_WRITE)
