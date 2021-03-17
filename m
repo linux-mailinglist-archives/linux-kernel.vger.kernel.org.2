@@ -2,155 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B6833F919
+	by mail.lfdr.de (Postfix) with ESMTP id 2713C33F91A
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Mar 2021 20:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233027AbhCQTZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 15:25:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231378AbhCQTY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 15:24:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 938DD64E74;
-        Wed, 17 Mar 2021 19:24:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616009067;
-        bh=KKLdsb/3DlDkU4aWs0Dgdf8TtDZwtJHl3u4fz67AniQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GZRTNw0CPL7kswGGvq7LaYQEyiyMeFE5x9bbrs/0yrOamTF4m1GdnaR/RopyRKCoV
-         jAjzVtaTzi392HO5KVybX1T3uzbbOD+mqq8mpTxvM7ilTURG04TfRvyCdwfhpY90lu
-         5YseBIs6KQdENZi/ng+V8Rie6VcwA0K66GbH66cnm+DaTdAIa4lnBL9qyGnUUYWdOv
-         OJlyQcuoWJsGA3Rnf3GyyPMkzmE8bf9NdCnwtqL7dxQVlV6zs44J/ewhVRYzOC1lAQ
-         mIiojOTxXZHSoFpVnKuYgohf2Jjj8Rbs3kRllnZwH2ySv1x7ql/UglC14uCCIXxBdc
-         W1aKq2IeCOWeA==
-Received: by pali.im (Postfix)
-        id B26938A9; Wed, 17 Mar 2021 20:24:24 +0100 (CET)
-Date:   Wed, 17 Mar 2021 20:24:24 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Amey Narkhede <ameynarkhede03@gmail.com>, bhelgaas@google.com,
-        raphael.norwitz@nutanix.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <20210317192424.kpfybcrsen3ivr4f@pali>
-References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
- <20210312173452.3855-5-ameynarkhede03@gmail.com>
- <20210314235545.girtrazsdxtrqo2q@pali>
- <20210315134323.llz2o7yhezwgealp@archlinux>
- <20210315135226.avwmnhkfsgof6ihw@pali>
- <20210315083409.08b1359b@x1.home.shazbot.org>
- <20210315145238.6sg5deblr2z2pupu@pali>
- <20210315090339.54546e91@x1.home.shazbot.org>
- <20210317190206.zrtzwgskxdogl7dz@pali>
- <20210317131536.38f398b0@omen.home.shazbot.org>
+        id S233220AbhCQTZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 15:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229796AbhCQTYt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 15:24:49 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549D9C06174A;
+        Wed, 17 Mar 2021 12:24:49 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id c6so2315222qtc.1;
+        Wed, 17 Mar 2021 12:24:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BHf4Zd/xk2APnMJaB2+YTf5Gt9D99Q0t4UzNTB9Qzgg=;
+        b=CS+faDzMcyiCI2IAOgVXYPQGtzZKWWlgL56sAcG0zXcn/HxxK04+DGLfZ9uNmbnWmV
+         u80EiiZBbrJfnSQNIkwEMaCEQOZvSBdHVBat7x/xLLDe7DSkQS2mA/6uQF00KeijhceP
+         e+mtYbt2J/pVskLTRYh0GbxYhPT1N77afYdNl6CesxJuuwqheiitBtXUMtVZfqe4BjK8
+         UZOSUdTrRx13Zifz9WabZL9A5s40FK/AjaPVCKksvj06sE2CjOWpKvEqhx4Xj3Xdqi3R
+         DbkSXipEI968z4j/plSgfhSHlUclntPhVM/9AaHlEwoVs1kMAwXPzuUXC3TcHkEKPT4k
+         AY6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BHf4Zd/xk2APnMJaB2+YTf5Gt9D99Q0t4UzNTB9Qzgg=;
+        b=Trp0mYYTasttjwOrrlfG1DmeWwoQFVZAunFvqSgni1IK7zH3jot3q7BhJ44dWGvXH9
+         VvISrmmMwoSPHQ0039OJ4tNgKU9yPAHjuCj52OosCEbRtJGnBSqY0TWfDJZqlXeUSZ4a
+         HWlIU1qeSQ1gJ+7CSuBaXfllotH3ld4xCgzDzUwojcU/x1v6WMAn8zyZvmDwFhcQUppE
+         EQ2K9I7drP14b79cKpkn/OPuq6LLH8hCuuDFSan0lTpYbFYO75Mf0PsaU5vX436LR3g2
+         Fd2FPjj9Y9ajXe2bbmfgSdq3eh/MTcU8CaHjtJiXchSVPmxYhgdZSUL4dHhkd9dE/zB1
+         JA3Q==
+X-Gm-Message-State: AOAM5316YFENCggkxF6o5y9rEaOspA86ph1MyGL+uc7FX/k5CoVt+HCS
+        r90Z5PtiT0MBkxHMkY2dhXk=
+X-Google-Smtp-Source: ABdhPJwzpnjH23bUO1tK9vc30IEH4UvwAUzDTH/JgEwfEkxceYTyTnptwD9OIbetmqD3tYXcKjT+kg==
+X-Received: by 2002:ac8:4a91:: with SMTP id l17mr609295qtq.174.1616009088615;
+        Wed, 17 Mar 2021 12:24:48 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.37.138])
+        by smtp.gmail.com with ESMTPSA id a20sm18376710qkg.61.2021.03.17.12.24.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 12:24:48 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        unixbhaskar@gmail.com, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH V3] parisc: math-emu:  Few spelling fixes in the file fpu.h
+Date:   Thu, 18 Mar 2021 00:54:27 +0530
+Message-Id: <20210317192427.2050913-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210317131536.38f398b0@omen.home.shazbot.org>
-User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 17 March 2021 13:15:36 Alex Williamson wrote:
-> On Wed, 17 Mar 2021 20:02:06 +0100
-> Pali Rohár <pali@kernel.org> wrote:
-> 
-> > On Monday 15 March 2021 09:03:39 Alex Williamson wrote:
-> > > On Mon, 15 Mar 2021 15:52:38 +0100
-> > > Pali Rohár <pali@kernel.org> wrote:
-> > >   
-> > > > On Monday 15 March 2021 08:34:09 Alex Williamson wrote:  
-> > > > > On Mon, 15 Mar 2021 14:52:26 +0100
-> > > > > Pali Rohár <pali@kernel.org> wrote:
-> > > > >     
-> > > > > > On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:    
-> > > > > > > slot reset (pci_dev_reset_slot_function) and secondary bus
-> > > > > > > reset(pci_parent_bus_reset) which I think are hot reset and
-> > > > > > > warm reset respectively.      
-> > > > > > 
-> > > > > > No. PCI secondary bus reset = PCIe Hot Reset. Slot reset is just another
-> > > > > > type of reset, which is currently implemented only for PCIe hot plug
-> > > > > > bridges and for PowerPC PowerNV platform and it just call PCI secondary
-> > > > > > bus reset with some other hook. PCIe Warm Reset does not have API in
-> > > > > > kernel and therefore drivers do not export this type of reset via any
-> > > > > > kernel function (yet).    
-> > > > > 
-> > > > > Warm reset is beyond the scope of this series, but could be implemented
-> > > > > in a compatible way to fit within the pci_reset_fn_methods[] array
-> > > > > defined here.    
-> > > > 
-> > > > Ok!
-> > > >   
-> > > > > Note that with this series the resets available through
-> > > > > pci_reset_function() and the per device reset attribute is sysfs remain
-> > > > > exactly the same as they are currently.  The bus and slot reset
-> > > > > methods used here are limited to devices where only a single function is
-> > > > > affected by the reset, therefore it is not like the patch you proposed
-> > > > > which performed a reset irrespective of the downstream devices.  This
-> > > > > series only enables selection of the existing methods.  Thanks,
-> > > > > 
-> > > > > Alex
-> > > > >     
-> > > > 
-> > > > But with this patch series, there is still an issue with PCI secondary
-> > > > bus reset mechanism as exported sysfs attribute does not do that
-> > > > remove-reset-rescan procedure. As discussed in other thread, this reset
-> > > > let device in unconfigured / broken state.  
-> > > 
-> > > No, there's not:
-> > > 
-> > > int pci_reset_function(struct pci_dev *dev)
-> > > {
-> > >         int rc;
-> > > 
-> > >         if (!dev->reset_fn)
-> > >                 return -ENOTTY;
-> > > 
-> > >         pci_dev_lock(dev);  
-> > > >>>     pci_dev_save_and_disable(dev);  
-> > > 
-> > >         rc = __pci_reset_function_locked(dev);
-> > >   
-> > > >>>     pci_dev_restore(dev);  
-> > >         pci_dev_unlock(dev);
-> > > 
-> > >         return rc;
-> > > }
-> > > 
-> > > The remove/re-scan was discussed primarily because your patch performed
-> > > a bus reset regardless of what devices were affected by that reset and
-> > > it's difficult to manage the scope where multiple devices are affected.
-> > > Here, the bus and slot reset functions will fail unless the scope is
-> > > limited to the single device triggering this reset.  Thanks,
-> > > 
-> > > Alex
-> > >   
-> > 
-> > I was thinking a bit more about it and I'm really sure how it would
-> > behave with hotplugging PCIe bridge.
-> > 
-> > On aardvark PCIe controller I have already tested that secondary bus
-> > reset bit is triggering Hot Reset event and then also Link Down event.
-> > These events are not handled by aardvark driver yet (needs to
-> > implemented into kernel's emulated root bridge code).
-> > 
-> > But I'm not sure how it would behave on real HW PCIe hotplugging bridge.
-> > Kernel has already code which removes PCIe device if it changes presence
-> > bit (and inform via interrupt). And Link Down event triggers this
-> > change.
-> 
-> This is the difference between slot and bus resets, the slot reset is
-> implemented by the hotplug controller and disables presence detection
-> around the bus reset.  Thanks,
 
-Yes, but I'm talking about bus reset, not about slot reset.
+s/synopis/synopsis/
+s/differeniate/differentiate/
+s/differeniation/differentiation/
 
-I mean: to use bus reset via sysfs on hardware which supports slots and
-hotplugging.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+  Changes from V2:
+  Incorporated the changes suggested by Randy
 
-And if I'm reading code correctly, this combination is allowed, right?
-Via these new patches it is possible to disable slot reset and enable
-bus reset.
+ arch/parisc/math-emu/fpu.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/parisc/math-emu/fpu.h b/arch/parisc/math-emu/fpu.h
+index 853c19c03828..ea1c8c3539c6 100644
+--- a/arch/parisc/math-emu/fpu.h
++++ b/arch/parisc/math-emu/fpu.h
+@@ -12,7 +12,7 @@
+  *      @(#)	pa/fp/fpu.h		$Revision: 1.1 $
+  *
+  *  Purpose:
+- *      <<please update with a synopis of the functionality provided by this file>>
++ *      <<please update with a synopsis of the functionality provided by this file>>
+  *
+  *
+  * END_DESC
+@@ -50,9 +50,9 @@
+ #define EMULATION_VERSION 4
+
+ /*
+- * The only was to differeniate between TIMEX and ROLEX (or PCX-S and PCX-T)
+- * is thorough the potential type field from the PDC_MODEL call.  The
+- * following flags are used at assist this differeniation.
++ * The only way to differentiate between TIMEX and ROLEX (or PCX-S and PCX-T)
++ * is through the potential type field from the PDC_MODEL call.  The
++ * following flags are used to assist this differentiation.
+  */
+
+ #define ROLEX_POTENTIAL_KEY_FLAGS	PDC_MODEL_CPU_KEY_WORD_TO_IO
+--
+2.30.2
+
