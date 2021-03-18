@@ -2,119 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C3134030F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:22:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA9D340312
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:23:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229877AbhCRKVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 06:21:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhCRKVP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 06:21:15 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770A4C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 03:21:15 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 084412D8; Thu, 18 Mar 2021 11:21:13 +0100 (CET)
-Date:   Thu, 18 Mar 2021 11:21:12 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Will Deacon <will@kernel.org>, Dave Jiang <dave.jiang@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] iommu/vt-d: Fix lockdep splat in
- intel_pasid_get_entry()
-Message-ID: <YFMpmLNd73IVcgWq@8bytes.org>
-References: <20210317005834.173503-1-baolu.lu@linux.intel.com>
+        id S229991AbhCRKWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 06:22:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59900 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230008AbhCRKWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 06:22:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616062970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6drPy5++cy/jLxICKU45ttYyTRuG0/pKPjS/Nwj8Jvs=;
+        b=JBzkA7hwJx0aIzuewbyoR+uidBiIKel4JFalCj7FtGVMQiJNn2NyZ5WRLyWVzVsdGFt8k3
+        IYnzEkIKJ/DPPJsGSeYexjcngPm8GCqAMUF5++UamGBqOlXXVvrC8MNUKWeIBPrjPHgkr5
+        l+1LUq+d1oONfo250qlHJ0HbBPj5B48=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C43DDAC1E;
+        Thu, 18 Mar 2021 10:22:50 +0000 (UTC)
+Date:   Thu, 18 Mar 2021 11:22:44 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/5] mm,compaction: Let
+ isolate_migratepages_{range,block} return error codes
+Message-ID: <YFMprphu2jEf+OY7@dhcp22.suse.cz>
+References: <20210317111251.17808-1-osalvador@suse.de>
+ <20210317111251.17808-3-osalvador@suse.de>
+ <YFIOTTC7wgXHQRpy@dhcp22.suse.cz>
+ <20210317143827.GA20965@linux>
+ <YFIZVvQllaZHDgzW@dhcp22.suse.cz>
+ <843f68e7-6fe6-54e7-976b-af8647482ac1@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210317005834.173503-1-baolu.lu@linux.intel.com>
+In-Reply-To: <843f68e7-6fe6-54e7-976b-af8647482ac1@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 08:58:34AM +0800, Lu Baolu wrote:
-> The pasid_lock is used to synchronize different threads from modifying a
-> same pasid directory entry at the same time. It causes below lockdep splat.
+On Thu 18-03-21 10:50:38, Vlastimil Babka wrote:
+> On 3/17/21 3:59 PM, Michal Hocko wrote:
+> > On Wed 17-03-21 15:38:35, Oscar Salvador wrote:
+> >> On Wed, Mar 17, 2021 at 03:12:29PM +0100, Michal Hocko wrote:
+> >> > > Since isolate_migratepages_block will stop returning the next pfn to be
+> >> > > scanned, we reuse the cc->migrate_pfn field to keep track of that.
+> >> > 
+> >> > This looks hakish and I cannot really tell that users of cc->migrate_pfn
+> >> > work as intended.
 > 
-> [   83.296538] ========================================================
-> [   83.296538] WARNING: possible irq lock inversion dependency detected
-> [   83.296539] 5.12.0-rc3+ #25 Tainted: G        W
-> [   83.296539] --------------------------------------------------------
-> [   83.296540] bash/780 just changed the state of lock:
-> [   83.296540] ffffffff82b29c98 (device_domain_lock){..-.}-{2:2}, at:
->            iommu_flush_dev_iotlb.part.0+0x32/0x110
-> [   83.296547] but this lock took another, SOFTIRQ-unsafe lock in the past:
-> [   83.296547]  (pasid_lock){+.+.}-{2:2}
-> [   83.296548]
+> We did check those in detail. Of course it's possible to overlook something...
 > 
->            and interrupts could create inverse lock ordering between them.
+> The alloc_contig_range user never cared about cc->migrate_pfn. compaction
+> (isolate_migratepages() -> isolate_migratepages_block()) did, and
+> isolate_migratepages_block() returned the pfn only to be assigned to
+> cc->migrate_pfn in isolate_migratepages(). I think it's now better that
+> isolate_migratepages_block() sets it.
 > 
-> [   83.296549] other info that might help us debug this:
-> [   83.296549] Chain exists of:
->                  device_domain_lock --> &iommu->lock --> pasid_lock
-> [   83.296551]  Possible interrupt unsafe locking scenario:
+> >> When discussing this with Vlastimil, I came up with the idea of adding a new
+> >> field in compact_control struct, e.g: next_pfn_scan to keep track of the next
+> >> pfn to be scanned.
+> >> 
+> >> But Vlastimil made me realize that since cc->migrate_pfn points to that aleady,
+> >> so we do not need any extra field.
 > 
-> [   83.296551]        CPU0                    CPU1
-> [   83.296552]        ----                    ----
-> [   83.296552]   lock(pasid_lock);
-> [   83.296553]                                local_irq_disable();
-> [   83.296553]                                lock(device_domain_lock);
-> [   83.296554]                                lock(&iommu->lock);
-> [   83.296554]   <Interrupt>
-> [   83.296554]     lock(device_domain_lock);
-> [   83.296555]
->                 *** DEADLOCK ***
+> Yes, the first patch had at asome point:
 > 
-> Fix it by replacing the pasid_lock with an atomic exchange operation.
+> 	/* Record where migration scanner will be restarted. */
+> 	cc->migrate_pfn = cc->the_new_field;
 > 
-> Reported-and-tested-by: Dave Jiang <dave.jiang@intel.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/iommu/intel/pasid.c | 14 ++++++--------
->  1 file changed, 6 insertions(+), 8 deletions(-)
+> Which was a clear sign that the new field is unnecessary.
 > 
-> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-> index 9fb3d3e80408..1ddcb8295f72 100644
-> --- a/drivers/iommu/intel/pasid.c
-> +++ b/drivers/iommu/intel/pasid.c
-> @@ -24,7 +24,6 @@
->  /*
->   * Intel IOMMU system wide PASID name space:
->   */
-> -static DEFINE_SPINLOCK(pasid_lock);
->  u32 intel_pasid_max_id = PASID_MAX;
->  
->  int vcmd_alloc_pasid(struct intel_iommu *iommu, u32 *pasid)
-> @@ -259,19 +258,18 @@ struct pasid_entry *intel_pasid_get_entry(struct device *dev, u32 pasid)
->  	dir_index = pasid >> PASID_PDE_SHIFT;
->  	index = pasid & PASID_PTE_MASK;
->  
-> -	spin_lock(&pasid_lock);
->  	entries = get_pasid_table_from_pde(&dir[dir_index]);
->  	if (!entries) {
->  		entries = alloc_pgtable_page(info->iommu->node);
-> -		if (!entries) {
-> -			spin_unlock(&pasid_lock);
-> +		if (!entries)
->  			return NULL;
-> -		}
->  
-> -		WRITE_ONCE(dir[dir_index].val,
-> -			   (u64)virt_to_phys(entries) | PASID_PTE_PRESENT);
-> +		if (cmpxchg64(&dir[dir_index].val, 0ULL,
-> +			      (u64)virt_to_phys(entries) | PASID_PTE_PRESENT)) {
-> +			free_pgtable_page(entries);
-> +			entries = get_pasid_table_from_pde(&dir[dir_index]);
+> > This deserves a big fat comment.
+> 
+> Comment where, saying what? :)
 
-This is racy, someone could have already cleared the pasid-entry again.
-What you need to do here is to retry the whole path by adding a goto
-to before  the first get_pasid_table_from_pde() call.
+E.g. something like the following
+diff --git a/mm/internal.h b/mm/internal.h
+index 1432feec62df..6c5a9066adf0 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -225,7 +225,13 @@ struct compact_control {
+ 	unsigned int nr_freepages;	/* Number of isolated free pages */
+ 	unsigned int nr_migratepages;	/* Number of pages to migrate */
+ 	unsigned long free_pfn;		/* isolate_freepages search base */
+-	unsigned long migrate_pfn;	/* isolate_migratepages search base */
++	unsigned long migrate_pfn;	/* Acts as an in/out parameter to page
++					 * isolation.
++					 * isolate_migratepages uses it as a search base.
++					 * isolate_migratepages_block will update the
++					 * value the next pfn after the last isolated
++					 * one.
++					 */
+ 	unsigned long fast_start_pfn;	/* a pfn to start linear scan from */
+ 	struct zone *zone;
+ 	unsigned long total_migrate_scanned;
 
-Btw, what makes sure that the pasid_entry does not go away when it is
-returned here?
-
-Regards,
-
-	Joerg
+Btw isolate_migratepages_block still has this comment which needs
+updating
+"The cc->migrate_pfn field is neither read nor updated."
+-- 
+Michal Hocko
+SUSE Labs
