@@ -2,207 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5499B33FE2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 05:30:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7951933FE30
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 05:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbhCREaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 00:30:15 -0400
-Received: from mga14.intel.com ([192.55.52.115]:7022 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229456AbhCRE3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 00:29:43 -0400
-IronPort-SDR: 9bT6otCCt2LaMm7ZDvIJLxR2t7tnNi1Pdm6YZySVP62QdGpQcYKO5Uri6XtL1IN/BPTfoKsPYO
- G4NFlklZcigw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="188970190"
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="188970190"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 21:29:43 -0700
-IronPort-SDR: yPUJWyUc5CMJumdOXq18QNvBB6i+qDBtTzjA77DOAHY/0oKhlcDHiXbNQz/PrjVslIUhg4rD0N
- DxAdA6fUv3YA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="450338184"
-Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 17 Mar 2021 21:29:41 -0700
-Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lMkI1-00011Q-73; Thu, 18 Mar 2021 04:29:41 +0000
-Date:   Thu, 18 Mar 2021 12:29:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 90f093fa8ea48e5d991332cee160b761423d55c1
-Message-ID: <6052d712.qkhGSNVIyXcEpdsf%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229664AbhCREcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 00:32:55 -0400
+Received: from mail-lf1-f51.google.com ([209.85.167.51]:42510 "EHLO
+        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhCREcn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 00:32:43 -0400
+Received: by mail-lf1-f51.google.com with SMTP id o10so2398566lfb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 21:32:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=boH6m1jSA/WN9PxrEykfEhqNhVP+e9nXbufeG1rDlxg=;
+        b=ZHInkikUjjd5haEJJ8Ai7CVPCK136bGOmoTK7JV/kL3Aon7nldbvS+RyJix5L7Kqr7
+         6VIQVrpZdVcUEPUV08t07ZkClc+2iamBX580DI6ZDcGXFA8OSheR1v3UziPg9HdZ60Bt
+         qzHem+Rtmdy43hqgZonunlwUoZYN3B2n1ivP1PBWX8mKjaMQnuRIgCfpNsvXkyGj/wig
+         M686SygI/46WpgpdrpXrrAM+cSZifZs0Duoy1bf3/phe/gXiV9EqAS3rKj0eWlNDlRKS
+         4CRXCKf/6awY9cE/pOEIjRzCb/5CwZdBxnJML5S6mDK4vAg3KWojb6fQykv76rxYUvFc
+         PNtg==
+X-Gm-Message-State: AOAM533L3HGC02Dr05amL98ca0JvOldhNglloJm+6dLavJuV74+YSJgl
+        1RghhkU4TPtiiFAH2GXU811VYfQDA5C/vVucSp3O2DdH
+X-Google-Smtp-Source: ABdhPJyHa/urGDQlvOW8jDAzRusi83V0+t0Zy/jytarlCErtdKNN9ykBZ5WKEabkazOaio06hNDfwdlCyoxLXMRNAxQ=
+X-Received: by 2002:ac2:5093:: with SMTP id f19mr4389827lfm.494.1616041961766;
+ Wed, 17 Mar 2021 21:32:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210316211837.910506-1-songliubraving@fb.com>
+ <CAM9d7ci=hfFjq3+XuBcCZ0TUJxv6AmdFk0dkHFQD3wx27aJMjA@mail.gmail.com>
+ <YFH//FRPvrPswhld@kernel.org> <7D48A756-C253-48DE-B536-826314778404@fb.com>
+In-Reply-To: <7D48A756-C253-48DE-B536-826314778404@fb.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 18 Mar 2021 13:32:30 +0900
+Message-ID: <CAM9d7cjAngAKo9EazV=iyNncBZY53-rnE5_8SYuJiEuG4f4-yg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] perf-stat: share hardware PMCs with BPF
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 90f093fa8ea48e5d991332cee160b761423d55c1  rseq, ptrace: Add PTRACE_GET_RSEQ_CONFIGURATION request
+On Thu, Mar 18, 2021 at 12:52 PM Song Liu <songliubraving@fb.com> wrote:
+>
+>
+>
+> > On Mar 17, 2021, at 6:11 AM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> >
+> > Em Wed, Mar 17, 2021 at 02:29:28PM +0900, Namhyung Kim escreveu:
+> >> Hi Song,
+> >>
+> >> On Wed, Mar 17, 2021 at 6:18 AM Song Liu <songliubraving@fb.com> wrote:
+> >>>
+> >>> perf uses performance monitoring counters (PMCs) to monitor system
+> >>> performance. The PMCs are limited hardware resources. For example,
+> >>> Intel CPUs have 3x fixed PMCs and 4x programmable PMCs per cpu.
+> >>>
+> >>> Modern data center systems use these PMCs in many different ways:
+> >>> system level monitoring, (maybe nested) container level monitoring, per
+> >>> process monitoring, profiling (in sample mode), etc. In some cases,
+> >>> there are more active perf_events than available hardware PMCs. To allow
+> >>> all perf_events to have a chance to run, it is necessary to do expensive
+> >>> time multiplexing of events.
+> >>>
+> >>> On the other hand, many monitoring tools count the common metrics (cycles,
+> >>> instructions). It is a waste to have multiple tools create multiple
+> >>> perf_events of "cycles" and occupy multiple PMCs.
+> >>
+> >> Right, it'd be really helpful when the PMCs are frequently or mostly shared.
+> >> But it'd also increase the overhead for uncontended cases as BPF programs
+> >> need to run on every context switch.  Depending on the workload, it may
+> >> cause a non-negligible performance impact.  So users should be aware of it.
+> >
+> > Would be interesting to, humm, measure both cases to have a firm number
+> > of the impact, how many instructions are added when sharing using
+> > --bpf-counters?
+> >
+> > I.e. compare the "expensive time multiplexing of events" with its
+> > avoidance by using --bpf-counters.
+> >
+> > Song, have you perfmormed such measurements?
+>
+> I have got some measurements with perf-bench-sched-messaging:
+>
+> The system: x86_64 with 23 cores (46 HT)
+>
+> The perf-stat command:
+> perf stat -e cycles,cycles,instructions,instructions,ref-cycles,ref-cycles <target, etc.>
+>
+> The benchmark command and output:
+> ./perf bench sched messaging -g 40 -l 50000 -t
+> # Running 'sched/messaging' benchmark:
+> # 20 sender and receiver threads per group
+> # 40 groups == 1600 threads run
+>      Total time: 10X.XXX [sec]
+>
+>
+> I use the "Total time" as measurement, so smaller number is better.
+>
+> For each condition, I run the command 5 times, and took the median of
+> "Total time".
+>
+> Baseline (no perf-stat)                 104.873 [sec]
+> # global
+> perf stat -a                            107.887 [sec]
+> perf stat -a --bpf-counters             106.071 [sec]
+> # per task
+> perf stat                               106.314 [sec]
+> perf stat --bpf-counters                105.965 [sec]
+> # per cpu
+> perf stat -C 1,3,5                      107.063 [sec]
+> perf stat -C 1,3,5 --bpf-counters       106.406 [sec]
+>
+> From the data, --bpf-counters is slightly better than the regular event
+> for all targets. I noticed that the results are not very stable. There
+> are a couple 108.xx runs in some of the conditions (w/ and w/o
+> --bpf-counters).
 
-elapsed time: 723m
+Hmm.. so this result is when multiplexing happened, right?
+I wondered how/why the regular perf stat is slower..
 
-configs tested: 145
-configs skipped: 2
+Thanks,
+Namhyung
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-powerpc                 mpc8540_ads_defconfig
-arm                         at91_dt_defconfig
-arc                            hsdk_defconfig
-mips                        nlm_xlr_defconfig
-sh                              ul2_defconfig
-h8300                     edosk2674_defconfig
-powerpc                     redwood_defconfig
-mips                        qi_lb60_defconfig
-powerpc                     taishan_defconfig
-mips                            gpr_defconfig
-m68k                       bvme6000_defconfig
-powerpc                      acadia_defconfig
-arm                          pxa910_defconfig
-sh                         ecovec24_defconfig
-powerpc                 xes_mpc85xx_defconfig
-arm                            mmp2_defconfig
-arm                         palmz72_defconfig
-arm                          iop32x_defconfig
-arm                        neponset_defconfig
-powerpc                     kilauea_defconfig
-sh                          landisk_defconfig
-powerpc                    mvme5100_defconfig
-m68k                       m5249evb_defconfig
-sh                            titan_defconfig
-mips                           gcw0_defconfig
-sh                         apsh4a3a_defconfig
-powerpc                         wii_defconfig
-powerpc                       eiger_defconfig
-mips                       bmips_be_defconfig
-m68k                        stmark2_defconfig
-mips                           ip28_defconfig
-powerpc                    adder875_defconfig
-arm                         assabet_defconfig
-arc                              alldefconfig
-arm                       multi_v4t_defconfig
-sh                           se7619_defconfig
-arm                          moxart_defconfig
-powerpc                          allyesconfig
-mips                           ip32_defconfig
-ia64                         bigsur_defconfig
-arm                        multi_v7_defconfig
-arm                       imx_v4_v5_defconfig
-powerpc                      chrp32_defconfig
-mips                     loongson1b_defconfig
-h8300                    h8300h-sim_defconfig
-sh                        sh7757lcr_defconfig
-arm                     eseries_pxa_defconfig
-arm                            lart_defconfig
-mips                      bmips_stb_defconfig
-mips                    maltaup_xpa_defconfig
-powerpc                     skiroot_defconfig
-sh                     sh7710voipgw_defconfig
-powerpc                       ebony_defconfig
-arm                      footbridge_defconfig
-mips                        bcm47xx_defconfig
-powerpc                mpc7448_hpc2_defconfig
-xtensa                              defconfig
-arm                         lpc18xx_defconfig
-arm                         lpc32xx_defconfig
-sh                          lboxre2_defconfig
-sh                             espt_defconfig
-sh                   secureedge5410_defconfig
-parisc                           allyesconfig
-arc                        nsimosci_defconfig
-riscv                             allnoconfig
-powerpc                    sam440ep_defconfig
-arm                         bcm2835_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                          ixp4xx_defconfig
-mips                        vocore2_defconfig
-s390                       zfcpdump_defconfig
-arm                     am200epdkit_defconfig
-microblaze                          defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210317
-x86_64               randconfig-a001-20210317
-x86_64               randconfig-a005-20210317
-x86_64               randconfig-a004-20210317
-x86_64               randconfig-a003-20210317
-x86_64               randconfig-a002-20210317
-i386                 randconfig-a001-20210317
-i386                 randconfig-a005-20210317
-i386                 randconfig-a002-20210317
-i386                 randconfig-a003-20210317
-i386                 randconfig-a004-20210317
-i386                 randconfig-a006-20210317
-i386                 randconfig-a013-20210317
-i386                 randconfig-a016-20210317
-i386                 randconfig-a011-20210317
-i386                 randconfig-a012-20210317
-i386                 randconfig-a015-20210317
-i386                 randconfig-a014-20210317
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a011-20210317
-x86_64               randconfig-a016-20210317
-x86_64               randconfig-a013-20210317
-x86_64               randconfig-a014-20210317
-x86_64               randconfig-a015-20210317
-x86_64               randconfig-a012-20210317
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+>
+> I also measured the average runtime of the BPF programs, with
+>
+>         sysctl kernel.bpf_stats_enabled=1
+>
+> For each event, if we have one leader and two followers, the total run
+> time is about 340ns. IOW, 340ns for two perf-stat reading instructions,
+> 340ns for two perf-stat reading cycles, etc.
+>
+> Thanks,
+> Song
