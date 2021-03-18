@@ -2,99 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFEC340BED
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3863340BF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:36:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232083AbhCRReJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:34:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42202 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232256AbhCRRdo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:33:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616088824;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DN+8K3rKTpznELYcmJSaxwcdANuiNnp4BTO6V95gyn8=;
-        b=fqIVI1fFvw5ebpzclbCfVZAszqu2hH//H2BqMCMINz7Q7yodm7FC/BBr9V+tDICTI43P4S
-        FYtl2ob/qQjiDKgLVpS5XEyo2fpxfTA7lSsOKZywobXO5pqilpaMYOknLnOgQa886boxm+
-        OXAdX7NTBwPwpGQN/e9q+FRCwP2J2r0=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-457-9cfwpIiiPxGH8kyDcmFtOA-1; Thu, 18 Mar 2021 13:33:38 -0400
-X-MC-Unique: 9cfwpIiiPxGH8kyDcmFtOA-1
-Received: by mail-wm1-f70.google.com with SMTP id z26so12149498wml.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:33:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DN+8K3rKTpznELYcmJSaxwcdANuiNnp4BTO6V95gyn8=;
-        b=sy40WeAxLVF9SDXBuVRzrXrs8Y62NvuH3gE1SV16ieIiCRQJU/dzI2+I6wV+T96REG
-         BTot04dD6otOCRTeRjpHkx8yXdkcKQhDFzBYtr4NGxyq0fAx9MH/jd1lsKWMnbKnqz8Y
-         Gf/CmIuVEUt1AXRsve6sTD/CJxHSXIn0vYDy6fvAdhjuM0GL/+aVQkebnGp/0yfK8YEu
-         9mU2xCT1b/ELscwyal1pdkRwaeg8VfYs6K8iqx1s035xCzCY/1tbd7dyIHFAlQrIxl0b
-         P90SvcbeXt2f9PXTK26lW6C0Zi4BPp0o3Zp41Rto86nFa4wk2WCmtnscDLxGrHsCGszQ
-         iLrQ==
-X-Gm-Message-State: AOAM532fYzAru5ODsAXwxg6Drl1yceWSBnydUffKcZXbca02elERtcpj
-        iOx9tncbGI7aET//swtZPOjvA7PqPMqhxYs/3UyyveGzLVEWLP3nTsmq4jwSylQnGNQC3faIu29
-        WvAAwGru0HhoOz1BxEKjhKds84mM9j3TwntmYM0sKdE3vrqLUmJ7E4FJVuznOzUn7oCnvYtBQ+d
-        u+
-X-Received: by 2002:a05:600c:4305:: with SMTP id p5mr281783wme.58.1616088816609;
-        Thu, 18 Mar 2021 10:33:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw4C0nnNPJfbUUcYMXpaLCD02RMObFn+Jfj9qUjWFqoZRQpPHL++lmLqOJOwel0p38NoPaT0g==
-X-Received: by 2002:a05:600c:4305:: with SMTP id p5mr281769wme.58.1616088816430;
-        Thu, 18 Mar 2021 10:33:36 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id n1sm4535975wro.36.2021.03.18.10.33.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 10:33:35 -0700 (PDT)
-To:     Andrew Jones <drjones@redhat.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Cc:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210318145629.486450-1-eesposit@redhat.com>
- <20210318170316.6vah7x2ws4bimmdf@kamzik.brq.redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH] selftests/kvm: add get_msr_index_features
-Message-ID: <c08773f1-4b84-bb19-cda8-c8ac6ffffdaf@redhat.com>
-Date:   Thu, 18 Mar 2021 18:33:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232126AbhCRRfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:35:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232088AbhCRRfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:35:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F04364E99;
+        Thu, 18 Mar 2021 17:35:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616088934;
+        bh=o5SA5DM7AwK8vuNSIQa7aOT1dmrHX7pjGtzFCywRg6E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mGXZdxG94oTGHotSnrkhwCuJ2lzAbPitW4XwCyAk9I9K6YIB63bFxBNCd2UCoRZ7F
+         MwvCr7bwMnYNM+jJ42/+LHDSRX849dpCH8/YVLdS/IRiPT4ui90wh8UdFL+SJNlisw
+         J1s60z8i1SQT641UsuZX80vxy1s7rJ77tkqeieIpmZlZeO+/WEgTFA67w5glvqMhs+
+         SOiTa3JEvWcV4NKByF8jWQP/Uu1e8/WXONTeJzuorg6K2lCv/JUfSX+e8zEz9aACi2
+         5bmHnQA/Oz5F61fWPDOZDaSpCrC4U0fltqmqHaU8SKPvSJoyr4b1ppWxNKrQj9O6kU
+         7KQL0xQcUgtiA==
+Date:   Thu, 18 Mar 2021 19:35:30 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     alex.williamson@redhat.com, raphael.norwitz@nutanix.com,
+        linux-pci@vger.kernel.org, bhelgaas@google.com,
+        linux-kernel@vger.kernel.org, alay.shah@nutanix.com,
+        suresh.gumpula@nutanix.com, shyam.rajendran@nutanix.com,
+        felipe@nutanix.com
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <YFOPYs3IGaemTLMj@unreal>
+References: <YFHh3bopQo/CRepV@unreal>
+ <20210317112309.nborigwfd26px2mj@archlinux>
+ <YFHsW/1MF6ZSm8I2@unreal>
+ <20210317131718.3uz7zxnvoofpunng@archlinux>
+ <YFILEOQBOLgOy3cy@unreal>
+ <20210317113140.3de56d6c@omen.home.shazbot.org>
+ <YFMYzkg101isRXIM@unreal>
+ <20210318142252.fqi3das3mtct4yje@archlinux>
+ <YFNqbJZo3wqhMc1S@unreal>
+ <20210318170143.ustrbjaqdl644ozj@archlinux>
 MIME-Version: 1.0
-In-Reply-To: <20210318170316.6vah7x2ws4bimmdf@kamzik.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318170143.ustrbjaqdl644ozj@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/03/21 18:03, Andrew Jones wrote:
->>
->>  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
->> +TEST_GEN_PROGS_x86_64 += x86_64/get_msr_index_features
-> 
-> Maybe we should give up trying to keep an alphabetic order.
+On Thu, Mar 18, 2021 at 10:31:43PM +0530, Amey Narkhede wrote:
+> On 21/03/18 04:57PM, Leon Romanovsky wrote:
+> > On Thu, Mar 18, 2021 at 07:52:52PM +0530, Amey Narkhede wrote:
+> > > On 21/03/18 11:09AM, Leon Romanovsky wrote:
+> > > > On Wed, Mar 17, 2021 at 11:31:40AM -0600, Alex Williamson wrote:
+> > > > > On Wed, 17 Mar 2021 15:58:40 +0200
+> > > > > Leon Romanovsky <leon@kernel.org> wrote:
 
-FWIW I had fixed that but yeah maybe we should just give up.
+<...>
 
->> +int main(int argc, char *argv[])
->> +{
->> +	if (kvm_check_cap(KVM_CAP_GET_MSR_FEATURES))
->> +		test_get_msr_feature();
->> +
->> +	test_get_msr_index();
-> Missing return
-> 
->> +}
+> > > > I'm lost here, does vfio-pci use sysfs interface or internal to the kernel API?
+> > > >
+> > > > If it is latter then we don't really need sysfs, if not, we still need
+> > > > some sort of DB to create second policy, because "supported != working".
+> > > > What am I missing?
+> > > >
+> > > > Thanks
+> > > >
+> > > Can you explain bit more about why supported != working?
+> >
+> > It is written in the commit message of this patch.
+> > https://lore.kernel.org/lkml/20210312173452.3855-1-ameynarkhede03@gmail.com/
+> > "This feature aims to allow greater control of a device for use cases
+> > as device assignment, where specific device or platform issues may
+> > interact poorly with a given reset method, and for which device specific
+> > quirks have not been developed."
+> >
+> > You wrote it and also repeated it a couple of times during the discussion.
+> >
+> > If device can understand that specific reset doesn't work, it won't
+> > perform it in first place.
+> >
+> > Thanks
+> Is it possible for device to understand whether or not specific reset
+> will work or not prior to performing reset and after it indicates
+> support for that reset method? Maybe theres problem with that particular
+> piece of hardware in that machine.
+> How can database be maintained if a particular machines have
+> particular piece of faulty HW?
 
-"main" is special, it's okay not to have a return there.
+It was exactly the reason why I think that VM usecase presented by
+you is not viable.
 
-Paolo
+> If for some reason reset doesn't work it will just give -ENOTTY.
+> This isn't any different from existing behavior.Actually it informs user
+> that the reset method didn't reset the device and user can use different
+> reset method instead of implicitly using different reset method.
+> If user doesn't explicitly set preferred reset method then
+> we go ahead with existing implicit fall through behavior which will try all
+> available reset methods until any one of them works.
+> If you have device that doesn't support reset at all then you have
+> option to completely disable it unlike existing reset attribute where
+> you cannot disable reset. So it gives greater control where you can
+> disable the reset altogether when quirk isn't developed yet.
 
+I explicitly asked to hear usecase, right now, I got an explanation from
+Alex for policy decision (which doesn't need sysfs) and from you about
+overcoming HW bugs with expectation that user will be guru of PCI reset
+methods.
+
+>
+> We can't expect to develop quirk for every device in existence.
+
+It doesn't give us an excuse do not try.
+
+> For example on my laptop elantech touchpad still doesn't work in 2021
+> with vanilla kernel, arch linux applies the patch which was reverted in
+> mainline kernel for some reason.
+
+I see it as a good example of cheap solution. Vendor won't fix your
+touchpad because distros provide workaround. The same will be with reset.
+
+Thanks
+
+>
+> Thanks,
+> Amey
