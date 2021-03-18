@@ -2,94 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F006340636
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:00:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 884F8340637
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbhCRM73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 08:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhCRM7L (ORCPT
+        id S231270AbhCRNAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 09:00:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31161 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230169AbhCRM77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:59:11 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C71C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 05:59:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZT0gy2r7v1/B9vqHI07WV/IgP39yaXGfSrqMZkiTlyA=; b=PBPkQ2c235mVrzeLx0Y5eVfroB
-        C0cjNLYJGEMOvK6zMNPXMPEswajM/ieavWO0SqExpKClayWFRUUHER99aVhvFaYLfjrjoReZKMl1C
-        unOq/MmpicSC/JIIHzQq6HeCnDd9UBAm4wtmsQSvNyQzRAF7wppEKum8R1Cgp/+wRyya255j/kjpD
-        gvVzn1KV+3SRbdiZfGaffCYupW4517w/VIf83uw8ThxwyxGLmtZmZJ7RDuFeZByxC34Iztch9z1GI
-        +jsBET8u894QhdcQCpI0cB1JVz+xpy0w/+8BAxQvWeKfful1kP5VfN+D7TXH6zG546lERyP/aSAEm
-        70WCRf9g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMsD2-005HIL-Vd; Thu, 18 Mar 2021 12:59:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 00AB13012DF;
-        Thu, 18 Mar 2021 13:57:03 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DA05F21244794; Thu, 18 Mar 2021 13:57:03 +0100 (CET)
-Date:   Thu, 18 Mar 2021 13:57:03 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, jgross@suse.com, mbenes@suze.cz,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/9] objtool: Rework rebuild_reloc logic
-Message-ID: <YFNOH1m+FrFK8TRN@hirez.programming.kicks-ass.net>
-References: <20210312171613.533405394@infradead.org>
- <20210312171653.649709484@infradead.org>
- <20210317033417.lbwemc2j2cpsdlzd@treble>
- <YFG53wkgw6nDBgIl@hirez.programming.kicks-ass.net>
- <20210318004917.sytcivxy5h2ujttc@treble>
+        Thu, 18 Mar 2021 08:59:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616072398;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zttNs7jZbn6D0lj/XsWF0ni+5Nn1KjE+7Wi6kmfAuuo=;
+        b=EyjUadxDE4dqnpVVfKSErLnlbU3bxE/fm9Qe5S3ntfTkR3aCOqnTc2kR21NwIWNcg76jC4
+        k64NK9UM2bno1PpFfz9CoQvbr9CgwC04s1ISo2tfCe1YINP5tiugHoSjA2wEC03dO2WRk2
+        vt6Za/+f/zNzpt0AVUhCSBXv0THpOs4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-aKlDJAgtOEyllUU2KOOVgg-1; Thu, 18 Mar 2021 08:59:55 -0400
+X-MC-Unique: aKlDJAgtOEyllUU2KOOVgg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B06D107ACCD;
+        Thu, 18 Mar 2021 12:59:52 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (ovpn-115-156.rdu2.redhat.com [10.10.115.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 40AC110013C1;
+        Thu, 18 Mar 2021 12:59:46 +0000 (UTC)
+Date:   Thu, 18 Mar 2021 08:59:44 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     changhuaixin <changhuaixin@linux.alibaba.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
+        open list <linux-kernel@vger.kernel.org>, mgorman@suse.de,
+        mingo@redhat.com, Odin Ugedal <odin@uged.al>,
+        Odin Ugedal <odin@ugedal.com>, pauld@redhat.com,
+        Paul Turner <pjt@google.com>, rostedt@goodmis.org,
+        Shanpei Chen <shanpeic@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        xiyou.wangcong@gmail.com
+Subject: Re: [PATCH v4 1/4] sched/fair: Introduce primitives for CFS
+ bandwidth burst
+Message-ID: <YFNNWumXTSa3Bssl@lorien.usersys.redhat.com>
+References: <20210316044931.39733-1-changhuaixin@linux.alibaba.com>
+ <20210316044931.39733-2-changhuaixin@linux.alibaba.com>
+ <YFCAXeZj6sXBI5Ls@hirez.programming.kicks-ass.net>
+ <B75EDF95-96B3-44E4-8169-3C1FCBC30A7B@linux.alibaba.com>
+ <YFG4hEOe65cbCo26@hirez.programming.kicks-ass.net>
+ <EA9BCA7F-8B57-4A87-A32E-DBBF8E7BAD8F@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210318004917.sytcivxy5h2ujttc@treble>
+In-Reply-To: <EA9BCA7F-8B57-4A87-A32E-DBBF8E7BAD8F@linux.alibaba.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 07:49:17PM -0500, Josh Poimboeuf wrote:
-> On Wed, Mar 17, 2021 at 09:12:15AM +0100, Peter Zijlstra wrote:
-> > On Tue, Mar 16, 2021 at 10:34:17PM -0500, Josh Poimboeuf wrote:
-> > > On Fri, Mar 12, 2021 at 06:16:18PM +0100, Peter Zijlstra wrote:
-> > > > --- a/tools/objtool/elf.c
-> > > > +++ b/tools/objtool/elf.c
-> > > > @@ -479,6 +479,8 @@ void elf_add_reloc(struct elf *elf, stru
-> > > >  
-> > > >  	list_add_tail(&reloc->list, &sec->reloc_list);
-> > > >  	elf_hash_add(elf->reloc_hash, &reloc->hash, reloc_hash(reloc));
-> > > > +
-> > > > +	sec->rereloc = true;
-> > > >  }
-> > > 
-> > > Can we just reuse sec->changed for this?  Something like this on top
-> > > (untested of course):
-> > 
-> > I think my worry was that we'd dirty too much and slow down the write,
-> > but I haven't done any actual performance measurements on this.
+On Thu, Mar 18, 2021 at 09:26:58AM +0800 changhuaixin wrote:
 > 
-> Really?  I thought my proposal was purely aesthetic, no functional
-> change, but my brain is toasty this week due to other distractions so
-> who knows.
+> 
+> > On Mar 17, 2021, at 4:06 PM, Peter Zijlstra <peterz@infradead.org> wrote:
+> > 
+> > On Wed, Mar 17, 2021 at 03:16:18PM +0800, changhuaixin wrote:
+> > 
+> >>> Why do you allow such a large burst? I would expect something like:
+> >>> 
+> >>> 	if (burst > quote)
+> >>> 		return -EINVAL;
+> >>> 
+> >>> That limits the variance in the system. Allowing super long bursts seems
+> >>> to defeat the entire purpose of bandwidth control.
+> >> 
+> >> I understand your concern. Surely large burst value might allow super
+> >> long bursts thus preventing bandwidth control entirely for a long
+> >> time.
+> >> 
+> >> However, I am afraid it is hard to decide what the maximum burst
+> >> should be from the bandwidth control mechanism itself. Allowing some
+> >> burst to the maximum of quota is helpful, but not enough. There are
+> >> cases where workloads are bursty that they need many times more than
+> >> quota in a single period. In such cases, limiting burst to the maximum
+> >> of quota fails to meet the needs.
+> >> 
+> >> Thus, I wonder whether is it acceptable to leave the maximum burst to
+> >> users. If the desired behavior is to allow some burst, configure burst
+> >> accordingly. If that is causing variance, use share or other fairness
+> >> mechanism. And if fairness mechanism still fails to coordinate, do not
+> >> use burst maybe.
+> > 
+> > It's not fairness, bandwidth control is about isolation, and burst
+> > introduces interference.
+> > 
+> >> In this way, cfs_b->buffer can be removed while cfs_b->max_overrun is
+> >> still needed maybe.
+> > 
+> > So what is the typical avg,stdev,max and mode for the workloads where you find
+> > you need this?
+> > 
+> > I would really like to put a limit on the burst. IMO a workload that has
+> > a burst many times longer than the quota is plain broken.
+> 
+> I see. Then the problem comes down to how large the limit on burst shall be.
+> 
+> I have sampled the CPU usage of a bursty container in 100ms periods. The statistics are:
+> average	: 42.2%
+> stddev	: 81.5%
+> max		: 844.5%
+> P95		: 183.3%
+> P99		: 437.0%
+> 
+> If quota is 100000ms, burst buffer needs to be 8 times more in order for this workload not to be throttled.
+> I can't say this is typical, but these workloads exist. On a machine running Kubernetes containers,
+> where there is often room for such burst and the interference is hard to notice, users would prefer
+> allowing such burst to being throttled occasionally.
+>
 
-I was thinking you could get a section changed without touching
-relocations, but while that is theoretically possible, it is exceedingly
-unlikely (and objtool doesn't do that).
+I admit to not having followed all the history of this patch set. That said, when I see the above I just
+think your quota is too low for your workload.
 
-Because if entries have relocations, then adding an entry will also add
-relocations etc..
+The burst (mis?)feature seems to be a way to bypass the quota.  And it sort of assumes cooperative
+containers that will only burst when they need it and then go back to normal. 
 
-pre: 79.269 +- 0.104 seconds time elapsed  ( +-  0.13% )
-post: 79.0604 +- 0.0441 seconds time elapsed  ( +-  0.06% )
-fini: 79.2995 +- 0.0448 seconds time elapsed  ( +-  0.06% )
+> In this sense, I suggest limit burst buffer to 16 times of quota or around. That should be enough for users to
+> improve tail latency caused by throttling. And users might choose a smaller one or even none, if the interference
+> is unacceptable. What do you think?
+> 
 
-is what I get for kbuild x86_64-defconfig-ish build times with the
-various patches applied. Which is all noise afaict. I'll fold your
-thing. Less is more etc..
+Having quotas that can regularly be exceeded by 16 times seems to make the concept of a quota
+meaningless.  I'd have thought a burst would be some small percentage.
+
+What if several such containers burst at the same time? Can't that lead to overcommit that can effect
+other well-behaved containers?
+
+
+Cheers,
+Phil
+
+-- 
+
