@@ -2,99 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F28340030
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E528340037
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhCRHXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 03:23:05 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:16758 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229554AbhCRHWy (ORCPT
+        id S229748AbhCRHYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 03:24:11 -0400
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:48769 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229803AbhCRHYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 03:22:54 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12I7LtGj001011;
-        Thu, 18 Mar 2021 08:22:43 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=selector1; bh=pDW8yn2SZ/DbGcux/g2wzgkS5pR7fc1/nVjggeXN9tw=;
- b=cOvalR7kVeuzluO4TYFTsP0yBenXFghs20yQGwLlev3XFJs5ykKpZ6EuamiFVPcR0OcL
- 4f2YSr9VHO5E2YosblW+rSUsLUQ4TPfoJ2M25HJ6IFFi3hrQcXmPlFIHAg63A0QX6n0Y
- lWizRwePjQUY9W37o0sPuRn8oPy+w9Bamq1mFIKtl5WtvpVQvvZiFMdbf6c06wAkYcEO
- oONTv0XQKWdnBqCdEITxTD/06Nqq56sgR9Bj31iI21OMt/W9hdxLfw8xtDBFgNVQQz6G
- zAKcZ2KbrClLLcmNo2SFTSTtkU1v997EqEYbTVJleSQApCGnZxcYKqY/KwWcxLCEhJa+ Ng== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 378pr63nqd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Mar 2021 08:22:43 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6038D100034;
-        Thu, 18 Mar 2021 08:22:42 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4D156220FAA;
-        Thu, 18 Mar 2021 08:22:42 +0100 (CET)
-Received: from gnbcxd0016.gnb.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Mar
- 2021 08:22:41 +0100
-Date:   Thu, 18 Mar 2021 08:22:38 +0100
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     Lukas Wunner <lukas@wunner.de>
-CC:     <broonie@kernel.org>, <amelie.delaunay@foss.st.com>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>,
-        <antonio.borneo@foss.st.com>
-Subject: Re: [PATCH] spi: stm32: drop devres version of spi_register_master
-Message-ID: <20210318072238.GA10567@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: Lukas Wunner <lukas@wunner.de>, broonie@kernel.org,
-        amelie.delaunay@foss.st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, linux-spi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        fabrice.gasnier@foss.st.com, antonio.borneo@foss.st.com
-References: <1615545286-5395-1-git-send-email-alain.volmat@foss.st.com>
- <20210316211744.GA25311@wunner.de>
+        Thu, 18 Mar 2021 03:24:03 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id Mn0glHf7RDUxpMn0jlhyS0; Thu, 18 Mar 2021 08:24:01 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1616052241; bh=deuUQU78hwcxkDF8i9lvlwSPAnhnrqcqvlsxydh6vw0=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=qjWC5C7JwQCG+FZOAL/J8pAROAMB1dE5MRHGiJwlwIVjFadV1LwtVpQI4uTSh+FUA
+         c7xoEDOi6t2h8EDvmHy6c5s4aaQkou9sSIvWtmvDnqW3RRXIOxfg3LXOpSnver3efs
+         73+IjJdw9xjNzwLVUIgxyAOliLdNWMO+Cm2bphu5V2+pcAEpZsdkKmhTi+mPCBjbE/
+         qYWgFI1/dD/3ddmNDGm+dDbJKH9FJe1VgAHtPQ6thXHRGKMybaQncNOQe1uEg4c9cc
+         ovIgHjoPqnqSO1i8N4E/8f7QPSvw1/mR7LfvtMhFd+1mYcJwTzD3slo1kVa5W2GLUp
+         o7z+qgF3LjXSA==
+Subject: Re: [PATCH v6 09/17] media: uvcvideo: refactor __uvc_ctrl_add_mapping
+To:     Ricardo Ribalda <ribalda@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org
+References: <20210317164511.39967-1-ribalda@chromium.org>
+ <20210317164511.39967-10-ribalda@chromium.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <ea946fbd-712b-717a-15c7-84a22816d051@xs4all.nl>
+Date:   Thu, 18 Mar 2021 08:23:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210316211744.GA25311@wunner.de>
-X-Disclaimer: ce message est personnel / this message is private
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-18_02:2021-03-17,2021-03-18 signatures=0
+In-Reply-To: <20210317164511.39967-10-ribalda@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfP7GNOQrueMSsK8pHIgg11LweBLFzckYnmjel4qTYYtOi+/jKZ0okzL+y16S4rAqnDlAC1L38ilwSiqm1zwX0P1IEuMMdfelhn9n5S0G/lWaGgI/VlNS
+ QSkOFsFRsOAzzpTEHwAXHhFLNSpII96dMG0QwD4hDJsGwf4l6WE9rqxjNnhLND6BRyVYY1BWetXWloACNqcC0H1cI18iXjoTeVN74m6jj1MeCw32x3+I2lvu
+ CK32zBehTSK3uGfnWvWd6jGahQ6twtDkxkM/eT8zhyR5x1CzEWXcL6AKx5FEP/MFsyxAd5vnV1XtUEwKgQzIjTYun9dlwm6wgtYqpQWXmJthR276rIyI4Fgc
+ +xC4ZYdo2R2k7x5BM1kro7qWqqUk1glCe3fZz9NVwnm4yrQr/i4rdM4n1os82XfY7nA1Rc12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukas,
+On 17/03/2021 17:45, Ricardo Ribalda wrote:
+> Pass the chain instead of the device. We want to keed the reference to
 
-On Tue, Mar 16, 2021 at 10:17:44PM +0100, Lukas Wunner wrote:
-> On Fri, Mar 12, 2021 at 11:34:46AM +0100, Alain Volmat wrote:
-> > --- a/drivers/spi/spi-stm32.c
-> > +++ b/drivers/spi/spi-stm32.c
-> > @@ -1960,6 +1960,7 @@ static int stm32_spi_remove(struct platform_device *pdev)
-> >  	struct spi_master *master = platform_get_drvdata(pdev);
-> >  	struct stm32_spi *spi = spi_master_get_devdata(master);
-> >  
-> > +	spi_unregister_master(master);
-> >  	spi->cfg->disable(spi);
-> >  
-> >  	if (master->dma_tx)
-> 
-> This introduces a use-after-free because spi_unregister_master()
-> drops the last reference on the spi_master allocation (which includes
-> the struct stm32_spi), causing it to be freed, yet the stm32_spi
-> struct is accessed afterwards.
+keed -> keep
 
-Indeed. Thanks. I've fixed that and will post it.
+With that typo fixed you can add my:
 
-> You need to convert the driver to devm_spi_alloc_master() to
-> fix the use-after-free.  See commit 6cfd39e212de for an example.
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+
+Thanks!
+
+	Hans
+
+> the chain that controls belong to.
 > 
-> Thanks,
+> We need to delay the initialization of the controls after the chains
+> have been initialized.
 > 
-> Lukas
+> This is a cleanup needed for the next patches.
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  drivers/media/usb/uvc/uvc_ctrl.c   | 41 ++++++++++++++++++++----------
+>  drivers/media/usb/uvc/uvc_driver.c |  8 +++---
+>  2 files changed, 32 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> index b3dde98499f4..b75da65115ef 100644
+> --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> @@ -2057,7 +2057,7 @@ static int uvc_ctrl_add_info(struct uvc_device *dev, struct uvc_control *ctrl,
+>  /*
+>   * Add a control mapping to a given control.
+>   */
+> -static int __uvc_ctrl_add_mapping(struct uvc_device *dev,
+> +static int __uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
+>  	struct uvc_control *ctrl, const struct uvc_control_mapping *mapping)
+>  {
+>  	struct uvc_control_mapping *map;
+> @@ -2086,7 +2086,7 @@ static int __uvc_ctrl_add_mapping(struct uvc_device *dev,
+>  		map->set = uvc_set_le_value;
+>  
+>  	list_add_tail(&map->list, &ctrl->info.mappings);
+> -	uvc_dbg(dev, CONTROL, "Adding mapping '%s' to control %pUl/%u\n",
+> +	uvc_dbg(chain->dev, CONTROL, "Adding mapping '%s' to control %pUl/%u\n",
+>  		map->name, ctrl->info.entity, ctrl->info.selector);
+>  
+>  	return 0;
+> @@ -2168,7 +2168,7 @@ int uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
+>  		goto done;
+>  	}
+>  
+> -	ret = __uvc_ctrl_add_mapping(dev, ctrl, mapping);
+> +	ret = __uvc_ctrl_add_mapping(chain, ctrl, mapping);
+>  	if (ret < 0)
+>  		atomic_dec(&dev->nmappings);
+>  
+> @@ -2244,7 +2244,8 @@ static void uvc_ctrl_prune_entity(struct uvc_device *dev,
+>   * Add control information and hardcoded stock control mappings to the given
+>   * device.
+>   */
+> -static void uvc_ctrl_init_ctrl(struct uvc_device *dev, struct uvc_control *ctrl)
+> +static void uvc_ctrl_init_ctrl(struct uvc_video_chain *chain,
+> +			       struct uvc_control *ctrl)
+>  {
+>  	const struct uvc_control_info *info = uvc_ctrls;
+>  	const struct uvc_control_info *iend = info + ARRAY_SIZE(uvc_ctrls);
+> @@ -2263,14 +2264,14 @@ static void uvc_ctrl_init_ctrl(struct uvc_device *dev, struct uvc_control *ctrl)
+>  	for (; info < iend; ++info) {
+>  		if (uvc_entity_match_guid(ctrl->entity, info->entity) &&
+>  		    ctrl->index == info->index) {
+> -			uvc_ctrl_add_info(dev, ctrl, info);
+> +			uvc_ctrl_add_info(chain->dev, ctrl, info);
+>  			/*
+>  			 * Retrieve control flags from the device. Ignore errors
+>  			 * and work with default flag values from the uvc_ctrl
+>  			 * array when the device doesn't properly implement
+>  			 * GET_INFO on standard controls.
+>  			 */
+> -			uvc_ctrl_get_flags(dev, ctrl, &ctrl->info);
+> +			uvc_ctrl_get_flags(chain->dev, ctrl, &ctrl->info);
+>  			break;
+>  		 }
+>  	}
+> @@ -2281,22 +2282,20 @@ static void uvc_ctrl_init_ctrl(struct uvc_device *dev, struct uvc_control *ctrl)
+>  	for (; mapping < mend; ++mapping) {
+>  		if (uvc_entity_match_guid(ctrl->entity, mapping->entity) &&
+>  		    ctrl->info.selector == mapping->selector)
+> -			__uvc_ctrl_add_mapping(dev, ctrl, mapping);
+> +			__uvc_ctrl_add_mapping(chain, ctrl, mapping);
+>  	}
+>  }
+>  
+>  /*
+>   * Initialize device controls.
+>   */
+> -int uvc_ctrl_init_device(struct uvc_device *dev)
+> +static int uvc_ctrl_init_chain(struct uvc_video_chain *chain)
+>  {
+>  	struct uvc_entity *entity;
+>  	unsigned int i;
+>  
+> -	INIT_WORK(&dev->async_ctrl.work, uvc_ctrl_status_event_work);
+> -
+>  	/* Walk the entities list and instantiate controls */
+> -	list_for_each_entry(entity, &dev->entities, list) {
+> +	list_for_each_entry(entity, &chain->entities, chain) {
+>  		struct uvc_control *ctrl;
+>  		unsigned int bControlSize = 0, ncontrols;
+>  		u8 *bmControls = NULL;
+> @@ -2316,7 +2315,7 @@ int uvc_ctrl_init_device(struct uvc_device *dev)
+>  		}
+>  
+>  		/* Remove bogus/blacklisted controls */
+> -		uvc_ctrl_prune_entity(dev, entity);
+> +		uvc_ctrl_prune_entity(chain->dev, entity);
+>  
+>  		/* Count supported controls and allocate the controls array */
+>  		ncontrols = memweight(bmControls, bControlSize);
+> @@ -2338,7 +2337,7 @@ int uvc_ctrl_init_device(struct uvc_device *dev)
+>  			ctrl->entity = entity;
+>  			ctrl->index = i;
+>  
+> -			uvc_ctrl_init_ctrl(dev, ctrl);
+> +			uvc_ctrl_init_ctrl(chain, ctrl);
+>  			ctrl++;
+>  		}
+>  	}
+> @@ -2346,6 +2345,22 @@ int uvc_ctrl_init_device(struct uvc_device *dev)
+>  	return 0;
+>  }
+>  
+> +int uvc_ctrl_init_device(struct uvc_device *dev)
+> +{
+> +	struct uvc_video_chain *chain;
+> +	int ret;
+> +
+> +	INIT_WORK(&dev->async_ctrl.work, uvc_ctrl_status_event_work);
+> +
+> +	list_for_each_entry(chain, &dev->chains, list) {
+> +		ret = uvc_ctrl_init_chain(chain);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * Cleanup device controls.
+>   */
+> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> index 30ef2a3110f7..35873cf2773d 100644
+> --- a/drivers/media/usb/uvc/uvc_driver.c
+> +++ b/drivers/media/usb/uvc/uvc_driver.c
+> @@ -2423,14 +2423,14 @@ static int uvc_probe(struct usb_interface *intf,
+>  	if (v4l2_device_register(&intf->dev, &dev->vdev) < 0)
+>  		goto error;
+>  
+> -	/* Initialize controls. */
+> -	if (uvc_ctrl_init_device(dev) < 0)
+> -		goto error;
+> -
+>  	/* Scan the device for video chains. */
+>  	if (uvc_scan_device(dev) < 0)
+>  		goto error;
+>  
+> +	/* Initialize controls. */
+> +	if (uvc_ctrl_init_device(dev) < 0)
+> +		goto error;
+> +
+>  	/* Register video device nodes. */
+>  	if (uvc_register_chains(dev) < 0)
+>  		goto error;
+> 
+
