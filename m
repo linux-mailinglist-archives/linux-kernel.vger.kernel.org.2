@@ -2,253 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA943340D03
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF0E340D09
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232540AbhCRSb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:31:26 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:36443 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230442AbhCRSbI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:31:08 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616092267; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=fPCATuh8PR5hX6LNsw9tRpvHJmQ1FsrvN3chUwd2U+U=;
- b=i+96y7+skqLbbYCHJnsVJXg9wt6GStmITvIAeokxFNPf30RCPtxhdLtvKoLLQu/nUCpbT8mh
- pPP/S7ZHZQfSuF7APgK0XP/HnN34dz7fmZ66sTLlBGevrA2rJmNitjHkxr2sZd+sbWl87b/k
- RbpLV1gnm2ei+ANOFTUqodkZFSs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60539c501de5dd7b99a87920 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Mar 2021 18:30:40
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9E054C433ED; Thu, 18 Mar 2021 18:30:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 42C8BC433C6;
-        Thu, 18 Mar 2021 18:30:38 +0000 (UTC)
+        id S232557AbhCRSb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232555AbhCRSbb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 14:31:31 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB46C061762
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:31:30 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 15so8825619ljj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:31:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dIq1u4ifgyugV1ACzu3RDx53gglMvtefOsgSWU4C8lM=;
+        b=snpnSGrQTZXRRsNjmoqbl9JHu/I7UN8FEcOkqpvGjCwRpvZjL0M9XIK5ymYGrbOTJL
+         y74RZpTikwDnkxWYzrkBcIJfSMHUlS/Q7E0etZrTjj9c+OrIRFf2J6QtI9N6h0DGhTVd
+         kv2tbLJx43Bn8dua4d7zrxsSeJ/9kHWIKT+FZB8BfJ2WpDQISl13YpRaq8ogfdUObui4
+         ANf799SetNqMPPGE+ICKB+5jTCYwfCTQIFeaFeMtyAAT3Ox44i6CXsrz+bDS6C45uBmS
+         XnLsSm+mloV7/aQwPuSe6LfG3NmCZdWVErqJF4RhLhWhMabPsrnY7EhRG+X86sMwPNm0
+         h96Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dIq1u4ifgyugV1ACzu3RDx53gglMvtefOsgSWU4C8lM=;
+        b=Doo0DeglUCnnnxpwweTuGe7hTtC0mYQVB77oSM85oGCiRU9+wHXVqaL0+RLUma4QPG
+         e62R4PMe/CIpZNoiThG3jsXb6qSaFW4zcysf6yi66PGssqTfq4NbSrvfk7WWxKBaAvrN
+         2WYTHapUVe/LUOAKRV4rGxGUUuJq8nEVYmA6JR9Cwf3puZNXHJ+BLM2iVO0EkROaereO
+         VxGM8lnhvn8utuZIXYx+MxQCorqzhhjcSzNOuSO0QeRZuatd2DZWKkLGzIaAxUUCR7tC
+         ATjPOaVHdAsm+jcjSqcjjAnhFBeQiww6l7eu23o8OL4t2CuIE+1UesfsA4Md8gCW3zhm
+         Veww==
+X-Gm-Message-State: AOAM532Y3i0tn5t+CsitHQErd7Qb972BLPCfwvXJskuRbQVauo2HiYZJ
+        VaR2hlbztcq+JvJxFqy1MM5MWdMwx68sfoKut5wTRQ==
+X-Google-Smtp-Source: ABdhPJxYI4Ni5EeKFZJ4EUZUt0SbxaXz+OFmajEMvrj1cKw0K3kwb/rWVM/Z9Oi8E17uksIN9MDcE9zE/SN+K0kwRow=
+X-Received: by 2002:a2e:b008:: with SMTP id y8mr5765845ljk.233.1616092288700;
+ Thu, 18 Mar 2021 11:31:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 18 Mar 2021 11:30:38 -0700
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Loic Poulain <loic.poulain@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        hemantk@codeaurora.org
-Cc:     Jeffrey Hugo <jhugo@codeaurora.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Carl_Yin=28=E6=AE=B7=E5=BC=A0=E6=88=90=29?= 
-        <carl.yin@quectel.com>, Naveen Kumar <naveen.kumar@quectel.com>,
-        jhugo=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH v4 1/3] bus: mhi: core: Introduce internal register poll
- helper function
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <CAMZdPi_GPxTT8Wky84V_FtGxC7cXLeeAi7tqkU9Xj_XxdFcL8Q@mail.gmail.com>
-References: <1615419080-26540-1-git-send-email-bbhatt@codeaurora.org>
- <1615419080-26540-2-git-send-email-bbhatt@codeaurora.org>
- <CAMZdPi8CHCVT8G60zOEn0n43vPJW0xx+fufnBFzb7aPXSoMQOw@mail.gmail.com>
- <e04579bf-6641-0038-1aa8-b46f8ab4b984@codeaurora.org>
- <43c83caf8a6b71207b107ac8457f22d6@codeaurora.org>
- <8b458436-dad9-8a8b-f997-9810f1be5d91@codeaurora.org>
- <CAMZdPi_GPxTT8Wky84V_FtGxC7cXLeeAi7tqkU9Xj_XxdFcL8Q@mail.gmail.com>
-Message-ID: <7c504fc79dfd3714191672713c6b8e8e@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210318171111.706303-1-samitolvanen@google.com> <20210318171111.706303-10-samitolvanen@google.com>
+In-Reply-To: <20210318171111.706303-10-samitolvanen@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 18 Mar 2021 11:31:16 -0700
+Message-ID: <CAKwvOdn1mkq1GL0nobyvpiAHMzA6rmvmdd_UfauO9YLs5rUAVw@mail.gmail.com>
+Subject: Re: [PATCH v2 09/17] lib/list_sort: fix function type mismatches
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-18 09:43 AM, Loic Poulain wrote:
-> On Thu, 18 Mar 2021 at 17:13, Jeffrey Hugo <jhugo@codeaurora.org> 
-> wrote:
->> 
->> On 3/17/2021 3:26 PM, Bhaumik Bhatt wrote:
->> > On 2021-03-11 11:59 AM, Jeffrey Hugo wrote:
->> >> On 3/11/2021 1:00 AM, Loic Poulain wrote:
->> >>> Hi Bhaumik,
->> >>>
->> >>> On Thu, 11 Mar 2021 at 00:31, Bhaumik Bhatt <bbhatt@codeaurora.org>
->> >>> wrote:
->> >>>>
->> >>>> Introduce helper function to allow MHI core driver to poll for
->> >>>> a value in a register field. This helps reach a common path to
->> >>>> read and poll register values along with a retry time interval.
->> >>>>
->> >>>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->> >>>> ---
->> >>>>   drivers/bus/mhi/core/internal.h |  3 +++
->> >>>>   drivers/bus/mhi/core/main.c     | 23 +++++++++++++++++++++++
->> >>>>   2 files changed, 26 insertions(+)
->> >>>>
->> >>>> diff --git a/drivers/bus/mhi/core/internal.h
->> >>>> b/drivers/bus/mhi/core/internal.h
->> >>>> index 6f80ec3..005286b 100644
->> >>>> --- a/drivers/bus/mhi/core/internal.h
->> >>>> +++ b/drivers/bus/mhi/core/internal.h
->> >>>> @@ -643,6 +643,9 @@ int __must_check mhi_read_reg(struct
->> >>>> mhi_controller *mhi_cntrl,
->> >>>>   int __must_check mhi_read_reg_field(struct mhi_controller *mhi_cntrl,
->> >>>>                                      void __iomem *base, u32 offset,
->> >>>> u32 mask,
->> >>>>                                      u32 shift, u32 *out);
->> >>>> +int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
->> >>>> +                                   void __iomem *base, u32 offset,
->> >>>> u32 mask,
->> >>>> +                                   u32 shift, u32 val, u32 delayus);
->> >>>>   void mhi_write_reg(struct mhi_controller *mhi_cntrl, void __iomem
->> >>>> *base,
->> >>>>                     u32 offset, u32 val);
->> >>>>   void mhi_write_reg_field(struct mhi_controller *mhi_cntrl, void
->> >>>> __iomem *base,
->> >>>> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
->> >>>> index 4e0131b..7c7f41a 100644
->> >>>> --- a/drivers/bus/mhi/core/main.c
->> >>>> +++ b/drivers/bus/mhi/core/main.c
->> >>>> @@ -4,6 +4,7 @@
->> >>>>    *
->> >>>>    */
->> >>>>
->> >>>> +#include <linux/delay.h>
->> >>>>   #include <linux/device.h>
->> >>>>   #include <linux/dma-direction.h>
->> >>>>   #include <linux/dma-mapping.h>
->> >>>> @@ -37,6 +38,28 @@ int __must_check mhi_read_reg_field(struct
->> >>>> mhi_controller *mhi_cntrl,
->> >>>>          return 0;
->> >>>>   }
->> >>>>
->> >>>> +int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
->> >>>> +                                   void __iomem *base, u32 offset,
->> >>>> +                                   u32 mask, u32 shift, u32 val,
->> >>>> u32 delayus)
->> >>>> +{
->> >>>> +       int ret;
->> >>>> +       u32 out, retry = (mhi_cntrl->timeout_ms * 1000) / delayus;
->> >>>> +
->> >>>> +       while (retry--) {
->> >>>> +               ret = mhi_read_reg_field(mhi_cntrl, base, offset,
->> >>>> mask, shift,
->> >>>> +                                        &out);
->> >>>> +               if (ret)
->> >>>> +                       return ret;
->> >>>> +
->> >>>> +               if (out == val)
->> >>>> +                       return 0;
->> >>>> +
->> >>>> +               udelay(delayus);
->> >>>
->> >>> Have you read my previous comment?
->> >>> Do you really want to risk hogging the CPU for several seconds? we
->> >>> know that some devices take several seconds to start/boot.
->> >>> Why not using msleep variant here?
->> >>
->> >> usleep_range() if there is a desire to stay in us units?
->> >>
->> >> Given that the use of this function is for 25ms in one case, I wonder
->> >> if this warning is applicable:
->> >> https://elixir.bootlin.com/linux/latest/source/include/linux/delay.h#L28
->> >>
->> >> Counter point, 1ms latency over PCIe is not unusual.  I know we've
->> >> removed the PCIe dependencies from MHI, but PCIe is the real usecase
->> >> at this time.  Seems like this function could behave a bit weird if
->> >> the parameter to udelay is something like "100", but the
->> >> mhi_read_reg_field() call takes significantly longer than that.  Feels
->> >> like in some scenarios, we could actually exceed the timeout by a
->> >> non-trivial margin.
->> >>
->> >> I guess I'm going back and forth in determining if us scale timing is
->> >> a benefit in any way.
->> > Thanks for all the inputs. I think a good idea here would be to use
->> > fsleep()
->> > API as we need to allow any timeout the caller specifies. Also, plan is to
->> > drop the patch #3 in this series since that will require a busywait due to
->> > the code being in panic path.
->> >
->> > I don't wish to accommodate another variable here for busywait but that
->> > would be an option to pick sleep or delay depending on the caller's path.
->> >
->> > Please respond if there are any concerns.
->> 
->> fsleep() would be some improvement, but I think there is still the 
->> issue
->> Loic points out where if delayus is small, but timeout_ms is large 
->> (say
->> 50us and 25s), this function will end up burning a lot of cpu cycles
->> However that is likely an edge case, and if your poll cycle is that
->> small, I think it should be assumed that the event is expected to 
->> happen
->> quickly, so the full timeout should not be hit.
-> 
-> Well, my point is that during initial power_up, with a device
-> cold-booting, it can take several seconds for it to reach ready state
-> (not a corner case). That why timeout_ms can be as large as 20 seconds
-> for mhi_pci_modem. If polling is based on busy-wait, that means the
-> while loop will not let the CPU running anything else for several
-> seconds. Not sure what is the expected meaning of this timeout_ms in
-> first place... maybe I just use it badly.
-> 
-> Moreover, do we need microsecond latency on detecting ready
-> transition, this is not a critical path, right?
-> 
-> Regards,
-> Loic
-At initial boot, yes, device could take longer to boot.
+On Thu, Mar 18, 2021 at 10:11 AM Sami Tolvanen <samitolvanen@google.com> wrote:
+>
+> Casting the comparison function to a different type trips indirect
+> call Control-Flow Integrity (CFI) checking. Remove the additional
+> consts from cmp_func, and the now unneeded casts.
+>
+> Fixes: 043b3f7b6388 ("lib/list_sort: simplify and remove MAX_LIST_LENGTH_BITS")
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> ---
+>  lib/list_sort.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/lib/list_sort.c b/lib/list_sort.c
+> index 52f0c258c895..b14accf4ef83 100644
+> --- a/lib/list_sort.c
+> +++ b/lib/list_sort.c
+> @@ -8,7 +8,7 @@
+>  #include <linux/list.h>
+>
+>  typedef int __attribute__((nonnull(2,3))) (*cmp_func)(void *,
+> -               struct list_head const *, struct list_head const *);
+> +               struct list_head *, struct list_head *);
+>
+>  /*
+>   * Returns a list organized in an intermediate format suited
+> @@ -227,7 +227,7 @@ void list_sort(void *priv, struct list_head *head,
 
-If we were to force caller to use an interval in the order of 
-milliseconds, I'd
-still be using fsleep() internally anyway and just multiply the value by 
-1000
-before passing it on as there's a need to check if the value is greater 
-than 20ms
-or not.
+There's definitely some const confusion going on around here.
+Comparison functions that modify their in/out parameters are a code
+smell, and I wonder if any exist in tree?
 
-I don't wish to reinvent the wheel and implement what we already have in 
-fsleep()
-internally for msec.
+I think it would be better to enforce one signature for cmp_func
+throughout lib/list_sort.c and the tree, either const or not, but not
+a mix of both.  I know `const` is messy because it tends to propagate
+everywhere, so I don't care which is preferred (making cmp_func have
+const qualified params or not, though if we're already being pedantic
+about which params are non-null...), but something like this might be
+nicer:
 
-It would be recommended that the caller specifies an interval of at 
-least 20+
-msec but I don't think we can enforce that.
+```
+diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+index 5132f64a5cee..d475b3cfd06f 100644
+--- a/block/blk-mq-sched.c
++++ b/block/blk-mq-sched.c
+@@ -75,7 +75,8 @@ void blk_mq_sched_restart(struct blk_mq_hw_ctx *hctx)
+        blk_mq_run_hw_queue(hctx, true);
+ }
 
-A point in favor of using microseconds is, if we were to expand usage of 
-this
-API in the future for panic path to do a busywait, we wouldn't have to 
-change
-the parameters.
+-static int sched_rq_cmp(void *priv, struct list_head *a, struct list_head *b)
++static int sched_rq_cmp(void *priv, const struct list_head *a,
++               const struct list_head *b)
+ {
+        struct request *rqa = container_of(a, struct request, queuelist);
+        struct request *rqb = container_of(b, struct request, queuelist);
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 2e825a7a3606..9ed063ffdb27 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -1905,7 +1905,8 @@ void blk_mq_insert_requests(struct blk_mq_hw_ctx
+*hctx, struct blk_mq_ctx *ctx,
+        spin_unlock(&ctx->lock);
+ }
 
-3 options:
-1. Use msec granularity and implement a partial fsleep for msec within 
-the new
-API.
-2. Use fsleep and leave it as usec granularity.
-3. Leave it at usec, and add a busywait boolean allowing caller to 
-choose between
-udelay() and fsleep() to also allow usage of this API in panic path (for 
-patch #3).
+-static int plug_rq_cmp(void *priv, struct list_head *a, struct list_head *b)
++static int plug_rq_cmp(void *priv, const struct list_head *a,
++               const struct list_head *b)
+ {
+        struct request *rqa = container_of(a, struct request, queuelist);
+        struct request *rqb = container_of(b, struct request, queuelist);
+diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
+index 1ac67d4505e0..5a3a343499f6 100644
+--- a/drivers/gpu/drm/drm_modes.c
++++ b/drivers/gpu/drm/drm_modes.c
+@@ -1290,7 +1290,8 @@ EXPORT_SYMBOL(drm_mode_prune_invalid);
+  * Negative if @lh_a is better than @lh_b, zero if they're equivalent, or
+  * positive if @lh_b is better than @lh_a.
+  */
+-static int drm_mode_compare(void *priv, struct list_head *lh_a,
+struct list_head *lh_b)
++static int drm_mode_compare(void *priv, const struct list_head *lh_a,
++               const struct list_head *lh_b)
+ {
+        struct drm_display_mode *a = list_entry(lh_a, struct
+drm_display_mode, head);
+        struct drm_display_mode *b = list_entry(lh_b, struct
+drm_display_mode, head);
+diff --git a/drivers/gpu/drm/i915/gt/intel_engine_user.c
+b/drivers/gpu/drm/i915/gt/intel_engine_user.c
+index 34e6096f196e..7586dffd27d3 100644
+--- a/drivers/gpu/drm/i915/gt/intel_engine_user.c
++++ b/drivers/gpu/drm/i915/gt/intel_engine_user.c
+@@ -49,7 +49,8 @@ static const u8 uabi_classes[] = {
+        [VIDEO_ENHANCEMENT_CLASS] = I915_ENGINE_CLASS_VIDEO_ENHANCE,
+ };
 
-I like options 2 and 3. Hemant/Mani, your guidance is welcome.
+-static int engine_cmp(void *priv, struct list_head *A, struct list_head *B)
++static int engine_cmp(void *priv, const struct list_head *A,
++               const struct list_head *B)
+ {
+        const struct intel_engine_cs *a =
+                container_of((struct rb_node *)A, typeof(*a), uabi_node);
+diff --git a/fs/ext4/fsmap.c b/fs/ext4/fsmap.c
+index 4c2a9fe30067..4493ef0c715e 100644
+--- a/fs/ext4/fsmap.c
++++ b/fs/ext4/fsmap.c
+@@ -354,8 +354,8 @@ static unsigned int ext4_getfsmap_find_sb(struct
+super_block *sb,
 
+ /* Compare two fsmap items. */
+ static int ext4_getfsmap_compare(void *priv,
+-                                struct list_head *a,
+-                                struct list_head *b)
++                                const struct list_head *a,
++                                const struct list_head *b)
+ {
+        struct ext4_fsmap *fa;
+        struct ext4_fsmap *fb;
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 414769a6ad11..0129e6bab985 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -1155,7 +1155,8 @@ iomap_ioend_try_merge(struct iomap_ioend *ioend,
+struct list_head *more_ioends,
+ EXPORT_SYMBOL_GPL(iomap_ioend_try_merge);
+
+ static int
+-iomap_ioend_compare(void *priv, struct list_head *a, struct list_head *b)
++iomap_ioend_compare(void *priv, const struct list_head *a,
++               const struct list_head *b)
+ {
+        struct iomap_ioend *ia = container_of(a, struct iomap_ioend, io_list);
+        struct iomap_ioend *ib = container_of(b, struct iomap_ioend, io_list);
+diff --git a/include/linux/list_sort.h b/include/linux/list_sort.h
+index 20f178c24e9d..4fe9cb94d0d1 100644
+--- a/include/linux/list_sort.h
++++ b/include/linux/list_sort.h
+@@ -6,8 +6,9 @@
+
+ struct list_head;
+
++typedef int __attribute__((nonnull(2,3))) (*cmp_func)(void *,
++               struct list_head const *, struct list_head const *);
++
+ __attribute__((nonnull(2,3)))
+-void list_sort(void *priv, struct list_head *head,
+-              int (*cmp)(void *priv, struct list_head *a,
+-                         struct list_head *b));
++void list_sort(void *priv, struct list_head *head, cmp_func cmp);
+ #endif
+diff --git a/lib/list_sort.c b/lib/list_sort.c
+index 52f0c258c895..6cfac649c4a6 100644
+--- a/lib/list_sort.c
++++ b/lib/list_sort.c
+@@ -7,9 +7,6 @@
+ #include <linux/list_sort.h>
+ #include <linux/list.h>
+
+-typedef int __attribute__((nonnull(2,3))) (*cmp_func)(void *,
+-               struct list_head const *, struct list_head const *);
+-
+ /*
+  * Returns a list organized in an intermediate format suited
+  * to chaining of merge() calls: null-terminated, no reserved or
+@@ -185,9 +182,7 @@ static void merge_final(void *priv, cmp_func cmp,
+struct list_head *head,
+  * 2^(k+1) - 1 (second merge of case 5 when x == 2^(k-1) - 1).
+  */
+ __attribute__((nonnull(2,3)))
+-void list_sort(void *priv, struct list_head *head,
+-               int (*cmp)(void *priv, struct list_head *a,
+-                       struct list_head *b))
++void list_sort(void *priv, struct list_head *head, cmp_func cmp)
+ {
+        struct list_head *list = head->next, *pending = NULL;
+        size_t count = 0;       /* Count of pending */
+```
+There are probably more instances in the tree to clean up, but that
+compiles with x86_64 defconfig, and I'm sure it doesn't suffer the CFI
+issue from the cast.
+
+>                 if (likely(bits)) {
+>                         struct list_head *a = *tail, *b = a->prev;
+>
+> -                       a = merge(priv, (cmp_func)cmp, b, a);
+> +                       a = merge(priv, cmp, b, a);
+>                         /* Install the merged result in place of the inputs */
+>                         a->prev = b->prev;
+>                         *tail = a;
+> @@ -249,10 +249,10 @@ void list_sort(void *priv, struct list_head *head,
+>
+>                 if (!next)
+>                         break;
+> -               list = merge(priv, (cmp_func)cmp, pending, list);
+> +               list = merge(priv, cmp, pending, list);
+>                 pending = next;
+>         }
+>         /* The final merge, rebuilding prev links */
+> -       merge_final(priv, (cmp_func)cmp, head, pending, list);
+> +       merge_final(priv, cmp, head, pending, list);
+>  }
+>  EXPORT_SYMBOL(list_sort);
+> --
+> 2.31.0.291.g576ba9dcdaf-goog
+>
+
+
+-- 
 Thanks,
-Bhaumik
----
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+~Nick Desaulniers
