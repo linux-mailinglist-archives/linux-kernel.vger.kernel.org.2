@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAB2340CCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78CCA340CD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:22:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbhCRSUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:20:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
+        id S232387AbhCRSVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:21:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbhCRSUZ (ORCPT
+        with ESMTP id S232400AbhCRSV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:20:25 -0400
+        Thu, 18 Mar 2021 14:21:27 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E526FC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:20:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F395C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:21:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
         Reply-To:Cc:Content-ID:Content-Description;
-        bh=KP81uY4onDw0bh1XsdPSUFPtpyk5GLIlqnt4BBVu1mw=; b=GWiqVZhXXRY89S6Pg1EfAma2J8
-        63Kj+G2FZVAjCUU4gc9vnU+/6wlbEjcCOpNNa+fmWRmAYubYOXtaLGXfQ4zyRfQVkL0cO9WPXW70t
-        hagEgn6tJe5yzkja4rweuGjpHKrshpYDlvnn+hyKD1vBImW636zGHKSKFHl6ZDekhc6gbzaFcOFdF
-        bTibaTV5b4dmiZ/U35dK/tiggNXVSD0IK8l4zNJRNLQAMOa39JMdCxyFNBu5r2uwIQ4K1ncpexiHJ
-        yVyxzJy+UYKClHPxop1qybL119AJpvGQOtLpHK8Li6ySQRRSYotEwpoenzQGHBJy1LcBix5cXPI38
-        9PW+7sEQ==;
+        bh=1fIw1IgvOl24l4m8f/gEO0YRNbX9Gkq8Y62gf03c89g=; b=eL4oAaAXCABdvFm15nw0+eHRVn
+        kaEyQIX1+V81BfF5/upqEDsRFk5ePkyqD8ZMkHw9BSI7yTZ71d8xGiXMgH9qhVWJ8zehLpHX06jLP
+        E7a+FRX5+cWkRz30cVZ/Eh/vfSAx1kt6G8d5T6vd2mNrO2IXSKv1NwWGBrpwUXCZcH+rMUPgogzKJ
+        l/LaAfl7vmw06ilJZay2Cb6DP5rmEZLztubeVcYUD+V5e0r7248wWpFoJ3k3Y4meUVbh343mN8CJq
+        yCkRMv/4v1zX4rMMJK4TxsAJcElHDoyikA5B43wnneYPd2kSLSeF4sAKn9BPpxRi4tQ39wKx+OBKy
+        gvX3hODg==;
 Received: from [2601:1c0:6280:3f0::9757]
         by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMxFX-003LDe-RF; Thu, 18 Mar 2021 18:20:07 +0000
-Subject: Re: [PATCH] mm: Few spelling fixes
+        id 1lMxGZ-003LLH-BB; Thu, 18 Mar 2021 18:21:07 +0000
+Subject: Re: [PATCH] x86/mm: Fixed couple of typos
 To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        akpm@linux-foundation.org, rppt@kernel.org, peterz@infradead.org,
-        tsbogend@alpha.franken.de, will@kernel.org, maobibo@loongson.cn,
-        linux-kernel@vger.kernel.org
-References: <20210318065831.9601-1-unixbhaskar@gmail.com>
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-kernel@vger.kernel.org
+References: <20210318064751.19226-1-unixbhaskar@gmail.com>
 From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <302bb00b-df7b-970a-1c47-b48a56c7a526@infradead.org>
-Date:   Thu, 18 Mar 2021 11:19:56 -0700
+Message-ID: <50c0a512-2af0-efdf-fa77-93e3695febaa@infradead.org>
+Date:   Thu, 18 Mar 2021 11:20:59 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210318065831.9601-1-unixbhaskar@gmail.com>
+In-Reply-To: <20210318064751.19226-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -48,33 +48,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 11:58 PM, Bhaskar Chowdhury wrote:
+On 3/17/21 11:47 PM, Bhaskar Chowdhury wrote:
 > 
-> Few spelling fixes throughout the file.
+> s/compied/compiled/
+> s/preseve/preserve/
 > 
 > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
 > ---
->  include/linux/pgtable.h | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+>  arch/x86/mm/init.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index 5e772392a379..4fcefd553a5c 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -852,7 +852,7 @@ static inline void __ptep_modify_prot_commit(struct vm_area_struct *vma,
->   * updates, but to prevent any updates it may make from being lost.
->   *
->   * This does not protect against other software modifications of the
-> - * pte; the appropriate pte lock must be held over the transation.
-> + * pte; the appropriate pte lock must be held over the transition.
-
-I think that should be                                    transaction.
-
->   *
->   * Note that this interface is intended to be batchable, meaning that
->   * ptep_modify_prot_commit may not actually update the pte, but merely
-
-Other changes are OK.
+> diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+> index dd694fb93916..0212e831d388 100644
+> --- a/arch/x86/mm/init.c
+> +++ b/arch/x86/mm/init.c
+> @@ -29,7 +29,7 @@
+> 
+>  /*
+>   * We need to define the tracepoints somewhere, and tlb.c
+> - * is only compied when SMP=y.
+> + * is only compiled when SMP=y.
+>   */
+>  #define CREATE_TRACE_POINTS
+>  #include <trace/events/tlb.h>
+> @@ -756,7 +756,7 @@ void __init init_mem_mapping(void)
+> 
+>  #ifdef CONFIG_X86_64
+>  	if (max_pfn > max_low_pfn) {
+> -		/* can we preseve max_low_pfn ?*/
+> +		/* can we preserve max_low_pfn ?*/
+>  		max_low_pfn = max_pfn;
+>  	}
+>  #else
+> --
 
 
 -- 
