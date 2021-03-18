@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B631340E42
+	by mail.lfdr.de (Postfix) with ESMTP id EEBC9340E43
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232890AbhCRTaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 15:30:01 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:59832 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232894AbhCRT3l (ORCPT
+        id S232920AbhCRTaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 15:30:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230008AbhCRT3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 15:29:41 -0400
-Message-Id: <20210318192819.636943062@linutronix.de>
+        Thu, 18 Mar 2021 15:29:45 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C835C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:29:45 -0700 (PDT)
+Message-Id: <20210318192819.795280387@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616095780;
+        s=2020; t=1616095781;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=LfvI7sCW2SL4HbRRF+idaLPXpqpsqiBF/HoysWbs8SA=;
-        b=TzEdTLH5JAloAauoEfeJktlYnl3lZLEv+7H6OxsasCteyOwrhnLIrVCeFJIDlo1pRpthvI
-        ByTs4iUAWETp6SujHhFTYSiiVHIvGnnZditikDYKH+y8dj/gtoWWts5fnMHz4M6ll0ycl6
-        xIxfbEpRcFJ54y2ghRnlxh4CilMYVxs4gMmsN83k1BTG3274wPHAvlAQhuFrhdRJZsumFr
-        xP0lFHXmTZzPGMEQx94a3bYPXMwu60uHLEpSPp6TbIq/Fv9/Vp/zohzGWIcCPYQz9hpVZa
-        DkFFzXWeZv+yoYlyetdjWA+rsLDIapb1UXK1C/kvsSqZuRyda+sIRD6zjnnl1g==
+        bh=MyrChZScikc3Vj+iBqMdUcIc5sbYRawJcbm85JMUQqg=;
+        b=JeFfOOXrr4wTLSd56PyYMBAIzefcAU1o1J0WJA5oJQ04Q7xw4BpH7tYphZc4z8XeR6AbCM
+        Vp4A9XEHtBc+Ysg9+kEsZ4iMG3XVtR8CsagaDbx7/5spXzlK4YZLkheAfQ1pwzCF1q/ndO
+        i10SoVk/lpxaHTRssiqpFZlD9OeUPThQhn59ieNgvAwh1DoZxa86PBJScgDpdAyTG6COQw
+        lQX2sPJn6K4DvGUjsQZaFiXEv2Izr43b1o7YvjWfm59A2+UZMoyNPBrgiCr7z/p6fThKsq
+        VRahHpGJYB+RRMwTm1NFGJDbAbrYgPnFgDoG5pDMUDx+gwidyhaPuf3tXrTqcw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616095780;
+        s=2020e; t=1616095781;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=LfvI7sCW2SL4HbRRF+idaLPXpqpsqiBF/HoysWbs8SA=;
-        b=PHOEWM1FMf8d70QCLFHRA/TLlem9UR/LhjviL32rVh//25p3oExPUsIk62PTL9L9tnjA7t
-        zonQkNaHxw8r4IBQ==
-Date:   Thu, 18 Mar 2021 20:26:47 +0100
+        bh=MyrChZScikc3Vj+iBqMdUcIc5sbYRawJcbm85JMUQqg=;
+        b=3HgKywDsBFiXcQzJ+/uMoIGv/yuspY2egZ/06mJxfCMmok3LwDmykLHvyKfaAjubNUqeoX
+        ZVW8CHcjnXhnWjBQ==
+Date:   Thu, 18 Mar 2021 20:26:48 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        stable@vger.kernel.org
-Subject: [patch 1/2] x86/ioapic: Ignore IRQ2 again
+Cc:     x86@kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: [patch 2/2] x86/vector: Add a sanity check to prevent IRQ2 allocations
 References: <20210318192646.868059483@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,64 +48,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vitali ran into an issue with hotplugging CPU0 on an Amazon instance where
-the matrix allocator claimed to be out of vectors. He analyzed it down to
-the point that IRQ2, the PIC cascade interrupt, which is supposed to be not
-ever routed to the IO/APIC ended up having an interrupt vector assigned
-which got moved during unplug of CPU0.
+To prevent another incidental removal of the IRQ2 ignore logic in the
+IO/APIC code going unnoticed add a sanity check. Add some commentry at the
+other place which ignores IRQ2 while at it.
 
-The underlying issue is that IRQ2 for various reasons (see commit
-af174783b925 ("x86: I/O APIC: Never configure IRQ2" for details) is treated
-as a reserved system vector by the vector core code and is not accounted as
-a regular vector. The Amazon BIOS has an routing entry of pin2 to IRQ2
-which causes the IO/APIC setup to claim that interrupt which is granted by
-the vector domain because there is no sanity check. As a consequence the
-allocation counter of CPU0 underflows which causes a subsequent unplug to
-fail with:
-
-  [ ... ] CPU 0 has 4294967295 vectors, 589 available. Cannot disable CPU
-
-There is another sanity check missing in the matrix allocator, but the
-underlying root cause is that the IO/APIC code lost the IRQ2 ignore logic
-during the conversion to irqdomains.
-
-For almost 6 years nobody complained about this wreckage, which might
-indicate that this requirement could be lifted, but for any system which
-actually has a PIC IRQ2 is unusable by design so any routing entry has no
-effect and the interrupt cannot be connected to a device anyway.
-
-Due to that and due to history biased paranoia reasons restore the IRQ2
-ignore logic and treat it as non existent despite a routing entry claiming
-otherwise.
-
-Fixes: d32932d02e18 ("x86/irq: Convert IOAPIC to use hierarchical irqdomain interfaces")
-Reported-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/874kh9xuid.fsf@nanos.tec.linutronix.de
-
 ---
- arch/x86/kernel/apic/io_apic.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/x86/kernel/apic/vector.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -1032,6 +1032,16 @@ static int mp_map_pin_to_irq(u32 gsi, in
- 	if (idx >= 0 && test_bit(mp_irqs[idx].srcbus, mp_bus_not_pci)) {
- 		irq = mp_irqs[idx].srcbusirq;
- 		legacy = mp_is_legacy_irq(irq);
-+		/*
-+		 * IRQ2 is unusable for historical reasons on systems which
-+		 * have a legacy PIC. See the comment vs. IRQ2 further down.
-+		 *
-+		 * If this gets removed at some point then the related code
-+		 * in lapic_assign_system_vectors() needs to be adjusted as
-+		 * well.
-+		 */
-+		if (legacy && irq == PIC_CASCADE_IR)
-+			return -EINVAL;
- 	}
+--- a/arch/x86/kernel/apic/vector.c
++++ b/arch/x86/kernel/apic/vector.c
+@@ -543,6 +543,14 @@ static int x86_vector_alloc_irqs(struct
+ 	if ((info->flags & X86_IRQ_ALLOC_CONTIGUOUS_VECTORS) && nr_irqs > 1)
+ 		return -ENOSYS;
  
- 	mutex_lock(&ioapic_mutex);
++	/*
++	 * Catch any attempt to touch the cascade interrupt on a PIC
++	 * equipped system.
++	 */
++	if (WARN_ON_ONCE(info->flags & X86_IRQ_ALLOC_LEGACY &&
++			 virq == PIC_CASCADE_IR))
++		return -EINVAL;
++
+ 	for (i = 0; i < nr_irqs; i++) {
+ 		irqd = irq_domain_get_irq_data(domain, virq + i);
+ 		BUG_ON(!irqd);
+@@ -745,6 +753,11 @@ void __init lapic_assign_system_vectors(
+ 
+ 	/* Mark the preallocated legacy interrupts */
+ 	for (i = 0; i < nr_legacy_irqs(); i++) {
++		/*
++		 * Don't touch the cascade interrupt. It's unusable
++		 * on PIC equipped machines. See the large comment
++		 * in the IO/APIC code.
++		 */
+ 		if (i != PIC_CASCADE_IR)
+ 			irq_matrix_assign(vector_matrix, ISA_IRQ_VECTOR(i));
+ 	}
 
