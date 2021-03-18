@@ -2,93 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D21340229
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9E3340231
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhCRJeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 05:34:25 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13190 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhCRJeA (ORCPT
+        id S229743AbhCRJgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 05:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhCRJgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 05:34:00 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F1MGr1z7XzmZCK;
-        Thu, 18 Mar 2021 17:31:32 +0800 (CST)
-Received: from [127.0.0.1] (10.69.38.203) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Thu, 18 Mar 2021
- 17:33:51 +0800
-Subject: Re: [Linuxarm] Re: [PATCH 2/3] drivers/perf: convert sysfs scnprintf
- family to sysfs_emit_at
-To:     Joe Perches <joe@perches.com>, <john.garry@huawei.com>,
-        <zhangshaokun@hisilicon.com>, <will@kernel.org>,
-        <mark.rutland@arm.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
-References: <1615974111-45601-1-git-send-email-liuqi115@huawei.com>
- <1615974111-45601-3-git-send-email-liuqi115@huawei.com>
- <eae7016a8cd8f426987dd5c4a2a56c4ec6d28a6e.camel@perches.com>
-From:   "liuqi (BA)" <liuqi115@huawei.com>
-Message-ID: <a2ccfc0f-5790-ef03-d357-ab606f40b3c5@huawei.com>
-Date:   Thu, 18 Mar 2021 17:33:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 18 Mar 2021 05:36:23 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449F4C06174A;
+        Thu, 18 Mar 2021 02:36:23 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1lMp4m-0006Ym-56; Thu, 18 Mar 2021 10:36:20 +0100
+Message-ID: <54859a03b8789a2800596067e06c8adb49a107f5.camel@sipsolutions.net>
+Subject: Re: systemd-rfkill regression on 5.11 and later kernels
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Takashi Iwai <tiwai@suse.de>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 18 Mar 2021 10:36:19 +0100
+In-Reply-To: <s5ha6r0kgt5.wl-tiwai@suse.de> (sfid-20210318_092815_512625_74D8A8A5)
+References: <s5ha6r0kgt5.wl-tiwai@suse.de>
+         (sfid-20210318_092815_512625_74D8A8A5)
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <eae7016a8cd8f426987dd5c4a2a56c4ec6d28a6e.camel@perches.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.38.203]
-X-CFilter-Loop: Reflected
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Takashi,
+
+Oh yay :-(
+
+> we've received a bug report about rfkill change that was introduced in
+> 5.11.  While the systemd-rfkill expects the same size of both read and
+> write, the kernel rfkill write cuts off to the old 8 bytes while read
+> gives 9 bytes, hence it leads the error:
+>   https://github.com/systemd/systemd/issues/18677
+>   https://bugzilla.opensuse.org/show_bug.cgi?id=1183147
+
+> As far as I understand from the log in the commit 14486c82612a, this
+> sounds like the intended behavior.
+
+Not really? I don't even understand why we get this behaviour.
+
+The code is this:
+
+rfkill_fop_write():
+
+...
+        /* we don't need the 'hard' variable but accept it */
+        if (count < RFKILL_EVENT_SIZE_V1 - 1)
+                return -EINVAL;
+
+# this is actually 7 - RFKILL_EVENT_SIZE_V1 is 8
+# (and obviously we get past this if and don't get -EINVAL
+
+        /*
+         * Copy as much data as we can accept into our 'ev' buffer,
+         * but tell userspace how much we've copied so it can determine
+         * our API version even in a write() call, if it cares.
+         */
+        count = min(count, sizeof(ev));
+
+# sizeof(ev) should be 9 since 'ev' is the new struct
+
+        if (copy_from_user(&ev, buf, count))
+                return -EFAULT;
+
+...
+	ret = 0;
+...
+	return ret ?: count;
 
 
-On 2021/3/17 22:57, Joe Perches wrote:
-> On Wed, 2021-03-17 at 17:41 +0800, Qi Liu wrote:
->> Use the generic sysfs_emit_at() function take place of scnprintf()
-> []
->> diff --git a/drivers/perf/arm-ccn.c b/drivers/perf/arm-ccn.c
-> []
->> @@ -328,41 +328,37 @@ static ssize_t arm_ccn_pmu_event_show(struct device *dev,
->>   			struct arm_ccn_pmu_event, attr);
->>   	ssize_t res;
->>   
->>
->> -	res = scnprintf(buf, PAGE_SIZE, "type=0x%x", event->type);
->> +	res = sysfs_emit(buf, "type=0x%x", event->type);
->>   	if (event->event)
->> -		res += scnprintf(buf + res, PAGE_SIZE - res, ",event=0x%x",
->> +		res += sysfs_emit_at(buf + res, res, ",event=0x%x",
->>   				event->event);
-> 
-> sysfs_emit_at should always use buf, not buf + offset.
-> res should be int and is the offset from buf for the output
-> 
-> so the form should be similar to
-> 
-> 	int len;
-> 
-> 	len = sysfs_emit(buf, "type=0x%x", event->type);
-> 	if (event->event) {
-> 		len += sysfs_emit_at(buf, len, ",event=0x%x", event->event);
-> 
-> 		etc...
-> 
-Hi Joe,
 
-I'll fix the use of sysfs_emit_at in next version, thanks.
-But I think it's better to keep the res as ssize_t, as the return value 
-of this function is ssize_t.
 
-Thanks,
+Ah, no, I see. The bug says:
 
-Qi
+	EDIT: above is with kernel-core-5.10.16-200.fc33.x86_64.
 
-> _______________________________________________
-> Linuxarm mailing list -- linuxarm@openeuler.org
-> To unsubscribe send an email to linuxarm-leave@openeuler.org
-> 
+So you've recompiled systemd with 5.11 headers, but are running against
+5.10 now, where the short write really was intentional - it lets you
+detect that the new fields weren't handled by the kernel. If 
+
+
+The other issue is basically this (pre-fix) systemd code:
+
+l = read(c.rfkill_fd, &event, sizeof(event));
+...
+if (l != RFKILL_EVENT_SIZE_V1) /* log/return error */
+
+
+
+So ... honestly, I don't have all that much sympathy, when the uapi
+header explicitly says we want to be able to change the size. But I
+guess "no regressions" rules are hard, so ... dunno. I guess we can add
+a version/size ioctl and keep using 8 bytes unless you send that?
+
+johannes
 
