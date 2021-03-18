@@ -2,237 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0013403E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 447E83403E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbhCRKvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 06:51:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35480 "EHLO
+        id S230336AbhCRKvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 06:51:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbhCRKun (ORCPT
+        with ESMTP id S230228AbhCRKu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 06:50:43 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7967C06174A;
-        Thu, 18 Mar 2021 03:50:42 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1lMqEg-0007xe-EQ; Thu, 18 Mar 2021 11:50:38 +0100
-Message-ID: <c196f9cb7ba2487fb5aceceedf860cc24c6843f2.camel@sipsolutions.net>
-Subject: Re: systemd-rfkill regression on 5.11 and later kernels
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 18 Mar 2021 11:50:37 +0100
-In-Reply-To: <s5ho8fgixl9.wl-tiwai@suse.de>
-References: <s5ha6r0kgt5.wl-tiwai@suse.de>
-         <54859a03b8789a2800596067e06c8adb49a107f5.camel@sipsolutions.net>
-         <s5ho8fgixl9.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Thu, 18 Mar 2021 06:50:59 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46905C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 03:50:59 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id f12so3680147qtq.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 03:50:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c0bBuJXJtSVD2VRbXXGWuUifU0x3U/uJ3IIhVzj5yUg=;
+        b=dJN4orhv3ohTJhEfLDveu0DoPVS5X52Ojuodmr7kgiBVlW186n7r4QvM05tNl6+Azi
+         QnKxwYW+SgS+0+FKCM2jCSRDnHt93vLOYjZxQauB68/AHjDNNEevng2kQ7+SPEUhKB0n
+         z/jcJ81FFZwLp6I4b16YG8M+WHZEw75W27LX0CKcZlyfsig4nIUcBlgVnnM9eyfzaL4A
+         ywX/jEzOJzo7BSoejH0elx1icbZf/wc2phEcw6OXIxV4X2CnZIT9eohMCaj5fIBx7ebF
+         FSPOx3PuHvwtyx7m91L/VMdW3lvGAPCs3mbLmzyh0r8q6wGB8gZcF+0ru97ENaBoGOuZ
+         bOzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c0bBuJXJtSVD2VRbXXGWuUifU0x3U/uJ3IIhVzj5yUg=;
+        b=DMJHqJ6f+0G9oTCJ7Vj93IL8goUDsXu7b0+U6f/EH4+xHENQW1tBFVjxVXQ2kIY0v9
+         vuA95hwmNvKKbFt5wg/HysBB9f0ZmO542hvyGEuaNvraZISLB0Sv47eglK20edCUlaj/
+         kQApr81dlhg/x/FAF0f2btmk/Kmbds/HT6rHIhignVUE2eXPi/a0OOz5KTzFvW4h1pXC
+         ngVcfsnRSs577ljOLq5lfckX9RXc3jLjpYSpMMQFugiL8VVkDhZMpmCE5GsN6QWo1FUD
+         rY+2HH9NhS/4XdxaX2rMg384kl7+jZ31NUE5JHjOV2tM6qjf68vqJNRf9HKcXuM+d8Zs
+         btiA==
+X-Gm-Message-State: AOAM532EIaLFKBUqbjxsBMutx+ETDVvnOGHYdkWVzJBJAzc9zjsa0MEB
+        8ogixUIpSMs4WkbbgDvOuUGcWI3Yp2zyxtohtm5VwA==
+X-Google-Smtp-Source: ABdhPJyUrzwkoEI85Y/T0RisRyUiYMYkNYDVsDe7Il/4gVbHkmO731Bqul6Z9mZsAmTOA+MmG7DNE/j2+l6ssQXx6Lg=
+X-Received: by 2002:a05:622a:c3:: with SMTP id p3mr2989066qtw.43.1616064658229;
+ Thu, 18 Mar 2021 03:50:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-malware-bazaar: not-scanned
+References: <00000000000067e37805b5623d10@google.com>
+In-Reply-To: <00000000000067e37805b5623d10@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 18 Mar 2021 11:50:47 +0100
+Message-ID: <CACT4Y+bRJBE8YXXp4m82AQPDHFWDtx78z=S+ePiUnw9mOdGyWw@mail.gmail.com>
+Subject: Re: BUG: unable to handle kernel paging request in workingset_age_nonresident
+To:     syzbot <syzbot+a59e7ceb87a83c5233df@syzkaller.appspotmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Dec 1, 2020 at 8:40 AM syzbot
+<syzbot+a59e7ceb87a83c5233df@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    c6b11acc Add linux-next specific files for 20201130
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=114b94e9500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=b5e03844e9b34d37
+> dashboard link: https://syzkaller.appspot.com/bug?extid=a59e7ceb87a83c5233df
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=150fed8b500000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1726291d500000
+>
+> The issue was bisected to:
+>
+> commit 76761ffa9ea1ddca78e817bf7eec5fcb0378a00c
+> Author: Alex Shi <alex.shi@linux.alibaba.com>
+> Date:   Sun Nov 29 23:58:06 2020 +0000
+>
+>     mm/memcg: bail out early when !memcg in mem_cgroup_lruvec
 
-> OK, I took a deeper look again, and actually there are two issues in
-> systemd-rfkill code:
-> 
-> * It expects 8 bytes returned from read while it reads a struct
->   rfkill_event record.  If the code is rebuilt with the latest kernel
->   headers, it breaks due to the change of rfkill_event.  That's the
->   error openSUSE bug report points to.
+This patch was removed from linux-next, so let's close the report:
 
-Right. It hardcoded the size check but not the size it reads.
-
-> * When systemd-rfkill is built with the latest kernel headers but runs
->   on the old kernel code, the write size check fails as you mentioned
->   in the above.  That's another part of the github issue.
-
-Yes. And it's all confusing, because they only later added the "this is
-on 5.10" bits, and on pure 5.11 the second thing made no sense.
-
-Same confusion bit the developer of the systemd fix, but nonetheless the
-fix seems OK.
-
-> So, with a kernel devs hat on, I share your feeling, that's an
-> application bug.  OTOH, the extension of the rfkill_event is, well,
-> not really safe as expected.
-
-Evidently.
-
-> IMO, if systemd-rfkill is the only one that hits such a problem, we
-> may let the systemd code fixed, as it's obviously buggy.  But who
-> knows...
-
-We hit it in at least one other places, but that was just dev/test code,
-I think.
-
-> Is the extension of rfkill_event mandatory?  Can the new entry
-> provided in a different way such as another sysfs record?
-
-Yes, it is mandatory - it needs to be provided as an event. Well, I
-guess in theory it's all software, but ... getting an event and then
-having to poke a sysfs file is also a nightmare.
-
-> IOW, if we revert the change, would it break anything else new?
-
-It would break the necessary notification for the feature :)
+#syz invalid
 
 
-That said, we can "fix" this like this, and hope we'll not get this
-again? And if we do get it again ... well, we keep renaming the structs
-and add "struct rfkill_event_v3" next time?
-
-
-
-diff --git a/include/uapi/linux/rfkill.h b/include/uapi/linux/rfkill.h
-index 03e8af87b364..9b77cfc42efa 100644
---- a/include/uapi/linux/rfkill.h
-+++ b/include/uapi/linux/rfkill.h
-@@ -86,34 +86,90 @@ enum rfkill_hard_block_reasons {
-  * @op: operation code
-  * @hard: hard state (0/1)
-  * @soft: soft state (0/1)
-+ *
-+ * Structure used for userspace communication on /dev/rfkill,
-+ * used for events from the kernel and control to the kernel.
-+ */
-+struct rfkill_event {
-+	__u32 idx;
-+	__u8  type;
-+	__u8  op;
-+	__u8  soft;
-+	__u8  hard;
-+} __attribute__((packed));
-+
-+/**
-+ * struct rfkill_event_ext - events for userspace on /dev/rfkill
-+ * @idx: index of dev rfkill
-+ * @type: type of the rfkill struct
-+ * @op: operation code
-+ * @hard: hard state (0/1)
-+ * @soft: soft state (0/1)
-  * @hard_block_reasons: valid if hard is set. One or several reasons from
-  *	&enum rfkill_hard_block_reasons.
-  *
-  * Structure used for userspace communication on /dev/rfkill,
-  * used for events from the kernel and control to the kernel.
-+ *
-+ * See the extensibility docs below.
-  */
--struct rfkill_event {
-+struct rfkill_event_ext {
- 	__u32 idx;
- 	__u8  type;
- 	__u8  op;
- 	__u8  soft;
- 	__u8  hard;
-+
-+	/*
-+	 * older kernels will accept/send only up to this point,
-+	 * and if extended further up to any chunk marked below
-+	 */
-+
- 	__u8  hard_block_reasons;
- } __attribute__((packed));
- 
--/*
-- * We are planning to be backward and forward compatible with changes
-- * to the event struct, by adding new, optional, members at the end.
-- * When reading an event (whether the kernel from userspace or vice
-- * versa) we need to accept anything that's at least as large as the
-- * version 1 event size, but might be able to accept other sizes in
-- * the future.
-+/**
-+ * DOC: Extensibility
-+ *
-+ * Originally, we had planned to allow backward and forward compatible
-+ * changes by just adding fields at the end of the structure that are
-+ * then not reported on older kernels on read(), and not written to by
-+ * older kernels on write(), with the kernel reporting the size it did
-+ * accept as the result.
-+ *
-+ * This would have allowed userspace to detect on read() and write()
-+ * which kernel structure version it was dealing with, and if was just
-+ * recompiled it would have gotten the new fields, but obviously not
-+ * accessed them, but things should've continued to work.
-+ *
-+ * Unfortunately, while actually exercising this mechanism to add the
-+ * hard block reasons field, we found that userspace (notably systemd)
-+ * did all kinds of fun things not in line with this scheme:
-+ *
-+ * 1. treat the (expected) short writes as an error;
-+ * 2. ask to read sizeof(struct rfkill_event) but then compare the
-+ *    actual return value to RFKILL_EVENT_SIZE_V1 and treat any
-+ *    mismatch as an error.
-+ *
-+ * As a consequence, just recompiling with a new struct version caused
-+ * things to no longer work correctly on old and new kernels.
-+ *
-+ * Hence, we've rolled back &struct rfkill_event to the original version
-+ * and added &struct rfkill_event_ext. This effectively reverts to the
-+ * old behaviour for all userspace, unless it explicitly opts in to the
-+ * rules outlined here by using the new &struct rfkill_event_ext.
-+ *
-+ * Userspace using &struct rfkill_event_ext must adhere to the following
-+ * rules
-  *
-- * One exception is the kernel -- we already have two event sizes in
-- * that we've made the 'hard' member optional since our only option
-- * is to ignore it anyway.
-+ * 1. accept short writes, optionally using them to detect that it's
-+ *    running on an older kernel;
-+ * 2. accept short reads, knowing that this means it's running on an
-+ *    older kernel;
-+ * 3. treat reads that are as long as requested as acceptable, not
-+ *    checking against RFKILL_EVENT_SIZE_V1 or such.
-  */
--#define RFKILL_EVENT_SIZE_V1	8
-+#define RFKILL_EVENT_SIZE_V1	sizeof(struct rfkill_event)
- 
- /* ioctl for turning off rfkill-input (if present) */
- #define RFKILL_IOC_MAGIC	'R'
-diff --git a/net/rfkill/core.c b/net/rfkill/core.c
-index 68d6ef9e59fc..ac15a944573f 100644
---- a/net/rfkill/core.c
-+++ b/net/rfkill/core.c
-@@ -69,7 +69,7 @@ struct rfkill {
- 
- struct rfkill_int_event {
- 	struct list_head	list;
--	struct rfkill_event	ev;
-+	struct rfkill_event_ext	ev;
- };
- 
- struct rfkill_data {
-@@ -253,7 +253,8 @@ static void rfkill_global_led_trigger_unregister(void)
- }
- #endif /* CONFIG_RFKILL_LEDS */
- 
--static void rfkill_fill_event(struct rfkill_event *ev, struct rfkill *rfkill,
-+static void rfkill_fill_event(struct rfkill_event_ext *ev,
-+			      struct rfkill *rfkill,
- 			      enum rfkill_operation op)
- {
- 	unsigned long flags;
-@@ -1237,7 +1238,7 @@ static ssize_t rfkill_fop_write(struct file *file, const char __user *buf,
- 				size_t count, loff_t *pos)
- {
- 	struct rfkill *rfkill;
--	struct rfkill_event ev;
-+	struct rfkill_event_ext ev;
- 	int ret;
- 
- 	/* we don't need the 'hard' variable but accept it */
-
-
-
-johannes
-
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122ff445500000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=112ff445500000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=162ff445500000
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+a59e7ceb87a83c5233df@syzkaller.appspotmail.com
+> Fixes: 76761ffa9ea1 ("mm/memcg: bail out early when !memcg in mem_cgroup_lruvec")
+>
+> BUG: unable to handle page fault for address: ffffffff81417c79
+> #PF: supervisor write access in kernel mode
+> #PF: error_code(0x0003) - permissions violation
+> PGD b08f067 P4D b08f067 PUD b090063 PMD 14001e1
+> Oops: 0003 [#1] PREEMPT SMP KASAN
+> CPU: 1 PID: 8503 Comm: syz-executor118 Not tainted 5.10.0-rc5-next-20201130-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:mem_cgroup_lruvec include/linux/memcontrol.h:630 [inline]
+> RIP: 0010:parent_lruvec include/linux/memcontrol.h:1560 [inline]
+> RIP: 0010:workingset_age_nonresident+0x179/0x1c0 mm/workingset.c:242
+> Code: 85 db 0f 85 c8 fe ff ff 5b 5d 41 5c 41 5d 41 5e 41 5f e9 6a 67 cf ff e8 65 67 cf ff 49 8d 9d 18 4d 00 00 eb b3 e8 57 67 cf ff <4c> 89 ab c0 00 00 00 eb c7 e8 69 35 12 00 e9 d3 fe ff ff e8 5f 35
+> RSP: 0018:ffffc9000112f4c0 EFLAGS: 00010093
+> RAX: 0000000000000000 RBX: ffffffff81417bb9 RCX: 0000000000000000
+> RDX: ffff88801eee5040 RSI: ffffffff81a159f9 RDI: ffffffff81417c79
+> RBP: dffffc0000000000 R08: 0000000000000001 R09: ffff88813ffffdbf
+> R10: ffffed1027ffffb7 R11: 0000000000000000 R12: ffffffff8e7911d0
+> R13: ffff88813fffb000 R14: 0000000000000001 R15: ffffffff8e7910b0
+> FS:  0000000002581880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffff81417c79 CR3: 0000000013a2f000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  workingset_eviction+0x452/0x9b0 mm/workingset.c:266
+>  __remove_mapping+0x867/0xd20 mm/vmscan.c:927
+>  shrink_page_list+0x246a/0x5e80 mm/vmscan.c:1431
+>  reclaim_pages+0x3e2/0xcd0 mm/vmscan.c:2148
+>  madvise_cold_or_pageout_pte_range+0x1615/0x2880 mm/madvise.c:473
+>  walk_pmd_range mm/pagewalk.c:89 [inline]
+>  walk_pud_range mm/pagewalk.c:160 [inline]
+>  walk_p4d_range mm/pagewalk.c:193 [inline]
+>  walk_pgd_range mm/pagewalk.c:229 [inline]
+>  __walk_page_range+0xda4/0x1e20 mm/pagewalk.c:331
+>  walk_page_range+0x1be/0x450 mm/pagewalk.c:427
+>  madvise_pageout_page_range mm/madvise.c:526 [inline]
+>  madvise_pageout+0x21b/0x390 mm/madvise.c:562
+>  madvise_vma mm/madvise.c:943 [inline]
+>  do_madvise.part.0+0x9f2/0x1ed0 mm/madvise.c:1142
+>  do_madvise mm/madvise.c:1168 [inline]
+>  __do_sys_madvise mm/madvise.c:1168 [inline]
+>  __se_sys_madvise mm/madvise.c:1166 [inline]
+>  __x64_sys_madvise+0x113/0x150 mm/madvise.c:1166
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x440279
+> Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007ffe7c1ab298 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+> RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440279
+> RDX: 0000000000000015 RSI: 0000000000600003 RDI: 0000000020000000
+> RBP: 00000000006ca018 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000401a80
+> R13: 0000000000401b10 R14: 0000000000000000 R15: 0000000000000000
+> Modules linked in:
+> CR2: ffffffff81417c79
+> ---[ end trace 89bcebda47215cf6 ]---
+> RIP: 0010:mem_cgroup_lruvec include/linux/memcontrol.h:630 [inline]
+> RIP: 0010:parent_lruvec include/linux/memcontrol.h:1560 [inline]
+> RIP: 0010:workingset_age_nonresident+0x179/0x1c0 mm/workingset.c:242
+> Code: 85 db 0f 85 c8 fe ff ff 5b 5d 41 5c 41 5d 41 5e 41 5f e9 6a 67 cf ff e8 65 67 cf ff 49 8d 9d 18 4d 00 00 eb b3 e8 57 67 cf ff <4c> 89 ab c0 00 00 00 eb c7 e8 69 35 12 00 e9 d3 fe ff ff e8 5f 35
+> RSP: 0018:ffffc9000112f4c0 EFLAGS: 00010093
+> RAX: 0000000000000000 RBX: ffffffff81417bb9 RCX: 0000000000000000
+> RDX: ffff88801eee5040 RSI: ffffffff81a159f9 RDI: ffffffff81417c79
+> RBP: dffffc0000000000 R08: 0000000000000001 R09: ffff88813ffffdbf
+> R10: ffffed1027ffffb7 R11: 0000000000000000 R12: ffffffff8e7911d0
+> R13: ffff88813fffb000 R14: 0000000000000001 R15: ffffffff8e7910b0
+> FS:  0000000002581880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffff81417c79 CR3: 0000000013a2f000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000067e37805b5623d10%40google.com.
