@@ -2,127 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F80C340B11
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:10:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F55340B28
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbhCRRKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:10:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232250AbhCRRJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:09:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED01464F1C;
-        Thu, 18 Mar 2021 17:09:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616087378;
-        bh=QMq8RJPZzlZps/hFwVNizcpJfBRIfzbtxWv5jpqvOEc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=OjnOVmdzRHVCt63wEPujITPWx89i1hO2P/zquCxCAfKzEkOy1OWl+oiLLzpmTJIec
-         GCgQAjTL0GyJwM2EoqqFHdDoDMzrQIag1ap1HAcwpP/JAJwguCLU7DgWmcQkXz9sYV
-         0Ldm5+OuoPVX7TCALxtYKadYVO/X0JFy/WJa30QoMeskXLiA9CMeCjcr6mfZsFtx8h
-         8Unc1RnYj1BbFvydAMPF95NP6kJSS5kCmm4U99UJEjafUzRSOKZTJ+c29vSurn8JOt
-         6RxWMaB79XN4lWADNTZVwnPhY5rRqFz6W9AgjbTC24GW98OrhUj9ZNMavbWJIHPzO8
-         3QIUD/mr9airA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B16AD3523944; Thu, 18 Mar 2021 10:09:37 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 10:09:37 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 1/3] rcu: Provide polling interfaces for
- Tree RCU grace periods
-Message-ID: <20210318170937.GF2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
- <20210304002632.23870-1-paulmck@kernel.org>
- <20210316151750.GF639918@lothringen>
- <20210316165101.GW2696@paulmck-ThinkPad-P72>
- <20210318145952.GC805381@lothringen>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318145952.GC805381@lothringen>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S232000AbhCRRLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232256AbhCRRLQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:11:16 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A8DC061761
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:11:15 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 6so49472015ybq.7
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:11:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=SCzz0vkCTXCJ+hl1sGhlu0aynSHOxUfyv4GiVUi2UT8=;
+        b=Qn2g5lLRvdKJvgzF43+LCRfbhyf/1XwO7VexN9MTAJ/y7/GXos2MZ6DPQ5+40SXSdr
+         3WUM1haHcbmP9fvJ5H0GP0vnMIfZYFYJ3/skq+V4JOBLmlhGlPExy6gqYwMz2uSJ1gR3
+         Kgl24aisbJ27zFi0E+w0DAM6qtK+mORJD0REsBOc+I74Jm51pwyVzGpvxB7NjD1JArlW
+         Z1Nw3IJcwTpFcPc/OM/mDZYHlik6/X5+hBBgaF+RBWA6lCnTc9Su31yLYk3E+KZP8/w7
+         k1BrfTKfIXXZ46LHA5pZpwKRNzhgz58PNc7YyUV/9wiANk3u5qYBZVv8t0PgePg8ENXo
+         Bcrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=SCzz0vkCTXCJ+hl1sGhlu0aynSHOxUfyv4GiVUi2UT8=;
+        b=ZnGHajtf58/DV7ocxE4Iq7/q1mrKlYMD2czuFFieWg2NVF05gnXc/YACziSA07GMX8
+         iiQcUvipDxNmgTnZf4ZoKyvOK+WVcJ4rRl84ZG01Mx8llA+oxXOgVbrAKCIMRjaJ8j3v
+         tr/ISUCIBdir0sqTdZl9qR+kJDsh1Ibgrz7ogB+qYXAxLjviryPHtBhcseF+4PFzD0lU
+         HrGEz0NzlhvcjTnuQO1hgugvlzyYQ8+movaa+KjyLHqCOtf7wjbpDxaxsphafdTL9suO
+         /FMYz5W80poAnidCjuciqvI3aVKZHMiCBG3wtNKF0B/t4v/ERaGnYatTzZuq11Q+OxpZ
+         O/TA==
+X-Gm-Message-State: AOAM532eFu12DKRwc4r9OHE899fllHv1oEb3aDLA6o952C+CRAvkXrKn
+        bifzCkoOgDzSTd98dw2UEuWw22MsI2B6qbG8ZjA=
+X-Google-Smtp-Source: ABdhPJwBMd/Hg8Inw/d+QCjcsX4aY1KphAmvmly7frqYXPa28oCDMQoPY4+7I2PpXYAYog1pvPg18bYfcaeLUFSg7M0=
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:c0d7:a7ba:fb41:a35a])
+ (user=samitolvanen job=sendgmr) by 2002:a25:4ce:: with SMTP id
+ 197mr429022ybe.462.1616087474808; Thu, 18 Mar 2021 10:11:14 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 10:10:54 -0700
+Message-Id: <20210318171111.706303-1-samitolvanen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH v2 00/17] Add support for Clang CFI
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 03:59:52PM +0100, Frederic Weisbecker wrote:
-> On Tue, Mar 16, 2021 at 09:51:01AM -0700, Paul E. McKenney wrote:
-> > On Tue, Mar 16, 2021 at 04:17:50PM +0100, Frederic Weisbecker wrote:
-> > > On Wed, Mar 03, 2021 at 04:26:30PM -0800, paulmck@kernel.org wrote:
-> > > > +/**
-> > > > + * poll_state_synchronize_rcu - Conditionally wait for an RCU grace period
-> > > > + *
-> > > > + * @oldstate: return from call to get_state_synchronize_rcu() or start_poll_synchronize_rcu()
-> > > > + *
-> > > > + * If a full RCU grace period has elapsed since the earlier call from
-> > > > + * which oldstate was obtained, return @true, otherwise return @false.
-> > > > + * Otherwise, invoke synchronize_rcu() to wait for a full grace period.
-> > > > + *
-> > > > + * Yes, this function does not take counter wrap into account.
-> > > > + * But counter wrap is harmless.  If the counter wraps, we have waited for
-> > > > + * more than 2 billion grace periods (and way more on a 64-bit system!).
-> > > > + * Those needing to keep oldstate values for very long time periods
-> > > > + * (many hours even on 32-bit systems) should check them occasionally
-> > > > + * and either refresh them or set a flag indicating that the grace period
-> > > > + * has completed.
-> > > > + */
-> > > > +bool poll_state_synchronize_rcu(unsigned long oldstate)
-> > > > +{
-> > > > +	if (rcu_seq_done(&rcu_state.gp_seq, oldstate)) {
-> > > > +		smp_mb(); /* Ensure GP ends before subsequent accesses. */
-> > > 
-> > > Also as usual I'm a bit lost with the reason behind those memory barriers.
-> > > So this is ordering the read on rcu_state.gp_seq against something (why not an
-> > > smp_rmb() btw?). And what does it pair with?
-> > 
-> > Because it needs to order subsequent writes as well as reads.
-> > 
-> > It is ordering whatever the RCU user wishes to put after the call to
-> > poll_state_synchronize_rcu() with whatever the RCU user put before
-> > whatever started the grace period that just now completed.  Please
-> > see the synchronize_rcu() comment header for the statement of the
-> > guarantee.  Or that of call_rcu().
-> 
-> I see. OTOH the update side's CPU had to report a quiescent state for the
-> requested grace period to complete. As the quiescent state propagated along
-> with full ordering up to the root rnp, everything that happened before
-> rcu_seq_done() should appear before and everything that happened after
-> rcu_seq_done() should appear after.
-> 
-> Now in the case the update side's CPU is not the last CPU that reported
-> a quiescent state (and thus not the one that propagated every subsequent
-> CPUs QS to the final "rcu_state.gp_seq"), the full barrier after rcu_seq_done()
-> is necessary to order against all the CPUs that reported a QS after the
-> update side's CPU.
-> 
-> Is that right?
+This series adds support for Clang's Control-Flow Integrity (CFI)
+checking. With CFI, the compiler injects a runtime check before each
+indirect function call to ensure the target is a valid function with
+the correct static type. This restricts possible call targets and
+makes it more difficult for an attacker to exploit bugs that allow the
+modification of stored function pointers. For more details, see:
 
-That is the way I see it.  ;-)
+  https://clang.llvm.org/docs/ControlFlowIntegrity.html
 
-> > For more detail on how these guarantees are implemented, please see
-> > Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-> > and its many diagrams.
-> 
-> Indeed, very useful documentation!
+The first patch contains build system changes and error handling,
+and implements support for cross-module indirect call checking. The
+remaining patches address issues caused by the compiler
+instrumentation. These include fixing known type mismatches, as well
+as issues with address space confusion and cross-module function
+address equality.
 
-Glad you like it!
+These patches add support only for arm64, but I'll post patches also
+for x86_64 after we address the remaining issues there, including
+objtool support.
 
-> > There are a lot of memory barriers that pair and form larger cycles to
-> > implement this guarantee.  Pretty much all of the calls to the infamous
-> > smp_mb__after_unlock_lock() macro form cycles involving this barrier,
-> > for example.
-> > 
-> > Please do not hesitate to ask more questions.  This underpins RCU.
-> 
-> Careful what you wish! ;-)
+You can also pull this series from
 
-;-) ;-) ;-)
+  https://github.com/samitolvanen/linux.git cfi-v2
 
-							Thanx, Paul
+---
+Changes in v2:
+ - Fixed .text merging in module.lds.S.
+ - Added WARN_ON_FUNCTION_MISMATCH() and changed kernel/thread.c
+   and kernel/workqueue.c to use the macro instead.
+
+
+Sami Tolvanen (17):
+  add support for Clang CFI
+  cfi: add __cficanonical
+  mm: add generic __va_function and __pa_function macros
+  module: ensure __cfi_check alignment
+  workqueue: use WARN_ON_FUNCTION_MISMATCH
+  kthread: use WARN_ON_FUNCTION_MISMATCH
+  kallsyms: strip ThinLTO hashes from static functions
+  bpf: disable CFI in dispatcher functions
+  lib/list_sort: fix function type mismatches
+  lkdtm: use __va_function
+  psci: use __pa_function for cpu_resume
+  arm64: implement __va_function
+  arm64: use __pa_function
+  arm64: add __nocfi to functions that jump to a physical address
+  arm64: add __nocfi to __apply_alternatives
+  KVM: arm64: Disable CFI for nVHE
+  arm64: allow CONFIG_CFI_CLANG to be selected
+
+ Makefile                                  |  17 ++
+ arch/Kconfig                              |  45 +++
+ arch/arm64/Kconfig                        |   1 +
+ arch/arm64/include/asm/memory.h           |  15 +
+ arch/arm64/include/asm/mmu_context.h      |   4 +-
+ arch/arm64/kernel/acpi_parking_protocol.c |   2 +-
+ arch/arm64/kernel/alternative.c           |   4 +-
+ arch/arm64/kernel/cpu-reset.h             |  10 +-
+ arch/arm64/kernel/cpufeature.c            |   4 +-
+ arch/arm64/kernel/psci.c                  |   3 +-
+ arch/arm64/kernel/smp_spin_table.c        |   2 +-
+ arch/arm64/kvm/hyp/nvhe/Makefile          |   6 +-
+ drivers/firmware/psci/psci.c              |   4 +-
+ drivers/misc/lkdtm/usercopy.c             |   2 +-
+ include/asm-generic/bug.h                 |  16 ++
+ include/asm-generic/vmlinux.lds.h         |  20 +-
+ include/linux/bpf.h                       |   4 +-
+ include/linux/cfi.h                       |  41 +++
+ include/linux/compiler-clang.h            |   3 +
+ include/linux/compiler_types.h            |   8 +
+ include/linux/init.h                      |   6 +-
+ include/linux/mm.h                        |   8 +
+ include/linux/module.h                    |  13 +-
+ include/linux/pci.h                       |   4 +-
+ init/Kconfig                              |   2 +-
+ kernel/Makefile                           |   4 +
+ kernel/cfi.c                              | 329 ++++++++++++++++++++++
+ kernel/kallsyms.c                         |  54 +++-
+ kernel/kthread.c                          |   3 +-
+ kernel/module.c                           |  43 +++
+ kernel/workqueue.c                        |   2 +-
+ lib/list_sort.c                           |   8 +-
+ scripts/Makefile.modfinal                 |   2 +-
+ scripts/module.lds.S                      |  18 +-
+ 34 files changed, 663 insertions(+), 44 deletions(-)
+ create mode 100644 include/linux/cfi.h
+ create mode 100644 kernel/cfi.c
+
+
+base-commit: 6417f03132a6952cd17ddd8eaddbac92b61b17e0
+-- 
+2.31.0.291.g576ba9dcdaf-goog
+
