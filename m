@@ -2,114 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F4233FF23
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 06:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A4E33FF28
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 07:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbhCRFzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 01:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbhCRFzZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 01:55:25 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F13C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 22:55:25 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id n11so735152pgm.12
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 22:55:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=thuNdy/atXOJvAUmIiVmx8uB0ZvJ8lEzYDmOkR+xX6c=;
-        b=MprH25HsBRaGXUd3lCFp5j+Axa+FdUL+lgNyZG0FycK5F1yxkPxN1nQq0/zc6Q0XWy
-         7/YTwqm6bZJpwLi2rw76pSmRZojjDYWpLX/7cbSwX7vjvwy29E95ewkiEPBgunT0IJxW
-         a3Kw5MJQeWoWflxa489bUZwYAR7aEvsiEaWbs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=thuNdy/atXOJvAUmIiVmx8uB0ZvJ8lEzYDmOkR+xX6c=;
-        b=evPiueyjL7rJ6Oq7VUD6vPOipUAEHoSLen35EGrdqOGlR2t6J2PTx5gn2JWXpHg9J/
-         ++q/5EQGzJaH2Q62YlSjxX01UhVCeYxLzeVBvNNh45XpIovUvY4sg6P8uTvLl2G0kWz/
-         IE5EnFg7hp/fcKFbHHqynkpRP0VI1WoxOGl5bWruH2CB8Jl/r4vPOsABRz5MgwWQMonp
-         DoUAfHd1lNb2QdnRmdygw6xjOSaYzPxKUvyrZ36mNiVD0hWHt02JiQcKiYlufOzt9o5O
-         QYhcQQ4tapKhAAG+VluCpmoPwdnJbRhGhAqoRJ83ADu4BeT13fW+DdrW2sCwFlyIo3OV
-         jvTg==
-X-Gm-Message-State: AOAM531d61M+U8ITqafWgsYYbXTNCHbz28njCQQoUBQ28QKSjWllpxVr
-        NB8YSG3O+1Gkj/eTM0Fvm4U9qg==
-X-Google-Smtp-Source: ABdhPJzo0CH0324dBXSBMnA6LRAoHtG5Kf0XhoXnPszZLNeJrtGXWDwT27AAVxMw3VT6jqq4EtCtJw==
-X-Received: by 2002:aa7:9a89:0:b029:1f6:26b9:bb73 with SMTP id w9-20020aa79a890000b02901f626b9bb73mr2487427pfi.78.1616046924564;
-        Wed, 17 Mar 2021 22:55:24 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s22sm822368pgv.94.2021.03.17.22.55.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 22:55:23 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 22:55:22 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     jannh@google.com, jeffv@google.com, surenb@google.com,
-        minchan@kernel.org, hridya@google.com, rdunlap@infradead.org,
-        christian.koenig@amd.com, willy@infradead.org,
-        viro@zeniv.linux.org.uk, kernel-team@android.com,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>, Helge Deller <deller@gmx.de>,
-        James Morris <jamorris@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [RESEND PATCH v6 1/2] procfs: Allow reading fdinfo with
- PTRACE_MODE_READ
-Message-ID: <202103172255.46B192DA@keescook>
-References: <20210308170651.919148-1-kaleshsingh@google.com>
+        id S229598AbhCRGAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 02:00:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229454AbhCRF7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 01:59:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 158A364F10;
+        Thu, 18 Mar 2021 05:59:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616047179;
+        bh=aIghCnFTgYTEh3YwzUwa6H7CqfKsbAaPXnVUIaCUXqk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R6blLqRdrxp2stOo/KeCL82xWV4xhxFUBTUv7JDCLOrpCSrBipj9Z9PWJcjLofav5
+         AGR0E+Ck48HfOGRwfNK8FT3+mB5OrchpMs3hpu1AipIlnWDAlL0pK8GuFJI+wEdtQY
+         VR4Z2VzOFjlXqOaf3GXsst6G6cFJQoEg+CQSVn7Z/U5n5G1AEuphpT15HY2q58+cJ1
+         XaqWrWcmwBn29hnCjB2EIwoPHqWucMj50jhkeqF5+srunQpoeB4ztbFrHk6A8/RUDj
+         Dtpd8H9mHN2HpcjAHIwhZdi1sK70xirWAaDMRAwty3wLTw31gPJ9sMFj6A+nKVUVGO
+         eILjgxTJM69pw==
+Date:   Thu, 18 Mar 2021 06:59:36 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Bence =?utf-8?B?Q3PDs2vDoXM=?= <bence98@sch.bme.hu>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Adding i2c-cp2615: i2c support for Silicon Labs'
+ CP2615 Digital Audio Bridge
+Message-ID: <20210318055936.GD1053@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Bence =?utf-8?B?Q3PDs2vDoXM=?= <bence98@sch.bme.hu>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210317103021.1913858-1-bence98@sch.bme.hu>
+ <20210317123344.GD1315@ninjato>
+ <CACCVKEF-R1zvr2=AKf_a0vxQodbT0_CFnu0pWMrBZ3EjxteL5g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eheScQNz3K90DVRs"
 Content-Disposition: inline
-In-Reply-To: <20210308170651.919148-1-kaleshsingh@google.com>
+In-Reply-To: <CACCVKEF-R1zvr2=AKf_a0vxQodbT0_CFnu0pWMrBZ3EjxteL5g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 05:06:40PM +0000, Kalesh Singh wrote:
-> Android captures per-process system memory state when certain low memory
-> events (e.g a foreground app kill) occur, to identify potential memory
-> hoggers. In order to measure how much memory a process actually consumes,
-> it is necessary to include the DMA buffer sizes for that process in the
-> memory accounting. Since the handle to DMA buffers are raw FDs, it is
-> important to be able to identify which processes have FD references to
-> a DMA buffer.
-> 
-> Currently, DMA buffer FDs can be accounted using /proc/<pid>/fd/* and
-> /proc/<pid>/fdinfo -- both are only readable by the process owner,
-> as follows:
->   1. Do a readlink on each FD.
->   2. If the target path begins with "/dmabuf", then the FD is a dmabuf FD.
->   3. stat the file to get the dmabuf inode number.
->   4. Read/ proc/<pid>/fdinfo/<fd>, to get the DMA buffer size.
-> 
-> Accessing other processes' fdinfo requires root privileges. This limits
-> the use of the interface to debugging environments and is not suitable
-> for production builds.  Granting root privileges even to a system process
-> increases the attack surface and is highly undesirable.
-> 
-> Since fdinfo doesn't permit reading process memory and manipulating
-> process state, allow accessing fdinfo under PTRACE_MODE_READ_FSCRED.
-> 
-> Suggested-by: Jann Horn <jannh@google.com>
-> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+--eheScQNz3K90DVRs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Who would be best to pick this up? Maybe akpm?
+Hi Bence,
 
--- 
-Kees Cook
+> You are right, sorry, I am still familiarizing myself with `git send-emai=
+l`
+
+No worries, the progress from your first to your second version was
+really great! You can add such information e.g. using the "--annotate"
+parameter og git-send-email.
+
+> GPLv2 or later is fine by me. If I change this to "//
+> SPDX-License-Identifier: GPL-2.0-or-later", is that OK?
+
+Yes, also perfect.
+
+> > > + * FIXME: There in no quirk flag for specifying that the adapter
+> > > + * does not support empty transfers, or that it cannot emit a
+> >
+> > Can't we use I2C_AQ_NO_ZERO_LEN here?
+>=20
+> I thought that meant the adapter cannot handle NEITHER zero-length
+> reads NOR writes, but the CP2615 can do a zero read combined with a
+> non-zero write or the other way around, just both cannot be zero. If
+> both are zero, the chip just ignores the request, as I've learned from
+> a very confusing situation with `i2cdetect`.
+
+I think we still should use I2C_AQ_NO_ZERO_LEN. The almost only use case
+is a standalone zero-len read or write. This is not supported by your
+adapter as you found out.
+
+> > True! But it makes sense, so we can fix that. We just need to add
+> > I2C_AQ_NO_REP_START and a short explanation to i2c.h. If you want, you
+> > can do it in a seperate patch. I can do it, too, if you prefer.
+>=20
+> Sure! I should just define it as BIT(7) or something, right? Should I
+> do it in a completely different patchset, or is it OK if I submit it
+> as the 2/2 of PATCH v3? Are there maybe other adapters that would be
+
+Yes, BIT(7) and same patchset please. But you need to make it 1/2
+because you will use it in you driver which is then 2/2.
+
+> affected?
+
+Maybe, but we can fix them later incrementally. Currently, there is also
+no client testing the flag, so we have a bit of time here.
+
+> > Maybe skip the defines for VID and PID and use the values directly?
+> > I am not a USB expert, not really sure what the consistent way is.
+>=20
+> I think this is how they usually do it, or at least from what I've seen.
+
+Then keep it.
+
+All the best and happy hacking,
+
+   Wolfram
+
+
+--eheScQNz3K90DVRs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBS7EgACgkQFA3kzBSg
+KbbuGA/+KaucbDtzrYePhtEGS3aTaStyBejDo54Aj9uA/tFEVQtcrdMAB5rtqueV
+//CAwia6o17aBI6m8AOpzE2xzuQtoEBCHTGjzS3/89ze1c5KM6c/rgxVWvwn5jP1
+YioB4WK/2Xn2w5Z2yYbC1Mt/39RJ57RrYVXoVs496g0ZLWvtMWLGiv2BBy7pm+jm
+hpcBBRT82WAI9hzSL29DG6rbAGqJBBCXdPpmFs5qz5ggZJlnUYGhlTawFnaBpj1D
+QMSt0jFN/H4mJ5eIxJY5l9lQpEVYP/ByFjBfALS9jT/UrqiLhevhhMjoPQdSgGhQ
+GaUbGseDOwEcAumluTcxxZD5upocjevwAUC75w0GbQ2GhNmE88cHT/oAeta9wAPl
+H/UioCX+3NYFlRGLhM8KWKfIKDnyawpg0JBjl/SjbknSbdG/1RWMwyg7+JokUOuc
+SQEIYgSpErVJvNrsBC9Vluwjvyqki/WBln4k1Lxh5xJHub6LO6mwU6U3ah4HRNFf
+ZRFBxB0Y38fteY0li7e8ib2jpJm3+6o2EoMuA5/gzZGJGs5nV226cl4QSZQ6bGPq
+c3PFDQveTnEXhk7nIOCd1yN7QX/BezDtg8e3aVIiKn3xwzcZxvLs5RE31chtn0VJ
+26Bz2r0gd8l2ovxRNbsMqKp+jTKp168HQ/IMHuntvNys7RWLClE=
+=+myQ
+-----END PGP SIGNATURE-----
+
+--eheScQNz3K90DVRs--
