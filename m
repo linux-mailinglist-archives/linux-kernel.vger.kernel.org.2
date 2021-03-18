@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30E93407C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:26:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E621D3407CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbhCROZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 10:25:45 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57048 "EHLO
+        id S231487AbhCROZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 10:25:48 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:57076 "EHLO
         fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231322AbhCROZK (ORCPT
+        with ESMTP id S231439AbhCROZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 10:25:10 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12IEOxVD119063;
-        Thu, 18 Mar 2021 09:24:59 -0500
+        Thu, 18 Mar 2021 10:25:12 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12IEP8rQ119152;
+        Thu, 18 Mar 2021 09:25:08 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1616077499;
-        bh=8j1w2tBDnp1rHlUVX6Sn6y9ad56f41JpDrOBlCFR3mM=;
+        s=ti-com-17Q1; t=1616077508;
+        bh=AS5mc4D+zGl7h7RvNCtg/TsfCUXanbmzNv2rPurXutI=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=vG6e33mde9H5BqCwAL+j6H4hAqFX4BzsYTBQWvefX+FomK744OO9Dk5ErZes/M8x7
-         g1N9NcGc+P2jGEbMmS4CCDf7GE4fO5oPidBljxJRjz+I2cthKhmPSUixVAMHX6AW8F
-         /IrR/Wxol3G/O5hTw4KYzy8qYOkjClrNwQdjRlZ8=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12IEOxkv025981
+        b=nbIBRamJTnOuw2oIflzjPhjngHBNID7Vev58b3uMoNFOTY3h4sPVgtJotEOKLCqug
+         478NAXBOHMTo07lhKZ3Rmf/UKij5tYp1LY64Px4KmGTHngbY7RVFg5tH+Yh916PEqm
+         G+jqc7qPLV07n64hEtj770N0fN5koJP4sXfI69jk=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12IEP8Qf124522
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 18 Mar 2021 09:24:59 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 18 Mar 2021 09:25:08 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 18
- Mar 2021 09:24:59 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ Mar 2021 09:25:07 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 18 Mar 2021 09:24:59 -0500
+ Frontend Transport; Thu, 18 Mar 2021 09:25:07 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12IEOwJq093940;
-        Thu, 18 Mar 2021 09:24:59 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12IEP72N110676;
+        Thu, 18 Mar 2021 09:25:07 -0500
 From:   Nishanth Menon <nm@ti.com>
 To:     Vignesh Raghavendra <vigneshr@ti.com>,
         Tero Kristo <kristo@kernel.org>
 CC:     Nishanth Menon <nm@ti.com>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [RESEND PATCH] arm64: dts: ti: k3-am64-main: Add ADC nodes
-Date:   Thu, 18 Mar 2021 09:24:58 -0500
-Message-ID: <161607554267.23461.3716611573021877758.b4-ty@ti.com>
+Subject: Re: [RESEND PATCH v2 1/2] arm64: dts: ti: k3-am64-main: Add OSPI node
+Date:   Thu, 18 Mar 2021 09:25:07 -0500
+Message-ID: <161607554267.23461.17402124466947052334.b4-ty@ti.com>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210318113443.20036-1-vigneshr@ti.com>
-References: <20210318113443.20036-1-vigneshr@ti.com>
+In-Reply-To: <20210318113757.21012-1-vigneshr@ti.com>
+References: <20210318113757.21012-1-vigneshr@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -57,25 +57,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Mar 2021 17:04:43 +0530, Vignesh Raghavendra wrote:
-> AM64 SoC has a single ADC IP with 8 channels. Add DT node for the same.
-> 
-> Default usecase is to control ADC from non Linux core on the system on
-> AM642 GP EVM, therefore mark the node as reserved in k3-am642-evm.dts
-> file. ADC lines are not pinned out on AM642 SK board, therefore disable
-> the node in k3-am642-sk.dts file.
+On Thu, 18 Mar 2021 17:07:56 +0530, Vignesh Raghavendra wrote:
+> AM64 SoC has a single Octal SPI (OSPI) instance under Flash SubSystem
+> (FSS).  Add DT entry for the same.
 
 Hi Vignesh Raghavendra,
 
 I have applied the following to branch ti-k3-dts-next on [1].
 Thank you!
 
-[1/1] arm64: dts: ti: k3-am64-main: Add ADC nodes
-      commit: fad4e18fe4dccacf68418da01e98c4b8fb590023
+[1/2] arm64: dts: ti: k3-am64-main: Add OSPI node
+      commit: 81623c55868475c4a81c7cdce38191c92ea37022
+[2/2] arm64: dts: ti: k3-am64-evm/sk: Add OSPI flash DT node
+      commit: e4e4e89482eafab0774ac0f93dc998eea84e626c
 
 Thanks for rebasing and helping sequence. I have taken note that we
 will be converting the binding to yaml in near future, so inline with
-what we are doing now, accepting the patch.
+what we are doing now, accepting the patches.
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent up the chain during
