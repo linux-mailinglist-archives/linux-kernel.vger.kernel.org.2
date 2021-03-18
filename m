@@ -2,69 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3C6340631
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F006340636
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:00:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbhCRM4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 08:56:49 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:40094 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231269AbhCRM4Y (ORCPT
+        id S231202AbhCRM73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 08:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhCRM7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:56:24 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0USS3ezc_1616072180;
-Received: from xunleideMacBook-Pro.local(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0USS3ezc_1616072180)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 18 Mar 2021 20:56:21 +0800
-Reply-To: xlpang@linux.alibaba.com
-Subject: Re: [PATCH v4 1/3] mm/slub: Introduce two counters for partial
- objects
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Xunlei Pang <xlpang@linux.alibaba.com>,
-        Christoph Lameter <cl@linux.com>,
-        Christoph Lameter <cl@gentwo.de>,
-        Pekka Enberg <penberg@kernel.org>,
-        Roman Gushchin <guro@fb.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Shu Ming <sming56@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Wen Yang <wenyang@linux.alibaba.com>,
-        James Wang <jnwang@linux.alibaba.com>
-References: <1615967692-80524-1-git-send-email-xlpang@linux.alibaba.com>
- <1615967692-80524-2-git-send-email-xlpang@linux.alibaba.com>
- <42b5dba7-f89f-ae43-3b93-f6e4868e1573@suse.cz>
-From:   Xunlei Pang <xlpang@linux.alibaba.com>
-Message-ID: <34a07677-3afe-465c-933e-dc9503e9634d@linux.alibaba.com>
-Date:   Thu, 18 Mar 2021 20:56:20 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Thu, 18 Mar 2021 08:59:11 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C71C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 05:59:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ZT0gy2r7v1/B9vqHI07WV/IgP39yaXGfSrqMZkiTlyA=; b=PBPkQ2c235mVrzeLx0Y5eVfroB
+        C0cjNLYJGEMOvK6zMNPXMPEswajM/ieavWO0SqExpKClayWFRUUHER99aVhvFaYLfjrjoReZKMl1C
+        unOq/MmpicSC/JIIHzQq6HeCnDd9UBAm4wtmsQSvNyQzRAF7wppEKum8R1Cgp/+wRyya255j/kjpD
+        gvVzn1KV+3SRbdiZfGaffCYupW4517w/VIf83uw8ThxwyxGLmtZmZJ7RDuFeZByxC34Iztch9z1GI
+        +jsBET8u894QhdcQCpI0cB1JVz+xpy0w/+8BAxQvWeKfful1kP5VfN+D7TXH6zG546lERyP/aSAEm
+        70WCRf9g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMsD2-005HIL-Vd; Thu, 18 Mar 2021 12:59:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 00AB13012DF;
+        Thu, 18 Mar 2021 13:57:03 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DA05F21244794; Thu, 18 Mar 2021 13:57:03 +0100 (CET)
+Date:   Thu, 18 Mar 2021 13:57:03 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, jgross@suse.com, mbenes@suze.cz,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/9] objtool: Rework rebuild_reloc logic
+Message-ID: <YFNOH1m+FrFK8TRN@hirez.programming.kicks-ass.net>
+References: <20210312171613.533405394@infradead.org>
+ <20210312171653.649709484@infradead.org>
+ <20210317033417.lbwemc2j2cpsdlzd@treble>
+ <YFG53wkgw6nDBgIl@hirez.programming.kicks-ass.net>
+ <20210318004917.sytcivxy5h2ujttc@treble>
 MIME-Version: 1.0
-In-Reply-To: <42b5dba7-f89f-ae43-3b93-f6e4868e1573@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318004917.sytcivxy5h2ujttc@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/18/21 8:18 PM, Vlastimil Babka wrote:
-> On 3/17/21 8:54 AM, Xunlei Pang wrote:
->> The node list_lock in count_partial() spends long time iterating
->> in case of large amount of partial page lists, which can cause
->> thunder herd effect to the list_lock contention.
->>
->> We have HSF RT(High-speed Service Framework Response-Time) monitors,
->> the RT figures fluctuated randomly, then we deployed a tool detecting
->> "irq off" and "preempt off" to dump the culprit's calltrace, capturing
->> the list_lock cost nearly 100ms with irq off issued by "ss", this also
->> caused network timeouts.
+On Wed, Mar 17, 2021 at 07:49:17PM -0500, Josh Poimboeuf wrote:
+> On Wed, Mar 17, 2021 at 09:12:15AM +0100, Peter Zijlstra wrote:
+> > On Tue, Mar 16, 2021 at 10:34:17PM -0500, Josh Poimboeuf wrote:
+> > > On Fri, Mar 12, 2021 at 06:16:18PM +0100, Peter Zijlstra wrote:
+> > > > --- a/tools/objtool/elf.c
+> > > > +++ b/tools/objtool/elf.c
+> > > > @@ -479,6 +479,8 @@ void elf_add_reloc(struct elf *elf, stru
+> > > >  
+> > > >  	list_add_tail(&reloc->list, &sec->reloc_list);
+> > > >  	elf_hash_add(elf->reloc_hash, &reloc->hash, reloc_hash(reloc));
+> > > > +
+> > > > +	sec->rereloc = true;
+> > > >  }
+> > > 
+> > > Can we just reuse sec->changed for this?  Something like this on top
+> > > (untested of course):
+> > 
+> > I think my worry was that we'd dirty too much and slow down the write,
+> > but I haven't done any actual performance measurements on this.
 > 
-> I forgot to ask, how does "ss" come into this? It displays network connections
-> AFAIK. Does it read any SLUB counters or slabinfo?
-> 
+> Really?  I thought my proposal was purely aesthetic, no functional
+> change, but my brain is toasty this week due to other distractions so
+> who knows.
 
-ss may access /proc/slabinfo to acquire network related slab statistics.
+I was thinking you could get a section changed without touching
+relocations, but while that is theoretically possible, it is exceedingly
+unlikely (and objtool doesn't do that).
+
+Because if entries have relocations, then adding an entry will also add
+relocations etc..
+
+pre: 79.269 +- 0.104 seconds time elapsed  ( +-  0.13% )
+post: 79.0604 +- 0.0441 seconds time elapsed  ( +-  0.06% )
+fini: 79.2995 +- 0.0448 seconds time elapsed  ( +-  0.06% )
+
+is what I get for kbuild x86_64-defconfig-ish build times with the
+various patches applied. Which is all noise afaict. I'll fold your
+thing. Less is more etc..
