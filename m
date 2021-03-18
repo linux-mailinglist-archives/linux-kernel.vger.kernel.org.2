@@ -2,72 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 742DA340A4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:38:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD8A340A52
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231963AbhCRQhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 12:37:40 -0400
-Received: from ms.lwn.net ([45.79.88.28]:52030 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232134AbhCRQhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 12:37:24 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        id S232135AbhCRQiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 12:38:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232120AbhCRQiQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 12:38:16 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C2B4C06174A;
+        Thu, 18 Mar 2021 09:38:16 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id E2D732E5;
-        Thu, 18 Mar 2021 16:37:23 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E2D732E5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1616085444; bh=pWbzF1wgIUiO8lLs6lJoTFe088GpnU5XVDRIVFq/5Ok=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=e48pDaT9fmQ8ixzvsSt301dPeftXj1BshL6H+kPC2MY4a6u0bbOAMG4LNpdSgJstY
-         sFXGk34Yr/N8e6t3VUsM2rCY5hxqBaF3gQvBXQuhcv85gVG2FrmwttrZH6LnONjHq2
-         9xezEugy1o4JuPHcj4sCcFyhFrcbwWunDddU/QtI7jsyCx4+xgU5Y1oydtDO37lxD1
-         E9oMvfouS4woufuQya2qosW04wCJITiQprm/D9jlbmtBT2GwPUswd+E8N8ZJY1CJ2g
-         z6qLze5ecujERovNo3M3BgdgQSYVeJLsEPUXN/0vN/vKCzKgg0zm2I5OLyhoKMfIDe
-         u3WwinKUwyxiA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Aditya <yashsri421@gmail.com>,
-        Markus Heiser <markus.heiser@darmarit.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [RFC] scripts: kernel-doc: avoid warnings due to initial
- commented lines in file
-In-Reply-To: <CAKXUXMzwTp1H_vokVEAJSnmm7jNHfWzhhmLfpcrrBD9b8ak+dA@mail.gmail.com>
-References: <20210309125324.4456-1-yashsri421@gmail.com>
- <8959bf29-9ee1-6a1d-da18-f440232864f3@darmarit.de>
- <c673e76f-72db-bbee-39d6-f5428e765173@gmail.com>
- <871rcg2p8g.fsf@meer.lwn.net>
- <CAKXUXMzwTp1H_vokVEAJSnmm7jNHfWzhhmLfpcrrBD9b8ak+dA@mail.gmail.com>
-Date:   Thu, 18 Mar 2021 10:37:23 -0600
-Message-ID: <878s6kto3g.fsf@meer.lwn.net>
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 2B7FB22205;
+        Thu, 18 Mar 2021 17:38:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1616085494;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MBkORc1i1EFSwgMZ1o0CjqSrDw+cjwMnNE9mNNijh+4=;
+        b=rKY53G0+6UHdq42l4sWeAQ4Z7hy1mhSs3fUxYiqUKzPrZZrxOojNKpJjpy229u3RugTXX7
+        Y4NuZik5fMGFK7fjRZPd0b7Hxzl9r8dQiCdMwmhTgZXKKc84H16azNB0L6nqHvfTEgQ+Nt
+        T7fwhYd1LDgdLwzjWsk+IWK3nphLvIc=
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 18 Mar 2021 17:38:13 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH net-next] net: phy: at803x: remove at803x_aneg_done()
+In-Reply-To: <ee24b531-df8b-fa3d-c7fd-8c529ecba4c8@gmail.com>
+References: <20210318142356.30702-1-michael@walle.cc>
+ <411c3508-978e-4562-f1e9-33ca7e98a752@gmail.com>
+ <20210318151712.7hmdaufxylyl33em@skbuf>
+ <ee24b531-df8b-fa3d-c7fd-8c529ecba4c8@gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <ae201dadd6842f533aaa2e1440209784@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
+Am 2021-03-18 17:21, schrieb Heiner Kallweit:
+> On 18.03.2021 16:17, Vladimir Oltean wrote:
+>> On Thu, Mar 18, 2021 at 03:54:00PM +0100, Heiner Kallweit wrote:
+>>> On 18.03.2021 15:23, Michael Walle wrote:
+>>>> at803x_aneg_done() is pretty much dead code since the patch series
+>>>> "net: phy: improve and simplify phylib state machine" [1]. Remove 
+>>>> it.
+>>>> 
+>>> 
+>>> Well, it's not dead, it's resting .. There are few places where
+>>> phy_aneg_done() is used. So you would need to explain:
+>>> - why these users can't be used with this PHY driver
+>>> - or why the aneg_done callback isn't needed here and the
+>>>   genphy_aneg_done() fallback is sufficient
+>> 
+>> The piece of code that Michael is removing keeps the aneg reporting as
+>> "not done" even when the copper-side link was reported as up, but the
+>> in-band autoneg has not finished.
+>> 
+>> That was the _intended_ behavior when that code was introduced, and 
+>> you
+>> have said about it:
+>> https://www.spinics.net/lists/stable/msg389193.html
+>> 
+>> | That's not nice from the PHY:
+>> | It signals "link up", and if the system asks the PHY for link 
+>> details,
+>> | then it sheepishly says "well, link is *almost* up".
+>> 
+>> If the specification of phy_aneg_done behavior does not include 
+>> in-band
+>> autoneg (and it doesn't), then this piece of code does not belong 
+>> here.
+>> 
+>> The fact that we can no longer trigger this code from phylib is yet
+>> another reason why it fails at its intended (and wrong) purpose and
+>> should be removed.
+>> 
+> I don't argue against the change, I just think that the current commit
+> description isn't sufficient. What you just said I would have expected
+> in the commit description.
 
-> I wonder if we could extend kernel-doc (not your preferred option as
-> it seems) for a new dedicated warning message or maintain a separate
-> kernel-doc sanity checking script to emit a dedicated warning based on
-> some heuristics that suggests when a "header comment" is probably
-> unintentionally declared as a "kernel-doc comment" when it really
-> should not be.
->
-> Jonathan, would you then prefer to have a separate kernel-doc sanity
-> checking script that then allows us to maintain checking for patterns
-> we already cleaned up?
+I'll come up with a better one, Vladimir, may I use parts of the text
+above?
 
-Having a warning in kernel-doc for "This comment starts with /** but
-isn't a kerneldoc comment" could be useful, I guess.  That is the real
-problem, not the fact that it appears at the top of the file.  I'm all
-for tools that help us to clean things up, but let's not add
-line-counting hacks to try to paper it over.
-
-Thanks,
-
-jon
+-michael
