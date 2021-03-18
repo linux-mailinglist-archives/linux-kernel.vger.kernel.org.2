@@ -2,178 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602B73410A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A343410A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:08:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232613AbhCRXGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 19:06:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbhCRXGd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 19:06:33 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D143DC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 16:06:32 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id a8so2765890oic.11
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 16:06:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gFvbKoTbbtISsQgZesBGqRcM9fA6M7gbO6KnRJFUa1c=;
-        b=YlOyVgCRI9TJ0J3Us5cFDJz1VNFTvypleCbdrXGB+xHIqvR7fXorMjOEF0pzeTtJfO
-         YUaWp9LhjWJb6Cy0Gm7/qTGgIBF8JOxNE5EEss5na4GnTD0ceXgi6/8qhMF3VBUB1h8Y
-         PFTkikmO/n/9S+q3nRwny22rGpyHIUfVvYy80qqFgNbdWSiVz6wU2gBfQeKgwDGaVWNx
-         hm6iakR4kk/UFtjVaFyxOS2n729tb1tjEJp5xaCCovHcjxbpiXKHfn6rEprAgWoWWKQO
-         z+C4jeCKamNLMLFZF908e8tNtb62HdSMEZY9VjHjAi3mAoKxslPz8yBWaEMEjVSXzkwf
-         HNhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gFvbKoTbbtISsQgZesBGqRcM9fA6M7gbO6KnRJFUa1c=;
-        b=HjTy1fDf2fsuT8jWw4fC7HYHEPPrHl/6lcXOEmrAOPD9KvCnZC2GI0/L/H7edEvX/E
-         oNazmpd6GCHPm2whAJ1wAj3847tloD7ny9gqiTMzfc1MiRMLuCHJiBhzue/YlXrpgbXE
-         OHW8h5wdL3feScdrZ3jNiz1KGUCdcUJkiZYxJ8e0N16FvJAxCsoNbM/A4aQjKXhikqVQ
-         At+yvXRrahLRpbLkR9y2zxmdCaDt9szeDVTlXwxa0s8TtlMLZOo9v3mUDuoNY36BZuZc
-         flYocrYNPp8wHZHfej37ncRCNapCYNFgzEc8O50ib/qOz6SKMgugxb5svHwiPMNA4NSv
-         /7UA==
-X-Gm-Message-State: AOAM532st5Zk6nD5F6VHb46im5RLlBO7fcoqn0+SfS3UiFVBbQ8DrUCM
-        /XWBTzdRMwXtwbiJYsp+vefZTbjJ6LLYsXLhU+7YWvWoUGKHs14p
-X-Google-Smtp-Source: ABdhPJwdsIuzyRDFEv8Njjjkwsn44HZryMhC/a+R0VAHGnuyeetQ/n698sy1xgOuIPgXL2TnStsbpDtKs4wR83ugXqw=
-X-Received: by 2002:aca:47c4:: with SMTP id u187mr4785963oia.136.1616108791883;
- Thu, 18 Mar 2021 16:06:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210316193905.1673600-1-jollys@google.com> <5e2c35b6-a9c4-0637-738b-ff6920635425@huawei.com>
- <CABGCNpDdK2+DNTJpzjig3hX3W_7JB8nEcRcuRnv8Z4oRSq2-dA@mail.gmail.com> <329a6159-7da6-f60d-b1a5-14648b90f052@huawei.com>
-In-Reply-To: <329a6159-7da6-f60d-b1a5-14648b90f052@huawei.com>
-From:   Jolly Shah <jollys@google.com>
-Date:   Thu, 18 Mar 2021 16:06:20 -0700
-Message-ID: <CABGCNpDisbWF=fSyKZPfyvR7RgZQeCg-PVxYOUs6PpkagAiMmw@mail.gmail.com>
-Subject: Re: [PATCH] scsi: libsas: Reset num_scatter if libata mark qc as NODATA
-To:     John Garry <john.garry@huawei.com>
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        a.darwish@linutronix.de, Jason Yan <yanaijie@huawei.com>,
-        luojiaxing@huawei.com, dan.carpenter@oracle.com,
-        b.zolnierkie@samsung.com, linux-scsi@vger.kernel.org,
+        id S231933AbhCRXH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 19:07:58 -0400
+Received: from mga17.intel.com ([192.55.52.151]:25251 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231939AbhCRXHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 19:07:36 -0400
+IronPort-SDR: tl1U9nYTzcwrIFn5Et9KmncSMk42yY8Qptf+U29qvkE1woh3rXWc5b1y45P4s7LZ9ZsfFYTwpT
+ ff4u7ulIQqBw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="169709420"
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
+   d="scan'208";a="169709420"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 16:07:36 -0700
+IronPort-SDR: ROBBYi5htD/iEBHdDoX3qJtSWU1/iyEaKJRh0vT1pYOYf6qNaOFaHH7ZYdydX4UMTTJtF9RnHN
+ 3OF30KKTmiow==
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
+   d="scan'208";a="450654431"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 16:07:29 -0700
+From:   ira.weiny@intel.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Oliver Sang <oliver.sang@intel.com>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        David Sterba <dsterba@suse.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: [PATCH] mm/highmem: Fix CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP
+Date:   Thu, 18 Mar 2021 16:06:57 -0700
+Message-Id: <20210318230657.1497881-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+From: Ira Weiny <ira.weiny@intel.com>
 
+The kernel test robot found that __kmap_local_sched_out() was not
+correctly skipping the guard pages when
+CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP was set.[1]  This was due to
+CONFIG_DEBUG_HIGHMEM check being used.
 
-On Thu, Mar 18, 2021 at 9:19 AM John Garry <john.garry@huawei.com> wrote:
->
-> On 18/03/2021 00:24, Jolly Shah wrote:
-> > Hi John,
-> >
-> > Thanks for the review.
-> >
-> >
-> > On Wed, Mar 17, 2021 at 4:44 AM John Garry <john.garry@huawei.com> wrote:
-> >>
-> >> On 16/03/2021 19:39, Jolly Shah wrote:
-> >>> When the cache_type for the scsi device is changed, the scsi layer
-> >>> issues a MODE_SELECT command. The caching mode details are communicated
-> >>> via a request buffer associated with the scsi command with data
-> >>> direction set as DMA_TO_DEVICE (scsi_mode_select). When this command
-> >>> reaches the libata layer, as a part of generic initial setup, libata
-> >>> layer sets up the scatterlist for the command using the scsi command
-> >>> (ata_scsi_qc_new). This command is then translated by the libata layer
-> >>> into ATA_CMD_SET_FEATURES (ata_scsi_mode_select_xlat). The libata layer
-> >>> treats this as a non data command (ata_mselect_caching), since it only
-> >>> needs an ata taskfile to pass the caching on/off information to the
-> >>> device. It does not need the scatterlist that has been setup, so it does
-> >>> not perform dma_map_sg on the scatterlist (ata_qc_issue).
-> >>
-> >> So if we don't perform the dma_map_sg() on the sgl at this point, then
-> >> it seems to me that we should not perform for_each_sg() on it either,
-> >> right? That is still what happens in sas_ata_qc_issue() in this case.
-> >>
->
-> Hi Jolly Shah,
->
-> >
-> > Yes that's right. To avoid that, I can add elseif block for
-> > ATA_PROT_NODATA before for_each_sg() is performed. Currently there's
-> > existing code block for ATA_PROT_NODATA after for_each_sg()  is
-> > performed,
-> > reused that to reset num_scatter. Please suggest.
-> >
->
-> How about just combine the 2x if-else statements into 1x if-elif-else
-> statement, like:
->
->
-> if (ata_is_atapi(qc->tf.protocol)) {
->         memcpy(task->ata_task.atapi_packet, qc->cdb, qc->dev->cdb_len);
->         task->total_xfer_len = qc->nbytes;
->         task->num_scatter = qc->n_elem;
->         task->data_dir = qc->dma_dir;
-> } else if (qc->tf.protocol == ATA_PROT_NODATA) {
->         task->data_dir = DMA_NONE;
-> } else {
->         for_each_sg(qc->sg, sg, qc->n_elem, si)
->                 xfer += sg_dma_len(sg);
->
->         task->total_xfer_len = xfer;
->         task->num_scatter = si;
->         task->data_dir = qc->dma_dir;
-> }
->
-Updated in v2.
+Change the configuration check to be correct.
 
-> >>> Unfortunately,
-> >>> when this command reaches the libsas layer(sas_ata_qc_issue), libsas
-> >>> layer sees it as a non data command with a scatterlist. It cannot
-> >>> extract the correct dma length, since the scatterlist has not been
-> >>> mapped with dma_map_sg for a DMA operation. When this partially
-> >>> constructed SAS task reaches pm80xx LLDD, it results in below warning.
-> >>>
-> >>> "pm80xx_chip_sata_req 6058: The sg list address
-> >>> start_addr=0x0000000000000000 data_len=0x0end_addr_high=0xffffffff
-> >>> end_addr_low=0xffffffff has crossed 4G boundary"
-> >>>
-> >>> This patch assigns appropriate value to  num_sectors for ata non data
-> >>> commands.
-> >>>
-> >>> Signed-off-by: Jolly Shah <jollys@google.com>
-> >>> ---
-> >>>    drivers/scsi/libsas/sas_ata.c | 6 ++++--
-> >>>    1 file changed, 4 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
-> >>> index 024e5a550759..94ec08cebbaa 100644
-> >>> --- a/drivers/scsi/libsas/sas_ata.c
-> >>> +++ b/drivers/scsi/libsas/sas_ata.c
-> >>> @@ -209,10 +209,12 @@ static unsigned int sas_ata_qc_issue(struct ata_queued_cmd *qc)
-> >>>                task->num_scatter = si;
-> >>>        }
-> >>>
-> >>> -     if (qc->tf.protocol == ATA_PROT_NODATA)
-> >>> +     if (qc->tf.protocol == ATA_PROT_NODATA) {
-> >>>                task->data_dir = DMA_NONE;
-> >>> -     else
-> >>> +             task->num_scatter = 0;
-> >>
-> >> task->num_scatter has already been set in this function. Best not set it
-> >> twice.
-> >>
-> >
-> > Sure. Please suggest if I should update patch to above suggested
-> > approach. That will avoid setting num_scatter twice.
-> >
->
-> Thanks,
-> John
->
-> BTW, could we add a fixes tag?
+[1] https://lore.kernel.org/lkml/20210304083825.GB17830@xsang-OptiPlex-9020/
 
-Added in v2.
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Oliver Sang <oliver.sang@intel.com>
+Cc: Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+Cc: David Sterba <dsterba@suse.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Fixes: 0e91a0c6984c ("mm/highmem: Provide CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+ mm/highmem.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-Jolly
+diff --git a/mm/highmem.c b/mm/highmem.c
+index 86f2b9495f9c..6ef8f5e05e7e 100644
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -618,7 +618,7 @@ void __kmap_local_sched_out(void)
+ 		int idx;
+ 
+ 		/* With debug all even slots are unmapped and act as guard */
+-		if (IS_ENABLED(CONFIG_DEBUG_HIGHMEM) && !(i & 0x01)) {
++		if (IS_ENABLED(CONFIG_DEBUG_KMAP_LOCAL) && !(i & 0x01)) {
+ 			WARN_ON_ONCE(!pte_none(pteval));
+ 			continue;
+ 		}
+@@ -654,7 +654,7 @@ void __kmap_local_sched_in(void)
+ 		int idx;
+ 
+ 		/* With debug all even slots are unmapped and act as guard */
+-		if (IS_ENABLED(CONFIG_DEBUG_HIGHMEM) && !(i & 0x01)) {
++		if (IS_ENABLED(CONFIG_DEBUG_KMAP_LOCAL) && !(i & 0x01)) {
+ 			WARN_ON_ONCE(!pte_none(pteval));
+ 			continue;
+ 		}
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
+
