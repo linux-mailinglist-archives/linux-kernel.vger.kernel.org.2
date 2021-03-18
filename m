@@ -2,120 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C50233FC28
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 01:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2F033FC2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 01:22:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhCRARw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 20:17:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhCRARt (ORCPT
+        id S229903AbhCRAVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 20:21:51 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:60410 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229562AbhCRAVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 20:17:49 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9F4C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 17:17:49 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id y2so419213qtw.13
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 17:17:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qBWp64Pug/SrgiIyadWuZwnOsiwL1P6TZRSFM00kaTE=;
-        b=IIqq6Eoj+LnGC7XeDnJA2LmQcviLVkZMtifQwLfmDot9ahXHP36PaGWUF7TjDY03Kc
-         CgLSKDVnRGfD2QD1G+Nr0Ytv3ywTh3OkyHJjNtkRqgVhyv+we+Fw00hJ1T5SNf7bwCGf
-         VdDFtMk+sITBGsRFfRFHeWThbRqSa6TGuRndAK9twANKLboIlc5el7Wg/rqlqUyA/RIp
-         HJpOvztH5oI8kn0X+pqy8c/jqavu/Oqc8I3CHtT7/oNd1b2ayXGM4tSOCN7AfgeCt6sW
-         x+zNRXN3ACaNJ00Rcic+TJobm40DIc/TTTsKAHwWTiPX0RcMDB3X+01RkybEOEOyg9PU
-         Adzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qBWp64Pug/SrgiIyadWuZwnOsiwL1P6TZRSFM00kaTE=;
-        b=W/NItVtqvX50Talc0h31+IIXyr9HvtD7Pe/CK84v89MuonfrCAjWniKNeUrNwoqs5b
-         mHbAq+Jwdcrq8Pa0DoHwJdejNU/GNaI9D0bgN1vKArlLhpwsZgxLZMWJ+VMIgeEs41lR
-         YzwJg3MtTglcUHvUKIDUFBtOf/zSXTo5wUSj2yOAEinsIcH5FpcABk7ipGeyCOoAJti7
-         zVKW1owSeOnK7AIVisF89/QT5wjjPgdAc5xJUoexm208XkbRGWV6zkJAnh6ndf31WI3r
-         2LAYQaiOSP4YxjF0Rz6OASaCgKnkx8r2Q2VMGpxrBTOeO/BY7NcB1JnJIq0QNHjx0s5+
-         921Q==
-X-Gm-Message-State: AOAM533BV9IXu5f8KRL0ozpMCyEduBJsCj6i8ybFPb0zwCrv5YdOlS1n
-        TELsOMRasA4RiRAzKXI2Xtoew23qNyDh2ihm4TZDSQ==
-X-Google-Smtp-Source: ABdhPJx0spgied9F00Q5lkECPAZWv345xymxG9XfK1q1w/CRjgQhQ3Xc/nTCSQS1+d1cZdKWm4aFSqhy2jaIazOr1ag=
-X-Received: by 2002:a05:622a:114:: with SMTP id u20mr1443275qtw.317.1616026668446;
- Wed, 17 Mar 2021 17:17:48 -0700 (PDT)
+        Wed, 17 Mar 2021 20:21:21 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C97658E6;
+        Thu, 18 Mar 2021 01:21:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1616026879;
+        bh=dPQCVgzd2lJUq3jAWBjnHWNQs/oOCycuPf1cKDuvFNo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kXDP5Vr4spLR26JNCW6vFJT2VC7Hi008uWYh5P3Yksx+ILEzfvHMztFPSPEzLQXvC
+         UKcwWkb8k6lYpZoYEmIPcK5U5XFa2QuK8Z7hNOWNSAqxAUn0U2RIA/l5gMKqiasfyL
+         ITEU8yUmZn+OAdyYCrNeyQKwt7SpFY1vGog3qa5I=
+Date:   Thu, 18 Mar 2021 02:20:43 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Sean Paul <seanpaul@chromium.org>
+Subject: Re: [PATCH v3 3/4] drm/bridge: ti-sn65dsi86: Read EDID blob over DDC
+Message-ID: <YFKc23MwUQAosCs8@pendragon.ideasonboard.com>
+References: <20201102181144.3469197-1-swboyd@chromium.org>
+ <20201102181144.3469197-4-swboyd@chromium.org>
 MIME-Version: 1.0
-References: <20210317045949.1584952-1-joshdon@google.com> <20210317083141.GB3881262@gmail.com>
-In-Reply-To: <20210317083141.GB3881262@gmail.com>
-From:   Josh Don <joshdon@google.com>
-Date:   Wed, 17 Mar 2021 17:17:37 -0700
-Message-ID: <CABk29Nu8iYDzY+GHa+z7oJyGF_0JKdF9+-zBbiL7C2hgSfHqMg@mail.gmail.com>
-Subject: Re: [PATCH] sched: Warn on long periods of pending need_resched
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        David Rientjes <rientjes@google.com>,
-        Oleg Rombakh <olegrom@google.com>, Paul Turner <pjt@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201102181144.3469197-4-swboyd@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 1:31 AM Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * Josh Don <joshdon@google.com> wrote:
->
-> > +static inline u64 resched_latency_check(struct rq *rq)
-> > +{
-> > +     int latency_warn_ms = READ_ONCE(sysctl_resched_latency_warn_ms);
-> > +     bool warn_only_once = (latency_warn_ms == RESCHED_DEFAULT_WARN_LATENCY_MS);
-> > +     u64 need_resched_latency, now = rq_clock(rq);
-> > +     static bool warned_once;
-> > +
-> > +     if (warn_only_once && warned_once)
-> > +             return 0;
-> > +
-> > +     if (!need_resched() || latency_warn_ms < 2)
-> > +             return 0;
-> > +
-> > +     /* Disable this warning for the first few mins after boot */
-> > +     if (now < RESCHED_BOOT_QUIET_SEC * NSEC_PER_SEC)
-> > +             return 0;
-> > +
-> > +     if (!rq->last_seen_need_resched_ns) {
-> > +             rq->last_seen_need_resched_ns = now;
-> > +             rq->ticks_without_resched = 0;
-> > +             return 0;
-> > +     }
-> > +
-> > +     rq->ticks_without_resched++;
->
-> So AFAICS this will only really do something useful on full-nohz
-> kernels with sufficiently long scheduler ticks, right?
+Hi Stephen,
 
-Not quite sure what you mean; it is actually the inverse? Since we
-rely on the tick to detect the resched latency, on nohz-full we won't
-have detection on cpus running a single thread. The ideal scenario is
-!nohz-full and tick interval << warn_ms.
+Reviving a bit of an old thread, for a question.
 
-> On other kernels the scheduler tick interrupt, when it returns to
-> user-space, will trigger a reschedule if it sees a need_resched.
+On Mon, Nov 02, 2020 at 10:11:43AM -0800, Stephen Boyd wrote:
+> Use the DDC connection to read the EDID from the eDP panel instead of
+> relying on the panel to tell us the modes.
+> 
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+> Cc: Jonas Karlman <jonas@kwiboo.se>
+> Cc: Jernej Skrabec <jernej.skrabec@siol.net>
+> Cc: Sean Paul <seanpaul@chromium.org>
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index 8276fa50138f..6b6e98ca2881 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -119,6 +119,7 @@
+>   * @debugfs:      Used for managing our debugfs.
+>   * @host_node:    Remote DSI node.
+>   * @dsi:          Our MIPI DSI source.
+> + * @edid:         Detected EDID of eDP panel.
+>   * @refclk:       Our reference clock.
+>   * @panel:        Our panel.
+>   * @enable_gpio:  The GPIO we toggle to enable the bridge.
+> @@ -144,6 +145,7 @@ struct ti_sn_bridge {
+>  	struct drm_bridge		bridge;
+>  	struct drm_connector		connector;
+>  	struct dentry			*debugfs;
+> +	struct edid			*edid;
+>  	struct device_node		*host_node;
+>  	struct mipi_dsi_device		*dsi;
+>  	struct clk			*refclk;
+> @@ -265,6 +267,23 @@ connector_to_ti_sn_bridge(struct drm_connector *connector)
+>  static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
+>  {
+>  	struct ti_sn_bridge *pdata = connector_to_ti_sn_bridge(connector);
+> +	struct edid *edid = pdata->edid;
+> +	int num, ret;
+> +
+> +	if (!edid) {
+> +		pm_runtime_get_sync(pdata->dev);
+> +		edid = pdata->edid = drm_get_edid(connector, &pdata->aux.ddc);
+> +		pm_runtime_put(pdata->dev);
 
-True for the case where we return to userspace, but we could instead
-be executing in a non-preemptible region of the kernel. This is where
-we've seen/fixed kernel bugs.
+Is there any specific reason to use the indirect access method, compared
+to the direct method that translates access to an I2C ancillary address
+to an I2C-over-AUX transaction (see page 20 of SLLSEH2B) ? The direct
+method seems it would be more efficient.
 
-Best,
-Josh
+> +	}
+> +
+> +	if (edid && drm_edid_is_valid(edid)) {
+> +		ret = drm_connector_update_edid_property(connector, edid);
+> +		if (!ret) {
+> +			num = drm_add_edid_modes(connector, edid);
+> +			if (num)
+> +				return num;
+> +		}
+> +	}
+>  
+>  	return drm_panel_get_modes(pdata->panel, connector);
+>  }
+> @@ -1245,6 +1264,7 @@ static int ti_sn_bridge_remove(struct i2c_client *client)
+>  	if (!pdata)
+>  		return -EINVAL;
+>  
+> +	kfree(pdata->edid);
+>  	ti_sn_debugfs_remove(pdata);
+>  
+>  	of_node_put(pdata->host_node);
+
+-- 
+Regards,
+
+Laurent Pinchart
