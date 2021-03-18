@@ -2,152 +2,425 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004A2340F99
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:15:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86663340FA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:16:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233093AbhCRVPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 17:15:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35341 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233149AbhCRVOm (ORCPT
+        id S233181AbhCRVPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 17:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233156AbhCRVPL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 17:14:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616102081;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=icwCuj2M4SyK4w9YvvG8G3EGcPjLUbArXWUr95szJzE=;
-        b=V0RoA1deh6jpGR4qI7uAfcpEPPJo4s6X5KzN52dmJYxZ0AkwXDL+KF6mRGIZ4ZX37mOAUz
-        lXMd8KQlYfxI7MkaMBLU8P9/mVE32bxO6Q8E1Hx56HAFqYakjI+RvAAstTj6rTqboagQKQ
-        uInJFazY88rv4J6mTtdHIBZoa4LXFDo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-520-0s4PakATMwSujQUR_vPfBA-1; Thu, 18 Mar 2021 17:14:38 -0400
-X-MC-Unique: 0s4PakATMwSujQUR_vPfBA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 720FC101371C;
-        Thu, 18 Mar 2021 21:14:37 +0000 (UTC)
-Received: from krava (unknown [10.40.194.6])
-        by smtp.corp.redhat.com (Postfix) with SMTP id D1A955D72E;
-        Thu, 18 Mar 2021 21:14:35 +0000 (UTC)
-Date:   Thu, 18 Mar 2021 22:14:34 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH v2 0/3] perf-stat: share hardware PMCs with BPF
-Message-ID: <YFPCul51MjrlY65P@krava>
-References: <20210316211837.910506-1-songliubraving@fb.com>
- <CAM9d7ci=hfFjq3+XuBcCZ0TUJxv6AmdFk0dkHFQD3wx27aJMjA@mail.gmail.com>
- <YFH//FRPvrPswhld@kernel.org>
- <7D48A756-C253-48DE-B536-826314778404@fb.com>
+        Thu, 18 Mar 2021 17:15:11 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FB8C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:15:10 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id y2so2809568qtw.13
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:15:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=thtI6D5yvLQ8I+ZEZPewpU2UeG4JeNUahdvcK2n34kc=;
+        b=Vctd/VJFOvSx90u1XC5z0hzSnDhF2EgyP2vMD0Kx/ybecq7kOpW39NaHT/O3QSILvq
+         04fYCFIQX+gM+pP+UvwFYjsp/JsYC/PSrHVM3P9v/hmQsYlhad78+lAw+EdcBxU2dGcT
+         JafEuw73AwskpvYEhNfUoRIqHlRvAGkUsHnSsz53p1p+KXTGiK4kdPe/oeeb1zu/IZ60
+         61PkfFwXZTk8dkeR3rvhdae1+qKGZ3ysCiG/UhZTq54bVhSgpgaX8UDXOpsOHlWkE3n3
+         plC89LVAm2RshOiIKuD8ualGH5nlyolrSiFNjmpuaTsFUDNB2xGT0+YYgwUR0TbNabeV
+         1PTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=thtI6D5yvLQ8I+ZEZPewpU2UeG4JeNUahdvcK2n34kc=;
+        b=poRaWW5OOqQF80Le+I6jq++ls7ZSLgru9SDgRD5OwqJFlQ6lnYEoeGkVrWNgNx48hW
+         8K5DmOnhc0JVwu5Wn6pzOMFEOJ4kaIKnfdT+tAmAxq6vPY9AnjOUDUT+B9yiLMQfsraZ
+         yUZ9Dq9V5ag0/aLYOUqNHDYzHE9X6o1Jfb7qtl0MtvL2ZxCzUiKdBkxdJAhViywOfCGS
+         s0YYSbNoWUy0t0eYGPTYiuEUdIGaUoAUd7d6lBUblpq/xLVJmwRnA8NzgAWMw7n5B0+g
+         qff/0Me8ar70TutYwFTtsi1v51g0LkGBia/jW28VCQt2uCLLiWGtQ2a70gvcu79XxjGy
+         CNdw==
+X-Gm-Message-State: AOAM531Wb7lxDLi1jVrJdygvExsJD33ABqs1GBK1iODh3Y0zO6K7yTfi
+        DrhKijFMtEpOCWD5GNsTTOI8DQ/yoBZAUg==
+X-Google-Smtp-Source: ABdhPJwfXGKIo+tl8E9EXsaHg7MmFGuE3MtjbAdHaDLdrDL7h3KJsFUbaud2jfCqV77838elS8U12Q==
+X-Received: by 2002:ac8:590e:: with SMTP id 14mr5711740qty.51.1616102109102;
+        Thu, 18 Mar 2021 14:15:09 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id v2sm2732410qkp.119.2021.03.18.14.15.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 14:15:08 -0700 (PDT)
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Subject: Re: [PATCH v10 1/8] drivers: thermal: tsens: Add VER_0 tsens version
+To:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Amit Kucheria <amitk@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210217194011.22649-1-ansuelsmth@gmail.com>
+ <20210217194011.22649-2-ansuelsmth@gmail.com>
+Message-ID: <642632a5-7124-e728-c2e5-691185816420@linaro.org>
+Date:   Thu, 18 Mar 2021 17:15:08 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7D48A756-C253-48DE-B536-826314778404@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20210217194011.22649-2-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 03:52:51AM +0000, Song Liu wrote:
-> 
-> 
-> > On Mar 17, 2021, at 6:11 AM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > 
-> > Em Wed, Mar 17, 2021 at 02:29:28PM +0900, Namhyung Kim escreveu:
-> >> Hi Song,
-> >> 
-> >> On Wed, Mar 17, 2021 at 6:18 AM Song Liu <songliubraving@fb.com> wrote:
-> >>> 
-> >>> perf uses performance monitoring counters (PMCs) to monitor system
-> >>> performance. The PMCs are limited hardware resources. For example,
-> >>> Intel CPUs have 3x fixed PMCs and 4x programmable PMCs per cpu.
-> >>> 
-> >>> Modern data center systems use these PMCs in many different ways:
-> >>> system level monitoring, (maybe nested) container level monitoring, per
-> >>> process monitoring, profiling (in sample mode), etc. In some cases,
-> >>> there are more active perf_events than available hardware PMCs. To allow
-> >>> all perf_events to have a chance to run, it is necessary to do expensive
-> >>> time multiplexing of events.
-> >>> 
-> >>> On the other hand, many monitoring tools count the common metrics (cycles,
-> >>> instructions). It is a waste to have multiple tools create multiple
-> >>> perf_events of "cycles" and occupy multiple PMCs.
-> >> 
-> >> Right, it'd be really helpful when the PMCs are frequently or mostly shared.
-> >> But it'd also increase the overhead for uncontended cases as BPF programs
-> >> need to run on every context switch.  Depending on the workload, it may
-> >> cause a non-negligible performance impact.  So users should be aware of it.
-> > 
-> > Would be interesting to, humm, measure both cases to have a firm number
-> > of the impact, how many instructions are added when sharing using
-> > --bpf-counters?
-> > 
-> > I.e. compare the "expensive time multiplexing of events" with its
-> > avoidance by using --bpf-counters.
-> > 
-> > Song, have you perfmormed such measurements?
-> 
-> I have got some measurements with perf-bench-sched-messaging:
-> 
-> The system: x86_64 with 23 cores (46 HT)
-> 
-> The perf-stat command:
-> perf stat -e cycles,cycles,instructions,instructions,ref-cycles,ref-cycles <target, etc.>
-> 
-> The benchmark command and output:
-> ./perf bench sched messaging -g 40 -l 50000 -t
-> # Running 'sched/messaging' benchmark:
-> # 20 sender and receiver threads per group
-> # 40 groups == 1600 threads run
->      Total time: 10X.XXX [sec]
-> 
-> 
-> I use the "Total time" as measurement, so smaller number is better. 
-> 
-> For each condition, I run the command 5 times, and took the median of 
-> "Total time". 
-> 
-> Baseline (no perf-stat)			104.873 [sec]
-> # global
-> perf stat -a				107.887 [sec]
-> perf stat -a --bpf-counters		106.071 [sec]
-> # per task
-> perf stat 				106.314 [sec]
-> perf stat --bpf-counters 		105.965 [sec]
-> # per cpu
-> perf stat -C 1,3,5 			107.063 [sec]
-> perf stat -C 1,3,5 --bpf-counters 	106.406 [sec]
+Hi Ansuel!
 
-I can't see why it's actualy faster than normal perf ;-)
-would be worth to find out
+Apologies for delay in the review..
 
-jirka
+This particular patch throws checkpatch check warnings. Please
+run checkpatch.pl --strict and fix them. Rest of the comments below
 
+On 2/17/21 2:40 PM, Ansuel Smith wrote:
+> VER_0 is used to describe device based on tsens version before v0.1.
+> These device are devices based on msm8960 for example apq8064 or
+> ipq806x.
 > 
-> From the data, --bpf-counters is slightly better than the regular event
-> for all targets. I noticed that the results are not very stable. There 
-> are a couple 108.xx runs in some of the conditions (w/ and w/o 
-> --bpf-counters).
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>   drivers/thermal/qcom/tsens.c | 175 +++++++++++++++++++++++++++++------
+>   drivers/thermal/qcom/tsens.h |   4 +-
+>   2 files changed, 151 insertions(+), 28 deletions(-)
 > 
-> 
-> I also measured the average runtime of the BPF programs, with 
-> 
-> 	sysctl kernel.bpf_stats_enabled=1
-> 
-> For each event, if we have one leader and two followers, the total run 
-> time is about 340ns. IOW, 340ns for two perf-stat reading instructions, 
-> 340ns for two perf-stat reading cycles, etc. 
-> 
-> Thanks,
-> Song
+> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+> index d8ce3a687b80..f9126909892b 100644
+> --- a/drivers/thermal/qcom/tsens.c
+> +++ b/drivers/thermal/qcom/tsens.c
+> @@ -12,6 +12,7 @@
+>   #include <linux/of.h>
+>   #include <linux/of_address.h>
+>   #include <linux/of_platform.h>
+> +#include <linux/mfd/syscon.h>
+>   #include <linux/platform_device.h>
+>   #include <linux/pm.h>
+>   #include <linux/regmap.h>
+> @@ -515,6 +516,15 @@ static irqreturn_t tsens_irq_thread(int irq, void *data)
+>   			dev_dbg(priv->dev, "[%u] %s: no violation:  %d\n",
+>   				hw_id, __func__, temp);
+>   		}
+> +
+> +		if (tsens_version(priv) < VER_0_1) {
+> +			/* Constraint: There is only 1 interrupt control register for all
+> +			 * 11 temperature sensor. So monitoring more than 1 sensor based
+> +			 * on interrupts will yield inconsistent result. To overcome this
+> +			 * issue we will monitor only sensor 0 which is the master sensor.
+> +			 */
+> +			break;
+> +		}
+>   	}
+>   
+>   	return IRQ_HANDLED;
+> @@ -530,6 +540,13 @@ static int tsens_set_trips(void *_sensor, int low, int high)
+>   	int high_val, low_val, cl_high, cl_low;
+>   	u32 hw_id = s->hw_id;
+>   
+> +	if (tsens_version(priv) < VER_0_1) {
+> +		/* Pre v0.1 IP had a single register for each type of interrupt
+> +		 * and thresholds
+> +		 */
+> +		hw_id = 0;
+> +	}
+> +
+>   	dev_dbg(dev, "[%u] %s: proposed thresholds: (%d:%d)\n",
+>   		hw_id, __func__, low, high);
+>   
+> @@ -584,18 +601,21 @@ int get_temp_tsens_valid(const struct tsens_sensor *s, int *temp)
+>   	u32 valid;
+>   	int ret;
+>   
+> -	ret = regmap_field_read(priv->rf[valid_idx], &valid);
+> -	if (ret)
+> -		return ret;
+> -	while (!valid) {
+> -		/* Valid bit is 0 for 6 AHB clock cycles.
+> -		 * At 19.2MHz, 1 AHB clock is ~60ns.
+> -		 * We should enter this loop very, very rarely.
+> -		 */
+> -		ndelay(400);
+> +	/* VER_0 doesn't have VALID bit */
+> +	if (tsens_version(priv) >= VER_0_1) {
+>   		ret = regmap_field_read(priv->rf[valid_idx], &valid);
+>   		if (ret)
+>   			return ret;
+> +		while (!valid) {
+> +			/* Valid bit is 0 for 6 AHB clock cycles.
+> +			 * At 19.2MHz, 1 AHB clock is ~60ns.
+> +			 * We should enter this loop very, very rarely.
+> +			 */
+> +			ndelay(400);
+> +			ret = regmap_field_read(priv->rf[valid_idx], &valid);
+> +			if (ret)
+> +				return ret;
+> +		}
+>   	}
+>   
+>   	/* Valid bit is set, OK to read the temperature */
+> @@ -608,15 +628,29 @@ int get_temp_common(const struct tsens_sensor *s, int *temp)
+>   {
+>   	struct tsens_priv *priv = s->priv;
+>   	int hw_id = s->hw_id;
+> -	int last_temp = 0, ret;
+> +	int last_temp = 0, ret, trdy;
+> +	unsigned long timeout;
+>   
+> -	ret = regmap_field_read(priv->rf[LAST_TEMP_0 + hw_id], &last_temp);
+> -	if (ret)
+> -		return ret;
+> +	timeout = jiffies + usecs_to_jiffies(TIMEOUT_US);
+> +	do {
+> +		if (priv->rf[TRDY]) {
+> +			ret = regmap_field_read(priv->rf[TRDY], &trdy);
+> +			if (ret)
+> +				return ret;
+> +			if (!trdy)
+> +				continue;
+> +		}
+
+Did you test this on v0.1 sensor and ensure that the trdy handshake 
+works there as well? I don't have a platform to test this. But the safer 
+option here will be to do the hand shake only for v0.
+
+> +
+> +		ret = regmap_field_read(priv->rf[LAST_TEMP_0 + hw_id], &last_temp);
+> +		if (ret)
+> +			return ret;
+>   
+> -	*temp = code_to_degc(last_temp, s) * 1000;
+> +		*temp = code_to_degc(last_temp, s) * 1000;
+>   
+> -	return 0;
+> +		return 0;
+> +	} while (time_before(jiffies, timeout));
+> +
+> +	return -ETIMEDOUT;
+>   }
+>   
+>   #ifdef CONFIG_DEBUG_FS
+> @@ -738,19 +772,31 @@ int __init init_common(struct tsens_priv *priv)
+>   		priv->tm_offset = 0x1000;
+>   	}
+>   
+> -	res = platform_get_resource(op, IORESOURCE_MEM, 0);
+> -	tm_base = devm_ioremap_resource(dev, res);
+> -	if (IS_ERR(tm_base)) {
+> -		ret = PTR_ERR(tm_base);
+> -		goto err_put_device;
+> +	if (tsens_version(priv) >= VER_0_1) {
+> +		res = platform_get_resource(op, IORESOURCE_MEM, 0);
+> +		tm_base = devm_ioremap_resource(dev, res);
+> +		if (IS_ERR(tm_base)) {
+> +			ret = PTR_ERR(tm_base);
+> +			goto err_put_device;
+> +		}
+> +
+> +		priv->tm_map = devm_regmap_init_mmio(dev, tm_base, &tsens_config);
+> +	} else { /* VER_0 share the same gcc regs using a syscon */
+> +		struct device *parent = priv->dev->parent;
+> +
+> +		if (parent)
+> +			priv->tm_map = syscon_node_to_regmap(parent->of_node);
+>   	}
+>   
+> -	priv->tm_map = devm_regmap_init_mmio(dev, tm_base, &tsens_config);
+> -	if (IS_ERR(priv->tm_map)) {
+> +	if (IS_ERR_OR_NULL(priv->tm_map)) {
+>   		ret = PTR_ERR(priv->tm_map);
+>   		goto err_put_device;
+>   	}
+>   
+> +	/* VER_0 have only tm_map */
+> +	if (!priv->srot_map)
+> +		priv->srot_map = priv->tm_map;
+> +
+>   	if (tsens_version(priv) > VER_0_1) {
+>   		for (i = VER_MAJOR; i <= VER_STEP; i++) {
+>   			priv->rf[i] = devm_regmap_field_alloc(dev, priv->srot_map,
+> @@ -769,6 +815,10 @@ int __init init_common(struct tsens_priv *priv)
+>   		ret = PTR_ERR(priv->rf[TSENS_EN]);
+>   		goto err_put_device;
+>   	}
+> +	/* in VER_0 TSENS need to be explicitly enabled */
+> +	if (tsens_version(priv) == VER_0)
+> +		regmap_field_write(priv->rf[TSENS_EN], 1);
+> +
+>   	ret = regmap_field_read(priv->rf[TSENS_EN], &enabled);
+>   	if (ret)
+>   		goto err_put_device;
+> @@ -791,6 +841,57 @@ int __init init_common(struct tsens_priv *priv)
+>   		goto err_put_device;
+>   	}
+>   
+> +	priv->rf[TSENS_EN] = devm_regmap_field_alloc(dev, priv->tm_map,
+> +						     priv->fields[TSENS_EN]);
+
+Why are you reallocating TSENS_EN here? It is already done above. Also 
+the base map is wrong. It should be priv->srot_map
+
+> +	if (IS_ERR(priv->rf[TSENS_EN])) {
+> +		ret = PTR_ERR(priv->rf[TSENS_EN]);
+> +		goto err_put_device;
+> +	}
+> +
+> +	priv->rf[TSENS_SW_RST] = devm_regmap_field_alloc(
+> +		dev, priv->tm_map, priv->fields[TSENS_EN]);
+
+/s/priv->tm_map/priv->srot_map.
+
+
+> +	if (IS_ERR(priv->rf[TSENS_EN])) {
+
+check for TSENS_SW_RST and not TSENS_EN..
+
+> +		ret = PTR_ERR(priv->rf[TSENS_EN]);
+
+check for TSENS_SW_RST and not TSENS_EN
+
+> +		goto err_put_device;
+> +	}
+> +
+> +	priv->rf[LOW_INT_CLEAR_0] = devm_regmap_field_alloc(
+> +		dev, priv->tm_map, priv->fields[LOW_INT_CLEAR_0]);
+> +	if (IS_ERR(priv->rf[LOW_INT_CLEAR_0])) {
+> +		ret = PTR_ERR(priv->rf[LOW_INT_CLEAR_0]);
+> +		goto err_put_device;
+> +	}
+> +
+> +	priv->rf[UP_INT_CLEAR_0] = devm_regmap_field_alloc(
+> +		dev, priv->tm_map, priv->fields[UP_INT_CLEAR_0]);
+> +	if (IS_ERR(priv->rf[UP_INT_CLEAR_0])) {
+> +		ret = PTR_ERR(priv->rf[UP_INT_CLEAR_0]);
+> +		goto err_put_device;
+> +	}
+
+Does not the code in for loop for (j = LAST_TEMP_0; j <= UP_THRESH_15; j 
++= 16) { do this for you ? If not, you should move it inside the if 
+condition below. And in that case you need not loop enter the for (j = 
+LAST_TEMP_0; j <= UP_THRESH_15; j += 16) {.
+
+> +
+> +	if (tsens_version(priv) < VER_0_1) {
+> +		priv->rf[CRIT_THRESH_0] = devm_regmap_field_alloc(
+> +			dev, priv->tm_map, priv->fields[CRIT_THRESH_0]);
+> +		if (IS_ERR(priv->rf[CRIT_THRESH_0])) {
+> +			ret = PTR_ERR(priv->rf[CRIT_THRESH_0]);
+> +			goto err_put_device;
+> +		}
+> +
+> +		priv->rf[CRIT_THRESH_1] = devm_regmap_field_alloc(
+> +			dev, priv->tm_map, priv->fields[CRIT_THRESH_1]);
+> +		if (IS_ERR(priv->rf[CRIT_THRESH_1])) {
+> +			ret = PTR_ERR(priv->rf[CRIT_THRESH_1]);
+> +			goto err_put_device;
+> +		}
+> +	}
+> +
+> +	priv->rf[TRDY] =
+> +		devm_regmap_field_alloc(dev, priv->tm_map, priv->fields[TRDY]);
+> +	if (IS_ERR(priv->rf[TRDY])) {
+> +		ret = PTR_ERR(priv->rf[TRDY]);
+> +		goto err_put_device;
+> +	}
+> +
+>   	/* This loop might need changes if enum regfield_ids is reordered */
+>   	for (j = LAST_TEMP_0; j <= UP_THRESH_15; j += 16) {
+>   		for (i = 0; i < priv->feat->max_sensors; i++) {
+> @@ -844,7 +945,11 @@ int __init init_common(struct tsens_priv *priv)
+>   	}
+>   
+>   	spin_lock_init(&priv->ul_lock);
+> -	tsens_enable_irq(priv);
+> +
+> +	/* VER_0 interrupt doesn't need to be enabled */
+> +	if (tsens_version(priv) >= VER_0_1)
+> +		tsens_enable_irq(priv);
+> +
+>   	tsens_debug_init(op);
+>   
+>   err_put_device:
+> @@ -930,7 +1035,7 @@ static int tsens_register_irq(struct tsens_priv *priv, char *irqname,
+>   			      irq_handler_t thread_fn)
+>   {
+>   	struct platform_device *pdev;
+> -	int ret, irq;
+> +	int ret, irq, irq_type = IRQF_ONESHOT;
+>   
+>   	pdev = of_find_device_by_node(priv->dev->of_node);
+>   	if (!pdev)
+> @@ -943,9 +1048,12 @@ static int tsens_register_irq(struct tsens_priv *priv, char *irqname,
+>   		if (irq == -ENXIO)
+>   			ret = 0;
+>   	} else {
+> -		ret = devm_request_threaded_irq(&pdev->dev, irq,
+> -						NULL, thread_fn,
+> -						IRQF_ONESHOT,
+> +		/* VER_0 interrupt is TRIGGER_RISING, VER_0_1 and up is ONESHOT */
+> +		if (tsens_version(priv) == VER_0)
+> +			irq_type = IRQF_TRIGGER_RISING;
+> +
+> +		ret = devm_request_threaded_irq(&pdev->dev, irq, thread_fn,
+> +						NULL, irq_type,
+>   						dev_name(&pdev->dev), priv);
+
+You have changed the interrupt handling from  threaded context to 
+interrupt context. I cannot see any reason to do this.
+
+>   		if (ret)
+>   			dev_err(&pdev->dev, "%s: failed to get irq\n",
+> @@ -975,6 +1083,19 @@ static int tsens_register(struct tsens_priv *priv)
+>   			priv->ops->enable(priv, i);
+>   	}
+>   
+> +	/* VER_0 require to set MIN and MAX THRESH
+> +	 * These 2 regs are set using the:
+> +	 * - CRIT_THRESH_0 for MAX THRESH hardcoded to 120°C
+> +	 * - CRIT_THRESH_1 for MIN THRESH hardcoded to   0°C
+> +	 */
+> +	if (tsens_version(priv) < VER_0_1) {
+> +		regmap_field_write(priv->rf[CRIT_THRESH_0],
+> +				   tsens_mC_to_hw(priv->sensor, 120000));
+> +
+> +		regmap_field_write(priv->rf[CRIT_THRESH_1],
+> +				   tsens_mC_to_hw(priv->sensor, 0));
+> +	}
+> +
+>   	ret = tsens_register_irq(priv, "uplow", tsens_irq_thread);
+>   	if (ret < 0)
+>   		return ret;
+> diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
+> index f40b625f897e..8e6c1fd3ccf5 100644
+> --- a/drivers/thermal/qcom/tsens.h
+> +++ b/drivers/thermal/qcom/tsens.h
+> @@ -13,6 +13,7 @@
+>   #define CAL_DEGC_PT2		120
+>   #define SLOPE_FACTOR		1000
+>   #define SLOPE_DEFAULT		3200
+> +#define TIMEOUT_US		100
+>   #define THRESHOLD_MAX_ADC_CODE	0x3ff
+>   #define THRESHOLD_MIN_ADC_CODE	0x0
+>   
+> @@ -25,7 +26,8 @@ struct tsens_priv;
+>   
+>   /* IP version numbers in ascending order */
+>   enum tsens_ver {
+> -	VER_0_1 = 0,
+> +	VER_0 = 0,
+> +	VER_0_1,
+>   	VER_1_X,
+>   	VER_2_X,
+>   };
 > 
 
+-- 
+Warm Regards
+Thara
