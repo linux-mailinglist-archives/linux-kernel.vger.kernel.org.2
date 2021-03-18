@@ -2,187 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CB83404C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 557093404D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:42:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbhCRLiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:38:21 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:42024 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbhCRLiO (ORCPT
+        id S230206AbhCRLlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:41:32 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2710 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229854AbhCRLlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:38:14 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12IBc80F053695;
-        Thu, 18 Mar 2021 06:38:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1616067488;
-        bh=6/hKaYfWRwXsEfboiIKm4TOw0lK8eIv20dnZsgLf3eM=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=SBpUL95QHEHioMVKWyVRlfdTH4nM7+kFCa7McPur2dAJ3ZvHIT5mgsqAU5BWmnbM6
-         zzZPgyO9qE2r44Dffyn1FV4Et4YhHaLFJt/in6/mzz9lFBhJ1VtieaHJGN48k+bS/e
-         Mxcu7KD46xtjzGqWcZhvoxwTGDIA5N4Y6TVFkFqI=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12IBc8mg056554
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 18 Mar 2021 06:38:08 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 18
- Mar 2021 06:38:07 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 18 Mar 2021 06:38:07 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12IBc22I033135;
-        Thu, 18 Mar 2021 06:38:05 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [RESEND PATCH v2 2/2] arm64: dts: ti: k3-am64-evm/sk: Add OSPI flash DT node
-Date:   Thu, 18 Mar 2021 17:07:57 +0530
-Message-ID: <20210318113757.21012-2-vigneshr@ti.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210318113757.21012-1-vigneshr@ti.com>
-References: <20210318113757.21012-1-vigneshr@ti.com>
+        Thu, 18 Mar 2021 07:41:01 -0400
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F1Q0z6vdJz6804r;
+        Thu, 18 Mar 2021 19:34:43 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 18 Mar 2021 12:40:59 +0100
+Received: from [10.47.0.142] (10.47.0.142) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 18 Mar
+ 2021 11:40:58 +0000
+Subject: Re: [PATCH 2/2] iommu/iova: Improve restart logic
+From:   John Garry <john.garry@huawei.com>
+To:     Robin Murphy <robin.murphy@arm.com>, <joro@8bytes.org>
+CC:     Linuxarm <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <iommu@lists.linux-foundation.org>, <vjitta@codeaurora.org>
+References: <03931d86c0ad71f44b29394e3a8d38bfc32349cd.1614962123.git.robin.murphy@arm.com>
+ <076b3484d1e5057b95d8c387c894bd6ad2514043.1614962123.git.robin.murphy@arm.com>
+ <c1181e3b-cdf3-c658-1c57-8ec86d034f4b@huawei.com>
+ <d8e80756-a628-3a0d-77ac-1e9df734f1c5@huawei.com>
+Message-ID: <6cea11f9-e98d-98cb-6789-93abd8833fa0@huawei.com>
+Date:   Thu, 18 Mar 2021 11:38:49 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
+In-Reply-To: <d8e80756-a628-3a0d-77ac-1e9df734f1c5@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Originating-IP: [10.47.0.142]
+X-ClientProxiedBy: lhreml730-chm.china.huawei.com (10.201.108.81) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both AM64 EVM and SK have a 512Mb S28HS512T Octal SPI NOR flash.
-Add DT node for the same.
+On 10/03/2021 17:47, John Garry wrote:
+> On 09/03/2021 15:55, John Garry wrote:
+>> On 05/03/2021 16:35, Robin Murphy wrote:
+>>
+>> Hi Robin,
+>>
+>>> When restarting after searching below the cached node fails, resetting
+>>> the start point to the anchor node is often overly pessimistic. If
+>>> allocations are made with mixed limits - particularly in the case of the
+>>> opportunistic 32-bit allocation for PCI devices - this could mean
+>>> significant time wasted walking through the whole populated upper range
+>>> just to reach the initial limit. 
+>>
+>> Right
+>>
+>>> We can improve on that by implementing
+>>> a proper tree traversal to find the first node above the relevant limit,
+>>> and set the exact start point.
+>>
+>> Thanks for this. However, as mentioned in the other thread, this does 
+>> not help our performance regression Re: commit 4e89dce72521.
+>>
+>> And mentioning this "retry" approach again, in case it was missed, 
+>> from my experiment on the affected HW, it also has generally a 
+>> dreadfully low success rate - less than 1% for the 32b range retry. 
+>> Retry rate is about 20%. So I am saying from this 20%, less than 1% of 
+>> those succeed.
+>>
+> 
+> So since the retry means that we search through the complete pfn range 
+> most of the time (due to poor success rate), we should be able to do a 
+> better job at maintaining an accurate max alloc size, by calculating it 
+> from the range search, and not relying on max alloc failed or resetting 
+> it frequently. Hopefully that would mean that we're smarter about not 
+> trying the allocation.
 
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
----
+So I tried that out and we seem to be able to scrap back an appreciable 
+amount of performance. Maybe 80% of original, with with another change, 
+below.
+
+Thanks,
+John
+
+> 
+> 
+>>
+>>>
+>>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+>>> ---
+>>>   drivers/iommu/iova.c | 39 ++++++++++++++++++++++++++++++++++++++-
+>>>   1 file changed, 38 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+>>> index c28003e1d2ee..471c48dd71e7 100644
+>>> --- a/drivers/iommu/iova.c
+>>> +++ b/drivers/iommu/iova.c
+>>> @@ -154,6 +154,43 @@ __cached_rbnode_delete_update(struct iova_domain 
+>>> *iovad, struct iova *free)
+>>>           iovad->cached_node = rb_next(&free->node);
+>>>   }
+>>> +static struct rb_node *iova_find_limit(struct iova_domain *iovad, 
+>>> unsigned long limit_pfn)
+>>> +{
+>>> +    struct rb_node *node, *next;
+>>> +    /*
+>>> +     * Ideally what we'd like to judge here is whether limit_pfn is 
+>>> close
+>>> +     * enough to the highest-allocated IOVA that starting the 
+>>> allocation
+>>> +     * walk from the anchor node will be quicker than this initial 
+>>> work to
+>>> +     * find an exact starting point (especially if that ends up 
+>>> being the
+>>> +     * anchor node anyway). This is an incredibly crude 
+>>> approximation which
+>>> +     * only really helps the most likely case, but is at least 
+>>> trivially easy.
+>>> +     */
+>>> +    if (limit_pfn > iovad->dma_32bit_pfn)
+>>> +        return &iovad->anchor.node;
+>>> +
+>>> +    node = iovad->rbroot.rb_node;
+>>> +    while (to_iova(node)->pfn_hi < limit_pfn)
+>>> +        node = node->rb_right;
+>>> +
+>>> +search_left:
+>>> +    while (node->rb_left && to_iova(node->rb_left)->pfn_lo >= 
+>>> limit_pfn)
+>>> +        node = node->rb_left;
+>>> +
+>>> +    if (!node->rb_left)
+>>> +        return node;
+>>> +
+>>> +    next = node->rb_left;
+>>> +    while (next->rb_right) {
+>>> +        next = next->rb_right;
+>>> +        if (to_iova(next)->pfn_lo >= limit_pfn) {
+>>> +            node = next;
+>>> +            goto search_left;
+>>> +        }
+>>> +    }
+>>> +
+>>> +    return node;
+>>> +}
+>>> +
+>>>   /* Insert the iova into domain rbtree by holding writer lock */
+>>>   static void
+>>>   iova_insert_rbtree(struct rb_root *root, struct iova *iova,
+>>> @@ -219,7 +256,7 @@ static int __alloc_and_insert_iova_range(struct 
+>>> iova_domain *iovad,
+>>>           if (low_pfn == iovad->start_pfn && retry_pfn < limit_pfn) {
+>>>               high_pfn = limit_pfn;
+>>>               low_pfn = retry_pfn;
+>>> -            curr = &iovad->anchor.node;
+>>> +            curr = iova_find_limit(iovad, limit_pfn);
 
 
-Boot logs:
-https://pastebin.ubuntu.com/p/VsMmyWk5SX/
-https://pastebin.ubuntu.com/p/KFcMwSGxr5/
+I see that it is now applied. However, alternatively could we just add a 
+zero-length 32b boundary marker node for the 32b pfn restart point?
 
-Resend:
-Rebase onto latest -next
-
-There is a warning related to dtbs_check which is because
-spi-cadence-quadspi.txt is not converted to YAML.
-
-v1: lore.kernel.org/r/20210309130514.11740-2-vigneshr@ti.com
-
- arch/arm64/boot/dts/ti/k3-am642-evm.dts | 36 +++++++++++++++++++++++++
- arch/arm64/boot/dts/ti/k3-am642-sk.dts  | 36 +++++++++++++++++++++++++
- 2 files changed, 72 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-index 6331fd426157..9522f104d979 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-@@ -216,6 +216,22 @@ main_usb0_pins_default: main-usb0-pins-default {
- 			AM64X_IOPAD(0x02a8, PIN_OUTPUT, 0) /* (E19) USB0_DRVVBUS */
- 		>;
- 	};
-+
-+	ospi0_pins_default: ospi0-pins-default {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x0000, PIN_OUTPUT, 0) /* (N20) OSPI0_CLK */
-+			AM64X_IOPAD(0x002c, PIN_OUTPUT, 0) /* (L19) OSPI0_CSn0 */
-+			AM64X_IOPAD(0x000c, PIN_INPUT, 0) /* (M19) OSPI0_D0 */
-+			AM64X_IOPAD(0x0010, PIN_INPUT, 0) /* (M18) OSPI0_D1 */
-+			AM64X_IOPAD(0x0014, PIN_INPUT, 0) /* (M20) OSPI0_D2 */
-+			AM64X_IOPAD(0x0018, PIN_INPUT, 0) /* (M21) OSPI0_D3 */
-+			AM64X_IOPAD(0x001c, PIN_INPUT, 0) /* (P21) OSPI0_D4 */
-+			AM64X_IOPAD(0x0020, PIN_INPUT, 0) /* (P20) OSPI0_D5 */
-+			AM64X_IOPAD(0x0024, PIN_INPUT, 0) /* (N18) OSPI0_D6 */
-+			AM64X_IOPAD(0x0028, PIN_INPUT, 0) /* (M17) OSPI0_D7 */
-+			AM64X_IOPAD(0x0008, PIN_INPUT, 0) /* (N19) OSPI0_DQS */
-+		>;
-+	};
- };
- 
- &main_uart0 {
-@@ -382,3 +398,23 @@ &tscadc0 {
- 	/* ADC is reserved for R5 usage */
- 	status = "reserved";
- };
-+
-+&ospi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&ospi0_pins_default>;
-+
-+	flash@0{
-+		compatible = "jedec,spi-nor";
-+		reg = <0x0>;
-+		spi-tx-bus-width = <8>;
-+		spi-rx-bus-width = <8>;
-+		spi-max-frequency = <25000000>;
-+		cdns,tshsl-ns = <60>;
-+		cdns,tsd2d-ns = <60>;
-+		cdns,tchsh-ns = <60>;
-+		cdns,tslch-ns = <60>;
-+		cdns,read-delay = <4>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-index 8f9b1078b7b5..3a5bee4b0b0c 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-@@ -132,6 +132,22 @@ AM64X_IOPAD(0x0148, PIN_OUTPUT, 4) /* (Y10) PRG1_PRU1_GPO16.RGMII2_TXC */
- 			AM64X_IOPAD(0x0144, PIN_OUTPUT, 4) /* (Y11) PRG1_PRU1_GPO15.RGMII2_TX_CTL */
- 		>;
- 	};
-+
-+	ospi0_pins_default: ospi0-pins-default {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x0000, PIN_OUTPUT, 0) /* (N20) OSPI0_CLK */
-+			AM64X_IOPAD(0x002c, PIN_OUTPUT, 0) /* (L19) OSPI0_CSn0 */
-+			AM64X_IOPAD(0x000c, PIN_INPUT, 0) /* (M19) OSPI0_D0 */
-+			AM64X_IOPAD(0x0010, PIN_INPUT, 0) /* (M18) OSPI0_D1 */
-+			AM64X_IOPAD(0x0014, PIN_INPUT, 0) /* (M20) OSPI0_D2 */
-+			AM64X_IOPAD(0x0018, PIN_INPUT, 0) /* (M21) OSPI0_D3 */
-+			AM64X_IOPAD(0x001c, PIN_INPUT, 0) /* (P21) OSPI0_D4 */
-+			AM64X_IOPAD(0x0020, PIN_INPUT, 0) /* (P20) OSPI0_D5 */
-+			AM64X_IOPAD(0x0024, PIN_INPUT, 0) /* (N18) OSPI0_D6 */
-+			AM64X_IOPAD(0x0028, PIN_INPUT, 0) /* (M17) OSPI0_D7 */
-+			AM64X_IOPAD(0x0008, PIN_INPUT, 0) /* (N19) OSPI0_DQS */
-+		>;
-+	};
- };
- 
- &mcu_uart0 {
-@@ -248,3 +264,23 @@ cpsw3g_phy1: ethernet-phy@1 {
- &tscadc0 {
- 	status = "disabled";
- };
-+
-+&ospi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&ospi0_pins_default>;
-+
-+	flash@0{
-+		compatible = "jedec,spi-nor";
-+		reg = <0x0>;
-+		spi-tx-bus-width = <8>;
-+		spi-rx-bus-width = <8>;
-+		spi-max-frequency = <25000000>;
-+		cdns,tshsl-ns = <60>;
-+		cdns,tsd2d-ns = <60>;
-+		cdns,tchsh-ns = <60>;
-+		cdns,tslch-ns = <60>;
-+		cdns,read-delay = <4>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+	};
-+};
--- 
-2.31.0
+>>>               curr_iova = to_iova(curr);
+>>>               goto retry;
+>>>           }
+>>>
+>>
+>> _______________________________________________
+>> iommu mailing list
+>> iommu@lists.linux-foundation.org
+>> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+>> .
+> 
 
