@@ -2,120 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576D233FF45
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 07:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE3B33FF47
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 07:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbhCRGId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 02:08:33 -0400
-Received: from mail-lf1-f43.google.com ([209.85.167.43]:41848 "EHLO
-        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbhCRGIC (ORCPT
+        id S229767AbhCRGIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 02:08:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhCRGI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 02:08:02 -0400
-Received: by mail-lf1-f43.google.com with SMTP id q13so2690127lfu.8
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 23:08:01 -0700 (PDT)
+        Thu, 18 Mar 2021 02:08:28 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 192F6C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 23:08:28 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so6368024pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 23:08:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8GhH4cTVoL0LfJc3UZUszeYbDpRmL5TWL1BjWP50Uz4=;
+        b=mIubeFddqSR3EKaZVNy5rbrJaHNUXne4naiUVYafpvQO15fTp7eXRmAHopzbbbLyED
+         RRQdw09/QKisZ6TGKn8it60oMIU4SxpAMmsjw9CKd0BLSU6GvXJLzGeLVnJFWYLQiLQP
+         GfutHjdWILN8FfZlo9XkQiSNhHk2L/q4vVNXboDBpjTEt2cmXtlu3p3K9TiRkiLAaoWS
+         W4TAguGoxlSfhHs8xhayrBYiSvoJW8KIAvhCoEmQDxU557DOlUmNLkYWRknx6mWQV73Y
+         AYMXkgj5idW282tScN8YI0cUqykrpR0mUckheXXdUo6d9SThPgmR3RGpCrkIAzBLopRe
+         lHZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C4xNbPI7VR6RZK6yqecNv+3y5W8hur9pvokyakylyS0=;
-        b=TI6I9RBTKqjaO0yhTEskGX52I7SKlYW3OoBDJL2dYe86979cZIGYjqUKORsMvzJhXB
-         2X8x/b1wwjxOHGoMpjgz85c1NG4n32ZdoDrq463r6ThZ2iubtjwLx9EG2f5wg4ug8Fni
-         Eo3bEeZXm1sxmiVivxBpAMWgqgJc/9NVCJ9ZP90t/z4YX/Sl0TurW0f2UVVWCg6d8p26
-         dEFsm3mvV2IXKkGV+xrvak7YhRymCecYiDuP25fzhXe968/mmfrUstCnEs17eOnJ3F3L
-         SmudCF3nfpqSbTBNa/ZwwjB6AFEHPZoeF06Z/IjdUf/SdVbeKdFVXOW+ZNOhAVuK+2tt
-         VoNA==
-X-Gm-Message-State: AOAM530Hy0HNvAQIucaf4Ydsty/xRWXUA4Phs6cPZNaay8HEgCnI8bpB
-        bzBFvTtbYaq29RuE+25K86Sxusr/1qM6BkMBl9YNmE7P
-X-Google-Smtp-Source: ABdhPJwC9q/HCvV19/xlYo3C2HajQ8Sdg2FFtdtgagv6OQ1MXkNow2TfDjN29BCoXENkcPVnIvFHkWfwfHUbTTmsVug=
-X-Received: by 2002:a05:6512:6d0:: with SMTP id u16mr4272892lff.300.1616047680886;
- Wed, 17 Mar 2021 23:08:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8GhH4cTVoL0LfJc3UZUszeYbDpRmL5TWL1BjWP50Uz4=;
+        b=HpDSG5wt9pEQVzjm9ZW+PHBeLBEmhR/DRoNqHYrOey8zlBEPIHKd6TAss0QX6v/Ex2
+         zqg8jPxvXkpU7eH+IsDGiLhktCU6TuCz6tHK9iqKITvzWDsIBlZ9rNcYL9yh2kKzGV2v
+         8hWe9E7agijXd3fZwNGCmi0fTdu4pMXCI/TLmkx6aWNtqnvCbMUXG0/I4iB7ukdSiOn1
+         BMaC4dS3Gt7EKpuTx2qsX5u/OlYuoNTT3L3dMbXj+ddCOp7JS5GWJ/XnTefz2GGnDoze
+         7fCxTKD0xc2FgRBwMpWv+OuHo6pnGH2LFSYBCIUFb6Qp8NLcmE4zZ4s+yQJnyjZ5TVu0
+         BMeA==
+X-Gm-Message-State: AOAM5300FZLhWjtEvsqAZ0vritJfGGTJd9BKFwDApty8AcG6gHwuyb4T
+        BMcixFIwqTKIuYy5Mjnrsx44bA==
+X-Google-Smtp-Source: ABdhPJzeHTjGVcWo4WvxhySCrEqEcLBWg1WasA9ZJ0Y4RCv1bFsY+eYb1iAciVjVCp3+v6vNUtG1yQ==
+X-Received: by 2002:a17:902:9304:b029:e6:8d24:b5ce with SMTP id bc4-20020a1709029304b02900e68d24b5cemr7821316plb.27.1616047707395;
+        Wed, 17 Mar 2021 23:08:27 -0700 (PDT)
+Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
+        by smtp.gmail.com with ESMTPSA id 68sm967353pfd.75.2021.03.17.23.08.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 23:08:26 -0700 (PDT)
+From:   Greentime Hu <greentime.hu@sifive.com>
+To:     greentime.hu@sifive.com, paul.walmsley@sifive.com, hes@sifive.com,
+        erik.danie@sifive.com, zong.li@sifive.com, bhelgaas@google.com,
+        robh+dt@kernel.org, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        lorenzo.pieralisi@arm.com, p.zabel@pengutronix.de,
+        alex.dewar90@gmail.com, khilman@baylibre.com,
+        hayashi.kunihiko@socionext.com, vidyas@nvidia.com,
+        jh80.chung@samsung.com, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        helgaas@kernel.org
+Subject: [PATCH v2 0/6] Add SiFive FU740 PCIe host controller driver support
+Date:   Thu, 18 Mar 2021 14:08:07 +0800
+Message-Id: <cover.1615954045.git.greentime.hu@sifive.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210316211837.910506-1-songliubraving@fb.com> <20210316211837.910506-4-songliubraving@fb.com>
-In-Reply-To: <20210316211837.910506-4-songliubraving@fb.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 18 Mar 2021 15:07:49 +0900
-Message-ID: <CAM9d7ciqTGRx6kZ3c-+tXi3AwvOj5EG1ig4oTiUy9sDuTA=KEw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] perf-test: add a test for perf-stat --bpf-counters option
-To:     Song Liu <songliubraving@fb.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 6:18 AM Song Liu <songliubraving@fb.com> wrote:
->
-> Add a test to compare the output of perf-stat with and without option
-> --bpf-counters. If the difference is more than 10%, the test is considered
-> as failed.
->
-> For stable results between two runs (w/ and w/o --bpf-counters), the test
-> program should: 1) be long enough for better signal-noise-ratio; 2) not
-> depend on the behavior of IO subsystem (for less noise from caching). So
-> far, the best option we found is stressapptest.
->
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
->  tools/perf/tests/shell/stat_bpf_counters.sh | 34 +++++++++++++++++++++
->  1 file changed, 34 insertions(+)
->  create mode 100755 tools/perf/tests/shell/stat_bpf_counters.sh
->
-> diff --git a/tools/perf/tests/shell/stat_bpf_counters.sh b/tools/perf/tests/shell/stat_bpf_counters.sh
-> new file mode 100755
-> index 0000000000000..c0bcb38d6b53c
-> --- /dev/null
-> +++ b/tools/perf/tests/shell/stat_bpf_counters.sh
-> @@ -0,0 +1,34 @@
-> +#!/bin/sh
-> +# perf stat --bpf-counters test
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +set -e
-> +
-> +# check whether $2 is within +/- 10% of $1
-> +compare_number()
-> +{
-> +       first_num=$1
-> +       second_num=$2
-> +
-> +       # upper bound is first_num * 110%
-> +       upper=$(( $first_num + $first_num / 10 ))
-> +       # lower bound is first_num * 90%
-> +       lower=$(( $first_num - $first_num / 10 ))
-> +
-> +       if [ $second_num -gt $upper ] || [ $second_num -lt $lower ]; then
-> +               echo "The difference between $first_num and $second_num are greater than 10%."
-> +               exit 1
-> +       fi
-> +}
-> +
-> +# skip if --bpf-counters is not supported
-> +perf stat --bpf-counters true > /dev/null 2>&1 || exit 2
-> +
-> +# skip if stressapptest is not available
-> +stressapptest -s 1 -M 100 -m 1 > /dev/null 2>&1 || exit 2
+This patchset includes SiFive FU740 PCIe host controller driver. We also
+add pcie_aux clock and pcie_power_on_reset controller to prci driver for
+PCIe driver to use it.
 
-I don't know how popular it is, but we can print some info
-in case we miss it.
+This is tested with e1000e: Intel(R) PRO/1000 Network Card, AMD Radeon R5
+230 graphics card and SP M.2 PCIe Gen 3 SSD in SiFive Unmatched based on
+v5.11 Linux kernel.
 
-> +
-> +base_cycles=$(perf stat --no-big-num -e cycles -- stressapptest -s 3 -M 100 -m 1 2>&1 | grep -e cycles | awk '{print $1}')
-> +bpf_cycles=$(perf stat --no-big-num --bpf-counters -e cycles -- stressapptest -s 3 -M 100 -m 1 2>&1 | grep -e cycles | awk '{print $1}')
+Changes in v2:
+ - Refine codes based on reviewers' feedback
+ - Remove define and use the common one
+ - Replace __raw_writel with writel_relaxed
+ - Split fu740_phyregreadwrite to write function
+ - Use readl_poll_timeout in stead of while loop checking
+ - Use dwc common codes
+ - Use gpio descriptors and the gpiod_* api.
+ - Replace devm_ioremap_resource with devm_platform_ioremap_resource_byname
+ - Replace devm_reset_control_get with devm_reset_control_get_exclusive
+ - Add more comments for delay and sleep
+ - Remove "phy ? x : y" expressions
+ - Refine code logic to remove possible infinite loop
+ - Replace magic number with meaningful define
+ - Remove fu740_pcie_pm_ops
+ - Use builtin_platform_driver
 
-I think just awk '/cycles/ {print $1}' should work.
+Greentime Hu (5):
+  clk: sifive: Add pcie_aux clock in prci driver for PCIe driver
+  clk: sifive: Use reset-simple in prci driver for PCIe driver
+  MAINTAINERS: Add maintainers for SiFive FU740 PCIe driver
+  dt-bindings: PCI: Add SiFive FU740 PCIe host controller
+  riscv: dts: Add PCIe support for the SiFive FU740-C000 SoC
 
-Thanks,
-Namhyung
+Paul Walmsley (1):
+  PCI: fu740: Add SiFive FU740 PCIe host controller driver
 
+ .../bindings/pci/sifive,fu740-pcie.yaml       | 119 +++++++
+ MAINTAINERS                                   |   8 +
+ arch/riscv/boot/dts/sifive/fu740-c000.dtsi    |  34 ++
+ drivers/clk/sifive/Kconfig                    |   2 +
+ drivers/clk/sifive/fu740-prci.c               |  11 +
+ drivers/clk/sifive/fu740-prci.h               |   2 +-
+ drivers/clk/sifive/sifive-prci.c              |  54 +++
+ drivers/clk/sifive/sifive-prci.h              |  13 +
+ drivers/pci/controller/dwc/Kconfig            |   9 +
+ drivers/pci/controller/dwc/Makefile           |   1 +
+ drivers/pci/controller/dwc/pcie-fu740.c       | 324 ++++++++++++++++++
+ drivers/reset/Kconfig                         |   3 +-
+ include/dt-bindings/clock/sifive-fu740-prci.h |   1 +
+ 13 files changed, 579 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml
+ create mode 100644 drivers/pci/controller/dwc/pcie-fu740.c
 
-> +
-> +compare_number $base_cycles $bpf_cycles
-> +exit 0
-> --
-> 2.30.2
->
+-- 
+2.30.2
+
