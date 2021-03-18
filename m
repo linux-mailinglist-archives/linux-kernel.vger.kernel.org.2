@@ -2,88 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6E2340CC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3DDB340CC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:18:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbhCRSSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:18:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232520AbhCRSRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:17:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 498E764F1D;
-        Thu, 18 Mar 2021 18:17:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616091472;
-        bh=Gq0Q8gKOwpVXyByKGAa5jJL40jar/QLwtYEcv1B0tjI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QMXzloZrVamfrEr8TEfQdm3uN+usp/2mzrcJlIcJIwG2GOwjy/Tgt7NPtGNwsb2k7
-         sXjFByz7b6J6oDeroafri51ojv9tkhg8vRcQxSQWByd3pFlfQtyqKq+bUSIBETOpUZ
-         XpBIu5tc6gxFLES7gEDHr1W3/qbHVKKIIB+aAA4tUFfVndU7S8ZOWcwtxhgs3YaNn7
-         +QtNJOvIyidNPZnODf75YoPBQ98z2ELZ3LkXRPJKeno/6TfvePgKtS2f38Ti/qE5zd
-         zgR7fwzKiqZLDl8015bd8VtB7/NtQWq6mwJJTwMksfz4D/bjIgqqZjmtpjue08hk5F
-         QWvgJbptQCD9Q==
-Received: by mail-oo1-f47.google.com with SMTP id n12-20020a4ad12c0000b02901b63e7bc1b4so1661023oor.5;
-        Thu, 18 Mar 2021 11:17:52 -0700 (PDT)
-X-Gm-Message-State: AOAM533CAoHlcn19TOzFQ3uYLulftd9nn5b+UqJij5RLG7KtWediBl8V
-        lCaCmJqPf6XSoYxlybSIxB8X5A/tlSn4E4BcN1s=
-X-Google-Smtp-Source: ABdhPJw+C9b1zRhUVvBjlvQyrzhtXyLaneQxhEg0ejiSLyRGwVjmvZ+7NtXGfkUUl4VIEhtsQf6bYJXLVbSGfLgif2I=
-X-Received: by 2002:a4a:bd1a:: with SMTP id n26mr8501906oop.45.1616091471572;
- Thu, 18 Mar 2021 11:17:51 -0700 (PDT)
+        id S232585AbhCRSSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232412AbhCRSST (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 14:18:19 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A78BC06174A;
+        Thu, 18 Mar 2021 11:18:19 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 181CD2C4;
+        Thu, 18 Mar 2021 18:18:19 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 181CD2C4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1616091499; bh=D6+NW32QhsSkiW9Ttc6kcoqu/iMNIPHgo6s+YdkpRNA=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=HgPD5ZwmH755X2ZgoYdrsMiW0iDui3F4GJMFBClm4A+IY2kD3oPGUeIPvG0jOfHQE
+         QibBHM5GyOnNEqJvriRmgZIHnyfoMOzExLX2TOafaTqM6hyU18PfjDDMbYjS5SI805
+         85dOU+FPnSwlG7GpdMJIXmv8rucBUNRBQzG3l9A1kzatbXVWi3hiGWCb/2YgpGlLS2
+         PoH4M85XJGbvxO+b6saMsGX1yP5ZwxwPctsQstBzm2TdljkRy5OycOJo/kYmq/xKZs
+         3u+9r4bx7S83rYOWu+kHYcipjcTE76kD941rGVbG7sD9OHG2J15o4SxMryEa8lZXmB
+         EwLrq7rL0tKYQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Aditya <yashsri421@gmail.com>,
+        Markus Heiser <markus.heiser@darmarit.de>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [RFC] scripts: kernel-doc: avoid warnings due to initial
+ commented lines in file
+In-Reply-To: <CAKXUXMxWOvM5HRwmAAWEsqQc2k6_ReqRw0uD=VANLO5D7OpFtg@mail.gmail.com>
+References: <20210309125324.4456-1-yashsri421@gmail.com>
+ <8959bf29-9ee1-6a1d-da18-f440232864f3@darmarit.de>
+ <c673e76f-72db-bbee-39d6-f5428e765173@gmail.com>
+ <871rcg2p8g.fsf@meer.lwn.net>
+ <CAKXUXMzwTp1H_vokVEAJSnmm7jNHfWzhhmLfpcrrBD9b8ak+dA@mail.gmail.com>
+ <878s6kto3g.fsf@meer.lwn.net>
+ <CAKXUXMxWOvM5HRwmAAWEsqQc2k6_ReqRw0uD=VANLO5D7OpFtg@mail.gmail.com>
+Date:   Thu, 18 Mar 2021 12:18:18 -0600
+Message-ID: <87o8fgpbpx.fsf@meer.lwn.net>
 MIME-Version: 1.0
-References: <20210310083127.5784-1-lyl2019@mail.ustc.edu.cn>
-In-Reply-To: <20210310083127.5784-1-lyl2019@mail.ustc.edu.cn>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 18 Mar 2021 19:17:40 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXESeiozq=DAsYsKOP6DVEOQknPqUdam_LpRiPzhLhCCBg@mail.gmail.com>
-Message-ID: <CAMj1kXESeiozq=DAsYsKOP6DVEOQknPqUdam_LpRiPzhLhCCBg@mail.gmail.com>
-Subject: Re: [PATCH] firmware/efi: Fix a use after bug in efi_mem_reserve_persistent
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     jonathan.richardson@broadcom.com,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 at 09:37, Lv Yunlong <lyl2019@mail.ustc.edu.cn> wrote:
->
-> In the for loop in efi_mem_reserve_persistent(), prsv = rsv->next
-> use the unmapped rsv. Use the unmapped pages will cause segment
-> fault.
->
-> Fixes: 18df7577adae6 ("efi/memreserve: deal with memreserve entries in unmapped memory")
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
 
-Queued as a fix, thanks.
+> Yeah, and as this line-counting is really just a poor man's
+> heuristics, we might just be better to really turn this heuristics
+> into a dedicated cleanup warning script, then we can check for more
+> indicators, such as "does it contain the word Copyright" somewhere in
+> the kernel-doc comment, which tells us even more that this is not a
+> kernel-doc as we would expect it.
 
-> ---
->  drivers/firmware/efi/efi.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-> index df3f9bcab581..4b7ee3fa9224 100644
-> --- a/drivers/firmware/efi/efi.c
-> +++ b/drivers/firmware/efi/efi.c
-> @@ -927,7 +927,7 @@ int __ref efi_mem_reserve_persistent(phys_addr_t addr, u64 size)
->         }
->
->         /* first try to find a slot in an existing linked list entry */
-> -       for (prsv = efi_memreserve_root->next; prsv; prsv = rsv->next) {
-> +       for (prsv = efi_memreserve_root->next; prsv; ) {
->                 rsv = memremap(prsv, sizeof(*rsv), MEMREMAP_WB);
->                 index = atomic_fetch_add_unless(&rsv->count, 1, rsv->size);
->                 if (index < rsv->size) {
-> @@ -937,6 +937,7 @@ int __ref efi_mem_reserve_persistent(phys_addr_t addr, u64 size)
->                         memunmap(rsv);
->                         return efi_mem_reserve_iomem(addr, size);
->                 }
-> +               prsv = rsv->next;
->                 memunmap(rsv);
->         }
->
-> --
-> 2.25.1
->
->
+I really don't think we need that kind of heuristic.  The format of
+kerneldoc comments is fairly rigid; it shouldn't be too hard to pick out
+the /** comments that don't fit that format, right?  Am I missing
+something there?
+
+Thanks,
+
+jon
