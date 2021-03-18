@@ -2,74 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D63340FD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49FC7340FE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233165AbhCRVap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 17:30:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232101AbhCRVaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 17:30:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7B83964F38;
-        Thu, 18 Mar 2021 21:30:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616103010;
-        bh=AwsWUyeFUWfSrisNWO8iAiM8UVfX358NycK0uj3mRS0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=iMB+L9kVVuajI0OoZOD3jY7j3uyPGyxMXsjesjZWerQTZYbumv94KSJVvZ5KmhOvt
-         wNPBithMCs54F4Ted5LhhWjdE7t2hUFAm94wZPYPo4OuN5QhHp9eq6qxTmPOr1Wkq+
-         E32L6OspwQRq6/K16xt0DLptF/q9pTf2YIs8GWpoTcc/B9nOLy4ToAZWRpsZrdDMvI
-         hOMik7/2JGbvipWJlNxsaW5zpljowt2MHepSXkiRsXMnEmI7gsXn2wemOuoUKGOQag
-         zX1iT5v+eDl51ocxIk8AzNx581awq420lnsEsQoG05R5BGjfoVLSocC6soMo1KBD/Y
-         YFBlFaWmAEArQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7665460951;
-        Thu, 18 Mar 2021 21:30:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233251AbhCRVbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 17:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233237AbhCRVbX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 17:31:23 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9744C06174A;
+        Thu, 18 Mar 2021 14:31:23 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1lN0E2-000JE2-TW; Thu, 18 Mar 2021 22:30:39 +0100
+Message-ID: <90d11ebdb1f9e13387aa7699702da7e7fecec27d.camel@sipsolutions.net>
+Subject: Re: [PATCH 4/6] um: split up CONFIG_GCOV
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Date:   Thu, 18 Mar 2021 22:30:38 +0100
+In-Reply-To: <CAFd5g47uR=HxjVET3uygeND8tFsZtfkgsS-PjMagbcagPMTBEg@mail.gmail.com> (sfid-20210318_222737_121554_AD23102C)
+References: <20210312095526.197739-1-johannes@sipsolutions.net>
+         <20210312104627.927fb4c7d36f.Idb980393c41c2129ee592de4ed71e7a5518212f9@changeid>
+         <CAFd5g47uR=HxjVET3uygeND8tFsZtfkgsS-PjMagbcagPMTBEg@mail.gmail.com>
+         (sfid-20210318_222737_121554_AD23102C)
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/2] stmmac: add VLAN priority based RX steering
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161610301047.15925.7348673094676244775.git-patchwork-notify@kernel.org>
-Date:   Thu, 18 Mar 2021 21:30:10 +0000
-References: <20210318172204.23766-1-boon.leong.ong@intel.com>
-In-Reply-To: <20210318172204.23766-1-boon.leong.ong@intel.com>
-To:     Ong Boon Leong <boon.leong.ong@intel.com>
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi Brendan,
 
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Fri, 19 Mar 2021 01:22:02 +0800 you wrote:
-> Hi,
+> Hey, thanks for doing this! I was looking into this a few weeks ago
+> and root caused part of the issue in GCC and in the kernel, but I did
+> not have a fix put together.
 > 
-> The current tc flower implementation in stmmac supports both L3 and L4
-> filter offloading. This patch adds the support of VLAN priority based
-> RX frame steering into different Rx Queues.
-> 
-> The patches have been tested on both configuration test (include L3/L4)
-> and traffic test (multi VLAN ping streams with RX Frame Steering) below:-
-> 
-> [...]
+> Anyway, most of the patches make sense to me, but I am not able to
+> apply this patch on torvalds/master. Do you mind sending a rebase so I
+> can test it?
 
-Here is the summary with links:
-  - [net-next,1/2] net: stmmac: restructure tc implementation for RX VLAN Priority steering
-    https://git.kernel.org/netdev/net-next/c/bd0f670e7931
-  - [net-next,2/2] net: stmmac: add RX frame steering based on VLAN priority in tc flower
-    https://git.kernel.org/netdev/net-next/c/0e039f5cf86c
+Well, if you see my other replies in the thread, I gave up for various
+reasons, see
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+https://lore.kernel.org/r/d36ea54d8c0a8dd706826ba844a6f27691f45d55.camel@sipsolutions.net
 
+Personally, I ended up switching to CONFIG_GCOV_KERNEL instead because
+it actually works for modules, but then it was _really_ slow (think 30s
+to copy data for a few modules), but I root-caused this and ultimately
+sent these patches instead:
+
+https://patchwork.ozlabs.org/project/linux-um/patch/20210315233804.d3e52f6a3422.I9672eef7dfa7ce6c3de1ccf7ab8d9aad1fa7f3a6@changeid/
+https://patchwork.ozlabs.org/project/linux-um/patch/20210315234731.2e03184a344b.I04f1816296f04c5aa7d7d88b33bd4a14dd458da8@changeid/
+
+
+johannes
 
