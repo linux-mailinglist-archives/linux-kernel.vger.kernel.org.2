@@ -2,141 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3400D33FC0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 01:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6753A33FC11
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 01:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhCRAA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 20:00:58 -0400
-Received: from mail-bn8nam12on2041.outbound.protection.outlook.com ([40.107.237.41]:60640
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229472AbhCRAAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 20:00:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AFjNkXfkUatmzBvnb/8aMVB2ptgGVtX0iCzDcgqhwcWs/or0cJdqW0izt1yf0qnvKnMVt+GEkwBoE4FQRBZm+6qtRG+r77PAB8qTJbgDP1BH63YcparXJdIl0N2qOt8PpQ/lYaTUrp7GwvJm/pTV9ZMtiBRnh+HGeJCgTFeh5JpfY3eXoPveFiLxAG1Nm4CBiJSe9sNBP7Xxo5hIp+rjEG36aTTh1s/vRgF+4hL6I4dQ570R53Hn7pqCRN5slHPtD6dlu+xIF+9s5Qt1++alwh1M3ePapefNwlcckm+wvfOioB+TxL7Ep4hKLna5xHmu7+Es5WepaVEImNOfc4CSgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZoOX0+1cYBs5W9FMUxXX8XsF/A63kw5z7FDellyu9oM=;
- b=FqEcfVi7hjbp/gElCh77N8Qflj20zJwz/eEjJbsqKASZU3frj4+mJgsIBtJxpuAId5dPVO8mu3KkkwefEFwKoBfrieAClWhI8fJkEyLH7QC6AXLkRwMSFrb1/fLY0X26bLLF1v+j1pH6mToDgM+nGiG0nhnYldpvLkS3FBPnGbCBG/t5sgBWyiiNcYnKSycqz8y37VX8jB2BV93bnG4XHQAqzNlZ/Dl2adJdnxGAHb4RpfscsC3ZyzJLTWBnAcfg7G2gXfq/VurZklBIZg5o4KTGEEQ2Mqx2naAHQVXAPTu6A5zUrVbQeRUIfmxe8U0S4223WsMNRKFOVoJn2SPCXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZoOX0+1cYBs5W9FMUxXX8XsF/A63kw5z7FDellyu9oM=;
- b=VnllamvSQwaup5TUf+MrkpO3DMxEVpw/B+zMD8VdaN5hA+ZtpORYSc4rLcW6GFjcR4dpqEDrvo2++W9ztDg8Uem+hyQQycQjIA//ByITFpa6XoDyUyo+KlpNm0y5oWWLvPurHo2q3q1woudXy5yb72rwPU5GRCzjBkjYjjkyybQH+tgJVuKEKhVUWf0/Oq2XaT99Jb0Y7hipqJReb3UX0ykYJ7TlnReuINwNFdILGrhNNatyrO7vAVU6JA4E4W+5kjsKwOs0a4EmnXFZ34ylWXigZwKRGkjszt24H1H0az1rIJx82YmrCErPAwf3Uq7xXcVxkZ9T0MHgdd9iW6myag==
-Received: from BY5PR12MB3764.namprd12.prod.outlook.com (2603:10b6:a03:1ac::17)
- by BY5PR12MB4148.namprd12.prod.outlook.com (2603:10b6:a03:208::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Thu, 18 Mar
- 2021 00:00:30 +0000
-Received: from BY5PR12MB3764.namprd12.prod.outlook.com
- ([fe80::11bb:b39e:3f42:d2af]) by BY5PR12MB3764.namprd12.prod.outlook.com
- ([fe80::11bb:b39e:3f42:d2af%7]) with mapi id 15.20.3933.032; Thu, 18 Mar 2021
- 00:00:30 +0000
-From:   Krishna Reddy <vdumpa@nvidia.com>
-To:     Eric Auger <eric.auger@redhat.com>,
-        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "will@kernel.org" <will@kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "tn@semihalf.com" <tn@semihalf.com>,
-        "zhukeqian1@huawei.com" <zhukeqian1@huawei.com>
-CC:     "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "wangxingang5@huawei.com" <wangxingang5@huawei.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "jiangkunkun@huawei.com" <jiangkunkun@huawei.com>,
-        "vivek.gautam@arm.com" <vivek.gautam@arm.com>,
-        Vikram Sethi <vsethi@nvidia.com>,
-        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
-        Bryan Huntsman <bhuntsman@nvidia.com>,
-        Yu-Huan Hsu <YHsu@nvidia.com>,
-        Sachin Nikam <Snikam@nvidia.com>,
-        Pritesh Raithatha <praithatha@nvidia.com>,
-        Terje Bergstrom <tbergstrom@nvidia.com>,
-        Nicolin Chen <nicolinc@nvidia.com>
-Subject: RE: [PATCH v12 00/13] SMMUv3 Nested Stage Setup (VFIO part)
-Thread-Topic: [PATCH v12 00/13] SMMUv3 Nested Stage Setup (VFIO part)
-Thread-Index: AQHXCihQnUqzDFTrxEGOO4/cVIU6g6qI+xPQ
-Date:   Thu, 18 Mar 2021 00:00:30 +0000
-Message-ID: <BY5PR12MB3764F91C594F666260D7FFECB3699@BY5PR12MB3764.namprd12.prod.outlook.com>
-References: <20210223210625.604517-1-eric.auger@redhat.com>
-In-Reply-To: <20210223210625.604517-1-eric.auger@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [216.228.112.22]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4d806201-03d6-4611-ad43-08d8e9a0d864
-x-ms-traffictypediagnostic: BY5PR12MB4148:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR12MB41484FDAF749E09CA6E6C729B3699@BY5PR12MB4148.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9Mv5Kh5b4JU3SYjvffakPwvAmdO51wzc6T4ZIitcyozXL3tmY5uFWPLqU74aLIRxcu260KoKWJjDovsJd7hmKc2dcXkkASpowaOBw3Sbewmr0RzrjoKa3W2t+oJd+7ekUZlS+eRxIhr/dlH1FOPdwYpKHmAR/LFRUz2aHgxJo5m5f+/dewx65YrLoAiUH6rF3XltnvE1huIy0KWztfTz9plG8AWFxFxRdnaAvBeAOUY8UYbFeRbQGH1T78Ec0GeaIgbhS6uCvA9BBUBVOIhG5VxgvrwNisCrPooE/WPLS+5A0F5VXCYa/t9TwLKjjJYpJ5zyOjFp2DZWqW3KhQ5DASMRQqv3aq648eBaZTNa1AbBcTT/eYlGZXr98eIoL/H10xkXhJaWzaEuVuIahnVFI1PX0lFI4XZIl3giL1NJIWcGiKpF9azERFDS4/hpcn6WwZV2+ugtE9v1mLFrmcpKDlKsnQAQZfzeXxRo8d6htwAF7Y+OqIictRynQ+MyAaRdGHF5JlHiGhOrRya0+rOQJUa5IUpGGB2rHVP+cUxGypn/kra9Z5tEpAJXgi08uJLH3zdmYTED9pQwOggi9qAEseFVVpFU6Oic8sSaEoZLfRfqSJyXRRjzupaQXd+GGGrVkuxEF9+9Oy7J7rrdtXfmew==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3764.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(39860400002)(376002)(136003)(64756008)(54906003)(66556008)(66476007)(6506007)(76116006)(66946007)(66446008)(55016002)(9686003)(5660300002)(110136005)(52536014)(7696005)(83380400001)(316002)(33656002)(38100700001)(2906002)(8936002)(8676002)(7416002)(186003)(26005)(86362001)(4744005)(107886003)(4326008)(478600001)(71200400001)(921005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?9hZrdYom431rnFfoYdEOT2GI6MASDMfmidzBOEydQCvPdc/X3uoYEaFoRGeQ?=
- =?us-ascii?Q?q/FCtgb4lCDLTTbm3HUc+qfVNaL7o/zqclz7XasVz+y742zUkDMZWkw7Y+IH?=
- =?us-ascii?Q?LvwYReOfGFS5m9w2KmSMnv9snvsXUOQO28smo6PjmQbGme/iyRpt5nF0l0WO?=
- =?us-ascii?Q?1Wc6o2WdxY4NK2HmUsDJuaUwaimHUHsm4hL4Ke0aZbmcsLr7p9Nvd05eo8Fh?=
- =?us-ascii?Q?k77G8GNF6PVhXqQgE++mYMYegxynFypMHbjWu7iuCLYFJ+EyVkjysmCGZkNZ?=
- =?us-ascii?Q?rb5WpuvM/R5gO4yVtEeh9pSQAOYLByj2dX/E5+7ladxA3uTe/dfXBkaQ7xwC?=
- =?us-ascii?Q?Yq1nZCN7CszNaCPVtKWV5C75Qe9q4e67NGoBCaG361kXe77lKtF3D7cu2gha?=
- =?us-ascii?Q?WwUKOJo+xBidIp7kzgFH7gdZBWj250W3LEgL2+YH/OFG9z6yfYYQcCH6FfLZ?=
- =?us-ascii?Q?VyoO4DFzgjHiiXhIPIx5Hg3DrQSOAx4F8zy5wfhqH+PzvY7fBpKxpWYvLl+E?=
- =?us-ascii?Q?AmS3LAiACtBfFcIa/N94i6brcqlIoz7GkAgUlPeJbk3C9qKsxZBM0YRhAj+Q?=
- =?us-ascii?Q?cBF4gSGpWcmhyfgJ0VrSrsZJk0k53sQIWuINTKWXto5iMZjhoI0djau8pWec?=
- =?us-ascii?Q?Uy41YtXYmHukInc702fYGLSIOI+vwp0iPs2h/BjjU0ZSPgceD0Gp8Dc4zo/c?=
- =?us-ascii?Q?e6AFDEjjGUyvQOAKndLI4GXKZ4w/mDt/kqQy0TH7Jr7lXq1W0oiMZ2GKK/RX?=
- =?us-ascii?Q?Wy0mP5Wku21UHaPcsEsZ26s/sojs6lkQWdcuBYTRm9THDyZdOKCfzM1NH+UK?=
- =?us-ascii?Q?Gy06RY6tBQw+O4y6CqpjjmOxoZEovJsY8cB34POEBnSLxfATpEmHvyASe3xI?=
- =?us-ascii?Q?SQVV1KTRFSg9hreVOQ18xl2VxIygbYGgvttRLbkTulqQIAqDrtlgIq9Zku40?=
- =?us-ascii?Q?Enfe7mH+QY+qSjqZeOArsLDqdAKMKG6L+4WrVIF+SLNrbpDYJD8r8Z60HT/X?=
- =?us-ascii?Q?RNUU6sZPm4HfqklI4JELg1O6DnnOjlkMjsE2cv1ga/hoi7eUrzXcKHyfyrlr?=
- =?us-ascii?Q?GARX1TQ7uD/buChBR7Tg9ug67vfVbSE342lQPeK0purei9T3q2f7GiFGC8Q3?=
- =?us-ascii?Q?EdxY2DnkV3Il4BQ36xJCb8st/EOCqb2sdOFcTeqLJTrhcb9BukKIs3B3ez92?=
- =?us-ascii?Q?gfxSbc9Wu0thggw6nNECRfaujLRnlgtVhI7xe+6ahHfFKY14EuZkErxGMuf/?=
- =?us-ascii?Q?mMpDRezIZDqcnyPD7zAyNqk9J+6/4QcGjrAI8qChlqK9EX0G/jGBWqwQxgAg?=
- =?us-ascii?Q?foKdJunmggTalYofpxLxN2ll?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S230085AbhCRACc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 20:02:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229934AbhCRACP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 20:02:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EC4D64F26;
+        Thu, 18 Mar 2021 00:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616025734;
+        bh=vresu2JOh2P7GZ/rMBfA5rTS0ajtTjBCvoZV08Sk+io=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=je6CmOhaVM4p4tGNzDMHgEx0pYGEAjhtEWu9Q0qdlDUXnTIGpDK2Bydk3OjUFvhp1
+         xc8b1Wv21q+6HkFj4ed+odlffSNg6Z/TscVV5viovfg0jLODgtIxXk4QSU9gXpLckx
+         QPd7oxHEawOUuj8X08KNOEfmNERjlzy/u7k1iPVzfBElmAJ7b3Ie4n/gx4afV7AH6G
+         lWBwQi17mqeofHOAJcavZbB8KqwsQ9wuSjPBBI8/BHBdMrCMr4m4X8+cSNrXSXLAog
+         AM+H04t9NNykXep1a8u/s8Ujh9t+bSaLKbeRUwzGopUqD8Cef7ehLnU0uJVX7sSVpr
+         fIKfdwlINGo9g==
+Received: by pali.im (Postfix)
+        id EFD9B8A9; Thu, 18 Mar 2021 01:02:11 +0100 (CET)
+Date:   Thu, 18 Mar 2021 01:02:11 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jianjun Wang <jianjun.wang@mediatek.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>, maz@kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Sj Huang <sj.huang@mediatek.com>, youlin.pei@mediatek.com,
+        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
+        sin_jieyang@mediatek.com, drinkcat@chromium.org,
+        Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com
+Subject: Re: [v8,3/7] PCI: mediatek-gen3: Add MediaTek Gen3 driver for MT8192
+Message-ID: <20210318000211.ykjsfavfc7suu2sb@pali>
+References: <20210224061132.26526-1-jianjun.wang@mediatek.com>
+ <20210224061132.26526-4-jianjun.wang@mediatek.com>
+ <20210311123844.qzl264ungtk7b6xz@pali>
+ <1615621394.25662.70.camel@mhfsdcap03>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3764.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d806201-03d6-4611-ad43-08d8e9a0d864
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Mar 2021 00:00:30.4302
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: XPBymNbiRPcchysXXllgsVPWYzJgYZHs2DgO+cYQHPr76MUGE4Z62bKCQoaMY32pGVT9ykB/ZYIPxmQV+Ubopw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4148
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1615621394.25662.70.camel@mhfsdcap03>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested-by: Krishna Reddy <vdumpa@nvidia.com>
+On Saturday 13 March 2021 15:43:14 Jianjun Wang wrote:
+> On Thu, 2021-03-11 at 13:38 +0100, Pali Rohár wrote:
+> > On Wednesday 24 February 2021 14:11:28 Jianjun Wang wrote:
+> > > +static int mtk_pcie_startup_port(struct mtk_pcie_port *port)
+> > > +{
+> > ...
+> > > +
+> > > +	/* Delay 100ms to wait the reference clocks become stable */
+> > > +	msleep(100);
+> > > +
+> > > +	/* De-assert PERST# signal */
+> > > +	val &= ~PCIE_PE_RSTB;
+> > > +	writel_relaxed(val, port->base + PCIE_RST_CTRL_REG);
+> > 
+> > Hello! This is a new driver which introduce yet another custom timeout
+> > prior PERST# signal for PCIe card is de-asserted. Timeouts for other
+> > drivers I collected in older email [2].
+> > 
+> > Please look at my email [1] about PCIe Warm Reset if you have any clue
+> > about it. Lorenzo and Rob already expressed that this timeout should not
+> > be driver specific. But nobody was able to "decode" and "understand"
+> > PCIe spec yet about these timeouts.
+> 
+> Hi Pali,
+> 
+> I think this is more like a platform specific timeout, which is used to
+> wait for the reference clocks to become stable and finish the reset flow
+> of HW blocks.
+> 
+> Here is the steps to start a link training in this HW:
+> 
+> 1. Assert all reset signals which including the transaction layer, PIPE
+> interface and internal bus interface;
+> 
+> 2. De-assert reset signals except the PERST#, this will make the
+> physical layer active and start to output the reference clock, but the
+> EP device remains in the reset state.
+>    Before releasing the PERST# signal, the HW blocks needs at least 10ms
+> to finish the reset flow, and ref-clk needs about 30us to become stable.
+> 
+> 3. De-assert PERST# signal, wait LTSSM enter L0 state.
+> 
+> This 100ms timeout is reference to TPVPERL in the PCIe CEM spec. Since
+> we are in the kernel stage, the power supply has already stabled, this
+> timeout may not take that long.
 
-Validated Nested SMMUv3 translations for NVMe PCIe device from Guest VM and=
- is functional.
+I think that this is not platform specific timeout or platform specific
+steps. This matches generic steps as defined in PCIe CEM spec, section
+2.2.1. Initial Power-Up (G3 to S0).
 
-This patch series resolved the mismatch(seen with v11 patches) for VFIO_IOM=
-MU_SET_PASID_TABLE and VFIO_IOMMU_CACHE_INVALIDATE Ioctls between linux and=
- QEMU patch series "vSMMUv3/pSMMUv3 2 stage VFIO integration" (v5.2.0-2stag=
-e-rfcv8).=20
+What is platform specific is just how to achieve these steps.
 
--KR
+Am I right?
 
+...
+
+TPVPERL is one of my timeout candidates as minimal required timeout for
+Warm Reset. I have wrote it in email:
+
+https://lore.kernel.org/linux-pci/20200430082245.xblvb7xeamm4e336@pali/
+
+But I'm not sure as specially in none diagram is described just warm
+reset as defined in mPCIe CEM (3.2.4.3. PERST# Signal).
+
+...
+
+Anyway, I would suggest to define constants for those timeouts. I guess
+that in future we could be able to define "generic" timeout constants
+which would not be in private driver section, but in some common header
+file.
+
+> > > +
+> > > +	/* Check if the link is up or not */
+> > > +	err = readl_poll_timeout(port->base + PCIE_LINK_STATUS_REG, val,
+> > > +				 !!(val & PCIE_PORT_LINKUP), 20,
+> > > +				 50 * USEC_PER_MSEC);
+> > 
+> > IIRC, you need to wait at least 100ms after de-asserting PERST# signal
+> > as it is required by PCIe specs and also because experiments proved that
+> > some Compex wifi cards (e.g. WLE900VX) are not detected if you do not
+> > wait this minimal time.
+> 
+> Yes, this should be 100ms, I will fix it at next version, thanks for
+> your review.
+
+In past Bjorn suggested to use msleep(PCI_PM_D3COLD_WAIT); macro for
+this step during reviewing aardvark driver.
+
+https://lore.kernel.org/linux-pci/20190426161050.GA189964@google.com/
+
+And next iteration used this PCI_PM_D3COLD_WAIT macro instead of 100:
+
+https://lore.kernel.org/linux-pci/20190522213351.21366-2-repk@triplefau.lt/
+
+> Thanks.
+> > 
+> > > +	if (err) {
+> > > +		val = readl_relaxed(port->base + PCIE_LTSSM_STATUS_REG);
+> > > +		dev_err(port->dev, "PCIe link down, ltssm reg val: %#x\n", val);
+> > > +		return err;
+> > > +	}
+> > 
+> > [1] - https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
+> > [2] - https://lore.kernel.org/linux-pci/20200424092546.25p3hdtkehohe3xw@pali/
+> 
