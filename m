@@ -2,97 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D87F33FDBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 04:23:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E038433FDC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 04:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbhCRDXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 23:23:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32236 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229949AbhCRDWu (ORCPT
+        id S230226AbhCRDYO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Mar 2021 23:24:14 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3042 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231352AbhCRDYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 23:22:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616037769;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LAdQb1xWq5W0KP92TFMDYP8cv7SphLZ0dz63LpVNMdg=;
-        b=XPjqGK+96Vi9gd5eVa/+C+egUxpSiuwKDwL33fzoi/brhYMcgJbrtETJollbP4JgISlce1
-        ncmX5S5yhvKP+/2T2pBImsKjhjxtGCIXNgRgs6l63nvQhd8Fs/lRizYYCOIRAS5Ogyw/ub
-        Pgla617f7sGm/R8EUjB1bz+ZvTiiDYw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-lvKCQcO5NiKXKEvGPTtdLA-1; Wed, 17 Mar 2021 23:22:48 -0400
-X-MC-Unique: lvKCQcO5NiKXKEvGPTtdLA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B06BB8189D3;
-        Thu, 18 Mar 2021 03:22:44 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-131.pek2.redhat.com [10.72.13.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 214261007625;
-        Thu, 18 Mar 2021 03:22:23 +0000 (UTC)
-Subject: Re: [PATCH v4 09/14] vhost/vdpa: use get_config_size callback in
- vhost_vdpa_config_validate()
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     netdev@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Parav Pandit <parav@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, kvm@vger.kernel.org
-References: <20210315163450.254396-1-sgarzare@redhat.com>
- <20210315163450.254396-10-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <32d55226-445e-4de5-2f5e-327bc724f0c4@redhat.com>
-Date:   Thu, 18 Mar 2021 11:22:22 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+        Wed, 17 Mar 2021 23:24:04 -0400
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F1C3H1sczzWMfX;
+        Thu, 18 Mar 2021 11:20:59 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Thu, 18 Mar 2021 11:24:01 +0800
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 18 Mar 2021 11:24:01 +0800
+Received: from dggpemm500006.china.huawei.com ([7.185.36.236]) by
+ dggpemm500006.china.huawei.com ([7.185.36.236]) with mapi id 15.01.2106.013;
+ Thu, 18 Mar 2021 11:24:01 +0800
+From:   "chenjun (AM)" <chenjun102@huawei.com>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Wangkefeng (OS Kernel Lab)" <wangkefeng.wang@huawei.com>
+Subject: Re: [PATCH 2/2] arm64: stacktrace: Add skip when task == current
+Thread-Topic: [PATCH 2/2] arm64: stacktrace: Add skip when task == current
+Thread-Index: AQHXGzmzVCWLNYUND0iAKn2NT1sSPA==
+Date:   Thu, 18 Mar 2021 03:24:01 +0000
+Message-ID: <75f39d3e2a38438fab5a3ca79e296d73@huawei.com>
+References: <20210317142050.57712-1-chenjun102@huawei.com>
+ <20210317142050.57712-3-chenjun102@huawei.com>
+ <20210317183636.GG12269@arm.com> <20210317193416.GB9786@C02TD0UTHF1T.local>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.178.53]
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <20210315163450.254396-10-sgarzare@redhat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+$B:_(B 2021/3/18 3:34, Mark Rutland $B<LF;(B:
+> On Wed, Mar 17, 2021 at 06:36:36PM +0000, Catalin Marinas wrote:
+>> On Wed, Mar 17, 2021 at 02:20:50PM +0000, Chen Jun wrote:
+>>> On ARM64, cat /sys/kernel/debug/page_owner, all pages return the same
+>>> stack:
+>>>   stack_trace_save+0x4c/0x78
+>>>   register_early_stack+0x34/0x70
+>>>   init_page_owner+0x34/0x230
+>>>   page_ext_init+0x1bc/0x1dc
+>>>
+>>> The reason is that:
+>>> check_recursive_alloc always return 1 because that
+>>> entries[0] is always equal to ip (__set_page_owner+0x3c/0x60).
+>>>
+>>> The root cause is that:
+>>> commit 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
+>>> make the save_trace save 2 more entries.
+>>>
+>>> Add skip in arch_stack_walk when task == current.
+>>>
+>>> Fixes: 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
+>>> Signed-off-by: Chen Jun <chenjun102@huawei.com>
+>>> ---
+>>>   arch/arm64/kernel/stacktrace.c | 5 +++--
+>>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+>>> index ad20981..c26b0ac 100644
+>>> --- a/arch/arm64/kernel/stacktrace.c
+>>> +++ b/arch/arm64/kernel/stacktrace.c
+>>> @@ -201,11 +201,12 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+>>>   
+>>>   	if (regs)
+>>>   		start_backtrace(&frame, regs->regs[29], regs->pc);
+>>> -	else if (task == current)
+>>> +	else if (task == current) {
+>>> +		((struct stacktrace_cookie *)cookie)->skip += 2;
+>>>   		start_backtrace(&frame,
+>>>   				(unsigned long)__builtin_frame_address(0),
+>>>   				(unsigned long)arch_stack_walk);
+>>> -	else
+>>> +	} else
+>>>   		start_backtrace(&frame, thread_saved_fp(task),
+>>>   				thread_saved_pc(task));
+>>
+>> I don't like abusing the cookie here. It's void * as it's meant to be an
+>> opaque type. I'd rather skip the first two frames in walk_stackframe()
+>> instead before invoking fn().
+> 
+> I agree that we shouldn't touch cookie here.
+> 
+> I don't think that it's right to bodge this inside walk_stackframe(),
+> since that'll add bogus skipping for the case starting with regs in the
+> current task. If we need a bodge, it has to live in arch_stack_walk()
+> where we set up the initial unwinding state.
+> 
+> In another thread, we came to the conclusion that arch_stack_walk()
+> should start at its parent, and its parent should add any skipping it
+> requires.
+> 
+> Currently, arch_stack_walk() is off-by-one, and we can bodge that by
+> using __builtin_frame_address(1), though I'm waiting for some compiler
+> folk to confirm that's sound. Otherwise we need to add an assembly
+> trampoline to snapshot the FP, which is unfortunastely convoluted.
+> 
+> This report suggests that a caller of arch_stack_walk() is off-by-one
+> too, which suggests a larger cross-architecture semantic issue. I'll try
+> to take a look tomorrow.
+> 
+> Thanks,
+> Mark.
+> 
+>>
+>> Prior to the conversion to ARCH_STACKWALK, we were indeed skipping two
+>> more entries in __save_stack_trace() if tsk == current. Something like
+>> below, completely untested:
+>>
+>> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+>> index ad20981dfda4..2a9f759aa41a 100644
+>> --- a/arch/arm64/kernel/stacktrace.c
+>> +++ b/arch/arm64/kernel/stacktrace.c
+>> @@ -115,10 +115,15 @@ NOKPROBE_SYMBOL(unwind_frame);
+>>   void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
+>>   			     bool (*fn)(void *, unsigned long), void *data)
+>>   {
+>> +	/* for the current task, we don't want this function nor its caller */
+>> +	int skip = tsk == current ? 2 : 0;
+>> +
+>>   	while (1) {
+>>   		int ret;
+>>   
+>> -		if (!fn(data, frame->pc))
+>> +		if (skip)
+>> +			skip--;
+>> +		else if (!fn(data, frame->pc))
+>>   			break;
+>>   		ret = unwind_frame(tsk, frame);
+>>   		if (ret < 0)
+>>
+>>
+>> -- 
+>> Catalin
+> 
 
-ÔÚ 2021/3/16 ÉÏÎç12:34, Stefano Garzarella Ð´µÀ:
-> Let's use the new 'get_config_size()' callback available instead of
-> using the 'virtio_id' to get the size of the device config space.
->
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+This change will make kmemleak broken.
+Maybe the reason is what Mark pointed out. I will try to check out.
 
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
-> ---
->   drivers/vhost/vdpa.c | 9 ++-------
->   1 file changed, 2 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index e0a27e336293..7ae4080e57d8 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -188,13 +188,8 @@ static long vhost_vdpa_set_status(struct vhost_vdpa *v, u8 __user *statusp)
->   static int vhost_vdpa_config_validate(struct vhost_vdpa *v,
->   				      struct vhost_vdpa_config *c)
->   {
-> -	long size = 0;
-> -
-> -	switch (v->virtio_id) {
-> -	case VIRTIO_ID_NET:
-> -		size = sizeof(struct virtio_net_config);
-> -		break;
-> -	}
-> +	struct vdpa_device *vdpa = v->vdpa;
-> +	long size = vdpa->config->get_config_size(vdpa);
->   
->   	if (c->len == 0)
->   		return -EINVAL;
-
+-- 
+Regards
+Chen Jun
