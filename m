@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974BF34106D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 23:39:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E765B341076
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 23:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232814AbhCRWjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 18:39:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28055 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230480AbhCRWjU (ORCPT
+        id S232649AbhCRWnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 18:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230480AbhCRWnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 18:39:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616107160;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oGOHq/WbcE/FK7Ks4LiyUfXGKcEUtRkPJeBWF/9F28c=;
-        b=IBXU5zNE5nVzGkztVFK1/Me2DrB5o0c9HDLmo9H2bT7/Pz8RbcfEaEEYWuOeMyWCTErS2b
-        /QNtdqsjkoL98+yPqZa3Ilt2cF+GpqNPqGwv3/KKVkja9Q4HORq3VtG8VE2hIZWAkHUjta
-        b4YjQB99PrESMmP556iim6nvwmbbwQw=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-600-te0ZBAFUPDKE6sl4z3vN8w-1; Thu, 18 Mar 2021 18:39:18 -0400
-X-MC-Unique: te0ZBAFUPDKE6sl4z3vN8w-1
-Received: by mail-qv1-f71.google.com with SMTP id x20so21733633qvd.21
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 15:39:18 -0700 (PDT)
+        Thu, 18 Mar 2021 18:43:15 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BA4C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 15:43:15 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id u1so50337820ybu.14
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 15:43:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=0DUdG6+uWcR80QCYp/6dg/L+XaUC6ThjbkuOe9VdQD4=;
+        b=rAO86R5j7uv4k/gpsuCAsovgD5YfUhw4FLglkgm4h7+p85RHSq/nnDXbxvuRXggadC
+         BhBBZEmGhaHL+67IutzvTP6EtzLXXsZaeuFsUkCZgli5NUv2jLmkH6lg4E21PpyvysaG
+         KGbwfNrO+0clC0HPUZmed5uQrPxzZGVKNu2eqXfvvg1dpPzVLJ+bEjMNQPvYIGewY9+Z
+         Pp/YP0CXLj+BhhIn6sZvC8lKusbU8LrJ72HIc4mqBg0pYNNnn4fsWgaFpTN7X5Wf0nnV
+         Kg9O2wQ+6Al9VfEBv0JaCix/A/zW2G5aNUpVNJpdhBebPLbM8sB0nw1CYKVjCXYJPbsz
+         SBWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
-         :in-reply-to:references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=oGOHq/WbcE/FK7Ks4LiyUfXGKcEUtRkPJeBWF/9F28c=;
-        b=gJH2MrKsvL0gHGlvDlrKkWrcOI7XT5hUnDnNG8h3rMKpKvBe3wHg2ZmM1zEvgIvD0C
-         hL0E2JCk8OpTormYyireqp8m76mUYZKBTgP63Xo8vZisusGyPnI7ZWOhG+IlG7ABl/T7
-         NUYGmrTQPiGEm2K2Sl+UTn11DTSk5v73xBCozqXCEZI+UMgcxC/iooBepMRpuCDWGReC
-         SQmu4gREMtBP6iP3QBbiwzbhxjEcizsHTleH9kxUp/jxzg1MpfXQTUqDXa58zC4nyPZH
-         opQXD39zWxybzUMJbQ2CjwAmKUG0ngd6AnaCADG7HQrAhXBkeYFDSXPw5c8CpsOXzi5B
-         VqyA==
-X-Gm-Message-State: AOAM532Vpx79x5BoEuKlFek4jMArkNTfAVYA4J6EEn+QiS2J/hph5gCz
-        1FlFbIsnBQmF7XkBANbQ5Gpb0J9mHACTlH9xp3O0nik3ZeLk/V2Q7tbYPGV41lF52gSYvI+BU5C
-        zPLB8hR57Yequ31C0qwDnuIXo
-X-Received: by 2002:a37:ef18:: with SMTP id j24mr6906144qkk.96.1616107158223;
-        Thu, 18 Mar 2021 15:39:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJydzeTIFW5JZKSCJS0r2r5PeTzveIrvq8RZJWfkRgUk7Sjwyc7/hRalxGMlgbxkBUXrdV+tHQ==
-X-Received: by 2002:a37:ef18:: with SMTP id j24mr6906125qkk.96.1616107157990;
-        Thu, 18 Mar 2021 15:39:17 -0700 (PDT)
-Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
-        by smtp.gmail.com with ESMTPSA id g11sm2961582qkk.5.2021.03.18.15.39.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 15:39:17 -0700 (PDT)
-Message-ID: <e26fac2f5750f4bd606cdbf9def82a3ee31db71c.camel@redhat.com>
-Subject: Re: [Nouveau] [PATCH] drm/nouveau/kms/nv50-: Check plane size for
- cursors, not fb size
-From:   Lyude Paul <lyude@redhat.com>
-Reply-To: lyude@redhat.com
-To:     Ilia Mirkin <imirkin@alum.mit.edu>
-Cc:     nouveau <nouveau@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <dri-devel@lists.freedesktop.org>, Ben Skeggs <bskeggs@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Martin Peres <martin.peres@mupuf.org>
-Date:   Thu, 18 Mar 2021 18:39:16 -0400
-In-Reply-To: <CAKb7UviTpAva-kc4-=1oCV_CxHJrZE7mWec0rNrgQ4r-RG8e7w@mail.gmail.com>
-References: <20210318215545.901756-1-lyude@redhat.com>
-         <CAKb7UviTpAva-kc4-=1oCV_CxHJrZE7mWec0rNrgQ4r-RG8e7w@mail.gmail.com>
-Organization: Red Hat
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=0DUdG6+uWcR80QCYp/6dg/L+XaUC6ThjbkuOe9VdQD4=;
+        b=A/NV9Zlh5dktRc0aBtfGv3kwpwa5RJecyWRNNnojzHqQmd5ksgysrvYd4nHT9sWnWd
+         Nrk5QiDP6MTYiMgIJHAo67+SbRlKyzzp4oja5BhCc29EGd2933+EtMklu4UDBctaNcc9
+         8EKNUoL0pQd071pGAnNUtyb3eLQaT5l50KRuJ74JAVnMfBhh9FT6S9hAcAjkxKPQEfZ1
+         qEi3V59b3ju/cBMjMiY5BaB/qVlu6+Sy8TvBrrkR+gpLUZpatPwGE5LSKcX+cqDR/9/f
+         +rwtO/6QKk+JVEUsD8fcGQkCMwTC9sEL39zEY/0ldqdD+j5ZgIWjT2MAVisDem+R7+DT
+         AG6g==
+X-Gm-Message-State: AOAM533qJF3/W/U2RMsfMfSFJcV7VGEQN/n6xNu9kg+oX7vr0uUJhWb8
+        sRd+LlVycjHC+wqXAFQL84VSClMcbJE=
+X-Google-Smtp-Source: ABdhPJyvkQoAFfVRCK5CJFRkWxaQyuTnUU/i5AYciu9HvCGCvlfImdoL2rAEO67g0ZMcWGsMZnS7Sssob3M=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:25e0:6b8b:f878:23d1])
+ (user=seanjc job=sendgmr) by 2002:a25:bb41:: with SMTP id b1mr2306208ybk.249.1616107393323;
+ Thu, 18 Mar 2021 15:43:13 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu, 18 Mar 2021 15:43:06 -0700
+Message-Id: <20210318224310.3274160-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH v2 0/4] KVM: x86: MSR filtering and related fixes
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>,
+        Yuan Yao <yaoyuan0329os@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-03-18 at 18:13 -0400, Ilia Mirkin wrote:
-> On Thu, Mar 18, 2021 at 5:56 PM Lyude Paul <lyude@redhat.com> wrote:
-> > 
-> > Found this while trying to make some changes to the kms_cursor_crc test.
-> > curs507a_acquire checks that the width and height of the cursor framebuffer
-> > are equal (asyw->image.{w,h}). This is actually wrong though, as we only
-> > want to be concerned that the actual width/height of the plane are the
-> > same. It's fine if we scan out from an fb that's slightly larger than the
-> > cursor plane (in fact, some igt tests actually do this).
-> 
-> How so? The scanout engine expects the data to be packed. Height can
-> be larger, but width has to match.
+Rework the MSR filtering implementation to treat a given filter instance
+as an atomic unit, and to properly protect it with SRCU.
 
-Huh - wasn't expecting that, nice catch. I'll fix this up in a moment
+Fix two nVMX bugs related to MSR filtering (one directly, one indirectly),
+and additional cleanup on top.
 
-> 
->   -ilia
-> 
+Regarding the macro insanity in patch 03, I verified the before and after
+binary output for vmx_set_intercept_for_msr() was identical, again.  This
+required wrapping "if (msr <= 0x1fff)" with (un)likely in both the before
+and after versions; gcc made seemingly random choices without forcing it
+to favor a specific branch.
+
+v2:
+  - Collect R-b. [Paolo, Alex].
+  - Make the macro insanity slightly less insane. [Paolo]
+
+v1: https://lkml.kernel.org/r/20210316184436.2544875-1-seanjc@google.com
+
+Sean Christopherson (4):
+  KVM: x86: Protect userspace MSR filter with SRCU, and set
+    atomically-ish
+  KVM: nVMX: Handle dynamic MSR intercept toggling
+  KVM: VMX: Macrofy the MSR bitmap getters and setters
+  KVM: nVMX: Clean up x2APIC MSR handling for L2
+
+ Documentation/virt/kvm/api.rst  |   6 +-
+ arch/x86/include/asm/kvm_host.h |  17 ++--
+ arch/x86/kvm/vmx/nested.c       | 161 +++++++++++++-------------------
+ arch/x86/kvm/vmx/vmx.c          |  67 +------------
+ arch/x86/kvm/vmx/vmx.h          |  28 ++++++
+ arch/x86/kvm/x86.c              | 109 ++++++++++++---------
+ 6 files changed, 172 insertions(+), 216 deletions(-)
 
 -- 
-Sincerely,
-   Lyude Paul (she/her)
-   Software Engineer at Red Hat
-   
-Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
-asked me a question, are waiting for a review/merge on a patch, etc. and I
-haven't responded in a while, please feel free to send me another email to check
-on my status. I don't bite!
+2.31.0.rc2.261.g7f71774620-goog
 
