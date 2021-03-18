@@ -2,172 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949F33404E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:44:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C15813404E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbhCRLnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbhCRLnP (ORCPT
+        id S229834AbhCRLpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:45:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59615 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229954AbhCRLpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:43:15 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53151C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:43:15 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id b2-20020a7bc2420000b029010be1081172so3172743wmj.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:43:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=qlh0PLI7gh/qmZ34aTQwcT+xdXL5fD/J8CQcbj7KKrg=;
-        b=NUsfxEv4djJ6Ej8xDqOo7zjA3jA6YXbq2HmjCS2XbUrlo8NFP38X1dqdG7q1IMGJit
-         zbXI/4JuajopV+n76wfbO75FdAY6CxPom4nD8go0ia0NBjPP3tioicSib8TwY4BzcX+U
-         nu56D/6N7nBfrd9CfrFp8YCDQ1UgS5luOCTbX7cCuSJeNczKiIPCMTsHKVEEs94ZwTy+
-         mx11kN9vkV67tHtBJ/46m24GCoGiOL2eOGYIr7gRvBb8HZw4X2RxeCQlWYbUD8nvIVIA
-         Fj3RPQND/DnVaQeUgurOUQ4+y9VNmsdoEf2TjbBmn591VWhrnf1PSa9INaI0scVjEfcy
-         VbKA==
+        Thu, 18 Mar 2021 07:45:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616067906;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rj+MpIByvkcAPNgiHQIZYz7YACaH5mhuQYo9q5r2KR0=;
+        b=hy8A3Hd62mjlIYXgnIAj9nbr1M2Vs/Jhr8PUPSlquPf+K0rdnRq6+2D0K1tqfAmBUKNrP9
+        A7qi3wat9lva0Y+6kU8nOM8NKECUOVpgPQFo9VtxvAY8IzJvMGzL0PoyqWuZacbpvdwZNu
+        6uLm4Ke+O5NzIDoSVushzPmp6GPTfM0=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-226-1PZpkhbBMNCeBIU3s6694g-1; Thu, 18 Mar 2021 07:45:04 -0400
+X-MC-Unique: 1PZpkhbBMNCeBIU3s6694g-1
+Received: by mail-ej1-f72.google.com with SMTP id v27so11751439ejq.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:45:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=qlh0PLI7gh/qmZ34aTQwcT+xdXL5fD/J8CQcbj7KKrg=;
-        b=RBTN4OiMGsYehioKHQm2vBGLRCcEKPJn8uU6+JkL95xPSJdJHxS9r/NdZb5T1Okpyv
-         FSBCx7AmsrwICBxAERHppbGQbc/1IC9Fqma35d3LT47Jp/AO2m6XTmju3Nju5/FKGp1M
-         VZlrFgmv39aqZm7o6mAJlsVG4vZa4PX8SHznrv4IHFXL7Umc3Er1VeQE1ecCG3mOt94c
-         HODluTiC6FLA4k/PN7RUqba7xsxqb4hqvWcdH4/mfYza0HQOCFAjyRfsg4Esg2w60XPZ
-         GU/ACvBiO6nwpYVIBkZZsXxk5ykErqzmjJi4hxb4tkw/maYQ+rYI76KzKMgOFXps4iFo
-         0Pbw==
-X-Gm-Message-State: AOAM533+ZsmqmOI5foPx/6hizHoto93oHcb7K9NlvuyqR7xyRi1DE34W
-        fC8MtvtGQZzZlO6um8IhHNcSmA==
-X-Google-Smtp-Source: ABdhPJwDsjFbmhs8zkFQ91cXTJVPdBZL/4TzKiQZhgpkFmHLoQ1cwC496vYDK6cJtaio41lVF+8gOQ==
-X-Received: by 2002:a1c:5416:: with SMTP id i22mr3247883wmb.146.1616067792719;
-        Thu, 18 Mar 2021 04:43:12 -0700 (PDT)
-Received: from dell ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id u2sm2724691wrp.12.2021.03.18.04.43.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 04:43:12 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 11:43:10 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH v4 resend 00/13] MFD/extcon/ASoC: Rework arizona codec
- jack-detect support
-Message-ID: <20210318114310.GE2916463@dell>
-References: <20210307151807.35201-1-hdegoede@redhat.com>
- <433cda84-2d61-ccb4-155a-5f8fa1021c90@redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rj+MpIByvkcAPNgiHQIZYz7YACaH5mhuQYo9q5r2KR0=;
+        b=TolHDGmxak2BWnzEM6vWG9iXNwwBH5Svac0vvVCAbm/dsJZyxu7oUziB4Lu/GIrBeP
+         eoEvP3h6xDlSHoHdT3ukUTTPVo5jH5t1OB+3wakZR2ToqINbmbVh3DIg4fQl1QmxROZn
+         NPbuUhBjeKXdtDkeaR0Gl/e42OIAPbfwUeMhrDR+H47MPjIDFRn3ROEo9bL3jkY9qLo4
+         S+SmhrwvkkmM8f91iM+8yuQFLII7nCfoYETiaulpaanYxWOcr+5WKEQIE2X4ajAjjIs+
+         5Cb3UbwoFgtZnaYuCVUtnZLOHmxdSdnHljLLvev2QJIXW1W+qyj28xeiHFVT8sr4MPuG
+         zj0g==
+X-Gm-Message-State: AOAM5319Bq/sFVxhsMGqY8SDsRZ4Nx5P/e+lnQuIay7aVmHInRPeQIfx
+        zG6fViZdQfyCVCl59XjZLpKfNIRid4D+m21rxo2ugGiEKaL3qitTIRXWe58XR7S6fXHF8gGptZA
+        ESdIR/XsM7YesV5Ydls9Cp88g
+X-Received: by 2002:a17:906:53d7:: with SMTP id p23mr40817609ejo.140.1616067903025;
+        Thu, 18 Mar 2021 04:45:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxlfX++OyTquXtlP0GTkMhXPpXiwr/Qlrg8hU/5WIl+yQy4mn6b3yGnHV3Yqj/B2qETXfxHog==
+X-Received: by 2002:a17:906:53d7:: with SMTP id p23mr40817596ejo.140.1616067902848;
+        Thu, 18 Mar 2021 04:45:02 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id a12sm1830424edx.91.2021.03.18.04.45.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 04:45:02 -0700 (PDT)
+Subject: Re: [PATCH v2 1/4] platform/x86: simatic-ipc: add main driver for
+ Siemens devices
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Henning Schild <henning.schild@siemens.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Pavel Machek <pavel@ucw.cz>
+References: <20210315095710.7140-1-henning.schild@siemens.com>
+ <20210315095710.7140-2-henning.schild@siemens.com>
+ <CAHp75VdXDcTfNL9QRQ5XE-zVLHacfMKHUxhse3=dAfJbOJdObQ@mail.gmail.com>
+ <20210317201311.70528fd4@md1za8fc.ad001.siemens.net>
+ <92080a68-9029-3103-9240-65c92d17bf16@redhat.com>
+ <6c7d165d-1332-2039-0af3-9875b482894b@metux.net>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <420f0e08-bec8-f85a-d9af-b9900072df66@redhat.com>
+Date:   Thu, 18 Mar 2021 12:45:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <6c7d165d-1332-2039-0af3-9875b482894b@metux.net>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <433cda84-2d61-ccb4-155a-5f8fa1021c90@redhat.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Mar 2021, Hans de Goede wrote:
+Hi,
 
-> Hi Lee,
+On 3/18/21 12:30 PM, Enrico Weigelt, metux IT consult wrote:
+> On 17.03.21 21:03, Hans de Goede wrote:
 > 
-> On 3/7/21 4:17 PM, Hans de Goede wrote:
-> > Hi All,
-> > 
-> > Here is v4 of my series to rework the arizona codec jack-detect support
-> > to use the snd_soc_jack helpers instead of direct extcon reporting.
-> > 
-> > As discussed before here is a resend rebased on 5.12-rc2, making sure that
-> > all patches this depends on are in place.
-> > 
-> > Lee, can you pick-up patches 1-6 through the MFD tree and then send a
-> > pull-req to Mark so that Mark can merge the Asoc parts throught the ASoC
-> > tree ?
-> > 
-> > Patches 2-6 touch drivers/extcon, these all have an Ack from Chanwoo Choi
-> > for merging these through the MFD tree.
+> Hi,
 > 
-> Lee, is there a specific reason why these have not been merged yet,
-> or did you just not get around to these yet ?
+>>> It just identifies the box and tells subsequent drivers which one it
+>>> is, which watchdog and LED path to take. Moving the knowledge of which
+>>> box has which LED/watchdog into the respective drivers seems to be the
+>>> better way to go.
+>>>
+>>> So we would end up with a LED and a watchdog driver both
+>>> MODULE_ALIAS("dmi:*:svnSIEMENSAG:*");
 > 
-> As I already mentioned Chanwoo Choi already gave an ack for merging
-> the extcon patches through MFD, so AFAICT eveything is ready to merge
-> 1-6 through the MFD tree, and then have Mark merge an ib from the
-> MFD tree and merge the rest.
+> Uh, isn't that a bit too broad ? This basically implies that Siemens
+> will never produce boards with different configurations.
 
-I can't remember where we left it.
+There is a further check done in probe() based on some Siemens specific
+DMI table entries.
 
-I guess I can take 1-6 (as suggested above) without issue.
-
-Hold tight.
-
-> > Here is some more generic info on this series from the previous
-> > cover-letter:
-> > 
-> > This is done by reworking the extcon driver into an arizona-jackdet
-> > library and then modifying the codec drivers to use that directly,
-> > replacing the old separate extcon child-devices and extcon-driver.
-> > 
-> > This brings the arizona-codec jack-detect handling inline with how
-> > all other ASoC codec driver do this. This was developed and tested on
-> > a Lenovo Yoga Tablet 1051L with a WM5102 codec.
-> > 
-> > This was also tested by Charles Keepax, one of the Cirrus Codec folks.
-> > 
-> > Regards,
-> > 
-> > Hans
-> > 
-> > 
-> > Hans de Goede (13):
-> >   mfd: arizona: Drop arizona-extcon cells
-> >   extcon: arizona: Fix some issues when HPDET IRQ fires after the jack
-> >     has been unplugged
-> >   extcon: arizona: Fix various races on driver unbind
-> >   extcon: arizona: Fix flags parameter to the gpiod_get("wlf,micd-pol")
-> >     call
-> >   extcon: arizona: Always use pm_runtime_get_sync() when we need the
-> >     device to be awake
-> >   ASoC/extcon: arizona: Move arizona jack code to
-> >     sound/soc/codecs/arizona-jack.c
-> >   ASoC: arizona-jack: Move jack-detect variables to struct arizona_priv
-> >   ASoC: arizona-jack: Use arizona->dev for runtime-pm
-> >   ASoC: arizona-jack: convert into a helper library for codec drivers
-> >   ASoC: arizona-jack: Use snd_soc_jack to report jack events
-> >   ASoC: arizona-jack: Cleanup logging
-> >   ASoC: arizona: Make the wm5102, wm5110, wm8997 and wm8998 drivers use
-> >     the new jack library
-> >   ASoC: Intel: bytcr_wm5102: Add jack detect support
-> > 
-> >  MAINTAINERS                                   |   3 +-
-> >  drivers/extcon/Kconfig                        |   8 -
-> >  drivers/extcon/Makefile                       |   1 -
-> >  drivers/mfd/arizona-core.c                    |  20 -
-> >  sound/soc/codecs/Makefile                     |   2 +-
-> >  .../soc/codecs/arizona-jack.c                 | 577 +++++++-----------
-> >  sound/soc/codecs/arizona.h                    |  44 ++
-> >  sound/soc/codecs/wm5102.c                     |  12 +-
-> >  sound/soc/codecs/wm5110.c                     |  12 +-
-> >  sound/soc/codecs/wm8997.c                     |  14 +-
-> >  sound/soc/codecs/wm8998.c                     |   9 +
-> >  sound/soc/intel/boards/bytcr_wm5102.c         |  28 +-
-> >  12 files changed, 325 insertions(+), 405 deletions(-)
-> >  rename drivers/extcon/extcon-arizona.c => sound/soc/codecs/arizona-jack.c (76%)
-> > 
+>>> and doing the identification with the inline dmi from that header,
+>>> doing p2sb with the support to come ... possibly a "//TODO\ninline" in
+>>> the meantime.
+>>>
+>>> So no "main platform" driver anymore, but still central platform
+>>> headers.
+>>>
+>>> Not sure how this sounds, but i think making that change should be
+>>> possible. And that is what i will try and go for in v3.
+>>
+>> Dropping the main drivers/platform/x86 driver sounds good to me,
+>> I was already wondering a bit about its function since it just
+>> instantiates devs to which the other ones bind to then instantiate
+>> more devs (in the LED case).
 > 
+> hmm, IMHO that depends on whether the individual sub-devices can be
+> more generic than just that specific machine. (@Hanning: could you
+> tell us more about that ?).
+> 
+> Another question is how they're actually probed .. only dmi or maybe
+> also pci dev ? (i've seen some refs to pci stuff in the led driver, but
+> missed the other code thats called here).
+> 
+> IMHO, if the whole thing lives on some PCI device (which can be probed
+> via pci ID), and that device has the knowledge, where the LED registers
+> actually are (eg. based on device ID, pci mmio mapping, ...) then there
+> should be some parent driver that instantiates the led devices (and
+> possibly other board specific stuff). That would be a clear separation,
+> modularization. In that case, maybe this LED driver could even be
+> replaced by some really generic "register-based-LED" driver, which just
+> needs to be fed with some parameters like register ranges, bitmasks, etc.
+> 
+> OTOH, if everything can be derived entirely from DMI match, w/o things
+> like pci mappings involved (IOW: behaves like directly wired to the
+> cpu's mem/io bus, no other "intelligent" bus involved), and it's all
+> really board specific logic (no generic led or gpio controllers
+> involved), then it might be better to have entirely separate drivers.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+FWIW I'm fine with either solution, and if we go the "parent driver"
+route I'm happy to have that driver sit in drivers/platform/x86
+(once all the discussions surrounding this are resolved).
+
+My reply was because I noticed that the Led driver seemed to sort of
+also act as a parent driver (last time I looked) and instantiated a
+bunch of stuff, so then we have 2 parent(ish) drivers. If things stay
+that way then having 2 levels of parent drivers seems a bit too much
+to me, esp. if it can all be done cleanly in e.g. the LED driver.
+
+But as said I'm fine either way as long as the code is reasonably
+clean and dealing with this sort of platform specific warts happens
+a lot in drivers/platform/x86 .
+
+Regards,
+
+Hans
+
