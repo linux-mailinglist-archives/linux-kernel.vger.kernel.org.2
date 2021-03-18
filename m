@@ -2,76 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D4833FC12
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 01:03:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 595DD33FC13
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 01:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhCRACd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 20:02:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60226 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229994AbhCRACX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 20:02:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616025742;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fIBduZVqJpIAz+UmbB5T+h+sCu84YvjhxSSRnUH9gxs=;
-        b=i0cnPVJxlH9ytEcW4LPZT/tGAr3pVZAqbHNoMuu30taU9gYU/DCYNZO1wxnd9E4IfF2pgv
-        Z4kVnNRUOlb/DMg/aDGCVl4lfDpBbe3wMlr/0XTPlU8kVdVr3OTWS6O8m04HwQuzcgjWNe
-        fyTEdSgaeZoSEo53farxqwFhoCj1Xtw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-62-PfD8_gOjNDC4IFSv4dkpUw-1; Wed, 17 Mar 2021 20:02:20 -0400
-X-MC-Unique: PfD8_gOjNDC4IFSv4dkpUw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0FD22100746C;
-        Thu, 18 Mar 2021 00:02:18 +0000 (UTC)
-Received: from treble (ovpn-112-220.rdu2.redhat.com [10.10.112.220])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BAD2C5D9C0;
-        Thu, 18 Mar 2021 00:02:15 +0000 (UTC)
-Date:   Wed, 17 Mar 2021 19:02:12 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        Oliver Sang <oliver.sang@intel.com>, jbaron@akamai.com,
-        lkp@lists.01.org, kbuild test robot <lkp@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] objtool,static_call: Don't emit static_call_site for
- .exit.text
-Message-ID: <20210318000212.l2fdz5vjhuq64yh6@treble>
-References: <20210315142345.GB4401@xsang-OptiPlex-9020>
- <CAFA6WYNMHAqqmNfncmJm3+BUYCktXouRtV_udSxQb7eifPmX+Q@mail.gmail.com>
- <20210317030101.GB22345@xsang-OptiPlex-9020>
- <CAFA6WYMb-C2L7DmGnhWgxjuuvP=qxPA4-s4q+knxH+iWXypHmw@mail.gmail.com>
- <YFHAsgNhe8c3ZHQN@hirez.programming.kicks-ass.net>
- <YFHE9CjanDAD4l5M@hirez.programming.kicks-ass.net>
- <YFHFjarVo7HAP7pg@hirez.programming.kicks-ass.net>
- <CAFA6WYNs-rQLUGPMwc-p0q_KRvR16rm-x55gDqw828c7-C1qeA@mail.gmail.com>
- <YFH6BR61b5GK8ITo@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YFH6BR61b5GK8ITo@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        id S229994AbhCRAFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 20:05:13 -0400
+Received: from mga03.intel.com ([134.134.136.65]:8467 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229562AbhCRAEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 20:04:42 -0400
+IronPort-SDR: Sdq4axED8jAW44mjiF0G0btHCXOrfRTiP9UvxyjBxXkS6KrnJBMFXWFIGc981jf4iP+aPbU2Ni
+ VDvlpF7Azalg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="189616265"
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="189616265"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 17:04:41 -0700
+IronPort-SDR: 90z7G9OzJqazdvZZK4s4do097MALZckYL92A89LgmUp8nt6fbBdXZnmAPQYuBalaJfe3z6dcJD
+ hmiGamQMQkFg==
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="389029351"
+Received: from salemhax-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.252.143.20])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 17:04:37 -0700
+Date:   Thu, 18 Mar 2021 13:04:35 +1300
+From:   Kai Huang <kai.huang@intel.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        linux-sgx@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v2 07/25] x86/sgx: Initialize virtual EPC driver even
+ when SGX driver is disabled
+Message-Id: <20210318130435.4cf6142368bb1837c585b447@intel.com>
+In-Reply-To: <YFCojQmyM8fdGmnl@kernel.org>
+References: <YE0NeChRjBlldQ8H@kernel.org>
+        <YE4M8JGGl9Xyx51/@kernel.org>
+        <YE4rVnfQ9y7CnVvr@kernel.org>
+        <20210315161317.9c72479dfcde4e22078abcd2@intel.com>
+        <YE9beKYDaG1sMWq+@kernel.org>
+        <YE9mVUF0KOPNSfA9@kernel.org>
+        <20210316094859.7b5947b743a81dff7434615c@intel.com>
+        <YE/oHt92suFDHJ7Z@kernel.org>
+        <YE/o/IGBAB8N+fnt@kernel.org>
+        <YFAGUWDYacz1zroI@google.com>
+        <YFCojQmyM8fdGmnl@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 01:45:57PM +0100, Peter Zijlstra wrote:
-> arguably it simply isn't a good idea to use static_call() in __exit
-> code anyway, since module unload is never a performance critical path.
+On Tue, 16 Mar 2021 14:46:05 +0200 Jarkko Sakkinen wrote:
+> On Mon, Mar 15, 2021 at 06:13:53PM -0700, Sean Christopherson wrote:
+> > On Tue, Mar 16, 2021, Jarkko Sakkinen wrote:
+> > > On Tue, Mar 16, 2021 at 01:05:05AM +0200, Jarkko Sakkinen wrote:
+> > > > The way I've understood it is that given that KVM can support SGX
+> > > > without FLC, vEPC should be available even if driver cannot be
+> > > > enabled.
+> > > > 
+> > > > This is also exactly what the short summary states.
+> > > > 
+> > > > "Initialize virtual EPC driver even when SGX driver is disabled"
+> > > > 
+> > > > It *does not* state:
+> > > > 
+> > > > "Initialize SGX driver even when vEPC driver is disabled"
+> > > > 
+> > > > Also, this is how I interpret the inline comment.
+> > > > 
+> > > > All this considered, the other direction is undocumented functionality.
+> > > 
+> > > Also:
+> > > 
+> > > 1. There is *zero* good practical reasons to support the "2nd direction".
+> > 
+> > Uh, yes there is.  CONFIG_KVM_INTEL=n and X86_FEATURE_VMX=n, either of which
+> > will cause vEPC initialization to fail.  The former is obvious, the latter is
+> > possible via BIOS configuration.
+> 
+> Hmm... So you make the checks as if ret != -ENODEV? That's the sane way to
+> deal with that situation IMHO.
+> 
+> /Jarkko
 
-Couldn't you make the same argument about __init functions, which are
-allowed to do static calls?
+OK. I actually wrote the code to show your idea:
 
-We might consider a STATIC_CALL_SITE_EXIT flag, but I suppose we've run
-out of flag space.
+-       ret = sgx_drv_init();
+-       if (ret)
++       /*
++        * Only continue to initialize SGX driver when SGX virtualization
++        * initialization is successful, or is not supported (-ENODEV), since
++        * any other initialization failure means SGX driver is unlikely to be
++        * initialized successfully.
++        */
++       ret = sgx_vepc_init();
++       if (ret && ret != -ENODEV)
+                goto err_kthread;
+ 
++       if (sgx_drv_init()) {
++               /*
++                * Cleanup when *both* SGX virtualization and SGX driver are
++                * not enabled, due to either not supported (-ENODEV), or
++                * somehow fail to initialize.
++                */
++               if (ret && ret != -ENODEV)
++                       goto err_kthread;
++       }
++
+        return 0;
+ 
+ err_kthread:
 
--- 
-Josh
 
+Is this the code you want?
