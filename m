@@ -2,124 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439FA340C95
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBBB340C9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232514AbhCRSMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47052 "EHLO
+        id S232508AbhCRSND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232298AbhCRSMV (ORCPT
+        with ESMTP id S232530AbhCRSMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:12:21 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3A6C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:12:21 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id t23-20020a0568301e37b02901b65ab30024so6059805otr.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:12:21 -0700 (PDT)
+        Thu, 18 Mar 2021 14:12:34 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE42CC06174A;
+        Thu, 18 Mar 2021 11:12:33 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id t6so5734790ilp.11;
+        Thu, 18 Mar 2021 11:12:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9Mp/bqm2YFp4NyDCzBjnGP7gif34FWuZnhrIj0q+jJI=;
-        b=G1ah34xvIoECWz9i/TlzYs207EAkTumLJMTcgRZAZqEsFRP8j8vtS+i93OZj3Fwyh5
-         xansT8QAg1v+0aj/4MNUhVTpxws8NOoOpiiflSJr5w4vTLn8pq1WMdIlo364jwNPSqui
-         4xSvIr4Hc1qkThPAZ4IvN+DnKMv8YhW0MEIfn4pk+rhDViDvJ77t0P/LfM2E+nsWVGw/
-         mfXolrgKVVJCeiUWRNPg2QqEDXRujI/F3HxEKKQAROAg/HwGXvLTkYW+gUb254UrZn+L
-         4VmOyG2ITSZwEEUVjKFvDCArHXHADotUOZQNX+OdML050e5t+eWU9hL3jFyayQ32L4fH
-         UwJw==
+        bh=q41xXuRmur179OHVx//rhAqOsEcMpgA+YrpYo7J41Gs=;
+        b=T+Il8wRP5/FIUoeDAvnQz9LVZSgHUpRSk2v95XYOaoKJe14ZwbG/TuPOYQTGiLKx1T
+         L2U0Ro2gkPwIwen3Nsb8405VKPRwo8CfvWqz0kX46Q0EfqaXIBObrzmYic5PoUa7Yq2M
+         YdViJwR959Mq0kjLyY/2SD/VQb956vVIQjtMyk3X3rJFnvzM+f+5xMe8nghOT02Dd8AX
+         s/RQCdIh1dVYFkQjKmxmpts/qF07bbUiJGhCcIgoXJYys/mSJF20yTXyin5/RRH7ZhH8
+         tQ1gNqeEl3IF8V52FIjn+u076EJopMKRk1Z56SEYQtcMx1e5VFFmeq7JDLS04lK0fNaF
+         3DCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9Mp/bqm2YFp4NyDCzBjnGP7gif34FWuZnhrIj0q+jJI=;
-        b=FhS8rcPYgZ57J2kGE+GWP2h51vCgv/M7tiThkLpLcnRLyb3yO9HpNVRj2Y2BVxdFRN
-         tPQxBtnq3XpyXaDPw2PZbGS6a82JptASqjMeXRY0D+dpN1h1qQHOKF3kE6VQjXw7A/f0
-         yoQ1AsHDnF5N7qb2pNtjB2mMJ+0QrpFgt2SQRilJqbXoCPAdK6f7ELJK2HE8O+lDEu1j
-         yMyuTY/P7CS0zRzEyjhGyw3sfv/t7eoDm/7J7Upsw+8iMuNJQ1A8yFhb+5NPLC+N9O3c
-         1yasZjtZqlzlibp7o9Aejh1H3v3Rmw82KBK76nxzqR17vmgTkN4i3JyXuum2yAMJFbTr
-         WKVg==
-X-Gm-Message-State: AOAM531MbPyzGpCdwNBp0JlPRL4F9jazTHmPEggcag8ZbeTUWNd4rZGE
-        bar4/t75/K0W9acRUNeb5UXc/2rTnVqpIQYw69odXuZZzMU=
-X-Google-Smtp-Source: ABdhPJwis+EdQ8GEL/sfDI7LNFt1XiDBiVCBHLPvZtHLfXfeeppuS/V3TIi6KXXkkyMkCPVpuaS2m8dXyFQ0/kRgwmo=
-X-Received: by 2002:a9d:d89:: with SMTP id 9mr6216093ots.23.1616091141211;
- Thu, 18 Mar 2021 11:12:21 -0700 (PDT)
+        bh=q41xXuRmur179OHVx//rhAqOsEcMpgA+YrpYo7J41Gs=;
+        b=MXuFmjPysw4gKATSJFaJbsr+Dzs8IiCZ3I5x0eejx63xBDrBQqy0hX4leJnIlY1EaY
+         GiGlfnMkCjjZMeeiNgTuwnXHJDMb6F8afWGP+xWBYHFANmNnb5mrm1rGy4pN7MGmIw9V
+         Qc6LtgFwqzCVhZNpgmgj6eterHGHv9i1d1h4xJ6lG/WA/izguPus0SMy+sDeWndQnwTu
+         rvfxW5JeLQW/gizUjbx1k0di9CA7l18ayZii/zkPBG0B3VDAhgKSNHZgfaWHfN+TPh/m
+         iYCE2bIuh9f/f51IwhKh56obfbHnbb6Icss5XiLHYlZvOfTdov4qK2Wq5mtFXWOD6K6b
+         KDMQ==
+X-Gm-Message-State: AOAM531pWUX/llxmNRS+H2DWN/vQkfQ2Dyj5Al93hRlUFtvhuB4W6rHV
+        6WrlruucL4uMrpTrGi35cNPKkXV4fcvPObBzGZc=
+X-Google-Smtp-Source: ABdhPJxCjCW9kXCdSRTEyPNBJPdoVR+YRar9BF6hVktq6LhZLgBZ05ns7zXGmjM10DygGEah3i1SbmoBj1XuLlWFBOY=
+X-Received: by 2002:a92:d5c4:: with SMTP id d4mr2705539ilq.102.1616091153416;
+ Thu, 18 Mar 2021 11:12:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210318113308.1345-1-unixbhaskar@gmail.com> <b09b524c-1f3d-6231-29b9-f0eac3e77293@infradead.org>
-In-Reply-To: <b09b524c-1f3d-6231-29b9-f0eac3e77293@infradead.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 18 Mar 2021 14:12:10 -0400
-Message-ID: <CADnq5_OsrHGxmXeuEiV06qas7jJ0pvExqdrw-PmqpKvWi=0jOg@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: Fix a typo
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        John Clements <John.Clements@amd.com>,
-        "Chen, Guchun" <guchun.chen@amd.com>, Tao Zhou <tao.zhou1@amd.com>,
-        Likun Gao <Likun.Gao@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Jiansong Chen <Jiansong.Chen@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210312003318.3273536-1-bjorn.andersson@linaro.org>
+ <CAOCk7Nq5B=TKh40wseAdnjGufcXuMRkc-e1GMsKDvZ-T7NfPGg@mail.gmail.com> <YFOIsIxIC2mgzhZ1@builder.lan>
+In-Reply-To: <YFOIsIxIC2mgzhZ1@builder.lan>
+From:   Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Date:   Thu, 18 Mar 2021 12:12:22 -0600
+Message-ID: <CAOCk7NqBnfb-snrd=kh9d4TQc+pobDN+rYPpVJrdLXWSqGq8mg@mail.gmail.com>
+Subject: Re: [PATCH 0/5] qcom: wcnss: Allow overriding firmware form DT
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, wcn36xx@lists.infradead.org,
+        "open list:NETWORKING DRIVERS (WIRELESS)" 
+        <linux-wireless@vger.kernel.org>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 2:08 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+On Thu, Mar 18, 2021 at 11:06 AM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
 >
-> On 3/18/21 4:33 AM, Bhaskar Chowdhury wrote:
-> >
-> > s/traing/training/
-> >
-> > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> > ---
-> >  drivers/gpu/drm/amd/amdgpu/psp_v11_0.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c b/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
-> > index c325d6f53a71..db18e4f6cf5f 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
-> > @@ -661,7 +661,7 @@ static int psp_v11_0_memory_training(struct psp_context *psp, uint32_t ops)
-> >
-> >       if (ops & PSP_MEM_TRAIN_SEND_LONG_MSG) {
-> >               /*
-> > -              * Long traing will encroach certain mount of bottom VRAM,
-> > +              * Long training will encroach certain mount of bottom VRAM,
+> On Thu 18 Mar 11:56 CDT 2021, Jeffrey Hugo wrote:
 >
->                                                        amount
-> I think.
+> > form -> from in the subject?
+> >
+>
+> Seems like I only failed in the cover letter, right?
 
-Yeah, I think it should read something like:
+Looks like.  I didn't even parse that this was the cover letter.
 
-Long training will encroach a certain amount on the bottom of VRAM;
-save the content from the bottom VRAM to system memory
-before training, and restore it after training to avoid
-VRAM corruption.
-
-Alex
-
->
-> >                * saving the content of this bottom VRAM to system memory
-> >                * before training, and restoring it after training to avoid
-> >                * VRAM corruption.
-> > --
-> > 2.26.2
-> >
->
->
-> --
-> ~Randy
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Nothing to see here.
