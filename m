@@ -2,407 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FEC633FE1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 05:10:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C5933FE29
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 05:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbhCREKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 00:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
+        id S229610AbhCRE1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 00:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbhCREKH (ORCPT
+        with ESMTP id S229456AbhCRE0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 00:10:07 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8FEC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 21:10:07 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id y5so2580268pfn.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 21:10:07 -0700 (PDT)
+        Thu, 18 Mar 2021 00:26:53 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06E9C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 21:26:52 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id v26so920548iox.11
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 21:26:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=v0FMiRP2ep+y/7iHbFg4j6pdz1i8NddTStWhM1r5FlE=;
-        b=LUwT0JdLyskrtEhbtVVjzxbaFMS3wgwkqmhazE2U5tk+bSfpxRox6SBSAHLUIM1XeA
-         ZtLim4S6h0SwXx1n4dIrZL1qZOHHCZLMCJPXP4NeNDtdIhrp6aX2fLipdMsn4I4KPOCg
-         73Yz47V/KK5Q8zw/E/CUc1YYPLO0l7CmdlrrA=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ql2dgaEyzlxz1rnlLy2Wg/nnnp7tmOxMWx8bJq2EFZU=;
+        b=W8cx8DyHSkSFRXpWsBNRnLfWNZxWBaqqHtgHrd/WpU0n2AEAEWHPGDzYqFXwZW576h
+         EcVKZzyxSb3zHtDCDhhYE4iNDuWSd50c4Pvl1YOJtIE6BKhTjwNRAddrDPPyJdHLDLVM
+         491KnMySN0siPXOHZisSPMAhdy2AKATWs/m0s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v0FMiRP2ep+y/7iHbFg4j6pdz1i8NddTStWhM1r5FlE=;
-        b=c44CYvl09YUmK5gYaLqm57QbmajGB3U9VshFX3FZUUKrHYIXBceu1YaDsApsRVopMb
-         mDeVUqKS7RbgIPbsfrNxTObDnJfrVdS5c9RU7tk7r3APU/SZlfSezv3zoOwXJEs2QEiw
-         czRYLgn6/D/KY9sJc0ZPfmmiMNFoa5TQxxLaYrqIX9yNt4gBYhWtbrFdooqSWffAnYvP
-         p7ae62vW9M8BPwoMCn1RM2gZsuL88yAeGFwQLmeJbItan8HgiY5KmzbdKgkPt5MstXbv
-         JoRO3JYrr3be7dd3hb/aZE4tfWC1xHQ4Y7modbw9X8Y0NJrCRG/hXyvpCmv3UHdpjL1+
-         rBmQ==
-X-Gm-Message-State: AOAM533V6NqbwnXElvgx/M68xzrOaEU+ZLb//CLHrdqvQ3tsKwDs70Kv
-        bwdROhvy7145NOWSIFXKjYQIwA==
-X-Google-Smtp-Source: ABdhPJyaHrqhomJOREpOHLzZy7zkHyXD/ORaLyGKBMZite/h+zlNaTs9KB+BJ3/miX7NofK3ZvP7Jw==
-X-Received: by 2002:a63:484b:: with SMTP id x11mr5343791pgk.2.1616040606977;
-        Wed, 17 Mar 2021 21:10:06 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id p3sm495481pgl.88.2021.03.17.21.10.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 21:10:06 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 21:10:05 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     John Wood <john.wood@gmx.com>
-Cc:     Jann Horn <jannh@google.com>, Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH v6 7/8] Documentation: Add documentation for the Brute LSM
-Message-ID: <202103172108.404F9B6ED2@keescook>
-References: <20210307113031.11671-1-john.wood@gmx.com>
- <20210307113031.11671-8-john.wood@gmx.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ql2dgaEyzlxz1rnlLy2Wg/nnnp7tmOxMWx8bJq2EFZU=;
+        b=L/1fvAhIxWWC/y2n1WZ/ES83IYTafOQD9veO1zTZaMr2SNZaol1S8/eYyZbz634Kf+
+         YvlSfYEY4AOWrtjbFwaeDj6TUebdRZPDn0aFwxLctMMjFWaozAA46DCP9/MtOUA8q8a5
+         wNCOO+6sBmJwI/dJVl0a24DjTFPbmKaFkbcynYbui5AjbSMzQc+ETJXHZnj8BtyZMWjh
+         ixDANh2ZbVzOritiDy78fWV6h6qYkz0ng/EOCL1YLBHmTkxorG0PAUsFQoXgpg1paClI
+         V0B50o1UQ1gOQnrBwtK7BPPw9na2FnqzZTlZgs4PcfxP+h/DU3MRxkhQWxDHNd579vuM
+         kCFw==
+X-Gm-Message-State: AOAM530veeBJKaPilpK9/bfuTu5aWJdTgWSe9lzFXpDLKF7VOSWPcKSl
+        WayCYFos5M+IL+Q1eUaReq3oMY6Fn3kTceCHWQ9p3w==
+X-Google-Smtp-Source: ABdhPJyiT+pK5YW1/xho4IDNMJd1L9KoZwDrKi/f2JRgrLZDLUc4ArB1kHW9DAPXHK1IuoyC3hGih7UIy39ozt/dTSQ=
+X-Received: by 2002:a05:6638:43:: with SMTP id a3mr5366562jap.102.1616041612173;
+ Wed, 17 Mar 2021 21:26:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210307113031.11671-8-john.wood@gmx.com>
+References: <20210224061409.3996755-1-hsinyi@chromium.org> <20210224061409.3996755-2-hsinyi@chromium.org>
+In-Reply-To: <20210224061409.3996755-2-hsinyi@chromium.org>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Thu, 18 Mar 2021 12:26:25 +0800
+Message-ID: <CAJMQK-ho9Ncqd=muCv-aMsHSRhgKtC3H6asxR=+3CODpeiWQWQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] drm/bridge: anx7625: disable regulators when power off
+To:     Xin Ji <xji@analogixsemi.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        Robert Foss <robert.foss@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 12:30:30PM +0100, John Wood wrote:
-> Add some info detailing what is the Brute LSM, its motivation, weak
-> points of existing implementations, proposed solutions, enabling,
-> disabling and self-tests.
-> 
-> Signed-off-by: John Wood <john.wood@gmx.com>
+On Wed, Feb 24, 2021 at 2:14 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> When suspending the driver, anx7625_power_standby() will be called to
+> turn off reset-gpios and enable-gpios. However, power supplies are not
+> disabled. To save power, the driver can get the power supply regulators
+> and turn off them in anx7625_power_standby().
+>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: Robert Foss <robert.foss@linaro.org>
 > ---
->  Documentation/admin-guide/LSM/Brute.rst | 278 ++++++++++++++++++++++++
->  Documentation/admin-guide/LSM/index.rst |   1 +
->  security/brute/Kconfig                  |   3 +-
->  3 files changed, 281 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/admin-guide/LSM/Brute.rst
-> 
-> diff --git a/Documentation/admin-guide/LSM/Brute.rst b/Documentation/admin-guide/LSM/Brute.rst
-> new file mode 100644
-> index 000000000000..ca80aef9aa67
-> --- /dev/null
-> +++ b/Documentation/admin-guide/LSM/Brute.rst
-> @@ -0,0 +1,278 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +===========================================================
-> +Brute: Fork brute force attack detection and mitigation LSM
-> +===========================================================
-> +
-> +Attacks against vulnerable userspace applications with the purpose to break ASLR
-> +or bypass canaries traditionally use some level of brute force with the help of
-> +the fork system call. This is possible since when creating a new process using
-> +fork its memory contents are the same as those of the parent process (the
-> +process that called the fork system call). So, the attacker can test the memory
-> +infinite times to find the correct memory values or the correct memory addresses
-> +without worrying about crashing the application.
-> +
-> +Based on the above scenario it would be nice to have this detected and
-> +mitigated, and this is the goal of this implementation. Specifically the
-> +following attacks are expected to be detected:
-> +
-> +1.- Launching (fork()/exec()) a setuid/setgid process repeatedly until a
-> +    desirable memory layout is got (e.g. Stack Clash).
-> +2.- Connecting to an exec()ing network daemon (e.g. xinetd) repeatedly until a
-> +    desirable memory layout is got (e.g. what CTFs do for simple network
-> +    service).
-> +3.- Launching processes without exec() (e.g. Android Zygote) and exposing state
-> +    to attack a sibling.
-> +4.- Connecting to a fork()ing network daemon (e.g. apache) repeatedly until the
-> +    previously shared memory layout of all the other children is exposed (e.g.
-> +    kind of related to HeartBleed).
-> +
-> +In each case, a privilege boundary has been crossed:
-> +
-> +Case 1: setuid/setgid process
-> +Case 2: network to local
-> +Case 3: privilege changes
-> +Case 4: network to local
-> +
-> +So, what really needs to be detected are fork/exec brute force attacks that
-> +cross any of the commented bounds.
-> +
-> +
-> +Other implementations
-> +=====================
-> +
-> +The public version of grsecurity, as a summary, is based on the idea of delaying
-> +the fork system call if a child died due to some fatal signal (SIGSEGV, SIGBUS,
-> +SIGKILL or SIGILL). This has some issues:
-> +
-> +Bad practices
-> +-------------
-> +
-> +Adding delays to the kernel is, in general, a bad idea.
-> +
-> +Scenarios not detected (false negatives)
-> +----------------------------------------
-> +
-> +This protection acts only when the fork system call is called after a child has
-> +crashed. So, it would still be possible for an attacker to fork a big amount of
-> +children (in the order of thousands), then probe all of them, and finally wait
-> +the protection time before repeating the steps.
-> +
-> +Moreover, this method is based on the idea that the protection doesn't act if
-> +the parent crashes. So, it would still be possible for an attacker to fork a
-> +process and probe itself. Then, fork the child process and probe itself again.
-> +This way, these steps can be repeated infinite times without any mitigation.
-> +
-> +Scenarios detected (false positives)
-> +------------------------------------
-> +
-> +Scenarios where an application rarely fails for reasons unrelated to a real
-> +attack.
-> +
-> +
-> +This implementation
-> +===================
-> +
-> +The main idea behind this implementation is to improve the existing ones
-> +focusing on the weak points annotated before. Basically, the adopted solution is
-> +to detect a fast crash rate instead of only one simple crash and to detect both
-> +the crash of parent and child processes. Also, fine tune the detection focusing
-> +on privilege boundary crossing. And finally, as a mitigation method, kill all
-> +the offending tasks involved in the attack instead of using delays.
-> +
-> +To achieve this goal, and going into more details, this implementation is based
-> +on the use of some statistical data shared across all the processes that can
-> +have the same memory contents. Or in other words, a statistical data shared
-> +between all the fork hierarchy processes after an execve system call.
-> +
-> +The purpose of these statistics is, basically, collect all the necessary info
-> +to compute the application crash period in order to detect an attack. This crash
-> +period is the time between the execve system call and the first fault or the
-> +time between two consecutive faults, but this has a drawback. If an application
-> +crashes twice in a short period of time for some reason unrelated to a real
-> +attack, a false positive will be triggered. To avoid this scenario the
-> +exponential moving average (EMA) is used. This way, the application crash period
-> +will be a value that is not prone to change due to spurious data and follows the
-> +real crash period.
-> +
-> +To detect a brute force attack it is necessary that the statistics shared by all
-> +the fork hierarchy processes be updated in every fatal crash and the most
-> +important data to update is the application crash period.
-> +
-> +These statistics are hold by the brute_stats struct.
-> +
-> +struct brute_cred {
-> +	kuid_t uid;
-> +	kgid_t gid;
-> +	kuid_t suid;
-> +	kgid_t sgid;
-> +	kuid_t euid;
-> +	kgid_t egid;
-> +	kuid_t fsuid;
-> +	kgid_t fsgid;
-> +};
-> +
-> +struct brute_stats {
-> +	spinlock_t lock;
-> +	refcount_t refc;
-> +	unsigned char faults;
-> +	u64 jiffies;
-> +	u64 period;
-> +	struct brute_cred saved_cred;
-> +	unsigned char network : 1;
-> +	unsigned char bounds_crossed : 1;
-> +};
 
-Instead of open-coding this, just use the kerndoc references you've
-already built in the .c files:
+Ping on the thread, thanks.
 
-.. kernel-doc:: security/brute/brute.c
-
+>  drivers/gpu/drm/bridge/analogix/anx7625.c | 34 +++++++++++++++++++++++
+>  drivers/gpu/drm/bridge/analogix/anx7625.h |  1 +
+>  2 files changed, 35 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> index 65cc05982f826..23283ba0c4f93 100644
+> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
+> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/mutex.h>
+> +#include <linux/regulator/consumer.h>
+>  #include <linux/slab.h>
+>  #include <linux/types.h>
+>  #include <linux/workqueue.h>
+> @@ -875,12 +876,25 @@ static int sp_tx_edid_read(struct anx7625_data *ctx,
+>  static void anx7625_power_on(struct anx7625_data *ctx)
+>  {
+>         struct device *dev = &ctx->client->dev;
+> +       int ret, i;
+>
+>         if (!ctx->pdata.low_power_mode) {
+>                 DRM_DEV_DEBUG_DRIVER(dev, "not low power mode!\n");
+>                 return;
+>         }
+>
+> +       for (i = 0; i < ARRAY_SIZE(ctx->pdata.supplies); i++) {
+> +               ret = regulator_enable(ctx->pdata.supplies[i].consumer);
+> +               if (ret < 0) {
+> +                       DRM_DEV_DEBUG_DRIVER(dev, "cannot enable supply %d: %d\n",
+> +                                            i, ret);
+> +                       goto reg_err;
+> +               }
+> +               usleep_range(2000, 2100);
+> +       }
 > +
-> +This is a fixed sized struct, so the memory usage will be based on the current
-> +number of processes exec()ing. The previous sentence is true since in every fork
-> +system call the parent's statistics are shared with the child process and in
-> +every execve system call a new brute_stats struct is allocated. So, only one
-> +brute_stats struct is used for every fork hierarchy (hierarchy of processes from
-> +the execve system call).
+> +       usleep_range(4000, 4100);
 > +
-> +There are two types of brute force attacks that need to be detected. The first
-> +one is an attack that happens through the fork system call and the second one is
-> +an attack that happens through the execve system call. The first type uses the
-> +statistics shared by all the fork hierarchy processes, but the second type
-> +cannot use this statistical data due to these statistics dissapear when the
-> +involved tasks finished. In this last scenario the attack info should be tracked
-> +by the statistics of a higher fork hierarchy (the hierarchy that contains the
-> +process that forks before the execve system call).
+>         /* Power on pin enable */
+>         gpiod_set_value(ctx->pdata.gpio_p_on, 1);
+>         usleep_range(10000, 11000);
+> @@ -889,11 +903,16 @@ static void anx7625_power_on(struct anx7625_data *ctx)
+>         usleep_range(10000, 11000);
+>
+>         DRM_DEV_DEBUG_DRIVER(dev, "power on !\n");
+> +       return;
+> +reg_err:
+> +       for (--i; i >= 0; i--)
+> +               regulator_disable(ctx->pdata.supplies[i].consumer);
+>  }
+>
+>  static void anx7625_power_standby(struct anx7625_data *ctx)
+>  {
+>         struct device *dev = &ctx->client->dev;
+> +       int ret;
+>
+>         if (!ctx->pdata.low_power_mode) {
+>                 DRM_DEV_DEBUG_DRIVER(dev, "not low power mode!\n");
+> @@ -904,6 +923,12 @@ static void anx7625_power_standby(struct anx7625_data *ctx)
+>         usleep_range(1000, 1100);
+>         gpiod_set_value(ctx->pdata.gpio_p_on, 0);
+>         usleep_range(1000, 1100);
 > +
-> +Moreover, these two attack types have two variants. A slow brute force attack
-> +that is detected if a maximum number of faults per fork hierarchy is reached and
-> +a fast brute force attack that is detected if the application crash period falls
-> +below a certain threshold.
+> +       ret = regulator_bulk_disable(ARRAY_SIZE(ctx->pdata.supplies),
+> +                                    ctx->pdata.supplies);
+> +       if (ret < 0)
+> +               DRM_DEV_DEBUG_DRIVER(dev, "cannot disable supplies %d\n", ret);
 > +
-> +Once an attack has been detected, this is mitigated killing all the offending
-> +tasks involved. Or in other words, once an attack has been detected, this is
-> +mitigated killing all the processes that share the same statistics (the stats
-> +that show an slow or fast brute force attack).
-> +
-> +Fine tuning the attack detection
-> +--------------------------------
-> +
-> +To avoid false positives during the attack detection it is necessary to narrow
-> +the possible cases. To do so, and based on the threat scenarios that we want to
-> +detect, this implementation also focuses on the crossing of privilege bounds.
-> +
-> +To be precise, only the following privilege bounds are taken into account:
-> +
-> +1.- setuid/setgid process
-> +2.- network to local
-> +3.- privilege changes
-> +
-> +Moreover, only the fatal signals delivered by the kernel are taken into account
-> +avoiding the fatal signals sent by userspace applications (with the exception of
-> +the SIGABRT user signal since this is used by glibc for stack canary, malloc,
-> +etc. failures, which may indicate that a mitigation has been triggered).
-> +
-> +Exponential moving average (EMA)
-> +--------------------------------
-> +
-> +This kind of average defines a weight (between 0 and 1) for the new value to add
-> +and applies the remainder of the weight to the current average value. This way,
-> +some spurious data will not excessively modify the average and only if the new
-> +values are persistent, the moving average will tend towards them.
-> +
-> +Mathematically the application crash period's EMA can be expressed as follows:
-> +
-> +period_ema = period * weight + period_ema * (1 - weight)
-> +
-> +Related to the attack detection, the EMA must guarantee that not many crashes
-> +are needed. To demonstrate this, the scenario where an application has been
-> +running without any crashes for a month will be used.
-> +
-> +The period's EMA can be written now as:
-> +
-> +period_ema[i] = period[i] * weight + period_ema[i - 1] * (1 - weight)
-> +
-> +If the new crash periods have insignificant values related to the first crash
-> +period (a month in this case), the formula can be rewritten as:
-> +
-> +period_ema[i] = period_ema[i - 1] * (1 - weight)
-> +
-> +And by extension:
-> +
-> +period_ema[i - 1] = period_ema[i - 2] * (1 - weight)
-> +period_ema[i - 2] = period_ema[i - 3] * (1 - weight)
-> +period_ema[i - 3] = period_ema[i - 4] * (1 - weight)
-> +
-> +So, if the substitution is made:
-> +
-> +period_ema[i] = period_ema[i - 1] * (1 - weight)
-> +period_ema[i] = period_ema[i - 2] * pow((1 - weight) , 2)
-> +period_ema[i] = period_ema[i - 3] * pow((1 - weight) , 3)
-> +period_ema[i] = period_ema[i - 4] * pow((1 - weight) , 4)
-> +
-> +And in a more generic form:
-> +
-> +period_ema[i] = period_ema[i - n] * pow((1 - weight) , n)
-> +
-> +Where n represents the number of iterations to obtain an EMA value. Or in other
-> +words, the number of crashes to detect an attack.
-> +
-> +So, if we isolate the number of crashes:
-> +
-> +period_ema[i] / period_ema[i - n] = pow((1 - weight), n)
-> +log(period_ema[i] / period_ema[i - n]) = log(pow((1 - weight), n))
-> +log(period_ema[i] / period_ema[i - n]) = n * log(1 - weight)
-> +n = log(period_ema[i] / period_ema[i - n]) / log(1 - weight)
-> +
-> +Then, in the commented scenario (an application has been running without any
-> +crashes for a month), the approximate number of crashes to detect an attack
-> +(using the implementation values for the weight and the crash period threshold)
-> +is:
-> +
-> +weight = 7 / 10
-> +crash_period_threshold = 30 seconds
-> +
-> +n = log(crash_period_threshold / seconds_per_month) / log(1 - weight)
-> +n = log(30 / (30 * 24 * 3600)) / log(1 - 0.7)
-> +n = 9.44
-> +
-> +So, with 10 crashes for this scenario an attack will be detected. If these steps
-> +are repeated for different scenarios and the results are collected:
-> +
-> +1 month without any crashes ----> 9.44 crashes to detect an attack
-> +1 year without any crashes -----> 11.50 crashes to detect an attack
-> +10 years without any crashes ---> 13.42 crashes to detect an attack
-> +
-> +However, this computation has a drawback. The first data added to the EMA not
-> +obtains a real average showing a trend. So the solution is simple, the EMA needs
-> +a minimum number of data to be able to be interpreted. This way, the case where
-> +a few first faults are fast enough followed by no crashes is avoided.
-> +
-> +Per system enabling/disabling
-> +-----------------------------
-> +
-> +This feature can be enabled at build time using the CONFIG_SECURITY_FORK_BRUTE
-> +option or using the visual config application under the following menu:
-> +
-> +Security options  --->  Fork brute force attack detection and mitigation
-> +
-> +Also, at boot time, this feature can be disable too, by changing the "lsm=" boot
-> +parameter.
-> +
-> +Kernel selftests
-> +----------------
-> +
-> +To validate all the expectations about this implementation, there is a set of
-> +selftests. This tests cover fork/exec brute force attacks crossing the following
-> +privilege boundaries:
-> +
-> +1.- setuid process
-> +2.- privilege changes
-> +3.- network to local
-> +
-> +Also, there are some tests to check that fork/exec brute force attacks without
-> +crossing any privilege boundariy already commented doesn't trigger the detection
-> +and mitigation stage.
-> +
-> +To build the tests:
-> +make -C tools/testing/selftests/ TARGETS=brute
-> +
-> +To run the tests:
-> +make -C tools/testing/selftests TARGETS=brute run_tests
-> +
-> +To package the tests:
-> +make -C tools/testing/selftests TARGETS=brute gen_tar
-> diff --git a/Documentation/admin-guide/LSM/index.rst b/Documentation/admin-guide/LSM/index.rst
-> index a6ba95fbaa9f..1f68982bb330 100644
-> --- a/Documentation/admin-guide/LSM/index.rst
-> +++ b/Documentation/admin-guide/LSM/index.rst
-> @@ -41,6 +41,7 @@ subdirectories.
->     :maxdepth: 1
-> 
->     apparmor
-> +   Brute
->     LoadPin
->     SELinux
->     Smack
-> diff --git a/security/brute/Kconfig b/security/brute/Kconfig
-> index 1bd2df1e2dec..334d7e88d27f 100644
-> --- a/security/brute/Kconfig
-> +++ b/security/brute/Kconfig
-> @@ -7,6 +7,7 @@ config SECURITY_FORK_BRUTE
->  	  vulnerable userspace processes. The detection method is based on
->  	  the application crash period and as a mitigation procedure all the
->  	  offending tasks are killed. Like capabilities, this security module
-> -	  stacks with other LSMs.
-> +	  stacks with other LSMs. Further information can be found in
-> +	  Documentation/admin-guide/LSM/Brute.rst.
-> 
->  	  If you are unsure how to answer this question, answer N.
+>         DRM_DEV_DEBUG_DRIVER(dev, "power down\n");
+>  }
+>
+> @@ -1742,6 +1767,15 @@ static int anx7625_i2c_probe(struct i2c_client *client,
+>         platform->client = client;
+>         i2c_set_clientdata(client, platform);
+>
+> +       pdata->supplies[0].supply = "vdd10";
+> +       pdata->supplies[1].supply = "vdd18";
+> +       pdata->supplies[2].supply = "vdd33";
+> +       ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(pdata->supplies),
+> +                                     pdata->supplies);
+> +       if (ret) {
+> +               DRM_DEV_ERROR(dev, "fail to get power supplies: %d\n", ret);
+> +               return ret;
+> +       }
+>         anx7625_init_gpio(platform);
+>
+>         atomic_set(&platform->power_status, 0);
+> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.h b/drivers/gpu/drm/bridge/analogix/anx7625.h
+> index 193ad86c54503..e4a086b3a3d7b 100644
+> --- a/drivers/gpu/drm/bridge/analogix/anx7625.h
+> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.h
+> @@ -350,6 +350,7 @@ struct s_edid_data {
+>  struct anx7625_platform_data {
+>         struct gpio_desc *gpio_p_on;
+>         struct gpio_desc *gpio_reset;
+> +       struct regulator_bulk_data supplies[3];
+>         struct drm_bridge *panel_bridge;
+>         int intp_irq;
+>         u32 low_power_mode;
 > --
-> 2.25.1
-> 
-
--- 
-Kees Cook
+> 2.30.1.766.gb4fecdf3b7-goog
+>
