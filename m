@@ -2,183 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28E53400B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5333C3400BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:19:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbhCRIPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 04:15:40 -0400
-Received: from mga09.intel.com ([134.134.136.24]:20833 "EHLO mga09.intel.com"
+        id S229690AbhCRISZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 04:18:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229725AbhCRIO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 04:14:59 -0400
-IronPort-SDR: ReOlrVBdbWkiKzWAKGQPyd24AHvTuvIRFDLoIsnO9anWD+7tSQGssSyBBmOsTJ2/texeVh8UXX
- p6SlGbvay/2g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="189719101"
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="189719101"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 01:14:58 -0700
-IronPort-SDR: qmGG/f3aD28ErMB+3WiRuAuzb/S275ueo9kf28oKcS3fHkOLV3VZ9AbbMONra3x3ysW+q5tT69
- DvVGECyqHRdw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="450389631"
-Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 18 Mar 2021 01:14:57 -0700
-Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lMno0-000189-T0; Thu, 18 Mar 2021 08:14:56 +0000
-Date:   Thu, 18 Mar 2021 16:14:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 77c781e43bc2f110ce8f73c4f81ca3d9f349ef72
-Message-ID: <60530bee.dkh6iOSc3s89fa7V%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229564AbhCRISR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 04:18:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D6C264EF6;
+        Thu, 18 Mar 2021 08:18:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616055497;
+        bh=3E9H2zpeiDX6zhLzzRcdnJAvRLq5r0LmDVSbVqSH5PY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=toPoZYi70tiuUwSJYqo92mplFfSeGWj2ik1yhufFzen5C/HeF0MbGYzDQYB46llDj
+         4LCHbAPmBGvIeD6di0GoC+M5803q0r4t7a7AE4k06k3wJYsPf12qD0V3/NrP0ohEZm
+         eJB7ZjL4cshxkdRAVtC3mAxMcouDKNP+n9nw1TSU3iTHu6Jx0ODcDbE74ihKmGvwyU
+         ahbCDNPeQopboh+9SPM75PGBUTCqAPHat9pW3Q1ZooeY/I/nPHkOs4v5EPkWdOIm8V
+         H9L4QuAASoDvtS7+nghvIORXU5tfBT0k/6VE5/7x3T0i/n8IsFmbQkAh/kkDeqLgxU
+         qzRWQ90DG0mKA==
+Date:   Thu, 18 Mar 2021 10:18:13 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     mst@redhat.com, jasowang@redhat.com, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] virtio_net: replace if (cond) BUG() with BUG_ON()
+Message-ID: <YFMMxSHGNxjw29iA@unreal>
+References: <1615960635-29735-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <1615960635-29735-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 77c781e43bc2f110ce8f73c4f81ca3d9f349ef72  Merge branch 'irq/core'
+On Wed, Mar 17, 2021 at 01:57:15PM +0800, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
+>
+> ./drivers/net/virtio_net.c:1551:2-5: WARNING: Use BUG_ON instead of if
+> condition followed by BUG.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/net/virtio_net.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 82e520d..093530b 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -1545,10 +1545,8 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
+>  	else
+>  		hdr = skb_vnet_hdr(skb);
+>
+> -	if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
+> -				    virtio_is_little_endian(vi->vdev), false,
+> -				    0))
+> -		BUG();
+> +	BUG_ON(virtio_net_hdr_from_skb(skb, &hdr->hdr,  virtio_is_little_endian(vi->vdev),
+> +				       false, 0));
 
-elapsed time: 726m
+This BUG() in virtio isn't supposed to be in the first place.
+You should return -EINVAL instead of crashing system.
 
-configs tested: 121
-configs skipped: 2
+Thanks
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm64                            allyesconfig
-arm64                               defconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-powerpc                 mpc8540_ads_defconfig
-arm                         at91_dt_defconfig
-arc                            hsdk_defconfig
-mips                        nlm_xlr_defconfig
-sh                              ul2_defconfig
-arm                       omap2plus_defconfig
-arm                        clps711x_defconfig
-m68k                       m5475evb_defconfig
-sparc                            alldefconfig
-powerpc                        icon_defconfig
-xtensa                  nommu_kc705_defconfig
-h8300                     edosk2674_defconfig
-powerpc                     redwood_defconfig
-mips                        qi_lb60_defconfig
-powerpc                     taishan_defconfig
-powerpc                          allmodconfig
-mips                            gpr_defconfig
-sh                          landisk_defconfig
-powerpc                    mvme5100_defconfig
-m68k                       m5249evb_defconfig
-sh                            titan_defconfig
-powerpc                  mpc885_ads_defconfig
-microblaze                          defconfig
-m68k                        stmark2_defconfig
-mips                           gcw0_defconfig
-sh                         apsh4a3a_defconfig
-powerpc                         wii_defconfig
-powerpc                       eiger_defconfig
-mips                       bmips_be_defconfig
-arm                       imx_v4_v5_defconfig
-powerpc                      chrp32_defconfig
-mips                     loongson1b_defconfig
-h8300                    h8300h-sim_defconfig
-sh                           se7619_defconfig
-sh                        sh7757lcr_defconfig
-sh                          rsk7269_defconfig
-mips                          rm200_defconfig
-mips                     cu1000-neo_defconfig
-powerpc                     tqm8560_defconfig
-arm                          pxa910_defconfig
-arm                          simpad_defconfig
-sh                             espt_defconfig
-sh                   secureedge5410_defconfig
-riscv                             allnoconfig
-xtensa                              defconfig
-arc                        nsimosci_defconfig
-arm                            mmp2_defconfig
-xtensa                       common_defconfig
-m68k                                defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210317
-i386                 randconfig-a005-20210317
-i386                 randconfig-a002-20210317
-i386                 randconfig-a003-20210317
-i386                 randconfig-a004-20210317
-i386                 randconfig-a006-20210317
-x86_64               randconfig-a006-20210317
-x86_64               randconfig-a001-20210317
-x86_64               randconfig-a005-20210317
-x86_64               randconfig-a004-20210317
-x86_64               randconfig-a003-20210317
-x86_64               randconfig-a002-20210317
-i386                 randconfig-a013-20210317
-i386                 randconfig-a016-20210317
-i386                 randconfig-a011-20210317
-i386                 randconfig-a012-20210317
-i386                 randconfig-a015-20210317
-i386                 randconfig-a014-20210317
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a011-20210317
-x86_64               randconfig-a016-20210317
-x86_64               randconfig-a013-20210317
-x86_64               randconfig-a014-20210317
-x86_64               randconfig-a015-20210317
-x86_64               randconfig-a012-20210317
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+>  	if (vi->mergeable_rx_bufs)
+>  		hdr->num_buffers = 0;
+> --
+> 1.8.3.1
+>
