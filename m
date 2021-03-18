@@ -2,91 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE15340FCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADE61340FCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhCRV2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 17:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33140 "EHLO
+        id S231769AbhCRV3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 17:29:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230333AbhCRV1g (ORCPT
+        with ESMTP id S230506AbhCRV2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 17:27:36 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D12C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:27:35 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id v8so1948648plz.10
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:27:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dbJ4tu0h2vfoq5iEJyv9eBMmHHIseIpXprgJl8iJhoU=;
-        b=hrxzCDgYaqrTpyC7RhpNufMokxP+WsITJYO5fQlSQA5Jp5rA4ymV6vYAHVpLuz1ZFK
-         cyEaJxDUeU3I0W9Mly7jHqjk9uOizXul73LUJLaPDx2FbvSVs8qA0KWKFVMv7N0kklfn
-         GoAXJtReybfqlKwh5myjGv+CNEq7s2he7RIszIY83DkPi9wkKG6gBAmXWEQbk6cDOYZK
-         TMUiiZZeKoK1qmSYuUxT2dGBLTbuFTEbQDzOf8U8PSoor7WBQT31WfitypyWeSGKjclA
-         VSLnyLpOQuH9MkI0zPMc6z3jRNGlHJzG7XIXITFtj8I4wLz2Bl79M0CVXVGqqXf33ISB
-         CoSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dbJ4tu0h2vfoq5iEJyv9eBMmHHIseIpXprgJl8iJhoU=;
-        b=gjtoiPCvOMSGIzvqO/tEnZ78JN1EkV9Vej4oVIsfZ4mEU3dlOl7HF3SlhRi+HK3L9p
-         XzLF7i9Q66gnBBRwPJb8bsaSuFRMgwvjnq3IwXlOrmigH4YK5B0hFxN6LqAt41ILkHx5
-         iXdCOMIdpQKQOu44X7nr/UbGFP0rONPwCQ4q9jmtzsDK38cZ5xNY6R+yVatI/zm8s4U0
-         qI+TudEX3AZm3CwG8/EIyrhJGpSD0VwG9pCyR/Byvm58bVH+Dz7zhImHuPFTniPOOUO2
-         mRAnvlZAaW5s3pzhOIh1q6MMkncKebLkgcdTjEJjwaWKGpv+FHnuHvM4xvnh66cbFiDq
-         lnbg==
-X-Gm-Message-State: AOAM532O/3zzdvquC1hmS4NhiKWW6v2XIISALa7SNa9WYmrg1so75t7U
-        IAzl7sFmV+W/4/HNEuUtVkP8d2pe6Sqfyssaqs4hlg==
-X-Google-Smtp-Source: ABdhPJy9j3X2ul9CXpfJuYjxYK4sS2lUaXNeTmcRcxjq10tEczdsEry9ruv+vRp/MwEQwcravOMjxZqh5cKYnjOe0oE=
-X-Received: by 2002:a17:90a:f489:: with SMTP id bx9mr6141115pjb.80.1616102854950;
- Thu, 18 Mar 2021 14:27:34 -0700 (PDT)
+        Thu, 18 Mar 2021 17:28:54 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5975BC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:28:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=BMGtrr6rGCMUJvzDTXbcK0Tug3qQwQY7xCKv7FbOuxA=; b=C5ozsp5SQAidczGOeDPbVEXR9T
+        cTy9zLd0iBOe1iRLaBBkjtnXD4HOsa+h3Hp6IUV9mkk0lxPednjg5xx5bmUaLHzFKHLT7LexdeZY6
+        Mb1uObowMqzTyOAePlrXSceMb0HTnynNqp3qyUk4SAfOoiiY3sxYnbraUaF5g6nA7mi8sFHvLkEYi
+        ltAw6UYOLACqkw+fE/Yj5hhASYtSniBYzY226/bJmnkQH/F/M2DcWRhEhMwa6RqMncGEmBRKlBVkm
+        vpNMqa0NI9PbqnDdNGNjZnwEpfFVa7+PKFh127ZkMTHB6DjX2r5fXG6lXPJGbIcBKoRie/v15qfbp
+        9v5Ua2MA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lN0Bv-0062oC-Rf; Thu, 18 Mar 2021 21:28:28 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 68386986500; Thu, 18 Mar 2021 22:28:26 +0100 (CET)
+Date:   Thu, 18 Mar 2021 22:28:26 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>, viresh.kumar@linaro.org
+Cc:     mingo@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org,
+        linux-kernel@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [RFC][PATCH] sched: Optimize cpufreq_update_util
+Message-ID: <20210318212826.GW4746@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210312095526.197739-1-johannes@sipsolutions.net> <20210312104627.927fb4c7d36f.Idb980393c41c2129ee592de4ed71e7a5518212f9@changeid>
-In-Reply-To: <20210312104627.927fb4c7d36f.Idb980393c41c2129ee592de4ed71e7a5518212f9@changeid>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Thu, 18 Mar 2021 14:27:24 -0700
-Message-ID: <CAFd5g47uR=HxjVET3uygeND8tFsZtfkgsS-PjMagbcagPMTBEg@mail.gmail.com>
-Subject: Re: [PATCH 4/6] um: split up CONFIG_GCOV
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 1:56 AM Johannes Berg <johannes@sipsolutions.net> wrote:
->
-> From: Johannes Berg <johannes.berg@intel.com>
->
-> It's not always desirable to collect coverage data for the
-> entire kernel, so split off CONFIG_GCOV_BASE. This option
-> only enables linking with coverage options, and compiles a
-> single file (reboot.c) with them as well to force gcov to
-> be linked into the kernel binary. That way, modules also
-> work.
->
-> To use this new option properly, one needs to manually add
-> '-fprofile-arcs -ftest-coverage' to the compiler options
-> of some object(s) or subdir(s) to collect coverage data at
-> the desired places.
->
-> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 
-Hey, thanks for doing this! I was looking into this a few weeks ago
-and root caused part of the issue in GCC and in the kernel, but I did
-not have a fix put together.
+Hi,
 
-Anyway, most of the patches make sense to me, but I am not able to
-apply this patch on torvalds/master. Do you mind sending a rebase so I
-can test it?
+The below replaces cpufreq_update_util()'s indirect call with a
+static_call(). The patch is quite gross, and we definitely need
+static_call_update_cpuslocked().
 
-Thanks!
+cpufreq folks, is there a better way to do that optimize pass? That is,
+we need to know when all CPUs have the *same* function set. Otherwise we
+obviously cannot rewrite the text, which is shared by all CPUs.
+
+Also, is there a lock order comment in cpufreq somewhere? I tried
+following it, but eventually gave up and figured 'asking' lockdep was
+far simpler.
+
+---
+ include/linux/sched/cpufreq.h |  9 ++++---
+ kernel/sched/cpufreq.c        | 55 +++++++++++++++++++++++++++++++++++++++++++
+ kernel/sched/sched.h          | 28 ++++++++++++++++++++--
+ kernel/static_call.c          |  4 ++--
+ 4 files changed, 89 insertions(+), 7 deletions(-)
+
+diff --git a/include/linux/sched/cpufreq.h b/include/linux/sched/cpufreq.h
+index 6205578ab6ee..6d2972b67fa0 100644
+--- a/include/linux/sched/cpufreq.h
++++ b/include/linux/sched/cpufreq.h
+@@ -12,14 +12,17 @@
+ 
+ #ifdef CONFIG_CPU_FREQ
+ struct cpufreq_policy;
++struct update_util_data;
++
++typedef void (*cpu_util_update_f)(struct update_util_data *data,
++				u64 time, unsigned int flags);
+ 
+ struct update_util_data {
+-       void (*func)(struct update_util_data *data, u64 time, unsigned int flags);
++	cpu_util_update_f func;
+ };
+ 
+ void cpufreq_add_update_util_hook(int cpu, struct update_util_data *data,
+-                       void (*func)(struct update_util_data *data, u64 time,
+-				    unsigned int flags));
++				  cpu_util_update_f func);
+ void cpufreq_remove_update_util_hook(int cpu);
+ bool cpufreq_this_cpu_can_update(struct cpufreq_policy *policy);
+ 
+diff --git a/kernel/sched/cpufreq.c b/kernel/sched/cpufreq.c
+index 7c2fe50fd76d..b362a04e04d1 100644
+--- a/kernel/sched/cpufreq.c
++++ b/kernel/sched/cpufreq.c
+@@ -6,11 +6,60 @@
+  * Author: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+  */
+ #include <linux/cpufreq.h>
++#include <linux/static_call.h>
+ 
+ #include "sched.h"
+ 
+ DEFINE_PER_CPU(struct update_util_data __rcu *, cpufreq_update_util_data);
+ 
++#ifdef CONFIG_HAVE_STATIC_CALL
++
++void cpufreq_update_indirect(struct update_util_data *data,
++			     u64 time, unsigned int flags)
++{
++	if (data)
++		data->func(data, time, flags);
++}
++
++DEFINE_STATIC_CALL(cpufreq_update_util, cpufreq_update_indirect);
++
++static void cpufreq_update_safe(void)
++{
++	static_call_update(cpufreq_update_util, cpufreq_update_indirect);
++}
++
++static void cpufreq_update_optimize(void)
++{
++	struct update_util_data *data;
++	cpu_util_update_f func = NULL, dfunc;
++	int cpu;
++
++	for_each_online_cpu(cpu) {
++		data = per_cpu(cpufreq_update_util_data, cpu);
++		dfunc = data ? READ_ONCE(data->func) : NULL;
++
++		if (dfunc) {
++			if (!func)
++				func = dfunc;
++			else if (func != dfunc)
++				return;
++		} else if (func)
++			return;
++	}
++
++	pr_info("sched: optimized cpufreq_update_util\n");
++
++	/* all CPUs have the same @func */
++	static_call_update(cpufreq_update_util, func);
++}
++
++#else
++
++static inline void cpufreq_update_safe(void) { }
++static inline void cpufreq_update_optimize(void) { }
++
++#endif
++
+ /**
+  * cpufreq_add_update_util_hook - Populate the CPU's update_util_data pointer.
+  * @cpu: The CPU to set the pointer for.
+@@ -39,8 +88,12 @@ void cpufreq_add_update_util_hook(int cpu, struct update_util_data *data,
+ 	if (WARN_ON(per_cpu(cpufreq_update_util_data, cpu)))
+ 		return;
+ 
++	cpufreq_update_safe();
++
+ 	data->func = func;
+ 	rcu_assign_pointer(per_cpu(cpufreq_update_util_data, cpu), data);
++
++	cpufreq_update_optimize();
+ }
+ EXPORT_SYMBOL_GPL(cpufreq_add_update_util_hook);
+ 
+@@ -56,7 +109,9 @@ EXPORT_SYMBOL_GPL(cpufreq_add_update_util_hook);
+  */
+ void cpufreq_remove_update_util_hook(int cpu)
+ {
++	cpufreq_update_safe();
+ 	rcu_assign_pointer(per_cpu(cpufreq_update_util_data, cpu), NULL);
++	cpufreq_update_optimize();
+ }
+ EXPORT_SYMBOL_GPL(cpufreq_remove_update_util_hook);
+ 
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 24ac31b40b55..333e33c3d496 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2473,6 +2473,30 @@ static inline u64 irq_time_read(int cpu)
+ #ifdef CONFIG_CPU_FREQ
+ DECLARE_PER_CPU(struct update_util_data __rcu *, cpufreq_update_util_data);
+ 
++#ifdef CONFIG_HAVE_STATIC_CALL
++
++extern void cpufreq_update_indirect(struct update_util_data *data,
++				    u64 time, unsigned int flags);
++
++DECLARE_STATIC_CALL(cpufreq_update_util, cpufreq_update_indirect);
++
++static inline void cpufreq_update_util_call(struct update_util_data *data,
++					    u64 time, unsigned int flags)
++{
++	static_call_cond(cpufreq_update_util)(data, time, flags);
++}
++
++#else
++
++static inline void cpufreq_update_util_call(struct update_util_data *data,
++					    u64 time, unsigned int flags)
++{
++	if (data)
++		data->func(data, time, flags);
++}
++
++#endif
++
+ /**
+  * cpufreq_update_util - Take a note about CPU utilization changes.
+  * @rq: Runqueue to carry out the update for.
+@@ -2501,9 +2525,9 @@ static inline void cpufreq_update_util(struct rq *rq, unsigned int flags)
+ 
+ 	data = rcu_dereference_sched(*per_cpu_ptr(&cpufreq_update_util_data,
+ 						  cpu_of(rq)));
+-	if (data)
+-		data->func(data, rq_clock(rq), flags);
++	cpufreq_update_util_call(data, rq_clock(rq), flags);
+ }
++
+ #else
+ static inline void cpufreq_update_util(struct rq *rq, unsigned int flags) {}
+ #endif /* CONFIG_CPU_FREQ */
+diff --git a/kernel/static_call.c b/kernel/static_call.c
+index ae825295cf68..fd73dfce3e50 100644
+--- a/kernel/static_call.c
++++ b/kernel/static_call.c
+@@ -122,7 +122,7 @@ void __static_call_update(struct static_call_key *key, void *tramp, void *func)
+ 	struct static_call_site *site, *stop;
+ 	struct static_call_mod *site_mod, first;
+ 
+-	cpus_read_lock();
++//	cpus_read_lock();
+ 	static_call_lock();
+ 
+ 	if (key->func == func)
+@@ -196,7 +196,7 @@ void __static_call_update(struct static_call_key *key, void *tramp, void *func)
+ 
+ done:
+ 	static_call_unlock();
+-	cpus_read_unlock();
++//	cpus_read_unlock();
+ }
+ EXPORT_SYMBOL_GPL(__static_call_update);
+ 
