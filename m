@@ -2,129 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E7B33FFB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 07:37:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5563433FFB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 07:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229559AbhCRGhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 02:37:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:60498 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229558AbhCRGgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 02:36:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E96C8ED1;
-        Wed, 17 Mar 2021 23:36:46 -0700 (PDT)
-Received: from net-arm-thunderx2-02.shanghai.arm.com (net-arm-thunderx2-02.shanghai.arm.com [10.169.208.224])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7BF6E3F718;
-        Wed, 17 Mar 2021 23:36:41 -0700 (PDT)
-From:   Jianlin Lv <Jianlin.Lv@arm.com>
-To:     bpf@vger.kernel.org
-Cc:     kuba@kernel.org, simon.horman@netronome.com, davem@davemloft.net,
-        ast@kernel.org, alexei.starovoitov@gmail.com, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com, linux-api@vger.kernel.org,
-        Jianlin.Lv@arm.com, iecedge@gmail.com
-Subject: [PATCH bpf-next v2] bpf: Simplify expression for identify bpf mem type
-Date:   Thu, 18 Mar 2021 14:36:26 +0800
-Message-Id: <20210318063626.216024-1-Jianlin.Lv@arm.com>
-X-Mailer: git-send-email 2.25.1
+        id S229792AbhCRGhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 02:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhCRGhM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 02:37:12 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E16C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 23:37:12 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id n79so1014407qke.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 23:37:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9KK3pAd1KRV0ESCKYhHZQ3UsogiNm22NnlLa5ysW8Fk=;
+        b=Bml1qeMGnM436VljGcsX17E687Um5S+FY/d+TZjF0gr8yg6Keka5wOo/q3Bm7zHn9a
+         z8M6dVTBrrfYp+VXF1p/E2o9KrDmidizedBRjoa04Q0OP/jszlGVdgHFowkfmWV0iAVk
+         mzvzFNtvh0AY4rHqfheXdjgrERQFdRpwaTkVc8YePrUt82GK1DEVYxSlsiCH5f7N4VMQ
+         sN7P/jZlp7XnCfRd1dJpRsfHcCTewusqNBzO/tq2F6l58A3HU18U/BIplhqWRtynumQf
+         m0IblVT+6Omd1LRRa5lxSNAQVHe6bQv/G+UjnRjnpmXKDHGTnpsHdy5i1fqtHkazyz1R
+         6Aig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9KK3pAd1KRV0ESCKYhHZQ3UsogiNm22NnlLa5ysW8Fk=;
+        b=kMmyZI2ohwm/lSTq2+oJ44oO+rf56kskTlJa6btHyOJCRCwVBdMh1jqrHqb0h7ETcI
+         LTa3ako21fFv8/ifFJYCUBraexzsY77z9TorwjvO7D9LRzDWUogDb8Hl/WeCVdnzl4mO
+         niXAiYixvYTRmKELPjaEOt6KNGf+ynF5qyj+RXBcgqal1AlyvN+WQjGxw3s26xtwdvZI
+         lQnJUrb/6Cba6eJhjjRLf+qh5l6y940/L6rWOz6pZZfCsPtmss5xmPFoOBIeJRY0GA16
+         GZQo1ahmZkrD3bjnLKb2HQsTJOdBYMRWtb3XWcLzNzgyJq05Bii2dij6Yg6Vqu7ghiLN
+         M4ig==
+X-Gm-Message-State: AOAM5323TJ1UqRtOJtm4mjbP3vPBw4ifkj31kkkYKPD3JLkuBGYOE+wX
+        77q5wvdLjcPoRLmHMEHAiFQ=
+X-Google-Smtp-Source: ABdhPJwVjQ7EwYzte6Gsa3X6h5JwWMXPc9ghLQyC/ES0GeJvRQIJtSynbd2qUDa6dh/5XaOWwBMufA==
+X-Received: by 2002:ae9:f818:: with SMTP id x24mr2896505qkh.101.1616049431145;
+        Wed, 17 Mar 2021 23:37:11 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id g7sm828004qti.20.2021.03.17.23.37.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 23:37:10 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id E6E4027C0054;
+        Thu, 18 Mar 2021 02:37:09 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 18 Mar 2021 02:37:09 -0400
+X-ME-Sender: <xms:FPVSYKPDExYmgatVrcUd2tsoRvkoYyihVZSPmyY_cD0R7K48B2Lucg>
+    <xme:FPVSYI_aaCSLyivuzbk7T_iRzpiTNKJ9svQleRpFINExF830Nau5BLHelLLa3JUz2
+    1JO2ZuNqDZkL6CHxA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudefhedgleehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
+    geejnecukfhppedufedurddutdejrddurddvheegnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgv
+    rhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfh
+    gvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:FPVSYBThNSo4_qLhocpxToZyNKuEi96H5fniEzO3OOU67jvZpxQYbg>
+    <xmx:FPVSYKs5fHxBRU8hAtmat1xzv1Ur0Kfe7NzwYL-BTPibu2jEhls1xw>
+    <xmx:FPVSYCf0m0xLWADJ4uKXB0o2Wrdw19A5k0lo7f_I71iXqi1Bd0YDfA>
+    <xmx:FfVSYKRX1TMGsGIMyR7nkp160dlyLOrlebTrwlcsLxFdlGVn8NaxZuHuj2o>
+Received: from localhost (unknown [131.107.1.254])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7E08F24005A;
+        Thu, 18 Mar 2021 02:37:08 -0400 (EDT)
+Date:   Thu, 18 Mar 2021 14:36:50 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: [PATCH 3/4] locking/ww_mutex: Treat ww_mutex_lock() like a
+ trylock
+Message-ID: <YFL1Ag8MrP6wCZjy@boqun-archlinux>
+References: <20210316153119.13802-1-longman@redhat.com>
+ <20210316153119.13802-4-longman@redhat.com>
+ <YFK5yBIOTiCdFLNm@boqun-archlinux>
+ <64af1d7b-6720-0ac1-4a55-bb0acb642c6f@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <64af1d7b-6720-0ac1-4a55-bb0acb642c6f@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added BPF_LD_ST_SIZE_MASK macro as mask of size modifier that help to
-reduce the evaluation of expressions in if statements,
-and remove BPF_SIZE_MASK in netronome driver.
+On Wed, Mar 17, 2021 at 10:54:17PM -0400, Waiman Long wrote:
+> On 3/17/21 10:24 PM, Boqun Feng wrote:
+> > Hi Waiman,
+> > 
+> > Just a question out of curiosity: how does this problem hide so long?
+> > ;-) Because IIUC, both locktorture and ww_mutex_lock have been there for
+> > a while, so why didn't we spot this earlier?
+> > 
+> > I ask just to make sure we don't introduce the problem because of some
+> > subtle problems in lock(dep).
+> > 
+> You have to explicitly specify ww_mutex in the locktorture module parameter
+> to run the test. ww_mutex is usually not the intended target of testing as
+> there aren't that many places that use it. Even if someone run it, it
+> probably is not on a debug kernel.
+> 
+> Our QA people try to run locktorture on ww_mutex and discover that.
+> 
 
-Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
----
-v2: Move the bpf_LD_ST_SIZE_MASK macro definition to include/linux/bpf.h
----
- drivers/net/ethernet/netronome/nfp/bpf/main.h |  8 +++-----
- include/linux/bpf.h                           |  1 +
- kernel/bpf/verifier.c                         | 12 ++++--------
- 3 files changed, 8 insertions(+), 13 deletions(-)
+Got it. Thanks ;-)
 
-diff --git a/drivers/net/ethernet/netronome/nfp/bpf/main.h b/drivers/net/ethernet/netronome/nfp/bpf/main.h
-index d0e17eebddd9..e90981e69763 100644
---- a/drivers/net/ethernet/netronome/nfp/bpf/main.h
-+++ b/drivers/net/ethernet/netronome/nfp/bpf/main.h
-@@ -346,8 +346,6 @@ struct nfp_insn_meta {
- 	struct list_head l;
- };
- 
--#define BPF_SIZE_MASK	0x18
--
- static inline u8 mbpf_class(const struct nfp_insn_meta *meta)
- {
- 	return BPF_CLASS(meta->insn.code);
-@@ -375,7 +373,7 @@ static inline bool is_mbpf_alu(const struct nfp_insn_meta *meta)
- 
- static inline bool is_mbpf_load(const struct nfp_insn_meta *meta)
- {
--	return (meta->insn.code & ~BPF_SIZE_MASK) == (BPF_LDX | BPF_MEM);
-+	return (meta->insn.code & ~BPF_LD_ST_SIZE_MASK) == (BPF_LDX | BPF_MEM);
- }
- 
- static inline bool is_mbpf_jmp32(const struct nfp_insn_meta *meta)
-@@ -395,7 +393,7 @@ static inline bool is_mbpf_jmp(const struct nfp_insn_meta *meta)
- 
- static inline bool is_mbpf_store(const struct nfp_insn_meta *meta)
- {
--	return (meta->insn.code & ~BPF_SIZE_MASK) == (BPF_STX | BPF_MEM);
-+	return (meta->insn.code & ~BPF_LD_ST_SIZE_MASK) == (BPF_STX | BPF_MEM);
- }
- 
- static inline bool is_mbpf_load_pkt(const struct nfp_insn_meta *meta)
-@@ -430,7 +428,7 @@ static inline bool is_mbpf_classic_store_pkt(const struct nfp_insn_meta *meta)
- 
- static inline bool is_mbpf_atomic(const struct nfp_insn_meta *meta)
- {
--	return (meta->insn.code & ~BPF_SIZE_MASK) == (BPF_STX | BPF_ATOMIC);
-+	return (meta->insn.code & ~BPF_LD_ST_SIZE_MASK) == (BPF_STX | BPF_ATOMIC);
- }
- 
- static inline bool is_mbpf_mul(const struct nfp_insn_meta *meta)
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index a25730eaa148..e85924719c65 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -995,6 +995,7 @@ struct bpf_array {
- 				 BPF_F_RDONLY_PROG |	\
- 				 BPF_F_WRONLY |		\
- 				 BPF_F_WRONLY_PROG)
-+#define BPF_LD_ST_SIZE_MASK	0x18	/* mask of size modifier */
- 
- #define BPF_MAP_CAN_READ	BIT(0)
- #define BPF_MAP_CAN_WRITE	BIT(1)
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index f9096b049cd6..29fdfdb8abfa 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -11384,15 +11384,11 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
- 	for (i = 0; i < insn_cnt; i++, insn++) {
- 		bpf_convert_ctx_access_t convert_ctx_access;
- 
--		if (insn->code == (BPF_LDX | BPF_MEM | BPF_B) ||
--		    insn->code == (BPF_LDX | BPF_MEM | BPF_H) ||
--		    insn->code == (BPF_LDX | BPF_MEM | BPF_W) ||
--		    insn->code == (BPF_LDX | BPF_MEM | BPF_DW))
-+		/* opcode: BPF_MEM | <size> | BPF_LDX */
-+		if ((insn->code & ~BPF_LD_ST_SIZE_MASK) == (BPF_LDX | BPF_MEM))
- 			type = BPF_READ;
--		else if (insn->code == (BPF_STX | BPF_MEM | BPF_B) ||
--			 insn->code == (BPF_STX | BPF_MEM | BPF_H) ||
--			 insn->code == (BPF_STX | BPF_MEM | BPF_W) ||
--			 insn->code == (BPF_STX | BPF_MEM | BPF_DW))
-+		/* opcode: BPF_MEM | <size> | BPF_STX */
-+		else if ((insn->code & ~BPF_LD_ST_SIZE_MASK) == (BPF_STX | BPF_MEM))
- 			type = BPF_WRITE;
- 		else
- 			continue;
--- 
-2.25.1
+Regards,
+Boqun
 
+> Cheers,
+> Longman
+> 
