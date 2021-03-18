@@ -2,160 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF87340E5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:35:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BAF5340E66
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbhCRTfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 15:35:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:47456 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232973AbhCRTfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 15:35:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 498A1ED1;
-        Thu, 18 Mar 2021 12:35:11 -0700 (PDT)
-Received: from [10.57.50.37] (unknown [10.57.50.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 80E293F70D;
-        Thu, 18 Mar 2021 12:35:03 -0700 (PDT)
-Subject: Re: [PATCH] swiotlb: Add swiotlb=off to disable SWIOTLB
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Cc:     opendmb@gmail.com, Jonathan Corbet <corbet@lwn.net>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
+        id S232642AbhCRTjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 15:39:04 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:32949 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230008AbhCRTip (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 15:38:45 -0400
+Received: from [192.168.1.155] ([77.4.36.33]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MUXYs-1lED2o2U40-00QPj6; Thu, 18 Mar 2021 20:38:10 +0100
+Subject: Re: [PATCH] init/Kconfig: make COMPILE_TEST depend on HAS_IOMEM
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "open list:SWIOTLB SUBSYSTEM" <iommu@lists.linux-foundation.org>
-References: <20210318191816.4185226-1-f.fainelli@gmail.com>
- <bbd44c42-cedc-7bd6-a443-c991fd080298@gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <e7850feb-b7cd-e279-e3fc-a9bdba162423@arm.com>
-Date:   Thu, 18 Mar 2021 19:34:55 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        KP Singh <kpsingh@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Terrell <terrelln@fb.com>,
+        Quentin Perret <qperret@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>
+References: <20210224140809.1067582-1-masahiroy@kernel.org>
+ <fa9d393d-1bc3-fc08-52dd-88e76ead97af@metux.net>
+ <c609139d-2df6-dd68-a80e-19b531adda78@roeck-us.net>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <fd9f0b40-136e-7518-7e0b-c4a7d21fe5a4@metux.net>
+Date:   Thu, 18 Mar 2021 20:38:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <bbd44c42-cedc-7bd6-a443-c991fd080298@gmail.com>
+In-Reply-To: <c609139d-2df6-dd68-a80e-19b531adda78@roeck-us.net>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:nKDWHDfiCtsxfLqQnOueQkCg2bBWe+TYDCQALHPQWqvwvkTHqjb
+ rYYtIgoqrLf0EpEgxJW1bE3qQYOnuhPVvbabI/xPty/xEwkMhLtDBIIckOoDmTVeJTolCuM
+ 8qBDWgG43mYQG7I0g6+TBKWG1xzGEIkZqviaYo9WMOYtLgBywxd6AzsSb+cJXNXHN8sX3wy
+ q2qO3U4ABBd+S8hdqZbXg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:OqEyc+vmQB8=:axQqGoABnTo/APizdc2PqZ
+ FQrOqPK0gA608iAxd0/1leg46pKixQe0K/vT6O7DXfprpJRS/qPIxiBp/A/D78pDAyilatmxk
+ KuRCoyiQsSpJ3Vhcoh1uDpoHY7gQwi3JgdAS2Zi4v0yIbfH5SzsMdhIYJwQcN3jZodw26T/nG
+ KxqlQF4/7WXttszG1gkKHE5OX0OyXkmyddRcnvi7Uj9Mv6e/zEQzhf+Mi25f9bgp0NVj9ha4o
+ qsJDfBg4KtEGk1uo6vLVmWaGGNjJEa60cYnadyN5nBw1XgLOoR1CaPSdZP4s9gUTwSBGY+IlP
+ pbmqCeYtYBBK5AXEg/z2rZeil/YCTqqW0SDi4YSLgtVU6lC1lwuI6g3kylRK0QMEWPD8ImU5l
+ kRESauVAISJvBeKwM57dc4JjIfeRLsqDyg8rYvIMIJ6X+biLnFddjq/d25fv4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-18 19:22, Florian Fainelli wrote:
-> 
-> 
-> On 3/18/2021 12:18 PM, Florian Fainelli wrote:
->> It may be useful to disable the SWIOTLB completely for testing or when a
->> platform is known not to have any DRAM addressing limitations what so
->> ever.
+On 24.02.21 17:23, Guenter Roeck wrote:
 
-Isn't that what "swiotlb=noforce" is for? If you're confident that we've 
-really ironed out *all* the awkward corners that used to blow up if 
-various internal bits were left uninitialised, then it would make sense 
-to just tweak the implementation of what we already have.
+> Unfortunately that does not reflect reality, which was the reason
+> for the above two commits. Problem here is that the cost is not paid
+> by the driver authors, but by architectures which don't support HAS_IOMEM,
+> specifically s390. Driver authors tend to enable COMPILE_TEST but never
+> test on a system with HAS_IOMEM=n (and/or ignore test results provided by
+> build robots).
 
-I wouldn't necessarily disagree with adding "off" as an additional alias 
-for "noforce", though, since it does come across as a bit wacky for 
-general use.
+Still, I believe the bug should be fixed at the source.
 
->> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> 
-> Christoph, in addition to this change, how would you feel if we
-> qualified the swiotlb_init() in arch/arm/mm/init.c with a:
-> 
-> 
-> if (memblock_end_of_DRAM() >= SZ_4G)
-> 	swiotlb_init(1)
+Maybe these bots do so much traffic that nobody really cares about them.
+Do they directly address the author and the corresponding maintainer ?
+(if that ever happens to one of my drivers, please let me know)
 
-Modulo "swiotlb=force", of course ;)
+> To a lesser degree, we see the same happen with 32-bit targets. Driver
+> authors often don't compile their drivers in 32-bit mode (just look
+> at 32-bit i386 builds in next-20210224 to see an example). Then it is
+> often up to others to track down and fix the problems. Fortunately,
+> there are still more than a few people who are still interested in
+> 32-bit builds, and problems with those builds tend to get fixed quickly.
+> This is not the case with HAS_IOMEM related issues, where the burden
+> is on very few people.
 
-Robin.
+Could we set up a separate build bot for those configurations, with a
+different from: address and an a special warning text, so maintainers
+quickly see they *should* pay attention.
 
-> right now this is made unconditional whenever ARM_LPAE is enabled which
-> is the case for the platforms I maintain (ARCH_BRCMSTB) however we do
-> not really need a SWIOTLB so long as the largest DRAM physical address
-> does not exceed 4GB AFAICT.
-> 
-> Thanks!
-> 
->> ---
->>   Documentation/admin-guide/kernel-parameters.txt | 1 +
->>   include/linux/swiotlb.h                         | 1 +
->>   kernel/dma/swiotlb.c                            | 9 +++++++++
->>   3 files changed, 11 insertions(+)
->>
->> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
->> index 04545725f187..b0223e48921e 100644
->> --- a/Documentation/admin-guide/kernel-parameters.txt
->> +++ b/Documentation/admin-guide/kernel-parameters.txt
->> @@ -5278,6 +5278,7 @@
->>   			force -- force using of bounce buffers even if they
->>   			         wouldn't be automatically used by the kernel
->>   			noforce -- Never use bounce buffers (for debugging)
->> +			off -- Completely disable SWIOTLB
->>   
->>   	switches=	[HW,M68k]
->>   
->> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
->> index 5857a937c637..23f86243defe 100644
->> --- a/include/linux/swiotlb.h
->> +++ b/include/linux/swiotlb.h
->> @@ -15,6 +15,7 @@ enum swiotlb_force {
->>   	SWIOTLB_NORMAL,		/* Default - depending on HW DMA mask etc. */
->>   	SWIOTLB_FORCE,		/* swiotlb=force */
->>   	SWIOTLB_NO_FORCE,	/* swiotlb=noforce */
->> +	SWIOTLB_OFF,		/* swiotlb=off */
->>   };
->>   
->>   /*
->> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
->> index c10e855a03bc..d7a4a789c7d3 100644
->> --- a/kernel/dma/swiotlb.c
->> +++ b/kernel/dma/swiotlb.c
->> @@ -126,6 +126,8 @@ setup_io_tlb_npages(char *str)
->>   	} else if (!strcmp(str, "noforce")) {
->>   		swiotlb_force = SWIOTLB_NO_FORCE;
->>   		io_tlb_nslabs = 1;
->> +	} else if (!strcmp(str, "off")) {
->> +		swiotlb_force = SWIOTLB_OFF;
->>   	}
->>   
->>   	return 0;
->> @@ -229,6 +231,9 @@ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
->>   	unsigned long i, bytes;
->>   	size_t alloc_size;
->>   
->> +	if (swiotlb_force == SWIOTLB_OFF)
->> +		return 0;
->> +
->>   	bytes = nslabs << IO_TLB_SHIFT;
->>   
->>   	io_tlb_nslabs = nslabs;
->> @@ -284,6 +289,9 @@ swiotlb_init(int verbose)
->>   	unsigned char *vstart;
->>   	unsigned long bytes;
->>   
->> +	if (swiotlb_force == SWIOTLB_OFF)
->> +		goto out;
->> +
->>   	if (!io_tlb_nslabs) {
->>   		io_tlb_nslabs = (default_size >> IO_TLB_SHIFT);
->>   		io_tlb_nslabs = ALIGN(io_tlb_nslabs, IO_TLB_SEGSIZE);
->> @@ -302,6 +310,7 @@ swiotlb_init(int verbose)
->>   		io_tlb_start = 0;
->>   	}
->>   	pr_warn("Cannot allocate buffer");
->> +out:
->>   	no_iotlb_memory = true;
->>   }
->>   
->>
-> 
+IMHO, this is primarily a problem of handling the massive traffic
+on lkml and sorting out whats relevant for oneself.
+
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
