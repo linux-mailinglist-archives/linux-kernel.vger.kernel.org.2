@@ -2,133 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B898834090D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A0D340911
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:42:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbhCRPkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 11:40:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60262 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230416AbhCRPj7 (ORCPT
+        id S231784AbhCRPl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 11:41:28 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:23964 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230416AbhCRPk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 11:39:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616081999;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z6n174q6cXzDs/Hg1NtNa/fztkMIalwwlrv76GiJi+4=;
-        b=CP3ijalE+05ebYIWW2hoPyOgTIFB8NIW8INR/gujNvdshLjT4Zvs96/Er4r+cUKjj+azeW
-        9bNftFl2+StP78q4mRbBiRYehFV5nuIeUovwSwnC5sjRLDXy7hU4UNP2agdeHekGYH5CAB
-        6ew0m2N6U802HJgZDcTSTxV+bstd0z0=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-140-xiY-S3wPP1SFpvW9ZpVdPA-1; Thu, 18 Mar 2021 11:39:57 -0400
-X-MC-Unique: xiY-S3wPP1SFpvW9ZpVdPA-1
-Received: by mail-wr1-f71.google.com with SMTP id y5so20293996wrp.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:39:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Z6n174q6cXzDs/Hg1NtNa/fztkMIalwwlrv76GiJi+4=;
-        b=ti0nkqCTMNrTEO5Hne6rjjtD5WNUCmX31LmtX3m0LN/Lt7ybQAx8gNZBwiMqMU+pxB
-         Rrf8UQV4lNlW3+CVXMCexe/B9L9k1edfaXes+Hh1UrRjWdgS7Hmd8ufgDiWQ/dy6s9MN
-         zyaRU+4YeFEjy5X6HqdE9TYJtiM255YJP5j6aYE0r3VrwOLfFfSItSnrTVZxclPet7Ay
-         IiuayYQo33yCvy0Y3RFNPlHDHq5PZyTmppH7voIeC0haQX7a/dnqJC/LS8bnFQMh/er7
-         Lb42/ShlHiQymUKDBKVkrYw1OHoKXhk8WGtAlOS1kqNuIqqw6cYUjLKjan3IkuUgg0R7
-         dFAg==
-X-Gm-Message-State: AOAM532kdxaqUoh18ULE4StQ22pV2jtmqXbgLL0BMUtVUxylh7jGJXQh
-        Xv47HM/jUmrMZKIojTwu27pIpKdtp9BuQvtoSTBy5jssvDybE/nxbRTefR3rIUVk7QYoJe4E7m4
-        tfTsLyEuWdokP3FfAqXNQdvGj
-X-Received: by 2002:a1c:6a12:: with SMTP id f18mr4304170wmc.31.1616081996403;
-        Thu, 18 Mar 2021 08:39:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJybgfAQG1Vp7DCkIhgHZxt6yWB7EsvxvHpIYhYjGgsBWmptisVOOyAnOQMvkZlUmz+20fqWDg==
-X-Received: by 2002:a1c:6a12:: with SMTP id f18mr4304157wmc.31.1616081996238;
-        Thu, 18 Mar 2021 08:39:56 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id w6sm3457685wrl.49.2021.03.18.08.39.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 08:39:55 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] kvm/kvm_util: add _vm_ioctl
-To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        linux-kselftest@vger.kernel.org
-Cc:     Shuah Khan <shuah@kernel.org>, Andrew Jones <drjones@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210318151624.490861-1-eesposit@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f240b088-9595-67d8-fd04-9c7ffa8805f4@redhat.com>
-Date:   Thu, 18 Mar 2021 16:39:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 18 Mar 2021 11:40:57 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-219-Z0U13KzUNJW_NStgkqAmDA-1; Thu, 18 Mar 2021 15:40:54 +0000
+X-MC-Unique: Z0U13KzUNJW_NStgkqAmDA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Thu, 18 Mar 2021 15:40:53 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Thu, 18 Mar 2021 15:40:53 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Shreeya Patel' <shreeya.patel@collabora.com>,
+        "krisman@collabora.com" <krisman@collabora.com>,
+        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
+        "yuchao0@huawei.com" <yuchao0@huawei.com>,
+        "tytso@mit.edu" <tytso@mit.edu>,
+        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "drosen@google.com" <drosen@google.com>,
+        "ebiggers@google.com" <ebiggers@google.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "kernel@collabora.com" <kernel@collabora.com>,
+        "andre.almeida@collabora.com" <andre.almeida@collabora.com>,
+        kernel test robot <lkp@intel.com>
+Subject: RE: [PATCH v2 3/4] fs: unicode: Use strscpy() instead of strncpy()
+Thread-Topic: [PATCH v2 3/4] fs: unicode: Use strscpy() instead of strncpy()
+Thread-Index: AQHXHADvVX9HQXwArESTX+RVn+Pn1qqJ39Rg
+Date:   Thu, 18 Mar 2021 15:40:53 +0000
+Message-ID: <609a9c29b91b4c9486f37c7ed74f0717@AcuMS.aculab.com>
+References: <20210318133305.316564-1-shreeya.patel@collabora.com>
+ <20210318133305.316564-4-shreeya.patel@collabora.com>
+ <f6bb5ec3-da94-ae9a-4ac4-e39038b42cb3@collabora.com>
+In-Reply-To: <f6bb5ec3-da94-ae9a-4ac4-e39038b42cb3@collabora.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20210318151624.490861-1-eesposit@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/03/21 16:16, Emanuele Giuseppe Esposito wrote:
-> As in kvm_ioctl and _kvm_ioctl, add
-> the respective _vm_ioctl for vm_ioctl.
-> 
-> _vm_ioctl invokes an ioctl using the vm fd,
-> leaving the caller to test the result.
-
-Slightly better subject: "selftests/kvm: add _vm_ioctl".
-
-Queued both, but next time please include a cover letter too.
-
-Thanks!
-
-Paolo
-
-> 
-> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
-> ---
->   tools/testing/selftests/kvm/include/kvm_util.h | 1 +
->   tools/testing/selftests/kvm/lib/kvm_util.c     | 7 ++++++-
->   2 files changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
-> index 2d7eb6989e83..d53a5f7cad61 100644
-> --- a/tools/testing/selftests/kvm/include/kvm_util.h
-> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
-> @@ -133,6 +133,7 @@ void vcpu_ioctl(struct kvm_vm *vm, uint32_t vcpuid, unsigned long ioctl,
->   int _vcpu_ioctl(struct kvm_vm *vm, uint32_t vcpuid, unsigned long ioctl,
->   		void *arg);
->   void vm_ioctl(struct kvm_vm *vm, unsigned long ioctl, void *arg);
-> +int _vm_ioctl(struct kvm_vm *vm, unsigned long cmd, void *arg);
->   void kvm_ioctl(struct kvm_vm *vm, unsigned long ioctl, void *arg);
->   int _kvm_ioctl(struct kvm_vm *vm, unsigned long ioctl, void *arg);
->   void vm_mem_region_set_flags(struct kvm_vm *vm, uint32_t slot, uint32_t flags);
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index e5fbf16f725b..b8849a1aca79 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -1697,11 +1697,16 @@ void vm_ioctl(struct kvm_vm *vm, unsigned long cmd, void *arg)
->   {
->   	int ret;
->   
-> -	ret = ioctl(vm->fd, cmd, arg);
-> +	ret = _vm_ioctl(vm, cmd, arg);
->   	TEST_ASSERT(ret == 0, "vm ioctl %lu failed, rc: %i errno: %i (%s)",
->   		cmd, ret, errno, strerror(errno));
->   }
->   
-> +int _vm_ioctl(struct kvm_vm *vm, unsigned long cmd, void *arg)
-> +{
-> +	return ioctl(vm->fd, cmd, arg);
-> +}
-> +
->   /*
->    * KVM system ioctl
->    *
-> 
+RnJvbTogU2hyZWV5YSBQYXRlbA0KPiBTZW50OiAxOCBNYXJjaCAyMDIxIDE0OjEzDQo+IA0KPiBP
+biAxOC8wMy8yMSA3OjAzIHBtLCBTaHJlZXlhIFBhdGVsIHdyb3RlOg0KPiA+IEZvbGxvd2luZyB3
+YXJuaW5nIHdhcyByZXBvcnRlZCBieSBLZXJuZWwgVGVzdCBSb2JvdC4NCj4gPg0KPiA+IEluIGZ1
+bmN0aW9uICd1dGY4X3BhcnNlX3ZlcnNpb24nLA0KPiA+IGlubGluZWQgZnJvbSAndXRmOF9sb2Fk
+JyBhdCBmcy91bmljb2RlL3V0Zjhtb2QuYzoxOTU6NzoNCj4gPj4+IGZzL3VuaWNvZGUvdXRmOG1v
+ZC5jOjE3NToyOiB3YXJuaW5nOiAnc3RybmNweScgc3BlY2lmaWVkIGJvdW5kIDEyIGVxdWFscw0K
+PiA+IGRlc3RpbmF0aW9uIHNpemUgWy1Xc3RyaW5nb3AtdHJ1bmNhdGlvbl0NCj4gPiAxNzUgfCAg
+c3RybmNweSh2ZXJzaW9uX3N0cmluZywgdmVyc2lvbiwgc2l6ZW9mKHZlcnNpb25fc3RyaW5nKSk7
+DQo+ID4gICAgICB8ICBefn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fg0KPiA+DQo+ID4gVGhlIC1Xc3RyaW5nb3AtdHJ1bmNhdGlvbiB3YXJuaW5n
+IGhpZ2hsaWdodHMgdGhlIHVuaW50ZW5kZWQNCj4gPiB1c2VzIG9mIHRoZSBzdHJuY3B5IGZ1bmN0
+aW9uIHRoYXQgdHJ1bmNhdGUgdGhlIHRlcm1pbmF0aW5nIE5VTEwNCj4gPiBjaGFyYWN0ZXIgZnJv
+bSB0aGUgc291cmNlIHN0cmluZy4NCj4gPiBVbmxpa2Ugc3RybmNweSgpLCBzdHJzY3B5KCkgYWx3
+YXlzIG51bGwtdGVybWluYXRlcyB0aGUgZGVzdGluYXRpb24gc3RyaW5nLA0KPiA+IGhlbmNlIHVz
+ZSBzdHJzY3B5KCkgaW5zdGVhZCBvZiBzdHJuY3B5KCkuDQo+IA0KPiANCj4gTm90IHN1cmUgaWYg
+c3Ryc2NweSBpcyBwcmVmZXJhYmxlLiBKdXN0IGZvdW5kIHRoaXMgYXJ0aWNsZQ0KPiBodHRwczov
+L2x3bi5uZXQvQXJ0aWNsZXMvNjU5MjE0Lw0KPiBTaG91bGQgSSBnbyBmb3IgbWVtY3B5IGluc3Rl
+YWQ/DQoNCldoaWNoIGxlbmd0aCB3b3VsZCB5b3UgZ2l2ZSBtZW1jcHkoKSA/DQpUaGUgY29tcGls
+ZXIgd2lsbCBtb2FuIGlmIHlvdSB0cnkgdG8gcmVhZCBiZXlvbmQgdGhlIGVuZCBvZiB0aGUNCmlu
+cHV0IHN0cmluZy4NCg0Kc3Ryc2NweSgpIGlzIGFib3V0IHRoZSBiZXN0IG9mIGEgYmFkIGxvdC4N
+Cg0KSSB0aGluayAoSSdtIG5vdCBzdXJlISkgdGhhdCBhIGdvb2Qgc3RyaW5nIGNvcHkgZnVuY3Rp
+b24gc2hvdWxkDQpyZXR1cm4gdGhlIG51bWJlciBvZiBieXRlcyBjb3BpZXMgb3IgdGhlIGJ1ZmZl
+ciBsZW5ndGggaXMgdHJ1bmNhdGVkLg0KVGhlbiB5b3UgY2FuIGRvIHJlcGVhdGVkOg0KCW9mZiAr
+PSB4eHhjcHkoYnVmICsgb2ZmLCBidWZsZW4gLSBvZmYsIHh4eHh4KTsNCndpdGhvdXQgYW55IGRh
+bmdlciBvZiB3cml0aW5nIGJleW9uZCB0aGUgYnVmZmVyIGVuZCwgYWx3YXlzDQpnZXR0aW5nIGEg
+J1wwJyB0ZXJtaW5hdGVkIHN0cmluZywgYW5kIGJlaW5nIGFibGUgdG8gZGV0ZWN0IG92ZXJmbG93
+DQpyaWdodCBhdCB0aGUgZW5kLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExh
+a2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQs
+IFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
