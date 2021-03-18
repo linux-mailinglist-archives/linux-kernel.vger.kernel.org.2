@@ -2,92 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4220A340D31
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:37:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2AAC340D30
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232630AbhCRSgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:36:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43182 "EHLO mail.kernel.org"
+        id S232684AbhCRSgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:36:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232645AbhCRSg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:36:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7166C64F3B;
-        Thu, 18 Mar 2021 18:36:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616092589;
-        bh=tcUmX62o1K3vI11xFYaD4YzszYOXdHv/IYyBaJNbW7U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b7Bbz5kfzJlUNvIMxkKAsK7XoiljfqK9ZUUDX/U410UPtnN34ZG28QQ34BFFD9Q9J
-         KQXu+EJn7mZ+XZ0fimScwIqZKE9zH+cnKn+JOIgRZTWVoY0PO+JQu3mVSF28Ij4Zie
-         9MEe2IriDa9pUN+xi+yGjWiGGJo+1joPJLVbh/M1WDFaM5grX6SfA79GuWWvzySoba
-         VusT1KOb4dN3iutb8/PYv0FHY3ljVSTN/0UxSXhc3fQMG17HrEyiuLnfaB2RdpUNP1
-         gEtvUm67F0F2HSF7Kwtq8+FX0jhh13Abc0raWQ+e4OJXvLYAf5XZL3+KSpZFYrpspP
-         0moDH/DvMR0Pw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Guru Das Srinagesh <gurus@codeaurora.org>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        David Collins <collinsd@codeaurora.org>,
-        Anirudh Ghayal <aghayal@codeaurora.org>,
-        Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: (subset) [RFC PATCH v3 0/3] Add support for Qualcomm MFD PMIC register layout
-Date:   Thu, 18 Mar 2021 18:36:07 +0000
-Message-Id: <161609215625.42159.3219588322808647787.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1615423027.git.gurus@codeaurora.org>
-References: <cover.1615423027.git.gurus@codeaurora.org>
+        id S232523AbhCRSg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 14:36:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEFF964F30;
+        Thu, 18 Mar 2021 18:36:26 +0000 (UTC)
+Date:   Thu, 18 Mar 2021 18:36:24 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Chen Jun <chenjun102@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, akpm@linux-foundation.org,
+        will@kernel.org, rui.xiang@huawei.com,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] arm64: stacktrace: Add skip when task == current
+Message-ID: <20210318183623.GB10758@arm.com>
+References: <20210317142050.57712-1-chenjun102@huawei.com>
+ <20210317142050.57712-3-chenjun102@huawei.com>
+ <20210317183636.GG12269@arm.com>
+ <20210317193416.GB9786@C02TD0UTHF1T.local>
+ <20210318161723.GA10758@arm.com>
+ <20210318171207.GB29466@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318171207.GB29466@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 16:39:51 -0800, Guru Das Srinagesh wrote:
-> Changes from v2:
-> - Split up framework changes patch for better comprehension.
-> - Dropped PM8008 driver example and converted it into example code in cover
->   letter and commit text.
-> - Added more info in cover letter and commit message as per v2 feedback.
+On Thu, Mar 18, 2021 at 05:12:07PM +0000, Mark Rutland wrote:
+> On Thu, Mar 18, 2021 at 04:17:24PM +0000, Catalin Marinas wrote:
+> > On Wed, Mar 17, 2021 at 07:34:16PM +0000, Mark Rutland wrote:
+> > > On Wed, Mar 17, 2021 at 06:36:36PM +0000, Catalin Marinas wrote:
+> > > > On Wed, Mar 17, 2021 at 02:20:50PM +0000, Chen Jun wrote:
+> > > > > On ARM64, cat /sys/kernel/debug/page_owner, all pages return the same
+> > > > > stack:
+> > > > >  stack_trace_save+0x4c/0x78
+> > > > >  register_early_stack+0x34/0x70
+> > > > >  init_page_owner+0x34/0x230
+> > > > >  page_ext_init+0x1bc/0x1dc
+> > > > > 
+> > > > > The reason is that:
+> > > > > check_recursive_alloc always return 1 because that
+> > > > > entries[0] is always equal to ip (__set_page_owner+0x3c/0x60).
+> > > > > 
+> > > > > The root cause is that:
+> > > > > commit 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
+> > > > > make the save_trace save 2 more entries.
+> > > > > 
+> > > > > Add skip in arch_stack_walk when task == current.
+> > > > > 
+> > > > > Fixes: 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
+> > > > > Signed-off-by: Chen Jun <chenjun102@huawei.com>
+> > > > > ---
+> > > > >  arch/arm64/kernel/stacktrace.c | 5 +++--
+> > > > >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > > > > 
+> > > > > diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+> > > > > index ad20981..c26b0ac 100644
+> > > > > --- a/arch/arm64/kernel/stacktrace.c
+> > > > > +++ b/arch/arm64/kernel/stacktrace.c
+> > > > > @@ -201,11 +201,12 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+> > > > >  
+> > > > >  	if (regs)
+> > > > >  		start_backtrace(&frame, regs->regs[29], regs->pc);
+> > > > > -	else if (task == current)
+> > > > > +	else if (task == current) {
+> > > > > +		((struct stacktrace_cookie *)cookie)->skip += 2;
+> > > > >  		start_backtrace(&frame,
+> > > > >  				(unsigned long)__builtin_frame_address(0),
+> > > > >  				(unsigned long)arch_stack_walk);
+> > > > > -	else
+> > > > > +	} else
+> > > > >  		start_backtrace(&frame, thread_saved_fp(task),
+> > > > >  				thread_saved_pc(task));
+> > > > 
+> > > > I don't like abusing the cookie here. It's void * as it's meant to be an
+> > > > opaque type. I'd rather skip the first two frames in walk_stackframe()
+> > > > instead before invoking fn().
+> > > 
+> > > I agree that we shouldn't touch cookie here.
+> > > 
+> > > I don't think that it's right to bodge this inside walk_stackframe(),
+> > > since that'll add bogus skipping for the case starting with regs in the
+> > > current task. If we need a bodge, it has to live in arch_stack_walk()
+> > > where we set up the initial unwinding state.
+> > 
+> > Good point. However, instead of relying on __builtin_frame_address(1),
+> > can we add a 'skip' value to struct stackframe via arch_stack_walk() ->
+> > start_backtrace() that is consumed by walk_stackframe()?
 > 
-> This is a follow-up as promised [1] to the earlier attempts [2] [3] to upstream
-> the driver that has been hitherto used to handle IRQs for Qualcomm's PMICs that
-> have multiple on-board peripherals when they are interfaced over the I2C
-> interface.
+> We could, but I'd strongly prefer to use __builtin_frame_address(1) if
+> we can, as it's much simpler to read and keeps the logic constrained to
+> the starting function. I'd already hacked that up at:
 > 
-> [...]
+> https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/commit/?h=arm64/unwind&id=5811a76c1be1dcea7104a9a771fc2604bc2a90ef
+> 
+> ... and I'm fairly confident that this works on arm64.
 
-Applied to
+If it works with both clang and gcc (and various versions), it's cleaner
+this way.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+> If __builtin_frame_address(1) is truly unreliable, then we could just
+> manually unwind one step within arch_stack_walk() when unwinding
+> current, which I think is cleaner than spreading this within
+> walk_stackframe().
+> 
+> I can clean up the commit message and post that as a real patch, if you
+> like?
 
-Thanks!
+Yes, please. Either variant is fine by me, with a preference for
+__builtin_frame_address(1) (if we know it works).
 
-[1/3] regmap-irq: Extend sub-irq to support non-fixed reg strides
-      commit: 1066cfbdfa3f5c401870fad577fe63d1171a5bcd
+> > > In another thread, we came to the conclusion that arch_stack_walk()
+> > > should start at its parent, and its parent should add any skipping it
+> > > requires.
+> > 
+> > This makes sense.
+> > 
+> > > Currently, arch_stack_walk() is off-by-one, and we can bodge that by
+> > > using __builtin_frame_address(1), though I'm waiting for some compiler
+> > > folk to confirm that's sound. Otherwise we need to add an assembly
+> > > trampoline to snapshot the FP, which is unfortunastely convoluted.
+> > > 
+> > > This report suggests that a caller of arch_stack_walk() is off-by-one
+> > > too, which suggests a larger cross-architecture semantic issue. I'll try
+> > > to take a look tomorrow.
+> > 
+> > I don't think the caller is off by one, at least not by the final skip
+> > value. __set_page_owner() wants the trace to start at its caller. The
+> > callee save_stack() in the same file adds a skip of 2.
+> > save_stack_trace() increments the skip before invoking
+> > arch_stack_walk(). So far, this assumes that arch_stack_walk() starts at
+> > its parent, i.e. save_stack_trace().
+> 
+> FWIW, I had only assumed the caller was also off-by-one because the
+> commit message for this patch said the conversion to ARCH_STACKWALK
+> added two entries. Have I misunderstood, or is that incorrect?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+I think the commit log is incorrect. Prior to the ARCH_STACKWALK
+conversion, __save_stack_trace() was skipping 2 since it was creating
+the initial stack_trace_data and called from save_stack_trace(). After
+the conversion, the start frame is initialised by arch_stack_walk()
+which doesn't have any other arch-specific caller it needs to skip.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+Catalin
