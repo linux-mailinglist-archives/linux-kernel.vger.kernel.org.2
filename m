@@ -2,88 +2,380 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7FA33FD0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:08:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B3933FD11
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbhCRCHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 22:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36142 "EHLO
+        id S230227AbhCRCKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 22:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhCRCHn (ORCPT
+        with ESMTP id S229702AbhCRCKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 22:07:43 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F7DC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 19:07:43 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id v192so834952oia.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 19:07:43 -0700 (PDT)
+        Wed, 17 Mar 2021 22:10:25 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38EEEC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 19:10:25 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so3500914otb.7
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 19:10:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cBOic09Ji2sUr7lSL2XtTwyzCrDuTRmAgWURvlhvtG0=;
-        b=Ndyrp+nu/db70ubdGOP4GiYnNhiVuTIguQnDDahQbyBGQtCYZkmBwbFRrQ0REfFdj2
-         dRkdkq4cgKCrJ8QfojElCvKbvTvOOx4+f16SDDder/3dQUojGoLn8e1GIaj4tmukiFd6
-         a4QwSiqMelJNPB48P0pbFRbE+P/KM6MHbvLTe+tmVJbozYvI6PqWLDPBILZM84FJTWUW
-         lZ00OaIwe0tRb/hp5VmnHACLpUaOuqKvERUGxgLjPUbbSfEwfwmv3yGkidDsLkSHf5Ta
-         r4CdscMpJb/kl0YwPHEaEdBuDNozUW8qyLuBqNZRgD94Ul84FkiCjiDZwUJjpYA9dyeZ
-         El/w==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=EmLn8rZvApz0CEK+2n4J5E4ndQ/u3PQvps0+HiUUndQ=;
+        b=IYZu/iRExH+qF3oPFMBhjXkesfxGZvxUuCAsL59J7g0Ir/FM9XdTLKhYblHv8dBdoe
+         5a5OVxK6C8kL+ONV5e2Ls3n0AW01o1Lt6zPiGMuxRVaysLJArU1/h9PDrSX8FhH7/3K/
+         Ykdk36RJgeunBwPJqvVkm/k8gzdbRvWSeCT+lUDbpvWjSBY8aV2lDylV82D0ajr9muTc
+         VtIjUAxJXSATYb/Fio9Mi5w9QmpeAPAVtgPijd0pNOE2Oy0qpIX7InsitPKnw9c1yOad
+         KtsJ6Ta0rz3PPXXg7C5yzNl6xjIDbI6Ln3inhqUuS3DSPn27tx51fjRC7RzMhwAosqET
+         HxuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cBOic09Ji2sUr7lSL2XtTwyzCrDuTRmAgWURvlhvtG0=;
-        b=S3o1WZxzr9/O83KrDfJVM6AjG0iNTEfn1QPbqXDF5gUGdn55L41CY+UMc0I+jtaa9T
-         E/BH3A/wg7rzNH6LjY7s2tV8iH2orvDUxWsGsBIpmuBAPzipXBpLbR/D/sqmS7pojwHI
-         /UYBGLpUL2bw1b7LX6iZLiwC5wGkTidGN+rJlZ2rN6sqlAywOCbKgaGkSjszlShtQjIl
-         JMNpLTbJ98JKAZ8fn52faQ4dcHw/L82i/vpK4mzKCGA8tTQixsxTvcNoxq2Xi27hYvnJ
-         rLC+LhSeJ1waF71IzYshq2CuuXG3Bi3N8b03B08G+55oJxoQmhu23IGRecMFCPFeGAus
-         +hgA==
-X-Gm-Message-State: AOAM531WAKpIMstCntTsc5iYqXoSkxctgGKEy+7cCesuw26PEYyuMsx3
-        x2NyToI1fH655G+bj0jFcIsxSNPBGxUHt6MnmBvoRQ==
-X-Google-Smtp-Source: ABdhPJyIpml/gdyY9dmtxfJlp6jCFpscTMsFU75hsrbdN3tUsgB4w6NmCOGaxfR8kIRzYDCQD946laEs77CtO2uP5Ko=
-X-Received: by 2002:aca:1c02:: with SMTP id c2mr1352536oic.31.1616033262714;
- Wed, 17 Mar 2021 19:07:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=EmLn8rZvApz0CEK+2n4J5E4ndQ/u3PQvps0+HiUUndQ=;
+        b=sVv8pF/v4Lg5eP7RQyMYWF9BFK8MJpSNj26srMlibEMkXzXACpjBq1yk3Y0M/84NvA
+         LEWDN1GVCXVcqpEIk+NJJt4w77be6NKFqL76uhQX4yb+bedahLsAkfzSLwM5ZdIscI4q
+         UlyTN0ySVYpsL2L/YohF4rJ+OYANk/5PGXCuR2LP5DG/cE1KHonEsBmKNtUoYuWv8ujw
+         2c5CHOM+5kxDHgeoHqia/SIz7rFwRr+rFi+JO9zu/b8cE9VbHel2fFVUFcGTlJ1bC0S9
+         zbWM3g1x3wXRGOosp1YmS/CT37Uiebau6Z7Iu8L7ryyOcgcRShh9MnFoIVmgQgfAdwAR
+         uj7Q==
+X-Gm-Message-State: AOAM532fL9wZUI4d/j2Wmnwj00hlW5K2/FJ76MnpdqQaZFey0hTpsldL
+        v2mo7TDIV62pdiK6S/eqEOs8ig==
+X-Google-Smtp-Source: ABdhPJzkvAJJcqb04nH9kaQaty1xkwr8wUcYvda48HhOce67br9qznOZwO56g6l8fKsOrih1uXtLgg==
+X-Received: by 2002:a9d:2226:: with SMTP id o35mr5533438ota.242.1616033424518;
+        Wed, 17 Mar 2021 19:10:24 -0700 (PDT)
+Received: from blackbox.Home ([2806:10b7:2:e880:2c32:cfff:fe8e:de1f])
+        by smtp.gmail.com with ESMTPSA id p64sm212511oib.57.2021.03.17.19.10.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 19:10:23 -0700 (PDT)
+From:   =?UTF-8?q?An=C3=ADbal=20Lim=C3=B3n?= <anibal.limon@linaro.org>
+To:     bjorn.andersson@linaro.org
+Cc:     agross@kernel.org, anibal.limon@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, loic.poulain@linaro.org,
+        mathieu.poirier@linaro.org, ohad@wizery.com
+Subject: [PATCH] remoteproc: qcom: wcnss: Fix race with iris probe
+Date:   Wed, 17 Mar 2021 20:10:21 -0600
+Message-Id: <20210318021021.1127314-1-anibal.limon@linaro.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210312002251.3273013-1-bjorn.andersson@linaro.org>
+References: <20210312002251.3273013-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-References: <20201209094916.17383-1-zong.li@sifive.com> <87v99qyjaz.fsf@igel.home>
-In-Reply-To: <87v99qyjaz.fsf@igel.home>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Thu, 18 Mar 2021 10:07:30 +0800
-Message-ID: <CANXhq0oLxFK1431WmTj5HRO5k_omYkQZCBTG+HORTk9=W_XyNg@mail.gmail.com>
-Subject: Re: [PATCH v7 0/5] clk: add driver for the SiFive FU740
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Pragnesh Patel <pragnesh.patel@openfive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Yash Shah <yash.shah@sifive.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 3:45 AM Andreas Schwab <schwab@linux-m68k.org> wrote:
->
-> On Dez 09 2020, Zong Li wrote:
->
-> > Add a driver for the SiFive FU740 PRCI IP block, which handles more
-> > clocks than FU540. These patches also refactor the original
-> > implementation by spliting the dependent-code of fu540 and fu740
-> > respectively.
->
-> That breaks ethernet on the fu540.
->
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-I would check that, thanks for the report.
+The remoteproc driver is split between the responsibilities of getting
+the SoC-internal ARM core up and running and the external RF (aka
+"Iris") part configured.
 
-> Andreas.
->
-> --
-> Andreas Schwab, schwab@linux-m68k.org
-> GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-> "And now for something completely different."
+In order to satisfy the regulator framework's need of a struct device *
+to look up supplies this was implemented as two different drivers, using
+of_platform_populate() in the remoteproc part to probe the iris part.
+
+Unfortunately it's possible that the iris part probe defers on yet not
+available regulators and an attempt to start the remoteproc will have to
+be rejected, until this has been resolved. But there's no useful
+mechanism of knowing when this would be.
+
+Instead replace the of_platform_populate() and the iris probe with a
+function that rolls its own struct device, with the relevant of_node
+associated that is enough to acquire regulators and clocks specified in
+the DT node and that may propagate the EPROBE_DEFER back to the wcnss
+device's probe.
+
+Reported-by: Anibal Limon <anibal.limon@linaro.org>
+Reported-by: Loic Poulain <loic.poulain@linaro.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Tested-by: Anibal Limon <anibal.limon@linaro.org>
+---
+ drivers/remoteproc/qcom_wcnss.c      |  52 ++++--------
+ drivers/remoteproc/qcom_wcnss.h      |   4 +-
+ drivers/remoteproc/qcom_wcnss_iris.c | 120 +++++++++++++++++----------
+ 3 files changed, 91 insertions(+), 85 deletions(-)
+
+diff --git a/drivers/remoteproc/qcom_wcnss.c b/drivers/remoteproc/qcom_wcnss.c
+index 2a6a23cb14ca..dcf21f12fe7e 100644
+--- a/drivers/remoteproc/qcom_wcnss.c
++++ b/drivers/remoteproc/qcom_wcnss.c
+@@ -142,18 +142,6 @@ static const struct wcnss_data pronto_v2_data = {
+ 	.num_vregs = 1,
+ };
+ 
+-void qcom_wcnss_assign_iris(struct qcom_wcnss *wcnss,
+-			    struct qcom_iris *iris,
+-			    bool use_48mhz_xo)
+-{
+-	mutex_lock(&wcnss->iris_lock);
+-
+-	wcnss->iris = iris;
+-	wcnss->use_48mhz_xo = use_48mhz_xo;
+-
+-	mutex_unlock(&wcnss->iris_lock);
+-}
+-
+ static int wcnss_load(struct rproc *rproc, const struct firmware *fw)
+ {
+ 	struct qcom_wcnss *wcnss = (struct qcom_wcnss *)rproc->priv;
+@@ -633,12 +621,20 @@ static int wcnss_probe(struct platform_device *pdev)
+ 		goto detach_pds;
+ 	}
+ 
++	wcnss->iris = qcom_iris_probe(&pdev->dev, &wcnss->use_48mhz_xo);
++	if (IS_ERR(wcnss->iris)) {
++		ret = PTR_ERR(wcnss->iris);
++		goto detach_pds;
++	}
++
+ 	ret = rproc_add(rproc);
+ 	if (ret)
+-		goto detach_pds;
++		goto remove_iris;
+ 
+-	return of_platform_populate(pdev->dev.of_node, NULL, NULL, &pdev->dev);
++	return 0;
+ 
++remove_iris:
++	qcom_iris_remove(wcnss->iris);
+ detach_pds:
+ 	wcnss_release_pds(wcnss);
+ free_rproc:
+@@ -651,9 +647,10 @@ static int wcnss_remove(struct platform_device *pdev)
+ {
+ 	struct qcom_wcnss *wcnss = platform_get_drvdata(pdev);
+ 
+-	of_platform_depopulate(&pdev->dev);
++	qcom_iris_remove(wcnss->iris);
+ 
+-	qcom_smem_state_put(wcnss->state);
++	if (wcnss->state)
++		qcom_smem_state_put(wcnss->state);
+ 	rproc_del(wcnss->rproc);
+ 
+ 	qcom_remove_sysmon_subdev(wcnss->sysmon);
+@@ -681,28 +678,7 @@ static struct platform_driver wcnss_driver = {
+ 	},
+ };
+ 
+-static int __init wcnss_init(void)
+-{
+-	int ret;
+-
+-	ret = platform_driver_register(&wcnss_driver);
+-	if (ret)
+-		return ret;
+-
+-	ret = platform_driver_register(&qcom_iris_driver);
+-	if (ret)
+-		platform_driver_unregister(&wcnss_driver);
+-
+-	return ret;
+-}
+-module_init(wcnss_init);
+-
+-static void __exit wcnss_exit(void)
+-{
+-	platform_driver_unregister(&qcom_iris_driver);
+-	platform_driver_unregister(&wcnss_driver);
+-}
+-module_exit(wcnss_exit);
++module_platform_driver(wcnss_driver);
+ 
+ MODULE_DESCRIPTION("Qualcomm Peripheral Image Loader for Wireless Subsystem");
+ MODULE_LICENSE("GPL v2");
+diff --git a/drivers/remoteproc/qcom_wcnss.h b/drivers/remoteproc/qcom_wcnss.h
+index 62c8682d0a92..6d01ee6afa7f 100644
+--- a/drivers/remoteproc/qcom_wcnss.h
++++ b/drivers/remoteproc/qcom_wcnss.h
+@@ -17,9 +17,9 @@ struct wcnss_vreg_info {
+ 	bool super_turbo;
+ };
+ 
++struct qcom_iris *qcom_iris_probe(struct device *parent, bool *use_48mhz_xo);
++void qcom_iris_remove(struct qcom_iris *iris);
+ int qcom_iris_enable(struct qcom_iris *iris);
+ void qcom_iris_disable(struct qcom_iris *iris);
+ 
+-void qcom_wcnss_assign_iris(struct qcom_wcnss *wcnss, struct qcom_iris *iris, bool use_48mhz_xo);
+-
+ #endif
+diff --git a/drivers/remoteproc/qcom_wcnss_iris.c b/drivers/remoteproc/qcom_wcnss_iris.c
+index 169acd305ae3..09720ddddc85 100644
+--- a/drivers/remoteproc/qcom_wcnss_iris.c
++++ b/drivers/remoteproc/qcom_wcnss_iris.c
+@@ -17,7 +17,7 @@
+ #include "qcom_wcnss.h"
+ 
+ struct qcom_iris {
+-	struct device *dev;
++	struct device dev;
+ 
+ 	struct clk *xo_clk;
+ 
+@@ -75,7 +75,7 @@ int qcom_iris_enable(struct qcom_iris *iris)
+ 
+ 	ret = clk_prepare_enable(iris->xo_clk);
+ 	if (ret) {
+-		dev_err(iris->dev, "failed to enable xo clk\n");
++		dev_err(&iris->dev, "failed to enable xo clk\n");
+ 		goto disable_regulators;
+ 	}
+ 
+@@ -93,43 +93,90 @@ void qcom_iris_disable(struct qcom_iris *iris)
+ 	regulator_bulk_disable(iris->num_vregs, iris->vregs);
+ }
+ 
+-static int qcom_iris_probe(struct platform_device *pdev)
++static const struct of_device_id iris_of_match[] = {
++	{ .compatible = "qcom,wcn3620", .data = &wcn3620_data },
++	{ .compatible = "qcom,wcn3660", .data = &wcn3660_data },
++	{ .compatible = "qcom,wcn3660b", .data = &wcn3680_data },
++	{ .compatible = "qcom,wcn3680", .data = &wcn3680_data },
++	{}
++};
++
++static void qcom_iris_release(struct device *dev)
++{
++	struct qcom_iris *iris = container_of(dev, struct qcom_iris, dev);
++
++	of_node_put(iris->dev.of_node);
++	kfree(iris);
++}
++
++struct qcom_iris *qcom_iris_probe(struct device *parent, bool *use_48mhz_xo)
+ {
++	const struct of_device_id *match;
+ 	const struct iris_data *data;
+-	struct qcom_wcnss *wcnss;
++	struct device_node *of_node;
+ 	struct qcom_iris *iris;
+ 	int ret;
+ 	int i;
+ 
+-	iris = devm_kzalloc(&pdev->dev, sizeof(struct qcom_iris), GFP_KERNEL);
+-	if (!iris)
+-		return -ENOMEM;
++	of_node = of_get_child_by_name(parent->of_node, "iris");
++	if (!of_node) {
++		dev_err(parent, "No child node \"iris\" found\n");
++		return ERR_PTR(-EINVAL);
++	}
++
++	iris = kzalloc(sizeof(*iris), GFP_KERNEL);
++	if (!iris) {
++		of_node_put(of_node);
++		return ERR_PTR(-ENOMEM);
++	}
++
++	device_initialize(&iris->dev);
++	iris->dev.parent = parent;
++	iris->dev.release = qcom_iris_release;
++	iris->dev.of_node = of_node;
++
++	dev_set_name(&iris->dev, "%s.iris", dev_name(parent));
++
++	ret = device_add(&iris->dev);
++	if (ret) {
++		put_device(&iris->dev);
++		return ERR_PTR(ret);
++	}
++
++	match = of_match_device(iris_of_match, &iris->dev);
++	if (!match) {
++		dev_err(&iris->dev, "no matching compatible for iris\n");
++		ret = -EINVAL;
++		goto err_device_del;
++	}
+ 
+-	data = of_device_get_match_data(&pdev->dev);
+-	wcnss = dev_get_drvdata(pdev->dev.parent);
++	data = match->data;
+ 
+-	iris->xo_clk = devm_clk_get(&pdev->dev, "xo");
++	iris->xo_clk = devm_clk_get(&iris->dev, "xo");
+ 	if (IS_ERR(iris->xo_clk)) {
+-		if (PTR_ERR(iris->xo_clk) != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "failed to acquire xo clk\n");
+-		return PTR_ERR(iris->xo_clk);
++		ret = PTR_ERR(iris->xo_clk);
++		if (ret != -EPROBE_DEFER)
++			dev_err(&iris->dev, "failed to acquire xo clk\n");
++		goto err_device_del;
+ 	}
+ 
+ 	iris->num_vregs = data->num_vregs;
+-	iris->vregs = devm_kcalloc(&pdev->dev,
++	iris->vregs = devm_kcalloc(&iris->dev,
+ 				   iris->num_vregs,
+ 				   sizeof(struct regulator_bulk_data),
+ 				   GFP_KERNEL);
+-	if (!iris->vregs)
+-		return -ENOMEM;
++	if (!iris->vregs) {
++		ret = -ENOMEM;
++		goto err_device_del;
++	}
+ 
+ 	for (i = 0; i < iris->num_vregs; i++)
+ 		iris->vregs[i].supply = data->vregs[i].name;
+ 
+-	ret = devm_regulator_bulk_get(&pdev->dev, iris->num_vregs, iris->vregs);
++	ret = devm_regulator_bulk_get(&iris->dev, iris->num_vregs, iris->vregs);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "failed to get regulators\n");
+-		return ret;
++		dev_err(&iris->dev, "failed to get regulators\n");
++		goto err_device_del;
+ 	}
+ 
+ 	for (i = 0; i < iris->num_vregs; i++) {
+@@ -143,34 +190,17 @@ static int qcom_iris_probe(struct platform_device *pdev)
+ 					   data->vregs[i].load_uA);
+ 	}
+ 
+-	qcom_wcnss_assign_iris(wcnss, iris, data->use_48mhz_xo);
+-
+-	return 0;
+-}
++	*use_48mhz_xo = data->use_48mhz_xo;
+ 
+-static int qcom_iris_remove(struct platform_device *pdev)
+-{
+-	struct qcom_wcnss *wcnss = dev_get_drvdata(pdev->dev.parent);
++	return iris;
+ 
+-	qcom_wcnss_assign_iris(wcnss, NULL, false);
++err_device_del:
++	device_del(&iris->dev);
+ 
+-	return 0;
++	return ERR_PTR(ret);
+ }
+ 
+-static const struct of_device_id iris_of_match[] = {
+-	{ .compatible = "qcom,wcn3620", .data = &wcn3620_data },
+-	{ .compatible = "qcom,wcn3660", .data = &wcn3660_data },
+-	{ .compatible = "qcom,wcn3660b", .data = &wcn3680_data },
+-	{ .compatible = "qcom,wcn3680", .data = &wcn3680_data },
+-	{}
+-};
+-MODULE_DEVICE_TABLE(of, iris_of_match);
+-
+-struct platform_driver qcom_iris_driver = {
+-	.probe = qcom_iris_probe,
+-	.remove = qcom_iris_remove,
+-	.driver = {
+-		.name = "qcom-iris",
+-		.of_match_table = iris_of_match,
+-	},
+-};
++void qcom_iris_remove(struct qcom_iris *iris)
++{
++	device_del(&iris->dev);
++}
+-- 
+2.30.1
+
