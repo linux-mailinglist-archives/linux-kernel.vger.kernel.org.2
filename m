@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CA334007E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3A4340080
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbhCRHzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 03:55:00 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:58887 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229634AbhCRHy5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 03:54:57 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1lMnUZ-002BtB-BB; Thu, 18 Mar 2021 08:54:51 +0100
-Received: from p5b13a966.dip0.t-ipconnect.de ([91.19.169.102] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lMnUZ-001WwY-3q; Thu, 18 Mar 2021 08:54:51 +0100
-Subject: Re: [PATCH 01/10] alpha: use libata instead of the legacy ide driver
-To:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210318045706.200458-1-hch@lst.de>
- <20210318045706.200458-2-hch@lst.de> <YFLrLwjZubWUvA2J@zeniv-ca.linux.org.uk>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <3a752e8c-b518-6d61-75e7-3549e9906f83@physik.fu-berlin.de>
-Date:   Thu, 18 Mar 2021 08:54:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229751AbhCRHzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 03:55:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229712AbhCRHzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 03:55:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E61EC64E77;
+        Thu, 18 Mar 2021 07:55:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616054117;
+        bh=HZGet467p/PlbISyuo70G+BBC8oVsBYVDU0nP87ZhW4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WDVhkm9xVEs6rrMDOIl7ll8Bo2EHZRtGzwV09UcMBr5c9TToC16kkfDDzrmGRSaqo
+         9SNu5qxYhLE6TJcE/B0vWT7NaclJ9Svwm0i0upnKg0BXqtWURpd2rEmUXBIz4A+bf8
+         /Lef2nYApemLwIeMjpXdZjoaG9Z/0AHn/qGdWivKYJn1q9KJfZxstiftpfBGGgl9Nw
+         JGHsa6hhLvrSK2JnR8/6Hvk0kPA7Q19w9zrepFUCfO4e6pmhPX5ppCHKnz2R3GyD0K
+         3+3vdYtypqnUahAdNp1vNK67VU7SABG9nPDF6uATnPg4rJv4S5DbByu51zXAyXuBOu
+         SsfVaR5dy3orw==
+Date:   Thu, 18 Mar 2021 09:55:13 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH master] module: remove never implemented
+ MODULE_SUPPORTED_DEVICE
+Message-ID: <YFMHYUbPmpS+Kzcj@unreal>
+References: <20210317104547.442203-1-leon@kernel.org>
+ <CAHk-=wj+Bsc1T41qziHxf9DvrBrYSBWKj27hEL0EbysCGRPzTA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YFLrLwjZubWUvA2J@zeniv-ca.linux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.169.102
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wj+Bsc1T41qziHxf9DvrBrYSBWKj27hEL0EbysCGRPzTA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Al!
+On Wed, Mar 17, 2021 at 01:17:32PM -0700, Linus Torvalds wrote:
+> On Wed, Mar 17, 2021 at 3:46 AM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > I'm sending this patch to you directly because it is much saner to
+> > apply it in one place instead of multiple patches saga that will
+> > span for at least two cycles if per-maintainer path will be taken.
+> >
+> > It applies cleanly on v5.12-rc2 and completely unharmful.
+>
+> You have an odd whitespace-only part in the patch inside the comment
+> underneath the "remove RME,Hammerfall" case.
 
-On 3/18/21 6:54 AM, Al Viro wrote:
-> On Thu, Mar 18, 2021 at 05:56:57AM +0100, Christoph Hellwig wrote:
->> Switch the alpha defconfig from the legacy ide driver to libata.
-> 
-> Umm...  I don't have an IDE alpha box in a usable shape (fans on
-> CPU module shat themselves), and it would take a while to resurrect
-> it, but I remember the joy it used to cause in some versions.
-> 
-> Do you have reports of libata variants of drivers actually tested on
-> those?
+This is something that I missed, my VIM changed whitespaces in many old
+files and I didn't pay attention when added that chunk.
 
-At least pata_cypress works fine on my AlphaStation XP1000:
+>
+> Also, your email seems to have swallowed spaces at the ends of lines.
+>
+> I can (and did) apply the patch with "--whitespace=fix", but that then
+> causes git to fix some _other_ whitespace too, so the end result isn't
+> quite the same. Oh well.
+>
+> Please check what's up with your email sending client that it seems to
+> remove space at end of lines in patches.
 
-root@tsunami:~> lspci
-0000:00:07.0 ISA bridge: Contaq Microsystems 82c693
-0000:00:07.1 IDE interface: Contaq Microsystems 82c693
-0000:00:07.2 IDE interface: Contaq Microsystems 82c693
-0000:00:07.3 USB controller: Contaq Microsystems 82c693
-0000:00:0d.0 VGA compatible controller: Texas Instruments TVP4020 [Permedia 2] (rev 01)
-0001:01:03.0 Ethernet controller: Digital Equipment Corporation DECchip 21142/43 (rev 41)
-0001:01:06.0 SCSI storage controller: QLogic Corp. ISP1020 Fast-wide SCSI (rev 06)
-0001:01:08.0 PCI bridge: Digital Equipment Corporation DECchip 21152 (rev 03)
-0001:02:09.0 Ethernet controller: Intel Corporation 82541PI Gigabit Ethernet Controller (rev 05)
-root@tsunami:~> lsmod|grep pata
-pata_cypress            3595  3
-libata                235071  2 ata_generic,pata_cypress
-root@tsunami:~>
+This is strange, I'm sending patches with "git send-email" with pretty
+standard settings:
 
-I also have two AlphaStation 233 currently in storage which I assume use
-different IDE chipset which I could test as well.
+   28 [sendemail]
+   29         smtpserver = /usr/local/bin/msmtp-enqueue.sh
+   30         suppresscc = self
+   31         chainReplyTo = false
+   32         confirm = always
+   33         from = Leon Romanovsky <leon@kernel.org>
+   34         envelopeSender = Leon Romanovsky <leon@kernel.org>
+   35         signingkey = leon@kernel.org
+   36         composeencoding = utf-8
 
-Adrian
+Also, I'm using mail.kernel.org as a SMTP especially to make sure that
+my mails are not mangled by our exchange server.
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Are you sure that such change came from me and not from "--whitespace=fix"?
 
+Thanks
+
+>
+>             Linus
