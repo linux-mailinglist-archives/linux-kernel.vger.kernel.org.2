@@ -2,69 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB84C33FCF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 02:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E539A33FCF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhCRB4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 21:56:36 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:45414 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230221AbhCRB4J (ORCPT
+        id S230245AbhCRCAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 22:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229973AbhCRCAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 21:56:09 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0USLDzcs_1616032554;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0USLDzcs_1616032554)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 18 Mar 2021 09:56:05 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     shuah@kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] selftests/bpf: fix warning comparing pointer to 0
-Date:   Thu, 18 Mar 2021 09:55:52 +0800
-Message-Id: <1616032552-39866-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 17 Mar 2021 22:00:05 -0400
+Received: from mail-vk1-xa4a.google.com (mail-vk1-xa4a.google.com [IPv6:2607:f8b0:4864:20::a4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A0CC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 19:00:04 -0700 (PDT)
+Received: by mail-vk1-xa4a.google.com with SMTP id i83so11629922vki.4
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 19:00:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=v1M50zVO+qfyX8hHQPyP5qHNesgD9s9P1xyKpHxr+O4=;
+        b=cbLMc8ExTKSMcFjJxmr7HW9m23mlVR3fNMnWGPh4+DjYZqiKhZUFQ4qcdVtPpzE/aA
+         8mzuAfy1Q0Y7qSpp/xGenI6FdRQWsuCmLqLHAF1mcTH7SZsy6c4b5+2jf6nJ4d07Cbfq
+         4v4LbsEel7zJtXZb2uQdbeUh1djn/FduBWLT8vHUZCzCeLdMhqzuFMfuR2MJROscijad
+         cQ4Qt4Yu9kV7InlNKAAj+USa8pz9YiawXTdgmUDfXxvo13msqrp/Tk04Bqk0ldaoqsYw
+         v7/o8ImE6egm/TTuhWC01bt5tIoIsowp7eUL6ELQhTEBEGO3lNsPjtUir0f1vCIdlEHf
+         AvDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=v1M50zVO+qfyX8hHQPyP5qHNesgD9s9P1xyKpHxr+O4=;
+        b=TA3gKTbQijOFy1zCwtKmg0h5TQ6/Pfv3R7vLzRPqvAqSilb5i6eE6UbGC1po27Q50j
+         9DIuXKgWeV5raKIJrqSou2FtkpsOYS14YY3ncUUMbmPQiGUBgsYyIKssArZhnUtLW8ZF
+         4bY8s4yeR3/7YRU3kjHg6J999MSd6NUb51WgcA8v2oQFgpHgNVPkNhQ604oXQNfJXPet
+         PzPl50c4sZwD4DSikPrXDeZfkLtfF1ZjtrZUXxeJPqAB2FkOlrBIW/wwVW3i+NlI4M2b
+         imY0mf6do9NcxvRbNpKLyA3xiVlrZ83HouTtdG4HqE7JBcH/ms0R8S9f7gFnx3P8PqhZ
+         nIVQ==
+X-Gm-Message-State: AOAM530rOr/DbU8s/iokPUw8lMFCd7HTJ9KmIZ13CBNLGCWI2ifNlHZh
+        xv4YtLH4dKaJaU4SncPijhkjAuJjUhrHow==
+X-Google-Smtp-Source: ABdhPJw8W0/x+H/Lj+3kOZGld4iiR5NSu7ISSwZyTycTarKtlprPwF1Pzu5TDYhgohhf4nqt8oNMwjVJjI1ryA==
+X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:6cf6:3db8:f12:ae7f])
+ (user=shakeelb job=sendgmr) by 2002:a9f:2142:: with SMTP id
+ 60mr1202881uab.105.1616032804013; Wed, 17 Mar 2021 19:00:04 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 18:59:59 -0700
+Message-Id: <20210318015959.2986837-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH] memcg: set page->private before calling swap_readpage
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+The function swap_readpage() (and other functions it call) extracts swap
+entry from page->private. However for SWP_SYNCHRONOUS_IO, the kernel
+skips the swapcache and thus we need to manually set the page->private
+with the swap entry before calling swap_readpage().
 
-./tools/testing/selftests/bpf/progs/fentry_test.c:76:15-16: WARNING
-comparing pointer to 0.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Reported-by: Heiko Carstens <hca@linux.ibm.com>
 ---
- tools/testing/selftests/bpf/progs/fentry_test.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/fentry_test.c b/tools/testing/selftests/bpf/progs/fentry_test.c
-index 5f645fd..d4247d6 100644
---- a/tools/testing/selftests/bpf/progs/fentry_test.c
-+++ b/tools/testing/selftests/bpf/progs/fentry_test.c
-@@ -64,7 +64,7 @@ struct bpf_fentry_test_t {
- SEC("fentry/bpf_fentry_test7")
- int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
- {
--	if (arg == 0)
-+	if (!arg)
- 		test7_result = 1;
- 	return 0;
- }
-@@ -73,7 +73,7 @@ int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
- SEC("fentry/bpf_fentry_test8")
- int BPF_PROG(test8, struct bpf_fentry_test_t *arg)
- {
--	if (arg->a == 0)
-+	if (!arg->a)
- 		test8_result = 1;
- 	return 0;
- }
+Andrew, please squash this into "memcg: charge before adding to
+swapcache on swapin" patch.
+
+ mm/memory.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index aefd158ae1ea..b6f3410b5902 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3324,7 +3324,11 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 					workingset_refault(page, shadow);
+ 
+ 				lru_cache_add(page);
++
++				/* To provide entry to swap_readpage() */
++				set_page_private(page, entry.val);
+ 				swap_readpage(page, true);
++				set_page_private(page, 0);
+ 			}
+ 		} else {
+ 			page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
 -- 
-1.8.3.1
+2.31.0.rc2.261.g7f71774620-goog
 
