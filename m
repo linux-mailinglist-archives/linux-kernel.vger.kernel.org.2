@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EB4340E9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:53:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 365BD340EA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232898AbhCRTwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 15:52:37 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:32771 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhCRTwH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 15:52:07 -0400
-Received: from [192.168.1.155] ([77.4.36.33]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MgwBv-1lufP905V7-00hQZc; Thu, 18 Mar 2021 20:51:50 +0100
-Subject: Re: [PATCH v2] leds: apu: extend support for PC Engines APU1 with
- newer firmware
-To:     Andreas Eberlein <foodeas@aeberlein.de>,
-        Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, post@lespocky.de
-References: <20210216133028.4025-1-foodeas@aeberlein.de>
- <c7eebbb6-df0c-51df-7701-ecb8f6543466@metux.net>
- <20210306165101.fnv6ytqofbolpf6s@falbala.internal.home.lespocky.de>
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-Message-ID: <798a0265-7f06-4894-7f84-64db6f236bcd@metux.net>
-Date:   Thu, 18 Mar 2021 20:51:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S232786AbhCRTyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 15:54:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:47794 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230008AbhCRTxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 15:53:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A8D4031B;
+        Thu, 18 Mar 2021 12:53:46 -0700 (PDT)
+Received: from [10.57.50.37] (unknown [10.57.50.37])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 005C33F792;
+        Thu, 18 Mar 2021 12:53:43 -0700 (PDT)
+Subject: Re: [PATCH] swiotlb: Add swiotlb=off to disable SWIOTLB
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>, opendmb@gmail.com,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "open list:SWIOTLB SUBSYSTEM" <iommu@lists.linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20210318191816.4185226-1-f.fainelli@gmail.com>
+ <bbd44c42-cedc-7bd6-a443-c991fd080298@gmail.com>
+ <e7850feb-b7cd-e279-e3fc-a9bdba162423@arm.com>
+ <f0940ea7-79f6-af57-aa7d-d121abb99012@gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <16d1c66f-5451-2515-af73-a6b44d996e92@arm.com>
+Date:   Thu, 18 Mar 2021 19:53:37 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210306165101.fnv6ytqofbolpf6s@falbala.internal.home.lespocky.de>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: tl
+In-Reply-To: <f0940ea7-79f6-af57-aa7d-d121abb99012@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:+bxIoX9ov4yiSVwImzHj09VyZcNPfr/TN9tv/1ZJyuvm1sVy44m
- LIxKaLhUnIidc2PMjXyP0/UY7ZVr29HjL5Y3Bn6k7SfQllsPDzPsQo27WU21mX6ltzy4LRV
- rLllmhBoPJxNoJ0sIQ3bXAFScaGQcp3JikNdaAM5ulNoyvD16QbXC9rsha3wCmN1BRXhnE8
- 3ifS2d9r/PlHNcHFJi5Og==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ZWcJYdXul5c=:Uz3yFNBC/c23mmVRznUkSy
- JHY7rslghyaUXjFaH0HmFezSUFOxLvNy5ACieLZyfsTx+3usCMYhcBiH7DgRkSWgdRj1j47B9
- OtCuF4dW2rHwIJSCTs+qVIU2kT0QkBNGDRJVUH1UPlElsDgtHzJjf+s5fy8Ccu0vBt5OVxhin
- Jcfp8BI3jcOqQEyNXc9yaI2MxpbMpEZgh3HYgUPDUCRik+WII8weuKiJbRSYuOeNnowntWhIl
- gOX3BzcWN7c0n3rm/OJ2qWbRlnRLhWaLOE3HGs5+no82xLk7WY2eOzcE9Bn9ZKGLnlxWl1mNY
- h/RtlzNP2BO6ssG3ijlphHRRVRYt28uLG4FraehgVouzZ3EadVPIFmKpgUi5dIG5DRBNh6Z3h
- lRgcZyeIVfPP+A+6qgAqZe9cEulx1PeFnblYkKx3mZHE8bT8YdtN9AifOQDlj
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.03.21 17:51, Alexander Dahl wrote:
-
-Hi,
-
-> If you give me a hint, which tree or patchset should be tested, and
-> some hints what should be tested, I can try.
-
-haven't written anything for apu1 yet (as I dont have one), but I wrote
-the drivers for apu2/3/4.
-
-My idea (which I never actually started on) was writing a separate gpio
-driver (not LED) for the old Soc in apu1 and add instantiation w/ 
-leds-gpio, keys, etc, into the pcengines-apu2 driver.
-
-> Thanks for that work.  I have to admit someone from the fli4l linux
-> router distribution team also wrote LED and button drivers for the APU
-> boards, but never managed to upstream those. :-/
+On 2021-03-18 19:43, Florian Fainelli wrote:
 > 
-> If someone is interested, those are spread in our Subversion
-> repository, but the apu drivers are here:
 > 
-> https://repo.nettworks.org/svn/fli4l/branches/4.0/trunk/src/packages/src/src/fli4l/hwsupp/pcengines-apu/
+> On 3/18/2021 12:34 PM, Robin Murphy wrote:
+>> On 2021-03-18 19:22, Florian Fainelli wrote:
+>>>
+>>>
+>>> On 3/18/2021 12:18 PM, Florian Fainelli wrote:
+>>>> It may be useful to disable the SWIOTLB completely for testing or when a
+>>>> platform is known not to have any DRAM addressing limitations what so
+>>>> ever.
+>>
+>> Isn't that what "swiotlb=noforce" is for? If you're confident that we've
+>> really ironed out *all* the awkward corners that used to blow up if
+>> various internal bits were left uninitialised, then it would make sense
+>> to just tweak the implementation of what we already have.
+> 
+> swiotlb=noforce does prevent dma_direct_map_page() from resorting to the
+> swiotlb, however what I am also after is reclaiming these 64MB of
+> default SWIOTLB bounce buffering memory because my systems run with
+> large amounts of reserved memory into ZONE_MOVABLE and everything in
+> ZONE_NORMAL is precious at that point.
 
-hmm, maybe I could pick up pieces for the FCH functionality that's
-not supported yet (eg. wdt) ... not sure how much they differ between
-different SoC versions.
+It also forces io_tlb_nslabs to the minimum, so it should be claiming 
+considerably less than 64MB. IIRC the original proposal *did* skip 
+initialisation completely, but that turned up the aforementioned issues.
 
-> Personally, I'd rather have mainline drivers for all that boards.
-> Don't know if it still makes sense for the older wrap or alix boards,
-> though.  I also have those lying around. ;-)
+>> I wouldn't necessarily disagree with adding "off" as an additional alias
+>> for "noforce", though, since it does come across as a bit wacky for
+>> general use.
+>>
+>>>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+>>>
+>>> Christoph, in addition to this change, how would you feel if we
+>>> qualified the swiotlb_init() in arch/arm/mm/init.c with a:
+>>>
+>>>
+>>> if (memblock_end_of_DRAM() >= SZ_4G)
+>>>  Â Â Â Â swiotlb_init(1)
+>>
+>> Modulo "swiotlb=force", of course ;)
+> 
+> Indeed, we would need to handle that case as well. Does it sound
+> reasonable to do that to you as well?
 
-Well, somebody has to make his hands dirty, write those drivers, bring
-them to mainline, and maintain them.
+I wouldn't like it done to me personally, but for arm64, observe what 
+mem_init() in arch/arm64/mm/init.c already does.
 
-
---mtx
-
--- 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Robin.
