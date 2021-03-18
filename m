@@ -2,93 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A01B340310
+	by mail.lfdr.de (Postfix) with ESMTP id 19C3134030F
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhCRKVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 06:21:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57506 "EHLO
+        id S229877AbhCRKVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 06:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhCRKVr (ORCPT
+        with ESMTP id S229558AbhCRKVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 06:21:47 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592B0C06174A;
-        Thu, 18 Mar 2021 03:21:47 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id f124so1406459qkj.5;
-        Thu, 18 Mar 2021 03:21:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1Xr7Q5W0mf+yiUAVixOuldC+FC1OKy7M7Vy31w+xy1Y=;
-        b=TEtG4SdAnzFyy/M2rKDKRnqAVekeFrgpAB2iHD5DbcokIKv4I1qcJq6kttnmIaFOPG
-         FA9XdKTGR191nxkB/ni54K5QALdJR2VrdcDuOMVEeqqjUdHLd6ag5k9tQ0UfoyWAyicU
-         2+XaSdblLbp6au25IshXW5b5JgmOK7MWgbLsuIECUC8WBa+6rP/0Y2bndmwmzBJBfglU
-         Zyy/TRO2ga/nkQkmmXBnXCezg9UEB3VLARDsYcpMlhXvP2Am9qvPbN2bKIBUPCZPaHmQ
-         KrWVzK/dYiFcKm4TOl6n+l34Pz44dhj5abexVwtedQ+ZikXrjKVYMwUDqNGEwPVenyMK
-         H5vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1Xr7Q5W0mf+yiUAVixOuldC+FC1OKy7M7Vy31w+xy1Y=;
-        b=en06t8tcCK2q2Hq66xsZ9IlMuX1WMjtslJYMHGCP0Q1K1t0b5nFnGEvHT0PUcfVyCr
-         gjli2Fb6g5qJEmFqJvi9vaEtr3XucfBueHnhY47gtUsqerSvqOxenm7w2h8E2CF29fJH
-         S9COtC4ernIo52rRYpKZFhqko5lZ4wsuDQISW6/ajfM3rFdXbfsGYRh3NGiczluHhTY3
-         Pl/wzkxaHdJ4nDbZtnMhEmGaU+qa/nTc0MmTZU7dKR+xY16UnEQMg9SG6FtvkqfTkBwT
-         CAYnve0JQ+v4VNOJGOUkKJAgAbc1FldXdgPE9+SHFUgg5MCF9YFEbOAY4mjtBZT5GpY9
-         DhUg==
-X-Gm-Message-State: AOAM530vun08Bvk7dt3nrkKdm5FRBH8teH33oz6PUKPYMZN7Y8WvKZFI
-        mjb/T4XP8ZFB01nr5T3mmMo=
-X-Google-Smtp-Source: ABdhPJzDRs+L/5k4egcTCwL/J4AHYZ9kwMa0q9V42HhyhSCgubQPEP3sb7Y0pb0+6jOA69PKKwYxsg==
-X-Received: by 2002:a37:6294:: with SMTP id w142mr3528165qkb.255.1616062906647;
-        Thu, 18 Mar 2021 03:21:46 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.54.246])
-        by smtp.gmail.com with ESMTPSA id r3sm1364387qkm.129.2021.03.18.03.21.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 03:21:46 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        chris@chris-wilson.co.uk, tvrtko.ursulin@intel.com,
-        mika.kuoppala@linux.intel.com, unixbhaskar@gmail.com,
-        maarten.lankhorst@linux.intel.com, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH] drm/i915/gt: A typo fix
-Date:   Thu, 18 Mar 2021 15:49:32 +0530
-Message-Id: <20210318101932.19894-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Thu, 18 Mar 2021 06:21:15 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770A4C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 03:21:15 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 084412D8; Thu, 18 Mar 2021 11:21:13 +0100 (CET)
+Date:   Thu, 18 Mar 2021 11:21:12 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Will Deacon <will@kernel.org>, Dave Jiang <dave.jiang@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] iommu/vt-d: Fix lockdep splat in
+ intel_pasid_get_entry()
+Message-ID: <YFMpmLNd73IVcgWq@8bytes.org>
+References: <20210317005834.173503-1-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210317005834.173503-1-baolu.lu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 17, 2021 at 08:58:34AM +0800, Lu Baolu wrote:
+> The pasid_lock is used to synchronize different threads from modifying a
+> same pasid directory entry at the same time. It causes below lockdep splat.
+> 
+> [   83.296538] ========================================================
+> [   83.296538] WARNING: possible irq lock inversion dependency detected
+> [   83.296539] 5.12.0-rc3+ #25 Tainted: G        W
+> [   83.296539] --------------------------------------------------------
+> [   83.296540] bash/780 just changed the state of lock:
+> [   83.296540] ffffffff82b29c98 (device_domain_lock){..-.}-{2:2}, at:
+>            iommu_flush_dev_iotlb.part.0+0x32/0x110
+> [   83.296547] but this lock took another, SOFTIRQ-unsafe lock in the past:
+> [   83.296547]  (pasid_lock){+.+.}-{2:2}
+> [   83.296548]
+> 
+>            and interrupts could create inverse lock ordering between them.
+> 
+> [   83.296549] other info that might help us debug this:
+> [   83.296549] Chain exists of:
+>                  device_domain_lock --> &iommu->lock --> pasid_lock
+> [   83.296551]  Possible interrupt unsafe locking scenario:
+> 
+> [   83.296551]        CPU0                    CPU1
+> [   83.296552]        ----                    ----
+> [   83.296552]   lock(pasid_lock);
+> [   83.296553]                                local_irq_disable();
+> [   83.296553]                                lock(device_domain_lock);
+> [   83.296554]                                lock(&iommu->lock);
+> [   83.296554]   <Interrupt>
+> [   83.296554]     lock(device_domain_lock);
+> [   83.296555]
+>                 *** DEADLOCK ***
+> 
+> Fix it by replacing the pasid_lock with an atomic exchange operation.
+> 
+> Reported-and-tested-by: Dave Jiang <dave.jiang@intel.com>
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  drivers/iommu/intel/pasid.c | 14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
+> index 9fb3d3e80408..1ddcb8295f72 100644
+> --- a/drivers/iommu/intel/pasid.c
+> +++ b/drivers/iommu/intel/pasid.c
+> @@ -24,7 +24,6 @@
+>  /*
+>   * Intel IOMMU system wide PASID name space:
+>   */
+> -static DEFINE_SPINLOCK(pasid_lock);
+>  u32 intel_pasid_max_id = PASID_MAX;
+>  
+>  int vcmd_alloc_pasid(struct intel_iommu *iommu, u32 *pasid)
+> @@ -259,19 +258,18 @@ struct pasid_entry *intel_pasid_get_entry(struct device *dev, u32 pasid)
+>  	dir_index = pasid >> PASID_PDE_SHIFT;
+>  	index = pasid & PASID_PTE_MASK;
+>  
+> -	spin_lock(&pasid_lock);
+>  	entries = get_pasid_table_from_pde(&dir[dir_index]);
+>  	if (!entries) {
+>  		entries = alloc_pgtable_page(info->iommu->node);
+> -		if (!entries) {
+> -			spin_unlock(&pasid_lock);
+> +		if (!entries)
+>  			return NULL;
+> -		}
+>  
+> -		WRITE_ONCE(dir[dir_index].val,
+> -			   (u64)virt_to_phys(entries) | PASID_PTE_PRESENT);
+> +		if (cmpxchg64(&dir[dir_index].val, 0ULL,
+> +			      (u64)virt_to_phys(entries) | PASID_PTE_PRESENT)) {
+> +			free_pgtable_page(entries);
+> +			entries = get_pasid_table_from_pde(&dir[dir_index]);
 
-s/bariers/barriers/
+This is racy, someone could have already cleared the pasid-entry again.
+What you need to do here is to retry the whole path by adding a goto
+to before  the first get_pasid_table_from_pde() call.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/gpu/drm/i915/gt/intel_timeline.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Btw, what makes sure that the pasid_entry does not go away when it is
+returned here?
 
-diff --git a/drivers/gpu/drm/i915/gt/intel_timeline.c b/drivers/gpu/drm/i915/gt/intel_timeline.c
-index 037b0e3ccbed..25fc7f44fee0 100644
---- a/drivers/gpu/drm/i915/gt/intel_timeline.c
-+++ b/drivers/gpu/drm/i915/gt/intel_timeline.c
-@@ -435,7 +435,7 @@ void intel_timeline_exit(struct intel_timeline *tl)
- 	spin_unlock(&timelines->lock);
+Regards,
 
- 	/*
--	 * Since this timeline is idle, all bariers upon which we were waiting
-+	 * Since this timeline is idle, all barriers upon which we were waiting
- 	 * must also be complete and so we can discard the last used barriers
- 	 * without loss of information.
- 	 */
---
-2.26.2
-
+	Joerg
