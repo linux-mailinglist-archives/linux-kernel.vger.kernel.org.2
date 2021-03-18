@@ -2,164 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4A7340FAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5FA7340FB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233228AbhCRVPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 17:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233185AbhCRVPe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 17:15:34 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405FDC061761
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:15:34 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id j7so5239530qtx.5
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:15:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2h/fJfUVZc3lt7GnwBXU8ijaCWEWcTsFoNt4wS6wz1k=;
-        b=rYLjhs1YdAhKTS6eb8HBmzfxZ4x/0tZbMjtiNYOtofICym5tn05oJbxhGMl6QdVpFL
-         +XLl0QmUv1G7Rxc6KA6nswMEtbxk+AqDzoJxB+8GfHNH4UA6ksowzKD72R5JX5ZmfYiV
-         xVtYKIR0toh2j1UceS23cg9M0hmseOGEHWZpC+kFxsDfUhDYpPvSHVV7RFpcXpoesVjf
-         v2i+qiDCHWgCgCuGLgg9L/Z7nzyAywWCpUAmKt1FakZsoeJkIHOS9ukRTUFDLscpZ/r6
-         KSypcnjxKrGaaQAfa5ziHBvS8u3wGY20k0n5WyzuCkEeojZ7DocNgkxaLPRVO7gGQshq
-         buZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2h/fJfUVZc3lt7GnwBXU8ijaCWEWcTsFoNt4wS6wz1k=;
-        b=bH5+KSiNXHoxxWGtE/hyQZ+oKQNE3aFHoHtk230j9L+U2jOqOvLa4PYfoQdyoUjJGV
-         FzrRco5jqJu9zLWYvKyeghvmQ4ZnChVALNhEm3BaQsEwzbSfhQWhg46GWZYpyJjG/ANq
-         VGjei+ON9d136NRVMhavYXdQgBKgjSFkOBqfJue+KLWgRbr+OSfZw5F4Jl4Z9ae73M0g
-         LHns7ZTgQpWYo24nB/U3c5qRhGybNbQKz8A4NZsXO6HQ4RQ5pRuK/nkRPrUmR9nKhiZb
-         xINmfU5ypvSXe7x5eQ6XnPyBrQchUsSSLr0xxNIA8ojGhjHhKZfLmi/OBkbykq7jUoNC
-         tUTw==
-X-Gm-Message-State: AOAM530RonPNZigJUBZQFehgzXoILtGKp8vuugMVVsL6wnJ00W3xPAUB
-        vVCX4gk7qcqMx8mVlry8+PlErqHHdJxTyg==
-X-Google-Smtp-Source: ABdhPJzI1lPGhLk5ZiaM2WHWL90E3tj31UDGa5JlBt1mw/TmLvVFD48T3jrajRkre4pAVR+hgGYICA==
-X-Received: by 2002:a05:622a:8a:: with SMTP id o10mr5451875qtw.50.1616102133172;
-        Thu, 18 Mar 2021 14:15:33 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id c73sm2857463qkg.6.2021.03.18.14.15.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 14:15:32 -0700 (PDT)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Subject: Re: [PATCH v10 4/8] drivers: thermal: tsens: Use init_common for
- msm8960
-To:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Amit Kucheria <amitk@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210217194011.22649-1-ansuelsmth@gmail.com>
- <20210217194011.22649-5-ansuelsmth@gmail.com>
-Message-ID: <d85c44e1-b436-4e7b-1bec-f33a36b4ec71@linaro.org>
-Date:   Thu, 18 Mar 2021 17:15:31 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233287AbhCRVQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 17:16:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233258AbhCRVQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 17:16:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9090564E02;
+        Thu, 18 Mar 2021 21:16:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616102160;
+        bh=3xDkvaW8GlfwEpu6Ok3K5BbG+SXWmgmEnOMjmlPKbfw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qdIrjuItgQGC8WeWbSWgP91x7L/bBAFacA/u+c60pVdHrLz7VFrgzsKy9gJQwb5XV
+         2oty6btRgJpX3jrvQSNBQfjWA49z11R+bpXq+yzbJlDpA8ZXBL5FKqmlnH7LwVyIck
+         fW2kGcVuamALhzFvcdawcKP689Czr93PsT0rK4qe5MsKgn9ChiFh1c61zcCmIE9QPZ
+         l8GjNAis9gWxLCaq65IjfYZksyc/U5SiF1JKtu1FQ+v5mETm71416rfVkqJauvw7bl
+         qL81YFjUjaY0RpPeyYvOa34FDTmTCAktxGX28YNBWstSpYxSjZqTLzs/N54KnTdC4f
+         imAUBu8jfKe6A==
+Received: by mail-oi1-f172.google.com with SMTP id i3so2481327oik.7;
+        Thu, 18 Mar 2021 14:16:00 -0700 (PDT)
+X-Gm-Message-State: AOAM530HYiNArJrF6ApCCKFqmC9fVPpEJG9Nt5LQ0Y2T0EUcTfgRodEE
+        MUAIJIQb6CJwl8JY2Nmd+3Bfd4cc31U0d6MbGc0=
+X-Google-Smtp-Source: ABdhPJxKYgLl8fYQ8VticfZtJO+yxbMjJVhbodTKk/n+YQeTpe3cchm4y/YrJuRX1lVcHuSXsJS+SQDXdnu5U4Z7BA4=
+X-Received: by 2002:a05:6808:3d9:: with SMTP id o25mr4563556oie.4.1616102159988;
+ Thu, 18 Mar 2021 14:15:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210217194011.22649-5-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210125153057.3623715-1-balsini@android.com> <20210125153057.3623715-3-balsini@android.com>
+ <CAK8P3a2VDH9-reuj8QTkFzbaU9XTUEOWFCmCVg1Snb6RjD6mHw@mail.gmail.com> <YFN8IyFTdqhlS9Lf@google.com>
+In-Reply-To: <YFN8IyFTdqhlS9Lf@google.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 18 Mar 2021 22:15:43 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a36ToSbvW1F_0w0gCiWGCoZgFwoLHmQ7Tz2jtwV++VrWA@mail.gmail.com>
+Message-ID: <CAK8P3a36ToSbvW1F_0w0gCiWGCoZgFwoLHmQ7Tz2jtwV++VrWA@mail.gmail.com>
+Subject: Re: [PATCH RESEND V12 2/8] fuse: 32-bit user space ioctl compat for
+ fuse device
+To:     Alessio Balsini <balsini@android.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Akilesh Kailash <akailash@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Antonio SJ Musumeci <trapexit@spawn.link>,
+        David Anderson <dvander@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Peng Tao <bergwolf@gmail.com>,
+        Stefano Duo <duostefano93@gmail.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
+        fuse-devel@lists.sourceforge.net,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 18, 2021 at 5:13 PM Alessio Balsini <balsini@android.com> wrote:
+> On Tue, Mar 16, 2021 at 07:53:06PM +0100, Arnd Bergmann wrote:
+> > On Mon, Jan 25, 2021 at 4:48 PM Alessio Balsini <balsini@android.com> wrote:
+> > >
+>
+> Thanks for spotting this possible criticality.
+>
+> I noticed that 32-bit users pace was unable to use the
+> FUSE_DEV_IOC_CLONE ioctl on 64-bit kernels, so this change avoid this
+> issue by forcing the kernel to interpret 32 and 64 bit
+> FUSE_DEV_IOC_CLONE command as if they were the same.
 
+As far as I can tell from the kernel headers, the command code should
+be the same for both 32-bit and 64-bit tasks: 0x8004e500.
+Can you find out what exact value you see in the user space that was
+causing problems, and how it ended up with a different value than
+the 64-bit version?
 
-On 2/17/21 2:40 PM, Ansuel Smith wrote:
-> Use init_common and drop custom init for msm8960.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+If there are two possible command codes, I'd suggest you just change
+the driver to handle both variants explicitly, but not any other one.
 
-Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
+> This is the simplest solution I could find as the UAPI is not changed
+> as, as you mentioned, the argument doesn't require any conversion.
+>
+> I understand that this might limit possible future extensions of the
+> FUSE_DEV_IOC_XXX ioctls if their in/out argument changed depending on
+> the architecture, but only at that point we can switch to using the
+> compat layer, right?
+>
+> What I'm worried about is the direction, do you think this would be an
+> issue?
+>
+> I can start working on a compat layer fix meanwhile.
 
-Warm Regards
-Thara
+For a proper well-designed ioctl interface, compat support should not
+need anything beyond the '.compat_ioctl = compat_ptr_ioctl'
+assignment.
 
-> --- >   drivers/thermal/qcom/tsens-8960.c | 52 +------------------------------
->   1 file changed, 1 insertion(+), 51 deletions(-)
-> 
-> diff --git a/drivers/thermal/qcom/tsens-8960.c b/drivers/thermal/qcom/tsens-8960.c
-> index 3f4fc1ffe679..86585f439985 100644
-> --- a/drivers/thermal/qcom/tsens-8960.c
-> +++ b/drivers/thermal/qcom/tsens-8960.c
-> @@ -173,56 +173,6 @@ static void disable_8960(struct tsens_priv *priv)
->   	regmap_write(priv->tm_map, CNTL_ADDR, reg_cntl);
->   }
->   
-> -static int init_8960(struct tsens_priv *priv)
-> -{
-> -	int ret, i;
-> -	u32 reg_cntl;
-> -
-> -	priv->tm_map = dev_get_regmap(priv->dev, NULL);
-> -	if (!priv->tm_map)
-> -		return -ENODEV;
-> -
-> -	/*
-> -	 * The status registers for each sensor are discontiguous
-> -	 * because some SoCs have 5 sensors while others have more
-> -	 * but the control registers stay in the same place, i.e
-> -	 * directly after the first 5 status registers.
-> -	 */
-> -	for (i = 0; i < priv->num_sensors; i++) {
-> -		if (i >= 5)
-> -			priv->sensor[i].status = S0_STATUS_ADDR + 40;
-> -		priv->sensor[i].status += i * 4;
-> -	}
-> -
-> -	reg_cntl = SW_RST;
-> -	ret = regmap_update_bits(priv->tm_map, CNTL_ADDR, SW_RST, reg_cntl);
-> -	if (ret)
-> -		return ret;
-> -
-> -	if (priv->num_sensors > 1) {
-> -		reg_cntl |= SLP_CLK_ENA | (MEASURE_PERIOD << 18);
-> -		reg_cntl &= ~SW_RST;
-> -		ret = regmap_update_bits(priv->tm_map, CONFIG_ADDR,
-> -					 CONFIG_MASK, CONFIG);
-> -	} else {
-> -		reg_cntl |= SLP_CLK_ENA_8660 | (MEASURE_PERIOD << 16);
-> -		reg_cntl &= ~CONFIG_MASK_8660;
-> -		reg_cntl |= CONFIG_8660 << CONFIG_SHIFT_8660;
-> -	}
-> -
-> -	reg_cntl |= GENMASK(priv->num_sensors - 1, 0) << SENSOR0_SHIFT;
-> -	ret = regmap_write(priv->tm_map, CNTL_ADDR, reg_cntl);
-> -	if (ret)
-> -		return ret;
-> -
-> -	reg_cntl |= EN;
-> -	ret = regmap_write(priv->tm_map, CNTL_ADDR, reg_cntl);
-> -	if (ret)
-> -		return ret;
-> -
-> -	return 0;
-> -}
-> -
->   static int calibrate_8960(struct tsens_priv *priv)
->   {
->   	int i;
-> @@ -346,7 +296,7 @@ static const struct reg_field tsens_8960_regfields[MAX_REGFIELDS] = {
->   };
->   
->   static const struct tsens_ops ops_8960 = {
-> -	.init		= init_8960,
-> +	.init		= init_common,
->   	.calibrate	= calibrate_8960,
->   	.get_temp	= get_temp_8960,
->   	.enable		= enable_8960,
-> 
-
+       Arnd
