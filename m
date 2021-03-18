@@ -2,245 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F894340564
+	by mail.lfdr.de (Postfix) with ESMTP id 2E59B340563
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230467AbhCRMVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 08:21:53 -0400
-Received: from gecko.sbs.de ([194.138.37.40]:40076 "EHLO gecko.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229747AbhCRMVn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:21:43 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12ICL3Aq031719
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Mar 2021 13:21:03 +0100
-Received: from [167.87.41.130] ([167.87.41.130])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12ICL22G003851;
-        Thu, 18 Mar 2021 13:21:02 +0100
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Subject: Re: [PATCH 2/3] KVM: x86: guest debug: don't inject interrupts while
- single stepping
-To:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
-References: <20210315221020.661693-1-mlevitsk@redhat.com>
- <20210315221020.661693-3-mlevitsk@redhat.com> <YE/vtYYwMakERzTS@google.com>
- <1259724f-1bdb-6229-2772-3192f6d17a4a@siemens.com>
- <bede3450413a7c5e7e55b19a47c8f079edaa55a2.camel@redhat.com>
- <ca41fe98-0e5d-3b4c-8ed8-bdd7cd5bc60f@siemens.com>
- <71ae8b75c30fd0f87e760216ad310ddf72d31c7b.camel@redhat.com>
-Message-ID: <cdb5210f-9eda-6a77-9625-26d76cf5ec6b@siemens.com>
-Date:   Thu, 18 Mar 2021 13:21:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229854AbhCRMVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 08:21:51 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:14397 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229703AbhCRMVY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 08:21:24 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F1R0z5n77zkYmq;
+        Thu, 18 Mar 2021 20:19:47 +0800 (CST)
+Received: from [10.174.177.244] (10.174.177.244) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 18 Mar 2021 20:21:15 +0800
+Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in riscv_intc_irq
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com>
+CC:     Albert Ou <aou@eecs.berkeley.edu>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <00000000000056b18b05bd7c6511@google.com>
+ <CACT4Y+brvecfGUk7H7-mcJ82NxbEuETv+js0nRxpV7zc1AZH5w@mail.gmail.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <c82390e5-33f6-75f6-6b93-c618537413e5@huawei.com>
+Date:   Thu, 18 Mar 2021 20:21:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <71ae8b75c30fd0f87e760216ad310ddf72d31c7b.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CACT4Y+brvecfGUk7H7-mcJ82NxbEuETv+js0nRxpV7zc1AZH5w@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.244]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.03.21 13:34, Maxim Levitsky wrote:
-> On Tue, 2021-03-16 at 12:27 +0100, Jan Kiszka wrote:
->> On 16.03.21 11:59, Maxim Levitsky wrote:
->>> On Tue, 2021-03-16 at 10:16 +0100, Jan Kiszka wrote:
->>>> On 16.03.21 00:37, Sean Christopherson wrote:
->>>>> On Tue, Mar 16, 2021, Maxim Levitsky wrote:
->>>>>> This change greatly helps with two issues:
->>>>>>
->>>>>> * Resuming from a breakpoint is much more reliable.
->>>>>>
->>>>>>   When resuming execution from a breakpoint, with interrupts enabled, more often
->>>>>>   than not, KVM would inject an interrupt and make the CPU jump immediately to
->>>>>>   the interrupt handler and eventually return to the breakpoint, to trigger it
->>>>>>   again.
->>>>>>
->>>>>>   From the user point of view it looks like the CPU never executed a
->>>>>>   single instruction and in some cases that can even prevent forward progress,
->>>>>>   for example, when the breakpoint is placed by an automated script
->>>>>>   (e.g lx-symbols), which does something in response to the breakpoint and then
->>>>>>   continues the guest automatically.
->>>>>>   If the script execution takes enough time for another interrupt to arrive,
->>>>>>   the guest will be stuck on the same breakpoint RIP forever.
->>>>>>
->>>>>> * Normal single stepping is much more predictable, since it won't land the
->>>>>>   debugger into an interrupt handler, so it is much more usable.
->>>>>>
->>>>>>   (If entry to an interrupt handler is desired, the user can still place a
->>>>>>   breakpoint at it and resume the guest, which won't activate this workaround
->>>>>>   and let the gdb still stop at the interrupt handler)
->>>>>>
->>>>>> Since this change is only active when guest is debugged, it won't affect
->>>>>> KVM running normal 'production' VMs.
->>>>>>
->>>>>>
->>>>>> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
->>>>>> Tested-by: Stefano Garzarella <sgarzare@redhat.com>
->>>>>> ---
->>>>>>  arch/x86/kvm/x86.c | 6 ++++++
->>>>>>  1 file changed, 6 insertions(+)
->>>>>>
->>>>>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->>>>>> index a9d95f90a0487..b75d990fcf12b 100644
->>>>>> --- a/arch/x86/kvm/x86.c
->>>>>> +++ b/arch/x86/kvm/x86.c
->>>>>> @@ -8458,6 +8458,12 @@ static void inject_pending_event(struct kvm_vcpu *vcpu, bool *req_immediate_exit
->>>>>>  		can_inject = false;
->>>>>>  	}
->>>>>>  
->>>>>> +	/*
->>>>>> +	 * Don't inject interrupts while single stepping to make guest debug easier
->>>>>> +	 */
->>>>>> +	if (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)
->>>>>> +		return;
->>>>>
->>>>> Is this something userspace can deal with?  E.g. disable IRQs and/or set NMI
->>>>> blocking at the start of single-stepping, unwind at the end?  Deviating this far
->>>>> from architectural behavior will end in tears at some point.
->>>>>
->>>>
->>>> Does this happen to address this suspicious workaround in the kernel?
->>>>
->>>>         /*
->>>>          * The kernel doesn't use TF single-step outside of:
->>>>          *
->>>>          *  - Kprobes, consumed through kprobe_debug_handler()
->>>>          *  - KGDB, consumed through notify_debug()
->>>>          *
->>>>          * So if we get here with DR_STEP set, something is wonky.
->>>>          *
->>>>          * A known way to trigger this is through QEMU's GDB stub,
->>>>          * which leaks #DB into the guest and causes IST recursion.
->>>>          */
->>>>         if (WARN_ON_ONCE(dr6 & DR_STEP))
->>>>                 regs->flags &= ~X86_EFLAGS_TF;
->>>>
->>>> (arch/x86/kernel/traps.c, exc_debug_kernel)
->>>>
->>>> I wonder why this got merged while no one fixed QEMU/KVM, for years? Oh,
->>>> yeah, question to myself as well, dancing around broken guest debugging
->>>> for a long time while trying to fix other issues...
->>>
->>> To be honest I didn't see that warning even once, but I can imagine KVM
->>> leaking #DB due to bugs in that code. That area historically didn't receive
->>> much attention since it can only be triggered by
->>> KVM_GET/SET_GUEST_DEBUG which isn't used in production.
+
+On 2021/3/14 18:47, Dmitry Vyukov wrote:
+> On Sun, Mar 14, 2021 at 11:14 AM syzbot
+> <syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com> wrote:
+>> Hello,
 >>
->> I've triggered it recently while debugging a guest, that's why I got
->> aware of the code path. Long ago, all this used to work (soft BPs,
->> single-stepping etc.)
+>> syzbot found the following issue on:
 >>
->>> The only issue that I on the other hand  did
->>> see which is mostly gdb fault is that it fails to remove a software breakpoint
->>> when resuming over it, if that breakpoint's python handler messes up 
->>> with gdb's symbols, which is what lx-symbols does.
->>>
->>> And that despite the fact that lx-symbol doesn't mess with the object
->>> (that is the kernel) where the breakpoint is defined.
->>>
->>> Just adding/removing one symbol file is enough to trigger this issue.
->>>
->>> Since lx-symbols already works this around when it reloads all symbols,
->>> I extended that workaround to happen also when loading/unloading 
->>> only a single symbol file.
+>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
+>> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=15a35756d00000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=81c0b708b31626cc
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=005654dd9b8f26bd4c07
+>> userspace arch: riscv64
 >>
->> You have no issue with interactive debugging when NOT using gdb scripts
->> / lx-symbol?
-> 
-> To be honest I don't use guest debugging that much,
-> so I probably missed some issues.
-> 
-> Now that I fixed lx-symbols though I'll probably use 
-> guest debugging much more.
-> I will keep an eye on any issues that I find.
-> 
-> The main push to fix lx-symbols actually came
-> from me wanting to understand if there is something
-> broken with KVM's guest debugging knowing that
-> lx-symbols crashes the guest when module is loaded
-> after lx-symbols was executed.
-> 
-> That lx-symbols related guest crash I traced to issue 
-> with gdb as I explained, and the lack of blocking of the interrupts 
-> on single step is not a bug but more a missing feature
-> that should be implemented to make single step easier to use.
-> 
-> Another issue which isn't a bug is that you can't place a software
-> breakpoint if kernel is not loaded (since there is no code in memory)
-> or if the kernel haven't done basic paging initialization 
-> (since there is no paging yet to know where to place the breakpoint).
-> Hardware breakpoints work for this fine though.
-> 
-> So in summary I haven't found any major issues with KVM's guest debug
-> yet.
-> 
-> If I do notice issues with guest debug, I will try to isolate
-> and debug them.
-> For the issue that you mentioned, do you have a way to reproduce it?
+>> Unfortunately, I don't have any reproducer for this issue yet.
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com
+>>
+>> ==================================================================
+>> BUG: KASAN: slab-out-of-bounds in riscv_intc_irq+0x24/0xcc drivers/irqchip/irq-riscv-intc.c:24
+>> Read of size 8 at addr ffffffe00c963bd0 by task kworker/1:1/4388
+>>
+>> CPU: 1 PID: 4388 Comm: kworker/1:1 Not tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
+>> Hardware name: riscv-virtio,qemu (DT)
+>> Workqueue: events nsim_dev_trap_report_work
+>> Call Trace:
+>> [<ffffffe0000096c0>] walk_stackframe+0x0/0x23c arch/riscv/kernel/traps.c:201
+>>
+>> Allocated by task 76347056:
+>> (stack is not available)
+>>
+>> Last potentially related work creation:
+> There seems to be some issue with riscv stack unwinder.
+> This does not have stacks.
 
-To pick this up again, I did some experiments and was easily able to
-reproduce the main problem:
+Hi, could you test with the following  patch about the no stack 
+issue(from v5.11-rc4), I made a mistake when do some cleanup...
 
- - checkout linux master (1df27313f50 yesterday)
- - build a fitting host kernel with KVM
- - build a target kernel with defconfig + CONFIG_KVM_GUEST +
-   CONFIG_DEBUG_INFO, no gdb scripts for now
- - boot the guest
+https://lore.kernel.org/linux-riscv/ce5b3533-b75d-c31c-4319-9d29769bbbd5@huawei.com/T/#t
 
-   qemu-system-x86_64 linux.img -enable-kvm -smp 4 -s
-      -kernel bzImage -append "console=ttyS0 root=... nokaslr"
-
- - gdb vmlinux
- - tar rem :1234
- - b __x64_sys_execve
- - continue whenever you hit the breakpoint, and the guest will
-   eventually hang
- - or stepi, and you may end up in the interrupt handler
- - specifically doing that on the serial console or setting the bp in
-   early boot exposes the issue
-
-I've also seen
-
-WARNING: CPU: 3 PID: 751 at ../arch/x86/kernel/traps.c:915
-exc_debug+0x16b/0x1c0
-
-from time to time.
-
-When I apply this patch to the host, the problems are gone.
-
-Interestingly, my OpenSUSE 5.3.18-lp152.66-default does not show this
-behavior and /seems/ stable from quick testing. Not sure if there were
-changes in upstream between that baseline and head or if Suse is
-carrying a local fix.
-
-In any case, I think we need the following:
-
- - default disabling of event injections when guest debugging injected
-   TF
- - possibly some control interface to allow events BUT then avoids any
-   TF injection to prevent guest state corruptions
- - exposure of that interface to the gdb frontend, maybe by making it
-   available via the QEMU monitor (monitor ...)
- - a for kvm-unit-tests to trigger the above corner cases
-
-Jan
-
--- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+> "BUG: unable to handle kernel access to user memory in schedule_tail"
+> does not have proper stacks:
+> https://syzkaller.appspot.com/bug?id=9de8c24d24004fd5e482555f5ad8314da2fb1cee
+>
+> I also found 2 riscv reports in "KASAN: use-after-free Read in
+> idr_for_each (2)":
+> https://syzkaller.appspot.com/bug?id=7f84dfc3902878befc22e52eb5c7298d0ad70cf3
+>
+> both don't have any stacks:
+>
+> ==================================================================
+> BUG: KASAN: use-after-free in radix_tree_next_slot
+> include/linux/radix-tree.h:422 [inline]
+> BUG: KASAN: use-after-free in idr_for_each+0xf4/0x160 lib/idr.c:202
+> Read of size 8 at addr ffffffe010c00878 by task syz-executor.1/4828
+>
+> CPU: 0 PID: 4828 Comm: syz-executor.1 Not tainted
+> 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
+> Hardware name: riscv-virtio,qemu (DT)
+> Call Trace:
+> [<ffffffe0000096c0>] walk_stackframe+0x0/0x23c arch/riscv/kernel/traps.c:201
+>
+> Allocated by task 4828:
+> (stack is not available)
+>
+> Freed by task 4473:
+> (stack is not available)
+>
+>
+>> ---
+>> This report is generated by a bot. It may contain errors.
+>> See https://goo.gl/tpsmEJ for more information about syzbot.
+>> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>>
+>> syzbot will keep track of this issue. See:
+>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> .
+>
