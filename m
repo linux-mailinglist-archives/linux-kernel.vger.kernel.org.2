@@ -2,90 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F24E3340CD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F72F340CD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:23:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232373AbhCRSWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232330AbhCRSWL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:22:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08919C06174A;
-        Thu, 18 Mar 2021 11:22:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=S9hxfnnZSFMfcMrf6bjIrxOqUzvx5VJvhFrIa36oBsA=; b=fY16BKpFfFkJVHeFR1WsjzrKBO
-        jxaJiM6Gvteh+TcN7aH2Y8/LX766eVyxGW2L0D6VoHJdeCyCFNQ9+PMV1zqT15JCuC4BnkmxhD3l5
-        ZHGj9ngr34tEwDqlU8Mb875p1YK+yRRADP0xtG4404D2du/xqh0v+BYauKFvBp4Ptk7ruRI5xn00Z
-        PJMJMR3cR/7MQuyD8gfxayhnBXWYm2xTnWmd5oQz8pb1rLF7BSSk8PWEDmdL/GiQXLzHvSorptkDh
-        Sm1lNFrvinmuv9mNv9vcFlrtsSFrFX02Ay65Q+lNyjnffGnuaWjE7aAlXVpihXk56RZLUGaU5bXr6
-        KDGlPfNA==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMxHT-003LNP-Ma; Thu, 18 Mar 2021 18:22:02 +0000
-Subject: Re: [PATCH] drm/msm/dp: Fixed couple of typos
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, robdclark@gmail.com,
-        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
-        khsieh@codeaurora.org, tanmay@codeaurora.org,
-        chandanu@codeaurora.org, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210318062650.19886-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d3facf30-2a60-46f2-caa0-af63d3a52dd1@infradead.org>
-Date:   Thu, 18 Mar 2021 11:21:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S232432AbhCRSXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:23:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40376 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232361AbhCRSXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 14:23:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07F5664DFF;
+        Thu, 18 Mar 2021 18:23:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616091783;
+        bh=sXISo4PQDYozWK3fHjEB01FxcE4xjmd31yUdATknSHQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=c1Hg6KJdZUPFO+8amgDpFBICHBW3D7yXRO8aGyH5Zvw3xIvjZxbKpuwFBaebaciPw
+         MPKYFTX5ZtWpAhYEL/L5gFdIkmhOvMfZn75/4dU9sNAdFUviiE+DHZwhxiFk4jp4RJ
+         /w2SXiN6p5B5W3gK79sXWfvgQB7GHxBNnDakr7B7A9sMVcrjLImePQnGftNH4TuSby
+         TQAiEr0nfpWma47VZYN/vi5rqSvIiX7mtfRkPi3Kl0eKrcoE1aDiUDDC0lpBL+zug6
+         O/ZFD5RbT0HungY4MRNPFNXWUON4OIxtfWT4k+9Y5MJO6eqGyFRjDhPyIVyYaKv/tk
+         T7mwchViYpAMQ==
+Date:   Thu, 18 Mar 2021 13:23:01 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] PCI: dwc: Fix MSI not work after resume
+Message-ID: <20210318182301.GA158400@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210318062650.19886-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210301111031.220a38b8@xhacker.debian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 11:26 PM, Bhaskar Chowdhury wrote:
-> s/modueles/modules/ ....two different places
+On Mon, Mar 01, 2021 at 11:10:31AM +0800, Jisheng Zhang wrote:
+> After we move dw_pcie_msi_init() into core -- dw_pcie_host_init(), the
+> MSI stops working after resume. Because dw_pcie_host_init() is only
+> called once during probe. To fix this issue, we move dw_pcie_msi_init()
+> to dw_pcie_setup_rc().
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> Fixes: 59fbab1ae40e ("PCI: dwc: Move dw_pcie_msi_init() into core")
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Oops, sorry, looks like this fell through the cracks.  Since
+59fbab1ae40e appeared in v5.11, I think we should add:
+
+  Cc: stable@vger.kernel.org	# v5.11+
+
+I'm sure Lorenzo will add it when applying, so no need to repost just
+for that.
 
 > ---
->  drivers/gpu/drm/msm/dp/dp_power.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Since v1:
+>  - collect Reviewed-by tag
 > 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_power.h b/drivers/gpu/drm/msm/dp/dp_power.h
-> index 7d0327bbc0d5..e3f959ffae12 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_power.h
-> +++ b/drivers/gpu/drm/msm/dp/dp_power.h
-> @@ -88,7 +88,7 @@ int dp_power_client_init(struct dp_power *power);
->   * return: 0 for success, error for failure.
->   *
->   * This API will de-initialize the DisplayPort's clocks and regulator
-> - * modueles.
-> + * modules.
->   */
->  void dp_power_client_deinit(struct dp_power *power);
+>  drivers/pci/controller/dwc/pcie-designware-host.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> @@ -100,7 +100,7 @@ void dp_power_client_deinit(struct dp_power *power);
->   *
->   * This API will configure the DisplayPort's power module and provides
->   * methods to be called by the client to configure the power related
-> - * modueles.
-> + * modules.
->   */
->  struct dp_power *dp_power_get(struct device *dev, struct dp_parser *parser);
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> index 7e55b2b66182..e6c274f4485c 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> @@ -400,7 +400,6 @@ int dw_pcie_host_init(struct pcie_port *pp)
+>  	}
+>  
+>  	dw_pcie_setup_rc(pp);
+> -	dw_pcie_msi_init(pp);
+>  
+>  	if (!dw_pcie_link_up(pci) && pci->ops && pci->ops->start_link) {
+>  		ret = pci->ops->start_link(pci);
+> @@ -551,6 +550,8 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
+>  		}
+>  	}
+>  
+> +	dw_pcie_msi_init(pp);
+> +
+>  	/* Setup RC BARs */
+>  	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, 0x00000004);
+>  	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_1, 0x00000000);
+> -- 
+> 2.30.1
 > 
-> --
-
-
--- 
-~Randy
-
