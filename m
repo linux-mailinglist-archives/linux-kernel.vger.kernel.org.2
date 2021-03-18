@@ -2,95 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E26D340F42
+	by mail.lfdr.de (Postfix) with ESMTP id CA32E340F43
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233141AbhCRUhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 16:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhCRUhB (ORCPT
+        id S231634AbhCRUhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 16:37:21 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:48580 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233084AbhCRUhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 16:37:01 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0BC9C06174A;
-        Thu, 18 Mar 2021 13:37:01 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id y2so2725458qtw.13;
-        Thu, 18 Mar 2021 13:37:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4KfRMmqBXGMzstF08CYRcyhbe6VbnCZEYFoVoFEOpYs=;
-        b=mLJCdXjyS3Ej1b167PhD7u4HuEpYHtYzgdR5dS9CPbztVfk6+PZaO2fN18QACA5aRb
-         sjqca8yu2w+MxK6rkUEylNAR8bNPkulyyCXY7uH0F6uAjo+fkgp14VQChGkOtYN/ZqNq
-         V+vPttPfTNURKnzuCZ7pirS51tcCry8rSL02bve4CvZ//C3Q1EhErCkzaDLeCh74coI6
-         Fxa11EyGGwKjZLrcqpU0/zgUWBEgehSXSaoZQqJ/rktXsNsJ3n+fl3Z4pIpoHw53RAWh
-         dDx1pho9nbRfRSVRoaREaZ86d7D6hB1ovVmeQMQthqb+hN17ZIu1dedlsNeuuqmtSN6P
-         dYtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4KfRMmqBXGMzstF08CYRcyhbe6VbnCZEYFoVoFEOpYs=;
-        b=lr/stJeegieWLP4pkYexHKPahEh3aV09dNhlsQarfar8AxVPswTOM47rCoAaI2x+wP
-         mlpOXxtZxEAUPkVJfDuK74fJYnbv25hr5SMzMtq0nkV/8dWcWHnrV7ySE1mfEFcKgpfE
-         D2CKDaVJEBQSLH/E0/bCOp7/cRC4p57veEutW6G2V+/GYkEZFvBu9jyCjDPVGgfr/A2L
-         kU34JXZmBjCxFUgpQIL5o7Xnjx9TUPdl9EoC7ciSZvPYdaGKU2OiXjCCgs1dByqZtvNz
-         z7XfgctHsR1VUE+UVBnwef9PmRgkBquriPNF4eywnQ79a9EyGPsrnoqQqIs2yfU6eHzJ
-         Km1g==
-X-Gm-Message-State: AOAM533na9Ka3MKgksWTDMMGJyyAI7vbHi13Wh+qfxuHmKXWSa/IV7yK
-        BmymcNF0faiLKCtVaR/CUQA=
-X-Google-Smtp-Source: ABdhPJwfPqdsaYkexMn4Jp5RzGg9P6QDTkDCzjJuuYsUNx8mI03N9GXHmeK5g0SzpGwsuVCtAEhN8g==
-X-Received: by 2002:aed:2f65:: with SMTP id l92mr5447244qtd.193.1616099820923;
-        Thu, 18 Mar 2021 13:37:00 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.63])
-        by smtp.gmail.com with ESMTPSA id f186sm2661320qkj.106.2021.03.18.13.36.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 13:36:59 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, unixbhaskar@gmail.com,
-        gustavoars@kernel.org, yuehaibing@huawei.com,
-        vaibhavgupta40@gmail.com, christophe.jaillet@wanadoo.fr,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH V3] ethernet: sun: Fix a typo
-Date:   Fri, 19 Mar 2021 02:04:43 +0530
-Message-Id: <20210318203443.21708-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Thu, 18 Mar 2021 16:37:13 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 887E31C0B7C; Thu, 18 Mar 2021 21:37:12 +0100 (CET)
+Date:   Thu, 18 Mar 2021 21:37:12 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Rahul Tanwar <rtanwar@maxlinear.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Adam Borowski <kilobyte@angband.pl>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        John Crispin <john@phrozen.org>,
+        Hauke Mehrtens <hmehrtens@maxlinear.com>,
+        Cheol Yong Kim <ckim@maxlinear.com>,
+        Qiming Wu <qwu@maxlinear.com>
+Subject: Re: [PATCH 1/1] leds: lgm: Improve Kconfig help
+Message-ID: <20210318203711.GA8429@amd>
+References: <8ae0456a08ef1a2491fd382b273ff7259e6fcbd0.1615969806.git.rtanwar@maxlinear.com>
+ <MN2PR19MB3693EEA37EA1FC18238FE45EB16A9@MN2PR19MB3693.namprd19.prod.outlook.com>
+ <20210318075552.GA2331@amd>
+ <MN2PR19MB3693318349FCCF3201E8EA80B1699@MN2PR19MB3693.namprd19.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="wac7ysb48OaltWcw"
+Content-Disposition: inline
+In-Reply-To: <MN2PR19MB3693318349FCCF3201E8EA80B1699@MN2PR19MB3693.namprd19.prod.outlook.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/serisouly/seriously/
 
-...plus the sentence construction for better readability.
+--wac7ysb48OaltWcw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
-  Changes from V2:
-  Missed the subject line labeling ..so added
+Hi!
 
- drivers/net/ethernet/sun/sungem.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/sun/sungem.c b/drivers/net/ethernet/sun/sungem.c
-index 58f142ee78a3..9790656cf970 100644
---- a/drivers/net/ethernet/sun/sungem.c
-+++ b/drivers/net/ethernet/sun/sungem.c
-@@ -1674,8 +1674,8 @@ static void gem_init_phy(struct gem *gp)
- 	if (gp->pdev->vendor == PCI_VENDOR_ID_APPLE) {
- 		int i;
+> >  > help
+> >  > - Parallel to serial conversion, which is also called SSO
+> >  > controller,
+> >  > - can drive external shift register for LED outputs.
+> >  > - This enables LED support for Serial Shift Output controller(SSO).
+> >  > + This option enables support for LEDs connected to GPIO lines on
+> >  > + Lightning Mountain(LGM) SoC. These LEDs are driven by a Serial
+> >  > + Shift Output(SSO) controller. The driver supports hardware
+> >=20
+> > What is Lightning Mountain? The codename is not widely known. Where
+> > can we find that hardware? Notebooks? Phones? Only some development
+> > boards?
+> >=20
+>=20
+> Lightning Mountain is generically a network processor with a primary=20
+> targeted application as Gateway SoC. It has already been added as a=20
+> valid Intel Atom processor variant in=20
+> arch/x86/include/asm/intel-family.h as below:
 
--		/* Those delay sucks, the HW seem to love them though, I'll
--		 * serisouly consider breaking some locks here to be able
-+		/* Those delays sucks, the HW seems to love them though, I'll
-+		 * seriously consider breaking some locks here to be able
- 		 * to schedule instead
- 		 */
- 		for (i = 0; i < 3; i++) {
---
-2.26.2
+Yep, but Kconfig users are not going to read header files.
 
+If the SoC is not shipping in any products, state so.
+
+> >  > *
+> >  > - * Copyright (c) 2020 Intel Corporation.
+> >  > + * Copyright (c) 2021 MaxLinear, Inc.
+> >  > */
+> >  >
+> >=20
+> > I don't think you can do that, and I don't think you should be doing
+> > it in the same patch.
+>=20
+> Well noted. Will revert it back now and update later in a separate=20
+> patch. Thanks.
+
+Don't. You can't update copyright like that.
+
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--wac7ysb48OaltWcw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBTufcACgkQMOfwapXb+vIi6wCgh+jfNVDq4t4Lp0ipP1ajsy82
+O+0AniEb6gxxkylOv0nwB3vg7woAnh13
+=HWCd
+-----END PGP SIGNATURE-----
+
+--wac7ysb48OaltWcw--
