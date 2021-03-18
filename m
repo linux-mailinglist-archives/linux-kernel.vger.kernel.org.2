@@ -2,1380 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24121340DF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38872340DF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232813AbhCRTMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 15:12:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232785AbhCRTLv (ORCPT
+        id S232719AbhCRTNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 15:13:22 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:37260 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232705AbhCRTNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 15:11:51 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13E0C06174A;
-        Thu, 18 Mar 2021 12:11:51 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso3620268pjb.3;
-        Thu, 18 Mar 2021 12:11:51 -0700 (PDT)
+        Thu, 18 Mar 2021 15:13:13 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12IJ3vBT019530;
+        Thu, 18 Mar 2021 19:12:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : in-reply-to : references : date : message-id : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=k381lxwLG2fnstlsplMWqZjJew5AP+0V8oe6V2+EYwE=;
+ b=HsVTTUU1EXtHxNSXeSMxPD1EXmioXLiHx665MD8wz3gWrcGrk0XvcOo9k1CJvzxQPZxA
+ MtdDiks6vcbWQsVRXWlWmzDs4jHiJbKjhAnLxnMkAdQh8b3Nf1ZN5knLLCh+ix3Ad7On
+ jRfeWmuwRQFjsQtg/sd8Hodn00RsHHrkKgsfMaImIVeRQcimKxL7Z/P4HgHbI2Bwt3V4
+ nDcn1VrHz6pnTBRKoIynKS0oegoz7go2qly8kee5ib+QYODufTOsPCjlVZVei2c7kRDs
+ AGrnwppi+emr6icre1JstUBE9LQ2Jv1VGzXuKKLFZhLlq722fBgNcmOfbWUQ5lgVhMfq /w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 378jwbrr4k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Mar 2021 19:12:42 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12IJ4nYo156495;
+        Thu, 18 Mar 2021 19:12:41 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
+        by aserp3030.oracle.com with ESMTP id 3796ywkjej-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Mar 2021 19:12:41 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FgIsWt2Det5XRzWDpqp7dfeyG8oYSnq/P1w2EVkMOXZIAbIjXXYh446vu6BBQbRwHEYyNWt/fweygdAkiPLCMvqXFhBFGukg9QvzvhcmgT5r2gzumaNrZcXQ4z8WCBcr79j7sTJVkjUTfmWKm/2DVcT0C2kL7gJwIfMyeLPlDbfJ72fJecAmbIiTYOf3KgPq2Hv3/g55ZCAltrGZgWjqKYQ8o2ZxBhCf9PuwuFqkbLyDS+ldNcvETaXeweUA8VJ6KAsAAPm/zRRHD0p6CUIVyLP6H/AT0FTAgu02GiTebZQMkAnFPWPIYQmlN0Kl1c/nCUmAll9VQvSdzVWNqD7uQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k381lxwLG2fnstlsplMWqZjJew5AP+0V8oe6V2+EYwE=;
+ b=RYFyuDfc3Q028rRMfgfXxWcO0iuqQkJAqzfE15WIpakdM3Xa1FxW4GkuAuyVmwvW9qPnydGYJ/KfImC2Pi9C4eOwkB0i+TjF1IMAffRyQOqPuhkwGlZgW6vxM3Z1NwlqEm/HKPEj4btem2dsz/D5LGtxBQohZz3tR7DoVmoGL+3wPqbB09lmtRZqfi8xYCqsavQkTxvZPl6kPlDuJuxD6jHsQ3Rgv2Bto9yzracNbDOEaNLJylIXfqESnOhReJLPrIC33W/hswgXTB/VLFt3dnbYspd8ykLsdoyrgIePlcx/yw5UeA5WYljB9u8lEmydRvOgoocrfg1azPyqTPLrSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=9zfkTQ4+IlLyQlmUg/5oscUXtfXJ+5RypS+rv9qVn9M=;
-        b=G66MxlUjC88jKiyv4rME9AvlpqAuOlPuKLeQ4UKigNJGgtsf9EJfK7T5gVZXNaFl0e
-         I2A/AKlSM5DS/ympVmCgmLJZ908mS6lhDozMNHajGAjvy6sXShZQph0/kFmlARHRjUlC
-         GBv/ioNep8ZLVbVX7ftov6GMVOjNKI6NHOHtoHC6dQikFn/OcJ+jwd1l/nrpvI24qFbY
-         sCBLdIwNMHZOTwWsQuOHwK8ciwpQS7NtWy3cFAM6a1N51xqh1f3a+cbqPbY51yn6+k7x
-         dBKs8sO0ebBHRw9xGp0EKvzpm2FRzQzFrQaCbHLNJ77xotChQJ7+1Xy4BG67zJbKRxHc
-         MUDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=9zfkTQ4+IlLyQlmUg/5oscUXtfXJ+5RypS+rv9qVn9M=;
-        b=DqZIL6Ubazp69Y9ILeT4eSRznnq4PftvMHF0LjQ5OVA+AbksEmu2xEkEM+xljnbHXc
-         Z6r7scAPIalJXBg8w+7trwKFRrPW9PhZt3CkYTNSHPHtq9NsT2tqIrkdnJcM2VzcaeBS
-         la8kKg1iFVH3NMsvv9MzX6PINMMv8q6LHbLiFSEYbTQp1VUSS69aWUjAe4WkOpG2Czfu
-         Mh6Zp5eAiBpKBlqcVdK3EfbIJ5ovBD7qa/V9ItQdUgu4mV2l69XNad1HX84TM540yGOd
-         qd0NV1iw0yl+v7yxg7rOpy4okocRT0BX/cl1b9JfBHy2Let68Ss5KXghuMrNIUgeSdXU
-         rcBw==
-X-Gm-Message-State: AOAM531FqOGPb/JZIpja3pm1ZM73wVqzsV2dKPzF/cQo7ZdnlNxD8KAf
-        82wZi0xjW8/yKVe7OywhCqbMCYP6Lks=
-X-Google-Smtp-Source: ABdhPJx3Vz8gT04CgIwfzM1TtbsXaMGUHVOfjqErVZNNkbkeirj5/PWqVfHwcN4YwqZCOne+6CCKDg==
-X-Received: by 2002:a17:90b:23d1:: with SMTP id md17mr5835473pjb.213.1616094710595;
-        Thu, 18 Mar 2021 12:11:50 -0700 (PDT)
-Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id na8sm3020711pjb.2.2021.03.18.12.11.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 12:11:50 -0700 (PDT)
-From:   Al Cooper <alcooperx@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Al Cooper <alcooperx@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v6 2/2] serial: 8250: Add new 8250-core based Broadcom STB driver
-Date:   Thu, 18 Mar 2021 15:11:31 -0400
-Message-Id: <20210318191131.35992-3-alcooperx@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210318191131.35992-1-alcooperx@gmail.com>
-References: <20210318191131.35992-1-alcooperx@gmail.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k381lxwLG2fnstlsplMWqZjJew5AP+0V8oe6V2+EYwE=;
+ b=C6aRsDgtrww45gnbuJ+sxvYEGrKacpdTz0RJXRGUjVE5Kb2GnDlz7wF7C+xnnVBDtJwb5q0kM4any6BYiyozF+6NeL8dVwsiTuGjYZGYQ8XygZyVyAEPmQrMPRXGEvc7fZEnuMRNzCXdjqgTEqO6Acj1lxxr3a8V/TiA6i0hzmU=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR10MB1774.namprd10.prod.outlook.com (2603:10b6:301:9::13)
+ by MWHPR10MB1373.namprd10.prod.outlook.com (2603:10b6:300:20::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Thu, 18 Mar
+ 2021 19:12:39 +0000
+Received: from MWHPR10MB1774.namprd10.prod.outlook.com
+ ([fe80::24eb:1300:dd70:4183]) by MWHPR10MB1774.namprd10.prod.outlook.com
+ ([fe80::24eb:1300:dd70:4183%3]) with mapi id 15.20.3955.018; Thu, 18 Mar 2021
+ 19:12:39 +0000
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Alexey Klimov <aklimov@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, yury.norov@gmail.com,
+        tglx@linutronix.de, Joshua Baker <jobaker@redhat.com>,
+        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
+        rafael@kernel.org, tj@kernel.org,
+        Qais Yousef <qais.yousef@arm.com>, hannes@cmpxchg.org,
+        Alexey Klimov <klimov.linux@gmail.com>
+Subject: Re: [PATCH v2] cpu/hotplug: wait for cpuset_hotplug_work to finish
+ on cpu onlining
+In-Reply-To: <CAFBcO+99Ax5MuOtzNx=NrmnUN=+913Sc-DV83ObOi01A=kkN3w@mail.gmail.com>
+References: <20210212003032.2037750-1-aklimov@redhat.com>
+ <87tuqhrs3d.fsf@oracle.com>
+ <CAFBcO+99Ax5MuOtzNx=NrmnUN=+913Sc-DV83ObOi01A=kkN3w@mail.gmail.com>
+Date:   Thu, 18 Mar 2021 15:12:25 -0400
+Message-ID: <87a6r0uvhi.fsf@oracle.com>
+Content-Type: text/plain
+X-Originating-IP: [98.229.125.203]
+X-ClientProxiedBy: BL0PR02CA0127.namprd02.prod.outlook.com
+ (2603:10b6:208:35::32) To MWHPR10MB1774.namprd10.prod.outlook.com
+ (2603:10b6:301:9::13)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from parnassus (98.229.125.203) by BL0PR02CA0127.namprd02.prod.outlook.com (2603:10b6:208:35::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Thu, 18 Mar 2021 19:12:37 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 476ed314-c624-4991-c1f1-08d8ea41cbf2
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1373:
+X-Microsoft-Antispam-PRVS: <MWHPR10MB1373479A9F9D60C9D6BF2FA3D9699@MWHPR10MB1373.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8mawJpIF784pckxKc6ptadYf7/FVmKDIiD4onAUUyHtPmONgWGUeGhvwRja+flyhUTizNKH3QZwnbuPNaGfIwds6ZzXZNz6dJhs8D4jEzFZgFaz6HwEtGIFzVt/msCjXEyai5IMqw11CxeZlQPeFr1xSU27+qwTnYU9VL4QaPP6pDD7KCQpGR/6qM+re/Ro2w5BiwNbml07FDfONJWL2m6yHPa6yvsQLr7VYvPIvi9pyXkojYSu1lSF7ox6gUFmvoTb07j9NF8ZtxAMKO1FAY21/gZ9pXac5BJpKgNRafQ4AmUoWts+5kmG7gQz8BbgETcOTMvTsFf6tTWXUxThJxY2jN6+9X4HQGeFWC8uAxkm4+let409P9Qad/hnGdJQ/IX+i/nA9qn1wUt0in8XlXxAMYoIGb6Rv9BHZ/3Rz/msXOrZuB5/oSZrBuKDQJao1SPPLkbMU6nJZP7a2/Kua3MZxOiGbot9DtJTzoStDualB236/YbvhVW2hj0xER/F+ynbm/BoPpkgnfvQzt4HNiFjOErbIgdeBVASmXmUVZP6f1uzYw/plgihLv7bz+cNQ26OHf8JJ4C38V256ux75JVeuZvzroNSrD7368Q30y8I=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1774.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(376002)(366004)(39860400002)(346002)(6916009)(8676002)(66556008)(54906003)(83380400001)(16526019)(66476007)(52116002)(8936002)(36756003)(4744005)(6666004)(66946007)(316002)(7416002)(4326008)(6486002)(6496006)(5660300002)(38100700001)(2906002)(186003)(478600001)(2616005)(26005)(956004)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?VLsIScVJiRA3QrQgeoj+r66mte1in7+qHrJIb1fTHnBie3+OMUPlWurUtXnN?=
+ =?us-ascii?Q?bCFWD0ey2IEq/5cXyIXNfHIhOU6/m2HfpQ5YfXHbucoDKhombNoSv5M3tsrN?=
+ =?us-ascii?Q?4VTKOX9fdm9AZDXJL3zIqeO5UPVfwiXbvQAq/rY3teZ4ZJxGld1J3i398DVi?=
+ =?us-ascii?Q?m7FDRVos1ra4ZkRV2E5eRyn3ErC/C6KoofBFATCK7MUXM29xkThGb8yVLwtY?=
+ =?us-ascii?Q?azyCBupQcHUfG4Yvi4krFS/Y7HENvggDo0ShJ9CMdDy3XcjriIujRE9Yv8Ld?=
+ =?us-ascii?Q?mUWdWHtAGwmmlb5Drdcn8Xf0MGNON0VSfKO8teMXdxsvfEh0QWCQcCBAVMdJ?=
+ =?us-ascii?Q?rMdT9LBDoWkFvC4EVVps2i4tvzFYtSg8lLMPiCJCqm1R0PSkIZxkMMlaL+U9?=
+ =?us-ascii?Q?b4ciawjccg1QrAb3IaM2b3QZxX/5FBXlONSNxvQBkXoBqefI942BWV6KjM/q?=
+ =?us-ascii?Q?Xrp5/6DzRIgqWcpoWd7e5weXt43S4cqMtcwGKav/ALZp8rpBoTyqxsP7aLb1?=
+ =?us-ascii?Q?EBYPGpYdsm/X0tcbuahNSEYA4tt8eakrNTBeoY3F/3iniW8mlKIsZvr2jYyt?=
+ =?us-ascii?Q?Evc+yZ1QSwdJPrNokyxuLst1Z5kkVFh6p91Wzh6mrkWths6YpHxaH+e4wJTV?=
+ =?us-ascii?Q?QLZtlADGX7tg5hyHzsj0jnerorJBIhKlRP02dbq2R8ZzM4AxcMygws9UTKbt?=
+ =?us-ascii?Q?SWWZ85cZ6aGhl8DL8LmQS+OEKUBPPy8cz4vppn7stSZT1H+3/Iv5yRMizydw?=
+ =?us-ascii?Q?W4BhCoZwW6WEKeW/2VDME6LDkdlZ6LOa4Hbn9IoDgecdfUP2XexgxdTC8mj1?=
+ =?us-ascii?Q?oEpesSzPseJtc+YmqG0uDPrqNsKPgQdfxUgPxGbGealCDhNMqR5Jl6vcVb5K?=
+ =?us-ascii?Q?UFpYxTEP1unRuYHPTZd1Gjwn93Fh0XpkLJgJJF1znmyP8ecMuAPzvYSCXI5r?=
+ =?us-ascii?Q?J6zJVUfHzbYDnxB87QvrO8eepOGJQVg4y80PdBPCy/KTdVv+hKk54Sc0v1m4?=
+ =?us-ascii?Q?4CWmcDEy1hdupq5pqgEnFMjJsqxYoq2GoR7u3mRnkuWxfV7cOMf9wpybTswg?=
+ =?us-ascii?Q?aTvqZYj7vPgUzVFfTezj7hzLoXtkrLd7lmPiXQZpRs5m3z3rBY+nv2Xw318I?=
+ =?us-ascii?Q?XbA03y2j2aWA0wNMkaQ8MdsKJtoVpPbZP2DmlJwUh9tzD0DuWlm/oGUMqztx?=
+ =?us-ascii?Q?FoQ2WfGo8SPyaao+nyT3Q0Aosn4Sypp34TmXOj4X0/69AzHD3U1TR+gPgV4i?=
+ =?us-ascii?Q?MjcZEe73Qlk5cJJOPTaYqBe1rArpfKFyPDrd7SE7UkwtWhKBNbffhmoeU0Me?=
+ =?us-ascii?Q?QY4CWVsnxZXqBLgdspdSJtQe?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 476ed314-c624-4991-c1f1-08d8ea41cbf2
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1774.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2021 19:12:39.1711
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5+0tNDlgakzMH3QZsP0mAPPIW9115MKMiQXr17cSqgIqYODq2XtRfO6HTAE7+NvHGNCx+T+aOgXSAyUbJ/cR+FQt9zkkFJhyGutvIFFtNbo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1373
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9927 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0 spamscore=0
+ bulkscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103180135
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9927 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ spamscore=0 mlxscore=0 bulkscore=0 suspectscore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1011 adultscore=0 phishscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103180135
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a UART driver for the new Broadcom 8250 based STB UART. The new
-UART is backward compatible with the standard 8250, but has some
-additional features. The new features include a high accuracy baud
-rate clock system and DMA support.
+Alexey Klimov <aklimov@redhat.com> writes:
+> The first section of comment seems problematic to me with regards to such move:
+>
+>                  * As this needs to hold the cpu maps lock it's impossible
+>                  * to call device_offline() because that ends up calling
+>                  * cpu_down() which takes cpu maps lock. cpu maps lock
+>                  * needs to be held as this might race against in kernel
+>                  * abusers of the hotplug machinery (thermal management).
+>
+> Cpu maps lock is released in cpu_maps_update_done() hence we will move
+> dev->offline out of cpu maps lock. Maybe I misunderstood the comment
+> and it relates to calling cpu_down_maps_locked() under lock to avoid
+> race?
 
-The driver will use the new optional BAUD MUX clock to select the best
-one of the four master clocks (81MHz, 108MHz, 64MHz and 48MHz) to feed
-the baud rate selection logic for any requested baud rate.  This allows
-for more accurate BAUD rates when high speed baud rates are selected.
-
-The driver will use the new UART DMA hardware if the UART DMA registers
-are specified in Device Tree "reg" property.
-
-The driver also sets the UPSTAT_AUTOCTS flag when hardware flow control
-is enabled. This flag is needed for UARTs that don't assert a CTS
-changed interrupt when CTS changes and AFE (Hardware Flow Control) is
-enabled.
-
-The driver also contains a workaround for a bug in the Synopsis 8250
-core. The problem is that at high baud rates, the RX partial FIFO
-timeout interrupt can occur but there is no RX data (DR not set in
-the LSR register). In this case the driver will not read the Receive
-Buffer Register, which clears the interrupt, and the system will get
-continuous UART interrupts until the next RX character arrives. The
-fix originally suggested by Synopsis was to read the Receive Buffer
-Register and discard the character when the DR bit in the LSR was
-not set, to clear the interrupt. The problem was that occasionally
-a character would arrive just after the DR bit check and a valid
-character would be discarded. The fix that was added will clear
-receive interrupts to stop the interrupt, deassert RTS to insure
-that no new data can arrive, wait for 1.5 character times for the
-sender to react to RTS and then check for data and either do a dummy
-read or a valid read. Debugfs error counters were also added and were
-used to help create test software that would cause the error condition.
-The counters can be found at:
-/sys/kernel/debug/bcm7271-uart/<device-name>/stats
-
-This also includes a few fixes for build warnings reported by
-the kernel test robot.
-
-Signed-off-by: Al Cooper <alcooperx@gmail.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
- MAINTAINERS                            |    8 +
- drivers/tty/serial/8250/8250_bcm7271.c | 1202 ++++++++++++++++++++++++
- drivers/tty/serial/8250/Kconfig        |   10 +
- drivers/tty/serial/8250/Makefile       |    1 +
- 4 files changed, 1221 insertions(+)
- create mode 100644 drivers/tty/serial/8250/8250_bcm7271.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index aa84121c5611..f2173c8fa4fa 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3558,6 +3558,14 @@ S:	Supported
- F:	Documentation/devicetree/bindings/i2c/brcm,brcmstb-i2c.yaml
- F:	drivers/i2c/busses/i2c-brcmstb.c
- 
-+BROADCOM BRCMSTB UART DRIVER
-+M:	Al Cooper <alcooperx@gmail.com>
-+L:	linux-serial@vger.kernel.org
-+L:	bcm-kernel-feedback-list@broadcom.com
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
-+F:	drivers/tty/serial/8250/8250_bcm7271.c
-+
- BROADCOM BRCMSTB USB EHCI DRIVER
- M:	Al Cooper <alcooperx@gmail.com>
- L:	linux-usb@vger.kernel.org
-diff --git a/drivers/tty/serial/8250/8250_bcm7271.c b/drivers/tty/serial/8250/8250_bcm7271.c
-new file mode 100644
-index 000000000000..63883185fccd
---- /dev/null
-+++ b/drivers/tty/serial/8250/8250_bcm7271.c
-@@ -0,0 +1,1202 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2020, Broadcom */
-+/*
-+ * 8250-core based driver for Broadcom ns16550a UARTs
-+ *
-+ * This driver uses the standard 8250 driver core but adds additional
-+ * optional features including the ability to use a baud rate clock
-+ * mux for more accurate high speed baud rate selection and also
-+ * an optional DMA engine.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/tty.h>
-+#include <linux/errno.h>
-+#include <linux/device.h>
-+#include <linux/io.h>
-+#include <linux/of.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/tty_flip.h>
-+#include <linux/delay.h>
-+#include <linux/clk.h>
-+#include <linux/debugfs.h>
-+
-+#include "8250.h"
-+
-+/* Register definitions for UART DMA block. Version 1.1 or later. */
-+#define UDMA_ARB_RX		0x00
-+#define UDMA_ARB_TX		0x04
-+#define		UDMA_ARB_REQ				0x00000001
-+#define		UDMA_ARB_GRANT				0x00000002
-+
-+#define UDMA_RX_REVISION	0x00
-+#define UDMA_RX_REVISION_REQUIRED			0x00000101
-+#define UDMA_RX_CTRL		0x04
-+#define		UDMA_RX_CTRL_BUF_CLOSE_MODE		0x00010000
-+#define		UDMA_RX_CTRL_MASK_WR_DONE		0x00008000
-+#define		UDMA_RX_CTRL_ENDIAN_OVERRIDE		0x00004000
-+#define		UDMA_RX_CTRL_ENDIAN			0x00002000
-+#define		UDMA_RX_CTRL_OE_IS_ERR			0x00001000
-+#define		UDMA_RX_CTRL_PE_IS_ERR			0x00000800
-+#define		UDMA_RX_CTRL_FE_IS_ERR			0x00000400
-+#define		UDMA_RX_CTRL_NUM_BUF_USED_MASK		0x000003c0
-+#define		UDMA_RX_CTRL_NUM_BUF_USED_SHIFT	6
-+#define		UDMA_RX_CTRL_BUF_CLOSE_CLK_SEL_SYS	0x00000020
-+#define		UDMA_RX_CTRL_BUF_CLOSE_ENA		0x00000010
-+#define		UDMA_RX_CTRL_TIMEOUT_CLK_SEL_SYS	0x00000008
-+#define		UDMA_RX_CTRL_TIMEOUT_ENA		0x00000004
-+#define		UDMA_RX_CTRL_ABORT			0x00000002
-+#define		UDMA_RX_CTRL_ENA			0x00000001
-+#define UDMA_RX_STATUS		0x08
-+#define		UDMA_RX_STATUS_ACTIVE_BUF_MASK		0x0000000f
-+#define UDMA_RX_TRANSFER_LEN	0x0c
-+#define UDMA_RX_TRANSFER_TOTAL	0x10
-+#define UDMA_RX_BUFFER_SIZE	0x14
-+#define UDMA_RX_SRC_ADDR	0x18
-+#define UDMA_RX_TIMEOUT		0x1c
-+#define UDMA_RX_BUFFER_CLOSE	0x20
-+#define UDMA_RX_BLOCKOUT_COUNTER 0x24
-+#define UDMA_RX_BUF0_PTR_LO	0x28
-+#define UDMA_RX_BUF0_PTR_HI	0x2c
-+#define UDMA_RX_BUF0_STATUS	0x30
-+#define		UDMA_RX_BUFX_STATUS_OVERRUN_ERR		0x00000010
-+#define		UDMA_RX_BUFX_STATUS_FRAME_ERR		0x00000008
-+#define		UDMA_RX_BUFX_STATUS_PARITY_ERR		0x00000004
-+#define		UDMA_RX_BUFX_STATUS_CLOSE_EXPIRED	0x00000002
-+#define		UDMA_RX_BUFX_STATUS_DATA_RDY		0x00000001
-+#define UDMA_RX_BUF0_DATA_LEN	0x34
-+#define UDMA_RX_BUF1_PTR_LO	0x38
-+#define UDMA_RX_BUF1_PTR_HI	0x3c
-+#define UDMA_RX_BUF1_STATUS	0x40
-+#define UDMA_RX_BUF1_DATA_LEN	0x44
-+
-+#define UDMA_TX_REVISION	0x00
-+#define UDMA_TX_REVISION_REQUIRED			0x00000101
-+#define UDMA_TX_CTRL		0x04
-+#define		UDMA_TX_CTRL_ENDIAN_OVERRIDE		0x00000080
-+#define		UDMA_TX_CTRL_ENDIAN			0x00000040
-+#define		UDMA_TX_CTRL_NUM_BUF_USED_MASK		0x00000030
-+#define		UDMA_TX_CTRL_NUM_BUF_USED_1		0x00000010
-+#define		UDMA_TX_CTRL_ABORT			0x00000002
-+#define		UDMA_TX_CTRL_ENA			0x00000001
-+#define UDMA_TX_DST_ADDR	0x08
-+#define UDMA_TX_BLOCKOUT_COUNTER 0x10
-+#define UDMA_TX_TRANSFER_LEN	0x14
-+#define UDMA_TX_TRANSFER_TOTAL	0x18
-+#define UDMA_TX_STATUS		0x20
-+#define UDMA_TX_BUF0_PTR_LO	0x24
-+#define UDMA_TX_BUF0_PTR_HI	0x28
-+#define UDMA_TX_BUF0_STATUS	0x2c
-+#define		UDMA_TX_BUFX_LAST			0x00000002
-+#define		UDMA_TX_BUFX_EMPTY			0x00000001
-+#define UDMA_TX_BUF0_DATA_LEN	0x30
-+#define UDMA_TX_BUF0_DATA_SENT	0x34
-+#define UDMA_TX_BUF1_PTR_LO	0x38
-+
-+#define UDMA_INTR_STATUS	0x00
-+#define		UDMA_INTR_ARB_TX_GRANT			0x00040000
-+#define		UDMA_INTR_ARB_RX_GRANT			0x00020000
-+#define		UDMA_INTR_TX_ALL_EMPTY			0x00010000
-+#define		UDMA_INTR_TX_EMPTY_BUF1			0x00008000
-+#define		UDMA_INTR_TX_EMPTY_BUF0			0x00004000
-+#define		UDMA_INTR_TX_ABORT			0x00002000
-+#define		UDMA_INTR_TX_DONE			0x00001000
-+#define		UDMA_INTR_RX_ERROR			0x00000800
-+#define		UDMA_INTR_RX_TIMEOUT			0x00000400
-+#define		UDMA_INTR_RX_READY_BUF7			0x00000200
-+#define		UDMA_INTR_RX_READY_BUF6			0x00000100
-+#define		UDMA_INTR_RX_READY_BUF5			0x00000080
-+#define		UDMA_INTR_RX_READY_BUF4			0x00000040
-+#define		UDMA_INTR_RX_READY_BUF3			0x00000020
-+#define		UDMA_INTR_RX_READY_BUF2			0x00000010
-+#define		UDMA_INTR_RX_READY_BUF1			0x00000008
-+#define		UDMA_INTR_RX_READY_BUF0			0x00000004
-+#define		UDMA_INTR_RX_READY_MASK			0x000003fc
-+#define		UDMA_INTR_RX_READY_SHIFT		2
-+#define		UDMA_INTR_RX_ABORT			0x00000002
-+#define		UDMA_INTR_RX_DONE			0x00000001
-+#define UDMA_INTR_SET		0x04
-+#define UDMA_INTR_CLEAR		0x08
-+#define UDMA_INTR_MASK_STATUS	0x0c
-+#define UDMA_INTR_MASK_SET	0x10
-+#define UDMA_INTR_MASK_CLEAR	0x14
-+
-+
-+#define UDMA_RX_INTERRUPTS ( \
-+	UDMA_INTR_RX_ERROR | \
-+	UDMA_INTR_RX_TIMEOUT | \
-+	UDMA_INTR_RX_READY_BUF0 | \
-+	UDMA_INTR_RX_READY_BUF1 | \
-+	UDMA_INTR_RX_READY_BUF2 | \
-+	UDMA_INTR_RX_READY_BUF3 | \
-+	UDMA_INTR_RX_READY_BUF4 | \
-+	UDMA_INTR_RX_READY_BUF5 | \
-+	UDMA_INTR_RX_READY_BUF6 | \
-+	UDMA_INTR_RX_READY_BUF7 | \
-+	UDMA_INTR_RX_ABORT | \
-+	UDMA_INTR_RX_DONE)
-+
-+#define UDMA_RX_ERR_INTERRUPTS ( \
-+	UDMA_INTR_RX_ERROR | \
-+	UDMA_INTR_RX_TIMEOUT | \
-+	UDMA_INTR_RX_ABORT | \
-+	UDMA_INTR_RX_DONE)
-+
-+#define UDMA_TX_INTERRUPTS ( \
-+	UDMA_INTR_TX_ABORT | \
-+	UDMA_INTR_TX_DONE)
-+
-+#define UDMA_IS_RX_INTERRUPT(status) ((status) & UDMA_RX_INTERRUPTS)
-+#define UDMA_IS_TX_INTERRUPT(status) ((status) & UDMA_TX_INTERRUPTS)
-+
-+
-+/* Current devices have 8 sets of RX buffer registers */
-+#define UDMA_RX_BUFS_COUNT	8
-+#define UDMA_RX_BUFS_REG_OFFSET (UDMA_RX_BUF1_PTR_LO - UDMA_RX_BUF0_PTR_LO)
-+#define UDMA_RX_BUFx_PTR_LO(x)	(UDMA_RX_BUF0_PTR_LO + \
-+				 ((x) * UDMA_RX_BUFS_REG_OFFSET))
-+#define UDMA_RX_BUFx_PTR_HI(x)	(UDMA_RX_BUF0_PTR_HI + \
-+				 ((x) * UDMA_RX_BUFS_REG_OFFSET))
-+#define UDMA_RX_BUFx_STATUS(x)	(UDMA_RX_BUF0_STATUS + \
-+				 ((x) * UDMA_RX_BUFS_REG_OFFSET))
-+#define UDMA_RX_BUFx_DATA_LEN(x) (UDMA_RX_BUF0_DATA_LEN + \
-+				  ((x) * UDMA_RX_BUFS_REG_OFFSET))
-+
-+/* Current devices have 2 sets of TX buffer registers */
-+#define UDMA_TX_BUFS_COUNT	2
-+#define UDMA_TX_BUFS_REG_OFFSET (UDMA_TX_BUF1_PTR_LO - UDMA_TX_BUF0_PTR_LO)
-+#define UDMA_TX_BUFx_PTR_LO(x)	(UDMA_TX_BUF0_PTR_LO + \
-+				 ((x) * UDMA_TX_BUFS_REG_OFFSET))
-+#define UDMA_TX_BUFx_PTR_HI(x)	(UDMA_TX_BUF0_PTR_HI + \
-+				 ((x) * UDMA_TX_BUFS_REG_OFFSET))
-+#define UDMA_TX_BUFx_STATUS(x)	(UDMA_TX_BUF0_STATUS + \
-+				 ((x) * UDMA_TX_BUFS_REG_OFFSET))
-+#define UDMA_TX_BUFx_DATA_LEN(x) (UDMA_TX_BUF0_DATA_LEN + \
-+				  ((x) * UDMA_TX_BUFS_REG_OFFSET))
-+#define UDMA_TX_BUFx_DATA_SENT(x) (UDMA_TX_BUF0_DATA_SENT + \
-+				   ((x) * UDMA_TX_BUFS_REG_OFFSET))
-+#define REGS_8250 0
-+#define REGS_DMA_RX 1
-+#define REGS_DMA_TX 2
-+#define REGS_DMA_ISR 3
-+#define REGS_DMA_ARB 4
-+#define REGS_MAX 5
-+
-+#define TX_BUF_SIZE 4096
-+#define RX_BUF_SIZE 4096
-+#define RX_BUFS_COUNT 2
-+#define KHZ    1000
-+#define MHZ(x) ((x) * KHZ * KHZ)
-+
-+static const u32 brcmstb_rate_table[] = {
-+	MHZ(81),
-+	MHZ(108),
-+	MHZ(64),		/* Actually 64285715 for some chips */
-+	MHZ(48),
-+};
-+
-+static const u32 brcmstb_rate_table_7278[] = {
-+	MHZ(81),
-+	MHZ(108),
-+	0,
-+	MHZ(48),
-+};
-+
-+struct brcmuart_priv {
-+	int		line;
-+	struct clk	*baud_mux_clk;
-+	unsigned long	default_mux_rate;
-+	u32		real_rates[ARRAY_SIZE(brcmstb_rate_table)];
-+	const u32	*rate_table;
-+	ktime_t		char_wait;
-+	struct uart_port *up;
-+	struct hrtimer	hrt;
-+	bool		shutdown;
-+	bool		dma_enabled;
-+	struct uart_8250_dma dma;
-+	void __iomem	*regs[REGS_MAX];
-+	dma_addr_t	rx_addr;
-+	void		*rx_bufs;
-+	size_t		rx_size;
-+	int		rx_next_buf;
-+	dma_addr_t	tx_addr;
-+	void		*tx_buf;
-+	size_t		tx_size;
-+	bool		tx_running;
-+	bool		rx_running;
-+	struct dentry	*debugfs_dir;
-+
-+	/* stats exposed through debugfs */
-+	u64		dma_rx_partial_buf;
-+	u64		dma_rx_full_buf;
-+	u32		rx_bad_timeout_late_char;
-+	u32		rx_bad_timeout_no_char;
-+	u32		rx_missing_close_timeout;
-+	u32		rx_err;
-+	u32		rx_timeout;
-+	u32		rx_abort;
-+};
-+
-+struct dentry *brcmuart_debugfs_root;
-+
-+/*
-+ * Register access routines
-+ */
-+static u32 udma_readl(struct brcmuart_priv *priv,
-+		int reg_type, int offset)
-+{
-+	return readl(priv->regs[reg_type] + offset);
-+}
-+
-+static void udma_writel(struct brcmuart_priv *priv,
-+			int reg_type, int offset, u32 value)
-+{
-+	writel(value, priv->regs[reg_type] + offset);
-+}
-+
-+static void udma_set(struct brcmuart_priv *priv,
-+		int reg_type, int offset, u32 bits)
-+{
-+	void __iomem *reg = priv->regs[reg_type] + offset;
-+	u32 value;
-+
-+	value = readl(reg);
-+	value |= bits;
-+	writel(value, reg);
-+}
-+
-+static void udma_unset(struct brcmuart_priv *priv,
-+		int reg_type, int offset, u32 bits)
-+{
-+	void __iomem *reg = priv->regs[reg_type] + offset;
-+	u32 value;
-+
-+	value = readl(reg);
-+	value &= ~bits;
-+	writel(value, reg);
-+}
-+
-+/*
-+ * The UART DMA engine hardware can be used by multiple UARTS, but
-+ * only one at a time. Sharing is not currently supported so
-+ * the first UART to request the DMA engine will get it and any
-+ * subsequent requests by other UARTS will fail.
-+ */
-+static int brcmuart_arbitration(struct brcmuart_priv *priv, bool acquire)
-+{
-+	u32 rx_grant;
-+	u32 tx_grant;
-+	int waits;
-+	int ret = 0;
-+
-+	if (acquire) {
-+		udma_set(priv, REGS_DMA_ARB, UDMA_ARB_RX, UDMA_ARB_REQ);
-+		udma_set(priv, REGS_DMA_ARB, UDMA_ARB_TX, UDMA_ARB_REQ);
-+
-+		waits = 1;
-+		while (1) {
-+			rx_grant = udma_readl(priv, REGS_DMA_ARB, UDMA_ARB_RX);
-+			tx_grant = udma_readl(priv, REGS_DMA_ARB, UDMA_ARB_TX);
-+			if (rx_grant & tx_grant & UDMA_ARB_GRANT)
-+				return 0;
-+			if (waits-- == 0)
-+				break;
-+			msleep(1);
-+		}
-+		ret = 1;
-+	}
-+
-+	udma_unset(priv, REGS_DMA_ARB, UDMA_ARB_RX, UDMA_ARB_REQ);
-+	udma_unset(priv, REGS_DMA_ARB, UDMA_ARB_TX, UDMA_ARB_REQ);
-+	return ret;
-+}
-+
-+static void brcmuart_init_dma_hardware(struct brcmuart_priv *priv)
-+{
-+	u32 daddr;
-+	u32 value;
-+	int x;
-+
-+	/* Start with all interrupts disabled */
-+	udma_writel(priv, REGS_DMA_ISR, UDMA_INTR_MASK_SET, 0xffffffff);
-+
-+	udma_writel(priv, REGS_DMA_RX, UDMA_RX_BUFFER_SIZE, RX_BUF_SIZE);
-+
-+	/*
-+	 * Setup buffer close to happen when 32 character times have
-+	 * elapsed since the last character was received.
-+	 */
-+	udma_writel(priv, REGS_DMA_RX, UDMA_RX_BUFFER_CLOSE, 16*10*32);
-+	value = (RX_BUFS_COUNT << UDMA_RX_CTRL_NUM_BUF_USED_SHIFT)
-+		| UDMA_RX_CTRL_BUF_CLOSE_MODE
-+		| UDMA_RX_CTRL_BUF_CLOSE_ENA;
-+	udma_writel(priv, REGS_DMA_RX, UDMA_RX_CTRL, value);
-+
-+	udma_writel(priv, REGS_DMA_RX, UDMA_RX_BLOCKOUT_COUNTER, 0);
-+	daddr = priv->rx_addr;
-+	for (x = 0; x < RX_BUFS_COUNT; x++) {
-+
-+		/* Set RX transfer length to 0 for unknown */
-+		udma_writel(priv, REGS_DMA_RX, UDMA_RX_TRANSFER_LEN, 0);
-+
-+		udma_writel(priv, REGS_DMA_RX, UDMA_RX_BUFx_PTR_LO(x),
-+			    lower_32_bits(daddr));
-+		udma_writel(priv, REGS_DMA_RX, UDMA_RX_BUFx_PTR_HI(x),
-+			    upper_32_bits(daddr));
-+		daddr += RX_BUF_SIZE;
-+	}
-+
-+	daddr = priv->tx_addr;
-+	udma_writel(priv, REGS_DMA_TX, UDMA_TX_BUFx_PTR_LO(0),
-+		    lower_32_bits(daddr));
-+	udma_writel(priv, REGS_DMA_TX, UDMA_TX_BUFx_PTR_HI(0),
-+		    upper_32_bits(daddr));
-+	udma_writel(priv, REGS_DMA_TX, UDMA_TX_CTRL,
-+		    UDMA_TX_CTRL_NUM_BUF_USED_1);
-+
-+	/* clear all interrupts then enable them */
-+	udma_writel(priv, REGS_DMA_ISR, UDMA_INTR_CLEAR, 0xffffffff);
-+	udma_writel(priv, REGS_DMA_ISR, UDMA_INTR_MASK_CLEAR,
-+		UDMA_RX_INTERRUPTS | UDMA_TX_INTERRUPTS);
-+
-+}
-+
-+static void start_rx_dma(struct uart_8250_port *p)
-+{
-+	struct brcmuart_priv *priv = p->port.private_data;
-+	int x;
-+
-+	udma_unset(priv, REGS_DMA_RX, UDMA_RX_CTRL, UDMA_RX_CTRL_ENA);
-+
-+	/* Clear the RX ready bit for all buffers */
-+	for (x = 0; x < RX_BUFS_COUNT; x++)
-+		udma_unset(priv, REGS_DMA_RX, UDMA_RX_BUFx_STATUS(x),
-+			UDMA_RX_BUFX_STATUS_DATA_RDY);
-+
-+	/* always start with buffer 0 */
-+	udma_unset(priv, REGS_DMA_RX, UDMA_RX_STATUS,
-+		   UDMA_RX_STATUS_ACTIVE_BUF_MASK);
-+	priv->rx_next_buf = 0;
-+
-+	udma_set(priv, REGS_DMA_RX, UDMA_RX_CTRL, UDMA_RX_CTRL_ENA);
-+	priv->rx_running = true;
-+}
-+
-+static void stop_rx_dma(struct uart_8250_port *p)
-+{
-+	struct brcmuart_priv *priv = p->port.private_data;
-+
-+	/* If RX is running, set the RX ABORT */
-+	if (priv->rx_running)
-+		udma_set(priv, REGS_DMA_RX, UDMA_RX_CTRL, UDMA_RX_CTRL_ABORT);
-+}
-+
-+static int stop_tx_dma(struct uart_8250_port *p)
-+{
-+	struct brcmuart_priv *priv = p->port.private_data;
-+	u32 value;
-+
-+	/* If TX is running, set the TX ABORT */
-+	value = udma_readl(priv, REGS_DMA_TX, UDMA_TX_CTRL);
-+	if (value & UDMA_TX_CTRL_ENA)
-+		udma_set(priv, REGS_DMA_TX, UDMA_TX_CTRL, UDMA_TX_CTRL_ABORT);
-+	priv->tx_running = false;
-+	return 0;
-+}
-+
-+/*
-+ * NOTE: printk's in this routine will hang the system if this is
-+ * the console tty
-+ */
-+static int brcmuart_tx_dma(struct uart_8250_port *p)
-+{
-+	struct brcmuart_priv *priv = p->port.private_data;
-+	struct circ_buf *xmit = &p->port.state->xmit;
-+	u32 tx_size;
-+
-+	if (uart_tx_stopped(&p->port) || priv->tx_running ||
-+		uart_circ_empty(xmit)) {
-+		return 0;
-+	}
-+	tx_size = CIRC_CNT_TO_END(xmit->head, xmit->tail, UART_XMIT_SIZE);
-+
-+	priv->dma.tx_err = 0;
-+	memcpy(priv->tx_buf, &xmit->buf[xmit->tail], tx_size);
-+	xmit->tail += tx_size;
-+	xmit->tail &= UART_XMIT_SIZE - 1;
-+	p->port.icount.tx += tx_size;
-+
-+	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
-+		uart_write_wakeup(&p->port);
-+
-+	udma_writel(priv, REGS_DMA_TX, UDMA_TX_TRANSFER_LEN, tx_size);
-+	udma_writel(priv, REGS_DMA_TX, UDMA_TX_BUF0_DATA_LEN, tx_size);
-+	udma_unset(priv, REGS_DMA_TX, UDMA_TX_BUF0_STATUS, UDMA_TX_BUFX_EMPTY);
-+	udma_set(priv, REGS_DMA_TX, UDMA_TX_CTRL, UDMA_TX_CTRL_ENA);
-+	priv->tx_running = true;
-+
-+	return 0;
-+}
-+
-+static void brcmuart_rx_buf_done_isr(struct uart_port *up, int index)
-+{
-+	struct brcmuart_priv *priv = up->private_data;
-+	struct tty_port *tty_port = &up->state->port;
-+	u32 status;
-+	u32 length;
-+	u32 copied;
-+
-+	/* Make sure we're still in sync with the hardware */
-+	status = udma_readl(priv, REGS_DMA_RX, UDMA_RX_BUFx_STATUS(index));
-+	length = udma_readl(priv, REGS_DMA_RX, UDMA_RX_BUFx_DATA_LEN(index));
-+
-+	if ((status & UDMA_RX_BUFX_STATUS_DATA_RDY) == 0) {
-+		dev_err(up->dev, "RX done interrupt but DATA_RDY not found\n");
-+		return;
-+	}
-+	if (status & (UDMA_RX_BUFX_STATUS_OVERRUN_ERR |
-+		      UDMA_RX_BUFX_STATUS_FRAME_ERR |
-+		      UDMA_RX_BUFX_STATUS_PARITY_ERR)) {
-+		if (status & UDMA_RX_BUFX_STATUS_OVERRUN_ERR) {
-+			up->icount.overrun++;
-+			dev_warn(up->dev, "RX OVERRUN Error\n");
-+		}
-+		if (status & UDMA_RX_BUFX_STATUS_FRAME_ERR) {
-+			up->icount.frame++;
-+			dev_warn(up->dev, "RX FRAMING Error\n");
-+		}
-+		if (status & UDMA_RX_BUFX_STATUS_PARITY_ERR) {
-+			up->icount.parity++;
-+			dev_warn(up->dev, "RX PARITY Error\n");
-+		}
-+	}
-+	copied = (u32)tty_insert_flip_string(
-+		tty_port,
-+		priv->rx_bufs + (index * RX_BUF_SIZE),
-+		length);
-+	if (copied != length) {
-+		dev_warn(up->dev, "Flip buffer overrun of %d bytes\n",
-+			 length - copied);
-+		up->icount.overrun += length - copied;
-+	}
-+	up->icount.rx += length;
-+	if (status & UDMA_RX_BUFX_STATUS_CLOSE_EXPIRED)
-+		priv->dma_rx_partial_buf++;
-+	else if (length != RX_BUF_SIZE)
-+		/*
-+		 * This is a bug in the controller that doesn't cause
-+		 * any problems but will be fixed in the future.
-+		 */
-+		priv->rx_missing_close_timeout++;
-+	else
-+		priv->dma_rx_full_buf++;
-+
-+	tty_flip_buffer_push(tty_port);
-+}
-+
-+static void brcmuart_rx_isr(struct uart_port *up, u32 rx_isr)
-+{
-+	struct brcmuart_priv *priv = up->private_data;
-+	struct device *dev = up->dev;
-+	u32 rx_done_isr;
-+	u32 check_isr;
-+
-+	rx_done_isr = (rx_isr & UDMA_INTR_RX_READY_MASK);
-+	while (rx_done_isr) {
-+		check_isr = UDMA_INTR_RX_READY_BUF0 << priv->rx_next_buf;
-+		if (check_isr & rx_done_isr) {
-+			brcmuart_rx_buf_done_isr(up, priv->rx_next_buf);
-+		} else {
-+			dev_err(dev,
-+				"RX buffer ready out of sequence, restarting RX DMA\n");
-+			start_rx_dma(up_to_u8250p(up));
-+			break;
-+		}
-+		if (rx_isr & UDMA_RX_ERR_INTERRUPTS) {
-+			if (rx_isr & UDMA_INTR_RX_ERROR)
-+				priv->rx_err++;
-+			if (rx_isr & UDMA_INTR_RX_TIMEOUT) {
-+				priv->rx_timeout++;
-+				dev_err(dev, "RX TIMEOUT Error\n");
-+			}
-+			if (rx_isr & UDMA_INTR_RX_ABORT)
-+				priv->rx_abort++;
-+			priv->rx_running = false;
-+		}
-+		/* If not ABORT, re-enable RX buffer */
-+		if (!(rx_isr & UDMA_INTR_RX_ABORT))
-+			udma_unset(priv, REGS_DMA_RX,
-+				   UDMA_RX_BUFx_STATUS(priv->rx_next_buf),
-+				   UDMA_RX_BUFX_STATUS_DATA_RDY);
-+		rx_done_isr &= ~check_isr;
-+		priv->rx_next_buf++;
-+		if (priv->rx_next_buf == RX_BUFS_COUNT)
-+			priv->rx_next_buf = 0;
-+	}
-+}
-+
-+static void brcmuart_tx_isr(struct uart_port *up, u32 isr)
-+{
-+	struct brcmuart_priv *priv = up->private_data;
-+	struct device *dev = up->dev;
-+	struct uart_8250_port *port_8250 = up_to_u8250p(up);
-+	struct circ_buf	*xmit = &port_8250->port.state->xmit;
-+
-+	if (isr & UDMA_INTR_TX_ABORT) {
-+		if (priv->tx_running)
-+			dev_err(dev, "Unexpected TX_ABORT interrupt\n");
-+		return;
-+	}
-+	priv->tx_running = false;
-+	if (!uart_circ_empty(xmit) && !uart_tx_stopped(up))
-+		brcmuart_tx_dma(port_8250);
-+}
-+
-+static irqreturn_t brcmuart_isr(int irq, void *dev_id)
-+{
-+	struct uart_port *up = dev_id;
-+	struct device *dev = up->dev;
-+	struct brcmuart_priv *priv = up->private_data;
-+	unsigned long flags;
-+	u32 interrupts;
-+	u32 rval;
-+	u32 tval;
-+
-+	interrupts = udma_readl(priv, REGS_DMA_ISR, UDMA_INTR_STATUS);
-+	if (interrupts == 0)
-+		return IRQ_NONE;
-+
-+	spin_lock_irqsave(&up->lock, flags);
-+
-+	/* Clear all interrupts */
-+	udma_writel(priv, REGS_DMA_ISR, UDMA_INTR_CLEAR, interrupts);
-+
-+	rval = UDMA_IS_RX_INTERRUPT(interrupts);
-+	if (rval)
-+		brcmuart_rx_isr(up, rval);
-+	tval = UDMA_IS_TX_INTERRUPT(interrupts);
-+	if (tval)
-+		brcmuart_tx_isr(up, tval);
-+	if ((rval | tval) == 0)
-+		dev_warn(dev, "Spurious interrupt: 0x%x\n", interrupts);
-+
-+	spin_unlock_irqrestore(&up->lock, flags);
-+	return IRQ_HANDLED;
-+}
-+
-+static int brcmuart_startup(struct uart_port *port)
-+{
-+	int res;
-+	struct uart_8250_port *up = up_to_u8250p(port);
-+	struct brcmuart_priv *priv = up->port.private_data;
-+
-+	priv->shutdown = false;
-+
-+	/*
-+	 * prevent serial8250_do_startup() from allocating non-existent
-+	 * DMA resources
-+	 */
-+	up->dma = NULL;
-+
-+	res = serial8250_do_startup(port);
-+	if (!priv->dma_enabled)
-+		return res;
-+	/*
-+	 * Disable the Receive Data Interrupt because the DMA engine
-+	 * will handle this.
-+	 */
-+	up->ier &= ~UART_IER_RDI;
-+	serial_port_out(port, UART_IER, up->ier);
-+
-+	priv->tx_running = false;
-+	priv->dma.rx_dma = NULL;
-+	priv->dma.tx_dma = brcmuart_tx_dma;
-+	up->dma = &priv->dma;
-+
-+	brcmuart_init_dma_hardware(priv);
-+	start_rx_dma(up);
-+	return res;
-+}
-+
-+static void brcmuart_shutdown(struct uart_port *port)
-+{
-+	struct uart_8250_port *up = up_to_u8250p(port);
-+	struct brcmuart_priv *priv = up->port.private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&port->lock, flags);
-+	priv->shutdown = true;
-+	if (priv->dma_enabled) {
-+		stop_rx_dma(up);
-+		stop_tx_dma(up);
-+		/* disable all interrupts */
-+		udma_writel(priv, REGS_DMA_ISR, UDMA_INTR_MASK_SET,
-+			UDMA_RX_INTERRUPTS | UDMA_TX_INTERRUPTS);
-+	}
-+
-+	/*
-+	 * prevent serial8250_do_shutdown() from trying to free
-+	 * DMA resources that we never alloc'd for this driver.
-+	 */
-+	up->dma = NULL;
-+
-+	spin_unlock_irqrestore(&port->lock, flags);
-+	serial8250_do_shutdown(port);
-+}
-+
-+/*
-+ * Not all clocks run at the exact specified rate, so set each requested
-+ * rate and then get the actual rate.
-+ */
-+static void init_real_clk_rates(struct device *dev, struct brcmuart_priv *priv)
-+{
-+	int x;
-+	int rc;
-+
-+	priv->default_mux_rate = clk_get_rate(priv->baud_mux_clk);
-+	for (x = 0; x < ARRAY_SIZE(priv->real_rates); x++) {
-+		if (priv->rate_table[x] == 0) {
-+			priv->real_rates[x] = 0;
-+			continue;
-+		}
-+		rc = clk_set_rate(priv->baud_mux_clk, priv->rate_table[x]);
-+		if (rc) {
-+			dev_err(dev, "Error selecting BAUD MUX clock for %u\n",
-+				priv->rate_table[x]);
-+			priv->real_rates[x] = priv->rate_table[x];
-+		} else {
-+			priv->real_rates[x] = clk_get_rate(priv->baud_mux_clk);
-+		}
-+	}
-+	clk_set_rate(priv->baud_mux_clk, priv->default_mux_rate);
-+}
-+
-+static void set_clock_mux(struct uart_port *up, struct brcmuart_priv *priv,
-+			u32 baud)
-+{
-+	u32 percent;
-+	u32 best_percent = UINT_MAX;
-+	u32 quot;
-+	u32 best_quot = 1;
-+	u32 rate;
-+	int best_index = -1;
-+	u64 hires_rate;
-+	u64 hires_baud;
-+	u64 hires_err;
-+	int rc;
-+	int i;
-+	int real_baud;
-+
-+	/* If the Baud Mux Clock was not specified, just return */
-+	if (priv->baud_mux_clk == NULL)
-+		return;
-+
-+	/* Find the closest match for specified baud */
-+	for (i = 0; i < ARRAY_SIZE(priv->real_rates); i++) {
-+		if (priv->real_rates[i] == 0)
-+			continue;
-+		rate = priv->real_rates[i] / 16;
-+		quot = DIV_ROUND_CLOSEST(rate, baud);
-+		if (!quot)
-+			continue;
-+
-+		/* increase resolution to get xx.xx percent */
-+		hires_rate = (u64)rate * 10000;
-+		hires_baud = (u64)baud * 10000;
-+
-+		hires_err = div_u64(hires_rate, (u64)quot);
-+
-+		/* get the delta */
-+		if (hires_err > hires_baud)
-+			hires_err = (hires_err - hires_baud);
-+		else
-+			hires_err = (hires_baud - hires_err);
-+
-+		percent = (unsigned long)DIV_ROUND_CLOSEST_ULL(hires_err, baud);
-+		dev_dbg(up->dev,
-+			"Baud rate: %u, MUX Clk: %u, Error: %u.%u%%\n",
-+			baud, priv->real_rates[i], percent / 100,
-+			percent % 100);
-+		if (percent < best_percent) {
-+			best_percent = percent;
-+			best_index = i;
-+			best_quot = quot;
-+		}
-+	}
-+	if (best_index == -1) {
-+		dev_err(up->dev, "Error, %d BAUD rate is too fast.\n", baud);
-+		return;
-+	}
-+	rate = priv->real_rates[best_index];
-+	rc = clk_set_rate(priv->baud_mux_clk, rate);
-+	if (rc)
-+		dev_err(up->dev, "Error selecting BAUD MUX clock\n");
-+
-+	/* Error over 3 percent will cause data errors */
-+	if (best_percent > 300)
-+		dev_err(up->dev, "Error, baud: %d has %u.%u%% error\n",
-+			baud, percent / 100, percent % 100);
-+
-+	real_baud = rate / 16 / best_quot;
-+	dev_dbg(up->dev, "Selecting BAUD MUX rate: %u\n", rate);
-+	dev_dbg(up->dev, "Requested baud: %u, Actual baud: %u\n",
-+		baud, real_baud);
-+
-+	/* calc nanoseconds for 1.5 characters time at the given baud rate */
-+	i = NSEC_PER_SEC / real_baud / 10;
-+	i += (i / 2);
-+	priv->char_wait = ns_to_ktime(i);
-+
-+	up->uartclk = rate;
-+}
-+
-+static void brcmstb_set_termios(struct uart_port *up,
-+				struct ktermios *termios,
-+				struct ktermios *old)
-+{
-+	struct uart_8250_port *p8250 = up_to_u8250p(up);
-+	struct brcmuart_priv *priv = up->private_data;
-+
-+	if (priv->dma_enabled)
-+		stop_rx_dma(p8250);
-+	set_clock_mux(up, priv, tty_termios_baud_rate(termios));
-+	serial8250_do_set_termios(up, termios, old);
-+	if (p8250->mcr & UART_MCR_AFE)
-+		p8250->port.status |= UPSTAT_AUTOCTS;
-+	if (priv->dma_enabled)
-+		start_rx_dma(p8250);
-+}
-+
-+static int brcmuart_handle_irq(struct uart_port *p)
-+{
-+	unsigned int iir = serial_port_in(p, UART_IIR);
-+	struct brcmuart_priv *priv = p->private_data;
-+	struct uart_8250_port *up = up_to_u8250p(p);
-+	unsigned int status;
-+	unsigned long flags;
-+	unsigned int ier;
-+	unsigned int mcr;
-+	int handled = 0;
-+
-+	/*
-+	 * There's a bug in some 8250 cores where we get a timeout
-+	 * interrupt but there is no data ready.
-+	 */
-+	if (((iir & UART_IIR_ID) == UART_IIR_RX_TIMEOUT) && !(priv->shutdown)) {
-+		spin_lock_irqsave(&p->lock, flags);
-+		status = serial_port_in(p, UART_LSR);
-+		if ((status & UART_LSR_DR) == 0) {
-+
-+			ier = serial_port_in(p, UART_IER);
-+			/*
-+			 * if Receive Data Interrupt is enabled and
-+			 * we're uing hardware flow control, deassert
-+			 * RTS and wait for any chars in the pipline to
-+			 * arrive and then check for DR again.
-+			 */
-+			if ((ier & UART_IER_RDI) && (up->mcr & UART_MCR_AFE)) {
-+				ier &= ~(UART_IER_RLSI | UART_IER_RDI);
-+				serial_port_out(p, UART_IER, ier);
-+				mcr = serial_port_in(p, UART_MCR);
-+				mcr &= ~UART_MCR_RTS;
-+				serial_port_out(p, UART_MCR, mcr);
-+				hrtimer_start(&priv->hrt, priv->char_wait,
-+					      HRTIMER_MODE_REL);
-+			} else {
-+				serial_port_in(p, UART_RX);
-+			}
-+
-+			handled = 1;
-+		}
-+		spin_unlock_irqrestore(&p->lock, flags);
-+		if (handled)
-+			return 1;
-+	}
-+	return serial8250_handle_irq(p, iir);
-+}
-+
-+static enum hrtimer_restart brcmuart_hrtimer_func(struct hrtimer *t)
-+{
-+	struct brcmuart_priv *priv = container_of(t, struct brcmuart_priv, hrt);
-+	struct uart_port *p = priv->up;
-+	struct uart_8250_port *up = up_to_u8250p(p);
-+	unsigned int status;
-+	unsigned long flags;
-+
-+	if (priv->shutdown)
-+		return HRTIMER_NORESTART;
-+
-+	spin_lock_irqsave(&p->lock, flags);
-+	status = serial_port_in(p, UART_LSR);
-+
-+	/*
-+	 * If a character did not arrive after the timeout, clear the false
-+	 * receive timeout.
-+	 */
-+	if ((status & UART_LSR_DR) == 0) {
-+		serial_port_in(p, UART_RX);
-+		priv->rx_bad_timeout_no_char++;
-+	} else {
-+		priv->rx_bad_timeout_late_char++;
-+	}
-+
-+	/* re-enable receive unless upper layer has disabled it */
-+	if ((up->ier & (UART_IER_RLSI | UART_IER_RDI)) ==
-+	    (UART_IER_RLSI | UART_IER_RDI)) {
-+		status = serial_port_in(p, UART_IER);
-+		status |= (UART_IER_RLSI | UART_IER_RDI);
-+		serial_port_out(p, UART_IER, status);
-+		status = serial_port_in(p, UART_MCR);
-+		status |= UART_MCR_RTS;
-+		serial_port_out(p, UART_MCR, status);
-+	}
-+	spin_unlock_irqrestore(&p->lock, flags);
-+	return HRTIMER_NORESTART;
-+}
-+
-+static const struct of_device_id brcmuart_dt_ids[] = {
-+	{
-+		.compatible = "brcm,bcm7278-uart",
-+		.data = brcmstb_rate_table_7278,
-+	},
-+	{
-+		.compatible = "brcm,bcm7271-uart",
-+		.data = brcmstb_rate_table,
-+	},
-+	{},
-+};
-+
-+MODULE_DEVICE_TABLE(of, brcmuart_dt_ids);
-+
-+static void brcmuart_free_bufs(struct device *dev, struct brcmuart_priv *priv)
-+{
-+	if (priv->rx_bufs)
-+		dma_free_coherent(dev, priv->rx_size, priv->rx_bufs,
-+				  priv->rx_addr);
-+	if (priv->tx_buf)
-+		dma_free_coherent(dev, priv->tx_size, priv->tx_buf,
-+				  priv->tx_addr);
-+}
-+
-+static void brcmuart_throttle(struct uart_port *port)
-+{
-+	struct brcmuart_priv *priv = port->private_data;
-+
-+	udma_writel(priv, REGS_DMA_ISR, UDMA_INTR_MASK_SET, UDMA_RX_INTERRUPTS);
-+}
-+
-+static void brcmuart_unthrottle(struct uart_port *port)
-+{
-+	struct brcmuart_priv *priv = port->private_data;
-+
-+	udma_writel(priv, REGS_DMA_ISR, UDMA_INTR_MASK_CLEAR,
-+		    UDMA_RX_INTERRUPTS);
-+}
-+
-+static int debugfs_stats_show(struct seq_file *s, void *unused)
-+{
-+	struct brcmuart_priv *priv = s->private;
-+
-+	seq_printf(s, "rx_err:\t\t\t\t%u\n",
-+		   priv->rx_err);
-+	seq_printf(s, "rx_timeout:\t\t\t%u\n",
-+		   priv->rx_timeout);
-+	seq_printf(s, "rx_abort:\t\t\t%u\n",
-+		   priv->rx_abort);
-+	seq_printf(s, "rx_bad_timeout_late_char:\t%u\n",
-+		   priv->rx_bad_timeout_late_char);
-+	seq_printf(s, "rx_bad_timeout_no_char:\t\t%u\n",
-+		   priv->rx_bad_timeout_no_char);
-+	seq_printf(s, "rx_missing_close_timeout:\t%u\n",
-+		   priv->rx_missing_close_timeout);
-+	if (priv->dma_enabled) {
-+		seq_printf(s, "dma_rx_partial_buf:\t\t%llu\n",
-+			   priv->dma_rx_partial_buf);
-+		seq_printf(s, "dma_rx_full_buf:\t\t%llu\n",
-+			   priv->dma_rx_full_buf);
-+	}
-+	return 0;
-+}
-+DEFINE_SHOW_ATTRIBUTE(debugfs_stats);
-+
-+static void brcmuart_init_debugfs(struct brcmuart_priv *priv,
-+				  const char *device)
-+{
-+	priv->debugfs_dir = debugfs_create_dir(device, brcmuart_debugfs_root);
-+	debugfs_create_file("stats", 0444, priv->debugfs_dir, priv,
-+			    &debugfs_stats_fops);
-+}
-+
-+
-+static int brcmuart_probe(struct platform_device *pdev)
-+{
-+	struct resource *regs;
-+	struct device_node *np = pdev->dev.of_node;
-+	const struct of_device_id *of_id = NULL;
-+	struct uart_8250_port *new_port;
-+	struct device *dev = &pdev->dev;
-+	struct brcmuart_priv *priv;
-+	struct clk *baud_mux_clk;
-+	struct uart_8250_port up;
-+	struct resource *irq;
-+	void __iomem *membase = 0;
-+	resource_size_t mapbase = 0;
-+	u32 clk_rate = 0;
-+	int ret;
-+	int x;
-+	int dma_irq;
-+	static const char * const reg_names[REGS_MAX] = {
-+		"uart", "dma_rx", "dma_tx", "dma_intr2", "dma_arb"
-+	};
-+
-+	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-+	if (!irq) {
-+		dev_err(dev, "missing irq\n");
-+		return -EINVAL;
-+	}
-+	priv = devm_kzalloc(dev, sizeof(struct brcmuart_priv),
-+			GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	of_id = of_match_node(brcmuart_dt_ids, np);
-+	if (!of_id || !of_id->data)
-+		priv->rate_table = brcmstb_rate_table;
-+	else
-+		priv->rate_table = of_id->data;
-+
-+	for (x = 0; x < REGS_MAX; x++) {
-+		regs = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-+						reg_names[x]);
-+		if (!regs)
-+			break;
-+		priv->regs[x] =	devm_ioremap(dev, regs->start,
-+					     resource_size(regs));
-+		if (IS_ERR(priv->regs[x]))
-+			return PTR_ERR(priv->regs[x]);
-+		if (x == REGS_8250) {
-+			mapbase = regs->start;
-+			membase = priv->regs[x];
-+		}
-+	}
-+
-+	/* We should have just the uart base registers or all the registers */
-+	if (x != 1 && x != REGS_MAX) {
-+		dev_warn(dev, "%s registers not specified\n", reg_names[x]);
-+		return -EINVAL;
-+	}
-+
-+	/* if the DMA registers were specified, try to enable DMA */
-+	if (x > REGS_DMA_RX) {
-+		if (brcmuart_arbitration(priv, 1) == 0) {
-+			u32 txrev = 0;
-+			u32 rxrev = 0;
-+
-+			txrev = udma_readl(priv, REGS_DMA_RX, UDMA_RX_REVISION);
-+			rxrev = udma_readl(priv, REGS_DMA_TX, UDMA_TX_REVISION);
-+			if ((txrev >= UDMA_TX_REVISION_REQUIRED) &&
-+				(rxrev >= UDMA_RX_REVISION_REQUIRED)) {
-+
-+				/* Enable the use of the DMA hardware */
-+				priv->dma_enabled = true;
-+			} else {
-+				brcmuart_arbitration(priv, 0);
-+				dev_err(dev,
-+					"Unsupported DMA Hardware Revision\n");
-+			}
-+		} else {
-+			dev_err(dev,
-+				"Timeout arbitrating for UART DMA hardware\n");
-+		}
-+	}
-+
-+	of_property_read_u32(np, "clock-frequency", &clk_rate);
-+
-+	/* See if a Baud clock has been specified */
-+	baud_mux_clk = of_clk_get_by_name(np, "sw_baud");
-+	if (IS_ERR(baud_mux_clk)) {
-+		if (PTR_ERR(baud_mux_clk) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+		dev_dbg(dev, "BAUD MUX clock not specified\n");
-+	} else {
-+		dev_dbg(dev, "BAUD MUX clock found\n");
-+		ret = clk_prepare_enable(baud_mux_clk);
-+		if (ret)
-+			return ret;
-+		priv->baud_mux_clk = baud_mux_clk;
-+		init_real_clk_rates(dev, priv);
-+		clk_rate = priv->default_mux_rate;
-+	}
-+
-+	if (clk_rate == 0) {
-+		dev_err(dev, "clock-frequency or clk not defined\n");
-+		return -EINVAL;
-+	}
-+
-+	dev_dbg(dev, "DMA is %senabled\n", priv->dma_enabled ? "" : "not ");
-+
-+	memset(&up, 0, sizeof(up));
-+	up.port.type = PORT_16550A;
-+	up.port.uartclk = clk_rate;
-+	up.port.dev = dev;
-+	up.port.mapbase = mapbase;
-+	up.port.membase = membase;
-+	up.port.irq = irq->start;
-+	up.port.handle_irq = brcmuart_handle_irq;
-+	up.port.regshift = 2;
-+	up.port.iotype = of_device_is_big_endian(np) ?
-+		UPIO_MEM32BE : UPIO_MEM32;
-+	up.port.flags = UPF_SHARE_IRQ | UPF_BOOT_AUTOCONF
-+		| UPF_FIXED_PORT | UPF_FIXED_TYPE;
-+	up.port.dev = dev;
-+	up.port.private_data = priv;
-+	up.capabilities = UART_CAP_FIFO | UART_CAP_AFE;
-+	up.port.fifosize = 32;
-+
-+	/* Check for a fixed line number */
-+	ret = of_alias_get_id(np, "serial");
-+	if (ret >= 0)
-+		up.port.line = ret;
-+
-+	/* setup HR timer */
-+	hrtimer_init(&priv->hrt, CLOCK_MONOTONIC, HRTIMER_MODE_ABS);
-+	priv->hrt.function = brcmuart_hrtimer_func;
-+
-+	up.port.shutdown = brcmuart_shutdown;
-+	up.port.startup = brcmuart_startup;
-+	up.port.throttle = brcmuart_throttle;
-+	up.port.unthrottle = brcmuart_unthrottle;
-+	up.port.set_termios = brcmstb_set_termios;
-+
-+	if (priv->dma_enabled) {
-+		priv->rx_size = RX_BUF_SIZE * RX_BUFS_COUNT;
-+		priv->rx_bufs = dma_alloc_coherent(dev,
-+						   priv->rx_size,
-+						   &priv->rx_addr, GFP_KERNEL);
-+		if (!priv->rx_bufs)
-+			goto err;
-+		priv->tx_size = UART_XMIT_SIZE;
-+		priv->tx_buf = dma_alloc_coherent(dev,
-+						  priv->tx_size,
-+						  &priv->tx_addr, GFP_KERNEL);
-+		if (!priv->tx_buf)
-+			goto err;
-+	}
-+
-+	ret = serial8250_register_8250_port(&up);
-+	if (ret < 0) {
-+		dev_err(dev, "unable to register 8250 port\n");
-+		goto err;
-+	}
-+	priv->line = ret;
-+	new_port = serial8250_get_port(ret);
-+	priv->up = &new_port->port;
-+	if (priv->dma_enabled) {
-+		dma_irq = platform_get_irq_byname(pdev,  "dma");
-+		if (dma_irq < 0) {
-+			dev_err(dev, "no IRQ resource info\n");
-+			goto err1;
-+		}
-+		ret = devm_request_irq(dev, dma_irq, brcmuart_isr,
-+				IRQF_SHARED, "uart DMA irq", &new_port->port);
-+		if (ret) {
-+			dev_err(dev, "unable to register IRQ handler\n");
-+			goto err1;
-+		}
-+	}
-+	platform_set_drvdata(pdev, priv);
-+	brcmuart_init_debugfs(priv, dev_name(&pdev->dev));
-+	return 0;
-+
-+err1:
-+	serial8250_unregister_port(priv->line);
-+err:
-+	brcmuart_free_bufs(dev, priv);
-+	brcmuart_arbitration(priv, 0);
-+	return -ENODEV;
-+}
-+
-+static int brcmuart_remove(struct platform_device *pdev)
-+{
-+	struct brcmuart_priv *priv = platform_get_drvdata(pdev);
-+
-+	debugfs_remove_recursive(priv->debugfs_dir);
-+	hrtimer_cancel(&priv->hrt);
-+	serial8250_unregister_port(priv->line);
-+	brcmuart_free_bufs(&pdev->dev, priv);
-+	brcmuart_arbitration(priv, 0);
-+	return 0;
-+}
-+
-+static int __maybe_unused brcmuart_suspend(struct device *dev)
-+{
-+	struct brcmuart_priv *priv = dev_get_drvdata(dev);
-+
-+	serial8250_suspend_port(priv->line);
-+	clk_disable_unprepare(priv->baud_mux_clk);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused brcmuart_resume(struct device *dev)
-+{
-+	struct brcmuart_priv *priv = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = clk_prepare_enable(priv->baud_mux_clk);
-+	if (ret)
-+		dev_err(dev, "Error enabling BAUD MUX clock\n");
-+
-+	/*
-+	 * The hardware goes back to it's default after suspend
-+	 * so get the "clk" back in sync.
-+	 */
-+	ret = clk_set_rate(priv->baud_mux_clk, priv->default_mux_rate);
-+	if (ret)
-+		dev_err(dev, "Error restoring default BAUD MUX clock\n");
-+	if (priv->dma_enabled) {
-+		if (brcmuart_arbitration(priv, 1)) {
-+			dev_err(dev, "Timeout arbitrating for DMA hardware on resume\n");
-+			return(-EBUSY);
-+		}
-+		brcmuart_init_dma_hardware(priv);
-+		start_rx_dma(serial8250_get_port(priv->line));
-+	}
-+	serial8250_resume_port(priv->line);
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops brcmuart_dev_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(brcmuart_suspend, brcmuart_resume)
-+};
-+
-+static struct platform_driver brcmuart_platform_driver = {
-+	.driver = {
-+		.name	= "bcm7271-uart",
-+		.pm		= &brcmuart_dev_pm_ops,
-+		.of_match_table = brcmuart_dt_ids,
-+	},
-+	.probe		= brcmuart_probe,
-+	.remove		= brcmuart_remove,
-+};
-+
-+static int __init brcmuart_init(void)
-+{
-+	brcmuart_debugfs_root = debugfs_create_dir(
-+		brcmuart_platform_driver.driver.name, NULL);
-+	return platform_driver_register(&brcmuart_platform_driver);
-+}
-+module_init(brcmuart_init);
-+
-+static void __exit brcmuart_deinit(void)
-+{
-+	platform_driver_unregister(&brcmuart_platform_driver);
-+	debugfs_remove_recursive(brcmuart_debugfs_root);
-+}
-+module_exit(brcmuart_deinit);
-+
-+MODULE_AUTHOR("Al Cooper");
-+MODULE_DESCRIPTION("Broadcom NS16550A compatible serial port driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/tty/serial/8250/Kconfig b/drivers/tty/serial/8250/Kconfig
-index 603137da4736..d8891d03e8d1 100644
---- a/drivers/tty/serial/8250/Kconfig
-+++ b/drivers/tty/serial/8250/Kconfig
-@@ -510,6 +510,16 @@ config SERIAL_8250_TEGRA
- 	  Select this option if you have machine with an NVIDIA Tegra SoC and
- 	  wish to enable 8250 serial driver for the Tegra serial interfaces.
- 
-+config SERIAL_8250_BCM7271
-+	bool "Broadcom 8250 based serial port"
-+	depends on SERIAL_8250 && (ARCH_BRCMSTB || COMPILE_TEST)
-+	default ARCH_BRCMSTB
-+	help
-+	  If you have a Broadcom STB based board and want to use the
-+	  enhanced features of the Broadcom 8250 based serial port,
-+	  including DMA support and high accuracy BAUD rates, say
-+	  Y to this option. If unsure, say N.
-+
- config SERIAL_OF_PLATFORM
- 	tristate "Devicetree based probing for 8250 ports"
- 	depends on SERIAL_8250 && OF
-diff --git a/drivers/tty/serial/8250/Makefile b/drivers/tty/serial/8250/Makefile
-index a8bfb654d490..b9bcd73c8997 100644
---- a/drivers/tty/serial/8250/Makefile
-+++ b/drivers/tty/serial/8250/Makefile
-@@ -38,6 +38,7 @@ obj-$(CONFIG_SERIAL_8250_LPSS)		+= 8250_lpss.o
- obj-$(CONFIG_SERIAL_8250_MID)		+= 8250_mid.o
- obj-$(CONFIG_SERIAL_8250_PXA)		+= 8250_pxa.o
- obj-$(CONFIG_SERIAL_8250_TEGRA)		+= 8250_tegra.o
-+obj-$(CONFIG_SERIAL_8250_BCM7271)	+= 8250_bcm7271.o
- obj-$(CONFIG_SERIAL_OF_PLATFORM)	+= 8250_of.o
- 
- CFLAGS_8250_ingenic.o += -I$(srctree)/scripts/dtc/libfdt
--- 
-2.17.1
-
+Yes, that's what I take from the comment, the cpu maps lock protects
+against racing hotplug operations.
