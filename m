@@ -2,147 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA396340834
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:55:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D7934083F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:57:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231603AbhCROyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 10:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231273AbhCROye (ORCPT
+        id S231620AbhCROzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 10:55:23 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41168 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230374AbhCROy5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 10:54:34 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C88C06174A;
-        Thu, 18 Mar 2021 07:54:34 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so5436917otk.5;
-        Thu, 18 Mar 2021 07:54:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Bp34zom1zCvJJrQquMcXUW0jeMnP2aq6CD78ogiP0Gg=;
-        b=N/hLIGGWKagKZiQNA6QggikiYl1d3csncrZHpWMWsoGJ40oMpSo+ZS1SYXRnGRtTJl
-         cT98pJswvaKyVrXdW8Z3Zbl3d0j2XmLkYUEOxA6HOwZpywNHOi0IaMmvlfF8KhobId1m
-         SIpRG8RnBYr8jdiJKRIzRvKAP/4U9cWCCRZVW1FkgH43URX1yrZmXtes2mIcTVJDXccp
-         BeSpJnXb6c4SAmLRvDzIxS4+YTHFEqKf8uRCHPmDC5xj+hZI27ybayUDbT34WL71XGLD
-         RXdKx5jNjiLoSWELtEaJKz0Z2hkK1dSUF072DVDlVTz5c9Mz92XIFZ3KusoBWnNurF5k
-         EBEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Bp34zom1zCvJJrQquMcXUW0jeMnP2aq6CD78ogiP0Gg=;
-        b=AZC9NIUPG5xwgTW4oplFa9iC7w3PfoV29Yvol68bjNUAp1uag1SLshxaqw99ftmZB1
-         86op5MJmmR8ThdU5qX0LWkBQdqN68TbDrcUm0tmfTxjH3dn5WkzR+9HemJDbf5YaD6df
-         j3jS70H0Q2AcNi5wcEThqBuC6gmigdBaT7LOuqYkwqxIsKZUv2qkdNGP2ilQL8UyqcLi
-         NWSod4yGB3nC7Bx7MUQhhvbc/svcnyo9MBQ/nSl1N96YCRsA9ppbfgJRiIvK4Ke/i1mW
-         pkkOXgP4IIP0yJBvAYRm4A/DDRP4KTRz6m2ZyDES7xwpU9ANYzBoxtEoeGJMhxJoAyZV
-         kJgw==
-X-Gm-Message-State: AOAM5320edAobAxEYQ1CfdyV9lEs6ZLOSIAmfi/JzdZGVfi3YhqkiTSW
-        Fh3TBYndmVWYWrmGs7urIGL4E7R/PyQ=
-X-Google-Smtp-Source: ABdhPJxjCIJZL4UJvbiTw2bq/H2XfxlAELvPLeryETt8w7pptwdwWI95fcm9k+XeNP3PqKu60BSRDQ==
-X-Received: by 2002:a9d:1ea2:: with SMTP id n31mr8101277otn.370.1616079273635;
-        Thu, 18 Mar 2021 07:54:33 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k9sm510720ots.24.2021.03.18.07.54.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 07:54:33 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v1] usb: typec: tcpm: Skip sink_cap query only when VDM sm
- is busy
-To:     Badhri Jagan Sridharan <badhri@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20210318064805.3747831-1-badhri@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <771d9847-6e0b-0aa1-e514-2558b4a59637@roeck-us.net>
-Date:   Thu, 18 Mar 2021 07:54:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 18 Mar 2021 10:54:57 -0400
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1lMu35-0000LC-Rm; Thu, 18 Mar 2021 14:54:55 +0000
+Date:   Thu, 18 Mar 2021 15:54:54 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Sargun Dhillon <sargun@sargun.me>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Hariharan Ananthakrishnan <hari@netflix.com>,
+        Keerti Lakshminarayan <keerti@netflix.com>,
+        Kyle Anderson <kylea@netflix.com>,
+        Linux Containers List <containers@lists.linux-foundation.org>,
+        stgraber@ubuntu.com, Andy Lutomirski <luto@amacapital.net>
+Subject: Re: seccomp: Delay filter activation
+Message-ID: <20210318145454.d2xbetk2werv7j2u@wittgenstein>
+References: <CAMp4zn9oEb6bJJLQWjSE1AFg6TqwkF3FOvFk2VSkKd+0Kj7TCg@mail.gmail.com>
+ <20210301110907.2qoxmiy55gpkgwnq@wittgenstein>
+ <20210301132156.in3z53t5xxy3ity5@wittgenstein>
+ <202103011515.3A941F6@keescook>
 MIME-Version: 1.0
-In-Reply-To: <20210318064805.3747831-1-badhri@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <202103011515.3A941F6@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 11:48 PM, Badhri Jagan Sridharan wrote:
-> When port partner responds "Not supported" to the DiscIdentity command,
-> VDM state machine can remain in NVDM_STATE_ERR_TMOUT and this causes
-> querying sink cap to be skipped indefinitely. Hence check for
-> vdm_sm_running instead of checking for VDM_STATE_DONE.
-> 
-> Fixes: 8dc4bd073663f ("usb: typec: tcpm: Add support for Sink Fast Role SWAP(FRS)")
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+Sorry, I just found that mail.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, Mar 01, 2021 at 03:44:06PM -0800, Kees Cook wrote:
+> On Mon, Mar 01, 2021 at 02:21:56PM +0100, Christian Brauner wrote:
+> > On Mon, Mar 01, 2021 at 12:09:09PM +0100, Christian Brauner wrote:
+> > > On Sat, Feb 20, 2021 at 01:31:57AM -0800, Sargun Dhillon wrote:
+> > > > We've run into a problem where attaching a filter can be quite messy
+> > > > business because the filter itself intercepts sendmsg, and other
+> > > > syscalls related to exfiltrating the listener FD. I believe that this
+> > > > problem set has been brought up before, and although there are
+> > > > "simpler" methods of exfiltrating the listener, like clone3 or
+> > > > pidfd_getfd, but these are still less than ideal.
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 11d0c40bc47d..39e068d60755 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -5219,7 +5219,7 @@ static void tcpm_enable_frs_work(struct kthread_work *work)
->  		goto unlock;
->  
->  	/* Send when the state machine is idle */
-> -	if (port->state != SNK_READY || port->vdm_state != VDM_STATE_DONE || port->send_discover)
-> +	if (port->state != SNK_READY || port->vdm_sm_running || port->send_discover)
->  		goto resched;
->  
->  	port->upcoming_state = GET_SINK_CAP;
-> 
+> I'm trying to make sure I understand: the target process would like to
+> have a filter attached that blocks sendmsg, but that would mean it has
+> no way to send the listener FD to its manager?
 
+With pidfd_getfd() that wouldn't be a problem, I think which is what I
+was trying to say. Unless the supervising task doen't have enough
+privilege over the supervised task which seems like an odd scenario but
+is technically possible, I guess.
+
+> 
+> And you'd want to have listening working for sendmsg (otherwise you
+> could do it with two filters, I imagine)?
+> 
+> > > 	int fd_filter = seccomp(SECCOMP_SET_MODE_FILTER, SECCOMP_FILTER_DETACHED, &prog);
+> > > 
+> > > 	BARRIER_WAIT_SETUP_DONE;
+> > > 
+> > > 	int ret = seccomp(SECCOMP_ATTACH_FILTER, 0, INT_TO_PTR(fd_listener));
+> > 
+> > This obviously should've been sm like:
+> > 
+> > struct seccomp_filter_attach {
+> > 	union {
+> > 		__s32 pidfd;
+> > 		__s32 pid;
+> > 	};
+> > 	__u32 fd_filter;
+> > };
+> > 
+> > and then
+> > 
+> > int ret = seccomp(SECCOMP_ATTACH_FILTER, 0, seccomp_filter_attach);
+> 
+> Given the difficulty with TSYNC, I'm not excited about adding an
+> "apply this filter to another process" API. :)
+
+Just to give a more complete reason for suggesting something like this
+without trying to argue that we must have this:
+
+seccomp() has so far been an API that is caller-centric and by that I
+mean that the caller loaded it's seccomp profile and sandboxed itself. As
+such seccomp is an example of "caller-managed" security. This security
+model has obvious advantages and fits into the general fork()-like world
+of unix. But imho that self-management model breaks down as soon as a
+file descriptor that can be used to refer to the object in question
+enters into the picture. For seccomp this "breaking point" was the
+seccomp notifier fd.
+
+Because with the introduction of that fd we have introduced the concept
+of supervisor and supervisee for seccomp which imho didn't really exist
+in the same way before. It's pretty obvious from the type of language
+that we now use both in userspace and in kernelspace when we talk about
+the seccomp notifier.
+
+At the current point we're somewhere in the middle between caller-managed
+and supervised seccomp which brings up funny probelms and edge-cases.
+One of them most obvious examples is in fact the question how to get the
+seccomp notify fd out of the supervised task. This clearly points to the
+fact that we're missing one of the fundamentals of an fd-based
+supervision model: open(). This is why I was suggesting the
+SECCOMP_ATTACH_FILTER command. It's in a sense an open-call for the
+seccomp notify fd.
+
+That all being said I know that it can be weird to implement this and if
+you prefer we go with another simpler model to work around such things
+than I fully understand.
+
+Christian
