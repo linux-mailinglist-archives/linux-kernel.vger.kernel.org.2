@@ -2,101 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33DD33FFF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 07:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF7833FFF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 07:54:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhCRGyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 02:54:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229879AbhCRGyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 02:54:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B97764EE2;
-        Thu, 18 Mar 2021 06:53:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616050443;
-        bh=OLr6tn9DSS1nD71KjjsWAEswxGCiO3d2wxs6sdMs5ck=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UEpxhUlMi4rO1maKkMirQrgS6TsD/xMhFzpz0BYGwpS2Hpkc/19BCYAx8f30VoAx5
-         taA7LSk/xNBcW3uPBwyV5/76T/e6yPUpXZ3ylisQQeBnUbGZNKS+/6yoTsVHUsWtne
-         +mCXxLZOZFjgTJf9wZJSGeQyYiiULplVCon0STnhruft9+oM+Hq6UWfPZwBZjn+IVS
-         7F7SmSL7VDuqRgJ2is9L+Z2amiFWeIWTPVIshjXANzk0GMZv/OQHaVJQJDku+JDGA2
-         4JRIrmm+DgZZlvg5PKO10o7azDGCL+F/MLncx8VYZQMRBr+fWv8a8aYxRa6ILpcprm
-         fFA7EifGc6sfQ==
-Date:   Thu, 18 Mar 2021 08:53:52 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     x86@kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        David Hildenbrand <david@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v3 0/2] x86/setup: consolidate early memory reservations
-Message-ID: <YFL5ACz5YDlymK75@kernel.org>
-References: <20210302100406.22059-1-rppt@kernel.org>
- <YEkHQ4PnxJkqJeoU@kernel.org>
+        id S229879AbhCRGyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 02:54:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229883AbhCRGyF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 02:54:05 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4849FC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 23:54:05 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id c6so3354672qtc.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 23:54:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RwKZTf6r3qzoagkUEIVvYx7G9KpwCcqS8Mu1ZCGxzNs=;
+        b=ZebnEmf/Bz5Q56X7DmHK+C5I08ViRHdMMps46MVGoY72WqrjNChTaIkhAVobSPFgCS
+         BSAbuY1vWJhcK5yRKzxeOCHk99HlreEJIB1gAKbdQzPWTuMK7VyzvQRu5vtJ6l6E/wZp
+         IgMeUjm/g7cU+glU87dkO09ud52IdFiEh2m1QUnWGWTTCmfbgKUcUqUGkFv/Okfw/43k
+         BxVdT6WvibizijldFK1urBUyj5YmL3L0kGiHH5QZ/7LHaaqChynw3PKpqFyWMIEzz+iT
+         5WSOU3Q6KcVCoiuHpfty/D56T4WloAkEAEhuMlvlR0XQctfTH969EhHXSx3SKFRfSXaj
+         idmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RwKZTf6r3qzoagkUEIVvYx7G9KpwCcqS8Mu1ZCGxzNs=;
+        b=ZK5g+crljX8JxlZ3mypHcZ8ksIkSZdSOL3JwA5OSQyEXiV8saPbNnW9StwUpEPLms8
+         MyKBvim/0aCByHqXVUwDHybv/cRnvJhWT/jXJYSgWXZP2r1Jgh9b+EBUoU+MZwHzEaae
+         eJMob3RrN7eij4dOjNPB3nzNn7TT06fQ3g1an/abqU1Cby5aKZt4pSfR7w6s70K5heMA
+         EHTS2NkJPyFCEeStjeinUvuh2NajOj+jTvsoZGITapeWZG3bHs2HZJ++TWaomVamM/VG
+         AiUOnTyc7o2lgXVsJ8X/rPmG6b8tBNLUESmG+fKpcvwAe2pZZlO3YbB0HQDVfrM+aKVk
+         KvcA==
+X-Gm-Message-State: AOAM533ZCgCkbJhk4e4nt1eKl8vi9imYMzVMVtlKMNA7cHCGwnsVLDuV
+        vzhoEc5wkO7dH+qeExVp29NEpqjPHzjyr6lSi+BHlw==
+X-Google-Smtp-Source: ABdhPJzuY0N9To0KWW1Et2NZ910MBoeACeoc8B4OQCX7VbYCN4QgEEDKP+dDVR8D1TYET+qqNiT0lKHw4/Rzc2kCO3Y=
+X-Received: by 2002:a05:622a:c3:: with SMTP id p3mr2376224qtw.43.1616050444158;
+ Wed, 17 Mar 2021 23:54:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEkHQ4PnxJkqJeoU@kernel.org>
+References: <CACT4Y+YBXLi=quMEyBHtLO3-Ef6E3CAN7toFUdTFJWeH+5Y7kg@mail.gmail.com>
+ <31c4e1863a561c47d38b8e547ec38a0a713bdadc.camel@linux.ibm.com>
+ <CACT4Y+b8cNr1zv=RFPLXf9vY==BSktM1vb9gOfcWyBEaojZ1-A@mail.gmail.com> <dbf9e31ca38b36b757c71bcc8fa17cb1ae392f1c.camel@linux.ibm.com>
+In-Reply-To: <dbf9e31ca38b36b757c71bcc8fa17cb1ae392f1c.camel@linux.ibm.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 18 Mar 2021 07:53:53 +0100
+Message-ID: <CACT4Y+YCJ3CPR4LHqY8j_g3=vM6-iKoCc96d8OJuZ-N9KKeZkg@mail.gmail.com>
+Subject: Re: NULL deref in integrity_inode_get
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, d.kasatkin@samsung.com,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Another gentle ping.
+On Thu, Mar 18, 2021 at 3:18 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
+>
+> Hi Dmitry,
+>
+> On Mon, 2021-03-15 at 14:07 +0100, Dmitry Vyukov wrote:
+> > On Mon, Mar 15, 2021 at 1:41 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > >
+> > > On Mon, 2021-03-15 at 11:58 +0100, Dmitry Vyukov wrote:
+> > > > Hi,
+> > > >
+> > > > I am trying to boot 5.12-rc3 with this config:
+> > > > https://github.com/google/syzkaller/blob/cc1cff8f1e1a585894796d6eae8c51eef98037e6/dashboard/config/linux/upstream-smack-kasan.config
+> > > >
+> > > > in qemu:
+> > > > qemu-system-x86_64       -enable-kvm     -machine q35,nvdimm -cpu
+> > > > max,migratable=off -smp 4       -m 4G,slots=4,maxmem=16G        -hda
+> > > > wheezy.img      -kernel arch/x86/boot/bzImage   -nographic -vga std
+> > > >  -soundhw all     -usb -usbdevice tablet  -bt hci -bt device:keyboard
+> > > >    -net user,host=10.0.2.10,hostfwd=tcp::10022-:22 -net
+> > > > nic,model=virtio-net-pci   -object
+> > > > memory-backend-file,id=pmem1,share=off,mem-path=/dev/zero,size=64M
+> > > >   -device nvdimm,id=nvdimm1,memdev=pmem1  -append "console=ttyS0
+> > > > root=/dev/sda earlyprintk=serial rodata=n oops=panic panic_on_warn=1
+> > > > panic=86400 lsm=smack numa=fake=2 nopcid dummy_hcd.num=8"   -pidfile
+> > > > vm_pid -m 2G -cpu host
+> > > >
+> > > > But it crashes on NULL deref in integrity_inode_get during boot:
+> > > >
+> > > > Run /sbin/init as init process
+> > > > BUG: kernel NULL pointer dereference, address: 000000000000001c
+> > > > #PF: supervisor read access in kernel mode
+> > > > #PF: error_code(0x0000) - not-present page
+> > > > PGD 0 P4D 0
+> > > > Oops: 0000 [#1] PREEMPT SMP KASAN
+> > > > CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc2+ #97
+> > > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+> > > > rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
+> > > > RIP: 0010:kmem_cache_alloc+0x2b/0x370 mm/slub.c:2920
+> > > > Code: 57 41 56 41 55 41 54 41 89 f4 55 48 89 fd 53 48 83 ec 10 44 8b
+> > > > 3d d9 1f 90 0b 65 48 8b 04 25 28 00 00 00 48 89 44 24 08 31 c0 <8b> 5f
+> > > > 1c 4cf
+> > > > RSP: 0000:ffffc9000032f9d8 EFLAGS: 00010246
+> > > > RAX: 0000000000000000 RBX: ffff888017fc4f00 RCX: 0000000000000000
+> > > > RDX: ffff888040220000 RSI: 0000000000000c40 RDI: 0000000000000000
+> > > > RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888019263627
+> > > > R10: ffffffff83937cd1 R11: 0000000000000000 R12: 0000000000000c40
+> > > > R13: ffff888019263538 R14: 0000000000000000 R15: 0000000000ffffff
+> > > > FS:  0000000000000000(0000) GS:ffff88802d180000(0000) knlGS:0000000000000000
+> > > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > CR2: 000000000000001c CR3: 000000000b48e000 CR4: 0000000000750ee0
+> > > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > > PKRU: 55555554
+> > > > Call Trace:
+> > > >  integrity_inode_get+0x47/0x260 security/integrity/iint.c:105
+> > > >  process_measurement+0x33d/0x17e0 security/integrity/ima/ima_main.c:237
+> > > >  ima_bprm_check+0xde/0x210 security/integrity/ima/ima_main.c:474
+> > > >  security_bprm_check+0x7d/0xa0 security/security.c:845
+> > > >  search_binary_handler fs/exec.c:1708 [inline]
+> > > >  exec_binprm fs/exec.c:1761 [inline]
+> > > >  bprm_execve fs/exec.c:1830 [inline]
+> > > >  bprm_execve+0x764/0x19a0 fs/exec.c:1792
+> > > >  kernel_execve+0x370/0x460 fs/exec.c:1973
+> > > >  try_to_run_init_process+0x14/0x4e init/main.c:1366
+> > > >  kernel_init+0x11d/0x1b8 init/main.c:1477
+> > > >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> > > > Modules linked in:
+> > > > CR2: 000000000000001c
+> > > > ---[ end trace 22d601a500de7d79 ]---
+> > >
+> > > It looks like integrity_inode_get() fails to alloc memory.   Only on
+> > > failure to verify the integrity of a file would an error be returned.
+> > > I think that is what you would want to happen.  Without an "appraise"
+> > > policy, this shouldn't happen.
+> >
+> > It happens at the very boot. I think the cache is NULL.
+>
+> An IMA policy had to have been loaded in order for
+> integrity_inode_get() to have been called.   If this is happening on
+> boot, it's too early for a custom policy to have been loaded by
+> userspace, but I don't see the builtin policy defined on the boot
+> command line either.
+>
+> Any additional information would be much appreciated.
 
-On Wed, Mar 10, 2021 at 07:52:13PM +0200, Mike Rapoport wrote:
-> Any comments on these?
-> 
-> On Tue, Mar 02, 2021 at 12:04:04PM +0200, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > Hi,
-> > 
-> > David noticed that we do some of memblock_reserve() calls after allocations
-> > are possible:
-> > 
-> > https://lore.kernel.org/lkml/6ba6bde3-1520-5cd0-f987-32d543f0b79f@redhat.com
-> > 
-> > The below patches consolidate early memory reservations done during
-> > setup_arch() so that memory used by firmware, bootloader, kernel text/data
-> > and the memory that should be excluded from the available memory for
-> > whatever other reason is reserved before memblock allocations are possible.
-> > 
-> > The patches are rebased on v5.12-rc1 and I think x86 tree is the best way
-> > to merge them.
-> > 
-> > v3:
-> > * rebase on v5.12-rc1
-> > 
-> > v2: https://lore.kernel.org/lkml/20210128105711.10428-1-rppt@kernel.org
-> > * get rid of trim_platform_memory_ranges() and call trim_snb_memory()
-> >   directly, per Boris comments
-> > * massage changelog and comments to use passive voice, per Boris
-> > * add Acked-by and Reviewed-by, thanks Boris and David
-> > 
-> > v1: https://lore.kernel.org/lkml/20210115083255.12744-1-rppt@kernel.org
-> > 
-> > Mike Rapoport (2):
-> >   x86/setup: consolidate early memory reservations
-> >   x86/setup: merge several reservations of start of the memory
-> > 
-> >  arch/x86/kernel/setup.c | 95 ++++++++++++++++++++---------------------
-> >  1 file changed, 46 insertions(+), 49 deletions(-)
-> > 
-> > -- 
-> > 2.28.0
-> > 
-> 
-> -- 
-> Sincerely yours,
-> Mike.
+Hi Mimi,
 
--- 
-Sincerely yours,
-Mike.
+I provided kernel config and qemu command line. What other information
+are you looking for? Can you reproduce it on your side?
