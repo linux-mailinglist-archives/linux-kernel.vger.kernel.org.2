@@ -2,118 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13006340556
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35232340540
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbhCRMQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 08:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbhCRMQJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:16:09 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B946CC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 05:16:09 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so3052408pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 05:16:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=mDvN0SgAfdUxvP15FGjlUIyfQkEQU0VmBT3cvhyl4P8=;
-        b=J0SCTpSl66AXYFrVZinWF1tdEH2O6BGxsFyMoRYdtxMpYlP0iLTy+DjI2rPZTfQIcU
-         p5xmOgENJh77+3sPhSiRMqCzHkPZAS8peVP/IbpKySbcykwSepPjABdApEOXSX02Z4S3
-         l4Ixeuc52rWSYU0kUkexKhpyhSRQ+xTSIqM6Gz5ptTsyQno+l9w7qgvgvWQdHQjCk6aD
-         Ao+jEHr44f7LoaOWDh4EfambbLt6ePERFM49V9dWx86fx+DE5ekAjey5sa9rXyMRSDBd
-         N47WBciaLHNJV1jdQ7ybbgXzHMux3nvRGU4MEy4G2kjjMANbg4zN6qVB7y4h5eZhXs1i
-         WUiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=mDvN0SgAfdUxvP15FGjlUIyfQkEQU0VmBT3cvhyl4P8=;
-        b=qB99RvLzak96B8ds+3reUBzx4VR+AwVJYcZDdBgEgqVOE7097RKgK/0lPT6MLlIQte
-         IApzqbw9Bzi/DHVNXfseBe7mVLoEsIsGAe1CufvpVwWT//8qywSivOYRKK8bbAEHwIfB
-         nvqMUiWTLgyhNs4y7vu4kyZmIveysyqEmvG3+hXhIFJmQNULzIX3+7IUHexMymsdkz0z
-         q4GNHN1M5l2mN0MP41vVnQf4Wz5uA5Rl6RMQyxEgNeEZalyBRCucJ2RtGWYK6hjzBFjM
-         kyu8SUqRMwSMuAeL4D2riTmQh9Z3ieXx3ho43xWmBVSj6zg46hoj04vWriaQpSCkObJI
-         LDlQ==
-X-Gm-Message-State: AOAM5319jIHjolvB5mKizDEBv9DALOKDiPrH2sTpbZnZ547fOmsmWRZC
-        LIXgeL1c2nit0bhpJQM0Bc1g
-X-Google-Smtp-Source: ABdhPJw8gFyVpDkplM9fABTLOzM0jYdB18ReJ2voNFd21l1TQUS6DAIi9n2ngbIujTbCX2OD6xslVQ==
-X-Received: by 2002:a17:90a:5211:: with SMTP id v17mr4141106pjh.53.1616069769155;
-        Thu, 18 Mar 2021 05:16:09 -0700 (PDT)
-Received: from thinkpad ([2409:4072:6d00:4737:af26:182c:a57e:1d9e])
-        by smtp.gmail.com with ESMTPSA id i7sm2473080pfq.184.2021.03.18.05.16.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 05:16:08 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 17:46:01 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
-        bjorn.andersson@linaro.org
-Subject: Re: [PATCH v5 0/3] Add support for secure regions in NAND
-Message-ID: <20210318121601.GA21610@thinkpad>
-References: <20210317122513.42369-1-manivannan.sadhasivam@linaro.org>
- <20210317155121.19cbb50c@xps13>
+        id S230087AbhCRMPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 08:15:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55674 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229745AbhCRMPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 08:15:00 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9BFB6AD8A;
+        Thu, 18 Mar 2021 12:14:59 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id c1198254;
+        Thu, 18 Mar 2021 12:16:15 +0000 (UTC)
+Date:   Thu, 18 Mar 2021 12:16:14 +0000
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>
+Subject: Re: fuse: kernel BUG at mm/truncate.c:763!
+Message-ID: <YFNEjnjF+RujYOL0@suse.de>
+References: <CAJfpegu+T-4m=OLMorJrZyWaDNff1eviKUaE2gVuMmLG+g9JVQ@mail.gmail.com>
+ <YEtc54pWLLjb6SgL@suse.de>
+ <20210312131123.GZ3479805@casper.infradead.org>
+ <YE8tQc66C6MW7EqY@suse.de>
+ <20210315110659.GT2577561@casper.infradead.org>
+ <YFMct4z1gEa8tXkh@suse.de>
+ <CAJfpeguX7NrdTH4JLbCtkQ1u7TFvUh+8s7RmwB_wmuPHJsQyiA@mail.gmail.com>
+ <20210318110302.nxddmrhmgmlw4adq@black.fi.intel.com>
+ <YFM5mEZ8dZBhZWLI@suse.de>
+ <20210318115543.GM3420@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210317155121.19cbb50c@xps13>
+In-Reply-To: <20210318115543.GM3420@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
-
-On Wed, Mar 17, 2021 at 03:51:21PM +0100, Miquel Raynal wrote:
-> Hi Manivannan,
-> 
-> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Wed,
-> 17 Mar 2021 17:55:10 +0530:
-> 
-> > On a typical end product, a vendor may choose to secure some regions in
-> > the NAND memory which are supposed to stay intact between FW upgrades.
-> > The access to those regions will be blocked by a secure element like
-> > Trustzone. So the normal world software like Linux kernel should not
-> > touch these regions (including reading).
+On Thu, Mar 18, 2021 at 11:55:43AM +0000, Matthew Wilcox wrote:
+> On Thu, Mar 18, 2021 at 11:29:28AM +0000, Luis Henriques wrote:
+> > On Thu, Mar 18, 2021 at 02:03:02PM +0300, Kirill A. Shutemov wrote:
+> > > On Thu, Mar 18, 2021 at 11:59:59AM +0100, Miklos Szeredi wrote:
+> > > > > [16247.536348] page:00000000dfe36ab1 refcount:673 mapcount:0 mapping:00000000f982a7f8 index:0x1400 pfn:0x4c65e00
+> > > > > [16247.536359] head:00000000dfe36ab1 order:9 compound_mapcount:0 compound_pincount:0
+> > > > 
+> > > > This is a compound page alright.   Have no idea how it got into fuse's
+> > > > pagecache.
+> > > 
+> > > 
+> > > Luis, do you have CONFIG_READ_ONLY_THP_FOR_FS enabled?
 > > 
-> > So this series adds a property for declaring such secure regions in DT
-> > so that the driver can skip touching them. While at it, the Qcom NANDc
-> > DT binding is also converted to YAML format.
-> > 
-> > Thanks,
-> > Mani
-> > 
-> > Changes in v5:
-> > 
-> > * Switched to "uint64-matrix" as suggested by Rob
-> > * Moved the whole logic from qcom driver to nand core as suggested by Boris
+> > Yes, it looks like Tumbleweed kernels have that config option enabled by
+> > default.  And it this feature was introduced in 5.4 (the bug doesn't seem
+> > to be reproducible in 5.3).
 > 
-> I'm really thinking about a nand-wide property now. Do you think it
-> makes sense to move the helper to the NAND core (instead of the raw
-> NAND core)? I'm fine only using it in the raw NAND core though.
+> Can you try adding this patch?
 > 
+> https://git.infradead.org/users/willy/pagecache.git/commitdiff/369a4fcd78369b7a026bdef465af9669bde98ef4
 
-The reason why I didn't move the helper and checks to NAND core is I haven't
-seen any secure implementations in other NAND interfaces except rawnand. This
-change can be done in future if we start seeing implementations.
+Yep, sure.  Unfortunately, the testing round-trip can be a bit high.  I'll
+push a new kernel build and ask the reporter to give it a try.
 
-> Also, can I request a global s/sec/secure/ update? I find the "sec"
-> abbreviation unclear and I think we have more than enough cryptic
-> names :-)
-> 
+[ I'll add this patch on top of the s/BUG_ON/VM_BUG_ON_PAGE change. ]
 
-Sure.
-
-Thanks,
-Mani
-
-> Thanks,
-> Miquèl
+Cheers,
+--
+Luís
