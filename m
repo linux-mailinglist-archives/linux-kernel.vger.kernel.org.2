@@ -2,65 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 222493410F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:24:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDEA13410FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:25:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhCRXXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 19:23:41 -0400
-Received: from gimli.rothwell.id.au ([103.230.158.156]:36301 "EHLO
-        gimli.rothwell.id.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhCRXXi (ORCPT
+        id S231952AbhCRXYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 19:24:46 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:47858 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231824AbhCRXYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 19:23:38 -0400
-Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.rothwell.id.au (Postfix) with ESMTPSA id 4F1jkq1nN6zybF;
-        Fri, 19 Mar 2021 10:23:31 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rothwell.id.au;
-        s=201702; t=1616109814;
-        bh=7u8eB13Q6KxjhFmE2PIjOeXy5JLOIRaqQwS6IrQ/T4g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=a0uJvjasvBHTdSbKopEny9/dge922bfeO3amPYx1G6PTZKDzpx+Yx5JhaA8cPdZmH
-         eKZp1XDOwyxqrzn+H3c7vtdRWtRb/9/+Ox0DlEwlSlBqjZfMcKGf9Ox4K/efmL8ahh
-         POh2ygNqB+4d3Sq/pJNBTS16S9FvBYInQsdbTuaqSZB5JO721kSracA/ACb+jZPA5+
-         Y+deiRjrLRZI9dxZP3mJLd01/Gm4jQzV9U7Hu81f7Ciwy7jnNxIMYd2eILjnD8bxjl
-         rR4kQnqRSbTiqA1S5Gpfa2wYou/Sphc7vwpgRIu4En/oJqhc4hSaSM3gJ2L9iCNP0L
-         GvZyb2VbnkseQ==
-Date:   Fri, 19 Mar 2021 10:23:30 +1100
-From:   Stephen Rothwell <sfr@rothwell.id.au>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Olof Johansson <olof@lixom.net>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: error fetching the arm-soc-fixes tree
-Message-ID: <20210319102330.1febe300@elm.ozlabs.ibm.com>
-In-Reply-To: <CAK8P3a31py=31dMgb+XKOwJo70v6Cab1yUJAB5zaF-0_ReP4sw@mail.gmail.com>
-References: <20210308185741.56900784@canb.auug.org.au>
-        <20210316084342.13b804f3@canb.auug.org.au>
-        <CAK8P3a31py=31dMgb+XKOwJo70v6Cab1yUJAB5zaF-0_ReP4sw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 18 Mar 2021 19:24:44 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 427494FD;
+        Fri, 19 Mar 2021 00:24:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1616109878;
+        bh=dAnfYr7tXXzuRPZNp1s80gcvNi2mEDtK9FDU/VnCAbU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i/SOGoo8Sja2C+GOBFy6C3JGF5vgD4c8LaFErZI+HSQL/XsKeO4eTg6bP7ZhOjyYo
+         qS044cGLNVKrhm0nm3ZnkrRcORgexRU5YRQZ3gb2fuBVGIn+03VKvKhRSGB2IkBgYm
+         bV/hHj3pk8uXtfWF7+l0rslnAWd7IgiJcQ7nAKS4=
+Date:   Fri, 19 Mar 2021 01:24:00 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Parshuram Thombare <pthombar@cadence.com>
+Cc:     robert.foss@linaro.org, robh+dt@kernel.org, airlied@linux.ie,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        a.hajda@samsung.com, narmstrong@baylibre.com, nikhil.nd@ti.com,
+        kishon@ti.com, sjakhade@cadence.com, mparab@cadence.com
+Subject: Re: [PATCH v4 1/2] dt-bindings: drm/bridge: MHDP8546 bridge binding
+ changes for HDCP
+Message-ID: <YFPhEKQkFpiXKcSb@pendragon.ideasonboard.com>
+References: <1616049882-29712-1-git-send-email-pthombar@cadence.com>
+ <1616049930-31457-1-git-send-email-pthombar@cadence.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1616049930-31457-1-git-send-email-pthombar@cadence.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+Hi Parshuram,
 
-On Thu, 18 Mar 2021 23:55:48 +0100 Arnd Bergmann <arnd@arndb.de> wrote:
->
-> Sorry for the delay. I had cleaned out the old branches while updating to -rc2
-> and forgot to upload the new fixes. I just pushed the branch with the latest
-> fixes.
+Thank you for the patch.
 
-No problem, I assumed that if you had any urgent fixes, you would
-recreate the branch.
+On Thu, Mar 18, 2021 at 07:45:30AM +0100, Parshuram Thombare wrote:
+> Add binding changes for HDCP in the MHDP8546 DPI/DP bridge binding.
+> 
+> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
+> ---
+>  .../display/bridge/cdns,mhdp8546.yaml         | 24 +++++++++++--------
+>  1 file changed, 14 insertions(+), 10 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
+> index 63427878715e..8a85768f6202 100644
+> --- a/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
+> +++ b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
+> @@ -17,8 +17,8 @@ properties:
+>        - ti,j721e-mhdp8546
+>  
+>    reg:
+> -    minItems: 1
+> -    maxItems: 2
+> +    minItems: 2
+> +    maxItems: 3
+>      items:
+>        - description:
+>            Register block of mhdptx apb registers up to PHY mapped area (AUX_CONFIG_P).
+> @@ -26,13 +26,16 @@ properties:
+>            included in the associated PHY.
+>        - description:
+>            Register block for DSS_EDP0_INTG_CFG_VP registers in case of TI J7 SoCs.
+> +      - description:
+> +          Register block of mhdptx sapb registers.
+>  
+>    reg-names:
+> -    minItems: 1
+> -    maxItems: 2
+> +    minItems: 2
+> +    maxItems: 3
+>      items:
+>        - const: mhdptx
+>        - const: j721e-intg
+> +      - const: mhdptx-sapb
+>  
+>    clocks:
+>      maxItems: 1
+> @@ -98,15 +101,15 @@ allOf:
+>      then:
+>        properties:
+>          reg:
+> -          minItems: 2
+> +          minItems: 3
+>          reg-names:
+> -          minItems: 2
+> +          minItems: 3
+>      else:
+>        properties:
+>          reg:
+> -          maxItems: 1
+> +          maxItems: 2
+>          reg-names:
+> -          maxItems: 1
+> +          maxItems: 2
+>  
+>  required:
+>    - compatible
+> @@ -129,8 +132,9 @@ examples:
+>  
+>          mhdp: dp-bridge@f0fb000000 {
+>              compatible = "cdns,mhdp8546";
+> -            reg = <0xf0 0xfb000000 0x0 0x1000000>;
+> -            reg-names = "mhdptx";
+> +            reg = <0xf0 0xfb000000 0x0 0x1000000>,
+> +                  <0x0 0x4f48000 0x0 0x74>;
+> +            reg-names = "mhdptx", "mhdptx-sapb";
+
+Running
+
+make dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
+
+produces
+
+  LINT    Documentation/devicetree/bindings
+  CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
+  SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+  DTEX    Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.example.dts
+  DTC     Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.example.dt.yaml
+  CHECK   Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.example.dt.yaml
+Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.example.dt.yaml: dp-bridge@f0fb000000: reg-names:1: 'j721e-intg' was expected
+        From schema: Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
+
+This is caused by the fact that reg-names is correctly limited to two
+elements, but then expects the second element to be "j721e-intg". The
+example is good, so it's the bindings that need to be fixed.
+
+>              clocks = <&mhdp_clock>;
+>              phys = <&dp_phy>;
+>              phy-names = "dpphy";
 
 -- 
-Cheers,
-Stephen Rothwell
+Regards,
+
+Laurent Pinchart
