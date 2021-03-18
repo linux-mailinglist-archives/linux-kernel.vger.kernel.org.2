@@ -2,106 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9F7340BB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:25:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE583340B6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232459AbhCRRYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36108 "EHLO
+        id S232579AbhCRRM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:12:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbhCRRYL (ORCPT
+        with ESMTP id S232405AbhCRRLq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:24:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B20C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:24:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=SlK5QKkRgCR8VsAPifj04b/JpEJ24BwnofM4yK4Zndk=; b=hWOoCzqxtzPjYX4z3kA7YJBbyR
-        TBpcFqg3HNC9EZJVf0YqlkNS06IhvgrqCkxdIeZJ1oSACG2YTLhKUJSbMS1Ocf5NURBW2wqZM1cj4
-        rseETqaWyE5gwKfLoV3Q2EZ8aXk7wf0V1fqDSYD6T52KJc4MP4QNmgoQmS2p80rtYu0UacK2kXL7B
-        a0Nnp9YH9tUmpZotsW5wIS/jaLvCG9LZoeiQS3YvXfynW/fei1VFwcru9wPRxnpXW+cuAQjkx+aYK
-        yy3tzcY9+XAqnn5QO0dx6wf3AAwR3w6Rzcz5gtqKkLfv9MNs4QAIh1ABZYvcsIBxyG+V3Gs1fWI5e
-        Z8CAei1A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMwMq-003HIU-Fi; Thu, 18 Mar 2021 17:23:40 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3913C3070F9;
-        Thu, 18 Mar 2021 18:23:27 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 236CD238A4648; Thu, 18 Mar 2021 18:23:27 +0100 (CET)
-Message-ID: <20210318171919.703716384@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 18 Mar 2021 18:11:08 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, jpoimboe@redhat.com, jgross@suse.com,
-        mbenes@suse.com
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org
-Subject: [PATCH v2 05/14] objtool: Per arch retpoline naming
-References: <20210318171103.577093939@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Thu, 18 Mar 2021 13:11:46 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7930BC061763
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:11:46 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id x197so24465358pfc.18
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:11:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=qy/qpaQcjeJGAGSX/SJfdvrV6+xztRS9WV/l31kV3fo=;
+        b=c2hTTF5tVw2Zkjg2BQ/t8/oPhiKF2nLKpbN6o85lqbzdLuNwgLxdZtapB3jgv7Jtjn
+         5PPpgX2oj4cWhKsE+uMWJ510PLIzgH3HaO2mO51+/aXSn9MltdR+iyxrSmFuV8/OuxCq
+         HEI4OcimcN242vISpRy0KAcVRLzmHZ/l71eQW7cg9ktaf+xkDMqexVxFVlz/23ieFoQE
+         hk4tlgYSkhKIeFY1jby3Py3Ch++ovSOcAKpWSL5Sh/N7Jj48vC8xq9Vdd5eimNRIuQfl
+         m5cjcZifAhB80labrIm2se6EWEROyemU19ZF5F75p0aKuw1WLupxSw9+ozFe9rhyZnj1
+         shcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=qy/qpaQcjeJGAGSX/SJfdvrV6+xztRS9WV/l31kV3fo=;
+        b=s9lvG/JRiYM/I62kdkBGwXNm1qKSMQxujNBG3SgMBVRFCR7eYJ9ZSYWS81DOWKe4Af
+         f7BQsLZSC+CpqY9XOEq6PL7UxBZXsNIAM7BoY3azcJZlj0N2iwXaHoqMZj28EmMrv/Us
+         /KWNeT9ohFXd/SVJIb8BRfrRY+ZnWWtCwKMB31LqZ6o7ubVQTVmCWiwtdc54Q4hjnkvS
+         DweQzKwYIIepC8ILckIa7y0q1nCADr2+su3gt3RvC9Neoll7OiGCyKmbB2SM3+krLJmQ
+         jeU10L9PeOazzQ3BnTTs+pAm4Tfd00ZrdGvgBN0KW0OrbfBHHQ1siy/8dyo1BzBLpGQO
+         KczQ==
+X-Gm-Message-State: AOAM5301ITwdT8uoyaFPo3b5LJ/G5oMuwiI6g0DvKql+P88vVIIo/PhZ
+        67/fMnGD00HzX+ZJp4y6yxk7zUMsRmebTM3q2ys=
+X-Google-Smtp-Source: ABdhPJzCXMFhAa2NKV6IDoPedF109qURHLuK0r/JIiSgzJgQstBmygmx77tZs7udLN2dCC5RnEr52xTHcy2QbI0lfG8=
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:c0d7:a7ba:fb41:a35a])
+ (user=samitolvanen job=sendgmr) by 2002:a17:90b:fcb:: with SMTP id
+ gd11mr1106688pjb.0.1616087505409; Thu, 18 Mar 2021 10:11:45 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 10:11:08 -0700
+In-Reply-To: <20210318171111.706303-1-samitolvanen@google.com>
+Message-Id: <20210318171111.706303-15-samitolvanen@google.com>
+Mime-Version: 1.0
+References: <20210318171111.706303-1-samitolvanen@google.com>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH v2 14/17] arm64: add __nocfi to functions that jump to a
+ physical address
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The __x86_indirect_ naming is obviously not generic. Shorten to allow
-matching some additional magic names later.
+Disable CFI checking for functions that switch to linear mapping and
+make an indirect call to a physical address, since the compiler only
+understands virtual addresses and the CFI check for such indirect calls
+would always fail.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
 ---
- tools/objtool/arch/x86/decode.c      |    5 +++++
- tools/objtool/check.c                |    7 ++++++-
- tools/objtool/include/objtool/arch.h |    2 ++
- 3 files changed, 13 insertions(+), 1 deletion(-)
+ arch/arm64/include/asm/mmu_context.h | 2 +-
+ arch/arm64/kernel/cpu-reset.h        | 8 ++++----
+ arch/arm64/kernel/cpufeature.c       | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -692,3 +692,8 @@ int arch_decode_hint_reg(struct instruct
- 
- 	return 0;
- }
-+
-+bool arch_is_retpoline(struct symbol *sym)
-+{
-+	return !strncmp(sym->name, "__x86_indirect_", 15);
-+}
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -850,6 +850,11 @@ static int add_ignore_alternatives(struc
- 	return 0;
- }
- 
-+__weak bool arch_is_retpoline(struct symbol *sym)
-+{
-+	return false;
-+}
-+
- /*
-  * Find the destination instructions for all jumps.
+diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
+index 16cc9a694bb2..270ba8761a23 100644
+--- a/arch/arm64/include/asm/mmu_context.h
++++ b/arch/arm64/include/asm/mmu_context.h
+@@ -119,7 +119,7 @@ static inline void cpu_install_idmap(void)
+  * Atomically replaces the active TTBR1_EL1 PGD with a new VA-compatible PGD,
+  * avoiding the possibility of conflicting TLB entries being allocated.
   */
-@@ -872,7 +877,7 @@ static int add_jump_destinations(struct
- 		} else if (reloc->sym->type == STT_SECTION) {
- 			dest_sec = reloc->sym->sec;
- 			dest_off = arch_dest_reloc_offset(reloc->addend);
--		} else if (!strncmp(reloc->sym->name, "__x86_indirect_thunk_", 21)) {
-+		} else if (arch_is_retpoline(reloc->sym)) {
- 			/*
- 			 * Retpoline jumps are really dynamic jumps in
- 			 * disguise, so convert them accordingly.
---- a/tools/objtool/include/objtool/arch.h
-+++ b/tools/objtool/include/objtool/arch.h
-@@ -85,4 +85,6 @@ const char *arch_nop_insn(int len);
+-static inline void cpu_replace_ttbr1(pgd_t *pgdp)
++static inline void __nocfi cpu_replace_ttbr1(pgd_t *pgdp)
+ {
+ 	typedef void (ttbr_replace_func)(phys_addr_t);
+ 	extern ttbr_replace_func idmap_cpu_replace_ttbr1;
+diff --git a/arch/arm64/kernel/cpu-reset.h b/arch/arm64/kernel/cpu-reset.h
+index dfba8cf921e5..a05bda363272 100644
+--- a/arch/arm64/kernel/cpu-reset.h
++++ b/arch/arm64/kernel/cpu-reset.h
+@@ -13,10 +13,10 @@
+ void __cpu_soft_restart(unsigned long el2_switch, unsigned long entry,
+ 	unsigned long arg0, unsigned long arg1, unsigned long arg2);
  
- int arch_decode_hint_reg(struct instruction *insn, u8 sp_reg);
+-static inline void __noreturn cpu_soft_restart(unsigned long entry,
+-					       unsigned long arg0,
+-					       unsigned long arg1,
+-					       unsigned long arg2)
++static inline void __noreturn __nocfi cpu_soft_restart(unsigned long entry,
++						       unsigned long arg0,
++						       unsigned long arg1,
++						       unsigned long arg2)
+ {
+ 	typeof(__cpu_soft_restart) *restart;
  
-+bool arch_is_retpoline(struct symbol *sym);
-+
- #endif /* _ARCH_H */
-
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 7ec1c2ccdc0b..473212ff4d70 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -1443,7 +1443,7 @@ static bool unmap_kernel_at_el0(const struct arm64_cpu_capabilities *entry,
+ }
+ 
+ #ifdef CONFIG_UNMAP_KERNEL_AT_EL0
+-static void
++static void __nocfi
+ kpti_install_ng_mappings(const struct arm64_cpu_capabilities *__unused)
+ {
+ 	typedef void (kpti_remap_fn)(int, int, phys_addr_t);
+-- 
+2.31.0.291.g576ba9dcdaf-goog
 
