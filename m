@@ -2,199 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9367833FC88
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 02:03:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C253633FC73
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 02:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbhCRBDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 21:03:11 -0400
-Received: from mga06.intel.com ([134.134.136.31]:29441 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230431AbhCRBDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 21:03:00 -0400
-IronPort-SDR: 6s1N2Xd6AksQVQW8ZA/pA5NwtN2vr8xkHjeQTQvtghfsXVUaTCy69DfhEngkFc1aX+/5asZsb5
- IV1+XpLQnc4w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="250933585"
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="250933585"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 18:03:00 -0700
-IronPort-SDR: y4Z6Tm6N5tJ/EywPAX9K3WS0oeqz/xnz6cDJ3oijPsrc+n5o4cJ4Qdlx8+0zcGHkXQ6TtqGdxE
- /UXzSnoCniDQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="411680283"
-Received: from allen-box.sh.intel.com ([10.239.159.128])
-  by orsmga007.jf.intel.com with ESMTP; 17 Mar 2021 18:02:58 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     Ashok Raj <ashok.raj@intel.com>, Guo Kaijie <Kaijie.Guo@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 1/1] iommu/vt-d: Report more information about invalidation errors
-Date:   Thu, 18 Mar 2021 08:53:40 +0800
-Message-Id: <20210318005340.187311-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S229918AbhCRBBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 21:01:21 -0400
+Received: from a0.mail.mailgun.net ([198.61.254.59]:42334 "EHLO
+        a0.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhCRBAz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 21:00:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616029255; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=cdXXKx/6cmpJ3k5zTd24Wab1Zl+Vk9yFNKDeZVbO238=;
+ b=vINr4YwVgzaE90t7B4wZKjnRvdL3L39wNBbfmrsqhEY72dMPRN6ccuB5erjhfMnLy7iPXsg2
+ o0LK9bopvfkBoCgL1GrbNSjSDHK1RYC3KSChYzbL2PMBER858z3k0fuONZXnZcK83Rio79Od
+ wFN1Cd4J4pZqSE+HSdlt//EitKQ=
+X-Mailgun-Sending-Ip: 198.61.254.59
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6052a63b3f267701a49f0d14 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Mar 2021 01:00:43
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F1BADC43468; Thu, 18 Mar 2021 01:00:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 46873C433C6;
+        Thu, 18 Mar 2021 01:00:41 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 18 Mar 2021 09:00:41 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Avri Altman <Avri.Altman@wdc.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
+Subject: Re: [PATCH v5 06/10] scsi: ufshpb: Add hpb dev reset response
+In-Reply-To: <DM6PR04MB65757E84F80B654689FBAE05FC6A9@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210302132503.224670-1-avri.altman@wdc.com>
+ <20210302132503.224670-7-avri.altman@wdc.com>
+ <59a62fc17ec9229a8498e696eb0474be@codeaurora.org>
+ <DM6PR04MB6575006E0682C3D11F54965DFC6A9@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <1d0e3c5441ecf14b6614ec0af0d30af6@codeaurora.org>
+ <DM6PR04MB65750C0AE1F1EDB41EDEE491FC6A9@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <37d0a4f115ad5d08ab12a76e6cbe17a5@codeaurora.org>
+ <DM6PR04MB65755C69AD3D64BC5B1E93D8FC6A9@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <4562e78aee9c5fbb7bbff65930fc81cd@codeaurora.org>
+ <DM6PR04MB65757E84F80B654689FBAE05FC6A9@DM6PR04MB6575.namprd04.prod.outlook.com>
+Message-ID: <546d67b328afcd0d26dff41180288b63@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the invalidation queue errors are encountered, dump the information
-logged by the VT-d hardware together with the pending queue invalidation
-descriptors.
+On 2021-03-17 23:46, Avri Altman wrote:
+>> >> >> >>
+>> >> >> >> Just curious, directly doing below things inside ufshpb_rsp_upiu()
+>> >> >> >> does
+>> >> >> >> not
+>> >> >> >> seem a problem to me, does this really deserve a separate work?
+>> >> >> > I don't know, I never even consider of doing this.
+>> >> >> > The active region list may contain up to few thousands of regions -
+>> >> >> > It is not rare to see configurations that covers the entire device.
+>> >> >> >
+>> >> >>
+>> >> >> Yes, true, it can be a huge list. But what does the ops
+>> >> >> "HPB_RSP_DEV_RESET"
+>> >> >> really mean? The specs says "Device reset HPB Regions information",
+>> >> >> but
+>> >> >> I
+>> >> >> don't know what is really happening. Could you please elaborate?
+>> >> > It means that the device informs the host that the L2P cache is no
+>> >> > longer valid.
+>> >> > The spec doesn't say what to do in that case.
+>> >>
+>> >> Then it means that all the clean (without DIRTY flag set) HPB entries
+>> >> (ppns)
+>> >> in active rgns in host memory side may not be valid to the device
+>> >> anymore.
+>> >> Please correct me if I am wrong.
+>> >>
+>> >> > We thought that in host mode, it make sense to update all the active
+>> >> > regions.
+>> >>
+>> >> But current logic does not set the state of the sub-regions (in active
+>> >> regions) to
+>> >> INVALID, it only marks all active regions as UPDATE.
+>> >>
+>> >> Although one of subsequent read cmds shall put the sub-region back to
+>> >> activate_list,
+>> >> ufshpb_test_ppn_dirty() can still return false, thus these read cmds
+>> >> still think the
+>> >> ppns are valid and they shall move forward to send HPB Write Buffer
+>> >> (buffer id = 0x2,
+>> >> in case of HPB2.0) and HPB Read cmds.
+>> >>
+>> >> HPB Read cmds with invalid ppns will be treated as normal Read cmds by
+>> >> device as the
+>> >> specs says, but what would happen to HPB Write Buffer cmds (buffer id
+>> >> =
+>> >> 0x2, in case
+>> >> of HPB2.0) with invalid ppns? Can this be a real problem?
+>> > No need to control the ppn dirty / invalid state for this case.
+>> > The device send device reset so it is aware that all the L2P cache is
+>> > invalid.
+>> > Any HPB_READ is treated like normal READ10.
+>> >
+>> > Only once HPB-READ-BUFFER is completed,
+>> > the device will relate back to the physical address.
+>> 
+>> What about HPB-WRITE-BUFFER (buffer id = 0x2) cmds?
+> Same.
+> Oper 0x2 is a relative simple case.
+> The device is expected to manage some versioning framework not to be
+> "fooled" by erroneous ppn.
+> There are some more challenging races that the device should meet.
+> 
 
-Signed-off-by: Ashok Raj <ashok.raj@intel.com>
-Tested-by: Guo Kaijie <Kaijie.Guo@intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/dmar.c  | 68 ++++++++++++++++++++++++++++++++++---
- include/linux/intel-iommu.h |  6 ++++
- 2 files changed, 70 insertions(+), 4 deletions(-)
+But I don't find the handling w.r.t this scenario on HPB2.0 specs -
+how would the device re-act/respond to HPB-WRITE-BUFFER cmds with
+invalid HPB entries? Could you please point me to relevant 
+section/paragraph?
 
-diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-index d5c51b5c20af..6971397805f3 100644
---- a/drivers/iommu/intel/dmar.c
-+++ b/drivers/iommu/intel/dmar.c
-@@ -1205,6 +1205,63 @@ static inline void reclaim_free_desc(struct q_inval *qi)
- 	}
- }
- 
-+static const char *qi_type_string(u8 type)
-+{
-+	switch (type) {
-+	case QI_CC_TYPE:
-+		return "Context-cache Invalidation";
-+	case QI_IOTLB_TYPE:
-+		return "IOTLB Invalidation";
-+	case QI_DIOTLB_TYPE:
-+		return "Device-TLB Invalidation";
-+	case QI_IEC_TYPE:
-+		return "Interrupt Entry Cache Invalidation";
-+	case QI_IWD_TYPE:
-+		return "Invalidation Wait";
-+	case QI_EIOTLB_TYPE:
-+		return "PASID-based IOTLB Invalidation";
-+	case QI_PC_TYPE:
-+		return "PASID-cache Invalidation";
-+	case QI_DEIOTLB_TYPE:
-+		return "PASID-based Device-TLB Invalidation";
-+	case QI_PGRP_RESP_TYPE:
-+		return "Page Group Response";
-+	default:
-+		return "UNKNOWN";
-+	}
-+}
-+
-+static void qi_dump_fault(struct intel_iommu *iommu, u32 fault)
-+{
-+	unsigned int head = dmar_readl(iommu->reg + DMAR_IQH_REG);
-+	u64 iqe_err = dmar_readq(iommu->reg + DMAR_IQER_REG);
-+	struct qi_desc *desc = iommu->qi->desc + head;
-+
-+	if (fault & DMA_FSTS_IQE)
-+		pr_err("VT-d detected Invalidation Queue Error: Reason %llx",
-+		       DMAR_IQER_REG_IQEI(iqe_err));
-+	if (fault & DMA_FSTS_ITE)
-+		pr_err("VT-d detected Invalidation Time-out Error: SID %llx",
-+		       DMAR_IQER_REG_ITESID(iqe_err));
-+	if (fault & DMA_FSTS_ICE)
-+		pr_err("VT-d detected Invalidation Completion Error: SID %llx",
-+		       DMAR_IQER_REG_ICESID(iqe_err));
-+
-+	pr_err("QI HEAD: %s qw0 = 0x%llx, qw1 = 0x%llx\n",
-+	       qi_type_string(desc->qw0 & 0xf),
-+	       (unsigned long long)desc->qw0,
-+	       (unsigned long long)desc->qw1);
-+
-+	head = ((head >> qi_shift(iommu)) + QI_LENGTH - 1) % QI_LENGTH;
-+	head <<= qi_shift(iommu);
-+	desc = iommu->qi->desc + head;
-+
-+	pr_err("QI PRIOR: %s qw0 = 0x%llx, qw1 = 0x%llx\n",
-+	       qi_type_string(desc->qw0 & 0xf),
-+	       (unsigned long long)desc->qw0,
-+	       (unsigned long long)desc->qw1);
-+}
-+
- static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
- {
- 	u32 fault;
-@@ -1216,6 +1273,8 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
- 		return -EAGAIN;
- 
- 	fault = readl(iommu->reg + DMAR_FSTS_REG);
-+	if (fault & (DMA_FSTS_IQE | DMA_FSTS_ITE | DMA_FSTS_ICE))
-+		qi_dump_fault(iommu, fault);
- 
- 	/*
- 	 * If IQE happens, the head points to the descriptor associated
-@@ -1232,12 +1291,10 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
- 			 * used by software as private data. We won't print
- 			 * out these two qw's for security consideration.
- 			 */
--			pr_err("VT-d detected invalid descriptor: qw0 = %llx, qw1 = %llx\n",
--			       (unsigned long long)desc->qw0,
--			       (unsigned long long)desc->qw1);
- 			memcpy(desc, qi->desc + (wait_index << shift),
- 			       1 << shift);
- 			writel(DMA_FSTS_IQE, iommu->reg + DMAR_FSTS_REG);
-+			pr_info("Invalidation Queue Error (IQE) cleared\n");
- 			return -EINVAL;
- 		}
- 	}
-@@ -1254,6 +1311,7 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
- 		tail = ((tail >> shift) - 1 + QI_LENGTH) % QI_LENGTH;
- 
- 		writel(DMA_FSTS_ITE, iommu->reg + DMAR_FSTS_REG);
-+		pr_info("Invalidation Time-out Error (ITE) cleared\n");
- 
- 		do {
- 			if (qi->desc_status[head] == QI_IN_USE)
-@@ -1265,8 +1323,10 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
- 			return -EAGAIN;
- 	}
- 
--	if (fault & DMA_FSTS_ICE)
-+	if (fault & DMA_FSTS_ICE) {
- 		writel(DMA_FSTS_ICE, iommu->reg + DMAR_FSTS_REG);
-+		pr_info("Invalidation Completion Error (ICE) cleared\n");
-+	}
- 
- 	return 0;
- }
-diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-index d1f32b33415a..76f974da8ca4 100644
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -20,6 +20,7 @@
- #include <linux/io-64-nonatomic-lo-hi.h>
- #include <linux/dmar.h>
- #include <linux/ioasid.h>
-+#include <linux/bitfield.h>
- 
- #include <asm/cacheflush.h>
- #include <asm/iommu.h>
-@@ -80,6 +81,7 @@
- #define DMAR_IQ_SHIFT	4	/* Invalidation queue head/tail shift */
- #define DMAR_IQA_REG	0x90	/* Invalidation queue addr register */
- #define DMAR_ICS_REG	0x9c	/* Invalidation complete status register */
-+#define DMAR_IQER_REG	0xb0	/* Invalidation queue error record register */
- #define DMAR_IRTA_REG	0xb8    /* Interrupt remapping table addr register */
- #define DMAR_PQH_REG	0xc0	/* Page request queue head register */
- #define DMAR_PQT_REG	0xc8	/* Page request queue tail register */
-@@ -126,6 +128,10 @@
- #define DMAR_VCMD_REG		0xe10 /* Virtual command register */
- #define DMAR_VCRSP_REG		0xe20 /* Virtual command response register */
- 
-+#define DMAR_IQER_REG_IQEI(reg)		FIELD_GET(GENMASK_ULL(3, 0), reg)
-+#define DMAR_IQER_REG_ITESID(reg)	FIELD_GET(GENMASK_ULL(47, 32), reg)
-+#define DMAR_IQER_REG_ICESID(reg)	FIELD_GET(GENMASK_ULL(63, 48), reg)
-+
- #define OFFSET_STRIDE		(9)
- 
- #define dmar_readq(a) readq(a)
--- 
-2.25.1
+Thanks,
+Can Guo.
 
+> Thanks,
+> Avri
+>> 
+>> Thanks,
+>> Can Guo.
+>> 
+>> >
+>> >>
+>> >> >
+>> >> > I think I will go with your suggestion.
+>> >> > Effectively, in host mode, since it is deactivating "cold" regions,
+>> >> > the lru list is kept relatively small, and contains only "hot" regions.
+>> >>
+>> >> hmm... I don't really have a idea on this, please go with whatever you
+>> >> and Daejun think is fine here.
+>> > I will take your advice and remove the worker.
+>> >
+>> >
+>> > Thanks,
+>> > Avri
+>> >
+>> >>
+>> >> Thanks,
+>> >> Can Guo.
+>> >>
+>> >> >
+>> >> > Thanks,
+>> >> > Avri
+>> >> >
+>> >> >>
+>> >> >> Thanks,
+>> >> >> Can Guo.
+>> >> >>
+>> >> >> > But yes, I can do that.
+>> >> >> > Better to get ack from Daejun first.
+>> >> >> >
+>> >> >> > Thanks,
+>> >> >> > Avri
+>> >> >> >
+>> >> >> >>
+>> >> >> >> Thanks,
+>> >> >> >> Can Guo.
+>> >> >> >>
+>> >> >> >> > +{
+>> >> >> >> > +     struct ufshpb_lu *hpb;
+>> >> >> >> > +     struct victim_select_info *lru_info;
+>> >> >> >> > +     struct ufshpb_region *rgn;
+>> >> >> >> > +     unsigned long flags;
+>> >> >> >> > +
+>> >> >> >> > +     hpb = container_of(work, struct ufshpb_lu,
+>> >> ufshpb_lun_reset_work);
+>> >> >> >> > +
+>> >> >> >> > +     lru_info = &hpb->lru_info;
+>> >> >> >> > +
+>> >> >> >> > +     spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+>> >> >> >> > +
+>> >> >> >> > +     list_for_each_entry(rgn, &lru_info->lh_lru_rgn, list_lru_rgn)
+>> >> >> >> > +             set_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags);
+>> >> >> >> > +
+>> >> >> >> > +     spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+>> >> >> >> > +}
+>> >> >> >> > +
+>> >> >> >> >  static void ufshpb_normalization_work_handler(struct work_struct
+>> >> >> >> > *work)
+>> >> >> >> >  {
+>> >> >> >> >       struct ufshpb_lu *hpb;
+>> >> >> >> > @@ -1798,6 +1832,8 @@ static int ufshpb_alloc_region_tbl(struct
+>> >> >> >> > ufs_hba *hba, struct ufshpb_lu *hpb)
+>> >> >> >> >               } else {
+>> >> >> >> >                       rgn->rgn_state = HPB_RGN_INACTIVE;
+>> >> >> >> >               }
+>> >> >> >> > +
+>> >> >> >> > +             rgn->rgn_flags = 0;
+>> >> >> >> >       }
+>> >> >> >> >
+>> >> >> >> >       return 0;
+>> >> >> >> > @@ -2012,9 +2048,12 @@ static int ufshpb_lu_hpb_init(struct
+>> >> ufs_hba
+>> >> >> >> > *hba, struct ufshpb_lu *hpb)
+>> >> >> >> >       INIT_LIST_HEAD(&hpb->list_hpb_lu);
+>> >> >> >> >
+>> >> >> >> >       INIT_WORK(&hpb->map_work, ufshpb_map_work_handler);
+>> >> >> >> > -     if (hpb->is_hcm)
+>> >> >> >> > +     if (hpb->is_hcm) {
+>> >> >> >> >               INIT_WORK(&hpb->ufshpb_normalization_work,
+>> >> >> >> >                         ufshpb_normalization_work_handler);
+>> >> >> >> > +             INIT_WORK(&hpb->ufshpb_lun_reset_work,
+>> >> >> >> > +                       ufshpb_reset_work_handler);
+>> >> >> >> > +     }
+>> >> >> >> >
+>> >> >> >> >       hpb->map_req_cache =
+>> kmem_cache_create("ufshpb_req_cache",
+>> >> >> >> >                         sizeof(struct ufshpb_req), 0, 0, NULL);
+>> >> >> >> > @@ -2114,8 +2153,10 @@ static void
+>> ufshpb_discard_rsp_lists(struct
+>> >> >> >> > ufshpb_lu *hpb)
+>> >> >> >> >
+>> >> >> >> >  static void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
+>> >> >> >> >  {
+>> >> >> >> > -     if (hpb->is_hcm)
+>> >> >> >> > +     if (hpb->is_hcm) {
+>> >> >> >> > +             cancel_work_sync(&hpb->ufshpb_lun_reset_work);
+>> >> >> >> >               cancel_work_sync(&hpb->ufshpb_normalization_work);
+>> >> >> >> > +     }
+>> >> >> >> >       cancel_work_sync(&hpb->map_work);
+>> >> >> >> >  }
+>> >> >> >> >
+>> >> >> >> > diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+>> >> >> >> > index 84598a317897..37c1b0ea0c0a 100644
+>> >> >> >> > --- a/drivers/scsi/ufs/ufshpb.h
+>> >> >> >> > +++ b/drivers/scsi/ufs/ufshpb.h
+>> >> >> >> > @@ -121,6 +121,7 @@ struct ufshpb_region {
+>> >> >> >> >       struct list_head list_lru_rgn;
+>> >> >> >> >       unsigned long rgn_flags;
+>> >> >> >> >  #define RGN_FLAG_DIRTY 0
+>> >> >> >> > +#define RGN_FLAG_UPDATE 1
+>> >> >> >> >
+>> >> >> >> >       /* region reads - for host mode */
+>> >> >> >> >       spinlock_t rgn_lock;
+>> >> >> >> > @@ -217,6 +218,7 @@ struct ufshpb_lu {
+>> >> >> >> >       /* for selecting victim */
+>> >> >> >> >       struct victim_select_info lru_info;
+>> >> >> >> >       struct work_struct ufshpb_normalization_work;
+>> >> >> >> > +     struct work_struct ufshpb_lun_reset_work;
+>> >> >> >> >
+>> >> >> >> >       /* pinned region information */
+>> >> >> >> >       u32 lu_pinned_start;
