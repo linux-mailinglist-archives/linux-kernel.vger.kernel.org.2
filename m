@@ -2,112 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CAC340C00
+	by mail.lfdr.de (Postfix) with ESMTP id 7FDC6340C01
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:41:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbhCRRkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:40:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53842 "EHLO mail.kernel.org"
+        id S232282AbhCRRkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:40:43 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:50794 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230431AbhCRRke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:40:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19B8764F1D;
-        Thu, 18 Mar 2021 17:40:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616089233;
-        bh=eTxd6Y3lO9P3INIl5OgeGP77pBRn4F5bfcQPCAvEYXk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QNBKr486S9km8ea3BcnlXxO0zeB4LXS2cb7+CrWFx6UZrObRX/LygJkX4jbsmzvse
-         kmCqQEAolb5msqnBM881ty/bE9ptZlb/yJ320RkMtVoHhi91OqK7bC4GXqPmTowoYP
-         jIzmwPdfJougkQkPK/ltnPsh5R2I8HRPOD12HdUBcnPjQtebsdIaO6Cptoh0F5lYxw
-         41SAOHYoGD0ZdOuTwBhMb5uPDKvEEEtK1L4llvLg0thgp5x/maGASlSW7m2uhw57fh
-         Qa7SM/vGvVhQxGZSImtTozgHE9SZFXwpE1bWgDWFVVDJp0oT9VgLVXzgZNtRqFgLUE
-         0oX64F35OqsUQ==
-Date:   Thu, 18 Mar 2021 17:40:29 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     madvenka@linux.microsoft.com
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 2/8] arm64: Implement frame types
-Message-ID: <20210318174029.GM5469@sirena.org.uk>
-References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
- <20210315165800.5948-1-madvenka@linux.microsoft.com>
- <20210315165800.5948-3-madvenka@linux.microsoft.com>
+        id S231952AbhCRRkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:40:35 -0400
+Received: from zn.tnic (p200300ec2f0fad00070f6d4b275c681b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:ad00:70f:6d4b:275c:681b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 077CB1EC0249;
+        Thu, 18 Mar 2021 18:40:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1616089234;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=5HUi4f5dejF+zrDWqEx6xSCL/wddRn6cotJCPEsJDjc=;
+        b=MnvJO+hRdyGGJWjcUH7ef8qvOmnp5N7CkLRWm0fMaAj8AEYXcaQ8YG1YUHanwbMTi8nrEF
+        uJvBuzpW2Ccg6pZrGTvGB29D6zr08TifaTfPtWOKDJ/wPVFHSby1WBb0EzvvpjRk5yrFE/
+        fPikY0QsWlSvh8qW45Yavi4Sx4wzs4g=
+Date:   Thu, 18 Mar 2021 18:40:32 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@intel.com>
+Cc:     linux-sgx@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] x86/sgx: Replace section->init_laundry_list with
+ sgx_dirty_page_list
+Message-ID: <20210318174032.GI19570@zn.tnic>
+References: <20210317235332.362001-1-jarkko.sakkinen@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ZmZU9S7l/XJx5q9b"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210315165800.5948-3-madvenka@linux.microsoft.com>
-X-Cookie: You are false data.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210317235332.362001-1-jarkko.sakkinen@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 18, 2021 at 01:53:30AM +0200, Jarkko Sakkinen wrote:
+> From: Jarkko Sakkinen <jarkko@kernel.org>
+> 
+> During normal runtime, the "ksgxd" daemon behaves like a  version of
+> kswapd just for SGX.  But, before it starts acting like kswapd, its
+> first job is to initialize enclave memory.
+> 
+> Currently, the SGX boot code places each enclave page on a
+> epc_section->init_laundry_list.  Once it starts up, the ksgxd code walks
+> over that list and populates the actual SGX page allocator.
+> 
+> However, the per-section structures are going away to make way for the SGX
+> NUMA allocator.  There's also little need to have a per-section structure;
+> the enclave pages are all treated identically, and they can be placed on
+> the correct allocator list from metadata stored in the enclave page
+> (struct sgx_epc_page) itself.
+> 
+> Modify sgx_sanitize_section() to take a single page list instead of taking
+> a section and deriving the list from there.
+> 
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+> ---
+> 
+> v5
+> * Refine the commit message.
+> * Refine inline comments.
+> * Encapsulate a sanitization pass into __sgx_sanitize_pages().
+> 
+> v4:
+> * Open coded sgx_santize_section() to ksgxd().
+> * Rewrote the commit message.
+> 
+>  arch/x86/kernel/cpu/sgx/main.c | 54 ++++++++++++++++------------------
+>  arch/x86/kernel/cpu/sgx/sgx.h  |  7 -----
+>  2 files changed, 25 insertions(+), 36 deletions(-)
 
---ZmZU9S7l/XJx5q9b
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+So both patches look ok to me but the sgx test case fails on -rc3 with and
+without those patches on my box:
 
-On Mon, Mar 15, 2021 at 11:57:54AM -0500, madvenka@linux.microsoft.com wrote:
+./test_sgx 
+0x0000000000000000 0x0000000000002000 0x03
+0x0000000000002000 0x0000000000001000 0x05
+0x0000000000003000 0x0000000000003000 0x03
+mmap() failed, errno=1.
 
-> To summarize, pt_regs->stackframe is used (or will be used) as a marker
-> frame in stack traces. To enable the unwinder to detect these frames, tag
-> each pt_regs->stackframe with a type. To record the type, use the unused2
-> field in struct pt_regs and rename it to frame_type. The types are:
+Box is:
 
-Unless I'm misreading what's going on here this is more trying to set a
-type for the stack as a whole than for a specific stack frame.  I'm also
-finding this a bit confusing as the unwinder already tracks things it
-calls frame types and it handles types that aren't covered here like
-SDEI.  At the very least there's a naming issue here.
+[    0.138402] smpboot: CPU0: Intel(R) Core(TM) i5-9600K CPU @ 3.70GHz (family: 0x6, model: 0x9e, stepping: 0xc)
+[    0.693947] sgx: EPC section 0x80200000-0x85ffffff
 
-Taking a step back though do we want to be tracking this via pt_regs?
-It's reliant on us robustly finding the correct pt_regs and on having
-the things that make the stack unreliable explicitly go in and set the
-appropriate type.  That seems like it will be error prone, I'd been
-expecting to do something more like using sections to filter code for
-unreliable features based on the addresses of the functions we find on
-the stack or similar.  This could still go wrong of course but there's
-fewer moving pieces, and especially fewer moving pieces specific to
-reliable stack trace.
+And AFAIR that test used to pass there...
 
-I'm wary of tracking data that only ever gets used for the reliable
-stack trace path given that it's going to be fairly infrequently used
-and hence tested, especially things that only crop up in cases that are
-hard to provoke reliably.  If there's a way to detect things that
-doesn't use special data that seems safer.
+-- 
+Regards/Gruss,
+    Boris.
 
-> EL1_FRAME
-> 	EL1 exception frame.
-
-We do trap into EL2 as well, the patch will track EL2 frames as EL1
-frames.  Even if we can treat them the same the naming ought to be
-clear.
-
-> FTRACE_FRAME
->         FTRACE frame.
-
-This is implemented later in the series.  If using this approach I'd
-suggest pulling the change in entry-ftrace.S that sets this into this
-patch, it's easier than adding a note about this being added later and
-should help with any bisect issues.
-
---ZmZU9S7l/XJx5q9b
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBTkI0ACgkQJNaLcl1U
-h9AGYgf/eLULWueR+lYuF43H4JsKlcPty+nratz9/9604ftfM345NlBSpEdD+0AC
-Pn2VplG5JfSvdyJaVWzB4LsuH+Eet+Rm2bMlpbmHRvkCAGKbl01PQws5q712pZ/v
-r6I+pmlk5T1wmjOfQJSCPiSI+AecFQhXLrdOi4Fp2bvPtFqcm9WASYI07rsDLBhr
-Bh2NlFC+MokW/K1d+HXjzmPudwQ92axCS1rXw365frfj4lLVKZ1S8vHAfyaOKDM8
-Hth0VqK1hQcl+0KekkmVeEZ4KzbniqO2L/dTikEeecz25hCk7EawXf/a65tCF/UC
-mO2CkbXcpX1M/PApLtc3oTimg3m3FQ==
-=NryZ
------END PGP SIGNATURE-----
-
---ZmZU9S7l/XJx5q9b--
+https://people.kernel.org/tglx/notes-about-netiquette
