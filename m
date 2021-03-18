@@ -2,87 +2,1586 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CAB340C7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ADF6340C7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:09:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhCRSIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:08:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46068 "EHLO
+        id S232487AbhCRSIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:08:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbhCRSH7 (ORCPT
+        with ESMTP id S232482AbhCRSI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:07:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93979C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:07:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=zX1IM6Mo/u7NFFyAIwCKTg2FQIUSClNMoYOG1y8Qo+0=; b=EwHVt3F8eQwDFnKZyEalMT0q8M
-        eknpJGf4LBR+KYGWYez0Rx44G2HruGo/5YqVGxh/7mecSQFSBOZyQ6zjS2ANfTlwII8XaAc38r9Kg
-        4GRa9QE6Y8MWNW7gMxPc8pOSBDRYjcDQQS42QcZvT39warCj43euQEJ/9h8UwBz80rZ0FesnrhOhL
-        1OsEpcunw/PiLkJrAnBTYDBxyY90WqhgITWNbeHakcm9V8Evyl8AZrZC8S7cn2vxHuNQrYxyV9eFV
-        PI8RT05ewtNflREX35nrhHQPHGhQHlWS9+pjLjOV5mtSC7eM3SDxd6vGE8WVCImfFkpYKld/tN11r
-        4YL816bg==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMx3f-003KMP-9B; Thu, 18 Mar 2021 18:07:49 +0000
-Subject: Re: [PATCH] drm/amdgpu: Fix a typo
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch, Hawking.Zhang@amd.com,
-        John.Clements@amd.com, guchun.chen@amd.com, tao.zhou1@amd.com,
-        Likun.Gao@amd.com, Bhawanpreet.Lakha@amd.com,
-        Jiansong.Chen@amd.com, ray.huang@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20210318113308.1345-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <b09b524c-1f3d-6231-29b9-f0eac3e77293@infradead.org>
-Date:   Thu, 18 Mar 2021 11:07:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 18 Mar 2021 14:08:28 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A54C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:08:28 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id g1so1703250plg.7
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:08:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=J2Bg+hnxlg0CHyDNs6R9dFawjXuVFnrhR75M8psQ6zU=;
+        b=OBWLxH+vWdYC0S03v8aL6IsbSTNzOhymybEbprdTEuX/oTQra0vVFtvbGUwtpQNMmg
+         idOPMnBfEgxXOcwXUu0VkS2jfXLfwC7jVFMLkqYHxFMOEZ457iNMIZ267uGC6RRIJk+l
+         dAu8ruh4MeFfeIE4rVJfoXRY1ChzTZkrw7M1bIbhp/YiU26q0WvBhyzFVEnqd3kRoasU
+         xEsc32kTLYq2gPXSWBadxyzKnN2ZiKJXHW1lkcjlpFJ6u96NhcybQoLmHKcJtfo67Tho
+         4lPtppbA5aolUn1Kzji0+mfPydg/CV0ePcUOcawmNWgDWssgcvdzBuBo0Y39XdRt+van
+         gYVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J2Bg+hnxlg0CHyDNs6R9dFawjXuVFnrhR75M8psQ6zU=;
+        b=cCk1C5Uap0sFiEpZBtFBZW2FGodkxXXhDV1InM/02IukJGfFYUDym+o/ctM4i55TB/
+         vq2h16QX714wavvvS4+bkXeg0VGBdce81cOoNXSsSo49YiuromtV0TlFITYWXEw40f3D
+         xvXLoNa1zzeZFDRh1zjww0gKNCXLaAPAuiqbgBOYue44bHetILGW4hF4qwufV7NhZNd/
+         OvDcu6aFRyH5MPI8KHCJEuuV6SYXFHVUZSkgcptgflO2wcx9QY7q1PerbNCGG6lM4EUQ
+         A/Hk8/BW66hLW5eCPsBkJHXyatua58vhXWgxQIpszfZe3+ZFzKgWxUb9bXP/huKP9yTm
+         ivkg==
+X-Gm-Message-State: AOAM531s5/yrzKiEOY4kQdKj66zxBa00TE30GhFTXMILDCEw36+hm7wu
+        uEk1S8JU2bL+6G9DhZYNJblnZA==
+X-Google-Smtp-Source: ABdhPJx75t1hxkeVcp2/hXu6AklVaFbJEW0UgAM9FdBK5KNo6fOCczEDcYfEppoZF5OJBdeLJHcHvg==
+X-Received: by 2002:a17:902:8b86:b029:e5:bef6:56b0 with SMTP id ay6-20020a1709028b86b02900e5bef656b0mr10630861plb.76.1616090907370;
+        Thu, 18 Mar 2021 11:08:27 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id w191sm3461160pfd.25.2021.03.18.11.08.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 11:08:26 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 12:08:24 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mike.leach@linaro.org, anshuman.khandual@arm.com,
+        leo.yan@linaro.org
+Subject: Re: [PATCH v4 18/19] coresight: sink: Add TRBE driver
+Message-ID: <20210318180824.GA1532406@xps15>
+References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
+ <20210225193543.2920532-19-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210318113308.1345-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225193543.2920532-19-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/18/21 4:33 AM, Bhaskar Chowdhury wrote:
+Good morning,
+
+On Thu, Feb 25, 2021 at 07:35:42PM +0000, Suzuki K Poulose wrote:
+> From: Anshuman Khandual <anshuman.khandual@arm.com>
 > 
-> s/traing/training/
+> Trace Buffer Extension (TRBE) implements a trace buffer per CPU which is
+> accessible via the system registers. The TRBE supports different addressing
+> modes including CPU virtual address and buffer modes including the circular
+> buffer mode. The TRBE buffer is addressed by a base pointer (TRBBASER_EL1),
+> an write pointer (TRBPTR_EL1) and a limit pointer (TRBLIMITR_EL1). But the
+> access to the trace buffer could be prohibited by a higher exception level
+> (EL3 or EL2), indicated by TRBIDR_EL1.P. The TRBE can also generate a CPU
+> private interrupt (PPI) on address translation errors and when the buffer
+> is full. Overall implementation here is inspired from the Arm SPE driver.
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 > ---
->  drivers/gpu/drm/amd/amdgpu/psp_v11_0.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Changes:
+>  - Replaced TRBLIMITR_LIMIT_SHIFT with TRBBASER_BASE_SHIFT in set_trbe_base_pointer()
+>  - Dropped TRBBASER_BASE_MASK and TRBBASER_BASE_SHIFT from get_trbe_base_pointer()
+>  - Indentation changes for TRBE_BSC_NOT_[STOPPED|FILLED|TRIGGERED] definitions
+>  - Moved DECLARE_PER_CPU(...., csdev_sink) into coresight-priv.h
+>  - Moved isb() from trbe_enable_hw() into set_trbe_limit_pointer_enabled()
+>  - Dropped the space after type casting before vmap()
+>  - Return 0 instead of EINVAL in arm_trbe_update_buffer()
+>  - Add a comment in trbe_handle_overflow()
+>  - Add a comment in arm_trbe_cpu_startup()
+>  - Unregister coresight TRBE device when not supported
+>  - Fix potential NULL handle dereference in IRQ handler with a spurious IRQ
+>  - Read TRBIDR after is_trbe_programmable() in arm_trbe_probe_coresight_cpu()
+>  - Replaced and modified trbe_drain_and_disable_local() in IRQ handler
+>  - Updated arm_trbe_update_buffer() for handling a missing interrupt
+>  - Dropped kfree() for all devm_xxx() allocated buffer
+>  - Dropped additional blank line in documentation coresight/coresight-trbe.rst
+>  - Added Documentation/ABI/testing/sysfs-bus-coresight-devices-trbe
+>  - Changed CONFIG_CORESIGHT_TRBE options, dependencies and helper write up
+>  - Added comment for irq_work_run()
+>  - Updated comment for minumum buffer length in arm_trbe_alloc_buffer()
+>  - Dropped redundant smp_processor_id() from arm_trbe_probe_coresight_cpu()
+>  - Fixed indentation in arm_trbe_probe_cpuhp()
+>  - Added static for arm_trbe_free_buffer()
+>  - Added comment for trbe_base element in trbe_buf structure
+>  - Dropped IS_ERR() check from vmap() returned pointer
+>  - Added WARN_ON(trbe_csdev) in arm_trbe_probe_coresight_cpu()
+>  - Changed TRBE device names from arm_trbeX to just trbeX
+>  - Dropped unused argument perf_output_handle from trbe_get_fault_act()
+>  - Dropped IS_ERR() from kzalloc_node()/kcalloc() buffer in arm_trbe_alloc_buffer()
+>  - Dropped IS_ERR() and return -ENOMEM in arm_trbe_probe_coresight()
+>  - Moved TRBE HW disabling before coresight cleanup in arm_trbe_remove_coresight_cpu()
+>  - Changed error return codes from arm_trbe_probe_irq()
+>  - Changed error return codes from arm_trbe_device_probe()
+>  - Changed arm_trbe_remove_coresight() order in arm_trbe_device_remove()
+>  - Changed TRBE CPU support probe/remove sequence with for_each_cpu() iterator
+>  - Changed coresight_register() in arm_trbe_probe_coresight_cpu()
+>  - Changed error return code when cpuhp_setup_state_multi() fails in arm_trbe_probe_cpuhp()
+>  - Changed error return code when cpuhp_state_add_instance() fails in arm_trbe_probe_cpuhp()
+>  - Changed trbe_dbm as trbe_flag including its sysfs interface
+>  - Handle race between update_buffer & IRQ handler
+>  - Rework and split the TRBE probe to avoid lockdep due to memory allocation
+>    from IPI calls (via coresight_register())
+>  - Fix handle->head updat for snapshot mode.
+> ---
+>  .../testing/sysfs-bus-coresight-devices-trbe  |   14 +
+>  .../trace/coresight/coresight-trbe.rst        |   38 +
+>  drivers/hwtracing/coresight/Kconfig           |   14 +
+>  drivers/hwtracing/coresight/Makefile          |    1 +
+>  drivers/hwtracing/coresight/coresight-trbe.c  | 1149 +++++++++++++++++
+>  drivers/hwtracing/coresight/coresight-trbe.h  |  153 +++
+>  6 files changed, 1369 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-coresight-devices-trbe
+>  create mode 100644 Documentation/trace/coresight/coresight-trbe.rst
+
+Please spinoff these two file in a separate patch and CC Jon Corbet and the
+linux-doc mailing list.
+
+>  create mode 100644 drivers/hwtracing/coresight/coresight-trbe.c
+>  create mode 100644 drivers/hwtracing/coresight/coresight-trbe.h
 > 
-> diff --git a/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c b/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
-> index c325d6f53a71..db18e4f6cf5f 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
-> @@ -661,7 +661,7 @@ static int psp_v11_0_memory_training(struct psp_context *psp, uint32_t ops)
+> diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-trbe b/Documentation/ABI/testing/sysfs-bus-coresight-devices-trbe
+> new file mode 100644
+> index 000000000000..ad3bbc6fa751
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-trbe
+> @@ -0,0 +1,14 @@
+> +What:		/sys/bus/coresight/devices/trbe<cpu>/align
+> +Date:		March 2021
+> +KernelVersion:	5.13
+> +Contact:	Anshuman Khandual <anshuman.khandual@arm.com>
+> +Description:	(Read) Shows the TRBE write pointer alignment. This value
+> +		is fetched from the TRBIDR register.
+> +
+> +What:		/sys/bus/coresight/devices/trbe<cpu>/flag
+> +Date:		March 2021
+> +KernelVersion:	5.13
+> +Contact:	Anshuman Khandual <anshuman.khandual@arm.com>
+> +Description:	(Read) Shows if TRBE updates in the memory are with access
+> +		and dirty flag updates as well. This value is fetched from
+> +		the TRBIDR register.
+
+For this file:
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+> diff --git a/Documentation/trace/coresight/coresight-trbe.rst b/Documentation/trace/coresight/coresight-trbe.rst
+> new file mode 100644
+> index 000000000000..b9928ef148da
+> --- /dev/null
+> +++ b/Documentation/trace/coresight/coresight-trbe.rst
+> @@ -0,0 +1,38 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +==============================
+> +Trace Buffer Extension (TRBE).
+> +==============================
+> +
+> +    :Author:   Anshuman Khandual <anshuman.khandual@arm.com>
+> +    :Date:     November 2020
+> +
+> +Hardware Description
+> +--------------------
+> +
+> +Trace Buffer Extension (TRBE) is a percpu hardware which captures in system
+> +memory, CPU traces generated from a corresponding percpu tracing unit. This
+> +gets plugged in as a coresight sink device because the corresponding trace
+> +generators (ETE), are plugged in as source device.
+> +
+> +The TRBE is not compliant to CoreSight architecture specifications, but is
+> +driven via the CoreSight driver framework to support the ETE (which is
+> +CoreSight compliant) integration.
+> +
+> +Sysfs files and directories
+> +---------------------------
+> +
+> +The TRBE devices appear on the existing coresight bus alongside the other
+> +coresight devices::
+> +
+> +	>$ ls /sys/bus/coresight/devices
+> +	trbe0  trbe1  trbe2 trbe3
+> +
+> +The ``trbe<N>`` named TRBEs are associated with a CPU.::
+> +
+> +	>$ ls /sys/bus/coresight/devices/trbe0/
+> +        align flag
+> +
+> +*Key file items are:-*
+> +   * ``align``: TRBE write pointer alignment
+> +   * ``flag``: TRBE updates memory with access and dirty flags
+
+For this file:
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
+> index f154ae7e705d..84530fd80998 100644
+> --- a/drivers/hwtracing/coresight/Kconfig
+> +++ b/drivers/hwtracing/coresight/Kconfig
+> @@ -173,4 +173,18 @@ config CORESIGHT_CTI_INTEGRATION_REGS
+>  	  CTI trigger connections between this and other devices.These
+>  	  registers are not used in normal operation and can leave devices in
+>  	  an inconsistent state.
+> +
+> +config CORESIGHT_TRBE
+> +	tristate "Trace Buffer Extension (TRBE) driver"
+> +	depends on ARM64 && CORESIGHT_SOURCE_ETM4X
+> +	help
+> +	  This driver provides support for percpu Trace Buffer Extension (TRBE).
+> +	  TRBE always needs to be used along with it's corresponding percpu ETE
+> +	  component. ETE generates trace data which is then captured with TRBE.
+> +	  Unlike traditional sink devices, TRBE is a CPU feature accessible via
+> +	  system registers. But it's explicit dependency with trace unit (ETE)
+> +	  requires it to be plugged in as a coresight sink device.
+> +
+> +	  To compile this driver as a module, choose M here: the module will be
+> +	  called coresight-trbe.
+>  endif
+> diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
+> index f20e357758d1..d60816509755 100644
+> --- a/drivers/hwtracing/coresight/Makefile
+> +++ b/drivers/hwtracing/coresight/Makefile
+> @@ -21,5 +21,6 @@ obj-$(CONFIG_CORESIGHT_STM) += coresight-stm.o
+>  obj-$(CONFIG_CORESIGHT_CPU_DEBUG) += coresight-cpu-debug.o
+>  obj-$(CONFIG_CORESIGHT_CATU) += coresight-catu.o
+>  obj-$(CONFIG_CORESIGHT_CTI) += coresight-cti.o
+> +obj-$(CONFIG_CORESIGHT_TRBE) += coresight-trbe.o
+>  coresight-cti-y := coresight-cti-core.o	coresight-cti-platform.o \
+>  		   coresight-cti-sysfs.o
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+> new file mode 100644
+> index 000000000000..41a012b525bb
+> --- /dev/null
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -0,0 +1,1149 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * This driver enables Trace Buffer Extension (TRBE) as a per-cpu coresight
+> + * sink device could then pair with an appropriate per-cpu coresight source
+> + * device (ETE) thus generating required trace data. Trace can be enabled
+> + * via the perf framework.
+
+If I remember correctly the last version stated the driver was tailored on
+Will's SPE driver.
+
+> + *
+> + * Copyright (C) 2020 ARM Ltd.
+> + *
+> + * Author: Anshuman Khandual <anshuman.khandual@arm.com>
+> + */
+> +#define DRVNAME "arm_trbe"
+> +
+> +#define pr_fmt(fmt) DRVNAME ": " fmt
+> +
+> +#include <asm/barrier.h>
+> +#include "coresight-trbe.h"
+> +
+> +#define PERF_IDX2OFF(idx, buf) ((idx) % ((buf)->nr_pages << PAGE_SHIFT))
+> +
+> +/*
+> + * A padding packet that will help the user space tools
+> + * in skipping relevant sections in the captured trace
+> + * data which could not be decoded. TRBE doesn't support
+> + * formatting the trace data, unlike the legacy CoreSight
+> + * sinks and thus we use ETE trace packets to pad the
+> + * sections of the buffer.
+> + */
+> +#define ETE_IGNORE_PACKET		0x70
+> +
+> +/*
+> + * Minimum amount of meaningful trace will contain:
+> + * A-Sync, Trace Info, Trace On, Address, Atom.
+> + * This is about 44bytes of ETE trace. To be on
+> + * the safer side, we assume 64bytes is the minimum
+> + * space required for a meaningful session, before
+> + * we hit a "WRAP" event.
+> + */
+> +#define TRBE_TRACE_MIN_BUF_SIZE		64
+> +
+> +enum trbe_fault_action {
+> +	TRBE_FAULT_ACT_WRAP,
+> +	TRBE_FAULT_ACT_SPURIOUS,
+> +	TRBE_FAULT_ACT_FATAL,
+> +};
+> +
+> +struct trbe_buf {
+> +	/*
+> +	 * Even though trbe_base represents vmap()
+> +	 * mapped allocated buffer's start address,
+> +	 * it's being as unsigned long for various
+> +	 * arithmetic and comparision operations &
+> +	 * also to be consistent with trbe_write &
+> +	 * trbe_limit sibling pointers.
+> +	 */
+> +	unsigned long trbe_base;
+> +	unsigned long trbe_limit;
+> +	unsigned long trbe_write;
+> +	int nr_pages;
+> +	void **pages;
+> +	bool snapshot;
+> +	struct trbe_cpudata *cpudata;
+> +};
+> +
+> +struct trbe_cpudata {
+> +	bool trbe_flag;
+> +	u64 trbe_align;
+> +	int cpu;
+> +	enum cs_mode mode;
+> +	struct trbe_buf *buf;
+> +	struct trbe_drvdata *drvdata;
+> +};
+> +
+> +struct trbe_drvdata {
+> +	struct trbe_cpudata __percpu *cpudata;
+> +	struct perf_output_handle __percpu **handle;
+> +	struct hlist_node hotplug_node;
+> +	int irq;
+> +	cpumask_t supported_cpus;
+> +	enum cpuhp_state trbe_online;
+> +	struct platform_device *pdev;
+> +};
+> +
+> +static int trbe_alloc_node(struct perf_event *event)
+> +{
+> +	if (event->cpu == -1)
+> +		return NUMA_NO_NODE;
+> +	return cpu_to_node(event->cpu);
+> +}
+> +
+> +static void trbe_drain_buffer(void)
+> +{
+> +	tsb_csync();
+> +	dsb(nsh);
+> +}
+> +
+> +static void trbe_drain_and_disable_local(void)
+> +{
+> +	u64 trblimitr = read_sysreg_s(SYS_TRBLIMITR_EL1);
+> +
+> +	trbe_drain_buffer();
+> +
+> +	/*
+> +	 * Disable the TRBE without clearing LIMITPTR which
+> +	 * might be required for fetching the buffer limits.
+> +	 */
+> +	trblimitr &= ~TRBLIMITR_ENABLE;
+> +	write_sysreg_s(trblimitr, SYS_TRBLIMITR_EL1);
+> +	isb();
+> +}
+> +
+> +static void trbe_reset_local(void)
+> +{
+> +	trbe_drain_and_disable_local();
+> +	write_sysreg_s(0, SYS_TRBLIMITR_EL1);
+> +	write_sysreg_s(0, SYS_TRBPTR_EL1);
+> +	write_sysreg_s(0, SYS_TRBBASER_EL1);
+> +	write_sysreg_s(0, SYS_TRBSR_EL1);
+> +}
+> +
+> +static void trbe_stop_and_truncate_event(struct perf_output_handle *handle)
+> +{
+> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+> +
+> +	/*
+> +	 * We cannot proceed with the buffer collection and we
+> +	 * do not have any data for the current session. The
+> +	 * etm_perf driver expects to close out the aux_buffer
+> +	 * at event_stop(). So disable the TRBE here and leave
+> +	 * the update_buffer() to return a 0 size.
+> +	 */
+> +	trbe_drain_and_disable_local();
+> +	perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
+> +	*this_cpu_ptr(buf->cpudata->drvdata->handle) = NULL;
+> +}
+> +
+> +/*
+> + * TRBE Buffer Management
+> + *
+> + * The TRBE buffer spans from the base pointer till the limit pointer. When enabled,
+> + * it starts writing trace data from the write pointer onward till the limit pointer.
+> + * When the write pointer reaches the address just before the limit pointer, it gets
+> + * wrapped around again to the base pointer. This is called a TRBE wrap event, which
+> + * generates a maintenance interrupt when operated in WRAP or FILL mode. This driver
+> + * uses FILL mode, where the TRBE stops the trace collection at wrap event. The IRQ
+> + * handler updates the AUX buffer and re-enables the TRBE with updated WRITE and
+> + * LIMIT pointers.
+> + *
+> + *	Wrap around with an IRQ
+> + *	------ < ------ < ------- < ----- < -----
+> + *	|					|
+> + *	------ > ------ > ------- > ----- > -----
+> + *
+> + *	+---------------+-----------------------+
+> + *	|		|			|
+> + *	+---------------+-----------------------+
+> + *	Base Pointer	Write Pointer		Limit Pointer
+> + *
+> + * The base and limit pointers always needs to be PAGE_SIZE aligned. But the write
+> + * pointer can be aligned to the implementation defined TRBE trace buffer alignment
+> + * as captured in trbe_cpudata->trbe_align.
+> + *
+> + *
+> + *		head		tail		wakeup
+> + *	+---------------------------------------+----- ~ ~ ------
+> + *	|$$$$$$$|################|$$$$$$$$$$$$$$|		|
+> + *	+---------------------------------------+----- ~ ~ ------
+> + *	Base Pointer	Write Pointer		Limit Pointer
+> + *
+> + * The perf_output_handle indices (head, tail, wakeup) are monotonically increasing
+> + * values which tracks all the driver writes and user reads from the perf auxiliary
+> + * buffer. Generally [head..tail] is the area where the driver can write into unless
+> + * the wakeup is behind the tail. Enabled TRBE buffer span needs to be adjusted and
+> + * configured depending on the perf_output_handle indices, so that the driver does
+> + * not override into areas in the perf auxiliary buffer which is being or yet to be
+> + * consumed from the user space. The enabled TRBE buffer area is a moving subset of
+> + * the allocated perf auxiliary buffer.
+> + */
+> +static void trbe_pad_buf(struct perf_output_handle *handle, int len)
+> +{
+> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+> +	u64 head = PERF_IDX2OFF(handle->head, buf);
+> +
+> +	memset((void *)buf->trbe_base + head, ETE_IGNORE_PACKET, len);
+> +	if (!buf->snapshot)
+> +		perf_aux_output_skip(handle, len);
+> +}
+> +
+> +static unsigned long trbe_snapshot_offset(struct perf_output_handle *handle)
+> +{
+> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+> +
+> +	/*
+> +	 * The ETE trace has alignment synchronization packets allowing
+> +	 * the decoder to reset in case of an overflow or corruption.
+> +	 * So we can use the entire buffer for the snapshot mode.
+> +	 */
+> +	return buf->nr_pages * PAGE_SIZE;
+> +}
+> +
+> +/*
+> + * TRBE Limit Calculation
+> + *
+> + * The following markers are used to illustrate various TRBE buffer situations.
+> + *
+> + * $$$$ - Data area, unconsumed captured trace data, not to be overridden
+> + * #### - Free area, enabled, trace will be written
+> + * %%%% - Free area, disabled, trace will not be written
+> + * ==== - Free area, padded with ETE_IGNORE_PACKET, trace will be skipped
+> + */
+> +static unsigned long __trbe_normal_offset(struct perf_output_handle *handle)
+> +{
+> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+> +	struct trbe_cpudata *cpudata = buf->cpudata;
+> +	const u64 bufsize = buf->nr_pages * PAGE_SIZE;
+> +	u64 limit = bufsize;
+> +	u64 head, tail, wakeup;
+> +
+> +	head = PERF_IDX2OFF(handle->head, buf);
+> +
+> +	/*
+> +	 *		head
+> +	 *	------->|
+> +	 *	|
+> +	 *	head	TRBE align	tail
+> +	 * +----|-------|---------------|-------+
+> +	 * |$$$$|=======|###############|$$$$$$$|
+> +	 * +----|-------|---------------|-------+
+> +	 * trbe_base				trbe_base + nr_pages
+> +	 *
+> +	 * Perf aux buffer output head position can be misaligned depending on
+> +	 * various factors including user space reads. In case misaligned, head
+> +	 * needs to be aligned before TRBE can be configured. Pad the alignment
+> +	 * gap with ETE_IGNORE_PACKET bytes that will be ignored by user tools
+> +	 * and skip this section thus advancing the head.
+> +	 */
+> +	if (!IS_ALIGNED(head, cpudata->trbe_align)) {
+> +		unsigned long delta = roundup(head, cpudata->trbe_align) - head;
+> +
+> +		delta = min(delta, handle->size);
+> +		trbe_pad_buf(handle, delta);
+> +		head = PERF_IDX2OFF(handle->head, buf);
+> +	}
+> +
+> +	/*
+> +	 *	head = tail (size = 0)
+> +	 * +----|-------------------------------+
+> +	 * |$$$$|$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$	|
+> +	 * +----|-------------------------------+
+> +	 * trbe_base				trbe_base + nr_pages
+> +	 *
+> +	 * Perf aux buffer does not have any space for the driver to write into.
+> +	 * Just communicate trace truncation event to the user space by marking
+> +	 * it with PERF_AUX_FLAG_TRUNCATED.
+> +	 */
+> +	if (!handle->size) {
+> +		perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
+> +		return 0;
+> +	}
+> +
+> +	/* Compute the tail and wakeup indices now that we've aligned head */
+> +	tail = PERF_IDX2OFF(handle->head + handle->size, buf);
+> +	wakeup = PERF_IDX2OFF(handle->wakeup, buf);
+> +
+> +	/*
+> +	 * Lets calculate the buffer area which TRBE could write into. There
+> +	 * are three possible scenarios here. Limit needs to be aligned with
+> +	 * PAGE_SIZE per the TRBE requirement. Always avoid clobbering the
+> +	 * unconsumed data.
+> +	 *
+> +	 * 1) head < tail
+> +	 *
+> +	 *	head			tail
+> +	 * +----|-----------------------|-------+
+> +	 * |$$$$|#######################|$$$$$$$|
+> +	 * +----|-----------------------|-------+
+> +	 * trbe_base			limit	trbe_base + nr_pages
+> +	 *
+> +	 * TRBE could write into [head..tail] area. Unless the tail is right at
+> +	 * the end of the buffer, neither an wrap around nor an IRQ is expected
+> +	 * while being enabled.
+> +	 *
+> +	 * 2) head == tail
+> +	 *
+> +	 *	head = tail (size > 0)
+> +	 * +----|-------------------------------+
+> +	 * |%%%%|###############################|
+> +	 * +----|-------------------------------+
+> +	 * trbe_base				limit = trbe_base + nr_pages
+> +	 *
+> +	 * TRBE should just write into [head..base + nr_pages] area even though
+> +	 * the entire buffer is empty. Reason being, when the trace reaches the
+> +	 * end of the buffer, it will just wrap around with an IRQ giving an
+> +	 * opportunity to reconfigure the buffer.
+> +	 *
+> +	 * 3) tail < head
+> +	 *
+> +	 *	tail			head
+> +	 * +----|-----------------------|-------+
+> +	 * |%%%%|$$$$$$$$$$$$$$$$$$$$$$$|#######|
+> +	 * +----|-----------------------|-------+
+> +	 * trbe_base				limit = trbe_base + nr_pages
+> +	 *
+> +	 * TRBE should just write into [head..base + nr_pages] area even though
+> +	 * the [trbe_base..tail] is also empty. Reason being, when the trace
+> +	 * reaches the end of the buffer, it will just wrap around with an IRQ
+> +	 * giving an opportunity to reconfigure the buffer.
+> +	 */
+> +	if (head < tail)
+> +		limit = round_down(tail, PAGE_SIZE);
+> +
+> +	/*
+> +	 * Wakeup may be arbitrarily far into the future. If it's not in the
+> +	 * current generation, either we'll wrap before hitting it, or it's
+> +	 * in the past and has been handled already.
+> +	 *
+> +	 * If there's a wakeup before we wrap, arrange to be woken up by the
+> +	 * page boundary following it. Keep the tail boundary if that's lower.
+> +	 *
+> +	 *	head		wakeup	tail
+> +	 * +----|---------------|-------|-------+
+> +	 * |$$$$|###############|%%%%%%%|$$$$$$$|
+> +	 * +----|---------------|-------|-------+
+> +	 * trbe_base		limit		trbe_base + nr_pages
+> +	 */
+> +	if (handle->wakeup < (handle->head + handle->size) && head <= wakeup)
+> +		limit = min(limit, round_up(wakeup, PAGE_SIZE));
+> +
+> +	/*
+> +	 * There are two situation when this can happen i.e limit is before
+> +	 * the head and hence TRBE cannot be configured.
+> +	 *
+> +	 * 1) head < tail (aligned down with PAGE_SIZE) and also they are both
+> +	 * within the same PAGE size range.
+> +	 *
+> +	 *			PAGE_SIZE
+> +	 *		|----------------------|
+> +	 *
+> +	 *		limit	head	tail
+> +	 * +------------|------|--------|-------+
+> +	 * |$$$$$$$$$$$$$$$$$$$|========|$$$$$$$|
+> +	 * +------------|------|--------|-------+
+> +	 * trbe_base				trbe_base + nr_pages
+> +	 *
+> +	 * 2) head < wakeup (aligned up with PAGE_SIZE) < tail and also both
+> +	 * head and wakeup are within same PAGE size range.
+> +	 *
+> +	 *		PAGE_SIZE
+> +	 *	|----------------------|
+> +	 *
+> +	 *	limit	head	wakeup  tail
+> +	 * +----|------|-------|--------|-------+
+> +	 * |$$$$$$$$$$$|=======|========|$$$$$$$|
+> +	 * +----|------|-------|--------|-------+
+> +	 * trbe_base				trbe_base + nr_pages
+> +	 */
+> +	if (limit > head)
+> +		return limit;
+> +
+> +	trbe_pad_buf(handle, handle->size);
+> +	perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
+> +	return 0;
+> +}
+> +
+> +static unsigned long trbe_normal_offset(struct perf_output_handle *handle)
+> +{
+> +	struct trbe_buf *buf = perf_get_aux(handle);
+> +	u64 limit = __trbe_normal_offset(handle);
+> +	u64 head = PERF_IDX2OFF(handle->head, buf);
+> +
+> +	/*
+> +	 * If the head is too close to the limit and we don't
+> +	 * have space for a meaningful run, we rather pad it
+> +	 * and start fresh.
+> +	 */
+> +	if (limit && (limit - head < TRBE_TRACE_MIN_BUF_SIZE)) {
+> +		trbe_pad_buf(handle, limit - head);
+> +		limit = __trbe_normal_offset(handle);
+> +	}
+> +	return limit;
+> +}
+> +
+> +static unsigned long compute_trbe_buffer_limit(struct perf_output_handle *handle)
+> +{
+> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+> +	unsigned long offset;
+> +
+> +	if (buf->snapshot)
+> +		offset = trbe_snapshot_offset(handle);
+> +	else
+> +		offset = trbe_normal_offset(handle);
+> +	return buf->trbe_base + offset;
+> +}
+> +
+> +static void clr_trbe_status(void)
+> +{
+> +	u64 trbsr = read_sysreg_s(SYS_TRBSR_EL1);
+> +
+> +	WARN_ON(is_trbe_enabled());
+> +	trbsr &= ~TRBSR_IRQ;
+> +	trbsr &= ~TRBSR_TRG;
+> +	trbsr &= ~TRBSR_WRAP;
+> +	trbsr &= ~(TRBSR_EC_MASK << TRBSR_EC_SHIFT);
+> +	trbsr &= ~(TRBSR_BSC_MASK << TRBSR_BSC_SHIFT);
+> +	trbsr &= ~TRBSR_STOP;
+> +	write_sysreg_s(trbsr, SYS_TRBSR_EL1);
+> +}
+> +
+> +static void set_trbe_limit_pointer_enabled(unsigned long addr)
+> +{
+> +	u64 trblimitr = read_sysreg_s(SYS_TRBLIMITR_EL1);
+> +
+> +	WARN_ON(!IS_ALIGNED(addr, (1UL << TRBLIMITR_LIMIT_SHIFT)));
+> +	WARN_ON(!IS_ALIGNED(addr, PAGE_SIZE));
+> +
+> +	trblimitr &= ~TRBLIMITR_NVM;
+> +	trblimitr &= ~(TRBLIMITR_FILL_MODE_MASK << TRBLIMITR_FILL_MODE_SHIFT);
+> +	trblimitr &= ~(TRBLIMITR_TRIG_MODE_MASK << TRBLIMITR_TRIG_MODE_SHIFT);
+> +	trblimitr &= ~(TRBLIMITR_LIMIT_MASK << TRBLIMITR_LIMIT_SHIFT);
+> +
+> +	/*
+> +	 * Fill trace buffer mode is used here while configuring the
+> +	 * TRBE for trace capture. In this particular mode, the trace
+> +	 * collection is stopped and a maintenance interrupt is raised
+> +	 * when the current write pointer wraps. This pause in trace
+> +	 * collection gives the software an opportunity to capture the
+> +	 * trace data in the interrupt handler, before reconfiguring
+> +	 * the TRBE.
+> +	 */
+> +	trblimitr |= (TRBE_FILL_MODE_FILL & TRBLIMITR_FILL_MODE_MASK) << TRBLIMITR_FILL_MODE_SHIFT;
+> +
+> +	/*
+> +	 * Trigger mode is not used here while configuring the TRBE for
+> +	 * the trace capture. Hence just keep this in the ignore mode.
+> +	 */
+> +	trblimitr |= (TRBE_TRIG_MODE_IGNORE & TRBLIMITR_TRIG_MODE_MASK) <<
+> +		      TRBLIMITR_TRIG_MODE_SHIFT;
+> +	trblimitr |= (addr & PAGE_MASK);
+> +
+> +	trblimitr |= TRBLIMITR_ENABLE;
+> +	write_sysreg_s(trblimitr, SYS_TRBLIMITR_EL1);
+> +
+> +	/* Synchronize the TRBE enable event */
+> +	isb();
+> +}
+> +
+> +static void trbe_enable_hw(struct trbe_buf *buf)
+> +{
+> +	WARN_ON(buf->trbe_write < buf->trbe_base);
+> +	WARN_ON(buf->trbe_write >= buf->trbe_limit);
+> +	set_trbe_disabled();
+> +	isb();
+> +	clr_trbe_status();
+> +	set_trbe_base_pointer(buf->trbe_base);
+> +	set_trbe_write_pointer(buf->trbe_write);
+> +
+> +	/*
+> +	 * Synchronize all the register updates
+> +	 * till now before enabling the TRBE.
+> +	 */
+> +	isb();
+> +	set_trbe_limit_pointer_enabled(buf->trbe_limit);
+> +}
+> +
+> +static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
+> +{
+> +	int ec = get_trbe_ec(trbsr);
+> +	int bsc = get_trbe_bsc(trbsr);
+> +
+> +	WARN_ON(is_trbe_running(trbsr));
+> +	if (is_trbe_trg(trbsr) || is_trbe_abort(trbsr))
+> +		return TRBE_FAULT_ACT_FATAL;
+> +
+> +	if ((ec == TRBE_EC_STAGE1_ABORT) || (ec == TRBE_EC_STAGE2_ABORT))
+> +		return TRBE_FAULT_ACT_FATAL;
+> +
+> +	if (is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED)) {
+> +		if (get_trbe_write_pointer() == get_trbe_base_pointer())
+> +			return TRBE_FAULT_ACT_WRAP;
+> +	}
+> +	return TRBE_FAULT_ACT_SPURIOUS;
+> +}
+> +
+> +static void *arm_trbe_alloc_buffer(struct coresight_device *csdev,
+> +				   struct perf_event *event, void **pages,
+> +				   int nr_pages, bool snapshot)
+> +{
+> +	struct trbe_buf *buf;
+> +	struct page **pglist;
+> +	int i;
+> +
+> +	/*
+> +	 * TRBE LIMIT and TRBE WRITE pointers must be page aligned. But with
+> +	 * just a single page, there would not be any room left while writing
+> +	 * into a partially filled TRBE buffer after the page size alignment.
+> +	 * Hence restrict the minimum buffer size as two pages.
+> +	 */
+> +	if (nr_pages < 2)
+> +		return NULL;
+> +
+> +	buf = kzalloc_node(sizeof(*buf), GFP_KERNEL, trbe_alloc_node(event));
+> +	if (!buf)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	pglist = kcalloc(nr_pages, sizeof(*pglist), GFP_KERNEL);
+> +	if (!pglist) {
+> +		kfree(buf);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +
+> +	for (i = 0; i < nr_pages; i++)
+> +		pglist[i] = virt_to_page(pages[i]);
+> +
+> +	buf->trbe_base = (unsigned long)vmap(pglist, nr_pages, VM_MAP, PAGE_KERNEL);
+> +	if (!buf->trbe_base) {
+> +		kfree(pglist);
+> +		kfree(buf);
+> +		return ERR_PTR(buf->trbe_base);
+> +	}
+> +	buf->trbe_limit = buf->trbe_base + nr_pages * PAGE_SIZE;
+> +	buf->trbe_write = buf->trbe_base;
+> +	buf->snapshot = snapshot;
+> +	buf->nr_pages = nr_pages;
+> +	buf->pages = pages;
+> +	kfree(pglist);
+> +	return buf;
+> +}
+> +
+> +static void arm_trbe_free_buffer(void *config)
+> +{
+> +	struct trbe_buf *buf = config;
+> +
+> +	vunmap((void *)buf->trbe_base);
+> +	kfree(buf);
+> +}
+> +
+> +static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
+> +					    struct perf_output_handle *handle,
+> +					    void *config)
+> +{
+> +	struct trbe_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+> +	struct trbe_cpudata *cpudata = dev_get_drvdata(&csdev->dev);
+> +	struct trbe_buf *buf = config;
+> +	enum trbe_fault_action act;
+> +	unsigned long size, offset;
+> +	unsigned long write, base, status;
+> +	unsigned long flags;
+> +
+> +	WARN_ON(buf->cpudata != cpudata);
+> +	WARN_ON(cpudata->cpu != smp_processor_id());
+> +	WARN_ON(cpudata->drvdata != drvdata);
+> +	if (cpudata->mode != CS_MODE_PERF)
+> +		return 0;
+> +
+> +	perf_aux_output_flag(handle, PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
+> +
+> +	/*
+> +	 * We are about to disable the TRBE. And this could in turn
+> +	 * fill up the buffer triggering, an IRQ. This could be consumed
+> +	 * by the PE asynchronously, causing a race here against
+> +	 * the IRQ handler in closing out the handle. So, let us
+> +	 * make sure the IRQ can't trigger while we are collecting
+> +	 * the buffer. We also make sure that a WRAP event is handled
+> +	 * accordingly.
+> +	 */
+> +	local_irq_save(flags);
+> +
+> +	/*
+> +	 * If the TRBE was disabled due to lack of space in the AUX buffer or a
+> +	 * spurious fault, the driver leaves it disabled, truncating the buffer.
+> +	 * Since the etm_perf driver expects to close out the AUX buffer, the
+> +	 * driver skips it. Thus, just pass in 0 size here to indicate that the
+> +	 * buffer was truncated.
+> +	 */
+> +	if (!is_trbe_enabled()) {
+> +		size = 0;
+> +		goto done;
+> +	}
+> +	/*
+> +	 * perf handle structure needs to be shared with the TRBE IRQ handler for
+> +	 * capturing trace data and restarting the handle. There is a probability
+> +	 * of an undefined reference based crash when etm event is being stopped
+> +	 * while a TRBE IRQ also getting processed. This happens due the release
+> +	 * of perf handle via perf_aux_output_end() in etm_event_stop(). Stopping
+> +	 * the TRBE here will ensure that no IRQ could be generated when the perf
+> +	 * handle gets freed in etm_event_stop().
+> +	 */
+> +	trbe_drain_and_disable_local();
+> +	write = get_trbe_write_pointer();
+> +	base = get_trbe_base_pointer();
+> +
+> +	/* Check if there is a pending interrupt and handle it here */
+> +	status = read_sysreg_s(SYS_TRBSR_EL1);
+> +	if (is_trbe_irq(status)) {
+> +
+> +		/*
+> +		 * Now that we are handling the IRQ here, clear the IRQ
+> +		 * from the status, to let the irq handler know that it
+> +		 * is taken care of.
+> +		 */
+> +		clr_trbe_irq();
+> +		isb();
+> +
+> +		act = trbe_get_fault_act(status);
+> +		/*
+> +		 * If this was not due to a WRAP event, we have some
+> +		 * errors and as such buffer is empty.
+> +		 */
+> +		if (act != TRBE_FAULT_ACT_WRAP) {
+> +			size = 0;
+> +			goto done;
+> +		}
+> +
+> +		/*
+> +		 * Otherwise, the buffer is full and the write pointer
+> +		 * has reached base. Adjust this back to the Limit pointer
+> +		 * for correct size.
+> +		 */
+> +		write = get_trbe_limit_pointer();
+> +	}
+> +
+> +	offset = write - base;
+> +	if (WARN_ON_ONCE(offset < PERF_IDX2OFF(handle->head, buf)))
+> +		size = 0;
+> +	else
+> +		size = offset - PERF_IDX2OFF(handle->head, buf);
+> +
+> +done:
+> +	local_irq_restore(flags);
+> +
+> +	if (buf->snapshot)
+> +		handle->head += size;
+> +	return size;
+> +}
+> +
+> +static int arm_trbe_enable(struct coresight_device *csdev, u32 mode, void *data)
+> +{
+> +	struct trbe_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+> +	struct trbe_cpudata *cpudata = dev_get_drvdata(&csdev->dev);
+> +	struct perf_output_handle *handle = data;
+> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+> +
+> +	WARN_ON(cpudata->cpu != smp_processor_id());
+> +	WARN_ON(cpudata->drvdata != drvdata);
+> +	if (mode != CS_MODE_PERF)
+> +		return -EINVAL;
+> +
+> +	*this_cpu_ptr(drvdata->handle) = handle;
+> +	cpudata->buf = buf;
+> +	cpudata->mode = mode;
+> +	buf->cpudata = cpudata;
+> +	buf->trbe_limit = compute_trbe_buffer_limit(handle);
+> +	buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
+> +	if (buf->trbe_limit == buf->trbe_base) {
+> +		trbe_stop_and_truncate_event(handle);
+> +		return 0;
+> +	}
+> +	trbe_enable_hw(buf);
+> +	return 0;
+> +}
+> +
+> +static int arm_trbe_disable(struct coresight_device *csdev)
+> +{
+> +	struct trbe_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+> +	struct trbe_cpudata *cpudata = dev_get_drvdata(&csdev->dev);
+> +	struct trbe_buf *buf = cpudata->buf;
+> +
+> +	WARN_ON(buf->cpudata != cpudata);
+> +	WARN_ON(cpudata->cpu != smp_processor_id());
+> +	WARN_ON(cpudata->drvdata != drvdata);
+> +	if (cpudata->mode != CS_MODE_PERF)
+> +		return -EINVAL;
+> +
+> +	trbe_drain_and_disable_local();
+> +	buf->cpudata = NULL;
+> +	cpudata->buf = NULL;
+> +	cpudata->mode = CS_MODE_DISABLED;
+> +	return 0;
+> +}
+> +
+> +static void trbe_handle_spurious(struct perf_output_handle *handle)
+> +{
+> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+> +
+> +	buf->trbe_limit = compute_trbe_buffer_limit(handle);
+> +	buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
+> +	if (buf->trbe_limit == buf->trbe_base) {
+> +		trbe_drain_and_disable_local();
+> +		return;
+> +	}
+> +	trbe_enable_hw(buf);
+> +}
+> +
+> +static void trbe_handle_overflow(struct perf_output_handle *handle)
+> +{
+> +	struct perf_event *event = handle->event;
+> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+> +	unsigned long offset, size;
+> +	struct etm_event_data *event_data;
+> +
+> +	offset = get_trbe_limit_pointer() - get_trbe_base_pointer();
+> +	size = offset - PERF_IDX2OFF(handle->head, buf);
+> +	if (buf->snapshot)
+> +		handle->head += size;
+> +
+> +	perf_aux_output_flag(handle, PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
+> +	perf_aux_output_end(handle, size);
+> +	event_data = perf_aux_output_begin(handle, event);
+> +	if (!event_data) {
+> +		/*
+> +		 * We are unable to restart the trace collection,
+> +		 * thus leave the TRBE disabled. The etm-perf driver
+> +		 * is able to detect this with a disconnected handle
+> +		 * (handle->event = NULL).
+> +		 */
+> +		trbe_drain_and_disable_local();
+> +		*this_cpu_ptr(buf->cpudata->drvdata->handle) = NULL;
+> +		return;
+> +	}
+> +	buf->trbe_limit = compute_trbe_buffer_limit(handle);
+> +	buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
+> +	if (buf->trbe_limit == buf->trbe_base) {
+> +		trbe_stop_and_truncate_event(handle);
+> +		return;
+> +	}
+> +	*this_cpu_ptr(buf->cpudata->drvdata->handle) = handle;
+> +	trbe_enable_hw(buf);
+> +}
+> +
+> +static bool is_perf_trbe(struct perf_output_handle *handle)
+> +{
+> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+> +	struct trbe_cpudata *cpudata = buf->cpudata;
+> +	struct trbe_drvdata *drvdata = cpudata->drvdata;
+> +	int cpu = smp_processor_id();
+> +
+> +	WARN_ON(buf->trbe_base != get_trbe_base_pointer());
+> +	WARN_ON(buf->trbe_limit != get_trbe_limit_pointer());
+> +
+> +	if (cpudata->mode != CS_MODE_PERF)
+> +		return false;
+> +
+> +	if (cpudata->cpu != cpu)
+> +		return false;
+> +
+> +	if (!cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+> +static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+> +{
+> +	struct perf_output_handle **handle_ptr = dev;
+> +	struct perf_output_handle *handle = *handle_ptr;
+> +	enum trbe_fault_action act;
+> +	u64 status;
+> +
+> +	/*
+> +	 * Ensure the trace is visible to the CPUs and
+> +	 * any external aborts have been resolved.
+> +	 */
+> +	trbe_drain_and_disable_local();
+> +
+> +	status = read_sysreg_s(SYS_TRBSR_EL1);
+> +	/*
+> +	 * If the pending IRQ was handled by update_buffer callback
+> +	 * we have nothing to do here.
+> +	 */
+> +	if (!is_trbe_irq(status))
+> +		return IRQ_NONE;
+> +
+> +	clr_trbe_irq();
+> +	isb();
+> +
+> +	if (WARN_ON_ONCE(!handle) || !perf_get_aux(handle))
+> +		return IRQ_NONE;
+> +
+> +	if (!is_perf_trbe(handle))
+> +		return IRQ_NONE;
+> +
+> +	/*
+> +	 * Ensure perf callbacks have completed, which may disable
+> +	 * the trace buffer in response to a TRUNCATION flag.
+> +	 */
+> +	irq_work_run();
+> +
+> +	act = trbe_get_fault_act(status);
+> +	switch (act) {
+> +	case TRBE_FAULT_ACT_WRAP:
+> +		trbe_handle_overflow(handle);
+> +		break;
+> +	case TRBE_FAULT_ACT_SPURIOUS:
+> +		trbe_handle_spurious(handle);
+> +		break;
+> +	case TRBE_FAULT_ACT_FATAL:
+> +		trbe_stop_and_truncate_event(handle);
+> +		break;
+> +	}
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static const struct coresight_ops_sink arm_trbe_sink_ops = {
+> +	.enable		= arm_trbe_enable,
+> +	.disable	= arm_trbe_disable,
+> +	.alloc_buffer	= arm_trbe_alloc_buffer,
+> +	.free_buffer	= arm_trbe_free_buffer,
+> +	.update_buffer	= arm_trbe_update_buffer,
+> +};
+> +
+> +static const struct coresight_ops arm_trbe_cs_ops = {
+> +	.sink_ops	= &arm_trbe_sink_ops,
+> +};
+> +
+> +static ssize_t align_show(struct device *dev, struct device_attribute *attr, char *buf)
+> +{
+> +	struct trbe_cpudata *cpudata = dev_get_drvdata(dev);
+> +
+> +	return sprintf(buf, "%llx\n", cpudata->trbe_align);
+> +}
+> +static DEVICE_ATTR_RO(align);
+> +
+> +static ssize_t flag_show(struct device *dev, struct device_attribute *attr, char *buf)
+> +{
+> +	struct trbe_cpudata *cpudata = dev_get_drvdata(dev);
+> +
+> +	return sprintf(buf, "%d\n", cpudata->trbe_flag);
+> +}
+> +static DEVICE_ATTR_RO(flag);
+> +
+> +static struct attribute *arm_trbe_attrs[] = {
+> +	&dev_attr_align.attr,
+> +	&dev_attr_flag.attr,
+> +	NULL,
+> +};
+> +
+> +static const struct attribute_group arm_trbe_group = {
+> +	.attrs = arm_trbe_attrs,
+> +};
+> +
+> +static const struct attribute_group *arm_trbe_groups[] = {
+> +	&arm_trbe_group,
+> +	NULL,
+> +};
+> +
+> +static void arm_trbe_enable_cpu(void *info)
+> +{
+> +	struct trbe_drvdata *drvdata = info;
+> +
+> +	trbe_reset_local();
+> +	enable_percpu_irq(drvdata->irq, IRQ_TYPE_NONE);
+> +}
+> +
+> +static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cpu)
+> +{
+> +	struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
+> +	struct coresight_device *trbe_csdev = coresight_get_percpu_sink(cpu);
+> +	struct coresight_desc desc = { 0 };
+> +	struct device *dev;
+> +
+> +	if (WARN_ON(trbe_csdev))
+> +		return;
+> +
+> +	dev = &cpudata->drvdata->pdev->dev;
+> +	desc.name = devm_kasprintf(dev, GFP_KERNEL, "trbe%d", cpu);
+> +	if (IS_ERR(desc.name))
+> +		goto cpu_clear;
+> +
+> +	desc.type = CORESIGHT_DEV_TYPE_SINK;
+> +	desc.subtype.sink_subtype = CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM;
+> +	desc.ops = &arm_trbe_cs_ops;
+> +	desc.pdata = dev_get_platdata(dev);
+> +	desc.groups = arm_trbe_groups;
+> +	desc.dev = dev;
+> +	trbe_csdev = coresight_register(&desc);
+> +	if (IS_ERR(trbe_csdev))
+> +		goto cpu_clear;
+> +
+> +	dev_set_drvdata(&trbe_csdev->dev, cpudata);
+> +	coresight_set_percpu_sink(cpu, trbe_csdev);
+> +	return;
+> +cpu_clear:
+> +	cpumask_clear_cpu(cpu, &drvdata->supported_cpus);
+> +}
+> +
+> +static void arm_trbe_probe_cpu(void *info)
+> +{
+> +	struct trbe_drvdata *drvdata = info;
+> +	int cpu = smp_processor_id();
+> +	struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
+> +	u64 trbidr;
+> +
+> +	if (WARN_ON(!cpudata))
+> +		goto cpu_clear;
+> +
+> +	if (!is_trbe_available()) {
+> +		pr_err("TRBE is not implemented on cpu %d\n", cpu);
+> +		goto cpu_clear;
+> +	}
+> +
+> +	trbidr = read_sysreg_s(SYS_TRBIDR_EL1);
+> +	if (!is_trbe_programmable(trbidr)) {
+> +		pr_err("TRBE is owned in higher exception level on cpu %d\n", cpu);
+> +		goto cpu_clear;
+> +	}
+> +
+> +	cpudata->trbe_align = 1ULL << get_trbe_address_align(trbidr);
+> +	if (cpudata->trbe_align > SZ_2K) {
+> +		pr_err("Unsupported alignment on cpu %d\n", cpu);
+> +		goto cpu_clear;
+> +	}
+> +	cpudata->trbe_flag = get_trbe_flag_update(trbidr);
+> +	cpudata->cpu = cpu;
+> +	cpudata->drvdata = drvdata;
+> +	return;
+> +cpu_clear:
+> +	cpumask_clear_cpu(cpu, &drvdata->supported_cpus);
+> +}
+> +
+> +static void arm_trbe_remove_coresight_cpu(void *info)
+> +{
+> +	int cpu = smp_processor_id();
+> +	struct trbe_drvdata *drvdata = info;
+> +	struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
+> +	struct coresight_device *trbe_csdev = coresight_get_percpu_sink(cpu);
+> +
+> +	disable_percpu_irq(drvdata->irq);
+> +	trbe_reset_local();
+> +	if (trbe_csdev) {
+> +		coresight_unregister(trbe_csdev);
+> +		cpudata->drvdata = NULL;
+> +		coresight_set_percpu_sink(cpu, NULL);
+> +	}
+> +}
+> +
+> +static int arm_trbe_probe_coresight(struct trbe_drvdata *drvdata)
+> +{
+> +	int cpu;
+> +
+> +	drvdata->cpudata = alloc_percpu(typeof(*drvdata->cpudata));
+> +	if (!drvdata->cpudata)
+> +		return -ENOMEM;
+> +
+> +	for_each_cpu(cpu, &drvdata->supported_cpus) {
+> +		smp_call_function_single(cpu, arm_trbe_probe_cpu, drvdata, 1);
+> +		if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+> +			arm_trbe_register_coresight_cpu(drvdata, cpu);
+> +		if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+> +			smp_call_function_single(cpu, arm_trbe_enable_cpu, drvdata, 1);
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int arm_trbe_remove_coresight(struct trbe_drvdata *drvdata)
+> +{
+> +	int cpu;
+> +
+> +	for_each_cpu(cpu, &drvdata->supported_cpus)
+> +		smp_call_function_single(cpu, arm_trbe_remove_coresight_cpu, drvdata, 1);
+> +	free_percpu(drvdata->cpudata);
+> +	return 0;
+> +}
+> +
+> +static int arm_trbe_cpu_startup(unsigned int cpu, struct hlist_node *node)
+> +{
+> +	struct trbe_drvdata *drvdata = hlist_entry_safe(node, struct trbe_drvdata, hotplug_node);
+> +
+> +	if (cpumask_test_cpu(cpu, &drvdata->supported_cpus)) {
+> +
+> +		/*
+> +		 * If this CPU was not probed for TRBE,
+> +		 * initialize it now.
+> +		 */
+> +		if (!coresight_get_percpu_sink(cpu)) {
+> +			arm_trbe_probe_cpu(drvdata);
+> +			if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+> +				arm_trbe_register_coresight_cpu(drvdata, cpu);
+> +			if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+> +				arm_trbe_enable_cpu(drvdata);
+> +		} else {
+> +			arm_trbe_enable_cpu(drvdata);
+> +		}
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int arm_trbe_cpu_teardown(unsigned int cpu, struct hlist_node *node)
+> +{
+> +	struct trbe_drvdata *drvdata = hlist_entry_safe(node, struct trbe_drvdata, hotplug_node);
+> +
+> +	if (cpumask_test_cpu(cpu, &drvdata->supported_cpus)) {
+> +		disable_percpu_irq(drvdata->irq);
+> +		trbe_reset_local();
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int arm_trbe_probe_cpuhp(struct trbe_drvdata *drvdata)
+> +{
+> +	enum cpuhp_state trbe_online;
+> +	int ret;
+> +
+> +	trbe_online = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN, DRVNAME,
+> +					      arm_trbe_cpu_startup, arm_trbe_cpu_teardown);
+> +	if (trbe_online < 0)
+> +		return trbe_online;
+> +
+> +	ret = cpuhp_state_add_instance(trbe_online, &drvdata->hotplug_node);
+> +	if (ret) {
+> +		cpuhp_remove_multi_state(trbe_online);
+> +		return ret;
+> +	}
+> +	drvdata->trbe_online = trbe_online;
+> +	return 0;
+> +}
+> +
+> +static void arm_trbe_remove_cpuhp(struct trbe_drvdata *drvdata)
+> +{
+> +	cpuhp_remove_multi_state(drvdata->trbe_online);
+> +}
+> +
+> +static int arm_trbe_probe_irq(struct platform_device *pdev,
+> +			      struct trbe_drvdata *drvdata)
+> +{
+> +	int ret;
+> +
+> +	drvdata->irq = platform_get_irq(pdev, 0);
+> +	if (drvdata->irq < 0) {
+> +		pr_err("IRQ not found for the platform device\n");
+> +		return drvdata->irq;
+> +	}
+> +
+> +	if (!irq_is_percpu(drvdata->irq)) {
+> +		pr_err("IRQ is not a PPI\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (irq_get_percpu_devid_partition(drvdata->irq, &drvdata->supported_cpus))
+> +		return -EINVAL;
+> +
+> +	drvdata->handle = alloc_percpu(typeof(*drvdata->handle));
+> +	if (!drvdata->handle)
+> +		return -ENOMEM;
+> +
+> +	ret = request_percpu_irq(drvdata->irq, arm_trbe_irq_handler, DRVNAME, drvdata->handle);
+> +	if (ret) {
+> +		free_percpu(drvdata->handle);
+> +		return ret;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static void arm_trbe_remove_irq(struct trbe_drvdata *drvdata)
+> +{
+> +	free_percpu_irq(drvdata->irq, drvdata->handle);
+> +	free_percpu(drvdata->handle);
+> +}
+> +
+> +static int arm_trbe_device_probe(struct platform_device *pdev)
+> +{
+> +	struct coresight_platform_data *pdata;
+> +	struct trbe_drvdata *drvdata;
+> +	struct device *dev = &pdev->dev;
+> +	int ret;
+> +
+> +	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
+> +	if (!drvdata)
+> +		return -ENOMEM;
+> +
+> +	pdata = coresight_get_platform_data(dev);
+> +	if (IS_ERR(pdata))
+> +		return PTR_ERR(pdata);
+
+Given there is no in and out ports, do we need a platform data for this driver?
+
+More comments on this patch tomorrow.
+
+Thanks,
+Mathieu
+
+> +
+> +	dev_set_drvdata(dev, drvdata);
+> +	dev->platform_data = pdata;
+> +	drvdata->pdev = pdev;
+> +	ret = arm_trbe_probe_irq(pdev, drvdata);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = arm_trbe_probe_coresight(drvdata);
+> +	if (ret)
+> +		goto probe_failed;
+> +
+> +	ret = arm_trbe_probe_cpuhp(drvdata);
+> +	if (ret)
+> +		goto cpuhp_failed;
+> +
+> +	return 0;
+> +cpuhp_failed:
+> +	arm_trbe_remove_coresight(drvdata);
+> +probe_failed:
+> +	arm_trbe_remove_irq(drvdata);
+> +	return ret;
+> +}
+> +
+> +static int arm_trbe_device_remove(struct platform_device *pdev)
+> +{
+> +	struct trbe_drvdata *drvdata = platform_get_drvdata(pdev);
+> +
+> +	arm_trbe_remove_cpuhp(drvdata);
+> +	arm_trbe_remove_coresight(drvdata);
+> +	arm_trbe_remove_irq(drvdata);
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id arm_trbe_of_match[] = {
+> +	{ .compatible = "arm,trace-buffer-extension"},
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, arm_trbe_of_match);
+> +
+> +static struct platform_driver arm_trbe_driver = {
+> +	.driver	= {
+> +		.name = DRVNAME,
+> +		.of_match_table = of_match_ptr(arm_trbe_of_match),
+> +		.suppress_bind_attrs = true,
+> +	},
+> +	.probe	= arm_trbe_device_probe,
+> +	.remove	= arm_trbe_device_remove,
+> +};
+> +
+> +static int __init arm_trbe_init(void)
+> +{
+> +	int ret;
+> +
+> +	if (arm64_kernel_unmapped_at_el0()) {
+> +		pr_err("TRBE wouldn't work if kernel gets unmapped at EL0\n");
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	ret = platform_driver_register(&arm_trbe_driver);
+> +	if (!ret)
+> +		return 0;
+> +
+> +	pr_err("Error registering %s platform driver\n", DRVNAME);
+> +	return ret;
+> +}
+> +
+> +static void __exit arm_trbe_exit(void)
+> +{
+> +	platform_driver_unregister(&arm_trbe_driver);
+> +}
+> +module_init(arm_trbe_init);
+> +module_exit(arm_trbe_exit);
+> +
+> +MODULE_AUTHOR("Anshuman Khandual <anshuman.khandual@arm.com>");
+> +MODULE_DESCRIPTION("Arm Trace Buffer Extension (TRBE) driver");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.h b/drivers/hwtracing/coresight/coresight-trbe.h
+> new file mode 100644
+> index 000000000000..499b846ccfee
+> --- /dev/null
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.h
+> @@ -0,0 +1,153 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * This contains all required hardware related helper functions for
+> + * Trace Buffer Extension (TRBE) driver in the coresight framework.
+> + *
+> + * Copyright (C) 2020 ARM Ltd.
+> + *
+> + * Author: Anshuman Khandual <anshuman.khandual@arm.com>
+> + */
+> +#include <linux/coresight.h>
+> +#include <linux/device.h>
+> +#include <linux/irq.h>
+> +#include <linux/kernel.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/smp.h>
+> +
+> +#include "coresight-etm-perf.h"
+> +
+> +static inline bool is_trbe_available(void)
+> +{
+> +	u64 aa64dfr0 = read_sysreg_s(SYS_ID_AA64DFR0_EL1);
+> +	unsigned int trbe = cpuid_feature_extract_unsigned_field(aa64dfr0, ID_AA64DFR0_TRBE_SHIFT);
+> +
+> +	return trbe >= 0b0001;
+> +}
+> +
+> +static inline bool is_trbe_enabled(void)
+> +{
+> +	u64 trblimitr = read_sysreg_s(SYS_TRBLIMITR_EL1);
+> +
+> +	return trblimitr & TRBLIMITR_ENABLE;
+> +}
+> +
+> +#define TRBE_EC_OTHERS		0
+> +#define TRBE_EC_STAGE1_ABORT	36
+> +#define TRBE_EC_STAGE2_ABORT	37
+> +
+> +static inline int get_trbe_ec(u64 trbsr)
+> +{
+> +	return (trbsr >> TRBSR_EC_SHIFT) & TRBSR_EC_MASK;
+> +}
+> +
+> +#define TRBE_BSC_NOT_STOPPED 0
+> +#define TRBE_BSC_FILLED      1
+> +#define TRBE_BSC_TRIGGERED   2
+> +
+> +static inline int get_trbe_bsc(u64 trbsr)
+> +{
+> +	return (trbsr >> TRBSR_BSC_SHIFT) & TRBSR_BSC_MASK;
+> +}
+> +
+> +static inline void clr_trbe_irq(void)
+> +{
+> +	u64 trbsr = read_sysreg_s(SYS_TRBSR_EL1);
+> +
+> +	trbsr &= ~TRBSR_IRQ;
+> +	write_sysreg_s(trbsr, SYS_TRBSR_EL1);
+> +}
+> +
+> +static inline bool is_trbe_irq(u64 trbsr)
+> +{
+> +	return trbsr & TRBSR_IRQ;
+> +}
+> +
+> +static inline bool is_trbe_trg(u64 trbsr)
+> +{
+> +	return trbsr & TRBSR_TRG;
+> +}
+> +
+> +static inline bool is_trbe_wrap(u64 trbsr)
+> +{
+> +	return trbsr & TRBSR_WRAP;
+> +}
+> +
+> +static inline bool is_trbe_abort(u64 trbsr)
+> +{
+> +	return trbsr & TRBSR_ABORT;
+> +}
+> +
+> +static inline bool is_trbe_running(u64 trbsr)
+> +{
+> +	return !(trbsr & TRBSR_STOP);
+> +}
+> +
+> +#define TRBE_TRIG_MODE_STOP		0
+> +#define TRBE_TRIG_MODE_IRQ		1
+> +#define TRBE_TRIG_MODE_IGNORE		3
+> +
+> +#define TRBE_FILL_MODE_FILL		0
+> +#define TRBE_FILL_MODE_WRAP		1
+> +#define TRBE_FILL_MODE_CIRCULAR_BUFFER	3
+> +
+> +static inline void set_trbe_disabled(void)
+> +{
+> +	u64 trblimitr = read_sysreg_s(SYS_TRBLIMITR_EL1);
+> +
+> +	trblimitr &= ~TRBLIMITR_ENABLE;
+> +	write_sysreg_s(trblimitr, SYS_TRBLIMITR_EL1);
+> +}
+> +
+> +static inline bool get_trbe_flag_update(u64 trbidr)
+> +{
+> +	return trbidr & TRBIDR_FLAG;
+> +}
+> +
+> +static inline bool is_trbe_programmable(u64 trbidr)
+> +{
+> +	return !(trbidr & TRBIDR_PROG);
+> +}
+> +
+> +static inline int get_trbe_address_align(u64 trbidr)
+> +{
+> +	return (trbidr >> TRBIDR_ALIGN_SHIFT) & TRBIDR_ALIGN_MASK;
+> +}
+> +
+> +static inline unsigned long get_trbe_write_pointer(void)
+> +{
+> +	return read_sysreg_s(SYS_TRBPTR_EL1);
+> +}
+> +
+> +static inline void set_trbe_write_pointer(unsigned long addr)
+> +{
+> +	WARN_ON(is_trbe_enabled());
+> +	write_sysreg_s(addr, SYS_TRBPTR_EL1);
+> +}
+> +
+> +static inline unsigned long get_trbe_limit_pointer(void)
+> +{
+> +	u64 trblimitr = read_sysreg_s(SYS_TRBLIMITR_EL1);
+> +	unsigned long limit = (trblimitr >> TRBLIMITR_LIMIT_SHIFT) & TRBLIMITR_LIMIT_MASK;
+> +	unsigned long addr = limit << TRBLIMITR_LIMIT_SHIFT;
+> +
+> +	WARN_ON(!IS_ALIGNED(addr, PAGE_SIZE));
+> +	return addr;
+> +}
+> +
+> +static inline unsigned long get_trbe_base_pointer(void)
+> +{
+> +	u64 trbbaser = read_sysreg_s(SYS_TRBBASER_EL1);
+> +	unsigned long addr = trbbaser & (TRBBASER_BASE_MASK << TRBBASER_BASE_SHIFT);
+> +
+> +	WARN_ON(!IS_ALIGNED(addr, PAGE_SIZE));
+> +	return addr;
+> +}
+> +
+> +static inline void set_trbe_base_pointer(unsigned long addr)
+> +{
+> +	WARN_ON(is_trbe_enabled());
+> +	WARN_ON(!IS_ALIGNED(addr, (1UL << TRBBASER_BASE_SHIFT)));
+> +	WARN_ON(!IS_ALIGNED(addr, PAGE_SIZE));
+> +	write_sysreg_s(addr, SYS_TRBBASER_EL1);
+> +}
+> -- 
+> 2.24.1
 > 
->  	if (ops & PSP_MEM_TRAIN_SEND_LONG_MSG) {
->  		/*
-> -		 * Long traing will encroach certain mount of bottom VRAM,
-> +		 * Long training will encroach certain mount of bottom VRAM,
-
-		                                       amount
-I think.
-
->  		 * saving the content of this bottom VRAM to system memory
->  		 * before training, and restoring it after training to avoid
->  		 * VRAM corruption.
-> --
-> 2.26.2
-> 
-
-
--- 
-~Randy
-
