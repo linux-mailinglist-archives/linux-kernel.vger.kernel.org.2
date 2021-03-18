@@ -2,70 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3FC340AFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 261FB340B02
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231129AbhCRRFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232253AbhCRRFE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:05:04 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68756C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:05:04 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id v92so6492339ybi.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:05:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=M96sX2ER8OUfU5ItsM/N27fVEe7WhfbzfJq6noJZvuE=;
-        b=ZptMR85CjXw01KHfTRcq2EVDLfQJLyIzsFLW4Xv6HgfrGrlFg12+R+C8zOG6HlhEB/
-         7fc8qRm5U8erwNc6doqipkpQ91OYFve38QvCDgYjVr9GPyul9GsTAhq87hnxO5UTYZ9F
-         ICob4RMgHSkZztNvxbg60nbijiHcBh/Zp+y55JtoX4Le6WXBPonFLh0m5dGw6JYZjexN
-         iP1QA1ALZx5DfK46KRR8BVflkt9Jhit7aqCtowtNkcSA+im9YzrWe5+XohD50T+vHHD5
-         5K+LkcS2Px48VpAuxfTSNGf7l9MNjthVirchi0NerDRWepN9A6M+voEF4VZ+tl215KBX
-         NOfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=M96sX2ER8OUfU5ItsM/N27fVEe7WhfbzfJq6noJZvuE=;
-        b=GXmskL7l37P+TPjSSzkzJlPZQz7p+YmgxAIhtI7S+s/na+tcpP4OpGBDzU0j+FRJGK
-         NorKzj3J1ntKgYeocZJgcnHfmK1Pxj1X3hsqekVyCJTLANU+Be2UrNAIagyp6k8aazEp
-         sx9N3O93err5fLjXWzCDNBreHVXK/B3BkJaxhdEmcfzTMYU3Zb7hBEr2TtMdzJLtmsbR
-         ImNKiffFGG2JE+jqzsQ3p5FhFKRdceH0LivvKB75ppaPT+zEwNmIV1slsuUpAjtcLg5d
-         3COKdO1ycFSy8B4QUTMZYLewllfXJ6B5zt6Z3K0X/iVlmzyHj4enQtA+Y1/hZt5KFVVA
-         2f/w==
-X-Gm-Message-State: AOAM532vYFi18nWIpWLnAELHv57PJFdvsEVKFXdxWdmqbQZdhl5i0jxC
-        ssVofjO+7OUW5yfQCtCxM4nAHu9QXlxokMAnINo=
-X-Google-Smtp-Source: ABdhPJxKgbPt3d9Ql9cYMZo4/Cdz/7X6qGcU8im11P5aoKSknsF2Cq+lDthgDh5Z+ThZ5mNrX8tZu/cYF0CWfwXyNPs=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:840a:6dbd:4c5:5c01])
- (user=ndesaulniers job=sendgmr) by 2002:a25:25d7:: with SMTP id
- l206mr367807ybl.43.1616087103611; Thu, 18 Mar 2021 10:05:03 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 10:05:01 -0700
-In-Reply-To: <CA+G9fYtBw0HAv5OOAycK2rZ_m2Sj73krXPJ0iDzT+O8qtc19SQ@mail.gmail.com>
-Message-Id: <20210318170501.2183418-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <CA+G9fYtBw0HAv5OOAycK2rZ_m2Sj73krXPJ0iDzT+O8qtc19SQ@mail.gmail.com>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: Re: s390: kernel/entry.o: in function `sys_call_table_emu':
- (.rodata+0x1bc0): undefined reference to `__s390_'
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     naresh.kamboju@linaro.org
-Cc:     acme@kernel.org, agordeev@linux.ibm.com, borntraeger@de.ibm.com,
-        gor@linux.ibm.com, hca@linux.ibm.com, heiko.carstens@de.ibm.com,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        lkft-triage@lists.linaro.org, nixiaoming@huawei.com,
-        svens@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+        id S232218AbhCRRGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:06:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232075AbhCRRGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:06:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 192BF64E05;
+        Thu, 18 Mar 2021 17:06:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616087189;
+        bh=OzZeeyt4+qWh1o9X9pVDpQhFygFpUpjHT7O44d2R7VI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j2k3mtD+SkCvCuLJKSvwIWCkwUXM71oF/UEPqqC9+BNlYIxOAhZOcVGzS5TedF+VK
+         Rign6nQIk1dE+B4+7k0Y8j+Zn0we0Ypgoc+9ZNhdQw6GNcWztRcEUAhS+gqHWGealW
+         7jll/tzCOvEF/7dRKTdFZTb1u/wSP7ue5Iap6IABrB0TvfGNnWNljWbgfHuVrCqjbm
+         8cscrweKkvFFa7ew80RWlgu+AbZWF9G27mAKGIaJaiCYtE+5L4YumE6p7ktsmcWUru
+         4/jgin9BJ/BYiw7OqZXOBIAP3MQfVRKQa9iDYIDjuVc2bT+FK4dDc/VDvl/d8YBB5y
+         UdQrd+fkSPQ0Q==
+Date:   Thu, 18 Mar 2021 18:06:23 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>
+Cc:     paul@crapouillou.net, stable@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, sernia.zhou@foxmail.com
+Subject: Re: [PATCH] I2C: JZ4780: Fix bug for Ingenic X1000.
+Message-ID: <20210318170623.GA1961@ninjato>
+References: <1616084743-112402-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1616084743-112402-2-git-send-email-zhouyanjie@wanyeetech.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
+Content-Disposition: inline
+In-Reply-To: <1616084743-112402-2-git-send-email-zhouyanjie@wanyeetech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(Replying to https://lore.kernel.org/linux-s390/CA+G9fYtBw0HAv5OOAycK2rZ_m2Sj73krXPJ0iDzT+O8qtc19SQ@mail.gmail.com/)
 
-Yeah, our CI is failing today, too with the same error on linux-next:
-https://github.com/ClangBuiltLinux/continuous-integration2/runs/2138006304?check_suite_focus=true
+--GvXjxJ+pjyke8COw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Mar 19, 2021 at 12:25:43AM +0800, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou=
+ Yanjie) wrote:
+> Only send "X1000_I2C_DC_STOP" when last byte, or it will cause
+> error when I2C write operation.
+
+Any write operation? I wonder then why nobody noticed before?
+
+> -			while ((i2c_sta & JZ4780_I2C_STA_TFNF) &&
+> -					(i2c->wt_len > 0)) {
+> +			while ((i2c_sta & JZ4780_I2C_STA_TFNF) && (i2c->wt_len > 0)) {
+
+This is a cosmetic change only IIUC. Shouldn't be in a bugfix.
+
+
+--GvXjxJ+pjyke8COw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBTiIsACgkQFA3kzBSg
+KbY+aA/9E48TYsKg+GY+0vucmpH6GdNoif7CStt7jwLYr5O6SEdo04WRdKLf1NAK
+mpJUVbIPlUbnZGiKgMASumG8hLl8/qO6288k0PxdZ25c8QJM8/mVIklq26/jQiZq
+rtHnD6yAUq11IkbeUKY5ClbncPelktYbxyNV4D7Hc2060DK9HoUxu7E7mf8Onbla
+bOkkfAwHfXIwQGJvopU0uZsxdgQngp7yuYjTOj0y5XlWjOeDP3mZuwMffNO8DuDS
+2+rPPp5mUz6maVA1byioWyhuH4R8OpTAOFdsDiA4lnNunjPzkfCWETlzM38cdUTk
+1CrSCiOVg4GnaJ7u0ZcCrJqx0I0F4zkHZtCVBohRETi/dIvEHIxBteHkLXzZV1oB
+/ASSY0Gzn7/HZ61AwqVV22aWI3BNYMhqALvBkScvLiuTuW0c4K2fEGZZt12U4guh
+9Hzjje0cIU+msNJzvZstO6k3iC8PDU56bKcRKx34JrlQsEWZbkHlkp1iziJJBPn+
+NIqo+16JcA7SLBgITX4pW5RvWHYtlPBRyaWK3qwqZkA1jbPfvsz/+jInUWb56WSZ
+2ZkNTwi+v7rTropAg5NyH+u6rMACFGVmyDPoh6R90fghtD4TMhiAPDOyuiZaAlXt
+2J/Y9toxI8Q3Y+PtNKWWKm4JV+2ToEFVu4hdMD5ag7IKG1G4ZOw=
+=f8EZ
+-----END PGP SIGNATURE-----
+
+--GvXjxJ+pjyke8COw--
