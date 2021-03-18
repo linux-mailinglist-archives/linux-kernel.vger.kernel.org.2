@@ -2,95 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4EE3404F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0198B3404FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhCRLwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbhCRLwT (ORCPT
+        id S230125AbhCRLx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:53:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48418 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230087AbhCRLw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:52:19 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A358C06174A;
-        Thu, 18 Mar 2021 04:52:19 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x184so3308436pfd.6;
-        Thu, 18 Mar 2021 04:52:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uvsR6rY1bwfBzZDL0MMowZ/svepC0HCxpC7Ki4GHewc=;
-        b=mi35mNkSZdJCt36jOGVHyupnZHUYO00OjmmXr9ddY6IyspeoYN317YuszSnbo55gnR
-         bteYf4J5Dp1YlrgBP/qMCXL+3bp4mmYDY0XiEiyIG6ej9A1py6H1/Hi2SO9Oq7CQrDdx
-         HKVZDhEta30IRvCOhkkFRMDcz1gliy1XYJQUblybp/bW5YMEqvl60e+z9u+oWatxwyzp
-         pPlY9z6Ye2thgL6rvaWVZMTETVvjBUlcKtHQ9+L7DT4DREcF4fzXosPNs7lKVQlFIPUa
-         i4dlqFIK3Z9makaJS4kmR1IwRGbNPV+nMOpFt5C+tSYVhGOK4VD0Fs+wRBl8RbFJPyaO
-         cvOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uvsR6rY1bwfBzZDL0MMowZ/svepC0HCxpC7Ki4GHewc=;
-        b=IkhiVlsLJM8k6T0hUCFS/wavCwUMOHMMpnYP29AWrdJO1EB6Z2FES5wfIOA79FCgjF
-         p5UE4Wc44qPGSv6azz6phGFqo7+NT4Xu07YmlrZ/pOjY/GfEvox4hk6ng6aPmrSgUqBJ
-         qv63/v/rfq4D65ZnfPUIu6l5v19oc0zE4pHxkSnwckBbtJTu6KGsKwar0jvzt2Z4Soaw
-         msSrlxILG6HeDAmPHJkFCtx2Nkh+mDxZsVo/XFRKGoYO0CXganPpczRvAn+HnWQzdZ3i
-         o4qNUp5P+aDYqj7vgAgTkSrFgFAtxziO6yBuIGeTV7UHgPcL78ivF918O/ygARLh8+lc
-         BrkA==
-X-Gm-Message-State: AOAM533xdQ4NJHWqFHmcJeJQyaNLkvwLjQIO2cxk9vbIkxtVU2/BZkpV
-        S/wEKosr0FY0TE79SIE+LvQ=
-X-Google-Smtp-Source: ABdhPJy+emOdWBmcgN8wc+mDXhLOYQ5opI806bS2nJvRVL4DEADS6dUxGxtoPmZ2BXWRjWTpJVz8Yg==
-X-Received: by 2002:a63:f11:: with SMTP id e17mr6759436pgl.296.1616068339166;
-        Thu, 18 Mar 2021 04:52:19 -0700 (PDT)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id j20sm2198812pjn.27.2021.03.18.04.52.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 04:52:18 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: xiong.zhenwu@zte.com.cn
-To:     nhorman@tuxdriver.com
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
-Subject: [PATCH net-next] /net/core/: fix misspellings using codespell tool
-Date:   Thu, 18 Mar 2021 04:52:13 -0700
-Message-Id: <20210318115213.474322-1-xiong.zhenwu@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 18 Mar 2021 07:52:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616068377;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=90h+1E2sAdBMnvKo/W6WXH2g+bl3xXKAkJKNk3akQ2I=;
+        b=F/TlgpeNfq+GeSDbXEiuimD1xXz0Z1oo8YZ9CDgTjdBvPv9FvWgUbqaskFU3gmLdqYJ8Yk
+        a0PZvzSxg7ew0FxFT28UT+2bpGB/Q/tkCHsEOGZh+PMZ2Z7EBrbCYrVHsz5dvRihMOeZmA
+        b+H2AhpHjOhYoJ1vSY1R1KmLvDGfNi4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-133-N_SZlK5YPkm4XrNfj80Tww-1; Thu, 18 Mar 2021 07:52:53 -0400
+X-MC-Unique: N_SZlK5YPkm4XrNfj80Tww-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B8A2961180;
+        Thu, 18 Mar 2021 11:52:51 +0000 (UTC)
+Received: from krava (unknown [10.40.194.6])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 0506118A50;
+        Thu, 18 Mar 2021 11:52:48 +0000 (UTC)
+Date:   Thu, 18 Mar 2021 12:52:48 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v2 16/27] perf evlist: Warn as events from different
+ hybrid PMUs in a group
+Message-ID: <YFM/EBq3gAZTh4m3@krava>
+References: <20210311070742.9318-1-yao.jin@linux.intel.com>
+ <20210311070742.9318-17-yao.jin@linux.intel.com>
+ <YE/n2BW1ifH42/o6@krava>
+ <020eaabf-abdb-4458-a883-2abbd4bbfbbd@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <020eaabf-abdb-4458-a883-2abbd4bbfbbd@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
+On Tue, Mar 16, 2021 at 01:25:29PM +0800, Jin, Yao wrote:
+> Hi Jiri,
+> 
+> On 3/16/2021 7:03 AM, Jiri Olsa wrote:
+> > On Thu, Mar 11, 2021 at 03:07:31PM +0800, Jin Yao wrote:
+> > 
+> > SNIP
+> > 
+> > >   				goto try_again;
+> > >   			}
+> > > +
+> > > +			if (errno == EINVAL && perf_pmu__hybrid_exist())
+> > > +				evlist__warn_hybrid_group(evlist);
+> > >   			rc = -errno;
+> > >   			evsel__open_strerror(pos, &opts->target, errno, msg, sizeof(msg));
+> > >   			ui__error("%s\n", msg);
+> > > diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> > > index 7a732508b2b4..6f780a039db0 100644
+> > > --- a/tools/perf/builtin-stat.c
+> > > +++ b/tools/perf/builtin-stat.c
+> > > @@ -239,6 +239,9 @@ static void evlist__check_cpu_maps(struct evlist *evlist)
+> > >   	struct evsel *evsel, *pos, *leader;
+> > >   	char buf[1024];
+> > > +	if (evlist__hybrid_exist(evlist))
+> > > +		return;
+> > 
+> > this should be in separate patch and explained
+> > 
+> 
+> Now I have another idea. If a group consists of atom events and core events,
+> we still follow current disabling group solution?
+> 
+> I mean removing following code:
+> 
+> if (evlist__hybrid_exist(evlist))
+> 	return;
+> 
+> evlist__check_cpu_maps then continues running and disabling the group. But
+> also report with a warning that says "WARNING: Group has events from
+> different hybrid PMUs".
+> 
+> Do you like this way?
 
-A typo is found out by codespell tool in 1734th line of drop_monitor.c:
+I'm not sure I follow completely.. would be best over the code
 
-$ codespell ./net/core/
-./net/core/drop_monitor.c:1734: guarnateed  ==> guaranteed
-
-Fix a typo found by codespell.
-
-Signed-off-by: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
----
- net/core/drop_monitor.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/core/drop_monitor.c b/net/core/drop_monitor.c
-index 571f191c06d9..1eb02c2236f2 100644
---- a/net/core/drop_monitor.c
-+++ b/net/core/drop_monitor.c
-@@ -1731,7 +1731,7 @@ static void exit_net_drop_monitor(void)
- 
- 	/*
- 	 * Because of the module_get/put we do in the trace state change path
--	 * we are guarnateed not to have any current users when we get here
-+	 * we are guaranteed not to have any current users when we get here
- 	 */
- 
- 	for_each_possible_cpu(cpu) {
--- 
-2.25.1
+jirka
 
