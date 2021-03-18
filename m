@@ -2,188 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C434234109B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:04:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1E734109D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232036AbhCRXDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 19:03:31 -0400
-Received: from mga14.intel.com ([192.55.52.115]:58303 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230227AbhCRXC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 19:02:58 -0400
-IronPort-SDR: FIGjvTsoR1WujhiTrYw3gyVx1YCfR/M8D2/6kgv8NPQXqA8dLdJ6UuF98X7e0xVlT43EPYgWpe
- 5xQDSVLQfZbw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="189162050"
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="189162050"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 16:02:58 -0700
-IronPort-SDR: 1lJ/eQL20xcn9u5UvJZGugrzQFU4iqnqo8oIcgMTtknwwgcYRE2kNg5q+FMO0VNIIA8k9dwLIP
- k+mxoOzkJWxw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="413276575"
-Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 18 Mar 2021 16:02:56 -0700
-Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lN1fM-0001T6-5j; Thu, 18 Mar 2021 23:02:56 +0000
-Date:   Fri, 19 Mar 2021 07:02:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/core] BUILD SUCCESS
- 44511ab344c755d1f216bf421e92fbc2777e87fe
-Message-ID: <6053dc00.bEm/qGyGigLV62TL%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232602AbhCRXEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 19:04:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28927 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230306AbhCRXEB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 19:04:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616108640;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=YZlE2SpcI6Z5P+uMCGU6V1+SijPPA2J1aeZ5CJSQ25s=;
+        b=e8Oyxj06xPVHW6tlOkl8BcARhy5zpzafzg/Iil50RVbiSpBJfgbuNsIvaDV/wuWKPZEMMx
+        m2PDkYte35rAElDayOJpIj8rsCO2/ozgcE2wCxyBa8BbHEfH5C7Rlt89cAnbdjY7DJt0ji
+        cOjftT4o5Ajd8jyNSuZIF/amzrVlb/w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-548-ONeMpnShPq2-b4QsQDZxGw-1; Thu, 18 Mar 2021 19:03:57 -0400
+X-MC-Unique: ONeMpnShPq2-b4QsQDZxGw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7EDD58189C8;
+        Thu, 18 Mar 2021 23:03:56 +0000 (UTC)
+Received: from Whitewolf.lyude.net (ovpn-113-18.rdu2.redhat.com [10.10.113.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E4EF96A8FC;
+        Thu, 18 Mar 2021 23:03:53 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     nouveau@lists.freedesktop.org
+Cc:     Martin Peres <martin.peres@mupuf.org>,
+        Jeremy Cline <jcline@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
+        GEFORCE/QUADRO GPUS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] drm/nouveau/kms/nv50-: Correct size checks for cursors
+Date:   Thu, 18 Mar 2021 19:03:49 -0400
+Message-Id: <20210318230351.982064-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
-branch HEAD: 44511ab344c755d1f216bf421e92fbc2777e87fe  time/debug: Remove dentry pointer for debugfs
+Found this while trying to make some changes to the kms_cursor_crc test.
+curs507a_acquire checks that the width and height of the cursor framebuffer
+are equal (asyw->image.{w,h}). This isn't entirely correct though, as the
+height of the cursor can be larger than the size of the cursor, as long as
+the width is the same as the cursor size and there's no framebuffer offset.
 
-elapsed time: 723m
+Note that I'm not entirely sure why this wasn't previously breaking
+kms_cursor_crc tests - they all set up cursors with the height being one
+pixel larger than the actual size of the cursor. But this seems to fix
+things, and the code before was definitely incorrect - so it's not really
+worth looking into further imho.
 
-configs tested: 126
-configs skipped: 3
+Changes since v1:
+* Don't use crtc_w everywhere for determining cursor layout, just use fb
+  size again
+* Change check so that we only check that the w/h of the cursor plane is
+  the same, the width of the scanout surface is the same as the framebuffer
+  width, and that there's no offset being used for the cursor surface.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-arm                       omap2plus_defconfig
-powerpc                 mpc8560_ads_defconfig
-sh                        apsh4ad0a_defconfig
-s390                             alldefconfig
-riscv                             allnoconfig
-arm                        clps711x_defconfig
-sparc                            alldefconfig
-powerpc                        icon_defconfig
-xtensa                  nommu_kc705_defconfig
-powerpc                    socrates_defconfig
-arm                         assabet_defconfig
-h8300                    h8300h-sim_defconfig
-mips                  decstation_64_defconfig
-arm                         nhk8815_defconfig
-xtensa                    xip_kc705_defconfig
-sh                         apsh4a3a_defconfig
-powerpc                     stx_gp3_defconfig
-powerpc                     skiroot_defconfig
-arm                     davinci_all_defconfig
-sh                           se7750_defconfig
-mips                  maltasmvp_eva_defconfig
-mips                        qi_lb60_defconfig
-xtensa                           alldefconfig
-mips                     decstation_defconfig
-arm                          exynos_defconfig
-mips                            gpr_defconfig
-arm                       multi_v4t_defconfig
-arm                          moxart_defconfig
-powerpc                    klondike_defconfig
-sh                            migor_defconfig
-riscv                          rv32_defconfig
-sh                     magicpanelr2_defconfig
-sh                          rsk7269_defconfig
-mips                          rm200_defconfig
-mips                     cu1000-neo_defconfig
-powerpc                     tqm8560_defconfig
-arm                          pxa910_defconfig
-arm                          simpad_defconfig
-m68k                       m5475evb_defconfig
-sh                             espt_defconfig
-powerpc                      ppc44x_defconfig
-arm                           sama5_defconfig
-arc                            hsdk_defconfig
-mips                        nlm_xlp_defconfig
-sh                             sh03_defconfig
-sh                               j2_defconfig
-mips                        jmr3927_defconfig
-powerpc                      makalu_defconfig
-sh                           se7722_defconfig
-arm                            lart_defconfig
-arm                         lpc32xx_defconfig
-ia64                         bigsur_defconfig
-sh                           se7780_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210318
-i386                 randconfig-a005-20210318
-i386                 randconfig-a003-20210318
-i386                 randconfig-a002-20210318
-i386                 randconfig-a006-20210318
-i386                 randconfig-a004-20210318
-x86_64               randconfig-a011-20210318
-x86_64               randconfig-a016-20210318
-x86_64               randconfig-a013-20210318
-x86_64               randconfig-a015-20210318
-x86_64               randconfig-a014-20210318
-x86_64               randconfig-a012-20210318
-i386                 randconfig-a013-20210318
-i386                 randconfig-a016-20210318
-i386                 randconfig-a011-20210318
-i386                 randconfig-a014-20210318
-i386                 randconfig-a015-20210318
-i386                 randconfig-a012-20210318
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a006-20210318
-x86_64               randconfig-a001-20210318
-x86_64               randconfig-a005-20210318
-x86_64               randconfig-a002-20210318
-x86_64               randconfig-a003-20210318
-x86_64               randconfig-a004-20210318
-
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Cc: Martin Peres <martin.peres@mupuf.org>
+Cc: Jeremy Cline <jcline@redhat.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/gpu/drm/nouveau/dispnv50/curs507a.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/curs507a.c b/drivers/gpu/drm/nouveau/dispnv50/curs507a.c
+index 54fbd6fe751d..00e19fd959ea 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/curs507a.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/curs507a.c
+@@ -98,6 +98,7 @@ static int
+ curs507a_acquire(struct nv50_wndw *wndw, struct nv50_wndw_atom *asyw,
+ 		 struct nv50_head_atom *asyh)
+ {
++	struct nouveau_drm *drm = nouveau_drm(wndw->plane.dev);
+ 	struct nv50_head *head = nv50_head(asyw->state.crtc);
+ 	int ret;
+ 
+@@ -109,8 +110,20 @@ curs507a_acquire(struct nv50_wndw *wndw, struct nv50_wndw_atom *asyw,
+ 	if (ret || !asyh->curs.visible)
+ 		return ret;
+ 
+-	if (asyw->image.w != asyw->image.h)
++	if (asyw->state.crtc_w != asyw->state.crtc_h) {
++		NV_ATOMIC(drm, "Plane width/height must be equal for cursors\n");
+ 		return -EINVAL;
++	}
++
++	if (asyw->image.w != asyw->state.crtc_w) {
++		NV_ATOMIC(drm, "Plane width must be equal to fb width for cursors (height can be larger though)\n");
++		return -EINVAL;
++	}
++
++	if (asyw->state.src_x || asyw->state.src_y) {
++		NV_ATOMIC(drm, "Cursor planes do not support framebuffer offsets\n");
++		return -EINVAL;
++	}
+ 
+ 	ret = head->func->curs_layout(head, asyw, asyh);
+ 	if (ret)
+-- 
+2.29.2
+
