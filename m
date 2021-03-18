@@ -2,104 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FDC6340C01
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:41:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A88340C0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232282AbhCRRkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:40:43 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:50794 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231952AbhCRRkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:40:35 -0400
-Received: from zn.tnic (p200300ec2f0fad00070f6d4b275c681b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:ad00:70f:6d4b:275c:681b])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 077CB1EC0249;
-        Thu, 18 Mar 2021 18:40:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616089234;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=5HUi4f5dejF+zrDWqEx6xSCL/wddRn6cotJCPEsJDjc=;
-        b=MnvJO+hRdyGGJWjcUH7ef8qvOmnp5N7CkLRWm0fMaAj8AEYXcaQ8YG1YUHanwbMTi8nrEF
-        uJvBuzpW2Ccg6pZrGTvGB29D6zr08TifaTfPtWOKDJ/wPVFHSby1WBb0EzvvpjRk5yrFE/
-        fPikY0QsWlSvh8qW45Yavi4Sx4wzs4g=
-Date:   Thu, 18 Mar 2021 18:40:32 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@intel.com>
-Cc:     linux-sgx@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] x86/sgx: Replace section->init_laundry_list with
- sgx_dirty_page_list
-Message-ID: <20210318174032.GI19570@zn.tnic>
-References: <20210317235332.362001-1-jarkko.sakkinen@intel.com>
+        id S232128AbhCRRod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230409AbhCRRo3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:44:29 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752EFC06175F;
+        Thu, 18 Mar 2021 10:44:29 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id k4so1668609plk.5;
+        Thu, 18 Mar 2021 10:44:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=silYB0ReWesGT2gy/SuDL9rDUPXG+HkXO/MQkv5g2jM=;
+        b=YxJy+2UgFvhSJ5sTGc0AonW0IZ31y/JHYc5PyZwE49qDmVAEEQ9+U/DGwEZ6jcM9fT
+         d0wM0A4wLR82s+Dj4vfSKOnU65Aq3EU+Mx5lkuFMTye1/4jwFGr1vKqGYHZf+NDhO/ii
+         ToUw1j51g717tBLanTwR6ESRQXPnNd5aw6Qsqyphail9J2gKNh5vEg2lTCT69KYh96Cs
+         fppNOCZ0ZUHrtfq16NQsTtEIVfXEQ7YcZAMNidIeKniAARkWn/Jhet3dNZqFbekIqRk4
+         NvlkXdcgRSkM/tJJMkUlB0PN5sT60k+Y2dJUL7KhJpoCHn5ahOwpQ88RzhVDJC/2aX5m
+         5WnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=silYB0ReWesGT2gy/SuDL9rDUPXG+HkXO/MQkv5g2jM=;
+        b=GseHYUTUTUUunao6GYgjL6zUCZ0NCp9/hhpQDTklMQGWWWvXlAfIZMk+Yo0od7vlSb
+         E9J63PmYM7WN0IBPKghC5FX7zYi4C++brYXX1FAVNBDy68LI3LJsDeqGUFGmm0EmxhYZ
+         0evGa7W1hcwza934FeTYNSNh0ouiUOSv5ihTFNcPvabu/RS8k3SmIMvk0SnThlEv1umQ
+         NdIAPBrv+NZ/95F8wZ2UtGDwj07dS75kifjeZTBNTPNmWYTAKxWTZrrF5ATZ86voGMUa
+         gb+WHawYvYMnleRFi96ezdjciGs7PLm/1XY8yKWrs54HW7i8fGhA6YMPcUkUrwZRT0pF
+         4yFQ==
+X-Gm-Message-State: AOAM531ICYYEcbc5fC1cJhHTgu6PrKmryW/Edmqe0YJMyww3b4U+P5wb
+        EtweXS76nKBjOl2x3qz3c3s=
+X-Google-Smtp-Source: ABdhPJxuSldlAiWbBW+PuJ6B4npIGUgS2l3D+DC6H4/WS6Uxgd7pNyalUYjxERzIB65Y7cuWxdD90w==
+X-Received: by 2002:a17:90b:100a:: with SMTP id gm10mr5487372pjb.0.1616089468752;
+        Thu, 18 Mar 2021 10:44:28 -0700 (PDT)
+Received: from localhost ([103.248.31.158])
+        by smtp.gmail.com with ESMTPSA id w22sm2884164pfi.133.2021.03.18.10.44.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 10:44:28 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 23:13:44 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, linux-kernel@vger.kernel.org,
+        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
+        shyam.rajendran@nutanix.com, felipe@nutanix.com,
+        alex.williamson@redhat.com
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210318174344.yslqpfyct6ziwypd@archlinux>
+References: <20210317112309.nborigwfd26px2mj@archlinux>
+ <YFHsW/1MF6ZSm8I2@unreal>
+ <20210317131718.3uz7zxnvoofpunng@archlinux>
+ <YFILEOQBOLgOy3cy@unreal>
+ <20210317113140.3de56d6c@omen.home.shazbot.org>
+ <YFMYzkg101isRXIM@unreal>
+ <20210318142252.fqi3das3mtct4yje@archlinux>
+ <YFNqbJZo3wqhMc1S@unreal>
+ <20210318170143.ustrbjaqdl644ozj@archlinux>
+ <YFOPYs3IGaemTLMj@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210317235332.362001-1-jarkko.sakkinen@intel.com>
+In-Reply-To: <YFOPYs3IGaemTLMj@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 01:53:30AM +0200, Jarkko Sakkinen wrote:
-> From: Jarkko Sakkinen <jarkko@kernel.org>
-> 
-> During normal runtime, the "ksgxd" daemon behaves like a  version of
-> kswapd just for SGX.  But, before it starts acting like kswapd, its
-> first job is to initialize enclave memory.
-> 
-> Currently, the SGX boot code places each enclave page on a
-> epc_section->init_laundry_list.  Once it starts up, the ksgxd code walks
-> over that list and populates the actual SGX page allocator.
-> 
-> However, the per-section structures are going away to make way for the SGX
-> NUMA allocator.  There's also little need to have a per-section structure;
-> the enclave pages are all treated identically, and they can be placed on
-> the correct allocator list from metadata stored in the enclave page
-> (struct sgx_epc_page) itself.
-> 
-> Modify sgx_sanitize_section() to take a single page list instead of taking
-> a section and deriving the list from there.
-> 
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-> ---
-> 
-> v5
-> * Refine the commit message.
-> * Refine inline comments.
-> * Encapsulate a sanitization pass into __sgx_sanitize_pages().
-> 
-> v4:
-> * Open coded sgx_santize_section() to ksgxd().
-> * Rewrote the commit message.
-> 
->  arch/x86/kernel/cpu/sgx/main.c | 54 ++++++++++++++++------------------
->  arch/x86/kernel/cpu/sgx/sgx.h  |  7 -----
->  2 files changed, 25 insertions(+), 36 deletions(-)
+On 21/03/18 07:35PM, Leon Romanovsky wrote:
+> On Thu, Mar 18, 2021 at 10:31:43PM +0530, Amey Narkhede wrote:
+> > On 21/03/18 04:57PM, Leon Romanovsky wrote:
+> > > On Thu, Mar 18, 2021 at 07:52:52PM +0530, Amey Narkhede wrote:
+> > > > On 21/03/18 11:09AM, Leon Romanovsky wrote:
+> > > > > On Wed, Mar 17, 2021 at 11:31:40AM -0600, Alex Williamson wrote:
+> > > > > > On Wed, 17 Mar 2021 15:58:40 +0200
+> > > > > > Leon Romanovsky <leon@kernel.org> wrote:
+>
+> <...>
+>
+> > > > > I'm lost here, does vfio-pci use sysfs interface or internal to the kernel API?
+> > > > >
+> > > > > If it is latter then we don't really need sysfs, if not, we still need
+> > > > > some sort of DB to create second policy, because "supported != working".
+> > > > > What am I missing?
+> > > > >
+> > > > > Thanks
+> > > > >
+> > > > Can you explain bit more about why supported != working?
+> > >
+> > > It is written in the commit message of this patch.
+> > > https://lore.kernel.org/lkml/20210312173452.3855-1-ameynarkhede03@gmail.com/
+> > > "This feature aims to allow greater control of a device for use cases
+> > > as device assignment, where specific device or platform issues may
+> > > interact poorly with a given reset method, and for which device specific
+> > > quirks have not been developed."
+> > >
+> > > You wrote it and also repeated it a couple of times during the discussion.
+> > >
+> > > If device can understand that specific reset doesn't work, it won't
+> > > perform it in first place.
+> > >
+> > > Thanks
+> > Is it possible for device to understand whether or not specific reset
+> > will work or not prior to performing reset and after it indicates
+> > support for that reset method? Maybe theres problem with that particular
+> > piece of hardware in that machine.
+> > How can database be maintained if a particular machines have
+> > particular piece of faulty HW?
+>
+> It was exactly the reason why I think that VM usecase presented by
+> you is not viable.
+>
+Well I didn't present it as new use case. I just gave existing
+usecase based on existing reset attribute. Nothing new here.
+Nothing really changes wrt that use case.
+> > If for some reason reset doesn't work it will just give -ENOTTY.
+> > This isn't any different from existing behavior.Actually it informs user
+> > that the reset method didn't reset the device and user can use different
+> > reset method instead of implicitly using different reset method.
+> > If user doesn't explicitly set preferred reset method then
+> > we go ahead with existing implicit fall through behavior which will try all
+> > available reset methods until any one of them works.
+> > If you have device that doesn't support reset at all then you have
+> > option to completely disable it unlike existing reset attribute where
+> > you cannot disable reset. So it gives greater control where you can
+> > disable the reset altogether when quirk isn't developed yet.
+>
+> I explicitly asked to hear usecase, right now, I got an explanation from
+> Alex for policy decision (which doesn't need sysfs) and from you about
+> overcoming HW bugs with expectation that user will be guru of PCI reset
+> methods.
+>
+> >
+> > We can't expect to develop quirk for every device in existence.
+>
+> It doesn't give us an excuse do not try.
+>
+> > For example on my laptop elantech touchpad still doesn't work in 2021
+> > with vanilla kernel, arch linux applies the patch which was reverted in
+> > mainline kernel for some reason.
+>
+> I see it as a good example of cheap solution. Vendor won't fix your
+> touchpad because distros provide workaround. The same will be with reset.
+>
+> Thanks
+>
+As mentioned earlier not all vendors care about Linux and not
+all of the population can afford to buy new HW just to run Linux.
 
-So both patches look ok to me but the sgx test case fails on -rc3 with and
-without those patches on my box:
-
-./test_sgx 
-0x0000000000000000 0x0000000000002000 0x03
-0x0000000000002000 0x0000000000001000 0x05
-0x0000000000003000 0x0000000000003000 0x03
-mmap() failed, errno=1.
-
-Box is:
-
-[    0.138402] smpboot: CPU0: Intel(R) Core(TM) i5-9600K CPU @ 3.70GHz (family: 0x6, model: 0x9e, stepping: 0xc)
-[    0.693947] sgx: EPC section 0x80200000-0x85ffffff
-
-And AFAIR that test used to pass there...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Amey
