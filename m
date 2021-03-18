@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 695B7340BB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7322C340BAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232386AbhCRRYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36092 "EHLO
+        id S232342AbhCRRYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:24:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232344AbhCRRYI (ORCPT
+        with ESMTP id S232020AbhCRRXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:24:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75762C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:24:08 -0700 (PDT)
+        Thu, 18 Mar 2021 13:23:36 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE04CC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:23:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=v6Mdg3dOUdpWrz7saxFKxGQVkoKIfFRx82pjr9Ly6oc=; b=X/pRvT1ue5pR78m/+0BA8DU9XX
-        t1TjPn7E0X9bamA7O+AjjvexHnrTWDkerYtZipU5Yaco5wJqNbjNTVaOJ9TiIswMEjSzXtdaG9pdL
-        4sbqg9yXt/2MmvgfYNzDDDN48Cz+aXS3ObMxXZUTDQM4WIDLNizCaVmxpdW/++5f9C5MoNhGeLsBp
-        5H7z64CbL4N/MMQX1e8QjeFppALZARP/DZGZuIADeFnyqfYcX8K/LwHJ7KmWNLCVudcl5xQo2eRoB
-        BID/mqcQbC/Itx4ZgHXPoOAtFizFeWYOlOMOYMcAfzXnWEhxpdLKPTi984pfta6CkPwGsgi84Yr/r
-        EzJGrwKw==;
+        bh=fff8wSjsFEVSScoLrEbNTADtep5HrGXAsNkRLBAqrKs=; b=p5xydzFnzKFJTr+jh//KAO2628
+        Pm1v/8yAYlXZqfTKwnp/y3pgrFG+oJsjbfqGz3JGDH752IjDp29XtZF7xfZF9Dybk275CHqInPuyY
+        tpH5TE1r+yRkDPGCx0MuFVWDCPs6AZMdR4lk1kYKpP1UY5K3eCrD71mSXL1dEFDAfShHywLO0zLPs
+        WEVDROgK0FqNyNhax/nkMkrcXNL0T9YeNXc6F7vvHAT+sIchXlyImWGwWddupsGrcwlSAKRYsjwMd
+        pdlPl3yeAb23xIcVR8CmBt4X/NL/SEFnlt9oGIyxaUd46zYejJj0AG2CyPdI+PwVVTbin9dBtS+9J
+        7EqDHXEQ==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMwMq-003HIY-JH; Thu, 18 Mar 2021 17:23:40 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMwMq-005kF2-MI; Thu, 18 Mar 2021 17:23:28 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5365C307963;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 595C930796A;
         Thu, 18 Mar 2021 18:23:27 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 45E97238A4644; Thu, 18 Mar 2021 18:23:27 +0100 (CET)
-Message-ID: <20210318171920.068888092@infradead.org>
+        id 4AE3A213C0F58; Thu, 18 Mar 2021 18:23:27 +0100 (CET)
+Message-ID: <20210318171920.131630843@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 18 Mar 2021 18:11:14 +0100
+Date:   Thu, 18 Mar 2021 18:11:15 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org, jpoimboe@redhat.com, jgross@suse.com,
         mbenes@suse.com
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org
-Subject: [PATCH v2 11/14] objtool: Add elf_create_undef_symbol()
+Subject: [PATCH v2 12/14] objtool: Allow archs to rewrite retpolines
 References: <20210318171103.577093939@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,96 +50,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow objtool to create undefined symbols; this allows creating
-relocations to symbols not currently in the symbol table.
+When retpolines are employed, compilers typically emit calls to
+retpoline thunks. Objtool recognises these calls and marks them as
+dynamic calls.
+
+Provide infrastructure for architectures to rewrite/augment what the
+compiler wrote for us.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- tools/objtool/elf.c                 |   63 ++++++++++++++++++++++++++++++++++++
- tools/objtool/include/objtool/elf.h |    1 
- 2 files changed, 64 insertions(+)
+ tools/objtool/check.c                |   23 +++++++++++++++++++++--
+ tools/objtool/include/objtool/arch.h |    3 +++
+ 2 files changed, 24 insertions(+), 2 deletions(-)
 
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -724,6 +724,69 @@ static int elf_strtab_concat(struct elf
- 	return len;
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -852,6 +852,14 @@ __weak bool arch_is_retpoline(struct sym
+ 	return false;
  }
  
-+struct symbol *elf_create_undef_symbol(struct elf *elf, const char *name)
++
++__weak int arch_rewrite_retpoline(struct objtool_file *file,
++				  struct instruction *insn,
++				  struct reloc *reloc)
 +{
-+	struct section *symtab;
-+	struct symbol *sym;
-+	Elf_Data *data;
-+	Elf_Scn *s;
-+
-+	sym = malloc(sizeof(*sym));
-+	if (!sym) {
-+		perror("malloc");
-+		return NULL;
-+	}
-+	memset(sym, 0, sizeof(*sym));
-+
-+	sym->name = strdup(name);
-+
-+	sym->sym.st_name = elf_strtab_concat(elf, sym->name, NULL);
-+	if (sym->sym.st_name == -1)
-+		return NULL;
-+
-+	sym->sym.st_info = 0x10; /* STB_GLOBAL, STT_NOTYPE */
-+	// st_other 0
-+	// st_shndx 0
-+	// st_value 0
-+	// st_size 0
-+
-+	symtab = find_section_by_name(elf, ".symtab");
-+	if (!symtab) {
-+		WARN("can't find .symtab");
-+		return NULL;
-+	}
-+
-+	s = elf_getscn(elf->elf, symtab->idx);
-+	if (!s) {
-+		WARN_ELF("elf_getscn");
-+		return NULL;
-+	}
-+
-+	data = elf_newdata(s);
-+	if (!data) {
-+		WARN_ELF("elf_newdata");
-+		return NULL;
-+	}
-+
-+	data->d_buf = &sym->sym;
-+	data->d_size = sizeof(sym->sym);
-+	data->d_align = 1;
-+
-+	sym->idx = symtab->len / sizeof(sym->sym);
-+
-+	symtab->len += data->d_size;
-+	symtab->changed = true;
-+
-+	sym->sec = find_section_by_index(elf, 0);
-+
-+	if (!elf_symbol_add(elf, sym)) {
-+		WARN("elf_symbol_add");
-+		return NULL;
-+	}
-+
-+	return sym;
++	return 0;
 +}
 +
- struct section *elf_create_section(struct elf *elf, const char *name,
- 				   unsigned int sh_flags, size_t entsize, int nr)
- {
---- a/tools/objtool/include/objtool/elf.h
-+++ b/tools/objtool/include/objtool/elf.h
-@@ -136,6 +136,7 @@ int elf_write_insn(struct elf *elf, stru
- 		   unsigned long offset, unsigned int len,
- 		   const char *insn);
- int elf_write_reloc(struct elf *elf, struct reloc *reloc);
-+struct symbol *elf_create_undef_symbol(struct elf *elf, const char *name);
- int elf_write(struct elf *elf);
- void elf_close(struct elf *elf);
+ /*
+  * Find the destination instructions for all jumps.
+  */
+@@ -885,6 +893,9 @@ static int add_jump_destinations(struct
+ 				insn->type = INSN_JUMP_DYNAMIC_CONDITIONAL;
+ 
+ 			insn->retpoline_safe = true;
++
++			arch_rewrite_retpoline(file, insn, reloc);
++
+ 			continue;
+ 		} else if (insn->func) {
+ 			/* internal or external sibling call (with reloc) */
+@@ -1036,6 +1047,8 @@ static int add_call_destinations(struct
+ 			insn->type = INSN_CALL_DYNAMIC;
+ 			insn->retpoline_safe = true;
+ 
++			arch_rewrite_retpoline(file, insn, reloc);
++
+ 			remove_insn_ops(insn);
+ 			continue;
+ 
+@@ -1212,6 +1225,8 @@ static int handle_group_alt(struct objto
+ 		dest_off = arch_jump_destination(insn);
+ 		if (dest_off == special_alt->new_off + special_alt->new_len)
+ 			insn->jump_dest = next_insn_same_sec(file, last_orig_insn);
++		else
++			insn->jump_dest = find_insn(file, insn->sec, dest_off);
+ 
+ 		if (!insn->jump_dest) {
+ 			WARN_FUNC("can't find alternative jump destination",
+@@ -1797,11 +1812,15 @@ static int decode_sections(struct objtoo
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = add_jump_destinations(file);
++	/*
++	 * Must be before add_{jump,call}_destination; for they can add
++	 * magic alternatives.
++	 */
++	ret = add_special_section_alts(file);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = add_special_section_alts(file);
++	ret = add_jump_destinations(file);
+ 	if (ret)
+ 		return ret;
+ 
+--- a/tools/objtool/include/objtool/arch.h
++++ b/tools/objtool/include/objtool/arch.h
+@@ -82,6 +82,9 @@ unsigned long arch_jump_destination(stru
+ unsigned long arch_dest_reloc_offset(int addend);
+ 
+ const char *arch_nop_insn(int len);
++int arch_rewrite_retpoline(struct objtool_file *file,
++			   struct instruction *insn,
++			   struct reloc *reloc);
+ 
+ int arch_decode_hint_reg(struct instruction *insn, u8 sp_reg);
  
 
 
