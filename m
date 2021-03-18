@@ -2,116 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C687833FEFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 06:43:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB48F33FF05
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 06:45:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbhCRFml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 01:42:41 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55364 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhCRFmS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 01:42:18 -0400
-Received: from mail-lf1-f69.google.com ([209.85.167.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lMlQH-0004v9-CE
-        for linux-kernel@vger.kernel.org; Thu, 18 Mar 2021 05:42:17 +0000
-Received: by mail-lf1-f69.google.com with SMTP id z12so821329lfs.15
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 22:42:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VxkRvo8Av52OSk++GohaaBtIAYaVN6TGBHHeWI4XHuU=;
-        b=JOcvUqA/aN+nJbQ/Njw/g4zOY4buioS4TS7ZomJ8YnOytILljV4W5urHys44JakAa7
-         YpjFiymHcjcJcMT3Y5hPE1+41oc+RdQqJjcmWHd5un31eHnR+mmUJLvRcX9175tyRHcM
-         MiVIug4DWjNSKta/e+T+gNG1GIYrcRXfAF4thz6ymci3xwfrN/9A1uMMCVBBt8xDexcz
-         209DM9Rc9hcv4DdWwOmkJR1XlsFuomDZoKLSHah8/3dbZDGBhYmvf9ydARt24sxUMzLq
-         t2SKdO2sk66OzDPFO8poS82Oh0MPTMrTtG3vCCQMWynzPb6QNr9mIA9vF5bcwgB8xkbU
-         D52w==
-X-Gm-Message-State: AOAM533Pj3CKCh7tAQd+S/R97tN1JbX0ztMfJqXWy2g6Ecqv6lIvR8WX
-        RDJRFEYcG7eJWr0yd4bBbjElWIrRAzQF8kBhmr3E6VRhOwxz4Z4Vy26ktgOWBQWTY1tjjTdi8Vh
-        ppbMy6gcQKZ6vfXb1IK7YWPaSNs9WAmQG0LHAz+J0sq3CFQSV5R0FWwUF6w==
-X-Received: by 2002:ac2:4acf:: with SMTP id m15mr4532072lfp.290.1616046136857;
-        Wed, 17 Mar 2021 22:42:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwgQo9UEdE+NM66rLQK/xasWGY3OP+m4oeg0m1l4VIeYKmu5ZW68DX09IM7OpKcH9HfWAmMzBxEBvCEYTIrMV4=
-X-Received: by 2002:ac2:4acf:: with SMTP id m15mr4532064lfp.290.1616046136611;
- Wed, 17 Mar 2021 22:42:16 -0700 (PDT)
+        id S229559AbhCRFou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 01:44:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52364 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229512AbhCRFoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 01:44:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BCD164EC4;
+        Thu, 18 Mar 2021 05:44:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616046259;
+        bh=d6af8rjjSi2t3Ya2rM1cTKrbkpK3hPDilCyxjQaGlBA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Rc0UIGu7CI4Y4tNPh6UTjIr6a6gGVZ50NwNuJF8ZBjmiphXlK/JgpQxKGuLhMcfj9
+         GbaA57am7o8uIv0hMk3U+J0BM3ZncxsHmfHQ4hYKbeKdYIf4pSUQF+9u0uNrWhCEnQ
+         YeJdBCSShbw6+kibZxfwAKLx9XrgLieGVU/L41NWKMXGUIj8aq7xabnLOVJ5y3ep8S
+         9rQqumbjY8xf8IeFxcUoTwBLUganICe0CcO9qwgwDlUr/aUDwCS3nHuD4B5qkS4kTB
+         QO37X5uSvqco85+yWXosbv4wU0Ftc7OFo05xOCkUNZFKWY118jsjReNPY/Y0uQuG3K
+         UKuvEV9effegw==
+Date:   Thu, 18 Mar 2021 06:44:15 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc:     David Laight <David.Laight@aculab.com>,
+        'Guenter Roeck' <linux@roeck-us.net>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>
+Subject: Re: Errant readings on LM81 with T2080 SoC
+Message-ID: <20210318054415.GB1053@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+        David Laight <David.Laight@aculab.com>,
+        'Guenter Roeck' <linux@roeck-us.net>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>
+References: <20210311081842.GA1070@ninjato>
+ <94dfa9dc-a80c-98ba-4169-44cce3d810f7@alliedtelesis.co.nz>
+ <725c5e51-65df-e17d-e2da-0982efacf2d2@roeck-us.net>
+ <1a7d43e6a16c46cdbe63b497b29ac453@AcuMS.aculab.com>
+ <ec89dfda-a321-6ec7-9da0-b4949f1f28b5@alliedtelesis.co.nz>
 MIME-Version: 1.0
-References: <b8db79e6857c41dab4ef08bdf826ea7c47e3bafc.1615947283.git.josef@toxicpanda.com>
- <CAAd53p5Vh_+tUeEQx3xf_aLiCiKP1u5Y3VgYCUzZ82Kgtr-iYw@mail.gmail.com>
- <bebcaffc-d485-912d-0c42-c0781f9c7603@toxicpanda.com> <CAAd53p7eJk9EtMTLjB5i7RdoKA3WS1W4TRjQs08adi7iAux_jQ@mail.gmail.com>
- <78dfcd55-442d-dcc0-c37f-5576f65f91b5@toxicpanda.com>
-In-Reply-To: <78dfcd55-442d-dcc0-c37f-5576f65f91b5@toxicpanda.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 18 Mar 2021 13:42:04 +0800
-Message-ID: <CAAd53p6Lp8+S0yjWi=MikQJ_zywiWamUS5p19oKoqB6uYW8jzg@mail.gmail.com>
-Subject: Re: [PATCH][RESEND] Revert "PM: ACPI: reboot: Use S5 for reboot"
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="H+4ONPRPur6+Ovig"
+Content-Disposition: inline
+In-Reply-To: <ec89dfda-a321-6ec7-9da0-b4949f1f28b5@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 1:25 AM Josef Bacik <josef@toxicpanda.com> wrote:
-[snipped]
-> "shutdown now" works fine with and without your patch.  Thanks,
 
-Rafael,
-Please revert the patch while we are working on it.
+--H+4ONPRPur6+Ovig
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Josef,
-Can you please test the following patch:
 
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index eb1b15850761..263444a3fb38 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -233,6 +233,15 @@ void migrate_to_reboot_cpu(void)
-        set_cpus_allowed_ptr(current, cpumask_of(cpu));
- }
+> Probably depends on the device implementation. I've got multiple other=20
+> I2C/SMBUS devices and the LM81 seems to be the one that objects.
 
-+static void kernel_shutdown_prepare(enum system_states state)
-+{
-+       blocking_notifier_call_chain(&reboot_notifier_list,
-+               (state == SYSTEM_HALT) ? SYS_HALT : SYS_POWER_OFF, NULL);
-+       system_state = state;
-+       usermodehelper_disable();
-+       device_shutdown();
-+}
-+
- /**
-  *     kernel_restart - reboot the system
-  *     @cmd: pointer to buffer containing command to execute for restart
-@@ -243,7 +252,7 @@ void migrate_to_reboot_cpu(void)
-  */
- void kernel_restart(char *cmd)
- {
--       kernel_restart_prepare(cmd);
-+       kernel_shutdown_prepare(SYSTEM_POWER_OFF);
-        if (pm_power_off_prepare)
-                pm_power_off_prepare();
-        migrate_to_reboot_cpu();
-@@ -257,14 +266,6 @@ void kernel_restart(char *cmd)
- }
- EXPORT_SYMBOL_GPL(kernel_restart);
+For the recored, there was just a similar case with a DA9063, but that
+one luckily had a bit to switch from SMBus to I2C mode, i.e. no timeout
+handling:
 
--static void kernel_shutdown_prepare(enum system_states state)
--{
--       blocking_notifier_call_chain(&reboot_notifier_list,
--               (state == SYSTEM_HALT) ? SYS_HALT : SYS_POWER_OFF, NULL);
--       system_state = state;
--       usermodehelper_disable();
--       device_shutdown();
--}
- /**
-  *     kernel_halt - halt the system
-  *
+  [PATCH v6 1/1] mfd: da9063: Support SMBus and I2C mode
 
->
-> Josef
+
+--H+4ONPRPur6+Ovig
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBS6K8ACgkQFA3kzBSg
+KbZVmxAAqwryS/bFzwCneErKw/kPhqTdQshdZeigjwzRhyd7LuOFinLlMZceJHXc
+84YD8l2nZ8mCvOLY9dICpTEXlD6AhD5g5fa9JlXR5ns9XYSLBZ23Va0Y74lA6i5L
+RHi1jeknvEZIGjUBiMwX6Tt/yVAprILjYhaP+Gmt3sMQqNm1ixC7G475npgpyvLl
+gUiLewJlAMMVW7n9U7Gx0YS8Gyw9NPvFnKy+qreSQS9Imid+g8L6X9M6SZwGaYwJ
+hYXT/3i7Suj3Or9/+9ruDpYJk7qIIYZW5aclTKoICUC+sWyF1ykk3O1afOCDigfd
+cmEV2HUMWsGeD5w6mKMVOH2UckMtUK6ZMMwZJlJNUx5hMygcdCOOAm/pY+udLnV7
+afYKoH1DHNJG9MpvESHSjA5muOAUmd0uryXMVs9KEC5iSBf9DCa9Rc+X2x6eZGbv
++xWAKfLRqvvF6X0u2h0mO563+zZpKtRlZsxuCyFjibS1KQ3VmQg4sGxo/n+oRbLd
+kgF12d4NNLXC8AQey025OaDpu0Su43+J3MKQXOpFaWqzt94HyhUZGGttt20JLJIv
+QgfKRdXG8xr2/gANyRsQvH34NKWOZqDMHjodTpRBbP8FfX03tzGMLkcqaE6Vt0qw
+5y/M1YQjtTSDQ9ftFajgSYUsknhXgnjxWNSyUMKnmu3A4XNeb2c=
+=Syxw
+-----END PGP SIGNATURE-----
+
+--H+4ONPRPur6+Ovig--
