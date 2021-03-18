@@ -2,132 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA33340824
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:51:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC6D340827
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbhCROvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 10:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbhCROuz (ORCPT
+        id S231421AbhCROvg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Mar 2021 10:51:36 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3369 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231578AbhCROvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 10:50:55 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9F3C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 07:50:55 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id w65so1725924oie.7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 07:50:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=og89K6jV3HFX8PE96KX/c5Zy0nyRjtFamlhCSJhcZac=;
-        b=BbZoR5bKJdUlBsWePVP9pZFO52LSwx83bqvlA+iFEHEJbXRLCIjazsIWJ7Viy6/Dqg
-         ms11HMn9qzvtUSKYV7kiYroJ8GoudjnuRaAotpDXCJkiH2454Zsrw0r8xOeT1eDT6YxS
-         q+3+MBnu38qnO454OYLGBpBP8Gq2YHx7vcVu1igvYYB7TkhTKWyAqpE95EEQZcA7yNgB
-         R/S0blHSK+wctWLHT5XamyOYHV+RON+tPa7QPNHdEwmYkO7LDY4BJHU3BGXMaxeArqVY
-         EZJyG7pBZFDAX8JWQxpbOFMez+cg1l1eLriE/6/arkjyVorRKAMnxrrUHlTsEIB5mVvO
-         PCAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=og89K6jV3HFX8PE96KX/c5Zy0nyRjtFamlhCSJhcZac=;
-        b=nvY0Vyxz6xa6XbOOwsweblPIRmdXv8uqRqG9082EZMQWAuOcgO5hZoOHEHyWoLIeN8
-         rDBWHZoRWHcHhJFTpug9356iIP5maRkzRpMS8Hdub7b4Z/dawdRNacFp1nrduhiIKCyk
-         JN1SOfOzsMY58GlGSiQG17pHXdmj+2OUruyBUAnbSLonJJSfPNAo/MpGyQ03N2trY1pJ
-         8HNreQGpCtuJ6TtNuaeKxKH3ggZcYpOPEZRuRkXPQKM5JnR/YsT5tmEq0GMhol8fHDP5
-         0v1SVqbG4BLvRvw7lxbiOHv4ZVFTQhA08M+dKrhK1712fv4ecOrWrltXNPmn2mRzK6IT
-         RFyg==
-X-Gm-Message-State: AOAM531k6/tvRUxaEMt9ru8zww0yWVa+mYz/KZr5+90TYYyvOwHy3llv
-        lP3MkDqyuVw+MRtr6+MP3j6w6NkPb3wlsA==
-X-Google-Smtp-Source: ABdhPJw88D0okVHzO8aCSbNOnCSK+c61zfhIoBhm9ubX4GrgcqtKVy0DZAl00IvFZIUH6e7eT8sHOA==
-X-Received: by 2002:a05:6808:987:: with SMTP id a7mr3198012oic.162.1616079054839;
-        Thu, 18 Mar 2021 07:50:54 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id r13sm594897oot.41.2021.03.18.07.50.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 07:50:54 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 09:50:52 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wcn36xx@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 5/5] arm64: dts: qcom: msm8916: Enable modem and WiFi
-Message-ID: <YFNozCCa4fdR5kSb@builder.lan>
-References: <20210312003318.3273536-1-bjorn.andersson@linaro.org>
- <20210312003318.3273536-6-bjorn.andersson@linaro.org>
- <f03b639f-f95a-a31a-6615-23cd6154182d@linaro.org>
+        Thu, 18 Mar 2021 10:51:10 -0400
+Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4F1VJp4ggpz5Hdt;
+        Thu, 18 Mar 2021 22:48:42 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
+ DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Thu, 18 Mar 2021 22:51:06 +0800
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500004.china.huawei.com (7.185.36.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 18 Mar 2021 22:51:07 +0800
+Received: from dggpemm500006.china.huawei.com ([7.185.36.236]) by
+ dggpemm500006.china.huawei.com ([7.185.36.236]) with mapi id 15.01.2106.013;
+ Thu, 18 Mar 2021 22:51:07 +0800
+From:   "chenjun (AM)" <chenjun102@huawei.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
+        "weiyongjun (A)" <weiyongjun1@huawei.com>,
+        "Guohanjun (Hanjun Guo)" <guohanjun@huawei.com>
+Subject: [RESEND PATCH] Kconfig: Move CONFIG_DEBUG_KMEMLEAK_TEST to
+ samples/Kconfig
+Thread-Topic: [RESEND PATCH] Kconfig: Move CONFIG_DEBUG_KMEMLEAK_TEST to
+ samples/Kconfig
+Thread-Index: AQHXHAYg8d9cii4PGkmLX5bvg0mNFw==
+Date:   Thu, 18 Mar 2021 14:51:07 +0000
+Message-ID: <e3e03188672c48dfb187e6683ea63308@huawei.com>
+References: <20201022021234.6638-1-chenjun102@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.178.53]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f03b639f-f95a-a31a-6615-23cd6154182d@linaro.org>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 15 Mar 07:01 CDT 2021, Bryan O'Donoghue wrote:
+From: Chen Jun <chenjun102@huawei.com>
 
-> On 12/03/2021 00:33, Bjorn Andersson wrote:
-> > Enable the modem and WiFi subsystems and specify msm8916 specific
-> > firmware path for these and the WCNSS control service.
-> > 
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> >   arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi | 12 ++++++++++++
-> >   arch/arm64/boot/dts/qcom/msm8916.dtsi     |  2 +-
-> >   2 files changed, 13 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
-> > index 6aef0c2e4f0a..448e3561ef63 100644
-> > --- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
-> > @@ -305,6 +305,12 @@ &mdss {
-> >   	status = "okay";
-> >   };
-> > +&mpss {
-> > +	status = "okay";
-> > +
-> > +	firmware-name = "qcom/msm8916/mba.mbn", "qcom/msm8916/modem.mbn";
-> > +};
-> > +
-> >   &pm8916_resin {
-> >   	status = "okay";
-> >   	linux,code = <KEY_VOLUMEDOWN>;
-> > @@ -312,6 +318,8 @@ &pm8916_resin {
-> >   &pronto {
-> >   	status = "okay";
-> > +
-> > +	firmware-name = "qcom/msm8916/wcnss.mbn";
-> >   };
-> 
-> On Debian I have to do this
-> 
-> 
-> index 2a6a23cb14ca..597cdc8f51cc 100644
-> --- a/drivers/remoteproc/qcom_wcnss.c
-> +++ b/drivers/remoteproc/qcom_wcnss.c
-> @@ -33,7 +33,7 @@
->  #include "qcom_wcnss.h"
-> 
->  #define WCNSS_CRASH_REASON_SMEM                422
-> -#define WCNSS_FIRMWARE_NAME            "wcnss.mdt"
-> +#define WCNSS_FIRMWARE_NAME            "qcom/msm8916/wcnss.mdt"
-> 
-> so I guess wcnss_probe() -> rproc_alloc() wants this fix too.
-> 
+commit 1abbef4f51724fb11f09adf0e75275f7cb422a8a
+("mm,kmemleak-test.c: move kmemleak-test.c to samples dir")
+make CONFIG_DEBUG_KMEMLEAK_TEST depend on CONFIG_SAMPLES implicitly.
+And the dependency cannot be guaranteed by Kconfig.
 
-Can you confirm that you're saying that you want below patch, which I
-just merged?
+move the definition of CONFIG_DEBUG_KMEMLEAK_TEST from lib/Kconfig.debug
+to samples/Kconfig.
 
-https://lore.kernel.org/linux-remoteproc/20210312002441.3273183-1-bjorn.andersson@linaro.org/
+Signed-off-by: Chen Jun <chenjun102@huawei.com>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+---
 
-(Which makes it possible to specify firmware name per platform/board)
+  lib/Kconfig.debug | 8 --------
+  samples/Kconfig   | 8 ++++++++
+  2 files changed, 8 insertions(+), 8 deletions(-)
 
-Regards,
-Bjorn
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 66d44d3..debacdc 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -678,14 +678,6 @@ config DEBUG_KMEMLEAK_MEM_POOL_SIZE
+  	  fully initialised, this memory pool acts as an emergency one
+  	  if slab allocations fail.
+
+-config DEBUG_KMEMLEAK_TEST
+-	tristate "Simple test for the kernel memory leak detector"
+-	depends on DEBUG_KMEMLEAK && m
+-	help
+-	  This option enables a module that explicitly leaks memory.
+-
+-	  If unsure, say N.
+-
+  config DEBUG_KMEMLEAK_DEFAULT_OFF
+  	bool "Default kmemleak to off"
+  	depends on DEBUG_KMEMLEAK
+diff --git a/samples/Kconfig b/samples/Kconfig
+index 0ed6e4d..15978dd 100644
+--- a/samples/Kconfig
++++ b/samples/Kconfig
+@@ -216,4 +216,12 @@ config SAMPLE_WATCH_QUEUE
+  	  Build example userspace program to use the new mount_notify(),
+  	  sb_notify() syscalls and the KEYCTL_WATCH_KEY keyctl() function.
+
++config DEBUG_KMEMLEAK_TEST
++	tristate "Simple test for the kernel memory leak detector"
++	depends on DEBUG_KMEMLEAK && m
++	help
++	  This option enables a module that explicitly leaks memory.
++
++	  If unsure, say N.
++
+  endif # SAMPLES
+-- 
+2.7.4
+
