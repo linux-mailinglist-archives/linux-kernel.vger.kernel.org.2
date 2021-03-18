@@ -2,137 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9E0340754
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC236340722
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:47:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhCRN7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 09:59:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41280 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230010AbhCRN67 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 09:58:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616075939;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z4To2i+xwe+1qmiy7fiF6l/qncD34bYmhb08BdcZeNM=;
-        b=EHzQQz8wL/KXZtUaXOd+ahIKUKQDRIu+XDHnmqpQ6AeWQ8LXbQfNw1elckJiIRGDBwdQsy
-        iAFiB/f1iW+t25hiZnFYwL19N3VB+OMtpCFE099ftzat+YQLs1d7RGBZaMDMBHcp/CYq+x
-        EqpUJp3Oy48CWJdYqCZnXAeSyTDusd0=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-319-GveKi81uNK-UICjNFDxbMQ-1; Thu, 18 Mar 2021 09:58:57 -0400
-X-MC-Unique: GveKi81uNK-UICjNFDxbMQ-1
-Received: by mail-oi1-f197.google.com with SMTP id v19so17304128oic.16
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:58:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Z4To2i+xwe+1qmiy7fiF6l/qncD34bYmhb08BdcZeNM=;
-        b=OBKHfeTOgu+RXD2yIj0uouMkq7u8twr1CNvN2630UimfioFeFjWAfnIQV2X8djTTVG
-         7nyICVJxEufCbkOsryIEMG9OLH3K9mzQOPkivniUvSlAKyjAxjb5fqNS3OIbqCY2EQ4z
-         jXnARFbIWW4R5uYRW96FywNURByBFK/W0PoeGpgCoH0pEzKDwwKHxp1K7/v2nDhrne9F
-         XVRSQNaJpPeNbxwDagwpScPy0Pks2f64W58eBhxvzdWlkWKaicCcASn7LWO3Q4haf0E+
-         8QeOWMvoASUc1Zu03Nx1Epbxrls70viLlWPCo9tjPOKH/nkB/ABd+9BL/AAX34f5uIy6
-         lKpw==
-X-Gm-Message-State: AOAM5335mRPN/nxgZwjCnQ04Tgl79W0A/0KQJ30RbqmSOSItINm2kvEh
-        3UfOpi85tTsSBuAlNu+6aGyw1PI6nZOOV/pvXnE60vmoAKn8MSv07aT4UiVu4/ftg7qnaBCrIAu
-        /1eD3OuJH0zt4v2cCkEqIqCl/QE0yzVMQs4k10s57XOhi9mVpl4vILHNuVFHcf8KFy4VFNCGDIA
-        ==
-X-Received: by 2002:a05:6830:120b:: with SMTP id r11mr7191637otp.82.1616075936566;
-        Thu, 18 Mar 2021 06:58:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxW+4FG/lY4llWoReFXiv9GdGgubr4KeyLh41T4icSVsCGPTS5mcZltuT4ra5NPolTUeQT3ZA==
-X-Received: by 2002:a05:6830:120b:: with SMTP id r11mr7191618otp.82.1616075936337;
-        Thu, 18 Mar 2021 06:58:56 -0700 (PDT)
-Received: from [192.168.0.173] (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
-        by smtp.gmail.com with ESMTPSA id 24sm516927oiq.11.2021.03.18.06.58.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 06:58:56 -0700 (PDT)
-Subject: Re: Question about sg_count_fuse_req() in linux/fs/fuse/virtio_fs.c
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     virtio-fs@redhat.com, stefanha@redhat.com, miklos@szeredi.hu,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <810089e0-3a09-0d8f-9f8e-be5b3ac70587@redhat.com>
- <20210318135600.GA368102@redhat.com>
-From:   Connor Kuehl <ckuehl@redhat.com>
-Message-ID: <19c488d0-2006-4a96-610d-f4825aa43cb3@redhat.com>
-Date:   Thu, 18 Mar 2021 08:58:54 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <20210318135600.GA368102@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S229785AbhCRNrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 09:47:12 -0400
+Received: from mail-bn7nam10on2078.outbound.protection.outlook.com ([40.107.92.78]:57761
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230159AbhCRNrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 09:47:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R5bw9BrE6vWGp/r3e+A8yrHXbZ8QF7QuElKJZCIv2Vbmj8y12ybMIKsZyueyeIiAZoJJLIVXFI7y1/dFNCW7lcHpx5OgrwVOXbpX+kmcWC9DEhve0YTXtD6oxPHfJhK8jt87Xv6VuJIMJ25lNiKMKZSIZRuPxNPhtj7QYwE4S3/EhVBWSv8jsv1/OncC1OSEhKicdpBY1vpDMwFSMm0TZ4rHeowNJCuFoCwBWxmRzCBwa4+x48poU231nd/Pc323qmq4x63UCzFshiumEWD7sS2N6BU78J1emEbjreKVmVRpZl9sd4uOIBsOla++frGULWiWjHr83qbhl72E/XavLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f2Hpi+IeN/FYkeoK+HoqHtYfR04bdrodVNsfEy076Zw=;
+ b=l4TWx52U0RTq3ywZyBNV2BJmTI4V4EgoJJpGg0Myz68/5gmP7eUd6CUWNo8Fz6rJkA5G09Z+6808MTDmTsqtOrd/JvF1/7NKJcE4JBsSdT7EklyO6yBn4bTOEAemDLh7LTD1sy/YX7xjxYPj+7fZzZGV3zPywZiq+7J409Z2m0YRkhBlTH+ao70ZUQyVgNn7eWZ7pzcssQ+G9C/YGFe4yxeWrIcDxN+Mz19Tt1Te0JPwwqgN+fegvZ2smTRbunUZQHTWZjkvMoKq49DSR74iMZfXMIq3O+ZFhrx7lHN6j+l1h5LWNwk6yKhXs4fsveuq4dFMcClKgOds3mbV5dN8Fg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f2Hpi+IeN/FYkeoK+HoqHtYfR04bdrodVNsfEy076Zw=;
+ b=eahnymnQjnMiUsQVrRVs9xrUAznUHYsVNWCnJwu59NAqf3wGtSzXDHQwW6y6OIkEpyw+YVbe7dCATE9Z3Fp7x7cs66+kj0jvxZsBswSV6wfhPd6N3IfzNouboHATi3CyI9v9nDaSAbitD3O86hcf9szRzGOBAaUIsXhqQndflUA=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ (2603:10b6:300:e4::23) by MWHPR1201MB0271.namprd12.prod.outlook.com
+ (2603:10b6:301:57::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Thu, 18 Mar
+ 2021 13:47:08 +0000
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::c977:4e9:66b8:a7e]) by MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::c977:4e9:66b8:a7e%11]) with mapi id 15.20.3933.032; Thu, 18 Mar 2021
+ 13:47:07 +0000
+Subject: Re: [PATCH v4 1/2] ASoC: amd: Add support for RT5682 codec in machine
+ driver
+To:     Mark Brown <broonie@kernel.org>
+Cc:     alsa-devel@alsa-project.org, shumingf@realtek.com,
+        flove@realtek.com, derek.fang@realtek.com,
+        Alexander.Deucher@amd.com, Basavaraj.Hiregoudar@amd.com,
+        Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ravulapati Vishnu vardhan rao 
+        <Vishnuvardhanrao.Ravulapati@amd.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1616013238-12254-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <20210318130020.GD5469@sirena.org.uk>
+From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Message-ID: <d9568571-6b67-5fea-4eb9-165039a3d7e8@amd.com>
+Date:   Thu, 18 Mar 2021 19:34:06 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210318130020.GD5469@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.159.242]
+X-ClientProxiedBy: PN1PR0101CA0061.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c00:d::23) To MWHPR1201MB2557.namprd12.prod.outlook.com
+ (2603:10b6:300:e4::23)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.252.93.39] (165.204.159.242) by PN1PR0101CA0061.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c00:d::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Thu, 18 Mar 2021 13:47:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: bde61cc3-5cfd-4d6a-855f-08d8ea145254
+X-MS-TrafficTypeDiagnostic: MWHPR1201MB0271:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR1201MB027182E3FD77D8A4AF66DEF197699@MWHPR1201MB0271.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +rIirW7LdE7cGVLt/+uyqo3mCuQM+ozw0J0z452mPPSyGK57YnFAKtKJ4FeWCr6rAxwdgHhS4prjcsfuAKmljRXUqe8M5Un7bsO/jBiK1QMS4jT8j/qcTGp02gViah4JrpuoTR8pt/IrLpYxRID+MYx9qHMnwO5hQV7GPCotA0/QO1bQUukwU8VnbglXjhUxcH5bLv9b76JXsjeDEQ1aZR1b0XG8pfLidROPE+jiMPIA1/cjcAcmmK8Iz8ijEvUzPVz+reWihK0xyoj9Lmn/5cZOR1eEU4L8ugqEi8fRZuPKCSfnlQ91KgEA/fqdKuUCyaBl0ro/3OP3N4fzCrsfTr57lrQ36OiaVUQu+6QKLc6rpY1V6QICu2k+PyIwj2fKC0uJetRbiDxibeiBFRLsJakBHqsDoM4IJaZl8pMCXCs8Rq4uoqJ34y64xKciCih/RRj8CSzy/SON36Mrc66RGwQBoa0/qMkj2PvuGyUAB1SvcGOdh8gBKhRHPIKMcfZKcTsQhDNTktlvvZqY7oB3VUJoVqKBrSMSriarJ2YQezqoBZ0LWZmdDIs8GhoHlU0isoseYkL+pWPt8TSleulvigxd5rjXtojVpRseaeVOreIpS6VieuVsdDBnphxjSAx2jhCwfY7NkLlYTDjJE4I6fecfbyVH2NL5C40c2fouHNeE7yj6wRjiYDzIG3IZakzr
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(346002)(366004)(396003)(31696002)(186003)(26005)(8676002)(53546011)(956004)(83380400001)(16526019)(66946007)(86362001)(66476007)(66556008)(2616005)(6916009)(5660300002)(6486002)(4326008)(478600001)(38100700001)(2906002)(31686004)(36756003)(7416002)(54906003)(16576012)(8936002)(316002)(52116002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?zBer6MUekFUNZJqbETxaPoP4WgnIVAMjsdjt4359LKFFqnOL4uSp685N?=
+ =?Windows-1252?Q?CPQ3EkyYgajsF0s+e17jyK9FeoFQHf/TDqXfGoj0HpI6DeEu/Eqii81U?=
+ =?Windows-1252?Q?/CU/SOsM3hmwQT/TAdpKZz/zww4quIX9kyGOpE6/Nr8IKXIp6rbmb/Uo?=
+ =?Windows-1252?Q?ud+bl1nknw/WNx3JePlDoZ2W5VWGbwjBez8ADHI+Qp7fxG42Gk/6Yoak?=
+ =?Windows-1252?Q?t0DDNub76JtIod3l7bKFWUdKE9hTquwXjpmXBUKzlYlKiwBnucm9OBo9?=
+ =?Windows-1252?Q?+KtGhgYYu5ay+CjuzqR+9FTrmly/Xpa8F+C7G39urye3wtF6xft+/r28?=
+ =?Windows-1252?Q?3lklOY0eegkMwMwae9m2C+2DpxtsVBrxs4YYWA5LDzpVEBNdIEw5XryL?=
+ =?Windows-1252?Q?X4Q7uH+DUxjnMvXeMkXeORlJmAliriuSR2VBSROgtgYzKWXhCzkafFTk?=
+ =?Windows-1252?Q?C2CFaniq/pDyZhdxr104cfPfHLAOc1zf5RprZGrQBHYu7mS0JUhsW1du?=
+ =?Windows-1252?Q?vbXlZ6W9ElQtv6xWFDFvm0KzwdAIH62HaJ5KSU+OKXIXBBbDsWYNHa8v?=
+ =?Windows-1252?Q?DL7Ydfr0LrILvOXh5FFk48k9spmio5zn1FDdtbtbfFVMHicqJW+Cx3oz?=
+ =?Windows-1252?Q?1ZtgagO0aYS1RNgehq9XI3dbnd+HOE196ARmZQGWNmqpN+IoAGS8H5Dd?=
+ =?Windows-1252?Q?wvqFnqJ4l+++yDLp+57qlQR4IyVx6I44eYb+Zo+HOlMR0+0vDeIqAvHI?=
+ =?Windows-1252?Q?iqohOaB5pX0ANYwDIducRsKozTDiGvGf6wt43oYetXr0En1uRwDopH7Q?=
+ =?Windows-1252?Q?ae4lusjWCT0XAMFtFXng5PrfP4kjt3tOKAodmwXXyIQLRojO/cV/GiZE?=
+ =?Windows-1252?Q?Vje4kApRx83+SvL8gjGiBw41l0p864Hmv3VcHp5lI7jyZ20pUsyoK30u?=
+ =?Windows-1252?Q?QT7WWuQZO2zCrACBA3FgzgMnCqre+i/G/QPMC8fEAhfUz9Rb7b3pbur8?=
+ =?Windows-1252?Q?LiODrZ+q/mTIPKKra5yxbwMNzIDNAsdtYwMsvbi+6AGBEX4G8Ui6Lz49?=
+ =?Windows-1252?Q?ihlLygDDkzH+ubJCAK6rdhLXHG7b6gPZMYbTeRgR0L7uBOuGVJu6MldK?=
+ =?Windows-1252?Q?ODxz/UGlQMCY3ZHOrtsg6Z29zVUHFDDiTCOwVaUEG4mja2P5uypH9B/V?=
+ =?Windows-1252?Q?HaQ9R14DrlkVAhZDrzOKjyf953TVBFqPhcyRz6XzVvGXMRQoY4z6oqky?=
+ =?Windows-1252?Q?PLnXyIvjESLFvzXhr3uFLmOaWN51o+8K83ugNNlykjhZoXRBrMOY+ZpT?=
+ =?Windows-1252?Q?6f1z+YH71dsqw56tCZgWYxecof1OVeJNjgDWerhlN0+HPTrD5ArdF6KG?=
+ =?Windows-1252?Q?SL/pKDyOtvAw78JsnSCr7LlNh1xh0LpmXyMqMo30Rc4Qd/UedB2XPinO?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bde61cc3-5cfd-4d6a-855f-08d8ea145254
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2021 13:47:07.7410
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hDBG11sEnXy6nvoAhwDJ1drmd81afRLTXJcB3akAFCH2y0ZaUZuAJePhOHX6eenGnJhpCa9bgnv8QQen6U85jA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0271
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/18/21 8:56 AM, Vivek Goyal wrote:
-> I think all the in args are being mapped into a single scatter gather
-> element and that's why it does not matter whether in_numargs is 3, 2 or 1.
-> They will be mapped in a single element.
-> 
-> sg_init_fuse_args()
-> {
->          len = fuse_len_args(numargs - argpages, args);
->          if (len)
->                  sg_init_one(&sg[total_sgs++], argbuf, len);
-> }
-> 
->          out_sgs += sg_init_fuse_args(&sg[out_sgs], req,
->                                       (struct fuse_arg *)args->in_args,
->                                       args->in_numargs, args->in_pages,
->                                       req->argbuf, &argbuf_used);
-> 
-> When we are sending some data in some pages, then we set args->in_pages
-> to true. And in that case, last element of args->in_args[] contains the
-> total size of bytes in additional pages we are sending and is not part
-> of in_args being mapped to scatter gather element. That's why this
-> check.
-> 
-> 	if (args->in_numargs - args->in_pages)
-> 		total_sgs += 1;
 
-Aha! Thank you, Vivek. That makes sense.
 
-> Not sure when we will have a case where args->in_numargs = 1 and
-> args->in_pages=true. Do we ever hit that.
-
-Not in my experience. My previous mail was examining this routine mainly 
-in a vacuum.
-
-Connor
-
-> Thanks
-> Vivek
+On 18/03/21 6:30 pm, Mark Brown wrote:
+> On Thu, Mar 18, 2021 at 02:03:46AM +0530, Vijendar Mukunda wrote:
+>> +++ b/sound/soc/amd/acp-da7219-max98357a.c
+>> @@ -1,27 +1,8 @@
+>> -/*
+>> - * Machine driver for AMD ACP Audio engine using DA7219 & MAX98357 codec
+>> - *
+>> - * Copyright 2017 Advanced Micro Devices, Inc.
 > 
->>
->> Especially since the block right below it counts pages if args->in_pages is
->> true:
->>
->>          if (args->in_pages) {
->>                  size = args->in_args[args->in_numargs - 1].size;
->>                  total_sgs += sg_count_fuse_pages(ap->descs, ap->num_pages,
->>                                                   size);
->>          }
->>
->> The rest of the routine goes on similarly but for the 'out' components.
->>
->> I doubt incrementing 'total_sgs' in the first if-statement I showed above is
->> vestigial, I just think my mental model of what is happening here is
->> incomplete.
->>
->> Any clarification is much appreciated!
+> The conversion to SPDX really feels like it should at least be called
+> out in the changelog, and probably a separate change.
 > 
->>
->> Connor
->>
+will upload SPDX changes as a separate patch.
+>> +	/*
+>> +	 * Set wclk to 48000 because the rate constraint of this driver is
+>> +	 * 48000. ADAU7002 spec: "The ADAU7002 requires a BCLK rate that is
+>> +	 * minimum of 64x the LRCLK sample rate." RT5682 is the only clk
+>> +	 * source so for all codecs we have to limit bclk to 64X lrclk.
+>> +	 */
+>> +	clk_set_rate(rt5682_dai_wclk, 48000);
+>> +	clk_set_rate(rt5682_dai_bclk, 48000 * 64);
 > 
-
+> The driver should really check the return value of clk_set_rate(), it
+> can fail.
+> 
+We will add checks for return value of clk_set_rate() and will upload 
+new version
