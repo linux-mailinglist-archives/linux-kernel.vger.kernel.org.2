@@ -2,132 +2,438 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B4F3404EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE203404F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbhCRLra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:47:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47636 "EHLO
+        id S229640AbhCRLsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:48:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230232AbhCRLrJ (ORCPT
+        with ESMTP id S229958AbhCRLsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:47:09 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13092C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:47:09 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id n79so1613945qke.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:47:09 -0700 (PDT)
+        Thu, 18 Mar 2021 07:48:12 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B1FC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:48:01 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id a132-20020a1c668a0000b029010f141fe7c2so3008948wmc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:48:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:in-reply-to:references:mime-version
-         :content-transfer-encoding:date:message-id;
-        bh=Xd/+a2wJECnWGpm73LH+F3DCjZXOTUzAsNn6jljBOVo=;
-        b=YswBmbZdVUxNJ1nAUXjhf3j4INsf/RmYoYDujnohUbSUgoSygaKKo/EC1SmcMQKB/0
-         h0xC/s9oNjQEgFbIbgf1tn4PfF9TnO6weoaDjDrFv+fx1YTk4SaIhE1kubU6mzcLmdzF
-         awM1N8VS4PHwli+oy6jujof72sZJ9GC4dtuUbyKB2dI8cYT7dweKuOD+U1isU3b1aT3g
-         VMOdM6d2t9VhKbuWN2C6dWw5az96ziHNYPTCijX9ttft2qSJpQjiBX994F2iWkNFVEy3
-         cQUxYtvZTIjY5ZH2ihcolY7ujm8v6bnPthudWbFFouU7iOyHXa/HbWUdCnjO3aVq0Xiw
-         gdzw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=f/sfUqxITjvaV6JgauSLAz16yZwCK1W+iY+GNVML/0s=;
+        b=dOBD9m7kWfOCjQoTkJS/jh2ols1hookxAD6tsIVcQSO0SXtr5mXwg7lkaJct9Y/9Em
+         S/Wj7HbRCKMjVmGan/1S7mouqLqlUqy0eEYYDyDdURtQz6cErrdMGT01nwTnCprzSWh+
+         vKS0Qu67tXluq/E6JdQMTfNwufXIKjLcCZ0Q6LuiX0B7KVc9FEeoNC1oZNM5l5oGqaOT
+         y/bAc2tSgMnoaFSjY298rp/D9x9l45rjILX5SLboJIEUMexxpzrE9nhF1bE0T0y2rSkc
+         gB8EZMb9w+wrn+BvDE5oQmWuYAMr1TmfmAFYKTEPG6raruR0t6O6tMPWxD1fIsOwzzqg
+         qEoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :mime-version:content-transfer-encoding:date:message-id;
-        bh=Xd/+a2wJECnWGpm73LH+F3DCjZXOTUzAsNn6jljBOVo=;
-        b=lqTWUBdrCyhB1uldKkpvl64t38RUhlb9NdM0loamCVj6wzn9w80QYHO+vQfYpXHXnF
-         B++OqCMFsJ/y6ccCVvCnDLxZG1ypLXb6Wth4++cmdpbgnbJR8sNZT4q3V2jTZeFPGxUd
-         BYtnpL/WeE2nLGHsB4K803MCyn5yVz1r8TNX4DJkKJrv/RgLYo4h+on8suqxkHKyRZD9
-         3JjCm8QxMj4wqC8To8osXXWOuc0JXzY7YEmMMT/OyLumUlNHKO1E4Yiy67soXj+j+rUF
-         unsUQPfArvkUFAwTnfzPMpgR52/t0mS9fF1JOi4xogSPCxzICyJcnwFCzfii+cTPO/kX
-         szeQ==
-X-Gm-Message-State: AOAM532G5EScm4yIH2kNo2Fhwbo5KW5W1XxaI4fOLL3faDHUYKKjTya3
-        blCyn2XcsNuVouWc4glVDlLUfw==
-X-Google-Smtp-Source: ABdhPJy2cYcPwTcgduhapJYhM1AEXyAUTeig+OlggUs5JR2SA6Z6PUa51PLJp6xPkr2jicckzs2Fgg==
-X-Received: by 2002:a37:a085:: with SMTP id j127mr3688500qke.206.1616068028177;
-        Thu, 18 Mar 2021 04:47:08 -0700 (PDT)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id o197sm1543765qka.26.2021.03.18.04.47.07
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=f/sfUqxITjvaV6JgauSLAz16yZwCK1W+iY+GNVML/0s=;
+        b=UCCgrgTQ5btyfFIXEmE4RPXwz+eqF0P8HdDu6jkWYXEUefa6PIGza/vkx3Co7Vb9SM
+         gG3+83DMI9q4UM8Zgb1U0BJFYdSTuxTlVmAsAFjo7ZG1l2/kiRwGhMZQjrxn/w1tVAfb
+         N/CXHFrk7kJ/E1cPDuyn2kmtwtoP4RcVDNqtA2isvcch2VkDbfD9mvZG5tdhPYYaL3BQ
+         2j2B/JXIzZO6V519CGO9Ms6v6pYCssVz7oUn2LXr7OCRipKdNvw4gTRTJzZeMXgaSCoJ
+         mO6wwz2F62k68ZB3m6oZiIqiGsVl5b9xdBFpEfPFrZ9mMBHRlja7kPC7VAamK0oMFvk3
+         THHg==
+X-Gm-Message-State: AOAM532zvDcmMyzHv0TZAyJ0dE2FSzsajZAiyj2fFrfm5QrTrP/P4qIR
+        6pnlBE27muSrV1mz4EihsmTT0Q==
+X-Google-Smtp-Source: ABdhPJwwiUqbNTUwE3YgH3pXoEYBV9Jow9foGwdEVgyOOyMMc3AgdQ9m/wNJxq35aNp6rUj1XtSxSw==
+X-Received: by 2002:a1c:541a:: with SMTP id i26mr3156402wmb.75.1616068079578;
+        Thu, 18 Mar 2021 04:47:59 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:988f:7a99:3425:c6b4])
+        by smtp.gmail.com with ESMTPSA id x11sm2418100wme.9.2021.03.18.04.47.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 04:47:07 -0700 (PDT)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH RESEND] gcc-plugins: avoid errors with -std=gnu++11 on old gcc
-In-Reply-To: <CAK7LNAT_hp0PmhWpb2=fScw6Q9DQsBztykis=xN0QCH==AVY6g@mail.gmail.com>
-References: <279558.1615192821@turing-police> <202103172251.F9D770D@keescook> <282490.1616047333@turing-police> <CANiq72nyNSgrM6bhmM7ymdtYYKoDLfUXfwgTwLOmhLFc=c0U-w@mail.gmail.com>
- <CAK7LNAT_hp0PmhWpb2=fScw6Q9DQsBztykis=xN0QCH==AVY6g@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1616068026_248661P";
-         micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 18 Mar 2021 07:47:06 -0400
-Message-ID: <299822.1616068026@turing-police>
+        Thu, 18 Mar 2021 04:47:58 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 12:47:53 +0100
+From:   Marco Elver <elver@google.com>
+To:     glittao@gmail.com
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
+        shuah@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 1/2] selftests: add a kselftest for SLUB debugging
+ functionality
+Message-ID: <YFM96dY1pfk/rs3U@elver.google.com>
+References: <20210316124118.6874-1-glittao@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316124118.6874-1-glittao@gmail.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1616068026_248661P
-Content-Type: text/plain; charset=us-ascii
+On Tue, Mar 16, 2021 at 01:41PM +0100, glittao@gmail.com wrote:
+> From: Oliver Glitta <glittao@gmail.com>
+> 
+> SLUB has resiliency_test() function which is hidden behind #ifdef
+> SLUB_RESILIENCY_TEST that is not part of Kconfig, so nobody
+> runs it. Kselftest should proper replacement for it.
+> 
+> Try changing byte in redzone after allocation and changing
+> pointer to next free node, first byte, 50th byte and redzone
+> byte. Check if validation finds errors.
+> 
+> There are several differences from the original resiliency test:
+> Tests create own caches with known state instead of corrupting
+> shared kmalloc caches.
+> 
+> The corruption of freepointer uses correct offset, the original
+> resiliency test got broken with freepointer changes.
+> 
+> Scratch changing random byte test, because it does not have
+> meaning in this form where we need deterministic results.
+> 
+> Add new option CONFIG_TEST_SLUB in Kconfig.
+> 
+> Add parameter to function validate_slab_cache() to return
+> number of errors in cache.
+> 
+> Signed-off-by: Oliver Glitta <glittao@gmail.com>
 
-On Thu, 18 Mar 2021 18:07:28 +0900, Masahiro Yamada said:
+No objection per-se, but have you considered a KUnit-based test instead?
 
-> We can require GCC 6+ for building GCC plugins.
+There is no user space portion required to run this test, and a pure
+in-kernel KUnit test would be cleaner. Various boiler-plate below,
+including pr_err()s, the kselftest script etc. would simply not be
+necessary.
 
-> +       depends on CC_IS_GCC && GCC_VERSION >= 60000
+This is only a suggestion, but just want to make sure you've considered
+the option and weighed its pros/cons.
 
-I'd be OK with that personally, but the question is whether
-any gcc 4.9 or 5.x users are using plugins.  That's a bit above
-my pay grade.  Kees?  Do we have any data on that? (All I know
-is that there is at least one, because they tripped over the GCC bug
-that prompted the second patch)
+Thanks,
+-- Marco
 
-> BTW, the commit message mentions that
-> the issues only happen on GCC 4 and 5,
-> but the added code was:
->
-> GCC_FLAVOR = $(call cc-ifversion, -ge, 1100, 11, 98)
->
->   instead of
->
-> GCC_FLAVOR = $(call cc-ifversion, -ge, 600, 11, 98)
->
-> So, this patch is also requiring to cover two standards:
->
-> GCC_VERSION >= 11  :  -std=gnu++11
-> GCC_VERSION <  11  : -std=gnu++98
+> ---
+>  lib/Kconfig.debug                    |   4 +
+>  lib/Makefile                         |   1 +
+>  lib/test_slub.c                      | 125 +++++++++++++++++++++++++++
+>  mm/slab.h                            |   1 +
+>  mm/slub.c                            |  34 +++++---
+>  tools/testing/selftests/lib/Makefile |   2 +-
+>  tools/testing/selftests/lib/config   |   1 +
+>  tools/testing/selftests/lib/slub.sh  |   3 +
+>  8 files changed, 159 insertions(+), 12 deletions(-)
+>  create mode 100644 lib/test_slub.c
+>  create mode 100755 tools/testing/selftests/lib/slub.sh
+> 
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 2779c29d9981..2d56092abbc4 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -2123,6 +2123,10 @@ config TEST_KSTRTOX
+>  config TEST_PRINTF
+>  	tristate "Test printf() family of functions at runtime"
+>  
+> +config TEST_SLUB
+> +	tristate "Test SLUB cache errors at runtime"
+> +	depends on SLUB_DEBUG
+> +
+>  config TEST_BITMAP
+>  	tristate "Test bitmap_*() family of functions at runtime"
+>  	help
+> diff --git a/lib/Makefile b/lib/Makefile
+> index b5307d3eec1a..b6603803b1c4 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -83,6 +83,7 @@ obj-$(CONFIG_TEST_USER_COPY) += test_user_copy.o
+>  obj-$(CONFIG_TEST_STATIC_KEYS) += test_static_keys.o
+>  obj-$(CONFIG_TEST_STATIC_KEYS) += test_static_key_base.o
+>  obj-$(CONFIG_TEST_PRINTF) += test_printf.o
+> +obj-$(CONFIG_TEST_SLUB) += test_slub.o
+>  obj-$(CONFIG_TEST_BITMAP) += test_bitmap.o
+>  obj-$(CONFIG_TEST_STRSCPY) += test_strscpy.o
+>  obj-$(CONFIG_TEST_UUID) += test_uuid.o
+> diff --git a/lib/test_slub.c b/lib/test_slub.c
+> new file mode 100644
+> index 000000000000..0075d9b44251
+> --- /dev/null
+> +++ b/lib/test_slub.c
+> @@ -0,0 +1,125 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Test cases for slub facility.
+> + */
+> +
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +
+> +#include <linux/mm.h>
+> +#include <linux/slab.h>
+> +#include <linux/module.h>
+> +#include <linux/kernel.h>
+> +#include "../mm/slab.h"
+> +
+> +#include "../tools/testing/selftests/kselftest_module.h"
+> +
+> +
+> +KSTM_MODULE_GLOBALS();
+> +
+> +
+> +static void __init validate_result(struct kmem_cache *s, int expected_errors)
+> +{
+> +	int errors = 0;
+> +
+> +	validate_slab_cache(s, &errors);
+> +	KSTM_CHECK_ZERO(errors - expected_errors);
+> +}
+> +
+> +static void __init test_clobber_zone(void)
+> +{
+> +	struct kmem_cache *s = kmem_cache_create("TestSlub_RZ_alloc", 64, 0,
+> +				SLAB_RED_ZONE, NULL);
+> +	u8 *p = kmem_cache_alloc(s, GFP_KERNEL);
+> +
+> +	p[64] = 0x12;
+> +	pr_err("1. kmem_cache: Clobber Redzone 0x12->0x%p\n", p + 64);
+> +
+> +	validate_result(s, 1);
+> +	kmem_cache_free(s, p);
+> +	kmem_cache_destroy(s);
+> +}
+> +
+> +static void __init test_next_pointer(void)
+> +{
+> +	struct kmem_cache *s = kmem_cache_create("TestSlub_next_ptr_free", 64, 0,
+> +				SLAB_RED_ZONE, NULL);
+> +	u8 *p = kmem_cache_alloc(s, GFP_KERNEL);
+> +
+> +	kmem_cache_free(s, p);
+> +	p[s->offset] = 0x12;
+> +	pr_err("1. kmem_cache: Clobber next pointer 0x34 -> -0x%p\n", p);
+> +
+> +	validate_result(s, 1);
+> +	kmem_cache_destroy(s);
+> +}
+> +
+> +static void __init test_first_word(void)
+> +{
+> +	struct kmem_cache *s = kmem_cache_create("TestSlub_1th_word_free", 64, 0,
+> +				SLAB_POISON, NULL);
+> +	u8 *p = kmem_cache_alloc(s, GFP_KERNEL);
+> +
+> +	kmem_cache_free(s, p);
+> +	*p = 0x78;
+> +	pr_err("2. kmem_cache: Clobber first word 0x78->0x%p\n", p);
+> +
+> +	validate_result(s, 1);
+> +	kmem_cache_destroy(s);
+> +}
+> +
+> +static void __init test_clobber_50th_byte(void)
+> +{
+> +	struct kmem_cache *s = kmem_cache_create("TestSlub_50th_word_free", 64, 0,
+> +				SLAB_POISON, NULL);
+> +	u8 *p = kmem_cache_alloc(s, GFP_KERNEL);
+> +
+> +	kmem_cache_free(s, p);
+> +	p[50] = 0x9a;
+> +	pr_err("3. kmem_cache: Clobber 50th byte 0x9a->0x%p\n", p);
+> +
+> +	validate_result(s, 1);
+> +	kmem_cache_destroy(s);
+> +}
+> +
+> +static void __init test_clobber_redzone_free(void)
+> +{
+> +	struct kmem_cache *s = kmem_cache_create("TestSlub_RZ_free", 64, 0,
+> +				SLAB_RED_ZONE, NULL);
+> +	u8 *p = kmem_cache_alloc(s, GFP_KERNEL);
+> +
+> +	kmem_cache_free(s, p);
+> +	p[64] = 0xab;
+> +	pr_err("4. kmem_cache: Clobber redzone 0xab->0x%p\n", p);
+> +
+> +	validate_result(s, 1);
+> +	kmem_cache_destroy(s);
+> +}
+> +
+> +static void __init resiliency_test(void)
+> +{
+> +
+> +	BUILD_BUG_ON(KMALLOC_MIN_SIZE > 16 || KMALLOC_SHIFT_HIGH < 10);
+> +
+> +	pr_err("SLUB resiliency testing\n");
+> +	pr_err("-----------------------\n");
+> +	pr_err("A. Corruption after allocation\n");
+> +
+> +	test_clobber_zone();
+> +
+> +	pr_err("\nB. Corruption after free\n");
+> +
+> +	test_next_pointer();
+> +	test_first_word();
+> +	test_clobber_50th_byte();
+> +	test_clobber_redzone_free();
+> +}
+> +
+> +
+> +static void __init selftest(void)
+> +{
+> +	resiliency_test();
+> +}
+> +
+> +
+> +KSTM_MODULE_LOADERS(test_slub);
+> +MODULE_LICENSE("GPL");
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 076582f58f68..5fc18d506b3b 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -215,6 +215,7 @@ DECLARE_STATIC_KEY_TRUE(slub_debug_enabled);
+>  DECLARE_STATIC_KEY_FALSE(slub_debug_enabled);
+>  #endif
+>  extern void print_tracking(struct kmem_cache *s, void *object);
+> +long validate_slab_cache(struct kmem_cache *s, int *errors);
+>  #else
+>  static inline void print_tracking(struct kmem_cache *s, void *object)
+>  {
+> diff --git a/mm/slub.c b/mm/slub.c
+> index e26c274b4657..c00e2b263e03 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -4612,7 +4612,8 @@ static int count_total(struct page *page)
+>  #endif
+>  
+>  #ifdef CONFIG_SLUB_DEBUG
+> -static void validate_slab(struct kmem_cache *s, struct page *page)
+> +static void validate_slab(struct kmem_cache *s, struct page *page,
+> +						int *errors)
+>  {
+>  	void *p;
+>  	void *addr = page_address(page);
+> @@ -4620,8 +4621,10 @@ static void validate_slab(struct kmem_cache *s, struct page *page)
+>  
+>  	slab_lock(page);
+>  
+> -	if (!check_slab(s, page) || !on_freelist(s, page, NULL))
+> +	if (!check_slab(s, page) || !on_freelist(s, page, NULL)) {
+> +		*errors += 1;
+>  		goto unlock;
+> +	}
+>  
+>  	/* Now we know that a valid freelist exists */
+>  	map = get_map(s, page);
+> @@ -4629,8 +4632,10 @@ static void validate_slab(struct kmem_cache *s, struct page *page)
+>  		u8 val = test_bit(__obj_to_index(s, addr, p), map) ?
+>  			 SLUB_RED_INACTIVE : SLUB_RED_ACTIVE;
+>  
+> -		if (!check_object(s, page, p, val))
+> +		if (!check_object(s, page, p, val)) {
+> +			*errors += 1;
+>  			break;
+> +		}
+>  	}
+>  	put_map(map);
+>  unlock:
+> @@ -4638,7 +4643,7 @@ static void validate_slab(struct kmem_cache *s, struct page *page)
+>  }
+>  
+>  static int validate_slab_node(struct kmem_cache *s,
+> -		struct kmem_cache_node *n)
+> +		struct kmem_cache_node *n, int *errors)
+>  {
+>  	unsigned long count = 0;
+>  	struct page *page;
+> @@ -4647,30 +4652,34 @@ static int validate_slab_node(struct kmem_cache *s,
+>  	spin_lock_irqsave(&n->list_lock, flags);
+>  
+>  	list_for_each_entry(page, &n->partial, slab_list) {
+> -		validate_slab(s, page);
+> +		validate_slab(s, page, errors);
+>  		count++;
+>  	}
+> -	if (count != n->nr_partial)
+> +	if (count != n->nr_partial) {
+>  		pr_err("SLUB %s: %ld partial slabs counted but counter=%ld\n",
+>  		       s->name, count, n->nr_partial);
+> +		*errors += 1;
+> +	}
+>  
+>  	if (!(s->flags & SLAB_STORE_USER))
+>  		goto out;
+>  
+>  	list_for_each_entry(page, &n->full, slab_list) {
+> -		validate_slab(s, page);
+> +		validate_slab(s, page, errors);
+>  		count++;
+>  	}
+> -	if (count != atomic_long_read(&n->nr_slabs))
+> +	if (count != atomic_long_read(&n->nr_slabs)) {
+>  		pr_err("SLUB: %s %ld slabs counted but counter=%ld\n",
+>  		       s->name, count, atomic_long_read(&n->nr_slabs));
+> +		*errors += 1;
+> +	}
+>  
+>  out:
+>  	spin_unlock_irqrestore(&n->list_lock, flags);
+>  	return count;
+>  }
+>  
+> -static long validate_slab_cache(struct kmem_cache *s)
+> +long validate_slab_cache(struct kmem_cache *s, int *errors)
+>  {
+>  	int node;
+>  	unsigned long count = 0;
+> @@ -4678,10 +4687,12 @@ static long validate_slab_cache(struct kmem_cache *s)
+>  
+>  	flush_all(s);
+>  	for_each_kmem_cache_node(s, node, n)
+> -		count += validate_slab_node(s, n);
+> +		count += validate_slab_node(s, n, errors);
+>  
+>  	return count;
+>  }
+> +EXPORT_SYMBOL(validate_slab_cache);
+> +
+>  /*
+>   * Generate lists of code addresses where slabcache objects are allocated
+>   * and freed.
+> @@ -5336,9 +5347,10 @@ static ssize_t validate_store(struct kmem_cache *s,
+>  			const char *buf, size_t length)
+>  {
+>  	int ret = -EINVAL;
+> +	int errors = 0;
+>  
+>  	if (buf[0] == '1') {
+> -		ret = validate_slab_cache(s);
+> +		ret = validate_slab_cache(s, &errors);
+>  		if (ret >= 0)
+>  			ret = length;
+>  	}
+> diff --git a/tools/testing/selftests/lib/Makefile b/tools/testing/selftests/lib/Makefile
+> index a105f094676e..f168313b7949 100644
+> --- a/tools/testing/selftests/lib/Makefile
+> +++ b/tools/testing/selftests/lib/Makefile
+> @@ -4,6 +4,6 @@
+>  # No binaries, but make sure arg-less "make" doesn't trigger "run_tests"
+>  all:
+>  
+> -TEST_PROGS := printf.sh bitmap.sh prime_numbers.sh strscpy.sh
+> +TEST_PROGS := printf.sh bitmap.sh prime_numbers.sh strscpy.sh slub.sh
+>  
+>  include ../lib.mk
+> diff --git a/tools/testing/selftests/lib/config b/tools/testing/selftests/lib/config
+> index b80ee3f6e265..4190863032e7 100644
+> --- a/tools/testing/selftests/lib/config
+> +++ b/tools/testing/selftests/lib/config
+> @@ -3,3 +3,4 @@ CONFIG_TEST_BITMAP=m
+>  CONFIG_PRIME_NUMBERS=m
+>  CONFIG_TEST_STRSCPY=m
+>  CONFIG_TEST_BITOPS=m
+> +CONFIG_TEST_SLUB=m
+> \ No newline at end of file
+> diff --git a/tools/testing/selftests/lib/slub.sh b/tools/testing/selftests/lib/slub.sh
+> new file mode 100755
+> index 000000000000..8b5757702910
+> --- /dev/null
+> +++ b/tools/testing/selftests/lib/slub.sh
+> @@ -0,0 +1,3 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0+
+> +$(dirname $0)/../kselftest/module.sh "slub" test_slub
 
-I chose 1100 so that everything from 4.9 to 10 would keep getting
-handed gnu++98 the way they had been, and only change it for
-gcc11.
-
---==_Exmh_1616068026_248661P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
-
-iQIVAwUBYFM9ugdmEQWDXROgAQJ0BhAAhLOSziVfqbVLcMdTzxE83OAGHH4JDetz
-oUS6F3q25fp7VR0wesEoFWpFOdKrMObHM6Lw20lZmNFltV9BBTK/54FoNivyUAJ9
-DXAkm6cPgUIg6w/rxOVYFh0vHs1WUYMfFfa527IhClr3ZyDbky4Xhx6s7z4zZq4I
-nU0k3WHupSl8auF5v7/ooOm8JWNM90nI6HLv2L1aLY2mIWVSXWFuUX6dPG5dbEKd
-iZ4iUYotm1LoLX3KA82SlhGe8j/JryVicQP/3t3mr8dERoFHPgYky+7vVY6Tdzou
-giWTTQOeAxPr16Dq5Ct6aYqeST63QufKSpvVeHVqZpR0GoQxOEf2mhUJLBRmRqr0
-AS6yfEybFzqn2fg8LrvKyn/2taMilKKHjdXjvK7/16fq23osmrgvQ0QzrSPzhU9Q
-peDaJnivzQKg2MdgTFXMGwBaNPFAA6NDmW5ykOAtkC/rkLBfPwjB2a0g/QwZ/HT3
-8Fu6DRTxbFdjZjNHJGnAgdxhOjmaLYL4G2JtEfYDgpzFQvDsWVaWqMtHoKQ/OvRu
-S6nyJqalE5I1cKmUx44/Gjg62PX1qCdLLd6SsnmVeVziDy85Q4U4u+mYonZfmD7e
-fth3FpjYSHjwVRXyCNp4/Qvnie+xKA2hbUXPTiUibh+x+40XRYjgseejgk8fg3XI
-w9zUfcNsqDE=
-=kv1K
------END PGP SIGNATURE-----
-
---==_Exmh_1616068026_248661P--
