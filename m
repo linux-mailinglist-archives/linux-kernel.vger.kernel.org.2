@@ -2,106 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4056B340C1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C57340C24
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:51:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbhCRRty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:49:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhCRRta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:49:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D55164E99;
-        Thu, 18 Mar 2021 17:49:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616089769;
-        bh=JMmu5Np1J+OYQZwLRQhUf1/zLFQt+qrWc+sHvATzSOA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jEpV769TirZkbz+ed6A36UBDUHUhRISPVgwSncBi40ksVBjo5/gBIkNng4vfjDJ46
-         8MqP76RYOt9D9l6K1clM0TmCgKKH7wU4Y/CtK9llWdXLuherAxVRqvxIGtJ0mKXU6U
-         HHS/AoB4OJtZC+nztGLZUTAol/voUlIIpFBtN+7Q7kRblFpsZkVqlZO1uWnWguDach
-         OyUFS/+iFneRrx+Y8L4wyQA6duZOzcv8pX26+YG0r9dEwWCrGLCAXbaBSuipDu1D6M
-         yPyGtOFcdb/7W0L3fjsWoGyrwAApafkocCwSnkhfOeSFHTvji73faYcV8k5iJU5xOG
-         7LHQqIL7GPg4A==
-Date:   Thu, 18 Mar 2021 19:49:25 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH master] module: remove never implemented
- MODULE_SUPPORTED_DEVICE
-Message-ID: <YFOSpQcrfP1UvqoL@unreal>
-References: <20210317104547.442203-1-leon@kernel.org>
- <CAHk-=wj+Bsc1T41qziHxf9DvrBrYSBWKj27hEL0EbysCGRPzTA@mail.gmail.com>
- <YFMHYUbPmpS+Kzcj@unreal>
- <CAHk-=wgdHxuQmhKR9oAS5bhahmo5CFj3x6YdHVPBCGhbSz6rEg@mail.gmail.com>
+        id S232256AbhCRRu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:50:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33172 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229964AbhCRRtx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:49:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616089792;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X1aq07hUECvkiCM1AMjlNy/+yooAsZ6Cw/htSTkJaNo=;
+        b=hrJ65Fpx+C5RxT4OA4ide1FK4gQ5xRsu5oyAFHBAictpw0Joz+QVWFyDhSf03dOO0FFeJW
+        4EgcU0Q4TXlJOh2RK1vFqJwhyBWbidRGqmZfda0aasx4mb3YqTIoaupzqvgt+3FBBS0Zzn
+        ZWGrpSyB+OYbvE9012fOPYBh3e0op0E=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-379-PrHa31E1M2OubflGsJVevA-1; Thu, 18 Mar 2021 13:49:49 -0400
+X-MC-Unique: PrHa31E1M2OubflGsJVevA-1
+Received: by mail-qk1-f198.google.com with SMTP id b78so32124304qkg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:49:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
+         :in-reply-to:references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=X1aq07hUECvkiCM1AMjlNy/+yooAsZ6Cw/htSTkJaNo=;
+        b=OpvBpQm5+R9WH2Usf29NAJbvebCes5PDPKRehhqrwLXX+1E+RYhCfTPOs+WiYWJC3h
+         hURFs75O1vCyitdZlTTEzffe29Jojgl0EHqrBXGmZl0557fDsUC/A0FSyBOIxZ7ow5Sk
+         tdTVF7Bo1g+Gu0PPyZUt9SjjaiYpr49LObgpRKIDNxF41wyCp/x5DdPDPJ33eZRjQDtT
+         G016UtchaGAyaWssQdxUmZRGr86V8DF9nUtDlp7Qk2vyGD4cAYEQHeClaz08QC1Ops6p
+         wTErw0GpCLLVQ5FOCsvLsAAFBUMI4bkJaKuU7obeHUBq1ouWyvBhNp907UCsopSEks6A
+         B5FA==
+X-Gm-Message-State: AOAM533SapI8a3zZ+7LkELlWe+TAxhfBKxrABnI3iWCd0R1EaPqIDdLv
+        dYBZsUmH4virIgNLT1TgNq06qDa0XWNHHQqn5j4hyUutTfxXEcFJ/RarybS5X3PEfx0MaBuSqhB
+        yQjeEF7fj8XwQn/xJhOIQTl78
+X-Received: by 2002:a05:620a:15eb:: with SMTP id p11mr5374087qkm.454.1616089789402;
+        Thu, 18 Mar 2021 10:49:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy6RlaOk96Syg3NZIwU9HFylmyO+xGqvapwSiL2VZgzQaQreQr9yUIj7wRqiSeRuR3vLr6E0Q==
+X-Received: by 2002:a05:620a:15eb:: with SMTP id p11mr5374074qkm.454.1616089789174;
+        Thu, 18 Mar 2021 10:49:49 -0700 (PDT)
+Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id m90sm1923315qte.44.2021.03.18.10.49.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 10:49:48 -0700 (PDT)
+Message-ID: <dfec442a4888c8387a6002b0424415ee5d8be343.camel@redhat.com>
+Subject: Re: [PATCH] drm/i915/dpcd_bl: Don't try vesa interface unless
+ specified by VBT
+From:   Lyude Paul <lyude@redhat.com>
+Reply-To: lyude@redhat.com
+To:     intel-gfx@lists.freedesktop.org
+Cc:     Jani Nikula <jani.nikula@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sean Paul <seanpaul@chromium.org>,
+        Aaron Ma <aaron.ma@canonical.com>,
+        Dave Airlie <airlied@redhat.com>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Thu, 18 Mar 2021 13:49:47 -0400
+In-Reply-To: <20210318170204.513000-1-lyude@redhat.com>
+References: <20210318170204.513000-1-lyude@redhat.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgdHxuQmhKR9oAS5bhahmo5CFj3x6YdHVPBCGhbSz6rEg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 10:36:36AM -0700, Linus Torvalds wrote:
-> On Thu, Mar 18, 2021 at 12:55 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > Also, your email seems to have swallowed spaces at the ends of lines.
-> > >
-> > > I can (and did) apply the patch with "--whitespace=fix", but that then
-> > > causes git to fix some _other_ whitespace too, so the end result isn't
-> > > quite the same. Oh well.
-> > >
-> > > Please check what's up with your email sending client that it seems to
-> > > remove space at end of lines in patches.
-> >
-> > This is strange, I'm sending patches with "git send-email" with pretty
-> > standard settings:
->
-> Hmm. I can't tell whats' wrong, but both my own mailbox and the
-> lore.kernel.org clearly has missing whitespace at end of lines.
->
-> You can see it yourself with a simple
->
->    b4 am 20210317104547.442203-1-leon@kernel.org
->
-> (assuming you have b4 installed, of course:
->
->   https://pypi.org/project/b4/
->
-> but with a kernel.org address I'm sure you've seen the emails about it
-> even if you may not be a user).
+Actually-NAK this. I just realized I've been misreading the bug and that this
+doesn't actually seem to be fixed. Will resend once I figure out what's going on
 
-Thanks, I'll try.
+On Thu, 2021-03-18 at 13:02 -0400, Lyude Paul wrote:
+> Looks like that there actually are another subset of laptops on the market
+> that don't support the Intel HDR backlight interface, but do advertise
+> support for the VESA DPCD backlight interface despite the fact it doesn't
+> seem to work.
+> 
+> Note though I'm not entirely clear on this - on one of the machines where
+> this issue was observed, I also noticed that we appeared to be rejecting
+> the VBT defined backlight frequency in
+> intel_dp_aux_vesa_calc_max_backlight(). It's noted in this function that:
+> 
+> /* Use highest possible value of Pn for more granularity of brightness
+>  * adjustment while satifying the conditions below.
+>  * ...
+>  * - FxP is within 25% of desired value.
+>  *   Note: 25% is arbitrary value and may need some tweak.
+>  */
+> 
+> So it's possible that this value might just need to be tweaked, but for now
+> let's just disable the VESA backlight interface unless it's specified in
+> the VBT just to be safe. We might be able to try enabling this again by
+> default in the future.
+> 
+> Fixes: 2227816e647a ("drm/i915/dp: Allow forcing specific interfaces through
+> enable_dpcd_backlight")
+> Cc: Jani Nikula <jani.nikula@intel.com>
+> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> Bugzilla: https://gitlab.freedesktop.org/drm/intel/-/issues/3169
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> ---
+>  drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> index 651884390137..4f8337c7fd2e 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> @@ -646,7 +646,6 @@ int intel_dp_aux_init_backlight_funcs(struct
+> intel_connector *connector)
+>                         break;
+>                 case INTEL_BACKLIGHT_DISPLAY_DDI:
+>                         try_intel_interface = true;
+> -                       try_vesa_interface = true;
+>                         break;
+>                 default:
+>                         return -ENODEV;
 
->
-> > Also, I'm using mail.kernel.org as a SMTP especially to make sure that
-> > my mails are not mangled by our exchange server.
->
-> Yeah, the email looks fine in any other way technically, it passes SPF
-> and DKIM, and I don't see anything else strange going on either.
->
-> I think the same VIM issue that caused some whitespace line changes
-> for you in the patch might have then bitten you when you sent it out -
-> I know you must have edited the message, becasuse you have that
->
->    "I'm sending this patch to you directly because it is much saner to
->     apply it in one place instead of multiple patches saga that will [...]"
->
-> below the commit message, that you presumable added with "--annotate".
+-- 
+Sincerely,
+   Lyude Paul (she/her)
+   Software Engineer at Red Hat
+   
+Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
+asked me a question, are waiting for a review/merge on a patch, etc. and I
+haven't responded in a while, please feel free to send me another email to check
+on my status. I don't bite!
 
-No, I opened patch and added the note manually, so it is definitely my VIM.
-Most likely this part of my .vimrc caused it.
-
- " Remove trailing white spaces
- " http://vim.wikia.com/wiki/Remove_unwanted_spaces
- autocmd BufWritePre * %s/\s\+$//e
-
->
-> > Are you sure that such change came from me and not from "--whitespace=fix"?
->
-> Yup. See above on how you can just use b4 to download a copy yourself..
-
-I'll try, thanks for taking the patch and for the analysis.
-
->
->          Linus
