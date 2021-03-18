@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F8D340D9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:58:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C21340DA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232673AbhCRS5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:57:49 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:41518 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232674AbhCRS50 (ORCPT
+        id S232788AbhCRS66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:58:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232772AbhCRS6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:57:26 -0400
-Received: by mail-oi1-f179.google.com with SMTP id z15so2048420oic.8;
-        Thu, 18 Mar 2021 11:57:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ndTWQxWMaQ8uWEc77N/kRP4OQQx2E++l4s9Oim2oRcU=;
-        b=RCAfxJD8I6uJ659FMEmGiLLlMgjBemPAymZUdNYUMlwFoFdkn4noS+M/H4+as5feDB
-         fmhH1tmfZAIisk5K2TFaA3vbcuHQqVcWmGTW1NCPhGfAaxv4/MVIArUcBOZopso0Vb3s
-         Zy2S/Di3qjgmp9aCLbRo9odjbCsA9ByIpVyVoyl0KO2FGwt9BnVc/jn+3R/iNnjkmtFl
-         kgOiHpC5uYbGh7zKTKmC1lACGob9OK4fpuYNo5+Bsu1fMhtmuKkphCfwCciE4V+FRKL2
-         yZJJm/oxrKXldGjDYYrGYO1CXltkCHQYobG4DBYWv9+7rP6a9r7dgrpGOoRH6cGKYmRA
-         m1vA==
-X-Gm-Message-State: AOAM531jT4m/HcszVbAhdHxc+nzpkw7elWHfJsMJWYhDc3EzTCXDCuFA
-        uWgC4lGtC/0bDhYK5zj/4Lm0xe6hMb5vSzJOreMsfIhJ
-X-Google-Smtp-Source: ABdhPJyBz0jBzMa2nMYKm228ff0yu8NZjN7i2Z/l2AHysD7tXUljAB4QtS/+5uM1uF86sVxSkb09YhJRlM7x1p6lOTo=
-X-Received: by 2002:aca:5fc3:: with SMTP id t186mr3977844oib.69.1616093846293;
- Thu, 18 Mar 2021 11:57:26 -0700 (PDT)
+        Thu, 18 Mar 2021 14:58:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE02DC06174A;
+        Thu, 18 Mar 2021 11:58:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=3PjOp+lk4bp+j1ybJzbccJCr44SWPFydI7o9KoqHLQs=; b=EBJEDA+bSKteXzmolNEj5iWl9m
+        q6nJjUmAnJkUIhDdaoeP8Y/7V+XatW5vMwwXrNmTjmT9rDFZetrav2sdVoIo2vC/v4/ndZSM0XXfO
+        m3Hdcqmy8SIWO1mcocYrcWeLxvRDLWI3jL9yxbE/ph+zqtGiEY973dZVYyQwZsW+3X5iEOy+qg26F
+        K51/lvIZK1LL+Ayrb4kopqBSqaO5PX1wUiCcRFyy5Nbx3AXiFrrXf7yqO5wO+JS44oSqbxWPPCrRm
+        aaLS+l3/UPzYqeve92nf3lKvB1o919Je5j1+Agxr2a454P+q624/5zZPNheCPUnuXzUhaYrqr9w6X
+        QS/sUrEw==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMxq0-003NeF-Kl; Thu, 18 Mar 2021 18:57:44 +0000
+Subject: Re: linux-next: Tree for Mar 18 (cifsd: Kconfig)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+        linux-cifsd-devel@lists.sourceforge.net,
+        Hyunchul Lee <hyc.lee@gmail.com>,
+        Steve French <sfrench@samba.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Namjae Jeon <namjae.jeon@samsung.com>
+References: <20210318210844.5e9adf1e@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <3497bc60-51be-04ba-50c8-4bc258df7f31@infradead.org>
+Date:   Thu, 18 Mar 2021 11:57:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210207224648.8137-1-colin.king@canonical.com>
-In-Reply-To: <20210207224648.8137-1-colin.king@canonical.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 18 Mar 2021 19:57:14 +0100
-Message-ID: <CAJZ5v0ix3iOwe=9X0_RiJ=FT_Qo2dJG14j2LuptK20H1mGYpsw@mail.gmail.com>
-Subject: Re: [PATCH] PM / Domains: Fix integer overflows on u32 bit multiplies
-To:     Colin King <colin.king@canonical.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marc Titinger <mtitinger+renesas@baylibre.com>,
-        Lina Iyer <lina.iyer@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210318210844.5e9adf1e@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 7, 2021 at 11:47 PM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> There are three occurrances of u32 variables being multiplied by
-> 1000 using 32 bit multiplies and the result being assigned to a
-> 64 bit signed integer.  These can potentially lead to a 32 bit
-> overflows, so fix this by casting 1000 to a UL first to force
-> a 64 bit multiply hence avoiding the overflow.
->
-> Addresses-Coverity: ("Unintentional integer overflow")
-> Fixes: 30f604283e05 ("PM / Domains: Allow domain power states to be read from DT")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/base/power/domain.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index aaf6c83b5cf6..ddeff69126ff 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -2831,10 +2831,10 @@ static int genpd_parse_state(struct genpd_power_state *genpd_state,
->
->         err = of_property_read_u32(state_node, "min-residency-us", &residency);
->         if (!err)
-> -               genpd_state->residency_ns = 1000 * residency;
-> +               genpd_state->residency_ns = 1000UL * residency;
+On 3/18/21 3:08 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> News: there will be no linux-next release on Friday this week.
+> 
+> Warning: Some of the branches in linux-next are still based on v5.12-rc1,
+> so please be careful if you are trying to bisect a bug.
+> 
+> News: if your -next included tree is based on Linus' tree tag
+> v5.12-rc1{,-dontuse} (or somewhere between v5.11 and that tag), please
+> consider rebasing it onto v5.12-rc2. Also, please check any branches
+> merged into your branch.
+> 
+> Changes since 20210317:
+> 
+> The cifsd tree lost its build failure.
 
-Wouldn't it be better to use NSEC_PER_USEC here and below?
+kconfig warning in cifsd:
 
->
-> -       genpd_state->power_on_latency_ns = 1000 * exit_latency;
-> -       genpd_state->power_off_latency_ns = 1000 * entry_latency;
-> +       genpd_state->power_on_latency_ns = 1000UL * exit_latency;
-> +       genpd_state->power_off_latency_ns = 1000UL * entry_latency;
->         genpd_state->fwnode = &state_node->fwnode;
->
->         return 0;
-> --
-> 2.29.2
->
+WARNING: unmet direct dependencies detected for CRYPTO_ARC4
+  Depends on [n]: CRYPTO [=y] && CRYPTO_USER_API_ENABLE_OBSOLETE [=n]
+  Selected by [y]:
+  - SMB_SERVER [=y] && NETWORK_FILESYSTEMS [=y] && INET [=y]
+
+
+
+Either
+	select CRYPTO_ARC4 if CRYPTO_USER_API_ENABLE_OBSOLETE
+or add
+	select CRYPTO_USER_API
+	select CRYPTO_USER_API_ENABLE_OBSOLETE
+
+The first choice is certainly more palatable if it is OK.
+
+
+thanks.
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
