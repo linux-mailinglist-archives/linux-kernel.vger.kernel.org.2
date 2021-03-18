@@ -2,98 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C943C340BFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:39:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CAC340C00
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:41:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhCRRjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:39:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47121 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229469AbhCRRiw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:38:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616089131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8cMYW+qc72OvUFSAB97G4d4IWQScq6KutjhVdo/e9mI=;
-        b=ZkBvEpuUw/zVvRywPf+FoGT/qS3V4gUjc2XQjUorNh/TPp0ez5N/q1DVCvI75M/24dA4jc
-        ydDE9AmlrYAkjBbNlEaTGL2/gKNACltbIzERn/MNmKhEnOQiMUtZdse+6XEq6xRWEQ2nvt
-        NbuszpYZS3Cqg8mjXmiYJ3sa4+F/mDE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-535-2IgyQOhsP4mZoEadaGvSPA-1; Thu, 18 Mar 2021 13:38:48 -0400
-X-MC-Unique: 2IgyQOhsP4mZoEadaGvSPA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43B40801817;
-        Thu, 18 Mar 2021 17:38:46 +0000 (UTC)
-Received: from treble (ovpn-120-92.rdu2.redhat.com [10.10.120.92])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DD8F75D9C6;
-        Thu, 18 Mar 2021 17:38:44 +0000 (UTC)
-Date:   Thu, 18 Mar 2021 12:38:42 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, jgross@suse.com, mbenes@suze.cz,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/9] objtool: Rework rebuild_reloc logic
-Message-ID: <20210318173842.55rwasdbqlfx7a2i@treble>
-References: <20210312171613.533405394@infradead.org>
- <20210312171653.649709484@infradead.org>
- <20210317033417.lbwemc2j2cpsdlzd@treble>
- <YFG53wkgw6nDBgIl@hirez.programming.kicks-ass.net>
- <20210318004917.sytcivxy5h2ujttc@treble>
- <YFNOH1m+FrFK8TRN@hirez.programming.kicks-ass.net>
- <20210318163640.5u6rucdk66aodun7@treble>
- <YFOIGYblhHTqp/fa@hirez.programming.kicks-ass.net>
+        id S230353AbhCRRkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:40:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230431AbhCRRke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:40:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19B8764F1D;
+        Thu, 18 Mar 2021 17:40:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616089233;
+        bh=eTxd6Y3lO9P3INIl5OgeGP77pBRn4F5bfcQPCAvEYXk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QNBKr486S9km8ea3BcnlXxO0zeB4LXS2cb7+CrWFx6UZrObRX/LygJkX4jbsmzvse
+         kmCqQEAolb5msqnBM881ty/bE9ptZlb/yJ320RkMtVoHhi91OqK7bC4GXqPmTowoYP
+         jIzmwPdfJougkQkPK/ltnPsh5R2I8HRPOD12HdUBcnPjQtebsdIaO6Cptoh0F5lYxw
+         41SAOHYoGD0ZdOuTwBhMb5uPDKvEEEtK1L4llvLg0thgp5x/maGASlSW7m2uhw57fh
+         Qa7SM/vGvVhQxGZSImtTozgHE9SZFXwpE1bWgDWFVVDJp0oT9VgLVXzgZNtRqFgLUE
+         0oX64F35OqsUQ==
+Date:   Thu, 18 Mar 2021 17:40:29 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     madvenka@linux.microsoft.com
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 2/8] arm64: Implement frame types
+Message-ID: <20210318174029.GM5469@sirena.org.uk>
+References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
+ <20210315165800.5948-1-madvenka@linux.microsoft.com>
+ <20210315165800.5948-3-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ZmZU9S7l/XJx5q9b"
 Content-Disposition: inline
-In-Reply-To: <YFOIGYblhHTqp/fa@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210315165800.5948-3-madvenka@linux.microsoft.com>
+X-Cookie: You are false data.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 06:04:25PM +0100, Peter Zijlstra wrote:
-> On Thu, Mar 18, 2021 at 11:36:40AM -0500, Josh Poimboeuf wrote:
-> > > I was thinking you could get a section changed without touching
-> > > relocations, but while that is theoretically possible, it is exceedingly
-> > > unlikely (and objtool doesn't do that).
-> > 
-> > Hm?  This is a *relocation* section, not a normal one.  So by
-> > definition, it only changes when its relocations change.
-> 
-> The way I read this code:
-> 
->  	list_for_each_entry(sec, &elf->sections, list) {
->  		if (sec->changed) {
-> +			if (sec->reloc &&
-> +			    elf_rebuild_reloc_section(elf, sec->reloc)) {
-> +				WARN_ELF("elf_rebuild_reloc_section");
-> +				return -1;
-> +			}
-> 
-> is that we iterate the regular sections (which could be dirtied because
-> we changed some data), and if that section has a relocation section, we
-> rebuild that for good measure (even though it might not have altered
-> relocations).
-> 
-> Or am I just totally confused ?
 
-Ah, you're right.  I'm the one that's confused.  I guess I was also
-confused when I wrote that hunk, but it just happens to work anyway.
+--ZmZU9S7l/XJx5q9b
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It would be cleaner to do something like
+On Mon, Mar 15, 2021 at 11:57:54AM -0500, madvenka@linux.microsoft.com wrote:
 
-			if ((is_reloc_sec(sec) &&	
-			    elf_rebuild_reloc_section(elf, sec)) {
+> To summarize, pt_regs->stackframe is used (or will be used) as a marker
+> frame in stack traces. To enable the unwinder to detect these frames, tag
+> each pt_regs->stackframe with a type. To record the type, use the unused2
+> field in struct pt_regs and rename it to frame_type. The types are:
 
-so we process the changed reloc section directly, instead of relying on
-the (most likely) fact that the corresponding text section also changed.
+Unless I'm misreading what's going on here this is more trying to set a
+type for the stack as a whole than for a specific stack frame.  I'm also
+finding this a bit confusing as the unwinder already tracks things it
+calls frame types and it handles types that aren't covered here like
+SDEI.  At the very least there's a naming issue here.
 
--- 
-Josh
+Taking a step back though do we want to be tracking this via pt_regs?
+It's reliant on us robustly finding the correct pt_regs and on having
+the things that make the stack unreliable explicitly go in and set the
+appropriate type.  That seems like it will be error prone, I'd been
+expecting to do something more like using sections to filter code for
+unreliable features based on the addresses of the functions we find on
+the stack or similar.  This could still go wrong of course but there's
+fewer moving pieces, and especially fewer moving pieces specific to
+reliable stack trace.
 
+I'm wary of tracking data that only ever gets used for the reliable
+stack trace path given that it's going to be fairly infrequently used
+and hence tested, especially things that only crop up in cases that are
+hard to provoke reliably.  If there's a way to detect things that
+doesn't use special data that seems safer.
+
+> EL1_FRAME
+> 	EL1 exception frame.
+
+We do trap into EL2 as well, the patch will track EL2 frames as EL1
+frames.  Even if we can treat them the same the naming ought to be
+clear.
+
+> FTRACE_FRAME
+>         FTRACE frame.
+
+This is implemented later in the series.  If using this approach I'd
+suggest pulling the change in entry-ftrace.S that sets this into this
+patch, it's easier than adding a note about this being added later and
+should help with any bisect issues.
+
+--ZmZU9S7l/XJx5q9b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBTkI0ACgkQJNaLcl1U
+h9AGYgf/eLULWueR+lYuF43H4JsKlcPty+nratz9/9604ftfM345NlBSpEdD+0AC
+Pn2VplG5JfSvdyJaVWzB4LsuH+Eet+Rm2bMlpbmHRvkCAGKbl01PQws5q712pZ/v
+r6I+pmlk5T1wmjOfQJSCPiSI+AecFQhXLrdOi4Fp2bvPtFqcm9WASYI07rsDLBhr
+Bh2NlFC+MokW/K1d+HXjzmPudwQ92axCS1rXw365frfj4lLVKZ1S8vHAfyaOKDM8
+Hth0VqK1hQcl+0KekkmVeEZ4KzbniqO2L/dTikEeecz25hCk7EawXf/a65tCF/UC
+mO2CkbXcpX1M/PApLtc3oTimg3m3FQ==
+=NryZ
+-----END PGP SIGNATURE-----
+
+--ZmZU9S7l/XJx5q9b--
