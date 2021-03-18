@@ -2,121 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA3D341119
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E662534111E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhCRXfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 19:35:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:53444 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229681AbhCRXfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 19:35:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DC6D4ED1;
-        Thu, 18 Mar 2021 16:35:08 -0700 (PDT)
-Received: from [10.57.50.37] (unknown [10.57.50.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D49F3F792;
-        Thu, 18 Mar 2021 16:35:06 -0700 (PDT)
-Subject: Re: [PATCH] swiotlb: Add swiotlb=off to disable SWIOTLB
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>, opendmb@gmail.com,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "open list:SWIOTLB SUBSYSTEM" <iommu@lists.linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20210318191816.4185226-1-f.fainelli@gmail.com>
- <bbd44c42-cedc-7bd6-a443-c991fd080298@gmail.com>
- <e7850feb-b7cd-e279-e3fc-a9bdba162423@arm.com>
- <f0940ea7-79f6-af57-aa7d-d121abb99012@gmail.com>
- <16d1c66f-5451-2515-af73-a6b44d996e92@arm.com>
- <a8a05321-3fd0-d1c4-9d76-ec2e79e310ec@gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <3dd81519-4a73-efb8-abf0-0b766f993a8b@arm.com>
-Date:   Thu, 18 Mar 2021 23:35:00 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232875AbhCRXgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 19:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232321AbhCRXgL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 19:36:11 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D01CC06174A;
+        Thu, 18 Mar 2021 16:36:11 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id i3so2831967oik.7;
+        Thu, 18 Mar 2021 16:36:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YNjpfJk0448TLWFUwKknNdPtfhbYapoGME7vRJxOjdU=;
+        b=O4UdLDFJ9qhRn6HtKnAXZDBGZZr1P5O6P/HW+eQhrxTFHtLdVOA4+t+kWbfbGM9fe9
+         UEu4P51WVI9ijHm1d8K4UltvOMBUP/JICUfkY3vAWLzRa99u5sGtVY6N9DX5TG91rfsX
+         vFQfD8O6vQbe9LcnD97KnqBU5Lsp7oz/JXz8ePZTymoFTAGPKSr4Vj3dFqBOtvNneO9H
+         r4JNbHGYyGbT8g777UFBKDhfQE0a54BtRU+iQaYpLjNU4MCG5ZzXYOUekHpUVbHfWBCy
+         u4wQDTHydV8TWmf0s/844JzmXswkU8wGjwKa6qjm8l1qJosFrh2wvXjk+UfB0GpI4Mhk
+         Ptqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YNjpfJk0448TLWFUwKknNdPtfhbYapoGME7vRJxOjdU=;
+        b=kdBKxlWp14WgFssORb/frkCyxmjI7u99iu88iQywqndM8t8EVZZBQqdraWOf7gtLuM
+         vN+MZuCyidGdPhHRb+th2etylmJsWPl199HQYxM5156HZ09+DKlR9i7lao5JQtmLUR2D
+         d8lreJHSQsk9QQUsvPC7Aq2pQuTN0EVhkef+S2WVVg8OCERsPochLtc0PV/CPJ40r6mc
+         4SZ64idrGpArgluR7q8zw8v157/CKrT00udhUuS4q7LUZvM2lwS13mIfWhOIDhaqLZA1
+         aUAqBhJZEY6OeNMnjWZ3ul+YuxECZHUoHJatsd95zAjqDL5nxV2/J+UrRDa23uVfL5sd
+         di7w==
+X-Gm-Message-State: AOAM531KaBbzctaOtFmUAYDEyCUkk6KwuTuMPAHDuTNGtKwkRrc1zqBQ
+        WAKMrFx7Ay+nBsP8CMeFaJIV2iGEkcU=
+X-Google-Smtp-Source: ABdhPJz6Vcsfo36hQOglcEG6v7PQjxjcOHHaevstv2qYZUHvk6thwo6kN1+yonDpmBpDlzKQIsjS6g==
+X-Received: by 2002:aca:eb8c:: with SMTP id j134mr4840611oih.3.1616110570613;
+        Thu, 18 Mar 2021 16:36:10 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t14sm595043otj.50.2021.03.18.16.36.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 18 Mar 2021 16:36:09 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 18 Mar 2021 16:36:08 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Jonas Malaco <jonas@protocubo.io>
+Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: add driver for NZXT Kraken X42/X52/X62/X72
+Message-ID: <20210318233608.GA140894@roeck-us.net>
+References: <20210318164824.21374-1-jonas@protocubo.io>
+ <8d59a1fe-e38d-3f1b-601d-26a9bcf7272f@roeck-us.net>
+ <20210318231506.v4dvz4jtvqazdoo2@calvin.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <a8a05321-3fd0-d1c4-9d76-ec2e79e310ec@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318231506.v4dvz4jtvqazdoo2@calvin.localdomain>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-18 21:31, Florian Fainelli wrote:
+On Thu, Mar 18, 2021 at 08:15:06PM -0300, Jonas Malaco wrote:
+
+[ ... ]
+
+> > Either case, the spinlocks are overkill. It would be much easier to
+> > convert raw readings here into temperature and fan speed and store
+> > the resulting values in struct kraken2_priv_data, and then to
+> > just report it in the read functions. That would be much less costly
+> > because the spinlock would not be needed at all, and calculations
+> > would be done only once per event.
 > 
+> Oddly enough, this is very close to how the code read last week.
 > 
-> On 3/18/2021 12:53 PM, Robin Murphy wrote:
->> On 2021-03-18 19:43, Florian Fainelli wrote:
->>>
->>>
->>> On 3/18/2021 12:34 PM, Robin Murphy wrote:
->>>> On 2021-03-18 19:22, Florian Fainelli wrote:
->>>>>
->>>>>
->>>>> On 3/18/2021 12:18 PM, Florian Fainelli wrote:
->>>>>> It may be useful to disable the SWIOTLB completely for testing or
->>>>>> when a
->>>>>> platform is known not to have any DRAM addressing limitations what so
->>>>>> ever.
->>>>
->>>> Isn't that what "swiotlb=noforce" is for? If you're confident that we've
->>>> really ironed out *all* the awkward corners that used to blow up if
->>>> various internal bits were left uninitialised, then it would make sense
->>>> to just tweak the implementation of what we already have.
->>>
->>> swiotlb=noforce does prevent dma_direct_map_page() from resorting to the
->>> swiotlb, however what I am also after is reclaiming these 64MB of
->>> default SWIOTLB bounce buffering memory because my systems run with
->>> large amounts of reserved memory into ZONE_MOVABLE and everything in
->>> ZONE_NORMAL is precious at that point.
->>
->> It also forces io_tlb_nslabs to the minimum, so it should be claiming
->> considerably less than 64MB. IIRC the original proposal *did* skip
->> initialisation completely, but that turned up the aforementioned issues.
+> But I was storing the values in kraken2_priv_data as longs, and I'm not
+> sure that storing and loading longs is atomic on all architectures.
 > 
-> AFAICT in that case we will have iotlb_n_slabs will set to 1, which will
-> still make us allocate io_tlb_n_slabs << IO_TLB_SHIFT bytes in
-> swiotlb_init(), which still gives us 64MB.
+> Was that safe, or should I use something else instead of longs?
+> 
 
-Eh? When did 2KB become 64MB? IO_TLB_SHIFT is 11, so that's at most one 
-page in anyone's money...
+Hard to say, but do you see any code in the kernel that assumes
+that loading or storing a long is not atomic, for any architecture ?
 
->>>> I wouldn't necessarily disagree with adding "off" as an additional alias
->>>> for "noforce", though, since it does come across as a bit wacky for
->>>> general use.
->>>>
->>>>>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
->>>>>
->>>>> Christoph, in addition to this change, how would you feel if we
->>>>> qualified the swiotlb_init() in arch/arm/mm/init.c with a:
->>>>>
->>>>>
->>>>> if (memblock_end_of_DRAM() >= SZ_4G)
->>>>>       swiotlb_init(1)
->>>>
->>>> Modulo "swiotlb=force", of course ;)
->>>
->>> Indeed, we would need to handle that case as well. Does it sound
->>> reasonable to do that to you as well?
->>
->> I wouldn't like it done to me personally, but for arm64, observe what
->> mem_init() in arch/arm64/mm/init.c already does.
+Also, I don't see how u16 * 1000 could ever require a long
+for storage. int would be good enough.
 
-In fact I should have looked more closely at that myself - checking 
-debugfs on my 4GB arm64 board actually shows io_tlb_nslabs = 0, and 
-indeed we are bypassing initialisation completely and (ab)using 
-SWIOTLB_NO_FORCE to cover it up, so I guess it probably *is* safe now 
-for the noforce option to do the same for itself and save even that one 
-page.
+> > 
+> > > +	memcpy(priv->status, data, STATUS_USEFUL_SIZE);
+> > > +	spin_unlock_irqrestore(&priv->lock, flags);
+> > > +
+> > > +	return 0;
+> > > +}
+> > 
+> > For my education: What triggers those events ? Are they reported
+> > by the hardware autonomously whenever something changes ?
+> > A comment at the top of the driver explaining how this works
+> > might be useful.
+> 
+> The device autonomously sends these status reports twice a second.
+> 
+> I'll add the comment for v2.
+> 
+That would be great, thanks.
 
-Robin.
+> > 
+> > Also, is there a way to initialize values during probe ? Otherwise
+> > the driver would report values of 0 until the hardware reports
+> > something.
+> 
+> The device doesn't respond to HID Get_Report, so we can't get valid
+> initial values.
+> 
+> The best we can do is identify the situation and report it to
+> user-space.  Am I right that ENODATA should be used for this?
+> 
+Yes, I think that would be a good idea, and ENODATA sounds good.
+
+Thanks,
+Guenter
