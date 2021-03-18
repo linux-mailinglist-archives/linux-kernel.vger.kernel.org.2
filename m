@@ -2,84 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41951340470
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A6C340475
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbhCRLQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40962 "EHLO
+        id S231189AbhCRLRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230497AbhCRLQL (ORCPT
+        with ESMTP id S231229AbhCRLQ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:16:11 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D888C06174A;
-        Thu, 18 Mar 2021 04:16:11 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0fad0050896a9c56ff90be.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:ad00:5089:6a9c:56ff:90be])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1F3F71EC058C;
-        Thu, 18 Mar 2021 12:16:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616066169;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=d9ZitKvEvuE1VBzOzL/yhpYXdhJ71yl0vc6GsYkRX+E=;
-        b=roCkwQgPBxlDfuGla7p4H1ykzB59WOAyMlwHeR+8g49vfBLZRs9AS3NMiHET4KpK14c7Nw
-        RbZHmJDMY73sbg3x4h8hLQ6UKXGwXEEZwDU9JSBzVJ4CVno4imgRmnp4YDrilxbqR63Xa7
-        7wIFLIXWVkkA3fzRO0t1X1E5TCg51H0=
-Date:   Thu, 18 Mar 2021 12:16:12 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: [PATCH v23 16/28] mm: Fixup places that call pte_mkwrite()
- directly
-Message-ID: <20210318111612.GC19570@zn.tnic>
-References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
- <20210316151054.5405-17-yu-cheng.yu@intel.com>
- <20210318094740.GA19570@zn.tnic>
+        Thu, 18 Mar 2021 07:16:59 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443A5C06174A;
+        Thu, 18 Mar 2021 04:16:59 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1lMqe7-0008Rq-9w; Thu, 18 Mar 2021 12:16:55 +0100
+Message-ID: <9db9d9ae751a50c9fd1da1ee3bd4c564546ce1c5.camel@sipsolutions.net>
+Subject: Re: systemd-rfkill regression on 5.11 and later kernels
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 18 Mar 2021 12:16:54 +0100
+In-Reply-To: <s5hczvwiumf.wl-tiwai@suse.de>
+References: <s5ha6r0kgt5.wl-tiwai@suse.de>
+         <54859a03b8789a2800596067e06c8adb49a107f5.camel@sipsolutions.net>
+         <s5ho8fgixl9.wl-tiwai@suse.de>
+         <c196f9cb7ba2487fb5aceceedf860cc24c6843f2.camel@sipsolutions.net>
+         <s5hczvwiumf.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210318094740.GA19570@zn.tnic>
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 10:47:40AM +0100, Borislav Petkov wrote:
-> As with the previous one, I guess this one needs a mm person ACK. I
-> mean, it is pretty obvious but still...
+On Thu, 2021-03-18 at 12:11 +0100, Takashi Iwai wrote:
+> > That said, we can "fix" this like this, and hope we'll not get this
+> > again? And if we do get it again ... well, we keep renaming the structs
+> > and add "struct rfkill_event_v3" next time?
+> 
+> Yeah, that's a dilemma.  An oft-seen trick is to add more bytes for
+> the future use, e.g. extend to 16 bytes and fill 0 for the remaining.
 
-And that needs to happen for all mm patches in here.
+Yeah, I guess I could stick a reserved[15] there, it's small enough.
 
--- 
-Regards/Gruss,
-    Boris.
+> In the sound driver, we introduced an ioctl to inform from user-space
+> which API protocol it can speak, and the kernel falls back to the old
+> API/ABI if it's a lower version or it's not told at all.  But I'm not
+> sure whether such an implementation is optimal for rfkill.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+I thought about it, but it ... doesn't really help.
+
+Somebody's going to do
+
+	ioctl(..., sizeof(ev)) == sizeof(ev)
+
+and break on older kernels, or == my_fixed_size, or ... something. It's
+not really going to address the issue entirely.
+
+And it's more complexity.
+
+johannes
+
