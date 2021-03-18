@@ -2,162 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AEBA3407CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D30E93407C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:26:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhCROZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 10:25:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbhCROZK (ORCPT
+        id S231423AbhCROZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 10:25:45 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:57048 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231322AbhCROZK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Mar 2021 10:25:10 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 850EDC06174A;
-        Thu, 18 Mar 2021 07:25:06 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id l79so1272403oib.1;
-        Thu, 18 Mar 2021 07:25:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=x3gm3O0zGV8d6mrkbGdIstufDDjuTEV+EDN8sx1MHFs=;
-        b=uFGGOC4Ywk38a7fsMuK1d25rlsW5/SVNRmMEVbRSofSkKCpYoAXsTUGK+c7MQ4/U6C
-         8UY6cdQqic8CUKPdi9K2n91vOnIC5JEQuI12KQOx2Oa7CYg47pS87oja4fKSFERHAVD5
-         zO5EONSGDbeCfXVYSF2iLtlnICXpnJbGDvBj+8nuMlFeOXNKP/4mhMBp4VYLfIukY3ZZ
-         G6V7bWXvj03TMheyPLxxdsG2NuyEZlfpr5z5VdhKuKA3PGhElNJkqdCCdyO8K6k5EupI
-         2OetHceDyWe72SgbsvqmHdLXO56YJBetfboxUqGsPH6tHlm+ZDdvP2Hg14RdEcsQPcSR
-         F4Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=x3gm3O0zGV8d6mrkbGdIstufDDjuTEV+EDN8sx1MHFs=;
-        b=lT9XAGNKVfhb1ZvgX38xqTjBMPJBtvlt62NsyHuFvojE4FTzOkh/BEjjRW+fugZFB8
-         QMPRyBO1psdqfRVGPU38PWt1Wwq/JwRXRxTK2mO0OtVgacg6WBwUWYPQHFjV5I+zbPxi
-         Z3Qny9VVfDi8zy8vwhdMt2ZUF6+u49mJueIUAsXqqHlAijVNWLQBjNg7EyHv925hr1in
-         Hu2LzmFVm8uhrONDa8Dan2ZpLOuU+Y6dDHnYVSaD/H1880oczANTQPFh7eWknMjt+5Z1
-         oY2z25YN6uBfcPTliN8zlvk539cqTT/sZjXxI3JwAoLEbjgXR9cE0p42L6tB8WGX8wTb
-         cuDg==
-X-Gm-Message-State: AOAM531hOEV9FOlj556a5HUbB+6Tv0QSKZyza+8I2gGaqRWAfYo5WU6J
-        yf5Pc7XqpwZUFiHB2zDsvGjzYyLxBRgUQ/FH3MY=
-X-Google-Smtp-Source: ABdhPJxczSmp9JhNjJ3jMbWiFTuzUjg10FCu/S5NMdSOgtYKIeIzaQfwZ8OYrjih3HhdHbZ5ZkhHFhjjpP2iIqIh8Io=
-X-Received: by 2002:a05:6808:14cf:: with SMTP id f15mr3233685oiw.39.1616077505936;
- Thu, 18 Mar 2021 07:25:05 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12IEOxVD119063;
+        Thu, 18 Mar 2021 09:24:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1616077499;
+        bh=8j1w2tBDnp1rHlUVX6Sn6y9ad56f41JpDrOBlCFR3mM=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=vG6e33mde9H5BqCwAL+j6H4hAqFX4BzsYTBQWvefX+FomK744OO9Dk5ErZes/M8x7
+         g1N9NcGc+P2jGEbMmS4CCDf7GE4fO5oPidBljxJRjz+I2cthKhmPSUixVAMHX6AW8F
+         /IrR/Wxol3G/O5hTw4KYzy8qYOkjClrNwQdjRlZ8=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12IEOxkv025981
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 18 Mar 2021 09:24:59 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 18
+ Mar 2021 09:24:59 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 18 Mar 2021 09:24:59 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12IEOwJq093940;
+        Thu, 18 Mar 2021 09:24:59 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>
+CC:     Nishanth Menon <nm@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [RESEND PATCH] arm64: dts: ti: k3-am64-main: Add ADC nodes
+Date:   Thu, 18 Mar 2021 09:24:58 -0500
+Message-ID: <161607554267.23461.3716611573021877758.b4-ty@ti.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210318113443.20036-1-vigneshr@ti.com>
+References: <20210318113443.20036-1-vigneshr@ti.com>
 MIME-Version: 1.0
-References: <1616046056-29068-1-git-send-email-rex-bc.chen@mediatek.com> <1616046056-29068-2-git-send-email-rex-bc.chen@mediatek.com>
-In-Reply-To: <1616046056-29068-2-git-send-email-rex-bc.chen@mediatek.com>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Thu, 18 Mar 2021 15:24:54 +0100
-Message-ID: <CAFqH_51qkjtRRS8yjiRXQhN7Hvn-rG34ieKxKnKmreJrOJVUow@mail.gmail.com>
-Subject: Re: [v5, 1/2] drm/mediatek: mtk_dpi: Add check for max clock rate in mode_valid
-To:     Rex-BC Chen <rex-bc.chen@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rex-BC Chen,
+On Thu, 18 Mar 2021 17:04:43 +0530, Vignesh Raghavendra wrote:
+> AM64 SoC has a single ADC IP with 8 channels. Add DT node for the same.
+> 
+> Default usecase is to control ADC from non Linux core on the system on
+> AM642 GP EVM, therefore mark the node as reserved in k3-am642-evm.dts
+> file. ADC lines are not pinned out on AM642 SK board, therefore disable
+> the node in k3-am642-sk.dts file.
 
-Thank you for your patch.
+Hi Vignesh Raghavendra,
 
-Missatge de Rex-BC Chen <rex-bc.chen@mediatek.com> del dia dj., 18 de
-mar=C3=A7 2021 a les 6:42:
->
-> Add per-platform max clock rate check in mtk_dpi_bridge_mode_valid.
->
-> Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
-> Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
-> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_dpi.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediate=
-k/mtk_dpi.c
-> index b05f900d9322..0b427ad0cd9b 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-> @@ -120,6 +120,7 @@ struct mtk_dpi_yc_limit {
->  struct mtk_dpi_conf {
->         unsigned int (*cal_factor)(int clock);
->         u32 reg_h_fre_con;
-> +       u32 max_clock_khz;
->         bool edge_sel_en;
->  };
->
-> @@ -557,9 +558,23 @@ static void mtk_dpi_bridge_enable(struct drm_bridge =
-*bridge)
->         mtk_dpi_set_display_mode(dpi, &dpi->mode);
->  }
->
-> +static enum drm_mode_status
-> +mtk_dpi_bridge_mode_valid(struct drm_bridge *bridge,
-> +                         const struct drm_display_info *info,
-> +                         const struct drm_display_mode *mode)
-> +{
-> +       struct mtk_dpi *dpi =3D bridge_to_dpi(bridge);
-> +
-> +       if (dpi->conf->max_clock_khz && mode->clock > dpi->conf->max_cloc=
-k_khz)
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
-Maybe I read this patch too fast, but why the &&? Shouldn't be more
-simple and readable
+[1/1] arm64: dts: ti: k3-am64-main: Add ADC nodes
+      commit: fad4e18fe4dccacf68418da01e98c4b8fb590023
 
-          if (mode->clock > max_clock)
+Thanks for rebasing and helping sequence. I have taken note that we
+will be converting the binding to yaml in near future, so inline with
+what we are doing now, accepting the patch.
 
-Thanks,
-  Enric
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> +               return MODE_CLOCK_HIGH;
-> +
-> +       return MODE_OK;
-> +}
-> +
->  static const struct drm_bridge_funcs mtk_dpi_bridge_funcs =3D {
->         .attach =3D mtk_dpi_bridge_attach,
->         .mode_set =3D mtk_dpi_bridge_mode_set,
-> +       .mode_valid =3D mtk_dpi_bridge_mode_valid,
->         .disable =3D mtk_dpi_bridge_disable,
->         .enable =3D mtk_dpi_bridge_enable,
->  };
-> @@ -668,17 +683,20 @@ static unsigned int mt8183_calculate_factor(int clo=
-ck)
->  static const struct mtk_dpi_conf mt8173_conf =3D {
->         .cal_factor =3D mt8173_calculate_factor,
->         .reg_h_fre_con =3D 0xe0,
-> +       .max_clock_khz =3D 300000,
->  };
->
->  static const struct mtk_dpi_conf mt2701_conf =3D {
->         .cal_factor =3D mt2701_calculate_factor,
->         .reg_h_fre_con =3D 0xb0,
->         .edge_sel_en =3D true,
-> +       .max_clock_khz =3D 150000,
->  };
->
->  static const struct mtk_dpi_conf mt8183_conf =3D {
->         .cal_factor =3D mt8183_calculate_factor,
->         .reg_h_fre_con =3D 0xe0,
-> +       .max_clock_khz =3D 100000,
->  };
->
->  static int mtk_dpi_probe(struct platform_device *pdev)
-> --
-> 2.18.0
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
