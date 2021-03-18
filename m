@@ -2,82 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9761B340467
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:16:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41951340470
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbhCRLQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
+        id S231160AbhCRLQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:16:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbhCRLPo (ORCPT
+        with ESMTP id S230497AbhCRLQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:15:44 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB66C06174A;
-        Thu, 18 Mar 2021 04:15:43 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 15so7060938ljj.0;
-        Thu, 18 Mar 2021 04:15:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lyNcHfk83roTwvdJIlHqrYHP3nduWOOraeh2JSUHlGw=;
-        b=uv6TY1wQg4REZq3APCa64EYho4ouL5vuGEU0UZ45C60RE5NqtEWlBk0Jd64PUqVuN/
-         lJNKMbZTg7EJ55w4OWPtfhYTSlRj/NByXX9CCxcQZujlax6S0s/KgIY1+89MOH6AAs8C
-         S0cp1Xf3CFt3x7Y+zjwSf81tvA2q9jfCATtU2gh4tZ4YfOWY+t3ytZmz9dwRiQlpMbyq
-         CC61BtR6mQXJ9sLR0horfofk37JXsE9KWzau9v/XL+N/HHfbwu6QqQg4K6lYkTHeDUfw
-         EjwQfYWKtMJDFyvnk02w/V4l/FdH3ALumbUOFHSN68XBs6gw/B1YPr5VVW7y9XaLSVOS
-         Cplw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lyNcHfk83roTwvdJIlHqrYHP3nduWOOraeh2JSUHlGw=;
-        b=ZoQCJ6TG8wZLfAw4tqNmsOsAFOfu7M/qhj0JwN9LoNhpI/AWTfvJxgtDJ0CGMa0OiN
-         CaFtZJTCPOKNnacn/uomHmmQPgpe/uAq5kDPpL6DUtHmHLy9MNJ1bi/kFs/AFG0mxYr0
-         R2SV64ChMJpQ1LzIxFIx8OEtPchNruioC+dFI21DiLkVBEmGkmwT+VkInFsOhvE5hL9O
-         lAiJmMv0GOW5Tym0gf76LrN6u7Vf76pQiNsFrqnhXgafpZDXw4jOfqqXV032CbTcsK9B
-         oIwx6HBYTFM4QR2uDgoCnyXD5yT3EA1zzroRVfXObE/oRsUw0+PfmVbTgQ0sSfeiiTsP
-         0qxA==
-X-Gm-Message-State: AOAM5309lau2PiKXEPeqQg3GFqKW6cNnXVAIIKM8WiCjFBwC+j1G1PRv
-        bE/cMUObpRteZMOcbXdweMWcZrAVUKKaE9ZI3Yw=
-X-Google-Smtp-Source: ABdhPJz8mKz5IRLIKkRTKtqyV7TUGy5n7srh7ZxcZbrYzDpbqQ2IR0M4B8d+oi1rBqHMf/v6jtevAfs3i/j8jG9KqaU=
-X-Received: by 2002:a2e:6f15:: with SMTP id k21mr5124042ljc.444.1616066142520;
- Thu, 18 Mar 2021 04:15:42 -0700 (PDT)
+        Thu, 18 Mar 2021 07:16:11 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D888C06174A;
+        Thu, 18 Mar 2021 04:16:11 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0fad0050896a9c56ff90be.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:ad00:5089:6a9c:56ff:90be])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1F3F71EC058C;
+        Thu, 18 Mar 2021 12:16:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1616066169;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=d9ZitKvEvuE1VBzOzL/yhpYXdhJ71yl0vc6GsYkRX+E=;
+        b=roCkwQgPBxlDfuGla7p4H1ykzB59WOAyMlwHeR+8g49vfBLZRs9AS3NMiHET4KpK14c7Nw
+        RbZHmJDMY73sbg3x4h8hLQ6UKXGwXEEZwDU9JSBzVJ4CVno4imgRmnp4YDrilxbqR63Xa7
+        7wIFLIXWVkkA3fzRO0t1X1E5TCg51H0=
+Date:   Thu, 18 Mar 2021 12:16:12 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v23 16/28] mm: Fixup places that call pte_mkwrite()
+ directly
+Message-ID: <20210318111612.GC19570@zn.tnic>
+References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
+ <20210316151054.5405-17-yu-cheng.yu@intel.com>
+ <20210318094740.GA19570@zn.tnic>
 MIME-Version: 1.0
-References: <20210304114013.18494-1-qiangqing.zhang@nxp.com>
- <20210318104813.GB22955@dragon> <DB8PR04MB6795178A70C52D067DC1AEE1E6699@DB8PR04MB6795.eurprd04.prod.outlook.com>
-In-Reply-To: <DB8PR04MB6795178A70C52D067DC1AEE1E6699@DB8PR04MB6795.eurprd04.prod.outlook.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Thu, 18 Mar 2021 08:15:31 -0300
-Message-ID: <CAOMZO5D8n-+PUgrr5wer4y92hX8CLxwDbfLb4mxahTbG+HTNMQ@mail.gmail.com>
-Subject: Re: [PATCH V1] arm64: dts: imx8mp: fix FEC can't work when attached
- to generic phy driver
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210318094740.GA19570@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joakim,
+On Thu, Mar 18, 2021 at 10:47:40AM +0100, Borislav Petkov wrote:
+> As with the previous one, I guess this one needs a mm person ACK. I
+> mean, it is pretty obvious but still...
 
-On Thu, Mar 18, 2021 at 8:04 AM Joakim Zhang <qiangqing.zhang@nxp.com> wrote:
+And that needs to happen for all mm patches in here.
 
-> Hi Shawn,
->
-> Seems you prefer to 2, is it possible to buildin Realtek PHY(CONFIG_REALTEK_PHY=y)? If not, it is going to be tricky.
+-- 
+Regards/Gruss,
+    Boris.
 
-Yes, we should select the driver as built-in and describe the reset
-timing requirements as per the datasheet.
-
-I have just sent two patches to address the issue you reported. Please
-test them.
+https://people.kernel.org/tglx/notes-about-netiquette
