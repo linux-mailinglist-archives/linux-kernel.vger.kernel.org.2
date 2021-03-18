@@ -2,82 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865DF340431
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B6B34044A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbhCRLHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:07:32 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:33319 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhCRLH2 (ORCPT
+        id S230512AbhCRLLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:11:22 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:11361 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230480AbhCRLKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:07:28 -0400
-Received: by mail-ot1-f43.google.com with SMTP id o19-20020a9d22130000b02901bfa5b79e18so4814439ota.0;
-        Thu, 18 Mar 2021 04:07:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TinDs4EVQQqlZ2LTjeSZTwhvPWfcUIiPPlSq9X257dw=;
-        b=tfmFrxXJy4TLmrn7HhjWFIFDumXictJZiezr7nyZRSvknfo3R+85nG7fk2sU+nucLt
-         JDtUcqnbhxUPtjGseQKBzAShWHau9kTvJtn/vwpB66gL11G+x8512ngz0cb35ztC8i1S
-         NpB9qCOrCBf9K/DfD3NpbgOYIp/rNZFOnnBg7phvdS4eIbux4dplEPgHar9rC6dz9e3d
-         ujlYk6hPk2O+ZQVUYSKBwW+D0Mseggi5HNjRPYcnvLRgY1tbJaF+YBem1iacyUdRPSpC
-         wWh48XrhT1dxr1qGawFQDEwx7d6G3cIAlpGQMluKiEkrwOGPN0IHTQgG2hfbwWgVBJrw
-         WB1g==
-X-Gm-Message-State: AOAM530NDVTE4JLPQQ9HloskI4UAuNdi5x0jP52PcYaKlz7Mar6h+6S+
-        OoAuiCm8IsnBffRyvlw/mwBNtBggfXKHqJ4XQ6o=
-X-Google-Smtp-Source: ABdhPJyRFfzU8LNxXDIE+4/TGFcKz89L9zU3zWmRmqa1qdIli/E9TD8Hr3RUJtRnXAYxbyFfxA8BrVt7LeHkuy/F/U8=
-X-Received: by 2002:a9d:4811:: with SMTP id c17mr4799994otf.206.1616065648247;
- Thu, 18 Mar 2021 04:07:28 -0700 (PDT)
+        Thu, 18 Mar 2021 07:10:46 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 18 Mar 2021 04:10:47 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 18 Mar 2021 04:10:44 -0700
+X-QCInternal: smtphost
+Received: from c-rojay-linux.qualcomm.com ([10.206.21.80])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 18 Mar 2021 16:40:11 +0530
+Received: by c-rojay-linux.qualcomm.com (Postfix, from userid 88981)
+        id C7D3F313A; Thu, 18 Mar 2021 16:40:10 +0530 (IST)
+From:   Roja Rani Yarubandi <rojay@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        gregkh@linuxfoundation.org, mka@chromium.org, robh+dt@kernel.org
+Cc:     linux-serial@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        akashast@codeaurora.org, msavaliy@qti.qualcomm.com,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+Subject: [PATCH V2 0/2] Separate out earlycon 
+Date:   Thu, 18 Mar 2021 16:40:07 +0530
+Message-Id: <20210318111009.30365-1-rojay@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-References: <2527835.vZkJICojNU@kreacher> <8b35de7b-072f-128c-6a3f-c7da5a1b91b8@molgen.mpg.de>
-In-Reply-To: <8b35de7b-072f-128c-6a3f-c7da5a1b91b8@molgen.mpg.de>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 18 Mar 2021 12:07:16 +0100
-Message-ID: <CAJZ5v0iDofnMTO8-GkBMGeQJkr1hSKU_uihKR87xTT1zJ2J_MQ@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: scan: Turn off unused power resources during initialization
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        David Box <david.e.box@linux.intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 10:27 PM Paul Menzel <pmenzel@molgen.mpg.de> wrote:
->
-> Dear Rafael,
->
->
-> Am 17.03.21 um 17:49 schrieb Rafael J. Wysocki:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > It is reported that on certain platforms unused ACPI power resources
-> > that have not been explicitly turned off prevent the platform from
-> > reaching the lowest power state in suspend-to-idle which leads to
-> > excessive power draw.
-> >
-> > For this reason, turn all of the unused ACPI power resources off
-> > at the end of the initial namespace scan for devices in analogy with
-> > resume from suspend-to-RAM.
-> >
-> > Reported-by: David Box <david.e.box@linux.intel.com>
->
-> Thank you for the patch. Could you please add more details to the commit
-> message, saying what device this was on, and if there were some
-> error/warning messages pointing to the problem?
+Dropped below patch as it is not required:
+[3/3] Serial: Separate out earlycon support
 
-The actual report is not public, so I cannot quote it.
+Roja Rani Yarubandi (2):
+  soc: qcom-geni-se: Cleanup the code to remove proxy votes
+  arm64: dts: qcom: sc7180: Remove QUP-CORE ICC path
 
-In essence, there is a power resource in the affected system that
-would be dedicated to a specific device, but that device is not
-present in that variant of the platform.
+ arch/arm64/boot/dts/qcom/sc7180.dtsi  |  4 --
+ drivers/soc/qcom/qcom-geni-se.c       | 74 ---------------------------
+ drivers/tty/serial/qcom_geni_serial.c |  7 ---
+ include/linux/qcom-geni-se.h          |  2 -
+ 4 files changed, 87 deletions(-)
 
-However, the behavior introduced by this patch is generally mandated
-by the spec and evidently depended on by firmware developers (see the
-second paragraph in
-https://uefi.org/specs/ACPI/6.4/07_Power_and_Performance_Mgmt/device-power-management-objects.html).
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
+
