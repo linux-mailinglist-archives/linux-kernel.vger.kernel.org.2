@@ -2,163 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCD4340CB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7E0340CB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:16:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232553AbhCRSQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:16:15 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:56600 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232412AbhCRSPo (ORCPT
+        id S232582AbhCRSQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229964AbhCRSQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:15:44 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
- id a56c98ea21005667; Thu, 18 Mar 2021 19:15:42 +0100
-Received: from kreacher.localnet (89-64-80-250.dynamic.chello.pl [89.64.80.250])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id C39A9668FA9;
-        Thu, 18 Mar 2021 19:15:41 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>,
-        "elaine.zhang" <zhangqing@rock-chips.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v1 2/2] PM: runtime: Defer suspending suppliers
-Date:   Thu, 18 Mar 2021 19:15:13 +0100
-Message-ID: <2060154.irdbgypaU6@kreacher>
-In-Reply-To: <5448054.DvuYhMxLoT@kreacher>
-References: <5448054.DvuYhMxLoT@kreacher>
+        Thu, 18 Mar 2021 14:16:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32A1C06174A;
+        Thu, 18 Mar 2021 11:16:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=gZMZdjXDN+l4F4l9qVN7E8hE4ihLPn0kW+X8DcE+T3Q=; b=sn9QwGb2fP4kn8z6VZtkUIiQT6
+        sND2fITDKmAjG6oK4FrdSMkziZm7HNnyXUn1+povLrVJeSFaBXMYTvOyEDg/E86g4vVoFZrpNc4zm
+        KROQ7sfVGZxERAf/GAydMsrV4h4dDl2kscRc5JMe1DOHZeuuTvExOZpvQYa7DdatGURauHBF1WEbw
+        XH04s8uLixrY0/jR/BlXJJbWlq74tDnYovxdFRgMTmZ1Bl5v7V4JMoSQd7eu91e32El3y+76Ptrlm
+        005X5XEO0ZPoIcjUcFM7M6yga4/6POYmyuTpu3gdBDzavvHfA9TO6qdw0Xpq2HTZAdAHjt90cfxal
+        IJz/+2Ag==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMxBR-003Kxv-0F; Thu, 18 Mar 2021 18:15:51 +0000
+Subject: Re: [PATCH] sh: kernel: Fix a typo
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        ysato@users.sourceforge.jp, dalias@libc.org,
+        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210318104437.21793-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6c57bc4b-7ee9-547d-cb31-3e8f47432659@infradead.org>
+Date:   Thu, 18 Mar 2021 11:15:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudefiedguddufecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttddvnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepffeuvddutdelgfdvtefgiefftddvfffgjeelvdethfehgfekfeeluedvueevvedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepkeelrdeigedrkedtrddvhedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedtrddvhedtpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepiihhrghnghhqihhnghesrhhotghkqdgthhhiphhsrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuhhlfhdrhhgrnhhsshhonheslhhinhgrrhhordhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+In-Reply-To: <20210318104437.21793-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 3/18/21 3:44 AM, Bhaskar Chowdhury wrote:
+> 
+> s/archtecture/architecture/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Because the PM-runtime status of the device is not updated in
-__rpm_callback(), attempts to suspend the suppliers of the given
-device triggered by the rpm_put_suppliers() call in there may fail.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-To fix this (1) modify __rpm_callback() to avoid attempting to
-actually suspend the suppliers, but only decrease their PM-runtime
-usage counters and (2) make rpm_suspend() try to suspend the suppliers
-after changing the device's PM-runtime status, in analogy with the
-handling of the device's parent.
-
-Link: https://lore.kernel.org/linux-pm/CAPDyKFqm06KDw_p8WXsM4dijDbho4bb6T4k50UqqvR1_COsp8g@mail.gmail.com/
-Fixes: 21d5c57b3726 ("PM / runtime: Use device links")
-Reported-by: elaine.zhang <zhangqing@rock-chips.com>
-Diagnosed-by: Ulf Hansson <ulf.hansson@linaro.org> 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/base/power/runtime.c |   45 +++++++++++++++++++++++++++++++++++++------
- 1 file changed, 39 insertions(+), 6 deletions(-)
-
-Index: linux-pm/drivers/base/power/runtime.c
-===================================================================
---- linux-pm.orig/drivers/base/power/runtime.c
-+++ linux-pm/drivers/base/power/runtime.c
-@@ -305,7 +305,7 @@ static int rpm_get_suppliers(struct devi
- 	return 0;
- }
- 
--static void rpm_put_suppliers(struct device *dev)
-+static void __rpm_put_suppliers(struct device *dev, bool try_to_suspend)
- {
- 	struct device_link *link;
- 
-@@ -313,10 +313,30 @@ static void rpm_put_suppliers(struct dev
- 				device_links_read_lock_held()) {
- 
- 		while (refcount_dec_not_one(&link->rpm_active))
--			pm_runtime_put(link->supplier);
-+			pm_runtime_put_noidle(link->supplier);
-+
-+		if (try_to_suspend)
-+			pm_request_idle(link->supplier);
- 	}
- }
- 
-+static void rpm_put_suppliers(struct device *dev)
-+{
-+	__rpm_put_suppliers(dev, true);
-+}
-+
-+static void rpm_try_to_suspend_suppliers(struct device *dev)
-+{
-+	struct device_link *link;
-+	int idx = device_links_read_lock();
-+
-+	list_for_each_entry_rcu(link, &dev->links.suppliers, c_node,
-+				device_links_read_lock_held())
-+		pm_request_idle(link->supplier);
-+
-+	device_links_read_unlock(idx);
-+}
-+
- /**
-  * __rpm_callback - Run a given runtime PM callback for a given device.
-  * @cb: Runtime PM callback to run.
-@@ -344,8 +364,10 @@ static int __rpm_callback(int (*cb)(stru
- 			idx = device_links_read_lock();
- 
- 			retval = rpm_get_suppliers(dev);
--			if (retval)
-+			if (retval) {
-+				rpm_put_suppliers(dev);
- 				goto fail;
-+			}
- 
- 			device_links_read_unlock(idx);
- 		}
-@@ -368,9 +390,9 @@ static int __rpm_callback(int (*cb)(stru
- 		    || (dev->power.runtime_status == RPM_RESUMING && retval))) {
- 			idx = device_links_read_lock();
- 
-- fail:
--			rpm_put_suppliers(dev);
-+			__rpm_put_suppliers(dev, false);
- 
-+fail:
- 			device_links_read_unlock(idx);
- 		}
- 
-@@ -642,8 +664,11 @@ static int rpm_suspend(struct device *de
- 		goto out;
- 	}
- 
-+	if (dev->power.irq_safe)
-+		goto out;
-+
- 	/* Maybe the parent is now able to suspend. */
--	if (parent && !parent->power.ignore_children && !dev->power.irq_safe) {
-+	if (parent && !parent->power.ignore_children) {
- 		spin_unlock(&dev->power.lock);
- 
- 		spin_lock(&parent->power.lock);
-@@ -652,6 +677,14 @@ static int rpm_suspend(struct device *de
- 
- 		spin_lock(&dev->power.lock);
- 	}
-+	/* Maybe the suppliers are now able to suspend. */
-+	if (dev->power.links_count > 0) {
-+		spin_unlock(&dev->power.lock);
-+
-+		rpm_try_to_suspend_suppliers(dev);
-+
-+		spin_lock(&dev->power.lock);
-+	}
- 
-  out:
- 	trace_rpm_return_int_rcuidle(dev, _THIS_IP_, retval);
+> ---
+>  arch/sh/kernel/relocate_kernel.S | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/sh/kernel/relocate_kernel.S b/arch/sh/kernel/relocate_kernel.S
+> index d9bf2b727b42..deda2f60a8f2 100644
+> --- a/arch/sh/kernel/relocate_kernel.S
+> +++ b/arch/sh/kernel/relocate_kernel.S
+> @@ -3,7 +3,7 @@
+>   * relocate_kernel.S - put the kernel image in place to boot
+>   * 2005.9.17 kogiidena@eggplant.ddo.jp
+>   *
+> - * LANDISK/sh4 is supported. Maybe, SH archtecture works well.
+> + * LANDISK/sh4 is supported. Maybe, SH architecture works well.
+>   *
+>   * 2009-03-18 Magnus Damm - Added Kexec Jump support
+>   */
+> --
 
 
+-- 
+~Randy
 
