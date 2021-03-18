@@ -2,100 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A96A3404F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:52:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68DB73404B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbhCRLwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:52:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24457 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229747AbhCRLvx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:51:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616068312;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RgtsA5KUehMmtmf9kRkW1SBSeTOUxt617f5ZR2KNNlc=;
-        b=VAIcaAl6mPFWRyF98AwQncZHnMOp/hxXSmgX0neC11DVR1ax0pbAXEknx8O2zbw4ThSUbn
-        iUZPfsg5sAztjkItelDAGFMnlHXf8+T91kGV6RTPbXD8r4bwRhgPJsCf6CNqhDfUkXl9Aa
-        JbedZ0EdXdPk3lHcqI0qCiXebajUPx0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-513-dt9R1DmIPT26mo52n5ETBw-1; Thu, 18 Mar 2021 07:51:50 -0400
-X-MC-Unique: dt9R1DmIPT26mo52n5ETBw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B9039107ACCA;
-        Thu, 18 Mar 2021 11:51:48 +0000 (UTC)
-Received: from krava (unknown [10.40.194.6])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6DE4010016F8;
-        Thu, 18 Mar 2021 11:51:46 +0000 (UTC)
-Date:   Thu, 18 Mar 2021 12:51:45 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v2 11/27] perf parse-events: Support hardware events
- inside PMU
-Message-ID: <YFM+0e+mPL036gyY@krava>
-References: <20210311070742.9318-1-yao.jin@linux.intel.com>
- <20210311070742.9318-12-yao.jin@linux.intel.com>
- <YEu9usdFl6VSnOQ7@krava>
- <c40d6187-9391-40de-aea8-7389bb369555@linux.intel.com>
- <YE+balbLkG5RL7Lu@krava>
- <fd88f214-f0a4-87bc-ef52-ee750ca13a8d@linux.intel.com>
- <YFC615nTdUR/aLw5@krava>
- <65624432-2752-8381-d299-9b48ec508406@linux.intel.com>
- <YFHUo1I8cYf502qJ@krava>
- <b0ec8d05-acbc-3021-2e74-684d119de2db@linux.intel.com>
+        id S230104AbhCRLgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:36:12 -0400
+Received: from mail.sch.bme.hu ([152.66.249.140]:15944 "EHLO mail.sch.bme.hu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229745AbhCRLfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 07:35:52 -0400
+Received: from Exchange2016-1.sch.bme.hu (152.66.249.140) by
+ Exchange2016-1.sch.bme.hu (152.66.249.140) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2176.2; Thu, 18 Mar 2021 12:35:46 +0100
+Received: from Cognitio.sch.bme.hu (152.66.211.220) by
+ Exchange2016-1.sch.bme.hu (152.66.249.140) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Thu, 18 Mar 2021 12:35:46 +0100
+From:   =?UTF-8?q?Bence=20Cs=C3=B3k=C3=A1s?= <bence98@sch.bme.hu>
+To:     <linux-i2c@vger.kernel.org>
+CC:     =?UTF-8?q?Bence=20Cs=C3=B3k=C3=A1s?= <bence98@sch.bme.hu>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/2] Add i2c-cp2615
+Date:   Thu, 18 Mar 2021 11:52:08 +0000
+Message-ID: <20210318115210.2014204-1-bence98@sch.bme.hu>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b0ec8d05-acbc-3021-2e74-684d119de2db@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 08:17:52PM +0800, Jin, Yao wrote:
+For a hardware project, I need the I2C master of SiLabs' CP2615 chip
+to be visible from under Linux. This patchset adds i2c-cp2615, a
+driver which sets up an i2c_adapter for said chip.
 
-SNIP
+Changes in v3:
+* Fixed SPDX header
+* Added I2C_AQ_NO_REP_START adapter quirk to i2c.h
+* Added I2C_AQ_NO_ZERO_LEN | I2C_AQ_NO_REP_START to CP2615's quirk flags
+* Made the driver only bind to the IOP interface
+* Return -ENXIO instead of -ECOMM when the device does not ACK
+* Formatting, fix almost all warnings and checks from `checkpatch --strict`
+  * CamelCase checks remain. These identifiers were taken from SiLabs'
+    Application Note, I thought it made sense to preserve these as-is.
 
-> > > 
-> > > For example,
-> > > 
-> > > perf stat -e '{cpu_core/cycles/,cpu_core/instructions/}' -e '{cpu_atom/cycles/,cpu_atom/instructions/}'
-> > > 
-> > > This usage is common and reasonable. So I think we may need to support pmu style events.
-> > 
-> > sure, but we don't support 'cpu/cycles/' but we support 'cpu/cpu-cycles/'
-> > why do you insist on supporting cpu_core/cycles/ ?
-> > 
-> > jirka
-> > 
-> 
-> I'm OK to only support 'cpu_core/cpu-cycles/' or 'cpu_atom/cpu-cycles/'. But
-> what would we do for cache event?
-> 
-> 'perf stat -e LLC-loads' is OK, but 'perf stat -e cpu/LLC-loads/' is not supported currently.
+Bence Csókás (2):
+  i2c: Add I2C_AQ_NO_REP_START adapter quirk
+  Adding i2c-cp2615: i2c support for Silicon Labs' CP2615 Digital Audio
+    Bridge
 
-ugh, I keep forgetting those ;-)
+ drivers/i2c/busses/Kconfig      |  10 ++
+ drivers/i2c/busses/Makefile     |   1 +
+ drivers/i2c/busses/i2c-cp2615.c | 279 ++++++++++++++++++++++++++++++++
+ include/linux/i2c.h             |   2 +
+ 4 files changed, 292 insertions(+)
+ create mode 100644 drivers/i2c/busses/i2c-cp2615.c
 
-> 
-> For hybrid platform, user may only want to enable the LLC-loads on core CPUs
-> or on atom CPUs. That's reasonable. While if we don't support the pmu style
-> event, how to satisfy this requirement?
-> 
-> If we can support the pmu style event, we can also use the same way for
-> cpu_core/cycles/. At least it's not a bad thing, right? :)
-
-right, it's probably best to use the pmu/LLC-.../ for this,
-I'll check the patch again
-
-jirka
+-- 
+2.31.0
 
