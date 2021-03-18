@@ -2,81 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0292734100D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:52:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA441341014
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:56:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231953AbhCRVvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 17:51:55 -0400
-Received: from mga11.intel.com ([192.55.52.93]:63077 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhCRVvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 17:51:35 -0400
-IronPort-SDR: Xgh6PCtAW4FsT2qblHLTO1ELx3Qi9nKGpytzoL2epu2yh2DStRYTbY8OmlYVzHSkqaBaRXOzZ3
- Xrd5CBz/V+Hw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="186423628"
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="186423628"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 14:51:35 -0700
-IronPort-SDR: HkWjNgs2L56YN6H5TehQTy8u8i1nWoURlU59FW4Vk37B71HGWd6Vr+auyCIDW3emB/SWpi3xIF
- H9T77LU/rIcQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="441070893"
-Received: from viggo.jf.intel.com ([10.54.77.144])
-  by FMSMGA003.fm.intel.com with ESMTP; 18 Mar 2021 14:51:35 -0700
-From:   Dave Hansen <dave.hansen@intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-sgx@vger.kernel.org
-Subject: [PATCH] x86/sgx: fix uninitialized 'nid' variable
-Date:   Thu, 18 Mar 2021 14:49:33 -0700
-Message-Id: <20210318214933.29341-1-dave.hansen@intel.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <202103190514.xH7IrKMe-lkp@intel.com>
-References: <202103190514.xH7IrKMe-lkp@intel.com>
+        id S233224AbhCRV4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 17:56:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56620 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231888AbhCRVzz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 17:55:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616104554;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+F9WBdvna1lLwOxbPDF5YvSCuQnZUcRY6D1ed3m7rV0=;
+        b=WV7PWEU3LLglX3hAVRQ21L60aXWSUjolb4bp6n2fZz0YycDOu3JVHdbVWl0oIul4HknGD9
+        SjA9ehiBJduwYtMkxxkNPCN3XH2neKIgOtb559WhamYH+DjwayH7HPjBull7cVGCXqVwZA
+        W40nSxBDBXGpqWxJ0cQ8XBUCJJsWZJU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-198-3wuonlc2PaWuoZRdCBN9wA-1; Thu, 18 Mar 2021 17:55:52 -0400
+X-MC-Unique: 3wuonlc2PaWuoZRdCBN9wA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE5B38143F2;
+        Thu, 18 Mar 2021 21:55:50 +0000 (UTC)
+Received: from Whitewolf.lyude.net (ovpn-113-18.rdu2.redhat.com [10.10.113.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 32D4C1F070;
+        Thu, 18 Mar 2021 21:55:49 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     nouveau@lists.freedesktop.org
+Cc:     Martin Peres <martin.peres@mupuf.org>,
+        Jeremy Cline <jcline@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
+        GEFORCE/QUADRO GPUS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/nouveau/kms/nv50-: Check plane size for cursors, not fb size
+Date:   Thu, 18 Mar 2021 17:55:40 -0400
+Message-Id: <20210318215545.901756-1-lyude@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The NUMA fallback in __sgx_alloc_epc_page() recently grew an
-additional 'nid' variable to prevent extra trips through the
-fallback loop in case where the thread is migrated around.
+Found this while trying to make some changes to the kms_cursor_crc test.
+curs507a_acquire checks that the width and height of the cursor framebuffer
+are equal (asyw->image.{w,h}). This is actually wrong though, as we only
+want to be concerned that the actual width/height of the plane are the
+same. It's fine if we scan out from an fb that's slightly larger than the
+cursor plane (in fact, some igt tests actually do this).
 
-But, the new copy is not properly initialized.  Fix it.
+Note that I'm not entirely sure why this wasn't previously breaking
+kms_cursor_crc tests - they all set up cursors with the height being one
+pixel larger than the actual size of the cursor. But this seems to fix
+things, and the code before was definitely incorrect - so it's not really
+worth looking into further imho.
 
-This was found by some fancy clang that 0day runs.  My gcc
-does not detect it.
-
-Fixes: 5b8719504e3a ("x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Jarkko Sakkinen <jarkko@kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org
-Cc: linux-sgx@vger.kernel.org
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Cc: Martin Peres <martin.peres@mupuf.org>
+Cc: Jeremy Cline <jcline@redhat.com>
 ---
- arch/x86/kernel/cpu/sgx/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/nouveau/dispnv50/curs507a.c | 2 +-
+ drivers/gpu/drm/nouveau/dispnv50/head507d.c | 2 +-
+ drivers/gpu/drm/nouveau/dispnv50/head917d.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 2a0031e4a4dc..1b4d8a0e0915 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -489,7 +489,7 @@ struct sgx_epc_page *__sgx_alloc_epc_page(void)
- {
- 	struct sgx_epc_page *page;
- 	int nid_of_current = numa_node_id();
--	int nid;
-+	int nid = nid_of_current;
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/curs507a.c b/drivers/gpu/drm/nouveau/dispnv50/curs507a.c
+index 54fbd6fe751d..7a7f80e51ec0 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/curs507a.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/curs507a.c
+@@ -109,7 +109,7 @@ curs507a_acquire(struct nv50_wndw *wndw, struct nv50_wndw_atom *asyw,
+ 	if (ret || !asyh->curs.visible)
+ 		return ret;
  
- 	if (node_isset(nid_of_current, sgx_numa_mask)) {
- 		page = __sgx_alloc_epc_page_from_node(nid_of_current);
+-	if (asyw->image.w != asyw->image.h)
++	if (asyw->state.crtc_w != asyw->state.crtc_h)
+ 		return -EINVAL;
+ 
+ 	ret = head->func->curs_layout(head, asyw, asyh);
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/head507d.c b/drivers/gpu/drm/nouveau/dispnv50/head507d.c
+index 09b89983864b..3d230ca488c9 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/head507d.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/head507d.c
+@@ -176,7 +176,7 @@ int
+ head507d_curs_layout(struct nv50_head *head, struct nv50_wndw_atom *asyw,
+ 		     struct nv50_head_atom *asyh)
+ {
+-	switch (asyw->image.w) {
++	switch (asyw->state.crtc_w) {
+ 	case 32: asyh->curs.layout = NV507D_HEAD_SET_CONTROL_CURSOR_SIZE_W32_H32; break;
+ 	case 64: asyh->curs.layout = NV507D_HEAD_SET_CONTROL_CURSOR_SIZE_W64_H64; break;
+ 	default:
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/head917d.c b/drivers/gpu/drm/nouveau/dispnv50/head917d.c
+index 4ce47b55f72c..caa7d633691b 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/head917d.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/head917d.c
+@@ -103,7 +103,7 @@ int
+ head917d_curs_layout(struct nv50_head *head, struct nv50_wndw_atom *asyw,
+ 		     struct nv50_head_atom *asyh)
+ {
+-	switch (asyw->state.fb->width) {
++	switch (asyw->state.crtc_w) {
+ 	case  32: asyh->curs.layout = NV917D_HEAD_SET_CONTROL_CURSOR_SIZE_W32_H32; break;
+ 	case  64: asyh->curs.layout = NV917D_HEAD_SET_CONTROL_CURSOR_SIZE_W64_H64; break;
+ 	case 128: asyh->curs.layout = NV917D_HEAD_SET_CONTROL_CURSOR_SIZE_W128_H128; break;
 -- 
-2.19.1
+2.29.2
 
