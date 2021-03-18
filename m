@@ -2,143 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EAE9340831
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:54:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA396340834
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:55:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbhCROyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 10:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
+        id S231603AbhCROyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 10:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231579AbhCROyJ (ORCPT
+        with ESMTP id S231273AbhCROye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 10:54:09 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DF0C06174A;
-        Thu, 18 Mar 2021 07:54:08 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso3573624wmi.0;
-        Thu, 18 Mar 2021 07:54:08 -0700 (PDT)
+        Thu, 18 Mar 2021 10:54:34 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C88C06174A;
+        Thu, 18 Mar 2021 07:54:34 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so5436917otk.5;
+        Thu, 18 Mar 2021 07:54:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zq17IkQsrNUsXP+07sWIsplyG1ml5Si3wFWK55wyySk=;
-        b=SGonUtw9DeBOF3DpV5mzN5oCAIHaVF1Q7exYFRQb6rYoHEO2yXEazxv16lDHLi3Mj0
-         OWpbv4YkkqLurLcUSWgRNQu43OeiFoNgKukXTFrisi/JnNbok/szDVn8+XsGd6kWsgHx
-         Ysn5Seh4jpuRxxPuO9tW16xHE7CuhZmi3dtN7aj5dk2viziMNOBnZ326Kym9h6jnUYTa
-         3tv3qSW92ixx/UNR3UFWlCfmYnJ1P/fV78Odl+dtPdQ1PczPyOMvEqXCMYXs9y9TurtN
-         AG6mA3RXJ8l7+UoduPCQLqxv3tsVwn7XWuUg4gM1DTj4UVLA1ruEbjyjpMr2is+Diq08
-         cW/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=zq17IkQsrNUsXP+07sWIsplyG1ml5Si3wFWK55wyySk=;
-        b=lpfd/GzUQOZeceVuc995W8itkrPgi0aCQZbFIgxmNcmAMbDHI57JORu7Zgpw6wwntv
-         oR1jfSpgis/FOpYXDpV9LApFr8oHiGdJRP17gv9cWkKIoV54J+My3wMAtxKsAhR3fDRQ
-         hTwjS2o4m6y7hRfwGVUtz7m1tbO2kldMOHdeuR5iokrsHVDdaBVHH5oCzlsmmd3XHTBV
-         25cup2n2b/Dai6XAWHipGTpSwcWOhXbFf85AE/cBvwnZOgs+W/UfEyUliLPhM4rWr6ZC
-         EUKZXChL4yKOsBboPnj+0bylrMz7CI6j/hxzF8TZOZobuh65hBEA97wZj0lA83Bze602
-         7mLQ==
-X-Gm-Message-State: AOAM530lJSApqgBXPUBFqtrBQQs+bHpUkBdZxYAnIbyP0goIzhmyJ3MK
-        rUmK53M19oMwHrSTbIHQiphryQ80zzjIWQ==
-X-Google-Smtp-Source: ABdhPJybQJnLUuV3oTP9I+F7IUOsM2u/fTuFjLfivsRy7gj5PWvpDgLMFxKE/t7YBdNNx3NjrpXfcQ==
-X-Received: by 2002:a1c:600a:: with SMTP id u10mr4085992wmb.139.1616079247294;
-        Thu, 18 Mar 2021 07:54:07 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f1f:bb00:8d2c:8cc:6c7f:1a84? (p200300ea8f1fbb008d2c08cc6c7f1a84.dip0.t-ipconnect.de. [2003:ea:8f1f:bb00:8d2c:8cc:6c7f:1a84])
-        by smtp.googlemail.com with ESMTPSA id m3sm2177463wme.40.2021.03.18.07.54.04
+        bh=Bp34zom1zCvJJrQquMcXUW0jeMnP2aq6CD78ogiP0Gg=;
+        b=N/hLIGGWKagKZiQNA6QggikiYl1d3csncrZHpWMWsoGJ40oMpSo+ZS1SYXRnGRtTJl
+         cT98pJswvaKyVrXdW8Z3Zbl3d0j2XmLkYUEOxA6HOwZpywNHOi0IaMmvlfF8KhobId1m
+         SIpRG8RnBYr8jdiJKRIzRvKAP/4U9cWCCRZVW1FkgH43URX1yrZmXtes2mIcTVJDXccp
+         BeSpJnXb6c4SAmLRvDzIxS4+YTHFEqKf8uRCHPmDC5xj+hZI27ybayUDbT34WL71XGLD
+         RXdKx5jNjiLoSWELtEaJKz0Z2hkK1dSUF072DVDlVTz5c9Mz92XIFZ3KusoBWnNurF5k
+         EBEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Bp34zom1zCvJJrQquMcXUW0jeMnP2aq6CD78ogiP0Gg=;
+        b=AZC9NIUPG5xwgTW4oplFa9iC7w3PfoV29Yvol68bjNUAp1uag1SLshxaqw99ftmZB1
+         86op5MJmmR8ThdU5qX0LWkBQdqN68TbDrcUm0tmfTxjH3dn5WkzR+9HemJDbf5YaD6df
+         j3jS70H0Q2AcNi5wcEThqBuC6gmigdBaT7LOuqYkwqxIsKZUv2qkdNGP2ilQL8UyqcLi
+         NWSod4yGB3nC7Bx7MUQhhvbc/svcnyo9MBQ/nSl1N96YCRsA9ppbfgJRiIvK4Ke/i1mW
+         pkkOXgP4IIP0yJBvAYRm4A/DDRP4KTRz6m2ZyDES7xwpU9ANYzBoxtEoeGJMhxJoAyZV
+         kJgw==
+X-Gm-Message-State: AOAM5320edAobAxEYQ1CfdyV9lEs6ZLOSIAmfi/JzdZGVfi3YhqkiTSW
+        Fh3TBYndmVWYWrmGs7urIGL4E7R/PyQ=
+X-Google-Smtp-Source: ABdhPJxjCIJZL4UJvbiTw2bq/H2XfxlAELvPLeryETt8w7pptwdwWI95fcm9k+XeNP3PqKu60BSRDQ==
+X-Received: by 2002:a9d:1ea2:: with SMTP id n31mr8101277otn.370.1616079273635;
+        Thu, 18 Mar 2021 07:54:33 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k9sm510720ots.24.2021.03.18.07.54.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 07:54:06 -0700 (PDT)
-To:     Michael Walle <michael@walle.cc>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Andrew Lunn <andrew@lunn.ch>, Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>
-References: <20210318142356.30702-1-michael@walle.cc>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH net-next] net: phy: at803x: remove at803x_aneg_done()
-Message-ID: <411c3508-978e-4562-f1e9-33ca7e98a752@gmail.com>
-Date:   Thu, 18 Mar 2021 15:54:00 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 18 Mar 2021 07:54:33 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v1] usb: typec: tcpm: Skip sink_cap query only when VDM sm
+ is busy
+To:     Badhri Jagan Sridharan <badhri@google.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20210318064805.3747831-1-badhri@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <771d9847-6e0b-0aa1-e514-2558b4a59637@roeck-us.net>
+Date:   Thu, 18 Mar 2021 07:54:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210318142356.30702-1-michael@walle.cc>
+In-Reply-To: <20210318064805.3747831-1-badhri@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.03.2021 15:23, Michael Walle wrote:
-> at803x_aneg_done() is pretty much dead code since the patch series
-> "net: phy: improve and simplify phylib state machine" [1]. Remove it.
+On 3/17/21 11:48 PM, Badhri Jagan Sridharan wrote:
+> When port partner responds "Not supported" to the DiscIdentity command,
+> VDM state machine can remain in NVDM_STATE_ERR_TMOUT and this causes
+> querying sink cap to be skipped indefinitely. Hence check for
+> vdm_sm_running instead of checking for VDM_STATE_DONE.
 > 
+> Fixes: 8dc4bd073663f ("usb: typec: tcpm: Add support for Sink Fast Role SWAP(FRS)")
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
-Well, it's not dead, it's resting .. There are few places where
-phy_aneg_done() is used. So you would need to explain:
-- why these users can't be used with this PHY driver
-- or why the aneg_done callback isn't needed here and the
-  genphy_aneg_done() fallback is sufficient
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-
-> [1] https://lore.kernel.org/netdev/922c223b-7bc0-e0ec-345d-2034b796af91@gmail.com/
-> 
-> Suggested-by: Vladimir Oltean <olteanv@gmail.com>
-> Signed-off-by: Michael Walle <michael@walle.cc>
 > ---
->  drivers/net/phy/at803x.c | 31 -------------------------------
->  1 file changed, 31 deletions(-)
+>  drivers/usb/typec/tcpm/tcpm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-> index c2aa4c92edde..d7799beb811c 100644
-> --- a/drivers/net/phy/at803x.c
-> +++ b/drivers/net/phy/at803x.c
-> @@ -751,36 +751,6 @@ static void at803x_link_change_notify(struct phy_device *phydev)
->  	}
->  }
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 11d0c40bc47d..39e068d60755 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -5219,7 +5219,7 @@ static void tcpm_enable_frs_work(struct kthread_work *work)
+>  		goto unlock;
 >  
-> -static int at803x_aneg_done(struct phy_device *phydev)
-> -{
-> -	int ccr;
-> -
-> -	int aneg_done = genphy_aneg_done(phydev);
-> -	if (aneg_done != BMSR_ANEGCOMPLETE)
-> -		return aneg_done;
-> -
-> -	/*
-> -	 * in SGMII mode, if copper side autoneg is successful,
-> -	 * also check SGMII side autoneg result
-> -	 */
-> -	ccr = phy_read(phydev, AT803X_REG_CHIP_CONFIG);
-> -	if ((ccr & AT803X_MODE_CFG_MASK) != AT803X_MODE_CFG_SGMII)
-> -		return aneg_done;
-> -
-> -	/* switch to SGMII/fiber page */
-> -	phy_write(phydev, AT803X_REG_CHIP_CONFIG, ccr & ~AT803X_BT_BX_REG_SEL);
-> -
-> -	/* check if the SGMII link is OK. */
-> -	if (!(phy_read(phydev, AT803X_PSSR) & AT803X_PSSR_MR_AN_COMPLETE)) {
-> -		phydev_warn(phydev, "803x_aneg_done: SGMII link is not ok\n");
-> -		aneg_done = 0;
-> -	}
-> -	/* switch back to copper page */
-> -	phy_write(phydev, AT803X_REG_CHIP_CONFIG, ccr | AT803X_BT_BX_REG_SEL);
-> -
-> -	return aneg_done;
-> -}
-> -
->  static int at803x_read_status(struct phy_device *phydev)
->  {
->  	int ss, err, old_link = phydev->link;
-> @@ -1198,7 +1168,6 @@ static struct phy_driver at803x_driver[] = {
->  	.resume			= at803x_resume,
->  	/* PHY_GBIT_FEATURES */
->  	.read_status		= at803x_read_status,
-> -	.aneg_done		= at803x_aneg_done,
->  	.config_intr		= &at803x_config_intr,
->  	.handle_interrupt	= at803x_handle_interrupt,
->  	.get_tunable		= at803x_get_tunable,
+>  	/* Send when the state machine is idle */
+> -	if (port->state != SNK_READY || port->vdm_state != VDM_STATE_DONE || port->send_discover)
+> +	if (port->state != SNK_READY || port->vdm_sm_running || port->send_discover)
+>  		goto resched;
+>  
+>  	port->upcoming_state = GET_SINK_CAP;
 > 
 
