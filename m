@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A0D340911
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:42:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB733340918
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:43:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231784AbhCRPl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 11:41:28 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:23964 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230416AbhCRPk5 (ORCPT
+        id S231796AbhCRPnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 11:43:06 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:34424 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231841AbhCRPmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 11:40:57 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-219-Z0U13KzUNJW_NStgkqAmDA-1; Thu, 18 Mar 2021 15:40:54 +0000
-X-MC-Unique: Z0U13KzUNJW_NStgkqAmDA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Thu, 18 Mar 2021 15:40:53 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Thu, 18 Mar 2021 15:40:53 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Shreeya Patel' <shreeya.patel@collabora.com>,
-        "krisman@collabora.com" <krisman@collabora.com>,
-        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        "yuchao0@huawei.com" <yuchao0@huawei.com>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "drosen@google.com" <drosen@google.com>,
-        "ebiggers@google.com" <ebiggers@google.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "kernel@collabora.com" <kernel@collabora.com>,
-        "andre.almeida@collabora.com" <andre.almeida@collabora.com>,
-        kernel test robot <lkp@intel.com>
-Subject: RE: [PATCH v2 3/4] fs: unicode: Use strscpy() instead of strncpy()
-Thread-Topic: [PATCH v2 3/4] fs: unicode: Use strscpy() instead of strncpy()
-Thread-Index: AQHXHADvVX9HQXwArESTX+RVn+Pn1qqJ39Rg
-Date:   Thu, 18 Mar 2021 15:40:53 +0000
-Message-ID: <609a9c29b91b4c9486f37c7ed74f0717@AcuMS.aculab.com>
-References: <20210318133305.316564-1-shreeya.patel@collabora.com>
- <20210318133305.316564-4-shreeya.patel@collabora.com>
- <f6bb5ec3-da94-ae9a-4ac4-e39038b42cb3@collabora.com>
-In-Reply-To: <f6bb5ec3-da94-ae9a-4ac4-e39038b42cb3@collabora.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 18 Mar 2021 11:42:33 -0400
+Received: by mail-ot1-f46.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so5613276otn.1;
+        Thu, 18 Mar 2021 08:42:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MSzbL7q7UOHy8XukE1pAVuaN95+QmKI6ybgop91aXbk=;
+        b=ANlYDidrioCB7tNaBCxDGmIfMCsD0wenZXnpauJoKeC9QqLP+C7GNMjwfc4Yk/pgjG
+         eH1D8f5dlZNdlJOpGkQQrUcPBV2Eidf15Fdy+PFTDyZ+Bzl+ohO3hfNgpciC999dq420
+         qhd9ITxX8+vE7cO0irjs6Jg3uNiAs5m45dQiDKTkgxEetekpO8qp1PN6t903AjASggcw
+         LG2A3RXLH4QOdNFbdhtkoSeNzMXLq3sFI6hJhbnKyBMg2lX+nMyLoG12BTmVipY2yIUH
+         1jy7cS/TzPNhsepEfHf5A2XEBE2TYqIqsEB6BWaX+qpw9MCumF5hVBdv+fdJ0zKDNSAG
+         bPrw==
+X-Gm-Message-State: AOAM532SxSD3enol9/kMd2aGZgIopvLi36M+m2M9YFfdkIBjyDmjiFXE
+        tE8cxCwBMixKvnHq3GZ6Fa0rhwnBkic6ar0QhGM=
+X-Google-Smtp-Source: ABdhPJw9CbqKs+8q9CJPeZk/eqMne0374o6AJM6grGChTntRlJqy7ruxZhdfrwTKhrfgAYU8cT2aiydfv+IKHBoN0VQ=
+X-Received: by 2002:a05:6830:20d2:: with SMTP id z18mr5393994otq.260.1616082153103;
+ Thu, 18 Mar 2021 08:42:33 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
+ <YE5dJ6U3nPWsXY4D@linux.ibm.com> <CAJZ5v0g1H6hCVbAAFajhn0AYRMU4GkZOqggOB6LVdgFx_vfwOA@mail.gmail.com>
+ <3236337.DtqTXxM43S@kreacher> <bad1ea33-1a6e-bd4d-b795-fbc51ac6ecca@oracle.com>
+In-Reply-To: <bad1ea33-1a6e-bd4d-b795-fbc51ac6ecca@oracle.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 18 Mar 2021 16:42:21 +0100
+Message-ID: <CAJZ5v0g81pE6S_bYV_ECvvzifEUFznWUOVcC8X5v-MQb4-th_g@mail.gmail.com>
+Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
+To:     George Kennedy <george.kennedy@oracle.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogU2hyZWV5YSBQYXRlbA0KPiBTZW50OiAxOCBNYXJjaCAyMDIxIDE0OjEzDQo+IA0KPiBP
-biAxOC8wMy8yMSA3OjAzIHBtLCBTaHJlZXlhIFBhdGVsIHdyb3RlOg0KPiA+IEZvbGxvd2luZyB3
-YXJuaW5nIHdhcyByZXBvcnRlZCBieSBLZXJuZWwgVGVzdCBSb2JvdC4NCj4gPg0KPiA+IEluIGZ1
-bmN0aW9uICd1dGY4X3BhcnNlX3ZlcnNpb24nLA0KPiA+IGlubGluZWQgZnJvbSAndXRmOF9sb2Fk
-JyBhdCBmcy91bmljb2RlL3V0Zjhtb2QuYzoxOTU6NzoNCj4gPj4+IGZzL3VuaWNvZGUvdXRmOG1v
-ZC5jOjE3NToyOiB3YXJuaW5nOiAnc3RybmNweScgc3BlY2lmaWVkIGJvdW5kIDEyIGVxdWFscw0K
-PiA+IGRlc3RpbmF0aW9uIHNpemUgWy1Xc3RyaW5nb3AtdHJ1bmNhdGlvbl0NCj4gPiAxNzUgfCAg
-c3RybmNweSh2ZXJzaW9uX3N0cmluZywgdmVyc2lvbiwgc2l6ZW9mKHZlcnNpb25fc3RyaW5nKSk7
-DQo+ID4gICAgICB8ICBefn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
-fn5+fn5+fn5+fn5+fg0KPiA+DQo+ID4gVGhlIC1Xc3RyaW5nb3AtdHJ1bmNhdGlvbiB3YXJuaW5n
-IGhpZ2hsaWdodHMgdGhlIHVuaW50ZW5kZWQNCj4gPiB1c2VzIG9mIHRoZSBzdHJuY3B5IGZ1bmN0
-aW9uIHRoYXQgdHJ1bmNhdGUgdGhlIHRlcm1pbmF0aW5nIE5VTEwNCj4gPiBjaGFyYWN0ZXIgZnJv
-bSB0aGUgc291cmNlIHN0cmluZy4NCj4gPiBVbmxpa2Ugc3RybmNweSgpLCBzdHJzY3B5KCkgYWx3
-YXlzIG51bGwtdGVybWluYXRlcyB0aGUgZGVzdGluYXRpb24gc3RyaW5nLA0KPiA+IGhlbmNlIHVz
-ZSBzdHJzY3B5KCkgaW5zdGVhZCBvZiBzdHJuY3B5KCkuDQo+IA0KPiANCj4gTm90IHN1cmUgaWYg
-c3Ryc2NweSBpcyBwcmVmZXJhYmxlLiBKdXN0IGZvdW5kIHRoaXMgYXJ0aWNsZQ0KPiBodHRwczov
-L2x3bi5uZXQvQXJ0aWNsZXMvNjU5MjE0Lw0KPiBTaG91bGQgSSBnbyBmb3IgbWVtY3B5IGluc3Rl
-YWQ/DQoNCldoaWNoIGxlbmd0aCB3b3VsZCB5b3UgZ2l2ZSBtZW1jcHkoKSA/DQpUaGUgY29tcGls
-ZXIgd2lsbCBtb2FuIGlmIHlvdSB0cnkgdG8gcmVhZCBiZXlvbmQgdGhlIGVuZCBvZiB0aGUNCmlu
-cHV0IHN0cmluZy4NCg0Kc3Ryc2NweSgpIGlzIGFib3V0IHRoZSBiZXN0IG9mIGEgYmFkIGxvdC4N
-Cg0KSSB0aGluayAoSSdtIG5vdCBzdXJlISkgdGhhdCBhIGdvb2Qgc3RyaW5nIGNvcHkgZnVuY3Rp
-b24gc2hvdWxkDQpyZXR1cm4gdGhlIG51bWJlciBvZiBieXRlcyBjb3BpZXMgb3IgdGhlIGJ1ZmZl
-ciBsZW5ndGggaXMgdHJ1bmNhdGVkLg0KVGhlbiB5b3UgY2FuIGRvIHJlcGVhdGVkOg0KCW9mZiAr
-PSB4eHhjcHkoYnVmICsgb2ZmLCBidWZsZW4gLSBvZmYsIHh4eHh4KTsNCndpdGhvdXQgYW55IGRh
-bmdlciBvZiB3cml0aW5nIGJleW9uZCB0aGUgYnVmZmVyIGVuZCwgYWx3YXlzDQpnZXR0aW5nIGEg
-J1wwJyB0ZXJtaW5hdGVkIHN0cmluZywgYW5kIGJlaW5nIGFibGUgdG8gZGV0ZWN0IG92ZXJmbG93
-DQpyaWdodCBhdCB0aGUgZW5kLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExh
-a2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQs
-IFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Wed, Mar 17, 2021 at 11:28 PM George Kennedy
+<george.kennedy@oracle.com> wrote:
+>
+>
+>
+> On 3/17/2021 4:14 PM, Rafael J. Wysocki wrote:
+> > On Monday, March 15, 2021 5:19:29 PM CET Rafael J. Wysocki wrote:
+> >> On Sun, Mar 14, 2021 at 8:00 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
+> >>> On Thu, Mar 11, 2021 at 04:36:31PM +0100, Rafael J. Wysocki wrote:
+> >>>> On Wed, Mar 10, 2021 at 8:47 PM David Hildenbrand <david@redhat.com> wrote:
+> >>>>>> There is some care that should be taken to make sure we get the order
+> >>>>>> right, but I don't see a fundamental issue here.
+> >>>> Me neither.
+> >>>>
+> >>>>>> If I understand correctly, Rafael's concern is about changing the parts of
+> >>>>>> ACPICA that should be OS agnostic, so I think we just need another place to
+> >>>>>> call memblock_reserve() rather than acpi_tb_install_table_with_override().
+> >>>> Something like this.
+> >>>>
+> >>>> There is also the problem that memblock_reserve() needs to be called
+> >>>> for all of the tables early enough, which will require some reordering
+> >>>> of the early init code.
+> >>>>
+> >>>>>> Since the reservation should be done early in x86::setup_arch() (and
+> >>>>>> probably in arm64::setup_arch()) we might just have a function that parses
+> >>>>>> table headers and reserves them, similarly to how we parse the tables
+> >>>>>> during KASLR setup.
+> >>>> Right.
+> >>> I've looked at it a bit more and we do something like the patch below that
+> >>> nearly duplicates acpi_tb_parse_root_table() which is not very nice.
+> >> It looks to me that the code need not be duplicated (see below).
+> >>
+> >>> Besides, reserving ACPI tables early and then calling acpi_table_init()
+> >>> (and acpi_tb_parse_root_table() again would mean doing the dance with
+> >>> early_memremap() twice for no good reason.
+> >> That'd be simply inefficient which is kind of acceptable to me to start with.
+> >>
+> >> And I changing the ACPICA code can be avoided at least initially, it
+> >> by itself would be a good enough reason.
+> >>
+> >>> I believe the most effective way to deal with this would be to have a
+> >>> function that does parsing, reservation and installs the tables supplied by
+> >>> the firmware which can be called really early and then another function
+> >>> that overrides tables if needed a some later point.
+> >> I agree that this should be the direction to go into.
+> > So maybe something like the patch below?
+>
+> Do you want me to try it out in the failing setup?
 
+Yes, please!
