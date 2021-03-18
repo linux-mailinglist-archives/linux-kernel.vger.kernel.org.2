@@ -2,70 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97595340AB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:54:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2B3340A3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbhCRQCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 12:02:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231648AbhCRQBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 12:01:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6047364E37;
-        Thu, 18 Mar 2021 16:01:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616083292;
-        bh=8ZlNeGVIC5iDIYpch4tok8Iud0RoY50Apo5qJ3GO4FA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EWoXqqN2y8LjEXl/uKzGgC5baeknNblv0OkEGxd/iWoEXKwSxQaxZYvA+NjGCo8B5
-         az/COz72aWunC3ek8oGCbCI6pmhHdFC19WpLMKb4N13F28VT922Z5pWqn7IsJeLCXe
-         ZrhpoPIslpIcahgnpWn4BSq4+vT7t52jysS+79a05Ee8E+yAnYCgNgpbbcVN/xf66A
-         rQuA+vR494BDWTYuRQRHxo97hmFj+t0CLGYJ87gF7hpvqSazUS2IUOlJjN1hOr9C+d
-         angl5UOYZ6mZP2sSmQ+OrmgXkQFhC/+KIwrRevdyA8FS7QQY5NImmJjVM7N8iQT1gr
-         VgOO58Mw6qnlQ==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lMv5q-0008Hf-Hj; Thu, 18 Mar 2021 17:01:50 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Oliver Neukum <oneukum@suse.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH net-next] net: cdc_ncm: drop redundant driver-data assignment
-Date:   Thu, 18 Mar 2021 17:01:42 +0100
-Message-Id: <20210318160142.31801-1-johan@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S232034AbhCRQbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 12:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231833AbhCRQaj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 12:30:39 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F000C06174A;
+        Thu, 18 Mar 2021 09:30:39 -0700 (PDT)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1lMvXc-0001zd-0z; Thu, 18 Mar 2021 17:30:32 +0100
+Date:   Thu, 18 Mar 2021 17:30:32 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Florian Westphal <fw@strlen.de>, twoerner@redhat.com,
+        tgraf@infradead.org, dan.carpenter@oracle.com,
+        Jones Desougi <jones.desougi+netfilter@gmail.com>
+Subject: Re: [PATCH] audit: log nftables configuration change events once per
+ table
+Message-ID: <20210318163032.GS5298@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Richard Guy Briggs <rgb@redhat.com>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>, Steve Grubb <sgrubb@redhat.com>,
+        Florian Westphal <fw@strlen.de>, twoerner@redhat.com,
+        tgraf@infradead.org, dan.carpenter@oracle.com,
+        Jones Desougi <jones.desougi+netfilter@gmail.com>
+References: <7e73ce4aa84b2e46e650b5727ee7a8244ec4a0ac.1616078123.git.rgb@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7e73ce4aa84b2e46e650b5727ee7a8244ec4a0ac.1616078123.git.rgb@redhat.com>
+Sender:  <n0-1@orbyte.nwl.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver data for the data interface has already been set by
-usb_driver_claim_interface() so drop the subsequent redundant
-assignment.
+Hi,
 
-Note that this also avoids setting the driver data three times in case
-of a combined interface.
+On Thu, Mar 18, 2021 at 11:39:52AM -0400, Richard Guy Briggs wrote:
+> Reduce logging of nftables events to a level similar to iptables.
+> Restore the table field to list the table, adding the generation.
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/net/usb/cdc_ncm.c | 1 -
- 1 file changed, 1 deletion(-)
+This looks much better, a few remarks below:
 
-diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
-index 8acf30115428..8ae565a801b5 100644
---- a/drivers/net/usb/cdc_ncm.c
-+++ b/drivers/net/usb/cdc_ncm.c
-@@ -920,7 +920,6 @@ int cdc_ncm_bind_common(struct usbnet *dev, struct usb_interface *intf, u8 data_
- 		goto error2;
- 	}
- 
--	usb_set_intfdata(ctx->data, dev);
- 	usb_set_intfdata(ctx->control, dev);
- 
- 	if (ctx->ether_desc) {
--- 
-2.26.2
+[...]
+> +static const u8 nft2audit_op[] = { // enum nf_tables_msg_types
+> +	/* NFT_MSG_NEWTABLE	*/	AUDIT_NFT_OP_TABLE_REGISTER,
+> +	/* NFT_MSG_GETTABLE	*/	AUDIT_NFT_OP_INVALID,
+> +	/* NFT_MSG_DELTABLE	*/	AUDIT_NFT_OP_TABLE_UNREGISTER,
+> +	/* NFT_MSG_NEWCHAIN	*/	AUDIT_NFT_OP_CHAIN_REGISTER,
+> +	/* NFT_MSG_GETCHAIN	*/	AUDIT_NFT_OP_INVALID,
+> +	/* NFT_MSG_DELCHAIN	*/	AUDIT_NFT_OP_CHAIN_UNREGISTER,
+> +	/* NFT_MSG_NEWRULE	*/	AUDIT_NFT_OP_RULE_REGISTER,
+> +	/* NFT_MSG_GETRULE	*/	AUDIT_NFT_OP_INVALID,
+> +	/* NFT_MSG_DELRULE	*/	AUDIT_NFT_OP_RULE_UNREGISTER,
+> +	/* NFT_MSG_NEWSET	*/	AUDIT_NFT_OP_SET_REGISTER,
+> +	/* NFT_MSG_GETSET	*/	AUDIT_NFT_OP_INVALID,
+> +	/* NFT_MSG_DELSET	*/	AUDIT_NFT_OP_SET_UNREGISTER,
+> +	/* NFT_MSG_NEWSETELEM	*/	AUDIT_NFT_OP_SETELEM_REGISTER,
+> +	/* NFT_MSG_GETSETELEM	*/	AUDIT_NFT_OP_INVALID,
+> +	/* NFT_MSG_DELSETELEM	*/	AUDIT_NFT_OP_SETELEM_UNREGISTER,
+> +	/* NFT_MSG_NEWGEN	*/	AUDIT_NFT_OP_GEN_REGISTER,
+> +	/* NFT_MSG_GETGEN	*/	AUDIT_NFT_OP_INVALID,
+> +	/* NFT_MSG_TRACE	*/	AUDIT_NFT_OP_INVALID,
+> +	/* NFT_MSG_NEWOBJ	*/	AUDIT_NFT_OP_OBJ_REGISTER,
+> +	/* NFT_MSG_GETOBJ	*/	AUDIT_NFT_OP_INVALID,
+> +	/* NFT_MSG_DELOBJ	*/	AUDIT_NFT_OP_OBJ_UNREGISTER,
+> +	/* NFT_MSG_GETOBJ_RESET	*/	AUDIT_NFT_OP_OBJ_RESET,
+> +	/* NFT_MSG_NEWFLOWTABLE	*/	AUDIT_NFT_OP_FLOWTABLE_REGISTER,
+> +	/* NFT_MSG_GETFLOWTABLE	*/	AUDIT_NFT_OP_INVALID,
+> +	/* NFT_MSG_DELFLOWTABLE	*/	AUDIT_NFT_OP_FLOWTABLE_UNREGISTER,
+> +	/* NFT_MSG_MAX		*/	AUDIT_NFT_OP_INVALID,
+> +};
 
+NFT_MSG_MAX is itself not a valid message, it serves merely as an upper
+bound for arrays, loops or sanity checks. You will never see it in
+trans->msg_type.
+
+Since enum nf_tables_msg_types contains consecutive values from 0 to
+NFT_MSG_MAX, you could write the above more explicitly:
+
+| static const u8 nft2audit_op[NFT_MSG_MAX] = {
+| 	[NFT_MSG_NEWTABLE]	= AUDIT_NFT_OP_TABLE_REGISTER,
+| 	[NFT_MSG_GETTABLE]	= AUDIT_NFT_OP_INVALID,
+| 	[NFT_MSG_DELTABLE]	= AUDIT_NFT_OP_TABLE_UNREGISTER,
+(And so forth.)
+
+Not a must, but it clarifies the 1:1 mapping between index and said
+enum. Sadly, AUDIT_NFT_OP_INVALID is non-zero. Otherwise one could skip
+all uninteresting ones.
+
+[...]
+> @@ -6278,12 +6219,11 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
+>  			    filter->type != NFT_OBJECT_UNSPEC &&
+>  			    obj->ops->type->type != filter->type)
+>  				goto cont;
+> -
+>  			if (reset) {
+>  				char *buf = kasprintf(GFP_ATOMIC,
+> -						      "%s:%llu;?:0",
+> +						      "%s:%u",
+>  						      table->name,
+> -						      table->handle);
+> +						      net->nft.base_seq);
+>  
+>  				audit_log_nfcfg(buf,
+>  						family,
+
+Why did you leave the object-related logs in place? They should reappear
+at commit time just like chains and sets for instance, no?
+
+Thanks, Phil
