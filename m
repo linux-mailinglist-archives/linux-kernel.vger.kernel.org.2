@@ -2,62 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB88733FFEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 07:52:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0322233FFEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 07:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbhCRGwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 02:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40392 "EHLO
+        id S229813AbhCRGwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 02:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhCRGva (ORCPT
+        with ESMTP id S229610AbhCRGvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 02:51:30 -0400
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDBEC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 23:51:30 -0700 (PDT)
-Received: by mail-ua1-x92b.google.com with SMTP id 97so1589217uav.7
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 23:51:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=nyRCCcxSvFOphW42Gy/nyFFxvC6MdkCLTfkHRSJWJwQ=;
-        b=bb5Jpl8pBWSd35DqcK24VxKj9zIM7icFQICOGVBVk3oaXPEeI0STBx0BtcABDWOMOJ
-         90VV8mr8aguM4DTcfMq35C9wC5+h7sRt7cnJaMt2wqsBKgHqS/x7/xaQliURpTA5yvK2
-         WqY+mayvtNcsUA4mLC2L98RnhCxUeMj6xK7f7msnco5EUAlMi3hlMSoBgtpPKUy8GKTG
-         e/KMO8DGqV1YQluVM2sFigCbMzDi1iSVfXiXM2keH8mZwsEAaO0VwMUBUII4AGavXwzO
-         MNqwTyIw/su0yUPM2Exz3lKOPxttEEC+hLRPwBoERuSiyYT/+6MbJM4qaNu+7/ivEydi
-         WP+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=nyRCCcxSvFOphW42Gy/nyFFxvC6MdkCLTfkHRSJWJwQ=;
-        b=ALyqgkAHDw7UZkRZGqg/F8Z8FfUuA+y7L8jcTckY+hr5xL2kmbuGKCbLGkKgo2TyTr
-         Cc0ZVDpUj1tEH0JRyEzo0QWeNQCo8x6cj1GbY4lmM0N+nPH2I9X9/7MKTmUIkGVml3nn
-         Fbu9D9/RtwopkFSgS2MhjrhUfO8fZtpTZs44RK8ksdfHNapbVRJAttcS6Qd6V2lfkdW+
-         yCdujQzp+fsST/fQvMPjR53dlMI8pBc/0pB9H+Hu08xip5HS9YvsqHRb/oSOir66XHgv
-         WMKVC82qqLaBWXZWrfDTN/L3Gwn2HOjv+jdGcMOtVc3NOQPQtJII+i+r19c5GzJAHW5a
-         wA5A==
-X-Gm-Message-State: AOAM530Xzd03DJDcqZ/9OTrzgnoQsVGQiQtD1swOVEwACYM6U6PyXVps
-        7hWExnMHI/ee/WTt4KnOiYmR6qDK2zLnd2QwYF+wiH1DtKD7HA==
-X-Google-Smtp-Source: ABdhPJycd4H2PC8TW/X+3ThrVU2P83VbsAEXhuA+u5OL2CuumGsXcw83wwtFz9mcJ1l3U2PyMjjKtj6RjhTn4VWJ4Vk=
-X-Received: by 2002:ab0:608a:: with SMTP id i10mr1343990ual.26.1616050289273;
- Wed, 17 Mar 2021 23:51:29 -0700 (PDT)
+        Thu, 18 Mar 2021 02:51:36 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E877C06174A;
+        Wed, 17 Mar 2021 23:51:34 -0700 (PDT)
+Received: from [192.168.1.111] (91-157-208-71.elisa-laajakaista.fi [91.157.208.71])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6DD4C899;
+        Thu, 18 Mar 2021 07:51:30 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1616050291;
+        bh=OLav/Aa/2rCDA1aYy29j1rYQIHc2mBshyrRFKtSkDtE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ETXnBrAYqVNh0HydaYQCo69fuMrN/pWxZ1Badqh9lWYbe9D/ou4JES4ttn4gK4qD7
+         rzY4qYeOpoWx31O+CJc74W5n8yWgPP0eOxozWM/3/C4RKwfzJdIcumNPePPMfgEodb
+         15IT8KwzdACVQk2xjrm5CDb6QuLgyFw2bWUbOIXw=
+Subject: Re: linux-next: manual merge of the drm tree with the drm-misc-fixes
+ tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Junlin Yang <yangjunlin@yulong.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Menglong Dong <dong.menglong@zte.com.cn>
+References: <20210318120221.6dc8f33b@canb.auug.org.au>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Message-ID: <d9a7932c-b988-905c-d1e8-2cbe10fa9f29@ideasonboard.com>
+Date:   Thu, 18 Mar 2021 08:51:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <CAPncsNOFoUt7uEDEdihDTZY4pJsuPxt146W-L+Ju53SgZ6ezYw@mail.gmail.com>
- <CAPncsNMWCim1kozMyJaT7_suEnWyGadf1Kg1fzjyWfdGDVMZ3A@mail.gmail.com> <CAPncsNOpMhn=N+9+uC8hx0shRE-5uhvHCmZKJ8X3=aAeja1sag@mail.gmail.com>
-In-Reply-To: <CAPncsNOpMhn=N+9+uC8hx0shRE-5uhvHCmZKJ8X3=aAeja1sag@mail.gmail.com>
-From:   Jarvis Jiang <jarvis.w.jiang@gmail.com>
-Date:   Thu, 18 Mar 2021 14:51:17 +0800
-Message-ID: <CAPncsNN05T7WyDnANAis_SeOPfC3vc8WaZa1igVBk8FrB9skWw@mail.gmail.com>
-Subject: Re:
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210318120221.6dc8f33b@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-jarvis.w.jiang@gmail.com
+On 18/03/2021 03:02, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the drm tree got a conflict in:
+> 
+>    drivers/gpu/drm/omapdrm/dss/dsi.c
+> 
+> between commit:
+> 
+>    690911544275 ("drm/omap: dsi: fix unsigned expression compared with zero")
+> 
+> from the drm-misc-fixes tree and commit:
+> 
+>    bbd13d6a7b2e ("drm/omap: dsi: fix unreachable code in dsi_vc_send_short()")
+> 
+> from the drm tree.
+> 
+> I fixed it up (these do basically the same thing, so I used the former
+> version) and can carry the fix as necessary. This is now fixed as far as
+> linux-next is concerned, but any non trivial conflicts should be mentioned
+> to your upstream maintainer when your tree is submitted for merging.
+> You may also want to consider cooperating with the maintainer of the
+> conflicting tree to minimise any particularly complex conflicts.
+Yes, I messed that up. I accidentally merged a fix to drm-misc-fixes, 
+but almost similar fix was already in drm-misc-next. Sorry about that.
 
-On Thu, Mar 18, 2021 at 2:49 PM Jarvis Jiang <jarvis.w.jiang@gmail.com> wrote:
-> subscribe linex-kernel jarvis.w.jiang@gmail.com
+  Tomi
