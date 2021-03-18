@@ -2,62 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F5D34011A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E5A34011E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbhCRIkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 04:40:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52888 "EHLO mail.kernel.org"
+        id S229751AbhCRIm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 04:42:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229687AbhCRIkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 04:40:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AF6A64EF9;
-        Thu, 18 Mar 2021 08:40:33 +0000 (UTC)
+        id S229540AbhCRImM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 04:42:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DAFA64F01
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:42:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616056834;
-        bh=2WnPoIviAZ+IGxSDjZN09t9OnbPRCM6YsWbXkWl0BN0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p0jqft3tu04ROcqzVXETpQPfRSt5jOlqbfdNMF7oJLl+0/XTpPIROG1wie/1cU5Lf
-         ABTOJFQ+faIOqEVD4P41JdVFGieozgznp+m6C+0u7u2tTC4LwsKE3R+ER5mMWXyS6k
-         HS/HHWJloB3d4Qwoyue2THgQu+2yNHiUsCN/RPHXX98xheVlvFGjm+OBQtksGTsb1G
-         tXBy2g3OAIZFNj3Snast2oDfMvp274v2YoZ9w/f6RCE4AHMHQ80xXNoxiQ6Pil83mf
-         dzABejHfAvdYXNS/SlsgWlXCnC1AKFuh4jJiOJ8EmUNwhQMZ5JnJg/auABe12666th
-         5BAx9DLtYfpoA==
-Date:   Thu, 18 Mar 2021 16:40:29 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Sahil Malhotra <sahil.malhotra@oss.nxp.com>
-Cc:     Sahil Malhotra <sahil.malhotra@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/FREESCALE LAYERSCAPE ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: ls1028a: enable optee node
-Message-ID: <20210318084029.GY11246@dragon>
-References: <20210305083351.13598-1-sahil.malhotra@oss.nxp.com>
- <20210315042821.GC11246@dragon>
+        s=k20201202; t=1616056932;
+        bh=R0XU7PwVtjNPgKAcSp0ER/msqSPDe6eC9lQgnsD+Fzg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Hk4WvS+gczCyDwKbwlFUlXiU7NGdYmPSiS1ya/CKhmMN5MFCs5cwf/oMV0zSZZtyG
+         uqoM6fsNL8ILoa/qk+vLFIXqoaKquMuLlLBb7BH/mM0MzUYQdhIWBbfU7wDtNdxKXs
+         +1XGSyKw+/r/VzTb1esnUQqF8IawWBMkYK+MvYUryXAbDWItrblpHeFZayPxr4uXUg
+         90s678LMFBV45gvZYCGLMMcsJEHgzVU7AlARD1FmM7ihHVNtnMyRXL6KaZ0xWgtEwK
+         WM1s9fXvVNiGykBo/r8ZqrH1MdFXglWESMgHcEtqrOCNkeKpBJcXXkA3FMw8A8yXVp
+         V+8rzZx5dXbLQ==
+Received: by mail-oi1-f181.google.com with SMTP id n8so747958oie.10
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 01:42:12 -0700 (PDT)
+X-Gm-Message-State: AOAM531CT2g1TckWJ6/jc5JaJdWWQULfGbA/My9cgvKsfHTN7XixIhoH
+        NLT+Te5LG3ceY5U7AFe+lBayeXcN0qkoRHChwDg=
+X-Google-Smtp-Source: ABdhPJzqyKtLGFMw32H0dTbdjXL4u6TJzWUgCUW+q7GBo7GFNwmaRF55u1pq0MUDB47x7aU97kOi+GNosD2xfnllHW8=
+X-Received: by 2002:a05:6808:3d9:: with SMTP id o25mr2273961oie.4.1616056931403;
+ Thu, 18 Mar 2021 01:42:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315042821.GC11246@dragon>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210225112122.2198845-1-arnd@kernel.org> <20210317143757.GD12269@arm.com>
+ <20210317161838.GF12269@arm.com>
+In-Reply-To: <20210317161838.GF12269@arm.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 18 Mar 2021 09:41:54 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0FeuGLYhiPx=GLdewu2P=Hix7cpVsbF05i5WO5T2XPvQ@mail.gmail.com>
+Message-ID: <CAK8P3a0FeuGLYhiPx=GLdewu2P=Hix7cpVsbF05i5WO5T2XPvQ@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] arm64: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Scull <ascull@google.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nicolas Pitre <nico@fluxnic.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 12:28:29PM +0800, Shawn Guo wrote:
-> On Fri, Mar 05, 2021 at 02:03:51PM +0530, Sahil Malhotra wrote:
-> > From: Sahil Malhotra <sahil.malhotra@nxp.com>
-> > 
-> > optee node was disabled in ls1028a.dtsi, enabling it by default.
-> > 
-> > Signed-off-by: Sahil Malhotra <sahil.malhotra@nxp.com>
-> 
-> Applied, thanks.
+On Wed, Mar 17, 2021 at 5:18 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+>
+> On Wed, Mar 17, 2021 at 02:37:57PM +0000, Catalin Marinas wrote:
+> > On Thu, Feb 25, 2021 at 12:20:56PM +0100, Arnd Bergmann wrote:
+> > > diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+> > > index bad2b9eaab22..926cdb597a45 100644
+> > > --- a/arch/arm64/kernel/vmlinux.lds.S
+> > > +++ b/arch/arm64/kernel/vmlinux.lds.S
+> > > @@ -217,7 +217,7 @@ SECTIONS
+> > >             INIT_CALLS
+> > >             CON_INITCALL
+> > >             INIT_RAM_FS
+> > > -           *(.init.altinstructions .init.bss .init.bss.*)  /* from the EFI stub */
+> > > +           *(.init.altinstructions .init.data.* .init.bss .init.bss.*)     /* from the EFI stub */
+> >
+> > INIT_DATA already covers .init.data and .init.data.*, so I don't think
+> > we need this change.
+>
+> Ah, INIT_DATA only covers init.data.* (so no dot in front). The above
+> is needed for the EFI stub.
 
-Patch dropped, as it causes regression on kontron-kbox-a-230-ls [1].
+I wonder if that is just a typo in INIT_DATA. Nico introduced it as part of
+266ff2a8f51f ("kbuild: Fix asm-generic/vmlinux.lds.h for
+LD_DEAD_CODE_DATA_ELIMINATION"), so perhaps that should have
+been .init.data.* instead.
 
-Shawn
+> However, I gave this a quick try and under Qemu with -cpu max and -smp 2
+> (or more) it fails as below. I haven't debugged but the lr points to
+> just after the switch_to() call. Maybe some section got discarded and we
+> patched in the wrong instructions. It is fine with -cpu host or -smp 1.
 
-[1] https://lore.kernel.org/linux-arm-kernel/38c31f5c-4400-eed7-d561-8f45e261ab01@collabora.com/
+Ah, interesting.
+
+> -------------------8<------------------------
+> smp: Bringing up secondary CPUs ...
+> Detected PIPT I-cache on CPU1
+> CPU1: Booted secondary processor 0x0000000001 [0x000f0510]
+> Unable to handle kernel paging request at virtual address eb91d81ad2971160
+> Mem abort info:
+>   ESR = 0x86000004
+>   EC = 0x21: IABT (current EL), IL = 32 bits
+>   SET = 0, FnV = 0
+>   EA = 0, S1PTW = 0
+> [eb91d81ad2971160] address between user and kernel address ranges
+> Internal error: Oops: 86000004 [#1] PREEMPT SMP
+> Modules linked in:
+> CPU: 1 PID: 16 Comm: migration/1 Not tainted 5.12.0-rc3-00002-g128e977c1322 #1
+> Stopper: 0x0 <- 0x0
+> pstate: 60000085 (nZCv daIf -PAN -UAO -TCO BTYPE=--)
+> pc : 0xeb91d81ad2971160
+> lr : __schedule+0x230/0x6b8
+> sp : ffff80001009bd60
+> x29: ffff80001009bd60 x28: 0000000000000000
+> x27: ffff0000000a6760 x26: ffff0000000b7540
+> x25: 0080000000000000 x24: ffffd81ad3969000
+> x23: ffff0000000a6200 x22: 6ee0d81ad2971658
+> x21: ffff0000000a6200 x20: ffff000000080000
+> x19: ffff00007fbc6bc0 x18: 0000000000000030
+> x17: 0000000000000000 x16: 0000000000000000
+> x15: 00008952b30a9a9e x14: 0000000000000366
+> x13: 0000000000000192 x12: 0000000000000000
+> x11: 0000000000000003 x10: 00000000000009b0
+> x9 : ffff80001009bd30 x8 : ffff0000000a6c10
+> x7 : ffff00007fbc6cc0 x6 : 00000000fffedb30
+> x5 : 00000000ffffffff x4 : 0000000000000000
+> x3 : 0000000000000008 x2 : 0000000000000000
+> x1 : ffff0000000a6200 x0 : ffff0000000a3800
+> Call trace:
+>  0xeb91d81ad2971160
+>  schedule+0x70/0x108
+>  schedule_preempt_disabled+0x24/0x40
+>  __kthread_parkme+0x68/0xd0
+>  kthread+0x138/0x170
+>  ret_from_fork+0x10/0x30
+> Code: bad PC value
+> ---[ end trace af3481062ecef3e7 ]---
+
+This looks like it has just returned from __schedule() to schedule()
+and is trying to return from that as well, through code like this:
+
+.L562:
+// /git/arm-soc/kernel/sched/core.c:5159: }
+        ldp     x19, x20, [sp, 16]      //,,
+        ldp     x29, x30, [sp], 32      //,,,
+        hint    29 // autiasp
+        ret
+
+It looks like pointer authentication gone wrong, which ended up
+with dereferencing the broken pointer in x22, and it explains why
+it only happens with -cpu max. Presumably this also only happens
+on secondary CPUs, so maybe the bit that initializes PAC on
+secondary CPUs got discarded?
+
+        Arnd
