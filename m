@@ -2,211 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1C034048B
+	by mail.lfdr.de (Postfix) with ESMTP id 51DF134048C
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbhCRLYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:24:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43732 "EHLO
+        id S230079AbhCRLYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:24:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51821 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229803AbhCRLYX (ORCPT
+        by vger.kernel.org with ESMTP id S229929AbhCRLYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:24:23 -0400
+        Thu, 18 Mar 2021 07:24:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616066663;
+        s=mimecast20190719; t=1616066674;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CKgKig4qhgfYAN5+Xyhcsw2h6SqxVFiqlkAsYQ9Uxzk=;
-        b=VORpiYkA/QsPCekkF8VTA0z1QR/17TlQ/5FwwA0bPFkXNy00JxfeVEBPAeYy5qryxLcKc+
-        euApSAwe55ay3rUz1SogfFfUjfa+ufPr7lAlRWcSWAY38jE8DQE5oNUKlui3BfTEd1A2Lg
-        cery1gVxjcWiJJq3sD1xnLSdxCybxWo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-341-7p8QkfV3OtC-7pYIeYaAnw-1; Thu, 18 Mar 2021 07:24:21 -0400
-X-MC-Unique: 7p8QkfV3OtC-7pYIeYaAnw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74AE88189C6;
-        Thu, 18 Mar 2021 11:24:19 +0000 (UTC)
-Received: from [10.36.113.61] (ovpn-113-61.ams2.redhat.com [10.36.113.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 696DE5C1D1;
-        Thu, 18 Mar 2021 11:24:17 +0000 (UTC)
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210309175546.5877-1-osalvador@suse.de>
- <20210309175546.5877-2-osalvador@suse.de>
- <f600451e-48aa-184f-ae71-94e0abe9d6b1@redhat.com>
- <20210315102224.GA24699@linux>
- <a2bf7b25-1e7a-bb6b-2fcd-08a4f4636ed5@redhat.com>
- <a03fcbb3-5b77-8671-6376-13c360f5ae25@redhat.com>
- <20210317140847.GA20407@linux>
- <f996f570-eed9-509f-553c-280a62dc6d20@redhat.com>
- <YFMPBFSJPq2VEOk9@localhost.localdomain>
- <YFMtuKZ8Ho66D8hN@localhost.localdomain>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v4 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <51c645b3-1220-80c4-e44c-4c0411222148@redhat.com>
-Date:   Thu, 18 Mar 2021 12:24:16 +0100
+        bh=4iXOrVyMySTuoCrUgKSxCYUTZzujXDxpyIVUUHHpo6E=;
+        b=amgAlwV3egMY0QbY70LT7E7kUukiiGJ6ed+0NOSo6BA6l7yTnxvQLgZ3qdcAF/alpunYP0
+        tMuM9wJS0PX2RHWUPX3KEelIsLm3N6JBsd/ZThb2u76jSsPfh4pBvnfWgvayBHwXgbQgxY
+        KL3OzlD3TbU5A0Vebf3tuhG4Awl6/QA=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-396-KywU5bkaMJC4sTY-sctybw-1; Thu, 18 Mar 2021 07:24:30 -0400
+X-MC-Unique: KywU5bkaMJC4sTY-sctybw-1
+Received: by mail-ed1-f71.google.com with SMTP id bm8so7867533edb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:24:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4iXOrVyMySTuoCrUgKSxCYUTZzujXDxpyIVUUHHpo6E=;
+        b=Z9hA1wTIXef1QRp7CkTyXIR6IWba3AM9cQMfAUD1ngzE/GSSBKX21xmQAbfPGNG6DL
+         MEqNdOM7LEsu4QnBsTpl2mvrrOmrRkxHfAJopXi0E1PrkKvrOsBhD7+3CWBN+CiA0m3J
+         izN/5lcLuQZqmpm7BISGp9A0siI0yf7Q80lqj9jM4OlPU46OX0IRNQZoaHigxkGjz4/8
+         NoCDJ0oQ+znXfi4uyIZPc3+xwEYn9O76z3OQBZMLq4dmfiRhIYilD77e1PObTv32pV1p
+         wUSu9vpOAcRTT3f5mmruIC11r7VebBFXdfT/5eWeNKmg56bpaJw15EndDhGOhFyNbmu/
+         fu/Q==
+X-Gm-Message-State: AOAM531eiWOYRwTtTrwsrKRwhUj+Zz1wosD4ycUJWynhTI/C+JgBOzsk
+        pKjkxTym+Rk8EAFNiJfnKfhD+bosUkoCiumJNSgbR+jQbOa2IwDY1K6p2g/4xdVaOlb8DRKS/NV
+        uXSityTzQak2wDjBWzF4AASfq
+X-Received: by 2002:aa7:df86:: with SMTP id b6mr3017834edy.294.1616066669350;
+        Thu, 18 Mar 2021 04:24:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyHuwfa/RMwxwdlj/Z414K7wfajD1biUO6xL/R+rKEsNZIXRlnhQS1xRR229+DDRcUCHGhNEg==
+X-Received: by 2002:aa7:df86:: with SMTP id b6mr3017814edy.294.1616066669163;
+        Thu, 18 Mar 2021 04:24:29 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id r17sm1765538edm.89.2021.03.18.04.24.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 04:24:28 -0700 (PDT)
+Subject: Re: [PATCH v4 resend 00/13] MFD/extcon/ASoC: Rework arizona codec
+ jack-detect support
+To:     Lee Jones <lee.jones@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+References: <20210307151807.35201-1-hdegoede@redhat.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <433cda84-2d61-ccb4-155a-5f8fa1021c90@redhat.com>
+Date:   Thu, 18 Mar 2021 12:24:28 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <YFMtuKZ8Ho66D8hN@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210307151807.35201-1-hdegoede@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.03.21 11:38, Oscar Salvador wrote:
-> On Thu, Mar 18, 2021 at 09:27:48AM +0100, Oscar Salvador wrote:
->>> If we check for
->>>
->>> IS_ALIGNED(nr_vmemmap_pages, PMD_SIZE), please add a proper TODO comment
->>> that this is most probably the wrong place to take care of this.
->>
->> Sure, I will stuff the check in there and place a big TODO comment so we
->> do not forget about addressing this issue the right way.
-> 
-> Ok, I realized something while working on v5.
-> 
-> Here is what I have right now:
-> 
->   bool mhp_supports_memmap_on_memory(unsigned long size)
->   {
->          /*
->           * Note: We calculate for a single memory section. The calculation
->           * implicitly covers memory blocks that span multiple sections.
->           *
->           * Not all archs define SECTION_SIZE, but MIN_MEMORY_BLOCK_SIZE always
->           * equals SECTION_SIZE, so use that instead.
->           */
->          unsigned long nr_vmemmap_pages = MIN_MEMORY_BLOCK_SIZE / PAGE_SIZE;
+Hi Lee,
 
-Even clearer would be just using "size / PAGE_SIZE" here. The you can 
-even drop the comment.
+On 3/7/21 4:17 PM, Hans de Goede wrote:
+> Hi All,
+> 
+> Here is v4 of my series to rework the arizona codec jack-detect support
+> to use the snd_soc_jack helpers instead of direct extcon reporting.
+> 
+> As discussed before here is a resend rebased on 5.12-rc2, making sure that
+> all patches this depends on are in place.
+> 
+> Lee, can you pick-up patches 1-6 through the MFD tree and then send a
+> pull-req to Mark so that Mark can merge the Asoc parts throught the ASoC
+> tree ?
+> 
+> Patches 2-6 touch drivers/extcon, these all have an Ack from Chanwoo Choi
+> for merging these through the MFD tree.
 
->          unsigned long vmemmap_size = nr_vmemmap_pages * sizeof(struct page);
->          unsigned long remaining_size = size - vmemmap_size;
->   
->          /*
->           * Besides having arch support and the feature enabled at runtime, we
->           * need a few more assumptions to hold true:
->           *
->           * a) We span a single memory block: memory onlining/offlinin;g happens
->           *    in memory block granularity. We don't want the vmemmap of online
->           *    memory blocks to reside on offline memory blocks. In the future,
->           *    we might want to support variable-sized memory blocks to make the
->           *    feature more versatile.
->           *
->           * b) The vmemmap pages span complete PMDs: We don't want vmemmap code
->           *    to populate memory from the altmap for unrelated parts (i.e.,
->           *    other memory blocks)
->           *
->           * c) The vmemmap pages (and thereby the pages that will be exposed to
->           *    the buddy) have to cover full pageblocks: memory onlining/offlining
->           *    code requires applicable ranges to be page-aligned, for example, to
->           *    set the migratetypes properly.
->           *
->           * TODO: Although we have a check here to make sure that vmemmap pages
->           *       fully populate a PMD, it is not the right place to check for
->           *       this. A much better solution involves improving vmemmap code
->           *       to fallback to base pages when trying to populate vmemmap using
->           *       altmap as an alternative source of memory, and we do not exactly
->           *       populate a single PMD.
->           */
->          return memmap_on_memory &&
->                 IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
->                 size == memory_block_size_bytes() &&
->                 remaining_size &&
->                 IS_ALIGNED(remaining_size, pageblock_size) &&
->                 IS_ALIGNED(vmemmap_size, PMD_SIZE);
->   }
-> 
->   Assume we are on x86_64 to simplify the case.
-> 
->   Above, nr_vmemmap_pages would be 32768 and vmemmap_size 2MB (exactly a
->   PMD).
-> 
->   Now, although correct, this nr_vmemmap_pages does not match with the
->   altmap->alloc.
-> 
->   static void * __meminit altmap_alloc_block_buf(unsigned long size,
->    struct altmap)
->   {
->     ...
->     ...
->     nr_pfns = size >> PAGE_SHIFT; //size is PMD_SIZE
->     altmap->alloc += nr_pfns;
->   }
-> 
->   altmap->alloc will be 512, 512 * 4K pages = 2MB.
-> 
-> Of course, the reason they do not match is because in one case, we are
-> saying a) how many pfns we need to cover a PMD_SIZE, while in the
-> other case we say b) how many pages we need to cover SECTION_SIZE
-> 
-> Then b) multiply for page_size to get the current size of it.
+Lee, is there a specific reason why these have not been merged yet,
+or did you just not get around to these yet ?
 
-I don't follow. 2MB == 2MB. And if there would be difference then we 
-would be in the problem I brought up: vmemmap code allocating too much 
-via the altmap, which can be very bad because might be populating more 
-vmemmap than we actually need.
+As I already mentioned Chanwoo Choi already gave an ack for merging
+the extcon patches through MFD, so AFAICT eveything is ready to merge
+1-6 through the MFD tree, and then have Mark merge an ib from the
+MFD tree and merge the rest.
+
+Regards,
+
+Hans
+
+
 
 > 
-> So, I have mixed feeling about this.
-> Would it be more clear to just do:
+> Here is some more generic info on this series from the previous
+> cover-letter:
 > 
->   bool mhp_supports_memmap_on_memory(unsigned long size)
->   {
->          /*
->           * Note: We calculate for a single memory section. The calculation
->           * implicitly covers memory blocks that span multiple sections.
->           */
-
-Then this comment is wrong
-
->          unsigned long nr_vmemmap_pages = PMD_SIZE / PAGE_SIZE;
-
-And this stuff just gets confusing.
-
-nr_vmemmap_pages = 2MiB / 4 KiB = 512;
-
->          unsigned long vmemmap_size = nr_vmemmap_pages * PAGE_SIZE;
-
-vmemmap_size = 512 * 4KiB = 2 MiB.
-
-That calculation wasn't very useful (/ PAGE_SIZE * PAGE_SIZE)?
-
->          unsigned long remaining_size = size - vmemmap_size;
-
-And here we could get something like
-
-remaining_size = 2 GiB - 2 MiB
-
-?
-
-Which does not make any sense.
-
-> 	...
-> 	...
+> This is done by reworking the extcon driver into an arizona-jackdet
+> library and then modifying the codec drivers to use that directly,
+> replacing the old separate extcon child-devices and extcon-driver.
+> 
+> This brings the arizona-codec jack-detect handling inline with how
+> all other ASoC codec driver do this. This was developed and tested on
+> a Lenovo Yoga Tablet 1051L with a WM5102 codec.
+> 
+> This was also tested by Charles Keepax, one of the Cirrus Codec folks.
+> 
+> Regards,
+> 
+> Hans
 > 
 > 
-
-
--- 
-Thanks,
-
-David / dhildenb
+> Hans de Goede (13):
+>   mfd: arizona: Drop arizona-extcon cells
+>   extcon: arizona: Fix some issues when HPDET IRQ fires after the jack
+>     has been unplugged
+>   extcon: arizona: Fix various races on driver unbind
+>   extcon: arizona: Fix flags parameter to the gpiod_get("wlf,micd-pol")
+>     call
+>   extcon: arizona: Always use pm_runtime_get_sync() when we need the
+>     device to be awake
+>   ASoC/extcon: arizona: Move arizona jack code to
+>     sound/soc/codecs/arizona-jack.c
+>   ASoC: arizona-jack: Move jack-detect variables to struct arizona_priv
+>   ASoC: arizona-jack: Use arizona->dev for runtime-pm
+>   ASoC: arizona-jack: convert into a helper library for codec drivers
+>   ASoC: arizona-jack: Use snd_soc_jack to report jack events
+>   ASoC: arizona-jack: Cleanup logging
+>   ASoC: arizona: Make the wm5102, wm5110, wm8997 and wm8998 drivers use
+>     the new jack library
+>   ASoC: Intel: bytcr_wm5102: Add jack detect support
+> 
+>  MAINTAINERS                                   |   3 +-
+>  drivers/extcon/Kconfig                        |   8 -
+>  drivers/extcon/Makefile                       |   1 -
+>  drivers/mfd/arizona-core.c                    |  20 -
+>  sound/soc/codecs/Makefile                     |   2 +-
+>  .../soc/codecs/arizona-jack.c                 | 577 +++++++-----------
+>  sound/soc/codecs/arizona.h                    |  44 ++
+>  sound/soc/codecs/wm5102.c                     |  12 +-
+>  sound/soc/codecs/wm5110.c                     |  12 +-
+>  sound/soc/codecs/wm8997.c                     |  14 +-
+>  sound/soc/codecs/wm8998.c                     |   9 +
+>  sound/soc/intel/boards/bytcr_wm5102.c         |  28 +-
+>  12 files changed, 325 insertions(+), 405 deletions(-)
+>  rename drivers/extcon/extcon-arizona.c => sound/soc/codecs/arizona-jack.c (76%)
+> 
 
