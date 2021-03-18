@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C0F33FD56
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:44:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15BA633FD5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbhCRCni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 22:43:38 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:34549 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229702AbhCRCnM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 22:43:12 -0400
-X-UUID: e05bc8db7fb242bcaa4a1a3e348a9b96-20210318
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=fQv6Dgwb3ZUIHKCcqqmaWUSPNkvouPy+QtwObI48/bE=;
-        b=UV5+P3PHZPuPxUnxdD4aERMjnEYLanODjoEBKaoeXt6MHVdhdYJ2PvLQCeKRfz7ziFJGToeXW5GDE25UPxKL2ga424pOhtqgVa1sTVHRRjkO+RRkTqWr+7fkoH67ECEBmg6cXgQwb2cvtrWE4CWbqm5jUOXZEe/m8tRmu6hcJkc=;
-X-UUID: e05bc8db7fb242bcaa4a1a3e348a9b96-20210318
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1657917886; Thu, 18 Mar 2021 10:43:06 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs05n1.mediatek.inc
- (172.21.101.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Mar
- 2021 10:43:04 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 18 Mar 2021 10:43:03 +0800
-Message-ID: <1616035383.25733.20.camel@mhfsdcap03>
-Subject: Re: [PATCH v5 02/13] dt-bindings: phy: mediatek: dsi-phy: modify
- compatible dependence
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jie Qiu <jie.qiu@mediatek.com>, CK Hu <ck.hu@mediatek.com>,
-        Cawa Cheng <cawa.cheng@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>
-Date:   Thu, 18 Mar 2021 10:43:03 +0800
-In-Reply-To: <20210316092232.9806-2-chunfeng.yun@mediatek.com>
-References: <20210316092232.9806-1-chunfeng.yun@mediatek.com>
-         <20210316092232.9806-2-chunfeng.yun@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S230499AbhCRCon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 22:44:43 -0400
+Received: from mga11.intel.com ([192.55.52.93]:63958 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230525AbhCRCoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 22:44:20 -0400
+IronPort-SDR: pCCmbqAB35mHGfS0lLS+kvcwFe8rDg2Yf59HvfqkDRQd+HtE/39BAkei4x1TjHG5sj2POdJrdD
+ 3pSCRooejvlw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="186232236"
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="186232236"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 19:44:20 -0700
+IronPort-SDR: FbkhzGsVEg6f0l7pM2QQBIjpDFVw/Cyn3rjWSHO1xLXN8PdCpvEhUntE8+92VloM0PObRHOikv
+ 6ZckVjbfs0wQ==
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="406170075"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 19:44:20 -0700
+Date:   Wed, 17 Mar 2021 19:44:20 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org
+Subject: Re: kmap_local semantics
+Message-ID: <20210318024418.GX3014244@iweiny-DESK2.sc.intel.com>
+References: <20210312065413.GA29805@lst.de>
+ <20210312153646.GE3014244@iweiny-DESK2.sc.intel.com>
+ <878s6lzxsq.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878s6lzxsq.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgVmlub2QsDQoNCiAgQ291bGQgeW91IHBsZWFzZSBoZWxwIHRvIGFwcGx5IHBhdGNoZXMgWzAy
-LzEzXSBbMDMvMTNdIFswNC8xM10gb2YgdGhlDQpzZXJpZXM/DQoNCiAgIFRoYW5rcyBhIGxvdA0K
-DQpPbiBUdWUsIDIwMjEtMDMtMTYgYXQgMTc6MjIgKzA4MDAsIENodW5mZW5nIFl1biB3cm90ZToN
-Cj4gbXQ3NjIzLW1pcGktdHggaXMgY29tcGF0aWJsZSB0byBtdDI3MDEtbWlwaS10eCwgYW5kIHVz
-ZQ0KPiAibWVkaWF0ZWssbXQyNzAxLW1pcGktdHgiIGluc3RlYWQgb24gTVQ3NjIzLCBzbyBtb2Rp
-ZnkNCj4gdGhlIGNvbXBhdGlibGUgaXRlbXMgdG8gbWFrZSBkZXBlbmRlbmNlIGNsZWFyLg0KPiAN
-Cj4gQ2M6IENodW4tS3VhbmcgSHUgPGNodW5rdWFuZy5odUBrZXJuZWwub3JnPg0KPiBDYzogUGhp
-bGlwcCBaYWJlbCA8cC56YWJlbEBwZW5ndXRyb25peC5kZT4NCj4gQWNrZWQtYnk6IENodW4tS3Vh
-bmcgSHUgPGNodW5rdWFuZy5odUBrZXJuZWwub3JnPg0KPiBSZXZpZXdlZC1ieTogUm9iIEhlcnJp
-bmcgPHJvYmhAa2VybmVsLm9yZz4NCj4gU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVuIDxjaHVu
-ZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KPiAtLS0NCj4gdjU6IG5vIGNoYW5nZXMNCj4gdjQ6IGFk
-ZCBhY2tlZC1ieSBDSywgYW5kIHJldmlld2VkLWJ5IFJvYg0KPiB2MzogbW9kaWZ5IGNvbW1pdCBt
-ZXNzYWdlIHN1Z2dlc3RlZCBieSBDSw0KPiB2Mjogc2VwYXJhdGUgdHdvIHBhdGNoZXMgc3VnZ2Vz
-dGVkIGJ5IENLDQo+IC0tLQ0KPiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L21lZGlhdGVr
-LGRzaS1waHkueWFtbCAgIHwgMTMgKysrKysrKystLS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDgg
-aW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L21lZGlhdGVrLGRzaS1waHkueWFtbCBiL0Rv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9waHkvbWVkaWF0ZWssZHNpLXBoeS55YW1s
-DQo+IGluZGV4IDcxZDRhY2VhMWY2Ni4uNmU0ZDc5NWY5YjAyIDEwMDY0NA0KPiAtLS0gYS9Eb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L21lZGlhdGVrLGRzaS1waHkueWFtbA0K
-PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L21lZGlhdGVrLGRz
-aS1waHkueWFtbA0KPiBAQCAtMTksMTEgKzE5LDE0IEBAIHByb3BlcnRpZXM6DQo+ICAgICAgcGF0
-dGVybjogIl5kc2ktcGh5QFswLTlhLWZdKyQiDQo+ICANCj4gICAgY29tcGF0aWJsZToNCj4gLSAg
-ICBlbnVtOg0KPiAtICAgICAgLSBtZWRpYXRlayxtdDI3MDEtbWlwaS10eA0KPiAtICAgICAgLSBt
-ZWRpYXRlayxtdDc2MjMtbWlwaS10eA0KPiAtICAgICAgLSBtZWRpYXRlayxtdDgxNzMtbWlwaS10
-eA0KPiAtICAgICAgLSBtZWRpYXRlayxtdDgxODMtbWlwaS10eA0KPiArICAgIG9uZU9mOg0KPiAr
-ICAgICAgLSBpdGVtczoNCj4gKyAgICAgICAgICAtIGVudW06DQo+ICsgICAgICAgICAgICAgIC0g
-bWVkaWF0ZWssbXQ3NjIzLW1pcGktdHgNCj4gKyAgICAgICAgICAtIGNvbnN0OiBtZWRpYXRlayxt
-dDI3MDEtbWlwaS10eA0KPiArICAgICAgLSBjb25zdDogbWVkaWF0ZWssbXQyNzAxLW1pcGktdHgN
-Cj4gKyAgICAgIC0gY29uc3Q6IG1lZGlhdGVrLG10ODE3My1taXBpLXR4DQo+ICsgICAgICAtIGNv
-bnN0OiBtZWRpYXRlayxtdDgxODMtbWlwaS10eA0KPiAgDQo+ICAgIHJlZzoNCj4gICAgICBtYXhJ
-dGVtczogMQ0KDQo=
+On Wed, Mar 17, 2021 at 02:59:01PM +0100, Thomas Gleixner wrote:
+> On Fri, Mar 12 2021 at 07:36, Ira Weiny wrote:
+> > On Fri, Mar 12, 2021 at 07:54:13AM +0100, Christoph Hellwig wrote:
+> >> So with the new kmap_local interface is it possible / advisable to
+> >> use local kmaps over code that might schedule(), e.g. to wait for I/O?
+> >
+> > It is possible yes.  "Advisable" I think so.  Thomas knows better than I what
+> > performance would be.
+> 
+> The performance impact is only relevant for 32bit machines with HIGHMEM
+> enabled. On 64bit kmap_local is a NOOP except when you enable
+> CONFIG_DEBUG_KMAP_LOCAL there which then actually does the mapping (on
+> x86 only for now) with guard maps between and that will do the 'drop
+> map' on schedule out and restore on schedule in dance. But for regular
+> 64bit there is absolutely _NO_ overhead.
 
+Thanks for clarification.
+
+> 
+> > FWIW I have been working on converting kmaps to kmap_local.  Most of the
+> > instances don't schedule AFAICT.
+> 
+> The whole point of kmap_local is to be preemptible and does not have the
+> nasty side effects of kmap_atomic, except for the 1 page per map and map
+> nesting ordering requirements.
+> 
+> > What I really don't want to see is any kmap'ings handed to another thread.  I
+> > am working hard to eliminate the use of kmap for that use.  Is that going to be
+> > a problem?
+> 
+> kmap != kmap_local
+> 
+> kmap_local mappings are thread local and can't be handed anywhere. It's
+> documented.
+
+Agreed.  I'm Sorry, I did not word the above clearly enough.  Let me rephrase
+that.
+
+Christoph, do you anticipate additional need to call kmap and hand the mappings
+to other threads?  If not then kmap_local is what you should use.  If so, I'd
+like to know why.
+
+Ira
+
+> 
+> Thanks,
+> 
+>         tglx
