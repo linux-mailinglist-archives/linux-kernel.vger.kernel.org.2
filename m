@@ -2,91 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19CDA340423
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:03:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBD834041F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbhCRLDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbhCRLDA (ORCPT
+        id S230223AbhCRLCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:02:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50338 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229914AbhCRLCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:03:00 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB74AC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:02:59 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id m186so1453520qke.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:02:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jFROpSYMFSugf/JDJSkj70mXo6rlQvepZUxoikhqvwU=;
-        b=SrRsdV2GlRLy1OIZxZ55PGFGPinWJS8RY3CsYUJWNkI9f9akNLQFISG4is4tiwOiYy
-         PbV0axfTUM+H6QPcymufLrlWEGjRIT34SnvPNBnpVeRisBnaKVJsbw/jmtv4MokTDjto
-         u0mKdPs8zfJHAuB25N4C5U6Tc4vg7QAJJZrdtambLN0VZEpLhZ4JJpkadukGKuXEmmZR
-         9En5GdChZ2P4AxCc0/1kK6eTgE3wkwOnVIsffA3P6QgkmRBljjgQAxEZJz59uFjnbXhy
-         3XB7l+I7Qw5ljV58BjWdhaWJQGVvXDf8TWGjTCtrCxrclFC7w1K5Ysk1uWjxhjNFGIba
-         kNkA==
+        Thu, 18 Mar 2021 07:02:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616065326;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qT8sXvj00qItqzlYyDhKarkrcjScc1QZn8W/3wkQDsY=;
+        b=GOKQyi+iKfT1akjt/pdOK+YM/nsVOdaaiLXfViTqsZOHdhGjBYyLhLczfxTArg040uqpHr
+        GTifYBhDNzaakv0rLXaJqG3iDJ5u0P2/n7jbrzfonnTZMx1adO2I9snElkG3nbKOA99qUQ
+        zmf1H+6hG9WomZZZcvHMTTauiXO7QM8=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-384-KfFpGw9jMKaeyzJ_HyeT1Q-1; Thu, 18 Mar 2021 07:02:03 -0400
+X-MC-Unique: KfFpGw9jMKaeyzJ_HyeT1Q-1
+Received: by mail-ej1-f71.google.com with SMTP id a22so14725302ejx.10
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:02:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=jFROpSYMFSugf/JDJSkj70mXo6rlQvepZUxoikhqvwU=;
-        b=AX12JumSVJDXdDZ3d2UZL45RRcxa6r43nNQupe+yWCN3hLdbe7ir3EdP1edkkGJCef
-         ZU6ANe0yrAujYV8EMz6BzwZMQ1rl/27WzLJRbMAYOae+YkfCygobWT13jIZv4xTVwGzT
-         kEywoPBRFI/karDfcILRXJ+VfGqTdFTzJlUnny3A63D8DHqByWFhpHvUH19wM1Zlwduy
-         qzIaimaq5ap/S9api5/gLs6CjIiLnM8A6bf+Dfd8XGO2WqXHya2z6TVov1i2ilIuVdc7
-         jNWojnvaa0sYnHRnjmqodJ16HywB74cQaymt7rKQp9beG/2SWDnDPPcOzBuqCdDEgRUJ
-         LRJg==
-X-Gm-Message-State: AOAM532NGICyPlWpnxUqX8E3MwvCqMwd0Gyff1LDXuzXHKUftuU/rgMM
-        dC0i//k8UCm/JM6oCLipLI4=
-X-Google-Smtp-Source: ABdhPJwkDT7cMA31ljW5JM3vw1gfqLU0z9C/0DWpzWCJm9s9ksIWUez9Dg5OON90ZbpVrK8+ajYGSQ==
-X-Received: by 2002:a37:7985:: with SMTP id u127mr3644083qkc.333.1616065379130;
-        Thu, 18 Mar 2021 04:02:59 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.54.246])
-        by smtp.gmail.com with ESMTPSA id f2sm1407123qko.135.2021.03.18.04.02.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 04:02:58 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     narmstrong@baylibre.com, airlied@linux.ie, daniel@ffwll.ch,
-        khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com,
-        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drm/meson: Fix few typo
-Date:   Thu, 18 Mar 2021 16:30:46 +0530
-Message-Id: <20210318110046.14830-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        bh=qT8sXvj00qItqzlYyDhKarkrcjScc1QZn8W/3wkQDsY=;
+        b=ozStTHYNTm7/mtQe/ow0adcprBolE3wttWVnKQ/Fld/3Ey9aZnUHAWMi4OXq9yKhmE
+         1vY7dzp4tV3fsLrF2wVxUGb8plGtJxupnKJceG9IftUiWVcNL7UNBttX17GMjPyhAJEH
+         Y22wpUj58CxbyNTutJwu3NUiVakZJ6DkgS/sjvJ9YVaSWdEvTuju3bqymVI7MXn2sKaQ
+         HEHpwb5FfP/Fd5M/sHBluCS2dvD+HsitKVdJF73Z0dShIToR43ZXHVxIchNd9kCSMQVW
+         w+SFD7gsBtuJAGopNtNjWm5TLrnbMZ5PygPurcoxjtJWO65zWP7ilAYcfMXgms9Ag3bW
+         p1fg==
+X-Gm-Message-State: AOAM531oN0LqfZktc2HX5OrYmjPOdtf65RwEFCoCjt/OyZ0mPBR6ID3O
+        1TapOJsC1FDBz39C3Rr5g+HIP5D6w67P85Y5aU5G+YxRpBPBmd3jq63nB0NekxTl4cZlXXnWvIr
+        1wOmgnzcvKSfGMdnkJF3D7Cls
+X-Received: by 2002:a17:906:bccc:: with SMTP id lw12mr39741378ejb.268.1616065322778;
+        Thu, 18 Mar 2021 04:02:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw4YEOii3XmAv1UFRr9lF62Tb1p12XeAreUyUkh32SNdZLwXapAN5f76EMeu27pU0dsEfkCHA==
+X-Received: by 2002:a17:906:bccc:: with SMTP id lw12mr39741365ejb.268.1616065322619;
+        Thu, 18 Mar 2021 04:02:02 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id b12sm1691963eds.94.2021.03.18.04.02.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 04:02:02 -0700 (PDT)
+Subject: Re: [GIT PULL v2] Immutable branch between MFD and Platform/X86 due
+ for the v5.13 merge window
+To:     Lee Jones <lee.jones@linaro.org>,
+        "David E. Box" <david.e.box@linux.intel.com>
+Cc:     mgross@linux.intel.com, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+References: <20210128172846.99352-1-david.e.box@linux.intel.com>
+ <20210224201005.1034005-1-david.e.box@linux.intel.com>
+ <20210309181206.GT4931@dell> <20210310105711.GJ701493@dell>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <f72cdea8-cd65-84e5-8dcd-1e94c01c90d1@redhat.com>
+Date:   Thu, 18 Mar 2021 12:02:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210310105711.GJ701493@dell>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-s/initialy/initially/
-s/desined/designed/
+On 3/10/21 11:57 AM, Lee Jones wrote:
+> Rebased onto -rc2
+> 
+> The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+> 
+>   Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-platform-x86-v5.13
+> 
+> for you to fetch changes up to aa47ad3f853ae72c32b7e46dfc8bc2c8dc2dbad7:
+> 
+>   mfd: intel_pmt: Add support for DG1 (2021-03-10 10:48:48 +0000)
+> 
+> ----------------------------------------------------------------
+> Immutable branch between MFD and Platform/x86 due for the v5.13 merge window
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/gpu/drm/meson/meson_venc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thank you, I've merged this into my review-hans branch now, so this will
+soon be in pdx86/for-next.
 
-diff --git a/drivers/gpu/drm/meson/meson_venc.c b/drivers/gpu/drm/meson/meson_venc.c
-index 5e2236ec189f..3c55ed003359 100644
---- a/drivers/gpu/drm/meson/meson_venc.c
-+++ b/drivers/gpu/drm/meson/meson_venc.c
-@@ -45,7 +45,7 @@
-  * The ENCI is designed for PAl or NTSC encoding and can go through the VDAC
-  * directly for CVBS encoding or through the ENCI_DVI encoder for HDMI.
-  * The ENCP is designed for Progressive encoding but can also generate
-- * 1080i interlaced pixels, and was initialy desined to encode pixels for
-+ * 1080i interlaced pixels, and was initially designed to encode pixels for
-  * VDAC to output RGB ou YUV analog outputs.
-  * It's output is only used through the ENCP_DVI encoder for HDMI.
-  * The ENCL LVDS encoder is not implemented.
---
-2.26.2
+Regards,
+
+Hans
 
