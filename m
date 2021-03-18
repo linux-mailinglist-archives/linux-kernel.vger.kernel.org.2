@@ -2,98 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CA4340199
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:14:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0B2340191
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbhCRJOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 05:14:07 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:9436 "EHLO rere.qmqm.pl"
+        id S229821AbhCRJND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 05:13:03 -0400
+Received: from 8bytes.org ([81.169.241.247]:59534 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229600AbhCRJNi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 05:13:38 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4F1Lt74w3zzFV;
-        Thu, 18 Mar 2021 10:13:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1616058816; bh=B/w6FnU1M8k1x8n6SpOvWjJ7fnKVBOzRmgm3GyKX0h4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FxIh9eKfWmGwT5IZxR16FfA9VRI+Ub43iw+oRHsJeETqL9G8qt9bw8GhVsB3UCzBm
-         +WYmN+7N4HvMx/8QwCcGbJ2o6uKZYLM6CA0ZPeM7F3A2qUbvEu9AomWdfoNzvCJmC2
-         MqhjvUr4aDgurjwJbsnGBtzcq4EXfnxQW6y4sEtt+1sGb8mn4aF4BE0wmveQlMGGkM
-         GXvICbgnZ+Tz75q/eIVToRrgu8C004NyVwGAvtOhe/3OHrlFaklZ0rhUv2TNHFChm4
-         lOJBK64yFJUVaGTIzXow9F+t8u/fGEJLL9H6KAAogJDI1MkvEsyiv/+WffktvZW2gM
-         1eB/DSPMBom2Q==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Thu, 18 Mar 2021 10:12:19 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 2/7] clk: tegra: Fix refcounting of gate clocks
-Message-ID: <20210318091219.GA18038@qmqm.qmqm.pl>
-References: <20210317193006.29633-1-digetx@gmail.com>
- <20210317193006.29633-3-digetx@gmail.com>
+        id S229564AbhCRJMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 05:12:53 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id BF6D82D8; Thu, 18 Mar 2021 10:12:47 +0100 (CET)
+Date:   Thu, 18 Mar 2021 10:12:46 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>, Will Deacon <will@kernel.org>,
+        kevin.tian@intel.com, jacob.jun.pan@intel.com, yi.l.liu@intel.com,
+        sanjay.k.kumar@intel.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] iommu/vt-d: Remove WO permissions on second-level
+ paging entries
+Message-ID: <YFMZjiGT13S2TZ6H@8bytes.org>
+References: <20210225062654.2864322-1-baolu.lu@linux.intel.com>
+ <20210225062654.2864322-3-baolu.lu@linux.intel.com>
+ <20210304122623.GD26414@8bytes.org>
+ <c7bffaee-6c3c-3254-a71a-d66d023d1e58@linux.intel.com>
+ <20210308194746.GA15436@otc-nc-03>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210317193006.29633-3-digetx@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210308194746.GA15436@otc-nc-03>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 10:30:01PM +0300, Dmitry Osipenko wrote:
-> The refcounting of the gate clocks has a bug causing the enable_refcnt
-> to underflow when unused clocks are disabled. This happens because clk
-> provider erroneously bumps the refcount if clock is enabled at a boot
-> time, which it shouldn't be doing, and it does this only for the gate
-> clocks, while peripheral clocks are using the same gate ops and the
-> peripheral clocks are missing the initial bump. Hence the refcount of
-> the peripheral clocks is 0 when unused clocks are disabled and then the
-> counter is decremented further by the gate ops, causing the integer
-> underflow.
-[...]
-> diff --git a/drivers/clk/tegra/clk-periph-gate.c b/drivers/clk/tegra/clk-periph-gate.c
-> index 4b31beefc9fc..3c4259fec82e 100644
-> --- a/drivers/clk/tegra/clk-periph-gate.c
-> +++ b/drivers/clk/tegra/clk-periph-gate.c
-[...]
-> @@ -91,21 +108,28 @@ static void clk_periph_disable(struct clk_hw *hw)
->  
->  	spin_lock_irqsave(&periph_ref_lock, flags);
->  
-> -	gate->enable_refcnt[gate->clk_num]--;
-> -	if (gate->enable_refcnt[gate->clk_num] > 0) {
-> -		spin_unlock_irqrestore(&periph_ref_lock, flags);
-> -		return;
-> -	}
-> +	WARN_ON(!gate->enable_refcnt[gate->clk_num]);
-> +
-> +	if (gate->enable_refcnt[gate->clk_num]-- == 1)
-> +		clk_periph_disable_locked(hw);
+Hi,
 
-Nit: "if (--n == 0)" seems more natural, as you want to call
-clk_periph_disable_locked() when the refcount goes down to 0.
+On Mon, Mar 08, 2021 at 11:47:46AM -0800, Raj, Ashok wrote:
+> That is the primary motivation, given that we have moved to 1st level for
+> general IOVA, first level doesn't have a WO mapping. I didn't know enough
+> about the history to determine if a WO without a READ is very useful. I
+> guess the ZLR was invented to support those cases without a READ in PCIe. I
 
-[...]
->  	/*
-> -	 * If peripheral is in the APB bus then read the APB bus to
-> -	 * flush the write operation in apb bus. This will avoid the
-> -	 * peripheral access after disabling clock
-> +	 * Some clocks are duplicated and some of them are marked as critical,
-> +	 * like fuse and fuse_burn for example, thus the enable_refcnt will
-> +	 * be non-zero here id the "unused" duplicate is disabled by CCF.
+Okay, please update the commit message and re-send. I guess these
+patches are 5.13 stuff. In that case, Baolu can include them into his
+pull request later this cycle.
 
-s/id/if/ ?
+Regards,
 
-Best Regards
-Micha³ Miros³aw
+	Joerg
