@@ -2,78 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BAF340004
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EBE34000E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:09:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229559AbhCRHHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 03:07:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
+        id S229739AbhCRHJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 03:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhCRHHB (ORCPT
+        with ESMTP id S229564AbhCRHIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 03:07:01 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F6BC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 00:07:01 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1lMmkF-0004vU-6M; Thu, 18 Mar 2021 08:06:59 +0100
-Subject: Re: [PATCH] KEYS: trusted: tee: fix build error due to missing
- include
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>, kernel@pengutronix.de,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210317142904.27855-1-a.fatoum@pengutronix.de>
- <YFJ7UOagBgm5Fn0/@kernel.org>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <94f5e918-21d4-ddbb-1db5-35c7f8be347a@pengutronix.de>
-Date:   Thu, 18 Mar 2021 08:06:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 18 Mar 2021 03:08:41 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A72FC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 00:08:41 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id z6-20020a1c4c060000b029010f13694ba2so2656643wmf.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 00:08:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=to:cc:references:from:subject:message-id:date:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=tYyCLy2hNOWzr8X9wkzDu/aLJvecRkc3MlIGDL43D84=;
+        b=zd8JS1IsADKWR0H+haadl3kwgDVTY80wS5vVfwcKWHtA+Pc8uUUADplsCdwc58x9Ay
+         cz+eMWMeqWXNfmTvVzFmEKGfUJZzljEEV21WDaqoflGHGbdiXNbQWEka+8SL4jmRgmRt
+         AP0u2/ipb/3a33yPjSuMSY9nzLnGzl3H6ULxMawzzELwBc5T9pTpDm+m2XFZkKrJ1zj5
+         iSQE/TSbkZ26RG0MMa4FOGDu7nhbBxfqeAi4Ylccp1HXSbMLmRqshH97R3BpAV9cMP0+
+         v3GKw8vYSFoxz/K4WdTtA4/WjHwkLcGYhK/5THvaZYzseLzZUh5UWMlfwHWSZWSY6VIF
+         Jtbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tYyCLy2hNOWzr8X9wkzDu/aLJvecRkc3MlIGDL43D84=;
+        b=SfBwF6yDlCYjR7TIBDdpABOBmW8JFgognh+5Y1Hf/6iyoxFtyLnz9GrKNUiZ3X7OPW
+         CWe0lWSb3sgnvRFvfuPTIAOvMEtHhX30UE+L3Lz16FJ1Ylb+rlxybXrWQEgDR2o0z1+F
+         vphW2evXT17IhYKbw2nL6MSp+gmOFYA1mrAtb9A84xoHJ7bwpRal+1p0/DePhvjq15En
+         bE32AG4I2YAT/zcG1efT8YVuZ7ILd4V0IZoiC64pAMz6v679jy5Pkyp70WgQMuGzAHsh
+         LK068D42PQZLvnUAEncZoY3/9cKMMaNIGjUVSc6bAcV2MVtUHb8lX7fBKa6tRaJUBLz7
+         rcgA==
+X-Gm-Message-State: AOAM531+mGnG4iha8c+z1rbfwwRv+rT1eEgVsxMecJl/k+q0DR7q5Gki
+        F2A+U4awOxZLry6uyGaFRm4sveLT3TIdlw==
+X-Google-Smtp-Source: ABdhPJx2mwu56ekL6RAkkwFD/e0wUpre3b1LhPriPxcJtF90oIkr/C7m31U9JM3IOE2Alq7gYWwTOA==
+X-Received: by 2002:a05:600c:290a:: with SMTP id i10mr2143686wmd.91.1616051320240;
+        Thu, 18 Mar 2021 00:08:40 -0700 (PDT)
+Received: from [10.44.66.8] ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id e18sm1696061wru.73.2021.03.18.00.08.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 00:08:39 -0700 (PDT)
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Odelu Kukatla <okukatla@codeaurora.org>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210302134323.2822076-1-vkoul@kernel.org>
+ <20210302134323.2822076-3-vkoul@kernel.org>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Subject: Re: [PATCH v2 2/2] interconnect: qcom: Add SM8350 interconnect
+ provider driver
+Message-ID: <0c405a3c-1759-34f3-08c6-116444479b09@linaro.org>
+Date:   Thu, 18 Mar 2021 09:08:39 +0200
 MIME-Version: 1.0
-In-Reply-To: <YFJ7UOagBgm5Fn0/@kernel.org>
+In-Reply-To: <20210302134323.2822076-3-vkoul@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jarkko,
+Hi Vinod,
 
-On 17.03.21 22:57, Jarkko Sakkinen wrote:
-> On Wed, Mar 17, 2021 at 03:29:05PM +0100, Ahmad Fatoum wrote:
->> MODULE_DEVICE_TABLE is defined in <linux/module.h>, which is not
->> included. Add the include to fix the build error its lack caused.
->>
->> Cc: Sumit Garg <sumit.garg@linaro.org>
->> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+On 3/2/21 15:43, Vinod Koul wrote:
+> Add driver for the Qualcomm interconnect buses found in SM8i350 based
+
+Still SM8i350? Have you checked my comments on v1?
+
+> platforms. The topology consists of several NoCs that are controlled by
+> a remote processor that collects the aggregated bandwidth for each
+> master-slave pairs.
 > 
-> Hi, I appreciate your work, thanks for taking action, but unfortunately
-> I already incorporated this fix to the original patch.
-
-Nothing unfortunate about this! :)
-
-Cheers,
-Ahmad
-
+> Generated from downstream interconnect driver written by David Dai
 > 
-> /Jarkko
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/interconnect/qcom/Kconfig  |  10 +
+>  drivers/interconnect/qcom/Makefile |   2 +
+>  drivers/interconnect/qcom/sm8350.c | 636 +++++++++++++++++++++++++++++
+>  drivers/interconnect/qcom/sm8350.h | 168 ++++++++
+>  4 files changed, 816 insertions(+)
+>  create mode 100644 drivers/interconnect/qcom/sm8350.c
+>  create mode 100644 drivers/interconnect/qcom/sm8350.h
 > 
+> diff --git a/drivers/interconnect/qcom/Kconfig b/drivers/interconnect/qcom/Kconfig
+> index ca52647f8955..836157d97cae 100644
+> --- a/drivers/interconnect/qcom/Kconfig
+> +++ b/drivers/interconnect/qcom/Kconfig
+> @@ -110,5 +110,15 @@ config INTERCONNECT_QCOM_SM8250
+>  	  This is a driver for the Qualcomm Network-on-Chip on sm8250-based
+>  	  platforms.
+>  
+> +config INTERCONNECT_QCOM_SM8350
+> +	tristate "Qualcomm SM8350 interconnect driver"
+> +	depends on INTERCONNECT_QCOM
+> +	depends on (QCOM_RPMH && QCOM_COMMAND_DB && OF) || COMPILE_TEST
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Again: depends on INTERCONNECT_QCOM_RPMH_POSSIBLE
+
+> +	select INTERCONNECT_QCOM_RPMH
+> +	select INTERCONNECT_QCOM_BCM_VOTER
+> +	help
+> +	  This is a driver for the Qualcomm Network-on-Chip on SM8350-based
+> +	  platforms.
+> +
+>  config INTERCONNECT_QCOM_SMD_RPM
+>  	tristate
+> diff --git a/drivers/interconnect/qcom/Makefile b/drivers/interconnect/qcom/Makefile
+> index c6a735df067e..93d97e590836 100644
+> --- a/drivers/interconnect/qcom/Makefile
+> +++ b/drivers/interconnect/qcom/Makefile
+> @@ -12,6 +12,7 @@ qnoc-sdm845-objs			:= sdm845.o
+>  qnoc-sdx55-objs				:= sdx55.o
+>  qnoc-sm8150-objs			:= sm8150.o
+>  qnoc-sm8250-objs			:= sm8250.o
+> +qnoc-sm8350-objs			:= sm8350.o
+>  icc-smd-rpm-objs			:= smd-rpm.o icc-rpm.o
+>  
+>  obj-$(CONFIG_INTERCONNECT_QCOM_BCM_VOTER) += icc-bcm-voter.o
+> @@ -26,4 +27,5 @@ obj-$(CONFIG_INTERCONNECT_QCOM_SDM845) += qnoc-sdm845.o
+>  obj-$(CONFIG_INTERCONNECT_QCOM_SDX55) += qnoc-sdx55.o
+>  obj-$(CONFIG_INTERCONNECT_QCOM_SM8150) += qnoc-sm8150.o
+>  obj-$(CONFIG_INTERCONNECT_QCOM_SM8250) += qnoc-sm8250.o
+> +obj-$(CONFIG_INTERCONNECT_QCOM_SM8350) += qnoc-sm8350.o
+>  obj-$(CONFIG_INTERCONNECT_QCOM_SMD_RPM) += icc-smd-rpm.o
+> diff --git a/drivers/interconnect/qcom/sm8350.c b/drivers/interconnect/qcom/sm8350.c
+> new file mode 100644
+> index 000000000000..55c76542aeff
+> --- /dev/null
+> +++ b/drivers/interconnect/qcom/sm8350.c
+> @@ -0,0 +1,636 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2021, Linaro Limited
+> + *
+> + */
+> +
+> +#include <linux/device.h>
+> +#include <linux/interconnect.h>
+> +#include <linux/interconnect-provider.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of_platform.h>
+
+Is this used?
+
+Thanks,
+Georgi
