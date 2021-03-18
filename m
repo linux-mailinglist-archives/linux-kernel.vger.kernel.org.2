@@ -2,85 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE20834062A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB0234062F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhCRMyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 08:54:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54648 "EHLO mail.kernel.org"
+        id S230473AbhCRM4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 08:56:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49692 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231349AbhCRMyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:54:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6295D64F53;
-        Thu, 18 Mar 2021 12:54:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616072055;
-        bh=PIgoILQ+JXQLKgHb4EX46KzQNin7qaWoZQINVA9rRg8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VM8uQb8n/g+eow1038PB3oZRgVelzhtSYvgJI8MQqo1iAMnUhxdMgv106lxMicZ1Q
-         cEAz8GE+D+1MmgYU+plwG6FP9I1LGuLZBWA6CEhW3dbbYLaL+q/xba7NWBVVUXSnhO
-         /EnXkZ+kYh1MrYkVXEVondrGhlT3o7Eg2SjZbg0ZQjlWl/GVtr0vXj6uftVzTNGSt6
-         qYJbtg8C4gKegkvBnPQhxWhDqpUfM+IZNlKtGDPAEx/+yOv8Vg1tp0WIfJ4d0AC7M4
-         ZBcGj0GbqKApy92ULDA3xumziIdyp4F0rlKYef9yfmSAbVzXB+12xRTzXfzk8ac02K
-         MmK6yxy0yFa3Q==
-Received: by mail-wr1-f45.google.com with SMTP id b9so5419756wrt.8;
-        Thu, 18 Mar 2021 05:54:15 -0700 (PDT)
-X-Gm-Message-State: AOAM532xLCaQIB1htnOvuLS75QFnkNZM0ihX85NMJzLjxZh5nQJ6KJrq
-        FICwswnlYkvaZlGyUSsKvx13Nwq7gpEJFsrVlA==
-X-Google-Smtp-Source: ABdhPJwLERCk/N5J3yNu9yr15qTSlb8M38k26qtsk7H27iH5P5Ntdy0rj4/mqmw1+bjPHgvQ7F5zwKMruCOCx4m9TeY=
-X-Received: by 2002:adf:e84f:: with SMTP id d15mr9572196wrn.394.1616072054006;
- Thu, 18 Mar 2021 05:54:14 -0700 (PDT)
+        id S230477AbhCRM4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 08:56:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8637AAC1E;
+        Thu, 18 Mar 2021 12:56:06 +0000 (UTC)
+Subject: Re: [PATCH] mm/slub: Add slub_debug option to panic on memory
+ corruption
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Georgi Djakov <georgi.djakov@linaro.org>, linux-mm@kvack.org,
+        akpm@linux-foundation.org, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com, corbet@lwn.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210309134720.29052-1-georgi.djakov@linaro.org>
+ <390d8a2f-ead9-48a9-99eb-65c73bd18422@suse.cz>
+ <6bfebf01-5f52-49bd-380b-04785c474c81@linaro.org>
+ <8fd43de6-71e4-cfe7-8208-32753cf1c363@suse.cz>
+ <202103172244.D5ADB06A96@keescook>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <ea740a0a-6225-3d6c-095d-1c456e497e3a@suse.cz>
+Date:   Thu, 18 Mar 2021 13:56:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <1616046056-29068-1-git-send-email-rex-bc.chen@mediatek.com>
-In-Reply-To: <1616046056-29068-1-git-send-email-rex-bc.chen@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 18 Mar 2021 20:54:02 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-V7=ooGE1DhAjQR4MrsCmwocARYqUkB_aoJNbVK8Hdyg@mail.gmail.com>
-Message-ID: <CAAOTY_-V7=ooGE1DhAjQR4MrsCmwocARYqUkB_aoJNbVK8Hdyg@mail.gmail.com>
-Subject: Re: [v5,0/2] Add check for max clock rate in mode_valid
-To:     Rex-BC Chen <rex-bc.chen@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <202103172244.D5ADB06A96@keescook>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Rex:
+On 3/18/21 6:48 AM, Kees Cook wrote:
+> On Tue, Mar 09, 2021 at 07:18:32PM +0100, Vlastimil Babka wrote:
+>> On 3/9/21 7:14 PM, Georgi Djakov wrote:
+>> > Hi Vlastimil,
+>> > 
+>> > Thanks for the comment!
+>> > 
+>> > On 3/9/21 17:09, Vlastimil Babka wrote:
+>> >> On 3/9/21 2:47 PM, Georgi Djakov wrote:
+>> >>> Being able to stop the system immediately when a memory corruption
+>> >>> is detected is crucial to finding the source of it. This is very
+>> >>> useful when the memory can be inspected with kdump or other tools.
+>> >>
+>> >> Is this in some testing scenarios where you would also use e.g. panic_on_warn?
+>> >> We could hook to that. If not, we could introduce a new
+>> >> panic_on_memory_corruption that would apply also for debug_pagealloc and whatnot?
+>> > 
+>> > I would prefer that we not tie it with panic_on_warn - there might be lots of
+>> > new code in multiple subsystems, so hitting some WARNing while testing is not
+>> > something unexpected.
+>> > 
+>> > Introducing an additional panic_on_memory_corruption would work, but i noticed
+>> > that we already have slub_debug and thought to re-use that. But indeed, аdding
+>> > an option to panic in for example bad_page() sounds also useful, if that's what
+>> > you suggest.
+>> 
+>> Yes, that would be another example.
+>> Also CCing Kees for input, as besides the "kdump ASAP for debugging" case, I can
+>> imagine security hardening folks could be interested in the "somebody might have
+>> just failed to pwn the kernel, better panic than let them continue" angle. But
+>> I'm naive wrt security, so it might be a stupid idea :)
+> 
+> I've really wanted such things, but Linus has been pretty adamant about
+> not wanting to provide new "panic" paths (or even BUG usage[1]). It
+> seems that panic_on_warn remains the way to get this behavior,
+> with the understanding that WARN should only be produced on
+> expected-to-be-impossible situations[1].
+> 
+> Hitting a WARN while testing should result in either finding and fixing
+> a real bug, or removing the WARN in favor of pr_warn(). :)
 
+I was going to suggest adding a panic_on_taint parameter... but turns out it was
+already added last year! And various memory corruption detections already use
+TAINT_BAD_PAGE, including SLUB.
+If anything's missing an add_taint() it can be added, and with the parameter you
+should get what you want.
 
-For this series, applied to mediatek-drm-next [1], thanks.
+> -Kees
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#bug-and-bug-on
+> 
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
-
-Regards,
-Chun-Kuang.
-
-Rex-BC Chen <rex-bc.chen@mediatek.com> =E6=96=BC 2021=E5=B9=B43=E6=9C=8818=
-=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=881:41=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> Changes in v5:
->   fix build error
->
-> Changes in v4:
->   add Author and add patch description
->
-> Rex-BC Chen (2):
->   drm/mediatek: mtk_dpi: Add check for max clock rate in mode_valid
->   drm/mediatek: mtk_dpi: Add dpi config for mt8192
->
->  drivers/gpu/drm/mediatek/mtk_dpi.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
->
-> --
-> 2.18.0
->
