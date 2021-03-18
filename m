@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378C9340DF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:15:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B21340DFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:16:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232793AbhCRTO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 15:14:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232304AbhCRTOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 15:14:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C97564F01;
-        Thu, 18 Mar 2021 19:14:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616094877;
-        bh=FDvUi5y3gmbGQqDpbsgRjjzwZmNqO7cadEh1mqrBz9o=;
-        h=Date:From:To:Cc:Subject:From;
-        b=EsEKhmnMfPvdDh+gmHPd1L8Q3xRnLnfrB22K1XGsWoUvn4Dxiaa2oafMHGHqRQyTb
-         2wJaOtNqiS+aqzAfMjl6/fsCqIQSBYU4vN+QFb3Avm8ZCqAGeUdPCHrvWW0Cw4H8jF
-         fuQ7b2m1MYgjA+DSjpMCMZhIX91+pUt0daXjoNid0mycj21Me6W0F8HYgAEfGR8vHs
-         V+zDMeJUrxpOIeC7ErD1+JbLQnCHe5+KujH/ghzHOYBn0awQmwQ2sfXzhFSaqBnzSA
-         s2rFTvM/kasKqyJ/Rkf3ZKQLkwFqFRTtHgR7dbGcXPeSWRmaRf0ZkJn2GJAfN+pQoL
-         1bQ5qxpxKWP3w==
-Date:   Thu, 18 Mar 2021 12:14:36 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
+        id S232728AbhCRTQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 15:16:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30170 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232759AbhCRTPo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 15:15:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616094943;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=UrN6I/K64VfQCttfF8qXoz5SoRAyjeSvtF00DW1eR4I=;
+        b=Ns1dRhOnx+GBUx5KXQay7y2qAXgRp4fzU1PDvG6vbB0jLMOCVn7g43J/DV6e7ULZJ8bLGO
+        vseG5lt/ILRxrQHK+7PWKuzQ3xc65mC0NrNNKqrLeCdhYOslWgJscn4SwAGjkbfQQCdFLe
+        zM2qnkrPMphie1vCvc0VNo5UmHLsbTA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-3LcEhTwLPCSXOj0Z9u-Bog-1; Thu, 18 Mar 2021 15:15:41 -0400
+X-MC-Unique: 3LcEhTwLPCSXOj0Z9u-Bog-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2EC1018C89C4;
+        Thu, 18 Mar 2021 19:15:40 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A60215D9C6;
+        Thu, 18 Mar 2021 19:15:39 +0000 (UTC)
+Date:   Thu, 18 Mar 2021 13:15:39 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de
-Subject: [GIT PULL] xfs: fixes for 5.12-rc4
-Message-ID: <20210318191436.GL22100@magnolia>
+Cc:     <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        steven.sistare@oracle.com, jgg@nvidia.com,
+        daniel.m.jordan@oracle.com
+Subject: [GIT PULL] VFIO fixes for v5.12-rc4
+Message-ID: <20210318131539.1c66212d@omen.home.shazbot.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Linus,
 
-Please pull the following branch containing some fixes to the xfs code
-for 5.12-rc4.  There's a couple of minor corrections for the new
-idmapping functionality, and a fix for a theoretical hang that could
-occur if we decide to abort a mount after dirtying the quota inodes.
+The following changes since commit 1e28eed17697bcf343c6743f0028cc3b5dd88bf0:
 
-This branch merges cleanly with upstream as of a few minutes ago.
-Please let me know if anything else strange happens during the merge
-process.
-
---D
-
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
-
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+  Linux 5.12-rc3 (2021-03-14 14:41:02 -0700)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.12-fixes-3
+  git://github.com/awilliam/linux-vfio.git tags/vfio-v5.12-rc4
 
-for you to fetch changes up to 8723d5ba8bdae1c41be7a6fc8469dc9aa551e7d0:
+for you to fetch changes up to 4ab4fcfce5b540227d80eb32f1db45ab615f7c92:
 
-  xfs: also reject BULKSTAT_SINGLE in a mount user namespace (2021-03-15 08:50:41 -0700)
-
-----------------------------------------------------------------
-Changes for 5.12-rc3:
- - Fix quota accounting on creat() when id mapping is enabled.
- - Actually reclaim dirty quota inodes when mount fails.
- - Typo fixes for documentation.
- - Restrict both bulkstat calls on idmapped/namespaced mounts.
+  vfio/type1: fix vaddr_get_pfns() return in vfio_pin_page_external() (2021-03-16 10:39:29 -0600)
 
 ----------------------------------------------------------------
-Bhaskar Chowdhury (1):
-      docs: ABI: Fix the spelling oustanding to outstanding in the file sysfs-fs-xfs
+VFIO fixes for v5.12-rc4
 
-Christoph Hellwig (1):
-      xfs: also reject BULKSTAT_SINGLE in a mount user namespace
+ - Fix 32-bit issue with new unmap-all flag (Steve Sistare)
 
-Darrick J. Wong (2):
-      xfs: fix quota accounting when a mount is idmapped
-      xfs: force log and push AIL to clear pinned inodes when aborting mount
+ - Various Kconfig changes for better coverage (Jason Gunthorpe)
 
- Documentation/ABI/testing/sysfs-fs-xfs |  2 +-
- fs/xfs/xfs_inode.c                     | 14 +++---
- fs/xfs/xfs_itable.c                    |  6 +++
- fs/xfs/xfs_mount.c                     | 90 +++++++++++++++++-----------------
- fs/xfs/xfs_symlink.c                   |  3 +-
- 5 files changed, 61 insertions(+), 54 deletions(-)
+ - Fix to batch pinning support (Daniel Jordan)
+
+----------------------------------------------------------------
+Daniel Jordan (1):
+      vfio/type1: fix vaddr_get_pfns() return in vfio_pin_page_external()
+
+Jason Gunthorpe (4):
+      vfio: IOMMU_API should be selected
+      vfio-platform: Add COMPILE_TEST to VFIO_PLATFORM
+      ARM: amba: Allow some ARM_AMBA users to compile with COMPILE_TEST
+      vfio: Depend on MMU
+
+Steve Sistare (1):
+      vfio/type1: fix unmap all on ILP32
+
+ drivers/vfio/Kconfig            |  4 ++--
+ drivers/vfio/platform/Kconfig   |  4 ++--
+ drivers/vfio/vfio_iommu_type1.c | 20 ++++++++++++--------
+ include/linux/amba/bus.h        | 11 +++++++++++
+ 4 files changed, 27 insertions(+), 12 deletions(-)
+
