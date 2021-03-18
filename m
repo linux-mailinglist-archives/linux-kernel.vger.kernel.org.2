@@ -2,119 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51187340AE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B38340AF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232252AbhCRREJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:04:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
+        id S232243AbhCRREk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232209AbhCRREE (ORCPT
+        with ESMTP id S231853AbhCRREb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:04:04 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E9FC06174A;
-        Thu, 18 Mar 2021 10:04:04 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id b9so5089483ejc.11;
-        Thu, 18 Mar 2021 10:04:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kGBtG1asT+naathIVeBKnaUsxi5B/fID3cTEy5mBPQc=;
-        b=c55hPvdd9epsvt7PhGitWFoldT52U22Ug5HNzDN/T7es7oYY/lCHk1pFBDWOFODTYm
-         REywWd9SShikMMSVPlNYVqYx/A92vbr0ojKSNoxL0pAQ/OEjgFjtLuXnPRDEh11fQBhR
-         NMcpOJlRB88B+Ln2gXSNe9zec64PmLQImVVTDn1Ou+dsI1HO4hoUrQ/i/tDX52eTk4GV
-         OFQoikJ6Z61V4wqOl36HiExDQVBZSQf1JVCjrM9Qwb+YuN1vT6sij1Z7GmLe96VXdoIE
-         I+KKHQqpz7yKffNssmUnkhwVSPaAe3lszzLxchYV0nrpz1XMgQP7s9aVEpuskjqlOeGg
-         8cIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kGBtG1asT+naathIVeBKnaUsxi5B/fID3cTEy5mBPQc=;
-        b=bT0DjZ1wr5/N7vMxX4oq2AAbos3/rahpiP0OFh1woZ8M7Iy7EpfnRAmdrk5OxZmHjv
-         meGVdsTLhDjHiZGoaJiqk84bTDp/LwXvOOP94vDAQTsDiPLjOO2+n1wF1uxu+9XgU/qk
-         8j7kyGGuzUZtJWtXDIp735ApnHtkoagDInd4CyH5ts9bG2MFDimW7wS6kp/zz6I6/5dP
-         0nDT0h3e9g4YBkkZEXbxJvmkdoBxqah3Cbw4SaVC11nvFtLtsxbM2xSAzL+E5dkOJdAx
-         aRPk61UGNfAnosm/tjkM9U77HtAM8nxAsxtwo8uXVB1h10ifKvgfI+ph57trGe2pMhCW
-         tfCQ==
-X-Gm-Message-State: AOAM530FH2aksY0RBQ2GU9MT9zbUs61AWJR0o4tLwduc3hPV6RoCNTqF
-        SoXKXqWPD2nkQYqOZBIGtcc=
-X-Google-Smtp-Source: ABdhPJxSLLaNIMAQ4v8UXlcygmjrzAvNeQO8iiZ+xrX3sa3p58SRwiKRsYlJBx/bTC/Mi9+08DREZg==
-X-Received: by 2002:a17:906:d9c9:: with SMTP id qk9mr41349939ejb.504.1616087042982;
-        Thu, 18 Mar 2021 10:04:02 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id v1sm2191787ejd.3.2021.03.18.10.04.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 10:04:02 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 19:04:01 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Michael Walle <michael@walle.cc>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net-next] net: phy: at803x: remove at803x_aneg_done()
-Message-ID: <20210318170401.mvvwryi7exouyrzy@skbuf>
-References: <20210318142356.30702-1-michael@walle.cc>
- <411c3508-978e-4562-f1e9-33ca7e98a752@gmail.com>
- <20210318151712.7hmdaufxylyl33em@skbuf>
- <ee24b531-df8b-fa3d-c7fd-8c529ecba4c8@gmail.com>
- <ae201dadd6842f533aaa2e1440209784@walle.cc>
+        Thu, 18 Mar 2021 13:04:31 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67535C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:04:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4Xe7zwmlgGzSOHd/wCg1g8Gl8QpxPFqOs1EqrRyWaFg=; b=OL/6ipAcXHtNK8oK9oZ0RUCAoA
+        ZaIOKrX0j6vihHNCkDAbR/e48uADSFKmxmWJ0crz1HrL+yPoO0kDpOIFL0GcA0QagRzyKVCtPbYMe
+        dIwL+6ZPy8YQiHWXuxJw/0y1zyzD6UIMTm0XNUB3s169xSXpeZ4tUm8QKOs+wt7Fi7JiyRZ71EYWp
+        k+CIz+PvtqyVIMHAPZxGeqOz0rPuOQPZTE4dUeYCQR5lvcRivFDKGw98PUIyXH4oaWWT6JLxymh5o
+        uG5JhmMYJ7XnK0j085IKJgBBGVPiEtSaVNIg0FftjQBVCfRYTDO18qEGb22BD+Vx58VUjt8xJnh85
+        3Xbp0KVg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMw4Q-005eRl-57; Thu, 18 Mar 2021 17:04:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6827E305C10;
+        Thu, 18 Mar 2021 18:04:25 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4DBA720D38741; Thu, 18 Mar 2021 18:04:25 +0100 (CET)
+Date:   Thu, 18 Mar 2021 18:04:25 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, jgross@suse.com, mbenes@suze.cz,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/9] objtool: Rework rebuild_reloc logic
+Message-ID: <YFOIGYblhHTqp/fa@hirez.programming.kicks-ass.net>
+References: <20210312171613.533405394@infradead.org>
+ <20210312171653.649709484@infradead.org>
+ <20210317033417.lbwemc2j2cpsdlzd@treble>
+ <YFG53wkgw6nDBgIl@hirez.programming.kicks-ass.net>
+ <20210318004917.sytcivxy5h2ujttc@treble>
+ <YFNOH1m+FrFK8TRN@hirez.programming.kicks-ass.net>
+ <20210318163640.5u6rucdk66aodun7@treble>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ae201dadd6842f533aaa2e1440209784@walle.cc>
+In-Reply-To: <20210318163640.5u6rucdk66aodun7@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 05:38:13PM +0100, Michael Walle wrote:
-> Am 2021-03-18 17:21, schrieb Heiner Kallweit:
-> > On 18.03.2021 16:17, Vladimir Oltean wrote:
-> > > On Thu, Mar 18, 2021 at 03:54:00PM +0100, Heiner Kallweit wrote:
-> > > > On 18.03.2021 15:23, Michael Walle wrote:
-> > > > > at803x_aneg_done() is pretty much dead code since the patch series
-> > > > > "net: phy: improve and simplify phylib state machine" [1].
-> > > > > Remove it.
-> > > > >
-> > > >
-> > > > Well, it's not dead, it's resting .. There are few places where
-> > > > phy_aneg_done() is used. So you would need to explain:
-> > > > - why these users can't be used with this PHY driver
-> > > > - or why the aneg_done callback isn't needed here and the
-> > > >   genphy_aneg_done() fallback is sufficient
-> > >
-> > > The piece of code that Michael is removing keeps the aneg reporting as
-> > > "not done" even when the copper-side link was reported as up, but the
-> > > in-band autoneg has not finished.
-> > >
-> > > That was the _intended_ behavior when that code was introduced, and
-> > > you
-> > > have said about it:
-> > > https://www.spinics.net/lists/stable/msg389193.html
-> > >
-> > > | That's not nice from the PHY:
-> > > | It signals "link up", and if the system asks the PHY for link details,
-> > > | then it sheepishly says "well, link is *almost* up".
-> > >
-> > > If the specification of phy_aneg_done behavior does not include
-> > > in-band
-> > > autoneg (and it doesn't), then this piece of code does not belong
-> > > here.
-> > >
-> > > The fact that we can no longer trigger this code from phylib is yet
-> > > another reason why it fails at its intended (and wrong) purpose and
-> > > should be removed.
-> > >
-> > I don't argue against the change, I just think that the current commit
-> > description isn't sufficient. What you just said I would have expected
-> > in the commit description.
->
-> I'll come up with a better one, Vladimir, may I use parts of the text
-> above?
+On Thu, Mar 18, 2021 at 11:36:40AM -0500, Josh Poimboeuf wrote:
+> > I was thinking you could get a section changed without touching
+> > relocations, but while that is theoretically possible, it is exceedingly
+> > unlikely (and objtool doesn't do that).
+> 
+> Hm?  This is a *relocation* section, not a normal one.  So by
+> definition, it only changes when its relocations change.
 
-My words aren't copyrighted, so feel free, however you might want to
-check with Heiner too for his part, you never know.
+The way I read this code:
+
+ 	list_for_each_entry(sec, &elf->sections, list) {
+ 		if (sec->changed) {
++			if (sec->reloc &&
++			    elf_rebuild_reloc_section(elf, sec->reloc)) {
++				WARN_ELF("elf_rebuild_reloc_section");
++				return -1;
++			}
+
+is that we iterate the regular sections (which could be dirtied because
+we changed some data), and if that section has a relocation section, we
+rebuild that for good measure (even though it might not have altered
+relocations).
+
+Or am I just totally confused ?
