@@ -2,305 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19EF33403F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:53:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1DC23403FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:55:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhCRKwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 06:52:50 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33770 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbhCRKwg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 06:52:36 -0400
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1lMqGW-0007Bb-3z; Thu, 18 Mar 2021 10:52:32 +0000
-Date:   Thu, 18 Mar 2021 11:52:30 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steve Grubb <sgrubb@redhat.com>, x86@kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Eric Paris <eparis@redhat.com>, linux-alpha@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Aleksa Sarai <cyphar@cyphar.com>
-Subject: Re: [PATCH 1/2] audit: add support for the openat2 syscall
-Message-ID: <20210318105230.4ggpg5r3clloa6br@wittgenstein>
-References: <cover.1616031035.git.rgb@redhat.com>
- <49510cacfb5fbbaa312a4a389f3a6619675007ab.1616031035.git.rgb@redhat.com>
- <20210318104843.uiga6tmmhn5wfhbs@wittgenstein>
-MIME-Version: 1.0
+        id S230188AbhCRKy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 06:54:29 -0400
+Received: from mail-bn7nam10on2067.outbound.protection.outlook.com ([40.107.92.67]:60630
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230001AbhCRKyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 06:54:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bkBSEIol5MOwNiqxfKT6pirCwCalGzQZFG30BL4yEAwLIhxTt/acJgIsSfVjIXoDIfseezUeOQxlxCa0nSIVndPZSqkYX3ww8vy+54O4O0ZAaQt0xJfSMNi1X0LkCFAkTnYNBCzgj+QN59JuiAzD+AqC6SMVz5ZyrmXFf7miGnZq/glguioDu4DCXv8nYCfKlc3Or6L7meneKoB0Q+NW8ilJa2h5NRQyCkxSHqSSZDWWPNg2/BuKIW+8bITnlEM0sDRKoMqUtGYE74t4NqtlaMvIcLQoUp5LgVUJHcwBJBwq2OIYyRU8QX9wPOouPTDwfMuU83yEbQBMaYeqgsamOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dhg5PzowF2QV+olfDLlfjU1Yg+4DjpsgcAABr9B+hrU=;
+ b=V6mlDoTbeBqka/OhXJm5GUYVcbusKEUu5hiDNWeGKMLdqe9/ea2T8o2Or0MP189XrRwdgZJ/UvxpDhxiIpjp3DbnBynWHyEdBPy/iPRYvYkoF9xqMfeuEkBLNdLEh1Fw32NF455FD219JSEcO1UO5m1GrIoGoEbKvXQQjtZZVeTNtN84WcD/owJmKxJT0ypnLWNIjDy9f8T8fm6Sn87I3nCUj7MdDzbNJYV0YuN7+EO/q1PVThMK85kz6/6C87kUNZPK0KmdCvE1pFYWd8LpIusEQk7rdxKXQfPVb6xY5GZ+jEreNAKEJQQv8nAwsi3rv0wDNObeeAIx7YPbj+ICeA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dhg5PzowF2QV+olfDLlfjU1Yg+4DjpsgcAABr9B+hrU=;
+ b=ur96DSe1Ht5c0Lx4Y91W9GoetGw+aX+LIMm5/EyqoDJfe5i6Q0H2hJb+iFkzXVEw9Yd5twVSqQ1LMEW5tWYkLPGql5tCvHt1pVWz70f0O0+93uHbPGYR80oIT1G+UquHXkcTHQ1WHk1/48MPnAhQVZ3h4dXC0sXYNwwUbsznCY0=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from CY4PR1201MB2549.namprd12.prod.outlook.com
+ (2603:10b6:903:da::10) by CY4PR1201MB2549.namprd12.prod.outlook.com
+ (2603:10b6:903:da::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Thu, 18 Mar
+ 2021 10:54:16 +0000
+Received: from CY4PR1201MB2549.namprd12.prod.outlook.com
+ ([fe80::e974:eaaf:2994:ccb6]) by CY4PR1201MB2549.namprd12.prod.outlook.com
+ ([fe80::e974:eaaf:2994:ccb6%4]) with mapi id 15.20.3955.018; Thu, 18 Mar 2021
+ 10:54:16 +0000
+Subject: Re: [PATCH v7 2/3] dmaengine: ptdma: register PTDMA controller as a
+ DMA resource
+To:     Vinod Koul <vkoul@kernel.org>, Sanjay R Mehta <Sanju.Mehta@amd.com>
+Cc:     gregkh@linuxfoundation.org, dan.j.williams@intel.com,
+        Thomas.Lendacky@amd.com, Shyam-sundar.S-k@amd.com,
+        Nehal-bakulchandra.Shah@amd.com, robh@kernel.org,
+        mchehab+samsung@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+References: <1602833947-82021-1-git-send-email-Sanju.Mehta@amd.com>
+ <1602833947-82021-3-git-send-email-Sanju.Mehta@amd.com>
+ <20201118121623.GR50232@vkoul-mobl>
+From:   Sanjay R Mehta <sanmehta@amd.com>
+Message-ID: <19466c1a-88a2-eeb2-77c0-9c0df1975713@amd.com>
+Date:   Thu, 18 Mar 2021 16:24:02 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+In-Reply-To: <20201118121623.GR50232@vkoul-mobl>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210318104843.uiga6tmmhn5wfhbs@wittgenstein>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.159.242]
+X-ClientProxiedBy: BM1PR01CA0111.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00::27)
+ To CY4PR1201MB2549.namprd12.prod.outlook.com (2603:10b6:903:da::10)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.31.32.35] (165.204.159.242) by BM1PR01CA0111.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Thu, 18 Mar 2021 10:54:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e5596f27-bffc-4340-b09f-08d8e9fc2cab
+X-MS-TrafficTypeDiagnostic: CY4PR1201MB2549:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR1201MB2549AD0BB4CEE2EACB8BD0ABE5699@CY4PR1201MB2549.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rFmHG1rlYamwgbzID66AXe7cRXDzGddN5bXmHpOjy6my8A/Y8hajawnjYJJgAcxYIhXkXkwJL8exDImuKssoxt/nICpaTwFxHXGUTpd5IrotlUlTd/HyVa3jI93vpLcg7/iwNch89Y81CuM8M/aw3rcZvLBaj2l949TCr9z0xC/vIVYm0GLVnMQ5ozFk7IeSiZm7K1kxNJDR0eUuZDnSoRXc0SbcJXiGkddGiEfpMbIHjRzW2TCqN4QSsVSiR6kAiDnUJvkRNuS9nhLJ+hKT1pPFVPALLRDdJ4m98Fd3hviuNxJKvh3AokIZSAEcDck5+CJCFZe4BcN3HtbUoTnaYQH9b2GDT9imtbhFxFIkmAk4vg+AboIOmezEujvas3n4cq2/lMwX8nUUBKMQ37B2a27NkYZ04JGmgQRin+RyKOJg53u3xHuFYpVhpubgXNu7McwWhHNqYuT+/UfvDHW9X9fMSGTRm+h3t4BDRMXD9e2CQe60dzRtu1JY1DDj1bXQgYhm27Rt74DQ7SB3CNwNQHYFC7C5W1ESA9vcRmcabsTsCBiXqEdnL647DVKPUHyAFek8h44l8WxrI0sO8WEybj0h8hqM4o1O3bkgdFC1DxaqHwGT5DAn5WoCKlxBBRF4jipMQYAeMq+dfPqg2TNqpbeZ5+V8r5QLlFbBDMY4NQOM4xd7BzCjA1Pkfj2jAUsD
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1201MB2549.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(136003)(376002)(366004)(956004)(4744005)(2616005)(8676002)(4326008)(52116002)(66946007)(16576012)(31696002)(66476007)(6636002)(5660300002)(66556008)(2906002)(8936002)(6666004)(110136005)(6486002)(478600001)(38100700001)(36756003)(16526019)(31686004)(316002)(186003)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?M0pFbWh1a0tOTUhwQ2dTN0x4U3RsRmFaUWgzL0VoOFBoUTdxUHkrRm9SSWgx?=
+ =?utf-8?B?YXo3MUZQMHdsNTFZc2xXek0zczVINUpITXRCZFNxaU1UMFVEMjlXVVR0OEVD?=
+ =?utf-8?B?emc2SUJtdW42S1VvUzVLalZxWnZQNkRnZWdnaXc3cEY5b1U5SHVUL25nL1dI?=
+ =?utf-8?B?QzdFUUxPZDExb29WRllVTHQ1eHdCT0diVWFidDFMeHdIZCtlZjZaTWcvT3Z5?=
+ =?utf-8?B?cVk5cFRCcXFCbkh3MVBDM2hJd1VvVGowZmp1YTZZekFxM3ByVzFOUGtpSlpl?=
+ =?utf-8?B?ektBVThJNHRXM1RmcVZOQ0czZTNDeVkvUlo5SloxU1kwSkJiYklCZnEyb0F4?=
+ =?utf-8?B?c1d2MTdQdXhPLzhDTEd0Um1KZnNpSkJuMFpmeUpsakhTanI0L205N1J1VXRQ?=
+ =?utf-8?B?c1ZydUFrdm9wcUErcWMzK2d0TkUvWEVBTm1CK2xRcHpaVi9HSk5ZSVNQbXAx?=
+ =?utf-8?B?aVYxZVVjYmhCQUUwV3BJRTBXcm5sYjNjNGxVbG5uLzYxblhTUDlld3BnYXcw?=
+ =?utf-8?B?VzY1STNNYUV3TUhuYkJwOUR6SnZGQnBTQWcrK1pqZUM5eTYyVlp4NDc0YVZM?=
+ =?utf-8?B?aWRXU05lZVdJK1dDNHl3cVdsV3RFa2k4cHhNUHAzczhlVzlWRTdaNWVwL25u?=
+ =?utf-8?B?MERaOTFNNW1tdm5VbTNmUGZybitMdVRKVW5pbUs1UjdkNk5ubFJuZTVBcEQ3?=
+ =?utf-8?B?OUtsLzhKelMwRFRzTmluMUZ4SEREOEkrOFpjMFFiSGpRMmpiR2I4U3pXSFd0?=
+ =?utf-8?B?aWFrZWg5S0ZuUGJtWCtCa0Y0MDl4RmR5ckViL2tZaE5ORGo0WGdiUFd1ZDcw?=
+ =?utf-8?B?TXdtUG1CZGdFRGR5alYra0FFc1pZWGIzUGNycmxEdmVtckJsQVF5UG5tUVUw?=
+ =?utf-8?B?a3hMT3hwVlZGbXAzLzVlaDlORDM4OXMwYVRZOWI2dG5VeTN2WCticmpqSTVh?=
+ =?utf-8?B?S21YSHpPei9KcisvTXpIK1B2cEUySjllSEFwUTFKb0NyVHpWOG9MRzlnK29t?=
+ =?utf-8?B?Y1lKU3JOZmVIWjdpZFFpeUdaM1k5VmZlSEorZEJ2SkpFdnNYLzFJMlNLdjRk?=
+ =?utf-8?B?KzZKdHY4ckxvdi85d1hmL1RXVlJPRXl6dmNLNWdQbXhCT3lkSEVKVytTQW1M?=
+ =?utf-8?B?eXBUWThyWGVINlN6RFpxRCtNdUtuMVRCaFpxdjdVSlV1SkIvc1U2UFJmSlFh?=
+ =?utf-8?B?U2J4RHhkV3BsdHJQQVB4RGc4NmY3dnhJMFlQZG1SUWtPTGR4bWEzTHJlZE9l?=
+ =?utf-8?B?dGJBampoR1F3TjFrd05TajN3Wk1od2prMmI4ODBhY2VqanJmZHY0Ymx3eUhm?=
+ =?utf-8?B?Nk1LQWFWUWUwdFg5Tk9kZEcwanZ1ZE9xWm1TbTVhUE9ORkx4VTlpQTYwQnF6?=
+ =?utf-8?B?VnhWdWJNRkRyQ25NMWVrYUJleGErM1dqNkVMaTM3dmlwMy9Ka2VmbWtGT0ln?=
+ =?utf-8?B?ZVJGQlJoazVxK28rSGx6QmZHV2M3azhZTlduemkxVGF3cU5FTzB4WVB5aVF5?=
+ =?utf-8?B?N2JlK0JHd1UzMVUzTDd4RGxzNVhHNnY2bDkzU3AzdXNxMmxLeG51dWNNRmE0?=
+ =?utf-8?B?NWdVT0lXTEZWM0NXMWgwS1VpTU0xTHl1TlZCZ1U0YTRqUlI1aGw2Z1JFbm00?=
+ =?utf-8?B?MnhoZjhSYUdINVJlRncrbWNsR3UvV1RNVG5jcnE4ZUJQSXd2OWQvaFE0aDBK?=
+ =?utf-8?B?ZERKaDBKeWFHMGszUlp5c1IrSm9Qa0N1SlYweXBNYmN2Y0NkRVc4UjRIK3NJ?=
+ =?utf-8?Q?7/3RsUZwpG8hXbpdjzO4IoLkjqGUMBj2QbYssl0?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e5596f27-bffc-4340-b09f-08d8e9fc2cab
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1201MB2549.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2021 10:54:16.4754
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Iq/p2h7kCvVy04tBj2fJtyUSDmbOQNxdAE2KkqD29Zxkj1g66KRYBJPqMgp6nX9kLmcbnZSiScV3NrDPZC5yAA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB2549
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 11:48:45AM +0100, Christian Brauner wrote:
-> [+Cc Aleksa, the author of openat2()]
+>> +     dma_dev->dst_addr_widths = PT_DMA_WIDTH(dma_get_mask(pt->dev));
+>> +     dma_dev->directions = DMA_MEM_TO_MEM;
+>> +     dma_dev->residue_granularity = DMA_RESIDUE_GRANULARITY_DESCRIPTOR;
+>> +     dma_cap_set(DMA_MEMCPY, dma_dev->cap_mask);
+>> +     dma_cap_set(DMA_INTERRUPT, dma_dev->cap_mask);
+>> +     dma_cap_set(DMA_PRIVATE, dma_dev->cap_mask);
 > 
-> and a comment below. :)
-> 
-> On Wed, Mar 17, 2021 at 09:47:17PM -0400, Richard Guy Briggs wrote:
-> > The openat2(2) syscall was added in kernel v5.6 with commit fddb5d430ad9
-> > ("open: introduce openat2(2) syscall")
-> > 
-> > Add the openat2(2) syscall to the audit syscall classifier.
-> > 
-> > See the github issue
-> > https://github.com/linux-audit/audit-kernel/issues/67
-> > 
-> > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> > ---
-> >  arch/alpha/kernel/audit.c          | 2 ++
-> >  arch/ia64/kernel/audit.c           | 2 ++
-> >  arch/parisc/kernel/audit.c         | 2 ++
-> >  arch/parisc/kernel/compat_audit.c  | 2 ++
-> >  arch/powerpc/kernel/audit.c        | 2 ++
-> >  arch/powerpc/kernel/compat_audit.c | 2 ++
-> >  arch/s390/kernel/audit.c           | 2 ++
-> >  arch/s390/kernel/compat_audit.c    | 2 ++
-> >  arch/sparc/kernel/audit.c          | 2 ++
-> >  arch/sparc/kernel/compat_audit.c   | 2 ++
-> >  arch/x86/ia32/audit.c              | 2 ++
-> >  arch/x86/kernel/audit_64.c         | 2 ++
-> >  kernel/auditsc.c                   | 3 +++
-> >  lib/audit.c                        | 4 ++++
-> >  lib/compat_audit.c                 | 4 ++++
-> >  15 files changed, 35 insertions(+)
-> > 
-> > diff --git a/arch/alpha/kernel/audit.c b/arch/alpha/kernel/audit.c
-> > index 96a9d18ff4c4..06a911b685d1 100644
-> > --- a/arch/alpha/kernel/audit.c
-> > +++ b/arch/alpha/kernel/audit.c
-> > @@ -42,6 +42,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
-> >  		return 3;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 0;
-> >  	}
-> > diff --git a/arch/ia64/kernel/audit.c b/arch/ia64/kernel/audit.c
-> > index 5192ca899fe6..5eaa888c8fd3 100644
-> > --- a/arch/ia64/kernel/audit.c
-> > +++ b/arch/ia64/kernel/audit.c
-> > @@ -43,6 +43,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
-> >  		return 3;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 0;
-> >  	}
-> > diff --git a/arch/parisc/kernel/audit.c b/arch/parisc/kernel/audit.c
-> > index 9eb47b2225d2..fc721a7727ba 100644
-> > --- a/arch/parisc/kernel/audit.c
-> > +++ b/arch/parisc/kernel/audit.c
-> > @@ -52,6 +52,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
-> >  		return 3;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 0;
-> >  	}
-> > diff --git a/arch/parisc/kernel/compat_audit.c b/arch/parisc/kernel/compat_audit.c
-> > index 20c39c9d86a9..fc6d35918c44 100644
-> > --- a/arch/parisc/kernel/compat_audit.c
-> > +++ b/arch/parisc/kernel/compat_audit.c
-> > @@ -35,6 +35,8 @@ int parisc32_classify_syscall(unsigned syscall)
-> >  		return 3;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 1;
-> >  	}
-> > diff --git a/arch/powerpc/kernel/audit.c b/arch/powerpc/kernel/audit.c
-> > index a2dddd7f3d09..8f32700b0baa 100644
-> > --- a/arch/powerpc/kernel/audit.c
-> > +++ b/arch/powerpc/kernel/audit.c
-> > @@ -54,6 +54,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
-> >  		return 4;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 0;
-> >  	}
-> > diff --git a/arch/powerpc/kernel/compat_audit.c b/arch/powerpc/kernel/compat_audit.c
-> > index 55c6ccda0a85..ebe45534b1c9 100644
-> > --- a/arch/powerpc/kernel/compat_audit.c
-> > +++ b/arch/powerpc/kernel/compat_audit.c
-> > @@ -38,6 +38,8 @@ int ppc32_classify_syscall(unsigned syscall)
-> >  		return 4;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 1;
-> >  	}
-> > diff --git a/arch/s390/kernel/audit.c b/arch/s390/kernel/audit.c
-> > index d395c6c9944c..d964cb94cfaf 100644
-> > --- a/arch/s390/kernel/audit.c
-> > +++ b/arch/s390/kernel/audit.c
-> > @@ -54,6 +54,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
-> >  		return 4;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 0;
-> >  	}
-> > diff --git a/arch/s390/kernel/compat_audit.c b/arch/s390/kernel/compat_audit.c
-> > index 444fb1f66944..f7b32933ce0e 100644
-> > --- a/arch/s390/kernel/compat_audit.c
-> > +++ b/arch/s390/kernel/compat_audit.c
-> > @@ -39,6 +39,8 @@ int s390_classify_syscall(unsigned syscall)
-> >  		return 4;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 1;
-> >  	}
-> > diff --git a/arch/sparc/kernel/audit.c b/arch/sparc/kernel/audit.c
-> > index a6e91bf34d48..b6dcca9c6520 100644
-> > --- a/arch/sparc/kernel/audit.c
-> > +++ b/arch/sparc/kernel/audit.c
-> > @@ -55,6 +55,8 @@ int audit_classify_syscall(int abi, unsigned int syscall)
-> >  		return 4;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 0;
-> >  	}
-> > diff --git a/arch/sparc/kernel/compat_audit.c b/arch/sparc/kernel/compat_audit.c
-> > index 10eeb4f15b20..d2652a1083ad 100644
-> > --- a/arch/sparc/kernel/compat_audit.c
-> > +++ b/arch/sparc/kernel/compat_audit.c
-> > @@ -39,6 +39,8 @@ int sparc32_classify_syscall(unsigned int syscall)
-> >  		return 4;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 1;
-> >  	}
-> > diff --git a/arch/x86/ia32/audit.c b/arch/x86/ia32/audit.c
-> > index 6efe6cb3768a..57a02ade5503 100644
-> > --- a/arch/x86/ia32/audit.c
-> > +++ b/arch/x86/ia32/audit.c
-> > @@ -39,6 +39,8 @@ int ia32_classify_syscall(unsigned syscall)
-> >  	case __NR_execve:
-> >  	case __NR_execveat:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 1;
-> >  	}
-> > diff --git a/arch/x86/kernel/audit_64.c b/arch/x86/kernel/audit_64.c
-> > index 83d9cad4e68b..39de1e021258 100644
-> > --- a/arch/x86/kernel/audit_64.c
-> > +++ b/arch/x86/kernel/audit_64.c
-> > @@ -53,6 +53,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
-> >  	case __NR_execve:
-> >  	case __NR_execveat:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 0;
-> >  	}
-> > diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> > index 8bb9ac84d2fb..f5616e70d129 100644
-> > --- a/kernel/auditsc.c
-> > +++ b/kernel/auditsc.c
-> > @@ -76,6 +76,7 @@
-> >  #include <linux/fsnotify_backend.h>
-> >  #include <uapi/linux/limits.h>
-> >  #include <uapi/linux/netfilter/nf_tables.h>
-> > +#include <uapi/linux/openat2.h>
-> >  
-> >  #include "audit.h"
-> >  
-> > @@ -195,6 +196,8 @@ static int audit_match_perm(struct audit_context *ctx, int mask)
-> >  		return ((mask & AUDIT_PERM_WRITE) && ctx->argv[0] == SYS_BIND);
-> >  	case 5: /* execve */
-> >  		return mask & AUDIT_PERM_EXEC;
-> > +	case 6: /* openat2 */
-> > +		return mask & ACC_MODE((u32)((struct open_how *)ctx->argv[2])->flags);
-> 
-> That looks a bit dodgy. Maybe sm like the below would be a bit better?
-> 
-> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> index 47fb48f42c93..531e882a5096 100644
-> --- a/kernel/auditsc.c
-> +++ b/kernel/auditsc.c
-> @@ -159,6 +159,7 @@ static const struct audit_nfcfgop_tab audit_nfcfgs[] = {
-> 
->  static int audit_match_perm(struct audit_context *ctx, int mask)
->  {
-> +       struct open_how *openat2;
->         unsigned n;
->         if (unlikely(!ctx))
->                 return 0;
-> @@ -195,6 +196,12 @@ static int audit_match_perm(struct audit_context *ctx, int mask)
->                 return ((mask & AUDIT_PERM_WRITE) && ctx->argv[0] == SYS_BIND);
->         case 5: /* execve */
->                 return mask & AUDIT_PERM_EXEC;
-> +       case 6: /* openat2 */
-> +               openat2 = ctx->argv[2];
-> +               if (upper_32_bits(openat2->flags))
-> +                       pr_warn("Some sensible warning about unknown flags");
-> +
-> +               return mask & ACC_MODE(lower_32_bits(openat2->flags));
->         default:
->                 return 0;
->         }
-> 
-> (Ideally we'd probably notice at build-time that we've got flags
-> exceeding 32bits. Could probably easily been done by exposing an all
-> flags macro somewhere and then we can place a BUILD_BUG_ON() or sm into
-> such places.)
+> Why DMA_PRIVATE for a memcpy function?
 
-And one more comment, why return a hard-coded integer from all of these
-architectures instead of introducing an enum in a central place with
-proper names idk:
+This DMA engine is intended to use with AMD NTB IP and not for general purpose DMA, hence set the cap as DMA_PRIVATE.
+Otherwise this DMA engine will be used for system DMA. Please correct me if my understanding is not right.
 
-enum audit_match_perm_t {
-	.
-	.
-	.
-	AUDIT_MATCH_PERM_EXECVE = 5,
-	AUDIT_MATCH_PERM_OPENAT2 = 6,
-	.
-	.
-	.
-}
 
-Then you can drop these hard-coded comments too and it's way less
-brittle overall.
+Also, I have implemented all of the comments for this patch except this. if this is fine, will send the next version for review.
 
-Christian
+Thanks,
+Sanjay
+
+> --
+> ~Vinod
+> 
