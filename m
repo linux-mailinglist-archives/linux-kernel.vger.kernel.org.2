@@ -2,118 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C651340203
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B30DF340201
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:26:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbhCRJ0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 05:26:09 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5097 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbhCRJZp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 05:25:45 -0400
-Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F1M651kgfzYKr5;
-        Thu, 18 Mar 2021 17:23:57 +0800 (CST)
-Received: from dggpemm100010.china.huawei.com (7.185.36.24) by
- DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 18 Mar 2021 17:25:42 +0800
-Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
- dggpemm100010.china.huawei.com (7.185.36.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 18 Mar 2021 17:25:42 +0800
-Received: from dggpeml500016.china.huawei.com ([7.185.36.70]) by
- dggpeml500016.china.huawei.com ([7.185.36.70]) with mapi id 15.01.2106.013;
- Thu, 18 Mar 2021 17:25:42 +0800
-From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Nadav Amit <nadav.amit@gmail.com>
-CC:     chenjiashang <chenjiashang@huawei.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
-        "will@kernel.org" <will@kernel.org>
-Subject: =?utf-8?B?UkU6IEEgcHJvYmxlbSBvZiBJbnRlbCBJT01NVSBoYXJkd2FyZSDvvJ8=?=
-Thread-Topic: =?utf-8?B?QSBwcm9ibGVtIG9mIEludGVsIElPTU1VIGhhcmR3YXJlIO+8nw==?=
-Thread-Index: AQHXGtwEduPlUZeCNUCbiy3s/+KwAaqHJckAgADDZTCAAA0+AIABZ4Ng//+HOQCAAIduIP//gKoAgACMgPA=
-Date:   Thu, 18 Mar 2021 09:25:41 +0000
-Message-ID: <e5b262c1ee14481ab68074be2a76b9d9@huawei.com>
-References: <670baaf8-4ff8-4e84-4be3-030b95ab5a5e@huawei.com>
- <FB4E11A5-84D4-4DAF-889E-FAA1BCD2E66F@gmail.com>
- <6a218e7fe42d41489d02f0b4e3ad2756@huawei.com>
- <98DB71EF-FF98-4509-85EC-26FF50825A58@gmail.com>
- <4d1c3bc0418e48b1b9d44799d65ea375@huawei.com>
- <MWHPR11MB18860801196A9319EBD96AF68C699@MWHPR11MB1886.namprd11.prod.outlook.com>
- <d7bb4ab26b8542c698926b7a0a3fc12c@huawei.com>
- <MWHPR11MB18861A144C085677931922018C699@MWHPR11MB1886.namprd11.prod.outlook.com>
-In-Reply-To: <MWHPR11MB18861A144C085677931922018C699@MWHPR11MB1886.namprd11.prod.outlook.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.151.207]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S229928AbhCRJZe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Mar 2021 05:25:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42512 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229965AbhCRJZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 05:25:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 38E12AEF8;
+        Thu, 18 Mar 2021 09:25:09 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 97a62fc2;
+        Thu, 18 Mar 2021 09:26:15 +0000 (UTC)
+Date:   Thu, 18 Mar 2021 09:26:15 +0000
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: fuse: kernel BUG at mm/truncate.c:763!
+Message-ID: <YFMct4z1gEa8tXkh@suse.de>
+References: <YEsryBEFq4HuLKBs@suse.de>
+ <CAJfpegu+T-4m=OLMorJrZyWaDNff1eviKUaE2gVuMmLG+g9JVQ@mail.gmail.com>
+ <YEtc54pWLLjb6SgL@suse.de>
+ <20210312131123.GZ3479805@casper.infradead.org>
+ <YE8tQc66C6MW7EqY@suse.de>
+ <20210315110659.GT2577561@casper.infradead.org>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210315110659.GT2577561@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVGlhbiwgS2V2aW4gW21h
-aWx0bzprZXZpbi50aWFuQGludGVsLmNvbV0NCj4gU2VudDogVGh1cnNkYXksIE1hcmNoIDE4LCAy
-MDIxIDQ6NTYgUE0NCj4gVG86IExvbmdwZW5nIChNaWtlLCBDbG91ZCBJbmZyYXN0cnVjdHVyZSBT
-ZXJ2aWNlIFByb2R1Y3QgRGVwdC4pDQo+IDxsb25ncGVuZzJAaHVhd2VpLmNvbT47IE5hZGF2IEFt
-aXQgPG5hZGF2LmFtaXRAZ21haWwuY29tPg0KPiBDYzogY2hlbmppYXNoYW5nIDxjaGVuamlhc2hh
-bmdAaHVhd2VpLmNvbT47IERhdmlkIFdvb2Rob3VzZQ0KPiA8ZHdtdzJAaW5mcmFkZWFkLm9yZz47
-IGlvbW11QGxpc3RzLmxpbnV4LWZvdW5kYXRpb24ub3JnOyBMS01MDQo+IDxsaW51eC1rZXJuZWxA
-dmdlci5rZXJuZWwub3JnPjsgYWxleC53aWxsaWFtc29uQHJlZGhhdC5jb207IEdvbmdsZWkgKEFy
-ZWkpDQo+IDxhcmVpLmdvbmdsZWlAaHVhd2VpLmNvbT47IHdpbGxAa2VybmVsLm9yZw0KPiBTdWJq
-ZWN0OiBSRTogQSBwcm9ibGVtIG9mIEludGVsIElPTU1VIGhhcmR3YXJlIO+8nw0KPiANCj4gPiBG
-cm9tOiBMb25ncGVuZyAoTWlrZSwgQ2xvdWQgSW5mcmFzdHJ1Y3R1cmUgU2VydmljZSBQcm9kdWN0
-IERlcHQuKQ0KPiA+IDxsb25ncGVuZzJAaHVhd2VpLmNvbT4NCj4gPg0KPiA+ID4gLS0tLS1Pcmln
-aW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IFRpYW4sIEtldmluIFttYWlsdG86a2V2aW4u
-dGlhbkBpbnRlbC5jb21dDQo+ID4gPiBTZW50OiBUaHVyc2RheSwgTWFyY2ggMTgsIDIwMjEgNDoy
-NyBQTQ0KPiA+ID4gVG86IExvbmdwZW5nIChNaWtlLCBDbG91ZCBJbmZyYXN0cnVjdHVyZSBTZXJ2
-aWNlIFByb2R1Y3QgRGVwdC4pDQo+ID4gPiA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+OyBOYWRhdiBB
-bWl0IDxuYWRhdi5hbWl0QGdtYWlsLmNvbT4NCj4gPiA+IENjOiBjaGVuamlhc2hhbmcgPGNoZW5q
-aWFzaGFuZ0BodWF3ZWkuY29tPjsgRGF2aWQgV29vZGhvdXNlDQo+ID4gPiA8ZHdtdzJAaW5mcmFk
-ZWFkLm9yZz47IGlvbW11QGxpc3RzLmxpbnV4LWZvdW5kYXRpb24ub3JnOyBMS01MDQo+ID4gPiA8
-bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz47IGFsZXgud2lsbGlhbXNvbkByZWRoYXQuY29t
-OyBHb25nbGVpDQo+ID4gKEFyZWkpDQo+ID4gPiA8YXJlaS5nb25nbGVpQGh1YXdlaS5jb20+OyB3
-aWxsQGtlcm5lbC5vcmcNCj4gPiA+IFN1YmplY3Q6IFJFOiBBIHByb2JsZW0gb2YgSW50ZWwgSU9N
-TVUgaGFyZHdhcmUg77yfDQo+ID4gPg0KPiA+ID4gPiBGcm9tOiBpb21tdSA8aW9tbXUtYm91bmNl
-c0BsaXN0cy5saW51eC1mb3VuZGF0aW9uLm9yZz4gT24gQmVoYWxmDQo+ID4gPiA+IE9mIExvbmdw
-ZW5nIChNaWtlLCBDbG91ZCBJbmZyYXN0cnVjdHVyZSBTZXJ2aWNlIFByb2R1Y3QgRGVwdC4pDQo+
-ID4gPiA+DQo+ID4gPiA+ID4gMi4gQ29uc2lkZXIgZW5zdXJpbmcgdGhhdCB0aGUgcHJvYmxlbSBp
-cyBub3Qgc29tZWhvdyByZWxhdGVkIHRvDQo+ID4gPiA+ID4gcXVldWVkIGludmFsaWRhdGlvbnMu
-IFRyeSB0byB1c2UgX19pb21tdV9mbHVzaF9pb3RsYigpIGluc3RlYWQNCj4gPiA+ID4gPiBvZg0K
-PiA+ID4gcWlfZmx1c2hfaW90bGIoKS4NCj4gPiA+ID4gPg0KPiA+ID4gPg0KPiA+ID4gPiBJIHRy
-aWVkIHRvIGZvcmNlIHRvIHVzZSBfX2lvbW11X2ZsdXNoX2lvdGxiKCksIGJ1dCBtYXliZSBzb21l
-dGhpbmcNCj4gPiA+ID4gd3JvbmcsIHRoZSBzeXN0ZW0gY3Jhc2hlZCwgc28gSSBwcmVmZXIgdG8g
-bG93ZXIgdGhlIHByaW9yaXR5IG9mDQo+ID4gPiA+IHRoaXMNCj4gPiBvcGVyYXRpb24uDQo+ID4g
-PiA+DQo+ID4gPg0KPiA+ID4gVGhlIFZULWQgc3BlYyBjbGVhcmx5IHNheXMgdGhhdCByZWdpc3Rl
-ci1iYXNlZCBpbnZhbGlkYXRpb24gY2FuIGJlDQo+ID4gPiB1c2VkIG9ubHkNCj4gPiB3aGVuDQo+
-ID4gPiBxdWV1ZWQtaW52YWxpZGF0aW9ucyBhcmUgbm90IGVuYWJsZWQuIEludGVsLUlPTU1VIGRy
-aXZlciBkb2Vzbid0DQo+ID4gPiBwcm92aWRlDQo+ID4gYW4NCj4gPiA+IG9wdGlvbiB0byBkaXNh
-YmxlIHF1ZXVlZC1pbnZhbGlkYXRpb24gdGhvdWdoLCB3aGVuIHRoZSBoYXJkd2FyZSBpcw0KPiA+
-IGNhcGFibGUuIElmIHlvdQ0KPiA+ID4gcmVhbGx5IHdhbnQgdG8gdHJ5LCB0d2VhayB0aGUgY29k
-ZSBpbiBpbnRlbF9pb21tdV9pbml0X3FpLg0KPiA+ID4NCj4gPg0KPiA+IEhpIEtldmluLA0KPiA+
-DQo+ID4gVGhhbmtzIHRvIHBvaW50IG91dCB0aGlzLiBEbyB5b3UgaGF2ZSBhbnkgaWRlYXMgYWJv
-dXQgdGhpcyBwcm9ibGVtID8gSQ0KPiA+IHRyaWVkIHRvIGRlc2NyaXB0IHRoZSBwcm9ibGVtIG11
-Y2ggY2xlYXIgaW4gbXkgcmVwbHkgdG8gQWxleCwgaG9wZSB5b3UNCj4gPiBjb3VsZCBoYXZlIGEg
-bG9vayBpZiB5b3UncmUgaW50ZXJlc3RlZC4NCj4gPg0KPiANCj4gYnR3IEkgc2F3IHlvdSB1c2Vk
-IDQuMTgga2VybmVsIGluIHRoaXMgdGVzdC4gV2hhdCBhYm91dCBsYXRlc3Qga2VybmVsPw0KPiAN
-Cg0KTm90IHRlc3QgeWV0LiBJdCdzIGhhcmQgdG8gdXBncmFkZSBrZXJuZWwgaW4gb3VyIGVudmly
-b25tZW50Lg0KDQo+IEFsc28gb25lIHdheSB0byBzZXBhcmF0ZSBzdy9odyBidWcgaXMgdG8gdHJh
-Y2UgdGhlIGxvdyBsZXZlbCBpbnRlcmZhY2UgKGUuZy4sDQo+IHFpX2ZsdXNoX2lvdGxiKSB3aGlj
-aCBhY3R1YWxseSBzZW5kcyBpbnZhbGlkYXRpb24gZGVzY3JpcHRvcnMgdG8gdGhlIElPTU1VDQo+
-IGhhcmR3YXJlLiBDaGVjayB0aGUgd2luZG93IGJldHdlZW4gYikgYW5kIGMpIGFuZCBzZWUgd2hl
-dGhlciB0aGUgc29mdHdhcmUgZG9lcw0KPiB0aGUgcmlnaHQgdGhpbmcgYXMgZXhwZWN0ZWQgdGhl
-cmUuDQo+IA0KDQpXZSBhZGQgc29tZSBsb2cgaW4gaW9tbXUgZHJpdmVyIHRoZXNlIGRheXMsIHRo
-ZSBzb2Z0d2FyZSBzZWVtcyBmaW5lLiBCdXQgd2UNCmRpZG4ndCBsb29rIGluc2lkZSB0aGUgcWlf
-c3VibWl0X3N5bmMgeWV0LCBJJ2xsIHRyeSBpdCB0b25pZ2h0Lg0KDQo+IFRoYW5rcw0KPiBLZXZp
-bg0K
+(I thought Vlastimil was already on CC...)
+
+On Mon, Mar 15, 2021 at 11:06:59AM +0000, Matthew Wilcox wrote:
+> On Mon, Mar 15, 2021 at 09:47:45AM +0000, Luis Henriques wrote:
+> > On Fri, Mar 12, 2021 at 01:11:23PM +0000, Matthew Wilcox wrote:
+> > > On Fri, Mar 12, 2021 at 12:21:59PM +0000, Luis Henriques wrote:
+> > > > > > I've seen a bug report (5.10.16 kernel splat below) that seems to be
+> > > > > > reproducible in kernels as early as 5.4.
+> > > 
+> > > If this is reproducible, can you turn this BUG_ON into a VM_BUG_ON_PAGE()
+> > > so we know what kind of problem we're dealing with?  Assuming the SUSE
+> > > tumbleweed kernels enable CONFIG_DEBUG_VM, which I'm sure they do.
+> > 
+> > Just to make sure I got this right, you want to test something like this:
+> > 
+> >  				}
+> >  			}
+> > -			BUG_ON(page_mapped(page));
+> > +			VM_BUG_ON_PAGE(page_mapped(page), page);
+> >  			ret2 = do_launder_page(mapping, page);
+> >  			if (ret2 == 0) {
+> >  				if (!invalidate_complete_page2(mapping, page))
+> 
+> Yes, exactly.
+
+Ok, finally I got some feedback from the bug reporter.  Please see bellow
+the kernel log with the VM_BUG_ON_PAGE() in place.  Also note that this is
+on a 5.12-rc3, vanilla.
+
+Cheers,
+--
+Luís
+
+[16247.536348] page:00000000dfe36ab1 refcount:673 mapcount:0 mapping:00000000f982a7f8 index:0x1400 pfn:0x4c65e00
+[16247.536359] head:00000000dfe36ab1 order:9 compound_mapcount:0 compound_pincount:0
+[16247.536361] memcg:ffff8e730012b000
+[16247.536364] aops:fuse_file_aops [fuse] ino:8b8 dentry name:"cc1plus"
+[16247.536379] flags: 0xaffff800010037(locked|referenced|uptodate|lru|active|head)
+[16247.536385] raw: 00affff800010037 ffffd6519ed9c448 ffffd651abea5b08 ffff8eb2f9a02ef8
+[16247.536388] raw: 0000000000001400 0000000000000000 000002a1ffffffff ffff8e730012b000
+[16247.536389] page dumped because: VM_BUG_ON_PAGE(page_mapped(page))
+[16247.536399] ------------[ cut here ]------------
+[16247.536400] kernel BUG at mm/truncate.c:678!
+[16247.536406] invalid opcode: 0000 [#1] SMP PTI
+[16247.536416] CPU: 42 PID: 2063761 Comm: g++ Not tainted 5.12.0-rc3-1.g008d601-default #1 openSUSE Tumbleweed (unreleased)
+[16247.536423] Hardware name: Supermicro X11DPi-N(T)/X11DPi-N, BIOS 3.1a 10/16/2019
+[16247.536427] RIP: 0010:invalidate_inode_pages2_range+0x3b4/0x550
+[16247.536436] Code: 00 00 00 4c 89 e6 e8 eb 0f 03 00 4c 89 ff e8 63 40 01 00 84 c0 0f 84 23 fe ff ff 48 c7 c6 d0 1d f4 b1 4c 89 ff e8 ec 82 02 00 <0f> 0b 48 8b 45 78 48 8b 80 80 00 00 00 48 85 c0 0f 84 fb fe ff ff
+[16247.536444] RSP: 0000:ffffa18cb0af7a40 EFLAGS: 00010246
+[16247.536450] RAX: 0000000000000036 RBX: 000000000000000d RCX: ffff8ef13fc9a748
+[16247.536455] RDX: 0000000000000000 RSI: 0000000000000027 RDI: ffff8ef13fc9a740
+[16247.536460] RBP: ffff8eb2f9a02ef8 R08: ffff8ef23ffb48a8 R09: 000000000004fffb
+[16247.536464] R10: 00000000ffff0000 R11: 3fffffffffffffff R12: 0000000000001400
+[16247.536468] R13: ffff8eb2f9a02f00 R14: 0000000000000000 R15: ffffd651b1978000
+[16247.536473] FS:  00007f97c1717740(0000) GS:ffff8ef13fc80000(0000) knlGS:0000000000000000
+[16247.536478] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[16247.536483] CR2: 00007fd48a25a7c0 CR3: 00000040aa3ac006 CR4: 00000000007706e0
+[16247.536487] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[16247.536491] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[16247.536495] PKRU: 55555554
+[16247.536498] Call Trace:
+[16247.536506]  fuse_finish_open+0x82/0x150 [fuse]
+[16247.536520]  fuse_open_common+0x1a8/0x1b0 [fuse]
+[16247.536530]  ? fuse_open_common+0x1b0/0x1b0 [fuse]
+[16247.536540]  do_dentry_open+0x14e/0x380
+[16247.536547]  path_openat+0xaf6/0x10a0
+[16247.536555]  do_filp_open+0x88/0x130
+[16247.536560]  ? security_prepare_creds+0x6d/0x90
+[16247.536566]  ? __kmalloc+0x157/0x2e0
+[16247.536575]  do_open_execat+0x6d/0x1a0
+[16247.536581]  bprm_execve+0x128/0x660
+[16247.536587]  do_execveat_common+0x192/0x1c0
+[16247.536593]  __x64_sys_execve+0x39/0x50
+[16247.536599]  do_syscall_64+0x33/0x80
+[16247.536606]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[16247.536614] RIP: 0033:0x7f97c0efec37
+[16247.536621] Code: Unable to access opcode bytes at RIP 0x7f97c0efec0d.
+[16247.536625] RSP: 002b:00007ffdc2fdea68 EFLAGS: 00000202 ORIG_RAX: 000000000000003b
+[16247.536631] RAX: ffffffffffffffda RBX: 00007f97c17176a0 RCX: 00007f97c0efec37
+[16247.536635] RDX: 0000000000ea42c0 RSI: 0000000000ea5848 RDI: 0000000000ea5d00
+[16247.536639] RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+[16247.536643] R10: 00007ffdc2fdde60 R11: 0000000000000202 R12: 0000000000000000
+[16247.536647] R13: 0000000000000001 R14: 0000000000ea5d00 R15: 0000000000000000
+[16247.536653] Modules linked in: overlay rpcsec_gss_krb5 nfsv4 dns_resolver nfsv3 nfs fscache iscsi_ibft iscsi_boot_sysfs rfkill dmi_sysfs intel_rapl_msr intel_rapl_common joydev isst_if_common ipmi_ssif i40iw ib_uverbs iTCO_wdt intel_pmc_bxt skx_edac ib_core hid_generic iTCO_vendor_support nfit libnvdimm x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel acpi_ipmi kvm usbhid i2c_i801 mei_me i40e irqbypass efi_pstore pcspkr ipmi_si ioatdma i2c_smbus lpc_ich mei intel_pch_thermal dca ipmi_devintf ipmi_msghandler tiny_power_button acpi_pad button nls_iso8859_1 nls_cp437 vfat fat nfsd nfs_acl auth_rpcgss lockd grace sunrpc fuse configfs nfs_ssc ast i2c_algo_bit drm_vram_helper drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops cec rc_core drm_ttm_helper ttm xhci_pci xhci_pci_renesas drm xhci_hcd crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd cryptd usbcore wmi sg br_netfilter bridge stp llc dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc
+[16247.536758]  scsi_dh_alua msr efivarfs
+[16247.536800] ---[ end trace e1493f55bf5b3a34 ]---
+[16247.544126] RIP: 0010:invalidate_inode_pages2_range+0x3b4/0x550
+[16247.544140] Code: 00 00 00 4c 89 e6 e8 eb 0f 03 00 4c 89 ff e8 63 40 01 00 84 c0 0f 84 23 fe ff ff 48 c7 c6 d0 1d f4 b1 4c 89 ff e8 ec 82 02 00 <0f> 0b 48 8b 45 78 48 8b 80 80 00 00 00 48 85 c0 0f 84 fb fe ff ff
+[16247.544148] RSP: 0000:ffffa18cb0af7a40 EFLAGS: 00010246
+[16247.544153] RAX: 0000000000000036 RBX: 000000000000000d RCX: ffff8ef13fc9a748
+[16247.544158] RDX: 0000000000000000 RSI: 0000000000000027 RDI: ffff8ef13fc9a740
+[16247.544162] RBP: ffff8eb2f9a02ef8 R08: ffff8ef23ffb48a8 R09: 000000000004fffb
+[16247.544166] R10: 00000000ffff0000 R11: 3fffffffffffffff R12: 0000000000001400
+[16247.544170] R13: ffff8eb2f9a02f00 R14: 0000000000000000 R15: ffffd651b1978000
+[16247.544175] FS:  00007f97c1717740(0000) GS:ffff8ef13fc80000(0000) knlGS:0000000000000000
+[16247.544180] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[16247.544184] CR2: 00007f97c0efec0d CR3: 00000040aa3ac006 CR4: 00000000007706e0
+[16247.544188] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[16247.544191] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[16247.544194] PKRU: 55555554
+[16247.546763] BUG: Bad rss-counter state mm:00000000060c94f4 type:MM_ANONPAGES val:8
+
+
