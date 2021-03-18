@@ -2,62 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62065340AD5
+	by mail.lfdr.de (Postfix) with ESMTP id 16A8D340AD4
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:03:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231986AbhCRRCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:02:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230509AbhCRRCA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:02:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AF8A64E07;
-        Thu, 18 Mar 2021 17:01:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616086916;
-        bh=I+1tJaROjaJ2NLUs21QiIetoDQNwWx//QTiUSM9j4cg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aNpMoVHPxFHJZw4WcY7Vu0ygCumpxDxXXnErqv2bxlUYJNawbUA/YRNMb+NSqG1oJ
-         4ohWHclFIBMD7KoZMao08chX3xqNFexR0as3skRjb1+vq1nlt1UNxwrfdmL8EEmsgp
-         0oZJf0DGlstrG0j0aYz3v0ccvt5Bf2hsJJpwPfnA=
-Date:   Thu, 18 Mar 2021 18:01:53 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     wsa@kernel.org, paul@crapouillou.net, stable@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, sernia.zhou@foxmail.com
-Subject: Re: [PATCH] I2C: JZ4780: Fix bug for Ingenic X1000.
-Message-ID: <YFOHgfEMrEhgbdyO@kroah.com>
-References: <1616084743-112402-1-git-send-email-zhouyanjie@wanyeetech.com>
- <1616084743-112402-2-git-send-email-zhouyanjie@wanyeetech.com>
+        id S232160AbhCRRCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:02:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47733 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232125AbhCRRCQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:02:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616086935;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aaIWi/Aa75Hr56eti79lKQowFccyYMrkVkBuTxfGEhk=;
+        b=YVFz/JDRMjCqyoJcJDVcmOr6RvTFR6PiV2rcja1ksY6aMF+ftFMRCePXb7mqeOX+13uXvM
+        GeF+e1QVIhJzID11OTOztHmkmkZC9NG1P7bxWpGaoRUlM62JVtQssm44jps4GCSRn1QkpT
+        S270WycbgrVK4tUVbCLFtOJ9snqN5Do=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-QzJu-dWLNPiT0vYhS6dp9g-1; Thu, 18 Mar 2021 13:02:11 -0400
+X-MC-Unique: QzJu-dWLNPiT0vYhS6dp9g-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BB50B190A7A1;
+        Thu, 18 Mar 2021 17:02:09 +0000 (UTC)
+Received: from Whitewolf.lyude.net (ovpn-113-18.rdu2.redhat.com [10.10.113.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1192019D9B;
+        Thu, 18 Mar 2021 17:02:07 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     intel-gfx@lists.freedesktop.org
+Cc:     Jani Nikula <jani.nikula@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sean Paul <seanpaul@chromium.org>,
+        Aaron Ma <aaron.ma@canonical.com>,
+        Dave Airlie <airlied@redhat.com>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/i915/dpcd_bl: Don't try vesa interface unless specified by VBT
+Date:   Thu, 18 Mar 2021 13:02:02 -0400
+Message-Id: <20210318170204.513000-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1616084743-112402-2-git-send-email-zhouyanjie@wanyeetech.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 12:25:43AM +0800, 周琰杰 (Zhou Yanjie) wrote:
-> Only send "X1000_I2C_DC_STOP" when last byte, or it will cause
-> error when I2C write operation.
-> 
-> Fixes: 21575a7a8d4c ("I2C: JZ4780: Add support for the X1000.")
-> 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> ---
->  drivers/i2c/busses/i2c-jz4780.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
+Looks like that there actually are another subset of laptops on the market
+that don't support the Intel HDR backlight interface, but do advertise
+support for the VESA DPCD backlight interface despite the fact it doesn't
+seem to work.
 
-<formletter>
+Note though I'm not entirely clear on this - on one of the machines where
+this issue was observed, I also noticed that we appeared to be rejecting
+the VBT defined backlight frequency in
+intel_dp_aux_vesa_calc_max_backlight(). It's noted in this function that:
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+/* Use highest possible value of Pn for more granularity of brightness
+ * adjustment while satifying the conditions below.
+ * ...
+ * - FxP is within 25% of desired value.
+ *   Note: 25% is arbitrary value and may need some tweak.
+ */
 
-</formletter>
+So it's possible that this value might just need to be tweaked, but for now
+let's just disable the VESA backlight interface unless it's specified in
+the VBT just to be safe. We might be able to try enabling this again by
+default in the future.
+
+Fixes: 2227816e647a ("drm/i915/dp: Allow forcing specific interfaces through enable_dpcd_backlight")
+Cc: Jani Nikula <jani.nikula@intel.com>
+Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Bugzilla: https://gitlab.freedesktop.org/drm/intel/-/issues/3169
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+---
+ drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+index 651884390137..4f8337c7fd2e 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
++++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+@@ -646,7 +646,6 @@ int intel_dp_aux_init_backlight_funcs(struct intel_connector *connector)
+ 			break;
+ 		case INTEL_BACKLIGHT_DISPLAY_DDI:
+ 			try_intel_interface = true;
+-			try_vesa_interface = true;
+ 			break;
+ 		default:
+ 			return -ENODEV;
+-- 
+2.29.2
+
