@@ -2,75 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E85340C6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A86E340CCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbhCRSDz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Mar 2021 14:03:55 -0400
-Received: from unicorn.mansr.com ([81.2.72.234]:42590 "EHLO unicorn.mansr.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229734AbhCRSDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:03:51 -0400
-Received: from raven.mansr.com (raven.mansr.com [IPv6:2001:8b0:ca0d:8d8e::3])
-        by unicorn.mansr.com (Postfix) with ESMTPS id C65CC15361;
-        Thu, 18 Mar 2021 18:03:42 +0000 (GMT)
-Received: by raven.mansr.com (Postfix, from userid 51770)
-        id B967B219C32; Thu, 18 Mar 2021 18:03:42 +0000 (GMT)
-From:   =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-doc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>, linux-ide@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Matt Turner <mattst88@gmail.com>, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Richard Henderson <rth@twiddle.net>
-Subject: Re: [PATCH 01/10] alpha: use libata instead of the legacy ide driver
-References: <20210318045706.200458-1-hch@lst.de>
-        <20210318045706.200458-2-hch@lst.de>
-        <YFLrLwjZubWUvA2J@zeniv-ca.linux.org.uk>
-        <20210318060724.GA29117@lst.de> <yw1x1rccie35.fsf@mansr.com>
-Date:   Thu, 18 Mar 2021 18:03:42 +0000
-In-Reply-To: <yw1x1rccie35.fsf@mansr.com> (=?iso-8859-1?Q?=22M=E5ns_Rullg?=
- =?iso-8859-1?Q?=E5rd=22's?= message of "Thu,
-        18 Mar 2021 17:09:02 +0000")
-Message-ID: <yw1xwnu4gwzl.fsf@mansr.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S232328AbhCRSVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:21:06 -0400
+Received: from sender4-pp-o95.zoho.com ([136.143.188.95]:25538 "EHLO
+        sender4-pp-o95.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232346AbhCRSVA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 14:21:00 -0400
+X-Greylist: delayed 907 seconds by postgrey-1.27 at vger.kernel.org; Thu, 18 Mar 2021 14:21:00 EDT
+ARC-Seal: i=1; a=rsa-sha256; t=1616090738; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=BS/ASwiksSXVdIJ92RQT6DVJKHn8N2W0DBGY8sSZthgQrmH8e1HAiUuj02L20lBQAmBi4fzvRKdQ0JM786LWGNh5D/idd7gAz8LZ6oYw39Esg/B73DdVL6/DK33Hzoj2Tcmt5OWIFRYaGmY8BzcUGHbR5YjzlzBd/TKHQGCb1VA=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1616090738; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=Pn/0VpxY8zVzBsgLDARP/LTfh1s0NNX1FtijvDvEPk0=; 
+        b=Pt1FJCJMNoHvERfa70btvSLvYBavcGij0lZ5yAz+dHNwBRYjvtwmz0V50fAtcH1/pTKySPq9ls6wnjK3TnHLligd9AKczI6zHzBPCRJiLTx+ggOat/5eaBiHJt6sgWHPowDPyVQ+9pCoTTP0wYempInig7v5POM4ObtZo8etMZ0=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=zohomail.com;
+        spf=pass  smtp.mailfrom=mdjurovic@zohomail.com;
+        dmarc=pass header.from=<mdjurovic@zohomail.com> header.from=<mdjurovic@zohomail.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1616090738;
+        s=zm2020; d=zohomail.com; i=mdjurovic@zohomail.com;
+        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        bh=Pn/0VpxY8zVzBsgLDARP/LTfh1s0NNX1FtijvDvEPk0=;
+        b=kKIZzsA2xGhnUnZuyeke2YkLkN0LK66b3+BQzkhd2Qyt9muRHFMD2IMgPrex9vVk
+        UbiVn1EbLj1D6F3IqJ8FUynhAclboyAuPOsIKAdJGyxcP21iMeoJAZDZgDgqifKLSTI
+        P98gFw4fXtHPStfeRkRCvPsi6kofeawdK1Lu2zzo=
+Received: from milan-pc.attlocal.net (107-220-151-69.lightspeed.sntcca.sbcglobal.net [107.220.151.69]) by mx.zohomail.com
+        with SMTPS id 1616090732821295.0170783118647; Thu, 18 Mar 2021 11:05:32 -0700 (PDT)
+From:   Milan Djurovic <mdjurovic@zohomail.com>
+To:     linux@armlinux.org.uk
+Cc:     linux-kernel@vger.kernel.org,
+        Milan Djurovic <mdjurovic@zohomail.com>
+Message-ID: <20210318180443.53546-1-mdjurovic@zohomail.com>
+Subject: [PATCH] amba: bus: Export symbols directly after function
+Date:   Thu, 18 Mar 2021 11:04:43 -0700
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
+X-ZohoMailClient: External
+Content-Type: text/plain; charset=utf8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Måns Rullgård <mans@mansr.com> writes:
+Fix the following checkpatch.pl warnings:
 
-> Christoph Hellwig <hch@lst.de> writes:
->
->> On Thu, Mar 18, 2021 at 05:54:55AM +0000, Al Viro wrote:
->>> On Thu, Mar 18, 2021 at 05:56:57AM +0100, Christoph Hellwig wrote:
->>> > Switch the alpha defconfig from the legacy ide driver to libata.
->>> 
->>> Umm...  I don't have an IDE alpha box in a usable shape (fans on
->>> CPU module shat themselves), and it would take a while to resurrect
->>> it, but I remember the joy it used to cause in some versions.
->>> 
->>> Do you have reports of libata variants of drivers actually tested on
->>> those?
->>
->> No, I haven't.  The whole point is that we're not going to keep 40000
->> lines of code around despite notice for users that don't exist or
->> care.  If there is a regression we'll fix it, but we're not going to
->> make life miserable just because we can.
->
-> The pata_ali driver works fine on my UP1500 machine, unless something
-> broke recently.  I'll build the latest kernel and report back.
+drivers/amba/bus.c:832: WARNING: EXPORT_SYMBOL(foo); should immediately fol=
+low its function/variable
+drivers/amba/bus.c:833: WARNING: EXPORT_SYMBOL(foo); should immediately fol=
+low its function/variable
+drivers/amba/bus.c:834: WARNING: EXPORT_SYMBOL(foo); should immediately fol=
+low its function/variable
+drivers/amba/bus.c:835: WARNING: EXPORT_SYMBOL(foo); should immediately fol=
+low its function/variable
+drivers/amba/bus.c:836: WARNING: EXPORT_SYMBOL(foo); should immediately fol=
+low its function/variable
+drivers/amba/bus.c:837: WARNING: EXPORT_SYMBOL(foo); should immediately fol=
+low its function/variable
+drivers/amba/bus.c:838: WARNING: EXPORT_SYMBOL(foo); should immediately fol=
+low its function/variable
 
-5.11.7 seems fine too.
+Signed-off-by: Milan Djurovic <mdjurovic@zohomail.com>
+---
+ drivers/amba/bus.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
--- 
-Måns Rullgård
+diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
+index 939ca220bf78..dba3f890f681 100644
+--- a/drivers/amba/bus.c
++++ b/drivers/amba/bus.c
+@@ -349,6 +349,7 @@ int amba_driver_register(struct amba_driver *drv)
+=20
+ =09return driver_register(&drv->drv);
+ }
++EXPORT_SYMBOL(amba_driver_register);
+=20
+ /**
+  *=09amba_driver_unregister - remove an AMBA device driver
+@@ -362,6 +363,7 @@ void amba_driver_unregister(struct amba_driver *drv)
+ {
+ =09driver_unregister(&drv->drv);
+ }
++EXPORT_SYMBOL(amba_driver_unregister);
+=20
+=20
+ static void amba_device_release(struct device *dev)
+@@ -707,6 +709,7 @@ int amba_device_register(struct amba_device *dev, struc=
+t resource *parent)
+=20
+ =09return amba_device_add(dev, parent);
+ }
++EXPORT_SYMBOL(amba_device_register);
+=20
+ /**
+  *=09amba_device_put - put an AMBA device
+@@ -733,6 +736,7 @@ void amba_device_unregister(struct amba_device *dev)
+ {
+ =09device_unregister(&dev->dev);
+ }
++EXPORT_SYMBOL(amba_device_unregister);
+=20
+=20
+ struct find_data {
+@@ -793,6 +797,7 @@ amba_find_device(const char *busid, struct device *pare=
+nt, unsigned int id,
+=20
+ =09return data.dev;
+ }
++EXPORT_SYMBOL(amba_find_device);
+=20
+ /**
+  *=09amba_request_regions - request all mem regions associated with device
+@@ -814,6 +819,7 @@ int amba_request_regions(struct amba_device *dev, const=
+ char *name)
+=20
+ =09return ret;
+ }
++EXPORT_SYMBOL(amba_request_regions);
+=20
+ /**
+  *=09amba_release_regions - release mem regions associated with device
+@@ -828,11 +834,4 @@ void amba_release_regions(struct amba_device *dev)
+ =09size =3D resource_size(&dev->res);
+ =09release_mem_region(dev->res.start, size);
+ }
+-
+-EXPORT_SYMBOL(amba_driver_register);
+-EXPORT_SYMBOL(amba_driver_unregister);
+-EXPORT_SYMBOL(amba_device_register);
+-EXPORT_SYMBOL(amba_device_unregister);
+-EXPORT_SYMBOL(amba_find_device);
+-EXPORT_SYMBOL(amba_request_regions);
+ EXPORT_SYMBOL(amba_release_regions);
+--=20
+2.30.1
+
+
