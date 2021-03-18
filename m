@@ -2,143 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A86E340CCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4C2340C70
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232328AbhCRSVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:21:06 -0400
-Received: from sender4-pp-o95.zoho.com ([136.143.188.95]:25538 "EHLO
-        sender4-pp-o95.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232346AbhCRSVA (ORCPT
+        id S232445AbhCRSFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:05:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49482 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230164AbhCRSFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:21:00 -0400
-X-Greylist: delayed 907 seconds by postgrey-1.27 at vger.kernel.org; Thu, 18 Mar 2021 14:21:00 EDT
-ARC-Seal: i=1; a=rsa-sha256; t=1616090738; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=BS/ASwiksSXVdIJ92RQT6DVJKHn8N2W0DBGY8sSZthgQrmH8e1HAiUuj02L20lBQAmBi4fzvRKdQ0JM786LWGNh5D/idd7gAz8LZ6oYw39Esg/B73DdVL6/DK33Hzoj2Tcmt5OWIFRYaGmY8BzcUGHbR5YjzlzBd/TKHQGCb1VA=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1616090738; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
-        bh=Pn/0VpxY8zVzBsgLDARP/LTfh1s0NNX1FtijvDvEPk0=; 
-        b=Pt1FJCJMNoHvERfa70btvSLvYBavcGij0lZ5yAz+dHNwBRYjvtwmz0V50fAtcH1/pTKySPq9ls6wnjK3TnHLligd9AKczI6zHzBPCRJiLTx+ggOat/5eaBiHJt6sgWHPowDPyVQ+9pCoTTP0wYempInig7v5POM4ObtZo8etMZ0=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=zohomail.com;
-        spf=pass  smtp.mailfrom=mdjurovic@zohomail.com;
-        dmarc=pass header.from=<mdjurovic@zohomail.com> header.from=<mdjurovic@zohomail.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1616090738;
-        s=zm2020; d=zohomail.com; i=mdjurovic@zohomail.com;
-        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        bh=Pn/0VpxY8zVzBsgLDARP/LTfh1s0NNX1FtijvDvEPk0=;
-        b=kKIZzsA2xGhnUnZuyeke2YkLkN0LK66b3+BQzkhd2Qyt9muRHFMD2IMgPrex9vVk
-        UbiVn1EbLj1D6F3IqJ8FUynhAclboyAuPOsIKAdJGyxcP21iMeoJAZDZgDgqifKLSTI
-        P98gFw4fXtHPStfeRkRCvPsi6kofeawdK1Lu2zzo=
-Received: from milan-pc.attlocal.net (107-220-151-69.lightspeed.sntcca.sbcglobal.net [107.220.151.69]) by mx.zohomail.com
-        with SMTPS id 1616090732821295.0170783118647; Thu, 18 Mar 2021 11:05:32 -0700 (PDT)
-From:   Milan Djurovic <mdjurovic@zohomail.com>
-To:     linux@armlinux.org.uk
-Cc:     linux-kernel@vger.kernel.org,
-        Milan Djurovic <mdjurovic@zohomail.com>
-Message-ID: <20210318180443.53546-1-mdjurovic@zohomail.com>
-Subject: [PATCH] amba: bus: Export symbols directly after function
-Date:   Thu, 18 Mar 2021 11:04:43 -0700
-X-Mailer: git-send-email 2.30.1
+        Thu, 18 Mar 2021 14:05:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616090703;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WftQMrFPNAP4YAr6T6xNf+HYZqIB+G4C+TYDinLLNQA=;
+        b=BM1KbF+EDz32kcFWmApUrXpYKNVRCuPB22sUqn5yzuaL+pSL3w3WQhPOwYgxdUQMoTdlIr
+        /BubPA4Or4haI2FyQWNsCmH7f2P5IrPG8pJnBsROzaAWxAIRP72m1KNYyXvtGGNOqW1sAb
+        7rs9RZfPBDs18PxQh94l426xsR9nOQw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-367-bVL03gc7N26YbIhQwHfKxg-1; Thu, 18 Mar 2021 14:04:59 -0400
+X-MC-Unique: bVL03gc7N26YbIhQwHfKxg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B67581A281;
+        Thu, 18 Mar 2021 18:04:54 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.212])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 473B460CDF;
+        Thu, 18 Mar 2021 18:04:52 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 18 Mar 2021 19:04:54 +0100 (CET)
+Date:   Thu, 18 Mar 2021 19:04:51 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     qianli zhao <zhaoqianligood@gmail.com>
+Cc:     christian@brauner.io, axboe@kernel.dk,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        linux-kernel@vger.kernel.org, Qianli Zhao <zhaoqianli@xiaomi.com>
+Subject: Re: [PATCH V3] exit: trigger panic when global init has exited
+Message-ID: <20210318180450.GA9977@redhat.com>
+References: <1615985460-112867-1-git-send-email-zhaoqianligood@gmail.com>
+ <20210317143805.GA5610@redhat.com>
+ <CAPx_LQG=tj+kM14wS79tLPJbVjC+79OFDgfv6zai_sJ74CGeug@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoMailClient: External
-Content-Type: text/plain; charset=utf8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPx_LQG=tj+kM14wS79tLPJbVjC+79OFDgfv6zai_sJ74CGeug@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following checkpatch.pl warnings:
+On 03/18, qianli zhao wrote:
+>
+> Hi,Oleg
+>
+> Thank you for your reply.
+>
+> >> When init sub-threads running on different CPUs exit at the same time,
+> >> zap_pid_ns_processe()->BUG() may be happened.
+>
+> > and why do you think your patch can't prevent this?
+>
+> > Sorry, I must have missed something. But it seems to me that you are trying
+> > to fix the wrong problem. Yes, zap_pid_ns_processes() must not be called in
+> > the root namespace, and this has nothing to do with CONFIG_PID_NS.
+>
+> Yes, i try to fix this exception by test SIGNAL_GROUP_EXIT and call
+> panic before setting PF_EXITING to prevent zap_pid_ns_processes()
+> being called when init do_exit().
 
-drivers/amba/bus.c:832: WARNING: EXPORT_SYMBOL(foo); should immediately fol=
-low its function/variable
-drivers/amba/bus.c:833: WARNING: EXPORT_SYMBOL(foo); should immediately fol=
-low its function/variable
-drivers/amba/bus.c:834: WARNING: EXPORT_SYMBOL(foo); should immediately fol=
-low its function/variable
-drivers/amba/bus.c:835: WARNING: EXPORT_SYMBOL(foo); should immediately fol=
-low its function/variable
-drivers/amba/bus.c:836: WARNING: EXPORT_SYMBOL(foo); should immediately fol=
-low its function/variable
-drivers/amba/bus.c:837: WARNING: EXPORT_SYMBOL(foo); should immediately fol=
-low its function/variable
-drivers/amba/bus.c:838: WARNING: EXPORT_SYMBOL(foo); should immediately fol=
-low its function/variable
+Ah, I didn't notice your patch does atomic_dec_and_test(signal->live)
+before exit_signals() which sets PF_EXITING. Thanks for correcting me.
 
-Signed-off-by: Milan Djurovic <mdjurovic@zohomail.com>
----
- drivers/amba/bus.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+So yes, I was wrong, your patch can prevent this. Although I'd like to
+recheck if every do-something-if-group-dead action is correct in the
+case we have a non-PF_EXITING thread...
 
-diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
-index 939ca220bf78..dba3f890f681 100644
---- a/drivers/amba/bus.c
-+++ b/drivers/amba/bus.c
-@@ -349,6 +349,7 @@ int amba_driver_register(struct amba_driver *drv)
-=20
- =09return driver_register(&drv->drv);
- }
-+EXPORT_SYMBOL(amba_driver_register);
-=20
- /**
-  *=09amba_driver_unregister - remove an AMBA device driver
-@@ -362,6 +363,7 @@ void amba_driver_unregister(struct amba_driver *drv)
- {
- =09driver_unregister(&drv->drv);
- }
-+EXPORT_SYMBOL(amba_driver_unregister);
-=20
-=20
- static void amba_device_release(struct device *dev)
-@@ -707,6 +709,7 @@ int amba_device_register(struct amba_device *dev, struc=
-t resource *parent)
-=20
- =09return amba_device_add(dev, parent);
- }
-+EXPORT_SYMBOL(amba_device_register);
-=20
- /**
-  *=09amba_device_put - put an AMBA device
-@@ -733,6 +736,7 @@ void amba_device_unregister(struct amba_device *dev)
- {
- =09device_unregister(&dev->dev);
- }
-+EXPORT_SYMBOL(amba_device_unregister);
-=20
-=20
- struct find_data {
-@@ -793,6 +797,7 @@ amba_find_device(const char *busid, struct device *pare=
-nt, unsigned int id,
-=20
- =09return data.dev;
- }
-+EXPORT_SYMBOL(amba_find_device);
-=20
- /**
-  *=09amba_request_regions - request all mem regions associated with device
-@@ -814,6 +819,7 @@ int amba_request_regions(struct amba_device *dev, const=
- char *name)
-=20
- =09return ret;
- }
-+EXPORT_SYMBOL(amba_request_regions);
-=20
- /**
-  *=09amba_release_regions - release mem regions associated with device
-@@ -828,11 +834,4 @@ void amba_release_regions(struct amba_device *dev)
- =09size =3D resource_size(&dev->res);
- =09release_mem_region(dev->res.start, size);
- }
--
--EXPORT_SYMBOL(amba_driver_register);
--EXPORT_SYMBOL(amba_driver_unregister);
--EXPORT_SYMBOL(amba_device_register);
--EXPORT_SYMBOL(amba_device_unregister);
--EXPORT_SYMBOL(amba_find_device);
--EXPORT_SYMBOL(amba_request_regions);
- EXPORT_SYMBOL(amba_release_regions);
---=20
-2.30.1
+But then I don't understand the SIGNAL_GROUP_EXIT check added by your
+patch. Do we really need it if we want to avoid zap_pid_ns_processes()
+when the global init exits?
 
+> In addition, the patch also protects the init process state to
+> successfully get usable init coredump.
+
+Could you spell please?
+
+Does this connect to SIGNAL_GROUP_EXIT check? Do you mean that you want
+to panic earlier, before other init's sub-threads exit?
+
+Thanks,
+
+Oleg.
 
