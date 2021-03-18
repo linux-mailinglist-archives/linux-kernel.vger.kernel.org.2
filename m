@@ -2,106 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 334B13405F1
+	by mail.lfdr.de (Postfix) with ESMTP id A456B3405F2
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbhCRMpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 08:45:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60134 "EHLO
+        id S231504AbhCRMpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 08:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231343AbhCRMol (ORCPT
+        with ESMTP id S231345AbhCRMow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:44:41 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FB6C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 05:44:41 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id g20so3459548wmk.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 05:44:41 -0700 (PDT)
+        Thu, 18 Mar 2021 08:44:52 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4C8C06174A;
+        Thu, 18 Mar 2021 05:44:52 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id l1so1247720plg.12;
+        Thu, 18 Mar 2021 05:44:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TY1HutZnteRyydV5Ih0Egjx6tbg8POtzIYYu0tZ9gLI=;
-        b=YpCedp9IdwWeyxohsMCGQpMQoLV/hkD4ApREPjeUj04im6YuhY7tA13/cQE/+ppygN
-         gD4CV7xwu/vJdv5lQCoaNMHriSIdIv5N5QBPK4Wmn0C4U2djRnpU7/C+E5upxSCkWGzE
-         tOHe9MF2in8lHi0Op/RB+Od7D9SCVOqREpzBkQArb4HKpO6hAcjGDN64seMVmvqwHPEP
-         r9nseEw/mDgKSTAg8kqsHIeCaOWrJc1XDZrInFEKRSwtrMPhD7pJ9wZh3wzYT+Lm4bQO
-         CoTKTy2nH43TNBDPGKNNWkgx4Qf9u4MvFGSgQqtWJC8oTc7Xsla9O4alkLDH06QTK7hS
-         e9gQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r9rE0tJpznlr6Ns/VvU6BMZweoj02KtdTWNNDOyyeFE=;
+        b=G552MO7zcD7RYfTHJ4kCT7C874hod2hJkzRBsqtBJtRTU9px+61TW9VyaoADGYNtHZ
+         pTja+//z52v7Ek7xavQtHZ9sysyFA+ED73lFSadoEJncd3ApOhPldvH+Gk3lQplQ94xi
+         aeMfjPAHyzX61z1PmOGRN+5G71qMu5Yb3FOlAwP2W/ixGDLbtHuIIfWVW/u81FZ7WJN0
+         v/J3x5IrZGVsw+OCRb7OF0mX5l3ajZwIWQUNQPaXnA1897TU/klaxTfCpktTOorqiHFY
+         VZDkB/HNvTSvWjgm2Nw+gsw91s93ZQgBYMN77ZHH/PNHaO1pve+E0JgCNPblvpPBNp6M
+         Yk+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TY1HutZnteRyydV5Ih0Egjx6tbg8POtzIYYu0tZ9gLI=;
-        b=pXELaC6mX1uVFwywoOBP1YzG1ZG35pcVHIzxc3GpzjXG31XcObRUTF7PDwNKDtWb1m
-         l+ZzeAqD5UGDr7/SnvnroQbsmtEIKZZnm0k60us+YlAXVamC4Mb7vR9PRRL49Q46J6v7
-         I64gU5rv35hqk6tJAO4Rq7t9o79cJRQEuIVdWUYsmIbUz5p8wdMYNwhCkV3OEmpw8nfJ
-         pZt2YJ6NPX37RqfcB6Syh6di37+p98Cd6rRNLfNv/3tSXicZ/nwH9e+ch9p3k6OBHosI
-         EFW9vvC+rN+yySeu6BWzLi6GzQw3l79YqIJ+HrjPqSWZAgMnvTMumUn2bauFzuT4zg2L
-         ULHw==
-X-Gm-Message-State: AOAM533zd2AdAPCJPuUoVcqjr1MxsJf4tPhBPATQ6GQJsHqrZjwmGfK5
-        ZZhkP08EoggmkYuFW0fr40dvGZbwKzLoKQ==
-X-Google-Smtp-Source: ABdhPJwayS+6aJydxHj5yStfZeVa3lyWXiOrvhsKnl33t0rWgECJEOb5yGGRqE5y2RprFfC7xgfXqg==
-X-Received: by 2002:a05:600c:3514:: with SMTP id h20mr3567716wmq.45.1616071480151;
-        Thu, 18 Mar 2021 05:44:40 -0700 (PDT)
-Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id q15sm2813900wrx.56.2021.03.18.05.44.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 05:44:39 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH 10/10] crypto: cavium: nitrox_isr: Demote non-compliant kernel-doc headers
-Date:   Thu, 18 Mar 2021 12:44:22 +0000
-Message-Id: <20210318124422.3200180-11-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210318124422.3200180-1-lee.jones@linaro.org>
-References: <20210318124422.3200180-1-lee.jones@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r9rE0tJpznlr6Ns/VvU6BMZweoj02KtdTWNNDOyyeFE=;
+        b=fUWCs636gUec41SumMgQZ2ZVAOnt4rP0WHAyACfEprTZZi1/yUPNE4563RrXeGU0P9
+         GLlQV6WWBLfZ645V9ha+wPeAh4B0N+GTV1fOwDlO9WefKqnl7Ta9TuonB5x37D2hMYfb
+         f3quBePmTV3WqJyDlEsszZzLUNOEJv+eNcaACB8hNJRqsyCUFF9ry+ZPrnWx7dZ6ec5m
+         Xc5Aa+x+cl2BAGvU0WEdkrlo4WOR9wONgdZLQ0EqAAew5xuZ0o5rn13FZHL+/kZBK2lV
+         ++jhRQ2bo+tvGpZitgGE1m+fFyVaikOti0+BAwAx1wYTaB4vpOddEqcxIGUsT+2lkrL4
+         qpHQ==
+X-Gm-Message-State: AOAM5329Usb+4nft1hu8PvwjOEzbvvDkG+esHor5/Bq7a3x5pKZOfP6L
+        /ciDN6kpjZUuQL169SQhvGT1zMqenh3ryiK6HdU=
+X-Google-Smtp-Source: ABdhPJya+MwPUimZnTCuEi8Fb+6qYbFJpRxFCYiMhyPih+jRE1gLYp2PIvEqb8nl5AjfwDw72YJHd5TXk8M5r79+AT0=
+X-Received: by 2002:a17:90a:5d10:: with SMTP id s16mr4259176pji.126.1616071492251;
+ Thu, 18 Mar 2021 05:44:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210224115146.9131-1-aford173@gmail.com> <20210224115146.9131-5-aford173@gmail.com>
+ <CAMuHMdW3SO7LemssHrGKkV0TUVNuT4oq1EfmJ-Js79=QBvNhqQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdW3SO7LemssHrGKkV0TUVNuT4oq1EfmJ-Js79=QBvNhqQ@mail.gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Thu, 18 Mar 2021 07:44:41 -0500
+Message-ID: <CAHCN7xLtDyfB5h5rWTLpiUgWY==2KmxYCOQkVSeU8DV8KB-NKg@mail.gmail.com>
+Subject: Re: [PATCH V3 5/5] arm64: dts: renesas: beacon kits: Setup AVB refclk
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     netdev <netdev@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Thu, Mar 4, 2021 at 2:04 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> On Wed, Feb 24, 2021 at 12:52 PM Adam Ford <aford173@gmail.com> wrote:
+> > The AVB refererence clock assumes an external clock that runs
+>
+> reference
+>
+> > automatically.  Because the Versaclock is wired to provide the
+> > AVB refclock, the device tree needs to reference it in order for the
+> > driver to start the clock.
+> >
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> i.e. will queue in renesas-devel (with the typo fixed) once the DT
+> bindings have been accepted.
+>
 
- drivers/crypto/cavium/nitrox/nitrox_isr.c:17: warning: expecting prototype for One vector for each type of ring(). Prototype was for NR_RING_VECTORS() instead
- drivers/crypto/cavium/nitrox/nitrox_isr.c:224: warning: Function parameter or member 'irq' not described in 'nps_core_int_isr'
- drivers/crypto/cavium/nitrox/nitrox_isr.c:224: warning: Function parameter or member 'data' not described in 'nps_core_int_isr'
+Who do I need to ping to get the DT bindings accepted?  They have an
+acked-by from Rob.
 
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/crypto/cavium/nitrox/nitrox_isr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+adam
 
-diff --git a/drivers/crypto/cavium/nitrox/nitrox_isr.c b/drivers/crypto/cavium/nitrox/nitrox_isr.c
-index 99b053094f5af..c288c4b51783d 100644
---- a/drivers/crypto/cavium/nitrox/nitrox_isr.c
-+++ b/drivers/crypto/cavium/nitrox/nitrox_isr.c
-@@ -10,7 +10,7 @@
- #include "nitrox_isr.h"
- #include "nitrox_mbx.h"
- 
--/**
-+/*
-  * One vector for each type of ring
-  *  - NPS packet ring, AQMQ ring and ZQMQ ring
-  */
-@@ -216,7 +216,7 @@ static void nps_core_int_tasklet(unsigned long data)
- 	}
- }
- 
--/**
-+/*
-  * nps_core_int_isr - interrupt handler for NITROX errors and
-  *   mailbox communication
-  */
--- 
-2.27.0
-
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
