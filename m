@@ -2,149 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE60340B93
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:19:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0AD340B8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232287AbhCRRSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:18:42 -0400
-Received: from mga18.intel.com ([134.134.136.126]:58225 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229810AbhCRRSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:18:18 -0400
-IronPort-SDR: UvTxcHt4Vsdk1hdjXa0diSh3nWG3qT/3dOutm04MFqKI4YLcBPCeEv+PR7iE6j8lsjf2gpsUcp
- p0V1Law5DbRg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="177324702"
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="177324702"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 10:18:17 -0700
-IronPort-SDR: Y5pBJNPKrRhFMTmbtbvLo2dX46i+dZJzhWk3kQVXCWiRbCGhDqhOUaMGIozoh3xj03y4V7uGax
- pcaEfzf5hmNw==
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="389323632"
-Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314) ([10.237.222.51])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 10:17:57 -0700
-Date:   Thu, 18 Mar 2021 17:17:50 +0000
-From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Tadeusz Struk <tadeusz.struk@intel.com>, qat-linux@intel.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>
-Subject: Re: [PATCH v4 2/2] crypto: qat: ADF_STATUS_PF_RUNNING should be set
- after adf_dev_init
-Message-ID: <YFOLPn31KF7bW6T/@silpixa00400314>
-References: <YFN6hlz/L7erLO0H@silpixa00400314>
- <20210318162105.378239-3-ztong0001@gmail.com>
+        id S232009AbhCRRSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:18:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229958AbhCRRSD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:18:03 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19676C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:18:02 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so3487068pjv.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:18:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Q/dGxKGWMn9sfMz1b8CCSg+fiC/dJhHGZJq+3SdzjOQ=;
+        b=WVWbyAI5kfosqOyzscCScjiH7ZCnvPLgynzAoQ7C8JvvuMRmVO+nfLQVdRcBcbhBl3
+         3CAeupwS4atfV2Uk80gYt5uTO+qtyNw+uAc7j/oep/H3uv4GOvIOY24izAyzE2DQ8VW7
+         kUqFutxVa5UtqjSHyhZiVeHY4i4xf4tXelALM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Q/dGxKGWMn9sfMz1b8CCSg+fiC/dJhHGZJq+3SdzjOQ=;
+        b=HbBaGhtb14ZOXwABj2L5ZD2aqWhd6zJLH8/UO6fPjtrFW+3NMho80L2h5JLdT9y1vI
+         eiuDagQBgVfmqS3CRfb+THfRswCQ66jnXGRhBkEABOZE/00AiaunTwxxy6df/FAEPZlM
+         C9mfb0ajlNrx9qJ29b/bzyptpoIj619F19GmiZNA74WmzPQvQzBDPxUM3VNkCYHqBGGg
+         2z2d1kjPpXIjKtmDPDbhTy9WL5rjgwnnx39BriEY8ew1IrG0Cl49EuaiBpWfUJYZs0nG
+         XtuMZkGYMmARWT7/EqGIqaUZ9VNQqH4Fs+AIdwuJrfMuHxP1baTYcyECWsuV55qs0BOt
+         GR1w==
+X-Gm-Message-State: AOAM530qWZCe9kMCRzZVBBHCPPAnp1qqxmO5raYsXdCgBVqo///8GBk+
+        ImRGL+kfAQ/KPDWV9IetMqU7lA==
+X-Google-Smtp-Source: ABdhPJwjpWZE1h3EfmpA8uaekrYi2l/kcDS5O6e6heHIWgnAfkX7fPzdsgqyeP70KZ8aaKjMwXs8Rg==
+X-Received: by 2002:a17:90b:f15:: with SMTP id br21mr5479022pjb.234.1616087881552;
+        Thu, 18 Mar 2021 10:18:01 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:3cf8:6a09:780b:f65d])
+        by smtp.gmail.com with UTF8SMTPSA id r23sm3063398pje.38.2021.03.18.10.18.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 10:18:01 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 10:17:59 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Roja Rani Yarubandi <rojay@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        akashast@codeaurora.org, msavaliy@qti.qualcomm.com
+Subject: Re: [PATCH V2 2/2] arm64: dts: qcom: sc7180: Remove QUP-CORE ICC path
+Message-ID: <YFOLR4pem0mRFkoQ@google.com>
+References: <20210318111009.30365-1-rojay@codeaurora.org>
+ <20210318111009.30365-3-rojay@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210318162105.378239-3-ztong0001@gmail.com>
-Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 -
- Collinstown Industrial Park, Leixlip, County Kildare - Ireland
+In-Reply-To: <20210318111009.30365-3-rojay@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just a minor comment on the commit message:
-crypto: qat: ADF_STATUS_PF_RUNNING ...
-           ^
-Patches to the qat driver have the following headline:
-        crypto: qat -
-not
-        crypto: qat :
+On Thu, Mar 18, 2021 at 04:40:09PM +0530, Roja Rani Yarubandi wrote:
+> We had introduced the QUP-CORE ICC path to put proxy votes from
+> QUP wrapper on behalf of earlycon, if other users of QUP-CORE turn
+> off this clock before the real console is probed, unclocked access
+> to HW was seen from earlycon.
+> 
+> With ICC sync state support proxy votes are no longer need as ICC
+> will ensure that the default bootloader votes are not removed until
+> all it's consumer are probed.
+> 
+> We can safely remove ICC path for QUP-CORE clock from QUP wrapper
+> device.
+> 
+> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+> Signed-off-by: Akash Asthana <akashast@codeaurora.org>
 
-Regards,
-
--- 
-Giovanni
-
-On Thu, Mar 18, 2021 at 12:21:05PM -0400, Tong Zhang wrote:
-> ADF_STATUS_PF_RUNNING is (only) used and checked by adf_vf2pf_shutdown()
-> before calling adf_iov_putmsg()->mutex_lock(vf2pf_lock), however the
-> vf2pf_lock is initialized in adf_dev_init(), which can fail and when it
-> fail, the vf2pf_lock is either not initialized or destroyed, a subsequent
-> use of vf2pf_lock will cause issue.
-> To fix this issue, only set this flag if adf_dev_init() returns 0.
-> 
-> [    7.178404] BUG: KASAN: user-memory-access in __mutex_lock.isra.0+0x1ac/0x7c0
-> [    7.180345] Call Trace:
-> [    7.182576]  mutex_lock+0xc9/0xd0
-> [    7.183257]  adf_iov_putmsg+0x118/0x1a0 [intel_qat]
-> [    7.183541]  adf_vf2pf_shutdown+0x4d/0x7b [intel_qat]
-> [    7.183834]  adf_dev_shutdown+0x172/0x2b0 [intel_qat]
-> [    7.184127]  adf_probe+0x5e9/0x600 [qat_dh895xccvf]
-> 
-> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Fixes: 25c6ffb249f6 ("crypto: qat - check if PF is running")
-> Acked-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-> ---
->  drivers/crypto/qat/qat_c3xxxvf/adf_drv.c    | 4 ++--
->  drivers/crypto/qat/qat_c62xvf/adf_drv.c     | 4 ++--
->  drivers/crypto/qat/qat_dh895xccvf/adf_drv.c | 4 ++--
->  3 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c b/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c
-> index 1d1532e8fb6d..067ca5e17d38 100644
-> --- a/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c
-> +++ b/drivers/crypto/qat/qat_c3xxxvf/adf_drv.c
-> @@ -184,12 +184,12 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->  	if (ret)
->  		goto out_err_free_reg;
->  
-> -	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
-> -
->  	ret = adf_dev_init(accel_dev);
->  	if (ret)
->  		goto out_err_dev_shutdown;
->  
-> +	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
-> +
->  	ret = adf_dev_start(accel_dev);
->  	if (ret)
->  		goto out_err_dev_stop;
-> diff --git a/drivers/crypto/qat/qat_c62xvf/adf_drv.c b/drivers/crypto/qat/qat_c62xvf/adf_drv.c
-> index 04742a6d91ca..51ea88c0b17d 100644
-> --- a/drivers/crypto/qat/qat_c62xvf/adf_drv.c
-> +++ b/drivers/crypto/qat/qat_c62xvf/adf_drv.c
-> @@ -184,12 +184,12 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->  	if (ret)
->  		goto out_err_free_reg;
->  
-> -	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
-> -
->  	ret = adf_dev_init(accel_dev);
->  	if (ret)
->  		goto out_err_dev_shutdown;
->  
-> +	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
-> +
->  	ret = adf_dev_start(accel_dev);
->  	if (ret)
->  		goto out_err_dev_stop;
-> diff --git a/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c b/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c
-> index c972554a755e..29999da716cc 100644
-> --- a/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c
-> +++ b/drivers/crypto/qat/qat_dh895xccvf/adf_drv.c
-> @@ -184,12 +184,12 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->  	if (ret)
->  		goto out_err_free_reg;
->  
-> -	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
-> -
->  	ret = adf_dev_init(accel_dev);
->  	if (ret)
->  		goto out_err_dev_shutdown;
->  
-> +	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
-> +
->  	ret = adf_dev_start(accel_dev);
->  	if (ret)
->  		goto out_err_dev_stop;
-> -- 
-> 2.25.1
-> 
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
