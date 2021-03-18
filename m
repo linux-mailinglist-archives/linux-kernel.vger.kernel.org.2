@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FEB34038B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:40:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB34340392
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhCRKjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 06:39:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56712 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbhCRKjG (ORCPT
+        id S230192AbhCRKkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 06:40:01 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:51640 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230163AbhCRKjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 06:39:06 -0400
-Date:   Thu, 18 Mar 2021 10:38:55 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616063936;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O2t2VuX4dAZ1DvnBSy56YvpC2/XAgdcUVKJ2f999NM4=;
-        b=SW4V8XRlnoiEiPz7J0xjSlHXq48jml+0dOpFMWXqfGFCz4Nr3tBrmLDCL3KQv5WCcGPWKX
-        r96H5iGYcYB2qvIUtQzGj9qjCeI0Zx0grgPtXKyn9SPXmYVBRfcS1Lkp/REUM6A9qe3Vkj
-        7fof4EV0PGoCFMNfG33hnlW6X86fvV1MHcAme5ve2YkFoT2SXpmiLvbsA4hhevNOh9E/da
-        sHmK9CfxF97IyOL3SNh04fBybl2B2RsBmZJn9L1cgaaLnhfADe5P3FwUMkRrHhO8cM1syK
-        OA0QiK1Q1qBms7ZcH8z55IYoZtR4xzWzZw+ROzYaiaYGjQtv1v9jJrtPlyFQKw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616063936;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O2t2VuX4dAZ1DvnBSy56YvpC2/XAgdcUVKJ2f999NM4=;
-        b=Ev//fCXE3cLqq9CNC917cj2wbQJ0oUcTQYImRKjHNZa7SWejxBf6FwqD6Qtjbr4PnV2jvX
-        3EPXCFHIJD1jqQCw==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/misc] tools/x86/kcpuid: Check last token too
-Cc:     Borislav Petkov <bp@suse.de>, Feng Tang <feng.tang@intel.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210315125901.30315-1-bp@alien8.de>
-References: <20210315125901.30315-1-bp@alien8.de>
+        Thu, 18 Mar 2021 06:39:49 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12IAYPZY034662;
+        Thu, 18 Mar 2021 10:39:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=GD8WYS+iipNBOR8UEjBiCP0s/hMSdX/AjNN8eYeXovs=;
+ b=NxtqH075myWPN900Z475TgFevSXeGtboWFXpON74LxUnlljtkQzj2VBeJC7XmO1aUxVO
+ jjNWS317YoPc73bcB5QyULew+opWHbC9lHhcKiNWx1YJBiOMKNH6d45+/hoRO1ABbYbn
+ mS5/hbbKkLxOvshONM4FcF8KGt/MBLwXjmm8fB6vE6jB7TSW77Z6Gr+ynz4aSYOS0/N3
+ yj9BOupBah7PTCOTLMAc20ixdnpFNN2olFMaqusFdAqJq4s2gQZkHamC5aSzsP2lHkRx
+ h2Di7ybTo+vJUf00KcJlOOFg8tHNscWPtsbvLLm8VYFknc/W7eOeJhe4q3sfZdB2B2rK sA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 37a4ekuygc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Mar 2021 10:39:45 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12IAYm9G093049;
+        Thu, 18 Mar 2021 10:39:43 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 3796yw1hw9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Mar 2021 10:39:43 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12IAdfl9017260;
+        Thu, 18 Mar 2021 10:39:42 GMT
+Received: from mwanda (/10.175.214.245)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 18 Mar 2021 10:39:41 +0000
+Date:   Thu, 18 Mar 2021 13:39:34 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Michael Zaidman <michael.zaidman@gmail.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] HID: ft260: fix an error message in ft260_i2c_write_read()
+Message-ID: <YFMt5pml1voGQkUy@mwanda>
 MIME-Version: 1.0
-Message-ID: <161606393556.398.17576665580386583166.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0 spamscore=0
+ bulkscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103180078
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0
+ priorityscore=1501 adultscore=0 phishscore=0 suspectscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103180078
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/misc branch of tip:
+The "len" variable is uninitialize.
 
-Commit-ID:     e20f67026b5ead2afc5627e98b45e6b65e7fb38c
-Gitweb:        https://git.kernel.org/tip/e20f67026b5ead2afc5627e98b45e6b65e7fb38c
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Mon, 15 Mar 2021 13:08:35 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 18 Mar 2021 11:36:01 +01:00
-
-tools/x86/kcpuid: Check last token too
-
-Input lines like
-
-  0x8000001E,     0, EAX,   31:0, Extended APIC ID
-
-where the short name is missing lead to a segfault because the loop
-takes the long name for the short name and tokens[5] becomes NULL which
-explodes later in strcpy().
-
-Check its value too before further processing.
-
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Feng Tang <feng.tang@intel.com>
-Link: https://lkml.kernel.org/r/20210315125901.30315-1-bp@alien8.de
+Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- tools/arch/x86/kcpuid/kcpuid.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/hid/hid-ft260.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/arch/x86/kcpuid/kcpuid.c b/tools/arch/x86/kcpuid/kcpuid.c
-index 6048da3..dae7551 100644
---- a/tools/arch/x86/kcpuid/kcpuid.c
-+++ b/tools/arch/x86/kcpuid/kcpuid.c
-@@ -324,6 +324,8 @@ static int parse_line(char *line)
- 		str = NULL;
- 	}
- 	tokens[5] = strtok(str, "\n");
-+	if (!tokens[5])
-+		goto err_exit;
+diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
+index 047aa85a7c83..a5751607ce24 100644
+--- a/drivers/hid/hid-ft260.c
++++ b/drivers/hid/hid-ft260.c
+@@ -512,7 +512,8 @@ static int ft260_i2c_write_read(struct ft260_device *dev, struct i2c_msg *msgs)
+ 	struct hid_device *hdev = dev->hdev;
  
- 	/* index/main-leaf */
- 	index = strtoull(tokens[0], NULL, 0);
+ 	if (msgs[0].len > 2) {
+-		hid_err(hdev, "%s: unsupported wr len: %d\n", __func__, len);
++		hid_err(hdev, "%s: unsupported wr len: %d\n", __func__,
++			msgs[0].len);
+ 		return -EOPNOTSUPP;
+ 	}
+ 
+-- 
+2.30.2
+
