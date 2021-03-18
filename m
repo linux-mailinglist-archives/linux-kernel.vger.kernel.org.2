@@ -2,98 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737E633FDE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 04:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB6C33FDEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 04:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229664AbhCRDrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 23:47:10 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:60586 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbhCRDrD (ORCPT
+        id S229707AbhCRDvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 23:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229708AbhCRDvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 23:47:03 -0400
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 2DFAB891AE;
-        Thu, 18 Mar 2021 16:46:59 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1616039219;
-        bh=YhRnUFVrl7/8nydokzr/5/OXltn4aUhYU1Fr4pawvfs=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=Wxm/LTQu9rRmMleCZxX+Ed3aTU/MrYR953tJJ3AjUCRaHDfmOyiz16R/OdsjSXSLU
-         +Zg9JLw8VUflvEdzqQWdjr6Q61COrRVacgwceND/GKLES3eygfopp/cXQ6HuDAaAJ7
-         Ui+J3gmmt/12WDWPXwswkczpmXeF9oG4CV3T3BIGWiqlbjUv2ZXZH1ExG/vMNvE9uI
-         LzB7QwhQyZzbVwi4BWpvQzihgzw2dC1veQ+GM8PYIIx/Ry2nwVRrwVp5n0QmW5Ufz1
-         etnHMCubJlFKDq6VQHE+RgweuEJMf9kZiuGIUHwnz0+2VxbSc94plTpTF3/TTOG+pI
-         zF7c1rXLztH+A==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B6052cd330001>; Thu, 18 Mar 2021 16:46:59 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Mar 2021 16:46:58 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.012; Thu, 18 Mar 2021 16:46:58 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Guenter Roeck <linux@roeck-us.net>, Wolfram Sang <wsa@kernel.org>
-CC:     "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: Errant readings on LM81 with T2080 SoC
-Thread-Topic: Errant readings on LM81 with T2080 SoC
-Thread-Index: AQHXE6SbssdAOSHgwE+zIRhtn11Sk6p4Y2sAgAAgcACAACSBgIAABe+AgAEDagCAAfS7gIAALq8AgAEX54CAAKWsgIAACmIAgADZp4CAAATLAIAJ1fMA
-Date:   Thu, 18 Mar 2021 03:46:58 +0000
-Message-ID: <9c912424-2cc9-8753-1352-1a5c27722cd2@alliedtelesis.co.nz>
-References: <20210311081842.GA1070@ninjato>
- <94dfa9dc-a80c-98ba-4169-44cce3d810f7@alliedtelesis.co.nz>
- <725c5e51-65df-e17d-e2da-0982efacf2d2@roeck-us.net>
-In-Reply-To: <725c5e51-65df-e17d-e2da-0982efacf2d2@roeck-us.net>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="Windows-1252"
-Content-ID: <0D62E11FAE39D940A8C764469E59E569@atlnz.lc>
-Content-Transfer-Encoding: quoted-printable
+        Wed, 17 Mar 2021 23:51:02 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7566C06174A;
+        Wed, 17 Mar 2021 20:51:01 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id j25so2554572pfe.2;
+        Wed, 17 Mar 2021 20:51:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=oCoahlrhSUtHIwZHOSYYJeuob0IXRJw9KR2mtFeePrE=;
+        b=tMLLXY51bUClfTr/XNQkSycUEZm10E/pbuuyVoWPTqUi//S/B1fnjC69vZAkadgCkd
+         BnofYZaesMdG2cbFL9M5TKs6ZhZN2hA9WhBxYUGz1UYW4VIkexYhuosJpG9kK+s53/4K
+         oylSUQb4LS6qcfAYpytvEvT7I9C1EFOW7IAmdVeJhSKsDYV+SuHWb7eJV+aGsj0TgZiE
+         Ws/Yy4BKjXcE8CLo+YEinDgkrqh6oi3I+/wD59zGWajj15+VRL7QDYuAWfjNf6XxKSe2
+         f+UmAUaYvbAeNZHdqI5qYHYvb0+MuyCkBYQySpPEs4oLVlr8lLwfRyAjG0RziY0HLiuO
+         gxfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=oCoahlrhSUtHIwZHOSYYJeuob0IXRJw9KR2mtFeePrE=;
+        b=aK5cCxPN8pc4Pz9AkMGthksYxN+tdQZxVo8tIfGP/b0yB3EbfaYk2R4g8KgKHmyoUD
+         ksZ/jmNoSATdJQ0YlzgWGC9IrD2SmHJRqz5ttnVDK3iHS4LwOj64IbZJ5XTvP6InFGC9
+         n+X/gIoowZco7aiAbQaB1Z6qt8KyLRWctTrw6jQgTBhYwfxA9dNB2zYJ6XjKLKn65UZJ
+         5X0HTNxErIMd+B6jhBti0JLpFsyxcXxkmkncWDSyu6JvmbcOAkMaZ72EKvh39WIHQaGW
+         cenlLt9k1B8bOYt3MJGIlTDyXYbvpnavMNOI7VTCbNYco8CMKf87tIOlsJgWtdJ8cxJ4
+         Lzdg==
+X-Gm-Message-State: AOAM533M8MVHAZN6zt3V4QMn1cUbGbL7RCkpJflXqk/jthps5O2EtZjY
+        4olk1imtgfMcUTOb1ZayAb8=
+X-Google-Smtp-Source: ABdhPJwRciX0al7Hy0D4VsTRTJHtdDfgNWGUjlaLSRmUAswSxm52BqbW3s3OOmvM9HeKkMlXXK+5hQ==
+X-Received: by 2002:a63:6642:: with SMTP id a63mr5150719pgc.333.1616039461220;
+        Wed, 17 Mar 2021 20:51:01 -0700 (PDT)
+Received: from localhost ([58.84.78.96])
+        by smtp.gmail.com with ESMTPSA id d19sm466620pjs.55.2021.03.17.20.50.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 20:51:00 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 13:50:55 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v13 00/14] huge vmalloc mappings
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Ding Tianhong <dingtianhong@huawei.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+References: <20210317062402.533919-1-npiggin@gmail.com>
+        <20210317155843.c15e71f966f1e4da508dea04@linux-foundation.org>
+In-Reply-To: <20210317155843.c15e71f966f1e4da508dea04@linux-foundation.org>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=GfppYjfL c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=N659UExz7-8A:10 a=dESyimp9J3IA:10 a=VNwDg8RZYkgfWyEnbsYA:9 a=pILNOxqGKmIA:10
-X-SEG-SpamProfiler-Score: 0
+Message-Id: <1616036421.amjz2efujj.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Excerpts from Andrew Morton's message of March 18, 2021 8:58 am:
+> On Wed, 17 Mar 2021 16:23:48 +1000 Nicholas Piggin <npiggin@gmail.com> wr=
+ote:
+>=20
+>>=20
+>> *** BLURB HERE ***
+>>=20
+>=20
+> That's really not what it means ;)
+=20
+Sigh, wasn't having a good yesterday.
 
-On 12/03/21 10:34 am, Guenter Roeck wrote:
-> On 3/11/21 1:17 PM, Chris Packham wrote:
->> On 11/03/21 9:18 pm, Wolfram Sang wrote:
->>>> Bummer. What is really weird is that you see clock stretching under
->>>> CPU load. Normally clock stretching is triggered by the device, not
->>>> by the host.
->>> One example: Some hosts need an interrupt per byte to know if they
->>> should send ACK or NACK. If that interrupt is delayed, they stretch the
->>> clock.
->>>
->> It feels like something like that is happening. Looking at the T2080
->> Reference manual there is an interesting timing diagram (Figure 14-2 if
->> someone feels like looking it up). It shows SCL low between the ACK for
->> the address and the data byte. I think if we're delayed in sending the
->> next byte we could violate Ttimeout or Tlow:mext from the SMBUS spec.
->>
-> I think that really leaves you only two options that I can see:
-> Rework the driver to handle critical actions (such as setting TXAK,
-> and everything else that might result in clock stretching) in the
-> interrupt handler, or rework the driver to handle everything in
-> a high priority kernel thread.
-I've made some reasonable progress on making i2c-mpc more interrupt=20
-driven. Assuming it works out for my use-case is there an opinion on=20
-making interrupt support mandatory? Looking at all the in-tree dts files=20
-that use one of the compatible strings from i2c-mpc.c they all have=20
-interrupt properties so in theory nothing is using the polling mode. But=20
-there may be some out-of-tree boards or boards using an old dtb that=20
-would be affected?=
+> Could we please get a nice description for the [0/n]?  What's it all
+> about, what's the benefit, what are potential downsides.
+>
+> And performance testing results!  Because if it ain't faster, there's
+> no point in merging it?
+>=20
+
+It's supposed to have a bit of description in patch 13, and has some
+performance reuslts in patch 14. Is it better to put a bigger writeup
+in 0? I thought that tends to get lost.
+
+I'll write something here to discuss for now, and can fit it into the=20
+appropriate place in the series after that.
+
+The kernel virtual mapping layer grew support for mapping memory with >=20
+PAGE_SIZE ptes with 0ddab1d2ed664 ("lib/ioremap.c: add huge I/O map=20
+capability interfaces"), and implemented support for using those huge
+page mappings with ioremap.
+
+According to the submission, the use-case is mapping very large=20
+non-volatile memory devices, which could be GB or TB.
+https://lore.kernel.org/lkml/1425404664-19675-1-git-send-email-toshi.kani@h=
+p.com/
+The benefit is said to be in the overhead of maintaining the mapping,
+perhaps both in memory overhead and setup / teardown time. Memory
+overhead for the mapping with a 4kB page and 8 byte page table is 2GB
+per TB of mapping, down to 4MB / TB with 2MB pages.
+
+The same huge page vmap infrastructure can be quite easily adapted and
+used for mapping vmalloc memory pages without more complexity for arch
+or core vmap code. However unlike ioremap, vmalloc page table overhead=20
+is not a real problem, so the advantage to justify this is performance.
+
+Several of the most structures in the kernel (e.g., vfs and network hash=20
+tables) are allocated with vmalloc on NUMA machines, in order to=20
+distribute access bandwidth over the machine. Mapping these with larger
+pages can improve TLB usage significantly, for example this reduces TLB=20
+misses by nearly 30x on a `git diff` workload on a 2-node POWER9 (59,800=20
+-> 2,100) and reduces CPU cycles by 0.54%, due to vfs hashes being=20
+allocated with 2MB pages.
+
+[ Other numbers?
+  - The difference is even larger in a guest due to more costly TLB=20
+    misses.
+  - Eric Dumazet was keen on the network hash performance possibilities.
+  - Other archs? Ding was doing x86 testing. ]
+
+The kernel module allocator also uses vmalloc to map module images even=20
+on non-NUMA, which can result in high iTLB pressure on highly modular=20
+distro type of kernels. This series does not implement huge mappings for=20
+modules yet, but it's a step along the way. Rick Edgecombe was looking=20
+at that IIRC.
+
+The per-cpu allocator similarly might be able to take advantage of this.
+Also on the todo list.
+
+The disadvantages of this I can see are:
+* Memory fragmentation can waste some physical memory because it will=20
+  attempt to allocate larger pages to fit the required size, rounding up=20
+  (once the requested size is >=3D 2MB).
+  - I don't see it being a big problem in practice unless some user=20
+    crops up that allocates thousands of 2.5MB ranges. We can tewak=20
+    heuristics a bit there if needed to reduce peak waste.
+* Less granular mappings can make the NUMA distribution less balanced.
+  - Similar to the above.
+  - Could also allocate all major system hashes with one allocation
+    up-front and spread them all across the one block, which should help
+    overall NUMA distribution and reduce fragmentation waste.
+* Callers might expect something about the underlying allocated pages.
+  - Tried to keep the apperance of base PAGE_SIZE pages throughout the=20
+    APIs and exposed data structures.
+  - Added a VM_NO_HUGE_VMAP flag to hammer troublesome cases with.
+
+- Finally, added a nohugevmalloc boot option to turn it off (independent
+  of nohugeiomap).
+
+Is that helpful?
+
+Thanks,
+Nick
