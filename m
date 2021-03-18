@@ -2,114 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76AF733FE8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 06:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B6333FE5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 05:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhCRFAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 01:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbhCRFAN (ORCPT
+        id S229624AbhCRE6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 00:58:07 -0400
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:59586 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229454AbhCRE5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 01:00:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571B6C06174A;
-        Wed, 17 Mar 2021 22:00:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=+nlm279ylA5Av6DETMBos1RXabjczdpECnt3hiQJvZw=; b=ANHvQI4KxYoaApzwlvQSBMTCk7
-        3OYutmcg+lJh5H8kXsn8/neUqT/z8/2CNM82ZKJ31TSj6XcNA3WDJI7ExWvcJ2LHE1O2hrNyg/TgA
-        BTHnGkvkU7VTBvt7G3sWB3hroM6qKXfvCLsOp3dz6FOGKOV+4v9ioq6WGotQo4Rgi14fbssLpC87H
-        yHZJDIBrypvHfnYpCpB5IvDJIblOipSQsWP4GfuOx/bmxat4IGvgwaXA+RD9njBrxHQ5+2sZPrXU2
-        6f0S0z1ppLOpYf0cQjLRmtF5T5ob+YY39FR20C8tkjisYerK6eoM5VxlESMaN9dUevpycm+fsD1EH
-        SeXneIoA==;
-Received: from [2001:4bb8:18c:bb3:e1cf:ad2f:7ff7:7a0b] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMkkO-002ZJq-GS; Thu, 18 Mar 2021 04:59:10 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 08/10] MIPS: disable CONFIG_IDE in malta*_defconfig
-Date:   Thu, 18 Mar 2021 05:57:04 +0100
-Message-Id: <20210318045706.200458-9-hch@lst.de>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210318045706.200458-1-hch@lst.de>
-References: <20210318045706.200458-1-hch@lst.de>
+        Thu, 18 Mar 2021 00:57:55 -0400
+Received: from dread.disaster.area (pa49-181-239-12.pa.nsw.optusnet.com.au [49.181.239.12])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 8F98878B349;
+        Thu, 18 Mar 2021 15:57:46 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1lMkjB-003oZC-HC; Thu, 18 Mar 2021 15:57:45 +1100
+Date:   Thu, 18 Mar 2021 15:57:45 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-mm@kvack.org, linux-nvdimm@lists.01.org,
+        Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@lst.de>,
+        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] mm, dax, pmem: Introduce dev_pagemap_failure()
+Message-ID: <20210318045745.GC349301@dread.disaster.area>
+References: <161604048257.1463742.1374527716381197629.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161604050314.1463742.14151665140035795571.stgit@dwillia2-desk3.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161604050314.1463742.14151665140035795571.stgit@dwillia2-desk3.amr.corp.intel.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
+        a=gO82wUwQTSpaJfP49aMSow==:117 a=gO82wUwQTSpaJfP49aMSow==:17
+        a=kj9zAlcOel0A:10 a=dESyimp9J3IA:10 a=7-415B0cAAAA:8
+        a=WmxcBHIv_b8-_gLMp1kA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Various malta defconfigs enable CONFIG_IDE for the tc86c001 ide driver,
-hich is a Toshiba plug in card that does not make much sense to use on
-bigsur platforms.  For all other ATA cards libata support is already
-enabled.
+On Wed, Mar 17, 2021 at 09:08:23PM -0700, Dan Williams wrote:
+> Jason wondered why the get_user_pages_fast() path takes references on a
+> @pgmap object. The rationale was to protect against accessing a 'struct
+> page' that might be in the process of being removed by the driver, but
+> he rightly points out that should be solved the same way all gup-fast
+> synchronization is solved which is invalidate the mapping and let the
+> gup slow path do @pgmap synchronization [1].
+> 
+> To achieve that it means that new user mappings need to stop being
+> created and all existing user mappings need to be invalidated.
+> 
+> For device-dax this is already the case as kill_dax() prevents future
+> faults from installing a pte, and the single device-dax inode
+> address_space can be trivially unmapped.
+> 
+> The situation is different for filesystem-dax where device pages could
+> be mapped by any number of inode address_space instances. An initial
+> thought was to treat the device removal event like a drop_pagecache_sb()
+> event that walks superblocks and unmaps all inodes. However, Dave points
+> out that it is not just the filesystem user-mappings that need to react
+> to global DAX page-unmap events, it is also filesystem metadata
+> (proposed DAX metadata access), and other drivers (upstream
+> DM-writecache) that need to react to this event [2].
+> 
+> The only kernel facility that is meant to globally broadcast the loss of
+> a page (via corruption or surprise remove) is memory_failure(). The
+> downside of memory_failure() is that it is a pfn-at-a-time interface.
+> However, the events that would trigger the need to call memory_failure()
+> over a full PMEM device should be rare.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/mips/configs/malta_kvm_defconfig       | 3 ---
- arch/mips/configs/malta_kvm_guest_defconfig | 3 ---
- arch/mips/configs/maltaup_xpa_defconfig     | 3 ---
- 3 files changed, 9 deletions(-)
+This is a highly suboptimal design. Filesystems only need a single
+callout to trigger a shutdown that unmaps every active mapping in
+the filesystem - we do not need a page-by-page error notification
+which results in 250 million hwposion callouts per TB of pmem to do
+this.
 
-diff --git a/arch/mips/configs/malta_kvm_defconfig b/arch/mips/configs/malta_kvm_defconfig
-index 62b1969b4f55b9..b4f9f3d4bd5d34 100644
---- a/arch/mips/configs/malta_kvm_defconfig
-+++ b/arch/mips/configs/malta_kvm_defconfig
-@@ -239,9 +239,6 @@ CONFIG_BLK_DEV_NBD=m
- CONFIG_BLK_DEV_RAM=y
- CONFIG_CDROM_PKTCDVD=m
- CONFIG_ATA_OVER_ETH=m
--CONFIG_IDE=y
--CONFIG_BLK_DEV_IDECD=y
--CONFIG_BLK_DEV_TC86C001=m
- CONFIG_RAID_ATTRS=m
- CONFIG_BLK_DEV_SD=y
- CONFIG_CHR_DEV_ST=m
-diff --git a/arch/mips/configs/malta_kvm_guest_defconfig b/arch/mips/configs/malta_kvm_guest_defconfig
-index 9185e0a0aa4551..4d415145d1163e 100644
---- a/arch/mips/configs/malta_kvm_guest_defconfig
-+++ b/arch/mips/configs/malta_kvm_guest_defconfig
-@@ -237,9 +237,6 @@ CONFIG_BLK_DEV_RAM=y
- CONFIG_CDROM_PKTCDVD=m
- CONFIG_ATA_OVER_ETH=m
- CONFIG_VIRTIO_BLK=y
--CONFIG_IDE=y
--CONFIG_BLK_DEV_IDECD=y
--CONFIG_BLK_DEV_TC86C001=m
- CONFIG_RAID_ATTRS=m
- CONFIG_BLK_DEV_SD=y
- CONFIG_CHR_DEV_ST=m
-diff --git a/arch/mips/configs/maltaup_xpa_defconfig b/arch/mips/configs/maltaup_xpa_defconfig
-index 636311d67a533c..cd536086dca4a4 100644
---- a/arch/mips/configs/maltaup_xpa_defconfig
-+++ b/arch/mips/configs/maltaup_xpa_defconfig
-@@ -237,9 +237,6 @@ CONFIG_BLK_DEV_NBD=m
- CONFIG_BLK_DEV_RAM=y
- CONFIG_CDROM_PKTCDVD=m
- CONFIG_ATA_OVER_ETH=m
--CONFIG_IDE=y
--CONFIG_BLK_DEV_IDECD=y
--CONFIG_BLK_DEV_TC86C001=m
- CONFIG_RAID_ATTRS=m
- CONFIG_BLK_DEV_SD=y
- CONFIG_CHR_DEV_ST=m
+Indeed, the moment we get the first hwpoison from this patch, we'll
+map it to the primary XFS superblock and we'd almost certainly
+consider losing the storage behind that block to be a shut down
+trigger. During the shutdown, the filesystem should unmap all the
+active mappings (we already need to add this to shutdown on DAX
+regardless of this device remove issue) and so we really don't need
+a page-by-page notification of badness.
+
+AFAICT, it's going to take minutes, maybe hours for do the page-by-page
+iteration to hwposion every page. It's going to take a few seconds
+for the filesystem shutdown to run a device wide invalidation.
+
+SO, yeah, I think this should simply be a single ranged call to the
+filesystem like:
+
+	->memory_failure(dev, 0, -1ULL)
+
+to tell the filesystem that the entire backing device has gone away,
+and leave the filesystem to handle failure entirely at the
+filesystem level.
+
+-Dave.
 -- 
-2.30.1
-
+Dave Chinner
+david@fromorbit.com
