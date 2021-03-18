@@ -2,90 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1F133FCA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 02:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E3E33FCA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 02:26:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhCRBWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 21:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhCRBWe (ORCPT
+        id S229884AbhCRBZf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Mar 2021 21:25:35 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:59702 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229472AbhCRBZa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 21:22:34 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B8B9C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 18:22:34 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id y200so2343521pfb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 18:22:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EalAswFOAcFp0mMFCKv9AaiQ3ouyPCG+tDog26PGvcI=;
-        b=TSffuJwrnV2vab8/yGoahUmuVCMDXKwUtsys3/bDoxiRWc2F+tAbiwWP2aKGYHhGV8
-         gzbjPnRuubA6uxOalwf/Z67un8+OC/fwBeJ8Upsa2Pv1pu1E+PVITOIEVPFFO+PQW43A
-         yV0DB8OU4s1DHxtjiTSy0K6Yf3Xh0c37cc+7Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EalAswFOAcFp0mMFCKv9AaiQ3ouyPCG+tDog26PGvcI=;
-        b=dkf7FauFhB345hmO4wxJig2pXNi/arLDF/zYFjrssi4QG6ULUf37FgJiOpaTg1KsXC
-         nKs85LeXXg3YVSZD1qIonifcLHso9db6jUaCgR3GY2aj6lSpDsU8i4kKgrX9jLPUdYt3
-         s1SMImZzEa/vOd9ZXO83WwhdFl2N9S7mHKdI5BQID6ltyfKBzhVOfLNyfhrDOKAqJ/nO
-         uxclxs80L7n7ATA/mJjvZ11SOWAnUJp0zBSHoDtEe8C+VBT/doJrm3sttM7743SMW80h
-         HeL48IiSjyD76eNAtm6x78sns0ENwjUnzOP2u0hFxAjonf/YUDYwVt7s/yhqykgsY1f2
-         X7yQ==
-X-Gm-Message-State: AOAM530Vj238T9QaG9fTGAi+inNER/b6+CsvXUXtj/stJzIWy+fl/mVU
-        D/UsdMFDu/xW+PDeGvYxyDpifg==
-X-Google-Smtp-Source: ABdhPJyrmCLmGW63fx9n1OC+yYNO5rjvfb0Ce9xQhK2RMb98xMDnfa90K4TsbnB5zAo7scdsUzAUcw==
-X-Received: by 2002:aa7:81cb:0:b029:1ee:5346:8f1d with SMTP id c11-20020aa781cb0000b02901ee53468f1dmr1683154pfn.4.1616030553695;
-        Wed, 17 Mar 2021 18:22:33 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c1sm272445pfn.131.2021.03.17.18.22.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 18:22:33 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 18:22:31 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     John Wood <john.wood@gmx.com>
-Cc:     Jann Horn <jannh@google.com>, Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH v6 1/8] security: Add LSM hook at the point where a task
- gets a fatal signal
-Message-ID: <202103171821.C851A2D189@keescook>
-References: <20210307113031.11671-1-john.wood@gmx.com>
- <20210307113031.11671-2-john.wood@gmx.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210307113031.11671-2-john.wood@gmx.com>
+        Wed, 17 Mar 2021 21:25:30 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0USLDttW_1616030695;
+Received: from 30.25.254.31(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0USLDttW_1616030695)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 18 Mar 2021 09:25:27 +0800
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v4 1/4] sched/fair: Introduce primitives for CFS bandwidth
+ burst
+From:   changhuaixin <changhuaixin@linux.alibaba.com>
+In-Reply-To: <YFG4hEOe65cbCo26@hirez.programming.kicks-ass.net>
+Date:   Thu, 18 Mar 2021 09:26:58 +0800
+Cc:     changhuaixin <changhuaixin@linux.alibaba.com>,
+        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
+        open list <linux-kernel@vger.kernel.org>, mgorman@suse.de,
+        mingo@redhat.com, Odin Ugedal <odin@uged.al>,
+        Odin Ugedal <odin@ugedal.com>, pauld@redhead.com,
+        Paul Turner <pjt@google.com>, rostedt@goodmis.org,
+        Shanpei Chen <shanpeic@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        xiyou.wangcong@gmail.com
+Content-Transfer-Encoding: 8BIT
+Message-Id: <EA9BCA7F-8B57-4A87-A32E-DBBF8E7BAD8F@linux.alibaba.com>
+References: <20210316044931.39733-1-changhuaixin@linux.alibaba.com>
+ <20210316044931.39733-2-changhuaixin@linux.alibaba.com>
+ <YFCAXeZj6sXBI5Ls@hirez.programming.kicks-ass.net>
+ <B75EDF95-96B3-44E4-8169-3C1FCBC30A7B@linux.alibaba.com>
+ <YFG4hEOe65cbCo26@hirez.programming.kicks-ass.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 12:30:24PM +0100, John Wood wrote:
-> Add a security hook that allows a LSM to be notified when a task gets a
-> fatal signal. This patch is a previous step on the way to compute the
-> task crash period by the "brute" LSM (linux security module to detect
-> and mitigate fork brute force attack against vulnerable userspace
-> processes).
+
+
+> On Mar 17, 2021, at 4:06 PM, Peter Zijlstra <peterz@infradead.org> wrote:
 > 
-> Signed-off-by: John Wood <john.wood@gmx.com>
+> On Wed, Mar 17, 2021 at 03:16:18PM +0800, changhuaixin wrote:
+> 
+>>> Why do you allow such a large burst? I would expect something like:
+>>> 
+>>> 	if (burst > quote)
+>>> 		return -EINVAL;
+>>> 
+>>> That limits the variance in the system. Allowing super long bursts seems
+>>> to defeat the entire purpose of bandwidth control.
+>> 
+>> I understand your concern. Surely large burst value might allow super
+>> long bursts thus preventing bandwidth control entirely for a long
+>> time.
+>> 
+>> However, I am afraid it is hard to decide what the maximum burst
+>> should be from the bandwidth control mechanism itself. Allowing some
+>> burst to the maximum of quota is helpful, but not enough. There are
+>> cases where workloads are bursty that they need many times more than
+>> quota in a single period. In such cases, limiting burst to the maximum
+>> of quota fails to meet the needs.
+>> 
+>> Thus, I wonder whether is it acceptable to leave the maximum burst to
+>> users. If the desired behavior is to allow some burst, configure burst
+>> accordingly. If that is causing variance, use share or other fairness
+>> mechanism. And if fairness mechanism still fails to coordinate, do not
+>> use burst maybe.
+> 
+> It's not fairness, bandwidth control is about isolation, and burst
+> introduces interference.
+> 
+>> In this way, cfs_b->buffer can be removed while cfs_b->max_overrun is
+>> still needed maybe.
+> 
+> So what is the typical avg,stdev,max and mode for the workloads where you find
+> you need this?
+> 
+> I would really like to put a limit on the burst. IMO a workload that has
+> a burst many times longer than the quota is plain broken.
 
-I continue to really like that this entire thing can be done from an LSM
-with just this one extra hook. :)
+I see. Then the problem comes down to how large the limit on burst shall be.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+I have sampled the CPU usage of a bursty container in 100ms periods. The statistics are:
+average	: 42.2%
+stddev	: 81.5%
+max		: 844.5%
+P95		: 183.3%
+P99		: 437.0%
 
--- 
-Kees Cook
+If quota is 100000ms, burst buffer needs to be 8 times more in order for this workload not to be throttled.
+I can't say this is typical, but these workloads exist. On a machine running Kubernetes containers,
+where there is often room for such burst and the interference is hard to notice, users would prefer
+allowing such burst to being throttled occasionally.
+
+In this sense, I suggest limit burst buffer to 16 times of quota or around. That should be enough for users to
+improve tail latency caused by throttling. And users might choose a smaller one or even none, if the interference
+is unacceptable. What do you think?
