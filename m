@@ -2,111 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B657340C44
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B95340C48
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhCRRzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:55:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57114 "EHLO
+        id S232489AbhCRR4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:56:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59813 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230365AbhCRRzf (ORCPT
+        by vger.kernel.org with ESMTP id S232487AbhCRRzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:55:35 -0400
+        Thu, 18 Mar 2021 13:55:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616090134;
+        s=mimecast20190719; t=1616090151;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LIthaCPfEMaPsdAY5ThVlMRUnMT/maNnKeXQkXykv2Q=;
-        b=Hzvpy8O76p8X1MbwgAZ1cO3+o7UP5Npk2GsF3U1cgyOtKMf34S6F6qUuCxMtPh73s24mVQ
-        qVHQzVtpkt43FNu1hYiDb10HXZa3KO5J81+yvFgd3AwFOhKX3M1YOiXqq8mXSbzTQzcYw3
-        1XSoX+qD9MMeBq94vPRqnB5DqgbFR0A=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-272-qnJvSdofNPOkGHUF8v3GVw-1; Thu, 18 Mar 2021 13:55:33 -0400
-X-MC-Unique: qnJvSdofNPOkGHUF8v3GVw-1
-Received: by mail-wm1-f71.google.com with SMTP id c7so12165778wml.8
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:55:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LIthaCPfEMaPsdAY5ThVlMRUnMT/maNnKeXQkXykv2Q=;
-        b=Wm1lOAEGyHyo1meww0hoQ//lLMi0GX8Kbu5nGx7xc7UOobuQUsDgNpEtxTjLGylqIu
-         sioI2BFsSfL/L9OcHZKcO7GA/uZ4I9NO+Hh+h2Sm7llm3Dz5VSuRtnGGnkN8Q/PvM3U5
-         qRsBPvtYDj1pCoOq4PKxUDoO6FQsgukGXujqrR4uPR3tm+F1RvUyk3Saurnc9B/nQ8nc
-         5l83ONod7139o/JrDb8GRyRq+tHGM97dKMlWOl9b2kdgGt1bWjjwZI4SC2G/QYyBUsWi
-         9K3wRG5hAvu5KJ5ysyuaDeLqo0Pvx0wfsMFbGDWF5ErDnC9hryG1ITwIhBWOlap5zABO
-         +lKw==
-X-Gm-Message-State: AOAM532RAmCwZAR6lM1dCYYQGP9Mh9OB4GPsWrXpYKyWr1DSAPHrrigD
-        7ZF5xGfDy7iMKw3UKAKUrzFi45xMRhucEzsjzopMSbCFYRWQ4oLi2ScZWbW7H0eBLJs++6rBc7L
-        TyYRY9+t8ZQL8baVuI5ZDPXZF
-X-Received: by 2002:a5d:5744:: with SMTP id q4mr489542wrw.390.1616090132304;
-        Thu, 18 Mar 2021 10:55:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzngAEXRO5HNCZLAOI0ZJiIVObmYJ3MwjuzQ6tHtgjDNK7r9zMdUo5YDT7qVH2LRtDU/xCMiA==
-X-Received: by 2002:a5d:5744:: with SMTP id q4mr489531wrw.390.1616090132098;
-        Thu, 18 Mar 2021 10:55:32 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id u2sm4110393wmm.5.2021.03.18.10.55.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 10:55:31 -0700 (PDT)
-Subject: Re: [PATCH] KVM: X86: Fix missing local pCPU when executing wbinvd on
- all dirty pCPUs
-To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Nadav Amit <namit@vmware.com>
-References: <1615517151-7465-1-git-send-email-wanpengli@tencent.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <4c37a4f6-8b73-9285-0aa5-2e86350b3b06@redhat.com>
-Date:   Thu, 18 Mar 2021 18:55:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=xfqMn6+5WJV+mW2DTjb8S4Co/uAn335F6nKNzcyyJ3M=;
+        b=JebIS0/NtBvtsUP9pbC50iO0svfc9XQdwLMT8UIUjwaldzLtGJE+1f3lES0BoBUJhIeyZn
+        VAVlPOkBG1Ze+Y6PDYVjruvIrfilpX+oLI/HpnrbsMsJTBma4oKVzxaedkm4G3LhmmVQ3/
+        6Q3EirWwIFz6u7yA9sXvgkBzD18ISH8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-172-AwVuuQi-PqefrEE1bjbagQ-1; Thu, 18 Mar 2021 13:55:48 -0400
+X-MC-Unique: AwVuuQi-PqefrEE1bjbagQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 13550190A7A4;
+        Thu, 18 Mar 2021 17:55:47 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.196.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 76CD260C13;
+        Thu, 18 Mar 2021 17:55:45 +0000 (UTC)
+Date:   Thu, 18 Mar 2021 18:55:42 +0100
+From:   Andrew Jones <drjones@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/kvm: add get_msr_index_features
+Message-ID: <20210318175542.xv7qaehgx2cjmuvv@kamzik.brq.redhat.com>
+References: <20210318145629.486450-1-eesposit@redhat.com>
+ <20210318170316.6vah7x2ws4bimmdf@kamzik.brq.redhat.com>
+ <c08773f1-4b84-bb19-cda8-c8ac6ffffdaf@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1615517151-7465-1-git-send-email-wanpengli@tencent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c08773f1-4b84-bb19-cda8-c8ac6ffffdaf@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/03/21 03:45, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
+On Thu, Mar 18, 2021 at 06:33:35PM +0100, Paolo Bonzini wrote:
+> On 18/03/21 18:03, Andrew Jones wrote:
+> > > 
+> > >  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
+> > > +TEST_GEN_PROGS_x86_64 += x86_64/get_msr_index_features
+> > 
+> > Maybe we should give up trying to keep an alphabetic order.
 > 
-> We should execute wbinvd on all dirty pCPUs when guest wbinvd exits
-> to maintain datat consistency in order to deal with noncoherent DMA.
-> smp_call_function_many() does not execute the provided function on
-> the local core, this patch replaces it by on_each_cpu_mask().
+> FWIW I had fixed that but yeah maybe we should just give up.
 > 
-> Reported-by: Nadav Amit <namit@vmware.com>
-> Cc: Nadav Amit <namit@vmware.com>
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
->   arch/x86/kvm/x86.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > +int main(int argc, char *argv[])
+> > > +{
+> > > +	if (kvm_check_cap(KVM_CAP_GET_MSR_FEATURES))
+> > > +		test_get_msr_feature();
+> > > +
+> > > +	test_get_msr_index();
+> > Missing return
+> > 
+> > > +}
 > 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 012d5df..aa6d667 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -6638,7 +6638,7 @@ static int kvm_emulate_wbinvd_noskip(struct kvm_vcpu *vcpu)
->   		int cpu = get_cpu();
->   
->   		cpumask_set_cpu(cpu, vcpu->arch.wbinvd_dirty_mask);
-> -		smp_call_function_many(vcpu->arch.wbinvd_dirty_mask,
-> +		on_each_cpu_mask(vcpu->arch.wbinvd_dirty_mask,
->   				wbinvd_ipi, NULL, 1);
->   		put_cpu();
->   		cpumask_clear(vcpu->arch.wbinvd_dirty_mask);
-> 
+> "main" is special, it's okay not to have a return there.
 
-Queued, thanks.
+Hmm, yeah. I always assumed the compiler would complain or that you'd end
+up with a garbage return code. But, I just checked, and indeed not only do
+you not get a warning, even with -Wall -Wextra, but the compiler actually
+emits code for a zero return value on your behalf. Looks weird to me
+though to end an int function without a return, so I don't think I'm
+going to adopt this practice myself.
 
-Paolo
+Thanks,
+drew
 
