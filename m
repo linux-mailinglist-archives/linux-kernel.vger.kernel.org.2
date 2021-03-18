@@ -2,123 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D105D340D7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A536340D80
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:46:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232661AbhCRSpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54302 "EHLO
+        id S232734AbhCRSqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232642AbhCRSpl (ORCPT
+        with ESMTP id S232599AbhCRSqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:45:41 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A559C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:45:41 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id j11so6173045lfg.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:45:41 -0700 (PDT)
+        Thu, 18 Mar 2021 14:46:17 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9126CC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:46:17 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id g15so4119247pfq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:46:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FXJ1Kpw2oRWiOPlZvmgzPqNpjS+OST6GpCVGaYkcfjU=;
-        b=KVhzG/Xt0d2tzVy7gn9DeiCmjSKqLb+wM+t8KT/0yYxikiuuU7zFmWYcGH7rBKFF2b
-         AtHQOK1YfGzGRBG0KZ4thwg0+JZusdpXujSogBcYD6D0hMB/V73nccM2C6cWPSHOEUQU
-         a1mayCuYUN57wUJaEJfG9UApRea4LPqYff1TlxP6DG3qTXu7cW9ElW4rVEx+PacKVcM4
-         1ObbqRp1qWL2rwPmFRQgVM7VmPubsIbfCjOIIgk5xp14ryEBC3GPnUcfaEyo/ZkGvVMu
-         jDzsbdtLYDpL+BtsNICkUJ0UHfPoPDJ1i7+u6wbVW+hhoK4xDwxigkc/8xNcpzwV8JYt
-         uF2w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Bf0Dt0STxVme8E7nNHr9X3FypHJvzfOBAA6p3/VdKOs=;
+        b=f4U7f0b0xTtH72mR0AURUneWkNYBzDnPg87aC2lPFJRIjbEVwaeJx1JvRtNRtvS2ib
+         nTERXzmVPsbFXSraCX/EG1Cis+s1l4Nn+BiMAIOPcrLjS0HMgr+Rro4OLNbf6eyhiNN6
+         1MbcvGkNuV0hUxMD4m/A3DLlfi5YEmRaBLujIL82wZjdgAqrcJNPc9KD+NEW/TXEhOmo
+         HK0kXFcpzDREZoawv2//shVPXvrZLKF2nqlgY3gGEJh0IRmF+cZP7lg9BlNSICE2wDlI
+         mrQ8VLTnwPAm/PdEUI2TK06Uc1NFVm3i4zxvD0UPtMohF+anAcDwsG0kWakBz/aRQ/Sg
+         NRWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FXJ1Kpw2oRWiOPlZvmgzPqNpjS+OST6GpCVGaYkcfjU=;
-        b=ElM9oL42BlxgV6wdTt2RjcWZ/SGB0wpcqJXXYferEYj2+9LD4klpU3eGg9l7ubK4Ra
-         T0v0xOYKvI4ZKXe7tYjoAoJtKD94F2IVm8eLwKD/yXCL/z4K0weg/R7Tcp8aWvTBJstY
-         TgVQL/Sq9Xn1GlRV9Gev425kBhS7USOem52GfcMZb9PNuUHZBaCUfD9kuE5qhD0h6Q3L
-         gQzSq1MaacrGheBTm8EqgC/XKfUN0QvBthYEZz+OdA4oyUaX/GZ0aynIYIGDdjVuvqin
-         wENQPUddGJoB6hro9DG4TCjBTOwIUsgQ26TaP75wI0hK/gePL8HbvDCkxzGzCIGtGMUT
-         V2tA==
-X-Gm-Message-State: AOAM533pUGAkR0D1+W3aNl+//y1JN0t4gYCwqHRHe3BXTMEMVxoFxsh9
-        +tvLDLBRg/GSpez3CXT87xVqY6F7HZKROuPvpC/9og==
-X-Google-Smtp-Source: ABdhPJzI/cXQgUy2RSLmNuSxvjB8uEjk+GLf2aUWomqyxgvUmHefmj8Y6oB/C1sojY9blIJSTxDq0p15b1fs89u6VoM=
-X-Received: by 2002:ac2:538e:: with SMTP id g14mr6055632lfh.543.1616093139630;
- Thu, 18 Mar 2021 11:45:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Bf0Dt0STxVme8E7nNHr9X3FypHJvzfOBAA6p3/VdKOs=;
+        b=mvAogNmtZ0qPXj3h1mPMrw7wH+WKkfy8s/Uxe3Nx5Lt+00IUHsqfh2I43kA2TDyKp5
+         LWJMpfs8pr+ZRZKMZRcTQHXAoXEeGm6vgCqXw9ltmSTJjPTcaT9eWKMFdmLQY7VDNCKN
+         ox7bTD4xNYCwgYJuylRTdtmUvj+GsLZh3szzBZuzhn7gQShwK2DhE1yodKHKdSh7VY5K
+         inzSUObAudKBUydPfq1lDWy5pRm5PEufAv/YLPK0AiTOwcfZV6vRhAC9C9g0IfBVO+Cj
+         8VSSMeWTVyiYNGvyvjvH0ZBgHmoYW0bojTlDaQLPjfPg6H1bX7OateOnCHofM3exset2
+         rpHQ==
+X-Gm-Message-State: AOAM532kiJN917VxECNJ/NlDM0ZS0VhNH6YWwA15AujH2IfhTv1vYCB5
+        SAitFbLmRiG9D3RE1NSAnWkz3A==
+X-Google-Smtp-Source: ABdhPJwFxywHp7L5YJi90JSdTwq+RSG30E/0m9h/OlAzFFlrxlPlHWRYwoUGnnXZsl5VQFWZec+LCw==
+X-Received: by 2002:a65:5543:: with SMTP id t3mr8130155pgr.275.1616093177008;
+        Thu, 18 Mar 2021 11:46:17 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id c72sm3075133pfb.165.2021.03.18.11.46.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 11:46:16 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 18:46:12 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Andrew Jones <drjones@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/kvm: add get_msr_index_features
+Message-ID: <YFOf9Jc3eFw6+dZX@google.com>
+References: <20210318145629.486450-1-eesposit@redhat.com>
+ <20210318170316.6vah7x2ws4bimmdf@kamzik.brq.redhat.com>
+ <c08773f1-4b84-bb19-cda8-c8ac6ffffdaf@redhat.com>
 MIME-Version: 1.0
-References: <20210318171111.706303-1-samitolvanen@google.com>
- <20210318171111.706303-11-samitolvanen@google.com> <CAKwvOdkn7MY+-9D0DQ-18OR=s1XmgPaP7VchCm6VV5kYuKSAkA@mail.gmail.com>
-In-Reply-To: <CAKwvOdkn7MY+-9D0DQ-18OR=s1XmgPaP7VchCm6VV5kYuKSAkA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 18 Mar 2021 11:45:28 -0700
-Message-ID: <CAKwvOdk7wg-BoE=A0wN6Oz7ptK4y2_YHUBNTTc80CvWuY=nF3Q@mail.gmail.com>
-Subject: Re: [PATCH v2 10/17] lkdtm: use __va_function
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c08773f1-4b84-bb19-cda8-c8ac6ffffdaf@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 11:43 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Thu, Mar 18, 2021 at 10:11 AM Sami Tolvanen <samitolvanen@google.com> wrote:
-> >
-> > To ensure we take the actual address of a function in kernel text, use
-> > __va_function. Otherwise, with CONFIG_CFI_CLANG, the compiler replaces
-> > the address with a pointer to the CFI jump table, which is actually in
-> > the module when compiled with CONFIG_LKDTM=m.
->
-> Should patch 10 and 12 be reordered against one another? Otherwise it
-> looks like 12 defines __va_function while 10 uses it?
+On Thu, Mar 18, 2021, Paolo Bonzini wrote:
+> On 18/03/21 18:03, Andrew Jones wrote:
+> > > 
+> > >  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
+> > > +TEST_GEN_PROGS_x86_64 += x86_64/get_msr_index_features
+> > 
+> > Maybe we should give up trying to keep an alphabetic order.
+> 
+> FWIW I had fixed that but yeah maybe we should just give up.
 
-Ah, nvm patch 3 defines a generic version, I see.
-
->
->
-> >
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > Acked-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  drivers/misc/lkdtm/usercopy.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/misc/lkdtm/usercopy.c b/drivers/misc/lkdtm/usercopy.c
-> > index 109e8d4302c1..d173d6175c87 100644
-> > --- a/drivers/misc/lkdtm/usercopy.c
-> > +++ b/drivers/misc/lkdtm/usercopy.c
-> > @@ -314,7 +314,7 @@ void lkdtm_USERCOPY_KERNEL(void)
-> >
-> >         pr_info("attempting bad copy_to_user from kernel text: %px\n",
-> >                 vm_mmap);
-> > -       if (copy_to_user((void __user *)user_addr, vm_mmap,
-> > +       if (copy_to_user((void __user *)user_addr, __va_function(vm_mmap),
-> >                          unconst + PAGE_SIZE)) {
-> >                 pr_warn("copy_to_user failed, but lacked Oops\n");
-> >                 goto free_user;
-> > --
-> > 2.31.0.291.g576ba9dcdaf-goog
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
+Never!  What if we make offenders wear a dunce cap at the next KVM Forum?
