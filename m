@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C63A3404F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A96A3404F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:52:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbhCRLvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:51:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhCRLve (ORCPT
+        id S230300AbhCRLwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:52:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24457 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229747AbhCRLvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:51:34 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A13AC06174A;
-        Thu, 18 Mar 2021 04:51:31 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id 11so3316116pfn.9;
-        Thu, 18 Mar 2021 04:51:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+UME5341F20O4YSlPgDYAA4Q0BzH+eMkJMlXuJ22FVc=;
-        b=BhP42TPgrKM8T7ks3K4MByvG/Uj1dMnc/BTxc56ycY3yQkWUWyYjG7quVJQCawgxGG
-         9iASnYetIYX6v8S2I0TDgHH8yCt+ULSqWcEUxlJPbUL49IYU9CdOZYNAoQQUBCWTTkmG
-         EuhU4DhX4KKPjrWuFXGmSYUtXCSi6OyxsAtr3u7JGpvbVCwZEVVmyovQH3eDWZRk0LYD
-         eel++qX/eusSnuUhn57NSiVDEQaAixAStweDR6fE4VzxfoPrBfKdX8pgkWbBCL5d9Eoc
-         T5ZmewMUQJykriLzvIQlszG2H9QlWB4+egYkRK3xg4dTZOEpH1I4URKW6jWv/9J6mCPX
-         jHug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+UME5341F20O4YSlPgDYAA4Q0BzH+eMkJMlXuJ22FVc=;
-        b=V3/VjO1nFJWAu6gV7qivfad8kaTJVuhFm7rc89Kf0RN27gnX+pxJuABA0yEGffS2U2
-         qHPfo5wHFzInZY3+IdGdFpOn0pjRfDpaVIiLVgj0nJrmrXvX9QF2a5QcwkV4cJ+Of44J
-         ebhMGCOQVhVo5fr4nzLeR9IQ6nM2elEcAinWDi8FgZLYZhvvubh0lCEANZ0x6k+I6xb+
-         IBw50Y8xlQ4Prk/djtKVOzjRV5+Zr59xacKZCZr3iMPj9HZBPF1i8H2R/W5IfPQxxA7z
-         Y/2ylHoIFQ/JHOl12zjIAjq2z8uvojtbIoqqsb7Ym3lGs8svA04oHRs194bUdkyaj30d
-         gklg==
-X-Gm-Message-State: AOAM533AAD8hBaG45Fg6mLCbrKIJCMkTGnglNfRVBPvKQNs/xOiwP404
-        LLjxrnZuTzmc6/lwWCnFRirRR1NAIwCzMxSqXJc=
-X-Google-Smtp-Source: ABdhPJwW6yC52Fl0EWloY3PwXG594KzByYwrWjXmVzmSuLYCcQyA5yDJUq6Pob06NGv+ayCICHgM2WMqro8cgHOls50=
-X-Received: by 2002:a62:7c43:0:b029:1ef:20ce:ba36 with SMTP id
- x64-20020a627c430000b02901ef20ceba36mr3825516pfc.40.1616068290602; Thu, 18
- Mar 2021 04:51:30 -0700 (PDT)
+        Thu, 18 Mar 2021 07:51:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616068312;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RgtsA5KUehMmtmf9kRkW1SBSeTOUxt617f5ZR2KNNlc=;
+        b=VAIcaAl6mPFWRyF98AwQncZHnMOp/hxXSmgX0neC11DVR1ax0pbAXEknx8O2zbw4ThSUbn
+        iUZPfsg5sAztjkItelDAGFMnlHXf8+T91kGV6RTPbXD8r4bwRhgPJsCf6CNqhDfUkXl9Aa
+        JbedZ0EdXdPk3lHcqI0qCiXebajUPx0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-513-dt9R1DmIPT26mo52n5ETBw-1; Thu, 18 Mar 2021 07:51:50 -0400
+X-MC-Unique: dt9R1DmIPT26mo52n5ETBw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B9039107ACCA;
+        Thu, 18 Mar 2021 11:51:48 +0000 (UTC)
+Received: from krava (unknown [10.40.194.6])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6DE4010016F8;
+        Thu, 18 Mar 2021 11:51:46 +0000 (UTC)
+Date:   Thu, 18 Mar 2021 12:51:45 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v2 11/27] perf parse-events: Support hardware events
+ inside PMU
+Message-ID: <YFM+0e+mPL036gyY@krava>
+References: <20210311070742.9318-1-yao.jin@linux.intel.com>
+ <20210311070742.9318-12-yao.jin@linux.intel.com>
+ <YEu9usdFl6VSnOQ7@krava>
+ <c40d6187-9391-40de-aea8-7389bb369555@linux.intel.com>
+ <YE+balbLkG5RL7Lu@krava>
+ <fd88f214-f0a4-87bc-ef52-ee750ca13a8d@linux.intel.com>
+ <YFC615nTdUR/aLw5@krava>
+ <65624432-2752-8381-d299-9b48ec508406@linux.intel.com>
+ <YFHUo1I8cYf502qJ@krava>
+ <b0ec8d05-acbc-3021-2e74-684d119de2db@linux.intel.com>
 MIME-Version: 1.0
-References: <20210318061250.8593-1-unixbhaskar@gmail.com>
-In-Reply-To: <20210318061250.8593-1-unixbhaskar@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 18 Mar 2021 13:51:14 +0200
-Message-ID: <CAHp75VcnkrisWsf4SUjz+r8zybL+zYEGGi8thF_6AqSsxomwaQ@mail.gmail.com>
-Subject: Re: [PATCH] x86/platform/intel-quark: Fix a typo
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b0ec8d05-acbc-3021-2e74-684d119de2db@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 8:15 AM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
->
->
-> s/secton/section/
+On Wed, Mar 17, 2021 at 08:17:52PM +0800, Jin, Yao wrote:
 
-Reviewed-by: Andy Shevchenko <andy.,shevchenko@gmail.com>
+SNIP
 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  arch/x86/platform/intel-quark/imr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/x86/platform/intel-quark/imr.c b/arch/x86/platform/intel-quark/imr.c
-> index 0286fe1b14b5..122e0f37b1f5 100644
-> --- a/arch/x86/platform/intel-quark/imr.c
-> +++ b/arch/x86/platform/intel-quark/imr.c
-> @@ -551,7 +551,7 @@ static void __init imr_fixup_memmap(struct imr_device *idev)
->
->         /*
->          * Setup an unlocked IMR around the physical extent of the kernel
-> -        * from the beginning of the .text secton to the end of the
-> +        * from the beginning of the .text section to the end of the
->          * .rodata section as one physically contiguous block.
->          *
->          * We don't round up @size since it is already PAGE_SIZE aligned.
-> --
-> 2.20.1
->
+> > > 
+> > > For example,
+> > > 
+> > > perf stat -e '{cpu_core/cycles/,cpu_core/instructions/}' -e '{cpu_atom/cycles/,cpu_atom/instructions/}'
+> > > 
+> > > This usage is common and reasonable. So I think we may need to support pmu style events.
+> > 
+> > sure, but we don't support 'cpu/cycles/' but we support 'cpu/cpu-cycles/'
+> > why do you insist on supporting cpu_core/cycles/ ?
+> > 
+> > jirka
+> > 
+> 
+> I'm OK to only support 'cpu_core/cpu-cycles/' or 'cpu_atom/cpu-cycles/'. But
+> what would we do for cache event?
+> 
+> 'perf stat -e LLC-loads' is OK, but 'perf stat -e cpu/LLC-loads/' is not supported currently.
 
+ugh, I keep forgetting those ;-)
 
--- 
-With Best Regards,
-Andy Shevchenko
+> 
+> For hybrid platform, user may only want to enable the LLC-loads on core CPUs
+> or on atom CPUs. That's reasonable. While if we don't support the pmu style
+> event, how to satisfy this requirement?
+> 
+> If we can support the pmu style event, we can also use the same way for
+> cpu_core/cycles/. At least it's not a bad thing, right? :)
+
+right, it's probably best to use the pmu/LLC-.../ for this,
+I'll check the patch again
+
+jirka
+
